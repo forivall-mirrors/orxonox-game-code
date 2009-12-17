@@ -88,6 +88,7 @@ ORXONOX_ADD_LIBRARY(core
     ConfigFileManager.h
     Game.h
     GameMode.h
+    GUIManager.h
     Loader.h
     LuaState.h
     PathConfig.h

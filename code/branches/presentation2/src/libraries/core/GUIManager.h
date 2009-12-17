@@ -43,8 +43,8 @@
 #include "util/Singleton.h"
 #include "input/InputHandler.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
     class PlayerInfo; // Forward declaration
 
     /**
@@ -58,8 +58,9 @@ namespace orxonox
         Since the GUI needs user input, the GUIManager implements the functions needed to act as a key and/or mouse handler.
         Those input events are then injected into CEGUI in Lua.
     */
-    class _CoreExport GUIManager : public Singleton<GUIManager>, public InputHandler
-    {
+    class _CoreExport GUIManager // tolua_export
+        : public Singleton<GUIManager>, public InputHandler
+    { // tolua_export
         friend class Singleton<GUIManager>;
     public:
         GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen);
@@ -115,7 +116,7 @@ namespace orxonox
         static GUIManager*                   singletonPtr_s;    //!< Singleton reference to GUIManager
         bool                                 bShowIngameGUI_;
 
-    };
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _GUIManager_H__ */
