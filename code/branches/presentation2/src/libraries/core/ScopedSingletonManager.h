@@ -161,6 +161,8 @@ namespace orxonox
             assert(singletonPtr_ == NULL);
             try
                 { singletonPtr_ = new T(); }
+            catch (const InitialisationAbortedException& ex)
+                { COUT(3) << ex.getDescription() << std::endl; }
             catch (...)
                 { COUT(1) << "Singleton creation failed: " << Exception::handleMessage() << std::endl; }
         }
