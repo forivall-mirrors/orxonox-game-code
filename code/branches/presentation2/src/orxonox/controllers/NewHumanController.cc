@@ -33,6 +33,7 @@
 #include <OgreSceneQuery.h>
 #include <OgreCamera.h>
 #include <OgreSceneManager.h>
+#include <bullet/BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
 
 #include "core/CoreIncludes.h"
 #include "core/ConsoleCommand.h"
@@ -42,16 +43,15 @@
 #include "overlays/OrxonoxOverlay.h"
 #include "graphics/Camera.h"
 #include "sound/SoundManager.h"
-#include "Scene.h"
 #include "tools/BulletConversions.h"
-#include "bullet/BulletCollision/NarrowPhaseCollision/btManifoldPoint.h"
+#include "Scene.h"
 
 namespace orxonox
 {
-    SetConsoleCommand(NewHumanController, changeMode,          false).keybindMode(KeybindMode::OnPress);
-    SetConsoleCommand(NewHumanController, accelerate,          false).keybindMode(KeybindMode::OnPress);
-    SetConsoleCommand(NewHumanController, decelerate,          false).keybindMode(KeybindMode::OnPress);
-    SetConsoleCommand(NewHumanController, unfire,              true).keybindMode(KeybindMode::OnRelease);
+    SetConsoleCommand(NewHumanController, changeMode, false).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand(NewHumanController, accelerate, false).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand(NewHumanController, decelerate, false).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand(NewHumanController, unfire,      true).keybindMode(KeybindMode::OnRelease);
 
     CreateUnloadableFactory(NewHumanController);
 
@@ -101,37 +101,37 @@ namespace orxonox
             centerOverlay_ = new OrxonoxOverlay(this);
             centerOverlay_->setBackgroundMaterial("Orxonox/CenterOverlay");
             centerOverlay_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-            centerOverlay_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+            centerOverlay_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
             centerOverlay_->hide();
 
-            if ( showDamageOverlay_ )
+            if (showDamageOverlay_)
             {
                 damageOverlayTop_ = new OrxonoxOverlay(this);
                 damageOverlayTop_->setBackgroundMaterial("Orxonox/DamageOverlayTop");
                 damageOverlayTop_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-                damageOverlayTop_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+                damageOverlayTop_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
                 damageOverlayTop_->hide();
 
                 damageOverlayRight_ = new OrxonoxOverlay(this);
                 damageOverlayRight_->setBackgroundMaterial("Orxonox/DamageOverlayRight");
                 damageOverlayRight_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-                damageOverlayRight_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+                damageOverlayRight_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
                 damageOverlayRight_->hide();
 
                 damageOverlayBottom_ = new OrxonoxOverlay(this);
                 damageOverlayBottom_->setBackgroundMaterial("Orxonox/DamageOverlayBottom");
                 damageOverlayBottom_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-                damageOverlayBottom_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+                damageOverlayBottom_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
                 damageOverlayBottom_->hide();
 
                 damageOverlayLeft_ = new OrxonoxOverlay(this);
                 damageOverlayLeft_->setBackgroundMaterial("Orxonox/DamageOverlayLeft");
                 damageOverlayLeft_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-                damageOverlayLeft_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));\
+                damageOverlayLeft_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
                 damageOverlayLeft_->hide();
             }
 
-            if ( showArrows_ )
+            if (showArrows_)
             {
                 arrowsOverlay1_ = new OrxonoxOverlay(this);
                 arrowsOverlay1_->setBackgroundMaterial("Orxonox/DirectionArrows1");
@@ -172,7 +172,7 @@ namespace orxonox
 
         controlPaused_ = false;
 
-//HumanController::localController_s->getControllableEntity()->getCamera()->setDrag(true);
+        //HumanController::localController_s->getControllableEntity()->getCamera()->setDrag(true);
     }
 
     NewHumanController::~NewHumanController()
@@ -203,36 +203,38 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
 
-            if( this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() )
+            if (this->controllableEntity_ && !this->controllableEntity_->isInMouseLook())
             {
                 this->updateTarget();
 
-                if ( !controlPaused_ ) {
-                    if (this->getControllableEntity() && (this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip" || this->getControllableEntity()->getIdentifier()->getName() == "Rocket"))
+                if (!controlPaused_ )
+                {
+                    if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
                         this->showOverlays();
 
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
 
-                    if ( this->controlMode_ == 0 || ( this->controlMode_ == 1 && this->firemode_ == 1 ) )
+                    if (this->controlMode_ == 0 || (this->controlMode_ == 1 && this->firemode_ == 1))
                     {
-                        if ( this->showOverlays_ && this->showArrows_)
+                        if (this->showOverlays_ && this->showArrows_)
                             alignArrows();
                     }
                     else
                         hideArrows();
 
-                    if ( this->showDamageOverlay_ && ( this->damageOverlayTT_ > 0 || this->damageOverlayTR_ > 0 || this->damageOverlayTB_ > 0 || this->damageOverlayTL_ > 0 ) ) {
+                    if (this->showDamageOverlay_ && (this->damageOverlayTT_ > 0 || this->damageOverlayTR_ > 0 || this->damageOverlayTB_ > 0 || this->damageOverlayTL_ > 0))
+                    {
                         this->damageOverlayTT_ -= dt;
                         this->damageOverlayTR_ -= dt;
                         this->damageOverlayTB_ -= dt;
                         this->damageOverlayTL_ -= dt;
-                        if ( this->damageOverlayTT_ <= 0 )
+                        if (this->damageOverlayTT_ <= 0)
                             this->damageOverlayTop_->hide();
-                        if ( this->damageOverlayTR_ <= 0 )
+                        if (this->damageOverlayTR_ <= 0)
                             this->damageOverlayRight_->hide();
-                        if ( this->damageOverlayTB_ <= 0 )
+                        if (this->damageOverlayTB_ <= 0)
                             this->damageOverlayBottom_->hide();
-                        if ( this->damageOverlayTL_ <= 0 )
+                        if (this->damageOverlayTL_ <= 0)
                             this->damageOverlayLeft_->hide();
                     }
                 }
@@ -240,14 +242,9 @@ namespace orxonox
             else
                 this->hideOverlays();
 
-            if ( this->acceleration_ > 0 )
+            if (this->acceleration_ > 0)
             {
-/*
-if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
-    std::cout << this->controllableEntity_->getEngine()->getAccelerationFront() << endl;
-}
-*/
-                if ( this->accelerating_ )
+                if (this->accelerating_)
                     HumanController::moveFrontBack(Vector2(1, 0));
                 else
                     HumanController::moveFrontBack(Vector2(this->acceleration_, 0)); 
@@ -264,40 +261,10 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         HumanController::tick(dt);
     }
 
-    /*void NewHumanController::tick(float dt)
-    {
-        if (GameMode::playsSound() && NewHumanController::localController_s && NewHumanController::localController_s->controllableEntity_)
-        {
-            // Update sound listener
-            Camera* camera = NewHumanController::localController_s->controllableEntity_->getCamera();
-            if (camera)
-            {
-                SoundManager::getInstance().setListenerPosition(camera->getWorldPosition());
-                SoundManager::getInstance().setListenerOrientation(camera->getWorldOrientation());
-            }
-            else
-                COUT(3) << "NewHumanController, Warning: Using a ControllableEntity without Camera" << std::endl;
-        }
-    }*/
-    
     void NewHumanController::doFire(unsigned int firemode)
     {
-        if ( !this->controllableEntity_ )
+        if (!this->controllableEntity_)
             return;
-        //if (HumanController::localController_s && HumanController::localController_s->controllableEntity_) {
-
-/*
-        // Get results, create a node/entity on the position
-        for ( itr = result.begin(); itr != result.end(); itr++ )
-        {
-            if (itr->movable && itr->movable->getName() == "Head")
-            {
-                soundMgr->StopSound( &jaguarSoundChannel );
-                soundMgr->PlaySound( jaguarSound, headNode, &jaguarSoundChannel );
-                break;
-            } // if
-        }
-*/
 
         this->firemode_ = firemode;
 
@@ -312,10 +279,12 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     }
 
-    void NewHumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {
-        if ( this->showDamageOverlay_ && !this->controlPaused_ && this->controllableEntity_ && !this->controllableEntity_->isInMouseLook() ) {
+    void NewHumanController::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
+    {
+        if (this->showDamageOverlay_ && !this->controlPaused_ && this->controllableEntity_ && !this->controllableEntity_->isInMouseLook())
+        {
             Vector3 posA;
-            if ( originator )
+            if (originator)
                 posA = originator->getWorldPosition();
             else
                 posA = multi_cast<Vector3>(contactpoint.getPositionWorldOnA());
@@ -328,35 +297,32 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
             //x is left positive
             //y is down positive
             relativeHit.normalise();
-//            COUT(0) << relativeHit << endl;
 
             float threshold = 0.3;
-            // && abs(relativeHit.y) < 0.5 
-            if ( relativeHit.x > threshold) // Left
+            if (relativeHit.x > threshold) // Left
             {
                 this->damageOverlayLeft_->show();
                 this->damageOverlayTL_ = this->damageOverlayTime_;
                 //this->damageOverlayLeft_->setBackgroundAlpha(0.3);
             }
-            if ( relativeHit.x < -threshold) //Right
+            if (relativeHit.x < -threshold) //Right
             {
                 this->damageOverlayRight_->show();
                 this->damageOverlayTR_ = this->damageOverlayTime_;
                 //this->damageOverlayRight_->setBackgroundAlpha(0.3);
             }
-            if ( relativeHit.y > threshold) //Top
+            if (relativeHit.y > threshold) //Top
             {
                 this->damageOverlayBottom_->show();
                 this->damageOverlayTB_ = this->damageOverlayTime_;
                 //this->damageOverlayTop_->setBackgroundAlpha(0.3);
             }
-            if ( relativeHit.y < -threshold) //Bottom
+            if (relativeHit.y < -threshold) //Bottom
             {
                 this->damageOverlayTop_->show();
                 this->damageOverlayTT_ = this->damageOverlayTime_;
                 //this->damageOverlayBottom_->setBackgroundAlpha(0.3);
             }
-
         }
     }
 
@@ -402,10 +368,10 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
                 WorldEntity* wePtr = dynamic_cast<WorldEntity*>(itr->movable->getUserObject());
                 if (wePtr)
                 {
-                    // go through all parents of object and look wheter they are Sightable or not
+                    // go through all parents of object and look whether they are sightable or not
                     bool isSightable = false;
                     WorldEntity* parent = wePtr->getParent();
-                    while( parent )
+                    while (parent)
                     {
                         if (this->targetMask_.isExcluded(parent->getIdentifier()))
                         {
@@ -418,35 +384,27 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
                             break;
                         }
                     }
-                    if ( !isSightable )
+                    if (!isSightable)
                         continue;
                 }
 
-                if ( this->getControllableEntity() && this->getControllableEntity()->getTarget() != wePtr )
-                {
+                if (this->getControllableEntity() && this->getControllableEntity()->getTarget() != wePtr)
                     this->getControllableEntity()->setTarget(wePtr);
-                }
 
-                if( pawn )
-                {
+                if (pawn)
                     pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance );
-                }
 
                 //itr->movable->getParentSceneNode()->showBoundingBox(true);
-                //std::cout << itr->movable->getParentSceneNode()->_getDerivedPosition() << endl;
                 //return mouseRay.getOrigin() + mouseRay.getDirection() * itr->distance; //or itr->movable->getParentSceneNode()->_getDerivedPosition()
                 return;
             }
+        }
 
-        }
-        if ( pawn )
-        {
+        if (pawn)
             pawn->setAimPosition( mouseRay.getOrigin() + mouseRay.getDirection() * 1200 );
-        }
 
         if( this->getControllableEntity() && this->getControllableEntity()->getTarget() != 0 )
             this->getControllableEntity()->setTarget( 0 );
-    
 
         //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getWorldOrientation() * Vector3::NEGATIVE_UNIT_Z * 2000);
         //return this->controllableEntity_->getWorldPosition() + (this->controllableEntity_->getCamera()->getOgreCamera()->getOrientation() * Vector3::NEGATIVE_UNIT_Z);
@@ -457,13 +415,13 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         this->accelerating_ = true;
 
         //if (this->acceleration_ == 0)
-            HumanController::frontback(value);
+        HumanController::frontback(value);
     }
 
     void NewHumanController::yaw(const Vector2& value)
     {
-//         SUPER(NewHumanController, yaw, value);
-        if (this->controlMode_ == 0 || ( this->controllableEntity_ && this->controllableEntity_->isInMouseLook() ) )
+        //SUPER(NewHumanController, yaw, value);
+        if (this->controlMode_ == 0 || (this->controllableEntity_ && this->controllableEntity_->isInMouseLook()))
             HumanController::yaw(value);
 
         this->currentYaw_ = value.x;
@@ -471,8 +429,8 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::pitch(const Vector2& value)
     {
-//         SUPER(NewHumanController, pitch, value);
-        if (this->controlMode_ == 0 || ( this->controllableEntity_ && this->controllableEntity_->isInMouseLook() ) )
+        //SUPER(NewHumanController, pitch, value);
+        if (this->controlMode_ == 0 || (this->controllableEntity_ && this->controllableEntity_->isInMouseLook()))
             HumanController::pitch(value);
 
         this->currentPitch_ = value.x;
@@ -494,19 +452,13 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::changedControllableEntity()
     {
-/*
-        if( this->getControllableEntity() )
-            CCOUT(0) << "changed controllable entity to: " << this->getControllableEntity()->getIdentifier()->getName() << endl;
-        else
-            CCOUT(0) << "changed controllable entity to: " << this->getControllableEntity() << endl;
-*/
         this->controlMode_ = 0;
         this->currentYaw_ = 0;
         this->currentPitch_ = 0;
-        if (this->getControllableEntity() && ( this->getControllableEntity()->getIdentifier()->getName() == "SpaceShip" || this->getControllableEntity()->getIdentifier()->getName() == "Rocket" ))
+        if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
         {
             this->showOverlays_ = true;
-            if( !this->controlPaused_ )
+            if (!this->controlPaused_)
             {
                 this->showOverlays();
                 this->alignArrows();
@@ -521,69 +473,69 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
 
     void NewHumanController::accelerate()
     {
-        if ( NewHumanController::localController_s )
-        {
+        if (NewHumanController::localController_s)
             NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ + 0.2f, 0.00f, 1.0f);
-        }
     }
 
     void NewHumanController::decelerate()
     {
-        if ( NewHumanController::localController_s )
-        {
+        if (NewHumanController::localController_s)
             NewHumanController::localController_s->acceleration_ = clamp(NewHumanController::localController_s->acceleration_ - 0.1f, 0.0f, 1.0f);
-        }
     }
 
-    void NewHumanController::doResumeControl() {
+    void NewHumanController::doResumeControl()
+    {
         this->controlPaused_ = false;
-        if( this->showOverlays_ ) {
+        if (this->showOverlays_)
             this->showOverlays();
-        }
     }
 
-    void NewHumanController::doPauseControl() {
+    void NewHumanController::doPauseControl()
+    {
         this->controlPaused_ = true;
-//        COUT(0) << "pause control" << endl;
         this->hideOverlays();
     }
 
-    void NewHumanController::alignArrows() {
-        if (showArrows_) {
+    void NewHumanController::alignArrows()
+    {
+        if (showArrows_)
+        {
             hideArrows();
     
             float distance = sqrt(pow(static_cast<float>(this->currentYaw_)/2*-1,2) + pow(static_cast<float>(this->currentPitch_)/2*-1,2));
     
-            if ( distance > 0.04 && distance <= 0.59 * arrowsSize_ / 2.0 ) {
+            if (distance > 0.04 && distance <= 0.59 * arrowsSize_ / 2.0 )
+            {
                 this->arrowsOverlay1_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
-    
                 this->arrowsOverlay1_->show();
             }
-            else if ( distance > 0.59 * arrowsSize_ / 2.0 && distance <= 0.77 * arrowsSize_ / 2.0 ) {
+            else if (distance > 0.59 * arrowsSize_ / 2.0 && distance <= 0.77 * arrowsSize_ / 2.0 )
+            {
                 this->arrowsOverlay2_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
-    
                 this->arrowsOverlay2_->show();
             }
-            else if ( distance > 0.77 * arrowsSize_ / 2.0 && distance <= arrowsSize_ / 2.0 ) {
+            else if (distance > 0.77 * arrowsSize_ / 2.0 && distance <= arrowsSize_ / 2.0)
+            {
                 this->arrowsOverlay3_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
-    
                 this->arrowsOverlay3_->show();
             }
-            else if ( distance > arrowsSize_ / 2.0 ) {
+            else if (distance > arrowsSize_ / 2.0)
+            {
                 this->arrowsOverlay4_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
-    
                 this->arrowsOverlay4_->show();
             }
         }
     }
 
-    void NewHumanController::showOverlays() {
-        if( !GameMode::showsGraphics() )
+    void NewHumanController::showOverlays()
+    {
+        if (!GameMode::showsGraphics())
             return;
         this->crossHairOverlay_->show();
         this->centerOverlay_->show();
 
-        if (showArrows_) {
+        if (showArrows_)
+        {
             this->arrowsOverlay1_->show();
             this->arrowsOverlay2_->show();
             this->arrowsOverlay3_->show();
@@ -591,13 +543,15 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         }
     }
 
-    void NewHumanController::hideOverlays() {
-        if( !GameMode::showsGraphics() )
+    void NewHumanController::hideOverlays()
+    {
+        if (!GameMode::showsGraphics())
             return;
         this->crossHairOverlay_->hide();
         this->centerOverlay_->hide();
 
-        if ( showDamageOverlay_ ) {
+        if (showDamageOverlay_)
+        {
             this->damageOverlayTop_->hide();
             this->damageOverlayRight_->hide();
             this->damageOverlayBottom_->hide();
@@ -607,10 +561,12 @@ if (this->controllableEntity_ && this->controllableEntity_->getEngine()) {
         this->hideArrows();
     }
 
-    void NewHumanController::hideArrows() {
-        if( !GameMode::showsGraphics() )
+    void NewHumanController::hideArrows()
+    {
+        if(!GameMode::showsGraphics())
             return;
-        if (showArrows_) {
+        if (showArrows_)
+        {
             this->arrowsOverlay1_->hide();
             this->arrowsOverlay2_->hide();
             this->arrowsOverlay3_->hide();

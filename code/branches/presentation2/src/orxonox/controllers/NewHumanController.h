@@ -75,6 +75,7 @@ namespace orxonox
 
             unsigned int                controlMode_;
             static NewHumanController*  localController_s;
+
         private:
             float                       currentYaw_;
             float                       currentPitch_;
