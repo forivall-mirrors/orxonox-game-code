@@ -264,7 +264,7 @@ namespace orxonox
         std::cout.flush();
         if (!this->origCout_.str().empty())
         {
-            this->shell_->addOutputLine(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::None);
             this->origCout_.str("");
         }
     }
