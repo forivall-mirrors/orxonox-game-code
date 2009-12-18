@@ -68,7 +68,7 @@
    accelerationupdown    =  125
   >
     <EffectContainer condition="idle">
-      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" loop=1 active=false/>
+      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" looping=1 active=false/>
     </EffectContainer>
     <EffectContainer condition="not idle">
 

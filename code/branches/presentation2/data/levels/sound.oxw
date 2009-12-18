@@ -17,8 +17,8 @@
     skybox       = "Orxonox/Starbox"
   >
 
-  <AmbientSound ambientSource="Earth.ogg" loop="true" play="true" />
-  <AmbientSound ambientSource="Mars.ogg" loop="true" play="false">
+  <AmbientSound ambientSource="Earth.ogg" looping="true" playOnLoad="true" />
+  <AmbientSound ambientSource="Mars.ogg" looping="true">
 	<events>
 		<activity>
 			<DistanceTrigger position="400,0,0" distance=200 target="Camera">
@@ -29,7 +29,7 @@
 		</activity>
 	</events>
   </AmbientSound>
-  <AmbientSound ambientSource="Jupiter.ogg" loop="true" play="false">
+  <AmbientSound ambientSource="Jupiter.ogg" looping="true">
 	<events>
 		<activity>
 			<DistanceTrigger position="400,150,0" distance=200 target="Camera">

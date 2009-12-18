@@ -41,17 +41,15 @@ namespace orxonox
     CreateFactory(AmbientSound);
 
     AmbientSound::AmbientSound(BaseObject* creator)
-        : BaseObject(creator), Synchronisable(creator)
+        : BaseObject(creator)
+        , Synchronisable(creator)
+        , bPlayOnLoad_(false)
     {
         RegisterObject(AmbientSound);
 
         // Ambient sounds always fade in
         this->setVolume(0);
         this->registerVariables();
-    }
-
-    AmbientSound::~AmbientSound()
-    {
     }
 
     void AmbientSound::preDestroy()
@@ -66,16 +64,17 @@ namespace orxonox
     void AmbientSound::registerVariables()
     {
         registerVariable(ambientSource_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::ambientSourceChanged));
-        registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::loopingChanged));
-        registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::pitchChanged));
-        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::stateChanged));
+        registerVariable(bLooping_,      ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::loopingChanged));
+        registerVariable(pitch_,         ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::pitchChanged));
+        registerVariable(bPlayOnLoad_,   ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::playOnLoadChanged));
     }
 
     void AmbientSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AmbientSound, XMLPort, xmlelement, mode);
         BaseSound::XMLPortExtern(xmlelement, mode);
-        XMLPortParam(AmbientSound, "ambientsource", setAmbientSource, getAmbientSource, xmlelement, mode);
+        XMLPortParam(AmbientSound, "ambientSource", setAmbientSource, getAmbientSource, xmlelement, mode);
+        XMLPortParam(AmbientSound, "playOnLoad", setPlayOnLoad, getPlayOnLoad, xmlelement, mode);
     }
 
     void AmbientSound::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
@@ -87,52 +86,25 @@ namespace orxonox
     void AmbientSound::play()
     {
         if (GameMode::playsSound())
-        {
             SoundManager::getInstance().registerAmbientSound(this);
-        }
-        else
-            BaseSound::play();
-    }
-
-    void AmbientSound::doPlay()
-    {
-        BaseSound::play();
     }
 
     void AmbientSound::stop()
     {
         if (GameMode::playsSound())
-        {
             SoundManager::getInstance().unregisterAmbientSound(this);
-        }
-        else
-            BaseSound::stop();
-    }
-
-    void AmbientSound::doStop()
-    {
-        BaseSound::stop();
     }
 
     void AmbientSound::pause()
     {
         if (GameMode::playsSound())
-        {
             SoundManager::getInstance().pauseAmbientSound(this);
-        }
-        else
-            BaseSound::pause();
     }
     
     float AmbientSound::getRealVolume()
     {
         assert(GameMode::playsSound());
         return SoundManager::getInstance().getRealVolume(SoundType::Music);
-    }
-
-    void AmbientSound::doPause()
-    {
-        BaseSound::pause();
     }
 
     void AmbientSound::setAmbientSource(const std::string& source)
@@ -147,6 +119,13 @@ namespace orxonox
             else
                 COUT(3) << "Sound: " << source << ": Not a valid name! Ambient sound will not change." << std::endl;       
         }
+    }
+
+    void AmbientSound::setPlayOnLoad(bool val)
+    {
+        this->bPlayOnLoad_ = val;
+        if (val)
+            this->play();
     }
 
     void AmbientSound::changedActivity()

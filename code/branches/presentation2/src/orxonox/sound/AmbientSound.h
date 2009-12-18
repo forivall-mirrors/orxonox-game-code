@@ -49,7 +49,6 @@ namespace orxonox
 
     public:
         AmbientSound(BaseObject* creator);
-        ~AmbientSound();
 
         void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
@@ -60,18 +59,27 @@ namespace orxonox
         void pause();
 
         void setAmbientSource(const std::string& source);
-        const std::string& getAmbientSource() const { return this->ambientSource_; }
-        inline void ambientSourceChanged(){ this->setAmbientSource(this->ambientSource_); }
+        inline const std::string& getAmbientSource() const
+            { return this->ambientSource_; }
+
+        void setPlayOnLoad(bool val);
+        bool getPlayOnLoad() const
+            { return this->bPlayOnLoad_; }
+
+    protected:
+        ~AmbientSound() { }
 
     private:
-        virtual void preDestroy();
-        void doPlay();
-        void doStop();
-        void doPause();
+        void preDestroy();
         void registerVariables();
         float getRealVolume();
+        inline void ambientSourceChanged()
+            { this->setAmbientSource(this->ambientSource_); }
+        inline void playOnLoadChanged()
+            { this->setPlayOnLoad(this->bPlayOnLoad_); }
 
         std::string ambientSource_; //!< Analogous to source_, but mood independent
+        bool        bPlayOnLoad_;   //!< Play the sound immediately when loaded
     };
 }
 

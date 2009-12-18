@@ -63,22 +63,24 @@ namespace orxonox
 
     void BaseSound::XMLPortExtern(Element& xmlelement, XMLPort::Mode mode)
     {
-        XMLPortParam(BaseSound, "volume", setVolume,  getVolume,  xmlelement, mode);
-        XMLPortParam(BaseSound, "loop",   setLooping, getLooping, xmlelement, mode);
-        XMLPortParam(BaseSound, "play",   setPlaying, isPlaying,  xmlelement, mode);
-        XMLPortParam(BaseSound, "source", setSource,  getSource,  xmlelement, mode);
+        XMLPortParam(BaseSound, "volume",  setVolume,  getVolume,  xmlelement, mode);
+        XMLPortParam(BaseSound, "looping", setLooping, getLooping, xmlelement, mode);
+        XMLPortParam(BaseSound, "pitch",   setPitch,   getPitch,   xmlelement, mode);
+        XMLPortParam(BaseSound, "source",  setSource,  getSource,  xmlelement, mode);
     }
 
-    void BaseSound::play()
+    void BaseSound::doPlay()
     {
         this->state_ = Playing;
         if (GameMode::playsSound() && this->getSourceState() != AL_PLAYING && this->soundBuffer_ != NULL)
         {
             if (!alIsSource(this->audioSource_))
+            {
                 this->audioSource_ = SoundManager::getInstance().getSoundSource();
-            if (!alIsSource(this->audioSource_))
-                return;
-            this->initialiseSource();
+                if (!alIsSource(this->audioSource_))
+                    return;
+                this->initialiseSource();
+            }
 
             alSourcePlay(this->audioSource_);
             if (int error = alGetError())
@@ -86,7 +88,7 @@ namespace orxonox
         }
     }
 
-    void BaseSound::stop()
+    void BaseSound::doStop()
     {
         this->state_ = Stopped;
         if (alIsSource(this->audioSource_))
@@ -102,7 +104,7 @@ namespace orxonox
         }
     }
 
-    void BaseSound::pause()
+    void BaseSound::doPause()
     {
         if (this->isStopped())
             return;
@@ -241,11 +243,11 @@ namespace orxonox
         {
             State state = this->state_; // save
             if (this->isPlaying() || this->isPaused())
-                BaseSound::play();
+                doPlay();
             if (state == Paused)
             {
                 this->state_ = Paused;
-                BaseSound::pause();
+                doPause();
             }
         }
     }

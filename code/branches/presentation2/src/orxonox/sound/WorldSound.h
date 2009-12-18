@@ -45,13 +45,15 @@ namespace orxonox
     {
     public:
         WorldSound(BaseObject* creator);
-        ~WorldSound();
 
         void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
         void changedActivity();
 
         void tick(float dt);
+
+    protected:
+        ~WorldSound() {}
 
     private:
         void registerVariables();

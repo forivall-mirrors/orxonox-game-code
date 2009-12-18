@@ -50,18 +50,14 @@ namespace orxonox
         this->bPooling_ = true;
         this->registerVariables();
     }
-
-    WorldSound::~WorldSound()
-    {
-    }
     
     void WorldSound::registerVariables()
     {
-        registerVariable(volume_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::volumeChanged));
-        registerVariable(source_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::sourceChanged));
+        registerVariable(volume_,   ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::volumeChanged));
+        registerVariable(source_,   ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::sourceChanged));
         registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::loopingChanged));
+        registerVariable(pitch_,    ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::pitchChanged));
         registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::stateChanged));
-        registerVariable(pitch_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::pitchChanged));
     }
 
     void WorldSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -124,6 +120,7 @@ namespace orxonox
 
     float WorldSound::getRealVolume()
     {
+        assert(GameMode::playsSound());
         return SoundManager::getInstance().getRealVolume(SoundType::Effects);
     }
 }
