@@ -38,6 +38,7 @@
 #include "util/ScopeGuard.h"
 #include "util/Clock.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/ScopedSingletonManager.h"
 #include "core/Resource.h"

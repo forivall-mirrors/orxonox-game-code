@@ -272,7 +272,7 @@ namespace orxonox
     */
     void HUDNavigation::sizeChanged()
     {
-        // use size to compensate for apspect ratio if enabled.
+        // use size to compensate for aspect ratio if enabled.
         float xScale = this->getActualSize().x;
         float yScale = this->getActualSize().y;
         if (this->navMarker_)

@@ -29,6 +29,7 @@
 #include "GSRoot.h"
 
 #include "util/Clock.h"
+#include "core/BaseObject.h"
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
@@ -57,15 +58,15 @@ namespace orxonox
     void GSRoot::printObjects()
     {
         unsigned int nr=0;
-        for(ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; ++it){
-            if( dynamic_cast<Synchronisable*>(*it) )
+        for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; ++it)
+        {
+            if (dynamic_cast<Synchronisable*>(*it))
                 COUT(0) << "object: " << it->getIdentifier()->getName() << " id: " << dynamic_cast<Synchronisable*>(*it)->getObjectID() << std::endl;
             else
                 COUT(0) << "object: " << it->getIdentifier()->getName() << std::endl;
             nr++;
         }
         COUT(0) << "currently got " << nr << " objects" << std::endl;
-    
     }
 
     void GSRoot::activate()

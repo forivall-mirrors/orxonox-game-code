@@ -36,6 +36,7 @@
 #include "core/Game.h"
 #include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "Scene.h"

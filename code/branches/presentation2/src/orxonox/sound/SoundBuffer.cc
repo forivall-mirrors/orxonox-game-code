@@ -34,7 +34,6 @@
 
 #include "util/Exception.h"
 #include "util/StringUtils.h"
-#include "core/Resource.h"
 #include "sound/SoundManager.h"
 
 namespace orxonox

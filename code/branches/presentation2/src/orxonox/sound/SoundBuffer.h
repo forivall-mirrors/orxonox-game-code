@@ -30,7 +30,10 @@
 #define _SoundBuffer_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include <list>
 #include <boost/shared_ptr.hpp>
+#include "core/Resource.h"
 
 namespace orxonox
 {

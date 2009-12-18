@@ -32,6 +32,7 @@
 
 #include <string>
 #include <OgreDataStream.h>
+#include "core/CorePrereqs.h"
 
 namespace orxonox
 {

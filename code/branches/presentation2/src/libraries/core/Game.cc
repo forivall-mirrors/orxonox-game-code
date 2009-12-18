@@ -142,7 +142,7 @@ namespace orxonox
         SetConfigValue(statisticsAvgLength_, 1000000)
             .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
         SetConfigValue(fpsLimit_, 50)
-            .description("Sets the desired framerate (0 for no limit).");
+            .description("Sets the desired frame rate (0 for no limit).");
     }
 
     /**

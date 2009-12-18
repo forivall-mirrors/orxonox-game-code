@@ -25,9 +25,10 @@
  *
  */
 #include "SoundStreamer.h"
-#include "SoundManager.h"
+
 #include <al.h>
 #include <vorbis/vorbisfile.h>
+#include "SoundManager.h"
 
 namespace orxonox
 {

@@ -30,6 +30,8 @@
 #define _Rocket_H__
 
 #include "weapons/WeaponsPrereqs.h"
+
+#include "tools/Timer.h"
 #include "worldentities/ControllableEntity.h"
 
 namespace orxonox

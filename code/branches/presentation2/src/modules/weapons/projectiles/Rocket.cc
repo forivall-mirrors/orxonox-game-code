@@ -28,16 +28,17 @@
 
 #include "Rocket.h"
 
+#include <BulletDynamics/Dynamics/btRigidBody.h>
+
+#include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include "worldentities/CameraPosition.h"
 #include "worldentities/pawns/Pawn.h"
 #include "graphics/ParticleSpawner.h"
 #include "graphics/Model.h"
 #include "objects/collisionshapes/ConeCollisionShape.h"
 #include "infos/PlayerInfo.h"
 #include "controllers/Controller.h"
-#include "worldentities/CameraPosition.h"
-
 #include "sound/WorldSound.h"
 
 namespace orxonox
