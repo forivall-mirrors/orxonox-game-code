@@ -121,13 +121,13 @@ namespace orxonox
             {
                 if ( this->defSndWpnEngine_->isPlaying() )
                     this->defSndWpnEngine_->stop();
-                delete this->defSndWpnEngine_;
+                this->defSndWpnEngine_->destroy();
             }
             if ( this->defSndWpnLaunch_ )
             {
                 if ( this->defSndWpnLaunch_->isPlaying())
                     this->defSndWpnLaunch_->stop();
-                delete this->defSndWpnLaunch_;
+                this->defSndWpnLaunch_->destroy();
             }
         }
     }

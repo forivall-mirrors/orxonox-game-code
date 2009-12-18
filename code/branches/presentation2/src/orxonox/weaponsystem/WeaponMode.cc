@@ -83,10 +83,10 @@ namespace orxonox
 
     WeaponMode::~WeaponMode()
     {
-        if(this->isInitialized())
+        if (this->isInitialized())
         {
-            if( this->defSndWpnFire_ )
-                delete this->defSndWpnFire_;
+            if (this->defSndWpnFire_)
+                this->defSndWpnFire_->destroy();
         }
     }
 

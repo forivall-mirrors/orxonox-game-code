@@ -87,9 +87,9 @@ namespace orxonox
                     for (std::vector<WorldEntity*>::const_iterator it2 = (*it)->getEffectsBegin(); it2 != (*it)->getEffectsBegin(); ++it2)
                         (*it2)->destroy();
                 if (this->defEngineSndNormal_)
-                    delete this->defEngineSndNormal_;
+                    this->defEngineSndNormal_->destroy();
                 if (this->defEngineSndBoost_)
-                    delete this->defEngineSndBoost_;
+                    this->defEngineSndBoost_->destroy();
             }
             if (this->lua_)
                 delete this->lua_;
