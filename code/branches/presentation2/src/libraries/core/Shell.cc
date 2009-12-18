@@ -160,9 +160,9 @@ namespace orxonox
         Shell& instance = Shell::getInstance();
 
         for (unsigned int i = instance.historyOffset_; i < instance.commandHistory_.size(); ++i)
-            instance.addOutputLine(instance.commandHistory_[i], -1);
+            instance.addOutput(instance.commandHistory_[i] + '\n', -1);
         for (unsigned int i =  0; i < instance.historyOffset_; ++i)
-            instance.addOutputLine(instance.commandHistory_[i], -1);
+            instance.addOutput(instance.commandHistory_[i] + '\n', -1);
     }
     */
 

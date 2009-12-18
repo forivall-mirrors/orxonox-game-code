@@ -123,7 +123,7 @@ namespace orxonox
         // Process output written to std::cout in the meantime
         std::cout.flush();
         if (!this->origCout_.str().empty())
-            this->shell_->addOutputLine(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::None);
         // Erase input and status lines
         this->cout_ << "\033[1G\033[J";
         // Move cursor to the bottom
