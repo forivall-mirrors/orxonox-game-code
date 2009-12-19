@@ -76,7 +76,7 @@ namespace orxonox
         {
             if (!alIsSource(this->audioSource_))
             {
-                this->audioSource_ = SoundManager::getInstance().getSoundSource();
+                this->audioSource_ = SoundManager::getInstance().getSoundSource(this);
                 if (!alIsSource(this->audioSource_))
                     return;
                 this->initialiseSource();

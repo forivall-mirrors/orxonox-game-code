@@ -114,21 +114,13 @@ namespace orxonox
         if(this->isInitialized())
         {
             if (GameMode::isMaster() && this->player_)
-            {
                 this->player_->stopTemporaryControl();
-            }
+
             if ( this->defSndWpnEngine_ )
-            {
-                if ( this->defSndWpnEngine_->isPlaying() )
-                    this->defSndWpnEngine_->stop();
                 this->defSndWpnEngine_->destroy();
-            }
+
             if ( this->defSndWpnLaunch_ )
-            {
-                if ( this->defSndWpnLaunch_->isPlaying())
-                    this->defSndWpnLaunch_->stop();
                 this->defSndWpnLaunch_->destroy();
-            }
         }
     }
 

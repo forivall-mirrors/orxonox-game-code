@@ -101,7 +101,7 @@ namespace orxonox
         shared_ptr<SoundBuffer> getSoundBuffer(const std::string& filename);
         void releaseSoundBuffer(const shared_ptr<SoundBuffer>& buffer, bool bPoolBuffer);
 
-        ALuint getSoundSource();
+        ALuint getSoundSource(BaseSound* object);
         void releaseSoundSource(ALuint source);
 
         static std::string getALErrorString(ALenum error);
@@ -146,7 +146,8 @@ namespace orxonox
 
         // Sound source related
         unsigned int maxSources_;
-        std::vector<ALuint> soundSources_;
+        std::vector<ALuint> availableSoundSources_;
+        std::vector<std::pair<ALuint, BaseSound*> > usedSoundSources_;
 
         static SoundManager* singletonPtr_s;
     }; // tolua_export

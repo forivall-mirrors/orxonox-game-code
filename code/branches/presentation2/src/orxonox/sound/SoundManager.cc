@@ -144,7 +144,7 @@ namespace orxonox
         ALuint source;
         alGenSources(1, &source);
         if (!alGetError() && alIsSource(source))
-            this->soundSources_.push_back(source);
+            this->availableSoundSources_.push_back(source);
         else
             ThrowException(InitialisationFailed, "Sound Error: Could not even create a single source");
         // Get the rest of the sources
@@ -152,7 +152,7 @@ namespace orxonox
         unsigned int count = 1;
         while (alIsSource(source) && !alGetError() && count <= this->maxSources_)
         {
-            this->soundSources_.push_back(source);
+            this->availableSoundSources_.push_back(source);
             alGenSources(1, &source);
             ++count;
         }
@@ -194,6 +194,18 @@ namespace orxonox
     void SoundManager::preUpdate(const Clock& time)
     {
         this->processCrossFading(time.getDeltaTime());
+
+        // Check whether a sound object has stopped playing
+        for (unsigned int i = 0; i < this->usedSoundSources_.size(); ++i)
+        {
+            ALint state;
+            alGetSourcei(this->usedSoundSources_[i].first, AL_SOURCE_STATE, &state);
+            if (state == AL_STOPPED)
+            {
+                this->usedSoundSources_[i].second->stop();
+                --i;
+            }
+        }
     }
 
     void SoundManager::setConfigValues()
@@ -535,12 +547,13 @@ namespace orxonox
         }
     }
 
-    ALuint SoundManager::getSoundSource()
+    ALuint SoundManager::getSoundSource(BaseSound* object)
     {
-        if (!this->soundSources_.empty())
+        if (!this->availableSoundSources_.empty())
         {
-            ALuint source = this->soundSources_.back();
-            this->soundSources_.pop_back();
+            ALuint source = this->availableSoundSources_.back();
+            this->availableSoundSources_.pop_back();
+            this->usedSoundSources_.push_back(std::make_pair(source, object));
             return source;
         }
         else
@@ -555,9 +568,18 @@ namespace orxonox
     void SoundManager::releaseSoundSource(ALuint source)
     {
 #ifndef NDEBUG
-        for (std::vector<ALuint>::const_iterator it = this->soundSources_.begin(); it != this->soundSources_.end(); ++it)
+        for (std::vector<ALuint>::const_iterator it = this->availableSoundSources_.begin(); it != this->availableSoundSources_.end(); ++it)
             assert((*it) != source);
 #endif
-        this->soundSources_.push_back(source);
+        this->availableSoundSources_.push_back(source);
+        for (std::vector<std::pair<ALuint, BaseSound*> >::iterator it = this->usedSoundSources_.begin();
+            it != this->usedSoundSources_.end(); ++it)
+        {
+            if (it->first == source)
+            {
+                this->usedSoundSources_.erase(it);
+                break;
+            }
+        }
     }
 }
