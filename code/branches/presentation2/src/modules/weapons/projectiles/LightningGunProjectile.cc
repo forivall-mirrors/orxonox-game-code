@@ -53,7 +53,7 @@ namespace orxonox
 
     void LightningGunProjectile::setMaterial(const std::string& material)
     {
-        this->materialBase_ = material;    
+        this->materialBase_ = material;
 
         BillboardProjectile::setMaterial(material + multi_cast<std::string>(this->textureIndex_));
     }

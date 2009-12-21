@@ -436,8 +436,8 @@ Gamestate *Gamestate::undiff(Gamestate *base)
 //     return NULL;
 //   uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
 //   uint8_t *dest = ndata + GamestateHeader::getSize();
-//   
-//   
+//
+//
 //   // LOOP-UNROLLED DIFFING
 //   uint32_t *dest32 = (uint32_t*)dest, *base32 = (uint32_t*)basep, *gs32 = (uint32_t*)gs;
 //   // diff in 4-byte steps
@@ -464,7 +464,7 @@ Gamestate *Gamestate::undiff(Gamestate *base)
 //       *(dest+4*of+of2)=*(gs+4*of+of2); // same as 0 ^ *(gs32+of)
 //     }
 //   }
-// 
+//
 //   Gamestate *g = new Gamestate(ndata, getClientID());
 //   *(g->header_) = *header_;
 //   g->header_->setDiffed( true );

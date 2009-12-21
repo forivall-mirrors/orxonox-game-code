@@ -120,7 +120,7 @@
     </EventDispatcher>
 
 <?lua
-for i = 1, 10, 1 
+for i = 1, 10, 1
 do
 ?>
     <SpaceShip position="<?lua print(5000 + math.random() * 4000 - 2000) ?>,<?lua print(0 + math.random() * 2000 - 1000) ?>,<?lua print(math.random() * 2000 - 1000) ?>">
@@ -135,12 +135,12 @@ do
         </WaypointPatrolController>
       </controller>
     </SpaceShip>
-<?lua 
+<?lua
 end
 ?>
 
 <?lua
-for i = 1, 12, 1 
+for i = 1, 12, 1
 do
 ?>
     <SpaceShip position="<?lua print(2800 + math.random() * 2000 - 1000) ?>,<?lua print(2500+ math.random() * 1000 - 500) ?>,<?lua print(2500 + math.random() * 1000 - 500) ?>" >
@@ -155,7 +155,7 @@ do
         </WaypointPatrolController>
       </controller>
     </SpaceShip>
-<?lua 
+<?lua
 end
 ?>
 
@@ -172,7 +172,7 @@ end
     </EventDispatcher>
 
 <?lua
-for i = 1, 12, 1 
+for i = 1, 12, 1
 do
 ?>
     <SpaceShip position="<?lua print(2500 + math.random() * 500 - 250) ?>,<?lua print(4800 + math.random() * 500 - 250) ?>,<?lua print(2500 + math.random() * 500 - 250) ?>" >
@@ -189,7 +189,7 @@ do
         </WaypointPatrolController>
       </controller>
     </SpaceShip>
-<?lua 
+<?lua
 end
 ?>
 
@@ -319,7 +319,7 @@ end
     </Destroyer>
 
 <?lua
-for i = 1, 10, 1 
+for i = 1, 10, 1
 do
 ?>
     <SpaceShip position="<?lua print(6200 + math.random() * 2000 - 1000) ?>,<?lua print(-1500 + math.random() * 1000 - 500) ?>,<?lua print(-700 + math.random() * 1000 - 500) ?>" >
@@ -334,12 +334,12 @@ do
         </WaypointPatrolController>
       </controller>
     </SpaceShip>
-<?lua 
+<?lua
 end
 ?>
 
 <?lua
-for i = 1, 200, 1 
+for i = 1, 200, 1
 do
 x = math.random() * 100  + (i-70) * 100
 y = math.random() * 3000 - 1500
@@ -347,12 +347,12 @@ z = math.random() * 3000 - 1500 + (i-100) * 10
 s = math.random() * 60 + 30
 ?>
 
-    <MovableEntity position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 - 15) ?>"> 
+    <MovableEntity position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 - 15) ?>">
       <attached>
         <Model position="0,0,0" scale=<?lua print(s) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
       </attached>
     </MovableEntity>
-<?lua 
+<?lua
 end
 ?>
 
@@ -362,7 +362,7 @@ sizes = {4, 4, 4, 4, 4, 10, 20}
 elements.length = function()
     return table.getn(elements)
 end
-for i = 1, 150, 1 
+for i = 1, 150, 1
 do
 x = math.random() * 750 - 4500
 y = math.random() * 1000 + 2000
@@ -370,12 +370,12 @@ z = math.random() * 500 + 1000
 e = math.floor(math.random()*elements.length()+1)
 ?>
 
-    <MovableEntity position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 - 15) ?>"> 
+    <MovableEntity position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 - 15) ?>">
       <attached>
         <Model position="0,0,0" scale="<?lua print(sizes[e]) ?>" mesh="<?lua print( elements[e]) ?>" />
       </attached>
     </MovableEntity>
-<?lua 
+<?lua
 end
 ?>
 

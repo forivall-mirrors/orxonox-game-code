@@ -72,10 +72,10 @@ namespace orxonox
             Even if resource locations are added recursively, you
             must provide a fully qualified name to this method.
         @param groupName
-            The name of the resource group; this determines which 
-            locations are searched. 
+            The name of the resource group; this determines which
+            locations are searched.
         @param searchGroupsIfNotFound
-            If true, if the resource is not found in 
+            If true, if the resource is not found in
             the group specified, other groups will be searched.
         @return
             Shared pointer to data stream containing the data. Will be
@@ -95,7 +95,7 @@ namespace orxonox
         /**
         @brief
             Open all resources matching a given pattern (which can contain
-            the character '*' as a wildcard), and return a collection of 
+            the character '*' as a wildcard), and return a collection of
             DataStream objects on them.
         @param pattern
             The pattern to look for. If resource locations have been
@@ -111,7 +111,7 @@ namespace orxonox
         static DataStreamListPtr openMulti(const std::string& pattern, const std::string& group = Resource::DEFAULT_GROUP);
 
         /**
-            Find out if the named file exists in a group. 
+            Find out if the named file exists in a group.
         @param filename
             Fully qualified name of the file to test for
         @param group

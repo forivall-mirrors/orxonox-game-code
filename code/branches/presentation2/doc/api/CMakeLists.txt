@@ -1,8 +1,8 @@
-# Add a "doc" target with CMake build system. 
+# Add a "doc" target with CMake build system.
 # And configure doxy.config.in to doxy.config
 #
 # target "doc" allows building the documentation with doxygen/dot on WIN32 and Linux
-# Creates .chm windows help file if MS HTML help workshop 
+# Creates .chm windows help file if MS HTML help workshop
 # (available from http://msdn.microsoft.com/workshop/author/htmlhelp)
 # is installed with its DLLs in PATH.
 #
@@ -11,7 +11,7 @@
 # doxygen, dot, latex, dvips, makeindex, gswin32, etc.
 # must be in path.
 #
-# Note about Visual Studio Projects: 
+# Note about Visual Studio Projects:
 # MSVS hast its own path environment which may differ from the shell.
 # See "Menu Tools/Options/Projects/VC++ Directories" in VS 7.1
 #
@@ -61,7 +61,7 @@ IF (DOXYGEN_FOUND)
   # fallback: use hhw.exe interactively
   IF(WIN32)
     FIND_PACKAGE(HTMLHelp)
-    IF(HTML_HELP_COMPILER)      
+    IF(HTML_HELP_COMPILER)
       SET(TMP ${DOXY_OUTPUT_DIR}/html/index.hhp)
       STRING(REGEX REPLACE "/" "\\\\" HHP_FILE ${TMP})
       ADD_CUSTOM_TARGET(doc_chm ${HTML_HELP_COMPILER} ${HHP_FILE})
@@ -69,7 +69,7 @@ IF (DOXYGEN_FOUND)
       # Adding a dependency somehow adds doc target as default build target
       SET_TARGET_PROPERTIES(doc doc_chm PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD TRUE)
     ENDIF(HTML_HELP_COMPILER)
-  ENDIF (WIN32) 
+  ENDIF (WIN32)
 
 
   # Installation

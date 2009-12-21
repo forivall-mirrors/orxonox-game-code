@@ -104,7 +104,7 @@ class TrafficControl : public ClientConnectionListener {
     /**
     *evaluates Data given (list) and produces result(->Data to be updated)
     */
-    void evaluateList(unsigned int clientID, std::list<obj>& list);//done    
+    void evaluateList(unsigned int clientID, std::list<obj>& list);//done
     void ack(unsigned int clientID, unsigned int gamestateID);  // this function gets called when the server receives an ack from the client
 
     //ClientConnectionListener functions
@@ -120,7 +120,7 @@ class TrafficControl : public ClientConnectionListener {
     virtual ~TrafficControl();
     /**
     *is being used by GSManager from Server:
-    *list contains: ObjIds, CreatorIds, Size (in this order) from Client XY 
+    *list contains: ObjIds, CreatorIds, Size (in this order) from Client XY
     *Elements of list are accessed by *list[i]
     *Elements of struct i are therefore: *list[i].objID
     */

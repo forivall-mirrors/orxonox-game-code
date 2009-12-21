@@ -53,7 +53,7 @@ namespace orxonox {
             void getName(std::string & buffer); //!< Sets the input buffer to the name of the node.
             /**
             @brief Retreive the window of this node.
-            @return The CEGUI Window of this node. 
+            @return The CEGUI Window of this node.
             */
             inline CEGUI::Window* getWindow(void)
                 { return this->window_; }

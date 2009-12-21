@@ -615,7 +615,7 @@ namespace orxonox{
 
     template <> inline uint32_t returnSize( const mbool& variable )
     {
-        return returnSize( (unsigned char&)((mbool&)variable).getMemory() ); 
+        return returnSize( (unsigned char&)((mbool&)variable).getMemory() );
     }
 
     template <> inline void saveAndIncrease( const mbool& variable, uint8_t*& mem )

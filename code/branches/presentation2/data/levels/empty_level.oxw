@@ -17,7 +17,7 @@
     skybox       = "Orxonox/Starbox"
   >
 
-<!--Rocket position="-10, 3.5,800" velocity="0,0,-100"> 
+<!--Rocket position="-10, 3.5,800" velocity="0,0,-100">
       <attached>
         <Model pitch=180 position="0,0,0" scale=1.5 mesh="rocket_test.mesh" >
 	  <attached>

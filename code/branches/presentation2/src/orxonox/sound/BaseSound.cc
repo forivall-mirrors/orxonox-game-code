@@ -176,7 +176,7 @@ namespace orxonox
             COUT(2) << "Sound warning: pitch out of range, cropping value." << std::endl;
             pitch = pitch > 2 ? 2 : pitch;
             pitch = pitch < 0.5 ? 0.5 : pitch;
-        }        
+        }
         this->pitch_ = pitch;
         if (alIsSource(this->audioSource_))
         {
@@ -223,7 +223,7 @@ namespace orxonox
 
         if (alIsSource(this->audioSource_)) // already playing or paused
         {
-            // Set new buffer 
+            // Set new buffer
             alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
             if (ALuint error = alGetError())
             {

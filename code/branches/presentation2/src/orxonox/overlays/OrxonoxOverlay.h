@@ -176,7 +176,7 @@ namespace orxonox
         void setOverlayGroup(OverlayGroup* group);
         inline OverlayGroup* getOverlayGroup() const
             { return this->group_; }
-        virtual void changedOverlayGroup() 
+        virtual void changedOverlayGroup()
             { this->changedVisibility(); }
 
     protected:

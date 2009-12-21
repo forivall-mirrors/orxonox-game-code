@@ -60,7 +60,7 @@ function P:init()
     table.insert(resolutionList, "1280 x 768")
     table.insert(resolutionList, "1440 x 900")
     for k,v in pairs(resolutionList) do
-        item = CEGUI.createListboxTextItem(v)        
+        item = CEGUI.createListboxTextItem(v)
         item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
         CEGUI.toListbox(listboxwindow):addItem(item)
     end

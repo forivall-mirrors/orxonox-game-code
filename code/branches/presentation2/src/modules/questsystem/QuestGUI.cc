@@ -267,7 +267,7 @@ namespace orxonox {
         }
         index = tempIndex; //!< Reset the index to the original level.
 
-        return index;        
+        return index;
     }
 
 }

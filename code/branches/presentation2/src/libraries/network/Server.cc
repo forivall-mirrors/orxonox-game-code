@@ -161,7 +161,7 @@ namespace orxonox
   }
 
   /**
-   * @brief: returns ping time to client in milliseconds 
+   * @brief: returns ping time to client in milliseconds
    */
   unsigned int Server::getRTT(unsigned int clientID){
     assert(ClientInformation::findClient(clientID));

@@ -173,6 +173,6 @@ namespace orxonox
     Arguments for the modifier function
 */
 #define ModifyConfigValue(varname, modifier, ...) \
-    ModifyConfigValueGeneric(this, &varname, #varname, modifier, __VA_ARGS__) 
+    ModifyConfigValueGeneric(this, &varname, #varname, modifier, __VA_ARGS__)
 
 #endif /* _ConfigValueIncludes_H__ */

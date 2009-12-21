@@ -247,7 +247,7 @@ namespace orxonox
                 if (this->accelerating_)
                     HumanController::moveFrontBack(Vector2(1, 0));
                 else
-                    HumanController::moveFrontBack(Vector2(this->acceleration_, 0)); 
+                    HumanController::moveFrontBack(Vector2(this->acceleration_, 0));
                 this->accelerating_ = false;
                 //HumanController::moveFrontBack(Vector2(clamp(this->acceleration_ + this->currentAcceleration_, 0.0f, 1.0f), 0));
             }

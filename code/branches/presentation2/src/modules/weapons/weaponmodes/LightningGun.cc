@@ -56,7 +56,7 @@ namespace orxonox
     }
 
     void LightningGun::fire()
-    {        
+    {
         LightningGunProjectile* projectile = new LightningGunProjectile(this);
         projectile->setMaterial("Flares/LightningBall_");
 

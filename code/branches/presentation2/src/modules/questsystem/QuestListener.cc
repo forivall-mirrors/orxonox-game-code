@@ -192,7 +192,7 @@ namespace orxonox
     @return
         Returns the questId of the Quest the QuestListener reacts to.
     */
-    const std::string & QuestListener::getQuestId(void)    
+    const std::string & QuestListener::getQuestId(void)
     {
         return this->quest_->getId();
     }

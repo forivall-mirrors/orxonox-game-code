@@ -507,7 +507,7 @@ namespace orxonox
         std::vector<InputState*>& mouseStates = devices_[InputDeviceEnumerator::Mouse]->getStateListRef();
         if (mouseStates.empty())
             requestedMode = MouseMode::Nonexclusive;
-        else 
+        else
             requestedMode = mouseStates.front()->getMouseMode();
         if (requestedMode != MouseMode::Dontcare && mouseMode_ != requestedMode)
         {
@@ -553,7 +553,7 @@ namespace orxonox
         COUT(0) << "Calibration has been stored." << std::endl;
     }
 
-    //! Gets called by WindowEventListener upon focus change --> clear buffers 
+    //! Gets called by WindowEventListener upon focus change --> clear buffers
     void InputManager::windowFocusChanged()
     {
         this->clearBuffers();

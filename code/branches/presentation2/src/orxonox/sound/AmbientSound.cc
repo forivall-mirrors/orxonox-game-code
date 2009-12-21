@@ -117,7 +117,7 @@ namespace orxonox
             if (fileInfo != NULL)
                 this->setSource(path);
             else
-                COUT(3) << "Sound: " << source << ": Not a valid name! Ambient sound will not change." << std::endl;       
+                COUT(3) << "Sound: " << source << ": Not a valid name! Ambient sound will not change." << std::endl;
         }
     }
 
@@ -133,7 +133,7 @@ namespace orxonox
         SUPER(AmbientSound, changedActivity);
         if (this->isActive())
             this->play();
-        else 
+        else
             this->stop();
     }
 }

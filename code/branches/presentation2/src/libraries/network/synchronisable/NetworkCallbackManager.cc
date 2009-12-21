@@ -35,8 +35,8 @@ namespace orxonox{
   std::queue<NetworkCallbackBase*> NetworkCallbackManager::triggeredCallbacks_;
 
   void NetworkCallbackManager::registerCallback(NetworkCallbackBase *cb)
-  { 
-    callbackSet_.insert(cb); 
+  {
+    callbackSet_.insert(cb);
   }
   void NetworkCallbackManager::deleteCallback(NetworkCallbackBase *cb)
   {

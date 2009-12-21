@@ -47,7 +47,7 @@ namespace packet {
 
 FunctionIDs::FunctionIDs( ) : Packet(){
   std::string functionname;
-  unsigned int nrOfFunctions=0; 
+  unsigned int nrOfFunctions=0;
   unsigned int packetSize=2*sizeof(uint32_t); //space for the packetID and for the nroffunctions
   uint32_t networkID;
   flags_ = flags_ | PACKET_FLAGS_FUNCTIONIDS;

@@ -37,7 +37,7 @@
 // tolua_begin
 namespace orxonox
 {
-    class _OrxonoxExport HumanController 
+    class _OrxonoxExport HumanController
 // tolua_end
         : public Controller, public Tickable
     { // tolua_export

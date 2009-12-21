@@ -41,7 +41,7 @@ function P:init()
     table.insert(themeList, "Default")
     table.insert(themeList, "Drum n' Bass")
     for k,v in pairs(themeList) do
-        item = CEGUI.createListboxTextItem(v)        
+        item = CEGUI.createListboxTextItem(v)
         item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
         CEGUI.toListbox(listboxwindow):addItem(item)
     end

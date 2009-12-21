@@ -81,7 +81,7 @@
 
 /**
     @brief This macro is needed to fire an event with this name. The event name must previously be declared with @ref CreateEventName.
-*/    
+*/
 #define FireEventName(classname, name) \
     eventname##classname##name
 

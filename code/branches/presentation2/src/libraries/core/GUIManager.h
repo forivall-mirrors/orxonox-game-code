@@ -66,7 +66,7 @@ namespace orxonox // tolua_export
         GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen);
         ~GUIManager();
 
-        void preUpdate(const Clock& time); 
+        void preUpdate(const Clock& time);
 
         static void showGUI(const std::string& name, bool hidePrevious=false, bool showCursor=true);
         void showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious=false, bool showCursor=true);

@@ -109,12 +109,12 @@ namespace orxonox
         }
     }
 
-    void WorldSound::changedActivity() 
+    void WorldSound::changedActivity()
     {
         SUPER(WorldSound, changedActivity);
         if (this->isActive())
             this->play();
-        else 
+        else
             this->stop();
     }
 

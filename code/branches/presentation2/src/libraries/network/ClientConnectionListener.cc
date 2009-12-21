@@ -35,8 +35,8 @@
 namespace orxonox
 {
     ClientConnectionListener::ClientConnectionListener()
-    { 
-        RegisterRootObject(ClientConnectionListener); 
+    {
+        RegisterRootObject(ClientConnectionListener);
     }
 
     void ClientConnectionListener::broadcastClientConnected(unsigned int clientID)

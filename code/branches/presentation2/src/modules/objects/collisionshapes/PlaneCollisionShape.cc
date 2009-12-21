@@ -66,7 +66,7 @@ namespace orxonox
         SUPER(PlaneCollisionShape, XMLPort, xmlelement, mode);
 
         XMLPortParam(PlaneCollisionShape, "normal", setNormal, getNormal, xmlelement, mode);
-        XMLPortParam(PlaneCollisionShape, "offset", setOffset, getOffset, xmlelement, mode);    
+        XMLPortParam(PlaneCollisionShape, "offset", setOffset, getOffset, xmlelement, mode);
     }
 
     btCollisionShape* PlaneCollisionShape::createNewShape() const

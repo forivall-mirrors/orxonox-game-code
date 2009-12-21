@@ -18,7 +18,7 @@ function P:init()
     table.insert(themeList, "Theme 2")
     table.insert(themeList, "Theme 3")
     for k,v in pairs(themeList) do
-        item = CEGUI.createListboxTextItem(v)        
+        item = CEGUI.createListboxTextItem(v)
         item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
         CEGUI.toCombobox(dropdown):addItem(item)
     end

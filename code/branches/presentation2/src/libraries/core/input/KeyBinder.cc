@@ -284,7 +284,7 @@ namespace orxonox
     }
 
      void KeyBinder::addButtonToCommand(std::string command, Button* button)
-     {  
+     {
         std::ostringstream stream;
         stream << button->groupName_  << "." << button->name_;
 

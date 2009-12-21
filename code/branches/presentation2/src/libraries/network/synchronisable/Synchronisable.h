@@ -65,8 +65,8 @@ namespace orxonox
   }
 
   /**
-   * @brief: stores information about a Synchronisable 
-   * 
+   * @brief: stores information about a Synchronisable
+   *
    * This class stores the information about a Synchronisable (objectID_, classID_, creatorID_, dataSize)
    * in an emulated bitset.
    * Bit 1 to 31 store the size of the Data the synchronisable consumes in the stream

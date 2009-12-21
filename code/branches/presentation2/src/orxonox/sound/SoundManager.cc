@@ -253,14 +253,14 @@ namespace orxonox
         this->checkVolumeValidity(type);
     }
 
-    float SoundManager::getVolume(SoundType::Value type) 
+    float SoundManager::getVolume(SoundType::Value type)
     {
         if (type < 0 || type > SoundType::Effects)
             return 0.0f;
         return this->volume_[type];
     }
 
-    float SoundManager::getRealVolume(SoundType::Value type) 
+    float SoundManager::getRealVolume(SoundType::Value type)
     {
         if (type != SoundType::Music && type != SoundType::Effects)
             return 0.0f;
@@ -338,7 +338,7 @@ namespace orxonox
                 }
             }
 
-            if (!this->ambientSounds_.empty()) 
+            if (!this->ambientSounds_.empty())
             {
                 this->fadeOut(ambientSounds_.front().first);
             }
@@ -353,7 +353,7 @@ namespace orxonox
         if (oldAmbient == NULL || ambientSounds_.empty())
             return;
 
-        if (this->ambientSounds_.front().first == oldAmbient) 
+        if (this->ambientSounds_.front().first == oldAmbient)
         {
             this->fadeOut(oldAmbient);
             this->ambientSounds_.pop_front();
