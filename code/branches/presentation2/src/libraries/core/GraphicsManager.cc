@@ -439,8 +439,6 @@ namespace orxonox
     void GraphicsManager::printScreen()
     {
         assert(this->renderWindow_);
-       
         this->renderWindow_->writeContentsToTimestampedFile(PathConfig::getLogPathString() + "screenShot_", ".png");
-        this->renderWindow_->writeContentsToTimestampedFile(PathConfig::getLogPathString() + "screenShot_", ".tif");
     }
 }
