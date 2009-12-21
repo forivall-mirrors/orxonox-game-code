@@ -70,8 +70,15 @@ namespace orxonox
     // Just for convenience
     using std::endl;
 
-    //! Adjust to discard certain output with level > hardDebugLevel at compile time
+    // Adjust this to discard certain output with level > hardDebugLevel at compile time already
+#ifdef ORXONOX_RELEASE
+    const int hardDebugLevel = OutputLevel::Verbose
+#elif defined(NDEBUG)
     const int hardDebugLevel = OutputLevel::Verbose;
+#else
+    //! Maximum level for debug output that should be even processed at run time
+    const int hardDebugLevel = OutputLevel::Ultra;
+#endif
 
     //! This function simply returns 0 and helps to suppress the "statement has no effect" compiler warning
     inline int debugDummyFunction()
