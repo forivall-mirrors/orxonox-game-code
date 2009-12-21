@@ -125,7 +125,7 @@ namespace orxonox
     }
     return true;
   }
-  
+
   void GamestateManager::sendGamestates()
   {
     ClientInformation *temp = ClientInformation::getBegin();
@@ -141,11 +141,11 @@ namespace orxonox
       COUT(4) << "client id: " << temp->getID() << " RTT: " << temp->getRTT() << " loss: " << temp->getPacketLoss() << std::endl;
       COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
       int cid = temp->getID(); //get client id
-      
+
       unsigned int gID = temp->getGamestateID();
       if(!reference)
         return;
-      
+
       packet::Gamestate *client=0;
       if(gID != GAMESTATEID_INITIAL){
         assert(gamestateMap_.find(cid)!=gamestateMap_.end());
@@ -155,7 +155,7 @@ namespace orxonox
           client = it->second;
         }
       }
-      
+
       clientGamestates.push(0);
       finishGamestate( cid, &clientGamestates.back(), client, reference );
       //FunctorMember<GamestateManager>* functor = 
@@ -164,12 +164,12 @@ namespace orxonox
 //       (*static_cast<Executor*>(executor))();
 //       this->threadPool_->passFunction( executor, true );
 //       (*functor)( cid, &(clientGamestates.back()), client, reference );
-      
+
       temp = temp->next();
     }
-    
+
 //     threadPool_->synchronise();
-    
+
     while( !clientGamestates.empty() )
     {
       if(clientGamestates.front())
@@ -184,7 +184,7 @@ namespace orxonox
     //Server::sendGameState?
     // save the (undiffed) gamestate in the clients gamestate map
     //chose wheather the next gamestate is the first or not
-    
+
     packet::Gamestate *gs = gamestate->doSelection(clientID, 20000);
 //     packet::Gamestate *gs = new packet::Gamestate(*gamestate);
 //     packet::Gamestate *gs = new packet::Gamestate();
@@ -192,10 +192,10 @@ namespace orxonox
 //     this->threadMutex_->lock();
     gamestateMap_[clientID][gamestate->getID()]=gs;
 //     this->threadMutex_->unlock();
-    
+
     if(base)
     {
-        
+
 //       COUT(3) << "diffing" << std::endl;
 //       packet::Gamestate* gs1  = gs;
       packet::Gamestate *diffed = gs->diff(base);
@@ -209,8 +209,8 @@ namespace orxonox
     else{
       gs = new packet::Gamestate(*gs);
     }
-    
-    
+
+
     bool b = gs->compressData();
     assert(b);
 //     COUT(4) << "sending gamestate with id " << gs->getID();

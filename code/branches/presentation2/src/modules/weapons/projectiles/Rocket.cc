@@ -57,12 +57,12 @@ namespace orxonox
         this->localAngularVelocity_ = 0;
         this->bDestroy_ = false;
         this->lifetime_ = 100;
-        
+
         if (GameMode::isMaster())
         {
             this->setCollisionType(WorldEntity::Kinematic);
             this->setVelocity(0,0,-100);
-        
+
             Model* model = new Model(this);
             model->setMeshSource("rocket.mesh");
 			model->scale(0.7);
@@ -71,7 +71,7 @@ namespace orxonox
             this->attach(fire);
             fire->setOrientation(this->getOrientation());
             fire->setSource("Orxonox/rocketfire");
-        
+
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
@@ -82,7 +82,7 @@ namespace orxonox
             this->attachCollisionShape(collisionShape);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Rocket::destroyObject, this)));
-            
+
             this->defSndWpnEngine_ = new WorldSound(this);
             this->defSndWpnEngine_->setLooping(true);
             this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
@@ -98,7 +98,7 @@ namespace orxonox
             this->defSndWpnEngine_ = 0;
             this->defSndWpnLaunch_ = 0;
         }
-        
+
         CameraPosition* camPosition = new CameraPosition(this);
         camPosition->setPosition(0,4,15);
         camPosition->setAllowMouseLook(true);
@@ -133,7 +133,7 @@ namespace orxonox
         // this calls the XMLPort function of the parent class
         SUPER(Rocket, XMLPort, xmlelement, mode);
     }
-    
+
     void Rocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
@@ -157,25 +157,25 @@ namespace orxonox
     void Rocket::tick(float dt)
     {
         SUPER(Rocket, tick, dt);
-        
+
         if( this->hasLocalController() )
         {
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
             this->localAngularVelocity_ = 0;
-            
+
             if( this->bDestroy_ )
                 this->destroy();
         }
     }
-    
+
     bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
         if (!this->bDestroy_ && GameMode::isMaster())
         {
             if (otherObject == this->owner_)
                 return false;
-            
+
             this->bDestroy_ = true;
 
             if (this->owner_)
@@ -210,7 +210,7 @@ namespace orxonox
         }
         return false;
     }
-    
+
     void Rocket::destroyObject()
     {
         if (GameMode::isMaster())
@@ -222,7 +222,7 @@ namespace orxonox
             this->destroy();
         }
     }
-    
+
     void Rocket::fired(unsigned int firemode)
     {
         if (this->owner_)
@@ -257,7 +257,7 @@ namespace orxonox
     void Rocket::rotateYaw(const Vector2& value)
     {
         ControllableEntity::rotateYaw(value);
-        
+
         if( !this->isInMouseLook() )
             this->localAngularVelocity_.y += value.x;
     }
@@ -271,7 +271,7 @@ namespace orxonox
     void Rocket::rotatePitch(const Vector2& value)
     {
         ControllableEntity::rotatePitch(value);
-        
+
         if( !this->isInMouseLook() )
             this->localAngularVelocity_.x += value.x;
     }
@@ -285,9 +285,9 @@ namespace orxonox
     void Rocket::rotateRoll(const Vector2& value)
     {
         ControllableEntity::rotateRoll(value);
-        
+
         if( !this->isInMouseLook() )
             this->localAngularVelocity_.z += value.x;
     }
-    
+
 }

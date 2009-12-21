@@ -82,7 +82,7 @@ namespace orxonox
         /**
         @brief
             Loads the devices and initialises the KeyDetector and the Calibrator.
-            
+
             If either the OIS input system and/or the keyboard could not be created,
             the constructor fails with an std::exception.
         */
@@ -169,7 +169,7 @@ namespace orxonox
         //! Returns a pointer to the OIS InputManager. Only you if you know what you're doing!
         OIS::InputManager* getOISInputManager() { return this->oisInputManager_; }
         std::pair<int, int> getMousePosition() const;
-        
+
         static InputManager& getInstance() { return Singleton<InputManager>::getInstance(); } // tolua_export
 
     private: // functions

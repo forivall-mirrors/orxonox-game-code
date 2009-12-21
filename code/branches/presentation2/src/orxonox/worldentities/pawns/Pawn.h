@@ -115,7 +115,7 @@ namespace orxonox
                 { this->pickups_.useItem(); }
 
             virtual void startLocalHumanControl();
-            
+
             void setAimPosition( Vector3 position )
                 { this->aimPosition_ = position; }
             Vector3 getAimPosition()
@@ -152,7 +152,7 @@ namespace orxonox
         private:
             inline void setWeaponSystem(WeaponSystem* weaponsystem)
                 { this->weaponSystem_ = weaponsystem; }
-            
+
             Vector3 aimPosition_;
     };
 }

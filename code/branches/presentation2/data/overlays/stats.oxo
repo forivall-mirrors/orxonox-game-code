@@ -11,7 +11,7 @@
        colour    = "0, 0.75, 0.2, 1"
        textsize  = 0.04
       /-->
-      
+
       <OverlayText
        name      = "descr1"
        position  = "0.1, 0.20"
@@ -39,7 +39,7 @@
        colour    = "0, 0.75, 0.2, 1"
        textsize  = 0.04
       />
-      
+
       <!--Stats
        name     = "Statistics"
        position = "0.5, 0.7"

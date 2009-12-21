@@ -37,15 +37,15 @@ namespace orxonox {
     {
         this->initialize();
     }
-    
+
     QuestNotification::QuestNotification(const std::string & message) : Notification(message)
     {
         this->initialize();
     }
-    
+
     QuestNotification::~QuestNotification()
     {
-        
+
     }
 
     bool QuestNotification::send(void)

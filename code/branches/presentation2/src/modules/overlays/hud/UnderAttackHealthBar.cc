@@ -93,11 +93,11 @@ namespace orxonox
             }
         }
     }
-    
+
     void UnderAttackHealthBar::changedOverlayGroup()
     {
         SUPER(UnderAttackHealthBar, changedOverlayGroup);
-        
+
         this->getOverlayGroup()->addElement(this->text_.get());
     }
 

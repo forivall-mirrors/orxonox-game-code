@@ -50,7 +50,7 @@ namespace orxonox
         this->bPooling_ = true;
         this->registerVariables();
     }
-    
+
     void WorldSound::registerVariables()
     {
         registerVariable(volume_,   ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::volumeChanged));

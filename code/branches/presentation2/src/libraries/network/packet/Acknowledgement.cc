@@ -37,7 +37,7 @@ namespace packet {
 #define PACKET_FLAGS_ACK    0
 #define _PACKETID           0
 #define _ACKID              _PACKETID + sizeof(packet::Type::Value)
-  
+
 Acknowledgement::Acknowledgement( unsigned int id, unsigned int clientID )
  : Packet()
 {

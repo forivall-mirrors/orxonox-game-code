@@ -170,12 +170,12 @@ namespace orxonox
 
         this->changedControllableEntity();
     }
-    
+
     void PlayerInfo::startTemporaryControl(ControllableEntity* entity)
     {
         if (!entity)
             return;
-        
+
 //         assert( this->temporaryControllableEntity_==0 );
 
         this->oldControllableEntity_ = this->controllableEntity_;
@@ -194,7 +194,7 @@ namespace orxonox
     {
         if ( this->oldControllableEntity_ )
             this->stopTemporaryControl();
-        
+
         ControllableEntity* entity = this->controllableEntity_;
 
         if (!entity)
@@ -212,7 +212,7 @@ namespace orxonox
 
         this->changedControllableEntity();
     }
-    
+
     void PlayerInfo::stopTemporaryControl()
     {
         ControllableEntity* entity = this->controllableEntity_;
@@ -230,10 +230,10 @@ namespace orxonox
 
         if ( GameMode::isMaster() )
             entity->removePlayer();
-        
+
         this->changedControllableEntity();
     }
-    
+
     void PlayerInfo::networkcallback_changedcontrollableentityID()
     {
         if (this->controllableEntityID_ != OBJECTID_UNKNOWN)

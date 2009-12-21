@@ -39,7 +39,7 @@ namespace orxonox
         public:
             TimeFactorListener();
             virtual ~TimeFactorListener() {}
-            
+
             static void setTimeFactor( float factor );
             static void setTimeFactorInternal( float factor );
             static inline float getTimeFactor(){ return TimeFactorListener::timefactor_s; }

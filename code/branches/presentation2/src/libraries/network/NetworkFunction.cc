@@ -32,25 +32,25 @@
 namespace orxonox
 {
   std::map<uint32_t, bool> NetworkFunctionBase::isStaticMap_;
-      
+
   std::map<NetworkFunctionPointer, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::functorMap_;
   std::map<uint32_t, NetworkMemberFunctionBase*> NetworkMemberFunctionBase::idMap_;
 
   NetworkFunctionBase::NetworkFunctionBase(const std::string& name)
   {
     RegisterRootObject(NetworkFunctionBase);
-    
+
     static uint32_t networkID = 0;
     this->networkID_ = networkID++;
-    
+
     this->name_ = name;
     NetworkFunctionBase::getNameMap()[name] = this;
   }
   NetworkFunctionBase::~NetworkFunctionBase()
   {
   }
-  
-  
+
+
   void NetworkFunctionBase::destroyAllNetworkFunctions()
   {
     std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionBase::getNameMap();
@@ -58,55 +58,55 @@ namespace orxonox
     for( it=map.begin(); it!=map.end(); ++it )
       it->second->destroy();
   }
-  
-  
+
+
   /*static*/ std::map<std::string, NetworkFunctionBase*>& NetworkFunctionBase::getNameMap()
   {
     static std::map<std::string, NetworkFunctionBase*> nameMap_;
     return nameMap_;
   }
-  
-  
+
+
   NetworkFunctionStatic::NetworkFunctionStatic(FunctorStatic* functor, const std::string& name, const NetworkFunctionPointer& p):
     NetworkFunctionBase(name)
   {
     RegisterObject(NetworkFunctionStatic);
-    
+
     this->functor_ = functor;
     NetworkFunctionStatic::getFunctorMap()[p] = this;
     NetworkFunctionStatic::getIdMap()[ this->getNetworkID() ] = this;
   }
-  
+
   NetworkFunctionStatic::~NetworkFunctionStatic()
   {
     delete this->functor_;
   }
-  
+
   /*static*/ std::map<NetworkFunctionPointer, NetworkFunctionStatic*>& NetworkFunctionStatic::getFunctorMap()
   {
     static std::map<NetworkFunctionPointer, NetworkFunctionStatic*> functorMap_;
     return functorMap_;
   }
-  
+
   /*static*/ std::map<uint32_t, NetworkFunctionStatic*>& NetworkFunctionStatic::getIdMap()
   {
     static std::map<uint32_t, NetworkFunctionStatic*> idMap_;
     return idMap_;
   }
-  
-  
+
+
   NetworkMemberFunctionBase::NetworkMemberFunctionBase(const std::string& name, const NetworkFunctionPointer& p):
     NetworkFunctionBase(name)
   {
     RegisterObject(NetworkMemberFunctionBase);
-    
+
     this->functorMap_[p] = this;
     this->idMap_[ this->getNetworkID() ] = this;
   }
-  
+
   NetworkMemberFunctionBase::~NetworkMemberFunctionBase()
   {
   }
-  
+
 
 }

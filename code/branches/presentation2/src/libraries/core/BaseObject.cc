@@ -118,7 +118,7 @@ namespace orxonox
 
         XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, Template*);
         XMLPortObject(BaseObject, BaseObject, "eventlisteners", addEventListener, getEventListener, xmlelement, mode);
-        
+
         Element* events = 0;
         if (mode == XMLPort::LoadObject || mode == XMLPort::ExpandObject)
             events = xmlelement.FirstChildElement("events", false);
@@ -138,7 +138,7 @@ namespace orxonox
         XMLPortEventState(BaseObject, BaseObject, "activity", setActive, xmlelement, mode);
         XMLPortEventState(BaseObject, BaseObject, "visibility", setVisible, xmlelement, mode);
         XMLPortEventState(BaseObject, BaseObject, "mainstate", setMainState, xmlelement, mode);
-        
+
         this->bRegisteredEventStates_ = true;
     }
 
@@ -235,7 +235,7 @@ namespace orxonox
         {
             if (it->second != state)
                 continue;
-            
+
             if (i == index)
                 return it->first;
             ++i;
@@ -251,7 +251,7 @@ namespace orxonox
         this->eventListenersXML_.insert(listener);
         listener->addEventSource(this, "mainstate");
     }
-    
+
     /**
         @brief Returns an event listener with a given index.
     */
@@ -343,7 +343,7 @@ namespace orxonox
     void BaseObject::processEvent(Event& event)
     {
         this->registerEventStates();
-        
+
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(event.statename_);
         if (it != this->eventStates_.end())
             it->second->process(event, this);
@@ -355,7 +355,7 @@ namespace orxonox
 
     /**
         @brief Sets the main state of the object to a given boolean value.
-        
+
         Note: The main state of an object can be set with the @ref setMainStateName function.
         It's part of the eventsystem and used for event forwarding (when the target object can't specify a specific state,
         the main state is used by default).
@@ -388,7 +388,7 @@ namespace orxonox
         if (this->mainStateName_ != "")
         {
             this->registerEventStates();
-            
+
             std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(this->mainStateName_);
             if (it != this->eventStates_.end() && it->second->getFunctor())
             {
@@ -401,7 +401,7 @@ namespace orxonox
                 COUT(2) << "Warning: \"" << this->mainStateName_ << "\" is not a valid MainState." << std::endl;
         }
     }
-    
+
     /**
         @brief Calls XMLEventPort with an empty XML-element to register the event states if necessary.
     */
@@ -413,7 +413,7 @@ namespace orxonox
             this->XMLEventPort(xmlelement, XMLPort::NOP);
         }
     }
-    
+
     /**
         @brief Manually loads all event states, even if the class doesn't officially support them. This is needed by some classes like @ref EventDispatcher or @ref EventTarget.
     */

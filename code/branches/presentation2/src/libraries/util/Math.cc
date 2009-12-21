@@ -137,10 +137,10 @@ namespace orxonox
             else
                 return orxonox::Vector2(0, 1);
         }
-        
+
         float cos_value = clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1);
         float sin_value = sqrt( 1 - cos_value*cos_value );
-        
+
         if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
             return orxonox::Vector2( sin_value, cos_value );
         else
@@ -178,7 +178,7 @@ namespace orxonox
                 return orxonox::Vector2(0, 1);
         }
         //float angle = acos(clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1));
-        
+
         float cos_value = clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1);
         float sin_value = sqrt( 1 - cos_value*cos_value );
 

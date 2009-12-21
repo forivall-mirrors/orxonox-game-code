@@ -41,7 +41,7 @@ namespace orxonox
     StaticEntity::StaticEntity(BaseObject* creator) : WorldEntity(creator)
     {
         RegisterObject(StaticEntity);
-        
+
         this->setPriority(Priority::VeryLow);
 
         this->registerVariables();

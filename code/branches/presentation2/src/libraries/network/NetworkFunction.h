@@ -73,29 +73,29 @@ class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
   public:
     NetworkFunctionBase(const std::string& name);
     ~NetworkFunctionBase();
-    
+
     virtual void        setNetworkID(uint32_t id)       { this->networkID_ = id; }
     inline uint32_t     getNetworkID() const            { return this->networkID_; }
     inline const std::string& getName() const           { return name_; }
     static inline bool  isStatic( uint32_t networkID )  { return isStaticMap_[networkID]; }
-    
+
     static inline void setNetworkID(const std::string& name, uint32_t id)
     {
         std::map<std::string, NetworkFunctionBase*>& map = NetworkFunctionBase::getNameMap();
         assert( map.find(name)!=map.end() ); 
         map[name]->setNetworkID(id);
     }
-    
+
     static void destroyAllNetworkFunctions();
-    
+
   protected:
     static std::map<uint32_t, bool> isStaticMap_;
-    
+
   private:
     static std::map<std::string, NetworkFunctionBase*>& getNameMap();
     uint32_t networkID_;
     std::string name_;
-      
+
 };
 
 
@@ -103,14 +103,14 @@ class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
   public:
     NetworkFunctionStatic(FunctorStatic* functor, const std::string& name, const NetworkFunctionPointer& p);
     ~NetworkFunctionStatic();
-    
+
     inline void call(){ (*this->functor_)(); }
     inline void call(const MultiType& mt1){ (*this->functor_)(mt1); }
     inline void call(const MultiType& mt1, const MultiType& mt2){ (*this->functor_)(mt1, mt2); }
     inline void call(const MultiType& mt1, const MultiType& mt2, const MultiType& mt3){ (*this->functor_)(mt1, mt2, mt3); }
     inline void call(const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4){ (*this->functor_)(mt1, mt2, mt3, mt4); }
     inline void call(const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5){ (*this->functor_)(mt1, mt2, mt3, mt4, mt5); }
-    
+
     virtual void setNetworkID( uint32_t id )
         { NetworkFunctionBase::setNetworkID( id ); NetworkFunctionStatic::getIdMap()[id] = this; }
     static inline NetworkFunctionStatic* getNetworkFunction( uint32_t id)
@@ -119,12 +119,12 @@ class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
         { assert( NetworkFunctionStatic::getIdMap().find(id) != NetworkFunctionStatic::getIdMap().end() ); return NetworkFunctionStatic::getIdMap()[id]; }
     static NetworkFunctionStatic* getFunction( const NetworkFunctionPointer& p )
         { assert( NetworkFunctionStatic::getFunctorMap().find(p) != NetworkFunctionStatic::getFunctorMap().end() ); return NetworkFunctionStatic::getFunctorMap()[p]; }
-        
+
   private:
     static std::map<NetworkFunctionPointer, NetworkFunctionStatic*>& getFunctorMap();
     static std::map<uint32_t, NetworkFunctionStatic*>& getIdMap();
     FunctorStatic* functor_;
-    
+
 };
 
 
@@ -132,12 +132,12 @@ class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
   public:
     NetworkMemberFunctionBase(const std::string& name, const NetworkFunctionPointer& p);
     ~NetworkMemberFunctionBase();
-    
+
     virtual void setNetworkID( uint32_t id ){ NetworkFunctionBase::setNetworkID( id ); idMap_[id] = this; }
     static inline NetworkMemberFunctionBase* getNetworkFunction( uint32_t id){ assert( idMap_.find(id)!=idMap_.end() ); return idMap_[id]; }
     static NetworkMemberFunctionBase* getFunction( uint32_t id ){ assert( idMap_.find(id) != idMap_.end() ); return idMap_[id]; }
     static NetworkMemberFunctionBase* getFunction( const NetworkFunctionPointer& p ){ assert( functorMap_.find(p) != functorMap_.end() ); return functorMap_[p]; }
-    
+
     // 
     virtual void call(uint32_t objectID)=0;
     virtual void call(uint32_t objectID, const MultiType& mt1)=0;
@@ -145,7 +145,7 @@ class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
     virtual void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)=0;
     virtual void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)=0;
     virtual void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)=0;
-    
+
   private:
     static std::map<NetworkFunctionPointer, NetworkMemberFunctionBase*> functorMap_;
     static std::map<uint32_t, NetworkMemberFunctionBase*> idMap_;
@@ -156,7 +156,7 @@ template <class T> class NetworkMemberFunction: public NetworkMemberFunctionBase
   public:
     NetworkMemberFunction(FunctorMember<T>* functor, const std::string& name, const NetworkFunctionPointer& p);
     ~NetworkMemberFunction();
-    
+
     inline void call(uint32_t objectID)
     { 
       if ( Synchronisable::getSynchronisable(objectID)!=0 )
@@ -187,7 +187,7 @@ template <class T> class NetworkMemberFunction: public NetworkMemberFunctionBase
       if ( Synchronisable::getSynchronisable(objectID)!=0 )
         (*this->functor_)(orxonox_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3, mt4, mt5);
     }
-    
+
   private:
     FunctorMember<T>* functor_;
 };

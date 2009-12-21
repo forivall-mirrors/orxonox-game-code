@@ -94,7 +94,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
     COUT(2) << "GameStateManager: could not allocate memory" << std::endl;
     return false;
   }
-  
+
   // create the header object
   assert( header_ == 0 );
   header_ = new GamestateHeader(data_);
@@ -104,13 +104,13 @@ bool Gamestate::collectData(int id, uint8_t mode)
   mem += GamestateHeader::getSize();
   ObjectList<Synchronisable>::iterator it;
   for(it = ObjectList<Synchronisable>::begin(); it; ++it){
-    
+
 //     tempsize=it->getSize(id, mode);
 
     tempsize = it->getData(mem, id, mode);
     if ( tempsize != 0 )
       dataVector_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
-    
+
 #ifndef NDEBUG
     if(currentsize+tempsize > size){
       assert(0); // if we don't use multithreading this part shouldn't be neccessary
@@ -361,17 +361,17 @@ Gamestate *Gamestate::diff(Gamestate *base)
   assert(this && base); assert(data_ && base->data_);
   assert(!header_->isCompressed() && !base->header_->isCompressed());
   assert(!header_->isDiffed());
-  
+
   uint8_t *basep = GAMESTATE_START(base->data_);
   uint8_t *gs = GAMESTATE_START(this->data_);
   uint32_t dest_length = header_->getDataSize();
-  
+
   if(dest_length==0)
     return NULL;
-  
+
   uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
   uint8_t *dest = GAMESTATE_START(ndata);
-  
+
   rawDiff( dest, gs, basep, header_->getDataSize(), base->header_->getDataSize() );
 #ifndef NDEBUG
   uint8_t *dest2 = new uint8_t[dest_length];
@@ -397,19 +397,19 @@ Gamestate *Gamestate::undiff(Gamestate *base)
   assert(this && base); assert(data_ && base->data_);
   assert(!header_->isCompressed() && !base->header_->isCompressed());
   assert(header_->isDiffed());
-  
+
   uint8_t *basep = GAMESTATE_START(base->data_);
   uint8_t *gs = GAMESTATE_START(this->data_);
   uint32_t dest_length = header_->getDataSize();
-  
+
   if(dest_length==0)
     return NULL;
-  
+
   uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
   uint8_t *dest = ndata + GamestateHeader::getSize();
-  
+
   rawDiff( dest, gs, basep, header_->getDataSize(), base->header_->getDataSize() );
-  
+
   Gamestate *g = new Gamestate(ndata, getClientID());
   assert(g->header_);
   *(g->header_) = *header_;
@@ -480,7 +480,7 @@ void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uin
   uint64_t* gd = (uint64_t*)data;
   uint64_t* bd = (uint64_t*)basedata;
   uint64_t* nd = (uint64_t*)newdata;
-  
+
   unsigned int i;
   for( i=0; i<datalength/8; i++ )
   {

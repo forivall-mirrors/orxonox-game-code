@@ -60,7 +60,7 @@ namespace orxonox
             SoundManager::getInstance().unregisterAmbientSound(this);
         }
     }
-    
+
     void AmbientSound::registerVariables()
     {
         registerVariable(ambientSource_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::ambientSourceChanged));
@@ -100,7 +100,7 @@ namespace orxonox
         if (GameMode::playsSound())
             SoundManager::getInstance().pauseAmbientSound(this);
     }
-    
+
     float AmbientSound::getRealVolume()
     {
         assert(GameMode::playsSound());

@@ -50,7 +50,7 @@ namespace orxonox
     Gametype::Gametype(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Gametype);
-        
+
         this->gtinfo_ = new GametypeInfo(creator);
 
         this->setGametype(SmartPtr<Gametype>(this, false));
@@ -78,7 +78,7 @@ namespace orxonox
         }
         else
             this->scoreboard_ = 0;
-        
+
         /* HACK HACK HACK */
         this->hackAddBots_ = createConsoleCommand( createFunctor(&Gametype::addBots, this), "hackAddBots");
         this->hackKillBots_ = createConsoleCommand( createFunctor(&Gametype::killBots, this), "hackKillBots");
@@ -86,7 +86,7 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut( this->hackKillBots_ );
         /* HACK HACK HACK */
     }
-    
+
     Gametype::~Gametype()
     {
         if (this->isInitialized())

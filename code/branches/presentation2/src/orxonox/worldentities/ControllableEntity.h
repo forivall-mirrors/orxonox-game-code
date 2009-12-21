@@ -144,7 +144,7 @@ namespace orxonox
                 { return this->controller_; }
             inline void setController(Controller* val)
                 { this->controller_ = val; }
-            
+
             virtual void setTarget( WorldEntity* target );
             virtual WorldEntity* getTarget()
                 { return this->target_.get(); }

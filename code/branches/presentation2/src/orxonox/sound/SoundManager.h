@@ -74,7 +74,7 @@ namespace orxonox
 
         void preUpdate(const Clock& time);
         void setConfigValues();
-        
+
         // tolua_begin
         static SoundManager& getInstance() { return Singleton<SoundManager>::getInstance(); }
 

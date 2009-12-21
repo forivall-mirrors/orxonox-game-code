@@ -49,16 +49,16 @@ namespace orxonox
 
     /**
         @brief The EventState contains information about an event state.
-        
+
         An event state is a state of an object, which can be changed by events.
         Event states are changed through functions. Possible functions headers for set event states are:
          - memoryless state: function()
          - boolean state:    function(bool state)
          - individual state: function(bool state, SomeClass originator)
-         
+
         Note that SomeClass may be any class deriving from BaseObject. You will not receive events from originators of other classes.
         The actual class for SomeClass must be specified as the second argument of the XMLPortEventState macro.
-        
+
         The this pointer of the affected object is hidden in the functors, because the events are processed in the BaseObject, but some
         statefunctions may be from child-classes.
     */
@@ -69,7 +69,7 @@ namespace orxonox
             virtual ~EventState();
 
             void process(const Event& event, BaseObject* object);
-            
+
             Functor* getFunctor() const
                 { return this->statefunction_; }
 

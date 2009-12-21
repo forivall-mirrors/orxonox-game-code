@@ -76,7 +76,7 @@ namespace orxonox {
                 (*it)->destroy();
         }
         this->windows_.clear();
-        
+
         if(this->root_ != NULL)
             this->root_->destroy();
     }
@@ -103,7 +103,7 @@ namespace orxonox {
         COUT(3) << "Updating QuestGUI..." << std::endl;
 
         this->clear(); //!< Clear the GUI.
-        
+
         int depth = 0;
         int index = 0;
 
@@ -234,7 +234,7 @@ namespace orxonox {
         QuestGUINode* node = new QuestGUINode(this, parent, item, depth, index); //!< Create a new QuestGUINode.
 
         this->nodes_.insert(std::pair<CEGUI::Window*, QuestGUINode*>(node->getWindow(),node)); //!< Insert the node and its window in the nodes_ map.
-        
+
         index++;
 
         //! Check if the QuestItem is a Quest, if not (it's a QuestHint) it just returns.

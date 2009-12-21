@@ -104,7 +104,7 @@ namespace orxonox
                         velocity.x = -velocity.x;
                         velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
                         acceleration = this->bat_[1]->getVelocity() * this->accelerationFactor_ * -1;
-                        
+
                         this->fireEvent();
                     }
                     else if (GameMode::isMaster() && position.x > this->fieldWidth_ / 2 * (1 + this->relMercyOffset_))

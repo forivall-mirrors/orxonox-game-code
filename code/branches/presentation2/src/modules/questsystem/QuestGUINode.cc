@@ -118,7 +118,7 @@ namespace orxonox {
 
     void QuestGUINode::toggleVisibility(void)
     {
-        
+
     }
 
     /**
@@ -208,7 +208,7 @@ namespace orxonox {
 
                 offset += height;
             }
-            
+
             //! Create title pane for the description.
             stream.str("");
             stream << this->details_->getName() << "/Description";
@@ -281,7 +281,7 @@ namespace orxonox {
     bool QuestGUINode::openDetails(const CEGUI::EventArgs& e)
     {
         COUT(3) << "Open QuestItem..." << std::endl;
-        
+
         //CEGUI::Window* window = this->gui_->getRootWindow();
         CEGUI::Window* window = this->gui_->getWindowManager()->getWindow("orxonox/QuestGUI/Background");
 
@@ -343,7 +343,7 @@ namespace orxonox {
 
         //! Set the height to the window.
         window->setHeight(CEGUI::UDim(0, height));
-        
+
         //Debug
         const CEGUI::Rect newArea = getStaticTextArea(window);
 
@@ -367,7 +367,7 @@ namespace orxonox {
     void QuestGUINode::createWindow(void)
     {
         Quest* quest = dynamic_cast<Quest*>(this->item_);
-        
+
         this->window_ = this->gui_->getWindow();
         std::ostringstream stream;
         stream << "QuestGUI/Quests/";
@@ -376,7 +376,7 @@ namespace orxonox {
             stream << this->parent_->index_ << "/Hints/";
         }
         stream << this->index_;
-        
+
         this->window_->rename(stream.str());
         this->window_->setText(this->item_->getDescription()->getTitle());
 

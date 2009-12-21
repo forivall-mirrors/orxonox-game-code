@@ -54,7 +54,7 @@ namespace orxonox
     {
         NetworkFunctionBase::destroyAllNetworkFunctions();
     }
-    
+
     void GSRoot::printObjects()
     {
         unsigned int nr=0;

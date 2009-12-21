@@ -80,10 +80,10 @@ namespace orxonox
     int id = GAMESTATEID_INITIAL;
     packet::Gamestate *processed = processGamestate(tempGamestate_);
     assert(processed);
-    
+
     //now call the queued callbacks
     NetworkCallbackManager::callCallbacks();
-    
+
     if (!processed){
       sendAck(0);
       return false;

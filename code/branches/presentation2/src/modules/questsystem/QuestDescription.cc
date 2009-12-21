@@ -49,7 +49,7 @@ namespace orxonox
     QuestDescription::QuestDescription(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestDescription);
-        
+
         this->title_ = "";
         this->description_ = "";
     }
@@ -78,7 +78,7 @@ namespace orxonox
 
         COUT(3) << "New QuestDescription with title '" << this->getTitle() << "' created." << std::endl;
     }
-    
+
     /**
     @brief
         This method is a helper for sending QuestDescriptions as Notifications.
@@ -123,7 +123,7 @@ namespace orxonox
             COUT(2) << "Bad input in notificationHelper, this should not be happening!" << std::endl;
             return false;
         }
-        
+
         QuestNotification* notification = new QuestNotification(message);
         notification->send();
         return true;

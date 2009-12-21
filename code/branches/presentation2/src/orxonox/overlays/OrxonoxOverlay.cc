@@ -170,7 +170,7 @@ namespace orxonox
     void OrxonoxOverlay::changedVisibility()
     {
         SUPER( OrxonoxOverlay, changedVisibility );
-        
+
         if (!this->overlay_)
             return;
 

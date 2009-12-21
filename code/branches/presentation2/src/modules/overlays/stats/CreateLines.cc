@@ -93,7 +93,7 @@ namespace orxonox
         this->playerNameText_->changedVisibility();
         this->background_->changedVisibility();
     }
-    
+
     void CreateLines::setOverlayGroup( OverlayGroup* group )
     {
         this->scoreText_->setOverlayGroup( group );

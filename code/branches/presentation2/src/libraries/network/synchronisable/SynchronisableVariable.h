@@ -40,7 +40,7 @@
 #include "network/synchronisable/NetworkCallbackManager.h"
 
 namespace orxonox{
-  
+
   namespace VariableDirection{
     enum Value{
       ToClient=0x1,
@@ -53,7 +53,7 @@ namespace orxonox{
       ClientMaster=0x2
     };
   }
-  
+
   class _NetworkExport SynchronisableVariableBase
   {
     public:
@@ -84,14 +84,14 @@ namespace orxonox{
       uint8_t                  mode_;
       NetworkCallbackBase      *callback_;
   };
-  
+
   template <class T>
   class SynchronisableVariableBidirectional: public SynchronisableVariable<T>
   {
     public:
       SynchronisableVariableBidirectional(T& variable, uint8_t master=Bidirectionality::ServerMaster, NetworkCallbackBase *cb=0);
       virtual ~SynchronisableVariableBidirectional();
-      
+
       virtual inline uint8_t getMode(){ return 0x3; } //this basically is a hack ^^
       virtual inline uint32_t getData(uint8_t*& mem, uint8_t mode);
       virtual void putData(uint8_t*& mem, uint8_t mode, bool forceCallback = false);
@@ -111,7 +111,7 @@ namespace orxonox{
       state_ = GameMode::isMaster() ? 0x1 : 0x2;  // set the appropriate mode here
     }
   }
-  
+
   template <class T> SynchronisableVariable<T>::~SynchronisableVariable()
   {
     if (this->callback_)
@@ -252,7 +252,7 @@ namespace orxonox{
     {
       return returnSize( this->variable_ ) + sizeof(varReference_);
     }
-  
+
 
 }
 

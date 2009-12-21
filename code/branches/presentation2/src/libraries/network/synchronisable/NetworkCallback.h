@@ -35,9 +35,9 @@
 // #include "util/MultiType.h"
 
 namespace orxonox{
-  
+
   struct EmptyType{};
-  
+
   class _NetworkExport NetworkCallbackBase
   {
     public:
@@ -59,7 +59,7 @@ namespace orxonox{
       T* object_;
       void (T::*function_) (void);
   };
-  
+
   template <class T, class U>
   class NetworkCallbackNotify: public NetworkCallbackBase
   {

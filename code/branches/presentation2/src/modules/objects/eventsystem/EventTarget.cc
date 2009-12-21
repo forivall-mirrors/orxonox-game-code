@@ -44,7 +44,7 @@ namespace orxonox
     EventTarget::~EventTarget()
     {
     }
-    
+
     void EventTarget::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(EventTarget, XMLPort, xmlelement, mode);
@@ -71,7 +71,7 @@ namespace orxonox
     void EventTarget::setTargetName(const std::string& name)
     {
         this->target_ = name;
-        
+
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
             if (it->getName() == this->target_)
                 this->addEventTarget(*it);

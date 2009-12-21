@@ -63,7 +63,7 @@ namespace orxonox
     */
     void GSGraphics::activate()
     {
-        
+
     }
 
     /**

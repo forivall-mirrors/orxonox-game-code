@@ -139,21 +139,21 @@ namespace orxonox
                 arrowsOverlay1_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay1_->setPosition(Vector2(0.5, 0.5));
                 arrowsOverlay1_->hide();
-    
+
                 arrowsOverlay2_ = new OrxonoxOverlay(this);
                 arrowsOverlay2_->setBackgroundMaterial("Orxonox/DirectionArrows2");
                 arrowsOverlay2_->setSize(Vector2(0.02727, 0.59 * arrowsSize_));
                 arrowsOverlay2_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay2_->setPosition(Vector2(0.5, 0.5));
                 arrowsOverlay2_->hide();
-    
+
                 arrowsOverlay3_ = new OrxonoxOverlay(this);
                 arrowsOverlay3_->setBackgroundMaterial("Orxonox/DirectionArrows3");
                 arrowsOverlay3_->setSize(Vector2(0.02727, 0.77 * arrowsSize_));
                 arrowsOverlay3_->setPickPoint(Vector2(0.5, 0.5));
                 arrowsOverlay3_->setPosition(Vector2(0.5, 0.5));
                 arrowsOverlay3_->hide();
-    
+
                 arrowsOverlay4_ = new OrxonoxOverlay(this);
                 arrowsOverlay4_->setBackgroundMaterial("Orxonox/DirectionArrows4");
                 arrowsOverlay4_->setSize(Vector2(0.02727, arrowsSize_));
@@ -501,9 +501,9 @@ namespace orxonox
         if (showArrows_)
         {
             hideArrows();
-    
+
             float distance = sqrt(pow(static_cast<float>(this->currentYaw_)/2*-1,2) + pow(static_cast<float>(this->currentPitch_)/2*-1,2));
-    
+
             if (distance > 0.04 && distance <= 0.59 * arrowsSize_ / 2.0 )
             {
                 this->arrowsOverlay1_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));

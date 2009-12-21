@@ -80,7 +80,7 @@ function showGUI(filename, hidePrevious, bCursorVisible)
     else
         hideCursor()
     end
-    
+
     if find( activeSheets, filename ) ~= nil then
         table.remove( activeSheets, find( activeSheets, filename ) )
         nrOfActiveSheets = nrOfActiveSheets - 1
@@ -95,7 +95,7 @@ function showGUI(filename, hidePrevious, bCursorVisible)
     activeSheets[nrOfActiveSheets] = filename
     bHidePrevious[filename]=hidePrevious
     cursorVisibility[filename] = bCursorVisible
-    
+
     if hidePrevious == true then
         for i=1,nrOfActiveSheets-1 do
             loadedGUIs[ activeSheets[i] ]:hide()

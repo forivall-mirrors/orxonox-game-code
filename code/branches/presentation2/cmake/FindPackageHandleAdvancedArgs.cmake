@@ -24,7 +24,7 @@
  #    This function also checks the version requirements. Also regards the
  #    EXACT keyword if specified in FIND_PACKAGE(...).
  #
- 
+
 INCLUDE(FindPackageHandleStandardArgs)
 INCLUDE(CompareVersionStrings)
 

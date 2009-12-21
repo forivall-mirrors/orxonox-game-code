@@ -68,7 +68,7 @@ namespace orxonox
         std::string getBinding(std::string commandName); //tolua_export
         std::string getBinding(std::string commandName, unsigned int index); //tolua_export
         unsigned int getNumberOfBindings(std::string commandName); //tolua_export
-        
+
         const std::string& getBindingsFilename()
             { return this->filename_; }
         void setConfigValues();
@@ -160,7 +160,7 @@ namespace orxonox
 
     private:
         void addButtonToCommand(std::string command, Button* button);
-        
+
         //##### ConfigValues #####
         //! Whether to filter small value analog input
         bool bFilterAnalogNoise_;

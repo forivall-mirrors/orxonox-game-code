@@ -40,7 +40,7 @@ namespace packet {
 #define _PACKETID           0
 #define _QUANTITY           _PACKETID + sizeof(Type::Value)
 #define _OBJECTIDS          _QUANTITY + sizeof(uint32_t)
-  
+
 DeleteObjects::DeleteObjects()
  : Packet()
 {

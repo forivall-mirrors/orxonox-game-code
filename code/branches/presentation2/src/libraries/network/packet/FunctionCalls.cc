@@ -35,11 +35,11 @@
 
 namespace orxonox {
 namespace packet {
-  
+
 #define   PACKET_FLAGS_FUNCTIONCALLS PacketFlag::Reliable
 #define   _PACKETID         0
 const unsigned int FUNCTIONCALLS_MEM_ALLOCATION = 1000;
-    
+
 FunctionCalls::FunctionCalls()
  : Packet()
 {
@@ -170,7 +170,7 @@ bool FunctionCalls::process(){
 
 void FunctionCalls::addCallStatic( uint32_t networkID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
   assert(!isDataENetAllocated());
-  
+
   // first determine the size that has to be reserved for this call
   uint32_t callsize = 2*sizeof(uint32_t)+sizeof(uint8_t); //size for network-function-id and nrOfArguments and for bool isStatic
   uint32_t nrOfArguments = 0;
@@ -199,7 +199,7 @@ void FunctionCalls::addCallStatic( uint32_t networkID, const MultiType* mt1, con
       }
     }
   }
-  
+
   // now allocated mem if neccessary
   if( currentSize_ + callsize > currentMemBlocks_*FUNCTIONCALLS_MEM_ALLOCATION )
   {
@@ -209,7 +209,7 @@ void FunctionCalls::addCallStatic( uint32_t networkID, const MultiType* mt1, con
     delete[] data_;
     data_ = temp;
   }
-  
+
   // now serialise the mt values and copy the function id and isStatic
   uint8_t* temp = data_+currentSize_;
   *(uint32_t*)(data_+sizeof(uint32_t)) = *(uint32_t*)(data_+sizeof(uint32_t))+1; // increase number of calls
@@ -239,12 +239,12 @@ void FunctionCalls::addCallStatic( uint32_t networkID, const MultiType* mt1, con
   }
   //currentSize_ += callsize;
   currentSize_ = temp-data_;
-  
+
 }
 
 void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
   assert(!isDataENetAllocated());
-  
+
   // first determine the size that has to be reserved for this call
   uint32_t callsize = 3*sizeof(uint32_t)+sizeof(uint8_t); //size for network-function-id and nrOfArguments and the objectID
   uint32_t nrOfArguments = 0;
@@ -273,7 +273,7 @@ void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, const 
       }
     }
   }
-  
+
   // now allocated mem if neccessary
   if( currentSize_ + callsize > currentMemBlocks_*FUNCTIONCALLS_MEM_ALLOCATION )
   {
@@ -283,7 +283,7 @@ void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, const 
     delete[] data_;
     data_ = temp;
   }
-  
+
   // now serialise the mt values and copy the function id
   uint8_t* temp = data_+currentSize_;
   *(uint32_t*)(data_+sizeof(uint32_t)) = *(uint32_t*)(data_+sizeof(uint32_t))+1; // increase number of calls
@@ -313,7 +313,7 @@ void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, const 
     }
   }
   currentSize_ += callsize;
-  
+
 }
 
 

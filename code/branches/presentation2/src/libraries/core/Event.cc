@@ -44,7 +44,7 @@ namespace orxonox
 
     /**
         @brief Processes an event (calls the set-function if the necessary conditions are met).
-        
+
         @param event     The fired event
         @param object    The object whose state is affected by the event (only needed for debug output)
     */

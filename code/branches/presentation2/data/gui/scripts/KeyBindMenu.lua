@@ -69,10 +69,10 @@ function P:init()
     --Calculate design parameters:
     sampleWindow = winMgr:createWindow("TaharezLook/StaticText", "orxonox/KeyBindPane/SampleWindow")
     sampleWindow:setText("SampleText")
-    
+
     local size = getMinTextSize(sampleWindow)
     lineHeight = size[1]
-    
+
     commandWidth = 0
     for k,v in pairs(commandList) do
         sampleWindow:setText(nameList[k])
@@ -85,13 +85,13 @@ function P:init()
     sampleWindow:setText("add")
     size = getMinTextSize(sampleWindow)
     addWidth = size[2]
-    
+
     sampleWindow:setText("X")
     size = getMinTextSize(sampleWindow)
     clearWidth = size[2]
 
     spaceWidth = math.floor(1/14*commandWidth)
-    
+
     buttonWidth = 145
 
     P.createLines()
@@ -165,7 +165,7 @@ function P.createLine(k)
     end
 
     line:setWidth(CEGUI.UDim(0, offset+clearWidth))
-    
+
     return line
 end
 
@@ -177,7 +177,7 @@ function P.createLines()
         table.insert(linesList, line)
         window:addChildWindow(line)
     end
-    
+
     pane = tolua.cast(window, "CEGUI::ScrollablePane")
     pane:setVerticalStepSize(getScrollingStepSize(window))
 end
@@ -215,7 +215,7 @@ function P.KeyBindClear_clicked(e)
     local match = string.gmatch(name, "%d+")
     local commandNr = tonumber(match())
     local buttonNr = tonumber(match())
- 
+
     orxonox.KeyBinderManager:getInstance():unbind(orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[commandNr], buttonNr))
 
     P.callback()

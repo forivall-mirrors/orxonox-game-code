@@ -44,7 +44,7 @@ namespace orxonox
         for (ObjectList<ClientConnectionListener>::iterator it = ObjectList<ClientConnectionListener>::begin(); it != ObjectList<ClientConnectionListener>::end(); ++it)
             it->clientConnected(clientID);
     }
-    
+
     void ClientConnectionListener::broadcastClientDisconnected(unsigned int clientID)
     {
         for (ObjectList<ClientConnectionListener>::iterator it = ObjectList<ClientConnectionListener>::begin(); it != ObjectList<ClientConnectionListener>::end(); ++it)

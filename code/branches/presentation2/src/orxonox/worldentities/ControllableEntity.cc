@@ -237,7 +237,7 @@ namespace orxonox
         if (this->bMouseLook_)
             this->cameraPositionRootNode_->roll(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
     }
-    
+
     void ControllableEntity::fire(unsigned int firemode)
     {
         if(GameMode::isMaster())
@@ -249,7 +249,7 @@ namespace orxonox
             callMemberNetworkFunction(ControllableEntity, fire, this->getObjectID(), 0, firemode);
         }
     }
-    
+
     void ControllableEntity::setTarget( WorldEntity* target )
     {
         this->target_ = target;
@@ -265,7 +265,7 @@ namespace orxonox
            }
         }
     }
-    
+
     void ControllableEntity::setTargetInternal( uint32_t targetID )
     {
         this->setTarget( orxonox_cast<WorldEntity*>(Synchronisable::getSynchronisable(targetID)) );

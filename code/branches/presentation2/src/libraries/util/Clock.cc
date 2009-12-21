@@ -43,7 +43,7 @@ namespace orxonox
     {
         delete timer_;
     }
-    
+
     /**
     @remarks
         Mind the types! Ogre::Timer::getMicroseconds() will return an unsigned

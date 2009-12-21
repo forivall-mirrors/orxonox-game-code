@@ -30,7 +30,7 @@
 #include "packet/FunctionCalls.h"
 
 namespace orxonox {
-    
+
 std::map<uint32_t, packet::FunctionCalls*> FunctionCallManager::clientMap_;
 
 // Static calls

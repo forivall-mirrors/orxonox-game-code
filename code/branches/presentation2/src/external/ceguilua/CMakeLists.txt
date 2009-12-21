@@ -44,7 +44,7 @@ IF(NOT "${_CEGUI_VERSION_REF}" STREQUAL "${CEGUI_VERSION}"
     IF(_compare_result EQUAL 1)
       BREAK() # _version > CEGUI_VERSION
     ENDIF()
-  
+
     ADD_SUBDIRECTORY(ceguilua-${_version}) # Sets parent scope variable _package_files
     FOREACH(_file ${_package_files})
       CONFIGURE_FILE(ceguilua-${_version}/package/${_file} ${CEGUILUA_BINARY_DIR}/${_file} COPYONLY)

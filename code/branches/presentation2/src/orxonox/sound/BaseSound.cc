@@ -149,7 +149,7 @@ namespace orxonox
             COUT(2) << "Sound warning: volume out of range, clamping value." << std::endl;
         this->updateVolume();
     }
-    
+
     void BaseSound::updateVolume()
     {
         if (alIsSource(this->audioSource_))
@@ -251,7 +251,7 @@ namespace orxonox
             }
         }
     }
-    
+
     void BaseSound::stateChanged()
     {
         switch (this->state_)

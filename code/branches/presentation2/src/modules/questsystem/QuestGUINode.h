@@ -43,11 +43,11 @@ namespace orxonox {
     {
 
         public:
-    
+
             QuestGUINode(void);
             QuestGUINode(QuestGUI* gui, QuestGUINode* parent, QuestItem* item, int depth, int index);
             virtual ~QuestGUINode(void);
-    
+
             void toggleVisibility(void);
 
             void getName(std::string & buffer); //!< Sets the input buffer to the name of the node.

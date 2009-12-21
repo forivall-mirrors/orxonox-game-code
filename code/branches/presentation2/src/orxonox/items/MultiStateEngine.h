@@ -63,7 +63,7 @@ namespace orxonox
 
             void addEffectContainer(EffectContainer* effect);
             EffectContainer* getEffectContainer(unsigned int index) const;
-            
+
             void setDefEngSndNormal(const std::string& engineSound);
             const std::string& getDefEngSndNormal();
             void setDefEngSndBoost(const std::string& engineSound);

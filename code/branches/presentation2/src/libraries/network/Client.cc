@@ -112,7 +112,7 @@ namespace orxonox
 //    COUT(1) << "Player " << playerID << ": " << message << std::endl;
     return true;
   }
-  
+
   void Client::printRTT(){
     COUT(0) << "Round trip time to server is " << ClientConnection::getRTT() << " ms" << endl;
   }
@@ -154,7 +154,7 @@ namespace orxonox
       }
     }
     sendPackets(); // flush the enet queue
-    
+
     Connection::processQueue();
     if(gamestate.processGamestates())
     {
@@ -166,7 +166,7 @@ namespace orxonox
 
     return;
   }
-  
+
   void Client::connectionClosed()
   {
     ObjectList<Synchronisable>::iterator it;

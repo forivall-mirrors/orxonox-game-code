@@ -144,7 +144,7 @@ namespace orxonox {
     assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
     assert(clientListPerm_.find(clientID) != clientListPerm_.end() );
     assert( clientListTemp_[clientID].find(gamestateID) != clientListTemp_[clientID].end() );
-    
+
     // shortcut for maps
     std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
     std::map<unsigned int, std::list<obj> >& objectListTemp = clientListTemp_[clientID];
@@ -235,9 +235,9 @@ namespace orxonox {
       //compare listToProcess vs clientListPerm
       //if listToProcess contains new Objects, add them to clientListPerm
       std::list<obj>::iterator itvec;
-    
+
       std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
-    
+
       for( itvec=list.begin(); itvec != list.end(); itvec++)
       {
         if ( objectListPerm.find( (*itvec).objID) != objectListPerm.end() )
@@ -255,12 +255,12 @@ namespace orxonox {
         }
       }
     //end compare listToProcess vs clientListPerm
-      
+
       //sort copied list according to priorities
       // use boost bind here because we need to pass a memberfunction to stl sort
 //       sort( list.begin(), list.end(), boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
       list.sort( boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
-      
+
 //       list.sort(boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
 
       //now we check, that the creator of an object always exists on a client
@@ -276,7 +276,7 @@ namespace orxonox {
       //now sort again after objDataOffset
 //       sort(list.begin(), list.end(), boost::bind(&TrafficControl::dataSort, this, _1, _2) );
       list.sort( boost::bind(&TrafficControl::dataSort, this, _1, _2) );
-      
+
       //diese Funktion updateClientList muss noch gemacht werden
       updateClientListTemp(list);
       //end of sorting

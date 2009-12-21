@@ -131,13 +131,13 @@ namespace orxonox
     inline uint32_t getClassID() const {return this->classID_;}
     inline unsigned int getPriority() const { return this->objectFrequency_;}
     inline uint8_t getSyncMode() const { return this->objectMode_; }
-    
+
     void setSyncMode(uint8_t mode);
 
   protected:
     Synchronisable(BaseObject* creator);
     template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
-    
+
     void setPriority(unsigned int freq){ objectFrequency_ = freq; }
 
 
@@ -147,7 +147,7 @@ namespace orxonox
     bool updateData(uint8_t*& mem, uint8_t mode=0x0, bool forceCallback=false);
     bool isMyData(uint8_t* mem);
     bool doSync(int32_t id, uint8_t mode=0x0);
-    
+
     inline void setObjectID(uint32_t id){ this->objectID_ = id; objectMap_[this->objectID_] = this; }
     inline void setClassID(uint32_t id){ this->classID_ = id; }
 
@@ -180,10 +180,10 @@ namespace orxonox
         this->dataSize_ += syncList.back()->getSize(state_);
     }
   }
-  
+
   template <> _NetworkExport void Synchronisable::registerVariable( std::string& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional);
 
-  
+
 }
 
 #endif /* _Synchronisable_H__ */

@@ -27,7 +27,7 @@
     <Template name="HealthUsableItem" baseclass="HealthUsable">
         <HealthImmediate recoveredHealth="80" guiImage="goldwrenchpickup.jpg" guiText="Health" />
     </Template>
-    
+
     <SpawnPoint position="-3800, 2500, 1500" direction="-0.683, -0.289, -0.670"  spawnclass=SpaceShip pawndesign=spaceshipassff />
 
 
@@ -97,14 +97,14 @@
             <Billboard material="Examples/Flare" colour="0.5, 1.0, 0.3" scale="0.5" />-->
         </attached>
     </PickupSpawner>
-    
+
     <PickupSpawner item="HealthUsableItem" triggerDistance="20" respawnTime="10000" position="-4150,2750,1550">
         <attached>
             <Model mesh="gwrench.mesh" scale="1.0" />
             <Billboard material="Examples/Flare" colour="0.3, 0.8, 1.0" scale="0.5" />
         </attached>
     </PickupSpawner>
-    
+
     <PickupSpawner item="HealthImmediateItem" triggerDistance="20" respawnTime="3" position="2300, 4300, 2400">
         <attached>
             <Model mesh="gwrench.mesh" scale="1.0" />
@@ -356,7 +356,7 @@ z = math.random() * 3000 - 1500 + (i-100) * 10
 s = math.random() * 60 + 30
 e = math.floor(math.random()*elements.length()+1)
 ?>
-    
+
     <MovableEntity mass=90000 position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>"> 
       <attached>
         <Model position="0,0,0" scale=<?lua print(s) ?> mesh="<?lua print(elements[e])?>" />
@@ -394,7 +394,7 @@ y = math.random() * 1000 + 2000
 z = math.random() * 500 + 1000
 e = math.floor(math.random()*elements.length()+1)
 ?>
-    
+
     <MovableEntity mass=90000 position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30- 15) ?>"> 
       <attached>
         <Model position="0,0,0" scale="<?lua print(sizes[e]) ?>" mesh="<?lua print( elements[e]) ?>" />

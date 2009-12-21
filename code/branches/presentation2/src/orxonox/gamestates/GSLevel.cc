@@ -89,7 +89,7 @@ namespace orxonox
         {
             // level is loaded: we can start capturing the input
             InputManager::getInstance().enterState("game");
-            
+
             // connect the HumanPlayer to the game
             PlayerManager::getInstance().clientConnected(0);
         }
@@ -104,7 +104,7 @@ namespace orxonox
 
             InputManager::getInstance().leaveState("game");
         }
-        
+
         // disconnect all HumanPlayers
         PlayerManager::getInstance().disconnectAllClients();
 
@@ -134,7 +134,7 @@ namespace orxonox
     {
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
             this->staticObjects_.insert(*it);
-        
+
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());

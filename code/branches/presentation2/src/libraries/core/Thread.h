@@ -49,7 +49,7 @@ namespace boost{
 
     private:
         void            threadLoop();
-        
+
         Executor*       executor_;
         bool            isWorking_;
         bool            stopThread_;

@@ -231,7 +231,7 @@ namespace orxonox
             virtual operator orxonox::Degree()      const = 0;
 
             virtual void toString(std::ostream& outstream) const = 0;
-            
+
             virtual void importData( uint8_t*& mem )=0;
             virtual void exportData( uint8_t*& mem ) const=0;
             virtual uint8_t getSize() const=0;
@@ -338,7 +338,7 @@ namespace orxonox
             /** @brief Returns true if the current type is T. */
             template <typename T> inline bool isType()                    const { return false; } // Only works for specialized values - see below
             std::string                       getTypename()               const;
-            
+
             /** @brief Saves the value of the MT to a bytestream (pointed at by mem) and increases mem pointer by size of MT */
             inline void                       exportData(uint8_t*& mem) const { assert(sizeof(MT_Type::Value)<=8); *static_cast<uint8_t*>(mem) = this->getType(); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
             /** @brief Loads the value of the MT from a bytestream (pointed at by mem) and increases mem pointer by size of MT */

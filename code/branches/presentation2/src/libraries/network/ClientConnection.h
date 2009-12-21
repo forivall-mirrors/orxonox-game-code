@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 #ifndef _ClientConnection_H__
 #define _ClientConnection_H__
 
@@ -39,10 +39,10 @@ namespace orxonox
   public:
     ClientConnection();
     virtual ~ClientConnection();
-    
+
     void setServerAddress( const std::string& serverAddress );
     void setPort( unsigned int port );
-    
+
     ENetEvent *getEvent();
     // check wheter the packet queue is empty
     bool queueEmpty();
@@ -58,7 +58,7 @@ namespace orxonox
   private:
     virtual void addPeer(ENetEvent* event);
     virtual void removePeer(ENetEvent* event);
-    
+
     bool disconnectConnection();
     // enet stuff
     ENetAddress *serverAddress_;

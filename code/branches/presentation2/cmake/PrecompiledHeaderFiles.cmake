@@ -22,7 +22,7 @@
  #
 
 INCLUDE(GetGCCCompilerFlags)
- 
+
 MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcefile_var)
 
   GET_FILENAME_COMPONENT(_pch_header_file ${_header_file_arg} ABSOLUTE)

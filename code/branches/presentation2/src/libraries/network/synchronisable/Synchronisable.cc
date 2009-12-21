@@ -61,7 +61,7 @@ namespace orxonox
       objectID_=OBJECTID_UNKNOWN;
     }
     classID_ = static_cast<uint32_t>(-1);
-    
+
     // set dataSize to 0
     this->dataSize_ = 0;
     // set standard priority
@@ -276,14 +276,14 @@ namespace orxonox
       tempsize += (*i)->getData( mem, mode );
       //tempsize += (*i)->getSize( mode );
     }
-    
+
     tempsize += SynchronisableHeader::getSize();
     header.setObjectID( this->objectID_ );
     header.setCreatorID( this->creatorID_ );
     header.setClassID( this->classID_ );
     header.setDataAvailable( true );
     header.setDataSize( tempsize );
-    
+
 #ifndef NDEBUG
     uint32_t size;
     size=getSize(id, mode);

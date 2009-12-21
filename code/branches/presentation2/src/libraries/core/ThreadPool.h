@@ -40,17 +40,17 @@
     public:
         ThreadPool();
         virtual ~ThreadPool();
-        
+
         void addThreads( unsigned int nr );
         unsigned int removeThreads( unsigned int nr );
         unsigned int setNrOfThreads( unsigned int nr );
-        
+
         bool passFunction( Executor* executor, bool addThread=false );
         void synchronise();
-        
+
     private:
         std::vector<Thread*> threadPool_;
-        
+
     };
 }
 

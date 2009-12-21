@@ -91,12 +91,12 @@ namespace orxonox
         else
             this->bDefaultFileLoaded_ = false;
     }
-    
+
     inline void KeyBinderManager::unbind(const std::string& binding)
     {
         this->currentBinder_->setBinding("", binding, false);
     }
-            
+
     inline void KeyBinderManager::tunbind(const std::string& binding)
     {
         this->currentBinder_->setBinding("", binding, true);

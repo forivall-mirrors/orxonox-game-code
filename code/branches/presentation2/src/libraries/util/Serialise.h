@@ -39,7 +39,7 @@
 #include "util/mbool.h"
 
 namespace orxonox{
-    
+
     /** @brief returns the size of the variable in a datastream */
     template <class T> inline uint32_t returnSize( const T& variable );
     /** @brief loads the value of a variable out of the bytestream and increases the mem pointer */
@@ -201,7 +201,7 @@ namespace orxonox{
     {
         return sizeof(uint32_t);
     }
-    
+
     template <> inline void loadAndIncrease( const unsigned int& variable, uint8_t*& mem )
     {
         *(unsigned int*)( &variable ) = *(uint32_t*)(mem);
@@ -469,7 +469,7 @@ namespace orxonox{
         Ogre::Real* r = (Ogre::Real*)mem;
         return variable==Degree(*r);
     }
-    
+
     // =========== Vector2
 
     template <> inline uint32_t returnSize( const Vector2& variable )
@@ -493,7 +493,7 @@ namespace orxonox{
     {
         return checkEquality(variable.x, mem) && checkEquality(variable.y, mem+returnSize(variable.x));
     }
-    
+
     // =========== Vector3
 
     template <> inline uint32_t returnSize( const Vector3& variable )
@@ -520,7 +520,7 @@ namespace orxonox{
         return checkEquality(variable.x, mem) && checkEquality(variable.y, mem+returnSize(variable.x)) &&
             checkEquality(variable.z, mem+returnSize(variable.x)+returnSize(variable.y));
     }
-    
+
     // =========== Vector4
 
     template <> inline uint32_t returnSize( const Vector4& variable )
@@ -550,7 +550,7 @@ namespace orxonox{
             checkEquality(variable.y, mem+returnSize(variable.w)+returnSize(variable.x)) &&
             checkEquality(variable.z, mem+returnSize(variable.w)+returnSize(variable.x)+returnSize(variable.y));
     }
-    
+
     // =========== Quaternion
 
     template <> inline uint32_t returnSize( const Quaternion& variable )
@@ -580,7 +580,7 @@ namespace orxonox{
             checkEquality(variable.y, mem+returnSize(variable.w)+returnSize(variable.x)) &&
             checkEquality(variable.z, mem+returnSize(variable.w)+returnSize(variable.x)+returnSize(variable.y));
     }
-    
+
     // =========== ColourValue
 
     template <> inline uint32_t returnSize( const ColourValue& variable )
@@ -610,7 +610,7 @@ namespace orxonox{
             checkEquality(variable.b, mem+returnSize(variable.r)+returnSize(variable.g)) &&
             checkEquality(variable.a, mem+returnSize(variable.r)+returnSize(variable.g)+returnSize(variable.b));
     }
-    
+
     // =========== mbool
 
     template <> inline uint32_t returnSize( const mbool& variable )

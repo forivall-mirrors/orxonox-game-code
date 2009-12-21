@@ -36,13 +36,13 @@ namespace orxonox
     ThreadPool::ThreadPool()
     {
     }
-    
+
     ThreadPool::~ThreadPool()
     {
         unsigned int a = this->setNrOfThreads(0);
         assert(a == 0);
     }
-    
+
     void ThreadPool::addThreads( unsigned int nr )
     {
         for( unsigned int i=0; i<nr; i++ )
@@ -79,7 +79,7 @@ namespace orxonox
             return nr;
         }
     }
-    
+
     bool ThreadPool::passFunction( Executor* executor, bool addThread )
     {
         std::vector<Thread*>::iterator it;
@@ -102,7 +102,7 @@ namespace orxonox
         else
             return false;
     }
-    
+
     void ThreadPool::synchronise()
     {
         std::vector<Thread*>::iterator it;

@@ -133,7 +133,7 @@ namespace orxonox
             COUT(4) << "Sound: --- Supported MIME Types: " << types << std::endl;
         else
             COUT(2) << "Sound Warning: MIME Type retrieval failed: " << alutGetErrorString(alutGetError()) << std::endl;
-        
+
         this->mute_[SoundType::All]     = 1.0f;
         this->mute_[SoundType::Music]   = 1.0f;
         this->mute_[SoundType::Effects] = 1.0f;
@@ -430,13 +430,13 @@ namespace orxonox
 
     void SoundManager::processCrossFading(float dt)
     {
-        
+
         // Hacky solution to the fade delay while loading a level.
         if(dt > 0.2)
         {
             return;
         }
-        
+
         // FADE IN
         for (std::list<SmartPtr<AmbientSound> >::iterator it= this->fadeInList_.begin(); it != this->fadeInList_.end(); )
         {

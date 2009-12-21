@@ -63,7 +63,7 @@ namespace orxonox
     {
         ModifyConfigValue(mood_, set, mood);
     }
-    
+
     //! Gets the current mood
     const std::string& MoodManager::getMood()
     {

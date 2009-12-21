@@ -50,7 +50,7 @@ namespace orxonox
                 { return this->player_; }
 
             virtual inline void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {};
-            
+
             void setGodMode( bool mode ){ this->bGodMode_ = mode; }
             bool getGodMode(){ return this->bGodMode_; }
 

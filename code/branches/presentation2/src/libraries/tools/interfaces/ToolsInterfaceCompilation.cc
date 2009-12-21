@@ -45,7 +45,7 @@ namespace orxonox
     // TimeFactorListener
     //----------------------------
     registerStaticNetworkFunction( &TimeFactorListener::setTimeFactorInternal );
-    
+
     float TimeFactorListener::timefactor_s = 1.0f;
 
     TimeFactorListener::TimeFactorListener()
@@ -59,7 +59,7 @@ namespace orxonox
             callStaticNetworkFunction( &TimeFactorListener::setTimeFactorInternal, CLIENTID_UNKNOWN, factor );
         TimeFactorListener::setTimeFactorInternal(factor);
     }
-    
+
     /*static*/ void TimeFactorListener::setTimeFactorInternal( float factor )
     {
         float oldFactor = TimeFactorListener::timefactor_s;

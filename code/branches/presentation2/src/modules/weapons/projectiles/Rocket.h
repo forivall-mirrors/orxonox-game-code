@@ -53,10 +53,10 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Rocket through XML.
             virtual void tick(float dt); //!< Defines which actions the Rocket has to take in each tick.
-            
+
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             void destroyObject();
-            
+
             virtual void moveFrontBack(const Vector2& value){}
             virtual void moveRightLeft(const Vector2& value){}
             virtual void moveUpDown(const Vector2& value){}
@@ -64,7 +64,7 @@ namespace orxonox
             virtual void rotateYaw(const Vector2& value);
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
-            
+
             /**
             @brief Moves the Rocket in the Front/Back-direction by the specifed amount.
             @param value  The amount by which the Rocket is to be moved.
@@ -83,7 +83,7 @@ namespace orxonox
             */
             inline void moveUpDown(float value)
             { this->moveUpDown(Vector2(value, 0)); }
-            
+
             /**
             @brief Rotates the Rocket around the y-axis by the specifed amount.
             @param value  The amount by which the Rocket is to be rotated.
@@ -102,24 +102,24 @@ namespace orxonox
             */
             inline void rotateRoll(float value)
             { this->rotateRoll(Vector2(value, 0)); }
-            
+
             void setOwner(Pawn* owner);
             inline Pawn* getOwner() const
                 { return this->owner_; }
-                
+
             inline void setDamage(float damage)
                 { this->damage_ = damage; }
             inline float getDamage() const
                 { return this->damage_; }
             virtual void fired(unsigned int firemode);
-            
+
         private:
             WeakPtr<Pawn> owner_;
             Vector3 localAngularVelocity_;
             float damage_;
             bool bDestroy_;
             ControllableEntity* originalControllableEntity_;
-            
+
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;
             float lifetime_;

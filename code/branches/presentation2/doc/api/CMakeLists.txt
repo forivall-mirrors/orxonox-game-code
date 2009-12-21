@@ -31,7 +31,7 @@ IF (DOXYGEN_FOUND)
 
   SET(DOXY_INPUT_DIR  ${CMAKE_CURRENT_SOURCE_DIR})
   SET(DOXY_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
-  
+
   # we need latex for doxygen because of the formulas
   # Orxonox doesn't
   #FIND_PACKAGE(LATEX)
@@ -44,7 +44,7 @@ IF (DOXYGEN_FOUND)
   #IF    (NOT DVIPS_CONVERTER)
   #  MESSAGE(STATUS "dvips command DVIPS_CONVERTER not found but usually required.")
   #ENDIF (NOT DVIPS_CONVERTER)
-  
+
   IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in)
     CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in ${CMAKE_CURRENT_BINARY_DIR}/doxy.config @ONLY)
     # use (configured) doxy.config from (out of place) BUILD tree:
@@ -53,9 +53,9 @@ IF (DOXYGEN_FOUND)
   ELSE()
     MESSAGE(FATAL_ERROR "Warning: Could not find dox.config.in in the root directory.")
   ENDIF()
-  
+
   ADD_CUSTOM_TARGET(doc ${DOXYGEN_EXECUTABLE} ${DOXY_CONFIG})
-  
+
   # create a windows help .chm file using hhc.exe
   # HTMLHelp DLL must be in path!
   # fallback: use hhw.exe interactively

@@ -68,7 +68,7 @@ namespace orxonox {
       obj();
       obj( uint32_t ID, uint32_t creatorID, uint32_t size, uint32_t offset );
   };
-  
+
 
 
 
@@ -96,9 +96,9 @@ class TrafficControl : public ClientConnectionListener {
     unsigned int currentClientID;
     unsigned int targetSize;
     bool         bActive_;
-    
+
     void insertinClientListPerm(unsigned int clientID, obj objinf);
-    
+
     void cut(std::list<obj>& list, unsigned int targetsize);
     void updateClientListTemp(std::list<obj>& list);//done
     /**
@@ -106,12 +106,12 @@ class TrafficControl : public ClientConnectionListener {
     */
     void evaluateList(unsigned int clientID, std::list<obj>& list);//done    
     void ack(unsigned int clientID, unsigned int gamestateID);  // this function gets called when the server receives an ack from the client
-    
+
     //ClientConnectionListener functions
     virtual void clientConnected(unsigned int clientID){};
     virtual void clientDisconnected(unsigned int clientID);
 
- 
+
   protected:
     static TrafficControl *instance_;
 
@@ -130,7 +130,7 @@ class TrafficControl : public ClientConnectionListener {
     static void processAck(unsigned int clientID, unsigned int gamestateID)
     { return instance_->ack(clientID, gamestateID); }
     void deleteObject(unsigned int objectID);               // this function gets called when an object has been deleted (in order to clean up lists and maps)
-    
+
     bool prioritySort(uint32_t clientID, obj i, obj j);
     bool dataSort(obj i, obj j);
     void printList(std::list<obj>& list, unsigned int clientID);

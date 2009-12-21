@@ -148,7 +148,7 @@ namespace orxonox
                 if (this->referenceCount_ == 0 && this->requestedDestruction_)
                     this->destroy();
             }
-                
+
             /** @brief Register a weak pointer which points to this object. */
             template <class T>
             inline void registerWeakPtr(WeakPtr<T>* pointer)

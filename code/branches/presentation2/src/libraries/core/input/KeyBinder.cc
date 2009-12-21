@@ -282,19 +282,19 @@ namespace orxonox
             return false;
         }
     }
-    
+
      void KeyBinder::addButtonToCommand(std::string command, Button* button)
      {  
         std::ostringstream stream;
         stream << button->groupName_  << "." << button->name_;
-        
+
         std::vector<std::string>& oldKeynames = this->allCommands_[button->bindingString_];
         std::vector<std::string>::iterator it = std::find(oldKeynames.begin(), oldKeynames.end(), stream.str());
         if(it != oldKeynames.end())
         {
             oldKeynames.erase(it);
         }
-        
+
         if(command != "")
         {
             std::vector<std::string>& keynames = this->allCommands_[command];
@@ -304,7 +304,7 @@ namespace orxonox
             }
         }
      }
-    
+
     /**
     @brief
         Return the first key name for a specific command
@@ -316,10 +316,10 @@ namespace orxonox
             std::vector<std::string>& keynames = this->allCommands_[commandName];
             return keynames.front();
         }
-        
+
         return "";
     }
-    
+
     /**
     @brief
         Return the key name for a specific command at a given index.
@@ -337,13 +337,13 @@ namespace orxonox
             {
                 return keynames[index];
             }
-                
+
             return "";
         }
-        
+
         return "";
     }
-    
+
     /**
     @brief
         Get the number of different key bindings of a specific command.
@@ -357,7 +357,7 @@ namespace orxonox
             std::vector<std::string>& keynames = this->allCommands_[commandName];
             return keynames.size();
         }
-        
+
         return 0;
     }
 
