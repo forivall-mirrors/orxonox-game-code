@@ -151,7 +151,9 @@ namespace orxonox
     //sound
     class AmbientSound;
     class BaseSound;
+    class SoundBuffer;
     class SoundManager;
+    class SoundStreamer;
     class WorldSound;
 
     // weaponsystem
@@ -168,6 +170,7 @@ namespace orxonox
     class BigExplosion;
     class CameraPosition;
     class ControllableEntity;
+    class EffectContainer;
     class ExplosionChunk;
     class MobileEntity;
     class MovableEntity;
@@ -209,5 +212,6 @@ typedef struct ALCcontext_struct ALCcontext;
 typedef struct ALCdevice_struct ALCdevice;
 typedef unsigned int ALuint;
 typedef int ALint;
+typedef int ALenum;
 
 #endif /* _OrxonoxPrereqs_H__ */

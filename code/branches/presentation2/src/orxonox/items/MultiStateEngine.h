@@ -37,9 +37,6 @@
 
 namespace orxonox
 {
-    // forward declaration
-    class EffectContainer;
-
     class _OrxonoxExport MultiStateEngine : public Engine
     {
         public:

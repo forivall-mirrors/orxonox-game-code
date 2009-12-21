@@ -41,15 +41,9 @@
 #include "core/OrxonoxClass.h"
 #include "core/SmartPtr.h"
 
-// forward declaration
-typedef int ALenum;
-
 // tolua_begin
 namespace orxonox
 {
-    // forward declaration
-    class SoundBuffer;
-
     //! Enum for the sound type.
     namespace SoundType
     {
