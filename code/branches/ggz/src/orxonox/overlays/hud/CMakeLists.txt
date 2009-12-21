@@ -1,9 +1,0 @@
-ADD_SOURCE_FILES(ORXONOX_SRC_FILES
-  HUDBar.cc
-  HUDNavigation.cc
-  HUDRadar.cc
-  HUDSpeedBar.cc
-  HUDHealthBar.cc
-  ChatOverlay.cc
-  GametypeStatus.cc
-)

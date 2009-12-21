@@ -1,7 +1,0 @@
-[RoomInfo]
-Name = Orxonox
-Description = Space Shooter
-GameType = Orxonox
-MaxPlayers = 32
-MaxTables = 32
-EntryRestriction = none
