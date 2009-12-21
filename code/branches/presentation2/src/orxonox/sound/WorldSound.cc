@@ -78,9 +78,9 @@ namespace orxonox
         if (this->getScene())
         {
             float refDist = this->getScene()->getSoundReferenceDistance();
-            alSourcei(this->audioSource_, AL_REFERENCE_DISTANCE, refDist);
+            alSourcef(this->audioSource_, AL_REFERENCE_DISTANCE, refDist);
             // TODO: 500 is very magical here. Derive something better
-            alSourcei(this->audioSource_, AL_MAX_DISTANCE, refDist * 500);
+            alSourcef(this->audioSource_, AL_MAX_DISTANCE, refDist * 500);
         }
         this->tick(0); // update position, orientation and velocity
     }
