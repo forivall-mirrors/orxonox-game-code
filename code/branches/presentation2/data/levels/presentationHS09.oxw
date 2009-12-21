@@ -346,7 +346,7 @@ end
 <?lua
 elements = {"asteroid_ice.mesh", "asteroid_UV.mesh", "ast1.mesh", "ast2.mesh", "ast3.mesh", "ast4.mesh", "ast5.mesh", "ast6.mesh"}
 elements.length = function()
-	return table.getn(elements)
+    return table.getn(elements)
 end
 for i = 1, 100, 1
 do

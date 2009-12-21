@@ -19,26 +19,26 @@
 
   <AmbientSound ambientSource="Earth.ogg" looping="true" playOnLoad="true" />
   <AmbientSound ambientSource="Mars.ogg" looping="true">
-	<events>
-		<activity>
-			<DistanceTrigger position="400,0,0" distance=200 target="Camera">
-				<attached>
-					<ParticleSpawner position="0,0,0" source="Orxonox/fire3" lifetime=0 loop=0 autostart=1 />
-				</attached>
-			</DistanceTrigger>
-		</activity>
-	</events>
+    <events>
+        <activity>
+            <DistanceTrigger position="400,0,0" distance=200 target="Camera">
+                <attached>
+                    <ParticleSpawner position="0,0,0" source="Orxonox/fire3" lifetime=0 loop=0 autostart=1 />
+                </attached>
+            </DistanceTrigger>
+        </activity>
+    </events>
   </AmbientSound>
   <AmbientSound ambientSource="Jupiter.ogg" looping="true">
-	<events>
-		<activity>
-			<DistanceTrigger position="400,150,0" distance=200 target="Camera">
-				<attached>
-					<ParticleSpawner position="0,0,0" source="Orxonox/fire3" lifetime=0 loop=0 autostart=1 />
-				</attached>
-			</DistanceTrigger>
-		</activity>
-	</events>
+    <events>
+        <activity>
+            <DistanceTrigger position="400,150,0" distance=200 target="Camera">
+                <attached>
+                    <ParticleSpawner position="0,0,0" source="Orxonox/fire3" lifetime=0 loop=0 autostart=1 />
+                </attached>
+            </DistanceTrigger>
+        </activity>
+    </events>
   </AmbientSound>
 
 

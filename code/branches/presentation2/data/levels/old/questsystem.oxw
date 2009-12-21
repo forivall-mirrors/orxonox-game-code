@@ -5,9 +5,9 @@
 ?>
 
 <NotificationQueue
-	name  = "notification"
-	position = "1.0, 1.0"
-	targets = "all"
+ name  = "notification"
+ position = "1.0, 1.0"
+ targets = "all"
 />
 
 <Level
@@ -28,19 +28,19 @@
             </hints>
         </GlobalQuest>
 
-				<ParticleSpawner position="0,0,100" source="Orxonox/BigExplosion1part3" lifetime=2.0 loop=0 autostart=0>
-				  <events>
-				    <spawn>
-				      <EventTrigger delay=1>
-				        <events>
-				          <trigger>
-				            <SpawnPoint position="0,0,100" spawnclass=SpaceShip pawndesign=spaceshipassff />
-				          </trigger>
-				        </events>
-				      </EventTrigger>
-				    </spawn>
-				  </events>
-				</ParticleSpawner>
+        <ParticleSpawner position="0,0,100" source="Orxonox/BigExplosion1part3" lifetime=2.0 loop=0 autostart=0>
+            <events>
+                <spawn>
+                    <EventTrigger delay=1>
+                        <events>
+                            <trigger>
+                                <SpawnPoint position="0,0,100" spawnclass=SpaceShip pawndesign=spaceshipassff />
+                            </trigger>
+                        </events>
+                    </EventTrigger>
+                </spawn>
+            </events>
+        </ParticleSpawner>
 
         <QuestEffectBeacon position="0,0,100" times=-1>
             <effects>

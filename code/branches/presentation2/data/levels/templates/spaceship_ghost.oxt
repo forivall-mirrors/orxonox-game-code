@@ -73,7 +73,7 @@
     </EffectContainer>
     <EffectContainer condition="not idle">
       <Backlight mainstate=activity active=false scale=0.4 position="7.6, 3, 6" colour="1, 1, 1, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
-    	<Backlight mainstate=activity active=false scale=0.4 position="-7.6, 3, 6" colour="1, 1, 1, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <Backlight mainstate=activity active=false scale=0.4 position="-7.6, 3, 6" colour="1, 1, 1, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
     </EffectContainer>
     <EffectContainer condition="brake">
       <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.2, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
