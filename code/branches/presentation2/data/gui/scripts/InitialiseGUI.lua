@@ -174,9 +174,9 @@ end
 
 function keyESC()
     if nrOfActiveSheets == 1 and activeSheets[1] == "MainMenu" then
-        orxonox.CommandExecutor:execute("exit")
+        orxonox.execute("exit")
     elseif nrOfActiveSheets > 0 then
-        orxonox.CommandExecutor:execute("hideGUI "..activeSheets[nrOfActiveSheets])
+        orxonox.execute("hideGUI "..activeSheets[nrOfActiveSheets])
     else
         showGUI("InGameMenu")
     end

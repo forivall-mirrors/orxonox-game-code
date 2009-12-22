@@ -13,7 +13,7 @@ P.layoutString = "MainMenu.layout"
 
 -- events for MainMenu
 function P.QuickGameTestButton_clicked(e)
-    orxonox.CommandExecutor:execute("startGame")
+    orxonox.execute("startGame")
 end
 
 function P.SingleplayerButton_clicked(e)
@@ -33,7 +33,7 @@ function P.CreditsButton_clicked(e)
 end
 
 function P.ExitButton_clicked(e)
-    orxonox.CommandExecutor:execute("exit")
+    orxonox.execute("exit")
 end
 
 return P

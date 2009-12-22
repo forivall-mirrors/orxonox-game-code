@@ -46,7 +46,7 @@ function P.MouseControlsMouseNormalScrollbar_changed(e)
     if mousenormalscrollbar_active == false then
         scrollposition = mousenormalscrollbarwindow:getScrollPosition()
         mousenormalsensitivity = (math.pow(64,scrollposition)+6)/14
-        orxonox.CommandExecutor:execute("config KeyBinder mouseSensitivity_ " .. mousenormalsensitivity)
+        orxonox.config("KeyBinder", "mouseSensitivity_", mousenormalsensitivity)
     end
 end
 
@@ -57,7 +57,7 @@ end
 function P.MouseControlsMouseNormalScrollbar_ended(e)
     scrollposition = mousenormalscrollbarwindow:getScrollPosition()
     mousenormalsensitivity = (math.pow(64,scrollposition)+6)/14
-    orxonox.CommandExecutor:execute("config KeyBinder mouseSensitivity_ " .. mousenormalsensitivity)
+    orxonox.config("KeyBinder", "mouseSensitivity_", mousenormalsensitivity)
     mousenormalscrollbar_active = false
 end
 
@@ -65,7 +65,7 @@ function P.MouseControlsMouseDeriveScrollbar_changed(e)
     if mousederivescrollbar_active == false then
         scrollposition = mousederivescrollbarwindow:getScrollPosition()
         mousederivesensitivity = (math.pow(64,scrollposition)+6)/14
-        orxonox.CommandExecutor:execute("config KeyBinder mouseSensitivityDerived_ " .. mousederivesensitivity)
+        orxonox.config("KeyBinder", "mouseSensitivityDerived_", mousederivesensitivity)
     end
 end
 
@@ -76,7 +76,7 @@ end
 function P.MouseControlsMouseDeriveScrollbar_ended(e)
     scrollposition = mousederivescrollbarwindow:getScrollPosition()
     mousederivesensitivity = (math.pow(64,scrollposition)+6)/14
-    orxonox.CommandExecutor:execute("config KeyBinder mouseSensitivityDerived_ " .. mousederivesensitivity)
+    orxonox.config("KeyBinder", "mouseSensitivityDerived_", mousederivesensitivity)
     mousederivescrollbar_active = false
 end
 
@@ -85,7 +85,7 @@ function P.MouseNormalButton_clicked(e)
         block = true
         derivewindow:setSelected(false)
         block = false
-        orxonox.CommandExecutor:execute("config KeyBinder bDeriveMouseInput_ false")
+        orxonox.config("KeyBinder", "bDeriveMouseInput_", 0)
     end
 end
 
@@ -94,7 +94,7 @@ function P.MouseDeriveButton_clicked(e)
         block = true
         normalwindow:setSelected(false)
         block = false
-        orxonox.CommandExecutor:execute("config KeyBinder bDeriveMouseInput_ true")
+        orxonox.config("KeyBinder", "bDeriveMouseInput_", 1)
     end
 end
 

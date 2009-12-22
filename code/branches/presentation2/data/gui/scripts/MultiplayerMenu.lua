@@ -69,7 +69,7 @@ function P.MultiplayerStartButton_clicked(e)
     local choice = winMgr:getWindow("orxonox/MultiplayerLevelListbox"):getFirstSelectedItem()
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
-        orxonox.CommandExecutor:execute(multiplayerMode)
+        orxonox.execute(multiplayerMode)
         hideAllGUIs()
     end
 end

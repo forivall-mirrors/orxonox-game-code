@@ -66,3 +66,8 @@ require = function(moduleName, resourceGroup)
   end
   return _LOADED[moduleName]
 end
+
+-- Convenience function for console commands
+orxonox.execute = function(command)
+  orxonox.CommandExecutor:execute(command)
+end

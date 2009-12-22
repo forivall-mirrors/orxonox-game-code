@@ -41,7 +41,7 @@ function P.SingleplayerStartButton_clicked(e)
     choice = winMgr:getWindow("orxonox/SingleplayerLevelListbox"):getFirstSelectedItem()
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
-        orxonox.CommandExecutor:execute("startGame")
+        orxonox.execute("startGame")
         hideAllGUIs()
     end
 end

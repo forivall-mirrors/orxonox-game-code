@@ -56,7 +56,7 @@ function P.AudioMasterScrollbar_changed(e)
     end
     if masterscrollbar_active == false then
         mastervolume = masterscrollbarwindow:getScrollPosition()
-        orxonox.CommandExecutor:execute("config SoundManager soundVolume_ " .. mastervolume)
+        orxonox.config("SoundManager", "soundVolume_", mastervolume)
     end
 end
 
@@ -66,7 +66,7 @@ end
 
 function P.AudioMasterScrollbar_ended(e)
     mastervolume = masterscrollbarwindow:getScrollPosition()
-    orxonox.CommandExecutor:execute("config SoundManager soundVolume_ " .. mastervolume)
+    orxonox.config("SoundManager", "soundVolume_", mastervolume)
     masterscrollbar_active = false
 end
 
@@ -79,7 +79,7 @@ function P.AudioMusicScrollbar_changed(e)
     end
     if musicscrollbar_active == false then
         musicvolume = musicscrollbarwindow:getScrollPosition()
-        orxonox.CommandExecutor:execute("config SoundManager ambientVolume_ " .. musicvolume)
+        orxonox.config("SoundManager", "ambientVolume_", musicvolume)
     end
 end
 
@@ -90,7 +90,7 @@ end
 function P.AudioMusicScrollbar_ended(e)
     musicmutewindow:setSelected(false)
     musicvolume = musicscrollbarwindow:getScrollPosition()
-    orxonox.CommandExecutor:execute("config SoundManager ambientVolume_ " .. musicvolume)
+    orxonox.config("SoundManager", "ambientVolume_", musicvolume)
     musicscrollbar_active = false
 end
 
@@ -103,7 +103,7 @@ function P.AudioEffectsScrollbar_changed(e)
     end
     if effectsscrollbar_active == false then
         effectsvolume = effectsscrollbarwindow:getScrollPosition()
-        orxonox.CommandExecutor:execute("config SoundManager effectsVolume_ " .. effectsvolume)
+        orxonox.config("SoundManager", "effectsVolume_", effectsvolume)
     end
 end
 
@@ -114,7 +114,7 @@ end
 function P.AudioEffectsScrollbar_ended(e)
     effectsmutewindow:setSelected(false)
     effectsvolume = effectsscrollbarwindow:getScrollPosition()
-    orxonox.CommandExecutor:execute("config SoundManager effectsVolume_ " .. effectsvolume)
+    orxonox.config("SoundManager", "effectsVolume_", effectsvolume)
     effectsscrollbar_active = false
 end
 
@@ -165,9 +165,9 @@ end
 
 function P.AudioThemeListbox_changed(e)
     if listboxwindow:isItemSelected(1) then
-        orxonox.CommandExecutor:execute("setMood dnb")
+        orxonox.execute("setMood dnb")
     else
-        orxonox.CommandExecutor:execute("setMood default")
+        orxonox.execute("setMood default")
     end
 end
 

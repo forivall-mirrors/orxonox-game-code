@@ -38,7 +38,7 @@ end
 function P.callback(doExit)
     if doExit then
         hideGUI("InGameMenu")
-        orxonox.CommandExecutor:execute("exit")
+        orxonox.execute("exit")
     end
 end
 
