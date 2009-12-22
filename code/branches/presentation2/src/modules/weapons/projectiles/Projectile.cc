@@ -47,6 +47,7 @@ namespace orxonox
         this->setConfigValues();
         this->bDestroy_ = false;
         this->owner_ = 0;
+        this->damage_ = 15;
 
         // Get notification about collisions
 
@@ -71,7 +72,6 @@ namespace orxonox
 
     void Projectile::setConfigValues()
     {
-        SetConfigValue(damage_, 15.0).description("The damage caused by the projectile");
         SetConfigValue(lifetime_, 4.0).description("The time in seconds a projectile stays alive");
     }
 
