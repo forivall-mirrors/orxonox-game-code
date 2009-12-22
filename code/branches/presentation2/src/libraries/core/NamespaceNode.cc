@@ -49,7 +49,7 @@ namespace orxonox
     {
         std::set<NamespaceNode*> nodes;
 
-        if ((name.size() == 0) || (name == ""))
+        if (name.empty())
         {
             nodes.insert(this);
         }
@@ -153,10 +153,10 @@ namespace orxonox
                 if (i > 0)
                     output += ", ";
 
-                output += (*it).second->toString();
+                output += it->second->toString();
             }
 
-            output += ")";
+            output += ')';
         }
 
         return output;
@@ -164,10 +164,10 @@ namespace orxonox
 
     std::string NamespaceNode::toString(const std::string& indentation) const
     {
-        std::string output = (indentation + this->name_ + "\n");
+        std::string output = (indentation + this->name_ + '\n');
 
         for (std::map<std::string, NamespaceNode*>::const_iterator it = this->subnodes_.begin(); it != this->subnodes_.end(); ++it)
-            output += (*it).second->toString(indentation + "  ");
+            output += it->second->toString(indentation + "  ");
 
         return output;
     }

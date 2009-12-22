@@ -77,7 +77,7 @@ namespace orxonox
         catch (...)
         {
             COUT(1) << "Error: Unable to copy the following text to the clipboard:" << std::endl;
-            COUT(1) << "       \"" << text << "\"" << std::endl;
+            COUT(1) << "       \"" << text << '"' << std::endl;
         }
         return false;
     }
@@ -95,7 +95,7 @@ namespace orxonox
                 HANDLE hData = GetClipboardData(CF_TEXT);
                 if (hData == NULL)
                     return "";
-                std::string output = static_cast<char*>(GlobalLock(hData));
+                std::string output(static_cast<char*>(GlobalLock(hData)));
                 GlobalUnlock(hData);
                 CloseClipboard();
 
@@ -118,7 +118,7 @@ namespace orxonox
 
 namespace orxonox
 {
-    static std::string clipboard = ""; //!< Keeps the text of our internal clipboard
+    static std::string clipboard; //!< Keeps the text of our internal clipboard
 
     /**
         @brief Default implementation if there is no OS-specific implementation or no clipboard. Copies the text into an internal clipboard.

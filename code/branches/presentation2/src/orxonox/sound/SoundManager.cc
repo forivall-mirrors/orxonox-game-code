@@ -91,7 +91,7 @@ namespace orxonox
         while (true)
         {
             this->deviceNames_.push_back(devices);
-            COUT(4) << "\"" << devices << "\", ";
+            COUT(4) << '"' << devices << "\", ";
             devices += strlen(devices) + 1;
             if (*devices == '\0')
                 break;
@@ -99,7 +99,7 @@ namespace orxonox
         COUT(4) << std::endl;
 
         // Open the selected device
-        COUT(3) << "Sound: Opening device \"" << renderDevice << "\"" << std::endl;
+        COUT(3) << "Sound: Opening device \"" << renderDevice << '\' << std::endl;
         this->device_ = alcOpenDevice(renderDevice.c_str());
 */
         this->device_ = alcOpenDevice(NULL);

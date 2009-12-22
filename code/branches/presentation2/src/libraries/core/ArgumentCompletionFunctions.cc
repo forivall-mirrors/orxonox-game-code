@@ -71,7 +71,7 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_WINDOWS
                 else
                 {
-                    std::string dir = startdirectory.string();
+                    const std::string& dir = startdirectory.string();
                     if (dir.size() > 0 && dir[dir.size() - 1] == ':')
                         startdirectory = dir + '/';
                 }
@@ -129,7 +129,7 @@ namespace orxonox
                 std::map<std::string, ConfigValueContainer*>::const_iterator variable = identifier->second->getLowercaseConfigValueMap().find(getLowercase(varname));
                 if (variable != identifier->second->getLowercaseConfigValueMapEnd())
                 {
-                    std::string valuestring = variable->second->toString();
+                    const std::string& valuestring = variable->second->toString();
                     oldvalue.push_back(ArgumentCompletionListElement(valuestring, getLowercase(valuestring), "Old value: " + valuestring));
                 }
             }

@@ -95,7 +95,7 @@ namespace orxonox
             inline unsigned int getCursorPosition() const
                 { return this->inputBuffer_->getCursorPosition(); }
 
-            inline std::string getInput() const
+            inline const std::string& getInput() const
                 { return this->inputBuffer_->get(); }
 
             typedef std::list<std::pair<std::string, LineType> > LineList;
@@ -117,7 +117,7 @@ namespace orxonox
             Shell(const Shell& other);
 
             void addToHistory(const std::string& command);
-            std::string getFromHistory() const;
+            const std::string& getFromHistory() const;
             void clearInput();
             // OutputListener
             void outputChanged(int level);

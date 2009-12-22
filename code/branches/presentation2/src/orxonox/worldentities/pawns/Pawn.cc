@@ -198,7 +198,7 @@ namespace orxonox
     void Pawn::spawneffect()
     {
         // play spawn effect
-        if (this->spawnparticlesource_ != "")
+        if (!this->spawnparticlesource_.empty())
         {
             ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
             effect->setPosition(this->getPosition());

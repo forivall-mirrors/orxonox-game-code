@@ -70,7 +70,7 @@ namespace orxonox
         this->setConfigValues();
 
         // load the corresponding score board
-        if (GameMode::showsGraphics() && this->scoreboardTemplate_ != "")
+        if (GameMode::showsGraphics() && !this->scoreboardTemplate_.empty())
         {
             this->scoreboard_ = new OverlayGroup(this);
             this->scoreboard_->addTemplate(this->scoreboardTemplate_);

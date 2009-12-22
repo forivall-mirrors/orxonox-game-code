@@ -112,7 +112,7 @@ namespace orxonox
         this->ambientSource_ = source;
         if (GameMode::playsSound())
         {
-            std::string path = "ambient/" + MoodManager::getInstance().getMood() + "/" + source;
+            const std::string& path = "ambient/" + MoodManager::getInstance().getMood() + '/' + source;
             shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
             if (fileInfo != NULL)
                 this->setSource(path);

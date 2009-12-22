@@ -528,7 +528,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
 //   std::list<obj>::iterator itt;
 //   COUT(0) << "myvector contains:";
 //   for ( itt=dataVector_.begin() ; itt!=dataVector_.end(); itt++ )
-//     COUT(0) << " " << (*itt).objID;
+//     COUT(0) << ' ' << (*itt).objID;
 //   COUT(0) << endl;
   for(it=dataVector_.begin(); it!=dataVector_.end();){
     SynchronisableHeader oldobjectheader(origdata);

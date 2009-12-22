@@ -76,8 +76,8 @@ namespace orxonox
             std::string name1;
             std::string name2;
 
-            std::string score1 = "0";
-            std::string score2 = "0";
+            std::string score1("0");
+            std::string score2("0");
 
             if (player1)
             {
@@ -113,11 +113,11 @@ namespace orxonox
                     output2 = name2;
             }
 
-            std::string output = "PONG";
+            std::string output("PONG");
             if (this->bShowName_ || this->bShowScore_)
             {
                 if (this->bShowLeftPlayer_ && this->bShowRightPlayer_)
-                    output = output1 + ":" + output2;
+                    output = output1 + ':' + output2;
                 else if (this->bShowLeftPlayer_ || this->bShowRightPlayer_)
                     output = output1 + output2;
             }

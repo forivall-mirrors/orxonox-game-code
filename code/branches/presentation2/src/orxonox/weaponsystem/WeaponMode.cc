@@ -29,7 +29,6 @@
 
 #include "WeaponMode.h"
 
-#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "controllers/Controller.h"

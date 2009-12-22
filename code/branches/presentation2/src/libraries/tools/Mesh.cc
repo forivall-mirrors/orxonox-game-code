@@ -35,7 +35,6 @@
 #include <OgreSceneManager.h>
 
 #include "util/Convert.h"
-#include "util/StringUtils.h"
 #include "core/GameMode.h"
 
 namespace orxonox
@@ -83,7 +82,7 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "Error: Couln't load mesh \"" << meshsource << "\"" << std::endl;
+                COUT(1) << "Error: Couln't load mesh \"" << meshsource << '"' << std::endl;
                 this->entity_ = 0;
             }
         }

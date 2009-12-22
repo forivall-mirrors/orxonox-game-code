@@ -306,7 +306,7 @@ namespace orxonox
         // Restore cursor position and move it to the right
         this->cout_ << "\033[u";
         if (this->buffer_->getCursorPosition() > 0)
-            this->cout_ << "\033[" << this->buffer_->getCursorPosition() << "C";
+            this->cout_ << "\033[" << this->buffer_->getCursorPosition() << 'C';
     }
 
     void IOConsole::printStatusLines()

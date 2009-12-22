@@ -136,7 +136,7 @@ namespace orxonox
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     COUT(4) << "gamestates: ";
     for(it=gamestateMap_.begin(); it!=gamestateMap_.end(); it++){
-      COUT(4) << it->first << ":" << it->second << "|";
+      COUT(4) << it->first << ':' << it->second << '|';
     }
     COUT(4) << std::endl;
 

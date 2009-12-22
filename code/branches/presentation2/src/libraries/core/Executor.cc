@@ -72,8 +72,7 @@ namespace orxonox
         if (paramCount == 1)
         {
             // only one param: check if there are params given, otherwise try to use default values
-            std::string temp = getStripped(params);
-            if ((temp != "") && (temp.size() != 0))
+            if (!getStripped(params).empty())
             {
                 param[0] = params;
                 this->functor_->evaluateParam(0, param[0]);

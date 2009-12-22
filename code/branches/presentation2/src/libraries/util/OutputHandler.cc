@@ -76,7 +76,7 @@ namespace orxonox
             // Get path for a temporary file
 #ifdef ORXONOX_PLATFORM_WINDOWS
             char* pTempDir = getenv("TEMP");
-            this->logFilename_ = std::string(pTempDir) + "/" + logFileBaseName_g;
+            this->logFilename_ = std::string(pTempDir) + '/' + logFileBaseName_g;
 #else
             this->logFilename_ = std::string("/tmp/") + logFileBaseName_g;
 #endif

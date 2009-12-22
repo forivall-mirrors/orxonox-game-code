@@ -98,7 +98,7 @@ namespace orxonox
         if (!this->bString_)
             this->value_ = value;
         else
-            this->value_ = "\"" + addSlashes(stripEnclosingQuotes(value)) + "\"";
+            this->value_ = '"' + addSlashes(stripEnclosingQuotes(value)) + '"';
     }
 
     std::string ConfigFileEntryValue::getValue() const
@@ -111,10 +111,10 @@ namespace orxonox
 
     std::string ConfigFileEntryValue::getFileEntry() const
     {
-        if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
-            return (this->name_ + "=" + this->value_);
+        if (this->additionalComment_.empty())
+            return (this->name_ + '=' + this->value_);
         else
-            return (this->name_ + "=" + this->value_ + " " + this->additionalComment_);
+            return (this->name_ + '=' + this->value_ + " " + this->additionalComment_);
     }
 
 
@@ -123,10 +123,10 @@ namespace orxonox
     ////////////////////////////////
     std::string ConfigFileEntryVectorValue::getFileEntry() const
     {
-        if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
-            return (this->name_ + "[" + multi_cast<std::string>(this->index_) + "]" + "=" + this->value_);
+        if (this->additionalComment_.empty())
+            return (this->name_ + '[' + multi_cast<std::string>(this->index_) + ']' + '=' + this->value_);
         else
-            return (this->name_ + "[" + multi_cast<std::string>(this->index_) + "]=" + this->value_ + " " + this->additionalComment_);
+            return (this->name_ + '[' + multi_cast<std::string>(this->index_) + "]=" + this->value_ + ' ' + this->additionalComment_);
     }
 
 
@@ -170,10 +170,10 @@ namespace orxonox
 
     std::string ConfigFileSection::getFileEntry() const
     {
-        if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
-            return ("[" + this->name_ + "]");
+        if (this->additionalComment_.empty())
+            return ('[' + this->name_ + ']');
         else
-            return ("[" + this->name_ + "] " + this->additionalComment_);
+            return ('[' + this->name_ + "] " + this->additionalComment_);
     }
 
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, const std::string& fallback, bool bString)
@@ -250,7 +250,7 @@ namespace orxonox
                 std::string line;
                 std::getline(file, line);
 
-                std::string temp = getStripped(line);
+                const std::string& temp = getStripped(line);
                 if (!isEmpty(temp) && !isComment(temp))
                 {
                     size_t   pos1 = temp.find('[');
@@ -260,7 +260,7 @@ namespace orxonox
                     if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1 + 1)
                     {
                         // New section
-                        std::string comment = line.substr(pos2 + 1);
+                        const std::string& comment = line.substr(pos2 + 1);
                         if (isComment(comment))
                             newsection = new ConfigFileSection(line.substr(pos1 + 1, pos2 - pos1 - 1), comment);
                         else
@@ -292,7 +292,7 @@ namespace orxonox
                             {
                                 commentposition = getNextCommentPosition(line, commentposition + 1);
                             }
-                            std::string value = "", comment = "";
+                            std::string value, comment;
                             if (commentposition == std::string::npos)
                             {
                                 value = removeTrailingWhitespaces(line.substr(pos1 + 1));

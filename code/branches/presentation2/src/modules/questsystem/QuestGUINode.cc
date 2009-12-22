@@ -133,11 +133,11 @@ namespace orxonox {
     {
         if(this->window_ != NULL)
         {
-            buffer = (std::string)(this->window_->getName().c_str());
+            buffer = this->window_->getName().c_str();
         }
         else
         {
-            buffer = "";
+            buffer.erase();
         }
     }
 
@@ -186,7 +186,7 @@ namespace orxonox {
                 stream << this->details_->getName() << "/Status";
                 CEGUI::Window* statusWindow = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
                 window->addChildWindow(statusWindow);
-                std::string status = "";
+                std::string status;
                 if(quest->isActive(this->gui_->getPlayer()))
                 {
                     status = "This quest is active.";

@@ -60,11 +60,11 @@ namespace orxonox
         // keys
         for (unsigned int i = 0; i < KeyCode::numberOfKeys; i++)
         {
-            std::string keyname = KeyCode::ByString[i];
+            const std::string& keyname = KeyCode::ByString[i];
             if (!keyname.empty())
                 keys_[i].name_ = std::string("Key") + keyname;
             else
-                keys_[i].name_ = "";
+                keys_[i].name_.clear();
             keys_[i].paramCommandBuffer_ = &paramCommandBuffer_;
             keys_[i].groupName_ = "Keys";
         }
@@ -187,10 +187,10 @@ namespace orxonox
         this->joyStickAxes_.resize(joySticks_.size());
         this->joyStickButtons_.resize(joySticks_.size());
 
-        // reinitialise all joy stick binings (doesn't overwrite the old ones)
+        // reinitialise all joy stick bindings (doesn't overwrite the old ones)
         for (unsigned int iDev = 0; iDev < joySticks_.size(); iDev++)
         {
-            std::string deviceName = joySticks_[iDev]->getDeviceName();
+            const std::string& deviceName = joySticks_[iDev]->getDeviceName();
             // joy stick buttons
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
             {
@@ -220,21 +220,21 @@ namespace orxonox
         // Note: Don't include the dummy keys which don't actually exist in OIS but have a number
         for (unsigned int i = 0; i < KeyCode::numberOfKeys; i++)
             if (!keys_[i].name_.empty())
-                allButtons_[keys_[i].groupName_ + "." + keys_[i].name_] = keys_ + i;
+                allButtons_[keys_[i].groupName_ + '.' + keys_[i].name_] = keys_ + i;
         for (unsigned int i = 0; i < numberOfMouseButtons_; i++)
-            allButtons_[mouseButtons_[i].groupName_ + "." + mouseButtons_[i].name_] = mouseButtons_ + i;
+            allButtons_[mouseButtons_[i].groupName_ + '.' + mouseButtons_[i].name_] = mouseButtons_ + i;
         for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
         {
-            allButtons_[mouseAxes_[i].groupName_ + "." + mouseAxes_[i].name_] = mouseAxes_ + i;
+            allButtons_[mouseAxes_[i].groupName_ + '.' + mouseAxes_[i].name_] = mouseAxes_ + i;
             allHalfAxes_.push_back(mouseAxes_ + i);
         }
         for (unsigned int iDev = 0; iDev < joySticks_.size(); iDev++)
         {
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
-                allButtons_[(*joyStickButtons_[iDev])[i].groupName_ + "." + (*joyStickButtons_[iDev])[i].name_] = &((*joyStickButtons_[iDev])[i]);
+                allButtons_[(*joyStickButtons_[iDev])[i].groupName_ + '.' + (*joyStickButtons_[iDev])[i].name_] = &((*joyStickButtons_[iDev])[i]);
             for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
             {
-                allButtons_[(*joyStickAxes_[iDev])[i].groupName_ + "." + (*joyStickAxes_[iDev])[i].name_] = &((*joyStickAxes_[iDev])[i]);
+                allButtons_[(*joyStickAxes_[iDev])[i].groupName_ + '.' + (*joyStickAxes_[iDev])[i].name_] = &((*joyStickAxes_[iDev])[i]);
                 allHalfAxes_.push_back(&((*joyStickAxes_[iDev])[i]));
             }
         }
@@ -283,10 +283,10 @@ namespace orxonox
         }
     }
 
-     void KeyBinder::addButtonToCommand(std::string command, Button* button)
+     void KeyBinder::addButtonToCommand(const std::string& command, Button* button)
      {
         std::ostringstream stream;
-        stream << button->groupName_  << "." << button->name_;
+        stream << button->groupName_  << '.' << button->name_;
 
         std::vector<std::string>& oldKeynames = this->allCommands_[button->bindingString_];
         std::vector<std::string>::iterator it = std::find(oldKeynames.begin(), oldKeynames.end(), stream.str());
@@ -295,7 +295,7 @@ namespace orxonox
             oldKeynames.erase(it);
         }
 
-        if(command != "")
+        if (!command.empty())
         {
             std::vector<std::string>& keynames = this->allCommands_[command];
             if( std::find(keynames.begin(), keynames.end(), stream.str()) == keynames.end())
@@ -309,7 +309,7 @@ namespace orxonox
     @brief
         Return the first key name for a specific command
     */
-    std::string KeyBinder::getBinding(std::string commandName)
+    const std::string& KeyBinder::getBinding(const std::string& commandName)
     {
         if( this->allCommands_.find(commandName) != this->allCommands_.end())
         {
@@ -317,7 +317,7 @@ namespace orxonox
             return keynames.front();
         }
 
-        return "";
+        return BLANKSTRING;
     }
 
     /**
@@ -328,7 +328,7 @@ namespace orxonox
     @param index
         The index at which the key name is returned for.
     */
-    std::string KeyBinder::getBinding(std::string commandName, unsigned int index)
+    const std::string& KeyBinder::getBinding(const std::string& commandName, unsigned int index)
     {
         if( this->allCommands_.find(commandName) != this->allCommands_.end())
         {
@@ -338,10 +338,10 @@ namespace orxonox
                 return keynames[index];
             }
 
-            return "";
+            return BLANKSTRING;
         }
 
-        return "";
+        return BLANKSTRING;
     }
 
     /**
@@ -350,7 +350,7 @@ namespace orxonox
     @param commandName
         The command.
     */
-    unsigned int KeyBinder::getNumberOfBindings(std::string commandName)
+    unsigned int KeyBinder::getNumberOfBindings(const std::string& commandName)
     {
         if( this->allCommands_.find(commandName) != this->allCommands_.end())
         {

@@ -68,10 +68,9 @@ namespace orxonox
 
         if (this->isVisible())
         {
-            std::string str;
-            std::stringstream out;
+            std::ostringstream out;
             out << reinterpret_cast<long>(this);
-            str = out.str();
+            const std::string& str = out.str();
             COUT(1) << "GUIManager ptr: " << str << std::endl;
             GUIManager::getInstance().showGUIExtra(this->guiName_, str);
 

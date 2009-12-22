@@ -56,7 +56,7 @@ namespace orxonox
         // Open data stream
         DataStreamPtr dataStream = Resource::open(fileInfo);
 
-        std::string extension(this->filename_.substr(this->filename_.find_last_of('.') + 1));
+        const std::string& extension = this->filename_.substr(this->filename_.find_last_of('.') + 1);
         if (getLowercase(extension) == "ogg")
         {
             // Try ogg loader

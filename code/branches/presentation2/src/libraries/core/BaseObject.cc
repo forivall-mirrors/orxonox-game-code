@@ -35,7 +35,6 @@
 
 #include <tinyxml/tinyxml.h>
 
-#include "util/StringUtils.h"
 #include "CoreIncludes.h"
 #include "Event.h"
 #include "EventIncludes.h"
@@ -277,7 +276,7 @@ namespace orxonox
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(name);
         if (it != this->eventStates_.end())
         {
-            COUT(2) << "Warning: Overwriting EventState in class " << this->getIdentifier()->getName() << "." << std::endl;
+            COUT(2) << "Warning: Overwriting EventState in class " << this->getIdentifier()->getName() << '.' << std::endl;
             delete (it->second);
         }
 
@@ -347,7 +346,7 @@ namespace orxonox
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(event.statename_);
         if (it != this->eventStates_.end())
             it->second->process(event, this);
-        else if (event.statename_ != "")
+        else if (!event.statename_.empty())
             COUT(2) << "Warning: \"" << event.statename_ << "\" is not a valid state in object \"" << this->getName() << "\" of class " << this->getIdentifier()->getName() << "." << std::endl;
         else
             COUT(2) << "Warning: Event with invalid source sent to object \"" << this->getName() << "\" of class " << this->getIdentifier()->getName() << "." << std::endl;
@@ -385,7 +384,7 @@ namespace orxonox
     {
         this->mainStateFunctor_ = 0;
 
-        if (this->mainStateName_ != "")
+        if (!this->mainStateName_.empty())
         {
             this->registerEventStates();
 
@@ -436,7 +435,7 @@ namespace orxonox
             // iterate through all states and get the event sources
             for (std::list<std::string>::iterator it = eventnames.begin(); it != eventnames.end(); ++it)
             {
-                std::string statename = (*it);
+                const std::string& statename = (*it);
 
                 // if the event state is already known, continue with the next state
                 orxonox::EventState* eventstate = object->getEventState(statename);
@@ -446,8 +445,8 @@ namespace orxonox
                 XMLPortClassObjectContainer<BaseObject, BaseObject>* container = (XMLPortClassObjectContainer<BaseObject, BaseObject>*)(identifier->getXMLPortObjectContainer(statename));
                 if (!container)
                 {
-                    ExecutorMember<BaseObject>* setfunctor = createExecutor(createFunctor(&BaseObject::addEventSource), std::string( "BaseObject" ) + "::" + "addEventSource" + "(" + statename + ")");
-                    ExecutorMember<BaseObject>* getfunctor = createExecutor(createFunctor(&BaseObject::getEventSource), std::string( "BaseObject" ) + "::" + "getEventSource" + "(" + statename + ")");
+                    ExecutorMember<BaseObject>* setfunctor = createExecutor(createFunctor(&BaseObject::addEventSource), std::string( "BaseObject" ) + "::" + "addEventSource" + '(' + statename + ')');
+                    ExecutorMember<BaseObject>* getfunctor = createExecutor(createFunctor(&BaseObject::getEventSource), std::string( "BaseObject" ) + "::" + "getEventSource" + '(' + statename + ')');
                     setfunctor->setDefaultValue(1, statename);
                     getfunctor->setDefaultValue(1, statename);
 

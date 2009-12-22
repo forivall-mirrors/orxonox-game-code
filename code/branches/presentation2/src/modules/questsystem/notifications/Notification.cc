@@ -74,7 +74,7 @@ namespace orxonox
     */
     void Notification::initialize(void)
     {
-        this->message_ = "";
+        this->message_.clear();
         this->sender_ = NotificationManager::NONE;
         this->sent_ = false;
     }

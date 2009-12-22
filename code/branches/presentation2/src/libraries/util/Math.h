@@ -164,7 +164,7 @@ namespace orxonox
     template <> inline long double          zeroise<long double>()          { return 0; }
     template <> inline bool                 zeroise<bool>()                 { return 0; }
     template <> inline void*                zeroise<void*>()                { return 0; }
-    template <> inline std::string          zeroise<std::string>()          { return ""; }
+    template <> inline std::string          zeroise<std::string>()          { return std::string(); }
     template <> inline orxonox::Radian      zeroise<orxonox::Radian>()      { return orxonox::Radian(0.0f); }
     template <> inline orxonox::Degree      zeroise<orxonox::Degree>()      { return orxonox::Degree(0.0f); }
     template <> inline orxonox::Vector2     zeroise<orxonox::Vector2>()     { return orxonox::Vector2    (0, 0)      ; }

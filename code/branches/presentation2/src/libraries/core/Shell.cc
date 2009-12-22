@@ -225,13 +225,13 @@ namespace orxonox
         ModifyConfigValue(historyOffset_, set, (this->historyOffset_ + 1) % this->maxHistoryLength_);
     }
 
-    std::string Shell::getFromHistory() const
+    const std::string& Shell::getFromHistory() const
     {
         unsigned int index = mod(static_cast<int>(this->historyOffset_) - static_cast<int>(this->historyPosition_), this->maxHistoryLength_);
         if (index < this->commandHistory_.size() && this->historyPosition_ != 0)
             return this->commandHistory_[index];
         else
-            return "";
+            return BLANKSTRING;
     }
 
     void Shell::outputChanged(int lineType)
@@ -250,7 +250,7 @@ namespace orxonox
                 this->outputBuffer_.clear();
             newline = (!eof && !fail);
 
-            if (!newline && output == "")
+            if (!newline && output.empty())
                 break;
 
             if (this->bFinishedLastLine_)
@@ -399,7 +399,7 @@ namespace orxonox
         if (this->historyPosition_ == this->historyOffset_)
             return;
         unsigned int cursorPosition = this->getCursorPosition();
-        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning of the inputline until the cursor position
+        const std::string& input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning of the inputline until the cursor position
         for (unsigned int newPos = this->historyPosition_ + 1; newPos <= this->historyOffset_; newPos++)
         {
             if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) // search case insensitive
@@ -417,7 +417,7 @@ namespace orxonox
         if (this->historyPosition_ == 0)
             return;
         unsigned int cursorPosition = this->getCursorPosition();
-        std::string input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning
+        const std::string& input_str(this->getInput().substr(0, cursorPosition)); // only search for the expression from the beginning
         for (unsigned int newPos = this->historyPosition_ - 1; newPos > 0; newPos--)
         {
             if (getLowercase(this->commandHistory_[this->historyOffset_ - newPos]).find(getLowercase(input_str)) == 0) // sear$

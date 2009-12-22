@@ -71,7 +71,7 @@ namespace orxonox
 
         if (it == colourMap.end())
         {
-            std::string materialName = textureName + "_Material_" + multi_cast<std::string>(materialCount_s++);
+            const std::string& materialName = textureName + "_Material_" + multi_cast<std::string>(materialCount_s++);
             Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(materialName, "General"));
             material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
             Ogre::TextureUnitState* textureUnitState = material->getTechnique(0)->getPass(0)->createTextureUnitState();

@@ -133,7 +133,7 @@ namespace orxonox
 
     void OverlayText::setFont(const std::string& font)
     {
-        if (font != "")
+        if (!font.empty())
             this->text_->setFontName(font);
     }
     const std::string& OverlayText::getFont() const

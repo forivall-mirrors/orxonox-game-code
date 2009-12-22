@@ -75,7 +75,7 @@ namespace orxonox
         std::vector<BufferedParamCommand*>* paramCommandBuffer_;
 
     private:
-        void parseError(std::string message, bool serious);
+        void parseError(const std::string& message, bool serious);
     };
 
     inline bool Button::execute(KeybindMode::Value mode, float abs, float rel)

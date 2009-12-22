@@ -43,8 +43,8 @@
 namespace orxonox
 {
 
-    const std::string NotificationManager::ALL = "all";
-    const std::string NotificationManager::NONE = "none";
+    const std::string NotificationManager::ALL("all");
+    const std::string NotificationManager::NONE("none");
 
     ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
 

@@ -44,7 +44,6 @@
 
 #include "util/Convert.h"
 #include "util/Exception.h"
-#include "util/StringUtils.h"
 #include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -145,7 +144,7 @@ namespace orxonox
         OrxonoxOverlay::overlays_s.erase(this->getOldName());
 
         if (OrxonoxOverlay::overlays_s.find(this->getName()) != OrxonoxOverlay::overlays_s.end())
-            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << "\"" << std::endl;
+            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << '"' << std::endl;
 
         OrxonoxOverlay::overlays_s[this->getName()] = this;
     }
@@ -153,7 +152,7 @@ namespace orxonox
     //! Only sets the background material name if not ""
     void OrxonoxOverlay::setBackgroundMaterial(const std::string& material)
     {
-        if (this->background_ && material != "")
+        if (this->background_ && !material.empty())
             this->background_->setMaterialName(material);
     }
 

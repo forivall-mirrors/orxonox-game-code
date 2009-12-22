@@ -163,7 +163,7 @@ namespace orxonox
 
         if (this->isInitialized() && this->isLocalPlayer())
         {
-            if (this->getGametype() && this->getGametype()->getHUDTemplate() != "")
+            if (this->getGametype() && !this->getGametype()->getHUDTemplate().empty())
                 this->setGametypeHUDTemplate(this->getGametype()->getHUDTemplate());
             else
                 this->setGametypeHUDTemplate("");
@@ -178,7 +178,7 @@ namespace orxonox
             this->humanHud_ = 0;
         }
 
-        if (this->isLocalPlayer() && this->humanHudTemplate_ != "" && GameMode::showsGraphics())
+        if (this->isLocalPlayer() && !this->humanHudTemplate_.empty() && GameMode::showsGraphics())
         {
             this->humanHud_ = new OverlayGroup(this);
             this->humanHud_->addTemplate(this->humanHudTemplate_);
@@ -194,7 +194,7 @@ namespace orxonox
             this->gametypeHud_ = 0;
         }
 
-        if (this->isLocalPlayer() && this->gametypeHudTemplate_ != "")
+        if (this->isLocalPlayer() && !this->gametypeHudTemplate_.empty())
         {
             this->gametypeHud_ = new OverlayGroup(this);
             this->gametypeHud_->addTemplate(this->gametypeHudTemplate_);

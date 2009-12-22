@@ -46,8 +46,6 @@ namespace orxonox
     QuestItem::QuestItem(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestItem);
-
-        this->id_ = "";
     }
 
     /**

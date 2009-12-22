@@ -34,7 +34,6 @@ extern "C" {
 }
 
 #include "util/Convert.h"
-#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/LuaState.h"
@@ -200,7 +199,7 @@ namespace orxonox
     {
         if (effect == NULL)
             return;
-        effect->setLuaState(this->lua_, "f" + multi_cast<std::string>(this->effectContainers_.size()));
+        effect->setLuaState(this->lua_, 'f' + multi_cast<std::string>(this->effectContainers_.size()));
         this->effectContainers_.push_back(effect);
         if (this->getShip())
         {

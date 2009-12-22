@@ -71,7 +71,7 @@ bool DeleteObjects::fetchIDs(){
   for(unsigned int i=0; i<number; i++){
     unsigned int temp = Synchronisable::popDeletedObject();
     *reinterpret_cast<uint32_t*>(tdata) = temp;
-    COUT(4) << temp << " ";
+    COUT(4) << temp << ' ';
     tdata += sizeof(uint32_t);
   }
   COUT(4) << std::endl;

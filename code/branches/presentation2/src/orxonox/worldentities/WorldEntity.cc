@@ -813,7 +813,7 @@ HACK HACK HACK
     //! Sets the CollisionType by string (used for the XMLPort)
     void WorldEntity::setCollisionTypeStr(const std::string& typeStr)
     {
-        std::string typeStrLower = getLowercase(typeStr);
+        const std::string& typeStrLower = getLowercase(typeStr);
         CollisionType type;
         if (typeStrLower == "dynamic")
             type = Dynamic;

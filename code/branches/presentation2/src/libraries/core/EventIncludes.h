@@ -65,8 +65,8 @@
     XMLPortEventStateIntern(xmlportevent##function, classname, statename, xmlelement, mode)
 
 #define XMLPortEventStateIntern(name, classname, statename, xmlelement, mode) \
-    static orxonox::ExecutorMember<classname>* xmlsetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::addEventSource), std::string( #classname ) + "::" + "addEventSource" + "(" + statename + ")")->setDefaultValue(1, statename); \
-    static orxonox::ExecutorMember<classname>* xmlgetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::getEventSource), std::string( #classname ) + "::" + "getEventSource" + "(" + statename + ")")->setDefaultValue(1, statename); \
+    static orxonox::ExecutorMember<classname>* xmlsetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::addEventSource), std::string( #classname ) + "::" + "addEventSource" + '(' + statename + ')')->setDefaultValue(1, statename); \
+    static orxonox::ExecutorMember<classname>* xmlgetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::getEventSource), std::string( #classname ) + "::" + "getEventSource" + '(' + statename + ')')->setDefaultValue(1, statename); \
     XMLPortObjectGeneric(xmlport##name, classname, orxonox::BaseObject, statename, xmlsetfunctor##name, xmlgetfunctor##name, xmlelement, mode, false, true)
 
 

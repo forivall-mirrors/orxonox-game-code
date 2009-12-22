@@ -182,7 +182,7 @@ namespace orxonox
         else
         {
             COUT(1) << "An unforseen, never to happen, Error has occurred. This is impossible!" << std::endl;
-        return "";
+            return "";
         }
     }
 

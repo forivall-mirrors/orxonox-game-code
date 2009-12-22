@@ -35,7 +35,6 @@
 #include <OgrePanelOverlayElement.h>
 
 #include "util/Math.h"
-#include "util/StringUtils.h"
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -107,7 +106,7 @@ namespace orxonox
 
     void HUDNavigation::setFont(const std::string& font)
     {
-        if (this->navText_ && font != "")
+        if (this->navText_ && !font.empty())
             this->navText_->setFontName(font);
     }
 

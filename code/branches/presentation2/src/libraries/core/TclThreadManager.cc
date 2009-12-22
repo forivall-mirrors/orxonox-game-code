@@ -38,6 +38,7 @@
 #include "util/Clock.h"
 #include "util/Convert.h"
 #include "util/Exception.h"
+#include "util/StringUtils.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 #include "CoreIncludes.h"
@@ -251,7 +252,7 @@ namespace orxonox
 
     void TclThreadManager::initialize(TclInterpreterBundle* bundle)
     {
-        std::string id_string = getConvertedValue<unsigned int, std::string>(bundle->id_);
+        const std::string& id_string = getConvertedValue<unsigned int, std::string>(bundle->id_);
 
         // Initialize the new interpreter
         try
@@ -402,10 +403,10 @@ namespace orxonox
             if ((source_bundle->id_ == target_bundle->id_) || source_bundle->queriers_.is_in(target_bundle->id_))
             {
                 // This query would lead to a deadlock - return with an error
-                TclThreadManager::error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + " " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) \
+                TclThreadManager::error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + ' ' + getConvertedValue<unsigned int, std::string>(source_bundle->id_) \
                             + " -> " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
                             + "), couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
-                            + " from other interpreter with ID " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) + ".");
+                            + " from other interpreter with ID " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) + '.');
             }
             else
             {
@@ -523,11 +524,11 @@ namespace orxonox
     */
     std::string TclThreadManager::dumpList(const std::list<unsigned int>& list)
     {
-        std::string output = "";
+        std::string output;
         for (std::list<unsigned int>::const_iterator it = list.begin(); it != list.end(); ++it)
         {
             if (it != list.begin())
-                output += " ";
+                output += ' ';
 
             output += getConvertedValue<unsigned int, std::string>(*it);
         }
@@ -599,7 +600,7 @@ namespace orxonox
         @param bundle The interpreter bundle containing all necessary variables
         @param command the Command to execute
     */
-    void tclThread(TclInterpreterBundle* bundle, std::string command)
+    void tclThread(TclInterpreterBundle* bundle, const std::string& command)
     {
         TclThreadManager::debug("TclThread_execute: " + command);
 
@@ -612,7 +613,7 @@ namespace orxonox
         @brief The main function of a non-interactive source thread. Executes the file.
         @param file The name of the file that should be executed by the non-interactive interpreter.
     */
-    void sourceThread(std::string file)
+    void sourceThread(const std::string& file)
     {
         TclThreadManager::debug("TclThread_source: " + file);
 
@@ -650,9 +651,9 @@ namespace orxonox
         bundle->interpreter_ = new Tcl::interpreter(interp, true);
 
         // Initialize the non-interactive interpreter (like in @ref TclBind::createTclInterpreter but exception safe)
-        std::string libpath = TclBind::getTclLibraryPath();
-        if (libpath != "")
-            TclThreadManager::eval(bundle, "set tcl_library \"" + libpath + "\"", "source");
+        const std::string& libpath = TclBind::getTclLibraryPath();
+        if (!libpath.empty())
+            TclThreadManager::eval(bundle, "set tcl_library \"" + libpath + '"', "source");
         int cc = Tcl_Init(interp);
         TclThreadManager::eval(bundle, "source \"" + TclBind::getInstance().getTclDataPath() + "/init.tcl\"", "source");
 

@@ -317,7 +317,7 @@ namespace orxonox
         if (LINES > 0)
             this->print(this->shell_->getInput(), Shell::Input, 0);
 
-        if (this->shell_->getInput() == "" || this->shell_->getInput().size() == 0)
+        if (this->shell_->getInput().empty())
             this->inputWindowStart_ = 0;
     }
 

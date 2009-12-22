@@ -48,6 +48,7 @@
 #include <OgreTextureManager.h>
 #include <OgreViewport.h>
 
+#include "util/StringUtils.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"

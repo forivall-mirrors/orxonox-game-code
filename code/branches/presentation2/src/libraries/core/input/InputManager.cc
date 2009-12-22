@@ -296,7 +296,7 @@ namespace orxonox
         {
             if (device == NULL)
                 continue;
-            std::string className = device->getClassName();
+            const std::string& className = device->getClassName();
             try
             {
                 delete device;
@@ -578,7 +578,7 @@ namespace orxonox
 
     InputState* InputManager::createInputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority)
     {
-        if (name == "")
+        if (name.empty())
             return 0;
         if (statesByName_.find(name) == statesByName_.end())
         {

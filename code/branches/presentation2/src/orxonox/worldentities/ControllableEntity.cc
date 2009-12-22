@@ -332,7 +332,7 @@ namespace orxonox
         {
             this->camera_ = new Camera(this);
             this->camera_->requestFocus();
-            if (this->cameraPositionTemplate_ != "")
+            if (!this->cameraPositionTemplate_.empty())
                 this->addTemplate(this->cameraPositionTemplate_);
             if (this->cameraPositions_.size() > 0)
             {
@@ -348,7 +348,7 @@ namespace orxonox
 
         if (!this->hud_ && GameMode::showsGraphics())
         {
-            if (this->hudtemplate_ != "")
+            if (!this->hudtemplate_.empty())
             {
                 this->hud_ = new OverlayGroup(this);
                 this->hud_->addTemplate(this->hudtemplate_);

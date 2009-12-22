@@ -52,7 +52,7 @@ namespace orxonox
     {
         if (this->bProcessingEvent_)
         {
-            COUT(2) << "Warning: Detected Event loop in section \"" << event.statename_ << "\" of object \"" << object->getName() << "\" and fired by \"" << event.originator_->getName() << "\"" << std::endl;
+            COUT(2) << "Warning: Detected Event loop in section \"" << event.statename_ << "\" of object \"" << object->getName() << "\" and fired by \"" << event.originator_->getName() << '"' << std::endl;
             return;
         }
 

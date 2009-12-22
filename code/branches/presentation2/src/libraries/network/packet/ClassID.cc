@@ -47,7 +47,6 @@ namespace packet {
 
 ClassID::ClassID( ) : Packet(){
   Identifier *id;
-  std::string classname;
   unsigned int nrOfClasses=0;
   unsigned int packetSize=2*sizeof(uint32_t); //space for the packetID and for the nrofclasses
   uint32_t network_id;
@@ -60,7 +59,7 @@ ClassID::ClassID( ) : Packet(){
     id = (*it).second;
     if(id == NULL || !id->hasFactory())
       continue;
-    classname = id->getName();
+    const std::string& classname = id->getName();
     network_id = id->getNetworkID();
     // now push the network id and the classname to the stack
     tempQueue.push( std::pair<unsigned int, std::string>(network_id, classname) );

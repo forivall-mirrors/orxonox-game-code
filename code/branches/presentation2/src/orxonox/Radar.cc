@@ -84,7 +84,7 @@ namespace orxonox
             return 0;
     }
 
-    RadarViewable::Shape Radar::addObjectDescription(const std::string name)
+    RadarViewable::Shape Radar::addObjectDescription(const std::string& name)
     {
         std::map<std::string, RadarViewable::Shape>::iterator it = this->objectTypes_.find(name);
         if (it == this->objectTypes_.end())

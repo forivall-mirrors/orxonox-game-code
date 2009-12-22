@@ -34,7 +34,6 @@
 
 #include "util/Debug.h"
 #include "util/MultiType.h"
-#include "util/StringUtils.h"
 
 namespace orxonox
 {

@@ -207,7 +207,7 @@ namespace orxonox
                 // Add file to the memory archive
                 shared_array<char> data(new char[output.str().size()]);
                 // Debug optimisations
-                const std::string outputStr = output.str();
+                const std::string& outputStr = output.str();
                 char* rawData = data.get();
                 for (unsigned i = 0; i < outputStr.size(); ++i)
                     rawData[i] = outputStr[i];
@@ -237,12 +237,12 @@ namespace orxonox
     {
         COUT(3) << "Setting up Ogre..." << std::endl;
 
-        if (ogreConfigFile_ == "")
+        if (ogreConfigFile_.empty())
         {
             COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
             ModifyConfigValue(ogreConfigFile_, tset, "config.cfg");
         }
-        if (ogreLogFile_ == "")
+        if (ogreLogFile_.empty())
         {
             COUT(2) << "Warning: Ogre log file set to \"\". Defaulting to ogre.log" << std::endl;
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
@@ -284,8 +284,8 @@ namespace orxonox
     void GraphicsManager::loadOgrePlugins()
     {
         // just to make sure the next statement doesn't segfault
-        if (ogrePluginsDirectory_ == "")
-            ogrePluginsDirectory_ = ".";
+        if (ogrePluginsDirectory_.empty())
+            ogrePluginsDirectory_ = '.';
 
         boost::filesystem::path folder(ogrePluginsDirectory_);
         // Do some SubString magic to get the comma separated list of plugins

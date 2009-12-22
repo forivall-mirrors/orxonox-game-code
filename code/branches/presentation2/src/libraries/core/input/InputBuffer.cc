@@ -38,7 +38,6 @@ namespace orxonox
     {
         RegisterRootObject(InputBuffer);
 
-        this->buffer_ = "";
         this->cursor_ = 0;
         this->maxLength_ = 1024;
         this->allowedChars_ = "abcdefghijklmnopqrstuvwxyz \
@@ -61,7 +60,6 @@ namespace orxonox
 
         this->maxLength_ = 1024;
         this->allowedChars_ = allowedChars;
-        this->buffer_ = "";
         this->cursor_ = 0;
 
         this->lastKey_ = KeyCode::Unassigned;
@@ -137,7 +135,7 @@ namespace orxonox
 
     void InputBuffer::clear(bool update)
     {
-        this->buffer_ = "";
+        this->buffer_.clear();
         this->cursor_ = 0;
 
         if (update)
@@ -187,7 +185,7 @@ namespace orxonox
 
     bool InputBuffer::charIsAllowed(const char& input)
     {
-        if (this->allowedChars_ == "")
+        if (this->allowedChars_.empty())
             return true;
         else
             return (this->allowedChars_.find(input) != std::string::npos);

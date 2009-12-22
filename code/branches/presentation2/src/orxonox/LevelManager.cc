@@ -121,10 +121,10 @@ namespace orxonox
         return defaultLevelName_;
     }
 
-    std::string LevelManager::getAvailableLevelListItem(unsigned int index) const
+    const std::string& LevelManager::getAvailableLevelListItem(unsigned int index) const
     {
         if (index >= availableLevels_.size())
-            return std::string();
+            return BLANKSTRING;
         else
             return availableLevels_[index];
     }

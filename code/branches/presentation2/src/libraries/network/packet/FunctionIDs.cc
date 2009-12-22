@@ -46,7 +46,6 @@ namespace packet {
 
 
 FunctionIDs::FunctionIDs( ) : Packet(){
-  std::string functionname;
   unsigned int nrOfFunctions=0;
   unsigned int packetSize=2*sizeof(uint32_t); //space for the packetID and for the nroffunctions
   uint32_t networkID;
@@ -56,7 +55,7 @@ FunctionIDs::FunctionIDs( ) : Packet(){
   //calculate total needed size (for all strings and integers)
   ObjectList<NetworkFunctionBase>::iterator it;
   for(it = ObjectList<NetworkFunctionBase>::begin(); it; ++it){
-    functionname = it->getName();
+    const std::string& functionname = it->getName();
     networkID = it->getNetworkID();
     // now push the network id and the classname to the stack
     tempQueue.push( std::pair<unsigned int, std::string>(networkID, functionname) );

@@ -138,7 +138,7 @@ namespace orxonox
     if(timeSinceLastUpdate_>=NETWORK_PERIOD)
     {
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
-      //     COUT(3) << ".";
+      //     COUT(3) << '.';
       if ( isConnected() && isSynched_ )
       {
         COUT(4) << "popping partial gamestate: " << std::endl;

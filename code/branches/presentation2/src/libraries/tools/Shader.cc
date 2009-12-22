@@ -56,8 +56,6 @@ namespace orxonox
         this->bVisible_ = true;
         this->bLoadCompositor_ = GameMode::showsGraphics();
         this->bViewportInitialized_ = false;
-        this->compositor_ = "";
-        this->oldcompositor_ = "";
 
         if (this->bLoadCompositor_ && Ogre::Root::getSingletonPtr())
         {
@@ -110,12 +108,12 @@ namespace orxonox
         {
             Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
             assert(viewport);
-            if (this->oldcompositor_ != "")
+            if (!this->oldcompositor_.empty())
             {
                 Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->oldcompositor_);
                 this->compositorInstance_ = 0;
             }
-            if (this->compositor_ != "")
+            if (!this->compositor_.empty())
             {
                 this->compositorInstance_ = Ogre::CompositorManager::getSingleton().addCompositor(viewport, this->compositor_);
                 if (!this->compositorInstance_)
@@ -297,7 +295,7 @@ namespace orxonox
                     if (!pass_pointer)
                         continue;
 
-                    if (pass_pointer->getFragmentProgramName() != "")
+                    if (!pass_pointer->getFragmentProgramName().empty())
                     {
                         Ogre::GpuProgramParameters* parameter_pointer = pass_pointer->getFragmentProgramParameters().get();
                         if (!parameter_pointer)

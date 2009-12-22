@@ -815,12 +815,12 @@ namespace orxonox
         {
             // Calculate the prefix: + means included, - means excluded
             if (it->isIncluded())
-                out << "+";
+                out << '+';
             else
-                out << "-";
+                out << '-';
 
             // Put the name of the corresponding class on the stream
-            out << it->getClass()->getName() << " ";
+            out << it->getClass()->getName() << ' ';
         }
 
         return out;

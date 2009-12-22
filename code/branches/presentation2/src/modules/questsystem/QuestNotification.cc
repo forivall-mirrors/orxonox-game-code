@@ -31,7 +31,7 @@
 
 namespace orxonox {
 
-    const std::string QuestNotification::SENDER = "questsystem";
+    const std::string QuestNotification::SENDER("questsystem");
 
     QuestNotification::QuestNotification(BaseObject* creator) : Notification(creator)
     {

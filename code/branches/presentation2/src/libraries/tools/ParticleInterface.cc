@@ -77,7 +77,7 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "Error: Couln't load particle system \"" << templateName << "\"" << std::endl;
+                COUT(1) << "Error: Couln't load particle system \"" << templateName << '"' << std::endl;
                 this->particleSystem_ = 0;
             }
         }

@@ -46,7 +46,7 @@ namespace orxonox
     {
         Gametype::start();
 
-        std::string message = "The match has started!";
+        std::string message("The match has started!");
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
     }
@@ -55,7 +55,7 @@ namespace orxonox
     {
         Gametype::end();
 
-        std::string message = "The match has ended.";
+        std::string message("The match has ended.");
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
     }
@@ -64,7 +64,7 @@ namespace orxonox
     {
         Gametype::playerEntered(player);
 
-        std::string message = player->getName() + " entered the game";
+        const std::string& message = player->getName() + " entered the game";
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
     }
@@ -75,7 +75,7 @@ namespace orxonox
 
         if (valid_player)
         {
-            std::string message = player->getName() + " left the game";
+            const std::string& message = player->getName() + " left the game";
             COUT(0) << message << std::endl;
             Host::Broadcast(message);
         }
@@ -89,7 +89,7 @@ namespace orxonox
 
         if (valid_player)
         {
-            std::string message = player->getOldName() + " changed name to " + player->getName();
+            const std::string& message = player->getOldName() + " changed name to " + player->getName();
             COUT(0) << message << std::endl;
             Host::Broadcast(message);
         }
@@ -125,7 +125,7 @@ namespace orxonox
 
         if (player)
         {
-            std::string message = player->getName() + " scores!";
+            const std::string& message = player->getName() + " scores!";
             COUT(0) << message << std::endl;
             Host::Broadcast(message);
         }
