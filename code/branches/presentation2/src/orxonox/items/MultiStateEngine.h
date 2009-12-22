@@ -67,8 +67,8 @@ namespace orxonox
             const std::string& getDefEngSndBoost();
 
         private:
-            float steeringDirectionZ_;
             int state_;
+            int oldState_;
             LuaState* lua_;
             std::vector<EffectContainer*> effectContainers_;
             WorldSound* defEngineSndNormal_;
