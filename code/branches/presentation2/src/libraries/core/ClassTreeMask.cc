@@ -290,6 +290,8 @@ namespace orxonox
     */
     void ClassTreeMask::add(const Identifier* subclass, bool bInclude, bool overwrite, bool clean)
     {
+        if (!subclass)
+            return;
         // Check if the given subclass is a child of our root-class
         if (subclass->isA(this->root_->getClass()))
         {
@@ -319,6 +321,8 @@ namespace orxonox
     */
     void ClassTreeMask::add(ClassTreeMaskNode* node, const Identifier* subclass, bool bInclude, bool overwrite)
     {
+        if (!subclass)
+            return;
         // Check if the current node contains exactly the subclass we want to add
         if (subclass == node->getClass())
         {
@@ -394,6 +398,8 @@ namespace orxonox
     */
     void ClassTreeMask::addSingle(const Identifier* subclass, bool bInclude, bool clean)
     {
+        if (!subclass)
+            return;
         for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
             this->add(*it, this->isIncluded(*it), false, false);
 
@@ -427,6 +433,8 @@ namespace orxonox
     */
     bool ClassTreeMask::isIncluded(ClassTreeMaskNode* node, const Identifier* subclass) const
     {
+        if (!subclass)
+            return false;
         // Check if the searched subclass is of the same type as the class in the current node or a derivative
         if (subclass->isA(node->getClass()))
         {
