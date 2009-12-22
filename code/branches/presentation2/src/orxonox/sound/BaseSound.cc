@@ -180,9 +180,9 @@ namespace orxonox
         this->pitch_ = pitch;
         if (alIsSource(this->audioSource_))
         {
+            alSourcef(this->audioSource_, AL_PITCH, pitch);
             if (int error = alGetError())
                 COUT(2) << "Sound: Error setting pitch: " << SoundManager::getALErrorString(error) << std::endl;
-            alSourcef(this->audioSource_, AL_PITCH, pitch);
         }
     }
 
