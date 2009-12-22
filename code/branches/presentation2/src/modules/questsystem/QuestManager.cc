@@ -75,7 +75,7 @@ namespace orxonox
     {
         for(std::map<PlayerInfo*, QuestGUI*>::iterator it = this->questGUIs_.begin(); it != this->questGUIs_.end(); it++)
         {
-            (*it).second->destroy();
+            it->second->destroy();
         }
         this->questGUIs_.clear();
     }

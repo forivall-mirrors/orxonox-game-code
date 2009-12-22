@@ -53,7 +53,7 @@ namespace orxonox
   GamestateClient::~GamestateClient() {
       std::map<unsigned int, packet::Gamestate *>::iterator it;
       for ( it = this->gamestateMap_.begin(); it != this->gamestateMap_.end(); ++it )
-          delete (*it).second;
+          delete it->second;
       if( this->tempGamestate_ )
           delete this->tempGamestate_;
   }
@@ -125,7 +125,7 @@ namespace orxonox
       if(it->first>=last_diff_)
         break;
       // otherwise delete that stuff
-      delete (*it).second;
+      delete it->second;
       temp=it++;
       gamestateMap_.erase(temp);
     }

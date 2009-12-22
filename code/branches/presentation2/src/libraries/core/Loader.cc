@@ -79,7 +79,7 @@ namespace orxonox
             return;
         for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
         {
-            if ((*it).first == file)
+            if (it->first == file)
             {
                 Loader::files_s.erase(it);
                 break;
@@ -91,7 +91,7 @@ namespace orxonox
     {
         bool success = true;
         for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
-            if (!Loader::load((*it).first, (*it).second * mask))
+            if (!Loader::load(it->first, it->second * mask))
                 success = false;
 
         return success;
@@ -290,7 +290,7 @@ namespace orxonox
             do
             {
                 if (it != luaTags.end())
-                    end = (*(it++)).first;
+                    end = (it++)->first;
                 else
                     end = std::string::npos;
 

@@ -53,12 +53,12 @@ namespace orxonox
     void strip(std::string* str)
     {
         size_t pos;
-        while ((pos = (*str).find(' ')) < (*str).length())
-            (*str).erase(pos, 1);
-        while ((pos = (*str).find('\t')) < (*str).length())
-            (*str).erase(pos, 1);
-        while ((pos = (*str).find('\n')) < (*str).length())
-            (*str).erase(pos, 1);
+        while ((pos = str->find(' ')) < str->length())
+            str->erase(pos, 1);
+        while ((pos = str->find('\t')) < str->length())
+            str->erase(pos, 1);
+        while ((pos = str->find('\n')) < str->length())
+            str->erase(pos, 1);
     }
 
     /**

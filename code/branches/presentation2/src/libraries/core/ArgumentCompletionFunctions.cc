@@ -83,9 +83,9 @@ namespace orxonox
                 while (file != end)
                 {
                     if (boost::filesystem::is_directory(*file))
-                        dirlist.push_back(ArgumentCompletionListElement((*file).string() + '/', getLowercase((*file).string()) + '/', (*file).BOOST_LEAF_FUNCTION() + '/'));
+                        dirlist.push_back(ArgumentCompletionListElement(file->string() + '/', getLowercase(file->string()) + '/', file->BOOST_LEAF_FUNCTION() + '/'));
                     else
-                        filelist.push_back(ArgumentCompletionListElement((*file).string(), getLowercase((*file).string()), (*file).BOOST_LEAF_FUNCTION()));
+                        filelist.push_back(ArgumentCompletionListElement(file->string(), getLowercase(file->string()), file->BOOST_LEAF_FUNCTION()));
                     ++file;
                 }
             }

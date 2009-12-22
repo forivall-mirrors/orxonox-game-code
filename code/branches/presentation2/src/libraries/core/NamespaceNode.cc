@@ -42,7 +42,7 @@ namespace orxonox
     NamespaceNode::~NamespaceNode()
     {
         for (std::map<std::string, NamespaceNode*>::iterator it = this->subnodes_.begin(); it != this->subnodes_.end(); )
-            delete ((*(it++)).second);
+            delete (it++)->second;
     }
 
     std::set<NamespaceNode*> NamespaceNode::getNodeRelative(const std::string& name)
@@ -88,14 +88,14 @@ namespace orxonox
                 if (it == this->subnodes_.end())
                     it = this->subnodes_.insert(this->subnodes_.begin(), std::pair<std::string, NamespaceNode*>(firstPart, new NamespaceNode(firstPart, this)));
 
-                if ((*it).second->isHidden())
+                if (it->second->isHidden())
                 {
                     COUT(2) << "Warning: Subnamespace '" << firstPart << "' in namespace '" << this->name_ << "' is hidden and can't be accessed." << std::endl;
                     nodes.insert(this);
                 }
                 else
                 {
-                    nodes = (*it).second->getNodeRelative(secondPart);
+                    nodes = it->second->getNodeRelative(secondPart);
                 }
             }
             else
@@ -104,9 +104,9 @@ namespace orxonox
 
                 for (std::map<std::string, NamespaceNode*>::iterator it = this->subnodes_.begin(); it != this->subnodes_.end(); ++it)
                 {
-                    if ((*it).first.find(firstPart) == ((*it).first.size() - firstPart.size()))
+                    if (it->first.find(firstPart) == (it->first.size() - firstPart.size()))
                     {
-                        std::set<NamespaceNode*> temp2 = (*it).second->getNodeRelative(secondPart);
+                        std::set<NamespaceNode*> temp2 = it->second->getNodeRelative(secondPart);
                         nodes.insert(temp2.begin(), temp2.end());
                         bFoundMatchingNamespace = true;
                     }
@@ -132,7 +132,7 @@ namespace orxonox
         else
         {
             for (std::map<std::string, NamespaceNode*>::const_iterator it = this->subnodes_.begin(); it != this->subnodes_.end(); ++it)
-                if ((*it).second->includes(ns))
+                if (it->second->includes(ns))
                     return true;
         }
 

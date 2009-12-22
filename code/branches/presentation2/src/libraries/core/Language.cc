@@ -317,7 +317,7 @@ namespace orxonox
         // Iterate through the list an write the lines into the file
         for (std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.begin(); it != this->languageEntries_.end(); ++it)
         {
-            file << (*it).second->getLabel() << '=' << (*it).second->getDefault() << std::endl;
+            file << it->second->getLabel() << '=' << it->second->getDefault() << std::endl;
         }
 
         file.close();

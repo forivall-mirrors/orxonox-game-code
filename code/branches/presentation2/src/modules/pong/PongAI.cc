@@ -61,7 +61,7 @@ namespace orxonox
     PongAI::~PongAI()
     {
         for (std::list<std::pair<Timer*, char> >::iterator it = this->reactionTimers_.begin(); it != this->reactionTimers_.end(); ++it)
-            (*it).first->destroy();
+            it->first->destroy();
     }
 
     void PongAI::setConfigValues()

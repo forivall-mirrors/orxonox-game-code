@@ -290,7 +290,7 @@ namespace orxonox
     {
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(name);
         if (it != this->eventStates_.end())
-            return ((*it).second);
+            return (it->second);
         else
             return 0;
     }

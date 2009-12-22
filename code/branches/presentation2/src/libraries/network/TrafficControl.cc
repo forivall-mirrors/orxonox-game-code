@@ -151,18 +151,18 @@ namespace orxonox {
 
     for(itvec = objectListTemp[gamestateID].begin(); itvec != objectListTemp[gamestateID].end(); itvec++)
       {
-      if(objectListPerm.find((*itvec).objID) != objectListPerm.end()) // check whether the obj already exists in our lists
+      if(objectListPerm.find(itvec->objID) != objectListPerm.end()) // check whether the obj already exists in our lists
       {
-        objectListPerm[(*itvec).objID].objCurGS = gamestateID;
-        objectListPerm[(*itvec).objID].objValueSched = 0; //set scheduling value back
+        objectListPerm[itvec->objID].objCurGS = gamestateID;
+        objectListPerm[itvec->objID].objValueSched = 0; //set scheduling value back
       }
       else
       {
         assert(0);
-        objectListPerm[(*itvec).objID].objCurGS = gamestateID;
-        objectListPerm[(*itvec).objID].objID = (*itvec).objID;
-        objectListPerm[(*itvec).objID].objCreatorID = (*itvec).objCreatorID;
-        objectListPerm[(*itvec).objID].objSize = (*itvec).objSize;
+        objectListPerm[itvec->objID].objCurGS = gamestateID;
+        objectListPerm[itvec->objID].objID = itvec->objID;
+        objectListPerm[itvec->objID].objCreatorID = itvec->objCreatorID;
+        objectListPerm[itvec->objID].objSize = itvec->objSize;
       }
       }
        // remove temporary list (with acked objects) from the map
@@ -204,15 +204,15 @@ namespace orxonox {
     assert(!list.empty());
     for(itvec = list.begin(); itvec != list.end();)
     {
-      assert( (*itvec).objSize < 1000);
-      if ( ( size + (*itvec).objSize ) < targetsize )
+      assert( itvec->objSize < 1000);
+      if ( ( size + itvec->objSize ) < targetsize )
       {
-        size += (*itvec).objSize;//objSize is given in bytes
+        size += itvec->objSize;//objSize is given in bytes
         ++itvec;
       }
       else
       {
-        clientListPerm_[currentClientID][(*itvec).objID].objValueSched += SCHED_PRIORITY_OFFSET; // NOTE: SCHED_PRIORITY_OFFSET is negative
+        clientListPerm_[currentClientID][itvec->objID].objValueSched += SCHED_PRIORITY_OFFSET; // NOTE: SCHED_PRIORITY_OFFSET is negative
         list.erase(itvec, list.end());
         break;
       }
@@ -240,11 +240,11 @@ namespace orxonox {
 
       for( itvec=list.begin(); itvec != list.end(); itvec++)
       {
-        if ( objectListPerm.find( (*itvec).objID) != objectListPerm.end() )
+        if ( objectListPerm.find( itvec->objID) != objectListPerm.end() )
         {
         // we already have the object in our map
         //obj bleibt in liste und permanente prio wird berechnet
-          objectListPerm[(*itvec).objID].objDiffGS = currentGamestateID - objectListPerm[(*itvec).objID].objCurGS;
+          objectListPerm[itvec->objID].objDiffGS = currentGamestateID - objectListPerm[itvec->objID].objCurGS;
           continue;//check next objId
         }
         else
@@ -288,19 +288,19 @@ namespace orxonox {
     std::list<obj>::iterator it;
     COUT(0) << "=========== Objectlist ===========" << endl;
     for( it=list.begin(); it!=list.end(); it++)
-      COUT(0) << "ObjectID: " << (*it).objID << " creatorID: " << (*it).objCreatorID << " Priority: " << clientListPerm_[clientID][(*it).objID].objValuePerm + clientListPerm_[clientID][(*it).objID].objValueSched << " size: " << (*it).objSize << endl;
+      COUT(0) << "ObjectID: " << it->objID << " creatorID: " << it->objCreatorID << " Priority: " << clientListPerm_[clientID][it->objID].objValuePerm + clientListPerm_[clientID][it->objID].objValueSched << " size: " << it->objSize << endl;
   }
 
   void TrafficControl::fixCreatorDependencies(std::list<obj>::iterator it1, std::list<obj>& list, unsigned int clientID)
   {
-    if ( (*it1).objCreatorID == OBJECTID_UNKNOWN )
+    if ( it1->objCreatorID == OBJECTID_UNKNOWN )
       return;
-    if( clientListPerm_[clientID][(*it1).objCreatorID].objCurGS != GAMESTATEID_INITIAL )
+    if( clientListPerm_[clientID][it1->objCreatorID].objCurGS != GAMESTATEID_INITIAL )
       return;
     std::list<obj>::iterator it2, it3=it1;
     for( it2 = ++it3; it2 != list.end(); it2++ )
     {
-      if( (*it2).objID == (*it1).objCreatorID )
+      if( it2->objID == it1->objCreatorID )
       {
         it3 = list.insert(it1, *it2); //insert creator before it1
         list.erase(it2);

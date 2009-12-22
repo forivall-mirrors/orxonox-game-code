@@ -121,15 +121,15 @@ namespace orxonox
             if (this->colours_.size() > 0)
             {
                 ColourValue colour1(0, 0, 0, 1);
-                ColourValue colour2 = (*this->colours_.rbegin()).second;
+                ColourValue colour2 = this->colours_.rbegin()->second;
                 float value1(0);
-                float value2 = (*this->colours_.rbegin()).first;
+                float value2 = this->colours_.rbegin()->first;
                 for (std::map<float, ColourValue>::reverse_iterator it = this->colours_.rbegin(); it != this->colours_.rend(); ++it)
                 {
                     colour1 = colour2;
                     value1 = value2;
-                    colour2 = (*it).second;
-                    value2 = (*it).first;
+                    colour2 = it->second;
+                    value2 = it->first;
 
                     if (value2 < this->value_)
                         break;

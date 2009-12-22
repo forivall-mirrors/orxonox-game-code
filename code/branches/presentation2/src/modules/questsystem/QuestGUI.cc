@@ -115,7 +115,7 @@ namespace orxonox {
         std::map<std::string, Quest*> quests = QuestManager::getInstance().getQuests();
         for(std::map<std::string, Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
         {
-            Quest* quest = (*it).second;
+            Quest* quest = it->second;
             if(quest->getParentQuest() == NULL && !quest->isInactive(this->player_)) //!< If the Quest isn't inactive and a root Quest (meaning it has no parent.), create a Node.
             {
                 index = createNode(this->root_, quest, depth, index);
@@ -135,7 +135,7 @@ namespace orxonox {
         //! Clear all nodes.
         for(std::map<CEGUI::Window*, QuestGUINode*>::iterator it = this->nodes_.begin(); it != this->nodes_.end(); it++)
         {
-            QuestGUINode* node = (*it).second;
+            QuestGUINode* node = it->second;
             if(node == NULL)
             {
                 COUT(1) << "Node is NULL!";
@@ -208,7 +208,7 @@ namespace orxonox {
     {
         for(std::map<PlayerInfo*, QuestGUI*>::iterator it = QuestManager::getInstance().questGUIs_.begin(); it != QuestManager::getInstance().questGUIs_.end(); it++)
         {
-            QuestGUI* gui = (*it).second;
+            QuestGUI* gui = it->second;
             std::map<CEGUI::Window*, QuestGUINode*>::iterator node = gui->nodes_.find(window);
             if(node != gui->nodes_.end()) return node->second;
         }

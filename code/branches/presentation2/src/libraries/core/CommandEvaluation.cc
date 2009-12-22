@@ -280,7 +280,7 @@ namespace orxonox
             if (it != list.begin())
                 output += ' ';
 
-            output += (*it).getDisplay();
+            output += it->getDisplay();
         }
         return output;
     }

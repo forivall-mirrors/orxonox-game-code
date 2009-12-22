@@ -56,7 +56,7 @@ ClassID::ClassID( ) : Packet(){
   //calculate total needed size (for all strings and integers)
   std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMapBegin();
   for(;it != Identifier::getStringIdentifierMapEnd();++it){
-    id = (*it).second;
+    id = it->second;
     if(id == NULL || !id->hasFactory())
       continue;
     const std::string& classname = id->getName();

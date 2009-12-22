@@ -849,12 +849,12 @@ namespace orxonox
 
         // If there is a first subclass, move the object-iterator to the first object of this class. Else go to the end
         if (this->subclassIterator_ != this->subclasses_.end())
-            this->objectIterator_ = (*this->subclassIterator_).first->getObjects()->begin();
+            this->objectIterator_ = this->subclassIterator_->first->getObjects()->begin();
         else
             this->objectIterator_ = ObjectList<BaseObject>::end();
 
         // Check if the iterator points on a valid object. If not, go to the next object by calling ++
-        if (!this->objectIterator_ || ((*this->subclassIterator_).second && !this->objectIterator_->isExactlyA((*this->subclassIterator_).first)))
+        if (!this->objectIterator_ || (this->subclassIterator_->second && !this->objectIterator_->isExactlyA(this->subclassIterator_->first)))
             this->operator++();
 
         return (*this);
@@ -881,13 +881,13 @@ namespace orxonox
 
                     // Check if there really is a next class. If yes, move the object-iterator to the first object
                     if (this->subclassIterator_ != this->subclasses_.end())
-                        this->objectIterator_ = (*this->subclassIterator_).first->getObjects()->begin();
+                        this->objectIterator_ = this->subclassIterator_->first->getObjects()->begin();
                     else
                         return (*this);
                 }
 
             // Repeat this until we reach a valid object or the end
-            } while ((*this->subclassIterator_).second && !this->objectIterator_->isExactlyA((*this->subclassIterator_).first));
+            } while (this->subclassIterator_->second && !this->objectIterator_->isExactlyA(this->subclassIterator_->first));
         }
         return (*this);
     }

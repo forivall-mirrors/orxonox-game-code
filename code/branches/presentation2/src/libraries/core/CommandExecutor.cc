@@ -81,7 +81,7 @@ namespace orxonox
     {
         std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_.find(name);
         if (it != CommandExecutor::getInstance().consoleCommandShortcuts_.end())
-            return (*it).second;
+            return it->second;
         else
             return 0;
     }
@@ -95,7 +95,7 @@ namespace orxonox
     {
         std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_LC_.find(name);
         if (it != CommandExecutor::getInstance().consoleCommandShortcuts_LC_.end())
-            return (*it).second;
+            return it->second;
         else
             return 0;
     }
@@ -385,8 +385,8 @@ namespace orxonox
                 if (CommandExecutor::getEvaluation().listOfPossibleArguments_.size() == 1)
                 {
                     // There is exactly one possible argument
-                    CommandExecutor::getEvaluation().argument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).getString();
-                    CommandExecutor::getEvaluation().possibleArgument_ = (*CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()).getString();
+                    CommandExecutor::getEvaluation().argument_ = CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()->getString();
+                    CommandExecutor::getEvaluation().possibleArgument_ = CommandExecutor::getEvaluation().listOfPossibleArguments_.begin()->getString();
                     CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                     return;
                 }
@@ -470,7 +470,7 @@ namespace orxonox
         for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseStringIdentifierMapBegin(); it != Identifier::getLowercaseStringIdentifierMapEnd(); ++it)
             if (it->second->hasConsoleCommands())
                 if (it->first.find(lowercase) == 0 || fragment.empty())
-                    CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.push_back(std::pair<const std::string*, const std::string*>(&(*it).first, &(*it).second->getName()));
+                    CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.push_back(std::pair<const std::string*, const std::string*>(&it->first, &it->second->getName()));
     }
 
     void CommandExecutor::createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier)
@@ -481,13 +481,13 @@ namespace orxonox
         {
             for (std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMapBegin(); it != CommandExecutor::getLowercaseConsoleCommandShortcutMapEnd(); ++it)
                 if (it->first.find(lowercase) == 0 || fragment.empty())
-                    CommandExecutor::getEvaluation().listOfPossibleFunctions_.push_back(std::pair<const std::string*, const std::string*>(&(*it).first, &(*it).second->getName()));
+                    CommandExecutor::getEvaluation().listOfPossibleFunctions_.push_back(std::pair<const std::string*, const std::string*>(&it->first, &it->second->getName()));
         }
         else
         {
             for (std::map<std::string, ConsoleCommand*>::const_iterator it = identifier->getLowercaseConsoleCommandMapBegin(); it != identifier->getLowercaseConsoleCommandMapEnd(); ++it)
                 if (it->first.find(lowercase) == 0 || fragment.empty())
-                    CommandExecutor::getEvaluation().listOfPossibleFunctions_.push_back(std::pair<const std::string*, const std::string*>(&(*it).first, &(*it).second->getName()));
+                    CommandExecutor::getEvaluation().listOfPossibleFunctions_.push_back(std::pair<const std::string*, const std::string*>(&it->first, &it->second->getName()));
         }
     }
 
@@ -516,8 +516,8 @@ namespace orxonox
     {
         const std::string& lowercase = getLowercase(name);
         std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseStringIdentifierMap().find(lowercase);
-        if ((it != Identifier::getLowercaseStringIdentifierMapEnd()) && (*it).second->hasConsoleCommands())
-            return (*it).second;
+        if ((it != Identifier::getLowercaseStringIdentifierMapEnd()) && it->second->hasConsoleCommands())
+            return it->second;
 
         return 0;
     }
@@ -529,13 +529,13 @@ namespace orxonox
         {
             std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMap().find(lowercase);
             if (it != CommandExecutor::getLowercaseConsoleCommandShortcutMapEnd())
-                return (*it).second;
+                return it->second;
         }
         else
         {
             std::map<std::string, ConsoleCommand*>::const_iterator it = identifier->getLowercaseConsoleCommandMap().find(lowercase);
             if (it != identifier->getLowercaseConsoleCommandMapEnd())
-                return (*it).second;
+                return it->second;
         }
         return 0;
     }
@@ -598,15 +598,15 @@ namespace orxonox
                 char temp = 0;
                 for (std::list<std::pair<const std::string*, const std::string*> >::const_iterator it = list.begin(); it != list.end(); ++it)
                 {
-                    if ((*(*it).first).size() > i)
+                    if (it->first->size() > i)
                     {
                         if (it == list.begin())
                         {
-                            temp = (*(*it).first)[i];
+                            temp = (*it->first)[i];
                         }
                         else
                         {
-                            if (temp != (*(*it).first)[i])
+                            if (temp != (*it->first)[i])
                                 return output;
                         }
                     }

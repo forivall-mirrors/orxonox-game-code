@@ -533,14 +533,14 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   for(it=dataVector_.begin(); it!=dataVector_.end();){
     SynchronisableHeader oldobjectheader(origdata);
     SynchronisableHeader newobjectheader(newdata);
-    if ( (*it).objSize == 0 )
+    if ( it->objSize == 0 )
     {
       ++it;
       continue;
     }
     objectsize = oldobjectheader.getDataSize();
     objectOffset=SynchronisableHeader::getSize(); //skip the size and the availableData variables in the objectheader
-    if ( (*it).objID == oldobjectheader.getObjectID() ){
+    if ( it->objID == oldobjectheader.getObjectID() ){
       memcpy(newdata, origdata, objectsize);
       assert(newobjectheader.isDataAvailable()==true);
       ++it;

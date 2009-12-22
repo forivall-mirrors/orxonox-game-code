@@ -81,7 +81,7 @@ namespace orxonox
         }
         else
         {
-            return (*it).second;
+            return it->second;
         }
     }
 }

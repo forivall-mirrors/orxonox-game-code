@@ -310,7 +310,7 @@ namespace orxonox
     {
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
         if (it != overlays_s.end())
-            (*it).second->scale(Vector2(scale, scale));
+            it->second->scale(Vector2(scale, scale));
     }
 
     /**
@@ -325,7 +325,7 @@ namespace orxonox
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
         if (it != overlays_s.end())
         {
-            OrxonoxOverlay* overlay= (*it).second;
+            OrxonoxOverlay* overlay= it->second;
             if(overlay->isVisible())
                 overlay->hide();
             else
@@ -344,7 +344,7 @@ namespace orxonox
     {
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
         if (it != overlays_s.end())
-            (*it).second->scroll(scroll);
+            it->second->scroll(scroll);
     }
 
     /**
@@ -358,7 +358,7 @@ namespace orxonox
     {
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
         if (it != overlays_s.end())
-            (*it).second->rotate(angle);
+            it->second->rotate(angle);
     }
 
     void OrxonoxOverlay::setOverlayGroup(OverlayGroup* group)

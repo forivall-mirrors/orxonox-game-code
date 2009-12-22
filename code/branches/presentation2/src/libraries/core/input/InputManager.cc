@@ -274,7 +274,7 @@ namespace orxonox
 
         // destroy all user InputStates
         while (statesByName_.size() > 0)
-            this->destroyStateInternal((*statesByName_.rbegin()).second);
+            this->destroyStateInternal(statesByName_.rbegin()->second);
 
         if (!(internalState_ & Bad))
             this->destroyDevices();
