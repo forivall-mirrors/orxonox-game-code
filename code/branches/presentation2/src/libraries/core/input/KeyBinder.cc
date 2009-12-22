@@ -127,7 +127,7 @@ namespace orxonox
             .description("Threshold for analog axes until which the state is 0.");
         SetConfigValue(bFilterAnalogNoise_, false)
             .description("Specifies whether to filter small analog values like joy stick fluctuations.");
-        SetConfigValue(mouseSensitivity_, 1.0f)
+        SetConfigValue(mouseSensitivity_, 3.0f)
             .description("Mouse sensitivity.");
         this->totalMouseSensitivity_ = this->mouseSensitivity_ / this->mouseClippingSize_;
         SetConfigValue(bDeriveMouseInput_, false)
