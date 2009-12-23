@@ -33,6 +33,8 @@
 */
 
 #include "GametypeMessageListener.h"
+#include "Pickupable.h"
+#include "PickupCarrier.h"
 #include "PlayerTrigger.h"
 #include "RadarListener.h"
 #include "Rewardable.h"
@@ -50,7 +52,37 @@ namespace orxonox
     {
         RegisterRootObject(GametypeMessageListener);
     }
+    
+    //----------------------------
+    // Pickupable
+    //----------------------------
+    Pickupable::Pickupable()
+    {
+        RegisterRootObject(Pickupable);
 
+        this->used_ = false;
+        this->owner_ = NULL;
+    }
+    
+    //----------------------------
+    // PickupCarrier
+    //----------------------------
+    PickupCarrier::PickupCarrier()
+    {
+        RegisterRootObject(PickupCarrier);
+    }
+
+    //----------------------------
+    // PlayerTrigger
+    //----------------------------
+    PlayerTrigger::PlayerTrigger()
+    {
+        RegisterRootObject(PlayerTrigger);
+
+        this->player_ = NULL;
+        this->isForPlayer_ = true;
+    }
+    
     //----------------------------
     // RadarListener
     //----------------------------
@@ -81,16 +113,5 @@ namespace orxonox
     NotificationListener::NotificationListener()
     {
         RegisterRootObject(NotificationListener);
-    }
-
-    //----------------------------
-    // PlayerTrigger
-    //----------------------------
-    PlayerTrigger::PlayerTrigger()
-    {
-        RegisterRootObject(PlayerTrigger);
-
-        this->player_ = NULL;
-        this->isForPlayer_ = true;
     }
 }

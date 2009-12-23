@@ -49,10 +49,9 @@ namespace orxonox
     @brief PickupCollection for organising items.
     @author Daniel 'Huty' Haggenmueller
     */
-    class _OrxonoxExport PickupCollection
+    class _OrxonoxExport PickupCollection : public orxonox::OrxonoxClass
     {
         public:
-            //TODO: Should probably be derived from OrxonoxClass???
             PickupCollection();
 
             bool add(BaseItem* item);       //!< Add an item to the collection.
@@ -64,29 +63,9 @@ namespace orxonox
 
             void remove(BaseItem* item, bool removeAllOfType = false);                  //!< Remove an item from the collection.
 
-            //TODO: What's up with that?
+            //TODO: Hmm... probably should stay...
             void useItem();                                                             //!< Use the first usable item.
             void useItem(UsableItem* item);                                             //!< Use a usable item.
-
-            //TODO: This really shouldn't be here. It's nbot the Collections business to know about stuff like that.
-            void addAdditiveModifier(ModifierType::Value type, float value);             //!< Add an additive modifier.
-            void addMultiplicativeModifier(ModifierType::Value type, float value);       //!< Add a multiplicative modifier.
-
-            float getAdditiveModifier(ModifierType::Value type);                         //!< Get total additive modifier.
-            float getMultiplicativeModifier(ModifierType::Value type);                   //!< Get total multiplicative modifier.
-
-            void removeAdditiveModifier(ModifierType::Value type, float value);          //!< Remove an additive modifier.
-            void removeMultiplicativeModifier(ModifierType::Value type, float value);    //!< Remove a multiplicative modifier.
-
-            float processModifiers(ModifierType::Value type, float inputValue, bool addBeforeMultiplication = false);        //!< Apply the modifiers to a float.
-            Vector3 processModifiers(ModifierType::Value type, Vector3 inputValue, bool addBeforeMultiplication = false);    //!< Apply the modifiers to a Vector3.
-
-            /**
-                @brief Get the map of contained items.
-                @return The map of items.
-            */
-            std::multimap<std::string, BaseItem*> getItems() const
-                { return this->items_; }
 
             /**
                 @brief Get the owner of the PickupCollection.
@@ -109,14 +88,11 @@ namespace orxonox
             std::deque<EquipmentItem*> getEquipmentItems();   //!< Get a list of equipment-type items.
             std::deque<PassiveItem*> getPassiveItems();     //!< Get a list of passive items.
             std::deque<UsableItem*> getUsableItems();      //!< Get a list of usable items.
+
         private:
-            Pawn* owner_;           //!< The owner of the PickupCollection.
+            Pawn* owner_; //!< The owner of the PickupCollection.
             UsableItem* currentUsable_;
-
-            bool bBlockRemovals_;   //!< Whether to block direct removals through remove().
-
-            std::multimap<ModifierType::Value, float> additiveModifiers_;        //!< Contains additive modifiers (indexed by ModifierType).
-            std::multimap<ModifierType::Value, float> multiplicativeModifiers_;  //!< Contains multiplicative modifiers (indexed by ModifierType).
+            int slots_;
 
             std::multimap<std::string, BaseItem*> items_;                       //!< Map of items in the collection (indexed by pickupIdentifier of the items).
     };

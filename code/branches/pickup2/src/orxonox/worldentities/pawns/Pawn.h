@@ -34,7 +34,8 @@
 #include <string>
 #include "interfaces/RadarViewable.h"
 #include "worldentities/ControllableEntity.h"
-#include "pickup/PickupCollection.h"
+//TODO: Remove.
+//#include "pickup/PickupCollection.h"
 
 namespace orxonox
 {
@@ -108,11 +109,12 @@ namespace orxonox
             inline unsigned int getExplosionChunks() const
                 { return this->numexplosionchunks_; }
 
-            virtual void dropItems();
-            inline PickupCollection& getPickups()
-                { return this->pickups_; }
-            virtual void useItem()
-                { this->pickups_.useItem(); }
+//TODO: Remove.
+//             virtual void dropItems();
+//             inline PickupCollection& getPickups()
+//                 { return this->pickups_; }
+//             virtual void useItem()
+//                 { this->pickups_.useItem(); }
 
             virtual void startLocalHumanControl();
 
@@ -127,7 +129,8 @@ namespace orxonox
 
             bool bAlive_;
 
-            PickupCollection pickups_;
+            //TODO: Remove.
+            //PickupCollection pickups_;
 
             float health_;
             float maxHealth_;

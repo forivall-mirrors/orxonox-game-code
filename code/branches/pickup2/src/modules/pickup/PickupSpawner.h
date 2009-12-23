@@ -34,12 +34,13 @@
 #ifndef _PickupSpawner_H__
 #define _PickupSpawner_H__
 
-#include "OrxonoxPrereqs.h"
+#include "pickup/PickupPrereqs.h"
 
 #include <string>
 #include "tools/Timer.h"
 #include "tools/interfaces/Tickable.h"
 #include "worldentities/StaticEntity.h"
+#include "interfaces/Pickupable.h"
 
 namespace orxonox
 {
@@ -50,32 +51,14 @@ namespace orxonox
     class _OrxonoxExport PickupSpawner : public StaticEntity, public Tickable
     {
         public:
-            //TODO: Add limit of items spawned here. Also possibility to spawn collections?
+            //TODO: Add limit of items spawned here.
             PickupSpawner(BaseObject* creator);
-            PickupSpawner(BaseObject* creator, BaseItem* item, float triggerDistance, float respawnTime, int maxSpawnedItems);
+            PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems);
             virtual ~PickupSpawner();
 
             virtual void changedActivity();                                 //!< Invoked when activity has changed (set visibilty).
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< Method for creating a PickupSpawner through XML.
             virtual void tick(float dt);
-
-            void trigger(Pawn* pawn);                                       //!< Method called when a Pawn is close enough.
-            void respawnTimerCallback();                                    //!< Method called when the timer runs out.
-
-            /**
-            @brief Get the template name for the item to spawn.
-            @return Returns the name of the template of the item to spawn.
-            */
-            inline const std::string& getItemTemplateName() const
-                { return this->itemTemplateName_; }
-            void setItemTemplateName(const std::string& name);              //!< Set the template name of the item to spawn.
-
-            /**
-                @brief Get the template for the item to spawn.
-                @return Returns the template of the item to spawn.
-            */
-            inline Template* getItemTemplate() const
-                { return this->itemTemplate_; }
 
             /**
                 @brief Get the distance in which to trigger.
@@ -109,13 +92,21 @@ namespace orxonox
             void setMaxSpawnedItems(int items);
 
         protected:
-            virtual BaseItem* getItem(void);
+            virtual Pickupable* getPickup(void);
+            
+            void addPickupable(Pickupable* pickup);
+            Pickupable* getPickupable(void);
+            
+            void decrementSpawnsRemaining(void);
 
         private:
             void initialize(void);
+            
+            void trigger(Pawn* pawn);                                       //!< Method called when a Pawn is close enough.
+            void respawnTimerCallback();                                    //!< Method called when the timer runs out.
 
-            std::string itemTemplateName_;          //!< Template name of the item to spawn.
-            Template* itemTemplate_;                //!< Template of the item to spawn.
+            
+            Pickupable* pickup_;
 
             int maxSpawnedItems_;                   //!< Maximum number of items spawned by this PickupSpawner.
             int spawnsRemaining_;                   //!< Number of items that can be spawned by this PickupSpawner until it selfdestructs.
