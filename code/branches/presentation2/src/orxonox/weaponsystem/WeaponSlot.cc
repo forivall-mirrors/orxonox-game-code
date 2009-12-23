@@ -44,6 +44,8 @@ namespace orxonox
 
         this->weaponSystem_ = 0;
         this->weapon_ = 0;
+
+        this->setSyncMode(0x0);
     }
 
     WeaponSlot::~WeaponSlot()

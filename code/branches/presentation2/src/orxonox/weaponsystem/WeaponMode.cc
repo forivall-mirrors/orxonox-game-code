@@ -113,8 +113,8 @@ namespace orxonox
         (*reloadTime) = this->reloadTime_;
         if( !this->bSoundAttached_ && GameMode::isMaster() )
         {
-            assert(this->getWeapon() && this->getWeapon()->getWeaponSlot());
-            this->getWeapon()->getWeaponSlot()->attach(this->defSndWpnFire_);
+            assert(this->getWeapon());
+            this->getWeapon()->attach(this->defSndWpnFire_);
             this->bSoundAttached_ = true;
         }
 
