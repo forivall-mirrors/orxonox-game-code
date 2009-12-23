@@ -70,15 +70,15 @@ namespace orxonox // tolua_export
         LuaState();
         ~LuaState();
 
-        void doFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
+        void doFile(const std::string& filename); // tolua_export
         void doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
 
-        void includeFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
+        void includeFile(const std::string& filename); // tolua_export
         void includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
 
         void luaPrint(const std::string& str); // tolua_export
         void luaLog(unsigned int level, const std::string& message); // tolua_export
-        bool fileExists(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
+        bool fileExists(const std::string& filename); // tolua_export
 
         const std::stringstream& getOutput() const { return output_; }
         void clearOutput() { output_.clear(); } // tolua_export
@@ -97,7 +97,7 @@ namespace orxonox // tolua_export
         static void closeToluaInterfaces(lua_State* state);
 
     private:
-        shared_ptr<ResourceInfo> getFileInfo(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths);
+        shared_ptr<ResourceInfo> getFileInfo(const std::string& filename);
 
 #if LUA_VERSION_NUM != 501
         struct LoadS

@@ -29,12 +29,12 @@
 #include "LevelManager.h"
 
 #include <map>
-#include <OgreResourceGroupManager.h>
 
 #include "core/CommandLineParser.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
+#include "core/Resource.h"
 #include "core/ScopedSingletonManager.h"
 #include "PlayerManager.h"
 #include "Level.h"
@@ -131,11 +131,7 @@ namespace orxonox
 
     void LevelManager::compileAvailableLevelList()
     {
-        availableLevels_.clear();
-
-        availableLevels_ = *Ogre::ResourceGroupManager::getSingleton().findResourceNames(
-            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "*.oxw");
-
+        availableLevels_ = *Resource::findResourceNames("*.oxw");
         for (std::vector<std::string>::iterator it = availableLevels_.begin(); it != availableLevels_.end();)
             if (it->find("old/") == 0)
                 it = availableLevels_.erase(it);

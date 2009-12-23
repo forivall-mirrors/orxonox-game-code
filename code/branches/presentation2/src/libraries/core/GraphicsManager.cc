@@ -99,17 +99,17 @@ namespace orxonox
         this->loadOgreRoot();
 
         // At first, add the root paths of the data directories as resource locations
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getDataPathString(), "FileSystem", "dataRoot", false);
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getDataPathString(), "FileSystem");
         // Load resources
-        resources_.reset(new XMLFile("resources.oxr", "dataRoot"));
+        resources_.reset(new XMLFile("DefaultResources.oxr"));
         resources_->setLuaSupport(false);
         Loader::open(resources_.get());
 
         // Only for development runs
         if (PathConfig::isDevelopmentRun())
         {
-            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem", "externalDataRoot", false);
-            extResources_.reset(new XMLFile("resources.oxr", "externalDataRoot"));
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem");
+            extResources_.reset(new XMLFile("resources.oxr"));
             extResources_->setLuaSupport(false);
             Loader::open(extResources_.get());
         }
@@ -394,22 +394,33 @@ namespace orxonox
         Ogre::LogMessageLevel lml, bool maskDebug, const std::string& logName)
     {
         int orxonoxLevel;
-        switch (lml)
+        std::string introduction;
+        // Do not show caught OGRE exceptions in front
+        if (message.find("OGRE_EXCEPTION"))
         {
-        case Ogre::LML_TRIVIAL:
-            orxonoxLevel = this->ogreLogLevelTrivial_;
-            break;
-        case Ogre::LML_NORMAL:
-            orxonoxLevel = this->ogreLogLevelNormal_;
-            break;
-        case Ogre::LML_CRITICAL:
-            orxonoxLevel = this->ogreLogLevelCritical_;
-            break;
-        default:
-            orxonoxLevel = 0;
+            orxonoxLevel = OutputLevel::Debug;
+            introduction = "Ogre, caught exception: ";
+        }
+        else
+        {
+            switch (lml)
+            {
+            case Ogre::LML_TRIVIAL:
+                orxonoxLevel = this->ogreLogLevelTrivial_;
+                break;
+            case Ogre::LML_NORMAL:
+                orxonoxLevel = this->ogreLogLevelNormal_;
+                break;
+            case Ogre::LML_CRITICAL:
+                orxonoxLevel = this->ogreLogLevelCritical_;
+                break;
+            default:
+                orxonoxLevel = 0;
+            }
+            introduction = "Ogre: ";
         }
         OutputHandler::getOutStream(orxonoxLevel)
-            << "Ogre: " << message << std::endl;
+            << introduction << message << std::endl;
     }
 
     size_t GraphicsManager::getRenderWindowHandle()

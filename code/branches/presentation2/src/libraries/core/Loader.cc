@@ -127,18 +127,18 @@ namespace orxonox
             // Use the LuaState to replace the XML tags (calls our function)
             scoped_ptr<LuaState> luaState(new LuaState());
             luaState->setIncludeParser(&Loader::replaceLuaTags);
-            luaState->includeFile(file->getFilename(), file->getResourceGroup(), false);
+            luaState->includeFile(file->getFilename());
             xmlInput = luaState->getOutput().str();
         }
         else
         {
-            shared_ptr<ResourceInfo> info = Resource::getInfo(file->getFilename(), file->getResourceGroup());
+            shared_ptr<ResourceInfo> info = Resource::getInfo(file->getFilename());
             if (info == NULL)
             {
                 COUT(1) << "Error: Could not find XML file '" << file->getFilename() << "'." << std::endl;
                 return false;
             }
-            xmlInput = Resource::open(file->getFilename(), file->getResourceGroup())->getAsString();
+            xmlInput = Resource::open(file->getFilename())->getAsString();
         }
 
         try
