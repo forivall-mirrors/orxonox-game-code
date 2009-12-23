@@ -33,8 +33,9 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/BaseObject.h"
-#include "sound/BaseSound.h"
 #include "network/synchronisable/Synchronisable.h"
+#include "BaseSound.h"
+#include "MoodManager.h"
 
 namespace orxonox
 {
@@ -43,7 +44,7 @@ namespace orxonox
      * It server as main interface to the OpenAL library.
      *
      */
-    class _OrxonoxExport AmbientSound : public BaseSound, public BaseObject, public Synchronisable
+    class _OrxonoxExport AmbientSound : public BaseSound, public BaseObject, public Synchronisable, public MoodListener
     {
         friend class SoundManager;
 
@@ -73,6 +74,7 @@ namespace orxonox
         void preDestroy();
         void registerVariables();
         float getRealVolume();
+        void moodChanged(const std::string& mood);
         inline void ambientSourceChanged()
             { this->setAmbientSource(this->ambientSource_); }
         inline void playOnLoadChanged()

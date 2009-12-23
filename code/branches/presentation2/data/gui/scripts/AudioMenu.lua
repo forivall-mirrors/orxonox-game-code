@@ -45,6 +45,11 @@ function P:init()
         item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
         CEGUI.toListbox(listboxwindow):addItem(item)
     end
+    if orxonox.getConfig("MoodManager", "mood_") == "dnb" then
+        listboxwindow:setItemSelectState(1,true)
+    else
+        listboxwindow:setItemSelectState(0,true)
+    end
 end
 
 function P.AudioMasterScrollbar_changed(e)
@@ -165,9 +170,9 @@ end
 
 function P.AudioThemeListbox_changed(e)
     if listboxwindow:isItemSelected(1) then
-        orxonox.execute("setMood dnb")
+        orxonox.config("MoodManager", "mood_", "dnb")
     else
-        orxonox.execute("setMood default")
+        orxonox.config("MoodManager", "mood_", "default")
     end
 end
 

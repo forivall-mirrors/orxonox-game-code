@@ -34,7 +34,6 @@
 #include "core/Resource.h"
 #include "core/XMLPort.h"
 #include "SoundManager.h"
-#include "MoodManager.h"
 
 namespace orxonox
 {
@@ -110,14 +109,19 @@ namespace orxonox
     void AmbientSound::setAmbientSource(const std::string& source)
     {
         this->ambientSource_ = source;
+        this->moodChanged(this->getMood());
+    }
+
+    void AmbientSound::moodChanged(const std::string& mood)
+    {
         if (GameMode::playsSound())
         {
-            const std::string& path = "ambient/" + MoodManager::getInstance().getMood() + '/' + source;
+            const std::string& path = "ambient/" + MoodManager::getInstance().getMood() + '/' + this->ambientSource_;
             shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
             if (fileInfo != NULL)
                 this->setSource(path);
             else
-                COUT(3) << "Sound: " << source << ": Not a valid name! Ambient sound will not change." << std::endl;
+                COUT(3) << "Sound: " << this->ambientSource_ << ": Not a valid name! Ambient sound will not change." << std::endl;
         }
     }
 

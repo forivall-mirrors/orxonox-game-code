@@ -110,8 +110,8 @@
                 </Window>
             </Window>
             <Window Type="TaharezLook/StaticText" Name="orxonox/AudioInfo" >
-                <Property Name="Text" >Theme changes require
-a game restart.</Property>
+                <Property Name="Text" >Theme changes might take
+up to a minute.</Property>
                 <Property Name="TextColours" Value="FF4444FF" />
                 <Property Name="InheritsAlpha" Value="False" />
                 <Property Name="HorzFormatting" Value="HorzCentred" />

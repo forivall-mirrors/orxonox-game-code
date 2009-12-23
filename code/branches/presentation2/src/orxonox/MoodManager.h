@@ -31,41 +31,51 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <cassert>
-#include <list>
 #include <string>
-
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
-// tolua_begin
 namespace orxonox
 {
-    class _OrxonoxExport MoodManager
-    // tolua_end
-        : public Singleton<MoodManager>, public OrxonoxClass
-    { // tolua_export
+    class _OrxonoxExport MoodListener : virtual public OrxonoxClass
+    {
+        friend class MoodManager;
+
+        protected:
+            MoodListener();
+            virtual ~MoodListener() {}
+
+            const std::string& getMood() const { return mood_s; }
+
+        private:
+            virtual void moodChanged(const std::string& mood) = 0;
+
+            static void changedMood(const std::string& mood);
+            static std::string mood_s;
+    };
+
+    class _OrxonoxExport MoodManager : public Singleton<MoodManager>, public OrxonoxClass
+    {
             friend class Singleton<MoodManager>;
         public:
             MoodManager();
-            ~MoodManager();
 
             void setConfigValues();
 
             void setMood(const std::string& mood);
-            const std::string& getMood();
+            inline const std::string& getMood() const { return this->mood_; }
 
-            static MoodManager& getInstance() { return Singleton<MoodManager>::getInstance(); } // tolua_export
+            static MoodManager& getInstance() { return Singleton<MoodManager>::getInstance(); }
 
         private:
+            ~MoodManager() {}
             void checkMoodValidity();
 
             // config values
             std::string mood_;
-            std::string moodOld_;
 
             static MoodManager* singletonPtr_s;
-    }; // tolua_export
-} // tolua_export
+    };
+}
 
 #endif /* _MoodManager_H__ */

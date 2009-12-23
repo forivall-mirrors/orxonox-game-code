@@ -28,7 +28,6 @@
 
 #include "MoodManager.h"
 
-#include "core/ConsoleCommand.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ScopedSingletonManager.h"
@@ -41,11 +40,6 @@ namespace orxonox
     {
         RegisterRootObject(MoodManager);
         this->setConfigValues();
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&MoodManager::setMood, this), "setMood"));
-    }
-
-    MoodManager::~MoodManager()
-    {
     }
 
     void MoodManager::setConfigValues()
@@ -64,16 +58,32 @@ namespace orxonox
         ModifyConfigValue(mood_, set, mood);
     }
 
-    //! Gets the current mood
-    const std::string& MoodManager::getMood()
-    {
-        return mood_;
-    }
-
     void MoodManager::checkMoodValidity()
     {
-        if (mood_ != "default" && mood_ != "dnb") // Insert new moods here; TODO: make this generic
+        // TODO: Insert new moods here & make this generic
+        if (mood_ != "default" && mood_ != "dnb")
+        {
             ResetConfigValue(mood_);
-        COUT(4) << "MoodManager: Mood set to " << mood_ << std::endl;
+        }
+        else
+        {
+            COUT(3) << "Mood changed to " << mood_ << std::endl;
+            MoodListener::changedMood(mood_);
+        }
+    }
+
+
+    std::string MoodListener::mood_s;
+
+    MoodListener::MoodListener()
+    {
+        RegisterRootObject(MoodListener);
+    }
+
+    /*static*/ void MoodListener::changedMood(const std::string& mood)
+    {
+        mood_s = mood;
+        for (ObjectList<MoodListener>::iterator it = ObjectList<MoodListener>::begin(); it; ++it)
+            it->moodChanged(mood_s);
     }
 }
