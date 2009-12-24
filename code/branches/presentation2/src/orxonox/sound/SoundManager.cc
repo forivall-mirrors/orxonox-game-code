@@ -146,16 +146,9 @@ namespace orxonox
         if (!alGetError() && alIsSource(source))
             this->availableSoundSources_.push_back(source);
         else
-            ThrowException(InitialisationFailed, "Sound Error: Could not even create a single source");
-        // Get the rest of the sources
-        alGenSources(1, &source);
-        unsigned int count = 1;
-        while (alIsSource(source) && !alGetError() && count <= this->maxSources_)
-        {
-            this->availableSoundSources_.push_back(source);
-            alGenSources(1, &source);
-            ++count;
-        }
+            ThrowException(InitialisationFailed, "Sound Error: Could not create even a single source");
+        // Create a few initial sources
+        this->createSoundSources(this->minSources_ - 1);
 
         // Disarm guards
         alutExitGuard.Dismiss();
@@ -191,23 +184,6 @@ namespace orxonox
             COUT(1) << "Sound Error: Closing ALUT failed: " << alutGetErrorString(alutGetError()) << std::endl;
     }
 
-    void SoundManager::preUpdate(const Clock& time)
-    {
-        this->processCrossFading(time.getDeltaTime());
-
-        // Check whether a sound object has stopped playing
-        for (unsigned int i = 0; i < this->usedSoundSources_.size(); ++i)
-        {
-            ALint state;
-            alGetSourcei(this->usedSoundSources_[i].first, AL_SOURCE_STATE, &state);
-            if (state == AL_STOPPED)
-            {
-                this->usedSoundSources_[i].second->stop();
-                --i;
-            }
-        }
-    }
-
     void SoundManager::setConfigValues()
     {
         SetConfigValue(crossFadeStep_, 0.2f)
@@ -224,8 +200,27 @@ namespace orxonox
             .description("Defines the effects volume.")
             .callback(this, &SoundManager::checkEffectsVolumeValidity);
 
+        SetConfigValue(minSources_, 16)
+            .description("Minimum number of sources being generated (if possible)");
         SetConfigValue(maxSources_, 1024)
             .description("Maximum number of sources to be made available");
+    }
+
+    void SoundManager::preUpdate(const Clock& time)
+    {
+        this->processCrossFading(time.getDeltaTime());
+
+        // Check whether a sound object has stopped playing
+        for (unsigned int i = 0; i < this->usedSoundSources_.size(); ++i)
+        {
+            ALint state;
+            alGetSourcei(this->usedSoundSources_[i].first, AL_SOURCE_STATE, &state);
+            if (state == AL_STOPPED)
+            {
+                this->usedSoundSources_[i].second->stop();
+                --i;
+            }
+        }
     }
 
     void SoundManager::checkFadeStepValidity()
@@ -558,6 +553,17 @@ namespace orxonox
         }
         else
         {
+            if (this->usedSoundSources_.size() < this->maxSources_)
+            {
+                ALuint source;
+                alGenSources(1, &source);
+                // Try to create new sources (50% more, but at least one)
+                if (alIsSource(source) && !alGetError())
+                {
+                    this->usedSoundSources_.push_back(std::make_pair(source, object));
+                    return source;
+                }
+            }
             // Return no source ID
             ALuint source = 123456789;
             while (alIsSource(++source));
@@ -581,5 +587,33 @@ namespace orxonox
                 break;
             }
         }
+        int used = std::max(this->usedSoundSources_.size(), this->minSources_);
+        // Subtract those we added in the statement above trough std::max
+        int available = (int)this->availableSoundSources_.size() - (used - (int)this->usedSoundSources_.size());
+        // Delete sources again to free resources if appropriate (more than 50% more available than used)
+        int toDelete = available - used / 2;
+        while (toDelete-- > 0)
+        {
+            alDeleteSources(1, &this->availableSoundSources_.back());
+            if (alGetError())
+                COUT(1) << "Sound Error: Failed to delete a source --> lost forever" << std::endl;
+            this->availableSoundSources_.pop_back();
+        }
+    }
+
+    unsigned int SoundManager::createSoundSources(unsigned int n)
+    {
+        unsigned int count = this->availableSoundSources_.size() + this->usedSoundSources_.size();
+        while (count < this->maxSources_ && count <= n)
+        {
+            ALuint source;
+            alGenSources(1, &source);
+            if (alIsSource(source) && !alGetError())
+                this->availableSoundSources_.push_back(source);
+            else
+                break;
+            ++count;
+        }
+        return count - this->availableSoundSources_.size() - this->usedSoundSources_.size();
     }
 }

@@ -113,6 +113,8 @@ namespace orxonox
         void checkEffectsVolumeValidity() { this->checkVolumeValidity(SoundType::Effects); }
         void updateVolume(SoundType::Value type);
 
+        unsigned int createSoundSources(unsigned int n);
+
         // OpenAL device/context related
         std::vector<std::string> deviceNames_;
         ALCdevice* device_;
@@ -139,6 +141,7 @@ namespace orxonox
         SoundBufferMap soundBuffers_;
 
         // Sound source related
+        unsigned int minSources_;
         unsigned int maxSources_;
         std::vector<ALuint> availableSoundSources_;
         std::vector<std::pair<ALuint, BaseSound*> > usedSoundSources_;
