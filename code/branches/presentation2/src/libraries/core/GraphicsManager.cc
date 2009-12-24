@@ -396,7 +396,7 @@ namespace orxonox
         int orxonoxLevel;
         std::string introduction;
         // Do not show caught OGRE exceptions in front
-        if (message.find("OGRE_EXCEPTION"))
+        if (message.find("EXCEPTION") != std::string::npos)
         {
             orxonoxLevel = OutputLevel::Debug;
             introduction = "Ogre, caught exception: ";
