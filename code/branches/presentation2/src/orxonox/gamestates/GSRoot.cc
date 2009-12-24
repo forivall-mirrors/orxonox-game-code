@@ -90,7 +90,11 @@ namespace orxonox
     void GSRoot::update(const Clock& time)
     {
         for (ObjectList<Timer>::iterator it = ObjectList<Timer>::begin(); it; )
-            (it++)->tick(time);
+        {
+            Timer* object = *it;
+            ++it;
+            object->tick(time);
+        }
 
         /*** HACK *** HACK ***/
         // Call the Tickable objects
@@ -100,8 +104,13 @@ namespace orxonox
             // just loaded
             leveldt = 0.0f;
         }
+        float realdt = leveldt * TimeFactorListener::getTimeFactor();
         for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; )
-            (it++)->tick(leveldt * TimeFactorListener::getTimeFactor());
+        {
+            Tickable* object = *it;
+            ++it;
+            object->tick(realdt);
+        }
         /*** HACK *** HACK ***/
     }
 
