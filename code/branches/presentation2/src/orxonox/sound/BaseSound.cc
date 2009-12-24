@@ -59,6 +59,12 @@ namespace orxonox
     BaseSound::~BaseSound()
     {
         this->stop();
+        // Release buffer
+        if (this->soundBuffer_ != NULL)
+        {
+            assert(GameMode::playsSound());
+            SoundManager::getInstance().releaseSoundBuffer(this->soundBuffer_, this->bPooling_);
+        }
     }
 
     void BaseSound::XMLPortExtern(Element& xmlelement, XMLPort::Mode mode)

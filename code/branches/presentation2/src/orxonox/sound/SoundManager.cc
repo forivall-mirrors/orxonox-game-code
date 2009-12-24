@@ -161,6 +161,26 @@ namespace orxonox
 
     SoundManager::~SoundManager()
     {
+        // Erase fade lists because of the smart pointers
+        this->fadeInList_.clear();
+        this->fadeOutList_.clear();
+
+        // If there are still used buffers around, well, that's just very bad...
+        if (this->soundBuffers_.size() != this->effectsPool_.size())
+            COUT(1) << "Sound Error: Some sound buffers are still in use but OpenAL is about to shut down. Fix this!" << std::endl;
+        // Empty buffer pool and buffer list
+        this->effectsPool_.clear();
+        this->soundBuffers_.clear();
+
+        // There should not be any sources in use anymore
+        if (!this->usedSoundSources_.empty())
+            COUT(1) << "Sound Error: Some sound sources are still in use but OpenAL is about to shut down. Fix this!" << std::endl;
+        while (!this->availableSoundSources_.empty())
+        {
+            alDeleteSources(1, &this->availableSoundSources_.back());
+            this->availableSoundSources_.pop_back();
+        }
+
         GameMode::setPlaysSound(false);
 
         // Relieve context to destroy it
