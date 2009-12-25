@@ -63,7 +63,7 @@ namespace orxonox
             return MemoryDataStreamPtr(new MemoryDataStream(itFile->second.first.get(), itFile->second.second));
     }
 
-    void MemoryArchive::findFiles(const String& pattern, bool bRecursive, 
+    void MemoryArchive::findFiles(const String& pattern, bool bRecursive,
         bool bDirs, StringVector* simpleList, FileInfoList* detailList)
     {
         const FileMap& files = archives_s[this->getName()];
@@ -117,7 +117,7 @@ namespace orxonox
         return ret;
     }
 
-    FileInfoListPtr MemoryArchive::findFileInfo(const String& pattern, 
+    FileInfoListPtr MemoryArchive::findFileInfo(const String& pattern,
         bool recursive, bool dirs)
     {
         FileInfoListPtr ret(new FileInfoList());

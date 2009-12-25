@@ -48,6 +48,7 @@
 #include <OgreTextureManager.h>
 #include <OgreViewport.h>
 
+#include "util/StringUtils.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -93,11 +94,8 @@ Ogre::MaterialPtr Map::init()
         Map::singletonMap_s=this;
 
         //Getting Scene Manager (Hack)
-        if( !sManager_ )
-        {
-            ObjectList<Scene>::iterator it = ObjectList<Scene>::begin();
-            this->sManager_ = it->getSceneManager();
-        }
+        ObjectList<Scene>::iterator it = ObjectList<Scene>::begin();
+        this->sManager_ = it->getSceneManager();
         if( !Map::getMapSceneManager() )
         {
             Map::setMapSceneManager( Ogre::Root::getSingletonPtr()->createSceneManager( Ogre::ST_GENERIC,"MapScene" ) );

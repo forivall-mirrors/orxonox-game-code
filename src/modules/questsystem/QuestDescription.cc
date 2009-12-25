@@ -49,9 +49,6 @@ namespace orxonox
     QuestDescription::QuestDescription(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestDescription);
-        
-        this->title_ = "";
-        this->description_ = "";
     }
 
     /**
@@ -78,7 +75,7 @@ namespace orxonox
 
         COUT(3) << "New QuestDescription with title '" << this->getTitle() << "' created." << std::endl;
     }
-    
+
     /**
     @brief
         This method is a helper for sending QuestDescriptions as Notifications.
@@ -93,24 +90,24 @@ namespace orxonox
     */
     bool QuestDescription::notificationHelper(const std::string & item, const std::string & status) const
     {
-        std::string message = "";
+        std::string message;
         if(item == "hint")
         {
-            message = "You received a hint: '" + this->title_ + "'";
+            message = "You received a hint: '" + this->title_ + '\'';
         }
         else if(item == "quest")
         {
             if(status == "start")
             {
-                message = "You received a new quest: '" + this->title_ + "'";
+                message = "You received a new quest: '" + this->title_ + '\'';
             }
             else if(status == "fail")
             {
-                message = "You failed the quest: '" + this->title_ + "'";
+                message = "You failed the quest: '" + this->title_ + '\'';
             }
             else if(status == "complete")
             {
-                message = "You successfully completed the quest: '" + this->title_ + "'";
+                message = "You successfully completed the quest: '" + this->title_ + '\'';
             }
             else
             {
@@ -123,7 +120,7 @@ namespace orxonox
             COUT(2) << "Bad input in notificationHelper, this should not be happening!" << std::endl;
             return false;
         }
-        
+
         QuestNotification* notification = new QuestNotification(message);
         notification->send();
         return true;

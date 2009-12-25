@@ -68,6 +68,8 @@ namespace orxonox
 
             void startControl(ControllableEntity* entity);
             void stopControl();
+            void startTemporaryControl(ControllableEntity* entity);
+            void stopTemporaryControl();
 
             inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
@@ -95,6 +97,7 @@ namespace orxonox
             bool bReadyToSpawn_;
             Controller* controller_;
             ControllableEntity* controllableEntity_;
+            ControllableEntity* oldControllableEntity_;
             unsigned int controllableEntityID_;
 
             const GametypeInfo* gtinfo_;

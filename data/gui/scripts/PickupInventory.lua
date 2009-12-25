@@ -19,7 +19,7 @@ P.currentUsableID_ = 0
 function P:frmUpdate(e)
     local equipCount = orxonox.PickupInventory:getEquipmentCount()
     local usableCount = orxonox.PickupInventory:getUsableCount()
-    
+
     if equipCount ~= self.lastEquipmentCount_ or usableCount ~= self.lastUsableCount_ then
         self:updateTabs()
     end
@@ -38,11 +38,11 @@ function P:mItemClicked(e)
     local name = w:getName()
     local t = name:sub(25, 27)
     local i = name:sub(29)
-    
+
     if t == "equ" then
-        
+
     end
-    
+
     if t == "use" then
         if self.currentUsableID_ >= 0 then
             winMgr:getWindow("orxonox/Inventory/Title/use/" .. self.currentUsableID_):setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF")
@@ -59,7 +59,7 @@ function P:updateTabs()
     local usWin = winMgr:getWindow("orxonox/Inventory/TabControl/TabUsable")
     orxonox.PickupInventory:getSingleton():clearInventory(winMgr, eqWin, usWin)
     orxonox.PickupInventory:getSingleton():updateTabs(winMgr, eqWin, usWin)
-    
+
     self.currentUsableID_ = orxonox.PickupInventory:getCurrentUsableIndex()
     self.lastEquipmentCount_ = orxonox.PickupInventory:getEquipmentCount()
     self.lastUsableCount_ = orxonox.PickupInventory:getUsableCount()

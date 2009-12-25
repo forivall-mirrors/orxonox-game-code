@@ -149,7 +149,7 @@ namespace orxonox
 
         /** @brief Puts the current value on the stream */
         inline void toString(std::ostream& outstream) const { outstream << this->value_; }
-        
+
         /** @brief loads data from the bytestream (mem) into the MT and increases the bytestream pointer by the size of the data */
         inline void importData( uint8_t*& mem )         { loadAndIncrease( /*(const T&)*/this->value_, mem ); }
         /** @brief saves data from the MT into the bytestream (mem) and increases the bytestream pointer by the size of the data */
@@ -159,7 +159,7 @@ namespace orxonox
 
         T value_; //!< The stored value
     };
-    
+
     // Import / Export specialisation
     // ColourValue
     template <> inline void MT_Value<ColourValue>::importData( uint8_t*& mem )

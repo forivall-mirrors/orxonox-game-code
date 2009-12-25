@@ -55,6 +55,7 @@ namespace orxonox
         , guiMouseOnlyInputState_(0)
         , guiKeysOnlyInputState_(0)
         , startFile_(0)
+        , bShowIngameGUI_(false)
     {
     }
 
@@ -77,8 +78,6 @@ namespace orxonox
 
             guiKeysOnlyInputState_ = InputManager::getInstance().createInputState("guiKeysOnly");
             guiKeysOnlyInputState_->setKeyHandler(GUIManager::getInstancePtr());
-
-            CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSLevel::showIngameGUI, this), "showIngameGUI"));
         }
 
         if (GameMode::isMaster())
@@ -90,25 +89,9 @@ namespace orxonox
         {
             // level is loaded: we can start capturing the input
             InputManager::getInstance().enterState("game");
-            
+
             // connect the HumanPlayer to the game
             PlayerManager::getInstance().clientConnected(0);
-        }
-    }
-
-    void GSLevel::showIngameGUI(bool show)
-    {
-        if (show)
-        {
-            GUIManager::getInstance().showGUI("inGameTest");
-            GUIManager::getInstance().executeCode("showCursor()");
-            InputManager::getInstance().enterState("guiMouseOnly");
-        }
-        else
-        {
-            GUIManager::getInstance().executeCode("hideGUI(\"inGameTest\")");
-            GUIManager::getInstance().executeCode("hideCursor()");
-            InputManager::getInstance().leaveState("guiMouseOnly");
         }
     }
 
@@ -121,7 +104,7 @@ namespace orxonox
 
             InputManager::getInstance().leaveState("game");
         }
-        
+
         // disconnect all HumanPlayers
         PlayerManager::getInstance().disconnectAllClients();
 
@@ -151,7 +134,7 @@ namespace orxonox
     {
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
             this->staticObjects_.insert(*it);
-        
+
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
@@ -170,7 +153,7 @@ namespace orxonox
             std::set<BaseObject*>::const_iterator find = this->staticObjects_.find(*it);
             if (find == this->staticObjects_.end())
             {
-                COUT(3) << ++i << ": " << it->getIdentifier()->getName() << " (" << *it << ")" << std::endl;
+                COUT(3) << ++i << ": " << it->getIdentifier()->getName() << " (" << *it << ')' << std::endl;
             }
         }
         COUT(3) << i << " objects remaining.";

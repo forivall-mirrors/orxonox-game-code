@@ -30,7 +30,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
+#include "core/GameMode.h"
+#include "core/Resource.h"
 #include "core/XMLPort.h"
+#include "SoundManager.h"
 
 namespace orxonox
 {
@@ -38,25 +41,103 @@ namespace orxonox
 
     AmbientSound::AmbientSound(BaseObject* creator)
         : BaseObject(creator)
+        , Synchronisable(creator)
+        , bPlayOnLoad_(false)
     {
         RegisterObject(AmbientSound);
+
+        // Ambient sounds always fade in
+        this->setVolume(0);
+        this->registerVariables();
     }
 
-    AmbientSound::~AmbientSound()
+    void AmbientSound::preDestroy()
     {
+        if (GameMode::playsSound())
+        {
+            // Smoothly fade out by keeping a SmartPtr
+            SoundManager::getInstance().unregisterAmbientSound(this);
+        }
+    }
+
+    void AmbientSound::registerVariables()
+    {
+        registerVariable(ambientSource_, ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::ambientSourceChanged));
+        registerVariable(bLooping_,      ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::loopingChanged));
+        registerVariable(pitch_,         ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::pitchChanged));
+        registerVariable(bPlayOnLoad_,   ObjectDirection::ToClient, new NetworkCallback<AmbientSound>(this, &AmbientSound::playOnLoadChanged));
     }
 
     void AmbientSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AmbientSound, XMLPort, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "source", setSource, getSource, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "loop", setLoop, getLoop, xmlelement, mode);
-        XMLPortParamExtern(AmbientSound, BaseSound, this, "playOnLoad", setPlayOnLoad, getPlayOnLoad, xmlelement, mode);
+        BaseSound::XMLPortExtern(xmlelement, mode);
+        XMLPortParam(AmbientSound, "ambientSource", setAmbientSource, getAmbientSource, xmlelement, mode);
+        XMLPortParam(AmbientSound, "playOnLoad", setPlayOnLoad, getPlayOnLoad, xmlelement, mode);
     }
 
     void AmbientSound::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(AmbientSound, XMLEventPort, xmlelement, mode);
         XMLPortEventState(AmbientSound, BaseObject, "play", play, xmlelement, mode);
+    }
+
+    void AmbientSound::play()
+    {
+        if (GameMode::playsSound())
+            SoundManager::getInstance().registerAmbientSound(this);
+    }
+
+    void AmbientSound::stop()
+    {
+        if (GameMode::playsSound())
+            SoundManager::getInstance().unregisterAmbientSound(this);
+    }
+
+    void AmbientSound::pause()
+    {
+        if (GameMode::playsSound())
+            SoundManager::getInstance().pauseAmbientSound(this);
+    }
+
+    float AmbientSound::getRealVolume()
+    {
+        assert(GameMode::playsSound());
+        return SoundManager::getInstance().getRealVolume(SoundType::Music);
+    }
+
+    void AmbientSound::setAmbientSource(const std::string& source)
+    {
+        this->ambientSource_ = source;
+        this->moodChanged(this->getMood());
+    }
+
+    void AmbientSound::moodChanged(const std::string& mood)
+    {
+        if (GameMode::playsSound())
+        {
+            const std::string& path = "ambient/" + MoodManager::getInstance().getMood() + '/' + this->ambientSource_;
+            shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
+            if (fileInfo != NULL)
+                this->setSource(path);
+            else
+                COUT(3) << "Sound: " << this->ambientSource_ << ": Not a valid name! Ambient sound will not change." << std::endl;
+        }
+    }
+
+    void AmbientSound::setPlayOnLoad(bool val)
+    {
+        this->bPlayOnLoad_ = val;
+        if (val)
+            this->play();
+    }
+
+    void AmbientSound::changedActivity()
+    {
+        SUPER(AmbientSound, changedActivity);
+        if (this->isActive())
+            this->play();
+        else
+            this->stop();
     }
 }

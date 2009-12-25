@@ -97,7 +97,7 @@ namespace orxonox
                     COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
                     if (identifier)
                     {
-                        COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
+                        COUT(1) << "Error: Class " << identifier->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << '!' << std::endl;
                         COUT(1) << "Error: SubclassIdentifier<" << ClassIdentifier<T>::getIdentifier()->getName() << "> = Class(" << identifier->getName() << ") is forbidden." << std::endl;
                     }
                     else
@@ -165,7 +165,7 @@ namespace orxonox
                     if (this->identifier_)
                     {
                         COUT(1) << "An error occurred in SubclassIdentifier (Identifier.h):" << std::endl;
-                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << "!" << std::endl;
+                        COUT(1) << "Error: Class " << this->identifier_->getName() << " is not a " << ClassIdentifier<T>::getIdentifier()->getName() << '!' << std::endl;
                         COUT(1) << "Error: Couldn't fabricate a new Object." << std::endl;
                     }
                     else

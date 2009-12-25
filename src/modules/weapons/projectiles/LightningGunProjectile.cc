@@ -42,19 +42,19 @@ namespace orxonox
         this->textureIndex_ = 1;
         this->maxTextureIndex_ = 8;
         this->textureTimer_.setTimer(0.01f, true, createExecutor(createFunctor(&LightningGunProjectile::changeTexture, this)));
-        
+
         registerVariables();
     }
-    
+
     void LightningGunProjectile::registerVariables()
     {
         registerVariable(this->materialBase_);
     }
-    
+
     void LightningGunProjectile::setMaterial(const std::string& material)
     {
-        this->materialBase_ = material;    
-    
+        this->materialBase_ = material;
+
         BillboardProjectile::setMaterial(material + multi_cast<std::string>(this->textureIndex_));
     }
 
@@ -63,7 +63,7 @@ namespace orxonox
         this->textureIndex_++;
         if (this->textureIndex_ > this->maxTextureIndex_)
             this->textureIndex_ = 1;
-        
+
         this->setMaterial(this->materialBase_);
     }
 }

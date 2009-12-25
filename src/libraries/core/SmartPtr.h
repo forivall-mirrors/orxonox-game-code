@@ -83,7 +83,7 @@ namespace orxonox
                 if (this->base_)
                     this->base_->decrementReferenceCount();
             }
-            
+
             inline const SmartPtr& operator=(int)
             {
                 SmartPtr(0).swap(*this);

@@ -34,6 +34,7 @@
 #include "network/ClientInformation.h"
 #include "network/Host.h"
 #include "controllers/HumanController.h"
+#include "controllers/NewHumanController.h"
 #include "gametypes/Gametype.h"
 #include "overlays/OverlayGroup.h"
 
@@ -49,7 +50,7 @@ namespace orxonox
         this->client_initialized_ = false;
 
         this->bHumanPlayer_ = true;
-        this->defaultController_ = Class(HumanController);
+        this->defaultController_ = Class(NewHumanController);
 
         this->humanHud_ = 0;
         this->gametypeHud_ = 0;
@@ -162,7 +163,7 @@ namespace orxonox
 
         if (this->isInitialized() && this->isLocalPlayer())
         {
-            if (this->getGametype() && this->getGametype()->getHUDTemplate() != "")
+            if (this->getGametype() && !this->getGametype()->getHUDTemplate().empty())
                 this->setGametypeHUDTemplate(this->getGametype()->getHUDTemplate());
             else
                 this->setGametypeHUDTemplate("");
@@ -177,7 +178,7 @@ namespace orxonox
             this->humanHud_ = 0;
         }
 
-        if (this->isLocalPlayer() && this->humanHudTemplate_ != "" && GameMode::showsGraphics())
+        if (this->isLocalPlayer() && !this->humanHudTemplate_.empty() && GameMode::showsGraphics())
         {
             this->humanHud_ = new OverlayGroup(this);
             this->humanHud_->addTemplate(this->humanHudTemplate_);
@@ -193,7 +194,7 @@ namespace orxonox
             this->gametypeHud_ = 0;
         }
 
-        if (this->isLocalPlayer() && this->gametypeHudTemplate_ != "")
+        if (this->isLocalPlayer() && !this->gametypeHudTemplate_.empty())
         {
             this->gametypeHud_ = new OverlayGroup(this);
             this->gametypeHud_->addTemplate(this->gametypeHudTemplate_);

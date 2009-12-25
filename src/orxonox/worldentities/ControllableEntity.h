@@ -83,7 +83,8 @@ namespace orxonox
             inline void rotateRoll(float value)
                 { this->rotateRoll(Vector2(value, 0)); }
 
-            virtual void fire(unsigned int firemode) {}
+            void fire(unsigned int firemode);
+            virtual void fired(unsigned int firemode) {}
             virtual void reload() {}
 
             virtual void boost() {}
@@ -138,6 +139,16 @@ namespace orxonox
 
             inline Controller* getXMLController() const
                 { return this->xmlcontroller_; }
+
+            inline Controller* getController() const
+                { return this->controller_; }
+            inline void setController(Controller* val)
+                { this->controller_ = val; }
+
+            virtual void setTarget( WorldEntity* target );
+            virtual WorldEntity* getTarget()
+                { return this->target_.get(); }
+            void setTargetInternal( uint32_t targetID );
 
         protected:
             virtual void setPlayer(PlayerInfo* player); // don't call this directly, use friend class PlayerInfo instead
@@ -198,9 +209,12 @@ namespace orxonox
             float mouseLookSpeed_;
             Ogre::SceneNode* cameraPositionRootNode_;
             std::list<SmartPtr<CameraPosition> > cameraPositions_;
+            CameraPosition* currentCameraPosition_;
             std::string cameraPositionTemplate_;
             Controller* xmlcontroller_;
+            Controller* controller_;
             CameraPosition* reverseCamera_;
+            WeakPtr<WorldEntity> target_;
     };
 }
 

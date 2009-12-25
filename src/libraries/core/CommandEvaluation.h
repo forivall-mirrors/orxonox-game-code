@@ -65,7 +65,7 @@ namespace orxonox
             void initialize(const std::string& command);
 
             bool execute() const;
-            std::string complete();
+            const std::string& complete();
             std::string hint() const;
             void evaluateParams();
 
@@ -81,7 +81,7 @@ namespace orxonox
             inline void setAdditionalParameter(const std::string& param)
                 { this->additionalParameter_ = param; this->bEvaluatedParams_ = false; }
             inline std::string getAdditionalParameter() const
-                { return (this->additionalParameter_ != "") ? (" " + this->additionalParameter_) : ""; }
+                { return (!this->additionalParameter_.empty()) ? (' ' + this->additionalParameter_) : ""; }
 
             void setEvaluatedParameter(unsigned int index, MultiType param);
             MultiType getEvaluatedParameter(unsigned int index) const;

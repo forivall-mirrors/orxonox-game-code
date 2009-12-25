@@ -156,7 +156,7 @@ namespace orxonox
             void addEventSource(BaseObject* source, const std::string& state);
             void removeEventSource(BaseObject* source);
             BaseObject* getEventSource(unsigned int index, const std::string& state) const;
-            
+
             void addEventListener(BaseObject* listener);
             BaseObject* getEventListener(unsigned int index) const;
 
@@ -171,7 +171,7 @@ namespace orxonox
             inline void setLoaderIndentation(const std::string& indentation) { this->loaderIndentation_ = indentation; }
             /** @brief Returns the indentation of the debug output in the Loader. @return The indentation */
             inline const std::string& getLoaderIndentation() const { return this->loaderIndentation_; }
-            
+
             static void loadAllEventStates(Element& xmlelement, XMLPort::Mode mode, BaseObject* object, Identifier* identifier);
 
         protected:
@@ -209,7 +209,7 @@ namespace orxonox
             SmartPtr<Gametype>     gametype_;
             Gametype*              oldGametype_;
             std::set<Template*>    templates_;
-            
+
             std::map<BaseObject*, std::string>  eventSources_;           //!< List of objects which send events to this object, mapped to the state which they affect
             std::set<BaseObject*>               eventListeners_;         //!< List of objects which listen to the events of this object
             std::set<BaseObject*>               eventListenersXML_;      //!< List of objects which listen to the events of this object through the "eventlisteners" subsection in XML

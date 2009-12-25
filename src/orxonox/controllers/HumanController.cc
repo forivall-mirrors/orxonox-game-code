@@ -35,8 +35,6 @@
 #include "gametypes/Gametype.h"
 #include "infos/PlayerInfo.h"
 #include "overlays/Map.h"
-#include "graphics/Camera.h"
-#include "sound/SoundManager.h"
 #include "Radar.h"
 #include "Scene.h"
 
@@ -55,6 +53,7 @@ namespace orxonox
     SetConsoleCommand(HumanController, switchCamera,  true);
     SetConsoleCommand(HumanController, mouseLook,     true);
     SetConsoleCommand(HumanController, suicide,       true);
+    SetConsoleCommand(HumanController, toggleGodMode, true);
     SetConsoleCommand(HumanController, addBots,       true).defaultValues(1);
     SetConsoleCommand(HumanController, killBots,      true).defaultValues(0);
     SetConsoleCommand(HumanController, dropItems,     true);
@@ -70,6 +69,8 @@ namespace orxonox
     {
         RegisterObject(HumanController);
 
+        controlPaused_ = false;
+
         HumanController::localController_s = this;
     }
 
@@ -82,19 +83,19 @@ namespace orxonox
     {
         if (GameMode::playsSound() && HumanController::localController_s && HumanController::localController_s->controllableEntity_)
         {
-            // Update sound listener
             Camera* camera = HumanController::localController_s->controllableEntity_->getCamera();
-            if (camera)
-            {
-                SoundManager::getInstance().setListenerPosition(camera->getWorldPosition());
-                SoundManager::getInstance().setListenerOrientation(camera->getWorldOrientation());
-            }
-            else
+            if (!camera)
                 COUT(3) << "HumanController, Warning: Using a ControllableEntity without Camera" << std::endl;
         }
     }
 
     void HumanController::moveFrontBack(const Vector2& value)
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->frontback(value);
+    }
+
+    void HumanController::frontback(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->moveFrontBack(value);
@@ -112,7 +113,7 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->moveUpDown(value);
     }
 
-    void HumanController::rotateYaw(const Vector2& value)
+    void HumanController::yaw(const Vector2& value)
     {
         //Hack to enable mouselook in map
         if ( Map::getSingletonPtr() && Map::getSingletonPtr()->getVisibility() && HumanController::localController_s->controllableEntity_->isInMouseLook() )
@@ -124,7 +125,7 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->rotateYaw(value);
     }
 
-    void HumanController::rotatePitch(const Vector2& value)
+    void HumanController::pitch(const Vector2& value)
     {
         //Hack to enable mouselook in map
         if ( Map::getSingletonPtr() && Map::getSingletonPtr()->getVisibility() && HumanController::localController_s->controllableEntity_->isInMouseLook() )
@@ -136,6 +137,18 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->rotatePitch(value);
     }
 
+    void HumanController::rotateYaw(const Vector2& value)
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->yaw(value);
+    }
+
+    void HumanController::rotatePitch(const Vector2& value)
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->pitch(value);
+    }
+
     void HumanController::rotateRoll(const Vector2& value)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
@@ -143,6 +156,12 @@ namespace orxonox
     }
 
     void HumanController::fire(unsigned int firemode)
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->doFire(firemode);
+    }
+
+    void HumanController::doFire(unsigned int firemode)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->fire(firemode);
@@ -190,6 +209,11 @@ namespace orxonox
         }
     }
 
+    void HumanController::toggleGodMode()
+    {
+        HumanController::getLocalControllerSingleton()->setGodMode( !HumanController::getLocalControllerSingleton()->getGodMode() );
+    }
+
     void HumanController::useItem()
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
@@ -232,5 +256,17 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->getScene()->getRadar()->releaseFocus();
+    }
+
+    void HumanController::pauseControl()
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->doPauseControl();
+    }
+
+    void HumanController::resumeControl()
+    {
+        if (HumanController::localController_s)
+            HumanController::localController_s->doResumeControl();
     }
 }

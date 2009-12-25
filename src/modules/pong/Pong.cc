@@ -41,7 +41,7 @@ namespace orxonox
 {
     CreateEventName(PongCenterpoint, right);
     CreateEventName(PongCenterpoint, left);
-    
+
     CreateUnloadableFactory(Pong);
 
     Pong::Pong(BaseObject* creator) : Deathmatch(creator)
@@ -163,7 +163,7 @@ namespace orxonox
                 this->center_->fireEvent(FireEventName(PongCenterpoint, right));
             else if (player == this->getLeftPlayer())
                 this->center_->fireEvent(FireEventName(PongCenterpoint, left));
-            
+
             if (player)
                 this->gtinfo_->sendAnnounceMessage(player->getName() + " scored");
         }

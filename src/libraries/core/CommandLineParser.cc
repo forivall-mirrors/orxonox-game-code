@@ -62,7 +62,7 @@ namespace orxonox
                 this->bHasDefaultValue_ = false;
                 this->value_ = temp;
             }
-            else if (value == "")
+            else if (value.empty())
             {
                 this->bHasDefaultValue_ = false;
                 this->value_ = true;
@@ -139,7 +139,7 @@ namespace orxonox
                 {
                     OrxAssert(cmdLineArgsShortcut_.find(it->second->getShortcut()) == cmdLineArgsShortcut_.end(),
                         "Cannot have two command line shortcut with the same name.");
-                    if (it->second->getShortcut() != "")
+                    if (!it->second->getShortcut().empty())
                         cmdLineArgsShortcut_[it->second->getShortcut()] = it->second;
                 }
                 bFirstTimeParse_ = false;
@@ -164,7 +164,7 @@ namespace orxonox
                         else if (arguments[i][1] <= 57 && arguments[i][1] >= 48)
                         {
                             // negative number as a value
-                            value += arguments[i] + " ";
+                            value += arguments[i] + ' ';
                         }
                         else
                         {
@@ -172,17 +172,17 @@ namespace orxonox
 
                             // save old data first
                             value = removeTrailingWhitespaces(value);
-                            if (name != "")
+                            if (!name.empty())
                             {
                                 checkFullArgument(name, value, bParsingFile);
-                                name = "";
-                                assert(shortcut == "");
+                                name.clear();
+                                assert(shortcut.empty());
                             }
-                            else if (shortcut != "")
+                            else if (!shortcut.empty())
                             {
                                 checkShortcut(shortcut, value, bParsingFile);
-                                shortcut = "";
-                                assert(name == "");
+                                shortcut.clear();
+                                assert(name.empty());
                             }
 
                             if (arguments[i][1] == '-')
@@ -197,14 +197,14 @@ namespace orxonox
                             }
 
                             // reset value string
-                            value = "";
+                            value.clear();
                         }
                     }
                     else
                     {
                         // value string
 
-                        if (name == "" && shortcut == "")
+                        if (name.empty() && shortcut.empty())
                         {
                             ThrowException(Argument, "Expected \"-\" or \"-\" in command line arguments.\n");
                         }
@@ -217,15 +217,15 @@ namespace orxonox
 
             // parse last argument
             value = removeTrailingWhitespaces(value);
-            if (name != "")
+            if (!name.empty())
             {
                 checkFullArgument(name, value, bParsingFile);
-                assert(shortcut == "");
+                assert(shortcut.empty());
             }
-            else if (shortcut != "")
+            else if (!shortcut.empty())
             {
                 checkShortcut(shortcut, value, bParsingFile);
-                assert(name == "");
+                assert(name.empty());
             }
         }
         catch (const ArgumentException& ex)
@@ -290,11 +290,11 @@ namespace orxonox
         for (std::map<std::string, CommandLineArgument*>::const_iterator it = inst.cmdLineArgs_.begin();
             it != inst.cmdLineArgs_.end(); ++it)
         {
-            if (it->second->getShortcut() != "")
+            if (!it->second->getShortcut().empty())
                 infoStr << " [-" << it->second->getShortcut() << "] ";
             else
                 infoStr << "      ";
-            infoStr << "--" << it->second->getName() << " ";
+            infoStr << "--" << it->second->getName() << ' ';
             if (it->second->getValue().getType() != MT_Type::Bool)
                 infoStr << "ARG ";
             else
@@ -346,7 +346,7 @@ namespace orxonox
     */
     void CommandLineParser::_parseFile()
     {
-        std::string filename = CommandLineParser::getValue("optionsFile").getString();
+        const std::string& filename = CommandLineParser::getValue("optionsFile").getString();
 
         // look for additional arguments in given file or start.ini as default
         // They will not overwrite the arguments given directly

@@ -28,235 +28,250 @@
 
 #include "BaseSound.h"
 
+#include <cassert>
 #include <vector>
-#include <AL/alut.h>
-#include <vorbis/vorbisfile.h>
+#include <al.h>
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/Resource.h"
+#include "core/XMLPort.h"
+#include "SoundBuffer.h"
+#include "SoundManager.h"
 
 namespace orxonox
 {
     BaseSound::BaseSound()
-        : audioSource_(0)
-        , audioBuffer_(0)
-        , bPlayOnLoad_(false)
-        , bLoop_(false)
+        : bPooling_(false)
+        , volume_(1.0)
+        , bLooping_(false)
+        , state_(Stopped)
+        , pitch_ (1.0)
     {
         RegisterRootObject(BaseSound);
+
+        // Initialise audioSource_ to a value that is not a source
+        // 0 is unfortunately not guaranteed to be no source ID.
+        this->audioSource_ = 123456789;
+        while (alIsSource(++this->audioSource_));
     }
 
     BaseSound::~BaseSound()
     {
-        this->setSource("");
-    }
-
-    void BaseSound::play()
-    {
-        if (alIsSource(this->audioSource_))
+        this->stop();
+        // Release buffer
+        if (this->soundBuffer_ != NULL)
         {
-            if (this->bLoop_)
-                alSourcei(this->audioSource_, AL_LOOPING, AL_TRUE);
-            else
-                alSourcei(this->audioSource_, AL_LOOPING, AL_FALSE);
-            alSourcePlay(this->audioSource_);
-
-            if (alGetError() != AL_NO_ERROR)
-            {
-                 COUT(2) << "Sound: OpenAL: Error playin sound " << this->audioSource_ << std::endl;
-            }
+            assert(GameMode::playsSound());
+            SoundManager::getInstance().releaseSoundBuffer(this->soundBuffer_, this->bPooling_);
         }
     }
 
-    void BaseSound::stop()
+    void BaseSound::XMLPortExtern(Element& xmlelement, XMLPort::Mode mode)
     {
-        if (alIsSource(this->audioSource_))
-            alSourceStop(this->audioSource_);
+        XMLPortParam(BaseSound, "volume",  setVolume,  getVolume,  xmlelement, mode);
+        XMLPortParam(BaseSound, "looping", setLooping, getLooping, xmlelement, mode);
+        XMLPortParam(BaseSound, "pitch",   setPitch,   getPitch,   xmlelement, mode);
+        XMLPortParam(BaseSound, "source",  setSource,  getSource,  xmlelement, mode);
     }
 
-    void BaseSound::pause()
+    void BaseSound::doPlay()
     {
+        this->state_ = Playing;
+        if (GameMode::playsSound() && this->getSourceState() != AL_PLAYING && this->soundBuffer_ != NULL)
+        {
+            if (!alIsSource(this->audioSource_))
+            {
+                this->audioSource_ = SoundManager::getInstance().getSoundSource(this);
+                if (!alIsSource(this->audioSource_))
+                    return;
+                this->initialiseSource();
+            }
+
+            alSourcePlay(this->audioSource_);
+            if (int error = alGetError())
+                COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
+        }
+    }
+
+    void BaseSound::doStop()
+    {
+        this->state_ = Stopped;
+        if (alIsSource(this->audioSource_))
+        {
+            alSourceStop(this->audioSource_);
+            // Release buffer
+            alSourcei(this->audioSource_, AL_BUFFER, AL_NONE);
+            // Release source again
+            SoundManager::getInstance().releaseSoundSource(this->audioSource_);
+            // Get a no source ID
+            this->audioSource_ += 123455;
+            while (alIsSource(++this->audioSource_));
+        }
+    }
+
+    void BaseSound::doPause()
+    {
+        if (this->isStopped())
+            return;
+        this->state_ = Paused;
         if (alIsSource(this->audioSource_))
             alSourcePause(this->audioSource_);
     }
 
-    bool BaseSound::isPlaying()
+    ALint BaseSound::getSourceState() const
     {
         if (alIsSource(this->audioSource_))
-            return getSourceState() == AL_PLAYING;
-        return false;
+        {
+            ALint state;
+            alGetSourcei(this->audioSource_, AL_SOURCE_STATE, &state);
+            return state;
+        }
+        else
+            return AL_INITIAL;
     }
 
-    bool BaseSound::isPaused()
+    void BaseSound::initialiseSource()
+    {
+        this->updateVolume();
+        this->setPitch(this->getPitch());
+        this->setLooping(this->getLooping());
+        alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
+        alSource3f(this->audioSource_, AL_VELOCITY,  0, 0, 0);
+        alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);
+        if (ALint error = alGetError())
+            COUT(2) << "Sound Warning: Setting source parameters to 0 failed: "
+                    << SoundManager::getALErrorString(error) << std::endl;
+        assert(this->soundBuffer_ != NULL);
+        alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
+        if (ALuint error = alGetError())
+            COUT(1) << "Sound Error: Could not set buffer \"" << this->source_ << "\": " << SoundManager::getALErrorString(error) << std::endl;
+    }
+
+    void BaseSound::setVolume(float vol)
+    {
+        this->volume_ = clamp(vol, 0.0f, 1.0f);
+        if (this->volume_ != vol)
+            COUT(2) << "Sound warning: volume out of range, clamping value." << std::endl;
+        this->updateVolume();
+    }
+
+    void BaseSound::updateVolume()
     {
         if (alIsSource(this->audioSource_))
-            return getSourceState() == AL_PAUSED;
-        return true;
+        {
+            float volume = this->volume_ * this->getRealVolume();
+            alSourcef(this->audioSource_, AL_GAIN, volume);
+            if (int error = alGetError())
+                COUT(2) << "Sound: Error setting volume to " << volume
+                        << ": " << SoundManager::getALErrorString(error) << std::endl;
+        }
     }
 
-    bool BaseSound::isStopped()
+    void BaseSound::setLooping(bool val)
     {
+        this->bLooping_ = val;
         if (alIsSource(this->audioSource_))
-            return getSourceState() == AL_INITIAL || getSourceState() == AL_STOPPED;
-        return true;
+            alSourcei(this->audioSource_, AL_LOOPING, (val ? AL_TRUE : AL_FALSE));
     }
 
-    void BaseSound::setPlayOnLoad(bool val)
+    void BaseSound::setPitch(float pitch)
     {
-        this->bPlayOnLoad_ = true;
-        this->play();
+        if (pitch > 2 || pitch < 0.5)
+        {
+            COUT(2) << "Sound warning: pitch out of range, cropping value." << std::endl;
+            pitch = pitch > 2 ? 2 : pitch;
+            pitch = pitch < 0.5 ? 0.5 : pitch;
+        }
+        this->pitch_ = pitch;
+        if (alIsSource(this->audioSource_))
+        {
+            alSourcef(this->audioSource_, AL_PITCH, pitch);
+            if (int error = alGetError())
+                COUT(2) << "Sound: Error setting pitch: " << SoundManager::getALErrorString(error) << std::endl;
+        }
     }
 
     void BaseSound::setSource(const std::string& source)
     {
-        this->source_ = source;
         if (!GameMode::playsSound())
-            return;
-
-        if (source.empty() && alIsSource(this->audioSource_))
         {
-            // Unload sound
-            alSourcei(this->audioSource_, AL_BUFFER, 0);
-            alDeleteSources(1, &this->audioSource_);
-            alDeleteBuffers(1, &this->audioBuffer_);
+            this->source_ = source;
             return;
         }
 
-        COUT(3) << "Sound: OpenAL ALUT: loading file " << source << std::endl;
-        // Get DataStream from the resources
-        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(source);
-        if (fileInfo == NULL)
+        if (this->soundBuffer_ != NULL)
         {
-            COUT(2) << "Warning: Sound file '" << source << "' not found" << std::endl;
-            return;
-        }
-        dataStream_ = Resource::open(source);
-        // Read everything into a temporary buffer
-        char* buffer = new char[fileInfo->size];
-        dataStream_->read(buffer, fileInfo->size);
-        dataStream_->seek(0);
-
-        this->audioBuffer_ = alutCreateBufferFromFileImage(buffer, fileInfo->size);
-        delete[] buffer;
-
-        if (this->audioBuffer_ == AL_NONE)
-        {
-            COUT(2) << "Sound: OpenAL ALUT: " << alutGetErrorString(alutGetError()) << std::endl;
-            if (source.find("ogg", 0) != std::string::npos)
+            if (this->soundBuffer_->getFilename() == source)
             {
-                COUT(2) << "Sound: Trying fallback ogg loader" << std::endl;
-                this->audioBuffer_ = loadOggFile();
-            }
-
-            if (this->audioBuffer_ == AL_NONE)
-            {
-                COUT(2) << "Sound: fallback ogg loader failed: " << alutGetErrorString(alutGetError()) << std::endl;
+                assert(this->source_ == source_);
                 return;
             }
+            // Stopping is imperative here!
+            if (alIsSource(this->audioSource_))
+            {
+                alSourceStop(this->audioSource_);
+                alSourcei(this->audioSource_, AL_BUFFER, AL_NONE);
+            }
+            SoundManager::getInstance().releaseSoundBuffer(this->soundBuffer_, this->bPooling_);
+            this->soundBuffer_.reset();
         }
 
-        alGenSources(1, &this->audioSource_);
-        alSourcei(this->audioSource_, AL_BUFFER, this->audioBuffer_);
-        if (alGetError() != AL_NO_ERROR)
-        {
-            COUT(2) << "Sound: OpenAL: Error loading sample file: " << source << std::endl;
+        this->source_ = source;
+        // Don't load ""
+        if (source_.empty())
             return;
-        }
 
-        alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
+        // Get new sound buffer
+        this->soundBuffer_ = SoundManager::getInstance().getSoundBuffer(this->source_);
+        if (this->soundBuffer_ == NULL)
+            return;
 
-        if (this->bPlayOnLoad_)
-            this->play();
-    }
-
-    ALint BaseSound::getSourceState()
-    {
-        ALint state;
-        alGetSourcei(this->audioSource_, AL_SOURCE_STATE, &state);
-        return state;
-    }
-
-    size_t readVorbis(void* ptr, size_t size, size_t nmemb, void* datasource)
-    {
-        return static_cast<Ogre::DataStream*>(datasource)->read(ptr, size * nmemb);
-    }
-
-    int seekVorbis(void* datasource, ogg_int64_t offset, int whence)
-    {
-        Ogre::DataStream* stream = static_cast<Ogre::DataStream*>(datasource);
-        int offset_beg = offset;
-        if (whence == SEEK_CUR)
-            offset_beg = stream->tell() + offset;
-        else if (whence == SEEK_END)
-            offset_beg = stream->size() + offset;
-        else if (whence != SEEK_SET)
-            return -1;
-        stream->seek(offset_beg);
-        return 0;
-    }
-
-    long tellVorbis(void* datasource)
-    {
-        return static_cast<long>(static_cast<Ogre::DataStream*>(datasource)->tell());
-    }
-
-    ALuint BaseSound::loadOggFile()
-    {
-        char inbuffer[4096];
-        std::vector<char> outbuffer;
-        OggVorbis_File vf;
-        vorbis_info* vorbisInfo;
-        int eof = false;
-        int current_section;
-        ALuint buffer;
-        ALenum format;
-
-        // Open file with custom streaming
-        ov_callbacks vorbisCallbacks;
-        vorbisCallbacks.read_func  = &readVorbis;
-        vorbisCallbacks.seek_func  = &seekVorbis;
-        vorbisCallbacks.tell_func  = &tellVorbis;
-        vorbisCallbacks.close_func = NULL;
-
-        int ret = ov_open_callbacks(dataStream_.get(), &vf, NULL, 0, vorbisCallbacks);
-        if (ret < 0)
+        if (alIsSource(this->audioSource_)) // already playing or paused
         {
-            COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
-            ov_clear(&vf);
-            return AL_NONE;
-        }
+            // Set new buffer
+            alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
+            if (ALuint error = alGetError())
+            {
+                COUT(1) << "Sound Error: Could not set buffer \"" << source << "\": " << SoundManager::getALErrorString(error) << std::endl;
+                return;
+            }
 
-        while (!eof)
+            // Sound was already playing or paused because there was a source acquired
+            assert(this->isPlaying() || this->isPaused());
+            alSourcePlay(this->audioSource_);
+            if (int error = alGetError())
+                COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
+            if (this->isPaused())
+                alSourcePause(this->audioSource_);
+        }
+        else // No source acquired so far, but might be set to playing or paused
         {
-            long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
-            if (ret == 0)
+            State state = this->state_; // save
+            if (this->isPlaying() || this->isPaused())
+                doPlay();
+            if (state == Paused)
             {
-                eof = true;
-            }
-            else if (ret < 0)
-            {
-                COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
-                ov_clear(&vf);
-                return AL_NONE;
-            }
-            else
-            {
-                outbuffer.insert(outbuffer.end(), inbuffer, inbuffer + sizeof(inbuffer));
+                this->state_ = Paused;
+                doPause();
             }
         }
-
-        vorbisInfo = ov_info(&vf, -1);
-        if (vorbisInfo->channels == 1)
-            format = AL_FORMAT_MONO16;
-        else
-            format = AL_FORMAT_STEREO16;
-
-        alGenBuffers(1, &buffer);
-        alBufferData(buffer, format, &outbuffer[0], outbuffer.size(), vorbisInfo->rate);
-        ov_clear(&vf);
-
-        return buffer;
     }
 
-} // namespace: orxonox
+    void BaseSound::stateChanged()
+    {
+        switch (this->state_)
+        {
+            case Playing:
+                this->play();
+                break;
+            case Paused:
+                this->pause();
+                break;
+            case Stopped:
+            default:
+                this->stop();
+                break;
+        }
+    }
+}

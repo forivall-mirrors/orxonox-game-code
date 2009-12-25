@@ -97,7 +97,7 @@ namespace orxonox
         this->targetname_ = target;
         this->target_ = 0;
 
-        if (this->targetname_ == "")
+        if (this->targetname_.empty())
             return;
 
         for (ObjectList<WorldEntity>::iterator it = ObjectList<WorldEntity>::begin(); it != ObjectList<WorldEntity>::end(); ++it)
@@ -112,7 +112,7 @@ namespace orxonox
 
     void Attacher::loadedNewXMLName(BaseObject* object)
     {
-        if (this->target_ || this->targetname_ == "")
+        if (this->target_ || this->targetname_.empty())
             return;
 
         WorldEntity* entity = orxonox_cast<WorldEntity*>(object);

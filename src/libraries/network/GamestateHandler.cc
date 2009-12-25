@@ -32,7 +32,7 @@
 namespace orxonox {
 
 GamestateHandler *GamestateHandler::instance_=0;
-  
+
 GamestateHandler::GamestateHandler()
 {
   assert(instance_==0);

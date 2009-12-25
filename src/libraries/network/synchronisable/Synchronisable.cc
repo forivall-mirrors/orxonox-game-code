@@ -61,7 +61,7 @@ namespace orxonox
       objectID_=OBJECTID_UNKNOWN;
     }
     classID_ = static_cast<uint32_t>(-1);
-    
+
     // set dataSize to 0
     this->dataSize_ = 0;
     // set standard priority
@@ -276,14 +276,14 @@ namespace orxonox
       tempsize += (*i)->getData( mem, mode );
       //tempsize += (*i)->getSize( mode );
     }
-    
+
     tempsize += SynchronisableHeader::getSize();
     header.setObjectID( this->objectID_ );
     header.setCreatorID( this->creatorID_ );
     header.setClassID( this->classID_ );
     header.setDataAvailable( true );
     header.setDataSize( tempsize );
-    
+
 #ifndef NDEBUG
     uint32_t size;
     size=getSize(id, mode);
@@ -387,6 +387,17 @@ namespace orxonox
   void Synchronisable::setSyncMode(uint8_t mode){
     assert(mode==0x0 || mode==0x1 || mode==0x2 || mode==0x3);
     this->objectMode_=mode;
+  }
+
+  template <> void Synchronisable::registerVariable( std::string& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
+  {
+    SynchronisableVariableBase* sv;
+    if (bidirectional)
+      sv = new SynchronisableVariableBidirectional<std::string>(variable, mode, cb);
+    else
+      sv = new SynchronisableVariable<std::string>(variable, mode, cb);
+    syncList.push_back(sv);
+    stringList.push_back(sv);
   }
 
 

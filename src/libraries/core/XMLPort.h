@@ -50,6 +50,7 @@
 #include "util/Exception.h"
 #include "util/MultiType.h"
 #include "util/OrxAssert.h"
+#include "util/StringUtils.h"
 #include "Identifier.h"
 #include "Executor.h"
 #include "BaseObject.h"
@@ -183,7 +184,7 @@
         containername = new orxonox::XMLPortClassParamContainer<objectclass>(std::string(paramname), ClassIdentifier<classname>::getIdentifier(), loadexecutor, saveexecutor); \
         ClassIdentifier<classname>::getIdentifier()->addXMLPortParamContainer(paramname, containername); \
     } \
-    containername->port(static_cast<BaseObject*>(this), object, xmlelement, mode)
+    containername->port(dynamic_cast<BaseObject*>(this), object, xmlelement, mode)
 
 // --------------------
 // XMLPortObjectExtended
@@ -315,7 +316,7 @@ namespace orxonox
             inline const std::string& getName() const
                 { return this->paramname_; }
 
-            virtual XMLPortParamContainer& description(const std::string description) = 0;
+            virtual XMLPortParamContainer& description(const std::string& description) = 0;
             virtual const std::string& getDescription() = 0;
 
             virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiType& param) = 0;
@@ -343,7 +344,7 @@ namespace orxonox
         };
 
         public:
-            XMLPortClassParamContainer(const std::string paramname, Identifier* identifier, ExecutorMember<T>* loadexecutor, ExecutorMember<T>* saveexecutor)
+            XMLPortClassParamContainer(const std::string& paramname, Identifier* identifier, ExecutorMember<T>* loadexecutor, ExecutorMember<T>* saveexecutor)
             {
                 this->paramname_ = paramname;
                 this->identifier_ = identifier;
@@ -384,7 +385,7 @@ namespace orxonox
                             this->owner_->lastLoadedXMLElement_ = &xmlelement;
                         }
                         std::map<std::string, std::string>::const_iterator it = this->owner_->xmlAttributes_.find(getLowercase(this->paramname_));
-                        std::string attributeValue("");
+                        std::string attributeValue;
                         if (it != this->owner_->xmlAttributes_.end())
                             attributeValue = it->second;
 
@@ -406,7 +407,7 @@ namespace orxonox
                     catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << this->owner_->getName() << ") in " << this->owner_->getFilename() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << this->owner_->getName() << ") in " << this->owner_->getFilename() << ':' << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
@@ -434,7 +435,7 @@ namespace orxonox
                     return (*this);
             }
 
-            virtual XMLPortParamContainer& description(const std::string description)
+            virtual XMLPortParamContainer& description(const std::string& description)
                 { this->loadexecutor_->setDescription(description); return (*this); }
             virtual const std::string& getDescription()
                 { return this->loadexecutor_->getDescription(); }
@@ -496,7 +497,7 @@ namespace orxonox
             inline const std::string& getName() const
                 { return this->sectionname_; }
 
-            virtual XMLPortObjectContainer& description(const std::string description) = 0;
+            virtual XMLPortObjectContainer& description(const std::string& description) = 0;
             virtual const std::string& getDescription() = 0;
 
             bool identifierIsIncludedInLoaderMask(const Identifier* identifier);
@@ -512,7 +513,7 @@ namespace orxonox
     class XMLPortClassObjectContainer : public XMLPortObjectContainer
     {
         public:
-            XMLPortClassObjectContainer(const std::string sectionname, Identifier* identifier, ExecutorMember<T>* loadexecutor, ExecutorMember<T>* saveexecutor, bool bApplyLoaderMask, bool bLoadBefore)
+            XMLPortClassObjectContainer(const std::string& sectionname, Identifier* identifier, ExecutorMember<T>* loadexecutor, ExecutorMember<T>* saveexecutor, bool bApplyLoaderMask, bool bLoadBefore)
             {
                 this->sectionname_ = sectionname;
                 this->identifier_ = identifier;
@@ -537,7 +538,7 @@ namespace orxonox
                     try
                     {
                         Element* xmlsubelement;
-                        if ((this->sectionname_ != "") && (this->sectionname_.size() > 0))
+                        if (!this->sectionname_.empty())
                             xmlsubelement = xmlelement.FirstChildElement(this->sectionname_, false);
                         else
                             xmlsubelement = &xmlelement;
@@ -569,11 +570,11 @@ namespace orxonox
                                                     if (this->bLoadBefore_)
                                                     {
                                                         newObject->XMLPort(*child, XMLPort::LoadObject);
-                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ")" << std::endl;
+                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ')' << std::endl;
                                                     }
                                                     else
                                                     {
-                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ")" << std::endl;
+                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ')' << std::endl;
                                                     }
 
                                                     COUT(5) << object->getLoaderIndentation();
@@ -608,7 +609,7 @@ namespace orxonox
                                 }
                                 else
                                 {
-                                    if (this->sectionname_ != "")
+                                    if (!this->sectionname_.empty())
                                     {
                                         COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a valid classname." << std::endl;
                                     }
@@ -623,7 +624,7 @@ namespace orxonox
                     catch (ticpp::Exception& ex)
                     {
                         COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << ClassIdentifier<O>::getIdentifier()->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << object->getName() << ") in " << object->getFilename() << ":" << std::endl;
+                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << ClassIdentifier<O>::getIdentifier()->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << object->getName() << ") in " << object->getFilename() << ':' << std::endl;
                         COUT(1) << ex.what() << std::endl;
                     }
                 }
@@ -634,7 +635,7 @@ namespace orxonox
                 return (*this);
             }
 
-            virtual XMLPortObjectContainer& description(const std::string description)
+            virtual XMLPortObjectContainer& description(const std::string& description)
                 { this->loadexecutor_->setDescription(description); return (*this); }
             virtual const std::string& getDescription()
                 { return this->loadexecutor_->getDescription(); }

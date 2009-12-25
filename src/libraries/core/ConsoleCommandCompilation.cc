@@ -34,6 +34,7 @@
 
 #include "util/Debug.h"
 #include "util/ExprParser.h"
+#include "util/StringUtils.h"
 #include "ConsoleCommand.h"
 
 namespace orxonox
@@ -141,7 +142,7 @@ namespace orxonox
             return "";
         }
 
-        std::string output = "";
+        std::string output;
         while (file.good() && !file.eof())
         {
             std::string line;
@@ -157,16 +158,17 @@ namespace orxonox
 
     float calculate(const std::string& calculation)
     {
-        ExprParser expr(calculation);
+        ExprParser expr;
+        expr.parse(calculation);
         if (expr.getSuccess())
         {
             if (expr.getResult() == 42.0)
             {
                 COUT(3) << "Greetings from the restaurant at the end of the universe." << std::endl;
             }
-            if (expr.getRemains() != "")
+            if (!expr.getRemains().empty())
             {
-                COUT(2) << "Warning: Expression could not be parsed to the end! Remains: '" << expr.getRemains() << "'" << std::endl;
+                COUT(2) << "Warning: Expression could not be parsed to the end! Remains: '" << expr.getRemains() << '\'' << std::endl;
             }
             return static_cast<float>(expr.getResult());
         }

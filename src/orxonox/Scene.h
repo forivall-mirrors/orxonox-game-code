@@ -70,9 +70,14 @@ namespace orxonox
             inline bool getShadow() const
                 { return this->bShadows_; }
 
+            inline void setSoundReferenceDistance(float distance)
+                { this->soundReferenceDistance_ = distance; }
+            inline float getSoundReferenceDistance() const
+                { return this->soundReferenceDistance_; }
+
             inline Radar* getRadar()
                 { return this->radar_; }
-            
+
             inline virtual uint32_t getSceneID() const { return this->getObjectID(); }
 
             virtual void tick(float dt);
@@ -95,6 +100,7 @@ namespace orxonox
             ColourValue              ambientLight_;
             std::list<BaseObject*>   objects_;
             bool                     bShadows_;
+            float                    soundReferenceDistance_;
             Radar*                   radar_;
 
 

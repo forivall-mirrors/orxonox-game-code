@@ -101,7 +101,7 @@ namespace orxonox
     {
         if (enterFunctor_)
             (*enterFunctor_)();
-            
+
     }
 
     void InputState::left()

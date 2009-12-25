@@ -58,9 +58,11 @@
 
 namespace orxonox
 {
+#if OGRE_VERSION < 0x010603
     _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Radian& radian);
-    _UtilExport std::istream& operator>>(std::istream& in, orxonox::Radian& radian);
     _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Degree& degree);
+#endif
+    _UtilExport std::istream& operator>>(std::istream& in, orxonox::Radian& radian);
     _UtilExport std::istream& operator>>(std::istream& in, orxonox::Degree& degree);
 
     _UtilExport float getAngle(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& otherposition);
@@ -162,7 +164,7 @@ namespace orxonox
     template <> inline long double          zeroise<long double>()          { return 0; }
     template <> inline bool                 zeroise<bool>()                 { return 0; }
     template <> inline void*                zeroise<void*>()                { return 0; }
-    template <> inline std::string          zeroise<std::string>()          { return ""; }
+    template <> inline std::string          zeroise<std::string>()          { return std::string(); }
     template <> inline orxonox::Radian      zeroise<orxonox::Radian>()      { return orxonox::Radian(0.0f); }
     template <> inline orxonox::Degree      zeroise<orxonox::Degree>()      { return orxonox::Degree(0.0f); }
     template <> inline orxonox::Vector2     zeroise<orxonox::Vector2>()     { return orxonox::Vector2    (0, 0)      ; }

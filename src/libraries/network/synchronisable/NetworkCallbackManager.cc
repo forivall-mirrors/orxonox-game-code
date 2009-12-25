@@ -25,18 +25,18 @@
  *      ...
  *
  */
- 
+
 #include "NetworkCallbackManager.h"
 #include "NetworkCallback.h"
 
 namespace orxonox{
-  
+
   std::set<NetworkCallbackBase*> NetworkCallbackManager::callbackSet_;
   std::queue<NetworkCallbackBase*> NetworkCallbackManager::triggeredCallbacks_;
-  
+
   void NetworkCallbackManager::registerCallback(NetworkCallbackBase *cb)
-  { 
-    callbackSet_.insert(cb); 
+  {
+    callbackSet_.insert(cb);
   }
   void NetworkCallbackManager::deleteCallback(NetworkCallbackBase *cb)
   {
@@ -47,7 +47,7 @@ namespace orxonox{
       delete cb;
     }
   }
-  
+
   void NetworkCallbackManager::triggerCallback(NetworkCallbackBase *cb)
   {
     if (triggeredCallbacks_.empty() || triggeredCallbacks_.front() != cb)

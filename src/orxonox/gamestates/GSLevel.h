@@ -51,7 +51,6 @@ namespace orxonox
     protected:
         void loadLevel();
         void unloadLevel();
-        void showIngameGUI(bool show);
 
         InputState*              gameInputState_;          //!< input state for normal ingame playing
         InputState*              guiMouseOnlyInputState_;  //!< input state if we only need the mouse to use the GUI
@@ -59,6 +58,7 @@ namespace orxonox
 
         XMLFile* startFile_;
         std::set<BaseObject*> staticObjects_;
+        bool bShowIngameGUI_;
     };
 }
 

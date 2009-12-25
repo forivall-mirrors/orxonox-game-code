@@ -61,7 +61,7 @@ namespace orxonox
     void LanguageEntry::setLocalisation(const std::string& localisation)
     {
         // Check if the translation is more than just an empty string
-        if ((localisation != "") && (localisation.size() > 0))
+        if (!localisation.empty())
         {
             this->localisedEntry_ = localisation;
             this->bLocalisationSet_ = true;
@@ -129,7 +129,7 @@ namespace orxonox
             return newEntry;
         }
 
-        COUT(2) << "Warning: Language entry " << label << " is duplicate in " << getFilename(this->defaultLanguage_) << "!" << std::endl;
+        COUT(2) << "Warning: Language entry " << label << " is duplicate in " << getFilename(this->defaultLanguage_) << '!' << std::endl;
         return it->second;
     }
 
@@ -198,7 +198,7 @@ namespace orxonox
     {
         COUT(4) << "Read default language file." << std::endl;
 
-        std::string filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
+        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
 
         // This creates the file if it's not existing
         std::ofstream createFile;
@@ -223,7 +223,7 @@ namespace orxonox
             std::getline(file, lineString);
 
             // Check if the line is empty
-            if ((lineString != "") && (lineString.size() > 0))
+            if (!lineString.empty())
             {
                 size_t pos = lineString.find('=');
 
@@ -245,9 +245,9 @@ namespace orxonox
     */
     void Language::readTranslatedLanguageFile()
     {
-        COUT(4) << "Read translated language file (" << Core::getLanguage() << ")." << std::endl;
+        COUT(4) << "Read translated language file (" << Core::getInstance().getLanguage() << ")." << std::endl;
 
-        std::string filepath = PathConfig::getConfigPathString() + getFilename(Core::getLanguage());
+        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(Core::getInstance().getLanguage());
 
         // Open the file
         std::ifstream file;
@@ -256,9 +256,9 @@ namespace orxonox
         if (!file.is_open())
         {
             COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFilename(Core::getLanguage()) << " to read the translated language entries!" << std::endl;
-            Core::resetLanguage();
-            COUT(3) << "Info: Reset language to " << this->defaultLanguage_ << "." << std::endl;
+            COUT(1) << "Error: Couldn't open file " << getFilename(Core::getInstance().getLanguage()) << " to read the translated language entries!" << std::endl;
+            Core::getInstance().resetLanguage();
+            COUT(3) << "Info: Reset language to " << this->defaultLanguage_ << '.' << std::endl;
             return;
         }
 
@@ -269,7 +269,7 @@ namespace orxonox
             std::getline(file, lineString);
 
             // Check if the line is empty
-            if ((lineString != "") && (lineString.size() > 0))
+            if (!lineString.empty())
             {
                 size_t pos = lineString.find('=');
 
@@ -286,7 +286,7 @@ namespace orxonox
                 }
                 else
                 {
-                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getLanguage()) << std::endl;
+                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getInstance().getLanguage()) << std::endl;
                 }
             }
         }
@@ -301,7 +301,7 @@ namespace orxonox
     {
         COUT(4) << "Language: Write default language file." << std::endl;
 
-        std::string filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
+        const std::string& filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
 
         // Open the file
         std::ofstream file;
@@ -317,7 +317,7 @@ namespace orxonox
         // Iterate through the list an write the lines into the file
         for (std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.begin(); it != this->languageEntries_.end(); ++it)
         {
-            file << (*it).second->getLabel() << "=" << (*it).second->getDefault() << std::endl;
+            file << it->second->getLabel() << '=' << it->second->getDefault() << std::endl;
         }
 
         file.close();

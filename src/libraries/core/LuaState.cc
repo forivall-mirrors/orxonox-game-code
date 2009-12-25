@@ -85,37 +85,26 @@ namespace orxonox
         lua_close(luaState_);
     }
 
-    shared_ptr<ResourceInfo> LuaState::getFileInfo(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)
+    shared_ptr<ResourceInfo> LuaState::getFileInfo(const std::string& filename)
     {
-        shared_ptr<ResourceInfo> sourceInfo;
-        if (resourceGroup != "NoResourceGroupProvided")
-            sourceInfo = Resource::getInfo(filename, resourceGroup);
-
-        // Continue search if not explicitely forbidden
-        if (bSearchOtherPaths && sourceInfo == NULL)
-        {
-            // Call might be relative to the file currently being processed
-            sourceInfo = Resource::getInfo(sourceFileInfo_->path + filename, sourceFileInfo_->group);
-            if (sourceInfo == NULL)
-            {
-                // Maybe find something in the same group but in the root path
-                sourceInfo = Resource::getInfo(filename, sourceFileInfo_->group);
-            }
-        }
+        // Look in the current directory first
+        shared_ptr<ResourceInfo> sourceInfo = Resource::getInfo(sourceFileInfo_->path + filename);
+        // Continue search in root directories
+        if (sourceInfo == NULL && !sourceFileInfo_->path.empty())
+            sourceInfo = Resource::getInfo(filename);
         return sourceInfo;
     }
 
-    void LuaState::includeFile(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)
+    void LuaState::includeFile(const std::string& filename)
     {
-        shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename, resourceGroup, bSearchOtherPaths);
+        shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename);
         if (sourceInfo != NULL)
-            this->includeString(Resource::open(sourceInfo->filename, sourceInfo->group)->getAsString(), sourceInfo);
+            this->includeString(Resource::open(sourceInfo)->getAsString(), sourceInfo);
         else
-            COUT(2) << "LuaState: Cannot include file '" << filename << "' in resource group '"
-                    << (resourceGroup == "NoResourceGroupProvided" ? sourceFileInfo_->group : resourceGroup) << "': group not found." << std::endl;
+            COUT(2) << "LuaState: Cannot include file '" << filename << "'." << std::endl;
     }
 
-    void LuaState::includeString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo)
+    void LuaState::includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo)
     {
         // Parse string with provided include parser (otherwise don't preparse at all)
         std::string luaInput;
@@ -127,19 +116,18 @@ namespace orxonox
         this->doString(luaInput, sourceFileInfo);
     }
 
-    void LuaState::doFile(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)
+    void LuaState::doFile(const std::string& filename)
     {
-        shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename, resourceGroup, bSearchOtherPaths);
+        shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename);
         if (sourceInfo != NULL)
-            this->doString(Resource::open(sourceInfo->filename, sourceInfo->group)->getAsString(), sourceInfo);
+            this->doString(Resource::open(sourceInfo)->getAsString(), sourceInfo);
         else
-            COUT(2) << "LuaState: Cannot do file '" << filename << "' in resource group '"
-                << (resourceGroup == "NoResourceGroupProvided" ? sourceFileInfo_->group : resourceGroup) << "': group not found." << std::endl;
+            COUT(2) << "LuaState: Cannot do file '" << filename << "'." << std::endl;
     }
 
-    void LuaState::doString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo)
+    void LuaState::doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo)
     {
-        // Save the oold source file info
+        // Save the old source file info
         shared_ptr<ResourceInfo> oldSourceFileInfo = sourceFileInfo_;
         // Only override if sourceFileInfo provides useful information
         if (sourceFileInfo != NULL)
@@ -163,7 +151,7 @@ namespace orxonox
             std::string origin;
             if (sourceFileInfo != NULL)
                 origin = " originating from " + sourceFileInfo_->filename;
-            COUT(2) << "Error in Lua-script" << origin << ": " << lua_tostring(luaState_, -1) << std::endl;
+            COUT(1) << "Error in Lua-script" << origin << ": " << lua_tostring(luaState_, -1) << std::endl;
             // return value is nil
             lua_pushnil(luaState_);
         }
@@ -184,9 +172,9 @@ namespace orxonox
         OutputHandler::getOutStream(level) << message << std::endl;
     }
 
-    bool LuaState::fileExists(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths)
+    bool LuaState::fileExists(const std::string& filename)
     {
-        shared_ptr<ResourceInfo> info =  this->getFileInfo(filename, resourceGroup, bSearchOtherPaths);
+        shared_ptr<ResourceInfo> info = this->getFileInfo(filename);
         if (info == NULL)
             return false;
         else
@@ -261,5 +249,17 @@ namespace orxonox
             lua_pushnil(state);
             lua_setglobal(state, it->first.c_str());
         }
+    }
+
+
+    LuaFunctor::LuaFunctor(const std::string& code, LuaState* luaState)
+    {
+        this->code_ = code;
+        this->lua_ = luaState;
+    }
+
+    void LuaFunctor::operator()(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
+    {
+        lua_->doString(this->code_);
     }
 }

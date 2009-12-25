@@ -130,4 +130,11 @@ namespace Loki
     typedef const ScopeGuardImplBase& ScopeGuard;
 }
 
+// Just so you don't have to include StringUtils.h everywhere just for this
+namespace orxonox
+{
+    extern _UtilExport std::string BLANKSTRING;
+}
+
+
 #endif /* _UtilPrereqs_H__ */

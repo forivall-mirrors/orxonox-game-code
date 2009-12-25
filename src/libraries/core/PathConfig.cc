@@ -225,7 +225,7 @@ namespace orxonox
         // Option to put all the config and log files in a separate folder
         if (!CommandLineParser::getArgument("writingPathSuffix")->hasDefaultValue())
         {
-            std::string directory(CommandLineParser::getValue("writingPathSuffix").getString());
+            const std::string& directory(CommandLineParser::getValue("writingPathSuffix").getString());
             configPath_ = configPath_ / directory;
             logPath_    = logPath_    / directory;
         }
@@ -255,12 +255,12 @@ namespace orxonox
         std::vector<std::string> modulePaths;
 
         // We search for helper files with the following extension
-        std::string moduleextension = specialConfig::moduleExtension;
+        const std::string& moduleextension = specialConfig::moduleExtension;
         size_t moduleextensionlength = moduleextension.size();
 
         // Add that path to the PATH variable in case a module depends on another one
-        std::string pathVariable = getenv("PATH");
-        putenv(const_cast<char*>(("PATH=" + pathVariable + ";" + modulePath_.string()).c_str()));
+        std::string pathVariable(getenv("PATH"));
+        putenv(const_cast<char*>(("PATH=" + pathVariable + ';' + modulePath_.string()).c_str()));
 
         // Make sure the path exists, otherwise don't load modules
         if (!boost::filesystem::exists(modulePath_))
@@ -272,7 +272,7 @@ namespace orxonox
         // Iterate through all files
         while (file != end)
         {
-            std::string filename = file->BOOST_LEAF_FUNCTION();
+            const std::string& filename = file->BOOST_LEAF_FUNCTION();
 
             // Check if the file ends with the exension in question
             if (filename.size() > moduleextensionlength)
@@ -280,7 +280,7 @@ namespace orxonox
                 if (filename.substr(filename.size() - moduleextensionlength) == moduleextension)
                 {
                     // We've found a helper file
-                    std::string library = filename.substr(0, filename.size() - moduleextensionlength);
+                    const std::string& library = filename.substr(0, filename.size() - moduleextensionlength);
                     modulePaths.push_back((modulePath_ / library).file_string());
                 }
             }

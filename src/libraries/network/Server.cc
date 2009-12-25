@@ -136,15 +136,15 @@ namespace orxonox
   void Server::update(const Clock& time) {
     // receive incoming packets
     Connection::processQueue();
-    
+
     if ( ClientInformation::hasClients() )
     {
       // process incoming gamestates
       GamestateManager::processGamestates();
-      
+
       // send function calls to clients
       FunctionCallManager::sendCalls();
-      
+
       //this steers our network frequency
       timeSinceLastUpdate_+=time.getDeltaTime();
       if(timeSinceLastUpdate_>=NETWORK_PERIOD)
@@ -159,15 +159,15 @@ namespace orxonox
   bool Server::queuePacket(ENetPacket *packet, int clientID){
     return ServerConnection::addPacket(packet, clientID);
   }
-  
+
   /**
-   * @brief: returns ping time to client in milliseconds 
+   * @brief: returns ping time to client in milliseconds
    */
   unsigned int Server::getRTT(unsigned int clientID){
     assert(ClientInformation::findClient(clientID));
     return ClientInformation::findClient(clientID)->getRTT();
   }
-  
+
   void Server::printRTT()
   {
     for( ClientInformation* temp=ClientInformation::getBegin(); temp!=0; temp=temp->next() )
@@ -316,16 +316,16 @@ namespace orxonox
       return false;
     }
     COUT(5) << "Con.Man: creating client id: " << temp->getID() << std::endl;
-    
+
     // synchronise class ids
     syncClassid(temp->getID());
-    
+
     // now synchronise functionIDs
     packet::FunctionIDs *fIDs = new packet::FunctionIDs();
     fIDs->setClientID(clientID);
     bool b = fIDs->send();
     assert(b);
-    
+
     temp->setSynched(true);
     COUT(4) << "sending welcome" << std::endl;
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
@@ -343,7 +343,7 @@ namespace orxonox
     assert(b);
     return true;
   }
-  
+
   void Server::disconnectClient( ClientInformation *client ){
     ServerConnection::disconnectClient( client );
     GamestateManager::removeClient(client);

@@ -80,7 +80,7 @@ namespace orxonox
             if (this->bQuadratic_)
                 this->setScale(this->amplitude_ * static_cast<float>(square(sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_))));
             else
-                this->setScale(this->amplitude_ * static_cast<float>(sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_)));
+                this->setScale(this->amplitude_ * static_cast<float>(fabs(sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_))));
         }
     }
 }

@@ -33,12 +33,15 @@
 
 #include <boost/shared_ptr.hpp>
 #include <OgreDataStream.h>
+#include <OgreStringVector.h>
 
 namespace orxonox
 {
     // Import the Ogre::DataStreamList
     using Ogre::DataStreamList;
     using Ogre::DataStreamListPtr;
+    using Ogre::StringVector;
+    using Ogre::StringVectorPtr;
 
     //! Stores basic information about a Resource from Ogre
     struct ResourceInfo
@@ -55,9 +58,8 @@ namespace orxonox
         size_t size;
     };
 
-    /**
-    @brief
-        Provides simple functions to easily access the Ogre::ResourceGroupManager
+    /** Provides simple functions to easily access the Ogre::ResourceGroupManager.
+        The wrapper functions also avoid having to deal with resource groups.
     */
     class _CoreExport Resource
     {
@@ -71,55 +73,55 @@ namespace orxonox
             The name of the resource to locate.
             Even if resource locations are added recursively, you
             must provide a fully qualified name to this method.
-        @param groupName
-            The name of the resource group; this determines which 
-            locations are searched. 
-        @param searchGroupsIfNotFound
-            If true, if the resource is not found in 
-            the group specified, other groups will be searched.
         @return
             Shared pointer to data stream containing the data. Will be
             destroyed automatically when no longer referenced.
         */
-        static DataStreamPtr open(const std::string& name,
-            const std::string& group = Resource::DEFAULT_GROUP,
-            bool bSearchGroupsIfNotFound = false);
+        static DataStreamPtr open(const std::string& name);
+
+        //! Similar to open(string, string, bool), but with a fileInfo struct
+        static DataStreamPtr open(shared_ptr<ResourceInfo> fileInfo)
+        {
+            return open(fileInfo->filename);
+        }
 
         /**
         @brief
             Open all resources matching a given pattern (which can contain
-            the character '*' as a wildcard), and return a collection of 
+            the character '*' as a wildcard), and return a collection of
             DataStream objects on them.
         @param pattern
             The pattern to look for. If resource locations have been
             added recursively, subdirectories will be searched too so this
             does not need to be fully qualified.
-        @param groupName
-            The resource group; this determines which locations
-            are searched.
         @return
             Shared pointer to a data stream list , will be
             destroyed automatically when no longer referenced
         */
-        static DataStreamListPtr openMulti(const std::string& pattern, const std::string& group = Resource::DEFAULT_GROUP);
+        static DataStreamListPtr openMulti(const std::string& pattern);
 
         /**
-            Find out if the named file exists in a group. 
+            Find out if the named file exists.
         @param filename
             Fully qualified name of the file to test for
-        @param group
-            The name of the resource group
         */
-        static bool exists(const std::string& name, const std::string& group = Resource::DEFAULT_GROUP);
+        static bool exists(const std::string& name);
 
         /**
-            Get struct with information about group, path and size.
+            Get struct with information about path and size.
         @param filename
             Fully qualified name of the file to test for
-        @param group
-            The name of the resource group
         */
-        static shared_ptr<ResourceInfo> getInfo(const std::string& name, const std::string& group = Resource::DEFAULT_GROUP);
+        static shared_ptr<ResourceInfo> getInfo(const std::string& name);
+
+        /**
+            Retrieves a list with all resources matching a certain pattern.
+        @param pattern
+            The pattern to look for. If resource locations have been
+            added recursively, subdirectories will be searched too so this
+            does not need to be fully qualified.
+        */
+        static StringVectorPtr findResourceNames(const std::string& pattern);
 
         //! Name of the default resource group (usually "General")
         static std::string DEFAULT_GROUP;

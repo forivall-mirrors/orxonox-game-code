@@ -50,6 +50,7 @@
 #include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/Scope.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
 #include "CommandExecutor.h"
@@ -77,90 +78,14 @@ namespace orxonox
 
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
 #ifdef ORXONOX_PLATFORM_WINDOWS
-    SetCommandLineArgument(limitToCPU, 0).information("Limits the program to one cpu/core (1, 2, 3, etc.). 0 turns it off (default)");
+    SetCommandLineArgument(limitToCPU, 1).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is the first core (faster than off)");
 #endif
-
-    /**
-    @brief
-        Helper class for the Core singleton: we cannot derive
-        Core from OrxonoxClass because we need to handle the Identifier
-        destruction in the Core destructor.
-    */
-    class CoreConfiguration : public OrxonoxClass
-    {
-    public:
-        CoreConfiguration()
-        {
-        }
-
-        void initialise()
-        {
-            RegisterRootObject(CoreConfiguration);
-            this->setConfigValues();
-        }
-
-        /**
-            @brief Function to collect the SetConfigValue-macro calls.
-        */
-        void setConfigValues()
-        {
-#ifdef ORXONOX_RELEASE
-            const unsigned int defaultLevelLogFile = 3;
-#else
-            const unsigned int defaultLevelLogFile = 4;
-#endif
-            SetConfigValueGeneric(ConfigFileType::Settings, softDebugLevelLogFile_, "softDebugLevelLogFile", "OutputHandler", defaultLevelLogFile)
-                .description("The maximum level of debug output shown in the log file");
-            OutputHandler::getInstance().setSoftDebugLevel(OutputHandler::logFileOutputListenerName_s, this->softDebugLevelLogFile_);
-
-            SetConfigValue(language_, Language::getInstance().defaultLanguage_)
-                .description("The language of the in game text")
-                .callback(this, &CoreConfiguration::languageChanged);
-            SetConfigValue(bInitializeRandomNumberGenerator_, true)
-                .description("If true, all random actions are different each time you start the game")
-                .callback(this, &CoreConfiguration::initializeRandomNumberGenerator);
-        }
-
-        /**
-            @brief Callback function if the language has changed.
-        */
-        void languageChanged()
-        {
-            // Read the translation file after the language was configured
-            Language::getInstance().readTranslatedLanguageFile();
-        }
-
-        /**
-            @brief Sets the language in the config-file back to the default.
-        */
-        void resetLanguage()
-        {
-            ResetConfigValue(language_);
-        }
-
-        void initializeRandomNumberGenerator()
-        {
-            static bool bInitialized = false;
-            if (!bInitialized && this->bInitializeRandomNumberGenerator_)
-            {
-                srand(static_cast<unsigned int>(time(0)));
-                rand();
-                bInitialized = true;
-            }
-        }
-
-        int softDebugLevelLogFile_;                     //!< The debug level for the log file (belongs to OutputHandler)
-        std::string language_;                          //!< The language
-        bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
-    };
-
 
     Core::Core(const std::string& cmdLine)
         // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
         : identifierDestroyer_(Identifier::destroyAllIdentifiers)
         // Cleanup guard for external console commands that don't belong to an Identifier
         , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
-        , configuration_(new CoreConfiguration()) // Don't yet create config values!
         , bGraphicsLoaded_(false)
     {
         // Set the hard coded fixed paths
@@ -217,15 +142,16 @@ namespace orxonox
         // Required as well for the config values
         this->languageInstance_.reset(new Language());
 
+        // Do this soon after the ConfigFileManager has been created to open up the
+        // possibility to configure everything below here
+        ClassIdentifier<Core>::getIdentifier("Core")->initialiseObject(this, "Core", true);
+        this->setConfigValues();
+
         // create persistent io console
         this->ioConsole_.reset(new IOConsole());
 
         // creates the class hierarchy for all classes with factories
         Identifier::createClassHierarchy();
-
-        // Do this soon after the ConfigFileManager has been created to open up the
-        // possibility to configure everything below here
-        this->configuration_->initialise();
 
         // Load OGRE excluding the renderer and the render window
         this->graphicsManager_.reset(new GraphicsManager(false));
@@ -244,6 +170,46 @@ namespace orxonox
     */
     Core::~Core()
     {
+        // Remove us from the object lists again to avoid problems when destroying them
+        this->unregisterObject();
+    }
+
+    //! Function to collect the SetConfigValue-macro calls.
+    void Core::setConfigValues()
+    {
+#ifdef ORXONOX_RELEASE
+        const unsigned int defaultLevelLogFile = 3;
+#else
+        const unsigned int defaultLevelLogFile = 4;
+#endif
+        setConfigValueGeneric(this, &this->softDebugLevelLogFile_, ConfigFileType::Settings, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
+            .description("The maximum level of debug output shown in the log file");
+        OutputHandler::getInstance().setSoftDebugLevel(OutputHandler::logFileOutputListenerName_s, this->softDebugLevelLogFile_);
+
+        SetConfigValue(language_, Language::getInstance().defaultLanguage_)
+            .description("The language of the in game text")
+            .callback(this, &Core::languageChanged);
+        SetConfigValue(bInitRandomNumberGenerator_, true)
+            .description("If true, all random actions are different each time you start the game")
+            .callback(this, &Core::initRandomNumberGenerator);
+    }
+
+    //! Callback function if the language has changed.
+    void Core::languageChanged()
+    {
+        // Read the translation file after the language was configured
+        Language::getInstance().readTranslatedLanguageFile();
+    }
+
+    void Core::initRandomNumberGenerator()
+    {
+        static bool bInitialized = false;
+        if (!bInitialized && this->bInitRandomNumberGenerator_)
+        {
+            srand(static_cast<unsigned int>(time(0)));
+            rand();
+            bInitialized = true;
+        }
     }
 
     void Core::loadGraphics()
@@ -295,20 +261,10 @@ namespace orxonox
         GameMode::bShowsGraphics_s = false;
     }
 
-    /**
-        @brief Returns the configured language.
-    */
-    /*static*/ const std::string& Core::getLanguage()
+    //! Sets the language in the config-file back to the default.
+    void Core::resetLanguage()
     {
-        return Core::getInstance().configuration_->language_;
-    }
-
-    /**
-        @brief Sets the language in the config-file back to the default.
-    */
-    /*static*/ void Core::resetLanguage()
-    {
-        Core::getInstance().configuration_->resetLanguage();
+        ResetConfigValue(language_);
     }
 
     /**
@@ -359,29 +315,33 @@ namespace orxonox
 
     void Core::preUpdate(const Clock& time)
     {
-        // singletons from other libraries
-        ScopedSingletonManager::update<ScopeID::Root>(time);
+        // Update singletons before general ticking
+        ScopedSingletonManager::preUpdate<ScopeID::Root>(time);
         if (this->bGraphicsLoaded_)
         {
-            // process input events
-            this->inputManager_->update(time);
-            // process gui events
-            this->guiManager_->update(time);
-            // graphics singletons from other libraries
-            ScopedSingletonManager::update<ScopeID::Graphics>(time);
+            // Process input events
+            this->inputManager_->preUpdate(time);
+            // Update GUI
+            this->guiManager_->preUpdate(time);
+            // Update singletons before general ticking
+            ScopedSingletonManager::preUpdate<ScopeID::Graphics>(time);
         }
-        // process console text
-        this->ioConsole_->update(time);
-        // process thread commands
-        this->tclThreadManager_->update(time);
+        // Process console events and status line
+        this->ioConsole_->preUpdate(time);
+        // Process thread commands
+        this->tclThreadManager_->preUpdate(time);
     }
 
     void Core::postUpdate(const Clock& time)
     {
+        // Update singletons just before rendering
+        ScopedSingletonManager::postUpdate<ScopeID::Root>(time);
         if (this->bGraphicsLoaded_)
         {
+            // Update singletons just before rendering
+            ScopedSingletonManager::postUpdate<ScopeID::Graphics>(time);
             // Render (doesn't throw)
-            this->graphicsManager_->update(time);
+            this->graphicsManager_->postUpdate(time);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace orxonox
   GamestateClient::~GamestateClient() {
       std::map<unsigned int, packet::Gamestate *>::iterator it;
       for ( it = this->gamestateMap_.begin(); it != this->gamestateMap_.end(); ++it )
-          delete (*it).second;
+          delete it->second;
       if( this->tempGamestate_ )
           delete this->tempGamestate_;
   }
@@ -80,10 +80,10 @@ namespace orxonox
     int id = GAMESTATEID_INITIAL;
     packet::Gamestate *processed = processGamestate(tempGamestate_);
     assert(processed);
-    
+
     //now call the queued callbacks
     NetworkCallbackManager::callCallbacks();
-    
+
     if (!processed){
       sendAck(0);
       return false;
@@ -125,7 +125,7 @@ namespace orxonox
       if(it->first>=last_diff_)
         break;
       // otherwise delete that stuff
-      delete (*it).second;
+      delete it->second;
       temp=it++;
       gamestateMap_.erase(temp);
     }
@@ -136,7 +136,7 @@ namespace orxonox
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     COUT(4) << "gamestates: ";
     for(it=gamestateMap_.begin(); it!=gamestateMap_.end(); it++){
-      COUT(4) << it->first << ":" << it->second << "|";
+      COUT(4) << it->first << ':' << it->second << '|';
     }
     COUT(4) << std::endl;
 

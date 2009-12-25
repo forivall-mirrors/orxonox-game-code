@@ -143,7 +143,7 @@ namespace orxonox
     void OverlayGroup::changedVisibility()
     {
         SUPER( OverlayGroup, changedVisibility );
-        
+
         for (std::set< SmartPtr<OrxonoxOverlay> >::iterator it = hudElements_.begin(); it != hudElements_.end(); ++it)
             (*it)->changedVisibility(); //inform all Child Overlays that our visibility has changed
     }

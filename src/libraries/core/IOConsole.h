@@ -40,6 +40,12 @@
 
 #ifdef ORXONOX_PLATFORM_UNIX
 struct termios;
+#elif defined(ORXONOX_PLATFORM_WINDOWS)
+#define WIN32_LEAN_AND_MEAN
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
 #endif
 
 namespace orxonox
@@ -52,18 +58,13 @@ namespace orxonox
         IOConsole();
         ~IOConsole();
 
-        void update(const Clock& time);
+        void preUpdate(const Clock& time);
 
     private:
         void setTerminalMode();
-        void resetTerminalMode();
         void getTerminalSize();
-        bool willPrintStatusLines();
-        int extractLogLevel(std::string* text);
-
-        void printLogText(const std::string& line);
-        void printInputLine();
         void printStatusLines();
+        static int extractLogLevel(std::string* text);
 
         // Methods from ShellListener
         void linesChanged();
@@ -73,23 +74,51 @@ namespace orxonox
         void cursorChanged();
         void executed();
         void exit();
+
         Shell*                  shell_;
         InputBuffer*            buffer_;
         std::ostream            cout_;
         std::ostringstream      origCout_;
-        unsigned int            terminalWidth_;
-        unsigned int            terminalHeight_;
-        unsigned int            lastTerminalWidth_;
-        unsigned int            lastTerminalHeight_;
-        bool                    bPrintStatusLine_;
-        bool                    bStatusPrinted_;
-        std::vector<unsigned>   statusLineWidths_;
-        unsigned int            statusLineMaxWidth_;
+        int                     terminalWidth_;
+        int                     terminalHeight_;
+        int                     lastTerminalWidth_;
+        int                     lastTerminalHeight_;
         const std::string       promptString_;
-        static const unsigned   minOutputLines_ = 3;
 
 #ifdef ORXONOX_PLATFORM_UNIX
+        bool willPrintStatusLines();
+        void printInputLine();
+        void printOutputLine(const std::string& line, Shell::LineType type);
+        static void resetTerminalMode();
+
+        bool                    bPrintStatusLine_;
+        bool                    bStatusPrinted_;
+        std::vector<int>        statusLineWidths_;
+        int                     statusLineMaxWidth_;
+        static const int        minOutputLines_ = 3;
         termios*                originalTerminalSettings_;
+
+#elif defined(ORXONOX_PLATFORM_WINDOWS)
+        void resetTerminalMode();
+        void moveCursor(int dx, int dy);
+        void writeText(const std::string& text, const COORD& pos, WORD attributes = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+        void createNewOutputLines(int lines);
+        void printOutputLine(const std::string& line, Shell::LineType type, const COORD& pos);
+
+        static inline COORD makeCOORD(int x, int y)
+        {
+            COORD val = {x, y};
+            return val;
+        }
+
+        DWORD                   originalTerminalSettings_;
+        HANDLE                  stdInHandle_;
+        HANDLE                  stdOutHandle_;
+        int                     inputLineRow_;
+        int                     inputLineHeight_;
+        const int               statusLines_;
+        int                     lastOutputLineHeight_;
+        uint64_t                lastRefreshTime_;
 #endif
 
         static IOConsole* singletonPtr_s;

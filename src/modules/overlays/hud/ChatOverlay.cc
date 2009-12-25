@@ -32,7 +32,7 @@
 #include <OgreTextAreaOverlayElement.h>
 
 #include "util/Convert.h"
-#include "util/UTFStringConversions.h"
+#include "util/DisplayStringConversions.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Executor.h"
@@ -85,7 +85,7 @@ namespace orxonox
             text = message;
         }
 
-        this->messages_.push_back(multi_cast<Ogre::UTFString>(text));
+        this->messages_.push_back(multi_cast<Ogre::DisplayString>(text));
         COUT(0) << "Chat: " << text << std::endl;
 
         Timer* timer = new Timer();
@@ -109,7 +109,7 @@ namespace orxonox
     {
         this->text_->setCaption("");
 
-        for (std::list<Ogre::UTFString>::reverse_iterator it = this->messages_.rbegin(); it != this->messages_.rend(); ++it)
+        for (std::list<Ogre::DisplayString>::reverse_iterator it = this->messages_.rbegin(); it != this->messages_.rend(); ++it)
         {
             this->text_->setCaption(this->text_->getCaption() + "\n" + (*it));
         }

@@ -32,6 +32,7 @@
 #include <ois/OISJoyStick.h>
 #include <boost/foreach.hpp>
 
+#include "util/StringUtils.h"
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -60,11 +61,11 @@ namespace orxonox
         {
             std::string name = oisDevice_->vendor();
             replaceCharacters(name, ' ', '_');
-            deviceName_ = name + "_";
+            deviceName_ = name + '_';
         }
-        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Button))  + "_";
-        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Axis))    + "_";
-        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Slider))  + "_";
+        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Button))  + '_';
+        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Axis))    + '_';
+        deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Slider))  + '_';
         deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_POV));
         //deviceName_ += multi_cast<std::string>(oisDevice_->getNumberOfComponents(OIS::OIS_Vector3));
 
@@ -73,7 +74,7 @@ namespace orxonox
             if (deviceName_ == idString)
             {
                 // Make the ID unique for this execution time.
-                deviceName_ += "_" + multi_cast<std::string>(this->getDeviceName());
+                deviceName_ += '_' + multi_cast<std::string>(this->getDeviceName());
                 break;
             }
         }

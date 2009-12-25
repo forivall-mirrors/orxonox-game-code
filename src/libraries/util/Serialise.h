@@ -36,19 +36,18 @@
 
 #include <cstring>
 #include "util/Math.h"
+#include "util/mbool.h"
 
 namespace orxonox{
-    
-// general template declaration
-    
+
     /** @brief returns the size of the variable in a datastream */
-    template <class T> inline uint32_t returnSize( const T& );
+    template <class T> inline uint32_t returnSize( const T& variable );
     /** @brief loads the value of a variable out of the bytestream and increases the mem pointer */
-    template <class T> inline void loadAndIncrease( const T&, uint8_t*& );
+    template <class T> inline void loadAndIncrease( const T& variable, uint8_t*& mem );
     /** @brief saves the value of a variable into the bytestream and increases the mem pointer */
-    template <class T> inline void saveAndIncrease( const T&, uint8_t*& );
+    template <class T> inline void saveAndIncrease( const T& variable, uint8_t*& mem );
     /** @brief checks whether the variable of type T is the same as in the bytestream */
-    template <class T> inline  bool checkEquality( const T&, uint8_t* );
+    template <class T> inline bool checkEquality( const T& variable, uint8_t* mem );
 
 // =================== Template specialisation stuff =============
 
@@ -202,7 +201,7 @@ namespace orxonox{
     {
         return sizeof(uint32_t);
     }
-    
+
     template <> inline void loadAndIncrease( const unsigned int& variable, uint8_t*& mem )
     {
         *(unsigned int*)( &variable ) = *(uint32_t*)(mem);
@@ -375,7 +374,7 @@ namespace orxonox{
     {
         double temp;
         memcpy(&temp, mem, sizeof(uint64_t));
-        *(long double*)( &variable ) = static_cast<const long double>(temp);
+        *(long double*)( &variable ) = static_cast<long double>(temp);
         mem += returnSize( variable );
     }
 
@@ -470,8 +469,169 @@ namespace orxonox{
         Ogre::Real* r = (Ogre::Real*)mem;
         return variable==Degree(*r);
     }
-    
-    
+
+    // =========== Vector2
+
+    template <> inline uint32_t returnSize( const Vector2& variable )
+    {
+        return returnSize( variable.x )+returnSize( variable.y );
+    }
+
+    template <> inline void saveAndIncrease( const Vector2& variable, uint8_t*& mem )
+    {
+        saveAndIncrease( variable.x, mem );
+        saveAndIncrease( variable.y, mem );
+    }
+
+    template <> inline void loadAndIncrease( const Vector2& variable, uint8_t*& mem )
+    {
+        loadAndIncrease( variable.x, mem );
+        loadAndIncrease( variable.y, mem );
+    }
+
+    template <> inline bool checkEquality( const Vector2& variable, uint8_t* mem )
+    {
+        return checkEquality(variable.x, mem) && checkEquality(variable.y, mem+returnSize(variable.x));
+    }
+
+    // =========== Vector3
+
+    template <> inline uint32_t returnSize( const Vector3& variable )
+    {
+        return returnSize( variable.x )+returnSize( variable.y )+returnSize( variable.z );
+    }
+
+    template <> inline void saveAndIncrease( const Vector3& variable, uint8_t*& mem )
+    {
+        saveAndIncrease( variable.x, mem );
+        saveAndIncrease( variable.y, mem );
+        saveAndIncrease( variable.z, mem );
+    }
+
+    template <> inline void loadAndIncrease( const Vector3& variable, uint8_t*& mem )
+    {
+        loadAndIncrease( variable.x, mem );
+        loadAndIncrease( variable.y, mem );
+        loadAndIncrease( variable.z, mem );
+    }
+
+    template <> inline bool checkEquality( const Vector3& variable, uint8_t* mem )
+    {
+        return checkEquality(variable.x, mem) && checkEquality(variable.y, mem+returnSize(variable.x)) &&
+            checkEquality(variable.z, mem+returnSize(variable.x)+returnSize(variable.y));
+    }
+
+    // =========== Vector4
+
+    template <> inline uint32_t returnSize( const Vector4& variable )
+    {
+        return returnSize( variable.w )+returnSize( variable.x )+returnSize( variable.y )+returnSize( variable.z );
+    }
+
+    template <> inline void saveAndIncrease( const Vector4& variable, uint8_t*& mem )
+    {
+        saveAndIncrease( variable.w, mem );
+        saveAndIncrease( variable.x, mem );
+        saveAndIncrease( variable.y, mem );
+        saveAndIncrease( variable.z, mem );
+    }
+
+    template <> inline void loadAndIncrease( const Vector4& variable, uint8_t*& mem )
+    {
+        loadAndIncrease( variable.w, mem );
+        loadAndIncrease( variable.x, mem );
+        loadAndIncrease( variable.y, mem );
+        loadAndIncrease( variable.z, mem );
+    }
+
+    template <> inline bool checkEquality( const Vector4& variable, uint8_t* mem )
+    {
+        return checkEquality(variable.w, mem) && checkEquality(variable.x, mem+returnSize(variable.w)) &&
+            checkEquality(variable.y, mem+returnSize(variable.w)+returnSize(variable.x)) &&
+            checkEquality(variable.z, mem+returnSize(variable.w)+returnSize(variable.x)+returnSize(variable.y));
+    }
+
+    // =========== Quaternion
+
+    template <> inline uint32_t returnSize( const Quaternion& variable )
+    {
+        return returnSize( variable.w )+returnSize( variable.x )+returnSize( variable.y )+returnSize( variable.z );
+    }
+
+    template <> inline void saveAndIncrease( const Quaternion& variable, uint8_t*& mem )
+    {
+        saveAndIncrease( variable.w, mem );
+        saveAndIncrease( variable.x, mem );
+        saveAndIncrease( variable.y, mem );
+        saveAndIncrease( variable.z, mem );
+    }
+
+    template <> inline void loadAndIncrease( const Quaternion& variable, uint8_t*& mem )
+    {
+        loadAndIncrease( variable.w, mem );
+        loadAndIncrease( variable.x, mem );
+        loadAndIncrease( variable.y, mem );
+        loadAndIncrease( variable.z, mem );
+    }
+
+    template <> inline bool checkEquality( const Quaternion& variable, uint8_t* mem )
+    {
+        return checkEquality(variable.w, mem) && checkEquality(variable.x, mem+returnSize(variable.w)) &&
+            checkEquality(variable.y, mem+returnSize(variable.w)+returnSize(variable.x)) &&
+            checkEquality(variable.z, mem+returnSize(variable.w)+returnSize(variable.x)+returnSize(variable.y));
+    }
+
+    // =========== ColourValue
+
+    template <> inline uint32_t returnSize( const ColourValue& variable )
+    {
+        return returnSize( variable.r )+returnSize( variable.g )+returnSize( variable.b )+returnSize( variable.a );
+    }
+
+    template <> inline void saveAndIncrease( const ColourValue& variable, uint8_t*& mem )
+    {
+        saveAndIncrease( variable.r, mem );
+        saveAndIncrease( variable.g, mem );
+        saveAndIncrease( variable.b, mem );
+        saveAndIncrease( variable.a, mem );
+    }
+
+    template <> inline void loadAndIncrease( const ColourValue& variable, uint8_t*& mem )
+    {
+        loadAndIncrease( variable.r, mem );
+        loadAndIncrease( variable.g, mem );
+        loadAndIncrease( variable.b, mem );
+        loadAndIncrease( variable.a, mem );
+    }
+
+    template <> inline bool checkEquality( const ColourValue& variable, uint8_t* mem )
+    {
+        return checkEquality(variable.r, mem) && checkEquality(variable.g, mem+returnSize(variable.r)) &&
+            checkEquality(variable.b, mem+returnSize(variable.r)+returnSize(variable.g)) &&
+            checkEquality(variable.a, mem+returnSize(variable.r)+returnSize(variable.g)+returnSize(variable.b));
+    }
+
+    // =========== mbool
+
+    template <> inline uint32_t returnSize( const mbool& variable )
+    {
+        return returnSize( (unsigned char&)((mbool&)variable).getMemory() );
+    }
+
+    template <> inline void saveAndIncrease( const mbool& variable, uint8_t*& mem )
+    {
+        saveAndIncrease( (unsigned char&)((mbool&)variable).getMemory(), mem );
+    }
+
+    template <> inline void loadAndIncrease( const mbool& variable, uint8_t*& mem )
+    {
+        loadAndIncrease( (unsigned char&)((mbool&)variable).getMemory(), mem );
+    }
+
+    template <> inline bool checkEquality( const mbool& variable, uint8_t* mem )
+    {
+        return checkEquality( (unsigned char&)((mbool&)variable).getMemory(), mem );
+    }
 }
 
 

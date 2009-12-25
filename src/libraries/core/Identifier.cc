@@ -409,7 +409,7 @@ namespace orxonox
         std::map<std::string, ConfigValueContainer*>::const_iterator it = this->configValues_.find(varname);
         if (it != this->configValues_.end())
         {
-            COUT(2) << "Warning: Overwriting config-value with name " << varname << " in class " << this->getName() << "." << std::endl;
+            COUT(2) << "Warning: Overwriting config-value with name " << varname << " in class " << this->getName() << '.' << std::endl;
             delete (it->second);
         }
 
@@ -457,7 +457,7 @@ namespace orxonox
         std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_.find(command->getName());
         if (it != this->consoleCommands_.end())
         {
-            COUT(2) << "Warning: Overwriting console-command with name " << command->getName() << " in class " << this->getName() << "." << std::endl;
+            COUT(2) << "Warning: Overwriting console-command with name " << command->getName() << " in class " << this->getName() << '.' << std::endl;
             delete (it->second);
         }
 
@@ -523,7 +523,7 @@ namespace orxonox
         std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
         if (it != this->xmlportParamContainers_.end())
         {
-            COUT(2) << "Warning: Overwriting XMLPortParamContainer in class " << this->getName() << "." << std::endl;
+            COUT(2) << "Warning: Overwriting XMLPortParamContainer in class " << this->getName() << '.' << std::endl;
             delete (it->second);
         }
 
@@ -554,7 +554,7 @@ namespace orxonox
         std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
         if (it != this->xmlportObjectContainers_.end())
         {
-            COUT(2) << "Warning: Overwriting XMLPortObjectContainer in class " << this->getName() << "." << std::endl;
+            COUT(2) << "Warning: Overwriting XMLPortObjectContainer in class " << this->getName() << '.' << std::endl;
             delete (it->second);
         }
 
@@ -572,7 +572,7 @@ namespace orxonox
         for (std::set<const Identifier*>::const_iterator it = list.begin(); it != list.end(); ++it)
         {
             if (it != list.begin())
-                out << " ";
+                out << ' ';
             out << (*it)->getName();
         }
 

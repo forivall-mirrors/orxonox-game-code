@@ -68,7 +68,7 @@ namespace orxonox
   bool ClientConnection::establishConnection()
   {
     ENetEvent event;
-    
+
     this->host_ = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
     if ( this->host_ == NULL )
     {
@@ -98,7 +98,7 @@ namespace orxonox
 
   bool ClientConnection::closeConnection() {
     ENetEvent event;
-    
+
     if ( !this->established_ )
       return true;
     this->established_ = false;
@@ -145,9 +145,9 @@ namespace orxonox
         // server closed the connection
     this->connectionClosed();
   }
-  
+
   uint32_t ClientConnection::getRTT()
-  { 
+  {
     assert(server_);
     return server_->roundTripTime;
   }

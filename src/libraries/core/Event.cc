@@ -44,7 +44,7 @@ namespace orxonox
 
     /**
         @brief Processes an event (calls the set-function if the necessary conditions are met).
-        
+
         @param event     The fired event
         @param object    The object whose state is affected by the event (only needed for debug output)
     */
@@ -52,7 +52,7 @@ namespace orxonox
     {
         if (this->bProcessingEvent_)
         {
-            COUT(2) << "Warning: Detected Event loop in section \"" << event.statename_ << "\" of object \"" << object->getName() << "\" and fired by \"" << event.originator_->getName() << "\"" << std::endl;
+            COUT(2) << "Warning: Detected Event loop in section \"" << event.statename_ << "\" of object \"" << object->getName() << "\" and fired by \"" << event.originator_->getName() << '"' << std::endl;
             return;
         }
 

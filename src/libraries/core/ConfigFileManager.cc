@@ -50,11 +50,16 @@ namespace orxonox
         std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
         if (identifier != Identifier::getLowercaseStringIdentifierMapEnd())
         {
-            std::map<std::string, ConfigValueContainer*>::const_iterator variable = (*identifier).second->getLowercaseConfigValueMap().find(getLowercase(varname));
-            if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
-                return (*variable).second->set(value);
+            std::map<std::string, ConfigValueContainer*>::const_iterator variable = identifier->second->getLowercaseConfigValueMap().find(getLowercase(varname));
+            if (variable != identifier->second->getLowercaseConfigValueMapEnd())
+                return variable->second->set(value);
         }
         return false;
+    }
+
+    std::string getConfig(const std::string& classname, const std::string& varname)
+    {
+        return ConfigFileManager::getInstance().getValue(ConfigFileType::Settings, classname, varname, "", true);
     }
 
     bool tconfig(const std::string& classname, const std::string& varname, const std::string& value)
@@ -62,9 +67,9 @@ namespace orxonox
         std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
         if (identifier != Identifier::getLowercaseStringIdentifierMapEnd())
         {
-            std::map<std::string, ConfigValueContainer*>::const_iterator variable = (*identifier).second->getLowercaseConfigValueMap().find(getLowercase(varname));
-            if (variable != (*identifier).second->getLowercaseConfigValueMapEnd())
-                return (*variable).second->tset(value);
+            std::map<std::string, ConfigValueContainer*>::const_iterator variable = identifier->second->getLowercaseConfigValueMap().find(getLowercase(varname));
+            if (variable != identifier->second->getLowercaseConfigValueMapEnd())
+                return variable->second->tset(value);
         }
         return false;
     }
@@ -93,7 +98,7 @@ namespace orxonox
         if (!this->bString_)
             this->value_ = value;
         else
-            this->value_ = "\"" + addSlashes(stripEnclosingQuotes(value)) + "\"";
+            this->value_ = '"' + addSlashes(stripEnclosingQuotes(value)) + '"';
     }
 
     std::string ConfigFileEntryValue::getValue() const
@@ -106,10 +111,10 @@ namespace orxonox
 
     std::string ConfigFileEntryValue::getFileEntry() const
     {
-        if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
-            return (this->name_ + "=" + this->value_);
+        if (this->additionalComment_.empty())
+            return (this->name_ + '=' + this->value_);
         else
-            return (this->name_ + "=" + this->value_ + " " + this->additionalComment_);
+            return (this->name_ + '=' + this->value_ + " " + this->additionalComment_);
     }
 
 
@@ -118,10 +123,10 @@ namespace orxonox
     ////////////////////////////////
     std::string ConfigFileEntryVectorValue::getFileEntry() const
     {
-        if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
-            return (this->name_ + "[" + multi_cast<std::string>(this->index_) + "]" + "=" + this->value_);
+        if (this->additionalComment_.empty())
+            return (this->name_ + '[' + multi_cast<std::string>(this->index_) + ']' + '=' + this->value_);
         else
-            return (this->name_ + "[" + multi_cast<std::string>(this->index_) + "]=" + this->value_ + " " + this->additionalComment_);
+            return (this->name_ + '[' + multi_cast<std::string>(this->index_) + "]=" + this->value_ + ' ' + this->additionalComment_);
     }
 
 
@@ -165,10 +170,10 @@ namespace orxonox
 
     std::string ConfigFileSection::getFileEntry() const
     {
-        if (this->additionalComment_ == "" || this->additionalComment_.size() == 0)
-            return ("[" + this->name_ + "]");
+        if (this->additionalComment_.empty())
+            return ('[' + this->name_ + ']');
         else
-            return ("[" + this->name_ + "] " + this->additionalComment_);
+            return ('[' + this->name_ + "] " + this->additionalComment_);
     }
 
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, const std::string& fallback, bool bString)
@@ -245,7 +250,7 @@ namespace orxonox
                 std::string line;
                 std::getline(file, line);
 
-                std::string temp = getStripped(line);
+                const std::string& temp = getStripped(line);
                 if (!isEmpty(temp) && !isComment(temp))
                 {
                     size_t   pos1 = temp.find('[');
@@ -255,7 +260,7 @@ namespace orxonox
                     if (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1 + 1)
                     {
                         // New section
-                        std::string comment = line.substr(pos2 + 1);
+                        const std::string& comment = line.substr(pos2 + 1);
                         if (isComment(comment))
                             newsection = new ConfigFileSection(line.substr(pos1 + 1, pos2 - pos1 - 1), comment);
                         else
@@ -287,7 +292,7 @@ namespace orxonox
                             {
                                 commentposition = getNextCommentPosition(line, commentposition + 1);
                             }
-                            std::string value = "", comment = "";
+                            std::string value, comment;
                             if (commentposition == std::string::npos)
                             {
                                 value = removeTrailingWhitespaces(line.substr(pos1 + 1));
@@ -376,15 +381,15 @@ namespace orxonox
         for (std::list<ConfigFileSection*>::iterator it1 = this->sections_.begin(); it1 != this->sections_.end(); )
         {
             std::map<std::string, Identifier*>::const_iterator it2 = Identifier::getStringIdentifierMap().find((*it1)->getName());
-            if (it2 != Identifier::getStringIdentifierMapEnd() && (*it2).second->hasConfigValues())
+            if (it2 != Identifier::getStringIdentifierMapEnd() && it2->second->hasConfigValues())
             {
                 // The section exists, delete comment
                 if (bCleanComments)
                     (*it1)->setComment("");
                 for (std::list<ConfigFileEntry*>::iterator it3 = (*it1)->entries_.begin(); it3 != (*it1)->entries_.end(); )
                 {
-                    std::map<std::string, ConfigValueContainer*>::const_iterator it4 = (*it2).second->getConfigValueMap().find((*it3)->getName());
-                    if (it4 != (*it2).second->getConfigValueMapEnd())
+                    std::map<std::string, ConfigValueContainer*>::const_iterator it4 = it2->second->getConfigValueMap().find((*it3)->getName());
+                    if (it4 != it2->second->getConfigValueMapEnd())
                     {
                         // The config-value exists, delete comment
                         if (bCleanComments)
@@ -458,7 +463,7 @@ namespace orxonox
             {
                 if (it->second->hasConfigValues())
                 {
-                    for (std::map<std::string, ConfigValueContainer*>::const_iterator it2 = (*it).second->getConfigValueMapBegin(); it2 != (*it).second->getConfigValueMapEnd(); ++it2)
+                    for (std::map<std::string, ConfigValueContainer*>::const_iterator it2 = it->second->getConfigValueMapBegin(); it2 != it->second->getConfigValueMapEnd(); ++it2)
                         it2->second->update();
 
                     it->second->updateConfigValues();

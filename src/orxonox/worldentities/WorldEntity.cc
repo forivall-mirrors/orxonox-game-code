@@ -471,27 +471,35 @@ namespace orxonox
 
     //! Attaches an Ogre::MovableObject to this WorldEntity.
     void WorldEntity::attachOgreObject(Ogre::MovableObject* object)
-        { this->node_->attachObject(object); }
+    {
+        this->node_->attachObject(object);
+        object->setUserObject(this);
+    }
+
     void WorldEntity::attachOgreObject(Ogre::BillboardSet* object)
-        { this->node_->attachObject(object); }
+        { this->attachOgreObject(static_cast<Ogre::MovableObject*>(object)); }
     void WorldEntity::attachOgreObject(Ogre::Camera* object)
-        { this->node_->attachObject(object); }
+        { this->attachOgreObject(static_cast<Ogre::MovableObject*>(object)); }
     void WorldEntity::attachOgreObject(Ogre::Entity* object)
-        { this->node_->attachObject(object); }
+        { this->attachOgreObject(static_cast<Ogre::MovableObject*>(object)); }
     void WorldEntity::attachOgreObject(Ogre::ParticleSystem* object)
-        { this->node_->attachObject(object); }
+        { this->attachOgreObject(static_cast<Ogre::MovableObject*>(object)); }
 
     //! Detaches an Ogre::MovableObject from this WorldEntity.
     void WorldEntity::detachOgreObject(Ogre::MovableObject* object)
-        { this->node_->detachObject(object); }
+    {
+        object->setUserObject(NULL);
+        this->node_->detachObject(object);
+    }
+
     void WorldEntity::detachOgreObject(Ogre::BillboardSet* object)
-        { this->node_->detachObject(object); }
+        { this->detachOgreObject(static_cast<Ogre::MovableObject*>(object)); }
     void WorldEntity::detachOgreObject(Ogre::Camera* object)
-        { this->node_->detachObject(object); }
+        { this->detachOgreObject(static_cast<Ogre::MovableObject*>(object)); }
     void WorldEntity::detachOgreObject(Ogre::Entity* object)
-        { this->node_->detachObject(object); }
+        { this->detachOgreObject(static_cast<Ogre::MovableObject*>(object)); }
     void WorldEntity::detachOgreObject(Ogre::ParticleSystem* object)
-        { this->node_->detachObject(object); }
+        { this->detachOgreObject(static_cast<Ogre::MovableObject*>(object)); }
 
     //! Detaches an Ogre::MovableObject (by string) from this WorldEntity.
     Ogre::MovableObject* WorldEntity::detachOgreObject(const Ogre::String& name)
@@ -645,7 +653,7 @@ HACK HACK HACK
 
     /**
     @brief
-        Makes this WorldEntity look a specific target location.
+        Makes this WorldEntity look at a specific target location.
     @param relativeTo
         @see WorldEntity::TransformSpace
     @param localDirectionVector
@@ -805,7 +813,7 @@ HACK HACK HACK
     //! Sets the CollisionType by string (used for the XMLPort)
     void WorldEntity::setCollisionTypeStr(const std::string& typeStr)
     {
-        std::string typeStrLower = getLowercase(typeStr);
+        const std::string& typeStrLower = getLowercase(typeStr);
         CollisionType type;
         if (typeStrLower == "dynamic")
             type = Dynamic;
@@ -912,7 +920,7 @@ HACK HACK HACK
         }
     }
 
-    //! Copies our own parameters for restitution, angular factor, dampings and friction to the bullet rigid body.
+    //! Copies our own parameters for restitution, angular factor, damping and friction to the bullet rigid body.
     void WorldEntity::internalSetPhysicsProps()
     {
         if (this->hasPhysics())

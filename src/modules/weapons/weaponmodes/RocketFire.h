@@ -20,42 +20,31 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
- *      Reto Grieder
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
+ *
  */
 
-/**
-@file
-@brief
-    std::sring to Ogre::UTFString conversion functions
-*/
+#ifndef _RocketFire_H__
+#define _RocketFire_H__
 
-#ifndef _UTFStringConversions_H__
-#define _UTFStringConversions_H__
-
-#include "UtilPrereqs.h"
-#include <OgreUTFString.h>
+#include "weapons/WeaponsPrereqs.h"
+#include "weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {
-    template <>
-    struct ConverterExplicit<std::string, Ogre::UTFString>
+    class _WeaponsExport RocketFire : public WeaponMode
     {
-        //! Converts an std::string into an Ogre::UTFString
-        inline static bool convert(Ogre::UTFString* output, const std::string& input)
-        {
-            Ogre::UTFString::code_point cp;
-            for (unsigned int i = 0; i < input.size(); ++i)
-            {
-              cp = input[i];
-              cp &= 0xFF;
-              output->append(1, cp);
-            }
-            return true;
-        }
+        public:
+            RocketFire(BaseObject* creator);
+            virtual ~RocketFire();
+
+            virtual void fire();
+
+        private:
+            float speed_;
     };
 }
 
-#endif /* _UTFStringConversions_H__ */
+#endif /* _RocketFire_H__ */

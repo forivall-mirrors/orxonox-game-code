@@ -39,8 +39,10 @@
 #include "util/OrxEnum.h"
 #include "util/Singleton.h"
 
+// tolua_begin
 namespace orxonox
 {
+    // tolua_end
     // Use int as config file type to have an arbitrary number of files
     struct ConfigFileType : OrxEnum<ConfigFileType>
     {
@@ -49,11 +51,13 @@ namespace orxonox
         static const int NoType              = 0;
         static const int Settings            = 1;
         static const int JoyStickCalibration = 2;
+        static const int CommandHistory      = 3;
 
         static const int numberOfReservedTypes = 1024;
     };
 
-    _CoreExport bool config(const std::string& classname, const std::string& varname, const std::string& value);
+    _CoreExport bool config(const std::string& classname, const std::string& varname, const std::string& value); // tolua_export
+    _CoreExport std::string getConfig(const std::string& classname, const std::string& varname); // tolua_export
     _CoreExport bool tconfig(const std::string& classname, const std::string& varname, const std::string& value);
     _CoreExport void reloadConfig();
     _CoreExport void saveConfig();
@@ -84,7 +88,12 @@ namespace orxonox
     class _CoreExport ConfigFileEntryValue : public ConfigFileEntry
     {
         public:
-            inline ConfigFileEntryValue(const std::string& name, const std::string& value = "", bool bString = false, const std::string& additionalComment = "") : name_(name), value_(value), bString_(bString), additionalComment_(additionalComment) {}
+            inline ConfigFileEntryValue(const std::string& name, const std::string& value = "", bool bString = false, const std::string& additionalComment = "")
+                : name_(name)
+                , value_(value)
+                , bString_(bString)
+                , additionalComment_(additionalComment)
+                {}
             inline virtual ~ConfigFileEntryValue() {}
 
             inline virtual const std::string& getName() const
@@ -168,7 +177,11 @@ namespace orxonox
         friend class ConfigFile;
 
         public:
-            inline ConfigFileSection(const std::string& name, const std::string& additionalComment = "") : name_(name), additionalComment_(additionalComment), bUpdated_(false) {}
+            inline ConfigFileSection(const std::string& name, const std::string& additionalComment = "")
+                : name_(name)
+                , additionalComment_(additionalComment)
+                , bUpdated_(false)
+                {}
             ~ConfigFileSection();
 
             inline const std::string& getName() const
@@ -239,12 +252,12 @@ namespace orxonox
             inline void setValue(const std::string& section, const std::string& name, const std::string& value, bool bString)
                 { this->getSection(section)->setValue(name, value, bString); this->save(); }
             inline std::string getValue(const std::string& section, const std::string& name, const std::string& fallback, bool bString)
-                { std::string output = this->getSection(section)->getValue(name, fallback, bString); this->saveIfUpdated(); return output; }
+                { const std::string& output = this->getSection(section)->getValue(name, fallback, bString); this->saveIfUpdated(); return output; }
 
             inline void setValue(const std::string& section, const std::string& name, unsigned int index, const std::string& value, bool bString)
                 { this->getSection(section)->setValue(name, index, value, bString); this->save(); }
             inline std::string getValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString)
-                { std::string output = this->getSection(section)->getValue(name, index, fallback, bString); this->saveIfUpdated(); return output; }
+                { const std::string& output = this->getSection(section)->getValue(name, index, fallback, bString); this->saveIfUpdated(); return output; }
 
             inline void deleteVectorEntries(const std::string& section, const std::string& name, unsigned int startindex = 0)
                 { this->getSection(section)->deleteVectorEntries(name, startindex); }
@@ -318,6 +331,6 @@ namespace orxonox
 
             static ConfigFileManager* singletonPtr_s;
     };
-}
+} // tolua_export
 
 #endif /* _ConfigFileManager_H__ */

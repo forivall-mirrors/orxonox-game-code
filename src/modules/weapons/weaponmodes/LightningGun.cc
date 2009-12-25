@@ -33,6 +33,7 @@
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -47,6 +48,7 @@ namespace orxonox
         this->speed_ = 150;
 
         this->setMunitionName("LaserMunition");
+        this->setDefaultSound("sounds/Weapon_LightningGun.ogg");
     }
 
     LightningGun::~LightningGun()
@@ -58,6 +60,7 @@ namespace orxonox
         LightningGunProjectile* projectile = new LightningGunProjectile(this);
         projectile->setMaterial("Flares/LightningBall_");
 
+        this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());
         projectile->setVelocity(this->getMuzzleDirection() * this->speed_);

@@ -61,7 +61,7 @@ namespace orxonox
     PongAI::~PongAI()
     {
         for (std::list<std::pair<Timer*, char> >::iterator it = this->reactionTimers_.begin(); it != this->reactionTimers_.end(); ++it)
-            (*it).first->destroy();
+            it->first->destroy();
     }
 
     void PongAI::setConfigValues()
@@ -130,7 +130,7 @@ namespace orxonox
                 delay = true;
                 this->bOscillationAvoidanceActive_ = false;
             }
-            
+
             // If the ball is close enough, calculate another random offset to accelerate the ball
             if (!this->bChangedRandomOffset_)
             {
@@ -205,11 +205,11 @@ namespace orxonox
         {
             // calculate the time until the ball reaches the other side
             float totaltime = (-position.x + dimension.x / 2 * sgn(velocity.x)) / velocity.x;
-            
+
             // calculate wall bounce position (four possible solutions of the equation: pos.z + vel.z*t + acc.z/2*t^2 = +/- dim.z/2)
             float bouncetime = totaltime;
             bool bUpperWall = false;
-            
+
             if (acceleration.z == 0)
             {
                 if (velocity.z > 0)
@@ -269,7 +269,7 @@ namespace orxonox
 
                 // ball bounces after <bouncetime> seconds, update the position and continue
                 velocity.z = velocity.z + acceleration.z * bouncetime;
-                
+
                 if (bUpperWall)
                 {
                     position.z = dimension.y / 2;
@@ -280,7 +280,7 @@ namespace orxonox
                     position.z = -dimension.y / 2;
                     velocity.z = fabs(velocity.z) - fabs(randomErrorZ);
                 }
-                    
+
                 position.x = position.x + velocity.x * bouncetime + randomErrorX;
                 this->ballEndPosition_ = position.z;
             }

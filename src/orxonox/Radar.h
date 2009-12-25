@@ -54,7 +54,7 @@ namespace orxonox
         virtual void tick(float dt);
 
         const RadarViewable* getFocus();
-        RadarViewable::Shape addObjectDescription(const std::string name);
+        RadarViewable::Shape addObjectDescription(const std::string& name);
 
         void listObjects() const;
 

@@ -57,6 +57,7 @@ namespace orxonox
 
         this->setScene(SmartPtr<Scene>(this, false), OBJECTID_UNKNOWN);
         this->bShadows_ = true;
+        this->soundReferenceDistance_ = 20.0;
 
         if (GameMode::showsGraphics())
         {
@@ -112,6 +113,7 @@ namespace orxonox
         XMLPortParam(Scene, "skybox", setSkybox, getSkybox, xmlelement, mode);
         XMLPortParam(Scene, "ambientlight", setAmbientLight, getAmbientLight, xmlelement, mode).defaultValues(ColourValue(0.2f, 0.2f, 0.2f, 1.0f));
         XMLPortParam(Scene, "shadow", setShadow, getShadow, xmlelement, mode).defaultValues(true);
+        XMLPortParam(Scene, "soundReferenceDistance", setSoundReferenceDistance, getSoundReferenceDistance, xmlelement, mode);
 
         XMLPortParam(Scene, "gravity", setGravity, getGravity, xmlelement, mode);
         XMLPortParam(Scene, "negativeWorldRange", setNegativeWorldRange, getNegativeWorldRange, xmlelement, mode);
@@ -333,10 +335,8 @@ namespace orxonox
                                              int index0, const btCollisionObject* colObj1, int partId1, int index1)
     {
         // get the WorldEntity pointers
-        WorldEntity* object0 = static_cast<WorldEntity*>(colObj0->getUserPointer());
-        assert(orxonox_cast<WorldEntity*>(object0));
-        WorldEntity* object1 = static_cast<WorldEntity*>(colObj1->getUserPointer());
-        assert(orxonox_cast<WorldEntity*>(object1));
+        SmartPtr<WorldEntity> object0 = static_cast<WorldEntity*>(colObj0->getUserPointer());
+        SmartPtr<WorldEntity> object1 = static_cast<WorldEntity*>(colObj1->getUserPointer());
 
         // false means that bullet will assume we didn't modify the contact
         bool modified = false;

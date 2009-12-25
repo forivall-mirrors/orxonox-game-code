@@ -9,7 +9,7 @@
    primaryThrust     = 100;
    auxilaryThrust    = 30;
    rotationThrust    = 10;
-   
+
    collisionType     = "dynamic"
    mass              = 100
    linearDamping     = 0.7

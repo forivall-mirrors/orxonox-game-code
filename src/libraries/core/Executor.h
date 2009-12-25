@@ -62,8 +62,8 @@
     } \
     else if (paramCount == 1) \
     { \
-        std::string temp = getStripped(params); \
-        if ((temp != "") && (temp.size() != 0)) \
+        const std::string& temp = getStripped(params); \
+        if (!temp.empty()) \
         { \
             COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl; \
             EXECUTOR_PARSE_FUNCTORCALL(mode)(EXECUTOR_PARSE_OBJECT(mode, 1) MultiType(params)); \
@@ -186,7 +186,7 @@ namespace orxonox
             inline const std::string& getTypenameReturnvalue() const
                 { return this->functor_->getTypenameReturnvalue(); }
 
-            inline void setName(const std::string name)
+            inline void setName(const std::string& name)
                 { this->name_ = name; }
             inline const std::string& getName() const
                 { return this->name_; }

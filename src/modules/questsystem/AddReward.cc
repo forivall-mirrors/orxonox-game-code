@@ -66,7 +66,7 @@ namespace orxonox
         SUPER(AddReward, XMLPort, xmlelement, mode);
 
         XMLPortObject(AddReward, Rewardable, "", addRewardable, getRewardables, xmlelement, mode);
-        
+
         COUT(3) << "New AddReward, with " << this->rewards_.size() << " Rewardables created." << std::endl;
     }
 
@@ -103,13 +103,13 @@ namespace orxonox
     bool AddReward::invoke(PlayerInfo* player)
     {
         COUT(3) << "AddReward on player: " << player << " ." << std::endl;
-        
+
         bool check = true;
         for ( std::list<Rewardable*>::iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward )
         {
             check = check && (*reward)->reward(player);
         }
-        
+
         COUT(3) << "Rewardable successfully added to player." << player << " ." << std::endl;
 
         return check;

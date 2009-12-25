@@ -91,7 +91,7 @@ namespace orxonox
         private:
             std::map<unsigned int, WeaponSet *> weaponSets_;
             std::vector<WeaponSlot *> weaponSlots_;
-            std::set<WeaponPack *> weaponPacks_;
+            std::vector<WeaponPack *> weaponPacks_;
             std::map<Identifier *, Munition *> munitions_;
             Pawn * pawn_;
     };

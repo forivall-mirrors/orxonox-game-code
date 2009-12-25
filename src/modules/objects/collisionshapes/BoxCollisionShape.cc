@@ -65,8 +65,8 @@ namespace orxonox
 
         XMLPortParam(BoxCollisionShape, "halfExtents",  setHalfExtents,  getHalfExtents,  xmlelement, mode);
         XMLPortParamLoadOnly(BoxCollisionShape, "width",  setWidth,  xmlelement, mode);
-        XMLPortParamLoadOnly(BoxCollisionShape, "height", setHeight, xmlelement, mode);    
-        XMLPortParamLoadOnly(BoxCollisionShape, "length", setLength, xmlelement, mode);    
+        XMLPortParamLoadOnly(BoxCollisionShape, "height", setHeight, xmlelement, mode);
+        XMLPortParamLoadOnly(BoxCollisionShape, "length", setLength, xmlelement, mode);
     }
 
     btCollisionShape* BoxCollisionShape::createNewShape() const

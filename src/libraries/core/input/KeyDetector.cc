@@ -38,7 +38,6 @@
 namespace orxonox
 {
     std::string KeyDetector::callbackCommand_s = "KeyDetectorKeyPressed";
-    KeyDetector* KeyDetector::singletonPtr_s = 0;
     ManageScopedSingleton(KeyDetector, ScopeID::Graphics, false);
 
     KeyDetector::KeyDetector()
@@ -67,7 +66,7 @@ namespace orxonox
         clearBindings();
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
         {
-            it->second->bindingString_ = callbackCommand_s + " " + it->second->groupName_ + "." + it->second->name_;
+            it->second->bindingString_ = callbackCommand_s + ' ' + it->second->groupName_ + "." + it->second->name_;
             it->second->parse();
         }
     }

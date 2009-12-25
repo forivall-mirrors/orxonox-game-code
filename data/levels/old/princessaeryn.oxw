@@ -5,13 +5,13 @@
 ?>
 
 <?lua
-	dofile("includes/CuboidSpaceStation.lua")
+    dofile("includes/CuboidSpaceStation.lua")
 ?>
 
 <NotificationQueue
-	name  = "notification"
-	position = "1.0, 1.0"
-	targets = "questsystem"
+ name  = "notification"
+ position = "1.0, 1.0"
+ targets = "questsystem"
 />
 
 <Level

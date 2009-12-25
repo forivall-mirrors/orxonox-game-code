@@ -34,7 +34,7 @@
    font     = "Monofur"
    textsize = 0.03
   />
-  
+
 </OverlayGroup>
 
 <Template name="defaultHUD">

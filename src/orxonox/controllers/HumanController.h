@@ -34,10 +34,13 @@
 #include "tools/interfaces/Tickable.h"
 #include "Controller.h"
 
+// tolua_begin
 namespace orxonox
 {
-    class _OrxonoxExport HumanController : public Controller, public Tickable
-    {
+    class _OrxonoxExport HumanController
+// tolua_end
+        : public Controller, public Tickable
+    { // tolua_export
         public:
             HumanController(BaseObject* creator);
             virtual ~HumanController();
@@ -52,7 +55,12 @@ namespace orxonox
             static void rotatePitch(const Vector2& value);
             static void rotateRoll(const Vector2& value);
 
+            virtual void frontback(const Vector2& value);
+            virtual void yaw(const Vector2& value);
+            virtual void pitch(const Vector2& value);
+
             static void fire(unsigned int firemode);
+            virtual void doFire(unsigned int firemode);
             static void reload();
 
             static void boost();
@@ -65,9 +73,15 @@ namespace orxonox
             static void releaseNavigationFocus();
 
             static void suicide();
+            static void toggleGodMode();
 
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);
+
+            static void pauseControl(); // tolua_export
+            static void resumeControl(); // tolua_export
+            virtual void doPauseControl() {};
+            virtual void doResumeControl() {};
 
             static inline HumanController* getLocalControllerSingleton()
                 { return HumanController::localController_s; }
@@ -75,9 +89,10 @@ namespace orxonox
             //friend class, for mouselook
             friend class Map;
 
-        private:
+        protected:
             static HumanController* localController_s;
-    };
-}
+            bool controlPaused_;
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _HumanController_H__ */

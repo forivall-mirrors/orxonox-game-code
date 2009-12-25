@@ -19,32 +19,32 @@
     <SpawnPoint position="0, 300, -300" pitch=-90 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
 
 
-	<!-- axes in ogre's origin of coordinate system for phsics engine testing purposes-->
-	<!--StaticEntity position="0,0,0">
-		<attached>
-			<Model position="0,0,0" scale=1 mesh="axes.mesh" />
-		</attached>
-	</StaticEntity -->
+    <!-- axes in ogre's origin of coordinate system for phsics engine testing purposes-->
+    <!--StaticEntity position="0,0,0">
+      <attached>
+        <Model position="0,0,0" scale=1 mesh="axes.mesh" />
+      </attached>
+    </StaticEntity -->
 
-	<!-- red sphere for phsics engine testing purposes-->
-	<!--StaticEntity position="40,0,0">
-		<attached>
-			<Model position="0,0,0" scale=1 mesh="sphere.mesh" />
-		</attached>
-	</StaticEntity-->
+    <!-- red sphere for phsics engine testing purposes-->
+    <!--StaticEntity position="40,0,0">
+      <attached>
+        <Model position="0,0,0" scale=1 mesh="sphere.mesh" />
+      </attached>
+    </StaticEntity-->
 
-	<!-- yellow cube for phsics engine testing purposes-->
-	<!--StaticEntity position="80,0,0">
-		<attached>
-			<Model position="0,0,0" scale=1 mesh="cube.mesh" />
-		</attached>
-	</StaticEntity-->
+    <!-- yellow cube for phsics engine testing purposes-->
+    <!--StaticEntity position="80,0,0">
+      <attached>
+        <Model position="0,0,0" scale=1 mesh="cube.mesh" />
+      </attached>
+    </StaticEntity-->
 
-	<!-- Carrier with guns not implemented yet -->
-	<MovableEntity position="-2000,-1000,-2000" pitch="-90" roll="90">
+    <!-- Carrier with guns not implemented yet -->
+    <MovableEntity position="-2000,-1000,-2000" pitch="-90" roll="90">
       <attached>
         <Model position="0,0,0" scale=10 mesh="Carrier.mesh" />
-		<Model position="0,30,20" scale=10 mesh="pirate.mesh" roll="180" />
+        <Model position="0,30,20" scale=10 mesh="pirate.mesh" roll="180" />
         <Model position="-80,-30,20" scale=10 mesh="pirate.mesh" roll="180" />
       </attached>
     </MovableEntity>
@@ -53,10 +53,10 @@
       <attached>
         <Model position="0,0,0" scale=10 mesh="satellite.mesh" />
         <MovableEntity position="-4,0,0" velocity="0,0,0" rotationaxis="0,0,1" rotationrate=50>
-	  <attached>
+          <attached>
             <Model position="4,0,0" scale=10 mesh="satellitedish.mesh"/>
           </attached>
-	</MovableEntity>
+        </MovableEntity>
         <ParticleEmitter pitch=-135 roll=30 position="-14, 3.5,-2.5" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
         <ParticleEmitter pitch=135 roll=30 position="-14, 3.5,-9" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
         <ParticleEmitter pitch=-45 roll=30 position="-14,-3.5,-2.5" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />

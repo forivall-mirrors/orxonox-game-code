@@ -41,7 +41,7 @@ namespace orxonox
         public:
             ArtificialController(BaseObject* creator);
             virtual ~ArtificialController();
-            
+
             void abandonTarget(Pawn* target);
 
         protected:

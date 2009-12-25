@@ -78,7 +78,7 @@ namespace orxonox
 
         m_hInst = (DYNLIB_HANDLE)DYNLIB_LOAD( name.c_str() );
 
-        if( !m_hInst )
+        if (!m_hInst)
             ThrowException(
                 General,
                 "Could not load dynamic library " + mName +
@@ -91,7 +91,7 @@ namespace orxonox
         // Log library unload
         COUT(4) << "Unloading module " << mName << std::endl;
 
-        if( DYNLIB_UNLOAD( m_hInst ) )
+        if (DYNLIB_UNLOAD( m_hInst ))
         {
             ThrowException(
                 General,
@@ -131,7 +131,7 @@ namespace orxonox
 #elif defined(ORXONOX_PLATFORM_APPLE)
         return std::string(mac_errorBundle());
 #else
-        return std::string("");
+        return "";
 #endif
     }
 

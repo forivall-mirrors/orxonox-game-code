@@ -31,21 +31,21 @@
 
 namespace orxonox {
 
-    const std::string QuestNotification::SENDER = "questsystem";
+    const std::string QuestNotification::SENDER("questsystem");
 
     QuestNotification::QuestNotification(BaseObject* creator) : Notification(creator)
     {
         this->initialize();
     }
-    
+
     QuestNotification::QuestNotification(const std::string & message) : Notification(message)
     {
         this->initialize();
     }
-    
+
     QuestNotification::~QuestNotification()
     {
-        
+
     }
 
     bool QuestNotification::send(void)

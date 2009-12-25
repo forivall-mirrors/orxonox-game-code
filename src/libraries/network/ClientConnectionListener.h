@@ -39,7 +39,7 @@ namespace orxonox
         public:
             ClientConnectionListener();
             virtual ~ClientConnectionListener() {}
-            
+
             static void broadcastClientConnected(unsigned int clientID);
             static void broadcastClientDisconnected(unsigned int clientID);
 

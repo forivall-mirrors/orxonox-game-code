@@ -202,14 +202,18 @@ namespace orxonox
         FORCEINLINE void buttonReleased(ButtonTypeParam button)
         {
             // remove the button from the pressedButtons_ list
+            bool found = false;
             for (unsigned int iButton = 0; iButton < pressedButtons_.size(); iButton++)
             {
                 if (pressedButtons_[iButton] == button)
                 {
                     pressedButtons_.erase(pressedButtons_.begin() + iButton);
+                    found = true;
                     break;
                 }
             }
+            if (!found)
+                return; // We ignore release strokes when the press was not captured
 
             // Call states
             for (unsigned int i = 0; i < inputStates_.size(); ++i)

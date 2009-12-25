@@ -49,10 +49,10 @@ namespace orxonox
   class _NetworkExport ServerConnection : public Connection{
   public:
     ~ServerConnection();
-    
+
     void setBindAddress( const std::string& bindAddress );
     void setPort( unsigned int port );
-    
+
     bool openListener();
     bool closeListener();
     static bool addPacket(ENetPacket *packet, unsigned int ID);

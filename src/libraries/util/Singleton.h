@@ -55,9 +55,13 @@ namespace orxonox
         }
 
         //! Update method called by ClassSingletonManager (if used)
-        void updateSingleton(const Clock& time) { static_cast<T*>(T::singletonPtr_s)->update(time); }
+        void preUpdateSingleton(const Clock& time) { static_cast<T*>(T::singletonPtr_s)->preUpdate(time); }
         //! Empty update method for the static polymorphism
-        void update(const Clock& time) { }
+        void preUpdate(const Clock& time) { }
+        //! Update method called by ClassSingletonManager (if used)
+        void postUpdateSingleton(const Clock& time) { static_cast<T*>(T::singletonPtr_s)->postUpdate(time); }
+        //! Empty update method for the static polymorphism
+        void postUpdate(const Clock& time) { }
 
     protected:
         //! Constructor sets the singleton instance pointer

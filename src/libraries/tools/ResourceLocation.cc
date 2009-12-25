@@ -91,7 +91,7 @@ namespace orxonox
     void ResourceLocation::unload()
     {
         // Remove from Ogre paths
-        resourceGroup_.erase();
+        resourceGroup_.clear();
         try
         {
             Ogre::ResourceGroupManager::getSingleton().removeResourceLocation(

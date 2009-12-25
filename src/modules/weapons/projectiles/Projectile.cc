@@ -47,11 +47,13 @@ namespace orxonox
         this->setConfigValues();
         this->bDestroy_ = false;
         this->owner_ = 0;
+        this->damage_ = 15;
 
         // Get notification about collisions
 
         if (GameMode::isMaster())
         {
+            this->setMass(1.0);
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
@@ -70,7 +72,6 @@ namespace orxonox
 
     void Projectile::setConfigValues()
     {
-        SetConfigValue(damage_, 15.0).description("The damage caused by the projectile");
         SetConfigValue(lifetime_, 4.0).description("The time in seconds a projectile stays alive");
     }
 
@@ -127,7 +128,7 @@ namespace orxonox
 
             Pawn* victim = orxonox_cast<Pawn*>(otherObject);
             if (victim)
-                victim->damage(dmg, this->owner_);
+                victim->hit(this->owner_, contactPoint, dmg);
         }
         return false;
     }

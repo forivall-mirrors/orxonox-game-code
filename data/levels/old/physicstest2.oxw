@@ -20,8 +20,8 @@
     <SpawnPoint position="0,   0, -700" yaw  =180 spawnclass=SpaceShip pawndesign=spaceshipassff />
     <SpawnPoint position="0, 300, -300" pitch=-90 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
 
-	<!-- axes in ogre's origin of coordinate system for phsics engine testing purposes-->
-	<StaticEntity
+    <!-- axes in ogre's origin of coordinate system for phsics engine testing purposes-->
+    <StaticEntity
      position        = "0,0,0"
      name            = "banana"
      collisionType   = "static"
@@ -34,21 +34,21 @@
       <collisionShapes>
         <PlaneCollisionShape name="thePlane" planeNormal="0,1,0" planeOffset=0 />
       </collisionShapes>
-	</StaticEntity>
+    </StaticEntity>
 
-	<!-- red sphere for phsics engine testing purposes-->
-	<!--StaticEntity position="40,0,0">
-		<attached>
-			<Model position="0,0,0" scale=1 mesh="sphere.mesh" />
-		</attached>
-	</StaticEntity-->
+    <!-- red sphere for phsics engine testing purposes-->
+    <!--StaticEntity position="40,0,0">
+      <attached>
+        <Model position="0,0,0" scale=1 mesh="sphere.mesh" />
+      </attached>
+    </StaticEntity-->
 
-	<!-- yellow cube for phsics engine testing purposes-->
-	<!--StaticEntity position="80,0,0">
+    <!-- yellow cube for phsics engine testing purposes-->
+    <!--StaticEntity position="80,0,0">
       <attached>
         <Model position="0,0,0" scale=1 mesh="cube.mesh" />
       </attached>
-	</StaticEntity-->
+    </StaticEntity-->
 
     <MovableEntity
      name            = "blubb"

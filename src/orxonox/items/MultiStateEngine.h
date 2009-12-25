@@ -21,6 +21,7 @@
  *
  *   Author:
  *      Fabian 'x3n' Landau
+ *      Reto Grieder
  *   Co-authors:
  *      ...
  *
@@ -31,7 +32,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <list>
+#include <vector>
 #include "Engine.h"
 
 namespace orxonox
@@ -39,6 +40,14 @@ namespace orxonox
     class _OrxonoxExport MultiStateEngine : public Engine
     {
         public:
+            enum EngineState
+            {
+                Idle    = 1,
+                Normal  = 2,
+                Brake   = 4,
+                Boost   = 8
+            };
+
             MultiStateEngine(BaseObject* creator);
             virtual ~MultiStateEngine();
 
@@ -49,22 +58,21 @@ namespace orxonox
 
             virtual void addToSpaceShip(SpaceShip* ship);
 
-            void addActiveEffect(WorldEntity* effect);
-            void addForwardEffect(WorldEntity* effect);
-            void addBoostEffect(WorldEntity* effect);
-            void addBrakeEffect(WorldEntity* effect);
+            void addEffectContainer(EffectContainer* effect);
+            EffectContainer* getEffectContainer(unsigned int index) const;
 
-            WorldEntity* getActiveEffect(unsigned int index) const;
-            WorldEntity* getForwardEffect(unsigned int index) const;
-            WorldEntity* getBoostEffect(unsigned int index) const;
-            WorldEntity* getBrakeEffect(unsigned int index) const;
+            void setDefEngSndNormal(const std::string& engineSound);
+            const std::string& getDefEngSndNormal();
+            void setDefEngSndBoost(const std::string& engineSound);
+            const std::string& getDefEngSndBoost();
 
         private:
-            unsigned char state_;
-            std::list<WorldEntity*> activeEffects_;
-            std::list<WorldEntity*> forwardEffects_;
-            std::list<WorldEntity*> boostEffects_;
-            std::list<WorldEntity*> brakeEffects_;
+            int state_;
+            int oldState_;
+            LuaState* lua_;
+            std::vector<EffectContainer*> effectContainers_;
+            WorldSound* defEngineSndNormal_;
+            WorldSound* defEngineSndBoost_;
     };
 }
 

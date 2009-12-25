@@ -36,19 +36,23 @@
 
 #include "CorePrereqs.h"
 
+// tolua_begin
 namespace orxonox
 {
     class _CoreExport GameMode
     {
+// tolua_end
         friend class Core;
 
         public:
+// tolua_begin
             static bool showsGraphics() { return bShowsGraphics_s; }
             static bool playsSound()    { return bPlaysSound_s; }
             static bool hasServer()     { return bHasServer_s; }
             static bool isClient()      { return bIsClient_s; }
             static bool isStandalone()  { return bIsStandalone_s; }
             static bool isMaster()      { return bIsMaster_s; }
+// tolua_end
 
             static void setPlaysSound   (bool val) { bPlaysSound_s    = val; }
             static void setHasServer    (bool val) { bHasServer_s     = val; updateIsMaster(); }
@@ -71,7 +75,7 @@ namespace orxonox
             static bool bIsClient_s;
             static bool bIsStandalone_s;
             static bool bIsMaster_s;
-    };
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _GameMode_H__ */

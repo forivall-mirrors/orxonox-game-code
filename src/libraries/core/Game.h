@@ -49,6 +49,7 @@
 #include "util/Debug.h"
 #include "util/ScopeGuard.h"
 #include "util/Singleton.h"
+#include "core/OrxonoxClass.h"
 
 /**
 @def
@@ -57,10 +58,10 @@
 */
 #define DeclareGameState(className, stateName, bIgnoreTickTime, bGraphicsMode) \
     static bool BOOST_PP_CAT(bGameStateDummy_##className, __LINE__) = orxonox::Game::declareGameState<className>(#className, stateName, bIgnoreTickTime, bGraphicsMode)
-
+// tolua_begin
 namespace orxonox
 {
-    class GameConfiguration;
+// tolua_end
 
     //! Helper object required before GameStates are being constructed
     struct GameStateInfo
@@ -77,8 +78,11 @@ namespace orxonox
     @remark
         You should only create this singleton once because it owns the Core class! (see remark there)
     */
-    class _CoreExport Game : public Singleton<Game>
-    {
+// tolua_begin
+    class _CoreExport Game
+// tolua_end
+        : public Singleton<Game>, public OrxonoxClass
+    { // tolua_export
         friend class Singleton<Game>;
         typedef std::vector<shared_ptr<GameState> > GameStateVector;
         typedef std::map<std::string, shared_ptr<GameState> > GameStateMap;
@@ -88,15 +92,19 @@ namespace orxonox
         Game(const std::string& cmdLine);
         ~Game();
 
+        void setConfigValues();
+
         void setStateHierarchy(const std::string& str);
         shared_ptr<GameState> getState(const std::string& name);
 
         void run();
         void stop();
 
-        void requestState(const std::string& name);
-        void requestStates(const std::string& names);
-        void popState();
+        static Game& getInstance(){ return Singleton<Game>::getInstance(); } // tolua_export
+
+        void requestState(const std::string& name); //tolua_export
+        void requestStates(const std::string& names); //tolua_export
+        void popState(); //tolua_export
 
         const Clock& getGameClock() { return *this->gameClock_; }
 
@@ -159,7 +167,6 @@ namespace orxonox
         scoped_ptr<Clock>                  gameClock_;
         scoped_ptr<Core>                   core_;
         ObjScopeGuard                      gsFactoryDestroyer_;
-        scoped_ptr<GameConfiguration>      configuration_;
 
         GameStateMap                       constructedStates_;
         GameStateVector                    loadedStates_;
@@ -180,9 +187,14 @@ namespace orxonox
         int                                excessSleepTime_;
         unsigned int                       minimumSleepTime_;
 
+        // config values
+        unsigned int                       statisticsRefreshCycle_;
+        unsigned int                       statisticsAvgLength_;
+        unsigned int                       fpsLimit_;
+
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
         static Game* singletonPtr_s;        //!< Pointer to the Singleton
-    };
+    }; //tolua_export
 
     template <class T>
     /*static*/ bool Game::declareGameState(const std::string& className, const std::string& stateName, bool bIgnoreTickTime, bool bGraphicsMode)
@@ -208,6 +220,6 @@ namespace orxonox
         // just a required dummy return value
         return true;
     }
-}
+} //tolua_export
 
 #endif /* _Game_H__ */

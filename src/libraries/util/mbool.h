@@ -66,7 +66,7 @@ namespace orxonox
 
             inline bool operator!() const
                 { return (!this->value_.bool_); }
-            
+
             inline unsigned char& getMemory(){ return value_.memory_; }
 
         private:

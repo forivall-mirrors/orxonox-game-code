@@ -95,8 +95,8 @@ namespace orxonox
 
         //  & load the GUI itself too, along with some empty windows
         //   = even less delays
-        GUIManager::getInstance().showGUI("PickupInventory");
-        GUIManager::getInstance().executeCode("hideGUI(\"PickupInventory\")");
+        GUIManager::showGUI("PickupInventory");
+        GUIManager::hideGUI("PickupInventory");
         PickupInventory::getSingleton();
     }
     /**
