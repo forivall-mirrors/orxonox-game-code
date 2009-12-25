@@ -116,6 +116,8 @@ namespace orxonox
     // interfaces
     class GametypeMessageListener;
     class NotificationListener;
+    class Pickupable;
+    class PickupCarrier;
     class PlayerTrigger;
     class RadarListener;
     class RadarViewable;
@@ -132,21 +134,6 @@ namespace orxonox
     class Map;
     class OrxonoxOverlay;
     class OverlayGroup;
-
-    // pickup
-    class BaseItem;
-    class DroppedItem;
-    class EquipmentItem;
-    class ModifierPickup;
-    class PassiveItem;
-    class PickupCollection;
-    class PickupInventory;
-    class PickupSpawner;
-    class UsableItem;
-    // pickup, items
-    class HealthImmediate;
-    class HealthUsable;
-    class Jump;
 
     //sound
     class AmbientSound;

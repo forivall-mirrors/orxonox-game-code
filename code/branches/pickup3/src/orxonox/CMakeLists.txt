@@ -46,7 +46,6 @@ ADD_SUBDIRECTORY(infos)
 ADD_SUBDIRECTORY(interfaces)
 ADD_SUBDIRECTORY(items)
 ADD_SUBDIRECTORY(overlays)
-ADD_SUBDIRECTORY(pickup)
 ADD_SUBDIRECTORY(sound)
 ADD_SUBDIRECTORY(weaponsystem)
 ADD_SUBDIRECTORY(worldentities)
@@ -57,8 +56,6 @@ ORXONOX_ADD_LIBRARY(orxonox
     LevelManager.h
     MoodManager.h
     controllers/HumanController.h
-    pickup/BaseItem.h
-    pickup/PickupInventory.h
     sound/SoundManager.h
   DEFINE_SYMBOL
     "ORXONOX_SHARED_BUILD"

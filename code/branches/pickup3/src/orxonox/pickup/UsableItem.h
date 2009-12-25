@@ -45,15 +45,16 @@ namespace orxonox
     */
     class _OrxonoxExport UsableItem : public BaseItem
     {
-    public:
-        UsableItem(BaseObject* creator);
-        virtual ~UsableItem() { }
+        //TODO: What is this exactly?
+        public:
+            UsableItem(BaseObject* creator);
+            virtual ~UsableItem() { }
 
-        /**
-            @brief Method invoked when the item is being used.
-            @param pawn Pawn which is using the item.
-        */
-        virtual void used(Pawn* pawn) { }
+            /**
+                @brief Method invoked when the item is being used.
+                @param pawn Pawn which is using the item.
+            */
+            virtual void used(Pawn* pawn) { }
     };
 }
 

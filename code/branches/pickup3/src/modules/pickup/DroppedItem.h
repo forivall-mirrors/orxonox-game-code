@@ -28,20 +28,36 @@
 
 /**
     @file
-    @brief Implementation of EquipmentItem.
+    @brief Definition of DroppedItem
 */
 
-#include "EquipmentItem.h"
-#include "core/CoreIncludes.h"
+#ifndef _DroppedItem_H__
+#define _DroppedItem_H__
+
+#include "OrxonoxPrereqs.h"
+
+#include "PickupSpawner.h"
 
 namespace orxonox
 {
-    /**
-    @brief Constructor. Registers the EquipmentItem.
-    @param creator Pointer to the object which created this item.
-    */
-    EquipmentItem::EquipmentItem(BaseObject* creator) : BaseItem(creator)
+    class _OrxonoxExport DroppedItem : public PickupSpawner
     {
-        RegisterObject(EquipmentItem);
-    }
+        public:
+            DroppedItem(BaseObject* creator);
+            DroppedItem(BaseObject* creator, BaseItem* item, float triggerDistance, float respawnTime, int maxSpawnedItems);
+            virtual ~DroppedItem();
+
+            static DroppedItem* createDefaultDrop(BaseItem* item, const Vector3& position, const ColourValue& flareColour = ColourValue(0.5f, 1.0f, 0.3f), float timeToLive = 0);
+            static DroppedItem* createDefaultDrop(BaseItem* item, Pawn* pawn, const ColourValue& flareColour = ColourValue(0.5f, 1.0f, 0.3f), float timeToLive = 0);
+
+        protected:
+            virtual BaseItem* getItem(void);
+
+        private:
+
+            BaseItem* item_; //!< The dropped item.
+
+    };
 }
+
+#endif /* _DroppedItem_H__ */

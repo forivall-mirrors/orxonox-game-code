@@ -51,13 +51,15 @@ namespace orxonox
     }
 
     /**
-        @brief
-            Add an item to the collection.
+    @brief
+        Add an item to the collection.
 
-            Only adds the item if there's a free slot for it.
+        Only adds the item if there's a free slot for it.
 
-        @param item Item to add to the collection.
-        @return Returns whether the item has been added to the collection.
+    @param item
+        Item to add to the collection.
+    @return
+        Returns whether the item has been added to the collection.
     */
     bool PickupCollection::add(BaseItem* item)
     {

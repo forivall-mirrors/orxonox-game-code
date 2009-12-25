@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Daniel 'Huty' Haggenmueller
+ *      Damian 'Mozork' Frick
  *   Co-authors:
  *      ...
  *
@@ -28,20 +28,33 @@
 
 /**
     @file
-    @brief Implementation of EquipmentItem.
+    @brief Definition of the PickupCarrier class.
 */
 
-#include "EquipmentItem.h"
-#include "core/CoreIncludes.h"
+#ifndef _PickupCarrier_H__
+#define _PickupCarrier_H__
+
+#include "OrxonoxPrereqs.h"
+#include "core/OrxonoxClass.h"
+
+#include <set>
 
 namespace orxonox
 {
-    /**
-    @brief Constructor. Registers the EquipmentItem.
-    @param creator Pointer to the object which created this item.
-    */
-    EquipmentItem::EquipmentItem(BaseObject* creator) : BaseItem(creator)
+
+    class _OrxonoxExport PickupCarrier : public OrxonoxClass
     {
-        RegisterObject(EquipmentItem);
-    }
+        
+        public:
+            PickupCarrier();
+            virtual ~PickupCarrier();
+        
+        private:
+            
+            std::set<Pickupable*> pickups_;
+        
+    };
+    
 }
+
+#endif /* _PickupCarrier_H__ */

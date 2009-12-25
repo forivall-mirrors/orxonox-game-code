@@ -43,55 +43,57 @@
 namespace orxonox
 {
     /**
-        @brief Static class for the inventory GUI window.
-        @author Daniel 'Huty' Haggenmueller
+    @brief Static class for the inventory GUI window.
+    @author Daniel 'Huty' Haggenmueller
     */
     class _OrxonoxExport PickupInventory
     {
 // tolua_end
-    public:
-        PickupInventory();
-        virtual ~PickupInventory();
+        public:
+            //TODO: Be derived from OrxonoxClass and ScopedSingleton.
+            //Make some methods private?
+            PickupInventory();
+            virtual ~PickupInventory();
 
-        static PickupInventory* getSingleton(); // tolua_export
+            static PickupInventory* getSingleton(); // tolua_export
 
-        static void toggleInventory(); // tolua_export
+            static void toggleInventory(); // tolua_export
 
-        static unsigned int getEquipmentCount(); // tolua_export
-        static unsigned int getUsableCount(); // tolua_export
-        static unsigned int getPassiveCount(); // tolua_export
+            static unsigned int getEquipmentCount(); // tolua_export
+            static unsigned int getUsableCount(); // tolua_export
+            static unsigned int getPassiveCount(); // tolua_export
 
-        static unsigned int getCurrentUsableIndex(); // tolua_export
-        static bool isCurrentUsable(const BaseItem* item); // tolua_export
-        static void selectUsable(unsigned int i); // tolua_export
+            static unsigned int getCurrentUsableIndex(); // tolua_export
+            static bool isCurrentUsable(const BaseItem* item); // tolua_export
+            static void selectUsable(unsigned int i); // tolua_export
 
-        static BaseItem* getEquipmentItem(unsigned int i); // tolua_export
-        static BaseItem* getUsableItem(unsigned int i); // tolua_export
-        static BaseItem* getPassiveItem(unsigned int i); // tolua_export
+            static BaseItem* getEquipmentItem(unsigned int i); // tolua_export
+            static BaseItem* getUsableItem(unsigned int i); // tolua_export
+            static BaseItem* getPassiveItem(unsigned int i); // tolua_export
 
-        static std::string getImageForItem(const BaseItem* item); // tolua_export
+            static std::string getImageForItem(const BaseItem* item); // tolua_export
 
-        void clearInventory(CEGUI::WindowManager* winMgr, CEGUI::Window* equipPane, CEGUI::Window* usablePane); // tolua_export
-        void updateTabs(CEGUI::WindowManager* winMgr, CEGUI::Window* equipWindow, CEGUI::Window* usableWindow); // tolua_export
+            void clearInventory(CEGUI::WindowManager* winMgr, CEGUI::Window* equipPane, CEGUI::Window* usablePane); // tolua_export
+            void updateTabs(CEGUI::WindowManager* winMgr, CEGUI::Window* equipWindow, CEGUI::Window* usableWindow); // tolua_export
 
-        void updateEquipment(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
-        void updateUsable(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
+            void updateEquipment(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
+            void updateUsable(CEGUI::WindowManager* winMgr, CEGUI::Window* target);
 
-        static void createItemWindows(CEGUI::WindowManager* winMgr, const std::string& id, int x, int y);
-        static void setWindowProperties(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, const BaseItem* item, const std::string& textColour);
+            static void createItemWindows(CEGUI::WindowManager* winMgr, const std::string& id, int x, int y);
+            static void setWindowProperties(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, const BaseItem* item, const std::string& textColour);
 
-        const bool isVisible() const
-            { return this->bInventoryVisible_; }
-        void setVisible(bool visible)
-            { this->bInventoryVisible_ = visible; }
-    private:
-        bool bInventoryVisible_;
-        unsigned int createdEquipmentWindows_;
-        unsigned int createdUsableWindows_;
-        unsigned int visibleEquipmentWindows_;
-        unsigned int visibleUsableWIndows_;
+            const bool isVisible() const
+                { return this->bInventoryVisible_; }
+            void setVisible(bool visible)
+                { this->bInventoryVisible_ = visible; }
+        private:
+            bool bInventoryVisible_;
+            unsigned int createdEquipmentWindows_;
+            unsigned int createdUsableWindows_;
+            unsigned int visibleEquipmentWindows_;
+            unsigned int visibleUsableWindows_;
 
-        static PickupInventory* pickupInventory_s;
+            static PickupInventory* pickupInventory_s;
     }; // tolua_export
 } // tolua_export
 

@@ -51,6 +51,16 @@ namespace orxonox
     SetConsoleCommandShortcut(PickupInventory, toggleInventory);
 
     PickupInventory* PickupInventory::pickupInventory_s = NULL;
+
+    //TODO: Comment.
+
+    /**
+    @brief
+        Get a Pointer to the PickupInventory Singleton.
+    @return
+        A Pointer to the PickupInventory.
+    */
+    //TODO: Make SingeltonPtr?
     PickupInventory* PickupInventory::getSingleton()
     {
         if(!PickupInventory::pickupInventory_s)
@@ -59,10 +69,16 @@ namespace orxonox
         return PickupInventory::pickupInventory_s;
     }
 
+    /**
+    @brief
+        Constructor. 
+    */
     PickupInventory::PickupInventory()
     {
-        this->bInventoryVisible_ = false;
-        this->visibleEquipmentWindows_ = this->visibleUsableWIndows_ = 0;
+        //TODO: Maybe some abstraction for the usableWindows, e.g. push and pop...
+        //RegisterObject() ? In some other Class, too. Which?
+        this->bInventoryVisible_ = false; //TODO: If OrxonoxClass, this should already be there...
+        this->visibleEquipmentWindows_ = this->visibleUsableWindows_ = 0;
 
         // Create some windows to avoid creating them while playing
         CEGUI::WindowManager* winMgr = CEGUI::WindowManager::getSingletonPtr();
@@ -76,13 +92,21 @@ namespace orxonox
         }
         this->createdEquipmentWindows_ = this->createdUsableWindows_ = 10;
     }
+
+    /**
+    @brief
+        Destructor.
+    */
+    //TODO: Destroy something?
     PickupInventory::~PickupInventory()
     {
     }
 
-
-
-    void PickupInventory::toggleInventory()
+    /**
+    @brief
+        Toggles the visibility of the inventory.
+    */
+    /*static*/ void PickupInventory::toggleInventory()
     {
         if(PickupInventory::getSingleton()->isVisible()) {
             GUIManager::hideGUI("PickupInventory");
@@ -94,6 +118,10 @@ namespace orxonox
         PickupInventory::getSingleton()->setVisible(!PickupInventory::getSingleton()->isVisible());
     }
 
+    /**
+    @brief
+        
+    */
     unsigned int PickupInventory::getCurrentUsableIndex()
     {
         Pawn* pawn = HumanController::getLocalControllerEntityAsPawn();
@@ -110,6 +138,7 @@ namespace orxonox
 
         return 0;
     }
+
     bool PickupInventory::isCurrentUsable(const BaseItem* item)
     {
         Pawn* pawn = HumanController::getLocalControllerEntityAsPawn();
@@ -118,6 +147,7 @@ namespace orxonox
         else
             return false;
     }
+
     void PickupInventory::selectUsable(unsigned int i)
     {
         Pawn* pawn = HumanController::getLocalControllerEntityAsPawn();
@@ -137,6 +167,7 @@ namespace orxonox
         else
             return 0;
     }
+
     unsigned int PickupInventory::getUsableCount()
     {
         Pawn* pawn = HumanController::getLocalControllerEntityAsPawn();
@@ -145,6 +176,7 @@ namespace orxonox
         else
             return 0;
     }
+
     unsigned int PickupInventory::getPassiveCount()
     {
         Pawn* pawn = HumanController::getLocalControllerEntityAsPawn();
@@ -153,6 +185,7 @@ namespace orxonox
         else
             return 0;
     }
+
     BaseItem* PickupInventory::getEquipmentItem(unsigned int i)
     {
         Pawn* pawn = HumanController::getLocalControllerEntityAsPawn();
@@ -165,6 +198,7 @@ namespace orxonox
         else
             return NULL;
     }
+
     BaseItem* PickupInventory::getUsableItem(unsigned int i)
     {
         Pawn* pawn = HumanController::getLocalControllerEntityAsPawn();
@@ -177,6 +211,7 @@ namespace orxonox
         else
             return NULL;
     }
+
     BaseItem* PickupInventory::getPassiveItem(unsigned int i)
     {
         Pawn* pawn = HumanController::getLocalControllerEntityAsPawn();
@@ -220,7 +255,7 @@ namespace orxonox
             equipPane->removeChildWindow("orxonox/Inventory/Title/equ/" + id.str());
             equipPane->removeChildWindow("orxonox/Inventory/Items/equ/" + id.str());*/
         }
-        for(unsigned int i = 0; i < this->visibleUsableWIndows_; i++)
+        for(unsigned int i = 0; i < this->visibleUsableWindows_; i++)
         {
             std::ostringstream id;
             id << i;
@@ -234,6 +269,7 @@ namespace orxonox
             usablePane->removeChildWindow("orxonox/Inventory/Items/use/" + id.str());*/
         }
     }
+
     void PickupInventory::updateTabs(CEGUI::WindowManager *winMgr, CEGUI::Window *equipWindow, CEGUI::Window *usableWindow)
     {
         this->updateEquipment(winMgr, equipWindow);
@@ -264,6 +300,7 @@ namespace orxonox
             this->visibleEquipmentWindows_ = items.size();
         }
     }
+
     void PickupInventory::updateUsable(CEGUI::WindowManager* winMgr, CEGUI::Window* target)
     {
         Pawn* pawn;
@@ -291,7 +328,7 @@ namespace orxonox
 
                 PickupInventory::setWindowProperties(winMgr, target, id.str(), item, colour);
             }
-            this->visibleUsableWIndows_ = items.size();
+            this->visibleUsableWindows_ = items.size();
         }
     }
 
@@ -321,6 +358,7 @@ namespace orxonox
         btn->subscribeScriptedEvent("Clicked", "PickupInventory.itemClicked");
         btn->setVisible(false);
     }
+
     void PickupInventory::setWindowProperties(CEGUI::WindowManager* winMgr, CEGUI::Window* target, const std::string& id, const BaseItem* item, const std::string& textColour)
     {
         CEGUI::Window* txt = winMgr->getWindow("orxonox/Inventory/Title/" + id);
@@ -345,4 +383,5 @@ namespace orxonox
         target->addChildWindow(txt);
         target->addChildWindow(btn);
     }
+
 }

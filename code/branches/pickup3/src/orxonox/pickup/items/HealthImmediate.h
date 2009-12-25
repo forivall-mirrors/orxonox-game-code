@@ -44,21 +44,23 @@ namespace orxonox
     */
     class _OrxonoxExport HealthImmediate : public PassiveItem
     {
-    public:
-        HealthImmediate(BaseObject* creator);
-        virtual ~HealthImmediate();
+        //TODO: Comment.
+        //Does this get destroyed, when the healt is delivered? It seems to me it doesn't.
+        public:
+            HealthImmediate(BaseObject* creator);
+            virtual ~HealthImmediate();
 
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-        virtual bool pickedUp(Pawn* pawn);
+            virtual bool pickedUp(Pawn* pawn);
 
-        inline float getRecoveredHealth() const
-            { return this->recoveredHealth_; }
-        inline void setRecoveredHealth(float recovery)
-            { this->recoveredHealth_ = recovery; }
+            inline float getRecoveredHealth() const
+                { return this->recoveredHealth_; }
+            inline void setRecoveredHealth(float recovery)
+                { this->recoveredHealth_ = recovery; }
 
-    private:
-        float recoveredHealth_;
+        private:
+            float recoveredHealth_;
     };
 }
 

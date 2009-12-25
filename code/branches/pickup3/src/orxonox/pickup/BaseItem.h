@@ -43,32 +43,33 @@
 namespace orxonox
 {
     /**
-        @brief
-            Base class for all items/pickups.
+    @brief
+        Base class for all items/pickups.
 
-            Provides common methods to be used in derived classes.
-        @author
-            Daniel 'Huty' Haggenmueller
+        Provides common methods to be used in derived classes.
+    @author
+        Daniel 'Huty' Haggenmueller
     */
     class _OrxonoxExport BaseItem : public BaseObject
     {
 // tolua_end
-    public:
-        BaseItem(BaseObject* creator);
-        virtual ~BaseItem();
+        public:
+            BaseItem(BaseObject* creator);
+            virtual ~BaseItem();
 
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< XMLPort
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< XMLPort
 
-        /**
+            /**
             @brief Checks how many instances of this item can be carried at a time.
             @return How many of this item can be carried.
-        */
-        virtual int getMaxCarryAmount() const
-            { return 1; }
+            */
+            virtual int getMaxCarryAmount() const //TODO: Maybe, better to just be virtual.
+                { return BaseItem::MAX_CARRY_AMOUNT; }
 
-        bool addTo(Pawn* pawn);             //!< Add the item to a pawn.
-        bool removeFrom(Pawn* pawn);        //!< Removes the item from a pawn.
-        /**
+            //TODO: Need to be public?
+            bool addTo(Pawn* pawn);             //!< Add the item to a pawn.
+            bool removeFrom(Pawn* pawn);        //!< Removes the item from a pawn.
+            /**
             @brief
                 Method invoked when the item gets picked up.
 
@@ -77,10 +78,10 @@ namespace orxonox
 
             @param pawn Pawn who picks up the item.
             @return Returns whether the pawn was able to pick up the item.
-        */
-        virtual bool pickedUp(Pawn* pawn)
-            { return false; }
-        /**
+            */
+            virtual bool pickedUp(Pawn* pawn) //TODO: Maybe better to be just virtual.
+                { return false; }
+            /**
             @brief
                 Method invoked when the item is dropped from a player.
 
@@ -89,61 +90,66 @@ namespace orxonox
 
             @param pawn Pawn which dropped the item.
             @return Returns whether the item was able to get dropped by the pawn.
-        */
-        virtual bool dropped(Pawn* pawn)
-            { return false; }
+            */
+            virtual bool dropped(Pawn* pawn)
+                { return false; }
 
-        /**
+            /**
             @brief Gets the current owner of the pickup.
             @return Returns the current owner.
-        */
-        inline Pawn* getOwner() const
-            { return this->owner_; }
-        /**
+            */
+            inline Pawn* getOwner() const
+                { return this->owner_; }
+            /**
             @brief Sets the owner of the pickup.
             @param owner New owner for the pickup.
-        */
-        inline void setOwner(Pawn* owner)
-            { this->owner_ = owner; }
+            */
+            inline void setOwner(Pawn* owner)
+                { this->owner_ = owner; }
 
-        /**
+            /**
             @brief Gets the pickupIdentifier of the item.
             @return Returns the pickupIdentifier of the item.
             @see pickupIdentifier_
-        */
-        inline const std::string& getPickupIdentifier() const
-            { return this->pickupIdentifier_; }
-        /**
+            */
+            inline const std::string& getPickupIdentifier() const
+                { return this->pickupIdentifier_; }
+            /**
             @brief Sets the pickupIdentifier for the item.
             @param identifier New pickupIdentifier for the item.
             @see pickupIdentifier_
-        */
-        inline void setPickupIdentifier(const std::string& identifier)
-            { this->pickupIdentifier_ = identifier; }
+            */
+            //TODO: Needs to be public?
+            inline void setPickupIdentifier(const std::string& identifier)
+                { this->pickupIdentifier_ = identifier; }
 
-        // GUI stuff
-        virtual const std::string& getGUIText() const; // tolua_export
-        inline void setGUIText(const std::string& text)
-            { this->guiText_ = text; }
+            // GUI stuff
+            //TODO: Comment. Maybe seperate GUI from Pickup, e.g. ItemDescription...
+            virtual const std::string& getGUIText() const; // tolua_export
+            inline void setGUIText(const std::string& text)
+                { this->guiText_ = text; }
 
-        virtual const std::string& getGUIImage() const
-            { return this->guiImage_; }
-        inline void setGUIImage(const std::string& image)
-            { this->guiImage_ = image; }
-    private:
-        Pawn* owner_;   //!< The current owner of the item.
+            virtual const std::string& getGUIImage() const
+                { return this->guiImage_; }
+            inline void setGUIImage(const std::string& image)
+                { this->guiImage_ = image; }
+        private:
+            static const int MAX_CARRY_AMOUNT = 1;
 
-        /**
+            Pawn* owner_;   //!< The current owner of the item.
+
+            /**
             @brief
                 The pickupIdentifier of the item..
 
                 Usually set to the template name used by a PickupSpawner,
                 used to index items in the PickupCollection.
-        */
-        std::string pickupIdentifier_;
+            */
+            std::string pickupIdentifier_; //TODO: Remove, when always just this->getName().
 
-        std::string guiText_;
-        std::string guiImage_;
+            //TODO: Comment.
+            std::string guiText_;
+            std::string guiImage_;
     }; // tolua_export
 } // tolua_export
 

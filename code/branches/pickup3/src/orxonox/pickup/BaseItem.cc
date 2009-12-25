@@ -40,8 +40,8 @@
 namespace orxonox
 {
     /**
-        @brief Constructor. Registers the BaseItem.
-        @param creator Pointer to the object which created this item.
+    @brief Constructor. Registers the BaseItem.
+    @param creator Pointer to the object which created this item.
     */
     BaseItem::BaseItem(BaseObject* creator) : BaseObject(creator)
     {
@@ -58,9 +58,9 @@ namespace orxonox
     }
 
     /**
-        @brief XMLPort for BaseItem.
-        @param xmlelement Element of the XML-file.
-        @param mode XMLPort mode to use.
+    @brief XMLPort for BaseItem.
+    @param xmlelement Element of the XML-file.
+    @param mode XMLPort mode to use.
     */
     void BaseItem::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -71,15 +71,15 @@ namespace orxonox
     }
 
     /**
-        @brief Method to add the item to a pawn.
-        @param pawn Pawn to which the item should get added.
-        @return Returns whether the pawn's PickupCollection accepted the item.
+    @brief Method to add the item to a pawn.
+    @param pawn Pawn to which the item should get added.
+    @return Returns whether the pawn's PickupCollection accepted the item.
     */
     bool BaseItem::addTo(Pawn* pawn)
     {
         this->setOwner(pawn);
 
-        if (pawn->getPickups().add(this))
+        if (pawn->getPickups().add(this)) //TODO: Does the pawn store his pickups?
         {
             COUT(3) << "Added '" << this->getPickupIdentifier() << "' item." << std::endl;
             return true;
