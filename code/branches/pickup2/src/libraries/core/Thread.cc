@@ -40,8 +40,8 @@
 namespace orxonox
 {
     boost::posix_time::millisec THREAD_WAIT_BEFORE_DETACH(1000);
-    
-    
+
+
     Thread::Thread():
         executor_(0),
         isWorking_(false),
@@ -52,7 +52,7 @@ namespace orxonox
         this->stopThreadMutex_ = new boost::mutex;
         this->workerThread_ = new boost::thread( boost::bind(&Thread::threadLoop, this) );
     }
-    
+
     Thread::~Thread()
     {
         this->stopThreadMutex_->lock();
@@ -65,7 +65,7 @@ namespace orxonox
         delete this->stopThreadMutex_;
         delete this->isWorkingMutex_;
     }
-    
+
     bool Thread::isWorking()
     {
       this->isWorkingMutex_->lock();
@@ -73,7 +73,7 @@ namespace orxonox
       this->isWorkingMutex_->unlock();
       return isWorking;
     }
-    
+
     bool Thread::evaluateExecutor( Executor* executor )
     {
         this->isWorkingMutex_->lock();
@@ -84,7 +84,7 @@ namespace orxonox
         this->executorMutex_->unlock();
         return true;
     }
-    
+
     void Thread::threadLoop()
     {
         bool stopThread = false;
@@ -113,7 +113,7 @@ namespace orxonox
             //this->stopThreadMutex_->unlock();
         }
     }
-    
+
     void Thread::waitUntilFinished()
     {
         bool stillWorking = true;

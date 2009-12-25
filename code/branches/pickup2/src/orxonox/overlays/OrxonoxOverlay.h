@@ -154,6 +154,11 @@ namespace orxonox
         //! ConsoleCommand: Accesses the overlay by its name and rotates it.
         static void rotateOverlay(const std::string& name, const Degree& angle);
 
+        void setBackgroundMaterial(const std::string& material);
+        const std::string& getBackgroundMaterial() const;
+
+        void setBackgroundAlpha(float alpha);
+
         virtual void changedVisibility();
 
         inline void setOwner(BaseObject* owner)
@@ -168,26 +173,17 @@ namespace orxonox
             { return this->owner_; }
         virtual void changedOwner() {}
 
-        inline void setOverlayGroup(OverlayGroup* group)
-        {
-            if (group != this->group_)
-            {
-                this->group_ = group;
-                this->changedOverlayGroup();
-            }
-        }
+        void setOverlayGroup(OverlayGroup* group);
         inline OverlayGroup* getOverlayGroup() const
             { return this->group_; }
-        virtual void changedOverlayGroup() {}
+        virtual void changedOverlayGroup()
+            { this->changedVisibility(); }
 
     protected:
         virtual void angleChanged();
         virtual void sizeCorrectionChanged();
         virtual void sizeChanged();
         virtual void positionChanged();
-
-        void setBackgroundMaterial(const std::string& material);
-        const std::string& getBackgroundMaterial() const;
 
         Ogre::Overlay* overlay_;                   //!< The overlay the entire class is about.
         Ogre::PanelOverlayElement* background_;    //!< Background image (blank per default).
@@ -210,6 +206,7 @@ namespace orxonox
         static std::map<std::string, OrxonoxOverlay*> overlays_s;
         BaseObject* owner_;
         OverlayGroup* group_;
+        Ogre::Pass* backgroundAlphaPass_;
   };
 
   SUPER_FUNCTION(6, OrxonoxOverlay, changedOwner, false);

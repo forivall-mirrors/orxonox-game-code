@@ -28,10 +28,10 @@
  #
 
 # Write some comment
-FILE(APPEND @DATA_INSTALL_DIRECTORY@/resources.oxr "\n\n\n <!-- ---------------------------------------- -->")
-FILE(APPEND @DATA_INSTALL_DIRECTORY@/resources.oxr     "\n <!-- Content from the external data directory -->")
-FILE(APPEND @DATA_INSTALL_DIRECTORY@/resources.oxr     "\n <!-- ---------------------------------------- -->\n\n")
+FILE(APPEND @DATA_INSTALL_DIRECTORY@/DefaultResources.oxr "\n\n\n <!-- ---------------------------------------- -->")
+FILE(APPEND @DATA_INSTALL_DIRECTORY@/DefaultResources.oxr     "\n <!-- Content from the external data directory -->")
+FILE(APPEND @DATA_INSTALL_DIRECTORY@/DefaultResources.oxr     "\n <!-- ---------------------------------------- -->\n\n")
 
 # Append the external file
 FILE(READ   @EXTERNAL_DATA_DIRECTORY@/resources.oxr _external_file)
-FILE(APPEND @DATA_INSTALL_DIRECTORY@/resources.oxr ${_external_file})
+FILE(APPEND @DATA_INSTALL_DIRECTORY@/DefaultResources.oxr ${_external_file})

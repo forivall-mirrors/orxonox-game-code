@@ -130,6 +130,7 @@ namespace orxonox
     CREATE_ORXONOX_EXCEPTION(ParseError);
     CREATE_ORXONOX_EXCEPTION(PluginsNotFound);
     CREATE_ORXONOX_EXCEPTION(InitialisationFailed);
+    CREATE_ORXONOX_EXCEPTION(InitialisationAborted);
     CREATE_ORXONOX_EXCEPTION(NotImplemented);
     CREATE_ORXONOX_EXCEPTION(GameState);
     CREATE_ORXONOX_EXCEPTION(NoGraphics);

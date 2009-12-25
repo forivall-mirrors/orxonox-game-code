@@ -269,10 +269,7 @@ namespace orxonox
             return retVal;
         }
         else
-        {
-            static std::string empty;
-            return empty;
-        }
+            return "";
     }
 
 
@@ -556,7 +553,7 @@ namespace orxonox
      */
     void SubString::debug() const
     {
-        printf("Substring-information::count=%d ::", this->strings.size());
+        printf("Substring-information::count=%zd ::", this->strings.size());
         for (unsigned int i = 0; i < this->strings.size(); i++)
             printf("s%d='%s'::", i, this->strings[i].c_str());
         printf("\n");

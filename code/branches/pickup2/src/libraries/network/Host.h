@@ -30,6 +30,7 @@
 #define _NETWORK_Host_H__
 
 #include "NetworkPrereqs.h"
+#include "core/CorePrereqs.h"
 
 namespace orxonox {
 
@@ -43,7 +44,7 @@ namespace orxonox {
 *       - Makes server and client a singleton
 *       - defines static functions available on both server and client
 *       - is the interface to be used when communicating with the network
-*	@author Oliver Scheuss
+*       @author Oliver Scheuss
 */
 class _NetworkExport Host{
   private:
@@ -78,7 +79,9 @@ class _NetworkExport Host{
     static bool Chat(const std::string& message);
     static bool Broadcast(const std::string& message);
     static bool incomingChat(const std::string& message, unsigned int playerID);
+    virtual void printRTT()=0;
   private:
+    ConsoleCommand* printRTTCC_;
 };
 
 }

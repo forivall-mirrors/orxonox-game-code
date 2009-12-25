@@ -42,6 +42,13 @@
 #include <set>
 #include <vector>
 
+/**
+@def CCOUT
+    Acts almost exactly like COUT(x), but prepends "ClassName: "
+*/
+#define CCOUT(level) \
+    COUT(level) << this->getIdentifier()->getName() << ": "
+
 namespace orxonox
 {
     //! The class all objects and interfaces of the game-logic (not the engine) are derived from.
@@ -65,6 +72,7 @@ namespace orxonox
             virtual ~OrxonoxClass();
 
             void destroy();
+            void unregisterObject();
 
             /** @brief Function to collect the SetConfigValue-macro calls. */
             void setConfigValues() {};
@@ -126,14 +134,21 @@ namespace orxonox
             template <class T> FORCEINLINE const T* getDerivedPointer(unsigned int classID) const
             {   return const_cast<OrxonoxClass*>(this)->getDerivedPointer<T>(classID);   }
 
+        protected:
+            virtual void preDestroy() {}
+
         private:
             /** @brief Increments the reference counter (for smart pointers). */
             inline void incrementReferenceCount()
                 { ++this->referenceCount_; }
             /** @brief Decrements the reference counter (for smart pointers). */
             inline void decrementReferenceCount()
-                { --this->referenceCount_; if (this->referenceCount_ == 0 && this->requestedDestruction_) { delete this; } }
-                
+            {
+                --this->referenceCount_;
+                if (this->referenceCount_ == 0 && this->requestedDestruction_)
+                    this->destroy();
+            }
+
             /** @brief Register a weak pointer which points to this object. */
             template <class T>
             inline void registerWeakPtr(WeakPtr<T>* pointer)

@@ -20,42 +20,27 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
- *      Reto Grieder
+ *      Erwin 'vaiursch' Herrsche
  *   Co-authors:
- *      ...
+ *
  */
 
-/**
-@file
-@brief
-    std::sring to Ogre::UTFString conversion functions
-*/
+#ifndef _SoundStreamer_H__
+#define _SoundStreamer_H__
 
-#ifndef _UTFStringConversions_H__
-#define _UTFStringConversions_H__
+#include "OrxonoxPrereqs.h"
 
-#include "UtilPrereqs.h"
-#include <OgreUTFString.h>
+#include <string>
+#include <OgreDataStream.h>
+#include "core/CorePrereqs.h"
 
 namespace orxonox
 {
-    template <>
-    struct ConverterExplicit<std::string, Ogre::UTFString>
+    class _OrxonoxExport SoundStreamer // class for stream threads
     {
-        //! Converts an std::string into an Ogre::UTFString
-        inline static bool convert(Ogre::UTFString* output, const std::string& input)
-        {
-            Ogre::UTFString::code_point cp;
-            for (unsigned int i = 0; i < input.size(); ++i)
-            {
-              cp = input[i];
-              cp &= 0xFF;
-              output->append(1, cp);
-            }
-            return true;
-        }
+    public:
+        void operator()(ALuint audioSource, DataStreamPtr dataStream);
     };
 }
 
-#endif /* _UTFStringConversions_H__ */
+#endif /* _SoundStreamer_H__ */

@@ -51,7 +51,7 @@ namespace orxonox
         void initialise();
         void setConfigValues();
 
-        void update(const Clock& time);
+        void preUpdate(const Clock& time);
 
         static void openConsole();
         static void closeConsole();
@@ -67,12 +67,13 @@ namespace orxonox
         void lineAdded();
         void inputChanged();
         void cursorChanged();
+        void executed();
         void exit();
 
         void shiftLines();
-        void colourLine(int colourcode, int index);
+        void colourLine(Shell::LineType type, int index);
         void setCursorPosition(unsigned int pos);
-        void print(const std::string& text, int index, bool alwaysShift = false);
+        void print(const std::string& text, Shell::LineType type, int index, bool alwaysShift = false);
 
         void windowResized(unsigned int newWidth, unsigned int newHeight);
 
@@ -80,6 +81,7 @@ namespace orxonox
         void bHidesAllInputChanged();
 
     private: // variables
+        Shell* shell_;
         bool bActive_;
         int windowW_;
         int windowH_;

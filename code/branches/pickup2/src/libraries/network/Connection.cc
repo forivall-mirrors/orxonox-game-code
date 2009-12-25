@@ -74,7 +74,7 @@ namespace orxonox
 
   void Connection::processQueue() {
     ENetEvent event;
-    
+
     assert(this->host_);
 
     while( enet_host_service( this->host_, &event, NETWORK_WAIT_TIMEOUT ) > 0 )

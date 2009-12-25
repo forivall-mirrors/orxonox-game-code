@@ -115,7 +115,7 @@ namespace orxonox
     class _CoreExport Language : public Singleton<Language>
     {
         friend class Singleton<Language>;
-        friend class CoreConfiguration;
+        friend class Core;
 
         public:
             Language();

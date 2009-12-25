@@ -48,7 +48,7 @@ namespace orxonox
         RegisterObject(Notification);
         this->initialize();
     }
-    
+
     /**
     @brief
         Constructor. Creates a Notification with the input message.
@@ -59,7 +59,7 @@ namespace orxonox
     {
         this->message_ = message;
     }
-    
+
     /**
     @brief
         Destructor.
@@ -67,18 +67,18 @@ namespace orxonox
     Notification::~Notification()
     {
     }
-    
+
     /**
     @brief
         Registers the object and sets some default values.
     */
     void Notification::initialize(void)
     {
-        this->message_ = "";
+        this->message_.clear();
         this->sender_ = NotificationManager::NONE;
         this->sent_ = false;
     }
-    
+
     /**
     @brief
         Sends the Notification to the Notificationmanager, with sender NetificationManager::NONE.
@@ -89,7 +89,7 @@ namespace orxonox
     {
         return this->send(NotificationManager::NONE);
     }
-    
+
     /**
     @brief
         Sends the Notification to the Notificationmanager, which then in turn distributes it to the different NotificationQueues.
@@ -105,12 +105,12 @@ namespace orxonox
         if(!successful)
             return false;
         this->sent_ = true;
-        
+
         COUT(3) << "Notification \"" << this->getMessage() << "\" sent." << std::endl;
-        
+
         return true;
     }
-    
+
     /**
     @brief
         Sets the message of the notification.

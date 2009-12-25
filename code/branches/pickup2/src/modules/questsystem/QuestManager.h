@@ -71,7 +71,7 @@ namespace orxonox
             //! Returns a reference to the single instance of the Quest Manager.
             static QuestManager& getInstance() { return Singleton<QuestManager>::getInstance(); } // tolua_export
 
-            //! Retreive the main window for the GUI. 
+            //! Retreive the main window for the GUI.
             CEGUI::Window* getQuestGUI(const std::string & guiName); // tolua_export
 
             bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.

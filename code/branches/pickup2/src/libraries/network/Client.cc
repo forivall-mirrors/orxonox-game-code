@@ -61,7 +61,8 @@ namespace orxonox
   */
   Client::Client():
       isSynched_(false),
-      gameStateFailure_(false)
+      gameStateFailure_(false),
+      timeSinceLastUpdate_(0)
   {
   }
 
@@ -72,7 +73,8 @@ namespace orxonox
   */
   Client::Client(const std::string& address, int port):
       isSynched_(false),
-      gameStateFailure_(false)
+      gameStateFailure_(false),
+      timeSinceLastUpdate_(0)
   {
       setPort( port );
       setServerAddress( address );
@@ -111,6 +113,10 @@ namespace orxonox
     return true;
   }
 
+  void Client::printRTT(){
+    COUT(0) << "Round trip time to server is " << ClientConnection::getRTT() << " ms" << endl;
+  }
+
   /**
    * This function implements the method of sending a chat message to the server
    * @param message message to be sent
@@ -132,7 +138,7 @@ namespace orxonox
     if(timeSinceLastUpdate_>=NETWORK_PERIOD)
     {
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
-      //     COUT(3) << ".";
+      //     COUT(3) << '.';
       if ( isConnected() && isSynched_ )
       {
         COUT(4) << "popping partial gamestate: " << std::endl;
@@ -148,7 +154,7 @@ namespace orxonox
       }
     }
     sendPackets(); // flush the enet queue
-    
+
     Connection::processQueue();
     if(gamestate.processGamestates())
     {
@@ -156,10 +162,11 @@ namespace orxonox
         isSynched_=true;
     }
     gamestate.cleanup();
+    Connection::sendPackets();
 
     return;
   }
-  
+
   void Client::connectionClosed()
   {
     ObjectList<Synchronisable>::iterator it;

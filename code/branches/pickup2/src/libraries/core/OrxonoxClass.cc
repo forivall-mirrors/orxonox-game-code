@@ -33,6 +33,7 @@
 
 #include "OrxonoxClass.h"
 
+#include <cassert>
 #include "MetaObjectList.h"
 #include "Identifier.h"
 #include "WeakPtr.h"
@@ -47,22 +48,24 @@ namespace orxonox
         this->metaList_ = new MetaObjectList();
         this->referenceCount_ = 0;
         this->requestedDestruction_ = false;
+        // Optimisation
+        this->objectPointers_.reserve(6);
     }
 
     /** @brief Destructor: Deletes, if existing, the list of the parents. */
     OrxonoxClass::~OrxonoxClass()
     {
 //        if (!this->requestedDestruction_)
-//            COUT(2) << "Warning: Destroyed object without destroy() (" << this->getIdentifier()->getName() << ")" << std::endl;
+//            COUT(2) << "Warning: Destroyed object without destroy() (" << this->getIdentifier()->getName() << ')' << std::endl;
 
         assert(this->referenceCount_ <= 0);
 
-        delete this->metaList_;
+        this->unregisterObject();
 
         // parents_ exists only if isCreatingHierarchy() of the associated Identifier returned true while creating the class
         if (this->parents_)
             delete this->parents_;
-            
+
         // reset all weak pointers pointing to this object
         for (std::set<WeakPtr<OrxonoxClass>*>::iterator it = this->weakPointers_.begin(); it != this->weakPointers_.end(); )
             (*(it++))->objectDeleted();
@@ -71,9 +74,21 @@ namespace orxonox
     /** @brief Deletes the object if no smart pointers point to this object. Otherwise schedules the object to be deleted as soon as possible. */
     void OrxonoxClass::destroy()
     {
+        assert(this); // Just in case someone tries to delete a NULL pointer
         this->requestedDestruction_ = true;
         if (this->referenceCount_ == 0)
-            delete this;
+        {
+            this->preDestroy();
+            if (this->referenceCount_ == 0)
+                delete this;
+        }
+    }
+
+    void OrxonoxClass::unregisterObject()
+    {
+        if (this->metaList_)
+            delete this->metaList_;
+        this->metaList_ = 0;
     }
 
     /** @brief Returns true if the objects class is of the given type or a derivative. */

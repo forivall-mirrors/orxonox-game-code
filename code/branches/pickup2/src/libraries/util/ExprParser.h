@@ -35,6 +35,8 @@
 #define _FloatParser_H__
 
 #include "UtilPrereqs.h"
+
+#include <map>
 #include <string>
 
 namespace orxonox
@@ -70,10 +72,13 @@ namespace orxonox
         };
 
 
-        ExprParser(const std::string& str);
+        ExprParser();
+        void parse(const std::string& str);
         const std::string& getRemains() { return  this->remains_; }
         double             getResult()  { return  this->result_; }
         bool               getSuccess() { return !this->failed_; }
+
+        void setVariable(const std::string& varname, double value);
 
     private:
         double parse_expr_1();
@@ -96,7 +101,7 @@ namespace orxonox
         bool failed_;
         double result_;
         std::string remains_;
-
+        std::map<std::string, double> variables_;
     };
 
     //Endzeichen für float expression: ')', '}', ']', ',', ';'

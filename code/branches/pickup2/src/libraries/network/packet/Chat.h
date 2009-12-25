@@ -35,7 +35,7 @@
 namespace orxonox {
 namespace packet {
 /**
-	@author
+    @author
 */
 class _NetworkExport Chat : public Packet
 {

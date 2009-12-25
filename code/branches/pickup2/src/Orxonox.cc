@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 #ifndef ORXONOX_USE_WINMAIN
         std::string strCmdLine;
         for (int i = 1; i < argc; ++i)
-            strCmdLine += argv[i] + std::string(" ");
+            strCmdLine = strCmdLine + argv[i] + ' ';
 #endif
 
         return orxonox::main(strCmdLine);

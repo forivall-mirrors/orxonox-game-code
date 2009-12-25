@@ -14,42 +14,28 @@ logMessage = function(level, message)
 end
 
 -- Redirect dofile in order to load with the resource manager
--- Note: The function does not behave exactly like LuaState::doFile because the
---       default argument here for the group is not "General" but
---       "NoResourceGroupProvided". This resolves to the resource group used to
---       do the current file.
-doFile = function(filename, resourceGroup)
-  local bSearchOtherPaths = (resourceGroup == nil) or false
-  resourceGroup = resourceGroup or "NoResourceGroupProvided"
-  luaState:doFile(filename, resourceGroup, bSearchOtherPaths)
+doFile = function(filename)
+  luaState:doFile(filename)
   -- Required because the C++ function cannot return whatever might be on the stack
-  return LuaStateReturnValue
+  return LuaStateReturnValue -- C-injected global variable
 end
 original_dofile = dofile
 dofile = doFile
 
 -- Create includeFile function that preparses the file according
 -- to a function provided to the LuaState constructor (in C++)
--- Note: See the same notes as for doFile
-include = function(filename, resourceGroup)
-  local bSearchOtherPaths = (resourceGroup == nil) or false
-  resourceGroup = resourceGroup or "NoResourceGroupProvided"
-  luaState:includeFile(filename, resourceGroup, bSearchOtherPaths)
+include = function(filename)
+  luaState:includeFile(filename)
   -- Required because the C++ function cannot return whatever might be on the stack
-  return LuaStateReturnValue
+  return LuaStateReturnValue -- C-injected global variable
 end
 
 -- Replace require function with almost similar behaviour
--- The difference is that you need to provide a resource group
--- Default value there is the current one (if present) or else "General"
--- But the loaded modules are then stored with only with the name (where name has no .lua extension)
--- CAUTION: That also means that you need to take care of conflicting filenames among groups
--- Furthermore the moduleName parameters is appended with the .lua extension when looking for the file
+-- The loaded modules are then stored with their names (where name has no .lua extension)
+-- Furthermore the ".lua" extension is appended to the moduleName parameter when looking for the file
 old_require = require
-require = function(moduleName, resourceGroup)
-  local bSearchOtherPaths = (resourceGroup == nil) or false
-  resourceGroup = resourceGroup or "NoResourceGroupProvided"
-  if not luaState:fileExists(moduleName .. ".lua", resourceGroup, bSearchOtherPaths) then
+require = function(moduleName)
+  if not luaState:fileExists(moduleName .. ".lua") then
     return nil
   end
   if not _LOADED then
@@ -59,10 +45,15 @@ require = function(moduleName, resourceGroup)
     -- save old value
     _REQUIREDNAME_OLD = _REQUIREDNAME
     _REQUIREDNAME = moduleName
-    luaState:doFile(moduleName .. ".lua", resourceGroup, bSearchOtherPaths)
+    luaState:doFile(moduleName .. ".lua")
     _LOADED[moduleName] = LuaStateReturnValue or true
     -- restore old value
     _REQUIREDNAME = _REQUIREDNAME_OLD
   end
   return _LOADED[moduleName]
+end
+
+-- Convenience function for console commands
+orxonox.execute = function(command)
+  orxonox.CommandExecutor:execute(command)
 end

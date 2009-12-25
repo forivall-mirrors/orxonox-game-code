@@ -39,7 +39,6 @@
 
 namespace orxonox
 {
-    KeyBinderManager* KeyBinderManager::singletonPtr_s = 0;
     ManageScopedSingleton(KeyBinderManager, ScopeID::Graphics, false);
 
     KeyBinderManager::KeyBinderManager()
@@ -47,8 +46,6 @@ namespace orxonox
         , bDefaultFileLoaded_(true)
         , bBinding_(false)
     {
-        this->callbackFunction_ = createFunctor(&KeyBinderManager::callback, this);
-
         RegisterObject(KeyBinderManager);
         this->setConfigValues();
 
@@ -56,6 +53,10 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::keybind,  this), "keybind" ))
             .defaultValues("");
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::tkeybind, this), "tkeybind"))
+            .defaultValues("");
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::unbind, this), "unbind"))
+            .defaultValues("");
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::tunbind, this), "tunbind"))
             .defaultValues("");
 
         // Load default key binder
@@ -67,7 +68,6 @@ namespace orxonox
         // Delete all remaining KeyBinders
         for (std::map<std::string, KeyBinder*>::const_iterator it = this->binders_.begin(); it != this->binders_.end(); ++it)
             delete it->second;
-        delete this->callbackFunction_;
     }
 
     void KeyBinderManager::setConfigValues()
@@ -90,6 +90,16 @@ namespace orxonox
             this->bDefaultFileLoaded_ = true;
         else
             this->bDefaultFileLoaded_ = false;
+    }
+
+    inline void KeyBinderManager::unbind(const std::string& binding)
+    {
+        this->currentBinder_->setBinding("", binding, false);
+    }
+
+    inline void KeyBinderManager::tunbind(const std::string& binding)
+    {
+        this->currentBinder_->setBinding("", binding, true);
     }
 
     void KeyBinderManager::load(const std::string& filename)
@@ -145,7 +155,7 @@ namespace orxonox
         if (!this->bBinding_)
         {
             COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
-            KeyDetector::getInstance().setCallback(callbackFunction_);
+            KeyDetector::getInstance().setCallback(shared_ptr<Functor>(createFunctor(&KeyBinderManager::keybindKeyPressed, this)));
             InputManager::getInstance().enterState("detector");
             this->command_ = command;
             this->bTemporary_ = bTemporary;
@@ -155,13 +165,23 @@ namespace orxonox
     }
 
     // Gets called by the KeyDetector (registered with a Functor)
-    void KeyBinderManager::callback(const std::string& keyName)
+    void KeyBinderManager::keybindKeyPressed(const std::string& keyName)
     {
         if (this->bBinding_)
         {
-            COUT(0) << "Binding string \"" << command_ << "\" on key '" << keyName << "'" << std::endl;
-            this->currentBinder_->setBinding(command_, keyName, bTemporary_);
+            if (keyName == "Keys.KeyEscape")
+            {
+                COUT(0) << "Keybinding aborted." << std::endl;
+            }
+            else
+            {
+                COUT(0) << "Binding string \"" << command_ << "\" on key '" << keyName << "'" << std::endl;
+                this->currentBinder_->setBinding(command_, keyName, bTemporary_);
+            }
             InputManager::getInstance().leaveState("detector");
+            // inform whatever was calling the command
+            if (this->callbackFunction_)
+                (*this->callbackFunction_)();
             this->bBinding_ = false;
         }
         // else: A key was probably pressed within the same tick, ignore it.

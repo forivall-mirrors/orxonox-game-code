@@ -139,7 +139,7 @@ SHORT_NAMES            = NO
 # comments will behave just like the Qt-style comments (thus requiring an 
 # explicit @brief command for a brief description.
 
-JAVADOC_AUTOBRIEF      = NO
+JAVADOC_AUTOBRIEF      = YES
 
 # The MULTILINE_CPP_IS_BRIEF tag can be set to YES to make Doxygen 
 # treat a multi-line C++ special comment block (i.e. a block of //! or /// 
@@ -474,7 +474,8 @@ WARN_LOGFILE           = @DOXY_LOGFILE@
 
 INPUT                  = @CMAKE_SOURCE_DIR@/src \
                          @CMAKE_CURRENT_SOURCE_DIR@ \
-                         @CMAKE_BINARY_DIR@/src
+                         @CMAKE_BINARY_DIR@/src/OrxonoxConfig.h \
+                         @CMAKE_BINARY_DIR@/src/SpecialConfig.h
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -500,7 +501,7 @@ RECURSIVE              = YES
 # excluded from the INPUT source files. This way you can easily exclude a 
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-EXCLUDE                = @CMAKE_SOURCE_DIR@/src/bullet/
+EXCLUDE                = @CMAKE_SOURCE_DIR@/src/external/bullet/
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or 
 # directories that are symbolic links (a Unix filesystem feature) are excluded 
@@ -1116,7 +1117,7 @@ HIDE_UNDOC_RELATIONS   = YES
 # toolkit from AT&T and Lucent Bell Labs. The other options in this section 
 # have no effect if this option is set to NO (the default)
 
-HAVE_DOT               = @DOXYGEN_DOT_FOUND@
+HAVE_DOT               = NO
 
 # If the CLASS_GRAPH and HAVE_DOT tags are set to YES then doxygen 
 # will generate a graph for each documented class showing the direct and 

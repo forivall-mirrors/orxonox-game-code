@@ -86,9 +86,9 @@ namespace orxonox
             COUT(4) << "A non-failable quest was trying to be failed." << std::endl;
             return false;
         }
-        
+
         Quest::fail(player);
-        
+
         QuestEffect::invokeEffects(player, this->getFailEffectList()); //!< Invoke the failEffects.
         return true;
     }
@@ -109,9 +109,9 @@ namespace orxonox
             COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
             return false;
         }
-        
+
         Quest::complete(player);
-        
+
         QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the complete QuestEffects.
         return true;
     }
@@ -187,7 +187,7 @@ namespace orxonox
         {
             return it->second;
         }
-        
+
         return QuestStatus::Inactive; //!< If the player is not yet in the map, that means the status of the quest form him is 'inactive'.
     }
 
@@ -208,7 +208,7 @@ namespace orxonox
         {
             return false;
         }
-        
+
         this->playerStatus_[player] = status;
         return true;
     }

@@ -37,6 +37,7 @@
 
 #include "PawnManager.h"
 #include "infos/PlayerInfo.h"
+#include "controllers/Controller.h"
 #include "gametypes/Gametype.h"
 #include "graphics/ParticleSpawner.h"
 #include "worldentities/ExplosionChunk.h"
@@ -50,8 +51,6 @@
 namespace orxonox
 {
     CreateFactory(Pawn);
-
-    registerMemberNetworkFunction( Pawn, doFire );
 
     Pawn::Pawn(BaseObject* creator) : ControllableEntity(creator)
     {
@@ -68,6 +67,8 @@ namespace orxonox
         this->lastHitOriginator_ = 0;
 
         this->spawnparticleduration_ = 3.0f;
+
+        this->aimPosition_ = Vector3::ZERO;
 
         //TODO: Remove.
         //this->getPickups().setOwner(this);
@@ -110,7 +111,7 @@ namespace orxonox
 
         XMLPortObject(Pawn, WeaponSlot, "weaponslots", addWeaponSlot, getWeaponSlot, xmlelement, mode);
         XMLPortObject(Pawn, WeaponSet, "weaponsets", addWeaponSet, getWeaponSet, xmlelement, mode);
-        XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPack, getWeaponPack, xmlelement, mode);
+        XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPackXML, getWeaponPack, xmlelement, mode);
     }
 
     void Pawn::registerVariables()
@@ -119,6 +120,7 @@ namespace orxonox
         registerVariable(this->health_,        VariableDirection::ToClient);
         registerVariable(this->initialHealth_, VariableDirection::ToClient);
         registerVariable(this->bReload_,       VariableDirection::ToServer);
+        registerVariable(this->aimPosition_,   Bidirectionality::ServerMaster, 0, true);
     }
 
     void Pawn::tick(float dt)
@@ -166,10 +168,23 @@ namespace orxonox
 
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage)
     {
-        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator))
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
             this->damage(damage, originator);
             this->setVelocity(this->getVelocity() + force);
+
+            // play hit effect
+        }
+    }
+
+    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
+    {
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
+        {
+            this->damage(damage, originator);
+
+            if ( this->getController() )
+                this->getController()->hit(originator, contactpoint, damage);
 
             // play hit effect
         }
@@ -184,7 +199,7 @@ namespace orxonox
     void Pawn::spawneffect()
     {
         // play spawn effect
-        if (this->spawnparticlesource_ != "")
+        if (!this->spawnparticlesource_.empty())
         {
             ParticleSpawner* effect = new ParticleSpawner(this->getCreator());
             effect->setPosition(this->getPosition());
@@ -263,24 +278,10 @@ namespace orxonox
         }
     }
 
-    void Pawn::fire(unsigned int firemode)
+    void Pawn::fired(unsigned int firemode)
     {
-        this->doFire(firemode);
-    }
-
-    void Pawn::doFire(uint8_t firemode)
-    {
-        if(GameMode::isMaster())
-        {
-            if (this->weaponSystem_)
-                this->weaponSystem_->fire(firemode);
-        }
-        else
-        {
-            callMemberNetworkFunction(Pawn, doFire, this->getObjectID(), 0, firemode);
-            if (this->weaponSystem_)
-                this->weaponSystem_->fire(firemode);
-        }
+        if (this->weaponSystem_)
+            this->weaponSystem_->fire(firemode);
     }
 
     void Pawn::reload()
@@ -340,6 +341,13 @@ namespace orxonox
     {
         if (this->weaponSystem_)
             this->weaponSystem_->addWeaponPack(wPack);
+    }
+
+    void Pawn::addWeaponPackXML(WeaponPack * wPack)
+    {
+        if (this->weaponSystem_)
+            if (!this->weaponSystem_->addWeaponPack(wPack))
+                wPack->destroy();
     }
 
     WeaponPack * Pawn::getWeaponPack(unsigned int index) const

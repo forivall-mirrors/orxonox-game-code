@@ -46,14 +46,4 @@ namespace orxonox
         getManagers()[manager->className_] = manager;
         getManagersByScope().insert(std::make_pair(manager->scope_, manager));
     }
-
-    /*static*/ void ScopedSingletonManager::removeManager(ScopedSingletonManager* manager)
-    {
-        getManagers().erase(getManagers().find(manager->className_));
-        for (ManagerMultiMap::iterator it = getManagersByScope().lower_bound(manager->scope_); it != getManagersByScope().upper_bound(manager->scope_);)
-            if (it->second == manager)
-                getManagersByScope().erase(it++);
-            else
-                ++it;
-    }
 }

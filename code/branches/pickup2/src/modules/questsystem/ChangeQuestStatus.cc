@@ -82,7 +82,7 @@ namespace orxonox
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return false;
         }
-        
+
         this->questId_ = id;
         return true;
     }

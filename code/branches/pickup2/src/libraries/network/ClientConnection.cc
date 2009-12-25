@@ -37,8 +37,8 @@ namespace orxonox
 {
   const unsigned int NETWORK_CLIENT_WAIT_TIME = 1;
   const unsigned int NETWORK_CLIENT_CONNECTION_TIMEOUT = 3000; //millisecs
-  const unsigned int NETWORK_CLIENT_MAX_CONNECTIONS = 5;
-  const unsigned int NETWORK_CLIENT_CHANNELS = 2;
+  const unsigned int NETWORK_CLIENT_MAX_CONNECTIONS = 1;
+  const unsigned int NETWORK_CLIENT_CHANNELS = 1;
 
 
   ClientConnection::ClientConnection():
@@ -68,7 +68,7 @@ namespace orxonox
   bool ClientConnection::establishConnection()
   {
     ENetEvent event;
-    
+
     this->host_ = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
     if ( this->host_ == NULL )
     {
@@ -98,7 +98,7 @@ namespace orxonox
 
   bool ClientConnection::closeConnection() {
     ENetEvent event;
-    
+
     if ( !this->established_ )
       return true;
     this->established_ = false;
@@ -144,6 +144,12 @@ namespace orxonox
     COUT(1) << "Received disconnect Packet from Server!" << endl;
         // server closed the connection
     this->connectionClosed();
+  }
+
+  uint32_t ClientConnection::getRTT()
+  {
+    assert(server_);
+    return server_->roundTripTime;
   }
 
 }

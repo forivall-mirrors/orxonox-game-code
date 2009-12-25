@@ -45,7 +45,7 @@ namespace orxonox
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
         this->targetPosition_ = Vector3::ZERO;
-        
+
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
     }
 
@@ -142,6 +142,10 @@ namespace orxonox
 
         this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getPosition(), hardcoded_projectile_speed, this->target_->getPosition(), this->target_->getVelocity());
         this->bHasTargetPosition_ = (this->targetPosition_ != Vector3::ZERO);
+
+        Pawn* pawn = dynamic_cast<Pawn*>(this->getControllableEntity());
+        if (pawn)
+            pawn->setAimPosition(this->targetPosition_);
     }
 
     bool ArtificialController::isCloseAtTarget(float distance) const

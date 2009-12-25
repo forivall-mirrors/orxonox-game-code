@@ -66,12 +66,12 @@ namespace orxonox
     unsigned int HUDBar::materialcount_s = 0;
 
     HUDBar::HUDBar(BaseObject* creator)
-        : OrxonoxOverlay(creator)
+        : OrxonoxOverlay(creator), right2Left_(false), autoColour_(false)
     {
         RegisterObject(HUDBar);
 
         // create new material
-        std::string materialname = "barmaterial" + multi_cast<std::string>(materialcount_s++);
+        const std::string& materialname = "barmaterial" + multi_cast<std::string>(materialcount_s++);
         Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(materialname, "General"));
         material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
         this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
@@ -84,9 +84,9 @@ namespace orxonox
         this->bar_->setMaterialName(materialname);
 
         this->value_ = 1.0f;  // initielize with 1.0f to trigger a change when calling setValue(0.0f) on the line below
+        this->setAutoColour(true);
         this->setValue(0.0f); // <--
         this->setRightToLeft(false);
-        this->setAutoColour(true);
         this->currentColour_ = ColourValue::White;
 
         this->background_->addChild(bar_);
@@ -121,15 +121,15 @@ namespace orxonox
             if (this->colours_.size() > 0)
             {
                 ColourValue colour1(0, 0, 0, 1);
-                ColourValue colour2 = (*this->colours_.rbegin()).second;
+                ColourValue colour2 = this->colours_.rbegin()->second;
                 float value1(0);
-                float value2 = (*this->colours_.rbegin()).first;
+                float value2 = this->colours_.rbegin()->first;
                 for (std::map<float, ColourValue>::reverse_iterator it = this->colours_.rbegin(); it != this->colours_.rend(); ++it)
                 {
                     colour1 = colour2;
                     value1 = value2;
-                    colour2 = (*it).second;
-                    value2 = (*it).first;
+                    colour2 = it->second;
+                    value2 = it->first;
 
                     if (value2 < this->value_)
                         break;

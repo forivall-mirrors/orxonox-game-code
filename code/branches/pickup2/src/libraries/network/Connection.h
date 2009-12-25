@@ -53,7 +53,7 @@ namespace orxonox
   class _NetworkExport Connection{
   public:
     virtual ~Connection();
-    
+
     static bool addPacket(ENetPacket *packet, ENetPeer *peer);
     bool sendPackets();
     ENetHost* getHost(){ return this->host_; }
@@ -61,15 +61,15 @@ namespace orxonox
   protected:
     Connection();
     static Connection* getInstance(){ return Connection::instance_; }
-    
+
     int service(ENetEvent* event);
     virtual void disconnectPeer(ENetPeer *peer);
-    
+
     void processQueue();
     virtual void addPeer(ENetEvent* event)=0;
     virtual void removePeer(ENetEvent* event)=0;
     virtual bool processPacket(ENetEvent* event);
-    
+
     ENetHost *host_;
   private:
     ENetAddress *bindAddress_;

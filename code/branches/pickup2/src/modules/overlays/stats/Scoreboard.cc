@@ -68,7 +68,7 @@ namespace orxonox
         SUPER(Scoreboard, changedVisibility);
 
         for (unsigned int i = 0; i < this->lines_.size(); ++i)
-            this->lines_[i]->setVisibility(this->isVisible());
+            this->lines_[i]->changedVisibility();
     }
 
     /**
@@ -88,6 +88,7 @@ namespace orxonox
             // create new lines
             CreateLines* lines = new CreateLines(leftOffset, topOffset + (distance + height) * lines_.size(), width, height);
             lines->setVisibility(this->isVisible());
+            lines->setOverlayGroup( this->getOverlayGroup() );
             this->lines_.push_back(lines);
         }
         while (playerList.size() < this->lines_.size())

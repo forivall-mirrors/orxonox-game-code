@@ -33,6 +33,7 @@
 #include "CorePrereqs.h"
 
 #include <map>
+#include <set>
 #include <string>
 #include <CEGUIForwardRefs.h>
 #include <boost/scoped_ptr.hpp>
@@ -42,8 +43,8 @@
 #include "util/Singleton.h"
 #include "input/InputHandler.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
     class PlayerInfo; // Forward declaration
 
     /**
@@ -57,17 +58,21 @@ namespace orxonox
         Since the GUI needs user input, the GUIManager implements the functions needed to act as a key and/or mouse handler.
         Those input events are then injected into CEGUI in Lua.
     */
-    class _CoreExport GUIManager : public Singleton<GUIManager>, public InputHandler
-    {
+    class _CoreExport GUIManager // tolua_export
+        : public Singleton<GUIManager>, public InputHandler
+    { // tolua_export
         friend class Singleton<GUIManager>;
     public:
         GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen);
         ~GUIManager();
 
-        void update(const Clock& time);
+        void preUpdate(const Clock& time);
 
-        void showGUI(const std::string& name);
-        void executeCode(const std::string& str);
+        static void showGUI(const std::string& name, bool hidePrevious=false, bool showCursor=true);
+        void showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious=false, bool showCursor=true);
+        static void hideGUI(const std::string& name);
+        void keyESC();
+        void setBackground(const std::string& name);
 
         void setCamera(Ogre::Camera* camera);
         Ogre::Camera* getCamera() { return this->camera_; }
@@ -79,8 +84,13 @@ namespace orxonox
         inline PlayerInfo* getPlayer(const std::string& guiname) const
             { std::map<std::string, PlayerInfo*>::const_iterator it = this->players_.find(guiname); return (it != this->players_.end()) ? it->second : 0; }
 
+        // TODO: Temporary hack because the tolua exported CEGUI method does not seem to work
+        static void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); //tolua_export
+
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
+
+        void executeCode(const std::string& str);
 
         // keyHandler functions
         void keyPressed (const KeyEvent& evt);
@@ -104,8 +114,9 @@ namespace orxonox
         Ogre::Camera*                        camera_;           //!< Camera used to render the scene with the GUI
 
         static GUIManager*                   singletonPtr_s;    //!< Singleton reference to GUIManager
+        bool                                 bShowIngameGUI_;
 
-    };
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _GUIManager_H__ */

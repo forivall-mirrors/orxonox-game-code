@@ -47,7 +47,7 @@ namespace orxonox
             virtual void changedName();
 
             inline void setLink(const std::string& link)
-                { this->link_ = link; this->bIsLink_ = (link != ""); }
+                { this->link_ = link; this->bIsLink_ = !link.empty(); }
             inline const std::string& getLink() const
                 { return this->link_; }
 

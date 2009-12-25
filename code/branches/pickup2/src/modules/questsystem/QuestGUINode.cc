@@ -70,7 +70,7 @@ namespace orxonox {
     */
     QuestGUINode::QuestGUINode(QuestGUI* gui, QuestGUINode* parent, QuestItem* item, int depth, int index)
     {
-        this->initialize();    
+        this->initialize();
 
         this->gui_ = gui;
         this->parent_ = parent;
@@ -118,7 +118,7 @@ namespace orxonox {
 
     void QuestGUINode::toggleVisibility(void)
     {
-        
+
     }
 
     /**
@@ -133,11 +133,11 @@ namespace orxonox {
     {
         if(this->window_ != NULL)
         {
-            buffer = (std::string)(this->window_->getName().c_str());
+            buffer = this->window_->getName().c_str();
         }
         else
         {
-            buffer = "";
+            buffer.erase();
         }
     }
 
@@ -153,7 +153,7 @@ namespace orxonox {
     {
 
         if(this->details_ == NULL) //!< If the details window was not already created.
-        {  
+        {
             std::ostringstream stream;
 
             //! Create the main window for the details.
@@ -186,7 +186,7 @@ namespace orxonox {
                 stream << this->details_->getName() << "/Status";
                 CEGUI::Window* statusWindow = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
                 window->addChildWindow(statusWindow);
-                std::string status = "";
+                std::string status;
                 if(quest->isActive(this->gui_->getPlayer()))
                 {
                     status = "This quest is active.";
@@ -208,7 +208,7 @@ namespace orxonox {
 
                 offset += height;
             }
-            
+
             //! Create title pane for the description.
             stream.str("");
             stream << this->details_->getName() << "/Description";
@@ -281,7 +281,7 @@ namespace orxonox {
     bool QuestGUINode::openDetails(const CEGUI::EventArgs& e)
     {
         COUT(3) << "Open QuestItem..." << std::endl;
-        
+
         //CEGUI::Window* window = this->gui_->getRootWindow();
         CEGUI::Window* window = this->gui_->getWindowManager()->getWindow("orxonox/QuestGUI/Background");
 
@@ -296,7 +296,7 @@ namespace orxonox {
         Close the details window.
     */
     bool QuestGUINode::closeDetails(const CEGUI::EventArgs& e)
-    {        
+    {
         //CEGUI::Window* window = this->gui_->getRootWindow();
         CEGUI::Window* window = this->gui_->getWindowManager()->getWindow("orxonox/QuestGUI/Background");
         window->removeChildWindow(this->details_);
@@ -343,7 +343,7 @@ namespace orxonox {
 
         //! Set the height to the window.
         window->setHeight(CEGUI::UDim(0, height));
-        
+
         //Debug
         const CEGUI::Rect newArea = getStaticTextArea(window);
 
@@ -367,7 +367,7 @@ namespace orxonox {
     void QuestGUINode::createWindow(void)
     {
         Quest* quest = dynamic_cast<Quest*>(this->item_);
-        
+
         this->window_ = this->gui_->getWindow();
         std::ostringstream stream;
         stream << "QuestGUI/Quests/";
@@ -376,7 +376,7 @@ namespace orxonox {
             stream << this->parent_->index_ << "/Hints/";
         }
         stream << this->index_;
-        
+
         this->window_->rename(stream.str());
         this->window_->setText(this->item_->getDescription()->getTitle());
 

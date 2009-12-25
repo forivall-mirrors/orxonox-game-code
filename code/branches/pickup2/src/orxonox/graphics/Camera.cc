@@ -41,6 +41,7 @@
 #include "core/GUIManager.h"
 #include "Scene.h"
 #include "CameraManager.h"
+#include "sound/SoundManager.h"
 
 namespace orxonox
 {
@@ -60,6 +61,7 @@ namespace orxonox
             ThrowException(AbortLoading, "Can't create Camera, no root-scene-node given.");
 
         this->camera_ = this->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
+        this->camera_->setUserObject(this);
         this->cameraNode_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
         this->attachNode(this->cameraNode_);
         this->cameraNode_->attachObject(this->camera_);
@@ -67,6 +69,7 @@ namespace orxonox
         this->bHasFocus_ = false;
         this->bDrag_ = false;
         this->nearClipDistance_ = 1;
+        this->lastDtLagged_ = false;
 
         this->setSyncMode(0x0);
 
@@ -110,13 +113,41 @@ namespace orxonox
         if (this->bDrag_)
         {
             // this stuff here may need some adjustments
-            float coeff = std::min(1.0f, 15.0f * dt);
+            float poscoeff = 15.0f * dt / this->getTimeFactor();
+            float anglecoeff = 7.0f * dt / this->getTimeFactor();
+            // Only clamp if fps rate is actually falling. Occasional high dts should
+            // not be clamped to reducing lagging effects.
+            if (poscoeff > 1.0f)
+            {
+                if (this->lastDtLagged_)
+                    poscoeff = 1.0f;
+                else
+                    this->lastDtLagged_ = true;
+            }
+            else
+                this->lastDtLagged_ = false;
+
+            if (anglecoeff > 1.0f)
+            {
+                if (this->lastDtLagged_)
+                    anglecoeff = 1.0f;
+                else
+                    this->lastDtLagged_ = true;
+            }
+            else
+                this->lastDtLagged_ = false;
 
             Vector3 offset = this->getWorldPosition() - this->cameraNode_->_getDerivedPosition();
-            this->cameraNode_->translate(coeff * offset);
+            this->cameraNode_->translate(poscoeff * offset);
 
-            this->cameraNode_->setOrientation(Quaternion::Slerp(coeff, this->cameraNode_->_getDerivedOrientation(), this->getWorldOrientation(), true));
-            //this->cameraNode_->setOrientation(this->getWorldOrientation());
+            this->cameraNode_->setOrientation(Quaternion::Slerp(anglecoeff, this->cameraNode_->_getDerivedOrientation(), this->getWorldOrientation(), true));
+        }
+
+        // Update sound listener transformation
+        if (GameMode::playsSound() && this->bHasFocus_)
+        {
+            SoundManager::getInstance().setListenerPosition(this->getWorldPosition());
+            SoundManager::getInstance().setListenerOrientation(this->getWorldOrientation());
         }
     }
 

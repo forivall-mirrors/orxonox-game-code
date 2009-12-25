@@ -49,6 +49,8 @@ Host::Host()
   clientID_=0;
   assert(instance_==0);
   instance_=this;
+  this->printRTTCC_ = createConsoleCommand( createFunctor(&Host::printRTT, this), "printRTT" );
+  CommandExecutor::addConsoleCommandShortcut( this->printRTTCC_ );
 }
 
 
@@ -58,6 +60,8 @@ Host::Host()
 Host::~Host()
 {
   instance_=0;
+  if( this->printRTTCC_ )
+    delete this->printRTTCC_;
 }
 
 /**

@@ -49,7 +49,7 @@ namespace orxonox
         this->command_ = command;
         this->commandTokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
 
-        this->additionalParameter_ = "";
+        this->additionalParameter_.clear();
 
         this->bEvaluatedParams_ = false;
 
@@ -59,10 +59,10 @@ namespace orxonox
 
         this->functionclass_ = 0;
         this->function_ = 0;
-        this->possibleArgument_ = "";
-        this->argument_ = "";
+        this->possibleArgument_.clear();
+        this->argument_.clear();
 
-        this->errorMessage_ = "";
+        this->errorMessage_.clear();
         this->state_ = CommandState::Empty;
     }
 
@@ -78,7 +78,7 @@ namespace orxonox
 
         if (this->bEvaluatedParams_ && this->function_)
         {
-            COUT(6) << "CE_execute (evaluation): " << this->function_->getName() << " " << this->param_[0] << " " << this->param_[1] << " " << this->param_[2] << " " << this->param_[3] << " " << this->param_[4] << std::endl;
+            COUT(6) << "CE_execute (evaluation): " << this->function_->getName() << ' ' << this->param_[0] << ' ' << this->param_[1] << ' ' << this->param_[2] << ' ' << this->param_[3] << ' ' << this->param_[4] << std::endl;
             (*this->function_)(this->param_[0], this->param_[1], this->param_[2], this->param_[3], this->param_[4]);
             return true;
         }
@@ -97,7 +97,7 @@ namespace orxonox
         return false;
     }
 
-    std::string CommandEvaluation::complete()
+    const std::string& CommandEvaluation::complete()
     {
         if (!this->bNewCommand_)
         {
@@ -113,39 +113,39 @@ namespace orxonox
                         if (this->function_->getParamCount() == 0)
                             return (this->command_ = this->function_->getName());
                         else
-                            return (this->command_ = this->function_->getName() + " ");
+                            return (this->command_ = this->function_->getName() + ' ');
                     }
                     else if (this->functionclass_)
-                        return (this->command_ = this->functionclass_->getName() + " ");
+                        return (this->command_ = this->functionclass_->getName() + ' ');
                     break;
                 case CommandState::Function:
                     if (this->function_)
                     {
                         if (this->function_->getParamCount() == 0)
-                            return (this->command_ = this->functionclass_->getName() + " " + this->function_->getName());
+                            return (this->command_ = this->functionclass_->getName() + ' ' + this->function_->getName());
                         else
-                            return (this->command_ = this->functionclass_->getName() + " " + this->function_->getName() + " ");
+                            return (this->command_ = this->functionclass_->getName() + ' ' + this->function_->getName() + ' ');
                     }
                     break;
                 case CommandState::ParamPreparation:
                 case CommandState::Params:
                 {
-                    if (this->argument_ == "" && this->possibleArgument_ == "")
+                    if (this->argument_.empty() && this->possibleArgument_.empty())
                         break;
 
                     unsigned int maxIndex = this->commandTokens_.size();
                     if (this->command_[this->command_.size() - 1] != ' ')
                         maxIndex -= 1;
-                    std::string whitespace = "";
+                    std::string whitespace;
 
-                    if (this->possibleArgument_ != "")
+                    if (!this->possibleArgument_.empty())
                     {
                         this->argument_ = this->possibleArgument_;
                         if (this->function_->getParamCount() > (maxIndex + 1 - this->getStartindex()))
                             whitespace = " ";
                     }
 
-                    return (this->command_ = this->commandTokens_.subSet(0, maxIndex).join() + " " + this->argument_ + whitespace);
+                    return (this->command_ = this->commandTokens_.subSet(0, maxIndex).join() + ' ' + this->argument_ + whitespace);
                     break;
                 }
                 case CommandState::Finished:
@@ -261,26 +261,26 @@ namespace orxonox
 
     std::string CommandEvaluation::dump(const std::list<std::pair<const std::string*, const std::string*> >& list)
     {
-        std::string output = "";
+        std::string output;
         for (std::list<std::pair<const std::string*, const std::string*> >::const_iterator it = list.begin(); it != list.end(); ++it)
         {
             if (it != list.begin())
-                output += " ";
+                output += ' ';
 
-            output += *(*it).second;
+            output += *(it->second);
         }
         return output;
     }
 
     std::string CommandEvaluation::dump(const ArgumentCompletionList& list)
     {
-        std::string output = "";
+        std::string output;
         for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
         {
             if (it != list.begin())
-                output += " ";
+                output += ' ';
 
-            output += (*it).getDisplay();
+            output += it->getDisplay();
         }
         return output;
     }
@@ -294,19 +294,19 @@ namespace orxonox
         for (unsigned int i = 0; i < command->getParamCount(); i++)
         {
             if (i != 0)
-                output += " ";
+                output += ' ';
 
             if (command->defaultValueSet(i))
-                output += "[";
+                output += '[';
             else
-                output += "{";
+                output += '{';
 
             output += command->getTypenameParam(i);
 
             if (command->defaultValueSet(i))
-                output += "=" + command->getDefaultValue(i).getString() + "]";
+                output += '=' + command->getDefaultValue(i).getString() + ']';
             else
-                output += "}";
+                output += '}';
         }
         return output;
     }

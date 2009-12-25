@@ -60,7 +60,7 @@ namespace orxonox
         };
         static std::vector<ColourValue> defaultcolours(colours, colours + sizeof(colours) / sizeof(ColourValue));
 
-        SetConfigValueVector(teamcolours_, defaultcolours);
+        SetConfigValue(teamcolours_, defaultcolours);
     }
 
     void TeamDeathmatch::playerEntered(PlayerInfo* player)

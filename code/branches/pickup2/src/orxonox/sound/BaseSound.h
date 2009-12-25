@@ -25,13 +25,14 @@
  *      Reto Grieder
  *
  */
+
 #ifndef _BaseSound_H__
 #define _BaseSound_H__
 
 #include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <OgreSharedPtr.h>
+#include <boost/shared_ptr.hpp>
 #include <OgreDataStream.h>
 #include "core/OrxonoxClass.h"
 
@@ -46,37 +47,75 @@ namespace orxonox
     {
     public:
         BaseSound();
-        virtual ~BaseSound();
 
-        void play();
-        void stop();
-        void pause();
+        void XMLPortExtern(Element& xmlelement, XMLPort::Mode mode);
 
-        bool isPlaying();
-        bool isPaused();
-        bool isStopped();
+        virtual void play()  { this->doPlay(); }
+        virtual void stop()  { this->doStop(); }
+        virtual void pause() { this->doPause(); }
 
-        void setSource(const std::string& source);
-        const std::string& getSource() { return this->source_; }
+        bool isPlaying() const { return this->state_ == Playing; }
+        bool isPaused()  const { return this->state_ == Paused; }
+        bool isStopped() const { return this->state_ == Stopped; }
 
-        bool getPlayOnLoad() { return this->bPlayOnLoad_; }
-        void setPlayOnLoad(bool val);
+        virtual void setSource(const std::string& source);
+        virtual const std::string& getSource() const
+            { return this->source_; }
 
-        bool getLoop() { return this->bLoop_; }
-        void setLoop(bool val) { this->bLoop_ = val; }
+        void setVolume(float vol);
+        float getVolume() const
+            { return this->volume_; }
+        void updateVolume();
+
+        bool getLooping() const
+            { return this->bLooping_; }
+        void setLooping(bool val);
+
+        float getPitch() const
+            { return this->pitch_; }
+        void setPitch(float pitch);
 
     protected:
-        ALuint loadOggFile();
-        ALint getSourceState();
+        enum State
+        {
+            Stopped,
+            Playing,
+            Paused
+        };
 
-        ALuint audioSource_;
-        ALuint audioBuffer_;
+        virtual ~BaseSound();
+
+        void doPlay();
+        void doStop();
+        void doPause();
+
+        // network callbacks
+        inline void pitchChanged()
+            { this->setPitch(this->pitch_); }
+        inline void loopingChanged()
+            { this->setLooping(this->bLooping_); }
+        inline void volumeChanged()
+            { this->setVolume(this->volume_); }
+        inline void sourceChanged()
+            { this->setSource(this->source_); }
+        void stateChanged();
+
+        virtual void initialiseSource();
+        ALint getSourceState() const;
+
+        virtual float getRealVolume() = 0;
+
+        ALuint          audioSource_;
+        bool            bPooling_;
+        shared_ptr<SoundBuffer> soundBuffer_;
+        std::string     source_;
+        float           volume_;
+        bool            bLooping_;
+        State           state_;
+        float           pitch_;
 
     private:
-        std::string source_;
-        bool bPlayOnLoad_;
-        bool bLoop_;
-        DataStreamPtr dataStream_;
+        DataStreamPtr   dataStream_;
     };
 }
 

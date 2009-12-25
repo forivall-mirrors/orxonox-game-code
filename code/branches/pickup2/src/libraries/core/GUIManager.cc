@@ -39,6 +39,7 @@ extern "C" {
 #include <CEGUIMouseCursor.h>
 #include <CEGUIResourceProvider.h>
 #include <CEGUISystem.h>
+#include <CEGUIWindow.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
 #include "SpecialConfig.h" // Configures the macro below
@@ -49,9 +50,11 @@ extern "C" {
 #endif
 
 #include "util/Clock.h"
+#include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
+#include "ConsoleCommand.h"
 #include "Core.h"
 #include "LuaState.h"
 #include "PathConfig.h"
@@ -59,6 +62,10 @@ extern "C" {
 
 namespace orxonox
 {
+    static void key_esc()
+        { GUIManager::getInstance().keyESC(); }
+    SetConsoleCommandShortcutExternAlias(key_esc, "keyESC");
+
     class CEGUILogger : public CEGUI::DefaultLogger
     {
     public:
@@ -74,7 +81,7 @@ namespace orxonox
                 case CEGUI::Insane:      orxonoxLevel = 6; break;
                 default: OrxAssert(false, "CEGUI log level out of range, inpect immediately!");
             }
-            OutputHandler::getOutStream().setOutputLevel(orxonoxLevel)
+            OutputHandler::getOutStream(orxonoxLevel)
                 << "CEGUI: " << message << std::endl;
 
             CEGUI::DefaultLogger::logEvent(message, level);
@@ -84,6 +91,9 @@ namespace orxonox
     static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
     GUIManager* GUIManager::singletonPtr_s = 0;
+
+    SetConsoleCommandShortcut(GUIManager, showGUI).accessLevel(AccessLevel::User).defaultValue(1, false).defaultValue(2, true);
+    SetConsoleCommandShortcut(GUIManager, hideGUI).accessLevel(AccessLevel::User);
 
     /**
     @brief
@@ -101,6 +111,7 @@ namespace orxonox
         : renderWindow_(renderWindow)
         , resourceProvider_(0)
         , camera_(NULL)
+        , bShowIngameGUI_(false)
     {
         using namespace CEGUI;
 
@@ -113,6 +124,9 @@ namespace orxonox
 
         // setup scripting
         luaState_.reset(new LuaState());
+        rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua");
+        // This is necessary to ensure that input events also use the right resource info when triggering lua functions
+        luaState_->setDefaultResourceInfo(this->rootFileInfo_);
         scriptModule_.reset(new LuaScriptModule(luaState_->getInternalLuaState()));
 
         // Create our own logger to specify the filepath
@@ -120,20 +134,19 @@ namespace orxonox
         ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
         // set the log level according to ours (translate by subtracting 1)
         ceguiLogger->setLoggingLevel(
-            static_cast<LoggingLevel>(Core::getSoftDebugLevel(OutputHandler::LD_Logfile) - 1));
+            static_cast<LoggingLevel>(OutputHandler::getInstance().getSoftDebugLevel("logFile") - 1));
         this->ceguiLogger_ = ceguiLogger.release();
 
         // create the CEGUI system singleton
         guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
-        // Initialise the basic lua code
-        rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua", "GUI");
-        this->luaState_->doFile("InitialiseGUI.lua", "GUI", false);
+        // Initialise the basic Lua code
+        this->luaState_->doFile("InitialiseGUI.lua");
 
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition(mousePosition.first, mousePosition.second);
 
-        // Hide the mouse cursor unless playing in fullscreen mode
+        // Hide the mouse cursor unless playing in full screen mode
         if (!bFullScreen)
             CEGUI::MouseCursor::getSingleton().hide();
     }
@@ -156,7 +169,7 @@ namespace orxonox
         The elapsed time since the last call is given in the time value provided by the clock.
         This time value is then used to provide a fluent animation of the GUI.
     */
-    void GUIManager::update(const Clock& time)
+    void GUIManager::preUpdate(const Clock& time)
     {
         assert(guiSystem_);
         guiSystem_->injectTimePulse(time.getDeltaTime());
@@ -203,9 +216,39 @@ namespace orxonox
         The function executes the Lua function with the same name in case the GUIManager is ready.
         For more details check out loadGUI_2.lua where the function presides.
     */
-    void GUIManager::showGUI(const std::string& name)
+    /*static*/ void GUIManager::showGUI(const std::string& name, bool hidePrevious, bool showCursor)
     {
-        this->luaState_->doString("showGUI(\"" + name + "\")", rootFileInfo_);
+        GUIManager::getInstance().executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ")");
+    }
+
+    /**
+    @brief
+        Hack-ish. Needed for GUIOverlay.
+    */
+    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious, bool showCursor)
+    {
+        this->executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ", " + ptr + ")");
+    }
+
+    /**
+    @brief
+        Hides specified GUI.
+    @param name
+        The name of the GUI.
+    */
+    /*static*/ void GUIManager::hideGUI(const std::string& name)
+    {
+        GUIManager::getInstance().executeCode("hideGUI(\"" + name + "\")");
+    }
+
+    void GUIManager::keyESC()
+    {
+        this->executeCode("keyESC()");
+    }
+
+    void GUIManager::setBackground(const std::string& name)
+    {
+        this->executeCode("setBackground(\"" + name + "\")");
     }
 
     void GUIManager::keyPressed(const KeyEvent& evt)
@@ -279,7 +322,7 @@ namespace orxonox
     @return
         code of the mouse button as it is used by CEGUI
 
-        Simple convertion from mouse event code in Orxonox to the one used in CEGUI.
+        Simple conversion from mouse event code in Orxonox to the one used in CEGUI.
      */
     static inline CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button)
     {
@@ -303,5 +346,10 @@ namespace orxonox
         default:
             return CEGUI::NoButton;
         }
+    }
+
+    void GUIManager::subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function)
+    {
+        window->subscribeScriptedEvent(event, function);
     }
 }

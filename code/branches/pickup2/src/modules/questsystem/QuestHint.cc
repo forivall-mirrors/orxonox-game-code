@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Implementation of the QuestHint class.
@@ -70,7 +70,7 @@ namespace orxonox
         SUPER(QuestHint, XMLPort, xmlelement, mode);
 
         QuestManager::getInstance().registerHint(this); //!< Registers the QuestHint with the QuestManager.
-        
+
         COUT(3) << "New QuestHint {" << this->getId() << "} created." << std::endl;
     }
 
@@ -99,7 +99,7 @@ namespace orxonox
         {
             return it->second;
         }
-        
+
         return QuestStatus::Inactive;
     }
 
@@ -118,7 +118,7 @@ namespace orxonox
             if(!(this->isActive(player)))  //!< If the hint is already active, activation is pointless.
             {
                 this->playerStatus_[player] = QuestHintStatus::Active;
-                
+
                 this->getDescription()->sendAddHintNotification();
                 return true;
             }
@@ -128,7 +128,7 @@ namespace orxonox
                 return false;
             }
         }
-        
+
         COUT(2) << "A hint of a non-active quest was trying to get activated." << std::endl;
         return false;
     }

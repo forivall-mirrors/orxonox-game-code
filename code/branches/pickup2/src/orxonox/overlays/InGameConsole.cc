@@ -43,7 +43,7 @@
 #include "util/Clock.h"
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "util/UTFStringConversions.h"
+#include "util/DisplayStringConversions.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
@@ -60,14 +60,15 @@ namespace orxonox
     SetConsoleCommand(InGameConsole, openConsole, true);
     SetConsoleCommand(InGameConsole, closeConsole, true);
 
-    InGameConsole* InGameConsole::singletonPtr_s = 0;
     ManageScopedSingleton(InGameConsole, ScopeID::Graphics, false);
 
     /**
         @brief Constructor: Creates and initializes the InGameConsole.
     */
     InGameConsole::InGameConsole()
-        : consoleOverlay_(0)
+        : shell_(new Shell("InGameConsole", true))
+        , bShowCursor_(false)
+        , consoleOverlay_(0)
         , consoleOverlayContainer_(0)
         , consoleOverlayNoise_(0)
         , consoleOverlayCursor_(0)
@@ -98,6 +99,9 @@ namespace orxonox
 
         // destroy the input state previously created (InputBuffer gets destroyed by the Shell)
         InputManager::getInstance().destroyState("console");
+
+        // destroy the underlaying shell
+        this->shell_->destroy();
 
         Ogre::OverlayManager* ovMan = Ogre::OverlayManager::getSingletonPtr();
         if (ovMan)
@@ -173,7 +177,7 @@ namespace orxonox
     {
         // create the corresponding input state
         inputState_ = InputManager::getInstance().createInputState("console", false, false, InputStatePriority::Console);
-        inputState_->setKeyHandler(Shell::getInstance().getInputBuffer());
+        inputState_->setKeyHandler(this->shell_->getInputBuffer());
         bHidesAllInputChanged();
 
         // create overlay and elements
@@ -213,6 +217,14 @@ namespace orxonox
         font->addCodePointRange(Ogre::Font::CodePointRange(33, 126));
         font->addCodePointRange(Ogre::Font::CodePointRange(161, 255));
 
+        // create noise
+        this->consoleOverlayNoise_ = static_cast<Ogre::PanelOverlayElement*>(ovMan->createOverlayElement("Panel", "InGameConsoleNoise"));
+        this->consoleOverlayNoise_->setMetricsMode(Ogre::GMM_PIXELS);
+        this->consoleOverlayNoise_->setPosition(5,0);
+        this->consoleOverlayNoise_->setMaterialName("ConsoleNoiseSmall");
+        // comment following line to disable noise
+        this->consoleOverlayBorder_->addChild(this->consoleOverlayNoise_);
+
         // create the text lines
         this->consoleOverlayTextAreas_ = new Ogre::TextAreaOverlayElement*[LINES];
         for (int i = 0; i < LINES; i++)
@@ -224,7 +236,7 @@ namespace orxonox
             this->consoleOverlayTextAreas_[i]->setParameter("colour_top", "0.21 0.69 0.21");
             this->consoleOverlayTextAreas_[i]->setLeft(8);
             this->consoleOverlayTextAreas_[i]->setCaption("");
-            this->consoleOverlayContainer_->addChild(this->consoleOverlayTextAreas_[i]);
+            this->consoleOverlayNoise_->addChild(this->consoleOverlayTextAreas_[i]);
         }
 
         // create cursor (also a text area overlay element)
@@ -235,23 +247,13 @@ namespace orxonox
         this->consoleOverlayCursor_->setParameter("colour_top", "0.21 0.69 0.21");
         this->consoleOverlayCursor_->setLeft(7);
         this->consoleOverlayCursor_->setCaption(std::string(this->cursorSymbol_, 1));
-        this->consoleOverlayContainer_->addChild(this->consoleOverlayCursor_);
-
-        // create noise
-        this->consoleOverlayNoise_ = static_cast<Ogre::PanelOverlayElement*>(ovMan->createOverlayElement("Panel", "InGameConsoleNoise"));
-        this->consoleOverlayNoise_->setMetricsMode(Ogre::GMM_PIXELS);
-        this->consoleOverlayNoise_->setPosition(5,0);
-        this->consoleOverlayNoise_->setMaterialName("ConsoleNoiseSmall");
-        // comment following line to disable noise
-        this->consoleOverlayContainer_->addChild(this->consoleOverlayNoise_);
+        this->consoleOverlayNoise_->addChild(this->consoleOverlayCursor_);
 
         this->windowResized(this->getWindowWidth(), this->getWindowWidth());
 
         // move overlay "above" the top edge of the screen
-        // we take -1.2 because the border makes the panel bigger
-        this->consoleOverlayContainer_->setTop(-1.2 * this->relativeHeight);
-
-        Shell::getInstance().addOutputLevel(true);
+        // we take -1.3 because the border makes the panel bigger
+        this->consoleOverlayContainer_->setTop(-1.3 * this->relativeHeight);
 
         COUT(4) << "Info: InGameConsole initialized" << std::endl;
     }
@@ -265,11 +267,11 @@ namespace orxonox
     */
     void InGameConsole::linesChanged()
     {
-        std::list<std::string>::const_iterator it = Shell::getInstance().getNewestLineIterator();
+        Shell::LineList::const_iterator it = this->shell_->getNewestLineIterator();
         int max = 0;
         for (int i = 1; i < LINES; ++i)
         {
-            if (it != Shell::getInstance().getEndIterator())
+            if (it != this->shell_->getEndIterator())
             {
                 ++it;
                 max = i;
@@ -279,12 +281,12 @@ namespace orxonox
         }
 
         for (int i = LINES - 1; i > max; --i)
-            this->print("", i, true);
+            this->print("", Shell::None, i, true);
 
         for (int i = max; i >= 1; --i)
         {
             --it;
-            this->print(*it, i, true);
+            this->print(it->first, it->second, i, true);
         }
     }
 
@@ -294,7 +296,7 @@ namespace orxonox
     void InGameConsole::onlyLastLineChanged()
     {
         if (LINES > 1)
-            this->print(*Shell::getInstance().getNewestLineIterator(), 1);
+            this->print(this->shell_->getNewestLineIterator()->first, this->shell_->getNewestLineIterator()->second, 1);
     }
 
     /**
@@ -313,9 +315,9 @@ namespace orxonox
     void InGameConsole::inputChanged()
     {
         if (LINES > 0)
-            this->print(Shell::getInstance().getInput(), 0);
+            this->print(this->shell_->getInput(), Shell::Input, 0);
 
-        if (Shell::getInstance().getInput() == "" || Shell::getInstance().getInput().size() == 0)
+        if (this->shell_->getInput().empty())
             this->inputWindowStart_ = 0;
     }
 
@@ -324,12 +326,20 @@ namespace orxonox
     */
     void InGameConsole::cursorChanged()
     {
-        unsigned int pos = Shell::getInstance().getCursorPosition() - inputWindowStart_;
+        unsigned int pos = this->shell_->getCursorPosition() - inputWindowStart_;
         if (pos > maxCharsPerLine_)
             pos = maxCharsPerLine_;
 
         this->consoleOverlayCursor_->setCaption(std::string(pos,' ') + cursorSymbol_);
         this->consoleOverlayCursor_->setTop(static_cast<int>(this->windowH_ * this->relativeHeight) - 24);
+    }
+
+    /**
+        @brief Called if a command is about to be executed
+    */
+    void InGameConsole::executed()
+    {
+        this->shell_->addOutput(this->shell_->getInput() + '\n', Shell::Command);
     }
 
     /**
@@ -347,7 +357,7 @@ namespace orxonox
     /**
         @brief Used to control the actual scrolling and the cursor.
     */
-    void InGameConsole::update(const Clock& time)
+    void InGameConsole::preUpdate(const Clock& time)
     {
         if (this->scroll_ != 0)
         {
@@ -373,11 +383,11 @@ namespace orxonox
             {
                 // scrolling up
                 // note: +0.01 for the same reason as when scrolling down
-                float deltaScroll = (1.2 * this->relativeHeight + 0.01 + oldTop) * time.getDeltaTime() * this->scrollSpeed_;
-                if (oldTop - deltaScroll <= -1.2 * this->relativeHeight)
+                float deltaScroll = (1.3 * this->relativeHeight + 0.01 + oldTop) * time.getDeltaTime() * this->scrollSpeed_;
+                if (oldTop - deltaScroll <= -1.3 * this->relativeHeight)
                 {
                     // window has completely scrolled up
-                    this->consoleOverlayContainer_->setTop(-1.2 * this->relativeHeight);
+                    this->consoleOverlayContainer_->setTop(-1.3 * this->relativeHeight);
                     this->scroll_ = 0;
                     this->consoleOverlay_->hide();
                 }
@@ -445,20 +455,12 @@ namespace orxonox
         @brief Prints string to bottom line.
         @param s String to be printed
     */
-    void InGameConsole::print(const std::string& text, int index, bool alwaysShift)
+    void InGameConsole::print(const std::string& text, Shell::LineType type, int index, bool alwaysShift)
     {
-        char level = 0;
-        if (text.size() > 0)
-            level = text[0];
-
         std::string output = text;
-
-        if (level >= -1 && level <= 5)
-            output.erase(0, 1);
-
         if (LINES > index)
         {
-            this->colourLine(level, index);
+            this->colourLine(type, index);
 
             if (index > 0)
             {
@@ -466,14 +468,14 @@ namespace orxonox
                 while (output.size() > this->maxCharsPerLine_)
                 {
                     ++linesUsed;
-                    this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::UTFString>(output.substr(0, this->maxCharsPerLine_)));
+                    this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::DisplayString>(output.substr(0, this->maxCharsPerLine_)));
                     output.erase(0, this->maxCharsPerLine_);
                     output.insert(0, 1, ' ');
                     if (linesUsed > numLinesShifted_ || alwaysShift)
                         this->shiftLines();
-                    this->colourLine(level, index);
+                    this->colourLine(type, index);
                 }
-                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::UTFString>(output));
+                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::DisplayString>(output));
                 this->displayedText_ = output;
                 this->numLinesShifted_ = linesUsed;
             }
@@ -481,17 +483,17 @@ namespace orxonox
             {
                 if (output.size() > this->maxCharsPerLine_)
                 {
-                    if (Shell::getInstance().getInputBuffer()->getCursorPosition() < this->inputWindowStart_)
-                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer()->getCursorPosition();
-                    else if (Shell::getInstance().getInputBuffer()->getCursorPosition() >= (this->inputWindowStart_ + this->maxCharsPerLine_ - 1))
-                        this->inputWindowStart_ = Shell::getInstance().getInputBuffer()->getCursorPosition() - this->maxCharsPerLine_ + 1;
+                    if (this->shell_->getInputBuffer()->getCursorPosition() < this->inputWindowStart_)
+                        this->inputWindowStart_ = this->shell_->getInputBuffer()->getCursorPosition();
+                    else if (this->shell_->getInputBuffer()->getCursorPosition() >= (this->inputWindowStart_ + this->maxCharsPerLine_ - 1))
+                        this->inputWindowStart_ = this->shell_->getInputBuffer()->getCursorPosition() - this->maxCharsPerLine_ + 1;
 
                     output = output.substr(this->inputWindowStart_, this->maxCharsPerLine_);
                 }
                 else
                   this->inputWindowStart_ = 0;
                 this->displayedText_ = output;
-                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::UTFString>(output));
+                this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::DisplayString>(output));
             }
         }
     }
@@ -505,7 +507,7 @@ namespace orxonox
         {
             this->bActive_ = true;
             InputManager::getInstance().enterState("console");
-            Shell::getInstance().registerListener(this);
+            this->shell_->registerListener(this);
 
             this->windowResized(this->windowW_, this->windowH_);
             this->linesChanged();
@@ -527,7 +529,7 @@ namespace orxonox
         {
             this->bActive_ = false;
             InputManager::getInstance().leaveState("console");
-            Shell::getInstance().unregisterListener(this);
+            this->shell_->unregisterListener(this);
 
             // scroll up
             this->scroll_ = -1;
@@ -548,48 +550,46 @@ namespace orxonox
         }
     }
 
-    void InGameConsole::colourLine(int colourcode, int index)
+    void InGameConsole::colourLine(Shell::LineType type, int index)
     {
-        if (colourcode == -1)
+        ColourValue colourTop, colourBottom;
+        switch (type)
         {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.90, 0.90, 0.90, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 1.00, 1.00, 1.00));
+        case Shell::Error:   colourTop = ColourValue(0.95, 0.25, 0.25, 1.00);
+                          colourBottom = ColourValue(1.00, 0.50, 0.50, 1.00); break;
+
+        case Shell::Warning: colourTop = ColourValue(0.95, 0.50, 0.20, 1.00);
+                          colourBottom = ColourValue(1.00, 0.70, 0.50, 1.00); break;
+
+        case Shell::Info:    colourTop = ColourValue(0.50, 0.50, 0.95, 1.00);
+                          colourBottom = ColourValue(0.80, 0.80, 1.00, 1.00); break;
+
+        case Shell::Debug:   colourTop = ColourValue(0.65, 0.48, 0.44, 1.00);
+                          colourBottom = ColourValue(1.00, 0.90, 0.90, 1.00); break;
+
+        case Shell::Verbose: colourTop = ColourValue(0.40, 0.20, 0.40, 1.00);
+                          colourBottom = ColourValue(0.80, 0.60, 0.80, 1.00); break;
+
+        case Shell::Ultra:   colourTop = ColourValue(0.21, 0.69, 0.21, 1.00);
+                          colourBottom = ColourValue(0.80, 1.00, 0.80, 1.00); break;
+
+        case Shell::Command: colourTop = ColourValue(0.80, 0.80, 0.80, 1.00);
+                          colourBottom = ColourValue(0.90, 0.90, 0.90, 0.90); break;
+
+        case Shell::Hint:    colourTop = ColourValue(0.80, 0.80, 0.80, 1.00);
+                          colourBottom = ColourValue(0.90, 0.90, 0.90, 1.00); break;
+
+        default:             colourTop = ColourValue(0.90, 0.90, 0.90, 1.00);
+                          colourBottom = ColourValue(1.00, 1.00, 1.00, 1.00); break;
         }
-        else if (colourcode == 1)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.95, 0.25, 0.25, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 0.50, 0.50, 1.00));
-        }
-        else if (colourcode == 2)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.95, 0.50, 0.20, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 0.70, 0.50, 1.00));
-        }
-        else if (colourcode == 3)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.50, 0.50, 0.95, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 0.80, 1.00, 1.00));
-        }
-        else if (colourcode == 4)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.65, 0.48, 0.44, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(1.00, 0.90, 0.90, 1.00));
-        }
-        else if (colourcode == 5)
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.40, 0.20, 0.40, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 0.60, 0.80, 1.00));
-        }
-        else
-        {
-            this->consoleOverlayTextAreas_[index]->setColourTop   (ColourValue(0.21, 0.69, 0.21, 1.00));
-            this->consoleOverlayTextAreas_[index]->setColourBottom(ColourValue(0.80, 1.00, 0.80, 1.00));
-        }
+
+        this->consoleOverlayTextAreas_[index]->setColourTop   (colourTop);
+        this->consoleOverlayTextAreas_[index]->setColourBottom(colourBottom);
     }
 
-    // ###############################
-    // ###      satic methods      ###
-    // ###############################
+    // ################################
+    // ###      static methods      ###
+    // ################################
 
     /**
         @brief Activates the console.

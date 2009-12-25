@@ -51,6 +51,10 @@ namespace orxonox
             bool fire(float* reloadTime);
             bool reload();
 
+            // Interacting with the default Firing sound
+            void setDefaultSound(const std::string& soundPath);
+            const std::string& getDefaultSound();
+
 
             // Munition
             inline Munition* getMunition() const
@@ -108,8 +112,11 @@ namespace orxonox
             inline const Vector3& getMuzzleOffset() const
                 { return this->muzzleOffset_; }
 
-            Vector3 getMuzzlePosition() const;
-            const Quaternion& getMuzzleOrientation() const;
+            void computeMuzzleParameters(const Vector3& target);
+            const Vector3& getMuzzlePosition() const
+                { return this->muzzlePosition_; }
+            const Quaternion& getMuzzleOrientation() const
+                { return this->muzzleOrientation_; }
             Vector3 getMuzzleDirection() const;
 
 
@@ -123,6 +130,8 @@ namespace orxonox
                 { this->mode_ = mode; }
             inline unsigned int getMode() const
                 { return this->mode_; }
+
+            Vector3 getTarget();
 
         protected:
             virtual void fire() = 0;
@@ -151,6 +160,12 @@ namespace orxonox
 
             Timer reloadTimer_;
             bool bReloading_;
+
+            Vector3 muzzlePosition_;
+            Quaternion muzzleOrientation_;
+
+            WorldSound* defSndWpnFire_;
+            bool        bSoundAttached_;
     };
 }
 

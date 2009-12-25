@@ -34,7 +34,7 @@
 namespace orxonox {
 namespace packet {
 /**
-	@author
+    @author
 */
 class _NetworkExport DeleteObjects : public Packet
 {

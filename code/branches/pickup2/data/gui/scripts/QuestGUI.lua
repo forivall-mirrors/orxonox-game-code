@@ -14,7 +14,7 @@ function P:show()
     self.visible = true
 
     local questManager = orxonox.QuestManager:getInstance()
-      
+
     local questsList = winMgr:getWindow("orxonox/QuestGUI/QuestsList")
 
     local window = questManager:getQuestGUI(P.filename)

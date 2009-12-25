@@ -42,7 +42,6 @@
 #include <typeinfo>
 
 #include "Debug.h"
-#include "StringUtils.h"
 #include "TemplateUtils.h"
 
 ////////////////////////////////////
@@ -335,7 +334,7 @@ namespace orxonox
     {
         FORCEINLINE static bool convert(std::string* output, const char input)
         {
-            *output = std::string(1, input);
+            *output = input;
             return true;
         }
     };
@@ -344,16 +343,16 @@ namespace orxonox
     {
         FORCEINLINE static bool convert(std::string* output, const unsigned char input)
         {
-            *output = std::string(1, input);
+            *output = input;
             return true;
         }
     };
     template <>
     struct ConverterExplicit<std::string, char>
     {
-        FORCEINLINE static bool convert(char* output, const std::string input)
+        FORCEINLINE static bool convert(char* output, const std::string& input)
         {
-            if (input != "")
+            if (!input.empty())
                 *output = input[0];
             else
                 *output = '\0';
@@ -363,9 +362,9 @@ namespace orxonox
     template <>
     struct ConverterExplicit<std::string, unsigned char>
     {
-        FORCEINLINE static bool convert(unsigned char* output, const std::string input)
+        FORCEINLINE static bool convert(unsigned char* output, const std::string& input)
         {
-            if (input != "")
+            if (!input.empty())
                 *output = input[0];
             else
                 *output = '\0';
@@ -388,22 +387,26 @@ namespace orxonox
         }
     };
 
+    // Declarations to avoid StringUtils.h include
+    _UtilExport std::string removeTrailingWhitespaces(const std::string& str);
+    _UtilExport std::string getLowercase(const std::string& str);
+
     // std::string to bool
     template <>
     struct ConverterExplicit<std::string, bool>
     {
         static bool convert(bool* output, const std::string& input)
         {
-            std::string stripped = getLowercase(removeTrailingWhitespaces(input));
+            const std::string& stripped = getLowercase(removeTrailingWhitespaces(input));
             if (stripped == "true" || stripped == "on" || stripped == "yes")
             {
-              *output = true;
-              return true;
+                *output = true;
+                return true;
             }
             else if (stripped == "false" || stripped == "off" || stripped == "no")
             {
-              *output = false;
-              return true;
+                *output = false;
+                return true;
             }
 
             std::istringstream iss(input);

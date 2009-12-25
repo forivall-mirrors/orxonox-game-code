@@ -39,7 +39,7 @@ namespace orxonox {
 
 namespace packet {
 /**
-	@author
+    @author
 */
 
 

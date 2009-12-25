@@ -53,7 +53,7 @@
 #include "SpecialConfig.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
-#include "CommandLine.h"
+#include "CommandLineParser.h"
 
 // Boost 1.36 has some issues with deprecated functions that have been omitted
 #if (BOOST_VERSION == 103600)
@@ -185,8 +185,8 @@ namespace orxonox
             logPath_          = specialConfig::logDevDirectory;
 
             // Check for data path override by the command line
-            if (!CommandLine::getArgument("externalDataPath")->hasDefaultValue())
-                externalDataPath_ = CommandLine::getValue("externalDataPath").getString();
+            if (!CommandLineParser::getArgument("externalDataPath")->hasDefaultValue())
+                externalDataPath_ = CommandLineParser::getValue("externalDataPath").getString();
             else
                 externalDataPath_ = specialConfig::externalDataDevDirectory;
         }
@@ -223,9 +223,9 @@ namespace orxonox
         }
 
         // Option to put all the config and log files in a separate folder
-        if (!CommandLine::getArgument("writingPathSuffix")->hasDefaultValue())
+        if (!CommandLineParser::getArgument("writingPathSuffix")->hasDefaultValue())
         {
-            std::string directory(CommandLine::getValue("writingPathSuffix").getString());
+            const std::string& directory(CommandLineParser::getValue("writingPathSuffix").getString());
             configPath_ = configPath_ / directory;
             logPath_    = logPath_    / directory;
         }
@@ -255,12 +255,16 @@ namespace orxonox
         std::vector<std::string> modulePaths;
 
         // We search for helper files with the following extension
-        std::string moduleextension = specialConfig::moduleExtension;
+        const std::string& moduleextension = specialConfig::moduleExtension;
         size_t moduleextensionlength = moduleextension.size();
 
         // Add that path to the PATH variable in case a module depends on another one
-        std::string pathVariable = getenv("PATH");
-        putenv(const_cast<char*>(("PATH=" + pathVariable + ";" + modulePath_.string()).c_str()));
+        std::string pathVariable(getenv("PATH"));
+        putenv(const_cast<char*>(("PATH=" + pathVariable + ';' + modulePath_.string()).c_str()));
+
+        // Make sure the path exists, otherwise don't load modules
+        if (!boost::filesystem::exists(modulePath_))
+            return modulePaths;
 
         boost::filesystem::directory_iterator file(modulePath_);
         boost::filesystem::directory_iterator end;
@@ -268,7 +272,7 @@ namespace orxonox
         // Iterate through all files
         while (file != end)
         {
-            std::string filename = file->BOOST_LEAF_FUNCTION();
+            const std::string& filename = file->BOOST_LEAF_FUNCTION();
 
             // Check if the file ends with the exension in question
             if (filename.size() > moduleextensionlength)
@@ -276,7 +280,7 @@ namespace orxonox
                 if (filename.substr(filename.size() - moduleextensionlength) == moduleextension)
                 {
                     // We've found a helper file
-                    std::string library = filename.substr(0, filename.size() - moduleextensionlength);
+                    const std::string& library = filename.substr(0, filename.size() - moduleextensionlength);
                     modulePaths.push_back((modulePath_ / library).file_string());
                 }
             }

@@ -28,7 +28,7 @@
 
 /**
 @file
-@brief 
+@brief
 */
 
 #ifndef _JoyStickQuantityListener_H__

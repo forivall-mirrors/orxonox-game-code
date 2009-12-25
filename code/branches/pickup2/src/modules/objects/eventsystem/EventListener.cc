@@ -57,7 +57,7 @@ namespace orxonox
     {
         if (this->bActive_)
         {
-            COUT(2) << "Warning: Detected Event loop in EventListener \"" << this->getName() << "\"" << std::endl;
+            COUT(2) << "Warning: Detected Event loop in EventListener \"" << this->getName() << '"' << std::endl;
             return;
         }
 
@@ -70,7 +70,7 @@ namespace orxonox
     {
         this->eventName_ = eventname;
 
-        if (this->eventName_ == "")
+        if (this->eventName_.empty())
             return;
 
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
@@ -80,7 +80,7 @@ namespace orxonox
 
     void EventListener::loadedNewXMLName(BaseObject* object)
     {
-        if (this->eventName_ == "")
+        if (this->eventName_.empty())
             return;
 
         if (object->getName() == this->eventName_)

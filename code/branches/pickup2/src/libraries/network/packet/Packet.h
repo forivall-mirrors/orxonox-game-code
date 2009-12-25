@@ -56,7 +56,7 @@ namespace Type{
 }
 
 /**
-	@author Oliver Scheuss <scheusso [at] ee.ethz.ch>
+    @author Oliver Scheuss <scheusso [at] ee.ethz.ch>
 */
 class _NetworkExport Packet{
   public:

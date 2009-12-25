@@ -109,15 +109,11 @@ namespace orxonox
     /*static*/ void PickupInventory::toggleInventory()
     {
         if(PickupInventory::getSingleton()->isVisible()) {
-            GUIManager::getInstance().executeCode("hideGUI(\"PickupInventory\")");
-            GUIManager::getInstance().executeCode("hideCursor()");
-            InputManager::getInstance().leaveState("guiMouseOnly");
+            GUIManager::hideGUI("PickupInventory");
         }
         else
         {
-            GUIManager::getInstance().showGUI("PickupInventory");
-            GUIManager::getInstance().executeCode("showCursor()");
-            InputManager::getInstance().enterState("guiMouseOnly");
+            GUIManager::showGUI("PickupInventory");
         }
         PickupInventory::getSingleton()->setVisible(!PickupInventory::getSingleton()->isVisible());
     }
@@ -234,14 +230,14 @@ namespace orxonox
         if(!item)
             return "";
 
-        std::string name = "pickup_" + item->getGUIImage();
+        const std::string& name = "pickup_" + item->getGUIImage();
 
         if(!CEGUI::ImagesetManager::getSingletonPtr()->isImagesetPresent(name))
         {
             CEGUI::ImagesetManager::getSingletonPtr()->createImagesetFromImageFile(name, item->getGUIImage(), "");
         }
 
-        return "set:" + name + " image:full_image";
+        return ("set:" + name + " image:full_image");
     }
 
     void PickupInventory::clearInventory(CEGUI::WindowManager* winMgr, CEGUI::Window* equipPane, CEGUI::Window* usablePane)
@@ -373,9 +369,9 @@ namespace orxonox
 
         txt->setVisible(true);
         txt->setProperty("Text", item->getGUIText());
-        txt->setProperty("TextColours", "tl:" + textColour + " tr:" + textColour + " bl:" + textColour + " br:" + textColour + "");
+        txt->setProperty("TextColours", "tl:" + textColour + " tr:" + textColour + " bl:" + textColour + " br:" + textColour);
 
-        std::string image = PickupInventory::getImageForItem(item);
+        const std::string& image = PickupInventory::getImageForItem(item);
         btn->setVisible(true);
         btn->setProperty("NormalImage", image);
         btn->setProperty("HoverImage", image);

@@ -27,6 +27,7 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   Level.cc
   LevelManager.cc
   Main.cc
+  MoodManager.cc
   PawnManager.cc
   PlayerManager.cc
   Radar.cc
@@ -53,6 +54,9 @@ ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
     LevelManager.h
+    MoodManager.h
+    controllers/HumanController.h
+    sound/SoundManager.h
   DEFINE_SYMBOL
     "ORXONOX_SHARED_BUILD"
   PCH_FILE

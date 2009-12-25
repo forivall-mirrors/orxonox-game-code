@@ -33,6 +33,7 @@
 #include "infos/PlayerInfo.h"
 #include "gametypes/UnderAttack.h"
 #include "worldentities/pawns/Destroyer.h"
+#include "overlays/OverlayGroup.h"
 
 namespace orxonox
 {
@@ -57,7 +58,10 @@ namespace orxonox
     UnderAttackHealthBar::~UnderAttackHealthBar()
     {
         if (this->isInitialized())
+        {
             this->text_->destroy();
+            this->text_ = 0;
+        }
     }
 
     void UnderAttackHealthBar::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -88,6 +92,13 @@ namespace orxonox
                     this->text_->setCaption("Defend the Transporter!");
             }
         }
+    }
+
+    void UnderAttackHealthBar::changedOverlayGroup()
+    {
+        SUPER(UnderAttackHealthBar, changedOverlayGroup);
+
+        this->getOverlayGroup()->addElement(this->text_.get());
     }
 
     void UnderAttackHealthBar::init()

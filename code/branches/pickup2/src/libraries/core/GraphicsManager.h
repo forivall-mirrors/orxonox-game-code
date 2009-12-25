@@ -62,7 +62,7 @@ namespace orxonox
 
         void setConfigValues();
 
-        void update(const Clock& time);
+        void postUpdate(const Clock& time);
 
         Ogre::Viewport* getViewport()         { return this->viewport_; }
         Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
@@ -105,13 +105,13 @@ namespace orxonox
         shared_ptr<XMLFile> debugOverlay_;             //!< XML with various debug overlays
 
         // config values
-        std::string         ogreConfigFile_;           //!< ogre config file name
+        std::string         ogreConfigFile_;           //!< ogre config filename
         std::string         ogrePluginsDirectory_;     //!< Directory where the Ogre plugins are located
         std::string         ogrePlugins_;              //!< Comma separated list of all plugins to load
-        std::string         ogreLogFile_;              //!< log file name for Ogre log messages
-        int                 ogreLogLevelTrivial_;      //!< Corresponding Orxonx debug level for LL_TRIVIAL
-        int                 ogreLogLevelNormal_;       //!< Corresponding Orxonx debug level for LL_NORMAL
-        int                 ogreLogLevelCritical_;     //!< Corresponding Orxonx debug level for LL_CRITICAL
+        std::string         ogreLogFile_;              //!< log filename for Ogre log messages
+        int                 ogreLogLevelTrivial_;      //!< Corresponding Orxonox debug level for LL_TRIVIAL
+        int                 ogreLogLevelNormal_;       //!< Corresponding Orxonox debug level for LL_NORMAL
+        int                 ogreLogLevelCritical_;     //!< Corresponding Orxonox debug level for LL_CRITICAL
 
         // console commands
         ConsoleCommand*     ccPrintScreen_;

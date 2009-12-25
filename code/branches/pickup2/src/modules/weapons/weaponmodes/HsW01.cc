@@ -38,6 +38,8 @@
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
+#include "worldentities/WorldEntity.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -55,6 +57,12 @@ namespace orxonox
 
         this->delayTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&HsW01::shot, this)));
         this->delayTimer_.stopTimer();
+
+        this->setDefaultSound("sounds/Weapon_HsW01.ogg");
+    }
+
+    HsW01::~HsW01()
+    {
     }
 
     void HsW01::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -102,6 +110,7 @@ namespace orxonox
 
     void HsW01::shot()
     {
+        assert( this->getWeapon() && this->getWeapon()->getWeaponPack() && this->getWeapon()->getWeaponPack()->getWeaponSystem() && this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn() );
         Projectile* projectile = new Projectile(this);
         Model* model = new Model(projectile);
         model->setMeshSource("laserbeam.mesh");
@@ -109,6 +118,7 @@ namespace orxonox
         projectile->attach(model);
         model->setScale(5);
 
+        this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());
         projectile->setVelocity(this->getMuzzleDirection() * this->speed_);

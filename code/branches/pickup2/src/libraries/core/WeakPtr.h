@@ -43,7 +43,7 @@ namespace orxonox
     class WeakPtr
     {
         friend class OrxonoxClass;
-        
+
         public:
             inline WeakPtr() : pointer_(0), base_(0), callback_(0)
             {
@@ -78,9 +78,9 @@ namespace orxonox
                     this->base_->unregisterWeakPtr(this);
                 if (this->callback_)
                     delete this->callback_;
-                    
+
             }
-            
+
             inline const WeakPtr& operator=(int)
             {
                 WeakPtr(0).swap(*this);
@@ -144,7 +144,7 @@ namespace orxonox
                     this->base_->unregisterWeakPtr(this);
                 if (other.base_)
                     other.base_->unregisterWeakPtr(&other);
-                
+
                 {
                     T* temp = this->pointer_;
                     this->pointer_ = other.pointer_;
@@ -166,12 +166,12 @@ namespace orxonox
             {
                 WeakPtr().swap(*this);
             }
-            
+
             inline void setCallback(Functor* callback)
             {
                 this->callback_ = callback;
             }
-            
+
             inline Functor* getFunctor() const
             {
                 return this->callback_;
@@ -185,7 +185,7 @@ namespace orxonox
                 if (this->callback_)
                     (*this->callback_)();
             }
-        
+
             T* pointer_;
             OrxonoxClass* base_;
             Functor* callback_;

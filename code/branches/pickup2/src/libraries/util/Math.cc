@@ -42,6 +42,7 @@
 
 namespace orxonox
 {
+#if OGRE_VERSION < 0x010603
     /**
         @brief Function for writing a Radian to a stream.
     */
@@ -52,6 +53,16 @@ namespace orxonox
     }
 
     /**
+        @brief Function for writing a Degree to a stream.
+    */
+    std::ostream& operator<<(std::ostream& out, const orxonox::Degree& degree)
+    {
+        out << degree.valueDegrees();
+        return out;
+    }
+#endif
+
+    /**
         @brief Function for reading a Radian from a stream.
     */
     std::istream& operator>>(std::istream& in, orxonox::Radian& radian)
@@ -60,15 +71,6 @@ namespace orxonox
         in >> temp;
         radian = temp;
         return in;
-    }
-
-    /**
-        @brief Function for writing a Degree to a stream.
-    */
-    std::ostream& operator<<(std::ostream& out, const orxonox::Degree& degree)
-    {
-        out << degree.valueDegrees();
-        return out;
     }
 
     /**
@@ -135,10 +137,10 @@ namespace orxonox
             else
                 return orxonox::Vector2(0, 1);
         }
-        
+
         float cos_value = clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1);
         float sin_value = sqrt( 1 - cos_value*cos_value );
-        
+
         if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
             return orxonox::Vector2( sin_value, cos_value );
         else
@@ -176,7 +178,7 @@ namespace orxonox
                 return orxonox::Vector2(0, 1);
         }
         //float angle = acos(clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1));
-        
+
         float cos_value = clamp<float>(myorthonormal.dotProduct(projection) / projectionlength, -1, 1);
         float sin_value = sqrt( 1 - cos_value*cos_value );
 

@@ -37,16 +37,16 @@
 
 #define SetCommandLineArgument(name, defaultValue) \
     orxonox::CommandLineArgument& CmdArgumentDummyBoolVar##name \
-    = orxonox::CommandLine::addArgument(#name, defaultValue, false)
+    = orxonox::CommandLineParser::addArgument(#name, defaultValue, false)
 #define SetCommandLineOnlyArgument(name, defaultValue) \
     orxonox::CommandLineArgument& CmdArgumentDummyBoolVar##name \
-    = orxonox::CommandLine::addArgument(#name, defaultValue, true)
+    = orxonox::CommandLineParser::addArgument(#name, defaultValue, true)
 #define SetCommandLineSwitch(name) \
     orxonox::CommandLineArgument& CmdArgumentDummyBoolVar##name \
-    = orxonox::CommandLine::addArgument(#name, false, false)
+    = orxonox::CommandLineParser::addArgument(#name, false, false)
 #define SetCommandLineOnlySwitch(name) \
     orxonox::CommandLineArgument& CmdArgumentDummyBoolVar##name \
-    = orxonox::CommandLine::addArgument(#name, false, true)
+    = orxonox::CommandLineParser::addArgument(#name, false, true)
 
 
 namespace orxonox
@@ -66,11 +66,11 @@ namespace orxonox
         So "--startVector (2, 4, 5)" is perfectly legal.
 
         Retrieving an argument is possible with the getCommandLineArgument function of the
-        CommandLine class. It is a Singleton, but the public interface is static.
+        CommandLineParser class. It is a Singleton, but the public interface is static.
     */
     class _CoreExport CommandLineArgument
     {
-        friend class CommandLine;
+        friend class CommandLineParser;
 
     public:
         //! Tells whether the value has been changed by the command line.
@@ -136,7 +136,7 @@ namespace orxonox
     @see
         CommandLineArgument
     */
-    class _CoreExport CommandLine
+    class _CoreExport CommandLineParser
     {
     public:
 
@@ -166,12 +166,12 @@ namespace orxonox
 
     private:
         //! Constructor initialises bFirstTimeParse_ with true.
-        CommandLine() : bFirstTimeParse_(true) { }
+        CommandLineParser() : bFirstTimeParse_(true) { }
         //! Undefined copy constructor
-        CommandLine(const CommandLine& instance);
-        ~CommandLine();
+        CommandLineParser(const CommandLineParser& instance);
+        ~CommandLineParser();
 
-        static CommandLine& _getInstance();
+        static CommandLineParser& _getInstance();
 
         void _parseCommandLine(const std::string& cmdLine);
         void _parseFile();
@@ -193,7 +193,7 @@ namespace orxonox
     };
 
     template <>
-    inline void CommandLine::getValue<std::string>(const std::string& name, std::string* value)
+    inline void CommandLineParser::getValue<std::string>(const std::string& name, std::string* value)
     {
         *value = getArgument(name)->getValue().getString();
     }
@@ -208,7 +208,7 @@ namespace orxonox
         Default value that is used when argument was not given.
     */
     template <class T>
-    CommandLineArgument& CommandLine::addArgument(const std::string& name, T defaultValue, bool bCommandLineOnly)
+    CommandLineArgument& CommandLineParser::addArgument(const std::string& name, T defaultValue, bool bCommandLineOnly)
     {
         OrxAssert(!_getInstance().existsArgument(name),
             "Cannot add a command line argument with name '" + name + "' twice.");

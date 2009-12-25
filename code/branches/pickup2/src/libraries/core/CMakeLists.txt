@@ -28,6 +28,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   GameState.cc
   GraphicsManager.cc
   GUIManager.cc
+  IOConsole.cc
   Language.cc
   LuaState.cc
   ObjectListBase.cc
@@ -39,7 +40,7 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   # command
   CommandEvaluation.cc
   CommandExecutor.cc
-  CommandLine.cc
+  CommandLineParser.cc
   ConsoleCommand.cc
   ConsoleCommandCompilation.cc
   Executor.cc
@@ -84,8 +85,16 @@ ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
     CommandExecutor.h
+    ConfigFileManager.h
+    Game.h
+    GameMode.h
+    GUIManager.h
     Loader.h
     LuaState.h
+    PathConfig.h
+    input/InputManager.h
+    input/KeyBinder.h
+    input/KeyBinderManager.h
   DEFINE_SYMBOL
     "CORE_SHARED_BUILD"
   PCH_FILE

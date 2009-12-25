@@ -70,7 +70,7 @@ namespace orxonox
         SUPER(AddQuestHint, XMLPort, xmlelement, mode);
 
         XMLPortParam(AddQuestHint, "hintId", setHintId, getHintId, xmlelement, mode);
-        
+
         COUT(3) << "New AddQuestHint, with target QuestHint {" << this->getHintId() << "}, created." << std::endl;
     }
 
@@ -89,7 +89,7 @@ namespace orxonox
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return false;
         }
-        
+
         this->hintId_ = id;
         return true;
     }

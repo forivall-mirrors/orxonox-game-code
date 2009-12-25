@@ -35,9 +35,9 @@
 namespace orxonox {
 namespace packet {
 
-  
+
 /**
-	@author
+    @author
 */
 class _NetworkExport FunctionIDs : public Packet
 {

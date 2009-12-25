@@ -45,6 +45,7 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void changedOwner();
+            virtual void changedOverlayGroup();
 
             inline void setDescriptionPickPoint(const Vector2& pickpoint)
                 { this->text_->setPickPoint(pickpoint); }
@@ -60,7 +61,7 @@ namespace orxonox
             void init();
 
             PlayerInfo* owner_;
-            OverlayText* text_;
+            SmartPtr<OverlayText> text_;
             Timer inittimer_;
     };
 }

@@ -79,7 +79,7 @@ namespace orxonox
             return;
         for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
         {
-            if ((*it).first == file)
+            if (it->first == file)
             {
                 Loader::files_s.erase(it);
                 break;
@@ -91,7 +91,7 @@ namespace orxonox
     {
         bool success = true;
         for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
-            if (!Loader::load((*it).first, (*it).second * mask))
+            if (!Loader::load(it->first, it->second * mask))
                 success = false;
 
         return success;
@@ -127,18 +127,18 @@ namespace orxonox
             // Use the LuaState to replace the XML tags (calls our function)
             scoped_ptr<LuaState> luaState(new LuaState());
             luaState->setIncludeParser(&Loader::replaceLuaTags);
-            luaState->includeFile(file->getFilename(), file->getResourceGroup(), false);
+            luaState->includeFile(file->getFilename());
             xmlInput = luaState->getOutput().str();
         }
         else
         {
-            shared_ptr<ResourceInfo> info = Resource::getInfo(file->getFilename(), file->getResourceGroup());
+            shared_ptr<ResourceInfo> info = Resource::getInfo(file->getFilename());
             if (info == NULL)
             {
                 COUT(1) << "Error: Could not find XML file '" << file->getFilename() << "'." << std::endl;
                 return false;
             }
-            xmlInput = Resource::open(file->getFilename(), file->getResourceGroup())->getAsString();
+            xmlInput = Resource::open(file->getFilename())->getAsString();
         }
 
         try
@@ -164,7 +164,7 @@ namespace orxonox
             rootNamespace->setRoot(true);
             rootNamespace->XMLPort(rootElement, XMLPort::LoadObject);
 
-            COUT(0) << "Finished loading " << file->getFilename() << "." << std::endl;
+            COUT(0) << "Finished loading " << file->getFilename() << '.' << std::endl;
 
             COUT(4) << "Namespace-tree:" << std::endl << rootNamespace->toString("  ") << std::endl;
 
@@ -173,7 +173,7 @@ namespace orxonox
         catch (ticpp::Exception& ex)
         {
             COUT(1) << std::endl;
-            COUT(1) << "An XML-error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
+            COUT(1) << "An XML-error occurred in Loader.cc while loading " << file->getFilename() << ':' << std::endl;
             COUT(1) << ex.what() << std::endl;
             COUT(1) << "Loading aborted." << std::endl;
             return false;
@@ -181,7 +181,7 @@ namespace orxonox
         catch (Exception& ex)
         {
             COUT(1) << std::endl;
-            COUT(1) << "A loading-error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
+            COUT(1) << "A loading-error occurred in Loader.cc while loading " << file->getFilename() << ':' << std::endl;
             COUT(1) << ex.what() << std::endl;
             COUT(1) << "Loading aborted." << std::endl;
             return false;
@@ -189,7 +189,7 @@ namespace orxonox
         catch (...)
         {
             COUT(1) << std::endl;
-            COUT(1) << "An error occurred in Loader.cc while loading " << file->getFilename() << ":" << std::endl;
+            COUT(1) << "An error occurred in Loader.cc while loading " << file->getFilename() << ':' << std::endl;
             COUT(1) << Exception::handleMessage() << std::endl;
             COUT(1) << "Loading aborted." << std::endl;
             return false;
@@ -217,7 +217,7 @@ namespace orxonox
 
     std::string Loader::replaceLuaTags(const std::string& text)
     {
-        // chreate map with all Lua tags
+        // create map with all Lua tags
         std::map<size_t, bool> luaTags;
         {
             size_t pos = 0;
@@ -290,7 +290,7 @@ namespace orxonox
             do
             {
                 if (it != luaTags.end())
-                    end = (*(it++)).first;
+                    end = (it++)->first;
                 else
                     end = std::string::npos;
 
@@ -299,7 +299,7 @@ namespace orxonox
                 if (bInPrintFunction)
                 {
                     // count ['='[ and ]'='] and replace tags with print([[ and ]])
-                    std::string temp = text.substr(start, end - start);
+                    const std::string& temp = text.substr(start, end - start);
                     {
                     size_t pos = 0;
                     while ((pos = temp.find('[', pos)) != std::string::npos)
@@ -344,12 +344,12 @@ namespace orxonox
                                 equalSignCounter = tempCounter;
                         }
                     }
-                    std::string equalSigns = "";
+                    std::string equalSigns;
                     for(unsigned int i = 0; i < equalSignCounter; i++)
                     {
-                        equalSigns += "=";
+                        equalSigns += '=';
                     }
-                    output << "print([" + equalSigns + "[" + temp + "]" + equalSigns +"])";
+                    output << "print([" + equalSigns + '[' + temp + ']' + equalSigns +"])";
                     start = end + 5;
                 }
                 else

@@ -25,6 +25,7 @@
  *      ...
  *
  */
+
 #ifndef _WorldSound_H__
 #define _WorldSound_H__
 
@@ -44,14 +45,20 @@ namespace orxonox
     {
     public:
         WorldSound(BaseObject* creator);
-        virtual ~WorldSound();
 
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-        virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+        void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+        void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+        void changedActivity();
 
-        virtual void tick(float dt);
+        void tick(float dt);
+
+    protected:
+        ~WorldSound() {}
 
     private:
+        void registerVariables();
+        void initialiseSource();
+        float getRealVolume();
     };
 }
 

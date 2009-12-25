@@ -40,7 +40,7 @@ namespace packet {
 #define _PACKETID           0
 #define _QUANTITY           _PACKETID + sizeof(Type::Value)
 #define _OBJECTIDS          _QUANTITY + sizeof(uint32_t)
-  
+
 DeleteObjects::DeleteObjects()
  : Packet()
 {
@@ -70,9 +70,8 @@ bool DeleteObjects::fetchIDs(){
   tdata += sizeof(uint32_t);
   for(unsigned int i=0; i<number; i++){
     unsigned int temp = Synchronisable::popDeletedObject();
-//     assert(temp<10000); //ugly hack
     *reinterpret_cast<uint32_t*>(tdata) = temp;
-    COUT(4) << temp << " ";
+    COUT(4) << temp << ' ';
     tdata += sizeof(uint32_t);
   }
   COUT(4) << std::endl;

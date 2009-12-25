@@ -41,9 +41,9 @@ namespace orxonox
         public:
             EventTarget(BaseObject* creator);
             virtual ~EventTarget();
-            
+
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            
+
             virtual void processEvent(Event& event);
 
             void setTargetName(const std::string& name);
@@ -53,7 +53,7 @@ namespace orxonox
         private:
             virtual void loadedNewXMLName(BaseObject* object);
             void addEventTarget(BaseObject* object);
-            
+
             std::string target_;
             bool bActive_;
     };

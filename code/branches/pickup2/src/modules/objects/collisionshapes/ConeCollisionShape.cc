@@ -65,7 +65,7 @@ namespace orxonox
         SUPER(ConeCollisionShape, XMLPort, xmlelement, mode);
 
         XMLPortParam(ConeCollisionShape, "radius", setRadius, getRadius, xmlelement, mode);
-        XMLPortParam(ConeCollisionShape, "height", setHeight, getHeight, xmlelement, mode);    
+        XMLPortParam(ConeCollisionShape, "height", setHeight, getHeight, xmlelement, mode);
     }
 
     btCollisionShape* ConeCollisionShape::createNewShape() const

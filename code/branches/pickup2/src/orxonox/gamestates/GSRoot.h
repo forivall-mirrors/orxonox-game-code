@@ -50,10 +50,9 @@ namespace orxonox
         // when taking the function address.
         void setTimeFactor(float factor);
         void pause();
-        float getTimeFactor() { return this->timeFactor_; }
+        float getTimeFactor();
 
     private:
-        float                 timeFactor_;              //!< A factor that sets the gamespeed. 1 is normal.
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
     };

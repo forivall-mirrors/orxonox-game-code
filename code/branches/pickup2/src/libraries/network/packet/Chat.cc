@@ -34,7 +34,7 @@
 
 namespace orxonox {
 namespace packet {
-  
+
 #define   PACKET_FLAGS_CHAT PacketFlag::Reliable
 #define   _PACKETID         0
 const int _PLAYERID     =   _PACKETID + sizeof(Type::Value);

@@ -44,7 +44,7 @@ namespace orxonox
     EventTarget::~EventTarget()
     {
     }
-    
+
     void EventTarget::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(EventTarget, XMLPort, xmlelement, mode);
@@ -59,7 +59,7 @@ namespace orxonox
     {
         if (this->bActive_)
         {
-            COUT(2) << "Warning: Detected Event loop in EventTarget \"" << this->getName() << "\"" << std::endl;
+            COUT(2) << "Warning: Detected Event loop in EventTarget \"" << this->getName() << '"' << std::endl;
             return;
         }
 
@@ -71,7 +71,7 @@ namespace orxonox
     void EventTarget::setTargetName(const std::string& name)
     {
         this->target_ = name;
-        
+
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)
             if (it->getName() == this->target_)
                 this->addEventTarget(*it);
@@ -79,7 +79,7 @@ namespace orxonox
 
     void EventTarget::loadedNewXMLName(BaseObject* object)
     {
-        if (this->target_ == "")
+        if (this->target_.empty())
             return;
 
         if (object->getName() == this->target_)

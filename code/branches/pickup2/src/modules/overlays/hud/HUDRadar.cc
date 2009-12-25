@@ -125,7 +125,7 @@ namespace orxonox
         {
             panel = *itRadarDots_;
             ++itRadarDots_;
-            std::string materialName = TextureGenerator::getMaterialName(
+            const std::string& materialName = TextureGenerator::getMaterialName(
                 shapeMaterials_[object->getRadarObjectShape()], object->getRadarObjectColour());
             if (materialName != panel->getMaterialName())
                 panel->setMaterialName(materialName);

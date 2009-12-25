@@ -172,7 +172,7 @@ namespace orxonox
         for (std::set<NamespaceNode*>::const_iterator it = this->representingNamespaces_.begin(); it != this->representingNamespaces_.end(); i++, ++it)
         {
             if (i > 0)
-                output += "\n";
+                output += '\n';
 
             output += (*it)->toString(indentation);
         }

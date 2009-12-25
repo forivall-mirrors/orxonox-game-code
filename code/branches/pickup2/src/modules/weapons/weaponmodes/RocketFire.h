@@ -20,52 +20,31 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
  */
 
-#include "GSIOConsole.h"
+#ifndef _RocketFire_H__
+#define _RocketFire_H__
 
-#include <iostream>
-#include "core/ConsoleCommand.h"
-#include "core/CommandExecutor.h"
-#include "core/Game.h"
+#include "weapons/WeaponsPrereqs.h"
+#include "weaponsystem/WeaponMode.h"
 
 namespace orxonox
 {
-    DeclareGameState(GSIOConsole, "ioConsole", false, false);
-
-    GSIOConsole::GSIOConsole(const GameStateInfo& info)
-        : GameState(info)
+    class _WeaponsExport RocketFire : public WeaponMode
     {
-    }
+        public:
+            RocketFire(BaseObject* creator);
+            virtual ~RocketFire();
 
-    GSIOConsole::~GSIOConsole()
-    {
-    }
+            virtual void fire();
 
-    void GSIOConsole::activate()
-    {
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSIOConsole::loadMenu, this), "loadMenu"));
-    }
-
-    void GSIOConsole::deactivate()
-    {
-    }
-
-    void GSIOConsole::update(const Clock& time)
-    {
-        std::cout << ">";
-        std::string command;
-        std::getline(std::cin, command);
-        CommandExecutor::execute(command, true);
-    }
-
-    void GSIOConsole::loadMenu()
-    {
-        Game::getInstance().popState();
-        Game::getInstance().requestStates("graphics, mainMenu");
-    }
+        private:
+            float speed_;
+    };
 }
+
+#endif /* _RocketFire_H__ */

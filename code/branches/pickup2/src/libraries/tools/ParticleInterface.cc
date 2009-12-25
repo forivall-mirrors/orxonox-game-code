@@ -64,6 +64,10 @@ namespace orxonox
         this->bAllowedByLOD_ = true;
         this->speedFactor_ = 1.0f;
 
+        this->setDetailLevel(static_cast<unsigned int>(detaillevel));
+
+        this->setConfigValues();
+
         if (GameMode::showsGraphics())
         {
             try
@@ -73,12 +77,10 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "Error: Couln't load particle system \"" << templateName << "\"" << std::endl;
+                COUT(1) << "Error: Couln't load particle system \"" << templateName << '"' << std::endl;
                 this->particleSystem_ = 0;
             }
         }
-
-        this->setDetailLevel(static_cast<unsigned int>(detaillevel));
     }
 
     ParticleInterface::~ParticleInterface()

@@ -33,23 +33,48 @@ namespace orxonox
 {
     std::string Resource::DEFAULT_GROUP(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-    DataStreamPtr Resource::open(const std::string& name, const std::string& group, bool bSearchGroupsIfNotFound)
+    DataStreamPtr Resource::open(const std::string& name)
     {
-        return Ogre::ResourceGroupManager::getSingleton().openResource(name, group, bSearchGroupsIfNotFound);
+        return Ogre::ResourceGroupManager::getSingleton().openResource(name,
+            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
     }
 
-    DataStreamListPtr Resource::openMulti(const std::string& pattern, const std::string& group)
+    DataStreamListPtr Resource::openMulti(const std::string& pattern)
     {
-        return Ogre::ResourceGroupManager::getSingleton().openResources(pattern, group);
+        DataStreamListPtr resources(new Ogre::DataStreamList());
+        const Ogre::StringVector& groups = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
+        for (Ogre::StringVector::const_iterator it = groups.begin(); it != groups.end(); ++it)
+        {
+            DataStreamListPtr temp = Ogre::ResourceGroupManager::getSingleton().openResources(pattern, *it);
+            resources->insert(resources->end(), temp->begin(), temp->end());
+        }
+        return resources;
     }
 
-    bool Resource::exists(const std::string& name, const std::string& group)
+    bool Resource::exists(const std::string& name)
     {
-        return Ogre::ResourceGroupManager::getSingleton().resourceExists(group, name);
+        try
+        {
+            Ogre::ResourceGroupManager::getSingleton().findGroupContainingResource(name);
+            return true;
+        }
+        catch (const Ogre::Exception&)
+        {
+            return false;
+        }
     }
 
-    shared_ptr<ResourceInfo> Resource::getInfo(const std::string& name, const std::string& group)
+    shared_ptr<ResourceInfo> Resource::getInfo(const std::string& name)
     {
+        std::string group;
+        try
+        {
+            group = Ogre::ResourceGroupManager::getSingleton().findGroupContainingResource(name);
+        }
+        catch (const Ogre::Exception&)
+        {
+            return shared_ptr<ResourceInfo>();
+        }
         Ogre::FileInfoListPtr infos = Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo(group, name);
         for (std::vector<Ogre::FileInfo>::const_iterator it = infos->begin(); it != infos->end(); ++it)
         {
@@ -65,5 +90,17 @@ namespace orxonox
             }
         }
         return shared_ptr<ResourceInfo>();
+    }
+
+    StringVectorPtr Resource::findResourceNames(const std::string& pattern)
+    {
+        StringVectorPtr resourceNames(new Ogre::StringVector());
+        const Ogre::StringVector& groups = Ogre::ResourceGroupManager::getSingleton().getResourceGroups();
+        for (Ogre::StringVector::const_iterator it = groups.begin(); it != groups.end(); ++it)
+        {
+            StringVectorPtr temp = Ogre::ResourceGroupManager::getSingleton().findResourceNames(*it, pattern);
+            resourceNames->insert(resourceNames->end(), temp->begin(), temp->end());
+        }
+        return resourceNames;
     }
 }

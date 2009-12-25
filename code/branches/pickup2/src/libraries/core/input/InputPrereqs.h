@@ -201,7 +201,7 @@ namespace orxonox
             Mail          = OIS::KC_MAIL,            // Mail
             MediaSelect   = OIS::KC_MEDIASELECT      // Media Select
         };
-        
+
         //! Key codes as strings
         const char* const ByString[] =
         {

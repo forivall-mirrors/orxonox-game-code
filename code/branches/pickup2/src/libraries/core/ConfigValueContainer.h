@@ -120,8 +120,8 @@ namespace orxonox
                 @param varname The name of the variable
                 @param defvalue The default-value
             */
-            template <class V>
-            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<V>& defvalue)
+            template <class D, class V>
+            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<D>& defvalue, const std::vector<V>& value)
             {
                 this->init(type, identifier, sectionname, varname);
 
@@ -145,13 +145,11 @@ namespace orxonox
             {
                 if ((this->callback_ && object) || this->bContainerIsNew_)
                 {
-                    if (this->bContainerIsNew_)
-                        this->bContainerIsNew_ = false;
-
                     T temp = *value;
                     this->value_.getValue(value);
-                    if ((*value) != temp)
+                    if (this->bContainerIsNew_ || (*value) != temp)
                     {
+                        this->bContainerIsNew_ = false;
                         if (this->callback_ && object)
                             this->callback_->call(object);
                         else

@@ -139,7 +139,7 @@ namespace orxonox
 
         private:
             void init();
-        
+
             Executor* executor_;  //!< The executor of the function that should be called when the time expires
 
             long long interval_;  //!< The time-interval in micro seconds

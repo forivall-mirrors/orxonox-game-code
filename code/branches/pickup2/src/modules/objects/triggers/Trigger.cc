@@ -279,13 +279,13 @@ namespace orxonox
   std::string Trigger::getModeString() const
   {
     if (this->mode_ == TriggerMode::EventTriggerAND)
-      return std::string("and");
+      return "and";
     else if (this->mode_ == TriggerMode::EventTriggerOR)
-      return std::string("or");
+      return "or";
     else if (this->mode_ == TriggerMode::EventTriggerXOR)
-      return std::string("xor");
+      return "xor";
     else
-      return std::string("and");
+      return "and";
   }
 
   void Trigger::addTrigger(Trigger* trigger)

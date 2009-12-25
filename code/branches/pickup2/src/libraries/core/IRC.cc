@@ -32,6 +32,7 @@
 
 #include "util/Convert.h"
 #include "util/Exception.h"
+#include "util/StringUtils.h"
 #include "ConsoleCommand.h"
 #include "CoreIncludes.h"
 #include "TclThreadManager.h"
@@ -102,13 +103,13 @@ namespace orxonox
 
     void IRC::say(const std::string& message)
     {
-        if (IRC::eval("irk::say $conn #orxonox {" + message + "}"))
+        if (IRC::eval("irk::say $conn #orxonox {" + message + '}'))
             IRC::tcl_say(Tcl::object(), Tcl::object(IRC::getInstance().nickname_), Tcl::object(message));
     }
 
     void IRC::msg(const std::string& channel, const std::string& message)
     {
-        if (IRC::eval("irk::say $conn " + channel + " {" + message + "}"))
+        if (IRC::eval("irk::say $conn " + channel + " {" + message + '}'))
             IRC::tcl_privmsg(Tcl::object(channel), Tcl::object(IRC::getInstance().nickname_), Tcl::object(message));
     }
 
@@ -130,7 +131,7 @@ namespace orxonox
 
     void IRC::tcl_action(Tcl::object const &channel, Tcl::object const &nick, Tcl::object const &args)
     {
-        COUT(0) << "IRC> * " << nick.get() << " " << stripEnclosingBraces(args.get()) << std::endl;
+        COUT(0) << "IRC> * " << nick.get() << ' ' << stripEnclosingBraces(args.get()) << std::endl;
     }
 
     void IRC::tcl_info(Tcl::object const &channel, Tcl::object const &args)

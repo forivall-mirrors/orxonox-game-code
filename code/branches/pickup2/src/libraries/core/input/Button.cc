@@ -115,18 +115,18 @@ namespace orxonox
 
         for (unsigned int iCommand = 0; iCommand < commandStrings.size(); iCommand++)
         {
-            if (commandStrings[iCommand] != "")
+            if (!commandStrings[iCommand].empty())
             {
                 SubString tokens(commandStrings[iCommand], " ", SubString::WhiteSpaces, false,
                     '\\', false, '"', false, '(', ')', false, '\0');
 
                 KeybindMode::Value mode = KeybindMode::None;
                 float paramModifier = 1.0f;
-                std::string commandStr = "";
+                std::string commandStr;
 
                 for (unsigned int iToken = 0; iToken < tokens.size(); ++iToken)
                 {
-                    std::string token = getLowercase(tokens[iToken]);
+                    const std::string& token = getLowercase(tokens[iToken]);
 
                     if (token == "onpress")
                         mode = KeybindMode::OnPress;
@@ -158,11 +158,11 @@ namespace orxonox
                         // no input related argument
                         // we interpret everything from here as a command string
                         while (iToken != tokens.size())
-                            commandStr += tokens[iToken++] + " ";
+                            commandStr += tokens[iToken++] + ' ';
                     }
                 }
 
-                if (commandStr == "")
+                if (commandStr.empty())
                 {
                     parseError("No command string given.", false);
                     continue;
@@ -241,7 +241,7 @@ namespace orxonox
         }
     }
 
-    inline void Button::parseError(std::string message, bool serious)
+    inline void Button::parseError(const std::string& message, bool serious)
     {
         if (serious)
         {

@@ -34,6 +34,9 @@
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
 #include "core/XMLPort.h"
+#include "Scene.h"
+#include "SoundManager.h"
+#include <core/ConsoleCommandCompilation.h>
 
 namespace orxonox
 {
@@ -43,24 +46,43 @@ namespace orxonox
         : StaticEntity(creator)
     {
         RegisterObject(WorldSound);
+        // WorldSound buffers should be pooled when they're not used anymore
+        this->bPooling_ = true;
+        this->registerVariables();
     }
 
-    WorldSound::~WorldSound()
+    void WorldSound::registerVariables()
     {
+        registerVariable(volume_,   ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::volumeChanged));
+        registerVariable(source_,   ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::sourceChanged));
+        registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::loopingChanged));
+        registerVariable(pitch_,    ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::pitchChanged));
+        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::stateChanged));
     }
 
     void WorldSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(WorldSound, XMLPort, xmlelement, mode);
-        XMLPortParamExtern(WorldSound, BaseSound, this, "source", setSource, getSource, xmlelement, mode);
-        XMLPortParamExtern(WorldSound, BaseSound, this, "loop", setLoop, getLoop, xmlelement, mode);
-        XMLPortParamExtern(WorldSound, BaseSound, this, "playOnLoad", setPlayOnLoad, getPlayOnLoad, xmlelement, mode);
+        BaseSound::XMLPortExtern(xmlelement, mode);
     }
 
     void WorldSound::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(WorldSound, XMLEventPort, xmlelement, mode);
         XMLPortEventState(WorldSound, BaseObject, "play", play, xmlelement, mode);
+    }
+
+    void WorldSound::initialiseSource()
+    {
+        BaseSound::initialiseSource();
+        if (this->getScene())
+        {
+            float refDist = this->getScene()->getSoundReferenceDistance();
+            alSourcef(this->audioSource_, AL_REFERENCE_DISTANCE, refDist);
+            // TODO: 500 is very magical here. Derive something better
+            alSourcef(this->audioSource_, AL_MAX_DISTANCE, refDist * 500);
+        }
+        this->tick(0); // update position, orientation and velocity
     }
 
     void WorldSound::tick(float dt)
@@ -79,13 +101,26 @@ namespace orxonox
             if (error == AL_INVALID_VALUE)
                 COUT(2) << "Sound: OpenAL: Invalid sound velocity" << std::endl;
 
-            const Quaternion& orient = this->getWorldOrientation();
-            Vector3 at = orient.zAxis();
-            alSource3f(this->audioSource_, AL_DIRECTION, at.x, at.y, at.z);
+            const Vector3& direction = -this->getWorldOrientation().zAxis();
+            alSource3f(this->audioSource_, AL_DIRECTION, direction.x, direction.y, direction.z);
             error = alGetError();
             if (error == AL_INVALID_VALUE)
                 COUT(2) << "Sound: OpenAL: Invalid sound direction" << std::endl;
         }
     }
 
+    void WorldSound::changedActivity()
+    {
+        SUPER(WorldSound, changedActivity);
+        if (this->isActive())
+            this->play();
+        else
+            this->stop();
+    }
+
+    float WorldSound::getRealVolume()
+    {
+        assert(GameMode::playsSound());
+        return SoundManager::getInstance().getRealVolume(SoundType::Effects);
+    }
 }

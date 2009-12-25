@@ -36,7 +36,7 @@
 #include <queue>
 
 namespace orxonox{
-  
+
   class _NetworkExport NetworkCallbackManager{
     public:
       static void registerCallback(NetworkCallbackBase *cb);
@@ -47,7 +47,7 @@ namespace orxonox{
       static std::set<NetworkCallbackBase*> callbackSet_;
       static std::queue<NetworkCallbackBase*> triggeredCallbacks_;
   };
-  
+
 
 }
 

@@ -50,10 +50,11 @@
 #include "util/Clock.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/Scope.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
 #include "CommandExecutor.h"
-#include "CommandLine.h"
+#include "CommandLineParser.h"
 #include "ConfigFileManager.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
@@ -63,9 +64,9 @@
 #include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
+#include "IOConsole.h"
 #include "LuaState.h"
 #include "ScopedSingletonManager.h"
-#include "Shell.h"
 #include "TclBind.h"
 #include "TclThreadManager.h"
 #include "input/InputManager.h"
@@ -77,121 +78,14 @@ namespace orxonox
 
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
 #ifdef ORXONOX_PLATFORM_WINDOWS
-    SetCommandLineArgument(limitToCPU, 0).information("Limits the program to one cpu/core (1, 2, 3, etc.). 0 turns it off (default)");
+    SetCommandLineArgument(limitToCPU, 1).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is the first core (faster than off)");
 #endif
-
-    /**
-    @brief
-        Helper class for the Core singleton: we cannot derive
-        Core from OrxonoxClass because we need to handle the Identifier
-        destruction in the Core destructor.
-    */
-    class CoreConfiguration : public OrxonoxClass
-    {
-    public:
-        CoreConfiguration()
-        {
-        }
-
-        void initialise()
-        {
-            RegisterRootObject(CoreConfiguration);
-            this->setConfigValues();
-        }
-
-        /**
-            @brief Function to collect the SetConfigValue-macro calls.
-        */
-        void setConfigValues()
-        {
-#ifdef NDEBUG
-            const unsigned int defaultLevelConsole = 1;
-            const unsigned int defaultLevelLogfile = 3;
-            const unsigned int defaultLevelShell   = 1;
-#else
-            const unsigned int defaultLevelConsole = 3;
-            const unsigned int defaultLevelLogfile = 4;
-            const unsigned int defaultLevelShell   = 3;
-#endif
-            SetConfigValue(softDebugLevelConsole_, defaultLevelConsole)
-                .description("The maximal level of debug output shown in the console")
-                .callback(this, &CoreConfiguration::debugLevelChanged);
-            SetConfigValue(softDebugLevelLogfile_, defaultLevelLogfile)
-                .description("The maximal level of debug output shown in the logfile")
-                .callback(this, &CoreConfiguration::debugLevelChanged);
-            SetConfigValue(softDebugLevelShell_, defaultLevelShell)
-                .description("The maximal level of debug output shown in the ingame shell")
-                .callback(this, &CoreConfiguration::debugLevelChanged);
-
-            SetConfigValue(language_, Language::getInstance().defaultLanguage_)
-                .description("The language of the ingame text")
-                .callback(this, &CoreConfiguration::languageChanged);
-            SetConfigValue(bInitializeRandomNumberGenerator_, true)
-                .description("If true, all random actions are different each time you start the game")
-                .callback(this, &CoreConfiguration::initializeRandomNumberGenerator);
-        }
-
-        /**
-            @brief Callback function if the debug level has changed.
-        */
-        void debugLevelChanged()
-        {
-            // softDebugLevel_ is the maximum of the 3 variables
-            this->softDebugLevel_ = this->softDebugLevelConsole_;
-            if (this->softDebugLevelLogfile_ > this->softDebugLevel_)
-                this->softDebugLevel_ = this->softDebugLevelLogfile_;
-            if (this->softDebugLevelShell_ > this->softDebugLevel_)
-                this->softDebugLevel_ = this->softDebugLevelShell_;
-
-            OutputHandler::setSoftDebugLevel(OutputHandler::LD_All,     this->softDebugLevel_);
-            OutputHandler::setSoftDebugLevel(OutputHandler::LD_Console, this->softDebugLevelConsole_);
-            OutputHandler::setSoftDebugLevel(OutputHandler::LD_Logfile, this->softDebugLevelLogfile_);
-            OutputHandler::setSoftDebugLevel(OutputHandler::LD_Shell,   this->softDebugLevelShell_);
-        }
-
-        /**
-            @brief Callback function if the language has changed.
-        */
-        void languageChanged()
-        {
-            // Read the translation file after the language was configured
-            Language::getInstance().readTranslatedLanguageFile();
-        }
-
-        /**
-            @brief Sets the language in the config-file back to the default.
-        */
-        void resetLanguage()
-        {
-            ResetConfigValue(language_);
-        }
-
-        void initializeRandomNumberGenerator()
-        {
-            static bool bInitialized = false;
-            if (!bInitialized && this->bInitializeRandomNumberGenerator_)
-            {
-                srand(static_cast<unsigned int>(time(0)));
-                rand();
-                bInitialized = true;
-            }
-        }
-
-        int softDebugLevel_;                            //!< The debug level
-        int softDebugLevelConsole_;                     //!< The debug level for the console
-        int softDebugLevelLogfile_;                     //!< The debug level for the logfile
-        int softDebugLevelShell_;                       //!< The debug level for the ingame shell
-        std::string language_;                          //!< The language
-        bool bInitializeRandomNumberGenerator_;         //!< If true, srand(time(0)) is called
-    };
-
 
     Core::Core(const std::string& cmdLine)
         // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
         : identifierDestroyer_(Identifier::destroyAllIdentifiers)
         // Cleanup guard for external console commands that don't belong to an Identifier
         , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
-        , configuration_(new CoreConfiguration()) // Don't yet create config values!
         , bGraphicsLoaded_(false)
     {
         // Set the hard coded fixed paths
@@ -215,27 +109,27 @@ namespace orxonox
         }
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
-        CommandLine::parseCommandLine(cmdLine);
+        CommandLineParser::parseCommandLine(cmdLine);
 
         // Set configurable paths like log, config and media
         this->pathConfig_->setConfigurablePaths();
 
-        // create a signal handler (only active for linux)
+        // create a signal handler (only active for Linux)
         // This call is placed as soon as possible, but after the directories are set
         this->signalHandler_.reset(new SignalHandler());
         this->signalHandler_->doCatch(PathConfig::getExecutablePathString(), PathConfig::getLogPathString() + "orxonox_crash.log");
 
-        // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% was used
-        OutputHandler::getOutStream().setLogPath(PathConfig::getLogPathString());
+        // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% (Windows) was used
+        OutputHandler::getInstance().setLogPath(PathConfig::getLogPathString());
 
         // Parse additional options file now that we know its path
-        CommandLine::parseFile();
+        CommandLineParser::parseFile();
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
         // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
         // the timer though).
-        int limitToCPU = CommandLine::getValue("limitToCPU");
+        int limitToCPU = CommandLineParser::getValue("limitToCPU");
         if (limitToCPU > 0)
             setThreadAffinity(static_cast<unsigned int>(limitToCPU));
 #endif
@@ -243,17 +137,21 @@ namespace orxonox
         // Manage ini files and set the default settings file (usually orxonox.ini)
         this->configFileManager_.reset(new ConfigFileManager());
         this->configFileManager_->setFilename(ConfigFileType::Settings,
-            CommandLine::getValue("settingsFile").getString());
+            CommandLineParser::getValue("settingsFile").getString());
 
         // Required as well for the config values
         this->languageInstance_.reset(new Language());
 
-        // creates the class hierarchy for all classes with factories
-        Identifier::createClassHierarchy();
-
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
-        this->configuration_->initialise();
+        ClassIdentifier<Core>::getIdentifier("Core")->initialiseObject(this, "Core", true);
+        this->setConfigValues();
+
+        // create persistent io console
+        this->ioConsole_.reset(new IOConsole());
+
+        // creates the class hierarchy for all classes with factories
+        Identifier::createClassHierarchy();
 
         // Load OGRE excluding the renderer and the render window
         this->graphicsManager_.reset(new GraphicsManager(false));
@@ -261,9 +159,6 @@ namespace orxonox
         // initialise Tcl
         this->tclBind_.reset(new TclBind(PathConfig::getDataPathString()));
         this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
-
-        // create a shell
-        this->shell_.reset(new Shell());
 
         // Create singletons that always exist (in other libraries)
         this->rootScope_.reset(new Scope<ScopeID::Root>());
@@ -275,6 +170,46 @@ namespace orxonox
     */
     Core::~Core()
     {
+        // Remove us from the object lists again to avoid problems when destroying them
+        this->unregisterObject();
+    }
+
+    //! Function to collect the SetConfigValue-macro calls.
+    void Core::setConfigValues()
+    {
+#ifdef ORXONOX_RELEASE
+        const unsigned int defaultLevelLogFile = 3;
+#else
+        const unsigned int defaultLevelLogFile = 4;
+#endif
+        setConfigValueGeneric(this, &this->softDebugLevelLogFile_, ConfigFileType::Settings, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
+            .description("The maximum level of debug output shown in the log file");
+        OutputHandler::getInstance().setSoftDebugLevel(OutputHandler::logFileOutputListenerName_s, this->softDebugLevelLogFile_);
+
+        SetConfigValue(language_, Language::getInstance().defaultLanguage_)
+            .description("The language of the in game text")
+            .callback(this, &Core::languageChanged);
+        SetConfigValue(bInitRandomNumberGenerator_, true)
+            .description("If true, all random actions are different each time you start the game")
+            .callback(this, &Core::initRandomNumberGenerator);
+    }
+
+    //! Callback function if the language has changed.
+    void Core::languageChanged()
+    {
+        // Read the translation file after the language was configured
+        Language::getInstance().readTranslatedLanguageFile();
+    }
+
+    void Core::initRandomNumberGenerator()
+    {
+        static bool bInitialized = false;
+        if (!bInitialized && this->bInitRandomNumberGenerator_)
+        {
+            srand(static_cast<unsigned int>(time(0)));
+            rand();
+            bInitialized = true;
+        }
     }
 
     void Core::loadGraphics()
@@ -326,62 +261,10 @@ namespace orxonox
         GameMode::bShowsGraphics_s = false;
     }
 
-    /**
-        @brief Returns the softDebugLevel for the given device (returns a default-value if the class is right about to be created).
-        @param device The device
-        @return The softDebugLevel
-    */
-    /*static*/ int Core::getSoftDebugLevel(OutputHandler::OutputDevice device)
+    //! Sets the language in the config-file back to the default.
+    void Core::resetLanguage()
     {
-        switch (device)
-        {
-        case OutputHandler::LD_All:
-            return Core::getInstance().configuration_->softDebugLevel_;
-        case OutputHandler::LD_Console:
-            return Core::getInstance().configuration_->softDebugLevelConsole_;
-        case OutputHandler::LD_Logfile:
-            return Core::getInstance().configuration_->softDebugLevelLogfile_;
-        case OutputHandler::LD_Shell:
-            return Core::getInstance().configuration_->softDebugLevelShell_;
-        default:
-            assert(0);
-            return 2;
-        }
-    }
-
-     /**
-        @brief Sets the softDebugLevel for the given device. Please use this only temporary and restore the value afterwards, as it overrides the configured value.
-        @param device The device
-        @param level The level
-    */
-    /*static*/ void Core::setSoftDebugLevel(OutputHandler::OutputDevice device, int level)
-    {
-        if (device == OutputHandler::LD_All)
-            Core::getInstance().configuration_->softDebugLevel_ = level;
-        else if (device == OutputHandler::LD_Console)
-            Core::getInstance().configuration_->softDebugLevelConsole_ = level;
-        else if (device == OutputHandler::LD_Logfile)
-            Core::getInstance().configuration_->softDebugLevelLogfile_ = level;
-        else if (device == OutputHandler::LD_Shell)
-            Core::getInstance().configuration_->softDebugLevelShell_ = level;
-
-        OutputHandler::setSoftDebugLevel(device, level);
-    }
-
-    /**
-        @brief Returns the configured language.
-    */
-    /*static*/ const std::string& Core::getLanguage()
-    {
-        return Core::getInstance().configuration_->language_;
-    }
-
-    /**
-        @brief Sets the language in the config-file back to the default.
-    */
-    /*static*/ void Core::resetLanguage()
-    {
-        Core::getInstance().configuration_->resetLanguage();
+        ResetConfigValue(language_);
     }
 
     /**
@@ -432,27 +315,33 @@ namespace orxonox
 
     void Core::preUpdate(const Clock& time)
     {
-        // singletons from other libraries
-        ScopedSingletonManager::update<ScopeID::Root>(time);
+        // Update singletons before general ticking
+        ScopedSingletonManager::preUpdate<ScopeID::Root>(time);
         if (this->bGraphicsLoaded_)
         {
-            // process input events
-            this->inputManager_->update(time);
-            // process gui events
-            this->guiManager_->update(time);
-            // graphics singletons from other libraries
-            ScopedSingletonManager::update<ScopeID::Graphics>(time);
+            // Process input events
+            this->inputManager_->preUpdate(time);
+            // Update GUI
+            this->guiManager_->preUpdate(time);
+            // Update singletons before general ticking
+            ScopedSingletonManager::preUpdate<ScopeID::Graphics>(time);
         }
-        // process thread commands
-        this->tclThreadManager_->update(time);
+        // Process console events and status line
+        this->ioConsole_->preUpdate(time);
+        // Process thread commands
+        this->tclThreadManager_->preUpdate(time);
     }
 
     void Core::postUpdate(const Clock& time)
     {
+        // Update singletons just before rendering
+        ScopedSingletonManager::postUpdate<ScopeID::Root>(time);
         if (this->bGraphicsLoaded_)
         {
+            // Update singletons just before rendering
+            ScopedSingletonManager::postUpdate<ScopeID::Graphics>(time);
             // Render (doesn't throw)
-            this->graphicsManager_->update(time);
+            this->graphicsManager_->postUpdate(time);
         }
     }
 }

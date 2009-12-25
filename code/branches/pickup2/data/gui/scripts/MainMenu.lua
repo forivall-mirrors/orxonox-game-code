@@ -11,81 +11,29 @@ end
 P.filename = "MainMenu"
 P.layoutString = "MainMenu.layout"
 
-function P:init()
-    listbox = winMgr:getWindow("orxonox/LevelListbox")
-    preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
-    orxonox.LevelManager:getInstance():compileAvailableLevelList()
-    local levelList = {}
-    local index = 0
-    local level = ""
-    while true do
-      level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
-      if level == "" then
-        break
-      end
-      table.insert(levelList, level)
-      index = index + 1
-    end
-    table.sort(levelList)
-    for k,v in pairs(levelList) do
-        item = CEGUI.createListboxTextItem(v)        
-        item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
-        CEGUI.toListbox(listbox):addItem(item)
-        if v .. ".oxw" == preselect then
-            listbox:setItemSelectState(item, true)
-        end
-    end
+-- events for MainMenu
+function P.QuickGameTestButton_clicked(e)
+    orxonox.execute("startGame")
 end
 
-
--- events for mainmenu
-function P.button_quit_clicked(e)
-    hideGUI()
-    orxonox.CommandExecutor:execute("exit")
+function P.SingleplayerButton_clicked(e)
+    showGUI("SingleplayerMenu", true)
 end
 
-function P.button_standalone_clicked(e)
-    choice = winMgr:getWindow("orxonox/LevelListbox"):getFirstSelectedItem()
-    if choice then
-        orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
-        orxonox.CommandExecutor:execute("startGame")
-        toggleGUI()
-    end
+function P.MultiplayerButton_clicked(e)
+    showGUI("MultiplayerMenu", true)
 end
 
-function P.button_server_clicked(e)
-    choice = winMgr:getWindow("orxonox/LevelListbox"):getFirstSelectedItem()
-    if choice then
-        orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
-        orxonox.CommandExecutor:execute("startServer")
-        toggleGUI()
-    end
+function P.SettingsButton_clicked(e)
+    showGUI("SettingsMenu", true)
 end
 
-function P.button_dedicated_clicked(e)
-    choice = winMgr:getWindow("orxonox/LevelListbox"):getFirstSelectedItem()
-    if choice then
-        orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
-        orxonox.CommandExecutor:execute("startDedicated")
-        toggleGUI()
-    end
+function P.CreditsButton_clicked(e)
+    showGUI("CreditsMenu", true)
 end
 
-function P.button_client_clicked(e)
-    choice = winMgr:getWindow("orxonox/LevelListbox"):getFirstSelectedItem()
-    if choice then
-        orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
-        orxonox.CommandExecutor:execute("startClient")
-        toggleGUI()
-    end
-end
-
-function P.listbox_level_selectionchanged(e)
-    if winMgr:getWindow("orxonox/LevelListbox"):getFirstSelectedItem() then
-        winMgr:getWindow("orxonox/StandaloneButton"):enable()
-    else
-        winMgr:getWindow("orxonox/StandaloneButton"):disable()
-    end
+function P.ExitButton_clicked(e)
+    orxonox.execute("exit")
 end
 
 return P

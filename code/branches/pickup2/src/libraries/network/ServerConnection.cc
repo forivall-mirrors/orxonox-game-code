@@ -98,12 +98,12 @@ namespace orxonox
     enet_host_broadcast( Connection::getInstance()->getHost(), 0, packet);
     return true;
   }
-  
+
   void ServerConnection::disconnectClient(ClientInformation *client)
   {
     Connection::disconnectPeer( client->getPeer() );
   }
-  
+
   void ServerConnection::disconnectClient(int clientID){
     ClientInformation *client = ClientInformation::findClient(clientID);
     if(client)

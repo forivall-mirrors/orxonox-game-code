@@ -56,7 +56,8 @@ namespace orxonox
     bool processChat(const std::string& message, unsigned int playerID);
     bool queuePacket(ENetPacket *packet, int clientID);
     void update(const Clock& time);
-    unsigned int getPing(unsigned int clientID);
+    unsigned int getRTT(unsigned int clientID);
+    virtual void printRTT();
     double getPacketLoss(unsigned int clientID);
   protected:
     void updateGamestate();
@@ -64,10 +65,10 @@ namespace orxonox
     virtual bool isServer_(){return true;}
     unsigned int shipID(){return 0;}
     unsigned int playerID(){return 0;}
-    
+
     void addPeer(ENetEvent *event);
     void removePeer(ENetEvent *event);
-    
+
     bool createClient(int clientID);
     void disconnectClient( ClientInformation *client);
     bool processPacket( ENetPacket *packet, ENetPeer *peer );

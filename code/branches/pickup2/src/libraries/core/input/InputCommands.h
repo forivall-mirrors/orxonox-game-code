@@ -70,7 +70,7 @@ namespace orxonox
     /**
     @brief
         Executes a simple command with no additional paramters.
-    @return 
+    @return
         True if command execution was successful, false otherwise.
     */
     inline bool SimpleCommand::execute(float abs, float rel)

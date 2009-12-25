@@ -82,6 +82,9 @@ namespace orxonox
 
             void setConfigValues();
 
+            unsigned int getMaxLength() const { return this->maxLength_; }
+            void setMaxLength(unsigned int length);
+
             template <class T>
             void registerListener(T* listener, void (T::*function)(), bool bOnlySingleInput)
             {
@@ -161,10 +164,11 @@ namespace orxonox
             inline void decreaseCursor()
                 { if (this->cursor_ > 0) { --this->cursor_; } }
 
+            void buttonPressed(const KeyEvent& evt);
+
         private:
             bool charIsAllowed(const char& input);
 
-            void buttonPressed(const KeyEvent& evt);
             void buttonHeld   (const KeyEvent& evt);
             void processKey   (const KeyEvent& evt);
 
@@ -173,6 +177,7 @@ namespace orxonox
             std::string buffer_;
             std::list<BaseInputBufferListenerTuple*> listeners_;
             std::string allowedChars_;
+            unsigned int maxLength_;
             unsigned int cursor_;
 
             KeyCode::ByEnum lastKey_;

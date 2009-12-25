@@ -28,16 +28,16 @@
 
 #include "GSClient.h"
 
-#include "util/Clock.h"
+#include "util/Debug.h"
 #include "util/Exception.h"
-#include "core/CommandLine.h"
+#include "core/CommandLineParser.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "network/Client.h"
 
 namespace orxonox
 {
-    DeclareGameState(GSClient, "client", false, true);
+    DeclareGameState(GSClient, "client", false, false);
 
     SetCommandLineArgument(ip, "127.0.0.1").information("Sever IP as string in the form #.#.#.#");
 
@@ -55,7 +55,7 @@ namespace orxonox
     {
         GameMode::setIsClient(true);
 
-        this->client_ = new Client(CommandLine::getValue("ip").getString(), CommandLine::getValue("port"));
+        this->client_ = new Client(CommandLineParser::getValue("ip").getString(), CommandLineParser::getValue("port"));
 
         if(!client_->establishConnection())
             ThrowException(InitialisationFailed, "Could not establish connection with server.");

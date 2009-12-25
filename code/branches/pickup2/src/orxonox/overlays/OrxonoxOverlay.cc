@@ -38,14 +38,18 @@
 #include <OgreOverlayManager.h>
 #include <OgrePanelOverlayElement.h>
 #include <OgreRenderWindow.h>
+#include <OgreMaterialManager.h>
+#include <OgreTechnique.h>
+#include <OgrePass.h>
 
 #include "util/Convert.h"
 #include "util/Exception.h"
-#include "util/StringUtils.h"
 #include "core/GameMode.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/ConsoleCommand.h"
+
+#include "OverlayGroup.h"
 
 namespace orxonox
 {
@@ -80,15 +84,15 @@ namespace orxonox
 
         // Get aspect ratio from the render window. Later on, we get informed automatically
         this->windowAspectRatio_ = static_cast<float>(this->getWindowWidth()) / this->getWindowHeight();
-        this->sizeCorrectionChanged();
 
-        this->changedVisibility();
+        this->size_ = Vector2(1.0f, 1.0f);
+        this->pickPoint_= Vector2(0.0f, 0.0f);
+        this->position_ = Vector2(0.0f, 0.0f);
+        this->angle_ = Degree(0.0);
+        this->bCorrectAspect_ = false;
+        this->rotState_ = Horizontal;
+        this->angleChanged(); // updates all other values as well
 
-        setSize(Vector2(1.0f, 1.0f));
-        setPickPoint(Vector2(0.0f, 0.0f));
-        setPosition(Vector2(0.0f, 0.0f));
-        setRotation(Degree(0.0));
-        setAspectCorrection(false);
         setBackgroundMaterial("");
     }
 
@@ -140,7 +144,7 @@ namespace orxonox
         OrxonoxOverlay::overlays_s.erase(this->getOldName());
 
         if (OrxonoxOverlay::overlays_s.find(this->getName()) != OrxonoxOverlay::overlays_s.end())
-            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << "\"" << std::endl;
+            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << '"' << std::endl;
 
         OrxonoxOverlay::overlays_s[this->getName()] = this;
     }
@@ -148,7 +152,7 @@ namespace orxonox
     //! Only sets the background material name if not ""
     void OrxonoxOverlay::setBackgroundMaterial(const std::string& material)
     {
-        if (this->background_ && material != "")
+        if (this->background_ && !material.empty())
             this->background_->setMaterialName(material);
     }
 
@@ -164,10 +168,13 @@ namespace orxonox
     //! Called by BaseObject when visibility has changed.
     void OrxonoxOverlay::changedVisibility()
     {
+        SUPER( OrxonoxOverlay, changedVisibility );
+
         if (!this->overlay_)
             return;
 
-        if (this->isVisible())
+        // only set to visible if corresponding OverlayGroup is also visible
+        if (this->isVisible() && (!this->getOverlayGroup() || this->getOverlayGroup()->isVisible()) )
             this->overlay_->show();
         else
             this->overlay_->hide();
@@ -303,7 +310,7 @@ namespace orxonox
     {
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
         if (it != overlays_s.end())
-            (*it).second->scale(Vector2(scale, scale));
+            it->second->scale(Vector2(scale, scale));
     }
 
     /**
@@ -318,7 +325,7 @@ namespace orxonox
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
         if (it != overlays_s.end())
         {
-            OrxonoxOverlay* overlay= (*it).second;
+            OrxonoxOverlay* overlay= it->second;
             if(overlay->isVisible())
                 overlay->hide();
             else
@@ -337,7 +344,7 @@ namespace orxonox
     {
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
         if (it != overlays_s.end())
-            (*it).second->scroll(scroll);
+            it->second->scroll(scroll);
     }
 
     /**
@@ -351,6 +358,23 @@ namespace orxonox
     {
         std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
         if (it != overlays_s.end())
-            (*it).second->rotate(angle);
+            it->second->rotate(angle);
+    }
+
+    void OrxonoxOverlay::setOverlayGroup(OverlayGroup* group)
+    {
+        if (group != this->group_)
+        {
+            if (this->group_)
+                this->group_->removeElement(this);
+            this->group_ = group;
+            this->changedOverlayGroup();
+        }
+    }
+
+    void OrxonoxOverlay::setBackgroundAlpha(float alpha) {
+        Ogre::MaterialPtr ptr = this->background_->getMaterial();
+        Ogre::TextureUnitState* tempTx = ptr->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+        tempTx->setAlphaOperation(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, alpha);
     }
 }

@@ -68,7 +68,7 @@ namespace orxonox
     void UnderAttack::killedDestroyer()
     {
         this->end(); //end gametype
-        std::string message = "Ship destroyed! Team 0 has won!";
+        std::string message("Ship destroyed! Team 0 has won!");
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
         this->gameEnded_ = true;
@@ -151,7 +151,7 @@ namespace orxonox
             {
                 this->gameEnded_ = true;
                 this->end();
-                std::string message = "Time is up! Team 1 has won!";
+                std::string message("Time is up! Team 1 has won!");
                 COUT(0) << message << std::endl;
                 Host::Broadcast(message);
 
@@ -170,7 +170,7 @@ namespace orxonox
              //prints gametime
             if ( gameTime_ <= timesequence_ && gameTime_ > 0)
             {
-                std::string message = multi_cast<std::string>(timesequence_) + " seconds left!";
+                const std::string& message = multi_cast<std::string>(timesequence_) + " seconds left!";
 /*
                 COUT(0) << message << std::endl;
                 Host::Broadcast(message);

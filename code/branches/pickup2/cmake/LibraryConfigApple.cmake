@@ -22,7 +22,7 @@
  #  Description:
  #    Sets necessary library options and paths on Mac.
  #
- 
+
 IF(APPLE)
   MESSAGE(STATUS "Running on Apple. Using customized paths and options.")
 

@@ -69,10 +69,10 @@ namespace orxonox
                 { return this->collisionDamage_; }
 
             inline void setEnableCollisionDamage(bool c)
-            { 
-                this->enableCollisionDamage_ = c; 
+            {
+                this->enableCollisionDamage_ = c;
                 this->enableCollisionCallback();
-            } 
+            }
 
             inline bool getEnableCollisionDamage()
                 { return this->enableCollisionDamage_; }

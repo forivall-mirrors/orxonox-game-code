@@ -100,8 +100,8 @@ Packet::Packet(const Packet &p){
 /**
 @brief
     Destroys a packet completely.
-    
-    That also means destroying the ENetPacket if one exists. There 
+
+    That also means destroying the ENetPacket if one exists. There
 */
 Packet::~Packet(){
   // Deallocate data_ memory if necessary.
@@ -229,7 +229,7 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
     data we allocated ourselves.
 */
 void Packet::deletePacket(ENetPacket *enetPacket){
-  // Get our Packet from a gloabal map with all Packets created in the send() method of Packet.
+  // Get our Packet from a global map with all Packets created in the send() method of Packet.
   std::map<size_t, Packet*>::iterator it = packetMap_.find(reinterpret_cast<size_t>(enetPacket));
   assert(it != packetMap_.end());
   // Make sure we don't delete it again in the destructor

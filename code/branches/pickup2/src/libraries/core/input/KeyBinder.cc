@@ -28,6 +28,8 @@
 
 #include "KeyBinder.h"
 
+#include <algorithm>
+#include <sstream>
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
@@ -49,8 +51,8 @@ namespace orxonox
     {
         mouseRelative_[0] = 0;
         mouseRelative_[1] = 0;
-        mousePosition_[0] = 0;
-        mousePosition_[1] = 0;
+        mousePosition_[0] = 0.0;
+        mousePosition_[1] = 0.0;
 
         RegisterRootObject(KeyBinder);
 
@@ -58,11 +60,11 @@ namespace orxonox
         // keys
         for (unsigned int i = 0; i < KeyCode::numberOfKeys; i++)
         {
-            std::string keyname = KeyCode::ByString[i];
+            const std::string& keyname = KeyCode::ByString[i];
             if (!keyname.empty())
                 keys_[i].name_ = std::string("Key") + keyname;
             else
-                keys_[i].name_ = "";
+                keys_[i].name_.clear();
             keys_[i].paramCommandBuffer_ = &paramCommandBuffer_;
             keys_[i].groupName_ = "Keys";
         }
@@ -125,8 +127,9 @@ namespace orxonox
             .description("Threshold for analog axes until which the state is 0.");
         SetConfigValue(bFilterAnalogNoise_, false)
             .description("Specifies whether to filter small analog values like joy stick fluctuations.");
-        SetConfigValue(mouseSensitivity_, 1.0f)
+        SetConfigValue(mouseSensitivity_, 3.0f)
             .description("Mouse sensitivity.");
+        this->totalMouseSensitivity_ = this->mouseSensitivity_ / this->mouseClippingSize_;
         SetConfigValue(bDeriveMouseInput_, false)
             .description("Whether or not to derive moues movement for the absolute value.");
         SetConfigValue(derivePeriod_, 0.05f)
@@ -184,10 +187,10 @@ namespace orxonox
         this->joyStickAxes_.resize(joySticks_.size());
         this->joyStickButtons_.resize(joySticks_.size());
 
-        // reinitialise all joy stick binings (doesn't overwrite the old ones)
+        // reinitialise all joy stick bindings (doesn't overwrite the old ones)
         for (unsigned int iDev = 0; iDev < joySticks_.size(); iDev++)
         {
-            std::string deviceName = joySticks_[iDev]->getDeviceName();
+            const std::string& deviceName = joySticks_[iDev]->getDeviceName();
             // joy stick buttons
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
             {
@@ -217,21 +220,21 @@ namespace orxonox
         // Note: Don't include the dummy keys which don't actually exist in OIS but have a number
         for (unsigned int i = 0; i < KeyCode::numberOfKeys; i++)
             if (!keys_[i].name_.empty())
-                allButtons_[keys_[i].groupName_ + "." + keys_[i].name_] = keys_ + i;
+                allButtons_[keys_[i].groupName_ + '.' + keys_[i].name_] = keys_ + i;
         for (unsigned int i = 0; i < numberOfMouseButtons_; i++)
-            allButtons_[mouseButtons_[i].groupName_ + "." + mouseButtons_[i].name_] = mouseButtons_ + i;
+            allButtons_[mouseButtons_[i].groupName_ + '.' + mouseButtons_[i].name_] = mouseButtons_ + i;
         for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
         {
-            allButtons_[mouseAxes_[i].groupName_ + "." + mouseAxes_[i].name_] = mouseAxes_ + i;
+            allButtons_[mouseAxes_[i].groupName_ + '.' + mouseAxes_[i].name_] = mouseAxes_ + i;
             allHalfAxes_.push_back(mouseAxes_ + i);
         }
         for (unsigned int iDev = 0; iDev < joySticks_.size(); iDev++)
         {
             for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; i++)
-                allButtons_[(*joyStickButtons_[iDev])[i].groupName_ + "." + (*joyStickButtons_[iDev])[i].name_] = &((*joyStickButtons_[iDev])[i]);
+                allButtons_[(*joyStickButtons_[iDev])[i].groupName_ + '.' + (*joyStickButtons_[iDev])[i].name_] = &((*joyStickButtons_[iDev])[i]);
             for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
             {
-                allButtons_[(*joyStickAxes_[iDev])[i].groupName_ + "." + (*joyStickAxes_[iDev])[i].name_] = &((*joyStickAxes_[iDev])[i]);
+                allButtons_[(*joyStickAxes_[iDev])[i].groupName_ + '.' + (*joyStickAxes_[iDev])[i].name_] = &((*joyStickAxes_[iDev])[i]);
                 allHalfAxes_.push_back(&((*joyStickAxes_[iDev])[i]));
             }
         }
@@ -252,7 +255,10 @@ namespace orxonox
 
         // Parse bindings and create the ConfigValueContainers if necessary
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
+        {
             it->second->readConfigValue(this->configFile_);
+            addButtonToCommand(it->second->bindingString_, it->second);
+        }
 
         COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
     }
@@ -262,6 +268,7 @@ namespace orxonox
         std::map<std::string, Button*>::iterator it = allButtons_.find(name);
         if (it != allButtons_.end())
         {
+            addButtonToCommand(binding, it->second);
             if (bTemporary)
                 it->second->configContainer_->tset(binding);
             else
@@ -274,6 +281,84 @@ namespace orxonox
             COUT(2) << "Could not find key/button/axis with name '" << name << "'." << std::endl;
             return false;
         }
+    }
+
+     void KeyBinder::addButtonToCommand(const std::string& command, Button* button)
+     {
+        std::ostringstream stream;
+        stream << button->groupName_  << '.' << button->name_;
+
+        std::vector<std::string>& oldKeynames = this->allCommands_[button->bindingString_];
+        std::vector<std::string>::iterator it = std::find(oldKeynames.begin(), oldKeynames.end(), stream.str());
+        if(it != oldKeynames.end())
+        {
+            oldKeynames.erase(it);
+        }
+
+        if (!command.empty())
+        {
+            std::vector<std::string>& keynames = this->allCommands_[command];
+            if( std::find(keynames.begin(), keynames.end(), stream.str()) == keynames.end())
+            {
+                this->allCommands_[command].push_back(stream.str());
+            }
+        }
+     }
+
+    /**
+    @brief
+        Return the first key name for a specific command
+    */
+    const std::string& KeyBinder::getBinding(const std::string& commandName)
+    {
+        if( this->allCommands_.find(commandName) != this->allCommands_.end())
+        {
+            std::vector<std::string>& keynames = this->allCommands_[commandName];
+            return keynames.front();
+        }
+
+        return BLANKSTRING;
+    }
+
+    /**
+    @brief
+        Return the key name for a specific command at a given index.
+    @param commandName
+        The command name the key name is returned for.
+    @param index
+        The index at which the key name is returned for.
+    */
+    const std::string& KeyBinder::getBinding(const std::string& commandName, unsigned int index)
+    {
+        if( this->allCommands_.find(commandName) != this->allCommands_.end())
+        {
+            std::vector<std::string>& keynames = this->allCommands_[commandName];
+            if(index < keynames.size())
+            {
+                return keynames[index];
+            }
+
+            return BLANKSTRING;
+        }
+
+        return BLANKSTRING;
+    }
+
+    /**
+    @brief
+        Get the number of different key bindings of a specific command.
+    @param commandName
+        The command.
+    */
+    unsigned int KeyBinder::getNumberOfBindings(const std::string& commandName)
+    {
+        if( this->allCommands_.find(commandName) != this->allCommands_.end())
+        {
+            std::vector<std::string>& keynames = this->allCommands_[commandName];
+            return keynames.size();
+        }
+
+        return 0;
     }
 
     /**
@@ -394,10 +479,7 @@ namespace orxonox
         }
 
         // these are the actually useful axis bindings for analog input
-        if (!bFilterAnalogNoise_ || halfAxis.relVal_ > analogThreshold_ || halfAxis.absVal_ > analogThreshold_)
-        {
-            halfAxis.execute();
-        }
+        halfAxis.execute();
     }
 
     /**
@@ -425,23 +507,23 @@ namespace orxonox
                     // write absolute values
                     mouseAxes_[2*i + 0].hasChanged_ = true;
                     mouseAxes_[2*i + 1].hasChanged_ = true;
-                    mousePosition_[i] += rel[i];
+                    mousePosition_[i] += rel[i] * totalMouseSensitivity_;
 
                     // clip absolute position
-                    if (mousePosition_[i] > mouseClippingSize_)
-                        mousePosition_[i] =  mouseClippingSize_;
-                    if (mousePosition_[i] < -mouseClippingSize_)
-                        mousePosition_[i] = -mouseClippingSize_;
+                    if (mousePosition_[i] > 1.0)
+                        mousePosition_[i] =  1.0;
+                    if (mousePosition_[i] < -1.0)
+                        mousePosition_[i] = -1.0;
 
-                    if (mousePosition_[i] < 0)
+                    if (mousePosition_[i] < 0.0)
                     {
-                        mouseAxes_[2*i + 0].absVal_ = -mouseSensitivity_ * mousePosition_[i] / mouseClippingSize_;
+                        mouseAxes_[2*i + 0].absVal_ = -mousePosition_[i];
                         mouseAxes_[2*i + 1].absVal_ = 0.0f;
                     }
                     else
                     {
                         mouseAxes_[2*i + 0].absVal_ = 0.0f;
-                        mouseAxes_[2*i + 1].absVal_ =  mouseSensitivity_ * mousePosition_[i] / mouseClippingSize_;
+                        mouseAxes_[2*i + 1].absVal_ =  mousePosition_[i];
                     }
                 }
             }
@@ -451,9 +533,9 @@ namespace orxonox
         for (int i = 0; i < 2; i++)
         {
             if (rel[i] < 0)
-                mouseAxes_[0 + 2*i].relVal_ = -mouseSensitivity_ * rel[i] / mouseClippingSize_;
+                mouseAxes_[0 + 2*i].relVal_ = -rel[i] * totalMouseSensitivity_;
             else
-                mouseAxes_[1 + 2*i].relVal_ =  mouseSensitivity_ * rel[i] / mouseClippingSize_;
+                mouseAxes_[1 + 2*i].relVal_ =  rel[i] * totalMouseSensitivity_;
         }
     }
 
@@ -473,6 +555,9 @@ namespace orxonox
 
     void KeyBinder::axisMoved(unsigned int device, unsigned int axisID, float value)
     {
+        // Filter analog noise
+        if (this->bFilterAnalogNoise_ && std::abs(value) < this->analogThreshold_)
+            value = 0.0;
         int i = axisID * 2;
         JoyStickAxisVector& axis = *joyStickAxes_[device];
         if (value < 0)

@@ -33,11 +33,9 @@ namespace orxonox
 {
     Clock::Clock()
         : timer_(new Ogre::Timer())
-        , storedTime_(0)
         , tickTime_(0)
         , tickDt_(0)
         , tickDtFloat_(0.0f)
-        , lastTimersTime_(0)
     {
     }
 
@@ -45,29 +43,25 @@ namespace orxonox
     {
         delete timer_;
     }
-    
+
+    /**
+    @remarks
+        Mind the types! Ogre::Timer::getMicroseconds() will return an unsigned
+        long, which will eventually overflow. But if you use the subtraction of
+        the current time minus the last time the timer gave us and sum these up to
+        a 64 bit integer, we get the desired result.
+        Also mind that we don't have to store the last timer's time as unsigned long
+        as well because (unsigned long)tickTime_ will do exactly that.
+    */
     void Clock::capture()
     {
-        unsigned long timersTime = timer_->getMicroseconds();
-        tickTime_ = storedTime_ + timersTime;
-        tickDt_ = timersTime - lastTimersTime_;
+        tickDt_ = timer_->getMicroseconds() - (unsigned long)tickTime_;
+        tickTime_ += tickDt_;
         tickDtFloat_ = static_cast<float>(tickDt_) / 1000000.0f;
-
-        if (timersTime > 0xFFFFFFFF/4)
-        {
-            // Ogre timer will overflow at 2^32 microseconds if unsigned long is 32 bit
-            storedTime_ += timersTime;
-            lastTimersTime_ = 0;
-            timer_->reset();
-        }
-        else
-        {
-            lastTimersTime_ = timersTime;
-        }
     }
 
     unsigned long long Clock::getRealMicroseconds() const
     {
-        return this->timer_->getMicroseconds() + this->storedTime_;
+        return tickTime_ + (timer_->getMicroseconds() - (unsigned long)tickTime_);
     }
 }
