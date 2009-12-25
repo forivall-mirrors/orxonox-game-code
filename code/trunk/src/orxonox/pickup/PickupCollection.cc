@@ -99,8 +99,8 @@ namespace orxonox
         this->bBlockRemovals_ = true;
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
-            if((*it).second && (*it).second->getOwner())
-                (*it).second->dropped((*it).second->getOwner());
+            if(it->second && it->second->getOwner())
+                it->second->dropped(it->second->getOwner());
         }
         this->currentUsable_ = NULL;
         this->items_.clear();
@@ -123,7 +123,7 @@ namespace orxonox
             item_range bounds = this->items_.equal_range(item->getPickupIdentifier());
             for (std::multimap<std::string, BaseItem*>::iterator it = bounds.first; it != bounds.second && it != this->items_.end(); it++)
             {
-                if ((*it).second == item)
+                if (it->second == item)
                 {
                     return true;
                 }
@@ -175,7 +175,7 @@ namespace orxonox
             item_range bounds = this->items_.equal_range(item->getPickupIdentifier());
             for (std::multimap<std::string, BaseItem*>::iterator it = bounds.first; it != bounds.second && it != this->items_.end(); it++)
             {
-                if ((*it).second == item)
+                if (it->second == item)
                 {
                     this->items_.erase(it);
                     break;
@@ -216,7 +216,7 @@ namespace orxonox
 
         for (std::multimap<ModifierType::Value, float>::iterator it = range.first; it != range.second && it != this->additiveModifiers_.end(); it++)
         {
-            v += (*it).second;
+            v += it->second;
         }
 
         return v;
@@ -231,7 +231,7 @@ namespace orxonox
         modifier_range range = this->additiveModifiers_.equal_range(type);
         for (std::multimap<ModifierType::Value, float>::iterator it = range.first; it != range.second && it != this->additiveModifiers_.end(); it++)
         {
-            if ((*it).second == value)
+            if (it->second == value)
             {
                 this->additiveModifiers_.erase(it);
                 return;
@@ -259,7 +259,7 @@ namespace orxonox
         modifier_range range = this->multiplicativeModifiers_.equal_range(type);
         for (std::multimap<ModifierType::Value, float>::iterator it = range.first; it != range.second && it != this->multiplicativeModifiers_.end(); it++)
         {
-            v *= (*it).second;
+            v *= it->second;
         }
 
         return v;
@@ -274,7 +274,7 @@ namespace orxonox
         modifier_range range = this->multiplicativeModifiers_.equal_range(type);
         for (std::multimap<ModifierType::Value, float>::iterator it = range.first; it != range.second && it != this->multiplicativeModifiers_.end(); it++)
         {
-            if ((*it).second == value)
+            if (it->second == value)
             {
                 this->multiplicativeModifiers_.erase(it);
                 return;
@@ -334,8 +334,8 @@ namespace orxonox
 
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
-            if ((*it).second->isA(ident))
-                ret.push_back(orxonox_cast<EquipmentItem*>((*it).second));
+            if (it->second->isA(ident))
+                ret.push_back(orxonox_cast<EquipmentItem*>(it->second));
         }
 
         return ret;
@@ -351,8 +351,8 @@ namespace orxonox
 
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
-            if ((*it).second->isA(ident))
-                ret.push_back(orxonox_cast<PassiveItem*>((*it).second));
+            if (it->second->isA(ident))
+                ret.push_back(orxonox_cast<PassiveItem*>(it->second));
         }
 
         return ret;
@@ -368,8 +368,8 @@ namespace orxonox
 
         for (std::multimap<std::string, BaseItem*>::iterator it = this->items_.begin(); it != this->items_.end(); it++)
         {
-            if ((*it).second->isA(ident))
-                ret.push_back(orxonox_cast<UsableItem*>((*it).second));
+            if (it->second->isA(ident))
+                ret.push_back(orxonox_cast<UsableItem*>(it->second));
         }
 
         return ret;

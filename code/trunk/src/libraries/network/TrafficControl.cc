@@ -144,25 +144,25 @@ namespace orxonox {
     assert(clientListTemp_.find(clientID) != clientListTemp_.end() );
     assert(clientListPerm_.find(clientID) != clientListPerm_.end() );
     assert( clientListTemp_[clientID].find(gamestateID) != clientListTemp_[clientID].end() );
-    
+
     // shortcut for maps
     std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
     std::map<unsigned int, std::list<obj> >& objectListTemp = clientListTemp_[clientID];
 
     for(itvec = objectListTemp[gamestateID].begin(); itvec != objectListTemp[gamestateID].end(); itvec++)
       {
-      if(objectListPerm.find((*itvec).objID) != objectListPerm.end()) // check whether the obj already exists in our lists
+      if(objectListPerm.find(itvec->objID) != objectListPerm.end()) // check whether the obj already exists in our lists
       {
-        objectListPerm[(*itvec).objID].objCurGS = gamestateID;
-        objectListPerm[(*itvec).objID].objValueSched = 0; //set scheduling value back
+        objectListPerm[itvec->objID].objCurGS = gamestateID;
+        objectListPerm[itvec->objID].objValueSched = 0; //set scheduling value back
       }
       else
       {
         assert(0);
-        objectListPerm[(*itvec).objID].objCurGS = gamestateID;
-        objectListPerm[(*itvec).objID].objID = (*itvec).objID;
-        objectListPerm[(*itvec).objID].objCreatorID = (*itvec).objCreatorID;
-        objectListPerm[(*itvec).objID].objSize = (*itvec).objSize;
+        objectListPerm[itvec->objID].objCurGS = gamestateID;
+        objectListPerm[itvec->objID].objID = itvec->objID;
+        objectListPerm[itvec->objID].objCreatorID = itvec->objCreatorID;
+        objectListPerm[itvec->objID].objSize = itvec->objSize;
       }
       }
        // remove temporary list (with acked objects) from the map
@@ -204,15 +204,15 @@ namespace orxonox {
     assert(!list.empty());
     for(itvec = list.begin(); itvec != list.end();)
     {
-      assert( (*itvec).objSize < 1000);
-      if ( ( size + (*itvec).objSize ) < targetsize )
+      assert( itvec->objSize < 1000);
+      if ( ( size + itvec->objSize ) < targetsize )
       {
-        size += (*itvec).objSize;//objSize is given in bytes
+        size += itvec->objSize;//objSize is given in bytes
         ++itvec;
       }
       else
       {
-        clientListPerm_[currentClientID][(*itvec).objID].objValueSched += SCHED_PRIORITY_OFFSET; // NOTE: SCHED_PRIORITY_OFFSET is negative
+        clientListPerm_[currentClientID][itvec->objID].objValueSched += SCHED_PRIORITY_OFFSET; // NOTE: SCHED_PRIORITY_OFFSET is negative
         list.erase(itvec, list.end());
         break;
       }
@@ -235,16 +235,16 @@ namespace orxonox {
       //compare listToProcess vs clientListPerm
       //if listToProcess contains new Objects, add them to clientListPerm
       std::list<obj>::iterator itvec;
-    
+
       std::map<unsigned int, objInfo >& objectListPerm = clientListPerm_[clientID];
-    
+
       for( itvec=list.begin(); itvec != list.end(); itvec++)
       {
-        if ( objectListPerm.find( (*itvec).objID) != objectListPerm.end() )
+        if ( objectListPerm.find( itvec->objID) != objectListPerm.end() )
         {
         // we already have the object in our map
         //obj bleibt in liste und permanente prio wird berechnet
-          objectListPerm[(*itvec).objID].objDiffGS = currentGamestateID - objectListPerm[(*itvec).objID].objCurGS;
+          objectListPerm[itvec->objID].objDiffGS = currentGamestateID - objectListPerm[itvec->objID].objCurGS;
           continue;//check next objId
         }
         else
@@ -255,12 +255,12 @@ namespace orxonox {
         }
       }
     //end compare listToProcess vs clientListPerm
-      
+
       //sort copied list according to priorities
       // use boost bind here because we need to pass a memberfunction to stl sort
 //       sort( list.begin(), list.end(), boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
       list.sort( boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
-      
+
 //       list.sort(boost::bind(&TrafficControl::prioritySort, this, clientID, _1, _2) );
 
       //now we check, that the creator of an object always exists on a client
@@ -276,7 +276,7 @@ namespace orxonox {
       //now sort again after objDataOffset
 //       sort(list.begin(), list.end(), boost::bind(&TrafficControl::dataSort, this, _1, _2) );
       list.sort( boost::bind(&TrafficControl::dataSort, this, _1, _2) );
-      
+
       //diese Funktion updateClientList muss noch gemacht werden
       updateClientListTemp(list);
       //end of sorting
@@ -288,19 +288,19 @@ namespace orxonox {
     std::list<obj>::iterator it;
     COUT(0) << "=========== Objectlist ===========" << endl;
     for( it=list.begin(); it!=list.end(); it++)
-      COUT(0) << "ObjectID: " << (*it).objID << " creatorID: " << (*it).objCreatorID << " Priority: " << clientListPerm_[clientID][(*it).objID].objValuePerm + clientListPerm_[clientID][(*it).objID].objValueSched << " size: " << (*it).objSize << endl;
+      COUT(0) << "ObjectID: " << it->objID << " creatorID: " << it->objCreatorID << " Priority: " << clientListPerm_[clientID][it->objID].objValuePerm + clientListPerm_[clientID][it->objID].objValueSched << " size: " << it->objSize << endl;
   }
 
   void TrafficControl::fixCreatorDependencies(std::list<obj>::iterator it1, std::list<obj>& list, unsigned int clientID)
   {
-    if ( (*it1).objCreatorID == OBJECTID_UNKNOWN )
+    if ( it1->objCreatorID == OBJECTID_UNKNOWN )
       return;
-    if( clientListPerm_[clientID][(*it1).objCreatorID].objCurGS != GAMESTATEID_INITIAL )
+    if( clientListPerm_[clientID][it1->objCreatorID].objCurGS != GAMESTATEID_INITIAL )
       return;
     std::list<obj>::iterator it2, it3=it1;
     for( it2 = ++it3; it2 != list.end(); it2++ )
     {
-      if( (*it2).objID == (*it1).objCreatorID )
+      if( it2->objID == it1->objCreatorID )
       {
         it3 = list.insert(it1, *it2); //insert creator before it1
         list.erase(it2);

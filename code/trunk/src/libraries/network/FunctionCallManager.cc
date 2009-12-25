@@ -30,63 +30,63 @@
 #include "packet/FunctionCalls.h"
 
 namespace orxonox {
-    
+
 std::map<uint32_t, packet::FunctionCalls*> FunctionCallManager::clientMap_;
 
 // Static calls
 
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID)
-{  
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager::clientMap_[clientID]->addCallStatic(functionID);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1)
-{  
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2)
-{  
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
-{  
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2, &mt3);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
-{  
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2, &mt3, &mt4);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
-{  
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2, &mt3, &mt4, &mt5);
 }
 
@@ -94,57 +94,57 @@ void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, 
 // MemberCalls
 
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID)
-{ 
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1)
-{ 
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2)
-{ 
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
-{ 
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
-{ 
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3, &mt4);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
-{ 
-  if(clientMap_.find(clientID)==clientMap_.end()) 
+{
+  if(clientMap_.find(clientID)==clientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls; 
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID); 
-  } 
+    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+  }
   FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3, &mt4, &mt5);
 }
 

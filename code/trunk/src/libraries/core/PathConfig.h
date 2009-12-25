@@ -35,8 +35,10 @@
 #include <vector>
 #include "util/Singleton.h"
 
+//tolua_begin
 namespace orxonox
 {
+//tolua_end
     /**
     @brief
         The PathConfig class is a singleton used to configure different paths.
@@ -49,8 +51,9 @@ namespace orxonox
         - root only when installed copyable
         - externalData only for development builds in the build tree
     */
-    class _CoreExport PathConfig : public Singleton<PathConfig>
-    {
+    class _CoreExport PathConfig //tolua_export
+        : public Singleton<PathConfig>
+    { //tolua_export
         friend class Singleton<PathConfig>;
         friend class Core;
 
@@ -98,7 +101,7 @@ namespace orxonox
             //! Returns the path to the external data files as std::string
             static std::string getExternalDataPathString();
             //! Returns the path to the config files as std::string
-            static std::string getConfigPathString();
+            static std::string getConfigPathString(); //tolua_export
             //! Returns the path to the log files as std::string
             static std::string getLogPathString();
             //! Returns the path to the modules as std::string
@@ -131,7 +134,7 @@ namespace orxonox
 
             bool                     bDevRun_;               //!< True for runs in the build directory (not installed)
             static PathConfig* singletonPtr_s;
-    };
-}
+    }; //tolua_export
+} //tolua_export
 
 #endif /* _PathConfig_H__ */

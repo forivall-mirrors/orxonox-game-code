@@ -41,7 +41,6 @@ namespace orxonox
     {
         RegisterObject(Billboard);
 
-        this->material_ = "";
         this->colour_ = ColourValue::White;
 //        this->rotation_ = 0;
 
@@ -75,7 +74,7 @@ namespace orxonox
 
     void Billboard::changedMaterial()
     {
-        if (this->material_ == "")
+        if (this->material_.empty())
             return;
 
         if (!this->billboard_.getBillboardSet())
@@ -98,7 +97,7 @@ namespace orxonox
         if (!this->billboard_.getBillboardSet())
         {
 /*
-            if (this->getScene() && GameMode::showsGraphics() && (this->material_ != ""))
+            if (this->getScene() && GameMode::showsGraphics() && !this->material_.empty())
             {
                 this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->material_, this->colour_, 1);
                 if (this->billboard_.getBillboardSet())

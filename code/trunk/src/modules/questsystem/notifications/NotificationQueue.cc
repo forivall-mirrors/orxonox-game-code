@@ -45,9 +45,9 @@ namespace orxonox
 
     CreateFactory(NotificationQueue);
 
-    const std::string NotificationQueue::DEFAULT_FONT = "VeraMono";
-    const Vector2 NotificationQueue::DEFAULT_POSITION = Vector2(0.0,0.0);
-    const float NotificationQueue::DEFAULT_FONT_SIZE  = 0.025f;
+    const std::string NotificationQueue::DEFAULT_FONT("VeraMono");
+    const Vector2 NotificationQueue::DEFAULT_POSITION(0.0,0.0);
+    const float NotificationQueue::DEFAULT_FONT_SIZE = 0.025f;
 
     /**
     @brief
@@ -270,7 +270,7 @@ namespace orxonox
         {
             if(!first)
             {
-                *string += ",";
+                *string += ',';
             }
             else
             {
@@ -299,7 +299,7 @@ namespace orxonox
         unsigned int index = 0;
         while( index < targets.size() ) //!< Go through the string, character by character until the end is reached.
         {
-            pTemp = new std::string("");
+            pTemp = new std::string();
             while(index < targets.size() && targets[index] != ',' && targets[index] != ' ')
             {
                 *pTemp += targets[index];
@@ -398,7 +398,7 @@ namespace orxonox
         timeString.erase(timeString.length()-1);
         std::ostringstream stream;
         stream << reinterpret_cast<unsigned long>(notification);
-        std::string addressString = stream.str() ;
+        const std::string& addressString = stream.str();
         container->name = "NotificationOverlay(" + timeString + ")&" + addressString;
 
         this->containers_.insert(container);

@@ -186,7 +186,7 @@ namespace orxonox
 
     void SpaceShip::loadEngineTemplate()
     {
-        if (this->enginetemplate_ != "")
+        if (!this->enginetemplate_.empty())
         {
             Template* temp = Template::getTemplate(this->enginetemplate_);
 

@@ -32,7 +32,7 @@
 #include "overlays/OverlaysPrereqs.h"
 
 #include <list>
-#include <OgreUTFString.h>
+#include <OgreOverlayElement.h>
 
 #include "network/ChatListener.h"
 #include "overlays/OverlayText.h"
@@ -50,7 +50,7 @@ namespace orxonox
         protected:
             virtual void incomingChat(const std::string& message, unsigned int senderID);
 
-            std::list<Ogre::UTFString> messages_;
+            std::list<Ogre::DisplayString> messages_;
 
         private:
             void updateOverlayText();

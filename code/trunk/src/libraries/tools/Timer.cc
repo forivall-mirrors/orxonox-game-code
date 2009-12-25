@@ -111,7 +111,7 @@ namespace orxonox
     {
         this->deleteExecutor();
     }
-    
+
     /**
         @brief Initializes the Timer
     */

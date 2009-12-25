@@ -61,7 +61,7 @@ namespace orxonox
     {
         if (this->bActive_)
         {
-            COUT(2) << "Warning: Detected Event loop in EventFilter \"" << this->getName() << "\"" << std::endl;
+            COUT(2) << "Warning: Detected Event loop in EventFilter \"" << this->getName() << '"' << std::endl;
             return;
         }
 

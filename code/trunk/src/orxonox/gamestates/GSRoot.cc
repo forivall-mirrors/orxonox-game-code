@@ -29,6 +29,7 @@
 #include "GSRoot.h"
 
 #include "util/Clock.h"
+#include "core/BaseObject.h"
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
@@ -44,7 +45,6 @@ namespace orxonox
 
     GSRoot::GSRoot(const GameStateInfo& info)
         : GameState(info)
-        , timeFactor_(1.0f)
         , bPaused_(false)
         , timeFactorPauseBackup_(1.0f)
     {
@@ -54,25 +54,25 @@ namespace orxonox
     {
         NetworkFunctionBase::destroyAllNetworkFunctions();
     }
-    
+
     void GSRoot::printObjects()
     {
         unsigned int nr=0;
-        for(ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; ++it){
-            if( dynamic_cast<Synchronisable*>(*it) )
+        for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it; ++it)
+        {
+            if (dynamic_cast<Synchronisable*>(*it))
                 COUT(0) << "object: " << it->getIdentifier()->getName() << " id: " << dynamic_cast<Synchronisable*>(*it)->getObjectID() << std::endl;
             else
                 COUT(0) << "object: " << it->getIdentifier()->getName() << std::endl;
             nr++;
         }
         COUT(0) << "currently got " << nr << " objects" << std::endl;
-    
     }
 
     void GSRoot::activate()
     {
         // reset game speed to normal
-        this->timeFactor_ = 1.0f;
+        TimeFactorListener::setTimeFactor(1.0f);
 
         // time factor console command
         ConsoleCommand* command = createConsoleCommand(createFunctor(&GSRoot::setTimeFactor, this), "setTimeFactor");
@@ -90,7 +90,11 @@ namespace orxonox
     void GSRoot::update(const Clock& time)
     {
         for (ObjectList<Timer>::iterator it = ObjectList<Timer>::begin(); it; )
-            (it++)->tick(time);
+        {
+            Timer* object = *it;
+            ++it;
+            object->tick(time);
+        }
 
         /*** HACK *** HACK ***/
         // Call the Tickable objects
@@ -100,8 +104,13 @@ namespace orxonox
             // just loaded
             leveldt = 0.0f;
         }
+        float realdt = leveldt * TimeFactorListener::getTimeFactor();
         for (ObjectList<Tickable>::iterator it = ObjectList<Tickable>::begin(); it; )
-            (it++)->tick(leveldt * this->timeFactor_);
+        {
+            Tickable* object = *it;
+            ++it;
+            object->tick(realdt);
+        }
         /*** HACK *** HACK ***/
     }
 
@@ -118,12 +127,7 @@ namespace orxonox
         {
             if (!this->bPaused_)
             {
-                TimeFactorListener::timefactor_s = factor;
-
-                for (ObjectList<TimeFactorListener>::iterator it = ObjectList<TimeFactorListener>::begin(); it != ObjectList<TimeFactorListener>::end(); ++it)
-                    it->changedTimeFactor(factor, this->timeFactor_);
-
-                this->timeFactor_ = factor;
+                TimeFactorListener::setTimeFactor(factor);
             }
             else
                 this->timeFactorPauseBackup_ = factor;
@@ -136,7 +140,7 @@ namespace orxonox
         {
             if (!this->bPaused_)
             {
-                this->timeFactorPauseBackup_ = this->timeFactor_;
+                this->timeFactorPauseBackup_ = TimeFactorListener::getTimeFactor();
                 this->setTimeFactor(0.0f);
                 this->bPaused_ = true;
             }
@@ -146,5 +150,10 @@ namespace orxonox
                 this->setTimeFactor(this->timeFactorPauseBackup_);
             }
         }
+    }
+
+    float GSRoot::getTimeFactor()
+    {
+        return TimeFactorListener::getTimeFactor();
     }
 }

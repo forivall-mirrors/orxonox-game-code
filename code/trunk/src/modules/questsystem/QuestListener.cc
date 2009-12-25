@@ -49,11 +49,11 @@ namespace orxonox
     QuestListener::QuestListener(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestListener);
-        
+
         this->mode_ = QuestListenerMode::All;
         this->quest_ = NULL;
     }
-    
+
     /**
     @brief
         Destructor.
@@ -61,7 +61,7 @@ namespace orxonox
     QuestListener::~QuestListener()
     {
     }
-    
+
     /**
     @brief
         Method for creating a Quest object through XML.
@@ -74,10 +74,10 @@ namespace orxonox
         XMLPortParam(QuestListener, "mode", setMode, getMode, xmlelement, mode);
 
         this->quest_->addListener(this); //!< Adds the QuestListener to the Quests list of listeners.
-        
+
         COUT(3) << "QuestListener created for quest: {" << this->quest_->getId() << "} with mode '" << this->getMode() << "'." << std::endl;
     }
-    
+
     /**
     @brief
         Makes all QuestListener in the list aware that a certain status change has occurred and executes them if the status change affects them.
@@ -97,7 +97,7 @@ namespace orxonox
             }
         }
     }
-    
+
     /**
     @brief
         Sets the questId of the Quest the QuestListener reacts to.
@@ -109,16 +109,16 @@ namespace orxonox
     bool QuestListener::setQuestId(const std::string & id)
     {
         this->quest_ = QuestManager::getInstance().findQuest(id); //!< Find the Quest corresponding to the given questId.
-        
+
         if(this->quest_ == NULL) //!< If there is no such Quest.
         {
             ThrowException(Argument, "This is bad! The QuestListener has not found a Quest with a corresponding id..");
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
     @brief
         Sets the mode of the QuestListener.
@@ -151,10 +151,10 @@ namespace orxonox
         this->mode_ = QuestListenerMode::All;
         return false;
         }
-        
+
         return true;
     }
-    
+
     /**
     @brief
         Get the mode of the QuestListener.
@@ -182,7 +182,7 @@ namespace orxonox
         else
         {
             COUT(1) << "An unforseen, never to happen, Error has occurred. This is impossible!" << std::endl;
-        return "";
+            return "";
         }
     }
 
@@ -192,7 +192,7 @@ namespace orxonox
     @return
         Returns the questId of the Quest the QuestListener reacts to.
     */
-    const std::string & QuestListener::getQuestId(void)    
+    const std::string & QuestListener::getQuestId(void)
     {
         return this->quest_->getId();
     }

@@ -31,11 +31,16 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "controllers/Controller.h"
+#include "worldentities/pawns/Pawn.h"
 
 #include "Munition.h"
 #include "Weapon.h"
 #include "WeaponPack.h"
 #include "WeaponSystem.h"
+#include "WeaponSlot.h"
+
+#include "sound/WorldSound.h"
 
 namespace orxonox
 {
@@ -60,11 +65,28 @@ namespace orxonox
         this->reloadTimer_.stopTimer();
 
         this->damage_ = 0;
+
         this->muzzleOffset_ = Vector3::ZERO;
+        this->muzzlePosition_ = Vector3::ZERO;
+        this->muzzleOrientation_ = Quaternion::IDENTITY;
+
+        if( GameMode::isMaster() )
+        {
+            this->defSndWpnFire_ = new WorldSound(this);
+            this->defSndWpnFire_->setLooping(false);
+            this->bSoundAttached_ = false;
+        }
+        else
+            this->defSndWpnFire_ = 0;
     }
 
     WeaponMode::~WeaponMode()
     {
+        if (this->isInitialized())
+        {
+            if (this->defSndWpnFire_)
+                this->defSndWpnFire_->destroy();
+        }
     }
 
     void WeaponMode::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -89,6 +111,12 @@ namespace orxonox
     bool WeaponMode::fire(float* reloadTime)
     {
         (*reloadTime) = this->reloadTime_;
+        if( !this->bSoundAttached_ && GameMode::isMaster() )
+        {
+            assert(this->getWeapon());
+            this->getWeapon()->attach(this->defSndWpnFire_);
+            this->bSoundAttached_ = true;
+        }
 
         if (!this->bReloading_ && this->munition_ && this->munition_->takeMunition(this->munitionPerShot_, this))
         {
@@ -106,6 +134,11 @@ namespace orxonox
             this->bReloading_ = true;
             this->reloadTimer_.setInterval(reloadtime);
             this->reloadTimer_.startTimer();
+
+            if( this->defSndWpnFire_ && !(this->defSndWpnFire_->isPlaying()))
+            {
+                this->defSndWpnFire_->play();
+            }
 
             this->fire();
 
@@ -144,7 +177,11 @@ namespace orxonox
     void WeaponMode::setMunitionName(const std::string& munitionname)
     {
         this->munitionname_ = munitionname;
-        this->munitiontype_ = ClassByString(this->munitionname_);
+        Identifier* identifier = ClassByString(this->munitionname_);
+        if (identifier)
+            this->munitiontype_ = identifier;
+        else
+            COUT(2) << "Warning: No munition class defined in WeaponMode " << this->getName() << std::endl;
         this->updateMunition();
     }
 
@@ -190,30 +227,50 @@ namespace orxonox
 
     void WeaponMode::reloaded()
     {
+        if( this->defSndWpnFire_ && this->defSndWpnFire_->isPlaying())
+        {
+            this->defSndWpnFire_->stop();
+        }
         this->bReloading_ = false;
     }
 
-    Vector3 WeaponMode::getMuzzlePosition() const
+    void WeaponMode::computeMuzzleParameters(const Vector3& target)
     {
         if (this->weapon_)
-            return (this->weapon_->getWorldPosition() + this->weapon_->getWorldOrientation() * this->muzzleOffset_);
-        else
-            return this->muzzleOffset_;
-    }
+        {
+            this->muzzlePosition_ = this->weapon_->getWorldPosition() + this->weapon_->getWorldOrientation() * this->muzzleOffset_;
 
-    const Quaternion& WeaponMode::getMuzzleOrientation() const
-    {
-        if (this->weapon_)
-            return this->weapon_->getWorldOrientation();
+            Vector3 muzzleDirection;
+            muzzleDirection = target - this->muzzlePosition_;
+//             COUT(0) << "muzzleDirection " << muzzleDirection << endl;
+            this->muzzleOrientation_ = (this->weapon_->getWorldOrientation() * WorldEntity::FRONT).getRotationTo(muzzleDirection) * this->weapon_->getWorldOrientation();
+        }
         else
-            return Quaternion::IDENTITY;
+        {
+            this->muzzlePosition_ = this->muzzleOffset_;
+            this->muzzleOrientation_ = Quaternion::IDENTITY;
+        }
     }
 
     Vector3 WeaponMode::getMuzzleDirection() const
     {
         if (this->weapon_)
-            return (this->weapon_->getWorldOrientation() * WorldEntity::FRONT);
+            return (this->getMuzzleOrientation() * WorldEntity::FRONT);
         else
             return WorldEntity::FRONT;
+    }
+
+    void WeaponMode::setDefaultSound(const std::string& soundPath)
+    {
+        if( this->defSndWpnFire_ )
+            this->defSndWpnFire_->setSource(soundPath);
+    }
+
+    const std::string& WeaponMode::getDefaultSound()
+    {
+        if( this->defSndWpnFire_ )
+            return this->defSndWpnFire_->getSource();
+        else
+            return BLANKSTRING;
     }
 }

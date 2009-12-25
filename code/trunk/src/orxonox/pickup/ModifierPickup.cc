@@ -90,12 +90,12 @@ namespace orxonox
 
             for (it = this->additiveModifiers_.begin(); it != this->additiveModifiers_.end(); it++)
             {
-                pawn->getPickups().addAdditiveModifier((*it).first, (*it).second);
+                pawn->getPickups().addAdditiveModifier(it->first, it->second);
             }
 
             for (it = this->multiplicativeModifiers_.begin(); it != this->multiplicativeModifiers_.end(); it++)
             {
-                pawn->getPickups().addMultiplicativeModifier((*it).first, (*it).second);
+                pawn->getPickups().addMultiplicativeModifier(it->first, it->second);
             }
 
             if (this->duration_ > 0.0f)
@@ -127,12 +127,12 @@ namespace orxonox
 
             for (it = this->additiveModifiers_.begin(); it != this->additiveModifiers_.end(); it++)
             {
-                pawn->getPickups().removeAdditiveModifier((*it).first, (*it).second);
+                pawn->getPickups().removeAdditiveModifier(it->first, it->second);
             }
 
             for (it = this->multiplicativeModifiers_.begin(); it != this->multiplicativeModifiers_.end(); it++)
             {
-                pawn->getPickups().removeMultiplicativeModifier((*it).first, (*it).second);
+                pawn->getPickups().removeMultiplicativeModifier(it->first, it->second);
             }
 
             if (this->timer_.getRemainingTime() > 0.0f)
@@ -161,7 +161,7 @@ namespace orxonox
     {
         std::map<ModifierType::Value, float>::const_iterator it = this->additiveModifiers_.find(type);
         if (it != this->additiveModifiers_.end())
-            return (*it).second;
+            return it->second;
         else
             return 0.0f;
     }
@@ -174,7 +174,7 @@ namespace orxonox
     {
         std::map<ModifierType::Value, float>::const_iterator it = this->multiplicativeModifiers_.find(type);
         if (it != this->multiplicativeModifiers_.end())
-            return (*it).second;
+            return it->second;
         else
             return 1.0f;
     }

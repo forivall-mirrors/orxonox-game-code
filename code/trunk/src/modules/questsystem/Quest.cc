@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Implementation of the Quest class.
@@ -203,7 +203,7 @@ namespace orxonox
     const Quest* Quest::getSubQuest(unsigned int index) const
     {
         int i = index;
-        
+
         //! Iterate through all subquests.
         for (std::list<Quest*>::const_iterator subQuest = this->subQuests_.begin(); subQuest != this->subQuests_.end(); ++subQuest)
         {
@@ -213,7 +213,7 @@ namespace orxonox
             }
             i--;
         }
-        
+
         return NULL; //!< If the index is greater than the number of elements in the list.
     }
 
@@ -228,7 +228,7 @@ namespace orxonox
     const QuestHint* Quest::getHint(unsigned int index) const
     {
         int i = index;
-        
+
         //! Iterate through all QuestHints.
         for (std::list<QuestHint*>::const_iterator hint = this->hints_.begin(); hint != this->hints_.end(); ++hint)
         {
@@ -252,7 +252,7 @@ namespace orxonox
     const QuestEffect* Quest::getFailEffect(unsigned int index) const
     {
         int i = index;
-        
+
         //! Iterate through all fail QuestEffects.
         for (std::list<QuestEffect*>::const_iterator effect = this->failEffects_.begin(); effect != this->failEffects_.end(); ++effect)
         {
@@ -276,7 +276,7 @@ namespace orxonox
     const QuestEffect* Quest::getCompleteEffect(unsigned int index) const
     {
         int i = index;
-        
+
         //! Iterate through all complete QuestEffects.
         for (std::list<QuestEffect*>::const_iterator effect = this->completeEffects_.begin(); effect != this->completeEffects_.end(); ++effect)
         {
@@ -349,7 +349,7 @@ namespace orxonox
     {
         return this->getStatus(player) == QuestStatus::Completed;
     }
-    
+
     /**
     @brief
         Fails the Quest for an input player.
@@ -362,13 +362,13 @@ namespace orxonox
     {
         QuestListener::advertiseStatusChange(this->listeners_, "fail"); //!< Tells the QuestListeners, that the status has changed to failed.
         this->setStatus(player, QuestStatus::Failed);
-        
+
         COUT(4) << "Quest {" << this->getId() << "} is failed for player: " << player << " ." <<std::endl;
-        
+
         this->getDescription()->sendFailQuestNotification();
         return true;
     }
-    
+
     /**
     @brief
         Completes the Quest for an input player.
@@ -381,9 +381,9 @@ namespace orxonox
     {
         QuestListener::advertiseStatusChange(this->listeners_, "complete"); //!< Tells the QuestListeners, that the status has changed to completed.
         this->setStatus(player, QuestStatus::Completed);
-        
+
         COUT(4) << "Quest {" << this->getId() << "} is completed for player: " << player << " ." <<std::endl;
-        
+
         this->getDescription()->sendCompleteQuestNotification();
         return true;
     }
@@ -403,17 +403,17 @@ namespace orxonox
             COUT(4) << "A non-startable quest was trying to be started." << std::endl;
             return false;
         }
-        
+
         COUT(4) << "Quest {" << this->getId() << "} is started for player: " << player << " ." <<std::endl;
-        
+
         QuestListener::advertiseStatusChange(this->listeners_, "start"); //!< Tells the QuestListeners, that the status has changed to active.
-        
+
         this->setStatus(player, QuestStatus::Active);
-        
+
         this->getDescription()->sendAddQuestNotification();
         return true;
     }
-    
+
     /**
     @brief
         Adds a QuestListener to the list of QuestListeners listening to this Quest.
@@ -429,7 +429,7 @@ namespace orxonox
             COUT(2) << "A NULL-QuestListener was trying to be added to a Quests listeners." << std::endl;
             return false;
         }
-        
+
         this->listeners_.push_back(listener);
         return true;
     }

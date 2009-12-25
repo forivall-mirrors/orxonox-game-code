@@ -82,7 +82,7 @@ namespace orxonox
     {
         if (this->item_)
         {
-            COUT(3) << "Delete DroppedItem with '" << this->item_->getPickupIdentifier() << "'" << std::endl;
+            COUT(3) << "Delete DroppedItem with '" << this->item_->getPickupIdentifier() << '\'' << std::endl;
             this->item_->destroy();
         }
 
@@ -111,7 +111,7 @@ namespace orxonox
         drop->setTimeToLive(timeToLive);
         drop->createTimer();
 
-        COUT(3) << "Created DroppedItem for '" << item->getPickupIdentifier() << "' at (" << position.x << "," << position.y << "," << position.z << ")." << std::endl;
+        COUT(3) << "Created DroppedItem for '" << item->getPickupIdentifier() << "' at (" << position.x << ',' << position.y << ',' << position.z << ")." << std::endl;
 
         return drop;
     }

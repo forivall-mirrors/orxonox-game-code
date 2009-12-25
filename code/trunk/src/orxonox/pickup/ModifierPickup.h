@@ -128,7 +128,7 @@ namespace orxonox
             { this->setMultiplicativeModifier(ModifierType::Acceleration, value); }
 
         void timerCallback(Pawn* pawn);     //!< Method called when the timer runs out.
-        
+
     private:
         float getAdditiveModifier(ModifierType::Value type) const;               //!< Get the additive modifier for a given ModifierType.
         float getMultiplicativeModifier(ModifierType::Value type) const;         //!< Get the multiplicative modifier for a given ModifierType.

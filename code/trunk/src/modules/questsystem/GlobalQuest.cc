@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Implementation of the GlobalQuest class.
@@ -58,7 +58,7 @@ namespace orxonox
     {
 
     }
-    
+
     /**
     @brief
         Method for creating a GlobalQuest object through XML.
@@ -66,12 +66,12 @@ namespace orxonox
     void GlobalQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(GlobalQuest, XMLPort, xmlelement, mode);
-        
+
         XMLPortObject(GlobalQuest, QuestEffect, "reward-effects", addRewardEffect, getRewardEffects, xmlelement, mode);
 
         COUT(3) << "New GlobalQuest {" << this->getId() << "} created." << std::endl;
     }
-    
+
     /**
     @brief
         Fails the Quest for all players.
@@ -88,9 +88,9 @@ namespace orxonox
             COUT(4) << "A non-completable quest was trying to be failed." << std::endl;
             return false;
         }
-        
+
         Quest::fail(player);
-    
+
     //! Iterate through all players possessing this Quest.
     for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
     {
@@ -117,15 +117,15 @@ namespace orxonox
             COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
             return false;
         }
-        
+
         //! Iterate through all players possessing the Quest.
         for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
         {
             QuestEffect::invokeEffects(*it, this->getCompleteEffectList());
         }
-    
+
         Quest::complete(player);
-    
+
         QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward QuestEffects on the player completing the Quest.
         return true;
     }
@@ -229,11 +229,11 @@ namespace orxonox
         {
             this->players_.insert(player); //!< Add the player to the set.
         }
-        
+
         this->status_ = status; //!< Set the status, which is global, remember...?
         return true;
     }
-    
+
     /**
     @brief
         Adds a reward QuestEffect to the list of reward QuestEffects.
@@ -255,7 +255,7 @@ namespace orxonox
         COUT(3) << "Reward effect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
-    
+
     /**
     @brief
         Returns the reward QuestEffect at the given index.

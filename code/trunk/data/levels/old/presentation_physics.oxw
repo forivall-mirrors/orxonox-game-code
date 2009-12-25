@@ -29,9 +29,9 @@
       <collisionShapes>
         <PlaneCollisionShape planeNormal="0,1,0" planeOffset=0 />
       </collisionShapes>
-	</StaticEntity>
+    </StaticEntity>
 
-	<MovableEntity
+    <MovableEntity
      position        = "0,250,500"
      rotationaxis    = "1, 1, 1"
      rotationrate    = 360
@@ -63,7 +63,7 @@
         <BoxCollisionShape position="0,0.1,-11"  halfExtents="2.2, 1.8, 6" />
         <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
       </collisionShapes>
-	</MovableEntity>
+    </MovableEntity>
 
     <?lua
     for i = -20, 20, 8

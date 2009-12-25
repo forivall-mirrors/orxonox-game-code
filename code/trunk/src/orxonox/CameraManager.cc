@@ -44,7 +44,6 @@
 
 namespace orxonox
 {
-    CameraManager* CameraManager::singletonPtr_s = 0;
     ManageScopedSingleton(CameraManager, ScopeID::Graphics, false);
 
     CameraManager::CameraManager()

@@ -31,6 +31,7 @@
 
 #include "InputPrereqs.h"
 
+#include <boost/shared_ptr.hpp>
 #include "util/Singleton.h"
 #include "KeyBinder.h"
 
@@ -44,7 +45,7 @@ namespace orxonox
         KeyDetector();
         ~KeyDetector();
 
-        void setCallback(Functor* function) { this->callbackFunction_ = function; }
+        void setCallback(const shared_ptr<Functor>& function) { this->callbackFunction_ = function; }
 
     private:
         KeyDetector(const KeyDetector&);
@@ -53,7 +54,7 @@ namespace orxonox
         void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
         void assignCommands();
 
-        Functor* callbackFunction_;
+        shared_ptr<Functor> callbackFunction_;
         InputState* inputState_;
         static std::string callbackCommand_s;
         static KeyDetector* singletonPtr_s;

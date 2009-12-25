@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Implementation of the FailQuest class.
@@ -66,7 +66,7 @@ namespace orxonox
     void FailQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(FailQuest, XMLPort, xmlelement, mode);
-        
+
         COUT(3) << "New FailQUest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
@@ -102,7 +102,7 @@ namespace orxonox
             COUT(2) << e.getFullDescription() << std::endl;
             return false;
         }
-        
+
         COUT(3) << "Quest {" << quest->getId() << "} failed by player: " << player << " ." << std::endl;
         return true;
     }

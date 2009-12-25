@@ -35,6 +35,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
+#include "network/NetworkFunction.h"
 
 #include "Scene.h"
 #include "infos/PlayerInfo.h"
@@ -46,6 +47,9 @@
 namespace orxonox
 {
     CreateFactory(ControllableEntity);
+
+    registerMemberNetworkFunction( ControllableEntity, fire );
+    registerMemberNetworkFunction( ControllableEntity, setTargetInternal );
 
     ControllableEntity::ControllableEntity(BaseObject* creator) : MobileEntity(creator)
     {
@@ -61,9 +65,11 @@ namespace orxonox
         this->hud_ = 0;
         this->camera_ = 0;
         this->xmlcontroller_ = 0;
+        this->controller_ = 0;
         this->reverseCamera_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
         this->cameraPositionRootNode_ = this->node_->createChildSceneNode();
+        this->currentCameraPosition_ = 0;
         this->bMouseLook_ = false;
         this->mouseLookSpeed_ = 200;
 
@@ -168,6 +174,7 @@ namespace orxonox
             if (this->camera_->getParent() == this && this->cameraPositions_.size() > 0)
             {
                 this->cameraPositions_.front()->attachCamera(this->camera_);
+                this->currentCameraPosition_ = this->cameraPositions_.front().get();
             }
             else if (this->cameraPositions_.size() > 0)
             {
@@ -177,9 +184,15 @@ namespace orxonox
                     {
                         ++it;
                         if (it != this->cameraPositions_.end())
+                        {
                             (*it)->attachCamera(this->camera_);
+                            this->currentCameraPosition_ = *it;
+                        }
                         else
+                        {
                             (*this->cameraPositions_.begin())->attachCamera(this->camera_);
+                            this->currentCameraPosition_ = *this->cameraPositions_.begin();
+                        }
                         break;
                     }
                 }
@@ -187,6 +200,7 @@ namespace orxonox
             else
             {
                 this->camera_->attachToNode(this->cameraPositionRootNode_);
+                this->currentCameraPosition_ = 0;
             }
         }
     }
@@ -197,6 +211,13 @@ namespace orxonox
 
         if (!this->bMouseLook_)
             this->cameraPositionRootNode_->setOrientation(Quaternion::IDENTITY);
+        if (this->getCamera())
+        {
+            if (!this->bMouseLook_&& this->currentCameraPosition_->getDrag())
+                this->getCamera()->setDrag(true);
+            else
+                this->getCamera()->setDrag(false);
+        }
     }
 
     void ControllableEntity::rotateYaw(const Vector2& value)
@@ -215,6 +236,39 @@ namespace orxonox
     {
         if (this->bMouseLook_)
             this->cameraPositionRootNode_->roll(Radian(value.y * this->mouseLookSpeed_), Ogre::Node::TS_LOCAL);
+    }
+
+    void ControllableEntity::fire(unsigned int firemode)
+    {
+        if(GameMode::isMaster())
+        {
+            this->fired(firemode);
+        }
+        else
+        {
+            callMemberNetworkFunction(ControllableEntity, fire, this->getObjectID(), 0, firemode);
+        }
+    }
+
+    void ControllableEntity::setTarget( WorldEntity* target )
+    {
+        this->target_ = target;
+        if ( !GameMode::isMaster() )
+        {
+            if ( target != 0 )
+            {
+                callMemberNetworkFunction(ControllableEntity, setTargetInternal, this->getObjectID(), 0, target->getObjectID() );
+            }
+           else
+           {
+                callMemberNetworkFunction(ControllableEntity, setTargetInternal, this->getObjectID(), 0, OBJECTID_UNKNOWN );
+           }
+        }
+    }
+
+    void ControllableEntity::setTargetInternal( uint32_t targetID )
+    {
+        this->setTarget( orxonox_cast<WorldEntity*>(Synchronisable::getSynchronisable(targetID)) );
     }
 
     void ControllableEntity::setPlayer(PlayerInfo* player)
@@ -278,17 +332,23 @@ namespace orxonox
         {
             this->camera_ = new Camera(this);
             this->camera_->requestFocus();
-            if (this->cameraPositionTemplate_ != "")
+            if (!this->cameraPositionTemplate_.empty())
                 this->addTemplate(this->cameraPositionTemplate_);
             if (this->cameraPositions_.size() > 0)
+            {
                 this->cameraPositions_.front()->attachCamera(this->camera_);
+                this->currentCameraPosition_ = this->cameraPositions_.front();
+            }
             else
+            {
                 this->camera_->attachToNode(this->cameraPositionRootNode_);
+                this->currentCameraPosition_ = 0;
+            }
         }
 
         if (!this->hud_ && GameMode::showsGraphics())
         {
-            if (this->hudtemplate_ != "")
+            if (!this->hudtemplate_.empty())
             {
                 this->hud_ = new OverlayGroup(this);
                 this->hud_->addTemplate(this->hudtemplate_);

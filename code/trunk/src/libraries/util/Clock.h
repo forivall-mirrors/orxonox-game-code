@@ -56,11 +56,9 @@ namespace orxonox
         Clock(const Clock& instance);
 
         Ogre::Timer*       timer_;
-        unsigned long long storedTime_;
         unsigned long long tickTime_;
         long               tickDt_;
         float              tickDtFloat_;
-        unsigned long      lastTimersTime_;
     };
 }
 

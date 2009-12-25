@@ -42,7 +42,7 @@ namespace orxonox
     /**
     @brief
         Rewardable is an Interface, that can be implemented by any object to enable it to be given as reward to a player through QuestEffects. (With the AddReward effect.)
-        
+
         It just needs to inherit form Rewardable, and implement the reward() method.
     @author
         Damian 'Mozork' Frick

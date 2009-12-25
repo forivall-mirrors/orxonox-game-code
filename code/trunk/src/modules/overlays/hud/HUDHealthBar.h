@@ -52,7 +52,7 @@ namespace orxonox
             virtual void changedName();
 
             inline void setTextFont(const std::string& font)
-                { if (font != "") { this->textoverlay_->setFont(font); } }
+                { if (!font.empty()) { this->textoverlay_->setFont(font); } }
             inline const std::string& getTextFont() const
                 { return this->textoverlay_->getFont(); }
 

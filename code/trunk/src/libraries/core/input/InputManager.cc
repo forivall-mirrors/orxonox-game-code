@@ -274,7 +274,7 @@ namespace orxonox
 
         // destroy all user InputStates
         while (statesByName_.size() > 0)
-            this->destroyStateInternal((*statesByName_.rbegin()).second);
+            this->destroyStateInternal(statesByName_.rbegin()->second);
 
         if (!(internalState_ & Bad))
             this->destroyDevices();
@@ -296,7 +296,7 @@ namespace orxonox
         {
             if (device == NULL)
                 continue;
-            std::string className = device->getClassName();
+            const std::string& className = device->getClassName();
             try
             {
                 delete device;
@@ -365,7 +365,7 @@ namespace orxonox
     // ##########                                        ##########
     // ############################################################
 
-    void InputManager::update(const Clock& time)
+    void InputManager::preUpdate(const Clock& time)
     {
         if (internalState_ & Bad)
             ThrowException(General, "InputManager was not correctly reloaded.");
@@ -465,7 +465,7 @@ namespace orxonox
     /**
     @brief
         Updates the currently active states (according to activeStates_) for each device.
-        Also, a list of all active states (no duplicates!) is compiled for the general update().
+        Also, a list of all active states (no duplicates!) is compiled for the general preUpdate().
     */
     void InputManager::updateActiveStates()
     {
@@ -507,7 +507,7 @@ namespace orxonox
         std::vector<InputState*>& mouseStates = devices_[InputDeviceEnumerator::Mouse]->getStateListRef();
         if (mouseStates.empty())
             requestedMode = MouseMode::Nonexclusive;
-        else 
+        else
             requestedMode = mouseStates.front()->getMouseMode();
         if (requestedMode != MouseMode::Dontcare && mouseMode_ != requestedMode)
         {
@@ -553,7 +553,7 @@ namespace orxonox
         COUT(0) << "Calibration has been stored." << std::endl;
     }
 
-    //! Gets called by WindowEventListener upon focus change --> clear buffers 
+    //! Gets called by WindowEventListener upon focus change --> clear buffers
     void InputManager::windowFocusChanged()
     {
         this->clearBuffers();
@@ -578,7 +578,7 @@ namespace orxonox
 
     InputState* InputManager::createInputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority)
     {
-        if (name == "")
+        if (name.empty())
             return 0;
         if (statesByName_.find(name) == statesByName_.end())
         {
@@ -630,10 +630,15 @@ namespace orxonox
                 if (stateDestroyRequests_.find(it->second) == stateDestroyRequests_.end())
                 {
                     // not scheduled for destruction
-                    // prevents a state being added multiple times
+                    // prevents a state from being added multiple times
                     stateEnterRequests_.insert(it->second);
                     return true;
                 }
+            }
+            else if (this->stateLeaveRequests_.find(it->second) != this->stateLeaveRequests_.end())
+            {
+                // State already scheduled for leaving --> cancel
+                this->stateLeaveRequests_.erase(this->stateLeaveRequests_.find(it->second));
             }
         }
         return false;
@@ -656,6 +661,11 @@ namespace orxonox
                 // active
                 stateLeaveRequests_.insert(it->second);
                 return true;
+            }
+            else if (this->stateEnterRequests_.find(it->second) != this->stateEnterRequests_.end())
+            {
+                // State already scheduled for entering --> cancel
+                this->stateEnterRequests_.erase(this->stateEnterRequests_.find(it->second));
             }
         }
         return false;

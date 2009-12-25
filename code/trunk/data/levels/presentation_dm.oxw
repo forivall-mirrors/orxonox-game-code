@@ -17,10 +17,10 @@
 
 
 <?lua
-for i = 1, 10, 1 
+for i = 1, 10, 1
 do ?>
     <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
-<?lua 
+<?lua
 end
 ?>
 
@@ -34,12 +34,12 @@ end
 
 
 <?lua
-for i = 1, 100, 1 
+for i = 1, 100, 1
 do
 j = math.random()
 ?>
-    
-    <MovableEntity position="<?lua print(math.random() * 5000-2000) ?>,<?lua print(math.random() * 5000-2000) ?>,<?lua print(math.random() * 5000 - 2000) ?>" collisionType=dynamic linearDamping=0.8 angularDamping=0 mass=<?lua print(j * 50) ?> scale=<?lua print(j * 5) ?> rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>"> 
+
+    <MovableEntity position="<?lua print(math.random() * 5000-2000) ?>,<?lua print(math.random() * 5000-2000) ?>,<?lua print(math.random() * 5000 - 2000) ?>" collisionType=dynamic linearDamping=0.8 angularDamping=0 mass=<?lua print(j * 50) ?> scale=<?lua print(j * 5) ?> rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
       <attached>
         <Model position="0,0,0" scale=<?lua print(j * 10) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
       </attached>
@@ -47,7 +47,7 @@ j = math.random()
         <SphereCollisionShape radius="<?lua print(j * 70) ?>" />
       </collisionShapes>
     </MovableEntity>
-<?lua 
+<?lua
 end
 ?>
 

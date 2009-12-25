@@ -63,8 +63,7 @@ namespace orxonox
     */
     void GSGraphics::activate()
     {
-        // add console command to toggle GUI
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSGraphics::toggleGUI, this), "toggleGUI"));
+
     }
 
     /**
@@ -75,18 +74,6 @@ namespace orxonox
     {
         // HACK: (destroys a resource smart pointer)
         Map::hackDestroyMap();
-    }
-
-    /**
-    @brief
-        Toggles the visibility of the current GUI
-
-        This function just executes a Lua function in the main script of the GUI by accessing the GUIManager.
-        For more details on this function check out the Lua code.
-    */
-    void GSGraphics::toggleGUI()
-    {
-        GUIManager::getInstance().executeCode("toggleGUI()");
     }
 
     void GSGraphics::update(const Clock& time)

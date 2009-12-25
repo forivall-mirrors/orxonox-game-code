@@ -290,6 +290,8 @@ namespace orxonox
     */
     void ClassTreeMask::add(const Identifier* subclass, bool bInclude, bool overwrite, bool clean)
     {
+        if (!subclass)
+            return;
         // Check if the given subclass is a child of our root-class
         if (subclass->isA(this->root_->getClass()))
         {
@@ -319,6 +321,8 @@ namespace orxonox
     */
     void ClassTreeMask::add(ClassTreeMaskNode* node, const Identifier* subclass, bool bInclude, bool overwrite)
     {
+        if (!subclass)
+            return;
         // Check if the current node contains exactly the subclass we want to add
         if (subclass == node->getClass())
         {
@@ -394,6 +398,8 @@ namespace orxonox
     */
     void ClassTreeMask::addSingle(const Identifier* subclass, bool bInclude, bool clean)
     {
+        if (!subclass)
+            return;
         for (std::set<const Identifier*>::const_iterator it = subclass->getDirectChildrenBegin(); it != subclass->getDirectChildrenEnd(); ++it)
             this->add(*it, this->isIncluded(*it), false, false);
 
@@ -427,6 +433,8 @@ namespace orxonox
     */
     bool ClassTreeMask::isIncluded(ClassTreeMaskNode* node, const Identifier* subclass) const
     {
+        if (!subclass)
+            return false;
         // Check if the searched subclass is of the same type as the class in the current node or a derivative
         if (subclass->isA(node->getClass()))
         {
@@ -815,12 +823,12 @@ namespace orxonox
         {
             // Calculate the prefix: + means included, - means excluded
             if (it->isIncluded())
-                out << "+";
+                out << '+';
             else
-                out << "-";
+                out << '-';
 
             // Put the name of the corresponding class on the stream
-            out << it->getClass()->getName() << " ";
+            out << it->getClass()->getName() << ' ';
         }
 
         return out;
@@ -849,12 +857,12 @@ namespace orxonox
 
         // If there is a first subclass, move the object-iterator to the first object of this class. Else go to the end
         if (this->subclassIterator_ != this->subclasses_.end())
-            this->objectIterator_ = (*this->subclassIterator_).first->getObjects()->begin();
+            this->objectIterator_ = this->subclassIterator_->first->getObjects()->begin();
         else
             this->objectIterator_ = ObjectList<BaseObject>::end();
 
         // Check if the iterator points on a valid object. If not, go to the next object by calling ++
-        if (!this->objectIterator_ || ((*this->subclassIterator_).second && !this->objectIterator_->isExactlyA((*this->subclassIterator_).first)))
+        if (!this->objectIterator_ || (this->subclassIterator_->second && !this->objectIterator_->isExactlyA(this->subclassIterator_->first)))
             this->operator++();
 
         return (*this);
@@ -881,13 +889,13 @@ namespace orxonox
 
                     // Check if there really is a next class. If yes, move the object-iterator to the first object
                     if (this->subclassIterator_ != this->subclasses_.end())
-                        this->objectIterator_ = (*this->subclassIterator_).first->getObjects()->begin();
+                        this->objectIterator_ = this->subclassIterator_->first->getObjects()->begin();
                     else
                         return (*this);
                 }
 
             // Repeat this until we reach a valid object or the end
-            } while ((*this->subclassIterator_).second && !this->objectIterator_->isExactlyA((*this->subclassIterator_).first));
+            } while (this->subclassIterator_->second && !this->objectIterator_->isExactlyA(this->subclassIterator_->first));
         }
         return (*this);
     }

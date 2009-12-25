@@ -36,6 +36,10 @@ namespace orxonox
 {
     class _OrxonoxExport Controller : public BaseObject
     {
+        // set friend classes to access setControllableEntity
+        friend class PlayerInfo;
+        friend class ControllableEntity;
+
         public:
             Controller(BaseObject* creator);
             virtual ~Controller();
@@ -45,6 +49,17 @@ namespace orxonox
             inline PlayerInfo* getPlayer() const
                 { return this->player_; }
 
+            virtual inline void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {};
+
+            void setGodMode( bool mode ){ this->bGodMode_ = mode; }
+            bool getGodMode(){ return this->bGodMode_; }
+
+            inline ControllableEntity* getControllableEntity() const
+                { return this->controllableEntity_; }
+            virtual void changedControllableEntity() {}
+
+        protected:
+            // don't use this directly, use getPlayer()->startControl(entity) (unless you know exactly what you do)
             inline void setControllableEntity(ControllableEntity* entity)
             {
                 if (entity != this->controllableEntity_)
@@ -53,13 +68,12 @@ namespace orxonox
                     this->changedControllableEntity();
                 }
             }
-            inline ControllableEntity* getControllableEntity() const
-                { return this->controllableEntity_; }
-            virtual void changedControllableEntity() {}
 
         protected:
             PlayerInfo* player_;
             ControllableEntity* controllableEntity_;
+        private:
+            bool bGodMode_;
     };
 }
 

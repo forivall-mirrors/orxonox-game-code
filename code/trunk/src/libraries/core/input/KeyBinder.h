@@ -34,6 +34,7 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <map>
 #include <boost/shared_ptr.hpp>
 
 #include "InputHandler.h"
@@ -42,8 +43,10 @@
 #include "InputCommands.h"
 #include "JoyStickQuantityListener.h"
 
+// tolua_begin
 namespace orxonox
 {
+    // tolua_end
     /**
     @brief
         Maps mouse, keyboard and joy stick input to command strings and executes them.
@@ -53,14 +56,19 @@ namespace orxonox
         You cannot change the filename because the KeyBinderManager maps these filenames to the
         KeyBinders. If you need to load other bindings, just create a new one.
     */
-    class _CoreExport KeyBinder : public InputHandler, public JoyStickQuantityListener
-    {
+    class _CoreExport KeyBinder // tolua_export
+        : public InputHandler, public JoyStickQuantityListener
+    { // tolua_export
     public:
         KeyBinder (const std::string& filename);
         virtual ~KeyBinder();
 
         void clearBindings();
         bool setBinding(const std::string& binding, const std::string& name, bool bTemporary = false);
+        const std::string& getBinding(const std::string& commandName); //tolua_export
+        const std::string& getBinding(const std::string& commandName, unsigned int index); //tolua_export
+        unsigned int getNumberOfBindings(const std::string& commandName); //tolua_export
+
         const std::string& getBindingsFilename()
             { return this->filename_; }
         void setConfigValues();
@@ -129,6 +137,8 @@ namespace orxonox
         std::map<std::string, Button*> allButtons_;
         //! Pointer list with all half axes
         std::vector<HalfAxis*> allHalfAxes_;
+        //! Maps input commands to all Button names, including half axes
+        std::map< std::string, std::vector<std::string> > allCommands_;
 
         /**
         @brief
@@ -137,8 +147,8 @@ namespace orxonox
         */
         std::vector<BufferedParamCommand*> paramCommandBuffer_;
 
-        //! Keeps track of the absolute mouse value (incl. scroll wheel)
-        int mousePosition_[2];
+        //! Keeps track of the absolute mouse value
+        float mousePosition_[2];
         //! Used to derive mouse input if requested
         int mouseRelative_[2];
         float deriveTime_;
@@ -149,6 +159,8 @@ namespace orxonox
         ConfigFileType configFile_;
 
     private:
+        void addButtonToCommand(const std::string& command, Button* button);
+
         //##### ConfigValues #####
         //! Whether to filter small value analog input
         bool bFilterAnalogNoise_;
@@ -164,13 +176,16 @@ namespace orxonox
         float mouseSensitivity_;
         //! mouse sensitivity if mouse input is derived
         float mouseSensitivityDerived_;
-        //! Equals one step of the mousewheel
+        //! Equals one step of the mouse wheel
         int mouseWheelStepSize_;
+
+        //! Multiplication of mouse sensitivity and clipping size
+        float totalMouseSensitivity_;
 
         //##### Constant config variables #####
         // Use some value at about 1000. This can be configured with mouseSensitivity_ anyway.
         static const int mouseClippingSize_ = 1024;
-    };
+    };// tolua_export
 
 
     inline void KeyBinder::buttonPressed (const KeyEvent& evt)
@@ -215,6 +230,6 @@ namespace orxonox
         for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
             mouseAxes_[i].relVal_ = 0.0f;
     }
-}
+}// tolua_export
 
 #endif /* _KeyBinder_H__ */

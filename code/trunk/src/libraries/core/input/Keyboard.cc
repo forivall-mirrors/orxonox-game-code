@@ -42,6 +42,10 @@ namespace orxonox
         if(arg.key == OIS::KC_RSHIFT   || arg.key == OIS::KC_LSHIFT)
             modifiers_ |= KeyboardModifier::Shift; // shift key
 
+        // Do not distribute the alt+tab event (messes with the operating system)
+        if ((modifiers_ & KeyboardModifier::Alt) != 0 && arg.key == OIS::KC_TAB)
+            return true;
+
         KeyEvent evt(arg);
         super::buttonPressed(evt);
         return true;

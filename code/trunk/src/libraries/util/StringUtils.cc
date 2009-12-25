@@ -39,7 +39,7 @@
 
 namespace orxonox
 {
-    std::string BLANKSTRING("");
+    std::string BLANKSTRING;
 
     std::string getUniqueNumberString()
     {
@@ -53,12 +53,12 @@ namespace orxonox
     void strip(std::string* str)
     {
         size_t pos;
-        while ((pos = (*str).find(" ")) < (*str).length())
-            (*str).erase(pos, 1);
-        while ((pos = (*str).find("\t")) < (*str).length())
-            (*str).erase(pos, 1);
-        while ((pos = (*str).find("\n")) < (*str).length())
-            (*str).erase(pos, 1);
+        while ((pos = str->find(' ')) < str->length())
+            str->erase(pos, 1);
+        while ((pos = str->find('\t')) < str->length())
+            str->erase(pos, 1);
+        while ((pos = str->find('\n')) < str->length())
+            str->erase(pos, 1);
     }
 
     /**
@@ -68,7 +68,7 @@ namespace orxonox
     */
     std::string getStripped(const std::string& str)
     {
-        std::string output = std::string(str);
+        std::string output(str);
         strip(&output);
         return output;
     }
@@ -97,7 +97,7 @@ namespace orxonox
     {
         size_t quote = start - 1;
 
-        while ((quote = str.find('\"', quote + 1)) != std::string::npos)
+        while ((quote = str.find('"', quote + 1)) != std::string::npos)
         {
             size_t backslash = quote;
             size_t numbackslashes = 0;
@@ -230,7 +230,7 @@ namespace orxonox
     bool isComment(const std::string& str)
     {
         // Strip the line, whitespaces are disturbing
-        std::string teststring = getStripped(str);
+        const std::string& teststring = getStripped(str);
 
         // There are four possible comment-symbols:
         //  1) #comment in script-language style
@@ -258,8 +258,7 @@ namespace orxonox
     */
     bool isEmpty(const std::string& str)
     {
-        std::string temp = getStripped(str);
-        return ((temp == "") || (temp.size() == 0));
+        return getStripped(str).empty();
     }
 
     /**
@@ -302,7 +301,7 @@ namespace orxonox
         for (size_t pos = 0; (pos = output.find('\r', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\r"); }
         for (size_t pos = 0; (pos = output.find('\f', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\f"); }
         for (size_t pos = 0; (pos = output.find('\a', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\a"); }
-        for (size_t pos = 0; (pos = output.find('"', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\""); }
+        for (size_t pos = 0; (pos = output.find('"' , pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\""); }
         for (size_t pos = 0; (pos = output.find('\0', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\0"); }
 
         return output;
@@ -318,7 +317,7 @@ namespace orxonox
         if (str.size() <= 1)
             return str;
 
-        std::string output = "";
+        std::string output;
         for (size_t pos = 0; pos < str.size() - 1; )
         {
             if (str[pos] == '\\')
@@ -362,7 +361,7 @@ namespace orxonox
     */
     std::string getLowercase(const std::string& str)
     {
-        std::string output = std::string(str);
+        std::string output(str);
         lowercase(&output);
         return output;
     }
@@ -386,7 +385,7 @@ namespace orxonox
     */
     std::string getUppercase(const std::string& str)
     {
-        std::string output = std::string(str);
+        std::string output(str);
         uppercase(&output);
         return output;
     }

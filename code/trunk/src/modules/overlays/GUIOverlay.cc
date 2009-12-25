@@ -61,28 +61,24 @@ namespace orxonox
     void GUIOverlay::changedVisibility()
     {
         SUPER(GUIOverlay, changedVisibility);
-        
+
         //Setting player now.
         if( this->getOwner() )
             GUIManager::getInstance().setPlayer(this->guiName_, (orxonox_cast<ControllableEntity*>(this->getOwner()))->getPlayer());
 
         if (this->isVisible())
         {
-            std::string str;
-            std::stringstream out;
+            std::ostringstream out;
             out << reinterpret_cast<long>(this);
-            str = out.str();
-            GUIManager::getInstance().executeCode("showCursor()");
-            InputManager::getInstance().enterState("guiMouseOnly");
-            GUIManager::getInstance().executeCode("showGUI(\"" + this->guiName_ + "\", " + str + ")");
+            const std::string& str = out.str();
+            COUT(1) << "GUIManager ptr: " << str << std::endl;
+            GUIManager::getInstance().showGUIExtra(this->guiName_, str);
 
             COUT(3) << "Showing GUI " << this->guiName_ << std::endl;
         }
         else
         {
-            GUIManager::getInstance().executeCode("hideGUI(\"" + this->guiName_ + "\")");
-            GUIManager::getInstance().executeCode("hideCursor()");
-            InputManager::getInstance().leaveState("guiMouseOnly");
+            GUIManager::hideGUI(this->guiName_);
             COUT(3) << "Hiding GUI " << this->guiName_ << std::endl;
         }
     }

@@ -40,6 +40,7 @@
 #include "core/WindowEventListener.h"
 #include "InputState.h"
 
+// tolua_begin
 namespace orxonox
 {
     /**
@@ -62,8 +63,10 @@ namespace orxonox
         - Keyboard construction is mandatory , mouse and joy sticks are not.
           If the OIS::InputManager or the Keyboard fail, an exception is thrown.
     */
-    class _CoreExport InputManager : public Singleton<InputManager>, public WindowEventListener
-    {
+    class _CoreExport InputManager
+// tolua_end
+        : public Singleton<InputManager>, public WindowEventListener
+    { // tolua_export
         friend class Singleton<InputManager>;
     public:
         //! Represents internal states of the InputManager.
@@ -79,7 +82,7 @@ namespace orxonox
         /**
         @brief
             Loads the devices and initialises the KeyDetector and the Calibrator.
-            
+
             If either the OIS input system and/or the keyboard could not be created,
             the constructor fails with an std::exception.
         */
@@ -95,7 +98,7 @@ namespace orxonox
             Any InpuStates changes (destroy, enter, leave) and happens here. If a reload request
             was submitted while updating, the request will be postponed until the next update call.
         */
-        void update(const Clock& time);
+        void preUpdate(const Clock& time);
         //! Clears all input device buffers. This usually only includes the pressed button list.
         void clearBuffers();
         //! Starts joy stick calibration.
@@ -104,7 +107,7 @@ namespace orxonox
         @brief
             Reloads all the input devices. Use this method to initialise new joy sticks.
         @note
-            Only reloads immediately if the call stack doesn't include the update() method.
+            Only reloads immediately if the call stack doesn't include the preUpdate() method.
         */
         void reload();
 
@@ -138,14 +141,14 @@ namespace orxonox
         @return
             False if name was not found, true otherwise.
         */
-        bool enterState(const std::string& name);
+        bool enterState(const std::string& name); // tolua_export
         /**
         @brief
             Deactivates a specific input state.
         @return
             False if name was not found, true otherwise.
         */
-        bool leaveState(const std::string& name);
+        bool leaveState(const std::string& name); // tolua_export
         /**
         @brief
             Removes and destroys an input state.
@@ -153,7 +156,7 @@ namespace orxonox
             True if removal was successful, false if name was not found.
         @remarks
             - You can't remove the internal states "empty", "calibrator" and "detector".
-            - The removal process is being postponed if InputManager::update() is currently running.
+            - The removal process is being postponed if InputManager::preUpdate() is currently running.
         */
         bool destroyState(const std::string& name);
 
@@ -166,6 +169,8 @@ namespace orxonox
         //! Returns a pointer to the OIS InputManager. Only you if you know what you're doing!
         OIS::InputManager* getOISInputManager() { return this->oisInputManager_; }
         std::pair<int, int> getMousePosition() const;
+
+        static InputManager& getInstance() { return Singleton<InputManager>::getInstance(); } // tolua_export
 
     private: // functions
         // don't mess with a Singleton
@@ -206,7 +211,7 @@ namespace orxonox
         std::set<InputState*>               stateDestroyRequests_; //!< Requests to destroy a state
 
         static InputManager*                singletonPtr_s;        //!< Pointer reference to the singleton
-    };
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _InputManager_H__ */

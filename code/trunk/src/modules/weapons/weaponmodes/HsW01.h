@@ -40,7 +40,7 @@ namespace orxonox
     {
         public:
             HsW01(BaseObject* creator);
-            virtual ~HsW01() {}
+            virtual ~HsW01();
 
             virtual void fire();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

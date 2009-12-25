@@ -89,8 +89,8 @@ namespace orxonox
             static unsigned int argumentsFinished();
             static unsigned int argumentsGiven();
             static bool enoughArgumentsGiven(ConsoleCommand* command);
-            static std::string getArgument(unsigned int index);
-            static std::string getLastArgument();
+            static const std::string& getArgument(unsigned int index);
+            static const std::string& getLastArgument();
 
             static void createListOfPossibleIdentifiers(const std::string& fragment);
             static void createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier = 0);
@@ -98,7 +98,7 @@ namespace orxonox
 
             static Identifier* getPossibleIdentifier(const std::string& name);
             static ConsoleCommand* getPossibleCommand(const std::string& name, Identifier* identifier = 0);
-            static std::string getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param);
+            static const std::string& getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param);
 
             static void createArgumentCompletionList(ConsoleCommand* command, unsigned int param);
             static std::string getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list);

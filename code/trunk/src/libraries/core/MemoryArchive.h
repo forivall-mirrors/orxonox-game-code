@@ -78,7 +78,7 @@ namespace orxonox
             { archives_s[archiveName][filename] = std::make_pair(content, size); }
 
     private:
-        void findFiles(const Ogre::String& pattern, bool bRecursive, 
+        void findFiles(const Ogre::String& pattern, bool bRecursive,
             bool bDirs, Ogre::StringVector* simpleList, Ogre::FileInfoList* detailList);
 
         typedef std::map<std::string, std::pair<shared_array<char>, size_t> > FileMap;

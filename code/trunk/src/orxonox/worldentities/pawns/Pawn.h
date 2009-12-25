@@ -74,13 +74,12 @@ namespace orxonox
             inline ControllableEntity* getLastHitOriginator() const
                 { return this->lastHitOriginator_; }
 
-            virtual void damage(float damage, Pawn* originator = 0);
             virtual void hit(Pawn* originator, const Vector3& force, float damage);
+            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
             virtual void kill();
 
-            virtual void fire(unsigned int firemode);
+            virtual void fired(unsigned int firemode);
             virtual void reload();
-            virtual void doFire(uint8_t firemode);
             virtual void postSpawn();
 
             void addWeaponSlot(WeaponSlot * wSlot);
@@ -88,6 +87,7 @@ namespace orxonox
             void addWeaponSet(WeaponSet * wSet);
             WeaponSet * getWeaponSet(unsigned int index) const;
             void addWeaponPack(WeaponPack * wPack);
+            void addWeaponPackXML(WeaponPack * wPack);
             WeaponPack * getWeaponPack(unsigned int index) const;
 
             inline const WorldEntity* getWorldEntity() const
@@ -116,6 +116,11 @@ namespace orxonox
 
             virtual void startLocalHumanControl();
 
+            void setAimPosition( Vector3 position )
+                { this->aimPosition_ = position; }
+            Vector3 getAimPosition()
+                { return this->aimPosition_; }
+
         protected:
             virtual void setPlayer(PlayerInfo* player);
             virtual void removePlayer();
@@ -124,6 +129,8 @@ namespace orxonox
             virtual void goWithStyle();
             virtual void deatheffect();
             virtual void spawneffect();
+
+            virtual void damage(float damage, Pawn* originator = 0);
 
             bool bAlive_;
 
@@ -145,6 +152,8 @@ namespace orxonox
         private:
             inline void setWeaponSystem(WeaponSystem* weaponsystem)
                 { this->weaponSystem_ = weaponsystem; }
+
+            Vector3 aimPosition_;
     };
 }
 

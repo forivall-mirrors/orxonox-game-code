@@ -143,6 +143,8 @@ namespace orxonox
   // synchronisable
   template <class T>
   class NetworkCallback;
+  template <class T, class U>
+  class NetworkCallbackNotify;
   class NetworkCallbackBase;
   class NetworkCallbackManager;
   class Synchronisable;

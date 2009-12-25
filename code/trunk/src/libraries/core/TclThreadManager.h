@@ -47,8 +47,8 @@ namespace orxonox
     {
         friend class Singleton<TclThreadManager>;
         friend class TclBind;
-        friend _CoreExport void tclThread(TclInterpreterBundle* bundle, std::string command);
-        friend _CoreExport void sourceThread(std::string file);
+        friend _CoreExport void tclThread(TclInterpreterBundle* bundle, const std::string& command);
+        friend _CoreExport void sourceThread(const std::string& file);
         friend _CoreExport int Tcl_OrxonoxAppInit(Tcl_Interp* interp);
 
         public:
@@ -65,7 +65,7 @@ namespace orxonox
             static void error(const std::string& error);
             static void debug(const std::string& error);
 
-            void update(const Clock& time);
+            void preUpdate(const Clock& time);
 
             std::list<unsigned int> getThreadList() const;
 
@@ -94,8 +94,8 @@ namespace orxonox
             boost::mutex* mainInterpreterMutex_;                                ///< A mutex to synchronize queries to the main interpreter
     };
 
-    _CoreExport void tclThread(TclInterpreterBundle* bundle, std::string command);
-    _CoreExport void sourceThread(std::string file);
+    _CoreExport void tclThread(TclInterpreterBundle* bundle, const std::string& command);
+    _CoreExport void sourceThread(const std::string& file);
     _CoreExport int Tcl_OrxonoxAppInit(Tcl_Interp* interp);
 }
 

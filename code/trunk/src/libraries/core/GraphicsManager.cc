@@ -99,17 +99,17 @@ namespace orxonox
         this->loadOgreRoot();
 
         // At first, add the root paths of the data directories as resource locations
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getDataPathString(), "FileSystem", "dataRoot", false);
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getDataPathString(), "FileSystem");
         // Load resources
-        resources_.reset(new XMLFile("resources.oxr", "dataRoot"));
+        resources_.reset(new XMLFile("DefaultResources.oxr"));
         resources_->setLuaSupport(false);
         Loader::open(resources_.get());
 
         // Only for development runs
         if (PathConfig::isDevelopmentRun())
         {
-            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem", "externalDataRoot", false);
-            extResources_.reset(new XMLFile("resources.oxr", "externalDataRoot"));
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem");
+            extResources_.reset(new XMLFile("resources.oxr"));
             extResources_->setLuaSupport(false);
             Loader::open(extResources_.get());
         }
@@ -207,7 +207,7 @@ namespace orxonox
                 // Add file to the memory archive
                 shared_array<char> data(new char[output.str().size()]);
                 // Debug optimisations
-                const std::string outputStr = output.str();
+                const std::string& outputStr = output.str();
                 char* rawData = data.get();
                 for (unsigned i = 0; i < outputStr.size(); ++i)
                     rawData[i] = outputStr[i];
@@ -237,12 +237,12 @@ namespace orxonox
     {
         COUT(3) << "Setting up Ogre..." << std::endl;
 
-        if (ogreConfigFile_ == "")
+        if (ogreConfigFile_.empty())
         {
             COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
             ModifyConfigValue(ogreConfigFile_, tset, "config.cfg");
         }
-        if (ogreLogFile_ == "")
+        if (ogreLogFile_.empty())
         {
             COUT(2) << "Warning: Ogre log file set to \"\". Defaulting to ogre.log" << std::endl;
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
@@ -284,8 +284,8 @@ namespace orxonox
     void GraphicsManager::loadOgrePlugins()
     {
         // just to make sure the next statement doesn't segfault
-        if (ogrePluginsDirectory_ == "")
-            ogrePluginsDirectory_ = ".";
+        if (ogrePluginsDirectory_.empty())
+            ogrePluginsDirectory_ = '.';
 
         boost::filesystem::path folder(ogrePluginsDirectory_);
         // Do some SubString magic to get the comma separated list of plugins
@@ -340,7 +340,7 @@ namespace orxonox
         as shown that there is probably only one FrameListener that doesn't even
         need the time. So we shouldn't run into problems.
     */
-    void GraphicsManager::update(const Clock& time)
+    void GraphicsManager::postUpdate(const Clock& time)
     {
         Ogre::FrameEvent evt;
         evt.timeSinceLastFrame = time.getDeltaTime();
@@ -394,22 +394,33 @@ namespace orxonox
         Ogre::LogMessageLevel lml, bool maskDebug, const std::string& logName)
     {
         int orxonoxLevel;
-        switch (lml)
+        std::string introduction;
+        // Do not show caught OGRE exceptions in front
+        if (message.find("EXCEPTION") != std::string::npos)
         {
-        case Ogre::LML_TRIVIAL:
-            orxonoxLevel = this->ogreLogLevelTrivial_;
-            break;
-        case Ogre::LML_NORMAL:
-            orxonoxLevel = this->ogreLogLevelNormal_;
-            break;
-        case Ogre::LML_CRITICAL:
-            orxonoxLevel = this->ogreLogLevelCritical_;
-            break;
-        default:
-            orxonoxLevel = 0;
+            orxonoxLevel = OutputLevel::Debug;
+            introduction = "Ogre, caught exception: ";
+        }
+        else
+        {
+            switch (lml)
+            {
+            case Ogre::LML_TRIVIAL:
+                orxonoxLevel = this->ogreLogLevelTrivial_;
+                break;
+            case Ogre::LML_NORMAL:
+                orxonoxLevel = this->ogreLogLevelNormal_;
+                break;
+            case Ogre::LML_CRITICAL:
+                orxonoxLevel = this->ogreLogLevelCritical_;
+                break;
+            default:
+                orxonoxLevel = 0;
+            }
+            introduction = "Ogre: ";
         }
         OutputHandler::getOutStream(orxonoxLevel)
-            << "Ogre: " << message << std::endl;
+            << introduction << message << std::endl;
     }
 
     size_t GraphicsManager::getRenderWindowHandle()
@@ -439,7 +450,6 @@ namespace orxonox
     void GraphicsManager::printScreen()
     {
         assert(this->renderWindow_);
-       
-        this->renderWindow_->writeContentsToTimestampedFile(PathConfig::getLogPathString() + "screenShot_", ".jpg");
+        this->renderWindow_->writeContentsToTimestampedFile(PathConfig::getLogPathString() + "screenShot_", ".png");
     }
 }

@@ -85,8 +85,16 @@ ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
     CommandExecutor.h
+    ConfigFileManager.h
+    Game.h
+    GameMode.h
+    GUIManager.h
     Loader.h
     LuaState.h
+    PathConfig.h
+    input/InputManager.h
+    input/KeyBinder.h
+    input/KeyBinderManager.h
   DEFINE_SYMBOL
     "CORE_SHARED_BUILD"
   PCH_FILE

@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Implementation of the QuestItem class.
@@ -46,8 +46,6 @@ namespace orxonox
     QuestItem::QuestItem(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(QuestItem);
-
-        this->id_ = "";
     }
 
     /**
@@ -85,7 +83,7 @@ namespace orxonox
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return;
         }
-        
+
         this->id_ = id;
     }
 

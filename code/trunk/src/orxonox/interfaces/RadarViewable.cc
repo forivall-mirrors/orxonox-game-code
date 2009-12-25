@@ -50,14 +50,13 @@ namespace orxonox
         , MapEntity_(NULL)
         , line_(NULL)
         , LineNode_(NULL)
+        , isHumanShip_(false)
+        , bVisibility_(true)
         , radarObjectCamouflage_(0.0f)
         , radarObjectShape_(Dot)
         , radarObjectDescription_("staticObject")
     {
         RegisterRootObject(RadarViewable);
-
-        this->bVisibility_ = true;
-        this->isHumanShip_ = false;
 
         this->uniqueId_=getUniqueNumberString();
 /*
@@ -163,7 +162,7 @@ namespace orxonox
     {
         if (!object)
         {
-            COUT(1) << "Assertation: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
+            COUT(1) << "Assertion: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
             assert(0);
         }
     }

@@ -48,9 +48,10 @@ namespace orxonox
 
     WeaponPack::~WeaponPack()
     {
-        if (this->isInitialized() && this->weaponSystem_)
+        if (this->isInitialized())
         {
-            this->weaponSystem_->removeWeaponPack(this);
+            if( this->weaponSystem_ )
+                this->weaponSystem_->removeWeaponPack(this);
 
             while (!this->weapons_.empty())
                 (*this->weapons_.begin())->destroy();
@@ -70,13 +71,13 @@ namespace orxonox
 
     void WeaponPack::fire(unsigned int weaponmode)
     {
-        for (std::set<Weapon *>::iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
+        for (std::vector<Weapon *>::iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
             (*it)->fire(weaponmode);
     }
 
     void WeaponPack::reload()
     {
-        for (std::set<Weapon *>::iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
+        for (std::vector<Weapon *>::iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
             (*it)->reload();
     }
 
@@ -85,7 +86,7 @@ namespace orxonox
         if (!weapon)
             return;
 
-        this->weapons_.insert(weapon);
+        this->weapons_.push_back(weapon);
         weapon->setWeaponPack(this);
     }
 
@@ -94,7 +95,9 @@ namespace orxonox
         if (!weapon)
             return;
 
-        this->weapons_.erase(weapon);
+        std::vector<Weapon*>::iterator it = std::find(this->weapons_.begin(), this->weapons_.end(), weapon);
+        assert(it != this->weapons_.end());
+        this->weapons_.erase(it);
         weapon->setWeaponPack(0);
     }
 
@@ -102,7 +105,7 @@ namespace orxonox
     {
         unsigned int i = 0;
 
-        for (std::set<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
+        for (std::vector<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
         {
             if (i == index)
                 return (*it);
@@ -141,7 +144,7 @@ namespace orxonox
 
     void WeaponPack::notifyWeapons()
     {
-        for (std::set<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
+        for (std::vector<Weapon *>::const_iterator it = this->weapons_.begin(); it != this->weapons_.end(); ++it)
             (*it)->setWeaponPack(this);
     }
 }

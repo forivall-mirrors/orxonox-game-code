@@ -35,6 +35,8 @@
 #include "core/input/KeyBinderManager.h"
 #include "core/Game.h"
 #include "core/ConsoleCommand.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "Scene.h"
@@ -48,6 +50,7 @@ namespace orxonox
         : GameState(info)
         , inputState_(0)
     {
+        RegisterRootObject(GSMainMenu);
         inputState_ = InputManager::getInstance().createInputState("mainMenu");
         inputState_->setMouseMode(MouseMode::Nonexclusive);
         inputState_->setHandler(GUIManager::getInstancePtr());
@@ -63,14 +66,14 @@ namespace orxonox
         {
             // Load sound
             this->ambient_ = new AmbientSound(0);
-            this->ambient_->setSource("ambient/mainmenu.wav");
+            this->ambient_->setSyncMode(0x0);
         }
     }
 
     GSMainMenu::~GSMainMenu()
     {
         if (GameMode::playsSound())
-            delete this->ambient_;
+            this->ambient_->destroy();
 
         InputManager::getInstance().destroyState("mainMenu");
 
@@ -81,8 +84,10 @@ namespace orxonox
     void GSMainMenu::activate()
     {
         // show main menu
-        GUIManager::getInstance().showGUI("MainMenu");
+        GUIManager::getInstance().showGUI("MainMenu", true, GraphicsManager::getInstance().isFullScreen());
         GUIManager::getInstance().setCamera(this->camera_);
+        GUIManager::getInstance().setBackground("MainMenuBackground");
+//         GUIManager::getInstance().setBackground("");
         GraphicsManager::getInstance().setCamera(this->camera_);
 
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startStandalone), "startGame"));
@@ -91,13 +96,18 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startDedicated), "startDedicated"));
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startMainMenu), "startMainMenu"));
 
+        // create command to change sound path
+        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::setMainMenuSoundPath, this), "setMMSoundPath"));
+
         KeyBinderManager::getInstance().setToDefault();
         InputManager::getInstance().enterState("mainMenu");
 
+        this->setConfigValues();
+
         if (GameMode::playsSound())
         {
-            this->ambient_->setLoop(true);
-            this->ambient_->play();
+            this->ambient_->setLooping(true);
+            this->ambient_->play(); // works without source
         }
     }
 
@@ -111,11 +121,38 @@ namespace orxonox
         InputManager::getInstance().leaveState("mainMenu");
 
         GUIManager::getInstance().setCamera(0);
+        GUIManager::getInstance().setBackground("");
+        GUIManager::hideGUI("MainMenu");
         GraphicsManager::getInstance().setCamera(0);
     }
 
     void GSMainMenu::update(const Clock& time)
     {
+    }
+
+    void GSMainMenu::setConfigValues()
+    {
+        SetConfigValue(soundPathMain_, "mainmenu.ogg")
+            .description("Contains the path to the main menu sound file.")
+            .callback(this, &GSMainMenu::reloadSound);
+    }
+
+    void GSMainMenu::reloadSound()
+    {
+        if (GameMode::playsSound())
+        {
+            this->ambient_->setAmbientSource(soundPathMain_);
+        }
+    }
+
+    const std::string& GSMainMenu::getMainMenuSoundPath()
+    {
+        return soundPathMain_;
+    }
+
+    void GSMainMenu::setMainMenuSoundPath(const std::string& path)
+    {
+        ModifyConfigValue(soundPathMain_, set, path);
     }
 
     void GSMainMenu::startStandalone()

@@ -100,12 +100,12 @@ namespace orxonox
     Tcl::interpreter* TclBind::createTclInterpreter()
     {
         Tcl::interpreter* interpreter = new Tcl::interpreter();
-        std::string libpath = TclBind::getTclLibraryPath();
+        const std::string& libpath = TclBind::getTclLibraryPath();
 
         try
         {
-            if (libpath != "")
-                interpreter->eval("set tcl_library \"" + libpath + "\"");
+            if (!libpath.empty())
+                interpreter->eval("set tcl_library \"" + libpath + '"');
 
             Tcl_Init(interpreter->get());
 
@@ -135,7 +135,7 @@ namespace orxonox
     {
         COUT(4) << "Tcl_query: " << args.get() << std::endl;
 
-        std::string command = stripEnclosingBraces(args.get());
+        const std::string& command = stripEnclosingBraces(args.get());
 
         if (!CommandExecutor::execute(command, false))
         {
@@ -151,7 +151,7 @@ namespace orxonox
     void TclBind::tcl_execute(Tcl::object const &args)
     {
         COUT(4) << "Tcl_execute: " << args.get() << std::endl;
-        std::string command = stripEnclosingBraces(args.get());
+        const std::string& command = stripEnclosingBraces(args.get());
 
         if (!CommandExecutor::execute(command, false))
         {
@@ -165,8 +165,8 @@ namespace orxonox
         {
             try
             {
-                std::string output = TclBind::getInstance().interpreter_->eval("uplevel #0 " + tclcode);
-                if (output != "")
+                const std::string& output = TclBind::getInstance().interpreter_->eval("uplevel #0 " + tclcode);
+                if (!output.empty())
                 {
                     COUT(0) << "tcl> " << output << std::endl;
                 }
@@ -181,7 +181,7 @@ namespace orxonox
         return "";
     }
 
-    void TclBind::bgerror(std::string error)
+    void TclBind::bgerror(const std::string& error)
     {
         COUT(1) << "Tcl background error: " << stripEnclosingBraces(error) << std::endl;
     }

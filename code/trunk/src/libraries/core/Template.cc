@@ -78,7 +78,7 @@ namespace orxonox
     {
         SUPER(Template, changedName);
 
-        if (this->getName() != "")
+        if (!this->getName().empty())
         {
             std::map<std::string, Template*>::iterator it;
             it = Template::getTemplateMap().find(this->getOldName());

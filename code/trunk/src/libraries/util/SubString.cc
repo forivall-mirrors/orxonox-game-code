@@ -269,10 +269,7 @@ namespace orxonox
             return retVal;
         }
         else
-        {
-            static std::string empty;
-            return empty;
-        }
+            return "";
     }
 
 

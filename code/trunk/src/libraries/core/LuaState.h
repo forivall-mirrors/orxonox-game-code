@@ -39,31 +39,46 @@
 #include <boost/shared_ptr.hpp>
 
 #include "util/ScopeGuard.h"
+#include "core/Functor.h"
 #include "ToluaInterface.h"
 
-// tolua_begin
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
+    class Functor; // tolua_export
+
+    //! Functor subclass that simply executes code with 0 arguments.
+    class _CoreExport LuaFunctor : public Functor
+    {
+        public:
+            LuaFunctor(const std::string& code, LuaState* luaState);
+            void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null);
+            void evaluateParam(unsigned int index, MultiType& param) const {}
+
+        private:
+            std::string code_;
+            LuaState*   lua_;
+    };
+
+
     /**
     @brief
         Representation of an interface to lua
     */
-    class _CoreExport LuaState
-    {
-// tolua_end
+    class _CoreExport LuaState // tolua_export
+    { // tolua_export
     public:
         LuaState();
         ~LuaState();
 
-        void doFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
-        void doString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo = shared_ptr<ResourceInfo>());
+        void doFile(const std::string& filename); // tolua_export
+        void doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
 
-        void includeFile(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
-        void includeString(const std::string& code, shared_ptr<ResourceInfo> sourceFileInfo = shared_ptr<ResourceInfo>());
+        void includeFile(const std::string& filename); // tolua_export
+        void includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
 
         void luaPrint(const std::string& str); // tolua_export
         void luaLog(unsigned int level, const std::string& message); // tolua_export
-        bool fileExists(const std::string& filename, const std::string& resourceGroup = "General", bool bSearchOtherPaths = true); // tolua_export
+        bool fileExists(const std::string& filename); // tolua_export
 
         const std::stringstream& getOutput() const { return output_; }
         void clearOutput() { output_.clear(); } // tolua_export
@@ -71,13 +86,18 @@ namespace orxonox
         void setIncludeParser(std::string (*function)(const std::string&)) { includeParseFunction_ = function; }
         lua_State* getInternalLuaState() { return luaState_; }
 
+        void setDefaultResourceInfo(const shared_ptr<ResourceInfo>& sourceFileInfo) { this->sourceFileInfo_ = sourceFileInfo; }
+        const shared_ptr<ResourceInfo>& getDefaultResourceInfo() { return this->sourceFileInfo_; }
+
+        Functor* createLuaFunctor(const std::string& code) { return new LuaFunctor(code, this); } // tolua_export
+
         static bool addToluaInterface(int (*function)(lua_State*), const std::string& name);
         static bool removeToluaInterface(const std::string& name);
         static void openToluaInterfaces(lua_State* state);
         static void closeToluaInterfaces(lua_State* state);
 
     private:
-        shared_ptr<ResourceInfo> getFileInfo(const std::string& filename, const std::string& resourceGroup, bool bSearchOtherPaths);
+        shared_ptr<ResourceInfo> getFileInfo(const std::string& filename);
 
 #if LUA_VERSION_NUM != 501
         struct LoadS

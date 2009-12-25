@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @file
     @brief Implementation of the CompleteQuest class.
@@ -66,7 +66,7 @@ namespace orxonox
     void CompleteQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(CompleteQuest, XMLPort, xmlelement, mode);
-        
+
         COUT(3) << "New CompleteQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 

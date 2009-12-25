@@ -52,7 +52,7 @@ namespace orxonox
         FORCEINLINE static bool convert(std::string* output, const orxonox::Vector2& input)
         {
             std::ostringstream ostream;
-            if (ostream << input.x << "," << input.y)
+            if (ostream << input.x << ',' << input.y)
             {
                 (*output) = ostream.str();
                 return true;
@@ -68,7 +68,7 @@ namespace orxonox
         FORCEINLINE static bool convert(std::string* output, const orxonox::Vector3& input)
         {
             std::ostringstream ostream;
-            if (ostream << input.x << "," << input.y << "," << input.z)
+            if (ostream << input.x << ',' << input.y << ',' << input.z)
             {
                 (*output) = ostream.str();
                 return true;
@@ -84,7 +84,7 @@ namespace orxonox
         FORCEINLINE static bool convert(std::string* output, const orxonox::Vector4& input)
         {
             std::ostringstream ostream;
-            if (ostream << input.x << "," << input.y << "," << input.z << "," << input.w)
+            if (ostream << input.x << ',' << input.y << ',' << input.z << ',' << input.w)
             {
                 (*output) = ostream.str();
                 return true;
@@ -100,7 +100,7 @@ namespace orxonox
         FORCEINLINE static bool convert(std::string* output, const orxonox::Quaternion& input)
         {
             std::ostringstream ostream;
-            if (ostream << input.w << "," << input.x << "," << input.y << "," << input.z)
+            if (ostream << input.w << ',' << input.x << ',' << input.y << ',' << input.z)
             {
                 (*output) = ostream.str();
                 return true;
@@ -116,7 +116,7 @@ namespace orxonox
         FORCEINLINE static bool convert(std::string* output, const orxonox::ColourValue& input)
         {
             std::ostringstream ostream;
-            if (ostream << input.r << "," << input.g << "," << input.b << "," << input.a)
+            if (ostream << input.r << ',' << input.g << ',' << input.b << ',' << input.a)
             {
                 (*output) = ostream.str();
                 return true;

@@ -78,7 +78,8 @@ namespace orxonox
             Pawn* victim = orxonox_cast<Pawn*>(otherObject);
             if (victim)
             {
-                victim->damage(this->collisionDamage_ * (victim->getVelocity() - this->getVelocity()).length());
+                float damage = this->collisionDamage_ * (victim->getVelocity() - this->getVelocity()).length();
+                victim->hit(0, contactPoint, damage);
             }
         }
 

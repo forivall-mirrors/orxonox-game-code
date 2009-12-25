@@ -55,7 +55,7 @@ namespace orxonox {
     {
 
         public:
-        
+
             QuestGUI(PlayerInfo* player);
             virtual ~QuestGUI();
 
@@ -85,9 +85,9 @@ namespace orxonox {
             */
             inline PlayerInfo* getPlayer(void)
                 { return this->player_; }
-    
+
         private:
-            
+
             int createNode(QuestGUINode* parent, QuestItem* item, int depth, int index); //!< Recursive method to create Nodes for all Quests an Hints the given Quest is a parent to.
 
             void clear(void); //!< Clear the QuestGUI.

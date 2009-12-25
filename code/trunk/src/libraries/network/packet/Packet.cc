@@ -100,8 +100,8 @@ Packet::Packet(const Packet &p){
 /**
 @brief
     Destroys a packet completely.
-    
-    That also means destroying the ENetPacket if one exists. There 
+
+    That also means destroying the ENetPacket if one exists. There
 */
 Packet::~Packet(){
   // Deallocate data_ memory if necessary.

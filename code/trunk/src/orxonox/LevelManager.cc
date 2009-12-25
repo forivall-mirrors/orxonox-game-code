@@ -29,12 +29,12 @@
 #include "LevelManager.h"
 
 #include <map>
-#include <OgreResourceGroupManager.h>
 
 #include "core/CommandLineParser.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
+#include "core/Resource.h"
 #include "core/ScopedSingletonManager.h"
 #include "PlayerManager.h"
 #include "Level.h"
@@ -43,7 +43,6 @@ namespace orxonox
 {
     SetCommandLineArgument(level, "").shortcut("l").information("Default level file (overrides LevelManager::defaultLevelName_ configValue)");
 
-    LevelManager* LevelManager::singletonPtr_s = 0;
     ManageScopedSingleton(LevelManager, ScopeID::Root, false);
 
     LevelManager::LevelManager()
@@ -65,7 +64,7 @@ namespace orxonox
     void LevelManager::setConfigValues()
     {
         SetConfigValue(defaultLevelName_, "presentation_dm.oxw")
-            .description("Sets the preselection of the level in the main menu.");
+            .description("Sets the pre selection of the level in the main menu.");
     }
 
     void LevelManager::requestActivity(Level* level)
@@ -122,21 +121,17 @@ namespace orxonox
         return defaultLevelName_;
     }
 
-    std::string LevelManager::getAvailableLevelListItem(unsigned int index) const
+    const std::string& LevelManager::getAvailableLevelListItem(unsigned int index) const
     {
         if (index >= availableLevels_.size())
-            return std::string();
+            return BLANKSTRING;
         else
             return availableLevels_[index];
     }
 
     void LevelManager::compileAvailableLevelList()
     {
-        availableLevels_.clear();
-
-        availableLevels_ = *Ogre::ResourceGroupManager::getSingleton().findResourceNames(
-            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, "*.oxw");
-
+        availableLevels_ = *Resource::findResourceNames("*.oxw");
         for (std::vector<std::string>::iterator it = availableLevels_.begin(); it != availableLevels_.end();)
             if (it->find("old/") == 0)
                 it = availableLevels_.erase(it);
