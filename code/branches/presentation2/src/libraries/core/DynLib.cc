@@ -69,7 +69,7 @@ namespace orxonox
         // Log library load
         COUT(2) << "Loading module " << mName << std::endl;
 
-        std::string& name = mName;
+        std::string name = mName;
 #ifdef ORXONOX_PLATFORM_LINUX
         // dlopen() does not add .so to the filename, like windows does for .dll
         if (name.substr(name.length() - 3, 3) != ".so")
@@ -78,7 +78,7 @@ namespace orxonox
 
         m_hInst = (DYNLIB_HANDLE)DYNLIB_LOAD( name.c_str() );
 
-        if( !m_hInst )
+        if (!m_hInst)
             ThrowException(
                 General,
                 "Could not load dynamic library " + mName +
@@ -91,7 +91,7 @@ namespace orxonox
         // Log library unload
         COUT(4) << "Unloading module " << mName << std::endl;
 
-        if( DYNLIB_UNLOAD( m_hInst ) )
+        if (DYNLIB_UNLOAD( m_hInst ))
         {
             ThrowException(
                 General,
