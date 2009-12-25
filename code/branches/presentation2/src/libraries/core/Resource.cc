@@ -27,6 +27,8 @@
  */
 
 #include "Resource.h"
+
+#include <OgreException.h>
 #include <OgreResourceGroupManager.h>
 
 namespace orxonox
