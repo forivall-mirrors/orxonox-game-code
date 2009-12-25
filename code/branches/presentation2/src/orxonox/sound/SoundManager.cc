@@ -607,7 +607,7 @@ namespace orxonox
                 break;
             }
         }
-        int used = std::max(this->usedSoundSources_.size(), this->minSources_);
+        int used = std::max((unsigned int)(this->usedSoundSources_.size()), this->minSources_);
         // Subtract those we added in the statement above trough std::max
         int available = (int)this->availableSoundSources_.size() - (used - (int)this->usedSoundSources_.size());
         // Delete sources again to free resources if appropriate (more than 50% more available than used)
