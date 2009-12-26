@@ -28,31 +28,33 @@
 
 #include "DroppedItem.h"
 
-#include "util/Math.h"
 #include "core/CoreIncludes.h"
-#include "core/Executor.h"
-#include "BaseItem.h"
-#include "graphics/Billboard.h"
+#include "interfaces/Pickupable.h"
 #include "graphics/Model.h"
-#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
-    CreateFactory(DroppedItem); //TODO: This isn't needed, is it?
-
     /**
     @brief
         Constructor. Registers object and sets default values.
     */
     DroppedItem::DroppedItem(BaseObject* creator) : PickupSpawner(creator)
     {
-        RegisterObject(DroppedItem);
+        this->initialize();
     }
 
-    DroppedItem::DroppedItem(BaseObject* creator, BaseItem* item, float triggerDistance, float respawnTime, int maxSpawnedItems) : PickupSpawner(creator, item, triggerDistance, respawnTime, maxSpawnedItems)
+    DroppedItem::DroppedItem(BaseObject* creator, Pickupable* item, const Vector3& position, float triggerDistance) : PickupSpawner(creator, item, triggerDistance, 0, 1)
+    {   
+        this->initialize();
+        
+        this->createDrop(position);
+    }
+    
+    void DroppedItem::initialize(void)
     {
         RegisterObject(DroppedItem);
-        this->item_ = item;
+        
+        this->gotPickedUp_ = false;
     }
 
     /**
@@ -61,54 +63,59 @@ namespace orxonox
     */
     DroppedItem::~DroppedItem()
     {
-        
+        if(this->gotPickedUp_ && this->pickup_ != NULL)
+        {
+            this->pickup_ = NULL;
+        }
     }
 
-    BaseItem* DroppedItem::getItem(void)
+    Pickupable* DroppedItem::getPickup(void)
     {
-        return this->item_;
+        return this->pickup_;
+    }
+    
+    void DroppedItem::createDrop(const Vector3& position)
+    {
+        this->setPosition(position);
+        
+        //TODO: Make this work.
+        //const Model& model = PickupManager::getModel(item->getPickupIdentifier());
+        //this->attach(model);
     }
 
-    /**
-    @brief
-        
-    */
+//TODO: Remove.
     //TODO: Comment.
     //Each pickup should have a XML template where the Model and Billboard, and so on, is specified.
-    /*static*/ DroppedItem* DroppedItem::createDefaultDrop(BaseItem* item, const Vector3& position, const ColourValue& flareColour, float timeToLive)
-    {
-        //TODO: triggerDistance?
-        float triggerDistance = 20.0;
-        DroppedItem* droppedItem = new DroppedItem(item, item, triggerDistance, 0, 1);
-        
-        //TODO: Do this somehwere else?
-        Model* model = new Model(item);
-        Billboard* billboard = new Billboard(item);
+//    /*static*/ DroppedItem* DroppedItem::createDefaultDrop(BaseItem* item, const Vector3& position, const ColourValue& flareColour, float timeToLive)
+//     {
+//         //TODO: triggerDistance?
+//         float triggerDistance = 20.0;
+//         DroppedItem* droppedItem = new DroppedItem(item, item, triggerDistance, 0, 1);
+//         
+//         //TODO: Do this somehwere else?
+//         Model* model = new Model(item);
+//         Billboard* billboard = new Billboard(item);
+// 
+//         model->setMeshSource("sphere.mesh");
+//         model->setScale(3.0f);
+// 
+//         billboard->setMaterial("Examples/Flare");
+//         billboard->setColour(flareColour);
+//         billboard->setScale(0.5f);
+// 
+//         droppedItem->setPosition(position);
+//         droppedItem->attach(model);
+//         droppedItem->attach(billboard);
+// 
+//         COUT(3) << "Created DroppedItem for '" << item->getPickupIdentifier() << "' at (" << position.x << "," << position.y << "," << position.z << ")." << std::endl;
+// 
+//         return droppedItem;
+//     }
 
-        model->setMeshSource("sphere.mesh");
-        model->setScale(3.0f);
-
-        billboard->setMaterial("Examples/Flare");
-        billboard->setColour(flareColour);
-        billboard->setScale(0.5f);
-
-        droppedItem->setPosition(position);
-        droppedItem->attach(model);
-        droppedItem->attach(billboard);
-
-        COUT(3) << "Created DroppedItem for '" << item->getPickupIdentifier() << "' at (" << position.x << ',' << position.y << ',' << position.z << ")." << std::endl;
-
-        return droppedItem;
-    }
-
-    /**
-    @brief
-
-    */
     //TODO: See one function above.
-    DroppedItem* DroppedItem::createDefaultDrop(BaseItem* item, Pawn* pawn, const ColourValue& flareColour, float timeToLive)
-    {
-        Vector3 after = pawn->getPosition() + pawn->getOrientation() * Vector3(0.0f, 0.0f, 50.0f);
-        return DroppedItem::createDefaultDrop(item, after, flareColour, timeToLive);
-    }
+//     DroppedItem* DroppedItem::createDefaultDrop(BaseItem* item, Pawn* pawn, const ColourValue& flareColour, float timeToLive)
+//     {
+//         Vector3 after = pawn->getPosition() + pawn->getOrientation() * Vector3(0.0f, 0.0f, 50.0f);
+//         return DroppedItem::createDefaultDrop(item, after, flareColour, timeToLive);
+//     }
 }

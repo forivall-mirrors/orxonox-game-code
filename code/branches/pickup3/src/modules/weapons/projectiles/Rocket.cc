@@ -200,8 +200,9 @@ namespace orxonox
             }
 
             float dmg = this->damage_;
-            if (this->owner_)
-                dmg = this->owner_->getPickups().processModifiers(ModifierType::Damage, dmg, false);
+            //TODO: This souldn't be necessary here.
+            //if (this->owner_)
+            //    dmg = this->owner_->getPickups().processModifiers(ModifierType::Damage, dmg, false);
 
             Pawn* victim = orxonox_cast<Pawn*>(otherObject);
             if (victim)

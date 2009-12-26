@@ -68,11 +68,11 @@ namespace orxonox
             virtual Pickupable* clone(void);
             
             bool addPickupable(Pickupable* pickup);
-            Pickupable* getPickupable(unsigned int index);
+            const Pickupable* getPickupable(unsigned int index);
             
         private:
             
-            std::list<Pickupable*> pickups_;
+            std::vector<Pickupable*> pickups_;
         
     };
     

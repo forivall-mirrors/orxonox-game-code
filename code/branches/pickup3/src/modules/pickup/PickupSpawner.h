@@ -56,7 +56,7 @@ namespace orxonox
             PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems);
             virtual ~PickupSpawner();
 
-            virtual void changedActivity();                                 //!< Invoked when activity has changed (set visibilty).
+            //virtual void changedActivity();                                 //!< Invoked when activity has changed (set visibilty).
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< Method for creating a PickupSpawner through XML.
             virtual void tick(float dt);
 
@@ -86,7 +86,10 @@ namespace orxonox
             inline void setRespawnTime(float time)
                 { this->respawnTime_ = time; }
 
-
+            /**
+                @brief Get the maximum number of items that will be spawned by this PickupSpawner.
+                @return Returns the maximum number of items spawned by this PickupSpawner.
+            */
             inline int getMaxSpawnedItems(void)
                 { return this->maxSpawnedItems_; }
             void setMaxSpawnedItems(int items);
@@ -94,19 +97,18 @@ namespace orxonox
         protected:
             virtual Pickupable* getPickup(void);
             
-            void addPickupable(Pickupable* pickup);
-            Pickupable* getPickupable(void);
+            void setPickupable(Pickupable* pickup);
+            const Pickupable* getPickupable(void);
             
             void decrementSpawnsRemaining(void);
+            
+            Pickupable* pickup_; //!< The pickup to be spawned.
 
         private:
             void initialize(void);
             
             void trigger(Pawn* pawn);                                       //!< Method called when a Pawn is close enough.
             void respawnTimerCallback();                                    //!< Method called when the timer runs out.
-
-            
-            Pickupable* pickup_;
 
             int maxSpawnedItems_;                   //!< Maximum number of items spawned by this PickupSpawner.
             int spawnsRemaining_;                   //!< Number of items that can be spawned by this PickupSpawner until it selfdestructs.

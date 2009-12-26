@@ -52,7 +52,7 @@ namespace orxonox
 
     /**
     @brief
-        Constructor. Registers the PickupSpawner.
+        Constructor. Creates a blank PickupSpawner.
     @param creator
         Pointer to the object which created this item.
     */
@@ -61,6 +61,20 @@ namespace orxonox
         this->initialize();
     }
 
+    /**
+    @brief
+        Constructor, Creates a fully functional PickupSpawner.
+    @param creator
+        The creator of this PickupSpawner.
+    @param pickup
+        The Pickupable to be spawned by this PickupSpawner.
+    @param triggerDistance
+        The distance at which the PickupSpawner will trigger.
+    @param respawnTime
+        The minimum time between two spawns.
+    @param maySpawnedItems
+        The maximum number of items spawned by this PickupSpawner.
+    */
     PickupSpawner::PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems) : StaticEntity(creator)
     {
         this->initialize();
@@ -72,6 +86,10 @@ namespace orxonox
         this->setMaxSpawnedItems(maxSpawnedItems);
     }
 
+    /**
+    @brief
+        Registers the object and sets some default values.
+    */
     void PickupSpawner::initialize(void)
     {
         RegisterObject(PickupSpawner);
@@ -91,7 +109,8 @@ namespace orxonox
     */
     PickupSpawner::~PickupSpawner()
     {
-        
+        if(this->pickup_ != NULL)
+            delete this->pickup_;
     }
 
     /**
@@ -106,7 +125,7 @@ namespace orxonox
     {
         SUPER(PickupSpawner, XMLPort, xmlelement, mode);
 
-        XMLPortObject(PickupSpawner, Pickupable, "pickup", addPickupable, getPickupable, xmlelement, mode);
+        XMLPortObject(PickupSpawner, Pickupable, "pickup", setPickupable, getPickupable, xmlelement, mode);
         
         XMLPortParam(PickupSpawner, "triggerDistance", setTriggerDistance, getTriggerDistance, xmlelement, mode);
         XMLPortParam(PickupSpawner, "respawnTime", setRespawnTime, getRespawnTime, xmlelement, mode);
@@ -127,12 +146,18 @@ namespace orxonox
 
         //  & load the GUI itself too, along with some empty windows
         //   = even less delays
-//         GUIManager::showGUI("PickupInventory");
-//         GUIManager::hideGUI("PickupInventory");
+//         GUIManager::getInstance().showGUI("PickupInventory");
+//         GUIManager::getInstance().executeCode("hideGUI(\"PickupInventory\")");
 //         PickupInventory::getSingleton();
     }
     
-    void PickupSpawner::addPickupable(Pickupable* pickup)
+    /**
+    @brief
+        Sets a Pickupable for the PickupSpawner to spawn.
+    @param pickup
+        The Pickupable to be set.
+    */
+    void PickupSpawner::setPickupable(Pickupable* pickup)
     {
         if(this->pickup_ != NULL)
         {
@@ -148,7 +173,13 @@ namespace orxonox
         this->pickup_ = pickup;
     }
     
-    Pickupable* PickupSpawner::getPickupable(void)
+    /**
+    @brief
+        Get the Pickupable that is spawned by this PickupSpawner.
+    @return
+        Returns the Pickupable that is spawned by this PickupSpawner.
+    */
+    const Pickupable* PickupSpawner::getPickupable(void)
     {
         return this->pickup_;
     }
@@ -165,6 +196,12 @@ namespace orxonox
 //             (*it)->setVisible(this->isActive());
 //     }
 
+    /**
+    @brief
+        Sets the maximum number of spawned items.
+    @param items
+        The maximum number of spawned items to be set.
+    */
     void PickupSpawner::setMaxSpawnedItems(int items)
     {
         this->maxSpawnedItems_ = items;
@@ -242,6 +279,13 @@ namespace orxonox
         }
     }
     
+    /**
+    @brief
+        Decrements the number of remaining spawns.
+        Sets the PickupSpawner to inactive for the duration of the respawnTime.
+        Destroys the PickupSpawner if the number of remaining spawns has reached zero.
+        
+    */
     void PickupSpawner::decrementSpawnsRemaining(void)
     {
         if(this->spawnsRemaining_ != INF)
@@ -250,7 +294,7 @@ namespace orxonox
         }
         if(this->spawnsRemaining_ != 0 && this->respawnTime_ > 0)
         {
-            //TODO: Nicer?
+            //TODO: Nicer? Does this even work?
             this->respawnTimer_.setTimer(this->respawnTime_, false, createExecutor(createFunctor(&PickupSpawner::respawnTimerCallback, this)));
 
             this->setActive(false);

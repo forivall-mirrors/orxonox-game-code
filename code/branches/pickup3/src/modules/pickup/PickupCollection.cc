@@ -57,7 +57,7 @@ namespace orxonox
     PickupCollection::~PickupCollection()
     {
         //! Destroy all Pickupables constructing this PickupCollection.
-        for(std::list<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             delete *it;
         }
@@ -88,7 +88,7 @@ namespace orxonox
         if(pickup == NULL)
             return false;
         
-        this->pickups_.insert(pickup);
+        this->pickups_.push_back(pickup);
         return true;
     }
     
@@ -100,7 +100,7 @@ namespace orxonox
     @return
         Returns a pointer to the Pickupable at the index given by index.
     */
-    Pickupable* PickupCollection::getPickupable(unsigned int index)
+    const Pickupable* PickupCollection::getPickupable(unsigned int index)
     {
         return this->pickups_[index]; //TODO. Does this work?
     }
@@ -111,7 +111,7 @@ namespace orxonox
         SUPER(PickupCollection, changedUsed);
         
         //! Change used for all Pickupables this PickupCollection consists of.
-        for(std::list<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             (*it)->changedUsed();
         }
@@ -131,7 +131,7 @@ namespace orxonox
         
         bool success = true;
         //! Set all Pickupables to used.
-        for(std::list<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             if(!(*it)->use())
             {
@@ -157,7 +157,7 @@ namespace orxonox
         
         bool success = true;
         //! Set all Pickupables to unused.
-        for(std::list<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             if(!(*it)->unuse())
             {
@@ -186,7 +186,7 @@ namespace orxonox
             COUT(2) << "Pickup wanted to get picked up by a new carrier, but it already has a carrier." << std::endl;
             return false;
         }
-        for(std::list<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             (*it)->setOwner(carrier);
         }
@@ -218,7 +218,7 @@ namespace orxonox
         BaseObject* newObject = collectionTemplate->getBaseclassIdentifier()->fabricate(this);
         
         PickupCollection* newCollection = dynamic_cast<PickupCollection*>(newObject);
-        for(std::list<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             Pickupable* newPickup = (*it)->clone();
             newCollection->pickups_.push_back(newPickup);

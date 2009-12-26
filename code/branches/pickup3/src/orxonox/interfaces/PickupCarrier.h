@@ -47,7 +47,7 @@ namespace orxonox
         
         public:
             PickupCarrier();
-            virtual ~PickupCarrier();
+            virtual ~PickupCarrier() {}
         
         private:
             

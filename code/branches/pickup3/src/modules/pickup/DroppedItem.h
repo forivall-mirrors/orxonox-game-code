@@ -34,7 +34,7 @@
 #ifndef _DroppedItem_H__
 #define _DroppedItem_H__
 
-#include "OrxonoxPrereqs.h"
+#include "pickup/PickupPrereqs.h"
 
 #include "PickupSpawner.h"
 
@@ -44,18 +44,17 @@ namespace orxonox
     {
         public:
             DroppedItem(BaseObject* creator);
-            DroppedItem(BaseObject* creator, BaseItem* item, float triggerDistance, float respawnTime, int maxSpawnedItems);
+            DroppedItem(BaseObject* creator, Pickupable* item, const Vector3& position, float triggerDistance);
             virtual ~DroppedItem();
 
-            static DroppedItem* createDefaultDrop(BaseItem* item, const Vector3& position, const ColourValue& flareColour = ColourValue(0.5f, 1.0f, 0.3f), float timeToLive = 0);
-            static DroppedItem* createDefaultDrop(BaseItem* item, Pawn* pawn, const ColourValue& flareColour = ColourValue(0.5f, 1.0f, 0.3f), float timeToLive = 0);
-
         protected:
-            virtual BaseItem* getItem(void);
-
+            virtual Pickupable* getPickup(void);
+            
         private:
-
-            BaseItem* item_; //!< The dropped item.
+            void initialize(void);
+            void createDrop(const Vector3& position);
+            
+            bool gotPickedUp_;
 
     };
 }
