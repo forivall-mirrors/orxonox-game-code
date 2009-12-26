@@ -124,6 +124,18 @@ namespace orxonox
     {
         return Identifier::getIdentifierByID(id);
     }
+
+    /**
+        @brief Returns the Identifier with a given 'this' pointer.
+        @note This of course only works with OrxonoxClasses.
+              The only use is in conjunction with macros that don't know the class type.
+        @param Pointer to an OrxonoxClass
+    */
+    template <class T>
+    inline Identifier* ClassByObjectType(const T* object)
+    {
+        return ClassIdentifier<T>::getIdentifier();
+    }
 }
 
 #endif /* _CoreIncludes_H__ */

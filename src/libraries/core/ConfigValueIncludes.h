@@ -62,11 +62,11 @@ namespace orxonox
     template <class T, class D, class V>
     inline ConfigValueContainer& setConfigValueGeneric(T* object, V* variable, ConfigFileType type, const std::string& sectionName, const std::string& entryName, const D& defaultValue)
     {
-        ConfigValueContainer* container = object->getIdentifier()->getConfigValueContainer(entryName);
+        ConfigValueContainer* container = ClassIdentifier<T>::getIdentifier()->getConfigValueContainer(entryName);
         if (!container)
         {
-            container = new ConfigValueContainer(type, object->getIdentifier(), sectionName, entryName, defaultValue, *variable);
-            object->getIdentifier()->addConfigValueContainer(entryName, container);
+            container = new ConfigValueContainer(type, ClassIdentifier<T>::getIdentifier(), sectionName, entryName, defaultValue, *variable);
+            ClassIdentifier<T>::getIdentifier()->addConfigValueContainer(entryName, container);
         }
         return container->getValue(variable, object);
     }
@@ -112,7 +112,7 @@ namespace orxonox
     template <class T, class V>
     inline void resetConfigValueGeneric(T* object, V* variable, const std::string& entryName)
     {
-        ConfigValueContainer* container = object->getIdentifier()->getConfigValueContainer(entryName);
+        ConfigValueContainer* container = ClassIdentifier<T>::getIdentifier()->getConfigValueContainer(entryName);
         if (container)
         {
             container->reset();
@@ -121,7 +121,7 @@ namespace orxonox
         else
         {
             COUT(2) << "Warning: Couldn't reset config-value '" << entryName << "' in class '"
-                    << object->getIdentifier()->getName() << "', corresponding container doesn't exist." << std::endl;
+                    << ClassIdentifier<T>::getIdentifier()->getName() << "', corresponding container doesn't exist." << std::endl;
         }
     }
 }
@@ -151,7 +151,7 @@ namespace orxonox
     Arguments for the modifier function
 */
 #define ModifyConfigValueGeneric(object, variable, entryName, modifier, ...) \
-    if (orxonox::ConfigValueContainer* container = object->getIdentifier()->getConfigValueContainer(entryName)) \
+    if (orxonox::ConfigValueContainer* container = ClassByObjectType(object)->getConfigValueContainer(entryName)) \
     { \
         container->modifier(__VA_ARGS__); \
         container->getValue(variable, object); \
@@ -159,7 +159,7 @@ namespace orxonox
     else \
     { \
         COUT(2) << "Warning: Couln't modify config-value '" << entryName << "' in class '" \
-                << object->getIdentifier()->getName() << "', corresponding container doesn't exist." << std::endl; \
+                << ClassByObjectType(object)->getName() << "', corresponding container doesn't exist." << std::endl; \
     }
 
 /** Modifies a runtime configurable value by using a modifier and some arguments.
