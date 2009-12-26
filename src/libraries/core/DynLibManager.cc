@@ -74,7 +74,7 @@ namespace orxonox
     DynLibManager::~DynLibManager()
     {
         // Unload & delete resources in turn
-        for( DynLibList::iterator it = mLibList.begin(); it != mLibList.end(); ++it )
+        for (DynLibList::iterator it = mLibList.begin(); it != mLibList.end(); ++it)
         {
             it->second->unload();
             delete it->second;

@@ -403,7 +403,7 @@ namespace orxonox
                 if ((*it)->getPriority() == 0)
                 {
                     // Get smallest possible priority between 1 and maxStateStackSize_s
-                    for(std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
+                    for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
                         rit != activeStates_.rend(); ++rit)
                     {
                         if (rit->first < InputStatePriority::HighPriority)

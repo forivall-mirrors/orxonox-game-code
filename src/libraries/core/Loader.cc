@@ -243,7 +243,7 @@ namespace orxonox
                     if (bBetweenQuotes)
                     {
                         it2++;
-                        if(it->second && !(it2->second) && it2->first < pos)
+                        if (it->second && !(it2->second) && it2->first < pos)
                             it = ++it2;
                         else
                             luaTags.erase(it++);
@@ -306,15 +306,15 @@ namespace orxonox
                     {
                         unsigned int tempCounter = 1;
                         size_t tempPos = pos++;
-                        while(temp[++tempPos] == '=')
+                        while (temp[++tempPos] == '=')
                         {
                             tempCounter++;
                         }
-                        if(temp[tempPos] != '[')
+                        if (temp[tempPos] != '[')
                         {
                             tempCounter = 0;
                         }
-                        else if(tempCounter == 0)
+                        else if (tempCounter == 0)
                         {
                             tempCounter = 1;
                         }
@@ -328,15 +328,15 @@ namespace orxonox
                         {
                             unsigned int tempCounter = 1;
                             size_t tempPos = pos++;
-                            while(temp[++tempPos] == '=')
+                            while (temp[++tempPos] == '=')
                             {
                                 tempCounter++;
                             }
-                            if(temp[tempPos] != ']')
+                            if (temp[tempPos] != ']')
                             {
                                 tempCounter = 0;
                             }
-                            else if(tempCounter == 0)
+                            else if (tempCounter == 0)
                             {
                                 tempCounter = 1;
                             }
@@ -345,7 +345,7 @@ namespace orxonox
                         }
                     }
                     std::string equalSigns;
-                    for(unsigned int i = 0; i < equalSignCounter; i++)
+                    for (unsigned int i = 0; i < equalSignCounter; i++)
                     {
                         equalSigns += '=';
                     }
