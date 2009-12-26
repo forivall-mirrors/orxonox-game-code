@@ -488,7 +488,7 @@ namespace orxonox
 
     ConfigFileManager::~ConfigFileManager()
     {
-        for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); )
+        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); )
             delete (it++)->second;
     }
 
@@ -506,19 +506,19 @@ namespace orxonox
 
     void ConfigFileManager::load()
     {
-        for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
+        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
             it->second->load();
     }
 
     void ConfigFileManager::save()
     {
-        for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
+        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
             it->second->save();
     }
 
     void ConfigFileManager::clean(bool bCleanComments)
     {
-        for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
+        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
             this->clean(it->first, bCleanComments);
     }
 
@@ -544,7 +544,7 @@ namespace orxonox
 
     void ConfigFileManager::updateConfigValues()
     {
-        for(std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
+        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
             it->second->updateConfigValues();
     }
 

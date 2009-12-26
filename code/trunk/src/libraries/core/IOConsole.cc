@@ -344,7 +344,7 @@ namespace orxonox
 
     /*static*/ void IOConsole::resetTerminalMode()
     {
-        if(IOConsole::singletonPtr_s && IOConsole::singletonPtr_s->originalTerminalSettings_)
+        if (IOConsole::singletonPtr_s && IOConsole::singletonPtr_s->originalTerminalSettings_)
         {
             tcsetattr(0, TCSANOW, IOConsole::singletonPtr_s->originalTerminalSettings_);
             delete IOConsole::singletonPtr_s->originalTerminalSettings_;

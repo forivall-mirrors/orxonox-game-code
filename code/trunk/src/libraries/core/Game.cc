@@ -444,10 +444,10 @@ namespace orxonox
         while (pos < str.size())
         {
             int indentation = 0;
-            while(pos < str.size() && str[pos] == ' ')
+            while (pos < str.size() && str[pos] == ' ')
                 ++indentation, ++pos;
             startPos = pos;
-            while(pos < str.size() && str[pos] != ' ')
+            while (pos < str.size() && str[pos] != ' ')
                 ++pos;
             stateStrings.push_back(std::make_pair(str.substr(startPos, pos - startPos), indentation));
         }

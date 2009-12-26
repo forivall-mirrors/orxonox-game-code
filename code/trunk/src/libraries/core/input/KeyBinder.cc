@@ -290,18 +290,14 @@ namespace orxonox
 
         std::vector<std::string>& oldKeynames = this->allCommands_[button->bindingString_];
         std::vector<std::string>::iterator it = std::find(oldKeynames.begin(), oldKeynames.end(), stream.str());
-        if(it != oldKeynames.end())
-        {
+        if (it != oldKeynames.end())
             oldKeynames.erase(it);
-        }
 
         if (!command.empty())
         {
             std::vector<std::string>& keynames = this->allCommands_[command];
-            if( std::find(keynames.begin(), keynames.end(), stream.str()) == keynames.end())
-            {
+            if (std::find(keynames.begin(), keynames.end(), stream.str()) == keynames.end())
                 this->allCommands_[command].push_back(stream.str());
-            }
         }
      }
 
@@ -311,7 +307,7 @@ namespace orxonox
     */
     const std::string& KeyBinder::getBinding(const std::string& commandName)
     {
-        if( this->allCommands_.find(commandName) != this->allCommands_.end())
+        if (this->allCommands_.find(commandName) != this->allCommands_.end())
         {
             std::vector<std::string>& keynames = this->allCommands_[commandName];
             return keynames.front();
@@ -330,13 +326,11 @@ namespace orxonox
     */
     const std::string& KeyBinder::getBinding(const std::string& commandName, unsigned int index)
     {
-        if( this->allCommands_.find(commandName) != this->allCommands_.end())
+        if (this->allCommands_.find(commandName) != this->allCommands_.end())
         {
             std::vector<std::string>& keynames = this->allCommands_[commandName];
-            if(index < keynames.size())
-            {
+            if (index < keynames.size())
                 return keynames[index];
-            }
 
             return BLANKSTRING;
         }
@@ -352,7 +346,7 @@ namespace orxonox
     */
     unsigned int KeyBinder::getNumberOfBindings(const std::string& commandName)
     {
-        if( this->allCommands_.find(commandName) != this->allCommands_.end())
+        if (this->allCommands_.find(commandName) != this->allCommands_.end())
         {
             std::vector<std::string>& keynames = this->allCommands_[commandName];
             return keynames.size();

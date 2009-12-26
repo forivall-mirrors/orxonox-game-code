@@ -35,11 +35,11 @@ namespace orxonox
     bool Keyboard::keyPressed(const OIS::KeyEvent& arg)
     {
         // update modifiers
-        if(arg.key == OIS::KC_RMENU    || arg.key == OIS::KC_LMENU)
+        if (arg.key == OIS::KC_RMENU    || arg.key == OIS::KC_LMENU)
             modifiers_ |= KeyboardModifier::Alt;   // alt key
-        if(arg.key == OIS::KC_RCONTROL || arg.key == OIS::KC_LCONTROL)
+        if (arg.key == OIS::KC_RCONTROL || arg.key == OIS::KC_LCONTROL)
             modifiers_ |= KeyboardModifier::Ctrl;  // ctrl key
-        if(arg.key == OIS::KC_RSHIFT   || arg.key == OIS::KC_LSHIFT)
+        if (arg.key == OIS::KC_RSHIFT   || arg.key == OIS::KC_LSHIFT)
             modifiers_ |= KeyboardModifier::Shift; // shift key
 
         // Do not distribute the alt+tab event (messes with the operating system)
@@ -55,11 +55,11 @@ namespace orxonox
     bool Keyboard::keyReleased(const OIS::KeyEvent& arg)
     {
         // update modifiers
-        if(arg.key == OIS::KC_RMENU    || arg.key == OIS::KC_LMENU)
+        if (arg.key == OIS::KC_RMENU    || arg.key == OIS::KC_LMENU)
             modifiers_ &= ~KeyboardModifier::Alt;   // alt key
-        if(arg.key == OIS::KC_RCONTROL || arg.key == OIS::KC_LCONTROL)
+        if (arg.key == OIS::KC_RCONTROL || arg.key == OIS::KC_LCONTROL)
             modifiers_ &= ~KeyboardModifier::Ctrl;  // ctrl key
-        if(arg.key == OIS::KC_RSHIFT   || arg.key == OIS::KC_LSHIFT)
+        if (arg.key == OIS::KC_RSHIFT   || arg.key == OIS::KC_LSHIFT)
             modifiers_ &= ~KeyboardModifier::Shift; // shift key
 
         KeyEvent evt(arg);
