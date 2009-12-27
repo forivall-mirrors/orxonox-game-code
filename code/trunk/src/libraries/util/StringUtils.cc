@@ -291,18 +291,27 @@ namespace orxonox
     */
     std::string addSlashes(const std::string& str)
     {
-        std::string output = str;
-
-        for (size_t pos = 0; (pos = output.find('\\', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\\"); }
-        for (size_t pos = 0; (pos = output.find('\n', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\n"); }
-        for (size_t pos = 0; (pos = output.find('\t', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\t"); }
-        for (size_t pos = 0; (pos = output.find('\v', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\v"); }
-        for (size_t pos = 0; (pos = output.find('\b', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\b"); }
-        for (size_t pos = 0; (pos = output.find('\r', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\r"); }
-        for (size_t pos = 0; (pos = output.find('\f', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\f"); }
-        for (size_t pos = 0; (pos = output.find('\a', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\a"); }
-        for (size_t pos = 0; (pos = output.find('"' , pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\\""); }
-        for (size_t pos = 0; (pos = output.find('\0', pos)) < std::string::npos; pos += 2) { output.replace(pos, 1, "\\0"); }
+        std::string output(str.size() * 2, ' ');
+        size_t i = 0;
+        for (size_t pos = 0; pos < str.size(); ++pos)
+        {
+            switch (str[pos])
+            {
+            case '\\': output[i] = '\\'; output[i + 1] = '\\'; break;
+            case '\n': output[i] = '\\'; output[i + 1] =  'n'; break;
+            case '\t': output[i] = '\\'; output[i + 1] =  't'; break;
+            case '\v': output[i] = '\\'; output[i + 1] =  'v'; break;
+            case '\b': output[i] = '\\'; output[i + 1] =  'b'; break;
+            case '\r': output[i] = '\\'; output[i + 1] =  'r'; break;
+            case '\f': output[i] = '\\'; output[i + 1] =  'f'; break;
+            case '\a': output[i] = '\\'; output[i + 1] =  'a'; break;
+            case  '"': output[i] = '\\'; output[i + 1] =  '"'; break;
+            case '\0': output[i] = '\\'; output[i + 1] =  '0'; break;
+            default  : output[i] = str[pos]; ++i; continue;
+            }
+            i += 2;
+        }
+        output.resize(i);
 
         return output;
     }
@@ -317,27 +326,35 @@ namespace orxonox
         if (str.size() <= 1)
             return str;
 
-        std::string output;
-        for (size_t pos = 0; pos < str.size() - 1; )
+        std::string output(str.size(), ' ');
+        size_t i = 0;
+        size_t pos = 0;
+        while (pos < str.size() - 1)
         {
             if (str[pos] == '\\')
             {
-                if (str[pos + 1] == '\\') { output += '\\'; pos += 2; continue; }
-                else if (str[pos + 1] == 'n') { output += '\n'; pos += 2; continue; }
-                else if (str[pos + 1] == 't') { output += '\t'; pos += 2; continue; }
-                else if (str[pos + 1] == 'v') { output += '\v'; pos += 2; continue; }
-                else if (str[pos + 1] == 'b') { output += '\b'; pos += 2; continue; }
-                else if (str[pos + 1] == 'r') { output += '\r'; pos += 2; continue; }
-                else if (str[pos + 1] == 'f') { output += '\f'; pos += 2; continue; }
-                else if (str[pos + 1] == 'a') { output += '\a'; pos += 2; continue; }
-                else if (str[pos + 1] == '"') { output += '"'; pos += 2; continue; }
-                else if (str[pos + 1] == '0') { output += '\0'; pos += 2; continue; }
+                switch (str[pos + 1])
+                {
+                case '\\': output[i] = '\\'; break;
+                case  'n': output[i] = '\n'; break;
+                case  't': output[i] = '\t'; break;
+                case  'v': output[i] = '\v'; break;
+                case  'b': output[i] = '\b'; break;
+                case  'r': output[i] = '\r'; break;
+                case  'f': output[i] = '\f'; break;
+                case  'a': output[i] = '\a'; break;
+                case  '"': output[i] =  '"'; break;
+                case  '0': output[i] = '\0'; break;
+                default: ++pos; continue;
+                }
+                pos += 2; ++i;
             }
-            output += str[pos];
-            pos++;
-            if (pos == str.size() - 1)
-                output += str[pos];
+            else
+                output[i++] = str[pos++];
         }
+        if (pos < str.size())
+            output[i++] = str[pos];
+        output.resize(i);
 
         return output;
     }
