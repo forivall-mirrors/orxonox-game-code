@@ -57,7 +57,7 @@ namespace orxonox
         return false;
     }
 
-    std::string getConfig(const std::string& classname, const std::string& varname)
+    const std::string& getConfig(const std::string& classname, const std::string& varname)
     {
         return ConfigFileManager::getInstance().getValue(ConfigFileType::Settings, classname, varname, "", true);
     }
@@ -93,40 +93,29 @@ namespace orxonox
     // ConfigFileEntryValue //
     //////////////////////////
 
-    void ConfigFileEntryValue::setValue(const std::string& value)
+    void ConfigFileEntryValue::update()
     {
-        if (!this->bString_)
-            this->value_ = value;
+        // Make sure we remove the quotes when bString changes
+        if (this->bString_)
+            this->value_ = stripEnclosingQuotes(this->value_);
+        // Assemble the entry line
+        this->fileEntry_ = this->getKeyString() + " = ";
+        if (this->bString_)
+            this->fileEntry_ += '"' + addSlashes(this->value_) + '"';
         else
-            this->value_ = '"' + addSlashes(stripEnclosingQuotes(value)) + '"';
-    }
-
-    std::string ConfigFileEntryValue::getValue() const
-    {
-        if (!this->bString_)
-            return this->value_;
-        else
-            return removeSlashes(stripEnclosingQuotes(this->value_));
-    }
-
-    std::string ConfigFileEntryValue::getFileEntry() const
-    {
-        if (this->additionalComment_.empty())
-            return (this->name_ + '=' + this->value_);
-        else
-            return (this->name_ + '=' + this->value_ + " " + this->additionalComment_);
+            this->fileEntry_ += this->value_;
+        if (!this->additionalComment_.empty())
+            this->fileEntry_ += ' ' + this->additionalComment_;
     }
 
 
     ////////////////////////////////
     // ConfigFileEntryVectorValue //
     ////////////////////////////////
-    std::string ConfigFileEntryVectorValue::getFileEntry() const
+    void ConfigFileEntryVectorValue::update()
     {
-        if (this->additionalComment_.empty())
-            return (this->name_ + '[' + multi_cast<std::string>(this->index_) + ']' + '=' + this->value_);
-        else
-            return (this->name_ + '[' + multi_cast<std::string>(this->index_) + "]=" + this->value_ + ' ' + this->additionalComment_);
+        this->keyString_ = this->name_ + '[' + multi_cast<std::string>(this->index_) + ']';
+        ConfigFileEntryValue::update();
     }
 
 

@@ -57,7 +57,7 @@ namespace orxonox
     };
 
     _CoreExport bool config(const std::string& classname, const std::string& varname, const std::string& value); // tolua_export
-    _CoreExport std::string getConfig(const std::string& classname, const std::string& varname); // tolua_export
+    _CoreExport const std::string& getConfig(const std::string& classname, const std::string& varname); // tolua_export
     _CoreExport bool tconfig(const std::string& classname, const std::string& varname, const std::string& value);
     _CoreExport void reloadConfig();
     _CoreExport void saveConfig();
@@ -73,12 +73,12 @@ namespace orxonox
         public:
             virtual ~ConfigFileEntry() {};
             virtual void setValue(const std::string& value) = 0;
-            virtual std::string getValue() const = 0;
+            virtual const std::string& getValue() const = 0;
             virtual const std::string& getName() const = 0;
             virtual void setComment(const std::string& comment) = 0;
             virtual unsigned int getIndex() const { return 0; }
             virtual void setString(bool bString) = 0;
-            virtual std::string getFileEntry() const = 0;
+            virtual const std::string& getFileEntry() const = 0;
     };
 
 
@@ -93,49 +93,65 @@ namespace orxonox
                 , value_(value)
                 , bString_(bString)
                 , additionalComment_(additionalComment)
-                {}
+                { this->update(); }
+
             inline virtual ~ConfigFileEntryValue() {}
 
             inline virtual const std::string& getName() const
                 { return this->name_; }
 
             inline virtual void setComment(const std::string& comment)
-                { this->additionalComment_ = comment; }
+                { this->additionalComment_ = comment; this->update(); }
 
-            virtual void setValue(const std::string& value);
-            virtual std::string getValue() const;
+            inline virtual void setValue(const std::string& value)
+                { this->value_ = value; this->update(); }
+            inline virtual const std::string& getValue() const
+                { return this->value_; }
 
-            inline bool isString() const
-                { return this->bString_; }
-            inline void setString(bool bString)
-                { this->bString_ = bString; }
+            inline void virtual setString(bool bString)
+                { this->bString_ = bString; this->update(); }
 
-            virtual std::string getFileEntry() const;
+            inline virtual const std::string& getFileEntry() const
+                { return this->fileEntry_; }
+
+            inline virtual const std::string& getKeyString() const
+                { return this->name_; }
 
         protected:
-            std::string name_;
+            virtual void update();
+
+            const std::string name_;
             std::string value_;
-            bool bString_;
             std::string additionalComment_;
+            std::string fileEntry_;
+            bool bString_;
     };
 
 
-    ///////////////////////////////
+    ////////////////////////////////
     // ConfigFileEntryVectorValue //
-    ///////////////////////////////
+    ////////////////////////////////
     class _CoreExport ConfigFileEntryVectorValue : public ConfigFileEntryValue
     {
         public:
-            inline ConfigFileEntryVectorValue(const std::string& name, unsigned int index, const std::string& value = "", bool bString = false, const std::string& additionalComment = "") : ConfigFileEntryValue(name, value, bString, additionalComment), index_(index) {}
-            inline virtual ~ConfigFileEntryVectorValue() {}
+            inline ConfigFileEntryVectorValue(const std::string& name, unsigned int index, const std::string& value = "", bool bString = false, const std::string& additionalComment = "")
+                : ConfigFileEntryValue(name, value, bString, additionalComment)
+                , index_(index)
+                { this->update(); /*No virtual calls in base class ctor*/ }
 
-            inline virtual unsigned int getIndex() const
+            inline ~ConfigFileEntryVectorValue() {}
+
+            inline unsigned int getIndex() const
                 { return this->index_; }
 
-            virtual std::string getFileEntry() const;
+            inline const std::string& getKeyString() const
+                { return this->keyString_; }
 
         private:
+            void update();
+
             unsigned int index_;
+            std::string keyString_;
     };
 
 
@@ -156,13 +172,17 @@ namespace orxonox
 
             inline virtual void setValue(const std::string& value)
                 {}
-            inline virtual std::string getValue() const
+            inline virtual const std::string& getValue() const
+                { return BLANKSTRING; }
+
+            inline void setString(bool bString)
+                {}
+
+            inline virtual const std::string& getFileEntry() const
                 { return this->comment_; }
 
-            inline void setString(bool bString) {}
-
-            inline virtual std::string getFileEntry() const
-                { return this->comment_; }
+            inline virtual const std::string& getKeyString() const
+                { return BLANKSTRING; }
 
         private:
             std::string comment_;
@@ -192,12 +212,12 @@ namespace orxonox
 
             inline void setValue(const std::string& name, const std::string& value, bool bString)
                 { this->getEntry(name, value, bString)->setValue(value); }
-            inline std::string getValue(const std::string& name, const std::string& fallback, bool bString)
+            inline const std::string& getValue(const std::string& name, const std::string& fallback, bool bString)
                 { return this->getEntry(name, fallback, bString)->getValue(); }
 
             inline void setValue(const std::string& name, unsigned int index, const std::string& value, bool bString)
                 { this->getEntry(name, index, value, bString)->setValue(value); }
-            inline std::string getValue(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
+            inline const std::string& getValue(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
                 { return this->getEntry(name, index, fallback, bString)->getValue(); }
 
             void deleteVectorEntries(const std::string& name, unsigned int startindex = 0);
@@ -251,12 +271,12 @@ namespace orxonox
 
             inline void setValue(const std::string& section, const std::string& name, const std::string& value, bool bString)
                 { this->getSection(section)->setValue(name, value, bString); this->save(); }
-            inline std::string getValue(const std::string& section, const std::string& name, const std::string& fallback, bool bString)
+            inline const std::string& getValue(const std::string& section, const std::string& name, const std::string& fallback, bool bString)
                 { const std::string& output = this->getSection(section)->getValue(name, fallback, bString); this->saveIfUpdated(); return output; }
 
             inline void setValue(const std::string& section, const std::string& name, unsigned int index, const std::string& value, bool bString)
                 { this->getSection(section)->setValue(name, index, value, bString); this->save(); }
-            inline std::string getValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString)
+            inline const std::string& getValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString)
                 { const std::string& output = this->getSection(section)->getValue(name, index, fallback, bString); this->saveIfUpdated(); return output; }
 
             inline void deleteVectorEntries(const std::string& section, const std::string& name, unsigned int startindex = 0)
@@ -303,12 +323,12 @@ namespace orxonox
 
             inline void setValue(ConfigFileType type, const std::string& section, const std::string& name, const std::string& value, bool bString)
                 { this->getFile(type)->setValue(section, name, value, bString); }
-            inline std::string getValue(ConfigFileType type, const std::string& section, const std::string& name, const std::string& fallback, bool bString)
+            inline const std::string& getValue(ConfigFileType type, const std::string& section, const std::string& name, const std::string& fallback, bool bString)
                 { return this->getFile(type)->getValue(section, name, fallback, bString); }
 
             inline void setValue(ConfigFileType type, const std::string& section, const std::string& name, unsigned int index, const std::string& value, bool bString)
                 { this->getFile(type)->setValue(section, name, index, value, bString); }
-            inline std::string getValue(ConfigFileType type, const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString)
+            inline const std::string& getValue(ConfigFileType type, const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString)
                 { return this->getFile(type)->getValue(section, name, index, fallback, bString); }
 
             inline void deleteVectorEntries(ConfigFileType type, const std::string& section, const std::string& name, unsigned int startindex = 0)
