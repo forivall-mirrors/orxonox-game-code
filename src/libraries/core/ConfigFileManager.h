@@ -91,8 +91,8 @@ namespace orxonox
             inline ConfigFileEntryValue(const std::string& name, const std::string& value = "", bool bString = false, const std::string& additionalComment = "")
                 : name_(name)
                 , value_(value)
-                , bString_(bString)
                 , additionalComment_(additionalComment)
+                , bString_(bString)
                 { this->update(); }
 
             inline virtual ~ConfigFileEntryValue() {}
