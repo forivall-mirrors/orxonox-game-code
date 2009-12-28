@@ -51,12 +51,11 @@ namespace orxonox
         virtual ~Button();
         virtual void clear();
         virtual bool addParamCommand(ParamCommand* command) { return false; }
-        void parse();
-        void readConfigValue(ConfigFileType configFile);
+        void parse(const std::string& binding);
+        void readBinding(ConfigFileType type);
+        void setBinding(ConfigFileType type, const std::string& binding, bool bTemporary);
         bool execute(KeybindMode::Value mode, float abs = 1.0f, float rel = 1.0f);
 
-        //! Container to allow for better configValue support
-        ConfigValueContainer* configContainer_;
         //! The configured string value
         std::string bindingString_;
         //! Name of the trigger as strings

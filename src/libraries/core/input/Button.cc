@@ -41,7 +41,6 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandEvaluation.h"
 #include "core/CommandExecutor.h"
-#include "core/ConfigValueContainer.h"
 
 namespace orxonox
 {
@@ -51,8 +50,7 @@ namespace orxonox
         correctly the first time. It is then set to false first and changed later in Button::parse().
     */
     Button::Button()
-        : configContainer_(0)
-        , bButtonThresholdUser_(false)
+        : bButtonThresholdUser_(false)
         , paramCommandBuffer_(0)
     {
         nCommands_[0]=0;
@@ -63,9 +61,6 @@ namespace orxonox
     Button::~Button()
     {
         this->clear();
-
-        if (this->configContainer_)
-            delete this->configContainer_;
     }
 
     void Button::clear()
@@ -82,23 +77,30 @@ namespace orxonox
                 nCommands_[j] = 0;
             }
         }
+        this->bindingString_.clear();
     }
 
-    void Button::readConfigValue(ConfigFileType configFile)
+    void Button::readBinding(ConfigFileType type)
     {
-        // create/get ConfigValueContainer
-        if (!configContainer_)
-        {
-            configContainer_ = new ConfigValueContainer(configFile, 0, groupName_, name_, "", name_);
-            configContainer_->callback(this, &Button::parse);
-        }
-        configContainer_->getValue(&bindingString_, this);
+        const std::string& binding = ConfigFileManager::getInstance().getValue(type, groupName_, name_, "", true);
+        this->parse(binding);
     }
 
-    void Button::parse()
+    void Button::setBinding(ConfigFileType type, const std::string& binding, bool bTemporary)
     {
+        if (!bTemporary)
+            ConfigFileManager::getInstance().setValue(type, groupName_, name_, binding, true);
+        this->parse(binding);
+    }
+
+    void Button::parse(const std::string& binding)
+    {
+        if (binding == this->bindingString_)
+            return;
+
         // delete all commands
         clear();
+        this->bindingString_ = binding;
 
         if (isEmpty(bindingString_))
             return;

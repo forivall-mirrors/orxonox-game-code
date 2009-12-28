@@ -37,6 +37,7 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 
+#include "core/ConfigFileManager.h"
 #include "InputHandler.h"
 #include "Button.h"
 #include "HalfAxis.h"

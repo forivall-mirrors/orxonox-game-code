@@ -56,7 +56,7 @@ namespace orxonox
 
         RegisterRootObject(KeyBinder);
 
-        // intialise all buttons and half axes to avoid creating everything with 'new'
+        // initialise all buttons and half axes to avoid creating everything with 'new'
         // keys
         for (unsigned int i = 0; i < KeyCode::numberOfKeys; i++)
         {
@@ -167,9 +167,9 @@ namespace orxonox
             for (unsigned int iDev = oldValue; iDev < joySticks_.size(); ++iDev)
             {
                 for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; ++i)
-                    (*joyStickButtons_[iDev])[i].readConfigValue(this->configFile_);
+                    (*joyStickButtons_[iDev])[i].readBinding(this->configFile_);
                 for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; ++i)
-                    (*joyStickAxes_[iDev])[i].readConfigValue(this->configFile_);
+                    (*joyStickAxes_[iDev])[i].readBinding(this->configFile_);
             }
         }
 
@@ -256,7 +256,7 @@ namespace orxonox
         // Parse bindings and create the ConfigValueContainers if necessary
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
         {
-            it->second->readConfigValue(this->configFile_);
+            it->second->readBinding(this->configFile_);
             addButtonToCommand(it->second->bindingString_, it->second);
         }
 
@@ -269,11 +269,7 @@ namespace orxonox
         if (it != allButtons_.end())
         {
             addButtonToCommand(binding, it->second);
-            if (bTemporary)
-                it->second->configContainer_->tset(binding);
-            else
-                it->second->configContainer_->set(binding);
-            it->second->configContainer_->getValue(&(it->second->bindingString_), it->second);
+            it->second->setBinding(this->configFile_, binding, bTemporary);
             return true;
         }
         else
