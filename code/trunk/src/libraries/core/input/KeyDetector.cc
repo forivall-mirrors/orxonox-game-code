@@ -63,12 +63,8 @@ namespace orxonox
     void KeyDetector::assignCommands()
     {
         // Assign every button/axis the same command, but with its name as argument
-        clearBindings();
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
-        {
-            it->second->bindingString_ = callbackCommand_s + ' ' + it->second->groupName_ + "." + it->second->name_;
-            it->second->parse();
-        }
+            it->second->parse(callbackCommand_s + ' ' + it->second->groupName_ + "." + it->second->name_);
     }
 
     void KeyDetector::callback(const std::string& name)
