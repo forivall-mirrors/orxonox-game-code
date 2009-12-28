@@ -73,6 +73,7 @@ SET_COMPILER_FLAGS("-MDd -Od -Zi -D_DEBUG -MP2 -RTC1" Debug          CACHE)
 SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP2"       Release        CACHE)
 SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG -MP2"       RelWithDebInfo CACHE)
 SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP2"       MinSizeRel     CACHE)
+ADD_COMPILER_FLAGS("-D_SECURE_SCL=0" MSVC9 ReleaseAll CACHE)
 
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
 IF(ORXONOX_RELEASE)
