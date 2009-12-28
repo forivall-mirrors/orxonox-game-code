@@ -58,7 +58,10 @@ namespace orxonox
         this->client_ = new Client(CommandLineParser::getValue("ip").getString(), CommandLineParser::getValue("port"));
 
         if(!client_->establishConnection())
+        {
+            delete this->client_;
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
+        }
 
         client_->update(Game::getInstance().getGameClock());
     }
