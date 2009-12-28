@@ -216,7 +216,8 @@ function P.KeyBindClear_clicked(e)
     local commandNr = tonumber(match())
     local buttonNr = tonumber(match())
 
-    orxonox.KeyBinderManager:getInstance():unbind(orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[commandNr], buttonNr))
+    local str = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[commandNr], buttonNr)
+    orxonox.KeyBinderManager:getInstance():unbind(str)
 
     P.callback()
 end
