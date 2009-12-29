@@ -415,7 +415,6 @@ namespace orxonox
 
         this->bHasConfigValues_ = true;
         this->configValues_[varname] = container;
-        this->configValues_LC_[getLowercase(varname)] = container;
     }
 
     /**
@@ -427,20 +426,6 @@ namespace orxonox
     {
         std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_.find(varname);
         if (it != configValues_.end())
-            return it->second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Returns the ConfigValueContainer of a variable, given by the string of its name in lowercase.
-        @param varname The name of the variable in lowercase
-        @return The ConfigValueContainer
-    */
-    ConfigValueContainer* Identifier::getLowercaseConfigValueContainer(const std::string& varname)
-    {
-        std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_LC_.find(varname);
-        if (it != configValues_LC_.end())
             return it->second;
         else
             return 0;

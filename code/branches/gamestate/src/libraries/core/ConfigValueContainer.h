@@ -49,7 +49,6 @@
 #include <vector>
 
 #include "util/MultiType.h"
-#include "ConfigFileManager.h"
 #include "Identifier.h"
 
 namespace orxonox
@@ -107,7 +106,7 @@ namespace orxonox
                 @param value Only needed do determine the right type.
             */
             template <class D, class V>
-            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const D& defvalue, const V& value)
+            ConfigValueContainer(ConfigFileType::Value type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const D& defvalue, const V& value)
             {
                 this->init(type, identifier, sectionname, varname);
                 this->initValue(static_cast<V>(defvalue));
@@ -121,7 +120,7 @@ namespace orxonox
                 @param defvalue The default-value
             */
             template <class D, class V>
-            ConfigValueContainer(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<D>& defvalue, const std::vector<V>& value)
+            ConfigValueContainer(ConfigFileType::Value type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<D>& defvalue, const std::vector<V>& value)
             {
                 this->init(type, identifier, sectionname, varname);
 
@@ -216,9 +215,12 @@ namespace orxonox
             /** @brief Returns the name of this container. */
             inline const std::string& getName() const
                 { return this->varname_; }
-            /** @brief Retuns the name of the section this config value is in. */
+            /** @brief Returns the name of the section this config value is in. */
             inline const std::string& getSectionName() const
                 { return this->sectionname_; }
+            /** @brief Returns the associated identifier (can be NULL). */
+            inline Identifier* getIdentifier() const
+                { return this->identifier_; }
             /** @brief Returns true if this config-value is a vector */
             inline bool isVector() const
                 { return this->bIsVector_; }
@@ -270,14 +272,14 @@ namespace orxonox
                 { return this->value_.getTypename(); }
 
         private:
-            void init(ConfigFileType type, Identifier* identifier, const std::string& sectionname, const std::string& varname);
+            void init(ConfigFileType::Value type, Identifier* identifier, const std::string& sectionname, const std::string& varname);
             void initValue(const MultiType& defvalue);
             void initVector();
             bool callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiType&), const std::string& input);
 
             bool                       bIsVector_;                  //!< True if the container contains a std::vector
 
-            ConfigFileType             type_;                       //!< The type of the corresponding config-file
+            ConfigFileType::Value      type_;                       //!< The type of the corresponding config-file
             Identifier*                identifier_;                 //!< The identifier of the class
             std::string                sectionname_;                //!< The name of the class the variable belongs to
             std::string                varname_;                    //!< The name of the variable

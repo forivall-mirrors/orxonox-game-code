@@ -31,39 +31,16 @@
 
 #include "CorePrereqs.h"
 
-#include <cassert>
-#include <string>
 #include <list>
 #include <map>
+#include <set>
+#include <string>
+#include <boost/array.hpp>
 
-#include "util/OrxEnum.h"
 #include "util/Singleton.h"
 
-// tolua_begin
-namespace orxonox
-{
-    // tolua_end
-    // Use int as config file type to have an arbitrary number of files
-    struct ConfigFileType : OrxEnum<ConfigFileType>
-    {
-        OrxEnumConstructors(ConfigFileType);
-
-        static const int NoType              = 0;
-        static const int Settings            = 1;
-        static const int JoyStickCalibration = 2;
-        static const int CommandHistory      = 3;
-
-        static const int numberOfReservedTypes = 1024;
-    };
-
-    _CoreExport bool config(const std::string& classname, const std::string& varname, const std::string& value); // tolua_export
-    _CoreExport const std::string& getConfig(const std::string& classname, const std::string& varname); // tolua_export
-    _CoreExport bool tconfig(const std::string& classname, const std::string& varname, const std::string& value);
-    _CoreExport void reloadConfig();
-    _CoreExport void saveConfig();
-    _CoreExport void cleanConfig();
-    _CoreExport void loadSettings(const std::string& filename);
-
+namespace orxonox // tolua_export
+{ // tolua_export
 
     /////////////////////
     // ConfigFileEntry //
@@ -195,6 +172,7 @@ namespace orxonox
     class _CoreExport ConfigFileSection
     {
         friend class ConfigFile;
+        friend class SettingsConfigFile;
 
         public:
             inline ConfigFileSection(const std::string& name, const std::string& additionalComment = "")
@@ -211,17 +189,27 @@ namespace orxonox
                 { this->additionalComment_ = comment; }
 
             inline void setValue(const std::string& name, const std::string& value, bool bString)
-                { this->getEntry(name, value, bString)->setValue(value); }
-            inline const std::string& getValue(const std::string& name, const std::string& fallback, bool bString)
-                { return this->getEntry(name, fallback, bString)->getValue(); }
+                { this->getOrCreateEntry(name, value, bString)->setValue(value); }
+            inline const std::string& getValue(const std::string& name, const std::string& fallback, bool bString) const
+            {
+                ConfigFileEntry* entry = this->getEntry(name);
+                return (entry ? entry->getValue() : BLANKSTRING);
+            }
+            inline const std::string& getOrCreateValue(const std::string& name, const std::string& fallback, bool bString)
+                { return this->getOrCreateEntry(name, fallback, bString)->getValue(); }
 
             inline void setValue(const std::string& name, unsigned int index, const std::string& value, bool bString)
-                { this->getEntry(name, index, value, bString)->setValue(value); }
-            inline const std::string& getValue(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
-                { return this->getEntry(name, index, fallback, bString)->getValue(); }
+                { this->getOrCreateEntry(name, index, value, bString)->setValue(value); }
+            inline const std::string& getValue(const std::string& name, unsigned int index) const
+            {
+                ConfigFileEntry* entry = this->getEntry(name, index);
+                return (entry ? entry->getValue() : BLANKSTRING);
+            }
+            inline const std::string& getOrCreateValue(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
+                { return this->getOrCreateEntry(name, index, fallback, bString)->getValue(); }
 
             void deleteVectorEntries(const std::string& name, unsigned int startindex = 0);
-            unsigned int getVectorSize(const std::string& name);
+            unsigned int getVectorSize(const std::string& name) const;
 
             std::string getFileEntry() const;
 
@@ -233,13 +221,19 @@ namespace orxonox
             std::list<ConfigFileEntry*>::const_iterator getEntriesEnd() const
                 { return this->entries_.end(); }
 
-            std::list<ConfigFileEntry*>::iterator getEntryIterator(const std::string& name, const std::string& fallback, bool bString);
-            std::list<ConfigFileEntry*>::iterator getEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString);
+            std::list<ConfigFileEntry*>::const_iterator getEntryIterator(const std::string& name) const;
+            std::list<ConfigFileEntry*>::iterator       getOrCreateEntryIterator(const std::string& name, const std::string& fallback, bool bString);
+            std::list<ConfigFileEntry*>::const_iterator getEntryIterator(const std::string& name, unsigned int index) const;
+            std::list<ConfigFileEntry*>::iterator       getOrCreateEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString);
 
-            inline ConfigFileEntry* getEntry(const std::string& name, const std::string& fallback, bool bString)
-                { return (*this->getEntryIterator(name, fallback, bString)); }
-            inline ConfigFileEntry* getEntry(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
-                { return (*this->getEntryIterator(name, index, fallback, bString)); }
+            inline ConfigFileEntry* getEntry(const std::string& name) const
+                { return (*this->getEntryIterator(name)); }
+            inline ConfigFileEntry* getOrCreateEntry(const std::string& name, const std::string& fallback, bool bString)
+                { return (*this->getOrCreateEntryIterator(name, fallback, bString)); }
+            inline ConfigFileEntry* getEntry(const std::string& name, unsigned int index) const
+                { return (*this->getEntryIterator(name, index)); }
+            inline ConfigFileEntry* getOrCreateEntry(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
+                { return (*this->getOrCreateEntryIterator(name, index, fallback, bString)); }
 
             std::string name_;
             std::string additionalComment_;
@@ -254,47 +248,103 @@ namespace orxonox
     class _CoreExport ConfigFile
     {
         public:
-            inline ConfigFile(const std::string& filename, ConfigFileType type)
-                : filename_(filename)
-                , type_(type)
-                , bUpdated_(false)
-            { }
-            ~ConfigFile();
+            ConfigFile(const std::string& filename);
+            virtual ~ConfigFile();
 
-            void load(bool bCreateIfNotExisting = true);
-            void save() const;
-            void saveAs(const std::string& filename);
-            void clean(bool bCleanComments = false);
-            void clear();
+            virtual void load();
+            virtual void save() const;
+            virtual void saveAs(const std::string& filename) const;
+            virtual void clear();
 
-            const std::string& getFilename() { return this->filename_; }
+            inline const std::string& getFilename()
+                { return this->filename_; }
 
             inline void setValue(const std::string& section, const std::string& name, const std::string& value, bool bString)
-                { this->getSection(section)->setValue(name, value, bString); this->save(); }
-            inline const std::string& getValue(const std::string& section, const std::string& name, const std::string& fallback, bool bString)
-                { const std::string& output = this->getSection(section)->getValue(name, fallback, bString); this->saveIfUpdated(); return output; }
+            {
+                this->getOrCreateSection(section)->setValue(name, value, bString);
+                this->save();
+            }
+            inline const std::string& getValue(const std::string& section, const std::string& name, bool bString) const
+            {
+                ConfigFileSection* sectionPtr = this->getSection(section);
+                return (sectionPtr ? sectionPtr->getValue(name, bString) : BLANKSTRING);
+            }
+            const std::string& getOrCreateValue(const std::string& section, const std::string& name, const std::string& fallback, bool bString);
 
             inline void setValue(const std::string& section, const std::string& name, unsigned int index, const std::string& value, bool bString)
-                { this->getSection(section)->setValue(name, index, value, bString); this->save(); }
-            inline const std::string& getValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString)
-                { const std::string& output = this->getSection(section)->getValue(name, index, fallback, bString); this->saveIfUpdated(); return output; }
+            {
+                this->getSection(section)->setValue(name, index, value, bString);
+                this->save();
+            }
+            inline const std::string& getValue(const std::string& section, const std::string& name, unsigned int index) const
+            {
+                ConfigFileSection* sectionPtr = this->getSection(section);
+                return (sectionPtr ? sectionPtr->getValue(name, index) : BLANKSTRING);
+            }
+            const std::string& getOrCreateValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString);
 
-            inline void deleteVectorEntries(const std::string& section, const std::string& name, unsigned int startindex = 0)
-                { this->getSection(section)->deleteVectorEntries(name, startindex); }
-            inline unsigned int getVectorSize(const std::string& section, const std::string& name)
-                { return this->getSection(section)->getVectorSize(name); }
+            void deleteVectorEntries(const std::string& section, const std::string& name, unsigned int startindex = 0);
+            inline unsigned int getVectorSize(const std::string& section, const std::string& name) const
+            {
+                ConfigFileSection* sectionPtr = this->getSection(section);
+                return (sectionPtr ? sectionPtr->getVectorSize(name) : 0);
+            }
 
-            void updateConfigValues();
+        protected:
+            ConfigFileSection* getSection(const std::string& section) const;
+            ConfigFileSection* getOrCreateSection(const std::string& section);
+
+            std::list<ConfigFileSection*> sections_;
 
         private:
-            ConfigFileSection* getSection(const std::string& section);
             void saveIfUpdated();
-
-            std::string filename_;
-            ConfigFileType type_;
-            std::list<ConfigFileSection*> sections_;
+            const std::string filename_;
             bool bUpdated_;
     };
+
+
+    ////////////////////////
+    // SettingsConfigFile //
+    ////////////////////////
+    class _CoreExport SettingsConfigFile // tolua_export
+        : public ConfigFile, public Singleton<SettingsConfigFile>
+    { // tolua_export
+        friend class Singleton<SettingsConfigFile>;
+
+        public:
+            typedef std::multimap<std::string, std::pair<std::string, ConfigValueContainer*> > ContainerMap;
+
+            SettingsConfigFile(const std::string& filename);
+            ~SettingsConfigFile();
+
+            void load(); // tolua_export
+            void setFilename(const std::string& filename); // tolua_export
+            void clean(bool bCleanComments = false); // tolua_export
+
+            bool config(const std::string& section, const std::string& entry, const std::string& value); // tolua_export
+            bool tconfig(const std::string& section, const std::string& entry, const std::string& value); // tolua_export
+            std::string getConfig(const std::string& section, const std::string& entry); // tolua_export
+
+            void addConfigValueContainer(ConfigValueContainer* container);
+            void removeConfigValueContainer(ConfigValueContainer* container);
+
+            inline const std::set<std::string>& getSectionNames()
+                { return this->sectionNames_; }
+            inline ContainerMap::const_iterator getContainerLowerBound(const std::string section)
+                { return this->containers_.lower_bound(section); }
+            inline ContainerMap::const_iterator getContainerUpperBound(const std::string section)
+                { return this->containers_.upper_bound(section); }
+
+            static SettingsConfigFile& getInstance() { return Singleton<SettingsConfigFile>::getInstance(); } // tolua_export
+
+        private:
+            void updateConfigValues();
+            bool configImpl(const std::string& section, const std::string& entry, const std::string& value, bool (ConfigValueContainer::*function)(const MultiType&));
+
+            ContainerMap containers_;
+            std::set<std::string> sectionNames_;
+            static SettingsConfigFile* singletonPtr_s;
+    }; // tolua_export
 
 
     ///////////////////////
@@ -307,48 +357,18 @@ namespace orxonox
             ConfigFileManager();
             ~ConfigFileManager();
 
-            void load();
-            void save();
-            void clean(bool bCleanComments = false);
+            void setFilename(ConfigFileType::Value type, const std::string& filename);
 
-            void setFilename(ConfigFileType type, const std::string& filename);
-            const std::string& getFilename(ConfigFileType type);
-
-            ConfigFileType getNewConfigFileType() { return mininmalFreeType_++; }
-
-            void load(ConfigFileType type);
-            void save(ConfigFileType type);
-            void saveAs(ConfigFileType type, const std::string& saveFilename);
-            void clean(ConfigFileType type, bool bCleanComments = false);
-
-            inline void setValue(ConfigFileType type, const std::string& section, const std::string& name, const std::string& value, bool bString)
-                { this->getFile(type)->setValue(section, name, value, bString); }
-            inline const std::string& getValue(ConfigFileType type, const std::string& section, const std::string& name, const std::string& fallback, bool bString)
-                { return this->getFile(type)->getValue(section, name, fallback, bString); }
-
-            inline void setValue(ConfigFileType type, const std::string& section, const std::string& name, unsigned int index, const std::string& value, bool bString)
-                { this->getFile(type)->setValue(section, name, index, value, bString); }
-            inline const std::string& getValue(ConfigFileType type, const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString)
-                { return this->getFile(type)->getValue(section, name, index, fallback, bString); }
-
-            inline void deleteVectorEntries(ConfigFileType type, const std::string& section, const std::string& name, unsigned int startindex = 0)
-                { this->getFile(type)->deleteVectorEntries(section, name, startindex); }
-            inline unsigned int getVectorSize(ConfigFileType type, const std::string& section, const std::string& name)
-                { return this->getFile(type)->getVectorSize(section, name); }
-
-            void updateConfigValues();
-            void updateConfigValues(ConfigFileType type);
-
-            static std::string DEFAULT_CONFIG_FILE;
+            inline ConfigFile* getConfigFile(ConfigFileType::Value type)
+            {
+                // Check array bounds
+                return configFiles_.at(type);
+            }
 
         private:
             ConfigFileManager(const ConfigFileManager&);
 
-            ConfigFile* getFile(ConfigFileType type);
-
-            std::map<ConfigFileType, ConfigFile*> configFiles_;
-            unsigned int mininmalFreeType_;
-
+            boost::array<ConfigFile*, 3> configFiles_;
             static ConfigFileManager* singletonPtr_s;
     };
 } // tolua_export

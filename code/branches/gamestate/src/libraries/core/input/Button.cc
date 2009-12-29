@@ -41,6 +41,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandEvaluation.h"
 #include "core/CommandExecutor.h"
+#include "core/ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -80,16 +81,16 @@ namespace orxonox
         this->bindingString_.clear();
     }
 
-    void Button::readBinding(ConfigFileType type)
+    void Button::readBinding(ConfigFile* configFile)
     {
-        const std::string& binding = ConfigFileManager::getInstance().getValue(type, groupName_, name_, "", true);
+        const std::string& binding = configFile->getOrCreateValue(groupName_, name_, "", true);
         this->parse(binding);
     }
 
-    void Button::setBinding(ConfigFileType type, const std::string& binding, bool bTemporary)
+    void Button::setBinding(ConfigFile* configFile, const std::string& binding, bool bTemporary)
     {
         if (!bTemporary)
-            ConfigFileManager::getInstance().setValue(type, groupName_, name_, binding, true);
+            configFile->setValue(groupName_, name_, binding, true);
         this->parse(binding);
     }
 

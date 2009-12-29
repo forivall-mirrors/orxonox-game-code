@@ -37,7 +37,6 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 
-#include "core/ConfigFileManager.h"
 #include "InputHandler.h"
 #include "Button.h"
 #include "HalfAxis.h"
@@ -156,8 +155,8 @@ namespace orxonox
 
         //! Name of the file used in this KeyBinder (constant!)
         const std::string filename_;
-        //! Config file used. ConfigFileType::NoType in case of KeyDetector. Also indicates whether we've already loaded.
-        ConfigFileType configFile_;
+        //! Config file used. NULL in case of KeyDetector. Also indicates whether we've already loaded.
+        ConfigFile* configFile_;
 
     private:
         void addButtonToCommand(const std::string& command, Button* button);

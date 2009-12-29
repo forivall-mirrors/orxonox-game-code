@@ -48,6 +48,7 @@ namespace orxonox
     KeyBinder::KeyBinder(const std::string& filename)
         : deriveTime_(0.0f)
         , filename_(filename)
+        , configFile_(NULL)
     {
         mouseRelative_[0] = 0;
         mouseRelative_[1] = 0;
@@ -92,9 +93,6 @@ namespace orxonox
             mouseAxes_[i].paramCommandBuffer_ = &paramCommandBuffer_;
             mouseAxes_[i].groupName_ = "MouseAxes";
         }
-
-        // We might not even load any bindings at all (KeyDetector for instance)
-        this->configFile_ = ConfigFileType::NoType;
 
         // initialise joy sticks separatly to allow for reloading
         this->JoyStickQuantityChanged(this->getJoyStickList());
@@ -162,7 +160,7 @@ namespace orxonox
         compilePointerLists();
 
         // load the bindings if required
-        if (configFile_ != ConfigFileType::NoType)
+        if (configFile_ != NULL)
         {
             for (unsigned int iDev = oldValue; iDev < joySticks_.size(); ++iDev)
             {
@@ -248,10 +246,8 @@ namespace orxonox
     {
         COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
 
-        // Get a new ConfigFileType from the ConfigFileManager
-        this->configFile_ = ConfigFileManager::getInstance().getNewConfigFileType();
-
-        ConfigFileManager::getInstance().setFilename(this->configFile_, this->filename_);
+        this->configFile_ = new ConfigFile(this->filename_);
+        this->configFile_->load();
 
         // Parse bindings and create the ConfigValueContainers if necessary
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)

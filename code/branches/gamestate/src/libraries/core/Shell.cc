@@ -33,6 +33,7 @@
 #include "util/SubString.h"
 #include "CommandExecutor.h"
 #include "CoreIncludes.h"
+#include "ConfigFileManager.h"
 #include "ConfigValueIncludes.h"
 #include "ConsoleCommand.h"
 
