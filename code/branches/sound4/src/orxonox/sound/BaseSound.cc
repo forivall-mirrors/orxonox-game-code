@@ -90,7 +90,7 @@ namespace orxonox
 
             alSourcePlay(this->audioSource_);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
+                COUT(2) << "Sound: Error playing sound: " << getALErrorString(error) << std::endl;
         }
     }
 
@@ -140,12 +140,11 @@ namespace orxonox
         alSource3f(this->audioSource_, AL_VELOCITY,  0, 0, 0);
         alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);
         if (ALint error = alGetError())
-            COUT(2) << "Sound Warning: Setting source parameters to 0 failed: "
-                    << SoundManager::getALErrorString(error) << std::endl;
+            COUT(2) << "Sound Warning: Setting source parameters to 0 failed: " << getALErrorString(error) << std::endl;
         assert(this->soundBuffer_ != NULL);
         alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
         if (ALuint error = alGetError())
-            COUT(1) << "Sound Error: Could not set buffer \"" << this->source_ << "\": " << SoundManager::getALErrorString(error) << std::endl;
+            COUT(1) << "Sound Error: Could not set buffer \"" << this->source_ << "\": " << getALErrorString(error) << std::endl;
     }
 
     void BaseSound::setVolume(float vol)
@@ -163,8 +162,7 @@ namespace orxonox
             float volume = this->volume_ * this->getRealVolume();
             alSourcef(this->audioSource_, AL_GAIN, volume);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error setting volume to " << volume
-                        << ": " << SoundManager::getALErrorString(error) << std::endl;
+                COUT(2) << "Sound: Error setting volume to " << volume << ": " << getALErrorString(error) << std::endl;
         }
     }
 
@@ -188,7 +186,7 @@ namespace orxonox
         {
             alSourcef(this->audioSource_, AL_PITCH, pitch);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error setting pitch: " << SoundManager::getALErrorString(error) << std::endl;
+                COUT(2) << "Sound: Error setting pitch: " << getALErrorString(error) << std::endl;
         }
     }
 
@@ -233,7 +231,7 @@ namespace orxonox
             alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
             if (ALuint error = alGetError())
             {
-                COUT(1) << "Sound Error: Could not set buffer \"" << source << "\": " << SoundManager::getALErrorString(error) << std::endl;
+                COUT(1) << "Sound Error: Could not set buffer \"" << source << "\": " << getALErrorString(error) << std::endl;
                 return;
             }
 
@@ -241,7 +239,7 @@ namespace orxonox
             assert(this->isPlaying() || this->isPaused());
             alSourcePlay(this->audioSource_);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
+                COUT(2) << "Sound: Error playing sound: " << getALErrorString(error) << std::endl;
             if (this->isPaused())
                 alSourcePause(this->audioSource_);
         }

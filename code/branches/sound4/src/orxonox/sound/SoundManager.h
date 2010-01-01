@@ -30,7 +30,7 @@
 #ifndef _SoundManager_H__
 #define _SoundManager_H__
 
-#include "OrxonoxPrereqs.h"
+#include "sound/SoundPrereqs.h"
 
 #include <list>
 #include <map>
@@ -97,8 +97,6 @@ namespace orxonox
 
         ALuint getSoundSource(BaseSound* object);
         void releaseSoundSource(ALuint source);
-
-        static std::string getALErrorString(ALenum error);
 
     private:
         void processCrossFading(float dt);

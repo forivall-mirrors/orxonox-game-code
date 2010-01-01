@@ -51,7 +51,8 @@ namespace orxonox
 {
     ManageScopedSingleton(SoundManager, ScopeID::Graphics, true);
 
-    std::string SoundManager::getALErrorString(ALenum code)
+    // From SoundPrereqs.h
+    std::string getALErrorString(ALenum code)
     {
         switch (code)
         {

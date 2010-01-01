@@ -30,7 +30,7 @@
 #ifndef _AmbientSound_H__
 #define _AmbientSound_H__
 
-#include "OrxonoxPrereqs.h"
+#include "sound/SoundPrereqs.h"
 
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
