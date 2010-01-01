@@ -36,6 +36,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
+#include "core/PathConfig.h"
 #include "InputCommands.h"
 #include "JoyStick.h"
 
@@ -49,6 +50,7 @@ namespace orxonox
         : deriveTime_(0.0f)
         , filename_(filename)
         , configFile_(NULL)
+        , fallbackConfigFile_(NULL)
     {
         mouseRelative_[0] = 0;
         mouseRelative_[1] = 0;
@@ -113,6 +115,10 @@ namespace orxonox
     {
         // almost no destructors required because most of the arrays are static.
         clearBindings(); // does some destruction work
+        if (this->configFile_)
+            delete this->configFile_;
+        if (this->fallbackConfigFile_)
+            delete this->fallbackConfigFile_;
     }
 
     /**
@@ -165,9 +171,9 @@ namespace orxonox
             for (unsigned int iDev = oldValue; iDev < joySticks_.size(); ++iDev)
             {
                 for (unsigned int i = 0; i < JoyStickButtonCode::numberOfButtons; ++i)
-                    (*joyStickButtons_[iDev])[i].readBinding(this->configFile_);
+                    (*joyStickButtons_[iDev])[i].readBinding(this->configFile_, this->fallbackConfigFile_);
                 for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; ++i)
-                    (*joyStickAxes_[iDev])[i].readBinding(this->configFile_);
+                    (*joyStickAxes_[iDev])[i].readBinding(this->configFile_, this->fallbackConfigFile_);
             }
         }
 
@@ -246,13 +252,27 @@ namespace orxonox
     {
         COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
 
-        this->configFile_ = new ConfigFile(this->filename_);
+        this->configFile_ = new ConfigFile(this->filename_, !PathConfig::isDevelopmentRun());
         this->configFile_->load();
+
+        if (PathConfig::isDevelopmentRun())
+        {
+            // Dev users should have combined key bindings files
+            std::string defaultFilepath(PathConfig::getDataPathString() + ConfigFile::DEFAULT_CONFIG_FOLDER + '/' + this->filename_);
+            std::ifstream file(defaultFilepath.c_str());
+            if (file.is_open())
+            {
+                file.close();
+                // Open the default file for later use (use absolute path!)
+                this->fallbackConfigFile_ = new ConfigFile(defaultFilepath, false);
+                this->fallbackConfigFile_->load();
+            }
+        }
 
         // Parse bindings and create the ConfigValueContainers if necessary
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
         {
-            it->second->readBinding(this->configFile_);
+            it->second->readBinding(this->configFile_, this->fallbackConfigFile_);
             addButtonToCommand(it->second->bindingString_, it->second);
         }
 
@@ -265,7 +285,10 @@ namespace orxonox
         if (it != allButtons_.end())
         {
             addButtonToCommand(binding, it->second);
-            it->second->setBinding(this->configFile_, binding, bTemporary);
+            std::string str = binding;
+            if (PathConfig::isDevelopmentRun() && binding.empty())
+                str = "NoBinding";
+            it->second->setBinding(this->configFile_, this->fallbackConfigFile_, binding, bTemporary);
             return true;
         }
         else

@@ -51,8 +51,8 @@ namespace orxonox
         virtual void clear();
         virtual bool addParamCommand(ParamCommand* command) { return false; }
         void parse(const std::string& binding);
-        void readBinding(ConfigFile* configFile);
-        void setBinding(ConfigFile* configFile, const std::string& binding, bool bTemporary);
+        void readBinding(ConfigFile* configFile, ConfigFile* fallbackFile);
+        void setBinding(ConfigFile* configFile, ConfigFile* fallbackFile, const std::string& binding, bool bTemporary);
         bool execute(KeybindMode::Value mode, float abs = 1.0f, float rel = 1.0f);
 
         //! The configured string value

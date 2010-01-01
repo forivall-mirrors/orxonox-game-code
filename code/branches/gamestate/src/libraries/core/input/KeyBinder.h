@@ -157,6 +157,8 @@ namespace orxonox
         const std::string filename_;
         //! Config file used. NULL in case of KeyDetector. Also indicates whether we've already loaded.
         ConfigFile* configFile_;
+        //! Config file from the data directory that only serves as fallback
+        ConfigFile* fallbackConfigFile_;
 
     private:
         void addButtonToCommand(const std::string& command, Button* button);

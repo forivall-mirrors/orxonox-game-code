@@ -32,7 +32,6 @@
 
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "util/StringUtils.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"
 #include "PathConfig.h"
@@ -115,14 +114,24 @@ namespace orxonox
             return ('[' + this->name_ + "] " + this->additionalComment_);
     }
 
-    std::list<ConfigFileEntry*>::const_iterator ConfigFileSection::getEntryIterator(const std::string& name) const
+    ConfigFileEntry* ConfigFileSection::getEntry(const std::string& name) const
     {
         for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
         {
             if ((*it)->getName() == name)
-                return it;
+                return *it;
         }
-        return this->entries_.end();
+        return NULL;
+    }
+
+    ConfigFileEntry* ConfigFileSection::getEntry(const std::string& name, unsigned int index) const
+    {
+        for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
+        {
+            if (((*it)->getName() == name) && ((*it)->getIndex() == index))
+                return *it;
+        }
+        return NULL;
     }
 
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getOrCreateEntryIterator(const std::string& name, const std::string& fallback, bool bString)
@@ -139,16 +148,6 @@ namespace orxonox
         this->bUpdated_ = true;
 
         return this->entries_.insert(this->entries_.end(), new ConfigFileEntryValue(name, fallback, bString));
-    }
-
-    std::list<ConfigFileEntry*>::const_iterator ConfigFileSection::getEntryIterator(const std::string& name, unsigned int index) const
-    {
-        for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
-        {
-            if (((*it)->getName() == name) && ((*it)->getIndex() == index))
-                return it;
-        }
-        return this->entries_.end();
     }
 
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getOrCreateEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
@@ -174,8 +173,12 @@ namespace orxonox
     ////////////////
     // ConfigFile //
     ////////////////
-    ConfigFile::ConfigFile(const std::string& filename)
+
+    const char* ConfigFile::DEFAULT_CONFIG_FOLDER = "defaultConfig";
+
+    ConfigFile::ConfigFile(const std::string& filename, bool bCopyFallbackFile)
         : filename_(filename)
+        , bCopyFallbackFile_(bCopyFallbackFile)
         , bUpdated_(false)
     {
     }
@@ -190,16 +193,28 @@ namespace orxonox
         // Be sure we start from new in the memory
         this->clear();
 
-        // Get default file if necessary and available
-        boost::filesystem::path filepath(PathConfig::getConfigPath() / this->filename_);
-        if (!boost::filesystem::exists(filepath))
+        boost::filesystem::path filepath(this->filename_);
+        if (!filepath.is_complete())
         {
-            // Try to get default one from the data folder
-            boost::filesystem::path defaultFilepath(PathConfig::getDataPath() / "defaultConfig" / this->filename_);
-            if (boost::filesystem::exists(defaultFilepath))
+            filepath = PathConfig::getConfigPath() / filepath;
+            if (this->bCopyFallbackFile_)
             {
-                COUT(3) << "Copied " << this->filename_ << " from the defaultConfig folder." << std::endl;
-                boost::filesystem::copy_file(defaultFilepath, filepath);
+                // Look for default file in the data folder
+                if (!boost::filesystem::exists(filepath))
+                {
+                    boost::filesystem::path defaultFilepath(PathConfig::getDataPath() / DEFAULT_CONFIG_FOLDER / this->filename_);
+                    if (boost::filesystem::exists(defaultFilepath))
+                    {
+                        // Try to copy default file from the data folder
+                        try
+                        {
+                            boost::filesystem::copy_file(defaultFilepath, filepath);
+                            COUT(3) << "Copied " << this->filename_ << " from the default config folder." << std::endl;
+                        }
+                        catch (const boost::filesystem::filesystem_error& ex)
+                        { COUT(1) << "Error in ConfigFile: " << ex.what() << std::endl; }
+                    }
+                }
             }
         }
 
@@ -294,8 +309,7 @@ namespace orxonox
 
             COUT(3) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
 
-            // Save the file in case something changed (like stripped white space)
-            this->save();
+            // DO NOT save the file --> we can open supposedly read only config files
         } // end file.is_open()
     }
 
@@ -306,8 +320,11 @@ namespace orxonox
 
     void ConfigFile::saveAs(const std::string& filename) const
     {
+        boost::filesystem::path filepath(filename);
+        if (!filepath.is_complete())
+            filepath = PathConfig::getConfigPath() / filename;
         std::ofstream file;
-        file.open((PathConfig::getConfigPathString() + filename).c_str(), std::fstream::out);
+        file.open(filepath.string().c_str(), std::fstream::out);
         file.setf(std::ios::fixed, std::ios::floatfield);
         file.precision(6);
 

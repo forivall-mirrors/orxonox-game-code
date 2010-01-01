@@ -81,13 +81,15 @@ namespace orxonox
         this->bindingString_.clear();
     }
 
-    void Button::readBinding(ConfigFile* configFile)
+    void Button::readBinding(ConfigFile* configFile, ConfigFile* fallbackFile)
     {
-        const std::string& binding = configFile->getOrCreateValue(groupName_, name_, "", true);
+        std::string binding = configFile->getOrCreateValue(groupName_, name_, "", true);
+        if (binding.empty() && fallbackFile)
+            binding = fallbackFile->getValue(groupName_, name_, true);
         this->parse(binding);
     }
 
-    void Button::setBinding(ConfigFile* configFile, const std::string& binding, bool bTemporary)
+    void Button::setBinding(ConfigFile* configFile, ConfigFile* fallbackFile, const std::string& binding, bool bTemporary)
     {
         if (!bTemporary)
             configFile->setValue(groupName_, name_, binding, true);
@@ -103,7 +105,7 @@ namespace orxonox
         clear();
         this->bindingString_ = binding;
 
-        if (isEmpty(bindingString_))
+        if (isEmpty(bindingString_) || removeTrailingWhitespaces(getLowercase(binding)) == "nobinding")
             return;
 
         // reset this to false first when parsing (was true before when parsing for the first time)

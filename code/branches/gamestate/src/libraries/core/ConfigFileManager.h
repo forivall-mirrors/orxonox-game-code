@@ -38,6 +38,7 @@
 #include <boost/array.hpp>
 
 #include "util/Singleton.h"
+#include "util/StringUtils.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -190,20 +191,30 @@ namespace orxonox // tolua_export
 
             inline void setValue(const std::string& name, const std::string& value, bool bString)
                 { this->getOrCreateEntry(name, value, bString)->setValue(value); }
-            inline const std::string& getValue(const std::string& name, const std::string& fallback, bool bString) const
+            inline const std::string& getValue(const std::string& name, bool bString)
             {
                 ConfigFileEntry* entry = this->getEntry(name);
-                return (entry ? entry->getValue() : BLANKSTRING);
+                if (entry)
+                {
+                    entry->setString(bString);
+                    return entry->getValue();
+                }
+                return BLANKSTRING;
             }
             inline const std::string& getOrCreateValue(const std::string& name, const std::string& fallback, bool bString)
                 { return this->getOrCreateEntry(name, fallback, bString)->getValue(); }
 
             inline void setValue(const std::string& name, unsigned int index, const std::string& value, bool bString)
                 { this->getOrCreateEntry(name, index, value, bString)->setValue(value); }
-            inline const std::string& getValue(const std::string& name, unsigned int index) const
+            inline const std::string& getValue(const std::string& name, unsigned int index, bool bString)
             {
                 ConfigFileEntry* entry = this->getEntry(name, index);
-                return (entry ? entry->getValue() : BLANKSTRING);
+                if (entry)
+                {
+                    entry->setString(bString);
+                    return entry->getValue();
+                }
+                return BLANKSTRING;
             }
             inline const std::string& getOrCreateValue(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
                 { return this->getOrCreateEntry(name, index, fallback, bString)->getValue(); }
@@ -221,17 +232,13 @@ namespace orxonox // tolua_export
             std::list<ConfigFileEntry*>::const_iterator getEntriesEnd() const
                 { return this->entries_.end(); }
 
-            std::list<ConfigFileEntry*>::const_iterator getEntryIterator(const std::string& name) const;
-            std::list<ConfigFileEntry*>::iterator       getOrCreateEntryIterator(const std::string& name, const std::string& fallback, bool bString);
-            std::list<ConfigFileEntry*>::const_iterator getEntryIterator(const std::string& name, unsigned int index) const;
-            std::list<ConfigFileEntry*>::iterator       getOrCreateEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString);
+            std::list<ConfigFileEntry*>::iterator getOrCreateEntryIterator(const std::string& name, const std::string& fallback, bool bString);
+            std::list<ConfigFileEntry*>::iterator getOrCreateEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString);
 
-            inline ConfigFileEntry* getEntry(const std::string& name) const
-                { return (*this->getEntryIterator(name)); }
+            ConfigFileEntry* getEntry(const std::string& name) const;
             inline ConfigFileEntry* getOrCreateEntry(const std::string& name, const std::string& fallback, bool bString)
                 { return (*this->getOrCreateEntryIterator(name, fallback, bString)); }
-            inline ConfigFileEntry* getEntry(const std::string& name, unsigned int index) const
-                { return (*this->getEntryIterator(name, index)); }
+            ConfigFileEntry* getEntry(const std::string& name, unsigned int index) const;
             inline ConfigFileEntry* getOrCreateEntry(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
                 { return (*this->getOrCreateEntryIterator(name, index, fallback, bString)); }
 
@@ -248,7 +255,7 @@ namespace orxonox // tolua_export
     class _CoreExport ConfigFile
     {
         public:
-            ConfigFile(const std::string& filename);
+            ConfigFile(const std::string& filename, bool bCopyFallbackFile = true);
             virtual ~ConfigFile();
 
             virtual void load();
@@ -264,7 +271,7 @@ namespace orxonox // tolua_export
                 this->getOrCreateSection(section)->setValue(name, value, bString);
                 this->save();
             }
-            inline const std::string& getValue(const std::string& section, const std::string& name, bool bString) const
+            inline const std::string& getValue(const std::string& section, const std::string& name, bool bString)
             {
                 ConfigFileSection* sectionPtr = this->getSection(section);
                 return (sectionPtr ? sectionPtr->getValue(name, bString) : BLANKSTRING);
@@ -273,13 +280,13 @@ namespace orxonox // tolua_export
 
             inline void setValue(const std::string& section, const std::string& name, unsigned int index, const std::string& value, bool bString)
             {
-                this->getSection(section)->setValue(name, index, value, bString);
+                this->getOrCreateSection(section)->setValue(name, index, value, bString);
                 this->save();
             }
-            inline const std::string& getValue(const std::string& section, const std::string& name, unsigned int index) const
+            inline const std::string& getValue(const std::string& section, const std::string& name, unsigned int index, bool bString)
             {
                 ConfigFileSection* sectionPtr = this->getSection(section);
-                return (sectionPtr ? sectionPtr->getValue(name, index) : BLANKSTRING);
+                return (sectionPtr ? sectionPtr->getValue(name, index, bString) : BLANKSTRING);
             }
             const std::string& getOrCreateValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString);
 
@@ -290,6 +297,8 @@ namespace orxonox // tolua_export
                 return (sectionPtr ? sectionPtr->getVectorSize(name) : 0);
             }
 
+            static const char* DEFAULT_CONFIG_FOLDER;
+
         protected:
             ConfigFileSection* getSection(const std::string& section) const;
             ConfigFileSection* getOrCreateSection(const std::string& section);
@@ -299,6 +308,7 @@ namespace orxonox // tolua_export
         private:
             void saveIfUpdated();
             const std::string filename_;
+            const bool bCopyFallbackFile_;
             bool bUpdated_;
     };
 
