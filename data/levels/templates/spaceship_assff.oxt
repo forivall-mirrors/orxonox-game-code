@@ -73,7 +73,7 @@
    accelerationupdown    =  125
   >
     <EffectContainer condition="idle">
-      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" loop=1 active=false/>
+      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" looping=1 active=false/>
     </EffectContainer>
     <EffectContainer condition="not idle">
       <FadingBillboard mainstate=activity active=false scale=0.1 position="0, 0, 9" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
