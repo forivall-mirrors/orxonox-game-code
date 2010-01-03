@@ -36,7 +36,7 @@
 #include <string>
 #include <vector>
 #include "util/Singleton.h"
-#include "core/Shell.h"
+#include "Shell.h"
 
 #ifdef ORXONOX_PLATFORM_UNIX
 struct termios;

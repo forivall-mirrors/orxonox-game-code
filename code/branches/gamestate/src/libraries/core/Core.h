@@ -37,7 +37,7 @@
 #include <boost/scoped_ptr.hpp>
 #include "util/ScopeGuard.h"
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
