@@ -68,6 +68,7 @@ namespace orxonox // tolua_export
 
         void preUpdate(const Clock& time);
 
+        void loadGUI(const std::string& name);
         static void showGUI(const std::string& name, bool hidePrevious=false, bool showCursor=true);
         void showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious=false, bool showCursor=true);
         static void hideGUI(const std::string& name);

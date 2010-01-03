@@ -207,6 +207,15 @@ namespace orxonox
         this->luaState_->doString(str, rootFileInfo_);
     }
 
+    /** Loads a GUI sheet by Lua script
+    @param name
+        The name of the GUI (like the script name, but without the extension)
+    */
+    void GUIManager::loadGUI(const std::string& name)
+    {
+        this->executeCode("loadGUI(\"" + name + "\")");
+    }
+
     /**
     @brief
         Displays specified GUI on screen
