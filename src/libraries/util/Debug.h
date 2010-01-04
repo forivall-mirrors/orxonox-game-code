@@ -72,7 +72,7 @@ namespace orxonox
 
     // Adjust this to discard certain output with level > hardDebugLevel at compile time already
 #ifdef ORXONOX_RELEASE
-    const int hardDebugLevel = OutputLevel::Verbose
+    const int hardDebugLevel = OutputLevel::Verbose;
 #elif defined(NDEBUG)
     const int hardDebugLevel = OutputLevel::Verbose;
 #else
