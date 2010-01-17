@@ -114,7 +114,9 @@ class _NetworkExport Gamestate: public Packet{
     inline bool isCompressed() const { return header_->isCompressed(); }
     inline int32_t getBaseID() const { return header_->getBaseID(); }
     inline uint32_t getDataSize() const { return header_->getDataSize(); }
-    Gamestate *diff(Gamestate *base);
+    Gamestate* diffVariables(Gamestate *base);
+    Gamestate* diffData(Gamestate *base);
+    Gamestate *undiff(Gamestate *base);
     Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
     bool compressData();
     bool decompressData();

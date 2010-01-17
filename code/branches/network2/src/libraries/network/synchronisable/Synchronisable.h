@@ -63,6 +63,8 @@ namespace orxonox
       VeryLow     = 100
     };
   }
+  
+  typedef uint8_t VariableID;
 
   /**
    * @brief: stores information about a Synchronisable
@@ -76,33 +78,34 @@ namespace orxonox
    * Byte 13 to 16: creatorID_
    */
   class _NetworkExport SynchronisableHeader{
+    friend class SynchronisableHeaderLight;
     private:
-      uint8_t *data_;
+      uint8_t* data_;
     public:
       SynchronisableHeader(uint8_t* data)
         { data_ = data; }
       inline static uint32_t getSize()
-        { return 16; }
-      inline uint32_t getDataSize() const
-        { return (*(uint32_t*)data_) & 0x7FFFFFFF; } //only use the first 31 bits
-      inline void setDataSize(uint32_t size)
-        { *(uint32_t*)(data_) = (size & 0x7FFFFFFF) | (*(uint32_t*)(data_) & 0x80000000 ); }
+        { return 14; }
+      inline uint16_t getDataSize() const
+        { return (*(uint16_t*)data_) & 0x7FFF; } //only use the first 31 bits
+      inline void setDataSize(uint16_t size)
+        { *(uint16_t*)(data_) = (size & 0x7FFFFFFF) | (*(uint16_t*)(data_) & 0x8000 ); }
       inline bool isDiffed() const
-        { return ( (*(uint32_t*)data_) & 0x80000000 ) == 0x80000000; }
+        { return ( (*(uint16_t*)data_) & 0x8000 ) == 0x8000; }
       inline void setDiffed( bool b)
-        { *(uint32_t*)(data_) = (b << 31) | (*(uint32_t*)(data_) & 0x7FFFFFFF ); }
+        { *(uint16_t*)(data_) = (b << 15) | (*(uint16_t*)(data_) & 0x7FFF ); }
       inline uint32_t getObjectID() const
-        { return *(uint32_t*)(data_+4); }
+        { return *(uint32_t*)(data_+2); }
       inline void setObjectID(uint32_t objectID_)
-        { *(uint32_t*)(data_+4) = objectID_; }
+        { *(uint32_t*)(data_+2) = objectID_; }
       inline uint32_t getClassID() const
-        { return *(uint32_t*)(data_+8); }
+        { return *(uint32_t*)(data_+6); }
       inline void setClassID(uint32_t classID_)
-        { *(uint32_t*)(data_+8) = classID_; }
+        { *(uint32_t*)(data_+6) = classID_; }
       inline uint32_t getCreatorID() const
-        { return *(uint32_t*)(data_+12); }
+        { return *(uint32_t*)(data_+10); }
       inline void setCreatorID(uint32_t creatorID_)
-        { *(uint32_t*)(data_+12) = creatorID_; }
+        { *(uint32_t*)(data_+10) = creatorID_; }
       inline void operator=(SynchronisableHeader& h)
         { memcpy(data_, h.data_, getSize()); }
   };
@@ -118,24 +121,24 @@ namespace orxonox
    */
   class _NetworkExport SynchronisableHeaderLight{
     private:
-      uint8_t *data_;
+      uint8_t* data_;
     public:
-      SynchronisableHeader(uint8_t* data)
+      SynchronisableHeaderLight(uint8_t* data)
         { data_ = data; }
       inline static uint32_t getSize()
-        { return 16; }
-      inline uint32_t getDataSize() const
-        { return (*(uint32_t*)data_) & 0x7FFFFFFF; } //only use the first 31 bits
-      inline void setDataSize(uint32_t size)
-        { *(uint32_t*)(data_) = (size & 0x7FFFFFFF) | (*(uint32_t*)(data_) & 0x80000000 ); }
+        { return 6; }
+      inline uint16_t getDataSize() const
+        { return (*(uint16_t*)data_) & 0x7FFF; } //only use the first 31 bits
+      inline void setDataSize(uint16_t size)
+        { *(uint16_t*)(data_) = (size & 0x7FFFFFFF) | (*(uint16_t*)(data_) & 0x8000 ); }
       inline bool isDiffed() const
-        { return ( (*(uint32_t*)data_) & 0x80000000 ) == 0x80000000; }
+        { return ( (*(uint16_t*)data_) & 0x8000 ) == 0x8000; }
       inline void setDiffed( bool b)
-        { *(uint32_t*)(data_) = (b << 31) | (*(uint32_t*)(data_) & 0x7FFFFFFF ); }
+        { *(uint16_t*)(data_) = (b << 15) | (*(uint16_t*)(data_) & 0x7FFF ); }
       inline uint32_t getObjectID() const
-        { return *(uint32_t*)(data_+4); }
+        { return *(uint32_t*)(data_+2); }
       inline void setObjectID(uint32_t objectID_)
-        { *(uint32_t*)(data_+4) = objectID_; }
+        { *(uint32_t*)(data_+2) = objectID_; }
       inline void operator=(SynchronisableHeader& h)
         { memcpy(data_, h.data_, getSize()); }
   };
@@ -152,7 +155,7 @@ namespace orxonox
 
     static void setClient(bool b);
 
-    static Synchronisable *fabricate(uint8_t*& mem, bool diffed, uint8_t mode=0x0);
+    static Synchronisable *fabricate(uint8_t*& mem, uint8_t mode=0x0);
     static bool deleteObject(uint32_t objectID_);
     static Synchronisable *getSynchronisable(uint32_t objectID_);
     static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
@@ -167,7 +170,7 @@ namespace orxonox
     void setSyncMode(uint8_t mode);
     
     inline uint32_t getNrOfVariables(){ return this->syncList_.size(); }
-    inline uint32_t getVarSize( uint32_t ID )
+    inline uint32_t getVarSize( VariableID ID )
     { return this->syncList_[ID]->getSize(state_); }
 
   protected:

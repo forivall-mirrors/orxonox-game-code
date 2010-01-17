@@ -131,9 +131,10 @@ namespace orxonox
    * @param mode defines the mode, how the data should be loaded
    * @return pointer to the newly created synchronisable
    */
-  Synchronisable *Synchronisable::fabricate(uint8_t*& mem, bool diffed, uint8_t mode)
+  Synchronisable *Synchronisable::fabricate(uint8_t*& mem, uint8_t mode)
   {
     SynchronisableHeader header(mem);
+    assert( !header.isDiffed() );
 
     COUT(4) << "fabricating object with id: " << header.getObjectID() << std::endl;
 
@@ -307,45 +308,44 @@ namespace orxonox
       mode=state_;
     if(syncList_.empty()){
       assert(0);
-      COUT(4) << "Synchronisable::updateData syncList_ is empty" << std::endl;
+      COUT(2) << "Synchronisable::updateData syncList_ is empty" << std::endl;
       return false;
     }
 
     uint8_t* data=mem;
     // start extract header
-    SynchronisableHeader syncHeader(mem);
-    assert(syncHeader.getObjectID()==this->objectID_);
-    assert(syncHeader.getCreatorID()==this->creatorID_);
-    assert(syncHeader.getClassID()==this->classID_);
-
-    mem += SynchronisableHeader::getSize();
-    // stop extract header
+    SynchronisableHeaderLight syncHeaderLight(mem);
+    assert(syncHeaderLight.getObjectID()==this->getObjectID());
 
     //COUT(5) << "Synchronisable: objectID_ " << syncHeader.getObjectID() << ", classID_ " << syncHeader.getClassID() << " size: " << syncHeader.getDataSize() << " synchronising data" << std::endl;
-    if( !syncHeader.isDiffed() )
+    if( !syncHeaderLight.isDiffed() )
     {
+      SynchronisableHeader syncHeader2(mem);
+      assert( this->getClassID() == syncHeader2.getClassID() );
+      assert( this->getCreatorID() == syncHeader2.getCreatorID() );
+      mem += SynchronisableHeader::getSize();
       std::vector<SynchronisableVariableBase *>::iterator i;
       for(i=syncList_.begin(); i!=syncList_.end(); i++)
       {
-        assert( mem <= data+syncHeader.getDataSize()+SynchronisableHeader::getSize() ); // always make sure we don't exceed the datasize in our stream
+        assert( mem <= data+syncHeader2.getDataSize()+SynchronisableHeader::getSize() ); // always make sure we don't exceed the datasize in our stream
         (*i)->putData( mem, mode, forceCallback );
       }
+      assert(mem == data+syncHeaderLight.getDataSize()+SynchronisableHeader::getSize() );
     }
     else
     {
-      COUT(0) << "objectID: " << this->objectID_ << endl;
-      while( mem < data+syncHeader.getDataSize()+SynchronisableHeader::getSize() )
+      mem += SynchronisableHeaderLight::getSize();
+//       COUT(0) << "objectID: " << this->objectID_ << endl;
+      while( mem < data+syncHeaderLight.getDataSize()+SynchronisableHeaderLight::getSize() )
       {
-        uint32_t varID = *(uint32_t*)mem;
-        COUT(0) << "varID: " << varID << endl;
-        if( varID == 22 )
-          COUT(6) << " blub " << endl;
+        VariableID varID = *(VariableID*)mem;
+//         COUT(0) << "varID: " << varID << endl;
         assert( varID < syncList_.size() );
-        mem += sizeof(uint32_t);
+        mem += sizeof(VariableID);
         syncList_[varID]->putData( mem, mode, forceCallback );
       }
+      assert(mem == data+syncHeaderLight.getDataSize()+SynchronisableHeaderLight::getSize() );
     }
-    assert(mem == data+syncHeader.getDataSize()+SynchronisableHeader::getSize() );
     return true;
   }
 

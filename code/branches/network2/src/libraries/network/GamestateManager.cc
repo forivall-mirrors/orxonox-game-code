@@ -189,7 +189,7 @@ namespace orxonox
 //     packet::Gamestate *gs = gamestate->doSelection(clientID, 20000);
 //       packet::Gamestate* gs = new packet::Gamestate(*gamestate);
 //     packet::Gamestate* gs = gamestate;
-    packet::Gamestate *gs = new packet::Gamestate(*gamestate);
+    packet::Gamestate *gs = new packet::Gamestate(*gamestate); //TODO: is this neccessary ?
 //     packet::Gamestate *gs = new packet::Gamestate();
 //     gs->collectData( id_, 0x1 );
 //     this->threadMutex_->lock();
@@ -200,25 +200,17 @@ namespace orxonox
 
     if(base)
     {
-
-//       COUT(3) << "diffing" << std::endl;
-//       packet::Gamestate* gs1  = gs;
-      packet::Gamestate *diffed = gs->diff(base);
-      if( diffed->getDataSize() == 0 )
+      packet::Gamestate *diffed1 = gs->diffVariables(base);
+      if( diffed1->getDataSize() == 0 )
       {
-        delete diffed;
+        delete diffed1;
         destgamestate = 0;
         return;
       }
-      else
-        gs = diffed;
-      //packet::Gamestate *gs2 = diffed->undiff(gs);
-//       assert(*gs == *gs2);
-//       packet::Gamestate* gs2 = gs->undiff(client);
-//       gs = new packet::Gamestate(*gs);
-//       assert(*gs1==*gs2);
+      gs = diffed1;
     }
-    else{
+    else
+    {
       gs = new packet::Gamestate(*gs);
     }
 

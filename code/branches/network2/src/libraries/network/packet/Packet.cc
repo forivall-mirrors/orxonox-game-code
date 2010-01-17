@@ -70,10 +70,6 @@ Packet::Packet(){
   bDataENetAllocated_ = false;
 }
 
-void blub(ENetPacket *packet){
-  COUT(4) << "blubb" << std::endl;
-}
-
 Packet::Packet(uint8_t *data, unsigned int clientID){
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = Direction::Incoming;

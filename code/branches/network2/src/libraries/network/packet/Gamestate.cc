@@ -180,7 +180,6 @@ bool Gamestate::spreadData(uint8_t mode)
   assert(data_);
   assert(!header_->isCompressed());
   uint8_t *mem=data_+GamestateHeader::getSize();
-  bool diffed = header_->isDiffed();
   Synchronisable *s;
 
   // update the data of the objects we received
@@ -193,11 +192,11 @@ bool Gamestate::spreadData(uint8_t mode)
     {
       if (!GameMode::isMaster())
       {
-        Synchronisable::fabricate(mem, diffed, mode);
+        Synchronisable::fabricate(mem, mode);
       }
       else
       {
-        mem += objectheader.getDataSize()+SynchronisableHeader::getSize();
+        mem += objectheader.getDataSize() + ( objectheader.isDiffed() ? SynchronisableHeaderLight::getSize() : SynchronisableHeader::getSize() );
       }
     }
     else
@@ -364,7 +363,7 @@ bool Gamestate::decompressData()
 }
 
 
-Gamestate *Gamestate::diff(Gamestate *base)
+Gamestate* Gamestate::diffVariables(Gamestate *base)
 {
   assert(this && base); assert(data_ && base->data_);
   assert(!header_->isCompressed() && !base->header_->isCompressed());
@@ -380,7 +379,6 @@ Gamestate *Gamestate::diff(Gamestate *base)
 
   assert( origLength && baseLength );
 
-  COUT(0) << "newSize: " << origLength + GamestateHeader::getSize() + sizeof(uint32_t)*this->nrOfVariables_ << endl;
   uint8_t *nData = new uint8_t[origLength + GamestateHeader::getSize() + sizeof(uint32_t)*this->nrOfVariables_]; // this is the maximum size needed in the worst case
   uint8_t *dest = GAMESTATE_START(nData);
 
@@ -447,10 +445,10 @@ DODIFF:
       {
 //         COUT(4) << "diff " << h.getObjectID() << ":";
         // Now start to diff the Object
-        SynchronisableHeader h2(dest);
+        SynchronisableHeaderLight h2(dest);
         h2 = h; // copy over the objectheader
-        uint32_t variableID = 0;
-        uint32_t newObjectOffset = SynchronisableHeader::getSize();
+        VariableID variableID = 0;
+        uint32_t newObjectOffset = SynchronisableHeaderLight::getSize();
         // iterate through all variables
         while( objectOffset < h.getDataSize()+SynchronisableHeader::getSize() )
         {
@@ -464,8 +462,8 @@ DODIFF:
             if ( memcmp(origData+origOffset+objectOffset, temp+objectOffset, varSize) != 0 )
             {
 //               COUT(4) << " c" << varSize;
-              *(uint32_t*)(dest+newObjectOffset) = variableID; // copy over the variableID
-              newObjectOffset += sizeof(uint32_t);
+              *(VariableID*)(dest+newObjectOffset) = variableID; // copy over the variableID
+              newObjectOffset += sizeof(VariableID);
               memcpy( dest+newObjectOffset, origData+origOffset+objectOffset, varSize );
               newObjectOffset += varSize;
               objectOffset += varSize;
@@ -484,7 +482,7 @@ DODIFF:
           sizes += Synchronisable::getSynchronisable(h.getObjectID())->getNrOfVariables() - variableID;
 //         COUT(4) << endl;
         h2.setDiffed(true);
-        h2.setDataSize(newObjectOffset-SynchronisableHeader::getSize());
+        h2.setDataSize(newObjectOffset-SynchronisableHeaderLight::getSize());
         assert(objectOffset == h.getDataSize()+SynchronisableHeader::getSize());
         origOffset += objectOffset;
         baseOffset += temp + h.getDataSize()+SynchronisableHeader::getSize() - baseData;
@@ -519,14 +517,106 @@ DOCOPY:
   Gamestate *g = new Gamestate(nData, getClientID());
   assert(g->header_);
   *(g->header_) = *header_;
-  g->header_->setDiffed( true );
   g->header_->setBaseID( base->getID() );
   g->header_->setDataSize(dest - nData - GamestateHeader::getSize());
+  g->flags_=flags_;
+  g->packetDirection_ = packetDirection_;
+  assert(!g->isCompressed());
+  return g;
+}
+
+
+Gamestate* Gamestate::diffData(Gamestate *base)
+{
+  assert(this && base); assert(data_ && base->data_);
+  assert(!header_->isCompressed() && !base->header_->isCompressed());
+  assert(!header_->isDiffed());
+
+  uint8_t *basep = GAMESTATE_START(base->data_);
+  uint8_t *gs = GAMESTATE_START(this->data_);
+  uint32_t dest_length = header_->getDataSize();
+
+  if(dest_length==0)
+    return NULL;
+
+  uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
+  uint8_t *dest = GAMESTATE_START(ndata);
+
+  rawDiff( dest, gs, basep, header_->getDataSize(), base->header_->getDataSize() );
+#ifndef NDEBUG
+  uint8_t *dest2 = new uint8_t[dest_length];
+  rawDiff( dest2, dest, basep, header_->getDataSize(), base->header_->getDataSize() );
+  assert( memcmp( dest2, gs, dest_length) == 0 );
+  delete dest2;
+#endif
+
+  Gamestate *g = new Gamestate(ndata, getClientID());
+  assert(g->header_);
+  *(g->header_) = *header_;
+  g->header_->setDiffed( true );
+  g->header_->setBaseID( base->getID() );
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
   assert(g->isDiffed());
   assert(!g->isCompressed());
   return g;
+}
+
+
+Gamestate* Gamestate::undiff(Gamestate *base)
+{
+  assert(this && base); assert(data_ && base->data_);
+  assert(!header_->isCompressed() && !base->header_->isCompressed());
+  assert(header_->isDiffed());
+
+  uint8_t *basep = GAMESTATE_START(base->data_);
+  uint8_t *gs = GAMESTATE_START(this->data_);
+  uint32_t dest_length = header_->getDataSize();
+
+  if(dest_length==0)
+    return NULL;
+
+  uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
+  uint8_t *dest = ndata + GamestateHeader::getSize();
+
+  rawDiff( dest, gs, basep, header_->getDataSize(), base->header_->getDataSize() );
+
+  Gamestate *g = new Gamestate(ndata, getClientID());
+  assert(g->header_);
+  *(g->header_) = *header_;
+  g->header_->setDiffed( false );
+  g->flags_=flags_;
+  g->packetDirection_ = packetDirection_;
+  assert(!g->isDiffed());
+  assert(!g->isCompressed());
+  return g;
+}
+
+
+void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uint32_t datalength, uint32_t baselength)
+{
+  uint64_t* gd = (uint64_t*)data;
+  uint64_t* bd = (uint64_t*)basedata;
+  uint64_t* nd = (uint64_t*)newdata;
+
+  unsigned int i;
+  for( i=0; i<datalength/8; i++ )
+  {
+    if( i<baselength/8 )
+      *(nd+i) = *(gd+i) ^ *(bd+i);  // xor the data
+    else
+      *(nd+i) = *(gd+i); // just copy over the data
+  }
+  unsigned int j;
+  // now process the rest (when datalength isn't a multiple of 4)
+  for( j = 8*(datalength/8); j<datalength; j++ )
+  {
+    if( j<baselength )
+      *(newdata+j) = *(data+j) ^ *(basedata+j); // xor
+    else
+      *(newdata+j) = *(data+j); // just copy
+  }
+  assert(j==datalength);
 }
 
 
