@@ -44,7 +44,6 @@ namespace orxonox
             virtual ~BigExplosion();
 
             virtual void tick(float dt);
-            void registerVariables();
 
             inline void setLOD(LODParticle::Value level)
                 { this->LOD_ = level; this->LODchanged(); }
@@ -52,6 +51,7 @@ namespace orxonox
                 { return this->LOD_; }
 
         private:
+            void registerVariables();
 
             void LODchanged();
             void checkStop();

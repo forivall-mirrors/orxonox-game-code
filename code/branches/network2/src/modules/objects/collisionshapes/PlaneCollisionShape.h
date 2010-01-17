@@ -42,7 +42,6 @@ namespace orxonox
             PlaneCollisionShape(BaseObject* creator);
             virtual ~PlaneCollisionShape();
 
-            void registerVariables();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             inline void setNormal(const Vector3& normal)
@@ -56,6 +55,8 @@ namespace orxonox
                 { return this->offset_;}
 
         private:
+            void registerVariables();
+
             btCollisionShape* createNewShape()const;
 
             Vector3 normal_;

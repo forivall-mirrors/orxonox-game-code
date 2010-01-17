@@ -93,9 +93,9 @@ namespace orxonox
             }
 
         protected:
-            void registerVariables();
 
         private:
+            void registerVariables();
 
             void changedMesh();
             void changedShadows();

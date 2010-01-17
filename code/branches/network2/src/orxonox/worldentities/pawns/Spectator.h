@@ -43,7 +43,6 @@ namespace orxonox
             virtual ~Spectator();
 
             void setConfigValues();
-            void registerVariables();
             virtual void tick(float dt);
 
             virtual void moveFrontBack(const Vector2& value);
@@ -62,6 +61,7 @@ namespace orxonox
             virtual void startLocalHumanControl();
 
         private:
+            void registerVariables();
             void changedGreeting();
             void changedFlareVisibility();
 

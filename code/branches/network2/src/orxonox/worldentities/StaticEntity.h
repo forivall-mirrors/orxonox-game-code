@@ -41,8 +41,6 @@ namespace orxonox
             StaticEntity(BaseObject* creator);
             virtual ~StaticEntity();
 
-            void registerVariables();
-
             using WorldEntity::setPosition;
             using WorldEntity::setOrientation;
 
@@ -50,6 +48,7 @@ namespace orxonox
             void setOrientation(const Quaternion& orientation);
 
         private:
+            void registerVariables();
             bool isCollisionTypeLegal(CollisionType type) const;
 
             // network callbacks

@@ -42,7 +42,6 @@ namespace orxonox
             HumanPlayer(BaseObject* creator);
             virtual ~HumanPlayer();
 
-            void registerVariables();
             void setConfigValues();
 
             bool isInitialized() const;
@@ -100,6 +99,8 @@ namespace orxonox
             OverlayGroup* humanHud_;
             std::string gametypeHudTemplate_;
             OverlayGroup* gametypeHud_;
+        private:
+            void registerVariables();
     };
 }
 

@@ -48,7 +48,6 @@ namespace orxonox
       virtual ~Test();
 
       void setConfigValues();
-      void registerVariables();
 
       static void call(unsigned int clientID);
       void call2(unsigned int clientID, std::string s1, std::string s2, std::string s3, std::string s4);
@@ -85,6 +84,8 @@ namespace orxonox
       void printBlaBla(std::string s1, std::string s2, std::string s3, std::string s4, std::string s5);
 
     private:
+      void registerVariables();
+
       UTYPE u1;
       UTYPE u2;
       UTYPE u3;

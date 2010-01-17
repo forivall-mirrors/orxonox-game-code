@@ -44,8 +44,6 @@ namespace orxonox
             GametypeInfo(BaseObject* creator);
             virtual ~GametypeInfo();
 
-            void registerVariables();
-
             inline bool hasStarted() const
                 { return this->bStarted_; }
             inline bool hasEnded() const
@@ -69,6 +67,8 @@ namespace orxonox
             void dispatchDeathMessage(const std::string& message);
 
         private:
+            void registerVariables();
+
             bool bStarted_;
             bool bEnded_;
             bool bStartCountdownRunning_;

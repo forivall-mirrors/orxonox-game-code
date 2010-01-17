@@ -48,7 +48,6 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
-            void registerVariables();
 
             inline bool isAlive() const
                 { return this->bAlive_; }
@@ -150,6 +149,7 @@ namespace orxonox
             unsigned int numexplosionchunks_;
 
         private:
+            void registerVariables();
             inline void setWeaponSystem(WeaponSystem* weaponsystem)
                 { this->weaponSystem_ = weaponsystem; }
 

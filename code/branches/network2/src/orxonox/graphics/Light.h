@@ -56,7 +56,6 @@ namespace orxonox
             virtual ~Light();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void changedVisibility();
 
@@ -131,6 +130,7 @@ namespace orxonox
                 { return this->spotlightRange_; }
 
         private:
+            void registerVariables();
             void setTypeString(const std::string& type);
             std::string getTypeString() const;
 

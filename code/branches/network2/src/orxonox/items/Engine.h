@@ -43,7 +43,6 @@ namespace orxonox
             virtual ~Engine();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
             void setConfigValues();
 
             virtual void tick(float dt);
@@ -106,6 +105,7 @@ namespace orxonox
             virtual const Vector3& getDirection() const;
 
         private:
+            void registerVariables();
             void networkcallback_shipID();
 
             SpaceShip* ship_;

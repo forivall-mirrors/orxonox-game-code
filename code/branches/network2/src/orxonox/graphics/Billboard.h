@@ -45,7 +45,6 @@ namespace orxonox
             virtual ~Billboard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void changedVisibility();
 
@@ -77,6 +76,7 @@ namespace orxonox
             virtual void changedColour();
 
         private:
+            void registerVariables();
             void changedMaterial();
 //            void changedRotation();
 

@@ -48,7 +48,6 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
-            void registerVariables();
             void setConfigValues();
 
             virtual void changedPlayer() {}
@@ -162,6 +161,7 @@ namespace orxonox
                 { this->hudtemplate_ = name; }
 
         private:
+            void registerVariables();
             void setXMLController(Controller* controller);
 
             void overwrite();

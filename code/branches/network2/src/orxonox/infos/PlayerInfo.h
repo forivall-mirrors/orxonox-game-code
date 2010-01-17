@@ -42,8 +42,6 @@ namespace orxonox
             PlayerInfo(BaseObject* creator);
             virtual ~PlayerInfo();
 
-            void registerVariables();
-
             virtual void changedName();
             virtual void changedGametype();
 
@@ -90,6 +88,7 @@ namespace orxonox
             unsigned int clientID_;
 
         private:
+            void registerVariables();
             void networkcallback_changedcontrollableentityID();
             void networkcallback_changedgtinfoID();
             void updateGametypeInfo();
