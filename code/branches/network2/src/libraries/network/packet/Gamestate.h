@@ -35,6 +35,7 @@
 #include <cassert>
 #include <cstring>
 #include <list>
+#include <vector>
 
 #include "util/CRC32.h"
 #include "network/TrafficControl.h"
@@ -112,8 +113,8 @@ class _NetworkExport Gamestate: public Packet{
     inline bool isDiffed() const { return header_->isDiffed(); }
     inline bool isCompressed() const { return header_->isCompressed(); }
     inline int32_t getBaseID() const { return header_->getBaseID(); }
+    inline uint32_t getDataSize() const { return header_->getDataSize(); }
     Gamestate *diff(Gamestate *base);
-    Gamestate *undiff(Gamestate *base);
     Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
     bool compressData();
     bool decompressData();
@@ -122,13 +123,15 @@ class _NetworkExport Gamestate: public Packet{
     // Packet functions
   private:
     void rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uint32_t datalength, uint32_t baselength);
+    inline uint32_t findObject( const SynchronisableHeader& header, uint8_t* mem, uint32_t dataLength, uint32_t startPosition = 0 );
     virtual uint32_t getSize() const;
     virtual inline bool process();
-
-  private:
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
-    std::list<obj> dataVector_;
-    GamestateHeader* header_;
+    
+    std::list<obj>          dataVector_;
+    GamestateHeader*        header_;
+    std::vector<uint32_t>   sizes_;
+    uint32_t                nrOfVariables_;
 };
 
 }

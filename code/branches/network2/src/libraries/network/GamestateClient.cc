@@ -160,19 +160,19 @@ namespace orxonox
       bool b = gs->decompressData();
       assert(b);
     }
-    if(gs->isDiffed()){
-      packet::Gamestate *base = gamestateMap_[gs->getBaseID()];
-      if(!base){
-        COUT(3) << "could not find base gamestate id: " << gs->getBaseID() << endl;
-        delete gs;
-        return 0;
-      }
-//       assert(base); //TODO: fix this
-      packet::Gamestate *undiffed = gs->undiff(base);
-      delete gs;
-      gs=undiffed;
-      COUT(5) << "successfully undiffed gamestate id: " << undiffed->getID() << std::endl;
-    }
+//     if(gs->isDiffed()){
+//       packet::Gamestate *base = gamestateMap_[gs->getBaseID()];
+//       if(!base){
+//         COUT(3) << "could not find base gamestate id: " << gs->getBaseID() << endl;
+//         delete gs;
+//         return 0;
+//       }
+// //       assert(base); //TODO: fix this
+//       packet::Gamestate *undiffed = gs->undiff(base);
+//       delete gs;
+//       gs=undiffed;
+//       COUT(5) << "successfully undiffed gamestate id: " << undiffed->getID() << std::endl;
+//     }
     if(gs->spreadData(0x2))
       return gs;
     else

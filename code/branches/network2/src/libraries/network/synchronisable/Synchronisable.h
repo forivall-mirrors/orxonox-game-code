@@ -70,7 +70,7 @@ namespace orxonox
    * This class stores the information about a Synchronisable (objectID_, classID_, creatorID_, dataSize)
    * in an emulated bitset.
    * Bit 1 to 31 store the size of the Data the synchronisable consumes in the stream
-   * Bit 32 is a bool and defines whether the data is actually stored or is just filled up with 0
+   * Bit 32 is a bool and defines whether the variables are stored in diff mode
    * Byte 5 to 8: objectID_
    * Byte 9 to 12: classID_
    * Byte 13 to 16: creatorID_
@@ -87,9 +87,9 @@ namespace orxonox
         { return (*(uint32_t*)data_) & 0x7FFFFFFF; } //only use the first 31 bits
       inline void setDataSize(uint32_t size)
         { *(uint32_t*)(data_) = (size & 0x7FFFFFFF) | (*(uint32_t*)(data_) & 0x80000000 ); }
-      inline bool isDataAvailable() const
+      inline bool isDiffed() const
         { return ( (*(uint32_t*)data_) & 0x80000000 ) == 0x80000000; }
-      inline void setDataAvailable( bool b)
+      inline void setDiffed( bool b)
         { *(uint32_t*)(data_) = (b << 31) | (*(uint32_t*)(data_) & 0x7FFFFFFF ); }
       inline uint32_t getObjectID() const
         { return *(uint32_t*)(data_+4); }
@@ -107,6 +107,38 @@ namespace orxonox
         { memcpy(data_, h.data_, getSize()); }
   };
 
+    /**
+   * @brief: stores information about a Synchronisable (light version)
+   *
+   * This class stores the information about a Synchronisable (objectID_, dataSize)
+   * in an emulated bitset.
+   * Bit 1 to 31 store the size of the Data the synchronisable consumes in the stream
+   * Bit 32 is a bool and defines whether the variables are stored in diff mode
+   * Byte 5 to 8: objectID_
+   */
+  class _NetworkExport SynchronisableHeaderLight{
+    private:
+      uint8_t *data_;
+    public:
+      SynchronisableHeader(uint8_t* data)
+        { data_ = data; }
+      inline static uint32_t getSize()
+        { return 16; }
+      inline uint32_t getDataSize() const
+        { return (*(uint32_t*)data_) & 0x7FFFFFFF; } //only use the first 31 bits
+      inline void setDataSize(uint32_t size)
+        { *(uint32_t*)(data_) = (size & 0x7FFFFFFF) | (*(uint32_t*)(data_) & 0x80000000 ); }
+      inline bool isDiffed() const
+        { return ( (*(uint32_t*)data_) & 0x80000000 ) == 0x80000000; }
+      inline void setDiffed( bool b)
+        { *(uint32_t*)(data_) = (b << 31) | (*(uint32_t*)(data_) & 0x7FFFFFFF ); }
+      inline uint32_t getObjectID() const
+        { return *(uint32_t*)(data_+4); }
+      inline void setObjectID(uint32_t objectID_)
+        { *(uint32_t*)(data_+4) = objectID_; }
+      inline void operator=(SynchronisableHeader& h)
+        { memcpy(data_, h.data_, getSize()); }
+  };
 
   /**
   * This class is the base class of all the Objects in the universe that need to be synchronised over the network
@@ -120,7 +152,7 @@ namespace orxonox
 
     static void setClient(bool b);
 
-    static Synchronisable *fabricate(uint8_t*& mem, uint8_t mode=0x0);
+    static Synchronisable *fabricate(uint8_t*& mem, bool diffed, uint8_t mode=0x0);
     static bool deleteObject(uint32_t objectID_);
     static Synchronisable *getSynchronisable(uint32_t objectID_);
     static unsigned int getNumberOfDeletedObject(){ return deletedObjects_.size(); }
@@ -133,6 +165,10 @@ namespace orxonox
     inline uint8_t getSyncMode() const { return this->objectMode_; }
 
     void setSyncMode(uint8_t mode);
+    
+    inline uint32_t getNrOfVariables(){ return this->syncList_.size(); }
+    inline uint32_t getVarSize( uint32_t ID )
+    { return this->syncList_[ID]->getSize(state_); }
 
   protected:
     Synchronisable(BaseObject* creator);
@@ -142,10 +178,9 @@ namespace orxonox
 
 
   private:
-    uint32_t getData(uint8_t*& men, int32_t id, uint8_t mode=0x0);
+    uint32_t getData(uint8_t*& mem, std::vector<uint32_t>& sizes, int32_t id, uint8_t mode);
     uint32_t getSize(int32_t id, uint8_t mode=0x0);
     bool updateData(uint8_t*& mem, uint8_t mode=0x0, bool forceCallback=false);
-    bool isMyData(uint8_t* mem);
     bool doSync(int32_t id, uint8_t mode=0x0);
 
     inline void setObjectID(uint32_t id){ this->objectID_ = id; objectMap_[this->objectID_] = this; }
@@ -155,8 +190,8 @@ namespace orxonox
     uint32_t creatorID_;
     uint32_t classID_;
 
-    std::vector<SynchronisableVariableBase*> syncList;
-    std::vector<SynchronisableVariableBase*> stringList;
+    std::vector<SynchronisableVariableBase*> syncList_;
+    std::vector<SynchronisableVariableBase*> stringList_;
     uint32_t dataSize_; //size of all variables except strings
     static uint8_t state_; // detemines wheter we are server (default) or client
     bool backsync_; // if true the variables with mode > 1 will be synchronised to server (client -> server)
@@ -170,14 +205,14 @@ namespace orxonox
   {
     if (bidirectional)
     {
-      syncList.push_back(new SynchronisableVariableBidirectional<T>(variable, mode, cb));
-      this->dataSize_ += syncList.back()->getSize(state_);
+      syncList_.push_back(new SynchronisableVariableBidirectional<T>(variable, mode, cb));
+      this->dataSize_ += syncList_.back()->getSize(state_);
     }
     else
     {
-      syncList.push_back(new SynchronisableVariable<T>(variable, mode, cb));
+      syncList_.push_back(new SynchronisableVariable<T>(variable, mode, cb));
       if ( this->state_ == mode )
-        this->dataSize_ += syncList.back()->getSize(state_);
+        this->dataSize_ += syncList_.back()->getSize(state_);
     }
   }
 
