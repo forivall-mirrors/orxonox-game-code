@@ -53,6 +53,7 @@ namespace orxonox // tolua_export
             LuaFunctor(const std::string& code, LuaState* luaState);
             void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null);
             void evaluateParam(unsigned int index, MultiType& param) const {}
+            const std::type_info& getHeaderIdentifier() const { return typeid(this); }
 
         private:
             std::string code_;
