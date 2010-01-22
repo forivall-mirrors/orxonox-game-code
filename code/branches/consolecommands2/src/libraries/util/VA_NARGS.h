@@ -31,6 +31,8 @@
     @brief Declaration of the ORXONOX_VA_NARGS macro which returns the number of arguments passed to a variadic macro.
 */
 
+#include <boost/preprocessor/facilities/expand.hpp>
+
 /**
     @brief Returns the number of arguments passed to a variadic macro. Important: The number of arguments must be greater than zero (ORXONOX_VA_NARGS() returns 1).
 */
@@ -41,7 +43,7 @@
 // some helper macros //
 
 #define ORXONOX_VA_NARGS_CONCAT(...) \
-    ORXONOX_VA_NARGS_INTERN(__VA_ARGS__)
+    BOOST_PP_EXPAND(ORXONOX_VA_NARGS_INTERN(__VA_ARGS__))
 
 #define ORXONOX_VA_NARGS_INTERN( \
     arg1,  arg2,  arg3,  arg4,  arg5,  arg6,  arg7,  arg8,  arg9,  arg10, \

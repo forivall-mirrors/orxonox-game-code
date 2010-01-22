@@ -32,6 +32,7 @@
 #include "CorePrereqs.h"
 
 #include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/facilities/expand.hpp>
 
 #include "util/VA_NARGS.h"
 #include "ArgumentCompletionFunctions.h"
@@ -157,7 +158,7 @@ namespace orxonox
 
 
 #define _SetConsoleCommand(...) \
-    BOOST_PP_CAT(_SetConsoleCommand, ORXONOX_VA_NARGS(__VA_ARGS__))(__VA_ARGS__)
+    BOOST_PP_EXPAND(BOOST_PP_CAT(_SetConsoleCommand, ORXONOX_VA_NARGS(__VA_ARGS__))(__VA_ARGS__))
 #define _SetConsoleCommand2(name, functionpointer) \
     _SetConsoleCommandGeneric("", name, orxonox::createFunctor(functionpointer))
 #define _SetConsoleCommand3(group, name, functionpointer) \

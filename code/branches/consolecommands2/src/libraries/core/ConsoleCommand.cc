@@ -77,7 +77,7 @@ namespace orxonox
 namespace orxonox
 {
     _SetConsoleCommand("BaseObject", "setName", &BaseObject::setName, (BaseObject*)0);
-    _ConsoleCommand::_ConsoleCommandManipulator test = _ModifyConsoleCommand("BaseObject", "setName").setFunction(&BaseObject::setActive);
+    _ConsoleCommand::_ConsoleCommandManipulator test(_ModifyConsoleCommand("BaseObject", "setName").setFunction(&BaseObject::setActive));
 
     _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, Functor* functor, State::Enum state) : Executor(functor, name), functionHeader_(functor->getHeaderIdentifier())
     {
