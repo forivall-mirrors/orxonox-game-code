@@ -176,6 +176,7 @@ namespace orxonox
   protected:
     Synchronisable(BaseObject* creator);
     template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
+    template <class T> void unregisterVariable(T& var);
 
     void setPriority(unsigned int freq){ objectFrequency_ = freq; }
 
@@ -218,8 +219,25 @@ namespace orxonox
         this->dataSize_ += syncList_.back()->getSize(state_);
     }
   }
+  
+  template <class T> void Synchronisable::unregisterVariable(T& variable){
+    std::vector<SynchronisableVariableBase*>::iterator it = syncList_.begin();
+    while(it!=syncList_.end()){
+      if( ((*it)->getReference()) == &variable ){
+        delete (*it);
+        syncList_.erase(it);
+        return;
+      }
+      else
+        it++;
+    }
+    bool unregistered_nonexistent_variable = false;
+    assert(unregistered_nonexistent_variable); //if we reach this point something went wrong:
+    // the variable has not been registered before
+  }
 
   template <> _NetworkExport void Synchronisable::registerVariable( std::string& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional);
+  template <> _NetworkExport void Synchronisable::unregisterVariable( std::string& variable );
 
 
 }
