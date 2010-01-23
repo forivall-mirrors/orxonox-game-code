@@ -57,7 +57,7 @@ namespace orxonox
         registerVariable(source_,   ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::sourceChanged));
         registerVariable(bLooping_, ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::loopingChanged));
         registerVariable(pitch_,    ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::pitchChanged));
-        registerVariable((int&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::stateChanged));
+        registerVariable((uint8_t&)(BaseSound::state_), ObjectDirection::ToClient, new NetworkCallback<WorldSound>(this, &WorldSound::stateChanged));
     }
 
     void WorldSound::XMLPort(Element& xmlelement, XMLPort::Mode mode)

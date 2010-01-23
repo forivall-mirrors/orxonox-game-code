@@ -224,6 +224,7 @@ namespace orxonox
     std::vector<SynchronisableVariableBase*>::iterator it = syncList_.begin();
     while(it!=syncList_.end()){
       if( ((*it)->getReference()) == &variable ){
+        this->dataSize_ -= (*it)->getSize(Synchronisable::state_);
         delete (*it);
         syncList_.erase(it);
         return;
