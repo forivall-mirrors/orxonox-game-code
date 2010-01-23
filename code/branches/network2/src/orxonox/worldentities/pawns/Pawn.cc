@@ -119,7 +119,7 @@ namespace orxonox
         registerVariable(this->health_,        VariableDirection::ToClient);
         registerVariable(this->initialHealth_, VariableDirection::ToClient);
         registerVariable(this->bReload_,       VariableDirection::ToServer);
-        registerVariable(this->aimPosition_,   Bidirectionality::ServerMaster, 0, true);
+        registerVariable(this->aimPosition_,   VariableDirection::ToServer);  // For the moment this variable gets only transfered to the server
     }
 
     void Pawn::tick(float dt)
