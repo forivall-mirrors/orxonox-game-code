@@ -1,13 +1,10 @@
 gui = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("QuestGUI")
 if _REQUIREDNAME == nil then
     QuestGUI = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "QuestGUI"
-P.layoutString = "QuestGUI.layout"
 
 function P:show()
     self.window:show() -- TDO: Do this through parent...

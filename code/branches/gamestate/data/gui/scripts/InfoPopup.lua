@@ -1,16 +1,13 @@
 -- InfoPopup.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("InfoPopup")
 
 if _REQUIREDNAME == nil then
     InfoPopup = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "InfoPopup"
-P.layoutString = "InfoPopup.layout"
 
 function P:init()
 end

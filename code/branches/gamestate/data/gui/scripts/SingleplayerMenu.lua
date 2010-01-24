@@ -1,15 +1,12 @@
 -- SingleplayerMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("SingleplayerMenu")
 if _REQUIREDNAME == nil then
     SingleplayerMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "SingleplayerMenu"
-P.layoutString = "SingleplayerMenu.layout"
 
 function P:init()
     listbox = winMgr:getWindow("orxonox/SingleplayerLevelListbox")

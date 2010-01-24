@@ -7,11 +7,16 @@ else
     _G[_REQUIREDNAME] = P
 end
 
+-- useless?
 P.overlay = nil
 
 -- constructor of the GUI
-function P:new (gui, fname)
-    local newElement = { window = gui, filename = fname, visible = false } or {}
+function P:new(_filename, _visible, _gui)
+    local newElement = {
+        filename = _filename,
+        gui = _gui,
+        visible = _visible or false
+    } or {}
     setmetatable(newElement, self) -- connects new element with class
     self.__index = self
     return newElement
@@ -22,19 +27,19 @@ function P:init()
 end
 
 -- hide function for the GUI
-function P:hide ()
+function P:hide()
     self.window:hide()
     self.visible = false
 end
 
 -- show function for the GUI
-function P:show ()
+function P:show()
     self.window:show()
     self.visible = true
 end
 
-function P:load ()
-    self.window = winMgr:loadWindowLayout(self.layoutString)
+function P:load()
+    self.window = winMgr:loadWindowLayout(self.filename .. ".layout")
     self:init()
     return self
 end

@@ -1,15 +1,12 @@
 -- ControlsMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("ControlsMenu")
 if _REQUIREDNAME == nil then
     ControlsMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "ControlsMenu"
-P.layoutString = "ControlsMenu.layout"
 
 function P.ControlsMouseControlsButton_clicked(e)
     showGUI("MouseControlsMenu", true)

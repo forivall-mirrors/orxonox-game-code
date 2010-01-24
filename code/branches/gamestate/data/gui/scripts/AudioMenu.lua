@@ -1,15 +1,12 @@
 -- AudioMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("AudioMenu")
 if _REQUIREDNAME == nil then
     AudioMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "AudioMenu"
-P.layoutString = "AudioMenu.layout"
 
 function P:init()
     soundMgr = orxonox.SoundManager:getInstance()

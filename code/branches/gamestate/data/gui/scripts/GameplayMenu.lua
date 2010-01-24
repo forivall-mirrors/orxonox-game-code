@@ -1,15 +1,12 @@
 -- GameplayMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("GameplayMenu")
 if _REQUIREDNAME == nil then
     GameplayMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "GameplayMenu"
-P.layoutString = "GameplayMenu.layout"
 
 function P:init()
     dropdown = winMgr:getWindow("orxonox/ThemeCombobox")

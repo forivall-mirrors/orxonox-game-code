@@ -1,16 +1,13 @@
 -- KeyBindMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("KeyBindMenu")
 
 if _REQUIREDNAME == nil then
     KeyBindMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "KeyBindMenu"
-P.layoutString = "KeyBindMenu.layout"
 
 function P:init()
 

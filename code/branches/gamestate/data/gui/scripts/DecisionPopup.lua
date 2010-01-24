@@ -1,15 +1,12 @@
 -- DecisionPopup.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("DecisionPopup")
 if _REQUIREDNAME == nil then
     DecisionPopup = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "DecisionPopup"
-P.layoutString = "DecisionPopup.layout"
 
 function P:init()
 end
