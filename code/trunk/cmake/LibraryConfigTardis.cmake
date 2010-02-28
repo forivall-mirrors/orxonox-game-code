@@ -41,8 +41,30 @@ IF(TARDIS)
 
   # Note: When setting ENV${} variables, make sure to use quotes when
   #       having multiple directories.
-  SET(BOOST_INCLUDEDIR "/usr/pack/boost-1.36.0-sd/include/boost-1_36")
-  SET(BOOST_LIBRARYDIR "/usr/pack/boost-1.36.0-sd/i686-debian-linux4.0/lib")
+#  SET(BOOST_INCLUDEDIR "/usr/pack/boost-1.42.0-bs/include")
+#  SET(BOOST_LIBRARYDIR "/usr/pack/boost-1.42.0-bs/i686-debian-linux4.0/lib")
+  SET(Boost_INCLUDE_DIRS "/usr/pack/boost-1.42.0-bs/include" CACHE PATH "")
+  SET(Boost_SYSTEM_LIBRARY_RELEASE "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_system.so" CACHE PATH "")
+  SET(Boost_SYSTEM_LIBRARY_DEBUG "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_system-d.so" CACHE PATH "")
+  SET(Boost_DATE_TIME_LIBRARY_RELEASE "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_date_time.so" CACHE PATH "")
+  SET(Boost_DATE_TIME_LIBRARY_DEBUG "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_date_time-d.so" CACHE PATH "")
+  SET(Boost_FILESYSTEM_LIBRARY_RELEASE "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_filesystem.so" CACHE PATH "")
+  SET(Boost_FILESYSTEM_LIBRARY_DEBUG "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_filesystem-d.so" CACHE PATH "")
+  SET(Boost_THREAD_LIBRARY_RELEASE "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_thread-mt.so" CACHE PATH "")
+  SET(Boost_THREAD_LIBRARY_DEBUG "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_thread-mt-d.so" CACHE PATH "")
+
+  SET(Boost_SYSTEM_LIBRARY "debug;${Boost_SYSTEM_LIBRARY_DEBUG};optimized;${Boost_SYSTEM_LIBRARY_RELEASE}" CACHE PATH "" FORCE)
+  SET(Boost_DATE_TIME_LIBRARY "debug;${Boost_DATE_TIME_LIBRARY_DEBUG};optimized;${Boost_DATE_TIME_LIBRARY_RELEASE}" CACHE PATH "" FORCE)
+  SET(Boost_FILESYSTEM_LIBRARY "debug;${Boost_FILESYSTEM_LIBRARY_DEBUG};optimized;${Boost_FILESYSTEM_LIBRARY_RELEASE}" CACHE PATH "" FORCE)
+  SET(Boost_THREAD_LIBRARY "debug;${Boost_THREAD_LIBRARY_DEBUG};optimized;${Boost_THREAD_LIBRARY_RELEASE}" CACHE PATH "" FORCE)
+
+  MARK_AS_ADVANCED( Boost_INCLUDE_DIRS )
+  MARK_AS_ADVANCED( Boost_SYSTEM_LIBRARY Boost_SYSTEM_LIBRARY_RELEASE Boost_SYSTEM_LIBRARY_DEBUG )
+  MARK_AS_ADVANCED( Boost_DATE_TIME_LIBRARY Boost_DATE_TIME_LIBRARY_RELEASE Boost_DATE_TIME_LIBRARY_DEBUG )
+  MARK_AS_ADVANCED( Boost_FILESYSTEM_LIBRARY Boost_FILESYSTEM_LIBRARY_RELEASE Boost_FILESYSTEM_LIBRARY_DEBUG )
+  MARK_AS_ADVANCED( Boost_THREAD_LIBRARY Boost_THREAD_LIBRARY_RELEASE Boost_THREAD_LIBRARY_DEBUG )
+
+
   SET(ENV{CEGUIDIR}    "/usr/pack/cegui-0.6.2-sd;/usr/pack/cegui-0.6.2-sd/i686-debian-linux4.0")
   SET(ENV{ENETDIR}     "/usr/pack/enet-1.2-sd;/usr/pack/enet-1.2-sd/i686-debian-linux4.0")
 #  SET(ENV{ALUTDIR}     "/usr/pack/openal-0.0.8-cl;/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1")
