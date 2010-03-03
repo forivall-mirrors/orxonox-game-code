@@ -317,7 +317,7 @@ namespace orxonox
         //       no ScopeGuards or anything to handle exceptions.
         this->viewport_ = this->renderWindow_->addViewport(0, 0);
 
-        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(MIP_UNLIMITED);
 
         // add console commands
         ccPrintScreen_ = createConsoleCommand(createFunctor(&GraphicsManager::printScreen, this), "printScreen");
