@@ -193,8 +193,8 @@ namespace orxonox
                 acceleration.y = direction.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
         }
 
-        //TODO: Remove.
-        //this->ship_->setAcceleration(this->ship_->getPickups().processModifiers(ModifierType::Acceleration, this->ship_->getOrientation() * acceleration, false));
+        //TODO: Correct?
+        this->ship_->setAcceleration(this->ship_->getOrientation() * acceleration);
 
         if (!this->ship_->getPermanentBoost())
             this->ship_->setBoost(false);
