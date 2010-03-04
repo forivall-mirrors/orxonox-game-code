@@ -1,7 +1,14 @@
 SET_SOURCE_FILES(PICKUP_SRC_FILES
+  DroppedItem.cc
+  Pickup.cc
   PickupCollection.cc
+  PickupCollectionIdentifier.cc
+  PickupManager.cc
+  PickupRepresentation.cc
   PickupSpawner.cc
 )
+
+ADD_SUBDIRECTORY(items)
 
 ORXONOX_ADD_LIBRARY(pickup
   MODULE
@@ -15,4 +22,3 @@ ORXONOX_ADD_LIBRARY(pickup
     orxonox
   SOURCE_FILES ${PICKUP_SRC_FILES}
 )
-

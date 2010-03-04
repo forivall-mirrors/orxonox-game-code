@@ -134,6 +134,9 @@ namespace orxonox
     class Map;
     class OrxonoxOverlay;
     class OverlayGroup;
+    
+    // pickup
+    class PickupIdentifier;
 
     //sound
     class AmbientSound;

@@ -36,22 +36,63 @@
 
 #include "OrxonoxPrereqs.h"
 #include "core/OrxonoxClass.h"
+#include "Pickupable.h"
 
 #include <set>
+#include <list>
 
 namespace orxonox
 {
 
-    class _OrxonoxExport PickupCarrier : public OrxonoxClass
+    class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
     {
+        friend class Pickupable;
         
         public:
             PickupCarrier();
             virtual ~PickupCarrier() {}
+            
+            //TODO: Secure uniqueness of each item in the set, if neccessary, check.
+            inline bool pickup(Pickupable* pickup)
+                {
+                    bool pickedUp = this->pickups_.insert(pickup).second;
+                    if(pickedUp) pickup->pickedUp(this);
+                    return pickedUp;
+                }
+                
+            inline bool drop(Pickupable* pickup)
+                { 
+                   bool dropped = this->pickups_.erase(pickup) == 1;
+                   if(dropped)
+                   {
+                       pickup->dropped();
+                        //TODO: Create Spawner.
+                   }
+                   return dropped;
+                }
+                
+            inline bool isTarget(Pickupable* pickup)
+                {
+                    if(pickup->isTarget(this))
+                        return true;
+                    const std::list<PickupCarrier*>* children = this->getChildren();
+                    for(std::list<PickupCarrier*>::const_iterator it = children->begin(); it != children->end(); it++)
+                    {
+                        if((*it)->isTarget(pickup))
+                            return true;
+                    }
+                    
+                    return false;
+                }
+            
+        protected:            
+            //TODO: Good return type?
+            virtual const std::list<PickupCarrier*>* getChildren(void) = 0;
+            virtual PickupCarrier* getParent(void) = 0;
         
         private:
-            
             std::set<Pickupable*> pickups_;
+            
         
     };
     

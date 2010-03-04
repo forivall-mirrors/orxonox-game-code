@@ -34,7 +34,7 @@
 #ifndef _PickupSpawner_H__
 #define _PickupSpawner_H__
 
-#include "pickup/PickupPrereqs.h"
+#include "PickupPrereqs.h"
 
 #include <string>
 #include "tools/Timer.h"

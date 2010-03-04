@@ -33,7 +33,6 @@
 */
 
 #include "GametypeMessageListener.h"
-#include "Pickupable.h"
 #include "PickupCarrier.h"
 #include "PlayerTrigger.h"
 #include "RadarListener.h"
@@ -51,17 +50,6 @@ namespace orxonox
     GametypeMessageListener::GametypeMessageListener()
     {
         RegisterRootObject(GametypeMessageListener);
-    }
-    
-    //----------------------------
-    // Pickupable
-    //----------------------------
-    Pickupable::Pickupable()
-    {
-        RegisterRootObject(Pickupable);
-
-        this->used_ = false;
-        this->owner_ = NULL;
     }
     
     //----------------------------

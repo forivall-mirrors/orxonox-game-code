@@ -29,11 +29,13 @@
 #ifndef _PickupCollection_H__
 #define _PickupCollection_H__
 
-#include "pickup/PickupPrereqs.h"
+#include "PickupPrereqs.h"
 
 #include "interfaces/Pickupable.h"
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
+
+#include "PickupCollectionIdentifier.h"
 
 #include <list>
 
@@ -59,16 +61,20 @@ namespace orxonox
 
             virtual void changedUsed(void);
             
-            virtual bool use(void);
-            virtual bool unuse(void);
+            virtual void changedCarrier(void);
             
-            virtual bool pickup(PickupCarrier* carrier);
-            virtual bool drop(void);
+            virtual void clone(OrxonoxClass* item);
             
-            virtual Pickupable* clone(void);
+            virtual const PickupIdentifier* getPickupIdentifier(void)
+                { return &this->pickupCollectionIdentifier_; }
             
             bool addPickupable(Pickupable* pickup);
             const Pickupable* getPickupable(unsigned int index);
+            
+        protected:
+            void initializeIdentifier(void);
+            
+            PickupCollectionIdentifier pickupCollectionIdentifier_;
             
         private:
             

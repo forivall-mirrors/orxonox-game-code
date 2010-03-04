@@ -32,14 +32,13 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
+#include "interfaces/PickupCarrier.h"
 #include "interfaces/RadarViewable.h"
 #include "worldentities/ControllableEntity.h"
-//TODO: Remove.
-//#include "pickup/PickupCollection.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Pawn : public ControllableEntity, public RadarViewable
+    class _OrxonoxExport Pawn : public ControllableEntity, public RadarViewable, public PickupCarrier
     {
         friend class WeaponSystem;
 
@@ -138,6 +137,10 @@ namespace orxonox
 
             //TODO: Remove.
             //PickupCollection pickups_;
+            virtual const std::list<PickupCarrier*>* getChildren(void)
+                { return new std::list<PickupCarrier*>(); }
+            virtual PickupCarrier* getParent(void)
+                { return NULL; }
 
             float health_;
             float maxHealth_;

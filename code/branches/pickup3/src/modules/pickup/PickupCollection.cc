@@ -71,8 +71,20 @@ namespace orxonox
     {
         SUPER(PickupCollection, XMLPort, xmlelement, mode);
         
-        //TODO: Does this work? Problem could be, that Pickupable itself cannot be instantiated through XML...
+        //TODO: Does this work? Problem could be, that Pickupable itself cannot be instantiated through XML, doubt that, though.
         XMLPortObject(PickupCollection, PickupCollection, "pickupables", addPickupable, getPickupable, xmlelement, mode);
+        
+        this->initializeIdentifier();
+    }
+    
+    void PickupCollection::initializeIdentifier(void)
+    {
+        this->pickupCollectionIdentifier_.addClass(this->getIdentifier());
+        
+        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        {
+            this->pickupCollectionIdentifier_.addPickup((*it)->getPickupIdentifier());
+        }
     }
     
     /**
@@ -113,119 +125,37 @@ namespace orxonox
         //! Change used for all Pickupables this PickupCollection consists of.
         for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            (*it)->changedUsed();
+            (*it)->setUsed(this->isUsed());
         }
     }
     
-    /**
-    @brief
-        Puts the PickupCollection in use.
-    @return
-        Returns true if successful.
-    */
-    //TODO: Revert if one fails? (same for unused)
-    bool PickupCollection::use(void)
+    void PickupCollection::changedCarrier()
     {
-        if(this->isUsed())
-            return false;
+        SUPER(PickupCollection, changedCarrier);
         
-        bool success = true;
-        //! Set all Pickupables to used.
+        //! Change the carrier for all Pickupables this PickupCollection consists of.
         for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            if(!(*it)->use())
-            {
-                success = false;
-            }
+            (*it)->setCarrier(this->getCarrier());
         }
-        
-        this->changedUsed();
-        
-        return success;
-    }
-    
-    /**
-    @brief
-        Puts the PickupCollection out of use.
-    @return
-        Returns true if successful.
-    */
-    bool PickupCollection::unuse(void)
-    {
-        if(!this->isUsed())
-            return false;
-        
-        bool success = true;
-        //! Set all Pickupables to unused.
-        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
-            if(!(*it)->unuse())
-            {
-                success = false;
-            }
-        }
-        
-        this->changedUsed();
-        
-        return success;
-    }
-
-    /**
-    @brief
-        Is invoked when the pickup is picked up.
-    @param carrier
-        The PickupCarrier that is picking up this pickup.
-    @return
-        Returns true if successful.
-    */
-    //TODO: Something should happen in the carrier as well, maybe just in the carrier. Owner might not be correct if the carrier hands the pickup down or up. Maybe even a Pawn as input instead fo a carrier. Or do this in Spawner?
-    bool PickupCollection::pickup(PickupCarrier* carrier)
-    {
-        if(this->getOwner() != NULL)
-        {
-            COUT(2) << "Pickup wanted to get picked up by a new carrier, but it already has a carrier." << std::endl;
-            return false;
-        }
-        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
-            (*it)->setOwner(carrier);
-        }
-        
-        this->setOwner(carrier);
-        
-        return true;
-    }
-    
-    /**
-    @brief
-        Drop the pickup.
-    @return
-        Return true if successful.
-    */
-    bool PickupCollection::drop(void)
-    {
-        this->unuse();
-        this->setOwner(NULL);
-        
-        //TODO: Create new Pickupspawner/DroppedPickup
-        return true;
     }
     
     //TODO: Steal description from Pickupable.
-    Pickupable* PickupCollection::clone()
+    void PickupCollection::clone(OrxonoxClass* item)
     {
-        Template* collectionTemplate = Template::getTemplate(this->getIdentifier()->getName());
-        BaseObject* newObject = collectionTemplate->getBaseclassIdentifier()->fabricate(this);
+        if(item == NULL)
+            item = new PickupCollection(this);
         
-        PickupCollection* newCollection = dynamic_cast<PickupCollection*>(newObject);
+        SUPER(PickupCollection, clone, item);
+        
+        PickupCollection* pickup = dynamic_cast<PickupCollection*>(item);
         for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             Pickupable* newPickup = (*it)->clone();
-            newCollection->pickups_.push_back(newPickup);
+            pickup->addPickupable(newPickup);
         }
-        
-        Pickupable* pickup = dynamic_cast<Pickupable*>(newCollection);
-        return pickup;
+
+        pickup->initializeIdentifier();
     }
     
 }

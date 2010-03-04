@@ -74,6 +74,7 @@ namespace orxonox
         return this->pickup_;
     }
     
+    //TODO; Doesn't seem to be needed anymore, just put setPosition in the constructor.
     void DroppedItem::createDrop(const Vector3& position)
     {
         this->setPosition(position);

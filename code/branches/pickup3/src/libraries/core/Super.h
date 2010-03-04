@@ -269,6 +269,13 @@
         
     #define SUPER_changedUsed(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
+        
+    #define SUPER_clone(classname, functionname, ...) \
+        SUPER_ARGS(classname, functionname, __VA_ARGS__)
+        
+    #define SUPER_changedCarrier(classname, functionname, ...) \
+        SUPER_NOARGS(classname, functionname)
+        
     // (1/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 
@@ -523,6 +530,15 @@ namespace orxonox
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(10, changedUsed, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
+
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(11, clone, true, OrxonoxClass* item)
+            (item)
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
+        
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(12, changedCarrier, false)
+            ()
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
+
         // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 }
@@ -577,6 +593,8 @@ namespace orxonox
     SUPER_INTRUSIVE_DECLARATION(changedName);
     SUPER_INTRUSIVE_DECLARATION(changedGametype);
     SUPER_INTRUSIVE_DECLARATION(changedUsed);
+    SUPER_INTRUSIVE_DECLARATION(clone);
+    SUPER_INTRUSIVE_DECLARATION(changedCarrier);
     // (3/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 

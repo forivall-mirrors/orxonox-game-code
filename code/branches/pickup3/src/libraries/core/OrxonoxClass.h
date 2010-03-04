@@ -38,6 +38,7 @@
 #define _OrxonoxClass_H__
 
 #include "CorePrereqs.h"
+#include "Super.h"
 
 #include <set>
 #include <vector>
@@ -106,6 +107,8 @@ namespace orxonox
             bool isDirectChildOf(const OrxonoxClass* object);
             bool isParentOf(const OrxonoxClass* object);
             bool isDirectParentOf(const OrxonoxClass* object);
+            
+            virtual void clone(OrxonoxClass* item) {}
 
             inline unsigned int getReferenceCount() const
                 { return this->referenceCount_; }
@@ -168,6 +171,9 @@ namespace orxonox
             //! 'Fast map' that holds this-pointers of all derived types
             std::vector<std::pair<unsigned int, void*> > objectPointers_;
     };
+    
+    SUPER_FUNCTION(11, OrxonoxClass, clone, true);
+    
 }
 
 #endif /* _OrxonoxClass_H__ */

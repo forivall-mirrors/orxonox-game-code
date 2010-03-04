@@ -38,6 +38,8 @@
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "worldentities/pawns/Pawn.h"
+#include "PickupManager.h"
+#include "PickupRepresentation.h"
 //#include "PickupInventory.h"    // HACK; Only for hack, remove later
 
 
@@ -58,7 +60,16 @@ namespace orxonox
     */
     PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator)
     {
+        RegisterObject(PickupSpawner);
+        
         this->initialize();
+        
+        PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(NULL);
+        
+        COUT(1) << "MUP4 " << representation << std::endl;
+        this->attach(representation->getSpawnerRepresentation(this));
+        
+        COUT(1) << "MUP6" << std::endl;
     }
 
     /**
@@ -77,6 +88,8 @@ namespace orxonox
     */
     PickupSpawner::PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems) : StaticEntity(creator)
     {
+        RegisterObject(PickupSpawner);
+        
         this->initialize();
   
         this->pickup_ = pickup;
@@ -84,6 +97,9 @@ namespace orxonox
         this->triggerDistance_ = triggerDistance;
         this->respawnTime_ = respawnTime;
         this->setMaxSpawnedItems(maxSpawnedItems);
+        
+        PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
+        this->attach(representation->getSpawnerRepresentation(this));
     }
 
     /**
@@ -92,8 +108,6 @@ namespace orxonox
     */
     void PickupSpawner::initialize(void)
     {
-        RegisterObject(PickupSpawner);
-
         this->pickup_ = NULL;
         
         this->triggerDistance_ = 20;
@@ -214,7 +228,7 @@ namespace orxonox
     @param dt
         Time since last tick.
     */
-    //TODO: Replace this with a real DistanceTrigger?
+    //TODO: Replace this with a real DistanceTrigger? Or better with collisions?
     void PickupSpawner::tick(float dt)
     {
         //! If the PickupSpawner is active.
@@ -258,6 +272,7 @@ namespace orxonox
             Pickupable* pickup = this->getPickup();
             if (pickup != NULL) //!< If everything went ok, and pickup is not NULL.
             {
+                //TODO: Not correct anymore.
                 PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
                 if(carrier == NULL)
                 {
@@ -265,7 +280,7 @@ namespace orxonox
                     return;
                 }
                 
-                if(pickup->pickup(carrier))
+                if(carrier->pickup(pickup))
                 {
                     COUT(3) << "Pickup got picked up." << std::endl;
 

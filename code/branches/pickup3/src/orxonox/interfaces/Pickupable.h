@@ -37,67 +37,33 @@
 #include "OrxonoxPrereqs.h"
 #include "core/OrxonoxClass.h"
 
-#include "core/Identifier.h"
 #include "core/Super.h"
-#include "interfaces/PickupCarrier.h"
-#include "worldentities/pawns/Pawn.h"
+#include "pickup/PickupIdentifier.h"
 #include <list>
 
 namespace orxonox
 {
-
-    //! Enum for the activation type.
-    namespace pickupActivationType
-    {
-        enum Value
-        {
-            immediate,
-            onUse,
-        };
-    }
-    
-    //! Enum for the duration tyoe.
-    namespace pickupDurationType
-    {
-        enum Value
-        {
-            once,
-            continuous,
-        };
-    }
     
     /**
     @brief
-        An Interface (or more precisely an abstract Class) to model and manage different (all kinds of) pickups.
+        An Interface (or more precisely an abstract Class) to model and represent different (all kinds of) pickups.
     @author
         Damian 'Mozork' Frick
     */
     //TODO: Add stuff like weight/space ?
     class _OrxonoxExport Pickupable : virtual public OrxonoxClass
     {
+        
         public:
             Pickupable(); //!< Default constructor.
             virtual ~Pickupable() {} //!< Default destructor.
-            
-            /**
-            @brief Get the activation type of the pickup.
-            @return Returns the activation type of the pickup.
-            */
-            inline pickupActivationType::Value getActivationType(void)
-                { return this->activationType_; }
-            /**
-            @brief Get the duration type of the pickup.
-            @return Returns the duration type of the pickup.
-            */
-            inline pickupDurationType::Value getDurationType(void)
-                { return this->durationType_; }
                 
             /**
-            @brief Get the owner of the pickup.
-            @return Returns a pointer to the owner of the pickup.
+            @brief Get the carrier of the pickup.
+            @return Returns a pointer to the carrier of the pickup.
             */
-            inline PickupCarrier* getOwner(void)
-                { return this->owner_; }
+            inline PickupCarrier* getCarrier(void)
+                { return this->carrier_; }
                 
             /**
             @brief Get whether the pickup is currently in use or not.
@@ -106,92 +72,57 @@ namespace orxonox
             inline bool isUsed(void)
                 { return this->used_; }
                 
-            /**
-            @brief Get whether the given pawn is a target of this pickup.
-            @param pawn The Pawn of which it has to be determinde whether it is a target of this pickup.
-            @return Retruns true if the given Pawn is a target.
-            */
-            //TODO: Determine whether Pawn includes all possible cases and if PickupCarrier wouldn't be better.
-            inline bool isTarget(Pawn* pawn)
-                {
-                    Identifier* identifier = pawn->getIdentifier();
-                    for(std::list<Identifier*>::iterator it = this->targets_.begin(); it != this->targets_.end(); it++)
-                    {
-                        if(identifier->isA(*it))
-                            return true;
-                    }
-                    return false;
-                }
-                
-            /**
-            @brief  Should be called when the pickup has transitetd from used to unused or the other way around.
-                    Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedUsed); to their changeUsed method.
-            */
-            virtual inline void changedUsed(void)
-                {
-                    if(this->isUsed())
-                        this->used_ = false;
-                    else
-                        this->used_ = true;
-                }
+            bool isTarget(PickupCarrier* carrier);
+            bool addTarget(PickupCarrier* target);
 
-            /**
-            @brief  Sets the pickup to used and makes sure the effects of the pickup take effect at the right places.
-                    This method needs to be implemented by any Class inheriting from Pickupable.
-            @return Returns false if for some reason the method could not take effect, e.g. because it is already in use, or some other circumstance.
-            */
-            virtual bool use(void) = 0;
-            /**
-            @brief  Sets the pickup to unused and makes sure the effects of the pickup no longer take effect.
-                    This method needs to be implemented by any Class inheriting from Pickupable.
-            @return Returns false if for some reason the method could not take effect, e.g. because the pickup is already unused, or some other circumstance.
-            */
-            virtual bool unuse(void) = 0;
+            bool setUsed(bool used);
+            
+            bool pickedUp(PickupCarrier* carrier);
+            bool dropped(void);
+            
+            inline bool isPickedUp(void)
+                { return this->pickedUp_; }
+            
+            Pickupable* clone(void);
+            
+            virtual const PickupIdentifier* getPickupIdentifier(void)
+                { return &this->pickupIdentifier_; }
+                
+            virtual void clone(OrxonoxClass* item);
             
             /**
-            @brief  Adds the pickup to the input PickupCarrier.
-                    This method needs to be implemented by any Class inheriting from Pickupable.
-            @return Returns false if, for some reason, the pickup could not be picked up.
+            @brief  Should be called when the pickup has transited from used to unused or the other way around.
+                    Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedUsed); to their changdeUsed method.
             */
-            //TODO: Maybe better in PickupCarrier?
-            virtual bool pickup(PickupCarrier* carrier) = 0;
-            /**
-            @brief  Drops the pickup. Creates a PickupSpawner at the place the Pickup has been dropped.
-                    This method needs to be implemented by any Class inheriting from Pickupable.
-            @return Returns false if the pickup could not be dropped.
-            */
-            //TODO: Probably could be done here?
-            virtual bool drop(void) = 0;
+            virtual void changedUsed(void) {}
             
             /**
-            @brief  Creates a duplicate of the pickup.
-                    This method needs to e implemented by any Class inheriting from Pickupable.
-            @return Returns the clone of this pickup as a pointer to a Pickupable.
+            @brief  Should be called when the pickup has transited from picked up to dropped or the other way around.
+                    Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedCarrier); to their changedCarrier method.
             */
-            //TODO: Would be nicer if standard case was implemented here.
-            virtual Pickupable* clone(void) = 0;
+            virtual void changedCarrier(void) {}
             
-            /**
-            @brief Sets the owner of the pickup.
-            @param owner Sets the input PickupCarrier as the owner of the pickup.
-            */
-            //TODO: Protected? Check for NULL and return true/false?
-            inline void setOwner(PickupCarrier* owner)
-                { this->owner_ = owner; }
+            bool setCarrier(PickupCarrier* carrier);
+            
+        protected:
+            void initializeIdentifier(void) {}
+            
+            PickupIdentifier pickupIdentifier_;
             
         private:
-            
-            pickupActivationType::Value activationType_; //!< The activation type of the Pickup.
-            pickupDurationType::Value durationType_; //!< The duration type of the pickup.
+            inline void setPickedUp(bool pickedUp)
+                { this->pickedUp_ = pickedUp; }
             
             bool used_; //!< Whether the pickup is currently in use or not.
+            bool pickedUp_; //!< Whether the pickup is currently picked up or not.
             
-            PickupCarrier* owner_; //!< The owner of the pickup.
+            PickupCarrier* carrier_; //!< The owner of the pickup.
             std::list<Identifier*> targets_; //!< The possible targets of this pickup.
 
     };
     
-    SUPER_FUNCTION(10, Pickupable, changedUsed, true)
+    SUPER_FUNCTION(10, Pickupable, changedUsed, false);
+    SUPER_FUNCTION(12, Pickupable, changedCarrier, false);
 }
 
 #endif /* _Pickupable_H__ */

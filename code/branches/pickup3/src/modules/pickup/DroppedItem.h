@@ -34,7 +34,7 @@
 #ifndef _DroppedItem_H__
 #define _DroppedItem_H__
 
-#include "pickup/PickupPrereqs.h"
+#include "PickupPrereqs.h"
 
 #include "PickupSpawner.h"
 
