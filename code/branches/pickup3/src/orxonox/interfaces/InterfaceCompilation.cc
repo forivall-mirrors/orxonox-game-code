@@ -58,6 +58,17 @@ namespace orxonox
     PickupCarrier::PickupCarrier()
     {
         RegisterRootObject(PickupCarrier);
+        
+    }
+    
+    PickupCarrier::~PickupCarrier()
+    {
+        for(std::set<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        {
+            (*it)->destroy();
+        }
+        
+        this->pickups_.clear();
     }
 
     //----------------------------

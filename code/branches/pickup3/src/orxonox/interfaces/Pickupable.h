@@ -35,18 +35,19 @@
 #define _Pickupable_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
 
+#include <list>
 #include "core/Super.h"
 #include "pickup/PickupIdentifier.h"
-#include <list>
+
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
     
     /**
     @brief
-        An Interface (or more precisely an abstract Class) to model and represent different (all kinds of) pickups.
+        An Interface (or more precisely an abstract class) to model and represent different (all kinds of) pickups.
     @author
         Damian 'Mozork' Frick
     */
@@ -56,67 +57,83 @@ namespace orxonox
         
         public:
             Pickupable(); //!< Default constructor.
-            virtual ~Pickupable() {} //!< Default destructor.
-                
-            /**
-            @brief Get the carrier of the pickup.
-            @return Returns a pointer to the carrier of the pickup.
-            */
-            inline PickupCarrier* getCarrier(void)
-                { return this->carrier_; }
-                
+            virtual ~Pickupable(); //!< Default destructor.
+            
             /**
             @brief Get whether the pickup is currently in use or not.
             @return Returns true if the pickup is currently in use.
             */
             inline bool isUsed(void)
                 { return this->used_; }
-                
-            bool isTarget(PickupCarrier* carrier);
-            bool addTarget(PickupCarrier* target);
-
-            bool setUsed(bool used);
-            
-            bool pickedUp(PickupCarrier* carrier);
-            bool dropped(void);
-            
-            inline bool isPickedUp(void)
-                { return this->pickedUp_; }
-            
-            Pickupable* clone(void);
-            
-            virtual const PickupIdentifier* getPickupIdentifier(void)
-                { return &this->pickupIdentifier_; }
-                
-            virtual void clone(OrxonoxClass* item);
-            
             /**
             @brief  Should be called when the pickup has transited from used to unused or the other way around.
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedUsed); to their changdeUsed method.
             */
             virtual void changedUsed(void) {}
+            bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
             
+            /**
+            @brief Returns whether the Pickupable is currently picked up.
+            @return Returns true if the Pickupable is currently picked up, false if not.
+            */
+            inline bool isPickedUp(void)
+                { return this->pickedUp_; }
+            //TODO: Better private, or protected?
+            bool pickedUp(PickupCarrier* carrier); //!< Sets the Pickupable to picked up.
+            bool dropped(void); //!< Sets the Pickupable to not picked up or dropped.
+            
+            bool isTarget(PickupCarrier* carrier); //!< Get whether the given PickupCarrier is a target of this pickup.
+            bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this pickup.
+            
+            /**
+            @brief Get the carrier of the pickup.
+            @return Returns a pointer to the carrier of the pickup.
+            */
+            inline PickupCarrier* getCarrier(void)
+                { return this->carrier_; }
             /**
             @brief  Should be called when the pickup has transited from picked up to dropped or the other way around.
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedCarrier); to their changedCarrier method.
             */
             virtual void changedCarrier(void) {}
+            //TODO: Maybe private?
+            bool setCarrier(PickupCarrier* carrier); //!< Sets the carrier of the pickup.
             
-            bool setCarrier(PickupCarrier* carrier);
+            Pickupable* clone(void); //!< Creates a duplicate of the Pickupable.
+            virtual void clone(OrxonoxClass* item); //!< Creates a duplicate of the input OrxonoxClass.
+            
+            /**
+            @brief Get the PickupIdentifier of this Pickupable.
+            @return Returns a pointer to the PickupIdentifier of this Pickupable.
+            */
+            virtual const PickupIdentifier* getPickupIdentifier(void)
+                { return &this->pickupIdentifier_; }
+                
+            virtual void destroy(void)
+                { delete this; }
             
         protected:
+            /**
+            @brief Helper method to initialize the PickupIdentifier.
+            */
+            //TODO: Really needed?
             void initializeIdentifier(void) {}
             
-            PickupIdentifier pickupIdentifier_;
+            //TODO: Move to private and create get method in protected.
+            PickupIdentifier pickupIdentifier_; //!< The PickupIdentifier of this Pickupable.
             
         private:
+            /**
+            @brief Helper method to set the Pickupable to either picked up or not picked up.
+            @param pickedUp The value this->pickedUp_ should be set to.
+            */
             inline void setPickedUp(bool pickedUp)
                 { this->pickedUp_ = pickedUp; }
             
             bool used_; //!< Whether the pickup is currently in use or not.
             bool pickedUp_; //!< Whether the pickup is currently picked up or not.
             
-            PickupCarrier* carrier_; //!< The owner of the pickup.
+            PickupCarrier* carrier_; //!< The carrier of the pickup.
             std::list<Identifier*> targets_; //!< The possible targets of this pickup.
 
     };

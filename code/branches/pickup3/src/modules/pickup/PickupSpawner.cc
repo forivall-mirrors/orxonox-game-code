@@ -65,11 +65,7 @@ namespace orxonox
         this->initialize();
         
         PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(NULL);
-        
-        COUT(1) << "MUP4 " << representation << std::endl;
         this->attach(representation->getSpawnerRepresentation(this));
-        
-        COUT(1) << "MUP6" << std::endl;
     }
 
     /**

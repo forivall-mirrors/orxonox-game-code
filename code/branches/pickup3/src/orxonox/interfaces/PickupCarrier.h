@@ -35,31 +35,48 @@
 #define _PickupCarrier_H__
 
 #include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+
+#include <list>
+#include <set>
 #include "Pickupable.h"
 
-#include <set>
-#include <list>
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
 
+    /**
+    @brief
+        The PickupCarrier interface provides the means, for any class implementing it, to possess Pickupables.
+    @author
+        Damian 'Mozork' Frick
+    */
     class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
     {
-        friend class Pickupable;
+        friend class Pickupable; //!< The Pickupable has full acces to its PickupCarrier.
         
         public:
-            PickupCarrier();
-            virtual ~PickupCarrier() {}
+            PickupCarrier(); //!< Constructor.
+            virtual ~PickupCarrier(); //!< Destructor.
             
-            //TODO: Secure uniqueness of each item in the set, if neccessary, check.
+            /**
+            @brief Can be called to pick up a Pickupable.
+            @param pickup A pointer to the Pickupable.
+            @return Returns true if the Pickupable was picked up, false if not.
+            */
             inline bool pickup(Pickupable* pickup)
                 {
                     bool pickedUp = this->pickups_.insert(pickup).second;
-                    if(pickedUp) pickup->pickedUp(this);
+                    if(pickedUp)
+                        pickup->pickedUp(this);
                     return pickedUp;
                 }
                 
+            /**
+            @brief Can be called to drop a Pickupable.
+            @param pickup A pointer to the Pickupable.
+            @return Returns true if the Pickupable has been dropped, false if not.
+            */
             inline bool drop(Pickupable* pickup)
                 { 
                    bool dropped = this->pickups_.erase(pickup) == 1;

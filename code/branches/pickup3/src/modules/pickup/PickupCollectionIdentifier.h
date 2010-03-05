@@ -20,28 +20,39 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Daniel 'Huty' Haggenmueller
+ *      ...
  *   Co-authors:
  *      ...
  *
- */
-
-/**
-    @file
-    @brief Implementation of EquipmentItem.
 */
 
-#include "EquipmentItem.h"
-#include "core/CoreIncludes.h"
+#ifndef _PickupCollectionIdentifier_H__
+#define _PickupCollectionIdentifier_H_
+
+#include "PickupPrereqs.h"
+
+#include "pickup/PickupIdentifier.h"
+#include <set>
 
 namespace orxonox
 {
-    /**
-    @brief Constructor. Registers the EquipmentItem.
-    @param creator Pointer to the object which created this item.
-    */
-    EquipmentItem::EquipmentItem(BaseObject* creator) : BaseItem(creator)
+
+    class PickupCollectionIdentifier : public PickupIdentifier
     {
-        RegisterObject(EquipmentItem);
-    }
+        
+        public:
+            PickupCollectionIdentifier(void);
+            ~PickupCollectionIdentifier();
+            
+            virtual int compare(const PickupIdentifier& identifier) const;
+            
+            void addPickup(const PickupIdentifier* identifier);
+            
+        private:
+            std::set<const PickupIdentifier*, PickupIdentifierPtrCompare> identifiers_;
+            
+    };
+    
 }
+
+#endif // _PickupCollectionIdentifier_H_
