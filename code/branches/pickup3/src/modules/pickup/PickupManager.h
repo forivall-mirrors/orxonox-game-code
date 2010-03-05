@@ -70,7 +70,7 @@ namespace orxonox
             
             static PickupManager& getInstance() { return Singleton<PickupManager>::getInstance(); }
             
-            bool registerRepresentation(const PickupIdentifier& identifier, PickupRepresentation* representation); //!< Registers a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
+            bool registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation); //!< Registers a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
             PickupRepresentation* getRepresentation(const PickupIdentifier* identifier); //!< Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
             
             //TODO: Delete or utilitze this.
@@ -80,7 +80,7 @@ namespace orxonox
             static PickupManager* singletonPtr_s;
             
             PickupRepresentation* defaultRepresentation_; //!< The default PickupRepresentation.
-            std::map<const PickupIdentifier, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types if Pickupables) and PickupRepresentations.
+            std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types if Pickupables) and PickupRepresentations.
             
             //TODO: Delete or utilize this.
             PickupCarrierNode* pickupCarrierStructure_;

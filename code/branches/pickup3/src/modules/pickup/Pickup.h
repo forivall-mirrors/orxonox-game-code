@@ -27,13 +27,14 @@
 */
 
 #ifndef _Pickup_H__
-#define Pickup_H__
+#define _Pickup_H__
 
 #include "pickup/PickupPrereqs.h"
 
-#include "interfaces/Pickupable.h"
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
+
+#include "interfaces/Pickupable.h"
 
 namespace orxonox
 {
@@ -58,13 +59,19 @@ namespace orxonox
         };
     }
     
+    /**
+    @brief
+        Pickup class. Offers base functionality for a wide range of pickups.
+        Pickups ingeriting from this class cann choose an activation type and a duration type.
+    @author
+        Damian 'Mozork' Frick
+    */
     class _PickupExport Pickup : public Pickupable, public BaseObject
     {
         
         public:
-            
-            Pickup(BaseObject* creator);
-            virtual ~Pickup();
+            Pickup(BaseObject* creator); //!< Constructor.
+            virtual ~Pickup(); //!< Destructor.
             
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             
@@ -84,21 +91,39 @@ namespace orxonox
             const std::string& getActivationType(void); //!< Get the activation type of the pickup.
             const std::string& getDurationType(void); //!< Get the duration type of the pickup.
             
+            /**
+            @brief Get whether the activation type is 'immediate'.
+            @return Returns true if the activation type is 'immediate'.
+            */
             inline bool isImmediate(void)
                 { return this->getActivationTypeDirect() == pickupActivationType::immediate; }
+            /**
+            @brief Get whether the activation type is 'onUse'.
+            @return Returns true if the activation type is 'onUse'.
+            */
             inline bool isOnUse(void)
                 { return this->getActivationTypeDirect() == pickupActivationType::onUse; }
+            /**
+            @brief Get whether the duration type is 'once'.
+            @return Returns true if the duration type is 'once'.
+            */
             inline bool isOnce(void)
                 { return this->getDurationTypeDirect() == pickupDurationType::once; }
+            /**
+            @brief Get whether the duration type is 'continuous'.
+            @return Returns true if the duration type is 'continuous'.
+            */
             inline bool isContinuous(void)
                 { return this->getDurationTypeDirect() == pickupDurationType::continuous; }
-                        
-            virtual void clone(OrxonoxClass* item);
             
-            virtual void changedCarrier(void);
+            virtual void changedCarrier(void); //!< Should be called when the pickup has transited from picked up to dropped or the other way around.
+                                    
+            virtual void clone(OrxonoxClass* item); //!< Creates a duplicate of the Pickup.
                 
         protected:
             void initializeIdentifier(void);
+            
+            virtual bool createSpawner(const Vector3& position); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
             
             /**
             @brief Set the activation type of the pickup.
@@ -117,6 +142,8 @@ namespace orxonox
             void setDurationType(const std::string& type); //!< Set the duration type of the pickup
                 
         private:
+            void initialize(void); //!< Initializes the member variables.
+            
             pickupActivationType::Value activationType_; //!< The activation type of the Pickup.
             pickupDurationType::Value durationType_; //!< The duration type of the pickup.
             
@@ -124,7 +151,6 @@ namespace orxonox
             static const std::string activationTypeOnUse_s;
             static const std::string durationTypeOnce_s;
             static const std::string durationTypeContinuous_s;
-            static const std::string blankString_s; //TODO: Maybe already implemented somewhere?
         
     };
     

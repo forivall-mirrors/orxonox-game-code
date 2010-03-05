@@ -22,7 +22,7 @@
  *   Author:
  *      Daniel 'Huty' Haggenmueller
  *   Co-authors:
- *      ...
+ *      Damian 'Mozork' Frick
  *
  */
 
@@ -37,94 +37,92 @@
 #include "PickupPrereqs.h"
 
 #include <string>
+#include "interfaces/Pickupable.h"
 #include "tools/Timer.h"
+
 #include "tools/interfaces/Tickable.h"
 #include "worldentities/StaticEntity.h"
-#include "interfaces/Pickupable.h"
 
 namespace orxonox
 {
     /**
-        @brief PickupSpawner.
-        @author Daniel 'Huty' Haggenmueller
+        @brief
+            The PickupSpawner class is responsible for spawning pickups of a specific type.
+            Forthermore it can be specified how long the time interval between spawning two items is and how many pickups are spawned at maximum, amongst other things.
+        @author
+            Daniel 'Huty' Haggenmueller
+            Damian 'Mozork' Frick
     */
     class _OrxonoxExport PickupSpawner : public StaticEntity, public Tickable
     {
         public:
-            //TODO: Add limit of items spawned here.
-            PickupSpawner(BaseObject* creator);
-            PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems);
-            virtual ~PickupSpawner();
+            PickupSpawner(BaseObject* creator); //!< Default Constructor.
+            PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems); //!< Constructor.
+            virtual ~PickupSpawner(); //!< Destructor.
 
-            //virtual void changedActivity();                                 //!< Invoked when activity has changed (set visibilty).
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< Method for creating a PickupSpawner through XML.
+            virtual void changedActivity(); //!< Invoked when activity has changed (set visibilty).
             virtual void tick(float dt);
 
             /**
-                @brief Get the distance in which to trigger.
-                @return Returns the distance in which this gets triggered.
+            @brief Get the distance in which to trigger.
+            @return Returns the distance in which this gets triggered.
             */
             inline float getTriggerDistance() const
                 { return this->triggerDistance_; }
             /**
-                @brief Set the distance in which to trigger.
-                @param value The new distance in which to trigger.
+            @brief Set the distance in which to trigger.
+            @param value The new distance in which to trigger.
             */
             inline void setTriggerDistance(float value)
                 { this->triggerDistance_ = value; }
 
             /**
-                @brief Get the time to respawn.
-                @returns Returns the time after which this gets re-actived.
+            @brief Get the time to respawn.
+            @returns Returns the time after which this gets re-actived.
             */
             inline float getRespawnTime() const
                 { return this->respawnTime_; }
             /**
-                @brief Set the time to respawn.
-                @param time New time after which this gets re-actived.
+            @brief Set the time to respawn.
+            @param time New time after which this gets re-actived.
             */
             inline void setRespawnTime(float time)
                 { this->respawnTime_ = time; }
 
             /**
-                @brief Get the maximum number of items that will be spawned by this PickupSpawner.
-                @return Returns the maximum number of items spawned by this PickupSpawner.
+            @brief Get the maximum number of items that will be spawned by this PickupSpawner.
+            @return Returns the maximum number of items spawned by this PickupSpawner.
             */
             inline int getMaxSpawnedItems(void)
                 { return this->maxSpawnedItems_; }
-            void setMaxSpawnedItems(int items);
+            void setMaxSpawnedItems(int items); //!< Sets the maximum number of spawned items.
 
         protected:
-            virtual Pickupable* getPickup(void);
+            void decrementSpawnsRemaining(void); //!< Decrements the number of remaining spawns.
             
-            void setPickupable(Pickupable* pickup);
-            const Pickupable* getPickupable(void);
+            virtual Pickupable* getPickup(void); //!< Creates a new Pickupable.
             
-            void decrementSpawnsRemaining(void);
+            void setPickupable(Pickupable* pickup); //!< Sets a Pickupable for the PickupSpawner to spawn.
+            const Pickupable* getPickupable(void); //!< Get the Pickupable that is spawned by this PickupSpawner.
             
             Pickupable* pickup_; //!< The pickup to be spawned.
 
         private:
             void initialize(void);
             
-            void trigger(Pawn* pawn);                                       //!< Method called when a Pawn is close enough.
-            void respawnTimerCallback();                                    //!< Method called when the timer runs out.
+            void trigger(Pawn* pawn); //!< Method called when a Pawn is close enough.
+            void respawnTimerCallback(); //!< Method called when the timer runs out.
 
-            int maxSpawnedItems_;                   //!< Maximum number of items spawned by this PickupSpawner.
-            int spawnsRemaining_;                   //!< Number of items that can be spawned by this PickupSpawner until it selfdestructs.
+            int maxSpawnedItems_; //!< Maximum number of items spawned by this PickupSpawner.
+            int spawnsRemaining_; //!< Number of items that can be spawned by this PickupSpawner until it selfdestructs.
 
-            float triggerDistance_;                 //!< Distance in which this gets triggered.
+            float triggerDistance_; //!< Distance in which this gets triggered.
 
-            /* Pickup animation */
-            float tickSum_;                         //!< Adds up tick to use in sine movement
-            static const float bounceSpeed_s;       //!< Speed of pickup to bounce up and down
-            static const float bounceDistance_s;    //!< Distance the pickup bounces up and down
-            static const float rotationSpeed_s;     //!< Rotation speed of pickup
+            float respawnTime_; //!< Time after which this gets re-actived.
+            Timer respawnTimer_; //!< Timer used for re-activating.
 
-            float respawnTime_;                     //!< Time after which this gets re-actived.
-            Timer respawnTimer_;                    //!< Timer used for re-activating.
-
-            static const int INF = -1;             //!< Constant for infinity.
+            static const int INF = -1; //!< Constant for infinity.
     };
 }
 

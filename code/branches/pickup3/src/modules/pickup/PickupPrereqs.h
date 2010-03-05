@@ -65,7 +65,7 @@
 namespace orxonox
 {
 
-    class DroppedItem;
+    class DroppedPickup;
     class Pickup;
     class PickupCollection;
     class PickupCollectionIdentifier;

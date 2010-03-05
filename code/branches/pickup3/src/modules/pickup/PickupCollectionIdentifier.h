@@ -44,12 +44,12 @@ namespace orxonox
             PickupCollectionIdentifier(void);
             ~PickupCollectionIdentifier();
             
-            virtual int compare(const PickupIdentifier& identifier) const;
+            virtual int compare(const PickupIdentifier* identifier) const;
             
             void addPickup(const PickupIdentifier* identifier);
             
         private:
-            std::set<const PickupIdentifier*, PickupIdentifierPtrCompare> identifiers_;
+            std::set<const PickupIdentifier*, PickupIdentifierCompare> identifiers_;
             
     };
     

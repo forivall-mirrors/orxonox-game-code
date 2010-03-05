@@ -37,6 +37,9 @@
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "interfaces/PickupCarrier.h"
+#include "DroppedPickup.h"
+
+#include "PickupCollectionIdentifier.h"
 
 namespace orxonox
 {
@@ -48,6 +51,8 @@ namespace orxonox
     PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(PickupCollection);
+        
+        this->pickupCollectionIdentifier_ = new PickupCollectionIdentifier();
     }
     
     /**
@@ -59,7 +64,7 @@ namespace orxonox
         //! Destroy all Pickupables constructing this PickupCollection.
         for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            delete *it;
+            (*it)->destroy();
         }
     }
     
@@ -79,12 +84,28 @@ namespace orxonox
     
     void PickupCollection::initializeIdentifier(void)
     {
-        this->pickupCollectionIdentifier_.addClass(this->getIdentifier());
+        this->pickupCollectionIdentifier_->addClass(this->getIdentifier());
         
         for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            this->pickupCollectionIdentifier_.addPickup((*it)->getPickupIdentifier());
+            this->pickupCollectionIdentifier_->addPickup((*it)->getPickupIdentifier());
         }
+    }
+    
+    /**
+    @brief
+        Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
+        This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
+        DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position);
+    @param position
+        The position at which the PickupSpawner should be placed.
+    @return
+        Returns true if a spawner was created, false if not.
+    */
+    bool PickupCollection::createSpawner(const Vector3& position)
+    {
+        DroppedPickup::DroppedPickup(this, this, position);
+        return true;
     }
     
     /**
@@ -156,6 +177,11 @@ namespace orxonox
         }
 
         pickup->initializeIdentifier();
+    }
+    
+    const PickupIdentifier* PickupCollection::getPickupIdentifier(void)
+    {
+        return this->pickupCollectionIdentifier_;
     }
     
 }

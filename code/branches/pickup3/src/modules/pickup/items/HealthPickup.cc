@@ -32,6 +32,7 @@
 #include "core/XMLPort.h"
 
 #include "worldentities/pawns/Pawn.h"
+#include "pickup/PickupIdentifier.h"
 
 #include <sstream>
 
@@ -69,18 +70,18 @@ namespace orxonox
     
     void HealthPickup::initializeIdentifier(void)
     {
-        this->pickupIdentifier_.addClass(this->getIdentifier());
+        this->pickupIdentifier_->addClass(this->getIdentifier());
         
         std::stringstream stream;
         stream << this->getHealth();
         std::string type1 = "health";
         std::string val1 = stream.str();
-        this->pickupIdentifier_.addParameter(type1, val1);
+        this->pickupIdentifier_->addParameter(type1, val1);
         
         //TODO: Does this work, is val valid outside the function scope?
         std::string val2 = this->getHealthType();
         std::string type2 = "healthType";
-        this->pickupIdentifier_.addParameter(type2, val2);
+        this->pickupIdentifier_->addParameter(type2, val2);
     }
     
     void HealthPickup::HealthPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)

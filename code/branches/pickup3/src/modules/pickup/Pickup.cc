@@ -29,6 +29,9 @@
 #include "Pickup.h"
 
 #include "core/CoreIncludes.h"
+#include "util/StringUtils.h"
+#include "pickup/PickupIdentifier.h"
+#include "DroppedPickup.h"
 
 namespace orxonox
 {
@@ -37,15 +40,15 @@ namespace orxonox
     /*static*/ const std::string Pickup::activationTypeOnUse_s = "onUse";
     /*static*/ const std::string Pickup::durationTypeOnce_s = "once";
     /*static*/ const std::string Pickup::durationTypeContinuous_s = "continuous";
-    /*static*/ const std::string Pickup::blankString_s = "";
     
-    //TODO: Should this bee here? Does it work without?
+    //TODO: Should this be here? Does it work without?
     CreateFactory(Pickup);
     
     Pickup::Pickup(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Pickup);
         
+        this->initialize();
     }
     
     Pickup::~Pickup()
@@ -53,20 +56,39 @@ namespace orxonox
         
     }
     
+    /**
+    @brief
+        Initializes the member variables.
+    */
+    void Pickup::initialize(void)
+    {
+        this->activationType_ = pickupActivationType::immediate;
+        this->durationType_ = pickupDurationType::once;
+    }
+    
+    /**
+    @brief
+        Initializes the PickupIdentififer of this Pickup.
+    */
     void Pickup::initializeIdentifier(void)
     {
-        this->pickupIdentifier_.addClass(this->getIdentifier());
+        //TODO: Check whether this could not be done in the Constructor if Pickupable. Would be much more convenient.
+        this->pickupIdentifier_->addClass(this->getIdentifier());
         
         //TODO: Works?
         std::string val1 = this->getActivationType();
         std::string type1 = "activationType";
-        this->pickupIdentifier_.addParameter(type1, val1);
+        this->pickupIdentifier_->addParameter(type1, val1);
         
         std::string val2 = this->getDurationType();
         std::string type2 = "durationType";
-        this->pickupIdentifier_.addParameter(type2, val2);
+        this->pickupIdentifier_->addParameter(type2, val2);
     }
     
+    /**
+    @brief
+        Method for creating a Pickup object through XML.
+    */
     void Pickup::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Pickup, XMLPort, xmlelement, mode);
@@ -80,8 +102,8 @@ namespace orxonox
     /**
     @brief
         Get the activation type of the pickup.
-    @param buffer
-        The buffer to store the activation type as string in.
+    @return
+        Returns a string containing the activation type.
     */
     const std::string& Pickup::getActivationType(void)
     {
@@ -92,15 +114,15 @@ namespace orxonox
             case pickupActivationType::onUse:
                 return activationTypeOnUse_s;
             default:
-                return blankString_s;
+                return BLANKSTRING;
         }
     }
         
     /**
     @brief
         Get the duration type of the pickup.
-    @param buffer
-        The buffer to store the duration type as string in.
+    @return
+        Returns a string containing the duration type.
     */
     const std::string& Pickup::getDurationType(void)
     {
@@ -111,7 +133,7 @@ namespace orxonox
             case pickupDurationType::continuous:
                 return durationTypeContinuous_s;
             default:
-                return blankString_s;
+                return BLANKSTRING;
         }
     }
     
@@ -161,7 +183,23 @@ namespace orxonox
     
     /**
     @brief
-        Creates a duplicate of the pickup.
+        Should be called when the pickup has transited from picked up to dropped or the other way around.
+        Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedCarrier); to their changedCarrier method.
+    */
+    void Pickup::changedCarrier(void)
+    {
+        SUPER(Pickup, changedCarrier);
+        
+        //! Sets the Pickup to used if the Pickup has activation type 'immediate' and gets picked up.
+        if(this->isPickedUp() && this->isImmediate())
+        {
+            this->setUsed(true);
+        }
+    }
+    
+    /**
+    @brief
+        Creates a duplicate of the Pickup.
     @return
         Returns the clone of this pickup as a pointer to a Pickupable.
     */
@@ -178,15 +216,21 @@ namespace orxonox
         
         pickup->initializeIdentifier();
     }
-    
-    void Pickup::changedCarrier(void)
-    {
-        SUPER(Pickup, changedCarrier);
         
-        if(this->isPickedUp() && this->isImmediate())
-        {
-            this->setUsed(true);
-        }
+    /**
+    @brief
+        Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
+        This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
+        DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position);
+    @param position
+        The position at which the PickupSpawner should be placed.
+    @return
+        Returns true if a spawner was created, false if not.
+    */
+    bool Pickup::createSpawner(const Vector3& position)
+    {
+        DroppedPickup::DroppedPickup(this, this, position);
+        return true;
     }
     
 }

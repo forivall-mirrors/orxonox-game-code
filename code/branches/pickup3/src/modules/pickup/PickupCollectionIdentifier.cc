@@ -43,9 +43,9 @@ namespace orxonox
         
     }
 
-    int PickupCollectionIdentifier::compare(const PickupIdentifier& identifier) const
+    int PickupCollectionIdentifier::compare(const PickupIdentifier* identifier) const
     {
-        PickupIdentifier* temp = const_cast<PickupIdentifier*>(&identifier);
+        PickupIdentifier* temp = const_cast<PickupIdentifier*>(identifier);
         const PickupCollectionIdentifier* collectionIdentifier = dynamic_cast<PickupCollectionIdentifier*>(temp);
         if(collectionIdentifier == NULL)
         {
@@ -59,9 +59,9 @@ namespace orxonox
         for(std::set<const PickupIdentifier*, PickupIdentifierCompare>::const_iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); it++)
         {
             
-            if((*it)->compare(**it2) < 0)
+            if((*it)->compare(*it2) < 0)
                 return -1;
-            if((*it2)->compare(**it) < 0)
+            if((*it2)->compare(*it) < 0)
                 return 1;
         }
         

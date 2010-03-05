@@ -82,7 +82,7 @@ namespace orxonox
         Returns true if successful and false if not.
     */
     //TODO: Make sure that either the PickupRepresentation is destroyed upon destruction of the PickupManager if the representation wasn't created with XMLPort.
-    bool PickupManager::registerRepresentation(const PickupIdentifier& identifier, PickupRepresentation* representation)
+    bool PickupManager::registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
     {
         if(this->representations_.find(identifier) == this->representations_.end()) //!< If the Pickupable already has a RepresentationRegistered.
             return false;
@@ -103,7 +103,7 @@ namespace orxonox
     */
     PickupRepresentation* PickupManager::getRepresentation(const PickupIdentifier* identifier)
     {
-        std::map<const PickupIdentifier, PickupRepresentation*, PickupIdentifierCompare>::iterator it = this->representations_.find(*identifier);
+        std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare>::iterator it = this->representations_.find(identifier);
         if(it == this->representations_.end())
         {
             COUT(4) << "PickupManager::getRepresentation() returned default representation." << std::endl;

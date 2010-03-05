@@ -22,17 +22,17 @@
  *   Author:
  *      Daniel 'Huty' Haggenmueller
  *   Co-authors:
- *      ...
+ *      Damian 'Mozork' Frick
  *
  */
 
 /**
     @file
-    @brief Definition of DroppedItem
+    @brief Definition of the DroppedPickup class.
 */
 
-#ifndef _DroppedItem_H__
-#define _DroppedItem_H__
+#ifndef _DroppedPickup_H__
+#define _DroppedPickup_H__
 
 #include "PickupPrereqs.h"
 
@@ -40,23 +40,30 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport DroppedItem : public PickupSpawner
+    
+    /**
+    @brief
+        Special PickupSpawner that is created whe a Pickupable is dropped. It just spawns one pickup, the one that was dropped.
+    @author
+        Daniel 'Huty' Haggenmueller
+        Damian 'Mozork' Frick
+    */
+    class _OrxonoxExport DroppedPickup : public PickupSpawner
     {
         public:
-            DroppedItem(BaseObject* creator);
-            DroppedItem(BaseObject* creator, Pickupable* item, const Vector3& position, float triggerDistance);
-            virtual ~DroppedItem();
+            DroppedPickup(BaseObject* creator); //!< Default constructor.
+            DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position, float triggerDistance = 10.0); //!< Constructor.
+            virtual ~DroppedPickup(); //!< Destructor.
 
         protected:
-            virtual Pickupable* getPickup(void);
+            virtual Pickupable* getPickup(void); //!< Creates the Pickupable that is going to get picked up.
             
         private:
-            void initialize(void);
-            void createDrop(const Vector3& position);
+            void initialize(void); //!< Initializes the member variables of the object.
             
-            bool gotPickedUp_;
+            bool gotPickedUp_; //!< Whether the pickup got picked up or not.
 
     };
 }
 
-#endif /* _DroppedItem_H__ */
+#endif /* _DroppedPickup_H__ */

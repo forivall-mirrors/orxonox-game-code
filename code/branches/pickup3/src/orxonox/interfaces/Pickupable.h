@@ -38,7 +38,6 @@
 
 #include <list>
 #include "core/Super.h"
-#include "pickup/PickupIdentifier.h"
 
 #include "core/OrxonoxClass.h"
 
@@ -82,7 +81,7 @@ namespace orxonox
             bool pickedUp(PickupCarrier* carrier); //!< Sets the Pickupable to picked up.
             bool dropped(void); //!< Sets the Pickupable to not picked up or dropped.
             
-            bool isTarget(PickupCarrier* carrier); //!< Get whether the given PickupCarrier is a target of this pickup.
+            bool isTarget(const PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this pickup.
             bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this pickup.
             
             /**
@@ -107,7 +106,7 @@ namespace orxonox
             @return Returns a pointer to the PickupIdentifier of this Pickupable.
             */
             virtual const PickupIdentifier* getPickupIdentifier(void)
-                { return &this->pickupIdentifier_; }
+                { return this->pickupIdentifier_; }
                 
             virtual void destroy(void)
                 { delete this; }
@@ -119,8 +118,17 @@ namespace orxonox
             //TODO: Really needed?
             void initializeIdentifier(void) {}
             
+            /**
+            @brief Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
+                   This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
+                   DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position, float triggerDistance);
+            @param position The position at which the PickupSpawner should be placed.
+            @return Returns true if a spawner was created, false if not.
+            */
+            virtual bool createSpawner(const Vector3& position) = 0;
+            
             //TODO: Move to private and create get method in protected.
-            PickupIdentifier pickupIdentifier_; //!< The PickupIdentifier of this Pickupable.
+            PickupIdentifier* pickupIdentifier_; //!< The PickupIdentifier of this Pickupable.
             
         private:
             /**

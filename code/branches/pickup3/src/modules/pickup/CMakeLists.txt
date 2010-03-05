@@ -1,5 +1,5 @@
 SET_SOURCE_FILES(PICKUP_SRC_FILES
-  DroppedItem.cc
+  DroppedPickup.cc
   Pickup.cc
   PickupCollection.cc
   PickupCollectionIdentifier.cc

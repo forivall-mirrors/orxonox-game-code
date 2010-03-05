@@ -34,21 +34,14 @@
 #include "PickupSpawner.h"
 
 #include "core/CoreIncludes.h"
-//#include "core/GUIManager.h"     // HACK; see below
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "worldentities/pawns/Pawn.h"
 #include "PickupManager.h"
 #include "PickupRepresentation.h"
-//#include "PickupInventory.h"    // HACK; Only for hack, remove later
-
 
 namespace orxonox
 {
-
-//     const float PickupSpawner::bounceSpeed_s = 6.0f;
-//     const float PickupSpawner::rotationSpeed_s = 1.0f;
-//     const float PickupSpawner::bounceDistance_s = 4.0f;
 
     CreateFactory(PickupSpawner);
 
@@ -63,9 +56,6 @@ namespace orxonox
         RegisterObject(PickupSpawner);
         
         this->initialize();
-        
-        PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(NULL);
-        this->attach(representation->getSpawnerRepresentation(this));
     }
 
     /**
@@ -94,8 +84,16 @@ namespace orxonox
         this->respawnTime_ = respawnTime;
         this->setMaxSpawnedItems(maxSpawnedItems);
         
-        PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
-        this->attach(representation->getSpawnerRepresentation(this));
+        if(this->pickup_ == NULL)
+        {
+            COUT(2) << "A PickupSpawner was created without a valid Pickupable. This won't work." << std::endl;
+            this->setActive(false);
+        }
+        else
+        {
+            PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
+            this->attach(representation->getSpawnerRepresentation(this));
+        }
     }
 
     /**
@@ -108,7 +106,6 @@ namespace orxonox
         
         this->triggerDistance_ = 20;
         this->respawnTime_ = 0;
-        this->tickSum_ = 0;
         this->maxSpawnedItems_ = INF;
         this->spawnsRemaining_ = INF;
     }
@@ -140,84 +137,33 @@ namespace orxonox
         XMLPortParam(PickupSpawner, "triggerDistance", setTriggerDistance, getTriggerDistance, xmlelement, mode);
         XMLPortParam(PickupSpawner, "respawnTime", setRespawnTime, getRespawnTime, xmlelement, mode);
         XMLPortParam(PickupSpawner, "maxSpawnedItems", setMaxSpawnedItems, getMaxSpawnedItems, xmlelement, mode);
-
-        //TODO: Kill hack.
-        // HACKs
-        // Load the GUI image as soon as the PickupSpawner gets loaded
-        //  = less delays while running
-//         BaseObject* newObject = this->itemTemplate_->getBaseclassIdentifier()->fabricate(this);
-//         BaseItem* asItem = orxonox_cast<BaseItem*>(newObject);
-//         if (asItem)
-//         {
-//             asItem->addTemplate(this->itemTemplate_);
-//             PickupInventory::getImageForItem(asItem);
-//             newObject->destroy();
-//         }
-
-        //  & load the GUI itself too, along with some empty windows
-        //   = even less delays
-//         GUIManager::getInstance().showGUI("PickupInventory");
-//         GUIManager::getInstance().executeCode("hideGUI(\"PickupInventory\")");
-//         PickupInventory::getSingleton();
-    }
-    
-    /**
-    @brief
-        Sets a Pickupable for the PickupSpawner to spawn.
-    @param pickup
-        The Pickupable to be set.
-    */
-    void PickupSpawner::setPickupable(Pickupable* pickup)
-    {
-        if(this->pickup_ != NULL)
-        {
-            COUT(1) << "addPickupable called, with this->pickup_ already set." << std::endl;
-            return;
-        }
-        if(pickup == NULL)
-        {
-            COUT(1) << "Argument of addPickupable is NULL." << std::endl;
-            return;
-        }
         
-        this->pickup_ = pickup;
+        if(this->pickup_ == NULL)
+        {
+            COUT(2) << "A PickupSpawner was created without a valid Pickupable. This won't work." << std::endl;
+            this->setActive(false);
+        }
+        else
+        {
+            PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
+            this->attach(representation->getSpawnerRepresentation(this));
+        }
     }
     
-    /**
-    @brief
-        Get the Pickupable that is spawned by this PickupSpawner.
-    @return
-        Returns the Pickupable that is spawned by this PickupSpawner.
-    */
-    const Pickupable* PickupSpawner::getPickupable(void)
-    {
-        return this->pickup_;
-    }
-
     /**
     @brief
         Invoked when the activity has changed. Sets visibility of attached objects.
     */
-//     void PickupSpawner::changedActivity()
-//     {
-//         SUPER(PickupSpawner, changedActivity);
-// 
-//         for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
-//             (*it)->setVisible(this->isActive());
-//     }
-
-    /**
-    @brief
-        Sets the maximum number of spawned items.
-    @param items
-        The maximum number of spawned items to be set.
-    */
-    void PickupSpawner::setMaxSpawnedItems(int items)
+    void PickupSpawner::changedActivity()
     {
-        this->maxSpawnedItems_ = items;
-        this->spawnsRemaining_ = items;
-    }
+        SUPER(PickupSpawner, changedActivity);
 
+        for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
+        {
+            (*it)->setVisible(this->isActive());
+        }
+    }
+     
     /**
     @brief
         Tick, checks if any Pawn is close enough to trigger.
@@ -240,54 +186,19 @@ namespace orxonox
                     this->trigger(*it);
                 }
             }
-
-            //! Animation.
-//             this->yaw(Radian(rotationSpeed_s*dt));
-//             this->tickSum_ += bounceSpeed_s*dt;
-//             this->translate(Vector3(0,bounceDistance_s*dt*sin(this->tickSum_),0));
-//             if (this->tickSum_ > 2*Ogre::Math::PI)
-//                 this->tickSum_ -= 2*Ogre::Math::PI;
         }
     }
-
+    
     /**
     @brief
-        Trigger the PickupSpawner.
-
-        Adds the pickup to the Pawn that triggered,
-        sets the timer to re-activate and deactives the PickupSpawner.
-
-    @param pawn
-        Pawn which triggered the PickupSpawner.
+        Sets the maximum number of spawned items.
+    @param items
+        The maximum number of spawned items to be set.
     */
-    void PickupSpawner::trigger(Pawn* pawn)
+    void PickupSpawner::setMaxSpawnedItems(int items)
     {
-        //TODO: If private, isActive doesn't need to be tested anymore.
-        if (this->isActive()) //!< Checks whether PickupItem is active.
-        {
-            Pickupable* pickup = this->getPickup();
-            if (pickup != NULL) //!< If everything went ok, and pickup is not NULL.
-            {
-                //TODO: Not correct anymore.
-                PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
-                if(carrier == NULL)
-                {
-                    COUT(1) << "This is bad. Pawn isn't PickupCarrier." << std::endl;
-                    return;
-                }
-                
-                if(carrier->pickup(pickup))
-                {
-                    COUT(3) << "Pickup got picked up." << std::endl;
-
-                    this->decrementSpawnsRemaining();
-                }
-                else
-                {
-                    pickup->destroy();
-                }
-            }
-        }
+        this->maxSpawnedItems_ = items;
+        this->spawnsRemaining_ = items;
     }
     
     /**
@@ -295,7 +206,6 @@ namespace orxonox
         Decrements the number of remaining spawns.
         Sets the PickupSpawner to inactive for the duration of the respawnTime.
         Destroys the PickupSpawner if the number of remaining spawns has reached zero.
-        
     */
     void PickupSpawner::decrementSpawnsRemaining(void)
     {
@@ -313,9 +223,99 @@ namespace orxonox
         }
         else
         {
-            COUT(3) << "PickupSpawner empty, selfdistruct initialized." << std::endl;
+            COUT(3) << "PickupSpawner empty, selfdestruct initialized." << std::endl;
             this->setActive(false);
-            this->destroy(); //TODO: Implement destroy().
+            this->destroy();
+        }
+    }
+    
+    /**
+    @brief
+        Sets a Pickupable for the PickupSpawner to spawn.
+    @param pickup
+        The Pickupable to be set.
+    */
+    void PickupSpawner::setPickupable(Pickupable* pickup)
+    {
+        if(this->pickup_ != NULL)
+        {
+            COUT(1) << "In PickupSpawner: setPickupable called, with this->pickup_ already set." << std::endl;
+            return;
+        }
+        if(pickup == NULL)
+        {
+            COUT(1) << "In PickupSpawner: Argument of setPickupable is NULL." << std::endl;
+            return;
+        }
+        
+        this->pickup_ = pickup;
+    }
+    
+    /**
+    @brief
+        Get the Pickupable that is spawned by this PickupSpawner.
+    @return
+        Returns the Pickupable that is spawned by this PickupSpawner.
+    */
+    const Pickupable* PickupSpawner::getPickupable(void)
+    {
+        return this->pickup_;
+    }
+
+    /**
+    @brief
+        Trigger the PickupSpawner.
+        Adds the pickup to the Pawn that triggered, sets the timer to re-activate and deactives the PickupSpawner.
+    @param pawn
+        Pawn which triggered the PickupSpawner.
+    */
+    //TODO: Make more generic -> without pawn.
+    void PickupSpawner::trigger(Pawn* pawn)
+    {
+        if (this->isActive()) //!< Checks whether PickupItem is active.
+        {
+            PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
+            if(carrier == NULL)
+            {
+                COUT(1) << "This is bad. Pawn isn't PickupCarrier." << std::endl;
+                return;
+            }
+            
+            if(!carrier->isTarget(this->pickup_))
+            {
+                COUT(4) << "PickupSpawner triggered but Pawn wasn't a target of the Pickupable." << std::endl;
+                return;
+            }
+            
+            PickupCarrier* target = carrier->getTarget(this->pickup_);
+            Pickupable* pickup = this->getPickup();
+            
+            if(target != NULL || pickup != NULL)
+            {
+                if(carrier->pickup(pickup))
+                {
+                    this->decrementSpawnsRemaining();
+                }
+                else
+                {
+                    pickup->destroy();
+                }
+            }
+            else
+            {
+                //TODO: Really that severe?
+                if(target == NULL)
+                    COUT(1) << "PickupSpawner: Pickupable has no target." << std::endl;
+                
+                if(pickup == NULL)
+                {
+                    COUT(1) << "PickupSpawner: getPickup produced an error, no Pickupable created." << std::endl;
+                }
+                else
+                {
+                    pickup->destroy();
+                }
+            }
         }
     }
 

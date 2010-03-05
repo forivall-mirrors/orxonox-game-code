@@ -35,8 +35,6 @@
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
 
-#include "PickupCollectionIdentifier.h"
-
 #include <list>
 
 namespace orxonox
@@ -65,8 +63,7 @@ namespace orxonox
             
             virtual void clone(OrxonoxClass* item);
             
-            virtual const PickupIdentifier* getPickupIdentifier(void)
-                { return &this->pickupCollectionIdentifier_; }
+            virtual const PickupIdentifier* getPickupIdentifier(void);
             
             bool addPickupable(Pickupable* pickup);
             const Pickupable* getPickupable(unsigned int index);
@@ -74,7 +71,9 @@ namespace orxonox
         protected:
             void initializeIdentifier(void);
             
-            PickupCollectionIdentifier pickupCollectionIdentifier_;
+            virtual bool createSpawner(const Vector3& position); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
+            
+            PickupCollectionIdentifier* pickupCollectionIdentifier_;
             
         private:
             

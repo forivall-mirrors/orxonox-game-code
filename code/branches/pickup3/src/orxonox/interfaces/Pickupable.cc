@@ -35,6 +35,7 @@
 
 #include "core/Identifier.h"
 #include "core/CoreIncludes.h"
+#include "pickup/PickupIdentifier.h"
 #include "PickupCarrier.h"
 
 namespace orxonox
@@ -51,6 +52,8 @@ namespace orxonox
         this->used_ = false;
         this->pickedUp_ = false;
         this->carrier_ = NULL;
+        
+        this->pickupIdentifier_ = new PickupIdentifier();
     }
     
     /**
@@ -90,7 +93,7 @@ namespace orxonox
     @return
         Returns true if the given PickupCarrier is a target.
     */
-    bool Pickupable::isTarget(PickupCarrier* carrier)
+    bool Pickupable::isTarget(const PickupCarrier* carrier) const
     {
         Identifier* identifier = carrier->getIdentifier();
         //! Iterate through all targets of this Pickupable.
@@ -155,7 +158,13 @@ namespace orxonox
         COUT(4) << "Pickupable (&" << this << ") got dropped up by a PickupCarrier (&" << this->getCarrier() << ")." << std::endl;
         this->setUsed(false);
         this->setPickedUp(false);
+        
+        bool created = this->createSpawner(this->getCarrier()->getCarrierPosition());
+        
         this->setCarrier(NULL);
+        if(!created)
+            this->destroy();
+        
         return true;
     }
     

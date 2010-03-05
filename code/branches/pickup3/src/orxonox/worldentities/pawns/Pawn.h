@@ -137,10 +137,12 @@ namespace orxonox
 
             //TODO: Remove.
             //PickupCollection pickups_;
-            virtual const std::list<PickupCarrier*>* getChildren(void)
+            virtual std::list<PickupCarrier*>* getCarrierChildren(void)
                 { return new std::list<PickupCarrier*>(); }
-            virtual PickupCarrier* getParent(void)
+            virtual PickupCarrier* getCarrierParent(void)
                 { return NULL; }
+            virtual const Vector3& getCarrierPosition(void)
+                { return this->getWorldPosition(); };
 
             float health_;
             float maxHealth_;
