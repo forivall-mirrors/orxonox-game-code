@@ -29,6 +29,7 @@
 #include <al.h>
 #include <vorbis/vorbisfile.h>
 #include "SoundManager.h"
+#include "util/Sleep.h"
 
 namespace orxonox
 {
@@ -120,6 +121,7 @@ namespace orxonox
                 if (ALint error = alGetError())
                     COUT(2) << "Sound Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
             }
+            msleep(250); // perhaps another value here is better
         }
     }
 }
