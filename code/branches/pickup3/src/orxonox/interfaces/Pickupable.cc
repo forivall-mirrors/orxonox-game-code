@@ -62,7 +62,14 @@ namespace orxonox
     */
     Pickupable::~Pickupable()
     {
+        if(this->isUsed())
+            this->setUsed(false);
         
+        if(this->isPickedUp())
+        {
+            this->getCarrier()->drop(this, false);
+            this->setCarrier(NULL);
+        }
     }
     
     /**

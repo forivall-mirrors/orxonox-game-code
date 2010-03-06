@@ -75,12 +75,13 @@ namespace orxonox
             /**
             @brief Can be called to drop a Pickupable.
             @param pickup A pointer to the Pickupable.
+            @param drop If the Pickupable should just be removed from the PickupCarrier without further action, this can be set to false. true is default.
             @return Returns true if the Pickupable has been dropped, false if not.
             */
-            bool drop(Pickupable* pickup)
+            bool drop(Pickupable* pickup, bool drop = true)
                 { 
                    bool dropped = this->pickups_.erase(pickup) == 1;
-                   if(dropped)
+                   if(dropped && drop)
                    {
                        pickup->dropped();
                    }

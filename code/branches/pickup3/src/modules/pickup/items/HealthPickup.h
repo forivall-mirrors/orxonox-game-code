@@ -31,11 +31,12 @@
 
 #include "pickup/PickupPrereqs.h"
 
-#include "pickup/Pickup.h"
-#include "tools/interfaces/Tickable.h"
+#include <string>
+#include <worldentities/pawns/Pawn.h>
 #include "worldentities/StaticEntity.h"
 
-#include <string>
+#include "pickup/Pickup.h"
+#include "tools/interfaces/Tickable.h"
 
 namespace orxonox {
     
@@ -50,48 +51,79 @@ namespace orxonox {
         };
     }
     
+    /**
+    @brief
+        A pickup that can do (dependent upon the parameters) lots of different things to the health of a Pawn.
+        There are 4 parameters that can be choosen:
+        1) The health. The amount of health that (in a way dependent on the other parameters) is transfered to the Pawn.
+        2) The activation type: It can be chosen to be either 'immediate' or 'onUse'. The activation type essentially (as indicated by the name) defines when the health is transfered, either immediately after being picked up or only after the player uses it.
+        3) The duration type: It can be chosen to be either 'once' or 'continuous'. For 'once' the specified health is transfered once to the Pawn, for 'continuous' the set health is transfered over a span of time at a rate defined by the health rate parameter.
+        4) The health type: The health type can be choosen to be 'limited', 'temporary' or 'permanent'. 'limited' means that the health is increased only to the maximum health of the Pawn. 'temporary' means that the maximum health is temporarily elevated but will be set back as soon as the pickup is no longer in use. 'permanent' means that the maximum health of the Pawn is increased such that the health provided by the pickup will fit in and the maximum health stays that way.
+    @author
+        Damian 'Mozork' Frick
+    */
     class _PickupExport HealthPickup : public Pickup, public Tickable
     {
         public:
         
-            HealthPickup(BaseObject* creator);
-            virtual ~HealthPickup();
+            HealthPickup(BaseObject* creator); //!< Constructor.
+            virtual ~HealthPickup(); //!< Destructor.
             
-            virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode);
-            virtual void tick(float dt);
+            virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
+            virtual void tick(float dt); //!< Is called every tick.
             
-            virtual void clone(OrxonoxClass* item);
-                        
-            virtual void changedUsed(void);
+            virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
+            virtual void clone(OrxonoxClass* item); //!< Creates a duplicate of the input OrxonoxClass.
             
-        protected:
-            void initializeIdentifier(void);
-
-            void setHealth(float health);
-            void setHealthSpeed(float speed);
-            void setHealthType(std::string type);
-            inline void setHealthTypeDirect(pickupHealthType::Value type)
-                { this->healthType_ = type; }
-            
+            /**
+            @brief Get the health that is transfered to the Pawn upon usage of this pickup.
+            @return Returns the health.
+            */
             inline float getHealth(void)
                 { return this->health_; }
-            inline float getHealthSpeed(void)
-                { return this->healthSpeed_; }
-            const std::string& getHealthType(void);
+            /**
+            @brief Get the rate at which the health is transferred to the Pawn, if this pickup has duration type 'continuous'.
+            @return Returns the rate.
+            */
+            inline float getHealthRate(void)
+                { return this->healthRate_; }
+                
+            /**
+            @brief Get the type of HealthPickup, this pickup is.
+            @return Returns the health type as an enum. 
+            */
             inline pickupHealthType::Value getHealthTypeDirect(void)
                 { return this->healthType_; }
+            const std::string& getHealthType(void); //!< Get the health type of this pickup.
+            
+        protected:
+            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
+
+            void setHealth(float health); //!< Sets the health.
+            void setHealthRate(float speed); //!< Set the rate at which health is transferred if the pickup is continuous.
+            
+            /**
+            @brief Set the health type of this pickup.
+            @param type The type of this pickup as an enum.
+            */
+            inline void setHealthTypeDirect(pickupHealthType::Value type)
+                { this->healthType_ = type; }
+            void setHealthType(std::string type); //!< Set the type of the HealthPickup.
         
         private:
-            void initialize(void);
+            void initialize(void); //!< Initializes the member variables.
+            Pawn* carrierToPawnHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
             
-            float health_;
-            float healthSpeed_;
-            pickupHealthType::Value healthType_;
+            float health_; //!< The health that is transferred to the Pawn.
+            float healthRate_; //!< The rate at which the health is transferred.
+            float maxHealthSave_; //!< Helper to remember what the actual maxHealth of the Pawn was before we changed it.
+            float maxHealthOverwrite_; //!< Helper to remember with which value we overwrote the maxHealh, to detect if someone else changed it as well.
+            pickupHealthType::Value healthType_; //!< The type of the HealthPickup.
             
+            //! Strings for the health types.
             static const std::string healthTypeLimited_s;
             static const std::string healthTypeTemporary_s;
             static const std::string healthTypePermanent_s;
-            static const std::string blankString_s; //TODO: Maybe already implemented somewhere?
         
     };
 }
