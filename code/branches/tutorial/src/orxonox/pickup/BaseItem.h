@@ -43,12 +43,12 @@
 namespace orxonox
 {
     /**
-        @brief
-            Base class for all items/pickups.
+    @brief
+        Base class for all items/pickups.
 
-            Provides common methods to be used in derived classes.
-        @author
-            Daniel 'Huty' Haggenmueller
+        Provides common methods to be used in derived classes.
+    @author
+        Daniel 'Huty' Haggenmueller
     */
     class _OrxonoxExport BaseItem : public BaseObject
     {
@@ -60,8 +60,8 @@ namespace orxonox
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< XMLPort
 
         /**
-            @brief Checks how many instances of this item can be carried at a time.
-            @return How many of this item can be carried.
+        @brief Checks how many instances of this item can be carried at a time.
+        @return How many of this item can be carried.
         */
         virtual int getMaxCarryAmount() const
             { return 1; }
@@ -69,14 +69,14 @@ namespace orxonox
         bool addTo(Pawn* pawn);             //!< Add the item to a pawn.
         bool removeFrom(Pawn* pawn);        //!< Removes the item from a pawn.
         /**
-            @brief
-                Method invoked when the item gets picked up.
+        @brief
+            Method invoked when the item gets picked up.
 
-                Has to be overridden for an item to work,
-                should contain a call to addTo().
+            Has to be overridden for an item to work,
+            should contain a call to addTo().
 
-            @param pawn Pawn who picks up the item.
-            @return Returns whether the pawn was able to pick up the item.
+        @param pawn Pawn who picks up the item.
+        @return Returns whether the pawn was able to pick up the item.
         */
         virtual bool pickedUp(Pawn* pawn)
             { return false; }
