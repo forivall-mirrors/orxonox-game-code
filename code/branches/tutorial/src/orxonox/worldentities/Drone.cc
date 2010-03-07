@@ -63,7 +63,7 @@ namespace orxonox
     */
     Drone::~Drone()
     {
-        if( this->myController_ )
+        if( this->isInitialized() && this->myController_ )
             delete this->myController_;
     }
 
