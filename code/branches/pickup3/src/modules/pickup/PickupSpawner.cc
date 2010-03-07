@@ -160,10 +160,7 @@ namespace orxonox
     {
         SUPER(PickupSpawner, changedActivity);
 
-        for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
-        {
-            (*it)->setVisible(this->isActive());
-        }
+        this->setVisible(this->isActive());
     }
      
     /**
