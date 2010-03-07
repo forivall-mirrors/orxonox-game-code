@@ -102,6 +102,11 @@ namespace orxonox
         XMLPortObject(PickupRepresentation, StaticEntity, "spawner-representation", setSpawnerRepresentation, getSpawnerRepresentationIndex, xmlelement, mode);
         
         PickupManager::getInstance().registerRepresentation(this->pickup_->getPickupIdentifier(), this); //!< Registers the PickupRepresentation with the PickupManager through the PickupIdentifier of the Pickupable it represents.
+        
+        if(this->spawnerRepresentation_ != NULL)
+            this->spawnerRepresentation_->setVisible(false);
+        
+        COUT(4) << "PickupRepresentation created: name: '" << this->name_ << "', description: '" << this->description_ << "', spawnerTemplate: '" << this->spawnerTemplate_ << "'." << std::endl;
     }
     
     /**
@@ -127,8 +132,10 @@ namespace orxonox
         }
         
         StaticEntity* representation = this->spawnerRepresentation_;
+        representation->setVisible(true);
         
         this->addTemplate(this->spawnerTemplate_);
+        this->spawnerRepresentation_->setVisible(false);
         
         return representation;
     }

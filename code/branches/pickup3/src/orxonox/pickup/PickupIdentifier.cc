@@ -100,7 +100,7 @@ namespace orxonox
     */
     bool PickupIdentifier::addParameter(std::string & name, std::string & value)
     {
-        COUT(1) << "PickupIdentifier " << name << ", " << value << std::endl;
+        COUT(4) << "PickupIdentifier " << name << ", " << value << std::endl;
         
         if(!(this->parameters_.find(name) == this->parameters_.end()))
         {

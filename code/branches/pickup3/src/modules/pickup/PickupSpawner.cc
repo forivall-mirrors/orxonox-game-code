@@ -146,7 +146,9 @@ namespace orxonox
         else
         {
             PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
+            representation->setVisible(this->isActive());
             this->attach(representation->getSpawnerRepresentation(this));
+            this->setActive(true);
         }
     }
     
@@ -272,8 +274,11 @@ namespace orxonox
     //TODO: Make more generic -> without pawn.
     void PickupSpawner::trigger(Pawn* pawn)
     {
-        if (this->isActive()) //!< Checks whether PickupItem is active.
+        COUT(1) << "PickupSpawner triggered." << std::endl;
+        if (this->isActive()) //!< Checks whether PickupSpawner is active.
         {
+            COUT(1) << "PickupSpawner triggered and active." << std::endl;
+            
             PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
             if(carrier == NULL)
             {

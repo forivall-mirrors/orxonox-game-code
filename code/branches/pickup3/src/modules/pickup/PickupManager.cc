@@ -51,6 +51,8 @@ namespace orxonox
     */
     PickupManager::PickupManager()
     {
+        this->defaultRepresentation_ = NULL;
+        this->pickupCarrierStructure_ = NULL;
         RegisterRootObject(PickupManager);
         
         this->defaultRepresentation_ = new PickupRepresentation();
@@ -84,7 +86,7 @@ namespace orxonox
     //TODO: Make sure that either the PickupRepresentation is destroyed upon destruction of the PickupManager if the representation wasn't created with XMLPort.
     bool PickupManager::registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
     {
-        if(this->representations_.find(identifier) == this->representations_.end()) //!< If the Pickupable already has a RepresentationRegistered.
+        if(this->representations_.find(identifier) != this->representations_.end()) //!< If the Pickupable already has a RepresentationRegistered.
             return false;
         
         this->representations_[identifier] = representation;

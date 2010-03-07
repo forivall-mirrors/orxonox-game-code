@@ -120,8 +120,6 @@ namespace orxonox
         if(!this->isContinuous())
             this->healthRate_ = 0.0;
         
-        COUT(1) << "HealthPickup " << this->getHealth() << ", " << this->getHealthRate() << ", " << this->getHealthType() << "." << std::endl;
-        
         this->initializeIdentifier();
     }
     
