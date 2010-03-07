@@ -117,7 +117,7 @@ namespace orxonox
     PickupSpawner::~PickupSpawner()
     {
         if(this->pickup_ != NULL)
-            delete this->pickup_;
+            this->pickup_->destroy();
     }
 
     /**

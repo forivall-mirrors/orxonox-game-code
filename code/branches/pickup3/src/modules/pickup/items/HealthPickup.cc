@@ -79,7 +79,6 @@ namespace orxonox
         this->healthType_ = pickupHealthType::limited;
         this->maxHealthSave_ = 0;
         this->maxHealthOverwrite_ = 0;
-        
     }
     
     /**
@@ -122,6 +121,8 @@ namespace orxonox
         
         if(!this->isContinuous())
             this->healthRate_ = 0.0;
+        
+        COUT(1) << "HealthPickup " << this->getHealth() << ", " << this->getHealthRate() << ", " << this->getHealthType() << "." << std::endl;
         
         this->initializeIdentifier();
     }

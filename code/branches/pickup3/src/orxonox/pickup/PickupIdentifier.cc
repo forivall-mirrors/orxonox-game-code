@@ -110,9 +110,11 @@ namespace orxonox
     */
     bool PickupIdentifier::addParameter(std::string & name, std::string & value)
     {
+        COUT(1) << "PickupIdentifier " << name << ", " << value << std::endl;
+        
         if(!(this->parameters_.find(name) == this->parameters_.end()))
         {
-            COUT(2) << "Request for adding a parameter that already exists for the PickupIdentififer was denied." << std::endl;
+            COUT(2) << "Request for adding a parameter that already exists for the PickupIdentififer was denied. name: '" << name << "', value: '" << value << "'."<<  std::endl;
             return false;
         }
         

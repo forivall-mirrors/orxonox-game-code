@@ -47,10 +47,11 @@ namespace orxonox
     */
     Pickupable::Pickupable()
     {
-        RegisterRootObject(Pickupable);
-
         this->used_ = false;
         this->pickedUp_ = false;
+        
+        RegisterRootObject(Pickupable);
+        
         this->carrier_ = NULL;
         
         this->pickupIdentifier_ = new PickupIdentifier();
@@ -65,7 +66,7 @@ namespace orxonox
         if(this->isUsed())
             this->setUsed(false);
         
-        if(this->isPickedUp())
+        if(this->isPickedUp() && this->getCarrier() != NULL)
         {
             this->getCarrier()->drop(this, false);
             this->setCarrier(NULL);

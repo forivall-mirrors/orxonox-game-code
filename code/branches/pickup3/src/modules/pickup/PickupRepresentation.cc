@@ -45,6 +45,8 @@ namespace orxonox
     */
     PickupRepresentation::PickupRepresentation() : BaseObject(this)
     {
+        this->spawnerRepresentation_ = NULL;
+        
         RegisterObject(PickupRepresentation);
         
         this->initialize();
@@ -56,6 +58,8 @@ namespace orxonox
     */
     PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator)
     {
+        this->spawnerRepresentation_ = NULL;
+        
         RegisterObject(PickupRepresentation);
         
         this->initialize();
@@ -80,7 +84,6 @@ namespace orxonox
         this->description_ = "This is a pickup.";
         this->name_ = "Pickup";
         this->spawnerTemplate_ = "";
-        this->spawnerRepresentation_ = NULL;
         this->pickup_ = NULL;
     }
     
