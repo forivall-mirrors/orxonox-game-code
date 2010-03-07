@@ -104,11 +104,9 @@ namespace orxonox
             @param thrust The amount of thrust.
             */
             inline void setPrimaryThrust( float thrust )
-                { this->primaryThrust_=thrust; }            
-            inline void setAuxilaryThrust( float thrust )
-                { this->auxilaryThrust_=thrust; }
-            inline void setRotationThrust( float thrust )
-                { this->rotationThrust_=thrust; }
+                { this->primaryThrust_=thrust; }      
+            // place your set-functions here.
+            // - hint: auxiliary thrust, rotation thrust.
             
             /**
             @brief Gets the primary thrust to the input amount.
@@ -116,10 +114,7 @@ namespace orxonox
             */
             inline float getPrimaryThrust()
                 { return this->primaryThrust_; }
-            inline float getAuxilaryThrust()
-                { return this->auxilaryThrust_; }
-            inline float getRotationThrust()
-                { return this->rotationThrust_; }
+            // place your get-functions here.
             
         private:
             DroneController *myController_; //!< The controller of the Drone.
