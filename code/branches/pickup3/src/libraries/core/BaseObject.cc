@@ -114,7 +114,8 @@ namespace orxonox
         XMLPortParam(BaseObject, "visible", setVisible, isVisible, xmlelement, mode);
         XMLPortParam(BaseObject, "active", setActive, isActive, xmlelement, mode);
         XMLPortParam(BaseObject, "mainstate", setMainStateName, getMainStateName, xmlelement, mode);
-
+        XMLPortParamTemplate(BaseObject, "template", addTemplate, getSingleTemplate, xmlelement, mode, const std::string&);
+        
         XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, Template*);
         XMLPortObject(BaseObject, BaseObject, "eventlisteners", addEventListener, getEventListener, xmlelement, mode);
 
@@ -186,6 +187,18 @@ namespace orxonox
     {
         this->templates_.insert(temp);
         temp->applyOn(this);
+    }
+
+    /**
+        @brief Returns the name of the first Template.
+        @return The name as string.
+    */
+    const std::string& BaseObject::getSingleTemplate(void) const
+    {
+        if(this->templates_.empty())
+            return BLANKSTRING;
+
+        return (*this->templates_.begin())->getName();
     }
 
     /**
