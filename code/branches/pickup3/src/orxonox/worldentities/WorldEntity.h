@@ -105,6 +105,9 @@ namespace orxonox
             static const Vector3 RIGHT;
             static const Vector3 DOWN;
             static const Vector3 UP;
+            
+            virtual void changedActivity(void);
+            virtual void changedVisibility(void);
 
             virtual void setPosition(const Vector3& position) = 0;
             inline void setPosition(float x, float y, float z)
