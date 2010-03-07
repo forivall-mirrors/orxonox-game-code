@@ -52,7 +52,7 @@ namespace orxonox
     {
         RegisterObject(PickupCollection);
         
-        this->pickupCollectionIdentifier_ = new PickupCollectionIdentifier();
+        this->pickupCollectionIdentifier_ = new PickupCollectionIdentifier(this);
     }
     
     /**
@@ -84,8 +84,6 @@ namespace orxonox
     
     void PickupCollection::initializeIdentifier(void)
     {
-        this->pickupCollectionIdentifier_->addClass(this->getIdentifier());
-        
         for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             this->pickupCollectionIdentifier_->addPickup((*it)->getPickupIdentifier());

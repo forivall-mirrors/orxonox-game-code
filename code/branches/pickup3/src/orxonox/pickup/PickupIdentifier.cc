@@ -29,6 +29,7 @@
 #include "PickupIdentifier.h"
 
 #include "core/CoreIncludes.h"
+#include "interfaces/Pickupable.h"
 
 namespace orxonox
 {
@@ -37,11 +38,11 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes member variables.
     */
-    PickupIdentifier::PickupIdentifier()
+    PickupIdentifier::PickupIdentifier(Pickupable* pickup)
     {
         RegisterRootObject(PickupIdentifier);
         
-        this->classIdentifier_ = NULL;
+        this->pickup_ = pickup;
     }
     
     PickupIdentifier::~PickupIdentifier()
@@ -60,8 +61,8 @@ namespace orxonox
     int PickupIdentifier::compare(const PickupIdentifier* identifier) const
     {
         //! If the classIdentifiers are not the same (meaning the PickupIdentifiers identify different classes), the obviously the two Pickupables identified by the PickupIdentifiers cannot be the same. An ordering is established through the alphabetical ordering of the respective classnames.
-        if(!identifier->classIdentifier_->isExactlyA(this->classIdentifier_))
-            return this->classIdentifier_->getName().compare(identifier->classIdentifier_->getName());
+        if(!identifier->pickup_->getIdentifier()->isExactlyA(this->pickup_->getIdentifier()))
+            return this->pickup_->getIdentifier()->getName().compare(identifier->pickup_->getIdentifier()->getName());
         
         //! If the class is the same for both PickupIdentifiers we go on to check the parameters of the class.
         //! If the two have a different number of parameters then obviusly something is very wrong.
@@ -85,17 +86,6 @@ namespace orxonox
         }
             
         return false;
-    }
-    
-    /**
-    @brief
-        Add the class of the Pickupable to its PickupIdentifier.
-    @param identifier
-        A pointer to the Identifier of the class.
-    */
-    void PickupIdentifier::addClass(Identifier* identifier)
-    {
-        this->classIdentifier_ = identifier;
     }
     
     /**

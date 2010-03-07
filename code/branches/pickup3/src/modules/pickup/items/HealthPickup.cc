@@ -87,8 +87,6 @@ namespace orxonox
     */
     void HealthPickup::initializeIdentifier(void)
     {
-        this->pickupIdentifier_->addClass(this->getIdentifier());
-        
         std::stringstream stream;
         stream << this->getHealth();
         std::string type1 = "health";

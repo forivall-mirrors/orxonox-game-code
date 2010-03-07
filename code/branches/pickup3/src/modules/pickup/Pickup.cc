@@ -71,10 +71,7 @@ namespace orxonox
         Initializes the PickupIdentififer of this Pickup.
     */
     void Pickup::initializeIdentifier(void)
-    {
-        //TODO: Check whether this could not be done in the Constructor if Pickupable. Would be much more convenient.
-        this->pickupIdentifier_->addClass(this->getIdentifier());
-        
+    {        
         //TODO: Works?
         std::string val1 = this->getActivationType();
         std::string type1 = "activationType";

@@ -41,7 +41,7 @@ namespace orxonox
     {
         
         public:
-            PickupCollectionIdentifier(void);
+            PickupCollectionIdentifier(Pickupable* pickup);
             ~PickupCollectionIdentifier();
             
             virtual int compare(const PickupIdentifier* identifier) const;

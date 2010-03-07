@@ -54,7 +54,7 @@ namespace orxonox
         
         this->carrier_ = NULL;
         
-        this->pickupIdentifier_ = new PickupIdentifier();
+        this->pickupIdentifier_ = new PickupIdentifier(this);
     }
     
     /**

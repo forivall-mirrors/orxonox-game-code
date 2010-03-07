@@ -33,7 +33,7 @@
 namespace orxonox
 {
     
-    PickupCollectionIdentifier::PickupCollectionIdentifier(void)
+    PickupCollectionIdentifier::PickupCollectionIdentifier(Pickupable* pickup) : PickupIdentifier(pickup)
     {
         RegisterObject(PickupCollectionIdentifier);
     }

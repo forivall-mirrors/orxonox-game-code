@@ -53,16 +53,15 @@ namespace orxonox
     {
         
         public:
-            PickupIdentifier(void); //!< Constructor.
+            PickupIdentifier(Pickupable* pickup); //!< Constructor.
             ~PickupIdentifier(); //!< Destructor.
             
             virtual int compare(const PickupIdentifier* identifier) const; //!< Compares two PickupIdentifiers and returns 0 if a == b, <0 if a < b and >0 if a > b for a.compare(b).
             
-            void addClass(Identifier* identifier); //!< Add the class of the Pickupable to its PickupIdentifier.
             bool addParameter(std::string & name, std::string & value); //!< Add a parameter to the PickupIdentifier.
             
         private:
-            Identifier* classIdentifier_; //!< The Identifier of the class.
+            Pickupable* pickup_; //!< The Pickupable the PickupIdentififer is for.
             std::map<std::string, std::string> parameters_; //!< The parameters identifying the type of the pickup beyond the class.
             
     };
