@@ -171,8 +171,8 @@ namespace orxonox
             return false;
         
         COUT(4) << "Pickupable (&" << this << ") got picked up by a PickupCarrier (&" << carrier << ")." << std::endl;
-        this->setCarrier(carrier);
         this->setPickedUp(true);
+        this->setCarrier(carrier);
         return true;
     }
     
@@ -230,8 +230,10 @@ namespace orxonox
     //TODO: Does this work?
     Pickupable* Pickupable::clone(void)
     {
-        Pickupable* pickup = NULL;
-        this->clone(pickup);
+        OrxonoxClass* item = NULL;
+        this->clone(item);
+        
+        Pickupable* pickup = dynamic_cast<Pickupable*>(item);
         
         COUT(4) << "Pickupable (&" << this << ") cloned. Clone is new Pickupable (&" << pickup << ")." << std::endl;
         return pickup;
@@ -245,7 +247,7 @@ namespace orxonox
         A pointer to the OrxonoxClass that is to be duplicated.
     */
     //TODO: Specify how the implementation must be done in detail.
-    void Pickupable::clone(OrxonoxClass* item)
+    void Pickupable::clone(OrxonoxClass*& item)
     {
         SUPER(Pickupable, clone, item);
     }

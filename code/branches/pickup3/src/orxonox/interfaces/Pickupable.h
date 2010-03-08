@@ -101,7 +101,7 @@ namespace orxonox
             bool setCarrier(PickupCarrier* carrier); //!< Sets the carrier of the pickup.
             
             Pickupable* clone(void); //!< Creates a duplicate of the Pickupable.
-            virtual void clone(OrxonoxClass* item); //!< Creates a duplicate of the input OrxonoxClass.
+            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
             
             /**
             @brief Get the PickupIdentifier of this Pickupable.

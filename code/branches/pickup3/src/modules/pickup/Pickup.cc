@@ -187,6 +187,7 @@ namespace orxonox
     {
         SUPER(Pickup, changedCarrier);
         
+        COUT(1) << "Changed Carrier: " << this->isPickedUp() << this->isImmediate() << std::endl;
         //! Sets the Pickup to used if the Pickup has activation type 'immediate' and gets picked up.
         if(this->getCarrier() != NULL && this->isPickedUp() && this->isImmediate())
         {
@@ -200,7 +201,7 @@ namespace orxonox
     @return
         Returns the clone of this pickup as a pointer to a Pickupable.
     */
-    void Pickup::clone(OrxonoxClass* item)
+    void Pickup::clone(OrxonoxClass*& item)
     {
         if(item == NULL)
             item = new Pickup(this);

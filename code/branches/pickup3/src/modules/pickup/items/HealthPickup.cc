@@ -279,7 +279,7 @@ namespace orxonox
     @param item
         A pointer to the Orxonox class.
     */
-    void HealthPickup::clone(OrxonoxClass* item)
+    void HealthPickup::clone(OrxonoxClass*& item)
     {
         if(item == NULL)
             item = new HealthPickup(this);

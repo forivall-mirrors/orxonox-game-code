@@ -108,7 +108,7 @@ namespace orxonox
             bool isParentOf(const OrxonoxClass* object);
             bool isDirectParentOf(const OrxonoxClass* object);
             
-            virtual void clone(OrxonoxClass* item) {}
+            virtual void clone(OrxonoxClass*& item) {}
 
             inline unsigned int getReferenceCount() const
                 { return this->referenceCount_; }

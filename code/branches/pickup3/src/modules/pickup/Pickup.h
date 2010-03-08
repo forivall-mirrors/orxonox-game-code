@@ -118,7 +118,7 @@ namespace orxonox
             
             virtual void changedCarrier(void); //!< Should be called when the pickup has transited from picked up to dropped or the other way around.
                                     
-            virtual void clone(OrxonoxClass* item); //!< Creates a duplicate of the Pickup.
+            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the Pickup.
                 
         protected:
             void initializeIdentifier(void);

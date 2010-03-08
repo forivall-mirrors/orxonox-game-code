@@ -61,7 +61,7 @@ namespace orxonox
             
             virtual void changedCarrier(void);
             
-            virtual void clone(OrxonoxClass* item);
+            virtual void clone(OrxonoxClass*& item);
             
             virtual const PickupIdentifier* getPickupIdentifier(void);
             

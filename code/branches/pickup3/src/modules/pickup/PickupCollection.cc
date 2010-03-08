@@ -160,7 +160,7 @@ namespace orxonox
     }
     
     //TODO: Steal description from Pickupable.
-    void PickupCollection::clone(OrxonoxClass* item)
+    void PickupCollection::clone(OrxonoxClass*& item)
     {
         if(item == NULL)
             item = new PickupCollection(this);
