@@ -195,6 +195,7 @@ namespace orxonox
         bool created = this->createSpawner(this->getCarrier()->getCarrierPosition());
         
         this->setCarrier(NULL);
+        //TODO: possible problem.
         if(!created)
             this->destroy();
         

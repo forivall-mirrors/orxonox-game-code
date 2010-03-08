@@ -292,9 +292,9 @@ namespace orxonox
             PickupCarrier* target = carrier->getTarget(this->pickup_);
             Pickupable* pickup = this->getPickup();
             
-            if(target != NULL || pickup != NULL)
+            if(target != NULL && pickup != NULL)
             {
-                if(carrier->pickup(pickup))
+                if(target->pickup(pickup))
                 {
                     this->decrementSpawnsRemaining();
                 }
