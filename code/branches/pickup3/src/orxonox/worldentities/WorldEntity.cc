@@ -80,6 +80,10 @@ namespace orxonox
 
         this->node_->setPosition(Vector3::ZERO);
         this->node_->setOrientation(Quaternion::IDENTITY);
+        
+        // Activity and visibility memory.
+        this->bActiveMem_ = true;
+        this->bVisibleMem_ = true;
 
 
         // Default behaviour does not include physics
@@ -211,7 +215,15 @@ namespace orxonox
         
         for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
         {
-            (*it)->setActive(this->isActive());
+            if(!this->isActive())
+            {
+                (*it)->bActiveMem_ = (*it)->isActive();
+                (*it)->setActive(this->isActive());
+            }
+            else
+            {
+                (*it)->setActive((*it)->bActiveMem_);
+            }
         }
     }
     
@@ -225,7 +237,15 @@ namespace orxonox
         
         for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
         {
-            (*it)->setVisible(this->isVisible());
+            if(!this->isVisible())
+            {
+                (*it)->bVisibleMem_ = (*it)->isVisible();
+                (*it)->setVisible(this->isVisible());
+            }
+            else
+            {
+                (*it)->setVisible((*it)->bVisibleMem_);
+            }
         }
     }
 
