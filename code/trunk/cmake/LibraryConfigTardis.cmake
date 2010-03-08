@@ -65,7 +65,7 @@ IF(TARDIS)
   MARK_AS_ADVANCED( Boost_THREAD_LIBRARY Boost_THREAD_LIBRARY_RELEASE Boost_THREAD_LIBRARY_DEBUG )
 
 
-  SET(ENV{CEGUIDIR}    "/usr/pack/cegui-0.6.2-sd;/usr/pack/cegui-0.6.2-sd/i686-debian-linux4.0")
+  SET(ENV{CEGUIDIR}    "/usr/pack/cegui-0.6.2-sd;/usr/pack/cegui-0.6.2-sd/i686-debian-linux5.0")
   SET(ENV{ENETDIR}     "/usr/pack/enet-1.2-sd;/usr/pack/enet-1.2-sd/i686-debian-linux4.0")
 #  SET(ENV{ALUTDIR}     "/usr/pack/openal-0.0.8-cl;/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1")
   SET(ENV{OGGDIR}      "/usr/pack/oggvorbis-1.0-ds;/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.0")
