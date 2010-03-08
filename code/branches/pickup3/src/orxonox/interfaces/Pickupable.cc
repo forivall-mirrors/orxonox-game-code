@@ -103,16 +103,28 @@ namespace orxonox
     */
     bool Pickupable::isTarget(const PickupCarrier* carrier) const
     {
-        Identifier* identifier = carrier->getIdentifier();
+        return this->isTarget(carrier->getIdentifier());
+    }
+    
+    /**
+    @brief
+        Get whether a given class, represented by the input Identifier, is a target of this pickup.
+    @param target
+        The Identifier of which it has to be determinde whether it is a target of this pickup.
+    @return
+        Returns true if the given Identifier is a target.
+    */
+    bool Pickupable::isTarget(Identifier* target) const
+    {
         //! Iterate through all targets of this Pickupable.
         for(std::list<Identifier*>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++)
         {
-            if(identifier->isA(*it))
+            if(target->isA(*it))
                 return true;
         }
         return false;
     }
-    
+        
     /**
     @brief
         Add a PickupCarrier as target of this pickup.
@@ -123,11 +135,24 @@ namespace orxonox
     */
     bool Pickupable::addTarget(PickupCarrier* target)
     {
+        return this->addTarget(target->getIdentifier());
+    }
+    
+    /**
+    @brief
+        Add a class, representetd by the input Identifier, as target of this pickup.
+    @param target
+        The Identifier to be added.
+    @return
+        Returns true if the target was added, false if not.
+    */
+    bool Pickupable::addTarget(Identifier* target)
+    {
         if(this->isTarget(target)) //!< If the input target is already present in the list of targets.
             return false;
         
-        COUT(4) << "Target (&" << target << ") added to Pickupable (&" << this << ")." << std::endl;
-        this->targets_.push_back(target->getIdentifier());
+        COUT(4) << "Target " << target->getName() << " added to Pickupable (&" << this << ")." << std::endl;
+        this->targets_.push_back(target);
         return true;
     }
     

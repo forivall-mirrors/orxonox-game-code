@@ -71,14 +71,14 @@ namespace orxonox
         Initializes the member variables.
     */
     void HealthPickup::initialize(void)
-    {
-        RegisterObject(HealthPickup);
-        
+    {        
         this->health_ = 0;
         this->healthRate_ = 0;
         this->healthType_ = pickupHealthType::limited;
         this->maxHealthSave_ = 0;
         this->maxHealthOverwrite_ = 0;
+        
+        this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
     
     /**
