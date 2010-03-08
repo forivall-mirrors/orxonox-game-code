@@ -109,7 +109,7 @@ namespace orxonox
     @brief
         Method for creating a HealthPickup object through XML.
     */
-    void HealthPickup::HealthPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
+    void HealthPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
         SUPER(HealthPickup, XMLPort, xmlelement, mode);
         

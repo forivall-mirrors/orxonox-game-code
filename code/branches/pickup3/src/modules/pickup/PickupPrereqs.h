@@ -43,7 +43,7 @@
 //-----------------------------------------------------------------------
 
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
-#  ifdef QUESTSYSTEM_SHARED_BUILD
+#  ifdef PICKUP_SHARED_BUILD
 #    define _PickupExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )

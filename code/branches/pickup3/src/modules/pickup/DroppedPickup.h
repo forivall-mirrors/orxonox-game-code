@@ -48,7 +48,7 @@ namespace orxonox
         Daniel 'Huty' Haggenmueller
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport DroppedPickup : public PickupSpawner
+    class _PickupExport DroppedPickup : public PickupSpawner
     {
         public:
             DroppedPickup(BaseObject* creator); //!< Default constructor.

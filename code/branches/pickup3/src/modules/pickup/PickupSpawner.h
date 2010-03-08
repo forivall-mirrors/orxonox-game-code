@@ -53,7 +53,7 @@ namespace orxonox
             Daniel 'Huty' Haggenmueller
             Damian 'Mozork' Frick
     */
-    class _OrxonoxExport PickupSpawner : public StaticEntity, public Tickable
+    class _PickupExport PickupSpawner : public StaticEntity, public Tickable
     {
         public:
             PickupSpawner(BaseObject* creator); //!< Default Constructor.
