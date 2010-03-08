@@ -6,7 +6,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   ControllableEntity.cc
 
   BigExplosion.cc
-  Drone.cc
   EffectContainer.cc
   ExplosionChunk.cc
   CameraPosition.cc
