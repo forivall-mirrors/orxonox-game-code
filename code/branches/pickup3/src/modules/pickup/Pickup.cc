@@ -187,7 +187,6 @@ namespace orxonox
     {
         SUPER(Pickup, changedCarrier);
         
-        COUT(1) << "Changed Carrier: " << this->isPickedUp() << this->isImmediate() << std::endl;
         //! Sets the Pickup to used if the Pickup has activation type 'immediate' and gets picked up.
         if(this->getCarrier() != NULL && this->isPickedUp() && this->isImmediate())
         {

@@ -324,7 +324,7 @@ namespace orxonox
     */
     void HealthPickup::setHealth(float health)
     {
-        if(health > 0.0f)
+        if(health >= 0.0f)
         {
             this->health_ = health;
         }

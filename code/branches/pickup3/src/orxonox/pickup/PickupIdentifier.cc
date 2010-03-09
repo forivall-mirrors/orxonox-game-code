@@ -104,7 +104,7 @@ namespace orxonox
         
         if(!(this->parameters_.find(name) == this->parameters_.end()))
         {
-            COUT(2) << "Request for adding a parameter that already exists for the PickupIdentififer was denied. name: '" << name << "', value: '" << value << "'."<<  std::endl;
+            COUT(4) << "Request for adding a parameter that already exists for the PickupIdentififer was denied. name: '" << name << "', value: '" << value << "'."<<  std::endl;
             return false;
         }
         

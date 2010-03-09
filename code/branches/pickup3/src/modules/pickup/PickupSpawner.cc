@@ -271,10 +271,9 @@ namespace orxonox
     //TODO: Make more generic -> without pawn.
     void PickupSpawner::trigger(Pawn* pawn)
     {
-        COUT(1) << "PickupSpawner triggered." << std::endl;
         if (this->isActive()) //!< Checks whether PickupSpawner is active.
         {
-            COUT(1) << "PickupSpawner triggered and active." << std::endl;
+            COUT(3) << "PickupSpawner triggered and active." << std::endl;
             
             PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
             if(carrier == NULL)
