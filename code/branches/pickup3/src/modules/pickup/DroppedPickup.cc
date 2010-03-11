@@ -50,7 +50,6 @@ namespace orxonox
     {
         RegisterObject(DroppedPickup);
         
-        this->initialize();
     }
 
     /**
@@ -68,9 +67,7 @@ namespace orxonox
     DroppedPickup::DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position, float triggerDistance) : PickupSpawner(creator, pickup, triggerDistance, 10, 1)
     {   
         RegisterObject(DroppedPickup);
-        
-        this->initialize();
-        
+
         this->setPosition(position);
         this->setActive(false);
         this->startRespawnTimer();
@@ -82,19 +79,10 @@ namespace orxonox
     */
     DroppedPickup::~DroppedPickup()
     {
-        if(this->gotPickedUp_ && this->pickup_ != NULL)
+        if(this->pickup_ != NULL && this->pickup_->isPickedUp())
         {
             this->pickup_ = NULL;
         }
-    }
-    
-    /**
-    @brief
-        Initializes the member variables of the object.
-    */
-    void DroppedPickup::initialize(void)
-    {
-        this->gotPickedUp_ = false;
     }
 
     /**

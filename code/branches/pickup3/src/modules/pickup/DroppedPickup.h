@@ -57,11 +57,6 @@ namespace orxonox
 
         protected:
             virtual Pickupable* getPickup(void); //!< Creates the Pickupable that is going to get picked up.
-            
-        private:
-            void initialize(void); //!< Initializes the member variables of the object.
-            
-            bool gotPickedUp_; //!< Whether the pickup got picked up or not.
 
     };
 }
