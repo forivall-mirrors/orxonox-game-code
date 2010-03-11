@@ -28,7 +28,7 @@
 #ifndef _SoundStreamer_H__
 #define _SoundStreamer_H__
 
-#include "OrxonoxPrereqs.h"
+#include "sound/SoundPrereqs.h"
 
 #include <string>
 #include <OgreDataStream.h>

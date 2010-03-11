@@ -29,7 +29,7 @@
 #ifndef _BaseSound_H__
 #define _BaseSound_H__
 
-#include "OrxonoxPrereqs.h"
+#include "sound/SoundPrereqs.h"
 
 #include <string>
 #include <boost/shared_ptr.hpp>

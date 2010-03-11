@@ -30,7 +30,9 @@
 #ifndef _AmbientSound_H__
 #define _AmbientSound_H__
 
-#include "OrxonoxPrereqs.h"
+#include <boost/thread.hpp>
+
+#include "sound/SoundPrereqs.h"
 
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
@@ -70,6 +72,9 @@ namespace orxonox
     protected:
         ~AmbientSound() { }
 
+        void doPlay();
+        void doStop();
+
     private:
         void preDestroy();
         void registerVariables();
@@ -82,6 +87,9 @@ namespace orxonox
 
         std::string ambientSource_; //!< Analogous to source_, but mood independent
         bool        bPlayOnLoad_;   //!< Play the sound immediately when loaded
+
+        boost::thread soundstreamthread_; // hacky solution for streaming
+        void setStreamSource(const std::string& source);
     };
 }
 

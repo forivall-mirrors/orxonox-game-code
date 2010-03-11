@@ -34,6 +34,7 @@
 #include "core/Resource.h"
 #include "core/XMLPort.h"
 #include "SoundManager.h"
+#include "SoundStreamer.h"
 
 namespace orxonox
 {
@@ -119,7 +120,7 @@ namespace orxonox
             const std::string& path = "ambient/" + MoodManager::getInstance().getMood() + '/' + this->ambientSource_;
             shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
             if (fileInfo != NULL)
-                this->setSource(path);
+                this->setStreamSource(path);
             else
                 COUT(3) << "Sound: " << this->ambientSource_ << ": Not a valid name! Ambient sound will not change." << std::endl;
         }
@@ -139,5 +140,43 @@ namespace orxonox
             this->play();
         else
             this->stop();
+    }
+
+    // hacky solution for file streaming
+    void AmbientSound::setStreamSource(const std::string& source)
+    {
+        this->audioSource_ = SoundManager::getInstance().getSoundSource(this);
+        if (this->source_ == source)
+        {
+            return;
+        }
+
+        this->source_ = source;
+        // Don't load ""
+        if (source_.empty())
+            return;
+
+        if (this->soundstreamthread_.get_id() != boost::thread::id())
+        {
+            this->soundstreamthread_.interrupt(); // unhandled interruptions lead to thread terminating ;-)
+        }
+        // Get resource info
+        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(source);
+        if (fileInfo == NULL)
+        {
+            COUT(2) << "Sound: Warning: Sound file '" << source << "' not found" << std::endl;
+            return;
+        }
+        // Open data stream
+        DataStreamPtr dataStream = Resource::open(fileInfo);
+
+        this->soundstreamthread_ = boost::thread(SoundStreamer(), this->audioSource_, dataStream);
+        this->initialiseSource();
+    }
+
+    void AmbientSound::doStop()
+    {
+        SUPER(AmbientSound, doStop);
+        this->soundstreamthread_.interrupt();
     }
 }

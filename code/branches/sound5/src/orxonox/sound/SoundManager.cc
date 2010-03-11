@@ -42,7 +42,7 @@
 #include "core/GameMode.h"
 #include "core/ScopedSingletonManager.h"
 #include "core/Resource.h"
-#include "SoundBuffer.h"
+#include "SoundBuffer.h":
 #include "BaseSound.h"
 #include "AmbientSound.h"
 #include "WorldSound.h"
@@ -51,7 +51,8 @@ namespace orxonox
 {
     ManageScopedSingleton(SoundManager, ScopeID::Graphics, true);
 
-    std::string SoundManager::getALErrorString(ALenum code)
+    // From SoundPrereqs.h
+    std::string getALErrorString(ALenum code)
     {
         switch (code)
         {
@@ -77,7 +78,7 @@ namespace orxonox
             ThrowException(InitialisationAborted, "Sound: Not loading at all");
 
         if (!alutInitWithoutContext(NULL, NULL))
-            ThrowException(InitialisationFailed, "Sound Error: ALUT initialisation failed: " << alutGetErrorString(alutGetError()));
+            ThrowException(InitialisationFailed, "Sound: Error: ALUT initialisation failed: " << alutGetErrorString(alutGetError()));
         Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);
 
 /*
@@ -109,17 +110,17 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_WINDOWS
             COUT(1) << "Sound: Just getting the DLL with the dependencies is not enough for Windows (esp. Windows 7)!" << std::endl;
 #endif
-            ThrowException(InitialisationFailed, "Sound Error: Could not open sound device.");
+            ThrowException(InitialisationFailed, "Sound: Error: Could not open sound device.");
         }
         Loki::ScopeGuard closeDeviceGuard = Loki::MakeGuard(&alcCloseDevice, this->device_);
 
         // Create sound context and make it the currently used one
         this->context_ = alcCreateContext(this->device_, NULL);
         if (this->context_ == NULL)
-            ThrowException(InitialisationFailed, "Sound Error: Could not create ALC context");
+            ThrowException(InitialisationFailed, "Sound: Error: Could not create ALC context");
         Loki::ScopeGuard desroyContextGuard = Loki::MakeGuard(&alcDestroyContext, this->context_);
         if (!alcMakeContextCurrent(this->context_))
-            ThrowException(InitialisationFailed, "Sound Error: Could not use ALC context");
+            ThrowException(InitialisationFailed, "Sound: Error: Could not use ALC context");
 
         GameMode::setPlaysSound(true);
         Loki::ScopeGuard resetPlaysSoundGuard = Loki::MakeGuard(&GameMode::setPlaysSound, false);
@@ -132,7 +133,7 @@ namespace orxonox
         if (const char* types = alutGetMIMETypes(ALUT_LOADER_BUFFER))
             COUT(4) << "Sound: --- Supported MIME Types: " << types << std::endl;
         else
-            COUT(2) << "Sound Warning: MIME Type retrieval failed: " << alutGetErrorString(alutGetError()) << std::endl;
+            COUT(2) << "Sound: Warning: MIME Type retrieval failed: " << alutGetErrorString(alutGetError()) << std::endl;
 
         this->mute_[SoundType::All]     = 1.0f;
         this->mute_[SoundType::Music]   = 1.0f;
@@ -146,7 +147,7 @@ namespace orxonox
         if (!alGetError() && alIsSource(source))
             this->availableSoundSources_.push_back(source);
         else
-            ThrowException(InitialisationFailed, "Sound Error: Could not create even a single source");
+            ThrowException(InitialisationFailed, "Sound: Error: Could not create even a single source");
         // Create a few initial sources
         this->createSoundSources(this->minSources_ - 1);
 
@@ -167,14 +168,14 @@ namespace orxonox
 
         // If there are still used buffers around, well, that's just very bad...
         if (this->soundBuffers_.size() != this->effectsPool_.size())
-            COUT(1) << "Sound Error: Some sound buffers are still in use but OpenAL is about to shut down. Fix this!" << std::endl;
+            COUT(1) << "Sound: Error: Some sound buffers are still in use but OpenAL is about to shut down. Fix this!" << std::endl;
         // Empty buffer pool and buffer list
         this->effectsPool_.clear();
         this->soundBuffers_.clear();
 
         // There should not be any sources in use anymore
         if (!this->usedSoundSources_.empty())
-            COUT(1) << "Sound Error: Some sound sources are still in use but OpenAL is about to shut down. Fix this!" << std::endl;
+            COUT(1) << "Sound: Error: Some sound sources are still in use but OpenAL is about to shut down. Fix this!" << std::endl;
         while (!this->availableSoundSources_.empty())
         {
             alDeleteSources(1, &this->availableSoundSources_.back());
@@ -185,23 +186,23 @@ namespace orxonox
 
         // Relieve context to destroy it
         if (!alcMakeContextCurrent(NULL))
-            COUT(1) << "Sound Error: Could not unset ALC context" << std::endl;
+            COUT(1) << "Sound: Error: Could not unset ALC context" << std::endl;
         alcDestroyContext(this->context_);
         if (ALCenum error = alcGetError(this->device_))
         {
             if (error == AL_INVALID_OPERATION)
-                COUT(1) << "Sound Error: Could not destroy ALC context because it is the current one" << std::endl;
+                COUT(1) << "Sound: Error: Could not destroy ALC context because it is the current one" << std::endl;
             else
-                COUT(1) << "Sound Error: Could not destroy ALC context because it is invalid" << std::endl;
+                COUT(1) << "Sound: Error: Could not destroy ALC context because it is invalid" << std::endl;
         }
 #ifdef AL_VERSION_1_1
         if (!alcCloseDevice(this->device_))
-            COUT(1) << "Sound Error: Could not destroy ALC device. This might be because there are still buffers in use!" << std::endl;
+            COUT(1) << "Sound: Error: Could not destroy ALC device. This might be because there are still buffers in use!" << std::endl;
 #else
         alcCloseDevice(this->device_);
 #endif
         if (!alutExit())
-            COUT(1) << "Sound Error: Closing ALUT failed: " << alutGetErrorString(alutGetError()) << std::endl;
+            COUT(1) << "Sound: Error: Closing ALUT failed: " << alutGetErrorString(alutGetError()) << std::endl;
     }
 
     void SoundManager::setConfigValues()
@@ -247,7 +248,7 @@ namespace orxonox
     {
         if (crossFadeStep_ <= 0.0 || crossFadeStep_ >= 1.0 )
         {
-            COUT(2) << "Sound warning: fade step out of range, ignoring change." << std::endl;
+            COUT(2) << "Sound: Warning: fade step out of range, ignoring change." << std::endl;
             ResetConfigValue(crossFadeStep_);
         }
     }
@@ -256,7 +257,7 @@ namespace orxonox
     {
         float clampedVolume = clamp(this->volume_[type], 0.0f, 1.0f);
         if (clampedVolume != this->volume_[type])
-            COUT(2) << "Sound warning: Volume setting (" << type << ") out of range, clamping." << std::endl;
+            COUT(2) << "Sound: Warning: Volume setting (" << type << ") out of range, clamping." << std::endl;
         this->updateVolume(type);
     }
 
@@ -348,7 +349,7 @@ namespace orxonox
             {
                 if (it->first == newAmbient)
                 {
-                    COUT(2) << "Sound warning: Will not play an AmbientSound twice." << std::endl;
+                    COUT(2) << "Sound: Warning: Will not play an AmbientSound twice." << std::endl;
                     return;
                 }
             }
@@ -616,7 +617,7 @@ namespace orxonox
         {
             alDeleteSources(1, &this->availableSoundSources_.back());
             if (alGetError())
-                COUT(1) << "Sound Error: Failed to delete a source --> lost forever" << std::endl;
+                COUT(1) << "Sound: Error: Failed to delete a source --> lost forever" << std::endl;
             this->availableSoundSources_.pop_back();
         }
     }

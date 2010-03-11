@@ -29,6 +29,7 @@
 #include <al.h>
 #include <vorbis/vorbisfile.h>
 #include "SoundManager.h"
+#include "util/Sleep.h"
 
 namespace orxonox
 {
@@ -90,16 +91,14 @@ namespace orxonox
             int processed;
             alGetSourcei(audioSource, AL_BUFFERS_PROCESSED, &processed);
             if (ALint error = alGetError())
-            COUT(2) << "Sound Warning: Couldn't get number of processed buffers: "
-                    << SoundManager::getALErrorString(error) << std::endl;
+            COUT(2) << "Sound Warning: Couldn't get number of processed buffers: " << getALErrorString(error) << std::endl;
 
             if(processed > 0)
             {
                 ALuint* buffers = new ALuint[processed];
                 alSourceUnqueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
-                    COUT(2) << "Sound Warning: Couldn't unqueue buffers: "
-                    << SoundManager::getALErrorString(error) << std::endl;
+                    COUT(2) << "Sound Warning: Couldn't unqueue buffers: " << getALErrorString(error) << std::endl;
 
                 for(int i = 0; i < processed; i++)
                 {
@@ -120,9 +119,9 @@ namespace orxonox
 
                 alSourceQueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
-                    COUT(2) << "Sound Warning: Couldn't queue buffers: "
-                    << SoundManager::getALErrorString(error) << std::endl;
+                    COUT(2) << "Sound Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
             }
+            msleep(250); // perhaps another value here is better
         }
     }
 }
