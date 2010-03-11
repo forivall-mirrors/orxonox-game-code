@@ -176,7 +176,7 @@ namespace orxonox
 
     void AmbientSound::doStop()
     {
-        SUPER(AmbientSound, doStop);
+        BaseSound::doStop();
         this->soundstreamthread_.interrupt();
     }
 }
