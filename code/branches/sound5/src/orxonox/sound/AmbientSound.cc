@@ -171,7 +171,15 @@ namespace orxonox
         DataStreamPtr dataStream = Resource::open(fileInfo);
 
         this->soundstreamthread_ = boost::thread(SoundStreamer(), this->audioSource_, dataStream);
-        this->initialiseSource();
+
+        this->updateVolume();
+        this->setPitch(this->getPitch());
+        this->setLooping(this->getLooping());
+        alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
+        alSource3f(this->audioSource_, AL_VELOCITY,  0, 0, 0);
+        alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);
+        if (ALint error = alGetError())
+            COUT(2) << "Sound: Warning: Setting source parameters to 0 failed: " << getALErrorString(error) << std::endl;
     }
 
     void AmbientSound::doStop()
