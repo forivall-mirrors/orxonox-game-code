@@ -105,7 +105,6 @@ namespace orxonox
             Mesh mesh_;
             float atmosphereSize;
             float imageSize;
-            std::vector<float> distList;
             BillboardSet billboard_;
             bool bCastShadows_;
 

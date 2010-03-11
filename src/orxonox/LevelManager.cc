@@ -131,15 +131,15 @@ namespace orxonox
 
     void LevelManager::compileAvailableLevelList()
     {
-        availableLevels_ = *Resource::findResourceNames("*.oxw");
-        for (std::vector<std::string>::iterator it = availableLevels_.begin(); it != availableLevels_.end();)
-            if (it->find("old/") == 0)
-                it = availableLevels_.erase(it);
-            else
+        this->availableLevels_.clear();
+        Ogre::StringVectorPtr levels = Resource::findResourceNames("*.oxw");
+        for (Ogre::StringVector::const_iterator it = levels->begin(); it != levels->end(); ++it)
+        {
+            if (it->find("old/") != 0)
             {
                 size_t pos = it->find(".oxw");
-                *it = it->substr(0, pos);
-                ++it;
+                this->availableLevels_.push_back(it->substr(0, pos));
             }
+        }
     }
 }

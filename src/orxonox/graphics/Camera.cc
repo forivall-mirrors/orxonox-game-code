@@ -61,7 +61,7 @@ namespace orxonox
             ThrowException(AbortLoading, "Can't create Camera, no root-scene-node given.");
 
         this->camera_ = this->getScene()->getSceneManager()->createCamera(getUniqueNumberString());
-        this->camera_->setUserObject(this);
+        static_cast<Ogre::MovableObject*>(this->camera_)->setUserAny(Ogre::Any(static_cast<OrxonoxClass*>(this)));
         this->cameraNode_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
         this->attachNode(this->cameraNode_);
         this->cameraNode_->attachObject(this->camera_);

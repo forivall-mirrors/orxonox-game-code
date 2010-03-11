@@ -473,7 +473,7 @@ namespace orxonox
     void WorldEntity::attachOgreObject(Ogre::MovableObject* object)
     {
         this->node_->attachObject(object);
-        object->setUserObject(this);
+        object->setUserAny(Ogre::Any(static_cast<OrxonoxClass*>(this)));
     }
 
     void WorldEntity::attachOgreObject(Ogre::BillboardSet* object)
@@ -488,7 +488,7 @@ namespace orxonox
     //! Detaches an Ogre::MovableObject from this WorldEntity.
     void WorldEntity::detachOgreObject(Ogre::MovableObject* object)
     {
-        object->setUserObject(NULL);
+        object->setUserAny(Ogre::Any(static_cast<OrxonoxClass*>(NULL)));
         this->node_->detachObject(object);
     }
 

@@ -32,7 +32,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <OgreUserDefinedObject.h>
 #ifdef ORXONOX_RELEASE
 #  include <OgreSceneNode.h>
 #endif
@@ -69,7 +68,7 @@ namespace orxonox
 
         Collision shapes: These are controlled by the internal WorldEntityCollisionShape. @see WorldEntityCollisionShape.
     */
-    class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState, public Ogre::UserDefinedObject
+    class _OrxonoxExport WorldEntity : public BaseObject, public Synchronisable, public btMotionState
     {
         friend class Scene;
 

@@ -90,16 +90,22 @@ namespace orxonox
     {
         float scaleFactor = this->getScale();
 
-        this->distList.push_back(10.0f*scaleFactor);
-        this->distList.push_back(19.0f*scaleFactor);
-        this->distList.push_back(27.0f*scaleFactor);
-        this->distList.push_back(34.0f*scaleFactor);
-        this->distList.push_back(40.0f*scaleFactor);
-        this->distList.push_back(45.0f*scaleFactor);
-        this->distList.push_back(49.0f*scaleFactor);
-        this->distList.push_back(52.0f*scaleFactor);
-        this->distList.push_back(54.0f*scaleFactor);
-        this->distList.push_back(55.0f*scaleFactor);
+#if OGRE_VERSION >= 0x010700
+        Ogre::Mesh::LodValueList distList;
+#else
+        Ogre::Mesh::LodDistanceList distList;
+#endif
+
+        distList.push_back(10.0f*scaleFactor);
+        distList.push_back(19.0f*scaleFactor);
+        distList.push_back(27.0f*scaleFactor);
+        distList.push_back(34.0f*scaleFactor);
+        distList.push_back(40.0f*scaleFactor);
+        distList.push_back(45.0f*scaleFactor);
+        distList.push_back(49.0f*scaleFactor);
+        distList.push_back(52.0f*scaleFactor);
+        distList.push_back(54.0f*scaleFactor);
+        distList.push_back(55.0f*scaleFactor);
 
         float reductionValue = 0.2f;
 
