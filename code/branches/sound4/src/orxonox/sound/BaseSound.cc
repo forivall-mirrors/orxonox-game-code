@@ -140,18 +140,18 @@ namespace orxonox
         alSource3f(this->audioSource_, AL_VELOCITY,  0, 0, 0);
         alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);
         if (ALint error = alGetError())
-            COUT(2) << "Sound Warning: Setting source parameters to 0 failed: " << getALErrorString(error) << std::endl;
+            COUT(2) << "Sound: Warning: Setting source parameters to 0 failed: " << getALErrorString(error) << std::endl;
         assert(this->soundBuffer_ != NULL);
         alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
         if (ALuint error = alGetError())
-            COUT(1) << "Sound Error: Could not set buffer \"" << this->source_ << "\": " << getALErrorString(error) << std::endl;
+            COUT(1) << "Sound: Error: Could not set buffer \"" << this->source_ << "\": " << getALErrorString(error) << std::endl;
     }
 
     void BaseSound::setVolume(float vol)
     {
         this->volume_ = clamp(vol, 0.0f, 1.0f);
         if (this->volume_ != vol)
-            COUT(2) << "Sound warning: volume out of range, clamping value." << std::endl;
+            COUT(2) << "Sound: Warning: volume out of range, clamping value." << std::endl;
         this->updateVolume();
     }
 
@@ -177,7 +177,7 @@ namespace orxonox
     {
         if (pitch > 2 || pitch < 0.5)
         {
-            COUT(2) << "Sound warning: pitch out of range, cropping value." << std::endl;
+            COUT(2) << "Sound: Warning: pitch out of range, cropping value." << std::endl;
             pitch = pitch > 2 ? 2 : pitch;
             pitch = pitch < 0.5 ? 0.5 : pitch;
         }
@@ -231,7 +231,7 @@ namespace orxonox
             alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
             if (ALuint error = alGetError())
             {
-                COUT(1) << "Sound Error: Could not set buffer \"" << source << "\": " << getALErrorString(error) << std::endl;
+                COUT(1) << "Sound: Error: Could not set buffer \"" << source << "\": " << getALErrorString(error) << std::endl;
                 return;
             }
 

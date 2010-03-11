@@ -72,6 +72,9 @@ namespace orxonox
     protected:
         ~AmbientSound() { }
 
+        void doPlay();
+        void doStop();
+
     private:
         void preDestroy();
         void registerVariables();

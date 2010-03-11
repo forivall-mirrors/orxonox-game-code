@@ -171,5 +171,12 @@ namespace orxonox
         DataStreamPtr dataStream = Resource::open(fileInfo);
 
         this->soundstreamthread_ = boost::thread(SoundStreamer(), this->audioSource_, dataStream);
+        this->initialiseSource();
+    }
+
+    void AmbientSound::doStop()
+    {
+        SUPER(AmbientSound, doStop);
+        this->soundstreamthread_.interrupt();
     }
 }
