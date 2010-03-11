@@ -226,7 +226,7 @@ namespace orxonox
     */
     bool Pickup::createSpawner(const Vector3& position)
     {
-        DroppedPickup::DroppedPickup(this, this, position);
+        new DroppedPickup(this, this, position);
         return true;
     }
     
