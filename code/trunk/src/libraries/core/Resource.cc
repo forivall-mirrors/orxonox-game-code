@@ -78,7 +78,7 @@ namespace orxonox
             return shared_ptr<ResourceInfo>();
         }
         Ogre::FileInfoListPtr infos = Ogre::ResourceGroupManager::getSingleton().findResourceFileInfo(group, name);
-        for (std::vector<Ogre::FileInfo>::const_iterator it = infos->begin(); it != infos->end(); ++it)
+        for (Ogre::FileInfoList::const_iterator it = infos->begin(); it != infos->end(); ++it)
         {
             if (it->filename == name)
             {

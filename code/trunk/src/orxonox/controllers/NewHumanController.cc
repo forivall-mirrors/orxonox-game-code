@@ -365,7 +365,7 @@ namespace orxonox
             if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" && itr->distance > 500)
             {
                 // Try to cast the user pointer
-                WorldEntity* wePtr = dynamic_cast<WorldEntity*>(itr->movable->getUserObject());
+                WorldEntity* wePtr = dynamic_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
                 if (wePtr)
                 {
                     // go through all parents of object and look whether they are sightable or not
