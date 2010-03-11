@@ -199,11 +199,11 @@ namespace orxonox
         this->consoleOverlayBorder_->setMaterialName("ConsoleCenter");
         this->consoleOverlayBorder_->setBorderSize(16, 16, 0, 16);
         this->consoleOverlayBorder_->setBorderMaterialName("ConsoleBorder");
-        this->consoleOverlayBorder_->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
-        this->consoleOverlayBorder_->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
-        this->consoleOverlayBorder_->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
-        this->consoleOverlayBorder_->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
-        this->consoleOverlayBorder_->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
+        this->consoleOverlayBorder_->setLeftBorderUV(0.0f, 0.49f, 0.5f, 0.51f);
+        this->consoleOverlayBorder_->setRightBorderUV(0.5f, 0.49f, 1.0f, 0.5f);
+        this->consoleOverlayBorder_->setBottomBorderUV(0.49f, 0.5f, 0.51f, 1.0f);
+        this->consoleOverlayBorder_->setBottomLeftBorderUV(0.0f, 0.5f, 0.5f, 1.0f);
+        this->consoleOverlayBorder_->setBottomRightBorderUV(0.5f, 0.5f, 1.0f, 1.0f);
         this->consoleOverlayContainer_->addChild(this->consoleOverlayBorder_);
 
         // create a new font to match the requested size exactly
@@ -253,7 +253,7 @@ namespace orxonox
 
         // move overlay "above" the top edge of the screen
         // we take -1.3 because the border makes the panel bigger
-        this->consoleOverlayContainer_->setTop(-1.3 * this->relativeHeight);
+        this->consoleOverlayContainer_->setTop(-1.3f * this->relativeHeight);
 
         COUT(4) << "Info: InGameConsole initialized" << std::endl;
     }
@@ -331,7 +331,7 @@ namespace orxonox
             pos = maxCharsPerLine_;
 
         this->consoleOverlayCursor_->setCaption(std::string(pos,' ') + cursorSymbol_);
-        this->consoleOverlayCursor_->setTop(static_cast<int>(this->windowH_ * this->relativeHeight) - 24);
+        this->consoleOverlayCursor_->setTop(static_cast<int>(this->windowH_ * this->relativeHeight) - 24.0f);
     }
 
     /**
@@ -368,7 +368,7 @@ namespace orxonox
                 // scrolling down
                 // enlarge oldTop a little bit so that this exponential function
                 // reaches 0 before infinite time has passed...
-                float deltaScroll = (oldTop - 0.01) * time.getDeltaTime() * this->scrollSpeed_;
+                float deltaScroll = (oldTop - 0.01f) * time.getDeltaTime() * this->scrollSpeed_;
                 if (oldTop - deltaScroll >= 0)
                 {
                     // window has completely scrolled down
@@ -383,11 +383,11 @@ namespace orxonox
             {
                 // scrolling up
                 // note: +0.01 for the same reason as when scrolling down
-                float deltaScroll = (1.3 * this->relativeHeight + 0.01 + oldTop) * time.getDeltaTime() * this->scrollSpeed_;
+                float deltaScroll = (1.3f * this->relativeHeight + 0.01f + oldTop) * time.getDeltaTime() * this->scrollSpeed_;
                 if (oldTop - deltaScroll <= -1.3 * this->relativeHeight)
                 {
                     // window has completely scrolled up
-                    this->consoleOverlayContainer_->setTop(-1.3 * this->relativeHeight);
+                    this->consoleOverlayContainer_->setTop(-1.3f * this->relativeHeight);
                     this->scroll_ = 0;
                     this->consoleOverlay_->hide();
                 }
@@ -423,10 +423,10 @@ namespace orxonox
     {
         this->windowW_ = newWidth;
         this->windowH_ = newHeight;
-        this->consoleOverlayBorder_->setWidth(static_cast<int>(this->windowW_* this->relativeWidth));
-        this->consoleOverlayBorder_->setHeight(static_cast<int>(this->windowH_ * this->relativeHeight));
-        this->consoleOverlayNoise_->setWidth(static_cast<int>(this->windowW_ * this->relativeWidth) - 10);
-        this->consoleOverlayNoise_->setHeight(static_cast<int>(this->windowH_ * this->relativeHeight) - 5);
+        this->consoleOverlayBorder_->setWidth((float)(int)(this->windowW_* this->relativeWidth));
+        this->consoleOverlayBorder_->setHeight((float)(int)(this->windowH_ * this->relativeHeight));
+        this->consoleOverlayNoise_->setWidth((float)(int)(this->windowW_ * this->relativeWidth) - 10.0f);
+        this->consoleOverlayNoise_->setHeight((float)(int)(this->windowH_ * this->relativeHeight) - 5.0f);
         this->consoleOverlayNoise_->setTiling(consoleOverlayNoise_->getWidth() / (50.0f * this->noiseSize_), consoleOverlayNoise_->getHeight() / (50.0f * this->noiseSize_));
 
         // now adjust the text lines...
@@ -439,8 +439,8 @@ namespace orxonox
 
         for (int i = 0; i < LINES; i++)
         {
-            this->consoleOverlayTextAreas_[i]->setWidth(this->desiredTextWidth_);
-            this->consoleOverlayTextAreas_[i]->setTop(static_cast<int>(this->windowH_ * this->relativeHeight) - 24 - 14*i);
+            this->consoleOverlayTextAreas_[i]->setWidth((float)this->desiredTextWidth_);
+            this->consoleOverlayTextAreas_[i]->setTop((float)(int)(this->windowH_ * this->relativeHeight) - 24 - 14*i);
         }
 
         this->linesChanged();
@@ -555,32 +555,32 @@ namespace orxonox
         ColourValue colourTop, colourBottom;
         switch (type)
         {
-        case Shell::Error:   colourTop = ColourValue(0.95, 0.25, 0.25, 1.00);
-                          colourBottom = ColourValue(1.00, 0.50, 0.50, 1.00); break;
+        case Shell::Error:   colourTop = ColourValue(0.95f, 0.25f, 0.25f, 1.00f);
+                          colourBottom = ColourValue(1.00f, 0.50f, 0.50f, 1.00f); break;
 
-        case Shell::Warning: colourTop = ColourValue(0.95, 0.50, 0.20, 1.00);
-                          colourBottom = ColourValue(1.00, 0.70, 0.50, 1.00); break;
+        case Shell::Warning: colourTop = ColourValue(0.95f, 0.50f, 0.20f, 1.00f);
+                          colourBottom = ColourValue(1.00f, 0.70f, 0.50f, 1.00f); break;
 
-        case Shell::Info:    colourTop = ColourValue(0.50, 0.50, 0.95, 1.00);
-                          colourBottom = ColourValue(0.80, 0.80, 1.00, 1.00); break;
+        case Shell::Info:    colourTop = ColourValue(0.50f, 0.50f, 0.95f, 1.00f);
+                          colourBottom = ColourValue(0.80f, 0.80f, 1.00f, 1.00f); break;
 
-        case Shell::Debug:   colourTop = ColourValue(0.65, 0.48, 0.44, 1.00);
-                          colourBottom = ColourValue(1.00, 0.90, 0.90, 1.00); break;
+        case Shell::Debug:   colourTop = ColourValue(0.65f, 0.48f, 0.44f, 1.00f);
+                          colourBottom = ColourValue(1.00f, 0.90f, 0.90f, 1.00f); break;
 
-        case Shell::Verbose: colourTop = ColourValue(0.40, 0.20, 0.40, 1.00);
-                          colourBottom = ColourValue(0.80, 0.60, 0.80, 1.00); break;
+        case Shell::Verbose: colourTop = ColourValue(0.40f, 0.20f, 0.40f, 1.00f);
+                          colourBottom = ColourValue(0.80f, 0.60f, 0.80f, 1.00f); break;
 
-        case Shell::Ultra:   colourTop = ColourValue(0.21, 0.69, 0.21, 1.00);
-                          colourBottom = ColourValue(0.80, 1.00, 0.80, 1.00); break;
+        case Shell::Ultra:   colourTop = ColourValue(0.21f, 0.69f, 0.21f, 1.00f);
+                          colourBottom = ColourValue(0.80f, 1.00f, 0.80f, 1.00f); break;
 
-        case Shell::Command: colourTop = ColourValue(0.80, 0.80, 0.80, 1.00);
-                          colourBottom = ColourValue(0.90, 0.90, 0.90, 0.90); break;
+        case Shell::Command: colourTop = ColourValue(0.80f, 0.80f, 0.80f, 1.00f);
+                          colourBottom = ColourValue(0.90f, 0.90f, 0.90f, 0.90f); break;
 
-        case Shell::Hint:    colourTop = ColourValue(0.80, 0.80, 0.80, 1.00);
-                          colourBottom = ColourValue(0.90, 0.90, 0.90, 1.00); break;
+        case Shell::Hint:    colourTop = ColourValue(0.80f, 0.80f, 0.80f, 1.00f);
+                          colourBottom = ColourValue(0.90f, 0.90f, 0.90f, 1.00f); break;
 
-        default:             colourTop = ColourValue(0.90, 0.90, 0.90, 1.00);
-                          colourBottom = ColourValue(1.00, 1.00, 1.00, 1.00); break;
+        default:             colourTop = ColourValue(0.90f, 0.90f, 0.90f, 1.00f);
+                          colourBottom = ColourValue(1.00f, 1.00f, 1.00f, 1.00f); break;
         }
 
         this->consoleOverlayTextAreas_[index]->setColourTop   (colourTop);

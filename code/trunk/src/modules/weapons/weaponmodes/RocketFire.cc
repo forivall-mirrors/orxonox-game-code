@@ -45,7 +45,7 @@ namespace orxonox
     {
         RegisterObject(RocketFire);
 
-        this->reloadTime_ = 0.20;
+        this->reloadTime_ = 0.20f;
         this->bParallelReload_ = false;
         this->damage_ = 100;
         this->speed_ = 500;

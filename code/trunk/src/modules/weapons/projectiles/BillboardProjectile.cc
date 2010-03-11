@@ -47,7 +47,7 @@ namespace orxonox
             this->attachOgreObject(this->billboard_.getBillboardSet());
         }
 
-        this->setScale(0.2);
+        this->setScale(0.2f);
     }
 
     BillboardProjectile::~BillboardProjectile()

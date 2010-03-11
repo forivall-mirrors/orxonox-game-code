@@ -73,10 +73,10 @@ namespace orxonox
     {
         RegisterObject(NewHumanController);
 
-        overlaySize_ = 0.08;
-        arrowsSize_ = 0.4;
+        overlaySize_ = 0.08f;
+        arrowsSize_ = 0.4f;
 
-        damageOverlayTime_ = 0.6;
+        damageOverlayTime_ = 0.6f;
 
         controlMode_ = 0;
         acceleration_ = 0;
@@ -100,34 +100,34 @@ namespace orxonox
 
             centerOverlay_ = new OrxonoxOverlay(this);
             centerOverlay_->setBackgroundMaterial("Orxonox/CenterOverlay");
-            centerOverlay_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-            centerOverlay_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
+            centerOverlay_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
+            centerOverlay_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
             centerOverlay_->hide();
 
             if (showDamageOverlay_)
             {
                 damageOverlayTop_ = new OrxonoxOverlay(this);
                 damageOverlayTop_->setBackgroundMaterial("Orxonox/DamageOverlayTop");
-                damageOverlayTop_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-                damageOverlayTop_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
+                damageOverlayTop_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
+                damageOverlayTop_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
                 damageOverlayTop_->hide();
 
                 damageOverlayRight_ = new OrxonoxOverlay(this);
                 damageOverlayRight_->setBackgroundMaterial("Orxonox/DamageOverlayRight");
-                damageOverlayRight_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-                damageOverlayRight_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
+                damageOverlayRight_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
+                damageOverlayRight_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
                 damageOverlayRight_->hide();
 
                 damageOverlayBottom_ = new OrxonoxOverlay(this);
                 damageOverlayBottom_->setBackgroundMaterial("Orxonox/DamageOverlayBottom");
-                damageOverlayBottom_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-                damageOverlayBottom_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
+                damageOverlayBottom_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
+                damageOverlayBottom_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
                 damageOverlayBottom_->hide();
 
                 damageOverlayLeft_ = new OrxonoxOverlay(this);
                 damageOverlayLeft_->setBackgroundMaterial("Orxonox/DamageOverlayLeft");
-                damageOverlayLeft_->setSize(Vector2(overlaySize_ * 2.5, overlaySize_ * 2.5));
-                damageOverlayLeft_->setPosition(Vector2(0.5 - overlaySize_*2.5/2.0, 0.5 - overlaySize_*2.5/2.0));
+                damageOverlayLeft_->setSize(Vector2(overlaySize_ * 2.5f, overlaySize_ * 2.5f));
+                damageOverlayLeft_->setPosition(Vector2(0.5f - overlaySize_*2.5f/2.0f, 0.5f - overlaySize_*2.5f/2.0f));
                 damageOverlayLeft_->hide();
             }
 
@@ -135,30 +135,30 @@ namespace orxonox
             {
                 arrowsOverlay1_ = new OrxonoxOverlay(this);
                 arrowsOverlay1_->setBackgroundMaterial("Orxonox/DirectionArrows1");
-                arrowsOverlay1_->setSize(Vector2(0.02727, 0.36 * arrowsSize_));
-                arrowsOverlay1_->setPickPoint(Vector2(0.5, 0.5));
-                arrowsOverlay1_->setPosition(Vector2(0.5, 0.5));
+                arrowsOverlay1_->setSize(Vector2(0.02727f, 0.36f * arrowsSize_));
+                arrowsOverlay1_->setPickPoint(Vector2(0.5f, 0.5f));
+                arrowsOverlay1_->setPosition(Vector2(0.5f, 0.5f));
                 arrowsOverlay1_->hide();
 
                 arrowsOverlay2_ = new OrxonoxOverlay(this);
                 arrowsOverlay2_->setBackgroundMaterial("Orxonox/DirectionArrows2");
-                arrowsOverlay2_->setSize(Vector2(0.02727, 0.59 * arrowsSize_));
-                arrowsOverlay2_->setPickPoint(Vector2(0.5, 0.5));
-                arrowsOverlay2_->setPosition(Vector2(0.5, 0.5));
+                arrowsOverlay2_->setSize(Vector2(0.02727f, 0.59f * arrowsSize_));
+                arrowsOverlay2_->setPickPoint(Vector2(0.5f, 0.5f));
+                arrowsOverlay2_->setPosition(Vector2(0.5f, 0.5f));
                 arrowsOverlay2_->hide();
 
                 arrowsOverlay3_ = new OrxonoxOverlay(this);
                 arrowsOverlay3_->setBackgroundMaterial("Orxonox/DirectionArrows3");
-                arrowsOverlay3_->setSize(Vector2(0.02727, 0.77 * arrowsSize_));
-                arrowsOverlay3_->setPickPoint(Vector2(0.5, 0.5));
-                arrowsOverlay3_->setPosition(Vector2(0.5, 0.5));
+                arrowsOverlay3_->setSize(Vector2(0.02727f, 0.77f * arrowsSize_));
+                arrowsOverlay3_->setPickPoint(Vector2(0.5f, 0.5f));
+                arrowsOverlay3_->setPosition(Vector2(0.5f, 0.5f));
                 arrowsOverlay3_->hide();
 
                 arrowsOverlay4_ = new OrxonoxOverlay(this);
                 arrowsOverlay4_->setBackgroundMaterial("Orxonox/DirectionArrows4");
-                arrowsOverlay4_->setSize(Vector2(0.02727, arrowsSize_));
-                arrowsOverlay4_->setPickPoint(Vector2(0.5, 0.5));
-                arrowsOverlay4_->setPosition(Vector2(0.5, 0.5));
+                arrowsOverlay4_->setSize(Vector2(0.02727f, arrowsSize_));
+                arrowsOverlay4_->setPickPoint(Vector2(0.5f, 0.5f));
+                arrowsOverlay4_->setPosition(Vector2(0.5f, 0.5f));
                 arrowsOverlay4_->hide();
             }
         }
@@ -212,7 +212,7 @@ namespace orxonox
                     if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
                         this->showOverlays();
 
-                    this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5-overlaySize_/2));
+                    this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5f-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5f-overlaySize_/2));
 
                     if (this->controlMode_ == 0 || (this->controlMode_ == 1 && this->firemode_ == 1))
                     {
@@ -298,7 +298,7 @@ namespace orxonox
             //y is down positive
             relativeHit.normalise();
 
-            float threshold = 0.3;
+            float threshold = 0.3f;
             if (relativeHit.x > threshold) // Left
             {
                 this->damageOverlayLeft_->show();
@@ -342,7 +342,7 @@ namespace orxonox
     {
         Ogre::RaySceneQuery * rsq = HumanController::localController_s->getControllableEntity()->getScene()->getSceneManager()->createRayQuery(Ogre::Ray());
 
-        Ogre::Ray mouseRay = HumanController::localController_s->getControllableEntity()->getCamera()->getOgreCamera()->getCameraToViewportRay(static_cast<float>(this->currentYaw_)/2*-1+.5, static_cast<float>(this->currentPitch_)/2*-1+.5);
+        Ogre::Ray mouseRay = HumanController::localController_s->getControllableEntity()->getCamera()->getOgreCamera()->getCameraToViewportRay(static_cast<float>(this->currentYaw_)/2*-1+.5f, static_cast<float>(this->currentPitch_)/2*-1+.5f);
 
         rsq->setRay(mouseRay);
         rsq->setSortByDistance(true);
@@ -504,24 +504,24 @@ namespace orxonox
 
             float distance = sqrt(pow(static_cast<float>(this->currentYaw_)/2*-1,2) + pow(static_cast<float>(this->currentPitch_)/2*-1,2));
 
-            if (distance > 0.04 && distance <= 0.59 * arrowsSize_ / 2.0 )
+            if (distance > 0.04f && distance <= 0.59f * arrowsSize_ / 2.0f )
             {
-                this->arrowsOverlay1_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
+                this->arrowsOverlay1_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
                 this->arrowsOverlay1_->show();
             }
-            else if (distance > 0.59 * arrowsSize_ / 2.0 && distance <= 0.77 * arrowsSize_ / 2.0 )
+            else if (distance > 0.59f * arrowsSize_ / 2.0f && distance <= 0.77f * arrowsSize_ / 2.0f )
             {
-                this->arrowsOverlay2_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
+                this->arrowsOverlay2_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
                 this->arrowsOverlay2_->show();
             }
-            else if (distance > 0.77 * arrowsSize_ / 2.0 && distance <= arrowsSize_ / 2.0)
+            else if (distance > 0.77f * arrowsSize_ / 2.0f && distance <= arrowsSize_ / 2.0f)
             {
-                this->arrowsOverlay3_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
+                this->arrowsOverlay3_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
                 this->arrowsOverlay3_->show();
             }
-            else if (distance > arrowsSize_ / 2.0)
+            else if (distance > arrowsSize_ / 2.0f)
             {
-                this->arrowsOverlay4_->setRotation(Degree(-90 + -1.0 * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
+                this->arrowsOverlay4_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * Ogre::Math::PI) * 360.0f));
                 this->arrowsOverlay4_->show();
             }
         }

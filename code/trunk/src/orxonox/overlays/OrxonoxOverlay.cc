@@ -225,7 +225,7 @@ namespace orxonox
             float tempAspect;
             if (angle > 89.0f && angle < 91.0f)
             {
-                tempAspect = 1.0 / this->windowAspectRatio_;
+                tempAspect = 1.0f / this->windowAspectRatio_;
                 rotState_ = Vertical;
             }
             else if (angle > 179 || angle < 1)

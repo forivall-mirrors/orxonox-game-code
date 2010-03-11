@@ -78,11 +78,11 @@ namespace orxonox
     {
         const std::map<PlayerInfo*, Player>& playerList = this->getGametype()->getPlayers();
 
-        const float topOffset  = 0.2;
-        const float leftOffset = 0.075;
-        const float distance   = 0.01;
-        const float width      = 0.85;
-        const float height     = 0.05;
+        const float topOffset  = 0.2f;
+        const float leftOffset = 0.075f;
+        const float distance   = 0.01f;
+        const float width      = 0.85f;
+        const float height     = 0.05f;
         while (playerList.size() > this->lines_.size())
         {
             // create new lines

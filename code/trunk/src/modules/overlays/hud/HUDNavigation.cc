@@ -152,7 +152,7 @@ namespace orxonox
         // set text
         int dist = static_cast<int>(getDist2Focus());
         navText_->setCaption(multi_cast<std::string>(dist));
-        float textLength = multi_cast<std::string>(dist).size() * navText_->getCharHeight() * 0.3;
+        float textLength = multi_cast<std::string>(dist).size() * navText_->getCharHeight() * 0.3f;
 
         orxonox::Camera* cam = CameraManager::getInstance().getActiveCamera();
         if (!cam)
@@ -190,20 +190,20 @@ namespace orxonox
                 if (pos.y > -pos.x)
                 {
                     // up
-                    float position = pos.x / pos.y + 1.0;
-                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5, 0.0);
-                    navMarker_->setUV(0.5, 0.0, 1.0, 0.5);
-                    navText_->setLeft((position - textLength) * 0.5);
+                    float position = pos.x / pos.y + 1.0f;
+                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5f, 0.0f);
+                    navMarker_->setUV(0.5f, 0.0f, 1.0f, 0.5f);
+                    navText_->setLeft((position - textLength) * 0.5f);
                     navText_->setTop(navMarker_->getHeight());
                 }
                 else
                 {
                     // left
-                    float position = pos.y / pos.x + 1.0;
-                    navMarker_->setPosition(0.0, (position - navMarker_->getWidth()) * 0.5);
-                    navMarker_->setUV(0.0, 0.0, 0.5, 0.5);
-                    navText_->setLeft(navMarker_->getWidth() + 0.01);
-                    navText_->setTop((position - navText_->getCharHeight()) * 0.5);
+                    float position = pos.y / pos.x + 1.0f;
+                    navMarker_->setPosition(0.0f, (position - navMarker_->getWidth()) * 0.5f);
+                    navMarker_->setUV(0.0f, 0.0f, 0.5f, 0.5f);
+                    navText_->setLeft(navMarker_->getWidth() + 0.01f);
+                    navText_->setTop((position - navText_->getCharHeight()) * 0.5f);
                 }
             }
             else
@@ -211,20 +211,20 @@ namespace orxonox
                 if (pos.y < -pos.x)
                 {
                     // down
-                    float position = -pos.x / pos.y + 1.0;
-                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5, 1.0 - navMarker_->getHeight());
-                    navMarker_->setUV(0.0, 0.5, 0.5, 1.0);
-                    navText_->setLeft((position - textLength) * 0.5);
-                    navText_->setTop(1.0 - navMarker_->getHeight() - navText_->getCharHeight());
+                    float position = -pos.x / pos.y + 1.0f;
+                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5f, 1.0f - navMarker_->getHeight());
+                    navMarker_->setUV(0.0f, 0.5f, 0.5f, 1.0f);
+                    navText_->setLeft((position - textLength) * 0.5f);
+                    navText_->setTop(1.0f - navMarker_->getHeight() - navText_->getCharHeight());
                 }
                 else
                 {
                     // right
-                    float position = -pos.y / pos.x + 1.0;
-                    navMarker_->setPosition(1.0 - navMarker_->getWidth(), (position - navMarker_->getHeight()) * 0.5);
-                    navMarker_->setUV(0.5, 0.5, 1.0, 1.0);
-                    navText_->setLeft(1.0 - navMarker_->getWidth() - textLength - 0.01);
-                    navText_->setTop((position - navText_->getCharHeight()) * 0.5);
+                    float position = -pos.y / pos.x + 1.0f;
+                    navMarker_->setPosition(1.0f - navMarker_->getWidth(), (position - navMarker_->getHeight()) * 0.5f);
+                    navMarker_->setUV(0.5f, 0.5f, 1.0f, 1.0f);
+                    navText_->setLeft(1.0f - navMarker_->getWidth() - textLength - 0.01f);
+                    navText_->setTop((position - navText_->getCharHeight()) * 0.5f);
                 }
             }
         }
@@ -242,17 +242,17 @@ namespace orxonox
             }
 
             // object is in view
-            navMarker_->setUV(0.0, 0.0, 1.0, 1.0);
-            navMarker_->setLeft((pos.x + 1.0 - navMarker_->getWidth()) * 0.5);
-            navMarker_->setTop((-pos.y + 1.0 - navMarker_->getHeight()) * 0.5);
+            navMarker_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
+            navMarker_->setLeft((pos.x + 1.0f - navMarker_->getWidth()) * 0.5f);
+            navMarker_->setTop((-pos.y + 1.0f - navMarker_->getHeight()) * 0.5f);
 
 /*
             aimMarker_->show();
-            aimMarker_->setLeft((aimpos.x + 1.0 - aimMarker_->getWidth()) * 0.5);
-            aimMarker_->setTop((-aimpos.y + 1.0 - aimMarker_->getHeight()) * 0.5);
+            aimMarker_->setLeft((aimpos.x + 1.0f - aimMarker_->getWidth()) * 0.5f);
+            aimMarker_->setTop((-aimpos.y + 1.0f - aimMarker_->getHeight()) * 0.5f);
 */
-            navText_->setLeft((pos.x + 1.0 + navMarker_->getWidth()) * 0.5);
-            navText_->setTop((-pos.y + 1.0 + navMarker_->getHeight()) * 0.5);
+            navText_->setLeft((pos.x + 1.0f + navMarker_->getWidth()) * 0.5f);
+            navText_->setTop((-pos.y + 1.0f + navMarker_->getHeight()) * 0.5f);
         }
     }
 

@@ -177,11 +177,11 @@ namespace orxonox
 
     void BaseSound::setPitch(float pitch)
     {
-        if (pitch > 2 || pitch < 0.5)
+        if (pitch > 2 || pitch < 0.5f)
         {
             COUT(2) << "Sound warning: pitch out of range, cropping value." << std::endl;
-            pitch = pitch > 2 ? 2 : pitch;
-            pitch = pitch < 0.5 ? 0.5 : pitch;
+            pitch = pitch > 2.0f ? 2.0f : pitch;
+            pitch = pitch < 0.5f ? 0.5f : pitch;
         }
         this->pitch_ = pitch;
         if (alIsSource(this->audioSource_))

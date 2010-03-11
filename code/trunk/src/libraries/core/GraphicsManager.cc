@@ -365,7 +365,7 @@ namespace orxonox
 
         uint64_t timeAfterTick = time.getRealMicroseconds();
         // Subtract the time used for rendering from the tick time counter
-        Game::getInstance().subtractTickTime(timeAfterTick - timeBeforeTick);
+        Game::getInstance().subtractTickTime((int32_t)(timeAfterTick - timeBeforeTick));
 
         // again, just to be sure OGRE works fine
         ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted

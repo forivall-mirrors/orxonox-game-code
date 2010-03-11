@@ -37,19 +37,19 @@ namespace orxonox
     CreateLines::CreateLines(float leftOffset, float topOffset, float width, float height)
     {
         playerNameText_ = new OverlayText(0);
-        playerNameText_->setTextSize(0.04);
-        playerNameText_->setColour(ColourValue(0, 0.75, 0.2, 1));
-        playerNameText_->setPosition(Vector2(0.1, topOffset + 0.01));
+        playerNameText_->setTextSize(0.04f);
+        playerNameText_->setColour(ColourValue(0.0f, 0.75f, 0.2f, 1.0f));
+        playerNameText_->setPosition(Vector2(0.1f, topOffset + 0.01f));
 
         scoreText_ = new OverlayText(0);
-        scoreText_->setTextSize(0.04);
-        scoreText_->setColour(ColourValue(0, 0.75, 0.2, 1));
-        scoreText_->setPosition(Vector2(0.6, topOffset + 0.01));
+        scoreText_->setTextSize(0.04f);
+        scoreText_->setColour(ColourValue(0.0f, 0.75f, 0.2f, 1.0f));
+        scoreText_->setPosition(Vector2(0.6f, topOffset + 0.01f));
 
         deathsText_ = new OverlayText(0);
-        deathsText_->setTextSize(0.04);
-        deathsText_->setColour(ColourValue(0, 0.75, 0.2, 1));
-        deathsText_->setPosition(Vector2(0.8, topOffset + 0.01));
+        deathsText_->setTextSize(0.04f);
+        deathsText_->setColour(ColourValue(0, 0.75f, 0.2f, 1.0f));
+        deathsText_->setPosition(Vector2(0.8f, topOffset + 0.01f));
 
         background_ = new Stats(0);
         background_->setPosition(Vector2(leftOffset, topOffset));

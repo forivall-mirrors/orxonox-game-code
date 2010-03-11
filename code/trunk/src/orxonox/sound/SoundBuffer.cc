@@ -107,13 +107,13 @@ namespace orxonox
         switch (whence)
         {
         case SEEK_SET:
-            stream->seek(offset);
+            stream->seek((size_t)offset);
             break;
         case SEEK_CUR:
-            stream->skip(offset);
+            stream->skip((size_t)offset);
             break;
         case SEEK_END:
-            stream->seek(stream->size() + offset);
+            stream->seek(stream->size() + (size_t)offset);
             break;
         default:
             return -1;

@@ -58,16 +58,16 @@ namespace orxonox
         // create BorderPanel
         this->statsOverlayBorder_ = static_cast<Ogre::BorderPanelOverlayElement*>(ovMan->createOverlayElement("BorderPanel", "StatsBorderPanel" + getUniqueNumberString()));
         //this->statsOverlayBorder_->setMaterialName("StatsCenter");
-        this->statsOverlayBorder_->setBorderSize(0.003, 16 * 0.003);
+        this->statsOverlayBorder_->setBorderSize(0.003f, 16.0f * 0.003f);
         this->statsOverlayBorder_->setBorderMaterialName("StatsBorder");
-        this->statsOverlayBorder_->setTopBorderUV(0.49, 0.0, 0.51, 0.5);
-        this->statsOverlayBorder_->setTopLeftBorderUV(0.0, 0.0, 0.5, 0.5);
-        this->statsOverlayBorder_->setTopRightBorderUV(0.5, 0.0, 1.0, 0.5);
-        this->statsOverlayBorder_->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
-        this->statsOverlayBorder_->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
-        this->statsOverlayBorder_->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
-        this->statsOverlayBorder_->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
-        this->statsOverlayBorder_->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
+        this->statsOverlayBorder_->setTopBorderUV(0.49f, 0.0f, 0.51f, 0.5f);
+        this->statsOverlayBorder_->setTopLeftBorderUV(0.0f, 0.0f, 0.5f, 0.5f);
+        this->statsOverlayBorder_->setTopRightBorderUV(0.5f, 0.0f, 1.0f, 0.5f);
+        this->statsOverlayBorder_->setLeftBorderUV(0.0f, 0.49f, 0.5f, 0.51f);
+        this->statsOverlayBorder_->setRightBorderUV(0.5f, 0.49f, 1.0f, 0.5f);
+        this->statsOverlayBorder_->setBottomBorderUV(0.49f, 0.5f, 0.51f, 1.0f);
+        this->statsOverlayBorder_->setBottomLeftBorderUV(0.0f, 0.5f, 0.5f, 1.0f);
+        this->statsOverlayBorder_->setBottomRightBorderUV(0.5f, 0.5f, 1.0f, 1.0f);
 
         background_->addChild(statsOverlayBorder_);
 

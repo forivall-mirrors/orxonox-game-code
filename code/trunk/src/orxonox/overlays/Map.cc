@@ -178,25 +178,25 @@ Ogre::MaterialPtr Map::init()
             //m_pOverlayPanel->setMetricsMode(Ogre::GMM_PIXELS);
             //m_pOverlayPanel->setPosition(10, 10);
             //m_pOverlayPanel->setDimensions(600, 400);
-            m_pOverlayPanel->setPosition(0.01, 0.003);
-            m_pOverlayPanel->setDimensions(0.5, 0.4);
+            m_pOverlayPanel->setPosition(0.01f, 0.003f);
+            m_pOverlayPanel->setDimensions(0.5f, 0.4f);
             // Give overlay a texture
             m_pOverlayPanel->setMaterialName("RttMat");
             overlay_->add2D(m_pOverlayPanel);
 
             //Add Borders
             Ogre::BorderPanelOverlayElement* oBorder = static_cast<Ogre::BorderPanelOverlayElement*>(Ogre::OverlayManager::getSingletonPtr()->createOverlayElement("BorderPanel", "MapBorderPanel" + getUniqueNumberString()));
-            oBorder->setBorderSize( 0.003, 0.003 );
-            oBorder->setDimensions(0.5, 0.4);
+            oBorder->setBorderSize( 0.003f, 0.003f );
+            oBorder->setDimensions(0.5f, 0.4f);
             oBorder->setBorderMaterialName("StatsBorder");
-            oBorder->setTopBorderUV(0.49, 0.0, 0.51, 0.5);
-            oBorder->setTopLeftBorderUV(0.0, 0.0, 0.5, 0.5);
-            oBorder->setTopRightBorderUV(0.5, 0.0, 1.0, 0.5);
-            oBorder->setLeftBorderUV(0.0, 0.49, 0.5, 0.51);
-            oBorder->setRightBorderUV(0.5, 0.49, 1.0, 0.5);
-            oBorder->setBottomBorderUV(0.49, 0.5, 0.51, 1.0);
-            oBorder->setBottomLeftBorderUV(0.0, 0.5, 0.5, 1.0);
-            oBorder->setBottomRightBorderUV(0.5, 0.5, 1.0, 1.0);
+            oBorder->setTopBorderUV(0.49f, 0.0f, 0.51f, 0.5f);
+            oBorder->setTopLeftBorderUV(0.0f, 0.0f, 0.5f, 0.5f);
+            oBorder->setTopRightBorderUV(0.5f, 0.0f, 1.0f, 0.5f);
+            oBorder->setLeftBorderUV(0.0f, 0.49f, 0.5f, 0.51f);
+            oBorder->setRightBorderUV(0.5f, 0.49f, 1.0f, 0.5f);
+            oBorder->setBottomBorderUV(0.49f, 0.5f, 0.51f, 1.0f);
+            oBorder->setBottomLeftBorderUV(0.0f, 0.5f, 0.5f, 1.0f);
+            oBorder->setBottomRightBorderUV(0.5f, 0.5f, 1.0f, 1.0f);
             //overlay_->add2D(oBorder);
             m_pOverlayPanel->addChild(oBorder);
         }
@@ -328,8 +328,8 @@ Ogre::MaterialPtr Map::init()
                     this->CamNode_->attachObject(this->Cam_);
                 //this->CamNodeHelper_ = this->CamNode_->createChildSceneNode();
                 //this->CamNodeHelper_->attachObject(this->Cam_);
-                    this->Cam_->setPosition(0, 0, DISTANCE);
-                    this->Cam_->pitch( static_cast<Degree>(PITCH) );
+                    this->Cam_->setPosition(0, 0, (float)DISTANCE);
+                    this->Cam_->pitch( static_cast<Degree>((float)PITCH) );
                     this->Cam_->lookAt(this->playerShipNode_->getPosition());
                 //this->Cam_->setAutoTracking(true, this->playerShipNode_);
                 }
