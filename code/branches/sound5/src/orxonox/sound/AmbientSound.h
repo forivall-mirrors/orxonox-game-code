@@ -72,7 +72,6 @@ namespace orxonox
     protected:
         ~AmbientSound() { }
 
-        void doPlay();
         void doStop();
 
     private:
