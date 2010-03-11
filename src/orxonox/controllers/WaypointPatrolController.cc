@@ -67,7 +67,7 @@ namespace orxonox
             if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();
 
-            if (this->getControllableEntity() && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0))
+            if (this->getControllableEntity() && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
                 this->getControllableEntity()->fire(0);
         }
         else
@@ -84,7 +84,7 @@ namespace orxonox
             return;
 
         Vector3 myposition = this->getControllableEntity()->getPosition();
-        float shortestsqdistance = static_cast<unsigned int>(-1);
+        float shortestsqdistance = (float)static_cast<unsigned int>(-1);
 
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
         {

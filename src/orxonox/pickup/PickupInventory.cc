@@ -300,13 +300,13 @@ namespace orxonox
         if(!winMgr) { return; }
 
         CEGUI::Window* frame = winMgr->createWindow("TaharezLook/StaticImage", "orxonox/Inventory/Frame/" + id);
-        frame->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5 + x * 70), CEGUI::UDim(0, 5 + y * 90)));
+        frame->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5.0f + x * 70), CEGUI::UDim(0, 5.0f + y * 90)));
         frame->setSize(CEGUI::UVector2(CEGUI::UDim(0, 65), CEGUI::UDim(0, 65)));
         frame->setRiseOnClickEnabled(false);
         frame->setVisible(false);
 
         CEGUI::Window* text = winMgr->createWindow("TaharezLook/StaticText", "orxonox/Inventory/Title/" + id);
-        text->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5 + x * 70), CEGUI::UDim(0, 70 + y * 90)));
+        text->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 5.0f + x * 70), CEGUI::UDim(0, 70.0f + y * 90)));
         text->setSize(CEGUI::UVector2(CEGUI::UDim(0, 65), CEGUI::UDim(0, 20)));
         text->setProperty("FrameEnabled", "False");
         text->setProperty("BackgroundEnabled", "False");
@@ -316,7 +316,7 @@ namespace orxonox
         text->setVisible(false);
 
         CEGUI::Window* btn = winMgr->createWindow("TaharezLook/Button", "orxonox/Inventory/Items/" + id);
-        btn->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 8 + x * 70), CEGUI::UDim(0, 8 + y * 90)));
+        btn->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 8.0f + x * 70), CEGUI::UDim(0, 8.0f + y * 90)));
         btn->setSize(CEGUI::UVector2(CEGUI::UDim(0, 59), CEGUI::UDim(0, 59)));
         btn->subscribeScriptedEvent("Clicked", "PickupInventory.itemClicked");
         btn->setVisible(false);

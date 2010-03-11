@@ -64,14 +64,14 @@ namespace orxonox
         if (this->target_ || distance > 10)
         {
             // Multiply with 0.8 to make them a bit slower
-            this->getControllableEntity()->rotateYaw(-0.8 * sgn(coord.x) * coord.x*coord.x);
-            this->getControllableEntity()->rotatePitch(0.8 * sgn(coord.y) * coord.y*coord.y);
+            this->getControllableEntity()->rotateYaw(-0.8f * sgn(coord.x) * coord.x*coord.x);
+            this->getControllableEntity()->rotatePitch(0.8f * sgn(coord.y) * coord.y*coord.y);
         }
 
         if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
-            this->getControllableEntity()->moveFrontBack(-0.5); // They don't brake with full power to give the player a chance
+            this->getControllableEntity()->moveFrontBack(-0.5f); // They don't brake with full power to give the player a chance
         else
-            this->getControllableEntity()->moveFrontBack(0.8);
+            this->getControllableEntity()->moveFrontBack(0.8f);
     }
 
     void ArtificialController::moveToTargetPosition()

@@ -138,11 +138,11 @@ namespace orxonox
             while(it != this->containers_.upper_bound(&this->timeLimit_)) //!< Iterate through all elements whose creation time is smaller than the current time minus the display time.
             {
                 this->removeContainer(*it);
-                this->scroll(Vector2(0.0,-(1.1*this->getFontSize())));
+                this->scroll(Vector2(0.0f,-(1.1f*this->getFontSize())));
                 it = this->containers_.begin(); //TODO: Needed?
             }
 
-            this->tickTime_ = 0.0; //!< Reset time counter.
+            this->tickTime_ = 0.0f; //!< Reset time counter.
         }
     }
 
@@ -192,7 +192,7 @@ namespace orxonox
         {
             it = this->containers_.begin();
             this->removeContainer(*it);
-            this->scroll(Vector2(0.0,-(1.1*this->getFontSize())));
+            this->scroll(Vector2(0.0f,-(1.1f*this->getFontSize())));
         }
 
         COUT(3) << "NotificationQueue updated. A new Notifications has been added." << std::endl;
@@ -374,7 +374,7 @@ namespace orxonox
         for (std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it = this->containers_.begin(); it != this->containers_.end(); it++) //!< Set the position for each overlay.
         {
             (*it)->overlay->setPosition(this->getPosition());
-            (*it)->overlay->scroll(Vector2(0.0,(1.1*this->getFontSize())*counter));
+            (*it)->overlay->scroll(Vector2(0.0f,(1.1f*this->getFontSize())*counter));
             counter++;
         }
     }
@@ -406,7 +406,7 @@ namespace orxonox
         this->addElement(container->overlay);
         this->size_= this->size_+1;
 
-        container->overlay->scroll(Vector2(0.0,(1.1*this->getFontSize())*(this->getSize()-1)));
+        container->overlay->scroll(Vector2(0.0f,(1.1f*this->getFontSize())*(this->getSize()-1)));
     }
 
     /**

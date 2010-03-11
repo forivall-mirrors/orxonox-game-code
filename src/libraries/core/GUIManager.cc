@@ -144,7 +144,7 @@ namespace orxonox
         this->luaState_->doFile("InitialiseGUI.lua");
 
         // Align CEGUI mouse with OIS mouse
-        guiSystem_->injectMousePosition(mousePosition.first, mousePosition.second);
+        guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
 
         // Hide the mouse cursor unless playing in full screen mode
         if (!bFullScreen)

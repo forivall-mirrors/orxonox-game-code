@@ -65,7 +65,7 @@ namespace orxonox
 
             Model* model = new Model(this);
             model->setMeshSource("rocket.mesh");
-            model->scale(0.7);
+            model->scale(0.7f);
             this->attach(model);
             ParticleEmitter* fire = new ParticleEmitter(this);
             this->attach(fire);

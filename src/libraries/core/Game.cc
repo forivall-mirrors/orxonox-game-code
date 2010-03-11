@@ -283,8 +283,8 @@ namespace orxonox
         // Add the tick time of this frame (rendering time has already been subtracted)
         uint64_t currentTime = gameClock_->getMicroseconds();
         uint64_t currentRealTime = gameClock_->getRealMicroseconds();
-        this->statisticsTickTimes_.back().tickLength += currentRealTime - currentTime;
-        this->periodTickTime_ += currentRealTime - currentTime;
+        this->statisticsTickTimes_.back().tickLength += (uint32_t)(currentRealTime - currentTime);
+        this->periodTickTime_ += (uint32_t)(currentRealTime - currentTime);
         if (this->periodTime_ > this->statisticsRefreshCycle_)
         {
             std::list<StatisticsTickInfo>::iterator it = this->statisticsTickTimes_.begin();
@@ -317,11 +317,11 @@ namespace orxonox
         uint64_t currentRealTime = gameClock_->getRealMicroseconds();
         while (currentRealTime < nextTime - minimumSleepTime_)
         {
-            usleep(nextTime - currentRealTime);
+            usleep((unsigned long)(nextTime - currentRealTime));
             currentRealTime = gameClock_->getRealMicroseconds();
         }
         // Integrate excess to avoid steady state error
-        excessSleepTime_ = currentRealTime - nextTime;
+        excessSleepTime_ = (int)(currentRealTime - nextTime);
         // Anti windup
         if (excessSleepTime_ > 50000) // 20ms is about the maximum time Windows would sleep for too long
             excessSleepTime_ = 50000;

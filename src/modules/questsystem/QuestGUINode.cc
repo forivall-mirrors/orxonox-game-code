@@ -160,8 +160,8 @@ namespace orxonox {
             stream << this->window_->getName() << "/Details";
             const QuestDescription* description = this->item_->getDescription();
             this->details_ = this->gui_->getWindowManager()->createWindow("TaharezLook/FrameWindow", stream.str());
-            this->details_->setSize(CEGUI::UVector2(CEGUI::UDim(0.7, 0),CEGUI::UDim(0.7, 0)));
-            this->details_->setPosition(CEGUI::UVector2(CEGUI::UDim(0.1, 0),CEGUI::UDim(0.1, 0)));
+            this->details_->setSize(CEGUI::UVector2(CEGUI::UDim(0.7f, 0),CEGUI::UDim(0.7f, 0)));
+            this->details_->setPosition(CEGUI::UVector2(CEGUI::UDim(0.1f, 0),CEGUI::UDim(0.1f, 0)));
             this->details_->setText(description->getTitle());
             this->details_->setAlpha(1.0);
             this->details_->setInheritsAlpha(false);
@@ -172,7 +172,7 @@ namespace orxonox {
             stream << "/Scrollable";
             CEGUI::Window* window = this->gui_->getWindowManager()->createWindow("TaharezLook/ScrollablePane", stream.str());
             window->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -2*QuestGUINode::BORDER_WIDTH),CEGUI::UDim(1.0, -QuestGUINode::TITLE_HEIGHT)));
-            window->setPosition(CEGUI::UVector2(CEGUI::UDim(0, QuestGUINode::BORDER_WIDTH),CEGUI::UDim(0, QuestGUINode::TITLE_HEIGHT)));
+            window->setPosition(CEGUI::UVector2(CEGUI::UDim(0, (float)QuestGUINode::BORDER_WIDTH),CEGUI::UDim(0, (float)QuestGUINode::TITLE_HEIGHT)));
             this->details_->addChildWindow(window);
 
             int height;
@@ -202,8 +202,8 @@ namespace orxonox {
                 statusWindow->setProperty("HorzFormatting", "WordWrapLeftAligned");
                 statusWindow->setProperty("VertFormatting", "TopAligned");
                 statusWindow->setText(status);
-                statusWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
-                statusWindow->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0, 0)));
+                statusWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, (float)offset)));
+                statusWindow->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, (float)-QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0f, 0)));
                 height = setHeight(statusWindow);
 
                 offset += height;
@@ -218,8 +218,8 @@ namespace orxonox {
             descriptionWindowTitle->setProperty("HorzFormatting", "HorzCentred");
             descriptionWindowTitle->setProperty("VertFormatting", "TopAligned");
             descriptionWindowTitle->setText("Description:");
-            descriptionWindowTitle->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
-            descriptionWindowTitle->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0, 0)));
+            descriptionWindowTitle->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, (float)offset)));
+            descriptionWindowTitle->setSize(CEGUI::UVector2(CEGUI::UDim(1.0f, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0f, 0)));
 
             offset += setHeight(descriptionWindowTitle);
 
@@ -231,8 +231,8 @@ namespace orxonox {
             descriptionWindow->setProperty("HorzFormatting", "WordWrapLeftAligned");
             descriptionWindow->setProperty("VertFormatting", "TopAligned");
             descriptionWindow->setText(description->getDescription());
-            descriptionWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
-            descriptionWindow->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0, 0)));
+            descriptionWindow->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, (float)offset)));
+            descriptionWindow->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, (float)-QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0f, 0)));
             height = setHeight(descriptionWindow);
 
             offset += height;
@@ -254,14 +254,14 @@ namespace orxonox {
                             hintsTitle->setProperty("HorzFormatting", "HorzCentred");
                             hintsTitle->setProperty("VertFormatting", "TopAligned");
                             hintsTitle->setText("Hints:");
-                            hintsTitle->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
+                            hintsTitle->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, (float)offset)));
                             hintsTitle->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(1.0, 0)));
                             offset += setHeight(hintsTitle);;
                             title = false;
                         }
                         QuestGUINode* node = *it;
-                        node->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(0, QuestGUINode::BUTTON_HEIGHT)));
-                        node->window_->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, offset)));
+                        node->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1.0f, (float)-QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(0, (float)QuestGUINode::BUTTON_HEIGHT)));
+                        node->window_->setPosition(CEGUI::UVector2(CEGUI::UDim(0, 0),CEGUI::UDim(0, (float)offset)));
                         window->addChildWindow(node->window_);
                         offset += QuestGUINode::BUTTON_HEIGHT;
                     }
@@ -336,7 +336,7 @@ namespace orxonox {
         const float frameHeight = window->getUnclippedPixelRect().getHeight() - formattedArea.getHeight();
 
         //! Get the formatted line count - using the formatting area obtained above.
-        const float lines = window->getFont()->getFormattedLineCount(window->getText(), formattedArea, CEGUI::WordWrapLeftAligned);
+        const float lines = (float)(window->getFont()->getFormattedLineCount(window->getText(), formattedArea, CEGUI::WordWrapLeftAligned));
 
         //! Calculate pixel height of window, which is the number of formatted lines multiplied by the spacing of the font, plus the pixel height of the frame.
         const float height = lines * window->getFont()->getLineSpacing() + frameHeight;
@@ -356,8 +356,8 @@ namespace orxonox {
     */
     void QuestGUINode::updatePosition(void)
     {
-        this->window_->setPosition(CEGUI::UVector2(CEGUI::UDim(0, QuestGUINode::INDENT_WIDTH*this->depth_),CEGUI::UDim(0, QuestGUINode::BUTTON_HEIGHT*this->index_)));
-        this->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1, -QuestGUINode::INDENT_WIDTH*this->depth_-QuestGUINode::SCROLLBAR_WIDTH),CEGUI::UDim(0, QuestGUINode::BUTTON_HEIGHT)));
+        this->window_->setPosition(CEGUI::UVector2(CEGUI::UDim(0, (float)(QuestGUINode::INDENT_WIDTH*this->depth_)),CEGUI::UDim(0, (float)(QuestGUINode::BUTTON_HEIGHT*this->index_))));
+        this->window_->setSize(CEGUI::UVector2(CEGUI::UDim(1, (float)(-QuestGUINode::INDENT_WIDTH*this->depth_-QuestGUINode::SCROLLBAR_WIDTH)),CEGUI::UDim(0, (float)QuestGUINode::BUTTON_HEIGHT)));
     }
 
     /**

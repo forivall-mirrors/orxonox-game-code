@@ -140,14 +140,14 @@ namespace orxonox
 
         // calc position on radar...
         Vector2 coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
-        coord *= Ogre::Math::PI / 3.5; // small adjustment to make it fit the texture
-        panel->setPosition((1.0 + coord.x - size) * 0.5, (1.0 - coord.y - size) * 0.5);
+        coord *= Ogre::Math::PI / 3.5f; // small adjustment to make it fit the texture
+        panel->setPosition((1.0f + coord.x - size) * 0.5f, (1.0f - coord.y - size) * 0.5f);
 
         if (bIsMarked)
         {
             this->marker_->show();
-            this->marker_->setDimensions(size * 1.5, size * 1.5);
-            this->marker_->setPosition((1.0 + coord.x - size * 1.5) * 0.5, (1.0 - coord.y - size * 1.5) * 0.5);
+            this->marker_->setDimensions(size * 1.5f, size * 1.5f);
+            this->marker_->setPosition((1.0f + coord.x - size * 1.5f) * 0.5f, (1.0f - coord.y - size * 1.5f) * 0.5f);
         }
     }
 
