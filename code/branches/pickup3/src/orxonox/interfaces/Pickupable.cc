@@ -197,7 +197,9 @@ namespace orxonox
         this->setCarrier(NULL);
         //TODO: possible problem.
         if(!created)
+        {
             this->destroy();
+        }
         
         return true;
     }

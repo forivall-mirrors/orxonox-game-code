@@ -3,7 +3,11 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="0.5,1.0,0" material="Examples/Flare" />
+                    <Billboard position="0,0,0" colour="0.50,0.90,0.25" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.36,0.81,0.10" material="Cross" scale=0.3 />
+                        </attached>
+                    </Billboard>
                 </attached>
             </StaticEntity>
         </spawner-representation>
@@ -24,7 +28,11 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="0,1.0,0.5" material="Examples/Flare" />
+                    <Billboard position="0,0,0" colour="0.50,0.90,0.25" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.36,0.81,0.10" material="Cross" scale=0.5 />
+                        </attached>
+                    </Billboard>
                 </attached>
             </StaticEntity>
         </spawner-representation>
@@ -45,7 +53,11 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="0,1.0,0.5" material="Examples/Flare" />
+                    <Billboard position="0,0,0" colour="0.50,0.90,0.25" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.36,0.81,0.10" material="Cross" scale=0.7 />
+                        </attached>
+                    </Billboard>
                 </attached>
             </StaticEntity>
         </spawner-representation>
@@ -66,7 +78,11 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="0,1.0,0.5" material="Examples/Flare" />
+                    <Billboard position="0,0,0" colour="0.50,0.90,0.25" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.36,0.81,0.10" material="Cross" scale=1.2 />
+                        </attached>
+                    </Billboard>
                 </attached>
             </StaticEntity>
         </spawner-representation>

@@ -215,7 +215,7 @@ namespace orxonox
         if(this->spawnsRemaining_ != 0 && this->respawnTime_ > 0)
         {
             //TODO: Nicer? Does this even work?
-            this->respawnTimer_.setTimer(this->respawnTime_, false, createExecutor(createFunctor(&PickupSpawner::respawnTimerCallback, this)));
+            this->startRespawnTimer();
 
             this->setActive(false);
             this->fireEvent();
@@ -226,6 +226,15 @@ namespace orxonox
             this->setActive(false);
             this->destroy();
         }
+    }
+    
+    /**
+    @brief
+        Starts the respawn timer.
+    */
+    void PickupSpawner::startRespawnTimer(void)
+    {
+        this->respawnTimer_.setTimer(this->respawnTime_, false, createExecutor(createFunctor(&PickupSpawner::respawnTimerCallback, this)));
     }
     
     /**

@@ -100,6 +100,8 @@ namespace orxonox
 
         protected:
             void decrementSpawnsRemaining(void); //!< Decrements the number of remaining spawns.
+                        
+            void startRespawnTimer(void);
             
             virtual Pickupable* getPickup(void); //!< Creates a new Pickupable.
             

@@ -39,11 +39,16 @@
 #include <list>
 #include <set>
 #include "Pickupable.h"
+#include "core/Identifier.h"
 
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
+    
+    class Pickup;
+    class HealthPickup;
+    class TestPickup;
 
     /**
     @brief
@@ -54,6 +59,10 @@ namespace orxonox
     class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
     {
         friend class Pickupable; //!< The Pickupable has full acces to its PickupCarrier.
+        //TODO: Ugly workaround.
+        friend class Pickup;
+        friend class HealthPickup;
+        friend class TestPickup;
         
         public:
             PickupCarrier(); //!< Constructor.
@@ -68,7 +77,10 @@ namespace orxonox
                 {
                     bool pickedUp = this->pickups_.insert(pickup).second;
                     if(pickedUp)
+                    {
+                        COUT(4) << "Picked up Pickupable " << pickup->getIdentifier()->getName() << "(&" << pickup << ")." << std::endl;
                         pickup->pickedUp(this);
+                    }
                     return pickedUp;
                 }
                 
@@ -80,12 +92,13 @@ namespace orxonox
             */
             bool drop(Pickupable* pickup, bool drop = true)
                 { 
-                   bool dropped = this->pickups_.erase(pickup) == 1;
-                   if(dropped && drop)
-                   {
-                       pickup->dropped();
-                   }
-                   return dropped;
+                    bool dropped = this->pickups_.erase(pickup) == 1;
+                    if(dropped && drop)
+                    {
+                        COUT(4) << "Dropping Pickupable " << pickup->getIdentifier()->getName() << "(&" << pickup << ")." << std::endl;
+                        pickup->dropped();
+                    }
+                    return dropped;
                 }
                 
             /**
@@ -160,6 +173,10 @@ namespace orxonox
             @return Returns the position as a Vector3.
             */
             virtual const Vector3& getCarrierPosition(void) = 0;
+                            
+            //TODO: Remove.
+            std::set<Pickupable*>& getPickups(void)
+                { return this->pickups_; }
         
         private:
             std::set<Pickupable*> pickups_; //!< The list of Pickupables carried by this PickupCarrier.

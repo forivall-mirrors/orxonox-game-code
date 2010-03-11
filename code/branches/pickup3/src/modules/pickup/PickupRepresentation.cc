@@ -153,11 +153,16 @@ namespace orxonox
     StaticEntity* PickupRepresentation::getDefaultSpawnerRepresentation(PickupSpawner* spawner)
     {
         StaticEntity* representation = new StaticEntity(spawner);
-        //TODO: Nicer...
-        Billboard* billboard = new Billboard(spawner);
-        billboard->setColour(ColourValue(1.0, 0.0, 0.0));
-        billboard->setMaterial("Examples/Flare");
-        representation->attach(billboard);
+        Billboard* sphere = new Billboard(spawner);
+        sphere->setColour(ColourValue(0.95, 0.85, 0.27));
+        sphere->setMaterial("Sphere2");
+        sphere->setScale(0.1);
+        Billboard* icon = new Billboard(spawner);
+        icon->setColour(ColourValue(0.89, 0.79, 0.08));
+        icon->setMaterial("Asterix");
+        icon->setScale(0.5);
+        sphere->attach(icon);
+        representation->attach(sphere);
         return representation;
     }
     
