@@ -36,6 +36,8 @@
 #include "SoundManager.h"
 #include "SoundStreamer.h"
 
+#include <AL/alut.h>
+
 namespace orxonox
 {
     CreateFactory(AmbientSound);
@@ -58,6 +60,7 @@ namespace orxonox
         {
             // Smoothly fade out by keeping a SmartPtr
             SoundManager::getInstance().unregisterAmbientSound(this);
+            this->soundstreamthread_.interrput();
         }
     }
 

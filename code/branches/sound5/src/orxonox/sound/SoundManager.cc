@@ -42,7 +42,7 @@
 #include "core/GameMode.h"
 #include "core/ScopedSingletonManager.h"
 #include "core/Resource.h"
-#include "SoundBuffer.h":
+#include "SoundBuffer.h"
 #include "BaseSound.h"
 #include "AmbientSound.h"
 #include "WorldSound.h"
