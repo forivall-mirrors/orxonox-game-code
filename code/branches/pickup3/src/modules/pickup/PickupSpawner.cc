@@ -53,9 +53,9 @@ namespace orxonox
     */
     PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator)
     {
-        RegisterObject(PickupSpawner);
-        
         this->initialize();
+
+        RegisterObject(PickupSpawner);
     }
 
     /**
