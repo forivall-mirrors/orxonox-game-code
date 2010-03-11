@@ -60,7 +60,7 @@ namespace orxonox
         {
             // Smoothly fade out by keeping a SmartPtr
             SoundManager::getInstance().unregisterAmbientSound(this);
-            this->soundstreamthread_.interrput();
+            this->soundstreamthread_.interrupt();
         }
     }
 
