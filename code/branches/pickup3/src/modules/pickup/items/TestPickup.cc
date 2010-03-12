@@ -29,7 +29,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "interfaces/PickupCarrier.h"
-#include "worldentities/pawns/Pawn.h"
 #include "pickup/PickupIdentifier.h"
 
 #include "TestPickup.h"
@@ -46,7 +45,7 @@ namespace orxonox {
     {
         RegisterObject(TestPickup);
         
-        this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
+        this->addTarget(ClassIdentifier<PickupCarrier>::getIdentifier());
         this->setActivationTypeDirect(pickupActivationType::immediate);
         this->setDurationTypeDirect(pickupDurationType::once);
         this->testType_ = pickupTestType::none;
