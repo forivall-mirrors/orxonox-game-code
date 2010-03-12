@@ -31,68 +31,68 @@
 #include "interfaces/PickupCarrier.h"
 #include "pickup/PickupIdentifier.h"
 
-#include "TestPickup.h"
+#include "MetaPickup.h"
 
 namespace orxonox {
  
-    CreateFactory(TestPickup);
+    CreateFactory(MetaPickup);
     
-    /*static*/ const std::string TestPickup::testTypeNone_s = "none";
-    /*static*/ const std::string TestPickup::testTypeUse_s = "use";
-    /*static*/ const std::string TestPickup::testTypeDrop_s = "drop";
+    /*static*/ const std::string MetaPickup::metaTypeNone_s = "none";
+    /*static*/ const std::string MetaPickup::metaTypeUse_s = "use";
+    /*static*/ const std::string MetaPickup::metaTypeDrop_s = "drop";
     
-    TestPickup::TestPickup(BaseObject* creator) : Pickup(creator)
+    MetaPickup::MetaPickup(BaseObject* creator) : Pickup(creator)
     {
-        RegisterObject(TestPickup);
+        RegisterObject(MetaPickup);
         
         this->addTarget(ClassIdentifier<PickupCarrier>::getIdentifier());
         this->setActivationTypeDirect(pickupActivationType::immediate);
         this->setDurationTypeDirect(pickupDurationType::once);
-        this->testType_ = pickupTestType::none;
+        this->metaType_ = pickupMetaType::none;
     }
     
-    TestPickup::~TestPickup()
+    MetaPickup::~MetaPickup()
     {
         
     }
     
-    void TestPickup::initializeIdentifier(void)
+    void MetaPickup::initializeIdentifier(void)
     {
-        std::string val = this->getTestType();
-        std::string type = "testType";
+        std::string val = this->getMetaType();
+        std::string type = "metaType";
         this->pickupIdentifier_->addParameter(type, val);
     }
     
-    void TestPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
+    void MetaPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
-        SUPER(TestPickup, XMLPort, xmlelement, mode);
+        SUPER(MetaPickup, XMLPort, xmlelement, mode);
         
-        XMLPortParam(TestPickup, "testType", setTestType, getTestType, xmlelement, mode);
+        XMLPortParam(MetaPickup, "metaType", setMetaType, getMetaType, xmlelement, mode);
         
         this->initializeIdentifier();
     }
     
-    void TestPickup::changedUsed(void)
+    void MetaPickup::changedUsed(void)
     {
-        SUPER(TestPickup, changedUsed);
+        SUPER(MetaPickup, changedUsed);
         
         if(this->isUsed())
         {
             PickupCarrier* carrier = this->getCarrier();
-            if(this->getTestTypeDirect() != pickupTestType::none && carrier != NULL)
+            if(this->getMetaTypeDirect() != pickupMetaType::none && carrier != NULL)
             {
                 std::set<Pickupable*> pickups = carrier->getPickups();
                 for(std::set<Pickupable*>::iterator it = pickups.begin(); it != pickups.end(); it++)
                 {
                     Pickup* pickup = dynamic_cast<Pickup*>(*it);
-                    if(this->getTestTypeDirect() == pickupTestType::use)
+                    if(this->getMetaTypeDirect() == pickupMetaType::use)
                     {
                         if(pickup != NULL && pickup != this && pickup->isOnUse() && !pickup->isUsed())
                         {
                             pickup->setUsed(true);
                         }
                     }
-                    if(this->getTestTypeDirect() == pickupTestType::drop)
+                    if(this->getMetaTypeDirect() == pickupMetaType::drop)
                     {
                         if(pickup != NULL && pickup != this)
                         {
@@ -105,46 +105,46 @@ namespace orxonox {
         }
     }
     
-    const std::string& TestPickup::getTestType(void)
+    const std::string& MetaPickup::getMetaType(void)
     {
-        switch(this->getTestTypeDirect())
+        switch(this->getMetaTypeDirect())
         {
-            case pickupTestType::none:
-                return TestPickup::testTypeNone_s;
-            case pickupTestType::use:
-                return TestPickup::testTypeUse_s;
-            case pickupTestType::drop:
-                return TestPickup::testTypeDrop_s;
+            case pickupMetaType::none:
+                return MetaPickup::metaTypeNone_s;
+            case pickupMetaType::use:
+                return MetaPickup::metaTypeUse_s;
+            case pickupMetaType::drop:
+                return MetaPickup::metaTypeDrop_s;
             default:
                 return BLANKSTRING;
         }
     }
     
-    void TestPickup::setTestType(const std::string& type)
+    void MetaPickup::setMetaType(const std::string& type)
     {
-        if(type == TestPickup::testTypeNone_s)
+        if(type == MetaPickup::metaTypeNone_s)
         {
-            this->setTestTypeDirect(pickupTestType::none);
+            this->setMetaTypeDirect(pickupMetaType::none);
         }
-        else if(type == TestPickup::testTypeUse_s)
+        else if(type == MetaPickup::metaTypeUse_s)
         {
-            this->setTestTypeDirect(pickupTestType::use);
+            this->setMetaTypeDirect(pickupMetaType::use);
         }
-        else if(type == TestPickup::testTypeDrop_s)
+        else if(type == MetaPickup::metaTypeDrop_s)
         {
-            this->setTestTypeDirect(pickupTestType::drop);
+            this->setMetaTypeDirect(pickupMetaType::drop);
         }
     }
     
-    void TestPickup::clone(OrxonoxClass*& item)
+    void MetaPickup::clone(OrxonoxClass*& item)
     {
         if(item == NULL)
-            item = new TestPickup(this);
+            item = new MetaPickup(this);
         
-        SUPER(TestPickup, clone, item);
+        SUPER(MetaPickup, clone, item);
         
-        TestPickup* pickup = dynamic_cast<TestPickup*>(item);
-        pickup->setTestTypeDirect(this->getTestTypeDirect());
+        MetaPickup* pickup = dynamic_cast<MetaPickup*>(item);
+        pickup->setMetaTypeDirect(this->getMetaTypeDirect());
         
         pickup->initializeIdentifier();
     }

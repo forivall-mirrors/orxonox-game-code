@@ -75,7 +75,7 @@ namespace orxonox
     
     //items
     class HealthPickup;
-    class TestPickup;
+    class MetaPickup;
     
 }
 

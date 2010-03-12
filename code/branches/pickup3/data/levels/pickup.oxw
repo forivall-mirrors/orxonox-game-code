@@ -24,13 +24,13 @@
     
     <PickupSpawner position="-100,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
         <pickup>
-            <TestPickup testType="drop" />
+            <MetaPickup metaType="drop" />
         </pickup>
     </PickupSpawner>
     
     <PickupSpawner position="-75,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
         <pickup>
-            <TestPickup testType="use" />
+            <MetaPickup metaType="use" />
         </pickup>
     </PickupSpawner>
 

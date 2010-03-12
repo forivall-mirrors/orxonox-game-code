@@ -48,7 +48,7 @@ namespace orxonox
     
     class Pickup;
     class HealthPickup;
-    class TestPickup;
+    class MetaPickup;
 
     /**
     @brief
@@ -62,7 +62,7 @@ namespace orxonox
         //TODO: Ugly workaround.
         friend class Pickup;
         friend class HealthPickup;
-        friend class TestPickup;
+        friend class MetaPickup;
         
         public:
             PickupCarrier(); //!< Constructor.

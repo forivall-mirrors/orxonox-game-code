@@ -26,8 +26,8 @@
  *
 */
 
-#ifndef _TestPickup_H__
-#define _TestPickup_H__
+#ifndef _MetaPickup_H__
+#define _MetaPickup_H__
 
 #include "pickup/PickupPrereqs.h"
 
@@ -35,7 +35,7 @@
 
 namespace orxonox {
 
-    namespace pickupTestType
+    namespace pickupMetaType
     {
         enum Value
         {
@@ -45,37 +45,37 @@ namespace orxonox {
         };
     }
     
-    class _PickupExport TestPickup : public Pickup
+    class _PickupExport MetaPickup : public Pickup
     {
         friend class PickupCarrier;
         
         public:
-            TestPickup(BaseObject* creator);
-            virtual ~TestPickup();
+            MetaPickup(BaseObject* creator);
+            virtual ~MetaPickup();
             
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
             
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
             
-            inline pickupTestType::Value getTestTypeDirect(void)
-                { return this->testType_; }
-            const std::string& getTestType(void);
+            inline pickupMetaType::Value getMetaTypeDirect(void)
+                { return this->metaType_; }
+            const std::string& getMetaType(void);
             
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
             
-            inline void setTestTypeDirect(pickupTestType::Value type)
-                { this->testType_ =  type; }
-            void setTestType(const std::string& type);
+            inline void setMetaTypeDirect(pickupMetaType::Value type)
+                { this->metaType_ =  type; }
+            void setMetaType(const std::string& type);
             
         private:
             void initialize(void); //!< Initializes the member variables.
             
-            pickupTestType::Value testType_;
-            static const std::string testTypeNone_s;
-            static const std::string testTypeUse_s;
-            static const std::string testTypeDrop_s;
+            pickupMetaType::Value metaType_;
+            static const std::string metaTypeNone_s;
+            static const std::string metaTypeUse_s;
+            static const std::string metaTypeDrop_s;
             
         
     };
