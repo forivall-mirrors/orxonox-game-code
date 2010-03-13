@@ -44,6 +44,8 @@
 namespace orxonox
 {
  
+    CreateFactory(PickupCollection);
+
     /**
     @brief
         Default Constructor.
@@ -76,8 +78,7 @@ namespace orxonox
     {
         SUPER(PickupCollection, XMLPort, xmlelement, mode);
         
-        //TODO: Does this work? Problem could be, that Pickupable itself cannot be instantiated through XML, doubt that, though.
-        XMLPortObject(PickupCollection, PickupCollection, "pickupables", addPickupable, getPickupable, xmlelement, mode);
+        XMLPortObject(PickupCollection, Pickupable, "pickupables", addPickupable, getPickupable, xmlelement, mode);
         
         this->initializeIdentifier();
     }
@@ -102,7 +103,7 @@ namespace orxonox
     */
     bool PickupCollection::createSpawner(const Vector3& position)
     {
-        DroppedPickup::DroppedPickup(this, this, position);
+        new DroppedPickup(this, this, position);
         return true;
     }
     
@@ -175,6 +176,17 @@ namespace orxonox
         }
 
         pickup->initializeIdentifier();
+    }
+    
+    bool PickupCollection::isTarget(Identifier* identifier) const
+    {
+        for(std::vector<Pickupable*>::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        {
+            if(!(*it)->isTarget(identifier))
+                return false;
+        }
+        
+        return true;
     }
     
     const PickupIdentifier* PickupCollection::getPickupIdentifier(void)

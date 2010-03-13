@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file
+    @brief Implementation of the MetaPickup class.
+*/
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "interfaces/PickupCarrier.h"
@@ -41,6 +46,10 @@ namespace orxonox {
     /*static*/ const std::string MetaPickup::metaTypeUse_s = "use";
     /*static*/ const std::string MetaPickup::metaTypeDrop_s = "drop";
     
+    /**
+    @brief
+        Constructor. 
+    */
     MetaPickup::MetaPickup(BaseObject* creator) : Pickup(creator)
     {
         RegisterObject(MetaPickup);

@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file
+    @brief Definition of the MetaPickup class.
+*/
+
 #ifndef _MetaPickup_H__
 #define _MetaPickup_H__
 
@@ -35,6 +40,7 @@
 
 namespace orxonox {
 
+    //! The meta type, deciding what the pickup does exactly.
     namespace pickupMetaType
     {
         enum Value
@@ -45,9 +51,14 @@ namespace orxonox {
         };
     }
     
+    /**
+    @brief
+        The MetaPickup is a pickup that can, depending on the parameters, either drop all pickups of the PickupCarrier that picks it up, or use all the unused pickups of the PickupCarrier, that picks it up. The parameter to set for this is the metaType and it can be used with the values 'none', 'drop' and 'use'.
+    @author
+        Damian 'Mozork' Frick
+    */
     class _PickupExport MetaPickup : public Pickup
     {
-        friend class PickupCarrier;
         
         public:
             MetaPickup(BaseObject* creator);

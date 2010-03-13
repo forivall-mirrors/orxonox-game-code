@@ -36,7 +36,7 @@
 
     <PickupSpawner position="-50,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
         <pickup>
-            <HealthPickup health=50 healthRate=5 durationType=continuous activationType=onUse healthType=limited />
+            <HealthPickup health=50 healthRate=5 durationType=continuous activationType=onUse healthType=permanent />
         </pickup>
     </PickupSpawner>
     
@@ -61,6 +61,12 @@
     <PickupSpawner position="50,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
         <pickup>
             <HealthPickup template=crazyhealthpickup />
+        </pickup>
+    </PickupSpawner>
+    
+    <PickupSpawner position="75,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+        <pickup>
+            <PickupCollection template=doublepickup />
         </pickup>
     </PickupSpawner>
 

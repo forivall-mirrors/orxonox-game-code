@@ -97,3 +97,13 @@
     durationType = "once"
   />
 </Template>
+
+<Template name=doublepickup>
+    <PickupCollection>
+        <pickupables>
+            <HealthPickup template=smallhealthpickup />
+            <HealthPickup health=50 healthRate=5 durationType=continuous activationType=immediate healthType=limited />
+        </pickupables>
+    </PickupCollection>
+</Template>
+    

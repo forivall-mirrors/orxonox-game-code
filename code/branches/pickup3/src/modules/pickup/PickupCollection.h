@@ -46,7 +46,6 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    //TODO: Isn't private inheritance sufficient?
     class _PickupExport PickupCollection : public Pickupable, public BaseObject
     {
         
@@ -62,6 +61,8 @@ namespace orxonox
             virtual void changedCarrier(void);
             
             virtual void clone(OrxonoxClass*& item);
+            
+            virtual bool isTarget(Identifier* identifier) const;
             
             virtual const PickupIdentifier* getPickupIdentifier(void);
             

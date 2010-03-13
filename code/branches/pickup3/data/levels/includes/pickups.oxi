@@ -37,3 +37,13 @@
         <HealthPickup template=crazyhealthpickup />
     </pickup>
 </PickupRepresentation>
+
+<PickupRepresentation
+    name = "Double Pickup"
+    description = "Does stuff."
+    spawnerTemplate = "crazyhealthpickupRepresentation"
+>
+    <pickup>
+        <PickupCollection template=doublepickup />
+    </pickup>
+</PickupRepresentation>

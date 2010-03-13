@@ -37,7 +37,7 @@
 namespace orxonox
 {
 
-    class PickupCollectionIdentifier : public PickupIdentifier
+    class _PickupExport PickupCollectionIdentifier : public PickupIdentifier
     {
         
         public:

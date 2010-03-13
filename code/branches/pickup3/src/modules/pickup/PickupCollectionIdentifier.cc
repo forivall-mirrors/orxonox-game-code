@@ -49,7 +49,7 @@ namespace orxonox
         const PickupCollectionIdentifier* collectionIdentifier = dynamic_cast<PickupCollectionIdentifier*>(temp);
         if(collectionIdentifier == NULL)
         {
-            return this->compare(identifier);
+            return this->PickupIdentifier::compare(identifier);
         }
         
         if(this->identifiers_.size() != collectionIdentifier->identifiers_.size())
