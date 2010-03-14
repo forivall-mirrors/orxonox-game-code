@@ -149,7 +149,7 @@ namespace orxonox
             switch(this->getHealthTypeDirect())
             {
                 case pickupHealthType::permanent:
-                    if(pawn->getMaxHealth() > fullHealth)
+                    if(pawn->getMaxHealth() < fullHealth)
                         pawn->setMaxHealth(fullHealth);
                 case pickupHealthType::limited:
                     pawn->addHealth(health);
