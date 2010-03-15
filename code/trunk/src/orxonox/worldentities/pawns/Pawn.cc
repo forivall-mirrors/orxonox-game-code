@@ -70,7 +70,8 @@ namespace orxonox
 
         this->aimPosition_ = Vector3::ZERO;
 
-        this->getPickups().setOwner(this);
+        //TODO: Remove.
+        //this->getPickups().setOwner(this);
 
         if (GameMode::isMaster())
         {
@@ -295,10 +296,11 @@ namespace orxonox
             this->spawneffect();
     }
 
-    void Pawn::dropItems()
-    {
-        this->getPickups().clear();
-    }
+//TODO: Remove.
+//     void Pawn::dropItems()
+//     {
+//         this->getPickups().clear();
+//     }
 
 
     /* WeaponSystem:

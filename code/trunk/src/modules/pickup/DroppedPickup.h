@@ -22,33 +22,43 @@
  *   Author:
  *      Daniel 'Huty' Haggenmueller
  *   Co-authors:
- *      ...
+ *      Damian 'Mozork' Frick
  *
  */
 
 /**
     @file
-    @brief Definition of EquipmentItem (base-class for equipment-type items).
+    @brief Definition of the DroppedPickup class.
 */
 
-#ifndef _EquipmentPickup_H__
-#define _EquipmentPickup_H__
+#ifndef _DroppedPickup_H__
+#define _DroppedPickup_H__
 
-#include "OrxonoxPrereqs.h"
+#include "PickupPrereqs.h"
 
-#include "BaseItem.h"
+#include "PickupSpawner.h"
+
 namespace orxonox
 {
+    
     /**
-        @brief Base class for all equipment-type items.
-        @author Daniel 'Huty' Haggenmueller
+    @brief
+        Special PickupSpawner that is created whe a Pickupable is dropped. It just spawns one pickup, the one that was dropped.
+    @author
+        Daniel 'Huty' Haggenmueller
+        Damian 'Mozork' Frick
     */
-    class _OrxonoxExport EquipmentItem : public BaseItem
+    class _PickupExport DroppedPickup : public PickupSpawner
     {
-    public:
-        EquipmentItem(BaseObject* creator);
-        virtual ~EquipmentItem() {}
+        public:
+            DroppedPickup(BaseObject* creator); //!< Default constructor.
+            DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position, float triggerDistance = 10.0); //!< Constructor.
+            virtual ~DroppedPickup(); //!< Destructor.
+
+        protected:
+            virtual Pickupable* getPickup(void); //!< Creates the Pickupable that is going to get picked up.
+
     };
 }
 
-#endif /* _EquipmentPickup_H__ */
+#endif /* _DroppedPickup_H__ */
