@@ -57,8 +57,6 @@ ORXONOX_ADD_LIBRARY(orxonox
     LevelManager.h
     MoodManager.h
     controllers/HumanController.h
-    pickup/BaseItem.h
-    pickup/PickupInventory.h
     sound/SoundManager.h
   DEFINE_SYMBOL
     "ORXONOX_SHARED_BUILD"

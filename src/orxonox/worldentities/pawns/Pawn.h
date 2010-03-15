@@ -32,13 +32,13 @@
 #include "OrxonoxPrereqs.h"
 
 #include <string>
+#include "interfaces/PickupCarrier.h"
 #include "interfaces/RadarViewable.h"
 #include "worldentities/ControllableEntity.h"
-#include "pickup/PickupCollection.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Pawn : public ControllableEntity, public RadarViewable
+    class _OrxonoxExport Pawn : public ControllableEntity, public RadarViewable, public PickupCarrier
     {
         friend class WeaponSystem;
 
@@ -108,11 +108,12 @@ namespace orxonox
             inline unsigned int getExplosionChunks() const
                 { return this->numexplosionchunks_; }
 
-            virtual void dropItems();
-            inline PickupCollection& getPickups()
-                { return this->pickups_; }
-            virtual void useItem()
-                { this->pickups_.useItem(); }
+//TODO: Remove.
+//             virtual void dropItems();
+//             inline PickupCollection& getPickups()
+//                 { return this->pickups_; }
+//             virtual void useItem()
+//                 { this->pickups_.useItem(); }
 
             virtual void startLocalHumanControl();
 
@@ -134,7 +135,14 @@ namespace orxonox
 
             bool bAlive_;
 
-            PickupCollection pickups_;
+            //TODO: Remove.
+            //PickupCollection pickups_;
+            virtual std::list<PickupCarrier*>* getCarrierChildren(void)
+                { return new std::list<PickupCarrier*>(); }
+            virtual PickupCarrier* getCarrierParent(void)
+                { return NULL; }
+            virtual const Vector3& getCarrierPosition(void)
+                { return this->getWorldPosition(); };
 
             float health_;
             float maxHealth_;

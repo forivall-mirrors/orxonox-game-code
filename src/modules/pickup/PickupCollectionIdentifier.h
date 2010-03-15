@@ -20,23 +20,39 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Daniel 'Huty' Haggenmueller
+ *      ...
  *   Co-authors:
  *      ...
  *
- */
+*/
 
-#include "PassiveItem.h"
-#include "core/CoreIncludes.h"
+#ifndef _PickupCollectionIdentifier_H__
+#define _PickupCollectionIdentifier_H_
+
+#include "PickupPrereqs.h"
+
+#include "pickup/PickupIdentifier.h"
+#include <set>
 
 namespace orxonox
 {
-    /**
-        @brief Constructor. Registers the PassiveItem.
-        @param creator Pointer to the object which created this item.
-    */
-    PassiveItem::PassiveItem(BaseObject* creator) : BaseItem(creator)
+
+    class _PickupExport PickupCollectionIdentifier : public PickupIdentifier
     {
-        RegisterObject(PassiveItem);
-    }
+        
+        public:
+            PickupCollectionIdentifier(Pickupable* pickup);
+            ~PickupCollectionIdentifier();
+            
+            virtual int compare(const PickupIdentifier* identifier) const;
+            
+            void addPickup(const PickupIdentifier* identifier);
+            
+        private:
+            std::set<const PickupIdentifier*, PickupIdentifierCompare> identifiers_;
+            
+    };
+    
 }
+
+#endif // _PickupCollectionIdentifier_H_

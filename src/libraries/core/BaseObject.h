@@ -194,6 +194,7 @@ namespace orxonox
                 { this->eventListeners_.erase(object); }
 
             void setXMLName(const std::string& name);
+            const std::string& getSingleTemplate(void) const;
             Template* getTemplate(unsigned int index) const;
             void registerEventStates();
 
