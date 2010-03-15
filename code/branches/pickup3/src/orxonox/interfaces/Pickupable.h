@@ -92,7 +92,7 @@ namespace orxonox
             @brief  Should be called when the pickup has transited from picked up to dropped or the other way around.
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedPickedUp); to their changedPickedUp method.
             */
-            virtual void changedPickedUp(void) {}    
+            virtual void changedPickedUp(void) {}
             
             //TODO: Better private, or protected?
             bool pickedUp(PickupCarrier* carrier); //!< Sets the Pickupable to picked up.
