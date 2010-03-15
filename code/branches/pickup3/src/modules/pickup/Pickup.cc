@@ -181,11 +181,11 @@ namespace orxonox
     /**
     @brief
         Should be called when the pickup has transited from picked up to dropped or the other way around.
-        Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedCarrier); to their changedCarrier method.
+        Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedPickedUp); to their changedPickedUp method.
     */
-    void Pickup::changedCarrier(void)
+    void Pickup::changedPickedUp(void)
     {
-        SUPER(Pickup, changedCarrier);
+        SUPER(Pickup, changedPickedUp);
         
         //! Sets the Pickup to used if the Pickup has activation type 'immediate' and gets picked up.
         if(this->getCarrier() != NULL && this->isPickedUp() && this->isImmediate())

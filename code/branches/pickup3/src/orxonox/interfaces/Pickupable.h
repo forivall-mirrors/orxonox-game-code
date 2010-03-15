@@ -69,22 +69,6 @@ namespace orxonox
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedUsed); to their changdeUsed method.
             */
             virtual void changedUsed(void) {}
-            bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
-            
-            /**
-            @brief Returns whether the Pickupable is currently picked up.
-            @return Returns true if the Pickupable is currently picked up, false if not.
-            */
-            inline bool isPickedUp(void)
-                { return this->pickedUp_; }
-            //TODO: Better private, or protected?
-            bool pickedUp(PickupCarrier* carrier); //!< Sets the Pickupable to picked up.
-            bool dropped(void); //!< Sets the Pickupable to not picked up or dropped.
-            
-            bool isTarget(const PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this pickup.
-            virtual bool isTarget(Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this pickup.
-            bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this pickup.
-            bool addTarget(Identifier* identifier); //!< Add a class, representetd by the input Identifier, as target of this pickup.
             
             /**
             @brief Get the carrier of the pickup.
@@ -93,12 +77,31 @@ namespace orxonox
             inline PickupCarrier* getCarrier(void)
                 { return this->carrier_; }
             /**
-            @brief  Should be called when the pickup has transited from picked up to dropped or the other way around.
-                    Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedCarrier); to their changedCarrier method.
+            @brief Should be called when the pickup has changed its PickupCarrier.
+                   Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedCarrier); to their changedCarrier method.
             */
             virtual void changedCarrier(void) {}
-            //TODO: Maybe private?
-            bool setCarrier(PickupCarrier* carrier); //!< Sets the carrier of the pickup.
+            
+            /**
+            @brief Returns whether the Pickupable is currently picked up.
+            @return Returns true if the Pickupable is currently picked up, false if not.
+            */
+            inline bool isPickedUp(void)
+                { return this->pickedUp_; }
+            /**
+            @brief  Should be called when the pickup has transited from picked up to dropped or the other way around.
+                    Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedPickedUp); to their changedPickedUp method.
+            */
+            virtual void changedPickedUp(void) {}    
+            
+            //TODO: Better private, or protected?
+            bool pickedUp(PickupCarrier* carrier); //!< Sets the Pickupable to picked up.
+            bool dropped(void); //!< Sets the Pickupable to not picked up or dropped.
+            
+            bool isTarget(const PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this pickup.
+            virtual bool isTarget(Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this pickup.
+            bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this pickup.
+            bool addTarget(Identifier* identifier); //!< Add a class, representetd by the input Identifier, as target of this pickup.
             
             Pickupable* clone(void); //!< Creates a duplicate of the Pickupable.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
@@ -112,6 +115,11 @@ namespace orxonox
                 
             virtual void destroy(void)
                 { delete this; }
+                
+            //TODO: Make them work as protected.
+            bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
+            bool setPickedUp(bool pickedUp); //!< Helper method to set the Pickupable to either picked up or not picked up.
+            bool setCarrier(PickupCarrier* carrier); //!< Sets the carrier of the pickup.
             
         protected:
             /**
@@ -133,12 +141,6 @@ namespace orxonox
             PickupIdentifier* pickupIdentifier_; //!< The PickupIdentifier of this Pickupable.
             
         private:
-            /**
-            @brief Helper method to set the Pickupable to either picked up or not picked up.
-            @param pickedUp The value this->pickedUp_ should be set to.
-            */
-            inline void setPickedUp(bool pickedUp)
-                { this->pickedUp_ = pickedUp; }
             
             bool used_; //!< Whether the pickup is currently in use or not.
             bool pickedUp_; //!< Whether the pickup is currently picked up or not.
@@ -150,6 +152,7 @@ namespace orxonox
     
     SUPER_FUNCTION(10, Pickupable, changedUsed, false);
     SUPER_FUNCTION(12, Pickupable, changedCarrier, false);
+    SUPER_FUNCTION(13, Pickupable, changedPickedUp, false);
 }
 
 #endif /* _Pickupable_H__ */

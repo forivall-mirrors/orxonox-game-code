@@ -137,7 +137,6 @@ namespace orxonox
         return this->pickups_[index]; //TODO. Does this work?
     }
     
-    //TODO: Steal description from Pickupable.
     void PickupCollection::changedUsed(void)
     {
         SUPER(PickupCollection, changedUsed);
@@ -149,18 +148,28 @@ namespace orxonox
         }
     }
     
-    void PickupCollection::changedCarrier()
+    void PickupCollection::changedCarrier(void)
     {
         SUPER(PickupCollection, changedCarrier);
         
-        //! Change the carrier for all Pickupables this PickupCollection consists of.
+        //! Change used for all Pickupables this PickupCollection consists of.
         for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             (*it)->setCarrier(this->getCarrier());
         }
     }
     
-    //TODO: Steal description from Pickupable.
+    void PickupCollection::changedPickedUp()
+    {
+        SUPER(PickupCollection, changedPickedUp);
+        
+        //! Change the carrier for all Pickupables this PickupCollection consists of.
+        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        {
+            (*it)->setPickedUp(this->isPickedUp());
+        }
+    }
+    
     void PickupCollection::clone(OrxonoxClass*& item)
     {
         if(item == NULL)

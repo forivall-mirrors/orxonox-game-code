@@ -116,7 +116,7 @@ namespace orxonox
             inline bool isContinuous(void)
                 { return this->getDurationTypeDirect() == pickupDurationType::continuous; }
             
-            virtual void changedCarrier(void); //!< Should be called when the pickup has transited from picked up to dropped or the other way around.
+            virtual void changedPickedUp(void); //!< Should be called when the pickup has transited from picked up to dropped or the other way around.
                                     
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the Pickup.
                 

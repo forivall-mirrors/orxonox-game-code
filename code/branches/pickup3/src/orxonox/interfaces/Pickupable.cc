@@ -171,8 +171,46 @@ namespace orxonox
             return false;
         
         COUT(4) << "Pickupable (&" << this << ") got picked up by a PickupCarrier (&" << carrier << ")." << std::endl;
-        this->setPickedUp(true);
         this->setCarrier(carrier);
+        this->setPickedUp(true);
+        return true;
+    }
+    
+    /**
+    @brief
+        Helper method to set the Pickupable to either picked up or not picked up.
+    @param pickedUp
+        The value this->pickedUp_ should be set to.
+    @return
+        Returns true if the pickedUp status was changed, false if not.
+    */
+    bool Pickupable::setPickedUp(bool pickedUp)
+    {
+        if(this->pickedUp_ == pickedUp)
+            return false;
+        
+        COUT(4) << "Pickupable (&" << this << ") set to pickedUp " << pickedUp << "." << std::endl;
+        
+        this->pickedUp_ = pickedUp;
+        this->changedPickedUp();
+        return true;
+    }
+        
+    /**
+    @brief
+        Sets the carrier of the pickup.
+    @param carrier
+        Sets the input PickupCarrier as the carrier of the pickup.
+    */
+    inline bool Pickupable::setCarrier(PickupCarrier* carrier)
+    {
+        if(this->carrier_ == carrier)
+            return false;
+        
+        COUT(4) << "Pickupable (&" << this << ") changed Carrier (& " << carrier << ")." << std::endl;
+        
+        this->carrier_ = carrier;
+        this->changedCarrier();
         return true;
     }
     
@@ -204,32 +242,12 @@ namespace orxonox
         return true;
     }
     
-        
-    /**
-    @brief
-        Sets the carrier of the pickup.
-    @param carrier
-        Sets the input PickupCarrier as the carrier of the pickup.
-    @return
-        Returns true if the carrier was changed, false if not.
-    */
-    bool Pickupable::setCarrier(PickupCarrier* carrier)
-    {
-        if(this->getCarrier() == carrier)
-            return false;
-        
-        this->carrier_ = carrier;
-        this->changedCarrier();
-        return true;
-    }
-    
     /**
     @brief
         Creates a duplicate of the Pickupable.
     @return
         Returns the clone of this pickup as a pointer to a Pickupable.
     */
-    //TODO: Does this work?
     Pickupable* Pickupable::clone(void)
     {
         OrxonoxClass* item = NULL;

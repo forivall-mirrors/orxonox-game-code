@@ -45,7 +45,7 @@
 
 namespace orxonox
 {
-    
+
     class Pickup;
     class HealthPickup;
     class MetaPickup;
@@ -174,7 +174,10 @@ namespace orxonox
             */
             virtual const Vector3& getCarrierPosition(void) = 0;
                             
-            //TODO: Remove.
+            /**
+            @brief Get all Pickupables this PickupCarrier has.
+            @return  Returns the set of all Pickupables this PickupCarrier has.
+            */
             std::set<Pickupable*>& getPickups(void)
                 { return this->pickups_; }
         

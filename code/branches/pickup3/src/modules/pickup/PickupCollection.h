@@ -57,8 +57,8 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             virtual void changedUsed(void);
-            
             virtual void changedCarrier(void);
+            virtual void changedPickedUp(void);
             
             virtual void clone(OrxonoxClass*& item);
             

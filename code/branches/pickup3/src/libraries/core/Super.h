@@ -276,6 +276,9 @@
     #define SUPER_changedCarrier(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
         
+    #define SUPER_changedPickedUp(classname, functionname, ...) \
+        SUPER_NOARGS(classname, functionname)
+        
     // (1/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 
@@ -538,6 +541,10 @@ namespace orxonox
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(12, changedCarrier, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
+        
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(13, changedPickedUp, false)
+            ()
+        SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
 
         // (2/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
@@ -595,6 +602,7 @@ namespace orxonox
     SUPER_INTRUSIVE_DECLARATION(changedUsed);
     SUPER_INTRUSIVE_DECLARATION(clone);
     SUPER_INTRUSIVE_DECLARATION(changedCarrier);
+    SUPER_INTRUSIVE_DECLARATION(changedPickedUp);
     // (3/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 
