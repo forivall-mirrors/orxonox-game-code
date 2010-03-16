@@ -27,19 +27,17 @@
  */
 
 /**
-    @file
+    @file PickupCollection.cc
     @brief Implementation of PickupCollection.
 */
 
-#include "PickupCollection.h"
-
 #include "core/CoreIncludes.h"
-#include "core/Template.h"
 #include "core/XMLPort.h"
 #include "interfaces/PickupCarrier.h"
 #include "DroppedPickup.h"
-
 #include "PickupCollectionIdentifier.h"
+
+#include "PickupCollection.h"
 
 namespace orxonox
 {
@@ -59,7 +57,7 @@ namespace orxonox
     
     /**
     @brief
-        Destructor.
+        Destructor. Iterates through all Pickupables this PickupCollection consists of and destroys them if they haven't been already.
     */
     PickupCollection::~PickupCollection()
     {
@@ -84,6 +82,10 @@ namespace orxonox
         this->initializeIdentifier();
     }
     
+    /**
+    @brief
+        Initializes the PickupIdentifier for this pickup.
+    */
     void PickupCollection::initializeIdentifier(void)
     {
         for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
@@ -94,18 +96,106 @@ namespace orxonox
     
     /**
     @brief
-        Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
-        This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
-        DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position);
-    @param position
-        The position at which the PickupSpawner should be placed.
-    @return
-        Returns true if a spawner was created, false if not.
+        Is called when the pickup has transited from used to unused or the other way around.
+        Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedUsed); to their changdeUsed method.
     */
-    bool PickupCollection::createSpawner(const Vector3& position)
+    void PickupCollection::changedUsed(void)
     {
-        new DroppedPickup(this, this, position);
+        SUPER(PickupCollection, changedUsed);
+        
+        //! Change used for all Pickupables this PickupCollection consists of.
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        {
+            (*it).get()->setUsed(this->isUsed());
+        }
+    }
+    
+    /**
+    @brief
+        Is called when the pickup has changed its PickupCarrier.
+        Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedCarrier); to their changedCarrier method.
+    */
+    void PickupCollection::changedCarrier(void)
+    {
+        SUPER(PickupCollection, changedCarrier);
+        
+        //! Change the PickupCarrier for all Pickupables this PickupCollection consists of.
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        {
+            (*it).get()->setCarrier(this->getCarrier());
+        }
+    }
+    
+    /**
+    @brief
+        Is called when the pickup has transited from picked up to dropped or the other way around.
+        Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedPickedUp); to their changedPickedUp method.
+    */
+    void PickupCollection::changedPickedUp()
+    {
+        SUPER(PickupCollection, changedPickedUp);
+        
+        //! Change the pickedUp status for all Pickupables this PickupCollection consists of.
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        {
+            (*it).get()->setPickedUp(this->isPickedUp());
+        }
+    }
+    
+    /**
+    @brief
+        Creates a duplicate of the input OrxonoxClass.
+        This method needs to be implemented by any Class inheriting from Pickupable.
+    @param item
+        A reference to a pointer to the OrxonoxClass that is to be duplicated.
+    */
+    void PickupCollection::clone(OrxonoxClass*& item)
+    {
+        if(item == NULL)
+            item = new PickupCollection(this);
+        
+        SUPER(PickupCollection, clone, item);
+        
+        PickupCollection* pickup = dynamic_cast<PickupCollection*>(item);
+        //! Clone allPickupables this PickupCollection consist of.
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        {
+            Pickupable* newPickup = (*it).get()->clone();
+            pickup->addPickupable(newPickup);
+        }
+
+        pickup->initializeIdentifier();
+    }
+    
+    /**
+    @brief
+        Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
+    @param identifier
+        A pointer to the PickupIdentifier of the PickupCarrier we want to know of, whether it is a target of this PickupCollection.
+    @return
+        Returns true if the PickupCarrier identified by the input PickupIdentififer it is a target of this PickupCollection, false if not.
+    */
+    bool PickupCollection::isTarget(Identifier* identifier) const
+    {
+        for(std::vector<WeakPtr<Pickupable> >::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        {
+            if(!(*it).get()->isTarget(identifier))
+                return false;
+        }
+        
         return true;
+    }
+    
+    /**
+    @brief
+        Get the PickupIdentifier of this PickupCollection.
+        This is in fact the PickupCollectionIdentifier.
+    @return
+        Returns a pointer to the PickupIdentifier of this PickupCollection.
+    */
+    const PickupIdentifier* PickupCollection::getPickupIdentifier(void)
+    {
+        return this->pickupCollectionIdentifier_;
     }
     
     /**
@@ -121,7 +211,7 @@ namespace orxonox
         if(pickup == NULL)
             return false;
         
-        WeakPtr<Pickupable> ptr = pickup;
+        WeakPtr<Pickupable> ptr = pickup; //!< Create a weak pointer to be able to test in the constructor if the Pointer is still valid.
         this->pickups_.push_back(ptr);
         return true;
     }
@@ -136,73 +226,23 @@ namespace orxonox
     */
     const Pickupable* PickupCollection::getPickupable(unsigned int index)
     {
-        return this->pickups_[index].get(); //TODO. Does this work?
+        return this->pickups_[index].get();
     }
-    
-    void PickupCollection::changedUsed(void)
+        
+    /**
+    @brief
+        Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
+        This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
+        DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position);
+    @param position
+        The position at which the PickupSpawner should be placed.
+    @return
+        Returns true if a spawner was created, false if not.
+    */
+    bool PickupCollection::createSpawner(const Vector3& position)
     {
-        SUPER(PickupCollection, changedUsed);
-        
-        //! Change used for all Pickupables this PickupCollection consists of.
-        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
-            (*it).get()->setUsed(this->isUsed());
-        }
-    }
-    
-    void PickupCollection::changedCarrier(void)
-    {
-        SUPER(PickupCollection, changedCarrier);
-        
-        //! Change used for all Pickupables this PickupCollection consists of.
-        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
-            (*it).get()->setCarrier(this->getCarrier());
-        }
-    }
-    
-    void PickupCollection::changedPickedUp()
-    {
-        SUPER(PickupCollection, changedPickedUp);
-        
-        //! Change the carrier for all Pickupables this PickupCollection consists of.
-        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
-            (*it).get()->setPickedUp(this->isPickedUp());
-        }
-    }
-    
-    void PickupCollection::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new PickupCollection(this);
-        
-        SUPER(PickupCollection, clone, item);
-        
-        PickupCollection* pickup = dynamic_cast<PickupCollection*>(item);
-        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
-            Pickupable* newPickup = (*it).get()->clone();
-            pickup->addPickupable(newPickup);
-        }
-
-        pickup->initializeIdentifier();
-    }
-    
-    bool PickupCollection::isTarget(Identifier* identifier) const
-    {
-        for(std::vector<WeakPtr<Pickupable> >::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
-            if(!(*it).get()->isTarget(identifier))
-                return false;
-        }
-        
+        new DroppedPickup(this, this, position);
         return true;
-    }
-    
-    const PickupIdentifier* PickupCollection::getPickupIdentifier(void)
-    {
-        return this->pickupCollectionIdentifier_;
     }
     
 }

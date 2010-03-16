@@ -20,10 +20,15 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Damian 'Mozork' Frick
  *   Co-authors:
  *      ...
  *
+*/
+
+/**
+    @file PickupCollectionIdentifier.h
+    @brief Declaration of PickupCollectionIdentifier.
 */
 
 #ifndef _PickupCollectionIdentifier_H__
@@ -32,24 +37,33 @@
 #include "PickupPrereqs.h"
 
 #include "pickup/PickupIdentifier.h"
+
 #include <set>
 
 namespace orxonox
 {
 
+    /**
+    @brief
+        The PickupCollectionIdentifier is the specialization of the PickupIdentifier for the PickupCollection class.
+        It identifies PickupCollections based on the different Pickupables they consist of.
+        Pickupables can be added to the PickupCollectionIdentifier via the addPickup method.
+    @author
+        Damian 'Mozork' Frick
+    */
     class _PickupExport PickupCollectionIdentifier : public PickupIdentifier
     {
         
         public:
-            PickupCollectionIdentifier(Pickupable* pickup);
-            ~PickupCollectionIdentifier();
+            PickupCollectionIdentifier(Pickupable* pickup); //!< Constructor.
+            ~PickupCollectionIdentifier(); //!< Destructor.
             
-            virtual int compare(const PickupIdentifier* identifier) const;
+            virtual int compare(const PickupIdentifier* identifier) const; //!< Compares a PickupCollectionIdentifier with a PickupIdentifier.
             
-            void addPickup(const PickupIdentifier* identifier);
+            void addPickup(const PickupIdentifier* identifier); //!< Add a Pickupable to the PickupCollectionIdentifier.
             
         private:
-            std::set<const PickupIdentifier*, PickupIdentifierCompare> identifiers_;
+            std::set<const PickupIdentifier*, PickupIdentifierCompare> identifiers_; //!< The set of PickupIdentifiers of the Pickupables the PickupCollection with this PickupCollectionIdentifier consists of, ordered by the rule set by PickupIdentifierCompare.
             
     };
     

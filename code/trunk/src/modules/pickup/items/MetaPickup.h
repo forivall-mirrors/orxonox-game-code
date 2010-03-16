@@ -27,7 +27,7 @@
 */
 
 /**
-    @file
+    @file MetaPickup.h
     @brief Definition of the MetaPickup class.
 */
 
@@ -61,29 +61,40 @@ namespace orxonox {
     {
         
         public:
-            MetaPickup(BaseObject* creator);
-            virtual ~MetaPickup();
+            MetaPickup(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            virtual ~MetaPickup(); //!< Destructor.
             
-            virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
+            virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a MetaPickup object through XML.
             
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
             
+            /**
+            @brief Returns the meta type of the MetaPickup.
+            @return Returns an enum with the meta type of the MetaPickup.
+            */
             inline pickupMetaType::Value getMetaTypeDirect(void)
                 { return this->metaType_; }
-            const std::string& getMetaType(void);
+            const std::string& getMetaType(void); //!< Get the meta type of this MetaPickup.
             
         protected:
+            void initialize(void); //!< Initializes the object.
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
             
+            /**
+            @brief Set the meta type of the MetaPickup.
+            @param type The meta type as an enum.
+            */
             inline void setMetaTypeDirect(pickupMetaType::Value type)
                 { this->metaType_ =  type; }
-            void setMetaType(const std::string& type);
+            void setMetaType(const std::string& type); //!< Set the meta type of this MetaPickup.
             
         private:
             void initialize(void); //!< Initializes the member variables.
             
-            pickupMetaType::Value metaType_;
+            pickupMetaType::Value metaType_; //!< The meta type of the MetaPickup, determines which actions are taken.
+            
+            //! Static strings for the meta types.
             static const std::string metaTypeNone_s;
             static const std::string metaTypeUse_s;
             static const std::string metaTypeDrop_s;

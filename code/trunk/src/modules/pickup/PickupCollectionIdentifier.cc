@@ -20,41 +20,67 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Damian 'Mozork' Frick
  *   Co-authors:
  *      ...
  *
 */
 
-#include "PickupCollectionIdentifier.h"
+/**
+    @file PickupCollectionIdentifier.cc
+    @brief Implementation of PickupCollectionIdentifier.
+*/
 
 #include "core/CoreIncludes.h"
+
+#include "PickupCollectionIdentifier.h"
 
 namespace orxonox
 {
     
+    /**
+    @brief
+        Constructor. Registers the object.
+    */
     PickupCollectionIdentifier::PickupCollectionIdentifier(Pickupable* pickup) : PickupIdentifier(pickup)
     {
         RegisterObject(PickupCollectionIdentifier);
     }
     
+    /**
+    @brief
+        Destructor.
+    */
     PickupCollectionIdentifier::~PickupCollectionIdentifier()
     {
         
     }
 
+    /**
+    @brief
+        Compares a PickupCollectionIdentifier with a PickupIdentifier and returns 0 if a == b, <0 if a < b and >0 if a > b for a.compare(b), where a is a PickupCollectionIdentifier and b is just some PickupIdentifier.
+    @param identifier
+        Pointer to the second PickupIdentifier, b.
+    @return
+        Returns an integer. 0 if the two compared PickupIdentifiers are the same, <0 if a < b and >0 if a > b.
+    */
     int PickupCollectionIdentifier::compare(const PickupIdentifier* identifier) const
     {
+        //! Slight un-niceity to cast the PickupIdentifier to a PickupCollectionIdentifier.
         PickupIdentifier* temp = const_cast<PickupIdentifier*>(identifier);
         const PickupCollectionIdentifier* collectionIdentifier = dynamic_cast<PickupCollectionIdentifier*>(temp);
+        
+        //! If the input PickupIdentifier 'identifier' is no PickupCollectionIdentifier then just the two PickupIdentifiers are compared.
         if(collectionIdentifier == NULL)
         {
             return this->PickupIdentifier::compare(identifier);
         }
         
+        //! If the number of Pickupables each of the two PickupCollectionIdentifiers contain differ, the one with less is considered smaller.
         if(this->identifiers_.size() != collectionIdentifier->identifiers_.size())
             return this->identifiers_.size()-collectionIdentifier->identifiers_.size();
         
+        //! Compare the Pickupables of the two PickupCollectionIdentifiers one after the other. the one with the first 'smaller' one is considered smaller.
         std::set<const PickupIdentifier*, PickupIdentifierCompare>::const_iterator it2 = collectionIdentifier->identifiers_.begin();
         for(std::set<const PickupIdentifier*, PickupIdentifierCompare>::const_iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); it++)
         {
@@ -65,9 +91,16 @@ namespace orxonox
                 return 1;
         }
         
+        //! Means they are equal.
         return 0;
     }
     
+    /**
+    @brief
+        Add a Pickupable to the PickupCollectionIdentifier.
+    @param
+        A pointer to the PickupIdentifier of the Pickupable to be added.
+    */
     void PickupCollectionIdentifier::addPickup(const PickupIdentifier* identifier)
     {
         this->identifiers_.insert(identifier);

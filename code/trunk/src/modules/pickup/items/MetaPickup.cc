@@ -27,7 +27,7 @@
 */
 
 /**
-    @file
+    @file MetaPickup.cc
     @brief Implementation of the MetaPickup class.
 */
 
@@ -42,29 +42,48 @@ namespace orxonox {
  
     CreateFactory(MetaPickup);
     
+    //! Setting the static variables to their values.
     /*static*/ const std::string MetaPickup::metaTypeNone_s = "none";
     /*static*/ const std::string MetaPickup::metaTypeUse_s = "use";
     /*static*/ const std::string MetaPickup::metaTypeDrop_s = "drop";
     
     /**
     @brief
-        Constructor. 
+        Constructor. Registers and initializes the object.
     */
     MetaPickup::MetaPickup(BaseObject* creator) : Pickup(creator)
     {
         RegisterObject(MetaPickup);
         
-        this->addTarget(ClassIdentifier<PickupCarrier>::getIdentifier());
-        this->setActivationTypeDirect(pickupActivationType::immediate);
-        this->setDurationTypeDirect(pickupDurationType::once);
-        this->metaType_ = pickupMetaType::none;
+        this->initialize();
     }
     
+    /**
+    @brief
+        Destructor.
+    */
     MetaPickup::~MetaPickup()
     {
         
     }
     
+    /**
+    @brief
+        Initializes the object.
+    */
+    void MetaPickup::initialize(void)
+    {
+        this->addTarget(ClassIdentifier<PickupCarrier>::getIdentifier());
+        
+        this->setActivationTypeDirect(pickupActivationType::immediate);
+        this->setDurationTypeDirect(pickupDurationType::once);
+        this->metaType_ = pickupMetaType::none;
+    }
+    
+    /**
+    @brief
+        Helper method to initialize the PickupIdentifier.
+    */
     void MetaPickup::initializeIdentifier(void)
     {
         std::string val = this->getMetaType();
@@ -72,6 +91,10 @@ namespace orxonox {
         this->pickupIdentifier_->addParameter(type, val);
     }
     
+    /**
+    @brief
+        Method for creating a MetaPickup object through XML.
+    */
     void MetaPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
         SUPER(MetaPickup, XMLPort, xmlelement, mode);
@@ -81,16 +104,23 @@ namespace orxonox {
         this->initializeIdentifier();
     }
     
+    /**
+    @brief
+        Is called when the pickup has transited from used to unused or the other way around.
+        Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedUsed); to their changdeUsed method.
+    */
     void MetaPickup::changedUsed(void)
     {
         SUPER(MetaPickup, changedUsed);
         
+        //! If the MetaPickup transited to used.
         if(this->isUsed())
         {
             PickupCarrier* carrier = this->getCarrier();
             if(this->getMetaTypeDirect() != pickupMetaType::none && carrier != NULL)
             {
                 std::set<Pickupable*> pickups = carrier->getPickups();
+                //! Set all Pickupables carried by the PickupCarrier either to used or drop them, depending o the meta type.
                 for(std::set<Pickupable*>::iterator it = pickups.begin(); it != pickups.end(); it++)
                 {
                     Pickup* pickup = dynamic_cast<Pickup*>(*it);
@@ -113,7 +143,32 @@ namespace orxonox {
             this->destroy();
         }
     }
+        
+    /**
+    @brief
+        Creates a duplicate of the input OrxonoxClass.
+    @param item
+        A pointer to the Orxonox class.
+    */
+    void MetaPickup::clone(OrxonoxClass*& item)
+    {
+        if(item == NULL)
+            item = new MetaPickup(this);
+        
+        SUPER(MetaPickup, clone, item);
+        
+        MetaPickup* pickup = dynamic_cast<MetaPickup*>(item);
+        pickup->setMetaTypeDirect(this->getMetaTypeDirect());
+        
+        pickup->initializeIdentifier();
+    }
     
+    /**
+    @brief
+        Get the meta type of this MetaPickup.
+    @return
+        Returns a string with the meta type of the MetaPickup.
+    */
     const std::string& MetaPickup::getMetaType(void)
     {
         switch(this->getMetaTypeDirect())
@@ -129,6 +184,12 @@ namespace orxonox {
         }
     }
     
+    /**
+    @brief
+        Set the meta type of this MetaPickup.
+    @param type
+        A string with the type to be set.
+    */
     void MetaPickup::setMetaType(const std::string& type)
     {
         if(type == MetaPickup::metaTypeNone_s)
@@ -143,19 +204,6 @@ namespace orxonox {
         {
             this->setMetaTypeDirect(pickupMetaType::drop);
         }
-    }
-    
-    void MetaPickup::clone(OrxonoxClass*& item)
-    {
-        if(item == NULL)
-            item = new MetaPickup(this);
-        
-        SUPER(MetaPickup, clone, item);
-        
-        MetaPickup* pickup = dynamic_cast<MetaPickup*>(item);
-        pickup->setMetaTypeDirect(this->getMetaTypeDirect());
-        
-        pickup->initializeIdentifier();
     }
     
 }

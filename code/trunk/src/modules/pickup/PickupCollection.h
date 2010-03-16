@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file PickupCollection.h
+    @brief Declaration of PickupCollection.
+*/
+
 #ifndef _PickupCollection_H__
 #define _PickupCollection_H__
 
@@ -33,7 +38,6 @@
 
 #include "interfaces/Pickupable.h"
 #include "core/BaseObject.h"
-#include "core/XMLPort.h"
 
 #include <list>
 
@@ -51,34 +55,34 @@ namespace orxonox
         
         public:
             
-            PickupCollection(BaseObject* creator);
-            virtual ~PickupCollection();
+            PickupCollection(BaseObject* creator); //!< Default Constructor.
+            virtual ~PickupCollection(); //!< Destructor.
             
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates an instance of this Class through XML.
 
-            virtual void changedUsed(void);
-            virtual void changedCarrier(void);
-            virtual void changedPickedUp(void);
+            virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
+            virtual void changedCarrier(void); //!< Is called when the pickup has changed its PickupCarrier.
+            virtual void changedPickedUp(void); //!< Is called when the pickup has transited from picked up to dropped or the other way around.
             
-            virtual void clone(OrxonoxClass*& item);
+            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
             
-            virtual bool isTarget(Identifier* identifier) const;
+            virtual bool isTarget(Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
             
-            virtual const PickupIdentifier* getPickupIdentifier(void);
+            virtual const PickupIdentifier* getPickupIdentifier(void); //!< Get the PickupIdentifier of this PickupCollection.
             
-            bool addPickupable(Pickupable* pickup);
-            const Pickupable* getPickupable(unsigned int index);
+            bool addPickupable(Pickupable* pickup); //!< Add the input Pickupable to list of Pickupables combined by this PickupCollection.
+            const Pickupable* getPickupable(unsigned int index); //!< Get the Pickupable at the given index.
             
         protected:
-            void initializeIdentifier(void);
+            void initializeIdentifier(void); //!< Initializes the PickupIdentifier for this pickup.
             
             virtual bool createSpawner(const Vector3& position); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
             
-            PickupCollectionIdentifier* pickupCollectionIdentifier_;
+            PickupCollectionIdentifier* pickupCollectionIdentifier_; //!< The PickupCollectionIdentifier of this PickupCollection. Is used to distinguish different PickupCollections amongst themselves.
             
         private:
             
-            std::vector<WeakPtr<Pickupable> > pickups_;
+            std::vector<WeakPtr<Pickupable> > pickups_; //!< The list of the pointers of all the Pickupables this PickupCollection consists of. They are weak pointers to facilitate testing, whether the pointers are still valid.
         
     };
     
