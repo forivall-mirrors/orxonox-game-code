@@ -40,7 +40,6 @@
 #include <string>
 #include <vector>
 #include "InputCommands.h"
-#include "core/ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -52,8 +51,8 @@ namespace orxonox
         virtual void clear();
         virtual bool addParamCommand(ParamCommand* command) { return false; }
         void parse(const std::string& binding);
-        void readBinding(ConfigFileType type);
-        void setBinding(ConfigFileType type, const std::string& binding, bool bTemporary);
+        void readBinding(ConfigFile* configFile, ConfigFile* fallbackFile);
+        void setBinding(ConfigFile* configFile, ConfigFile* fallbackFile, const std::string& binding, bool bTemporary);
         bool execute(KeybindMode::Value mode, float abs = 1.0f, float rel = 1.0f);
 
         //! The configured string value

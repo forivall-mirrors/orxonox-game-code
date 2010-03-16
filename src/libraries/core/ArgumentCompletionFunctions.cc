@@ -35,6 +35,7 @@
 #include "util/Convert.h"
 #include "util/StringUtils.h"
 #include "Identifier.h"
+#include "ConfigFileManager.h"
 #include "ConfigValueContainer.h"
 #include "TclThreadManager.h"
 
@@ -95,45 +96,48 @@ namespace orxonox
             return filelist;
         }
 
-        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalueclasses)()
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(settingssections)()
         {
-            ArgumentCompletionList classlist;
+            ArgumentCompletionList sectionList;
 
-            for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMapBegin(); it != Identifier::getStringIdentifierMapEnd(); ++it)
-                if (it->second->hasConfigValues())
-                    classlist.push_back(ArgumentCompletionListElement(it->first, getLowercase(it->first)));
+            const std::set<std::string>& names = SettingsConfigFile::getInstance().getSectionNames();
+            for (std::set<std::string>::const_iterator it = names.begin(); it != names.end(); ++it)
+                sectionList.push_back(ArgumentCompletionListElement(*it, getLowercase(*it)));
 
-            return classlist;
+            return sectionList;
         }
 
-        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalues)(const std::string& fragment, const std::string& classname)
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(settingsentries)(const std::string& fragment, const std::string& section)
         {
-            ArgumentCompletionList configvalues;
-            std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
+            ArgumentCompletionList entryList;
+            SettingsConfigFile& settings = SettingsConfigFile::getInstance();
+            const std::string& sectionLC = getLowercase(section);
 
-            if (identifier != Identifier::getLowercaseStringIdentifierMapEnd() && identifier->second->hasConfigValues())
-            {
-                for (std::map<std::string, ConfigValueContainer*>::const_iterator it = identifier->second->getConfigValueMapBegin(); it != identifier->second->getConfigValueMapEnd(); ++it)
-                    configvalues.push_back(ArgumentCompletionListElement(it->first, getLowercase(it->first)));
-            }
+            SettingsConfigFile::ContainerMap::const_iterator upper = settings.getContainerUpperBound(sectionLC);
+            for (SettingsConfigFile::ContainerMap::const_iterator it = settings.getContainerLowerBound(sectionLC); it != upper; ++it)
+                entryList.push_back(ArgumentCompletionListElement(it->second.second->getName(), it->second.first));
 
-            return configvalues;
+            return entryList;
         }
 
-        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(configvalue)(const std::string& fragment, const std::string& varname, const std::string& classname)
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(settingsvalue)(const std::string& fragment, const std::string& entry, const std::string& section)
         {
-            ArgumentCompletionList oldvalue;
-            std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
-            if (identifier != Identifier::getLowercaseStringIdentifierMapEnd())
+            ArgumentCompletionList oldValue;
+            SettingsConfigFile& settings = SettingsConfigFile::getInstance();
+            const std::string& sectionLC = getLowercase(section);
+            const std::string& entryLC = getLowercase(entry);
+
+            SettingsConfigFile::ContainerMap::const_iterator upper = settings.getContainerUpperBound(sectionLC);
+            for (SettingsConfigFile::ContainerMap::const_iterator it = settings.getContainerLowerBound(sectionLC); it != upper; ++it)
             {
-                std::map<std::string, ConfigValueContainer*>::const_iterator variable = identifier->second->getLowercaseConfigValueMap().find(getLowercase(varname));
-                if (variable != identifier->second->getLowercaseConfigValueMapEnd())
+                if (it->second.first == entryLC)
                 {
-                    const std::string& valuestring = variable->second->toString();
-                    oldvalue.push_back(ArgumentCompletionListElement(valuestring, getLowercase(valuestring), "Old value: " + valuestring));
+                    const std::string& valuestring = it->second.second->toString();
+                    oldValue.push_back(ArgumentCompletionListElement(valuestring, getLowercase(valuestring), "Old value: " + valuestring));
                 }
             }
-            return oldvalue;
+
+            return oldValue;
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(tclthreads)()

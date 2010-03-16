@@ -50,8 +50,14 @@ namespace orxonox
         //! Returns a reference to the singleton instance
         static T& getInstance()
         {
-            assert(T::singletonPtr_s != 0);
+            assert(T::singletonPtr_s != NULL);
             return *T::singletonPtr_s;
+        }
+
+        //! Tells whether the singleton has been created
+        static bool exists()
+        {
+            return (T::singletonPtr_s != NULL);
         }
 
         //! Update method called by ClassSingletonManager (if used)
@@ -67,15 +73,15 @@ namespace orxonox
         //! Constructor sets the singleton instance pointer
         Singleton()
         {
-            assert(T::singletonPtr_s == 0);
+            assert(T::singletonPtr_s == NULL);
             T::singletonPtr_s = static_cast<T*>(this);
         }
 
         //! Constructor resets the singleton instance pointer
         ~Singleton()
         {
-            assert(T::singletonPtr_s != 0);
-            T::singletonPtr_s = 0;
+            assert(T::singletonPtr_s != NULL);
+            T::singletonPtr_s = NULL;
         }
 
     private:

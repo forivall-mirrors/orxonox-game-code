@@ -52,13 +52,6 @@
 #include <cassert>
 #include "util/Singleton.h"
 
-#define AddLanguageEntry(label, fallbackstring) \
-    orxonox::Language::getInstance().addEntry(label, fallbackstring)
-
-#define GetLocalisation(label) \
-    orxonox::Language::getInstance().getLocalisation(label)
-
-
 namespace orxonox
 {
     // ###############################
@@ -139,6 +132,18 @@ namespace orxonox
 
             static Language* singletonPtr_s;
     };
+
+    //! Shortcut function for Language::addEntry
+    inline void AddLanguageEntry(const LanguageEntryLabel& label, const std::string& fallbackString)
+    {
+        Language::getInstance().addEntry(label, fallbackString);
+    }
+
+    //! Shortcut function for Language::getLocalisation
+    inline const std::string& GetLocalisation(const LanguageEntryLabel& label)
+    {
+        return Language::getInstance().getLocalisation(label);
+    }
 }
 
 #endif /* _Language_H__ */

@@ -32,63 +32,12 @@
 
 #include "util/Convert.h"
 #include "util/Math.h"
-#include "util/StringUtils.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"
 #include "PathConfig.h"
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutExtern(config).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
-    SetConsoleCommandShortcutExtern(tconfig).argumentCompleter(0, autocompletion::configvalueclasses()).argumentCompleter(1, autocompletion::configvalues()).argumentCompleter(2, autocompletion::configvalue());
-    SetConsoleCommandShortcutExtern(reloadConfig);
-    SetConsoleCommandShortcutExtern(cleanConfig);
-    SetConsoleCommandShortcutExtern(loadSettings).argumentCompleter(0, autocompletion::files());
-
-    bool config(const std::string& classname, const std::string& varname, const std::string& value)
-    {
-        std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
-        if (identifier != Identifier::getLowercaseStringIdentifierMapEnd())
-        {
-            std::map<std::string, ConfigValueContainer*>::const_iterator variable = identifier->second->getLowercaseConfigValueMap().find(getLowercase(varname));
-            if (variable != identifier->second->getLowercaseConfigValueMapEnd())
-                return variable->second->set(value);
-        }
-        return false;
-    }
-
-    const std::string& getConfig(const std::string& classname, const std::string& varname)
-    {
-        return ConfigFileManager::getInstance().getValue(ConfigFileType::Settings, classname, varname, "", true);
-    }
-
-    bool tconfig(const std::string& classname, const std::string& varname, const std::string& value)
-    {
-        std::map<std::string, Identifier*>::const_iterator identifier = Identifier::getLowercaseStringIdentifierMap().find(getLowercase(classname));
-        if (identifier != Identifier::getLowercaseStringIdentifierMapEnd())
-        {
-            std::map<std::string, ConfigValueContainer*>::const_iterator variable = identifier->second->getLowercaseConfigValueMap().find(getLowercase(varname));
-            if (variable != identifier->second->getLowercaseConfigValueMapEnd())
-                return variable->second->tset(value);
-        }
-        return false;
-    }
-
-    void reloadConfig()
-    {
-        ConfigFileManager::getInstance().load();
-    }
-
-    void cleanConfig()
-    {
-        ConfigFileManager::getInstance().clean(false);
-    }
-
-    void loadSettings(const std::string& filename)
-    {
-        ConfigFileManager::getInstance().setFilename(ConfigFileType::Settings, filename);
-    }
-
     //////////////////////////
     // ConfigFileEntryValue //
     //////////////////////////
@@ -100,7 +49,7 @@ namespace orxonox
             this->value_ = stripEnclosingQuotes(this->value_);
         // Assemble the entry line
         this->fileEntry_ = this->getKeyString() + " = ";
-        if (this->bString_)
+        if (this->bString_ && !this->value_.empty())
             this->fileEntry_ += '"' + addSlashes(this->value_) + '"';
         else
             this->fileEntry_ += this->value_;
@@ -144,7 +93,7 @@ namespace orxonox
         }
     }
 
-    unsigned int ConfigFileSection::getVectorSize(const std::string& name)
+    unsigned int ConfigFileSection::getVectorSize(const std::string& name) const
     {
         unsigned int size = 0;
         for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
@@ -165,7 +114,27 @@ namespace orxonox
             return ('[' + this->name_ + "] " + this->additionalComment_);
     }
 
-    std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, const std::string& fallback, bool bString)
+    ConfigFileEntry* ConfigFileSection::getEntry(const std::string& name) const
+    {
+        for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
+        {
+            if ((*it)->getName() == name)
+                return *it;
+        }
+        return NULL;
+    }
+
+    ConfigFileEntry* ConfigFileSection::getEntry(const std::string& name, unsigned int index) const
+    {
+        for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
+        {
+            if (((*it)->getName() == name) && ((*it)->getIndex() == index))
+                return *it;
+        }
+        return NULL;
+    }
+
+    std::list<ConfigFileEntry*>::iterator ConfigFileSection::getOrCreateEntryIterator(const std::string& name, const std::string& fallback, bool bString)
     {
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
         {
@@ -178,10 +147,10 @@ namespace orxonox
 
         this->bUpdated_ = true;
 
-        return this->entries_.insert(this->entries_.end(), static_cast<ConfigFileEntry*>(new ConfigFileEntryValue(name, fallback, bString)));
+        return this->entries_.insert(this->entries_.end(), new ConfigFileEntryValue(name, fallback, bString));
     }
 
-    std::list<ConfigFileEntry*>::iterator ConfigFileSection::getEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
+    std::list<ConfigFileEntry*>::iterator ConfigFileSection::getOrCreateEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
     {
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
         {
@@ -195,35 +164,57 @@ namespace orxonox
         this->bUpdated_ = true;
 
         if (index == 0)
-            return this->entries_.insert(this->entries_.end(), static_cast<ConfigFileEntry*>(new ConfigFileEntryVectorValue(name, index, fallback, bString)));
+            return this->entries_.insert(this->entries_.end(), new ConfigFileEntryVectorValue(name, index, fallback, bString));
         else
-            return this->entries_.insert(++this->getEntryIterator(name, index - 1, "", bString), static_cast<ConfigFileEntry*>(new ConfigFileEntryVectorValue(name, index, fallback, bString)));
+            return this->entries_.insert(++this->getOrCreateEntryIterator(name, index - 1, "", bString), new ConfigFileEntryVectorValue(name, index, fallback, bString));
     }
 
 
     ////////////////
     // ConfigFile //
     ////////////////
+
+    const char* ConfigFile::DEFAULT_CONFIG_FOLDER = "defaultConfig";
+
+    ConfigFile::ConfigFile(const std::string& filename, bool bCopyFallbackFile)
+        : filename_(filename)
+        , bCopyFallbackFile_(bCopyFallbackFile)
+        , bUpdated_(false)
+    {
+    }
+
     ConfigFile::~ConfigFile()
     {
         this->clear();
     }
 
-    void ConfigFile::load(bool bCreateIfNotExisting)
+    void ConfigFile::load()
     {
         // Be sure we start from new in the memory
         this->clear();
 
-        // Get default file if necessary and available
-        boost::filesystem::path filepath(PathConfig::getConfigPath() / this->filename_);
-        if (!boost::filesystem::exists(filepath))
+        boost::filesystem::path filepath(this->filename_);
+        if (!filepath.is_complete())
         {
-            // Try to get default one from the data folder
-            boost::filesystem::path defaultFilepath(PathConfig::getDataPath() / "defaultConfig" / this->filename_);
-            if (boost::filesystem::exists(defaultFilepath))
+            filepath = PathConfig::getConfigPath() / filepath;
+            if (this->bCopyFallbackFile_)
             {
-                COUT(3) << "Copied " << this->filename_ << " from the defaultConfig folder." << std::endl;
-                boost::filesystem::copy_file(defaultFilepath, filepath);
+                // Look for default file in the data folder
+                if (!boost::filesystem::exists(filepath))
+                {
+                    boost::filesystem::path defaultFilepath(PathConfig::getDataPath() / DEFAULT_CONFIG_FOLDER / this->filename_);
+                    if (boost::filesystem::exists(defaultFilepath))
+                    {
+                        // Try to copy default file from the data folder
+                        try
+                        {
+                            boost::filesystem::copy_file(defaultFilepath, filepath);
+                            COUT(3) << "Copied " << this->filename_ << " from the default config folder." << std::endl;
+                        }
+                        catch (const boost::filesystem::filesystem_error& ex)
+                        { COUT(1) << "Error in ConfigFile: " << ex.what() << std::endl; }
+                    }
+                }
             }
         }
 
@@ -299,7 +290,7 @@ namespace orxonox
                                 if (convertValue(&index, line.substr(pos2 + 1, pos3 - pos2 - 1)))
                                 {
                                     // New array
-                                    std::list<ConfigFileEntry*>::iterator it = newsection->getEntryIterator(getStripped(line.substr(0, pos2)), index, value, false);
+                                    std::list<ConfigFileEntry*>::iterator it = newsection->getOrCreateEntryIterator(getStripped(line.substr(0, pos2)), index, value, false);
                                     (*it)->setValue(value);
                                     (*it)->setComment(comment);
                                     continue;
@@ -318,25 +309,28 @@ namespace orxonox
 
             COUT(3) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
 
-            // Save the file in case something changed (like stripped whitespaces)
-            this->save();
-
-            // Update all ConfigValueContainers
-            this->updateConfigValues();
+            // DO NOT save the file --> we can open supposedly read only config files
         } // end file.is_open()
     }
 
     void ConfigFile::save() const
     {
+        this->saveAs(this->filename_);
+    }
+
+    void ConfigFile::saveAs(const std::string& filename) const
+    {
+        boost::filesystem::path filepath(filename);
+        if (!filepath.is_complete())
+            filepath = PathConfig::getConfigPath() / filename;
         std::ofstream file;
-        file.open((PathConfig::getConfigPathString() + filename_).c_str(), std::fstream::out);
+        file.open(filepath.string().c_str(), std::fstream::out);
         file.setf(std::ios::fixed, std::ios::floatfield);
         file.precision(6);
 
         if (!file.is_open())
         {
-            COUT(1) << "An error occurred in ConfigFileManager.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open config-file \"" << this->filename_ << "\"." << std::endl;
+            COUT(1) << "Error: Couldn't open config-file \"" << filename << "\"." << std::endl;
             return;
         }
 
@@ -345,65 +339,14 @@ namespace orxonox
             file << (*it)->getFileEntry() << std::endl;
 
             for (std::list<ConfigFileEntry*>::const_iterator it_entries = (*it)->getEntriesBegin(); it_entries != (*it)->getEntriesEnd(); ++it_entries)
-            {
                 file << (*it_entries)->getFileEntry() << std::endl;
-            }
 
             file << std::endl;
         }
 
         file.close();
 
-        COUT(4) << "Saved config file \"" << this->filename_ << "\"." << std::endl;
-    }
-
-    void ConfigFile::saveAs(const std::string& filename)
-    {
-        std::string temp = this->filename_;
-        this->filename_ = filename;
-        this->save();
-        this->filename_ = temp;
-    }
-
-    void ConfigFile::clean(bool bCleanComments)
-    {
-        for (std::list<ConfigFileSection*>::iterator it1 = this->sections_.begin(); it1 != this->sections_.end(); )
-        {
-            std::map<std::string, Identifier*>::const_iterator it2 = Identifier::getStringIdentifierMap().find((*it1)->getName());
-            if (it2 != Identifier::getStringIdentifierMapEnd() && it2->second->hasConfigValues())
-            {
-                // The section exists, delete comment
-                if (bCleanComments)
-                    (*it1)->setComment("");
-                for (std::list<ConfigFileEntry*>::iterator it3 = (*it1)->entries_.begin(); it3 != (*it1)->entries_.end(); )
-                {
-                    std::map<std::string, ConfigValueContainer*>::const_iterator it4 = it2->second->getConfigValueMap().find((*it3)->getName());
-                    if (it4 != it2->second->getConfigValueMapEnd())
-                    {
-                        // The config-value exists, delete comment
-                        if (bCleanComments)
-                            (*it3)->setComment("");
-                        ++it3;
-                    }
-                    else
-                    {
-                        // The config-value doesn't exist
-                        delete (*it3);
-                        (*it1)->entries_.erase(it3++);
-                    }
-                }
-                ++it1;
-            }
-            else
-            {
-                // The section doesn't exist
-                delete (*it1);
-                this->sections_.erase(it1++);
-            }
-        }
-
-        // Save the file
-        this->save();
+        COUT(4) << "Saved config file \"" << filename << "\"." << std::endl;
     }
 
     void ConfigFile::clear()
@@ -413,7 +356,38 @@ namespace orxonox
         this->sections_.clear();
     }
 
-    ConfigFileSection* ConfigFile::getSection(const std::string& section)
+    const std::string& ConfigFile::getOrCreateValue(const std::string& section, const std::string& name, const std::string& fallback, bool bString)
+    {
+        const std::string& output = this->getOrCreateSection(section)->getOrCreateValue(name, fallback, bString);
+        this->saveIfUpdated();
+        return output;
+    }
+
+    const std::string& ConfigFile::getOrCreateValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString)
+    {
+        const std::string& output = this->getOrCreateSection(section)->getOrCreateValue(name, index, fallback, bString);
+        this->saveIfUpdated();
+        return output;
+    }
+
+    void ConfigFile::deleteVectorEntries(const std::string& section, const std::string& name, unsigned int startindex)
+    {
+        if (ConfigFileSection* sectionPtr = this->getSection(section))
+        {
+            sectionPtr->deleteVectorEntries(name, startindex);
+            this->save();
+        }
+    }
+
+    ConfigFileSection* ConfigFile::getSection(const std::string& section) const
+    {
+        for (std::list<ConfigFileSection*>::const_iterator it = this->sections_.begin(); it != this->sections_.end(); ++it)
+            if ((*it)->getName() == section)
+                return (*it);
+        return NULL;
+    }
+
+    ConfigFileSection* ConfigFile::getOrCreateSection(const std::string& section)
     {
         for (std::list<ConfigFileSection*>::iterator it = this->sections_.begin(); it != this->sections_.end(); ++it)
             if ((*it)->getName() == section)
@@ -444,21 +418,171 @@ namespace orxonox
         }
     }
 
-    void ConfigFile::updateConfigValues()
-    {
-        if (this->type_ == ConfigFileType::Settings)
-        {
-            for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMapBegin(); it != Identifier::getStringIdentifierMapEnd(); ++it)
-            {
-                if (it->second->hasConfigValues())
-                {
-                    for (std::map<std::string, ConfigValueContainer*>::const_iterator it2 = it->second->getConfigValueMapBegin(); it2 != it->second->getConfigValueMapEnd(); ++it2)
-                        it2->second->update();
 
-                    it->second->updateConfigValues();
-                }
+    ////////////////////////
+    // SettingsConfigFile //
+    ////////////////////////
+
+    SettingsConfigFile* SettingsConfigFile::singletonPtr_s = 0;
+
+    SettingsConfigFile::SettingsConfigFile(const std::string& filename)
+        : ConfigFile(filename)
+    {
+        ConsoleCommand* command = createConsoleCommand(createFunctor(&ConfigFile::load, this), "reloadSettings");
+        CommandExecutor::addConsoleCommandShortcut(command);
+        command = createConsoleCommand(createFunctor(&SettingsConfigFile::setFilename, this), "setSettingsFile");
+        CommandExecutor::addConsoleCommandShortcut(command);
+        command = createConsoleCommand(createFunctor(&SettingsConfigFile::config, this), "config");
+        CommandExecutor::addConsoleCommandShortcut(command).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
+        command = createConsoleCommand(createFunctor(&SettingsConfigFile::tconfig, this), "tconfig");
+        CommandExecutor::addConsoleCommandShortcut(command).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
+        command = createConsoleCommand(createFunctor(&SettingsConfigFile::getConfig, this), "getConfig");
+        CommandExecutor::addConsoleCommandShortcut(command).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries());
+    }
+
+    SettingsConfigFile::~SettingsConfigFile()
+    {
+    }
+
+    void SettingsConfigFile::load()
+    {
+        ConfigFile::load();
+        this->updateConfigValues();
+    }
+
+    void SettingsConfigFile::setFilename(const std::string& filename)
+    {
+        ConfigFileManager::getInstance().setFilename(ConfigFileType::Settings, filename);
+    }
+
+    void SettingsConfigFile::addConfigValueContainer(ConfigValueContainer* container)
+    {
+        if (container == NULL)
+            return;
+        std::pair<std::string, ConfigValueContainer*> second(getLowercase(container->getName()), container);
+        this->containers_.insert(std::make_pair(getLowercase(container->getSectionName()), second));
+        this->sectionNames_.insert(container->getSectionName());
+    }
+
+    void SettingsConfigFile::removeConfigValueContainer(ConfigValueContainer* container)
+    {
+        if (container == NULL)
+            return;
+        const std::string& sectionLC = getLowercase(container->getSectionName());
+        ContainerMap::iterator upper = this->containers_.upper_bound(sectionLC);
+        for (ContainerMap::iterator it = this->containers_.lower_bound(sectionLC); it != upper; ++it)
+        {
+            if (it->second.second == container)
+            {
+                // Remove entry from section name set this was the last container for that section
+                if (upper == this->containers_.lower_bound(sectionLC))
+                    this->sectionNames_.erase(container->getSectionName());
+                this->containers_.erase(it);
+                break;
             }
         }
+    }
+
+    void SettingsConfigFile::updateConfigValues()
+    {
+        for (ContainerMap::const_iterator it = this->containers_.begin(); it != this->containers_.end(); ++it)
+        {
+            it->second.second->update();
+            it->second.second->getIdentifier()->updateConfigValues();
+        }
+    }
+
+    void SettingsConfigFile::clean(bool bCleanComments)
+    {
+        for (std::list<ConfigFileSection*>::iterator itSection = this->sections_.begin(); itSection != this->sections_.end(); )
+        {
+            const std::string& sectionLC = getLowercase((*itSection)->getName());
+            ContainerMap::const_iterator lower = this->containers_.lower_bound(sectionLC);
+            ContainerMap::const_iterator upper = this->containers_.upper_bound(sectionLC);
+            if (lower != upper)
+            {
+                // The section exists, delete comment
+                if (bCleanComments)
+                    (*itSection)->setComment("");
+                for (std::list<ConfigFileEntry*>::iterator itEntry = (*itSection)->entries_.begin(); itEntry != (*itSection)->entries_.end(); )
+                {
+                    const std::string& entryLC = getLowercase((*itEntry)->getName());
+                    bool bFound = false;
+                    for (ContainerMap::const_iterator itContainer = lower; itContainer != upper; ++itContainer)
+                    {
+                        if (itContainer->second.first == entryLC)
+                        {
+                            // The config-value exists, delete comment
+                            if (bCleanComments)
+                                (*itEntry)->setComment("");
+                            ++itEntry;
+                            bFound = true;
+                            break;
+                        }
+                    }
+                    if (!bFound)
+                    {
+                        // The config-value doesn't exist
+                        delete (*itEntry);
+                        (*itSection)->entries_.erase(itEntry++);
+                    }
+                }
+                ++itSection;
+            }
+            else
+            {
+                // The section doesn't exist
+                delete (*itSection);
+                this->sections_.erase(itSection++);
+            }
+        }
+
+        // Save the file
+        this->save();
+    }
+
+    bool SettingsConfigFile::config(const std::string& section, const std::string& entry, const std::string& value)
+    {
+        return this->configImpl(section, entry, value, &ConfigValueContainer::set);
+    }
+
+    bool SettingsConfigFile::tconfig(const std::string& section, const std::string& entry, const std::string& value)
+    {
+        return this->configImpl(section, entry, value, &ConfigValueContainer::tset);
+    }
+
+    bool SettingsConfigFile::configImpl(const std::string& section, const std::string& entry, const std::string& value, bool (ConfigValueContainer::*function)(const MultiType&))
+    {
+        const std::string& sectionLC = getLowercase(section);
+        const std::string& entryLC = getLowercase(entry);
+        ContainerMap::iterator upper = this->containers_.upper_bound(sectionLC);
+        for (ContainerMap::iterator it = this->containers_.lower_bound(sectionLC); it != upper; ++it)
+        {
+            // Note: Config value vectors cannot be supported
+            if (it->second.first == entryLC && !it->second.second->isVector())
+            {
+                return (it->second.second->*function)(value);
+            }
+        }
+        return false;
+    }
+
+    std::string SettingsConfigFile::getConfig(const std::string& section, const std::string& entry)
+    {
+        const std::string& sectionLC = getLowercase(section);
+        const std::string& entryLC = getLowercase(entry);
+        ContainerMap::iterator upper = this->containers_.upper_bound(sectionLC);
+        for (ContainerMap::iterator it = this->containers_.lower_bound(sectionLC); it != upper; ++it)
+        {
+            // Note: Config value vectors cannot be supported
+            if (it->second.first == entryLC && ! it->second.second->isVector())
+            {
+                std::string value;
+                it->second.second->getValue<std::string, OrxonoxClass>(&value, NULL);
+                return value;
+            }
+        }
+        return "";
     }
 
 
@@ -468,100 +592,33 @@ namespace orxonox
 
     ConfigFileManager* ConfigFileManager::singletonPtr_s = 0;
 
-    std::string ConfigFileManager::DEFAULT_CONFIG_FILE = "default.ini";
-
     ConfigFileManager::ConfigFileManager()
-         : mininmalFreeType_(ConfigFileType::numberOfReservedTypes)
     {
+        this->configFiles_.assign(NULL);
     }
 
     ConfigFileManager::~ConfigFileManager()
     {
-        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); )
-            delete (it++)->second;
+        for (boost::array<ConfigFile*, 3>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
+            if (*it)
+                delete (*it);
     }
 
-    void ConfigFileManager::setFilename(ConfigFileType type, const std::string& filename)
+    void ConfigFileManager::setFilename(ConfigFileType::Value type, const std::string& filename)
     {
-        std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.find(type);
-        if (it != this->configFiles_.end())
+        if (this->getConfigFile(type))
+            delete this->configFiles_[type];
+        // Create and load config file
+        switch (type)
         {
-            assert(it->second);
-            delete it->second;
+        case ConfigFileType::Settings:
+            this->configFiles_[type] = new SettingsConfigFile(filename);
+            break;
+        case ConfigFileType::JoyStickCalibration:
+        case ConfigFileType::CommandHistory:
+            this->configFiles_[type] = new ConfigFile(filename);
+            break;
         }
-        this->configFiles_[type] = new ConfigFile(filename, type);
-        this->load(type);
-    }
-
-    void ConfigFileManager::load()
-    {
-        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            it->second->load();
-    }
-
-    void ConfigFileManager::save()
-    {
-        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            it->second->save();
-    }
-
-    void ConfigFileManager::clean(bool bCleanComments)
-    {
-        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            this->clean(it->first, bCleanComments);
-    }
-
-    void ConfigFileManager::load(ConfigFileType type)
-    {
-        this->getFile(type)->load();
-    }
-
-    void ConfigFileManager::save(ConfigFileType type)
-    {
-        this->getFile(type)->save();
-    }
-
-    void ConfigFileManager::saveAs(ConfigFileType type, const std::string& saveFilename)
-    {
-        this->getFile(type)->saveAs(saveFilename);
-    }
-
-    void ConfigFileManager::clean(ConfigFileType type, bool bCleanComments)
-    {
-        this->getFile(type)->clean(bCleanComments);
-    }
-
-    void ConfigFileManager::updateConfigValues()
-    {
-        for (std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
-            it->second->updateConfigValues();
-    }
-
-    void ConfigFileManager::updateConfigValues(ConfigFileType type)
-    {
-        this->getFile(type)->updateConfigValues();
-    }
-
-    const std::string& ConfigFileManager::getFilename(ConfigFileType type)
-    {
-        std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.find(type);
-        if (it != this->configFiles_.end())
-            return it->second->getFilename();
-        else
-            return BLANKSTRING;
-    }
-
-    ConfigFile* ConfigFileManager::getFile(ConfigFileType type)
-    {
-        std::map<ConfigFileType, ConfigFile*>::const_iterator it = this->configFiles_.find(type);
-        if (it != this->configFiles_.end())
-            return it->second;
-        else
-        {
-            COUT(1) << "ConfigFileManager: Can't find a config file for type with ID " << static_cast<int>(type) << std::endl;
-            COUT(1) << "Using " << DEFAULT_CONFIG_FILE << " file." << std::endl;
-            this->setFilename(type, DEFAULT_CONFIG_FILE);
-            return getFile(type);
-        }
+        this->configFiles_[type]->load();
     }
 }

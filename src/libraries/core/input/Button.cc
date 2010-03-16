@@ -41,6 +41,7 @@
 #include "core/ConsoleCommand.h"
 #include "core/CommandEvaluation.h"
 #include "core/CommandExecutor.h"
+#include "core/ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -80,16 +81,18 @@ namespace orxonox
         this->bindingString_.clear();
     }
 
-    void Button::readBinding(ConfigFileType type)
+    void Button::readBinding(ConfigFile* configFile, ConfigFile* fallbackFile)
     {
-        const std::string& binding = ConfigFileManager::getInstance().getValue(type, groupName_, name_, "", true);
+        std::string binding = configFile->getOrCreateValue(groupName_, name_, "", true);
+        if (binding.empty() && fallbackFile)
+            binding = fallbackFile->getValue(groupName_, name_, true);
         this->parse(binding);
     }
 
-    void Button::setBinding(ConfigFileType type, const std::string& binding, bool bTemporary)
+    void Button::setBinding(ConfigFile* configFile, ConfigFile* fallbackFile, const std::string& binding, bool bTemporary)
     {
         if (!bTemporary)
-            ConfigFileManager::getInstance().setValue(type, groupName_, name_, binding, true);
+            configFile->setValue(groupName_, name_, binding, true);
         this->parse(binding);
     }
 
@@ -102,7 +105,7 @@ namespace orxonox
         clear();
         this->bindingString_ = binding;
 
-        if (isEmpty(bindingString_))
+        if (isEmpty(bindingString_) || removeTrailingWhitespaces(getLowercase(binding)) == "nobinding")
             return;
 
         // reset this to false first when parsing (was true before when parsing for the first time)

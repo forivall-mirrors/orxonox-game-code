@@ -38,7 +38,6 @@
 
 #include "util/OutputHandler.h"
 #include "OrxonoxClass.h"
-#include "ConfigFileManager.h"
 #include "input/InputBuffer.h"
 
 namespace orxonox

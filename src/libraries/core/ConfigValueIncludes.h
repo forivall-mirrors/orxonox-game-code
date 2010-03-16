@@ -39,7 +39,6 @@
 
 #include "Identifier.h"
 #include "ConfigValueContainer.h"
-#include "ConfigFileManager.h"
 
 namespace orxonox
 {
@@ -60,7 +59,7 @@ namespace orxonox
         Value to be used if it cannot be read from the ini file
     */
     template <class T, class D, class V>
-    inline ConfigValueContainer& setConfigValueGeneric(T* object, V* variable, ConfigFileType type, const std::string& sectionName, const std::string& entryName, const D& defaultValue)
+    inline ConfigValueContainer& setConfigValueGeneric(T* object, V* variable, ConfigFileType::Value type, const std::string& sectionName, const std::string& entryName, const D& defaultValue)
     {
         ConfigValueContainer* container = ClassIdentifier<T>::getIdentifier()->getConfigValueContainer(entryName);
         if (!container)

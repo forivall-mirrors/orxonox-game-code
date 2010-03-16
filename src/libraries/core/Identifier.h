@@ -199,23 +199,8 @@ namespace orxonox
             /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
             inline bool hasConfigValues() const { return this->bHasConfigValues_; }
 
-            /** @brief Returns the map that stores all config values. @return The const_iterator */
-            inline const std::map<std::string, ConfigValueContainer*>& getConfigValueMap() const { return this->configValues_; }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all config values. @return The const_iterator */
-            inline std::map<std::string, ConfigValueContainer*>::const_iterator getConfigValueMapBegin() const { return this->configValues_.begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all config values. @return The const_iterator */
-            inline std::map<std::string, ConfigValueContainer*>::const_iterator getConfigValueMapEnd() const { return this->configValues_.end(); }
-
-            /** @brief Returns the map that stores all config values with their names in lowercase. @return The const_iterator */
-            inline const std::map<std::string, ConfigValueContainer*>& getLowercaseConfigValueMap() const { return this->configValues_LC_; }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all config values with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapBegin() const { return this->configValues_LC_.begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all config values with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ConfigValueContainer*>::const_iterator getLowercaseConfigValueMapEnd() const { return this->configValues_LC_.end(); }
-
             void addConfigValueContainer(const std::string& varname, ConfigValueContainer* container);
             ConfigValueContainer* getConfigValueContainer(const std::string& varname);
-            ConfigValueContainer* getLowercaseConfigValueContainer(const std::string& varname);
 
 
             ////////////////////////////
@@ -319,7 +304,6 @@ namespace orxonox
 
             bool bHasConfigValues_;                                        //!< True if this class has at least one assigned config value
             std::map<std::string, ConfigValueContainer*> configValues_;    //!< A map to link the string of configurable variables with their ConfigValueContainer
-            std::map<std::string, ConfigValueContainer*> configValues_LC_; //!< A map to link the string of configurable variables with their ConfigValueContainer
 
             bool bHasConsoleCommands_;                                     //!< True if this class has at least one assigned console command
             std::map<std::string, ConsoleCommand*> consoleCommands_;       //!< All console commands of this class

@@ -83,6 +83,17 @@ namespace orxonox
         };
     }
 
+    namespace ConfigFileType
+    {
+        enum Value
+        {
+            Settings,
+            JoyStickCalibration,
+            CommandHistory
+            // Don't forget to adjust the array size in the ConfigFileManager when adding a new entry here!
+        };
+    }
+
     namespace KeybindMode
     {
         enum Value
@@ -123,7 +134,6 @@ namespace orxonox
     class ConfigFileEntryValue;
     class ConfigFileManager;
     class ConfigFileSection;
-    struct ConfigFileType;
     class ConfigValueContainer;
     class ConsoleCommand;
     class Core;
@@ -171,6 +181,7 @@ namespace orxonox
     class OrxonoxClass;
     class PathConfig;
     struct ResourceInfo;
+    class SettingsConfigFile;
     class Shell;
     class ShellListener;
     template <class T>

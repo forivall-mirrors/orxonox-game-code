@@ -105,14 +105,14 @@ namespace orxonox
     void loadCalibration(std::vector<int>& list, const std::string& sectionName, const std::string& valueName, size_t size, int defaultValue)
     {
         list.resize(size);
-        unsigned int configValueVectorSize = ConfigFileManager::getInstance().getVectorSize(ConfigFileType::JoyStickCalibration, sectionName, valueName);
+        unsigned int configValueVectorSize = ConfigFileManager::getInstance().getConfigFile(ConfigFileType::JoyStickCalibration)->getVectorSize(sectionName, valueName);
         if (configValueVectorSize > size)
             configValueVectorSize = size;
 
         for (unsigned int i = 0; i < configValueVectorSize; ++i)
         {
-            list[i] = multi_cast<int>(ConfigFileManager::getInstance().getValue(
-                ConfigFileType::JoyStickCalibration, sectionName, valueName, i, multi_cast<std::string>(defaultValue), false));
+            list[i] = multi_cast<int>(ConfigFileManager::getInstance().getConfigFile(ConfigFileType::JoyStickCalibration)
+                ->getOrCreateValue(sectionName, valueName, i, multi_cast<std::string>(defaultValue), false));
         }
 
         // fill the rest with default values
@@ -152,18 +152,18 @@ namespace orxonox
             // Minimum values
             if (configMinValues_[i] == INT_MAX)
                 configMinValues_[i] = -32768;
-            ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                deviceName_, "MinValue", i, multi_cast<std::string>(configMinValues_[i]), false);
+            ConfigFileManager::getInstance().getConfigFile(ConfigFileType::JoyStickCalibration)
+                ->getOrCreateValue(deviceName_, "MinValue", i, multi_cast<std::string>(configMinValues_[i]), false);
 
             // Maximum values
             if (configMaxValues_[i] == INT_MIN)
                 configMaxValues_[i] = 32767;
-            ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                deviceName_, "MaxValue", i, multi_cast<std::string>(configMaxValues_[i]), false);
+            ConfigFileManager::getInstance().getConfigFile(ConfigFileType::JoyStickCalibration)
+                ->getOrCreateValue(deviceName_, "MaxValue", i, multi_cast<std::string>(configMaxValues_[i]), false);
 
             // Middle values
-            ConfigFileManager::getInstance().setValue(ConfigFileType::JoyStickCalibration,
-                deviceName_, "ZeroValue", i, multi_cast<std::string>(configZeroValues_[i]), false);
+            ConfigFileManager::getInstance().getConfigFile(ConfigFileType::JoyStickCalibration)
+                ->getOrCreateValue(deviceName_, "ZeroValue", i, multi_cast<std::string>(configZeroValues_[i]), false);
         }
 
         this->evaluateCalibration();
