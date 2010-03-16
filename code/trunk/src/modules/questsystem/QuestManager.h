@@ -51,7 +51,7 @@ namespace orxonox
 {
     /**
     @brief
-        Is a Singleton and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessable (through findX()).
+        Is a Singleton and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessible (through findX()).
         Quests (and QuestHints) are registered in the QuestManager with their id, and can be accessed in the same way.
     @author
         Damian 'Mozork' Frick
@@ -71,7 +71,7 @@ namespace orxonox
             //! Returns a reference to the single instance of the Quest Manager.
             static QuestManager& getInstance() { return Singleton<QuestManager>::getInstance(); } // tolua_export
 
-            //! Retreive the main window for the GUI.
+            //! Retrieve the main window for the GUI.
             CEGUI::Window* getQuestGUI(const std::string & guiName); // tolua_export
 
             bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
@@ -81,11 +81,11 @@ namespace orxonox
             QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.
 
         protected:
-            std::map<std::string, Quest*> & getQuests(void); //!< Retreive all Quests.
+            std::map<std::string, Quest*> & getQuests(void); //!< Retrieve all Quests.
 
         private:
             static QuestManager* singletonPtr_s;
-            PlayerInfo* retreivePlayer(const std::string & guiName); //!< Retrieve the player for a certain GUI.
+            PlayerInfo* retrievePlayer(const std::string & guiName); //!< Retrieve the player for a certain GUI.
 
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.

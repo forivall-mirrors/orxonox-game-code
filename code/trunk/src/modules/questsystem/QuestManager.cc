@@ -234,7 +234,7 @@ namespace orxonox
     */
     CEGUI::Window* QuestManager::getQuestGUI(const std::string & guiName)
     {
-        PlayerInfo* player = this->retreivePlayer(guiName);
+        PlayerInfo* player = this->retrievePlayer(guiName);
 
         if(this->questGUIs_.find(player) == this->questGUIs_.end()) //!< Create a new GUI, if there is none, yet.
             this->questGUIs_[player] = new QuestGUI(player);
@@ -252,7 +252,7 @@ namespace orxonox
     @todo
         This very well might be outdated. So: Check if still needed, and update if necessary.
     */
-    PlayerInfo* QuestManager::retreivePlayer(const std::string & guiName)
+    PlayerInfo* QuestManager::retrievePlayer(const std::string & guiName)
     {
         PlayerInfo* player = GUIManager::getInstance().getPlayer(guiName);
         if(player == NULL)

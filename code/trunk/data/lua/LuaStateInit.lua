@@ -57,3 +57,14 @@ end
 orxonox.execute = function(command)
   orxonox.CommandExecutor:execute(command)
 end
+
+-- Convenience function for config values
+orxonox.getConfig = function(section, entry)
+  return orxonox.SettingsConfigFile:getInstance():getConfig(section, entry)
+end
+orxonox.config = function(section, entry, value)
+  return orxonox.SettingsConfigFile:getInstance():config(section, entry, value)
+end
+orxonox.tconfig = function(section, entry, value)
+  return orxonox.SettingsConfigFile:getInstance():tconfig(section, entry, value)
+end
