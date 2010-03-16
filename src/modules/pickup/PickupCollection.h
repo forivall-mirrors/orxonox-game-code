@@ -78,7 +78,7 @@ namespace orxonox
             
         private:
             
-            std::vector<Pickupable*> pickups_;
+            std::vector<WeakPtr<Pickupable> > pickups_;
         
     };
     

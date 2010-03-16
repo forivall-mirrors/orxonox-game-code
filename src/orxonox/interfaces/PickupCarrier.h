@@ -40,6 +40,7 @@
 #include <set>
 #include "Pickupable.h"
 #include "core/Identifier.h"
+#include "core/WeakPtr.h"
 
 #include "core/OrxonoxClass.h"
 

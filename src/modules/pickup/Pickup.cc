@@ -72,7 +72,6 @@ namespace orxonox
     */
     void Pickup::initializeIdentifier(void)
     {        
-        //TODO: Works?
         std::string val1 = this->getActivationType();
         std::string type1 = "activationType";
         this->pickupIdentifier_->addParameter(type1, val1);

@@ -64,9 +64,10 @@ namespace orxonox
     PickupCollection::~PickupCollection()
     {
         //! Destroy all Pickupables constructing this PickupCollection.
-        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            (*it)->destroy();
+            if((*it).get() != NULL)
+                (*it).get()->destroy();
         }
     }
     
@@ -85,9 +86,9 @@ namespace orxonox
     
     void PickupCollection::initializeIdentifier(void)
     {
-        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            this->pickupCollectionIdentifier_->addPickup((*it)->getPickupIdentifier());
+            this->pickupCollectionIdentifier_->addPickup((*it).get()->getPickupIdentifier());
         }
     }
     
@@ -120,7 +121,8 @@ namespace orxonox
         if(pickup == NULL)
             return false;
         
-        this->pickups_.push_back(pickup);
+        WeakPtr<Pickupable> ptr = pickup;
+        this->pickups_.push_back(ptr);
         return true;
     }
     
@@ -134,7 +136,7 @@ namespace orxonox
     */
     const Pickupable* PickupCollection::getPickupable(unsigned int index)
     {
-        return this->pickups_[index]; //TODO. Does this work?
+        return this->pickups_[index].get(); //TODO. Does this work?
     }
     
     void PickupCollection::changedUsed(void)
@@ -142,9 +144,9 @@ namespace orxonox
         SUPER(PickupCollection, changedUsed);
         
         //! Change used for all Pickupables this PickupCollection consists of.
-        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            (*it)->setUsed(this->isUsed());
+            (*it).get()->setUsed(this->isUsed());
         }
     }
     
@@ -153,9 +155,9 @@ namespace orxonox
         SUPER(PickupCollection, changedCarrier);
         
         //! Change used for all Pickupables this PickupCollection consists of.
-        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            (*it)->setCarrier(this->getCarrier());
+            (*it).get()->setCarrier(this->getCarrier());
         }
     }
     
@@ -164,9 +166,9 @@ namespace orxonox
         SUPER(PickupCollection, changedPickedUp);
         
         //! Change the carrier for all Pickupables this PickupCollection consists of.
-        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            (*it)->setPickedUp(this->isPickedUp());
+            (*it).get()->setPickedUp(this->isPickedUp());
         }
     }
     
@@ -178,9 +180,9 @@ namespace orxonox
         SUPER(PickupCollection, clone, item);
         
         PickupCollection* pickup = dynamic_cast<PickupCollection*>(item);
-        for(std::vector<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            Pickupable* newPickup = (*it)->clone();
+            Pickupable* newPickup = (*it).get()->clone();
             pickup->addPickupable(newPickup);
         }
 
@@ -189,9 +191,9 @@ namespace orxonox
     
     bool PickupCollection::isTarget(Identifier* identifier) const
     {
-        for(std::vector<Pickupable*>::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        for(std::vector<WeakPtr<Pickupable> >::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            if(!(*it)->isTarget(identifier))
+            if(!(*it).get()->isTarget(identifier))
                 return false;
         }
         

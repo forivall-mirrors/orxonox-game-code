@@ -113,9 +113,6 @@ namespace orxonox
             virtual const PickupIdentifier* getPickupIdentifier(void)
                 { return this->pickupIdentifier_; }
                 
-            virtual void destroy(void)
-                { delete this; }
-                
             //TODO: Make them work as protected.
             bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
             bool setPickedUp(bool pickedUp); //!< Helper method to set the Pickupable to either picked up or not picked up.

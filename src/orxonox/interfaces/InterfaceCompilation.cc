@@ -63,11 +63,13 @@ namespace orxonox
     
     PickupCarrier::~PickupCarrier()
     {
-        for(std::set<Pickupable*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
+        while(this->pickups_.size() > 0)
         {
+            std::set<Pickupable*>::iterator it = this->pickups_.begin();
+            this->pickups_.erase(it);
             (*it)->destroy();
         }
-        
+
         this->pickups_.clear();
     }
 
