@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file Pickupable.cc
     @brief Implementation of the Pickupable class.
 */
 
@@ -95,9 +95,9 @@ namespace orxonox
     
     /**
     @brief
-        Get whether the given PickupCarrier is a target of this pickup.
+        Get whether the given PickupCarrier is a target of this Pickupable.
     @param carrier
-        The PickupCarrier of which it has to be determinde whether it is a target of this pickup.
+        The PickupCarrier of which it has to be determinde whether it is a target of this Pickupable.
     @return
         Returns true if the given PickupCarrier is a target.
     */
@@ -108,9 +108,9 @@ namespace orxonox
     
     /**
     @brief
-        Get whether a given class, represented by the input Identifier, is a target of this pickup.
+        Get whether a given class, represented by the input Identifier, is a target of this Pickupable.
     @param target
-        The Identifier of which it has to be determinde whether it is a target of this pickup.
+        The Identifier of which it has to be determinde whether it is a target of this Pickupable.
     @return
         Returns true if the given Identifier is a target.
     */
@@ -127,7 +127,7 @@ namespace orxonox
         
     /**
     @brief
-        Add a PickupCarrier as target of this pickup.
+        Add a PickupCarrier as target of this Pickupable.
     @param target
         The PickupCarrier to be added.
     @return
@@ -140,7 +140,7 @@ namespace orxonox
     
     /**
     @brief
-        Add a class, representetd by the input Identifier, as target of this pickup.
+        Add a class, representetd by the input Identifier, as target of this Pickupable.
     @param target
         The Identifier to be added.
     @return
@@ -198,7 +198,7 @@ namespace orxonox
         
     /**
     @brief
-        Sets the carrier of the pickup.
+        Sets the carrier of the Pickupable.
     @param carrier
         Sets the input PickupCarrier as the carrier of the pickup.
     */
@@ -264,7 +264,7 @@ namespace orxonox
         Creates a duplicate of the input OrxonoxClass.
         This method needs to be implemented by any Class inheriting from Pickupable.
     @param item
-        A pointer to the OrxonoxClass that is to be duplicated.
+        A reference to a pointer to the OrxonoxClass that is to be duplicated.
     */
     //TODO: Specify how the implementation must be done in detail.
     void Pickupable::clone(OrxonoxClass*& item)

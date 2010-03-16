@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file Pickupable.h
     @brief Definition of the Pickupable class.
 */
 
@@ -99,7 +99,7 @@ namespace orxonox
             bool dropped(void); //!< Sets the Pickupable to not picked up or dropped.
             
             bool isTarget(const PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this pickup.
-            virtual bool isTarget(Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this pickup.
+            virtual bool isTarget(Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this Pickupable.
             bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this pickup.
             bool addTarget(Identifier* identifier); //!< Add a class, representetd by the input Identifier, as target of this pickup.
             
@@ -122,7 +122,6 @@ namespace orxonox
             /**
             @brief Helper method to initialize the PickupIdentifier.
             */
-            //TODO: Really needed?
             void initializeIdentifier(void) {}
             
             /**
