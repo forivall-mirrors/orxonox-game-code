@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file PickupIdentifier.h
+    @brief Definition of the PickupIdentifier class.
+*/
+
 #ifndef _PickupIdentifier_H__
 #define _PickupIdentifier_H__
 

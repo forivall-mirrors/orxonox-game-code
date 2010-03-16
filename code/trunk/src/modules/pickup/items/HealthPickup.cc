@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file HealthPickup.cc
+    @brief Implementation of the HealthPickup class.
+*/
+
 #include "HealthPickup.h"
 
 #include "core/CoreIncludes.h"
@@ -93,7 +98,6 @@ namespace orxonox
         std::string val1 = stream.str();
         this->pickupIdentifier_->addParameter(type1, val1);
         
-        //TODO: Does this work, is val valid outside the function scope?
         std::string val2 = this->getHealthType();
         std::string type2 = "healthType";
         this->pickupIdentifier_->addParameter(type2, val2);
@@ -132,6 +136,8 @@ namespace orxonox
     */
     void HealthPickup::tick(float dt)
     {
+        SUPER(HealthPickup, tick, dt);
+        
         if(this->isContinuous() && this->isUsed())
         {
             Pawn* pawn = this->carrierToPawnHelper();

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file DroppedPickup.cc
     @brief Implementation of the DroppedPickup class.
 */
 
@@ -35,6 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "interfaces/Pickupable.h"
+#include "interfaces/PickupCarrier.h"
 #include "graphics/Model.h"
 
 namespace orxonox
@@ -64,12 +65,14 @@ namespace orxonox
     @param triggerDistance
         The distance at which the PickupSpawner triggers. Default is 10.
     */
-    DroppedPickup::DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position, float triggerDistance) : PickupSpawner(creator, pickup, triggerDistance, 10, 1)
+    DroppedPickup::DroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance) : PickupSpawner(creator, pickup, triggerDistance, 5, 1)
     {   
         RegisterObject(DroppedPickup);
 
-        this->setPosition(position);
+        this->setPosition(carrier->getCarrierPosition());
         this->setActive(false);
+        
+        //TODO: Do more elegantly.
         this->startRespawnTimer();
     }
 

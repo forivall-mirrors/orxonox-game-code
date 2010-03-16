@@ -157,7 +157,7 @@ namespace orxonox
         SUPER(PickupCollection, clone, item);
         
         PickupCollection* pickup = dynamic_cast<PickupCollection*>(item);
-        //! Clone allPickupables this PickupCollection consist of.
+        //! Clone all Pickupables this PickupCollection consist of.
         for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             Pickupable* newPickup = (*it).get()->clone();
@@ -239,9 +239,9 @@ namespace orxonox
     @return
         Returns true if a spawner was created, false if not.
     */
-    bool PickupCollection::createSpawner(const Vector3& position)
+    bool PickupCollection::createSpawner(void)
     {
-        new DroppedPickup(this, this, position);
+        new DroppedPickup(this, this, this->getCarrier());
         return true;
     }
     

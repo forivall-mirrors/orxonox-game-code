@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file HealthPickup.h
+    @brief Declaration of the HealthPickup class.
+*/
+
 #ifndef _HealthPickup_H__
 #define _HealthPickup_H__
 

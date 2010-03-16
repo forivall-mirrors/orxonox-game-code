@@ -108,19 +108,15 @@ namespace orxonox
             inline unsigned int getExplosionChunks() const
                 { return this->numexplosionchunks_; }
 
-//TODO: Remove.
-//             virtual void dropItems();
-//             inline PickupCollection& getPickups()
-//                 { return this->pickups_; }
-//             virtual void useItem()
-//                 { this->pickups_.useItem(); }
-
             virtual void startLocalHumanControl();
 
             void setAimPosition( Vector3 position )
                 { this->aimPosition_ = position; }
             Vector3 getAimPosition()
                 { return this->aimPosition_; }
+                
+            virtual const Vector3& getCarrierPosition(void)
+                { return this->getWorldPosition(); };
 
         protected:
             virtual void setPlayer(PlayerInfo* player);
@@ -135,14 +131,10 @@ namespace orxonox
 
             bool bAlive_;
 
-            //TODO: Remove.
-            //PickupCollection pickups_;
             virtual std::list<PickupCarrier*>* getCarrierChildren(void)
                 { return new std::list<PickupCarrier*>(); }
             virtual PickupCarrier* getCarrierParent(void)
                 { return NULL; }
-            virtual const Vector3& getCarrierPosition(void)
-                { return this->getWorldPosition(); };
 
             float health_;
             float maxHealth_;

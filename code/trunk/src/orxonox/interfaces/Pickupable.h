@@ -50,12 +50,12 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    //TODO: Add stuff like weight/space ?
     class _OrxonoxExport Pickupable : virtual public OrxonoxClass
     {
+        protected:
+            Pickupable(); //!< Default constructor.
         
         public:
-            Pickupable(); //!< Default constructor.
             virtual ~Pickupable(); //!< Default destructor.
             
             /**
@@ -112,7 +112,6 @@ namespace orxonox
             virtual const PickupIdentifier* getPickupIdentifier(void)
                 { return this->pickupIdentifier_; }
                 
-            //TODO: Make them work as protected.
             bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
             bool setPickedUp(bool pickedUp); //!< Helper method to set the Pickupable to either picked up or not picked up.
             bool setCarrier(PickupCarrier* carrier); //!< Sets the carrier of the pickup.
@@ -130,9 +129,8 @@ namespace orxonox
             @param position The position at which the PickupSpawner should be placed.
             @return Returns true if a spawner was created, false if not.
             */
-            virtual bool createSpawner(const Vector3& position) = 0;
+            virtual bool createSpawner(void) = 0;
             
-            //TODO: Move to private and create get method in protected.
             PickupIdentifier* pickupIdentifier_; //!< The PickupIdentifier of this Pickupable.
             
         private:

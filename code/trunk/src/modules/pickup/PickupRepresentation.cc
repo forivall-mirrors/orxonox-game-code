@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file PickupRepresentation.cc
+    @brief Implementation of the PickupRepresentation class.
+*/
+
 #include "PickupRepresentation.h"
 
 #include "core/CoreIncludes.h"
@@ -43,11 +48,8 @@ namespace orxonox
         Constructor. Registers the object and initializes its member variables.
         This is primarily for use of the PickupManager in creating a default PickupRepresentation.
     */
-    //TODO: Not this as creator!!!
-    PickupRepresentation::PickupRepresentation() : BaseObject(this)
+    PickupRepresentation::PickupRepresentation() : BaseObject(NULL), spawnerRepresentation_(NULL)
     {
-        this->spawnerRepresentation_ = NULL;
-        
         RegisterObject(PickupRepresentation);
         
         this->initialize();
@@ -57,10 +59,8 @@ namespace orxonox
     @brief
         Default Constructor. Registers the object and initializes its member variables.
     */
-    PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator)
+    PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator), spawnerRepresentation_(NULL)
     {
-        this->spawnerRepresentation_ = NULL;
-        
         RegisterObject(PickupRepresentation);
         
         this->initialize();
@@ -150,7 +150,7 @@ namespace orxonox
     @return
         Returns a pointer to the StaticEntity.
     */
-    //TODO: Think of more elegant solution.
+    //TODO: Possibility to define default representation through XML.
     StaticEntity* PickupRepresentation::getDefaultSpawnerRepresentation(PickupSpawner* spawner)
     {
         StaticEntity* representation = new StaticEntity(spawner);

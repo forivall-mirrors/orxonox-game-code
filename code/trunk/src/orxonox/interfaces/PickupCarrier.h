@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file PickupCarrier.h
     @brief Definition of the PickupCarrier class.
 */
 
@@ -47,6 +47,7 @@
 namespace orxonox
 {
 
+    //! Pre-declarations.
     class Pickup;
     class HealthPickup;
     class MetaPickup;
@@ -59,8 +60,8 @@ namespace orxonox
     */
     class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
     {
-        friend class Pickupable; //!< The Pickupable has full acces to its PickupCarrier.
-        //TODO: Ugly workaround.
+         //! So that the different Pickupables have full access to their PickupCarrier.
+        friend class Pickupable;
         friend class Pickup;
         friend class HealthPickup;
         friend class MetaPickup;
@@ -107,7 +108,6 @@ namespace orxonox
             @param pickup A pointer to the Pickupable.
             @return Returns true if the PickupCarrier or one of its children is a target, false if not.
             */
-            //TODO: Use?
             bool isTarget(const Pickupable* pickup)
                 {
                     if(pickup->isTarget(this)) //!< If the PickupCarrier itself is a target.
@@ -153,14 +153,21 @@ namespace orxonox
                     
                     return NULL;
                 }
+                
+            /**
+            @brief Get the (absolute) position of the PickupCarrier.
+                   This method needs to be implemented by any direct derivative class of PickupCarrier.
+            @return Returns the position as a Vector3.
+            */
+            virtual const Vector3& getCarrierPosition(void) = 0;
             
         protected:        
             /**
             @brief Get all direct children of this PickupSpawner.
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
+                   The returned list will be deleted by the methods calling this function.
             @return Returns a pointer to a list of all direct children. 
             */
-            //TODO: Good return type? Maybe not const and destroyed in isTarget...
             virtual std::list<PickupCarrier*>* getCarrierChildren(void) = 0;
             /**
             @brief Get the parent of this PickupSpawner
@@ -168,12 +175,6 @@ namespace orxonox
             @return Returns a pointer to the parent.
             */
             virtual PickupCarrier* getCarrierParent(void) = 0;
-            /**
-            @brief Get the (absolute) position of the PickupCarrier.
-                   This method needs to be implemented by any direct derivative class of PickupCarrier.
-            @return Returns the position as a Vector3.
-            */
-            virtual const Vector3& getCarrierPosition(void) = 0;
                             
             /**
             @brief Get all Pickupables this PickupCarrier has.
