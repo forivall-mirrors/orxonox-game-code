@@ -45,11 +45,8 @@ namespace orxonox
     @brief
         Constructor. Registers the objects and initializes its member variables.
     */
-    Pickupable::Pickupable()
-    {
-        this->used_ = false;
-        this->pickedUp_ = false;
-        
+    Pickupable::Pickupable() : used_(false), pickedUp_(false)
+    {        
         RegisterRootObject(Pickupable);
         
         this->carrier_ = NULL;
@@ -230,10 +227,10 @@ namespace orxonox
         this->setUsed(false);
         this->setPickedUp(false);
         
-        bool created = this->createSpawner(this->getCarrier()->getCarrierPosition());
+        bool created = this->createSpawner();
         
         this->setCarrier(NULL);
-        //TODO: possible problem.
+        
         if(!created)
         {
             this->destroy();
@@ -266,7 +263,6 @@ namespace orxonox
     @param item
         A reference to a pointer to the OrxonoxClass that is to be duplicated.
     */
-    //TODO: Specify how the implementation must be done in detail.
     void Pickupable::clone(OrxonoxClass*& item)
     {
         SUPER(Pickupable, clone, item);

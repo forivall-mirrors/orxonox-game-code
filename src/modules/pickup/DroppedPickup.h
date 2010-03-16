@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file DroppedPickup.h
     @brief Definition of the DroppedPickup class.
 */
 
@@ -52,7 +52,7 @@ namespace orxonox
     {
         public:
             DroppedPickup(BaseObject* creator); //!< Default constructor.
-            DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position, float triggerDistance = 10.0); //!< Constructor.
+            DroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance = 10.0); //!< Constructor.
             virtual ~DroppedPickup(); //!< Destructor.
 
         protected:

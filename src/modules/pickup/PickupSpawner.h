@@ -27,8 +27,8 @@
  */
 
 /**
-    @file
-    @brief Definition of PickupSpawner.
+    @file PickupSpawner.h
+    @brief Definition of the PickupSpawner class.
 */
 
 #ifndef _PickupSpawner_H__

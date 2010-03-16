@@ -34,8 +34,6 @@
 #include "core/XMLPort.h"
 #include "Scene.h"
 #include "worldentities/pawns/SpaceShip.h"
-//TODO: Remove.
-//#include "pickup/ModifierType.h"
 #include "tools/Shader.h"
 
 namespace orxonox
@@ -193,7 +191,6 @@ namespace orxonox
                 acceleration.y = direction.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
         }
 
-        //TODO: Correct?
         this->ship_->setAcceleration(this->ship_->getOrientation() * acceleration);
 
         if (!this->ship_->getPermanentBoost())

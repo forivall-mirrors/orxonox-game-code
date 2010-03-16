@@ -27,7 +27,7 @@
 */
 
 /**
-    @file
+    @file PickupManager.cc
     @brief Implementation of the PickupManager class.
 */
 
@@ -49,10 +49,8 @@ namespace orxonox
     @brief
         Constructor. Registers the PickupManager and creates the default PickupRepresentation.
     */
-    PickupManager::PickupManager()
+    PickupManager::PickupManager() : defaultRepresentation_(NULL)
     {
-        this->defaultRepresentation_ = NULL;
-        this->pickupCarrierStructure_ = NULL;
         RegisterRootObject(PickupManager);
         
         this->defaultRepresentation_ = new PickupRepresentation();
@@ -67,9 +65,6 @@ namespace orxonox
     {
         if(this->defaultRepresentation_ != NULL)
             this->defaultRepresentation_->destroy();
-        
-        if(this->pickupCarrierStructure_ != NULL)
-            delete this->pickupCarrierStructure_;
     }
     
     /**
@@ -83,7 +78,6 @@ namespace orxonox
     @return
         Returns true if successful and false if not.
     */
-    //TODO: Make sure that either the PickupRepresentation is destroyed upon destruction of the PickupManager if the representation wasn't created with XMLPort.
     bool PickupManager::registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
     {
         if(this->representations_.find(identifier) != this->representations_.end()) //!< If the Pickupable already has a RepresentationRegistered.

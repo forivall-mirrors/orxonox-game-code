@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file PickupRepresentation.h
+    @brief Definition of the PickupRepresentation class.
+*/
+
 #ifndef _PickupRepresentation_H__
 #define _PickupRepresentation_H__
 

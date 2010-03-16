@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file PickupIdentifier.cc
+    @brief Implementation of the PickupIdentifier class.
+*/
+
 #include "PickupIdentifier.h"
 
 #include "core/CoreIncludes.h"

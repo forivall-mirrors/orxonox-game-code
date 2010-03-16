@@ -27,8 +27,8 @@
  */
 
 /**
-    @file
-    @brief Implementation of PickupSpawner.
+    @file PickupSpawner.cc
+    @brief Implementation of the PickupSpawner class.
 */
 
 #include "PickupSpawner.h"
@@ -51,11 +51,11 @@ namespace orxonox
     @param creator
         Pointer to the object which created this item.
     */
-    PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator)
+    PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator), pickup_(NULL)
     {
-        this->initialize();
-
         RegisterObject(PickupSpawner);
+        
+        this->initialize();
     }
 
     /**
@@ -72,7 +72,7 @@ namespace orxonox
     @param maySpawnedItems
         The maximum number of items spawned by this PickupSpawner.
     */
-    PickupSpawner::PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems) : StaticEntity(creator)
+    PickupSpawner::PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems) : StaticEntity(creator), pickup_(NULL)
     {
         RegisterObject(PickupSpawner);
         
@@ -102,8 +102,6 @@ namespace orxonox
     */
     void PickupSpawner::initialize(void)
     {
-        this->pickup_ = NULL;
-        
         this->triggerDistance_ = 20;
         this->respawnTime_ = 0;
         this->maxSpawnedItems_ = INF;
@@ -169,9 +167,11 @@ namespace orxonox
     @param dt
         Time since last tick.
     */
-    //TODO: Replace this with a real DistanceTrigger? Or better with collisions?
+    //TODO: Replace with collisions.
     void PickupSpawner::tick(float dt)
     {
+        SUPER(PickupSpawner, tick, dt);
+        
         //! If the PickupSpawner is active.
         if (this->isActive())
         {
@@ -214,7 +214,6 @@ namespace orxonox
         }
         if(this->spawnsRemaining_ != 0 && this->respawnTime_ > 0)
         {
-            //TODO: Nicer? Does this even work?
             this->startRespawnTimer();
 
             this->setActive(false);
@@ -277,7 +276,6 @@ namespace orxonox
     @param pawn
         Pawn which triggered the PickupSpawner.
     */
-    //TODO: Make more generic -> without pawn.
     void PickupSpawner::trigger(Pawn* pawn)
     {
         if (this->isActive()) //!< Checks whether PickupSpawner is active.
@@ -313,7 +311,6 @@ namespace orxonox
             }
             else
             {
-                //TODO: Really that severe?
                 if(target == NULL)
                     COUT(1) << "PickupSpawner: Pickupable has no target." << std::endl;
                 

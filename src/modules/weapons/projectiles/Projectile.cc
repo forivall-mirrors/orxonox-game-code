@@ -122,14 +122,9 @@ namespace orxonox
                 }
             }
 
-            float dmg = this->damage_;
-            //TODO: Remove.
-//             if (this->owner_)
-//                 dmg = this->owner_->getPickups().processModifiers(ModifierType::Damage, dmg, false);
-
             Pawn* victim = orxonox_cast<Pawn*>(otherObject);
             if (victim)
-                victim->hit(this->owner_, contactPoint, dmg);
+                victim->hit(this->owner_, contactPoint, this->damage_);
         }
         return false;
     }

@@ -76,7 +76,7 @@ namespace orxonox
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier for this pickup.
             
-            virtual bool createSpawner(const Vector3& position); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
+            virtual bool createSpawner(void); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
             
             PickupCollectionIdentifier* pickupCollectionIdentifier_; //!< The PickupCollectionIdentifier of this PickupCollection. Is used to distinguish different PickupCollections amongst themselves.
             

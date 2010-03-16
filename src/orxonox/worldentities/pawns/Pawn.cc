@@ -70,9 +70,6 @@ namespace orxonox
 
         this->aimPosition_ = Vector3::ZERO;
 
-        //TODO: Remove.
-        //this->getPickups().setOwner(this);
-
         if (GameMode::isMaster())
         {
             this->weaponSystem_ = new WeaponSystem(this);
@@ -295,13 +292,6 @@ namespace orxonox
         if (GameMode::isMaster())
             this->spawneffect();
     }
-
-//TODO: Remove.
-//     void Pawn::dropItems()
-//     {
-//         this->getPickups().clear();
-//     }
-
 
     /* WeaponSystem:
     *   functions load Slot, Set, Pack from XML and make sure all parent-pointers are set.

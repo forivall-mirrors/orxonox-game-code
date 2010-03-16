@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file Pickup.cc
+    @brief Implementation of the Pickup class.
+*/
+
 #include "Pickup.h"
 
 #include "core/CoreIncludes.h"
@@ -40,9 +45,6 @@ namespace orxonox
     /*static*/ const std::string Pickup::activationTypeOnUse_s = "onUse";
     /*static*/ const std::string Pickup::durationTypeOnce_s = "once";
     /*static*/ const std::string Pickup::durationTypeContinuous_s = "continuous";
-    
-    //TODO: Should this be here? Does it work without?
-    CreateFactory(Pickup);
     
     Pickup::Pickup(BaseObject* creator) : BaseObject(creator)
     {
@@ -223,9 +225,9 @@ namespace orxonox
     @return
         Returns true if a spawner was created, false if not.
     */
-    bool Pickup::createSpawner(const Vector3& position)
+    bool Pickup::createSpawner(void)
     {
-        new DroppedPickup(this, this, position);
+        new DroppedPickup(this, this, this->getCarrier());
         return true;
     }
     

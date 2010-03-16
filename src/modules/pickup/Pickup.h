@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file Pickup.h
+    @brief Declaration of the Pickup class.
+*/
+
 #ifndef _Pickup_H__
 #define _Pickup_H__
 
@@ -69,8 +74,10 @@ namespace orxonox
     class _PickupExport Pickup : public Pickupable, public BaseObject
     {
         
-        public:
+        protected:
             Pickup(BaseObject* creator); //!< Constructor.
+        
+        public:
             virtual ~Pickup(); //!< Destructor.
             
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
@@ -123,7 +130,7 @@ namespace orxonox
         protected:
             void initializeIdentifier(void);
             
-            virtual bool createSpawner(const Vector3& position); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
+            virtual bool createSpawner(void); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
             
             /**
             @brief Set the activation type of the pickup.
