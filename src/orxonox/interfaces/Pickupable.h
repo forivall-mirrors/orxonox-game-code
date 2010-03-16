@@ -94,7 +94,6 @@ namespace orxonox
             */
             virtual void changedPickedUp(void) {}
             
-            //TODO: Better private, or protected?
             bool pickedUp(PickupCarrier* carrier); //!< Sets the Pickupable to picked up.
             bool dropped(void); //!< Sets the Pickupable to not picked up or dropped.
             

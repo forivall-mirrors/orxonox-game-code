@@ -78,7 +78,6 @@ namespace orxonox {
             const std::string& getMetaType(void); //!< Get the meta type of this MetaPickup.
             
         protected:
-            void initialize(void); //!< Initializes the object.
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
             
             /**
