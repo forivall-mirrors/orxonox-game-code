@@ -9,9 +9,6 @@ else
     _G[_REQUIREDNAME] = P
 end
 
-function P:init()
-end
-
 function P.execute(functionPtr, arguments)
     if functionPtr ~= nil then
         if arguments ~= nil then
@@ -22,7 +19,7 @@ function P.execute(functionPtr, arguments)
     end
 end
 
-function P.setText( text )
+function P.setText(text)
     winMgr:getWindow("orxonox/InfoPopup_text"):setText( text )
 end
 
@@ -38,7 +35,7 @@ end
 
 -- events for ingamemenu
 function P.close(e)
-    hideGUI("InfoPopup")
+    hideGUI(P.filename)
 end
 
 return P

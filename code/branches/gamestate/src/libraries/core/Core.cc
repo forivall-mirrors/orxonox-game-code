@@ -224,8 +224,7 @@ namespace orxonox
         inputManager_.reset(new InputManager());
 
         // Load the CEGUI interface
-        guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
-            inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
+        guiManager_.reset(new GUIManager(inputManager_->getMousePosition()));
 
         bGraphicsLoaded_ = true;
         GameMode::bShowsGraphics_s = true;

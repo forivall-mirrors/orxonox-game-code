@@ -1,8 +1,10 @@
+winMgr   = CEGUI.WindowManager:getSingleton()
+guiMgr   = orxonox.GUIManager:getInstance()
+inputMgr = orxonox.InputManager:getInstance()
+
 local schemeMgr = CEGUI.SchemeManager:getSingleton()
-winMgr = CEGUI.WindowManager:getSingleton()
-local logger = CEGUI.Logger:getSingleton()
-local system = CEGUI.System:getSingleton()
-local cursor = CEGUI.MouseCursor:getSingleton()
+local system    = CEGUI.System:getSingleton()
+local cursor    = CEGUI.MouseCursor:getSingleton()
 
 schemeMgr:loadScheme("TaharezLookSkin.scheme")
 -- load scheme with our own images
@@ -86,10 +88,12 @@ function showGUI(filename, hidePrevious, bCursorVisible)
         nrOfActiveSheets = nrOfActiveSheets - 1
     else
         if nrOfActiveSheets == 0 then
-            orxonox.InputManager:getInstance():enterState("guiMouseOnly")
+            --orxonox.InputManager:getInstance():enterState("guiMouseOnly")
             orxonox.HumanController:pauseControl()
         end
     end
+    orxonox.InputManager:getInstance():enterState(currentGUI.inputState)
+
     nrOfActiveSheets = nrOfActiveSheets + 1
     table.insert(activeSheets, filename)
     activeSheets[nrOfActiveSheets] = filename
@@ -160,10 +164,11 @@ function hideGUI(filename)
     cursorVisibility[filename] = nil -- remove the cursor visibility of the current gui from the table
     bHidePrevious[filename] = nil
     if nrOfActiveSheets == 0 then
-        orxonox.InputManager:getInstance():leaveState("guiMouseOnly")
+        --orxonox.InputManager:getInstance():leaveState("guiMouseOnly")
         orxonox.HumanController:resumeControl()
         hideCursor()
     end
+    orxonox.InputManager:getInstance():leaveState(currentGUI.inputState)
 end
 
 function hideAllGUIs()

@@ -8,11 +8,6 @@ else
     _G[_REQUIREDNAME] = P
 end
 
-
-function P:init()
-end
-
-
 -- events for ingamemenu
 function P.button_quit_clicked(e)
     openDecisionPopup( "Do you really want to quit the game?", InGameMenu.callback )

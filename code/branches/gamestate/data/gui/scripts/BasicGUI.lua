@@ -7,11 +7,11 @@ else
     _G[_REQUIREDNAME] = P
 end
 
--- useless?
+-- useless, even wrong? P is the class, not the object..
 P.overlay = nil
 
 -- constructor of the GUI
-function P:new(_filename, _visible, _gui)
+function P:new(_filename, _gui, _visible)
     local newElement = {
         filename = _filename,
         gui = _gui,
@@ -22,8 +22,14 @@ function P:new(_filename, _visible, _gui)
     return newElement
 end
 
+-- Override this function if you need to
 function P:init()
--- this function is empty and intended for inheriting GUIs to use
+end
+
+-- Override this function if you need to
+-- But don't forget to stick to the naming convention ("GUI_" .. self.filename)
+function P:createInputState()
+    self.inputState = guiMgr:createInputState("GUI_" .. self.filename)
 end
 
 -- hide function for the GUI
@@ -40,6 +46,7 @@ end
 
 function P:load()
     self.window = winMgr:loadWindowLayout(self.filename .. ".layout")
+    self:createInputState()
     self:init()
     return self
 end

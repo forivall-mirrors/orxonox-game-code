@@ -56,9 +56,13 @@ extern "C" {
 #include "util/OrxAssert.h"
 #include "ConsoleCommand.h"
 #include "Core.h"
+#include "GraphicsManager.h"
 #include "LuaState.h"
 #include "PathConfig.h"
 #include "Resource.h"
+#include "input/InputManager.h"
+#include "input/InputState.h"
+#include "input/KeyBinderManager.h"
 
 namespace orxonox
 {
@@ -107,18 +111,16 @@ namespace orxonox
         Ogre's render window. Without this, the GUI cannot be displayed.
     @return true if success, otherwise false
     */
-    GUIManager::GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen)
-        : renderWindow_(renderWindow)
-        , resourceProvider_(0)
+    GUIManager::GUIManager(const std::pair<int, int>& mousePosition)
+        : resourceProvider_(NULL)
         , camera_(NULL)
-        , bShowIngameGUI_(false)
     {
         using namespace CEGUI;
 
         COUT(3) << "Initialising CEGUI." << std::endl;
 
         // Note: No SceneManager specified yet
-        guiRenderer_.reset(new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
+        guiRenderer_.reset(new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
         resourceProvider_ = guiRenderer_->createResourceProvider();
         resourceProvider_->setDefaultResourceGroup("GUI");
 
@@ -140,15 +142,15 @@ namespace orxonox
         // create the CEGUI system singleton
         guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
-        // Initialise the basic Lua code
-        this->luaState_->doFile("InitialiseGUI.lua");
-
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition(mousePosition.first, mousePosition.second);
 
         // Hide the mouse cursor unless playing in full screen mode
-        if (!bFullScreen)
+        if (!GraphicsManager::getInstance().isFullScreen())
             CEGUI::MouseCursor::getSingleton().hide();
+
+        // Initialise the basic Lua code
+        this->luaState_->doFile("InitialiseGUI.lua");
     }
 
     /**
@@ -248,6 +250,32 @@ namespace orxonox
     /*static*/ void GUIManager::hideGUI(const std::string& name)
     {
         GUIManager::getInstance().executeCode("hideGUI(\"" + name + "\")");
+    }
+
+    const std::string& GUIManager::createInputState(const std::string& name, TriBool::Value showMouse, TriBool::Value useKeyboard, bool bBlockJoyStick)
+    {
+        InputState* state = InputManager::getInstance().createInputState(name);
+
+        if (GraphicsManager::getInstance().isFullScreen() && showMouse == TriBool::True ||
+           !GraphicsManager::getInstance().isFullScreen() && showMouse == TriBool::False)
+            state->setMouseExclusive(TriBool::True);
+        else
+            state->setMouseExclusive(TriBool::Dontcare);
+
+        if (showMouse == TriBool::True)
+            state->setMouseHandler(this);
+        else if (showMouse == TriBool::False)
+            state->setMouseHandler(&InputHandler::EMPTY);
+
+        if (useKeyboard == TriBool::True)
+            state->setKeyHandler(this);
+        else if (useKeyboard == TriBool::False)
+            state->setKeyHandler(&InputHandler::EMPTY);
+
+        if (bBlockJoyStick)
+            state->setJoyStickHandler(&InputHandler::EMPTY);
+
+        return state->getName();
     }
 
     void GUIManager::keyESC()

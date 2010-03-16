@@ -37,6 +37,7 @@
 #include <vector>
 
 #include "util/Singleton.h"
+#include "util/TriBool.h"
 #include "core/WindowEventListener.h"
 #include "InputState.h"
 
@@ -158,7 +159,7 @@ namespace orxonox
             - You can't remove the internal states "empty", "calibrator" and "detector".
             - The removal process is being postponed if InputManager::preUpdate() is currently running.
         */
-        bool destroyState(const std::string& name);
+        bool destroyState(const std::string& name); // tolua_export
 
         //-------------------------------
         // Various getters and setters
@@ -195,7 +196,7 @@ namespace orxonox
         State                               internalState_;        //!< Current internal state
         OIS::InputManager*                  oisInputManager_;      //!< OIS input manager
         std::vector<InputDevice*>           devices_;              //!< List of all input devices (keyboard, mouse, joy sticks)
-        MouseMode::Value                    mouseMode_;            //!< Currently applied mouse mode
+        TriBool::Value                      exclusiveMouse_;       //!< Currently applied mouse mode
 
         // some internally handled states and handlers
         InputState*                         emptyState_;           //!< Lowest priority states (makes handling easier)

@@ -8,9 +8,6 @@ else
     _G[_REQUIREDNAME] = P
 end
 
-function P:init()
-end
-
 function P.setCallback(functionPtr)
     P.functionPtr = functionPtr
 end
