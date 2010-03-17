@@ -10,7 +10,6 @@
             <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             <Property Name="Alpha" Value="0.7" />
             <Window Type="TaharezLook/Button" Name="orxonox/InfoPopup_close" >
-                <Property Name="Font" Value="BlueHighway-12" />
                 <Property Name="Text" Value="Close" />
                 <Property Name="Alpha" Value="0.7" />
                 <Property Name="InheritsAlpha" Value="False" />
