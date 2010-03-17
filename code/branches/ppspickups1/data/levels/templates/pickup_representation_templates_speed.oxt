@@ -1,0 +1,24 @@
+<Template name=speedboostRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1,0,0" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0,1,0" material="Cross" scale=1 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=speedboost>
+  <SpeedPickup
+    health = 10
+    healthType = "limited"
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>

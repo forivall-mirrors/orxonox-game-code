@@ -1,0 +1,9 @@
+<PickupRepresentation
+    name="SpeedBoost"
+    description="Doubles The ship's speed."
+    spawnerTemplate="speedboost"
+>
+    <pickup>
+        <HealthPickup template="speedboostpickup" />
+    </pickup>
+</PickupRepresentation>

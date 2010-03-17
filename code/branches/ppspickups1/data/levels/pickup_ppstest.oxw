@@ -1,0 +1,34 @@
+<?lua
+  include("stats.oxo")
+  include("hudtemplates3.oxo")
+?>
+
+<?lua
+  include("templates/spaceship_assff.oxt")
+  include("templates/spaceship_pirate.oxt")
+  include("templates/pickup_representation_templates.oxt")
+?>
+
+<Level
+ name         = "Sample"
+ description  = "Just a few tests"
+>
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+<?lua
+  include("includes/pickups_speed.oxi")
+?>
+    
+    <PickupSpawner position="-100,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+        <pickup>
+            <MetaPickup metaType="drop" />
+        </pickup>
+    </PickupSpawner>
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+    <SpawnPoint position="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+  </Scene>
+</Level>
