@@ -6,7 +6,7 @@ local schemeMgr = CEGUI.SchemeManager:getSingleton()
 local system    = CEGUI.System:getSingleton()
 local cursor    = CEGUI.MouseCursor:getSingleton()
 
-schemeMgr:loadScheme("TaharezLookSkin.scheme")
+schemeMgr:loadScheme("TaharezLook.scheme")
 -- load scheme with our own images
 schemeMgr:loadScheme("OrxonoxGUIScheme.scheme")
 
@@ -52,8 +52,7 @@ function showGUI(filename, hidePrevious, bCursorVisible, ptr)
     gui.overlay = ptr
 end
 
--- shows the specified and loads it if not loaded already
--- be sure to set the global variable "filename" before calling this function
+-- shows the specified GUI sheet and loads it if not loaded already
 function showGUI(filename, hidePrevious, bCursorVisible)
     if bCursorVisible == nil then
         if nrOfActiveSheets > 0 then
