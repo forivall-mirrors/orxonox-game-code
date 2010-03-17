@@ -1,4 +1,4 @@
-<Template name=speedboostRepresentation>
+<Template name=speedboostpickupRepresentation>
     <PickupRepresentation>
         <spawner-representation>
             <StaticEntity>
@@ -14,10 +14,11 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=speedboost>
+<Template name="speedboostpickup">
   <SpeedPickup
-    health = 10
-    healthType = "limited"
+    speedAddition = "0"
+    speedMultiplier = "2"
+    duration = "10"
     activationType = "immediate"
     durationType = "once"
   />
