@@ -13,6 +13,7 @@ schemeMgr:loadScheme("TaharezLook.scheme")
 -- By loading a different file (if there is) you can change the skin
 -- of the menus or the HUD independently
 schemeMgr:loadScheme("TaharezMenuWidgets.scheme")
+schemeMgr:loadScheme("TaharezHUDWidgets.scheme")
 
 -- Just a remaining test hack
 schemeMgr:loadScheme("OrxonoxGUIScheme.scheme")
