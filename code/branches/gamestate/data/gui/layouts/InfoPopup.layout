@@ -5,11 +5,11 @@
         <Property Name="InheritsAlpha" Value="False" />
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
-        <Window Type="TaharezLook/StaticImage" Name="orxonox/InfoPopup_Background" >
+        <Window Type="MenuWidgets/StaticImage" Name="orxonox/InfoPopup_Background" >
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             <Property Name="Alpha" Value="0.7" />
-            <Window Type="TaharezLook/Button" Name="orxonox/InfoPopup_close" >
+            <Window Type="MenuWidgets/Button" Name="orxonox/InfoPopup_close" >
                 <Property Name="Text" Value="Close" />
                 <Property Name="Alpha" Value="0.7" />
                 <Property Name="InheritsAlpha" Value="False" />
@@ -17,7 +17,7 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.5,0},{0.6,0},{0.55,0}}" />
                 <Event Name="Clicked" Function="InfoPopup.close"/>
             </Window>
-            <Window Type="TaharezLook/StaticText" Name="orxonox/InfoPopup_text" >
+            <Window Type="MenuWidgets/StaticText" Name="orxonox/InfoPopup_text" >
                 <Property Name="Text" Value="Template text" />
                 <Property Name="TextColours" Value="FF4444FF" />
                 <Property Name="HorzFormatting" Value="WordWrapCentred" />

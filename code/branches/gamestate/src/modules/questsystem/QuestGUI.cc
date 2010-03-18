@@ -108,7 +108,7 @@ namespace orxonox {
         int index = 0;
 
         //! Create root window.
-        this->rootWindow_ = this->windowManager_->createWindow("TaharezLook/ScrollablePane", "QuestGUI/Quests");
+        this->rootWindow_ = this->windowManager_->createWindow("MenuWidgets/ScrollablePane", "QuestGUI/Quests");
         this->rootWindow_->setSize(CEGUI::UVector2(CEGUI::UDim(1, 0),CEGUI::UDim(1, 0)));
 
         //! Iterate through all Quests.
@@ -160,9 +160,9 @@ namespace orxonox {
     @brief
         Get a CEGUI Window to use.
         Windows that are no longer used are collected with giveWindow, and are given out again with getWindow, so save some time recreating new windows everytime.
-        The retreived window is of type "TaharezLook/TabButton".
+        The retreived window is of type "MenuWidgets/TabButton".
     @return
-        Returns a CEGUI Window of type "TaharezLook/TabButton".
+        Returns a CEGUI Window of type "MenuWidgets/TabButton".
     */
     CEGUI::Window* QuestGUI::getWindow(void)
     {
@@ -176,7 +176,7 @@ namespace orxonox {
         //!< Else create a new one.
         std::ostringstream stream;
         stream << "QuestGUI/Quests/EmptyWindows/" << this->windows_.size()+1;
-        return this->windowManager_->createWindow("TaharezLook/TabButton", stream.str());
+        return this->windowManager_->createWindow("MenuWidgets/TabButton", stream.str());
     }
 
     /**

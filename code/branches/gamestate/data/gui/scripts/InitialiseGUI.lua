@@ -6,13 +6,14 @@ local schemeMgr = CEGUI.SchemeManager:getSingleton()
 local system    = CEGUI.System:getSingleton()
 local cursor    = CEGUI.MouseCursor:getSingleton()
 
-schemeMgr:loadScheme("TaharezLook.scheme")
--- load scheme with our own images
+schemeMgr:loadScheme("TaharezMenuWidgets.scheme")
+schemeMgr:loadScheme("TaharezMenuWidgetsAliases.scheme")
+-- load scheme with our own images, hack!
 schemeMgr:loadScheme("OrxonoxGUIScheme.scheme")
 
 system:setDefaultMouseCursor("TaharezLook", "MouseArrow")
 system:setDefaultFont("BlueHighway-12")
-system:setDefaultTooltip("TaharezLook/Tooltip")
+system:setDefaultTooltip("MenuWidgets/Tooltip")
 
 loadedGUIs = {}
 cursorVisibility = {}

@@ -5,28 +5,28 @@
         <Property Name="InheritsAlpha" Value="False" />
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
-        <Window Type="TaharezLook/Button" Name="orxonox/InGameMenu_ReturnButton" >
+        <Window Type="MenuWidgets/Button" Name="orxonox/InGameMenu_ReturnButton" >
             <Property Name="Text" Value="Return to Game" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.3625,0},{0.6,0},{0.4125,0}}" />
             <Property Name="Alpha" Value="0.7" />
             <Event Name="Clicked" Function="InGameMenu.button_return_clicked"/>
         </Window>
-        <Window Type="TaharezLook/Button" Name="orxonox/InGameMenu_MainMenuButton" >
+        <Window Type="MenuWidgets/Button" Name="orxonox/InGameMenu_MainMenuButton" >
             <Property Name="Text" Value="Main Menu" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.4625,0},{0.6,0},{0.5125,0}}" />
             <Property Name="Alpha" Value="0.7" />
             <Event Name="Clicked" Function="InGameMenu.button_mainmenu_clicked"/>
         </Window>
-        <Window Type="TaharezLook/Button" Name="orxonox/InGameMenu_SettingsButton" >
+        <Window Type="MenuWidgets/Button" Name="orxonox/InGameMenu_SettingsButton" >
             <Property Name="Text" Value="Settings" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.5625,0},{0.6,0},{0.6125,0}}" />
             <Property Name="Alpha" Value="0.7" />
             <Event Name="Clicked" Function="InGameMenu.button_settings_clicked"/>
         </Window>
-        <Window Type="TaharezLook/Button" Name="orxonox/InGameMenu_QuitButton" >
+        <Window Type="MenuWidgets/Button" Name="orxonox/InGameMenu_QuitButton" >
             <Property Name="Text" Value="Quit" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />

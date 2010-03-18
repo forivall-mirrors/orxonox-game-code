@@ -5,11 +5,11 @@
         <Property Name="InheritsAlpha" Value="False" />
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
-        <Window Type="TaharezLook/StaticImage" Name="orxonox/DecisionPopup_Background" >
+        <Window Type="MenuWidgets/StaticImage" Name="orxonox/DecisionPopup_Background" >
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
             <Property Name="Alpha" Value="0.6" />
-            <Window Type="TaharezLook/Button" Name="orxonox/DecisionPopup_button_yes" >
+            <Window Type="MenuWidgets/Button" Name="orxonox/DecisionPopup_button_yes" >
                 <Property Name="Text" Value="Yes" />
                 <Property Name="Alpha" Value="0.7" />
                 <Property Name="InheritsAlpha" Value="False" />
@@ -17,7 +17,7 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.2875,0},{0.5625,0},{0.4875,0},{0.6125,0}}" />
                 <Event Name="Clicked" Function="DecisionPopup.button_yes"/>
             </Window>
-            <Window Type="TaharezLook/Button" Name="orxonox/DecisionPopup_button_no" >
+            <Window Type="MenuWidgets/Button" Name="orxonox/DecisionPopup_button_no" >
                 <Property Name="Text" Value="No" />
                 <Property Name="Alpha" Value="0.8" />
                 <Property Name="InheritsAlpha" Value="False" />
@@ -25,7 +25,7 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.5125,0},{0.5625,0},{0.7125,0},{0.6125,0}}" />
                 <Event Name="Clicked" Function="DecisionPopup.button_no"/>
             </Window>
-            <Window Type="TaharezLook/StaticText" Name="orxonox/DecisionPopup_text" >
+            <Window Type="MenuWidgets/StaticText" Name="orxonox/DecisionPopup_text" >
                 <Property Name="Text" Value="Template text" />
                 <Property Name="HorzFormatting" Value="WordWrapCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />

@@ -159,7 +159,7 @@ namespace orxonox {
             //! Create the main window for the details.
             stream << this->window_->getName() << "/Details";
             const QuestDescription* description = this->item_->getDescription();
-            this->details_ = this->gui_->getWindowManager()->createWindow("TaharezLook/FrameWindow", stream.str());
+            this->details_ = this->gui_->getWindowManager()->createWindow("MenuWidgets/FrameWindow", stream.str());
             this->details_->setSize(CEGUI::UVector2(CEGUI::UDim(0.7, 0),CEGUI::UDim(0.7, 0)));
             this->details_->setPosition(CEGUI::UVector2(CEGUI::UDim(0.1, 0),CEGUI::UDim(0.1, 0)));
             this->details_->setText(description->getTitle());
@@ -170,7 +170,7 @@ namespace orxonox {
 
             //! Create a ScrollablePane.
             stream << "/Scrollable";
-            CEGUI::Window* window = this->gui_->getWindowManager()->createWindow("TaharezLook/ScrollablePane", stream.str());
+            CEGUI::Window* window = this->gui_->getWindowManager()->createWindow("MenuWidgets/ScrollablePane", stream.str());
             window->setSize(CEGUI::UVector2(CEGUI::UDim(1.0, -2*QuestGUINode::BORDER_WIDTH),CEGUI::UDim(1.0, -QuestGUINode::TITLE_HEIGHT)));
             window->setPosition(CEGUI::UVector2(CEGUI::UDim(0, QuestGUINode::BORDER_WIDTH),CEGUI::UDim(0, QuestGUINode::TITLE_HEIGHT)));
             this->details_->addChildWindow(window);
@@ -184,7 +184,7 @@ namespace orxonox {
             {
                 stream.str("");
                 stream << this->details_->getName() << "/Status";
-                CEGUI::Window* statusWindow = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
+                CEGUI::Window* statusWindow = this->gui_->getWindowManager()->createWindow("MenuWidgets/StaticText", stream.str());
                 window->addChildWindow(statusWindow);
                 std::string status;
                 if(quest->isActive(this->gui_->getPlayer()))
@@ -213,7 +213,7 @@ namespace orxonox {
             stream.str("");
             stream << this->details_->getName() << "/Description";
             stream << "/Title";
-            CEGUI::Window* descriptionWindowTitle = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
+            CEGUI::Window* descriptionWindowTitle = this->gui_->getWindowManager()->createWindow("MenuWidgets/StaticText", stream.str());
             window->addChildWindow(descriptionWindowTitle);
             descriptionWindowTitle->setProperty("HorzFormatting", "HorzCentred");
             descriptionWindowTitle->setProperty("VertFormatting", "TopAligned");
@@ -226,7 +226,7 @@ namespace orxonox {
             //! Display the Description of the QuestItem.
             stream.str("");
             stream << this->details_->getName() << "/Description";
-            CEGUI::Window* descriptionWindow = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
+            CEGUI::Window* descriptionWindow = this->gui_->getWindowManager()->createWindow("MenuWidgets/StaticText", stream.str());
             window->addChildWindow(descriptionWindow);
             descriptionWindow->setProperty("HorzFormatting", "WordWrapLeftAligned");
             descriptionWindow->setProperty("VertFormatting", "TopAligned");
@@ -249,7 +249,7 @@ namespace orxonox {
                         {
                             stream.str("");
                             stream << this->details_->getName() << "/Hints/Title";
-                            CEGUI::Window* hintsTitle = this->gui_->getWindowManager()->createWindow("TaharezLook/StaticText", stream.str());
+                            CEGUI::Window* hintsTitle = this->gui_->getWindowManager()->createWindow("MenuWidgets/StaticText", stream.str());
                             window->addChildWindow(hintsTitle);
                             hintsTitle->setProperty("HorzFormatting", "HorzCentred");
                             hintsTitle->setProperty("VertFormatting", "TopAligned");
