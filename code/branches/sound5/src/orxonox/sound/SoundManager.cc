@@ -115,7 +115,8 @@ namespace orxonox
         Loki::ScopeGuard closeDeviceGuard = Loki::MakeGuard(&alcCloseDevice, this->device_);
 
         // Create sound context and make it the currently used one
-        this->context_ = alcCreateContext(this->device_, NULL);
+        const ALint contattr[]  = {ALC_SYNC, 1, 0};
+        this->context_ = alcCreateContext(this->device_, contattr);
         if (this->context_ == NULL)
             ThrowException(InitialisationFailed, "Sound: Error: Could not create ALC context");
         Loki::ScopeGuard desroyContextGuard = Loki::MakeGuard(&alcDestroyContext, this->context_);

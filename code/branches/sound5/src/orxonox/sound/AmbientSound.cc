@@ -174,6 +174,9 @@ namespace orxonox
         DataStreamPtr dataStream = Resource::open(fileInfo);
 
         this->soundstreamthread_ = boost::thread(SoundStreamer(), this->audioSource_, dataStream);
+        if(this->soundstreamthread_ == boost::thread())
+            COUT(2) << "Sound: Failed to create thread." << std::endl;
+
 
         this->updateVolume();
         this->setPitch(this->getPitch());

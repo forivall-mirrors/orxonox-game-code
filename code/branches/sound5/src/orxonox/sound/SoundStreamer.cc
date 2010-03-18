@@ -27,6 +27,7 @@
 #include "SoundStreamer.h"
 
 #include <al.h>
+#include <alc.h>
 #include <vorbis/vorbisfile.h>
 #include "SoundManager.h"
 #include "util/Sleep.h"
@@ -66,6 +67,10 @@ namespace orxonox
         char inbuffer[256*1024];
         ALuint initbuffers[4];
         alGenBuffers(4, initbuffers);
+        if (ALint error = alGetError()) {
+            COUT(2) << "Sound: Streamer: Could not generate buffer:" << getALErrorString(error) << std::endl;
+            return;
+        }
         int current_section;
 
         for(int i = 0; i < 4; i++)
@@ -83,22 +88,30 @@ namespace orxonox
             }
 
             alBufferData(initbuffers[i], format, &inbuffer, ret, vorbisInfo->rate);
+            alGetError();
         }
         alSourceQueueBuffers(audioSource, 4, initbuffers);
+        if (ALint error = alGetError()) {
+            COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
+        }
 
         while(true) // Stream forever, control through thread control
         {
             int processed;
+
+        if(alcGetCurrentContext() == NULL)
+            COUT(2) << "This should not be!" << std::endl;
+
             alGetSourcei(audioSource, AL_BUFFERS_PROCESSED, &processed);
             if (ALint error = alGetError())
-            COUT(2) << "Sound Warning: Couldn't get number of processed buffers: " << getALErrorString(error) << std::endl;
+            COUT(2) << "Sound: Warning: Couldn't get number of processed buffers: " << getALErrorString(error) << std::endl;
 
             if(processed > 0)
             {
                 ALuint* buffers = new ALuint[processed];
                 alSourceUnqueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
-                    COUT(2) << "Sound Warning: Couldn't unqueue buffers: " << getALErrorString(error) << std::endl;
+                    COUT(2) << "Sound: Warning: Couldn't unqueue buffers: " << getALErrorString(error) << std::endl;
 
                 for(int i = 0; i < processed; i++)
                 {
@@ -115,13 +128,14 @@ namespace orxonox
                     }
 
                     alBufferData(buffers[i], format, &inbuffer, ret, vorbisInfo->rate);
+                    alGetError();
                 }
 
                 alSourceQueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
-                    COUT(2) << "Sound Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
+                    COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
             }
-            msleep(250); // perhaps another value here is better
+            msleep(100); // perhaps another value here is better
         }
     }
 }
