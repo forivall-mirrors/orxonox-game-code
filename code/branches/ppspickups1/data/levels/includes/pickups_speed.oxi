@@ -1,0 +1,18 @@
+<PickupRepresentation
+    name="SpeedBoost"
+    description="Speeds up the Ship for a certain time."
+    spawnerTemplate="speedboostpickuprepresentation"
+>
+    <pickup>
+        <SpeedPickup template="speedboostpickup" />
+    </pickup>
+</PickupRepresentation>
+<PickupRepresentation
+    name="SpeedBoost"
+    description="Speeds up the Ship for a certain time."
+    spawnerTemplate="speedboostpickuprepresentation"
+>
+    <pickup>
+        <SpeedPickup template="speedboostpickup" />
+    </pickup>
+</PickupRepresentation>
