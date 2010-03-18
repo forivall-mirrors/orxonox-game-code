@@ -226,7 +226,8 @@ function P.keybind(arguments)
     local commandNr = arguments[1]
     local buttonNr = arguments[2]
     if buttonNr ~= nil then
-        orxonox.KeyBinderManager:getInstance():unbind(orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[commandNr], buttonNr))
+        local str = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[commandNr], buttonNr)
+        orxonox.KeyBinderManager:getInstance():unbind(str)
     end
 
     orxonox.KeyBinderManager:getInstance():keybind(commandList[commandNr])
