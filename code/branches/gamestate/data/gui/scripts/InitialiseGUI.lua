@@ -6,9 +6,15 @@ local schemeMgr = CEGUI.SchemeManager:getSingleton()
 local system    = CEGUI.System:getSingleton()
 local cursor    = CEGUI.MouseCursor:getSingleton()
 
+-- Load all required skins
+schemeMgr:loadScheme("TaharezLook.scheme")
+
+-- Connect skin specific window types with our own window types
+-- By loading a different file (if there is) you can change the skin
+-- of the menus or the HUD independently
 schemeMgr:loadScheme("TaharezMenuWidgets.scheme")
-schemeMgr:loadScheme("TaharezMenuWidgetsAliases.scheme")
--- load scheme with our own images, hack!
+
+-- Just a remaining test hack
 schemeMgr:loadScheme("OrxonoxGUIScheme.scheme")
 
 system:setDefaultMouseCursor("TaharezLook", "MouseArrow")
