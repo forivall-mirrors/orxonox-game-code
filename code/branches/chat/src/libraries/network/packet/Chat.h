@@ -40,17 +40,31 @@ namespace packet {
 class _NetworkExport Chat : public Packet
 {
 public:
+  /* constructors */
   Chat( const std::string& message, unsigned int playerID );
   Chat( uint8_t* data, unsigned int clientID );
+
+  /* destructor */
   ~Chat();
 
+  /* get size of packet */
   inline unsigned int getSize() const;
+
+  /* process chat message packet and remove it afterwards */
   bool process();
 
+  /* Get the length of the message (not the full size of the packet) */
   unsigned int getMessageLength(){ return messageLength_; };
+
+  /* return message content */
   unsigned char *getMessage();
+
 private:
+
+  /* Message length */
   uint32_t messageLength_;
+
+  /* Client ID (an integral value for identification) */
   unsigned int clientID_;
 };
 
