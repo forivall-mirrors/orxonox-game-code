@@ -60,7 +60,8 @@ namespace orxonox
     */
     class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
     {
-         //! So that the different Pickupables have full access to their PickupCarrier.
+        //! So that the different Pickupables have full access to their PickupCarrier.
+        //! Friends. 
         friend class Pickupable;
         friend class Pickup;
         friend class HealthPickup;
