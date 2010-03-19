@@ -39,7 +39,7 @@ function P:init()
     table.insert(themeList, "Drum n' Bass")
     for k,v in pairs(themeList) do
         item = CEGUI.createListboxTextItem(v)
-        item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toListbox(listboxwindow):addItem(item)
     end
     if orxonox.getConfig("MoodManager", "mood_") == "dnb" then

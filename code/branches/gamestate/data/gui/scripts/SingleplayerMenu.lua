@@ -26,7 +26,7 @@ function P:init()
     table.sort(levelList)
     for k,v in pairs(levelList) do
         item = CEGUI.createListboxTextItem(v)
-        item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toListbox(listbox):addItem(item)
         if v .. ".oxw" == preselect then
             listbox:setItemSelectState(item, true)

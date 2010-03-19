@@ -16,12 +16,14 @@ schemeMgr:loadScheme("TaharezLook.scheme")
 -- By loading a different file (if there is) you can change the skin
 -- of the menus or the HUD independently
 schemeMgr:loadScheme("TaharezMenuWidgets.scheme")
+menuImageSet = "TaharezLook"
 schemeMgr:loadScheme("TaharezHUDWidgets.scheme")
+hudImageSet = "TaharezLook"
 
 -- Just a remaining test hack
 schemeMgr:loadScheme("OrxonoxGUIScheme.scheme")
 
-system:setDefaultMouseCursor("TaharezLook", "MouseArrow")
+system:setDefaultMouseCursor(menuImageSet, "MouseArrow")
 system:setDefaultFont("BlueHighway-12")
 system:setDefaultTooltip("MenuWidgets/Tooltip")
 
