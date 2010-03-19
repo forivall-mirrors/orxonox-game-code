@@ -8,6 +8,9 @@ local cursor    = CEGUI.MouseCursor:getSingleton()
 
 -- Load all required skins
 schemeMgr:loadScheme("TaharezLook.scheme")
+--schemeMgr:loadScheme("WindowsLook.scheme")
+--schemeMgr:loadScheme("VanillaLook.scheme")
+--schemeMgr:loadScheme("SleekSpaceLook.scheme")
 
 -- Connect skin specific window types with our own window types
 -- By loading a different file (if there is) you can change the skin
