@@ -73,9 +73,9 @@ namespace orxonox
     */
     void SpeedPickup::initialize(void)
     {
-        this->duration_ = 0;
-        this->speedAdd_ = 0;
-        this->speedMultiply_ = 0;
+        this->duration_ = 0.0;
+        this->speedAdd_ = 0.0;
+        this->speedMultiply_ = 1.0;
 
         this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
@@ -268,14 +268,14 @@ namespace orxonox
     */
     void SpeedPickup::setSpeedMultiply(float speedMultiply)
     {
-        if(speedMultiply > 0.0f)
+        if(speedMultiply != 0.0f)
         {
             this->speedMultiply_ = speedMultiply;
         }
         else
         {
             COUT(1) << "Invalid speedMultiply in SpeedPickup." << std::endl;
-            this->speedMultiply_ = 0.0;
+            this->speedMultiply_ = 1.0;
         }
     }
 }

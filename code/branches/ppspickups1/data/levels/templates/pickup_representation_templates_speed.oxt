@@ -1,11 +1,11 @@
-<Template name=speedboostpickupRepresentation>
+<Template name=smallspeedpickupRepresentation>
     <PickupRepresentation>
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="1,0,0" material="Sphere2" scale=0.1>
+                    <Billboard position="0,0,0" colour="1.0,0.0,0.0" material="Sphere2" scale=0.1>
                         <attached>
-                            <Billboard position="0,0,0" colour="0,1,0" material="Cross" scale=1 />
+                            <Billboard position="0,0,0" colour="1.0,1.0,0.0" material="Cross" scale=0.7 />
                         </attached>
                     </Billboard>
                 </attached>
@@ -14,36 +14,11 @@
     </PickupRepresentation>
 </Template>
 
-<Template name="speedboostpickup">
+<Template name=smallspeedpickup>
   <SpeedPickup
-    speedAddition = "0"
-    speedMultiplier = "2"
-    duration = "10"
-    activationType = "immediate"
-    durationType = "once"
-  />
-</Template>
-<Template name=speedboostpickupRepresentation>
-    <PickupRepresentation>
-        <spawner-representation>
-            <StaticEntity>
-                <attached>
-                    <Billboard position="0,0,0" colour="1,0,0" material="Sphere2" scale=0.1>
-                        <attached>
-                            <Billboard position="0,0,0" colour="0,1,0" material="Cross" scale=1 />
-                        </attached>
-                    </Billboard>
-                </attached>
-            </StaticEntity>
-        </spawner-representation>
-    </PickupRepresentation>
-</Template>
-
-<Template name="speedboostpickup">
-  <SpeedPickup
-    speedAddition = "0"
-    speedMultiplier = "2"
-    duration = "10"
+    duration = 10
+    speedAdd = 1
+    SpeedMultiply = 1
     activationType = "immediate"
     durationType = "once"
   />
