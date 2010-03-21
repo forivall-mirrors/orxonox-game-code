@@ -48,7 +48,7 @@ namespace orxonox {
 */
 class _NetworkExport Host{
   private:
-    //TODO add theese functions or adequate
+    //TODO add these functions or adequate
     //virtual bool processChat(packet::Chat *message, unsigned int clientID)=0;
     //virtual bool sendChat(packet::Chat *chat)=0;
     virtual bool queuePacket(ENetPacket *packet, int clientID)=0;
