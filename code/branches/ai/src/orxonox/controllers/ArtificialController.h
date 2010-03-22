@@ -42,7 +42,15 @@ namespace orxonox
             ArtificialController(BaseObject* creator);
             virtual ~ArtificialController();
 
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);//new
+
             void abandonTarget(Pawn* target);
+
+            inline void setTeam(int team)//new
+                { this->team_ = team; }
+            inline int getTeam() const
+                { return this->team_; }
+
 
         protected:
             void targetDied();
@@ -67,6 +75,9 @@ namespace orxonox
             Vector3 targetPosition_;
             WeakPtr<Pawn> target_;
             bool bShooting_;
+
+            bool isMaster_;//new
+            int team_;//new
 
         private:
     };

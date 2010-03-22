@@ -29,6 +29,7 @@
 #include "ArtificialController.h"
 
 #include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/TeamBaseMatchBase.h"
@@ -42,6 +43,8 @@ namespace orxonox
         RegisterObject(ArtificialController);
 
         this->target_ = 0;
+	this->team_ = 0;//new
+	this->isMaster_ = false;//new
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
         this->targetPosition_ = Vector3::ZERO;
@@ -51,6 +54,13 @@ namespace orxonox
 
     ArtificialController::~ArtificialController()
     {
+    }
+
+    void ArtificialController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(ArtificialController, XMLPort, xmlelement, mode);
+
+        XMLPortParam(ArtificialController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(0);
     }
 
     void ArtificialController::moveToPosition(const Vector3& target)
@@ -187,17 +197,27 @@ namespace orxonox
         int team1 = -1;
         int team2 = -1;
 
-        if (entity1->getXMLController())
+        Controller* controller = 0;
+        if (entity1->getController())
+            controller = entity1->getController();
+        else
+            controller = entity1->getXMLController();
+        if (controller)
         {
-            WaypointPatrolController* wpc = orxonox_cast<WaypointPatrolController*>(entity1->getXMLController());
-            if (wpc)
-                team1 = wpc->getTeam();
+            ArtificialController* ac = orxonox_cast<ArtificialController*>(controller);
+            if (ac)
+                team1 = ac->getTeam();
         }
-        if (entity2->getXMLController())
+
+        if (entity1->getController())
+            controller = entity1->getController();
+        else
+            controller = entity1->getXMLController();
+        if (controller)
         {
-            WaypointPatrolController* wpc = orxonox_cast<WaypointPatrolController*>(entity2->getXMLController());
-            if (wpc)
-                team2 = wpc->getTeam();
+            ArtificialController* ac = orxonox_cast<ArtificialController*>(controller);
+            if (ac)
+                team2 = ac->getTeam();
         }
 
         TeamDeathmatch* tdm = orxonox_cast<TeamDeathmatch*>(gametype);
