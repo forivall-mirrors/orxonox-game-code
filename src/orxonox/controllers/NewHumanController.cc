@@ -184,17 +184,22 @@ namespace orxonox
             if (this->centerOverlay_)
                 this->centerOverlay_->destroy();
 
-            if (showArrows_)
-            {
-                if (this->arrowsOverlay1_)
-                    this->arrowsOverlay1_->destroy();
-                if (this->arrowsOverlay2_)
-                    this->arrowsOverlay2_->destroy();
-                if (this->arrowsOverlay3_)
-                    this->arrowsOverlay3_->destroy();
-                if (this->arrowsOverlay4_)
-                    this->arrowsOverlay4_->destroy();
-            }
+            if (this->arrowsOverlay1_)
+                this->arrowsOverlay1_->destroy();
+            if (this->arrowsOverlay2_)
+                this->arrowsOverlay2_->destroy();
+            if (this->arrowsOverlay3_)
+                this->arrowsOverlay3_->destroy();
+            if (this->arrowsOverlay4_)
+                this->arrowsOverlay4_->destroy();
+            if (this->damageOverlayTop_)
+                this->damageOverlayTop_->destroy();
+            if (this->damageOverlayLeft_)
+                this->damageOverlayLeft_->destroy();
+            if (this->damageOverlayRight_)
+                this->damageOverlayRight_->destroy();
+            if (this->damageOverlayBottom_)
+                this->damageOverlayBottom_->destroy();
         }
     }
 
