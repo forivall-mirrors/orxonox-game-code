@@ -37,7 +37,8 @@
 #include "core/XMLPort.h"
 #include "util/StringUtils.h"
 
-#include "worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/SpaceShip.h"
+#include "items/Engine.h"
 #include "pickup/PickupIdentifier.h"
 
 #include <sstream>
@@ -122,33 +123,6 @@ namespace orxonox
 
     /**
     @brief
-        Is called every tick.
-        Does count down the duration of the SpeedPickup.
-    @param dt
-        The duration of the last tick.
-    */
-    void SpeedPickup::tick(float dt)
-    {
-        if(this->isUsed())
-        {
-            Pawn* pawn = this->carrierToPawnHelper();
-            if(pawn == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
-                this->destroy();
-
-             //! Calculate the remaining duration of the Pickup
-            float duration=this->getDuration()-dt;
-            this->setDuration(duration);
-
-            //! If duration is over
-            if(this->getDuration() < 0)
-            {
-                this->setUsed(false);
-            }
-        }
-    }
-
-    /**
-    @brief
         Is called when the pickup has transited from used to unused or the other way around.
     */
     void SpeedPickup::changedUsed(void)
@@ -162,25 +136,17 @@ namespace orxonox
         //! If the pickup has transited to used.
         if(this->isUsed())
         {
-            if(this->isOnce())
-            {
-                Pawn* pawn = this->carrierToPawnHelper();
-                if(pawn == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
-                    this->destroy();
+            this->startPickupTimer(this->getDuration());
 
-                //! The pickup has been used up.
-                this->setUsed(false);
-            }
-        }
-        else
-        {
-            //! If either the pickup can only be used once or it is continuous and used up, it is destroyed upon setting it to unused.
-            if(this->isOnce() || (this->isContinuous() && this->getDuration() < 0))
-            {
+            Engine* engine = this->carrierToEngineHelper();
+            if(engine == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
                 this->destroy();
-            }
+            engine->setSpeedAdd(this->getSpeedAdd());
+            engine->setSpeedMultiply(this->getSpeedMultiply());
         }
     }
+
+
 
     /**
     @brief
@@ -188,17 +154,21 @@ namespace orxonox
     @return
         A pointer to the Pawn, or NULL if the conversion failed.
     */
-    Pawn* SpeedPickup::carrierToPawnHelper(void)
+    Engine* SpeedPickup::carrierToEngineHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        SpaceShip* ship = dynamic_cast<SpaceShip*>(carrier);
 
-        if(pawn == NULL)
+        if(ship == NULL)
         {
             COUT(1) << "Invalid PickupCarrier in SpeedPickup." << std::endl;
         }
+        else
+        {
+            return ship->getEngine();
+        }
 
-        return pawn;
+        return 0;
     }
 
     /**
@@ -237,7 +207,7 @@ namespace orxonox
         else
         {
             COUT(1) << "Invalid duration in SpeedPickup." << std::endl;
-            this->duration_ = 0.0;
+            this->duration_ = 0;
         }
     }
 
@@ -249,7 +219,7 @@ namespace orxonox
     */
     void SpeedPickup::setSpeedAdd(float speedAdd)
     {
-        if(speedAdd > 0.0f)
+        if(speedAdd >= 0.0f)
         {
             this->speedAdd_ = speedAdd;
         }
@@ -268,7 +238,7 @@ namespace orxonox
     */
     void SpeedPickup::setSpeedMultiply(float speedMultiply)
     {
-        if(speedMultiply != 0.0f)
+        if(speedMultiply != 0)
         {
             this->speedMultiply_ = speedMultiply;
         }
@@ -277,5 +247,9 @@ namespace orxonox
             COUT(1) << "Invalid speedMultiply in SpeedPickup." << std::endl;
             this->speedMultiply_ = 1.0;
         }
+    }
+
+    void SpeedPickup::PickupTimerCallBack(void) {
+        COUT(2) << "Timer ended!" << std::endl;
     }
 }

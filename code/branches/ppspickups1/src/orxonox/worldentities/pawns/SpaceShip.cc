@@ -219,4 +219,11 @@ namespace orxonox
         if (engine && engine->getShip() != this)
             engine->addToSpaceShip(this);
     }
+
+    std::list<PickupCarrier*>* SpaceShip::getCarrierChildren(void)
+    {
+        std::list<PickupCarrier*>* list = new std::list<PickupCarrier*>();
+        list->push_front(engine_);
+        return list;
+    }
 }

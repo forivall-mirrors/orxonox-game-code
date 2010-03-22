@@ -16,9 +16,9 @@
 
 <Template name=smallspeedpickup>
   <SpeedPickup
-    duration = 10
-    speedAdd = 1
-    SpeedMultiply = 1
+    duration = 10.0
+    speedAdd = 0
+    SpeedMultiply = 10
     activationType = "immediate"
     durationType = "once"
   />

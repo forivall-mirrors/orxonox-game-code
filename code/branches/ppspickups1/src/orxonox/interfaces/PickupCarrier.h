@@ -47,11 +47,6 @@
 namespace orxonox
 {
 
-    //! Pre-declarations.
-    class Pickup;
-    class HealthPickup;
-    class MetaPickup;
-
     /**
     @brief
         The PickupCarrier interface provides the means, for any class implementing it, to possess Pickupables.
@@ -65,11 +60,12 @@ namespace orxonox
         friend class Pickup;
         friend class HealthPickup;
         friend class MetaPickup;
-        
+        friend class SpeedPickup;
+
         public:
             PickupCarrier(); //!< Constructor.
             virtual ~PickupCarrier(); //!< Destructor.
-            
+
             /**
             @brief Can be called to pick up a Pickupable.
             @param pickup A pointer to the Pickupable.
@@ -85,7 +81,7 @@ namespace orxonox
                     }
                     return pickedUp;
                 }
-                
+
             /**
             @brief Can be called to drop a Pickupable.
             @param pickup A pointer to the Pickupable.
@@ -93,7 +89,7 @@ namespace orxonox
             @return Returns true if the Pickupable has been dropped, false if not.
             */
             bool drop(Pickupable* pickup, bool drop = true)
-                { 
+                {
                     bool dropped = this->pickups_.erase(pickup) == 1;
                     if(dropped && drop)
                     {
@@ -102,7 +98,7 @@ namespace orxonox
                     }
                     return dropped;
                 }
-                
+
             /**
             @brief Can be used to check whether the PickupCarrier or a child of his is a target ot the input Pickupable.
             @param pickup A pointer to the Pickupable.
@@ -112,7 +108,7 @@ namespace orxonox
                 {
                     if(pickup->isTarget(this)) //!< If the PickupCarrier itself is a target.
                         return true;
-                    
+
                     //! Go recursively through all children to check whether they are a target.
                     std::list<PickupCarrier*>* children = this->getCarrierChildren();
                     for(std::list<PickupCarrier*>::const_iterator it = children->begin(); it != children->end(); it++)
@@ -120,13 +116,13 @@ namespace orxonox
                         if((*it)->isTarget(pickup))
                             return true;
                     }
-                    
+
                     children->clear();
                     delete children;
-                    
+
                     return false;
                 }
-                
+
             /**
             @brief Get the carrier that is both a child of the PickupCarrier (or the PickupCarrier itself) and a target of the input Pickupable.
             @param pickup A pounter to the Pickupable.
@@ -136,10 +132,10 @@ namespace orxonox
                 {
                     if(!this->isTarget(pickup))
                         return NULL;
-                    
+
                     if(pickup->isTarget(this)) //!< If the PickupCarrier itself is a target.
                         return this;
-                    
+
                     //! Go recursively through all children to check whether they are the target.
                     std::list<PickupCarrier*>* children = this->getCarrierChildren();
                     for(std::list<PickupCarrier*>::iterator it = children->begin(); it != children->end(); it++)
@@ -147,26 +143,26 @@ namespace orxonox
                         if(pickup->isTarget(*it))
                             return *it;
                     }
-                    
+
                     children->clear();
                     delete children;
-                    
+
                     return NULL;
                 }
-                
+
             /**
             @brief Get the (absolute) position of the PickupCarrier.
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
             @return Returns the position as a Vector3.
             */
             virtual const Vector3& getCarrierPosition(void) = 0;
-            
-        protected:        
+
+        protected:
             /**
             @brief Get all direct children of this PickupSpawner.
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
                    The returned list will be deleted by the methods calling this function.
-            @return Returns a pointer to a list of all direct children. 
+            @return Returns a pointer to a list of all direct children.
             */
             virtual std::list<PickupCarrier*>* getCarrierChildren(void) = 0;
             /**
@@ -175,17 +171,17 @@ namespace orxonox
             @return Returns a pointer to the parent.
             */
             virtual PickupCarrier* getCarrierParent(void) = 0;
-                            
+
             /**
             @brief Get all Pickupables this PickupCarrier has.
             @return  Returns the set of all Pickupables this PickupCarrier has.
             */
             std::set<Pickupable*>& getPickups(void)
                 { return this->pickups_; }
-        
+
         private:
             std::set<Pickupable*> pickups_; //!< The list of Pickupables carried by this PickupCarrier.
-            
+
     };
 }
 

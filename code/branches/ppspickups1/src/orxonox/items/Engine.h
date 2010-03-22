@@ -34,9 +34,11 @@
 #include "tools/interfaces/Tickable.h"
 #include "Item.h"
 
+#include "interfaces/PickupCarrier.h"
+
 namespace orxonox
 {
-    class _OrxonoxExport Engine : public Item, public Tickable
+    class _OrxonoxExport Engine : public Item, public Tickable, public PickupCarrier
     {
         public:
             Engine(BaseObject* creator);
@@ -103,7 +105,25 @@ namespace orxonox
             inline float getAccelerationUpDown() const
                 { return this->accelerationUpDown_; }
 
+            inline float getSpeedAdd(void)
+                { return this->speedAdd_; }
+            inline float getSpeedMultiply(void)
+                { return this->speedMultiply_; }
+
             virtual const Vector3& getDirection() const;
+
+            virtual const Vector3& getCarrierPosition(void);
+
+            /* not in protected ?? */
+            inline void setSpeedAdd(float speedAdd)
+                { this->speedAdd_=speedAdd; }
+            inline void setSpeedMultiply(float speedMultiply)
+                { this->speedMultiply_=speedMultiply; }
+
+        protected:
+            virtual std::list<PickupCarrier*>* getCarrierChildren(void)
+                { return new std::list<PickupCarrier*>(); }
+            virtual PickupCarrier* getCarrierParent(void);
 
         private:
             void networkcallback_shipID();
@@ -113,6 +133,9 @@ namespace orxonox
 
             float boostFactor_;
             float speedFactor_;
+
+            float speedAdd_;
+            float speedMultiply_;
 
             float maxSpeedFront_;
             float maxSpeedBack_;

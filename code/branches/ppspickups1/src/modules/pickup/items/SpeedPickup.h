@@ -56,7 +56,7 @@ namespace orxonox {
     @author
         Eric Beier
     */
-    class _PickupExport SpeedPickup : public Pickup, public Tickable
+    class _PickupExport SpeedPickup : public Pickup
     {
         public:
 
@@ -64,7 +64,6 @@ namespace orxonox {
             virtual ~SpeedPickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
-            virtual void tick(float dt); //!< Is called every tick.
 
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
@@ -79,14 +78,14 @@ namespace orxonox {
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
 
-            void setDuration(float duration); //!< Sets the duration
+            void setDuration(float duration);
             void setSpeedAdd(float speedAdd);
             void setSpeedMultiply(float speedMultiply);
 
-
         private:
             void initialize(void); //!< Initializes the member variables.
-            Pawn* carrierToPawnHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
+            void PickupTimerCallBack(void); //!< Function that gets called when timer ends.
+            Engine* carrierToEngineHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
 
             float duration_; //!< The health that is transferred to the Pawn.
             float speedAdd_;
