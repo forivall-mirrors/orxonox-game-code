@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<GUILayout >
+<GUILayout>
 	<Window Type="DefaultWindow" Name="orxonox/InGamePickupHUD_RootWindow" >
 		<Property Name="InheritsAlpha" Value="False" />
 		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -23,4 +23,4 @@
 	
 	</Window>
 	
-</GUILayout >
+</GUILayout>
