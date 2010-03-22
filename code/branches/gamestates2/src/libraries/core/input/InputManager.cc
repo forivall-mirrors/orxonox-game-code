@@ -86,7 +86,7 @@ namespace orxonox
         : internalState_(Bad)
         , oisInputManager_(0)
         , devices_(2)
-        , mouseMode_(MouseMode::Nonexclusive)
+        , exclusiveMouse_(TriBool::False)
         , emptyState_(0)
         , calibratorCallbackHandler_(0)
     {
@@ -97,7 +97,7 @@ namespace orxonox
         this->setConfigValues();
 
         if (GraphicsManager::getInstance().isFullScreen())
-            mouseMode_ = MouseMode::Exclusive;
+            exclusiveMouse_ = TriBool::True;
         this->loadDevices();
 
         // Lowest priority empty InputState
@@ -154,7 +154,7 @@ namespace orxonox
         paramList.insert(std::make_pair("w32_keyboard", "DISCL_NONEXCLUSIVE"));
         paramList.insert(std::make_pair("w32_keyboard", "DISCL_FOREGROUND"));
         paramList.insert(std::make_pair("w32_mouse", "DISCL_FOREGROUND"));
-        if (mouseMode_ == MouseMode::Exclusive || GraphicsManager::getInstance().isFullScreen())
+        if (exclusiveMouse_ == TriBool::True || GraphicsManager::getInstance().isFullScreen())
         {
             // Disable Windows key plus special keys (like play, stop, next, etc.)
             paramList.insert(std::make_pair("w32_keyboard", "DISCL_NOWINKEY"));
@@ -167,7 +167,7 @@ namespace orxonox
         // Trouble might be that the Pressed event occurs a bit too often...
         paramList.insert(std::make_pair("XAutoRepeatOn", "true"));
 
-        if (mouseMode_ == MouseMode::Exclusive || GraphicsManager::getInstance().isFullScreen())
+        if (exclusiveMouse_ == TriBool::True || GraphicsManager::getInstance().isFullScreen())
         {
             if (CommandLineParser::getValue("keyboard_no_grab").getBool())
                 paramList.insert(std::make_pair("x11_keyboard_grab", "false"));
@@ -503,15 +503,15 @@ namespace orxonox
             activeStatesTicked_.push_back(*it);
 
         // Check whether we have to change the mouse mode
-        MouseMode::Value requestedMode = MouseMode::Dontcare;
+        TriBool::Value requestedMode = TriBool::Dontcare;
         std::vector<InputState*>& mouseStates = devices_[InputDeviceEnumerator::Mouse]->getStateListRef();
         if (mouseStates.empty())
-            requestedMode = MouseMode::Nonexclusive;
+            requestedMode = TriBool::False;
         else
-            requestedMode = mouseStates.front()->getMouseMode();
-        if (requestedMode != MouseMode::Dontcare && mouseMode_ != requestedMode)
+            requestedMode = mouseStates.front()->getMouseExclusive();
+        if (requestedMode != TriBool::Dontcare && exclusiveMouse_ != requestedMode)
         {
-            mouseMode_ = requestedMode;
+            exclusiveMouse_ = requestedMode;
             if (!GraphicsManager::getInstance().isFullScreen())
                 this->reloadInternal();
         }

@@ -1,15 +1,12 @@
 -- AudioMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("AudioMenu")
 if _REQUIREDNAME == nil then
     AudioMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "AudioMenu"
-P.layoutString = "AudioMenu.layout"
 
 function P:init()
     soundMgr = orxonox.SoundManager:getInstance()
@@ -42,7 +39,7 @@ function P:init()
     table.insert(themeList, "Drum n' Bass")
     for k,v in pairs(themeList) do
         item = CEGUI.createListboxTextItem(v)
-        item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toListbox(listboxwindow):addItem(item)
     end
     if orxonox.getConfig("MoodManager", "mood_") == "dnb" then

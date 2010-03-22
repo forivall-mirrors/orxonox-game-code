@@ -1,19 +1,12 @@
 -- InGameMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("InGameMenu")
 if _REQUIREDNAME == nil then
     InGameMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "InGameMenu"
-P.layoutString = "InGameMenu.layout"
-
-function P:init()
-end
-
 
 -- events for ingamemenu
 function P.button_quit_clicked(e)

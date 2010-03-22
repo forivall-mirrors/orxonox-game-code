@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <GUILayout >
-    <Window Type="TaharezLook/StaticImage" Name="orxonox/SettingsBackground" >
+    <Window Type="MenuWidgets/StaticImage" Name="orxonox/SettingsBackground" >
         <Property Name="InheritsAlpha" Value="False" />
         <Property Name="FrameEnabled" Value="False" />
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Property Name="BackgroundEnabled" Value="False" />
-        <Window Type="TaharezLook/StaticText" Name="orxonox/SettingsWindow" >
+        <Window Type="MenuWidgets/StaticText" Name="orxonox/SettingsWindow" >
             <Property Name="Text" Value="Settings" />
             <Property Name="Alpha" Value="0.8" />
             <Property Name="InheritsAlpha" Value="False" />
@@ -15,39 +15,39 @@
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
             <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.3625,0},{0.75,0},{0.6375,0}}" />
-            <Window Type="TaharezLook/Button" Name="orxonox/GameplayButton" >
+            <Window Type="MenuWidgets/Button" Name="orxonox/GameplayButton" >
                 <Property Name="Text" Value="Gameplay" />
                 <Property Name="Disabled" Value="True" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.181818,0},{0.45,0},{0.363636,0}}" />
                 <Event Name="Clicked" Function="SettingsMenu.SettingsGameplayButton_clicked"/>
             </Window>
-            <Window Type="TaharezLook/Button" Name="orxonox/MultiplayerOptionsButton" >
+            <Window Type="MenuWidgets/Button" Name="orxonox/MultiplayerOptionsButton" >
                 <Property Name="Text" Value="Multiplayer options" />
                 <Property Name="Disabled" Value="True" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.454545,0},{0.45,0},{0.636363,0}}" />
                 <Event Name="Clicked" Function="SettingsMenu.SettingsMultiplayerOptionsButton_clicked"/>
             </Window>
-            <Window Type="TaharezLook/Button" Name="orxonox/ControlsButton" >
+            <Window Type="MenuWidgets/Button" Name="orxonox/ControlsButton" >
                 <Property Name="Text" Value="Controls" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.727272,0},{0.45,0},{0.909090,0}}" />
                 <Event Name="Clicked" Function="SettingsMenu.SettingsControlsButton_clicked"/>
             </Window>
-            <Window Type="TaharezLook/Button" Name="orxonox/GraphicsButton" >
+            <Window Type="MenuWidgets/Button" Name="orxonox/GraphicsButton" >
                 <Property Name="Text" Value="Graphics" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.55,0},{0.181818,0},{0.95,0},{0.363636,0}}" />
                 <Event Name="Clicked" Function="SettingsMenu.SettingsGraphicsButton_clicked"/>
             </Window>
-            <Window Type="TaharezLook/Button" Name="orxonox/AudioButton" >
+            <Window Type="MenuWidgets/Button" Name="orxonox/AudioButton" >
                 <Property Name="Text" Value="Audio" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.55,0},{0.454545,0},{0.95,0},{0.636363,0}}" />
                 <Event Name="Clicked" Function="SettingsMenu.SettingsAudioButton_clicked"/>
             </Window>
-            <Window Type="TaharezLook/Button" Name="orxonox/ResetSettingsButton" >
+            <Window Type="MenuWidgets/Button" Name="orxonox/ResetSettingsButton" >
                 <Property Name="Text" Value="Reset settings" />
                 <Property Name="Disabled" Value="True" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -55,7 +55,7 @@
                 <Event Name="Clicked" Function="SettingsMenu.SettingsResetSettingsButton_clicked"/>
             </Window>
         </Window>
-        <Window Type="TaharezLook/Button" Name="orxonox/SettingsBackButton" >
+        <Window Type="MenuWidgets/Button" Name="orxonox/SettingsBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />

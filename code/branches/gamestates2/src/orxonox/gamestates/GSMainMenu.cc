@@ -52,8 +52,8 @@ namespace orxonox
     {
         RegisterRootObject(GSMainMenu);
         inputState_ = InputManager::getInstance().createInputState("mainMenu");
-        inputState_->setMouseMode(MouseMode::Nonexclusive);
-        inputState_->setHandler(GUIManager::getInstancePtr());
+        inputState_->setMouseExclusive(TriBool::False);
+        inputState_->setHandler(&GUIManager::getInstance());
         inputState_->setKeyHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
         inputState_->setJoyStickHandler(&InputHandler::EMPTY);
 
@@ -100,7 +100,7 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::setMainMenuSoundPath, this), "setMMSoundPath"));
 
         KeyBinderManager::getInstance().setToDefault();
-        InputManager::getInstance().enterState("mainMenu");
+        //InputManager::getInstance().enterState("mainMenu");
 
         this->setConfigValues();
 
@@ -118,7 +118,7 @@ namespace orxonox
             this->ambient_->stop();
         }
 
-        InputManager::getInstance().leaveState("mainMenu");
+        //InputManager::getInstance().leaveState("mainMenu");
 
         GUIManager::getInstance().setCamera(0);
         GUIManager::getInstance().setBackground("");

@@ -1,15 +1,12 @@
 -- GraphicsMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("GraphicsMenu")
 if _REQUIREDNAME == nil then
     GraphicsMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "GraphicsMenu"
-P.layoutString = "GraphicsMenu.layout"
 
 function P:init()
     block = true
@@ -61,7 +58,7 @@ function P:init()
     table.insert(resolutionList, "1440 x 900")
     for k,v in pairs(resolutionList) do
         item = CEGUI.createListboxTextItem(v)
-        item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toListbox(listboxwindow):addItem(item)
     end
     if resolution == "640 x 480" then

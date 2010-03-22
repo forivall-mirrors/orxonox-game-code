@@ -1,15 +1,12 @@
 -- GameplayMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("GameplayMenu")
 if _REQUIREDNAME == nil then
     GameplayMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "GameplayMenu"
-P.layoutString = "GameplayMenu.layout"
 
 function P:init()
     dropdown = winMgr:getWindow("orxonox/ThemeCombobox")
@@ -19,7 +16,7 @@ function P:init()
     table.insert(themeList, "Theme 3")
     for k,v in pairs(themeList) do
         item = CEGUI.createListboxTextItem(v)
-        item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toCombobox(dropdown):addItem(item)
     end
 end

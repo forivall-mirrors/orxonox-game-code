@@ -1,15 +1,12 @@
 -- PickupInventory.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("PickupInventory")
 if _REQUIREDNAME == nil then
     PickupInventory = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "PickupInventory"
-P.layoutString = "PickupInventory.layout"
 
 P.lastEquipmentCount_ = 0
 P.lastUsableCount_ = 0

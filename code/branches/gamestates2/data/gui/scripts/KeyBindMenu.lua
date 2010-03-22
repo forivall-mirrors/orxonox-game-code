@@ -1,16 +1,13 @@
 -- KeyBindMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("KeyBindMenu")
 
 if _REQUIREDNAME == nil then
     KeyBindMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "KeyBindMenu"
-P.layoutString = "KeyBindMenu.layout"
 
 function P:init()
 
@@ -67,7 +64,7 @@ function P:init()
     linesList = {}
 
     --Calculate design parameters:
-    sampleWindow = winMgr:createWindow("TaharezLook/StaticText", "orxonox/KeyBindPane/SampleWindow")
+    sampleWindow = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/KeyBindPane/SampleWindow")
     sampleWindow:setText("SampleText")
 
     local size = getMinTextSize(sampleWindow)
@@ -124,14 +121,14 @@ function P.createLine(k)
     line:setHeight(CEGUI.UDim(0, lineHeight))
     line:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, lineHeight*(k-1))))
 
-    local command = winMgr:createWindow("TaharezLook/StaticText", "orxonox/KeyBindPane/Binding" .. k .. "/Command")
+    local command = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/KeyBindPane/Binding" .. k .. "/Command")
     command:setText(nameList[k])
     command:setSize(CEGUI.UVector2(CEGUI.UDim(0, commandWidth), CEGUI.UDim(1, 0)))
     command:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0, 0)))
     line:addChildWindow(command)
     offset = offset + commandWidth + spaceWidth
 
-    local plus = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Plus")
+    local plus = winMgr:createWindow("MenuWidgets/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Plus")
     plus:setSize(CEGUI.UVector2(CEGUI.UDim(0, addWidth), CEGUI.UDim(0.7, 0)))
     plus:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
     plus:setText("add")
@@ -141,7 +138,7 @@ function P.createLine(k)
 
     local numButtons = orxonox.KeyBinderManager:getInstance():getCurrent():getNumberOfBindings(commandList[k]);
     for i=0,(numButtons-1) do
-        local button = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Button" .. i)
+        local button = winMgr:createWindow("MenuWidgets/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Button" .. i)
         local name = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[k],i)
         name = P.KeyNameNiceifier(name)
         button:setText(name)
@@ -155,7 +152,7 @@ function P.createLine(k)
         line:addChildWindow(button)
         offset = offset + buttonWidth
 
-        local clear = winMgr:createWindow("TaharezLook/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Clear" .. i)
+        local clear = winMgr:createWindow("MenuWidgets/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Clear" .. i)
         clear:setSize(CEGUI.UVector2(CEGUI.UDim(0, clearWidth), CEGUI.UDim(0.7, 0)))
         clear:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
         clear:setText("X")

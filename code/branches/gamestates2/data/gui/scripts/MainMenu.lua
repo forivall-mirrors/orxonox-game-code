@@ -1,15 +1,12 @@
 -- MainMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("MainMenu")
 if _REQUIREDNAME == nil then
     MainMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "MainMenu"
-P.layoutString = "MainMenu.layout"
 
 -- events for MainMenu
 function P.QuickGameTestButton_clicked(e)

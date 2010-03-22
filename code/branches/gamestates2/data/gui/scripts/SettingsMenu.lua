@@ -1,15 +1,12 @@
 -- SettingsMenu.lua
 
 BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
+local P = BasicGUI:new("SettingsMenu")
 if _REQUIREDNAME == nil then
     SettingsMenu = P
 else
     _G[_REQUIREDNAME] = P
 end
-
-P.filename = "SettingsMenu"
-P.layoutString = "SettingsMenu.layout"
 
 function P.SettingsGameplayButton_clicked(e)
     showGUI("GameplayMenu", true)

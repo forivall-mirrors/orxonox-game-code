@@ -36,6 +36,7 @@
 #include <vector>
 
 #include "util/OrxEnum.h"
+#include "util/TriBool.h"
 #include "InputHandler.h"
 #include "JoyStickQuantityListener.h"
 
@@ -55,15 +56,6 @@ namespace orxonox
         static const int Detector     = HighPriority + 2;
     };
 
-    namespace MouseMode
-    {
-        enum Value
-        {
-            Exclusive,
-            Nonexclusive,
-            Dontcare
-        };
-    }
 
     /**
     @brief
@@ -72,7 +64,7 @@ namespace orxonox
         The general idea is a stack: Every activated InputState will be pushed on
         that stack and only the top one gets the input events. This is done for
         every device (keyboard, mouse, all joy sticks) separately to allow
-        for intance keyboard input capturing for the console while you can still
+        for instance keyboard input capturing for the console while you can still
         steer a ship with the mouse.
         There are two exceptions to this behaviour though:
         - If an InputState is created with the 'Transparent' parameter on, the
@@ -82,7 +74,7 @@ namespace orxonox
         - If an InputState is created with the 'AlwaysGetsInput' parameter on, then
           the state will always receive input as long as it is activated.
         - Note: If you mark an InputState with both parameters on, then it will
-          not influence ony other InputState at all.
+          not influence only other InputState at all.
 
     @par Priorities
         Every InputState has a priority when on the stack, but mostly this
@@ -94,7 +86,7 @@ namespace orxonox
 
     @par Exclusive/Non-Exclusive mouse Mode
         You can select a specific mouse mode that tells whether the application
-        should have exclusive accessto it or not.
+        should have exclusive access to it or not.
         When in non-exclusive mode, you can move the mouse out of the window
         like with any other normal window (only for windowed mode!).
         The setting is dictated by the topmost InputState that gets mouse events.
@@ -129,8 +121,8 @@ namespace orxonox
         //! Sets an InputHandler to be used for all devices
         void setHandler        (InputHandler* handler);
 
-        void setMouseMode(MouseMode::Value value) { mouseMode_ = value; this->bExpired_ = true; }
-        MouseMode::Value getMouseMode() const { return mouseMode_; }
+        void setMouseExclusive(TriBool::Value value) { exclusiveMouse_ = value; this->bExpired_ = true; }
+        TriBool::Value getMouseExclusive() const { return exclusiveMouse_; }
 
         //! Returns the name of the state (which is unique!)
         const std::string& getName() const { return name_; }
@@ -183,7 +175,7 @@ namespace orxonox
         const std::string           name_;                  //!< Name of the state
         const bool                  bAlwaysGetsInput_;      //!< See class declaration for explanation
         const bool                  bTransparent_;          //!< See class declaration for explanation
-        MouseMode::Value            mouseMode_;             //!< See class declaration for explanation
+        TriBool::Value              exclusiveMouse_;        //!< See class declaration for explanation
         int                         priority_;              //!< Current priority (might change)
         bool                        bExpired_;              //!< See hasExpired()
         std::vector<InputHandler*>  handlers_;              //!< Vector with all handlers where the index is the device ID

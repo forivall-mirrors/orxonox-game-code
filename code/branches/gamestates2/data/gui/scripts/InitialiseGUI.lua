@@ -1,16 +1,32 @@
-local schemeMgr = CEGUI.SchemeManager:getSingleton()
-winMgr = CEGUI.WindowManager:getSingleton()
-local logger = CEGUI.Logger:getSingleton()
-local system = CEGUI.System:getSingleton()
-local cursor = CEGUI.MouseCursor:getSingleton()
+winMgr   = CEGUI.WindowManager:getSingleton()
+guiMgr   = orxonox.GUIManager:getInstance()
+inputMgr = orxonox.InputManager:getInstance()
 
-schemeMgr:loadScheme("TaharezLookSkin.scheme")
--- load scheme with our own images
+local schemeMgr = CEGUI.SchemeManager:getSingleton()
+local system    = CEGUI.System:getSingleton()
+local cursor    = CEGUI.MouseCursor:getSingleton()
+
+-- Load all required skins
+schemeMgr:loadScheme("TaharezGreenLook.scheme")
+--schemeMgr:loadScheme("TaharezLook.scheme")
+--schemeMgr:loadScheme("WindowsLook.scheme")
+--schemeMgr:loadScheme("VanillaLook.scheme")
+--schemeMgr:loadScheme("SleekSpaceLook.scheme")
+
+-- Connect skin specific window types with our own window types
+-- By loading a different file (if there is) you can change the skin
+-- of the menus or the HUD independently
+schemeMgr:loadScheme("TaharezGreenMenuWidgets.scheme")
+menuImageSet = "TaharezGreenLook"
+schemeMgr:loadScheme("TaharezGreenHUDWidgets.scheme")
+hudImageSet = "TaharezGreenLook"
+
+-- Just a remaining test hack
 schemeMgr:loadScheme("OrxonoxGUIScheme.scheme")
 
-system:setDefaultMouseCursor("TaharezLook", "MouseArrow")
+system:setDefaultMouseCursor(menuImageSet, "MouseArrow")
 system:setDefaultFont("BlueHighway-12")
-system:setDefaultTooltip("TaharezLook/Tooltip")
+system:setDefaultTooltip("MenuWidgets/Tooltip")
 
 loadedGUIs = {}
 cursorVisibility = {}
@@ -50,8 +66,7 @@ function showGUI(filename, hidePrevious, bCursorVisible, ptr)
     gui.overlay = ptr
 end
 
--- shows the specified and loads it if not loaded already
--- be sure to set the global variable "filename" before calling this function
+-- shows the specified GUI sheet and loads it if not loaded already
 function showGUI(filename, hidePrevious, bCursorVisible)
     if bCursorVisible == nil then
         if nrOfActiveSheets > 0 then
@@ -86,10 +101,12 @@ function showGUI(filename, hidePrevious, bCursorVisible)
         nrOfActiveSheets = nrOfActiveSheets - 1
     else
         if nrOfActiveSheets == 0 then
-            orxonox.InputManager:getInstance():enterState("guiMouseOnly")
+            --orxonox.InputManager:getInstance():enterState("guiMouseOnly")
             orxonox.HumanController:pauseControl()
         end
     end
+    orxonox.InputManager:getInstance():enterState(currentGUI.inputState)
+
     nrOfActiveSheets = nrOfActiveSheets + 1
     table.insert(activeSheets, filename)
     activeSheets[nrOfActiveSheets] = filename
@@ -160,10 +177,11 @@ function hideGUI(filename)
     cursorVisibility[filename] = nil -- remove the cursor visibility of the current gui from the table
     bHidePrevious[filename] = nil
     if nrOfActiveSheets == 0 then
-        orxonox.InputManager:getInstance():leaveState("guiMouseOnly")
+        --orxonox.InputManager:getInstance():leaveState("guiMouseOnly")
         orxonox.HumanController:resumeControl()
         hideCursor()
     end
+    orxonox.InputManager:getInstance():leaveState(currentGUI.inputState)
 end
 
 function hideAllGUIs()
