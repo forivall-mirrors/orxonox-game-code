@@ -27,7 +27,6 @@ end
 
 function P.close_button_clicked()
     hideGUI("InGamePickupHUD")
-    openDecisionPopup( "SEMI IS absolutely the BEST")
 end
 
 return P
