@@ -16,8 +16,17 @@
 				<Property Name="Text" Value="Pickup List" />
 				<Property Name="Font" Value="BlueHighway-10" />
 				<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-				<Property Name="UnifiedAreaRect" Value="{{0,5},{0,5},{1,-5},{0,30}}" />
-			</Window>	
+				<Property Name="UnifiedAreaRect" Value="{{0,5},{0,5},{1,-40},{0,30}}" />
+			</Window>
+			<Window Type="TaharezLook/Button" Name="orxonox/InGamePickupHUD_closeButton" >
+			<Property Name="Font" Value="BlueHighway-12" />
+			<Property Name="Text" Value="X" />
+			<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+			<Property Name="UnifiedAreaRect" Value="{{0,85},{0,5},{1,-5},{0,30}}" />
+			<Property Name="Alpha" Value="0.7" />
+			<Event Name="Clicked" Function="InGamePickupHUD.close_button_clicked"/>
+			</Window>
+			
 		</Window>
 		
 	

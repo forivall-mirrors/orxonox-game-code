@@ -37,13 +37,5 @@
             <Property Name="Alpha" Value="0.7" />
             <Event Name="Clicked" Function="InGameMenu.button_quit_clicked"/>
         </Window>
-	<Window Type="TaharezLook/Button" Name="orxonox/InGameMenu_Test" >
-		<Property Name="Font" Value="BlueHighway-12" />
-		<Property Name="Text" Value="Test" />
-		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-		<Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.7625,0},{0.6,0},{0.8125,0}}" />
-		<Property Name="Alpha" Value="0.7" />
-		<Event Name="Clicked" Function="InGameMenu.button_quit_clicked"/>
-        </Window>
     </Window>
 </GUILayout>
