@@ -1,12 +1,6 @@
 -- SettingsMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("SettingsMenu")
-if _REQUIREDNAME == nil then
-    SettingsMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("SettingsMenu")
 
 function P.SettingsGameplayButton_clicked(e)
     showGUI("GameplayMenu", true)

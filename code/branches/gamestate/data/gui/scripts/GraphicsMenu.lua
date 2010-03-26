@@ -1,12 +1,6 @@
 -- GraphicsMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("GraphicsMenu")
-if _REQUIREDNAME == nil then
-    GraphicsMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("GraphicsMenu")
 
 function P:init()
     block = true

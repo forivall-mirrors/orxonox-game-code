@@ -1,12 +1,6 @@
 -- ControlsMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("ControlsMenu")
-if _REQUIREDNAME == nil then
-    ControlsMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("ControlsMenu")
 
 function P.ControlsMouseControlsButton_clicked(e)
     showGUI("MouseControlsMenu", true)

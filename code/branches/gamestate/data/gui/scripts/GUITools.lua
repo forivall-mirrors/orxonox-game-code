@@ -1,3 +1,10 @@
+function createSheet(sheetName)
+    -- Create object of type BasicGUI and make it global
+    local sheet = require("BasicGUI"):new(sheetName)
+    _G[sheetName] = sheet
+    return sheet
+end
+
 function openDecisionPopup( text, callbackPtr )
     showGUI("DecisionPopup", false, true)
     DecisionPopup.setCallback(callbackPtr)

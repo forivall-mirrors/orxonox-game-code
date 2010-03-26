@@ -1,12 +1,6 @@
 -- PickupInventory.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("PickupInventory")
-if _REQUIREDNAME == nil then
-    PickupInventory = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("PickupInventory")
 
 P.lastEquipmentCount_ = 0
 P.lastUsableCount_ = 0

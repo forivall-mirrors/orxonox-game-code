@@ -1,11 +1,7 @@
--- gui.lua
+-- BasicGUI.lua
 
 local P = {}
-if _REQUIREDNAME == nil then
-    BasicGUI = P
-else
-    _G[_REQUIREDNAME] = P
-end
+_G[_REQUIREDNAME or "BasicGUI"] = P
 
 -- useless, even wrong? P is the class, not the object..
 P.overlay = nil
@@ -26,7 +22,8 @@ end
 function P:init()
 end
 
--- Override this function if you need to
+-- Override this function if you want to change one of the three input parameters:
+-- showCursor = true, useKeyboard = true and blockJoyStick = false
 -- But don't forget to stick to the naming convention ("GUI_" .. self.filename)
 function P:createInputState()
     self.inputState = guiMgr:createInputState("GUI_" .. self.filename)

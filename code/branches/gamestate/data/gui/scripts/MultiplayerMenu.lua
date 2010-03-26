@@ -1,12 +1,6 @@
 -- MultiplayerMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("MultiplayerMenu")
-if _REQUIREDNAME == nil then
-    MultiplayerMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("MultiplayerMenu")
 
 function P:init()
     listbox = winMgr:getWindow("orxonox/MultiplayerLevelListbox")

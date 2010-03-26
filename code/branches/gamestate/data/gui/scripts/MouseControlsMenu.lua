@@ -1,12 +1,6 @@
 -- MouseControlsMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("MouseControlsMenu")
-if _REQUIREDNAME == nil then
-    MouseControlsMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("MouseControlsMenu")
 
 function P:init()
     block = false

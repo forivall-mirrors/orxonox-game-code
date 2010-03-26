@@ -1,13 +1,6 @@
 -- InfoPopup.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("InfoPopup")
-
-if _REQUIREDNAME == nil then
-    InfoPopup = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("InfoPopup")
 
 function P.execute(functionPtr, arguments)
     if functionPtr ~= nil then
