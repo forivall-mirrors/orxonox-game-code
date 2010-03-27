@@ -68,3 +68,6 @@ end
 orxonox.tconfig = function(section, entry, value)
   return orxonox.SettingsConfigFile:getInstance():tconfig(section, entry, value)
 end
+
+-- Include command line debugger
+require("Debugger")
