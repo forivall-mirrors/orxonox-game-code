@@ -142,7 +142,7 @@ end
 function P.GraphicsBrightnessScrollbar_changed(e)
     if scrollbar_active == false then
         -- brightness
-        debug("event: brightness")
+        logMessage(0, "event: brightness")
     end
 end
 
@@ -152,7 +152,7 @@ end
 
 function P.GraphicsBrightnessScrollbar_ended(e)
     -- brightness
-    debug("event: brightness")
+    logMessage(0, "event: brightness")
     scrollbar_active = false
 end
 

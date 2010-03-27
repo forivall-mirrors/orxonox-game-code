@@ -24,7 +24,7 @@ end
 
 function P.SettingsResetSettingsButton_clicked(e)
     -- reset settings
-    debug("event: reset settings")
+    logMessage(0, "event: reset settings")
 end
 
 function P.SettingsBackButton_clicked(e)
