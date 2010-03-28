@@ -139,6 +139,10 @@ namespace orxonox
             // Provide lua_load with the filename for debug purposes
             // The '@' is a Lua convention to identify the chunk name as filename
             chunkname = '@' + sourceFileInfo->filename;
+            
+            // Also fill a map with the actual source code. This is just for the include* commands
+            // where the content of sourceFileInfo->filename doesn't match 'code'
+            this->sourceCodeMap_[sourceFileInfo->filename] = code;
         }
         else
         {
@@ -173,6 +177,10 @@ namespace orxonox
 
         // Load the old info again
         sourceFileInfo_ = oldSourceFileInfo;
+
+        // Delete source code entry
+        if (sourceFileInfo != NULL)
+            this->sourceCodeMap_.erase(sourceFileInfo->filename);
     }
 
     void LuaState::luaPrint(const std::string& str)
@@ -197,6 +205,11 @@ namespace orxonox
     //! Returns the content of a file
     std::string LuaState::getSourceCode(const std::string& filename)
     {
+        // Try the internal map first to get the actual Lua code
+        // and not just some pseudo Lua-XML code when using include* commands
+        std::map<std::string, std::string>::const_iterator it = this->sourceCodeMap_.find(filename);
+        if (it != this->sourceCodeMap_.end())
+            return it->second;
         shared_ptr<ResourceInfo> info = Resource::getInfo(filename);
         if (info == NULL)
             return "";

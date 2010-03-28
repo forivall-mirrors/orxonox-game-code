@@ -114,6 +114,7 @@ namespace orxonox // tolua_export
         lua_State* luaState_;
         bool bIsRunning_;
         shared_ptr<ResourceInfo> sourceFileInfo_;
+        std::map<std::string, std::string> sourceCodeMap_;
         std::string (*includeParseFunction_)(const std::string&);
 
         typedef std::map<std::string, int (*)(lua_State *L)> ToluaInterfaceMap;
