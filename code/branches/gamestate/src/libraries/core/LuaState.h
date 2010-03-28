@@ -79,6 +79,7 @@ namespace orxonox // tolua_export
         void luaPrint(const std::string& str); // tolua_export
         void luaLog(unsigned int level, const std::string& message); // tolua_export
         bool fileExists(const std::string& filename); // tolua_export
+        std::string getSourceCode(const std::string& filename); // tolua_export
 
         const std::stringstream& getOutput() const { return output_; }
         void clearOutput() { output_.clear(); } // tolua_export

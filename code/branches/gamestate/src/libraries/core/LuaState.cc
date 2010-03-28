@@ -134,16 +134,16 @@ namespace orxonox
             sourceFileInfo_ = sourceFileInfo;
 
         std::string chunkname;
-        if (sourceFileInfo != NULL && !sourceFileInfo->fileSystemPath.empty())
+        if (sourceFileInfo != NULL)
         {
             // Provide lua_load with the filename for debug purposes
             // The '@' is a Lua convention to identify the chunk name as filename
-            chunkname = '@' + sourceFileInfo->fileSystemPath;
+            chunkname = '@' + sourceFileInfo->filename;
         }
         else
         {
-            // Use the beginning of the code string to identify the chunk
-            chunkname = code.substr(0, 80);
+            // Use the code string to identify the chunk
+            chunkname = code;
         }
 
         int error = 0;
@@ -192,6 +192,16 @@ namespace orxonox
             return false;
         else
             return true;
+    }
+
+    //! Returns the content of a file
+    std::string LuaState::getSourceCode(const std::string& filename)
+    {
+        shared_ptr<ResourceInfo> info = Resource::getInfo(filename);
+        if (info == NULL)
+            return "";
+        else
+            return Resource::open(info)->getAsString();
     }
 
 #if LUA_VERSION_NUM != 501

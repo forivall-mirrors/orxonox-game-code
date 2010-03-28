@@ -1,6 +1,7 @@
 
 --{{{  history
 
+--28/03/10 ORX Adjusted show() to work with the Orxonox resource system
 --15/03/06 DCN Created based on RemDebug
 --28/04/06 DCN Update for Lua 5.1
 --01/06/06 DCN Fix command argument parsing
@@ -395,46 +396,60 @@ local function show(file,line,before,after)
   before = tonumber(before or 10)
   after  = tonumber(after  or before)
 
-  if not string.find(file,'%.') then file = file..'.lua' end
+  -- Try to find the file in the Orxonox resources
+  local text = luaState:getSourceCode(file)
 
-  local f = io.open(file,'r')
-  if not f then
-    --{{{  try to find the file in the path
-    
-    --
-    -- looks for a file in the package path
-    --
-    local path = package.path or LUA_PATH or ''
-    for c in string.gmatch (path, "[^;]+") do
-      local c = string.gsub (c, "%?%.lua", file)
-      f = io.open (c,'r')
-      if f then
-        break
-      end
-    end
-    
-    --}}}
+  if text == "" then
+    if not string.find(file,'%.') then file = file..'.lua' end
+
+    local f = io.open(file,'r')
     if not f then
-      io.write('Cannot find '..file..'\n')
-      return
+      --{{{  try to find the file in the path
+    
+      --
+      -- looks for a file in the package path
+      --
+      local path = package.path or LUA_PATH or ''
+      for c in string.gmatch (path, "[^;]+") do
+        local c = string.gsub (c, "%?%.lua", file)
+        f = io.open (c,'r')
+        if f then
+          break
+        end
+      end
+    
+      --}}}
+
+      if f then
+        -- Read file into 'text'
+        text = f:read("*a")
+        f:close()
+      else
+        io.write('Cannot find '..file..'\n')
+        return
+      end
     end
   end
 
+  -- Transform line endings to \n
+  text :gsub("\r\n", "\n") -- Windows to Unix
+  text:gsub("\r", "\n")   -- Mac to Unix
+  if text[-1] ~= "\n" then
+      text = text.."\n"
+  end
+  -- Print requested lines
   local i = 0
-  for l in f:lines() do
+  for l in text:gmatch("[^\n]*[\n]") do
     i = i + 1
     if i >= (line-before) then
       if i > (line+after) then break end
       if i == line then
-        io.write(i..'***\t'..l..'\n')
+        io.write(i..'***\t'..l)
       else
-        io.write(i..'\t'..l..'\n')
+        io.write(i..'\t'..l)
       end
     end
   end
-
-  f:close()
-
 end
 
 --}}}
@@ -610,7 +625,8 @@ local function capture_vars(ref,level,line)
   if string.find(file, "@") == 1 then
     file = string.sub(file, 2)
   end
-  if IsWindows then file = string.lower(file) end
+  -- Orxonox changes: Our resource system is case sensisive, even on Windows
+  --if IsWindows then file = string.lower(file) end
 
   if not line then
     line = getinfo(lvl, "currentline")
