@@ -69,5 +69,7 @@ orxonox.tconfig = function(section, entry, value)
   return orxonox.SettingsConfigFile:getInstance():tconfig(section, entry, value)
 end
 
--- Include command line debugger
-require("Debugger")
+-- Include command line debugger for lua 5.1
+if _VERSION ~= "Lua 5.0" then
+  require("Debugger")
+end
