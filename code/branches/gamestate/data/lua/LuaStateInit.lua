@@ -33,6 +33,8 @@ end
 -- The loaded modules are then stored with their names (where name has no .lua extension)
 -- Furthermore the ".lua" extension is appended to the moduleName parameter when looking for the file
 original_require = require
+_REQUIREDNAME = ""
+LuaStateReturnValue = true
 require = function(moduleName)
   if not luaState:fileExists(moduleName .. ".lua") then
     logMessage(2, "Warning: Lua function require() could not find file '" .. moduleName .. ".lua' ")
@@ -43,10 +45,10 @@ require = function(moduleName)
   end
   if not _LOADED[moduleName] then
     -- save old value
-    _REQUIREDNAME_OLD = _REQUIREDNAME
+    local _REQUIREDNAME_OLD = _REQUIREDNAME
     _REQUIREDNAME = moduleName
     luaState:doFile(moduleName .. ".lua")
-    _LOADED[moduleName] = LuaStateReturnValue or true
+    _LOADED[moduleName] = LuaStateReturnValue
     -- restore old value
     _REQUIREDNAME = _REQUIREDNAME_OLD
   end

@@ -169,10 +169,16 @@ namespace orxonox
             if (sourceFileInfo != NULL)
                 origin = " originating from " + sourceFileInfo_->filename;
             COUT(1) << "Error in Lua-script" << origin << ": " << lua_tostring(luaState_, -1) << std::endl;
-            // return value is nil
-            lua_pushnil(luaState_);
+            // return value is true (not nil!)
+            lua_pushboolean(luaState_, 1);
         }
-        // push return value because it will get lost since the return value of this function is void
+        if (lua_isnil(luaState_, -1))
+        {
+            // Nil return values cause problems
+            lua_pop(luaState_, 1);
+            lua_pushboolean(luaState_, 1);
+        }
+        // Push return value because it will get lost since the return value of this function is void
         lua_setglobal(luaState_, "LuaStateReturnValue");
 
         // Load the old info again
