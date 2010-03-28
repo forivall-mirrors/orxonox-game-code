@@ -133,14 +133,27 @@ namespace orxonox
         if (sourceFileInfo != NULL)
             sourceFileInfo_ = sourceFileInfo;
 
+        std::string chunkname;
+        if (sourceFileInfo != NULL && !sourceFileInfo->fileSystemPath.empty())
+        {
+            // Provide lua_load with the filename for debug purposes
+            // The '@' is a Lua convention to identify the chunk name as filename
+            chunkname = '@' + sourceFileInfo->fileSystemPath;
+        }
+        else
+        {
+            // Use the beginning of the code string to identify the chunk
+            chunkname = code.substr(0, 80);
+        }
+
         int error = 0;
 #if LUA_VERSION_NUM != 501
         LoadS ls;
         ls.s = code.c_str();
         ls.size = code.size();
-        error = lua_load(luaState_, &orxonox::LuaState::lua_Chunkreader, &ls, code.c_str());
+        error = lua_load(luaState_, &orxonox::LuaState::lua_Chunkreader, &ls, chunkname.c_str());
 #else
-        error = luaL_loadstring(luaState_, code.c_str());
+        error = luaL_loadbuffer(luaState_, code.c_str(), code.size(), chunkname.c_str());
 #endif
 
         // execute the chunk
