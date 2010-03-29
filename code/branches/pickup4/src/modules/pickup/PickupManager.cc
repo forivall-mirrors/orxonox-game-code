@@ -34,16 +34,25 @@
 #include "PickupManager.h"
 
 #include "core/CoreIncludes.h"
+#include "core/LuaState.h"
+#include "core/GUIManager.h"
 #include "core/ScopedSingletonManager.h"
 #include "core/Identifier.h"
 #include "interfaces/PickupCarrier.h"
+#include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
 #include "PickupRepresentation.h"
 
+#include "ToluaBindPickup.h"
+
 namespace orxonox
 {
-
+    // Register tolua_open function when loading the library
+    DeclareToluaInterface(Pickup);
+    
     ManageScopedSingleton(PickupManager, ScopeID::Root, false);
+    
+    /*static*/ const std::string PickupManager::guiName_s = "PickupInventory";
     
     /**
     @brief
@@ -107,6 +116,51 @@ namespace orxonox
         }
         
         return it->second;
+    }
+    
+    PickupCarrier* PickupManager::getPawn(void)
+    {
+        Pawn* pawn = dynamic_cast<Pawn*>(GUIManager::getInstancePtr()->getPlayer(PickupManager::guiName_s)->getControllableEntity());
+        if(pawn == NULL)
+            return NULL;
+        return dynamic_cast<PickupCarrier*>(pawn);
+    }
+    
+    unsigned int PickupManager::getNumCarrierChildren(PickupCarrier* carrier)
+    {
+        return carrier->getNumCarrierChildren();
+    }
+            
+    PickupCarrier* PickupManager::getCarrierChild(unsigned int index, PickupCarrier* carrier)
+    {
+        return carrier->getCarrierChild(index);
+    }
+    
+    PickupRepresentation* PickupManager::getPickupRepresentation(unsigned int index, PickupCarrier* carrier)
+    {
+        Pickupable* pickup = carrier->getPickup(index);
+        if(pickup == NULL)
+            return NULL;
+        
+        return this->getRepresentation(pickup->getPickupIdentifier());
+    }
+    
+
+    unsigned int PickupManager::getNumPickups(PickupCarrier* carrier)
+    {
+        return carrier->getNumPickups();
+    }
+    
+    void PickupManager::dropPickup(unsigned int index, PickupCarrier* carrier)
+    {
+        Pickupable* pickup = carrier->getPickup(index);
+        carrier->drop(pickup);
+    }
+    
+    void PickupManager::usePickup(unsigned int index, PickupCarrier* carrier, bool use)
+    {
+        Pickupable* pickup = carrier->getPickup(index);
+        pickup->setUsed(use);
     }
     
 }

@@ -2,6 +2,7 @@
 
 BasicGUI = require("BasicGUI")
 local P = BasicGUI:new() --inherit everything from the gui package
+
 if _REQUIREDNAME == nil then
     PickupInventory = P
 else
@@ -11,58 +12,87 @@ end
 P.filename = "PickupInventory"
 P.layoutString = "PickupInventory.layout"
 
-P.lastEquipmentCount_ = 0
-P.lastUsableCount_ = 0
-P.currentUsableID_ = 0
+function P:init()
+    
+end
 
--- events
-function P:frmUpdate(e)
-    local equipCount = orxonox.PickupInventory:getEquipmentCount()
-    local usableCount = orxonox.PickupInventory:getUsableCount()
-
-    if equipCount ~= self.lastEquipmentCount_ or usableCount ~= self.lastUsableCount_ then
-        self:updateTabs()
+function P:show()
+    self.window:show() -- TODO: Do this through parent...
+    self.visible = true
+    
+    carrierList = {}
+    
+    -- TODO: Nicer?
+    local pickupManager = orxonox.PickupManager:getInstance()
+    local carrier = pickupManager:getPawn()
+    P.getCarrierList(carrier)
+    
+    for k,v in pairs(carrierList) do
+        local args = {}
+        table.insert(args, v)
+        table.insert(args, k)
+        local window = P.createCarrierBox(args)
     end
 end
 
-function P.update(e)
-    loadedGUIs["PickupInventory"]:frmUpdate(e)
-end
+function P.getCarrierList(carrier)
 
-function P.itemClicked(e)
-    loadedGUIs["PickupInventory"]:mItemClicked(e)
-end
-
-function P:mItemClicked(e)
-    local w = CEGUI.toWindowEventArgs(e).window
-    local name = w:getName()
-    local t = name:sub(25, 27)
-    local i = name:sub(29)
-
-    if t == "equ" then
-
+    -- TODO: Test for nil or 0?
+    if carrier == nil then
+        return
     end
-
-    if t == "use" then
-        if self.currentUsableID_ >= 0 then
-            winMgr:getWindow("orxonox/Inventory/Title/use/" .. self.currentUsableID_):setProperty("TextColours", "tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF")
+    
+    table.insert(carrierList, carrier)
+    
+    local numCarriers = orxonox.PickupManager.getInstance():getNumCarrierChildren(carrier)
+    if numCarriers == 0 then
+        return
+    end
+    
+    for i=0,numCarriers-1,1 do
+        local child = orxonox.PickupManager.getInstance():getCarrierChild(i, carrier)
+        if child ~= nil then
+            P.getCarrierList(child)
         end
-        orxonox.PickupInventory:selectUsable(tonumber(i))
-        self.currentUsableID_ = tonumber(i)
-        winMgr:getWindow("orxonox/Inventory/Title/use/" .. i):setProperty("TextColours", "tl:FFFF4444 tr:FFFF4444 bl:FFFF4444 br:FFFF4444")
     end
 end
 
--- methods
-function P:updateTabs()
-    local eqWin = winMgr:getWindow("orxonox/Inventory/TabControl/TabEquipment")
-    local usWin = winMgr:getWindow("orxonox/Inventory/TabControl/TabUsable")
-    orxonox.PickupInventory:getSingleton():clearInventory(winMgr, eqWin, usWin)
-    orxonox.PickupInventory:getSingleton():updateTabs(winMgr, eqWin, usWin)
+function P.createCarrierBox(args)
+    local carrier = args[1]
+    local index = args[2]
+    
+    local name = "orxonox/PickupInventory/Carrier" .. index
+    local window = winMgr:createWindow("TaharezLook/StaticText", name .. "/Title")
+    window:setText(carrier:getCarrierName())
+    -- TODO: Does this exist?
+    local height = window:getHeight()
+    
+    local box = winMgr:createWindow("TaharezLook/ScrollablePane", name .. "/Box")
+    box:setPosition(CEGUI.UVector2(CEGUI.UDim(0.05, 0), CEGUI.UDim(0, height)))
+    box:setWidth(CEGUI.UDim(0.9, 0))
+    
+    local numPickups = orxonox.PickupManager.getInstance():getNumPickups(carrier)
+    for i=0,numPickups-1,1 do
+        
+    end
+    
+    return window
+end
 
-    self.currentUsableID_ = orxonox.PickupInventory:getCurrentUsableIndex()
-    self.lastEquipmentCount_ = orxonox.PickupInventory:getEquipmentCount()
-    self.lastUsableCount_ = orxonox.PickupInventory:getUsableCount()
+function P.InventoryUseButton_clicked(e)
+
+end
+
+function P.InventoryDropButton_clicked(e)
+
+end
+
+function P.InventoryShowDetails_clicked(e)
+
+end
+
+function P.InventoryBackButton_clicked(e)
+    hideGUI("PickupInventory")
 end
 
 return P

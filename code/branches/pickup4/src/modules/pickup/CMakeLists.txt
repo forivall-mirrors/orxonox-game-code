@@ -14,6 +14,8 @@ ORXONOX_ADD_LIBRARY(pickup
   MODULE
   FIND_HEADER_FILES
   TOLUA_FILES
+    PickupManager.h
+    PickupRepresentation.h
   DEFINE_SYMBOL
     "PICKUP_SHARED_BUILD"
   PCH_FILE

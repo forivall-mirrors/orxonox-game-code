@@ -43,38 +43,55 @@
 
 #include "core/OrxonoxClass.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
+
+    //TODO: Remove after transfer to orxonox/pickup
+    class PickupCarrier; // tolua_export
 
     /**
     @brief
         Manages Pickupables.
-        In essence has two tasks to fulfill. Firstly it must link Pickupables (through their PickupIdentifiers) and their PickupRepresentations. Secondly it manages the Pickup GUI.
+        In essence has two tasks to fulfill. Firstly it must link Pickupables (through their PickupIdentifiers) and their PickupRepresentations. Secondly it manages the PickupInventory.
         //TODO: Manage Pickup GUI.
     @author
         Damian 'Mozork' Frick
     */
-    class _PickupExport PickupManager : public Singleton<PickupManager>, public OrxonoxClass
-    {
+    class _PickupExport PickupManager // tolua_export
+        : public Singleton<PickupManager>, public OrxonoxClass
+    { // tolua_export
         friend class Singleton<PickupManager>;
         
         public:
             PickupManager();
             virtual ~PickupManager();
             
-            static PickupManager& getInstance() { return Singleton<PickupManager>::getInstance(); }
+            static PickupManager& getInstance() { return Singleton<PickupManager>::getInstance(); } // tolua_export
             
             bool registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation); //!< Registers a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
             PickupRepresentation* getRepresentation(const PickupIdentifier* identifier); //!< Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
             
+            // tolua_begin
+            PickupCarrier* getPawn(void);
+            
+            unsigned int getNumCarrierChildren(PickupCarrier* carrier);
+            PickupCarrier* getCarrierChild(unsigned int index, PickupCarrier* carrier);
+            
+            unsigned int getNumPickups(PickupCarrier* carrier);
+            PickupRepresentation* getPickupRepresentation(unsigned int index, PickupCarrier* carrier);
+            void dropPickup(unsigned int index, PickupCarrier* carrier);
+            void usePickup(unsigned int index, PickupCarrier* carrier, bool use);
+            // tolua_end
+            
         private:
             static PickupManager* singletonPtr_s;
+            static const std::string guiName_s;
             
             PickupRepresentation* defaultRepresentation_; //!< The default PickupRepresentation.
             std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types if Pickupables) and PickupRepresentations.
         
-    };
+    }; // tolua_export
     
-}
+} // tolua_export
 
 #endif // _PickupManager_H__
