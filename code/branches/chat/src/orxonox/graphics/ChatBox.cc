@@ -46,19 +46,19 @@ bool ChatBox::initialiseSample()
 
     // Configure the history size
     // Pressing <ENTER> changes the maximal number of entries within the history Listbox
-    historySize->subscribeEvent(Editbox::EventTextAccepted,  Event::Subscriber(&DemoSample::Event_HistorySizeChange, this)); 
+    historySize->subscribeEvent(Editbox::EventTextAccepted,  Event::Subscriber(&ChatBox::Event_HistorySizeChange, this)); 
 
     // Configure the text Editbox
     // Pressing <ENTER> puts the text into the history Listbox
-    chatText->subscribeEvent(Editbox::EventTextAccepted,  Event::Subscriber(&DemoSample::Event_ChatTextAdded,  this)); 
+    chatText->subscribeEvent(Editbox::EventTextAccepted,  Event::Subscriber(&ChatBox::Event_ChatTextAdded,  this)); 
 
     // Configure the font name Combobox
     // Selecting a name changes the font used in the history Listbox and the text Editbox
-    fontName->subscribeEvent(Combobox::EventTextChanged,  Event::Subscriber(&DemoSample::Event_FontChange,  this)); 
+    fontName->subscribeEvent(Combobox::EventTextChanged,  Event::Subscriber(&ChatBox::Event_FontChange,  this)); 
 
     // Configure the font size Spinner
     // Selecting a size changes the font size used in the history Listbox and the text Editbox
-    fontSize->subscribeEvent(Spinner::EventValueChanged,  Event::Subscriber(&DemoSample::Event_FontChange,  this)); 
+    fontSize->subscribeEvent(Spinner::EventValueChanged,  Event::Subscriber(&ChatBox::Event_FontChange,  this)); 
     fontSize->setTextInputMode(Spinner::Integer);
     fontSize->setMinimumValue(4.0f);
     fontSize->setMaximumValue(72.0f);
@@ -280,7 +280,7 @@ CEGUI::Font* makeFont(const CEGUI::String& pFontName, const CEGUI::String& pFile
   catch(Exception& e)
   {
     // Display the error message in the chat window
-    addChatText(e.getMessage());
+    //addChatText(e.getMessage());
     font = 0;
   }
 
