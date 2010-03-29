@@ -46,6 +46,11 @@
 
 namespace orxonox
 {
+    class Pickupable;
+    class Pickup;
+    class HealthPickup;
+    class MetaPickup;
+    class SpeedPickup;
 
     /**
     @brief

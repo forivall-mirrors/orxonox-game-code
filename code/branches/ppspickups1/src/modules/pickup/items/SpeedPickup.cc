@@ -250,6 +250,6 @@ namespace orxonox
     }
 
     void SpeedPickup::PickupTimerCallBack(void) {
-        COUT(2) << "Timer ended!" << std::endl;
+        /* Reset values */
     }
 }

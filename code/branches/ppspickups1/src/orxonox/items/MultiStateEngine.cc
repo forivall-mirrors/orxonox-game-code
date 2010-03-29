@@ -128,6 +128,9 @@ namespace orxonox
                     this->state_ = Brake;
                 else
                     this->state_ = Idle;
+
+                if (this->state_ = Idle && this->getSpeedAdd()>0)
+                    this->state_ = Normal;
             }
 
             if (GameMode::isMaster())

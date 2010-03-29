@@ -244,7 +244,7 @@ namespace orxonox
             COUT(1) << "Invalid durationTime in pickup." << std::endl;
             return false;
         }
-        if (false) /* How to check if Timer already running? */
+        if (false) /* TODO: Check if Timer is already running */
         {
             COUT(1) << "Pickup durationTimer already in use." << std::endl;
             return false;

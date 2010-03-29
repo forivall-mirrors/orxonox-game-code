@@ -3,9 +3,9 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="1.0,0.0,0.0" material="Sphere2" scale=0.1>
+                    <Billboard position="0,0,0" colour="0.50,0.90,0.25" material="Sphere2" scale=0.1>
                         <attached>
-                            <Billboard position="0,0,0" colour="1.0,1.0,0.0" material="Cross" scale=0.7 />
+                            <Billboard position="0,0,0" colour="0.90,0.90,0.10" material="3arrowsup" scale=0.7 />
                         </attached>
                     </Billboard>
                 </attached>
@@ -17,7 +17,7 @@
 <Template name=smallspeedpickup>
   <SpeedPickup
     duration = 10.0
-    speedAdd = 0
+    speedAdd = 100
     SpeedMultiply = 10
     activationType = "immediate"
     durationType = "once"
