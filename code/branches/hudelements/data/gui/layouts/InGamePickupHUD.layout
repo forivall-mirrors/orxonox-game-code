@@ -29,6 +29,21 @@
 				und relativen Positionsangaben (problematisch bei kleinen auflösungen) -->
 				<Event Name="Clicked" Function="InGamePickupHUD.close_button_clicked"/>
 			</Window>
+			<Window Type="TaharezLook/Listbox" Name="orxonox/InGamePickupHUD_PickupListBox">
+			        <Property Name="Alpha" Value="0.8" />
+				<Property Name="Font" Value="BlueHighway-12" />
+				<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+				<Property Name="UnifiedAreaRect" Value="{{0,5},{0,25},{1,-5},{1,-5}}" />	
+				<!--
+				<Window Type="TaharezLook/ListboxItem" Name="orxonox/InGamePickupHUD_TestPickupOne">
+					<Property Name="Alpha" Value="0.8" />
+					<Property Name="Font" Value="BlueHighway-12" />
+					<Property Name="Text" Value="First Pickup" />
+					<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+					<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{0,30},{1,0}}" />	
+				</Window>
+				-->
+			</Window>
 			
 		</Window>
 		
