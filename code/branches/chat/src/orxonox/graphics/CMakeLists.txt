@@ -1,6 +1,7 @@
 ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Billboard.cc
   BlinkingBillboard.cc
+  ChatBox.cc
   FadingBillboard.cc
   GlobalShader.cc
   Model.cc
