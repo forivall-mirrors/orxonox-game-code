@@ -1,0 +1,9 @@
+<PickupRepresentation
+    name = "Invisibility"
+    description = "Makes you invisible."
+    spawnerTemplate = "invisiblepickupRepresentation"
+>
+    <pickup>
+        <InvisiblePickup template=invisiblepickup />
+    </pickup>
+</PickupRepresentation>

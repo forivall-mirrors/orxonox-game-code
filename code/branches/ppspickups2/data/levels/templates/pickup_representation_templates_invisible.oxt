@@ -1,0 +1,23 @@
+<Template name=invisiblepickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1,1,1" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0,0,0" material="Cross" scale=0.3 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=invisiblepickup>
+  <InvisiblePickup 
+    duration = 10.0
+    activaionType = "immediate"
+    durationType = "once"
+  />
+</Template>
