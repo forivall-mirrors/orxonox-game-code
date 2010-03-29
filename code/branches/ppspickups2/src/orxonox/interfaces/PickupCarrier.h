@@ -47,10 +47,6 @@
 namespace orxonox
 {
 
-    //! Pre-declarations.
-    class Pickup;
-    class HealthPickup;
-    class MetaPickup;
 
     /**
     @brief
@@ -65,6 +61,7 @@ namespace orxonox
         friend class Pickup;
         friend class HealthPickup;
         friend class MetaPickup;
+	friend class InvisiblePickup;
         
         public:
             PickupCarrier(); //!< Constructor.
