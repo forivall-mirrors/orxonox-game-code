@@ -79,7 +79,7 @@ namespace orxonox
     this->chat_hist_logline( buf );
   } 
 
-  /* Synchronize logfile onto the hard drive */
+  /* Synchronize logfile onto the hard drive */ /* MARK MARK */
   int ChatHistory::syncLog();
 
   /* add a line to this history */
@@ -95,6 +95,9 @@ namespace orxonox
   /* log a line to a logfile */
   int ChatHistory::chat_hist_logline( const std::string& toadd )
   { 
+    /* TODO use already written class to batch write to file
+     * so not every line gets written on its own 
+     */
     /* output the line to the file if logging is enabled */
     if( this->hist_log_enabled )
       this->hist_logfile << buf << std::endl;
