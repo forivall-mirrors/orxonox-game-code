@@ -240,7 +240,7 @@ void ChatBox::registerFont(const CEGUI::String& pLogicalName, const CEGUI::Strin
   }
 }
 
-CEGUI::Font* makeFont(const CEGUI::String& pFontName, const CEGUI::String& pFileName, const CEGUI::String& pSize)
+CEGUI::Font* ChatBox::makeFont(const CEGUI::String& pFontName, const CEGUI::String& pFileName, const CEGUI::String& pSize)
 {
   using namespace CEGUI;
 
@@ -287,7 +287,7 @@ CEGUI::Font* makeFont(const CEGUI::String& pFontName, const CEGUI::String& pFile
   return font;
 }
 
-void changeFont(const CEGUI::String& pFontLogicalName, const CEGUI::String& pFontSize)
+void ChatBox::changeFont(const CEGUI::String& pFontLogicalName, const CEGUI::String& pFontSize)
 {
   using namespace CEGUI;
   WindowManager& winMgr = WindowManager::getSingleton();
