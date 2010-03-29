@@ -6,6 +6,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   GlobalShader.cc
   Model.cc
   ChatBox.cc
+  CEGuiSample.cc
   ParticleEmitter.cc
   ParticleSpawner.cc
 COMPILATION_BEGIN GraphicsCompilation.cc
