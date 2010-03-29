@@ -43,8 +43,8 @@ namespace orxonox
         RegisterObject(ArtificialController);
 
         this->target_ = 0;
-	this->team_ = 0;//new
-	this->isMaster_ = false;//new
+	this->team_ = -1;//new
+	this->state_ = 0;//new
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
         this->targetPosition_ = Vector3::ZERO;
@@ -87,6 +87,46 @@ namespace orxonox
     void ArtificialController::moveToTargetPosition()
     {
         this->moveToPosition(this->targetPosition_);
+    }
+
+    int ArtificialController::getState()
+    {
+        return this->state_;
+    }
+
+    void ArtificialController::searchNewMaster()
+    {
+        if (!this->getControllableEntity())
+            return;
+
+        this->targetPosition_ = this->getControllableEntity()->getPosition();
+        this->forgetTarget();
+
+        //go through all pawns
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
+        {
+            //same team? no: continue
+            if (!ArtificialController::sameTeam(this->getControllableEntity(), static_cast<ControllableEntity*>(*it), this->getGametype()))
+                continue;
+
+            //has it an ArtificialController and is it a master? no: continue
+
+            ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
+            if (controller && controller->getState()!=1)
+                continue;
+
+            //is pawn oneself? && is pawn in range?
+            if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity() /*&& it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) < 1000 */)
+            {
+                //this->target_ = (*it);
+                //this->targetPosition_ = it->getPosition();
+                this->state_ = -1;
+
+            }
+        }//for
+
+        //hasn't encountered any masters in range? -> become a master
+        if (state_!=-1) state_=1; // keep in mind: what happens when two masters encounter eache other? -> has to be evaluated in the for loop of within master mode in AIcontroller...
     }
 
     void ArtificialController::setTargetPosition(const Vector3& target)

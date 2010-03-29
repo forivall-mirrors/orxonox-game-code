@@ -114,7 +114,7 @@ namespace orxonox
                 { this->aimPosition_ = position; }
             Vector3 getAimPosition()
                 { return this->aimPosition_; }
-                
+
             virtual const Vector3& getCarrierPosition(void)
                 { return this->getWorldPosition(); };
 

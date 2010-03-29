@@ -58,6 +58,9 @@ namespace orxonox
             void moveToPosition(const Vector3& target);
             void moveToTargetPosition();
 
+            int getState();
+            void searchNewMaster();
+
             void setTargetPosition(const Vector3& target);
             void searchRandomTargetPosition();
 
@@ -76,7 +79,7 @@ namespace orxonox
             WeakPtr<Pawn> target_;
             bool bShooting_;
 
-            bool isMaster_;//new
+            int state_;//new master: 1 slave: -1  free: 0 
             int team_;//new
 
         private:

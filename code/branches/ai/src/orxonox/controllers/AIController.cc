@@ -55,45 +55,65 @@ namespace orxonox
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
 
-        // search enemy
-        random = rnd(maxrand);
-        if (random < 15 && (!this->target_))
-            this->searchNewTarget();
+        if (this->state_==0)
+        {
 
-        // forget enemy
-        random = rnd(maxrand);
-        if (random < 5 && (this->target_))
-            this->forgetTarget();
+            // search master
+            random = rnd(maxrand);
+            if (random < 50 && (!this->target_))
+                this->searchNewMaster();
 
-        // next enemy
-        random = rnd(maxrand);
-        if (random < 10 && (this->target_))
-            this->searchNewTarget();
+            //this->state_=1;
 
-        // fly somewhere
-        random = rnd(maxrand);
-        if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
-            this->searchRandomTargetPosition();
+        }
 
-        // stop flying
-        random = rnd(maxrand);
-        if (random < 10 && (this->bHasTargetPosition_ && !this->target_))
-            this->bHasTargetPosition_ = false;
+        if (this->state_==-1)
+        {
+            
+        }
 
-        // fly somewhere else
-        random = rnd(maxrand);
-        if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
-            this->searchRandomTargetPosition();
+        if (this->state_==1)
+        {
+            // search enemy
+            random = rnd(maxrand);
+            if (random < 15 && (!this->target_))
+                this->searchNewTarget();
 
-        // shoot
-        random = rnd(maxrand);
-        if (random < 75 && (this->target_ && !this->bShooting_))
-            this->bShooting_ = true;
+            // forget enemy
+            random = rnd(maxrand);
+            if (random < 5 && (this->target_))
+                this->forgetTarget();
 
-        // stop shooting
-        random = rnd(maxrand);
-        if (random < 25 && (this->bShooting_))
-            this->bShooting_ = false;
+            // next enemy
+            random = rnd(maxrand);
+            if (random < 10 && (this->target_))
+                this->searchNewTarget();
+
+            // fly somewhere
+            random = rnd(maxrand);
+            if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
+                this->searchRandomTargetPosition();
+
+            // stop flying
+            random = rnd(maxrand);
+            if (random < 10 && (this->bHasTargetPosition_ && !this->target_))
+                this->bHasTargetPosition_ = false;
+
+            // fly somewhere else
+            random = rnd(maxrand);
+            if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
+                this->searchRandomTargetPosition();
+
+            // shoot
+            random = rnd(maxrand);
+            if (random < 75 && (this->target_ && !this->bShooting_))
+                this->bShooting_ = true;
+
+            // stop shooting
+            random = rnd(maxrand);
+            if (random < 25 && (this->bShooting_))
+                this->bShooting_ = false;
+        }
     }
 
     void AIController::tick(float dt)
@@ -101,14 +121,24 @@ namespace orxonox
         if (!this->isActive())
             return;
 
-        if (this->target_)
-            this->aimAtTarget();
+        if (this->state_==1)
+        {
+            if (this->target_)
+                this->aimAtTarget();
 
-        if (this->bHasTargetPosition_)
-            this->moveToTargetPosition();
+            if (this->bHasTargetPosition_)
+                this->moveToTargetPosition();
 
-        if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
-            this->getControllableEntity()->fire(0);
+            if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
+                this->getControllableEntity()->fire(0);
+        }
+
+        if (this->state_==-1)
+        {
+            //this->state_=1;
+
+
+        }
 
         SUPER(AIController, tick, dt);
     }
