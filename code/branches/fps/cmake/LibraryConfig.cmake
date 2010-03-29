@@ -187,7 +187,7 @@ ENDIF(WIN32)
 ################# OGRE Plugins ##################
 
 # More plugins: Plugin_BSPSceneManager, Plugin_OctreeSceneManager
-SET(OGRE_PLUGINS_INT Plugin_ParticleFX)
+SET(OGRE_PLUGINS_INT "Plugin_ParticleFX;Plugin_BSPSceneManager")
 IF(WIN32)
   # CG program manager is probably DirectX related (not available under unix)
   LIST(APPEND OGRE_PLUGINS_INT Plugin_CgProgramManager)
