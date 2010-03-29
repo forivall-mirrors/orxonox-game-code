@@ -1,1 +1,3 @@
-blah balh ben balal
+<<<<<<< .mine
+asd=======
+blah balh ben balal>>>>>>> .r6646
