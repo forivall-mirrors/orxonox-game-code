@@ -39,7 +39,6 @@
 #include "util/Singleton.h"
 #include "util/TriBool.h"
 #include "core/WindowEventListener.h"
-#include "InputState.h"
 
 // tolua_begin
 namespace orxonox

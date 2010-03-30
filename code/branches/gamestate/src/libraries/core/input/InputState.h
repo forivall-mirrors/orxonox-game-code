@@ -35,28 +35,12 @@
 #include <string>
 #include <vector>
 
-#include "util/OrxEnum.h"
 #include "util/TriBool.h"
 #include "InputHandler.h"
 #include "JoyStickQuantityListener.h"
 
 namespace orxonox
 {
-    //! Enumeration wrapper for input state priorities
-    struct InputStatePriority : OrxEnum<InputStatePriority>
-    {
-        OrxEnumConstructors(InputStatePriority);
-
-        static const int Empty        = -1;
-        static const int Dynamic      = 0;
-
-        static const int HighPriority = 1000;
-        static const int Console      = HighPriority + 0;
-        static const int Calibrator   = HighPriority + 1;
-        static const int Detector     = HighPriority + 2;
-    };
-
-
     /**
     @brief
         InputStates allow you to customise the input event targets at runtime.
