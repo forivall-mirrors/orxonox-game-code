@@ -84,7 +84,7 @@ namespace orxonox
     void GSMainMenu::activate()
     {
         // show main menu
-        GUIManager::getInstance().showGUI("MainMenu", true, GraphicsManager::getInstance().isFullScreen());
+        GUIManager::getInstance().showGUI("MainMenu", true, true);
         GUIManager::getInstance().setCamera(this->camera_);
         GUIManager::getInstance().setBackground("MainMenuBackground");
 //         GUIManager::getInstance().setBackground("");

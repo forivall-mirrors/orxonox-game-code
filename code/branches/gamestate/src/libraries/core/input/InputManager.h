@@ -167,7 +167,10 @@ namespace orxonox
             { return devices_.size() - InputDeviceEnumerator::FirstJoyStick; }
         //! Returns a pointer to the OIS InputManager. Only you if you know what you're doing!
         OIS::InputManager* getOISInputManager() { return this->oisInputManager_; }
+        //! Returns the position of the cursor as std::pair of ints
         std::pair<int, int> getMousePosition() const;
+        //! Tells whether the mouse is used exclusively to the game
+        bool isMouseExclusive() const { return this->exclusiveMouse_; } // tolua_export
 
         //-------------------------------
         // Function call caching
