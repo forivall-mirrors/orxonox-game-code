@@ -85,7 +85,7 @@ errorHandler = function(err)
     pause()
   else
     -- Fallback: print stack trace
-    debug.traceback(nil, "", 2)
+    logMessage(1, debug.traceback(2))
   end
   return err -- Hello Lua debugger user! Please type 'set 2' to get to the
              -- actual position in the stack where the error occurred
