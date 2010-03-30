@@ -2,7 +2,7 @@
 
 local P = createSheet("MouseControlsMenu")
 
-function P:init()
+function P.init()
     block = false
     mousenormalscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MouseNormalScrollbar"),"CEGUI::Scrollbar")
     mousederivescrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MouseDeriveScrollbar"),"CEGUI::Scrollbar")

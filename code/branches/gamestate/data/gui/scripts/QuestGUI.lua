@@ -2,9 +2,9 @@
 
 local P = createSheet("QuestGUI")
 
-function P:show()
-    self.window:show() -- TDO: Do this through parent...
-    self.visible = true
+function P.show()
+    P.window:show() -- TDO: Do this through parent...
+    P.visible = true
 
     local questManager = orxonox.QuestManager:getInstance()
 

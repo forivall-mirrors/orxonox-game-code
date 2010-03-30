@@ -2,7 +2,7 @@
 
 local P = createSheet("SingleplayerMenu")
 
-function P:init()
+function P.init()
     listbox = winMgr:getWindow("orxonox/SingleplayerLevelListbox")
     preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
     orxonox.LevelManager:getInstance():compileAvailableLevelList()
