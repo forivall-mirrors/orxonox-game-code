@@ -16,7 +16,7 @@ cout = logMessage
 original_dofile = dofile
 dofile = function(filename)
   luaState:doFile(filename)
-  -- Required because the C++ function cannot return whatever might be on the stack
+  -- Required because if the file returns a table, it cannot be passed through the C++ function
   return LuaStateReturnValue -- C-injected global variable
 end
 doFile = dofile
@@ -25,7 +25,7 @@ doFile = dofile
 -- to a function provided to the LuaState constructor (in C++)
 include = function(filename)
   luaState:includeFile(filename)
-  -- Required because the C++ function cannot return whatever might be on the stack
+  -- Required because if the file returns a table, it cannot be passed through the C++ function
   return LuaStateReturnValue -- C-injected global variable
 end
 
@@ -43,17 +43,54 @@ require = function(moduleName)
   if not _LOADED then
     _LOADED = {}
   end
-  if not _LOADED[moduleName] then
+  if _LOADED[moduleName] == nil then
     -- save old value
     local _REQUIREDNAME_OLD = _REQUIREDNAME
     _REQUIREDNAME = moduleName
     luaState:doFile(moduleName .. ".lua")
-    _LOADED[moduleName] = LuaStateReturnValue
+    -- LuaStateReturnValue is required because if the file returns a table,
+    -- it cannot be passed through the C++ function
+    if LuaStateReturnValue == nil then -- C-injected global variable
+        LuaStateReturnValue = true
+    end
+    _LOADED[moduleName] = LuaStateReturnValue -- This entry must never be nil
     -- restore old value
     _REQUIREDNAME = _REQUIREDNAME_OLD
   end
   return _LOADED[moduleName]
 end
+
+
+-- Include command line debugger for lua 5.1
+-- Note: It doesn't work if the IOConsole was started. Then we replace pause() with a warning
+if _VERSION ~= "Lua 5.0"  and not luaState:usingIOConsole() then
+  require("Debugger")
+else
+  -- Fallback pause function
+  pause = function()
+    logMessage(2, [["Warning: debug() called in Lua, but Debugger is not active.
+Do you have the IOConsole disabled and are you using Lua version 5.1?"]])
+  end
+end
+
+-- General error handler that gets called whenever an error happens at runtime
+errorHandler = function(err)
+  -- Display the error message
+  if type(err) == "string" then
+    logMessage(1, "Lua runtime error: "..err)
+  end
+
+  -- Start debugger if possible
+  if _LOADED and _LOADED["Debugger"] ~= nil then
+    pause()
+  else
+    -- Fallback: print stack trace
+    debug.traceback(nil, "", 2)
+  end
+  return err -- Hello Lua debugger user! Please type 'set 2' to get to the
+             -- actual position in the stack where the error occurred
+end
+
 
 -- Convenience function for console commands
 orxonox.execute = function(command)
@@ -69,9 +106,4 @@ orxonox.config = function(section, entry, value)
 end
 orxonox.tconfig = function(section, entry, value)
   return orxonox.SettingsConfigFile:getInstance():tconfig(section, entry, value)
-end
-
--- Include command line debugger for lua 5.1
-if _VERSION ~= "Lua 5.0" then
-  require("Debugger")
 end

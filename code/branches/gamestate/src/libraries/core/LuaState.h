@@ -70,11 +70,11 @@ namespace orxonox // tolua_export
         LuaState();
         ~LuaState();
 
-        void doFile(const std::string& filename); // tolua_export
-        void doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
+        bool doFile(const std::string& filename); // tolua_export
+        bool doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
 
-        void includeFile(const std::string& filename); // tolua_export
-        void includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
+        bool includeFile(const std::string& filename); // tolua_export
+        bool includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
 
         void luaPrint(const std::string& str); // tolua_export
         void luaLog(unsigned int level, const std::string& message); // tolua_export
@@ -91,6 +91,8 @@ namespace orxonox // tolua_export
         const shared_ptr<ResourceInfo>& getDefaultResourceInfo() { return this->sourceFileInfo_; }
 
         Functor* createLuaFunctor(const std::string& code) { return new LuaFunctor(code, this); } // tolua_export
+        //! Tells about whether IOConsole was activated. The Lua debugger only works with a normal console.
+        bool usingIOConsole() const; // tolua_export
 
         static bool addToluaInterface(int (*function)(lua_State*), const std::string& name);
         static bool removeToluaInterface(const std::string& name);

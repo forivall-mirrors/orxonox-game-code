@@ -432,7 +432,7 @@ local function show(file,line,before,after)
   end
 
   -- Transform line endings to \n
-  text :gsub("\r\n", "\n") -- Windows to Unix
+  text:gsub("\r\n", "\n") -- Windows to Unix
   text:gsub("\r", "\n")   -- Mac to Unix
   if text[-1] ~= "\n" then
       text = text.."\n"
