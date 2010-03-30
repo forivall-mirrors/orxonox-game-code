@@ -48,26 +48,26 @@ namespace orxonox
     {
     public:
         //! Returns a reference to the singleton instance
-        static T& getInstance()
+        FORCEINLINE static T& getInstance()
         {
             assert(T::singletonPtr_s != NULL);
             return *T::singletonPtr_s;
         }
 
         //! Tells whether the singleton has been created
-        static bool exists()
+        FORCEINLINE static bool exists()
         {
             return (T::singletonPtr_s != NULL);
         }
 
         //! Update method called by ClassSingletonManager (if used)
-        void preUpdateSingleton(const Clock& time) { static_cast<T*>(T::singletonPtr_s)->preUpdate(time); }
+        FORCEINLINE void preUpdateSingleton(const Clock& time) { static_cast<T*>(T::singletonPtr_s)->preUpdate(time); }
         //! Empty update method for the static polymorphism
-        void preUpdate(const Clock& time) { }
+        FORCEINLINE void preUpdate(const Clock& time) { }
         //! Update method called by ClassSingletonManager (if used)
-        void postUpdateSingleton(const Clock& time) { static_cast<T*>(T::singletonPtr_s)->postUpdate(time); }
+        FORCEINLINE void postUpdateSingleton(const Clock& time) { static_cast<T*>(T::singletonPtr_s)->postUpdate(time); }
         //! Empty update method for the static polymorphism
-        void postUpdate(const Clock& time) { }
+        FORCEINLINE void postUpdate(const Clock& time) { }
 
     protected:
         //! Constructor sets the singleton instance pointer
