@@ -252,19 +252,27 @@ namespace orxonox
         GUIManager::getInstance().executeCode("hideGUI(\"" + name + "\")");
     }
 
-    const std::string& GUIManager::createInputState(const std::string& name, TriBool::Value showMouse, TriBool::Value useKeyboard, bool bBlockJoyStick)
+    const std::string& GUIManager::createInputState(const std::string& name, TriBool::Value showCursor, TriBool::Value useKeyboard, bool bBlockJoyStick)
     {
         InputState* state = InputManager::getInstance().createInputState(name);
 
-        if (GraphicsManager::getInstance().isFullScreen() && showMouse == TriBool::True ||
-           !GraphicsManager::getInstance().isFullScreen() && showMouse == TriBool::False)
+        /* Table that maps isFullScreen() and showCursor to mouseExclusive
+        isFullscreen / showCursor | True  | False | Dontcare
+        ----------------------------------------------------
+        true                      | True  | True  | Dontcare
+        ----------------------------------------------------
+        false                     | False | True  | Dontcare
+        */
+        if (showCursor == TriBool::Dontcare)
+            state->setMouseExclusive(TriBool::Dontcare);
+        else if (GraphicsManager::getInstance().isFullScreen() || showCursor == TriBool::False)
             state->setMouseExclusive(TriBool::True);
         else
-            state->setMouseExclusive(TriBool::Dontcare);
+            state->setMouseExclusive(TriBool::False);
 
-        if (showMouse == TriBool::True)
+        if (showCursor == TriBool::True)
             state->setMouseHandler(this);
-        else if (showMouse == TriBool::False)
+        else if (showCursor == TriBool::False)
             state->setMouseHandler(&InputHandler::EMPTY);
 
         if (useKeyboard == TriBool::True)

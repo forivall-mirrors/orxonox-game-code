@@ -34,29 +34,19 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 
-#include "util/OrxEnum.h"
 #include "util/TriBool.h"
 #include "InputHandler.h"
+#include "InputManager.h"
 #include "JoyStickQuantityListener.h"
+
+#define INPUT_STATE_PUSH_CALL(deviceIndex, functionName, ...) \
+    InputManager::getInstance().pushCall(boost::function<void ()>(boost::bind(&InputHandler::functionName, handlers_[deviceIndex], __VA_ARGS__)))
 
 namespace orxonox
 {
-    //! Enumeration wrapper for input state priorities
-    struct InputStatePriority : OrxEnum<InputStatePriority>
-    {
-        OrxEnumConstructors(InputStatePriority);
-
-        static const int Empty        = -1;
-        static const int Dynamic      = 0;
-
-        static const int HighPriority = 1000;
-        static const int Console      = HighPriority + 0;
-        static const int Calibrator   = HighPriority + 1;
-        static const int Detector     = HighPriority + 2;
-    };
-
-
     /**
     @brief
         InputStates allow you to customise the input event targets at runtime.
@@ -143,8 +133,8 @@ namespace orxonox
         void update(float dt);
 
         //! Generic function that distributes all 9 button events
-        template <typename EventType, class Traits>
-        void buttonEvent(unsigned int device, const typename Traits::ButtonTypeParam button);
+        template <typename EventType, class ButtonTypeParam>
+        void buttonEvent(unsigned int device, ButtonTypeParam button);
 
         //! Event handler
         void mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
@@ -189,7 +179,7 @@ namespace orxonox
     {
         for (unsigned int i = 0; i < handlers_.size(); ++i)
             if (handlers_[i] != NULL)
-                handlers_[i]->allDevicesUpdated(dt);
+                INPUT_STATE_PUSH_CALL(i, allDevicesUpdated, dt);
     }
 
     FORCEINLINE void InputState::update(float dt, unsigned int device)
@@ -198,46 +188,50 @@ namespace orxonox
         {
         case InputDeviceEnumerator::Keyboard:
             if (handlers_[keyboardIndex_s] != NULL)
-                handlers_[keyboardIndex_s]->keyboardUpdated(dt);
+                INPUT_STATE_PUSH_CALL(keyboardIndex_s, keyboardUpdated, dt);
             break;
 
         case InputDeviceEnumerator::Mouse:
             if (handlers_[mouseIndex_s] != NULL)
-                handlers_[mouseIndex_s]->mouseUpdated(dt);
+                INPUT_STATE_PUSH_CALL(mouseIndex_s, mouseUpdated, dt);
             break;
 
         default: // joy sticks
             if (handlers_[device] != NULL)
-                handlers_[device]->joyStickUpdated(device - firstJoyStickIndex_s, dt);
+                INPUT_STATE_PUSH_CALL(device, joyStickUpdated, device - firstJoyStickIndex_s, dt);
             break;
         }
     }
 
-    template <typename EventType, class Traits>
-    FORCEINLINE void InputState::buttonEvent(unsigned int device, const typename Traits::ButtonTypeParam button)
+    template <typename EventType, class ButtonTypeParam>
+    FORCEINLINE void InputState::buttonEvent(unsigned int device, typename ButtonTypeParam button)
     {
         assert(device < handlers_.size());
         if (handlers_[device] != NULL)
-            handlers_[device]->buttonEvent(device, button, EventType());
+        {
+            // We have to store the function pointer to tell the compiler about its actual type because of overloading
+            void (InputHandler::*function)(unsigned int, ButtonTypeParam, EventType) = &InputHandler::buttonEvent<ButtonTypeParam>;
+            InputManager::getInstance().pushCall(boost::function<void ()>(boost::bind(function, handlers_[device], device, button, EventType())));
+        }
     }
 
     FORCEINLINE void InputState::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
         if (handlers_[mouseIndex_s] != NULL)
-            handlers_[mouseIndex_s]->mouseMoved(abs, rel, clippingSize);
+            INPUT_STATE_PUSH_CALL(mouseIndex_s, mouseMoved, abs, rel, clippingSize);
     }
 
     FORCEINLINE void InputState::mouseScrolled(int abs, int rel)
     {
         if (handlers_[mouseIndex_s] != NULL)
-            handlers_[mouseIndex_s]->mouseScrolled(abs, rel);
+            INPUT_STATE_PUSH_CALL(mouseIndex_s, mouseScrolled, abs, rel);
     }
 
     FORCEINLINE void InputState::joyStickAxisMoved(unsigned int device, unsigned int axis, float value)
     {
         assert(device < handlers_.size());
         if (handlers_[device] != NULL)
-            handlers_[device]->axisMoved(device - firstJoyStickIndex_s, axis, value);
+            INPUT_STATE_PUSH_CALL(device, axisMoved, device - firstJoyStickIndex_s, axis, value);
     }
 }
 

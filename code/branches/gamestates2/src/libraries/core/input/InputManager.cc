@@ -94,6 +94,9 @@ namespace orxonox
 
         CCOUT(4) << "Constructing..." << std::endl;
 
+        // Allocate space for the function call buffer
+        this->callBuffer_.reserve(16);
+
         this->setConfigValues();
 
         if (GraphicsManager::getInstance().isFullScreen())
@@ -265,14 +268,19 @@ namespace orxonox
     {
         CCOUT(3) << "Destroying..." << std::endl;
 
+        // Leave all active InputStates (except "empty")
+        while (this->activeStates_.size() > 1)
+            this->leaveState(this->activeStates_.rbegin()->second->getName());
+        this->activeStates_.clear();
+
         // Destroy calibrator helper handler and state
         this->destroyState("calibrator");
         // Destroy KeyDetector and state
         calibratorCallbackHandler_->destroy();
-        // destroy the empty InputState
+        // Destroy the empty InputState
         this->destroyStateInternal(this->emptyState_);
 
-        // destroy all user InputStates
+        // Destroy all user InputStates
         while (statesByName_.size() > 0)
             this->destroyStateInternal(statesByName_.rbegin()->second);
 
@@ -334,14 +342,7 @@ namespace orxonox
 
     void InputManager::reload()
     {
-        if (internalState_ & Ticking)
-        {
-            // We cannot destroy OIS right now, because reload was probably
-            // caused by a user clicking on a GUI item. The stack trace would then
-            // include an OIS method. So it would be a very bad thing to destroy it..
-            internalState_ |= ReloadRequest;
-        }
-        else if (internalState_ & Calibrating)
+        if (internalState_ & Calibrating)
             CCOUT(2) << "Warning: Cannot reload input system. Joy sticks are currently being calibrated." << std::endl;
         else
             reloadInternal();
@@ -350,13 +351,12 @@ namespace orxonox
     //! Internal reload method. Destroys the OIS devices and loads them again.
     void InputManager::reloadInternal()
     {
-        CCOUT(3) << "Reloading ..." << std::endl;
+        CCOUT(4) << "Reloading ..." << std::endl;
 
         this->destroyDevices();
         this->loadDevices();
 
         internalState_ &= ~Bad;
-        internalState_ &= ~ReloadRequest;
         CCOUT(4) << "Reloading complete." << std::endl;
     }
 
@@ -369,70 +369,6 @@ namespace orxonox
     {
         if (internalState_ & Bad)
             ThrowException(General, "InputManager was not correctly reloaded.");
-
-        else if (internalState_ & ReloadRequest)
-            reloadInternal();
-
-        // check for states to leave
-        if (!stateLeaveRequests_.empty())
-        {
-            for (std::set<InputState*>::iterator it = stateLeaveRequests_.begin();
-                it != stateLeaveRequests_.end(); ++it)
-            {
-                (*it)->left();
-                // just to be sure that the state actually is registered
-                assert(statesByName_.find((*it)->getName()) != statesByName_.end());
-
-                activeStates_.erase((*it)->getPriority());
-                if ((*it)->getPriority() < InputStatePriority::HighPriority)
-                    (*it)->setPriority(0);
-                updateActiveStates();
-            }
-            stateLeaveRequests_.clear();
-        }
-
-        // check for states to enter
-        if (!stateEnterRequests_.empty())
-        {
-            for (std::set<InputState*>::const_iterator it = stateEnterRequests_.begin();
-                it != stateEnterRequests_.end(); ++it)
-            {
-                // just to be sure that the state actually is registered
-                assert(statesByName_.find((*it)->getName()) != statesByName_.end());
-
-                if ((*it)->getPriority() == 0)
-                {
-                    // Get smallest possible priority between 1 and maxStateStackSize_s
-                    for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
-                        rit != activeStates_.rend(); ++rit)
-                    {
-                        if (rit->first < InputStatePriority::HighPriority)
-                        {
-                            (*it)->setPriority(rit->first + 1);
-                            break;
-                        }
-                    }
-                    // In case no normal handler was on the stack
-                    if ((*it)->getPriority() == 0)
-                        (*it)->setPriority(1);
-                }
-                activeStates_[(*it)->getPriority()] = (*it);
-                updateActiveStates();
-                (*it)->entered();
-            }
-            stateEnterRequests_.clear();
-        }
-
-        // check for states to destroy
-        if (!stateDestroyRequests_.empty())
-        {
-            for (std::set<InputState*>::iterator it = stateDestroyRequests_.begin();
-                it != stateDestroyRequests_.end(); ++it)
-            {
-                destroyStateInternal((*it));
-            }
-            stateDestroyRequests_.clear();
-        }
 
         // check whether a state has changed its EMPTY situation
         bool bUpdateRequired = false;
@@ -447,19 +383,27 @@ namespace orxonox
         if (bUpdateRequired)
             updateActiveStates();
 
-        // mark that we now start capturing and distributing input
-        internalState_ |= Ticking;
-
-        // Capture all the input and handle it
+        // Capture all the input and collect the function calls
+        // No event gets triggered here yet!
         BOOST_FOREACH(InputDevice* device, devices_)
             if (device != NULL)
                 device->update(time);
 
-        // Update the states
+        // Collect functions calls for the update
         for (unsigned int i = 0; i < activeStatesTicked_.size(); ++i)
             activeStatesTicked_[i]->update(time.getDeltaTime());
 
-        internalState_ &= ~Ticking;
+        // Execute all cached function calls in order
+        // Why so complicated? The problem is that an InputHandler could trigger
+        // a reload that would destroy the OIS devices or it could even leave and
+        // then destroy its own InputState. That would of course lead to access
+        // violations.
+        // If we delay the calls, then OIS and and the InputStates are not anymore
+        // in the call stack and can therefore be edited.
+        for (size_t i = 0; i < this->callBuffer_.size(); ++i)
+            this->callBuffer_[i]();
+
+        this->callBuffer_.clear();
     }
 
     /**
@@ -469,7 +413,6 @@ namespace orxonox
     */
     void InputManager::updateActiveStates()
     {
-        assert((internalState_ & InputManager::Ticking) == 0);
         // temporary resize
         for (unsigned int i = 0; i < devices_.size(); ++i)
         {
@@ -621,25 +564,30 @@ namespace orxonox
     {
         // get pointer from the map with all stored handlers
         std::map<std::string, InputState*>::const_iterator it = statesByName_.find(name);
-        if (it != statesByName_.end())
+        if (it != statesByName_.end() && activeStates_.find(it->second->getPriority()) == activeStates_.end())
         {
-            // exists
-            if (activeStates_.find(it->second->getPriority()) == activeStates_.end())
+            // exists and not active
+            if (it->second->getPriority() == 0)
             {
-                // not active
-                if (stateDestroyRequests_.find(it->second) == stateDestroyRequests_.end())
+                // Get smallest possible priority between 1 and maxStateStackSize_s
+                for (std::map<int, InputState*>::reverse_iterator rit = activeStates_.rbegin();
+                    rit != activeStates_.rend(); ++rit)
                 {
-                    // not scheduled for destruction
-                    // prevents a state from being added multiple times
-                    stateEnterRequests_.insert(it->second);
-                    return true;
+                    if (rit->first < InputStatePriority::HighPriority)
+                    {
+                        it->second->setPriority(rit->first + 1);
+                        break;
+                    }
                 }
+                // In case no normal handler was on the stack
+                if (it->second->getPriority() == 0)
+                    it->second->setPriority(1);
             }
-            else if (this->stateLeaveRequests_.find(it->second) != this->stateLeaveRequests_.end())
-            {
-                // State already scheduled for leaving --> cancel
-                this->stateLeaveRequests_.erase(this->stateLeaveRequests_.find(it->second));
-            }
+            activeStates_[it->second->getPriority()] = it->second;
+            updateActiveStates();
+            it->second->entered();
+
+            return true;
         }
         return false;
     }
@@ -653,20 +601,18 @@ namespace orxonox
         }
         // get pointer from the map with all stored handlers
         std::map<std::string, InputState*>::const_iterator it = statesByName_.find(name);
-        if (it != statesByName_.end())
+        if (it != statesByName_.end() && activeStates_.find(it->second->getPriority()) != activeStates_.end())
         {
-            // exists
-            if (activeStates_.find(it->second->getPriority()) != activeStates_.end())
-            {
-                // active
-                stateLeaveRequests_.insert(it->second);
-                return true;
-            }
-            else if (this->stateEnterRequests_.find(it->second) != this->stateEnterRequests_.end())
-            {
-                // State already scheduled for entering --> cancel
-                this->stateEnterRequests_.erase(this->stateEnterRequests_.find(it->second));
-            }
+            // exists and active
+
+            it->second->left();
+
+            activeStates_.erase(it->second->getPriority());
+            if (it->second->getPriority() < InputStatePriority::HighPriority)
+                it->second->setPriority(0);
+            updateActiveStates();
+
+            return true;
         }
         return false;
     }
@@ -681,19 +627,8 @@ namespace orxonox
         std::map<std::string, InputState*>::iterator it = statesByName_.find(name);
         if (it != statesByName_.end())
         {
-            if (activeStates_.find(it->second->getPriority()) != activeStates_.end())
-            {
-                // The state is still active. We have to postpone
-                stateLeaveRequests_.insert(it->second);
-                stateDestroyRequests_.insert(it->second);
-            }
-            else if (this->internalState_ & Ticking)
-            {
-                // cannot remove state while ticking
-                stateDestroyRequests_.insert(it->second);
-            }
-            else
-                destroyStateInternal(it->second);
+            this->leaveState(name);
+            destroyStateInternal(it->second);
 
             return true;
         }
@@ -703,13 +638,7 @@ namespace orxonox
     //! Destroys an InputState internally.
     void InputManager::destroyStateInternal(InputState* state)
     {
-        assert(state && !(this->internalState_ & Ticking));
-        std::map<int, InputState*>::iterator it = this->activeStates_.find(state->getPriority());
-        if (it != this->activeStates_.end())
-        {
-            this->activeStates_.erase(it);
-            updateActiveStates();
-        }
+        assert(state && this->activeStates_.find(state->getPriority()) == this->activeStates_.end());
         statesByName_.erase(state->getName());
         state->destroy();
     }

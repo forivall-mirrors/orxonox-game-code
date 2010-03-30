@@ -28,7 +28,9 @@
 
 #include "Resource.h"
 
+#include <boost/filesystem/path.hpp>
 #include <OgreException.h>
+#include <OgreFileSystem.h>
 #include <OgreResourceGroupManager.h>
 
 namespace orxonox
@@ -88,6 +90,12 @@ namespace orxonox
                 ptr->basename = it->basename;
                 ptr->group = group;
                 ptr->size = it->uncompressedSize;
+                if (dynamic_cast<Ogre::FileSystemArchive*>(it->archive) != NULL)
+                {
+                    boost::filesystem::path base(it->archive->getName());
+                    base /= it->filename;
+                    ptr->fileSystemPath = base.string();
+                }
                 return ptr;
             }
         }

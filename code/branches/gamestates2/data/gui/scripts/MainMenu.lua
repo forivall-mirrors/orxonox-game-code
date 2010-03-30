@@ -1,12 +1,6 @@
 -- MainMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("MainMenu")
-if _REQUIREDNAME == nil then
-    MainMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("MainMenu")
 
 -- events for MainMenu
 function P.QuickGameTestButton_clicked(e)

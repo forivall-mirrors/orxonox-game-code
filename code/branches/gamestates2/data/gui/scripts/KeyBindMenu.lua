@@ -1,15 +1,8 @@
 -- KeyBindMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("KeyBindMenu")
+local P = createSheet("KeyBindMenu")
 
-if _REQUIREDNAME == nil then
-    KeyBindMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
-
-function P:init()
+function P.init()
 
     commandList = {}
     table.insert(commandList, "fire 0")

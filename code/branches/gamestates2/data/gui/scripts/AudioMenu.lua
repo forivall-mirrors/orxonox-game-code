@@ -1,14 +1,8 @@
 -- AudioMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("AudioMenu")
-if _REQUIREDNAME == nil then
-    AudioMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("AudioMenu")
 
-function P:init()
+function P.init()
     soundMgr = orxonox.SoundManager:getInstance()
     block = false
     masterscrollbar_active = false

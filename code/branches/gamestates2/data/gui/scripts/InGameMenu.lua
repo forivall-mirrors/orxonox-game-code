@@ -1,12 +1,6 @@
 -- InGameMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("InGameMenu")
-if _REQUIREDNAME == nil then
-    InGameMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("InGameMenu")
 
 -- events for ingamemenu
 function P.button_quit_clicked(e)

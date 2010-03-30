@@ -1,14 +1,8 @@
 -- GraphicsMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("GraphicsMenu")
-if _REQUIREDNAME == nil then
-    GraphicsMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("GraphicsMenu")
 
-function P:init()
+function P.init()
     block = true
     file = orxonox.PathConfig:getConfigPathString() .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
     search_mode = 0
@@ -148,7 +142,7 @@ end
 function P.GraphicsBrightnessScrollbar_changed(e)
     if scrollbar_active == false then
         -- brightness
-        debug("event: brightness")
+        logMessage(0, "event: brightness")
     end
 end
 
@@ -158,7 +152,7 @@ end
 
 function P.GraphicsBrightnessScrollbar_ended(e)
     -- brightness
-    debug("event: brightness")
+    logMessage(0, "event: brightness")
     scrollbar_active = false
 end
 

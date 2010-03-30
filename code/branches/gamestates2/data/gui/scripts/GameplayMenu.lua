@@ -1,14 +1,8 @@
 -- GameplayMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("GameplayMenu")
-if _REQUIREDNAME == nil then
-    GameplayMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("GameplayMenu")
 
-function P:init()
+function P.init()
     dropdown = winMgr:getWindow("orxonox/ThemeCombobox")
     local themeList = {}
     table.insert(themeList, "Theme 1")
@@ -23,22 +17,22 @@ end
 
 function P.GameplayThemeCombobox_changed(e)
     -- theme
-    debug("event: theme")
+    logMessage(0, "event: theme")
 end
 
 function P.GameplayDifficultyEasyButton_clicked(e)
     -- difficulty easy
-    debug("event: easy")
+    logMessage(0, "event: easy")
 end
 
 function P.GameplayDifficultyNormalButton_clicked(e)
     -- difficulty normal
-    debug("event: normal")
+    logMessage(0, "event: normal")
 end
 
 function P.GameplayDifficultyHardButton_clicked(e)
     -- difficulty hard
-    debug("event: hard")
+    logMessage(0, "event: hard")
 end
 
 function P.GameplayBackButton_clicked(e)

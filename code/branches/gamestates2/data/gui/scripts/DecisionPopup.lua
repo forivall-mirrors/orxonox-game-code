@@ -1,12 +1,6 @@
 -- DecisionPopup.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new("DecisionPopup")
-if _REQUIREDNAME == nil then
-    DecisionPopup = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createSheet("DecisionPopup")
 
 function P.setCallback(functionPtr)
     P.functionPtr = functionPtr

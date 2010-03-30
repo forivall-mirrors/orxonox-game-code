@@ -80,7 +80,7 @@ namespace orxonox // tolua_export
         void keyESC();
         void setBackground(const std::string& name);
 
-        const std::string& createInputState(const std::string& name, TriBool::Value showMouse = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export
+        const std::string& createInputState(const std::string& name, TriBool::Value showCursor = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export
 
         void setCamera(Ogre::Camera* camera);
         Ogre::Camera* getCamera() { return this->camera_; }
