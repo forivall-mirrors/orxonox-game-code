@@ -176,8 +176,8 @@ namespace orxonox
         }
 
         // Push custom error handler that uses the debugger
-        int errorHandler = 1;
         lua_getglobal(this->luaState_, "errorHandler");
+        int errorHandler = lua_gettop(luaState_);
         if (lua_isnil(this->luaState_, -1))
         {
             lua_pop(this->luaState_, 1);
@@ -200,7 +200,7 @@ namespace orxonox
             break;
         case LUA_ERRMEM:    // Memory allocation error
             COUT(1) << "Lua memory allocation error: Consult your dentist immediately!" << std::endl;
-            lua_pop(luaState_, 1);
+            lua_pop(luaState_, 1); // Remove error message
             break;
         }
 
@@ -214,23 +214,23 @@ namespace orxonox
             case LUA_ERRRUN: // Runtime error
                 // Remove error string from stack (we already display the error in the
                 // 'errorHandler' Lua function in LuaStateInit.lua)
-                lua_pop(luaState_, 1);
                 break;
             case LUA_ERRERR: // Error in the error handler
-                COUT(1) << "Lua error in error handler: " << lua_tostring(luaState_, -1) << std::endl;
+                COUT(1) << "Lua error in error handler. No message available." << std::endl;
                 break;
             case LUA_ERRMEM: // Memory allocation error
                 COUT(1) << "Lua memory allocation error: Consult your dentist immediately!" << std::endl;
-                lua_pop(luaState_, 1);
                 break;
             }
+            if (error != 0)
+                lua_pop(luaState_, 1); // Remove error message
         }
 
         if (error != 0)
-        {
-            // Push a nil return value
-            lua_pushnil(luaState_);
-        }
+            lua_pushnil(luaState_); // Push a nil return value
+
+        if (errorHandler != 0)
+            lua_remove(luaState_, errorHandler); // Remove error handler from stack
 
         // Set return value to a global variable because we cannot return a table in this function
         // here. It would work for numbers, pointers and strings, but certainly not for Lua tables.
