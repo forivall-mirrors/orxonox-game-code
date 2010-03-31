@@ -40,24 +40,30 @@ require = function(moduleName)
     logMessage(2, "Warning: Lua function require() could not find file '" .. moduleName .. ".lua' ")
     return nil
   end
+
   if not _LOADED then
     _LOADED = {}
   end
-  if _LOADED[moduleName] == nil then
-    -- save old value
+  if not _LOADED_RETURN_VALUES then
+      _LOADED_RETURN_VALUES = {}
+  end
+
+  if not _LOADED[moduleName] then
+    -- save old value for the required name
     local _REQUIREDNAME_OLD = _REQUIREDNAME
     _REQUIREDNAME = moduleName
+
     luaState:doFile(moduleName .. ".lua")
     -- LuaStateReturnValue is required because if the file returns a table,
     -- it cannot be passed through the C++ function
-    if LuaStateReturnValue == nil then -- C-injected global variable
-        LuaStateReturnValue = true
-    end
-    _LOADED[moduleName] = LuaStateReturnValue -- This entry must never be nil
+    _LOADED_RETURN_VALUES[moduleName] = LuaStateReturnValue
+    _LOADED[moduleName] = true
+
     -- restore old value
     _REQUIREDNAME = _REQUIREDNAME_OLD
   end
-  return _LOADED[moduleName]
+  local asdf = _LOADED_RETURN_VALUES[moduleName]
+  return asdf
 end
 
 
