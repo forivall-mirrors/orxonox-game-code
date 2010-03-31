@@ -1,6 +1,10 @@
 function createSheet(sheetName)
     -- Create object of type BasicGUI and make it global
-    local sheet = require("BasicGUI"):new(sheetName)
+    local basicGUI = require("BasicGUI")
+    if basicGUI == nil then
+        error("Loading BasicGUI.lua failed")
+    end
+    local sheet = basicGUI:new(sheetName)
     _G[sheetName] = sheet
     return sheet
 end
