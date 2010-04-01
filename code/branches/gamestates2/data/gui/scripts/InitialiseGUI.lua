@@ -73,15 +73,6 @@ local function showCursor()
     end
 end
 
-local function find(table, value)
-    for i, v in ipairs(table) do
-        if v == value then
-            return i
-        end
-    end
-    return nil
-end
-
 
 ------------------------
 --- Global functions ---
@@ -193,7 +184,7 @@ function hideGUI(name)
 
     -- Remove sheet with its tuple from the table
     root:removeChildWindow(sheetTuple.menuSheet.window)
-    table.remove(activeMenuSheets, find(activeMenuSheets, sheetTuple))
+    table.remove(activeMenuSheets, table.findIndex(activeMenuSheets, sheetTuple))
     activeMenuSheets[name] = nil
     activeMenuSheets.size = activeMenuSheets.size - 1
     activeMenuSheets.topSheet = activeMenuSheets[activeMenuSheets.size]
