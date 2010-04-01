@@ -26,6 +26,7 @@
  */
 #include "SoundStreamer.h"
 
+#include <boost/thread.hpp>
 #include <al.h>
 #include <alc.h>
 #include <vorbis/vorbisfile.h>
@@ -41,6 +42,7 @@ namespace orxonox
 
     void orxonox::SoundStreamer::operator()(ALuint audioSource, DataStreamPtr dataStream)
     {
+        COUT(4) << "Sound: Creating thread for " << dataStream->getName() << std::endl;
         // Open file with custom streaming
         ov_callbacks vorbisCallbacks;
         vorbisCallbacks.read_func  = &readVorbis;
@@ -64,21 +66,21 @@ namespace orxonox
         else
             format = AL_FORMAT_STEREO16;
 
-        char inbuffer[256*1024];
-        ALuint initbuffers[4];
-        alGenBuffers(4, initbuffers);
+        char inbuffer[4096];
+        ALuint initbuffers[20];
+        alGenBuffers(20, initbuffers);
         if (ALint error = alGetError()) {
             COUT(2) << "Sound: Streamer: Could not generate buffer:" << getALErrorString(error) << std::endl;
             return;
         }
         int current_section;
 
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 20; i++)
         {
             long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
             if (ret == 0)
             {
-                return;
+                break;
             }
             else if (ret < 0)
             {
@@ -88,26 +90,35 @@ namespace orxonox
             }
 
             alBufferData(initbuffers[i], format, &inbuffer, ret, vorbisInfo->rate);
-            alGetError();
-        }
-        alSourceQueueBuffers(audioSource, 4, initbuffers);
-        if (ALint error = alGetError()) {
-            COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
+            if(ALint error = alGetError()) {
+                COUT(2) << "Sound: Could not fill buffer: " << getALErrorString(error) << std::endl;
+                break;
+             }
+             alSourceQueueBuffers(audioSource, 1, &initbuffers[i]);
+             if (ALint error = alGetError()) {
+                 COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
+             }
+             COUT(4) << "Sound: " << ret << std::endl;
         }
 
         while(true) // Stream forever, control through thread control
         {
             int processed;
 
-        if(alcGetCurrentContext() == NULL)
-            COUT(2) << "This should not be!" << std::endl;
+            if(alcGetCurrentContext() == NULL)
+            {
+                COUT(2) << "Sound: There is no context, terminating thread" << std::endl;
+                return;
+            }
 
             alGetSourcei(audioSource, AL_BUFFERS_PROCESSED, &processed);
             if (ALint error = alGetError())
-            COUT(2) << "Sound: Warning: Couldn't get number of processed buffers: " << getALErrorString(error) << std::endl;
+                COUT(2) << "Sound: Warning: Couldn't get number of processed buffers: " << getALErrorString(error) << std::endl;
 
+            COUT(2) << "Sound: Blub: " << processed << std::endl;
             if(processed > 0)
             {
+                COUT(4) << "Sound: " << processed << std::endl;
                 ALuint* buffers = new ALuint[processed];
                 alSourceUnqueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
@@ -118,7 +129,7 @@ namespace orxonox
                     long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
                     if (ret == 0)
                     {
-                        return;
+                        break;
                     }
                     else if (ret < 0)
                     {
@@ -128,12 +139,22 @@ namespace orxonox
                     }
 
                     alBufferData(buffers[i], format, &inbuffer, ret, vorbisInfo->rate);
-                    alGetError();
+                    if(ALint error = alGetError()) {
+                        COUT(2) << "Sound: Could not fill buffer: " << getALErrorString(error) << std::endl;
+                        break;
+                    }
+                    alSourceQueueBuffers(audioSource, 1, &buffers[i]);
+                    if (ALint error = alGetError()) {
+                        COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
+                    }
                 }
-
-                alSourceQueueBuffers(audioSource, processed, buffers);
-                if (ALint error = alGetError())
-                    COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
+            }
+            try {
+                boost::this_thread::interruption_point();
+            }
+            catch(boost::thread_interrupted) {
+                COUT(4) << "Sound: Catched interruption. Terminating thread for " << dataStream->getName() << std::endl;
+                return;
             }
             msleep(100); // perhaps another value here is better
         }

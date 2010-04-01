@@ -193,4 +193,24 @@ namespace orxonox
         BaseSound::doStop();
         this->soundstreamthread_.interrupt();
     }
+
+    void AmbientSound::doPlay()
+    {
+        BaseSound::doPlay();
+
+        if(GameMode::playsSound() && this->getSourceState() != AL_PLAYING)
+        {
+            if(!alIsSource(this->audioSource_))
+            {
+                this->audioSource_ = SoundManager::getInstance().getSoundSource(this);
+                if(!alIsSource(this->audioSource_))
+                    return;
+                this->initialiseSource();
+            }
+
+            alSourcePlay(this->audioSource_);
+            if(int error = alGetError())
+                COUT(2) << "Sound: Error playing sound: " << getALErrorString(error) << std::endl;
+        }
+    }
 }

@@ -73,6 +73,7 @@ namespace orxonox
         ~AmbientSound() { }
 
         void doStop();
+        void doPlay();
 
     private:
         void preDestroy();
