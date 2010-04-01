@@ -12,22 +12,23 @@ end
 P.filename = "PickupInventory"
 P.layoutString = "PickupInventory.layout"
 
-function P:init()
+P.carrierList = {}
+
+function P.init()
     
 end
 
-function P:show()
-    self.window:show() -- TODO: Do this through parent...
-    self.visible = true
+function P.show()
+    P.window:show() -- TODO: Do this through parent...
+    P.visible = true
     
-    carrierList = {}
+    table.insert(P.carrierList, 4)
     
-    -- TODO: Nicer?
     local pickupManager = orxonox.PickupManager:getInstance()
     local carrier = pickupManager:getPawn()
     P.getCarrierList(carrier)
     
-    for k,v in pairs(carrierList) do
+    for k,v in pairs(P.carrierList) do
         local args = {}
         table.insert(args, v)
         table.insert(args, k)
@@ -42,15 +43,15 @@ function P.getCarrierList(carrier)
         return
     end
     
-    table.insert(carrierList, carrier)
+    table.insert(P.carrierList, carrier)
     
-    local numCarriers = orxonox.PickupManager.getInstance():getNumCarrierChildren(carrier)
+    local numCarriers = orxonox.PickupManager:getInstance():getNumCarrierChildren(carrier)
     if numCarriers == 0 then
         return
     end
     
     for i=0,numCarriers-1,1 do
-        local child = orxonox.PickupManager.getInstance():getCarrierChild(i, carrier)
+        local child = orxonox.PickupManager:getInstance():getCarrierChild(i, carrier)
         if child ~= nil then
             P.getCarrierList(child)
         end

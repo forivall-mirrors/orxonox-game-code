@@ -46,9 +46,6 @@
 namespace orxonox // tolua_export
 { // tolua_export
 
-    //TODO: Remove after transfer to orxonox/pickup
-    class PickupCarrier; // tolua_export
-
     /**
     @brief
         Manages Pickupables.
@@ -72,15 +69,15 @@ namespace orxonox // tolua_export
             PickupRepresentation* getRepresentation(const PickupIdentifier* identifier); //!< Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
             
             // tolua_begin
-            PickupCarrier* getPawn(void);
+            orxonox::PickupCarrier* getPawn(void);
             
-            unsigned int getNumCarrierChildren(PickupCarrier* carrier);
-            PickupCarrier* getCarrierChild(unsigned int index, PickupCarrier* carrier);
+            unsigned int getNumCarrierChildren(orxonox::PickupCarrier* carrier);
+            orxonox::PickupCarrier* getCarrierChild(unsigned int index, orxonox::PickupCarrier* carrier);
             
-            unsigned int getNumPickups(PickupCarrier* carrier);
-            PickupRepresentation* getPickupRepresentation(unsigned int index, PickupCarrier* carrier);
-            void dropPickup(unsigned int index, PickupCarrier* carrier);
-            void usePickup(unsigned int index, PickupCarrier* carrier, bool use);
+            unsigned int getNumPickups(orxonox::PickupCarrier* carrier);
+            PickupRepresentation* getPickupRepresentation(unsigned int index, orxonox::PickupCarrier* carrier);
+            void dropPickup(unsigned int index, orxonox::PickupCarrier* carrier);
+            void usePickup(unsigned int index, orxonox::PickupCarrier* carrier, bool use);
             // tolua_end
             
         private:

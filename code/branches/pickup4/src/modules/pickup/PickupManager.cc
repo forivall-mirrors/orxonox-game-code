@@ -128,6 +128,8 @@ namespace orxonox
     
     unsigned int PickupManager::getNumCarrierChildren(PickupCarrier* carrier)
     {
+        if(carrier == NULL)
+            return 0;
         return carrier->getNumCarrierChildren();
     }
             
