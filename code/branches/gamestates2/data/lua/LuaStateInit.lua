@@ -15,7 +15,9 @@ cout = logMessage
 -- Redirect dofile in order to load with the resource manager
 original_dofile = dofile
 dofile = function(filename)
-  luaState:doFile(filename)
+  if not luaState:doFile(filename) then
+    error("Error propagation. Do not display")
+  end
   -- Required because if the file returns a table, it cannot be passed through the C++ function
   return LuaStateReturnValue -- C-injected global variable
 end
@@ -24,7 +26,9 @@ doFile = dofile
 -- Create includeFile function that preparses the file according
 -- to a function provided to the LuaState constructor (in C++)
 include = function(filename)
-  luaState:includeFile(filename)
+  if not luaState:includeFile(filename) then
+    error("Error propagation. Do not display")
+  end
   -- Required because if the file returns a table, it cannot be passed through the C++ function
   return LuaStateReturnValue -- C-injected global variable
 end
@@ -53,7 +57,9 @@ require = function(moduleName)
     local _REQUIREDNAME_OLD = _REQUIREDNAME
     _REQUIREDNAME = moduleName
 
-    luaState:doFile(moduleName .. ".lua")
+    if not luaState:doFile(moduleName .. ".lua") then
+      error("Error propagation. Do not display")
+    end
     -- LuaStateReturnValue is required because if the file returns a table,
     -- it cannot be passed through the C++ function
     _LOADED_RETURN_VALUES[moduleName] = LuaStateReturnValue
@@ -65,6 +71,10 @@ require = function(moduleName)
   local asdf = _LOADED_RETURN_VALUES[moduleName]
   return asdf
 end
+
+
+-- Load useful tool functions (like handleDefaultArgument)
+require("Tools")
 
 
 -- Include command line debugger for lua 5.1
@@ -81,8 +91,12 @@ end
 
 -- General error handler that gets called whenever an error happens at runtime
 errorHandler = function(err)
-  -- Display the error message
   if type(err) == "string" then
+    -- Simply return if the error has already been handled
+    if string.find(err, "Error propagation. Do not display") ~= nil then
+      return err
+    end
+    -- Display the error message
     logMessage(1, "Lua runtime error: "..err)
   end
 
@@ -91,7 +105,7 @@ errorHandler = function(err)
     pause()
   else
     -- Fallback: print stack trace
-    logMessage(1, debug.traceback(2))
+    logMessage(3, debug.traceback(""))
   end
   return err -- Hello Lua debugger user! Please type 'set 2' to get to the
              -- actual position in the stack where the error occurred

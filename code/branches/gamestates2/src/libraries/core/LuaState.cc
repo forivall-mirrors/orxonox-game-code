@@ -200,7 +200,6 @@ namespace orxonox
             break;
         case LUA_ERRMEM:    // Memory allocation error
             COUT(1) << "Lua memory allocation error: Consult your dentist immediately!" << std::endl;
-            lua_pop(luaState_, 1); // Remove error message
             break;
         }
 
@@ -212,7 +211,7 @@ namespace orxonox
             switch (error)
             {
             case LUA_ERRRUN: // Runtime error
-                // Remove error string from stack (we already display the error in the
+                // Do nothing (we already display the error in the
                 // 'errorHandler' Lua function in LuaStateInit.lua)
                 break;
             case LUA_ERRERR: // Error in the error handler
@@ -222,12 +221,13 @@ namespace orxonox
                 COUT(1) << "Lua memory allocation error: Consult your dentist immediately!" << std::endl;
                 break;
             }
-            if (error != 0)
-                lua_pop(luaState_, 1); // Remove error message
         }
 
         if (error != 0)
+        {
+            lua_pop(luaState_, 1);  // Remove error message
             lua_pushnil(luaState_); // Push a nil return value
+        }
 
         if (errorHandler != 0)
             lua_remove(luaState_, errorHandler); // Remove error handler from stack
