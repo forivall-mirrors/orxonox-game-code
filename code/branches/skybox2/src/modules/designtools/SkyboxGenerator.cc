@@ -29,10 +29,20 @@
 #include "SkyboxGenerator.h"
 
 #include <string>
+#include <cassert>
+#include <OgreRenderWindow.h>
+
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ScopedSingletonManager.h"
+#include "controllers/HumanController.h"
+#include "worldentities/CameraPosition.h"
+#include "worldentities/ControllableEntity.h"
+#include "core/GraphicsManager.h"
+#include "core/CommandExecutor.h"
+
+
  
 namespace orxonox
 {
@@ -41,11 +51,12 @@ namespace orxonox
 
     ManageScopedSingleton(SkyboxGenerator, ScopeID::Graphics, false);
 
-    SkyboxGenerator::SkyboxGenerator()
+    SkyboxGenerator::SkyboxGenerator() : iterateOverDirections_(0)
     {
         RegisterRootObject(SkyboxGenerator);
 
         this->setConfigValues();
+        takeScreenshot_ = false;
     }
 
     SkyboxGenerator::~SkyboxGenerator()
@@ -57,53 +68,75 @@ namespace orxonox
     {
         SetConfigValue(skyboxPrefix_, "SkyboxFile_");
     }
+
+    void SkyboxGenerator::tick(float dt)
+    {
+        if( takeScreenshot_ == true )
+        {
+            ControllableEntity* ce = HumanController::getLocalControllerSingleton()->getControllableEntity();
+            assert(ce);
+        
+            Ogre::RenderWindow* w = GraphicsManager::getInstance().getRenderWindow();
+
+
+
+            switch (iterateOverDirections_) 
+            {
+            case 0 :
+                CommandExecutor::execute("pause");
+                //w->writeContentsToFile(skyboxPrefix_+"FR.png");
+                w->writeContentsToFile(skyboxPrefix_+"0.png");
+                ce->yaw(Degree(90));
+                iterateOverDirections_++;
+                break;
+                
+            case 1 :
+                //w->writeContentsToFile(skyboxPrefix_+"LF.png");
+                w->writeContentsToFile(skyboxPrefix_+"1.png");
+                ce->yaw(Degree(90)); 
+                iterateOverDirections_++;
+                break;
+
+            case 2 :
+                //w->writeContentsToFile(skyboxPrefix_+"BK.png");
+                w->writeContentsToFile(skyboxPrefix_+"2.png");
+                ce->yaw(Degree(90)); 
+                iterateOverDirections_++;
+                break;
+
+            case 3 :
+                //w->writeContentsToFile(skyboxPrefix_+"RT.png");
+                w->writeContentsToFile(skyboxPrefix_+"3.png");
+                ce->yaw(Degree(90)); 
+                ce->pitch(Degree(90)); 
+                iterateOverDirections_++;
+                break;
+
+            case 4 :
+                //w->writeContentsToFile(skyboxPrefix_+"UP.png");
+                w->writeContentsToFile(skyboxPrefix_+"4.png");
+                ce->pitch(Degree(180)); 
+                iterateOverDirections_++;
+                break;
+
+            case 5 :
+                //w->writeContentsToFile(skyboxPrefix_+"DN.png");
+                w->writeContentsToFile(skyboxPrefix_+"5.png");
+                ce->pitch(Degree(90));
+                iterateOverDirections_ =0;
+                takeScreenshot_ = false;
+                CommandExecutor::execute("pause");
+
+            }
+        }
+    }
 	
 	void SkyboxGenerator::createSkybox( ) 
 	{
-        //SkyboxGenerator* sbg = SkyboxGenerator::getInstancePtr();
-        //sbg->skyboxPrefix_;
 
-		/*unsigned int indice = 1; 
-	    char filename[30]; 
-	    char fn[1]; 
-	    // generate new names... 
-	    //sprintf(filename, "screenshot_%d.png", ++indice); 
-	    //sprintf(filename, fn, ++indice); 
-	    */ 
+        SkyboxGenerator::getInstance().takeScreenshot_ = true;
+        
 
-	     /*
-	    if(stopper == 1){ 
-	    //sprintf(filename, "stevecube_FR.bmp"); 
-	    mWindow->writeContentsToFile("MySky_FR.bmp");    
-	    } 
-	    else if(stopper == 2){ 
-	    //sprintf(filename, "stevecube_LF.bmp"); 
-	        cam->pitch(Ogre::Degree(90)); 
-	    mWindow->writeContentsToFile("MySky_LF.bmp"); 
-	    } 
-	    else if(stopper == 3){ 
-	    //sprintf(filename, "stevecube_BK.bmp"); 
-	        cam->pitch(Ogre::Degree(90)); 
-	    mWindow->writeContentsToFile("MySky_BK.bmp"); 
-	    } 
-	    else if(stopper == 4){ 
-	    //sprintf(filename, "stevecube_RT.bmp"); 
-	        cam->pitch(Ogre::Degree(90)); 
-	    mWindow->writeContentsToFile("MySky_RT.bmp"); 
-	    } 
-	    else if(stopper == 5){ 
-	    //sprintf(filename, "stevecube_UP.bmp"); 
-	        cam->yaw(Ogre::Degree(90)); 
-	    mWindow->writeContentsToFile("MySky_UP.bmp"); 
-	    } 
-	    else if(stopper == 6){ 
-	        cam->yaw(Ogre::Degree(-90)); 
-	    mWindow->writeContentsToFile("MySky_DN.bmp"); 
-	    } 
-	 
-	    stopper+=1; 
-	    if(stopper >= 7) 
-	    stopper = 1; 
-            */
+    
 	}
 }

@@ -29,23 +29,27 @@
 
 #include "core/OrxonoxClass.h"
 #include "util/Singleton.h"
+#include "tools/interfaces/Tickable.h"
  
  
 namespace orxonox
 {
-    class SkyboxGenerator : public virtual OrxonoxClass, public Singleton<SkyboxGenerator>
+    class SkyboxGenerator : public virtual OrxonoxClass, public Singleton<SkyboxGenerator>, public Tickable
     {
         friend class Singleton<SkyboxGenerator>;
     
         public:
             SkyboxGenerator();
             virtual ~SkyboxGenerator();
-            void createSkybox( );
+            static void createSkybox( );
             void setConfigValues( );
+            void tick(float dt);
 
         private:
             static SkyboxGenerator* singletonPtr_s;
-            std::string skyboxPrefix_;           
+            std::string skyboxPrefix_; 
+            bool takeScreenshot_;
+            int iterateOverDirections_;       
         
     };
 }
