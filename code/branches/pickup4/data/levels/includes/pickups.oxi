@@ -1,6 +1,6 @@
 <PickupRepresentation
-    name = "Small Health Boost"
-    description = "Adds a small amout of health to the ship."
+    pickupName = "Small Health Boost"
+    pickupDescription = "Adds a small amout of health to the ship."
     spawnerTemplate = "smallhealthpickupRepresentation"
 >
     <pickup>
@@ -9,8 +9,8 @@
 </PickupRepresentation>
 
 <PickupRepresentation
-    name = "Medium Health Boost"
-    description = "Adds a medium amout of health to the ship."
+    pickupName = "Medium Health Boost"
+    pickupDescription = "Adds a medium amout of health to the ship."
     spawnerTemplate = "mediumhealthpickupRepresentation"
 >
     <pickup>
@@ -19,8 +19,8 @@
 </PickupRepresentation>
 
 <PickupRepresentation
-    name = "Huge Health Boost"
-    description = "Adds a huge amout of health to the ship."
+    pickupName = "Huge Health Boost"
+    pickupDescription = "Adds a huge amout of health to the ship."
     spawnerTemplate = "hugehealthpickupRepresentation"
 >
     <pickup>
@@ -29,8 +29,8 @@
 </PickupRepresentation>
 
 <PickupRepresentation
-    name = "Crazy Madness Health Boost"
-    description = "Adds a crazy amout of health to the ship."
+    pickupName = "Crazy Madness Health Boost"
+    pickupDescription = "Adds a crazy amout of health to the ship."
     spawnerTemplate = "crazyhealthpickupRepresentation"
 >
     <pickup>
@@ -39,8 +39,8 @@
 </PickupRepresentation>
 
 <PickupRepresentation
-    name = "Double Pickup"
-    description = "Does stuff."
+    pickupName = "Double Pickup"
+    pickupDescription = "Does stuff."
     spawnerTemplate = "crazyhealthpickupRepresentation"
 >
     <pickup>

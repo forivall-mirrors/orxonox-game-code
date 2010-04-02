@@ -67,13 +67,13 @@ namespace orxonox // tolua_export
             @brief Set the name of the Pickupable represented by this PickupRepresentation.
             @param name The name.
             */
-            inline void setName(const std::string& name)
+            inline void setPickupName(const std::string& name)
                 { this->name_ = name; }
             /**
             @brief Set the description of the Pickupable represented by this PickupRepresentation.
             @param description The Description.
             */
-            inline void setDescription(const std::string& description)
+            inline void setPickupDescription(const std::string& description)
                 { this->description_ = description; }
             /**
             @brief Set the spawnerTemplate of the Pickupable represented by this PickupRepresentation.
@@ -106,12 +106,12 @@ namespace orxonox // tolua_export
             @brief Get the name of the Pickupable represented by this PickupRepresentation.
             @return Returns the name.
             */
-            inline const std::string& getName(void) { return this->name_; } // tolua_export
+            inline const std::string& getPickupName(void) { return this->name_; } // tolua_export
             /**
             @brief Get the description of the Pickupable represented by this PickupRepresentation.
             @return Returns the description.
             */
-            inline const std::string& getDescription(void) { return this->description_; } // tolua_export
+            inline const std::string& getPickupDescription(void) { return this->description_; } // tolua_export
             /**
             @brief Get the name of spawnerTemplate the Pickupable represented by this PickupRepresentation.
             @return Returns the name of the spawnerTemplate.

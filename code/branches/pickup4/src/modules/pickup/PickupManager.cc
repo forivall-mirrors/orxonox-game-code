@@ -126,19 +126,28 @@ namespace orxonox
         return dynamic_cast<PickupCarrier*>(pawn);
     }
     
-    unsigned int PickupManager::getNumCarrierChildren(PickupCarrier* carrier)
+    int PickupManager::getNumCarrierChildren(PickupCarrier* carrier)
     {
         if(carrier == NULL)
             return 0;
         return carrier->getNumCarrierChildren();
     }
             
-    PickupCarrier* PickupManager::getCarrierChild(unsigned int index, PickupCarrier* carrier)
+    PickupCarrier* PickupManager::getCarrierChild(int index, PickupCarrier* carrier)
     {
+        if(carrier == NULL)
+            return NULL;
         return carrier->getCarrierChild(index);
     }
     
-    PickupRepresentation* PickupManager::getPickupRepresentation(unsigned int index, PickupCarrier* carrier)
+    const std::string& PickupManager::getCarrierName(orxonox::PickupCarrier* carrier)
+    {
+        if(carrier == NULL)
+            return BLANKSTRING;
+        return carrier->getCarrierName();
+    }
+    
+    PickupRepresentation* PickupManager::getPickupRepresentation(int index, PickupCarrier* carrier)
     {
         Pickupable* pickup = carrier->getPickup(index);
         if(pickup == NULL)
@@ -148,18 +157,20 @@ namespace orxonox
     }
     
 
-    unsigned int PickupManager::getNumPickups(PickupCarrier* carrier)
+    int PickupManager::getNumPickups(PickupCarrier* carrier)
     {
+        if(carrier == NULL)
+            return 0;
         return carrier->getNumPickups();
     }
     
-    void PickupManager::dropPickup(unsigned int index, PickupCarrier* carrier)
+    void PickupManager::dropPickup(int index, PickupCarrier* carrier)
     {
         Pickupable* pickup = carrier->getPickup(index);
         carrier->drop(pickup);
     }
     
-    void PickupManager::usePickup(unsigned int index, PickupCarrier* carrier, bool use)
+    void PickupManager::usePickup(int index, PickupCarrier* carrier, bool use)
     {
         Pickupable* pickup = carrier->getPickup(index);
         pickup->setUsed(use);

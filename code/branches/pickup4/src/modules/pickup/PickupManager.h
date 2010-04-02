@@ -71,13 +71,15 @@ namespace orxonox // tolua_export
             // tolua_begin
             orxonox::PickupCarrier* getPawn(void);
             
-            unsigned int getNumCarrierChildren(orxonox::PickupCarrier* carrier);
-            orxonox::PickupCarrier* getCarrierChild(unsigned int index, orxonox::PickupCarrier* carrier);
+            int getNumCarrierChildren(orxonox::PickupCarrier* carrier);
+            orxonox::PickupCarrier* getCarrierChild(int index, orxonox::PickupCarrier* carrier);
             
-            unsigned int getNumPickups(orxonox::PickupCarrier* carrier);
-            PickupRepresentation* getPickupRepresentation(unsigned int index, orxonox::PickupCarrier* carrier);
-            void dropPickup(unsigned int index, orxonox::PickupCarrier* carrier);
-            void usePickup(unsigned int index, orxonox::PickupCarrier* carrier, bool use);
+            const std::string& getCarrierName(orxonox::PickupCarrier* carrier);
+            
+            int getNumPickups(orxonox::PickupCarrier* carrier);
+            PickupRepresentation* getPickupRepresentation(int index, orxonox::PickupCarrier* carrier);
+            void dropPickup(int index, orxonox::PickupCarrier* carrier);
+            void usePickup(int index, orxonox::PickupCarrier* carrier, bool use);
             // tolua_end
             
         private:
