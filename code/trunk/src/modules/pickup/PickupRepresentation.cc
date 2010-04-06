@@ -155,11 +155,11 @@ namespace orxonox
     {
         StaticEntity* representation = new StaticEntity(spawner);
         Billboard* sphere = new Billboard(spawner);
-        sphere->setColour(ColourValue(0.95, 0.85, 0.27));
+        sphere->setColour(ColourValue(0.95f, 0.85f, 0.27f));
         sphere->setMaterial("Sphere2");
-        sphere->setScale(0.1);
+        sphere->setScale(0.1f);
         Billboard* icon = new Billboard(spawner);
-        icon->setColour(ColourValue(0.89, 0.79, 0.08));
+        icon->setColour(ColourValue(0.89f, 0.79f, 0.08f));
         icon->setMaterial("Asterix");
         icon->setScale(0.5);
         sphere->attach(icon);
