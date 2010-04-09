@@ -15,7 +15,7 @@ P.layoutString = "PickupInventory.layout"
 P.carrierList = {}
 
 function P.init()
-    
+    carrierList = {}
 end
 
 function P.show()
@@ -26,6 +26,8 @@ function P.show()
     local carrier = pickupManager:getPawn()
     
     local root = winMgr:getWindow("orxonox/PickupInventory/Inventory")
+    
+    P.carrierList = {}
     
     P.getCarrierList(carrier)    
     for k,v in pairs(P.carrierList) do
@@ -130,12 +132,11 @@ end
 
 function P.InventoryUseButton_clicked(e)
     local arguments = P.windowToCarrierHelper(e)
-    debug(0, "(Buh: " .. arguments[1] .. "|" .. arguments[2] .. ")")
-    orxonox.PickupManager:getInstance():usePickup(arguments[2], P.carrierList[arguments[1]], 1)
+    orxonox.PickupManager:getInstance():usePickup(arguments[2], P.carrierList[arguments[1]], true)
 end
 
 function P.InventoryDropButton_clicked(e)
-    local arguments = P.windowToCarierHelper(e)
+    local arguments = P.windowToCarrierHelper(e)
     orxonox.PickupManager:getInstance():dropPickup(arguments[2], P.carrierList[arguments[1]])
 end
 
