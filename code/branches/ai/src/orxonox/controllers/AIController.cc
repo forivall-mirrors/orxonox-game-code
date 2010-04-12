@@ -49,6 +49,8 @@ namespace orxonox
     AIController::~AIController()
     {
         if (this->state_ == MASTER) freeAllSlaves();
+        if (this->state_ == SLAVE) unregisterSlave();
+        this->slaves.clear();
     }
 
     void AIController::action()
@@ -59,12 +61,11 @@ namespace orxonox
         if (this->state_ == FREE)//FREE
         {
 
+            //this->state_ = MASTER;
             // search master
-            random = rnd(maxrand);
-            if (random < 50 && (!this->target_))
+            //random = rnd(maxrand);
+            //if (random < 101 && (!this->target_))
                 this->searchNewMaster();
-
-
 
         }
 
@@ -77,6 +78,7 @@ namespace orxonox
         {
             // command slaves
             this->commandSlaves();
+
             // search enemy
             random = rnd(maxrand);
             if (random < 15 && (!this->target_))
@@ -129,14 +131,14 @@ namespace orxonox
             if (this->target_)
                 this->aimAtTarget();
 
-            /*if (this->bHasTargetPosition_)
+            if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();
-*/
+
             if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
                 this->getControllableEntity()->fire(0);
         }
 
-        if (this->state_==SLAVE)
+        if (this->state_ == SLAVE)
         {
 
             if (this->bHasTargetPosition_)

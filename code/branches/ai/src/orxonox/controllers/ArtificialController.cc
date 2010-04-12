@@ -43,6 +43,8 @@ namespace orxonox
         RegisterObject(ArtificialController);
 
         this->target_ = 0;
+        this->myMaster_ = 0;
+        //this->slaveNumber_ = -1;
 	this->team_ = -1;//new
 	this->state_ = FREE;//new
         this->bShooting_ = false;
@@ -94,8 +96,16 @@ namespace orxonox
         return this->state_;
     }
 
+    void ArtificialController::unregisterSlave() {
+        if(myMaster_)
+        {
+            myMaster_->slaves.remove(this);
+        }
+    }
+
     void ArtificialController::searchNewMaster()
     {
+
         if (!this->getControllableEntity())
             return;
 
@@ -105,49 +115,64 @@ namespace orxonox
         //go through all pawns
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-            //same team? no: continue
+
+            //same team?
             if (!ArtificialController::sameTeam(this->getControllableEntity(), static_cast<ControllableEntity*>(*it), this->getGametype()))
                 continue;
 
-            //has it an ArtificialController and is it a master? no: continue
+            //has it an ArtificialController and is it a master?
+            if (!it->getController())
+                continue;
 
             ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
-            if (controller && controller->getState() != MASTER)
+            if (!controller || controller->getState() != MASTER)
                 continue;
 
             //is pawn oneself? && is pawn in range?
-            if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity() /*&& it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) < 1000 */)
+            if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity()) //&& it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) < 1000 
             {
-                //this->target_ = (*it);
-                //this->targetPosition_ = it->getPosition();
                 this->state_ = SLAVE;
-
+                this->myMaster_ = controller;
+                controller->slaves.push_back(this);
+                break;
             }
         }//for
 
         //hasn't encountered any masters in range? -> become a master
-        if (state_!=SLAVE) state_=MASTER; // keep in mind: what happens when two masters encounter eache other? -> has to be evaluated in the for loop of within master mode in AIcontroller...
+        if (state_!=SLAVE) state_ = MASTER; // keep in mind: what happens when two masters encounter eache other? -> has to be evaluated in the for loop within master mode in AIcontroller...
+
     }
 
     void ArtificialController::commandSlaves() {
 
+        for(std::list<ArtificialController*>::iterator it = slaves.begin(); it != slaves.end(); it++)
+        {
+            (*it)->setTargetPosition(this->getControllableEntity()->getPosition());
+        }
+/*
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-            ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
-            if (controller && controller->getState() != MASTER)
+
+            if (!it->getController())
                 continue;
 
+            ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
+            if (!controller || controller->getState() != SLAVE)
+                continue;
+            //controller->setTargetPosition(this->getControllableEntity()->getPosition());
             controller->targetPosition_ = this->getControllableEntity()->getPosition();
+            controller->bHasTargetPosition_ = true;
         }
-
+*/
     }
 
     void ArtificialController::freeAllSlaves()
     {
+
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
             ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
-            if (controller && controller->getState() != MASTER)
+            if (controller && controller->getState() != SLAVE)
                 continue;
 
             controller->state_ = FREE;

@@ -60,9 +60,13 @@ namespace orxonox
 
             enum State {SLAVE, MASTER, FREE};
             int getState();
+            std::list<ArtificialController*> slaves;
+            void unregisterSlave();
             void searchNewMaster();
             void commandSlaves();
             void freeAllSlaves();
+
+            ArtificialController *myMaster_;
 
             void setTargetPosition(const Vector3& target);
             void searchRandomTargetPosition();
