@@ -223,7 +223,7 @@ namespace orxonox
     std::list<PickupCarrier*>* SpaceShip::getCarrierChildren(void)
     {
         std::list<PickupCarrier*>* list = new std::list<PickupCarrier*>();
-        list->push_front(engine_);
+        list->push_front(this->engine_);
         return list;
     }
 }

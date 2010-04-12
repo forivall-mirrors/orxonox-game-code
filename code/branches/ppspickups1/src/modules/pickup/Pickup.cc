@@ -235,7 +235,13 @@ namespace orxonox
 
     /**
     @brief
-        Starts the Pickup duration Timer.
+        Starts the pickup duration timer.
+        After the specified durationTime has expired the function pickupTimerCallback is called.
+        pickupTimerCallback can be overloaded and thus the desired functionality can be implemented.
+    @param durationTime
+        The duration after which the expires and the callback function is called.
+    @return
+        Returns true if the pickup duration timer was started successfully, false if not.
     */
     bool Pickup::startPickupTimer(float durationTime)
     {
@@ -244,12 +250,12 @@ namespace orxonox
             COUT(1) << "Invalid durationTime in pickup." << std::endl;
             return false;
         }
-        if (false) /* TODO: Check if Timer is already running */
+        if (this->durationTimer_.isActive()) //!< Check if Timer is already running
         {
             COUT(1) << "Pickup durationTimer already in use." << std::endl;
             return false;
         }
-        this->durationTimer_.setTimer(durationTime, false, createExecutor(createFunctor(&Pickup::PickupTimerCallBack, this)));
+        this->durationTimer_.setTimer(durationTime, false, createExecutor(createFunctor(&Pickup::pickupTimerCallback, this)));
         return true;
     }
 }

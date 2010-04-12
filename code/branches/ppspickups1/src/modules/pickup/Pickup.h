@@ -136,7 +136,7 @@ namespace orxonox
 
             bool startPickupTimer(float durationTime);
 
-            virtual void PickupTimerCallBack(void) {}
+            virtual void pickupTimerCallback(void) {}
 
             /**
             @brief Set the activation type of the pickup.
@@ -156,6 +156,9 @@ namespace orxonox
 
         private:
             void initialize(void); //!< Initializes the member variables.
+            
+            //TODO: Problems, when there are more Timers needed? Solutions?
+            Timer durationTimer_; //!< Timer at the disposal of each Class implementing Pickup.
 
             pickupActivationType::Value activationType_; //!< The activation type of the Pickup.
             pickupDurationType::Value durationType_; //!< The duration type of the pickup.
@@ -164,9 +167,6 @@ namespace orxonox
             static const std::string activationTypeOnUse_s;
             static const std::string durationTypeOnce_s;
             static const std::string durationTypeContinuous_s;
-
-            float durationTime_;
-            Timer durationTimer_;
     };
 
 }

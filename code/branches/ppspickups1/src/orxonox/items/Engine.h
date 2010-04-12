@@ -114,7 +114,7 @@ namespace orxonox
 
             virtual const Vector3& getCarrierPosition(void);
 
-            /* Should not be here */
+            //TODO: Move to protected or private. How?
             inline void setSpeedAdd(float speedAdd)
                 { this->speedAdd_=speedAdd; }
             inline void setSpeedMultiply(float speedMultiply)

@@ -93,4 +93,4 @@ namespace orxonox {
     };
 }
 
-#endif // _HealthPickup_H__
+#endif // _SpeedPickup_H__
