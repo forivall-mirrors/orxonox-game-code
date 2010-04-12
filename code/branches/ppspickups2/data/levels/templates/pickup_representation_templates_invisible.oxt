@@ -1,11 +1,11 @@
-<Template name=invisiblepickupRepresentation>
+<Template name=smallinvisiblepickupRepresentation>
     <PickupRepresentation>
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="1,1,1" material="Sphere2" scale=0.1>
+                    <Billboard position="0,0,0" colour="0.22,0.32,0.86" material="Sphere2" scale=0.1>
                         <attached>
-                            <Billboard position="0,0,0" colour="0,0,0" material="Cross" scale=0.3 />
+                            <Billboard position="0,0,0" colour="0.06,0.14,0.63" material="Eye" scale=0.1 />
                         </attached>
                     </Billboard>
                 </attached>
@@ -14,10 +14,59 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=invisiblepickup>
+<Template name=smalltinvisiblepickup>
+  <InvisiblePickup 
+    duration = 5.0
+    activaionType = "immediate"
+    durationType = "once"
+  />
+</Template>
+
+<Template name=mediuminvisiblepickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.22,0.32,0.86" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.06,0.14,0.63" material="Eye" scale=0.1 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=mediuminvisiblepickup>
   <InvisiblePickup 
     duration = 10.0
     activaionType = "immediate"
     durationType = "once"
   />
 </Template>
+
+<Template name=hugeinvisiblepickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.22,0.32,0.86" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.06,0.14,0.63" material="Eye" scale=0.1 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=hugeinvisiblepickup>
+  <InvisiblePickup 
+    duration = 20.0
+    activaionType = "immediate"
+    durationType = "once"
+  />
+</Template>
+
