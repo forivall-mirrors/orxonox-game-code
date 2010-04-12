@@ -74,9 +74,9 @@ namespace orxonox
     */
     void SpeedPickup::initialize(void)
     {
-        this->duration_ = 0.0;
-        this->speedAdd_ = 0.0;
-        this->speedMultiply_ = 1.0;
+        this->duration_ = 0.0f;
+        this->speedAdd_ = 0.0f;
+        this->speedMultiply_ = 1.0f;
 
         this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
@@ -133,20 +133,28 @@ namespace orxonox
         if(!this->isPickedUp())
             return;
 
+        Engine* engine = this->carrierToEngineHelper();
+        if(engine == NULL) //!< If the PickupCarrier is no Engine, then this pickup is useless and therefore is destroyed.
+            this->destroy();
+        
         //! If the pickup has transited to used.
         if(this->isUsed())
         {
-            Engine* engine = this->carrierToEngineHelper();
-            if(engine == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
-                this->destroy();
-
             this->startPickupTimer(this->getDuration());
             engine->setSpeedAdd(this->getSpeedAdd());
             engine->setSpeedMultiply(this->getSpeedMultiply());
         }
+        else
+        {
+            engine->setSpeedAdd(0.0f);
+            engine->setSpeedMultiply(1.0f);
+            
+            if(this->isOnce())
+            {
+                this->destroy();
+            }
+        }
     }
-
-
 
     /**
     @brief
@@ -249,12 +257,8 @@ namespace orxonox
         }
     }
 
-    void SpeedPickup::PickupTimerCallBack(void) {
-            Engine* engine = this->carrierToEngineHelper();
-            if(engine == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
-                this->destroy();
-
-            engine->setSpeedAdd(0.0f);
-            engine->setSpeedMultiply(1.0f);
+    void SpeedPickup::pickupTimerCallback(void)
+    {       
+        this->setUsed(false);
     }
 }

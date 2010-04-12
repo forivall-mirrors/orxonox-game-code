@@ -37,7 +37,7 @@
 #include "pickup/PickupPrereqs.h"
 
 #include <string>
-#include <worldentities/pawns/Pawn.h>
+#include "worldentities/pawns/Pawn.h"
 #include "worldentities/StaticEntity.h"
 
 #include "pickup/Pickup.h"
@@ -77,6 +77,8 @@ namespace orxonox {
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
+            
+            virtual void pickupTimerCallback(void); //!< Function that gets called when timer ends.
 
             void setDuration(float duration);
             void setSpeedAdd(float speedAdd);
@@ -84,7 +86,6 @@ namespace orxonox {
 
         private:
             void initialize(void); //!< Initializes the member variables.
-            void PickupTimerCallBack(void); //!< Function that gets called when timer ends.
             Engine* carrierToEngineHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
 
             float duration_; //!< The health that is transferred to the Pawn.
