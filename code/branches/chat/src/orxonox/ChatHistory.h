@@ -26,24 +26,45 @@
  *
  */
 
-#include <list>
+#include <deque>
+#include <string>
+#include <fstream>
+#include <iostream>
+
+#define TEST 0
+
+#ifndef TEST
 #include <core/BaseObject.h>
+#endif
 
 #ifndef _ChatHistory_H__
 #define _ChatHistory_H__
 
+
 /* Class to implement chat history */
+#ifndef TEST
 namespace orxonox
 {
+#endif
+
+  /* constructor */
+  #ifndef TEST
   class _OrxonoxExport ChatHistory : public BaseObject, public ChatListener
+  #else
+  class ChatHistory 
+  #endif
   {
     public:
       /* constructors, destructors */
+      #ifndef TEST
       ChatHistory(BaseObject* creator);
+      #else
+      ChatHistory();
+      #endif
       virtual ~ChatHistory();
 
   
-    protected:
+    //protected:
       /** what to do with incoming chat 
        * 
        * \param message The incoming message 
@@ -57,11 +78,14 @@ namespace orxonox
        * \return 0 for success, other for error
        */
       int syncLog();
+
+      /** debug-print */
+      void debug_printhist();
       
     private:
       /* FIELDS */
       /** Vector to store the history in */
-      list<std::string> hist_buffer;
+      std::deque<std::string> hist_buffer;
 
       /** Maximum number of lines stored in this history */
       unsigned int hist_maxlines;
@@ -73,7 +97,7 @@ namespace orxonox
       std::string hist_logfile_path;
 
       /** Output file stream for logfile */
-      ofstream hist_logfile;
+      std::ofstream hist_logfile;
 
 
 
@@ -98,8 +122,15 @@ namespace orxonox
        * \return 0 for success,s other for error
        */
       int chat_hist_openlog();
-  }
+
+
+      /** close logfile */
+      void chat_hist_closelog();
+  };
+
+#ifndef TEST
 }
+#endif
 
 
 #endif /* _ChatHistory_H__ */
