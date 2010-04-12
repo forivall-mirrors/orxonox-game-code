@@ -48,6 +48,7 @@ namespace orxonox
 
     AIController::~AIController()
     {
+        if (this->state_ == MASTER) freeAllSlaves();
     }
 
     void AIController::action()
@@ -55,7 +56,7 @@ namespace orxonox
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
 
-        if (this->state_==0)
+        if (this->state_ == FREE)//FREE
         {
 
             // search master
@@ -63,17 +64,19 @@ namespace orxonox
             if (random < 50 && (!this->target_))
                 this->searchNewMaster();
 
-            //this->state_=1;
+
 
         }
 
-        if (this->state_==-1)
+        if (this->state_ == SLAVE)//SLAVE
         {
-            
+               // this->bShooting_ = true;
         }
 
-        if (this->state_==1)
+        if (this->state_ == MASTER)//MASTER
         {
+            // command slaves
+            this->commandSlaves();
             // search enemy
             random = rnd(maxrand);
             if (random < 15 && (!this->target_))
@@ -105,10 +108,10 @@ namespace orxonox
                 this->searchRandomTargetPosition();
 
             // shoot
-            random = rnd(maxrand);
+            /*random = rnd(maxrand);
             if (random < 75 && (this->target_ && !this->bShooting_))
                 this->bShooting_ = true;
-
+*/
             // stop shooting
             random = rnd(maxrand);
             if (random < 25 && (this->bShooting_))
@@ -121,22 +124,25 @@ namespace orxonox
         if (!this->isActive())
             return;
 
-        if (this->state_==1)
+        if (this->state_ == MASTER)
         {
             if (this->target_)
                 this->aimAtTarget();
 
-            if (this->bHasTargetPosition_)
+            /*if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();
-
+*/
             if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
                 this->getControllableEntity()->fire(0);
         }
 
-        if (this->state_==-1)
+        if (this->state_==SLAVE)
         {
-            //this->state_=1;
 
+            if (this->bHasTargetPosition_)
+                this->moveToTargetPosition();
+
+        //this->getControllableEntity()->fire(0);
 
         }
 

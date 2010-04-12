@@ -44,7 +44,7 @@ namespace orxonox
 
         this->target_ = 0;
 	this->team_ = -1;//new
-	this->state_ = 0;//new
+	this->state_ = FREE;//new
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
         this->targetPosition_ = Vector3::ZERO;
@@ -112,7 +112,7 @@ namespace orxonox
             //has it an ArtificialController and is it a master? no: continue
 
             ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
-            if (controller && controller->getState()!=1)
+            if (controller && controller->getState() != MASTER)
                 continue;
 
             //is pawn oneself? && is pawn in range?
@@ -120,14 +120,41 @@ namespace orxonox
             {
                 //this->target_ = (*it);
                 //this->targetPosition_ = it->getPosition();
-                this->state_ = -1;
+                this->state_ = SLAVE;
 
             }
         }//for
 
         //hasn't encountered any masters in range? -> become a master
-        if (state_!=-1) state_=1; // keep in mind: what happens when two masters encounter eache other? -> has to be evaluated in the for loop of within master mode in AIcontroller...
+        if (state_!=SLAVE) state_=MASTER; // keep in mind: what happens when two masters encounter eache other? -> has to be evaluated in the for loop of within master mode in AIcontroller...
     }
+
+    void ArtificialController::commandSlaves() {
+
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
+        {
+            ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
+            if (controller && controller->getState() != MASTER)
+                continue;
+
+            controller->targetPosition_ = this->getControllableEntity()->getPosition();
+        }
+
+    }
+
+    void ArtificialController::freeAllSlaves()
+    {
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
+        {
+            ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
+            if (controller && controller->getState() != MASTER)
+                continue;
+
+            controller->state_ = FREE;
+        }
+
+    }
+
 
     void ArtificialController::setTargetPosition(const Vector3& target)
     {
