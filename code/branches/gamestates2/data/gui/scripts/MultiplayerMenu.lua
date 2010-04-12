@@ -66,7 +66,7 @@ function P.MultiplayerStartButton_clicked(e)
 end
 
 function P.MultiplayerBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideGUI(P.name)
 end
 
 return P

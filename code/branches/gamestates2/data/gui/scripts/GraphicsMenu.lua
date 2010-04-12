@@ -191,7 +191,7 @@ function P.GraphicsFullscreenCheckbox_clicked(e)
 end
 
 function P.GraphicsBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideGUI(P.name)
 end
 
 return P

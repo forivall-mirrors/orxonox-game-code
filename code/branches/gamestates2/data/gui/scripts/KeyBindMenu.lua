@@ -125,7 +125,7 @@ function P.createLine(k)
     plus:setSize(CEGUI.UVector2(CEGUI.UDim(0, addWidth), CEGUI.UDim(0.7, 0)))
     plus:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
     plus:setText("add")
-    orxonox.GUIManager:subscribeEventHelper(plus, "Clicked", P.filename .. ".KeyBindPlus_clicked")
+    orxonox.GUIManager:subscribeEventHelper(plus, "Clicked", P.name .. ".KeyBindPlus_clicked")
     line:addChildWindow(plus)
     offset = offset + addWidth + spaceWidth
 
@@ -140,8 +140,8 @@ function P.createLine(k)
         local buttonWidth = size[2]
         button:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0.7, 0)))
         button:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
-        orxonox.GUIManager:subscribeEventHelper(button, "Clicked", P.filename .. ".KeyBindButton_clicked")
-        --button:subscribeScriptedEvent("EventClicked", P.filename .. ".KeyBindButton_clicked")
+        orxonox.GUIManager:subscribeEventHelper(button, "Clicked", P.name .. ".KeyBindButton_clicked")
+        --button:subscribeScriptedEvent("EventClicked", P.name .. ".KeyBindButton_clicked")
         line:addChildWindow(button)
         offset = offset + buttonWidth
 
@@ -149,7 +149,7 @@ function P.createLine(k)
         clear:setSize(CEGUI.UVector2(CEGUI.UDim(0, clearWidth), CEGUI.UDim(0.7, 0)))
         clear:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
         clear:setText("X")
-        orxonox.GUIManager:subscribeEventHelper(clear, "Clicked", P.filename .. ".KeyBindClear_clicked")
+        orxonox.GUIManager:subscribeEventHelper(clear, "Clicked", P.name .. ".KeyBindClear_clicked")
         line:addChildWindow(clear)
         offset = offset + clearWidth + spaceWidth
     end

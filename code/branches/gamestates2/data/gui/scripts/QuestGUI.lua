@@ -10,7 +10,7 @@ function P.show()
 
     local questsList = winMgr:getWindow("orxonox/QuestGUI/QuestsList")
 
-    local window = questManager:getQuestGUI(P.filename)
+    local window = questManager:getQuestGUI(P.name)
 
     questsList:addChildWindow(window)
 

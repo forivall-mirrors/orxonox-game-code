@@ -168,7 +168,7 @@ function P.AudioThemeListbox_changed(e)
 end
 
 function P.AudioBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideGUI(P.name)
 end
 
 return P

@@ -94,7 +94,7 @@ function P.MouseInvertCheckbox_clicked(e)
 end
 
 function P.MouseControlsBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideGUI(P.name)
 end
 
 return P

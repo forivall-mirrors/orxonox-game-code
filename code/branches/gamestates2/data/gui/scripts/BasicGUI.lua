@@ -7,9 +7,9 @@ _G[_REQUIREDNAME or "BasicGUI"] = P
 P.overlay = nil
 
 -- constructor of the GUI
-function P:new(_filename, _gui, _visible)
+function P:new(_name, _gui, _visible)
     local newElement = {
-        filename = _filename,
+        name = _name,
         gui = _gui,
         visible = _visible or false
     } or {}
@@ -24,9 +24,9 @@ end
 
 -- Override this function if you want to change one of the three input parameters:
 -- showCursor = true, useKeyboard = true and blockJoyStick = false
--- But don't forget to stick to the naming convention ("GUI_" .. self.filename)
+-- But don't forget to stick to the naming convention ("GUI_" .. self.name)
 function P:createInputState()
-    self.inputState = guiMgr:createInputState("GUI_" .. self.filename)
+    self.inputState = guiMgr:createInputState("GUI_" .. self.name)
 end
 
 -- hide function for the GUI
@@ -42,7 +42,7 @@ function P:show()
 end
 
 function P:load()
-    self.window = winMgr:loadWindowLayout(self.filename .. ".layout")
+    self.window = winMgr:loadWindowLayout(self.name .. ".layout")
     self:createInputState()
     self:init()
     return self

@@ -28,7 +28,7 @@ function P.SettingsResetSettingsButton_clicked(e)
 end
 
 function P.SettingsBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideGUI(P.name)
 end
 
 return P

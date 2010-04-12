@@ -38,7 +38,7 @@ function P.SingleplayerStartButton_clicked(e)
 end
 
 function P.SingleplayerBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideGUI(P.name)
 end
 
 return P
