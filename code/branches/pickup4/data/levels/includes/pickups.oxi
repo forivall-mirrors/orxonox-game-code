@@ -1,6 +1,7 @@
 <PickupRepresentation
     pickupName = "Small Health Boost"
     pickupDescription = "Adds a small amout of health to the ship."
+    inventoryRepresentation = "SmallHealth"
     spawnerTemplate = "smallhealthpickupRepresentation"
 >
     <pickup>
@@ -12,6 +13,7 @@
     pickupName = "Medium Health Boost"
     pickupDescription = "Adds a medium amout of health to the ship."
     spawnerTemplate = "mediumhealthpickupRepresentation"
+    inventoryRepresentation = "MediumHealth"
 >
     <pickup>
         <HealthPickup template=mediumhealthpickup />
@@ -22,6 +24,7 @@
     pickupName = "Huge Health Boost"
     pickupDescription = "Adds a huge amout of health to the ship."
     spawnerTemplate = "hugehealthpickupRepresentation"
+    inventoryRepresentation = "HugeHealth"
 >
     <pickup>
         <HealthPickup template=hugehealthpickup />
@@ -32,6 +35,7 @@
     pickupName = "Crazy Madness Health Boost"
     pickupDescription = "Adds a crazy amout of health to the ship."
     spawnerTemplate = "crazyhealthpickupRepresentation"
+    inventoryRepresentation = "CrazyMadnessHealth"
 >
     <pickup>
         <HealthPickup template=crazyhealthpickup />
@@ -45,5 +49,43 @@
 >
     <pickup>
         <PickupCollection template=doublepickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Use Pickup"
+    pickupDescription = "Uses all pickups you have."
+    spawnerTemplate = "usepickupRepresentation"
+    inventoryRepresentation = "usePickup"
+>
+    <pickup>
+        <MetaPickup metaType="use" />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Drop Pickup"
+    pickupDescription = "Drops all pickups you have."
+    spawnerTemplate = "droppickupRepresentation"
+    inventoryRepresentation = "dropPickup"
+>
+    <pickup>
+        <MetaPickup metaType="drop" />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Huge Health Boost"
+    pickupDescription = "Adds a huge amout of health to the ship."
+    spawnerTemplate = "hugehealthpickupRepresentation"
+    inventoryRepresentation = "HugeHealth"
+>
+    <pickup>
+          <HealthPickup
+    health = 100
+    healthType = "limited"
+    activationType = "onUse"
+    durationType = "once"
+  />
     </pickup>
 </PickupRepresentation>
