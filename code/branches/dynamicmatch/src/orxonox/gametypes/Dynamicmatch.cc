@@ -35,8 +35,8 @@
 #include "worldentities/pawns/Pawn.h"
 #include "core/ConfigValueIncludes.h"
 #include "interfaces/TeamColourable.h"
-
-//toDO: maybe the has entered the game function is not enough... look at TeamDeathmath
+//#include "Engine.h"
+//timer mit new erstellen
 namespace orxonox
 {
     CreateUnloadableFactory(Dynamicmatch);
@@ -57,8 +57,6 @@ namespace orxonox
 void Dynamicmatch::setPlayerColour(PlayerInfo* player) // not sure if this is the right place - helper function
 {
 	std::map<PlayerInfo*, int>::const_iterator it_player = this->playerParty_.find(player);
-        //if (it_player != this->playerParty_.end() && it_player->second >= 0 && it_player->second < static_cast<int>(this->partyColours_.size()))
-        // all players are the same colour at the beginning!!
             Pawn* pawn = dynamic_cast<Pawn*>(player->getControllableEntity());
             if (pawn)
             {
@@ -99,20 +97,20 @@ void Dynamicmatch::setConfigValues()
         SetConfigValue(partyColours_, defaultcolours);
     }
 
-bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)//
+bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)//tested - works fine
     {	
 
         if (victim && victim->getPlayer())
-        { 	//TODO: evtl. ->getPlayer() zugriffe auslagern fuer mehr uebersicht
-		//Case: 1. onlyChasers==false und victim ist chaser
-		if ((!onlyChasers)&&(playerParty_[originator->getPlayer()]==chaser)) {
+        {
+		//Case 1: a chaser hits piggy // BUG: playerParty_[originator->getPlayer()]==chaser) is true even if victim is a chaser
+		if ((!onlyChasers)&&(playerParty_[originator->getPlayer()]==chaser)&&playerParty_[victim->getPlayer()]==piggy) {
 			std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
                     if (it != this->players_.end())
                     {
                         it->second.frags_++;
                     }
 		}
-		//Case 2: onlyChasers==false und victim ist piggy
+		//Case 2: piggy hits chaser
 		else if ((!onlyChasers)&&(playerParty_[originator->getPlayer()]==piggy)){
 			//partyswitch: victim bcomes piggy and the orginator(piggy) becomes chaser
 			playerParty_[victim->getPlayer()]=piggy;
@@ -132,6 +130,8 @@ bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)//
 			playerParty_[victim->getPlayer()]=piggy;
 			onlyChasers=false;
 			setPlayerColour(victim->getPlayer()); //victim colour
+		//victim - Boost ueber setBoostFactor(float factor) //vermutlich muss victim gecastet werden
+		// timer aufrufen - nach 5 Sekunden wieder auf normalgeschwindigkeit setzen
 		std::string message("First victim.");
         	COUT(0) << message << std::endl;
 		Host::Broadcast(message);
@@ -187,30 +187,22 @@ void Dynamicmatch::start()
     }
 
     
-void Dynamicmatch::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)
+void Dynamicmatch::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn) //set party + colouring
     {
         if (!player)
             return;
 	playerParty_[player]=chaser;//playerparty
 	// Set the playercolour
  	Dynamicmatch::setPlayerColour(player);
-
-	
     }
 
-    void Dynamicmatch::playerEntered(PlayerInfo* player) //standardfunction + party + colouring
+    void Dynamicmatch::playerEntered(PlayerInfo* player) //standardfunction
     {
 
 	if (!player)// only for safety
             return;
 
         Gametype::playerEntered(player);
-	
-	//playerParty_[player]=chaser;//playerparty
-	
-        // Set the playercolour
-        //Dynamicmatch::setPlayerColour(player);
-	
 	
         const std::string& message = player->getName() + " entered the game";
         COUT(0) << message << std::endl;
