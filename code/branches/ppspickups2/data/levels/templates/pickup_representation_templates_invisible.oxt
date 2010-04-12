@@ -5,7 +5,7 @@
                 <attached>
                     <Billboard position="0,0,0" colour="0.22,0.32,0.86" material="Sphere2" scale=0.1>
                         <attached>
-                            <Billboard position="0,0,0" colour="0.06,0.14,0.63" material="Eye" scale=0.1 />
+                            <Billboard position="0,0,0" colour="0.06,0.14,0.63" material="Eye" scale=0.5 />
                         </attached>
                     </Billboard>
                 </attached>
@@ -14,7 +14,7 @@
     </PickupRepresentation>
 </Template>
 
-<Template name=smalltinvisiblepickup>
+<Template name=smallinvisiblepickup>
   <InvisiblePickup 
     duration = 5.0
     activaionType = "immediate"
@@ -29,7 +29,7 @@
                 <attached>
                     <Billboard position="0,0,0" colour="0.22,0.32,0.86" material="Sphere2" scale=0.1>
                         <attached>
-                            <Billboard position="0,0,0" colour="0.06,0.14,0.63" material="Eye" scale=0.1 />
+                            <Billboard position="0,0,0" colour="0.06,0.14,0.63" material="Eye" scale=0.7 />
                         </attached>
                     </Billboard>
                 </attached>
@@ -53,7 +53,7 @@
                 <attached>
                     <Billboard position="0,0,0" colour="0.22,0.32,0.86" material="Sphere2" scale=0.1>
                         <attached>
-                            <Billboard position="0,0,0" colour="0.06,0.14,0.63" material="Eye" scale=0.1 />
+                            <Billboard position="0,0,0" colour="0.06,0.14,0.63" material="Eye" scale=0.9 />
                         </attached>
                     </Billboard>
                 </attached>
