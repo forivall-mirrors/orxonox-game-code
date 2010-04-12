@@ -33,10 +33,12 @@
 #include "network/Host.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
+#include "worldentities/pawns/SpaceShip.h"
 #include "core/ConfigValueIncludes.h"
 #include "interfaces/TeamColourable.h"
-//#include "Engine.h"
-//timer mit new erstellen
+#include "items/Engine.h"
+#include "tools/Timer.h"
+
 namespace orxonox
 {
     CreateUnloadableFactory(Dynamicmatch);
@@ -52,6 +54,21 @@ namespace orxonox
 	this->gameEnded_ =false;
 	this->timesequence_ = static_cast<int>(this->gameTime_);
 	this->friendlyfire=true;
+    }
+
+    void Dynamicmatch::setConfigValues()
+    {
+        SetConfigValue(gameTime_, 180);//just for test cases
+	SetConfigValue(friendlyfire, true);
+	static ColourValue colours[] =
+        {
+	    ColourValue(0.3f, 0.3f, 1.0f),
+            ColourValue(1.0f, 0.3f, 0.3f)
+            
+        };
+        static std::vector<ColourValue> defaultcolours(colours, colours + sizeof(colours) / sizeof(ColourValue));
+
+        SetConfigValue(partyColours_, defaultcolours);
     }
 
 void Dynamicmatch::setPlayerColour(PlayerInfo* player) // not sure if this is the right place - helper function
@@ -81,22 +98,6 @@ return this->playerParty_[player];
 }
 
 
-
-void Dynamicmatch::setConfigValues()
-    {
-        SetConfigValue(gameTime_, 180);//just for test cases
-	SetConfigValue(friendlyfire, true);
-	static ColourValue colours[] =
-        {
-	    ColourValue(0.3f, 0.3f, 1.0f),
-            ColourValue(1.0f, 0.3f, 0.3f)
-            
-        };
-        static std::vector<ColourValue> defaultcolours(colours, colours + sizeof(colours) / sizeof(ColourValue));
-
-        SetConfigValue(partyColours_, defaultcolours);
-    }
-
 bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)//tested - works fine
     {	
 
@@ -119,10 +120,20 @@ bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)//tested - wor
 			const std::string& messageVictim = victim->getPlayer()->getName() + " is victim";
         		COUT(0) << messageVictim << std::endl;
 			Host::Broadcast(messageVictim);
-		//party switch -> colour switch
-		
-		setPlayerColour(victim->getPlayer()); //victim colour
-		setPlayerColour(originator->getPlayer());//orginator colour
+
+			//party switch -> colour switch		
+			setPlayerColour(victim->getPlayer()); //victim colour
+			setPlayerColour(originator->getPlayer());//orginator colour
+
+			//Give new pig boost
+			SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
+			if (spaceship && spaceship->getEngine())
+			{
+				spaceship->getEngine()->setSpeedFactor(5);
+				WeakPtr<Engine>* ptr = new WeakPtr<Engine>(spaceship->getEngine());
+				new Timer(10, false, &createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this))->setDefaultValue(0, ptr), true);
+			}
+
 		}
 		//Case 3: there are only chasers -> new piggy is needed
 		else if (onlyChasers){
@@ -130,8 +141,17 @@ bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)//tested - wor
 			playerParty_[victim->getPlayer()]=piggy;
 			onlyChasers=false;
 			setPlayerColour(victim->getPlayer()); //victim colour
-		//victim - Boost ueber setBoostFactor(float factor) //vermutlich muss victim gecastet werden
-		// timer aufrufen - nach 5 Sekunden wieder auf normalgeschwindigkeit setzen
+
+			//Give new pig boost
+			SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
+			if (spaceship && spaceship->getEngine())
+			{
+				spaceship->getEngine()->setSpeedFactor(5);
+				WeakPtr<Engine>* ptr = new WeakPtr<Engine>(spaceship->getEngine());
+				new Timer(10, false, &createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this))->setDefaultValue(0, ptr), true);
+			}
+
+
 		std::string message("First victim.");
         	COUT(0) << message << std::endl;
 		Host::Broadcast(message);
@@ -149,8 +169,14 @@ bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)//tested - wor
 	return false;
     }
 
-        
-    
+void Dynamicmatch::resetSpeedFactor(WeakPtr<Engine>* ptr)
+{
+	if (*ptr)
+	{
+		(*ptr)->setSpeedFactor(1.0f);
+	}
+	delete ptr;
+}
 
 bool Dynamicmatch::allowPawnDeath(Pawn* victim, Pawn* originator)//
     {
@@ -191,9 +217,8 @@ void Dynamicmatch::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn) /
     {
         if (!player)
             return;
-	playerParty_[player]=chaser;//playerparty
-	// Set the playercolour
- 	Dynamicmatch::setPlayerColour(player);
+	playerParty_[player]=chaser;//playerparty	
+ 	Dynamicmatch::setPlayerColour(player); //Set playercolour
     }
 
     void Dynamicmatch::playerEntered(PlayerInfo* player) //standardfunction

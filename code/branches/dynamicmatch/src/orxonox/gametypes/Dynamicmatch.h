@@ -57,6 +57,8 @@ namespace orxonox
 		virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);//is used to initialize the player's party and colour
             virtual bool playerLeft(PlayerInfo* player);//ToDo: extract the player's party record - done?
             virtual bool playerChangedName(PlayerInfo* player);//unchanged
+
+		void resetSpeedFactor(WeakPtr<Engine>* ptr);
 	
             
 		void tick (float dt);// used to end the game
