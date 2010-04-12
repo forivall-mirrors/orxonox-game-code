@@ -32,10 +32,11 @@
 #include <iostream>
 
 /* define this if you're unit testing */
-#define TEST 0
+#define TEST 1
 
 #ifndef TEST
 #include <core/BaseObject.h>
+#include <core/PathConfig.h>
 #endif
 
 #ifndef _ChatHistory_H__
@@ -49,19 +50,19 @@ namespace orxonox
 #endif
 
   /* constructor */
-  #ifndef TEST
+#ifndef TEST
   class _OrxonoxExport ChatHistory : public BaseObject, public ChatListener
-  #else
+#else
   class ChatHistory 
-  #endif
+#endif
   {
     public:
       /* constructors, destructors */
-      #ifndef TEST
+#ifndef TEST
       ChatHistory(BaseObject* creator);
-      #else
+#else
       ChatHistory();
-      #endif
+#endif
       virtual ~ChatHistory();
 
   

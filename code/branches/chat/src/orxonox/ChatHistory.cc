@@ -32,21 +32,18 @@
 namespace orxonox
 {
 #endif
-  /* QUESTION */
-  /* is this necessary? if yes uncomment please :P */
-  //CreateFactory(ChatHistory);
 
   /* constructor */
-  #ifndef TEST
+#ifndef TEST
   ChatHistory(BaseObject* creator) : BaseObject(creator) 
-  #else
+#else
   ChatHistory::ChatHistory()
-  #endif
+#endif
   {
     /* register the object */
-    #ifndef TEST
+#ifndef TEST
     RegisterObject(ChatHistory);
-    #endif
+#endif
 
     this->hist_log_enabled = true;
 
@@ -75,24 +72,30 @@ namespace orxonox
   void ChatHistory::incomingChat(const std::string& message, 
     unsigned int senderID)
   {
-    /* QUESTION */
-    /* sanity - check for valid senderID */
-
-    /* TODO make a correct name */
-    std::string name = "" + senderID; /* NOTE to be changed */
-
-    /* TODO */
-    /* QUESTION */
     /* --> a) look up the actual name of the sender */
-    /* --> b) add sender name and string up with a separator
-     *    to make up the actual message
-     */
+    std::string text;
+
+#ifndef TEST
+    if (senderID != CLIENTID_UNKNOWN)
+    {
+       std::string name = "unknown";
+       PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
+       if (player)
+         name = player->getName();
+
+         text = name + ": " + message;
+    }
+    else
+      text = message;
+#else
+    text = message;
+#endif
 
     /* add the line to the history */
-    this->chat_hist_addline( name + ": " + message );
+    this->chat_hist_addline( text );
 
     /* add the line to the log */
-    this->chat_hist_logline( name + ": " + message );
+    this->chat_hist_logline( text );
   } 
 
   /* Synchronize logfile onto the hard drive */ /* MARK MARK */
@@ -124,15 +127,25 @@ namespace orxonox
   /* open logfile */
   int ChatHistory::chat_hist_openlog()
   {
-    /* QUESTION */
     /* TODO: find out the name of the file to log to via settings 
      *       and set the this->hist_logfile_path variable to it
      */
-    this->hist_logfile.open( "/tmp/setsomepath.txt", 
+#ifndef TEST
+    this->hist_logfile.open( PathConfig::getInstance().getLogPathString() +
+      "chatlog.log",
       std::fstream::out | std::fstream::app );
+#else
+    this->hist_logfile.open( "/tmp/chatlog.log",
+      std::fstream::out | std::fstream::app );
+#endif
 
-    /* QUESTION */
     /* TODO check whether this works (not sure how you'd like it?) */
+    if( !this->hist_logfile )
+    { this->hist_log_enabled = false;
+#ifndef TEST
+      COUT(2) << "Warning: Could not open logfile." << std::endl;
+#endif
+    }
 
     /* if it worked */
     return 0;
