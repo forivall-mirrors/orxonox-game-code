@@ -136,11 +136,11 @@ namespace orxonox
         //! If the pickup has transited to used.
         if(this->isUsed())
         {
-            this->startPickupTimer(this->getDuration());
-
             Engine* engine = this->carrierToEngineHelper();
             if(engine == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
                 this->destroy();
+
+            this->startPickupTimer(this->getDuration());
             engine->setSpeedAdd(this->getSpeedAdd());
             engine->setSpeedMultiply(this->getSpeedMultiply());
         }
@@ -207,7 +207,7 @@ namespace orxonox
         else
         {
             COUT(1) << "Invalid duration in SpeedPickup." << std::endl;
-            this->duration_ = 0;
+            this->duration_ = 0.0f;
         }
     }
 
@@ -226,7 +226,7 @@ namespace orxonox
         else
         {
             COUT(1) << "Invalid speedAdd in SpeedPickup." << std::endl;
-            this->speedAdd_ = 0.0;
+            this->speedAdd_ = 0.0f;
         }
     }
 
@@ -245,11 +245,16 @@ namespace orxonox
         else
         {
             COUT(1) << "Invalid speedMultiply in SpeedPickup." << std::endl;
-            this->speedMultiply_ = 1.0;
+            this->speedMultiply_ = 1.0f;
         }
     }
 
     void SpeedPickup::PickupTimerCallBack(void) {
-        /* Reset values */
+            Engine* engine = this->carrierToEngineHelper();
+            if(engine == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+                this->destroy();
+
+            engine->setSpeedAdd(0.0f);
+            engine->setSpeedMultiply(1.0f);
     }
 }

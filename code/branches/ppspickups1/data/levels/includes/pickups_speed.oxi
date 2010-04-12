@@ -1,9 +1,42 @@
 <PickupRepresentation
     name = "Small Speed Boost"
-    description = "Adds a small amout of speed (?) to the ship."
+    description = "Multiplies Speed of the Ship with a small
+amount."
     spawnerTemplate = "smallspeedpickupRepresentation"
 >
     <pickup>
         <SpeedPickup template=smallspeedpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    name = "Medium Speed Boost"
+    description = "Multiplies Speed of the Ship with a bigger
+amount."
+    spawnerTemplate = "mediumspeedpickupRepresentation"
+>
+    <pickup>
+        <SpeedPickup template=mediumspeedpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    name = "Huge Speed Boost"
+    description = "Multiplies Speed of the Ship with a huge
+amount."
+    spawnerTemplate = "hugespeedpickupRepresentation"
+>
+    <pickup>
+        <SpeedPickup template=hugespeedpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    name = "Small Jump Boost"
+    description = "Boosts the Ship with a massive amount for a very short time."
+    spawnerTemplate = "smalljumppickupRepresentation"
+>
+    <pickup>
+        <SpeedPickup template=smalljumppickup />
     </pickup>
 </PickupRepresentation>
