@@ -33,12 +33,16 @@
 #include <cassert>
 
 /* define this if you're unit testing */
-#define CHATTEST 0
+//#define CHATTEST 
 
 #ifndef CHATTEST
+#include <OrxonoxPrereqs.h>
+#include <PlayerManager.h>
+#include <infos/PlayerInfo.h>
 #include <core/BaseObject.h>
+#include <network/ChatListener.h>
 #include <core/PathConfig.h>
-#include <Singleton.h>
+#include <util/Singleton.h>
 #endif
 
 #ifndef _ChatHistory_H__
@@ -53,7 +57,7 @@ namespace orxonox
 
   /* constructor */
 #ifndef CHATTEST
-  class _OrxonoxExport ChatHistory : public BaseObject, public ChatListener,
+  class _OrxonoxExport ChatHistory : public ChatListener,
     public Singleton<ChatHistory>
 
 #else
@@ -63,7 +67,7 @@ namespace orxonox
     public:
       /* constructors, destructors */
 #ifndef CHATTEST
-      ChatHistory(BaseObject* creator);
+      ChatHistory();
       friend class Singleton<ChatHistory>;
 #else
       ChatHistory();

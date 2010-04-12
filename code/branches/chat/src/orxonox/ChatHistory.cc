@@ -27,7 +27,7 @@
  */
 
 #include "ChatHistory.h"
-#include "core/ScopedSingletonManager.h"
+#include <core/ScopedSingletonManager.h>
 
 #ifndef CHATTEST
 namespace orxonox
@@ -38,7 +38,8 @@ namespace orxonox
 
   /* constructor */
 #ifndef CHATTEST
-  ChatHistory(BaseObject* creator) : BaseObject(creator) 
+  //ChatHistory::ChatHistory( BaseObject* creator ) : BaseObject(creator) 
+  ChatHistory::ChatHistory() 
 #else
   ChatHistory::ChatHistory()
 #endif
@@ -57,8 +58,6 @@ namespace orxonox
       /* push starting line */
       this->chat_hist_logline( "--- Logfile opened ---" );
     }
-
-    assert(0);
 
     /* Read setting for maximum number of lines and set limit */
     this->hist_maxlines = 200; /* NOTE to be changed, 200 is just for testing */
@@ -141,8 +140,8 @@ namespace orxonox
      *       and set the this->hist_logfile_path variable to it
      */
 #ifndef CHATTEST
-    this->hist_logfile.open( PathConfig::getInstance().getLogPathString() +
-      "chatlog.log",
+    this->hist_logfile.open( (PathConfig::getInstance().getLogPathString() +
+      "chatlog.log").c_str(),
       std::fstream::out | std::fstream::app );
 #else
     this->hist_logfile.open( "/tmp/chatlog.log",
