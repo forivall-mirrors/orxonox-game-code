@@ -33,7 +33,9 @@
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/TeamBaseMatchBase.h"
 #include "gametypes/TeamDeathmatch.h"
+#include "gametypes/Dynamicmatch.h"
 #include "controllers/WaypointPatrolController.h"
+
 
 namespace orxonox
 {
@@ -243,7 +245,16 @@ namespace orxonox
                     team2 = -1;
             }
         }
+	Dynamicmatch* dynamic = orxonox_cast<Dynamicmatch*>(gametype);
+        if (dynamic)
+        {
+            if (entity1->getPlayer())
+                team1 = dynamic->getParty(entity1->getPlayer());
 
-        return (team1 == team2 && team1 != -1);
-    }
+            if (entity2->getPlayer())
+                team2 = dynamic->getParty(entity2->getPlayer());
+        }
+
+        return (team1 == team2 && team1 != -1)&&(!dynamic->onlyChasers); //returns false if players are in the same party and there is a victim
+    }								//-> if there is no victim or the AI-Player is not in the same team the AI attacks
 }

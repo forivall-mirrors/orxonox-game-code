@@ -29,6 +29,8 @@
 #ifndef _Dynamicmatch_H__
 #define _Dynamicmatch_H__
 
+#include <map>
+#include <vector>
 #include "OrxonoxPrereqs.h"
 #include "Gametype.h"
 #include "tools/Timer.h"
@@ -40,27 +42,38 @@ namespace orxonox
         public:
             Dynamicmatch(BaseObject* creator);
             virtual ~Dynamicmatch() {}
-
-		virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0);
-            	virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0);
+		
+		bool onlyChasers;
+		int getParty(PlayerInfo* player);
+		void setPlayerColour(PlayerInfo* player);//own function
+		void setConfigValues();//done
+		virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //ok - score function and management of parties
+            	virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //ok - simple
             virtual void start();
 
 		  
-            virtual void end();
+            virtual void end(); //Wie geht das mit der Punkteausgabe? frags als Schnittstelle ausreichend?
             virtual void playerEntered(PlayerInfo* player);
-            virtual bool playerLeft(PlayerInfo* player);
-            virtual bool playerChangedName(PlayerInfo* player);
-
-            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
-            virtual void playerScored(PlayerInfo* player);
-		  virtual void showPoints();
-
+		virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);//is used to initialize the player's party and colour
+            virtual bool playerLeft(PlayerInfo* player);//ToDo: extract the player's party record - done?
+            virtual bool playerChangedName(PlayerInfo* player);//unchanged
+	
+            
+		void tick (float dt);// used to end the game
+		
+		//inline const ColourValue& getPlayerColour(int teamnr) const
+                //{ return this->partyColours_[teamnr]; }
+		
 		protected:
-		  //points for each player
-		  int pointsScored[50];//sorry hard coded - each player should be able to score
-		  void winPoints();
-		  Timer outputTimer_;
-		  Timer scoreTimer_;      //?
+		  //the two different parties
+		  int chaser;
+		  int piggy;
+		  std::map< PlayerInfo*, int > playerParty_; //player's parties are recorded here
+		  std::vector<ColourValue> partyColours_; //aus TeamDeathmatch		  
+		bool friendlyfire; //goal: player can switch it on/off
+		float gameTime_;   // from UnderAttack
+		bool gameEnded_; // true if game is over
+		int timesequence_; //used for countdown
     };
 }
 
