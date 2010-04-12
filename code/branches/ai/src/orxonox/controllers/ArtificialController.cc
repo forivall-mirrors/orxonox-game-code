@@ -131,9 +131,15 @@ namespace orxonox
             //is pawn oneself? && is pawn in range?
             if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity()) //&& it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) < 1000 
             {
+                if(controller->slaves.size() > 9) continue;
+
+                this->freeAllSlaves();
+                this->slaves.clear();
                 this->state_ = SLAVE;
+
                 this->myMaster_ = controller;
                 controller->slaves.push_back(this);
+
                 break;
             }
         }//for
@@ -169,6 +175,12 @@ namespace orxonox
     void ArtificialController::freeAllSlaves()
     {
 
+
+        for(std::list<ArtificialController*>::iterator it = slaves.begin(); it != slaves.end(); it++)
+        {
+            (*it)->state_ = FREE;
+        }
+/*
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
             ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
@@ -177,9 +189,14 @@ namespace orxonox
 
             controller->state_ = FREE;
         }
-
+*/
     }
 
+    void ArtificialController::loseMasterState()
+    {
+        this->freeAllSlaves();
+        this->state_ = FREE;
+    }
 
     void ArtificialController::setTargetPosition(const Vector3& target)
     {

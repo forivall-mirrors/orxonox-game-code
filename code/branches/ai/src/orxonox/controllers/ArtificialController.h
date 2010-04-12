@@ -65,6 +65,7 @@ namespace orxonox
             void searchNewMaster();
             void commandSlaves();
             void freeAllSlaves();
+            void loseMasterState();
 
             ArtificialController *myMaster_;
 

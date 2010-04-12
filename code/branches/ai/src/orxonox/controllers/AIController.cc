@@ -76,8 +76,19 @@ namespace orxonox
 
         if (this->state_ == MASTER)//MASTER
         {
+
             // command slaves
             this->commandSlaves();
+
+
+            // lose master status (only if less than 4 slaves in formation)
+            random = rnd(maxrand);
+            if(random < 5/(this->slaves.size()+1) && this->slaves.size() < 5 ) 
+                this->loseMasterState();
+
+            // look out for outher masters if formation is small
+            if(this->slaves.size() < 3)
+                this->searchNewMaster();
 
             // search enemy
             random = rnd(maxrand);
