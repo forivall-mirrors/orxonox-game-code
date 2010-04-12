@@ -33,8 +33,10 @@
 
 #include <list>
 #include <string>
+#include <map>
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
+#include "graphics/MeshLodInformation.h"
 
 namespace orxonox
 {
@@ -59,17 +61,21 @@ namespace orxonox
             void addObject(BaseObject* object);
             BaseObject* getObject(unsigned int index) const;
 
+            void addLodInfo(const MeshLodInformation* object);
+            MeshLodInformation* getLodInfo(unsigned int index) const;
+
             void setGametypeString(const std::string& gametype);
             inline const std::string& getGametypeString() const
                 { return this->gametype_; }
 
             void networkcallback_applyXMLFile();
 
-            std::string            description_;
-            std::string            gametype_;
-            std::string            xmlfilename_;
-            XMLFile*               xmlfile_;
-            std::list<BaseObject*> objects_;
+            std::string                    description_;
+            std::string                    gametype_;
+            std::string                    xmlfilename_;
+            XMLFile*                       xmlfile_;
+            std::list<BaseObject*>         objects_;
+            std::map<std::string,MeshLodInformation*>  lodInformation_;
     };
 }
 

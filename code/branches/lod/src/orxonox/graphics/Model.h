@@ -60,14 +60,23 @@ namespace orxonox
                 { this->bCastShadows_ = bCastShadows; this->changedShadows(); }
             inline bool getCastShadows() const
                 { return this->bCastShadows_; }
-
+				
         private:
             void changedMesh();
             void changedShadows();
+			
+			//LoD
+			inline void setLodLevel(unsigned short lodLevel)
+				{ this->lodLevel_ =  lodLevel; }
+			inline unsigned short getLodLevel() const
+				{ return this->lodLevel_; }
 
             std::string meshSrc_;
             Mesh mesh_;
             bool bCastShadows_;
+			
+			//LoD
+			unsigned short lodLevel_;
     };
 }
 

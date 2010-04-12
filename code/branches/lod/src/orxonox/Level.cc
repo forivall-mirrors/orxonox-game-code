@@ -31,7 +31,7 @@
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
-#include "core/Template.h"
+#include "core/template.h"
 #include "core/XMLFile.h"
 #include "core/XMLPort.h"
 
@@ -72,8 +72,9 @@ namespace orxonox
         XMLPortParam(Level, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(Level, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
 
-        XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
-    }
+        XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);            
+        XMLPortObject(Level, MeshLodInformation, "lodinformation", addLodInfo, getLodInfo, xmlelement, mode);
+}
 
     void Level::registerVariables()
     {
@@ -136,6 +137,33 @@ namespace orxonox
             ++i;
         }
         return 0;
+    }
+    
+    //LoD
+    void Level::addLodInfo(const MeshLodInformation* lodInformation)
+    {
+//		std::pair<std::map<std::string,MeshLodInformation*>::iterator,bool> it 
+//		    = new std::pair<lodInformation->getMeshName(),lodInformation>;
+        this->lodInformation_.insert(std::pair<lodInformation->getMeshName(),lodInformation>);
+    }
+
+    MeshLodInformation* Level::getLodInfo(string meshName) const
+    {
+        if(this->lodInformation_.find(meshName)!=std::map::end)
+            return this->lodInformation_.find(meshName);
+        
+        return 0;
+        
+        
+        /*
+        unsigned int i = 0;
+        for (std::map<MeshLodInformation*>::const_iterator it = this->lodInformation_.begin(); it != this->lodInformation_.end(); ++it)
+        {
+            if (i == index)
+                return (*it);
+            ++i;
+        }
+        return 0;*/
     }
 
     void Level::playerEntered(PlayerInfo* player)

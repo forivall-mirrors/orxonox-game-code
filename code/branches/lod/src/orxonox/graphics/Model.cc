@@ -57,7 +57,10 @@ namespace orxonox
     void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Model, XMLPort, xmlelement, mode);
-
+		
+		//LoD
+        XMLPortParam(Model, "lodLevel", setLodLevel, getLodLevel, xmlelement, mode).defaultValues(5);
+		
         XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
         XMLPortParam(Model, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
     }
@@ -74,7 +77,7 @@ namespace orxonox
         {
             if (this->mesh_.getEntity())
                 this->detachOgreObject(this->mesh_.getEntity());
-
+            
             this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
 
             if (this->mesh_.getEntity())
@@ -82,6 +85,39 @@ namespace orxonox
                 this->attachOgreObject(this->mesh_.getEntity());
                 this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
                 this->mesh_.setVisible(this->isVisible());
+                
+                //LOD
+                if(this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1
+                    &&this->meshSrc_!="laserbeam.mesh"
+                    &&this->lodLevel_!=0)
+                {
+                    float scaleFactor = this->getScale();
+                    COUT(0) << this->meshSrc_<< " lodLevel_: " << this->lodLevel_ <<" scale: "<< scaleFactor << std::endl;
+                    //Für Asteroiden perfekt
+
+#if OGRE_VERSION >= 0x010700
+                    Ogre::Mesh::LodValueList distList;
+#else
+                    Ogre::Mesh::LodDistanceList distList;
+#endif
+
+                    distList.push_back(70.0f*scaleFactor);
+                    distList.push_back(140.0f*scaleFactor);
+                    distList.push_back(170.0f*scaleFactor);
+                    distList.push_back(200.0f*scaleFactor);
+                    distList.push_back(230.0f*scaleFactor);
+                    distList.push_back(250.0f*scaleFactor);
+                    distList.push_back(270.0f*scaleFactor);
+                    distList.push_back(290.0f*scaleFactor);
+                    distList.push_back(310.0f*scaleFactor);
+                    distList.push_back(330.0f*scaleFactor);
+
+                    float reductionValue = 0.2f;
+
+                    
+                    //Generiert LOD-Levels
+                    this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
+                }
             }
         }
     }
