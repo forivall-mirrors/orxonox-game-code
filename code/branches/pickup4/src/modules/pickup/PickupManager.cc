@@ -156,7 +156,6 @@ namespace orxonox
         return this->getRepresentation(pickup->getPickupIdentifier());
     }
     
-
     int PickupManager::getNumPickups(PickupCarrier* carrier)
     {
         if(carrier == NULL)
