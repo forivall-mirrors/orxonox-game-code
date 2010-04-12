@@ -44,8 +44,7 @@
 
 namespace orxonox
 {
-    
-    
+
     CreateFactory(InvisiblePickup);
     
     /**
@@ -86,9 +85,6 @@ namespace orxonox
 	this->duration_ = 0.0;
 	this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
- 
-   
-    
 
     /**
     @brief
@@ -101,7 +97,6 @@ namespace orxonox
 	 
 	 this->initializeIdentifier();
     }
-    
     
     /**
     @brief
@@ -117,8 +112,8 @@ namespace orxonox
             return;
 	if (this->isUsed())
 	{
-	    this->setInvisible(true);
 	    this->startPickupTimer(this->getDuration());
+	    this->setInvisible(true);
 	}
 	else
 	  this->setInvisible(false);
@@ -161,10 +156,6 @@ namespace orxonox
 	pickup->initializeIdentifier();
     }
     
-    
-    
-    
-     
     /**
     @brief
         Sets the invisibility.
@@ -178,8 +169,6 @@ namespace orxonox
       pawn->setVisible(!invisibility);
       return 0;
     }
-    
-   
     
     /**
     @brief
@@ -200,9 +189,8 @@ namespace orxonox
 	}
     }
     
-    
-    
-    void InvisiblePickup::PickupTimerCallBack(void){
+    void InvisiblePickup::PickupTimerCallBack(void)
+    {
 	this->setInvisible(false);
     }
 
