@@ -27,21 +27,24 @@
  */
 
 #include "ChatHistory.h"
+#include "core/ScopedSingletonManager.h"
 
-#ifndef TEST
+#ifndef CHATTEST
 namespace orxonox
 {
+  /* singleton */
+  ManageScopedSingleton( ChatHistory, ScopeID::Root, false );
 #endif
 
   /* constructor */
-#ifndef TEST
+#ifndef CHATTEST
   ChatHistory(BaseObject* creator) : BaseObject(creator) 
 #else
   ChatHistory::ChatHistory()
 #endif
   {
     /* register the object */
-#ifndef TEST
+#ifndef CHATTEST
     RegisterObject(ChatHistory);
 #endif
 
@@ -54,6 +57,8 @@ namespace orxonox
       /* push starting line */
       this->chat_hist_logline( "--- Logfile opened ---" );
     }
+
+    assert(0);
 
     /* Read setting for maximum number of lines and set limit */
     this->hist_maxlines = 200; /* NOTE to be changed, 200 is just for testing */
@@ -75,7 +80,9 @@ namespace orxonox
     /* --> a) look up the actual name of the sender */
     std::string text;
 
-#ifndef TEST
+    COUT(0) << "Meow.\n";
+
+#ifndef CHATTEST
     if (senderID != CLIENTID_UNKNOWN)
     {
        std::string name = "unknown";
@@ -103,6 +110,7 @@ namespace orxonox
   {
     //if( this->hist_logfile )
       //this->hist_logfile.sync();
+    return 0;
   }
 
   /* add a line to this history */
@@ -114,6 +122,7 @@ namespace orxonox
 
     /* push to the front of the history */
     this->hist_buffer.push_back( toadd );
+    return 0;
   }
 
   /* log a line to a logfile */
@@ -122,6 +131,7 @@ namespace orxonox
     /* output the line to the file if logging is enabled */
     if( this->hist_log_enabled )
       this->hist_logfile << toadd << std::endl;
+    return 0;
   }
 
   /* open logfile */
@@ -130,7 +140,7 @@ namespace orxonox
     /* TODO: find out the name of the file to log to via settings 
      *       and set the this->hist_logfile_path variable to it
      */
-#ifndef TEST
+#ifndef CHATTEST
     this->hist_logfile.open( PathConfig::getInstance().getLogPathString() +
       "chatlog.log",
       std::fstream::out | std::fstream::app );
@@ -142,7 +152,7 @@ namespace orxonox
     /* TODO check whether this works (not sure how you'd like it?) */
     if( !this->hist_logfile )
     { this->hist_log_enabled = false;
-#ifndef TEST
+#ifndef CHATTEST
       COUT(2) << "Warning: Could not open logfile." << std::endl;
 #endif
     }
@@ -175,6 +185,6 @@ namespace orxonox
     std::cout << "Size: " << hist_buffer.size() << std::endl;
   }
 
-#ifndef TEST
+#ifndef CHATTEST
 }
 #endif

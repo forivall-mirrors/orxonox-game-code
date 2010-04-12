@@ -30,13 +30,15 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <cassert>
 
 /* define this if you're unit testing */
-#define TEST 1
+#define CHATTEST 0
 
-#ifndef TEST
+#ifndef CHATTEST
 #include <core/BaseObject.h>
 #include <core/PathConfig.h>
+#include <Singleton.h>
 #endif
 
 #ifndef _ChatHistory_H__
@@ -44,22 +46,25 @@
 
 
 /* Class to implement chat history */
-#ifndef TEST
+#ifndef CHATTEST
 namespace orxonox
 {
 #endif
 
   /* constructor */
-#ifndef TEST
-  class _OrxonoxExport ChatHistory : public BaseObject, public ChatListener
+#ifndef CHATTEST
+  class _OrxonoxExport ChatHistory : public BaseObject, public ChatListener,
+    public Singleton<ChatHistory>
+
 #else
   class ChatHistory 
 #endif
   {
     public:
       /* constructors, destructors */
-#ifndef TEST
+#ifndef CHATTEST
       ChatHistory(BaseObject* creator);
+      friend class Singleton<ChatHistory>;
 #else
       ChatHistory();
 #endif
@@ -101,6 +106,9 @@ namespace orxonox
       /** Output file stream for logfile */
       std::ofstream hist_logfile;
 
+#ifndef CHATTEST
+      static ChatHistory* singletonPtr_s;
+#endif
 
 
 
@@ -130,7 +138,7 @@ namespace orxonox
       void chat_hist_closelog();
   };
 
-#ifndef TEST
+#ifndef CHATTEST
 }
 #endif
 
