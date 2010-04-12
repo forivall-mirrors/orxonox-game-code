@@ -32,6 +32,7 @@
 namespace orxonox
 {
 #endif
+  /* QUESTION */
   /* is this necessary? if yes uncomment please :P */
   //CreateFactory(ChatHistory);
 
@@ -66,30 +67,32 @@ namespace orxonox
   {
     chat_hist_closelog();
     
-    /* TODO clear list */
+    /* clear list */
+    this->hist_buffer.clear();
   }
 
   /* react to incoming chat */
   void ChatHistory::incomingChat(const std::string& message, 
     unsigned int senderID)
   {
+    /* QUESTION */
     /* sanity - check for valid senderID */
-    /* sanity - check for valid string format */ 
 
-    /* format the message and senderID into a line */
-    std::string buf = "" + senderID; /* NOTE to be changed */
+    /* TODO make a correct name */
+    std::string name = "" + senderID; /* NOTE to be changed */
 
     /* TODO */
+    /* QUESTION */
     /* --> a) look up the actual name of the sender */
     /* --> b) add sender name and string up with a separator
      *    to make up the actual message
      */
 
     /* add the line to the history */
-    this->chat_hist_addline( buf + ": " + message );
+    this->chat_hist_addline( name + ": " + message );
 
     /* add the line to the log */
-    this->chat_hist_logline( buf + ": " + message );
+    this->chat_hist_logline( name + ": " + message );
   } 
 
   /* Synchronize logfile onto the hard drive */ /* MARK MARK */
@@ -108,15 +111,11 @@ namespace orxonox
 
     /* push to the front of the history */
     this->hist_buffer.push_back( toadd );
-
   }
 
   /* log a line to a logfile */
   int ChatHistory::chat_hist_logline( const std::string& toadd )
   { 
-    /* TODO use already written class to batch write to file
-     * so not every line gets written on its own 
-     */
     /* output the line to the file if logging is enabled */
     if( this->hist_log_enabled )
       this->hist_logfile << toadd << std::endl;
@@ -125,12 +124,14 @@ namespace orxonox
   /* open logfile */
   int ChatHistory::chat_hist_openlog()
   {
+    /* QUESTION */
     /* TODO: find out the name of the file to log to via settings 
      *       and set the this->hist_logfile_path variable to it
      */
     this->hist_logfile.open( "/tmp/setsomepath.txt", 
       std::fstream::out | std::fstream::app );
 
+    /* QUESTION */
     /* TODO check whether this works (not sure how you'd like it?) */
 
     /* if it worked */
@@ -149,15 +150,16 @@ namespace orxonox
   /* output history for debugging */
   void ChatHistory::debug_printhist()
   {
+    /* create deque iterator */
     std::deque<std::string>::iterator it;
 
+    /* output all the strings */
     for( it = this->hist_buffer.begin(); it != this->hist_buffer.end();
       ++it )
       std::cout << *it << std::endl;
 
+    /* output size */
     std::cout << "Size: " << hist_buffer.size() << std::endl;
-
-    
   }
 
 #ifndef TEST

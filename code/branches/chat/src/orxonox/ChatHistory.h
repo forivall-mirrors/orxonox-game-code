@@ -31,6 +31,7 @@
 #include <fstream>
 #include <iostream>
 
+/* define this if you're unit testing */
 #define TEST 0
 
 #ifndef TEST
@@ -79,7 +80,7 @@ namespace orxonox
        */
       int syncLog();
 
-      /** debug-print */
+      /** debug-print: output the whole history to stdout */
       void debug_printhist();
       
     private:
@@ -131,6 +132,5 @@ namespace orxonox
 #ifndef TEST
 }
 #endif
-
 
 #endif /* _ChatHistory_H__ */
