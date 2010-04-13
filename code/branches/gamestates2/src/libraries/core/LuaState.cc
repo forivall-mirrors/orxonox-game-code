@@ -211,8 +211,17 @@ namespace orxonox
             switch (error)
             {
             case LUA_ERRRUN: // Runtime error
-                // Do nothing (we already display the error in the
-                // 'errorHandler' Lua function in LuaStateInit.lua)
+                if (errorHandler)
+                {
+                    // Do nothing (we already display the error in the
+                    // 'errorHandler' Lua function in LuaStateInit.lua)
+                }
+                else
+                {
+                    std::string errorString = lua_tostring(this->luaState_, -1);
+                    if (errorString.find("Error propagation") == std::string::npos)
+                        COUT(1) << "Lua runtime error: " << errorString << std::endl;
+                }
                 break;
             case LUA_ERRERR: // Error in the error handler
                 COUT(1) << "Lua error in error handler. No message available." << std::endl;
