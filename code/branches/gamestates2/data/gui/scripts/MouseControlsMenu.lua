@@ -94,7 +94,7 @@ function P.MouseInvertCheckbox_clicked(e)
 end
 
 function P.MouseControlsBackButton_clicked(e)
-    hideGUI(P.name)
+    hideMenuSheet(P.name)
 end
 
 return P

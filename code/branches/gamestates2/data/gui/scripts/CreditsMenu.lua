@@ -3,7 +3,7 @@
 local P = createMenuSheet("CreditsMenu")
 
 function P.CreditsBackButton_clicked(e)
-    hideGUI(P.name)
+    hideMenuSheet(P.name)
 end
 
 return P

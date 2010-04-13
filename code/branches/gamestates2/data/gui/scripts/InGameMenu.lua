@@ -11,20 +11,20 @@ function P.button_mainmenu_clicked(e)
     orxonox.Game:getInstance():popState()
     orxonox.Game:getInstance():popState()
     orxonox.Game:getInstance():requestState("mainmenu")
-    hideGUI("InGameMenu")
+    hideMenuSheet("InGameMenu")
 end
 
 function P.button_settings_clicked(e)
-    showGUI("SettingsMenu", true)
+    showMenuSheet("SettingsMenu", true)
 end
 
 function P.button_return_clicked(e)
-    hideGUI("InGameMenu")
+    hideMenuSheet("InGameMenu")
 end
 
 function P.callback(doExit)
     if doExit then
-        hideGUI("InGameMenu")
+        hideMenuSheet("InGameMenu")
         orxonox.execute("exit")
     end
 end

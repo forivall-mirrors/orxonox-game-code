@@ -36,7 +36,7 @@ function P.GameplayDifficultyHardButton_clicked(e)
 end
 
 function P.GameplayBackButton_clicked(e)
-    hideGUI(P.name)
+    hideMenuSheet(P.name)
 end
 
 return P

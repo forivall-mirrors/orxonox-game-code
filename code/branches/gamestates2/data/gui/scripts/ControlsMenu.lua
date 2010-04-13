@@ -3,15 +3,15 @@
 local P = createMenuSheet("ControlsMenu")
 
 function P.ControlsMouseControlsButton_clicked(e)
-    showGUI("MouseControlsMenu", true)
+    showMenuSheet("MouseControlsMenu", true)
 end
 
 function P.ControlsKeyboardControlsButton_clicked(e)
-    showGUI("KeyBindMenu", true)
+    showMenuSheet("KeyBindMenu", true)
 end
 
 function P.ControlsBackButton_clicked(e)
-    hideGUI(P.name)
+    hideMenuSheet(P.name)
 end
 
 return P

@@ -28,7 +28,7 @@ end
 
 -- events for ingamemenu
 function P.close(e)
-    hideGUI(P.name)
+    hideMenuSheet(P.name)
 end
 
 return P

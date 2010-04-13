@@ -15,14 +15,14 @@ function P.button_yes(e)
     if P.functionPtr ~= nil then
         P.functionPtr(true)
     end
-    hideGUI("DecisionPopup")
+    hideMenuSheet("DecisionPopup")
 end
 
 function P.button_no(e)
     if P.functionPtr ~= nil then
         P.functionPtr(false)
     end
-    hideGUI("DecisionPopup")
+    hideMenuSheet("DecisionPopup")
 end
 
 return P

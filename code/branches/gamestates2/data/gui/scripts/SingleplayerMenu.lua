@@ -33,12 +33,12 @@ function P.SingleplayerStartButton_clicked(e)
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
         orxonox.execute("startGame")
-        hideAllGUIs()
+        hideAllMenuSheets()
     end
 end
 
 function P.SingleplayerBackButton_clicked(e)
-    hideGUI(P.name)
+    hideMenuSheet(P.name)
 end
 
 return P

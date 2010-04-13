@@ -64,7 +64,7 @@ namespace orxonox
 
     void GUISheet::show()
     {
-        GUIManager::showGUI(this->script_, this->bHidePrevious_, this->bShowCursor_);
+        GUIManager::showGUI(this->script_, this->bHidePrevious_);
     }
 
     void GUISheet::hide()

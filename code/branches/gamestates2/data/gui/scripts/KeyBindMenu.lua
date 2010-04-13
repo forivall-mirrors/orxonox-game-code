@@ -243,7 +243,7 @@ function P.callback()
 end
 
 function P.KeyBindBackButton_clicked(e)
-    hideGUI("KeyBindMenu")
+    hideMenuSheet("KeyBindMenu")
 end
 
 return P

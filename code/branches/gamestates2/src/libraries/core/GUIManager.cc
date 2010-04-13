@@ -225,20 +225,19 @@ namespace orxonox
         The name of the GUI
 
         The function executes the Lua function with the same name in case the GUIManager is ready.
-        For more details check out loadGUI_2.lua where the function presides.
     */
-    /*static*/ void GUIManager::showGUI(const std::string& name, bool hidePrevious, bool showCursor)
+    /*static*/ void GUIManager::showGUI(const std::string& name, bool bHidePrevious)
     {
-        GUIManager::getInstance().executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ")");
+        GUIManager::getInstance().executeCode("showMenuSheet(\"" + name + "\", " + multi_cast<std::string>(bHidePrevious) + ")");
     }
 
     /**
     @brief
         Hack-ish. Needed for GUIOverlay.
     */
-    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious, bool showCursor)
+    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool bHidePrevious)
     {
-        this->executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ", " + ptr + ")");
+        this->executeCode("showMenuSheet(\"" + name + "\", " + multi_cast<std::string>(bHidePrevious) + ", " + ptr + ")");
     }
 
     /**
@@ -249,7 +248,7 @@ namespace orxonox
     */
     /*static*/ void GUIManager::hideGUI(const std::string& name)
     {
-        GUIManager::getInstance().executeCode("hideGUI(\"" + name + "\")");
+        GUIManager::getInstance().executeCode("hideMenuSheet(\"" + name + "\")");
     }
 
     const std::string& GUIManager::createInputState(const std::string& name, TriBool::Value showCursor, TriBool::Value useKeyboard, bool bBlockJoyStick)

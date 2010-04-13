@@ -61,12 +61,12 @@ function P.MultiplayerStartButton_clicked(e)
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
         orxonox.execute(multiplayerMode)
-        hideAllGUIs()
+        hideAllMenuSheets()
     end
 end
 
 function P.MultiplayerBackButton_clicked(e)
-    hideGUI(P.name)
+    hideMenuSheet(P.name)
 end
 
 return P

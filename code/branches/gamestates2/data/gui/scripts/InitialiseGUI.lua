@@ -74,14 +74,14 @@ end
 ------------------------
 
 -- ?
-function showGUI(name, bHidePrevious, ptr)
-    local sheet = showGUI(name, bHidePrevious)
+function showMenuSheet(name, bHidePrevious, ptr)
+    local sheet = showMenuSheet(name, bHidePrevious)
     sheet.overlay = ptr
     return sheet
 end
 
 -- Shows the specified menu sheet and loads it if neccessary
-function showGUI(name, bHidePrevious)
+function showMenuSheet(name, bHidePrevious)
     -- Get sheet (or load it)
     local menuSheet = loadSheet(name)
     if not menuSheet then
@@ -102,7 +102,7 @@ function showGUI(name, bHidePrevious)
 
     -- Hide if already displayed (to make sure it is up front in the end)
     if activeMenuSheets[name] ~= nil then
-        hideGUI(name)
+        hideMenuSheet(name)
     end
 
     -- Add the sheet in a tuple of additional information
@@ -145,7 +145,7 @@ function showGUI(name, bHidePrevious)
     return menuSheet
 end
 
-function hideGUI(name)
+function hideMenuSheet(name)
     local sheetTuple = activeMenuSheets[name]
     if sheetTuple == nil then
         return
@@ -205,9 +205,9 @@ function hideGUI(name)
 end
 
 -- Hides all menu GUI sheets
-function hideAllGUIs()
+function hideAllMenuSheets()
     while activeMenuSheets.size ~= 0 do
-        hideGUI(activeMenuSheets.topSheetTuple.sheet.name)
+        hideMenuSheet(activeMenuSheets.topSheetTuple.sheet.name)
     end
 end
 
@@ -216,9 +216,9 @@ function keyESC()
     if activeMenuSheets.size == 1 and activeMenuSheets[1].sheet.name == "MainMenu" then
         orxonox.execute("exit")
     elseif activeMenuSheets.size > 0 then
-        orxonox.execute("hideGUI "..activeMenuSheets.topSheetTuple.sheet.name)
+        orxonox.execute("hideMenuSheet "..activeMenuSheets.topSheetTuple.sheet.name)
     else
-        showGUI("InGameMenu")
+        showMenuSheet("InGameMenu")
     end
 end
 
