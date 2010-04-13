@@ -78,7 +78,7 @@ namespace orxonox
         this->speedAdd_ = 0.0f;
         this->speedMultiply_ = 1.0f;
 
-        this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
+        this->addTarget(ClassIdentifier<Engine>::getIdentifier());
     }
 
     /**
@@ -165,18 +165,14 @@ namespace orxonox
     Engine* SpeedPickup::carrierToEngineHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        SpaceShip* ship = dynamic_cast<SpaceShip*>(carrier);
+        Engine* engine = dynamic_cast<Engine*>(carrier);
 
-        if(ship == NULL)
+        if(engine == NULL)
         {
             COUT(1) << "Invalid PickupCarrier in SpeedPickup." << std::endl;
         }
-        else
-        {
-            return ship->getEngine();
-        }
-
-        return 0;
+        
+        return engine;
     }
 
     /**
