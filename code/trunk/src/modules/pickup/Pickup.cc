@@ -38,26 +38,28 @@
 #include "pickup/PickupIdentifier.h"
 #include "DroppedPickup.h"
 
+#include "tools/Timer.h"
+
 namespace orxonox
 {
-    
+
     /*static*/ const std::string Pickup::activationTypeImmediate_s = "immediate";
     /*static*/ const std::string Pickup::activationTypeOnUse_s = "onUse";
     /*static*/ const std::string Pickup::durationTypeOnce_s = "once";
     /*static*/ const std::string Pickup::durationTypeContinuous_s = "continuous";
-    
+
     Pickup::Pickup(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Pickup);
-        
+
         this->initialize();
     }
-    
+
     Pickup::~Pickup()
     {
-        
+
     }
-    
+
     /**
     @brief
         Initializes the member variables.
@@ -67,22 +69,22 @@ namespace orxonox
         this->activationType_ = pickupActivationType::immediate;
         this->durationType_ = pickupDurationType::once;
     }
-    
+
     /**
     @brief
         Initializes the PickupIdentififer of this Pickup.
     */
     void Pickup::initializeIdentifier(void)
-    {        
+    {
         std::string val1 = this->getActivationType();
         std::string type1 = "activationType";
         this->pickupIdentifier_->addParameter(type1, val1);
-        
+
         std::string val2 = this->getDurationType();
         std::string type2 = "durationType";
         this->pickupIdentifier_->addParameter(type2, val2);
     }
-    
+
     /**
     @brief
         Method for creating a Pickup object through XML.
@@ -93,10 +95,10 @@ namespace orxonox
 
         XMLPortParam(Pickup, "activationType", setActivationType, getActivationType, xmlelement, mode);
         XMLPortParam(Pickup, "durationType", setDurationType, getDurationType, xmlelement, mode);
-        
+
         this->initializeIdentifier();
     }
-    
+
     /**
     @brief
         Get the activation type of the pickup.
@@ -115,7 +117,7 @@ namespace orxonox
                 return BLANKSTRING;
         }
     }
-        
+
     /**
     @brief
         Get the duration type of the pickup.
@@ -134,7 +136,7 @@ namespace orxonox
                 return BLANKSTRING;
         }
     }
-    
+
     /**
     @brief
         Set the activation type of the Pickup.
@@ -156,7 +158,7 @@ namespace orxonox
             COUT(1) << "Invalid activationType in pickup." << std::endl;
         }
     }
-        
+
     /**
     @brief
         Set the duration type of the Pickup.
@@ -178,7 +180,7 @@ namespace orxonox
             COUT(1) << "Invalid durationType in pickup." << std::endl;
         }
     }
-    
+
     /**
     @brief
         Should be called when the pickup has transited from picked up to dropped or the other way around.
@@ -187,14 +189,14 @@ namespace orxonox
     void Pickup::changedPickedUp(void)
     {
         SUPER(Pickup, changedPickedUp);
-        
+
         //! Sets the Pickup to used if the Pickup has activation type 'immediate' and gets picked up.
         if(this->getCarrier() != NULL && this->isPickedUp() && this->isImmediate())
         {
             this->setUsed(true);
         }
     }
-    
+
     /**
     @brief
         Creates a duplicate of the Pickup.
@@ -205,16 +207,16 @@ namespace orxonox
     {
         if(item == NULL)
             item = new Pickup(this);
-        
+
         SUPER(Pickup, clone, item);
-        
+
         Pickup* pickup = dynamic_cast<Pickup*>(item);
         pickup->setActivationTypeDirect(this->getActivationTypeDirect());
         pickup->setDurationTypeDirect(this->getDurationTypeDirect());
-        
+
         pickup->initializeIdentifier();
     }
-        
+
     /**
     @brief
         Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
@@ -230,5 +232,30 @@ namespace orxonox
         new DroppedPickup(this, this, this->getCarrier());
         return true;
     }
-    
+
+    /**
+    @brief
+        Starts the pickup duration timer.
+        After the specified durationTime has expired the function pickupTimerCallback is called.
+        pickupTimerCallback can be overloaded and thus the desired functionality can be implemented.
+    @param durationTime
+        The duration after which the expires and the callback function is called.
+    @return
+        Returns true if the pickup duration timer was started successfully, false if not.
+    */
+    bool Pickup::startPickupTimer(float durationTime)
+    {
+        if (durationTime<=0)
+        {
+            COUT(1) << "Invalid durationTime in pickup." << std::endl;
+            return false;
+        }
+        if (this->durationTimer_.isActive()) //!< Check if Timer is already running
+        {
+            COUT(1) << "Pickup durationTimer already in use." << std::endl;
+            return false;
+        }
+        this->durationTimer_.setTimer(durationTime, false, createExecutor(createFunctor(&Pickup::pickupTimerCallback, this)));
+        return true;
+    }
 }
