@@ -1,0 +1,157 @@
+
+<!-- Health pickups -->
+
+<PickupRepresentation
+    pickupName = "Small Health Boost"
+    pickupDescription = "Adds a small amout of health to the ship."
+    inventoryRepresentation = "SmallHealth"
+    spawnerTemplate = "smallhealthpickupRepresentation"
+>
+    <pickup>
+        <HealthPickup template=smallhealthpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Medium Health Boost"
+    pickupDescription = "Adds a medium amout of health to the ship."
+    spawnerTemplate = "mediumhealthpickupRepresentation"
+    inventoryRepresentation = "MediumHealth"
+>
+    <pickup>
+        <HealthPickup template=mediumhealthpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Huge Health Boost"
+    pickupDescription = "Adds a huge amout of health to the ship."
+    spawnerTemplate = "hugehealthpickupRepresentation"
+    inventoryRepresentation = "HugeHealth"
+>
+    <pickup>
+        <HealthPickup template=hugehealthpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Crazy Madness Health Boost"
+    pickupDescription = "Adds a crazy amout of health to the ship."
+    spawnerTemplate = "crazyhealthpickupRepresentation"
+    inventoryRepresentation = "CrazyMadnessHealth"
+>
+    <pickup>
+        <HealthPickup template=crazyhealthpickup />
+    </pickup>
+</PickupRepresentation>
+
+<!-- Meta pickups -->
+
+<PickupRepresentation
+    pickupName = "Use Pickup"
+    pickupDescription = "Uses all pickups you have."
+    spawnerTemplate = "usepickupRepresentation"
+    inventoryRepresentation = "usePickup"
+>
+    <pickup>
+        <MetaPickup metaType="use" />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Drop Pickup"
+    pickupDescription = "Drops all pickups you have."
+    spawnerTemplate = "droppickupRepresentation"
+    inventoryRepresentation = "dropPickup"
+>
+    <pickup>
+        <MetaPickup metaType="drop" />
+    </pickup>
+</PickupRepresentation>
+
+<!-- Speed pickups -->
+
+<PickupRepresentation
+    name = "Small Speed Boost"
+    description = "Multiplies Speed of the Ship by a small amount."
+    spawnerTemplate = "smallspeedpickupRepresentation"
+>
+    <pickup>
+        <SpeedPickup template=smallspeedpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    name = "Medium Speed Boost"
+    description = "Multiplies Speed of the Ship by a bigger amount."
+    spawnerTemplate = "mediumspeedpickupRepresentation"
+>
+    <pickup>
+        <SpeedPickup template=mediumspeedpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    name = "Huge Speed Boost"
+    description = "Multiplies Speed of the Ship by a huge amount."
+    spawnerTemplate = "hugespeedpickupRepresentation"
+>
+    <pickup>
+        <SpeedPickup template=hugespeedpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    name = "Small Jump Boost"
+    description = "Boosts the Ship with a massive amount for a very short time."
+    spawnerTemplate = "smalljumppickupRepresentation"
+>
+    <pickup>
+        <SpeedPickup template=smalljumppickup />
+    </pickup>
+</PickupRepresentation>
+
+<!-- Invisible pickups -->
+
+<PickupRepresentation
+    name = "small Invisibility"
+    description = "Makes you invisible for 5 seconds."
+    spawnerTemplate = "smallinvisiblepickupRepresentation"
+>
+    <pickup>
+        <InvisiblePickup template=smallinvisiblepickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    name = "medium Invisibility"
+    description = "Makes you invisible for 10 seconds."
+    spawnerTemplate = "mediuminvisiblepickupRepresentation"
+>
+    <pickup>
+        <InvisiblePickup template=mediuminvisiblepickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    name = "hunge Invisibility"
+    description = "Makes you invisible for 20 seconds."
+    spawnerTemplate = "hugeinvisiblepickupRepresentation"
+>
+    <pickup>
+        <InvisiblePickup template=hugeinvisiblepickup />
+    </pickup>
+</PickupRepresentation>
+
+<!-- Pickup Collection pickups -->
+
+<PickupRepresentation
+    pickupName = "Triple Pickup"
+    pickupDescription = "Adds health, speed and invisibility."
+    spawnerTemplate = "triplehealthspeedinvisibilitypickupRepresentation"
+>
+    <pickup>
+        <PickupCollection template=triplehealthspeedinvisibilitypickup />
+    </pickup>
+</PickupRepresentation>
+
