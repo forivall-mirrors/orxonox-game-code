@@ -69,10 +69,10 @@ ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32"      CACHE)
 ADD_COMPILER_FLAGS("-D_CRT_SECURE_NO_WARNINGS" CACHE)
 
 # Overwrite CMake default flags here.
-SET_COMPILER_FLAGS("-MDd -Od -Zi -D_DEBUG -MP2 -RTC1" Debug          CACHE)
-SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP2"       Release        CACHE)
-SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG -MP2"       RelWithDebInfo CACHE)
-SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP2"       MinSizeRel     CACHE)
+SET_COMPILER_FLAGS("-MDd -Od -Zi -D_DEBUG -MP -RTC1" Debug          CACHE)
+SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP"       Release        CACHE)
+SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG -MP"       RelWithDebInfo CACHE)
+SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP"       MinSizeRel     CACHE)
 ADD_COMPILER_FLAGS("-D_SECURE_SCL=0" MSVC9 ReleaseAll CACHE)
 
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
