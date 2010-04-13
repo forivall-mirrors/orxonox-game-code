@@ -94,6 +94,12 @@ function showGUI(name, bHidePrevious)
         assert(bHidePrevious ~= nil)
     end
 
+    -- Pause game control if this is the first menu to be displayed
+    -- HUGE HACK?
+    if activeMenuSheets.size == 0 then
+        orxonox.HumanController:pauseControl()
+    end
+
     -- Hide if already displayed (to make sure it is up front in the end)
     if activeMenuSheets[name] ~= nil then
         hideGUI(name)
@@ -116,12 +122,6 @@ function showGUI(name, bHidePrevious)
 
     -- Add sheet to the root window
     root:addChildWindow(menuSheet.window)
-
-    -- Pause game control if this is the first menu to be displayed
-    -- HUGE HACK?
-    if activeMenuSheets.size == 0 then
-        orxonox.HumanController:pauseControl()
-    end
 
     -- Handle input distribution
     orxonox.InputManager:getInstance():enterState(menuSheet.inputState)
