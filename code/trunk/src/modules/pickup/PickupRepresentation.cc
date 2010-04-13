@@ -85,6 +85,7 @@ namespace orxonox
         this->description_ = "This is a pickup.";
         this->name_ = "Pickup";
         this->spawnerTemplate_ = "";
+        this->inventoryRepresentation_ = "Default";
         this->pickup_ = NULL;
     }
     
@@ -96,9 +97,10 @@ namespace orxonox
     {
         SUPER(PickupRepresentation, XMLPort, xmlelement, mode);
         
-        XMLPortParam(PickupRepresentation, "name", setName, getName, xmlelement, mode);
-        XMLPortParam(PickupRepresentation, "description", setDescription, getDescription, xmlelement, mode);
+        XMLPortParam(PickupRepresentation, "pickupName", setPickupName, getPickupName, xmlelement, mode);
+        XMLPortParam(PickupRepresentation, "pickupDescription", setPickupDescription, getPickupDescription, xmlelement, mode);
         XMLPortParam(PickupRepresentation, "spawnerTemplate", setSpawnerTemplate, getSpawnerTemplate, xmlelement, mode);
+        XMLPortParam(PickupRepresentation, "inventoryRepresentation", setInventoryRepresentation, getInventoryRepresentation, xmlelement, mode);
         XMLPortObject(PickupRepresentation, Pickupable, "pickup", setPickup, getPickup, xmlelement, mode);
         XMLPortObject(PickupRepresentation, StaticEntity, "spawner-representation", setSpawnerRepresentation, getSpawnerRepresentationIndex, xmlelement, mode);
         

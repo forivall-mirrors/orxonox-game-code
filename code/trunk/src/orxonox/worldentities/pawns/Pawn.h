@@ -36,10 +36,11 @@
 #include "interfaces/RadarViewable.h"
 #include "worldentities/ControllableEntity.h"
 
-namespace orxonox
-{
-    class _OrxonoxExport Pawn : public ControllableEntity, public RadarViewable, public PickupCarrier
-    {
+namespace orxonox // tolua_export
+{ // tolua_export
+    class _OrxonoxExport Pawn // tolua_export
+        : public ControllableEntity, public RadarViewable, public PickupCarrier
+    { // tolua_export
         friend class WeaponSystem;
 
         public:
@@ -131,8 +132,8 @@ namespace orxonox
 
             bool bAlive_;
 
-            virtual std::list<PickupCarrier*>* getCarrierChildren(void)
-                { return new std::list<PickupCarrier*>(); }
+            virtual std::vector<PickupCarrier*>* getCarrierChildren(void)
+                { return new std::vector<PickupCarrier*>(); }
             virtual PickupCarrier* getCarrierParent(void)
                 { return NULL; }
 
@@ -154,7 +155,7 @@ namespace orxonox
                 { this->weaponSystem_ = weaponsystem; }
 
             Vector3 aimPosition_;
-    };
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _Pawn_H__ */

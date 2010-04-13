@@ -100,6 +100,12 @@
       guiname = "QuestGUI"
       visible = "false"
     />
+    
+    <GUIOverlay
+      name = "PickupInventory"
+      guiname = "PickupInventory"
+      visible = "false"
+    />
 
   </OverlayGroup>
 </Template>

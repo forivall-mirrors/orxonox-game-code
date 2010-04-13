@@ -106,4 +106,36 @@
         </pickupables>
     </PickupCollection>
 </Template>
+
+<Template name=usepickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.60,0.97,0.23" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.40,0.81,0.10" material="Arrow" scale=0.65 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=droppickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.95,0.10,0.05" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.95,0.20,0.10" material="Arrow" scale=0.65 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
     

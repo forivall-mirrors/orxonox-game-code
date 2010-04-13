@@ -326,10 +326,17 @@ namespace orxonox
         if (it != overlays_s.end())
         {
             OrxonoxOverlay* overlay= it->second;
+            COUT(1) << "MUP" << std::endl;
             if(overlay->isVisible())
+            {
                 overlay->hide();
+                COUT(1) << "HIDE " << name << std::endl;
+            }
             else
+            {
                 overlay->show();
+                COUT(1) << "SHOW " << name << std::endl;
+            }
         }
     }
 

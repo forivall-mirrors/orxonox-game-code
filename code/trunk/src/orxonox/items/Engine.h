@@ -121,8 +121,8 @@ namespace orxonox
                 { this->speedMultiply_=speedMultiply; }
 
         protected:
-            virtual std::list<PickupCarrier*>* getCarrierChildren(void)
-                { return new std::list<PickupCarrier*>(); }
+            virtual std::vector<PickupCarrier*>* getCarrierChildren(void)
+                { return new std::vector<PickupCarrier*>(); }
             virtual PickupCarrier* getCarrierParent(void);
 
         private:
