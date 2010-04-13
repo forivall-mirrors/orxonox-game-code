@@ -46,9 +46,11 @@
 
 namespace orxonox
 {
-    class Pickupable;
+
+    //! Forward-declarations.
     class Pickup;
     class HealthPickup;
+    class InvisiblePickup;
     class MetaPickup;
     class SpeedPickup;
 
@@ -65,6 +67,7 @@ namespace orxonox
         friend class Pickupable;
         friend class Pickup;
         friend class HealthPickup;
+        friend class InvisiblePickup;
         friend class MetaPickup;
         friend class SpeedPickup;
 
