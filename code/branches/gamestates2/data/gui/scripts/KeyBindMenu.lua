@@ -2,7 +2,7 @@
 
 local P = createMenuSheet("KeyBindMenu")
 
-function P.init()
+function P.onLoad()
 
     commandList = {}
     table.insert(commandList, "fire 0")

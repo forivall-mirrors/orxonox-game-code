@@ -2,7 +2,7 @@
 
 local P = createMenuSheet("MultiplayerMenu")
 
-function P.init()
+function P.onLoad()
     listbox = winMgr:getWindow("orxonox/MultiplayerLevelListbox")
     preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
     orxonox.LevelManager:getInstance():compileAvailableLevelList()

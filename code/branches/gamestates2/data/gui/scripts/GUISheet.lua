@@ -12,8 +12,7 @@ function P.new(_name)
 end
 
 -- Override this function if you need to do work on load
--- TODO: rename to onLoad
-function P:init()
+function P:onLoad()
 end
 
 -- hide function for the GUI
@@ -37,7 +36,7 @@ function P:load()
     -- Hide it at first
     self:hide()
     -- Allow sheets to do some work upon loading
-    self:init()
+    self:onLoad()
     return self
 end
 

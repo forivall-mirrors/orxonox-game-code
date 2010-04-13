@@ -2,7 +2,7 @@
 
 local P = createMenuSheet("AudioMenu")
 
-function P.init()
+function P.onLoad()
     soundMgr = orxonox.SoundManager:getInstance()
     block = false
     masterscrollbar_active = false

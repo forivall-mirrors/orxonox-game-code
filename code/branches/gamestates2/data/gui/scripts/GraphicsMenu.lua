@@ -2,7 +2,7 @@
 
 local P = createMenuSheet("GraphicsMenu")
 
-function P.init()
+function P.onLoad()
     block = true
     file = orxonox.PathConfig:getConfigPathString() .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
     search_mode = 0
