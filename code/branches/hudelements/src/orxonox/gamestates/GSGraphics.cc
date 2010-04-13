@@ -38,8 +38,6 @@
 #include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GUIManager.h"
-// HACK:
-#include "overlays/Map.h"
 
 namespace orxonox
 {
@@ -72,8 +70,7 @@ namespace orxonox
     */
     void GSGraphics::deactivate()
     {
-        // HACK: (destroys a resource smart pointer)
-        Map::hackDestroyMap();
+
     }
 
     void GSGraphics::update(const Clock& time)

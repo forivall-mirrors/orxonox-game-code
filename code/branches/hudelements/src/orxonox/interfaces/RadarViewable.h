@@ -87,23 +87,7 @@ namespace orxonox
         inline Shape getRadarObjectShape() const
             { return this->radarObjectShape_; }
 
-/*
-        inline void setMapNode(Ogre::SceneNode * node)
-            { this->MapNode_ = node; }
-        inline Ogre::SceneNode * getMapNode() const
-            { return this->MapNode_; }
-        inline void setMapEntity(Ogre::Entity * ent)
-            { this->MapEntity_ = ent; }
-        inline Ogre::Entity * getMapEntity() const
-            { return this->MapEntity_; }
-*/
-        //Used for Map
-        Ogre::SceneNode * MapNode_;
-        Ogre::Entity * MapEntity_;
-        Ogre::DynamicLines* line_;
-        Ogre::SceneNode * LineNode_;
-        void addMapEntity();
-        void updateMapPosition();
+
         bool isHumanShip_;
         inline const std::string& getUniqueId()
         {
