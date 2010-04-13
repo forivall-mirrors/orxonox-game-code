@@ -1,6 +1,6 @@
 -- InGameMenu.lua
 
-local P = createSheet("InGameMenu")
+local P = createMenuSheet("InGameMenu")
 
 -- events for ingamemenu
 function P.button_quit_clicked(e)

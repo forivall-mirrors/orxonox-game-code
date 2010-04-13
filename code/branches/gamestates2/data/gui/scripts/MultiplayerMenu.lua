@@ -1,6 +1,6 @@
 -- MultiplayerMenu.lua
 
-local P = createSheet("MultiplayerMenu")
+local P = createMenuSheet("MultiplayerMenu")
 
 function P.init()
     listbox = winMgr:getWindow("orxonox/MultiplayerLevelListbox")

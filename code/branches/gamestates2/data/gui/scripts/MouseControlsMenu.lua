@@ -1,6 +1,6 @@
 -- MouseControlsMenu.lua
 
-local P = createSheet("MouseControlsMenu")
+local P = createMenuSheet("MouseControlsMenu")
 
 function P.init()
     block = false

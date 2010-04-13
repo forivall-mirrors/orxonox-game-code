@@ -1,6 +1,6 @@
 -- MultiplayerOptionsMenu.lua
 
-local P = createSheet("MultiplayerOptionsMenu")
+local P = createMenuSheet("MultiplayerOptionsMenu")
 
 function P.MultiplayerOptionsBackButton_clicked(e)
     hideGUI(P.name)

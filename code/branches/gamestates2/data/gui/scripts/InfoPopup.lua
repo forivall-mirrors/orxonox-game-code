@@ -1,6 +1,6 @@
 -- InfoPopup.lua
 
-local P = createSheet("InfoPopup")
+local P = createMenuSheet("InfoPopup")
 
 function P.execute(functionPtr, arguments)
     if functionPtr ~= nil then

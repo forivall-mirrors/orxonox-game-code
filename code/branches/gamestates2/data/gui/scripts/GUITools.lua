@@ -1,11 +1,15 @@
-function createSheet(sheetName)
-    -- Create object of type BasicGUI and make it global
-    local basicGUI = require("BasicGUI")
-    if basicGUI == nil then
-        error("Loading BasicGUI.lua failed")
-    end
-    local sheet = basicGUI:new(sheetName)
-    _G[sheetName] = sheet
+-- Returns a new menu sheet
+-- See MenuSheet.new for details about the parameters
+function createMenuSheet(name, bHidePrevious, tShowCursor, tUseKeyboard, bBlockJoyStick)
+    local sheet = require("MenuSheet").new(name, bHidePrevious, tShowCursor, tUseKeyboard, bBlockJoyStick)
+    _G[sheet.name] = sheet -- Global access required because of the event handlers
+    return sheet
+end
+
+-- Returns a new HUD sheet
+function createHUDSheet(name)
+    local sheet = require("HUDSheet").new(name)
+    _G[sheet.name] = sheet -- Global access required because of the event handlers
     return sheet
 end
 

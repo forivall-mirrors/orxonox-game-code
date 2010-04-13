@@ -1,6 +1,6 @@
 -- AudioMenu.lua
 
-local P = createSheet("AudioMenu")
+local P = createMenuSheet("AudioMenu")
 
 function P.init()
     soundMgr = orxonox.SoundManager:getInstance()

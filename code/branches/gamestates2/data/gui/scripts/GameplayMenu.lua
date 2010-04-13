@@ -1,6 +1,6 @@
 -- GameplayMenu.lua
 
-local P = createSheet("GameplayMenu")
+local P = createMenuSheet("GameplayMenu")
 
 function P.init()
     dropdown = winMgr:getWindow("orxonox/ThemeCombobox")

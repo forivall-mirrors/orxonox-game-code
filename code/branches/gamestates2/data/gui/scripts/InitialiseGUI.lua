@@ -29,8 +29,8 @@ system:setDefaultFont("BlueHighway-12")
 system:setDefaultTooltip("MenuWidgets/Tooltip")
 
 local loadedSheets = {}
-local activeMenuSheets = {size = 0, topSheet = nil}
---activeHUDSheets  = {size = 0, topSheet = nil}
+local activeMenuSheets = {size = 0, topSheetTuple = nil}
+--activeHUDSheets  = {size = 0, topSheetTuple = nil}
 local root = nil
 
 -- Require all tools
@@ -50,13 +50,8 @@ local function loadSheet(name)
     if sheet == nil then
         -- Load the sheet
         sheet = require(name)
-        if sheet == nil then
-            return
-        end
         sheet:load()
         loadedSheets[name] = sheet
-        -- Hide new GUI as we do not want to show it accidentally
-        sheet:hide()
     end
     return sheet
 end
@@ -79,20 +74,24 @@ end
 ------------------------
 
 -- ?
-function showGUI(name, bHidePrevious, bShowCursor, ptr)
-    gui = showGUI(name, bHidePrevious, bShowCursor)
-    gui.overlay = ptr
+function showGUI(name, bHidePrevious, ptr)
+    local sheet = showGUI(name, bHidePrevious)
+    sheet.overlay = ptr
+    return sheet
 end
 
 -- Shows the specified menu sheet and loads it if neccessary
-function showGUI(name, bHidePrevious, bShowCursor)
-    -- Handle default value for bShowCursor
-    if bShowCursor == nil then
-        if activeMenuSheets.size > 0 then
-            bShowCursor = activeMenuSheets.topSheet.bShowCursor
-        else
-            bShowCursor = true
-        end
+function showGUI(name, bHidePrevious)
+    -- Get sheet (or load it)
+    local menuSheet = loadSheet(name)
+    if not menuSheet then
+        return nil
+    end
+
+    -- Use sheet's value if nil was provided
+    if bHidePrevious == nil then
+        bHidePrevious = menuSheet.bHidePrevious
+        assert(bHidePrevious ~= nil)
     end
 
     -- Hide if already displayed (to make sure it is up front in the end)
@@ -100,14 +99,19 @@ function showGUI(name, bHidePrevious, bShowCursor)
         hideGUI(name)
     end
 
+    -- Add the sheet in a tuple of additional information
+    local sheetTuple =
+    {
+        ["sheet"]          = menuSheet,
+        ["bHidePrevious"]  = bHidePrevious
+    }
+    table.insert(activeMenuSheets, sheetTuple) -- indexed array access
+    activeMenuSheets[name] = sheetTuple -- name access
+    activeMenuSheets.size = activeMenuSheets.size + 1
+    activeMenuSheets.topSheetTuple = sheetTuple
+
     if not root then
         setBackground("")
-    end
-
-    -- Get sheet (or load it)
-    local menuSheet = loadSheet(name)
-    if not menuSheet then
-        return
     end
 
     -- Add sheet to the root window
@@ -122,33 +126,22 @@ function showGUI(name, bHidePrevious, bShowCursor)
     -- Handle input distribution
     orxonox.InputManager:getInstance():enterState(menuSheet.inputState)
 
-    if bShowCursor then
+    -- Only change cursor situation if menuSheet.tShowCursor ~= TriBool.Dontcare
+    if menuSheet.tShowCursor == TriBool.True then
         showCursor()
-    else
+    elseif menuSheet.tShowCursor == TriBool.False then
         hideCursor()
     end
-
-    -- Add the sheet in a tuple of additional information
-    local sheetTuple =
-    {
-        ["menuSheet"]      = menuSheet,
-        ["name"]           = name,
-        ["bShowCursor"]    = bShowCursor,
-        ["bHidePrevious"]  = bHidePrevious
-    }
-    table.insert(activeMenuSheets, sheetTuple) -- indexed array access
-    activeMenuSheets[name] = sheetTuple -- name access
-    activeMenuSheets.size = activeMenuSheets.size + 1
-    activeMenuSheets.topSheet = sheetTuple
 
     -- Hide all previous sheets if necessary
     if bHidePrevious then
         for i = 1, activeMenuSheets.size - 1 do
-            activeMenuSheets[i].menuSheet:hide()
+            activeMenuSheets[i].sheet:hide()
         end
     end
 
     menuSheet:show()
+
     return menuSheet
 end
 
@@ -159,19 +152,19 @@ function hideGUI(name)
     end
 
     -- Hide the sheet
-    sheetTuple.menuSheet:hide()
+    sheetTuple.sheet:hide()
 
     -- Show sheets that were hidden by the sheet to be removed
     local i = activeMenuSheets.size
     -- Only do something if all sheets on top of sheetTuple
-    -- have bHidePrevious == false and sheetTuple.bHidePrevious == true
+    -- have bHidePrevious == true and sheetTuple.bHidePrevious == true
     while i > 0 do
-        if activeMenuSheets[i].bHidePrevious == true then
+        if activeMenuSheets[i].bHidePrevious then
             if activeMenuSheets[i] == sheetTuple then
                 i = i - 1
                 while i > 0 do
-                    activeMenuSheets[i].menuSheet:show()
-                    if activeMenuSheets[i].bHidePrevious == true then
+                    activeMenuSheets[i].sheet:show()
+                    if activeMenuSheets[i].bHidePrevious then
                         break
                     end
                     i = i - 1
@@ -183,17 +176,22 @@ function hideGUI(name)
     end
 
     -- Remove sheet with its tuple from the table
-    root:removeChildWindow(sheetTuple.menuSheet.window)
+    root:removeChildWindow(sheetTuple.sheet.window)
     table.remove(activeMenuSheets, table.findIndex(activeMenuSheets, sheetTuple))
     activeMenuSheets[name] = nil
     activeMenuSheets.size = activeMenuSheets.size - 1
-    activeMenuSheets.topSheet = activeMenuSheets[activeMenuSheets.size]
+    activeMenuSheets.topSheetTuple = activeMenuSheets[activeMenuSheets.size]
 
     -- Leave the input state
-    orxonox.InputManager:getInstance():leaveState(sheetTuple.menuSheet.inputState)
+    orxonox.InputManager:getInstance():leaveState(sheetTuple.sheet.inputState)
     
-    -- See whether to show or hide cursor
-    if activeMenuSheets.size > 0 and activeMenuSheets.topSheet.bShowCursor then
+    -- CURSOR SHOWING
+    local i = activeMenuSheets.size
+    -- Find top most sheet that doesn't have tShowCusor == TriBool.Dontcare
+    while i > 0 and activeMenuSheets[i].sheet.tShowCursor == TriBool.Dontcare do
+        i = i - 1
+    end
+    if i > 0 and activeMenuSheets[i].sheet.tShowCursor == TriBool.True then
         showCursor()
     else
         hideCursor()
@@ -209,16 +207,16 @@ end
 -- Hides all menu GUI sheets
 function hideAllGUIs()
     while activeMenuSheets.size ~= 0 do
-        hideGUI(activeMenuSheets.topSheet.name)
+        hideGUI(activeMenuSheets.topSheetTuple.sheet.name)
     end
 end
 
 function keyESC()
     -- HUGE, very HUGE hacks!
-    if activeMenuSheets.size == 1 and activeMenuSheets[1].name == "MainMenu" then
+    if activeMenuSheets.size == 1 and activeMenuSheets[1].sheet.name == "MainMenu" then
         orxonox.execute("exit")
     elseif activeMenuSheets.size > 0 then
-        orxonox.execute("hideGUI "..activeMenuSheets.topSheet.name)
+        orxonox.execute("hideGUI "..activeMenuSheets.topSheetTuple.sheet.name)
     else
         showGUI("InGameMenu")
     end

@@ -1,6 +1,6 @@
 -- PickupInventory.lua
 
-local P = createSheet("PickupInventory")
+local P = createMenuSheet("PickupInventory")
 
 P.lastEquipmentCount_ = 0
 P.lastUsableCount_ = 0

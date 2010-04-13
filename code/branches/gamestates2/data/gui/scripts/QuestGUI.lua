@@ -1,6 +1,6 @@
 -- QuestGUI.lua
 
-local P = createSheet("QuestGUI")
+local P = createMenuSheet("QuestGUI")
 
 function P.show()
     P.window:show() -- TDO: Do this through parent...

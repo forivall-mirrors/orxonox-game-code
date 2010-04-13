@@ -1,6 +1,6 @@
 -- ControlsMenu.lua
 
-local P = createSheet("ControlsMenu")
+local P = createMenuSheet("ControlsMenu")
 
 function P.ControlsMouseControlsButton_clicked(e)
     showGUI("MouseControlsMenu", true)

@@ -1,6 +1,6 @@
 -- CreditsMenu.lua
 
-local P = createSheet("CreditsMenu")
+local P = createMenuSheet("CreditsMenu")
 
 function P.CreditsBackButton_clicked(e)
     hideGUI(P.name)

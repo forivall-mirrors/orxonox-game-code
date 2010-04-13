@@ -1,6 +1,6 @@
 -- SingleplayerMenu.lua
 
-local P = createSheet("SingleplayerMenu")
+local P = createMenuSheet("SingleplayerMenu")
 
 function P.init()
     listbox = winMgr:getWindow("orxonox/SingleplayerLevelListbox")

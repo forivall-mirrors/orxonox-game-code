@@ -1,6 +1,6 @@
 -- KeyBindMenu.lua
 
-local P = createSheet("KeyBindMenu")
+local P = createMenuSheet("KeyBindMenu")
 
 function P.init()
 

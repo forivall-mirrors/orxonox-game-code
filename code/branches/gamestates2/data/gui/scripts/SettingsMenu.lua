@@ -1,6 +1,6 @@
 -- SettingsMenu.lua
 
-local P = createSheet("SettingsMenu")
+local P = createMenuSheet("SettingsMenu")
 
 function P.SettingsGameplayButton_clicked(e)
     showGUI("GameplayMenu", true)

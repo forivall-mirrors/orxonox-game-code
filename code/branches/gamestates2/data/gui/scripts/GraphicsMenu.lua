@@ -1,6 +1,6 @@
 -- GraphicsMenu.lua
 
-local P = createSheet("GraphicsMenu")
+local P = createMenuSheet("GraphicsMenu")
 
 function P.init()
     block = true

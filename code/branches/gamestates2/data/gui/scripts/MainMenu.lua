@@ -1,6 +1,6 @@
 -- MainMenu.lua
 
-local P = createSheet("MainMenu")
+local P = createMenuSheet("MainMenu")
 
 -- events for MainMenu
 function P.QuickGameTestButton_clicked(e)

@@ -1,6 +1,6 @@
 -- DecisionPopup.lua
 
-local P = createSheet("DecisionPopup")
+local P = createMenuSheet("DecisionPopup")
 
 function P.setCallback(functionPtr)
     P.functionPtr = functionPtr
