@@ -102,7 +102,7 @@ namespace orxonox
     */
     void PickupSpawner::initialize(void)
     {
-        this->triggerDistance_ = 20;
+        this->triggerDistance_ = 10;
         this->respawnTime_ = 0;
         this->maxSpawnedItems_ = INF;
         this->spawnsRemaining_ = INF;

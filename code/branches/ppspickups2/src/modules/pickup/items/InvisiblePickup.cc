@@ -54,8 +54,8 @@ namespace orxonox
     InvisiblePickup::InvisiblePickup(BaseObject* creator) : Pickup(creator)
     {
         RegisterObject(InvisiblePickup);
-	//! Defines who is allowed to pick up the pickup.
-	this->initialize(); 
+        //! Defines who is allowed to pick up the pickup.
+        this->initialize(); 
     }
     
     /**
@@ -69,11 +69,11 @@ namespace orxonox
     
     void InvisiblePickup::initializeIdentifier(void)
     {
-	std::stringstream stream;
-	stream << this->getDuration();
-	std::string type1 = "duration";
-	std::string val1 = stream.str();
-	this->pickupIdentifier_->addParameter(type1, val1);
+        std::stringstream stream;
+        stream << this->getDuration();
+        std::string type1 = "duration";
+        std::string val1 = stream.str();
+        this->pickupIdentifier_->addParameter(type1, val1);
     }
     
     /**
@@ -82,8 +82,8 @@ namespace orxonox
     */
     void InvisiblePickup::initialize(void)
     {
-	this->duration_ = 0.0;
-	this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
+        this->duration_ = 0.0f;
+        this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
 
     /**
@@ -93,9 +93,9 @@ namespace orxonox
     void InvisiblePickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
         SUPER(InvisiblePickup, XMLPort, xmlelement, mode);    
-	XMLPortParam(InvisiblePickup, "duration", setDuration, getDuration, xmlelement, mode);
-	 
-	 this->initializeIdentifier();
+        XMLPortParam(InvisiblePickup, "duration", setDuration, getDuration, xmlelement, mode);
+        
+        this->initializeIdentifier();
     }
     
     /**
@@ -105,19 +105,22 @@ namespace orxonox
     void InvisiblePickup::changedUsed(void)
     {
         SUPER(InvisiblePickup, changedUsed);
-	
         
         //! If the pickup is not picked up nothing must be done.
         if(!this->isPickedUp())
             return;
-	if (this->isUsed())
-	{
-	    this->startPickupTimer(this->getDuration());
-	    this->setInvisible(true);
-	}
-	else
-	  this->setInvisible(false);
-	
+        
+        if (this->isUsed())
+        {
+            this->startPickupTimer(this->getDuration());
+            this->setInvisible(true);
+        }
+        else
+        {
+            this->setInvisible(false);
+            this->destroy();
+        }
+        
     }
     
     /**
@@ -150,48 +153,50 @@ namespace orxonox
             item = new InvisiblePickup(this);
         
         SUPER(InvisiblePickup, clone, item);
-	
-	InvisiblePickup* pickup = dynamic_cast<InvisiblePickup*>(item);
-	pickup->setDuration(this->getDuration());
-	pickup->initializeIdentifier();
+        
+        InvisiblePickup* pickup = dynamic_cast<InvisiblePickup*>(item);
+        pickup->setDuration(this->getDuration());
+        pickup->initializeIdentifier();
     }
     
     /**
     @brief
         Sets the invisibility.
-    @param health
+    @param invisibility
         The invisibility.
     */
     bool InvisiblePickup::setInvisible(bool invisibility)
     {
-      
-      Pawn* pawn = this->carrierToPawnHelper();
-      pawn->setVisible(!invisibility);
-      return 0;
+        Pawn* pawn = this->carrierToPawnHelper();
+        if(pawn == NULL)
+            return false;
+        
+        pawn->setVisible(!invisibility);
+        return true;
     }
     
     /**
     @brief
-    Sets the duration.
+        Sets the duration.
     @param duration
-    The duration
+        The duration
     */
     void InvisiblePickup::setDuration(float duration)
     {
-	if(duration >= 0.0f)
-	{
-	    this->duration_ = duration;
-	}
-	else
-	{
-	    COUT(1) << "Invalid duration in InvisiblePickup." << std::endl;
-	    this->duration_ = 0;
-	}
+        if(duration >= 0.0f)
+        {
+            this->duration_ = duration;
+        }
+        else
+        {
+            COUT(1) << "Invalid duration in InvisiblePickup." << std::endl;
+            this->duration_ = 0.0f;
+        }
     }
     
-    void InvisiblePickup::PickupTimerCallBack(void)
+    void InvisiblePickup::pickupTimerCallback(void)
     {
-	this->setInvisible(false);
+        this->setUsed(false);
     }
 
 }

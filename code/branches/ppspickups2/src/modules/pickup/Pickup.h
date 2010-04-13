@@ -136,7 +136,7 @@ namespace orxonox
 
             bool startPickupTimer(float durationTime);
 
-            virtual void PickupTimerCallBack(void) {}
+            virtual void pickupTimerCallback(void) {}
 
             /**
             @brief Set the activation type of the pickup.

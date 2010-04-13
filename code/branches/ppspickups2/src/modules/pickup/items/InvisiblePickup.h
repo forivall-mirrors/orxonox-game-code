@@ -63,26 +63,26 @@ namespace orxonox {
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
             
-	     /**
-            @brief Checks wether the Pawn is invisible.
+            /**
+            @brief Checks whether the Pawn is invisible.
             @return Returns if the Pawn is invisible.
             */
             inline bool getInvisibility(bool)
                 { return this->invisible_; }
-	    inline float getDuration()
-		{return this->duration_;}
+            inline float getDuration()
+                { return this->duration_; }
  
         protected:
-	    bool setInvisible(bool invisibility); //!< Set the Pawn to be invisible or visible again.
-	    void setDuration(float duration);
-	    void initializeIdentifier(void);
+            bool setInvisible(bool invisibility); //!< Set the Pawn to be invisible or visible again.
+            void setDuration(float duration);
+            void initializeIdentifier(void);
+            virtual void pickupTimerCallback(void); //!< Function that gets called when the timer ends.
         
         private:
-	   void initialize(void); //!< Initializes the member variables.
+            void initialize(void); //!< Initializes the member variables.
             Pawn* carrierToPawnHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
-            void PickupTimerCallBack(void); //!< Function that gets called when the timer ends.
-	    bool invisible_; //!< Helper to remember wether the Pawn is invisible.
-	    float duration_; //! Duration of invisibility.
+            bool invisible_; //!< Helper to remember wether the Pawn is invisible.
+            float duration_; //! Duration of invisibility.
     };
 }
 

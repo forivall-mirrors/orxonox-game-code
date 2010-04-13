@@ -249,7 +249,7 @@ namespace orxonox
             COUT(1) << "Pickup durationTimer already in use." << std::endl;
             return false;
         }
-        this->durationTimer_.setTimer(durationTime, false, createExecutor(createFunctor(&Pickup::PickupTimerCallBack, this)));
+        this->durationTimer_.setTimer(durationTime, false, createExecutor(createFunctor(&Pickup::pickupTimerCallback, this)));
         return true;
     }
 }
