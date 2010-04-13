@@ -47,12 +47,15 @@ namespace orxonox
     {
         RegisterRootObject(PickupIdentifier);
         
+        if(pickup == NULL)
+            COUT(1) << "Error, PickupIdentifier was created without a valid Pickupable." << std::endl;
+        
         this->pickup_ = pickup;
     }
     
     PickupIdentifier::~PickupIdentifier()
     {
-        
+
     }
     
     /**
@@ -65,6 +68,30 @@ namespace orxonox
     */
     int PickupIdentifier::compare(const PickupIdentifier* identifier) const
     {
+        if(identifier == NULL)
+        {
+            return 1;
+            COUT(1) << "Error in PickupIdentifier::compare: Input Identifier is NULL." << std::endl;
+        }
+        
+        if(identifier->pickup_ == NULL && this->pickup_ == NULL)
+        {
+            return 0;
+            COUT(1) << "Error in PickupIdentifier::compare: Pickup stored by Identifier is NULL." << std::endl;
+        }
+        
+        if(identifier->pickup_ == NULL)
+        {
+            return 1;
+            COUT(1) << "Error in PickupIdentifier::compare: Pickup stored by Identifier is NULL." << std::endl;
+        }
+        
+        if(this->pickup_ == NULL)
+        {
+            return -1;
+            COUT(1) << "Error in PickupIdentifier::compare: Pickup stored by Identifier is NULL." << std::endl;
+        }
+        
         //! If the classIdentifiers are not the same (meaning the PickupIdentifiers identify different classes), the obviously the two Pickupables identified by the PickupIdentifiers cannot be the same. An ordering is established through the alphabetical ordering of the respective classnames.
         if(!identifier->pickup_->getIdentifier()->isExactlyA(this->pickup_->getIdentifier()))
             return this->pickup_->getIdentifier()->getName().compare(identifier->pickup_->getIdentifier()->getName());
@@ -90,7 +117,7 @@ namespace orxonox
                 return it->second.compare(identifier->parameters_.find(it->first)->second);
         }
             
-        return false;
+        return 0;
     }
     
     /**

@@ -45,7 +45,7 @@ namespace orxonox
     @brief
         Constructor. Registers the objects and initializes its member variables.
     */
-    Pickupable::Pickupable() : used_(false), pickedUp_(false)
+    Pickupable::Pickupable() : pickupIdentifier_(NULL), used_(false), pickedUp_(false)
     {        
         RegisterRootObject(Pickupable);
         
@@ -68,6 +68,9 @@ namespace orxonox
             this->getCarrier()->drop(this, false);
             this->setCarrier(NULL);
         }
+        
+        if(this->pickupIdentifier_ != NULL)
+            this->pickupIdentifier_->destroy();
     }
     
     /**

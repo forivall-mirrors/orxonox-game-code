@@ -48,7 +48,7 @@ namespace orxonox
         Constructor. Registers the object and initializes its member variables.
         This is primarily for use of the PickupManager in creating a default PickupRepresentation.
     */
-    PickupRepresentation::PickupRepresentation() : BaseObject(NULL), spawnerRepresentation_(NULL)
+    PickupRepresentation::PickupRepresentation() : BaseObject(NULL), spawnerRepresentation_(NULL), pickup_(NULL)
     {
         RegisterObject(PickupRepresentation);
         
@@ -59,7 +59,7 @@ namespace orxonox
     @brief
         Default Constructor. Registers the object and initializes its member variables.
     */
-    PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator), spawnerRepresentation_(NULL)
+    PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator), spawnerRepresentation_(NULL), pickup_(NULL)
     {
         RegisterObject(PickupRepresentation);
         
@@ -74,6 +74,9 @@ namespace orxonox
     {
         if(this->spawnerRepresentation_ != NULL)
             this->spawnerRepresentation_->destroy();
+        
+        if(this->pickup_ != NULL)
+            PickupManager::getInstance().unregisterRepresentation(this->pickup_->getPickupIdentifier(), this);
     }
     
     /**
@@ -86,7 +89,6 @@ namespace orxonox
         this->name_ = "Pickup";
         this->spawnerTemplate_ = "";
         this->inventoryRepresentation_ = "Default";
-        this->pickup_ = NULL;
     }
     
     /**
