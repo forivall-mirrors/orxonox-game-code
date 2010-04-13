@@ -1,0 +1,103 @@
+<Template name=smallspeedpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.99,0.96,0.52" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.98,0.94,0.22" material="3arrowsup" scale=0.3 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=smallspeedpickup>
+  <SpeedPickup
+    duration = 10.0
+    speedAdd = 0.0
+    SpeedMultiply = 10.0
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
+
+<Template name=mediumspeedpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.99,0.96,0.52" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.98,0.94,0.22" material="3arrowsup" scale=0.5 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=mediumspeedpickup>
+  <SpeedPickup
+    duration = 10.0
+    speedAdd = 0.0
+    SpeedMultiply = 25.0
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
+
+<Template name=hugespeedpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.99,0.96,0.52" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="0.98,0.94,0.22" material="3arrowsup" scale=0.7 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=hugespeedpickup>
+  <SpeedPickup
+    duration = 10.0
+    speedAdd = 0.0
+    SpeedMultiply = 50.0
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
+
+<Template name=smalljumppickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.99,0.96,0.52" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1,0,0" material="3arrowsup" scale=0.3 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=smalljumppickup>
+  <SpeedPickup
+    duration = 0.7
+    speedAdd = 5000.0
+    SpeedMultiply = 1.0
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>

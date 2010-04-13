@@ -63,6 +63,9 @@ namespace orxonox
 
         this->boostBlur_ = 0;
 
+        this->speedAdd_ = 0.0;
+        this->speedMultiply_ = 1.0;
+
         this->setConfigValues();
         this->registerVariables();
     }
@@ -118,6 +121,9 @@ namespace orxonox
         registerVariable(this->accelerationBack_,      VariableDirection::ToClient);
         registerVariable(this->accelerationLeftRight_, VariableDirection::ToClient);
         registerVariable(this->accelerationUpDown_,    VariableDirection::ToClient);
+
+        registerVariable(this->speedAdd_, VariableDirection::ToClient);
+        registerVariable(this->speedMultiply_, VariableDirection::ToClient);
     }
 
     void Engine::networkcallback_shipID()
@@ -191,7 +197,7 @@ namespace orxonox
                 acceleration.y = direction.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
         }
 
-        this->ship_->setAcceleration(this->ship_->getOrientation() * acceleration);
+        this->ship_->setAcceleration(this->ship_->getOrientation() * (acceleration*this->getSpeedMultiply()+Vector3(0,0,-this->getSpeedAdd())));
 
         if (!this->ship_->getPermanentBoost())
             this->ship_->setBoost(false);
@@ -239,5 +245,15 @@ namespace orxonox
             return this->ship_->getSteeringDirection();
         else
             return Vector3::ZERO;
+    }
+
+    PickupCarrier* Engine::getCarrierParent(void)
+    {
+        return this->ship_;
+    }
+
+    const Vector3& Engine::getCarrierPosition(void)
+    {
+        return this->ship_->getWorldPosition();
     }
 }

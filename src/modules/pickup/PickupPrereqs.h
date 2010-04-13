@@ -72,11 +72,12 @@ namespace orxonox
     class PickupManager;
     class PickupRepresentation;
     class PickupSpawner;
-    
+
     //items
     class HealthPickup;
     class MetaPickup;
-    
+    class SpeedPickup;
+
 }
 
 #endif /* _PickupPrereqs_H__ */
