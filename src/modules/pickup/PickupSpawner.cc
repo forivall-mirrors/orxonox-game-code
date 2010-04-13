@@ -179,8 +179,9 @@ namespace orxonox
             for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
             {
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
+                PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(*it);
                 //! If a Pawn, that fits the target-range of the item spawned by this Pickup, is in trigger-distance.
-                if (distance.length() < this->triggerDistance_ && this->pickup_->isTarget(*it))
+                if (distance.length() < this->triggerDistance_ && carrier != NULL && carrier->isTarget(this->pickup_))
                 {
                     this->trigger(*it);
                 }

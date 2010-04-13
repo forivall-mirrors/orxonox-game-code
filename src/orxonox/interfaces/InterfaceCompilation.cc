@@ -59,6 +59,7 @@ namespace orxonox
     {
         RegisterRootObject(PickupCarrier);
         
+        this->setCarrierName("PickupCarrier");
     }
     
     PickupCarrier::~PickupCarrier()

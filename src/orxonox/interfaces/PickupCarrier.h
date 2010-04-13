@@ -44,10 +44,11 @@
 
 #include "core/OrxonoxClass.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
 
     //! Forward-declarations.
+    class PickupManager;
     class Pickup;
     class HealthPickup;
     class InvisiblePickup;
@@ -60,11 +61,13 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
-    {
+    class _OrxonoxExport PickupCarrier  // tolua_export
+        : virtual public OrxonoxClass
+    { // tolua_export
         //! So that the different Pickupables have full access to their PickupCarrier.
-        //! Friends. 
         friend class Pickupable;
+        friend class PickupManager;
+        //! Friends. 
         friend class Pickup;
         friend class HealthPickup;
         friend class InvisiblePickup;
@@ -119,8 +122,8 @@ namespace orxonox
                         return true;
 
                     //! Go recursively through all children to check whether they are a target.
-                    std::list<PickupCarrier*>* children = this->getCarrierChildren();
-                    for(std::list<PickupCarrier*>::const_iterator it = children->begin(); it != children->end(); it++)
+                    std::vector<PickupCarrier*>* children = this->getCarrierChildren();
+                    for(std::vector<PickupCarrier*>::const_iterator it = children->begin(); it != children->end(); it++)
                     {
                         if((*it)->isTarget(pickup))
                             return true;
@@ -146,8 +149,8 @@ namespace orxonox
                         return this;
 
                     //! Go recursively through all children to check whether they are the target.
-                    std::list<PickupCarrier*>* children = this->getCarrierChildren();
-                    for(std::list<PickupCarrier*>::iterator it = children->begin(); it != children->end(); it++)
+                    std::vector<PickupCarrier*>* children = this->getCarrierChildren();
+                    for(std::vector<PickupCarrier*>::iterator it = children->begin(); it != children->end(); it++)
                     {
                         if(pickup->isTarget(*it))
                             return *it;
@@ -165,15 +168,21 @@ namespace orxonox
             @return Returns the position as a Vector3.
             */
             virtual const Vector3& getCarrierPosition(void) = 0;
-
-        protected:
+            
+            /**
+            @brief Get the name of this PickupCarrier.
+            @return Returns the name as a string.
+            */
+            const std::string& getCarrierName(void) { return this->carrierName_; } // tolua_export
+            
+        protected:        
             /**
             @brief Get all direct children of this PickupSpawner.
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
                    The returned list will be deleted by the methods calling this function.
             @return Returns a pointer to a list of all direct children.
             */
-            virtual std::list<PickupCarrier*>* getCarrierChildren(void) = 0;
+            virtual std::vector<PickupCarrier*>* getCarrierChildren(void) = 0;
             /**
             @brief Get the parent of this PickupSpawner
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
@@ -187,11 +196,69 @@ namespace orxonox
             */
             std::set<Pickupable*>& getPickups(void)
                 { return this->pickups_; }
-
+                
+            /**
+            @brief Set the name of this PickupCarrier.
+                   The name needs to be set in the constructor of every class inheriting from PickupCarrier, by calling setCarrierName().
+            @param name The name to be set.
+            */
+            void setCarrierName(const std::string& name)
+                { this->carrierName_ = name; }
+        
         private:
             std::set<Pickupable*> pickups_; //!< The list of Pickupables carried by this PickupCarrier.
-
-    };
-}
+            std::string carrierName_; //!< The name of the PickupCarrier, as displayed in the PickupInventory.
+            
+            /**
+            @brief Get the number of carrier children this PickupCarrier has.
+            @return Returns the number of carrier children.
+            */
+            unsigned int getNumCarrierChildren(void)
+                {
+                    std::vector<PickupCarrier*>* list = this->getCarrierChildren();
+                    unsigned int size = list->size();
+                    delete list;
+                    return size;
+                }
+            
+            /**
+            @brief Get the index-th child of this PickupCarrier.
+            @param index The index of the child to return.
+            @return Returns the index-th child.
+            */
+            PickupCarrier* getCarrierChild(unsigned int index)
+                {
+                    std::vector<PickupCarrier*>* list = this->getCarrierChildren();
+                    if(list->size() < index)
+                        return NULL;
+                    PickupCarrier* carrier = (*list)[index];
+                    delete list;
+                    return carrier;
+                }
+            
+            /**
+            @brief Get the number of Pickupables this PickupCarrier carries.
+            @return returns the number of pickups.
+            */
+            unsigned int getNumPickups(void)
+                { return this->pickups_.size(); }
+            
+            /**
+            @brief Get the index-th Pickupable of this PickupCarrier.
+            @param index The index of the Pickupable to return.
+            @return Returns the index-th pickup.
+            */
+            Pickupable* getPickup(unsigned int index)
+                {
+                    std::set<Pickupable*>::iterator it;
+                    for(it = this->pickups_.begin(); index != 0 && it != this->pickups_.end(); it++)
+                        index--;
+                    if(it == this->pickups_.end())
+                        return NULL;
+                    return *it;
+                }
+            
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _PickupCarrier_H__ */

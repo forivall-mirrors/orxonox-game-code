@@ -10,7 +10,7 @@ P.filename = "QuestGUI"
 P.layoutString = "QuestGUI.layout"
 
 function P:show()
-    self.window:show() -- TDO: Do this through parent...
+    self.window:show() -- TODO: Do this through parent...
     self.visible = true
 
     local questManager = orxonox.QuestManager:getInstance()
