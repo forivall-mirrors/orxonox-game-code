@@ -50,7 +50,7 @@ namespace orxonox
     // Register tolua_open function when loading the library
     DeclareToluaInterface(Pickup);
     
-    ManageScopedSingleton(PickupManager, ScopeID::Root, false);
+    ManageScopedSingleton(PickupManager, ScopeID::Graphics, false);
     
     /*static*/ const std::string PickupManager::guiName_s = "PickupInventory";
     
@@ -63,6 +63,8 @@ namespace orxonox
         RegisterRootObject(PickupManager);
         
         this->defaultRepresentation_ = new PickupRepresentation();
+        
+        COUT(3) << "PickupManager created." << std::endl;
     }
     
     /**
@@ -74,6 +76,10 @@ namespace orxonox
     {
         if(this->defaultRepresentation_ != NULL)
             this->defaultRepresentation_->destroy();
+        
+        this->representations_.clear();
+        
+        COUT(3) << "PickupManager destroyed." << std::endl;
     }
     
     /**
@@ -88,13 +94,38 @@ namespace orxonox
         Returns true if successful and false if not.
     */
     bool PickupManager::registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
-    {
-        if(this->representations_.find(identifier) != this->representations_.end()) //!< If the Pickupable already has a RepresentationRegistered.
+    {       
+        if(identifier == NULL || representation == NULL || this->representations_.find(identifier) != this->representations_.end()) //!< If the Pickupable already has a Representation registered.
             return false;
         
         this->representations_[identifier] = representation;
         
         COUT(4) << "PickupRepresentation " << representation << " registered with the PickupManager." << std::endl;
+        return true;
+    }
+    
+    /**
+    @brief
+        Unegisters a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
+    @param identifier
+        The PickupIdentifier identifying the Pickupable.
+    @param representation
+        A pointer to the PickupRepresentation.
+    @return
+        Returns true if successful and false if not.
+    */
+    bool PickupManager::unregisterRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
+    {       
+        if(identifier == NULL || representation == NULL)
+            return false;
+        
+        std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare>::iterator it = this->representations_.find(identifier);
+        if(it == this->representations_.end()) //!< If the Pickupable is not registered in the first place.
+            return false;
+        
+        this->representations_.erase(it);
+        
+        COUT(4) << "PickupRepresentation " << representation << " unregistered with the PickupManager." << std::endl;
         return true;
     }
     
