@@ -35,7 +35,6 @@
 #include <cassert>
 
 #include "util/Math.h"
-#include "util/OgreForwardRefs.h"
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

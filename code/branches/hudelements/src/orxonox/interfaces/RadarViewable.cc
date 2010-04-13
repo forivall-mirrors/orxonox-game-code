@@ -28,13 +28,8 @@
 
 #include "RadarViewable.h"
 
-#include <OgreSceneManager.h>
-#include <OgreSceneNode.h>
-#include <OgreEntity.h>
-
 #include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
-#include "tools/DynamicLines.h"
 #include "worldentities/WorldEntity.h"
 #include "Radar.h"
 #include "Scene.h"
