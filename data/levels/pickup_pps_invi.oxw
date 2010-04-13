@@ -6,7 +6,7 @@
 <?lua
   include("templates/spaceship_assff.oxt")
   include("templates/spaceship_pirate.oxt")
-  include("templates/pickup_representation_templates_invisible.oxt")
+  include("templates/pickup_representation_templates.oxt")
 ?>
 
 <Level
@@ -19,7 +19,7 @@
   >
 
 <?lua
-  include("includes/pickups_invisible.oxi")
+  include("includes/pickups.oxi")
 ?>
 
     <PickupSpawner position="-75,0,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
