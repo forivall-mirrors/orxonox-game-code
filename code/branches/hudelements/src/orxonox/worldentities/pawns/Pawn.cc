@@ -52,7 +52,9 @@ namespace orxonox
 {
     CreateFactory(Pawn);
 
-    Pawn::Pawn(BaseObject* creator) : ControllableEntity(creator)
+    Pawn::Pawn(BaseObject* creator) 
+        : ControllableEntity(creator)
+        , RadarViewable(creator)
     {
         RegisterObject(Pawn);
 

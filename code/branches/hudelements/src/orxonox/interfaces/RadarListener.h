@@ -40,7 +40,9 @@ namespace orxonox
         RadarListener();
         virtual ~RadarListener() { }
 
-        virtual void displayObject(RadarViewable* viewable, bool bIsMarked) = 0;
+        virtual void addObject(RadarViewable* viewable) = 0;
+        virtual void removeObject(RadarViewable* viewable) = 0;
+        virtual void objectChanged(RadarViewable* viewable) = 0;
         virtual float getRadarSensitivity() const = 0;
         virtual void radarTick(float dt) = 0;
     };

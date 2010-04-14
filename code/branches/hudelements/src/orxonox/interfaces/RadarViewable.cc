@@ -39,9 +39,11 @@ namespace orxonox
     /**
         @brief Constructor.
     */
-    RadarViewable::RadarViewable()
+    RadarViewable::RadarViewable(BaseObject* creator)
         : isHumanShip_(false)
         , bVisibility_(true)
+        , bInitialized_(false)
+        , creator_(creator)
         , radarObjectCamouflage_(0.0f)
         , radarObjectShape_(Dot)
         , radarObjectDescription_("staticObject")
@@ -49,24 +51,28 @@ namespace orxonox
         RegisterRootObject(RadarViewable);
 
         this->uniqueId_=getUniqueNumberString();
+        this->creator_->getScene()->getRadar()->addRadarObject(this);
+        this->bInitialized_ = true;
     }
 
 
     RadarViewable::~RadarViewable()
     {
+        if( this->bInitialized_ )
+            this->creator_->getScene()->getRadar()->removeRadarObject(this);
     }
 
-    void RadarViewable::setRadarObjectDescription(const std::string& str)
-    {
-        Radar* radar = this->getWorldEntity()->getScene()->getRadar();
-        if (radar)
-            this->radarObjectShape_ = radar->addObjectDescription(str);
-        else
-        {
-            CCOUT(2) << "Attempting to access the radar, but the radar is non existent." << std::endl;
-        }
-        this->radarObjectDescription_ = str;
-    }
+//     void RadarViewable::setRadarObjectDescription(const std::string& str)
+//     {
+//         Radar* radar = this->getWorldEntity()->getScene()->getRadar();
+//         if (radar)
+//             this->radarObjectShape_ = radar->addObjectDescription(str);
+//         else
+//         {
+//             CCOUT(2) << "Attempting to access the radar, but the radar is non existent." << std::endl;
+//         }
+//         this->radarObjectDescription_ = str;
+//     }
 
     const Vector3& RadarViewable::getRVWorldPosition() const
     {
@@ -89,5 +95,10 @@ namespace orxonox
             COUT(1) << "Assertion: Every RadarViewable has to be assigned a WorldEntity pointer!" << std::endl;
             assert(0);
         }
+    }
+    
+    void RadarViewable::settingsChanged()
+    {
+        this->creator_->getScene()->getRadar()->radarObjectChanged(this);
     }
 }
