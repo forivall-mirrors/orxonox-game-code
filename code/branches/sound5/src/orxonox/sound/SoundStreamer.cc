@@ -67,15 +67,15 @@ namespace orxonox
             format = AL_FORMAT_STEREO16;
 
         char inbuffer[4096];
-        ALuint initbuffers[20];
-        alGenBuffers(20, initbuffers);
+        ALuint initbuffers[5];
+        alGenBuffers(5, initbuffers);
         if (ALint error = alGetError()) {
             COUT(2) << "Sound: Streamer: Could not generate buffer:" << getALErrorString(error) << std::endl;
             return;
         }
         int current_section;
 
-        for(int i = 0; i < 20; i++)
+        for(int i = 0; i < 5; i++)
         {
             long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
             if (ret == 0)
@@ -98,7 +98,6 @@ namespace orxonox
              if (ALint error = alGetError()) {
                  COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
              }
-             COUT(4) << "Sound: " << ret << std::endl;
         }
 
         while(true) // Stream forever, control through thread control
@@ -115,7 +114,6 @@ namespace orxonox
             if (ALint error = alGetError())
                 COUT(2) << "Sound: Warning: Couldn't get number of processed buffers: " << getALErrorString(error) << std::endl;
 
-            COUT(2) << "Sound: Blub: " << processed << std::endl;
             if(processed > 0)
             {
                 COUT(4) << "Sound: " << processed << std::endl;
@@ -129,7 +127,7 @@ namespace orxonox
                     long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
                     if (ret == 0)
                     {
-                        break;
+                        return;
                     }
                     else if (ret < 0)
                     {

@@ -85,9 +85,9 @@ namespace orxonox
 
         virtual ~BaseSound();
 
-        void doPlay();
-        void doStop();
-        void doPause();
+        virtual void doPlay();
+        virtual void doStop();
+        virtual void doPause();
 
         // network callbacks
         inline void pitchChanged()

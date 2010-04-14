@@ -141,8 +141,9 @@ namespace orxonox
         alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);
         if (ALint error = alGetError())
             COUT(2) << "Sound: Warning: Setting source parameters to 0 failed: " << getALErrorString(error) << std::endl;
-        assert(this->soundBuffer_ != NULL);
-        alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
+        if(this->soundBuffer_ != NULL) {
+            alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
+        }
         if (ALuint error = alGetError())
             COUT(1) << "Sound: Error: Could not set buffer \"" << this->source_ << "\": " << getALErrorString(error) << std::endl;
     }
