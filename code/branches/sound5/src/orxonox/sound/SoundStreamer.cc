@@ -106,7 +106,7 @@ namespace orxonox
 
             if(alcGetCurrentContext() == NULL)
             {
-                COUT(2) << "Sound: There is no context, terminating thread" << std::endl;
+                COUT(2) << "Sound: There is no context, terminating thread for " << dataStream->getName() << std::endl;
                 return;
             }
 
@@ -122,6 +122,13 @@ namespace orxonox
                 if (ALint error = alGetError())
                     COUT(2) << "Sound: Warning: Couldn't unqueue buffers: " << getALErrorString(error) << std::endl;
 
+                int info;
+                alGetSourcei(audioSource, AL_SOURCE_STATE, &info);
+                if(info == AL_PLAYING)
+                    COUT(4) << "Sound: " << dataStream->getName() << " is playing." << std::endl;
+                else
+                    COUT(4) << "Sound: " << dataStream->getName() << " is not playing." << std::endl;
+
                 for(int i = 0; i < processed; i++)
                 {
                     long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
@@ -131,7 +138,7 @@ namespace orxonox
                     }
                     else if (ret < 0)
                     {
-                        COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
+                        COUT(2) << "Sound: libvorbisfile: error reading the file " << dataStream->getName() << std::endl;
                         ov_clear(&vf);
                         return;
                     }
@@ -152,6 +159,15 @@ namespace orxonox
             }
             catch(boost::thread_interrupted) {
                 COUT(4) << "Sound: Catched interruption. Terminating thread for " << dataStream->getName() << std::endl;
+                ALuint* buffers = new ALuint[5];
+                alSourceUnqueueBuffers(audioSource, 5, buffers);
+                if (ALint error = alGetError())
+                    COUT(2) << "Sound: Warning: Couldn't unqueue buffers: " << getALErrorString(error) << std::endl;
+
+                alDeleteBuffers(5, buffers);
+                if (ALint error = alGetError())
+                    COUT(2) << "Sound: Warning: Couldn't delete buffers: " << getALErrorString(error) << std::endl;
+
                 return;
             }
             msleep(100); // perhaps another value here is better
