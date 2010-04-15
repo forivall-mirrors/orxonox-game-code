@@ -140,7 +140,14 @@ namespace orxonox
         //! If the pickup has transited to used.
         if(this->isUsed())
         {
-            this->startPickupTimer(this->getDuration());
+            if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() > 0.0f)
+            {
+                this->getTimer()->unpauseTimer();
+            }
+            else
+            {
+                this->startPickupTimer(this->getDuration());
+            }
             engine->setSpeedAdd(this->getSpeedAdd());
             engine->setSpeedMultiply(this->getSpeedMultiply());
         }
@@ -151,7 +158,15 @@ namespace orxonox
             
             if(this->isOnce())
             {
-                this->destroy();
+                if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
+                {
+                    //TODO: Potentially dangerous, not only for this pickup. Think long and hard about this!!!
+                    this->destroy();
+                }
+                else
+                {
+                    this->getTimer()->pauseTimer();
+                }
             }
         }
     }
