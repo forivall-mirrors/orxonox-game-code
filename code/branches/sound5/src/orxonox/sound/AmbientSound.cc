@@ -182,30 +182,7 @@ namespace orxonox
         this->soundstreamthread_ = boost::thread(SoundStreamer(), this->audioSource_, dataStream);
         if(this->soundstreamthread_ == boost::thread())
             COUT(2) << "Sound: Failed to create thread." << std::endl;
-
-        if (alIsSource(this->audioSource_)) // already playing or paused
-        {
-            // Sound was already playing or paused because there was a source acquired
-            assert(this->isPlaying() || this->isPaused());
-            alSourcePlay(this->audioSource_);
-            if (int error = alGetError())
-                COUT(2) << "Sound: Error playing sound: " << getALErrorString(error) << std::endl;
-            if (this->isPaused())
-                alSourcePause(this->audioSource_);
-        }
-        else // No source acquired so far, but might be set to playing or paused
-        {
-            if (this->isPlaying() || this->isPaused())
-                doPlay();
-            if (this->isPaused())
-            {
-                doPause();
-            }
-        }
-
-        this->updateVolume();
-        this->setPitch(this->getPitch());
-        this->setLooping(this->getLooping());
+       
         alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
         alSource3f(this->audioSource_, AL_VELOCITY,  0, 0, 0);
         alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);

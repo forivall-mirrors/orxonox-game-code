@@ -43,6 +43,9 @@ namespace orxonox
     void orxonox::SoundStreamer::operator()(ALuint audioSource, DataStreamPtr dataStream)
     {
         COUT(4) << "Sound: Creating thread for " << dataStream->getName() << std::endl;
+
+        alSourcei(audioSource, AL_BUFFER, 0);
+
         // Open file with custom streaming
         ov_callbacks vorbisCallbacks;
         vorbisCallbacks.read_func  = &readVorbis;
@@ -100,9 +103,21 @@ namespace orxonox
              }
         }
 
+        alSourcei(audioSource, AL_LOOPING, AL_TRUE);
+
+        alSourcePlay(audioSource);
+        if(ALint error = alGetError())
+            COUT(2) << "Sound: Could not start ambient sound" << std::endl;
+
         while(true) // Stream forever, control through thread control
         {
-            int processed;
+
+            int info;
+            alGetSourcei(audioSource, AL_SOURCE_STATE, &info);
+            if(info == AL_PLAYING)
+                COUT(4) << "Sound: " << dataStream->getName() << " is playing." << std::endl;
+            else
+                COUT(4) << "Sound: " << dataStream->getName() << " is not playing." << std::endl;
 
             if(alcGetCurrentContext() == NULL)
             {
@@ -110,24 +125,18 @@ namespace orxonox
                 return;
             }
 
+            int processed;
             alGetSourcei(audioSource, AL_BUFFERS_PROCESSED, &processed);
             if (ALint error = alGetError())
                 COUT(2) << "Sound: Warning: Couldn't get number of processed buffers: " << getALErrorString(error) << std::endl;
+            COUT(4) << "Sound: processed buffers: " << processed << std::endl;
 
             if(processed > 0)
             {
-                COUT(4) << "Sound: " << processed << std::endl;
                 ALuint* buffers = new ALuint[processed];
                 alSourceUnqueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
                     COUT(2) << "Sound: Warning: Couldn't unqueue buffers: " << getALErrorString(error) << std::endl;
-
-                int info;
-                alGetSourcei(audioSource, AL_SOURCE_STATE, &info);
-                if(info == AL_PLAYING)
-                    COUT(4) << "Sound: " << dataStream->getName() << " is playing." << std::endl;
-                else
-                    COUT(4) << "Sound: " << dataStream->getName() << " is not playing." << std::endl;
 
                 for(int i = 0; i < processed; i++)
                 {
@@ -170,7 +179,7 @@ namespace orxonox
 
                 return;
             }
-            msleep(100); // perhaps another value here is better
+            msleep(50); // perhaps another value here is better
         }
     }
 }
