@@ -148,6 +148,12 @@ namespace orxonox
     // hacky solution for file streaming
     void AmbientSound::setStreamSource(const std::string& source)
     {
+        if (!GameMode::playsSound())
+        {
+            this->source_ = source;
+            return;
+        }
+
         this->audioSource_ = SoundManager::getInstance().getSoundSource(this);
         if (this->source_ == source)
         {
@@ -177,6 +183,25 @@ namespace orxonox
         if(this->soundstreamthread_ == boost::thread())
             COUT(2) << "Sound: Failed to create thread." << std::endl;
 
+        if (alIsSource(this->audioSource_)) // already playing or paused
+        {
+            // Sound was already playing or paused because there was a source acquired
+            assert(this->isPlaying() || this->isPaused());
+            alSourcePlay(this->audioSource_);
+            if (int error = alGetError())
+                COUT(2) << "Sound: Error playing sound: " << getALErrorString(error) << std::endl;
+            if (this->isPaused())
+                alSourcePause(this->audioSource_);
+        }
+        else // No source acquired so far, but might be set to playing or paused
+        {
+            if (this->isPlaying() || this->isPaused())
+                doPlay();
+            if (this->isPaused())
+            {
+                doPause();
+            }
+        }
 
         this->updateVolume();
         this->setPitch(this->getPitch());
