@@ -38,6 +38,7 @@
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -106,7 +107,7 @@ namespace orxonox
 
         projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());
-        projectile->setVelocity(this->getMuzzleDirection() * this->speed_);
+        projectile->setVelocity(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getVelocity() + this->getMuzzleDirection() * this->speed_);
 
         projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
