@@ -197,13 +197,15 @@ namespace orxonox
     void PickupManager::dropPickup(int index, PickupCarrier* carrier)
     {
         Pickupable* pickup = carrier->getPickup(index);
-        carrier->drop(pickup);
+        if(pickup != NULL)
+            carrier->drop(pickup);
     }
     
     void PickupManager::usePickup(int index, PickupCarrier* carrier, bool use)
     {
         Pickupable* pickup = carrier->getPickup(index);
-        pickup->setUsed(use);
+        if(pickup != NULL)
+            pickup->setUsed(use);
     }
     
 }
