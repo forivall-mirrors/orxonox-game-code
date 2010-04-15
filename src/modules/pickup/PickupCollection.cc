@@ -175,11 +175,11 @@ namespace orxonox
     @return
         Returns true if the PickupCarrier identified by the input PickupIdentififer it is a target of this PickupCollection, false if not.
     */
-    bool PickupCollection::isTarget(Identifier* identifier) const
+    bool PickupCollection::isTarget(PickupCarrier* carrier) const
     {
         for(std::vector<WeakPtr<Pickupable> >::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            if(!(*it).get()->isTarget(identifier))
+            if(!carrier->isTarget((*it).get()))
                 return false;
         }
         

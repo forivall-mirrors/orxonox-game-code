@@ -113,17 +113,11 @@
     
     <!-- Pickup Collection pickups -->
     
-    <PickupSpawner position="0,-25,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+    <!--PickupSpawner position="0,-25,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
         <pickup>
             <PickupCollection template=triplehealthspeedinvisibilitypickup />
         </pickup>
-    </PickupSpawner>
-    
-    <PickupSpawner position="0,-50,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-        <pickup>
-            <HealthPickup activationType=immediate durationType=continuous healthRate=10 health=100 />
-        </pickup>
-    </PickupSpawner>
+    </PickupSpawner-->
     
   </Scene>
 </Level>
