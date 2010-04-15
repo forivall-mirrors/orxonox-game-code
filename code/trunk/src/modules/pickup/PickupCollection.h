@@ -66,7 +66,7 @@ namespace orxonox
             
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
             
-            virtual bool isTarget(Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
+            virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
             
             virtual const PickupIdentifier* getPickupIdentifier(void); //!< Get the PickupIdentifier of this PickupCollection.
             

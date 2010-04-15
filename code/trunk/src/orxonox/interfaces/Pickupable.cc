@@ -103,23 +103,25 @@ namespace orxonox
     */
     bool Pickupable::isTarget(const PickupCarrier* carrier) const
     {
+        if(carrier == NULL)
+            return false;
         return this->isTarget(carrier->getIdentifier());
     }
     
     /**
     @brief
-        Get whether a given class, represented by the input Identifier, is a target of this Pickupable.
-    @param target
-        The Identifier of which it has to be determinde whether it is a target of this Pickupable.
+        Get whether the given Identififer is a target of this Pickupable.
+    @param identifier
+        The PickupCarrier of which it has to be determinde whether it is a target of this Pickupable.
     @return
-        Returns true if the given Identifier is a target.
+        Returns true if the given PickupCarrier is a target.
     */
-    bool Pickupable::isTarget(Identifier* target) const
+    bool Pickupable::isTarget(const Identifier* identifier) const
     {
         //! Iterate through all targets of this Pickupable.
         for(std::list<Identifier*>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++)
         {
-            if(target->isA(*it))
+            if(identifier->isA(*it))
                 return true;
         }
         return false;
