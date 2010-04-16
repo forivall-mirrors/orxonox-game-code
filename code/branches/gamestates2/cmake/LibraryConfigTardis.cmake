@@ -43,6 +43,7 @@ IF(TARDIS)
   #       having multiple directories.
   #SET(BOOST_INCLUDEDIR "/usr/pack/boost-1.42.0-bs/include")
   #SET(BOOST_LIBRARYDIR "/usr/pack/boost-1.42.0-bs/i686-debian-linux4.0/lib")
+  SET(Boost_VERSION 104200)
   SET(Boost_INCLUDE_DIRS "/usr/pack/boost-1.42.0-bs/include" CACHE PATH "")
   SET(Boost_SYSTEM_LIBRARY_RELEASE "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_system.so" CACHE PATH "")
   SET(Boost_SYSTEM_LIBRARY_DEBUG "/usr/pack/boost-1.42.0-bs/i686-debian-linux5.0/lib/libboost_system-d.so" CACHE PATH "")
