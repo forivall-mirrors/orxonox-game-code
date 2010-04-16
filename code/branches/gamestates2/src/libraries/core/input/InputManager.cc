@@ -389,7 +389,7 @@ namespace orxonox
             if (device != NULL)
                 device->update(time);
 
-        // Collect functions calls for the update
+        // Collect function calls for the update
         for (unsigned int i = 0; i < activeStatesTicked_.size(); ++i)
             activeStatesTicked_[i]->update(time.getDeltaTime());
 
@@ -413,7 +413,8 @@ namespace orxonox
     */
     void InputManager::updateActiveStates()
     {
-        // temporary resize
+        // Calculate the stack of input states
+        // and assign it to the corresponding device
         for (unsigned int i = 0; i < devices_.size(); ++i)
         {
             if (devices_[i] == NULL)
@@ -432,15 +433,15 @@ namespace orxonox
             }
         }
 
-        // update tickables (every state will only appear once)
-        // Using a std::set to avoid duplicates
+        // See that we only update each InputState once for each device
+        // Using an std::set to avoid duplicates
         std::set<InputState*> tempSet;
         for (unsigned int i = 0; i < devices_.size(); ++i)
             if (devices_[i] != NULL)
                 for (unsigned int iState = 0; iState < devices_[i]->getStateListRef().size(); ++iState)
                     tempSet.insert(devices_[i]->getStateListRef()[iState]);
 
-        // copy the content of the std::set back to the actual vector
+        // Copy the content of the std::set back to the actual vector
         activeStatesTicked_.clear();
         for (std::set<InputState*>::const_iterator it = tempSet.begin();it != tempSet.end(); ++it)
             activeStatesTicked_.push_back(*it);
