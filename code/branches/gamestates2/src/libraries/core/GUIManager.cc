@@ -41,6 +41,7 @@ extern "C" {
 #include <CEGUIResourceProvider.h>
 #include <CEGUISystem.h>
 #include <CEGUIWindow.h>
+#include <CEGUIWindowManager.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
 #include "SpecialConfig.h" // Configures the macro below
@@ -146,12 +147,21 @@ namespace orxonox
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
 
-        // Hide the mouse cursor unless playing in full screen mode
-        if (!GraphicsManager::getInstance().isFullScreen())
-            CEGUI::MouseCursor::getSingleton().hide();
-
-        // Initialise the basic Lua code
+        // Initialise the Lua framework and load the schemes
         this->luaState_->doFile("InitialiseGUI.lua");
+
+        // Create the root nodes
+        this->rootWindow_ = CEGUI::WindowManager::getSingleton().createWindow("MenuWidgets/StaticImage", "AbsoluteRootWindow");
+        this->rootWindow_->setProperty("FrameEnabled", "False");
+        this->hudRootWindow_ = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "HUDRootWindow");
+        this->menuRootWindow_ = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "MenuRootWindow");
+        // And connect them
+        CEGUI::System::getSingleton().setGUISheet(this->rootWindow_);
+        this->rootWindow_->addChildWindow(this->hudRootWindow_);
+        this->rootWindow_->addChildWindow(this->menuRootWindow_);
+
+        // Set up the sheet manager in the Lua framework
+        this->luaState_->doFile("SheetManager.lua");
     }
 
     /**
@@ -202,8 +212,6 @@ namespace orxonox
         Executes Lua code
     @param str
         reference to string object holding the Lua code which is to be executed
-
-        This function gives total access to the GUI. You can execute ANY Lua code here.
     */
     void GUIManager::executeCode(const std::string& str)
     {
@@ -216,7 +224,7 @@ namespace orxonox
     */
     void GUIManager::loadGUI(const std::string& name)
     {
-        this->executeCode("loadGUI(\"" + name + "\")");
+        this->executeCode("loadSheet(\"" + name + "\")");
     }
 
     /**
@@ -291,9 +299,21 @@ namespace orxonox
         this->executeCode("keyESC()");
     }
 
-    void GUIManager::setBackground(const std::string& name)
+    void GUIManager::setBackgroundImage(const std::string& imageSet, const std::string imageName)
     {
-        this->executeCode("setBackground(\"" + name + "\")");
+        if (imageSet.empty() || imageName.empty())
+            this->setBackgroundImage("set: " + imageSet + " image: " + imageName);
+        else
+            this->setBackgroundImage("");
+    }
+
+    void GUIManager::setBackgroundImage(const std::string& image)
+    {
+        if (image.empty())
+            this->rootWindow_->setProperty("Alpha", "0.0");
+        else
+            this->rootWindow_->setProperty("Alpha", "1.0");
+        this->rootWindow_->setProperty("Image", image);
     }
 
     void GUIManager::keyPressed(const KeyEvent& evt)

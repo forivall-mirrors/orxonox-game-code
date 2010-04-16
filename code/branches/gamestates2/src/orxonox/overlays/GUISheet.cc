@@ -39,8 +39,8 @@ namespace orxonox
     GUISheet::GUISheet(BaseObject* creator)
         : BaseObject(creator)
         , bShowOnLoad_(false)
-        , bShowCursor_(true)
         , bHidePrevious_(false)
+        , bHidePreviousSet_(false)
     {
         RegisterObject(GUISheet);
 
@@ -56,39 +56,41 @@ namespace orxonox
     {
         SUPER(GUISheet, XMLPort, xmlElement, mode);
 
-        XMLPortParam(GUISheet, "showOnLoad",   setShowOnLoad,       getShowOnLoad,       xmlElement, mode);
-        XMLPortParam(GUISheet, "showCursor",   setCursorVisibility, getCursorVisibility, xmlElement, mode);
-        XMLPortParam(GUISheet, "hidePrevious", setPreviousHiding,   getPreviousHiding,   xmlElement, mode);
-        XMLPortParam(GUISheet, "script",       setScript,           getScript,           xmlElement, mode);
-    }
+        XMLPortParam(GUISheet, "showOnLoad",   setShowOnLoad,     getShowOnLoad,     xmlElement, mode);
+        XMLPortParam(GUISheet, "hidePrevious", setPreviousHiding, getPreviousHiding, xmlElement, mode);
+        XMLPortParam(GUISheet, "sheetName",    setSheetName,      getSheetName,      xmlElement, mode);
+        XMLPortParam(GUISheet, "backgroundImage",  setBackgroundImage,  getBackgroundImage,  xmlElement, mode);
 
-    void GUISheet::show()
-    {
-        GUIManager::showGUI(this->script_, this->bHidePrevious_);
-    }
-
-    void GUISheet::hide()
-    {
-        GUIManager::hideGUI(this->script_);
-    }
-
-    void GUISheet::setScript(const std::string& filename)
-    {
-        this->script_ = filename;
-        GUIManager::getInstance().loadGUI(this->script_);
         if (this->bShowOnLoad_)
             this->show();
     }
 
-    void GUISheet::setCursorVisibility(bool bShow)
+    void GUISheet::show()
     {
-        this->bShowCursor_ = bShow;
-        // TODO: This call has no effect when already showing!
+        GUIManager::getInstance().setBackgroundImage(this->backgroundImage_);
+        if (this->bHidePreviousSet_)
+            GUIManager::getInstance().showGUI(this->sheetName_, this->bHidePrevious_);
+        else
+            GUIManager::getInstance().showGUI(this->sheetName_);
+    }
+
+    void GUISheet::hide()
+    {
+        GUIManager::getInstance().hideGUI(this->sheetName_);
+        if (!this->backgroundImage_.empty())
+            GUIManager::getInstance().setBackgroundImage("");
+    }
+
+    void GUISheet::setSheetName(const std::string& name)
+    {
+        this->sheetName_ = name;
+        GUIManager::getInstance().loadGUI(this->sheetName_);
     }
 
     void GUISheet::setPreviousHiding(bool bHide)
     {
         this->bHidePrevious_ = bHide;
-        // TODO: This call has no effect when already showing!
+        this->bHidePreviousSet_ = true;
+        // Note: This call has no effect when already showing!
     }
 }

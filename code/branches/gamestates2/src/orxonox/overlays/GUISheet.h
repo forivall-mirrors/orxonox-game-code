@@ -48,28 +48,30 @@ namespace orxonox
         void show();
         void hide();
 
-        void setScript(const std::string& filename);
-        inline const std::string& getScript() const
-            { return this->script_; }
+        void setSheetName(const std::string& name);
+        inline const std::string& getSheetName() const
+            { return this->sheetName_; }
 
         inline void setShowOnLoad(bool bShow)
             { this->bShowOnLoad_ = bShow; }
         inline bool getShowOnLoad() const
             { return this->bShowOnLoad_; }
 
-        void setCursorVisibility(bool bShow);
-        inline bool getCursorVisibility() const
-            { return this->bShowCursor_; }
-
         void setPreviousHiding(bool bHide);
         inline bool getPreviousHiding() const
             { return this->bHidePrevious_; }
 
+        void setBackgroundImage(const std::string& image)
+            { this->backgroundImage_ = image; }
+        inline const std::string& getBackgroundImage() const
+            { return this->backgroundImage_; }
+
     private:
-        std::string script_;
+        std::string sheetName_;
         bool bShowOnLoad_;
-        bool bShowCursor_;
         bool bHidePrevious_;
+        bool bHidePreviousSet_;
+        std::string backgroundImage_;
   };
 }
 

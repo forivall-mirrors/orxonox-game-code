@@ -78,9 +78,16 @@ namespace orxonox // tolua_export
         void showGUIExtra(const std::string& name, const std::string& ptr, bool bHidePrevious = false);
         static void hideGUI(const std::string& name);
         void keyESC();
-        void setBackground(const std::string& name);
+        void setBackgroundImage(const std::string& imageSet, const std::string imageName); // tolua_export
+        void setBackgroundImage(const std::string& image);
 
+        //! Creates a new InputState to be used with a GUI Sheet
         const std::string& createInputState(const std::string& name, TriBool::Value showCursor = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export
+
+        //! Returns the root window for all menu sheets
+        CEGUI::Window* getMenuRootWindow() { return this->menuRootWindow_; } // tolua_export
+        //! Returns the root window for all HUD sheets
+        CEGUI::Window* getHUDRootWindow() { return this->hudRootWindow_; } // tolua_export
 
         void setCamera(Ogre::Camera* camera);
         Ogre::Camera* getCamera() { return this->camera_; }
@@ -119,6 +126,9 @@ namespace orxonox // tolua_export
         shared_ptr<ResourceInfo>             rootFileInfo_;     //!< Resource information about the root script
         CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
         CEGUI::Logger*                       ceguiLogger_;      //!< CEGUI's logger to be able to log CEGUI errors in our log
+        CEGUI::Window*                       rootWindow_;       //!< Root node for all windows
+        CEGUI::Window*                       hudRootWindow_;    //!< Root node for the HUD sheets
+        CEGUI::Window*                       menuRootWindow_;   //!< Root node for the menu sheets (used by Lua)
         std::map<std::string, PlayerInfo*>   players_;          //!< Stores the player (owner) for each GUI
         Ogre::Camera*                        camera_;           //!< Camera used to render the scene with the GUI
 
