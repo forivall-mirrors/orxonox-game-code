@@ -20,5 +20,5 @@ TriBool =
 {
     True     = orxonox.TriBool.True,
     False    = orxonox.TriBool.False,
-    Dontcare = orxonox.TriBool.Dontcarex
+    Dontcare = orxonox.TriBool.Dontcare
 }
