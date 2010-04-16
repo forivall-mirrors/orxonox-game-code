@@ -1,6 +1,7 @@
 -- SettingsMenu.lua
 
 local P = createMenuSheet("SettingsMenu")
+P.loadAlong = { "ControlsMenu", "AudioMenu", "GraphicsMenu" }
 
 function P.SettingsGameplayButton_clicked(e)
     showMenuSheet("GameplayMenu", true)
