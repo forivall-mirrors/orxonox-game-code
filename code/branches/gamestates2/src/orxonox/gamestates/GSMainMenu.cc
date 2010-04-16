@@ -86,8 +86,7 @@ namespace orxonox
         // show main menu
         GUIManager::getInstance().showGUI("MainMenu", true);
         GUIManager::getInstance().setCamera(this->camera_);
-        GUIManager::getInstance().setBackground("MainMenuBackground");
-//         GUIManager::getInstance().setBackground("");
+        GUIManager::getInstance().setBackgroundImage("MainMenuBackground", "Background");
         GraphicsManager::getInstance().setCamera(this->camera_);
 
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startStandalone), "startGame"));
@@ -121,7 +120,7 @@ namespace orxonox
         //InputManager::getInstance().leaveState("mainMenu");
 
         GUIManager::getInstance().setCamera(0);
-        GUIManager::getInstance().setBackground("");
+        GUIManager::getInstance().setBackgroundImage("");
         GUIManager::hideGUI("MainMenu");
         GraphicsManager::getInstance().setCamera(0);
     }
