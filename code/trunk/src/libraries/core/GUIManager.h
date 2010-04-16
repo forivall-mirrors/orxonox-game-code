@@ -106,7 +106,6 @@ namespace orxonox // tolua_export
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
 
         void executeCode(const std::string& str);
-
         template <typename FunctionType>
         bool protectedCall(FunctionType function);
 
@@ -119,6 +118,7 @@ namespace orxonox // tolua_export
         void buttonReleased(MouseButtonCode::ByEnum id);
         void mouseMoved    (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled (int abs, int rel);
+
         scoped_ptr<CEGUI::OgreCEGUIRenderer> guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         scoped_ptr<LuaState>                 luaState_;         //!< LuaState, access point to the Lua engine
         scoped_ptr<CEGUI::LuaScriptModule>   scriptModule_;     //!< CEGUI's script module to use Lua

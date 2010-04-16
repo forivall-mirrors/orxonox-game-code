@@ -126,7 +126,7 @@ namespace orxonox
         resourceProvider_ = guiRenderer_->createResourceProvider();
         resourceProvider_->setDefaultResourceGroup("GUI");
 
-        // setup scripting
+        // Setup scripting
         luaState_.reset(new LuaState());
         rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua");
         // This is necessary to ensure that input events also use the right resource info when triggering lua functions
@@ -141,7 +141,7 @@ namespace orxonox
             static_cast<LoggingLevel>(OutputHandler::getInstance().getSoftDebugLevel("logFile") - 1));
         this->ceguiLogger_ = ceguiLogger.release();
 
-        // create the CEGUI system singleton
+        // Create the CEGUI system singleton
         guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
         // Align CEGUI mouse with OIS mouse
@@ -159,6 +159,9 @@ namespace orxonox
         CEGUI::System::getSingleton().setGUISheet(this->rootWindow_);
         this->rootWindow_->addChildWindow(this->hudRootWindow_);
         this->rootWindow_->addChildWindow(this->menuRootWindow_);
+
+        // No background to start with (sets the alpha value to 0)
+        this->setBackgroundImage("");
 
         // Set up the sheet manager in the Lua framework
         this->luaState_->doFile("SheetManager.lua");
