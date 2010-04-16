@@ -100,6 +100,9 @@ namespace orxonox // tolua_export
 
         void executeCode(const std::string& str);
 
+        template <typename FunctionType>
+        bool protectedCall(FunctionType function);
+
         // keyHandler functions
         void keyPressed (const KeyEvent& evt);
         void keyReleased(const KeyEvent& evt);

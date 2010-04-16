@@ -29,6 +29,7 @@
 
 #include "GUIManager.h"
 
+#include <boost/bind.hpp>
 #include <memory>
 extern "C" {
 #include <lua.h>
@@ -174,7 +175,7 @@ namespace orxonox
     void GUIManager::preUpdate(const Clock& time)
     {
         assert(guiSystem_);
-        guiSystem_->injectTimePulse(time.getDeltaTime());
+        this->protectedCall(boost::bind(&CEGUI::System::injectTimePulse, _1, time.getDeltaTime()));
     }
 
     /**
@@ -297,12 +298,13 @@ namespace orxonox
 
     void GUIManager::keyPressed(const KeyEvent& evt)
     {
-        guiSystem_->injectKeyDown(evt.getKeyCode());
-        guiSystem_->injectChar(evt.getText());
+        this->protectedCall(boost::bind(&CEGUI::System::injectKeyDown, _1, evt.getKeyCode()));
+        this->protectedCall(boost::bind(&CEGUI::System::injectChar, _1, evt.getText()));
     }
+
     void GUIManager::keyReleased(const KeyEvent& evt)
     {
-        guiSystem_->injectKeyUp(evt.getKeyCode());
+        this->protectedCall(boost::bind(&CEGUI::System::injectKeyUp, _1, evt.getKeyCode()));
     }
 
     /**
@@ -316,15 +318,7 @@ namespace orxonox
     */
     void GUIManager::buttonPressed(MouseButtonCode::ByEnum id)
     {
-        try
-        {
-            guiSystem_->injectMouseButtonDown(convertButton(id));
-        }
-        catch (CEGUI::ScriptException& ex)
-        {
-            // We simply ignore the exception and proceed
-            COUT(1) << ex.getMessage() << std::endl;
-        }
+        this->protectedCall(boost::bind(&CEGUI::System::injectMouseButtonDown, _1, convertButton(id)));
     }
 
     /**
@@ -338,24 +332,17 @@ namespace orxonox
     */
     void GUIManager::buttonReleased(MouseButtonCode::ByEnum id)
     {
-        try
-        {
-            guiSystem_->injectMouseButtonUp(convertButton(id));
-        }
-        catch (CEGUI::ScriptException& ex)
-        {
-            // We simply ignore the exception and proceed
-            COUT(1) << ex.getMessage() << std::endl;
-        }
+        this->protectedCall(boost::bind(&CEGUI::System::injectMouseButtonUp, _1, convertButton(id)));
     }
 
     void GUIManager::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
-        guiSystem_->injectMousePosition(static_cast<float>(abs.x), static_cast<float>(abs.y));
+        this->protectedCall(boost::bind(&CEGUI::System::injectMousePosition, _1, (float)abs.x, (float)abs.y));
     }
+
     void GUIManager::mouseScrolled(int abs, int rel)
     {
-        guiSystem_->injectMouseWheelChange(static_cast<float>(rel));
+        this->protectedCall(boost::bind(&CEGUI::System::injectMouseWheelChange, _1, (float)rel));
     }
 
     /**
@@ -389,6 +376,36 @@ namespace orxonox
 
         default:
             return CEGUI::NoButton;
+        }
+    }
+
+    /** Executes a CEGUI function normally, but catches CEGUI::ScriptException.
+        When a ScriptException occurs, the error message will be displayed and
+        the program carries on.
+    @remarks
+        The exception behaviour may pose problems if the code is not written
+        exception-safe (and you can forget about that in Lua). The program might
+        be left in an undefined state. But otherwise one script error would
+        terminate the whole program...
+    @note
+        Your life gets easier if you use boost::bind to create the object/function.
+    @param function
+        Any callable object/function that takes this->guiSystem_ as its only parameter.
+    @return
+        True if input was handled, false otherwise. A caught exception yields true.
+    */
+    template <typename FunctionType>
+    bool GUIManager::protectedCall(FunctionType function)
+    {
+        try
+        {
+            return function(this->guiSystem_);
+        }
+        catch (CEGUI::ScriptException& ex)
+        {
+            // Display the error and proceed. See @remarks why this can be dangerous.
+            COUT(1) << ex.getMessage() << std::endl;
+            return true;
         }
     }
 
