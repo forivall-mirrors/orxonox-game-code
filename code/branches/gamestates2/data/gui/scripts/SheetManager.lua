@@ -180,7 +180,7 @@ function keyESC()
     if activeMenuSheets.size == 1 and activeMenuSheets[1].sheet.name == "MainMenu" then
         orxonox.execute("exit")
     elseif activeMenuSheets.size > 0 then
-        orxonox.execute("hideMenuSheet "..activeMenuSheets.topSheetTuple.sheet.name)
+        orxonox.execute("hideGUI "..activeMenuSheets.topSheetTuple.sheet.name)
     else
         showMenuSheet("InGameMenu")
     end

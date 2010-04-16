@@ -15,7 +15,7 @@ function P.new(_name, _bHidePrevious, _tShowCursor, _tUseKeyboard, _bBlockJoySti
     local newSheet = GUISheet.new(_name)
     newSheet.bHidePrevious  = handleDefArg(_bHidePrevious,  true)
     newSheet.tShowCursor    = handleDefArg(_tShowCusor,     TriBool.True)
-    newSheet.tUseKeyboard   = handleDefArg(_tUseKeyboard,   TriBool.True)
+    newSheet.tUseKeyboard   = handleDefArg(_tUseKeyboard,   TriBool.Dontcare)
     newSheet.bBlockJoyStick = handleDefArg(_bBlockJoyStick, false)
 
     setmetatable(newSheet, P)
