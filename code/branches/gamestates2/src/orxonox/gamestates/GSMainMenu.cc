@@ -30,8 +30,6 @@
 
 #include <OgreSceneManager.h>
 
-#include "core/input/InputManager.h"
-#include "core/input/InputState.h"
 #include "core/input/KeyBinderManager.h"
 #include "core/Game.h"
 #include "core/ConsoleCommand.h"
@@ -48,14 +46,8 @@ namespace orxonox
 
     GSMainMenu::GSMainMenu(const GameStateInfo& info)
         : GameState(info)
-        , inputState_(0)
     {
         RegisterRootObject(GSMainMenu);
-        inputState_ = InputManager::getInstance().createInputState("mainMenu");
-        inputState_->setMouseExclusive(TriBool::False);
-        inputState_->setHandler(&GUIManager::getInstance());
-        inputState_->setKeyHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
-        inputState_->setJoyStickHandler(&InputHandler::EMPTY);
 
         // create an empty Scene
         this->scene_ = new Scene(NULL);
@@ -74,8 +66,6 @@ namespace orxonox
     {
         if (GameMode::playsSound())
             this->ambient_->destroy();
-
-        InputManager::getInstance().destroyState("mainMenu");
 
         this->scene_->getSceneManager()->destroyCamera(this->camera_);
         this->scene_->destroy();
@@ -99,7 +89,6 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::setMainMenuSoundPath, this), "setMMSoundPath"));
 
         KeyBinderManager::getInstance().setToDefault();
-        //InputManager::getInstance().enterState("mainMenu");
 
         this->setConfigValues();
 
@@ -116,8 +105,6 @@ namespace orxonox
         {
             this->ambient_->stop();
         }
-
-        //InputManager::getInstance().leaveState("mainMenu");
 
         GUIManager::getInstance().setCamera(0);
         GUIManager::getInstance().setBackgroundImage("");
