@@ -65,7 +65,7 @@ namespace orxonox
             assert(!this->clients_[clientID]);
             this->clients_[clientID] = player;
 
-            if (LevelManager::getInstancePtr() && LevelManager::getInstance().getActiveLevel())
+            if (LevelManager::exists() && LevelManager::getInstance().getActiveLevel())
                 LevelManager::getInstance().getActiveLevel()->playerEntered(player);
         }
     }
@@ -81,7 +81,7 @@ namespace orxonox
             PlayerInfo* player = this->clients_[clientID];
             this->clients_.erase(clientID);
 
-            if (LevelManager::getInstancePtr() && LevelManager::getInstance().getActiveLevel())
+            if (LevelManager::exists() && LevelManager::getInstance().getActiveLevel())
                 LevelManager::getInstance().getActiveLevel()->playerLeft(player);
 
             // delete PlayerInfo instance
