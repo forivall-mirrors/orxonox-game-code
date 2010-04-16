@@ -30,8 +30,6 @@
 
 #include <OgreSceneManager.h>
 
-#include "core/input/InputManager.h"
-#include "core/input/InputState.h"
 #include "core/input/KeyBinderManager.h"
 #include "core/Game.h"
 #include "core/ConsoleCommand.h"
@@ -41,6 +39,9 @@
 #include "core/GUIManager.h"
 #include "Scene.h"
 #include "sound/AmbientSound.h"
+// HACK
+#include "core/input/InputManager.h"
+#include "core/input/InputState.h"
 
 namespace orxonox
 {
@@ -48,14 +49,10 @@ namespace orxonox
 
     GSMainMenu::GSMainMenu(const GameStateInfo& info)
         : GameState(info)
-        , inputState_(0)
     {
         RegisterRootObject(GSMainMenu);
-        inputState_ = InputManager::getInstance().createInputState("mainMenu");
-        inputState_->setMouseMode(MouseMode::Nonexclusive);
-        inputState_->setHandler(GUIManager::getInstancePtr());
-        inputState_->setKeyHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
-        inputState_->setJoyStickHandler(&InputHandler::EMPTY);
+
+        InputManager::getInstance().createInputState("MainMenuHackery")->setKeyHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
 
         // create an empty Scene
         this->scene_ = new Scene(NULL);
@@ -75,7 +72,7 @@ namespace orxonox
         if (GameMode::playsSound())
             this->ambient_->destroy();
 
-        InputManager::getInstance().destroyState("mainMenu");
+        InputManager::getInstance().destroyState("MainMenuHackery");
 
         this->scene_->getSceneManager()->destroyCamera(this->camera_);
         this->scene_->destroy();
@@ -84,11 +81,12 @@ namespace orxonox
     void GSMainMenu::activate()
     {
         // show main menu
-        GUIManager::getInstance().showGUI("MainMenu", true, GraphicsManager::getInstance().isFullScreen());
+        GUIManager::getInstance().showGUI("MainMenu", true);
         GUIManager::getInstance().setCamera(this->camera_);
-        GUIManager::getInstance().setBackground("MainMenuBackground");
-//         GUIManager::getInstance().setBackground("");
+        GUIManager::getInstance().setBackgroundImage("MainMenuBackground", "Background");
         GraphicsManager::getInstance().setCamera(this->camera_);
+
+        InputManager::getInstance().enterState("MainMenuHackery");
 
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startStandalone), "startGame"));
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startServer), "startServer"));
@@ -100,7 +98,6 @@ namespace orxonox
         CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::setMainMenuSoundPath, this), "setMMSoundPath"));
 
         KeyBinderManager::getInstance().setToDefault();
-        InputManager::getInstance().enterState("mainMenu");
 
         this->setConfigValues();
 
@@ -118,10 +115,10 @@ namespace orxonox
             this->ambient_->stop();
         }
 
-        InputManager::getInstance().leaveState("mainMenu");
+        InputManager::getInstance().leaveState("MainMenuHackery");
 
         GUIManager::getInstance().setCamera(0);
-        GUIManager::getInstance().setBackground("");
+        GUIManager::getInstance().setBackgroundImage("");
         GUIManager::hideGUI("MainMenu");
         GraphicsManager::getInstance().setCamera(0);
     }

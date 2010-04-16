@@ -35,10 +35,11 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <boost/function.hpp>
 
 #include "util/Singleton.h"
+#include "util/TriBool.h"
 #include "core/WindowEventListener.h"
-#include "InputState.h"
 
 // tolua_begin
 namespace orxonox
@@ -74,9 +75,7 @@ namespace orxonox
         {
             Nothing       = 0x00,
             Bad           = 0x02,
-            Ticking       = 0x04,
-            Calibrating   = 0x08,
-            ReloadRequest = 0x10,
+            Calibrating   = 0x04,
         };
 
         /**
@@ -158,7 +157,7 @@ namespace orxonox
             - You can't remove the internal states "empty", "calibrator" and "detector".
             - The removal process is being postponed if InputManager::preUpdate() is currently running.
         */
-        bool destroyState(const std::string& name);
+        bool destroyState(const std::string& name); // tolua_export
 
         //-------------------------------
         // Various getters and setters
@@ -168,7 +167,16 @@ namespace orxonox
             { return devices_.size() - InputDeviceEnumerator::FirstJoyStick; }
         //! Returns a pointer to the OIS InputManager. Only you if you know what you're doing!
         OIS::InputManager* getOISInputManager() { return this->oisInputManager_; }
+        //! Returns the position of the cursor as std::pair of ints
         std::pair<int, int> getMousePosition() const;
+        //! Tells whether the mouse is used exclusively to the game
+        bool isMouseExclusive() const { return this->exclusiveMouse_; } // tolua_export
+
+        //-------------------------------
+        // Function call caching
+        //-------------------------------
+        void pushCall(const boost::function<void ()>& function)
+            { this->callBuffer_.push_back(function); }
 
         static InputManager& getInstance() { return Singleton<InputManager>::getInstance(); } // tolua_export
 
@@ -195,7 +203,7 @@ namespace orxonox
         State                               internalState_;        //!< Current internal state
         OIS::InputManager*                  oisInputManager_;      //!< OIS input manager
         std::vector<InputDevice*>           devices_;              //!< List of all input devices (keyboard, mouse, joy sticks)
-        MouseMode::Value                    mouseMode_;            //!< Currently applied mouse mode
+        TriBool::Value                      exclusiveMouse_;       //!< Currently applied mouse mode
 
         // some internally handled states and handlers
         InputState*                         emptyState_;           //!< Lowest priority states (makes handling easier)
@@ -206,9 +214,7 @@ namespace orxonox
         std::map<int, InputState*>          activeStates_;         //!< Contains all active input states by priority (std::map is sorted!)
         std::vector<InputState*>            activeStatesTicked_;   //!< Like activeStates_, but only contains the ones that currently receive events
 
-        std::set<InputState*>               stateEnterRequests_;   //!< Requests to enter a new state
-        std::set<InputState*>               stateLeaveRequests_;   //!< Requests to leave a running state
-        std::set<InputState*>               stateDestroyRequests_; //!< Requests to destroy a state
+        std::vector<boost::function<void ()> > callBuffer_;        //!< Caches all calls from InputStates to be executed afterwards (see preUpdate)
 
         static InputManager*                singletonPtr_s;        //!< Pointer reference to the singleton
     }; // tolua_export

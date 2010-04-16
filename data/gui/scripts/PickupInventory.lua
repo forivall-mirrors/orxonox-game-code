@@ -1,28 +1,18 @@
 -- PickupInventory.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
-
-if _REQUIREDNAME == nil then
-    PickupInventory = P
-else
-    _G[_REQUIREDNAME] = P
-end
-
-P.filename = "PickupInventory"
-P.layoutString = "PickupInventory.layout"
+local P = createMenuSheet("PickupInventory")
 
 P.carrierList = {}
 P.wrapper = nil
 P.detailsWindows = {}
 
-function P.init()
+function P.onLoad()
     carrierList = {}
 end
 
 function P.show()
     P.window:show() -- TODO: Do this through parent...
-    P.visible = true 
+    P.bVisible = true 
     
     P.createInventory()
 
@@ -136,21 +126,21 @@ function P.createCarrierBox(carrier, index)
         useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, imageHeight+10),CEGUI.UDim(0, (imageHeight-textHeight)/2)))
         useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, textHeight)))
         useButton:setText("use")
-        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.filename .. ".InventoryUseButton_clicked")
+        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseButton_clicked")
         item:addChildWindow(useButton)
         
         local dropButton = winMgr:createWindow("TaharezLook/Button", name .. "/Box/Pickup" .. i .. "/DropButton")
         dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, imageHeight+15+buttonWidth),CEGUI.UDim(0, (imageHeight-textHeight)/2)))
         dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, textHeight)))
         dropButton:setText("drop")
-        orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.filename .. ".InventoryDropButton_clicked")
+        orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropButton_clicked")
         item:addChildWindow(dropButton)
         
         local detailsButton = winMgr:createWindow("TaharezLook/Button", name .. "/Box/Pickup" .. i .. "/DetailsButton")
         detailsButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, imageHeight+20+2*buttonWidth),CEGUI.UDim(0, (imageHeight-textHeight)/2)))
         detailsButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, textHeight)))
         detailsButton:setText("details")
-        orxonox.GUIManager:subscribeEventHelper(detailsButton, "Clicked", P.filename .. ".InventoryDetailsButton_clicked")
+        orxonox.GUIManager:subscribeEventHelper(detailsButton, "Clicked", P.name .. ".InventoryDetailsButton_clicked")
         item:addChildWindow(detailsButton)
     end
     
@@ -200,7 +190,7 @@ function P.createDetailsWindow(pickupIndex, carrierIndex)
     
     local window = winMgr:createWindow("TaharezLook/FrameWindow", name)
     window:setSize(CEGUI.UVector2(CEGUI.UDim(0.5,0),CEGUI.UDim(0.4,0)))
-    orxonox.GUIManager:subscribeEventHelper(window, "CloseClicked", P.filename .. ".closeDetailWindow")
+    orxonox.GUIManager:subscribeEventHelper(window, "CloseClicked", P.name .. ".closeDetailWindow")
     
     local root = winMgr:getWindow("orxonox/PickupInventory/Background")
     root:addChildWindow(window)
@@ -239,14 +229,14 @@ function P.createDetailsWindow(pickupIndex, carrierIndex)
     useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageSize+10),CEGUI.UDim(1, -40)))
     useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, titleHeight)))
     useButton:setText("use")
-    orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.filename .. ".InventoryUseButton_clicked")
+    orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseButton_clicked")
     wrapper:addChildWindow(useButton)
     
     local dropButton = winMgr:createWindow("TaharezLook/Button", name .. "/DropButton")
     dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageSize+10+buttonWidth+10),CEGUI.UDim(1, -40)))
     dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, titleHeight)))
     dropButton:setText("drop")
-    orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.filename .. ".InventoryDropButton_clicked")
+    orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropButton_clicked")
     wrapper:addChildWindow(dropButton)
     
     table.insert(P.detailsWindows, window)

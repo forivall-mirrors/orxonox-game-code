@@ -34,8 +34,8 @@
 
 #include "util/Clock.h"
 #include "util/Math.h"
-#include "core/Game.h"
-#include "core/input/InputBuffer.h"
+#include "Game.h"
+#include "input/InputBuffer.h"
 
 // ##########################
 // ###   Mutual methods   ###

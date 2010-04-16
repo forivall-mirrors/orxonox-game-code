@@ -34,9 +34,11 @@
 #ifndef _Serialise_H__
 #define _Serialise_H__
 
+#include "UtilPrereqs.h"
+
 #include <cstring>
-#include "util/Math.h"
-#include "util/mbool.h"
+#include "Math.h"
+#include "mbool.h"
 
 namespace orxonox{
 

@@ -77,6 +77,7 @@ namespace orxonox
     Core* Core::singletonPtr_s  = 0;
 
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
+    SetCommandLineSwitch(noIOConsole).information("Use this if you don't want to use the IOConsole (for instance for Lua debugging)");
 #ifdef ORXONOX_PLATFORM_WINDOWS
     SetCommandLineArgument(limitToCPU, 1).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is the first core (faster than off)");
 #endif
@@ -87,6 +88,7 @@ namespace orxonox
         // Cleanup guard for external console commands that don't belong to an Identifier
         , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
         , bGraphicsLoaded_(false)
+        , bStartIOConsole_(true)
     {
         // Set the hard coded fixed paths
         this->pathConfig_.reset(new PathConfig());
@@ -148,7 +150,12 @@ namespace orxonox
         this->setConfigValues();
 
         // create persistent io console
-        this->ioConsole_.reset(new IOConsole());
+        if (CommandLineParser::getValue("noIOConsole").getBool())
+        {
+            ModifyConfigValue(bStartIOConsole_, tset, false);
+        }
+        if (this->bStartIOConsole_)
+            this->ioConsole_.reset(new IOConsole());
 
         // creates the class hierarchy for all classes with factories
         Identifier::createClassHierarchy();
@@ -192,6 +199,8 @@ namespace orxonox
         SetConfigValue(bInitRandomNumberGenerator_, true)
             .description("If true, all random actions are different each time you start the game")
             .callback(this, &Core::initRandomNumberGenerator);
+        SetConfigValue(bStartIOConsole_, true)
+            .description("Set to false if you don't want to use the IOConsole (for Lua debugging for instance)");
     }
 
     //! Callback function if the language has changed.
@@ -224,8 +233,7 @@ namespace orxonox
         inputManager_.reset(new InputManager());
 
         // Load the CEGUI interface
-        guiManager_.reset(new GUIManager(graphicsManager_->getRenderWindow(),
-            inputManager_->getMousePosition(), graphicsManager_->isFullScreen()));
+        guiManager_.reset(new GUIManager(inputManager_->getMousePosition()));
 
         bGraphicsLoaded_ = true;
         GameMode::bShowsGraphics_s = true;
@@ -327,7 +335,8 @@ namespace orxonox
             ScopedSingletonManager::preUpdate<ScopeID::Graphics>(time);
         }
         // Process console events and status line
-        this->ioConsole_->preUpdate(time);
+        if (this->ioConsole_ != NULL)
+            this->ioConsole_->preUpdate(time);
         // Process thread commands
         this->tclThreadManager_->preUpdate(time);
     }

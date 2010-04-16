@@ -56,6 +56,8 @@ namespace orxonox
         std::string group;
         //! Uncompressed size
         size_t size;
+        //! Absolute file path ("" for files not on filesystem)
+        std::string fileSystemPath;
     };
 
     /** Provides simple functions to easily access the Ogre::ResourceGroupManager.

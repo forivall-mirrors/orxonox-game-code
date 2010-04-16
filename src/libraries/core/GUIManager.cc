@@ -29,6 +29,7 @@
 
 #include "GUIManager.h"
 
+#include <boost/bind.hpp>
 #include <memory>
 extern "C" {
 #include <lua.h>
@@ -40,6 +41,7 @@ extern "C" {
 #include <CEGUIResourceProvider.h>
 #include <CEGUISystem.h>
 #include <CEGUIWindow.h>
+#include <CEGUIWindowManager.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
 #include "SpecialConfig.h" // Configures the macro below
@@ -56,9 +58,13 @@ extern "C" {
 #include "util/OrxAssert.h"
 #include "ConsoleCommand.h"
 #include "Core.h"
+#include "GraphicsManager.h"
 #include "LuaState.h"
 #include "PathConfig.h"
 #include "Resource.h"
+#include "input/InputManager.h"
+#include "input/InputState.h"
+#include "input/KeyBinderManager.h"
 
 namespace orxonox
 {
@@ -107,18 +113,16 @@ namespace orxonox
         Ogre's render window. Without this, the GUI cannot be displayed.
     @return true if success, otherwise false
     */
-    GUIManager::GUIManager(Ogre::RenderWindow* renderWindow, const std::pair<int, int>& mousePosition, bool bFullScreen)
-        : renderWindow_(renderWindow)
-        , resourceProvider_(0)
+    GUIManager::GUIManager(const std::pair<int, int>& mousePosition)
+        : resourceProvider_(NULL)
         , camera_(NULL)
-        , bShowIngameGUI_(false)
     {
         using namespace CEGUI;
 
         COUT(3) << "Initialising CEGUI." << std::endl;
 
         // Note: No SceneManager specified yet
-        guiRenderer_.reset(new OgreCEGUIRenderer(renderWindow_, Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
+        guiRenderer_.reset(new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
         resourceProvider_ = guiRenderer_->createResourceProvider();
         resourceProvider_->setDefaultResourceGroup("GUI");
 
@@ -140,15 +144,24 @@ namespace orxonox
         // create the CEGUI system singleton
         guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
 
-        // Initialise the basic Lua code
-        this->luaState_->doFile("InitialiseGUI.lua");
-
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
 
-        // Hide the mouse cursor unless playing in full screen mode
-        if (!bFullScreen)
-            CEGUI::MouseCursor::getSingleton().hide();
+        // Initialise the Lua framework and load the schemes
+        this->luaState_->doFile("InitialiseGUI.lua");
+
+        // Create the root nodes
+        this->rootWindow_ = CEGUI::WindowManager::getSingleton().createWindow("MenuWidgets/StaticImage", "AbsoluteRootWindow");
+        this->rootWindow_->setProperty("FrameEnabled", "False");
+        this->hudRootWindow_ = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "HUDRootWindow");
+        this->menuRootWindow_ = CEGUI::WindowManager::getSingleton().createWindow("DefaultWindow", "MenuRootWindow");
+        // And connect them
+        CEGUI::System::getSingleton().setGUISheet(this->rootWindow_);
+        this->rootWindow_->addChildWindow(this->hudRootWindow_);
+        this->rootWindow_->addChildWindow(this->menuRootWindow_);
+
+        // Set up the sheet manager in the Lua framework
+        this->luaState_->doFile("SheetManager.lua");
     }
 
     /**
@@ -172,7 +185,7 @@ namespace orxonox
     void GUIManager::preUpdate(const Clock& time)
     {
         assert(guiSystem_);
-        guiSystem_->injectTimePulse(time.getDeltaTime());
+        this->protectedCall(boost::bind(&CEGUI::System::injectTimePulse, _1, time.getDeltaTime()));
     }
 
     /**
@@ -199,12 +212,19 @@ namespace orxonox
         Executes Lua code
     @param str
         reference to string object holding the Lua code which is to be executed
-
-        This function gives total access to the GUI. You can execute ANY Lua code here.
     */
     void GUIManager::executeCode(const std::string& str)
     {
         this->luaState_->doString(str, rootFileInfo_);
+    }
+
+    /** Loads a GUI sheet by Lua script
+    @param name
+        The name of the GUI (like the script name, but without the extension)
+    */
+    void GUIManager::loadGUI(const std::string& name)
+    {
+        this->executeCode("loadSheet(\"" + name + "\")");
     }
 
     /**
@@ -214,20 +234,19 @@ namespace orxonox
         The name of the GUI
 
         The function executes the Lua function with the same name in case the GUIManager is ready.
-        For more details check out loadGUI_2.lua where the function presides.
     */
-    /*static*/ void GUIManager::showGUI(const std::string& name, bool hidePrevious, bool showCursor)
+    /*static*/ void GUIManager::showGUI(const std::string& name, bool bHidePrevious)
     {
-        GUIManager::getInstance().executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ")");
+        GUIManager::getInstance().executeCode("showMenuSheet(\"" + name + "\", " + multi_cast<std::string>(bHidePrevious) + ")");
     }
 
     /**
     @brief
         Hack-ish. Needed for GUIOverlay.
     */
-    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool hidePrevious, bool showCursor)
+    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool bHidePrevious)
     {
-        this->executeCode("showGUI(\"" + name + "\", " + multi_cast<std::string>(hidePrevious) + ", " + multi_cast<std::string>(showCursor) + ", " + ptr + ")");
+        this->executeCode("showMenuSheet(\"" + name + "\", " + multi_cast<std::string>(bHidePrevious) + ", " + ptr + ")");
     }
 
     /**
@@ -238,7 +257,41 @@ namespace orxonox
     */
     /*static*/ void GUIManager::hideGUI(const std::string& name)
     {
-        GUIManager::getInstance().executeCode("hideGUI(\"" + name + "\")");
+        GUIManager::getInstance().executeCode("hideMenuSheet(\"" + name + "\")");
+    }
+
+    const std::string& GUIManager::createInputState(const std::string& name, TriBool::Value showCursor, TriBool::Value useKeyboard, bool bBlockJoyStick)
+    {
+        InputState* state = InputManager::getInstance().createInputState(name);
+
+        /* Table that maps isFullScreen() and showCursor to mouseExclusive
+        isFullscreen / showCursor | True  | False | Dontcare
+        ----------------------------------------------------
+        true                      | True  | True  | Dontcare
+        ----------------------------------------------------
+        false                     | False | True  | Dontcare
+        */
+        if (showCursor == TriBool::Dontcare)
+            state->setMouseExclusive(TriBool::Dontcare);
+        else if (GraphicsManager::getInstance().isFullScreen() || showCursor == TriBool::False)
+            state->setMouseExclusive(TriBool::True);
+        else
+            state->setMouseExclusive(TriBool::False);
+
+        if (showCursor == TriBool::True)
+            state->setMouseHandler(this);
+        else if (showCursor == TriBool::False)
+            state->setMouseHandler(&InputHandler::EMPTY);
+
+        if (useKeyboard == TriBool::True)
+            state->setKeyHandler(this);
+        else if (useKeyboard == TriBool::False)
+            state->setKeyHandler(&InputHandler::EMPTY);
+
+        if (bBlockJoyStick)
+            state->setJoyStickHandler(&InputHandler::EMPTY);
+
+        return state->getName();
     }
 
     void GUIManager::keyESC()
@@ -246,19 +299,32 @@ namespace orxonox
         this->executeCode("keyESC()");
     }
 
-    void GUIManager::setBackground(const std::string& name)
+    void GUIManager::setBackgroundImage(const std::string& imageSet, const std::string imageName)
     {
-        this->executeCode("setBackground(\"" + name + "\")");
+        if (imageSet.empty() || imageName.empty())
+            this->setBackgroundImage("");
+        else
+            this->setBackgroundImage("set: " + imageSet + " image: " + imageName);
+    }
+
+    void GUIManager::setBackgroundImage(const std::string& image)
+    {
+        if (image.empty())
+            this->rootWindow_->setProperty("Alpha", "0.0");
+        else
+            this->rootWindow_->setProperty("Alpha", "1.0");
+        this->rootWindow_->setProperty("Image", image);
     }
 
     void GUIManager::keyPressed(const KeyEvent& evt)
     {
-        guiSystem_->injectKeyDown(evt.getKeyCode());
-        guiSystem_->injectChar(evt.getText());
+        this->protectedCall(boost::bind(&CEGUI::System::injectKeyDown, _1, evt.getKeyCode()));
+        this->protectedCall(boost::bind(&CEGUI::System::injectChar, _1, evt.getText()));
     }
+
     void GUIManager::keyReleased(const KeyEvent& evt)
     {
-        guiSystem_->injectKeyUp(evt.getKeyCode());
+        this->protectedCall(boost::bind(&CEGUI::System::injectKeyUp, _1, evt.getKeyCode()));
     }
 
     /**
@@ -272,15 +338,7 @@ namespace orxonox
     */
     void GUIManager::buttonPressed(MouseButtonCode::ByEnum id)
     {
-        try
-        {
-            guiSystem_->injectMouseButtonDown(convertButton(id));
-        }
-        catch (CEGUI::ScriptException& ex)
-        {
-            // We simply ignore the exception and proceed
-            COUT(1) << ex.getMessage() << std::endl;
-        }
+        this->protectedCall(boost::bind(&CEGUI::System::injectMouseButtonDown, _1, convertButton(id)));
     }
 
     /**
@@ -294,24 +352,17 @@ namespace orxonox
     */
     void GUIManager::buttonReleased(MouseButtonCode::ByEnum id)
     {
-        try
-        {
-            guiSystem_->injectMouseButtonUp(convertButton(id));
-        }
-        catch (CEGUI::ScriptException& ex)
-        {
-            // We simply ignore the exception and proceed
-            COUT(1) << ex.getMessage() << std::endl;
-        }
+        this->protectedCall(boost::bind(&CEGUI::System::injectMouseButtonUp, _1, convertButton(id)));
     }
 
     void GUIManager::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
-        guiSystem_->injectMousePosition(static_cast<float>(abs.x), static_cast<float>(abs.y));
+        this->protectedCall(boost::bind(&CEGUI::System::injectMousePosition, _1, (float)abs.x, (float)abs.y));
     }
+
     void GUIManager::mouseScrolled(int abs, int rel)
     {
-        guiSystem_->injectMouseWheelChange(static_cast<float>(rel));
+        this->protectedCall(boost::bind(&CEGUI::System::injectMouseWheelChange, _1, (float)rel));
     }
 
     /**
@@ -345,6 +396,36 @@ namespace orxonox
 
         default:
             return CEGUI::NoButton;
+        }
+    }
+
+    /** Executes a CEGUI function normally, but catches CEGUI::ScriptException.
+        When a ScriptException occurs, the error message will be displayed and
+        the program carries on.
+    @remarks
+        The exception behaviour may pose problems if the code is not written
+        exception-safe (and you can forget about that in Lua). The program might
+        be left in an undefined state. But otherwise one script error would
+        terminate the whole program...
+    @note
+        Your life gets easier if you use boost::bind to create the object/function.
+    @param function
+        Any callable object/function that takes this->guiSystem_ as its only parameter.
+    @return
+        True if input was handled, false otherwise. A caught exception yields true.
+    */
+    template <typename FunctionType>
+    bool GUIManager::protectedCall(FunctionType function)
+    {
+        try
+        {
+            return function(this->guiSystem_);
+        }
+        catch (CEGUI::ScriptException& ex)
+        {
+            // Display the error and proceed. See @remarks why this can be dangerous.
+            COUT(1) << ex.getMessage() << std::endl;
+            return true;
         }
     }
 

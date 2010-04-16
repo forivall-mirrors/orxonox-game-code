@@ -33,7 +33,7 @@
 
 #include <list>
 #include <map>
-#include "network/ClientConnectionListener.h"
+#include "ClientConnectionListener.h"
 
 namespace orxonox {
 

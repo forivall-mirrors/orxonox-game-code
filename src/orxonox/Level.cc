@@ -57,7 +57,7 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (LevelManager::getInstancePtr())
+            if (LevelManager::exists())
                 LevelManager::getInstance().releaseActivity(this);
 
             if (this->xmlfile_)
@@ -115,7 +115,7 @@ namespace orxonox
         for (std::list<BaseObject*>::iterator it = this->objects_.begin(); it != this->objects_.end(); ++it)
             (*it)->setGametype(rootgametype);
 
-        if (LevelManager::getInstancePtr())
+        if (LevelManager::exists())
             LevelManager::getInstance().requestActivity(this);
     }
 

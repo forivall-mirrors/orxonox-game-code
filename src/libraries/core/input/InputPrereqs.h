@@ -41,6 +41,7 @@
 #include <ois/OISKeyboard.h>
 #include <ois/OISMouse.h>
 #include <ois/OISJoyStick.h>
+#include "util/OrxEnum.h"
 
 namespace orxonox
 {
@@ -447,6 +448,20 @@ namespace orxonox
             FirstJoyStick = 2
         };
     }
+
+    //! Enumeration wrapper for input state priorities
+    struct InputStatePriority : OrxEnum<InputStatePriority>
+    {
+        OrxEnumConstructors(InputStatePriority);
+
+        static const int Empty        = -1;
+        static const int Dynamic      = 0;
+
+        static const int HighPriority = 1000;
+        static const int Console      = HighPriority + 0;
+        static const int Calibrator   = HighPriority + 1;
+        static const int Detector     = HighPriority + 2;
+    };
 }
 
 #endif /* _InputPrereqs_H__ */
