@@ -10,17 +10,12 @@ function P.onLoad()
     carrierList = {}
 end
 
-function P.show()
-    P.window:show() -- TODO: Do this through parent...
-    P.bVisible = true 
-    
+function P.onShow()
     P.createInventory()
-
 end
 
-function P.hide()
+function P.onHide()
     P.cleanup()
-    
 end
 
 function P.update()

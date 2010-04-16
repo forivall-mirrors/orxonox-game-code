@@ -15,16 +15,28 @@ end
 function P:onLoad()
 end
 
--- hide function for the GUI
-function P:hide()
-    self.window:hide()
-    self.bVisible = false
-end
-
 -- show function for the GUI
 function P:show()
     self.window:show()
     self.bVisible = true
+
+    self:onShow()
+end
+
+-- Override this function if you need to do work on show
+function P:onShow()
+end
+
+-- hide function for the GUI
+function P:hide()
+    self.window:hide()
+    self.bVisible = false
+
+    self:onHide()
+end
+
+-- Override this function if you need to do work on hide
+function P:onHide()
 end
 
 function P:load()
