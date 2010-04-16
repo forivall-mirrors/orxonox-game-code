@@ -302,9 +302,9 @@ namespace orxonox
     void GUIManager::setBackgroundImage(const std::string& imageSet, const std::string imageName)
     {
         if (imageSet.empty() || imageName.empty())
-            this->setBackgroundImage("set: " + imageSet + " image: " + imageName);
-        else
             this->setBackgroundImage("");
+        else
+            this->setBackgroundImage("set: " + imageSet + " image: " + imageName);
     }
 
     void GUIManager::setBackgroundImage(const std::string& image)
