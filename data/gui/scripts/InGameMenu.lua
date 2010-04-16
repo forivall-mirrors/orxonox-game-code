@@ -1,6 +1,7 @@
 -- InGameMenu.lua
 
 local P = createMenuSheet("InGameMenu")
+P.loadAlong = { "DecisionPopup" }
 
 -- events for ingamemenu
 function P.button_quit_clicked(e)

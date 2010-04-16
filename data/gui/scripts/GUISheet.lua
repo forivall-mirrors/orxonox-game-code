@@ -49,6 +49,13 @@ function P:load()
     self:hide()
     -- Allow sheets to do some work upon loading
     self:onLoad()
+
+    -- Also load additional sheets to avoid display lags
+    if self.loadAlong then
+        for k, sheet in pairs(self.loadAlong) do
+            loadSheet(sheet)
+        end
+    end
     return self
 end
 

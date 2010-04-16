@@ -1,6 +1,7 @@
 -- ControlsMenu.lua
 
 local P = createMenuSheet("ControlsMenu")
+P.loadAlong = { "MouseControlsMenu", "KeyBindMenu" }
 
 function P.ControlsMouseControlsButton_clicked(e)
     showMenuSheet("MouseControlsMenu", true)

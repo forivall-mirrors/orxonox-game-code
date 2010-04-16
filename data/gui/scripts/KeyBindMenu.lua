@@ -1,6 +1,7 @@
 -- KeyBindMenu.lua
 
 local P = createMenuSheet("KeyBindMenu")
+P.loadAlong = { "InfoPopup" }
 
 function P.onLoad()
 

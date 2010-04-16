@@ -1,6 +1,7 @@
 -- MainMenu.lua
 
 local P = createMenuSheet("MainMenu")
+P.loadAlong = { "SingleplayerMenu", "MultiplayerMenu", "SettingsMenu", "CreditsMenu" }
 
 -- events for MainMenu
 function P.QuickGameTestButton_clicked(e)
