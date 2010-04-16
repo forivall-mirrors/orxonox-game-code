@@ -204,7 +204,7 @@ namespace orxonox
     }
 
     template <typename EventType, class ButtonTypeParam>
-    FORCEINLINE void InputState::buttonEvent(unsigned int device, typename ButtonTypeParam button)
+    FORCEINLINE void InputState::buttonEvent(unsigned int device, ButtonTypeParam button)
     {
         assert(device < handlers_.size());
         if (handlers_[device] != NULL)

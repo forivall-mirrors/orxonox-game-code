@@ -117,12 +117,6 @@ namespace orxonox
             { this->buttonReleased(button); }
         template<class T> void buttonEvent(unsigned int device, T button, ButtonEvent::THold)
             { this->buttonHeld(button); }
-        template<> void buttonEvent<JoyStickButtonCode::ByEnum>(unsigned int device, JoyStickButtonCode::ByEnum button, ButtonEvent::TPress)
-            { this->buttonPressed(device - InputDeviceEnumerator::FirstJoyStick, button); }
-        template<> void buttonEvent<JoyStickButtonCode::ByEnum>(unsigned int device, JoyStickButtonCode::ByEnum button, ButtonEvent::TRelease)
-            { this->buttonReleased(device - InputDeviceEnumerator::FirstJoyStick, button); }
-        template<> void buttonEvent<JoyStickButtonCode::ByEnum>(unsigned int device, JoyStickButtonCode::ByEnum button, ButtonEvent::THold)
-            { this->buttonHeld(device - InputDeviceEnumerator::FirstJoyStick, button); }
 
         virtual void buttonPressed (const KeyEvent& evt) { }
         virtual void buttonReleased(const KeyEvent& evt) { }
@@ -148,6 +142,13 @@ namespace orxonox
         //! Use this input handler if you want to occupy a device in an input state.
         static InputHandler EMPTY;
     };
+
+    template<> inline void InputHandler::buttonEvent<JoyStickButtonCode::ByEnum>(unsigned int device, JoyStickButtonCode::ByEnum button, ButtonEvent::TPress)
+        { this->buttonPressed(device - InputDeviceEnumerator::FirstJoyStick, button); }
+    template<> inline void InputHandler::buttonEvent<JoyStickButtonCode::ByEnum>(unsigned int device, JoyStickButtonCode::ByEnum button, ButtonEvent::TRelease)
+        { this->buttonReleased(device - InputDeviceEnumerator::FirstJoyStick, button); }
+    template<> inline void InputHandler::buttonEvent<JoyStickButtonCode::ByEnum>(unsigned int device, JoyStickButtonCode::ByEnum button, ButtonEvent::THold)
+        { this->buttonHeld(device - InputDeviceEnumerator::FirstJoyStick, button); }
 }
 
 #endif /* _InputHandler_H__ */
