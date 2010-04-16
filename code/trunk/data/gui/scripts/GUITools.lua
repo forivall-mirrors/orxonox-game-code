@@ -1,11 +1,26 @@
+-- Returns a new menu sheet
+-- See MenuSheet.new for details about the parameters
+function createMenuSheet(name, bHidePrevious, tShowCursor, tUseKeyboard, bBlockJoyStick)
+    local sheet = require("MenuSheet").new(name, bHidePrevious, tShowCursor, tUseKeyboard, bBlockJoyStick)
+    _G[sheet.name] = sheet -- Global access required because of the event handlers
+    return sheet
+end
+
+-- Returns a new HUD sheet
+function createHUDSheet(name)
+    local sheet = require("HUDSheet").new(name)
+    _G[sheet.name] = sheet -- Global access required because of the event handlers
+    return sheet
+end
+
 function openDecisionPopup( text, callbackPtr )
-    showGUI("DecisionPopup", false, true)
+    showMenuSheet("DecisionPopup", false, true)
     DecisionPopup.setCallback(callbackPtr)
     DecisionPopup.setText(text)
 end
 
 function openInfoPopup(text, functionPtr, closeButton, arguments)
-    showGUI("InfoPopup", false, true)
+    showMenuSheet("InfoPopup", false, true)
     InfoPopup.execute(functionPtr, arguments)
     InfoPopup.setText(text)
     InfoPopup.setCloseButton(closeButton)

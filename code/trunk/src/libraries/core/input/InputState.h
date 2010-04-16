@@ -34,37 +34,19 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 
-#include "util/OrxEnum.h"
+#include "util/TriBool.h"
 #include "InputHandler.h"
+#include "InputManager.h"
 #include "JoyStickQuantityListener.h"
+
+#define INPUT_STATE_PUSH_CALL(deviceIndex, functionName, ...) \
+    InputManager::getInstance().pushCall(boost::function<void ()>(boost::bind(&InputHandler::functionName, handlers_[deviceIndex], __VA_ARGS__)))
 
 namespace orxonox
 {
-    //! Enumeration wrapper for input state priorities
-    struct InputStatePriority : OrxEnum<InputStatePriority>
-    {
-        OrxEnumConstructors(InputStatePriority);
-
-        static const int Empty        = -1;
-        static const int Dynamic      = 0;
-
-        static const int HighPriority = 1000;
-        static const int Console      = HighPriority + 0;
-        static const int Calibrator   = HighPriority + 1;
-        static const int Detector     = HighPriority + 2;
-    };
-
-    namespace MouseMode
-    {
-        enum Value
-        {
-            Exclusive,
-            Nonexclusive,
-            Dontcare
-        };
-    }
-
     /**
     @brief
         InputStates allow you to customise the input event targets at runtime.
@@ -72,7 +54,7 @@ namespace orxonox
         The general idea is a stack: Every activated InputState will be pushed on
         that stack and only the top one gets the input events. This is done for
         every device (keyboard, mouse, all joy sticks) separately to allow
-        for intance keyboard input capturing for the console while you can still
+        for instance keyboard input capturing for the console while you can still
         steer a ship with the mouse.
         There are two exceptions to this behaviour though:
         - If an InputState is created with the 'Transparent' parameter on, the
@@ -82,7 +64,7 @@ namespace orxonox
         - If an InputState is created with the 'AlwaysGetsInput' parameter on, then
           the state will always receive input as long as it is activated.
         - Note: If you mark an InputState with both parameters on, then it will
-          not influence ony other InputState at all.
+          not influence only other InputState at all.
 
     @par Priorities
         Every InputState has a priority when on the stack, but mostly this
@@ -94,7 +76,7 @@ namespace orxonox
 
     @par Exclusive/Non-Exclusive mouse Mode
         You can select a specific mouse mode that tells whether the application
-        should have exclusive accessto it or not.
+        should have exclusive access to it or not.
         When in non-exclusive mode, you can move the mouse out of the window
         like with any other normal window (only for windowed mode!).
         The setting is dictated by the topmost InputState that gets mouse events.
@@ -129,8 +111,8 @@ namespace orxonox
         //! Sets an InputHandler to be used for all devices
         void setHandler        (InputHandler* handler);
 
-        void setMouseMode(MouseMode::Value value) { mouseMode_ = value; this->bExpired_ = true; }
-        MouseMode::Value getMouseMode() const { return mouseMode_; }
+        void setMouseExclusive(TriBool::Value value) { exclusiveMouse_ = value; this->bExpired_ = true; }
+        TriBool::Value getMouseExclusive() const { return exclusiveMouse_; }
 
         //! Returns the name of the state (which is unique!)
         const std::string& getName() const { return name_; }
@@ -151,8 +133,8 @@ namespace orxonox
         void update(float dt);
 
         //! Generic function that distributes all 9 button events
-        template <typename EventType, class Traits>
-        void buttonEvent(unsigned int device, const typename Traits::ButtonTypeParam button);
+        template <typename EventType, class ButtonTypeParam>
+        void buttonEvent(unsigned int device, ButtonTypeParam button);
 
         //! Event handler
         void mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
@@ -183,7 +165,7 @@ namespace orxonox
         const std::string           name_;                  //!< Name of the state
         const bool                  bAlwaysGetsInput_;      //!< See class declaration for explanation
         const bool                  bTransparent_;          //!< See class declaration for explanation
-        MouseMode::Value            mouseMode_;             //!< See class declaration for explanation
+        TriBool::Value              exclusiveMouse_;        //!< See class declaration for explanation
         int                         priority_;              //!< Current priority (might change)
         bool                        bExpired_;              //!< See hasExpired()
         std::vector<InputHandler*>  handlers_;              //!< Vector with all handlers where the index is the device ID
@@ -197,7 +179,7 @@ namespace orxonox
     {
         for (unsigned int i = 0; i < handlers_.size(); ++i)
             if (handlers_[i] != NULL)
-                handlers_[i]->allDevicesUpdated(dt);
+                INPUT_STATE_PUSH_CALL(i, allDevicesUpdated, dt);
     }
 
     FORCEINLINE void InputState::update(float dt, unsigned int device)
@@ -206,46 +188,50 @@ namespace orxonox
         {
         case InputDeviceEnumerator::Keyboard:
             if (handlers_[keyboardIndex_s] != NULL)
-                handlers_[keyboardIndex_s]->keyboardUpdated(dt);
+                INPUT_STATE_PUSH_CALL(keyboardIndex_s, keyboardUpdated, dt);
             break;
 
         case InputDeviceEnumerator::Mouse:
             if (handlers_[mouseIndex_s] != NULL)
-                handlers_[mouseIndex_s]->mouseUpdated(dt);
+                INPUT_STATE_PUSH_CALL(mouseIndex_s, mouseUpdated, dt);
             break;
 
         default: // joy sticks
             if (handlers_[device] != NULL)
-                handlers_[device]->joyStickUpdated(device - firstJoyStickIndex_s, dt);
+                INPUT_STATE_PUSH_CALL(device, joyStickUpdated, device - firstJoyStickIndex_s, dt);
             break;
         }
     }
 
-    template <typename EventType, class Traits>
-    FORCEINLINE void InputState::buttonEvent(unsigned int device, const typename Traits::ButtonTypeParam button)
+    template <typename EventType, class ButtonTypeParam>
+    FORCEINLINE void InputState::buttonEvent(unsigned int device, ButtonTypeParam button)
     {
         assert(device < handlers_.size());
         if (handlers_[device] != NULL)
-            handlers_[device]->buttonEvent(device, button, EventType());
+        {
+            // We have to store the function pointer to tell the compiler about its actual type because of overloading
+            void (InputHandler::*function)(unsigned int, ButtonTypeParam, EventType) = &InputHandler::buttonEvent<ButtonTypeParam>;
+            InputManager::getInstance().pushCall(boost::function<void ()>(boost::bind(function, handlers_[device], device, button, EventType())));
+        }
     }
 
     FORCEINLINE void InputState::mouseMoved(IntVector2 abs, IntVector2 rel, IntVector2 clippingSize)
     {
         if (handlers_[mouseIndex_s] != NULL)
-            handlers_[mouseIndex_s]->mouseMoved(abs, rel, clippingSize);
+            INPUT_STATE_PUSH_CALL(mouseIndex_s, mouseMoved, abs, rel, clippingSize);
     }
 
     FORCEINLINE void InputState::mouseScrolled(int abs, int rel)
     {
         if (handlers_[mouseIndex_s] != NULL)
-            handlers_[mouseIndex_s]->mouseScrolled(abs, rel);
+            INPUT_STATE_PUSH_CALL(mouseIndex_s, mouseScrolled, abs, rel);
     }
 
     FORCEINLINE void InputState::joyStickAxisMoved(unsigned int device, unsigned int axis, float value)
     {
         assert(device < handlers_.size());
         if (handlers_[device] != NULL)
-            handlers_[device]->axisMoved(device - firstJoyStickIndex_s, axis, value);
+            INPUT_STATE_PUSH_CALL(device, axisMoved, device - firstJoyStickIndex_s, axis, value);
     }
 }
 

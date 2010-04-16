@@ -36,7 +36,7 @@ namespace orxonox
         : name_(name)
         , bAlwaysGetsInput_(bAlwaysGetsInput)
         , bTransparent_(bTransparent)
-        , mouseMode_(MouseMode::Dontcare)
+        , exclusiveMouse_(TriBool::Dontcare)
         , bExpired_(true)
         , handlers_(2)
         , joyStickHandlerAll_(0)

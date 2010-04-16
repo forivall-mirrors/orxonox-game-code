@@ -37,7 +37,7 @@
 #include <boost/scoped_ptr.hpp>
 #include "util/ScopeGuard.h"
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -96,7 +96,7 @@ namespace orxonox
             scoped_ptr<IOConsole>         ioConsole_;
             scoped_ptr<TclBind>           tclBind_;
             scoped_ptr<TclThreadManager>  tclThreadManager_;
-            scoped_ptr<Scope<ScopeID::Root> >     rootScope_;
+            scoped_ptr<Scope<ScopeID::Root> > rootScope_;
             // graphical
             scoped_ptr<GraphicsManager>   graphicsManager_;     //!< Interface to OGRE
             scoped_ptr<InputManager>      inputManager_;        //!< Interface to OIS
@@ -107,6 +107,7 @@ namespace orxonox
             int                           softDebugLevelLogFile_;      //!< The debug level for the log file (belongs to OutputHandler)
             std::string                   language_;                   //!< The language
             bool                          bInitRandomNumberGenerator_; //!< If true, srand(time(0)) is called
+            bool                          bStartIOConsole_;            //!< Set to false if you don't want to use the IOConsole
 
             static Core*                  singletonPtr_s;
     };

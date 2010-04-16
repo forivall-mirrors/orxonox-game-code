@@ -158,7 +158,7 @@ namespace orxonox
             // Call all the states with the held button event
             for (unsigned int iB = 0; iB < pressedButtons_.size(); ++iB)
                 for (unsigned int iS = 0; iS < inputStates_.size(); ++iS)
-                    inputStates_[iS]->buttonEvent<ButtonEvent::THold, Traits>(
+                    inputStates_[iS]->buttonEvent<ButtonEvent::THold, typename Traits::ButtonTypeParam>(
                         this->getDeviceID(), static_cast<DeviceClass*>(this)->getButtonEventArg(pressedButtons_[iB]));
 
             // Call states with device update events
@@ -195,7 +195,7 @@ namespace orxonox
 
             // Call states
             for (unsigned int i = 0; i < inputStates_.size(); ++i)
-                inputStates_[i]->buttonEvent<ButtonEvent::TPress, Traits>(this->getDeviceID(), static_cast<DeviceClass*>(this)->getButtonEventArg(button));
+                inputStates_[i]->buttonEvent<ButtonEvent::TPress, typename Traits::ButtonTypeParam>(this->getDeviceID(), static_cast<DeviceClass*>(this)->getButtonEventArg(button));
         }
 
         //! Common code for all button released events (updates pressed buttons list and calls the input states)
@@ -217,7 +217,7 @@ namespace orxonox
 
             // Call states
             for (unsigned int i = 0; i < inputStates_.size(); ++i)
-                inputStates_[i]->buttonEvent<ButtonEvent::TRelease, Traits>(this->getDeviceID(), static_cast<DeviceClass*>(this)->getButtonEventArg(button));
+                inputStates_[i]->buttonEvent<ButtonEvent::TRelease, typename Traits::ButtonTypeParam>(this->getDeviceID(), static_cast<DeviceClass*>(this)->getButtonEventArg(button));
         }
 
         //! Managed pointer to the OIS device

@@ -1,23 +1,16 @@
-gui = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
-if _REQUIREDNAME == nil then
-    QuestGUI = P
-else
-    _G[_REQUIREDNAME] = P
-end
+-- QuestGUI.lua
 
-P.filename = "QuestGUI"
-P.layoutString = "QuestGUI.layout"
+local P = createMenuSheet("QuestGUI")
 
-function P:show()
-    self.window:show() -- TODO: Do this through parent...
-    self.visible = true
+function P.show()
+    P.window:show() -- TODO: Do this through parent...
+    P.visible = true
 
     local questManager = orxonox.QuestManager:getInstance()
 
     local questsList = winMgr:getWindow("orxonox/QuestGUI/QuestsList")
 
-    local window = questManager:getQuestGUI(P.filename)
+    local window = questManager:getQuestGUI(P.name)
 
     questsList:addChildWindow(window)
 

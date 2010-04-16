@@ -60,8 +60,6 @@ namespace orxonox
 
             void useCamera(Ogre::Camera* camera);
 
-            static CameraManager* getInstancePtr() { return singletonPtr_s; }
-
         private:
             CameraManager(const CameraManager&); // don't use
 

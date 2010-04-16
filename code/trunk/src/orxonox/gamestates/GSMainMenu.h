@@ -60,7 +60,6 @@ namespace orxonox
         static void startIOConsole();
 
     private:
-        InputState*       inputState_;
         Scene*            scene_;
         Ogre::Camera*     camera_;
 

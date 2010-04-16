@@ -1,17 +1,8 @@
 -- MouseControlsMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
-if _REQUIREDNAME == nil then
-    MouseControlsMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createMenuSheet("MouseControlsMenu")
 
-P.filename = "MouseControlsMenu"
-P.layoutString = "MouseControlsMenu.layout"
-
-function P:init()
+function P.onLoad()
     block = false
     mousenormalscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MouseNormalScrollbar"),"CEGUI::Scrollbar")
     mousederivescrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MouseDeriveScrollbar"),"CEGUI::Scrollbar")
@@ -103,7 +94,7 @@ function P.MouseInvertCheckbox_clicked(e)
 end
 
 function P.MouseControlsBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideMenuSheet(P.name)
 end
 
 return P

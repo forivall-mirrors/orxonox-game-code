@@ -1,17 +1,8 @@
 -- GraphicsMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
-if _REQUIREDNAME == nil then
-    GraphicsMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createMenuSheet("GraphicsMenu")
 
-P.filename = "GraphicsMenu"
-P.layoutString = "GraphicsMenu.layout"
-
-function P:init()
+function P.onLoad()
     block = true
     file = orxonox.PathConfig:getConfigPathString() .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
     search_mode = 0
@@ -61,7 +52,7 @@ function P:init()
     table.insert(resolutionList, "1440 x 900")
     for k,v in pairs(resolutionList) do
         item = CEGUI.createListboxTextItem(v)
-        item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toListbox(listboxwindow):addItem(item)
     end
     if resolution == "640 x 480" then
@@ -151,7 +142,7 @@ end
 function P.GraphicsBrightnessScrollbar_changed(e)
     if scrollbar_active == false then
         -- brightness
-        debug("event: brightness")
+        logMessage(0, "event: brightness")
     end
 end
 
@@ -161,7 +152,7 @@ end
 
 function P.GraphicsBrightnessScrollbar_ended(e)
     -- brightness
-    debug("event: brightness")
+    logMessage(0, "event: brightness")
     scrollbar_active = false
 end
 
@@ -200,7 +191,7 @@ function P.GraphicsFullscreenCheckbox_clicked(e)
 end
 
 function P.GraphicsBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideMenuSheet(P.name)
 end
 
 return P

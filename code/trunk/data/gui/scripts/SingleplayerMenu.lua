@@ -1,17 +1,8 @@
 -- SingleplayerMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
-if _REQUIREDNAME == nil then
-    SingleplayerMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
+local P = createMenuSheet("SingleplayerMenu")
 
-P.filename = "SingleplayerMenu"
-P.layoutString = "SingleplayerMenu.layout"
-
-function P:init()
+function P.onLoad()
     listbox = winMgr:getWindow("orxonox/SingleplayerLevelListbox")
     preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
     orxonox.LevelManager:getInstance():compileAvailableLevelList()
@@ -29,7 +20,7 @@ function P:init()
     table.sort(levelList)
     for k,v in pairs(levelList) do
         item = CEGUI.createListboxTextItem(v)
-        item:setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush")
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toListbox(listbox):addItem(item)
         if v .. ".oxw" == preselect then
             listbox:setItemSelectState(item, true)
@@ -42,12 +33,12 @@ function P.SingleplayerStartButton_clicked(e)
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
         orxonox.execute("startGame")
-        hideAllGUIs()
+        hideAllMenuSheets()
     end
 end
 
 function P.SingleplayerBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideMenuSheet(P.name)
 end
 
 return P

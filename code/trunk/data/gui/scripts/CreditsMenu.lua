@@ -1,18 +1,9 @@
 -- CreditsMenu.lua
 
-BasicGUI = require("BasicGUI")
-local P = BasicGUI:new() --inherit everything from the gui package
-if _REQUIREDNAME == nil then
-    CreditsMenu = P
-else
-    _G[_REQUIREDNAME] = P
-end
-
-P.filename = "CreditsMenu"
-P.layoutString = "CreditsMenu.layout"
+local P = createMenuSheet("CreditsMenu")
 
 function P.CreditsBackButton_clicked(e)
-    hideGUI(P.filename)
+    hideMenuSheet(P.name)
 end
 
 return P

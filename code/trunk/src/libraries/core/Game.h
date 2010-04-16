@@ -49,7 +49,7 @@
 #include "util/Debug.h"
 #include "util/ScopeGuard.h"
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
+#include "OrxonoxClass.h"
 
 /**
 @def

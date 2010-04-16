@@ -36,6 +36,9 @@ extern "C" {
 }
 
 #include "util/Debug.h"
+#include "util/Exception.h"
+#include "util/ScopeGuard.h"
+#include "IOConsole.h"
 #include "Resource.h"
 #include "ToluaBindCore.h"
 
@@ -53,6 +56,7 @@ namespace orxonox
     {
         // Create new lua state and configure it
         luaState_ = lua_open();
+        Loki::ScopeGuard luaStateGuard = Loki::MakeGuard(&lua_close, luaState_);
 #if LUA_VERSION_NUM == 501
         luaL_openlibs(luaState_);
 #else
@@ -77,7 +81,10 @@ namespace orxonox
         lua_setglobal(luaState_, "luaState");
 
         // Parse init script
-        this->doFile("LuaStateInit.lua");
+        if (!this->doFile("LuaStateInit.lua"))
+            ThrowException(InitialisationFailed, "Running LuaStateInit.lua failed");
+
+        luaStateGuard.Dismiss();
     }
 
     LuaState::~LuaState()
@@ -95,16 +102,19 @@ namespace orxonox
         return sourceInfo;
     }
 
-    void LuaState::includeFile(const std::string& filename)
+    bool LuaState::includeFile(const std::string& filename)
     {
         shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename);
         if (sourceInfo != NULL)
-            this->includeString(Resource::open(sourceInfo)->getAsString(), sourceInfo);
+            return this->includeString(Resource::open(sourceInfo)->getAsString(), sourceInfo);
         else
-            COUT(2) << "LuaState: Cannot include file '" << filename << "'." << std::endl;
+        {
+            COUT(2) << "LuaState: Cannot include file '" << filename << "' (not found)." << std::endl;
+            return false;
+        }
     }
 
-    void LuaState::includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo)
+    bool LuaState::includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo)
     {
         // Parse string with provided include parser (otherwise don't preparse at all)
         std::string luaInput;
@@ -113,19 +123,38 @@ namespace orxonox
         else
             luaInput = code;
 
-        this->doString(luaInput, sourceFileInfo);
+        if (sourceFileInfo != NULL)
+        {
+            // Also fill a map with the actual source code. This is just for the include* commands
+            // where the content of sourceFileInfo->filename doesn't match 'code'
+            this->sourceCodeMap_[sourceFileInfo->filename] = code;
+        }
+
+        bool returnValue = this->doString(luaInput, sourceFileInfo);
+
+        if (sourceFileInfo != NULL)
+        {
+            // Delete source code entry
+            if (sourceFileInfo != NULL)
+                this->sourceCodeMap_.erase(sourceFileInfo->filename);
+        }
+
+        return returnValue;
     }
 
-    void LuaState::doFile(const std::string& filename)
+    bool LuaState::doFile(const std::string& filename)
     {
         shared_ptr<ResourceInfo> sourceInfo = this->getFileInfo(filename);
         if (sourceInfo != NULL)
-            this->doString(Resource::open(sourceInfo)->getAsString(), sourceInfo);
+            return this->doString(Resource::open(sourceInfo)->getAsString(), sourceInfo);
         else
-            COUT(2) << "LuaState: Cannot do file '" << filename << "'." << std::endl;
+        {
+            COUT(2) << "LuaState: Cannot do file '" << filename << "' (not found)." << std::endl;
+            return false;
+        }
     }
 
-    void LuaState::doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo)
+    bool LuaState::doString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo)
     {
         // Save the old source file info
         shared_ptr<ResourceInfo> oldSourceFileInfo = sourceFileInfo_;
@@ -133,33 +162,93 @@ namespace orxonox
         if (sourceFileInfo != NULL)
             sourceFileInfo_ = sourceFileInfo;
 
-        int error = 0;
+        std::string chunkname;
+        if (sourceFileInfo != NULL)
+        {
+            // Provide lua_load with the filename for debug purposes
+            // The '@' is a Lua convention to identify the chunk name as filename
+            chunkname = '@' + sourceFileInfo->filename;
+        }
+        else
+        {
+            // Use the code string to identify the chunk
+            chunkname = code;
+        }
+
+        // Push custom error handler that uses the debugger
+        lua_getglobal(this->luaState_, "errorHandler");
+        int errorHandler = lua_gettop(luaState_);
+        if (lua_isnil(this->luaState_, -1))
+        {
+            lua_pop(this->luaState_, 1);
+            errorHandler = 0;
+        }
+
 #if LUA_VERSION_NUM != 501
         LoadS ls;
         ls.s = code.c_str();
         ls.size = code.size();
-        error = lua_load(luaState_, &orxonox::LuaState::lua_Chunkreader, &ls, code.c_str());
+        int error = lua_load(luaState_, &orxonox::LuaState::lua_Chunkreader, &ls, chunkname.c_str());
 #else
-        error = luaL_loadstring(luaState_, code.c_str());
+        int error = luaL_loadbuffer(luaState_, code.c_str(), code.size(), chunkname.c_str());
 #endif
 
-        // execute the chunk
+        switch (error)
+        {
+        case LUA_ERRSYNTAX: // Syntax error
+            COUT(1) << "Lua syntax error: " << lua_tostring(luaState_, -1) << std::endl;
+            break;
+        case LUA_ERRMEM:    // Memory allocation error
+            COUT(1) << "Lua memory allocation error: Consult your dentist immediately!" << std::endl;
+            break;
+        }
+
         if (error == 0)
-            error = lua_pcall(luaState_, 0, 1, 0);
+        {
+            // Execute the chunk in protected mode with an error handler function (stack index)
+            error = lua_pcall(luaState_, 0, 1, errorHandler);
+
+            switch (error)
+            {
+            case LUA_ERRRUN: // Runtime error
+                if (errorHandler)
+                {
+                    // Do nothing (we already display the error in the
+                    // 'errorHandler' Lua function in LuaStateInit.lua)
+                }
+                else
+                {
+                    std::string errorString = lua_tostring(this->luaState_, -1);
+                    if (errorString.find("Error propagation") == std::string::npos)
+                        COUT(1) << "Lua runtime error: " << errorString << std::endl;
+                }
+                break;
+            case LUA_ERRERR: // Error in the error handler
+                COUT(1) << "Lua error in error handler. No message available." << std::endl;
+                break;
+            case LUA_ERRMEM: // Memory allocation error
+                COUT(1) << "Lua memory allocation error: Consult your dentist immediately!" << std::endl;
+                break;
+            }
+        }
+
         if (error != 0)
         {
-            std::string origin;
-            if (sourceFileInfo != NULL)
-                origin = " originating from " + sourceFileInfo_->filename;
-            COUT(1) << "Error in Lua-script" << origin << ": " << lua_tostring(luaState_, -1) << std::endl;
-            // return value is nil
-            lua_pushnil(luaState_);
+            lua_pop(luaState_, 1);  // Remove error message
+            lua_pushnil(luaState_); // Push a nil return value
         }
-        // push return value because it will get lost since the return value of this function is void
+
+        if (errorHandler != 0)
+            lua_remove(luaState_, errorHandler); // Remove error handler from stack
+
+        // Set return value to a global variable because we cannot return a table in this function
+        // here. It would work for numbers, pointers and strings, but certainly not for Lua tables.
         lua_setglobal(luaState_, "LuaStateReturnValue");
 
         // Load the old info again
         sourceFileInfo_ = oldSourceFileInfo;
+
+        return (error == 0);
     }
 
     void LuaState::luaPrint(const std::string& str)
@@ -179,6 +268,26 @@ namespace orxonox
             return false;
         else
             return true;
+    }
+
+    //! Returns the content of a file
+    std::string LuaState::getSourceCode(const std::string& filename)
+    {
+        // Try the internal map first to get the actual Lua code
+        // and not just some pseudo Lua-XML code when using include* commands
+        std::map<std::string, std::string>::const_iterator it = this->sourceCodeMap_.find(filename);
+        if (it != this->sourceCodeMap_.end())
+            return it->second;
+        shared_ptr<ResourceInfo> info = Resource::getInfo(filename);
+        if (info == NULL)
+            return "";
+        else
+            return Resource::open(info)->getAsString();
+    }
+
+    bool LuaState::usingIOConsole() const
+    {
+        return IOConsole::exists();
     }
 
 #if LUA_VERSION_NUM != 501
