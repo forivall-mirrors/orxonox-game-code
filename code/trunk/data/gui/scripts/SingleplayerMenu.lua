@@ -29,7 +29,7 @@ function P.onLoad()
 end
 
 function P.SingleplayerStartButton_clicked(e)
-    choice = winMgr:getWindow("orxonox/SingleplayerLevelListbox"):getFirstSelectedItem()
+    local choice = winMgr:getWindow("orxonox/SingleplayerLevelListbox"):getFirstSelectedItem()
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
         orxonox.execute("startGame")
