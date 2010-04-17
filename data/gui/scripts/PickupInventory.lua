@@ -29,7 +29,7 @@ function P.createInventory()
     local carrier = pickupManager:getPawn()
     
     local root = winMgr:getWindow("orxonox/PickupInventory/Inventory")
-    P.wrapper = winMgr:createWindow("TaharezLook/ScrollablePane", "orxonox/PickupInventory/Inventory/Wrapper")
+    P.wrapper = winMgr:createWindow("MenuWidgets/ScrollablePane", "orxonox/PickupInventory/Inventory/Wrapper")
     P.wrapper:setSize(CEGUI.UVector2(CEGUI.UDim(1,0),CEGUI.UDim(1,0)))
     root:addChildWindow(P.wrapper)
     
@@ -82,12 +82,12 @@ function P.createCarrierBox(carrier, index)
     
     local offset = 0
 
-    local box = winMgr:createWindow("TaharezLook/ScrollablePane", name .. "/Box")
+    local box = winMgr:createWindow("MenuWidgets/ScrollablePane", name .. "/Box")
     box:setPosition(CEGUI.UVector2(CEGUI.UDim(0, horizontalOffset), CEGUI.UDim(0, 0)))
     box:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, -horizontalOffset), CEGUI.UDim(1, 0)))
     
     offset = offset+textHeight
-    local title = winMgr:createWindow("TaharezLook/StaticText", name .. "/Title")
+    local title = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Title")
     title:setText(carrier:getCarrierName())
     title:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, offset)))
     title:setProperty("FrameEnabled", "set:False")
@@ -97,41 +97,41 @@ function P.createCarrierBox(carrier, index)
     for i=0,numPickups-1,1 do
         local pickup = orxonox.PickupManager:getInstance():getPickupRepresentation(i, carrier)
         
-        local item = winMgr:createWindow("TaharezLook/StaticText", name .. "/Box/Pickup" .. i)
+        local item = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Box/Pickup" .. i)
         item:setSize(CEGUI.UVector2(CEGUI.UDim(1, -horizontalOffset), CEGUI.UDim(0, imageHeight)))
         item:setPosition(CEGUI.UVector2(CEGUI.UDim(0, horizontalOffset), CEGUI.UDim(0, offset)))
         box:addChildWindow(item)
         offset = offset + imageHeight+5
         
-        local image = winMgr:createWindow("TaharezLook/StaticImage", name .. "/Box/Pickup" .. i .. "/Image")
+        local image = winMgr:createWindow("MenuWidgets/StaticImage", name .. "/Box/Pickup" .. i .. "/Image")
         image:setProperty("Image", "set:PickupInventory image:" .. pickup:getInventoryRepresentation())
         image:setProperty("BackgroundEnabled", "set:False")
         image:setProperty("FrameEnabled", "set:True")
         image:setSize(CEGUI.UVector2(CEGUI.UDim(0, imageHeight), CEGUI.UDim(0, imageHeight)))
         item:addChildWindow(image)
         
-        local title = winMgr:createWindow("TaharezLook/StaticText", name .. "/Box/Pickup" .. i .. "/Title")
+        local title = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Box/Pickup" .. i .. "/Title")
         title:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageHeight+5), CEGUI.UDim(0, (imageHeight-textHeight)/2)))
         title:setSize(CEGUI.UVector2(CEGUI.UDim(0.4, 0), CEGUI.UDim(0, textHeight)))
         title:setText(pickup:getPickupName())
         title:setProperty("FrameEnabled", "set:False")
         item:addChildWindow(title)
         
-        local useButton = winMgr:createWindow("TaharezLook/Button", name .. "/Box/Pickup" .. i .. "/UseButton")
+        local useButton = winMgr:createWindow("MenuWidgets/Button", name .. "/Box/Pickup" .. i .. "/UseButton")
         useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, imageHeight+10),CEGUI.UDim(0, (imageHeight-textHeight)/2)))
         useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, textHeight)))
         useButton:setText("use")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseButton_clicked")
         item:addChildWindow(useButton)
         
-        local dropButton = winMgr:createWindow("TaharezLook/Button", name .. "/Box/Pickup" .. i .. "/DropButton")
+        local dropButton = winMgr:createWindow("MenuWidgets/Button", name .. "/Box/Pickup" .. i .. "/DropButton")
         dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, imageHeight+15+buttonWidth),CEGUI.UDim(0, (imageHeight-textHeight)/2)))
         dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, textHeight)))
         dropButton:setText("drop")
         orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropButton_clicked")
         item:addChildWindow(dropButton)
         
-        local detailsButton = winMgr:createWindow("TaharezLook/Button", name .. "/Box/Pickup" .. i .. "/DetailsButton")
+        local detailsButton = winMgr:createWindow("MenuWidgets/Button", name .. "/Box/Pickup" .. i .. "/DetailsButton")
         detailsButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, imageHeight+20+2*buttonWidth),CEGUI.UDim(0, (imageHeight-textHeight)/2)))
         detailsButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, textHeight)))
         detailsButton:setText("details")
@@ -183,7 +183,7 @@ function P.createDetailsWindow(pickupIndex, carrierIndex)
     
     local name = "orxonox/PickupInventory/Carrier" .. carrierIndex .. "/Pickup" .. pickupIndex .. "/Details" .. P.getNewDetailNumber()
     
-    local window = winMgr:createWindow("TaharezLook/FrameWindow", name)
+    local window = winMgr:createWindow("MenuWidgets/FrameWindow", name)
     window:setSize(CEGUI.UVector2(CEGUI.UDim(0.5,0),CEGUI.UDim(0.4,0)))
     orxonox.GUIManager:subscribeEventHelper(window, "CloseClicked", P.name .. ".closeDetailWindow")
     
@@ -195,14 +195,14 @@ function P.createDetailsWindow(pickupIndex, carrierIndex)
     wrapper:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 10),CEGUI.UDim(0, 40)))
     window:addChildWindow(wrapper)
     
-    local title = winMgr:createWindow("TaharezLook/StaticText", name .. "/Title")
+    local title = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Title")
     title:setText(pickup:getPickupName())
     title:setHeight(CEGUI.UDim(0, titleHeight))
     title:setProperty("FrameEnabled", "set:False")
     title:setProperty("BackgroundEnabled", "set:False")
     wrapper:addChildWindow(title)
     
-    local image = winMgr:createWindow("TaharezLook/StaticImage", name .. "/Image")
+    local image = winMgr:createWindow("MenuWidgets/StaticImage", name .. "/Image")
     image:setProperty("Image", "set:PickupInventory image:" .. pickup:getInventoryRepresentation())
     image:setProperty("BackgroundEnabled", "set:False")
     image:setProperty("FrameEnabled", "set:True")
@@ -210,7 +210,7 @@ function P.createDetailsWindow(pickupIndex, carrierIndex)
     image:setYPosition(CEGUI.UDim(0, titleHeight + 5))
     wrapper:addChildWindow(image)
     
-    local box = winMgr:createWindow("TaharezLook/ScrollablePane", name .. "/Description")
+    local box = winMgr:createWindow("MenuWidgets/ScrollablePane", name .. "/Description")
     box:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, -1*(imageSize + 10)),CEGUI.UDim(1, -(titleHeight + 5 + titleHeight + 20))))
     box:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageSize + 10),CEGUI.UDim(0, titleHeight + 5)))
     local description = winMgr:createWindow("TaharezLook/StaticText", name .. "/Description/Text")
@@ -220,14 +220,14 @@ function P.createDetailsWindow(pickupIndex, carrierIndex)
     box:addChildWindow(description)
     wrapper:addChildWindow(box)
     
-    local useButton = winMgr:createWindow("TaharezLook/Button", name .. "/UseButton")
+    local useButton = winMgr:createWindow("MenuWidgets/Button", name .. "/UseButton")
     useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageSize+10),CEGUI.UDim(1, -40)))
     useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, titleHeight)))
     useButton:setText("use")
     orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseButton_clicked")
     wrapper:addChildWindow(useButton)
     
-    local dropButton = winMgr:createWindow("TaharezLook/Button", name .. "/DropButton")
+    local dropButton = winMgr:createWindow("MenuWidgets/Button", name .. "/DropButton")
     dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageSize+10+buttonWidth+10),CEGUI.UDim(1, -40)))
     dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, titleHeight)))
     dropButton:setText("drop")
@@ -278,7 +278,7 @@ function P.closeDetailWindow(e)
 end
 
 function P.InventoryBackButton_clicked(e)
-    hideGUI("PickupInventory")
+    orxonox.CommandExecutor:execute("OrxonoxOverlay toggleVisibility PickupInventory")
 end
 
 return P
