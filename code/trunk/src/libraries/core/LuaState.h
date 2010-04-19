@@ -99,6 +99,8 @@ namespace orxonox // tolua_export
         static void openToluaInterfaces(lua_State* state);
         static void closeToluaInterfaces(lua_State* state);
 
+        static const std::string ERROR_HANDLER_NAME;
+
     private:
         shared_ptr<ResourceInfo> getFileInfo(const std::string& filename);
 

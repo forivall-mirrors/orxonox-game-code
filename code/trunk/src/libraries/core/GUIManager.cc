@@ -132,6 +132,7 @@ namespace orxonox
         // This is necessary to ensure that input events also use the right resource info when triggering lua functions
         luaState_->setDefaultResourceInfo(this->rootFileInfo_);
         scriptModule_.reset(new LuaScriptModule(luaState_->getInternalLuaState()));
+        scriptModule_->setDefaultPCallErrorHandler(LuaState::ERROR_HANDLER_NAME);
 
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
