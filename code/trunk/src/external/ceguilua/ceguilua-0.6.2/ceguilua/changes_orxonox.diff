@@ -20,16 +20,20 @@
  
  // prototype for bindings initialisation function
  int tolua_CEGUI_open(lua_State* tolua_S);
-@@ -61,7 +57,7 @@
+@@ -59,9 +55,10 @@
+ 	Constructor (creates Lua state)
+ *************************************************************************/
  LuaScriptModule::LuaScriptModule() :
-     d_errFuncIndex(LUA_NOREF)
+-    d_errFuncIndex(LUA_NOREF)
++    d_errFuncIndex(LUA_NOREF),
++    d_activeErrFuncIndex(LUA_NOREF)
  {
 -    #if CEGUI_LUA_VER >= 51
 +    #if LUA_VERSION_NUM >= 501
          static const luaL_Reg lualibs[] = {
              {"", luaopen_base},
              {LUA_LOADLIBNAME, luaopen_package},
-@@ -75,14 +71,14 @@
+@@ -75,14 +72,14 @@
          #endif
              {0, 0}
          };
@@ -46,7 +50,7 @@
              const luaL_Reg *lib = lualibs;
              for (; lib->func; lib++)
              {
-@@ -90,7 +86,7 @@
+@@ -90,7 +87,7 @@
                  lua_pushstring(d_state, lib->name);
                  lua_call(d_state, 1, 0);
              }
@@ -55,7 +59,7 @@
          luaopen_base(d_state);
          luaopen_io(d_state);
          luaopen_string(d_state);
-@@ -99,7 +95,7 @@
+@@ -99,7 +96,7 @@
          #if defined(DEBUG) || defined (_DEBUG)
              luaopen_debug(d_state);
          #endif
@@ -64,6 +68,17 @@
  
      setModuleIdentifierString();
  }
+@@ -108,7 +105,9 @@
+ /*************************************************************************
+ 	Constructor (uses given Lua state)
+ *************************************************************************/
+-LuaScriptModule::LuaScriptModule(lua_State* state)
++LuaScriptModule::LuaScriptModule(lua_State* state) :
++    d_errFuncIndex(LUA_NOREF),
++    d_activeErrFuncIndex(LUA_NOREF)
+ {
+ 	// just use the given state
+ 	d_ownsState = false;
 --- CEGUILua.h	Sun Jan 25 18:32:57 2009
 +++ CEGUILua.h	Thu Jan 29 10:17:42 2009
 @@ -38,7 +38,11 @@
@@ -90,3 +105,14 @@
  
  // Start of CEGUI namespace section
  namespace CEGUI
+@@ -199,6 +199,10 @@
+     bool ret = lua_isboolean(L, -1) ? lua_toboolean(L, -1 ) : true;
+     lua_pop(L, 1);
+ 
++    // remove error handler from stack
++    if (err_idx != 0)
++        lua_remove(L, err_idx);
++
+ 	if(helper)
+ 	{
+ 		delete helper;
