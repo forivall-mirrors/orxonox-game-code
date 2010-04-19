@@ -151,10 +151,11 @@ namespace orxonox
     
     PickupCarrier* PickupManager::getPawn(void)
     {
-        Pawn* pawn = dynamic_cast<Pawn*>(GUIManager::getInstance().getPlayer(PickupManager::guiName_s)->getControllableEntity());
-        if(pawn == NULL)
+        PlayerInfo* player = GUIManager::getInstance().getPlayer(PickupManager::guiName_s);
+        if (player != NULL)
+            return dynamic_cast<PickupCarrier*>(player->getControllableEntity());
+        else
             return NULL;
-        return dynamic_cast<PickupCarrier*>(pawn);
     }
     
     int PickupManager::getNumCarrierChildren(PickupCarrier* carrier)
