@@ -199,6 +199,10 @@ bool LuaFunctor::operator()(const EventArgs& args) const
     bool ret = lua_isboolean(L, -1) ? lua_toboolean(L, -1 ) : true;
     lua_pop(L, 1);
 
+    // remove error handler from stack
+    if (err_idx != 0)
+        lua_remove(L, err_idx);
+
 	if(helper)
 	{
 		delete helper;

@@ -55,7 +55,8 @@ namespace CEGUI
 	Constructor (creates Lua state)
 *************************************************************************/
 LuaScriptModule::LuaScriptModule() :
-    d_errFuncIndex(LUA_NOREF)
+    d_errFuncIndex(LUA_NOREF),
+    d_activeErrFuncIndex(LUA_NOREF)
 {
     #if LUA_VERSION_NUM >= 501
         static const luaL_Reg lualibs[] = {
@@ -104,7 +105,9 @@ LuaScriptModule::LuaScriptModule() :
 /*************************************************************************
 	Constructor (uses given Lua state)
 *************************************************************************/
-LuaScriptModule::LuaScriptModule(lua_State* state)
+LuaScriptModule::LuaScriptModule(lua_State* state) :
+    d_errFuncIndex(LUA_NOREF),
+    d_activeErrFuncIndex(LUA_NOREF)
 {
 	// just use the given state
 	d_ownsState = false;
