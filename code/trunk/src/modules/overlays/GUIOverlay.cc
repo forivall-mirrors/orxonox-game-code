@@ -63,8 +63,12 @@ namespace orxonox
         SUPER(GUIOverlay, changedVisibility);
 
         //Setting player now.
-        if( this->getOwner() )
-            GUIManager::getInstance().setPlayer(this->guiName_, (orxonox_cast<ControllableEntity*>(this->getOwner()))->getPlayer());
+        if (this->getOwner())
+        {
+            ControllableEntity* entity = orxonox_cast<ControllableEntity*>(this->getOwner());
+            if (entity)
+                GUIManager::getInstance().setPlayer(this->guiName_, entity->getPlayer());
+        }
 
         if (this->isVisible())
         {
@@ -86,6 +90,18 @@ namespace orxonox
     void GUIOverlay::setGUIName(const std::string& name)
     {
         this->guiName_ = name;
-        GUIManager::getInstance().setPlayer(name, orxonox_cast<PlayerInfo*>(this->getOwner())); //Set Player is going to be NULL, so it needs to be set in changedVisibility() as well.
+        if (this->getOwner())
+        {
+            ControllableEntity* entity = orxonox_cast<ControllableEntity*>(this->getOwner());
+            if (entity)
+                GUIManager::getInstance().setPlayer(name, entity->getPlayer()); //Set Player is going to be NULL, so it needs to be set in changedVisibility() as well.
+        }
+    }
+
+    void GUIOverlay::changedOwner()
+    {
+        SUPER(GUIOverlay, changedOwner);
+        if (!this->getGUIName().empty())
+            this->setGUIName(this->getGUIName());
     }
 }

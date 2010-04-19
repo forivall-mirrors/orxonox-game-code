@@ -41,6 +41,7 @@
 #include "util/Math.h"
 #include "util/OgreForwardRefs.h"
 #include "core/BaseObject.h"
+#include "core/Super.h"
 #include "core/WindowEventListener.h"
 
 namespace orxonox
