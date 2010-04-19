@@ -49,6 +49,7 @@ namespace orxonox
             inline const std::string& getGUIName() const { return this->guiName_; }
 
             virtual void changedVisibility();
+            virtual void changedOwner();
 
         private:
             std::string guiName_;
