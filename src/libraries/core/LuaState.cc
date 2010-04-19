@@ -47,6 +47,8 @@ namespace orxonox
     LuaState::ToluaInterfaceMap LuaState::toluaInterfaces_s;
     std::vector<LuaState*> LuaState::instances_s;
 
+    const std::string LuaState::ERROR_HANDLER_NAME = "errorHandler";
+
     // Do this after declaring toluaInterfaces_s and instances_s to avoid larger problems
     DeclareToluaInterface(Core);
 
@@ -176,7 +178,7 @@ namespace orxonox
         }
 
         // Push custom error handler that uses the debugger
-        lua_getglobal(this->luaState_, "errorHandler");
+        lua_getglobal(this->luaState_, ERROR_HANDLER_NAME.c_str());
         int errorHandler = lua_gettop(luaState_);
         if (lua_isnil(this->luaState_, -1))
         {
