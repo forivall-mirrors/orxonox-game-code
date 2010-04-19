@@ -112,13 +112,28 @@ namespace orxonox
         
         if (this->isUsed())
         {
-            this->startPickupTimer(this->getDuration());
+            if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() > 0.0f)
+            {
+                this->getTimer()->unpauseTimer();
+            }
+            else
+            {
+                this->startPickupTimer(this->getDuration());
+            }
             this->setInvisible(true);
         }
         else
         {
             this->setInvisible(false);
-            this->destroy();
+        
+            if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
+            {
+                this->destroy();
+            }
+            else
+            {
+                this->getTimer()->pauseTimer();
+            }
         }
         
     }

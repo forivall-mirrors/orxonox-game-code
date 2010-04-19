@@ -160,7 +160,6 @@ namespace orxonox
             {
                 if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
                 {
-                    //TODO: Potentially dangerous, not only for this pickup. Think long and hard about this!!!
                     this->destroy();
                 }
                 else
