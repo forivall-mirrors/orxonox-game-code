@@ -1,0 +1,15 @@
+ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
+  HUDBar.cc
+  HUDNavigation.cc
+  HUDRadar.cc
+  HUDSpeedBar.cc
+  HUDHealthBar.cc
+  HUDTimer.cc
+  ChatOverlay.cc
+  GametypeStatus.cc
+  AnnounceMessage.cc
+  KillMessage.cc
+  DeathMessage.cc
+  UnderAttackHealthBar.cc
+  TeamBaseMatchScore.cc
+)
