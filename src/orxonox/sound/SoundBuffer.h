@@ -44,11 +44,16 @@ namespace orxonox
     class _OrxonoxExport SoundBuffer
     {
         friend class SoundManager;
+#if !defined(_MSC_VER) || _MSC_VER >= 1500
         // Make sure nobody deletes an instance (using smart pointers)
         template <class T>
         friend void boost::checked_delete(T*);
+#endif
 
     public:
+#if defined(_MSC_VER) && _MSC_VER < 1500
+        ~SoundBuffer();
+#endif
         inline ALuint getBuffer()
             { return this->audioBuffer_; }
 
@@ -59,7 +64,9 @@ namespace orxonox
 
     private:
         SoundBuffer(const std::string& filename, std::list<shared_ptr<SoundBuffer> >::iterator poolIterator);
+#if !defined(_MSC_VER) || _MSC_VER >= 1500
         ~SoundBuffer();
+#endif
         void loadStandard(const shared_ptr<ResourceInfo>& fileInfo, DataStreamPtr dataStream);
         void loadOgg(const shared_ptr<ResourceInfo>& fileInfo, DataStreamPtr dataStream);
 
