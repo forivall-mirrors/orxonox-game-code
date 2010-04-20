@@ -30,7 +30,7 @@
 #        For example any code running on 3.0 should still run on 3.1
 #        But you can specify that the code only runs on 3.1 and higher
 #        or 4.0 and higher (so both 3.1 and 4.0 will work).
-SET(ALLOWED_MINIMUM_VERSIONS 3.1 4.0)
+SET(ALLOWED_MINIMUM_VERSIONS 3.1 4.0 5.0)
 
 IF(NOT EXISTS ${DEPENDENCY_PACKAGE_DIR}/version.txt)
   SET(DEPENDENCY_VERSION 1.0)
