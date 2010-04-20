@@ -21,10 +21,10 @@
  *
  *   Author:
  *       Erwin 'vaiursch' Herrsche
+ *       
+ *   Co-authors:
  *       Kevin Young
  *       Reto Grieder
- *   Co-authors:
- *      ...
  *
  */
 

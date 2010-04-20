@@ -21,9 +21,9 @@
  *
  *   Author:
  *      Reto Grieder
- *      Kevin Young
+ *      
  *   Co-authors:
- *      ...
+ *      Kevin Young
  *
  */
 
@@ -42,8 +42,10 @@
 namespace orxonox
 {
     /**
-     * The AmbientSound class is the base class for all sound file loader classes.
-     * It server as main interface to the OpenAL library.
+     * The AmbientSound class implements the non-3D sound, i.e. sound files that are used for atmospheric
+     * highlighting.
+     * It interfaces with BaseSound and is controllable by MoodManager.
+     * Ambient sounds are always cross-faded. New sounds are registered and activated/deactivated as needed.
      *
      */
     class _OrxonoxExport AmbientSound : public BaseSound, public BaseObject, public Synchronisable, public MoodListener

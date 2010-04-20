@@ -22,7 +22,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Kevin Young
  *
  */
 
