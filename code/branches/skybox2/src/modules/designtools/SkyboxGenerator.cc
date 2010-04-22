@@ -31,6 +31,7 @@
 #include <string>
 #include <cassert>
 #include <OgreRenderWindow.h>
+#include <OgreCamera.h>
 
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
@@ -41,6 +42,7 @@
 #include "worldentities/ControllableEntity.h"
 #include "core/GraphicsManager.h"
 #include "core/CommandExecutor.h"
+#include "graphics/Camera.h"
 
 
  
@@ -74,69 +76,74 @@ namespace orxonox
         if( takeScreenshot_ == true )
         {
             ControllableEntity* ce = HumanController::getLocalControllerSingleton()->getControllableEntity();
+            Camera* camera = ce->getCamera();
             assert(ce);
         
             Ogre::RenderWindow* w = GraphicsManager::getInstance().getRenderWindow();
 
-
-
             switch (iterateOverDirections_) 
             {
             case 0 :
-                CommandExecutor::execute("pause");
-                //w->writeContentsToFile(skyboxPrefix_+"FR.png");
-                w->writeContentsToFile(skyboxPrefix_+"0.png");
+                camera->getOgreCamera()->setFOVy(Degree(90));
+                camera->getOgreCamera()->setAspectRatio(1);
+                iterateOverDirections_++;
+                break;
+            case 1 :
+                w->writeContentsToFile(skyboxPrefix_+"fr.png");
+                //w->writeContentsToFile(skyboxPrefix_+"0.png");
                 ce->yaw(Degree(90));
                 iterateOverDirections_++;
                 break;
                 
-            case 1 :
-                //w->writeContentsToFile(skyboxPrefix_+"LF.png");
-                w->writeContentsToFile(skyboxPrefix_+"1.png");
-                ce->yaw(Degree(90)); 
-                iterateOverDirections_++;
-                break;
-
             case 2 :
-                //w->writeContentsToFile(skyboxPrefix_+"BK.png");
-                w->writeContentsToFile(skyboxPrefix_+"2.png");
+                w->writeContentsToFile(skyboxPrefix_+"lf.png");
+                //w->writeContentsToFile(skyboxPrefix_+"1.png");
                 ce->yaw(Degree(90)); 
                 iterateOverDirections_++;
                 break;
 
             case 3 :
-                //w->writeContentsToFile(skyboxPrefix_+"RT.png");
-                w->writeContentsToFile(skyboxPrefix_+"3.png");
+                w->writeContentsToFile(skyboxPrefix_+"bk.png");
+                //w->writeContentsToFile(skyboxPrefix_+"2.png");
+                ce->yaw(Degree(90)); 
+                iterateOverDirections_++;
+                break;
+
+            case 4 :
+                w->writeContentsToFile(skyboxPrefix_+"rt.png");
+                //w->writeContentsToFile(skyboxPrefix_+"3.png");
                 ce->yaw(Degree(90)); 
                 ce->pitch(Degree(90)); 
                 iterateOverDirections_++;
                 break;
 
-            case 4 :
-                //w->writeContentsToFile(skyboxPrefix_+"UP.png");
-                w->writeContentsToFile(skyboxPrefix_+"4.png");
+            case 5 :
+                w->writeContentsToFile(skyboxPrefix_+"up.png");
+                //w->writeContentsToFile(skyboxPrefix_+"4.png");
                 ce->pitch(Degree(180)); 
                 iterateOverDirections_++;
                 break;
 
-            case 5 :
-                //w->writeContentsToFile(skyboxPrefix_+"DN.png");
-                w->writeContentsToFile(skyboxPrefix_+"5.png");
+            case 6 :
+                w->writeContentsToFile(skyboxPrefix_+"dn.png");
+                //w->writeContentsToFile(skyboxPrefix_+"5.png");
                 ce->pitch(Degree(90));
+                iterateOverDirections_++;
+                break;
+                
+            case 7 :
+                camera->getOgreCamera()->setAspectRatio(1.3333);
+                camera->getOgreCamera()->setFOVy(Degree(45));
                 iterateOverDirections_ =0;
                 takeScreenshot_ = false;
                 CommandExecutor::execute("pause");
-
             }
         }
     }
 	
 	void SkyboxGenerator::createSkybox( ) 
 	{
-
         SkyboxGenerator::getInstance().takeScreenshot_ = true;
-        
-
-    
+        CommandExecutor::execute("pause");
 	}
 }

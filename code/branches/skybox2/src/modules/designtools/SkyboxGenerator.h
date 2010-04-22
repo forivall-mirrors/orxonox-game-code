@@ -49,7 +49,6 @@ namespace orxonox
             static SkyboxGenerator* singletonPtr_s;
             std::string skyboxPrefix_; 
             bool takeScreenshot_;
-            int iterateOverDirections_;       
-        
+            int iterateOverDirections_;
     };
 }
