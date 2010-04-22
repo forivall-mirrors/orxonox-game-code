@@ -66,6 +66,9 @@ namespace orxonox
 
             void setConfigValues();
 
+            inline bool hasGametypeCaptions(void)
+                { return this->bGametypeCaptions_; }
+
             //! Returns the configured language.
             const std::string& getLanguage()
                 { return this->language_; }
@@ -107,6 +110,7 @@ namespace orxonox
             int                           softDebugLevelLogFile_;      //!< The debug level for the log file (belongs to OutputHandler)
             std::string                   language_;                   //!< The language
             bool                          bInitRandomNumberGenerator_; //!< If true, srand(time(0)) is called
+            bool                          bGametypeCaptions_;
 
             static Core*                  singletonPtr_s;
     };

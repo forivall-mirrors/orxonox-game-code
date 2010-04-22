@@ -29,6 +29,7 @@
 #include "GametypeStatus.h"
 
 #include "util/Convert.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "infos/GametypeInfo.h"
 #include "infos/PlayerInfo.h"
@@ -58,6 +59,9 @@ namespace orxonox
         {
             const GametypeInfo* gtinfo = this->owner_->getGametypeInfo();
             ControllableEntity* ce = this->owner_->getControllableEntity();
+
+            if(!Core::getInstance().hasGametypeCaptions()) // No captions are displayed.
+                return;
 
             if (!gtinfo->hasStarted() && !gtinfo->isStartCountdownRunning())
             {
