@@ -103,11 +103,11 @@ namespace orxonox
              }
         }
 
-        alSourcei(audioSource, AL_LOOPING, AL_TRUE);
+        //alSourcei(audioSource, AL_LOOPING, AL_TRUE);
 
         alSourcePlay(audioSource);
         if(ALint error = alGetError())
-            COUT(2) << "Sound: Could not start ambient sound" << std::endl;
+            COUT(2) << "Sound: Could not start ambient sound" << getALErrorString(error) << std::endl;
 
         while(true) // Stream forever, control through thread control
         {
