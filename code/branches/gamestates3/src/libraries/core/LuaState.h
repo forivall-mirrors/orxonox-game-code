@@ -67,7 +67,7 @@ namespace orxonox // tolua_export
     class _CoreExport LuaState // tolua_export
     { // tolua_export
     public:
-        LuaState();
+        LuaState(bool bStrict = true);
         ~LuaState();
 
         bool doFile(const std::string& filename); // tolua_export

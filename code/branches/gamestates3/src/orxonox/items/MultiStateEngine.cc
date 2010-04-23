@@ -60,7 +60,7 @@ namespace orxonox
             this->defEngineSndBoost_  = new WorldSound(this);
             this->defEngineSndNormal_->setLooping(true);
             this->defEngineSndBoost_->setLooping(true);
-            this->lua_ = new LuaState();
+            this->lua_ = new LuaState(false);
         }
         else
         {
