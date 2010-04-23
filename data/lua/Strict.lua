@@ -12,15 +12,17 @@ if mt == nil then
   setmetatable(_G, mt)
 end
 
-__STRICT = false
+__STRICT = true
 mt.__declared = {}
 
 mt.__newindex = function (t, n, v)
-  if __STRICT and not mt.__declared[n] then
-    local d = debug.getinfo(2, "S")
-    local w = d and d.what or "C"
-    if w ~= "main" and w ~= "C" then
-      error("assign to undeclared variable '"..n.."'", 2)
+  if not mt.__declared[n] then
+    if __STRICT then
+      local d = debug.getinfo(2, "S")
+      local w = d and d.what or "C"
+      if w ~= "main" and w ~= "C" then
+        error("Assigning to undeclared global variable '"..n.."'", 2)
+      end
     end
     mt.__declared[n] = true
   end
@@ -28,12 +30,20 @@ mt.__newindex = function (t, n, v)
 end
   
 mt.__index = function (t, n)
-  if not mt.__declared[n] and debug.getinfo(2, "S").what ~= "C" then
-    error("variable '"..n.."' is not declared", 2)
+  if not mt.__declared[n] then
+    local d = debug.getinfo(2, "S")
+    local w = d and d.what or "C"
+    if w ~= "C" then
+      error("Global variable '"..n.."' was not declared", 2)
+    else
+      mt.__declared[n] = true
+    end
   end
   return rawget(t, n)
 end
 
 function global(...)
-   for _, v in ipairs{...} do mt.__declared[v] = true end
+  for _, v in ipairs{...} do
+    mt.__declared[v] = true
+  end
 end

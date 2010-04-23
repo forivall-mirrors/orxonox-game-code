@@ -52,7 +52,7 @@ namespace orxonox
     // Do this after declaring toluaInterfaces_s and instances_s to avoid larger problems
     DeclareToluaInterface(Core);
 
-    LuaState::LuaState()
+    LuaState::LuaState(bool bStrict)
         : bIsRunning_(false)
         , includeParseFunction_(NULL)
     {
@@ -81,6 +81,18 @@ namespace orxonox
         // Push 'this' pointer
         tolua_pushusertype(luaState_, static_cast<void*>(this), "orxonox::LuaState");
         lua_setglobal(luaState_, "luaState");
+
+        // Strict.lua ensures that global variables are not declared inside a function scope
+        if (bStrict)
+        {
+            if (!this->doFile("Strict.lua"))
+                ThrowException(InitialisationFailed, "Running Strict.lua failed");
+        }
+        else
+        {
+            // Add dummy function for declaring global variables
+            this->doString("global = function(...) end");
+        }
 
         // Parse init script
         if (!this->doFile("LuaStateInit.lua"))
