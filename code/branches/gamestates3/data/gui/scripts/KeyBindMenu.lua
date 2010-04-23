@@ -5,85 +5,85 @@ P.loadAlong = { "InfoPopup" }
 
 function P.onLoad()
 
-    commandList = {}
-    table.insert(commandList, "fire 0")
-    table.insert(commandList, "fire 1 | unfire")
-    table.insert(commandList, "onpress fire 2")
-    table.insert(commandList, "scale 1 moveFrontBack")
-    table.insert(commandList, "scale -1 moveFrontBack")
-    table.insert(commandList, "boost")
-    table.insert(commandList, "scale 1 moveRightLeft")
-    table.insert(commandList, "scale -1 moveRightLeft")
-    table.insert(commandList, "scale 1 moveUpDown")
-    table.insert(commandList, "scale -1 moveUpDown")
-    table.insert(commandList, "scale -1 rotateRoll")
-    table.insert(commandList, "scale 1 rotateRoll")
-    table.insert(commandList, "scale 1 rotateYaw")
-    table.insert(commandList, "scale -1 rotateYaw")
-    table.insert(commandList, "scale 1 rotatePitch")
-    table.insert(commandList, "scale -1 rotatePitch")
-    table.insert(commandList, "NewHumanController changeMode")
-    table.insert(commandList, "switchCamera")
-    table.insert(commandList, "openConsole")
-    table.insert(commandList, "OverlayGroup toggleVisibility Debug")
-    table.insert(commandList, "OverlayGroup toggleVisibility Stats")
-    table.insert(commandList, "mouseLook")
-    table.insert(commandList, "pause")
+    P.commandList = {}
+    table.insert(P.commandList, "fire 0")
+    table.insert(P.commandList, "fire 1 | unfire")
+    table.insert(P.commandList, "onpress fire 2")
+    table.insert(P.commandList, "scale 1 moveFrontBack")
+    table.insert(P.commandList, "scale -1 moveFrontBack")
+    table.insert(P.commandList, "boost")
+    table.insert(P.commandList, "scale 1 moveRightLeft")
+    table.insert(P.commandList, "scale -1 moveRightLeft")
+    table.insert(P.commandList, "scale 1 moveUpDown")
+    table.insert(P.commandList, "scale -1 moveUpDown")
+    table.insert(P.commandList, "scale -1 rotateRoll")
+    table.insert(P.commandList, "scale 1 rotateRoll")
+    table.insert(P.commandList, "scale 1 rotateYaw")
+    table.insert(P.commandList, "scale -1 rotateYaw")
+    table.insert(P.commandList, "scale 1 rotatePitch")
+    table.insert(P.commandList, "scale -1 rotatePitch")
+    table.insert(P.commandList, "NewHumanController changeMode")
+    table.insert(P.commandList, "switchCamera")
+    table.insert(P.commandList, "openConsole")
+    table.insert(P.commandList, "OverlayGroup toggleVisibility Debug")
+    table.insert(P.commandList, "OverlayGroup toggleVisibility Stats")
+    table.insert(P.commandList, "mouseLook")
+    table.insert(P.commandList, "pause")
 
-    nameList = {}
-    table.insert(nameList, "Primary Fire")
-    table.insert(nameList, "Secondary Fire")
-    table.insert(nameList, "Fire Rocket")
-    table.insert(nameList, "Accelerate")
-    table.insert(nameList, "Break")
-    table.insert(nameList, "Boost")
-    table.insert(nameList, "Move Right")
-    table.insert(nameList, "Move Left")
-    table.insert(nameList, "Move Up")
-    table.insert(nameList, "Move Down")
-    table.insert(nameList, "Roll Right")
-    table.insert(nameList, "Roll Left")
-    table.insert(nameList, "Yaw Left")
-    table.insert(nameList, "Yaw Right")
-    table.insert(nameList, "Pitch Up")
-    table.insert(nameList, "Pitch Down")
-    table.insert(nameList, "Switch Input Mode")
-    table.insert(nameList, "Switch Camera")
-    table.insert(nameList, "Open Console")
-    table.insert(nameList, "Show Debug")
-    table.insert(nameList, "Show Stats")
-    table.insert(nameList, "Look Around")
-    table.insert(nameList, "Pause")
+    P.nameList = {}
+    table.insert(P.nameList, "Primary Fire")
+    table.insert(P.nameList, "Secondary Fire")
+    table.insert(P.nameList, "Fire Rocket")
+    table.insert(P.nameList, "Accelerate")
+    table.insert(P.nameList, "Break")
+    table.insert(P.nameList, "Boost")
+    table.insert(P.nameList, "Move Right")
+    table.insert(P.nameList, "Move Left")
+    table.insert(P.nameList, "Move Up")
+    table.insert(P.nameList, "Move Down")
+    table.insert(P.nameList, "Roll Right")
+    table.insert(P.nameList, "Roll Left")
+    table.insert(P.nameList, "Yaw Left")
+    table.insert(P.nameList, "Yaw Right")
+    table.insert(P.nameList, "Pitch Up")
+    table.insert(P.nameList, "Pitch Down")
+    table.insert(P.nameList, "Switch Input Mode")
+    table.insert(P.nameList, "Switch Camera")
+    table.insert(P.nameList, "Open Console")
+    table.insert(P.nameList, "Show Debug")
+    table.insert(P.nameList, "Show Stats")
+    table.insert(P.nameList, "Look Around")
+    table.insert(P.nameList, "Pause")
 
-    linesList = {}
+    P.linesList = {}
 
     --Calculate design parameters:
-    sampleWindow = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/KeyBindPane/SampleWindow")
-    sampleWindow:setText("SampleText")
+    P.sampleWindow = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/KeyBindPane/SampleWindow")
+    P.sampleWindow:setText("SampleText")
 
-    local size = getMinTextSize(sampleWindow)
-    lineHeight = size[1]
+    local size = getMinTextSize(P.sampleWindow)
+    P.lineHeight = size[1]
 
-    commandWidth = 0
-    for k,v in pairs(commandList) do
-        sampleWindow:setText(nameList[k])
-        size = getMinTextSize(sampleWindow)
-        if size[2] > commandWidth then
-            commandWidth = size[2]
+    P.commandWidth = 0
+    for k,v in pairs(P.commandList) do
+        P.sampleWindow:setText(P.nameList[k])
+        size = getMinTextSize(P.sampleWindow)
+        if size[2] > P.commandWidth then
+            P.commandWidth = size[2]
         end
     end
 
-    sampleWindow:setText("add")
-    size = getMinTextSize(sampleWindow)
-    addWidth = size[2]
+    P.sampleWindow:setText("add")
+    size = getMinTextSize(P.sampleWindow)
+    P.addWidth = size[2]
 
-    sampleWindow:setText("X")
-    size = getMinTextSize(sampleWindow)
-    clearWidth = size[2]
+    P.sampleWindow:setText("X")
+    size = getMinTextSize(P.sampleWindow)
+    P.clearWidth = size[2]
 
-    spaceWidth = math.floor(1/14*commandWidth)
+    P.spaceWidth = math.floor(1/14*P.commandWidth)
 
-    buttonWidth = 145
+    P.buttonWidth = 145
 
     P.createLines()
 
@@ -112,32 +112,32 @@ end
 function P.createLine(k)
     local offset = 0
     local line = winMgr:createWindow("DefaultWindow", "orxonox/KeyBindPane/Binding" .. k)
-    line:setHeight(CEGUI.UDim(0, lineHeight))
-    line:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, lineHeight*(k-1))))
+    line:setHeight(CEGUI.UDim(0, P.lineHeight))
+    line:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, P.lineHeight*(k-1))))
 
     local command = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/KeyBindPane/Binding" .. k .. "/Command")
-    command:setText(nameList[k])
-    command:setSize(CEGUI.UVector2(CEGUI.UDim(0, commandWidth), CEGUI.UDim(1, 0)))
+    command:setText(P.nameList[k])
+    command:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.commandWidth), CEGUI.UDim(1, 0)))
     command:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0, 0)))
     line:addChildWindow(command)
-    offset = offset + commandWidth + spaceWidth
+    offset = offset + P.commandWidth + P.spaceWidth
 
     local plus = winMgr:createWindow("MenuWidgets/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Plus")
-    plus:setSize(CEGUI.UVector2(CEGUI.UDim(0, addWidth), CEGUI.UDim(0.7, 0)))
+    plus:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.addWidth), CEGUI.UDim(0.7, 0)))
     plus:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
     plus:setText("add")
     orxonox.GUIManager:subscribeEventHelper(plus, "Clicked", P.name .. ".KeyBindPlus_clicked")
     line:addChildWindow(plus)
-    offset = offset + addWidth + spaceWidth
+    offset = offset + P.addWidth + P.spaceWidth
 
-    local numButtons = orxonox.KeyBinderManager:getInstance():getCurrent():getNumberOfBindings(commandList[k]);
+    local numButtons = orxonox.KeyBinderManager:getInstance():getCurrent():getNumberOfBindings(P.commandList[k]);
     for i=0,(numButtons-1) do
         local button = winMgr:createWindow("MenuWidgets/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Button" .. i)
-        local name = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[k],i)
+        local name = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(P.commandList[k],i)
         name = P.KeyNameNiceifier(name)
         button:setText(name)
-        sampleWindow:setText(name)
-        local size = getMinTextSize(sampleWindow)
+        P.sampleWindow:setText(name)
+        local size = getMinTextSize(P.sampleWindow)
         local buttonWidth = size[2]
         button:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0.7, 0)))
         button:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
@@ -147,15 +147,15 @@ function P.createLine(k)
         offset = offset + buttonWidth
 
         local clear = winMgr:createWindow("MenuWidgets/TabButton", "orxonox/KeyBindPane/Binding" .. k .. "/Clear" .. i)
-        clear:setSize(CEGUI.UVector2(CEGUI.UDim(0, clearWidth), CEGUI.UDim(0.7, 0)))
+        clear:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.clearWidth), CEGUI.UDim(0.7, 0)))
         clear:setPosition(CEGUI.UVector2(CEGUI.UDim(0, offset), CEGUI.UDim(0.15, 0)))
         clear:setText("X")
         orxonox.GUIManager:subscribeEventHelper(clear, "Clicked", P.name .. ".KeyBindClear_clicked")
         line:addChildWindow(clear)
-        offset = offset + clearWidth + spaceWidth
+        offset = offset + P.clearWidth + P.spaceWidth
     end
 
-    line:setWidth(CEGUI.UDim(0, offset+clearWidth))
+    line:setWidth(CEGUI.UDim(0, offset+P.clearWidth))
 
     return line
 end
@@ -163,13 +163,13 @@ end
 function P.createLines()
     local window = winMgr:getWindow("orxonox/KeyBindPane")
 
-    for k,v in pairs(commandList) do
+    for k,v in pairs(P.commandList) do
         local line = P.createLine(k)
-        table.insert(linesList, line)
+        table.insert(P.linesList, line)
         window:addChildWindow(line)
     end
 
-    pane = tolua.cast(window, "CEGUI::ScrollablePane")
+    local pane = tolua.cast(window, "CEGUI::ScrollablePane")
     pane:setVerticalStepSize(getScrollingStepSize(window))
 end
 
@@ -207,7 +207,7 @@ function P.KeyBindClear_clicked(e)
     local commandNr = tonumber(match())
     local buttonNr = tonumber(match())
 
-    local str = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[commandNr], buttonNr)
+    local str = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(P.commandList[commandNr], buttonNr)
     orxonox.KeyBinderManager:getInstance():unbind(str)
 
     P.callback()
@@ -217,24 +217,24 @@ function P.keybind(arguments)
     local commandNr = arguments[1]
     local buttonNr = arguments[2]
     if buttonNr ~= nil then
-        local str = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(commandList[commandNr], buttonNr)
+        local str = orxonox.KeyBinderManager:getInstance():getCurrent():getBinding(P.commandList[commandNr], buttonNr)
         orxonox.KeyBinderManager:getInstance():unbind(str)
     end
 
-    orxonox.KeyBinderManager:getInstance():keybind(commandList[commandNr])
+    orxonox.KeyBinderManager:getInstance():keybind(P.commandList[commandNr])
 end
 
 function P.callback()
     local pane = tolua.cast(winMgr:getWindow("orxonox/KeyBindPane"), "CEGUI::ScrollablePane")
     local position = pane:getVerticalScrollPosition()
-    while table.getn(linesList) ~= 0 do
-        if linesList[1] ~= nil then
-            winMgr:destroyWindow(linesList[1]:getName())
+    while table.getn(P.linesList) ~= 0 do
+        if P.linesList[1] ~= nil then
+            winMgr:destroyWindow(P.linesList[1]:getName())
         end
-        table.remove(linesList, 1)
+        table.remove(P.linesList, 1)
     end
 
-    linesList = {}
+    P.linesList = {}
 
     P.createLines()
     if(InfoPopup ~= nil) then

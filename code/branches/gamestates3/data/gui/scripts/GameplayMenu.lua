@@ -3,7 +3,7 @@
 local P = createMenuSheet("GameplayMenu")
 
 function P.onLoad()
-    dropdown = winMgr:getWindow("orxonox/ThemeCombobox")
+    local dropdown = winMgr:getWindow("orxonox/ThemeCombobox")
     local themeList = {}
     table.insert(themeList, "Theme 1")
     table.insert(themeList, "Theme 2")

@@ -3,8 +3,8 @@
 local P = createMenuSheet("MultiplayerMenu")
 
 function P.onLoad()
-    listbox = winMgr:getWindow("orxonox/MultiplayerLevelListbox")
-    preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
+    local listbox = winMgr:getWindow("orxonox/MultiplayerLevelListbox")
+    local preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
     orxonox.LevelManager:getInstance():compileAvailableLevelList()
     local levelList = {}
     local index = 0
@@ -19,48 +19,48 @@ function P.onLoad()
     end
     table.sort(levelList)
     for k,v in pairs(levelList) do
-        item = CEGUI.createListboxTextItem(v)
+        local item = CEGUI.createListboxTextItem(v)
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toListbox(listbox):addItem(item)
         if v .. ".oxw" == preselect then
             listbox:setItemSelectState(item, true)
         end
     end
-    local multiplayerMode = "startClient"
-    if multiplayerMode == "startClient" then
-        window = winMgr:getWindow("orxonox/MultiplayerJoinButton")
-        button = tolua.cast(window,"CEGUI::RadioButton")
+    P.multiplayerMode = "startClient"
+    if P.multiplayerMode == "startClient" then
+        local window = winMgr:getWindow("orxonox/MultiplayerJoinButton")
+        local button = tolua.cast(window,"CEGUI::RadioButton")
         button:setSelected(true)
     end
-    if multiplayerMode == "startServer" then
-        window = winMgr:getWindow("orxonox/MultiplayerHostButton")
-        button = tolua.cast(window,"CEGUI::RadioButton")
+    if P.multiplayerMode == "startServer" then
+        local window = winMgr:getWindow("orxonox/MultiplayerHostButton")
+        local button = tolua.cast(window,"CEGUI::RadioButton")
         button:setSelected(true)
     end
-    if multiplayerMode == "startDedicated" then
-        window = winMgr:getWindow("orxonox/MultiplayerDedicatedButton")
-        button = tolua.cast(window,"CEGUI::RadioButton")
+    if P.multiplayerMode == "startDedicated" then
+        local window = winMgr:getWindow("orxonox/MultiplayerDedicatedButton")
+        local button = tolua.cast(window,"CEGUI::RadioButton")
         button:setSelected(true)
     end
 end
 
 function P.MultiplayerJoinButton_clicked(e)
-    multiplayerMode = "startClient"
+    P.multiplayerMode = "startClient"
 end
 
 function P.MultiplayerHostButton_clicked(e)
-    multiplayerMode = "startServer"
+    P.multiplayerMode = "startServer"
 end
 
 function P.MultiplayerDedicatedButton_clicked(e)
-    multiplayerMode = "startDedicated"
+    P.multiplayerMode = "startDedicated"
 end
 
 function P.MultiplayerStartButton_clicked(e)
     local choice = winMgr:getWindow("orxonox/MultiplayerLevelListbox"):getFirstSelectedItem()
     if choice then
         orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
-        orxonox.execute(multiplayerMode)
+        orxonox.execute(P.multiplayerMode)
         hideAllMenuSheets()
     end
 end

@@ -3,31 +3,31 @@
 local P = createMenuSheet("GraphicsMenu")
 
 function P.onLoad()
-    block = true
-    file = orxonox.PathConfig:getConfigPathString() .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
-    search_mode = 0
-    f = io.open(file, "r")
-    firstline = f:read("*line")
-    rendersystem = string.sub(firstline, 15)
+    P.block = true
+    P.file = orxonox.PathConfig:getConfigPathString() .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
+    P.search_mode = 0
+    local f = io.open(P.file, "r")
+    local firstline = f:read("*line")
+    local rendersystem = string.sub(firstline, 15)
     for line in f:lines() do
-        if search_mode == 0 then
+        if P.search_mode == 0 then
             if string.find(line, rendersystem) ~= nil then
-                search_mode = 1
+                P.search_mode = 1
             end
         end
-        if search_mode == 1 then
+        if P.search_mode == 1 then
             if string.sub(line, 1, 11) == "Full Screen" then
                 if string.sub(line, 13) == "Yes" then
-                    fullscreen = true
+                    P.fullscreen = true
                 else
-                    fullscreen = false
+                    P.fullscreen = false
                 end
             end
             if string.sub(line, 1, 10) == "Video Mode" then
                 if string.match(line, "@") == "@" then
-                    resolution = string.sub(line, 12, string.find(line, "@")-2)
+                    P.resolution = string.sub(line, 12, string.find(line, "@")-2)
                 else
-                    resolution = string.sub(line, 12)
+                    P.resolution = string.sub(line, 12)
                 end
                 break
             end
@@ -35,8 +35,8 @@ function P.onLoad()
     end
     f:close()
     local fullscreenwindow = tolua.cast(winMgr:getWindow("orxonox/FullscreenCheckbox"),"CEGUI::Checkbox")
-    fullscreenwindow:setSelected(fullscreen)
-    listboxwindow = winMgr:getWindow("orxonox/ResolutionListbox")
+    fullscreenwindow:setSelected(P.fullscreen)
+    P.listboxwindow = winMgr:getWindow("orxonox/ResolutionListbox")
     local resolutionList = {}
     table.insert(resolutionList, "640 x 480")
     table.insert(resolutionList, "720 x 480")
@@ -51,140 +51,140 @@ function P.onLoad()
     table.insert(resolutionList, "1280 x 768")
     table.insert(resolutionList, "1440 x 900")
     for k,v in pairs(resolutionList) do
-        item = CEGUI.createListboxTextItem(v)
+        local item = CEGUI.createListboxTextItem(v)
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
-        CEGUI.toListbox(listboxwindow):addItem(item)
+        CEGUI.toListbox(P.listboxwindow):addItem(item)
     end
-    if resolution == "640 x 480" then
-        listboxwindow:setItemSelectState(0,true)
-    elseif resolution == "720 x 480" then
-        listboxwindow:setItemSelectState(1,true)
-    elseif resolution == "720 x 576" then
-        listboxwindow:setItemSelectState(2,true)
-    elseif resolution == "800 x 480" then
-        listboxwindow:setItemSelectState(3,true)
-    elseif resolution == "800 x 600" then
-        listboxwindow:setItemSelectState(4,true)
-    elseif resolution == "1024 x 480" then
-        listboxwindow:setItemSelectState(5,true)
-    elseif resolution == "1024 x 600" then
-        listboxwindow:setItemSelectState(6,true)
-    elseif resolution == "1024 x 768" then
-        listboxwindow:setItemSelectState(7,true)
-    elseif resolution == "1152 x 864" then
-        listboxwindow:setItemSelectState(8,true)
-    elseif resolution == "1280 x 720" then
-        listboxwindow:setItemSelectState(9,true)
-    elseif resolution == "1280 x 768" then
-        listboxwindow:setItemSelectState(10,true)
-    elseif resolution == "1440 x 900" then
-        listboxwindow:setItemSelectState(11,true)
+    if P.resolution == "640 x 480" then
+        P.listboxwindow:setItemSelectState(0,true)
+    elseif P.resolution == "720 x 480" then
+        P.listboxwindow:setItemSelectState(1,true)
+    elseif P.resolution == "720 x 576" then
+        P.listboxwindow:setItemSelectState(2,true)
+    elseif P.resolution == "800 x 480" then
+        P.listboxwindow:setItemSelectState(3,true)
+    elseif P.resolution == "800 x 600" then
+        P.listboxwindow:setItemSelectState(4,true)
+    elseif P.resolution == "1024 x 480" then
+        P.listboxwindow:setItemSelectState(5,true)
+    elseif P.resolution == "1024 x 600" then
+        P.listboxwindow:setItemSelectState(6,true)
+    elseif P.resolution == "1024 x 768" then
+        P.listboxwindow:setItemSelectState(7,true)
+    elseif P.resolution == "1152 x 864" then
+        P.listboxwindow:setItemSelectState(8,true)
+    elseif P.resolution == "1280 x 720" then
+        P.listboxwindow:setItemSelectState(9,true)
+    elseif P.resolution == "1280 x 768" then
+        P.listboxwindow:setItemSelectState(10,true)
+    elseif P.resolution == "1440 x 900" then
+        P.listboxwindow:setItemSelectState(11,true)
     end
-    scrollbar_active = false
-    block = false
+    P.scrollbar_active = false
+    P.block = false
 end
 
 function P.GraphicsResolutionListbox_changed(e)
-    if listboxwindow:isItemSelected(0) then
-        resolution = "640 x 480"
-    elseif listboxwindow:isItemSelected(1) then
-        resolution = "720 x 480"
-    elseif listboxwindow:isItemSelected(2) then
-        resolution = "720 x 576"
-    elseif listboxwindow:isItemSelected(3) then
-        resolution = "800 x 480"
-    elseif listboxwindow:isItemSelected(4) then
-        resolution = "800 x 600"
-    elseif listboxwindow:isItemSelected(5) then
-        resolution = "1024 x 480"
-    elseif listboxwindow:isItemSelected(6) then
-        resolution = "1024 x 600"
-    elseif listboxwindow:isItemSelected(7) then
-        resolution = "1024 x 768"
-    elseif listboxwindow:isItemSelected(8) then
-        resolution = "1152 x 864"
-    elseif listboxwindow:isItemSelected(9) then
-        resolution = "1280 x 720"
-    elseif listboxwindow:isItemSelected(10) then
-        resolution = "1280 x 768"
-    elseif listboxwindow:isItemSelected(11) then
-        resolution = "1440 x 900"
+    if P.listboxwindow:isItemSelected(0) then
+        P.resolution = "640 x 480"
+    elseif P.listboxwindow:isItemSelected(1) then
+        P.resolution = "720 x 480"
+    elseif P.listboxwindow:isItemSelected(2) then
+        P.resolution = "720 x 576"
+    elseif P.listboxwindow:isItemSelected(3) then
+        P.resolution = "800 x 480"
+    elseif P.listboxwindow:isItemSelected(4) then
+        P.resolution = "800 x 600"
+    elseif P.listboxwindow:isItemSelected(5) then
+        P.resolution = "1024 x 480"
+    elseif P.listboxwindow:isItemSelected(6) then
+        P.resolution = "1024 x 600"
+    elseif P.listboxwindow:isItemSelected(7) then
+        P.resolution = "1024 x 768"
+    elseif P.listboxwindow:isItemSelected(8) then
+        P.resolution = "1152 x 864"
+    elseif P.listboxwindow:isItemSelected(9) then
+        P.resolution = "1280 x 720"
+    elseif P.listboxwindow:isItemSelected(10) then
+        P.resolution = "1280 x 768"
+    elseif P.listboxwindow:isItemSelected(11) then
+        P.resolution = "1440 x 900"
     end
-    search_mode = 0
-    f = io.open(file, "r")
-    firstline = f:read("*line")
-    text = firstline .. "\n"
-    rendersystem = string.sub(firstline, 15)
+    P.search_mode = 0
+    local f = io.open(P.file, "r")
+    local firstline = f:read("*line")
+    local text = firstline .. "\n"
+    local rendersystem = string.sub(firstline, 15)
     for line in f:lines() do
-        if search_mode == 0 then
+        if P.search_mode == 0 then
             if string.find(line, rendersystem) ~= nil then
-                search_mode = 1
+                P.search_mode = 1
             end
         end
-        if search_mode == 1 then
+        if P.search_mode == 1 then
             if string.sub(line, 1, 10) == "Video Mode" then
                 if string.match(line, "@") == "@" then
-                    line = "Video Mode=" .. resolution .. string.sub(line, string.find(line, "@")-1)
+                    line = "Video Mode=" .. P.resolution .. string.sub(line, string.find(line, "@")-1)
                 else
-                    line = "Video Mode=" .. resolution
+                    line = "Video Mode=" .. P.resolution
                 end
-                search_mode = 2
+                P.search_mode = 2
             end
         end
         text = text .. line .. "\n"
     end
     f:close()
-    f = io.open(file, "w")
+    f = io.open(P.file, "w")
     f:write(text)
     f:close()
 end
 
 function P.GraphicsBrightnessScrollbar_changed(e)
-    if scrollbar_active == false then
+    if P.scrollbar_active == false then
         -- brightness
         logMessage(0, "event: brightness")
     end
 end
 
 function P.GraphicsBrightnessScrollbar_started(e)
-    scrollbar_active = true
+    P.scrollbar_active = true
 end
 
 function P.GraphicsBrightnessScrollbar_ended(e)
     -- brightness
     logMessage(0, "event: brightness")
-    scrollbar_active = false
+    P.scrollbar_active = false
 end
 
 function P.GraphicsFullscreenCheckbox_clicked(e)
-    if block == false then
-        search_mode = 0
-        f = io.open(file, "r")
-        firstline = f:read("*line")
-        text = firstline .. "\n"
-        rendersystem = string.sub(firstline, 15)
+    if P.block == false then
+        P.search_mode = 0
+        local f = io.open(P.file, "r")
+        local firstline = f:read("*line")
+        local text = firstline .. "\n"
+        local rendersystem = string.sub(firstline, 15)
         for line in f:lines() do
-            if search_mode == 0 then
+            if P.search_mode == 0 then
                 if string.find(line, rendersystem) ~= nil then
-                    search_mode = 1
+                    P.search_mode = 1
                 end
             end
-            if search_mode == 1 then
+            if P.search_mode == 1 then
                 if string.sub(line, 1, 11) == "Full Screen" then
-                    if fullscreen == true then
+                    if P.fullscreen == true then
                         line = "Full Screen=No"
-                        fullscreen = false
+                        P.fullscreen = false
                     else
                         line = "Full Screen=Yes"
-                        fullscreen = true
+                        P.fullscreen = true
                     end
-                    search_mode = 2
+                    P.search_mode = 2
                 end
             end
             text = text .. line .. "\n"
         end
         f:close()
-        f = io.open(file, "w")
+        f = io.open(P.file, "w")
         f:write(text)
         f:close()
     end

@@ -17,7 +17,7 @@ function P.setText(text)
 end
 
 function P.setCloseButton(closeButton)
-    close = winMgr:getWindow("orxonox/InfoPopup_close")
+    local close = winMgr:getWindow("orxonox/InfoPopup_close")
     close:setVisible(closeButton)
     if(not closeButton) then
         close:deactivate();

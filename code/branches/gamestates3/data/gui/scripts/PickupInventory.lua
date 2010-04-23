@@ -7,7 +7,6 @@ P.wrapper = nil
 P.detailsWindows = {}
 
 function P.onLoad()
-    carrierList = {}
 end
 
 function P.onShow()
