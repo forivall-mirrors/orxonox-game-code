@@ -2,6 +2,7 @@
 -- See MenuSheet.new for details about the parameters
 function createMenuSheet(name, bHidePrevious, tShowCursor, tUseKeyboard, bBlockJoyStick)
     local sheet = require("MenuSheet").new(name, bHidePrevious, tShowCursor, tUseKeyboard, bBlockJoyStick)
+    global(sheet.name)
     _G[sheet.name] = sheet -- Global access required because of the event handlers
     return sheet
 end

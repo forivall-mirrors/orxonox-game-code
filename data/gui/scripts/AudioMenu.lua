@@ -3,164 +3,164 @@
 local P = createMenuSheet("AudioMenu")
 
 function P.onLoad()
-    soundMgr = orxonox.SoundManager:getInstance()
-    block = false
-    masterscrollbar_active = false
-    musicscrollbar_active = false
-    effectsscrollbar_active = false
-    mastervolume = soundMgr:getVolume(orxonox.SoundType.All)
-    musicvolume = soundMgr:getVolume(orxonox.SoundType.Music)
-    effectsvolume = soundMgr:getVolume(orxonox.SoundType.Effects)
-    mastermute = soundMgr:getMute(orxonox.SoundType.All)
-    musicmute = soundMgr:getMute(orxonox.SoundType.Music)
-    effectsmute = soundMgr:getMute(orxonox.SoundType.Effects)
-    masterscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MasterScrollbar"),"CEGUI::Scrollbar")
-    musicscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MusicScrollbar"),"CEGUI::Scrollbar")
-    effectsscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/EffectsScrollbar"),"CEGUI::Scrollbar")
-    mastermutewindow = tolua.cast(winMgr:getWindow("orxonox/MasterCheckbox"),"CEGUI::Checkbox")
-    musicmutewindow = tolua.cast(winMgr:getWindow("orxonox/MusicCheckbox"),"CEGUI::Checkbox")
-    effectsmutewindow = tolua.cast(winMgr:getWindow("orxonox/EffectsCheckbox"),"CEGUI::Checkbox")
-    masterscrollbarwindow:setScrollPosition(mastervolume)
-    musicscrollbarwindow:setScrollPosition(musicvolume)
-    effectsscrollbarwindow:setScrollPosition(effectsvolume)
-    mastermutewindow:setSelected(mastermute)
-    musicmutewindow:setSelected(musicmute)
-    effectsmutewindow:setSelected(effectsmute)
-    choice = "Default"
-    listboxwindow = winMgr:getWindow("orxonox/AudioThemeListbox")
+    P.soundMgr = orxonox.SoundManager:getInstance()
+    P.block = false
+    P.masterscrollbar_active = false
+    P.musicscrollbar_active = false
+    P.effectsscrollbar_active = false
+    P.mastervolume = P.soundMgr:getVolume(orxonox.SoundType.All)
+    P.musicvolume = P.soundMgr:getVolume(orxonox.SoundType.Music)
+    P.effectsvolume = P.soundMgr:getVolume(orxonox.SoundType.Effects)
+    P.mastermute = P.soundMgr:getMute(orxonox.SoundType.All)
+    P.musicmute = P.soundMgr:getMute(orxonox.SoundType.Music)
+    P.effectsmute = P.soundMgr:getMute(orxonox.SoundType.Effects)
+    P.masterscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MasterScrollbar"),"CEGUI::Scrollbar")
+    P.musicscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/MusicScrollbar"),"CEGUI::Scrollbar")
+    P.effectsscrollbarwindow = tolua.cast(winMgr:getWindow("orxonox/EffectsScrollbar"),"CEGUI::Scrollbar")
+    P.mastermutewindow = tolua.cast(winMgr:getWindow("orxonox/MasterCheckbox"),"CEGUI::Checkbox")
+    P.musicmutewindow = tolua.cast(winMgr:getWindow("orxonox/MusicCheckbox"),"CEGUI::Checkbox")
+    P.effectsmutewindow = tolua.cast(winMgr:getWindow("orxonox/EffectsCheckbox"),"CEGUI::Checkbox")
+    P.masterscrollbarwindow:setScrollPosition(P.mastervolume)
+    P.musicscrollbarwindow:setScrollPosition(P.musicvolume)
+    P.effectsscrollbarwindow:setScrollPosition(P.effectsvolume)
+    P.mastermutewindow:setSelected(P.mastermute)
+    P.musicmutewindow:setSelected(P.musicmute)
+    P.effectsmutewindow:setSelected(P.effectsmute)
+    local choice = "Default"
+    P.listboxwindow = winMgr:getWindow("orxonox/AudioThemeListbox")
     local themeList = {}
     table.insert(themeList, "Default")
     table.insert(themeList, "Drum n' Bass")
     for k,v in pairs(themeList) do
-        item = CEGUI.createListboxTextItem(v)
+        local item = CEGUI.createListboxTextItem(v)
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
-        CEGUI.toListbox(listboxwindow):addItem(item)
+        CEGUI.toListbox(P.listboxwindow):addItem(item)
     end
     if orxonox.getConfig("MoodManager", "mood_") == "dnb" then
-        listboxwindow:setItemSelectState(1,true)
+        P.listboxwindow:setItemSelectState(1,true)
     else
-        listboxwindow:setItemSelectState(0,true)
+        P.listboxwindow:setItemSelectState(0,true)
     end
 end
 
 function P.AudioMasterScrollbar_changed(e)
-    if mastermute then
-        block = true
-        mastermutewindow:setSelected(false)
-        block = false
-        mastermute = false
+    if P.mastermute then
+        P.block = true
+        P.mastermutewindow:setSelected(false)
+        P.block = false
+        P.mastermute = false
     end
-    if masterscrollbar_active == false then
-        mastervolume = masterscrollbarwindow:getScrollPosition()
-        orxonox.config("SoundManager", "soundVolume_", mastervolume)
+    if P.masterscrollbar_active == false then
+        P.mastervolume = P.masterscrollbarwindow:getScrollPosition()
+        orxonox.config("SoundManager", "soundVolume_", P.mastervolume)
     end
 end
 
 function P.AudioMasterScrollbar_started(e)
-    masterscrollbar_active = true
+    P.masterscrollbar_active = true
 end
 
 function P.AudioMasterScrollbar_ended(e)
-    mastervolume = masterscrollbarwindow:getScrollPosition()
-    orxonox.config("SoundManager", "soundVolume_", mastervolume)
-    masterscrollbar_active = false
+    P.mastervolume = P.masterscrollbarwindow:getScrollPosition()
+    orxonox.config("SoundManager", "soundVolume_", P.mastervolume)
+    P.masterscrollbar_active = false
 end
 
 function P.AudioMusicScrollbar_changed(e)
-    if musicmute then
-        block = true
-        musicmutewindow:setSelected(false)
-        block = false
-        musicmute = false
+    if P.musicmute then
+        P.block = true
+        P.musicmutewindow:setSelected(false)
+        P.block = false
+        P.musicmute = false
     end
-    if musicscrollbar_active == false then
-        musicvolume = musicscrollbarwindow:getScrollPosition()
-        orxonox.config("SoundManager", "ambientVolume_", musicvolume)
+    if P.musicscrollbar_active == false then
+        P.musicvolume = P.musicscrollbarwindow:getScrollPosition()
+        orxonox.config("SoundManager", "ambientVolume_", P.musicvolume)
     end
 end
 
 function P.AudioMusicScrollbar_started(e)
-    musicscrollbar_active = true
+    P.musicscrollbar_active = true
 end
 
 function P.AudioMusicScrollbar_ended(e)
-    musicmutewindow:setSelected(false)
-    musicvolume = musicscrollbarwindow:getScrollPosition()
-    orxonox.config("SoundManager", "ambientVolume_", musicvolume)
-    musicscrollbar_active = false
+    P.musicmutewindow:setSelected(false)
+    P.musicvolume = P.musicscrollbarwindow:getScrollPosition()
+    orxonox.config("SoundManager", "ambientVolume_", P.musicvolume)
+    P.musicscrollbar_active = false
 end
 
 function P.AudioEffectsScrollbar_changed(e)
-    if effectsmute then
-        block = true
-        effectsmutewindow:setSelected(false)
-        block = false
-        effectsmute = false
+    if P.effectsmute then
+        P.block = true
+        P.effectsmutewindow:setSelected(false)
+        P.block = false
+        P.effectsmute = false
     end
-    if effectsscrollbar_active == false then
-        effectsvolume = effectsscrollbarwindow:getScrollPosition()
-        orxonox.config("SoundManager", "effectsVolume_", effectsvolume)
+    if P.effectsscrollbar_active == false then
+        P.effectsvolume = P.effectsscrollbarwindow:getScrollPosition()
+        orxonox.config("SoundManager", "effectsVolume_", P.effectsvolume)
     end
 end
 
 function P.AudioEffectsScrollbar_started(e)
-    effectsscrollbar_active = true
+    P.effectsscrollbar_active = true
 end
 
 function P.AudioEffectsScrollbar_ended(e)
-    effectsmutewindow:setSelected(false)
-    effectsvolume = effectsscrollbarwindow:getScrollPosition()
-    orxonox.config("SoundManager", "effectsVolume_", effectsvolume)
-    effectsscrollbar_active = false
+    P.effectsmutewindow:setSelected(false)
+    P.effectsvolume = P.effectsscrollbarwindow:getScrollPosition()
+    orxonox.config("SoundManager", "effectsVolume_", P.effectsvolume)
+    P.effectsscrollbar_active = false
 end
 
 function P.AudioMuteMasterCheckbox_clicked(e)
-    if block == false then
-        if mastermute then
-            masterscrollbarwindow:setScrollPosition(mastervolume)
-            mastermute = false
+    if P.block == false then
+        if P.mastermute then
+            P.masterscrollbarwindow:setScrollPosition(P.mastervolume)
+            P.mastermute = false
         else
-            temp = masterscrollbarwindow:getScrollPosition()
-            masterscrollbarwindow:setScrollPosition(0)
-            mastervolume = temp
-            mastermute = true
+            temp = P.masterscrollbarwindow:getScrollPosition()
+            P.masterscrollbarwindow:setScrollPosition(0)
+            P.mastervolume = temp
+            P.mastermute = true
         end
     end
-    soundMgr:toggleMute(orxonox.SoundType.All)
+    P.soundMgr:toggleMute(orxonox.SoundType.All)
 end
 
 function P.AudioMuteMusicCheckbox_clicked(e)
-    if block == false then
-        if musicmute then
-            musicscrollbarwindow:setScrollPosition(musicvolume)
-            musicmute = false
+    if P.block == false then
+        if P.musicmute then
+            P.musicscrollbarwindow:setScrollPosition(P.musicvolume)
+            P.musicmute = false
         else
-            temp = musicscrollbarwindow:getScrollPosition()
-            musicscrollbarwindow:setScrollPosition(0)
-            musicvolume = temp
-            musicmute = true
+            temp = P.musicscrollbarwindow:getScrollPosition()
+            P.musicscrollbarwindow:setScrollPosition(0)
+            P.musicvolume = temp
+            P.musicmute = true
         end
     end
-    soundMgr:toggleMute(orxonox.SoundType.Music)
+    P.soundMgr:toggleMute(orxonox.SoundType.Music)
 end
 
 function P.AudioMuteEffectsCheckbox_clicked(e)
-    if block == false then
-        if effectsmute then
-            effectsscrollbarwindow:setScrollPosition(effectsvolume)
-            effectsmute = false
+    if P.block == false then
+        if P.effectsmute then
+            P.effectsscrollbarwindow:setScrollPosition(P.effectsvolume)
+            P.effectsmute = false
         else
-            temp = effectsscrollbarwindow:getScrollPosition()
-            effectsscrollbarwindow:setScrollPosition(0)
-            effectsvolume = temp
-            effectsmute = true
+            temp = P.effectsscrollbarwindow:getScrollPosition()
+            P.effectsscrollbarwindow:setScrollPosition(0)
+            P.effectsvolume = temp
+            P.effectsmute = true
         end
     end
-    soundMgr:toggleMute(orxonox.SoundType.Effects)
+    P.soundMgr:toggleMute(orxonox.SoundType.Effects)
 end
 
 function P.AudioThemeListbox_changed(e)
-    if listboxwindow:isItemSelected(1) then
+    if P.listboxwindow:isItemSelected(1) then
         orxonox.config("MoodManager", "mood_", "dnb")
     else
         orxonox.config("MoodManager", "mood_", "default")

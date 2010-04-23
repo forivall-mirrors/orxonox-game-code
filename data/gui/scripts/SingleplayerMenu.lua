@@ -3,8 +3,8 @@
 local P = createMenuSheet("SingleplayerMenu")
 
 function P.onLoad()
-    listbox = winMgr:getWindow("orxonox/SingleplayerLevelListbox")
-    preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
+    local listbox = winMgr:getWindow("orxonox/SingleplayerLevelListbox")
+    local preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
     orxonox.LevelManager:getInstance():compileAvailableLevelList()
     local levelList = {}
     local index = 0
@@ -19,7 +19,7 @@ function P.onLoad()
     end
     table.sort(levelList)
     for k,v in pairs(levelList) do
-        item = CEGUI.createListboxTextItem(v)
+        local item = CEGUI.createListboxTextItem(v)
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toListbox(listbox):addItem(item)
         if v .. ".oxw" == preselect then
