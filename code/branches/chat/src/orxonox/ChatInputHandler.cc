@@ -30,9 +30,15 @@
 
 namespace orxonox 
 {
+  /* singleton */
+  ManageScopedSingleton( ChatInputHandler, ScopeID::Root, false );
+
   /* constructor */
   void ChatInputHandler::ChatInputHandler()
   {
+    /* register the object  */
+    RegisterObject(ChatInputHandler);
+
     /* create necessary objects */
     this->inpbuf = new InputBuffer();
 
@@ -65,6 +71,20 @@ namespace orxonox
     this->inputBuffer_->registerListener(this, &ChatInputHandler::cursorHome,      KeyCode::Home);
   }
 
+
+  /* activate, deactivate */
+  void ChatInputHandler::activate()   /* TBI */
+  {
+    /* start listening */
+  }
+
+  void ChatInputHandler::deactivate()   /* TBI */
+  {
+    /* stop listening */
+  }
+
+
+
   /* callbacks for InputBuffer */
   void ChatInputHandler::inputChanged()
   {
@@ -78,10 +98,13 @@ namespace orxonox
 
     /* actually do send what was input */
     /* a) get the string out of the inputbuffer */
+    String msgtosend = this->inpbuf->get();
 
     /* b) clear the input buffer */
+    this->inpbuf->clear();
 
     /* c) send the chat via some call */
+    Host::Chat( msgtosend );
 
     /* d) stop listening to input  */
   }

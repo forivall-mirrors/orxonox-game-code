@@ -39,12 +39,13 @@
 /* project includes */
 #include <OrxonoxPrereqs.h>
 #include <InputBuffer.h>
+#include <Host.h>
 
 
 namespace orxonox
 {
   /* class to handle chat using an InputBuffer */
-  class _OrxonoxExport ChatInputHandler
+  class _OrxonoxExport ChatInputHandler : public Singleton<ChatInputHandler>
   {
     private:
       /** Input buffer, to be used to catch input from the
@@ -58,6 +59,11 @@ namespace orxonox
     public:
       /** constructor */
       ChatInputHandler();
+      friend class Singleton<ChatInputHandler>;
+
+      /* start listening, stop listening */
+      void activate();
+      void deactivate();
 
       void inputChanged();
       void addline();
