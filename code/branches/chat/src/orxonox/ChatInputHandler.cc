@@ -36,6 +36,8 @@ namespace orxonox
 {
   /* singleton */
   ManageScopedSingleton( ChatInputHandler, ScopeID::Graphics, false );
+  SetConsoleCommandAlias( ChatInputHandler, activate_static, "startchat",
+    true );
 
   /* constructor */
   ChatInputHandler::ChatInputHandler()
@@ -49,14 +51,14 @@ namespace orxonox
     this->inpbuf = new InputBuffer();
 
     /* configure the input buffer */
-		configureInputBuffer();
+    configureInputBuffer();
 
     this->inputState = InputManager::getInstance().createInputState( "chatinput", false, false, InputStatePriority::Dynamic );
     this->inputState->setKeyHandler(this->inpbuf);
 
-    /* set console shortcut */
-    this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(
-      &ChatInputHandler::activate, this), "startchat"), false);
+    //[> set console shortcut <]
+    //this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(
+      //&ChatInputHandler::activate, this), "startchat"), false);
   }
 
   void ChatInputHandler::configureInputBuffer()
@@ -87,6 +89,9 @@ namespace orxonox
 
 
   /* activate, deactivate */
+  void ChatInputHandler::activate_static()
+  { ChatInputHandler::getInstance().activate(); }
+  
   void ChatInputHandler::activate()
   {
     /* start listening */

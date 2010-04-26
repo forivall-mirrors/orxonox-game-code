@@ -38,15 +38,14 @@
 
 /* project includes */
 #include <OrxonoxPrereqs.h>
+#include <core/BaseObject.h>
+#include <core/PathConfig.h>
+
 #include "core/input/InputBuffer.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
+
 #include "../libraries/network/Host.h"
-#include <core/BaseObject.h>
-#include <PlayerManager.h>
-#include <infos/PlayerInfo.h>
-#include <network/ChatListener.h>
-#include <core/PathConfig.h>
 #include <util/Singleton.h>
 
 
@@ -77,6 +76,7 @@ namespace orxonox
       friend class Singleton<ChatInputHandler>;
 
       /* start listening, stop listening */
+      static void activate_static();
       void activate();
       void deactivate();
 
