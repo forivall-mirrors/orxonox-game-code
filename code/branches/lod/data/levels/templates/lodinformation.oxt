@@ -1,0 +1,7 @@
+<Template name=lodtemplate_default>
+  <Level>
+	<lodinformation>
+	  <MeshLodInformation mesh=ast1.mesh lodQuality=1 />
+	</lodinformation>
+  </Level>
+</Template>

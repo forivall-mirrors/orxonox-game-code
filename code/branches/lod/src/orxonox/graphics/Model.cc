@@ -101,18 +101,20 @@ namespace orxonox
                     Ogre::Mesh::LodDistanceList distList;
 #endif
 
-                    distList.push_back(70.0f*scaleFactor);
-                    distList.push_back(140.0f*scaleFactor);
-                    distList.push_back(170.0f*scaleFactor);
-                    distList.push_back(200.0f*scaleFactor);
-                    distList.push_back(230.0f*scaleFactor);
-                    distList.push_back(250.0f*scaleFactor);
-                    distList.push_back(270.0f*scaleFactor);
-                    distList.push_back(290.0f*scaleFactor);
-                    distList.push_back(310.0f*scaleFactor);
-                    distList.push_back(330.0f*scaleFactor);
+					float factor = scaleFactor*scaleFactor*scaleFactor*scaleFactor;
 
-                    float reductionValue = 0.2f;
+                    distList.push_back(70.0f*factor);
+                    distList.push_back(140.0f*factor);
+                    distList.push_back(170.0f*factor);
+                    distList.push_back(200.0f*factor);
+                    distList.push_back(230.0f*factor);
+                    distList.push_back(250.0f*factor);
+                    distList.push_back(270.0f*factor);
+                    distList.push_back(290.0f*factor);
+                    distList.push_back(310.0f*factor);
+                    distList.push_back(330.0f*factor);
+
+                    float reductionValue = 0.5f;
 
                     
                     //Generiert LOD-Levels

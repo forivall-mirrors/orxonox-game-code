@@ -39,7 +39,8 @@ namespace orxonox
 {
     CreateFactory(MeshLodInformation);
 
-    MeshLodInformation::MeshLodInformation(BaseObject* creator) : StaticEntity(creator)
+    MeshLodInformation::MeshLodInformation(BaseObject* creator) 
+	: BaseObject(creator), lodLevel_(-1)
     {
         RegisterObject(MeshLodInformation);
     }
@@ -55,12 +56,26 @@ namespace orxonox
         XMLPortParam(MeshLodInformation, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
     }
     
-    std::string getMeshName()
+    std::string MeshLodInformation::getMeshName()
     {
-        if(mesh!=null)
-            return mesh;
-        return "";
+		return MeshLodInformation::getMeshSource();
     }
-
+	
+	void MeshLodInformation::setLodLevel(unsigned int lodLevel)
+	{
+		lodLevel_=lodLevel;
+	}
+	int MeshLodInformation::getLodLevel()
+	{
+		return lodLevel_;
+	}
+	void MeshLodInformation::setMeshSource(std::string meshSource)
+	{
+		meshSource_ = meshSource;
+	}
+	std::string MeshLodInformation::getMeshSource()
+	{
+		return meshSource_;
+	}
  
 }
