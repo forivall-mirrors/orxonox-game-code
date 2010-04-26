@@ -68,7 +68,7 @@ namespace orxonox
 	int MeshLodInformation::getLodLevel()
 	{
 		return lodLevel_;
-	}
+	} 
 	void MeshLodInformation::setMeshSource(std::string meshSource)
 	{
 		meshSource_ = meshSource;
