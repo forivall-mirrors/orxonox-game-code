@@ -27,7 +27,7 @@
  */
 
 #include "RocketController.h"
-#include "weapons/projectiles/SimpleRocket.h"
+#include "weapons/projectiles/SimpleRocket.h" //wie kann ich das hier includen? so gehts nich aber eigentlich isses eher ein Projectile als einfach ein Worldentity...
 #include "util/Math.h"
 
 
