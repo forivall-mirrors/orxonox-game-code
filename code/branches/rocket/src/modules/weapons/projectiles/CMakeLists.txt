@@ -4,5 +4,4 @@ ADD_SOURCE_FILES(WEAPONS_SRC_FILES
   Projectile.cc
   LightningGunProjectile.cc
   Rocket.cc
-  SimpleRocket.cc
 )
