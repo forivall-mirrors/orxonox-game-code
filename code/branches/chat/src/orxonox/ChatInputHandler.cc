@@ -45,8 +45,6 @@ namespace orxonox
     /* register the object  */
     RegisterObject(ChatInputHandler);
 
-    //COUT(0) << "Singleton registered for ChatInputHandler." << std::endl;
-
     /* create necessary objects */
     this->inpbuf = new InputBuffer();
 

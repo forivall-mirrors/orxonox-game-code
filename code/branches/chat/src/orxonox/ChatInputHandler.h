@@ -81,7 +81,6 @@ namespace orxonox
       void deactivate();
 
       /* callbacks for input handler */
-
       void inputChanged();
       void addline();
       void backspace();
