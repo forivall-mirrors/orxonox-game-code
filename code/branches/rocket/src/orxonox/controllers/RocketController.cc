@@ -27,7 +27,7 @@
  */
 
 #include "RocketController.h"
-#include "modules\weapons\projectiles\SimpleRocket.h"
+#include "weapons/projectiles/SimpleRocket.h"
 #include "util/Math.h"
 
 
