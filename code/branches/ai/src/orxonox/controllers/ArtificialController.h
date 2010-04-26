@@ -46,10 +46,11 @@ namespace orxonox
 
             void abandonTarget(Pawn* target);
 
-            inline void setTeam(int team)//new
+            inline void setTeam(int team)
                 { this->team_ = team; }
             inline int getTeam() const
                 { return this->team_; }
+            virtual void changedControllableEntity();
 
 
         protected:
@@ -60,10 +61,11 @@ namespace orxonox
 
             enum State {SLAVE, MASTER, FREE};
             int getState();
-            std::list<ArtificialController*> slaves;
+            std::list<ArtificialController*> slaves_;
             void unregisterSlave();
             void searchNewMaster();
             void commandSlaves();
+            void setNewMasterWithinFormation();
             void freeAllSlaves();
             void loseMasterState();
 
@@ -88,8 +90,8 @@ namespace orxonox
             bool bShooting_;
 
 
-            State state_;//new master: 1 slave: -1  free: 0 
-            int team_;//new
+            State state_;
+            int team_;
 
         private:
     };

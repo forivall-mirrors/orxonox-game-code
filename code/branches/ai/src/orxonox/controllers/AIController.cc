@@ -48,9 +48,13 @@ namespace orxonox
 
     AIController::~AIController()
     {
-        if (this->state_ == MASTER) freeAllSlaves();
+COUT(0) << "~AIController 1" << std::endl;
+        if (this->state_ == MASTER) setNewMasterWithinFormation();
+COUT(0) << "~AIController 2" << std::endl;
         if (this->state_ == SLAVE) unregisterSlave();
-        this->slaves.clear();
+COUT(0) << "~AIController 3" << std::endl;
+        this->slaves_.clear();
+COUT(0) << "~AIController 4" << std::endl;
     }
 
     void AIController::action()
@@ -83,11 +87,11 @@ namespace orxonox
 
             // lose master status (only if less than 4 slaves in formation)
             random = rnd(maxrand);
-            if(random < 5/(this->slaves.size()+1) && this->slaves.size() < 5 ) 
+            if(random < 5/(this->slaves_.size()+1) && this->slaves_.size() < 5 ) 
                 this->loseMasterState();
 
             // look out for outher masters if formation is small
-            if(this->slaves.size() < 3)
+            if(this->slaves_.size() < 3)
                 this->searchNewMaster();
 
             // search enemy

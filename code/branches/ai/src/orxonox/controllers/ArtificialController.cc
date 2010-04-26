@@ -50,6 +50,7 @@ namespace orxonox
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
         this->targetPosition_ = Vector3::ZERO;
+        //this->slaves_ = new std::list<ArtificialController*>;
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
     }
@@ -99,7 +100,7 @@ namespace orxonox
     void ArtificialController::unregisterSlave() {
         if(myMaster_)
         {
-            myMaster_->slaves.remove(this);
+            myMaster_->slaves_.remove(this);
         }
     }
 
@@ -131,14 +132,14 @@ namespace orxonox
             //is pawn oneself? && is pawn in range?
             if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity()) //&& it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) < 1000 
             {
-                if(controller->slaves.size() > 9) continue;
+                if(controller->slaves_.size() > 9) continue;
 
                 this->freeAllSlaves();
-                this->slaves.clear();
+                this->slaves_.clear();
                 this->state_ = SLAVE;
 
                 this->myMaster_ = controller;
-                controller->slaves.push_back(this);
+                controller->slaves_.push_back(this);
 
                 break;
             }
@@ -151,7 +152,7 @@ namespace orxonox
 
     void ArtificialController::commandSlaves() {
 
-        for(std::list<ArtificialController*>::iterator it = slaves.begin(); it != slaves.end(); it++)
+        for(std::list<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
         {
             (*it)->setTargetPosition(this->getControllableEntity()->getPosition());
         }
@@ -172,11 +173,42 @@ namespace orxonox
 */
     }
 
+    // binds slaves to new Master within formation
+    void ArtificialController::setNewMasterWithinFormation()
+    {
+COUT(0) << "~setNewMasterWithinFormation 1" << std::endl;
+        if (this->slaves_.empty())
+            return;
+COUT(0) << "~setNewMasterWithinFormation 1b" << std::endl;
+
+        ArtificialController *newMaster = this->slaves_.back();
+COUT(0) << "~setNewMasterWithinFormation 2" << std::endl;
+        this->slaves_.pop_back();
+COUT(0) << "~setNewMasterWithinFormation 3" << std::endl;
+        if(!newMaster) return;
+COUT(0) << "~setNewMasterWithinFormation 4" << std::endl;
+        newMaster->state_ = MASTER;
+        newMaster->slaves_ = this->slaves_;
+        //this->slaves_.clear();
+
+        this->state_ = SLAVE;
+        this->myMaster_ = newMaster;
+
+COUT(0) << "~setNewMasterWithinFormation 5" << std::endl;
+        for(std::list<ArtificialController*>::iterator it = newMaster->slaves_.begin(); it != newMaster->slaves_.end(); it++)
+        {
+COUT(0) << "~setNewMasterWithinFormation 6" << std::endl;
+            (*it)->myMaster_ = newMaster;
+        }
+COUT(0) << "~setNewMasterWithinFormation 7" << std::endl;
+
+    }
+
     void ArtificialController::freeAllSlaves()
     {
 
 
-        for(std::list<ArtificialController*>::iterator it = slaves.begin(); it != slaves.end(); it++)
+        for(std::list<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
         {
             (*it)->state_ = FREE;
         }
