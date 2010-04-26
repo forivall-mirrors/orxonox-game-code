@@ -12,6 +12,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   SpawnPoint.cc
   TeamSpawnPoint.cc
   Drone.cc
+  SimpleRocket.cc
 )
 
 ADD_SUBDIRECTORY(pawns)
