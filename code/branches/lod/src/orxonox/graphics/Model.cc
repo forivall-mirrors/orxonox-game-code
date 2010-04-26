@@ -91,7 +91,13 @@ namespace orxonox
                     &&this->meshSrc_!="laserbeam.mesh"
                     &&this->lodLevel_!=0)
                 {
-                    float scaleFactor = this->getScale();
+					Vector3 scale3d = this->getScale3D();
+                    float scaleFactor = scale3d.x;
+					if(scale3d.y>scaleFactor)
+						scaleFactor = scale3d.y;
+					if(scale3d.z>scaleFactor)
+						scaleFactor = scale3d.z;
+						
                     COUT(0) << this->meshSrc_<< " lodLevel_: " << this->lodLevel_ <<" scale: "<< scaleFactor << std::endl;
                     //Für Asteroiden perfekt
 
@@ -101,7 +107,8 @@ namespace orxonox
                     Ogre::Mesh::LodDistanceList distList;
 #endif
 
-					float factor = scaleFactor*scaleFactor*scaleFactor*scaleFactor;
+					float factor = scaleFactor;
+					COUT(0)<<"scaleFactor:"<<scaleFactor<<std::endl;
 
                     distList.push_back(70.0f*factor);
                     distList.push_back(140.0f*factor);
@@ -114,7 +121,7 @@ namespace orxonox
                     distList.push_back(310.0f*factor);
                     distList.push_back(330.0f*factor);
 
-                    float reductionValue = 0.5f;
+                    float reductionValue = 0.2f;
 
                     
                     //Generiert LOD-Levels
