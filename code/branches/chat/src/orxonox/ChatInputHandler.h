@@ -38,14 +38,23 @@
 
 /* project includes */
 #include <OrxonoxPrereqs.h>
-#include <InputBuffer.h>
-#include <Host.h>
+#include "core/input/InputBuffer.h"
+#include "core/input/InputManager.h"
+#include "core/input/InputState.h"
+#include "../libraries/network/Host.h"
+#include <core/BaseObject.h>
+#include <PlayerManager.h>
+#include <infos/PlayerInfo.h>
+#include <network/ChatListener.h>
+#include <core/PathConfig.h>
+#include <util/Singleton.h>
 
 
 namespace orxonox
 {
   /* class to handle chat using an InputBuffer */
-  class _OrxonoxExport ChatInputHandler : public Singleton<ChatInputHandler>
+  class _OrxonoxExport ChatInputHandler : public Singleton<ChatInputHandler>,
+    public OrxonoxClass
   {
     private:
       /** Input buffer, to be used to catch input from the
@@ -53,8 +62,14 @@ namespace orxonox
        */
       InputBuffer *inpbuf;
 
-      /* setup input buffer, the constructor calls this */
+      /** input state */
+      InputState *inputState;
+
+      /** setup input buffer, the constructor calls this */
       void configureInputBuffer();
+
+      /* singleton pointer */
+      static ChatInputHandler* singletonPtr_s;
 
     public:
       /** constructor */
@@ -64,6 +79,8 @@ namespace orxonox
       /* start listening, stop listening */
       void activate();
       void deactivate();
+
+      /* callbacks for input handler */
 
       void inputChanged();
       void addline();

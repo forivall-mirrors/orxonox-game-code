@@ -32,6 +32,7 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   PlayerManager.cc
   Radar.cc
   ChatHistory.cc
+  ChatInputHandler.cc
 COMPILATION_BEGIN SceneCompilation.cc
   CameraManager.cc
   Scene.cc

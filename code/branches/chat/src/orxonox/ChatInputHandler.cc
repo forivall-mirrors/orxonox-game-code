@@ -27,60 +27,77 @@
  */
 
 #include "ChatInputHandler.h"
+#include <core/ScopedSingletonManager.h>
+#include "core/ConsoleCommand.h"
+#include "core/CoreIncludes.h"
+#include <string>
 
 namespace orxonox 
 {
   /* singleton */
-  ManageScopedSingleton( ChatInputHandler, ScopeID::Root, false );
+  ManageScopedSingleton( ChatInputHandler, ScopeID::Graphics, false );
 
   /* constructor */
-  void ChatInputHandler::ChatInputHandler()
+  ChatInputHandler::ChatInputHandler()
   {
     /* register the object  */
     RegisterObject(ChatInputHandler);
 
+    //COUT(0) << "Singleton registered for ChatInputHandler." << std::endl;
+
     /* create necessary objects */
     this->inpbuf = new InputBuffer();
 
+    /* configure the input buffer */
 		configureInputBuffer();
+
+    this->inputState = InputManager::getInstance().createInputState( "chatinput", false, false, InputStatePriority::Dynamic );
+    this->inputState->setKeyHandler(this->inpbuf);
+
+    /* set console shortcut */
+    this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(
+      &ChatInputHandler::activate, this), "startchat"), false);
   }
 
   void ChatInputHandler::configureInputBuffer()
   {
 	  /* input has changed */
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::inputChanged, true);
+    this->inpbuf->registerListener(this, &ChatInputHandler::inputChanged, true);
 		
 		/* add a line */
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::addline,         '\r',   false);
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::addline,         '\n',   false);
+    this->inpbuf->registerListener(this, &ChatInputHandler::addline,         '\r',   false);
+    this->inpbuf->registerListener(this, &ChatInputHandler::addline,         '\n',   false);
 
 		/* backspace */
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::backspace,       '\b',   true);
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::backspace,       '\177', true);
+    this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       '\b',   true);
+    this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       '\177', true);
 
 		/* exit the chatinputhandler thingy (tbd) */
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::exit,            '\033', true); // escape
+    this->inpbuf->registerListener(this, &ChatInputHandler::exit,            '\033', true); // escape
 
 		/* delete character */
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::deleteChar,      KeyCode::Delete);
+    this->inpbuf->registerListener(this, &ChatInputHandler::deleteChar,      KeyCode::Delete);
 
 		/* cursor movement */
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::cursorRight,     KeyCode::Right);
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::cursorLeft,      KeyCode::Left);
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::cursorEnd,       KeyCode::End);
-    this->inputBuffer_->registerListener(this, &ChatInputHandler::cursorHome,      KeyCode::Home);
+    this->inpbuf->registerListener(this, &ChatInputHandler::cursorRight,     KeyCode::Right);
+    this->inpbuf->registerListener(this, &ChatInputHandler::cursorLeft,      KeyCode::Left);
+    this->inpbuf->registerListener(this, &ChatInputHandler::cursorEnd,       KeyCode::End);
+    this->inpbuf->registerListener(this, &ChatInputHandler::cursorHome,      KeyCode::Home);
   }
 
 
   /* activate, deactivate */
-  void ChatInputHandler::activate()   /* TBI */
+  void ChatInputHandler::activate()
   {
     /* start listening */
+    COUT(0) << "chatinput activated." << std::endl;
+    InputManager::getInstance().enterState("chatinput");
   }
 
-  void ChatInputHandler::deactivate()   /* TBI */
+  void ChatInputHandler::deactivate() 
   {
     /* stop listening */
+    InputManager::getInstance().leaveState("chatinput");
   }
 
 
@@ -98,57 +115,59 @@ namespace orxonox
 
     /* actually do send what was input */
     /* a) get the string out of the inputbuffer */
-    String msgtosend = this->inpbuf->get();
+    std::string msgtosend = this->inpbuf->get();
 
     /* b) clear the input buffer */
-    this->inpbuf->clear();
+    if (this->inpbuf->getSize() > 0)
+      this->inpbuf->clear();
 
     /* c) send the chat via some call */
     Host::Chat( msgtosend );
 
     /* d) stop listening to input  */
+    this->deactivate();
   }
 
   void ChatInputHandler::backspace()
   {
-    this->inputBuffer_->removeBehindCursor();
+    this->inpbuf->removeBehindCursor();
     //this->updateListeners<&ShellListener::inputChanged>();
     //this->updateListeners<&ShellListener::cursorChanged>();
   }
 
   void ChatInputHandler::deleteChar()
   {
-    this->inputBuffer_->removeAtCursor();
+    this->inpbuf->removeAtCursor();
     //this->updateListeners<&ShellListener::inputChanged>();
   }
 
   void ChatInputHandler::cursorRight()
   {
-    this->inputBuffer_->increaseCursor();
+    this->inpbuf->increaseCursor();
     //this->updateListeners<&ShellListener::cursorChanged>();
   }
   
   void ChatInputHandler::cursorLeft()
   {
-    this->inputBuffer_->decreaseCursor();
+    this->inpbuf->decreaseCursor();
     //this->updateListeners<&ShellListener::cursorChanged>();
   }
   
   void ChatInputHandler::cursorEnd()
   {
-    this->inputBuffer_->setCursorToEnd();
+    this->inpbuf->setCursorToEnd();
     //this->updateListeners<&ShellListener::cursorChanged>();
   }
 
   void ChatInputHandler::cursorHome()
   {
-    this->inputBuffer_->setCursorToBegin();
+    this->inpbuf->setCursorToBegin();
     //this->updateListeners<&ShellListener::cursorChanged>();
   }
 
   void ChatInputHandler::exit()
   {
-    //if (this->inputBuffer_->getSize() > 0)
+    //if (this->inpbuf->getSize() > 0)
     //{
       //this->clearInput();
       //return;
