@@ -29,6 +29,8 @@
 #include "HUDNavigation.h"
 
 #include <string>
+#include <vector>
+#include <map>
 #include <OgreCamera.h>
 #include <OgreOverlayManager.h>
 #include <OgreTextAreaOverlayElement.h>
@@ -82,6 +84,8 @@ namespace orxonox
 
         // hide at first
         this->setVisible(false);
+	
+	
     }
 
     HUDNavigation::~HUDNavigation()
@@ -134,6 +138,8 @@ namespace orxonox
 
     void HUDNavigation::tick(float dt)
     {
+
+	
         SUPER(HUDNavigation, tick, dt);
 
         // Get radar
@@ -283,4 +289,18 @@ namespace orxonox
         if (this->navText_)
             navText_->setCharHeight(navText_->getCharHeight() * yScale);
     }
+    
+//     map <WorldEntity*, pair <Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > ActiveObjectList;
+    
+//     void updateActiveObjectMap(){
+//       --> iteration durch die betsehende map über alle keys (Worldentity*)
+// 	     --> check: 'existiert noch' 'sizeChanged' 'angleChanged' 'positionChanged'
+// 		 --> update des aktuellen Objects (Panel & Text) 
+// 		 --> lücke schliessen in der map (aufrücken nach links)
+// 	 --> neue objekte suchen
+// 		 -- map.add neue objekte hinzufügen (pair <panel, text> einfügen.
+//     }	
+    
+
+
 }

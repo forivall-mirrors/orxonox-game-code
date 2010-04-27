@@ -35,8 +35,12 @@
 #include "tools/interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
 
+#include <pair>
+#include <vector>
+
 namespace orxonox
 {
+class WorldEntity;
     class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable
     {
     public:
@@ -45,11 +49,17 @@ namespace orxonox
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
+	
+	virtual map <WorldEntity*, pair <Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > ActiveObjectList;
+	
 
     private:
-        void sizeChanged();
+
+	void sizeChanged();
         void angleChanged() { }
         void positionChanged() { }
+	
+	
 
         // XMLPort accessors
         void setNavMarkerSize(float size) { this->navMarkerSize_ = size; this->sizeChanged(); }
@@ -69,7 +79,11 @@ namespace orxonox
         void updateMarker();
         void updateFocus();
         float getDist2Focus() const;
-
+	void getSingleton();
+	void getSingleton();
+    
+	void updateActiveObjectMap();
+	
         Ogre::PanelOverlayElement* navMarker_;      //!< the panel used to show the arrow and the target marker
         float navMarkerSize_;                       //!< One paramter size of the navigation marker
 /*
@@ -78,6 +92,8 @@ namespace orxonox
 */
         Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
         bool wasOutOfView_;                         //!< Performance booster variable: setMaterial is not cheap
+	
+	
     };
 }
 
