@@ -114,15 +114,22 @@ namespace orxonox
         std::queue<MultiTriggerState*>* queue  = this->letTrigger();
         if(queue != NULL)
             COUT(4) << "MultiTrigger &" << this << ": " << queue->size() << " new states to state queue." << std::endl;
-        while(queue != NULL && queue->size() > 0)
+        
+        if(queue != NULL)
         {
-            //TODO: Be more efficient, Don't delete a state and create a new one immediately after that. Reuse!
-            MultiTriggerState* state = queue->front();
-            this->addState(state->bTriggered & this->isModeTriggered(state->originator), state->originator);
-            queue->pop();
-            delete state;
+            while(queue->size() > 0)
+            {
+                //TODO: Be more efficient, Don't delete a state and create a new one immediately after that. Reuse!
+                MultiTriggerState* state = queue->front();
+                if(state == NULL)
+                    break;
+                    
+                this->addState(state->bTriggered & this->isModeTriggered(state->originator), state->originator);
+                queue->pop();
+                delete state;
+            }
+            delete queue;
         }
-        delete queue;
 
         if (this->stateQueue_.size() > 0)
         {
