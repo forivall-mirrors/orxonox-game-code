@@ -87,7 +87,7 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestEffectBeacon object through XML.
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
-            bool execute(bool b, PlayerTrigger* trigger); //!< Executes the QuestEffects of the QuestEffectBeacon.
+            bool execute(bool b, BaseObject* trigger); //!< Executes the QuestEffects of the QuestEffectBeacon.
 
             /**
             @brief Tests whether the QuestEffectBeacon is active.

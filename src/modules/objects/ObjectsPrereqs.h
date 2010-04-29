@@ -84,8 +84,11 @@ namespace orxonox
 
     // triggers
     class CheckPoint;
+    class DistanceMultiTrigger;
     class DistanceTrigger;
     class EventTrigger;
+    class MultiTrigger;
+    class MultiTriggerContainer;
     class Trigger;
 }
 

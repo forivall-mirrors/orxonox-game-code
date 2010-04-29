@@ -58,18 +58,24 @@ namespace orxonox
 
         this->bProcessingEvent_ = true;
 
+        COUT(4) << "Processing event (EventState) : originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << "), activate: " << event.activate_ << ", name: " << event.name_ << ", statename: " << event.statename_ << ", object: " << object->getIdentifier()->getName() << " (&" << object << ")" << ", subclass: " << this->subclass_->getName() << ", (?): " << event.originator_->isA(this->subclass_) << "." << std::endl;
+        
         // check if the originator is an instance of the requested class
         if (event.originator_->isA(this->subclass_))
         {
+            // If the EventState doesn't act as an EventSink.
             // actualize the activationcounter
-            if (event.activate_)
-                ++this->activeEvents_;
-            else
+            if(!this->bSink_)
             {
-                --this->activeEvents_;
+                if (event.activate_)
+                    ++this->activeEvents_;
+                else
+                {
+                    --this->activeEvents_;
 
-                if (this->activeEvents_ < 0)
-                    this->activeEvents_ = 0;
+                    if (this->activeEvents_ < 0)
+                        this->activeEvents_ = 0;
+                }
             }
 
             if (this->statefunction_->getParamCount() == 0 && event.activate_)
@@ -77,13 +83,13 @@ namespace orxonox
                 // if the eventfunction doesn't have a state, just call it whenever an activation-event comes in
                 (*this->statefunction_)();
             }
-            else if ((this->activeEvents_ == 1 && event.activate_) || (this->activeEvents_ == 0 && !event.activate_))
+            else if (this->bSink_ || (!this->bSink_ && ((this->activeEvents_ == 1 && event.activate_) || (this->activeEvents_ == 0 && !event.activate_)) ) )
             {
                 // if the eventfunction needs a state, we just call the function if the state changed from 0 to 1 (state = true) or from 1 to 0 (state = false) [but not if activeEvents_ is > 1]
                 if (this->statefunction_->getParamCount() == 1)
                 {
                     // one argument: just the eventstate
-                    (*this->statefunction_)(this->activeEvents_);
+                    (*this->statefunction_)(event.activate_);
                 }
                 else if (this->statefunction_->getParamCount() >= 2)
                 {
@@ -91,13 +97,13 @@ namespace orxonox
                     if (this->subclass_->isExactlyA(ClassIdentifier<BaseObject>::getIdentifier()))
                     {
                         // if the subclass is BaseObject, we don't have to cast the pointer
-                        (*this->statefunction_)(this->activeEvents_, event.originator_);
+                        (*this->statefunction_)(event.activate_, event.originator_);
                     }
                     else
                     {
                         // else cast the pointer to the desired class
                         void* castedOriginator = event.originator_->getDerivedPointer(this->subclass_->getClassID());
-                        (*this->statefunction_)(this->activeEvents_, castedOriginator);
+                        (*this->statefunction_)(event.activate_, castedOriginator);
                     }
                 }
             }

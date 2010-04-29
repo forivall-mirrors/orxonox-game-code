@@ -33,6 +33,7 @@ ORXONOX_ADD_LIBRARY(questsystem
     QuestsystemPrecompiledHeaders.h
   LINK_LIBRARIES
     orxonox
+    objects
     overlays
   SOURCE_FILES ${QUESTSYSTEM_SRC_FILES}
 )

@@ -45,6 +45,7 @@ namespace orxonox
         std::string statename_;  //!< The name of the state this event affects
         BaseObject* originator_; //!< The object which triggered this event
         std::string name_;       //!< The name of this event
+
     };
 
     /**
@@ -65,7 +66,7 @@ namespace orxonox
     class _CoreExport EventState
     {
         public:
-            EventState(Functor* statefunction, Identifier* subclass) : bProcessingEvent_(false), activeEvents_(0), statefunction_(statefunction), subclass_(subclass) {}
+            EventState(Functor* statefunction, Identifier* subclass, bool bSink = false) : bProcessingEvent_(false), activeEvents_(0), statefunction_(statefunction), subclass_(subclass), bSink_(bSink) {}
             virtual ~EventState();
 
             void process(const Event& event, BaseObject* object);
@@ -78,6 +79,7 @@ namespace orxonox
             int         activeEvents_;      //!< The number of events which affect this state and are currently active
             Functor*    statefunction_;     //!< A functor to set the state
             Identifier* subclass_;          //!< Originators must be an instance of this class (usually BaseObject, but some statefunctions allow a second argument with an originator of a specific class)
+            bool        bSink_;             //!< Determines whether the EventState acts as an EventSink forwarding any Event (even if the state didn't change) or in the normal manner, only processing Events that change the state.
     };
 }
 

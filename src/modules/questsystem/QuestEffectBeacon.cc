@@ -38,6 +38,7 @@
 #include "core/EventIncludes.h"
 #include "worldentities/pawns/Pawn.h"
 #include "interfaces/PlayerTrigger.h"
+#include "objects/triggers/MultiTriggerContainer.h"
 #include "QuestEffect.h"
 
 namespace orxonox
@@ -74,7 +75,7 @@ namespace orxonox
         XMLPortParam(QuestEffectBeacon, "times", setTimes, getTimes, xmlelement, mode);
         XMLPortObject(QuestEffectBeacon, QuestEffect, "effects", addEffect, getEffect, xmlelement, mode);
 
-        XMLPortEventState(QuestEffectBeacon, PlayerTrigger, "execute", execute, xmlelement, mode);
+        XMLPortEventState(QuestEffectBeacon, BaseObject, "execute", execute, xmlelement, mode); //TODO: Change BaseObject to MultiTrigger as soon as MultiTrigger is the base of all triggers.
 
         COUT(3) << "New QuestEffectBeacon created." << std::endl;
     }
@@ -83,7 +84,7 @@ namespace orxonox
     {
         SUPER(QuestEffectBeacon, XMLEventPort, xmlelement, mode);
 
-        XMLPortEventState(QuestEffectBeacon, PlayerTrigger, "execute", execute, xmlelement, mode);
+        XMLPortEventSink(QuestEffectBeacon, BaseObject, "execute", execute, xmlelement, mode);
     }
 
     /**
@@ -91,12 +92,15 @@ namespace orxonox
         Executes the QuestEffectBeacon.
         This means extracting the Pawn from the PlayerTrigger, provided by the Event causing the execution, and the extracting the PlayerInfo from the received Pawn and invoking the QuestEffectbeacon's QuestEffects on the received PlayerInfo.
     @param trigger
-        Apointer to the PlayerTrigger that threw the Event.
+        A pointer to the PlayerTrigger that threw the Event.
     @return
         Returns true if successfully executed, false if not.
     */
-    bool QuestEffectBeacon::execute(bool b, PlayerTrigger* trigger)
+    bool QuestEffectBeacon::execute(bool b, BaseObject* trigger)
     {
+        //TODO: Remove debug output.
+        COUT(1) << "Debug: Calling execute on QuestEffectBeacon." << std::endl;
+        
         if(!b)
         {
             return false;
@@ -107,13 +111,28 @@ namespace orxonox
             return false;
         }
 
-        if(!trigger->isForPlayer()) //!< The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
-        {
+        PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
+        MultiTriggerContainer* mTrigger = orxonox_cast<MultiTriggerContainer*>(trigger);
+        Pawn* pawn = NULL;
+        
+        //! If the trigger is neither a Playertrigger nor a MultiTrigger (i.e. a MultitriggerContainer) we can do anything with it.
+        if(pTrigger == NULL && mTrigger == NULL)
             return false;
+        
+        // If the trigger is a PlayerTrigger.        
+        if(pTrigger != NULL)
+        {
+            if(!pTrigger->isForPlayer())  //!< The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+                return false;
+            else
+                pawn = pTrigger->getTriggeringPlayer();
         }
-
-        //! Extracting the Pawn from the PlayerTrigger.
-        Pawn* pawn = trigger->getTriggeringPlayer();
+        
+        // If the trigger is a MultiTrigger (i.e. a MultiTriggerContainer)
+        if(mTrigger != NULL)
+        {
+            pawn = orxonox_cast<Pawn*>(mTrigger->getData());
+        }
 
         if(pawn == NULL)
         {
