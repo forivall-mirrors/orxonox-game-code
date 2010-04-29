@@ -75,15 +75,14 @@ namespace orxonox
             std::ostringstream out;
             out << reinterpret_cast<long>(this);
             const std::string& str = out.str();
-            COUT(1) << "GUIManager ptr: " << str << std::endl;
             GUIManager::getInstance().showGUIExtra(this->guiName_, str);
 
-            COUT(3) << "Showing GUI " << this->guiName_ << std::endl;
+            COUT(4) << "Showing GUI " << this->guiName_ << std::endl;
         }
         else
         {
             GUIManager::hideGUI(this->guiName_);
-            COUT(3) << "Hiding GUI " << this->guiName_ << std::endl;
+            COUT(4) << "Hiding GUI " << this->guiName_ << std::endl;
         }
     }
 
