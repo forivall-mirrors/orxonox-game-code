@@ -51,9 +51,19 @@
         this->addEventState(statename, containername##function); \
     } \
     XMLPortEventStateIntern(xmlportevent##function, classname, statename, xmlelement, mode)
+    
+#define XMLPortEventSink(classname, subclassname, statename, function, xmlelement, mode) \
+    orxonox::EventState* containername##function = this->getEventState(statename); \
+    if (!containername##function) \
+    { \
+        containername##function = new orxonox::EventState(orxonox::createFunctor(&classname::function, this), orxonox::ClassIdentifier<subclassname>::getIdentifier(), true); \
+        this->addEventState(statename, containername##function); \
+    } \
+    XMLPortEventStateIntern(xmlportevent##function, classname, statename, xmlelement, mode)
 
 /**
-    @brief Like XMLPortEventState but with additional template arguments to identify the function of the state (if ambiguous).
+    @brief Like XMLPortEventState but creates an event sink instead of an event state.
+           The most important destinction between an EventState and an EventSink is, that an EventState only processes event which change the state of the EventState, where as an EventSink is an EventState that processes any Event that reaches it.
 */
 #define XMLPortEventStateTemplate(classname, subclassname, statename, function, xmlelement, mode, ...) \
     orxonox::EventState* containername##function = this->getEventState(statename); \

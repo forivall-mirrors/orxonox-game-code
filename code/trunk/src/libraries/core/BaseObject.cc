@@ -102,6 +102,13 @@ namespace orxonox
                 delete it->second;
         }
     }
+    
+    /** @brief Adds an object which listens to the events of this object. */
+    void BaseObject::registerEventListener(BaseObject* object)
+    {
+        COUT(4) << "New EventListener: " << object->getIdentifier()->getName() << " &(" << object << ")." << std::endl;
+        this->eventListeners_.insert(object);
+    }
 
     /**
         @brief XML loading and saving.
@@ -355,6 +362,8 @@ namespace orxonox
     void BaseObject::processEvent(Event& event)
     {
         this->registerEventStates();
+        
+        COUT(4) << this->getIdentifier()->getName() << " (&" << this << ") processing event. originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << "), activate: " << event.activate_ << ", name: " << event.name_ << ", statename: " << event.statename_ << "." << std::endl;
 
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(event.statename_);
         if (it != this->eventStates_.end())

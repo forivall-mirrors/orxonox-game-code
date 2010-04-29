@@ -187,8 +187,7 @@ namespace orxonox
 
         private:
             /** @brief Adds an object which listens to the events of this object. */
-            inline void registerEventListener(BaseObject* object)
-                { this->eventListeners_.insert(object); }
+            void registerEventListener(BaseObject* object);
             /** @brief Removes an event listener from this object. */
             inline void unregisterEventListener(BaseObject* object)
                 { this->eventListeners_.erase(object); }
