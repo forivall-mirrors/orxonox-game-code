@@ -30,6 +30,7 @@
 #include "core/OrxonoxClass.h"
 #include "util/Singleton.h"
 #include "tools/interfaces/Tickable.h"
+#include <OgreMath.h>
  
  
 namespace orxonox
@@ -50,5 +51,7 @@ namespace orxonox
             std::string skyboxPrefix_; 
             bool takeScreenshot_;
             int iterateOverDirections_;
+            float aspectRatio_;
+            Ogre::Radian fovy_;
     };
 }

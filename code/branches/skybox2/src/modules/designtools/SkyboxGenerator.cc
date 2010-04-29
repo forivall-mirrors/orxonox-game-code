@@ -85,6 +85,8 @@ namespace orxonox
             {
             case 0 :
                 camera->getOgreCamera()->setFOVy(Degree(90));
+                aspectRatio_ = camera->getOgreCamera()->getAspectRatio();
+                fovy_ = camera->getOgreCamera()->getFOVy();
                 camera->getOgreCamera()->setAspectRatio(1);
                 iterateOverDirections_++;
                 break;
@@ -132,8 +134,8 @@ namespace orxonox
                 break;
                 
             case 7 :
-                camera->getOgreCamera()->setAspectRatio(1.3333);
-                camera->getOgreCamera()->setFOVy(Degree(45));
+                camera->getOgreCamera()->setAspectRatio(aspectRatio_);
+                camera->getOgreCamera()->setFOVy(fovy_);
                 iterateOverDirections_ =0;
                 takeScreenshot_ = false;
                 CommandExecutor::execute("pause");
