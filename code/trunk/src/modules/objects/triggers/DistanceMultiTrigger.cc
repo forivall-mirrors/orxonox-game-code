@@ -84,12 +84,13 @@ namespace orxonox
             }
         }
         
-        for(std::set<WorldEntity*>::iterator it = this->range_.begin(); it != this->range_.end(); it++)
+        for(std::set<WorldEntity*>::iterator it = this->range_.begin(); it != this->range_.end(); )
         {
             Vector3 distanceVec = (*it)->getWorldPosition() - this->getWorldPosition();
             if (distanceVec.length() >= this->distance_)
             {
-                if(!this->removeFromRange(*it))
+                WorldEntity* temp = *(it++);
+                if(!this->removeFromRange(temp))
                     continue;
                 
                 if(queue == NULL)
@@ -98,9 +99,11 @@ namespace orxonox
                 }
                 MultiTriggerState* state = new MultiTriggerState;
                 state->bTriggered = false;
-                state->originator = *it;
+                state->originator = temp;
                 queue->push(state);
             }
+            else
+                ++it;
         }
         
         return queue;
