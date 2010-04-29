@@ -84,36 +84,32 @@ namespace orxonox
             switch (iterateOverDirections_) 
             {
             case 0 :
+                fovy_ = camera->getOgreCamera()->getFOVy();
                 camera->getOgreCamera()->setFOVy(Degree(90));
                 aspectRatio_ = camera->getOgreCamera()->getAspectRatio();
-                fovy_ = camera->getOgreCamera()->getFOVy();
                 camera->getOgreCamera()->setAspectRatio(1);
                 iterateOverDirections_++;
                 break;
             case 1 :
                 w->writeContentsToFile(skyboxPrefix_+"fr.png");
-                //w->writeContentsToFile(skyboxPrefix_+"0.png");
                 ce->yaw(Degree(90));
                 iterateOverDirections_++;
                 break;
                 
             case 2 :
                 w->writeContentsToFile(skyboxPrefix_+"lf.png");
-                //w->writeContentsToFile(skyboxPrefix_+"1.png");
                 ce->yaw(Degree(90)); 
                 iterateOverDirections_++;
                 break;
 
             case 3 :
                 w->writeContentsToFile(skyboxPrefix_+"bk.png");
-                //w->writeContentsToFile(skyboxPrefix_+"2.png");
                 ce->yaw(Degree(90)); 
                 iterateOverDirections_++;
                 break;
 
             case 4 :
                 w->writeContentsToFile(skyboxPrefix_+"rt.png");
-                //w->writeContentsToFile(skyboxPrefix_+"3.png");
                 ce->yaw(Degree(90)); 
                 ce->pitch(Degree(90)); 
                 iterateOverDirections_++;
@@ -121,14 +117,12 @@ namespace orxonox
 
             case 5 :
                 w->writeContentsToFile(skyboxPrefix_+"up.png");
-                //w->writeContentsToFile(skyboxPrefix_+"4.png");
                 ce->pitch(Degree(180)); 
                 iterateOverDirections_++;
                 break;
 
             case 6 :
                 w->writeContentsToFile(skyboxPrefix_+"dn.png");
-                //w->writeContentsToFile(skyboxPrefix_+"5.png");
                 ce->pitch(Degree(90));
                 iterateOverDirections_++;
                 break;
