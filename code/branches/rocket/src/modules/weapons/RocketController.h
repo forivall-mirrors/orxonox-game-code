@@ -31,8 +31,9 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "Controller.h"
+#include "controllers/Controller.h"
 #include "tools/interfaces/Tickable.h"
+#include "weapons/projectiles/SimpleRocket.h"
 
 namespace orxonox
 {
@@ -46,13 +47,16 @@ namespace orxonox
     {
         public:
             RocketController(BaseObject* creator);
-            virtual ~RocketController();
+			virtual ~RocketController(){};
+			void setRocket(SimpleRocket* rocket, RocketController* contr);
             
             virtual void tick(float dt); //!< The controlling happens here. This method defines what the controller has to do each tick.
 
         protected:
 
+
         private:
+
     };
 }
 

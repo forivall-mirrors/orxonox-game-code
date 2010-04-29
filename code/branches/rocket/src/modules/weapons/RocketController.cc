@@ -27,7 +27,7 @@
  */
 
 #include "RocketController.h"
-#include "weapons/projectiles/SimpleRocket.h" //wie kann ich das hier includen? so gehts nich aber eigentlich isses eher ein Projectile als einfach ein Worldentity...
+#include "projectiles/SimpleRocket.h" 
 #include "util/Math.h"
 
 
@@ -47,9 +47,6 @@ namespace orxonox
         // and saves the pointer to the drone for the controlling commands
     }
 
-    RocketController::~RocketController()
-    {
-    }
 
     /**
     @brief
@@ -61,7 +58,7 @@ namespace orxonox
     {
         // Place your code here:
         // - steering commands
-        SimpleRocket* rocket = static_cast<SimpleRocket>(this->getControllableEntity());
+        SimpleRocket *rocket = static_cast<SimpleRocket*>(this->getControllableEntity());
         // you can use the following commands for steering 
         // - moveFrontBack, moveRightLeft, moveUpDown 
         // - rotatePitch, rotateYaw, rotateRoll 
@@ -71,4 +68,10 @@ namespace orxonox
 			rocket->moveFrontBack(2);
 
     }
+
+
+
+	void setRocket(SimpleRocket* rocket, RocketController* contr) {
+			contr->setControllableEntity(dynamic_cast<ControllableEntity*> rocket);
+	}
 }

@@ -38,7 +38,7 @@
 #include "objects/collisionshapes/ConeCollisionShape.h"
 #include "infos/PlayerInfo.h"
 #include "controllers/Controller.h"
-#include "controllers/RocketController.h"
+#include "weapons/RocketController.h"
 #include "sound/WorldSound.h"
 
 namespace orxonox
@@ -58,9 +58,12 @@ namespace orxonox
         this->bDestroy_ = false;
         this->lifetime_ = 100;
 		//this->camera_ = null;
-		RocketController* myController = new RocketController();
-		this->setController(myController));
-		myController->setControllableEntity(this);
+		RocketController* myRController = new RocketController(this);
+		this->setController(myRController);
+		myRController->setRocket(this, myRController);
+		
+		//this->getController()->setControllableEntity(this);
+		//myController->setControllableEntity(this);
 		//this->getController()->setControllableEntity(this);
         //this->controllableEntity_->setController(this->controller_);
 
@@ -89,7 +92,6 @@ namespace orxonox
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
         }
-		this->
 
     }
 
