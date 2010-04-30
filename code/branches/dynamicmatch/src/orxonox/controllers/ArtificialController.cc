@@ -248,13 +248,21 @@ namespace orxonox
 	Dynamicmatch* dynamic = orxonox_cast<Dynamicmatch*>(gametype);
         if (dynamic)
         {
+	    if (dynamic->notEnoughPigs||dynamic->notEnoughKillers||dynamic->notEnoughChasers) {return false;}
+	
             if (entity1->getPlayer())
                 team1 = dynamic->getParty(entity1->getPlayer());
 
             if (entity2->getPlayer())
                 team2 = dynamic->getParty(entity2->getPlayer());
+	    	if (team1 ==-1 ||team2 ==-1 ) {return false;}
+		else if (team1 == dynamic->chaser && team2 != dynamic->chaser) {return false;}
+		else if (team1 == dynamic->piggy && team2 == dynamic->chaser) {return false;}
+		else if (team1 == dynamic->killer && team2 == dynamic->chaser) {return false;}
+		else return true;
+		
         }
 
-        return (team1 == team2 && team1 != -1)&&(!dynamic->onlyChasers); //returns false if players are in the same party and there is a victim
-    }								//-> if there is no victim or the AI-Player is not in the same team the AI attacks
+        return (team1 == team2 && team1 != -1);
+    }
 }

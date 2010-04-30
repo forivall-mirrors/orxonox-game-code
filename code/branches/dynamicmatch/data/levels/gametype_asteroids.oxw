@@ -137,10 +137,10 @@ end
 </ForceField>
 
 
-<CheckPoint name=trigger1 position="-300,300,0" scale=1 isdestination=false isfirst=true stayactive=true distance=10 addtime=13 />
+<CheckPoint name=trigger1 position="-300,300,0" scale=1 isdestination=false isfirst=true stayactive=true distance=10 addtime=14 />
 
 
-<CheckPoint name=trigger2 position="2200,600,0" scale=3 isdestination=false stayactive=true distance=100 addtime=10>
+<CheckPoint name=trigger2 position="2200,600,0" scale=3 isdestination=false stayactive=true distance=100 addtime=11>
   <events>
     <activity>
       <EventListener event=trigger1 />
