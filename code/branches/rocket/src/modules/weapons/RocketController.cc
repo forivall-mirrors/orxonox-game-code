@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oli Scheuss
+ *     Gabriel Nadler, Originalfile: Oli Scheuss
  *   Co-authors:
  *      ...
  *
@@ -40,12 +40,9 @@ namespace orxonox
     */
     RocketController::RocketController(BaseObject* creator) : Controller(creator)
     {
-        // Place your code here:
-        // - make sure to register the object in the factory
-        // - do any kind of initialisation
+
         RegisterObject(RocketController);
-        // this checks that our creator really is a drone
-        // and saves the pointer to the drone for the controlling commands
+
     }
 
 
@@ -57,20 +54,19 @@ namespace orxonox
     */
     void RocketController::tick(float dt)
     {
-        // Place your code here:
-        // - steering commands
+
         SimpleRocket *rocket = static_cast<SimpleRocket*>(this->getControllableEntity());
-        // you can use the following commands for steering 
-        // - moveFrontBack, moveRightLeft, moveUpDown 
-        // - rotatePitch, rotateYaw, rotateRoll 
-        // - apply the to myDrone (e.g. myDrone->rotateYaw(..) ) 
+
 
 		rocket->rotateYaw(0.2);
 			//rocket->moveFrontBack(2);
 
     }
 
-
+	/*
+	I wanted to define the controllable entity with this function but the compiler gives the error: line 80: rocket - unidentified identifier
+	or some similar error.
+	*/
 
 	//void setRocket(SimpleRocket* rocket, RocketController* contr) {
 	//		contr->setControllableEntity(dynamic_cast<ControllableEntity*> rocket);

@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oli Scheuss
+ *      Gabriel Nadler, Originalfile: Oli Scheuss
  *   Co-authors:
  *      ...
  *
@@ -41,7 +41,7 @@ namespace orxonox
     @brief
         Controller for the Drone of the PPS tutorial.
     @author
-        Oli Scheuss
+        Gabriel Nadler, Originalfile: Oli Scheuss
     */
     class _WeaponsExport RocketController : public Controller, public Tickable
     {
@@ -50,8 +50,7 @@ namespace orxonox
 			virtual ~RocketController(){};
 			void setRocket(SimpleRocket* rocket, RocketController* contr);
             
-            virtual void tick(float dt); //!< The controlling happens here. This method defines what the controller has to do each tick.
-
+            virtual void tick(float dt);
         protected:
 
 
