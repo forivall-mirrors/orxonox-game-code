@@ -45,12 +45,12 @@ namespace orxonox
     {
         RegisterObject(SimpleRocketFire);
 
-        this->reloadTime_ = 0.20f;
+      /*  this->reloadTime_ = 0.20f;
         this->bParallelReload_ = false;
         this->damage_ = 100;
         this->speed_ = 500;
 
-        this->setMunitionName("LaserMunition");
+        this->setMunitionName("LaserMunition");*/
         // The firing sound of the Rocket is played in Rocket.cc (because of OpenAl sound positioning)
     }
 
@@ -62,13 +62,13 @@ namespace orxonox
     {
         SimpleRocket* rocket = new SimpleRocket(this);
 
-        this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
+      /*  this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         rocket->setOrientation(this->getMuzzleOrientation());
         rocket->setPosition(this->getMuzzlePosition());
         rocket->setVelocity(this->getMuzzleDirection() * this->speed_);
         rocket->scale(2);
 
         rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
-        rocket->setDamage(this->getDamage());
+        rocket->setDamage(this->getDamage());*/
     }
 }

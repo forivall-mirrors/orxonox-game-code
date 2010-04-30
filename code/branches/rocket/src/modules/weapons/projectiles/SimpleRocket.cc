@@ -60,7 +60,7 @@ namespace orxonox
 		//this->camera_ = null;
 		RocketController* myRController = new RocketController(this);
 		this->setController(myRController);
-		myRController->setRocket(this, myRController);
+		//myRController->setRocket(this, myRController);
 		
 		//this->getController()->setControllableEntity(this);
 		//myController->setControllableEntity(this);
@@ -69,14 +69,14 @@ namespace orxonox
 
         if (GameMode::isMaster())
         {
-            this->setCollisionType(WorldEntity::Kinematic);
-            this->setVelocity(0,0,-100);
+         /*   this->setCollisionType(WorldEntity::Kinematic);
+            this->setVelocity(0,0,-100);*/
 
             Model* model = new Model(this);
             model->setMeshSource("Rocket.mesh");
-            model->scale(0.7f);
+            //model->scale(0.7f);
             this->attach(model);
-            ParticleEmitter* fire = new ParticleEmitter(this);
+           /* ParticleEmitter* fire = new ParticleEmitter(this);
             this->attach(fire);
             fire->setOrientation(this->getOrientation());
             fire->setSource("Orxonox/Rocketfire");
@@ -88,14 +88,14 @@ namespace orxonox
             ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
             collisionShape->setRadius(3);
             collisionShape->setHeight(500);
-            this->attachCollisionShape(collisionShape);
+            this->attachCollisionShape(collisionShape);*/
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
         }
 
     }
 
-    /**
+    /**s
     @brief
         Destructor. Destroys controller, if present and kills sounds, if playing.
     */

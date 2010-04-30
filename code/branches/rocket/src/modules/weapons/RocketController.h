@@ -29,7 +29,7 @@
 #ifndef _RocketController_H__
 #define _RocketController_H__
 
-#include "OrxonoxPrereqs.h"
+#include "weapons/WeaponsPrereqs.h"
 
 #include "controllers/Controller.h"
 #include "tools/interfaces/Tickable.h"
@@ -43,7 +43,7 @@ namespace orxonox
     @author
         Oli Scheuss
     */
-    class _OrxonoxExport RocketController : public Controller, public Tickable
+    class _WeaponsExport RocketController : public Controller, public Tickable
     {
         public:
             RocketController(BaseObject* creator);

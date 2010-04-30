@@ -29,6 +29,7 @@
 #include "RocketController.h"
 #include "projectiles/SimpleRocket.h" 
 #include "util/Math.h"
+#include "weapons/projectiles/SimpleRocket.h"
 
 
 namespace orxonox
@@ -65,13 +66,13 @@ namespace orxonox
         // - apply the to myDrone (e.g. myDrone->rotateYaw(..) ) 
 
 		rocket->rotateYaw(0.2);
-			rocket->moveFrontBack(2);
+			//rocket->moveFrontBack(2);
 
     }
 
 
 
-	void setRocket(SimpleRocket* rocket, RocketController* contr) {
-			contr->setControllableEntity(dynamic_cast<ControllableEntity*> rocket);
-	}
+	//void setRocket(SimpleRocket* rocket, RocketController* contr) {
+	//		contr->setControllableEntity(dynamic_cast<ControllableEntity*> rocket);
+	//}
 }
