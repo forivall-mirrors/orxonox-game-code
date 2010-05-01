@@ -66,9 +66,13 @@ namespace orxonox
 
     }
 
-	/*
-	I wanted to define the controllable entity with this function but the compiler gives the error: line 80: rocket - unidentified identifier
-	or some similar error.
-	*/
+
+	RocketController::~RocketController() {
+
+		delete this->getControllableEntity();
+
+	}
+
+
 
 }

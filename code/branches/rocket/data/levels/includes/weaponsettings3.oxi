@@ -38,7 +38,7 @@
           <LightningGun mode=1 muzzleoffset="0,0,0" />
         </Weapon>
         <Weapon>
-          <SimpleRocketFire mode=2 muzzleoffset="5,5,5" />
+          <SimpleRocketFire mode=2 muzzleoffset="0,0,0" />
         </Weapon>
       </WeaponPack>
       <WeaponPack>

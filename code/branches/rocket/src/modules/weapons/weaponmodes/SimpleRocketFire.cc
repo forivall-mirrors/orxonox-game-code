@@ -64,10 +64,10 @@ namespace orxonox
 		RocketController* con = new RocketController(this);
 
 
-      /*  this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
-        rocket->setOrientation(this->getMuzzleOrientation());
-        rocket->setPosition(this->getMuzzlePosition());
-        rocket->setVelocity(this->getMuzzleDirection() * this->speed_);
+        this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
+        con->getControllableEntity()->setOrientation(this->getMuzzleOrientation());
+        con->getControllableEntity()->setPosition(this->getMuzzlePosition());
+        /* rocket->setVelocity(this->getMuzzleDirection() * this->speed_);
         rocket->scale(2);
 
         rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
