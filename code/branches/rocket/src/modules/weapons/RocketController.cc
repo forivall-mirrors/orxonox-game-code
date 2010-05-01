@@ -42,6 +42,9 @@ namespace orxonox
     {
 
         RegisterObject(RocketController);
+		SimpleRocket* rocket = new SimpleRocket(this);
+		rocket->setController(this);
+		this->setControllableEntity(dynamic_cast<ControllableEntity*> (rocket));
 
     }
 
@@ -68,7 +71,4 @@ namespace orxonox
 	or some similar error.
 	*/
 
-	//void setRocket(SimpleRocket* rocket, RocketController* contr) {
-	//		contr->setControllableEntity(dynamic_cast<ControllableEntity*> rocket);
-	//}
 }

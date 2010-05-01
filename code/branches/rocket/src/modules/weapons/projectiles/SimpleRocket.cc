@@ -58,8 +58,8 @@ namespace orxonox
         this->bDestroy_ = false;
         this->lifetime_ = 100;
 		//this->camera_ = null;
-		RocketController* myRController = new RocketController(this);
-		this->setController(myRController);
+		//RocketController* myRController = new RocketController(this);
+		//this->setController(creator);
 		//myRController->setRocket(this, myRController);
 		
 		//this->getController()->setControllableEntity(this);
@@ -67,8 +67,8 @@ namespace orxonox
 		//this->getController()->setControllableEntity(this);
         //this->controllableEntity_->setController(this->controller_);
 
-        if (GameMode::isMaster())
-        {
+        //if (GameMode::isMaster())
+        //{
          /*   this->setCollisionType(WorldEntity::Kinematic);
             this->setVelocity(0,0,-100);*/
 
@@ -91,7 +91,7 @@ namespace orxonox
             this->attachCollisionShape(collisionShape);*/
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
-        }
+       // }
 
     }
 

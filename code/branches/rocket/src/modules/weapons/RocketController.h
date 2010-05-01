@@ -48,7 +48,6 @@ namespace orxonox
         public:
             RocketController(BaseObject* creator);
 			virtual ~RocketController(){};
-			void setRocket(SimpleRocket* rocket, RocketController* contr);
             
             virtual void tick(float dt);
         protected:

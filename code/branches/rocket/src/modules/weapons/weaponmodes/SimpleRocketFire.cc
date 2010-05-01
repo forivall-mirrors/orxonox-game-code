@@ -30,7 +30,7 @@
 
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
-#include "weapons/projectiles/SimpleRocket.h"
+#include "weapons/RocketController.h"
 
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
@@ -60,7 +60,9 @@ namespace orxonox
 
     void SimpleRocketFire::fire()
     {
-        SimpleRocket* rocket = new SimpleRocket(this);
+        //SimpleRocket* rocket = new SimpleRocket(this);
+		RocketController* con = new RocketController(this);
+
 
       /*  this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         rocket->setOrientation(this->getMuzzleOrientation());
