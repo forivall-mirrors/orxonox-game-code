@@ -35,7 +35,7 @@ along with bsp-renderer.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Q3Map_misc.h"
 
-#include "JarDebug.h" //!! just for debugging, remove from final build
+//#include "JarDebug.h" //!! just for debugging, remove from final build
 
 #define MEMADD	65536 // memory is grown in 66k blocks
 #define MAX_TOKENSIZE 1024 // make sure tokens in texts aren't ridiculously large

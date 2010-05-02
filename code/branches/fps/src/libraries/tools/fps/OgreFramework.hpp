@@ -60,7 +60,7 @@ along with bsp-renderer.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Q3Map.h"
 
-#include "JarDebug.h" //!! just for debugging, remove from final build
+//#include "JarDebug.h" //!! just for debugging, remove from final build
 
 
 #define CHECKDELETE_ARRAY(x, y)		if(x) { delete [] x ; x=0 ; m_nNewCount-- ; m_nNewCheck[y]-- ;}
