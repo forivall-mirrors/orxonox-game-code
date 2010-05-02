@@ -58,7 +58,6 @@ namespace orxonox
         this->localAngularVelocity_ = 0;
         this->bDestroy_ = false;
         this->lifetime_ = 100;
-		this->controller_=null;
 		COUT(0)<< "simplerocket constructed\n";
 		//this->camera_ = null;
 		//RocketController* myRController = new RocketController(this);
@@ -105,8 +104,8 @@ namespace orxonox
     SimpleRocket::~SimpleRocket()
     {
 		COUT(0)<< "simplerocket destroyed\n";
-		if (this->controller_) delete this->controller_;
-    }
+		if (this->hasLocalController()) delete this->getController();
+	}
 
     /**
     @brief

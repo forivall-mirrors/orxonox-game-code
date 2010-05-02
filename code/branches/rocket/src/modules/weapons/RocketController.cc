@@ -71,8 +71,6 @@ namespace orxonox
 
 	RocketController::~RocketController() {
 		COUT(0)<< "RocketController destroyed\n";
-		delete this;
-
 	}
 
 
