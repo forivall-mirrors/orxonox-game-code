@@ -103,8 +103,10 @@ namespace orxonox
     */
     SimpleRocket::~SimpleRocket()
     {
+		if (this->isInitialized()) {
 		COUT(0)<< "simplerocket destroyed\n";
-		if (this->hasLocalController()) delete this->getController();
+		delete this->getController();
+		}
 	}
 
     /**
