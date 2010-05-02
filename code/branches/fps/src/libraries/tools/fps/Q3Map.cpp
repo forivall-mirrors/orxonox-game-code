@@ -105,13 +105,13 @@ Q3Map::Q3Map()
 	m_pTransTexture=NULL ;
 
 
-	Q3Bug.LogInit() ;
+//	Q3Bug.LogInit() ;
 
 }
 
 Q3Map::~Q3Map()
 {
-	Q3Bug.LogSave("Q3Bug.log") ;
+//	Q3Bug.LogSave("Q3Bug.log") ;
 
 	DELETE_ARRAY(m_pTransTexture) ;
 	//DELETE_ARRAY(m_pSubZones) ;

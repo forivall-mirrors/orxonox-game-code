@@ -409,7 +409,7 @@ public:
 
 	int m_nDebugA ;
 
-	CJarDebug Q3Bug ; //!! just for debugging, remove from final build
+//	CJarDebug Q3Bug ; //!! just for debugging, remove from final build
 	char m_chBug[10240] ;
 
 	int ParseAndTriangulateMap(const char* pData, size_t Size) ;

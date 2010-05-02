@@ -173,7 +173,7 @@ OgreFramework::OgreFramework()
 
 	ZeroMemory((void*)m_nKeyToggle, sizeof(m_nKeyToggle)) ;
 
-	OFBug.LogInit() ;
+//	OFBug.LogInit() ;
 
 	m_nRTTAssetsExist=0 ;
 	
@@ -201,7 +201,7 @@ OgreFramework::OgreFramework()
 
 OgreFramework::~OgreFramework()
 {
-	OFBug.LogSave("OFBug.txt") ;
+//	OFBug.LogSave("OFBug.txt") ;
 
 	/*
 	char chMessage[1024] ;
@@ -3862,7 +3862,7 @@ int OgreFramework::ConstructMapFromTriangles(void)
 			if(pMaterial_Base.isNull())
 			{
 				strcat(chMaterial_Base, " *** MISSING ***") ;
-				OFBug.LogAddCR(chMaterial_Base) ;
+//				OFBug.LogAddCR(chMaterial_Base) ;
 				
 				//sprintf(chMessage, "Missing material, using default: %s", chMaterial_Base) ;
 				//m_pLog->logMessage(chMessage);
@@ -3908,7 +3908,7 @@ int OgreFramework::ConstructMapFromTriangles(void)
 				pMaterial_Base=MaterialManager::getSingleton().getByName(chMaterial_Base) ;
 			}
 			else
-				OFBug.LogAddCR(chMaterial_Base) ;
+//				OFBug.LogAddCR(chMaterial_Base) ;
 
 
 
@@ -4764,7 +4764,7 @@ int OgreFramework::SetupEntity(int nEntity, char *chMeshName)
 			if(true)//pMaterial_Base.isNull())
 			{
 				strcat(chMaterial_Base, " *** MISSING ***") ;
-				OFBug.LogAddCR(chMaterial_Base) ;
+//				OFBug.LogAddCR(chMaterial_Base) ;
 				
 				strcpy(chMaterial_Base, "textures/metaltech/OPAQUE_DSCE_TechRadar") ;
 				pMaterial_Base=MaterialManager::getSingleton().getByName(chMaterial_Base) ;

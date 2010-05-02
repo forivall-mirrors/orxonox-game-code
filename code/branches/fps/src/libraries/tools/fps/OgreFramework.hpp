@@ -213,7 +213,7 @@ public:
 	int m_nStartTime ;
 	int m_nTime ;
 
-	CJarDebug OFBug ; //!! just for debugging, remove from final build
+//	CJarDebug OFBug ; //!! just for debugging, remove from final build
 	char m_chBug[10240] ;
 	int m_nFrameTime[MAXFRAME][10] ;
 	int m_nFrame ;
