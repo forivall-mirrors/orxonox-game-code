@@ -581,7 +581,7 @@ Q3BspFace_t *Q3Map::getFaces(void)
 int Q3Map::ParseAndTriangulateMap(const char* pData, size_t Size)
 {
 	
-	char chMessage[1024] ;
+//	char chMessage[1024] ;
 	int nError=0 ;
 
 		// setup pointers to the various lumps and get their quantities
@@ -1045,8 +1045,8 @@ int Q3Map::AddTexLamp(int TexLamp)
 // extract entities from bsp entities lump
 int Q3Map::ParseEntities(void)
 {
-	char chKey[MAX_TOKENSIZE+1] ;   // +1 to leave room for null terminator
-	char chValue[MAX_TOKENSIZE+1] ; // +1 to leave room for null terminator
+//	char chKey[MAX_TOKENSIZE+1] ;   // +1 to leave room for null terminator
+//	char chValue[MAX_TOKENSIZE+1] ; // +1 to leave room for null terminator
 	int nPos=0 ;
 	int nMaxPos=m_BspHeader.Lumps[0].iLength ;
 	int nEntityType=0 ;
@@ -1313,7 +1313,7 @@ int Q3Map::GetNumbersFromValue(char* pValue, int *pNumber, int nNumberSize)
 // the point lights ("lamps") will later be changed into map triangles.
 int Q3Map::ParseAndAddLight(int* pPos, int nMaxPos)
 {
-	char chMessage[1024] ;
+//	char chMessage[1024] ;
 
 
 	char chKey[MAX_TOKENSIZE+1] ;   // +1 to leave room for null terminator
@@ -1682,12 +1682,12 @@ void Q3Map::SetupZones(void)
 	int nZone=0 ;
 	int nPos=0 ;
 
-	float flMinX=0.0f ;
-	float flMinY=0.0f ;
-	float flMinZ=0.0f ;
-	float flMaxX=0.0f ;
-	float flMaxY=0.0f ;
-	float flMaxZ=0.0f ;
+//	float flMinX=0.0f ;
+//	float flMinY=0.0f ;
+//	float flMinZ=0.0f ;
+//	float flMaxX=0.0f ;
+//	float flMaxY=0.0f ;
+//	float flMaxZ=0.0f ;
 
 	m_nMaxZone=0 ;
 	
@@ -1761,7 +1761,7 @@ void Q3Map::SetupZones(void)
 int Q3Map::AssignTrianglesToZones(void)
 {
 	int nCurrentTriangle=0 ;
-	int nZone=0 ;
+//	int nZone=0 ;
 
 
 	/*
@@ -1819,12 +1819,12 @@ int Q3Map::AssignTrianglesToZones(void)
 int Q3Map::FindTriangleZone(int nTriangle)
 {
 	int nZone=0 ;
-	int nSubZone=0 ;
+//	int nSubZone=0 ;
 	int nPos=0 ;
 	bool bVertInSubZone=false ;
 	int nVert=0 ;
 	bool bTriangleInZone=false ;
-	int nMaxSubZone=m_iNumSubZones ;
+//	int nMaxSubZone=m_iNumSubZones ;
 	float flVert[6][3] ; // verts 0, 1, 2 are the original triangle corners, verts 3, 4, 5 are interpolated edge points.
 	// we need the edge points, since it's possible for all the 
 	// triangle verts to be in one L shaped zone but the triangle they form not be in that zone. 
@@ -2377,7 +2377,7 @@ int Q3Map::SplitTriangle(int nTriangle, int nAxis, float flCutPos)
 
 	}
 
-	int nInitialTrianglePos=m_nTriangleMax ; // debugging
+//	int nInitialTrianglePos=m_nTriangleMax ; // debugging
 
 	// default parameters for all new triangles
 	NewTri.Texture	=	m_pTriangle[ nTriangle ].Texture ;
@@ -2502,10 +2502,10 @@ void Q3Map::CreateTweenVert(Q3BspVertex* pVertA, Q3BspVertex* pVertB, float flPe
 {
 	float flPercent1=1.0f-flPercent0 ;
 
-	pVertexAB->color[0]=flPercent0*pVertA->color[0] + flPercent1*pVertB->color[0] ;
-	pVertexAB->color[1]=flPercent0*pVertA->color[1] + flPercent1*pVertB->color[1] ;
-	pVertexAB->color[2]=flPercent0*pVertA->color[2] + flPercent1*pVertB->color[2] ;
-	pVertexAB->color[3]=flPercent0*pVertA->color[3] + flPercent1*pVertB->color[3] ;
+	pVertexAB->color[0]=(unsigned char)(flPercent0*pVertA->color[0] + flPercent1*pVertB->color[0]) ;
+	pVertexAB->color[1]=(unsigned char)(flPercent0*pVertA->color[1] + flPercent1*pVertB->color[1]) ;
+	pVertexAB->color[2]=(unsigned char)(flPercent0*pVertA->color[2] + flPercent1*pVertB->color[2]) ;
+	pVertexAB->color[3]=(unsigned char)(flPercent0*pVertA->color[3] + flPercent1*pVertB->color[3]) ;
 
 	pVertexAB->position[0]=flPercent0*pVertA->position[0] + flPercent1*pVertB->position[0] ;
 	pVertexAB->position[1]=flPercent0*pVertA->position[1] + flPercent1*pVertB->position[1] ;
@@ -2605,25 +2605,25 @@ int Q3Map::ConvertFacesToTriangles(void)
 {
 	int nFaceIndex = 0 ;
 	
-	int nVertex=0 ;
-	int nVertexMax=0 ;
+//	int nVertex=0 ;
+//	int nVertexMax=0 ;
 	int nTriangle=0 ;
 	int nTriangleMax=0 ;
 
-	float flPosX=0.0f ;
-	float flPosY=0.0f ;
-	float flPosZ=0.0f ;
-	float	flNormX=0.0f ;
-	float	flNormY=0.0f ;
-	float	flNormZ=0.0f ;
-	float flTexU=0.0f ;
-	float flTexV=0.0f ;
+//	float flPosX=0.0f ;
+//	float flPosY=0.0f ;
+//	float flPosZ=0.0f ;
+//	float	flNormX=0.0f ;
+//	float	flNormY=0.0f ;
+//	float	flNormZ=0.0f ;
+//	float flTexU=0.0f ;
+//	float flTexV=0.0f ;
 	int nMeshVert=0 ;
-	int nMeshVertA=0 ;
-	int nMeshVertB=0 ;
-	int nMeshVertC=0 ;
+//	int nMeshVertA=0 ;
+//	int nMeshVertB=0 ;
+//	int nMeshVertC=0 ;
 
-	Q3BspVertex *vertices = m_pVertices ;
+//	Q3BspVertex *vertices = m_pVertices ;
 	int *meshverts = m_pMeshVerts ;
 	
 	QVECTOR junk ;
@@ -2684,15 +2684,15 @@ int Q3Map::ConvertFacesToTriangles(void)
 int Q3Map::ConvertPatchesToTriangles(void)
 {
 
-	float flPosX=0.0f ;
-	float flPosY=0.0f ;
-	float flPosZ=0.0f ;
-	float	flNormX=0.0f ;
-	float	flNormY=0.0f ;
-	float	flNormZ=0.0f ;
-	float flTexU=0.0f ;
-	float flTexV=0.0f ;
-	int nMeshVert=0 ;
+//	float flPosX=0.0f ;
+//	float flPosY=0.0f ;
+//	float flPosZ=0.0f ;
+//	float	flNormX=0.0f ;
+//	float	flNormY=0.0f ;
+//	float	flNormZ=0.0f ;
+//	float flTexU=0.0f ;
+//	float flTexV=0.0f ;
+//	int nMeshVert=0 ;
 	int nMeshVertA=0 ;
 	int nMeshVertB=0 ;
 	int nMeshVertC=0 ;
@@ -2704,7 +2704,7 @@ int Q3Map::ConvertPatchesToTriangles(void)
 	int nFirstVertex=m_nVertexMax ;
 	
 	int nVertCount=nFirstVertex ;
-	int nPatchCount=0 ;
+//	int nPatchCount=0 ;
 
 	int* pIndexBuffer=NULL ;
 
@@ -2874,18 +2874,18 @@ int Q3Map::ConvertTexLampsToLampTriangles(void)
 	float flCentreY=0.0f ;
 	float flCentreZ=0.0f ;
 
-	float flMinX=0.0f ;
-	float flMinY=0.0f ;
-	float flMinZ=0.0f ;
-	float flMaxX=0.0f ;
-	float flMaxY=0.0f ;
-	float flMaxZ=0.0f ;
+//	float flMinX=0.0f ;
+//	float flMinY=0.0f ;
+//	float flMinZ=0.0f ;
+//	float flMaxX=0.0f ;
+//	float flMaxY=0.0f ;
+//	float flMaxZ=0.0f ;
 
-	float	flNormX=0.0f ;
-	float	flNormY=0.0f ;
-	float	flNormZ=0.0f ;
-	float flTexU=0.0f ;
-	float flTexV=0.0f ;
+//	float	flNormX=0.0f ;
+//	float	flNormY=0.0f ;
+//	float	flNormZ=0.0f ;
+//	float flTexU=0.0f ;
+//	float flTexV=0.0f ;
 
 	float flColR=0.0f ;
 	float flColG=0.0f ;
@@ -2899,9 +2899,9 @@ int Q3Map::ConvertTexLampsToLampTriangles(void)
 	int nLightNode=0 ;
 	int nTexture=0 ;
 	int nZone=0 ;
-	int nLampZone=0 ;
-	int nMaxLampZone=0 ;
-	int nZoneMatch=0 ;
+//	int nLampZone=0 ;
+//	int nMaxLampZone=0 ;
+//	int nZoneMatch=0 ;
 
 
 	for(nTexLampListPos=0 ; nTexLampListPos<m_nTexLampMax ; nTexLampListPos++)
@@ -3001,25 +3001,25 @@ int Q3Map::ConvertTexLampsToLampTriangles(void)
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[0]  ].texcoord[0][1]=flCentreY ;
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[0]  ].texcoord[1][0]=flCentreZ ;
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[0]  ].texcoord[1][1]=flBrightness ;
-				m_pVertex[  m_pTriangle[nTriangle].VIndex[0]  ].color[0]=flColR ;
-				m_pVertex[  m_pTriangle[nTriangle].VIndex[0]  ].color[1]=flColG ;
-				m_pVertex[  m_pTriangle[nTriangle].VIndex[0]  ].color[2]=flColB ;
+				m_pVertex[  m_pTriangle[nTriangle].VIndex[0]  ].color[0]=(unsigned char)flColR ;
+				m_pVertex[  m_pTriangle[nTriangle].VIndex[0]  ].color[1]=(unsigned char)flColG ;
+				m_pVertex[  m_pTriangle[nTriangle].VIndex[0]  ].color[2]=(unsigned char)flColB ;
 
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].texcoord[0][0]=flCentreX ;
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].texcoord[0][1]=flCentreY ;
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].texcoord[1][0]=flCentreZ ;
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].texcoord[1][1]=flBrightness ;
-				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].color[0]=flColR ;
-				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].color[1]=flColG ;
-				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].color[2]=flColB ;
+				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].color[0]=(unsigned char)flColR ;
+				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].color[1]=(unsigned char)flColG ;
+				m_pVertex[  m_pTriangle[nTriangle].VIndex[1]  ].color[2]=(unsigned char)flColB ;
 
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].texcoord[0][0]=flCentreX ;
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].texcoord[0][1]=flCentreY ;
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].texcoord[1][0]=flCentreZ ;
 				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].texcoord[1][1]=flBrightness ;
-				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].color[0]=flColR ;
-				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].color[1]=flColG ;
-				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].color[2]=flColB ;
+				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].color[0]=(unsigned char)flColR ;
+				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].color[1]=(unsigned char)flColG ;
+				m_pVertex[  m_pTriangle[nTriangle].VIndex[2]  ].color[2]=(unsigned char)flColB ;
 
 				
 				m_pTriangle[ m_nTriangleMax ].Group=m_nGroup ;
@@ -3060,11 +3060,11 @@ int Q3Map::ConvertLampsToTriangles(void)
 	float flMaxY=0.0f ;
 	float flMaxZ=0.0f ;
 
-	float	flNormX=0.0f ;
-	float	flNormY=0.0f ;
-	float	flNormZ=0.0f ;
-	float flTexU=0.0f ;
-	float flTexV=0.0f ;
+//	float	flNormX=0.0f ;
+//	float	flNormY=0.0f ;
+//	float	flNormZ=0.0f ;
+//	float flTexU=0.0f ;
+//	float flTexV=0.0f ;
 
 	float flColR=0.0f ;
 	float flColG=0.0f ;
@@ -3148,9 +3148,9 @@ int Q3Map::ConvertLampsToTriangles(void)
 		Vert_xyz.texcoord[0][1]=flCentreY ;
 		Vert_xyz.texcoord[1][0]=flCentreZ ;
 		Vert_xyz.texcoord[1][1]=flBrightness ;
-		Vert_xyz.color[0]=flColR ;
-		Vert_xyz.color[1]=flColG ;
-		Vert_xyz.color[2]=flColB ;
+		Vert_xyz.color[0]=(unsigned char)flColR ;
+		Vert_xyz.color[1]=(unsigned char)flColG ;
+		Vert_xyz.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_xyz)) return 0 ;
 			
 
@@ -3164,9 +3164,9 @@ int Q3Map::ConvertLampsToTriangles(void)
 		Vert_Xyz.texcoord[0][1]=flCentreY ;
 		Vert_Xyz.texcoord[1][0]=flCentreZ ;
 		Vert_Xyz.texcoord[1][1]=flBrightness ;
-		Vert_Xyz.color[0]=flColR ;
-		Vert_Xyz.color[1]=flColG ;
-		Vert_Xyz.color[2]=flColB ;
+		Vert_Xyz.color[0]=(unsigned char)flColR ;
+		Vert_Xyz.color[1]=(unsigned char)flColG ;
+		Vert_Xyz.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_Xyz)) return 0 ;
 
 		Vert_xYz.position[0]=flMinX ;
@@ -3179,9 +3179,9 @@ int Q3Map::ConvertLampsToTriangles(void)
 		Vert_xYz.texcoord[0][1]=flCentreY ;
 		Vert_xYz.texcoord[1][0]=flCentreZ ;
 		Vert_xYz.texcoord[1][1]=flBrightness ;
-		Vert_xYz.color[0]=flColR ;
-		Vert_xYz.color[1]=flColG ;
-		Vert_xYz.color[2]=flColB ;
+		Vert_xYz.color[0]=(unsigned char)flColR ;
+		Vert_xYz.color[1]=(unsigned char)flColG ;
+		Vert_xYz.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_xYz)) return 0 ;
 
 		Vert_XYz.position[0]=flMaxX ;
@@ -3194,9 +3194,9 @@ int Q3Map::ConvertLampsToTriangles(void)
 		Vert_XYz.texcoord[0][1]=flCentreY ;
 		Vert_XYz.texcoord[1][0]=flCentreZ ;
 		Vert_XYz.texcoord[1][1]=flBrightness ;
-		Vert_XYz.color[0]=flColR ;
-		Vert_XYz.color[1]=flColG ;
-		Vert_XYz.color[2]=flColB ;
+		Vert_XYz.color[0]=(unsigned char)flColR ;
+		Vert_XYz.color[1]=(unsigned char)flColG ;
+		Vert_XYz.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_XYz)) return 0 ;
 
 		//////////////////////////////////////
@@ -3211,9 +3211,9 @@ int Q3Map::ConvertLampsToTriangles(void)
 		Vert_xyZ.texcoord[0][1]=flCentreY ;
 		Vert_xyZ.texcoord[1][0]=flCentreZ ;
 		Vert_xyZ.texcoord[1][1]=flBrightness ;
-		Vert_xyZ.color[0]=flColR ;
-		Vert_xyZ.color[1]=flColG ;
-		Vert_xyZ.color[2]=flColB ;
+		Vert_xyZ.color[0]=(unsigned char)flColR ;
+		Vert_xyZ.color[1]=(unsigned char)flColG ;
+		Vert_xyZ.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_xyZ)) return 0 ;
 
 		Vert_XyZ.position[0]=flMaxX ;
@@ -3226,9 +3226,9 @@ int Q3Map::ConvertLampsToTriangles(void)
 		Vert_XyZ.texcoord[0][1]=flCentreY ;
 		Vert_XyZ.texcoord[1][0]=flCentreZ ;
 		Vert_XyZ.texcoord[1][1]=flBrightness ;
-		Vert_XyZ.color[0]=flColR ;
-		Vert_XyZ.color[1]=flColG ;
-		Vert_XyZ.color[2]=flColB ;
+		Vert_XyZ.color[0]=(unsigned char)flColR ;
+		Vert_XyZ.color[1]=(unsigned char)flColG ;
+		Vert_XyZ.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_XyZ)) return 0 ;
 
 		Vert_xYZ.position[0]=flMinX ;
@@ -3241,9 +3241,9 @@ int Q3Map::ConvertLampsToTriangles(void)
 		Vert_xYZ.texcoord[0][1]=flCentreY ;
 		Vert_xYZ.texcoord[1][0]=flCentreZ ;
 		Vert_xYZ.texcoord[1][1]=flBrightness ;
-		Vert_xYZ.color[0]=flColR ;
-		Vert_xYZ.color[1]=flColG ;
-		Vert_xYZ.color[2]=flColB ;
+		Vert_xYZ.color[0]=(unsigned char)flColR ;
+		Vert_xYZ.color[1]=(unsigned char)flColG ;
+		Vert_xYZ.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_xYZ)) return 0 ;
 
 		Vert_XYZ.position[0]=flMaxX ;
@@ -3256,9 +3256,9 @@ int Q3Map::ConvertLampsToTriangles(void)
 		Vert_XYZ.texcoord[0][1]=flCentreY ;
 		Vert_XYZ.texcoord[1][0]=flCentreZ ;
 		Vert_XYZ.texcoord[1][1]=flBrightness ;
-		Vert_XYZ.color[0]=flColR ;
-		Vert_XYZ.color[1]=flColG ;
-		Vert_XYZ.color[2]=flColB ;
+		Vert_XYZ.color[0]=(unsigned char)flColR ;
+		Vert_XYZ.color[1]=(unsigned char)flColG ;
+		Vert_XYZ.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_XYZ)) return 0 ;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3361,11 +3361,11 @@ int Q3Map::ConvertLampsToGlowTriangles(void)
 	float flMaxY=0.0f ;
 	float flMaxZ=0.0f ;
 
-	float	flNormX=0.0f ;
-	float	flNormY=0.0f ;
-	float	flNormZ=0.0f ;
-	float flTexU=0.0f ;
-	float flTexV=0.0f ;
+//	float	flNormX=0.0f ;
+//	float	flNormY=0.0f ;
+//	float	flNormZ=0.0f ;
+//	float flTexU=0.0f ;
+//	float flTexV=0.0f ;
 
 	float flColR=0.0f ;
 	float flColG=0.0f ;
@@ -3450,9 +3450,9 @@ int Q3Map::ConvertLampsToGlowTriangles(void)
 		Vert_L.texcoord[0][1]=flCentreY ;
 		Vert_L.texcoord[1][0]=flCentreZ ;
 		Vert_L.texcoord[1][1]=flBrightness ;
-		Vert_L.color[0]=flColR ;
-		Vert_L.color[1]=flColG ;
-		Vert_L.color[2]=flColB ;
+		Vert_L.color[0]=(unsigned char)flColR ;
+		Vert_L.color[1]=(unsigned char)flColG ;
+		Vert_L.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_L)) return 0 ;
 
 		Vert_R.position[0]=flMaxX ;
@@ -3465,9 +3465,9 @@ int Q3Map::ConvertLampsToGlowTriangles(void)
 		Vert_R.texcoord[0][1]=flCentreY ;
 		Vert_R.texcoord[1][0]=flCentreZ ;
 		Vert_R.texcoord[1][1]=flBrightness ;
-		Vert_R.color[0]=flColR ;
-		Vert_R.color[1]=flColG ;
-		Vert_R.color[2]=flColB ;
+		Vert_R.color[0]=(unsigned char)flColR ;
+		Vert_R.color[1]=(unsigned char)flColG ;
+		Vert_R.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_R)) return 0 ;
 
 		Vert_F.position[0]=flCentreX ;
@@ -3480,9 +3480,9 @@ int Q3Map::ConvertLampsToGlowTriangles(void)
 		Vert_F.texcoord[0][1]=flCentreY ;
 		Vert_F.texcoord[1][0]=flCentreZ ;
 		Vert_F.texcoord[1][1]=flBrightness ;
-		Vert_F.color[0]=flColR ;
-		Vert_F.color[1]=flColG ;
-		Vert_F.color[2]=flColB ;
+		Vert_F.color[0]=(unsigned char)flColR ;
+		Vert_F.color[1]=(unsigned char)flColG ;
+		Vert_F.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_F)) return 0 ;
 		
 		Vert_B.position[0]=flCentreX ;
@@ -3495,9 +3495,9 @@ int Q3Map::ConvertLampsToGlowTriangles(void)
 		Vert_B.texcoord[0][1]=flCentreY ;
 		Vert_B.texcoord[1][0]=flCentreZ ;
 		Vert_B.texcoord[1][1]=flBrightness ;
-		Vert_B.color[0]=flColR ;
-		Vert_B.color[1]=flColG ;
-		Vert_B.color[2]=flColB ;
+		Vert_B.color[0]=(unsigned char)flColR ;
+		Vert_B.color[1]=(unsigned char)flColG ;
+		Vert_B.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_B)) return 0 ;
 
 		Vert_U.position[0]=flCentreX ;
@@ -3510,9 +3510,9 @@ int Q3Map::ConvertLampsToGlowTriangles(void)
 		Vert_U.texcoord[0][1]=flCentreY ;
 		Vert_U.texcoord[1][0]=flCentreZ ;
 		Vert_U.texcoord[1][1]=flBrightness ;
-		Vert_U.color[0]=flColR ;
-		Vert_U.color[1]=flColG ;
-		Vert_U.color[2]=flColB ;
+		Vert_U.color[0]=(unsigned char)flColR ;
+		Vert_U.color[1]=(unsigned char)flColG ;
+		Vert_U.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_U)) return 0 ;
 
 		Vert_D.position[0]=flCentreX ;
@@ -3525,9 +3525,9 @@ int Q3Map::ConvertLampsToGlowTriangles(void)
 		Vert_D.texcoord[0][1]=flCentreY ;
 		Vert_D.texcoord[1][0]=flCentreZ ;
 		Vert_D.texcoord[1][1]=flBrightness ;
-		Vert_D.color[0]=flColR ;
-		Vert_D.color[1]=flColG ;
-		Vert_D.color[2]=flColB ;
+		Vert_D.color[0]=(unsigned char)flColR ;
+		Vert_D.color[1]=(unsigned char)flColG ;
+		Vert_D.color[2]=(unsigned char)flColB ;
 		if(!AddVertex(Vert_D)) return 0 ;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3605,11 +3605,11 @@ int Q3Map::ConvertLightsToGlowTriangles(void)
 	float flMaxY=0.0f ;
 	float flMaxZ=0.0f ;
 
-	float	flNormX=0.0f ;
-	float	flNormY=0.0f ;
-	float	flNormZ=0.0f ;
-	float flTexU=0.0f ;
-	float flTexV=0.0f ;
+//	float	flNormX=0.0f ;
+//	float	flNormY=0.0f ;
+//	float	flNormZ=0.0f ;
+//	float flTexU=0.0f ;
+//	float flTexV=0.0f ;
 
 	float flColR=0.0f ;
 	float flColG=0.0f ;
@@ -3637,7 +3637,7 @@ int Q3Map::ConvertLightsToGlowTriangles(void)
 	float flBaseGlowSize=0.2f ;//0.001f ;
 	float flGlowSize=0.0f ;
 
-	char chMessage[1024] ;
+//	char chMessage[1024] ;
 
 
 
@@ -3784,9 +3784,9 @@ int Q3Map::ConvertLightsToGlowTriangles(void)
 	Vert_Or.texcoord[0][1]=flCentreY ;
 	Vert_Or.texcoord[1][0]=flCentreZ ;
 	Vert_Or.texcoord[1][1]=flBrightness ;
-	Vert_Or.color[0]=flColR ;
-	Vert_Or.color[1]=flColG ;
-	Vert_Or.color[2]=flColB ;
+	Vert_Or.color[0]=(unsigned char)flColR ;
+	Vert_Or.color[1]=(unsigned char)flColG ;
+	Vert_Or.color[2]=(unsigned char)flColB ;
 	if(!AddVertex(Vert_Or)) return 0 ;
 
 
@@ -3826,9 +3826,9 @@ int Q3Map::ConvertLightsToGlowTriangles(void)
 	Vert_A0.texcoord[0][1]=flCentreY ;
 	Vert_A0.texcoord[1][0]=flCentreZ ;
 	Vert_A0.texcoord[1][1]=flBrightness ;
-	Vert_A0.color[0]=flColR ;//abs(Vert_A0.normal[0])*255 ;//0.0f ;
-	Vert_A0.color[1]=flColG ;//abs(Vert_A0.normal[1])*255 ;//0.0f ;
-	Vert_A0.color[2]=flColB ;//abs(Vert_A0.normal[2])*255 ;//0.0f ;
+	Vert_A0.color[0]=(unsigned char)flColR ;//abs(Vert_A0.normal[0])*255 ;//0.0f ;
+	Vert_A0.color[1]=(unsigned char)flColG ;//abs(Vert_A0.normal[1])*255 ;//0.0f ;
+	Vert_A0.color[2]=(unsigned char)flColB ;//abs(Vert_A0.normal[2])*255 ;//0.0f ;
 	if(!AddVertex(Vert_A0)) return 0 ;
 
 
@@ -3855,9 +3855,9 @@ int Q3Map::ConvertLightsToGlowTriangles(void)
 	Vert_A1.texcoord[0][1]=flCentreY ;
 	Vert_A1.texcoord[1][0]=flCentreZ ;
 	Vert_A1.texcoord[1][1]=flBrightness ;
-	Vert_A1.color[0]=flColR ;//abs(Vert_A1.normal[0])*255 ;//0.0f ;
-	Vert_A1.color[1]=flColG ;//abs(Vert_A1.normal[1])*255 ;//0.0f ;
-	Vert_A1.color[2]=flColB ;//abs(Vert_A1.normal[2])*255 ;//0.0f ;
+	Vert_A1.color[0]=(unsigned char)flColR ;//abs(Vert_A1.normal[0])*255 ;//0.0f ;
+	Vert_A1.color[1]=(unsigned char)flColG ;//abs(Vert_A1.normal[1])*255 ;//0.0f ;
+	Vert_A1.color[2]=(unsigned char)flColB ;//abs(Vert_A1.normal[2])*255 ;//0.0f ;
 	if(!AddVertex(Vert_A1)) return 0 ;
 
 	//////////////////////////////////////////////////////////////////////
@@ -3888,9 +3888,9 @@ int Q3Map::ConvertLightsToGlowTriangles(void)
 	Vert_B0.texcoord[0][1]=flCentreY ;
 	Vert_B0.texcoord[1][0]=flCentreZ ;
 	Vert_B0.texcoord[1][1]=flBrightness ;
-	Vert_B0.color[0]=flColR ;//abs(Vert_B0.normal[0])*255 ;//0.0f ;
-	Vert_B0.color[1]=flColG ;//abs(Vert_B0.normal[1])*255 ;//0.0f ;
-	Vert_B0.color[2]=flColB ;//abs(Vert_B0.normal[2])*255 ;//0.0f ;
+	Vert_B0.color[0]=(unsigned char)flColR ;//abs(Vert_B0.normal[0])*255 ;//0.0f ;
+	Vert_B0.color[1]=(unsigned char)flColG ;//abs(Vert_B0.normal[1])*255 ;//0.0f ;
+	Vert_B0.color[2]=(unsigned char)flColB ;//abs(Vert_B0.normal[2])*255 ;//0.0f ;
 	if(!AddVertex(Vert_B0)) return 0 ;
 
 	tangentStart=start ;
@@ -3916,9 +3916,9 @@ int Q3Map::ConvertLightsToGlowTriangles(void)
 	Vert_B1.texcoord[0][1]=flCentreY ;
 	Vert_B1.texcoord[1][0]=flCentreZ ;
 	Vert_B1.texcoord[1][1]=flBrightness ;
-	Vert_B1.color[0]=flColR ;//abs(Vert_B1.normal[0])*255 ;//0.0f ;
-	Vert_B1.color[1]=flColG ;//abs(Vert_B1.normal[1])*255 ;//0.0f ;
-	Vert_B1.color[2]=flColB ;//abs(Vert_B1.normal[2])*255 ;//0.0f ;
+	Vert_B1.color[0]=(unsigned char)flColR ;//abs(Vert_B1.normal[0])*255 ;//0.0f ;
+	Vert_B1.color[1]=(unsigned char)flColG ;//abs(Vert_B1.normal[1])*255 ;//0.0f ;
+	Vert_B1.color[2]=(unsigned char)flColB ;//abs(Vert_B1.normal[2])*255 ;//0.0f ;
 	if(!AddVertex(Vert_B1)) return 0 ;
 
 	/////////////////////////////////////////////////////////////////////

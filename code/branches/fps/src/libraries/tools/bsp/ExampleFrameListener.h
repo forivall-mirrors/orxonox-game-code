@@ -41,7 +41,9 @@ D:        Step right
 
 //Use this define to signify OIS will be used as a DLL
 //(so that dll import/export macros are in effect)
-#define OIS_DYNAMIC_LIB
+#ifndef OIS_DYNAMIC_LIB
+#  define OIS_DYNAMIC_LIB
+#endif
 #include <OIS/OIS.h>
 
 using namespace Ogre;

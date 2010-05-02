@@ -80,7 +80,7 @@ int DemoApp::runDemo_Default()
 
 	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Start main loop (Default)...");
 
-	char chMessage[1024] ;
+//	char chMessage[1024] ;
 	
 	UINT uFrameStartTime=OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds();
 	UINT uFrameTotalTime=0 ;
@@ -152,7 +152,7 @@ int DemoApp::runDemo_MethodA()
 
 	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Start main loop (MethodA)...");
 
-	char chMessage[1024] ;
+//	char chMessage[1024] ;
 	
 	UINT uFrameStartTime=OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds();
 	UINT uFrameTotalTime=0 ;
@@ -314,7 +314,7 @@ int DemoApp::runDemo_MethodB()
 
 	OgreFramework::getSingletonPtr()->m_pLog->logMessage("Start main loop (MethodB)...");
 
-	char chMessage[1024] ;
+//	char chMessage[1024] ;
 	
 	UINT uFrameStartTime=OgreFramework::getSingletonPtr()->m_pTimer->getMilliseconds();
 	UINT uFrameTotalTime=0 ;
@@ -454,7 +454,7 @@ int DemoApp::runDemo_MethodC()
 			
 
 
-			uSleepTime=(uFrameTargetTime-uFrameRenderTime)/1000.0f ;
+			uSleepTime=(int)((uFrameTargetTime-uFrameRenderTime)/1000.0f) ;
 			if(uSleepTime>0) Sleep(uSleepTime) ;
 
 			sprintf(chMessage, "render %i, target %i, sleep %i", uFrameRenderTime, uFrameTargetTime, uSleepTime) ;

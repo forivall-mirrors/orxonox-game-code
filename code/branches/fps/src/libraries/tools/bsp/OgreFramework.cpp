@@ -107,9 +107,9 @@ OgreFramework::OgreFramework()
 
 	m_nMaxEntity=0 ;
 	m_pEntityInfo=NULL ;
-	m_nMaxVisibleEntity=NULL ;
+	m_nMaxVisibleEntity=0 ;
 	m_pVisibleEntity=NULL ;
-	m_nMaxFrustumEntity=NULL ;
+	m_nMaxFrustumEntity=0 ;
 	m_pFrustumEntity=NULL ;
 
 
@@ -240,7 +240,7 @@ OgreFramework::~OgreFramework()
 
 void OgreFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListener, OIS::MouseListener *pMouseListener)
 {
-	Ogre::LogManager* logMgr = new Ogre::LogManager();
+//	Ogre::LogManager* logMgr = new Ogre::LogManager();
 	
 	m_pLog = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, true, false);
 	m_pLog->setDebugOutputEnabled(true);
@@ -970,7 +970,7 @@ void OgreFramework::UpdateRenderTargets()
 
 	int nVisEnt=0 ;
 	int nEntity=0 ;
-	int nMaxEntity=0 ;
+//	int nMaxEntity=0 ;
 	int nSubMesh=0 ;
 	int nMaxSubMesh=0 ;
 
@@ -1797,7 +1797,7 @@ void OgreFramework::UpdateRenderTargets()
 		//////////////////////////////////////////////////////////////
 		// now we do a few rounds of ping-pong bluring of A to B, B to A.
 		int nMaxBlur=4 ;
-		int nLastBlur=nMaxBlur-1 ;
+//		int nLastBlur=nMaxBlur-1 ;
 		int nBlurLoop=0 ;
 
 		
@@ -2281,7 +2281,7 @@ void OgreFramework::updateOgre(double timeSinceLastFrame)
 		
 	m_TranslateVector = Vector3::ZERO;
 
-	char chMessage[1024] ;
+//	char chMessage[1024] ;
 	//sprintf(chMessage, "winmessage %u, %u, %u", m_pRenderWnd->m_Test_uMsg, (UINT)m_pRenderWnd->m_Test_wParam, (UINT)m_pRenderWnd->m_Test_lParam) ; 
 	//m_pLog->logMessage(chMessage) ;
 
@@ -2416,9 +2416,9 @@ void OgreFramework::updateStats()
 	
 	Ogre::Vector3 Pos ;
 	Pos=m_pCamera->getPosition() ;
-	int nCamX=Pos.x ;
-	int nCamY=Pos.y ;
-	int nCamZ=Pos.z ;
+	Ogre::Real nCamX=Pos.x ;
+	Ogre::Real nCamY=Pos.y ;
+	Ogre::Real nCamZ=Pos.z ;
 
 
 	static String currFps = "FPS: "; 
@@ -2998,8 +2998,8 @@ void OgreFramework::UnloadMap(bool bShutdown)
 
 		// reattach all entity scenenodes.
 		int nLoop=0 ;
-		int nSubMesh=0 ;
-		int nMaxSubMesh=0 ;
+//		int nSubMesh=0 ;
+//		int nMaxSubMesh=0 ;
 		for(nLoop=0 ; nLoop<m_nMaxEntity ; nLoop++)
 			m_pSceneMgr->getRootSceneNode()->addChild(m_pEntityInfo[nLoop].pMasterNode) ;
 
@@ -3485,7 +3485,7 @@ int OgreFramework::ConstructMapFromTriangles(void)
 	char chMeshName[1024] ;
 
 	int nTriangle=0 ;
-	int nStart=0 ;
+//	int nStart=0 ;
 	int nEnd=0 ;
 	int nMaterial=0 ;
 	int nGroup=0 ;
@@ -3552,9 +3552,9 @@ int OgreFramework::ConstructMapFromTriangles(void)
 	float flMaxX=0.0f ;
 	float flMaxY=0.0f ;
 	float flMaxZ=0.0f ;
-	float flMidX=0.0f ;
-	float flMidY=0.0f ;
-	float flMidZ=0.0f ;
+//	float flMidX=0.0f ;
+//	float flMidY=0.0f ;
+//	float flMidZ=0.0f ;
 	float flDisX=0.0f ;
 	float flDisY=0.0f ;
 	float flDisZ=0.0f ;
@@ -5628,23 +5628,23 @@ void OgreFramework::CalculateZoneVisibility(Ogre::Camera *pCamera, int *pCameraZ
 
 	
 	int nZone=0 ;
-	int nZoneIndex=0 ;
+//	int nZoneIndex=0 ;
 	int nSubZone=0 ;
-	int nSubZoneIndex=0 ;
+//	int nSubZoneIndex=0 ;
 	int nMaxSubZone=0 ;
 	int nPortal=0 ;
-	int nPortalIndex=0 ;
+//	int nPortalIndex=0 ;
 	int nMaxPortal=0 ;
-	int nMaxPortalZone=0 ;
-	int nPortalZone=0 ;
-	int nPortalZoneIndex=0 ;
-	int nMaxZone=0 ;
+//	int nMaxPortalZone=0 ;
+//	int nPortalZone=0 ;
+//	int nPortalZoneIndex=0 ;
+//	int nMaxZone=0 ;
 	
 
 	int nMaxLight=m_Q3Map->m_nLightMax ;
 	int nLt=0 ;
 
-	int nMaxSubLight=m_Q3Map->m_nSubLightMax ;
+//	int nMaxSubLight=m_Q3Map->m_nSubLightMax ;
 	int nSubLt=0 ;
 	
 	m_nMaxVisibleLight=0 ;
@@ -5890,7 +5890,7 @@ void OgreFramework::SetupEntityZones(void)
 	int nSubLightIndex=0 ;
 	int nSubLight=0 ;
 
-	int nLight=0;
+//	int nLight=0;
 	int nLightIndex=0 ;
 
 
@@ -6047,7 +6047,7 @@ void OgreFramework::CalculateEntityVisibility(Ogre::Camera* pCamera, char* pZone
 	int nMaxZone=0 ;
 	int nZone=0 ;
 	int nZoneIndex=0 ;
-	int nVisible=0 ;
+//	int nVisible=0 ;
 	Ogre::AxisAlignedBox AABB ;
 
 
@@ -6383,24 +6383,24 @@ void OgreFramework::CheckMultiZoneLights(int nCameraZone, char* pZoneVis, char* 
 	int nLightMax=m_Q3Map->m_nMaxMultiZoneLight ;
 	int nLight=0 ;
 	int nLightIndex=0 ;
-	int nLightVal=0 ;
+//	int nLightVal=0 ;
 	int nOpenPortals=0 ;
-	int nZoneHasOpenPortals=0 ;
+//	int nZoneHasOpenPortals=0 ;
 	int nPortal=0 ;
 	int nPortalIndex=0 ;
 	int nMaxPortal=0 ;
-	int nZone=0 ;
-	int nMaxZone=0 ;
-	int nZoneIndex=0 ;
+//	int nZone=0 ;
+//	int nMaxZone=0 ;
+//	int nZoneIndex=0 ;
 
 	int nSubLightMax=0 ;
-	int nSubLightIndex=0 ;
+//	int nSubLightIndex=0 ;
 	int nSubLight=0 ;
 	int nSubLightStart=0 ;
 
 	int nPortalLightMax=0 ;
 	int nPortalLightIndex=0 ;
-	int nPortalLight=0 ;
+//	int nPortalLight=0 ;
 
 	int nCentreZone=0 ;
 
@@ -6494,7 +6494,7 @@ void OgreFramework::AddZonesFromMultiZoneLights(char* pZoneVis, char* pLightVis,
 	float flMaxZ=0.0f ;
 
 	int nSubLightMax=0 ;
-	int nSubLightIndex=0 ;
+//	int nSubLightIndex=0 ;
 	int nSubLight=0 ;
 	int nSubLightStart=0 ;
 	int nSubLightFirst=0 ;
@@ -6585,13 +6585,13 @@ void OgreFramework::PortalScan(Ogre::Camera *pCamera, int nZone, Ogre::Real Scal
 
 	int nLight=0;
 	int nLightVal=0 ;
-	int nLightIndex=0 ;
-	int nMaxLight=0 ;
+//	int nLightIndex=0 ;
+//	int nMaxLight=0 ;
 
 	int nSubLight=0 ;
 	int nSubLightIndex=0 ;
 	int nMaxSubLight=0 ;
-	int nSubLightVal=0 ;
+//	int nSubLightVal=0 ;
 
 	
 	// check all lights completely contained in this zone to see if they're visible
@@ -6871,7 +6871,7 @@ int OgreFramework::CalculatePortalFrustum(Ogre::Camera *pCamera, int nPortal, Og
 
 void OgreFramework::initLight() 
 {
-	char chMessage[1024] ;
+//	char chMessage[1024] ;
 
 		// these lights only have placeholder settings to begin with, since they get moved around and reused thoughout the level.
 	
@@ -6907,13 +6907,13 @@ void OgreFramework::ParseBZNConfig(void)
 	const int KVSIZE=1024 ;
 	// make sure the config is a string
 	int nConfigPos=-1 ;
-	int nPos=0 ;
+//	int nPos=0 ;
 	int nKeyPos=0 ;
 	int nValuePos=0 ;
 
 	char chKey[KVSIZE] ;
 	char chValue[KVSIZE] ;
-	float flValue=0.0f ;
+	int nValue=0 ;
 
 	
 
@@ -6966,16 +6966,16 @@ void OgreFramework::ParseBZNConfig(void)
 					chValue[nValuePos]='\0' ; // null terminate the value
 				
 					// convert value string to a float
-					flValue=atof(chValue) ;
+					nValue=atoi(chValue) ;
 
 					// assign that value
-					if(strcmp("r_shadowmapsize", chKey)==0)		{ m_nShadowMapSize=flValue ; if(m_nShadowMapSize<2) m_nShadowMapSize=2 ; }
-					if(strcmp("r_shadowrgbsize", chKey)==0)		{ m_nShadowRGBSize=flValue ; if(m_nShadowRGBSize<2) m_nShadowRGBSize=2 ; }
-					if(strcmp("r_colouredshadow", chKey)==0)	{ m_nColouredShadow=flValue ; }
-					if(strcmp("r_renderhdr", chKey)==0)				{ m_nRenderHDR=flValue ; }
-					if(strcmp("r_maxgpuquery", chKey)==0)			{ m_nMaxGPUQuery=flValue ; if(m_nMaxGPUQuery<0) m_nMaxGPUQuery=0 ; if(m_nMaxGPUQuery>MAXGPUQUERY) m_nMaxGPUQuery=MAXGPUQUERY ; }
+					if(strcmp("r_shadowmapsize", chKey)==0)		{ m_nShadowMapSize=nValue ; if(m_nShadowMapSize<2) m_nShadowMapSize=2 ; }
+					if(strcmp("r_shadowrgbsize", chKey)==0)		{ m_nShadowRGBSize=nValue ; if(m_nShadowRGBSize<2) m_nShadowRGBSize=2 ; }
+					if(strcmp("r_colouredshadow", chKey)==0)	{ m_nColouredShadow=nValue ; }
+					if(strcmp("r_renderhdr", chKey)==0)				{ m_nRenderHDR=nValue ; }
+					if(strcmp("r_maxgpuquery", chKey)==0)			{ m_nMaxGPUQuery=nValue ; if(m_nMaxGPUQuery<0) m_nMaxGPUQuery=0 ; if(m_nMaxGPUQuery>MAXGPUQUERY) m_nMaxGPUQuery=MAXGPUQUERY ; }
 
-					//sprintf(m_chBug, "Key: %s, Value: %f", chKey, flValue) ;
+					//sprintf(m_chBug, "Key: %s, Value: %i", chKey, nValue) ;
 					//m_pLog->logMessage(m_chBug);
 				
 				}// end found end of value
