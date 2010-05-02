@@ -40,6 +40,7 @@
 #include "controllers/Controller.h"
 #include "weapons/RocketController.h"
 #include "sound/WorldSound.h"
+#include "util/Debug.h"
 
 namespace orxonox
 {
@@ -57,6 +58,7 @@ namespace orxonox
         this->localAngularVelocity_ = 0;
         this->bDestroy_ = false;
         this->lifetime_ = 100;
+		COUT(0)<< "simplerocket constructed\n";
 		//this->camera_ = null;
 		//RocketController* myRController = new RocketController(this);
 		//this->setController(creator);
@@ -101,6 +103,8 @@ namespace orxonox
     */
     SimpleRocket::~SimpleRocket()
     {
+		COUT(0)<< "simplerocket destroyed\n";
+		delete this->getController();
     }
 
     /**

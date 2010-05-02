@@ -30,6 +30,7 @@
 #include "projectiles/SimpleRocket.h" 
 #include "util/Math.h"
 #include "weapons/projectiles/SimpleRocket.h"
+#include "util/Debug.h"
 
 
 namespace orxonox
@@ -40,6 +41,7 @@ namespace orxonox
     */
     RocketController::RocketController(BaseObject* creator) : Controller(creator)
     {
+		COUT(0)<< "RocketController constructed\n";
 
         RegisterObject(RocketController);
 		SimpleRocket* rocket = new SimpleRocket(this);
@@ -68,8 +70,8 @@ namespace orxonox
 
 
 	RocketController::~RocketController() {
-
-		delete this->getControllableEntity();
+		COUT(0)<< "RocketController destroyed\n";
+		delete this;
 
 	}
 
