@@ -29,8 +29,11 @@
 #ifndef _HUDNavigation_H__
 #define _HUDNavigation_H__
 
+#include <utility>
+#include <map>
 #include "overlays/OverlaysPrereqs.h"
 
+#include "interfaces/RadarListener.h"
 #include "util/OgreForwardRefs.h"
 #include "tools/interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
@@ -40,8 +43,7 @@
 
 namespace orxonox
 {
-class WorldEntity;
-    class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable
+    class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable, public RadarListener
     {
     public:
         HUDNavigation(BaseObject* creator);
@@ -49,9 +51,12 @@ class WorldEntity;
 
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
-	
-	virtual map <WorldEntity*, pair <Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > ActiveObjectList;
-	
+	virtual void addObject(RadarViewable* object);
+	 
+	virtual void removeObject(RadarViewable* viewable);
+         virtual void objectChanged(RadarViewable* viewable){}
+         inline float getRadarSensitivity() const{}
+         inline void radarTick(float dt) {}
 
     private:
 
@@ -62,7 +67,7 @@ class WorldEntity;
 	
 
         // XMLPort accessors
-        void setNavMarkerSize(float size) { this->navMarkerSize_ = size; this->sizeChanged(); }
+        void setNavMarkerSize(float size) { this->navMarkerSize_ = size; this->sizeChanged(); } 
         float getNavMarkerSize() const    { return this->navMarkerSize_; }
 
 /*
@@ -93,8 +98,10 @@ class WorldEntity;
         Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
         bool wasOutOfView_;                         //!< Performance booster variable: setMaterial is not cheap
 	
+	std::map<RadarViewable*, std::pair<Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > activeObjectList_;
 	
     };
+    
 }
 
 #endif /* _HUDNavigation_H__ */

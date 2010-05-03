@@ -29,13 +29,10 @@
 #include "HUDNavigation.h"
 
 #include <string>
-#include <vector>
-#include <map>
 #include <OgreCamera.h>
 #include <OgreOverlayManager.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
-
 #include "util/Math.h"
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
@@ -46,6 +43,7 @@
 #include "graphics/Camera.h"
 #include "controllers/HumanController.h"
 #include "worldentities/pawns/Pawn.h"
+#include "worldentities/WorldEntity.h"
 
 namespace orxonox
 {
@@ -138,8 +136,6 @@ namespace orxonox
 
     void HUDNavigation::tick(float dt)
     {
-
-	
         SUPER(HUDNavigation, tick, dt);
 
         // Get radar
@@ -290,17 +286,41 @@ namespace orxonox
             navText_->setCharHeight(navText_->getCharHeight() * yScale);
     }
     
-//     map <WorldEntity*, pair <Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > ActiveObjectList;
+    void HUDNavigation::addObject(RadarViewable* object)
+    {
+        if (object == dynamic_cast<RadarViewable*>(this->getOwner()))
+            return;
+	
+	assert(object);
+	  
+        // Make sure the object hasn't been added yet
+        assert( this->activeObjectList_.find(object) == this->activeObjectList_.end() );
+
+        // Create everything needed to display the object on the radar and add it to the map
+	
+	 // create nav marker
+        Ogre::PanelOverlayElement* panel = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
+	    
+        panel->setMaterialName("Orxonox/NavArrows");
+	 
+        Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
+             .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
+	
+	activeObjectList_[object] = std::make_pair (panel, text) ;	
+	activeObjectList_[object].first->show();
+	activeObjectList_[object].second->show();
+	}
     
-//     void updateActiveObjectMap(){
-//       --> iteration durch die betsehende map über alle keys (Worldentity*)
-// 	     --> check: 'existiert noch' 'sizeChanged' 'angleChanged' 'positionChanged'
-// 		 --> update des aktuellen Objects (Panel & Text) 
-// 		 --> lücke schliessen in der map (aufrücken nach links)
-// 	 --> neue objekte suchen
-// 		 -- map.add neue objekte hinzufügen (pair <panel, text> einfügen.
-//     }	
-    
+    	void HUDNavigation::removeObject(RadarViewable* viewable){
+	  assert(activeObjectList_.find(viewable)!=activeObjectList_.end());
+	  activeObjectList_.erase(viewable);
+	}
+// 	
+//         void HUDNavigation::objectChanged(RadarViewable* viewable){}
+//         float HUDNavigation::getRadarSensitivity(){}
+//         void HUDNavigation::radarTick(float dt){}
+// 	
 
 
 }
