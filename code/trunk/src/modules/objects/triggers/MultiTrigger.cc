@@ -35,22 +35,29 @@
 
 namespace orxonox
 {
-    
+
+    // Initialization of some static (magic) variables.
     /*static*/ const int MultiTrigger::INF_s = -1;
     /*static*/ const std::string MultiTrigger::or_s = "or";
     /*static*/ const std::string MultiTrigger::and_s = "and";
     /*static*/ const std::string MultiTrigger::xor_s = "xor";
     
     CreateFactory(MultiTrigger);
-    
+
+    /**
+    @brief
+        Constructor. Registers the objects and initializes default values.
+    @param creator
+        The creator.
+    */
     //TODO: Clean up.
     MultiTrigger::MultiTrigger(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(MultiTrigger);
-        
-        this->mode_ = MultiTriggerMode::EventTriggerAND;
 
         this->bFirstTick_ = true;
+        
+        this->mode_ = MultiTriggerMode::EventTriggerAND;
 
         this->bInvertMode_ = false;
         this->bSwitch_ = false;
@@ -65,7 +72,10 @@ namespace orxonox
         
     }
     
-    //TODO: Document
+    /**
+    @brief
+        Destructor. Cleans up the state queue.
+    */
     MultiTrigger::~MultiTrigger()
     {
         COUT(4) << "Destorying MultiTrigger &" << this << ". " << this->stateQueue_.size() << " states still in queue. Deleting." << std::endl;
@@ -75,9 +85,27 @@ namespace orxonox
             this->stateQueue_.pop_front();
             delete state;
         }
+
+        // Destroying the appended triggers
+        for(std::set<MultiTrigger*>::iterator it = this->children_.begin(); it != this->children_.end(); it++)
+        {
+            (*it)->destroy();
+        }
+        this->children_.clear();
+
+        // Telling everyone, that this trigger is gone.
+        for(std::set<BaseObject*>::iterator it = this->active_.begin(); it != this->active_.end(); it++)
+        {
+            this->fire(false, *it);
+        }
+        this->active_.clear();
     }
     
-    //TODO: Document.
+    /**
+    @brief
+        Method for creating a MultiTrigger object through XML.
+        For a detailed description of the parameters please see the class description in the header file.
+    */
     void MultiTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(MultiTrigger, XMLPort, xmlelement, mode);
@@ -91,95 +119,163 @@ namespace orxonox
         XMLPortParamTemplate(MultiTrigger, "mode", setMode, getModeString, xmlelement, mode, const std::string&).defaultValues(MultiTrigger::and_s);
         XMLPortParamLoadOnly(MultiTrigger, "target", addTargets, xmlelement, mode).defaultValues("ControllableEntity"); //TODO: Remove load only
 
+        //TODO: Maybe nicer with explicit subgroup, e.g. triggers
         XMLPortObject(MultiTrigger, MultiTrigger, "", addTrigger, getTrigger, xmlelement, mode);
         
         COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") created." << std::endl;
     }
     
-    //TODO: Document
+
+    /**
+    @brief
+        A method that is executed each tick.
+    @param dt
+        The duration of the last tick.
+    */
     void MultiTrigger::tick(float dt)
     {
-        if(this->bFirstTick_) // If this is the first tick.
+        // If this is the first tick.
+        //TODO: Determine need for this, else kick it out. 
+        if(this->bFirstTick_)
         {
             this->bFirstTick_ = false;
-            this->fire(false); //TODO: Does this work? Resp. Is it correct?
+            this->fire(false);
         }
 
-        // Check if the object is active (this is NOT Trigger::isActive()!)
+        // Check if the object is active (this is NOT MultiTrigger::isActive()!)
         if (!this->BaseObject::isActive())
             return;
 
         SUPER(MultiTrigger, tick, dt);
-        
+
+        // Let the MultiTrigger return the states that trigger and process the new states if there are any.
         std::queue<MultiTriggerState*>* queue  = this->letTrigger();
-        
         if(queue != NULL)
         {
             while(queue->size() > 0)
             {
                 //TODO: Be more efficient, Don't delete a state and create a new one immediately after that. Reuse!
                 MultiTriggerState* state = queue->front();
+                // If the state is NULL. (This really shouldn't happen)
                 if(state == NULL)
-                    break;
+                {
+                    COUT(1) << "In MultiTrigger '" << this->getName() << "' (&" << this << "), Error: State of new states queue was NULL." << std::endl;
+                    queue->pop();
+                    continue;
+                }
 
+                // The new triggered state dependent on the requested state, the mode and the invert-mode.
                 bool bTriggered = (state->bTriggered & this->isModeTriggered(state->originator)) ^ this->bInvertMode_;
-                if(bTriggered ^ this->isTriggered(state->originator))
+
+                // If the 'triggered' state has changed a new state is added to the state queue.
+                //TODO: Do something against flooding, when there is delay.
+                if(this->delay_ != 0.0f || bTriggered ^ this->isTriggered(state->originator))
                     this->addState(bTriggered, state->originator);
+                
                 queue->pop();
                 delete state;
             }
             delete queue;
-        }        
+        }
 
+        // Go through the state queue.
         if (this->stateQueue_.size() > 0)
         {
             MultiTriggerState* state;
             float timeRemaining;
+            
+            // Go through all pending states.
             for(int size = this->stateQueue_.size(); size >= 1; size--)
             {
                 timeRemaining = this->stateQueue_.front().first;
                 state = this->stateQueue_.front().second;
+
+                // If the remaining time has expired, the state has to be set as the state of the MultiTrigger.
                 if(timeRemaining <= dt)
                 {
+                    // If the maximum number of objects simultaniously triggering this MultiTrigger is not exceeded.
                     if(this->maxNumSimultaniousTriggerers_ == INF_s || this->triggered_.size() < (unsigned int)this->maxNumSimultaniousTriggerers_)
                     {
-                        // Add the originator to the objects triggering this MultiTrigger.
-                        if(state->bTriggered == true)
+                        bool bStateChanged = false;
+                        // If the 'triggered' state is different form what it is now, change it.
+                        if(state->bTriggered ^ this->isTriggered(state->originator))
                         {
-                            this->triggered_.insert(state->originator);
+                            // Add the originator to the objects triggering this MultiTrigger.
+                            if(state->bTriggered == true)
+                            {
+                                this->triggered_.insert(state->originator);
+                            }
+                            // Remove the originator from the objects triggering this MultiTrigger.
+                            else
+                            {
+                                this->triggered_.erase(state->originator);
+                            }
+                            
+                            bStateChanged = true;
                         }
-                        // Remove the originator from the objects triggering this MultiTrigger.
-                        else
+
+                        // If the activity is different from what it is now, change it and fire an Event.
+                        if(state->bActive ^ this->isActive(state->originator))
                         {
-                            this->triggered_.erase(state->originator);
+
+                            bool bFire = true;
+                            
+                            // Add the originator to the objects activating this MultiTrigger.
+                            if(state->bActive == true)
+                            {
+                                if(this->remainingActivations_ != 0)
+                                {
+                                    this->active_.insert(state->originator);
+                                    if(this->remainingActivations_ != INF_s)
+                                        this->remainingActivations_--; // Decrement the remaining activations.
+                                }
+                                else
+                                {
+                                    bFire = false;
+                                }
+                            }
+                            // Remove the originator from the objects activating this MultiTrigger.
+                            else
+                            {
+                                if(!this->bStayActive_ || this->remainingActivations_ != 0)
+                                {
+                                    this->active_.erase(state->originator);
+                                }
+                                else
+                                {
+                                    bFire = false;
+                                }
+                            }
+
+                            // Fire the Event if the activity has changed.
+                            if(bFire)
+                            {
+                                this->fire(state->bActive, state->originator);
+                                bStateChanged = true;
+                            }
                         }
-                        
-                        // Add the originator to the objects activating this MultiTrigger.
-                        if(state->bActive == true)
+
+                        // Print some debug output if the state has changed.
+                        if(bStateChanged)
+                            COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << state->bActive << ", triggered: " << state->bTriggered << "." << std::endl;
+
+                        // If the MultiTrigger has exceeded its amount of activations and it desn't stay active, it has to be destroyed,
+                        if(this->remainingActivations_ == 0 && bStateChanged && !state->bActive && !this->bStayActive_)
                         {
-                            this->active_.insert(state->originator);
+                            this->destroy();
                         }
-                        // Remove the originator from the objects activating this MultiTrigger.
-                        else
-                        {
-                            this->active_.erase(state->originator);
-                        }
-                        
-                        // Fire the event.
-                        this->fire(state->bActive, state->originator);
                     }
                     
                     // Remove the state from the state queue.
                     this->stateQueue_.pop_front();
-                    COUT(4) << "MultiTrigger '" << this->getName() << "' &" << this << ": State processed, removing from state queue. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << state->bActive << "|" << this->isActive(state->originator) << ", triggered: " << state->bTriggered << "|" << this->isTriggered(state->originator) << "." << std::endl;
                     delete state;
                     size -= 1;
                 }
+                // If the remaining time has not yet expired. Decrement the remainig time.
                 else
                 {
                     this->stateQueue_.push_back(std::pair<float, MultiTriggerState*>(timeRemaining-dt, state));
                     this->stateQueue_.pop_front();
-                    COUT(4) << "MultiTrigger '" << this->getName() << "' &" << this << ": State processed, decreasing time remaining. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << state->bActive << ", triggered: " << state->bTriggered << ", time remaining: " << timeRemaining-dt << "." << std::endl;
                 }
             }
         }
@@ -317,22 +413,6 @@ namespace orxonox
         {
             bActive = this->isActive(originator);
         }
-        // If the state changes to active.
-        else if(this->remainingActivations_ != INF_s && bActive)
-        {
-            if(this->remainingActivations_ == 0)
-                return false;
-            this->remainingActivations_--;
-        }
-        else
-        {
-            // If the MultiTrigger should stay active if there are no more remaining activations.
-            //TODO: Find out how this applies to infinitely many activations.
-            if(this->bStayActive_ && this->remainingActivations_ == 0)
-                return false;
-        }
-        
-        COUT(4) << "MultiTrigger &" << this << ": State added to state queue. originator: " << originator->getIdentifier()->getName() << " (&" << originator << "), active: " << bActive << "|" << this->isActive(originator) << ", triggered: " << bTriggered << "|" << this->isTriggered(originator) << ", remaining activations: " << this->remainingActivations_ << "." << std::endl;
         
         // Create state.
         MultiTriggerState* state = new MultiTriggerState;
