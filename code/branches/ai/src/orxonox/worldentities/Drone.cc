@@ -63,6 +63,8 @@ namespace orxonox
         this->setCollisionType(WorldEntity::Dynamic);
         
         myController_ = new DroneController(static_cast<BaseObject*>(this)); //!< Creates a new controller and passes our this pointer to it as creator.
+        myController_->setDrone(this);
+
         this->setController(myController_);
     }
 

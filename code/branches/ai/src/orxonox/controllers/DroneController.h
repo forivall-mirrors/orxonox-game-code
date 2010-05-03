@@ -52,15 +52,22 @@ namespace orxonox
             virtual ~DroneController();
             
             virtual void tick(float dt); //!< The controlling happens here. This method defines what the controller has to do each tick.
-            void setPawn(Pawn* pawn);
-            const Pawn* getPawn(unsigned int index) const; 
+
+            void setOwner(Pawn* owner);
+            inline Pawn* getOwner() const
+                { return this->owner_; }
+
+            void setDrone(Drone*  drone);
+            inline Drone* getDrone() const
+                { return this->drone_; }
 
         protected:
             virtual void action();
 
         private:
             Timer actionTimer_;
-            Pawn* pawnpointer_;
+            Pawn* owner_;
+            Drone* drone_;
     };
 }
 

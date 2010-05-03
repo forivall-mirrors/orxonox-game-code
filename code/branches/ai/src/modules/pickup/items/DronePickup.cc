@@ -140,7 +140,7 @@ namespace orxonox
                 DroneController* droneController = dynamic_cast<DroneController*>(controller);
                 if(droneController != NULL)
                 {
-                    droneController->setPawn(pawn);
+                    droneController->setOwner(pawn);
                 }
 
                 //! The pickup has been used up.

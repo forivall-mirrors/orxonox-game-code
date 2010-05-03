@@ -50,10 +50,12 @@ namespace orxonox
 
         // this checks that our creator really is a drone
         // and saves the pointer to the drone for the controlling commands
-        assert(dynamic_cast<Drone*>(creator)!=0);
-        this->setControllableEntity(dynamic_cast<Drone*>(creator));
+
     
         RegisterObject(DroneController);
+
+        this->owner_ = 0;
+        this->drone_ = 0;
 
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, createExecutor(createFunctor(&DroneController::action, this)));
     }
@@ -62,21 +64,43 @@ namespace orxonox
     {
     }
 
-    void DroneController::setPawn(Pawn* pawn){
-        pawnpointer_ = pawn;
+    void DroneController::setOwner(Pawn* owner){
+        this->owner_ = owner;
     } 
-    
-    const Pawn* DroneController::getPawn(unsigned int index) const
-    {
-    if(index == 0) return pawnpointer_;
-    return NULL;
-    }
 
+    void DroneController::setDrone(Drone* drone)
+    {
+        this->drone_ = drone;
+        this->setControllableEntity(drone);
+    }
+    
     void DroneController::action()
     {
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
 
+        const Vector3& ownerPosition = getOwner()->getWorldPosition();
+        const Vector3& dronePosition = getDrone()->getWorldPosition();
+
+        const Vector3& locOwnerDir = getDrone()->getOrientation().UnitInverse()*(dronePosition-ownerPosition); //Vector from Drone To Owner out of drones local coordinate system
+
+        int distance = sqrt( (ownerPosition.x-dronePosition.x)*(ownerPosition.x-dronePosition.x)
+                           + (ownerPosition.y-dronePosition.y)*(ownerPosition.y-dronePosition.y)
+                           + (ownerPosition.z-dronePosition.z)*(ownerPosition.z-dronePosition.z)); //distance to Owner
+
+        if (distance > 500) { //TODO: variable implementation of maxdistance
+            drone_->moveUpDown(-locOwnerDir.y);
+            drone_->moveFrontBack(locOwnerDir.z);
+            drone_->moveRightLeft(-locOwnerDir.x);
+        }
+
+        COUT(0) << "Owner: " << ownerPosition << endl;
+        COUT(0) << "Drone: " << dronePosition << endl;
+        COUT(0) << "Distance: " << distance << endl;
+        COUT(0) << "locDrone: " << locOwnerDir << endl;
+
+
+/*
         // search enemy
         random = rnd(maxrand);
         if (random < 15 && (!this->target_))
@@ -107,15 +131,15 @@ namespace orxonox
         if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
             this->searchRandomTargetPosition();
 
-     /*   // shoot
+        // shoot
         random = rnd(maxrand);
         if (random < 75 && (this->target_ && !this->bShooting_))
             this->bShooting_ = true;
 
         // stop shooting
         random = rnd(maxrand);
-        if (random < 25 && (this->bShooting_)) */
-            this->bShooting_ = false;
+        if (random < 25 && (this->bShooting_)) 
+            this->bShooting_ = false; */
     }
 
 
@@ -127,17 +151,15 @@ namespace orxonox
     */
     void DroneController::tick(float dt)
     {
-        // Place your code here:
-        // - steering commands
         
 
 	Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
 
         if(myDrone != NULL) {
-        
+
         setTargetPosition(this->getControllableEntity()->getPosition());
-/*
-	myDrone->setRotationThrust(25);
+
+/*      myDrone->setRotationThrust(25);
 	myDrone->setAuxilaryThrust(30);
 	myDrone->rotateYaw(10*dt); */
         }
