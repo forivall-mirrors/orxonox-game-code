@@ -48,13 +48,6 @@ namespace orxonox
 
     AIController::~AIController()
     {
-COUT(0) << "~AIController 1" << std::endl;
-        if (this->state_ == MASTER) setNewMasterWithinFormation();
-COUT(0) << "~AIController 2" << std::endl;
-        if (this->state_ == SLAVE) unregisterSlave();
-COUT(0) << "~AIController 3" << std::endl;
-        this->slaves_.clear();
-COUT(0) << "~AIController 4" << std::endl;
     }
 
     void AIController::action()
@@ -62,37 +55,21 @@ COUT(0) << "~AIController 4" << std::endl;
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
 
-        if (this->state_ == FREE)//FREE
+        if (this->state_ == FREE)
         {
 
-            //this->state_ = MASTER;
-            // search master
-            //random = rnd(maxrand);
-            //if (random < 101 && (!this->target_))
-                this->searchNewMaster();
 
-        }
+            // return to Master after being forced free
+            if (this->freedomCount_ == 1)   
+            {
+                this->state_ = SLAVE;
+                this->freedomCount_ = 0;
+            }
 
-        if (this->state_ == SLAVE)//SLAVE
-        {
-               // this->bShooting_ = true;
-        }
-
-        if (this->state_ == MASTER)//MASTER
-        {
-
-            // command slaves
-            this->commandSlaves();
-
-
-            // lose master status (only if less than 4 slaves in formation)
             random = rnd(maxrand);
-            if(random < 5/(this->slaves_.size()+1) && this->slaves_.size() < 5 ) 
-                this->loseMasterState();
-
-            // look out for outher masters if formation is small
-            if(this->slaves_.size() < 3)
+            if (random < 90 && (((!this->target_) || (random < 50 && this->target_)) && !this->forcedFree()))
                 this->searchNewMaster();
+
 
             // search enemy
             random = rnd(maxrand);
@@ -124,16 +101,79 @@ COUT(0) << "~AIController 4" << std::endl;
             if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
                 this->searchRandomTargetPosition();
 
-            // shoot
-            /*random = rnd(maxrand);
+
+            random = rnd(maxrand);
             if (random < 75 && (this->target_ && !this->bShooting_))
                 this->bShooting_ = true;
-*/
+
+            // stop shooting
+            random = rnd(maxrand);
+            if (random < 25 && (this->bShooting_))
+                this->bShooting_ = false;
+
+        }
+
+        if (this->state_ == SLAVE)
+        {
+               // this->bShooting_ = true;
+        }
+
+        if (this->state_ == MASTER)//MASTER
+        {
+
+
+            this->commandSlaves();
+
+
+            // lose master status (only if less than 4 slaves in formation)
+            random = rnd(maxrand);
+            if(random < 15/(this->slaves_.size()+1) && this->slaves_.size() < 5 ) 
+                this->loseMasterState();
+
+            // look out for outher masters if formation is small
+            random = rnd(maxrand);
+            if(this->slaves_.size() < 3 && random < 20)
+                this->searchNewMaster();
+
+            // search enemy
+            random = rnd(maxrand);
+            if (random < 15 && (!this->target_))
+                this->searchNewTarget();
+
+            // forget enemy
+            random = rnd(maxrand);
+            if (random < 5 && (this->target_))
+                this->forgetTarget();
+
+            // next enemy
+            random = rnd(maxrand);
+            if (random < 10 && (this->target_))
+                this->searchNewTarget();
+
+            // fly somewhere
+            random = rnd(maxrand);
+            if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
+                this->searchRandomTargetPosition();
+
+
+            // fly somewhere else
+            random = rnd(maxrand);
+            if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
+                this->searchRandomTargetPosition();
+
+            // shoot
+            random = rnd(maxrand);
+            if (random < 5 && (this->target_ && !this->bShooting_))
+            {
+                this->bShooting_ = true;
+                this->forceFreeSlaves();
+            }
             // stop shooting
             random = rnd(maxrand);
             if (random < 25 && (this->bShooting_))
                 this->bShooting_ = false;
         }
+
     }
 
     void AIController::tick(float dt)
@@ -159,8 +199,18 @@ COUT(0) << "~AIController 4" << std::endl;
             if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();
 
-        //this->getControllableEntity()->fire(0);
+        }
 
+         if (this->state_ == FREE)
+        {
+            if (this->target_)
+                this->aimAtTarget();
+
+            if (this->bHasTargetPosition_)
+                this->moveToTargetPosition();
+
+            if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
+                this->getControllableEntity()->fire(0);
         }
 
         SUPER(AIController, tick, dt);

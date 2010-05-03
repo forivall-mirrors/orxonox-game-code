@@ -44,13 +44,12 @@ namespace orxonox
 
         this->target_ = 0;
         this->myMaster_ = 0;
-        //this->slaveNumber_ = -1;
-	this->team_ = -1;//new
-	this->state_ = FREE;//new
+        this->freedomCount_ = 0;
+	this->team_ = -1;
+	this->state_ = FREE;
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
         this->targetPosition_ = Vector3::ZERO;
-        //this->slaves_ = new std::list<ArtificialController*>;
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
     }
@@ -66,6 +65,24 @@ namespace orxonox
         XMLPortParam(ArtificialController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(0);
     }
 
+// gets called when Bot dies
+    void ArtificialController::changedControllableEntity()
+    {
+COUT(0) << "~changedControllableEntity 0" << std::endl;
+        if(!getControllableEntity()) 
+        {
+COUT(0) << "~changedControllableEntity 1" << std::endl;
+        if (this->state_ == SLAVE) unregisterSlave();
+COUT(0) << "~changedControllableEntity 2" << std::endl;
+         if (this->state_ == MASTER) setNewMasterWithinFormation();
+COUT(0) << "~changedControllableEntity 3" << std::endl;
+        this->slaves_.clear();
+COUT(0) << "~changedControllableEntity 4" << std::endl;
+        this->state_ = FREE;
+COUT(0) << "~changedControllableEntity 5" << std::endl;
+        }
+    }
+
     void ArtificialController::moveToPosition(const Vector3& target)
     {
         if (!this->getControllableEntity())
@@ -76,15 +93,28 @@ namespace orxonox
 
         if (this->target_ || distance > 10)
         {
-            // Multiply with 0.8 to make them a bit slower
-            this->getControllableEntity()->rotateYaw(-0.8f * sgn(coord.x) * coord.x*coord.x);
-            this->getControllableEntity()->rotatePitch(0.8f * sgn(coord.y) * coord.y*coord.y);
+            // Multiply with rotateFactor to make them a bit slower
+            float rotateFactor;
+            if(this->state_ == SLAVE) rotateFactor = 1.0f;
+            if(this->state_ == MASTER) rotateFactor = 0.4f;
+            else rotateFactor = 0.8f;
+
+            this->getControllableEntity()->rotateYaw(-1.0f * rotateFactor * sgn(coord.x) * coord.x*coord.x);
+            this->getControllableEntity()->rotatePitch(rotateFactor * sgn(coord.y) * coord.y*coord.y);
+
+
+
         }
 
         if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
-            this->getControllableEntity()->moveFrontBack(-0.5f); // They don't brake with full power to give the player a chance
-        else
-            this->getControllableEntity()->moveFrontBack(0.8f);
+        {
+            if(this->state_ == SLAVE) this->getControllableEntity()->moveFrontBack(-0.8f);
+            else this->getControllableEntity()->moveFrontBack(-0.05f); // They don't brake with full power to give the player a chance
+        } else {
+            if(this->state_ == SLAVE) this->getControllableEntity()->moveFrontBack(2.5f);
+            if(this->state_ == MASTER) this->getControllableEntity()->moveFrontBack(0.4f);
+            else this->getControllableEntity()->moveFrontBack(0.8f);
+        }
     }
 
     void ArtificialController::moveToTargetPosition()
@@ -101,6 +131,7 @@ namespace orxonox
         if(myMaster_)
         {
             myMaster_->slaves_.remove(this);
+COUT(0) << "~unregister slave" << std::endl;
         }
     }
 
@@ -125,21 +156,28 @@ namespace orxonox
             if (!it->getController())
                 continue;
 
-            ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
-            if (!controller || controller->getState() != MASTER)
+            ArtificialController *newMaster = static_cast<ArtificialController*>(it->getController());
+
+            if (!newMaster || newMaster->getState() != MASTER)
                 continue;
 
             //is pawn oneself? && is pawn in range?
             if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity()) //&& it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) < 1000 
             {
-                if(controller->slaves_.size() > 9) continue;
+                if(newMaster->slaves_.size() > 6) continue;
 
-                this->freeAllSlaves();
+                //this->freeSlaves();
+
+                for(std::list<ArtificialController*>::iterator itSlave = this->slaves_.begin(); itSlave != this->slaves_.end(); itSlave++)
+                {
+                    (*itSlave)->myMaster_ = newMaster;
+                    newMaster->slaves_.push_back(*itSlave);
+                }
                 this->slaves_.clear();
                 this->state_ = SLAVE;
 
-                this->myMaster_ = controller;
-                controller->slaves_.push_back(this);
+                this->myMaster_ = newMaster;
+                newMaster->slaves_.push_back(this);
 
                 break;
             }
@@ -147,7 +185,7 @@ namespace orxonox
 
         //hasn't encountered any masters in range? -> become a master
         if (state_!=SLAVE) state_ = MASTER; // keep in mind: what happens when two masters encounter eache other? -> has to be evaluated in the for loop within master mode in AIcontroller...
-
+COUT(0) << "~searcheNewMaster" << std::endl;
     }
 
     void ArtificialController::commandSlaves() {
@@ -156,21 +194,6 @@ namespace orxonox
         {
             (*it)->setTargetPosition(this->getControllableEntity()->getPosition());
         }
-/*
-        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
-        {
-
-            if (!it->getController())
-                continue;
-
-            ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
-            if (!controller || controller->getState() != SLAVE)
-                continue;
-            //controller->setTargetPosition(this->getControllableEntity()->getPosition());
-            controller->targetPosition_ = this->getControllableEntity()->getPosition();
-            controller->bHasTargetPosition_ = true;
-        }
-*/
     }
 
     // binds slaves to new Master within formation
@@ -189,7 +212,7 @@ COUT(0) << "~setNewMasterWithinFormation 3" << std::endl;
 COUT(0) << "~setNewMasterWithinFormation 4" << std::endl;
         newMaster->state_ = MASTER;
         newMaster->slaves_ = this->slaves_;
-        //this->slaves_.clear();
+        this->slaves_.clear();
 
         this->state_ = SLAVE;
         this->myMaster_ = newMaster;
@@ -204,30 +227,45 @@ COUT(0) << "~setNewMasterWithinFormation 7" << std::endl;
 
     }
 
-    void ArtificialController::freeAllSlaves()
+    void ArtificialController::freeSlaves()
     {
-
-
         for(std::list<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
         {
             (*it)->state_ = FREE;
         }
-/*
-        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
-        {
-            ArtificialController *controller = static_cast<ArtificialController*>(it->getController());
-            if (controller && controller->getState() != SLAVE)
-                continue;
+        this->slaves_.clear();
+    }
 
-            controller->state_ = FREE;
+    void ArtificialController::forceFreeSlaves()
+    {
+        for(std::list<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
+        {
+            (*it)->state_ = FREE;
+            (*it)->forceFreedom();
+            (*it)->targetPosition_ = this->targetPosition_;
+            (*it)->bShooting_ = true;
+            (*it)->getControllableEntity()->fire(0);
         }
-*/
     }
 
     void ArtificialController::loseMasterState()
     {
-        this->freeAllSlaves();
+        this->freeSlaves();
         this->state_ = FREE;
+    }
+
+    void ArtificialController::forceFreedom()
+    {
+        this->freedomCount_ = 5;
+    }
+
+    bool ArtificialController::forcedFree()
+    {
+        if(this->freedomCount_ > 0) 
+        {
+            this->freedomCount_--;
+            return true;
+        } else return false;
     }
 
     void ArtificialController::setTargetPosition(const Vector3& target)

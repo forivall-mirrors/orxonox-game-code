@@ -50,24 +50,34 @@ namespace orxonox
                 { this->team_ = team; }
             inline int getTeam() const
                 { return this->team_; }
-            //virtual void changedControllableEntity();
+            virtual void changedControllableEntity();
 
 
         protected:
+
+            int team_;
+            int freedomCount_;
+            enum State {SLAVE, MASTER, FREE};
+            State state_;
+            std::list<ArtificialController*> slaves_;
+
             void targetDied();
 
             void moveToPosition(const Vector3& target);
+            //void speedToTargetPosition(const Vector3& target);
             void moveToTargetPosition();
 
-            enum State {SLAVE, MASTER, FREE};
             int getState();
-            std::list<ArtificialController*> slaves_;
+
             void unregisterSlave();
             void searchNewMaster();
             void commandSlaves();
             void setNewMasterWithinFormation();
-            void freeAllSlaves();
+            void freeSlaves();
+            void forceFreeSlaves();
             void loseMasterState();
+            void forceFreedom();
+            bool forcedFree();
 
             ArtificialController *myMaster_;
 
@@ -88,10 +98,6 @@ namespace orxonox
             Vector3 targetPosition_;
             WeakPtr<Pawn> target_;
             bool bShooting_;
-
-
-            State state_;
-            int team_;
 
         private:
     };
