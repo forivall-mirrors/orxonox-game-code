@@ -104,10 +104,10 @@ namespace orxonox
                 {
                     float scaleFactor = getBiggestScale(this->getScale3D());
                     BaseObject* creatorPtr = this->getCreator();
-                    while(creatorPtr!=0)
+					//TODO Doesn't work...
+                    while(creatorPtr!=0&&typeid(creatorPtr)!=typeid(new WorldEntity*))
                     {
-                        // TODO Cannot cast to WorldEntity
-                        scaleFactor *= getBiggestScale(((WorldEntity) creatorPtr)->getScale3D());
+                        scaleFactor *= getBiggestScale(((WorldEntity*) creatorPtr)->getScale3D());
                         creatorPtr = this->getCreator();
                     }
                     
