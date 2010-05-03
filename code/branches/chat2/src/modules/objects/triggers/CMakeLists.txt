@@ -1,0 +1,9 @@
+ADD_SOURCE_FILES(OBJECTS_SRC_FILES
+  CheckPoint.cc
+  DistanceMultiTrigger.cc
+  DistanceTrigger.cc
+  EventTrigger.cc
+  MultiTrigger.cc
+  MultiTriggerContainer.cc
+  Trigger.cc
+)
