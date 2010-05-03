@@ -45,7 +45,7 @@ namespace orxonox
     @author
         Oli Scheuss
     */
-    class _OrxonoxExport DroneController : public AIController
+    class _OrxonoxExport DroneController : public ArtificialController
     {
         public:
             DroneController(BaseObject* creator);

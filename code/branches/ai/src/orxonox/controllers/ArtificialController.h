@@ -50,7 +50,7 @@ namespace orxonox
                 { this->team_ = team; }
             inline int getTeam() const
                 { return this->team_; }
-            virtual void changedControllableEntity();
+            //virtual void changedControllableEntity();
 
 
         protected:

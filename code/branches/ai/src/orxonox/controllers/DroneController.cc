@@ -46,16 +46,13 @@ namespace orxonox
 
     DroneController::DroneController(BaseObject* creator) : ArtificialController(creator)
     {
-    /*    // Place your code here:
-        // - make sure to register the object in the factory
         // - do any kind of initialisation
-        RegisterObject(DroneController);
 
         // this checks that our creator really is a drone
         // and saves the pointer to the drone for the controlling commands
         assert(dynamic_cast<Drone*>(creator)!=0);
         this->setControllableEntity(dynamic_cast<Drone*>(creator));
-    */
+    
         RegisterObject(DroneController);
 
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, createExecutor(createFunctor(&DroneController::action, this)));
