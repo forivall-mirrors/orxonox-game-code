@@ -108,8 +108,7 @@ namespace orxonox
   /* callbacks for InputBuffer */
   void ChatInputHandler::inputChanged()
   {
-    //this->updateListeners<&ShellListener::inputChanged>();
-    //this->updateListeners<&ShellListener::cursorChanged>();
+
   }
 
   void ChatInputHandler::addline()
@@ -134,53 +133,36 @@ namespace orxonox
   void ChatInputHandler::backspace()
   {
     this->inpbuf->removeBehindCursor();
-    //this->updateListeners<&ShellListener::inputChanged>();
-    //this->updateListeners<&ShellListener::cursorChanged>();
   }
 
   void ChatInputHandler::deleteChar()
   {
     this->inpbuf->removeAtCursor();
-    //this->updateListeners<&ShellListener::inputChanged>();
   }
 
   void ChatInputHandler::cursorRight()
   {
     this->inpbuf->increaseCursor();
-    //this->updateListeners<&ShellListener::cursorChanged>();
   }
   
   void ChatInputHandler::cursorLeft()
   {
     this->inpbuf->decreaseCursor();
-    //this->updateListeners<&ShellListener::cursorChanged>();
   }
   
   void ChatInputHandler::cursorEnd()
   {
     this->inpbuf->setCursorToEnd();
-    //this->updateListeners<&ShellListener::cursorChanged>();
   }
 
   void ChatInputHandler::cursorHome()
   {
     this->inpbuf->setCursorToBegin();
-    //this->updateListeners<&ShellListener::cursorChanged>();
   }
 
   void ChatInputHandler::exit()
   {
-    //if (this->inpbuf->getSize() > 0)
-    //{
-      //this->clearInput();
-      //return;
-    //}
 
-    //this->clearInput();
-    //this->scrollPosition_ = 0;
-    //this->scrollIterator_ = this->outputLines_.begin();
-
-    //this->updateListeners<&ShellListener::exit>();
   }
 
 }

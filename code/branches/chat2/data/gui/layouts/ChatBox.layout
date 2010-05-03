@@ -5,44 +5,56 @@
         <Property Name="InheritsAlpha" Value="False" />
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
-        <Window Type="TaharezLook/FrameWindow" Name="/ChatBox" >
+        <Window Type="MenuWidgets/FrameWindow" Name="/ChatBox" >
             <Property Name="Text" Value="Chat" />
             <Property Name="TitlebarFont" Value="Commonwealth-10" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="TitlebarEnabled" Value="True" />
             <Property Name="UnifiedAreaRect" Value="{{0.01,0},{0.03,0},{0.6,0},{0.69375,0}}" />
-            <Window Type="TaharezLook/Listbox" Name="/ChatBox/List" >
+            <Window Type="MenuWidgets/Listbox" Name="/ChatBox/List" >
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.078,0},{0.98,0},{1,-30}}" />
             </Window>
-            <Window Type="TaharezLook/Editbox" Name="/ChatBox/Text" >
-                <Property Name="Text" Value="Error: you did not register any font or none were valid" />
-                <Property Name="MaxTextLength" Value="1073741823" />
+            <!--<Window Type="MenuWidgets/Editbox" Name="/ChatBox/Text" >-->
+                <!--<Property Name="Text" Value="Error: you did not register any font or none were valid" />-->
+                <!--<Property Name="MaxTextLength" Value="1073741823" />-->
+                <!--<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />-->
+                <!--<Property Name="UnifiedAreaRect" Value="{{0.02,0},{1,-30},{0.98,0},{1,-5}}" />-->
+            <!--</Window>-->
+            <Window Type="MenuWidgets/StaticText" Name="/ChatBox/Text" >
+                <Property Name="Text" Value="History" />
+                <Property Name="HorzFormatting" Value="RightAligned" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{1,-30},{0.98,0},{1,-5}}" />
             </Window>
         </Window>
-        <Window Type="TaharezLook/Editbox" Name="/ChatBox/History" >
+        <!--<Window Type="MenuWidgets/Editbox" Name="/ChatBox/History" >-->
+            <!--<Property Name="Text" Value="5" />-->
+            <!--<Property Name="MaxTextLength" Value="1073741823" />-->
+            <!--<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />-->
+            <!--<Property Name="UnifiedAreaRect" Value="{{0.77,0},{0.03,0},{0.81,0},{0.1,0}}" />-->
+        <!--</Window>-->
+        <Window Type="MenuWidgets/StaticText" Name="/ChatBox/History" >
             <Property Name="Text" Value="5" />
-            <Property Name="MaxTextLength" Value="1073741823" />
+            <Property Name="HorzFormatting" Value="RightAligned" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.77,0},{0.03,0},{0.81,0},{0.1,0}}" />
         </Window>
-        <Window Type="TaharezLook/StaticText" Name="/ChatBox/HistoryLabel" >
+        <Window Type="MenuWidgets/StaticText" Name="/ChatBox/HistoryLabel" >
             <Property Name="Text" Value="History size:" />
             <Property Name="HorzFormatting" Value="RightAligned" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.65,0},{0.03,0},{0.77,0},{0.1,0}}" />
         </Window>
-        <Window Type="TaharezLook/StaticText" Name="/ChatBox/FonSizeLabel" >
+        <Window Type="MenuWidgets/StaticText" Name="/ChatBox/FonSizeLabel" >
             <Property Name="Font" Value="Commonwealth-10" />
             <Property Name="Text" Value="Font size:" />
             <Property Name="HorzFormatting" Value="RightAligned" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.65,0},{0.1,0},{0.77,0},{0.17,0}}" />
         </Window>
-        <Window Type="TaharezLook/Spinner" Name="/ChatBox/FontSize" >
+        <Window Type="MenuWidgets/Spinner" Name="/ChatBox/FontSize" >
             <Property Name="Text" Value="10" />
             <Property Name="StepSize" Value="1" />
             <Property Name="CurrentValue" Value="10" />
@@ -51,14 +63,14 @@
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.77,0},{0.1,0},{0.83,0},{0.17,0}}" />
         </Window>
-        <Window Type="TaharezLook/StaticText" Name="/ChatBox/FontNameLabel" >
+        <Window Type="MenuWidgets/StaticText" Name="/ChatBox/FontNameLabel" >
             <Property Name="Font" Value="Commonwealth-10" />
             <Property Name="Text" Value="Font name:" />
             <Property Name="HorzFormatting" Value="RightAligned" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="UnifiedAreaRect" Value="{{0.65,0},{0.17,0},{0.77,0},{0.24,0}}" />
         </Window>
-        <Window Type="TaharezLook/Combobox" Name="/ChatBox/FontName" >
+        <Window Type="MenuWidgets/Combobox" Name="/ChatBox/FontName" >
             <Property Name="Text" Value="ChatBoxFont" />
             <Property Name="ReadOnly" Value="True" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
