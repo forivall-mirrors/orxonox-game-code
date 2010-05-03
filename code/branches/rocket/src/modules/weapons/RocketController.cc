@@ -31,7 +31,7 @@
 #include "util/Math.h"
 #include "weapons/projectiles/SimpleRocket.h"
 #include "util/Debug.h"
-
+#include "weapons/weaponmodes/SimpleRocketFire.h"
 
 namespace orxonox
 {
@@ -44,10 +44,9 @@ namespace orxonox
 		COUT(0)<< "RocketController constructed\n";
 
         RegisterObject(RocketController);
-		SimpleRocket* rocket = new SimpleRocket(this);
-		rocket->setController(this);
+		this->rocket = new SimpleRocket(this);
+		this->rocket->setController(dynamic_cast<RocketController*>(this));
 		this->setControllableEntity(dynamic_cast<ControllableEntity*> (rocket));
-
     }
 
 
@@ -61,10 +60,9 @@ namespace orxonox
     {
 
         SimpleRocket *rocket = static_cast<SimpleRocket*>(this->getControllableEntity());
-
-
-		rocket->rotateYaw(0.2);
-			//rocket->moveFrontBack(2);
+		double rd = rand();
+		if (rd > 0.5) rocket->rotateRoll(5); 
+		else rocket->rotatePitch(5);
 
     }
 

@@ -44,6 +44,7 @@ namespace orxonox
     SimpleRocketFire::SimpleRocketFire(BaseObject* creator) : WeaponMode(creator)
     {
         RegisterObject(SimpleRocketFire);
+		
 
       /*  this->reloadTime_ = 0.20f;
         this->bParallelReload_ = false;
@@ -60,18 +61,26 @@ namespace orxonox
 
     void SimpleRocketFire::fire()
     {
-        SimpleRocket* rocket = new SimpleRocket(this);
-	RocketController* con = new RocketController(this);
+        //SimpleRocket* rocket = new SimpleRocket(this);
+		RocketController* con = new RocketController(this);
+		SimpleRocket* rocket = con->getRocket();
+		this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
+		rocket->setOrientation(this->getMuzzleOrientation());
+        rocket->setPosition(this->getMuzzlePosition());
+		rocket->setVelocity(this->getMuzzleDirection() * rocket->getVelocity());
+		rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+		//con->getRocket()->setPosition(this->getMuzzlePosition());
+	//con->setControllableEntity(dynamic_cast<ControllableEntity*>(rocket));
+	//con->getControllableEntity()->setPosition(this->getMuzzlePosition());
 
-
-        this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
+        /* this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         rocket->setOrientation(this->getMuzzleOrientation());
         rocket->setPosition(this->getMuzzlePosition());
-	rocket->scale(10);
+		rocket->scale(10);
         rocket->setVelocity(this->getMuzzleDirection() * this->speed_);
         rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
-        rocket->setDamage(this->getDamage());
-        //rocket->scale(2);
-
+        rocket->setDamage(this->getDamage()); 
+        rocket->scale(2);
+		*/
     }
 }

@@ -52,7 +52,6 @@ namespace orxonox
             virtual ~SimpleRocket();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a SimpleRocket through XML.
-            virtual void tick(float dt); //!< Defines which actions the SimpleRocket has to take in each tick.
 
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             void destroyObject();

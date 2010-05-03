@@ -59,29 +59,22 @@ namespace orxonox
         this->bDestroy_ = false;
         this->lifetime_ = 100;
 		COUT(0)<< "simplerocket constructed\n";
-		//this->camera_ = null;
-		//RocketController* myRController = new RocketController(this);
-		//this->setController(creator);
-		//myRController->setRocket(this, myRController);
-		
-		//this->getController()->setControllableEntity(this);
-		//myController->setControllableEntity(this);
-		//this->getController()->setControllableEntity(this);
-        //this->controllableEntity_->setController(this->controller_);
+
 
         //if (GameMode::isMaster())
         //{
-         /*   this->setCollisionType(WorldEntity::Kinematic);
-            this->setVelocity(0,0,-100);*/
+           this->setCollisionType(WorldEntity::Kinematic);
+            this->setVelocity(0,0,100);
 
             Model* model = new Model(this);
             model->setMeshSource("rocket.mesh");
-            //model->scale(0.7f);
+            model->scale(0.7f);
             this->attach(model);
-           /* ParticleEmitter* fire = new ParticleEmitter(this);
+
+            ParticleEmitter* fire = new ParticleEmitter(this);
             this->attach(fire);
             fire->setOrientation(this->getOrientation());
-            fire->setSource("Orxonox/Rocketfire");
+            fire->setSource("Orxonox/rocketfire2");
 
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
@@ -90,7 +83,7 @@ namespace orxonox
             ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
             collisionShape->setRadius(3);
             collisionShape->setHeight(500);
-            this->attachCollisionShape(collisionShape);*/
+            this->attachCollisionShape(collisionShape);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
        // }
@@ -126,26 +119,6 @@ namespace orxonox
         this->player_ = this->owner_->getPlayer();
     }
 
-    /**
-    @brief
-        Defines which actions the SimpleRocket has to take in each tick.
-    @param dt
-        The length of the tick.
-    */
-    void SimpleRocket::tick(float dt)
-    {
-        SUPER(SimpleRocket, tick, dt);
-
-        if( this->hasLocalController() )
-        {
-            this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
-            this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
-            this->localAngularVelocity_ = 0;
-
-            if( this->bDestroy_ )
-                this->destroy();
-        }
-    }
 
     bool SimpleRocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {

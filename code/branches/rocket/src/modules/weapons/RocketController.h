@@ -34,6 +34,7 @@
 #include "controllers/Controller.h"
 #include "tools/interfaces/Tickable.h"
 #include "weapons/projectiles/SimpleRocket.h"
+#include "weapons/weaponmodes/SimpleRocketFire.h"
 
 namespace orxonox
 {
@@ -50,10 +51,12 @@ namespace orxonox
 			virtual ~RocketController();
             
             virtual void tick(float dt);
+			SimpleRocket* getRocket(){return rocket;};
         protected:
 
 
         private:
+			SimpleRocket* rocket;
 
     };
 }
