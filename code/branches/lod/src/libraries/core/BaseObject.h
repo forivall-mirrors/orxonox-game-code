@@ -221,7 +221,7 @@ namespace orxonox
             uint32_t               sceneID_;
             SmartPtr<Gametype>     gametype_;
             Gametype*              oldGametype_;
-	    SmartPtr<Level>        level_;
+            SmartPtr<Level>        level_;
             std::set<Template*>    templates_;
 
             std::map<BaseObject*, std::string>  eventSources_;           //!< List of objects which send events to this object, mapped to the state which they affect
