@@ -35,6 +35,7 @@
 #include <fstream>
 #include <iostream>
 #include <cassert>
+#include <CEGUIForwardRefs.h>
 
 /* project includes */
 #include <OrxonoxPrereqs.h>
@@ -69,6 +70,10 @@ namespace orxonox
 
       /* singleton pointer */
       static ChatInputHandler* singletonPtr_s;
+
+      /* cegui stuff */
+      CEGUI::Window *input;
+      CEGUI::Listbox *lb_history;
 
     public:
       /** constructor */

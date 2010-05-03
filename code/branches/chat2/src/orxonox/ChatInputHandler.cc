@@ -30,6 +30,13 @@
 #include <core/ScopedSingletonManager.h>
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
+#include "core/GUIManager.h"
+#include "core/CorePrereqs.h"
+#include <CEGUIWindow.h>
+#include <CEGUI/elements/CEGUIListbox.h>
+#include <CEGUI/elements/CEGUIListboxItem.h>
+#include <CEGUI/elements/CEGUIListboxTextItem.h>
+#include <CEGUIWindowManager.h>
 #include <string>
 
 namespace orxonox 
@@ -39,6 +46,7 @@ namespace orxonox
   SetConsoleCommandAlias( ChatInputHandler, activate_static, "startchat",
     true );
 
+
   /* constructor */
   ChatInputHandler::ChatInputHandler()
   {
@@ -47,6 +55,10 @@ namespace orxonox
 
     /* create necessary objects */
     this->inpbuf = new InputBuffer();
+    assert( this->inpbuf != NULL );
+
+    /* MARK add generation of ChatBox thingy here */
+    GUIManager::getInstance().loadGUI( "ChatBox" );
 
     /* configure the input buffer */
     configureInputBuffer();
@@ -61,28 +73,36 @@ namespace orxonox
 
   void ChatInputHandler::configureInputBuffer()
   {
-	  /* input has changed */
+    /* input has changed */
     this->inpbuf->registerListener(this, &ChatInputHandler::inputChanged, true);
-		
-		/* add a line */
+
+    /* add a line */
     this->inpbuf->registerListener(this, &ChatInputHandler::addline,         '\r',   false);
     this->inpbuf->registerListener(this, &ChatInputHandler::addline,         '\n',   false);
 
-		/* backspace */
+    /* backspace */
     this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       '\b',   true);
     this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       '\177', true);
 
-		/* exit the chatinputhandler thingy (tbd) */
+    /* exit the chatinputhandler thingy (tbd) */
     this->inpbuf->registerListener(this, &ChatInputHandler::exit,            '\033', true); // escape
 
-		/* delete character */
+    /* delete character */
     this->inpbuf->registerListener(this, &ChatInputHandler::deleteChar,      KeyCode::Delete);
 
-		/* cursor movement */
+    /* cursor movement */
     this->inpbuf->registerListener(this, &ChatInputHandler::cursorRight,     KeyCode::Right);
     this->inpbuf->registerListener(this, &ChatInputHandler::cursorLeft,      KeyCode::Left);
     this->inpbuf->registerListener(this, &ChatInputHandler::cursorEnd,       KeyCode::End);
     this->inpbuf->registerListener(this, &ChatInputHandler::cursorHome,      KeyCode::Home);
+
+    /* get window pointers */
+    input = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/input" );
+    CEGUI::Window *history = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/history" );
+    lb_history = dynamic_cast<CEGUI::Listbox*>(history); 
+
+    /* assert wee */
+    assert( lb_history );
   }
 
 
@@ -93,31 +113,50 @@ namespace orxonox
   void ChatInputHandler::activate()
   {
     /* start listening */
-    COUT(0) << "chatinput activated." << std::endl;
+    //COUT(0) << "chatinput activated." << std::endl;
     InputManager::getInstance().enterState("chatinput");
+
+    /* MARK add spawning of chat widget stuff here.*/
+    GUIManager::getInstance().showGUI( "ChatBox" );
   }
 
   void ChatInputHandler::deactivate() 
   {
     /* stop listening */
     InputManager::getInstance().leaveState("chatinput");
+
+    /* MARK add un-spawning of chat widget stuff here. */
+    GUIManager::getInstance().hideGUI( "ChatBox" );
   }
-
-
 
   /* callbacks for InputBuffer */
   void ChatInputHandler::inputChanged()
   {
+    /* update the cursor and the window */
+    std::string raw = this->inpbuf->get();
+    
+    /* get string before cursor */
+    std::string left = raw.substr( 0, this->inpbuf->getCursorPosition() );
 
+    /* see if there's a string after the cursor */
+    std::string right = "";
+    if( raw.length() >= left.length()+1 )
+      right = raw.substr( this->inpbuf->getCursorPosition() );
+      
+    /* set the text */
+    this->input->setProperty( "Text", left + "|" + right );
   }
 
   void ChatInputHandler::addline()
   {
-    /* MARK MARK */
-
     /* actually do send what was input */
     /* a) get the string out of the inputbuffer */
     std::string msgtosend = this->inpbuf->get();
+
+    if( msgtosend.length() == 0 )
+    { this->deactivate();
+      return;
+    }
 
     /* b) clear the input buffer */
     if (this->inpbuf->getSize() > 0)
@@ -128,41 +167,35 @@ namespace orxonox
 
     /* d) stop listening to input  */
     this->deactivate();
+
+    /* e) create item and add to history */
+    CEGUI::ListboxTextItem *toadd = new CEGUI::ListboxTextItem( msgtosend );
+    this->lb_history->addItem( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
+    this->lb_history->ensureItemIsVisible( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
+
+    /* f) make sure the history handles it */
+    this->lb_history->handleUpdatedItemData();
   }
 
   void ChatInputHandler::backspace()
-  {
-    this->inpbuf->removeBehindCursor();
-  }
+  { this->inpbuf->removeBehindCursor(); }
 
   void ChatInputHandler::deleteChar()
-  {
-    this->inpbuf->removeAtCursor();
-  }
+  { this->inpbuf->removeAtCursor(); }
 
   void ChatInputHandler::cursorRight()
-  {
-    this->inpbuf->increaseCursor();
-  }
+  { this->inpbuf->increaseCursor(); }
   
   void ChatInputHandler::cursorLeft()
-  {
-    this->inpbuf->decreaseCursor();
-  }
+  { this->inpbuf->decreaseCursor(); }
   
   void ChatInputHandler::cursorEnd()
-  {
-    this->inpbuf->setCursorToEnd();
-  }
+  { this->inpbuf->setCursorToEnd(); }
 
   void ChatInputHandler::cursorHome()
-  {
-    this->inpbuf->setCursorToBegin();
-  }
+  { this->inpbuf->setCursorToBegin(); }
 
   void ChatInputHandler::exit()
-  {
-
-  }
+  { }
 
 }

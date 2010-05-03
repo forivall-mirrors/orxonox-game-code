@@ -79,7 +79,7 @@ namespace orxonox
     /* --> a) look up the actual name of the sender */
     std::string text;
 
-    COUT(0) << "Meow.\n";
+    //COUT(0) << "Meow.\n";
 
 #ifndef CHATTEST
     if (senderID != CLIENTID_UNKNOWN)
