@@ -63,7 +63,8 @@ namespace orxonox
             virtual void rewardPig();
             void resetSpeedFactor(WeakPtr<Engine>* ptr);  
             void tick (float dt);// used to end the game
-            //three different parties	TODO const machen!	
+            SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
+            //three different parties	
             int chaser;
             int piggy;
             int killer;
@@ -77,7 +78,7 @@ namespace orxonox
             std::vector<ColourValue> partyColours_; //aus TeamDeathmatch
             unsigned int numberOf[3]; //array to count number of chasers, pigs, killers
             float pointsPerTime;
-            float gameTime_;   // from UnderAttack better: use gametype interface!!!
+            float gameTime_;   // from UnderAttack
             bool gameEnded_; // true if game is over
             int timesequence_; //used for countdown
             Timer callInstructions_;

@@ -55,6 +55,7 @@ P.S: If you don't want to be a victim: Get rid of your part by shooting a chaser
 #include "interfaces/TeamColourable.h"
 #include "items/Engine.h"
 #include "tools/Timer.h"
+#include "worldentities/TeamSpawnPoint.h"
 
 namespace orxonox
 {
@@ -98,7 +99,7 @@ namespace orxonox
         SetConfigValue(partyColours_, defaultcolours);
     }
 
-    bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)//tested - works fine
+    bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)
     {	
         if (!originator||!victim)
         {return false;}
@@ -112,19 +113,15 @@ namespace orxonox
             {
 			
                 numberOf[target]--;				//decrease numberof victims's party
-                const std::string& message = std::string(" Chasers ") + multi_cast<std::string>(numberOf[chaser]); COUT(0) << message << std::endl; Host::Broadcast(message);
                 playerParty_[victim->getPlayer()]=piggy;	//victim's new party: pig
                 setPlayerColour(victim->getPlayer());		//victim's new colour
                 numberOf[piggy]++; 				//party switch: number of players is not affected (decrease and increase)
-                const std::string& message1 = std::string(" Pig") + multi_cast<std::string>(numberOf[piggy]); COUT(0) << message1 << std::endl; Host::Broadcast(message1);
                     if (notEnoughKillers) 			//reward the originator
                     {
                         numberOf[source]--;			//decrease numberof originator's party
-                        const std::string& message = std::string(" Chasers ") + multi_cast<std::string>(numberOf[chaser]); COUT(0) << message << std::endl; Host::Broadcast(message);
                         playerParty_[originator->getPlayer()]=killer;		//originator's new party: killer
                         setPlayerColour(originator->getPlayer());		//originator's new colour
                         numberOf[killer]++;
-                        const std::string& message2 = std::string(" Killers ") + multi_cast<std::string>(numberOf[killer]); COUT(0) << message2 << std::endl; Host::Broadcast(message2);
                     }
                 evaluatePlayerParties(); 			//check if the party change has to trigger futher party changes
 			
@@ -136,9 +133,6 @@ namespace orxonox
                     WeakPtr<Engine>* ptr = new WeakPtr<Engine>(spaceship->getEngine());
                     new Timer(10, false, &createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this))->setDefaultValue(0, ptr), true);
                 }
-                std::string message5("First victim.");// for testing purposes
-                COUT(0) << message5 << std::endl;
-                Host::Broadcast(message5);
             }
 
             //Case: notEnoughKillers: party change
@@ -148,7 +142,6 @@ namespace orxonox
                 playerParty_[victim->getPlayer()]=killer; 	//victim's new party: killer
                 setPlayerColour(victim->getPlayer()); 		//victim colour
                 numberOf[killer]++;				//party switch: number of players is not affected (decrease and increase)
-                const std::string& message = std::string(" Killers ") + multi_cast<std::string>(numberOf[killer]); COUT(0) << message << std::endl; Host::Broadcast(message);
                 evaluatePlayerParties();			//check if the party change has to trigger futher party changes
             }
             //Case: notEnoughChasers: party change
@@ -158,7 +151,6 @@ namespace orxonox
                 playerParty_[victim->getPlayer()]=chaser; 	//victim's new party: chaser
                 setPlayerColour(victim->getPlayer()); 		//victim colour
                 numberOf[chaser]++;				//party switch: number of players is not affected (decrease and increase)
-                const std::string& message = std::string(" Chasers ") + multi_cast<std::string>(numberOf[chaser]); COUT(0) << message << std::endl; Host::Broadcast(message);
                 evaluatePlayerParties();			//check if the party change has to trigger futher party changes
             }
 
@@ -183,10 +175,6 @@ namespace orxonox
                 //partyswitch: victim bcomes piggy and the originator(piggy) becomes chaser
                 playerParty_[victim->getPlayer()]=piggy;
                 playerParty_[originator->getPlayer()]=chaser;
-                //announce
-                const std::string& messageVictim = victim->getPlayer()->getName() + " is victim";
-                COUT(0) << messageVictim << std::endl;
-                Host::Broadcast(messageVictim);
 
                 //party switch -> colour switch		
                 setPlayerColour(victim->getPlayer()); //victim colour
@@ -202,7 +190,7 @@ namespace orxonox
                 }
 
             }
-            //TODO: killer vs piggy
+            // killer vs piggy
             else if (source==killer &&target==piggy)		//party and colour switch	
             {
             playerParty_[victim->getPlayer()]=killer;
@@ -259,7 +247,7 @@ namespace orxonox
         if (!player)// only for safety
             return;
         playerParty_[player]=chaser;		//Set playerparty
-        numberOf[chaser]++; const std::string& message = std::string(" Chasers ") + multi_cast<std::string>(numberOf[chaser]); COUT(0) << message << std::endl; Host::Broadcast(message);
+        numberOf[chaser]++;
         Gametype::playerEntered(player);
         const std::string& message6 = player->getName() + " entered the game";
         COUT(0) << message6 << std::endl;
@@ -289,13 +277,10 @@ namespace orxonox
         return valid_player;
     }
 
-   
-
-    
 
     void Dynamicmatch::tick(float dt)
     {
-        SUPER(Dynamicmatch, tick, dt);//TODO - was bedeutet diese Zeile
+        SUPER(Dynamicmatch, tick, dt);
 
         if (this->hasStarted() && !gameEnded_)
         {   pointsPerTime =pointsPerTime + dt;
@@ -335,6 +320,9 @@ namespace orxonox
     void Dynamicmatch::rewardPig()
     {
         //durch alle Spieler iterieren
+        /*std::string message("Game started!");
+            COUT(0) << message << std::endl;
+            Host::Broadcast(message);*/
         // allen Spielern mit der Pig-party frags++
         ;
     }
@@ -368,9 +356,7 @@ namespace orxonox
         else {notEnoughKillers=false;}
         //chasers: there are more chasers than killers + pigs
         if (numberOf[piggy]+numberOf[killer] > numberOf[chaser]) {notEnoughChasers=true;}
-        else {notEnoughChasers=false; const std::string& message = "Players Evaluated";COUT(0) << message << std::endl; Host::Broadcast(message);}
-	const std::string& messagetest = multi_cast<std::string>(numberOf[piggy]+numberOf[chaser]+numberOf[killer]) + "   players!";
-        COUT(0) << messagetest << std::endl; Host::Broadcast(messagetest);	
+        else {notEnoughChasers=false;}	
     }
 
     int Dynamicmatch::getParty(PlayerInfo* player) // helper function for ArtificialController
@@ -439,7 +425,7 @@ namespace orxonox
         std::string message("Time out. Press F2 to see the points you scored.");
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
-	/*for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
+	/*for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
                 {
                     if (it->first->getClientID() == CLIENTID_UNKNOWN)
                         continue;
@@ -449,6 +435,45 @@ namespace orxonox
                     else
                         this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
                 }*/
+    }
+    SpawnPoint* Dynamicmatch::getBestSpawnPoint(PlayerInfo* player) const
+    {
+        int desiredTeamNr = -1;
+        std::map<PlayerInfo*, int>::const_iterator it_player = this->playerParty_.find(player);
+        if (it_player != this->playerParty_.end())
+            desiredTeamNr = it_player->second;
+
+        // Only use spawnpoints of the own team (or non-team-spawnpoints)
+        std::set<SpawnPoint*> teamSpawnPoints = this->spawnpoints_;
+        for (std::set<SpawnPoint*>::iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); )
+        {
+            if ((*it)->isA(Class(TeamSpawnPoint)))
+            {
+                TeamSpawnPoint* tsp = orxonox_cast<TeamSpawnPoint*>(*it);
+                if (tsp && static_cast<int>(tsp->getTeamNumber()) != desiredTeamNr)//getTeamNumber!!
+                {
+                    teamSpawnPoints.erase(it++);
+                    continue;
+                }
+            }
+
+            ++it;
+        }
+
+        if (teamSpawnPoints.size() > 0)
+        {
+            unsigned int randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(teamSpawnPoints.size())));
+            unsigned int index = 0;
+            for (std::set<SpawnPoint*>::const_iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); ++it)
+            {
+                if (index == randomspawn)
+                    return (*it);
+
+                ++index;
+            }
+        }
+
+        return 0;
     }
 
 }
