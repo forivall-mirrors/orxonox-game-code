@@ -125,7 +125,7 @@ namespace orxonox
     {
         this->objects_.push_back(object);
         object->setGametype(this->getGametype());
-	object->setLevel(this);
+    object->setLevel(this);
     }
 
     BaseObject* Level::getObject(unsigned int index) const
@@ -143,14 +143,14 @@ namespace orxonox
     //LoD
     void Level::addLodInfo(MeshLodInformation* lodInformation)
     {
-//		std::pair<std::map<std::string,MeshLodInformation*>::iterator,bool> it 
-//		    = new std::pair<lodInformation->getMeshName(),lodInformation>;
-		std::string meshName = lodInformation->getMeshName();
+//        std::pair<std::map<std::string,MeshLodInformation*>::iterator,bool> it 
+//            = new std::pair<lodInformation->getMeshName(),lodInformation>;
+        std::string meshName = lodInformation->getMeshName();
         this->lodInformation_.insert(std::make_pair(meshName,lodInformation));
-		//this->lodInformation_[std::make_pair<meshName,lodInformation>);
+        //this->lodInformation_[std::make_pair<meshName,lodInformation>);
     }
 
-    const MeshLodInformation* Level::getLodInfo(std::string meshName) const
+    MeshLodInformation* Level::getLodInfo(std::string meshName) const
     {
         if(this->lodInformation_.find(meshName)!=this->lodInformation_.end())
             return this->lodInformation_.find(meshName)->second;

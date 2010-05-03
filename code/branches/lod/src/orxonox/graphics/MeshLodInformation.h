@@ -41,7 +41,6 @@ namespace orxonox
     {
 		private:
 			void setLodLevel(unsigned int lodLevel);
-			int getLodLevel();
 			void setMeshSource(std::string meshSource);
 			std::string getMeshSource();
 			std::string meshSource_;
@@ -51,6 +50,7 @@ namespace orxonox
             MeshLodInformation(BaseObject* creator);
             virtual ~MeshLodInformation();
             
+			int getLodLevel();
             std::string getMeshName();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

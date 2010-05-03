@@ -56,13 +56,16 @@ namespace orxonox
 
             void playerEntered(PlayerInfo* player);
             void playerLeft(PlayerInfo* player);
+			
+            MeshLodInformation* getLodInfo(std::string meshName) const;
+
 
         private:
             void addObject(BaseObject* object);
             BaseObject* getObject(unsigned int index) const;
 
             void addLodInfo(MeshLodInformation* object);
-            const MeshLodInformation* getLodInfo(std::string meshName) const;
+//            const MeshLodInformation* getLodInfo(std::string meshName) const;
 //            MeshLodInformation* getLodInfo(unsigned int index) const;
 
             void setGametypeString(const std::string& gametype);

@@ -28,12 +28,16 @@
 
 #include "Model.h"
 
-#include <OGRE/OgreEntity.h>
+// What's this? With the directory in front the filename, my compiler can't find the file...
+//#include <OGRE/OgreEntity.h>
+#include <OgreEntity.h>
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "Scene.h"
+#include "graphics/MeshLodInformation.h"
+#include "Level.h"
 
 namespace orxonox
 {
@@ -57,10 +61,10 @@ namespace orxonox
     void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Model, XMLPort, xmlelement, mode);
-		
-		//LoD
+        
+        //LoD
         XMLPortParam(Model, "lodLevel", setLodLevel, getLodLevel, xmlelement, mode).defaultValues(5);
-		
+        
         XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
         XMLPortParam(Model, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
     }
@@ -97,7 +101,13 @@ namespace orxonox
                         scaleFactor = scale3d.y;
                     if(scale3d.z>scaleFactor)
                         scaleFactor = scale3d.z;
-
+                    
+                    Level* level_ = this->getLevel();
+                    
+                    MeshLodInformation* lodInfo = level_->getLodInfo(this->meshSrc_);
+                    if(lodInfo!=0)
+                        setLodLevel(lodInfo->getLodLevel());
+                    
                     COUT(0) << this->meshSrc_<< " lodLevel_: " << this->lodLevel_ <<" scale: "<< scaleFactor << std::endl;
                     //Fuer Asteroiden perfekt
 
