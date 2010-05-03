@@ -60,17 +60,18 @@ namespace orxonox
 
     void SimpleRocketFire::fire()
     {
-        //SimpleRocket* rocket = new SimpleRocket(this);
-		RocketController* con = new RocketController(this);
+        SimpleRocket* rocket = new SimpleRocket(this);
+	RocketController* con = new RocketController(this);
 
 
         this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
-        con->getControllableEntity()->setOrientation(this->getMuzzleOrientation());
-        con->getControllableEntity()->setPosition(this->getMuzzlePosition());
-        /* rocket->setVelocity(this->getMuzzleDirection() * this->speed_);
-        rocket->scale(2);
-
+        rocket->setOrientation(this->getMuzzleOrientation());
+        rocket->setPosition(this->getMuzzlePosition());
+	rocket->scale(10);
+        rocket->setVelocity(this->getMuzzleDirection() * this->speed_);
         rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
-        rocket->setDamage(this->getDamage());*/
+        rocket->setDamage(this->getDamage());
+        //rocket->scale(2);
+
     }
 }
