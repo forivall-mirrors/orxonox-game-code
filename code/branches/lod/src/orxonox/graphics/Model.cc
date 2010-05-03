@@ -28,8 +28,6 @@
 
 #include "Model.h"
 
-// What's this? With the directory in front the filename, my compiler can't find the file...
-//#include <OGRE/OgreEntity.h>
 #include <OgreEntity.h>
 
 #include "core/CoreIncludes.h"
@@ -75,6 +73,16 @@ namespace orxonox
         registerVariable(this->bCastShadows_, VariableDirection::ToClient, new NetworkCallback<Model>(this, &Model::changedShadows));
     }
 
+    float Model::getBiggestScale(Vector3 scale3d)
+    {
+        float scaleFactor = scale3d.x;
+        if(scale3d.y>scaleFactor)
+            scaleFactor = scale3d.y;
+        if(scale3d.z>scaleFactor)
+            scaleFactor = scale3d.z;
+        return scaleFactor;
+    }
+    
     void Model::changedMesh()
     {
         if (GameMode::showsGraphics())
@@ -92,15 +100,16 @@ namespace orxonox
                 
                 //LOD
                 if(this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1
-                    &&this->meshSrc_!="laserbeam.mesh"
-                    &&this->lodLevel_!=0)
+                    &&this->meshSrc_!="laserbeam.mesh")
                 {
-                    Vector3 scale3d = this->getScale3D();
-                    float scaleFactor = scale3d.x;
-                    if(scale3d.y>scaleFactor)
-                        scaleFactor = scale3d.y;
-                    if(scale3d.z>scaleFactor)
-                        scaleFactor = scale3d.z;
+                    float scaleFactor = getBiggestScale(this->getScale3D());
+                    BaseObject* creatorPtr = this->getCreator();
+                    while(creatorPtr!=0)
+                    {
+                        // TODO Cannot cast to WorldEntity
+                        scaleFactor *= getBiggestScale(((WorldEntity) creatorPtr)->getScale3D());
+                        creatorPtr = this->getCreator();
+                    }
                     
                     Level* level_ = this->getLevel();
                     
@@ -108,8 +117,7 @@ namespace orxonox
                     if(lodInfo!=0)
                         setLodLevel(lodInfo->getLodLevel());
                     
-                    COUT(0) << this->meshSrc_<< " lodLevel_: " << this->lodLevel_ <<" scale: "<< scaleFactor << std::endl;
-                    //Fuer Asteroiden perfekt
+                    COUT(0) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and scale: "<< scaleFactor << ":" << std::endl;
 
 #if OGRE_VERSION >= 0x010700
                     Ogre::Mesh::LodValueList distList;
@@ -117,25 +125,33 @@ namespace orxonox
                     Ogre::Mesh::LodDistanceList distList;
 #endif
 
-                    float factor = scaleFactor;
-                    COUT(0)<<"scaleFactor:"<<scaleFactor<<std::endl;
+                    if(lodLevel_>0)
+                    {
+                        float factor = scaleFactor*5/lodLevel_;
+                        
+                        COUT(0)<<"LodLevel set with factor: "<<factor<<std::endl;
 
-                    distList.push_back(70.0f*factor);
-                    distList.push_back(140.0f*factor);
-                    distList.push_back(170.0f*factor);
-                    distList.push_back(200.0f*factor);
-                    distList.push_back(230.0f*factor);
-                    distList.push_back(250.0f*factor);
-                    distList.push_back(270.0f*factor);
-                    distList.push_back(290.0f*factor);
-                    distList.push_back(310.0f*factor);
-                    distList.push_back(330.0f*factor);
+                        distList.push_back(70.0f*factor);
+                        distList.push_back(140.0f*factor);
+                        distList.push_back(170.0f*factor);
+                        distList.push_back(200.0f*factor);
+                        distList.push_back(230.0f*factor);
+                        distList.push_back(250.0f*factor);
+                        distList.push_back(270.0f*factor);
+                        distList.push_back(290.0f*factor);
+                        distList.push_back(310.0f*factor);
+                        distList.push_back(330.0f*factor);
 
-                    float reductionValue = 0.2f;
+                        float reductionValue = 0.2f;
 
-                    
-                    //Generiert LOD-Levels
-                    this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
+                        
+                        //Generiert LOD-Levels
+                        this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
+                    }
+                    else
+                    {
+                        COUT(0)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was < 0."<<std::endl;
+                    }
                 }
             }
         }
