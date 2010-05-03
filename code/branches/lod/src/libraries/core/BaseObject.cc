@@ -74,6 +74,7 @@ namespace orxonox
             this->setNamespace(this->creator_->getNamespace());
             this->setScene(this->creator_->getScene(), this->creator_->getSceneID());
             this->setGametype(this->creator_->getGametype());
+	    this->setLevel(this->creator_->getLevel());
         }
         else
         {
@@ -82,6 +83,7 @@ namespace orxonox
             this->scene_ = 0;
             this->sceneID_ = OBJECTID_UNKNOWN;
             this->gametype_ = 0;
+	    this->level_ = 0;
         }
     }
 

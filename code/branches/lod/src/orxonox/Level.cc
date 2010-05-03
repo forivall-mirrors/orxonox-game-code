@@ -31,7 +31,7 @@
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
-#include "core/template.h"
+#include "core/Template.h"
 #include "core/XMLFile.h"
 #include "core/XMLPort.h"
 
@@ -125,6 +125,7 @@ namespace orxonox
     {
         this->objects_.push_back(object);
         object->setGametype(this->getGametype());
+	object->setLevel(this);
     }
 
     BaseObject* Level::getObject(unsigned int index) const

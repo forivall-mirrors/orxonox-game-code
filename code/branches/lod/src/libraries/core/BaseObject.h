@@ -50,6 +50,7 @@ namespace orxonox
 {
     class Scene;
     class Gametype;
+    class Level;
 
     //! The BaseObject is the parent of all classes representing an instance in the game.
     class _CoreExport BaseObject : virtual public OrxonoxClass
@@ -152,6 +153,17 @@ namespace orxonox
             inline const SmartPtr<Gametype>& getGametype() const { return this->gametype_; }
             inline Gametype* getOldGametype() const { return this->oldGametype_; }
             virtual void changedGametype() {}
+            
+            inline void setLevel(const SmartPtr<Level>& level)
+            {
+                if (level != this->level_)
+                {
+                    this->level_ = level;
+                    this->changedLevel();
+                }
+            }
+            inline const SmartPtr<Level>& getLevel() const { return this->level_; }
+            virtual void changedLevel() {}
 
             void addEventSource(BaseObject* source, const std::string& state);
             void removeEventSource(BaseObject* source);
@@ -209,6 +221,7 @@ namespace orxonox
             uint32_t               sceneID_;
             SmartPtr<Gametype>     gametype_;
             Gametype*              oldGametype_;
+	    SmartPtr<Level>        level_;
             std::set<Template*>    templates_;
 
             std::map<BaseObject*, std::string>  eventSources_;           //!< List of objects which send events to this object, mapped to the state which they affect

@@ -28,7 +28,7 @@
 
 #include "Model.h"
 
-#include <OgreEntity.h>
+#include <OGRE/OgreEntity.h>
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
@@ -91,15 +91,15 @@ namespace orxonox
                     &&this->meshSrc_!="laserbeam.mesh"
                     &&this->lodLevel_!=0)
                 {
-					Vector3 scale3d = this->getScale3D();
+                    Vector3 scale3d = this->getScale3D();
                     float scaleFactor = scale3d.x;
-					if(scale3d.y>scaleFactor)
-						scaleFactor = scale3d.y;
-					if(scale3d.z>scaleFactor)
-						scaleFactor = scale3d.z;
-						
+                    if(scale3d.y>scaleFactor)
+                        scaleFactor = scale3d.y;
+                    if(scale3d.z>scaleFactor)
+                        scaleFactor = scale3d.z;
+
                     COUT(0) << this->meshSrc_<< " lodLevel_: " << this->lodLevel_ <<" scale: "<< scaleFactor << std::endl;
-                    //Für Asteroiden perfekt
+                    //Fuer Asteroiden perfekt
 
 #if OGRE_VERSION >= 0x010700
                     Ogre::Mesh::LodValueList distList;
@@ -107,8 +107,8 @@ namespace orxonox
                     Ogre::Mesh::LodDistanceList distList;
 #endif
 
-					float factor = scaleFactor;
-					COUT(0)<<"scaleFactor:"<<scaleFactor<<std::endl;
+                    float factor = scaleFactor;
+                    COUT(0)<<"scaleFactor:"<<scaleFactor<<std::endl;
 
                     distList.push_back(70.0f*factor);
                     distList.push_back(140.0f*factor);
