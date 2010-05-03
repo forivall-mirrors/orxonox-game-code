@@ -77,7 +77,7 @@ namespace orxonox
         }
     }
     
-    //TODO: Clean up?
+    //TODO: Document.
     void MultiTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(MultiTrigger, XMLPort, xmlelement, mode);
@@ -93,7 +93,7 @@ namespace orxonox
 
         XMLPortObject(MultiTrigger, MultiTrigger, "", addTrigger, getTrigger, xmlelement, mode);
         
-        COUT(4) << "MultiTrigger &" << this << " created." << std::endl;
+        COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") created." << std::endl;
     }
     
     //TODO: Document
@@ -112,8 +112,6 @@ namespace orxonox
         SUPER(MultiTrigger, tick, dt);
         
         std::queue<MultiTriggerState*>* queue  = this->letTrigger();
-        if(queue != NULL)
-            COUT(4) << "MultiTrigger &" << this << ": " << queue->size() << " new states to state queue." << std::endl;
         
         if(queue != NULL)
         {
@@ -123,13 +121,15 @@ namespace orxonox
                 MultiTriggerState* state = queue->front();
                 if(state == NULL)
                     break;
-                    
-                this->addState(state->bTriggered & this->isModeTriggered(state->originator), state->originator);
+
+                bool bTriggered = (state->bTriggered & this->isModeTriggered(state->originator)) ^ this->bInvertMode_;
+                if(bTriggered ^ this->isTriggered(state->originator))
+                    this->addState(bTriggered, state->originator);
                 queue->pop();
                 delete state;
             }
             delete queue;
-        }
+        }        
 
         if (this->stateQueue_.size() > 0)
         {
@@ -171,7 +171,7 @@ namespace orxonox
                     
                     // Remove the state from the state queue.
                     this->stateQueue_.pop_front();
-                    COUT(4) << "MultiTrigger &" << this << ": State processed, removing from state queue. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << state->bActive << "|" << this->isActive(state->originator) << ", triggered: " << state->bTriggered << "|" << this->isTriggered(state->originator) << "." << std::endl;
+                    COUT(4) << "MultiTrigger '" << this->getName() << "' &" << this << ": State processed, removing from state queue. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << state->bActive << "|" << this->isActive(state->originator) << ", triggered: " << state->bTriggered << "|" << this->isTriggered(state->originator) << "." << std::endl;
                     delete state;
                     size -= 1;
                 }
@@ -179,7 +179,7 @@ namespace orxonox
                 {
                     this->stateQueue_.push_back(std::pair<float, MultiTriggerState*>(timeRemaining-dt, state));
                     this->stateQueue_.pop_front();
-                    COUT(4) << "MultiTrigger &" << this << ": State processed, decreasing time remaining. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << state->bActive << ", triggered: " << state->bTriggered << ", time remaining: " << timeRemaining-dt << "." << std::endl;
+                    COUT(4) << "MultiTrigger '" << this->getName() << "' &" << this << ": State processed, decreasing time remaining. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << state->bActive << ", triggered: " << state->bTriggered << ", time remaining: " << timeRemaining-dt << "." << std::endl;
                 }
             }
         }
@@ -217,11 +217,38 @@ namespace orxonox
     //TODO: Document
     std::queue<MultiTriggerState*>* MultiTrigger::letTrigger(void)
     {
+        // Goes through all trigger children and gets the objects triggering them.
+        std::set<BaseObject*>* triggerers = new std::set<BaseObject*>();
+        std::set<BaseObject*>::iterator objIt;
+        for(std::set<MultiTrigger*>::iterator it = this->children_.begin(); it != this->children_.end(); it ++)
+        {
+            std::set<BaseObject*> set = (*it)->getActive();
+            for(objIt = set.begin(); objIt != set.end(); objIt++)
+            {
+                triggerers->insert(*objIt);
+            }
+        }
+
+        // Goes through all the triggerers of this trigger.
+        for(objIt = this->active_.begin(); objIt != this->active_.end(); objIt++)
+        {
+            triggerers->insert(*objIt);
+        }
+
+        if(triggerers->size() == 0)
+            return NULL;
+        
         std::queue<MultiTriggerState*>* queue = new std::queue<MultiTriggerState*>();
-        MultiTriggerState* state = new MultiTriggerState;
-        state->bTriggered = true;
-        state->originator = NULL;
-        queue->push(state);
+        MultiTriggerState* state = NULL;
+        for(std::set<BaseObject*>::iterator it = triggerers->begin(); it != triggerers->end(); it++)
+        {
+            state = new MultiTriggerState;
+            state->bTriggered = true;
+            state->originator = *it;
+            queue->push(state);
+        }
+        delete triggerers;
+        
         return queue;
     }
     
@@ -279,7 +306,6 @@ namespace orxonox
         if(!this->isTarget(originator))
             return false;
         
-        bTriggered ^= this->bInvertMode_;
         // If the state doesn't change.
         if(this->isTriggered() && bTriggered)
             return false;
@@ -288,10 +314,11 @@ namespace orxonox
         
         // If the MultiTrigger is in switch mode.
         if(this->bSwitch_ && !bTriggered)
-            return false;
-        
+        {
+            bActive = this->isActive(originator);
+        }
         // If the state changes to active.
-        if(this->remainingActivations_ != INF_s && bActive)
+        else if(this->remainingActivations_ != INF_s && bActive)
         {
             if(this->remainingActivations_ == 0)
                 return false;
@@ -299,12 +326,13 @@ namespace orxonox
         }
         else
         {
-            // If the MultiTrigger should stay active and there are no more remaining activations.
+            // If the MultiTrigger should stay active if there are no more remaining activations.
+            //TODO: Find out how this applies to infinitely many activations.
             if(this->bStayActive_ && this->remainingActivations_ == 0)
                 return false;
         }
         
-        COUT(4) << "MultiTrigger &" << this << ": State added to state queue. originator: " << originator->getIdentifier()->getName() << " (&" << originator << "), active: " << bActive << "|" << this->isActive(originator) << ", triggered: " << bTriggered << "|" << this->isTriggered(originator) <<  "." << std::endl;
+        COUT(4) << "MultiTrigger &" << this << ": State added to state queue. originator: " << originator->getIdentifier()->getName() << " (&" << originator << "), active: " << bActive << "|" << this->isActive(originator) << ", triggered: " << bTriggered << "|" << this->isTriggered(originator) << ", remaining activations: " << this->remainingActivations_ << "." << std::endl;
         
         // Create state.
         MultiTriggerState* state = new MultiTriggerState;

@@ -59,7 +59,11 @@ namespace orxonox
         bool bActive;
         bool bTriggered;
     };
-    
+
+    /**
+    @brief
+        The MultiTrigger class implements a trigger that has a distinct state for each object triggering it.
+    */
     class _ObjectsExport MultiTrigger : public StaticEntity, public Tickable
     {
         public:
@@ -138,6 +142,9 @@ namespace orxonox
             bool checkAnd(BaseObject* triggerer);
             bool checkOr(BaseObject* triggerer);
             bool checkXor(BaseObject* triggerer);
+
+            std::set<BaseObject*>& getActive(void)
+                { return this->active_; }
 
             bool bFirstTick_;
 
