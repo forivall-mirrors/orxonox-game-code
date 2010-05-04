@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file DistanceMultiTrigger.cc
+    @brief Implementation of the DistanceMultiTrigger class.
+*/
+
 #include "DistanceMultiTrigger.h"
 
 #include "core/CoreIncludes.h"
@@ -35,31 +40,75 @@ namespace orxonox
 {
     
     CreateFactory(DistanceMultiTrigger);
-    
+
+    /**
+    @brief
+        Default Constructor. Registers the object and initializes default values. 
+    */
     DistanceMultiTrigger::DistanceMultiTrigger(BaseObject* creator) : MultiTrigger(creator)
     {
         RegisterObject(DistanceMultiTrigger);
         
         this->distance_ = 100.0f;
     }
-    
+
+    /**
+    @brief
+        Destructor.
+    */
     DistanceMultiTrigger::~DistanceMultiTrigger()
     {
         
     }
-    
+
+    /**
+    @brief
+        Method for creating a DistanceMultiTrigger object through XML.
+    */
     void DistanceMultiTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(DistanceMultiTrigger, XMLPort, xmlelement, mode);
 
-        XMLPortParam(DistanceMultiTrigger, "distance", setDistance, getDistance, xmlelement, mode).defaultValues(100.0f);
+        XMLPortParam(DistanceMultiTrigger, "distance", setDistance, getDistance, xmlelement, mode);
     }
-    
+
+    /**
+    @brief
+        This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
+
+        In this implementation we iterate through all possible objects and check whether the fact that they are in range or not has changed and fire and hand a state ofer to the MultiTrigger if so.
+    */
     std::queue<MultiTriggerState*>* DistanceMultiTrigger::letTrigger(void)
     {
-        ClassTreeMask targetMask = this->getTargetMask();
-        
+        ClassTreeMask& targetMask = this->getTargetMask();
+
         std::queue<MultiTriggerState*>* queue = NULL;
+
+        // Check for objects that were in range but no longer are. Iterate through all objects, that are in range.
+        for(std::set<WorldEntity*>::iterator it = this->range_.begin(); it != this->range_.end(); )
+        {
+            Vector3 distanceVec = (*it)->getWorldPosition() - this->getWorldPosition();
+            // If the object is no longer in range.
+            if (distanceVec.length() > this->distance_)
+            {
+                WorldEntity* temp = *(it++);
+                if(!this->removeFromRange(temp))
+                    continue;
+
+                // If no queue has been created, yet.
+                if(queue == NULL)
+                    queue = new std::queue<MultiTriggerState*>();
+
+                // Create a state and append it to the queue.
+                MultiTriggerState* state = new MultiTriggerState;
+                state->bTriggered = false;
+                state->originator = temp;
+                queue->push(state);
+            }
+            else
+                ++it;
+        }
+
         // Check for new objects that are in range
         for(ClassTreeMaskObjectIterator it = targetMask.begin(); it != targetMask.end(); ++it)
         {
@@ -68,42 +117,23 @@ namespace orxonox
                 continue;
 
             Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
-            if (distanceVec.length() < this->distance_)
+            // If the object is in range.
+            if (distanceVec.length() <= this->distance_)
             {
+                // Add the object to the objects that are in range.
                 if(!this->addToRange(entity))
                     continue;
-                
+
+                // If no queue has been created, yet.
                 if(queue == NULL)
-                {
                     queue = new std::queue<MultiTriggerState*>();
-                }
+
+                // Create a state and append it to the queue.
                 MultiTriggerState* state = new MultiTriggerState;
                 state->bTriggered = true;
                 state->originator = entity;
                 queue->push(state);
             }
-        }
-        
-        for(std::set<WorldEntity*>::iterator it = this->range_.begin(); it != this->range_.end(); )
-        {
-            Vector3 distanceVec = (*it)->getWorldPosition() - this->getWorldPosition();
-            if (distanceVec.length() >= this->distance_)
-            {
-                WorldEntity* temp = *(it++);
-                if(!this->removeFromRange(temp))
-                    continue;
-                
-                if(queue == NULL)
-                {
-                    queue = new std::queue<MultiTriggerState*>();
-                }
-                MultiTriggerState* state = new MultiTriggerState;
-                state->bTriggered = false;
-                state->originator = temp;
-                queue->push(state);
-            }
-            else
-                ++it;
         }
         
         return queue;

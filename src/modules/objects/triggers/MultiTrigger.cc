@@ -107,7 +107,7 @@ namespace orxonox
         XMLPortParam(MultiTrigger, "simultaniousTriggerers", setSimultaniousTriggerers, getSimultaniousTriggerers, xmlelement, mode);
         XMLPortParam(MultiTrigger, "invert", setInvert, getInvert, xmlelement, mode);
         XMLPortParamTemplate(MultiTrigger, "mode", setMode, getModeString, xmlelement, mode, const std::string&);
-        XMLPortParamLoadOnly(MultiTrigger, "target", addTargets, xmlelement, mode).defaultValues("ControllableEntity"); //TODO: Remove load only
+        XMLPortParamLoadOnly(MultiTrigger, "target", addTargets, xmlelement, mode).defaultValues("Pawn"); //TODO: Remove load only
 
         //TODO: Maybe nicer with explicit subgroup, e.g. triggers
         XMLPortObject(MultiTrigger, MultiTrigger, "", addTrigger, getTrigger, xmlelement, mode);
