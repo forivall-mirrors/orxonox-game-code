@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file MultiTrigger.h
+    @brief Definition of the MultiTrigger class.
+*/
+
 #ifndef _MultiTrigger_H__
 #define _MultiTrigger_H__
 
@@ -58,7 +63,6 @@ namespace orxonox
     struct MultiTriggerState
     {
         BaseObject* originator;
-        bool bActive;
         bool bTriggered;
     };
 
@@ -92,96 +96,174 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a MultiTrigger object through XML.
             virtual void tick(float dt); //!< A method that is executed each tick.
             
-            bool isActive(BaseObject* triggerer = NULL);
-            void addTrigger(MultiTrigger* trigger);
-            const MultiTrigger* getTrigger(unsigned int index) const;
-            
-            void addTargets(const std::string& targets);
-            void removeTargets(const std::string& targets);
-            inline bool isTarget(BaseObject* target)
-                { return targetMask_.isIncluded(target->getIdentifier()); }
-            
-            void setMode(const std::string& modeName);
-            const std::string& getModeString(void) const;
-            inline void setMode(MultiTriggerMode::Value mode)
-                { this->mode_ = mode; }
-            inline MultiTriggerMode::Value getMode() const
-                { return mode_; }
+            bool isActive(BaseObject* triggerer = NULL); //!< Get whether the MultiTrigger is active for a given object.
 
-            inline void setInvert(bool bInvert)
-                { this->bInvertMode_ = bInvert; }
-            inline bool getInvert() const
-                { return this->bInvertMode_; }
+            /**
+            @brief Set the delay of the MultiTrigger.
+            @param delay The delay to be set.
+            */
+            inline void setDelay(float delay)
+                { if(delay > 0) this->delay_= delay; }
+            /**
+            @brief Get the delay of the MultiTrigger.
+            @return The delay.
+            */
+            inline float getDelay() const
+                { return this->delay_; }
 
+            /**
+            @brief Set switch-mode of the MultiTrigger.
+            @param bSwitch If true the MultiTrigger is set to switched.
+            */
             inline void setSwitch(bool bSwitch)
                 { this->bSwitch_ = bSwitch; }
+            /**
+            @brief Get the switch-mode of the MultiTrigger.
+            @return Returns true if the MultiTriger is in switch-mode.
+            */
             inline bool getSwitch() const
                 { return this->bSwitch_; }
 
+            /**
+            @brief Set the stay-active-mode of the MultiTrigger.
+            @param bStayActive If true the MultiTrigger is set to stay active.
+            */
             inline void setStayActive(bool bStayActive)
                 { this->bStayActive_ = bStayActive; }
+            /**
+            @brief Get the stay-active-mode of the MultiTrigger.
+            @return Returns true if the MultiTrigger stays active.
+            */
             inline bool getStayActive() const
                 { return this->bStayActive_; }
 
+            /**
+            @brief Set the number of activations the MultiTrigger can go through.
+            @param activations The number of activations. -1 denotes infinitely many activations.
+            */
             inline void setActivations(int activations)
-                { this->remainingActivations_ = activations; }
+                { if(activations >= 0 || activations == INF_s) this->remainingActivations_ = activations; }
+            /**
+            @brief Get the number of remaining activations of the MultiTrigger.
+            @return The number of activations. -1 denotes infinity.
+            */
             inline int getActivations() const
                 { return this->remainingActivations_; }
-                
+
+            /**
+            @brief Set the number of objects that are allowed to simultaniously trigger this MultiTrigger.
+            @param triggerers The number of objects. -1 denotes infinitely many.
+            */
             inline void setSimultaniousTriggerers(int triggerers)
-                { this->maxNumSimultaniousTriggerers_ = triggerers; }
+                { if(triggerers >= 0 || triggerers == INF_s) this->maxNumSimultaniousTriggerers_ = triggerers; }
+            /**
+            @brief Get the number of objects that are allowed to simultaniously trigger this MultiTriggger.
+            @return Returns the number of objects. -1 denotes infinity.
+            */
             inline int getSimultaniousTriggerers(void)
                 { return this->maxNumSimultaniousTriggerers_; }
 
-            inline void setDelay(float delay)
-                { this->delay_= delay; }
-            inline float getDelay() const
-                { return this->delay_; }
+            /**
+            @brief Set the invert-mode of the MultiTrigger.
+            @param bInvert If true the MultiTrigger is set to invert.
+            */
+            inline void setInvert(bool bInvert)
+                { this->bInvertMode_ = bInvert; }
+            /**
+            @brief Get the invert-mode of the MultiTrigger.
+            @return Returns true if the MultiTrigger is set to invert.
+            */
+            inline bool getInvert() const
+                { return this->bInvertMode_; }
+
+            void setMode(const std::string& modeName); //!< Set the mode of the MultiTrigger.
+            /**
+            @brief Set the mode of the MultiTrigger.
+            @param mode The mode of the MultiTrigger.
+            */
+            inline void setMode(MultiTriggerMode::Value mode) //!< Get the mode of the MultiTrigger.
+                { this->mode_ = mode; }
+            const std::string& getModeString(void) const;
+            /**
+            @brief Get the mode of the MultiTrigger.
+            @return Returns and Enum for the mode of the MultiTrigger.
+            */
+            inline MultiTriggerMode::Value getMode() const
+                { return mode_; }
+
+            /**
+            @brief Get whether the input object is a target of the MultiTrigger.
+            @param target A pointer to the object.
+            @return Returns true if the input object is a target, false if not.
+            */
+            inline bool isTarget(BaseObject* target)
+                { return targetMask_.isIncluded(target->getIdentifier()); }
+            void addTargets(const std::string& targets); //!< Add some target to the MultiTrigger.
+            void removeTargets(const std::string& targets); //!< Remove some target from the MultiTrigger.
+            
+            void addTrigger(MultiTrigger* trigger); //!< Adds a MultiTrigger as a sub-trigger to the trigger.
+            const MultiTrigger* getTrigger(unsigned int index) const; //!< Get the sub-trigger of this MultiTrigger at the given index.
             
         protected:
-            void fire(bool status, BaseObject* originator = NULL);
+            virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
             
-            bool isModeTriggered(BaseObject* triggerer = NULL);
-            bool isTriggered(BaseObject* triggerer = NULL);
-            
-            virtual std::queue<MultiTriggerState*>* letTrigger(void);
-            
+            bool isModeTriggered(BaseObject* triggerer = NULL); //!< Checks whetherx the MultiTrigger is triggered concerning it's sub-triggers.
+            bool isTriggered(BaseObject* triggerer = NULL); //!< Get whether the MultiTrigger is triggered for a given object.
+
+            void fire(bool status, BaseObject* originator = NULL);  //!< Helper method. Creates an event for the given status and originator and fires it.
+
+            /**
+            @brief Get the target mask used to identify the targets of this MultiTrigger.
+            @return Returns the target mask.
+            */
             inline ClassTreeMask& getTargetMask(void)
                 { return this->targetMask_; }
+            /**
+            @brief Is called, when the target mask changes.
+            */
+            //TODO: Check if something mus be done here.
             virtual void notifyMaskUpdate(void) {}
             
         private:
-            static const int INF_s;
-            static const std::string or_s;
+            static const int INF_s; //!< Magic number for infinity.
+            //! Magic strings for the mode.
             static const std::string and_s;
+            static const std::string or_s;
             static const std::string xor_s;
             
-            bool addState(bool bTriggered, BaseObject* originator = NULL);
+            bool addState(MultiTriggerState* state); //!< Helper method. Adds a state to the state queue, where the state will wait to become active.
             
-            bool checkAnd(BaseObject* triggerer);
-            bool checkOr(BaseObject* triggerer);
-            bool checkXor(BaseObject* triggerer);
+            bool checkAnd(BaseObject* triggerer); //!< Checks whether the sub-triggers amount to true for the 'and' mode for a given object.
+            bool checkOr(BaseObject* triggerer); //!< Checks whether the sub-triggers amount to true for the 'or' mode for a given object.
+            bool checkXor(BaseObject* triggerer); //!< Checks whether the sub-triggers amount to true for the 'xor' mode for a given object.
 
+            /**
+            @brief Get the objects for which this MultiTrigger is active.
+            @return Returns a set with all the object this MultiTrigger is active for.
+            */
             std::set<BaseObject*>& getActive(void)
                 { return this->active_; }
 
-            bool bFirstTick_;
+            bool bFirstTick_; //!< Bool to distinguish the first tick form all the following.
 
-            MultiTriggerMode::Value mode_;
-            bool bInvertMode_;
-            bool bSwitch_;
-            bool bStayActive_;
-            float delay_;
-            int remainingActivations_;
-            int maxNumSimultaniousTriggerers_;
+            float delay_; //!< The delay that is imposed on all new trigger events.
+            bool bSwitch_; //!< Bool for the switch-mode, if true the MultiTrigger behaves like a switch.
+            bool bStayActive_; //!< Bool for the stay-active-mode, if true the MultiTrigger stays active after its last activation.;
             
-            std::set<BaseObject*> active_;
-            std::set<BaseObject*> triggered_;
+            int remainingActivations_; //!< The remaining activations of this MultiTrigger.
+            int maxNumSimultaniousTriggerers_; //!< The maximum number of objects simultaniously trigggering this MultiTrigger.
 
-            std::set<MultiTrigger*> children_;
-            std::deque<std::pair<float, MultiTriggerState*> > stateQueue_;
+            bool bInvertMode_; //!< Bool for the invert-mode, if true the MultiTrigger is inverted.
+            MultiTriggerMode::Value mode_; //!< The mode of the MultiTrigger.
+
+            std::set<MultiTrigger*> subTriggers_; //!< The sub-triggers of this MultiTrigger.
             
-            ClassTreeMask targetMask_;
+            std::set<BaseObject*> active_; //!< The set of all objects the MultiTrigger is active for.
+            std::set<BaseObject*> triggered_; //!< The set of all objects the MultiTrigger is triggered for.
+
+            std::deque< std::pair<float, MultiTriggerState*> > stateQueue_; //!< The queue of states waiting to become active.
+            
+            ClassTreeMask targetMask_; //!< The target mask, masking all objects that can trigger this MultiTrigger.
             
     };
 
