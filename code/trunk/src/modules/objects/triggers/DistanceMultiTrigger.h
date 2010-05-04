@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file DistanceMultiTrigger.h
+    @brief Definition of the DistanceMultiTrigger class.
+*/
+
 #ifndef _DistanceMultiTrigger_H__
 #define _DistanceMultiTrigger_H__
 
@@ -39,33 +44,64 @@
 namespace orxonox
 {
 
+    /**
+    @brief
+        The DistanceMultiTrigger is a trigger that triggers whenever an object (that is of the specified target type) is in a specified range of the DistanceMultiTrigger.
+    @see MultiTrigger.h
+        For more information on MultiTriggers.
+    @author
+        Damian 'Mozork' Frick
+    */
     class _ObjectsExport DistanceMultiTrigger : public MultiTrigger
     {
         
         public:
-            DistanceMultiTrigger(BaseObject* creator);
-            ~DistanceMultiTrigger();
+            DistanceMultiTrigger(BaseObject* creator); //!< Default Constructor. Registers the object and initializes default values.
+            ~DistanceMultiTrigger(); //!< Destructor.
             
-            void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            
+            void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a DistanceMultiTrigger object through XML.
+
+            /**
+            @brief Set the distance at which the DistanceMultiTrigger triggers.
+            @param distance The distance.
+            */
             inline void setDistance(float distance)
-                { this->distance_ = distance; }
+                { if(distance >= 0) this->distance_ = distance; }
+            /**
+            @brief Get the distance at which the DistanceMultiTrigger triggers.
+            @return Returns the distance.
+            */
             inline float getDistance() const
                 { return this->distance_; }
                 
         protected:
-            virtual std::queue<MultiTriggerState*>* letTrigger(void);
-            
+            virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
+
+            /**
+            @brief Check whether a given entity is currently (since the last update) in range of the DistanceMultiTrigger.
+            @param entity A pointer to the entity.
+            @return Returns true if the entity is in the range.
+            */
             inline bool inRange(WorldEntity* entity)
                 { return this->range_.find(entity) != this->range_.end(); }
-            bool addToRange(WorldEntity* entity)
+            /**
+            @brief Add a given entity to the entities, that currently are in range of the DistanceMultiTrigger.
+            @param entity A pointer to the entity.
+            @return Returns true if successful, false if not.
+            */
+            inline bool addToRange(WorldEntity* entity)
                 { std::pair<std::set<WorldEntity*>::iterator, bool> pair = this->range_.insert(entity); return pair.second; }
-            bool removeFromRange(WorldEntity* entity)
+            /**
+            @brief Remove a given entity from the set of entities, that currently are in range of the DistanceMultiTrigger.
+            @param entity A pointer ot the entity.
+            @return Returns true if successful.
+            */
+            inline bool removeFromRange(WorldEntity* entity)
                 { return this->range_.erase(entity) > 0; }
                 
         private:
-            float distance_;
-            std::set<WorldEntity*> range_;
+            float distance_; //!< The distance at which the DistanceMultiTrigger triggers.
+            std::set<WorldEntity*> range_; //!< The set of entities that currently are in range of the DistanceMultiTrigger.
         
     };
     
