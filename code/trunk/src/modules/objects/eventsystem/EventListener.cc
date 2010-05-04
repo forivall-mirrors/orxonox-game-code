@@ -61,9 +61,10 @@ namespace orxonox
             return;
         }
         
-        COUT(4) << "EventListener: Processing event: originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << ")" << ", activate: " << event.activate_ << ", name: " << event.name_ << std::endl;
+        COUT(4) << "EventListener, processing event: originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << ")" << ", activate: " << event.activate_ << ", name: " << event.name_ << std::endl;
 
         this->bActive_ = true;
+        //TODO: Why not this->fireEvent(event)?
         this->fireEvent(event.activate_, event.originator_, event.name_);
         this->bActive_ = false;
     }
