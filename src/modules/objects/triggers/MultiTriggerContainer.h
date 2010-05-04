@@ -20,10 +20,15 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Damian 'Mozork' Frick
  *   Co-authors:
  *      ...
  *
+*/
+
+/**
+    @file MultiTriggerContainer.h
+    @brief Definition of the MultiTriggerContainer class.
 */
 
 #ifndef _MultiTriggerContainer_H__
@@ -36,22 +41,36 @@
 namespace orxonox
 {
 
+    /**
+    @brief
+        This class is used by the MultiTrigger class to transport additional data via Events.
+    @author
+        Damian 'Mozork' Frick
+    */
     class _ObjectsExport MultiTriggerContainer : public BaseObject
     {
+        
         public:
-            
-            MultiTriggerContainer(BaseObject* creator);
-            MultiTriggerContainer(BaseObject* creator, MultiTrigger* originator, BaseObject* data);
-            ~MultiTriggerContainer();
-            
+            MultiTriggerContainer(BaseObject* creator); //!< Default constructor. Registers the object and creates an empty container.
+            MultiTriggerContainer(BaseObject* creator, MultiTrigger* originator, BaseObject* data); //!< Constructor. Registers the object and sets the input values.
+            ~MultiTriggerContainer(); //!< Destructor.
+
+            /**
+            @brief Get the originator of the Event. (The MultiTrigger that fired the Event)
+            @return Returns a pointer to the originator.
+            */
             inline MultiTrigger* getOriginator(void)
                 { return this->originator_; }
+            /**
+            @brief Get the data of this container.
+            @return Returns a pointer ot the data.
+            */
             inline BaseObject* getData(void)
                 { return this->data_; }
             
         private:
-            MultiTrigger* originator_;
-            BaseObject* data_;
+            MultiTrigger* originator_; //!< The originator.
+            BaseObject* data_; //!< The data.
     };
     
 }

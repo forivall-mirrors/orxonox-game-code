@@ -26,27 +26,48 @@
  *
 */
 
+/**
+    @file MultiTriggerContainer.cc
+    @brief Implementation of the MultiTriggerContainer class.
+*/
+
 #include "MultiTriggerContainer.h"
 
 #include "core/CoreIncludes.h"
 
 namespace orxonox
 {
-
-    CreateFactory(MultiTriggerContainer);
     
+    /**
+    @brief
+        Default constructor. Registers the object and creates an empty container.
+    @param creator
+        The creator.
+    */
     MultiTriggerContainer::MultiTriggerContainer(BaseObject* creator) : BaseObject(creator), originator_(NULL), data_(NULL)
     {
         RegisterObject(MultiTriggerContainer);
-        
     }
-    
+
+    /**
+    @brief
+        Constructor. Registers the object and sets the input values.
+    @param creator
+        The creator.
+    @param originator
+        A pointer to the originator of the Event, i.e. the MultiTrigger that fired the Event. (or is about to)
+    @param data
+        A pointer to the data that should be sent with the container.
+    */
     MultiTriggerContainer::MultiTriggerContainer(BaseObject* creator, MultiTrigger* originator, BaseObject* data) : BaseObject(creator), originator_(originator), data_(data)
     {
         RegisterObject(MultiTriggerContainer);
-        
     }
-    
+
+    /**
+    @brief
+        Destructor.
+    */
     MultiTriggerContainer::~MultiTriggerContainer()
     {
         
