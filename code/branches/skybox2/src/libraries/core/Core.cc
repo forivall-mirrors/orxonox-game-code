@@ -77,7 +77,6 @@ namespace orxonox
     Core* Core::singletonPtr_s  = 0;
 
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
-    SetCommandLineSwitch(noGametypeCaptions).information("Use this if you don't want to use Gametype captions.");
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
     SetCommandLineArgument(limitToCPU, 1).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is the first core (faster than off)");
@@ -149,12 +148,6 @@ namespace orxonox
         ClassIdentifier<Core>::getIdentifier("Core")->initialiseObject(this, "Core", true);
         this->setConfigValues();
 
-        // no captions in gametype.
-        if(CommandLineParser::getValue("noGametypeCaptions").getBool())
-        {
-            ModifyConfigValue(bGametypeCaptions_, tset, false);
-        }
-
         // create persistent io console
         this->ioConsole_.reset(new IOConsole());
 
@@ -200,8 +193,6 @@ namespace orxonox
         SetConfigValue(bInitRandomNumberGenerator_, true)
             .description("If true, all random actions are different each time you start the game")
             .callback(this, &Core::initRandomNumberGenerator);
-        SetConfigValue(bGametypeCaptions_, true)
-            .description("Set to false if you don't want to use Gametype captions.");
     }
 
     //! Callback function if the language has changed.

@@ -59,6 +59,7 @@ namespace orxonox
 
         this->setConfigValues();
         takeScreenshot_ = false;
+        this->captionsRemoved_ = false;
     }
 
     SkyboxGenerator::~SkyboxGenerator()
@@ -75,11 +76,19 @@ namespace orxonox
     {
         if( takeScreenshot_ == true )
         {
+            if(!this->captionsRemoved_)
+            {
+                CommandExecutor::execute("setGametypeStatus false");
+                this->captionsRemoved_ = true;
+                return;
+            }
+            
             ControllableEntity* ce = HumanController::getLocalControllerSingleton()->getControllableEntity();
             Camera* camera = ce->getCamera();
             assert(ce);
         
             Ogre::RenderWindow* w = GraphicsManager::getInstance().getRenderWindow();
+
 
             switch (iterateOverDirections_) 
             {
@@ -130,10 +139,15 @@ namespace orxonox
             case 7 :
                 camera->getOgreCamera()->setAspectRatio(aspectRatio_);
                 camera->getOgreCamera()->setFOVy(fovy_);
+                iterateOverDirections_++;
+            case 8 :
                 iterateOverDirections_ =0;
                 takeScreenshot_ = false;
                 CommandExecutor::execute("pause");
+                CommandExecutor::execute("setGametypeStatus true");
+                this->captionsRemoved_ = false;
             }
+
         }
     }
 	

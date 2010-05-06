@@ -45,8 +45,12 @@ namespace orxonox
             virtual void tick(float dt);
             virtual void changedOwner();
 
+            static void setGametypeStatus(bool bValue); //!< Toggles whether the gametype status is displayed.
+
         private:
             PlayerInfo* owner_;
+            static bool noCaption_s;
+            
     };
 }
 #endif /* _GametypeStatus_H__ */

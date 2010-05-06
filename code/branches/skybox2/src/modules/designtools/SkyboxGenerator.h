@@ -53,5 +53,6 @@ namespace orxonox
             int iterateOverDirections_;
             float aspectRatio_;
             Ogre::Radian fovy_;
+            bool captionsRemoved_;
     };
 }
