@@ -37,7 +37,8 @@
 #include "objects/ObjectsPrereqs.h"
 
 #include "worldentities/WorldEntity.h"
-#include <set>
+#include "core/WeakPtr.h"
+#include <map>
 
 #include "MultiTrigger.h"
 
@@ -78,30 +79,23 @@ namespace orxonox
             virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
 
             /**
-            @brief Check whether a given entity is currently (since the last update) in range of the DistanceMultiTrigger.
-            @param entity A pointer to the entity.
-            @return Returns true if the entity is in the range.
-            */
-            inline bool inRange(WorldEntity* entity)
-                { return this->range_.find(entity) != this->range_.end(); }
-            /**
             @brief Add a given entity to the entities, that currently are in range of the DistanceMultiTrigger.
             @param entity A pointer to the entity.
             @return Returns true if successful, false if not.
             */
             inline bool addToRange(WorldEntity* entity)
-                { std::pair<std::set<WorldEntity*>::iterator, bool> pair = this->range_.insert(entity); return pair.second; }
+                { std::pair<std::map<WorldEntity*, WeakPtr<WorldEntity>* >::iterator, bool> pair = this->range_.insert(std::pair<WorldEntity*, WeakPtr<WorldEntity>* >(entity, new WeakPtr<WorldEntity>(entity))); return pair.second; }
             /**
             @brief Remove a given entity from the set of entities, that currently are in range of the DistanceMultiTrigger.
             @param entity A pointer ot the entity.
             @return Returns true if successful.
             */
             inline bool removeFromRange(WorldEntity* entity)
-                { return this->range_.erase(entity) > 0; }
+                { (*this->range_.find(entity)->second)->destroy(); bool erased = this->range_.erase(entity) > 0; return erased; }
                 
         private:
             float distance_; //!< The distance at which the DistanceMultiTrigger triggers.
-            std::set<WorldEntity*> range_; //!< The set of entities that currently are in range of the DistanceMultiTrigger.
+            std::map<WorldEntity*, WeakPtr<WorldEntity>* > range_; //!< The set of entities that currently are in range of the DistanceMultiTrigger.
         
     };
     

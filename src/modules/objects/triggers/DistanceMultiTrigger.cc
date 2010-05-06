@@ -85,14 +85,22 @@ namespace orxonox
         std::queue<MultiTriggerState*>* queue = NULL;
 
         // Check for objects that were in range but no longer are. Iterate through all objects, that are in range.
-        for(std::set<WorldEntity*>::iterator it = this->range_.begin(); it != this->range_.end(); )
+        for(std::map<WorldEntity*, WeakPtr<WorldEntity>* >::iterator it = this->range_.begin(); it != this->range_.end(); )
         {
-            Vector3 distanceVec = (*it)->getWorldPosition() - this->getWorldPosition();
+            WorldEntity* entity = it->second->get();
+            WorldEntity* key = it->first;
+            if(entity == NULL)
+            {
+                it++;
+                this->removeFromRange(key);
+                continue;
+            }
+            
+            Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
             // If the object is no longer in range.
             if (distanceVec.length() > this->distance_)
             {
-                WorldEntity* temp = *(it++);
-                if(!this->removeFromRange(temp))
+                if(!this->removeFromRange(entity))
                     continue;
 
                 // If no queue has been created, yet.
@@ -102,7 +110,7 @@ namespace orxonox
                 // Create a state and append it to the queue.
                 MultiTriggerState* state = new MultiTriggerState;
                 state->bTriggered = false;
-                state->originator = temp;
+                state->originator = entity;
                 queue->push(state);
             }
             else
@@ -112,8 +120,8 @@ namespace orxonox
         // Check for new objects that are in range
         for(ClassTreeMaskObjectIterator it = targetMask.begin(); it != targetMask.end(); ++it)
         {
-            WorldEntity* entity = orxonox_cast<WorldEntity*>(*it);
-            if (entity == NULL || this->inRange(entity)) //If the object is no WorldEntity or is already in range.
+            WorldEntity* entity = static_cast<WorldEntity*>(*it);
+            if (entity == NULL) //If the object is no WorldEntity or is already in range.
                 continue;
 
             Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
