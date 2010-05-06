@@ -1,5 +1,6 @@
 SET_SOURCE_FILES(DESIGNTOOLS_SRC_FILES
   SkyboxGenerator.cc
+  CreateStars.cc
 )
 
 ORXONOX_ADD_LIBRARY(designtools
