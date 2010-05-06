@@ -75,7 +75,7 @@ namespace orxonox
         XMLPortParam(QuestEffectBeacon, "times", setTimes, getTimes, xmlelement, mode);
         XMLPortObject(QuestEffectBeacon, QuestEffect, "effects", addEffect, getEffect, xmlelement, mode);
 
-        XMLPortEventState(QuestEffectBeacon, BaseObject, "execute", execute, xmlelement, mode); //TODO: Change BaseObject to MultiTrigger as soon as MultiTrigger is the base of all triggers.
+        XMLPortEventSink(QuestEffectBeacon, BaseObject, "execute", execute, xmlelement, mode); //TODO: Change BaseObject to MultiTrigger as soon as MultiTrigger is the base of all triggers.
 
         COUT(3) << "New QuestEffectBeacon created." << std::endl;
     }

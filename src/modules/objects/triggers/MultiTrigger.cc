@@ -70,6 +70,8 @@ namespace orxonox
 
         this->bInvertMode_ = false;
         this->mode_ = MultiTriggerMode::EventTriggerAND;
+
+        this->parentTrigger_ = NULL;
         
         this->targetMask_.exclude(Class(BaseObject));
 
@@ -164,7 +166,10 @@ namespace orxonox
                     this->addState(state);
                 }
                 else
+                {
+                    COUT(1) << "BUH" << std::endl;
                     delete state;
+                }
                 
                 queue->pop();
             }
@@ -258,7 +263,11 @@ namespace orxonox
 
                         // Print some debug output if the state has changed.
                         if(bStateChanged)
+                        {
                             COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << bActive << ", triggered: " << state->bTriggered << "." << std::endl;
+                            if(this->parentTrigger_ != NULL)
+                                this->parentTrigger_->activityChanged(state->originator);
+                        }
 
                         // If the MultiTrigger has exceeded its amount of activations and it doesn't stay active, it has to be destroyed,
                         if(this->remainingActivations_ == 0 && !bActive)
@@ -385,6 +394,7 @@ namespace orxonox
     {
         if (this != trigger && trigger != NULL)
             this->subTriggers_.insert(trigger);
+        trigger->addParentTrigger(this);
     }
 
     /**
@@ -422,41 +432,15 @@ namespace orxonox
     */
     std::queue<MultiTriggerState*>* MultiTrigger::letTrigger(void)
     {
-        // Goes through all sub-triggers and gets the objects triggering them.
-        std::set<BaseObject*>* triggerers = new std::set<BaseObject*>();
-        std::set<BaseObject*>::iterator objIt;
-        for(std::set<MultiTrigger*>::iterator it = this->subTriggers_.begin(); it != this->subTriggers_.end(); it ++)
-        {
-            std::set<BaseObject*> set = (*it)->getActive();
-            for(objIt = set.begin(); objIt != set.end(); objIt++)
-            {
-                triggerers->insert(*objIt);
-            }
-        }
-
-        // Goes through all the triggerers of this trigger.
-        for(objIt = this->active_.begin(); objIt != this->active_.end(); objIt++)
-        {
-            triggerers->insert(*objIt);
-        }
-
-        // If no objects are triggering this MultiTrigger or the sub-triggers.
-        if(triggerers->size() == 0)
-            return NULL;
-
-        // Create a state for each object triggering this MultiTrigger or any of the sub-triggers and append it to the queue.
-        std::queue<MultiTriggerState*>* queue = new std::queue<MultiTriggerState*>();
-        MultiTriggerState* state = NULL;
-        for(std::set<BaseObject*>::iterator it = triggerers->begin(); it != triggerers->end(); it++)
-        {
-            state = new MultiTriggerState;
-            state->bTriggered = true;
-            state->originator = *it;
-            queue->push(state);
-        }
-        delete triggerers;
-
-        return queue;
+        return NULL;
+    }
+    
+    void MultiTrigger::activityChanged(BaseObject* originator)
+    {
+        MultiTriggerState* state = new MultiTriggerState;
+        state->bTriggered = (this->isTriggered(originator) & this->isModeTriggered(originator)) ^ this->bInvertMode_;
+        state->originator = originator;
+        this->addState(state);
     }
 
     /**
