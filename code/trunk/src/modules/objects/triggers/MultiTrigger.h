@@ -206,12 +206,21 @@ namespace orxonox
             
         protected:
             virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
+
+            void activityChanged(BaseObject* originator);
             
             bool isModeTriggered(BaseObject* triggerer = NULL); //!< Checks whetherx the MultiTrigger is triggered concerning it's sub-triggers.
             bool isTriggered(BaseObject* triggerer = NULL); //!< Get whether the MultiTrigger is triggered for a given object.
 
             void fire(bool status, BaseObject* originator = NULL);  //!< Helper method. Creates an event for the given status and originator and fires it.
 
+            /**
+            @brief Adds the parent of a MultiTrigger.
+            @param parent A pointer to the parent MultiTrigger.
+            */
+            inline void addParentTrigger(MultiTrigger* parent)
+                { this->parentTrigger_ = parent; }
+            
             /**
             @brief Get the target mask used to identify the targets of this MultiTrigger.
             @return Returns the target mask.
@@ -256,6 +265,7 @@ namespace orxonox
             bool bInvertMode_; //!< Bool for the invert-mode, if true the MultiTrigger is inverted.
             MultiTriggerMode::Value mode_; //!< The mode of the MultiTrigger.
 
+            MultiTrigger* parentTrigger_;
             std::set<MultiTrigger*> subTriggers_; //!< The sub-triggers of this MultiTrigger.
             
             std::set<BaseObject*> active_; //!< The set of all objects the MultiTrigger is active for.

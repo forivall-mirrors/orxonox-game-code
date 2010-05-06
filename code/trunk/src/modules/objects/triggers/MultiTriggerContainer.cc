@@ -37,6 +37,8 @@
 
 namespace orxonox
 {
+
+    CreateUnloadableFactory(MultiTriggerContainer);
     
     /**
     @brief
