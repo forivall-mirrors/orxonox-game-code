@@ -97,8 +97,8 @@ namespace orxonox
     SimpleRocket::~SimpleRocket()
     {
 		if (this->isInitialized()) {
+			this->getController()->destroy();
 		COUT(0)<< "simplerocket destroyed\n";
-		delete this->getController();
 		}
 	}
 
@@ -157,7 +157,7 @@ namespace orxonox
             Pawn* victim = orxonox_cast<Pawn*>(otherObject);
             if (victim)
                 victim->hit(this->owner_, contactPoint, dmg);
-//             this->destroy();
+             this->destroy();
         }
         return false;
     }

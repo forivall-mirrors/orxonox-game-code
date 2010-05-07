@@ -47,6 +47,7 @@ namespace orxonox
 		this->rocket = new SimpleRocket(this);
 		this->rocket->setController(dynamic_cast<RocketController*>(this));
 		this->setControllableEntity(dynamic_cast<ControllableEntity*> (rocket));
+		this->haha=0;
     }
 
 
@@ -58,16 +59,21 @@ namespace orxonox
     */
     void RocketController::tick(float dt)
     {
+		haha++;
 
         SimpleRocket *rocket = static_cast<SimpleRocket*>(this->getControllableEntity());
-		double rd = rand();
-		if (rd > 0.5) rocket->rotateRoll(5); 
+		rocket->setAcceleration(rocket->getAcceleration()*2);
+		if (haha < 100) rocket->rotateYaw(10);
+		else {
+		if (rand() > 0.5) rocket->rotateRoll(5); 
 		else rocket->rotatePitch(5);
+		}
 
     }
 
 
 	RocketController::~RocketController() {
+		
 		COUT(0)<< "RocketController destroyed\n";
 	}
 

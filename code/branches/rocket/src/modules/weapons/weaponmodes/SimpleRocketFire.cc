@@ -44,14 +44,13 @@ namespace orxonox
     SimpleRocketFire::SimpleRocketFire(BaseObject* creator) : WeaponMode(creator)
     {
         RegisterObject(SimpleRocketFire);
-		
 
-      /*  this->reloadTime_ = 0.20f;
+        this->reloadTime_ = 0.20f;
         this->bParallelReload_ = false;
         this->damage_ = 100;
-        this->speed_ = 500;
+        this->speed_ = 50;
 
-        this->setMunitionName("LaserMunition");*/
+        this->setMunitionName("LaserMunition");
         // The firing sound of the Rocket is played in Rocket.cc (because of OpenAl sound positioning)
     }
 
@@ -66,11 +65,15 @@ namespace orxonox
 		SimpleRocket* rocket = con->getRocket();
 		this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
 		rocket->setOrientation(this->getMuzzleOrientation());
-        rocket->setPosition(this->getMuzzlePosition());
-		rocket->setVelocity(this->getMuzzleDirection() * rocket->getVelocity());
+		Vector3 pos = this->getMuzzlePosition() + (this->getMuzzleOrientation()* Vector3(-2, -3, -2));
+        rocket->setPosition(pos);
+		rocket->setVelocity(this->getMuzzleDirection()*this->speed_);
+		//Ogre::Vector3 vec = this->getMuzzlePosition();
+		//vec.normalise();
+		//rocket->setAcceleration(100*vec);
 		rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
 		//con->getRocket()->setPosition(this->getMuzzlePosition());
-	//con->setControllableEntity(dynamic_cast<ControllableEntity*>(rocket));
+	//con->setControllableEntity(dynamic_cast<rocket*>(ControllableEntity));
 	//con->getControllableEntity()->setPosition(this->getMuzzlePosition());
 
         /* this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());

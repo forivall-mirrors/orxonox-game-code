@@ -51,12 +51,15 @@ namespace orxonox
 			virtual ~RocketController();
             
             virtual void tick(float dt);
-			SimpleRocket* getRocket(){return rocket;};
+			SimpleRocket* getRocket(){return this->rocket;};
         protected:
 
 
         private:
 			SimpleRocket* rocket;
+			WeakPtr<PlayerInfo> player_;
+						int haha;
+
 
     };
 }

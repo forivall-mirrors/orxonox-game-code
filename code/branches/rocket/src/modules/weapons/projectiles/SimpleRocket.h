@@ -111,12 +111,14 @@ namespace orxonox
             inline float getDamage() const
                 { return this->damage_; }
             virtual void fired(unsigned int firemode);
+			
 
         private:
             WeakPtr<Pawn> owner_;
             Vector3 localAngularVelocity_;
             float damage_;
             bool bDestroy_;
+
 
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;
