@@ -71,6 +71,8 @@ namespace orxonox
         this->bInvertMode_ = false;
         this->mode_ = MultiTriggerMode::EventTriggerAND;
 
+        this->bBroadcast_ = false;
+
         this->parentTrigger_ = NULL;
         
         this->targetMask_.exclude(Class(BaseObject));
@@ -84,7 +86,7 @@ namespace orxonox
     */
     MultiTrigger::~MultiTrigger()
     {
-        COUT(4) << "Destorying MultiTrigger &" << this << ". " << this->stateQueue_.size() << " states still in queue. Deleting." << std::endl;
+        COUT(4) << "Destroying MultiTrigger &" << this << ". " << this->stateQueue_.size() << " states still in queue. Deleting." << std::endl;
         while(this->stateQueue_.size() > 0)
         {
             MultiTriggerState* state = this->stateQueue_.front().second;
@@ -109,6 +111,7 @@ namespace orxonox
         XMLPortParam(MultiTrigger, "simultaniousTriggerers", setSimultaniousTriggerers, getSimultaniousTriggerers, xmlelement, mode);
         XMLPortParam(MultiTrigger, "invert", setInvert, getInvert, xmlelement, mode);
         XMLPortParamTemplate(MultiTrigger, "mode", setMode, getModeString, xmlelement, mode, const std::string&);
+        XMLPortParam(MultiTrigger, "broadcast", setBroadcast, getBroadcast, xmlelement, mode);
         XMLPortParamLoadOnly(MultiTrigger, "target", addTargets, xmlelement, mode).defaultValues("Pawn"); //TODO: Remove load only
 
         //TODO: Maybe nicer with explicit subgroup, e.g. triggers
@@ -256,7 +259,13 @@ namespace orxonox
                             // Fire the Event if the activity has changed.
                             if(bFire)
                             {
-                                this->fire(bActive, state->originator);
+                                if(this->bBroadcast_ && state->originator == NULL)
+                                {
+                                    this->broadcast(bActive);
+                                }
+                                else
+                                    this->fire(bActive, state->originator);
+                                
                                 bStateChanged = true;
                             }
                         }
@@ -264,9 +273,12 @@ namespace orxonox
                         // Print some debug output if the state has changed.
                         if(bStateChanged)
                         {
-                            COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << bActive << ", triggered: " << state->bTriggered << "." << std::endl;
+                            if(state->originator != NULL)
+                                COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: " << state->originator->getIdentifier()->getName() << " (&" << state->originator << "), active: " << bActive << ", triggered: " << state->bTriggered << "." << std::endl;
+                            else
+                                COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: NULL, active: " << bActive << ", triggered: " << state->bTriggered << "." << std::endl;
                             if(this->parentTrigger_ != NULL)
-                                this->parentTrigger_->activityChanged(state->originator);
+                                this->parentTrigger_->subTrigggerActivityChanged(state->originator);
                         }
 
                         // If the MultiTrigger has exceeded its amount of activations and it doesn't stay active, it has to be destroyed,
@@ -424,8 +436,6 @@ namespace orxonox
     @brief
         This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
         This method is the device for the behaviour (the conditions under which the MultiTrigger triggers) of any derived class from MultiTrigger.
-
-        In this implementation it collects all objects triggering all sub-triggers nd the MultiTrigger itself and creates a state for each of them.
     @return
         A pointer to a queue of MultiTriggerState pointers is returned, containing all the neccessary information to decide whether these states should indeed become new states of the MultiTrigger.
         Please be aware that both the queue and the states in the queue need to be deleted one they have been used. This is already done in the tick() method of this class but would have to be done by any method calling this method.
@@ -434,8 +444,30 @@ namespace orxonox
     {
         return NULL;
     }
-    
-    void MultiTrigger::activityChanged(BaseObject* originator)
+
+    /**
+    @brief
+        This method can be called by any class inheriting from MultiTrigger to change it's triggered status for a specified originator.
+
+        Compared to the letTrigger mode, which just polls and lets the pollee send it's state changed back, the changeTriggered method lets the trigger advertise its state changes just as they happen so it's much like the interrupt version of letTrigger.
+    @param originator
+        The originator which triggered the state change.
+    */
+    void MultiTrigger::changeTriggered(BaseObject* originator)
+    {
+        MultiTriggerState* state = new MultiTriggerState;
+        state->bTriggered = (!this->isTriggered(originator) & this->isModeTriggered(originator)) ^ this->bInvertMode_;
+        state->originator = originator;
+        this->addState(state);
+    }
+
+    /**
+    @brief
+        This method is called by any sub-trigger to advertise changes in it's state to it's parent-trigger.
+    @param originator
+        The object that caused the change in activity.
+    */
+    void MultiTrigger::subTrigggerActivityChanged(BaseObject* originator)
     {
         MultiTriggerState* state = new MultiTriggerState;
         state->bTriggered = (this->isTriggered(originator) & this->isModeTriggered(originator)) ^ this->bInvertMode_;
@@ -498,10 +530,10 @@ namespace orxonox
 
     /**
     @brief
-        Helper method. Creates an event for the given status and originator and fires it.
+        Helper method. Creates an Event for the given status and originator and fires it.
         Or more precisely creates a MultiTriggerContainer to encompass all neccesary information and creates an Event from that and sends it.
     @param status
-        The status of the event to be fired. This is equivalent to the activity of the MultiTrigger.
+        The status of the Event to be fired. This is equivalent to the activity of the MultiTrigger.
     @param originator
         The object that triggered the MultiTrigger to fire this Event.
     */
@@ -511,6 +543,7 @@ namespace orxonox
         if(originator == NULL)
         {
             this->fireEvent(status);
+            COUT(4) << "MultiTrigger '" <<  this->getName() << "' (&" << this << "): Fired event. status: " << status << "." << std::endl;
             return;
         }
         
@@ -518,6 +551,23 @@ namespace orxonox
         this->fireEvent(status, container);
         COUT(4) << "MultiTrigger '" <<  this->getName() << "' (&" << this << "): Fired event. originator: " << originator->getIdentifier()->getName() << " (&" << originator << "), status: " << status << "." << std::endl;
         delete container;
+    }
+
+    /**
+    @brief
+        Helper method. Broadcasts an Event for every object that is a target.
+    @param status
+        The status of the Events to be fired. This is equivalent to the activity of the MultiTrigger.
+    */
+    void MultiTrigger::broadcast(bool status)
+    {
+        ClassTreeMask& targetMask = this->getTargetMask();
+        
+        for(ClassTreeMaskObjectIterator it = targetMask.begin(); it != targetMask.end(); ++it)
+        {
+            BaseObject* object = static_cast<BaseObject*>(*it);
+            this->fire(status, object);
+        }
     }
 
     /**

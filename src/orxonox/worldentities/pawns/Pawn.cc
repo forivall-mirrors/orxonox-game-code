@@ -130,7 +130,10 @@ namespace orxonox
 
         if (GameMode::isMaster())
             if (this->health_ <= 0 && bAlive_)
+            {
+                this->fireEvent(); // Event to notify anyone who want's to know about the death.
                 this->death();
+            }
     }
 
     void Pawn::setPlayer(PlayerInfo* player)

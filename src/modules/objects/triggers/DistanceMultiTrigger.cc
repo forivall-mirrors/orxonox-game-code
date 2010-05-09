@@ -58,7 +58,6 @@ namespace orxonox
     */
     DistanceMultiTrigger::~DistanceMultiTrigger()
     {
-        
     }
 
     /**
@@ -80,7 +79,6 @@ namespace orxonox
     */
     std::queue<MultiTriggerState*>* DistanceMultiTrigger::letTrigger(void)
     {
-        ClassTreeMask& targetMask = this->getTargetMask();
 
         std::queue<MultiTriggerState*>* queue = NULL;
 
@@ -91,7 +89,7 @@ namespace orxonox
             WorldEntity* key = it->first;
             if(entity == NULL)
             {
-                it++;
+                ++it;
                 this->removeFromRange(key);
                 continue;
             }
@@ -100,8 +98,11 @@ namespace orxonox
             // If the object is no longer in range.
             if (distanceVec.length() > this->distance_)
             {
-                if(!this->removeFromRange(entity))
+                if(!this->removeFromRange(key))
+                {
+                    ++it;
                     continue;
+                }
 
                 // If no queue has been created, yet.
                 if(queue == NULL)
@@ -116,6 +117,8 @@ namespace orxonox
             else
                 ++it;
         }
+
+        ClassTreeMask& targetMask = this->getTargetMask();
 
         // Check for new objects that are in range
         for(ClassTreeMaskObjectIterator it = targetMask.begin(); it != targetMask.end(); ++it)
