@@ -81,6 +81,7 @@ namespace orxonox
             'invert':                   Invert is a bool, if true the trigger is in invert-mode, meaning, that if the triggering condition is fulfilled the MultiTrigger will have the state not triggered and and if the condition is not fulfilled it will have the state triggered. In short it just inverts the behaviour of the MultiTrigger. The default is false.
             'simultaniousTriggerers':   The number of simultanious triggerers limits the number of object that are allowed to trigger the MultiTrigger at the same time. Or a little more precisely, the number of distinct objects the MultiTrigger has 'triggered' states for, at each point in time.
             'mode':                     The mode describes how the MultiTrigger acts in relation to all the MultiTriggers, that are appended to it. There are 3 modes: 'and', meaning that the MultiTrigger can only be triggered if all the appended MultiTriggers are active. 'or', meaning that the MultiTrigger can only triggered if at least one of the appendend MultiTriggers is active. And 'xor', meaning that the MultiTrigger can only be triggered if one and only one appended MultiTrigger is active. Notice, that I wrote 'can only be active', that implies, that there is an addtitional condition to the activity of the MultiTrigger and that is the fulfillment of the triggering condition (the MultiTrigger itself doesn't have one, but all derived classes should). Also bear in mind, that the activity of a MultiTrigger is still coupled to the object that triggered it. The default is 'and'.
+            'broadcast'                 Broadcast is a bool, if true the MutliTrigger is in broadcast-mode, meaining, that all trigger events that are caused by no originator (originator is NULL) are broadcasted as having come from every possible originator, or more precisely as having come from all objects that are specified targets of this MultiTrigger.
             'target':                   The target describes the kind of objects that are allowed to trigger this MultiTrigger. The default is 'Pawn'.
             Also there is the possibility of appending MultiTriggers to the MultiTrigger just by adding them as subobjects in the XML description of your MultiTrigger.
 
@@ -108,7 +109,7 @@ namespace orxonox
             @brief Get the delay of the MultiTrigger.
             @return The delay.
             */
-            inline float getDelay() const
+            inline float getDelay(void) const
                 { return this->delay_; }
 
             /**
@@ -121,7 +122,7 @@ namespace orxonox
             @brief Get the switch-mode of the MultiTrigger.
             @return Returns true if the MultiTriger is in switch-mode.
             */
-            inline bool getSwitch() const
+            inline bool getSwitch(void) const
                 { return this->bSwitch_; }
 
             /**
@@ -134,7 +135,7 @@ namespace orxonox
             @brief Get the stay-active-mode of the MultiTrigger.
             @return Returns true if the MultiTrigger stays active.
             */
-            inline bool getStayActive() const
+            inline bool getStayActive(void) const
                 { return this->bStayActive_; }
 
             /**
@@ -147,7 +148,7 @@ namespace orxonox
             @brief Get the number of remaining activations of the MultiTrigger.
             @return The number of activations. -1 denotes infinity.
             */
-            inline int getActivations() const
+            inline int getActivations(void) const
                 { return this->remainingActivations_; }
 
             /**
@@ -173,7 +174,7 @@ namespace orxonox
             @brief Get the invert-mode of the MultiTrigger.
             @return Returns true if the MultiTrigger is set to invert.
             */
-            inline bool getInvert() const
+            inline bool getInvert(void) const
                 { return this->bInvertMode_; }
 
             void setMode(const std::string& modeName); //!< Set the mode of the MultiTrigger.
@@ -192,12 +193,25 @@ namespace orxonox
                 { return mode_; }
 
             /**
+            @brief Set the broadcast-mode of the MultiTrigger.
+            @param bBroadcast If true the MultiTrigger is set to broadcast;
+            */
+            inline void setBroadcast(bool bBroadcast)
+                { this->bBroadcast_ = bBroadcast; }
+            /**
+            @brief Get the broadcast-mode of the MultiTrigger.
+            @return Returns true if the MultiTrigger is set to broadcast.
+            */
+            inline bool getBroadcast(void)
+                { return this->bBroadcast_; }
+
+            /**
             @brief Get whether the input object is a target of the MultiTrigger.
             @param target A pointer to the object.
             @return Returns true if the input object is a target, false if not.
             */
             inline bool isTarget(BaseObject* target)
-                { return targetMask_.isIncluded(target->getIdentifier()); }
+                { if(target == NULL) return true; else return targetMask_.isIncluded(target->getIdentifier()); }
             void addTargets(const std::string& targets); //!< Add some target to the MultiTrigger.
             void removeTargets(const std::string& targets); //!< Remove some target from the MultiTrigger.
             
@@ -207,12 +221,13 @@ namespace orxonox
         protected:
             virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
 
-            void activityChanged(BaseObject* originator);
+            void changeTriggered(BaseObject* originator = NULL); //!< This method can be called by any class inheriting from MultiTrigger to change it's triggered status for a specified originator.
             
             bool isModeTriggered(BaseObject* triggerer = NULL); //!< Checks whetherx the MultiTrigger is triggered concerning it's sub-triggers.
             bool isTriggered(BaseObject* triggerer = NULL); //!< Get whether the MultiTrigger is triggered for a given object.
 
-            void fire(bool status, BaseObject* originator = NULL);  //!< Helper method. Creates an event for the given status and originator and fires it.
+            void fire(bool status, BaseObject* originator = NULL);  //!< Helper method. Creates an Event for the given status and originator and fires it.
+            void broadcast(bool status); //!< Helper method. Broadcasts an Event for every object that is a target.
 
             /**
             @brief Adds the parent of a MultiTrigger.
@@ -239,6 +254,8 @@ namespace orxonox
             static const std::string and_s;
             static const std::string or_s;
             static const std::string xor_s;
+
+            void subTrigggerActivityChanged(BaseObject* originator); //!< This method is called by any sub-trigger to advertise changes in it's state to it's parent-trigger.
             
             bool addState(MultiTriggerState* state); //!< Helper method. Adds a state to the state queue, where the state will wait to become active.
             
@@ -264,6 +281,8 @@ namespace orxonox
 
             bool bInvertMode_; //!< Bool for the invert-mode, if true the MultiTrigger is inverted.
             MultiTriggerMode::Value mode_; //!< The mode of the MultiTrigger.
+
+            bool bBroadcast_; //!< Bool for the broadcast-mode, if true all triggers go to all possible targets.
 
             MultiTrigger* parentTrigger_;
             std::set<MultiTrigger*> subTriggers_; //!< The sub-triggers of this MultiTrigger.

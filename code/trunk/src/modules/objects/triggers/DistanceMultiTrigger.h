@@ -91,7 +91,7 @@ namespace orxonox
             @return Returns true if successful.
             */
             inline bool removeFromRange(WorldEntity* entity)
-                { (*this->range_.find(entity)->second)->destroy(); bool erased = this->range_.erase(entity) > 0; return erased; }
+                { WeakPtr<WorldEntity>* weakptr = this->range_.find(entity)->second; bool erased = this->range_.erase(entity) > 0; if(erased) delete weakptr; return erased; }
                 
         private:
             float distance_; //!< The distance at which the DistanceMultiTrigger triggers.
