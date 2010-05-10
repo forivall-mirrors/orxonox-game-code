@@ -184,7 +184,7 @@ namespace orxonox
             if (this->getShieldHealth() > 0)
             {
                 this->setShieldHealth(this->shieldHealth_ - shielddamage);
-                COUT(1) << "damage " << damage  << " shieldAbsorption " << this->shieldAbsorption_ << std::endl;
+                COUT(1) << "damage " << damage  << " getShieldAbsorption " << getShieldAbsorption() << std::endl;
                 COUT(1) << "shielddamage " << shielddamage  << " healthdamage " << healthdamage << std::endl;
                 COUT(1) << "the shield takes its share of the damage and is left with " << this->getShieldHealth() << std::endl;
             }
