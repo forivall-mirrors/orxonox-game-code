@@ -1,6 +1,6 @@
 <Template name=fps>
   <FpsPlayer
-   hudtemplate            = spaceshiphud
+   hudtemplate            = fpshud
    camerapositiontemplate = fpscamera
  
    spawnparticlesource    = "Orxonox/fairytwirl"
@@ -28,7 +28,7 @@
     </attached>
 -->
     <collisionShapes>
-      <BoxCollisionShape position="0,0,0" halfExtents="100,10,100" />
+      <BoxCollisionShape position="0,0,0" halfExtents="7,7,7" />
     <!--
       <SphereCollisionShape radius="10" />
       

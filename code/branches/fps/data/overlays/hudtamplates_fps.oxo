@@ -3,8 +3,8 @@
   </OverlayGroup>
 </Template>
 
-<Template name="spaceshiphud">
-  <OverlayGroup name = "spaceshiphud" scale = "1, 1">
+<Template name="fpshud">
+  <OverlayGroup name = "fpshud" scale = "1, 1">
     <Map />
 
     <HUDHealthBar
@@ -72,11 +72,11 @@
      align    = "center"
     />
 
-    <GUIOverlay
+ <!--   <GUIOverlay
       name = "QuestGUI"
       guiname = "QuestGUI"
       visible = "false"
     />
-
+-->
   </OverlayGroup>
 </Template>

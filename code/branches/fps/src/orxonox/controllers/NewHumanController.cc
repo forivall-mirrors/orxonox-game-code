@@ -209,8 +209,12 @@ namespace orxonox
 
                 if (!controlPaused_ )
                 {
-                    if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket")) || this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer"))))
-                        this->showOverlays();
+                    if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
+                        {this->showOverlays();}
+			
+		    if (this->getControllableEntity() &&  this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))\
+			{this->showOverlays();
+			this->hideArrows();}
 
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5f-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5f-overlaySize_/2));
 
@@ -459,6 +463,7 @@ namespace orxonox
         this->currentPitch_ = 0;
         if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
         {
+	    
             this->showOverlays_ = true;
             if (!this->controlPaused_)
             {
