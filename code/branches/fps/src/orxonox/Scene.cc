@@ -337,7 +337,7 @@ namespace orxonox
         // get the WorldEntity pointers
         SmartPtr<WorldEntity> object0 = static_cast<WorldEntity*>(colObj0->getUserPointer());
         SmartPtr<WorldEntity> object1 = static_cast<WorldEntity*>(colObj1->getUserPointer());
-
+	
         // false means that bullet will assume we didn't modify the contact
         bool modified = false;
         if (object0->isCollisionCallbackActive())

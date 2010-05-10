@@ -40,6 +40,7 @@
 
 namespace orxonox
 {
+    
     SetConsoleCommand(HumanController, moveFrontBack, true).setAsInputCommand();
     SetConsoleCommand(HumanController, moveRightLeft, true).setAsInputCommand();
     SetConsoleCommand(HumanController, moveUpDown,    true).setAsInputCommand();

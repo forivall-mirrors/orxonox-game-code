@@ -64,10 +64,10 @@ namespace orxonox
 
     void CameraPosition::attachCamera(Camera* camera)
     {
-        if (!this->bDrag_)
-            camera->setDrag(false);
-
+        
         this->attach(camera);
+		  if (!this->bDrag_)
+            camera->setDrag(false);
 
         if (this->bDrag_)
             camera->setDrag(true);
