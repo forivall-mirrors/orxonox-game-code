@@ -46,6 +46,10 @@
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 
+#include <network/ChatListener.h>
+#include <PlayerManager.h>
+#include <infos/PlayerInfo.h>
+
 #include "../libraries/network/Host.h"
 #include <util/Singleton.h>
 
@@ -54,7 +58,7 @@ namespace orxonox
 {
   /* class to handle chat using an InputBuffer */
   class _OrxonoxExport ChatInputHandler : public Singleton<ChatInputHandler>,
-    public OrxonoxClass
+    public ChatListener
   {
     private:
       /** Input buffer, to be used to catch input from the
@@ -88,6 +92,10 @@ namespace orxonox
       /* start listening, stop listening */
       static void activate_static();
       static void activate_small_static();
+
+      void incomingChat( const std::string& message, 
+        unsigned int senderID );
+
       void activate( bool full );
       void deactivate();
 

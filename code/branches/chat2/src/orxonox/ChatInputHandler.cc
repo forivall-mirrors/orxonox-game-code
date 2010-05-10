@@ -116,6 +116,9 @@ namespace orxonox
   void ChatInputHandler::activate_small_static()
   { ChatInputHandler::getInstance().activate( false ); }
 
+
+
+
   void ChatInputHandler::activate( bool full )
   {
     /* start listening */
@@ -141,7 +144,38 @@ namespace orxonox
     GUIManager::getInstance().hideGUI( "ChatBox-inputonly" );
   }
 
-  void ChatInputHandler::sub_adjust_dispoffset( int maxlen, int cursorpos, int inplen )
+
+  void ChatInputHandler::incomingChat(const std::string& message, 
+    unsigned int senderID)
+  {
+    /* --> a) look up the actual name of the sender */
+    std::string text;
+
+    if (senderID != CLIENTID_UNKNOWN)
+    {
+       std::string name = "unknown";
+       PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
+       if (player)
+         name = player->getName();
+
+         text = name + ": " + message;
+    }
+    else
+      text = message;
+
+    /* e) create item and add to history */
+    CEGUI::ListboxTextItem *toadd = new CEGUI::ListboxTextItem( text );
+    this->lb_history->addItem( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
+    this->lb_history->ensureItemIsVisible( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
+
+    /* f) make sure the history handles it */
+    this->lb_history->handleUpdatedItemData();
+  } 
+
+
+  void ChatInputHandler::sub_adjust_dispoffset( int maxlen, 
+    int cursorpos, 
+    int inplen )
   {
     /* already start offsetting 5 characters before end */
     if( cursorpos+5 > maxlen )
@@ -212,17 +246,10 @@ namespace orxonox
     /* c) send the chat via some call */
     Host::Chat( msgtosend );
 
-    /* d) stop listening to input  */
+    /* d) stop listening to input - only if this is not fullchat */
     if( !this->fullchat )
       this->deactivate();
 
-    /* e) create item and add to history */
-    CEGUI::ListboxTextItem *toadd = new CEGUI::ListboxTextItem( msgtosend );
-    this->lb_history->addItem( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
-    this->lb_history->ensureItemIsVisible( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
-
-    /* f) make sure the history handles it */
-    this->lb_history->handleUpdatedItemData();
   }
 
   void ChatInputHandler::backspace()
