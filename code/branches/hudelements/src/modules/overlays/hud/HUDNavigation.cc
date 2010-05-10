@@ -54,7 +54,16 @@ HUDNavigation::HUDNavigation(BaseObject* creator)
         : OrxonoxOverlay(creator)
 {
     RegisterObject(HUDNavigation);
-
+    
+     
+     const std::set<RadarViewable*>& respawnObjectSet_ = this->getOwner()->getScene()->getRadar()->getRadarObjects();
+     std::set<RadarViewable*>::const_iterator respawnObjectSetIt_;
+     
+     if(!respawnObjectSet_.empty()){
+     for(respawnObjectSetIt_ = respawnObjectSet_.begin(); respawnObjectSetIt_ != respawnObjectSet_.end();
+	 ++respawnObjectSetIt_){ addObject(*respawnObjectSetIt_);}
+     }
+    
 //         // create nav text
 //         navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
 //             .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
@@ -286,11 +295,11 @@ void HUDNavigation::tick(float dt)
                 tempRadarViewable->second.first->setLeft((pos.x + 1.0f - tempRadarViewable->second.first->getWidth()) * 0.5f);
                 tempRadarViewable->second.first->setTop((-pos.y + 1.0f - tempRadarViewable->second.first->getHeight()) * 0.5f);
 
-                /*
-                            aimMarker_->show();
-                            aimMarker_->setLeft((aimpos.x + 1.0f - aimMarker_->getWidth()) * 0.5f);
-                            aimMarker_->setTop((-aimpos.y + 1.0f - aimMarker_->getHeight()) * 0.5f);
-                */
+
+//                 aimMarker_->show();
+//                 aimMarker_->setLeft((aimpos.x + 1.0f - aimMarker_->getWidth()) * 0.5f);
+//                 aimMarker_->setTop((-aimpos.y + 1.0f - aimMarker_->getHeight()) * 0.5f);
+//
                 tempRadarViewable->second.second->setLeft((pos.x + 1.0f + tempRadarViewable->second.first->getWidth()) * 0.5f);
                 tempRadarViewable->second.second->setTop((-pos.y + 1.0f + tempRadarViewable->second.first->getHeight()) * 0.5f);
             }
@@ -300,7 +309,7 @@ void HUDNavigation::tick(float dt)
     }
 
     }
-    
+
 }
 
 
