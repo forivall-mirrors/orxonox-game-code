@@ -40,17 +40,17 @@ namespace orxonox
     class _OrxonoxExport MeshLodInformation : public BaseObject
     {
 		private:
-			void setLodLevel(unsigned int lodLevel);
+			void setLodLevel(float lodLevel);
 			void setMeshSource(std::string meshSource);
 			std::string getMeshSource();
 			std::string meshSource_;
-			int lodLevel_;
+			float lodLevel_;
 		
         public:
             MeshLodInformation(BaseObject* creator);
             virtual ~MeshLodInformation();
             
-			int getLodLevel();
+			float getLodLevel();
             std::string getMeshName();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

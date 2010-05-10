@@ -61,11 +61,12 @@ namespace orxonox
 		return MeshLodInformation::getMeshSource();
     }
 	
-	void MeshLodInformation::setLodLevel(unsigned int lodLevel)
+	void MeshLodInformation::setLodLevel(float lodLevel)
 	{
-		lodLevel_=lodLevel;
+        if(lodLevel>=0)
+		    lodLevel_=lodLevel;
 	}
-	int MeshLodInformation::getLodLevel()
+	float MeshLodInformation::getLodLevel()
 	{
 		return lodLevel_;
 	} 
