@@ -146,7 +146,18 @@ namespace orxonox
             {
                 this->yaw(Radian(this->yaw_ * this->getMouseLookSpeed()),WorldEntity::Parent);
                 //this->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
-		this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+		Radian pitch=this->cameraPositionRootNode_->getOrientation().getPitch();
+		if( pitch<Radian(1.5707) && pitch>Radian(-1.5707) ) this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+		else if(pitch<Radian(-1.5707)){
+			if(this->pitch_>0.0) this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+			else if(pitch<Radian(-1.571)) this->cameraPositionRootNode_->pitch(-pitch+Radian(-1.570796));
+		}
+		else if(pitch>Radian(1.5707)){
+			if(this->pitch_<0.0) this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+			else if(pitch>Radian(1.571)) this->cameraPositionRootNode_->pitch(-pitch+Radian(1.570796));
+		}
+		 
+		
  //               this->roll(Radian(this->roll_ * this->getMouseLookSpeed()));
             }
 

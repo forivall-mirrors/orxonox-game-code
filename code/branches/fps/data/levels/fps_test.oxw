@@ -20,7 +20,7 @@
   >
     <Light type=directional position="0,-100000,0" direction="0.02, -1, 0.05" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 
-  <StaticEntity position="0,-10000,0" direction="0,-1,2" collisionType=static mass=100000 friction=0.01 >
+  <StaticEntity position="0,-10000,0" direction="0,-1,0" collisionType=static mass=100000 friction=0.01 >
       <attached>
         <Model position="0,0,0" mesh="cube.mesh" scale3D="10000,10000,1000" />
       </attached>
