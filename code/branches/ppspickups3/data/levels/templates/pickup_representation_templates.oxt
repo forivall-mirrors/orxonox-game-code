@@ -1,3 +1,30 @@
+<!-- Shield pickups: -->
+
+<Template name=supershieldpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1,1,1" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1,1,1" material="Shield" scale=10 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=supershieldpickup>
+  <ShieldPickup
+    absorption = 1
+    duration = 6000
+    shieldhealth = 1000000
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
 
 <!-- Health pickups: -->
 

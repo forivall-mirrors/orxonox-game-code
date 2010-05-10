@@ -1,3 +1,15 @@
+<!-- Shield pickups -->
+
+<PickupRepresentation
+    pickupName = "Super Shield Pickup"
+    pickupDescription = "Gives you a shield with 1000000 helath points for 5 minutes"
+    inventoryRepresentation = "SmallHealth"
+    spawnerTemplate = "supershieldpickupRepresentation"
+>
+    <pickup>
+        <ShieldPickup template=supershieldpickup />
+    </pickup>
+</PickupRepresentation>
 
 <!-- Health pickups -->
 

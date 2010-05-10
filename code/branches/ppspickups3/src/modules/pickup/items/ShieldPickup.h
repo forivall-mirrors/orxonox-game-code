@@ -1,3 +1,4 @@
+
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
  *                    > www.orxonox.net <
@@ -48,9 +49,9 @@ namespace orxonox {
     @brief
         A Pickup which can add a Shield to the Pawn.
 
-        1) The Shield multiplier:
-           The additional (forward) Shield:
-        2) The activation type: 'immediate' or 'onUse'. defines if the item is used when it's picked up or only after the player chooses to use it.
+	1) The percentage: The percentage the shield takes from the damage dealt to a Pawn
+	2) The hit points: The amount of damage points a shield can teake before collapsing
+        3) The activation type: 'immediate' or 'onUse'. defines if the item is used when it's picked up or only after the player chooses to use it.
         4) The duration: the activation time of the pickup.
 
     @author
@@ -70,21 +71,28 @@ namespace orxonox {
 
             inline float getDuration(void)
                 { return this->duration_; }
-
+            inline float getShieldHealth()
+                { return this->shieldHealth_; }
+            inline float getShieldAbsorption()
+                { return this->shieldAbsorption_; }
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-            
+
             virtual void pickupTimerCallback(void); //!< Function that gets called when timer ends.
 
             void setDuration(float duration);
-
+            void setShieldHealth(float shieldHealth);
+            void setShieldAbsorption(float shieldAbsorption);
 
         private:
             void initialize(void); //!< Initializes the member variables.
-            Engine* carrierToEngineHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
+            Pawn* carrierToPawnHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
 
             float duration_; //!< The health that is transferred to the Pawn.
+            float shieldHealth_;
+            float shieldAbsorption_; // Has to be between 0 and 1
+
     };
 }
 

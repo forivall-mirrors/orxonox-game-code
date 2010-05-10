@@ -70,11 +70,31 @@ namespace orxonox
 
     /**
     @brief
+    Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
+    @return
+    A pointer to the Pawn, or NULL if the conversion failed.
+    */
+    Pawn* ShieldPickup::carrierToPawnHelper(void)
+    {
+        PickupCarrier* carrier = this->getCarrier();
+        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+        
+        if(pawn == NULL)
+        {
+            COUT(1) << "Invalid PickupCarrier in ShieldPickup." << std::endl;
+        }
+        return pawn;
+    }
+    
+    /**
+    @brief
         Initializes the member variables.
     */
     void ShieldPickup::initialize(void)
     {
         this->duration_ = 0.0f;
+        this->shieldAbsorption_ = 0.0f;
+        this->shieldHealth_ = 0.0f;
 
         this->addTarget(ClassIdentifier<Engine>::getIdentifier());
     }
@@ -91,11 +111,17 @@ namespace orxonox
         std::string val1 = stream.str();
         this->pickupIdentifier_->addParameter(type1, val1);
 
-//         stream.clear();
-//         stream << this->getShieldAdd();
-//         std::string type2 = "ShieldAdd";
-//         std::string val2 = stream.str();
-//         this->pickupIdentifier_->addParameter(type2, val2);
+        stream.clear();
+        stream << this->getShieldHealth();
+        std::string type2 = "ShieldHealth";
+        std::string val2 = stream.str();
+        this->pickupIdentifier_->addParameter(type2, val2);
+        
+        stream.clear();
+        stream << this->getShieldAbsorption();
+        std::string type3 = "ShieldAbsorption";
+        std::string val3 = stream.str();
+        this->pickupIdentifier_->addParameter(type3, val3);
 
     }
 
@@ -108,6 +134,8 @@ namespace orxonox
         SUPER(ShieldPickup, XMLPort, xmlelement, mode);
 
         XMLPortParam(ShieldPickup, "duration", setDuration, getDuration, xmlelement, mode);
+        XMLPortParam(ShieldPickup, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode);
+        XMLPortParam(ShieldPickup, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode);
 
         this->initializeIdentifier();
     }
@@ -123,6 +151,43 @@ namespace orxonox
         //! If the pickup is not picked up nothing must be done.
         if(!this->isPickedUp())
             return;
+
+        Pawn* pawn = this->carrierToPawnHelper();
+        if(pawn == NULL)
+            this->destroy();
+
+        //! If the pickup has transited to used.
+        if(this->isUsed())
+        {
+            if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() > 0.0f)
+            {
+                this->getTimer()->unpauseTimer();
+            }
+            else
+            {
+                this->startPickupTimer(this->getDuration());
+            }
+            pawn->setShieldAbsorption(this->getShieldAbsorption());
+            pawn->setShieldHealth(this->getShieldHealth());
+        }
+        else
+        {
+            pawn->setShieldAbsorption(0.0f);
+            this->setShieldHealth(pawn->getShieldHealth());
+            pawn->setShieldHealth(0.0f);
+
+            if(this->isOnce())
+            {
+                if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
+                {
+                    this->destroy();
+                }
+                else
+                {
+                    this->getTimer()->pauseTimer();
+                }
+            }
+        }
     }
 
     /**
@@ -140,8 +205,47 @@ namespace orxonox
 
         ShieldPickup* pickup = dynamic_cast<ShieldPickup*>(item);
         pickup->setDuration(this->getDuration());
-
+        pickup->setShieldAbsorption(this->getShieldAbsorption());
+        pickup->setShieldHealth(this->getShieldHealth());
         pickup->initializeIdentifier();
+    }
+
+    /**
+    @brief
+    Sets the percentage the shield absorbs of the dealt damage.
+    @param shieldAbsorption
+    The shieldAbsorption. Has to be between 0 and 1
+    */
+    void ShieldPickup::setShieldAbsorption(float shieldAbsorption)
+    {
+        if (shieldAbsorption>=0 && shieldAbsorption<=1)
+        {
+            this->shieldAbsorption_=shieldAbsorption;
+        }
+        else
+        {
+            COUT(1) << "Invalid Absorption in ShieldPickup." << std::endl;
+            this->shieldAbsorption_=0;
+        }
+    }
+
+    /**
+    @brief
+    Sets the health of the shield.
+    @param shieldHealth
+    The shieldHealth
+    */
+    void ShieldPickup::setShieldHealth(float shieldHealth)
+    {
+        if (shieldHealth>=0)
+        {
+            this->shieldHealth_=shieldHealth;
+        }
+        else
+        {
+            COUT(1) << "Invalid Shieldhealth in ShieldPickup." << std::endl;
+            this->shieldHealth_=0;
+        }
     }
 
     /**
