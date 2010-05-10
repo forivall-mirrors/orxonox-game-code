@@ -245,7 +245,7 @@ void HUDNavigation::tick(float dt)
                 }
                 else
                 {
-                    COUT(0) << "check 241" << std::endl;
+
                     if (pos.y < -pos.x)
                     {
                         // down
@@ -294,9 +294,12 @@ void HUDNavigation::tick(float dt)
                 tempRadarViewable->second.second->setLeft((pos.x + 1.0f + tempRadarViewable->second.first->getWidth()) * 0.5f);
                 tempRadarViewable->second.second->setTop((-pos.y + 1.0f + tempRadarViewable->second.first->getHeight()) * 0.5f);
             }
+	          
+	tempRadarViewable->second.first->show();
+	tempRadarViewable->second.second->show();
+	COUT(0) << "ShowGUITest z300" << std::endl;
         }
-      tempRadarViewable->second.first->show();
-      tempRadarViewable->second.second->show();
+
     }
     
 }
