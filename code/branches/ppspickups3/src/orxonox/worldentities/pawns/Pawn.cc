@@ -174,6 +174,8 @@ namespace orxonox
             if (shielddamage > this->getShieldHealth()) 
             {
                 COUT(1) << "the shield is too weak to take its share of the damage!" << std::endl;
+                COUT(1) << "damage" << damage  << "shieldAbsorption" << this->shieldAbsorption_ << std::endl;
+                COUT(1) << "shielddamage" << shielddamage  << "healthdamage" << healthdamage << std::endl;
                 healthdamage += shielddamage-this->getShieldHealth();
                 this->setShieldHealth(0);
             }
