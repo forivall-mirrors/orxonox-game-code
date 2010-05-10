@@ -83,7 +83,7 @@ namespace orxonox
 
     /* backspace */
     this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       '\b',   true);
-    this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       '\177', true);
+    //this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       '\177', true);
 
     /* exit the chatinputhandler thingy (tbd) */
     this->inpbuf->registerListener(this, &ChatInputHandler::exit,            '\033', true); // escape
