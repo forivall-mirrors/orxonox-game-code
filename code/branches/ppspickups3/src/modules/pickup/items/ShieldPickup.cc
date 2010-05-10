@@ -96,7 +96,7 @@ namespace orxonox
         this->shieldAbsorption_ = 0.0f;
         this->shieldHealth_ = 0.0f;
 
-        this->addTarget(ClassIdentifier<Engine>::getIdentifier());
+        this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
 
     /**
