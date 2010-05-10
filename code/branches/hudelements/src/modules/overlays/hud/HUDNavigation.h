@@ -38,7 +38,6 @@
 #include "tools/interfaces/Tickable.h"
 #include "overlays/OrxonoxOverlay.h"
 
-#include <pair>
 #include <vector>
 
 namespace orxonox
@@ -64,6 +63,8 @@ namespace orxonox
         void angleChanged() { }
         void positionChanged() { }
 	
+// 	void updateActiveObjectList(map activeObjectList_);
+	
 	
 
         // XMLPort accessors
@@ -85,7 +86,7 @@ namespace orxonox
         void updateFocus();
         float getDist2Focus() const;
 	void getSingleton();
-	void getSingleton();
+
     
 	void updateActiveObjectMap();
 	
@@ -98,7 +99,9 @@ namespace orxonox
         Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
         bool wasOutOfView_;                         //!< Performance booster variable: setMaterial is not cheap
 	
-	std::map<RadarViewable*, std::pair<Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > activeObjectList_;
+	typedef std::map<RadarViewable*, std::pair<Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > activeObjectListType;
+	activeObjectListType activeObjectList_;
+	activeObjectListType::iterator tempRadarViewable;
 	
     };
     

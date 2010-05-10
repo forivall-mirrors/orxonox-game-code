@@ -27,6 +27,7 @@
  */
 
 #include "HUDNavigation.h"
+#include <utility>
 
 #include <string>
 #include <OgreCamera.h>
@@ -53,15 +54,15 @@ namespace orxonox
         : OrxonoxOverlay(creator)
     {
         RegisterObject(HUDNavigation);
-
-        // create nav text
-        navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
-            .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
-
-        // create nav marker
-        navMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-            .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
-        navMarker_->setMaterialName("Orxonox/NavArrows");
+	
+//         // create nav text
+//         navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
+//             .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
+// 
+//         // create nav marker
+//         navMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+//             .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
+//         navMarker_->setMaterialName("Orxonox/NavArrows");
 
 /*
         // create aim marker
@@ -75,13 +76,13 @@ namespace orxonox
         setNavMarkerSize(0.05f);
         setAimMarkerSize(0.04f);
 */
-
-        background_->addChild(navMarker_);
+/*
+        background_->addChild(navMarker_);*/
 //        background_->addChild(aimMarker_);
-        background_->addChild(navText_);
+//         background_->addChild(navText_);
 
         // hide at first
-        this->setVisible(false);
+//         this->setVisible(false);
 	
 	
     }
@@ -137,31 +138,42 @@ namespace orxonox
     void HUDNavigation::tick(float dt)
     {
         SUPER(HUDNavigation, tick, dt);
+	
+// 	updateActiveObjectList(activeObjectList_);
 
         // Get radar
-        Radar* radar = this->getOwner()->getScene()->getRadar();
-
-        if (!radar->getFocus())
-        {
-            this->overlay_->hide();
-            return;
-        }
-        else
-        {
-            this->overlay_->show();
-        }
+//         Radar* radar = this->getOwner()->getScene()->getRadar();
+// 
+//         if (!radar->getFocus())
+//         {
+//             this->overlay_->hide();
+//             return;
+//         }
+//         else
+//         {
+//             this->overlay_->show();
+//         }
 
         // set text
-        int dist = static_cast<int>(getDist2Focus());
-        navText_->setCaption(multi_cast<std::string>(dist));
-        float textLength = multi_cast<std::string>(dist).size() * navText_->getCharHeight() * 0.3f;
+//         int dist = static_cast<int>(getDist2Focus());
+//         navText_->setCaption(multi_cast<std::string>(dist));
+//         float textLength = multi_cast<std::string>(dist).size() * navText_->getCharHeight() * 0.3f;
 
-        orxonox::Camera* cam = CameraManager::getInstance().getActiveCamera();
+      if(!activeObjectList_.empty()) {
+      for(tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
+	{
+	
+	//get Distance to HumanController and save it in the TextAreaOverlayElement.
+	int dist = (int)(tempRadarViewable->first->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
+	tempRadarViewable->second.second->setCaption(multi_cast<std::string>(dist));
+	float textLength = multi_cast<std::string>(dist).size() * tempRadarViewable->second.second->getCharHeight() * 0.3f;
+	 
+	orxonox::Camera* cam = CameraManager::getInstance().getActiveCamera();
         if (!cam)
             return;
         const Matrix4& transform = cam->getOgreCamera()->getProjectionMatrix() * cam->getOgreCamera()->getViewMatrix();
         // transform to screen coordinates
-        Vector3 pos = transform * radar->getFocus()->getRVWorldPosition();
+        Vector3 pos = transform * tempRadarViewable->first->getRVWorldPosition();
 
         bool outOfView;
         if (pos.z > 1.0)
@@ -183,7 +195,7 @@ namespace orxonox
 
             if (!wasOutOfView_)
             {
-                navMarker_->setMaterialName("Orxonox/NavArrows");
+                tempRadarViewable->second.first->setMaterialName("Orxonox/NavArrows");
                 wasOutOfView_ = true;
             }
 
@@ -193,19 +205,19 @@ namespace orxonox
                 {
                     // up
                     float position = pos.x / pos.y + 1.0f;
-                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5f, 0.0f);
-                    navMarker_->setUV(0.5f, 0.0f, 1.0f, 0.5f);
-                    navText_->setLeft((position - textLength) * 0.5f);
-                    navText_->setTop(navMarker_->getHeight());
+                    tempRadarViewable->second.first->setPosition((position - tempRadarViewable->second.first->getWidth()) * 0.5f, 0.0f);
+                    tempRadarViewable->second.first->setUV(0.5f, 0.0f, 1.0f, 0.5f);
+                    tempRadarViewable->second.second->setLeft((position - textLength) * 0.5f);
+                    tempRadarViewable->second.second->setTop(tempRadarViewable->second.first->getHeight());
                 }
                 else
                 {
                     // left
                     float position = pos.y / pos.x + 1.0f;
-                    navMarker_->setPosition(0.0f, (position - navMarker_->getWidth()) * 0.5f);
-                    navMarker_->setUV(0.0f, 0.0f, 0.5f, 0.5f);
-                    navText_->setLeft(navMarker_->getWidth() + 0.01f);
-                    navText_->setTop((position - navText_->getCharHeight()) * 0.5f);
+                    tempRadarViewable->second.first->setPosition(0.0f, (position - tempRadarViewable->second.first->getWidth()) * 0.5f);
+                    tempRadarViewable->second.first->setUV(0.0f, 0.0f, 0.5f, 0.5f);
+                    tempRadarViewable->second.second->setLeft(tempRadarViewable->second.first->getWidth() + 0.01f);
+                    tempRadarViewable->second.second->setTop((position - tempRadarViewable->second.second->getCharHeight()) * 0.5f);
                 }
             }
             else
@@ -214,24 +226,26 @@ namespace orxonox
                 {
                     // down
                     float position = -pos.x / pos.y + 1.0f;
-                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5f, 1.0f - navMarker_->getHeight());
-                    navMarker_->setUV(0.0f, 0.5f, 0.5f, 1.0f);
-                    navText_->setLeft((position - textLength) * 0.5f);
-                    navText_->setTop(1.0f - navMarker_->getHeight() - navText_->getCharHeight());
+                    tempRadarViewable->second.first->setPosition((position - tempRadarViewable->second.first->getWidth()) * 0.5f, 1.0f - navMarker_->getHeight());
+                    tempRadarViewable->second.first->setUV(0.0f, 0.5f, 0.5f, 1.0f);
+                    tempRadarViewable->second.second->setLeft((position - textLength) * 0.5f);
+                    tempRadarViewable->second.second->setTop(1.0f - tempRadarViewable->second.first->getHeight() - tempRadarViewable->second.second->getCharHeight());
                 }
                 else
                 {
                     // right
                     float position = -pos.y / pos.x + 1.0f;
-                    navMarker_->setPosition(1.0f - navMarker_->getWidth(), (position - navMarker_->getHeight()) * 0.5f);
-                    navMarker_->setUV(0.5f, 0.5f, 1.0f, 1.0f);
-                    navText_->setLeft(1.0f - navMarker_->getWidth() - textLength - 0.01f);
-                    navText_->setTop((position - navText_->getCharHeight()) * 0.5f);
+                    tempRadarViewable->second.first->setPosition(1.0f - tempRadarViewable->second.first->getWidth(), (position - tempRadarViewable->second.first->getHeight()) * 0.5f);
+                    tempRadarViewable->second.first->setUV(0.5f, 0.5f, 1.0f, 1.0f);
+                    tempRadarViewable->second.second->setLeft(1.0f - tempRadarViewable->second.first->getWidth() - textLength - 0.01f);
+                    tempRadarViewable->second.second->setTop((position - tempRadarViewable->second.second->getCharHeight()) * 0.5f);
                 }
             }
         }
         else
         {
+	  
+	  
             // object is in view
 /*
             Vector3 aimpos = transform * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
@@ -239,27 +253,30 @@ namespace orxonox
 */
             if (wasOutOfView_)
             {
-                navMarker_->setMaterialName("Orxonox/NavTDC");
+                tempRadarViewable->second.first->setMaterialName("Orxonox/NavTDC");
                 wasOutOfView_ = false;
             }
 
             // object is in view
-            navMarker_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
-            navMarker_->setLeft((pos.x + 1.0f - navMarker_->getWidth()) * 0.5f);
-            navMarker_->setTop((-pos.y + 1.0f - navMarker_->getHeight()) * 0.5f);
+            tempRadarViewable->second.first->setUV(0.0f, 0.0f, 1.0f, 1.0f);
+            tempRadarViewable->second.first->setLeft((pos.x + 1.0f - tempRadarViewable->second.first->getWidth()) * 0.5f);
+            tempRadarViewable->second.first->setTop((-pos.y + 1.0f - tempRadarViewable->second.first->getHeight()) * 0.5f);
 
 /*
             aimMarker_->show();
             aimMarker_->setLeft((aimpos.x + 1.0f - aimMarker_->getWidth()) * 0.5f);
             aimMarker_->setTop((-aimpos.y + 1.0f - aimMarker_->getHeight()) * 0.5f);
 */
-            navText_->setLeft((pos.x + 1.0f + navMarker_->getWidth()) * 0.5f);
-            navText_->setTop((-pos.y + 1.0f + navMarker_->getHeight()) * 0.5f);
+            tempRadarViewable->second.second->setLeft((pos.x + 1.0f + tempRadarViewable->second.first->getWidth()) * 0.5f);
+            tempRadarViewable->second.second->setTop((-pos.y + 1.0f + tempRadarViewable->second.first->getHeight()) * 0.5f);
         }
+      }
     }
-
-    float HUDNavigation::getDist2Focus() const
-    {
+    }
+    
+    
+    float HUDNavigation::getDist2Focus() const{
+      
         Radar* radar = this->getOwner()->getScene()->getRadar();
         if (radar->getFocus() && HumanController::getLocalControllerEntityAsPawn())
             return (radar->getFocus()->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
@@ -271,26 +288,23 @@ namespace orxonox
     @brief Overridden method of OrxonoxOverlay. Usually the entire overlay
            scales with scale(). Here we obviously have to adjust this.
     */
-    void HUDNavigation::sizeChanged()
-    {
-        // use size to compensate for aspect ratio if enabled.
+    void HUDNavigation::sizeChanged(){
+            // use size to compensate for aspect ratio if enabled.
         float xScale = this->getActualSize().x;
         float yScale = this->getActualSize().y;
         if (this->navMarker_)
             navMarker_->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
-/*
-        if (this->aimMarker_)
-            aimMarker_->setDimensions(aimMarkerSize_ * xScale, aimMarkerSize_ * yScale);
-*/
+//         if (this->aimMarker_)
+//             aimMarker_->setDimensions(aimMarkerSize_ * xScale, aimMarkerSize_ * yScale);
         if (this->navText_)
             navText_->setCharHeight(navText_->getCharHeight() * yScale);
     }
     
-    void HUDNavigation::addObject(RadarViewable* object)
-    {
-        if (object == dynamic_cast<RadarViewable*>(this->getOwner()))
+    
+    void HUDNavigation::addObject(RadarViewable* object){
+            if (object == dynamic_cast<RadarViewable*>(this->getOwner()))
             return;
-	
+	 
 	assert(object);
 	  
         // Make sure the object hasn't been added yet
@@ -306,21 +320,31 @@ namespace orxonox
 	 
         Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
              .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
+	     
+	int dist = (int)(object->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
+	    activeObjectList_[object].second->setCaption(multi_cast<std::string>(dist));
 	
 	activeObjectList_[object] = std::make_pair (panel, text) ;	
 	activeObjectList_[object].first->show();
 	activeObjectList_[object].second->show();
-	}
+// 	background_->addChild(activeObjectList_[object].first);
+// 	background_->addChild(activeObjectList_[object].second);
+    }
     
-    	void HUDNavigation::removeObject(RadarViewable* viewable){
-	  assert(activeObjectList_.find(viewable)!=activeObjectList_.end());
+  void HUDNavigation::removeObject(RadarViewable* viewable){
+  	  assert(activeObjectList_.find(viewable)!=activeObjectList_.end());
 	  activeObjectList_.erase(viewable);
-	}
+  }
+
+// 	void updateActiveObjectList(map activeObjectList_){}
+// 
+// 	void HUDNavigation::objectChanged(RadarViewable* viewable){}
+// 
 // 	
-//         void HUDNavigation::objectChanged(RadarViewable* viewable){}
 //         float HUDNavigation::getRadarSensitivity(){}
 //         void HUDNavigation::radarTick(float dt){}
-// 	
-
+	
 
 }
+
+
