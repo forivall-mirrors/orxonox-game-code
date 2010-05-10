@@ -3,4 +3,5 @@ ADD_SOURCE_FILES(PICKUP_SRC_FILES
   InvisiblePickup.cc
   MetaPickup.cc
   SpeedPickup.cc
+  ShieldPickup.cc
 )
