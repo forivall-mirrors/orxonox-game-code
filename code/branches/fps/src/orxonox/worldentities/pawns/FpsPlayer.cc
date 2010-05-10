@@ -78,6 +78,7 @@ namespace orxonox
 
         this->setConfigValues();
         this->registerVariables();
+	
     }
 
     FpsPlayer::~FpsPlayer()
@@ -121,7 +122,8 @@ namespace orxonox
     {
         if (this->hasLocalController())
         {
-           
+            this->setOrientation(savedOrientation_);
+	    
 	    thistickboost=false;
 	    
 	    float localSpeedSquared = this->localVelocity_.squaredLength();
@@ -149,6 +151,11 @@ namespace orxonox
             }
 
             this->yaw_ = this->pitch_ = this->roll_ = 0;
+	    
+	    //Quaternion q=this->getOrientation();
+	    //if( q.y<0.99 ) this->setOrientation(q.w, q.x, 1.0, q.z);
+	    this->setAngularVelocity(0.0, 0.0, 0.0);
+	    savedOrientation_=this->getOrientation();
         }
 
         SUPER(FpsPlayer, tick, dt);

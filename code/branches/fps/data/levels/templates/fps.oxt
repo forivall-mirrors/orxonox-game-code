@@ -11,14 +11,15 @@
    maxhealth         = 200
    initialhealth     = 100
 
-   primaryThrust     = 100;
-   auxilaryThrust    = 30;
-   rotationThrust    = 25;
+   primaryThrust     = 0;
+   auxilaryThrust    = 0;
+   rotationThrust    = 0;
 
    collisionType     = "dynamic"
    mass              = 100
    linearDamping     = 0.7
    angularDamping    = 0.9999999
+   friction	     = 0.01
   >
  <!--   <attached>
       <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=4 mesh="assff.mesh" />

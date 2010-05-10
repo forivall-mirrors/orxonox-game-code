@@ -12,6 +12,7 @@
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/Starbox"
+   gravity      = "0,-50,0"
    negativeWorldRange = "(-100000, -100000, -100000)"
    positiveWorldRange = "( 100000,  100000,  100000)"
    hasPhysics   = true

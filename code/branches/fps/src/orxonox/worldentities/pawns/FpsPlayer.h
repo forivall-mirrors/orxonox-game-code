@@ -87,6 +87,7 @@ namespace orxonox
             Vector3 localVelocity_;
 	    bool isfloor;
 	    bool thistickboost;
+	    Quaternion savedOrientation_;
     };
 }
 
