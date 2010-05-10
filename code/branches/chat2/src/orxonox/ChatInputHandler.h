@@ -61,12 +61,16 @@ namespace orxonox
        * keyboard 
        */
       InputBuffer *inpbuf;
+      int disp_offset, width;
 
       /** input state */
       InputState *inputState;
 
       /** setup input buffer, the constructor calls this */
       void configureInputBuffer();
+
+      /** adjust display offset depending on cursor position */
+      void sub_adjust_dispoffset( int maxlen, int cursorpos, int inplen );
 
       /* singleton pointer */
       static ChatInputHandler* singletonPtr_s;

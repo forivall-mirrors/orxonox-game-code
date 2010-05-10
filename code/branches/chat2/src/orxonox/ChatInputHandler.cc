@@ -43,11 +43,12 @@ namespace orxonox
 {
   /* singleton */
   ManageScopedSingleton( ChatInputHandler, ScopeID::Graphics, false );
+
+  /* add commands to console */
   SetConsoleCommandAlias( ChatInputHandler, activate_static, "startchat",
     true );
   SetConsoleCommandAlias( ChatInputHandler, activate_small_static, 
     "startchat_small", true );
-
 
   /* constructor */
   ChatInputHandler::ChatInputHandler()
@@ -57,6 +58,7 @@ namespace orxonox
 
     /* create necessary objects */
     this->inpbuf = new InputBuffer();
+    this->disp_offset = 0;
     assert( this->inpbuf != NULL );
 
     /* generate chatbox ui and chatbox-inputonly ui */
@@ -132,9 +134,25 @@ namespace orxonox
     /* stop listening */
     InputManager::getInstance().leaveState("chatinput");
 
-    /* MARK add un-spawning of chat widget stuff here. */
+    /* un-spawning of chat widget stuff */
     GUIManager::getInstance().hideGUI( "ChatBox" );
     GUIManager::getInstance().hideGUI( "ChatBox-inputonly" );
+  }
+
+  void ChatInputHandler::sub_adjust_dispoffset( int maxlen, int cursorpos, int inplen )
+  {
+    /* already start offsetting 5 characters before end */
+    if( cursorpos+5 > maxlen )
+    { 
+      /* always stay 5 characters ahead of end, looks better */
+      ((disp_offset = cursorpos-maxlen+5) >= 0) ? 1 : disp_offset = 0;
+
+      /* enforce visibility of cursor */
+      (disp_offset > cursorpos ) ? disp_offset = 0 : 1;
+    }
+     
+    /* make sure we don't die at substr */
+    if( inplen <= disp_offset ) disp_offset = 0;
   }
 
   /* callbacks for InputBuffer */
@@ -142,18 +160,34 @@ namespace orxonox
   {
     /* update the cursor and the window */
     std::string raw = this->inpbuf->get();
+    int cursorpos = this->inpbuf->getCursorPosition();
     
     /* get string before cursor */
-    std::string left = raw.substr( 0, this->inpbuf->getCursorPosition() );
+    std::string left = raw.substr( 0, cursorpos );
 
     /* see if there's a string after the cursor */
     std::string right = "";
     if( raw.length() >= left.length()+1 )
-      right = raw.substr( this->inpbuf->getCursorPosition() );
+      right = raw.substr( cursorpos );
       
     /* set the text */
-    this->input->setProperty( "Text", left + "|" + right );
-    this->inputonly->setProperty( "Text", left + "|" + right );
+    std::string assembled = "$ " + left + "|" + right;
+
+    /* adjust curser position - magic number 5 for font width */
+    sub_adjust_dispoffset( (this->input->getUnclippedInnerRect().getWidth()/6), 
+      cursorpos, assembled.length() );
+    this->input->setProperty( "Text", assembled.substr( disp_offset ) );
+
+    /* reset display offset */
+    disp_offset = 0;
+
+    /* adjust curser position - magic number 5 for font width */
+    sub_adjust_dispoffset( (this->inputonly->getUnclippedInnerRect().getWidth()/6), 
+      cursorpos, assembled.length() );
+    this->inputonly->setProperty( "Text", assembled.substr( disp_offset) );
+
+    /* reset display offset */
+    disp_offset = 0;
   }
 
   void ChatInputHandler::addline()
