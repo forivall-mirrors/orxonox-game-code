@@ -62,6 +62,7 @@ namespace orxonox
        */
       InputBuffer *inpbuf;
       int disp_offset, width;
+      bool fullchat;
 
       /** input state */
       InputState *inputState;

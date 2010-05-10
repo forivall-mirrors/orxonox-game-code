@@ -127,6 +127,8 @@ namespace orxonox
       GUIManager::getInstance().showGUI( "ChatBox" );
     else
       GUIManager::getInstance().showGUI( "ChatBox-inputonly" );
+
+    this->fullchat = full;
   }
 
   void ChatInputHandler::deactivate() 
@@ -173,18 +175,20 @@ namespace orxonox
     /* set the text */
     std::string assembled = "$ " + left + "|" + right;
 
-    /* adjust curser position - magic number 5 for font width */
-    sub_adjust_dispoffset( (this->input->getUnclippedInnerRect().getWidth()/6), 
-      cursorpos, assembled.length() );
-    this->input->setProperty( "Text", assembled.substr( disp_offset ) );
-
-    /* reset display offset */
-    disp_offset = 0;
-
-    /* adjust curser position - magic number 5 for font width */
-    sub_adjust_dispoffset( (this->inputonly->getUnclippedInnerRect().getWidth()/6), 
-      cursorpos, assembled.length() );
-    this->inputonly->setProperty( "Text", assembled.substr( disp_offset) );
+    if( this->fullchat )
+    { 
+      /* adjust curser position - magic number 5 for font width */
+      sub_adjust_dispoffset( (this->input->getUnclippedInnerRect().getWidth()/6), 
+        cursorpos, assembled.length() );
+      this->input->setProperty( "Text", assembled.substr( disp_offset ) );
+    }
+    else
+    {
+      /* adjust curser position - magic number 5 for font width */
+      sub_adjust_dispoffset( (this->inputonly->getUnclippedInnerRect().getWidth()/6), 
+        cursorpos, assembled.length() );
+      this->inputonly->setProperty( "Text", assembled.substr( disp_offset) );
+    }
 
     /* reset display offset */
     disp_offset = 0;
@@ -209,7 +213,8 @@ namespace orxonox
     Host::Chat( msgtosend );
 
     /* d) stop listening to input  */
-    this->deactivate();
+    if( !this->fullchat )
+      this->deactivate();
 
     /* e) create item and add to history */
     CEGUI::ListboxTextItem *toadd = new CEGUI::ListboxTextItem( msgtosend );
@@ -239,6 +244,13 @@ namespace orxonox
   { this->inpbuf->setCursorToBegin(); }
 
   void ChatInputHandler::exit()
-  { }
+  {
+    /* b) clear the input buffer */
+    if (this->inpbuf->getSize() > 0)
+      this->inpbuf->clear();
+
+    /* d) stop listening to input  */
+    this->deactivate();
+  }
 
 }
