@@ -173,6 +173,7 @@ namespace orxonox
             // In case the shield can not take all the shield damage.
             if (shielddamage > this->getShieldHealth()) 
             {
+                COUT(1) << "the shield is too weak to take its share of the damage!" << std::endl;
                 healthdamage += shielddamage-this->getShieldHealth();
                 this->setShieldHealth(0);
             }
@@ -182,6 +183,7 @@ namespace orxonox
             if (this->getShieldHealth() > 0)
             {
                 this->setShieldHealth(this->shieldHealth_ - shielddamage);
+                COUT(1) << "the shield takes its share of the damage and is left with " << this->getShieldHealth() << std::endl;
             }
 
             this->lastHitOriginator_ = originator;
