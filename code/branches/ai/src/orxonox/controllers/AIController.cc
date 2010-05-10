@@ -126,9 +126,9 @@ namespace orxonox
 
 
             // lose master status (only if less than 4 slaves in formation)
-            random = rnd(maxrand);
-            if(random < 15/(this->slaves_.size()+1) && this->slaves_.size() < 5 ) 
-                this->loseMasterState();
+//             random = rnd(maxrand);
+//             if(random < 15/(this->slaves_.size()+1) && this->slaves_.size() < 4 ) 
+//                 this->loseMasterState();
 
             // look out for outher masters if formation is small
             random = rnd(maxrand);
@@ -166,7 +166,7 @@ namespace orxonox
             if (random < 5 && (this->target_ && !this->bShooting_))
             {
                 this->bShooting_ = true;
-                this->forceFreeSlaves();
+//                 this->forceFreeSlaves();
             }
             // stop shooting
             random = rnd(maxrand);

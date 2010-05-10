@@ -34,7 +34,7 @@
 
 
 <?lua
-for i = 1, 70, 1
+for i = 1, 8, 1
 do ?>
   <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 1000 + 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
     <attached>

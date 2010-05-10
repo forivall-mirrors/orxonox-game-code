@@ -31,6 +31,8 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <vector>
+
 #include "util/Math.h"
 #include "Controller.h"
 
@@ -42,7 +44,7 @@ namespace orxonox
             ArtificialController(BaseObject* creator);
             virtual ~ArtificialController();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);//new
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void abandonTarget(Pawn* target);
 
@@ -59,12 +61,11 @@ namespace orxonox
             int freedomCount_;
             enum State {SLAVE, MASTER, FREE};
             State state_;
-            std::list<ArtificialController*> slaves_;
+            std::vector<ArtificialController*> slaves_;
 
             void targetDied();
 
             void moveToPosition(const Vector3& target);
-            //void speedToTargetPosition(const Vector3& target);
             void moveToTargetPosition();
 
             int getState();

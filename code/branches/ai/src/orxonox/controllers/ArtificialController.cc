@@ -35,9 +35,18 @@
 #include "worldentities/pawns/TeamBaseMatchBase.h"
 #include "gametypes/TeamDeathmatch.h"
 #include "controllers/WaypointPatrolController.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
+
+    static const unsigned int MAX_FORMATION_SIZE = 6;
+    static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
+    static const float SPEED_MASTER = 0.6f;
+    static const float ROTATEFACTOR_MASTER = 0.2f;
+    static const float SPEED_FREE = 0.8f;
+    static const float ROTATEFACTOR_FREE = 0.8f;
+
     ArtificialController::ArtificialController(BaseObject* creator) : Controller(creator)
     {
         RegisterObject(ArtificialController);
@@ -68,18 +77,13 @@ namespace orxonox
 // gets called when Bot dies
     void ArtificialController::changedControllableEntity()
     {
-COUT(0) << "~changedControllableEntity 0" << std::endl;
         if(!getControllableEntity()) 
         {
-COUT(0) << "~changedControllableEntity 1" << std::endl;
         if (this->state_ == SLAVE) unregisterSlave();
-COUT(0) << "~changedControllableEntity 2" << std::endl;
          if (this->state_ == MASTER) setNewMasterWithinFormation();
-COUT(0) << "~changedControllableEntity 3" << std::endl;
         this->slaves_.clear();
-COUT(0) << "~changedControllableEntity 4" << std::endl;
         this->state_ = FREE;
-COUT(0) << "~changedControllableEntity 5" << std::endl;
+
         }
     }
 
@@ -91,29 +95,66 @@ COUT(0) << "~changedControllableEntity 5" << std::endl;
         Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
 
-        if (this->target_ || distance > 10)
+
+        if(this->state_ == FREE)
         {
-            // Multiply with rotateFactor to make them a bit slower
-            float rotateFactor;
-            if(this->state_ == SLAVE) rotateFactor = 1.0f;
-            if(this->state_ == MASTER) rotateFactor = 0.4f;
-            else rotateFactor = 0.8f;
+            if (this->target_ || distance > 10)
+            {
+                // Multiply with 0.8 to make them a bit slower
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * sgn(coord.x) * coord.x*coord.x);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * sgn(coord.y) * coord.y*coord.y);
+            }
 
-            this->getControllableEntity()->rotateYaw(-1.0f * rotateFactor * sgn(coord.x) * coord.x*coord.x);
-            this->getControllableEntity()->rotatePitch(rotateFactor * sgn(coord.y) * coord.y*coord.y);
-
-
-
+            if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+            {
+              this->getControllableEntity()->moveFrontBack(-0.05f); // They don't brake with full power to give the player a chance
+            } else this->getControllableEntity()->moveFrontBack(SPEED_FREE);
         }
 
-        if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+
+
+        if(this->state_ == MASTER)
         {
-            if(this->state_ == SLAVE) this->getControllableEntity()->moveFrontBack(-0.8f);
-            else this->getControllableEntity()->moveFrontBack(-0.05f); // They don't brake with full power to give the player a chance
-        } else {
-            if(this->state_ == SLAVE) this->getControllableEntity()->moveFrontBack(2.5f);
-            if(this->state_ == MASTER) this->getControllableEntity()->moveFrontBack(0.4f);
-            else this->getControllableEntity()->moveFrontBack(0.8f);
+            if (this->target_ || distance > 10)
+            {
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+
+            }
+
+            if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+            {
+                this->getControllableEntity()->moveFrontBack(-0.05f);
+            } else this->getControllableEntity()->moveFrontBack(SPEED_MASTER);
+        }
+
+
+
+        if(this->state_ == SLAVE)
+        {
+//             if (this->target_ || distance > 10)
+//             {
+                float rotateFactor;
+                if(this->state_ == SLAVE) rotateFactor = 1.0f;
+
+
+                this->getControllableEntity()->rotateYaw(-1.0f * rotateFactor * sgn(coord.x) * coord.x*coord.x);
+                this->getControllableEntity()->rotatePitch(rotateFactor * sgn(coord.y) * coord.y*coord.y);
+
+
+
+//             }
+
+            if (this->target_ && distance < 500 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+            {
+                if (this->target_ && distance < 60)
+                {
+                    this->getControllableEntity()->setVelocity(0.8f*this->target_->getVelocity());
+                } else this->getControllableEntity()->moveFrontBack(-1.0f*exp(distance/100.0));
+
+            } else {
+                this->getControllableEntity()->moveFrontBack(1.0f + distance/500.0f);
+            }
         }
     }
 
@@ -130,8 +171,10 @@ COUT(0) << "~changedControllableEntity 5" << std::endl;
     void ArtificialController::unregisterSlave() {
         if(myMaster_)
         {
-            myMaster_->slaves_.remove(this);
-COUT(0) << "~unregister slave" << std::endl;
+            std::vector<ArtificialController*>::iterator it = std::find(myMaster_->slaves_.begin(), myMaster_->slaves_.end(), this);
+            if( it != myMaster_->slaves_.end() )
+                myMaster_->slaves_.erase(it);
+//COUT(0) << "~unregister slave" << std::endl;
         }
     }
 
@@ -161,14 +204,14 @@ COUT(0) << "~unregister slave" << std::endl;
             if (!newMaster || newMaster->getState() != MASTER)
                 continue;
 
+            float distance = (it->getPosition() - this->getControllableEntity()->getPosition()).length();
+
             //is pawn oneself? && is pawn in range?
-            if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity()) //&& it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) < 1000 
+            if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity() && distance < 5000) 
             {
-                if(newMaster->slaves_.size() > 6) continue;
+                if(newMaster->slaves_.size() > MAX_FORMATION_SIZE) continue;
 
-                //this->freeSlaves();
-
-                for(std::list<ArtificialController*>::iterator itSlave = this->slaves_.begin(); itSlave != this->slaves_.end(); itSlave++)
+                for(std::vector<ArtificialController*>::iterator itSlave = this->slaves_.begin(); itSlave != this->slaves_.end(); itSlave++)
                 {
                     (*itSlave)->myMaster_ = newMaster;
                     newMaster->slaves_.push_back(*itSlave);
@@ -184,52 +227,66 @@ COUT(0) << "~unregister slave" << std::endl;
         }//for
 
         //hasn't encountered any masters in range? -> become a master
-        if (state_!=SLAVE) state_ = MASTER; // keep in mind: what happens when two masters encounter eache other? -> has to be evaluated in the for loop within master mode in AIcontroller...
-COUT(0) << "~searcheNewMaster" << std::endl;
+        if (state_!=SLAVE) state_ = MASTER;//master encounters master? ->done
     }
 
     void ArtificialController::commandSlaves() {
 
-        for(std::list<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
+        Quaternion orient = this->getControllableEntity()->getOrientation();
+        Vector3 dest = this->getControllableEntity()->getPosition();
+
+        // 1 slave: follow
+        if (this->slaves_.size() == 1)
         {
-            (*it)->setTargetPosition(this->getControllableEntity()->getPosition());
+            dest += 4*orient*WorldEntity::BACK;
+            this->slaves_.front()->setTargetPosition(dest);
+        }
+
+        // 2 slaves: triangle
+         if (this->slaves_.size() == 2) 
+        {
+            dest += 10*orient*WorldEntity::BACK;
+            this->slaves_[0]->setTargetPosition(dest + 10*orient*WorldEntity::LEFT);
+            this->slaves_[1]->setTargetPosition(dest + 10*orient*WorldEntity::RIGHT);
+        }
+
+        if (this->slaves_.size() > MAX_FORMATION_SIZE)
+        {
+            for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
+            {
+                (*it)->setTargetPosition(this->getControllableEntity()->getPosition());
+            }
         }
     }
 
     // binds slaves to new Master within formation
     void ArtificialController::setNewMasterWithinFormation()
     {
-COUT(0) << "~setNewMasterWithinFormation 1" << std::endl;
+
         if (this->slaves_.empty())
             return;
-COUT(0) << "~setNewMasterWithinFormation 1b" << std::endl;
 
         ArtificialController *newMaster = this->slaves_.back();
-COUT(0) << "~setNewMasterWithinFormation 2" << std::endl;
         this->slaves_.pop_back();
-COUT(0) << "~setNewMasterWithinFormation 3" << std::endl;
+
         if(!newMaster) return;
-COUT(0) << "~setNewMasterWithinFormation 4" << std::endl;
         newMaster->state_ = MASTER;
         newMaster->slaves_ = this->slaves_;
-        this->slaves_.clear();
 
+        this->slaves_.clear();
         this->state_ = SLAVE;
         this->myMaster_ = newMaster;
 
-COUT(0) << "~setNewMasterWithinFormation 5" << std::endl;
-        for(std::list<ArtificialController*>::iterator it = newMaster->slaves_.begin(); it != newMaster->slaves_.end(); it++)
+        for(std::vector<ArtificialController*>::iterator it = newMaster->slaves_.begin(); it != newMaster->slaves_.end(); it++)
         {
-COUT(0) << "~setNewMasterWithinFormation 6" << std::endl;
             (*it)->myMaster_ = newMaster;
         }
-COUT(0) << "~setNewMasterWithinFormation 7" << std::endl;
 
     }
 
     void ArtificialController::freeSlaves()
     {
-        for(std::list<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
+        for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
         {
             (*it)->state_ = FREE;
         }
@@ -238,13 +295,13 @@ COUT(0) << "~setNewMasterWithinFormation 7" << std::endl;
 
     void ArtificialController::forceFreeSlaves()
     {
-        for(std::list<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
+        for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
         {
             (*it)->state_ = FREE;
             (*it)->forceFreedom();
             (*it)->targetPosition_ = this->targetPosition_;
             (*it)->bShooting_ = true;
-            (*it)->getControllableEntity()->fire(0);
+            (*it)->getControllableEntity()->fire(0);// fire once for fun
         }
     }
 
@@ -256,7 +313,7 @@ COUT(0) << "~setNewMasterWithinFormation 7" << std::endl;
 
     void ArtificialController::forceFreedom()
     {
-        this->freedomCount_ = 5;
+        this->freedomCount_ = FREEDOM_COUNT;
     }
 
     bool ArtificialController::forcedFree()
