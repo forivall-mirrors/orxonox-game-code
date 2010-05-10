@@ -72,7 +72,7 @@ namespace orxonox
       static ChatInputHandler* singletonPtr_s;
 
       /* cegui stuff */
-      CEGUI::Window *input;
+      CEGUI::Window *input, *inputonly;
       CEGUI::Listbox *lb_history;
 
     public:
@@ -82,7 +82,8 @@ namespace orxonox
 
       /* start listening, stop listening */
       static void activate_static();
-      void activate();
+      static void activate_small_static();
+      void activate( bool full );
       void deactivate();
 
       /* callbacks for input handler */

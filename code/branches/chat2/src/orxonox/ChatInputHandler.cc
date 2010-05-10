@@ -45,6 +45,8 @@ namespace orxonox
   ManageScopedSingleton( ChatInputHandler, ScopeID::Graphics, false );
   SetConsoleCommandAlias( ChatInputHandler, activate_static, "startchat",
     true );
+  SetConsoleCommandAlias( ChatInputHandler, activate_small_static, 
+    "startchat_small", true );
 
 
   /* constructor */
@@ -57,18 +59,15 @@ namespace orxonox
     this->inpbuf = new InputBuffer();
     assert( this->inpbuf != NULL );
 
-    /* MARK add generation of ChatBox thingy here */
+    /* generate chatbox ui and chatbox-inputonly ui */
     GUIManager::getInstance().loadGUI( "ChatBox" );
+    GUIManager::getInstance().loadGUI( "ChatBox-inputonly" );
 
     /* configure the input buffer */
     configureInputBuffer();
 
     this->inputState = InputManager::getInstance().createInputState( "chatinput", false, false, InputStatePriority::Dynamic );
     this->inputState->setKeyHandler(this->inpbuf);
-
-    //[> set console shortcut <]
-    //this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(
-      //&ChatInputHandler::activate, this), "startchat"), false);
   }
 
   void ChatInputHandler::configureInputBuffer()
@@ -98,6 +97,8 @@ namespace orxonox
 
     /* get window pointers */
     input = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/input" );
+    inputonly = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox-inputonly/input" );
+
     CEGUI::Window *history = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/history" );
     lb_history = dynamic_cast<CEGUI::Listbox*>(history); 
 
@@ -108,16 +109,22 @@ namespace orxonox
 
   /* activate, deactivate */
   void ChatInputHandler::activate_static()
-  { ChatInputHandler::getInstance().activate(); }
-  
-  void ChatInputHandler::activate()
+  { ChatInputHandler::getInstance().activate( true ); }
+
+  void ChatInputHandler::activate_small_static()
+  { ChatInputHandler::getInstance().activate( false ); }
+
+  void ChatInputHandler::activate( bool full )
   {
     /* start listening */
     //COUT(0) << "chatinput activated." << std::endl;
     InputManager::getInstance().enterState("chatinput");
 
     /* MARK add spawning of chat widget stuff here.*/
-    GUIManager::getInstance().showGUI( "ChatBox" );
+    if( full )
+      GUIManager::getInstance().showGUI( "ChatBox" );
+    else
+      GUIManager::getInstance().showGUI( "ChatBox-inputonly" );
   }
 
   void ChatInputHandler::deactivate() 
@@ -127,6 +134,7 @@ namespace orxonox
 
     /* MARK add un-spawning of chat widget stuff here. */
     GUIManager::getInstance().hideGUI( "ChatBox" );
+    GUIManager::getInstance().hideGUI( "ChatBox-inputonly" );
   }
 
   /* callbacks for InputBuffer */
@@ -145,6 +153,7 @@ namespace orxonox
       
     /* set the text */
     this->input->setProperty( "Text", left + "|" + right );
+    this->inputonly->setProperty( "Text", left + "|" + right );
   }
 
   void ChatInputHandler::addline()
