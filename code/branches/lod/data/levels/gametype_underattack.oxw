@@ -10,6 +10,11 @@
  description  = "A simple testlevel"
  gametype     = UnderAttack
 >
+
+  <lodinformation>
+    <MeshLodInformation mesh=Carrier.mesh lodQuality=1 />
+  </lodinformation>
+  
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/skypanoramagen1"

@@ -60,7 +60,6 @@ namespace orxonox
     {
         SUPER(Model, XMLPort, xmlelement, mode);
         
-        //LoD
         XMLPortParam(Model, "lodLevel", setLodLevel, getLodLevel, xmlelement, mode).defaultValues(5);
         
         XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
@@ -102,18 +101,19 @@ namespace orxonox
                 if(this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1
                     &&this->meshSrc_!="laserbeam.mesh")
                 {
-                    float scaleFactor = getBiggestScale(this->getScale3D());
-                    BaseObject* creatorPtr = this->getCreator();
-					//TODO Doesn't work...
-                    while(creatorPtr!=0&&typeid(creatorPtr)!=typeid(new WorldEntity*))
+                    float scaleFactor = 1;
+                    BaseObject* creatorPtr = this;
+                    
+                    while(creatorPtr!=NULL&&orxonox_cast<WorldEntity*>(creatorPtr))
                     {
                         scaleFactor *= getBiggestScale(((WorldEntity*) creatorPtr)->getScale3D());
-                        creatorPtr = this->getCreator();
+                        creatorPtr = creatorPtr->getCreator();
                     }
                     
                     Level* level_ = this->getLevel();
                     
                     MeshLodInformation* lodInfo = level_->getLodInfo(this->meshSrc_);
+                    
                     if(lodInfo!=0)
                         setLodLevel(lodInfo->getLodLevel());
                     
@@ -125,7 +125,7 @@ namespace orxonox
                     Ogre::Mesh::LodDistanceList distList;
 #endif
 
-                    if(lodLevel_>0)
+                    if(lodLevel_>0&&lodLevel_<=5)
                     {
                         float factor = scaleFactor*5/lodLevel_;
                         
@@ -142,7 +142,7 @@ namespace orxonox
                         distList.push_back(310.0f*factor);
                         distList.push_back(330.0f*factor);
 
-                        float reductionValue = 0.2f;
+                        float reductionValue = 0.15f;
 
                         
                         //Generiert LOD-Levels
@@ -150,7 +150,13 @@ namespace orxonox
                     }
                     else
                     {
-                        COUT(0)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was < 0."<<std::endl;
+                        std::string what;
+                        if(lodLevel_>5)
+                            what = ">5";
+                        else
+                            what = "<0";
+                        
+                        COUT(0)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"."<<std::endl;
                     }
                 }
             }

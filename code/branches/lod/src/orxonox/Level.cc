@@ -71,9 +71,9 @@ namespace orxonox
 
         XMLPortParam(Level, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(Level, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
-
-        XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);            
+            
         XMLPortObject(Level, MeshLodInformation, "lodinformation", addLodInfo, getLodInfo, xmlelement, mode);
+        XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
 }
 
     void Level::registerVariables()
@@ -140,14 +140,10 @@ namespace orxonox
         return 0;
     }
     
-    //LoD
     void Level::addLodInfo(MeshLodInformation* lodInformation)
     {
-//        std::pair<std::map<std::string,MeshLodInformation*>::iterator,bool> it 
-//            = new std::pair<lodInformation->getMeshName(),lodInformation>;
         std::string meshName = lodInformation->getMeshName();
         this->lodInformation_.insert(std::make_pair(meshName,lodInformation));
-        //this->lodInformation_[std::make_pair<meshName,lodInformation>);
     }
 
     MeshLodInformation* Level::getLodInfo(std::string meshName) const
@@ -156,17 +152,6 @@ namespace orxonox
             return this->lodInformation_.find(meshName)->second;
         
         return 0;
-        
-        
-        /*
-        unsigned int i = 0;
-        for (std::map<MeshLodInformation*>::const_iterator it = this->lodInformation_.begin(); it != this->lodInformation_.end(); ++it)
-        {
-            if (i == index)
-                return (*it);
-            ++i;
-        }
-        return 0;*/
     }
 
     void Level::playerEntered(PlayerInfo* player)

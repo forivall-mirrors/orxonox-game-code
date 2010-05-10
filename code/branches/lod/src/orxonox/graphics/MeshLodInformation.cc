@@ -52,8 +52,8 @@ namespace orxonox
     {
         SUPER(MeshLodInformation, XMLPort, xmlelement, mode);
 
-        XMLPortParam(MeshLodInformation, "lodQuality", setLodLevel, getLodLevel, xmlelement, mode).defaultValues(5);
         XMLPortParam(MeshLodInformation, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
+        XMLPortParam(MeshLodInformation, "lodQuality", setLodLevel, getLodLevel, xmlelement, mode);
     }
     
     std::string MeshLodInformation::getMeshName()
