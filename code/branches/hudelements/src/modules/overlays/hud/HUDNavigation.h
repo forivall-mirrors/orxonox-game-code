@@ -56,9 +56,12 @@ namespace orxonox
          virtual void objectChanged(RadarViewable* viewable){}
          inline float getRadarSensitivity() const{}
          inline void radarTick(float dt) {}
+	 
 
     private:
 
+	
+      
 	void sizeChanged();
         void angleChanged() { }
         void positionChanged() { }
@@ -102,6 +105,9 @@ namespace orxonox
 	typedef std::map<RadarViewable*, std::pair<Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > activeObjectListType;
 	activeObjectListType activeObjectList_;
 	activeObjectListType::iterator tempRadarViewable;
+	
+	std::string fontName_;
+	int textSize_;
 	
     };
     

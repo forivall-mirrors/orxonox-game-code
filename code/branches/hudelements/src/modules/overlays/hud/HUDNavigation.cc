@@ -71,10 +71,7 @@ namespace orxonox
         aimMarker_->setMaterialName("Orxonox/NavCrosshair");
         this->wasOutOfView_ = true; // Ensure the material is changed right the first time..
 
-        setFont("Monofur");
-        setTextSize(0.05f);
-        setNavMarkerSize(0.05f);
-        setAimMarkerSize(0.04f);
+
 */
 /*
         background_->addChild(navMarker_);*/
@@ -85,6 +82,10 @@ namespace orxonox
 //         this->setVisible(false);
 	
 	
+	setFont("Monofur");
+	setTextSize(0.05f);
+        setNavMarkerSize(0.05f);
+//         setAimMarkerSize(0.04f);
     }
 
     HUDNavigation::~HUDNavigation()
@@ -109,30 +110,38 @@ namespace orxonox
 
     void HUDNavigation::setFont(const std::string& font)
     {
-        if (this->navText_ && !font.empty())
-            this->navText_->setFontName(font);
+        fontName_ = font;
+	if(!activeObjectList_.empty()) 
+	{
+	  for(tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
+	   {
+	      if (tempRadarViewable->second.second && !fontName_.empty())
+		tempRadarViewable->second.second->setFontName(fontName_);
+	   }
+	}
     }
 
     const std::string& HUDNavigation::getFont() const
     {
-        if (this->navText_)
-            return this->navText_->getFontName();
-        else
-            return BLANKSTRING;
+        return fontName_;
     }
 
     void HUDNavigation::setTextSize(float size)
     {
-        if (this->navText_ && size >= 0.0f)
-            this->navText_->setCharHeight(size);
+      textSize_ = size;
+      if(!activeObjectList_.empty()) 
+	{
+	  for(tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
+	    {
+	      if (tempRadarViewable->second.second && size >= 0.0f)
+		tempRadarViewable->second.second->setCharHeight(size);
+	    }
+	}   
     }
 
     float HUDNavigation::getTextSize() const
     {
-        if (this->navText_)
-            return this->navText_->getCharHeight();
-        else
-            return 0.0f;
+      return textSize_;
     }
 
     void HUDNavigation::tick(float dt)
