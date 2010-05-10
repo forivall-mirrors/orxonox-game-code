@@ -101,7 +101,7 @@ namespace orxonox
             if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
                 this->searchRandomTargetPosition();
 
-
+/*
             random = rnd(maxrand);
             if (random < 75 && (this->target_ && !this->bShooting_))
                 this->bShooting_ = true;
@@ -109,7 +109,7 @@ namespace orxonox
             // stop shooting
             random = rnd(maxrand);
             if (random < 25 && (this->bShooting_))
-                this->bShooting_ = false;
+                this->bShooting_ = false; */
 
         }
 

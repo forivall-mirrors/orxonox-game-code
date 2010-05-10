@@ -500,6 +500,14 @@ namespace orxonox
             }
         }
 
+        DroneController* droneController = 0;
+        droneController = orxonox_cast<DroneController*>(entity1->getController());
+        if (droneController && static_cast<ControllableEntity*>(droneController->getOwner()) == entity2)
+            return true;
+        droneController = orxonox_cast<DroneController*>(entity2->getController());
+        if (droneController && static_cast<ControllableEntity*>(droneController->getOwner()) == entity1)
+            return true;
+            
         return (team1 == team2 && team1 != -1);
     }
 }

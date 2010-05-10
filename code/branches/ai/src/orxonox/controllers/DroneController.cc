@@ -58,6 +58,8 @@ namespace orxonox
         this->drone_ = 0;
 
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, createExecutor(createFunctor(&DroneController::action, this)));
+
+        this->owner_.setCallback(createFunctor(&DroneController::ownerDied, this));
     }
 
     DroneController::~DroneController()
@@ -82,23 +84,36 @@ namespace orxonox
         const Vector3& ownerPosition = getOwner()->getWorldPosition();
         const Vector3& dronePosition = getDrone()->getWorldPosition();
 
-        const Vector3& locOwnerDir = getDrone()->getOrientation().UnitInverse()*(dronePosition-ownerPosition); //Vector from Drone To Owner out of drones local coordinate system
+        const Vector3& locOwnerDir = getDrone()->getOrientation().UnitInverse()*(ownerPosition-dronePosition); //Vector from Drone To Owner out of drones local coordinate system
 
         int distance = sqrt( (ownerPosition.x-dronePosition.x)*(ownerPosition.x-dronePosition.x)
                            + (ownerPosition.y-dronePosition.y)*(ownerPosition.y-dronePosition.y)
                            + (ownerPosition.z-dronePosition.z)*(ownerPosition.z-dronePosition.z)); //distance to Owner
 
         if (distance > 500) { //TODO: variable implementation of maxdistance
-            drone_->moveUpDown(-locOwnerDir.y);
-            drone_->moveFrontBack(locOwnerDir.z);
-            drone_->moveRightLeft(-locOwnerDir.x);
+            drone_->moveUpDown(locOwnerDir.y);
+            drone_->moveFrontBack(-locOwnerDir.z);
+            drone_->moveRightLeft(locOwnerDir.x);
         }
 
-        COUT(0) << "Owner: " << ownerPosition << endl;
-        COUT(0) << "Drone: " << dronePosition << endl;
-        COUT(0) << "Distance: " << distance << endl;
-        COUT(0) << "locDrone: " << locOwnerDir << endl;
 
+        random = rnd(maxrand);
+        if ( random < 30 && (!this->target_))
+            this->searchNewTarget();
+
+
+        this->aimAtTarget();
+        drone_->fire(0);
+         
+
+
+
+        //COUT(0) << "Drone: " << dronePosition << endl;
+        //COUT(0) << "Distance: " << distance << endl;
+        COUT(0) << "locDrone: " << locOwnerDir << endl;
+        COUT(0) << "target: " << targetPosition_ << endl;
+        COUT(0) << "Owner: " << ownerPosition << endl;
+        COUT(0) << "Rand: " << random << endl;
 
 /*
         // search enemy
@@ -159,17 +174,17 @@ namespace orxonox
 
         setTargetPosition(this->getControllableEntity()->getPosition());
 
-/*      myDrone->setRotationThrust(25);
-	myDrone->setAuxilaryThrust(30);
-	myDrone->rotateYaw(10*dt); */
         }
 
         SUPER(AIController, tick, dt);
 
-        // you can use the following commands for steering 
-        // - moveFrontBack, moveRightLeft, moveUpDown 
-        // - rotatePitch, rotateYaw, rotateRoll 
-        // - apply the to myDrone (e.g. myDrone->rotateYaw(..) ) 
+    }
 
+    void DroneController::ownerDied()
+    {
+        if (this->drone_)
+            this->drone_->destroy();
+        else
+            this->destroy();
     }
 }

@@ -133,16 +133,19 @@ namespace orxonox
                     this->destroy();
                 
                 //Attach to pawn
-                Drone* drone = new Drone(this);
+                Drone* drone = new Drone(pawn->getCreator()); // this is neccessary because the projectiles fired need a valid creator for the particlespawner (when colliding against something)
                 drone->addTemplate(this->getDroneTemplate());
-                pawn->attach(drone);
+
                 Controller* controller = drone->getController();
                 DroneController* droneController = dynamic_cast<DroneController*>(controller);
                 if(droneController != NULL)
                 {
                     droneController->setOwner(pawn);
                 }
-
+                
+                Vector3 spawnPosition = pawn->getWorldPosition() + Vector3(30,0,-30);
+                drone->setPosition(spawnPosition);
+                
                 //! The pickup has been used up.
                 this->setUsed(false);
         }

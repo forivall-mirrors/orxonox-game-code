@@ -32,6 +32,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "AIController.h"
+#include "core/WeakPtr.h"
 #include "tools/interfaces/Tickable.h"
 
 #include "tools/Timer.h"
@@ -63,10 +64,11 @@ namespace orxonox
 
         protected:
             virtual void action();
+            void ownerDied();
 
         private:
             Timer actionTimer_;
-            Pawn* owner_;
+            WeakPtr<Pawn> owner_;
             Drone* drone_;
     };
 }
