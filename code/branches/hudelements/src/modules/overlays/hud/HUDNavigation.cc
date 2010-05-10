@@ -250,7 +250,7 @@ void HUDNavigation::tick(float dt)
                     {
                         // down
                         float position = -pos.x / pos.y + 1.0f;
-                        tempRadarViewable->second.first->setPosition((position - tempRadarViewable->second.first->getWidth()) * 0.5f, 1.0f - navMarker_->getHeight());
+                        tempRadarViewable->second.first->setPosition((position - tempRadarViewable->second.first->getWidth()) * 0.5f, 1.0f - tempRadarViewable->second.first->getHeight());
                         tempRadarViewable->second.first->setUV(0.0f, 0.5f, 0.5f, 1.0f);
                         tempRadarViewable->second.second->setLeft((position - textLength) * 0.5f);
                         tempRadarViewable->second.second->setTop(1.0f - tempRadarViewable->second.first->getHeight() - tempRadarViewable->second.second->getCharHeight());
@@ -295,10 +295,9 @@ void HUDNavigation::tick(float dt)
                 tempRadarViewable->second.second->setTop((-pos.y + 1.0f + tempRadarViewable->second.first->getHeight()) * 0.5f);
             }
 	          
-	tempRadarViewable->second.first->show();
-	tempRadarViewable->second.second->show();
-	COUT(0) << "ShowGUITest z300" << std::endl;
-        }
+    tempRadarViewable->second.first->show();
+    tempRadarViewable->second.second->show();
+    }
 
     }
     
@@ -359,18 +358,34 @@ void HUDNavigation::addObject(RadarViewable* object) {
     Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
                                          .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
 
-    
+    float xScale = this->getActualSize().x;
+    float yScale = this->getActualSize().y;
+
+    panel->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
+    text->setCharHeight(text->getCharHeight() * yScale);
 
     activeObjectList_[object] = std::make_pair (panel, text) ;
+
+    this->background_->addChild(panel);
+    this->background_->addChild(text);
 
 // 	background_->addChild(activeObjectList_[object].first);
 // 	background_->addChild(activeObjectList_[object].second);
     COUT(0) << "check 357" << std::endl;
 }
 
-void HUDNavigation::removeObject(RadarViewable* viewable) {
-    assert(activeObjectList_.find(viewable)!=activeObjectList_.end());
-    activeObjectList_.erase(viewable);
+void HUDNavigation::removeObject(RadarViewable* viewable)
+{
+    activeObjectListType::iterator it = activeObjectList_.find(viewable);
+
+    if (activeObjectList_.find(viewable) != activeObjectList_.end())
+    {
+        // Remove overlays from Ogre
+        this->background_->removeChild(it->second.first->getName());
+        this->background_->removeChild(it->second.second->getName());
+
+        activeObjectList_.erase(viewable);
+    }
 }
 
 // 	void updateActiveObjectList(map activeObjectList_){}
