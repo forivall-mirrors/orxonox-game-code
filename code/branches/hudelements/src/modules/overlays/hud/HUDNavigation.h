@@ -71,8 +71,9 @@ namespace orxonox
 	
 
         // XMLPort accessors
-        void setNavMarkerSize(float size) { this->navMarkerSize_ = size; this->sizeChanged(); } 
-        float getNavMarkerSize() const    { return this->navMarkerSize_; }
+        void setNavMarkerSize(float size) { navMarkerSize_ = size; 
+					    this->sizeChanged(); } 
+        float getNavMarkerSize() const    { return navMarkerSize_; }
 
 /*
         void setAimMarkerSize(float size) { this->aimMarkerSize_ = size; this->sizeChanged(); }
@@ -107,8 +108,8 @@ namespace orxonox
 	activeObjectListType::iterator tempRadarViewable;
 	
 	std::string fontName_;
-	int textSize_;
-	
+	float textSize_;
+
     };
     
 }

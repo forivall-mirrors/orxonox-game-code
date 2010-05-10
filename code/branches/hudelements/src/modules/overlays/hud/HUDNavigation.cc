@@ -90,11 +90,18 @@ namespace orxonox
 
     HUDNavigation::~HUDNavigation()
     {
+      
         if (this->isInitialized())
         {
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navMarker_);
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navText_);
+	  if(!activeObjectList_.empty()) 
+	   {
+	    for(tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
+	    {
+	      Ogre::OverlayManager::getSingleton().destroyOverlayElement(tempRadarViewable->second.first);
+	      Ogre::OverlayManager::getSingleton().destroyOverlayElement(tempRadarViewable->second.second);
 //            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
+	    }
+	  }
         }
     }
 
@@ -171,12 +178,15 @@ namespace orxonox
       if(!activeObjectList_.empty()) {
       for(tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
 	{
+	  COUT(0) << "check 174" << std::endl;
 	
 	//get Distance to HumanController and save it in the TextAreaOverlayElement.
 	int dist = (int)(tempRadarViewable->first->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
 	tempRadarViewable->second.second->setCaption(multi_cast<std::string>(dist));
 	float textLength = multi_cast<std::string>(dist).size() * tempRadarViewable->second.second->getCharHeight() * 0.3f;
 	 
+	 COUT(0) << "check 181" << std::endl;
+      
 	orxonox::Camera* cam = CameraManager::getInstance().getActiveCamera();
         if (!cam)
             return;
@@ -184,6 +194,8 @@ namespace orxonox
         // transform to screen coordinates
         Vector3 pos = transform * tempRadarViewable->first->getRVWorldPosition();
 
+	 COUT(0) << "check 190" << std::endl;
+	 
         bool outOfView;
         if (pos.z > 1.0)
         {
@@ -207,6 +219,8 @@ namespace orxonox
                 tempRadarViewable->second.first->setMaterialName("Orxonox/NavArrows");
                 wasOutOfView_ = true;
             }
+	    
+	     COUT(0) << "check 174" << std::endl;
 
             if (pos.x < pos.y)
             {
@@ -231,6 +245,7 @@ namespace orxonox
             }
             else
             {
+	       COUT(0) << "check 241" << std::endl;
                 if (pos.y < -pos.x)
                 {
                     // down
@@ -253,7 +268,7 @@ namespace orxonox
         }
         else
         {
-	  
+	   COUT(0) << "check 264" << std::endl;
 	  
             // object is in view
 /*
@@ -299,14 +314,22 @@ namespace orxonox
     */
     void HUDNavigation::sizeChanged(){
             // use size to compensate for aspect ratio if enabled.
-        float xScale = this->getActualSize().x;
-        float yScale = this->getActualSize().y;
-        if (this->navMarker_)
-            navMarker_->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
-//         if (this->aimMarker_)
-//             aimMarker_->setDimensions(aimMarkerSize_ * xScale, aimMarkerSize_ * yScale);
-        if (this->navText_)
-            navText_->setCharHeight(navText_->getCharHeight() * yScale);
+	float xScale = this->getActualSize().x;
+	float yScale = this->getActualSize().y;
+	
+	 if(!activeObjectList_.empty()) 
+	{
+	  for(tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
+	  {
+
+	     if (tempRadarViewable->second.first)
+	      tempRadarViewable->second.first->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
+//            if (this->aimMarker_)
+//            aimMarker_->setDimensions(aimMarkerSize_ * xScale, aimMarkerSize_ * yScale);
+	     if (tempRadarViewable->second.second)
+	      tempRadarViewable->second.second->setCharHeight(tempRadarViewable->second.second->getCharHeight() * yScale);
+	  }
+	}
     }
     
     
@@ -338,6 +361,7 @@ namespace orxonox
 	activeObjectList_[object].second->show();
 // 	background_->addChild(activeObjectList_[object].first);
 // 	background_->addChild(activeObjectList_[object].second);
+	COUT(0) << "check 357" << std::endl;
     }
     
   void HUDNavigation::removeObject(RadarViewable* viewable){
