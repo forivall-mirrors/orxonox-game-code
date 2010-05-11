@@ -187,10 +187,10 @@ namespace orxonox
 
     void HUDRadar::changedOwner()
     {
-        SUPER(HUDRadar, changedOwner);
+    SUPER(HUDRadar, changedOwner);
 
-        this->owner_ = orxonox_cast<Pawn*>(this->getOwner());
-        assert(this->radarObjects_.size()==0);
-        this->gatherObjects();
-    }
+    this->owner_ = orxonox_cast<Pawn*>(this->getOwner());
+    assert(this->radarObjects_.size()==0);
+    this->gatherObjects();
+}
 }

@@ -45,6 +45,7 @@
 #include "controllers/HumanController.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/WorldEntity.h"
+#include "interfaces/RadarViewable.h"
 
 namespace orxonox
 {
@@ -54,15 +55,18 @@ HUDNavigation::HUDNavigation(BaseObject* creator)
         : OrxonoxOverlay(creator)
 {
     RegisterObject(HUDNavigation);
-    
-     
-     const std::set<RadarViewable*>& respawnObjectSet_ = this->getOwner()->getScene()->getRadar()->getRadarObjects();
-     std::set<RadarViewable*>::const_iterator respawnObjectSetIt_;
-     
-     if(!respawnObjectSet_.empty()){
-     for(respawnObjectSetIt_ = respawnObjectSet_.begin(); respawnObjectSetIt_ != respawnObjectSet_.end();
-	 ++respawnObjectSetIt_){ addObject(*respawnObjectSetIt_);}
-     }
+
+    setFont("Monofur");
+    setTextSize(0.05f);
+    setNavMarkerSize(0.05f);
+
+    respawnObjectSet_ = this->getOwner()->getScene()->getRadar()->getRadarObjects();  
+
+    for (respawnObjectSetIt_ = respawnObjectSet_.begin(); respawnObjectSetIt_ != respawnObjectSet_.end();
+            ++respawnObjectSetIt_)
+    {
+        if (!(*respawnObjectSetIt_)->isHumanShip_)  addObject(*respawnObjectSetIt_);
+    }
     
 //         // create nav text
 //         navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
@@ -73,49 +77,39 @@ HUDNavigation::HUDNavigation(BaseObject* creator)
 //             .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
 //         navMarker_->setMaterialName("Orxonox/NavArrows");
 
-    /*
-            // create aim marker
-            aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-                .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberString()));
-            aimMarker_->setMaterialName("Orxonox/NavCrosshair");
-            this->wasOutOfView_ = true; // Ensure the material is changed right the first time..
+        /*
+                // create aim marker
+                aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+                    .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberString()));
+                aimMarker_->setMaterialName("Orxonox/NavCrosshair");
+                this->wasOutOfView_ = true; // Ensure the material is changed right the first time..
 
 
-    */
-    /*
-            background_->addChild(navMarker_);*/
+        */
+        /*
+                background_->addChild(navMarker_);*/
 //        background_->addChild(aimMarker_);
 //         background_->addChild(navText_);
 
-    // hide at first
+        // hide at first
 //         this->setVisible(false);
 
 
-    setFont("Monofur");
-    setTextSize(0.05f);
-    setNavMarkerSize(0.05f);
+
 //         setAimMarkerSize(0.04f);
+    
 }
 
-HUDNavigation::~HUDNavigation()
-{
+HUDNavigation::~HUDNavigation() {
 
     if (this->isInitialized())
     {
-        if (!activeObjectList_.empty())
-        {
-            for (tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
-            {
-                Ogre::OverlayManager::getSingleton().destroyOverlayElement(tempRadarViewable->second.first);
-                Ogre::OverlayManager::getSingleton().destroyOverlayElement(tempRadarViewable->second.second);
-//            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
-            }
-        }
+        activeObjectList_.clear();
+        respawnObjectSet_.clear();
     }
 }
 
-void HUDNavigation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
-{
+void HUDNavigation::XMLPort(Element& xmlElement, XMLPort::Mode mode) {
     SUPER(HUDNavigation, XMLPort, xmlElement, mode);
 
     XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode);
@@ -303,10 +297,10 @@ void HUDNavigation::tick(float dt)
                 tempRadarViewable->second.second->setLeft((pos.x + 1.0f + tempRadarViewable->second.first->getWidth()) * 0.5f);
                 tempRadarViewable->second.second->setTop((-pos.y + 1.0f + tempRadarViewable->second.first->getHeight()) * 0.5f);
             }
-	          
-    tempRadarViewable->second.first->show();
-    tempRadarViewable->second.second->show();
-    }
+
+            tempRadarViewable->second.first->show();
+            tempRadarViewable->second.second->show();
+        }
 
     }
 
@@ -396,6 +390,14 @@ void HUDNavigation::removeObject(RadarViewable* viewable)
         activeObjectList_.erase(viewable);
     }
 }
+
+// void HUDRadar::changedOwner() {
+//     SUPER(HUDRadar, changedOwner);
+//
+//     this->owner_ = orxonox_cast<Pawn*>(this->getOwner());
+//     assert(this->radarObjects_.size()==0);
+//     this->gatherObjects();
+// }
 
 // 	void updateActiveObjectList(map activeObjectList_){}
 //

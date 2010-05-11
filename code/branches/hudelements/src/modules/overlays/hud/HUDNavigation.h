@@ -32,6 +32,7 @@
 #include <utility>
 #include <map>
 #include "overlays/OverlaysPrereqs.h"
+#include "interfaces/RadarViewable.h"
 
 #include "interfaces/RadarListener.h"
 #include "util/OgreForwardRefs.h"
@@ -56,6 +57,7 @@ public:
     virtual void objectChanged(RadarViewable* viewable) {}
     inline float getRadarSensitivity() const {return 1.0f;}
     inline void radarTick(float dt) {}
+//     virtual void changedOwner();
 
 
 private:
@@ -110,6 +112,10 @@ private:
     typedef std::map<RadarViewable*, std::pair<Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > activeObjectListType;
     activeObjectListType activeObjectList_;
     activeObjectListType::iterator tempRadarViewable;
+    
+    typedef std::set<RadarViewable*> respawnObjectSetType;
+    respawnObjectSetType respawnObjectSet_;
+    respawnObjectSetType::iterator respawnObjectSetIt_;
 
     std::string fontName_;
     float textSize_;
