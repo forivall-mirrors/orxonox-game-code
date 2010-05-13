@@ -98,8 +98,12 @@ HUDNavigation::~HUDNavigation() {
 
     if (this->isInitialized())
     {
+        activeObjectListType::iterator it;
+        for( it = activeObjectList_.begin(); it!=activeObjectList_.end(); ++it )
+        {
+            removeObject(it->first);
+        }
         activeObjectList_.clear();
-        respawnObjectSet_.clear();
     }
 }
 
@@ -172,7 +176,8 @@ void HUDNavigation::tick(float dt)
 //         navText_->setCaption(multi_cast<std::string>(dist));
 //         float textLength = multi_cast<std::string>(dist).size() * navText_->getCharHeight() * 0.3f;
 
-    if (!activeObjectList_.empty()) {
+    if (!activeObjectList_.empty())
+    {
         for (tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
         {
 
@@ -292,8 +297,9 @@ void HUDNavigation::tick(float dt)
                 tempRadarViewable->second.second->setTop((-pos.y + 1.0f + tempRadarViewable->second.first->getHeight()) * 0.5f);
             }
 
-	     tempRadarViewable->second.first->show();
-	     tempRadarViewable->second.second->show();
+            tempRadarViewable->second.first->show();
+            tempRadarViewable->second.second->show();
+//             tempRadarViewable->second.second->hide();
         }
 
     }
@@ -314,7 +320,8 @@ void HUDNavigation::tick(float dt)
 @brief Overridden method of OrxonoxOverlay. Usually the entire overlay
        scales with scale(). Here we obviously have to adjust this.
 */
-void HUDNavigation::sizeChanged() {
+void HUDNavigation::sizeChanged()
+{
     // use size to compensate for aspect ratio if enabled.
     float xScale = this->getActualSize().x;
     float yScale = this->getActualSize().y;
@@ -335,7 +342,8 @@ void HUDNavigation::sizeChanged() {
 }
 
 
-void HUDNavigation::addObject(RadarViewable* object) {
+void HUDNavigation::addObject(RadarViewable* object)
+{
     if (object == dynamic_cast<RadarViewable*>(this->getOwner()))
         return;
 
@@ -381,21 +389,22 @@ void HUDNavigation::removeObject(RadarViewable* viewable)
         // Remove overlays from Ogre
         this->background_->removeChild(it->second.first->getName());
         this->background_->removeChild(it->second.second->getName());
+        // correctly destroy the overlay elements
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.first);
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.second);
 
         activeObjectList_.erase(viewable);
     }
 }
 
-void HUDNavigation::changedOwner() {
-     
-
- 
-    respawnObjectSet_ = this->getOwner()->getScene()->getRadar()->getRadarObjects();
+void HUDNavigation::changedOwner()
+{
+    respawnObjectSetType respawnObjectSet = this->getOwner()->getScene()->getRadar()->getRadarObjects();
     respawnObjectSetType::iterator respawnObjectSetIt_;
-    for (respawnObjectSetIt_ = respawnObjectSet_.begin(); respawnObjectSetIt_ != respawnObjectSet_.end();
-            ++respawnObjectSetIt_)
+    for (respawnObjectSetIt_ = respawnObjectSet.begin(); respawnObjectSetIt_ != respawnObjectSet.end(); ++respawnObjectSetIt_)
     {
-        if (!(*respawnObjectSetIt_)->isHumanShip_)  HUDNavigation::addObject(*respawnObjectSetIt_);
+        if (!(*respawnObjectSetIt_)->isHumanShip_)
+            this->addObject(*respawnObjectSetIt_);
     }
 
 }

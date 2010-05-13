@@ -114,7 +114,6 @@ private:
     activeObjectListType::iterator tempRadarViewable;
         
     typedef std::set<RadarViewable*> respawnObjectSetType;
-    respawnObjectSetType respawnObjectSet_;
     
 
 
