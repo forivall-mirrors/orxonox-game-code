@@ -60,13 +60,7 @@ HUDNavigation::HUDNavigation(BaseObject* creator)
     setTextSize(0.05f);
     setNavMarkerSize(0.05f);
 
-    respawnObjectSet_ = this->getOwner()->getScene()->getRadar()->getRadarObjects();  
 
-    for (respawnObjectSetIt_ = respawnObjectSet_.begin(); respawnObjectSetIt_ != respawnObjectSet_.end();
-            ++respawnObjectSetIt_)
-    {
-        if (!(*respawnObjectSetIt_)->isHumanShip_)  addObject(*respawnObjectSetIt_);
-    }
     
 //         // create nav text
 //         navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
@@ -181,14 +175,14 @@ void HUDNavigation::tick(float dt)
     if (!activeObjectList_.empty()) {
         for (tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
         {
-            COUT(0) << "check 174" << std::endl;
+
 
             //get Distance to HumanController and save it in the TextAreaOverlayElement.
             int dist = (int)(tempRadarViewable->first->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
             tempRadarViewable->second.second->setCaption(multi_cast<std::string>(dist));
             float textLength = multi_cast<std::string>(dist).size() * tempRadarViewable->second.second->getCharHeight() * 0.3f;
 
-            COUT(0) << "check 181" << std::endl;
+
 
             orxonox::Camera* cam = CameraManager::getInstance().getActiveCamera();
             if (!cam)
@@ -197,7 +191,7 @@ void HUDNavigation::tick(float dt)
             // transform to screen coordinates
             Vector3 pos = transform * tempRadarViewable->first->getRVWorldPosition();
 
-            COUT(0) << "check 190" << std::endl;
+
 
             bool outOfView;
             if (pos.z > 1.0)
@@ -223,7 +217,7 @@ void HUDNavigation::tick(float dt)
                     wasOutOfView_ = true;
                 }
 
-                COUT(0) << "check 174" << std::endl;
+
 
                 if (pos.x < pos.y)
                 {
@@ -271,7 +265,7 @@ void HUDNavigation::tick(float dt)
             }
             else
             {
-                COUT(0) << "check 264" << std::endl;
+
 
                 // object is in view
                 /*
@@ -298,8 +292,8 @@ void HUDNavigation::tick(float dt)
                 tempRadarViewable->second.second->setTop((-pos.y + 1.0f + tempRadarViewable->second.first->getHeight()) * 0.5f);
             }
 
-            tempRadarViewable->second.first->show();
-            tempRadarViewable->second.second->show();
+	     tempRadarViewable->second.first->show();
+	     tempRadarViewable->second.second->show();
         }
 
     }
@@ -307,14 +301,14 @@ void HUDNavigation::tick(float dt)
 }
 
 
-float HUDNavigation::getDist2Focus() const {
-
-    Radar* radar = this->getOwner()->getScene()->getRadar();
-    if (radar->getFocus() && HumanController::getLocalControllerEntityAsPawn())
-        return (radar->getFocus()->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
-    else
-        return 0;
-}
+// float HUDNavigation::getDist2Focus() const {
+// 
+//     Radar* radar = this->getOwner()->getScene()->getRadar();
+//     if (radar->getFocus() && HumanController::getLocalControllerEntityAsPawn())
+//         return (radar->getFocus()->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
+//     else
+//         return 0;
+// }
 
 /**
 @brief Overridden method of OrxonoxOverlay. Usually the entire overlay
@@ -360,7 +354,8 @@ void HUDNavigation::addObject(RadarViewable* object) {
 
     Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
                                          .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
-
+		
+   
     float xScale = this->getActualSize().x;
     float yScale = this->getActualSize().y;
 
@@ -374,7 +369,7 @@ void HUDNavigation::addObject(RadarViewable* object) {
 
 // 	background_->addChild(activeObjectList_[object].first);
 // 	background_->addChild(activeObjectList_[object].second);
-    COUT(0) << "check 357" << std::endl;
+
 }
 
 void HUDNavigation::removeObject(RadarViewable* viewable)
@@ -391,13 +386,21 @@ void HUDNavigation::removeObject(RadarViewable* viewable)
     }
 }
 
-// void HUDRadar::changedOwner() {
-//     SUPER(HUDRadar, changedOwner);
-//
-//     this->owner_ = orxonox_cast<Pawn*>(this->getOwner());
-//     assert(this->radarObjects_.size()==0);
-//     this->gatherObjects();
-// }
+void HUDNavigation::changedOwner() {
+     
+
+ 
+    respawnObjectSet_ = this->getOwner()->getScene()->getRadar()->getRadarObjects();
+    respawnObjectSetType::iterator respawnObjectSetIt_;
+    for (respawnObjectSetIt_ = respawnObjectSet_.begin(); respawnObjectSetIt_ != respawnObjectSet_.end();
+            ++respawnObjectSetIt_)
+    {
+        if (!(*respawnObjectSetIt_)->isHumanShip_)  HUDNavigation::addObject(*respawnObjectSetIt_);
+    }
+
+}
+
+
 
 // 	void updateActiveObjectList(map activeObjectList_){}
 //

@@ -57,7 +57,7 @@ public:
     virtual void objectChanged(RadarViewable* viewable) {}
     inline float getRadarSensitivity() const {return 1.0f;}
     inline void radarTick(float dt) {}
-//     virtual void changedOwner();
+    virtual void changedOwner();
 
 
 private:
@@ -94,7 +94,7 @@ private:
 
     void updateMarker();
     void updateFocus();
-    float getDist2Focus() const;
+//     float getDist2Focus() const;
     void getSingleton();
 
 
@@ -112,10 +112,11 @@ private:
     typedef std::map<RadarViewable*, std::pair<Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > activeObjectListType;
     activeObjectListType activeObjectList_;
     activeObjectListType::iterator tempRadarViewable;
-    
+        
     typedef std::set<RadarViewable*> respawnObjectSetType;
     respawnObjectSetType respawnObjectSet_;
-    respawnObjectSetType::iterator respawnObjectSetIt_;
+    
+
 
     std::string fontName_;
     float textSize_;
