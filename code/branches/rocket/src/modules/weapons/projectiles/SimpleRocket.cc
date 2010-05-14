@@ -61,8 +61,8 @@ namespace orxonox
 		COUT(0)<< "simplerocket constructed\n";
 
 
-        //if (GameMode::isMaster())
-        //{
+        if (GameMode::isMaster())
+       {
            this->setCollisionType(WorldEntity::Kinematic);
             this->setVelocity(0,0,100);
 
@@ -86,9 +86,13 @@ namespace orxonox
             this->attachCollisionShape(collisionShape);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
-       // }
+        }
 
     }
+	void SimpleRocket::tick(float dt)
+    {
+        SUPER(SimpleRocket, tick, dt);
+	}
 
     /**s
     @brief

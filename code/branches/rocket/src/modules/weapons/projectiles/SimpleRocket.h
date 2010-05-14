@@ -50,7 +50,7 @@ namespace orxonox
         public:
             SimpleRocket(BaseObject* creator);
             virtual ~SimpleRocket();
-
+			virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a SimpleRocket through XML.
 
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);

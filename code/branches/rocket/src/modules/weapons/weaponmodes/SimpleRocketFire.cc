@@ -60,7 +60,6 @@ namespace orxonox
 
     void SimpleRocketFire::fire()
     {
-        //SimpleRocket* rocket = new SimpleRocket(this);
 		RocketController* con = new RocketController(this);
 		SimpleRocket* rocket = con->getRocket();
 		this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
@@ -68,22 +67,6 @@ namespace orxonox
 		Vector3 pos = this->getMuzzlePosition() + (this->getMuzzleOrientation()* Vector3(-2, -3, -2));
         rocket->setPosition(pos);
 		rocket->setVelocity(this->getMuzzleDirection()*this->speed_);
-		//Ogre::Vector3 vec = this->getMuzzlePosition();
-		//vec.normalise();
-		//rocket->setAcceleration(100*vec);
 		rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
-		//con->getRocket()->setPosition(this->getMuzzlePosition());
-	//con->setControllableEntity(dynamic_cast<rocket*>(ControllableEntity));
-	//con->getControllableEntity()->setPosition(this->getMuzzlePosition());
-
-        /* this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
-        rocket->setOrientation(this->getMuzzleOrientation());
-        rocket->setPosition(this->getMuzzlePosition());
-		rocket->scale(10);
-        rocket->setVelocity(this->getMuzzleDirection() * this->speed_);
-        rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
-        rocket->setDamage(this->getDamage()); 
-        rocket->scale(2);
-		*/
     }
 }
