@@ -97,7 +97,7 @@ namespace orxonox
             bool pickedUp(PickupCarrier* carrier); //!< Sets the Pickupable to picked up.
             bool dropped(void); //!< Sets the Pickupable to not picked up or dropped.
             
-            virtual bool isTarget(const PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this pickup.
+            virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this pickup.
             bool isTarget(const Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this Pickupable.
             bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this pickup.
             bool addTarget(Identifier* identifier); //!< Add a class, representetd by the input Identifier, as target of this pickup.
