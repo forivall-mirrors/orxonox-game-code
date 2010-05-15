@@ -63,8 +63,11 @@ namespace orxonox
 		haha++;
 
         SimpleRocket *rocket = static_cast<SimpleRocket*>(this->getControllableEntity());
-		rocket->rotatePitch(0.005);
-		rocket->setVelocity(rocket->getVelocity()*1.02);
+		if (this->target_) {
+		rocket->rotatePitch(0.5);
+		rocket->rotateYaw(0.5);
+		}
+		rocket->setVelocity(rocket->getVelocity()*1.03);
 	
 	}
 
@@ -74,6 +77,12 @@ namespace orxonox
 		
 		COUT(0)<< "RocketController destroyed\n";
 	}
+
+
+	void RocketController::setTarget(Pawn* target) {
+		this->target_ = target;
+	}
+
 
 
 

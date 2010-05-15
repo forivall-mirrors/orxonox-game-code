@@ -71,7 +71,6 @@ namespace orxonox
         // - apply the to myDrone (e.g. myDrone->rotateYaw(..) ) 
 
 		myDrone->rotateYaw(0.2);
-		myDrone->moveFrontBack(2);
 
     }
 }

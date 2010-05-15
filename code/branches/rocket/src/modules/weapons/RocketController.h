@@ -52,6 +52,7 @@ namespace orxonox
             
             virtual void tick(float dt);
 			SimpleRocket* getRocket(){return this->rocket;};
+			void setTarget(Pawn* target);
         protected:
 
 
@@ -59,6 +60,7 @@ namespace orxonox
 			SimpleRocket* rocket;
 			WeakPtr<PlayerInfo> player_;
 						int haha;
+			WeakPtr<Pawn> target_;
 
 
     };
