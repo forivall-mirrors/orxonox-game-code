@@ -573,62 +573,6 @@ namespace orxonox
             this->arrowsOverlay4_->hide();
         }
     }
-
-	Pawn* NewHumanController::getRocketTarget() {
-
-
- Ogre::RaySceneQuery * rsq = HumanController::localController_s->getControllableEntity()->getScene()->getSceneManager()->createRayQuery(Ogre::Ray());
-
-        Ogre::Ray mouseRay = HumanController::localController_s->getControllableEntity()->getCamera()->getOgreCamera()->getCameraToViewportRay(static_cast<float>(this->currentYaw_)/2*-1+.5f, static_cast<float>(this->currentPitch_)/2*-1+.5f);
-
-        rsq->setRay(mouseRay);
-        rsq->setSortByDistance(true);
-
-        /*
-        Distance of objects:
-        ignore everything under 200 maybe even take 1000 as min distance to shoot at
-
-        shots are regularly traced and are entities!!!!!!!!! this is the biggest problem
-        they vanish only after a distance of 10'000
-        */
-
-
-        Ogre::RaySceneQueryResult& result = rsq->execute();
-        Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
-
-        Ogre::RaySceneQueryResult::iterator itr;
-        for (itr = result.begin(); itr != result.end(); ++itr)
-        {
-            if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" && itr->distance > 500)
-            {
-                // Try to cast the user pointer
-                WorldEntity* wePtr = dynamic_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
-                if (wePtr)
-                {
-                    // go through all parents of object and look whether they are sightable or not
-                    bool isSightable = false;
-                    WorldEntity* parent = wePtr->getParent();
-                    while (parent)
-                    {
-                        if (this->targetMask_.isExcluded(parent->getIdentifier()))
-                        {
-                            parent = parent->getParent();
-                            continue;
-                        }
-                        else
-                        {
-                            isSightable = true;
-                            break;
-                        }
-                    }
-                    if (!isSightable)
-                        continue;
-                }
-
-				return dynamic_cast<Pawn*> (wePtr);
-			}
-		}
-	}
 		
 
 	

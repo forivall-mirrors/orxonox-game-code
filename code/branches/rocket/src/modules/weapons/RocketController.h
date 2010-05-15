@@ -52,15 +52,18 @@ namespace orxonox
             
             virtual void tick(float dt);
 			SimpleRocket* getRocket(){return this->rocket;};
-			void setTarget(Pawn* target);
+			void setTarget(WorldEntity* target);
         protected:
-
+			void moveToPosition(const Vector3& target);
+			void setTargetPosition();
+			void moveToTargetPosition();
 
         private:
 			SimpleRocket* rocket;
+			Vector3 targetPosition_;
 			WeakPtr<PlayerInfo> player_;
 						int haha;
-			WeakPtr<Pawn> target_;
+			WeakPtr<WorldEntity> target_;
 
 
     };

@@ -68,5 +68,10 @@ namespace orxonox
         rocket->setPosition(pos);
 		rocket->setVelocity(this->getMuzzleDirection()*this->speed_);
 		rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+		rocket->setDamage(this->damage_);
+		WorldEntity* pawnn=(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getTarget());
+		if (pawnn) {
+		con->setTarget(pawnn);
+		}
     }
 }

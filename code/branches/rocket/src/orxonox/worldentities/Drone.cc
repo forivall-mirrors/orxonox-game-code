@@ -48,7 +48,7 @@ namespace orxonox
         // - register the drone class to the core
         this->myController_ = 0;
         
-        this->localLinearAcceleration_.setValue(0, 0, 0);
+        this->localLinearAcceleration_.setValue(1, 1, 1);
         this->localAngularAcceleration_.setValue(0, 0, 0);
         this->primaryThrust_  = 100;
         this->auxilaryThrust_ = 100;

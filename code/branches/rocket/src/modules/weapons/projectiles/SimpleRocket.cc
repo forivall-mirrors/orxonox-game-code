@@ -179,6 +179,10 @@ namespace orxonox
             this->destroy();
         }
     }
+	void SimpleRocket::setDestroy() {
+		this->bDestroy_=true;
+		COUT(0)<<"trying to destroy";
+	}
 
     void SimpleRocket::fired(unsigned int firemode)
     {

@@ -48,6 +48,7 @@ namespace orxonox
         // and saves the pointer to the drone for the controlling commands
         assert(dynamic_cast<Drone*>(creator)!=0);
         this->setControllableEntity(dynamic_cast<Drone*>(creator));
+		this->counter=0;
     }
 
     DroneController::~DroneController()
@@ -62,6 +63,7 @@ namespace orxonox
     */
     void DroneController::tick(float dt)
     {
+		this->counter++;
         // Place your code here:
         // - steering commands
         Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
@@ -69,8 +71,8 @@ namespace orxonox
         // - moveFrontBack, moveRightLeft, moveUpDown 
         // - rotatePitch, rotateYaw, rotateRoll 
         // - apply the to myDrone (e.g. myDrone->rotateYaw(..) ) 
-
-		myDrone->rotateYaw(0.2);
+		myDrone->rotatePitch(0.08);
+		myDrone->moveFrontBack(1);
 
     }
 }

@@ -66,8 +66,6 @@ namespace orxonox
             virtual void doPauseControl();
             virtual void doResumeControl();
 
-			Pawn* getRocketTarget();
-
 
         protected:
             void updateTarget();

@@ -53,6 +53,7 @@ namespace orxonox
         protected:
 
         private:
+			int counter;
     };
 }
 

@@ -62,13 +62,17 @@ namespace orxonox
     void RocketController::tick(float dt)
     {
 		haha++;
+		
 
         SimpleRocket *rocket = static_cast<SimpleRocket*>(this->getControllableEntity());
+		if (haha<30)rocket->setVelocity(rocket->getVelocity()*1.03);
 		if (this->target_) {
-		rocket->rotatePitch(0.5);
-		rocket->rotateYaw(0.5);
+			this->setTargetPosition();
+			this->moveToTargetPosition();
+		
 		}
-		rocket->setVelocity(rocket->getVelocity()*1.03);
+		
+		if (haha>500) rocket->setDestroy();;
 	
 	}
 
@@ -79,10 +83,39 @@ namespace orxonox
 		COUT(0)<< "RocketController destroyed\n";
 	}
 
-
-	void RocketController::setTarget(Pawn* target) {
-		this->target_ = target;
+	void RocketController::setTargetPosition() {
+		this->targetPosition_=this->target_->getPosition();
+		//this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getPosition(),this->getControllableEntity()->getVelocity().length() , this->target_->getPosition(), this->target_->getVelocity());
 	}
+	void RocketController::moveToTargetPosition() {
+		this->moveToPosition(this->targetPosition_);
+	}
+
+
+
+	void RocketController::setTarget(WorldEntity* target) {
+		this->target_ = target;
+		COUT(0)<<"got target\n";
+	}
+
+	void RocketController::moveToPosition(const Vector3& target)
+    {
+       if (!this->getControllableEntity())
+            return;
+
+	   COUT(0)<<"moving";
+
+        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+        float distance = (target - this->getControllableEntity()->getPosition()).length();
+
+        if (this->target_ || distance > 10)
+        {
+            // Multiply with 0.8 to make them a bit slower
+			 this->getControllableEntity()->rotateYaw(-0.2f * sgn(coord.x) * coord.x*coord.x);
+            this->getControllableEntity()->rotatePitch(0.2f * sgn(coord.y) * coord.y*coord.y);
+			
+        }
+    }
 
 
 

@@ -63,6 +63,7 @@ namespace orxonox
             virtual void rotateYaw(const Vector2& value);
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
+			void setDestroy();
 
             /**
             @brief Moves the SimpleRocket in the Front/Back-direction by the specifed amount.
@@ -94,13 +95,16 @@ namespace orxonox
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotatePitch(float value)
-            { this->rotatePitch(Vector2(value, 0)); }
+            {   COUT(0)<<"rotated rocket yaw";
+				this->rotatePitch(Vector2(value, 0)); }
             /**
             @brief Rotates the SimpleRocket around the z-axis by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotateRoll(float value)
-            { this->rotateRoll(Vector2(value, 0)); }
+            { 
+				COUT(0)<<"rotated rocket roll";
+				this->rotateRoll(Vector2(value, 0)); }
 
             void setOwner(Pawn* owner);
             inline Pawn* getOwner() const
