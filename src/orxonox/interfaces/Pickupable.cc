@@ -101,7 +101,7 @@ namespace orxonox
     @return
         Returns true if the given PickupCarrier is a target.
     */
-    bool Pickupable::isTarget(const PickupCarrier* carrier) const
+    bool Pickupable::isTarget(PickupCarrier* carrier) const
     {
         if(carrier == NULL)
             return false;
