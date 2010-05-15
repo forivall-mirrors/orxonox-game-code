@@ -63,7 +63,8 @@ namespace orxonox
 		haha++;
 
         SimpleRocket *rocket = static_cast<SimpleRocket*>(this->getControllableEntity());
-		rocket->moveRightLeft(5);
+		rocket->rotatePitch(0.005);
+		rocket->setVelocity(rocket->getVelocity()*1.02);
 	
 	}
 

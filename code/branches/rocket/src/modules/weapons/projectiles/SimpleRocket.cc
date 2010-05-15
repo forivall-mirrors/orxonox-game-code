@@ -92,6 +92,13 @@ namespace orxonox
 	void SimpleRocket::tick(float dt)
     {
         SUPER(SimpleRocket, tick, dt);
+
+            this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
+            this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
+
+            if( this->bDestroy_ )
+                this->destroy();
+        
 	}
 
     /**s
