@@ -32,6 +32,7 @@
 #include "weapons/projectiles/SimpleRocket.h"
 #include "util/Debug.h"
 #include "weapons/weaponmodes/SimpleRocketFire.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
