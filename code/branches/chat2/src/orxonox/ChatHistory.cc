@@ -79,17 +79,18 @@ namespace orxonox
     /* --> a) look up the actual name of the sender */
     std::string text;
 
-    //COUT(0) << "Meow.\n";
-
 #ifndef CHATTEST
+    /* get sender ID and prepend it to the message */
     if (senderID != CLIENTID_UNKNOWN)
     {
-       std::string name = "unknown";
-       PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
-       if (player)
-         name = player->getName();
+      /* if we can't find anything, use "unknown" as default */
+      std::string name = "unknown";
 
-         text = name + ": " + message;
+      PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
+      if (player)
+        name = player->getName();
+
+      text = name + ": " + message;
     }
     else
       text = message;
@@ -163,8 +164,13 @@ namespace orxonox
   /* close logfile */
   void ChatHistory::chat_hist_closelog()
   {
+    /* see if we've actually got a logfile */
     if( this->hist_logfile )
-    { this->chat_hist_logline( "--- Logfile closed ---" );
+    { 
+      /* yes, we've got one, add a line that shows we're closing it */
+      this->chat_hist_logline( "--- Logfile closed ---" );
+
+      /* actually close down the file */
       this->hist_logfile.close();
     }
   }

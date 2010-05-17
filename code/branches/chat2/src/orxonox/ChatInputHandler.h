@@ -77,27 +77,14 @@ namespace orxonox
       /** adjust display offset depending on cursor position */
       void sub_adjust_dispoffset( int maxlen, int cursorpos, int inplen );
 
-      /* singleton pointer */
+      /** singleton pointer */
       static ChatInputHandler* singletonPtr_s;
 
-      /* cegui stuff */
+      /** cegui window handles */
       CEGUI::Window *input, *inputonly;
+
+      /** cegui handle for the history window */
       CEGUI::Listbox *lb_history;
-
-    public:
-      /** constructor */
-      ChatInputHandler();
-      friend class Singleton<ChatInputHandler>;
-
-      /* start listening, stop listening */
-      static void activate_static();
-      static void activate_small_static();
-
-      void incomingChat( const std::string& message, 
-        unsigned int senderID );
-
-      void activate( bool full );
-      void deactivate();
 
       /* callbacks for input handler */
       void inputChanged();
@@ -109,6 +96,38 @@ namespace orxonox
       void cursorEnd();
       void cursorHome();
       void exit();
+
+    public:
+      /** constructor */
+      ChatInputHandler();
+      friend class Singleton<ChatInputHandler>;
+
+      /** start listening */
+      static void activate_static();
+
+      /** stop listening */
+      static void activate_small_static();
+
+      /** \param message the message text
+       * \param senderID ID of the player who sent the message
+       *
+       * Deal with incoming chat (which means in our case: Add it to the
+       * history window of the full chat window)
+       */
+      void incomingChat( const std::string& message, 
+        unsigned int senderID );
+
+      /** \param full true means show full chat window with history,
+            false means show only an input line
+       * 
+       * Show the chat window and redirect the game's keyboard input 
+       * into it.
+       */
+      void activate( bool full );
+
+      /** Deactivate the chat window, meaning: hide it. */
+      void deactivate();
+
   };
 
 

@@ -74,6 +74,7 @@ namespace orxonox
 
   void ChatInputHandler::configureInputBuffer()
   {
+    /* INSTALL CALLBACKS */
     /* input has changed */
     this->inpbuf->registerListener(this, &ChatInputHandler::inputChanged, true);
 
@@ -97,11 +98,14 @@ namespace orxonox
     this->inpbuf->registerListener(this, &ChatInputHandler::cursorEnd,       KeyCode::End);
     this->inpbuf->registerListener(this, &ChatInputHandler::cursorHome,      KeyCode::Home);
 
-    /* get window pointers */
+    /* GET WINDOW POINTERS */
     input = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/input" );
     inputonly = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox-inputonly/input" );
 
+    /* get pointer to the history window */
     CEGUI::Window *history = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/history" );
+
+    /* cast it to a listbox */
     lb_history = dynamic_cast<CEGUI::Listbox*>(history); 
 
     /* assert wee */
