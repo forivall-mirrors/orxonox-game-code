@@ -70,7 +70,7 @@ namespace orxonox
                 { this->lodLevel_ =  lodLevel; }
             inline float getLodLevel() const
                 { return this->lodLevel_; }
-            float Model::getBiggestScale(Vector3 scale3d);
+            float getBiggestScale(Vector3 scale3d);
 
             std::string meshSrc_;
             Mesh mesh_;
