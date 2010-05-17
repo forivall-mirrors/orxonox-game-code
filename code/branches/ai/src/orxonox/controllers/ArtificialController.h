@@ -52,16 +52,25 @@ namespace orxonox
                 { this->team_ = team; }
             inline int getTeam() const
                 { return this->team_; }
+            inline void setFormationFlight(bool formation)
+                { this->formationFlight_ = formation; }
+            inline bool getFormationFlight() const
+                { return this->formationFlight_; }
             virtual void changedControllableEntity();
 
 
         protected:
 
             int team_;
+            bool formationFlight_;
             int freedomCount_;
             enum State {SLAVE, MASTER, FREE};
             State state_;
             std::vector<ArtificialController*> slaves_;
+            ArtificialController *myMaster_;
+            enum SpecificMasterAction {NONE, HOLD, SPIN, TURN180};
+            SpecificMasterAction specificMasterAction_;
+            int specificMasterActionHoldCount_;
 
             void targetDied();
 
@@ -79,8 +88,9 @@ namespace orxonox
             void loseMasterState();
             void forceFreedom();
             bool forcedFree();
-
-            ArtificialController *myMaster_;
+            void specificMasterActionHold();
+            void turn180();
+            void spin();
 
             void setTargetPosition(const Vector3& target);
             void searchRandomTargetPosition();

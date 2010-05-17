@@ -41,7 +41,9 @@
 namespace orxonox
 {
 
-    static const unsigned int MAX_FORMATION_SIZE = 6;
+    static const unsigned int MAX_FORMATION_SIZE = 7;
+    static const int FORMATION_LENGTH =  10;
+    static const int FORMATION_WIDTH =  110;
     static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
     static const float SPEED_MASTER = 0.6f;
     static const float ROTATEFACTOR_MASTER = 0.2f;
@@ -53,10 +55,13 @@ namespace orxonox
         RegisterObject(ArtificialController);
 
         this->target_ = 0;
+        this->formationFlight_  =  true;
         this->myMaster_ = 0;
         this->freedomCount_ = 0;
 	this->team_ = -1;
 	this->state_ = FREE;
+        this->specificMasterAction_ = NONE;
+        this->specificMasterActionHoldCount_  = 0;
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
         this->targetPosition_ = Vector3::ZERO;
@@ -72,7 +77,8 @@ namespace orxonox
     {
         SUPER(ArtificialController, XMLPort, xmlelement, mode);
 
-        XMLPortParam(ArtificialController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(0);
+        XMLPortParam(ArtificialController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
+//         XMLPortParam(ArtificialController, "formation", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(true);
     }
 
 // gets called when Bot dies
@@ -133,28 +139,23 @@ namespace orxonox
 
         if(this->state_ == SLAVE)
         {
-//             if (this->target_ || distance > 10)
-//             {
-                float rotateFactor;
-                if(this->state_ == SLAVE) rotateFactor = 1.0f;
 
-
-                this->getControllableEntity()->rotateYaw(-1.0f * rotateFactor * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(rotateFactor * sgn(coord.y) * coord.y*coord.y);
+           this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
+           this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
 
 
 
-//             }
 
-            if (this->target_ && distance < 500 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
+
+            if (distance < 300)
             {
-                if (this->target_ && distance < 60)
+                if (distance < 40)
                 {
-                    this->getControllableEntity()->setVelocity(0.8f*this->target_->getVelocity());
-                } else this->getControllableEntity()->moveFrontBack(-1.0f*exp(distance/100.0));
+                    this->getControllableEntity()->moveFrontBack(0.8f*SPEED_MASTER);
+                } else this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER);
 
             } else {
-                this->getControllableEntity()->moveFrontBack(1.0f + distance/500.0f);
+                this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER + distance/300.0f);
             }
         }
     }
@@ -175,7 +176,7 @@ namespace orxonox
             std::vector<ArtificialController*>::iterator it = std::find(myMaster_->slaves_.begin(), myMaster_->slaves_.end(), this);
             if( it != myMaster_->slaves_.end() )
                 myMaster_->slaves_.erase(it);
-//COUT(0) << "~unregister slave" << std::endl;
+// COUT(0) << "~unregister slave" << std::endl;
         }
     }
 
@@ -187,7 +188,7 @@ namespace orxonox
 
         this->targetPosition_ = this->getControllableEntity()->getPosition();
         this->forgetTarget();
-
+        int teamSize = 0;
         //go through all pawns
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
@@ -196,19 +197,26 @@ namespace orxonox
             if (!ArtificialController::sameTeam(this->getControllableEntity(), static_cast<ControllableEntity*>(*it), this->getGametype()))
                 continue;
 
-            //has it an ArtificialController and is it a master?
+            //has it an ArtificialController?
             if (!it->getController())
                 continue;
 
+            //is pawn oneself?
+            if (static_cast<ControllableEntity*>(*it) == this->getControllableEntity())
+                continue;
+
+            teamSize++;
+
             ArtificialController *newMaster = static_cast<ArtificialController*>(it->getController());
 
+            //is it a master?
             if (!newMaster || newMaster->getState() != MASTER)
                 continue;
 
             float distance = (it->getPosition() - this->getControllableEntity()->getPosition()).length();
 
-            //is pawn oneself? && is pawn in range?
-            if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity() && distance < 5000) 
+            // is pawn in range?
+            if (distance < 5000)
             {
                 if(newMaster->slaves_.size() > MAX_FORMATION_SIZE) continue;
 
@@ -226,9 +234,9 @@ namespace orxonox
                 break;
             }
         }//for
-
         //hasn't encountered any masters in range? -> become a master
-        if (state_!=SLAVE) state_ = MASTER;//master encounters master? ->done
+        if (state_ != SLAVE  && teamSize != 0) state_ = MASTER;//master encounters master? ->done
+
     }
 
     void ArtificialController::commandSlaves() {
@@ -242,20 +250,28 @@ namespace orxonox
             dest += 4*orient*WorldEntity::BACK;
             this->slaves_.front()->setTargetPosition(dest);
         }
-
-        // 2 slaves: triangle
-         if (this->slaves_.size() == 2) 
+        else 
         {
-            dest += 10*orient*WorldEntity::BACK;
-            this->slaves_[0]->setTargetPosition(dest + 10*orient*WorldEntity::LEFT);
-            this->slaves_[1]->setTargetPosition(dest + 10*orient*WorldEntity::RIGHT);
-        }
+            dest += 1.0f*orient*WorldEntity::BACK;
+            Vector3 pos = Vector3::ZERO;
+            int i = 1;
 
-        if (this->slaves_.size() > MAX_FORMATION_SIZE)
-        {
             for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
             {
-                (*it)->setTargetPosition(this->getControllableEntity()->getPosition());
+                pos = Vector3::ZERO;
+                if (i <= 1) pos += dest  + FORMATION_WIDTH*WorldEntity::LEFT;
+                if (i == 2) pos += dest  + FORMATION_WIDTH*WorldEntity::RIGHT;
+                if (i == 3) pos += dest  + FORMATION_WIDTH*WorldEntity::UP;
+                if (i >= 4)
+                {
+                    pos += dest  + FORMATION_WIDTH*WorldEntity::DOWN;
+                    i = 1;
+                    dest += FORMATION_LENGTH*orient*WorldEntity::BACK;
+                    (*it)->setTargetPosition(pos);
+                    continue;
+                }
+                i++;
+                (*it)->setTargetPosition(pos);
             }
         }
     }
@@ -325,6 +341,23 @@ namespace orxonox
             return true;
         } else return false;
     }
+
+    void ArtificialController::specificMasterActionHold()
+    {
+        if (specificMasterActionHoldCount_ == 0) this->specificMasterAction_ = NONE;
+        else specificMasterActionHoldCount_--;
+    }
+
+    void ArtificialController::turn180()
+    {
+        this->specificMasterAction_  =  NONE;
+    }
+
+    void ArtificialController::spin()
+    {
+        this->specificMasterAction_  =  NONE;
+    }
+
 
     void ArtificialController::setTargetPosition(const Vector3& target)
     {

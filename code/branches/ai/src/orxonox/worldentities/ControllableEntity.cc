@@ -576,7 +576,7 @@ namespace orxonox
         else if (this->bHasLocalController_)
         {
             MobileEntity::setAngularVelocity(velocity);
-            this->client_angular_velocity_ = this->getAngularVelocity();
+// //             this->client_angular_velocity_ = this->getAngularVelocity();
         }
     }
 

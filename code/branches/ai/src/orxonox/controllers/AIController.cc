@@ -58,18 +58,19 @@ namespace orxonox
         if (this->state_ == FREE)
         {
 
-
-            // return to Master after being forced free
-            if (this->freedomCount_ == 1)   
+            if (this->formationFlight_)
             {
+            // return to Master after being forced free
+                if (this->freedomCount_ == 1)
+                {
                 this->state_ = SLAVE;
                 this->freedomCount_ = 0;
+                }
+
+                random = rnd(maxrand);
+                if (random < 90 && (((!this->target_) || (random < 50 && this->target_)) && !this->forcedFree()))
+                    this->searchNewMaster();
             }
-
-            random = rnd(maxrand);
-            if (random < 90 && (((!this->target_) || (random < 50 && this->target_)) && !this->forcedFree()))
-                this->searchNewMaster();
-
 
             // search enemy
             random = rnd(maxrand);
@@ -115,7 +116,7 @@ namespace orxonox
 
         if (this->state_ == SLAVE)
         {
-               // this->bShooting_ = true;
+
         }
 
         if (this->state_ == MASTER)//MASTER
@@ -124,54 +125,80 @@ namespace orxonox
 
             this->commandSlaves();
 
-
-            // lose master status (only if less than 4 slaves in formation)
-//             random = rnd(maxrand);
-//             if(random < 15/(this->slaves_.size()+1) && this->slaves_.size() < 4 ) 
-//                 this->loseMasterState();
-
-            // look out for outher masters if formation is small
-            random = rnd(maxrand);
-            if(this->slaves_.size() < 3 && random < 20)
-                this->searchNewMaster();
-
-            // search enemy
-            random = rnd(maxrand);
-            if (random < 15 && (!this->target_))
-                this->searchNewTarget();
-
-            // forget enemy
-            random = rnd(maxrand);
-            if (random < 5 && (this->target_))
-                this->forgetTarget();
-
-            // next enemy
-            random = rnd(maxrand);
-            if (random < 10 && (this->target_))
-                this->searchNewTarget();
-
-            // fly somewhere
-            random = rnd(maxrand);
-            if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
-                this->searchRandomTargetPosition();
-
-
-            // fly somewhere else
-            random = rnd(maxrand);
-            if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
-                this->searchRandomTargetPosition();
-
-            // shoot
-            random = rnd(maxrand);
-            if (random < 5 && (this->target_ && !this->bShooting_))
+            if  (this->specificMasterAction_ != NONE) 
             {
-                this->bShooting_ = true;
-//                 this->forceFreeSlaves();
+                if (this->specificMasterAction_  == HOLD)
+                    this->specificMasterActionHold();
+
+                if (this->specificMasterAction_  == TURN180)
+                    this->turn180();
+
+                if (this->specificMasterAction_ == SPIN)
+                    this->spin();
             }
-            // stop shooting
-            random = rnd(maxrand);
-            if (random < 25 && (this->bShooting_))
-                this->bShooting_ = false;
+
+            else {
+
+                 // make 180 degree turn - a specific Master Action
+                random = rnd(maxrand);
+                if (random < 5)
+                   this->specificMasterAction_ = TURN180;
+
+                // spin around - a specific Master Action
+                random = rnd(maxrand);
+                if (random < 5)
+                   this->specificMasterAction_ = SPIN;
+
+                 // lose master status (only if less than 4 slaves in formation)
+                random = rnd(maxrand);
+                if(random < 15/(this->slaves_.size()+1) && this->slaves_.size() < 4 ) 
+                   this->loseMasterState();
+
+                // look out for outher masters if formation is small
+                random = rnd(maxrand);
+                if(this->slaves_.size() < 3 && random < 20)
+                    this->searchNewMaster();
+
+                // search enemy
+                random = rnd(maxrand);
+                if (random < 15 && (!this->target_))
+                    this->searchNewTarget();
+
+                // forget enemy
+                random = rnd(maxrand);
+                if (random < 5 && (this->target_))
+                    this->forgetTarget();
+
+                // next enemy
+                random = rnd(maxrand);
+                if (random < 10 && (this->target_))
+                    this->searchNewTarget();
+
+                // fly somewhere
+                random = rnd(maxrand);
+                if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
+                    this->searchRandomTargetPosition();
+
+
+                // fly somewhere else
+                random = rnd(maxrand);
+                if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
+                    this->searchRandomTargetPosition();
+
+                // shoot
+                random = rnd(maxrand);
+                if (random < 5 && (this->target_ && !this->bShooting_))
+                {
+                this->bShooting_ = true;
+                this->forceFreeSlaves();
+                }
+
+                // stop shooting
+                random = rnd(maxrand);
+                if (random < 25 && (this->bShooting_))
+                    this->bShooting_ = false;
+
+            }
         }
 
     }
@@ -188,9 +215,11 @@ namespace orxonox
 
             if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();
-
-            if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
-                this->getControllableEntity()->fire(0);
+            if (this->specificMasterAction_ ==  NONE)
+            {
+                if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
+                    this->getControllableEntity()->fire(0);
+            }
         }
 
         if (this->state_ == SLAVE)
