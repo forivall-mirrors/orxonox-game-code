@@ -48,6 +48,7 @@ namespace orxonox
     {
         RegisterObject(Level);
 
+        
         this->registerVariables();
         this->xmlfilename_ = this->getFilename();
         this->xmlfile_ = 0;

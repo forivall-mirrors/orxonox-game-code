@@ -48,6 +48,8 @@ namespace orxonox
         this->bCastShadows_ = true;
 
         this->registerVariables();
+        //LoD
+        this->lodLevel_=5;
     }
 
     Model::~Model()

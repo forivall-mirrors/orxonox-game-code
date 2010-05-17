@@ -66,9 +66,9 @@ namespace orxonox
             void changedShadows();
             
             //LoD
-            inline void setLodLevel(unsigned short lodLevel)
+            inline void setLodLevel(float lodLevel)
                 { this->lodLevel_ =  lodLevel; }
-            inline unsigned short getLodLevel() const
+            inline float getLodLevel() const
                 { return this->lodLevel_; }
             float Model::getBiggestScale(Vector3 scale3d);
 
@@ -77,7 +77,7 @@ namespace orxonox
             bool bCastShadows_;
             
             //LoD
-            unsigned short lodLevel_;
+            float lodLevel_;
     };
 }
 
