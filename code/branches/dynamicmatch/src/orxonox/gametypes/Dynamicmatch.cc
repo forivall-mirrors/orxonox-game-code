@@ -25,7 +25,7 @@
  *      ...
  *
  */
-//TODO: killers integrieren ; ArtificialController anpassen);
+//TODO:
 //pig punkte vergeben pro Zeit!
 //killerfarbe schwarz; evtl. eigenes Raumfahrzeug;
 //Low; Codeoptimierung und Dokumentation
@@ -80,6 +80,8 @@ namespace orxonox
         this->numberOf[killer]=0;
         this->tutorial=true;
 	this->pointsPerTime=0.0f;
+        this->setHUDTemplate("DynamicmatchHUD");
+
     }
 
     void Dynamicmatch::setConfigValues()
@@ -100,9 +102,11 @@ namespace orxonox
     }
 
     bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)
-    {	
+    {	//TODO: static and fading message for the "human" player's
         if (!originator||!victim)
-        {return false;}
+            return false;
+        if (!!originator->getPlayer()||!victim->getPlayer())
+            return false;
         if (victim && victim->getPlayer()) //&& originator && originator->getPlayer() ??
         {
         int target= playerParty_[victim->getPlayer()];
@@ -111,17 +115,32 @@ namespace orxonox
             //Case: Not Enough Pigs: party change (= party management)
             if (notEnoughPigs)
             {
-			
                 numberOf[target]--;				//decrease numberof victims's party
                 playerParty_[victim->getPlayer()]=piggy;	//victim's new party: pig
                 setPlayerColour(victim->getPlayer());		//victim's new colour
                 numberOf[piggy]++; 				//party switch: number of players is not affected (decrease and increase)
+                    if(tutorial)				//announce party switch
+                    {
+                         std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
+                         if (it2 != this->players_.end())
+                         {
+                              this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it2->first->getClientID());
+                         }
+                    }
                     if (notEnoughKillers) 			//reward the originator
                     {
                         numberOf[source]--;			//decrease numberof originator's party
                         playerParty_[originator->getPlayer()]=killer;		//originator's new party: killer
                         setPlayerColour(originator->getPlayer());		//originator's new colour
                         numberOf[killer]++;
+                        if(tutorial)				//announce party switch
+                        {
+                             std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
+                             if (it3 != this->players_.end())
+                             {
+                                  this->gtinfo_->sendStaticMessage("Take the chasers down.",it3->first->getClientID());
+                             }
+                        }
                     }
                 evaluatePlayerParties(); 			//check if the party change has to trigger futher party changes
 			
@@ -142,6 +161,14 @@ namespace orxonox
                 playerParty_[victim->getPlayer()]=killer; 	//victim's new party: killer
                 setPlayerColour(victim->getPlayer()); 		//victim colour
                 numberOf[killer]++;				//party switch: number of players is not affected (decrease and increase)
+                if(tutorial)				//announce party switch
+                {
+                     std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
+                     if (it3 != this->players_.end())
+                     {
+                          this->gtinfo_->sendStaticMessage("Take the chasers down.",it3->first->getClientID());
+                     }
+                }
                 evaluatePlayerParties();			//check if the party change has to trigger futher party changes
             }
             //Case: notEnoughChasers: party change
@@ -151,6 +178,17 @@ namespace orxonox
                 playerParty_[victim->getPlayer()]=chaser; 	//victim's new party: chaser
                 setPlayerColour(victim->getPlayer()); 		//victim colour
                 numberOf[chaser]++;				//party switch: number of players is not affected (decrease and increase)
+                if(tutorial)					//announce party switch
+                {
+                     std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
+                     if (it3 != this->players_.end())
+                     {
+                          if (numberOf[killer]>0)
+                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it3->first->getClientID());
+                          else
+                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it3->first->getClientID());
+                     }
+                }
                 evaluatePlayerParties();			//check if the party change has to trigger futher party changes
             }
 
@@ -179,7 +217,24 @@ namespace orxonox
                 //party switch -> colour switch		
                 setPlayerColour(victim->getPlayer()); //victim colour
                 setPlayerColour(originator->getPlayer());//originator colour
-
+                
+                //Announce pary switch
+                if(tutorial)
+                {
+                     std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
+                     if (it != this->players_.end())
+                     {    
+                          if (numberOf[killer]>0)
+                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
+                          else
+                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                     }
+                     std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
+                     if (it2 != this->players_.end())
+                     {
+                          this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it2->first->getClientID());
+                     }
+                }
                 //Give new pig boost
                 SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
                 if (spaceship && spaceship->getEngine())
@@ -198,6 +253,20 @@ namespace orxonox
 
             setPlayerColour(victim->getPlayer()); 		//victim colour
             setPlayerColour(originator->getPlayer());		//originator colour
+             
+            if(tutorial) //Announce pary switch
+            {
+                 std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
+                 if (it != this->players_.end())
+                 {
+                      this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                 }
+                 std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
+                 if (it2 != this->players_.end())
+                 {
+                      this->gtinfo_->sendStaticMessage("Take the chasers down.",it2->first->getClientID());
+                 }
+                }
             }
             //Case: friendly fire
             else if (friendlyfire && (source == target))
@@ -285,10 +354,10 @@ namespace orxonox
         if (this->hasStarted() && !gameEnded_)
         {   pointsPerTime =pointsPerTime + dt;
             gameTime_ = gameTime_ - dt;
-            if (pointsPerTime > 5)
+            if (pointsPerTime > 3.0f)//hard coded!! should be changed
             {
                 pointsPerTime=0.0f;
-                
+                rewardPig();
             }
             if (gameTime_<= 0)
             {
@@ -319,12 +388,18 @@ namespace orxonox
 
     void Dynamicmatch::rewardPig()
     {
-        //durch alle Spieler iterieren
-        /*std::string message("Game started!");
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);*/
-        // allen Spielern mit der Pig-party frags++
-        ;
+        for (std::map< PlayerInfo*, int >::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it) //durch alle Spieler iterieren und alle piggys finden
+        {
+            if (it->second==piggy)
+            {
+                 //Spieler mit der Pig-party frags++
+                 std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(it->first);// still not sure if right syntax
+                 if (it2 != this->players_.end())
+                 {
+                     it2->second.frags_++;
+                 }
+            }
+        }
     }
     void Dynamicmatch::setPlayerColour(PlayerInfo* player) // sets a players colour
     {
@@ -332,7 +407,7 @@ namespace orxonox
         Pawn* pawn = dynamic_cast<Pawn*>(player->getControllableEntity());
             if (pawn)
             {
-                pawn->setRadarObjectColour(this->partyColours_[it_player->second]); //does this work? //what about playerParty_[it_player] instead of it_player->second
+                pawn->setRadarObjectColour(this->partyColours_[it_player->second]);
 
                 std::set<WorldEntity*> pawnAttachments = pawn->getAttachedObjects();
                 for (std::set<WorldEntity*>::iterator it = pawnAttachments.begin(); it != pawnAttachments.end(); ++it)
@@ -349,14 +424,132 @@ namespace orxonox
     void Dynamicmatch::evaluatePlayerParties() //manages the notEnough booleans (here the percentage of special players is implemented)
     {
         //pigs: 1 + every 6th player is a pig
-        if ( (1+this->getNumberOfPlayers()/6) > numberOf[piggy]) {notEnoughPigs=true;}
-        else {notEnoughPigs=false;}
+        if ( (1+this->getNumberOfPlayers()/6) > numberOf[piggy])
+        {
+            notEnoughPigs=true;
+            if (tutorial) // Announce selectionphase
+            {
+             for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
+                {
+                    if (!it->first)//in order to catch nullpointer
+                        continue;
+                    if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                        continue;
+                    this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID());
+                }
+            }
+        }
+        else
+        {
+             notEnoughPigs=false;
+             if(tutorial&&(!notEnoughKillers)&&(!notEnoughChasers)) //Selection phase over
+             {
+                  for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
+                  {
+                       if (!it->first)//in order to catch nullpointer
+                           continue;
+                       if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                           continue;
+                       else if (it->second==chaser)
+                       {
+                           if (numberOf[killer]>0)
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
+                           else
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                       }
+                       else if (it->second==piggy)
+                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                       else if (it->second==killer)
+                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID());
+                  }
+                  
+             }
+        }
         //killers: every 4th player is a killer
-        if (getNumberOfPlayers()/4 > numberOf[killer]) {notEnoughKillers=true;}
-        else {notEnoughKillers=false;}
+        if (getNumberOfPlayers()/4 > numberOf[killer])
+        {
+            notEnoughKillers=true;
+            if (tutorial) // Announce selectionphase
+            {
+             for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
+                {
+                    if (!it->first)//in order to catch nullpointer
+                        continue;
+                    if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                        continue;
+                    this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID());
+                }
+            }
+        }
+        else
+        {
+            notEnoughKillers=false;
+            if(tutorial&&(!notEnoughPigs)&&(!notEnoughChasers)) //Selection phase over
+             {
+                  for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
+                  {
+                       if (!it->first)
+                           continue;
+                       if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                           continue;
+                       else if (it->second==chaser)
+                       {
+                           if (numberOf[killer]>0)
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
+                           else
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                       }
+                       else if (it->second==piggy)
+                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                       else if (it->second==killer)
+                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID());
+                  }
+                  
+             }
+            
+        }
         //chasers: there are more chasers than killers + pigs
-        if (numberOf[piggy]+numberOf[killer] > numberOf[chaser]) {notEnoughChasers=true;}
-        else {notEnoughChasers=false;}	
+        if (numberOf[piggy]+numberOf[killer] > numberOf[chaser])
+        {
+            notEnoughChasers=true;
+            if (tutorial) // Announce selectionphase
+            {
+             for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
+                {
+                    if (!it->first)//in order to catch nullpointer
+                        continue;
+                    if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                        continue;
+                    this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID());
+                }
+            }
+        }
+        else
+        {
+             notEnoughChasers=false;
+             if(tutorial&&(!notEnoughPigs)&&(!notEnoughKillers)) //Selection phase over
+             {
+                  for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
+                  {
+                       if (!it->first)
+                           continue;
+                       if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                           continue;
+                       else if (it->second==chaser)
+                       {
+                           if (numberOf[killer]>0)
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
+                           else
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                       }
+                       else if (it->second==piggy)
+                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                       else if (it->second==killer)
+                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID());
+                  }
+                  
+             }
+        }	
     }
 
     int Dynamicmatch::getParty(PlayerInfo* player) // helper function for ArtificialController
@@ -391,20 +584,22 @@ namespace orxonox
         Gametype::start();
         if(!tutorial)
         {
-            std::string message("Game started!");
+            std::string message("Dynamicmatch started!");
             COUT(0) << message << std::endl;
             Host::Broadcast(message);
         }
-        else if(tutorial) //in order to explain how this gametype works briefly
+        else if(tutorial) // Announce selectionphase
         {
-            std::string tutotrialmessage("Shoot at other players as long as every player is red.\n\nIf you are fast enough you're spaceship will become green.\n\nIf you are hit you'll become blue.");
-            COUT(0) << tutotrialmessage << std::endl;
-            Host::Broadcast(tutotrialmessage);
-            callInstructions_.setTimer(10, false, createExecutor(createFunctor(&Dynamicmatch::instructions, this)));
+            for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
+            {
+                if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                    continue;
+                this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID());
+            }
         }
     }	
 
-    void Dynamicmatch::instructions()
+    /*void Dynamicmatch::instructions()
     {
         std::string message("Earn points:\n\n\n\tIf you're red: Chase the blue player!\n\n\tIf you're blue shoot at a red player or hide.\n\n\tIf you're green: You've got the licence to kill red players!");
         COUT(0) << message << std::endl;
@@ -417,7 +612,7 @@ namespace orxonox
         std::string message("After 3 Minutes the game is over.");
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
-    }
+    }*/
     void Dynamicmatch::end()
     {
         Gametype::end();

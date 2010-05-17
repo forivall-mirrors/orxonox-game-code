@@ -43,6 +43,8 @@ namespace orxonox
             virtual void announcemessage(const GametypeInfo* gtinfo, const std::string& message) {}
             virtual void killmessage(const GametypeInfo* gtinfo, const std::string& message) {}
             virtual void deathmessage(const GametypeInfo* gtinfo, const std::string& message) {}
+            virtual void staticmessage(const GametypeInfo* gtinfo, const std::string& message) {}
+            virtual void fadingmessage(const GametypeInfo* gtinfo, const std::string& message) {}
     };
 }
 

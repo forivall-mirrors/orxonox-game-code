@@ -46,10 +46,20 @@ namespace orxonox
             bool notEnoughPigs;
             bool notEnoughKillers;
             bool notEnoughChasers;
+
+            //three different parties	
+            int chaser;
+            int piggy;
+            int killer;
+
             virtual void evaluatePlayerParties();
             int getParty(PlayerInfo* player);
             void setPlayerColour(PlayerInfo* player);//own function
             void setConfigValues();//done
+            
+            bool friendlyfire; //goal: player can switch it on/off
+            bool tutorial; //goal: new players recieve messages how the new gametype works - later it can be switched off.
+            
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //ok - score function and management of parties
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //ok - simple
             virtual void start();
@@ -58,22 +68,16 @@ namespace orxonox
             virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);//is used to initialize the player's party and colour
             virtual bool playerLeft(PlayerInfo* player);
             virtual bool playerChangedName(PlayerInfo* player);//unchanged
-            virtual void instructions();
-            virtual void furtherInstructions();
+            
+            /*virtual void instructions();
+            virtual void furtherInstructions();*/
             virtual void rewardPig();
             void resetSpeedFactor(WeakPtr<Engine>* ptr);  
             void tick (float dt);// used to end the game
             SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
-            //three different parties	
-            int chaser;
-            int piggy;
-            int killer;
-		
-            bool friendlyfire; //goal: player can switch it on/off
-            bool tutorial; //goal: new players recieve messages how the new gametype works - later it can be switched off.
+            
         protected:
-		  
-		  
+
             std::map< PlayerInfo*, int > playerParty_; //player's parties are recorded here
             std::vector<ColourValue> partyColours_; //aus TeamDeathmatch
             unsigned int numberOf[3]; //array to count number of chasers, pigs, killers
@@ -81,7 +85,7 @@ namespace orxonox
             float gameTime_;   // from UnderAttack
             bool gameEnded_; // true if game is over
             int timesequence_; //used for countdown
-            Timer callInstructions_;
+            //Timer callInstructions_;
     };
 }
 
