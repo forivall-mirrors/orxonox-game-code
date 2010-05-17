@@ -98,16 +98,13 @@ namespace orxonox
     */
     bool QuestEffectBeacon::execute(bool b, BaseObject* trigger)
     {
-        //TODO: Remove debug output.
-        COUT(1) << "Debug: Calling execute on QuestEffectBeacon." << std::endl;
-        
         if(!b)
         {
             return false;
         }
         if(!(this->isActive())) //!< If the QuestEffectBeacon is inactive it cannot be executed.
         {
-            COUT(3) << "The QuestEffectBeacon is inactive." << std::endl;
+            COUT(4) << "The QuestEffectBeacon is inactive." << std::endl;
             return false;
         }
 

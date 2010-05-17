@@ -73,7 +73,7 @@ end
 function P.createCarrierBox(carrier, index)
 
     local name = "orxonox/PickupInventory/Carrier" .. index
-        
+    
     --Design parameters:
     local imageHeight = 50
     local textHeight = 30
@@ -85,13 +85,6 @@ function P.createCarrierBox(carrier, index)
     local box = winMgr:createWindow("MenuWidgets/ScrollablePane", name .. "/Box")
     box:setPosition(CEGUI.UVector2(CEGUI.UDim(0, horizontalOffset), CEGUI.UDim(0, 0)))
     box:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, -horizontalOffset), CEGUI.UDim(1, 0)))
-    
-    offset = offset+textHeight
-    local title = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Title")
-    title:setText(carrier:getCarrierName())
-    title:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, offset)))
-    title:setProperty("FrameEnabled", "set:False")
-    box:addChildWindow(title)
     
     local numPickups = orxonox.PickupManager:getInstance():getNumPickups(carrier)
     for i=0,numPickups-1,1 do

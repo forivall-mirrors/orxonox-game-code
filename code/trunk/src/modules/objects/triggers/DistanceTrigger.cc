@@ -31,6 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "worldentities/pawns/Pawn.h"
+#include "DistanceTriggerBeacon.h"
 
 namespace orxonox
 {
@@ -42,6 +43,8 @@ namespace orxonox
 
     this->distance_ = 100;
     this->targetMask_.exclude(Class(BaseObject));
+    this->targetName_ = BLANKSTRING;
+    this->singleTargetMode_ = false;
     this->setForPlayer(false); //!< Normally hasn't just players as targets.
   }
 
@@ -54,7 +57,8 @@ namespace orxonox
     SUPER(DistanceTrigger, XMLPort, xmlelement, mode);
 
     XMLPortParam(DistanceTrigger, "distance", setDistance, getDistance, xmlelement, mode).defaultValues(100.0f);
-    XMLPortParamLoadOnly(DistanceTrigger, "target", addTargets, xmlelement, mode).defaultValues("ControllableEntity");
+    XMLPortParamLoadOnly(DistanceTrigger, "target", addTargets, xmlelement, mode).defaultValues("Pawn");
+    XMLPortParam(DistanceTrigger, "targetname", setTargetName, getTargetName, xmlelement, mode);
   }
 
   void DistanceTrigger::addTarget(Ogre::Node* targetNode)
@@ -83,8 +87,9 @@ namespace orxonox
     Identifier* targetId = ClassByString(targets);
 
     //! Checks whether the target is (or is derived from) a ControllableEntity.
-    Identifier* controllableEntityId = Class(ControllableEntity);
-    if(targetId->isA(controllableEntityId))
+    Identifier* pawnId = Class(Pawn);
+    Identifier* distanceTriggerBeaconId = Class(DistanceTriggerBeacon);
+    if(targetId->isA(pawnId) || targetId->isA(distanceTriggerBeaconId))
     {
       this->setForPlayer(true);
     }
@@ -123,6 +128,14 @@ namespace orxonox
       if (!entity)
         continue;
 
+      if(this->singleTargetMode_)
+      {
+        if(!(*it)->isA(ClassIdentifier<DistanceTriggerBeacon>::getIdentifier()))
+          this->singleTargetMode_ = false;
+        else if(entity->getName().compare(this->targetName_) != 0)
+          continue;
+      }
+      
       Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
       if (distanceVec.length() < this->distance_)
       {
@@ -130,6 +143,10 @@ namespace orxonox
         // If the target is a player (resp. is a, or is derived from a, ControllableEntity) the triggeringPlayer is set to the target entity.
         if(this->isForPlayer())
         {
+
+          if(this->singleTargetMode_)
+            entity = entity->getParent();
+
           Pawn* player = orxonox_cast<Pawn*>(entity);
           this->setTriggeringPlayer(player);
         }

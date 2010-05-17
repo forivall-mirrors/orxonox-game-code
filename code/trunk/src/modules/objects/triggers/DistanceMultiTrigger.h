@@ -47,7 +47,7 @@ namespace orxonox
 
     /**
     @brief
-        The DistanceMultiTrigger is a trigger that triggers whenever an object (that is of the specified target type) is in a specified range of the DistanceMultiTrigger.
+        The DistanceMultiTrigger is a trigger that triggers whenever an object (that is of the specified target type) is in a specified range of the DistanceMultiTrigger. The object can be specified further by adding a DistanceTriggerBeacon (just attaching it) to the objects that can trigger this DistanceMultiTrigger and specify the name of the DistanceTriggerBeacon with the parameter targetname and only objects that hav a DistanceTriggerBeacon with that name attached will trigger the DistanceMultiTrigger.
     @see MultiTrigger.h
         For more information on MultiTriggers.
     @author
@@ -62,6 +62,19 @@ namespace orxonox
             
             void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a DistanceMultiTrigger object through XML.
 
+            /**
+            @brief Set the target name of DistanceTriggerBeacons that triggers this DistanceMultiTrigger.
+            @param targename The name of the DistanceTriggerBeacon as a string.
+            */
+            inline void setTargetName(const std::string& targetname)
+                { if(targetname.compare(BLANKSTRING) != 0) this->singleTargetMode_ = true; else this->singleTargetMode_ = false; this->targetName_ = targetname; }
+            /**
+            @brief Get the target name of the DistanceTriggerbeacon, that triggers this DistanceMultiTrigger.
+            @return Returns the target name as a string.
+            */
+            inline const std::string& getTargetName(void)
+                { return this->targetName_; }
+            
             /**
             @brief Set the distance at which the DistanceMultiTrigger triggers.
             @param distance The distance.
@@ -95,6 +108,9 @@ namespace orxonox
                 
         private:
             float distance_; //!< The distance at which the DistanceMultiTrigger triggers.
+            std::string targetName_; //!< The target name, used in singleTargetMode.
+            bool singleTargetMode_; //!< To indicate whe the MultiDistanceTrigger is in single-target-mode.
+            
             std::map<WorldEntity*, WeakPtr<WorldEntity>* > range_; //!< The set of entities that currently are in range of the DistanceMultiTrigger.
         
     };
