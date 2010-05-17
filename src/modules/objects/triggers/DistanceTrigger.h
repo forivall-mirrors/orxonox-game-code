@@ -51,6 +51,11 @@ namespace orxonox
       void removeTarget(Ogre::Node* targetNode);
       void removeTargets(const std::string& targets);
 
+      inline void setTargetName(const std::string& targetname)
+        { if(targetname.compare(BLANKSTRING) != 0) this->singleTargetMode_ = true; else this->singleTargetMode_ = false; this->targetName_ = targetname; }
+      inline const std::string& getTargetName(void)
+        { return this->targetName_; }
+
       inline void setDistance(float distance)
         { this->distance_ = distance; }
       inline float getDistance() const
@@ -66,7 +71,9 @@ namespace orxonox
 
     private:
       std::set<Ogre::Node*> targetSet_;
+      std::string targetName_;
       float distance_;
+      bool singleTargetMode_;
 
   };
 }

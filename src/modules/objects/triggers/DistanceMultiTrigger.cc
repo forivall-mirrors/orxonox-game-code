@@ -35,6 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "DistanceTriggerBeacon.h"
 
 namespace orxonox
 {
@@ -50,6 +51,8 @@ namespace orxonox
         RegisterObject(DistanceMultiTrigger);
         
         this->distance_ = 100.0f;
+        this->targetName_ = BLANKSTRING;
+        this->singleTargetMode_ = false;
     }
 
     /**
@@ -69,6 +72,7 @@ namespace orxonox
         SUPER(DistanceMultiTrigger, XMLPort, xmlelement, mode);
 
         XMLPortParam(DistanceMultiTrigger, "distance", setDistance, getDistance, xmlelement, mode);
+        XMLPortParam(DistanceMultiTrigger, "targetname", setTargetName, getTargetName, xmlelement, mode);
     }
 
     /**
@@ -127,6 +131,17 @@ namespace orxonox
             if (entity == NULL) //If the object is no WorldEntity or is already in range.
                 continue;
 
+            // If the DistanceMultiTrigger is in single-target-mode.
+            if(this->singleTargetMode_)
+            {
+                // If the object that is a target is no DistanceTriggerBeacon, then the DistanceMultiTrigger can't be in single-target-mode.
+                if(!(*it)->isA(ClassIdentifier<DistanceTriggerBeacon>::getIdentifier()))
+                    this->singleTargetMode_ = false;
+                // If the target name and the name of the DistancTriggreBeacon don't match.
+                else if(entity->getName().compare(this->targetName_) != 0)
+                    continue;
+            }
+
             Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
             // If the object is in range.
             if (distanceVec.length() <= this->distance_)
@@ -135,6 +150,10 @@ namespace orxonox
                 if(!this->addToRange(entity))
                     continue;
 
+                // Change the entity to the parent of the DistanceTriggerBeacon (if in single-target-mode), which is the entity to which the beacon is attached.
+                if(this->singleTargetMode_)
+                    entity = entity->getParent();
+                
                 // If no queue has been created, yet.
                 if(queue == NULL)
                     queue = new std::queue<MultiTriggerState*>();
