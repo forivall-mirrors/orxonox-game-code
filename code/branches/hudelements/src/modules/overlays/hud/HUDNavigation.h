@@ -107,9 +107,18 @@ private:
             float aimMarkerSize_;                       //!< One paramter size of the aim marker
     */
     Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
-    bool wasOutOfView_;                         //!< Performance booster variable: setMaterial is not cheap
+    
 
-    typedef std::map<RadarViewable*, std::pair<Ogre::PanelOverlayElement*, Ogre::TextAreaOverlayElement*> > activeObjectListType;
+    struct objectStruct{
+      
+      Ogre::PanelOverlayElement* panel_;
+      Ogre::TextAreaOverlayElement text_;
+      bool outOfView_;
+      bool wasOutOfView_;
+    
+    };
+    
+    typedef std::map<RadarViewable*, objectStruct > activeObjectListType;
     activeObjectListType activeObjectList_;
     activeObjectListType::iterator tempRadarViewable;
         

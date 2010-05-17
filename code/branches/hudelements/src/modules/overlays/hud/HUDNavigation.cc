@@ -99,9 +99,9 @@ HUDNavigation::~HUDNavigation() {
     if (this->isInitialized())
     {
         activeObjectListType::iterator it;
-        for( it = activeObjectList_.begin(); it!=activeObjectList_.end(); )
+        for( it = activeObjectList_.begin(); it!=activeObjectList_.end(); ++it )
         {
-            removeObject((it++)->first);
+            removeObject(it->first);
         }
         activeObjectList_.clear();
     }
@@ -123,8 +123,8 @@ void HUDNavigation::setFont(const std::string& font)
     {
         for (tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
         {
-            if (tempRadarViewable->second.second && !fontName_.empty())
-                tempRadarViewable->second.second->setFontName(fontName_);
+            if (tempRadarViewable->second.text_ && !fontName_.empty())
+                tempRadarViewable->second.text_->setFontName(fontName_);
         }
     }
 }
@@ -141,8 +141,8 @@ void HUDNavigation::setTextSize(float size)
     {
         for (tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
         {
-            if (tempRadarViewable->second.second && size >= 0.0f)
-                tempRadarViewable->second.second->setCharHeight(size);
+            if (tempRadarViewable->second.text_ && size >= 0.0f)
+                tempRadarViewable->second.text_->setCharHeight(size);
         }
     }
 }
@@ -184,8 +184,8 @@ void HUDNavigation::tick(float dt)
 
             //get Distance to HumanController and save it in the TextAreaOverlayElement.
             int dist = (int)(tempRadarViewable->first->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
-            tempRadarViewable->second.second->setCaption(multi_cast<std::string>(dist));
-            float textLength = multi_cast<std::string>(dist).size() * tempRadarViewable->second.second->getCharHeight() * 0.3f;
+            tempRadarViewable->second.text_->setCaption(multi_cast<std::string>(dist));
+            float textLength = multi_cast<std::string>(dist).size() * tempRadarViewable->second.text_->getCharHeight() * 0.3f;
 
 
 
@@ -198,28 +198,28 @@ void HUDNavigation::tick(float dt)
 
 
 
-            bool outOfView;
+
             if (pos.z > 1.0)
             {
                 // z > 1.0 means that the object is behind the camera
-                outOfView = true;
+                tempRadarViewable->second.outOfView_ = true;
                 // we have to switch all coordinates (if you don't know why,
                 // try linear algebra lectures, because I can't explain..)
                 pos.x = -pos.x;
                 pos.y = -pos.y;
             }
             else
-                outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
+                tempRadarViewable->second.outOfView_ = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
 
-            if (outOfView)
+            if (tempRadarViewable->second.outOfView_)
             {
                 // object is not in view
 //            aimMarker_->hide();
 
-                if (!wasOutOfView_)
+                if (!tempRadarViewable->second.wasOutOfView__)
                 {
-                    tempRadarViewable->second.first->setMaterialName("Orxonox/NavArrows");
-                    wasOutOfView_ = true;
+                    tempRadarViewable->second.panel_->setMaterialName("Orxonox/NavArrows");
+                    tempRadarViewable->second.wasOutOfView__ = true;
                 }
 
 
@@ -230,19 +230,19 @@ void HUDNavigation::tick(float dt)
                     {
                         // up
                         float position = pos.x / pos.y + 1.0f;
-                        tempRadarViewable->second.first->setPosition((position - tempRadarViewable->second.first->getWidth()) * 0.5f, 0.0f);
-                        tempRadarViewable->second.first->setUV(0.5f, 0.0f, 1.0f, 0.5f);
-                        tempRadarViewable->second.second->setLeft((position - textLength) * 0.5f);
-                        tempRadarViewable->second.second->setTop(tempRadarViewable->second.first->getHeight());
+                        tempRadarViewable->second.panel_->setPosition((position - tempRadarViewable->second.panel_->getWidth()) * 0.5f, 0.0f);
+                        tempRadarViewable->second.panel_->setUV(0.5f, 0.0f, 1.0f, 0.5f);
+                        tempRadarViewable->second.text_->setLeft((position - textLength) * 0.5f);
+                        tempRadarViewable->second.text_->setTop(tempRadarViewable->second.panel_->getHeight());
                     }
                     else
                     {
                         // left
                         float position = pos.y / pos.x + 1.0f;
-                        tempRadarViewable->second.first->setPosition(0.0f, (position - tempRadarViewable->second.first->getWidth()) * 0.5f);
-                        tempRadarViewable->second.first->setUV(0.0f, 0.0f, 0.5f, 0.5f);
-                        tempRadarViewable->second.second->setLeft(tempRadarViewable->second.first->getWidth() + 0.01f);
-                        tempRadarViewable->second.second->setTop((position - tempRadarViewable->second.second->getCharHeight()) * 0.5f);
+                        tempRadarViewable->second.panel_->setPosition(0.0f, (position - tempRadarViewable->second.panel_->getWidth()) * 0.5f);
+                        tempRadarViewable->second.panel_->setUV(0.0f, 0.0f, 0.5f, 0.5f);
+                        tempRadarViewable->second.text_->setLeft(tempRadarViewable->second.panel_->getWidth() + 0.01f);
+                        tempRadarViewable->second.text_->setTop((position - tempRadarViewable->second.text_->getCharHeight()) * 0.5f);
                     }
                 }
                 else
@@ -252,19 +252,19 @@ void HUDNavigation::tick(float dt)
                     {
                         // down
                         float position = -pos.x / pos.y + 1.0f;
-                        tempRadarViewable->second.first->setPosition((position - tempRadarViewable->second.first->getWidth()) * 0.5f, 1.0f - tempRadarViewable->second.first->getHeight());
-                        tempRadarViewable->second.first->setUV(0.0f, 0.5f, 0.5f, 1.0f);
-                        tempRadarViewable->second.second->setLeft((position - textLength) * 0.5f);
-                        tempRadarViewable->second.second->setTop(1.0f - tempRadarViewable->second.first->getHeight() - tempRadarViewable->second.second->getCharHeight());
+                        tempRadarViewable->second.panel_->setPosition((position - tempRadarViewable->second.panel_->getWidth()) * 0.5f, 1.0f - tempRadarViewable->second.panel_->getHeight());
+                        tempRadarViewable->second.panel_->setUV(0.0f, 0.5f, 0.5f, 1.0f);
+                        tempRadarViewable->second.text_->setLeft((position - textLength) * 0.5f);
+                        tempRadarViewable->second.text_->setTop(1.0f - tempRadarViewable->second.panel_->getHeight() - tempRadarViewable->second.text_->getCharHeight());
                     }
                     else
                     {
                         // right
                         float position = -pos.y / pos.x + 1.0f;
-                        tempRadarViewable->second.first->setPosition(1.0f - tempRadarViewable->second.first->getWidth(), (position - tempRadarViewable->second.first->getHeight()) * 0.5f);
-                        tempRadarViewable->second.first->setUV(0.5f, 0.5f, 1.0f, 1.0f);
-                        tempRadarViewable->second.second->setLeft(1.0f - tempRadarViewable->second.first->getWidth() - textLength - 0.01f);
-                        tempRadarViewable->second.second->setTop((position - tempRadarViewable->second.second->getCharHeight()) * 0.5f);
+                        tempRadarViewable->second.panel_->setPosition(1.0f - tempRadarViewable->second.panel_->getWidth(), (position - tempRadarViewable->second.panel_->getHeight()) * 0.5f);
+                        tempRadarViewable->second.panel_->setUV(0.5f, 0.5f, 1.0f, 1.0f);
+                        tempRadarViewable->second.text_->setLeft(1.0f - tempRadarViewable->second.panel_->getWidth() - textLength - 0.01f);
+                        tempRadarViewable->second.text_->setTop((position - tempRadarViewable->second.text_->getCharHeight()) * 0.5f);
                     }
                 }
             }
@@ -277,29 +277,29 @@ void HUDNavigation::tick(float dt)
                             Vector3 aimpos = transform * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
                                     Projectile::getSpeed(), Radar::getInstance().getFocus()->getRVWorldPosition(), Radar::getInstance().getFocus()->getRVOrientedVelocity());
                 */
-                if (wasOutOfView_)
+                if (tempRadarViewable->second.wasOutOfView_)
                 {
-                    tempRadarViewable->second.first->setMaterialName("Orxonox/NavTDC");
-                    wasOutOfView_ = false;
+                    tempRadarViewable->second.panel_->setMaterialName("Orxonox/NavTDC");
+                    tempRadarViewable->second.wasOutOfView__ = false;
                 }
 
                 // object is in view
-                tempRadarViewable->second.first->setUV(0.0f, 0.0f, 1.0f, 1.0f);
-                tempRadarViewable->second.first->setLeft((pos.x + 1.0f - tempRadarViewable->second.first->getWidth()) * 0.5f);
-                tempRadarViewable->second.first->setTop((-pos.y + 1.0f - tempRadarViewable->second.first->getHeight()) * 0.5f);
+                tempRadarViewable->second.panel_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
+                tempRadarViewable->second.panel_->setLeft((pos.x + 1.0f - tempRadarViewable->second.panel_->getWidth()) * 0.5f);
+                tempRadarViewable->second.panel_->setTop((-pos.y + 1.0f - tempRadarViewable->second.panel_->getHeight()) * 0.5f);
 
 
 //                 aimMarker_->show();
 //                 aimMarker_->setLeft((aimpos.x + 1.0f - aimMarker_->getWidth()) * 0.5f);
 //                 aimMarker_->setTop((-aimpos.y + 1.0f - aimMarker_->getHeight()) * 0.5f);
 //
-                tempRadarViewable->second.second->setLeft((pos.x + 1.0f + tempRadarViewable->second.first->getWidth()) * 0.5f);
-                tempRadarViewable->second.second->setTop((-pos.y + 1.0f + tempRadarViewable->second.first->getHeight()) * 0.5f);
+                tempRadarViewable->second.text_->setLeft((pos.x + 1.0f + tempRadarViewable->second.panel_->getWidth()) * 0.5f);
+                tempRadarViewable->second.text_->setTop((-pos.y + 1.0f + tempRadarViewable->second.panel_->getHeight()) * 0.5f);
             }
 
-            tempRadarViewable->second.first->show();
-            tempRadarViewable->second.second->show();
-//             tempRadarViewable->second.second->hide();
+            tempRadarViewable->second.panel_->show();
+            tempRadarViewable->second.text_->show();
+//             tempRadarViewable->second.text_->hide();
         }
 
     }
@@ -331,12 +331,12 @@ void HUDNavigation::sizeChanged()
         for (tempRadarViewable = activeObjectList_.begin(); tempRadarViewable!=activeObjectList_.end(); ++tempRadarViewable)
         {
 
-            if (tempRadarViewable->second.first)
-                tempRadarViewable->second.first->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
+            if (tempRadarViewable->second.panel_)
+                tempRadarViewable->second.panel_->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
 //            if (this->aimMarker_)
 //            aimMarker_->setDimensions(aimMarkerSize_ * xScale, aimMarkerSize_ * yScale);
-            if (tempRadarViewable->second.second)
-                tempRadarViewable->second.second->setCharHeight(tempRadarViewable->second.second->getCharHeight() * yScale);
+            if (tempRadarViewable->second.text_)
+                tempRadarViewable->second.text_->setCharHeight(tempRadarViewable->second.text_->getCharHeight() * yScale);
         }
     }
 }
@@ -370,7 +370,8 @@ void HUDNavigation::addObject(RadarViewable* object)
     panel->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
     text->setCharHeight(text->getCharHeight() * yScale);
 
-    activeObjectList_[object] = std::make_pair (panel, text) ;
+    objectStruct tempStruct = {panel, text, true};
+    activeObjectList_[object] = tempStruct;
 
     this->background_->addChild(panel);
     this->background_->addChild(text);
@@ -387,11 +388,11 @@ void HUDNavigation::removeObject(RadarViewable* viewable)
     if (activeObjectList_.find(viewable) != activeObjectList_.end())
     {
         // Remove overlays from Ogre
-        this->background_->removeChild(it->second.first->getName());
-        this->background_->removeChild(it->second.second->getName());
+        this->background_->removeChild(it->second.panel_->getName());
+        this->background_->removeChild(it->second.text_->getName());
         // correctly destroy the overlay elements
-        Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.first);
-        Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.second);
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.panel_);
+        Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.text_);
 
         activeObjectList_.erase(viewable);
     }
