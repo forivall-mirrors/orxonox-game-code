@@ -30,7 +30,7 @@
             munitionType="LaserGunMunition"
             bulletLoadingTime="0.2"
             magazineLoadingTime="5.0"
-            speed="1250"
+            speed="250"
             unlimitedMunition=true
         />
   <!--       <LaserGun

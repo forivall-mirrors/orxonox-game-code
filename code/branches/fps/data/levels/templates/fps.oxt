@@ -50,7 +50,7 @@
 <Template name=fpscamera defaults=0>
   <FpsPlayer>
     <camerapositions>
-      <CameraPosition position="0,0,0" drag=false mouselook=true />
+      <CameraPosition position="0,0,20" drag=false mouselook=true />
       <!--CameraPosition position="0,150,-25" pitch=-90 drag=true />
       <CameraPosition position="0,0,-40" yaw=180 drag=true />
       <CameraPosition position="0,3,-14" yaw=0 />

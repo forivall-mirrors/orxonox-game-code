@@ -78,7 +78,7 @@ namespace orxonox
 
         this->setConfigValues();
         this->registerVariables();
-	
+
     }
 
     FpsPlayer::~FpsPlayer()
