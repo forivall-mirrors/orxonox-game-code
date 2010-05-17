@@ -136,6 +136,8 @@ namespace orxonox
             ++it;
         }
 
+        SpawnPoint* fallbackSpawnPoint = NULL;
+
         if (teamSpawnPoints.size() > 0)
         {
             unsigned int randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(teamSpawnPoints.size())));
@@ -143,10 +145,37 @@ namespace orxonox
             for (std::set<SpawnPoint*>::const_iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); ++it)
             {
                 if (index == randomspawn)
+                {
+                    fallbackSpawnPoint = (*it);
+                    break;
+                }
+
+                ++index;
+            }
+
+            for (std::set<SpawnPoint*>::const_iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); )
+            {
+                if (!(*it)->isActive())
+                {
+                    COUT(1) << "MUP" << std::endl;
+                    teamSpawnPoints.erase(it++);
+                    continue;
+                }
+
+                ++it;
+            }
+
+            randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(teamSpawnPoints.size())));
+            index = 0;
+            for (std::set<SpawnPoint*>::const_iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); ++it)
+            {
+                if (index == randomspawn)
                     return (*it);
 
                 ++index;
             }
+
+            return fallbackSpawnPoint;
         }
 
         return 0;
