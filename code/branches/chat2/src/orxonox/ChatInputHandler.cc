@@ -68,7 +68,8 @@ namespace orxonox
     /* configure the input buffer */
     configureInputBuffer();
 
-    this->inputState = InputManager::getInstance().createInputState( "chatinput", false, false, InputStatePriority::Dynamic );
+    this->inputState = InputManager::getInstance().createInputState( 
+      "chatinput", false, false, InputStatePriority::Dynamic );
     this->inputState->setKeyHandler(this->inpbuf);
   }
 
@@ -79,31 +80,48 @@ namespace orxonox
     this->inpbuf->registerListener(this, &ChatInputHandler::inputChanged, true);
 
     /* add a line */
-    this->inpbuf->registerListener(this, &ChatInputHandler::addline,         '\r',   false);
-    this->inpbuf->registerListener(this, &ChatInputHandler::addline,         '\n',   false);
+    this->inpbuf->registerListener(this, &ChatInputHandler::addline,
+      '\r',   false);
+    this->inpbuf->registerListener(this, &ChatInputHandler::addline, 
+      '\n',   false);
 
     /* backspace */
-    this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       '\b',   true);
-    //this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       '\177', true);
+    this->inpbuf->registerListener(this, &ChatInputHandler::backspace,       
+      '\b',   true);
+
+    /* NOTE this doesn't work on my debian linux box, it makes backspace get
+     * registered also when delete is pressed 
+     */
+    //this->inpbuf->registerListener(this, &ChatInputHandler::backspace, 
+      //'\177', true);
 
     /* exit the chatinputhandler thingy (tbd) */
-    this->inpbuf->registerListener(this, &ChatInputHandler::exit,            '\033', true); // escape
+    this->inpbuf->registerListener(this, &ChatInputHandler::exit,  
+      '\033', true); // escape
 
     /* delete character */
-    this->inpbuf->registerListener(this, &ChatInputHandler::deleteChar,      KeyCode::Delete);
+    this->inpbuf->registerListener(this, &ChatInputHandler::deleteChar,  
+      KeyCode::Delete);
 
     /* cursor movement */
-    this->inpbuf->registerListener(this, &ChatInputHandler::cursorRight,     KeyCode::Right);
-    this->inpbuf->registerListener(this, &ChatInputHandler::cursorLeft,      KeyCode::Left);
-    this->inpbuf->registerListener(this, &ChatInputHandler::cursorEnd,       KeyCode::End);
-    this->inpbuf->registerListener(this, &ChatInputHandler::cursorHome,      KeyCode::Home);
+    this->inpbuf->registerListener(this, &ChatInputHandler::cursorRight,
+      KeyCode::Right);
+    this->inpbuf->registerListener(this, &ChatInputHandler::cursorLeft, 
+      KeyCode::Left);
+    this->inpbuf->registerListener(this, &ChatInputHandler::cursorEnd,     
+      KeyCode::End);
+    this->inpbuf->registerListener(this, &ChatInputHandler::cursorHome,     
+      KeyCode::Home);
 
     /* GET WINDOW POINTERS */
-    input = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/input" );
-    inputonly = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox-inputonly/input" );
+    input = CEGUI::WindowManager::getSingleton().getWindow( 
+      "orxonox/ChatBox/input" );
+    inputonly = CEGUI::WindowManager::getSingleton().getWindow( 
+      "orxonox/ChatBox-inputonly/input" );
 
     /* get pointer to the history window */
-    CEGUI::Window *history = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/history" );
+    CEGUI::Window *history = CEGUI::WindowManager::getSingleton().getWindow( 
+      "orxonox/ChatBox/history" );
 
     /* cast it to a listbox */
     lb_history = dynamic_cast<CEGUI::Listbox*>(history); 
@@ -170,7 +188,8 @@ namespace orxonox
     /* e) create item and add to history */
     CEGUI::ListboxTextItem *toadd = new CEGUI::ListboxTextItem( text );
     this->lb_history->addItem( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
-    this->lb_history->ensureItemIsVisible( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
+    this->lb_history->ensureItemIsVisible( 
+      dynamic_cast<CEGUI::ListboxItem*>(toadd) );
 
     /* f) make sure the history handles it */
     this->lb_history->handleUpdatedItemData();
@@ -213,18 +232,21 @@ namespace orxonox
     /* set the text */
     std::string assembled = "$ " + left + "|" + right;
 
+    /* decide what to do based on the active view */
     if( this->fullchat )
     { 
       /* adjust curser position - magic number 5 for font width */
-      sub_adjust_dispoffset( (this->input->getUnclippedInnerRect().getWidth()/6), 
-        cursorpos, assembled.length() );
+      sub_adjust_dispoffset( 
+        (this->input->getUnclippedInnerRect().getWidth()/6), cursorpos, 
+        assembled.length() );
       this->input->setProperty( "Text", assembled.substr( disp_offset ) );
     }
     else
     {
       /* adjust curser position - magic number 5 for font width */
-      sub_adjust_dispoffset( (this->inputonly->getUnclippedInnerRect().getWidth()/6), 
-        cursorpos, assembled.length() );
+      sub_adjust_dispoffset( 
+        (this->inputonly->getUnclippedInnerRect().getWidth()/6), cursorpos, 
+        assembled.length() );
       this->inputonly->setProperty( "Text", assembled.substr( disp_offset) );
     }
 
@@ -238,6 +260,9 @@ namespace orxonox
     /* a) get the string out of the inputbuffer */
     std::string msgtosend = this->inpbuf->get();
 
+    /* if someone pressed return and nothing was put in,
+     * just close the window
+     */
     if( msgtosend.length() == 0 )
     { this->deactivate();
       return;
