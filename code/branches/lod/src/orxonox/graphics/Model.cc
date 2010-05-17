@@ -62,7 +62,7 @@ namespace orxonox
     {
         SUPER(Model, XMLPort, xmlelement, mode);
         
-        XMLPortParam(Model, "lodLevel", setLodLevel, getLodLevel, xmlelement, mode).defaultValues(5);
+        XMLPortParam(Model, "lodLevel", setLodLevel, getLodLevel, xmlelement, mode);
         
         XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
         XMLPortParam(Model, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
