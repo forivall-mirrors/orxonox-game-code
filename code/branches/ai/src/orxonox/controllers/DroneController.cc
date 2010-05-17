@@ -46,12 +46,6 @@ namespace orxonox
 
     DroneController::DroneController(BaseObject* creator) : ArtificialController(creator)
     {
-        // - do any kind of initialisation
-
-        // this checks that our creator really is a drone
-        // and saves the pointer to the drone for the controlling commands
-
-    
         RegisterObject(DroneController);
 
         this->owner_ = 0;
@@ -85,36 +79,35 @@ namespace orxonox
         const Vector3& dronePosition = getDrone()->getWorldPosition();
 
         const Vector3& locOwnerDir = getDrone()->getOrientation().UnitInverse()*(ownerPosition-dronePosition); //Vector from Drone To Owner out of drones local coordinate system
-
-        int distance = sqrt( (ownerPosition.x-dronePosition.x)*(ownerPosition.x-dronePosition.x)
-                           + (ownerPosition.y-dronePosition.y)*(ownerPosition.y-dronePosition.y)
-                           + (ownerPosition.z-dronePosition.z)*(ownerPosition.z-dronePosition.z)); //distance to Owner
-
-        if (distance > 500) { //TODO: variable implementation of maxdistance
-            drone_->moveUpDown(locOwnerDir.y);
-            drone_->moveFrontBack(-locOwnerDir.z);
-            drone_->moveRightLeft(locOwnerDir.x);
-        }
-
-
+/*
+        int distance_square  = (ownerPosition.x-dronePosition.x)*(ownerPosition.x-dronePosition.x)
+                             + (ownerPosition.y-dronePosition.y)*(ownerPosition.y-dronePosition.y)
+                             + (ownerPosition.z-dronePosition.z)*(ownerPosition.z-dronePosition.z); //distance to Owner squared
+*/
         random = rnd(maxrand);
         if ( random < 30 && (!this->target_))
             this->searchNewTarget();
-
-
-        this->aimAtTarget();
-        drone_->fire(0);
+/*
+        //face target
+        drone_->rotateYaw(-targetPosition_.x);
+        drone_->rotatePitch(targetPosition_.y);
+  */      
+        if (this->target_)
+        {
+            this->aimAtTarget();
+            drone_->fire(0);
+        }
          
 
 
-
-        //COUT(0) << "Drone: " << dronePosition << endl;
-        //COUT(0) << "Distance: " << distance << endl;
+/*
+        COUT(0) << "Drone: " << dronePosition << endl;
+        COUT(0) << "Distance: " << distance << endl;
         COUT(0) << "locDrone: " << locOwnerDir << endl;
         COUT(0) << "target: " << targetPosition_ << endl;
         COUT(0) << "Owner: " << ownerPosition << endl;
         COUT(0) << "Rand: " << random << endl;
-
+*/
 /*
         // search enemy
         random = rnd(maxrand);
@@ -170,9 +163,8 @@ namespace orxonox
 
 	Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
 
-        if(myDrone != NULL) {
-
-        setTargetPosition(this->getControllableEntity()->getPosition());
+        if ((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > 150*150) { //TODO: variable implementation of maxdistance
+            this->moveToPosition(this->getOwner()->getWorldPosition());
 
         }
 

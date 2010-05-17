@@ -106,4 +106,36 @@
         </pickupables>
     </PickupCollection>
 </Template>
-    
+
+
+<Template name=droneTemplate>
+    <Drone name="meineDrohne"  mass= "50" linearDamping = "0.7" angularDamping = "0.9999999" primaryThrust_=250 auxilaryThrust_=250 rotationThrust_=50>
+        <attached>
+            <Model scale="1" mesh="drone.mesh"/>
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0"      halfExtents="1, 1, 1" />
+        </collisionShapes>
+        <weaponslots>
+            <WeaponSlot position="    0,   0,0" />
+        </weaponslots>
+        <weaponsets>
+            <WeaponSet firemode=0 />
+        </weaponsets>
+        <weapons>
+            <WeaponPack>
+                <links>
+                    <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
+                </links>
+                <Weapon>
+                    <attached>
+                        <Model mesh="hs-w01.mesh" roll="195" position="0,1,0" scale=2 />
+                        <Model mesh="hs-w01s.mesh" roll="195" position="0.1,0.5,0" scale=2 />
+                    </attached>
+                    <HsW01 mode=0 munitionpershot=0 delay=0.125 material="Flares/point_lensflare" muzzleoffset=" 0.7, 1.5,-4" />
+                    <HsW01 mode=0 munitionpershot=0 delay=0     material="Flares/point_lensflare" muzzleoffset="-0.9, 1.1,-4" />
+                </Weapon>
+            </WeaponPack>
+        </weapons>
+    </Drone>
+</Template>

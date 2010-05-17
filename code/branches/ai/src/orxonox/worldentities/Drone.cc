@@ -168,7 +168,7 @@ namespace orxonox
     */
     void Drone::rotateYaw(const Vector2& value)
     {
-        this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() - value.x);
+        this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x);
     }
 
     /**

@@ -35,6 +35,7 @@
 #include "worldentities/pawns/TeamBaseMatchBase.h"
 #include "gametypes/TeamDeathmatch.h"
 #include "controllers/WaypointPatrolController.h"
+#include "controllers/DroneController.h"
 #include "util/Math.h"
 
 namespace orxonox
@@ -347,6 +348,7 @@ namespace orxonox
 
     void ArtificialController::searchNewTarget()
     {
+COUT(0) << "search new target - start" << std::endl;
         if (!this->getControllableEntity())
             return;
 
@@ -371,6 +373,7 @@ namespace orxonox
                 }
             }
         }
+COUT(0) << "search new target - end: " << this->target_ << std::endl;
     }
 
     void ArtificialController::forgetTarget()
