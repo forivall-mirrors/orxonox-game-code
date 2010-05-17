@@ -112,7 +112,7 @@ private:
     struct objectStruct{
       
       Ogre::PanelOverlayElement* panel_;
-      Ogre::TextAreaOverlayElement text_;
+      Ogre::TextAreaOverlayElement* text_;
       bool outOfView_;
       bool wasOutOfView_;
     

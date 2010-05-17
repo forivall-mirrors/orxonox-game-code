@@ -216,10 +216,10 @@ void HUDNavigation::tick(float dt)
                 // object is not in view
 //            aimMarker_->hide();
 
-                if (!tempRadarViewable->second.wasOutOfView__)
+                if (!tempRadarViewable->second.wasOutOfView_)
                 {
                     tempRadarViewable->second.panel_->setMaterialName("Orxonox/NavArrows");
-                    tempRadarViewable->second.wasOutOfView__ = true;
+                    tempRadarViewable->second.wasOutOfView_ = true;
                 }
 
 
@@ -280,7 +280,7 @@ void HUDNavigation::tick(float dt)
                 if (tempRadarViewable->second.wasOutOfView_)
                 {
                     tempRadarViewable->second.panel_->setMaterialName("Orxonox/NavTDC");
-                    tempRadarViewable->second.wasOutOfView__ = false;
+                    tempRadarViewable->second.wasOutOfView_ = false;
                 }
 
                 // object is in view
@@ -396,6 +396,7 @@ void HUDNavigation::removeObject(RadarViewable* viewable)
 
         activeObjectList_.erase(viewable);
     }
+   
 }
 
 void HUDNavigation::changedOwner()

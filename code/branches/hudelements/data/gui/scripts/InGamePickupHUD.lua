@@ -12,14 +12,18 @@ P.filename = "InGamePickupHUD"
 P.layoutString = "InGamePickupHUD.layout"
 
 function P:init()
-  -- wie kann man hier dynamisch neue ListBoxItems erstellen? 
-  -- wie können sich diese ListBoxItems selbst aktualisieren? <<Tickable?>>
 end
 
 
 -- events for ingamemenu
 
 
+function P.button_Pickup_clicked(e)
+    orxonox.Game:getInstance():popState()
+    orxonox.Game:getInstance():popState()
+    orxonox.Game:getInstance():requestState("mainmenu")
+    hideGUI("InGameMenu")
+end
 
 function P.close_button_clicked()
     hideGUI("InGamePickupHUD")
