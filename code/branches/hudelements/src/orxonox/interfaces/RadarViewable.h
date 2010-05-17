@@ -36,6 +36,7 @@
 
 #include "util/Math.h"
 #include "core/OrxonoxClass.h"
+#include "core/SmartPtr.h"
 
 namespace orxonox
 {
@@ -131,6 +132,7 @@ namespace orxonox
 
 
         //Radar
+        SmartPtr<Radar> radar_;
         float radarObjectCamouflage_;
         Shape radarObjectShape_;
         std::string radarObjectDescription_;

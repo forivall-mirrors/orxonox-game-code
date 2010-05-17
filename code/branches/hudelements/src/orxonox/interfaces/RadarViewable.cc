@@ -51,7 +51,8 @@ namespace orxonox
         RegisterRootObject(RadarViewable);
 
         this->uniqueId_=getUniqueNumberString();
-        this->creator_->getScene()->getRadar()->addRadarObject(this);
+        this->radar_ = this->creator_->getScene()->getRadar();
+        this->radar_->addRadarObject(this);
         this->bInitialized_ = true;
     }
 
@@ -59,7 +60,7 @@ namespace orxonox
     RadarViewable::~RadarViewable()
     {
         if( this->bInitialized_ )
-            this->creator_->getScene()->getRadar()->removeRadarObject(this);
+            this->radar_->removeRadarObject(this);
     }
 
 //     void RadarViewable::setRadarObjectDescription(const std::string& str)
@@ -99,6 +100,6 @@ namespace orxonox
     
     void RadarViewable::settingsChanged()
     {
-        this->creator_->getScene()->getRadar()->radarObjectChanged(this);
+        this->radar_->radarObjectChanged(this);
     }
 }

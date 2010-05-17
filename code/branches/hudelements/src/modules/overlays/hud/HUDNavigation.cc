@@ -99,9 +99,9 @@ HUDNavigation::~HUDNavigation() {
     if (this->isInitialized())
     {
         activeObjectListType::iterator it;
-        for( it = activeObjectList_.begin(); it!=activeObjectList_.end(); ++it )
+        for( it = activeObjectList_.begin(); it!=activeObjectList_.end(); )
         {
-            removeObject(it->first);
+            removeObject((it++)->first);
         }
         activeObjectList_.clear();
     }
