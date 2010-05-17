@@ -116,7 +116,7 @@ namespace orxonox
         it = this->radarObjects_.find( object );
         if( it != this->radarObjects_.end() )
         {
-            delete it->second;
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second);
             this->radarObjects_.erase(it);
         }
     }
