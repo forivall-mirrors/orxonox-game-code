@@ -29,108 +29,68 @@
 #ifndef _HUDNavigation_H__
 #define _HUDNavigation_H__
 
-#include <utility>
-#include <map>
 #include "overlays/OverlaysPrereqs.h"
-#include "interfaces/RadarViewable.h"
 
-#include "interfaces/RadarListener.h"
+#include <map>
+#include <string>
+
 #include "util/OgreForwardRefs.h"
 #include "tools/interfaces/Tickable.h"
+#include "interfaces/RadarListener.h"
 #include "overlays/OrxonoxOverlay.h"
-
-#include <vector>
 
 namespace orxonox
 {
-class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable, public RadarListener
-{
-public:
-    HUDNavigation(BaseObject* creator);
-    virtual ~HUDNavigation();
+    class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable, public RadarListener
+    {
+    public:
+        HUDNavigation(BaseObject* creator);
+        virtual ~HUDNavigation();
 
-    virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-    virtual void tick(float dt);
-    virtual void addObject(RadarViewable* object);
+        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void tick(float dt);
 
-    virtual void removeObject(RadarViewable* viewable);
-    virtual void objectChanged(RadarViewable* viewable) {}
-    inline float getRadarSensitivity() const {return 1.0f;}
-    inline void radarTick(float dt) {}
-    virtual void changedOwner();
+        virtual void addObject(RadarViewable* object);
+        virtual void removeObject(RadarViewable* viewable);
+        virtual void objectChanged(RadarViewable* viewable) {}
 
+        virtual void changedOwner();
+        virtual void sizeChanged();
+        virtual void angleChanged() { }
+        virtual void positionChanged() { }
+        virtual void radarTick(float dt) {}
 
-private:
+        inline float getRadarSensitivity() const
+            { return 1.0f; }
 
+    private:
+        struct ObjectInfo
+        {
+            Ogre::PanelOverlayElement* panel_;
+            Ogre::TextAreaOverlayElement* text_;
+            bool outOfView_;
+            bool wasOutOfView_;
+        };
 
+        // XMLPort accessors
+        void setNavMarkerSize(float size)
+            { navMarkerSize_ = size; this->sizeChanged(); }
+        float getNavMarkerSize() const
+            { return navMarkerSize_; }
 
-    void sizeChanged();
-    void angleChanged() { }
-    void positionChanged() { }
+        void setTextSize(float size);
+        float getTextSize() const;
 
-// 	void updateActiveObjectList(map activeObjectList_);
+        void setFont(const std::string& font);
+        const std::string& getFont() const;
 
+        typedef std::map<RadarViewable*, ObjectInfo > ObjectMap;
+        ObjectMap activeObjectList_;
 
-
-    // XMLPort accessors
-    void setNavMarkerSize(float size) {
-        navMarkerSize_ = size;
-        this->sizeChanged();
-    }
-    float getNavMarkerSize() const    {
-        return navMarkerSize_;
-    }
-
-    /*
-            void setAimMarkerSize(float size) { this->aimMarkerSize_ = size; this->sizeChanged(); }
-            float getAimMarkerSize() const    { return this->aimMarkerSize_; }
-    */
-
-    void setTextSize(float size);
-    float getTextSize() const;
-
-    void setFont(const std::string& font);
-    const std::string& getFont() const;
-
-    void updateMarker();
-    void updateFocus();
-//     float getDist2Focus() const;
-    void getSingleton();
-
-
-    void updateActiveObjectMap();
-
-    Ogre::PanelOverlayElement* navMarker_;      //!< the panel used to show the arrow and the target marker
-    float navMarkerSize_;                       //!< One paramter size of the navigation marker
-    /*
-            Ogre::PanelOverlayElement* aimMarker_;      //!< Panel used to show the aim Marker
-            float aimMarkerSize_;                       //!< One paramter size of the aim marker
-    */
-    Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
-    
-
-    struct objectStruct{
-      
-      Ogre::PanelOverlayElement* panel_;
-      Ogre::TextAreaOverlayElement* text_;
-      bool outOfView_;
-      bool wasOutOfView_;
-    
+        float navMarkerSize_;
+        std::string fontName_;
+        float textSize_;
     };
-    
-    typedef std::map<RadarViewable*, objectStruct > activeObjectListType;
-    activeObjectListType activeObjectList_;
-    activeObjectListType::iterator tempRadarViewable;
-        
-    typedef std::set<RadarViewable*> respawnObjectSetType;
-    
-
-
-    std::string fontName_;
-    float textSize_;
-
-};
-
 }
 
 #endif /* _HUDNavigation_H__ */
