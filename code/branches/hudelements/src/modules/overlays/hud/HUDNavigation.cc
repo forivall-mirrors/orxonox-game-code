@@ -94,20 +94,17 @@ HUDNavigation::HUDNavigation(BaseObject* creator)
     
 }
 
-HUDNavigation::~HUDNavigation() {
-
+HUDNavigation::~HUDNavigation()
+{
     if (this->isInitialized())
     {
-        activeObjectListType::iterator it;
-        for( it = activeObjectList_.begin(); it!=activeObjectList_.end(); ++it )
-        {
-            removeObject(it->first);
-        }
-        activeObjectList_.clear();
+        for (activeObjectListType::iterator it = activeObjectList_.begin(); it != activeObjectList_.end();)
+            removeObject((it++)->first);
     }
 }
 
-void HUDNavigation::XMLPort(Element& xmlElement, XMLPort::Mode mode) {
+void HUDNavigation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+{
     SUPER(HUDNavigation, XMLPort, xmlElement, mode);
 
     XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode);
