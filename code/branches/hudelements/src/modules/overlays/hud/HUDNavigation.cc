@@ -365,6 +365,7 @@ void HUDNavigation::addObject(RadarViewable* object)
     float yScale = this->getActualSize().y;
 
     panel->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
+    text->setFontName(this->fontName_);
     text->setCharHeight(text->getCharHeight() * yScale);
 
     objectStruct tempStruct = {panel, text, true};
