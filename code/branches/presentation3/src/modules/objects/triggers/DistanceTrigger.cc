@@ -154,6 +154,7 @@ namespace orxonox
         return true;
       }
     }
+
     return false;
   }
 

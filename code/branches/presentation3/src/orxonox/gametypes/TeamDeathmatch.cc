@@ -137,11 +137,11 @@ namespace orxonox
         }
 
         SpawnPoint* fallbackSpawnPoint = NULL;
-
         if (teamSpawnPoints.size() > 0)
         {
             unsigned int randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(teamSpawnPoints.size())));
             unsigned int index = 0;
+            // Get random fallback spawnpoint in case there is no active SpawnPoint.
             for (std::set<SpawnPoint*>::const_iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); ++it)
             {
                 if (index == randomspawn)
@@ -153,17 +153,21 @@ namespace orxonox
                 ++index;
             }
 
+            // Remove all inactive SpawnPoints from the list.
             for (std::set<SpawnPoint*>::const_iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); )
             {
-                if (!(*it)->isActive())
+                if(!(*it)->isActive())
                 {
-                    COUT(1) << "MUP" << std::endl;
+                    COUT(1) << (*it)->getName() << " is inactive." << std::endl;
                     teamSpawnPoints.erase(it++);
                     continue;
                 }
+                COUT(1) << (*it)->getName() << " is active." << std::endl;
 
                 ++it;
             }
+
+            COUT(1) << "MUP " << teamSpawnPoints.size() << std::endl;
 
             randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(teamSpawnPoints.size())));
             index = 0;

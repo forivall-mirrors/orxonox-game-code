@@ -59,6 +59,9 @@
   description="Level zerstoeren von Transportern"
   gametype=TeamDeathmatch
 >
+    <lodinformation>
+	    <MeshLodInformation mesh=Transporter.mesh lodQuality=10 />
+    </lodinformation>
 
 	<!-- Ausgang: Szene ===> ambientlight/skybox -->
 	<Scene
@@ -81,20 +84,26 @@
 <!--*****************************************************************************************************************************************************************************************-->
 
 		<!--Spieler Spawnpoint ===> position/direction-->
-		<SpawnPoint position="150,0,-50" direction="2000,0,-1000" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0 active="true" > 
+		<SpawnPoint position="150,0,-50" direction="2000,0,-1000" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0 active="true" name=spawn1> 
 			<events>
 				<activity>
-					<EventListener event="activateSecondSpawnpoint" />
+					<EventListener event="activateFirstSpawnpoint" />
 				</activity>
 			</events>
+			<attached>
+			    <Billboard position="0,0,0" colour="0,1.0,0" material="Examples/Flare"/>
+			</attached>
 		</SpawnPoint>
 
-		<SpawnPoint position="10000,0,3000" direction="2000,0,-1000" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0 active="false" > 
+		<SpawnPoint position="10000,0,3000" direction="2000,0,-1000" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0 active="false" name=spawn2> 
 			<events>
 				<activity>
 					<EventListener event="activateSecondSpawnpoint" />
 				</activity>
 			</events>
+			<attached>
+			    <Billboard position="0,0,0" colour="1.0,0,0" material="Examples/Flare"/>
+			</attached>
 		</SpawnPoint>
 
 
@@ -230,48 +239,40 @@ z=j*300
 
 <!--Erstellen des Asteroidenfeldes___FUNKTIONIERT_________________________________________________________________________________________________________________________________________OK--> 
 
-		<StaticEntity position="3000,0,-1000">
+		<?lua for i=0,100,1 do 
+		x=math.random(250,4000)
+		y=math.random(-500,500)
+		z=math.random(1000,2000)
+		scale=math.random(20,70)
+		?>
+		<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>">
 			<attached>
-				<?lua for i=0,100,1 do 
-				x=math.random(250,4000)
-				y=math.random(-500,500)
-				z=math.random(1000,2000)
-				scale=math.random(20,70)
-				?>
-				<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>">
-					<attached>
-						<Model scale=<?lua print(scale) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
-					</attached>
-					<collisionShapes>
-        				<SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
-      					</collisionShapes> 
-				</MovableEntity>
-				<?lua end ?>
+				<Model scale=<?lua print(scale) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
 			</attached>
-		</StaticEntity>
+			<collisionShapes>
+				<SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
+				</collisionShapes> 
+		</MovableEntity>
+		<?lua end ?>
 
 <!--Erstellen des Ateroidenfeldes______ENDE__________________________________________________________________________________________________________________________________________________-->
 
 <!--Erstellen von Asteroiden die zufaellig plaziert sind___________________________________________________________________________________________________________________________________OK-->
 
-		<StaticEntity position="0,0,0">
-			<attached>
-				<?lua for i=0,150,1 do 
-				x=math.random(-8000,8000)
-				y=math.random(-8000,8000)
-				z=math.random(-8000,8000)
-				?>
-				<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>" >
-					<attached>
-						<Model scale=<?lua print(math.random(20,70)) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
-					</attached>
-					<collisionShapes>
-       					<SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
- 					</collisionShapes> 
-				</MovableEntity>
-				<?lua end ?>
-			</attached>
-		</StaticEntity>
+	<?lua for i=0,150,1 do 
+	x=math.random(-8000,8000)
+	y=math.random(-8000,8000)
+	z=math.random(-8000,8000)
+	?>
+	<MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>" >
+		<attached>
+			<Model scale=<?lua print(math.random(20,70)) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
+		</attached>
+		<collisionShapes>
+			<SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
+		</collisionShapes> 
+	</MovableEntity>
+	<?lua end ?>
 
 <!--Erstellen von Asteroiden die zufaellig plaziert sind______ENDE___________________________________________________________________________________________________________________________-->
 
@@ -404,7 +405,13 @@ z=math.random(-300,300)
 <?lua end ?>
 <!--Erstellen von Feinden auf dem Weg zu den Transportern______ENDE__________________________________________________________________________________________________________________________-->
 
-<DistanceTrigger name="activateSecondSpawnpoint" position="10000,0,3000" distance="1000" target="DistanceTriggerBeacon" targetname="PlayerDistanceTrigger" activations="1" stayactive="true" />
+<Trigger name=activateFirstSpawnpoint invert=true >
+    <DistanceTrigger name="activateSecondSpawnpoint" position="150,0,-300" distance="10" target="DistanceTriggerBeacon" targetname="PlayerDistanceTrigger" activations="1" stayactive="true">
+        <attached>
+                <Billboard position="0,0,0" colour="0,0,1.0" material="Examples/Flare" />
+        </attached>
+    </DistanceTrigger>
+</Trigger>
 
 	</Scene>
 </Level>

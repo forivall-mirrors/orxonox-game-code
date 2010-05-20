@@ -133,7 +133,7 @@ namespace orxonox
 
         if(pawn == NULL)
         {
-            COUT(2) << "The QuestEffectBeacon was triggered by an entity other than a Pawn." << std::endl;
+            COUT(2) << "The QuestEffectBeacon was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
             return false;
         }
 
