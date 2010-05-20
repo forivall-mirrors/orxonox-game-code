@@ -57,7 +57,7 @@ namespace orxonox
                 { return this->bLoadDefaults_; }
 
             void setXMLElement(const TiXmlElement& xmlelement);
-            const TiXmlElement& getXMLElement() const;
+            const TiXmlElement& getXMLElement();
 
             void setBaseclass(const std::string& baseclass);
             inline const std::string& getBaseclass() const
