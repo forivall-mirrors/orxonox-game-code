@@ -69,6 +69,7 @@ namespace orxonox
 
     void LevelManager::requestActivity(Level* level)
     {
+        assert( std::find(this->levels_s.begin(), this->levels_s.end(), level)==this->levels_s.end() );
         if( std::find(this->levels_s.begin(), this->levels_s.end(), level)!=this->levels_s.end() )
             return; // level is already in list
         this->levels_s.push_back(level);
