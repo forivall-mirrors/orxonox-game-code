@@ -27,8 +27,8 @@
 #include "SoundStreamer.h"
 
 #include <boost/thread.hpp>
-#include <al.h>
-#include <alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 #include <vorbis/vorbisfile.h>
 #include "SoundManager.h"
 #include "util/Sleep.h"
@@ -40,74 +40,16 @@ namespace orxonox
     int seekVorbis(void* datasource, ogg_int64_t offset, int whence);
     long tellVorbis(void* datasource);
 
-    void orxonox::SoundStreamer::operator()(ALuint audioSource, DataStreamPtr dataStream)
+    void orxonox::SoundStreamer::operator()(ALuint audioSource, DataStreamPtr dataStream, OggVorbis_File* vf, int current_section)
     {
-        COUT(4) << "Sound: Creating thread for " << dataStream->getName() << std::endl;
-
-        alSourcei(audioSource, AL_BUFFER, 0);
-
-        // Open file with custom streaming
-        ov_callbacks vorbisCallbacks;
-        vorbisCallbacks.read_func  = &readVorbis;
-        vorbisCallbacks.seek_func  = &seekVorbis;
-        vorbisCallbacks.tell_func  = &tellVorbis;
-        vorbisCallbacks.close_func = NULL;
-
-        OggVorbis_File vf;
-        int ret = ov_open_callbacks(dataStream.get(), &vf, NULL, 0, vorbisCallbacks);
-        if (ret < 0)
-        {
-            COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
-            ov_clear(&vf);
-            return;
-        }
+        char inbuffer[4096];
         vorbis_info* vorbisInfo;
-        vorbisInfo = ov_info(&vf, -1);
+        vorbisInfo = ov_info(vf, -1);
         ALenum format;
         if (vorbisInfo->channels == 1)
             format = AL_FORMAT_MONO16;
         else
             format = AL_FORMAT_STEREO16;
-
-        char inbuffer[4096];
-        ALuint initbuffers[5];
-        alGenBuffers(5, initbuffers);
-        if (ALint error = alGetError()) {
-            COUT(2) << "Sound: Streamer: Could not generate buffer:" << getALErrorString(error) << std::endl;
-            return;
-        }
-        int current_section;
-
-        for(int i = 0; i < 5; i++)
-        {
-            long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
-            if (ret == 0)
-            {
-                break;
-            }
-            else if (ret < 0)
-            {
-                COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
-                ov_clear(&vf);
-                return;
-            }
-
-            alBufferData(initbuffers[i], format, &inbuffer, ret, vorbisInfo->rate);
-            if(ALint error = alGetError()) {
-                COUT(2) << "Sound: Could not fill buffer: " << getALErrorString(error) << std::endl;
-                break;
-             }
-             alSourceQueueBuffers(audioSource, 1, &initbuffers[i]);
-             if (ALint error = alGetError()) {
-                 COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
-             }
-        }
-
-        //alSourcei(audioSource, AL_LOOPING, AL_TRUE);
-
-        alSourcePlay(audioSource);
-        if(ALint error = alGetError())
-            COUT(2) << "Sound: Could not start ambient sound" << getALErrorString(error) << std::endl;
 
         while(true) // Stream forever, control through thread control
         {
@@ -117,7 +59,9 @@ namespace orxonox
             if(info == AL_PLAYING)
                 COUT(4) << "Sound: " << dataStream->getName() << " is playing." << std::endl;
             else
+            {
                 COUT(4) << "Sound: " << dataStream->getName() << " is not playing." << std::endl;
+            }
 
             if(alcGetCurrentContext() == NULL)
             {
@@ -129,6 +73,7 @@ namespace orxonox
             alGetSourcei(audioSource, AL_BUFFERS_PROCESSED, &processed);
             if (ALint error = alGetError())
                 COUT(2) << "Sound: Warning: Couldn't get number of processed buffers: " << getALErrorString(error) << std::endl;
+
             COUT(4) << "Sound: processed buffers: " << processed << std::endl;
 
             if(processed > 0)
@@ -137,18 +82,25 @@ namespace orxonox
                 alSourceUnqueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
                     COUT(2) << "Sound: Warning: Couldn't unqueue buffers: " << getALErrorString(error) << std::endl;
+            
+                int queued;
+                alGetSourcei(audioSource, AL_BUFFERS_QUEUED, &queued);
+                if (ALint error = alGetError())
+                    COUT(2) << "Sound: Warning: Couldn't get number of queued buffers: " << getALErrorString(error) << std::endl;
+                COUT(4) << "Sound: queued buffers: " << queued << std::endl;
 
                 for(int i = 0; i < processed; i++)
                 {
-                    long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
+                    long ret = ov_read(vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
                     if (ret == 0)
                     {
+                        COUT(4) << "Sound: End of file " << dataStream->getName() << ", terminating thread" << std::endl;
                         return;
                     }
                     else if (ret < 0)
                     {
                         COUT(2) << "Sound: libvorbisfile: error reading the file " << dataStream->getName() << std::endl;
-                        ov_clear(&vf);
+                        ov_clear(vf);
                         return;
                     }
 
@@ -163,6 +115,11 @@ namespace orxonox
                     }
                 }
             }
+            else
+            {
+                msleep(10); // perhaps another value here is better
+            }
+
             try {
                 boost::this_thread::interruption_point();
             }
@@ -179,7 +136,6 @@ namespace orxonox
 
                 return;
             }
-            msleep(50); // perhaps another value here is better
         }
     }
 }

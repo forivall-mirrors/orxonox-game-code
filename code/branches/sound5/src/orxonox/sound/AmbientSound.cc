@@ -35,13 +35,19 @@
 #include "core/XMLPort.h"
 #include "SoundManager.h"
 #include "SoundStreamer.h"
+#include "util/Sleep.h"
 
 #include <AL/alut.h>
 
 namespace orxonox
 {
     CreateFactory(AmbientSound);
-
+    
+    // vorbis callbacks
+    size_t readVorbis(void* ptr, size_t size, size_t nmemb, void* datasource);
+    int seekVorbis(void* datasource, ogg_int64_t offset, int whence);
+    long tellVorbis(void* datasource);
+    
     AmbientSound::AmbientSound(BaseObject* creator)
         : BaseObject(creator)
         , Synchronisable(creator)
@@ -50,7 +56,7 @@ namespace orxonox
         RegisterObject(AmbientSound);
 
         // Ambient sounds always fade in
-        this->setVolume(0);
+        //this->setVolume(0);
         this->registerVariables();
     }
 
@@ -94,7 +100,7 @@ namespace orxonox
 
     void AmbientSound::stop()
     {
-        if (GameMode::playsSound())
+        if (GameMode::playsSound()) 
             SoundManager::getInstance().unregisterAmbientSound(this);
     }
 
@@ -169,8 +175,11 @@ namespace orxonox
 
         if (this->soundstreamthread_.get_id() != boost::thread::id())
         {
-            this->soundstreamthread_.interrupt(); // unhandled interruptions lead to thread terminating ;-)
+            this->soundstreamthread_.interrupt(); // terminate an old thread if necessary
         }
+
+        // queue some init buffers
+        COUT(4) << "Sound: Creating thread for " << source << std::endl;
         // Get resource info
         shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(source);
         if (fileInfo == NULL)
@@ -180,8 +189,67 @@ namespace orxonox
         }
         // Open data stream
         DataStreamPtr dataStream = Resource::open(fileInfo);
+        
+        alSourcei(this->audioSource_, AL_BUFFER, 0);
 
-        this->soundstreamthread_ = boost::thread(SoundStreamer(), this->audioSource_, dataStream);
+        // Open file with custom streaming
+        ov_callbacks vorbisCallbacks;
+        vorbisCallbacks.read_func  = &readVorbis;
+        vorbisCallbacks.seek_func  = &seekVorbis;
+        vorbisCallbacks.tell_func  = &tellVorbis;
+        vorbisCallbacks.close_func = NULL;
+
+        OggVorbis_File* vf = new OggVorbis_File();
+        int ret = ov_open_callbacks(dataStream.get(), vf, NULL, 0, vorbisCallbacks);
+        if (ret < 0)
+        {
+            COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
+            ov_clear(vf);
+            return;
+        }
+        vorbis_info* vorbisInfo;
+        vorbisInfo = ov_info(vf, -1);
+        ALenum format;
+        if (vorbisInfo->channels == 1)
+            format = AL_FORMAT_MONO16;
+        else
+            format = AL_FORMAT_STEREO16;
+
+        char inbuffer[4096];
+        ALuint initbuffers[10];
+        alGenBuffers(10, initbuffers);
+        if (ALint error = alGetError()) {
+            COUT(2) << "Sound: Streamer: Could not generate buffer:" << getALErrorString(error) << std::endl;
+            return;
+        }
+        int current_section;
+
+        for(int i = 0; i < 10; i++)
+        {
+            long ret = ov_read(vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
+            if (ret == 0)
+            {
+                break;
+            }
+            else if (ret < 0)
+            {
+                COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
+                ov_clear(vf);
+                return;
+            }
+
+            alBufferData(initbuffers[i], format, &inbuffer, ret, vorbisInfo->rate);
+            if(ALint error = alGetError()) {
+                COUT(2) << "Sound: Could not fill buffer: " << getALErrorString(error) << std::endl;
+                break;
+             }
+             alSourceQueueBuffers(this->audioSource_, 1, &initbuffers[i]);
+             if (ALint error = alGetError()) {
+                 COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
+             }
+        }
+        
+        this->soundstreamthread_ = boost::thread(SoundStreamer(), this->audioSource_, dataStream, vf, current_section);
         if(this->soundstreamthread_ == boost::thread())
             COUT(2) << "Sound: Failed to create thread." << std::endl;
         //SoundStreamer streamer;
