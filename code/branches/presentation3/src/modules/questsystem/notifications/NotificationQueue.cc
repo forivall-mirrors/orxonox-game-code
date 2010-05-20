@@ -55,6 +55,8 @@ namespace orxonox
     */
     NotificationQueue::NotificationQueue(BaseObject* creator) : OverlayGroup(creator)
     {
+        this->registered_ = false;
+        
         RegisterObject(NotificationQueue);
         this->initialize();
     }
@@ -67,6 +69,9 @@ namespace orxonox
     {
         this->targets_.clear();
         this->clear();
+
+        if(this->registered_)
+            NotificationManager::getInstance().unregisterListener(this);
     }
 
     /**
@@ -80,6 +85,7 @@ namespace orxonox
         this->tickTime_ = 0.0;
 
         NotificationManager::getInstance().registerListener(this);
+        this->registered_ = true;
     }
 
     /**
@@ -422,6 +428,8 @@ namespace orxonox
         if(this->size_ == 0) //!< You cannot remove anything if the queue is empty.
             return false;
 
+        NotificationManager::getInstance().unregisterNotification(container->notification, this);
+        
         this->removeElement(container->overlay);
         this->containers_.erase(container);
         this->overlays_.erase(container->notification);
@@ -442,7 +450,7 @@ namespace orxonox
         while(it != this->containers_.end())
         {
             this->removeContainer(*it);
-            it = this->containers_.begin(); //TODO: Needed?
+            it = this->containers_.begin();
         }
     }
 

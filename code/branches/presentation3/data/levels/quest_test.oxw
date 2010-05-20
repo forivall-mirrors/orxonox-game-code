@@ -16,23 +16,21 @@
 
 <?lua
     dofile("includes/CuboidSpaceStation.lua")
-?>
-
-<NotificationQueue
-	 name     = "notification"
-	 position = "0.40, 0.05"
-	 font     = "VeraMono"
-	 textsize = 0.020
-	 length   = 3
-	 width    = 50
-/>
-	
-	
+?>	
 	
 <Level
 name="Dani's Testlevel"
 description="Erste Versuche mit den Quests"
 >
+
+    <NotificationQueue
+	     name     = "notification"
+	     position = "0.40, 0.05"
+	     font     = "VeraMono"
+	     textsize = 0.020
+	     length   = 3
+	     width    = 50
+    />
 
     <Scene
         ambientlight = "0.3, 0.3, 0.3"
@@ -261,7 +259,7 @@ description="Erste Versuche mit den Quests"
 		  <EventTrigger invert=true>
 		    <events>
 		      <trigger>
-		        <QuestListener questId="dbd02b4c-ab7c-46fd-bdaf-fd4c19ac1551" mode="recieve" />
+		        <QuestListener questId="dbd02b4c-ab7c-46fd-bdaf-fd4c19ac1551" mode="start" />
 		      </trigger>
 		    </events>
 		  </EventTrigger>
@@ -270,7 +268,7 @@ description="Erste Versuche mit den Quests"
 	            <EventTrigger invert=true>
 		    <events>
 		      <trigger>
-                             <QuestListener questId="dbd02b4c-ab7c-46fd-bdaf-fd4c19ac1551" mode="recieve" />
+                             <QuestListener questId="dbd02b4c-ab7c-46fd-bdaf-fd4c19ac1551" mode="start" />
 		      </trigger>
 		    </events>
 		  </EventTrigger>
