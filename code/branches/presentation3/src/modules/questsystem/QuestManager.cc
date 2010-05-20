@@ -113,6 +113,7 @@ namespace orxonox
 
         if(result.second) //!< If inserting was a success.
         {
+            quest->setRegistered();
             COUT(3) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
             return true;
         }
@@ -121,6 +122,15 @@ namespace orxonox
            COUT(2) << "Quest with the same id was already present." << std::endl;
            return false;
         }
+    }
+
+    /**
+    @brief
+        Unregisters a Quest in the QuestManager.
+    */
+    bool QuestManager::unregisterQuest(Quest* quest)
+    {
+        return this->questMap_.erase(quest->getId()) == 1;
     }
 
     /**
@@ -145,6 +155,7 @@ namespace orxonox
 
         if(result.second) //!< If inserting was a success.
         {
+            hint->setRegistered();
             COUT(3) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
             return true;
         }
@@ -153,6 +164,15 @@ namespace orxonox
            COUT(2) << "QuestHint with the same id was already present." << std::endl;
            return false;
         }
+    }
+
+    /**
+    @brief
+        Unregisters a QuestHint in the QuestManager.
+    */
+    bool QuestManager::unregisterHint(QuestHint* hint)
+    {
+        return this->hintMap_.erase(hint->getId()) == 1;
     }
 
     /**
@@ -168,7 +188,7 @@ namespace orxonox
     */
     Quest* QuestManager::findQuest(const std::string & questId)
     {
-        if(!QuestItem::isId(questId)) //!< Check vor validity of the given id.
+        if(questId.compare(BLANKSTRING) == 1) //!< Check vor validity of the given id.
         {
             ThrowException(Argument, "Invalid questId.");
         }
@@ -202,7 +222,7 @@ namespace orxonox
     */
     QuestHint* QuestManager::findHint(const std::string & hintId)
     {
-        if(!QuestItem::isId(hintId)) //!< Check vor validity of the given id.
+        if(hintId.compare(BLANKSTRING) == 1) //!< Check vor validity of the given id.
         {
             ThrowException(Argument, "Invalid hintId.");
         }

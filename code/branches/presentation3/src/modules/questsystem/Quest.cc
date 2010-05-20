@@ -60,7 +60,8 @@ namespace orxonox
     */
     Quest::~Quest()
     {
-
+        if(this->isRegistered())
+            QuestManager::getInstance().unregisterQuest(this);
     }
 
     /**

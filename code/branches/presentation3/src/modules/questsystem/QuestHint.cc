@@ -58,7 +58,8 @@ namespace orxonox
     */
     QuestHint::~QuestHint()
     {
-
+        if(this->isRegistered())
+            QuestManager::getInstance().unregisterHint(this);
     }
 
     /**

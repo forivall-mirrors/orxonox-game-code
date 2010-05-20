@@ -75,7 +75,9 @@ namespace orxonox
             CEGUI::Window* getQuestGUI(const std::string & guiName); // tolua_export
 
             bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
-            bool registerHint(QuestHint* quest); //!< Registers a QuestHint in the QuestManager.
+            bool unregisterQuest(Quest* quest); //!< Unregisters a Quest in the QuestManager.
+            bool registerHint(QuestHint* hint); //!< Registers a QuestHint in the QuestManager.
+            bool unregisterHint(QuestHint* hint); //!< Unregisters a QuestHint in the QuestManager.
 
             Quest* findQuest(const std::string & questId); //!< Returns the Quest with the input id.
             QuestHint* findHint(const std::string & hintId); //!< Returns the QuestHint with the input id.

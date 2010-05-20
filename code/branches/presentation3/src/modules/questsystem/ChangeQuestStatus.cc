@@ -77,7 +77,7 @@ namespace orxonox
     */
     bool ChangeQuestStatus::setQuestId(const std::string & id)
     {
-        if(!QuestItem::isId(id))
+        if(id.compare(BLANKSTRING) == 0)
         {
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return false;

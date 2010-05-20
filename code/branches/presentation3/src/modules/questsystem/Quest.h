@@ -103,7 +103,7 @@ namespace orxonox
             bool start(PlayerInfo* player); //!< Sets a Quest to active.
             virtual bool fail(PlayerInfo* player); //!< Fails the Quest.
             virtual bool complete(PlayerInfo* player); //!< Completes the Quest.
-
+            
             bool addListener(QuestListener* listener); //!< Adds a QuestListener to the list of QuestListeners listening to this Quest.
 
         protected:
