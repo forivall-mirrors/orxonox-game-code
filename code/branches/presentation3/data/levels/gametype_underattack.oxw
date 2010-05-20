@@ -3,6 +3,7 @@
   include("stats.oxo")
   include("underattackhud.oxo")
   include("templates/spaceship_assff.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
@@ -10,6 +11,10 @@
  description  = "A simple testlevel"
  gametype     = UnderAttack
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/skypanoramagen1"

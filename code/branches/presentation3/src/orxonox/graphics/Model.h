@@ -60,14 +60,24 @@ namespace orxonox
                 { this->bCastShadows_ = bCastShadows; this->changedShadows(); }
             inline bool getCastShadows() const
                 { return this->bCastShadows_; }
-
+                
         private:
             void changedMesh();
             void changedShadows();
+            
+            //LoD
+            inline void setLodLevel(float lodLevel)
+                { this->lodLevel_ =  lodLevel; }
+            inline float getLodLevel() const
+                { return this->lodLevel_; }
+            float getBiggestScale(Vector3 scale3d);
 
             std::string meshSrc_;
             Mesh mesh_;
             bool bCastShadows_;
+            
+            //LoD
+            float lodLevel_;
     };
 }
 

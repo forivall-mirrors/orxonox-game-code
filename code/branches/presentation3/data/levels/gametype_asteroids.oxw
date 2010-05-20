@@ -2,6 +2,7 @@
   include("hudtemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceship_assff.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
@@ -9,6 +10,10 @@
  description  = "testmap for gametype asteroid race"
  gametype     =  Asteroids
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
 <Scene
  ambientlight = "0.5, 0.5, 0.5"
  skybox       = "Orxonox/Starbox"
