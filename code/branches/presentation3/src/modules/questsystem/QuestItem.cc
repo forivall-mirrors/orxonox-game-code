@@ -39,6 +39,9 @@
 
 namespace orxonox
 {
+
+    CreateUnloadableFactory(QuestItem);
+    
     /**
     @brief
         Constructor. Registers and initializes the object.

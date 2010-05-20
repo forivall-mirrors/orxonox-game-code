@@ -67,7 +67,7 @@ namespace orxonox
     {
         SUPER(FailQuest, XMLPort, xmlelement, mode);
 
-        COUT(3) << "New FailQUest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
+        COUT(4) << "New FailQUest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
     /**
@@ -86,7 +86,7 @@ namespace orxonox
             return false;
         }
 
-        COUT(3) << "FailQuest on player: " << player << " ." << std::endl;
+        COUT(4) << "FailQuest on player: " << player << " ." << std::endl;
 
         Quest* quest;
         try
@@ -103,7 +103,7 @@ namespace orxonox
             return false;
         }
 
-        COUT(3) << "Quest {" << quest->getId() << "} failed by player: " << player << " ." << std::endl;
+        COUT(4) << "Quest {" << quest->getId() << "} failed by player: " << player << " ." << std::endl;
         return true;
     }
 

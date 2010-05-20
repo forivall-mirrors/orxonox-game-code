@@ -71,7 +71,7 @@ namespace orxonox
             @brief Returns the QuestDescription of the QuestItem.
             @return Returns a pointer to the QuestDescription object of the QuestItem.
             */
-            inline const QuestDescription* getDescription(void) const
+            inline QuestDescription* getDescription(void) const
                 { return this->description_; }
 
             /**

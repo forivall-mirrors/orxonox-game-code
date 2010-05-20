@@ -59,8 +59,8 @@ namespace orxonox
             NotificationManager();
             virtual ~NotificationManager();
 
-            static const std::string ALL;
-            static const std::string NONE;
+            static const std::string ALL; //!< Static string to indicate a sender that sends to all NotificationListeners.
+            static const std::string NONE; //!< Static string to indicare a sender that sends to no specific NotificationListener.
 
             bool registerNotification(Notification* notification); //!< Registers a Notification within the NotificationManager.
             void unregisterNotification(Notification* notification, NotificationListener* listener); //!< Unregisters a Notification within the NotificationManager.
@@ -98,8 +98,7 @@ namespace orxonox
             std::map<int,std::multimap<std::time_t,Notification*>*> notificationLists_; //!< Container where all Notifications, for each identifier (associated with a NotificationListener), are stored.
             std::map<Notification*, unsigned int> listenerCounter_; //!< A container to store the number of NotificationListeners a Notification is registered with.
 
-            bool removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map);
-
+            bool removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map); //!< Helper method that removes an input notification form an input map.
 
     };
 

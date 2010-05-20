@@ -82,42 +82,42 @@ namespace orxonox
             @brief Returns the fail message.
             @return Returns a string containing the fail message of the QuestDescription.
             */
-            inline const std::string & getFailMessage(void) const
+            inline const std::string & getFailMessage(void)
                 { return this->failMessage_; }
 
             /**
             @brief Returns the complete message.
             @return Returns a string containing the complete message of the QuestDescription.
             */
-            inline const std::string & getCompleteMessage(void) const
+            inline const std::string & getCompleteMessage(void)
                 { return this->completeMessage_; }
 
             /**
             @brief Sends a Notification displaying that a QuestHint was added.
             @return Returns true if successful.
             */
-            inline bool sendAddHintNotification(void) const
+            inline bool sendAddHintNotification(void)
                 { return notificationHelper("hint", ""); }
 
             /**
             @brief Sends a Notification displaying that a Quest was added.
             @return Returns true if successful.
             */
-            inline bool sendAddQuestNotification(void) const
+            inline bool sendAddQuestNotification(void)
                 { return notificationHelper("quest", "start"); }
 
             /**
             @brief Sends a Notification displaying that a Quest was failed.
             @return Returns true if successful.
             */
-            inline bool sendFailQuestNotification(void) const
+            inline bool sendFailQuestNotification(void)
                 { return notificationHelper("quest", "fail"); }
 
             /**
             @brief Sends a Notification displaying that a Quest was completed.
             @return Returns true if successful.
             */
-            inline bool sendCompleteQuestNotification(void) const
+            inline bool sendCompleteQuestNotification(void)
                 { return notificationHelper("quest", "complete"); }
 
         private:
@@ -126,7 +126,7 @@ namespace orxonox
             std::string failMessage_; //!< The message displayed when the Quest is failed.
             std::string completeMessage_; //!< The message displayed when the Quest is completed.
 
-            bool notificationHelper(const std::string & item, const std::string & status) const; //!< Helper for sending QuestDescriptions as Notifications.
+            bool notificationHelper(const std::string & item, const std::string & status); //!< Helper for sending QuestDescriptions as Notifications.
 
             /**
             @brief Sets the title.

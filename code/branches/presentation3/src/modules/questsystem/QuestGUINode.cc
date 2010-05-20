@@ -80,7 +80,7 @@ namespace orxonox {
 
         this->createWindow();
 
-        COUT(3) << "New QuestGUINode '" << this->window_->getName() << "' created." << std::endl;
+        COUT(4) << "New QuestGUINode '" << this->window_->getName() << "' created." << std::endl;
     }
 
     /**
@@ -268,7 +268,7 @@ namespace orxonox {
                 }
             }
 
-            COUT(3) << "Show Details: " << this->details_->getName() << std::endl;
+            COUT(4) << "Show Details: " << this->details_->getName() << std::endl;
         }
 
         return this->details_;
@@ -280,7 +280,7 @@ namespace orxonox {
     */
     bool QuestGUINode::openDetails(const CEGUI::EventArgs& e)
     {
-        COUT(3) << "Open QuestItem..." << std::endl;
+        COUT(4) << "Open QuestItem..." << std::endl;
 
         //CEGUI::Window* window = this->gui_->getRootWindow();
         CEGUI::Window* window = this->gui_->getWindowManager()->getWindow("orxonox/QuestGUI/Background");

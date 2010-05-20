@@ -73,7 +73,7 @@ namespace orxonox
         XMLPortParam(QuestDescription, "failMessage", setFailMessage, getFailMessage, xmlelement, mode);
         XMLPortParam(QuestDescription, "completeMessage", setCompleteMessage, getCompleteMessage, xmlelement, mode);
 
-        COUT(3) << "New QuestDescription with title '" << this->getTitle() << "' created." << std::endl;
+        COUT(4) << "New QuestDescription with title '" << this->getTitle() << "' created." << std::endl;
     }
 
     /**
@@ -88,7 +88,7 @@ namespace orxonox
     @todo
         Make sure the messages meet the conditions.
     */
-    bool QuestDescription::notificationHelper(const std::string & item, const std::string & status) const
+    bool QuestDescription::notificationHelper(const std::string & item, const std::string & status)
     {
         std::string message;
         if(item == "hint")
@@ -121,7 +121,7 @@ namespace orxonox
             return false;
         }
 
-        QuestNotification* notification = new QuestNotification(message);
+        QuestNotification* notification = new QuestNotification(this, message);
         notification->send();
         return true;
     }

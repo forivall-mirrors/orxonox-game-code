@@ -100,7 +100,7 @@ namespace orxonox {
     */
     void QuestGUI::update(void)
     {
-        COUT(3) << "Updating QuestGUI..." << std::endl;
+        COUT(4) << "Updating QuestGUI..." << std::endl;
 
         this->clear(); //!< Clear the GUI.
 
@@ -121,7 +121,7 @@ namespace orxonox {
                 index = createNode(this->root_, quest, depth, index);
             }
         }
-        COUT(3) << "Updating QuestGUI done." << std::endl;
+        COUT(4) << "Updating QuestGUI done." << std::endl;
     }
 
     /**
@@ -130,7 +130,7 @@ namespace orxonox {
     */
     void QuestGUI::clear(void)
     {
-        COUT(3) << "Clearing QuestGUI..." << std::endl;
+        COUT(4) << "Clearing QuestGUI..." << std::endl;
 
         //! Clear all nodes.
         for(std::map<CEGUI::Window*, QuestGUINode*>::iterator it = this->nodes_.begin(); it != this->nodes_.end(); it++)

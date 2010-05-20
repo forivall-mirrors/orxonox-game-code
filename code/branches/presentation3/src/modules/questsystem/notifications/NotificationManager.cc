@@ -117,17 +117,25 @@ namespace orxonox
     /**
     @brief
         Unregisters a Notification within the NotificationManager.
+    @param notification
+        A pointer to the Notification to be unregistered.
+    @param listener
+        A pointer to the NotificationListener the Notification is unregistered for.
     */
     void NotificationManager::unregisterNotification(Notification* notification, NotificationListener* listener)
     {
         assert(notification);
         assert(listener);
 
+        // If the Notification was removed from the list of Notifications of the input NotificationListener, the counter for the Notification of the number of NotificationListeners it is present in is decremented.
         if(this->removeNotification(notification, *(this->notificationLists_.find(this->listenerList_.find(listener)->second)->second)))
             this->listenerCounter_[notification] = this->listenerCounter_[notification] - 1;
+
+        // If the Notification is no longer present in any of the NotificationListeners it can be removed from the map of all Notifications and be destroyed.
         if(this->listenerCounter_[notification] == (unsigned int) 0)
         {
             this->removeNotification(notification, this->allNotificationsList_);
+            this->listenerCounter_.erase(notification);
             notification->destroy();
         }
 
@@ -137,9 +145,17 @@ namespace orxonox
     /**
     @brief
         Helper method that removes an input notification form an input map.
+    @param notification
+        A pointer to the notification to be removed.
+    @param map
+        The map the notification should be removed from.
+    @return
+        Returns true if successful.
     */
     bool NotificationManager::removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map)
     {
+        // Iterates through all items in the map until the Notification is found.
+        //TODO: Do more efficiently?
         for(std::multimap<std::time_t, Notification*>::iterator it = map.begin(); it != map.end(); it++)
         {
             if(it->second == notification)
@@ -221,7 +237,10 @@ namespace orxonox
 
         this->listenerList_.erase(listener);
         this->notificationLists_.erase(identifier);
-        delete map;
+
+        // If the map is not the map of all notifications, delete it.
+        if(map != &this->allNotificationsList_)
+            delete map;
 
         COUT(4) << "NotificationListener unregistered with the NotificationManager." << std::endl;
     }

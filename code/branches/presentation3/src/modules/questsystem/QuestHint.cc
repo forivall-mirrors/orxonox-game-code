@@ -72,7 +72,7 @@ namespace orxonox
 
         QuestManager::getInstance().registerHint(this); //!< Registers the QuestHint with the QuestManager.
 
-        COUT(3) << "New QuestHint {" << this->getId() << "} created." << std::endl;
+        COUT(4) << "New QuestHint {" << this->getId() << "} created." << std::endl;
     }
 
 
@@ -125,12 +125,12 @@ namespace orxonox
             }
             else
             {
-                COUT(2) << "An already active questHint was trying to get activated." << std::endl;
+                COUT(4) << "An already active questHint was trying to get activated." << std::endl;
                 return false;
             }
         }
 
-        COUT(2) << "A hint of a non-active quest was trying to get activated." << std::endl;
+        COUT(4) << "A hint of a non-active quest was trying to get activated." << std::endl;
         return false;
     }
 

@@ -114,7 +114,7 @@ namespace orxonox
         if(result.second) //!< If inserting was a success.
         {
             quest->setRegistered();
-            COUT(3) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
+            COUT(4) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
             return true;
         }
         else
@@ -156,7 +156,7 @@ namespace orxonox
         if(result.second) //!< If inserting was a success.
         {
             hint->setRegistered();
-            COUT(3) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
+            COUT(4) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
             return true;
         }
         else

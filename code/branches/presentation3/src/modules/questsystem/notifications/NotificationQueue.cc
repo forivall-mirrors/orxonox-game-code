@@ -123,7 +123,7 @@ namespace orxonox
         XMLPortParam(NotificationQueue, "fontSize", setFontSize, getFontSize, xmlElement, mode);
         XMLPortParam(NotificationQueue, "position", setPosition, getPosition, xmlElement, mode);
 
-        COUT(3) << "NotificationQueue created." << std::endl;
+        COUT(3) << "NotificationQueue '" << this->getName() << "' created." << std::endl;
     }
 
     /**
@@ -178,7 +178,7 @@ namespace orxonox
 
         delete notifications;
 
-        COUT(3) << "NotificationQueue updated." << std::endl;
+        COUT(4) << "NotificationQueue '" << this->getName() << "' updated." << std::endl;
     }
 
     /**
@@ -201,7 +201,7 @@ namespace orxonox
             this->scroll(Vector2(0.0f,-(1.1f*this->getFontSize())));
         }
 
-        COUT(3) << "NotificationQueue updated. A new Notifications has been added." << std::endl;
+        COUT(4) << "NotificationQueue '" << this->getName() << "' updated. A new Notifications has been added." << std::endl;
     }
 
     /**
@@ -428,6 +428,7 @@ namespace orxonox
         if(this->size_ == 0) //!< You cannot remove anything if the queue is empty.
             return false;
 
+        // Unregister the NotificationQueue with the NotificationManager.
         NotificationManager::getInstance().unregisterNotification(container->notification, this);
         
         this->removeElement(container->overlay);

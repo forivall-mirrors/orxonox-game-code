@@ -98,7 +98,7 @@ namespace orxonox
 
         this->parentQuest_ = quest;
 
-        COUT(3) << "Parent Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
+        COUT(4) << "Parent Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
 
@@ -121,7 +121,7 @@ namespace orxonox
         quest->setParentQuest(this); //!< Sets the currentQuest (this) as parentquest for the added subquest.
         this->subQuests_.push_back(quest); //!< Adds the Quest to the end of the list of subquests.
 
-        COUT(3) << "Sub Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
+        COUT(4) << "Sub Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
 
@@ -145,7 +145,7 @@ namespace orxonox
         hint->setQuest(this); //!< Sets the current Quest (this) as Quest for the added QuestHint.
         this->hints_.push_back(hint); //!< Adds the QuestHint to the end of the list of QuestHints.
 
-        COUT(3) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
+        COUT(4) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
 
@@ -167,7 +167,7 @@ namespace orxonox
 
         this->failEffects_.push_back(effect); //!< Adds the QuestEffect to the end of the list of fail QuestEffects.
 
-        COUT(3) << "A FailEffect was added to Quest {" << this->getId() << "}." << std::endl;
+        COUT(4) << "A FailEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
 
@@ -189,7 +189,7 @@ namespace orxonox
 
         this->completeEffects_.push_back(effect); //!< Adds the QuestEffect to the end of the list of complete QuestEffects.
 
-        COUT(3) << "A CompleteEffect was added to Quest {" << this->getId() << "}." << std::endl;
+        COUT(4) << "A CompleteEffect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
 
