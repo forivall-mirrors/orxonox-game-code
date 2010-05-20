@@ -33,9 +33,9 @@
 #include "core/GUIManager.h"
 #include "core/CorePrereqs.h"
 #include <CEGUIWindow.h>
-#include <CEGUI/elements/CEGUIListbox.h>
-#include <CEGUI/elements/CEGUIListboxItem.h>
-#include <CEGUI/elements/CEGUIListboxTextItem.h>
+#include <elements/CEGUIListbox.h>
+#include <elements/CEGUIListboxItem.h>
+#include <elements/CEGUIListboxTextItem.h>
 #include <CEGUIWindowManager.h>
 #include <string>
 
