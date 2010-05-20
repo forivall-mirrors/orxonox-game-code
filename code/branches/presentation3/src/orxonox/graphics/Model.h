@@ -61,7 +61,7 @@ namespace orxonox
             inline bool getCastShadows() const
                 { return this->bCastShadows_; }
                 
-        private:
+        protected:
             void changedMesh();
             void changedShadows();
             

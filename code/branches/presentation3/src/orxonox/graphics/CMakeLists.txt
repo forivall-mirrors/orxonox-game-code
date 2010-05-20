@@ -5,6 +5,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   GlobalShader.cc
   MeshLodInformation.cc
   Model.cc
+  AnimatedModel.cc
   ParticleEmitter.cc
   ParticleSpawner.cc
 COMPILATION_BEGIN GraphicsCompilation.cc
