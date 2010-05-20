@@ -28,8 +28,8 @@
 
 #include "HUDNavigation.h"
 
-#include <string>
 #include <OgreCamera.h>
+#include <OgreFontManager.h>
 #include <OgreOverlayManager.h>
 #include <OgreTextAreaOverlayElement.h>
 #include <OgrePanelOverlayElement.h>
@@ -44,6 +44,8 @@
 #include "graphics/Camera.h"
 #include "controllers/HumanController.h"
 #include "worldentities/pawns/Pawn.h"
+#include "worldentities/WorldEntity.h"
+#include "interfaces/RadarViewable.h"
 
 namespace orxonox
 {
@@ -54,43 +56,18 @@ namespace orxonox
     {
         RegisterObject(HUDNavigation);
 
-        // create nav text
-        navText_ = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
-            .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
-
-        // create nav marker
-        navMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-            .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
-        navMarker_->setMaterialName("Orxonox/NavArrows");
-
-/*
-        // create aim marker
-        aimMarker_ = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
-            .createOverlayElement("Panel", "HUDNavigation_aimMarker_" + getUniqueNumberString()));
-        aimMarker_->setMaterialName("Orxonox/NavCrosshair");
-        this->wasOutOfView_ = true; // Ensure the material is changed right the first time..
-
+        // Set default values
         setFont("Monofur");
         setTextSize(0.05f);
         setNavMarkerSize(0.05f);
-        setAimMarkerSize(0.04f);
-*/
-
-        background_->addChild(navMarker_);
-//        background_->addChild(aimMarker_);
-        background_->addChild(navText_);
-
-        // hide at first
-        this->setVisible(false);
     }
 
     HUDNavigation::~HUDNavigation()
     {
         if (this->isInitialized())
         {
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navMarker_);
-            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->navText_);
-//            Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->aimMarker_);
+            for (ObjectMap::iterator it = activeObjectList_.begin(); it != activeObjectList_.end();)
+                removeObject((it++)->first);
         }
     }
 
@@ -98,189 +75,251 @@ namespace orxonox
     {
         SUPER(HUDNavigation, XMLPort, xmlElement, mode);
 
-        XMLPortParam(HUDNavigation, "font",     setFont,     getFont,     xmlElement, mode);
-        XMLPortParam(HUDNavigation, "textSize", setTextSize, getTextSize, xmlElement, mode);
+        XMLPortParam(HUDNavigation, "font",          setFont,          getFont,          xmlElement, mode);
+        XMLPortParam(HUDNavigation, "textSize",      setTextSize,      getTextSize,      xmlElement, mode);
         XMLPortParam(HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode);
-//        XMLPortParam(HUDNavigation, "aimMarkerSize", setAimMarkerSize, getAimMarkerSize, xmlElement, mode);
     }
 
     void HUDNavigation::setFont(const std::string& font)
     {
-        if (this->navText_ && !font.empty())
-            this->navText_->setFontName(font);
+        const Ogre::ResourcePtr& fontPtr = Ogre::FontManager::getSingleton().getByName(font);
+        if (fontPtr.isNull())
+        {
+            COUT(2) << "Warning: HUDNavigation: Font '" << font << "' not found" << std::endl;
+            return;
+        }
+        fontName_ = font;
+        for (ObjectMap::iterator it = activeObjectList_.begin(); it != activeObjectList_.end(); ++it)
+        {
+            if (it->second.text_ != NULL)
+                it->second.text_->setFontName(fontName_);
+        }
     }
 
     const std::string& HUDNavigation::getFont() const
     {
-        if (this->navText_)
-            return this->navText_->getFontName();
-        else
-            return BLANKSTRING;
+        return fontName_;
     }
 
     void HUDNavigation::setTextSize(float size)
     {
-        if (this->navText_ && size >= 0.0f)
-            this->navText_->setCharHeight(size);
+        if (size <= 0.0f)
+        {
+            COUT(2) << "Warning: HUDNavigation: Negative font size not allowed" << std::endl;
+            return;
+        }
+        textSize_ = size;
+        for (ObjectMap::iterator it = activeObjectList_.begin(); it!=activeObjectList_.end(); ++it)
+        {
+            if (it->second.text_)
+                it->second.text_->setCharHeight(size);
+        }
     }
 
     float HUDNavigation::getTextSize() const
     {
-        if (this->navText_)
-            return this->navText_->getCharHeight();
-        else
-            return 0.0f;
+        return textSize_;
     }
 
     void HUDNavigation::tick(float dt)
     {
         SUPER(HUDNavigation, tick, dt);
 
-        // Get radar
-        Radar* radar = this->getOwner()->getScene()->getRadar();
-
-        if (!radar->getFocus())
-        {
-            this->overlay_->hide();
+        Camera* cam = CameraManager::getInstance().getActiveCamera();
+        if (cam == NULL)
             return;
-        }
-        else
+        const Matrix4& camTransform = cam->getOgreCamera()->getProjectionMatrix() * cam->getOgreCamera()->getViewMatrix();
+
+        for (ObjectMap::iterator it = activeObjectList_.begin(); it != activeObjectList_.end(); ++it)
         {
-            this->overlay_->show();
-        }
+            // Get Distance to HumanController and save it in the TextAreaOverlayElement.
+            int dist = (int)((it->first->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length() + 0.5f);
+            it->second.text_->setCaption(multi_cast<std::string>(dist));
+            float textLength = multi_cast<std::string>(dist).size() * it->second.text_->getCharHeight() * 0.3f;
 
-        // set text
-        int dist = static_cast<int>(getDist2Focus());
-        navText_->setCaption(multi_cast<std::string>(dist));
-        float textLength = multi_cast<std::string>(dist).size() * navText_->getCharHeight() * 0.3f;
+            // Transform to screen coordinates
+            Vector3 pos = camTransform * it->first->getRVWorldPosition();
 
-        orxonox::Camera* cam = CameraManager::getInstance().getActiveCamera();
-        if (!cam)
-            return;
-        const Matrix4& transform = cam->getOgreCamera()->getProjectionMatrix() * cam->getOgreCamera()->getViewMatrix();
-        // transform to screen coordinates
-        Vector3 pos = transform * radar->getFocus()->getRVWorldPosition();
-
-        bool outOfView;
-        if (pos.z > 1.0)
-        {
-            // z > 1.0 means that the object is behind the camera
-            outOfView = true;
-            // we have to switch all coordinates (if you don't know why,
-            // try linear algebra lectures, because I can't explain..)
-            pos.x = -pos.x;
-            pos.y = -pos.y;
-        }
-        else
-            outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
-
-        if (outOfView)
-        {
-            // object is not in view
-//            aimMarker_->hide();
-
-            if (!wasOutOfView_)
+            bool outOfView = true;
+            if (pos.z > 1.0)
             {
-                navMarker_->setMaterialName("Orxonox/NavArrows");
-                wasOutOfView_ = true;
+                // z > 1.0 means that the object is behind the camera
+                outOfView = true;
+                // we have to switch all coordinates (if you don't know why,
+                // try linear algebra lectures, because I can't explain..)
+                pos.x = -pos.x;
+                pos.y = -pos.y;
             }
+            else
+                outOfView = pos.x < -1.0 || pos.x > 1.0 || pos.y < -1.0 || pos.y > 1.0;
 
-            if (pos.x < pos.y)
+            if (outOfView)
             {
-                if (pos.y > -pos.x)
+                // Object is not in view
+
+                // Change material only if outOfView changed
+                if (!it->second.wasOutOfView_)
                 {
-                    // up
-                    float position = pos.x / pos.y + 1.0f;
-                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5f, 0.0f);
-                    navMarker_->setUV(0.5f, 0.0f, 1.0f, 0.5f);
-                    navText_->setLeft((position - textLength) * 0.5f);
-                    navText_->setTop(navMarker_->getHeight());
+                    it->second.panel_->setMaterialName("Orxonox/NavArrows");
+                    it->second.wasOutOfView_ = true;
+                }
+
+                // Switch between top, bottom, left and right position of the arrow at the screen border
+                if (pos.x < pos.y)
+                {
+                    if (pos.y > -pos.x)
+                    {
+                        // Top
+                        float position = pos.x / pos.y + 1.0f;
+                        it->second.panel_->setPosition((position - it->second.panel_->getWidth()) * 0.5f, 0.0f);
+                        it->second.panel_->setUV(0.5f, 0.0f, 1.0f, 0.5f);
+                        it->second.text_->setLeft((position - textLength) * 0.5f);
+                        it->second.text_->setTop(it->second.panel_->getHeight());
+                    }
+                    else
+                    {
+                        // Left
+                        float position = pos.y / pos.x + 1.0f;
+                        it->second.panel_->setPosition(0.0f, (position - it->second.panel_->getWidth()) * 0.5f);
+                        it->second.panel_->setUV(0.0f, 0.0f, 0.5f, 0.5f);
+                        it->second.text_->setLeft(it->second.panel_->getWidth() + 0.01f);
+                        it->second.text_->setTop((position - it->second.text_->getCharHeight()) * 0.5f);
+                    }
                 }
                 else
                 {
-                    // left
-                    float position = pos.y / pos.x + 1.0f;
-                    navMarker_->setPosition(0.0f, (position - navMarker_->getWidth()) * 0.5f);
-                    navMarker_->setUV(0.0f, 0.0f, 0.5f, 0.5f);
-                    navText_->setLeft(navMarker_->getWidth() + 0.01f);
-                    navText_->setTop((position - navText_->getCharHeight()) * 0.5f);
+
+                    if (pos.y < -pos.x)
+                    {
+                        // Bottom
+                        float position = -pos.x / pos.y + 1.0f;
+                        it->second.panel_->setPosition((position - it->second.panel_->getWidth()) * 0.5f, 1.0f - it->second.panel_->getHeight());
+                        it->second.panel_->setUV(0.0f, 0.5f, 0.5f, 1.0f);
+                        it->second.text_->setLeft((position - textLength) * 0.5f);
+                        it->second.text_->setTop(1.0f - it->second.panel_->getHeight() - it->second.text_->getCharHeight());
+                    }
+                    else
+                    {
+                        // Right
+                        float position = -pos.y / pos.x + 1.0f;
+                        it->second.panel_->setPosition(1.0f - it->second.panel_->getWidth(), (position - it->second.panel_->getHeight()) * 0.5f);
+                        it->second.panel_->setUV(0.5f, 0.5f, 1.0f, 1.0f);
+                        it->second.text_->setLeft(1.0f - it->second.panel_->getWidth() - textLength - 0.01f);
+                        it->second.text_->setTop((position - it->second.text_->getCharHeight()) * 0.5f);
+                    }
                 }
             }
             else
             {
-                if (pos.y < -pos.x)
+                // Object is in view
+
+                // Change material only if outOfView changed
+                if (it->second.wasOutOfView_)
                 {
-                    // down
-                    float position = -pos.x / pos.y + 1.0f;
-                    navMarker_->setPosition((position - navMarker_->getWidth()) * 0.5f, 1.0f - navMarker_->getHeight());
-                    navMarker_->setUV(0.0f, 0.5f, 0.5f, 1.0f);
-                    navText_->setLeft((position - textLength) * 0.5f);
-                    navText_->setTop(1.0f - navMarker_->getHeight() - navText_->getCharHeight());
+                    it->second.panel_->setMaterialName("Orxonox/NavTDC");
+                    it->second.wasOutOfView_ = false;
                 }
-                else
-                {
-                    // right
-                    float position = -pos.y / pos.x + 1.0f;
-                    navMarker_->setPosition(1.0f - navMarker_->getWidth(), (position - navMarker_->getHeight()) * 0.5f);
-                    navMarker_->setUV(0.5f, 0.5f, 1.0f, 1.0f);
-                    navText_->setLeft(1.0f - navMarker_->getWidth() - textLength - 0.01f);
-                    navText_->setTop((position - navText_->getCharHeight()) * 0.5f);
-                }
-            }
-        }
-        else
-        {
-            // object is in view
-/*
-            Vector3 aimpos = transform * getPredictedPosition(SpaceShip::getLocalShip()->getPosition(),
-                    Projectile::getSpeed(), Radar::getInstance().getFocus()->getRVWorldPosition(), Radar::getInstance().getFocus()->getRVOrientedVelocity());
-*/
-            if (wasOutOfView_)
-            {
-                navMarker_->setMaterialName("Orxonox/NavTDC");
-                wasOutOfView_ = false;
+
+                // Position marker
+                it->second.panel_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
+                it->second.panel_->setLeft((pos.x + 1.0f - it->second.panel_->getWidth()) * 0.5f);
+                it->second.panel_->setTop((-pos.y + 1.0f - it->second.panel_->getHeight()) * 0.5f);
+
+                // Position text
+                it->second.text_->setLeft((pos.x + 1.0f + it->second.panel_->getWidth()) * 0.5f);
+                it->second.text_->setTop((-pos.y + 1.0f + it->second.panel_->getHeight()) * 0.5f);
             }
 
-            // object is in view
-            navMarker_->setUV(0.0f, 0.0f, 1.0f, 1.0f);
-            navMarker_->setLeft((pos.x + 1.0f - navMarker_->getWidth()) * 0.5f);
-            navMarker_->setTop((-pos.y + 1.0f - navMarker_->getHeight()) * 0.5f);
-
-/*
-            aimMarker_->show();
-            aimMarker_->setLeft((aimpos.x + 1.0f - aimMarker_->getWidth()) * 0.5f);
-            aimMarker_->setTop((-aimpos.y + 1.0f - aimMarker_->getHeight()) * 0.5f);
-*/
-            navText_->setLeft((pos.x + 1.0f + navMarker_->getWidth()) * 0.5f);
-            navText_->setTop((-pos.y + 1.0f + navMarker_->getHeight()) * 0.5f);
+            // Make sure the overlays are shown
+            it->second.panel_->show();
+            it->second.text_->show();
         }
     }
 
-    float HUDNavigation::getDist2Focus() const
-    {
-        Radar* radar = this->getOwner()->getScene()->getRadar();
-        if (radar->getFocus() && HumanController::getLocalControllerEntityAsPawn())
-            return (radar->getFocus()->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length();
-        else
-            return 0;
-    }
 
-    /**
-    @brief Overridden method of OrxonoxOverlay. Usually the entire overlay
-           scales with scale(). Here we obviously have to adjust this.
+    /** Overridden method of OrxonoxOverlay.
+    @details
+        Usually the entire overlay scales with scale().
+        Here we obviously have to adjust this.
     */
     void HUDNavigation::sizeChanged()
     {
-        // use size to compensate for aspect ratio if enabled.
+        // Use size to compensate for aspect ratio if enabled.
         float xScale = this->getActualSize().x;
         float yScale = this->getActualSize().y;
-        if (this->navMarker_)
-            navMarker_->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
-/*
-        if (this->aimMarker_)
-            aimMarker_->setDimensions(aimMarkerSize_ * xScale, aimMarkerSize_ * yScale);
-*/
-        if (this->navText_)
-            navText_->setCharHeight(navText_->getCharHeight() * yScale);
+
+        for (ObjectMap::iterator it = activeObjectList_.begin(); it!=activeObjectList_.end(); ++it)
+        {
+            if (it->second.panel_ != NULL)
+                it->second.panel_->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
+            if (it->second.text_ != NULL)
+                it->second.text_->setCharHeight(it->second.text_->getCharHeight() * yScale);
+        }
+    }
+
+    void HUDNavigation::addObject(RadarViewable* object)
+    {
+        if (object == NULL)
+            return;
+
+        // Don't display our own ship
+        if (object == dynamic_cast<RadarViewable*>(this->getOwner()))
+            return;
+
+        // Object hasn't been added yet (we know that)
+        assert(this->activeObjectList_.find(object) == this->activeObjectList_.end());
+
+        // Scales used for dimensions and text size
+        float xScale = this->getActualSize().x;
+        float yScale = this->getActualSize().y;
+
+        // Create everything needed to display the object on the radar and add it to the map
+
+        // Create arrow/marker
+        Ogre::PanelOverlayElement* panel = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
+        panel->setMaterialName("Orxonox/NavTDC");
+        panel->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
+
+        Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
+            .createOverlayElement("TextArea", "HUDNavigation_navText_" + getUniqueNumberString()));
+        text->setFontName(this->fontName_);
+        text->setCharHeight(text->getCharHeight() * yScale);
+
+        ObjectInfo tempStruct = {panel, text, false};
+        activeObjectList_[object] = tempStruct;
+
+        this->background_->addChild(panel);
+        this->background_->addChild(text);
+    }
+
+    void HUDNavigation::removeObject(RadarViewable* viewable)
+    {
+        ObjectMap::iterator it = activeObjectList_.find(viewable);
+
+        if (activeObjectList_.find(viewable) != activeObjectList_.end())
+        {
+            // Detach overlays
+            this->background_->removeChild(it->second.panel_->getName());
+            this->background_->removeChild(it->second.text_->getName());
+            // Properly destroy the overlay elements (do not use delete!)
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.panel_);
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second.text_);
+            // Remove from the list
+            activeObjectList_.erase(viewable);
+        }
+        else
+            COUT(2) << "Warning, HUDNavigation: Attempting to remove non-existent object" << std::endl;
+    }
+
+    void HUDNavigation::changedOwner()
+    {
+        // TODO: Delete old objects?
+        const std::set<RadarViewable*>& respawnObjects = this->getOwner()->getScene()->getRadar()->getRadarObjects();
+        for (std::set<RadarViewable*>::const_iterator it = respawnObjects.begin(); it != respawnObjects.end(); ++it)
+        {
+            if (!(*it)->isHumanShip_)
+                this->addObject(*it);
+        }
     }
 }

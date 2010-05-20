@@ -39,10 +39,12 @@
 #include "tools/TextureGenerator.h"
 #include "worldentities/WorldEntity.h"
 #include "worldentities/pawns/Pawn.h"
+#include "Scene.h"
+#include "Radar.h"
 
 namespace orxonox
 {
-    CreateFactory(HUDRadar);
+    CreateFactory(HUDRadar); 
 
     HUDRadar::HUDRadar(BaseObject* creator)
         : OrxonoxOverlay(creator)
@@ -71,10 +73,10 @@ namespace orxonox
         if (this->isInitialized())
         {
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->marker_);
-            for (std::vector<Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.begin();
-                it != this->radarDots_.end(); ++it)
+            for (std::map<RadarViewable*,Ogre::PanelOverlayElement*>::iterator it = this->radarObjects_.begin();
+                it != this->radarObjects_.end(); ++it)
             {
-                Ogre::OverlayManager::getSingleton().destroyOverlayElement(*it);
+                Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second);
             }
         }
     }
@@ -88,81 +90,107 @@ namespace orxonox
         XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlElement, mode);
     }
 
-    void HUDRadar::displayObject(RadarViewable* object, bool bIsMarked)
+    void HUDRadar::addObject(RadarViewable* object)
     {
-        if (object == static_cast<RadarViewable*>(this->owner_))
+        if (object == dynamic_cast<RadarViewable*>(this->owner_))
             return;
 
-        const WorldEntity* wePointer = object->getWorldEntity();
+        // Make sure the object hasn't been added yet
+        assert( this->radarObjects_.find(object) == this->radarObjects_.end() );
 
-        // Just to be sure that we actually have a WorldEntity.
-        // We could do a dynamic_cast, but that would be a lot slower.
-        if (!wePointer || !this->owner_)
-        {
-            if (!wePointer)
-                CCOUT(2) << "Cannot display a non-WorldEntitiy on the radar" << std::endl;
-            if (!this->owner_)
-                CCOUT(2) << "No owner defined" << std::endl;
-            return;
-        }
-
-        // try to find a panel already created
+        // Create everything needed to display the object on the radar and add it to the map
         Ogre::PanelOverlayElement* panel;
-        //std::map<RadarViewable*, Ogre::PanelOverlayElement*>::iterator it = this->radarDots_.find(object);
-        if (itRadarDots_ == this->radarDots_.end())
-        {
-            // we have to create a new entry
-            panel = static_cast<Ogre::PanelOverlayElement*>(
-                Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + getUniqueNumberString()));
-            radarDots_.push_back(panel);
-            // get right material
-            panel->setMaterialName(TextureGenerator::getMaterialName(
-                shapeMaterials_[object->getRadarObjectShape()], object->getRadarObjectColour()));
-            this->overlay_->add2D(panel);
-            this->itRadarDots_ = this->radarDots_.end();
-        }
-        else
-        {
-            panel = *itRadarDots_;
-            ++itRadarDots_;
-            const std::string& materialName = TextureGenerator::getMaterialName(
-                shapeMaterials_[object->getRadarObjectShape()], object->getRadarObjectColour());
-            if (materialName != panel->getMaterialName())
-                panel->setMaterialName(materialName);
-        }
-        panel->show();
+        panel = static_cast<Ogre::PanelOverlayElement*>(
+            Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "RadarDot" + getUniqueNumberString()));
+        this->overlay_->add2D(panel);
+        // get right material
+        panel->setMaterialName(TextureGenerator::getMaterialName(
+            shapeMaterials_[object->getRadarObjectShape()], object->getRadarObjectColour()));
+        this->radarObjects_[object] = panel;
+    }
 
-        // set size to fit distance...
-        float distance = (wePointer->getWorldPosition() - this->owner_->getPosition()).length();
-        // calculate the size with 1/distance dependency for simplicity (instead of exp(-distance * lambda)
-        float size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance);
-        panel->setDimensions(size, size);
-
-        // calc position on radar...
-        Vector2 coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
-        coord *= Ogre::Math::PI / 3.5f; // small adjustment to make it fit the texture
-        panel->setPosition((1.0f + coord.x - size) * 0.5f, (1.0f - coord.y - size) * 0.5f);
-
-        if (bIsMarked)
+    void HUDRadar::removeObject(RadarViewable* object)
+    {
+        // If object was added at all then remove it
+        std::map<RadarViewable*,Ogre::PanelOverlayElement*>::iterator it;
+        it = this->radarObjects_.find( object );
+        if( it != this->radarObjects_.end() )
         {
-            this->marker_->show();
-            this->marker_->setDimensions(size * 1.5f, size * 1.5f);
-            this->marker_->setPosition((1.0f + coord.x - size * 1.5f) * 0.5f, (1.0f - coord.y - size * 1.5f) * 0.5f);
+            Ogre::OverlayManager::getSingleton().destroyOverlayElement(it->second);
+            this->radarObjects_.erase(it);
         }
+    }
+
+    void HUDRadar::objectChanged( RadarViewable* rv )
+    {
+        assert( this->radarObjects_.find(rv) != this->radarObjects_.end() );
+        Ogre::PanelOverlayElement* panel = this->radarObjects_[rv];
+        panel->setMaterialName(TextureGenerator::getMaterialName(
+            shapeMaterials_[rv->getRadarObjectShape()], rv->getRadarObjectColour()));
+    }
+
+    void HUDRadar::gatherObjects()
+    {
+        const std::set<RadarViewable*>& objectSet = this->getCreator()->getScene()->getRadar()->getRadarObjects();
+        std::set<RadarViewable*>::const_iterator it;
+        for( it=objectSet.begin(); it!=objectSet.end(); ++it )
+            this->addObject(*it);
     }
 
     void HUDRadar::radarTick(float dt)
     {
-        for (itRadarDots_ = radarDots_.begin(); itRadarDots_ != radarDots_.end(); ++itRadarDots_)
-            (*itRadarDots_)->hide();
-        this->itRadarDots_ = this->radarDots_.begin();
-        this->marker_->hide();
+        // Make sure the owner of the radar was defined
+        if( !this->owner_ )
+        {
+            CCOUT(0) << "No owner defined" << std::endl;
+            assert(0);
+        }
+
+        this->marker_->hide();      // in case that no object is in focus
+        // get the focus object
+        Radar* radar = this->getOwner()->getScene()->getRadar();
+        const RadarViewable* focusObject = radar->getFocus();
+
+        // update the distances for all objects
+        std::map<RadarViewable*,Ogre::PanelOverlayElement*>::iterator it;
+        for( it = this->radarObjects_.begin(); it != this->radarObjects_.end(); ++it )
+        {
+            // Make sure the object really is a WorldEntity
+            const WorldEntity* wePointer = it->first->getWorldEntity();
+            if( !wePointer )
+            {
+                CCOUT(0) << "Cannot display a non-WorldEntitiy on the radar" << std::endl;
+                assert(0);
+            }
+            bool isFocus = (it->first == focusObject);
+            // set size to fit distance...
+            float distance = (wePointer->getWorldPosition() - this->owner_->getPosition()).length();
+            // calculate the size with 1/distance dependency for simplicity (instead of exp(-distance * lambda)
+            float size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance);
+            it->second->setDimensions(size, size);
+
+            // calc position on radar...
+            Vector2 coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
+            coord *= Ogre::Math::PI / 3.5f; // small adjustment to make it fit the texture
+            it->second->setPosition((1.0f + coord.x - size) * 0.5f, (1.0f - coord.y - size) * 0.5f);
+            it->second->show();
+
+            // if this object is in focus, then set the focus marker
+            if (isFocus)
+            {
+                this->marker_->setDimensions(size * 1.5f, size * 1.5f);
+                this->marker_->setPosition((1.0f + coord.x - size * 1.5f) * 0.5f, (1.0f - coord.y - size * 1.5f) * 0.5f);
+                this->marker_->show();
+            }
+        }
     }
 
     void HUDRadar::changedOwner()
     {
-        SUPER(HUDRadar, changedOwner);
+    SUPER(HUDRadar, changedOwner);
 
-        this->owner_ = orxonox_cast<Pawn*>(this->getOwner());
-    }
+    this->owner_ = orxonox_cast<Pawn*>(this->getOwner());
+    assert(this->radarObjects_.size()==0);
+    this->gatherObjects();
+}
 }

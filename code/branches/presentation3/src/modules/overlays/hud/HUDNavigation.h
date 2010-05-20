@@ -31,13 +31,17 @@
 
 #include "overlays/OverlaysPrereqs.h"
 
+#include <map>
+#include <string>
+
 #include "util/OgreForwardRefs.h"
 #include "tools/interfaces/Tickable.h"
+#include "interfaces/RadarListener.h"
 #include "overlays/OrxonoxOverlay.h"
 
 namespace orxonox
 {
-    class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable
+    class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable, public RadarListener
     {
     public:
         HUDNavigation(BaseObject* creator);
@@ -46,19 +50,33 @@ namespace orxonox
         virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
 
+        virtual void addObject(RadarViewable* object);
+        virtual void removeObject(RadarViewable* viewable);
+        virtual void objectChanged(RadarViewable* viewable) {}
+
+        virtual void changedOwner();
+        virtual void sizeChanged();
+        virtual void angleChanged() { }
+        virtual void positionChanged() { }
+        virtual void radarTick(float dt) {}
+
+        inline float getRadarSensitivity() const
+            { return 1.0f; }
+
     private:
-        void sizeChanged();
-        void angleChanged() { }
-        void positionChanged() { }
+        struct ObjectInfo
+        {
+            Ogre::PanelOverlayElement* panel_;
+            Ogre::TextAreaOverlayElement* text_;
+            bool outOfView_;
+            bool wasOutOfView_;
+        };
 
         // XMLPort accessors
-        void setNavMarkerSize(float size) { this->navMarkerSize_ = size; this->sizeChanged(); }
-        float getNavMarkerSize() const    { return this->navMarkerSize_; }
-
-/*
-        void setAimMarkerSize(float size) { this->aimMarkerSize_ = size; this->sizeChanged(); }
-        float getAimMarkerSize() const    { return this->aimMarkerSize_; }
-*/
+        void setNavMarkerSize(float size)
+            { navMarkerSize_ = size; this->sizeChanged(); }
+        float getNavMarkerSize() const
+            { return navMarkerSize_; }
 
         void setTextSize(float size);
         float getTextSize() const;
@@ -66,18 +84,12 @@ namespace orxonox
         void setFont(const std::string& font);
         const std::string& getFont() const;
 
-        void updateMarker();
-        void updateFocus();
-        float getDist2Focus() const;
+        typedef std::map<RadarViewable*, ObjectInfo > ObjectMap;
+        ObjectMap activeObjectList_;
 
-        Ogre::PanelOverlayElement* navMarker_;      //!< the panel used to show the arrow and the target marker
-        float navMarkerSize_;                       //!< One paramter size of the navigation marker
-/*
-        Ogre::PanelOverlayElement* aimMarker_;      //!< Panel used to show the aim Marker
-        float aimMarkerSize_;                       //!< One paramter size of the aim marker
-*/
-        Ogre::TextAreaOverlayElement* navText_;     //!< Text overlay to display the target distance
-        bool wasOutOfView_;                         //!< Performance booster variable: setMaterial is not cheap
+        float navMarkerSize_;
+        std::string fontName_;
+        float textSize_;
     };
 }
 

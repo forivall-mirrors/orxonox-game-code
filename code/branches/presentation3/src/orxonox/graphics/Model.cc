@@ -119,7 +119,7 @@ namespace orxonox
                     if(lodInfo!=0)
                         setLodLevel(lodInfo->getLodLevel());
                     
-                    COUT(0) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and scale: "<< scaleFactor << ":" << std::endl;
+                    COUT(4) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and scale: "<< scaleFactor << ":" << std::endl;
 
 #if OGRE_VERSION >= 0x010700
                     Ogre::Mesh::LodValueList distList;
@@ -131,7 +131,7 @@ namespace orxonox
                     {
                         float factor = scaleFactor*5/lodLevel_;
                         
-                        COUT(0)<<"LodLevel set with factor: "<<factor<<std::endl;
+                        COUT(4)<<"LodLevel set with factor: "<<factor<<std::endl;
 
                         distList.push_back(70.0f*factor);
                         distList.push_back(140.0f*factor);
@@ -158,7 +158,7 @@ namespace orxonox
                         else
                             what = "<0";
                         
-                        COUT(0)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"."<<std::endl;
+                        COUT(4)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"."<<std::endl;
                     }
                 }
             }

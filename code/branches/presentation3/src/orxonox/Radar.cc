@@ -76,6 +76,28 @@ namespace orxonox
     {
     }
 
+    void Radar::addRadarObject(RadarViewable* rv)
+    {
+        assert( this->radarObjects_.find(rv) == this->radarObjects_.end() );
+        this->radarObjects_.insert(rv);
+        // iterate through all radarlisteners and notify them
+        for (ObjectList<RadarListener>::iterator itListener = ObjectList<RadarListener>::begin(); itListener; ++itListener)
+        {
+            (*itListener)->addObject(rv);
+        }
+    }
+    
+    void Radar::removeRadarObject(RadarViewable* rv)
+    {
+        assert( this->radarObjects_.find(rv) != this->radarObjects_.end() );
+        this->radarObjects_.erase(rv);
+        // iterate through all radarlisteners and notify them
+        for (ObjectList<RadarListener>::iterator itListener = ObjectList<RadarListener>::begin(); itListener; ++itListener)
+        {
+            (*itListener)->removeObject(rv);
+        }
+    }
+
     const RadarViewable* Radar::getFocus()
     {
         if (this->itFocus_)
@@ -108,13 +130,6 @@ namespace orxonox
         for (ObjectList<RadarListener>::iterator itListener = ObjectList<RadarListener>::begin(); itListener; ++itListener)
         {
             (*itListener)->radarTick(dt);
-
-            for (ObjectList<RadarViewable>::iterator itElement = ObjectList<RadarViewable>::begin(); itElement; ++itElement)
-            {
-                if ((*itElement)->getRadarVisibility())
-                    if ((*itListener)->getRadarSensitivity() > (*itElement)->getRadarObjectCamouflage())
-                        (*itListener)->displayObject(*itElement, *itElement == this->focus_);
-            }
         }
     }
 
@@ -185,6 +200,14 @@ namespace orxonox
         for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it, ++i)
         {
             COUT(3) << i++ << ": " << (*it)->getRVWorldPosition() << std::endl;
+        }
+    }
+    
+    void Radar::radarObjectChanged(RadarViewable* rv)
+    {
+        for (ObjectList<RadarListener>::iterator itListener = ObjectList<RadarListener>::begin(); itListener; ++itListener)
+        {
+          (*itListener)->objectChanged(rv);
         }
     }
 }
