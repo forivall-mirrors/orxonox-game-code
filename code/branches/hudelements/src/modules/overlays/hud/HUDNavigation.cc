@@ -278,7 +278,7 @@ namespace orxonox
         // Create arrow/marker
         Ogre::PanelOverlayElement* panel = static_cast<Ogre::PanelOverlayElement*>(Ogre::OverlayManager::getSingleton()
             .createOverlayElement("Panel", "HUDNavigation_navMarker_" + getUniqueNumberString()));
-        panel->setMaterialName("Orxonox/NavArrows");
+        panel->setMaterialName("Orxonox/NavTDC");
         panel->setDimensions(navMarkerSize_ * xScale, navMarkerSize_ * yScale);
 
         Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*>(Ogre::OverlayManager::getSingleton()
@@ -286,7 +286,7 @@ namespace orxonox
         text->setFontName(this->fontName_);
         text->setCharHeight(text->getCharHeight() * yScale);
 
-        ObjectInfo tempStruct = {panel, text, true};
+        ObjectInfo tempStruct = {panel, text, false};
         activeObjectList_[object] = tempStruct;
 
         this->background_->addChild(panel);
