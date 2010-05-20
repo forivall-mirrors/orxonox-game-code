@@ -1,4 +1,4 @@
-<Template name=lodtemplate_default>
+<Template name=lodtemplate_default defaults=0>
   <Level>
 	<lodinformation>
 	  <MeshLodInformation mesh=Carrier.mesh lodQuality=1.8 />
