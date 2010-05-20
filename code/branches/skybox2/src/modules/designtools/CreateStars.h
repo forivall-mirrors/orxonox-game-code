@@ -30,7 +30,7 @@
 #include "core/BaseObject.h"
 
 #include "graphics/Billboard.h"
- 
+
  
 namespace orxonox
 {
@@ -60,6 +60,46 @@ namespace orxonox
                 return this->material_;
             }
 
+            void setColour(const orxonox::ColourValue& colour) { 
+                this->colour_ = colour;
+            }
+
+            ColourValue& getColour() { 
+                return this->colour_;
+            }
+
+            void setAlpha(float alpha) {
+                this->alpha_ = alpha;
+            }
+
+            float getAlpha() {
+                return this->alpha_;
+            }
+
+            void setColourDiff(float colourDiff) {
+                this->colourDiff_ = colourDiff;
+            }
+
+            float getColourDiff() {
+                return this->colourDiff_;
+            }
+
+            void setAlphaDiff(float alphaDiff) {
+                this->alphaDiff_ = alphaDiff;
+            }
+
+            float getAlphaDiff() {
+                return this->alphaDiff_;
+            }
+
+            void setRadiusDiff(float radiusDiff) {
+                this->radiusDiff_ = radiusDiff;
+            }
+
+            float getRadiusDiff() {
+                return this->radiusDiff_;
+            }
+
             void setRadius(unsigned int dist) {
                 this->radius_ = dist;
                 this->createBillboards();
@@ -74,8 +114,13 @@ namespace orxonox
         private:
             int numStars_;
             std::string material_;
+            orxonox::ColourValue colour_;
             std::vector<Billboard*> billboards_;
-            unsigned int radius_;
+            float radius_;
+            float alpha_;
+            float colourDiff_; 
+            float alphaDiff_;
+            float radiusDiff_;
             
     };
 }

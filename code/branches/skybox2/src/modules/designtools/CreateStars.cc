@@ -51,6 +51,14 @@ namespace orxonox
 
     {
         RegisterObject(CreateStars);
+        this->material_ = "Examples/Flare";
+        this->alpha_ = 0.7;
+        this->alphaDiff_ = 0.5;
+        this->radiusDiff_ = 0.9;
+        this->colour_.r = 1;
+        this->colour_.g = 1;
+        this->colour_.b = 1;
+        this->colourDiff_ = 0.1;
     }
 
     CreateStars::~CreateStars()
@@ -70,29 +78,55 @@ namespace orxonox
 
         for(int i=0; i < numStars_; i++) 
         {
-            Billboard* b = new Billboard(this);
-            b->setMaterial(material_);
+            Billboard* bb = new Billboard(this);
 
-            float alpha = rnd(-90,90);
-            float beta = rnd(0,360);
-            
-            b->setPosition( PolarToCartesian(alpha, beta, radius_) );
-            billboards_.push_back(b);
+            float r = rnd(-colourDiff_,colourDiff_);
+            float g = rnd(-colourDiff_,colourDiff_);
+            float b = rnd(-colourDiff_,colourDiff_);
+            orxonox::ColourValue thisColour = colour_;
+            float alpha = alpha_+rnd(-alphaDiff_,alphaDiff_);
+            thisColour.r=clamp(thisColour.r*alpha+r, 0.0f, 1.0f);
+            thisColour.g=clamp(thisColour.g*alpha+g, 0.0f, 1.0f);
+            thisColour.b=clamp(thisColour.b*alpha+b, 0.0f, 1.0f);
+
+            bb->setMaterial(material_);
+            bb->setColour(thisColour);
+
+            float phi;
+            float teta;
+
+            while(1) 
+            {
+                phi = rnd(2*M_PI);
+                teta = rnd(M_PI);
+                float random = rnd(1);
+                if(sin(teta)>random) break;
+            }
+            float radius = rnd(radiusDiff_,1)*radius_;
+            bb->setPosition( PolarToCartesian(phi, teta, radius) );
+            billboards_.push_back(bb);
         }
     }
 
-    Vector3 PolarToCartesian(float alpha, float beta, float radius) 
+    Vector3 CreateStars::PolarToCartesian(float phi, float teta, float radius) 
     {
-        int x = radius * cos(alpha) * sin(beta);
-        int y = radius * sin(alpha) * cos(beta);
-        int z = radius * cos(beta);
+        float x = radius * cos(phi) * sin(teta);
+        float y = radius * sin(phi) * sin(teta);
+        float z = radius * cos(teta);
         return Vector3(x,y,z);
     }
 
     void CreateStars::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
+        SUPER(CreateStars, XMLPort, xmlelement, mode);
+
         XMLPortParam(CreateStars, "numStars", setNumStars, getNumStars, xmlelement, mode);
         XMLPortParam(CreateStars, "material", setMaterial, getMaterial, xmlelement, mode);
+        XMLPortParam(CreateStars, "colour", setColour, getColour, xmlelement, mode);
+        XMLPortParam(CreateStars, "alpha", setAlpha, getAlpha, xmlelement, mode);
+        XMLPortParam(CreateStars, "colourDiff", setColourDiff, getColourDiff, xmlelement, mode);
+        XMLPortParam(CreateStars, "alphaDiff", setAlphaDiff, getAlphaDiff, xmlelement, mode);
+        XMLPortParam(CreateStars, "radiusDiff", setRadiusDiff, getRadiusDiff, xmlelement, mode);
         XMLPortParam(CreateStars, "radius", setRadius, getRadius, xmlelement, mode);
 	}
 
