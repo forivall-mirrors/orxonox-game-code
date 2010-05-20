@@ -69,7 +69,8 @@ namespace orxonox
 
     void LevelManager::requestActivity(Level* level)
     {
-        COUT(0) << "pushing level into level list: " << level << endl;
+        if( std::find(this->levels_s.begin(), this->levels_s.end(), level)!=this->levels_s.end() )
+            return; // level is already in list
         this->levels_s.push_back(level);
         if (this->levels_s.size() == 1)
             this->activateNextLevel();
@@ -77,7 +78,6 @@ namespace orxonox
 
     void LevelManager::releaseActivity(Level* level)
     {
-        COUT(0) << "poping level from level list: " << level << endl;
         if (this->levels_s.size() > 0)
         {
             if (this->levels_s.front() == level)
