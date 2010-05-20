@@ -8,19 +8,20 @@
     dofile("includes/CuboidSpaceStation.lua")
 ?>
 
-<NotificationQueue
- name     = "notification"
- position = "0.55, 0.05"
- font     = "VeraMono"
- textsize = 0.020
- length   = 3
- width    = 50
-/>
-
 <Level
  name         = "The Tale of Princess Aeryn"
  description  = "The Tale of Princess Aeryn"
 >
+
+    <NotificationQueue
+     name     = "notification"
+     position = "0.55, 0.05"
+     font     = "VeraMono"
+     textsize = 0.020
+     length   = 3
+     width    = 50
+    />
+
     <Scene
         ambientlight = "0.3, 0.3, 0.3"
         skybox       = "Orxonox/skypanoramagen1"
