@@ -62,16 +62,12 @@ namespace orxonox
     void RocketController::tick(float dt)
     {
 		haha++;
-		
 
-        SimpleRocket *rocket = static_cast<SimpleRocket*>(this->getControllableEntity());
-		if (haha<30)rocket->setVelocity(rocket->getVelocity()*1.03);
+		//if (haha<30)this->rocket->setVelocity(rocket->getVelocity()*1.03);
 		if (this->target_) {
 			this->setTargetPosition();
 			this->moveToTargetPosition();
-		
 		}
-		
 		if (haha>500) rocket->setDestroy();;
 	
 	}
@@ -84,8 +80,8 @@ namespace orxonox
 	}
 
 	void RocketController::setTargetPosition() {
-		this->targetPosition_=this->target_->getPosition();
-		//this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getPosition(),this->getControllableEntity()->getVelocity().length() , this->target_->getPosition(), this->target_->getVelocity());
+		//this->targetPosition_=this->target_->getWorldPosition();
+		this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getPosition(),this->getControllableEntity()->getVelocity().length() , this->target_->getPosition(), this->target_->getVelocity());
 	}
 	void RocketController::moveToTargetPosition() {
 		this->moveToPosition(this->targetPosition_);
@@ -102,19 +98,41 @@ namespace orxonox
     {
        if (!this->getControllableEntity())
             return;
-
-	   COUT(0)<<"moving";
-
+	   float dx = target.x-this->getControllableEntity()->getPosition().x;
+	   float dy = target.y-this->getControllableEntity()->getPosition().y;
+	   COUT(0)<<"\n diff: ";
+	   COUT(0)<<target.x-this->getControllableEntity()->getPosition().x;
+	   COUT(0)<<" ";
+	   COUT(0)<<target.y-this->getControllableEntity()->getPosition().y;
+	   COUT(0)<<" ";
+	   COUT(0)<<target.z-this->getControllableEntity()->getPosition().z;
+	   //COUT(0)<<"\n 2D view: ";
+	  /* COUT(0)<<this->getControllableEntity()->getPosition().x;
+	   COUT(0)<<" ";
+	   COUT(0)<<this->getControllableEntity()->getPosition().y;
+	   COUT(0)<<" ";
+	   COUT(0)<<this->getControllableEntity()->getPosition().z;
+	   COUT(0)<<"\n";*/
         Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
-
-        if (this->target_ || distance > 10)
-        {
-            // Multiply with 0.8 to make them a bit slower
-			 this->getControllableEntity()->rotateYaw(-0.2f * sgn(coord.x) * coord.x*coord.x);
-            this->getControllableEntity()->rotatePitch(0.2f * sgn(coord.y) * coord.y*coord.y);
-			
-        }
+		//Vector3D diff =target-this->rocket->getPosition();
+		//COUT(0)<<coord.x;
+		//COUT(0)<<"  ";
+		//COUT(0)<<coord.y;
+		 this->getControllableEntity()->rotateYaw(coord.x*coord.x*coord.x*coord.x);
+            this->getControllableEntity()->rotatePitch(coord.y*coord.y* coord.y*coord.y);
+		//this->getControllableEntity()->rotatePitch(rotation.getPitch().valueRadians());
+		//this->getControllableEntity()->rotateYaw(rotation.getYaw().valueRadians());
+		//this->getControllableEntity()->moveUpDown(coord.y);
+		//this->getControllableEntity()->moveRightLeft(coord.x);
+		//this->getControllableEntity()->rotatePitch(coord);
+   //     if (this->target_ || distance > 10)
+   //     {
+   //         // Multiply with 0.8 to make them a bit slower
+			//this->getControllableEntity()->rotateYaw(coord.x );
+   //         this->getControllableEntity()->rotatePitch(coord.y);
+			//
+   //     }
     }
 
 

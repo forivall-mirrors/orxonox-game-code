@@ -15,7 +15,7 @@
 
 <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
   <attached>
-    <Model scale="10" mesh="drone.mesh"/>
+    <Model scale="1" mesh="drone.mesh"/>
   </attached>
   <collisionShapes>
     <BoxCollisionShape position="0,0,0"      halfExtents="10, 10, 10" />
@@ -24,7 +24,7 @@
 
 <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
   <attached>
-    <Model scale="10" mesh="rocket.mesh"/>
+    <Model scale="1" mesh="rocket.mesh"/>
   </attached>
   <collisionShapes>
     <BoxCollisionShape position="0,0,0"      halfExtents="10, 10, 10" />

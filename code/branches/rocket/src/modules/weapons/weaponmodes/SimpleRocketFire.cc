@@ -48,7 +48,7 @@ namespace orxonox
         this->reloadTime_ = 0.20f;
         this->bParallelReload_ = false;
         this->damage_ = 100;
-        this->speed_ = 50;
+        this->speed_ = 1;
 
         this->setMunitionName("LaserMunition");
         // The firing sound of the Rocket is played in Rocket.cc (because of OpenAl sound positioning)
@@ -66,10 +66,11 @@ namespace orxonox
 		rocket->setOrientation(this->getMuzzleOrientation());
 		Vector3 pos = this->getMuzzlePosition() + (this->getMuzzleOrientation()* Vector3(-2, -3, -2));
         rocket->setPosition(pos);
+		rocket->setAcceleration(20*rocket->getOrientation() * WorldEntity::FRONT);
 		rocket->setVelocity(this->getMuzzleDirection()*this->speed_);
 		rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
 		rocket->setDamage(this->damage_);
-		WorldEntity* pawnn=(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getTarget());
+		WorldEntity* pawnn=this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getTarget();
 		if (pawnn) {
 		con->setTarget(pawnn);
 		}
