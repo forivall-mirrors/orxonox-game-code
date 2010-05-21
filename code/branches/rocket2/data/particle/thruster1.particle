@@ -1,0 +1,53 @@
+particle_system Orxonox/thruster1
+{
+	quota	100
+	material	PE/bigFlame
+	particle_width	15
+	particle_height	15
+	cull_each	false
+	renderer	billboard
+	billboard_type	point
+
+	emitter HollowEllipsoid
+	{
+		angle	0
+		colour	0.493151 0.246575 0.0410959 1
+		colour_range_start	0.493151 0.246575 0.0410959 1
+		colour_range_end	0.684932 0.547945 0.315068 1
+		direction	0 1 0
+		emission_rate	300
+		position	0 0 0
+		velocity	100
+		velocity_min	18
+		velocity_max	30
+		time_to_live	0.25
+		time_to_live_min	0
+		time_to_live_max	0.25
+		duration	0
+		duration_min	0
+		duration_max	0
+		repeat_delay	0
+		repeat_delay_min	0
+		repeat_delay_max	0
+		width	5
+		height	5
+		depth	2.8
+		inner_width	0.8
+		inner_height	0.8
+		inner_depth	0.8
+	}
+
+
+	affector ColourFader2
+	{
+		red1	0
+		green1	0
+		blue1	0
+		alpha1	0
+		red2	-0.3
+		green2	-0.6
+		blue2	-0.6
+		alpha2	0
+		state_change	0.25
+	}
+}
