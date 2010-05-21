@@ -58,6 +58,8 @@ namespace orxonox
                 { return this->formationFlight_; }
             virtual void changedControllableEntity();
 
+            static void formationflight(bool form);
+            static void masteraction(int action);
 
         protected:
 

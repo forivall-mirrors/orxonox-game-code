@@ -37,9 +37,12 @@
 #include "controllers/WaypointPatrolController.h"
 #include "controllers/DroneController.h"
 #include "util/Math.h"
+#include "core/ConsoleCommand.h"
 
 namespace orxonox
 {
+    SetConsoleCommand(ArtificialController, formationflight, true);//.defaultValues(0, true);
+    SetConsoleCommand(ArtificialController, masteraction, true);
 
     static const unsigned int MAX_FORMATION_SIZE = 7;
     static const int FORMATION_LENGTH =  10;
@@ -55,7 +58,7 @@ namespace orxonox
         RegisterObject(ArtificialController);
 
         this->target_ = 0;
-        this->formationFlight_  =  true;
+        this->formationFlight_ = true;
         this->myMaster_ = 0;
         this->freedomCount_ = 0;
 	this->team_ = -1;
@@ -78,7 +81,40 @@ namespace orxonox
         SUPER(ArtificialController, XMLPort, xmlelement, mode);
 
         XMLPortParam(ArtificialController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
-//         XMLPortParam(ArtificialController, "formation", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(true);
+        XMLPortParam(ArtificialController, "formation", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(true);
+    }
+
+    //activate/deactivate formationflight
+    void ArtificialController::formationflight(bool form)
+    {
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
+        {
+            if (!it->getController())
+                continue;
+
+            ArtificialController *aiController = static_cast<ArtificialController*>(it->getController());
+
+            if(aiController)
+            {
+                aiController->formationFlight_ = form;
+            }
+        }
+    }
+    //get all masters to do this action
+    void ArtificialController::masteraction(int action) 
+    {
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
+        {
+            if (!it->getController())
+                continue;
+
+            ArtificialController *aiController = static_cast<ArtificialController*>(it->getController());
+
+            if(aiController || aiController->state_ == MASTER)
+            {
+                aiController->specificMasterAction_ = TURN180;
+            }
+        }
     }
 
 // gets called when Bot dies
@@ -124,8 +160,15 @@ namespace orxonox
         {
             if (this->target_ || distance > 10)
             {
+                if (this->specificMasterAction_ == NONE)
+                {
                 this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
                 this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
+                } else if (this->specificMasterAction_ == TURN180)
+                {
+                this->getControllableEntity()->rotateYaw(-1.0f * sgn(coord.x) * coord.x*coord.x);
+                this->getControllableEntity()->rotatePitch(sgn(coord.y) * coord.y*coord.y);
+                }
 
             }
 
@@ -142,10 +185,6 @@ namespace orxonox
 
            this->getControllableEntity()->rotateYaw(-2.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
            this->getControllableEntity()->rotatePitch(2.0f * ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
-
-
-
-
 
             if (distance < 300)
             {
@@ -176,7 +215,6 @@ namespace orxonox
             std::vector<ArtificialController*>::iterator it = std::find(myMaster_->slaves_.begin(), myMaster_->slaves_.end(), this);
             if( it != myMaster_->slaves_.end() )
                 myMaster_->slaves_.erase(it);
-// COUT(0) << "~unregister slave" << std::endl;
         }
     }
 
@@ -344,13 +382,24 @@ namespace orxonox
 
     void ArtificialController::specificMasterActionHold()
     {
-        if (specificMasterActionHoldCount_ == 0) this->specificMasterAction_ = NONE;
+        if (specificMasterActionHoldCount_ == 0) 
+         {
+            this->specificMasterAction_ = NONE;
+            this->searchNewTarget();
+            COUT(0) << "~action end" << std::endl;
+         }
         else specificMasterActionHoldCount_--;
     }
 
     void ArtificialController::turn180()
     {
-        this->specificMasterAction_  =  NONE;
+        COUT(0) << "~turn" << std::endl;
+
+        Quaternion orient = this->getControllableEntity()->getOrientation();
+
+        this->setTargetPosition(this->getControllableEntity()->getPosition() + 500.0f*orient*WorldEntity::BACK);
+        this->specificMasterActionHoldCount_ = 2;
+        this->specificMasterAction_  =  HOLD;
     }
 
     void ArtificialController::spin()
@@ -381,7 +430,6 @@ namespace orxonox
 
     void ArtificialController::searchNewTarget()
     {
-COUT(0) << "search new target - start" << std::endl;
         if (!this->getControllableEntity())
             return;
 
@@ -406,7 +454,6 @@ COUT(0) << "search new target - start" << std::endl;
                 }
             }
         }
-COUT(0) << "search new target - end: " << this->target_ << std::endl;
     }
 
     void ArtificialController::forgetTarget()
@@ -543,7 +590,7 @@ COUT(0) << "search new target - end: " << this->target_ << std::endl;
         droneController = orxonox_cast<DroneController*>(entity2->getController());
         if (droneController && static_cast<ControllableEntity*>(droneController->getOwner()) == entity1)
             return true;
-            
+
         return (team1 == team2 && team1 != -1);
     }
 }
