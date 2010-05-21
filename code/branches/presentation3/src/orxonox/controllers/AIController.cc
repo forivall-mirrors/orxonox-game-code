@@ -56,19 +56,19 @@ namespace orxonox
         float maxrand = 100.0f / ACTION_INTERVAL;
 
         // search enemy
-      /*  random = rnd(maxrand);
+        random = rnd(maxrand);
         if (random < 15 && (!this->target_))
-            this->searchNewTarget();*/
+            this->searchNewTarget();
 
         // forget enemy
-        //random = rnd(maxrand);
-        //if (random < 5 && (this->target_))
-        //    this->forgetTarget();
+        random = rnd(maxrand);
+        if (random < 5 && (this->target_))
+            this->forgetTarget();
 
         // next enemy
-  /*      random = rnd(maxrand);
+        random = rnd(maxrand);
         if (random < 10 && (this->target_))
-            this->searchNewTarget();*/
+            this->searchNewTarget();
 
         // fly somewhere
         random = rnd(maxrand);
@@ -86,14 +86,14 @@ namespace orxonox
             this->searchRandomTargetPosition();
 
         // shoot
-        //random = rnd(maxrand);
-        //if (random < 75 && (this->target_ && !this->bShooting_))
-        //    this->bShooting_ = true;
+        random = rnd(maxrand);
+        if (random < 75 && (this->target_ && !this->bShooting_))
+            this->bShooting_ = true;
 
-        //// stop shooting
-        //random = rnd(maxrand);
-        //if (random < 25 && (this->bShooting_))
-        //    this->bShooting_ = false;
+        // stop shooting
+        random = rnd(maxrand);
+        if (random < 25 && (this->bShooting_))
+            this->bShooting_ = false;
     }
 
     void AIController::tick(float dt)
