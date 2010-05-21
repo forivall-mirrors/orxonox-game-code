@@ -93,7 +93,7 @@ namespace orxonox
     void RocketController::setTarget(WorldEntity* target)
     {
         this->target_ = target;
-        COUT(0)<<"got target\n";
+        CCOUT(4) << "got target" << endl;
     }
 
     void RocketController::moveToPosition(const Vector3& target)
@@ -117,8 +117,8 @@ namespace orxonox
         COUT(4) << "viewdirection: "<< coord << endl;
         //COUT(0)<<"  ";
         //COUT(0)<<coord.y;
-        this->getControllableEntity()->rotateYaw(-0.8f*sgn(coord.x)*coord.x*coord.x);
-        this->getControllableEntity()->rotatePitch(0.8f*sgn(coord.y)*coord.y*coord.y);
+        this->getControllableEntity()->rotateYaw(-sgn(coord.x)*coord.x*coord.x);
+        this->getControllableEntity()->rotatePitch(sgn(coord.y)*coord.y*coord.y);
 //         this->getControllableEntity()->rotateYaw(10);
 //         this->getControllableEntity()->rotatePitch(0);
         //this->getControllableEntity()->rotatePitch(rotation.getPitch().valueRadians());

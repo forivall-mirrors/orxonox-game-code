@@ -63,8 +63,8 @@ namespace orxonox
 
         if (GameMode::isMaster())
        {
-           this->setCollisionType(WorldEntity::Kinematic);
-            this->setVelocity(0,0,100);
+            this->setCollisionType(WorldEntity::Kinematic);
+            //this->setVelocity(0,0,100);
 
             Model* model = new Model(this);
             model->setMeshSource("rocket.mesh");
