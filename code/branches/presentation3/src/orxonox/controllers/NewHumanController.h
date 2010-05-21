@@ -66,6 +66,7 @@ namespace orxonox
             virtual void doPauseControl();
             virtual void doResumeControl();
 
+
         protected:
             void updateTarget();
             void alignArrows();

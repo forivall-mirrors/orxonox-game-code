@@ -363,14 +363,21 @@ namespace orxonox
 
         Ogre::RaySceneQueryResult& result = rsq->execute();
         Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
+        WorldEntity* myWe = static_cast<WorldEntity*>(this->getControllableEntity());
 
         Ogre::RaySceneQueryResult::iterator itr;
         for (itr = result.begin(); itr != result.end(); ++itr)
         {
-            if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" && itr->distance > 500)
+//             CCOUT(0) << "testing object as target" << endl;
+            if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" /*&& itr->distance > 500*/)
             {
                 // Try to cast the user pointer
                 WorldEntity* wePtr = dynamic_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
+                
+                // make sure we don't shoot ourselves
+                if( wePtr==myWe )
+                    continue;
+                
                 if (wePtr)
                 {
                     // go through all parents of object and look whether they are sightable or not
@@ -378,7 +385,7 @@ namespace orxonox
                     WorldEntity* parent = wePtr->getParent();
                     while (parent)
                     {
-                        if (this->targetMask_.isExcluded(parent->getIdentifier()))
+                        if (this->targetMask_.isExcluded(parent->getIdentifier()) || parent==myWe)
                         {
                             parent = parent->getParent();
                             continue;
@@ -578,4 +585,9 @@ namespace orxonox
             this->arrowsOverlay4_->hide();
         }
     }
+        
+
+    
+
+
 }

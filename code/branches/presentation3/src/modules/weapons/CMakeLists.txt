@@ -1,5 +1,6 @@
 SET_SOURCE_FILES(WEAPONS_SRC_FILES
   MuzzleFlash.cc
+  RocketController.cc
 )
 
 ADD_SUBDIRECTORY(munitions)
