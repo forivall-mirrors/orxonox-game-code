@@ -133,7 +133,7 @@ namespace orxonox
         for (ObjectMap::iterator it = activeObjectList_.begin(); it != activeObjectList_.end(); ++it)
         {
             // Get Distance to HumanController and save it in the TextAreaOverlayElement.
-            int dist = (int)((it->first->getRVWorldPosition() - HumanController::getLocalControllerEntityAsPawn()->getWorldPosition()).length() + 0.5f);
+            int dist = (int)((it->first->getRVWorldPosition() - HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition()).length() + 0.5f);
             it->second.text_->setCaption(multi_cast<std::string>(dist));
             float textLength = multi_cast<std::string>(dist).size() * it->second.text_->getCharHeight() * 0.3f;
 
