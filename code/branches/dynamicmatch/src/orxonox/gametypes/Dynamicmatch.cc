@@ -91,8 +91,8 @@ namespace orxonox
         SetConfigValue(tutorial, true);
         static ColourValue colours[] =
         {
-            ColourValue(0.3f, 0.3f, 1.0f),	//chasercolour
-            ColourValue(1.0f, 0.3f, 0.3f),	//piggycolour
+            ColourValue(1.0f, 0.3f, 0.3f),	//chasercolour
+            ColourValue(0.3f, 0.3f, 1.0f),	//piggycolour
             ColourValue(0.3f, 1.0f, 0.3f)	//killercolour  what about black: 0.0f, 0.0f, 0.0f
             
         };
@@ -105,7 +105,7 @@ namespace orxonox
     {	//TODO: static and fading message for the "human" player's
         if (!originator||!victim)
             return false;
-        if (!!originator->getPlayer()||!victim->getPlayer())
+        if (!originator->getPlayer()||!victim->getPlayer())
             return false;
         if (victim && victim->getPlayer()) //&& originator && originator->getPlayer() ??
         {
