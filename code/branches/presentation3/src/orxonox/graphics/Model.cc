@@ -114,10 +114,9 @@ namespace orxonox
                     
                     Level* level_ = this->getLevel();
                     
-                    MeshLodInformation* lodInfo = level_->getLodInfo(this->meshSrc_);
-                    
-                    if(lodInfo!=0)
-                        setLodLevel(lodInfo->getLodLevel());
+                    // TODO: make this also working on the client (there is currently no level pointer in the baseobject on the client)
+                    if( level_ != 0 && level_->getLodInfo(this->meshSrc_)!=0 )
+                        setLodLevel(level_->getLodInfo(this->meshSrc_)->getLodLevel());
                     
                     COUT(4) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and scale: "<< scaleFactor << ":" << std::endl;
 

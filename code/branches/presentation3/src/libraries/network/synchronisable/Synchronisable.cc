@@ -176,6 +176,8 @@ namespace orxonox
     //no->creatorID=header.getCreatorID(); //TODO: remove this
     no->setClassID(header.getClassID());
     assert(no->creatorID_ == header.getCreatorID());
+    if( creator )
+      bo->setLevel(creator->getLevel());          // Note: this ensures that the level is known on the client for child objects of the scene (and the scene itself)
     //assert(no->classID_ == header.getClassID());
     COUT(4) << "fabricate objectID_: " << no->objectID_ << " classID_: " << no->classID_ << std::endl;
           // update data and create object/entity...

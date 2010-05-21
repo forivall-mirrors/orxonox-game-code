@@ -30,6 +30,7 @@
 
 #include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "worldentities/WorldEntity.h"
 #include "Radar.h"
 #include "Scene.h"
@@ -51,16 +52,25 @@ namespace orxonox
         RegisterRootObject(RadarViewable);
 
         this->uniqueId_=getUniqueNumberString();
-        this->radar_ = this->creator_->getScene()->getRadar();
-        this->radar_->addRadarObject(this);
+        if( GameMode::showsGraphics() )
+        {
+            this->radar_ = this->creator_->getScene()->getRadar();
+            this->radar_->addRadarObject(this);
+        }
         this->bInitialized_ = true;
     }
 
 
     RadarViewable::~RadarViewable()
     {
+        
         if( this->bInitialized_ )
-            this->radar_->removeRadarObject(this);
+        {
+            if( GameMode::showsGraphics() )
+            {
+                this->radar_->removeRadarObject(this);
+            }
+        }
     }
 
 //     void RadarViewable::setRadarObjectDescription(const std::string& str)
@@ -100,6 +110,9 @@ namespace orxonox
     
     void RadarViewable::settingsChanged()
     {
-        this->radar_->radarObjectChanged(this);
+        if( GameMode::showsGraphics() )
+        {
+            this->radar_->radarObjectChanged(this);
+        }
     }
 }

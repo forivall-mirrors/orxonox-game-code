@@ -126,7 +126,7 @@ namespace orxonox
     {
         this->objects_.push_back(object);
         object->setGametype(this->getGametype());
-    object->setLevel(this);
+        object->setLevel(this);
     }
 
     BaseObject* Level::getObject(unsigned int index) const
