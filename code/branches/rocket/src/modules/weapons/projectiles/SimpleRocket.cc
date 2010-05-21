@@ -80,9 +80,10 @@ namespace orxonox
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
 
+            // TODO: fix the orientation and size of this collision shape to match the rocket
             ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
             collisionShape->setRadius(3);
-            collisionShape->setHeight(500);
+            collisionShape->setHeight(5);
             this->attachCollisionShape(collisionShape);
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
@@ -95,6 +96,7 @@ namespace orxonox
 
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
+            this->localAngularVelocity_ = 0;
 
             if( this->bDestroy_ )
                 this->destroy();
