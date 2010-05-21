@@ -64,7 +64,7 @@ ClassID::ClassID( ) : Packet(){
     // now push the network id and the classname to the stack
     tempQueue.push( std::pair<unsigned int, std::string>(network_id, classname) );
     ++nrOfClasses;
-    packetSize += (classname.size()+1)+sizeof(uint32_t)+sizeof(uint32_t);
+    packetSize += (classname.size()+1)+sizeof(network_id)+sizeof(uint32_t);
   }
 
   this->data_=new uint8_t[ packetSize ];
@@ -79,6 +79,7 @@ ClassID::ClassID( ) : Packet(){
 
   // now save all classids and classnames
   std::pair<uint32_t, std::string> tempPair;
+  uint32_t tempsize = 2*sizeof(uint32_t); // packetid and nrOfClasses
   while( !tempQueue.empty() ){
     tempPair = tempQueue.front();
     tempQueue.pop();
@@ -86,7 +87,9 @@ ClassID::ClassID( ) : Packet(){
     *(uint32_t*)(temp+sizeof(uint32_t)) = tempPair.second.size()+1;
     memcpy(temp+2*sizeof(uint32_t), tempPair.second.c_str(), tempPair.second.size()+1);
     temp+=2*sizeof(uint32_t)+tempPair.second.size()+1;
+    tempsize+=2*sizeof(uint32_t)+tempPair.second.size()+1;
   }
+  assert(tempsize=packetSize);
 
   COUT(5) << "classid packetSize is " << packetSize << endl;
 
@@ -110,6 +113,7 @@ uint32_t ClassID::getSize() const{
 
   for(unsigned int i=0; i<nrOfClasses; i++){
     totalsize += 2*sizeof(uint32_t) + *(uint32_t*)(temp + sizeof(uint32_t));
+    temp += 2*sizeof(uint32_t) + *(uint32_t*)(temp + sizeof(uint32_t));
   }
   return totalsize;
 }
