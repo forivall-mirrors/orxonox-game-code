@@ -81,7 +81,7 @@ namespace orxonox
 
 	void RocketController::setTargetPosition() {
 		//this->targetPosition_=this->target_->getWorldPosition();
-		this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getPosition(),this->getControllableEntity()->getVelocity().length() , this->target_->getPosition(), this->target_->getVelocity());
+		this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getWorldPosition(),this->getControllableEntity()->getVelocity().length() , this->target_->getWorldPosition(), this->target_->getVelocity());
 	}
 	void RocketController::moveToTargetPosition() {
 		this->moveToPosition(this->targetPosition_);
@@ -101,11 +101,7 @@ namespace orxonox
 	   float dx = target.x-this->getControllableEntity()->getPosition().x;
 	   float dy = target.y-this->getControllableEntity()->getPosition().y;
 	   COUT(0)<<"\n diff: ";
-	   COUT(0)<<target.x-this->getControllableEntity()->getPosition().x;
-	   COUT(0)<<" ";
-	   COUT(0)<<target.y-this->getControllableEntity()->getPosition().y;
-	   COUT(0)<<" ";
-	   COUT(0)<<target.z-this->getControllableEntity()->getPosition().z;
+	   COUT(0)<<target-this->getControllableEntity()->getPosition() << endl;
 	   //COUT(0)<<"\n 2D view: ";
 	  /* COUT(0)<<this->getControllableEntity()->getPosition().x;
 	   COUT(0)<<" ";
@@ -116,11 +112,13 @@ namespace orxonox
         Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
 		//Vector3D diff =target-this->rocket->getPosition();
-		//COUT(0)<<coord.x;
+		COUT(0) << "viewdirection: "<< coord << endl;
 		//COUT(0)<<"  ";
 		//COUT(0)<<coord.y;
-		 this->getControllableEntity()->rotateYaw(coord.x*coord.x*coord.x*coord.x);
-            this->getControllableEntity()->rotatePitch(coord.y*coord.y* coord.y*coord.y);
+        this->getControllableEntity()->rotateYaw(-0.8f*sgn(coord.x)*coord.x*coord.x);
+        this->getControllableEntity()->rotatePitch(0.8f*sgn(coord.y)*coord.y*coord.y);
+//         this->getControllableEntity()->rotateYaw(10);
+//         this->getControllableEntity()->rotatePitch(0);
 		//this->getControllableEntity()->rotatePitch(rotation.getPitch().valueRadians());
 		//this->getControllableEntity()->rotateYaw(rotation.getYaw().valueRadians());
 		//this->getControllableEntity()->moveUpDown(coord.y);
