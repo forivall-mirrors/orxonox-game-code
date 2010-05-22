@@ -89,7 +89,7 @@ ClassID::ClassID( ) : Packet(){
     temp+=2*sizeof(uint32_t)+tempPair.second.size()+1;
     tempsize+=2*sizeof(uint32_t)+tempPair.second.size()+1;
   }
-  assert(tempsize=packetSize);
+  assert(tempsize==packetSize);
 
   COUT(5) << "classid packetSize is " << packetSize << endl;
 

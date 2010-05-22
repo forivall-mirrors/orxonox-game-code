@@ -163,9 +163,13 @@ namespace orxonox
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
             this->localAngularVelocity_ = 0;
-
+        }
+        
+        if( GameMode::isMaster() )
+        {
             if( this->bDestroy_ )
                 this->destroy();
+            
         }
     }
 

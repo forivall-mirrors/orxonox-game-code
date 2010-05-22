@@ -110,6 +110,41 @@ namespace orxonox{
         else
             return *(uint32_t*)(mem) == OBJECTID_UNKNOWN;
     }
+    
+    // These functions implement loading / saving / etc. for WeakPtr<T>
+    
+    /** @brief returns the size of the objectID needed to synchronise the pointer */
+    template <class T> inline uint32_t returnSize( const WeakPtr<T>& variable )
+    {
+        return sizeof(uint32_t);
+    }
+    
+    /** @brief reads the objectID of a pointer out of the bytestream and increases the mem pointer */
+    template <class T> inline void loadAndIncrease( const WeakPtr<T>& variable, uint8_t*& mem )
+    {
+        //         *const_cast<typename Loki::TypeTraits<T*>::UnqualifiedType*>(&variable) = dynamic_cast<T*>(variable->getSynchronisable( *(uint32_t*)(mem) ));
+        *const_cast<typename Loki::TypeTraits<SmartPtr<T> >::UnqualifiedType*>(&variable) = orxonox_cast<T*>(T::getSynchronisable(*(uint32_t*)(mem)));
+        mem += returnSize( variable );
+    }
+    
+    /** @brief saves the objectID of a pointer into the bytestream and increases the mem pointer */
+    template <class T> inline void saveAndIncrease( const WeakPtr<T>& variable, uint8_t*& mem )
+    {
+        if ( variable.get() )
+            *(uint32_t*)(mem) = static_cast<uint32_t>(variable->getObjectID());
+        else
+            *(uint32_t*)(mem) = OBJECTID_UNKNOWN;
+        mem += returnSize( variable );
+    }
+    
+    /** @brief checks whether the objectID of the variable is the same as in the bytestream */
+    template <class T> inline  bool checkEquality( const WeakPtr<T>& variable, uint8_t* mem )
+    {
+        if ( variable.get() )
+            return *(uint32_t*)(mem) == variable->getObjectID();
+        else
+            return *(uint32_t*)(mem) == OBJECTID_UNKNOWN;
+    }
 }
 
 
