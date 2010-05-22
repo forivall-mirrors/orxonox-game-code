@@ -61,7 +61,7 @@ namespace orxonox
     void MoodManager::checkMoodValidity()
     {
         // TODO: Insert new moods here & make this generic
-        if (mood_ != "default" && mood_ != "dnb")
+        if (mood_ != "default" && mood_ != "dnb" && mood_ != "eightbit")
         {
             ResetConfigValue(mood_);
         }
