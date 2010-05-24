@@ -70,17 +70,13 @@ namespace orxonox // tolua_export
             PickupRepresentation* getRepresentation(const PickupIdentifier* identifier); //!< Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
             
             // tolua_begin
-            orxonox::PickupCarrier* getPawn(void);
-            
-            int getNumCarrierChildren(orxonox::PickupCarrier* carrier);
-            orxonox::PickupCarrier* getCarrierChild(int index, orxonox::PickupCarrier* carrier);
-            
-            const std::string& getCarrierName(orxonox::PickupCarrier* carrier);
-            
-            int getNumPickups(orxonox::PickupCarrier* carrier);
-            PickupRepresentation* getPickupRepresentation(int index, orxonox::PickupCarrier* carrier);
-            void dropPickup(int index, orxonox::PickupCarrier* carrier);
-            void usePickup(int index, orxonox::PickupCarrier* carrier, bool use);
+            int getNumPickups(void);
+            orxonox::Pickupable* popPickup(void) { this->pickupsIndex_++; return *(this->pickupsIterator_++); }
+            int getPickupIndex(void) { return this->pickupsIndex_-1; }
+            orxonox::PickupRepresentation* getPickupRepresentation(orxonox::Pickupable* pickup) { if(pickup != NULL) return this->getRepresentation(pickup->getPickupIdentifier()); return NULL; }
+
+            void dropPickup(orxonox::Pickupable* pickup);
+            void usePickup(orxonox::Pickupable* pickup, bool use);
             // tolua_end
             
         private:
@@ -89,6 +85,12 @@ namespace orxonox // tolua_export
             
             PickupRepresentation* defaultRepresentation_; //!< The default PickupRepresentation.
             std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types if Pickupables) and PickupRepresentations.
+
+            std::set<Pickupable*> pickupsList_;
+            std::set<Pickupable*>::iterator pickupsIterator_;
+            int pickupsIndex_;
+
+            std::vector<PickupCarrier*>* getAllCarriers(PickupCarrier* carrier);
         
     }; // tolua_export
     

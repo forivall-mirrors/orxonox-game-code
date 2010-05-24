@@ -63,6 +63,7 @@ namespace orxonox
         RegisterRootObject(PickupManager);
         
         this->defaultRepresentation_ = new PickupRepresentation();
+        this->pickupsIndex_ = 0;
         
         COUT(3) << "PickupManager created." << std::endl;
     }
@@ -148,64 +149,70 @@ namespace orxonox
         
         return it->second;
     }
-    
-    PickupCarrier* PickupManager::getPawn(void)
+
+    int PickupManager::getNumPickups(void)
     {
-        PlayerInfo* player = GUIManager::getInstance().getPlayer(PickupManager::guiName_s);
-        if (player != NULL)
-            return dynamic_cast<PickupCarrier*>(player->getControllableEntity());
-        else
-            return NULL;
-    }
-    
-    int PickupManager::getNumCarrierChildren(PickupCarrier* carrier)
-    {
-        if(carrier == NULL)
-            return 0;
-        return carrier->getNumCarrierChildren();
-    }
-            
-    PickupCarrier* PickupManager::getCarrierChild(int index, PickupCarrier* carrier)
-    {
-        if(carrier == NULL)
-            return NULL;
-        return carrier->getCarrierChild(index);
-    }
-    
-    const std::string& PickupManager::getCarrierName(orxonox::PickupCarrier* carrier)
-    {
-        if(carrier == NULL)
-            return BLANKSTRING;
-        return carrier->getCarrierName();
-    }
-    
-    PickupRepresentation* PickupManager::getPickupRepresentation(int index, PickupCarrier* carrier)
-    {
-        Pickupable* pickup = carrier->getPickup(index);
-        if(pickup == NULL)
-            return NULL;
+        this->pickupsList_.clear();
+        this->pickupsIndex_ = 0;
         
-        return this->getRepresentation(pickup->getPickupIdentifier());
-    }
-    
-    int PickupManager::getNumPickups(PickupCarrier* carrier)
-    {
-        if(carrier == NULL)
+        PlayerInfo* player = GUIManager::getInstance().getPlayer(PickupManager::guiName_s);
+        PickupCarrier* carrier = NULL;
+        if (player != NULL)
+            carrier =  dynamic_cast<PickupCarrier*>(player->getControllableEntity());
+        else
             return 0;
-        return carrier->getNumPickups();
+
+        std::vector<PickupCarrier*>* carriers = this->getAllCarriers(carrier);
+        for(std::vector<PickupCarrier*>::iterator it = carriers->begin(); it != carriers->end(); it++)
+        {
+            std::set<Pickupable*> pickups = (*it)->getPickups();
+            for(std::set<Pickupable*>::iterator pickup = pickups.begin(); pickup != pickups.end(); pickup++)
+            {
+                this->pickupsList_.insert(*pickup);
+            }
+        }
+        delete carriers;
+
+        this->pickupsIterator_ = this->pickupsList_.begin();
+        return this->pickupsList_.size();
     }
-    
-    void PickupManager::dropPickup(int index, PickupCarrier* carrier)
+
+    std::vector<PickupCarrier*>* PickupManager::getAllCarriers(PickupCarrier* carrier)
     {
-        Pickupable* pickup = carrier->getPickup(index);
-        if(pickup != NULL)
+        //TODO: More efficiently.
+        std::vector<PickupCarrier*>* carriers = new std::vector<PickupCarrier*>();
+        carriers->insert(carriers->end(), carrier);
+        std::vector<PickupCarrier*>* children = carrier->getCarrierChildren();
+        for(std::vector<PickupCarrier*>::iterator it = children->begin(); it != children->end(); it++)
+        {
+            std::vector<PickupCarrier*>* childrensChildren = this->getAllCarriers(*it);
+            for(std::vector<PickupCarrier*>::iterator it2 = childrensChildren->begin(); it2 != childrensChildren->end(); it2++)
+            {
+                carriers->insert(carriers->end(), *it2);
+            }
+            delete childrensChildren;
+        }
+        delete children;
+        return carriers;
+    }
+
+    void PickupManager::dropPickup(orxonox::Pickupable* pickup)
+    {
+        if(!pickup->isPickedUp())
+            return;
+        
+        PickupCarrier* carrier = pickup->getCarrier();
+        if(pickup != NULL && carrier != NULL)
             carrier->drop(pickup);
     }
-    
-    void PickupManager::usePickup(int index, PickupCarrier* carrier, bool use)
+
+    void PickupManager::usePickup(orxonox::Pickupable* pickup, bool use)
     {
-        Pickupable* pickup = carrier->getPickup(index);
-        if(pickup != NULL)
+        if(!pickup->isPickedUp())
+            return;
+
+        PickupCarrier* carrier = pickup->getCarrier();
+        if(pickup != NULL && carrier != NULL)
             pickup->setUsed(use);
     }
     

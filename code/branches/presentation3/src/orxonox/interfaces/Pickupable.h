@@ -41,8 +41,8 @@
 
 #include "core/OrxonoxClass.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
     
     /**
     @brief
@@ -50,8 +50,9 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport Pickupable : virtual public OrxonoxClass
-    {
+    class _OrxonoxExport Pickupable  // tolua_export
+        : virtual public OrxonoxClass
+    {  // tolua_export
         protected:
             Pickupable(); //!< Default constructor.
         
@@ -62,8 +63,7 @@ namespace orxonox
             @brief Get whether the pickup is currently in use or not.
             @return Returns true if the pickup is currently in use.
             */
-            inline bool isUsed(void)
-                { return this->used_; }
+            inline bool isUsed(void) { return this->used_; }  // tolua_export
             /**
             @brief  Should be called when the pickup has transited from used to unused or the other way around.
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedUsed); to their changdeUsed method.
@@ -86,8 +86,7 @@ namespace orxonox
             @brief Returns whether the Pickupable is currently picked up.
             @return Returns true if the Pickupable is currently picked up, false if not.
             */
-            inline bool isPickedUp(void)
-                { return this->pickedUp_; }
+            inline bool isPickedUp(void) { return this->pickedUp_; }  // tolua_export
             /**
             @brief  Should be called when the pickup has transited from picked up to dropped or the other way around.
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedPickedUp); to their changedPickedUp method.
@@ -141,11 +140,11 @@ namespace orxonox
             PickupCarrier* carrier_; //!< The carrier of the pickup.
             std::list<Identifier*> targets_; //!< The possible targets of this pickup.
 
-    };
+    };  // tolua_export
     
     SUPER_FUNCTION(10, Pickupable, changedUsed, false);
     SUPER_FUNCTION(12, Pickupable, changedCarrier, false);
     SUPER_FUNCTION(13, Pickupable, changedPickedUp, false);
-}
+}  // tolua_export
 
 #endif /* _Pickupable_H__ */

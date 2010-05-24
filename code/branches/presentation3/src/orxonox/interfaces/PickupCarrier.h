@@ -44,8 +44,8 @@
 
 #include "core/OrxonoxClass.h"
 
-namespace orxonox // tolua_export
-{ // tolua_export
+namespace orxonox
+{
 
     //! Forward-declarations.
     class PickupManager;
@@ -61,9 +61,8 @@ namespace orxonox // tolua_export
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport PickupCarrier  // tolua_export
-        : virtual public OrxonoxClass
-    { // tolua_export
+    class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
+    {
         //! So that the different Pickupables have full access to their PickupCarrier.
         friend class Pickupable;
         friend class PickupManager;
@@ -258,7 +257,7 @@ namespace orxonox // tolua_export
                     return *it;
                 }
             
-    }; // tolua_export
-} // tolua_export
+    };
+}
 
 #endif /* _PickupCarrier_H__ */
