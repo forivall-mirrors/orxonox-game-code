@@ -40,7 +40,7 @@ namespace orxonox
 {
     /**
     @brief
-        Controller for the Drone of the PPS tutorial.
+        Controller for the Rocket (targetseeking)
     @author
         Gabriel Nadler, Originalfile: Oli Scheuss
     */
@@ -51,7 +51,7 @@ namespace orxonox
 			virtual ~RocketController();
             
             virtual void tick(float dt);
-			SimpleRocket* getRocket(){return this->rocket;};
+			SimpleRocket* getRocket(){return this->rocket_;};
 			void setTarget(WorldEntity* target);
         protected:
 			void moveToPosition(const Vector3& target);
@@ -59,11 +59,12 @@ namespace orxonox
 			void moveToTargetPosition();
 
         private:
-			SimpleRocket* rocket;
+			SimpleRocket* rocket_;
 			Vector3 targetPosition_;
 			WeakPtr<PlayerInfo> player_;
-						int haha;
+						
 			WeakPtr<WorldEntity> target_;
+            int counter_;
 
 
     };

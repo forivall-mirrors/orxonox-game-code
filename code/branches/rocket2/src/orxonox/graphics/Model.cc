@@ -148,7 +148,7 @@ namespace orxonox
 
                         
                         //Generiert LOD-Levels
-                        this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
+                        //this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
                     }
                     else
                     {

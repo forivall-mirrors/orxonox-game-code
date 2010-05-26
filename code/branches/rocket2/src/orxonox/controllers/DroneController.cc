@@ -71,8 +71,8 @@ namespace orxonox
         // - moveFrontBack, moveRightLeft, moveUpDown 
         // - rotatePitch, rotateYaw, rotateRoll 
         // - apply the to myDrone (e.g. myDrone->rotateYaw(..) ) 
-		myDrone->rotatePitch(0.08);
-		myDrone->moveFrontBack(1);
+		//myDrone->rotatePitch(0.08);
+		//myDrone->moveFrontBack(1);
 
     }
 }

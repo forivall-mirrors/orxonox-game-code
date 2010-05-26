@@ -58,49 +58,84 @@ namespace orxonox
         this->localAngularVelocity_ = 0;
         this->bDestroy_ = false;
         this->lifetime_ = 100;
+        this->setMass(15);
         COUT(4) << "simplerocket constructed\n";
-
+        this->counter_=0;
+        this->slowing_=false;
 
         if (GameMode::isMaster())
        {
             this->setCollisionType(WorldEntity::Kinematic);
-            //this->setVelocity(0,0,100);
+            this->fuel_=true;
 
             Model* model = new Model(this);
             model->setMeshSource("rocket.mesh");
             model->scale(0.7f);
             this->attach(model);
 
-            ParticleEmitter* fire = new ParticleEmitter(this);
-            this->attach(fire);
-            fire->setOrientation(this->getOrientation());
-            fire->setSource("Orxonox/rocketfire2");
-
+            this->fire_ = new ParticleEmitter(this);
+            this->attach(this->fire_);
+           
+            this->fire_->setOrientation(this->getOrientation());
+            this->fire_->setSource("Orxonox/simplerocketfire");
             this->enableCollisionCallback();
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
 
             // TODO: fix the orientation and size of this collision shape to match the rocket
             ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
-            collisionShape->setRadius(3);
-            collisionShape->setHeight(5);
+            collisionShape->setOrientation(this->getOrientation());
+            collisionShape->setRadius(1.5f);
+            collisionShape->setHeight(200);
             this->attachCollisionShape(collisionShape);
+            
 
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
         }
 
     }
-    
+   
+    void SimpleRocket::disableFire(){
+        this->setAcceleration(0,0,0);
+        this->setVelocity(Vector3(0,0,0));
+        
+        this->fire_->detachFromParent();
+        //this->fire_->setVisible(false);
+
+    }
+
+
     void SimpleRocket::tick(float dt)
     {
+
         SUPER(SimpleRocket, tick, dt);
+        counter_++;
+        if (this->getVelocity().squaredLength() >130000 && !slowing_) counter_++; //if Velocity bigger than about 360, uses a lot more "fuel" :)
 
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
             this->localAngularVelocity_ = 0;
 
+            
+            if (this->fuel_) {
+                COUT(0)<<this->getVelocity().length()<<endl;
+                if (this->counter_>1000 && counter_%12==0) 
+                    
+                    if (!this->slowing_) {
+                        this->setAcceleration(this->getOrientation()*Vector3(10,10,10));
+                        this->slowing_=true;
+                    }
+
+                if (this->counter_ > 1800) 
+                    this->fuel_=false;
+            }
             if( this->bDestroy_ )
                 this->destroy();
+            if (!this->fuel_) 
+                this->disableFire();
+        
+           
+            
         
     }
 
@@ -133,6 +168,7 @@ namespace orxonox
         //this->originalControllableEntity_ = this->owner_->getPlayer()->getControllableEntity();
         this->player_ = this->owner_->getPlayer();
     }
+
 
 
     bool SimpleRocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
