@@ -37,5 +37,7 @@
     <ParticleEmitter position="0,10000,0" source="Orxonox/fog" />
     <ParticleEmitter position="6000,7000,0" source="Orxonox/fog2" />
     <ParticleEmitter position="-6000,-7000,0" source="Orxonox/fog3" />
+    <ParticleEmitter position="-6000,0,9000" source="Orxonox/fog4" />
+    <ParticleEmitter position="2000,-7000,-5963" source="Orxonox/fog3" />
   </Scene>
 </Level>
