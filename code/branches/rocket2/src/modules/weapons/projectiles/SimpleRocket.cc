@@ -85,7 +85,7 @@ namespace orxonox
             ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
             collisionShape->setOrientation(this->getOrientation());
             collisionShape->setRadius(1.5f);
-            collisionShape->setHeight(200);
+            collisionShape->setHeight(5);
             this->attachCollisionShape(collisionShape);
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
         }
