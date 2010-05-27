@@ -72,6 +72,16 @@ namespace orxonox // tolua_export
             inline float getInitialHealth() const
                 { return this->initialHealth_; }
 
+            inline void setShieldHealth(float shieldHealth)
+            { this->shieldHealth_ = shieldHealth; }
+            inline float getShieldHealth()
+            { return this->shieldHealth_; }
+            
+            inline void setShieldAbsorption(float shieldAbsorption)
+            { this->shieldAbsorption_ = shieldAbsorption; }
+            inline float getShieldAbsorption()
+            { return this->shieldAbsorption_; }
+
             inline ControllableEntity* getLastHitOriginator() const
                 { return this->lastHitOriginator_; }
 
@@ -140,6 +150,8 @@ namespace orxonox // tolua_export
             float health_;
             float maxHealth_;
             float initialHealth_;
+            float shieldHealth_;
+            float shieldAbsorption_; // Has to be between 0 and 1
 
             Pawn* lastHitOriginator_;
 

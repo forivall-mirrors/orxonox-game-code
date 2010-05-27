@@ -65,6 +65,8 @@ namespace orxonox
         this->health_ = 0;
         this->maxHealth_ = 0;
         this->initialHealth_ = 0;
+        this->shieldHealth_ = 0;
+        this->shieldAbsorption_ = 0.5;
 
         this->lastHitOriginator_ = 0;
 
@@ -79,7 +81,7 @@ namespace orxonox
         }
         else
             this->weaponSystem_ = 0;
-        
+
         this->setCarrierName("Pawn");
 
         this->setRadarObjectColour(ColourValue::Red);
@@ -106,6 +108,10 @@ namespace orxonox
         XMLPortParam(Pawn, "health", setHealth, getHealth, xmlelement, mode).defaultValues(100);
         XMLPortParam(Pawn, "maxhealth", setMaxHealth, getMaxHealth, xmlelement, mode).defaultValues(200);
         XMLPortParam(Pawn, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
+
+        XMLPortParam(Pawn, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode).defaultValues(0);
+        XMLPortParam(Pawn, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode).defaultValues(0);
+
         XMLPortParam(Pawn, "spawnparticlesource", setSpawnParticleSource, getSpawnParticleSource, xmlelement, mode);
         XMLPortParam(Pawn, "spawnparticleduration", setSpawnParticleDuration, getSpawnParticleDuration, xmlelement, mode).defaultValues(3.0f);
         XMLPortParam(Pawn, "explosionchunks", setExplosionChunks, getExplosionChunks, xmlelement, mode).defaultValues(7);
@@ -117,11 +123,13 @@ namespace orxonox
 
     void Pawn::registerVariables()
     {
-        registerVariable(this->bAlive_,        VariableDirection::ToClient);
-        registerVariable(this->health_,        VariableDirection::ToClient);
-        registerVariable(this->initialHealth_, VariableDirection::ToClient);
-        registerVariable(this->bReload_,       VariableDirection::ToServer);
-        registerVariable(this->aimPosition_,   Bidirectionality::ServerMaster, 0, true);
+        registerVariable(this->bAlive_,           VariableDirection::ToClient);
+        registerVariable(this->health_,           VariableDirection::ToClient);
+        registerVariable(this->initialHealth_,    VariableDirection::ToClient);
+        registerVariable(this->shieldHealth_,     VariableDirection::ToClient);
+        registerVariable(this->shieldAbsorption_, VariableDirection::ToClient);
+        registerVariable(this->bReload_,          VariableDirection::ToServer);
+        registerVariable(this->aimPosition_,      Bidirectionality::ServerMaster, 0, true);
     }
 
     void Pawn::tick(float dt)
@@ -163,7 +171,24 @@ namespace orxonox
     {
         if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
         {
-            this->setHealth(this->health_ - damage);
+            //share the dealt damage to the shield and the Pawn.
+            float shielddamage = damage*this->shieldAbsorption_;
+            float healthdamage = damage*(1-this->shieldAbsorption_);
+
+            // In case the shield can not take all the shield damage.
+            if (shielddamage > this->getShieldHealth())
+            {
+                healthdamage += shielddamage-this->getShieldHealth();
+                this->setShieldHealth(0);
+            }
+
+            this->setHealth(this->health_ - healthdamage);
+
+            if (this->getShieldHealth() > 0)
+            {
+                this->setShieldHealth(this->shieldHealth_ - shielddamage);
+            }
+
             this->lastHitOriginator_ = originator;
 
             // play damage effect

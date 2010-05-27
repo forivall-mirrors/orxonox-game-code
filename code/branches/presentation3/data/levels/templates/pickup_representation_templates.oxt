@@ -1,3 +1,84 @@
+<!-- Shield pickups: -->
+
+<Template name=smallshieldpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1,1,1" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1,1,1" material="Shield" scale=0.3 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=smallshieldpickup>
+  <ShieldPickup
+    duration = 10
+    shieldabsorption = 0.7
+    shieldhealth = 300
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
+
+
+<Template name=mediumshieldpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1,1,1" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1,1,1" material="Shield" scale=0.5 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=mediumshieldpickup>
+  <ShieldPickup
+    duration = 30
+    shieldabsorption = 0.8
+    shieldhealth = 500
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
+
+
+<Template name=hugeshieldpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1,1,1" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1,1,1" material="Shield" scale=0.7 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=hugeshieldpickup>
+  <ShieldPickup
+    duration = 60
+    shieldabsorption = 0.95
+    shieldhealth = 700
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
 
 <!-- Health pickups: -->
 
