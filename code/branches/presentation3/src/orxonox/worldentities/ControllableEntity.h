@@ -136,6 +136,8 @@ namespace orxonox
                 { return this->bMouseLook_; }
             inline float getMouseLookSpeed() const
                 { return this->mouseLookSpeed_; }
+            inline CameraPosition* getCurrentCameraPosition()
+                { return this->currentCameraPosition_; }
 
             inline Controller* getXMLController() const
                 { return this->xmlcontroller_; }

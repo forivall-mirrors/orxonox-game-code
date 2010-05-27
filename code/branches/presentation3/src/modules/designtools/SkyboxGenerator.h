@@ -20,37 +20,39 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Gion-Andri Cantieni
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _GametypeStatus_H__
-#define _GametypeStatus_H__
 
-#include "overlays/OverlaysPrereqs.h"
-
+#include "core/OrxonoxClass.h"
+#include "util/Singleton.h"
 #include "tools/interfaces/Tickable.h"
-#include "overlays/OverlayText.h"
-
+#include <OgreMath.h>
+ 
+ 
 namespace orxonox
 {
-    class _OverlaysExport GametypeStatus : public OverlayText, public Tickable
+    class SkyboxGenerator : public virtual OrxonoxClass, public Singleton<SkyboxGenerator>, public Tickable
     {
+        friend class Singleton<SkyboxGenerator>;
+    
         public:
-            GametypeStatus(BaseObject* creator);
-            virtual ~GametypeStatus();
-
-            virtual void tick(float dt);
-            virtual void changedOwner();
-
-            static void setGametypeStatus(bool bValue); //!< Toggles whether the gametype status is displayed.
+            SkyboxGenerator();
+            virtual ~SkyboxGenerator();
+            static void createSkybox( );
+            void setConfigValues( );
+            void tick(float dt);
 
         private:
-            PlayerInfo* owner_;
-            static bool noCaption_s;
-            
+            static SkyboxGenerator* singletonPtr_s;
+            std::string skyboxPrefix_; 
+            bool takeScreenshot_;
+            int iterateOverDirections_;
+            float aspectRatio_;
+            Ogre::Radian fovy_;
+            bool captionsRemoved_;
     };
 }
-#endif /* _GametypeStatus_H__ */

@@ -78,6 +78,7 @@ namespace orxonox
 
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
     SetCommandLineSwitch(noIOConsole).information("Use this if you don't want to use the IOConsole (for instance for Lua debugging)");
+
 #ifdef ORXONOX_PLATFORM_WINDOWS
     SetCommandLineArgument(limitToCPU, 1).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is the first core (faster than off)");
 #endif

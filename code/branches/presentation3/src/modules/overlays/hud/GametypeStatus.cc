@@ -29,6 +29,7 @@
 #include "GametypeStatus.h"
 
 #include "util/Convert.h"
+#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "infos/GametypeInfo.h"
 #include "infos/PlayerInfo.h"
@@ -37,7 +38,10 @@
 
 namespace orxonox
 {
-    CreateFactory(GametypeStatus);
+    CreateFactory(GametypeStatus);  
+
+    /*static*/ bool GametypeStatus::noCaption_s = false; 
+    SetConsoleCommand(GametypeStatus, setGametypeStatus, true);
 
     GametypeStatus::GametypeStatus(BaseObject* creator) : OverlayText(creator)
     {
@@ -58,6 +62,12 @@ namespace orxonox
         {
             const GametypeInfo* gtinfo = this->owner_->getGametypeInfo();
             ControllableEntity* ce = this->owner_->getControllableEntity();
+
+            if(GametypeStatus::noCaption_s) // No captions are displayed.
+            {
+                this->setCaption("");
+                return;
+            }
 
             if (!gtinfo->hasStarted() && !gtinfo->isStartCountdownRunning())
             {
@@ -87,4 +97,16 @@ namespace orxonox
 
         this->owner_ = orxonox_cast<PlayerInfo*>(this->getOwner());
     }
+
+    /**
+    @brief
+        Sets whether the gametype status is displayed.
+    @param bValue
+        If true captions are displayed, if false, not.
+    */
+    /*static*/ void GametypeStatus::setGametypeStatus(bool bValue)
+    {
+        GametypeStatus::noCaption_s = !bValue;
+    }
+    
 }
