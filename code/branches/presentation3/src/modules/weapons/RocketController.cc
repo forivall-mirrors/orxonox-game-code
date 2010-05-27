@@ -100,8 +100,8 @@ namespace orxonox
     {
         if (!this->getControllableEntity())
             return;
-        float dx = target.x-this->getControllableEntity()->getPosition().x;
-        float dy = target.y-this->getControllableEntity()->getPosition().y;
+        //float dx = target.x-this->getControllableEntity()->getPosition().x;
+        //float dy = target.y-this->getControllableEntity()->getPosition().y;
         COUT(4)<<"\n diff: ";
         COUT(4)<<target-this->getControllableEntity()->getPosition() << endl;
         //COUT(0)<<"\n 2D view: ";
@@ -112,7 +112,7 @@ namespace orxonox
         COUT(0)<<this->getControllableEntity()->getPosition().z;
         COUT(0)<<"\n";*/
         Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
-        float distance = (target - this->getControllableEntity()->getPosition()).length();
+        //float distance = (target - this->getControllableEntity()->getPosition()).length();
         //Vector3D diff =target-this->rocket->getPosition();
         COUT(4) << "viewdirection: "<< coord << endl;
         //COUT(0)<<"  ";
