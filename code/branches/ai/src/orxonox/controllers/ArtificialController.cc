@@ -50,7 +50,7 @@ namespace orxonox
     SetConsoleCommand(ArtificialController, formationsize, true);
 
     static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
-    static const int FORMATION_LENGTH =  10;
+    static const int FORMATION_LENGTH =  130;
     static const int FORMATION_WIDTH =  110;
     static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
     static const float SPEED_MASTER = 0.6f;
@@ -111,6 +111,11 @@ namespace orxonox
             if(aiController)
             {
                 aiController->formationFlight_ = form;
+                if(!form)
+                {
+                    if(aiController->state_ == MASTER) aiController->freeSlaves();
+                    aiController->state_ = FREE;
+                }
             }
         }
     }
@@ -119,7 +124,7 @@ namespace orxonox
         @brief Get all masters to do a "specific master action" 
         @param action which action to perform (integer, so it can be called with a console command (tmp solution))
     */
-    void ArtificialController::masteraction(int action) 
+    void ArtificialController::masteraction(int action)
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
@@ -128,12 +133,12 @@ namespace orxonox
 
             ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
 
-            if(aiController || aiController->state_ == MASTER)
+            if(aiController && aiController->state_ == MASTER)
             {
                 if (action == 1)
-                    aiController->specificMasterAction_ = TURN180;
+                    aiController->spinInit();
                 if (action == 2)
-                    aiController->specificMasterAction_ = SPIN;
+                    aiController->turn180Init();
             }
         }
     }
@@ -270,16 +275,8 @@ namespace orxonox
         {
             if (this->target_ || distance > 10)
             {
-                if (this->specificMasterAction_ == NONE)
-                {
                 this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_MASTER * sgn(coord.x) * coord.x*coord.x);
                 this->getControllableEntity()->rotatePitch(ROTATEFACTOR_MASTER * sgn(coord.y) * coord.y*coord.y);
-                } else if (this->specificMasterAction_ == TURN180)
-                {
-                this->getControllableEntity()->rotateYaw(-1.0f * sgn(coord.x) * coord.x*coord.x);
-                this->getControllableEntity()->rotatePitch(sgn(coord.y) * coord.y*coord.y);
-                }
-
             }
 
             if (this->target_ && distance < 200 && this->getControllableEntity()->getVelocity().squaredLength() > this->target_->getVelocity().squaredLength())
@@ -415,14 +412,14 @@ namespace orxonox
             for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
             {
                 pos = Vector3::ZERO;
-                if (i <= 1) pos += dest  + FORMATION_WIDTH*WorldEntity::LEFT;
-                if (i == 2) pos += dest  + FORMATION_WIDTH*WorldEntity::RIGHT;
-                if (i == 3) pos += dest  + FORMATION_WIDTH*WorldEntity::UP;
+                if (i <= 1) pos += dest  + FORMATION_WIDTH*(orient*WorldEntity::LEFT);
+                if (i == 2) pos += dest  + FORMATION_WIDTH*(orient*WorldEntity::RIGHT);
+                if (i == 3) pos += dest  + FORMATION_WIDTH*(orient*WorldEntity::UP);
                 if (i >= 4)
                 {
-                    pos += dest  + FORMATION_WIDTH*WorldEntity::DOWN;
+                    pos += dest  + FORMATION_WIDTH*(orient*WorldEntity::DOWN);
                     i = 1;
-                    dest += FORMATION_LENGTH*orient*WorldEntity::BACK;
+                    dest += FORMATION_LENGTH*(orient*WorldEntity::BACK);
                     (*it)->setTargetPosition(pos);
                     continue;
                 }
@@ -517,7 +514,7 @@ namespace orxonox
     }
 
     /**
-        @brief Used to continue a "specific master action" for a certain time.
+        @brief Used to continue a "specific master action" for a certain time and resuming normal behaviour after.
     */
     void ArtificialController::specificMasterActionHold()
     {
@@ -532,29 +529,53 @@ namespace orxonox
     }
 
     /**
-        @brief Master engages a 180 degree turn. Is a "specific master action".
+        @brief Master initializes a 180 degree turn. Leads to a "specific master action".
     */
-    void ArtificialController::turn180()
+    void ArtificialController::turn180Init()
     {
+        COUT(0) << "~turnInit" << std::endl;
         if(this->state_ != MASTER) return;
-
-        COUT(0) << "~turn" << std::endl;
 
         Quaternion orient = this->getControllableEntity()->getOrientation();
 
-        this->setTargetPosition(this->getControllableEntity()->getPosition() + 500.0f*orient*WorldEntity::BACK);
-        this->specificMasterActionHoldCount_ = 2;
-        this->specificMasterAction_  =  HOLD;
+        this->setTargetPosition(this->getControllableEntity()->getPosition() + 1000.0f*orient*WorldEntity::BACK);
+
+        this->specificMasterActionHoldCount_ = 4;
+
+        this->specificMasterAction_ = TURN180;
     }
 
     /**
-        @brief Master spins around its looking direction axis. Is a "specific master action". Not yet implemented.
+        @brief Execute the 180 degree turn. Called within tick.
+    */
+    void ArtificialController::turn180()
+    {
+            Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, this->targetPosition_);
+
+            this->getControllableEntity()->rotateYaw(-2.0f * sgn(coord.x) * coord.x*coord.x);
+            this->getControllableEntity()->rotatePitch(2.0f * sgn(coord.y) * coord.y*coord.y);
+
+            this->getControllableEntity()->moveFrontBack(SPEED_MASTER);
+    }
+
+    /**
+        @brief Master initializes a spin around its looking direction axis. Leads to a "specific master action". Not yet implemented.
+    */
+    void ArtificialController::spinInit()
+    {
+         COUT(0) << "~spinInit" << std::endl;
+        if(this->state_ != MASTER) return;
+        this->specificMasterAction_ = SPIN;
+        this->specificMasterActionHoldCount_ = 10;
+    }
+
+    /**
+        @brief Execute the spin. Called within tick.
     */
     void ArtificialController::spin()
     {
-        if(this->state_ != MASTER) return;
-
-        this->specificMasterAction_  =  NONE;
+            this->moveToTargetPosition();
+            this->getControllableEntity()->rotateRoll(0.8f);
     }
 
     /**

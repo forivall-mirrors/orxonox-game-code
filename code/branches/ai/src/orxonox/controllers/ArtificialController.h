@@ -70,7 +70,7 @@ namespace orxonox
             int team_;
             bool formationFlight_;
             bool passive_;
-            int maxFormationSize_;
+            unsigned int maxFormationSize_;
             int freedomCount_;
             enum State {SLAVE, MASTER, FREE};
             State state_;
@@ -100,7 +100,9 @@ namespace orxonox
             bool forcedFree();
 
             void specificMasterActionHold();
+            void turn180Init();
             void turn180();
+            void spinInit();
             void spin();
             void followHuman(Pawn* humanController, bool always);
 

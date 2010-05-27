@@ -127,14 +127,13 @@ namespace orxonox
 
             if  (this->specificMasterAction_ != NONE) 
             {
-                if (this->specificMasterAction_  == HOLD)
                     this->specificMasterActionHold();
 
-                if (this->specificMasterAction_  == TURN180)
-                    this->turn180();
+//                 if (this->specificMasterAction_  == TURN180)
+//                     this->turn180Init();
 
-                if (this->specificMasterAction_ == SPIN)
-                    this->spin();
+//                 if (this->specificMasterAction_ == SPIN)
+//                     this->spinInit();
 
 //                 if (this->specificMasterAction_ == FOLLOWHUMAN)
 //                     this->followHuman(this->HumanToFollow_, false);
@@ -143,14 +142,14 @@ namespace orxonox
             else {
 
                  // make 180 degree turn - a specific Master Action
-                random = rnd(maxrand);
+                random = rnd(1000.0f);
                 if (random < 5)
-                   this->specificMasterAction_ = TURN180;
+                   this->turn180Init();
 
                 // spin around - a specific Master Action
-                random = rnd(maxrand);
+                random = rnd(1000.0f);
                 if (random < 5)
-                   this->specificMasterAction_ = SPIN;
+                   this->spinInit();
 
                  // lose master status (only if less than 4 slaves in formation)
                 random = rnd(maxrand);
@@ -190,7 +189,7 @@ namespace orxonox
 
                 // shoot
                 random = rnd(maxrand);
-                if (!(this->passive_) && random < 15 && (this->target_ && !this->bShooting_))
+                if (!(this->passive_) && random < 9 && (this->target_ && !this->bShooting_))
                 {
                 this->bShooting_ = true;
                 this->forceFreeSlaves();
@@ -213,16 +212,23 @@ namespace orxonox
 
         if (this->state_ == MASTER)
         {
-            if (this->target_)
-                this->aimAtTarget();
-
-            if (this->bHasTargetPosition_)
-                this->moveToTargetPosition();
             if (this->specificMasterAction_ ==  NONE)
             {
+                if (this->target_)
+                    this->aimAtTarget();
+
+                if (this->bHasTargetPosition_)
+                    this->moveToTargetPosition();
+
                 if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
                     this->getControllableEntity()->fire(0);
             }
+
+            if (this->specificMasterAction_  == TURN180)
+                    this->turn180();
+
+            if (this->specificMasterAction_ == SPIN)
+                    this->spin();
         }
 
         if (this->state_ == SLAVE)
