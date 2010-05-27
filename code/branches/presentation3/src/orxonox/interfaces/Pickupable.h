@@ -40,6 +40,7 @@
 #include "core/Super.h"
 
 #include "core/OrxonoxClass.h"
+#include "Rewardable.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -51,7 +52,7 @@ namespace orxonox // tolua_export
         Damian 'Mozork' Frick
     */
     class _OrxonoxExport Pickupable  // tolua_export
-        : virtual public OrxonoxClass
+        : virtual public OrxonoxClass, public Rewardable
     {  // tolua_export
         protected:
             Pickupable(); //!< Default constructor.
@@ -139,6 +140,10 @@ namespace orxonox // tolua_export
             
             PickupCarrier* carrier_; //!< The carrier of the pickup.
             std::list<Identifier*> targets_; //!< The possible targets of this pickup.
+
+        // For implementing the Rewardable interface:
+        public:
+            virtual bool reward(PlayerInfo* player); //!< Method to transcribe a Pickupable as a Rewardable to the player.
 
     };  // tolua_export
     

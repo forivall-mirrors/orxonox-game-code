@@ -308,15 +308,32 @@ namespace orxonox
     {
         if (this->spawnpoints_.size() > 0)
         {
+            SpawnPoint* fallbackSpawnPoint = NULL;
             unsigned int randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(this->spawnpoints_.size())));
             unsigned int index = 0;
+            std::set<SpawnPoint*> activeSpawnPoints = this->spawnpoints_;
             for (std::set<SpawnPoint*>::const_iterator it = this->spawnpoints_.begin(); it != this->spawnpoints_.end(); ++it)
             {
                 if (index == randomspawn)
-                    return (*it);
+                    fallbackSpawnPoint = (*it);
+
+                if (!(*it)->isActive())
+                    activeSpawnPoints.erase(*it);
 
                 ++index;
             }
+
+            randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(this->spawnpoints_.size())));
+            index = 0;
+            for (std::set<SpawnPoint*>::const_iterator it = activeSpawnPoints.begin(); it != activeSpawnPoints.end(); ++it)
+            {
+                if (index == randomspawn)
+                    return (*it);
+                
+                ++index;
+            }
+
+            return fallbackSpawnPoint;
         }
         return 0;
     }

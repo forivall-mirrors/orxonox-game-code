@@ -38,6 +38,7 @@
 #include "core/GUIManager.h"
 #include "core/ScopedSingletonManager.h"
 #include "core/Identifier.h"
+#include "util/Convert.h"
 #include "interfaces/PickupCarrier.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
@@ -63,7 +64,6 @@ namespace orxonox
         RegisterRootObject(PickupManager);
         
         this->defaultRepresentation_ = new PickupRepresentation();
-        this->pickupsIndex_ = 0;
         
         COUT(3) << "PickupManager created." << std::endl;
     }
@@ -153,7 +153,6 @@ namespace orxonox
     int PickupManager::getNumPickups(void)
     {
         this->pickupsList_.clear();
-        this->pickupsIndex_ = 0;
         
         PlayerInfo* player = GUIManager::getInstance().getPlayer(PickupManager::guiName_s);
         PickupCarrier* carrier = NULL;
@@ -168,7 +167,7 @@ namespace orxonox
             std::set<Pickupable*> pickups = (*it)->getPickups();
             for(std::set<Pickupable*>::iterator pickup = pickups.begin(); pickup != pickups.end(); pickup++)
             {
-                this->pickupsList_.insert(*pickup);
+                this->pickupsList_.insert(std::pair<Pickupable*, WeakPtr<Pickupable> >(*pickup, WeakPtr<Pickupable>(*pickup)));
             }
         }
         delete carriers;
@@ -198,16 +197,26 @@ namespace orxonox
 
     void PickupManager::dropPickup(orxonox::Pickupable* pickup)
     {
+        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup);
+        if(pickup == NULL || it == this->pickupsList_.end() || it->second.get() == NULL)
+            return;
+
         if(!pickup->isPickedUp())
             return;
-        
+
         PickupCarrier* carrier = pickup->getCarrier();
         if(pickup != NULL && carrier != NULL)
+        {
             carrier->drop(pickup);
+        }
     }
 
     void PickupManager::usePickup(orxonox::Pickupable* pickup, bool use)
     {
+        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup);
+        if(pickup == NULL || it == this->pickupsList_.end() || it->second.get() == NULL)
+            return;
+        
         if(!pickup->isPickedUp())
             return;
 

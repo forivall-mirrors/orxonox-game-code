@@ -38,6 +38,7 @@
 
 #include <map>
 #include "util/Singleton.h"
+#include "core/WeakPtr.h"
 #include "pickup/PickupIdentifier.h"
 #include "PickupRepresentation.h"
 
@@ -71,12 +72,12 @@ namespace orxonox // tolua_export
             
             // tolua_begin
             int getNumPickups(void);
-            orxonox::Pickupable* popPickup(void) { this->pickupsIndex_++; return *(this->pickupsIterator_++); }
-            int getPickupIndex(void) { return this->pickupsIndex_-1; }
+            orxonox::Pickupable* popPickup(void) { return (this->pickupsIterator_++)->first; }
             orxonox::PickupRepresentation* getPickupRepresentation(orxonox::Pickupable* pickup) { if(pickup != NULL) return this->getRepresentation(pickup->getPickupIdentifier()); return NULL; }
 
             void dropPickup(orxonox::Pickupable* pickup);
             void usePickup(orxonox::Pickupable* pickup, bool use);
+            bool isValidPickup(orxonox::Pickupable* pickup) { std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); if(it == this->pickupsList_.end()) return false; return it->second.get() != NULL; }
             // tolua_end
             
         private:
@@ -86,9 +87,8 @@ namespace orxonox // tolua_export
             PickupRepresentation* defaultRepresentation_; //!< The default PickupRepresentation.
             std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types if Pickupables) and PickupRepresentations.
 
-            std::set<Pickupable*> pickupsList_;
-            std::set<Pickupable*>::iterator pickupsIterator_;
-            int pickupsIndex_;
+            std::map<Pickupable*, WeakPtr<Pickupable> > pickupsList_;
+            std::map<Pickupable*, WeakPtr<Pickupable> >::iterator pickupsIterator_;
 
             std::vector<PickupCarrier*>* getAllCarriers(PickupCarrier* carrier);
         

@@ -33,9 +33,14 @@
 
 #include "Pickupable.h"
 
+#include "core/LuaState.h"
+#include "core/GUIManager.h"
 #include "core/Identifier.h"
 #include "core/CoreIncludes.h"
+#include "util/Convert.h"
+#include "infos/PlayerInfo.h"
 #include "pickup/PickupIdentifier.h"
+#include "worldentities/pawns/Pawn.h"
 #include "PickupCarrier.h"
 
 namespace orxonox
@@ -90,6 +95,8 @@ namespace orxonox
         
         this->used_ = used;
         this->changedUsed();
+
+        GUIManager::getInstance().getLuaState()->doString("PickupInventory.update()");
         return true;
     }
     
@@ -195,6 +202,7 @@ namespace orxonox
         
         this->pickedUp_ = pickedUp;
         this->changedPickedUp();
+        GUIManager::getInstance().getLuaState()->doString("PickupInventory.update()");
         return true;
     }
         
@@ -271,6 +279,22 @@ namespace orxonox
     void Pickupable::clone(OrxonoxClass*& item)
     {
         SUPER(Pickupable, clone, item);
+    }
+
+    /**
+    @brief
+        Method to transcribe a Pickupable as a Rewardable to the player.
+    @param player
+        A pointer to the PlayerInfo, do whatever you want with it.
+    @return
+        Return true if successful.
+    */
+    bool Pickupable::reward(PlayerInfo* player)
+    {
+        ControllableEntity* entity = player->getControllableEntity();
+        Pawn* pawn = static_cast<Pawn*>(entity);
+        PickupCarrier* carrier = static_cast<PickupCarrier*>(pawn);
+        return carrier->pickup(this);
     }
     
 }

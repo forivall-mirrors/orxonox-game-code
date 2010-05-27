@@ -83,6 +83,8 @@ namespace orxonox // tolua_export
 
         //! Creates a new InputState to be used with a GUI Sheet
         const std::string& createInputState(const std::string& name, TriBool::Value showCursor = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export
+        LuaState* getLuaState(void)
+            { return this->luaState_.get(); }
 
         //! Returns the root window for all menu sheets
         CEGUI::Window* getMenuRootWindow() { return this->menuRootWindow_; } // tolua_export
@@ -101,11 +103,11 @@ namespace orxonox // tolua_export
         static void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); //tolua_export
 
         static GUIManager& getInstance() { return Singleton<GUIManager>::getInstance(); } // tolua_export
-
+        
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
-
         void executeCode(const std::string& str);
+        
         template <typename FunctionType>
         bool protectedCall(FunctionType function);
 

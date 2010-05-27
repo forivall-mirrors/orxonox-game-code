@@ -2,9 +2,9 @@
 
 local P = createMenuSheet("PickupInventory")
 
-P.carrierList = {}
 P.wrapper = nil
 P.detailsWindows = {}
+P.detailPickups = {}
 P.pickupsList = {}
 
 P.showing = false
@@ -16,7 +16,10 @@ P.textHeight = 30
 P.buttonWidth = 85
 
 function P.onLoad()
-    carrierList = {}
+    P.wrapper = nil
+    P.detailsWindows = {}
+    P.detailPickups = {}
+    P.pickupsList = {}
 end
 
 function P.onShow()
@@ -26,17 +29,50 @@ end
 
 function P.onHide()
     P.showing = false
-    P.cleanup()
+    P.cleanup(true)
 end
 
 function P.update()
     if P.showing == false then
         return
     end
-    
-    P.cleanup()
-    
+
+    -- Update opened detail windows.
+    for k,v in pairs(P.detailsWindows) do
+        if v ~= nil then
+            local pickup = P.detailPickups[k]
+            if pickup ~= nil and pickup ~= 0 then
+                local useButton = winMgr:getWindow("orxonox/PickupInventory/Details" .. k .. "/UseButton")
+                local dropButton = winMgr:getWindow("orxonox/PickupInventory/Details" .. k .. "/DropButton")
+                if orxonox.PickupManager:getInstance():isValidPickup(pickup) == false then
+                    useButton:setEnabled(false)
+                    dropButton:setEnabled(false)
+                    P.detailPickups[k] = nil
+                else
+                    useButton:setEnabled(true)
+                    if pickup:isUsed() == true then
+                        useButton:setText("unuse")
+                        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseDetailButton_clicked")
+                    else
+                        useButton:setText("use")
+                        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseDetailButton_clicked")
+                    end
+
+                    if pickup:isPickedUp() == false then
+                        useButton:setEnabled(false)
+                        dropButton:setEnabled(false)
+                        P.detailPickups[k] = nil
+                    end
+                end
+            end
+        end
+    end
+
+    -- Update main inventory.
+    P.cleanup(false)
     P.createInventory()
+    -- TODO: Recover scrolling position
+    
 end
 
 function P.createInventory()
@@ -82,13 +118,13 @@ function P.createPickupEntry(index, pickup)
 
     local title = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Title")
     title:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.imageHeight+5), CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
-    title:setSize(CEGUI.UVector2(CEGUI.UDim(0.4, 0), CEGUI.UDim(0, P.textHeight)))
+    title:setSize(CEGUI.UVector2(CEGUI.UDim(0.3, 0), CEGUI.UDim(0, P.textHeight)))
     title:setText(representation:getPickupName())
     title:setProperty("FrameEnabled", "set:False")
     item:addChildWindow(title)
 
     local useButton = winMgr:createWindow("MenuWidgets/Button", name .. "/UseButton")
-    useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, P.imageHeight+10),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
+    useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.3, P.imageHeight+10),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
     useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
     if pickup:isUsed() == false then
         useButton:setText("use")
@@ -100,14 +136,14 @@ function P.createPickupEntry(index, pickup)
     item:addChildWindow(useButton)
 
     local dropButton = winMgr:createWindow("MenuWidgets/Button", name .. "/DropButton")
-    dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, P.imageHeight+15+P.buttonWidth),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
+    dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.3, P.imageHeight+15+P.buttonWidth),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
     dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
     dropButton:setText("drop")
     orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropButton_clicked")
     item:addChildWindow(dropButton)
 
     local detailsButton = winMgr:createWindow("MenuWidgets/Button", name .. "/DetailsButton")
-    detailsButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, P.imageHeight+20+2*P.buttonWidth),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
+    detailsButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.3, P.imageHeight+20+2*P.buttonWidth),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
     detailsButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
     detailsButton:setText("details")
     orxonox.GUIManager:subscribeEventHelper(detailsButton, "Clicked", P.name .. ".InventoryDetailsButton_clicked")
@@ -116,12 +152,15 @@ function P.createPickupEntry(index, pickup)
     return item
 end
 
-function P.cleanup()
+function P.cleanup(destroyDetails)
     if P.wrapper ~= nil then
         winMgr:destroyWindow(P.wrapper)
     end
     
     --Destroy details windows.
+    if destroyDetails == false then
+        return
+    end
     for k,v in pairs(P.detailsWindows) do
         if v ~= nil then
             winMgr:destroyWindow(v)
@@ -142,12 +181,9 @@ end
 function P.createDetailsWindow(pickupIndex)
     local pickup = P.pickupsList[pickupIndex]
     local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup)
-    
-    local headerOffset = 35
-    --Design parameters
-    local imageSize = 100
-    
-    local name = "orxonox/PickupInventory/Pickup" .. pickupIndex .. "/Details" .. P.getNewDetailNumber()
+
+    local index = P.getNewDetailNumber()
+    local name = "orxonox/PickupInventory/Details" .. index
     
     local window = winMgr:createWindow("MenuWidgets/FrameWindow", name)
     window:setSize(CEGUI.UVector2(CEGUI.UDim(0.5,0),CEGUI.UDim(0.4,0)))
@@ -191,10 +227,10 @@ function P.createDetailsWindow(pickupIndex)
     useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
     if pickup:isUsed() == false then
         useButton:setText("use")
-        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseButton_clicked")
+        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseDetailButton_clicked")
     else
         useButton:setText("unuse")
-        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseButton_clicked")
+        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseDetailButton_clicked")
     end
     wrapper:addChildWindow(useButton)
     
@@ -202,13 +238,15 @@ function P.createDetailsWindow(pickupIndex)
     dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.detailImageSize+10+P.buttonWidth+10),CEGUI.UDim(1, -40)))
     dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
     dropButton:setText("drop")
-    orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropButton_clicked")
+    orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropDetailButton_clicked")
     wrapper:addChildWindow(dropButton)
-    
-    table.insert(P.detailsWindows, window)
+
+    P.detailsWindows[index] = window
+    P.detailPickups[index] = pickup
     
 end
 
+-- TODO: Smarter
 function P.getNewDetailNumber()
     local number = table.getn(P.detailsWindows)
     for k,v in pairs(P.detailsWindows) do
@@ -216,7 +254,7 @@ function P.getNewDetailNumber()
             number = k-1
         end
     end
-    return number
+    return number+1
 end
 
 function P.InventoryUseButton_clicked(e)
@@ -239,17 +277,32 @@ function P.InventoryDetailsButton_clicked(e)
     P.createDetailsWindow(pickupIndex)
 end
 
+function P.InventoryUseDetailButton_clicked(e)
+    local pickupIndex = P.windowToPickupHelper(e)
+    orxonox.PickupManager:getInstance():usePickup(P.detailPickups[pickupIndex], true)
+end
+
+function P.InventoryUnuseDetailButton_clicked(e)
+    local pickupIndex = P.windowToPickupHelper(e)
+    orxonox.PickupManager:getInstance():usePickup(P.detailPickups[pickupIndex], false)
+end
+
+function P.InventoryDropDetailButton_clicked(e)
+    local pickupIndex = P.windowToPickupHelper(e)
+    orxonox.PickupManager:getInstance():dropPickup(P.detailPickups[pickupIndex])
+end
+
 function P.closeDetailWindow(e)
     --Get some numbers from the window
     local we = CEGUI.toWindowEventArgs(e)
     local name = we.window:getName()
     local match = string.gmatch(name, "%d+")
-    local pickupNr = tonumber(match())
     local detailNr = tonumber(match())
     
-    local window = P.detailsWindows[detailNr+1]
+    local window = P.detailsWindows[detailNr]
     winMgr:destroyWindow(window)
-    P.detailsWindows[detailNr+1] = nil
+    P.detailsWindows[detailNr] = nil
+    P.detailPickups[detailNr] = nil
 end
 
 function P.InventoryBackButton_clicked(e)
