@@ -85,9 +85,9 @@ namespace orxonox
             float b = rnd(-colourDiff_,colourDiff_);
             orxonox::ColourValue thisColour = colour_;
             float alpha = alpha_+rnd(-alphaDiff_,alphaDiff_);
-            thisColour.r=clamp(thisColour.r*alpha+r, 0.0f, 1.0f);
-            thisColour.g=clamp(thisColour.g*alpha+g, 0.0f, 1.0f);
-            thisColour.b=clamp(thisColour.b*alpha+b, 0.0f, 1.0f);
+            thisColour.r=clamp((thisColour.r+r)*alpha, 0.0f, 1.0f);
+            thisColour.g=clamp((thisColour.g+g)*alpha, 0.0f, 1.0f);
+            thisColour.b=clamp((thisColour.b+b)*alpha, 0.0f, 1.0f);
 
             bb->setMaterial(material_);
             bb->setColour(thisColour);
