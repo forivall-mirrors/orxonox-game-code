@@ -130,14 +130,16 @@ namespace orxonox
             float damage_;
             bool bDestroy_;
             bool fuel_;
-            bool slowing_;
-            int counter_;
 
 
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;
             float lifetime_;
+            float maxLife_;
+
             ParticleEmitter* fire_;
+
+
 
 
     };

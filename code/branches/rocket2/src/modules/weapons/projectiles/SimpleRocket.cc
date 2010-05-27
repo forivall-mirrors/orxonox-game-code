@@ -57,11 +57,10 @@ namespace orxonox
 
         this->localAngularVelocity_ = 0;
         this->bDestroy_ = false;
-        this->lifetime_ = 100;
+        this->lifetime_ = 120;
         this->setMass(15);
         COUT(4) << "simplerocket constructed\n";
-        this->counter_=0;
-        this->slowing_=false;
+        this->maxLife_=90;
 
         if (GameMode::isMaster())
        {
@@ -88,29 +87,20 @@ namespace orxonox
             collisionShape->setRadius(1.5f);
             collisionShape->setHeight(200);
             this->attachCollisionShape(collisionShape);
-            
-
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
         }
 
     }
    
-    void SimpleRocket::disableFire(){
-        this->setAcceleration(0,0,0);
-        this->setVelocity(Vector3(0,0,0));
-        
-        this->fire_->detachFromParent();
-        //this->fire_->setVisible(false);
 
-    }
 
 
     void SimpleRocket::tick(float dt)
     {
 
         SUPER(SimpleRocket, tick, dt);
-        counter_++;
-        if (this->getVelocity().squaredLength() >130000 && !slowing_) counter_++; //if Velocity bigger than about 360, uses a lot more "fuel" :)
+        if (this->getVelocity().squaredLength() >130000) this->maxLife_-=dt; //if Velocity bigger than about 360, uses a lot more "fuel" :)
+        
 
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
@@ -118,25 +108,19 @@ namespace orxonox
 
             
             if (this->fuel_) {
-                COUT(0)<<this->getVelocity().length()<<endl;
-                if (this->counter_>1000 && counter_%12==0) 
-                    
-                    if (!this->slowing_) {
-                        this->setAcceleration(this->getOrientation()*Vector3(10,10,10));
-                        this->slowing_=true;
-                    }
-
-                if (this->counter_ > 1800) 
+                if (this->destroyTimer_.getRemainingTime()<  this->lifetime_-this->maxLife_ ) 
                     this->fuel_=false;
-            }
+            } else this->disableFire();
+
             if( this->bDestroy_ )
                 this->destroy();
-            if (!this->fuel_) 
-                this->disableFire();
-        
-           
-            
-        
+                
+    }
+
+    void SimpleRocket::disableFire(){
+        this->setAcceleration(0,0,0);        
+        this->fire_->detachFromParent();
+
     }
 
     /**s
@@ -220,11 +204,6 @@ namespace orxonox
         }
     }
     
-    void SimpleRocket::setDestroy()
-    {
-        this->bDestroy_=true;
-        CCOUT(4)<<"trying to destroy";
-    }
 
     void SimpleRocket::fired(unsigned int firemode)
     {

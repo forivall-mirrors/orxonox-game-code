@@ -79,8 +79,8 @@ namespace orxonox
 
     void RocketController::setTargetPosition()
     {
-        //this->targetPosition_=this->target_->getWorldPosition();
-        this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getWorldPosition(),this->getControllableEntity()->getVelocity().length() , this->target_->getWorldPosition(), this->target_->getVelocity());
+        this->targetPosition_=this->target_->getWorldPosition(); //don't really note a difference in the rocket behaviour xD
+        //this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getWorldPosition(),this->getControllableEntity()->getVelocity().length() , this->target_->getWorldPosition(), this->target_->getVelocity());
     }
     void RocketController::moveToTargetPosition()
     {
