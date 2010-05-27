@@ -5,17 +5,17 @@
    name     = "staticmessage"
    position = "0.5, 0.01"
    font     = "VeraMono"
-   caption  = "Instructions"
-   textsize = 0.035
+   caption  = ""
+   textsize = 0.033
    colour   = "1.0, 1.0, 0.5, 1.0"
    align    = "center"
   />
 
 <GametypeFadingMessage
      name     = "fadingmessage"
-     position = "0.25, 0.5"
+     position = "0.5, 0.05"
      font     = "VeraMono"
-     textsize = 0.035
+     textsize = 0.04
      colour   = "1.0, 1.0, 0.5, 1.0"
      align    = "center"
     />

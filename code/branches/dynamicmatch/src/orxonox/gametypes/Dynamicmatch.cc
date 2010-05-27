@@ -125,6 +125,7 @@ namespace orxonox
                          if (it2 != this->players_.end())
                          {
                               this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it2->first->getClientID());
+                              this->gtinfo_->sendFadingMessage("You're now a victim.",it2->first->getClientID());
                          }
                     }
                     if (notEnoughKillers) 			//reward the originator
@@ -139,6 +140,7 @@ namespace orxonox
                              if (it3 != this->players_.end())
                              {
                                   this->gtinfo_->sendStaticMessage("Take the chasers down.",it3->first->getClientID());
+                                  this->gtinfo_->sendFadingMessage("You're now a killer.",it3->first->getClientID());
                              }
                         }
                     }
@@ -167,6 +169,7 @@ namespace orxonox
                      if (it3 != this->players_.end())
                      {
                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it3->first->getClientID());
+                          this->gtinfo_->sendFadingMessage("You're now a killer.",it3->first->getClientID());
                      }
                 }
                 evaluatePlayerParties();			//check if the party change has to trigger futher party changes
@@ -185,8 +188,10 @@ namespace orxonox
                      {
                           if (numberOf[killer]>0)
                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it3->first->getClientID());
+                              
                           else
                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it3->first->getClientID());
+                          this->gtinfo_->sendFadingMessage("You're now a chaser.",it3->first->getClientID());
                      }
                 }
                 evaluatePlayerParties();			//check if the party change has to trigger futher party changes
@@ -228,11 +233,13 @@ namespace orxonox
                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
                           else
                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                          this->gtinfo_->sendFadingMessage("You're now a chaser.",it->first->getClientID());
                      }
                      std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
                      if (it2 != this->players_.end())
                      {
                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it2->first->getClientID());
+                          this->gtinfo_->sendFadingMessage("You're now a victim.",it2->first->getClientID());
                      }
                 }
                 //Give new pig boost
@@ -260,11 +267,13 @@ namespace orxonox
                  if (it != this->players_.end())
                  {
                       this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                      this->gtinfo_->sendFadingMessage("You're now a victim.",it->first->getClientID());
                  }
                  std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
                  if (it2 != this->players_.end())
                  {
                       this->gtinfo_->sendStaticMessage("Take the chasers down.",it2->first->getClientID());
+                      this->gtinfo_->sendFadingMessage("You're now a killer.",it2->first->getClientID());
                  }
                 }
             }
@@ -456,11 +465,18 @@ namespace orxonox
                                this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
                            else
                                this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                           //this->gtinfo_->sendFadingMessage("You're now a chaser.",it->first->getClientID());
                        }
                        else if (it->second==piggy)
+                       {
                            this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                           //this->gtinfo_->sendFadingMessage("You're now a victim.",it->first->getClientID());
+                       }
                        else if (it->second==killer)
+                       {
                            this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID());
+                           //this->gtinfo_->sendFadingMessage("You're now a killer.",it->first->getClientID());
+                       }
                   }
                   
              }
@@ -498,11 +514,18 @@ namespace orxonox
                                this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
                            else
                                this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                           //this->gtinfo_->sendFadingMessage("You're now a chaser.",it->first->getClientID());
                        }
                        else if (it->second==piggy)
+                       {
                            this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                           //this->gtinfo_->sendFadingMessage("You're now a victim.",it->first->getClientID());
+                       }
                        else if (it->second==killer)
+                       {
                            this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID());
+                           //this->gtinfo_->sendFadingMessage("You're now a killer.",it->first->getClientID());
+                       }
                   }
                   
              }
@@ -541,11 +564,18 @@ namespace orxonox
                                this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
                            else
                                this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                           //this->gtinfo_->sendFadingMessage("You're now a chaser.",it->first->getClientID());
                        }
                        else if (it->second==piggy)
+                       {
                            this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                           //this->gtinfo_->sendFadingMessage("You're now a victim.",it->first->getClientID());
+                       }
                        else if (it->second==killer)
+                       {
                            this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID());
+                           //this->gtinfo_->sendFadingMessage("You're now a killer.",it->first->getClientID());
+                       }
                   }
                   
              }
