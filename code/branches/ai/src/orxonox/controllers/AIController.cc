@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Dominik Solenicki
  *
  */
 
@@ -60,7 +60,7 @@ namespace orxonox
 
             if (this->formationFlight_)
             {
-            // return to Master after being forced free
+                // return to Master after being forced free
                 if (this->freedomCount_ == 1)
                 {
                 this->state_ = SLAVE;
@@ -102,15 +102,15 @@ namespace orxonox
             if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
                 this->searchRandomTargetPosition();
 
-/*
+            // shoot
             random = rnd(maxrand);
-            if (random < 75 && (this->target_ && !this->bShooting_))
+            if (!(this->passive_) && random < 75 && (this->target_ && !this->bShooting_))
                 this->bShooting_ = true;
 
             // stop shooting
             random = rnd(maxrand);
             if (random < 25 && (this->bShooting_))
-                this->bShooting_ = false; */
+                this->bShooting_ = false; 
 
         }
 
@@ -119,7 +119,7 @@ namespace orxonox
 
         }
 
-        if (this->state_ == MASTER)//MASTER
+        if (this->state_ == MASTER)
         {
 
 
@@ -135,6 +135,9 @@ namespace orxonox
 
                 if (this->specificMasterAction_ == SPIN)
                     this->spin();
+
+//                 if (this->specificMasterAction_ == FOLLOWHUMAN)
+//                     this->followHuman(this->HumanToFollow_, false);
             }
 
             else {
@@ -187,7 +190,7 @@ namespace orxonox
 
                 // shoot
                 random = rnd(maxrand);
-                if (random < 5 && (this->target_ && !this->bShooting_))
+                if (!(this->passive_) && random < 15 && (this->target_ && !this->bShooting_))
                 {
                 this->bShooting_ = true;
                 this->forceFreeSlaves();

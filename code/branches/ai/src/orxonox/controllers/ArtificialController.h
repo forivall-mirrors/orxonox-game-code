@@ -35,6 +35,7 @@
 
 #include "util/Math.h"
 #include "Controller.h"
+#include "controllers/NewHumanController.h"
 
 namespace orxonox
 {
@@ -60,6 +61,7 @@ namespace orxonox
 
             static void formationflight(bool form);
             static void masteraction(int action);
+            static void followme();
 
         protected:
 
@@ -70,9 +72,10 @@ namespace orxonox
             State state_;
             std::vector<ArtificialController*> slaves_;
             ArtificialController *myMaster_;
-            enum SpecificMasterAction {NONE, HOLD, SPIN, TURN180};
+            enum SpecificMasterAction {NONE, HOLD, SPIN, TURN180, FOLLOWHUMAN};
             SpecificMasterAction specificMasterAction_;
             int specificMasterActionHoldCount_;
+            Pawn* humanToFollow_;
 
             void targetDied();
 
@@ -85,14 +88,17 @@ namespace orxonox
             void searchNewMaster();
             void commandSlaves();
             void setNewMasterWithinFormation();
+
             void freeSlaves();
             void forceFreeSlaves();
             void loseMasterState();
             void forceFreedom();
             bool forcedFree();
+
             void specificMasterActionHold();
             void turn180();
             void spin();
+            void followHuman(Pawn* humanController, bool always);
 
             void setTargetPosition(const Vector3& target);
             void searchRandomTargetPosition();

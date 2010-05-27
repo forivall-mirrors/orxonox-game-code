@@ -22,12 +22,13 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Dominik Solenicki
  *
  */
 
 #include "ArtificialController.h"
 
+#include <vector>
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "worldentities/ControllableEntity.h"
@@ -35,14 +36,17 @@
 #include "worldentities/pawns/TeamBaseMatchBase.h"
 #include "gametypes/TeamDeathmatch.h"
 #include "controllers/WaypointPatrolController.h"
+#include "controllers/NewHumanController.h"
 #include "controllers/DroneController.h"
 #include "util/Math.h"
 #include "core/ConsoleCommand.h"
 
 namespace orxonox
 {
-    SetConsoleCommand(ArtificialController, formationflight, true);//.defaultValues(0, true);
+    SetConsoleCommand(ArtificialController, formationflight, true);
     SetConsoleCommand(ArtificialController, masteraction, true);
+    SetConsoleCommand(ArtificialController, followme, true);
+    SetConsoleCommand(ArtificialController, passivbehaviour, true);
 
     static const unsigned int MAX_FORMATION_SIZE = 7;
     static const int FORMATION_LENGTH =  10;
@@ -52,6 +56,7 @@ namespace orxonox
     static const float ROTATEFACTOR_MASTER = 0.2f;
     static const float SPEED_FREE = 0.8f;
     static const float ROTATEFACTOR_FREE = 0.8f;
+    static const int SECONDS_TO_FOLLOW_HUMAN = 10;
 
     ArtificialController::ArtificialController(BaseObject* creator) : Controller(creator)
     {
@@ -59,6 +64,7 @@ namespace orxonox
 
         this->target_ = 0;
         this->formationFlight_ = true;
+        this->passive_ = false;
         this->myMaster_ = 0;
         this->freedomCount_ = 0;
 	this->team_ = -1;
@@ -68,6 +74,7 @@ namespace orxonox
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
         this->targetPosition_ = Vector3::ZERO;
+        this->humanToFollow_ = NULL;
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
     }
@@ -84,7 +91,12 @@ namespace orxonox
         XMLPortParam(ArtificialController, "formation", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(true);
     }
 
-    //activate/deactivate formationflight
+// Documentation only here to get a faster overview for creating a useful documentation, what you're reading here not intended for an actual documentation...
+
+    /**
+        @brief Activates / deactivates formationflight behaviour
+        @param form activate formflight if form is true
+    */
     void ArtificialController::formationflight(bool form)
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
@@ -100,7 +112,11 @@ namespace orxonox
             }
         }
     }
-    //get all masters to do this action
+
+    /**
+        @brief Get all masters to do a specific action 
+        @param action which action to perform (integer, so it can be called with a console command (tmp solution))
+    */
     void ArtificialController::masteraction(int action) 
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
@@ -117,7 +133,63 @@ namespace orxonox
         }
     }
 
-// gets called when Bot dies
+    /**
+        @brief A human player gets followed by its nearest master. Initiated by console command, only for demonstration puproses. Does not work at the moment.
+    */
+    void ArtificialController::followme()
+    {
+
+        Pawn *humanPawn = NULL;
+        NewHumanController *currentHumanController = NULL;
+        std::vector<ArtificialController*> allMasters;
+
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
+        {
+            if (!it->getController())
+                continue;
+
+            currentHumanController = static_cast<NewHumanController*>(it->getController());
+
+            if(currentHumanController) humanPawn = *it;
+
+            ArtificialController *aiController = static_cast<ArtificialController*>(it->getController());
+
+            if(aiController || aiController->state_ == MASTER)
+                allMasters.push_back(aiController);
+
+        }
+        /*if((humanPawn != NULL) && (allMasters.size != 0))
+        {
+
+                float posHuman = humanPawn->getPosition().length();
+                float distance = 0.0f;
+                float minDistance = posHuman - allMasters.back()->getControllableEntity()->getPosition().length();
+                int index = 0;
+                int i = 0;
+
+                for(std::vector<ArtificialController*>::iterator it = allMasters.begin(); it != allMasters.end(); it++)
+                    {
+                        distance = posHuman - (*it)->getControllableEntity()->getPosition().length();
+                        if(distance < minDistance) index = i;
+                    }
+                allMasters[index].humanToFollow_ = humanPawn;
+                allMasters[index].followHuman(humanPawn, false);
+            }*/
+
+    }
+
+    /**
+        @brief Sets shootingbehaviour of pawns.
+        @param passive if true, pawns won't shoot.
+    */
+    void ArtificialController::passivebehaviour(bool passive)
+    {
+        this->passive_ = passive;
+    }
+
+    /**
+        @brief Gets called if ControllableEntity is changed. Resets the bot when it dies.
+    */
     void ArtificialController::changedControllableEntity()
     {
         if(!getControllableEntity()) 
@@ -129,6 +201,7 @@ namespace orxonox
 
         }
     }
+
 
     void ArtificialController::moveToPosition(const Vector3& target)
     {
@@ -209,6 +282,9 @@ namespace orxonox
         return this->state_;
     }
 
+    /**
+        @brief Unregisters a slave from its master. Called by a slave.
+    */
     void ArtificialController::unregisterSlave() {
         if(myMaster_)
         {
@@ -271,13 +347,18 @@ namespace orxonox
 
                 break;
             }
-        }//for
-        //hasn't encountered any masters in range? -> become a master
-        if (state_ != SLAVE  && teamSize != 0) state_ = MASTER;//master encounters master? ->done
+        }
+
+        if (state_ != SLAVE  && teamSize != 0) state_ = MASTER;
 
     }
 
-    void ArtificialController::commandSlaves() {
+    /**
+        @brief Commands the slaves of a master into a formation. Called by a master.
+    */
+    void ArtificialController::commandSlaves() 
+    {
+        if(this->state_ != MASTER) return;
 
         Quaternion orient = this->getControllableEntity()->getOrientation();
         Vector3 dest = this->getControllableEntity()->getPosition();
@@ -314,9 +395,12 @@ namespace orxonox
         }
     }
 
-    // binds slaves to new Master within formation
+    /**
+        @brief Sets a new master within the formation. Called by a master.
+    */
     void ArtificialController::setNewMasterWithinFormation()
     {
+        if(this->state_ != MASTER) return;
 
         if (this->slaves_.empty())
             return;
@@ -339,8 +423,13 @@ namespace orxonox
 
     }
 
+    /**
+        @brief Frees all slaves form a master. Called by a master.
+    */
     void ArtificialController::freeSlaves()
     {
+        if(this->state_ != MASTER) return;
+
         for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
         {
             (*it)->state_ = FREE;
@@ -348,8 +437,13 @@ namespace orxonox
         this->slaves_.clear();
     }
 
+    /**
+        @brief Master sets its slaves free for \var FREEDOM_COUNT seconds.
+    */
     void ArtificialController::forceFreeSlaves()
     {
+        if(this->state_ != MASTER) return;
+
         for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
         {
             (*it)->state_ = FREE;
@@ -366,11 +460,16 @@ namespace orxonox
         this->state_ = FREE;
     }
 
+
     void ArtificialController::forceFreedom()
     {
         this->freedomCount_ = FREEDOM_COUNT;
     }
 
+    /**
+        @brief Checks wether caller has been forced free, decrements time to stay forced free.
+        @return true if forced free.
+    */
     bool ArtificialController::forcedFree()
     {
         if(this->freedomCount_ > 0) 
@@ -380,19 +479,28 @@ namespace orxonox
         } else return false;
     }
 
+    /**
+        @brief Used to continue a "specific master action" for a certain time.
+    */
     void ArtificialController::specificMasterActionHold()
     {
+        if(this->state_ != MASTER) return;
+
         if (specificMasterActionHoldCount_ == 0) 
          {
             this->specificMasterAction_ = NONE;
             this->searchNewTarget();
-            COUT(0) << "~action end" << std::endl;
          }
         else specificMasterActionHoldCount_--;
     }
 
+    /**
+        @brief Master engages a 180 degree turn. Is a "specific master action".
+    */
     void ArtificialController::turn180()
     {
+        if(this->state_ != MASTER) return;
+
         COUT(0) << "~turn" << std::endl;
 
         Quaternion orient = this->getControllableEntity()->getOrientation();
@@ -402,9 +510,35 @@ namespace orxonox
         this->specificMasterAction_  =  HOLD;
     }
 
+    /**
+        @brief Master spins around looking directions axis. Is a "specific master action".
+    */
     void ArtificialController::spin()
     {
+        if(this->state_ != MASTER) return;
+
         this->specificMasterAction_  =  NONE;
+    }
+
+    /**
+        @brief Master begins to follow a human player. Is a "specific master action".
+        @param humanController human to follow.
+        @param alaways follows human forever if true - yet only inplemented for false.
+    */
+    void ArtificialController::followHuman(Pawn* human, bool always)
+    {
+        if (human == NULL)
+        {
+            this->specificMasterAction_ = NONE;
+            return;
+        }
+        if (!always)
+        {
+            this->setTarget(human);
+            this->specificMasterActionHoldCount_ = SECONDS_TO_FOLLOW_HUMAN;
+            this->specificMasterAction_  =  HOLD;
+        }
+
     }
 
 
