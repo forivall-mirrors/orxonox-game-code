@@ -46,9 +46,10 @@ namespace orxonox
     SetConsoleCommand(ArtificialController, formationflight, true);
     SetConsoleCommand(ArtificialController, masteraction, true);
     SetConsoleCommand(ArtificialController, followme, true);
-    SetConsoleCommand(ArtificialController, passivbehaviour, true);
+    SetConsoleCommand(ArtificialController, passivebehaviour, true);
+    SetConsoleCommand(ArtificialController, formationsize, true);
 
-    static const unsigned int MAX_FORMATION_SIZE = 7;
+    static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
     static const int FORMATION_LENGTH =  10;
     static const int FORMATION_WIDTH =  110;
     static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
@@ -56,7 +57,7 @@ namespace orxonox
     static const float ROTATEFACTOR_MASTER = 0.2f;
     static const float SPEED_FREE = 0.8f;
     static const float ROTATEFACTOR_FREE = 0.8f;
-    static const int SECONDS_TO_FOLLOW_HUMAN = 10;
+    static const int SECONDS_TO_FOLLOW_HUMAN = 100;
 
     ArtificialController::ArtificialController(BaseObject* creator) : Controller(creator)
     {
@@ -65,6 +66,7 @@ namespace orxonox
         this->target_ = 0;
         this->formationFlight_ = true;
         this->passive_ = false;
+        this->maxFormationSize_ = STANDARD_MAX_FORMATION_SIZE;
         this->myMaster_ = 0;
         this->freedomCount_ = 0;
 	this->team_ = -1;
@@ -104,7 +106,7 @@ namespace orxonox
             if (!it->getController())
                 continue;
 
-            ArtificialController *aiController = static_cast<ArtificialController*>(it->getController());
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
 
             if(aiController)
             {
@@ -114,7 +116,7 @@ namespace orxonox
     }
 
     /**
-        @brief Get all masters to do a specific action 
+        @brief Get all masters to do a "specific master action" 
         @param action which action to perform (integer, so it can be called with a console command (tmp solution))
     */
     void ArtificialController::masteraction(int action) 
@@ -124,17 +126,20 @@ namespace orxonox
             if (!it->getController())
                 continue;
 
-            ArtificialController *aiController = static_cast<ArtificialController*>(it->getController());
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
 
             if(aiController || aiController->state_ == MASTER)
             {
-                aiController->specificMasterAction_ = TURN180;
+                if (action == 1)
+                    aiController->specificMasterAction_ = TURN180;
+                if (action == 2)
+                    aiController->specificMasterAction_ = SPIN;
             }
         }
     }
 
     /**
-        @brief A human player gets followed by its nearest master. Initiated by console command, only for demonstration puproses. Does not work at the moment.
+        @brief A human player gets followed by its nearest master. Initiated by console command, intended for demonstration puproses. Does not work at the moment.
     */
     void ArtificialController::followme()
     {
@@ -148,22 +153,22 @@ namespace orxonox
             if (!it->getController())
                 continue;
 
-            currentHumanController = static_cast<NewHumanController*>(it->getController());
+            currentHumanController = orxonox_cast<NewHumanController*>(it->getController());
 
             if(currentHumanController) humanPawn = *it;
 
-            ArtificialController *aiController = static_cast<ArtificialController*>(it->getController());
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
 
             if(aiController || aiController->state_ == MASTER)
                 allMasters.push_back(aiController);
 
         }
-        /*if((humanPawn != NULL) && (allMasters.size != 0))
-        {
 
+        if((humanPawn != NULL) && (allMasters.size() != 0))
+        {
                 float posHuman = humanPawn->getPosition().length();
                 float distance = 0.0f;
-                float minDistance = posHuman - allMasters.back()->getControllableEntity()->getPosition().length();
+                float minDistance = FLT_MAX;
                 int index = 0;
                 int i = 0;
 
@@ -172,19 +177,51 @@ namespace orxonox
                         distance = posHuman - (*it)->getControllableEntity()->getPosition().length();
                         if(distance < minDistance) index = i;
                     }
-                allMasters[index].humanToFollow_ = humanPawn;
-                allMasters[index].followHuman(humanPawn, false);
-            }*/
+                allMasters[index]->humanToFollow_ = humanPawn;
+                allMasters[index]->followHuman(humanPawn, false);
+            }
 
     }
 
     /**
-        @brief Sets shootingbehaviour of pawns.
-        @param passive if true, pawns won't shoot.
+        @brief Sets shooting behaviour of pawns.
+        @param passive if true, bots won't shoot.
     */
     void ArtificialController::passivebehaviour(bool passive)
     {
-        this->passive_ = passive;
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
+        {
+            if (!it->getController())
+                continue;
+
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
+
+            if(aiController)
+            {
+                aiController->passive_ = passive;
+            }
+        }
+    }
+
+
+    /**
+        @brief Sets maximal formation size
+        @param size maximal formation size.
+    */
+    void ArtificialController::formationsize(int size)
+    {
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
+        {
+            if (!it->getController())
+                continue;
+
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
+
+            if(aiController)
+            {
+                aiController->maxFormationSize_ = size;
+            }
+        }
     }
 
     /**
@@ -316,12 +353,12 @@ namespace orxonox
                 continue;
 
             //is pawn oneself?
-            if (static_cast<ControllableEntity*>(*it) == this->getControllableEntity())
+            if (orxonox_cast<ControllableEntity*>(*it) == this->getControllableEntity())
                 continue;
 
             teamSize++;
 
-            ArtificialController *newMaster = static_cast<ArtificialController*>(it->getController());
+            ArtificialController *newMaster = orxonox_cast<ArtificialController*>(it->getController());
 
             //is it a master?
             if (!newMaster || newMaster->getState() != MASTER)
@@ -332,7 +369,7 @@ namespace orxonox
             // is pawn in range?
             if (distance < 5000)
             {
-                if(newMaster->slaves_.size() > MAX_FORMATION_SIZE) continue;
+                if(newMaster->slaves_.size() > this->maxFormationSize_) continue;
 
                 for(std::vector<ArtificialController*>::iterator itSlave = this->slaves_.begin(); itSlave != this->slaves_.end(); itSlave++)
                 {
@@ -450,7 +487,7 @@ namespace orxonox
             (*it)->forceFreedom();
             (*it)->targetPosition_ = this->targetPosition_;
             (*it)->bShooting_ = true;
-            (*it)->getControllableEntity()->fire(0);// fire once for fun
+//             (*it)->getControllableEntity()->fire(0);// fire once for fun
         }
     }
 
@@ -511,7 +548,7 @@ namespace orxonox
     }
 
     /**
-        @brief Master spins around looking directions axis. Is a "specific master action".
+        @brief Master spins around its looking direction axis. Is a "specific master action". Not yet implemented.
     */
     void ArtificialController::spin()
     {
@@ -523,7 +560,7 @@ namespace orxonox
     /**
         @brief Master begins to follow a human player. Is a "specific master action".
         @param humanController human to follow.
-        @param alaways follows human forever if true - yet only inplemented for false.
+        @param alaways follows human forever if true - only inplemented for false yet.
     */
     void ArtificialController::followHuman(Pawn* human, bool always)
     {
@@ -606,7 +643,7 @@ namespace orxonox
         this->targetPosition_ = getPredictedPosition(this->getControllableEntity()->getPosition(), hardcoded_projectile_speed, this->target_->getPosition(), this->target_->getVelocity());
         this->bHasTargetPosition_ = (this->targetPosition_ != Vector3::ZERO);
 
-        Pawn* pawn = dynamic_cast<Pawn*>(this->getControllableEntity());
+        Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
         if (pawn)
             pawn->setAimPosition(this->targetPosition_);
     }

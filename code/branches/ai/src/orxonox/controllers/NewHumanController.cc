@@ -297,7 +297,7 @@ namespace orxonox
             //x is left positive
             //y is down positive
             relativeHit.normalise();
-
+COUT(0) << (int)this->showDamageOverlay_ << " / " << this->damageOverlayLeft_ << " / " << this->damageOverlayRight_ << std::endl;
             float threshold = 0.3f;
             if (relativeHit.x > threshold) // Left
             {

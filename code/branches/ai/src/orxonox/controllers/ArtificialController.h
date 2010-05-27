@@ -62,11 +62,15 @@ namespace orxonox
             static void formationflight(bool form);
             static void masteraction(int action);
             static void followme();
+            static void passivebehaviour(bool passive);
+            static void formationsize(int size);
 
         protected:
 
             int team_;
             bool formationFlight_;
+            bool passive_;
+            int maxFormationSize_;
             int freedomCount_;
             enum State {SLAVE, MASTER, FREE};
             State state_;
