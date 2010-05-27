@@ -65,6 +65,7 @@ namespace orxonox
         protected:
             virtual void action();
             void ownerDied();
+            bool isShooting_;
 
         private:
             Timer actionTimer_;

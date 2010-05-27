@@ -79,79 +79,24 @@ namespace orxonox
         const Vector3& dronePosition = getDrone()->getWorldPosition();
 
         const Vector3& locOwnerDir = getDrone()->getOrientation().UnitInverse()*(ownerPosition-dronePosition); //Vector from Drone To Owner out of drones local coordinate system
-/*
-        int distance_square  = (ownerPosition.x-dronePosition.x)*(ownerPosition.x-dronePosition.x)
-                             + (ownerPosition.y-dronePosition.y)*(ownerPosition.y-dronePosition.y)
-                             + (ownerPosition.z-dronePosition.z)*(ownerPosition.z-dronePosition.z); //distance to Owner squared
-*/
+
         random = rnd(maxrand);
         if ( random < 30 && (!this->target_))
             this->searchNewTarget();
-/*
-        //face target
-        drone_->rotateYaw(-targetPosition_.x);
-        drone_->rotatePitch(targetPosition_.y);
-  */      
-        if (this->target_)
+
+        if (random < 50 && this->target_)
         {
+            this->isShooting_ = true;
             this->aimAtTarget();
+            drone_->rotateYaw(targetPosition_.x);   //face target
+            drone_->rotatePitch(targetPosition_.y);
             drone_->fire(0);
+            this->isShooting_ = false;
         }
-         
 
-
-/*
-        COUT(0) << "Drone: " << dronePosition << endl;
-        COUT(0) << "Distance: " << distance << endl;
-        COUT(0) << "locDrone: " << locOwnerDir << endl;
-        COUT(0) << "target: " << targetPosition_ << endl;
-        COUT(0) << "Owner: " << ownerPosition << endl;
-        COUT(0) << "Rand: " << random << endl;
-*/
-/*
-        // search enemy
-        random = rnd(maxrand);
-        if (random < 15 && (!this->target_))
-            this->searchNewTarget();
-
-        // forget enemy
-        random = rnd(maxrand);
-        if (random < 5 && (this->target_))
-            this->forgetTarget();
-
-        // next enemy
-        random = rnd(maxrand);
-        if (random < 10 && (this->target_))
-            this->searchNewTarget();
-
-        //fly somewhere
-        random = rnd(maxrand);
-        if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
-            this->searchRandomTargetPosition(); 
- 
-        // stop flying
-        random = rnd(maxrand);
-        if (random < 10 && (this->bHasTargetPosition_ && !this->target_))
-            this->bHasTargetPosition_ = false;
-
-        // fly somewhere else
-        random = rnd(maxrand);
-        if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
-            this->searchRandomTargetPosition();
-
-        // shoot
-        random = rnd(maxrand);
-        if (random < 75 && (this->target_ && !this->bShooting_))
-            this->bShooting_ = true;
-
-        // stop shooting
-        random = rnd(maxrand);
-        if (random < 25 && (this->bShooting_)) 
-            this->bShooting_ = false; */
     }
 
-
-    /**
+    /*
     @brief
         The controlling happens here. This method defines what the controller has to do each tick.
     @param dt
@@ -162,12 +107,24 @@ namespace orxonox
         
 
 	Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
-
-        if ((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > 150*150) { //TODO: variable implementation of maxdistance
+        float maxDistanceSquared = this->getDrone()->getMaxDistanceToOwner()*this->getDrone()->getMaxDistanceToOwner();
+        float minDistanceSquared = this->getDrone()->getMinDistanceToOwner()*this->getDrone()->getMinDistanceToOwner();
+        if ((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > maxDistanceSquared) { 
             this->moveToPosition(this->getOwner()->getWorldPosition());
-
         }
-
+        else if((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength() < minDistanceSquared) {
+            this->moveToPosition(-this->getOwner()->getWorldPosition());
+        }
+        else if(!isShooting_) {
+            float random = rnd(2.0f);
+            float randomSelection = rnd(6.0f);
+            if((int)randomSelection==0) drone_->moveUpDown(random);
+            else if((int)randomSelection==1) drone_->moveRightLeft(random);
+            else if((int)randomSelection==2) drone_->moveFrontBack(random);
+            else if((int)randomSelection==3) drone_->rotateYaw(random);
+            else if((int)randomSelection==4) drone_->rotatePitch(random);
+            else if((int)randomSelection==5) drone_->rotateRoll(random);
+        }
         SUPER(AIController, tick, dt);
 
     }

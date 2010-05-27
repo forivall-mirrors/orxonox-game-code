@@ -109,6 +109,10 @@ namespace orxonox
                 { this->auxilaryThrust_=thrust; }      
             inline void setRotationThrust( float thrust )
                 { this->rotationThrust_=thrust; }      
+            inline void setMaxDistanceToOwner( float distance)
+                { this->maxDistanceToOwner_=distance; }
+            inline void setMinDistanceToOwner( float distance)
+                { this->minDistanceToOwner_=distance; }
                 	
             
             /**
@@ -117,11 +121,14 @@ namespace orxonox
             */
             inline float getPrimaryThrust()
                 { return this->primaryThrust_; }
-
-	   inline float getAuxilaryThrust()
+	    inline float getAuxilaryThrust()
                 { return this->auxilaryThrust_; }
-	   inline float getRotationThrust()
+	    inline float getRotationThrust()
                 { return this->rotationThrust_; }
+	    inline float getMaxDistanceToOwner()
+                { return this->maxDistanceToOwner_; }
+            inline float getMinDistanceToOwner()
+                { return this->minDistanceToOwner_; }
             
         private:
             DroneController *myController_; //!< The controller of the Drone.
@@ -131,6 +138,8 @@ namespace orxonox
             float primaryThrust_; //!< The amount of primary thrust. This is just used, when moving forward. 
             float auxilaryThrust_; //!< The amount of auxilary thrust. Used for all other movements (except for rotations).
             float rotationThrust_; //!< The amount of rotation thrust. Used for rotations only.
+            float maxDistanceToOwner_; //Maximum Distance to owner
+            float minDistanceToOwner_; //Minimum Distance to owner
     };
 
 }

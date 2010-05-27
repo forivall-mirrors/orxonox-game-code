@@ -109,7 +109,7 @@
 
 
 <Template name=droneTemplate>
-    <Drone name="meineDrohne"  mass= "50" linearDamping = "0.7" angularDamping = "0.9999999" primaryThrust_=250 auxilaryThrust_=250 rotationThrust_=50>
+    <Drone name="meineDrohne"  mass= "50" linearDamping = "0.7" angularDamping = "0.99999" maxDistanceToOwner_=150 minDistanceToOwner_=50 primaryThrust_=250 auxilaryThrust_=250 rotationThrust_=50>
         <attached>
             <Model scale="1" mesh="drone.mesh"/>
         </attached>
