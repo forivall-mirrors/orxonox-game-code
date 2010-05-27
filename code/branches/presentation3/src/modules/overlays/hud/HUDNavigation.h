@@ -34,6 +34,7 @@
 #include <map>
 #include <string>
 
+
 #include "util/OgreForwardRefs.h"
 #include "tools/interfaces/Tickable.h"
 #include "interfaces/RadarListener.h"
@@ -41,56 +42,65 @@
 
 namespace orxonox
 {
-    class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable, public RadarListener
+class _OverlaysExport HUDNavigation : public OrxonoxOverlay, public Tickable, public RadarListener
+{
+public:
+    HUDNavigation ( BaseObject* creator );
+    virtual ~HUDNavigation();
+
+    virtual void XMLPort ( Element& xmlElement, XMLPort::Mode mode );
+    virtual void tick ( float dt );
+
+    virtual void addObject ( RadarViewable* object );
+    virtual void removeObject ( RadarViewable* viewable );
+    virtual void objectChanged ( RadarViewable* viewable ) {}
+
+    virtual void changedOwner();
+    virtual void sizeChanged();
+    virtual void angleChanged() { }
+    virtual void positionChanged() { }
+    virtual void radarTick ( float dt ) {}
+
+    inline float getRadarSensitivity() const
+    { return 1.0f; }
+
+private:
+    struct ObjectInfo
     {
-    public:
-        HUDNavigation(BaseObject* creator);
-        virtual ~HUDNavigation();
+        Ogre::PanelOverlayElement* panel_;
+        Ogre::TextAreaOverlayElement* text_;
+        bool outOfView_;
+        bool wasOutOfView_;
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-        virtual void tick(float dt);
-
-        virtual void addObject(RadarViewable* object);
-        virtual void removeObject(RadarViewable* viewable);
-        virtual void objectChanged(RadarViewable* viewable) {}
-
-        virtual void changedOwner();
-        virtual void sizeChanged();
-        virtual void angleChanged() { }
-        virtual void positionChanged() { }
-        virtual void radarTick(float dt) {}
-
-        inline float getRadarSensitivity() const
-            { return 1.0f; }
-
-    private:
-        struct ObjectInfo
-        {
-            Ogre::PanelOverlayElement* panel_;
-            Ogre::TextAreaOverlayElement* text_;
-            bool outOfView_;
-            bool wasOutOfView_;
-        };
-
-        // XMLPort accessors
-        void setNavMarkerSize(float size)
-            { navMarkerSize_ = size; this->sizeChanged(); }
-        float getNavMarkerSize() const
-            { return navMarkerSize_; }
-
-        void setTextSize(float size);
-        float getTextSize() const;
-
-        void setFont(const std::string& font);
-        const std::string& getFont() const;
-
-        typedef std::map<RadarViewable*, ObjectInfo > ObjectMap;
-        ObjectMap activeObjectList_;
-
-        float navMarkerSize_;
-        std::string fontName_;
-        float textSize_;
     };
+
+    // XMLPort accessors
+    void setNavMarkerSize ( float size )
+    { navMarkerSize_ = size; this->sizeChanged(); }
+    float getNavMarkerSize() const
+    { return navMarkerSize_; }
+
+    void setTextSize ( float size );
+    float getTextSize() const;
+
+    void setFont ( const std::string& font );
+    const std::string& getFont() const;
+
+    typedef std::map<RadarViewable*, ObjectInfo > ObjectMap;
+    ObjectMap activeObjectList_;
+
+    typedef std::list < std::pair<RadarViewable*, unsigned int > > sortedList;
+    sortedList sortedObjectList_;
+
+
+    float navMarkerSize_;
+    std::string fontName_;
+    float textSize_;
+
+    static const unsigned int markerLimit_ = 5; //TODO: is it possible to set this over the console and/or the IG-Setting
+
+
+};
 }
 
 #endif /* _HUDNavigation_H__ */
