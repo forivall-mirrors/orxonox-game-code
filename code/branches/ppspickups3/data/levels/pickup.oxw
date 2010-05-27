@@ -28,9 +28,21 @@
 
     <!-- Shield pickups -->
     
-    <PickupSpawner position="-50,50,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+    <PickupSpawner position="-25,-25,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
         <pickup>
-            <ShieldPickup template=supershieldpickup />
+            <ShieldPickup template=smallshieldpickup />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="0,-25,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <ShieldPickup template=mediumshieldpickup />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="25,-25,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <ShieldPickup template=hugeshieldpickup />
         </pickup>
     </PickupSpawner>
     

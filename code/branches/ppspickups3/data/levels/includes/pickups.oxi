@@ -1,13 +1,35 @@
 <!-- Shield pickups -->
 
 <PickupRepresentation
-    pickupName = "Super Shield Pickup"
-    pickupDescription = "Gives you a shield with 1000000 helath points for 5 minutes"
-    inventoryRepresentation = "SmallHealth"
-    spawnerTemplate = "supershieldpickupRepresentation"
+    pickupName = "Small Shield Pickup"
+    pickupDescription = "Gives you a small shield for 10 seconds."
+    inventoryRepresentation = "SmallShield"
+    spawnerTemplate = "smallshieldpickupRepresentation"
 >
     <pickup>
-        <ShieldPickup template=supershieldpickup />
+        <ShieldPickup template=smallshieldpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Medium Shield Pickup"
+    pickupDescription = "Gives you a medium-sized shield for 30 seconds."
+    inventoryRepresentation = "MediumShield"
+    spawnerTemplate = "mediumshieldpickupRepresentation"
+>
+    <pickup>
+        <ShieldPickup template=mediumshieldpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Huge Shield Pickup"
+    pickupDescription = "Gives you a big shield for 60 seconds."
+    inventoryRepresentation = "HugeShield"
+    spawnerTemplate = "hugeshieldpickupRepresentation"
+>
+    <pickup>
+        <ShieldPickup template=hugeshieldpickup />
     </pickup>
 </PickupRepresentation>
 

@@ -79,7 +79,7 @@ namespace orxonox
         }
         else
             this->weaponSystem_ = 0;
-        
+
         this->setCarrierName("Pawn");
 
         this->setRadarObjectColour(ColourValue::Red);
@@ -106,10 +106,10 @@ namespace orxonox
         XMLPortParam(Pawn, "health", setHealth, getHealth, xmlelement, mode).defaultValues(100);
         XMLPortParam(Pawn, "maxhealth", setMaxHealth, getMaxHealth, xmlelement, mode).defaultValues(200);
         XMLPortParam(Pawn, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
-        
+
         XMLPortParam(Pawn, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode).defaultValues(0);
-        
+
         XMLPortParam(Pawn, "spawnparticlesource", setSpawnParticleSource, getSpawnParticleSource, xmlelement, mode);
         XMLPortParam(Pawn, "spawnparticleduration", setSpawnParticleDuration, getSpawnParticleDuration, xmlelement, mode).defaultValues(3.0f);
         XMLPortParam(Pawn, "explosionchunks", setExplosionChunks, getExplosionChunks, xmlelement, mode).defaultValues(7);
@@ -169,24 +169,19 @@ namespace orxonox
             //share the dealt damage to the shield and the Pawn.
             float shielddamage = damage*this->shieldAbsorption_;
             float healthdamage = damage*(1-this->shieldAbsorption_);
-            
-            // In case the shield can not take all the shield damage.
-            if (shielddamage > this->getShieldHealth()) 
-            {
-                COUT(1) << "the shield is too weak to take its share of the damage!" << std::endl;
 
+            // In case the shield can not take all the shield damage.
+            if (shielddamage > this->getShieldHealth())
+            {
                 healthdamage += shielddamage-this->getShieldHealth();
                 this->setShieldHealth(0);
             }
 
             this->setHealth(this->health_ - healthdamage);
-            
+
             if (this->getShieldHealth() > 0)
             {
                 this->setShieldHealth(this->shieldHealth_ - shielddamage);
-                COUT(1) << "damage " << damage  << " getShieldAbsorption " << getShieldAbsorption() << std::endl;
-                COUT(1) << "shielddamage " << shielddamage  << " healthdamage " << healthdamage << std::endl;
-                COUT(1) << "the shield takes its share of the damage and is left with " << this->getShieldHealth() << std::endl;
             }
 
             this->lastHitOriginator_ = originator;
@@ -194,7 +189,7 @@ namespace orxonox
             // play damage effect
         }
     }
-    
+
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
