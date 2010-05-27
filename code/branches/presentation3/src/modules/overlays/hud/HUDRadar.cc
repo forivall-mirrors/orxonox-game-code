@@ -123,6 +123,8 @@ namespace orxonox
 
     void HUDRadar::objectChanged( RadarViewable* rv )
     {
+        if (rv == dynamic_cast<RadarViewable*>(this->owner_))
+            return;
         assert( this->radarObjects_.find(rv) != this->radarObjects_.end() );
         Ogre::PanelOverlayElement* panel = this->radarObjects_[rv];
         panel->setMaterialName(TextureGenerator::getMaterialName(
