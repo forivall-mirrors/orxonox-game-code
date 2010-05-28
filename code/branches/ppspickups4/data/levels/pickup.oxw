@@ -1,0 +1,144 @@
+<?lua
+  include("stats.oxo")
+  include("hudtemplates3.oxo")
+?>
+
+<?lua
+  include("templates/spaceship_assff.oxt")
+  include("templates/spaceship_pirate.oxt")
+  include("templates/pickup_representation_templates.oxt")
+?>
+
+<Level
+ name         = "Sample"
+ description  = "Just a few tests"
+>
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+<?lua
+  include("includes/pickups.oxi")
+?>
+    
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+    <SpawnPoint position="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+
+
+    <!-- Shield pickups -->
+    
+    <PickupSpawner position="-25,-25,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <ShieldPickup template=smallshieldpickup />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="0,-25,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <ShieldPickup template=mediumshieldpickup />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="25,-25,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <ShieldPickup template=hugeshieldpickup />
+        </pickup>
+    </PickupSpawner>
+    
+    <!-- Health pickups -->
+    
+    <PickupSpawner position="-25,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+        <pickup>
+            <HealthPickup template=smallhealthpickup />
+        </pickup>
+    </PickupSpawner>
+    
+    <PickupSpawner position="0,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+        <pickup>
+            <HealthPickup template=mediumhealthpickup />
+        </pickup>
+    </PickupSpawner>
+    
+    <PickupSpawner position="25,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+        <pickup>
+            <HealthPickup template=hugehealthpickup />
+        </pickup>
+    </PickupSpawner>
+    
+    <PickupSpawner position="50,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+        <pickup>
+            <HealthPickup template=crazyhealthpickup />
+        </pickup>
+    </PickupSpawner>
+    
+    <!-- Speed pickups -->
+    
+    <PickupSpawner position="-25,25,-100" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
+        <pickup>
+            <SpeedPickup template=smallspeedpickup />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="0,25,-100" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
+        <pickup>
+            <SpeedPickup template=mediumspeedpickup />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="25,25,-100" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
+        <pickup>
+            <SpeedPickup template=hugespeedpickup />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="50,25,-100" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
+        <pickup>
+            <SpeedPickup template=smalljumppickup />
+        </pickup>
+    </PickupSpawner>
+    
+    <!-- Invisible pickups -->
+    
+    <PickupSpawner position="-25,50,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <InvisiblePickup template=smallinvisiblepickup />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="0,50,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <InvisiblePickup template=mediuminvisiblepickup />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="25,50,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <InvisiblePickup template=hugeinvisiblepickup />
+        </pickup>
+    </PickupSpawner>
+    
+    <!-- Meta pickups -->
+    
+    <PickupSpawner position="-25,75,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <MetaPickup metaType="use" />
+        </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="0,75,-100" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+        <pickup>
+            <MetaPickup metaType="drop" />
+        </pickup>
+    </PickupSpawner>
+    
+    <!-- Pickup Collection pickups -->
+    
+    <PickupSpawner position="0,100,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+        <pickup>
+            <PickupCollection template=triplehealthspeedinvisibilitypickup />
+        </pickup>
+    </PickupSpawner>
+    
+  </Scene>
+</Level>

@@ -1,0 +1,244 @@
+<?lua
+  include("hudtemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceship_assff.oxt")
+?>
+
+<Level
+ name         = "QuestSystem2"
+ description  = "Test level for Questsystem-Features"
+
+>
+
+  <NotificationQueue
+     name     = "notification"
+     position = "0.55, 0.05"
+     font     = "VeraMono"
+     textsize = 0.020
+     length   = 3
+     width    = 50
+    />
+
+  <Scene
+   ambientlight = "0.5, 0.5, 0.5"
+   skybox       = "Orxonox/skypanoramagen1"
+  >
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+        <GlobalQuest id="b80c2c60-e62c-4637-80f8-5aa18dc93b34">
+            <QuestDescription title="The Main QUest" description="This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! This is the main quest hooray. Solve it! " failMessage="You fail. Looser." completeMessage="You Win." />
+            <hints>
+                <QuestHint id="022a859d-08dd-4eac-a085-c28c29c06d48">
+                    <QuestDescription title="The super Hint." description="Be proud of yourself." />
+                </QuestHint>
+                <QuestHint id="aa19e785-f110-4f3a-abc4-b5e76556e71">
+                    <QuestDescription title="The super Hint.2" description="Be proud of yourself.2" />
+                </QuestHint>
+                <QuestHint id="93d0bdcb-9ce1-4f96-bc69-8d04e659fb31">
+                    <QuestDescription title="The super Hint.3" description="Be proud of yourself.3" />
+                </QuestHint>
+            </hints>
+            <subquests>
+                <GlobalQuest id="e17f5245-f95b-44a8-b6cf-402274435ed4">
+                    <QuestDescription title="The Main QUest2" description="This is the main quest hooray. Solve it!" failMessage="You fail. Looser." completeMessage="You Win." />
+                    <subquests>
+                        <GlobalQuest id="cff6c1ae-fae7-4e55-8af0-56c939911679">
+                            <QuestDescription title="The Main QUest2.1" description="This is the main quest hooray. Solve it!" failMessage="You fail. Looser." completeMessage="You Win." />
+                        </GlobalQuest>
+                        <GlobalQuest id="c04016a3-1e43-4797-885f-75ababa22e07">
+                            <QuestDescription title="The Main QUest2.2" description="This is the main quest hooray. Solve it!" failMessage="You fail. Looser." completeMessage="You Win." />
+                        </GlobalQuest>
+                    </subquests>
+                </GlobalQuest>
+                <GlobalQuest id="71becf91-1456-4763-a2c9-5d575fbcf087">
+                    <QuestDescription title="The Main QUest3" description="This is the main quest hooray. Solve it!" failMessage="You fail. Looser." completeMessage="You Win." />
+                </GlobalQuest>
+                <GlobalQuest id="ca3198a2-ea9d-48d0-b07a-e30f9aa8e241">
+                    <QuestDescription title="The Main QUest4" description="This is the main quest hooray. Solve it!" failMessage="You fail. Looser." completeMessage="You Win." />
+                </GlobalQuest>
+            </subquests>
+        </GlobalQuest>
+        <GlobalQuest id="d7b9526e-b369-43ca-a377-163007cd0577">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="41f729ed-892d-499a-a977-fd3ade3232c2">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="efc6af59-2a49-4220-8486-dce649350d85">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="c0bb8864-78a4-4984-b33e-19ca703cf022">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="7b1d7fce-b5f2-45e8-9e42-7fda78410892">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="ae4287e4-7a65-4fc2-912b-aebd033fcfb7">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="9312ee34-650b-494b-bf12-12394f94d248">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="d0b610db-aa09-4590-a7a8-1fad9be72bd9">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="3106c2d5-3f90-42fb-a164-bde993b13e20">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="a7a82d75-ebc5-487a-8f20-33fa79bc911d">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="32b2da07-882f-4e8b-8c32-ea548c11d91d">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="8945258e-56ea-45d3-b873-e237e2709866">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="9108702d-f3cd-400f-9c13-b2743886dddb">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="03a4bf9f-57ba-4676-97c8-6197086eff16">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="89311e30-2938-4bcb-ba93-23ca3037cdda">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="5ca628bb-cb62-4c54-9e0e-18139a8c5f02">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="e73aed96-02ca-452a-bdd0-61a3a549cf61">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="694cf67f-3579-41cf-ba52-11d4b311327c">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+        <GlobalQuest id="540ab003-ea02-4556-b95a-053ce191ea7f">
+            <QuestDescription title="Mup" description="" />
+        </GlobalQuest>
+
+<SpawnPoint position="0,0,100" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+
+        <QuestEffectBeacon position="0,0,100" times=-1>
+            <effects>
+                <AddQuest questId="b80c2c60-e62c-4637-80f8-5aa18dc93b34" />
+                <AddQuest questId="e17f5245-f95b-44a8-b6cf-402274435ed4" />
+                <AddQuest questId="cff6c1ae-fae7-4e55-8af0-56c939911679" />
+                <AddQuest questId="c04016a3-1e43-4797-885f-75ababa22e07" />
+                <AddQuest questId="71becf91-1456-4763-a2c9-5d575fbcf087" />
+                <AddQuest questId="ca3198a2-ea9d-48d0-b07a-e30f9aa8e241" />
+                <AddQuest questId="d7b9526e-b369-43ca-a377-163007cd0577" />
+                <AddQuest questId="41f729ed-892d-499a-a977-fd3ade3232c2" />
+                <AddQuest questId="efc6af59-2a49-4220-8486-dce649350d85" />
+                <AddQuest questId="c0bb8864-78a4-4984-b33e-19ca703cf022" />
+                <AddQuest questId="7b1d7fce-b5f2-45e8-9e42-7fda78410892" />
+                <AddQuest questId="ae4287e4-7a65-4fc2-912b-aebd033fcfb7" />
+                <AddQuest questId="9312ee34-650b-494b-bf12-12394f94d248" />
+                <AddQuest questId="d0b610db-aa09-4590-a7a8-1fad9be72bd9" />
+                <AddQuest questId="3106c2d5-3f90-42fb-a164-bde993b13e20" />
+                <AddQuest questId="a7a82d75-ebc5-487a-8f20-33fa79bc911d" />
+                <AddQuest questId="32b2da07-882f-4e8b-8c32-ea548c11d91d" />
+                <AddQuest questId="8945258e-56ea-45d3-b873-e237e2709866" />
+                <AddQuest questId="9108702d-f3cd-400f-9c13-b2743886dddb" />
+                <AddQuest questId="03a4bf9f-57ba-4676-97c8-6197086eff16" />
+                <AddQuest questId="89311e30-2938-4bcb-ba93-23ca3037cdda" />
+                <AddQuest questId="5ca628bb-cb62-4c54-9e0e-18139a8c5f02" />
+                <AddQuest questId="e73aed96-02ca-452a-bdd0-61a3a549cf61" />
+                <AddQuest questId="694cf67f-3579-41cf-ba52-11d4b311327c" />
+                <AddQuest questId="540ab003-ea02-4556-b95a-053ce191ea7f" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=qebdt1 />
+                </execute>
+            </events>
+            <attached>
+                <Billboard position="0,0,0" colour="1.0,1.0,1.0" material="Examples/Flare" />
+                <DistanceTrigger name=qebdt1 position="0,0,0" distance=10 target="ControllableEntity" />
+            </attached>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon position="-100,0,0" times=-1>
+            <effects>
+                <FailQuest questId="b80c2c60-e62c-4637-80f8-5aa18dc93b34" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=qebdt2 />
+                </execute>
+            </events>
+            <attached>
+                <Billboard position="0,0,0" colour="1.0,0,0" material="Examples/Flare" />
+                <DistanceTrigger name=qebdt2 position="0,0,0" distance=10 target="ControllableEntity" />
+            </attached>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon position="100,0,0" times=-1>
+            <effects>
+                <CompleteQuest questId="b80c2c60-e62c-4637-80f8-5aa18dc93b34" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=qebdt3 />
+                </execute>
+            </events>
+            <attached>
+                <Billboard position="0,0,0" colour="0,1.0,0" material="Examples/Flare" />
+                <DistanceTrigger name=qebdt3 position="0,0,0" distance=10 target="ControllableEntity" />
+            </attached>
+        </QuestEffectBeacon>
+
+        <QuestEffectBeacon position="0,100,0" times=-1>
+            <effects>
+                <AddQuestHint hintId="022a859d-08dd-4eac-a085-c28c29c06d48" />
+                <AddQuestHint hintId="aa19e785-f110-4f3a-abc4-b5e76556e71" />
+                <AddQuestHint hintId="93d0bdcb-9ce1-4f96-bc69-8d04e659fb31" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event=qebdt4 />
+                </execute>
+            </events>
+            <attached>
+                <Billboard position="0,0,0" colour="0,0,1.0" material="Examples/Flare" />
+                <DistanceTrigger name=qebdt4 position="0,0,0" distance=10 target="ControllableEntity" />
+            </attached>
+        </QuestEffectBeacon>
+
+        <ParticleEmitter name=firecenter position="0,0,0" source="Orxonox/fire3" active=false>
+            <events>
+                <activity>
+                    <QuestListener questId="b80c2c60-e62c-4637-80f8-5aa18dc93b34" mode="complete" />
+                </activity>
+            </events>
+        </ParticleEmitter>
+
+<?lua
+max = 20
+for i = 1, max, 1
+do
+    x = math.sin(i/max*6)*40000
+    y = math.cos(i/max*6)*40000
+    z = i*100
+    ?>
+<?lua
+for k = 1, 25, 1
+do
+j = math.random()
+?>
+
+    <MovableEntity position="<?lua print(x + math.random() * 10000-2500) ?>,<?lua print(y + math.random() * 5000-2500) ?>,<?lua print(z + math.random() * 1000-500) ?>" <?lua if i == 5 then ?> collisionType=dynamic linearDamping=0.8 angularDamping=0 mass=<?lua print(j * 50) ?> <?lua end ?> scale=<?lua print(j * 5) ?> rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
+      <attached>
+        <Model position="0,0,0" scale=<?lua print(j * 10) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+      </attached>
+      <?lua if i == 5 then ?><collisionShapes>
+        <SphereCollisionShape radius="<?lua print(j * 70) ?>" />
+      </collisionShapes> <?lua end ?>
+    </MovableEntity>
+<?lua
+end
+?>
+<?lua end ?>
+    <Planet position="0,0,0" scale=10000 pitch=-90 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="1,1,0" rotationrate="1" atmospheresize=224.0f imagesize=1024.0f />
+
+  </Scene>
+</Level>
