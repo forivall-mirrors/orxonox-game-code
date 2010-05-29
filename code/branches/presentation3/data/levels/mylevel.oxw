@@ -1,10 +1,10 @@
 <?lua
-	include("stats.oxo")
-	include("hudtemplates3.oxo")
-	include("underattackhud.oxo")
-	include("templates/spaceship_assff.oxt")
-	include("templates/spaceship_pirate.oxt")
-	include("templates/spaceship_Transporter.oxt")
+  include("stats.oxo")
+  include("hudtemplates3.oxo")
+  include("underattackhud.oxo")
+  include("templates/spaceship_assff.oxt")
+  include("templates/spaceship_pirate.oxt")
+  include("templates/spaceship_Transporter.oxt")
 ?>
 
 <Template name=spaceshipassffplayer>
@@ -43,9 +43,10 @@
       <BoxCollisionShape position="0,0.1,-11"  halfExtents="2.2, 1.8, 6" />
       <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
     </collisionShapes>
-<?lua
-  include("includes/weaponsettings3.oxi")
-?>
+
+    <?lua
+      include("includes/weaponsettings3.oxi")
+    ?>
   </SpaceShip>
 </Template>
 
@@ -56,87 +57,84 @@
   gametype=TeamDeathmatch
 >
 
-	<!-- Ausgang: Szene ===> ambientlight/skybox -->
-	<Scene
-	  ambientlight="0.8,0.8,0.8"
-	  skybox="Orxonox/skypanoramagen1"
-	>
+  <!-- Ausgang: Szene ===> ambientlight/skybox -->
+  <Scene
+    ambientlight="0.8,0.8,0.8"
+    skybox="Orxonox/skypanoramagen1"
+  >
 
-		<!--Light: noch zu aendern -->
-		<Light type=directional position="0,0,0" direction="1000, 0, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 1.0, 0.9" />
+    <!--Light: noch zu aendern -->
+    <Light type=directional position="0,0,0" direction="1000, 0, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 1.0, 0.9" />
 
-
-		<SpawnPoint position="0,0,0" direction="1000,0,0" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0/>
+    <SpawnPoint position="0,0,0" direction="1000,0,0" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0/>
 
 <!--
-		<EventTrigger name="testdestroy" activations=1 stayactive="true">
-			<events>
-				<trigger>
-					<SpaceShip position="2000,0,3000" lookat="0,0,0" team=1>
-						<templates>
-							<Template link=spaceshippirate/>
-						</templates>
-						<controller>
-							<AIController activity="false"/>
-						</controller>
-					</SpaceShip>
-				</trigger>
-			</events>
-		</EventTrigger>
+    <EventTrigger name="testdestroy" activations=1 stayactive="true">
+      <events>
+        <trigger>
+          <SpaceShip position="2000,0,3000" lookat="0,0,0" team=1>
+            <templates>
+              <Template link=spaceshippirate/>
+            </templates>
+            <controller>
+              <AIController activity="false"/>
+            </controller>
+          </SpaceShip>
+        </trigger>
+      </events>
+    </EventTrigger>
 -->
 
-					<SpaceShip position="1000,0,200" lookat="0,0,0">
-						<templates>
-							<Template link=spaceshipassff/>
-						</templates>
-						<controller>
-							<AIController active="false"/>
-						</controller>
-					</SpaceShip>
+    <SpaceShip position="1000,0,200" lookat="0,0,0">
+      <templates>
+        <Template link=spaceshipassff/>
+      </templates>
+      <controller>
+        <AIController active="false"/>
+      </controller>
+    </SpaceShip>
 
-<DistanceTrigger name="triggername" position="1000,0,0" distance="500" target="DistanceTriggerBeacon" targetname="test" activations=1 stayactive="true" />
+    <DistanceTrigger name="triggername" position="1000,0,0" distance="500" target="DistanceTriggerBeacon" targetname="test" activations=1 stayactive="true" />
 
-		<SpaceShip position="1000,0,0" lookat="2000,0,0" >
-			<templates>
-				<Template link=spaceshipassff />
-			</templates>
-			<controller>
-				<WaypointPatrolController alertnessradius=5000 team=0 active="false" >
-					<waypoints>
-						<Model mesh="cube.mesh" scale=0 position="2000,0,0" />
-					</waypoints>
-					<events>
-						<activity>
-							<EventListener event="triggername" />
-						</activity>
-					</events>
-				</WaypointPatrolController>
-			</controller>
-		</SpaceShip>
-	</Scene>
-</Level>
-
-
+    <SpaceShip position="1000,0,0" lookat="2000,0,0" >
+      <templates>
+        <Template link=spaceshipassff />
+      </templates>
+      <controller>
+        <WaypointPatrolController alertnessradius=5000 team=0 active="false" >
+          <waypoints>
+            <Model mesh="cube.mesh" scale=0 position="2000,0,0" />
+          </waypoints>
+          <events>
+            <activity>
+              <EventListener event="triggername" />
+            </activity>
+          </events>
+        </WaypointPatrolController>
+      </controller>
+    </SpaceShip>
 
 <!-- ZUM ERSTELLEN DER DESTROYTRIGGER
-<EventTrigger name="triggername" activations=1 stayactive=true >
-	<events>
-		<trigger>
-			<Spaceship />
-		</trigger>
-	</events>
-</EventTrigger>
+    <EventTrigger name="triggername" activations=1 stayactive=true >
+      <events>
+        <trigger>
+          <Spaceship />
+        </trigger>
+      </events>
+    </EventTrigger>
 
-<Spaceship>
-	<controller>
-		<SomeController activity="false">
-			<events>
-				<activity>
-					<EventListener event="triggername" />
-				</activity>
-			</events>
-		</SomeController>
-	</controller>
-</Spacehip>
-
+    <Spaceship>
+      <controller>
+        <SomeController activity="false">
+          <events>
+            <activity>
+              <EventListener event="triggername" />
+            </activity>
+          </events>
+        </SomeController>
+      </controller>
+    </Spacehip>
 -->
+
+  </Scene>
+</Level>

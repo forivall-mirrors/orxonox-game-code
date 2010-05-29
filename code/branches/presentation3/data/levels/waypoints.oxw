@@ -84,25 +84,22 @@
       </controller>
     </SpaceShip>
 
-<?lua
-for i = 1, 5, 1
-do ?>
-    <SpaceShip position="1500,<?lua print(-2000 + 50*i) ?>,200" lookat="0,0,0" name=polonaise<?lua print(i+1) ?> >
-      <templates>
-        <Template link=spaceshipassff />
-      </templates>
-      <controller>
-        <WaypointPatrolController alertnessradius=1000 team=12>
-          <waypoints>
-            <Attacher target=polonaise<?lua print(i) ?> deletewithparent=false />
-          </waypoints>
-        </WaypointPatrolController>
-      </controller>
-    </SpaceShip>
-<?lua
-end
-?>
-
+    <?lua
+      for i = 1, 5, 1 do
+    ?>
+      <SpaceShip position="1500,<?lua print(-2000 + 50*i) ?>,200" lookat="0,0,0" name=polonaise<?lua print(i+1) ?> >
+        <templates>
+          <Template link=spaceshipassff />
+        </templates>
+        <controller>
+          <WaypointPatrolController alertnessradius=1000 team=12>
+            <waypoints>
+              <Attacher target=polonaise<?lua print(i) ?> deletewithparent=false />
+            </waypoints>
+          </WaypointPatrolController>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
 
     <SpaceShip position="-1500,-2000,200" lookat="0,0,0" name=attack1>
       <templates>
@@ -117,40 +114,36 @@ end
       </controller>
     </SpaceShip>
 
-<?lua
-for i = 1, 5, 1
-do ?>
-    <SpaceShip position="-1500,<?lua print(-2000 + 50*i) ?>,200" lookat="0,0,0" name=attack<?lua print(i+1) ?> >
-      <templates>
-        <Template link=spaceshipassff />
-      </templates>
-      <controller>
-        <WaypointPatrolController alertnessradius=1000 team=13>
-          <waypoints>
-            <Attacher target=attack<?lua print(i) ?> deletewithparent=false />
-          </waypoints>
-        </WaypointPatrolController>
-      </controller>
-    </SpaceShip>
-<?lua
-end
-?>
+    <?lua
+      for i = 1, 5, 1 do
+    ?>
+      <SpaceShip position="-1500,<?lua print(-2000 + 50*i) ?>,200" lookat="0,0,0" name=attack<?lua print(i+1) ?> >
+        <templates>
+          <Template link=spaceshipassff />
+        </templates>
+        <controller>
+          <WaypointPatrolController alertnessradius=1000 team=13>
+            <waypoints>
+              <Attacher target=attack<?lua print(i) ?> deletewithparent=false />
+            </waypoints>
+          </WaypointPatrolController>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
 
 <!--
-<?lua
-for i = 1, 50, 1
-do ?>
-    <SpaceShip position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" >
-      <templates>
-        <Template link=spaceshipassff />
-      </templates>
-      <controller>
-        <AIController />
-      </controller>
-    </SpaceShip>
-<?lua
-end
-?>
+    <?lua
+      for i = 1, 50, 1 do
+    ?>
+      <SpaceShip position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" >
+        <templates>
+          <Template link=spaceshipassff />
+        </templates>
+        <controller>
+          <AIController />
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
 -->
 
   </Scene>

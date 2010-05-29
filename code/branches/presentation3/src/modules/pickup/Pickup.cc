@@ -145,11 +145,11 @@ namespace orxonox
     */
     void Pickup::setActivationType(const std::string& type)
     {
-        if(type == activationTypeImmediate_s)
+        if(Pickup::activationTypeImmediate_s.compare(type))
         {
             this->activationType_ = pickupActivationType::immediate;
         }
-        else if(type == activationTypeOnUse_s)
+        else if(Pickup::activationTypeOnUse_s.compare(type))
         {
             this->activationType_ = pickupActivationType::onUse;
         }
@@ -167,11 +167,11 @@ namespace orxonox
     */
     void Pickup::setDurationType(const std::string& type)
     {
-        if(type == durationTypeOnce_s)
+        if(Pickup::durationTypeOnce_s.compare(type) == 0)
         {
             this->durationType_ = pickupDurationType::once;
         }
-        else if(type == durationTypeContinuous_s)
+        else if(Pickup::durationTypeContinuous_s.compare(type) == 0)
         {
             this->durationType_ = pickupDurationType::continuous;
         }
