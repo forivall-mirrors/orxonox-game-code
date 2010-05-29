@@ -53,13 +53,12 @@
 #include "../libraries/network/Host.h"
 #include <util/Singleton.h>
 
-
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
   /* class to handle chat using an InputBuffer */
-  class _OrxonoxExport ChatInputHandler : public Singleton<ChatInputHandler>,
-    public ChatListener
-  {
+  class _OrxonoxExport ChatInputHandler  // tolua_export
+    : public Singleton<ChatInputHandler>, public ChatListener
+  { // tolua_export
     private:
       /** Input buffer, to be used to catch input from the
        * keyboard 
@@ -102,6 +101,8 @@ namespace orxonox
       ChatInputHandler();
       friend class Singleton<ChatInputHandler>;
 
+      static ChatInputHandler& getInstance(void) { return Singleton<ChatInputHandler>::getInstance(); }  // tolua_export
+
       /** start listening */
       static void activate_static();
 
@@ -126,12 +127,12 @@ namespace orxonox
       void activate( bool full );
 
       /** Deactivate the chat window, meaning: hide it. */
-      void deactivate();
+      void deactivate();  // tolua_export
 
-  };
+  };  // tolua_export
 
 
-}
+}  // tolua_export
 
 
 #endif /*_ChatInputHandler_H__*/

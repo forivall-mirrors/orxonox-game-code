@@ -56,6 +56,7 @@ ADD_SUBDIRECTORY(worldentities)
 ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
+    ChatInputHandler.h
     LevelManager.h
     MoodManager.h
     controllers/HumanController.h

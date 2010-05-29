@@ -5,7 +5,7 @@
         <Property Name="InheritsAlpha" Value="False" />
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
-        <Window Type="MenuWidgets/FrameWindow" Name="/ChatBox" >
+        <Window Type="MenuWidgets/FrameWindow" Name="orxonox/ChatBox" >
             <Property Name="Text" Value="Chat" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -24,6 +24,7 @@
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{1,-30},{0.98,0},{1,-5}}" />
             </Window>
+            <Event Name="CloseClicked" Function="ChatBox.ChatBoxCloseButton_clicked"/>
         </Window>
     </Window>
 </GUILayout>
