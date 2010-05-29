@@ -48,6 +48,8 @@ namespace orxonox
     /*static*/ const std::string Pickup::durationTypeOnce_s = "once";
     /*static*/ const std::string Pickup::durationTypeContinuous_s = "continuous";
 
+    CreateUnloadableFactory(Pickup);
+
     Pickup::Pickup(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Pickup);
@@ -145,11 +147,11 @@ namespace orxonox
     */
     void Pickup::setActivationType(const std::string& type)
     {
-        if(Pickup::activationTypeImmediate_s.compare(type))
+        if(Pickup::activationTypeImmediate_s.compare(type) == 0)
         {
             this->activationType_ = pickupActivationType::immediate;
         }
-        else if(Pickup::activationTypeOnUse_s.compare(type))
+        else if(Pickup::activationTypeOnUse_s.compare(type) == 0)
         {
             this->activationType_ = pickupActivationType::onUse;
         }

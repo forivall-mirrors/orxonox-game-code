@@ -188,7 +188,7 @@ namespace orxonox
     void HealthPickup::changedUsed(void)
     {
         SUPER(HealthPickup, changedUsed);
-        
+
         //! If the pickup is not picked up nothing must be done.
         if(!this->isPickedUp())
             return;
@@ -289,9 +289,9 @@ namespace orxonox
     {
         if(item == NULL)
             item = new HealthPickup(this);
-        
+
         SUPER(HealthPickup, clone, item);
-        
+
         HealthPickup* pickup = dynamic_cast<HealthPickup*>(item);
         pickup->setHealth(this->getHealth());
         pickup->setHealthRate(this->getHealthRate());

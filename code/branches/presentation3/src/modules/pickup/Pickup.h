@@ -76,10 +76,8 @@ namespace orxonox
     class _PickupExport Pickup : public Pickupable, public BaseObject
     {
 
-        protected:
-            Pickup(BaseObject* creator); //!< Constructor.
-
         public:
+            Pickup(BaseObject* creator); //!< Constructor.
             virtual ~Pickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);

@@ -172,7 +172,7 @@ namespace orxonox
             std::vector<std::pair<unsigned int, void*> > objectPointers_;
     };
     
-    SUPER_FUNCTION(11, OrxonoxClass, clone, true);
+    SUPER_FUNCTION(11, OrxonoxClass, clone, false);
     
 }
 
