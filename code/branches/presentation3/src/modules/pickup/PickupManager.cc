@@ -62,7 +62,8 @@ namespace orxonox
     PickupManager::PickupManager() : defaultRepresentation_(NULL)
     {
         RegisterRootObject(PickupManager);
-        
+
+        GUIManager::getInstance().loadGUI(PickupManager::guiName_s);
         this->defaultRepresentation_ = new PickupRepresentation();
         
         COUT(3) << "PickupManager created." << std::endl;
