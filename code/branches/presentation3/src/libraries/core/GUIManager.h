@@ -112,8 +112,8 @@ namespace orxonox // tolua_export
         bool protectedCall(FunctionType function);
 
         // keyHandler functions
-        void keyPressed (const KeyEvent& evt);
-        void keyReleased(const KeyEvent& evt);
+        void buttonPressed (const KeyEvent& evt);
+        void buttonReleased(const KeyEvent& evt);
 
         // mouseHandler functions
         void buttonPressed (MouseButtonCode::ByEnum id);
