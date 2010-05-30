@@ -158,16 +158,12 @@ namespace orxonox
             {
                 if(!(*it)->isActive())
                 {
-                    COUT(1) << (*it)->getName() << " is inactive." << std::endl;
                     teamSpawnPoints.erase(it++);
                     continue;
                 }
-                COUT(1) << (*it)->getName() << " is active." << std::endl;
 
                 ++it;
             }
-
-            COUT(1) << "MUP " << teamSpawnPoints.size() << std::endl;
 
             randomspawn = static_cast<unsigned int>(rnd(static_cast<float>(teamSpawnPoints.size())));
             index = 0;
