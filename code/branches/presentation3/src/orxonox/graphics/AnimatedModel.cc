@@ -21,12 +21,12 @@
  *
  *   Author:
  *      Benjamin de Capitani
- *   Co-authors:
- *      ...
+ *
  *
  */
- #include "AnimatedModel.h"
- #include <OgreEntity.h>
+
+#include "AnimatedModel.h"
+#include <OgreEntity.h>
 #include <Ogre.h>
 #include <deque>
 
