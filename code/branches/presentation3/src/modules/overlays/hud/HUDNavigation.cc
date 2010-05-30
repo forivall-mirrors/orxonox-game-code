@@ -342,6 +342,8 @@ void HUDNavigation::addObject ( RadarViewable* object )
 
 void HUDNavigation::removeObject ( RadarViewable* viewable )
 {
+    if ( viewable == dynamic_cast<RadarViewable*> ( this->getOwner() ) )
+        return;
 
     ObjectMap::iterator it = activeObjectList_.find ( viewable );
 
