@@ -63,7 +63,7 @@ namespace orxonox
         this->maxLife_=90;
 
         if (GameMode::isMaster())
-       {
+        {
             this->setCollisionType(WorldEntity::Kinematic);
             this->fuel_=true;
 
@@ -99,28 +99,37 @@ namespace orxonox
     {
 
         SUPER(SimpleRocket, tick, dt);
-        if (this->getVelocity().squaredLength() >130000) this->maxLife_-=dt; //if Velocity bigger than about 360, uses a lot more "fuel" :)
-        
+        if ( GameMode::isMaster() )
+        {
+            if (this->getVelocity().squaredLength() >130000)
+                this->maxLife_-=dt; //if Velocity bigger than about 360, uses a lot more "fuel" :)
+            
 
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
             this->localAngularVelocity_ = 0;
 
             
-            if (this->fuel_) {
+            if (this->fuel_)
+            {
                 if (this->destroyTimer_.getRemainingTime()<  this->lifetime_-this->maxLife_ ) 
                     this->fuel_=false;
-            } else this->disableFire();
+            }
+            else 
+                this->disableFire();
 
             if( this->bDestroy_ )
                 this->destroy();
+        }
                 
     }
 
-    void SimpleRocket::disableFire(){
-        this->setAcceleration(0,0,0);        
-        this->fire_->detachFromParent();
-
+    void SimpleRocket::disableFire()
+    {
+        this->setAcceleration(0,0,0);
+        this->fire_->destroy();
+        this->fire_ = 0;
+//         this->fire_->detachFromParent();
     }
 
     /**s
@@ -131,8 +140,11 @@ namespace orxonox
     {
         if (this->isInitialized()) 
         {
-            this->getController()->destroy();
-            COUT(4)<< "simplerocket destroyed\n";
+            if( GameMode::isMaster() )
+            {
+                this->getController()->destroy();
+                COUT(4)<< "simplerocket destroyed\n";
+            }
         }
     }
 
@@ -200,32 +212,6 @@ namespace orxonox
     {
         if (GameMode::isMaster())
         {
-            this->destroy();
-        }
-    }
-    
-
-    void SimpleRocket::fired(unsigned int firemode)
-    {
-        if (this->owner_)
-        {
-            {
-                ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                effect->setPosition(this->getPosition());
-                effect->setOrientation(this->getOrientation());
-                effect->setDestroyAfterLife(true);
-                effect->setSource("Orxonox/explosion4");
-                effect->setLifetime(2.0f);
-            }
-
-            {
-                ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                effect->setPosition(this->getPosition());
-                effect->setOrientation(this->getOrientation());
-                effect->setDestroyAfterLife(true);
-                effect->setSource("Orxonox/smoke4");
-                effect->setLifetime(3.0f);
-            }
             this->destroy();
         }
     }
