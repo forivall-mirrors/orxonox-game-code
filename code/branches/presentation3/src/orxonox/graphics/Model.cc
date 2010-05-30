@@ -104,65 +104,67 @@ namespace orxonox
                 if(this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1
                     &&this->meshSrc_!="laserbeam.mesh")
                 {
-                    float volume = this->mesh_.getEntity()->getBoundingBox().volume();
-                    float scaleFactor = 1;
-                    
-                    BaseObject* creatorPtr = this;
-                    
-                    while(creatorPtr!=NULL&&orxonox_cast<WorldEntity*>(creatorPtr))
-                    {
-                        scaleFactor *= getBiggestScale(((WorldEntity*) creatorPtr)->getScale3D());
-                        creatorPtr = creatorPtr->getCreator();
-                    }
-//                     COUT(0) << "name: " << this->meshSrc_ << "scaleFactor: " << scaleFactor << ", volume: " << volume << endl;
-                    
                     Level* level = this->getLevel();
-                    
+                  
                     assert( level != 0 );
-                    if( level->getLodInfo(this->meshSrc_)!=0 )
+                    if( level->getLodInfo(this->meshSrc_)!=0 && level->getLodInfo(this->meshSrc_)->getEnabled() )
+                    {
                         setLodLevel(level->getLodInfo(this->meshSrc_)->getLodLevel());
-                    
-                    COUT(4) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and scale: "<< scaleFactor << ":" << std::endl;
+
+                        float volume = this->mesh_.getEntity()->getBoundingBox().volume();
+    //                     float scaleFactor = 1;
+                        
+    //                     BaseObject* creatorPtr = this;
+    //                     
+    //                     while(creatorPtr!=NULL&&orxonox_cast<WorldEntity*>(creatorPtr))
+    //                     {
+    //                         scaleFactor *= getBiggestScale(((WorldEntity*) creatorPtr)->getScale3D());
+    //                         creatorPtr = creatorPtr->getCreator();
+    //                     }
+    //                     COUT(0) << "name: " << this->meshSrc_ << "scaleFactor: " << scaleFactor << ", volume: " << volume << endl;
+                        
+                        COUT(4) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and volume: "<< volume << ":" << std::endl;
 
 #if OGRE_VERSION >= 0x010700
-                    Ogre::Mesh::LodValueList distList;
+                        Ogre::Mesh::LodValueList distList;
 #else
-                    Ogre::Mesh::LodDistanceList distList;
+                        Ogre::Mesh::LodDistanceList distList;
 #endif
 
-                    if( lodLevel_>0 )
-                    {
-//                         float factor = scaleFactor*5/lodLevel_;
-                        float factor = volume/3/lodLevel_;
-                        
-                        COUT(4)<<"LodLevel set with factor: "<<factor<<std::endl;
+                        if( lodLevel_>0 )
+                        {
+    //                         float factor = scaleFactor*5/lodLevel_;
+                            float factor = volume/3/lodLevel_;
+                            
+                            COUT(4)<<"LodLevel set with factor: "<<factor<<std::endl;
 
-                        distList.push_back(70.0f*factor);
-                        distList.push_back(140.0f*factor);
-                        distList.push_back(170.0f*factor);
-                        distList.push_back(200.0f*factor);
-                        distList.push_back(230.0f*factor);
-                        distList.push_back(250.0f*factor);
-                        distList.push_back(270.0f*factor);
-                        distList.push_back(290.0f*factor);
-                        distList.push_back(310.0f*factor);
-                        distList.push_back(330.0f*factor);
+                            distList.push_back(70.0f*factor);
+                            distList.push_back(140.0f*factor);
+                            distList.push_back(170.0f*factor);
+                            distList.push_back(200.0f*factor);
+                            distList.push_back(230.0f*factor);
+                            distList.push_back(250.0f*factor);
+                            distList.push_back(270.0f*factor);
+                            distList.push_back(290.0f*factor);
+                            distList.push_back(310.0f*factor);
+                            distList.push_back(330.0f*factor);
 
-                        float reductionValue = 0.15f;
+                            float reductionValue = 0.15f;
 
-                        
-                        //Generiert LOD-Levels
-                        this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
-                    }
-                    else
-                    {
-                        std::string what;
-                        if(lodLevel_>5)
-                            what = ">5";
+                            
+                            //Generiert LOD-Levels
+                            this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
+                        }
                         else
-                            what = "<0";
-                        
-                        COUT(4)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"."<<std::endl;
+                        {
+                            std::string what;
+                            if(lodLevel_>5)
+                                what = ">5";
+                            else
+                                what = "<0";
+                            
+                            COUT(4)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"."<<std::endl;
+                        }
                     }
                 }
             }
