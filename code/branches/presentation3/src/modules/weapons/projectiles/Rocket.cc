@@ -86,11 +86,13 @@ namespace orxonox
             this->defSndWpnEngine_ = new WorldSound(this);
             this->defSndWpnEngine_->setLooping(true);
             this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
+            this->defSndWpnEngine_->setVolume(100);
             this->attach(defSndWpnEngine_);
 
             this->defSndWpnLaunch_ = new WorldSound(this);
             this->defSndWpnLaunch_->setLooping(false);
             this->defSndWpnLaunch_->setSource("sounds/Rocket_launch.ogg");
+            this->defSndWpnLaunch_->setVolume(100);
             this->attach(defSndWpnLaunch_);
         }
         else

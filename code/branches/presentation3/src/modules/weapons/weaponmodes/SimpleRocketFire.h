@@ -39,11 +39,12 @@ namespace orxonox
         public:
             SimpleRocketFire(BaseObject* creator);
             virtual ~SimpleRocketFire();
-
+            void deactivateFire();
             virtual void fire();
 
         private:
             float speed_;
+
     };
 }
 

@@ -33,6 +33,7 @@
 
 #include "tools/Timer.h"
 #include "worldentities/ControllableEntity.h"
+#include "graphics/ParticleSpawner.h"
 
 namespace orxonox
 {
@@ -55,6 +56,8 @@ namespace orxonox
 
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             void destroyObject();
+
+            void disableFire();
 
             virtual void moveFrontBack(const Vector2& value){}
             virtual void moveRightLeft(const Vector2& value){}
@@ -95,7 +98,7 @@ namespace orxonox
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotatePitch(float value)
-            {   COUT(0)<<"rotated rocket yaw";
+            {   
 				this->rotatePitch(Vector2(value, 0)); }
             /**
             @brief Rotates the SimpleRocket around the z-axis by the specifed amount.
@@ -103,12 +106,16 @@ namespace orxonox
             */
             inline void rotateRoll(float value)
             { 
-				COUT(0)<<"rotated rocket roll";
 				this->rotateRoll(Vector2(value, 0)); }
 
             void setOwner(Pawn* owner);
             inline Pawn* getOwner() const
                 { return this->owner_; }
+            inline bool hasFuel()
+            { return this->fuel_;}
+
+            inline void fuelRefill()
+            {this->fuel_=true;}
 
             inline void setDamage(float damage)
                 { this->damage_ = damage; }
@@ -122,11 +129,18 @@ namespace orxonox
             Vector3 localAngularVelocity_;
             float damage_;
             bool bDestroy_;
+            bool fuel_;
 
 
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;
             float lifetime_;
+            float maxLife_;
+
+            ParticleEmitter* fire_;
+
+
+
 
     };
 
