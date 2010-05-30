@@ -26,11 +26,11 @@
  *
  */
 
+#include "DesignToolsPrereqs.h"
 
+#include <string>
+#include "util/Math.h"
 #include "core/BaseObject.h"
-
-#include "graphics/Billboard.h"
-
  
 namespace orxonox
 {
@@ -48,7 +48,7 @@ namespace orxonox
                 this->numStars_ = num;
             }
 
-            int getNumStars(){
+            int getNumStars() const {
                 return this->numStars_;
             }
 
@@ -56,7 +56,7 @@ namespace orxonox
                 this->material_ = material;
             }
 
-            std::string& getMaterial(){
+            const std::string& getMaterial() const {
                 return this->material_;
             }
 
@@ -64,7 +64,7 @@ namespace orxonox
                 this->colour_ = colour;
             }
 
-            ColourValue& getColour() { 
+            const ColourValue& getColour() const { 
                 return this->colour_;
             }
 
@@ -72,7 +72,7 @@ namespace orxonox
                 this->alpha_ = alpha;
             }
 
-            float getAlpha() {
+            float getAlpha() const {
                 return this->alpha_;
             }
 
@@ -80,7 +80,7 @@ namespace orxonox
                 this->colourDiff_ = colourDiff;
             }
 
-            float getColourDiff() {
+            float getColourDiff() const {
                 return this->colourDiff_;
             }
 
@@ -88,7 +88,7 @@ namespace orxonox
                 this->alphaDiff_ = alphaDiff;
             }
 
-            float getAlphaDiff() {
+            float getAlphaDiff() const {
                 return this->alphaDiff_;
             }
 
@@ -96,7 +96,7 @@ namespace orxonox
                 this->radiusDiff_ = radiusDiff;
             }
 
-            float getRadiusDiff() {
+            float getRadiusDiff() const {
                 return this->radiusDiff_;
             }
 
@@ -105,7 +105,7 @@ namespace orxonox
                 this->createBillboards();
             }
 
-            unsigned int getRadius(){
+            unsigned int getRadius()const {
                 return this->radius_;
             }
             
@@ -114,9 +114,9 @@ namespace orxonox
         private:
             int numStars_;
             std::string material_;
-            orxonox::ColourValue colour_;
+            ColourValue colour_;
             std::vector<Billboard*> billboards_;
-            float radius_;
+            unsigned int radius_;
             float alpha_;
             float colourDiff_; 
             float alphaDiff_;

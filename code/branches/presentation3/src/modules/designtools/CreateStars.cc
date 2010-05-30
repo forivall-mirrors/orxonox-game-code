@@ -28,37 +28,29 @@
 
 #include "CreateStars.h"
 
-#include "core/ConsoleCommand.h"
-#include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
-#include "core/ScopedSingletonManager.h"
-#include "core/BaseObject.h"
-
-
-#include "core/XMLPort.h"
-
-#include "graphics/Billboard.h"
-
 #include <OgreVector3.h>
-#include "util/Math.h"
+
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
+#include "graphics/Billboard.h"
  
 namespace orxonox
 {
-
     CreateFactory(CreateStars);
 
-    CreateStars::CreateStars(BaseObject* creator) : BaseObject(creator)
+    static const float pi = 3.14159265359f;
 
+    CreateStars::CreateStars(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(CreateStars);
         this->material_ = "Examples/Flare";
-        this->alpha_ = 0.7;
-        this->alphaDiff_ = 0.5;
-        this->radiusDiff_ = 0.9;
+        this->alpha_ = 0.7f;
+        this->alphaDiff_ = 0.5f;
+        this->radiusDiff_ = 0.9f;
         this->colour_.r = 1;
         this->colour_.g = 1;
         this->colour_.b = 1;
-        this->colourDiff_ = 0.1;
+        this->colourDiff_ = 0.1f;
     }
 
     CreateStars::~CreateStars()
@@ -97,8 +89,8 @@ namespace orxonox
 
             while(1) 
             {
-                phi = rnd(2*M_PI);
-                teta = rnd(M_PI);
+                phi = rnd(2*pi);
+                teta = rnd(pi);
                 float random = rnd(1);
                 if(sin(teta)>random) break;
             }
