@@ -99,11 +99,14 @@ namespace orxonox
                 this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
                 this->mesh_.setVisible(this->isVisible());
                 
+                
                 //LOD
                 if(this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1
                     &&this->meshSrc_!="laserbeam.mesh")
                 {
+                    float volume = this->mesh_.getEntity()->getBoundingBox().volume();
                     float scaleFactor = 1;
+                    
                     BaseObject* creatorPtr = this;
                     
                     while(creatorPtr!=NULL&&orxonox_cast<WorldEntity*>(creatorPtr))
@@ -111,6 +114,7 @@ namespace orxonox
                         scaleFactor *= getBiggestScale(((WorldEntity*) creatorPtr)->getScale3D());
                         creatorPtr = creatorPtr->getCreator();
                     }
+//                     COUT(0) << "name: " << this->meshSrc_ << "scaleFactor: " << scaleFactor << ", volume: " << volume << endl;
                     
                     Level* level = this->getLevel();
                     
@@ -126,9 +130,10 @@ namespace orxonox
                     Ogre::Mesh::LodDistanceList distList;
 #endif
 
-                    if(lodLevel_>0&&lodLevel_<=5)
+                    if( lodLevel_>0 )
                     {
-                        float factor = scaleFactor*5/lodLevel_;
+//                         float factor = scaleFactor*5/lodLevel_;
+                        float factor = volume/3/lodLevel_;
                         
                         COUT(4)<<"LodLevel set with factor: "<<factor<<std::endl;
 
