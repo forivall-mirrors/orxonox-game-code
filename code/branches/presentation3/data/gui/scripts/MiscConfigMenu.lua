@@ -17,10 +17,42 @@ P.spaceWidth = 0
 function P.onLoad()
 
     P.commandList = {}
+    table.insert(P.commandList, "KeyBinder mouseSensitivity_")
+    table.insert(P.commandList, "KeyBinder mouseSensitivityDerived_")
+    table.insert(P.commandList, "KeyBinder bDeriveMouseInput_")
+    table.insert(P.commandList, "KeyBinder mouseWheelStepSize_")
+    table.insert(P.commandList, "Shell maxHistoryLength_")
+    table.insert(P.commandList, "Core bStartIOConsole_")
+    table.insert(P.commandList, "Game fpsLimit_")
+    table.insert(P.commandList, "Spectator speed_")
+    table.insert(P.commandList, "SpaceShip bInvertYAxis_")
+    table.insert(P.commandList, "LevelManager defaultLevelName_")
+    table.insert(P.commandList, "Gametype initialStartCountdown_")
+    table.insert(P.commandList, "Gametype bAutoStart_")
+    table.insert(P.commandList, "Gametype numberOfBots_")
+    table.insert(P.commandList, "UnderAttack gameTime_")
+    table.insert(P.commandList, "TeamDeathmatch teams_")
+    table.insert(P.commandList, "HumanPlayer nick_")
     table.insert(P.commandList, "ChatOverlay displayTime_")
 
     P.nameList = {}
-    table.insert(P.nameList, "ChatOverlay: display time")
+    table.insert(P.nameList, "Mouse sensitivity")
+    table.insert(P.nameList, "Mouse acceleration")
+    table.insert(P.nameList, "Derive mouse input")
+    table.insert(P.nameList, "Mouse wheel stepsize")
+    table.insert(P.nameList, "Shell: max. History length")
+    table.insert(P.nameList, "Start IOConsole")
+    table.insert(P.nameList, "FPS limit")
+    table.insert(P.nameList, "Spectator speed")
+    table.insert(P.nameList, "Invert Y-axis")
+    table.insert(P.nameList, "Default level")
+    table.insert(P.nameList, "Start countdown")
+    table.insert(P.nameList, "Autostart")
+    table.insert(P.nameList, "Number of Bots")
+    table.insert(P.nameList, "UnderAttack: game time")
+    table.insert(P.nameList, "TeamDeathmatch: Numer of teams")
+    table.insert(P.nameList, "Playername")
+    table.insert(P.nameList, "Chat: display time")
 
     P.linesList = {}
 
@@ -94,6 +126,7 @@ function P.createLine(k)
     reset:setText("reset")
     orxonox.GUIManager:subscribeEventHelper(reset, "Clicked", P.name .. ".MiscConfigReset_clicked")
     line:addChildWindow(reset)
+    reset:setEnabled(false)
     offset = offset + P.resetWidth + P.spaceWidth
 
     line:setWidth(CEGUI.UDim(0, offset))
@@ -133,8 +166,7 @@ function P.MiscConfigConfigure_clicked(e)
 
     local window = winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. commandNr .. "/Configvalue")
 
-    -- TODO: tconfig or permanent?
-    orxonox.CommandExecutor:execute("tconfig " .. P.commandList[commandNr] .. " " .. window:getText())
+    orxonox.CommandExecutor:execute("config " .. P.commandList[commandNr] .. " " .. window:getText())
     orxonox.CommandExecutor:execute("getConfig " .. P.commandList[commandNr])
     local value = orxonox.CommandExecutor:getReturnValueString()
     window:setText(value)

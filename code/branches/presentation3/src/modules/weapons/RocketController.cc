@@ -93,7 +93,6 @@ namespace orxonox
     void RocketController::setTarget(WorldEntity* target)
     {
         this->target_ = target;
-        COUT(0)<<"got target\n";
     }
 
     void RocketController::moveToPosition(const Vector3& target)
