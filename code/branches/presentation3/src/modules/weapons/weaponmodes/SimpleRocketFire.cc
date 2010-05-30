@@ -39,6 +39,13 @@
 
 namespace orxonox
 {
+       /**
+    @file
+    @brief
+        FireMode for target-seeking Rocket
+        @author
+        Gabriel Nadler (Original file: Oli Scheuss)
+        */
     CreateFactory(SimpleRocketFire);
 
     SimpleRocketFire::SimpleRocketFire(BaseObject* creator) : WeaponMode(creator)

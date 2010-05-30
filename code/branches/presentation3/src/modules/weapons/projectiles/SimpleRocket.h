@@ -26,6 +26,16 @@
  *
  */
 
+    /**
+    @file
+    @brief
+        SimpleRocket, follows direction from a Rocketcontroller, has fuel for 80% of its lifetime, afterwords it's fire disappears.
+    @author
+       Gabriel Nadler (Original file: Oli Scheuss)
+    */
+
+
+
 #ifndef _SimpleRocket_H__
 #define _SimpleRocket_H__
 
@@ -39,13 +49,7 @@ namespace orxonox
 {
     class ConeCollisionShape;
 
-    /**
-    @brief
-        SimpleRocket, that is made to move upon a specified pattern.
-        This class was constructed for the PPS tutorial.
-    @author
-        Oli Scheuss
-    */
+
     class _WeaponsExport SimpleRocket : public ControllableEntity
     {
         public:
@@ -57,7 +61,7 @@ namespace orxonox
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             void destroyObject();
 
-            void disableFire();
+            void disableFire(); //!< Method to disable the fire and stop all acceleration
 
             virtual void moveFrontBack(const Vector2& value){}
             virtual void moveRightLeft(const Vector2& value){}
@@ -111,11 +115,8 @@ namespace orxonox
             void setOwner(Pawn* owner);
             inline Pawn* getOwner() const
                 { return this->owner_; }
-            inline bool hasFuel()
-            { return this->fuel_;}
-
-            inline void fuelRefill()
-            {this->fuel_=true;}
+            inline bool hasFuel() const
+            { return this->fuel_; }
 
             inline void setDamage(float damage)
                 { this->damage_ = damage; }
@@ -127,16 +128,16 @@ namespace orxonox
             WeakPtr<Pawn> owner_;
             Vector3 localAngularVelocity_;
             float damage_;
-            bool bDestroy_;
-            bool fuel_;
+            bool bDestroy_; 
+            bool fuel_; //!< Bool is true while the rocket "has fuel"
 
 
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;
             float lifetime_;
-            float maxLife_;
+            static const int FUEL_PERCENTAGE=80; //!<Percentage of Lifetime the rocket has fuel
 
-            ParticleEmitter* fire_;
+            ParticleEmitter* fire_; //!< Fire-Emittor
 
 
 

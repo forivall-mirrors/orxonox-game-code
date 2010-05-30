@@ -49,7 +49,6 @@ namespace orxonox
         this->rocket_ = new SimpleRocket(this);
         this->rocket_->setController(this);
         this->setControllableEntity(dynamic_cast<ControllableEntity*> (this->rocket_));
-        this->counter_=0;
     }
 
 
@@ -61,7 +60,6 @@ namespace orxonox
     */
     void RocketController::tick(float dt)
     {
-        counter_++;
 
         if (this->target_ && this->rocket_->hasFuel()) {
             this->setTargetPosition();
@@ -98,16 +96,17 @@ namespace orxonox
     {
         if (!this->getControllableEntity())
             return;
-        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
-        float distance = (target - this->getControllableEntity()->getWorldPosition()).length();
+
+        Vector2 coord = get2DViewdirection(this->rocket_->getPosition(), this->rocket_->getOrientation() * WorldEntity::FRONT, this->rocket_->getOrientation() * WorldEntity::UP, target);
+        float distance = (target - this->rocket_->getWorldPosition()).length();
 
 
-        if (distance > 1000&&this->getControllableEntity()->getVelocity().squaredLength()<160000) 
-            this->getControllableEntity()->setAcceleration(this->rocket_->getOrientation()*Vector3(-20,-20,-20));
+        if (distance > 1000 && this->rocket_->getVelocity().squaredLength()<160000) 
+            this->rocket_->setAcceleration(this->rocket_->getOrientation()*Vector3(-20,-20,-20));
         if (distance <1000) this->rocket_->setAcceleration(0,0,0);
-        
-        this->getControllableEntity()->rotateYaw(-sgn(coord.x)*coord.x*coord.x);
-        this->getControllableEntity()->rotatePitch(sgn(coord.y)*coord.y*coord.y);
+
+        this->rocket_->rotateYaw(-sgn(coord.x)*coord.x*coord.x);
+        this->rocket_->rotatePitch(sgn(coord.y)*coord.y*coord.y);
     }
 
 

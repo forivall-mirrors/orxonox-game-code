@@ -44,13 +44,16 @@
 
 namespace orxonox
 {
-    CreateFactory(SimpleRocket);
-    // create the factory for the SimpleRocket
-
-    /**
+        /**
+    @file
     @brief
-        Constructor. Registers the object and initializes some default values.
+        SimpleRocket, follows direction from a Rocketcontroller, has fuel for 80% of its lifetime, afterwords it's fire disappears.
+    @author
+       Gabriel Nadler (Original file: Oli Scheuss)
     */
+    CreateFactory(SimpleRocket);
+
+
     SimpleRocket::SimpleRocket(BaseObject* creator) : ControllableEntity(creator)
     {
         RegisterObject(SimpleRocket);// - register the SimpleRocket class to the core
@@ -58,9 +61,9 @@ namespace orxonox
         this->localAngularVelocity_ = 0;
         this->bDestroy_ = false;
         this->lifetime_ = 120;
+
         this->setMass(15);
         COUT(4) << "simplerocket constructed\n";
-        this->maxLife_=90;
 
         if (GameMode::isMaster())
         {
@@ -91,45 +94,47 @@ namespace orxonox
         }
 
     }
-   
 
 
-
+    
+    /**
+    * @brief updates state of rocket, disables fire if no fuel
+    * @param dt tick-length
+    */
     void SimpleRocket::tick(float dt)
     {
 
         SUPER(SimpleRocket, tick, dt);
         if ( GameMode::isMaster() )
         {
-            if (this->getVelocity().squaredLength() >130000)
-                this->maxLife_-=dt; //if Velocity bigger than about 360, uses a lot more "fuel" :)
-            
+
 
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
             this->localAngularVelocity_ = 0;
 
-            
+        
             if (this->fuel_)
             {
-                if (this->destroyTimer_.getRemainingTime()<  this->lifetime_-this->maxLife_ ) 
+                if (this->destroyTimer_.getRemainingTime()<  (static_cast<float>(this->FUEL_PERCENTAGE)/100) *this->lifetime_ ) 
                     this->fuel_=false;
-            }
-            else 
+            } else
                 this->disableFire();
 
-            if( this->bDestroy_ )
+            if( this->bDestroy_ ) 
                 this->destroy();
         }
                 
     }
 
+    /**
+    * @brief Sets the Acceleration to 0 and detaches the fire
+    * @return void
+    */
     void SimpleRocket::disableFire()
     {
-        this->setAcceleration(0,0,0);
-        this->fire_->destroy();
-        this->fire_ = 0;
-//         this->fire_->detachFromParent();
+        this->setAcceleration(0,0,0);        
+        this->fire_->detachFromParent();
     }
 
     /**s
@@ -143,7 +148,6 @@ namespace orxonox
             if( GameMode::isMaster() )
             {
                 this->getController()->destroy();
-                COUT(4)<< "simplerocket destroyed\n";
             }
         }
     }
@@ -161,9 +165,9 @@ namespace orxonox
     void SimpleRocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
-        //this->originalControllableEntity_ = this->owner_->getPlayer()->getControllableEntity();
         this->player_ = this->owner_->getPlayer();
     }
+
 
 
 
