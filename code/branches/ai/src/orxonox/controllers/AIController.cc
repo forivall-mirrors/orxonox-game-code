@@ -229,6 +229,8 @@ namespace orxonox
 
             if (this->specificMasterAction_ == SPIN)
                     this->spin();
+            if (this->specificMasterAction_ == FOLLOWHUMAN)
+                    this->follow();
         }
 
         if (this->state_ == SLAVE)

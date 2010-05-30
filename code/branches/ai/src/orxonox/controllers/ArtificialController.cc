@@ -90,10 +90,11 @@ namespace orxonox
         SUPER(ArtificialController, XMLPort, xmlelement, mode);
 
         XMLPortParam(ArtificialController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
-        XMLPortParam(ArtificialController, "formation", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(true);
+        XMLPortParam(ArtificialController, "formationflight", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(true);
+        XMLPortParam(ArtificialController, "formation_size", setFormationSize, getFormationSize, xmlelement, mode).defaultValues(STANDARD_MAX_FORMATION_SIZE);
     }
 
-// Documentation only here to get a faster overview for creating a useful documentation, what you're reading here not intended for an actual documentation...
+// Documentation only here to get a faster overview for creating a useful documentation...
 
     /**
         @brief Activates / deactivates formationflight behaviour
@@ -230,7 +231,7 @@ namespace orxonox
     }
 
     /**
-        @brief Gets called if ControllableEntity is changed. Resets the bot when it dies.
+        @brief Gets called when ControllableEntity is being changed. Resets the bot when it dies.
     */
     void ArtificialController::changedControllableEntity()
     {
@@ -472,7 +473,7 @@ namespace orxonox
     }
 
     /**
-        @brief Master sets its slaves free for \var FREEDOM_COUNT seconds.
+        @brief Master sets its slaves free for @var FREEDOM_COUNT seconds.
     */
     void ArtificialController::forceFreeSlaves()
     {
@@ -563,7 +564,7 @@ namespace orxonox
     */
     void ArtificialController::spinInit()
     {
-         COUT(0) << "~spinInit" << std::endl;
+        COUT(0) << "~spinInit" << std::endl;
         if(this->state_ != MASTER) return;
         this->specificMasterAction_ = SPIN;
         this->specificMasterActionHoldCount_ = 10;
@@ -581,23 +582,32 @@ namespace orxonox
     /**
         @brief Master begins to follow a human player. Is a "specific master action".
         @param humanController human to follow.
-        @param alaways follows human forever if true - only inplemented for false yet.
+        @param alaways follows human forever if true, else it follows it for @var SECONDS_TO_FOLLOW_HUMAN seconds.
     */
-    void ArtificialController::followHuman(Pawn* human, bool always)
+    void ArtificialController::followHumanInit(Pawn* human, bool always)
     {
-        if (human == NULL)
-        {
-            this->specificMasterAction_ = NONE;
+        COUT(0) << "~followInit" << std::endl;
+        if (human == NULL || this->state_ != MASTER)
             return;
-        }
+
+        this->specificMasterAction_  =  FOLLOWHUMAN;
+
+        this->setTarget(human);
         if (!always)
-        {
-            this->setTarget(human);
             this->specificMasterActionHoldCount_ = SECONDS_TO_FOLLOW_HUMAN;
-            this->specificMasterAction_  =  HOLD;
-        }
+        else 
+            this->specificMasterActionHoldCount_ = INT_MAX; //for now...
 
     }
+
+    /**
+        @brief Follows target with adjusted speed. Called within tick.
+    */
+    void ArtificialController::follow()
+    {
+        this->moveToTargetPosition(); //standard position apprach for now.
+    }
+
 
 
     void ArtificialController::setTargetPosition(const Vector3& target)

@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Dominik Solenicki
  *
  */
 
@@ -57,6 +57,10 @@ namespace orxonox
                 { this->formationFlight_ = formation; }
             inline bool getFormationFlight() const
                 { return this->formationFlight_; }
+            inline void setFormationSize(int size)
+                { this->maxFormationSize_ = size; }
+            inline int getFormationSize() const
+                { return this->maxFormationSize_; }
             virtual void changedControllableEntity();
 
             static void formationflight(bool form);
@@ -104,7 +108,8 @@ namespace orxonox
             void turn180();
             void spinInit();
             void spin();
-            void followHuman(Pawn* humanController, bool always);
+            void followHumanInit(Pawn* human, bool always);
+            void follow();
 
             void setTargetPosition(const Vector3& target);
             void searchRandomTargetPosition();
