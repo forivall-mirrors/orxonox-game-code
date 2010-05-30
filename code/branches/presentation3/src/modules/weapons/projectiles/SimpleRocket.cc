@@ -44,15 +44,8 @@
 
 namespace orxonox
 {
-        /**
-    @file
-    @brief
-        SimpleRocket, follows direction from a Rocketcontroller, has fuel for 80% of its lifetime, afterwords it's fire disappears.
-    @author
-       Gabriel Nadler (Original file: Oli Scheuss)
-    */
-    CreateFactory(SimpleRocket);
 
+    CreateFactory(SimpleRocket);
 
     SimpleRocket::SimpleRocket(BaseObject* creator) : ControllableEntity(creator)
     {

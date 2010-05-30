@@ -26,16 +26,6 @@
  *
  */
 
-    /**
-    @file
-    @brief
-        SimpleRocket, follows direction from a Rocketcontroller, has fuel for 80% of its lifetime, afterwords it's fire disappears.
-    @author
-       Gabriel Nadler (Original file: Oli Scheuss)
-    */
-
-
-
 #ifndef _SimpleRocket_H__
 #define _SimpleRocket_H__
 
@@ -49,7 +39,12 @@ namespace orxonox
 {
     class ConeCollisionShape;
 
-
+    /**
+    @brief
+        SimpleRocket, follows direction from a Rocketcontroller, has fuel for 80% of its lifetime, afterwards it's fire disappears.
+    @author
+       Gabriel Nadler (Original file: Oli Scheuss)
+    */
     class _WeaponsExport SimpleRocket : public ControllableEntity
     {
         public:

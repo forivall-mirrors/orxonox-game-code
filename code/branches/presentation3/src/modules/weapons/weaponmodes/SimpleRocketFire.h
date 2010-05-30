@@ -34,6 +34,12 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        FireMode for target-seeking Rocket
+    @author
+        Gabriel Nadler (Original file: Oli Scheuss)
+    */
     class _WeaponsExport SimpleRocketFire : public WeaponMode
     {
         public:
