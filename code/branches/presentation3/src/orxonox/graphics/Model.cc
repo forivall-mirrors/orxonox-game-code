@@ -107,9 +107,11 @@ namespace orxonox
                     Level* level = this->getLevel();
                   
                     assert( level != 0 );
-                    if( level->getLodInfo(this->meshSrc_)!=0 && level->getLodInfo(this->meshSrc_)->getEnabled() )
-                    {
+                    
+                    if( level->getLodInfo(this->meshSrc_)!=0 )
                         setLodLevel(level->getLodInfo(this->meshSrc_)->getLodLevel());
+                    if( level->getLodInfo(this->meshSrc_)==0 || level->getLodInfo(this->meshSrc_)->getEnabled() )
+                    {
 
                         float volume = this->mesh_.getEntity()->getBoundingBox().volume();
     //                     float scaleFactor = 1;
