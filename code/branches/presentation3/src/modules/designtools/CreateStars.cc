@@ -40,7 +40,7 @@
 #include "graphics/Billboard.h"
 
 #include <OgreVector3.h>
-#include <math.h>
+#include "util/Math.h"
  
 namespace orxonox
 {

@@ -7,7 +7,7 @@
 #include <OgrePrerequisites.h>
 #include <OgreTexture.h>
 #include <OgreHardwarePixelBuffer.h>
-#include <stdint.h>
+#include "OrxonoxConfig.h"
 #include <cstring>
 #include <cstdlib>
 
