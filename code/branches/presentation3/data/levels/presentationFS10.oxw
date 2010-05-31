@@ -4,6 +4,7 @@
 ?>
 
 <?lua
+  include("templates/lodinformation.oxt")
   include("templates/spaceship_assff.oxt")
   include("templates/spaceship_pirate.oxt")
   include("templates/pickup_representation_templates.oxt")
@@ -13,6 +14,10 @@
  name         = "Sample"
  description  = "Just a few tests"
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
