@@ -49,7 +49,7 @@ namespace orxonox
         this->reloadTime_ = 1;
         this->bParallelReload_ = false;
         this->damage_ = 100;
-        this->speed_ = 300;
+        this->speed_ = 500;
 
         this->setMunitionName("LaserMunition");
         // The firing sound of the Rocket is played in Rocket.cc (because of OpenAl sound positioning)
