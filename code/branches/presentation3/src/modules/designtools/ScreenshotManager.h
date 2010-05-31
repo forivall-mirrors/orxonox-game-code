@@ -49,7 +49,7 @@ namespace orxonox
             { getInstance().makeScreenshot(); }
       
     protected:
-        static std::string ScreenshotManager::getTimestamp();
+        static std::string getTimestamp();
 
         std::string    mFileExtension;
         unsigned int   mGridSize, mWindowWidth, mWindowHeight;
