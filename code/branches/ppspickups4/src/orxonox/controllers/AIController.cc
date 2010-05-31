@@ -32,6 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "worldentities/ControllableEntity.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -102,6 +103,8 @@ namespace orxonox
             return;
 
         if (this->target_)
+            if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
+                this->forgetTarget();
             this->aimAtTarget();
 
         if (this->bHasTargetPosition_)
