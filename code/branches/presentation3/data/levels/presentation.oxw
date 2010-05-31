@@ -2,12 +2,16 @@
   include("hudtemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceship_assff.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
  name         = "Sample"
  description  = "Just a few tests"
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
   <Scene
    ambientlight = "0.3, 0.3, 0.3"
    skybox       = "Orxonox/Starbox"

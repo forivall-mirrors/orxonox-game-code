@@ -12,6 +12,9 @@
  name         = "Sample"
  description  = "Just a few tests"
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
   >

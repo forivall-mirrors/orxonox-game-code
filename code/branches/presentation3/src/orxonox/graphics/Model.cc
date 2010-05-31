@@ -41,15 +41,12 @@ namespace orxonox
 {
     CreateFactory(Model);
 
-    Model::Model(BaseObject* creator) : StaticEntity(creator)
+    Model::Model(BaseObject* creator) : 
+        StaticEntity(creator), bCastShadows_(true), lodLevel_(5), bLodEnabled_(true), numLodLevels_(10), lodReductionRate_(.15)
     {
         RegisterObject(Model);
 
-        this->bCastShadows_ = true;
-
         this->registerVariables();
-        //LoD
-        this->lodLevel_=5;
     }
 
     Model::~Model()
@@ -101,18 +98,27 @@ namespace orxonox
                 
                 
                 //LOD
-                if(this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1
-                    &&this->meshSrc_!="laserbeam.mesh")
+                if( this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1 )
                 {
                     Level* level = this->getLevel();
                   
                     assert( level != 0 );
                     
-                    if( level->getLodInfo(this->meshSrc_)!=0 )
-                        setLodLevel(level->getLodInfo(this->meshSrc_)->getLodLevel());
-                    if( level->getLodInfo(this->meshSrc_)==0 || level->getLodInfo(this->meshSrc_)->getEnabled() )
+                    MeshLodInformation* lodInfo = level->getLodInfo(this->meshSrc_);
+                    if( lodInfo )
                     {
-
+                        setLodLevel(lodInfo->getLodLevel());
+                        this->bLodEnabled_ = lodInfo->getEnabled();
+                        this->numLodLevels_ = lodInfo->getNumLevels();
+                        this->lodReductionRate_ = lodInfo->getReductionRate();
+                    }
+                    if( this->numLodLevels_>10 )
+                    {
+                        CCOUT(2) << "More than 10 LoD levels requested. Creating only 10." << endl;
+                        this->numLodLevels_ = 10;
+                    }
+                    if( this->bLodEnabled_ )
+                    {
                         float volume = this->mesh_.getEntity()->getBoundingBox().volume();
     //                     float scaleFactor = 1;
                         
@@ -138,7 +144,7 @@ namespace orxonox
     //                         float factor = scaleFactor*5/lodLevel_;
                             float factor = volume/3/lodLevel_;
                             
-                            COUT(4)<<"LodLevel set with factor: "<<factor<<std::endl;
+                            COUT(4) << "LodLevel set with factor: " << factor << endl;
 
                             distList.push_back(70.0f*factor);
                             distList.push_back(140.0f*factor);
@@ -150,12 +156,12 @@ namespace orxonox
                             distList.push_back(290.0f*factor);
                             distList.push_back(310.0f*factor);
                             distList.push_back(330.0f*factor);
-
-                            float reductionValue = 0.15f;
+                            while(distList.size()>this->numLodLevels_)
+                                distList.pop_back();
 
                             
                             //Generiert LOD-Levels
-                            this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
+                            this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, this->lodReductionRate_);
                         }
                         else
                         {
@@ -165,9 +171,11 @@ namespace orxonox
                             else
                                 what = "<0";
                             
-                            COUT(4)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"."<<std::endl;
+                            COUT(4)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"." << endl;
                         }
                     }
+                    else
+                        COUT(4) << "LodLevel for " << this->meshSrc_ << " not set because is disabled." << endl;
                 }
             }
         }

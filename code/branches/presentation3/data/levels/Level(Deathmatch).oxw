@@ -1,10 +1,11 @@
 <?lua
-	include("stats.oxo")
-	include("hudtemplates3.oxo")
-	include("underattackhud.oxo")
-	include("templates/spaceship_assff.oxt")
-	include("templates/spaceship_pirate.oxt")
-	include("templates/spaceship_Transporter.oxt")
+  include("stats.oxo")
+  include("hudtemplates3.oxo")
+  include("underattackhud.oxo")
+  include("templates/spaceship_assff.oxt")
+  include("templates/spaceship_pirate.oxt")
+  include("templates/spaceship_Transporter.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <!--*****************************************************************************************************************************************************************************************-->
@@ -59,9 +60,9 @@
   description="Level zerstoeren von Transportern"
   gametype=TeamDeathmatch
 >
-    <lodinformation>
-	    <MeshLodInformation mesh=Transporter.mesh lodQuality=10 />
-    </lodinformation>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
 
 	<!-- Ausgang: Szene ===> ambientlight/skybox -->
 	<Scene

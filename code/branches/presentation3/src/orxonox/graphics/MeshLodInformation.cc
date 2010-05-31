@@ -40,7 +40,7 @@ namespace orxonox
     CreateFactory(MeshLodInformation);
 
     MeshLodInformation::MeshLodInformation(BaseObject* creator) 
-	: BaseObject(creator), lodLevel_(-1), bEnabled_(true)
+	: BaseObject(creator), lodLevel_(5), bEnabled_(true), numLevels_(10), reductionRate_(0.15)
     {
         RegisterObject(MeshLodInformation);
     }
@@ -55,6 +55,8 @@ namespace orxonox
         XMLPortParam(MeshLodInformation, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
         XMLPortParam(MeshLodInformation, "lodQuality", setLodLevel, getLodLevel, xmlelement, mode);
         XMLPortParam(MeshLodInformation, "enabled", setEnabled, getEnabled, xmlelement, mode);
+        XMLPortParam(MeshLodInformation, "numLevels", setNumLevels, getNumLevels, xmlelement, mode);
+        XMLPortParam(MeshLodInformation, "reductionRate", setReductionRate, getReductionRate, xmlelement, mode);
     }
     
     std::string MeshLodInformation::getMeshName()

@@ -5,6 +5,7 @@
   include("templates/spaceship_H2.oxt")
   include("templates/spaceship_pirate.oxt")
   include("templates/pickup_representation_templates.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
@@ -13,6 +14,9 @@
  gametype     = TeamDeathmatch
  hasPhysics = true
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
   <Scene
    ambientlight = "0.6, 0.4, 0.4"
    skybox       = "Orxonox/skypanoramagen2"

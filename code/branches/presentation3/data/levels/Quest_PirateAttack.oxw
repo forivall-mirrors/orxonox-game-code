@@ -4,6 +4,7 @@
   include("templates/spaceship_assff.oxt")
   include("templates/spaceship_HXY_SL.oxt")
   include("templates/spaceship_pirate.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Template name=spaceshipassffplayer defaults=0>
@@ -34,6 +35,10 @@ name="Dani's Testlevel"
 description="Erste Versuche mit den Quests"
 gametype=TeamDeathmatch
 >
+
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
 
     <Scene
         ambientlight = "0.3, 0.3, 0.3"

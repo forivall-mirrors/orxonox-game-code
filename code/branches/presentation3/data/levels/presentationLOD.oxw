@@ -1,6 +1,7 @@
 <?lua
   include("stats.oxo")
   include("hudtemplates3.oxo")
+  include("templates/lodinformation.oxt")
 ?>
 
 <?lua
@@ -12,6 +13,9 @@
  name         = "Sample"
  description  = "Just a few tests"
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"

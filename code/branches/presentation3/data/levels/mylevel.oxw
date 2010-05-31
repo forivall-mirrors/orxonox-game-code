@@ -5,6 +5,7 @@
   include("templates/spaceship_assff.oxt")
   include("templates/spaceship_pirate.oxt")
   include("templates/spaceship_Transporter.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Template name=spaceshipassffplayer>

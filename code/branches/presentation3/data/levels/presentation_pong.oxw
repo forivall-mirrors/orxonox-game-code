@@ -2,6 +2,7 @@
   include("hudtemplates3.oxo")
   include("stats.oxo")
   include("ponghud.oxo")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Template name=pongbatcameras defaults=0>

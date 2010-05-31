@@ -3,6 +3,7 @@
   include("stats.oxo")
   include("templates/spaceship_ghost.oxt")
   include("templates/spaceship_pirate.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
@@ -10,6 +11,10 @@
  description  = "presentation level for Orxonox Convention X"
 
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/skypanoramagen1"

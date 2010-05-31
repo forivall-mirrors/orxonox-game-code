@@ -13,6 +13,9 @@
  name         = "Sample"
  description  = "Just a few tests"
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
 
   <lodinformation>
     <MeshLodInformation mesh=ast1.mesh lodQuality=4 />

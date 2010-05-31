@@ -46,17 +46,23 @@ namespace orxonox
             float getLodLevel();
             std::string getMeshName();
             bool getEnabled(){ return this->bEnabled_; }
+            unsigned int getNumLevels(){ return this->numLevels_; }
+            float getReductionRate(){ return this->reductionRate_; }
             
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         private:
             void setLodLevel(float lodLevel);
             void setMeshSource(std::string meshSource);
-            void setEnabled( bool enabled ){ this->bEnabled_ = true; }
+            void setEnabled( bool enabled ){ this->bEnabled_ = enabled; }
+            void setNumLevels( unsigned int num ){ this->numLevels_ = num; }
+            void setReductionRate( float rate ){ this->reductionRate_ = rate; }
             std::string getMeshSource();
             std::string meshSource_;
             float lodLevel_;
             bool bEnabled_;
+            unsigned int numLevels_;
+            float reductionRate_;
 
     };
 }

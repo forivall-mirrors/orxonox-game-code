@@ -144,7 +144,10 @@ namespace orxonox
     void Level::addLodInfo(MeshLodInformation* lodInformation)
     {
         std::string meshName = lodInformation->getMeshName();
-        this->lodInformation_.insert(std::make_pair(meshName,lodInformation));
+//         this->lodInformation_.insert(std::make_pair(meshName,lodInformation));
+        if( this->lodInformation_.find(meshName) != this->lodInformation_.end())
+          CCOUT(4) << "replacing lod information for " << meshName << endl;
+        this->lodInformation_[meshName] = lodInformation;
     }
 
     MeshLodInformation* Level::getLodInfo(std::string meshName) const

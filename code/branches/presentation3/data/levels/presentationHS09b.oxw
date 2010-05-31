@@ -1,6 +1,7 @@
 <?lua
   include("stats.oxo")
   include("hudtemplates3.oxo")
+  include("templates/lodinformation.oxt")
 ?>
 
 <?lua
@@ -18,6 +19,9 @@
  description  = "Just a few tests"
  gametype     = TeamDeathmatch
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"

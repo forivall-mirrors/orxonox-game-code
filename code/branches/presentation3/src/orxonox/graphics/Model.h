@@ -78,6 +78,10 @@ namespace orxonox
             
             //LoD
             float lodLevel_;
+            bool bLodEnabled_;
+            unsigned int numLodLevels_;
+            float lodReductionRate_;
+            
     };
 }
 

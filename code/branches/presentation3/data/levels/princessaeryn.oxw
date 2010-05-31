@@ -2,6 +2,7 @@
   include("hudtemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceship_assff.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <?lua
@@ -21,6 +22,10 @@
    length   = 3
    width  = 50
   />
+
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
 
   <Scene
     ambientlight = "0.3, 0.3, 0.3"
