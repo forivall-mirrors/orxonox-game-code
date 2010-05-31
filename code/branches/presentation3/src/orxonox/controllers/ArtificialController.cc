@@ -29,7 +29,10 @@
 #include "ArtificialController.h"
 
 #include <vector>
-#include "limits.h"
+#include <climits>
+
+#include "util/Math.h"
+#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "worldentities/ControllableEntity.h"
@@ -40,8 +43,6 @@
 #include "controllers/WaypointPatrolController.h"
 #include "controllers/NewHumanController.h"
 #include "controllers/DroneController.h"
-#include "util/Math.h"
-#include "core/ConsoleCommand.h"
 
 namespace orxonox
 {
@@ -71,8 +72,8 @@ namespace orxonox
         this->maxFormationSize_ = STANDARD_MAX_FORMATION_SIZE;
         this->myMaster_ = 0;
         this->freedomCount_ = 0;
-	this->team_ = -1;
-	this->state_ = FREE;
+        this->team_ = -1;
+        this->state_ = FREE;
         this->specificMasterAction_ = NONE;
         this->specificMasterActionHoldCount_  = 0;
         this->bShooting_ = false;
