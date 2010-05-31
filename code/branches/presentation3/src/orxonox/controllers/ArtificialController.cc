@@ -733,10 +733,10 @@ namespace orxonox
                 team1 = ac->getTeam();
         }
 
-        if (entity1->getController())
-            controller = entity1->getController();
+        if (entity2->getController())
+            controller = entity2->getController();
         else
-            controller = entity1->getXMLController();
+            controller = entity2->getXMLController();
         if (controller)
         {
             ArtificialController* ac = orxonox_cast<ArtificialController*>(controller);
