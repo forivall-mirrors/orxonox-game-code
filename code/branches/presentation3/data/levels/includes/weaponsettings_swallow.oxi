@@ -1,0 +1,24 @@
+    <weaponslots>
+      <WeaponSlot position=" 7.8,1.8,-19" />
+      <WeaponSlot position="-7.8,1.8,-19" />
+    </weaponslots>
+    <weaponsets>
+      <WeaponSet firemode=0 />
+      <WeaponSet firemode=1 />
+    </weaponsets>
+    <weapons>
+      <WeaponPack>
+        <links>
+          <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
+          <DefaultWeaponmodeLink firemode=1 weaponmode=1 />
+        </links>
+        <Weapon>
+          <HsW01 mode=0 munitionpershot=0 delay=0     damage=2.5 material="Flares/point_lensflare" />
+          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=2.5 material="Flares/point_lensflare" muzzleoffset=" 0.2,0.3,0.5" />
+        </Weapon>
+        <Weapon>
+          <HsW01 mode=0 munitionpershot=0 delay=0     damage=2.5 material="Flares/point_lensflare" />
+          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=2.5 material="Flares/point_lensflare" muzzleoffset="-0.2,0.3,0.5" />
+        </Weapon>
+      </WeaponPack>
+    </weapons>
