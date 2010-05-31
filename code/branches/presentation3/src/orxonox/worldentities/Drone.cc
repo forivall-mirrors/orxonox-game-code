@@ -78,6 +78,7 @@ namespace orxonox
         XMLPortParam(Drone, "rotationThrust_", setRotationThrust, getRotationThrust, xmlelement, mode);
         XMLPortParam(Drone, "maxDistanceToOwner_", setMaxDistanceToOwner, getMaxDistanceToOwner, xmlelement, mode);
         XMLPortParam(Drone, "minDistanceToOwner_", setMinDistanceToOwner, getMinDistanceToOwner, xmlelement, mode);
+        XMLPortParam(Drone, "maxShootingRange_", setMaxShootingRange, getMaxShootingRange, xmlelement, mode);
     }
 
 

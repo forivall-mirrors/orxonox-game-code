@@ -113,6 +113,8 @@ namespace orxonox
                 { this->maxDistanceToOwner_=distance; }
             inline void setMinDistanceToOwner( float distance)
                 { this->minDistanceToOwner_=distance; }
+            inline void setMaxShootingRange( float distance)
+                { this->maxShootingRange_=distance; }
 
             
             /**
@@ -129,6 +131,8 @@ namespace orxonox
                 { return this->maxDistanceToOwner_; }
             inline float getMinDistanceToOwner()
                 { return this->minDistanceToOwner_; }
+            inline float getMaxShootingRange()
+                { return this->maxShootingRange_; }
             
         private:
             DroneController *myController_; //!< The controller of the Drone.
@@ -140,6 +144,7 @@ namespace orxonox
             float rotationThrust_; //!< The amount of rotation thrust. Used for rotations only.
             float maxDistanceToOwner_; //Maximum Distance to owner
             float minDistanceToOwner_; //Minimum Distance to owner
+            float maxShootingRange_;
     };
 
 }

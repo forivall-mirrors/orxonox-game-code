@@ -74,17 +74,18 @@ namespace orxonox
     {
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
+        float distanceToTargetSquared;
 
-        // const Vector3& ownerPosition = getOwner()->getWorldPosition();
-        // const Vector3& dronePosition = getDrone()->getWorldPosition();
-
-        // const Vector3& locOwnerDir = getDrone()->getOrientation().UnitInverse()*(ownerPosition-dronePosition); //Vector from Drone To Owner out of drones local coordinate system
-
+        if (target_) {
+        const Vector3& locTargetDir = getDrone()->getOrientation().UnitInverse()*((getDrone()->getWorldPosition())-(target_->getWorldPosition())); //Vector from Drone To target out of drones local coordinate system
+            distanceToTargetSquared = locTargetDir.squaredLength();
+        }
+         
         random = rnd(maxrand);
-        if ( random < 30 && (!this->target_))
+        if ( random < 30 || (!this->target_) || distanceToTargetSquared > (this->getDrone()->getMaxShootingRange()*this->getDrone()->getMaxShootingRange()))
             this->searchNewTarget();
 
-        if (random < 50 && this->target_)
+        if (random < 50 && this->target_ && distanceToTargetSquared < (this->getDrone()->getMaxShootingRange()*this->getDrone()->getMaxShootingRange()))
         {
             this->isShooting_ = true;
             this->aimAtTarget();
@@ -104,14 +105,13 @@ namespace orxonox
     */
     void DroneController::tick(float dt)
     {
-        // Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
         float maxDistanceSquared = this->getDrone()->getMaxDistanceToOwner()*this->getDrone()->getMaxDistanceToOwner();
         float minDistanceSquared = this->getDrone()->getMinDistanceToOwner()*this->getDrone()->getMinDistanceToOwner();
         if ((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > maxDistanceSquared) { 
-            this->moveToPosition(this->getOwner()->getWorldPosition());
+            this->moveToPosition(this->getOwner()->getWorldPosition()); //fly towards owner
         }
         else if((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength() < minDistanceSquared) {
-            this->moveToPosition(-this->getOwner()->getWorldPosition());
+            this->moveToPosition(-this->getOwner()->getWorldPosition()); //fly away from owner
         }
         else if(!isShooting_) {
             float random = rnd(2.0f);
@@ -130,6 +130,10 @@ namespace orxonox
 
     void DroneController::ownerDied()
     {
+//         if (this->target_) {            //Drone has some kind of Stockholm-Syndrom --> gets attached to Owners Killer
+//             this->setOwner(target_);
+//             this->searchNewTarget();
+//         }
         if (this->drone_)
             this->drone_->destroy();
         else
