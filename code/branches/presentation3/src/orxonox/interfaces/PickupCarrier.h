@@ -53,6 +53,7 @@ namespace orxonox
     class HealthPickup;
     class InvisiblePickup;
     class MetaPickup;
+    class DronePickup;
     class SpeedPickup;
 
     /**
@@ -71,6 +72,7 @@ namespace orxonox
         friend class HealthPickup;
         friend class InvisiblePickup;
         friend class MetaPickup;
+        friend class DronePickup;
         friend class SpeedPickup;
 
         public:

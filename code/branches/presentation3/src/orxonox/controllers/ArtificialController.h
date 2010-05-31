@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Dominik Solenicki
  *
  */
 
@@ -31,8 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <vector>
+
 #include "util/Math.h"
 #include "Controller.h"
+#include "controllers/NewHumanController.h"
 
 namespace orxonox
 {
@@ -42,13 +45,71 @@ namespace orxonox
             ArtificialController(BaseObject* creator);
             virtual ~ArtificialController();
 
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+
             void abandonTarget(Pawn* target);
 
+            inline void setTeam(int team)
+                { this->team_ = team; }
+            inline int getTeam() const
+                { return this->team_; }
+            inline void setFormationFlight(bool formation)
+                { this->formationFlight_ = formation; }
+            inline bool getFormationFlight() const
+                { return this->formationFlight_; }
+            inline void setFormationSize(int size)
+                { this->maxFormationSize_ = size; }
+            inline int getFormationSize() const
+                { return this->maxFormationSize_; }
+            virtual void changedControllableEntity();
+
+            static void formationflight(bool form);
+            static void masteraction(int action);
+            static void followme();
+            static void passivebehaviour(bool passive);
+            static void formationsize(int size);
+
         protected:
+
+            int team_;
+            bool formationFlight_;
+            bool passive_;
+            unsigned int maxFormationSize_;
+            int freedomCount_;
+            enum State {SLAVE, MASTER, FREE};
+            State state_;
+            std::vector<ArtificialController*> slaves_;
+            ArtificialController *myMaster_;
+            enum SpecificMasterAction {NONE, HOLD, SPIN, TURN180, FOLLOWHUMAN};
+            SpecificMasterAction specificMasterAction_;
+            int specificMasterActionHoldCount_;
+            Pawn* humanToFollow_;
+
             void targetDied();
 
             void moveToPosition(const Vector3& target);
             void moveToTargetPosition();
+
+            int getState();
+
+            void unregisterSlave();
+            void searchNewMaster();
+            void commandSlaves();
+            void setNewMasterWithinFormation();
+
+            void freeSlaves();
+            void forceFreeSlaves();
+            void loseMasterState();
+            void forceFreedom();
+            bool forcedFree();
+
+            void specificMasterActionHold();
+            void turn180Init();
+            void turn180();
+            void spinInit();
+            void spin();
+            void followHumanInit(Pawn* human, bool always);
+            void follow();
 
             void setTargetPosition(const Vector3& target);
             void searchRandomTargetPosition();

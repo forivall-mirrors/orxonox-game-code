@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Dominik Solenicki
  *
  */
 
@@ -55,45 +55,154 @@ namespace orxonox
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
 
-        // search enemy
-        random = rnd(maxrand);
-        if (random < 15 && (!this->target_))
-            this->searchNewTarget();
+        if (this->state_ == FREE)
+        {
 
-        // forget enemy
-        random = rnd(maxrand);
-        if (random < 5 && (this->target_))
-            this->forgetTarget();
+            if (this->formationFlight_)
+            {
+                // return to Master after being forced free
+                if (this->freedomCount_ == 1)
+                {
+                this->state_ = SLAVE;
+                this->freedomCount_ = 0;
+                }
 
-        // next enemy
-        random = rnd(maxrand);
-        if (random < 10 && (this->target_))
-            this->searchNewTarget();
+                random = rnd(maxrand);
+                if (random < 90 && (((!this->target_) || (random < 50 && this->target_)) && !this->forcedFree()))
+                    this->searchNewMaster();
+            }
 
-        // fly somewhere
-        random = rnd(maxrand);
-        if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
-            this->searchRandomTargetPosition();
+            // search enemy
+            random = rnd(maxrand);
+            if (random < 15 && (!this->target_))
+                this->searchNewTarget();
 
-        // stop flying
-        random = rnd(maxrand);
-        if (random < 10 && (this->bHasTargetPosition_ && !this->target_))
-            this->bHasTargetPosition_ = false;
+            // forget enemy
+            random = rnd(maxrand);
+            if (random < 5 && (this->target_))
+                this->forgetTarget();
 
-        // fly somewhere else
-        random = rnd(maxrand);
-        if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
-            this->searchRandomTargetPosition();
+            // next enemy
+            random = rnd(maxrand);
+            if (random < 10 && (this->target_))
+                this->searchNewTarget();
 
-        // shoot
-        random = rnd(maxrand);
-        if (random < 75 && (this->target_ && !this->bShooting_))
-            this->bShooting_ = true;
+            // fly somewhere
+            random = rnd(maxrand);
+            if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
+                this->searchRandomTargetPosition();
 
-        // stop shooting
-        random = rnd(maxrand);
-        if (random < 25 && (this->bShooting_))
-            this->bShooting_ = false;
+            // stop flying
+            random = rnd(maxrand);
+            if (random < 10 && (this->bHasTargetPosition_ && !this->target_))
+                this->bHasTargetPosition_ = false;
+
+            // fly somewhere else
+            random = rnd(maxrand);
+            if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
+                this->searchRandomTargetPosition();
+
+            // shoot
+            random = rnd(maxrand);
+            if (!(this->passive_) && random < 75 && (this->target_ && !this->bShooting_))
+                this->bShooting_ = true;
+
+            // stop shooting
+            random = rnd(maxrand);
+            if (random < 25 && (this->bShooting_))
+                this->bShooting_ = false; 
+
+        }
+
+        if (this->state_ == SLAVE)
+        {
+
+        }
+
+        if (this->state_ == MASTER)
+        {
+
+
+            this->commandSlaves();
+
+            if  (this->specificMasterAction_ != NONE) 
+            {
+                    this->specificMasterActionHold();
+
+//                 if (this->specificMasterAction_  == TURN180)
+//                     this->turn180Init();
+
+//                 if (this->specificMasterAction_ == SPIN)
+//                     this->spinInit();
+
+//                 if (this->specificMasterAction_ == FOLLOWHUMAN)
+//                     this->followHuman(this->HumanToFollow_, false);
+            }
+
+            else {
+
+                 // make 180 degree turn - a specific Master Action
+                random = rnd(1000.0f);
+                if (random < 5)
+                   this->turn180Init();
+
+                // spin around - a specific Master Action
+                random = rnd(1000.0f);
+                if (random < 5)
+                   this->spinInit();
+
+                 // lose master status (only if less than 4 slaves in formation)
+                random = rnd(maxrand);
+                if(random < 15/(this->slaves_.size()+1) && this->slaves_.size() < 4 ) 
+                   this->loseMasterState();
+
+                // look out for outher masters if formation is small
+                random = rnd(maxrand);
+                if(this->slaves_.size() < 3 && random < 20)
+                    this->searchNewMaster();
+
+                // search enemy
+                random = rnd(maxrand);
+                if (random < 15 && (!this->target_))
+                    this->searchNewTarget();
+
+                // forget enemy
+                random = rnd(maxrand);
+                if (random < 5 && (this->target_))
+                    this->forgetTarget();
+
+                // next enemy
+                random = rnd(maxrand);
+                if (random < 10 && (this->target_))
+                    this->searchNewTarget();
+
+                // fly somewhere
+                random = rnd(maxrand);
+                if (random < 50 && (!this->bHasTargetPosition_ && !this->target_))
+                    this->searchRandomTargetPosition();
+
+
+                // fly somewhere else
+                random = rnd(maxrand);
+                if (random < 30 && (this->bHasTargetPosition_ && !this->target_))
+                    this->searchRandomTargetPosition();
+
+                // shoot
+                random = rnd(maxrand);
+                if (!(this->passive_) && random < 9 && (this->target_ && !this->bShooting_))
+                {
+                this->bShooting_ = true;
+                this->forceFreeSlaves();
+                }
+
+                // stop shooting
+                random = rnd(maxrand);
+                if (random < 25 && (this->bShooting_))
+                    this->bShooting_ = false;
+
+            }
+        }
+
     }
 
     void AIController::tick(float dt)
@@ -101,14 +210,48 @@ namespace orxonox
         if (!this->isActive())
             return;
 
-        if (this->target_)
-            this->aimAtTarget();
+        if (this->state_ == MASTER)
+        {
+            if (this->specificMasterAction_ ==  NONE)
+            {
+                if (this->target_)
+                    this->aimAtTarget();
 
-        if (this->bHasTargetPosition_)
-            this->moveToTargetPosition();
+                if (this->bHasTargetPosition_)
+                    this->moveToTargetPosition();
 
-        if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
-            this->getControllableEntity()->fire(0);
+                if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
+                    this->getControllableEntity()->fire(0);
+            }
+
+            if (this->specificMasterAction_  == TURN180)
+                    this->turn180();
+
+            if (this->specificMasterAction_ == SPIN)
+                    this->spin();
+            if (this->specificMasterAction_ == FOLLOWHUMAN)
+                    this->follow();
+        }
+
+        if (this->state_ == SLAVE)
+        {
+
+            if (this->bHasTargetPosition_)
+                this->moveToTargetPosition();
+
+        }
+
+         if (this->state_ == FREE)
+        {
+            if (this->target_)
+                this->aimAtTarget();
+
+            if (this->bHasTargetPosition_)
+                this->moveToTargetPosition();
+
+            if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
+                this->getControllableEntity()->fire(0);
+        }
 
         SUPER(AIController, tick, dt);
     }

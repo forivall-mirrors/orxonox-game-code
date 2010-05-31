@@ -74,6 +74,7 @@ namespace orxonox
     class PickupSpawner;
 
     //items
+    class DronePickup;
     class HealthPickup;
     class InvisiblePickup;
     class MetaPickup;

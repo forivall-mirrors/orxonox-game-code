@@ -81,6 +81,7 @@ namespace orxonox
     class AIController;
     class ArtificialController;
     class Controller;
+    class DroneController;
     class HumanController;
     class ScriptController;
     class WaypointController;
@@ -161,6 +162,7 @@ namespace orxonox
     class BigExplosion;
     class CameraPosition;
     class ControllableEntity;
+    class Drone;
     class EffectContainer;
     class ExplosionChunk;
     class MobileEntity;
