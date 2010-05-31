@@ -119,9 +119,11 @@ namespace orxonox
   /* setup the colors, sub for the constructor */
   void ChatInputHandler::setupColors()
   {
+    /* auto variables */
     float red = 1.0, green = 0.5, blue = 0.5;
     int i = 0;
 
+    // three loops: red tones, blue tones and green tones
     // reds
     for( i = 0; i < NumberOfColors/3; ++i )
     { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
@@ -183,6 +185,7 @@ namespace orxonox
   void ChatInputHandler::sub_setcolor( CEGUI::ListboxTextItem *tocolor,
     std::string name )
   {
+    /* sanity checks */
     if( !tocolor )
       COUT(2) << "Empty ListBoxTextItem given to "
         "ChatInputhandler::sub_setcolor().\n";
