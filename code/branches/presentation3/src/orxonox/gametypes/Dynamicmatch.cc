@@ -81,8 +81,6 @@ namespace orxonox
         this->tutorial=true;
 	this->pointsPerTime=0.0f;
         this->setHUDTemplate("DynamicmatchHUD");
-        this->allowDeath=false;
-        this->notYet=true;
     }
 
     void Dynamicmatch::setConfigValues()
@@ -121,12 +119,6 @@ namespace orxonox
                 setPlayerColour(victim->getPlayer());		//victim's new colour
                 numberOf[piggy]++;				//party switch: number of players is not affected (decrease and increase)
 
-                if (target == killer)
-                {
-                     allowDeath=true;
-                     victim->kill(); //new ship
-                }
-
                     if(tutorial)				//announce party switch
                     {
                          std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
@@ -142,8 +134,7 @@ namespace orxonox
                         playerParty_[originator->getPlayer()]=killer;		//originator's new party: killer
                         setPlayerColour(originator->getPlayer());		//originator's new colour
                         numberOf[killer]++;
-                        allowDeath=true;
-                        originator->kill(); //new ship for killer
+
                         if(tutorial)				//announce party switch
                         {
                              std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
@@ -174,8 +165,7 @@ namespace orxonox
                 setPlayerColour(originator->getPlayer()); 	//originator colour
                 numberOf[killer]++;				//party switch: number of players is not affected (decrease and increase)
 
-                allowDeath=true;
-                originator->kill(); //new ship
+
                 if(tutorial)				//announce party switch
                 {
                      std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
@@ -194,9 +184,6 @@ namespace orxonox
                 playerParty_[victim->getPlayer()]=chaser; 	//victim's new party: chaser
                 setPlayerColour(victim->getPlayer()); 		//victim colour
                 numberOf[chaser]++;				//party switch: number of players is not affected (decrease and increase)
-                
-                allowDeath=true;
-                victim->kill(); //new ship
 
                 if(tutorial)					//announce party switch
                 {
@@ -278,12 +265,6 @@ namespace orxonox
             setPlayerColour(victim->getPlayer()); 		//victim colour
             setPlayerColour(originator->getPlayer());		//originator colour
 
-            notYet=false;
-            allowDeath=true;
-            victim->kill(); //new ship
-            originator->kill(); //new ship
-
-
             if(tutorial) //Announce pary switch
             {
                  std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
@@ -317,14 +298,6 @@ namespace orxonox
 
     bool Dynamicmatch::allowPawnDeath(Pawn* victim, Pawn* originator)
     {	
-        if (allowDeath)//Hack for Ghost-Spaceship
-        {
-          if (notYet)
-          {allowDeath=false;}
-          else
-          {notYet=true;}
-         return true;
-        }
         //killers can kill chasers and killers can be killed by chasers
         if ((playerParty_[originator->getPlayer()] == killer && playerParty_[victim->getPlayer()] == chaser)||(playerParty_[victim->getPlayer()] == killer &&
         playerParty_[originator->getPlayer()] == chaser ))
@@ -394,7 +367,7 @@ namespace orxonox
         if (this->hasStarted() && !gameEnded_)
         {   pointsPerTime =pointsPerTime + dt;
             gameTime_ = gameTime_ - dt;
-            if (pointsPerTime > 3.0f)//hard coded!! should be changed
+            if (pointsPerTime > 2.0f)//hard coded!! should be changed
             {
                 pointsPerTime=0.0f;
                 rewardPig();

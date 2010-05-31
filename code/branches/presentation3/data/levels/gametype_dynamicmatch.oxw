@@ -56,9 +56,9 @@
               <?lua
                 createSpaceStationPar(0,2,1,2,1,4,1,50)
               ?>
-                <TeamSpawnPoint team=2 position="20,20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipghost/>
-                <TeamSpawnPoint team=2 position="-20,-20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipghost/>
-                <TeamSpawnPoint team=2 position="-10,10,20" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipghost/>
+                <TeamSpawnPoint team=2 position="20,20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
+                <TeamSpawnPoint team=2 position="-20,-20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
+                <TeamSpawnPoint team=2 position="-10,10,20" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
             </attached>
           </StaticEntity>
         </attached>

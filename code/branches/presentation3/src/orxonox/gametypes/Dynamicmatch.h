@@ -78,8 +78,6 @@ namespace orxonox
             
         protected:
 
-            bool allowDeath;
-            bool notYet;
             std::map< PlayerInfo*, int > playerParty_; //player's parties are recorded here
             std::vector<ColourValue> partyColours_; //aus TeamDeathmatch
             unsigned int numberOf[3]; //array to count number of chasers, pigs, killers
