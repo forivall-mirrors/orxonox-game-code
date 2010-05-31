@@ -16,7 +16,7 @@
           <DefaultWeaponmodeLink firemode=2 weaponmode=2 />
         </links>
 	<Weapon>
-	   <HsW01 mode=0 munitionpershot=0 delay=0.0 material="Flares/point_lensflare" muzzleoffset=" 0.7, 1.5, -4" />
+	   <HsW01 mode=0 munitionpershot=0 delay=0.0 material="Flares/point_lensflare" muzzleoffset=" 0.7, -0.3, -3" />
            <LightningGun mode=1 muzzleoffset="0,0,0" />
         </Weapon>
         <LaserGun
@@ -24,7 +24,7 @@
             munitionType="LaserGunMunition"
             bulletLoadingTime="0.2"
             magazineLoadingTime="5.0"
-            speed="250"
+            speed="1000"
             unlimitedMunition=true
         />
   <!--       <LaserGun
