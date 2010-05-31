@@ -40,7 +40,7 @@ namespace orxonox
     CreateFactory(MeshLodInformation);
 
     MeshLodInformation::MeshLodInformation(BaseObject* creator) 
-	: BaseObject(creator), lodLevel_(5), bEnabled_(true), numLevels_(10), reductionRate_(0.15)
+    : BaseObject(creator), lodLevel_(5), bEnabled_(true), numLevels_(10), reductionRate_(0.15)
     {
         RegisterObject(MeshLodInformation);
     }
@@ -61,25 +61,25 @@ namespace orxonox
     
     std::string MeshLodInformation::getMeshName()
     {
-		return MeshLodInformation::getMeshSource();
+        return MeshLodInformation::getMeshSource();
     }
-	
-	void MeshLodInformation::setLodLevel(float lodLevel)
-	{
+    
+    void MeshLodInformation::setLodLevel(float lodLevel)
+    {
         if(lodLevel>=0)
-		    lodLevel_=lodLevel;
-	}
-	float MeshLodInformation::getLodLevel()
-	{
-		return lodLevel_;
-	} 
-	void MeshLodInformation::setMeshSource(std::string meshSource)
-	{
-		meshSource_ = meshSource;
-	}
-	std::string MeshLodInformation::getMeshSource()
-	{
-		return meshSource_;
-	}
+            lodLevel_=lodLevel;
+    }
+    float MeshLodInformation::getLodLevel()
+    {
+        return lodLevel_;
+    } 
+    void MeshLodInformation::setMeshSource(std::string meshSource)
+    {
+        meshSource_ = meshSource;
+    }
+    std::string MeshLodInformation::getMeshSource()
+    {
+        return meshSource_;
+    }
  
 }

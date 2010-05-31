@@ -150,10 +150,10 @@ namespace orxonox
 
         }
     }
-	
-	void SkyboxGenerator::createSkybox( ) 
-	{
+
+    void SkyboxGenerator::createSkybox( ) 
+    {
         SkyboxGenerator::getInstance().takeScreenshot_ = true;
         CommandExecutor::execute("pause");
-	}
+    }
 }

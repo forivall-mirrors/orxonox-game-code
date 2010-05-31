@@ -39,7 +39,7 @@ namespace orxonox
         void makeScreenshot(Ogre::Camera* camera, Ogre::String fileName) const;
       
     protected:
-        std::string	 mFileExtension;
+        std::string    mFileExtension;
         unsigned int   mGridSize, mWindowWidth, mWindowHeight;
         bool           mDisableOverlays;
         //temp texture with current screensize

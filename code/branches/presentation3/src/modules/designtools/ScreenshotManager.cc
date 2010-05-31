@@ -24,8 +24,8 @@ namespace orxonox
         // flag for overlay rendering
         mDisableOverlays  = overlayFlag;
         //get current window size
-        mWindowWidth	 = pRenderWindow->getWidth();
-        mWindowHeight	 = pRenderWindow->getHeight();
+        mWindowWidth   = pRenderWindow->getWidth();
+        mWindowHeight  = pRenderWindow->getHeight();
         //create temporary texture
         mTempTex = Ogre::TextureManager::getSingleton().createManual("ScreenShotTex", 
                                                                   Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D,
@@ -63,7 +63,7 @@ namespace orxonox
                 
         //set the viewport settings
         Ogre::Viewport *vp = mRT->getViewport(0);
-        vp->setClearEveryFrame(true);	
+        vp->setClearEveryFrame(true);  
         vp->setOverlaysEnabled(false);
 
         // remind current overlay flag
@@ -77,7 +77,7 @@ namespace orxonox
         {
             // Simple case where the contents of the screen are taken directly
             // Also used when an invalid value is passed within gridSize (zero or negative grid size)
-            mRT->update();		//render
+            mRT->update();    //render
 
             //write the file on the Harddisk
             mRT->writeContentsToFile(fileName + "." + mFileExtension);
@@ -90,8 +90,8 @@ namespace orxonox
             camera->getFrustumExtents(originalFrustumLeft, originalFrustumRight, originalFrustumTop, originalFrustumBottom);
             
             // compute the Stepsize for the drid
-            Ogre::Real frustumGridStepHorizontal	= (originalFrustumRight * 2) / mGridSize;
-            Ogre::Real frustumGridStepVertical	= (originalFrustumTop * 2) / mGridSize;
+            Ogre::Real frustumGridStepHorizontal  = (originalFrustumRight * 2) / mGridSize;
+            Ogre::Real frustumGridStepVertical  = (originalFrustumTop * 2) / mGridSize;
 
             // process each grid
             Ogre::Real frustumLeft, frustumRight, frustumTop, frustumBottom;
@@ -102,17 +102,17 @@ namespace orxonox
                 
                 // Shoggoth frustum extents setting
                 // compute the new frustum extents
-                frustumLeft		= originalFrustumLeft + frustumGridStepHorizontal * x;
-                frustumRight	= frustumLeft + frustumGridStepHorizontal;
-                frustumTop		= originalFrustumTop - frustumGridStepVertical * y;
-                frustumBottom	= frustumTop - frustumGridStepVertical;
+                frustumLeft    = originalFrustumLeft + frustumGridStepHorizontal * x;
+                frustumRight  = frustumLeft + frustumGridStepHorizontal;
+                frustumTop    = originalFrustumTop - frustumGridStepVertical * y;
+                frustumBottom  = frustumTop - frustumGridStepVertical;
                 
                 // set the frustum extents value to the camera
                 camera->setFrustumExtents(frustumLeft, frustumRight, frustumTop, frustumBottom);
 
                 // ignore time duration between frames
                 Ogre::Root::getSingletonPtr()->clearEventTimes();
-                mRT->update();		//render
+                mRT->update();    //render
                 
                 //define the current 
                 Ogre::Box subBox = Ogre::Box(x* mWindowWidth,y * mWindowHeight,x * mWindowWidth + mWindowWidth, y * mWindowHeight + mWindowHeight);

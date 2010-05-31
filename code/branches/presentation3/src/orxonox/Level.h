@@ -56,7 +56,7 @@ namespace orxonox
 
             void playerEntered(PlayerInfo* player);
             void playerLeft(PlayerInfo* player);
-			
+
             MeshLodInformation* getLodInfo(std::string meshName) const;
 
 

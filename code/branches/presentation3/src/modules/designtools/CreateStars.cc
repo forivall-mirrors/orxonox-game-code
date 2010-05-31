@@ -120,6 +120,6 @@ namespace orxonox
         XMLPortParam(CreateStars, "alphaDiff", setAlphaDiff, getAlphaDiff, xmlelement, mode);
         XMLPortParam(CreateStars, "radiusDiff", setRadiusDiff, getRadiusDiff, xmlelement, mode);
         XMLPortParam(CreateStars, "radius", setRadius, getRadius, xmlelement, mode);
-	}
+    }
 
 }

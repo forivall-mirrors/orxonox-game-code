@@ -48,23 +48,23 @@ namespace orxonox
     {
         public:
             RocketController(BaseObject* creator);
-			virtual ~RocketController();
+            virtual ~RocketController();
             
             virtual void tick(float dt);
-			SimpleRocket* getRocket() const
+            SimpleRocket* getRocket() const
              {  return this->rocket_;  };
-			void setTarget(WorldEntity* target);
+            void setTarget(WorldEntity* target);
         protected:
-			void moveToPosition(const Vector3& target);
-			void setTargetPosition();
-			void moveToTargetPosition();
+            void moveToPosition(const Vector3& target);
+            void setTargetPosition();
+            void moveToTargetPosition();
 
         private:
-			SimpleRocket* rocket_; //!<The Rocket it controlls
-			Vector3 targetPosition_;
-			WeakPtr<PlayerInfo> player_;
-						
-			WeakPtr<WorldEntity> target_;
+            SimpleRocket* rocket_; //!<The Rocket it controlls
+            Vector3 targetPosition_;
+            WeakPtr<PlayerInfo> player_;
+                        
+            WeakPtr<WorldEntity> target_;
 
 
     };

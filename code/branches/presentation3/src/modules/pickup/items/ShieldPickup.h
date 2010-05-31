@@ -49,8 +49,8 @@ namespace orxonox {
     @brief
         A Pickup which can add a Shield to the Pawn.
 
-	1) The percentage: The percentage the shield takes from the damage dealt to a Pawn
-	2) The hit points: The amount of damage points a shield can teake before collapsing
+        1) The percentage: The percentage the shield takes from the damage dealt to a Pawn
+        2) The hit points: The amount of damage points a shield can teake before collapsing
         3) The activation type: 'immediate' or 'onUse'. defines if the item is used when it's picked up or only after the player chooses to use it.
         4) The duration: the activation time of the pickup.
 

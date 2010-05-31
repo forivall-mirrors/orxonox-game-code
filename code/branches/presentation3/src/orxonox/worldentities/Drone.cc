@@ -1,9 +1,3 @@
-
-
-
-
-
-
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
  *                    > www.orxonox.net <
@@ -46,7 +40,7 @@ namespace orxonox
     */
     Drone::Drone(BaseObject* creator) : Pawn(creator)
     {
-	RegisterObject(Drone);
+        RegisterObject(Drone);
 
         this->myController_ = 0;
         
@@ -79,9 +73,9 @@ namespace orxonox
     {
         SUPER(Drone, XMLPort, xmlelement, mode);
 
-	XMLPortParam(Drone, "primaryThrust_", setPrimaryThrust, getPrimaryThrust, xmlelement, mode);
-	XMLPortParam(Drone, "auxilaryThrust_", setAuxilaryThrust, getAuxilaryThrust, xmlelement, mode);
-	XMLPortParam(Drone, "rotationThrust_", setRotationThrust, getRotationThrust, xmlelement, mode);
+        XMLPortParam(Drone, "primaryThrust_", setPrimaryThrust, getPrimaryThrust, xmlelement, mode);
+        XMLPortParam(Drone, "auxilaryThrust_", setAuxilaryThrust, getAuxilaryThrust, xmlelement, mode);
+        XMLPortParam(Drone, "rotationThrust_", setRotationThrust, getRotationThrust, xmlelement, mode);
         XMLPortParam(Drone, "maxDistanceToOwner_", setMaxDistanceToOwner, getMaxDistanceToOwner, xmlelement, mode);
         XMLPortParam(Drone, "minDistanceToOwner_", setMinDistanceToOwner, getMinDistanceToOwner, xmlelement, mode);
     }

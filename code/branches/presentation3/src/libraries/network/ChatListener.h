@@ -37,7 +37,7 @@ namespace orxonox
     class _NetworkExport ChatListener : virtual public OrxonoxClass
     {
         public:
-	    /* constructor, destructor */
+            /* constructor, destructor */
             ChatListener();
             virtual ~ChatListener() {}
 

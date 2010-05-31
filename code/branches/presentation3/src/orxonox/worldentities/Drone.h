@@ -113,19 +113,19 @@ namespace orxonox
                 { this->maxDistanceToOwner_=distance; }
             inline void setMinDistanceToOwner( float distance)
                 { this->minDistanceToOwner_=distance; }
-                	
+
             
             /**
             @brief Gets the primary thrust to the input amount.
-            @preturn The amount of thrust.
+            @return The amount of thrust.
             */
             inline float getPrimaryThrust()
                 { return this->primaryThrust_; }
-	    inline float getAuxilaryThrust()
+            inline float getAuxilaryThrust()
                 { return this->auxilaryThrust_; }
-	    inline float getRotationThrust()
+            inline float getRotationThrust()
                 { return this->rotationThrust_; }
-	    inline float getMaxDistanceToOwner()
+            inline float getMaxDistanceToOwner()
                 { return this->maxDistanceToOwner_; }
             inline float getMinDistanceToOwner()
                 { return this->minDistanceToOwner_; }
