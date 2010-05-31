@@ -46,6 +46,7 @@
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/WorldEntity.h"
 #include "core/ConfigValueIncludes.h"
+#include "tools/TextureGenerator.h"
 // #include <boost/bind/bind_template.hpp>
 
 
@@ -198,7 +199,7 @@ void HUDNavigation::tick ( float dt )
                 // Change material only if outOfView changed
                 if ( !it->second.wasOutOfView_ )
                 {
-                    it->second.panel_->setMaterialName ( "Orxonox/NavArrows" );
+                    it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "arrows.tga", it->first->getRadarObjectColour()) );
                     it->second.wasOutOfView_ = true;
                 }
 
@@ -255,7 +256,8 @@ void HUDNavigation::tick ( float dt )
                 // Change material only if outOfView changed
                 if ( it->second.wasOutOfView_ )
                 {
-                    it->second.panel_->setMaterialName ( "Orxonox/NavTDC" );
+                  //it->second.panel_->setMaterialName ( "Orxonox/NavTDC" );
+                    it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "tdc.tga", it->first->getRadarObjectColour()) );
                     it->second.wasOutOfView_ = false;
                 }
 
@@ -305,14 +307,12 @@ void HUDNavigation::sizeChanged()
 
 void HUDNavigation::addObject ( RadarViewable* object )
 {
+    if( showObject(object)==false )
+        return;
 
     if ( activeObjectList_.size() >= markerLimit_ )
         if ( object == NULL )
             return;
-
-    // Don't display our own ship
-    if ( object == dynamic_cast<RadarViewable*> ( this->getOwner() ) )
-        return;
 
     // Object hasn't been added yet (we know that)
     assert ( this->activeObjectList_.find ( object ) == this->activeObjectList_.end() );
@@ -326,13 +326,16 @@ void HUDNavigation::addObject ( RadarViewable* object )
     // Create arrow/marker
     Ogre::PanelOverlayElement* panel = static_cast<Ogre::PanelOverlayElement*> ( Ogre::OverlayManager::getSingleton()
                                        .createOverlayElement ( "Panel", "HUDNavigation_navMarker_" + getUniqueNumberString() ) );
-    panel->setMaterialName ( "Orxonox/NavTDC" );
+//     panel->setMaterialName ( "Orxonox/NavTDC" );
+    panel->setMaterialName( TextureGenerator::getMaterialName( "tdc.tga", object->getRadarObjectColour()) );
     panel->setDimensions ( navMarkerSize_ * xScale, navMarkerSize_ * yScale );
+//     panel->setColour( object->getRadarObjectColour() );
 
     Ogre::TextAreaOverlayElement* text = static_cast<Ogre::TextAreaOverlayElement*> ( Ogre::OverlayManager::getSingleton()
                                          .createOverlayElement ( "TextArea", "HUDNavigation_navText_" + getUniqueNumberString() ) );
     text->setFontName ( this->fontName_ );
     text->setCharHeight ( text->getCharHeight() * yScale );
+    text->setColour( object->getRadarObjectColour() );
 
     panel->hide();
     text->hide();
@@ -350,7 +353,7 @@ void HUDNavigation::addObject ( RadarViewable* object )
 
 void HUDNavigation::removeObject ( RadarViewable* viewable )
 {
-    if ( viewable == dynamic_cast<RadarViewable*> ( this->getOwner() ) )
+    if( showObject(viewable)==false )
         return;
 
     ObjectMap::iterator it = activeObjectList_.find ( viewable );
@@ -383,6 +386,24 @@ void HUDNavigation::removeObject ( RadarViewable* viewable )
 
     }
 
+}
+
+void HUDNavigation::objectChanged(RadarViewable* viewable)
+{
+    // TODO: niceification neccessary ;)
+    removeObject(viewable);
+    addObject(viewable);
+}
+
+
+bool HUDNavigation::showObject(RadarViewable* rv)
+{
+    if ( rv == dynamic_cast<RadarViewable*> ( this->getOwner() ) )
+        return false;
+    assert( rv->getWorldEntity() );
+    if ( rv->getWorldEntity()->isVisible()==false )
+        return false;
+    return true;
 }
 
 void HUDNavigation::changedOwner()

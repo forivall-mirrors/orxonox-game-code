@@ -55,7 +55,7 @@ public:
 
     virtual void addObject ( RadarViewable* object );
     virtual void removeObject ( RadarViewable* viewable );
-    virtual void objectChanged ( RadarViewable* viewable ) {}
+    virtual void objectChanged ( RadarViewable* viewable );
 
     virtual void changedOwner();
     virtual void sizeChanged();
@@ -75,6 +75,8 @@ private:
         bool wasOutOfView_;
 
     };
+    
+    bool showObject( RadarViewable* rv );
 
     // XMLPort accessors
     void setNavMarkerSize ( float size )
