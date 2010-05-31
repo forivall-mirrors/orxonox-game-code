@@ -89,6 +89,7 @@ namespace orxonox
     // gametypes
     class Asteroids;
     class Deathmatch;
+    class Dynamicmatch;
     class Gametype;
     class TeamBaseMatch;
     class TeamDeathmatch;

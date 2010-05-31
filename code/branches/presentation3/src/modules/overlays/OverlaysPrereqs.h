@@ -77,6 +77,8 @@ namespace orxonox
     class BarColour;
     class ChatOverlay;
     class DeathMessage;
+    class GametypeFadingMessage;
+    class GametypeStaticMessage;
     class GametypeStatus;
     class HUDBar;
     class HUDHealthBar;

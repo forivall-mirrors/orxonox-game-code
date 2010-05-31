@@ -26,26 +26,31 @@
  *
  */
 
-#ifndef _GametypeMessageListener_H__
-#define _GametypeMessageListener_H__
+#ifndef _GametypeInfoMessage_H__
+#define _GametypeInfoMessage_H__
 
-#include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "overlays/OverlaysPrereqs.h"
+
+#include "interfaces/GametypeMessageListener.h"
+#include "overlays/OverlayText.h"
+/*Goal: Every Gametype could add a hud-element that displays text in the gametype. For example instructions for newbies.
+-> you have to add a "GametypeInfoMessage"-object that displays text. How the message change has to be defined in the gametype.
+*/
 
 namespace orxonox
 {
-    class _OrxonoxExport GametypeMessageListener : virtual public OrxonoxClass
+    class _OverlaysExport GametypeStaticMessage : public OverlayText, GametypeMessageListener
     {
         public:
-            GametypeMessageListener();
-            virtual ~GametypeMessageListener() {}
+            GametypeStaticMessage(BaseObject* creator);
+            virtual ~GametypeStaticMessage();
 
-            virtual void announcemessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void killmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void deathmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void staticmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void fadingmessage(const GametypeInfo* gtinfo, const std::string& message) {}
+            virtual void changedOwner();
+
+            void staticmessage(const GametypeInfo* gtinfo, const std::string& message);
+            
+        private:
+            PlayerInfo* owner_;
     };
 }
-
-#endif /* _GametypeMessageListener_H__ */
+#endif /* _GametypeInfoMessage_H__ */

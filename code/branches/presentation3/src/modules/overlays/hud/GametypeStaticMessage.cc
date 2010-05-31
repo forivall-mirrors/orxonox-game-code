@@ -26,26 +26,38 @@
  *
  */
 
-#ifndef _GametypeMessageListener_H__
-#define _GametypeMessageListener_H__
+#include "GametypeStaticMessage.h"
 
-#include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "core/CoreIncludes.h"
+#include "infos/GametypeInfo.h"
+#include "infos/PlayerInfo.h"
+
 
 namespace orxonox
 {
-    class _OrxonoxExport GametypeMessageListener : virtual public OrxonoxClass
+    CreateFactory(GametypeStaticMessage);
+    
+    
+    GametypeStaticMessage::GametypeStaticMessage(BaseObject* creator) : OverlayText(creator)
     {
-        public:
-            GametypeMessageListener();
-            virtual ~GametypeMessageListener() {}
+        RegisterObject(GametypeStaticMessage);
+        this->owner_ = 0;
+    }
 
-            virtual void announcemessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void killmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void deathmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void staticmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void fadingmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-    };
+    GametypeStaticMessage::~GametypeStaticMessage()
+    {
+    }
+
+    void GametypeStaticMessage::staticmessage(const GametypeInfo* gtinfo, const std::string& message)
+    {
+    if (this->owner_ && this->owner_->getGametypeInfo() == gtinfo)
+        this->setCaption(message);
+    }
+
+    void GametypeStaticMessage::changedOwner()
+    {
+        SUPER(GametypeStaticMessage, changedOwner);
+        this->owner_ = orxonox_cast<PlayerInfo*>(this->getOwner());
+    }
+
 }
-
-#endif /* _GametypeMessageListener_H__ */

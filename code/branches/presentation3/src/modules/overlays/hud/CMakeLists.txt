@@ -12,4 +12,6 @@ ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
   DeathMessage.cc
   UnderAttackHealthBar.cc
   TeamBaseMatchScore.cc
+  GametypeStaticMessage.cc
+  GametypeFadingMessage.cc
 )

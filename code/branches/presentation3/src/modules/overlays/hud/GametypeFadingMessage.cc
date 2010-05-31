@@ -26,26 +26,37 @@
  *
  */
 
-#ifndef _GametypeMessageListener_H__
-#define _GametypeMessageListener_H__
+#include "GametypeFadingMessage.h"
 
-#include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "core/CoreIncludes.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GametypeMessageListener : virtual public OrxonoxClass
+    CreateFactory(GametypeFadingMessage);
+
+    GametypeFadingMessage::GametypeFadingMessage(BaseObject* creator) : FadeoutText(creator)
     {
-        public:
-            GametypeMessageListener();
-            virtual ~GametypeMessageListener() {}
+        RegisterObject(GametypeFadingMessage);
 
-            virtual void announcemessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void killmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void deathmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void staticmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void fadingmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-    };
+        this->owner_ = 0;
+        this->setDelay(2.0f);
+        this->setFadeouttime(0.5f);
+    }
+
+    GametypeFadingMessage::~GametypeFadingMessage()
+    {
+    }
+
+    void GametypeFadingMessage::fadingmessage(const GametypeInfo* gtinfo, const std::string& message)
+    {
+        if (this->owner_ && this->owner_->getGametypeInfo() == gtinfo)
+            this->setCaption(message);
+    }
+
+    void GametypeFadingMessage::changedOwner()
+    {
+        SUPER(GametypeFadingMessage, changedOwner);
+        this->owner_ = orxonox_cast<PlayerInfo*>(this->getOwner());
+    }
 }
-
-#endif /* _GametypeMessageListener_H__ */

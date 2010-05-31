@@ -26,26 +26,28 @@
  *
  */
 
-#ifndef _GametypeMessageListener_H__
-#define _GametypeMessageListener_H__
+#ifndef _GametypeInfoMessage_H__
+#define _GametypeInfoMessage_H__
 
-#include "OrxonoxPrereqs.h"
-#include "core/OrxonoxClass.h"
+#include "overlays/OverlaysPrereqs.h"
+
+#include "interfaces/GametypeMessageListener.h"
+#include "overlays/FadeoutText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GametypeMessageListener : virtual public OrxonoxClass
+    class _OverlaysExport GametypeFadingMessage : public FadeoutText, GametypeMessageListener
     {
         public:
-            GametypeMessageListener();
-            virtual ~GametypeMessageListener() {}
+            GametypeFadingMessage(BaseObject* creator);
+            virtual ~GametypeFadingMessage();
 
-            virtual void announcemessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void killmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void deathmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void staticmessage(const GametypeInfo* gtinfo, const std::string& message) {}
-            virtual void fadingmessage(const GametypeInfo* gtinfo, const std::string& message) {}
+            virtual void changedOwner();
+
+            void fadingmessage(const GametypeInfo* gtinfo, const std::string& message);
+                  
+        private:
+            PlayerInfo* owner_;
     };
 }
-
-#endif /* _GametypeMessageListener_H__ */
+#endif /* _GametypeFadingMessage_H__ */
