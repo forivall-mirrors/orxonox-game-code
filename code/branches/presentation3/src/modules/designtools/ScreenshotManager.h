@@ -3,13 +3,18 @@
 #ifndef __ScreenshotManager_h__
 #define __ScreenshotManager_h__
 
+#include "DesignToolsPrereqs.h"
+
 #include <string>
+#include <cstring>
+#include <cstdlib>
+
 #include <OgrePrerequisites.h>
 #include <OgreTexture.h>
 #include <OgreHardwarePixelBuffer.h>
-#include "OrxonoxConfig.h"
-#include <cstring>
-#include <cstdlib>
+
+#include "util/Singleton.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -26,19 +31,26 @@ namespace orxonox
     *  fileExtension:    The extension of the screenshot file name, hence the type of graphics file to generate.
     *              To generate "MyScreenshot.png" this parameter would contain ".png".
     */
-    class ScreenshotManager
+    class ScreenshotManager : public OrxonoxClass, public Singleton<ScreenshotManager>
     {
+        friend class Singleton<ScreenshotManager>;
+
     public:
-        ScreenshotManager(Ogre::RenderWindow* pRenderWindow, int gridSize, std::string fileExtension, bool overlayFlag);
+        ScreenshotManager();
         ~ScreenshotManager();
 
       /* Creates a screenshot with the given camera.
         * @param camera Pointer to the camera "looking at" the scene of interest
         * @param fileName the filename of the screenshot file.
       */
-        void makeScreenshot(Ogre::Camera* camera, Ogre::String fileName) const;
+        void makeScreenshot() const;
+
+        static void makeScreenshot_s()
+            { getInstance().makeScreenshot(); }
       
     protected:
+        static std::string ScreenshotManager::getTimestamp();
+
         std::string    mFileExtension;
         unsigned int   mGridSize, mWindowWidth, mWindowHeight;
         bool           mDisableOverlays;
@@ -49,6 +61,8 @@ namespace orxonox
         //PixelBox for a large Screenshot, if grid size is > 1
         Ogre::PixelBox  mFinalPicturePB;
         uint8_t* data_;
+
+        static ScreenshotManager* singletonPtr_s;
     };
 
 }

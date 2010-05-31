@@ -1,7 +1,7 @@
 /* COPYRIGHT: this code comes from http://www.ogre3d.org/wiki/index.php/High_resolution_screenshots */
 
-//#include <stdafx.h>
 #include "ScreenshotManager.h"
+
 #include <OgreRenderWindow.h>
 #include <OgreViewport.h>
 #include <OgreRenderTexture.h>
@@ -9,20 +9,31 @@
 #include <OgreRoot.h>
 
 #include "core/GraphicsManager.h"
+#include "core/PathConfig.h"
+#include "core/ScopedSingletonManager.h"
+#include "core/ConsoleCommand.h"
 
-//using namespace Ogre;
+#include "CameraManager.h"
+#include "graphics/Camera.h"
 
 namespace orxonox
 {
+    ManageScopedSingleton(ScreenshotManager, ScopeID::Graphics, false);
+    SetConsoleCommandAlias(ScreenshotManager, makeScreenshot_s, "printScreenHD", true);
 
-    ScreenshotManager::ScreenshotManager(Ogre::RenderWindow* pRenderWindow, int gridSize, std::string fileExtension, bool overlayFlag)
+    ScreenshotManager::ScreenshotManager()
     {
+        Ogre::RenderWindow* pRenderWindow = GraphicsManager::getInstance().getRenderWindow();
+        int gridSize = 3;
+        std::string fileExtension = ".png";
+        bool overlayFlag = true;
+
         //set file extension for the Screenshot files
-        mFileExtension = fileExtension;
+        mFileExtension   = fileExtension;
         // the gridsize
-        mGridSize         = gridSize;
+        mGridSize        = gridSize;
         // flag for overlay rendering
-        mDisableOverlays  = overlayFlag;
+        mDisableOverlays = overlayFlag;
         //get current window size
         mWindowWidth   = pRenderWindow->getWidth();
         mWindowHeight  = pRenderWindow->getHeight();
@@ -46,7 +57,8 @@ namespace orxonox
 
     ScreenshotManager::~ScreenshotManager()
     {
-      delete[] data_;
+        // Don't delete data_. Somehow this pointer points anywhere but to memory location.
+        //delete[] data_;
     }
 
 
@@ -54,8 +66,10 @@ namespace orxonox
     * @param camera Pointer to the camera "looking at" the scene of interest
     * @param fileName the filename of the screenshot file.
     */
-    void ScreenshotManager::makeScreenshot(Ogre::Camera* camera, std::string fileName) const
+    void ScreenshotManager::makeScreenshot() const
     {
+        Ogre::Camera* camera = CameraManager::getInstance().getActiveCamera()->getOgreCamera();
+        std::string fileName = PathConfig::getInstance().getLogPathString() + "screenshot_" + this->getTimestamp();
 
         //Remove all viewports, so the added Viewport(camera) ist the only 
         mRT->removeAllViewports();
@@ -140,6 +154,21 @@ namespace orxonox
 
         // reset time since last frame to pause the scene
         Ogre::Root::getSingletonPtr()->clearEventTimes();
+    }
+
+    std::string ScreenshotManager::getTimestamp()
+    {
+        struct tm *pTime;
+        time_t ctTime; time(&ctTime);
+        pTime = localtime( &ctTime );
+        std::ostringstream oss;
+        oss	<< std::setw(2) << std::setfill('0') << (pTime->tm_mon + 1)
+            << std::setw(2) << std::setfill('0') << pTime->tm_mday
+            << std::setw(2) << std::setfill('0') << (pTime->tm_year + 1900)
+            << "_" << std::setw(2) << std::setfill('0') << pTime->tm_hour
+            << std::setw(2) << std::setfill('0') << pTime->tm_min
+            << std::setw(2) << std::setfill('0') << pTime->tm_sec;
+        return oss.str();
     }
 
 }
