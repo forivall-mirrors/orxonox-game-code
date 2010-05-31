@@ -65,6 +65,9 @@ namespace orxonox
     GUIManager::getInstance().loadGUI( "ChatBox" );
     GUIManager::getInstance().loadGUI( "ChatBox-inputonly" );
 
+    /* setup colors */
+    setupColors();
+
     /* configure the input buffer */
     configureInputBuffer();
 
@@ -72,6 +75,7 @@ namespace orxonox
     this->inputState->setKeyHandler(this->inpbuf);
   }
 
+  /* configure input buffer, sub for the constructor */
   void ChatInputHandler::configureInputBuffer()
   {
     /* INSTALL CALLBACKS */
@@ -112,6 +116,36 @@ namespace orxonox
     assert( lb_history );
   }
 
+  /* setup the colors, sub for the constructor */
+  void ChatInputHandler::setupColors()
+  {
+    float red = 1.0, green = 0.5, blue = 0.5;
+    int i = 0;
+
+    // reds
+    for( i = 0; i < NumberOfColors/3; ++i )
+    { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
+      assert( this->text_colors[ i ] );
+      green += 0.2, blue += 0.2;
+    }
+
+    // greens
+    red = 0.5, green = 1, blue = 0.5;
+    for( ; i < NumberOfColors*2/3; ++i )
+    { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
+      assert( this->text_colors[ i ] );
+      red += 0.2, blue += 0.2;
+    }
+
+    // blues 
+    red = 0.5, green = 0.5, blue = 1;
+    for( ; i < NumberOfColors; ++i )
+    { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
+      assert( this->text_colors[ i ] );
+      red += 0.2, green += 0.2;
+    }
+  }
+
 
   /* activate, deactivate */
   void ChatInputHandler::activate_static()
@@ -120,13 +154,9 @@ namespace orxonox
   void ChatInputHandler::activate_small_static()
   { ChatInputHandler::getInstance().activate( false ); }
 
-
-
-
   void ChatInputHandler::activate( bool full )
   {
     /* start listening */
-    //COUT(0) << "chatinput activated." << std::endl;
     InputManager::getInstance().enterState("chatinput");
 
     /* MARK add spawning of chat widget stuff here.*/
@@ -149,34 +179,59 @@ namespace orxonox
   }
 
 
+  /* subs for incomingChat */
+  void ChatInputHandler::sub_setcolor( CEGUI::ListboxTextItem *tocolor,
+    std::string name )
+  {
+    if( !tocolor )
+      COUT(2) << "Empty ListBoxTextItem given to "
+        "ChatInputhandler::sub_setcolor().\n";
+
+    /* "hash" the name */
+    int hash = 0;
+    for( int i = name.length(); i > 0; --i )
+      hash += name[i-1];
+    hash = hash % this->NumberOfColors;
+
+    /* set the color according to the hash */
+    tocolor->setTextColours( *(this->text_colors[ hash ]) );
+  }
+
+  /* handle incoming chat */
   void ChatInputHandler::incomingChat(const std::string& message, 
     unsigned int senderID)
   {
-    /* --> a) look up the actual name of the sender */
-    std::string text;
+    /* look up the actual name of the sender */
+    std::string text, name = "unknown";
 
+    /* setup player name info */
     if (senderID != CLIENTID_UNKNOWN)
-    {
-       std::string name = "unknown";
+    { 
        PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
        if (player)
          name = player->getName();
-
-         text = name + ": " + message;
     }
-    else
-      text = message;
 
-    /* e) create item and add to history */
+    /* assemble the text */
+    text = name + ": " + message;
+
+    /* create item */
     CEGUI::ListboxTextItem *toadd = new CEGUI::ListboxTextItem( text );
-    this->lb_history->addItem( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
-    this->lb_history->ensureItemIsVisible( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
 
-    /* f) make sure the history handles it */
+    /* setup colors */
+    sub_setcolor( toadd, name );
+
+    /* now add */
+    this->lb_history->addItem( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
+    this->lb_history->ensureItemIsVisible( 
+      dynamic_cast<CEGUI::ListboxItem*>(toadd) );
+
+    /* make sure the history handles it */
     this->lb_history->handleUpdatedItemData();
   } 
 
 
+  /* sub for inputchanged */
   void ChatInputHandler::sub_adjust_dispoffset( int maxlen, 
     int cursorpos, 
     int inplen )

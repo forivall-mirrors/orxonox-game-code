@@ -67,6 +67,10 @@ namespace orxonox // tolua_export
       int disp_offset, width;
       bool fullchat;
 
+      /* colors for nickname coloring */
+      static const int NumberOfColors = 10;
+      CEGUI::colour *text_colors[ NumberOfColors ];
+
       /** input state */
       InputState *inputState;
 
@@ -84,6 +88,12 @@ namespace orxonox // tolua_export
 
       /** cegui handle for the history window */
       CEGUI::Listbox *lb_history;
+
+      /* methods to deal with colors */
+      void sub_setcolor( CEGUI::ListboxTextItem *tocolor,
+        std::string name );
+
+      void setupColors();
 
       /* callbacks for input handler */
       void inputChanged();
