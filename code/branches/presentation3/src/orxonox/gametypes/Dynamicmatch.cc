@@ -81,7 +81,8 @@ namespace orxonox
         this->tutorial=true;
 	this->pointsPerTime=0.0f;
         this->setHUDTemplate("DynamicmatchHUD");
-
+        this->allowDeath=false;
+        this->notYet=true;
     }
 
     void Dynamicmatch::setConfigValues()
@@ -118,13 +119,20 @@ namespace orxonox
                 numberOf[target]--;				//decrease numberof victims's party
                 playerParty_[victim->getPlayer()]=piggy;	//victim's new party: pig
                 setPlayerColour(victim->getPlayer());		//victim's new colour
-                numberOf[piggy]++; 				//party switch: number of players is not affected (decrease and increase)
+                numberOf[piggy]++;				//party switch: number of players is not affected (decrease and increase)
+
+                if (target == killer)
+                {
+                     allowDeath=true;
+                     victim->kill(); //new ship
+                }
+
                     if(tutorial)				//announce party switch
                     {
                          std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
                          if (it2 != this->players_.end())
                          {
-                              this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it2->first->getClientID());
+                              this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it2->first->getClientID(), partyColours_[chaser]);
                               this->gtinfo_->sendFadingMessage("You're now a victim.",it2->first->getClientID());
                          }
                     }
@@ -134,12 +142,14 @@ namespace orxonox
                         playerParty_[originator->getPlayer()]=killer;		//originator's new party: killer
                         setPlayerColour(originator->getPlayer());		//originator's new colour
                         numberOf[killer]++;
+                        allowDeath=true;
+                        originator->kill(); //new ship for killer
                         if(tutorial)				//announce party switch
                         {
                              std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
                              if (it3 != this->players_.end())
                              {
-                                  this->gtinfo_->sendStaticMessage("Take the chasers down.",it3->first->getClientID());
+                                  this->gtinfo_->sendStaticMessage("Take the chasers down.",it3->first->getClientID(), partyColours_[chaser]);
                                   this->gtinfo_->sendFadingMessage("You're now a killer.",it3->first->getClientID());
                              }
                         }
@@ -159,16 +169,19 @@ namespace orxonox
             //Case: notEnoughKillers: party change
             else if (notEnoughKillers)
             {
-                numberOf[target]--; 	//decrease numberof victims's party
-                playerParty_[victim->getPlayer()]=killer; 	//victim's new party: killer
-                setPlayerColour(victim->getPlayer()); 		//victim colour
+                numberOf[source]--; 	//decrease numberof originator's party
+                playerParty_[originator->getPlayer()]=killer; 	//originator's new party: killer
+                setPlayerColour(originator->getPlayer()); 	//originator colour
                 numberOf[killer]++;				//party switch: number of players is not affected (decrease and increase)
+
+                allowDeath=true;
+                originator->kill(); //new ship
                 if(tutorial)				//announce party switch
                 {
                      std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
                      if (it3 != this->players_.end())
                      {
-                          this->gtinfo_->sendStaticMessage("Take the chasers down.",it3->first->getClientID());
+                          this->gtinfo_->sendStaticMessage("Take the chasers down.",it3->first->getClientID(),partyColours_[chaser]);
                           this->gtinfo_->sendFadingMessage("You're now a killer.",it3->first->getClientID());
                      }
                 }
@@ -181,16 +194,20 @@ namespace orxonox
                 playerParty_[victim->getPlayer()]=chaser; 	//victim's new party: chaser
                 setPlayerColour(victim->getPlayer()); 		//victim colour
                 numberOf[chaser]++;				//party switch: number of players is not affected (decrease and increase)
+                
+                allowDeath=true;
+                victim->kill(); //new ship
+
                 if(tutorial)					//announce party switch
                 {
                      std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
                      if (it3 != this->players_.end())
                      {
                           if (numberOf[killer]>0)
-                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it3->first->getClientID());
+                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it3->first->getClientID(),partyColours_[piggy]);
                               
                           else
-                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it3->first->getClientID());
+                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it3->first->getClientID(),partyColours_[piggy]);
                           this->gtinfo_->sendFadingMessage("You're now a chaser.",it3->first->getClientID());
                      }
                 }
@@ -230,15 +247,15 @@ namespace orxonox
                      if (it != this->players_.end())
                      {    
                           if (numberOf[killer]>0)
-                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
+                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID(), partyColours_[piggy]);
                           else
-                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                              this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID(),partyColours_[piggy]);
                           this->gtinfo_->sendFadingMessage("You're now a chaser.",it->first->getClientID());
                      }
                      std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
                      if (it2 != this->players_.end())
                      {
-                          this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it2->first->getClientID());
+                          this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it2->first->getClientID(),partyColours_[chaser]);
                           this->gtinfo_->sendFadingMessage("You're now a victim.",it2->first->getClientID());
                      }
                 }
@@ -260,19 +277,25 @@ namespace orxonox
 
             setPlayerColour(victim->getPlayer()); 		//victim colour
             setPlayerColour(originator->getPlayer());		//originator colour
-             
+
+            notYet=false;
+            allowDeath=true;
+            victim->kill(); //new ship
+            originator->kill(); //new ship
+
+
             if(tutorial) //Announce pary switch
             {
                  std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
                  if (it != this->players_.end())
                  {
-                      this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                      this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID(),partyColours_[chaser]);
                       this->gtinfo_->sendFadingMessage("You're now a victim.",it->first->getClientID());
                  }
                  std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
                  if (it2 != this->players_.end())
                  {
-                      this->gtinfo_->sendStaticMessage("Take the chasers down.",it2->first->getClientID());
+                      this->gtinfo_->sendStaticMessage("Take the chasers down.",it2->first->getClientID(),partyColours_[chaser]);
                       this->gtinfo_->sendFadingMessage("You're now a killer.",it2->first->getClientID());
                  }
                 }
@@ -294,6 +317,14 @@ namespace orxonox
 
     bool Dynamicmatch::allowPawnDeath(Pawn* victim, Pawn* originator)
     {	
+        if (allowDeath)//Hack for Ghost-Spaceship
+        {
+          if (notYet)
+          {allowDeath=false;}
+          else
+          {notYet=true;}
+         return true;
+        }
         //killers can kill chasers and killers can be killed by chasers
         if ((playerParty_[originator->getPlayer()] == killer && playerParty_[victim->getPlayer()] == chaser)||(playerParty_[victim->getPlayer()] == killer &&
         playerParty_[originator->getPlayer()] == chaser ))
@@ -410,7 +441,7 @@ namespace orxonox
             }
         }
     }
-    void Dynamicmatch::setPlayerColour(PlayerInfo* player) // sets a players colour
+    void Dynamicmatch::setPlayerColour(PlayerInfo* player) // sets a player's colour
     {
         std::map<PlayerInfo*, int>::const_iterator it_player = this->playerParty_.find(player);
         Pawn* pawn = dynamic_cast<Pawn*>(player->getControllableEntity());
@@ -444,7 +475,7 @@ namespace orxonox
                         continue;
                     if (it->first->getClientID() == CLIENTID_UNKNOWN)
                         continue;
-                    this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID());
+                    this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
                 }
             }
         }
@@ -462,19 +493,19 @@ namespace orxonox
                        else if (it->second==chaser)
                        {
                            if (numberOf[killer]>0)
-                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID(),partyColours_[piggy]);
                            else
-                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID(),partyColours_[piggy]);
                            //this->gtinfo_->sendFadingMessage("You're now a chaser.",it->first->getClientID());
                        }
                        else if (it->second==piggy)
                        {
-                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID(),partyColours_[chaser]);
                            //this->gtinfo_->sendFadingMessage("You're now a victim.",it->first->getClientID());
                        }
                        else if (it->second==killer)
                        {
-                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID());
+                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID(),partyColours_[chaser]);
                            //this->gtinfo_->sendFadingMessage("You're now a killer.",it->first->getClientID());
                        }
                   }
@@ -493,7 +524,7 @@ namespace orxonox
                         continue;
                     if (it->first->getClientID() == CLIENTID_UNKNOWN)
                         continue;
-                    this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID());
+                    this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
                 }
             }
         }
@@ -511,19 +542,19 @@ namespace orxonox
                        else if (it->second==chaser)
                        {
                            if (numberOf[killer]>0)
-                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID(),partyColours_[piggy]);
                            else
-                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID(),partyColours_[piggy]);
                            //this->gtinfo_->sendFadingMessage("You're now a chaser.",it->first->getClientID());
                        }
                        else if (it->second==piggy)
                        {
-                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID(),partyColours_[piggy]);
                            //this->gtinfo_->sendFadingMessage("You're now a victim.",it->first->getClientID());
                        }
                        else if (it->second==killer)
                        {
-                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID());
+                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID(),partyColours_[piggy]);
                            //this->gtinfo_->sendFadingMessage("You're now a killer.",it->first->getClientID());
                        }
                   }
@@ -543,7 +574,7 @@ namespace orxonox
                         continue;
                     if (it->first->getClientID() == CLIENTID_UNKNOWN)
                         continue;
-                    this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID());
+                    this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
                 }
             }
         }
@@ -561,19 +592,19 @@ namespace orxonox
                        else if (it->second==chaser)
                        {
                            if (numberOf[killer]>0)
-                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID());
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID(),partyColours_[piggy]);
                            else
-                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID());
+                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it->first->getClientID(),partyColours_[piggy]);
                            //this->gtinfo_->sendFadingMessage("You're now a chaser.",it->first->getClientID());
                        }
                        else if (it->second==piggy)
                        {
-                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID());
+                           this->gtinfo_->sendStaticMessage("Either hide or shoot a chaser.",it->first->getClientID(),partyColours_[chaser]);
                            //this->gtinfo_->sendFadingMessage("You're now a victim.",it->first->getClientID());
                        }
                        else if (it->second==killer)
                        {
-                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID());
+                           this->gtinfo_->sendStaticMessage("Take the chasers down.",it->first->getClientID(),partyColours_[chaser]);
                            //this->gtinfo_->sendFadingMessage("You're now a killer.",it->first->getClientID());
                        }
                   }
@@ -624,7 +655,7 @@ namespace orxonox
             {
                 if (it->first->getClientID() == CLIENTID_UNKNOWN)
                     continue;
-                this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID());
+                this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
             }
         }
     }	
@@ -650,16 +681,6 @@ namespace orxonox
         std::string message("Time out. Press F2 to see the points you scored.");
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
-	/*for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
-                {
-                    if (it->first->getClientID() == CLIENTID_UNKNOWN)
-                        continue;
-
-                    if (it->second == 1)
-                        this->gtinfo_->sendAnnounceMessage("You have won the match!", it->first->getClientID());
-                    else
-                        this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
-                }*/
     }
     SpawnPoint* Dynamicmatch::getBestSpawnPoint(PlayerInfo* player) const
     {

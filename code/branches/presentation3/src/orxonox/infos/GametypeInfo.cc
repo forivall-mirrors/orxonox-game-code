@@ -111,14 +111,14 @@ namespace orxonox
         }
     }
 
-    void GametypeInfo::sendStaticMessage(const std::string& message, unsigned int clientID)
+    void GametypeInfo::sendStaticMessage(const std::string& message, unsigned int clientID, const ColourValue& colour)
     {
         if (GameMode::isMaster())
         {
             if (clientID == CLIENTID_SERVER)
-                this->dispatchStaticMessage(message);
+                this->dispatchStaticMessage(message, colour);
             else
-                callMemberNetworkFunction(GametypeInfo, dispatchStaticMessage, this->getObjectID(), clientID, message);
+                callMemberNetworkFunction(GametypeInfo, dispatchStaticMessage, this->getObjectID(), clientID, message, colour);
         }
     }
 
@@ -151,10 +151,10 @@ namespace orxonox
             it->deathmessage(this, message);
     }
 
-     void GametypeInfo::dispatchStaticMessage(const std::string& message)
+     void GametypeInfo::dispatchStaticMessage(const std::string& message, const ColourValue& colour)
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
-            it->staticmessage(this, message);
+            it->staticmessage(this, message, colour);
     }
     
      void GametypeInfo::dispatchFadingMessage(const std::string& message)

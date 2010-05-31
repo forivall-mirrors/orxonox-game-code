@@ -63,13 +63,13 @@ namespace orxonox
             void sendAnnounceMessage(const std::string& message, unsigned int clientID);
             void sendKillMessage(const std::string& message, unsigned int clientID);
             void sendDeathMessage(const std::string& message, unsigned int clientID);
-            void sendStaticMessage(const std::string& message, unsigned int clientID);
+            void sendStaticMessage(const std::string& message, unsigned int clientID, const ColourValue& colour);
             void sendFadingMessage(const std::string& message, unsigned int clientID);
 
             void dispatchAnnounceMessage(const std::string& message);
             void dispatchKillMessage(const std::string& message);
             void dispatchDeathMessage(const std::string& message);
-            void dispatchStaticMessage(const std::string& message);
+            void dispatchStaticMessage(const std::string& message,const ColourValue& colour);
             void dispatchFadingMessage(const std::string& message);
 
         private:

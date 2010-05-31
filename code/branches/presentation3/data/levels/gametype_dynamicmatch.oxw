@@ -2,8 +2,9 @@
   include("hudtemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceship_assff.oxt")
-  include("templates/spaceship_H2.oxt")
+  include("templates/spaceship_ghost.oxt")
   include("dynamicmatchhud.oxo")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
@@ -11,6 +12,10 @@
  description  = "In progress -level for dynamicmatch"
  gametype     = "Dynamicmatch"
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/Starbox"
@@ -51,9 +56,9 @@
               <?lua
                 createSpaceStationPar(0,2,1,2,1,4,1,50)
               ?>
-                <TeamSpawnPoint team=2 position="20,20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-                <TeamSpawnPoint team=2 position="-20,-20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
-                <TeamSpawnPoint team=2 position="-10,10,20" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff/>
+                <TeamSpawnPoint team=2 position="20,20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipghost/>
+                <TeamSpawnPoint team=2 position="-20,-20,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipghost/>
+                <TeamSpawnPoint team=2 position="-10,10,20" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipghost/>
             </attached>
           </StaticEntity>
         </attached>

@@ -48,10 +48,13 @@ namespace orxonox
     {
     }
 
-    void GametypeStaticMessage::staticmessage(const GametypeInfo* gtinfo, const std::string& message)
+    void GametypeStaticMessage::staticmessage(const GametypeInfo* gtinfo, const std::string& message, const ColourValue& colour)
     {
     if (this->owner_ && this->owner_->getGametypeInfo() == gtinfo)
+    {
+        this->setColour(colour);
         this->setCaption(message);
+    }
     }
 
     void GametypeStaticMessage::changedOwner()
