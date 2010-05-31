@@ -23,11 +23,11 @@
    weapon            = "hs-w01.mesh"
   >
     <collisionShapes>
-      <BoxCollisionShape position="0,0,0" halfExtents="8,20,8" />
+      <BoxCollisionShape position="0,-20,0" halfExtents="8,25,8" />
     </collisionShapes>
     
     <camerapositions>
-      <CameraPosition position="-0.5,0.8,2.5" drag=false mouselook=true />
+      <CameraPosition position="0,0,0" drag=false mouselook=true />
     </camerapositions>
     
     <?lua
