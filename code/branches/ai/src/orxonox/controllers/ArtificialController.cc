@@ -184,7 +184,7 @@ namespace orxonox
                         if(distance < minDistance) index = i;
                     }
                 allMasters[index]->humanToFollow_ = humanPawn;
-                allMasters[index]->followHuman(humanPawn, false);
+//                allMasters[index]->followHuman(humanPawn, false);
             }
 
     }
