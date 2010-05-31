@@ -48,6 +48,8 @@ public:
     HUDNavigation ( BaseObject* creator );
     virtual ~HUDNavigation();
 
+    void setConfigValues();
+    
     virtual void XMLPort ( Element& xmlElement, XMLPort::Mode mode );
     virtual void tick ( float dt );
 
@@ -97,7 +99,7 @@ private:
     std::string fontName_;
     float textSize_;
 
-    static const unsigned int markerLimit_ = 5; //TODO: is it possible to set this over the console and/or the IG-Setting
+    unsigned int markerLimit_;; //TODO: is it possible to set this over the console and/or the IG-Setting
 
 
 };

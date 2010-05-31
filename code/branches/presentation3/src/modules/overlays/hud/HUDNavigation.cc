@@ -45,7 +45,7 @@
 #include "controllers/HumanController.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/WorldEntity.h"
-#include "interfaces/RadarViewable.h"
+#include "core/ConfigValueIncludes.h"
 // #include <boost/bind/bind_template.hpp>
 
 
@@ -56,12 +56,19 @@ bool compareDistance ( std::pair<RadarViewable*, unsigned int > a, std::pair<Rad
     return a.second<b.second;
 
 }
+
+void HUDNavigation::setConfigValues()
+{
+  SetConfigValue(markerLimit_, 3);
+}
+
 CreateFactory ( HUDNavigation );
 
 HUDNavigation::HUDNavigation ( BaseObject* creator )
         : OrxonoxOverlay ( creator )
 {
     RegisterObject ( HUDNavigation );
+    this->setConfigValues();
 
     // Set default values
     setFont ( "Monofur" );
@@ -131,6 +138,8 @@ float HUDNavigation::getTextSize() const
     return textSize_;
 }
 
+
+
 void HUDNavigation::tick ( float dt )
 {
     SUPER ( HUDNavigation, tick, dt );
@@ -141,7 +150,6 @@ void HUDNavigation::tick ( float dt )
     const Matrix4& camTransform = cam->getOgreCamera()->getProjectionMatrix() * cam->getOgreCamera()->getViewMatrix();
 
 
-    //TODO: sort list 'sortedObjectList_' according to distance.$
     for ( sortedList::iterator listIt = sortedObjectList_.begin(); listIt != sortedObjectList_.end(); ++listIt )
     {
         listIt->second = ( int ) ( ( listIt->first->getRVWorldPosition() - HumanController::getLocalControllerSingleton()->getControllableEntity()->getWorldPosition() ).length() + 0.5f );
@@ -337,7 +345,7 @@ void HUDNavigation::addObject ( RadarViewable* object )
 
     sortedObjectList_.push_front ( std::make_pair ( object, ( unsigned int ) 0 ) );
 
-    //TODO: hide elements
+
 }
 
 void HUDNavigation::removeObject ( RadarViewable* viewable )
@@ -379,7 +387,7 @@ void HUDNavigation::removeObject ( RadarViewable* viewable )
 
 void HUDNavigation::changedOwner()
 {
-    // TODO: Delete old objects?
+    
     const std::set<RadarViewable*>& respawnObjects = this->getOwner()->getScene()->getRadar()->getRadarObjects();
     for ( std::set<RadarViewable*>::const_iterator it = respawnObjects.begin(); it != respawnObjects.end(); ++it )
     {
