@@ -16,6 +16,9 @@
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+  <lodinformation>
+      <MeshLodInformation mesh=ast2.mesh lodQuality=500 />
+  </lodinformation>
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
@@ -26,7 +29,7 @@
     <SpawnPoint position="0,0,100" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
     <Model position="0,10,0" scale=3 mesh="ast3.mesh"/>
-    <Model position="0,-10,0" scale=3 mesh="ast3.mesh"/>
+    <Model position="0,-10,0" scale=3 mesh="ast2.mesh"/>
 
   </Scene>
 </Level>
