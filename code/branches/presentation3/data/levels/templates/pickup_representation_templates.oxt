@@ -26,7 +26,6 @@
   />
 </Template>
 
-
 <Template name=mediumshieldpickupRepresentation>
     <PickupRepresentation>
         <spawner-representation>
@@ -426,6 +425,8 @@
     </PickupCollection>
 </Template>
 
+<!-- Drone Pickup -->
+
 <Template name=droneTemplate>
     <Drone name="meineDrohne"  mass= "50" linearDamping = "0.7" angularDamping = "0.99999" maxDistanceToOwner_=150 minDistanceToOwner_=50 primaryThrust_=250 auxilaryThrust_=250 rotationThrust_=50>
         <attached>
@@ -457,3 +458,24 @@
         </weapons>
     </Drone>
 </Template>
+
+<Template name=dronepickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.96,0.35,0.02" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Model scale="5" mesh="drone.mesh"/>
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=dronepickup>
+    <DronePickup droneTemplate=droneTemplate />
+</Template>
+

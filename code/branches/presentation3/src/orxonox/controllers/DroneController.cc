@@ -96,7 +96,7 @@ namespace orxonox
 
     }
 
-    /*
+    /**
     @brief
         The controlling happens here. This method defines what the controller has to do each tick.
     @param dt

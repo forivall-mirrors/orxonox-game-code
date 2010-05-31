@@ -1,8 +1,9 @@
+
 <!-- Shield pickups -->
 
 <PickupRepresentation
     pickupName = "Small Shield Pickup"
-    pickupDescription = "Gives you a small shield for 10 seconds."
+    pickupDescription = "Gives you a small-sized shield for 30 seconds."
     inventoryRepresentation = "SmallShield"
     spawnerTemplate = "smallshieldpickupRepresentation"
 >
@@ -193,6 +194,18 @@
 >
     <pickup>
         <PickupCollection template=triplehealthspeedinvisibilitypickup />
+    </pickup>
+</PickupRepresentation>
+
+<!-- Drone Pickup -->
+
+<PickupRepresentation
+    pickupName = "Drone Pickup"
+    pickupDescription = "Adds a Drone to the Players Spaceship"
+    spawnerTemplate = "dronepickupRepresentation"
+>
+    <pickup>
+        <DronePickup template=dronepickup />
     </pickup>
 </PickupRepresentation>
 

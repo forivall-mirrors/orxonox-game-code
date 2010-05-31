@@ -29,14 +29,6 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
     <SpawnPoint position="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
-    <!-- Drone pickup -->
-
-    <PickupSpawner position="-100,0,-100" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-        <pickup>
-            <DronePickup droneTemplate=droneTemplate />
-        </pickup>
-    </PickupSpawner>
-
     <!-- Shield pickups -->
 
     <PickupSpawner position="-25,-25,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
@@ -150,6 +142,16 @@
         <PickupCollection template=triplehealthspeedinvisibilitypickup />
       </pickup>
     </PickupSpawner>
+    
+    <!-- Drone pickup -->
+    
+    <PickupSpawner position="-50,50,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+      <pickup>
+        <DronePickup template=dronepickup />
+      </pickup>
+    </PickupSpawner>
+    
+    <!-- Other pickups -->
 
     <!-- PickupRepresentation for the pickup below, since it is not a standard pickup provided by pickups.oxi -->
     <PickupRepresentation

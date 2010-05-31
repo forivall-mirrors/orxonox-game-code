@@ -222,7 +222,7 @@ namespace orxonox
         }
         else
         {
-            COUT(3) << "PickupSpawner empty, selfdestruct initialized." << std::endl;
+            COUT(4) << "PickupSpawner (&" << this << ") empty, selfdestruct initialized." << std::endl;
             this->setActive(false);
             this->destroy();
         }
@@ -247,12 +247,12 @@ namespace orxonox
     {
         if(this->pickup_ != NULL)
         {
-            COUT(1) << "In PickupSpawner: setPickupable called, with this->pickup_ already set." << std::endl;
+            COUT(1) << "In PickupSpawner (&" << this << "): setPickupable called, with this->pickup_ already set." << std::endl;
             return;
         }
         if(pickup == NULL)
         {
-            COUT(1) << "In PickupSpawner: Argument of setPickupable is NULL." << std::endl;
+            COUT(1) << "In PickupSpawner (&" << this << "): Argument of setPickupable is NULL." << std::endl;
             return;
         }
         
@@ -281,7 +281,7 @@ namespace orxonox
     {
         if (this->isActive()) //!< Checks whether PickupSpawner is active.
         {
-            COUT(3) << "PickupSpawner triggered and active." << std::endl;
+            COUT(4) << "PickupSpawner (&" << this << ") triggered and active." << std::endl;
             
             PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
             if(carrier == NULL)
@@ -292,7 +292,7 @@ namespace orxonox
             
             if(!carrier->isTarget(this->pickup_))
             {
-                COUT(4) << "PickupSpawner triggered but Pawn wasn't a target of the Pickupable." << std::endl;
+                COUT(4) << "PickupSpawner (&" << this << ") triggered but Pawn wasn't a target of the Pickupable." << std::endl;
                 return;
             }
             
@@ -313,11 +313,11 @@ namespace orxonox
             else
             {
                 if(target == NULL)
-                    COUT(1) << "PickupSpawner: Pickupable has no target." << std::endl;
+                    COUT(1) << "PickupSpawner (&" << this << "): Pickupable has no target." << std::endl;
                 
                 if(pickup == NULL)
                 {
-                    COUT(1) << "PickupSpawner: getPickup produced an error, no Pickupable created." << std::endl;
+                    COUT(1) << "PickupSpawner (&" << this << "): getPickup produced an error, no Pickupable created." << std::endl;
                 }
                 else
                 {
@@ -351,7 +351,7 @@ namespace orxonox
     */
     void PickupSpawner::respawnTimerCallback()
     {
-        COUT(3) << "PickupSpawner reactivated." << std::endl;
+        COUT(4) << "PickupSpawner (&" << this << ") reactivated." << std::endl;
 
         this->setActive(true);
     }
