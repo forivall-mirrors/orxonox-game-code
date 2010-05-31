@@ -75,10 +75,10 @@ namespace orxonox
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
 
-        const Vector3& ownerPosition = getOwner()->getWorldPosition();
-        const Vector3& dronePosition = getDrone()->getWorldPosition();
+        // const Vector3& ownerPosition = getOwner()->getWorldPosition();
+        // const Vector3& dronePosition = getDrone()->getWorldPosition();
 
-        const Vector3& locOwnerDir = getDrone()->getOrientation().UnitInverse()*(ownerPosition-dronePosition); //Vector from Drone To Owner out of drones local coordinate system
+        // const Vector3& locOwnerDir = getDrone()->getOrientation().UnitInverse()*(ownerPosition-dronePosition); //Vector from Drone To Owner out of drones local coordinate system
 
         random = rnd(maxrand);
         if ( random < 30 && (!this->target_))
@@ -104,9 +104,7 @@ namespace orxonox
     */
     void DroneController::tick(float dt)
     {
-        
-
-	Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
+        // Drone *myDrone = static_cast<Drone*>(this->getControllableEntity());
         float maxDistanceSquared = this->getDrone()->getMaxDistanceToOwner()*this->getDrone()->getMaxDistanceToOwner();
         float minDistanceSquared = this->getDrone()->getMinDistanceToOwner()*this->getDrone()->getMinDistanceToOwner();
         if ((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > maxDistanceSquared) { 
@@ -125,6 +123,7 @@ namespace orxonox
             else if((int)randomSelection==4) drone_->rotatePitch(random);
             else if((int)randomSelection==5) drone_->rotateRoll(random);
         }
+        
         SUPER(AIController, tick, dt);
 
     }
