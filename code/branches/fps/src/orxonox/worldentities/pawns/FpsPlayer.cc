@@ -32,13 +32,19 @@
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include <LinearMath/btVector3.h>
 #include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
-
+#include <OgreSceneManager.h>
+#include <OgreSceneNode.h>
+#include <OgreEntity.h>
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "items/Engine.h"
+#include "Scene.h"
+#include "weaponsystem/WeaponPack.h"
+#include "weaponsystem/WeaponSlot.h"
+#include "weaponsystem/Weapon.h"
 
 #include <cmath>
 
@@ -79,10 +85,16 @@ namespace orxonox
         this->setConfigValues();
         this->registerVariables();
 
+	this->weaponNode = this->cameraPositionRootNode_;
+	//this->weaponNode = this->getScene()->getRootSceneNode()->createChildSceneNode();
+	//this->weaponNode = this->cameraPositionRootNode_->createChildSceneNode();
+        this->attachNode(this->weaponNode);
     }
 
     FpsPlayer::~FpsPlayer()
     {
+	if (this->isInitialized() && this->mesh_.getEntity())
+            this->detachOgreObject(this->mesh_.getEntity());
     }
 
     void FpsPlayer::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -92,6 +104,7 @@ namespace orxonox
         XMLPortParamVariable(FpsPlayer, "primaryThrust",  primaryThrust_,  xmlelement, mode);
         XMLPortParamVariable(FpsPlayer, "auxilaryThrust", auxilaryThrust_, xmlelement, mode);
         XMLPortParamVariable(FpsPlayer, "rotationThrust", rotationThrust_, xmlelement, mode);
+	XMLPortParam(FpsPlayer, "weapon", setMeshSource, getMeshSource, xmlelement, mode);
     }
 
     void FpsPlayer::registerVariables()
@@ -99,7 +112,10 @@ namespace orxonox
         registerVariable(this->primaryThrust_,  VariableDirection::ToClient);
         registerVariable(this->auxilaryThrust_, VariableDirection::ToClient);
         registerVariable(this->rotationThrust_, VariableDirection::ToClient);
+	registerVariable(this->weaponmashname);
     }
+    
+   
 
     void FpsPlayer::setConfigValues()
     {
@@ -144,22 +160,36 @@ namespace orxonox
 
             if (!this->isInMouseLook())
             {
-                this->yaw(Radian(this->yaw_ * this->getMouseLookSpeed()),WorldEntity::Parent);
-                //this->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+                this->yaw(Radian(this->yaw_ * this->getMouseLookSpeed()), WorldEntity::Parent);
+		
 		Radian pitch=this->cameraPositionRootNode_->getOrientation().getPitch();
-		if( pitch<Radian(1.5707) && pitch>Radian(-1.5707) ) this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+		if( pitch<Radian(1.5707) && pitch>Radian(-1.5707) ) {
+			//this->weaponNode->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+			this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+			}
 		else if(pitch<Radian(-1.5707)){
-			if(this->pitch_>0.0) this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
-			else if(pitch<Radian(-1.571)) this->cameraPositionRootNode_->pitch(-pitch+Radian(-1.570796));
+			if(this->pitch_>0.0) {
+				//this->weaponNode->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+				this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+				}
+			else if(pitch<Radian(-1.571)){
+				//this->weaponNode->pitch(-pitch+Radian(-1.570796));
+				this->cameraPositionRootNode_->pitch(-pitch+Radian(-1.570796));
+				}
 		}
 		else if(pitch>Radian(1.5707)){
-			if(this->pitch_<0.0) this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
-			else if(pitch>Radian(1.571)) this->cameraPositionRootNode_->pitch(-pitch+Radian(1.570796));
+			if(this->pitch_<0.0) {
+				//this->weaponNode->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+				this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+				}
+			else if(pitch>Radian(1.571)){ 
+				//this->weaponNode->pitch(-pitch+Radian(1.570796));
+				this->cameraPositionRootNode_->pitch(-pitch+Radian(1.570796));
+				}
 		}
-		 
+		//this->weaponNode->setOrientation(this->cameraPositionRootNode_->getOrientation());
 		
- //               this->roll(Radian(this->roll_ * this->getMouseLookSpeed()));
-            }
+	    }
 
             this->yaw_ = this->pitch_ = this->roll_ = 0;
 	    
@@ -170,6 +200,22 @@ namespace orxonox
         }
 
         SUPER(FpsPlayer, tick, dt);
+    }
+    
+    void FpsPlayer::changedMesh()
+    {
+        if (GameMode::showsGraphics())
+        {
+            if (this->mesh_.getEntity())
+                this->weaponNode->detachObject(this->mesh_.getEntity());
+
+            this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
+
+            if (this->mesh_.getEntity())
+            {
+                this->weaponNode->attachObject(this->mesh_.getEntity());
+            }
+        }
     }
 
     void FpsPlayer::setPlayer(PlayerInfo* player)
@@ -243,4 +289,17 @@ namespace orxonox
 	return false;
     }
     
+    void FpsPlayer::addedWeaponPack(WeaponPack* wPack)
+    {
+        for (size_t i = 0; i < wPack->getNumWeapons(); ++i)
+	{
+	    Weapon* weapon = wPack->getWeapon(i);
+	    if (weapon->getWeaponSlot())
+	    {
+	        weapon->getWeaponSlot()->removeWeapon();
+	        weapon->detachFromParent();
+		weapon->attachToNode(this->weaponNode);
+	    }
+	}
+    }
 }

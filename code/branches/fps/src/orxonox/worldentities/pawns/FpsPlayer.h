@@ -34,6 +34,7 @@
 #include <string>
 #include <LinearMath/btVector3.h>
 #include "util/Math.h"
+#include "tools/Mesh.h"
 #include "Pawn.h"
 
 namespace orxonox
@@ -57,11 +58,19 @@ namespace orxonox
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
 	    
+	    
+            inline void setMeshSource(const std::string& meshname)
+                { this->meshSrc_ = meshname; this->changedMesh(); }
+            inline const std::string& getMeshSource() const
+                { return this->meshSrc_; }
+	    
 	    void boost();						//acctually jump
 
             virtual void fire();
 	    
 	    bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+
+	    virtual void addedWeaponPack(WeaponPack* wPack);
             
         protected:
             virtual void setPlayer(PlayerInfo* player);
@@ -74,6 +83,7 @@ namespace orxonox
             float primaryThrust_;
             float auxilaryThrust_;
             float rotationThrust_;
+	    std::string weaponmashname;
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
 
@@ -81,6 +91,9 @@ namespace orxonox
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
             float speed_;
 
+	    void changedMesh();
+	    Mesh mesh_;
+	    std::string meshSrc_;
             float yaw_;
             float pitch_;
             float roll_;
@@ -88,6 +101,8 @@ namespace orxonox
 	    bool isfloor;
 	    bool thistickboost;
 	    Quaternion savedOrientation_;
+	    Ogre::SceneNode* weaponNode;
+	    Ogre::Camera* camera_;
     };
 }
 
