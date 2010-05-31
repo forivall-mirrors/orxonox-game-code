@@ -177,7 +177,7 @@ function P.createLines()
         window:addChildWindow(line)
     end
 
-    pane = tolua.cast(window, "CEGUI::ScrollablePane")
+    local pane = tolua.cast(window, "CEGUI::ScrollablePane")
     pane:setVerticalStepSize(getScrollingStepSize(window))
 end
 

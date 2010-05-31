@@ -28,6 +28,12 @@
     <Billboard position="12.5, -30, -500" material="Banners/Pickups" scale="0.5"/>
     <Billboard position="500, -30, -500" material="Banners/Drone" scale="0.5"/>
 
+    <PickupSpawner position="500,-50,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+      <pickup>
+        <DronePickup template=dronepickup />
+      </pickup>
+    </PickupSpawner>
+
     <!-- Shield pickups -->
 
     <PickupSpawner position="-25,-50,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
@@ -41,12 +47,6 @@
     <PickupSpawner position="0,-50,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
       <pickup>
         <HealthPickup template=hugehealthpickup />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="25,-50,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <HealthPickup template=crazyhealthpickup />
       </pickup>
     </PickupSpawner>
 
@@ -72,23 +72,9 @@
       </pickup>
     </PickupSpawner>
 
-    <!-- Meta pickups -->
-
-    <PickupSpawner position="0,-75,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <MetaPickup metaType="use" />
-      </pickup>
-    </PickupSpawner>
-
-    <PickupSpawner position="-25,-75,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
-      <pickup>
-        <MetaPickup metaType="drop" />
-      </pickup>
-    </PickupSpawner>
-
     <!-- Pickup Collection pickups -->
 
-    <PickupSpawner position="0,-100,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+    <PickupSpawner position="0,-75,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
       <pickup>
         <PickupCollection template=triplehealthspeedinvisibilitypickup />
       </pickup>
@@ -106,7 +92,7 @@
       </pickup>
     </PickupRepresentation>
 
-    <PickupSpawner position="25,-100,-500" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
+    <PickupSpawner position="25,-50,-500" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
       <pickup>
         <HealthPickup health=50 activationType=onUse durationType=once />
       </pickup>
