@@ -53,6 +53,7 @@ namespace orxonox
     SetConsoleCommand(ArtificialController, formationsize, true);
 
     static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
+    static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;
     static const int FORMATION_LENGTH =  130;
     static const int FORMATION_WIDTH =  110;
     static const int FREEDOM_COUNT = 4; //seconds the slaves in a formation will be set free when master attacks an enemy
@@ -60,7 +61,7 @@ namespace orxonox
     static const float ROTATEFACTOR_MASTER = 0.2f;
     static const float SPEED_FREE = 0.8f;
     static const float ROTATEFACTOR_FREE = 0.8f;
-    static const int SECONDS_TO_FOLLOW_HUMAN = 100;
+
 
     ArtificialController::ArtificialController(BaseObject* creator) : Controller(creator)
     {
@@ -78,8 +79,8 @@ namespace orxonox
         this->specificMasterActionHoldCount_  = 0;
         this->bShooting_ = false;
         this->bHasTargetPosition_ = false;
+        this->speedCounter_ = 0.2f;
         this->targetPosition_ = Vector3::ZERO;
-        this->humanToFollow_ = NULL;
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
     }
@@ -93,8 +94,8 @@ namespace orxonox
         SUPER(ArtificialController, XMLPort, xmlelement, mode);
 
         XMLPortParam(ArtificialController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
-        XMLPortParam(ArtificialController, "formationflight", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(true);
-        XMLPortParam(ArtificialController, "formation_size", setFormationSize, getFormationSize, xmlelement, mode).defaultValues(STANDARD_MAX_FORMATION_SIZE);
+        XMLPortParam(ArtificialController, "formationFlight", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(true);
+        XMLPortParam(ArtificialController, "formationSize", setFormationSize, getFormationSize, xmlelement, mode).defaultValues(STANDARD_MAX_FORMATION_SIZE);
     }
 
 // Documentation only here to get a faster overview for creating a useful documentation...
@@ -103,7 +104,7 @@ namespace orxonox
         @brief Activates / deactivates formationflight behaviour
         @param form activate formflight if form is true
     */
-    void ArtificialController::formationflight(bool form)
+    void ArtificialController::formationflight(const bool form)
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
@@ -128,7 +129,7 @@ namespace orxonox
         @brief Get all masters to do a "specific master action" 
         @param action which action to perform (integer, so it can be called with a console command (tmp solution))
     */
-    void ArtificialController::masteraction(int action)
+    void ArtificialController::masteraction(const int action)
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
@@ -148,7 +149,7 @@ namespace orxonox
     }
 
     /**
-        @brief A human player gets followed by its nearest master. Initiated by console command, intended for demonstration puproses. Does not work at the moment.
+        @brief A human player gets followed by its nearest master. Initiated by console command, so far intended for demonstration puproses (possible future pickup).
     */
     void ArtificialController::followme()
     {
@@ -168,7 +169,7 @@ namespace orxonox
 
             ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
 
-            if(aiController || aiController->state_ == MASTER)
+            if(aiController && aiController->state_ == MASTER)
                 allMasters.push_back(aiController);
 
         }
@@ -181,13 +182,13 @@ namespace orxonox
                 int index = 0;
                 int i = 0;
 
-                for(std::vector<ArtificialController*>::iterator it = allMasters.begin(); it != allMasters.end(); it++)
+                for(std::vector<ArtificialController*>::iterator it = allMasters.begin(); it != allMasters.end(); it++, i++)
                     {
+                        if (!ArtificialController::sameTeam((*it)->getControllableEntity(), humanPawn, (*it)->getGametype())) continue;
                         distance = posHuman - (*it)->getControllableEntity()->getPosition().length();
                         if(distance < minDistance) index = i;
                     }
-                allMasters[index]->humanToFollow_ = humanPawn;
-//                allMasters[index]->followHuman(humanPawn, false);
+                allMasters[index]->followInit(humanPawn);
             }
 
     }
@@ -196,7 +197,7 @@ namespace orxonox
         @brief Sets shooting behaviour of pawns.
         @param passive if true, bots won't shoot.
     */
-    void ArtificialController::passivebehaviour(bool passive)
+    void ArtificialController::passivebehaviour(const bool passive)
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
@@ -217,7 +218,7 @@ namespace orxonox
         @brief Sets maximal formation size
         @param size maximal formation size.
     */
-    void ArtificialController::formationsize(int size)
+    void ArtificialController::formationsize(const int size)
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
@@ -241,9 +242,10 @@ namespace orxonox
         if(!getControllableEntity()) 
         {
         if (this->state_ == SLAVE) unregisterSlave();
-         if (this->state_ == MASTER) setNewMasterWithinFormation();
+        if (this->state_ == MASTER) setNewMasterWithinFormation();
         this->slaves_.clear();
         this->state_ = FREE;
+        this->specificMasterAction_ = NONE;
 
         }
     }
@@ -254,6 +256,13 @@ namespace orxonox
         if (!this->getControllableEntity())
             return;
 
+        // Slave uses special movement if its master is in FOLLOW mode
+        if(this->state_ == SLAVE && this->myMaster_ && this->myMaster_->specificMasterAction_ == FOLLOW)
+        {
+//             this->followForSlaves(target);
+//             return;
+        }
+
         Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
         float distance = (target - this->getControllableEntity()->getPosition()).length();
 
@@ -262,7 +271,7 @@ namespace orxonox
         {
             if (this->target_ || distance > 10)
             {
-                // Multiply with 0.8 to make them a bit slower
+                // Multiply with ROTATEFACTOR_FREE to make them a bit slower
                 this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * sgn(coord.x) * coord.x*coord.x);
                 this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * sgn(coord.y) * coord.y*coord.y);
             }
@@ -315,13 +324,9 @@ namespace orxonox
         this->moveToPosition(this->targetPosition_);
     }
 
-    int ArtificialController::getState()
-    {
-        return this->state_;
-    }
 
     /**
-        @brief Unregisters a slave from its master. Called by a slave.
+        @brief Unregisters a slave from its master. Initiated by a slave.
     */
     void ArtificialController::unregisterSlave() {
         if(myMaster_)
@@ -362,13 +367,13 @@ namespace orxonox
             ArtificialController *newMaster = orxonox_cast<ArtificialController*>(it->getController());
 
             //is it a master?
-            if (!newMaster || newMaster->getState() != MASTER)
+            if (!newMaster || newMaster->state_ != MASTER)
                 continue;
 
             float distance = (it->getPosition() - this->getControllableEntity()->getPosition()).length();
 
             // is pawn in range?
-            if (distance < 5000)
+            if (distance < RADIUS_TO_SEARCH_FOR_MASTERS)
             {
                 if(newMaster->slaves_.size() > this->maxFormationSize_) continue;
 
@@ -392,7 +397,7 @@ namespace orxonox
     }
 
     /**
-        @brief Commands the slaves of a master into a formation. Called by a master.
+        @brief Commands the slaves of a master into a formation. Sufficiently fast not to be called within tick. Initiated by a master.
     */
     void ArtificialController::commandSlaves() 
     {
@@ -451,6 +456,7 @@ namespace orxonox
         newMaster->slaves_ = this->slaves_;
 
         this->slaves_.clear();
+        this->specificMasterAction_ = NONE;
         this->state_ = SLAVE;
         this->myMaster_ = newMaster;
 
@@ -462,7 +468,7 @@ namespace orxonox
     }
 
     /**
-        @brief Frees all slaves form a master. Called by a master.
+        @brief Frees all slaves form a master. Initiated by a master.
     */
     void ArtificialController::freeSlaves()
     {
@@ -537,7 +543,6 @@ namespace orxonox
     */
     void ArtificialController::turn180Init()
     {
-        COUT(0) << "~turnInit" << std::endl;
         if(this->state_ != MASTER) return;
 
         Quaternion orient = this->getControllableEntity()->getOrientation();
@@ -563,11 +568,10 @@ namespace orxonox
     }
 
     /**
-        @brief Master initializes a spin around its looking direction axis. Leads to a "specific master action". Not yet implemented.
+        @brief Master initializes a spin around its looking direction axis. Leads to a "specific master action".
     */
     void ArtificialController::spinInit()
     {
-        COUT(0) << "~spinInit" << std::endl;
         if(this->state_ != MASTER) return;
         this->specificMasterAction_ = SPIN;
         this->specificMasterActionHoldCount_ = 10;
@@ -583,34 +587,143 @@ namespace orxonox
     }
 
     /**
-        @brief Master begins to follow a human player. Is a "specific master action".
-        @param humanController human to follow.
-        @param alaways follows human forever if true, else it follows it for @var SECONDS_TO_FOLLOW_HUMAN seconds.
+        @brief Master begins to follow a pawn. Is a "specific master action".
+        @param pawn pawn to follow.
+        @param alaways follows pawn forever if true (false if omitted).
+        @param secondsToFollow seconds to follow the pawn if always is false. Will follow pawn 100 seconds if omitted (set in header).
     */
-    void ArtificialController::followHumanInit(Pawn* human, bool always)
+    void ArtificialController::followInit(Pawn* pawn, const bool always, const int secondsToFollow)
     {
-        COUT(0) << "~followInit" << std::endl;
-        if (human == NULL || this->state_ != MASTER)
+        if (pawn == NULL || this->state_ != MASTER)
             return;
+        this->specificMasterAction_  =  FOLLOW;
 
-        this->specificMasterAction_  =  FOLLOWHUMAN;
-
-        this->setTarget(human);
+        this->setTarget(pawn);
         if (!always)
-            this->specificMasterActionHoldCount_ = SECONDS_TO_FOLLOW_HUMAN;
+            this->specificMasterActionHoldCount_ = secondsToFollow;
         else 
             this->specificMasterActionHoldCount_ = INT_MAX; //for now...
 
     }
 
+
     /**
-        @brief Follows target with adjusted speed. Called within tick.
+        @brief Master begins to follow a randomly chosen human player of the same team. Is a "specific master action".
+    */
+    void ArtificialController::followRandomHumanInit()
+    {
+
+        Pawn *humanPawn = NULL;
+        NewHumanController *currentHumanController = NULL;
+
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
+        {
+            if (!it->getController())
+                continue;
+
+            currentHumanController = orxonox_cast<NewHumanController*>(it->getController());
+            if(currentHumanController) 
+            {
+                if (!ArtificialController::sameTeam(this->getControllableEntity(), *it, this->getGametype())) continue;
+                humanPawn = *it;
+                break;
+            }
+        }
+
+        if((humanPawn != NULL))
+                this->followInit(humanPawn);
+    }
+
+    /**
+        @brief Master follows target with adjusted speed. Called within tick.
     */
     void ArtificialController::follow()
     {
-        this->moveToTargetPosition(); //standard position apprach for now.
+        this->moveToPosition(this->target_->getPosition());
+/*
+        if (!this->getControllableEntity())
+            return;
+
+        float distance = (this->target_->getPosition() - this->getControllableEntity()->getPosition()).length();
+
+        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, this->target_->getPosition());
+
+
+        this->getControllableEntity()->rotateYaw(-0.8f * sgn(coord.x) * coord.x*coord.x);
+        this->getControllableEntity()->rotatePitch(0.8f * sgn(coord.y) * coord.y*coord.y);
+
+        float speedDiv = this->getControllableEntity()->getVelocity().squaredLength() - this->target_->getVelocity().squaredLength();
+
+COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCounter_ << "~speedDiv: " << speedDiv << std::endl;
+        if (distance < 800)
+        {
+            if (distance < 200)
+            {
+                this->speedCounter_ -= 0.5f;
+                if(this->speedCounter_ < 0) this->speedCounter_ = 0.0f;
+                this->getControllableEntity()->moveFrontBack(speedCounter_);
+            } else {
+                if(speedDiv < 0)
+                    this->speedCounter_ +=  0.01f;
+                else
+                    this->speedCounter_ -= 0.05f;
+                this->getControllableEntity()->moveFrontBack(speedCounter_);
+            }
+
+        } else {
+            this->speedCounter_ += 0.05f;
+            this->getControllableEntity()->moveFrontBack(speedCounter_ + distance/300.0f);
+        }
+//         if (this->getControllableEntity()->getVelocity().squaredLength() > 50.0f) this->speedCounter_ = 0;
+
+*/
     }
 
+
+    /**
+        @brief Slave moving behaviour when master is following a pawn, gets redirected from moveToPosition(const Vector3& target)). Called within tick.
+    */
+    void ArtificialController::followForSlaves(const Vector3& target)
+    {
+
+/*
+        if (!this->getControllableEntity() && !this->myMaster_ && this->myMaster_->state_ != FOLLOW && !this->myMaster_->target_)
+            return;
+
+        float distance = (target - this->getControllableEntity()->getPosition()).length();
+
+        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+
+
+        this->getControllableEntity()->rotateYaw(-0.8f * sgn(coord.x) * coord.x*coord.x);
+        this->getControllableEntity()->rotatePitch(0.8f * sgn(coord.y) * coord.y*coord.y);
+
+
+        float speedDiv = this->getControllableEntity()->getVelocity().squaredLength() - this->myMaster_->target_->getVelocity().squaredLength();
+
+
+         if (distance < 800)
+        {
+            if (distance < 200)
+            {
+                this->speedCounter_ -= 5.0f;
+                if(this->speedCounter_ < 0) this->speedCounter_ = 0.0f;
+                this->getControllableEntity()->moveFrontBack(speedCounter_);
+            } else {
+                if(speedDiv < 0)
+                    this->speedCounter_ +=  0.01f;
+                else
+                    this->speedCounter_ -= 0.05f;
+                this->getControllableEntity()->moveFrontBack(speedCounter_);
+            }
+
+        } else {
+            this->speedCounter_ += 0.05f;
+            this->getControllableEntity()->moveFrontBack(speedCounter_ + distance/300.0f);
+        }
+//         if (this->getControllableEntity()->getVelocity().squaredLength() > 50.0f) this->speedCounter_ = 0;
+*/
+    }
 
 
     void ArtificialController::setTargetPosition(const Vector3& target)

@@ -53,21 +53,24 @@ namespace orxonox
                 { this->team_ = team; }
             inline int getTeam() const
                 { return this->team_; }
+
             inline void setFormationFlight(bool formation)
                 { this->formationFlight_ = formation; }
             inline bool getFormationFlight() const
                 { return this->formationFlight_; }
+
             inline void setFormationSize(int size)
                 { this->maxFormationSize_ = size; }
             inline int getFormationSize() const
                 { return this->maxFormationSize_; }
+
             virtual void changedControllableEntity();
 
-            static void formationflight(bool form);
-            static void masteraction(int action);
+            static void formationflight(const bool form);
+            static void masteraction(const int action);
             static void followme();
-            static void passivebehaviour(bool passive);
-            static void formationsize(int size);
+            static void passivebehaviour(const bool passive);
+            static void formationsize(const int size);
 
         protected:
 
@@ -80,17 +83,13 @@ namespace orxonox
             State state_;
             std::vector<ArtificialController*> slaves_;
             ArtificialController *myMaster_;
-            enum SpecificMasterAction {NONE, HOLD, SPIN, TURN180, FOLLOWHUMAN};
+            enum SpecificMasterAction {NONE, HOLD, SPIN, TURN180, FOLLOW};
             SpecificMasterAction specificMasterAction_;
             int specificMasterActionHoldCount_;
-            Pawn* humanToFollow_;
-
-            void targetDied();
+            float speedCounter_; //for speed adjustment when following
 
             void moveToPosition(const Vector3& target);
             void moveToTargetPosition();
-
-            int getState();
 
             void unregisterSlave();
             void searchNewMaster();
@@ -108,8 +107,10 @@ namespace orxonox
             void turn180();
             void spinInit();
             void spin();
-            void followHumanInit(Pawn* human, bool always);
+            void followInit(Pawn* pawn, const bool always = false, const int secondsToFollow = 100);
+            void followRandomHumanInit();
             void follow();
+            void followForSlaves(const Vector3& target);
 
             void setTargetPosition(const Vector3& target);
             void searchRandomTargetPosition();
@@ -121,6 +122,8 @@ namespace orxonox
 
             bool isCloseAtTarget(float distance) const;
             bool isLookingAtTarget(float angle) const;
+
+            void targetDied();
 
             static bool sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype); // hack
 

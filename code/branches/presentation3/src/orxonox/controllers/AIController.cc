@@ -126,18 +126,7 @@ namespace orxonox
             this->commandSlaves();
 
             if  (this->specificMasterAction_ != NONE) 
-            {
                     this->specificMasterActionHold();
-
-//                 if (this->specificMasterAction_  == TURN180)
-//                     this->turn180Init();
-
-//                 if (this->specificMasterAction_ == SPIN)
-//                     this->spinInit();
-
-//                 if (this->specificMasterAction_ == FOLLOWHUMAN)
-//                     this->followHuman(this->HumanToFollow_, false);
-            }
 
             else {
 
@@ -150,6 +139,11 @@ namespace orxonox
                 random = rnd(1000.0f);
                 if (random < 5)
                    this->spinInit();
+
+                // follow a randomly chosen human - a specific Master Action
+                random = rnd(1000.0f);
+                if (random < 1)
+                   this->followRandomHumanInit();
 
                  // lose master status (only if less than 4 slaves in formation)
                 random = rnd(maxrand);
@@ -229,7 +223,7 @@ namespace orxonox
 
             if (this->specificMasterAction_ == SPIN)
                     this->spin();
-            if (this->specificMasterAction_ == FOLLOWHUMAN)
+            if (this->specificMasterAction_ == FOLLOW)
                     this->follow();
         }
 
