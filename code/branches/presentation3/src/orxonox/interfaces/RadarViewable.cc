@@ -40,11 +40,12 @@ namespace orxonox
     /**
         @brief Constructor.
     */
-    RadarViewable::RadarViewable(BaseObject* creator)
+    RadarViewable::RadarViewable(BaseObject* creator, const WorldEntity* wePtr)
         : isHumanShip_(false)
         , bVisibility_(true)
         , bInitialized_(false)
         , creator_(creator)
+        , wePtr_(wePtr)
         , radarObjectCamouflage_(0.0f)
         , radarObjectShape_(Dot)
         , radarObjectDescription_("staticObject")

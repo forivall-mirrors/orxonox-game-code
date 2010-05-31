@@ -54,7 +54,7 @@ namespace orxonox
 
     Pawn::Pawn(BaseObject* creator) 
         : ControllableEntity(creator)
-        , RadarViewable(creator)
+        , RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
         RegisterObject(Pawn);
 

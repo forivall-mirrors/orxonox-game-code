@@ -57,7 +57,7 @@ namespace orxonox
 
 
     public:
-        RadarViewable(BaseObject* creator);
+        RadarViewable(BaseObject* creator, const WorldEntity* wePtr);
         virtual ~RadarViewable();
 
         inline void setRadarObjectCamouflage(float camouflage)
@@ -97,7 +97,7 @@ namespace orxonox
         inline bool getRadarVisibility() const
             { return this->bVisibility_; }
 
-        virtual const WorldEntity* getWorldEntity() const = 0;
+        virtual const WorldEntity* getWorldEntity() const{ return this->wePtr_; }
 
         const Vector3& getRVWorldPosition() const;
         Vector3 getRVOrientedVelocity() const;
@@ -132,6 +132,7 @@ namespace orxonox
 
 
         //Radar
+        const WorldEntity* wePtr_;
         SmartPtr<Radar> radar_;
         float radarObjectCamouflage_;
         Shape radarObjectShape_;
