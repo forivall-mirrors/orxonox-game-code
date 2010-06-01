@@ -50,8 +50,8 @@
 
 namespace orxonox
 {
-    const float orientationGain = 100;
-    const float jumpvalue = 300;
+    const float orientationGain_ = 100;
+    const float jumpValue_ = 300;
     CreateFactory(FpsPlayer);
 
     FpsPlayer::FpsPlayer(BaseObject* creator) : Pawn(creator)
@@ -85,10 +85,9 @@ namespace orxonox
         this->setConfigValues();
         this->registerVariables();
 
-	this->weaponNode = this->cameraPositionRootNode_;
-	//this->weaponNode = this->getScene()->getRootSceneNode()->createChildSceneNode();
-	//this->weaponNode = this->cameraPositionRootNode_->createChildSceneNode();
-        this->attachNode(this->weaponNode);
+	//this->weaponNode = this->cameraPositionRootNode_;
+	this->weaponNode_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
+	this->attachNode(this->weaponNode_);
     }
 
     FpsPlayer::~FpsPlayer()
@@ -112,7 +111,7 @@ namespace orxonox
         registerVariable(this->primaryThrust_,  VariableDirection::ToClient);
         registerVariable(this->auxilaryThrust_, VariableDirection::ToClient);
         registerVariable(this->rotationThrust_, VariableDirection::ToClient);
-	registerVariable(this->weaponmashname);
+	registerVariable(this->weaponMashName_);
     }
     
    
@@ -140,7 +139,7 @@ namespace orxonox
         {
             this->setOrientation(savedOrientation_);
 	    
-	    thistickboost=false;
+	    thisTickBoost_=false;
 	    
 	    float localSpeedSquared = this->localVelocity_.squaredLength();
             float localSpeed;
@@ -152,7 +151,7 @@ namespace orxonox
             this->localVelocity_.x *= localSpeed;
             this->localVelocity_.z *= localSpeed;
 	    Vector3 temp = this->getOrientation() * this->localVelocity_;
-	    if(localVelocity_.y==jumpvalue) this->setVelocity(Vector3(temp.x, temp.y + this->getVelocity().y, temp.z));
+	    if(localVelocity_.y==jumpValue_) this->setVelocity(Vector3(temp.x, temp.y + this->getVelocity().y, temp.z));
 	    else this->setVelocity(Vector3(temp.x, this->getVelocity().y, temp.z));
             this->localVelocity_.x = 0;
             this->localVelocity_.y = 0;
@@ -164,37 +163,30 @@ namespace orxonox
 		
 		Radian pitch=this->cameraPositionRootNode_->getOrientation().getPitch();
 		if( pitch<Radian(1.5707) && pitch>Radian(-1.5707) ) {
-			//this->weaponNode->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
 			this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
 			}
 		else if(pitch<Radian(-1.5707)){
 			if(this->pitch_>0.0) {
-				//this->weaponNode->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
 				this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
 				}
 			else if(pitch<Radian(-1.571)){
-				//this->weaponNode->pitch(-pitch+Radian(-1.570796));
 				this->cameraPositionRootNode_->pitch(-pitch+Radian(-1.570796));
 				}
 		}
 		else if(pitch>Radian(1.5707)){
 			if(this->pitch_<0.0) {
-				//this->weaponNode->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
 				this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
 				}
 			else if(pitch>Radian(1.571)){ 
-				//this->weaponNode->pitch(-pitch+Radian(1.570796));
 				this->cameraPositionRootNode_->pitch(-pitch+Radian(1.570796));
 				}
 		}
-		//this->weaponNode->setOrientation(this->cameraPositionRootNode_->getOrientation());
+		this->weaponNode_->setOrientation(this->cameraPositionRootNode_->getOrientation());
 		
 	    }
 
             this->yaw_ = this->pitch_ = this->roll_ = 0;
 	    
-	    //Quaternion q=this->getOrientation();
-	    //if( q.y<0.99 ) this->setOrientation(q.w, q.x, 1.0, q.z);
 	    this->setAngularVelocity(0.0, 0.0, 0.0);
 	    savedOrientation_=this->getOrientation();
         }
@@ -207,13 +199,13 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
             if (this->mesh_.getEntity())
-                this->weaponNode->detachObject(this->mesh_.getEntity());
+                this->weaponNode_->detachObject(this->mesh_.getEntity());
 
             this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
 
             if (this->mesh_.getEntity())
             {
-                this->weaponNode->attachObject(this->mesh_.getEntity());
+                this->weaponNode_->attachObject(this->mesh_.getEntity());
             }
         }
     }
@@ -273,18 +265,18 @@ namespace orxonox
     
     void FpsPlayer::boost()					//acctually jump
     {
-        if(isfloor) { 
-		if(!thistickboost) this->localVelocity_.y = jumpvalue;
+        if(isFloor_) { 
+		if(!thisTickBoost_) this->localVelocity_.y = jumpValue_;
 		//this->physicalBody_->applyCentralImpulse(btVector3(0, jumpvalue, 0));
-		thistickboost=true;
-		isfloor=false;
+		thisTickBoost_=true;
+		isFloor_=false;
 	}
     }
 
     bool FpsPlayer::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-	if(contactPoint.m_normalWorldOnB.y() > 0.6) isfloor=true;
-	else isfloor=false;
+	if(contactPoint.m_normalWorldOnB.y() > 0.6) isFloor_=true;
+	else isFloor_=false;
 	
 	return false;
     }
@@ -298,7 +290,7 @@ namespace orxonox
 	    {
 	        weapon->getWeaponSlot()->removeWeapon();
 	        weapon->detachFromParent();
-		weapon->attachToNode(this->weaponNode);
+		weapon->attachToNode(this->weaponNode_);
 	    }
 	}
     }

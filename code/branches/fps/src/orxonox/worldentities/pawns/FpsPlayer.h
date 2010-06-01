@@ -83,7 +83,7 @@ namespace orxonox
             float primaryThrust_;
             float auxilaryThrust_;
             float rotationThrust_;
-	    std::string weaponmashname;
+	    std::string weaponMashName_;
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
 
@@ -98,12 +98,11 @@ namespace orxonox
             float pitch_;
             float roll_;
             Vector3 localVelocity_;
-	    bool isfloor;
-	    bool thistickboost;
+	    bool isFloor_;
+	    bool thisTickBoost_;
 	    Quaternion savedOrientation_;
-	    Ogre::SceneNode* weaponNode;
-	    Ogre::Camera* camera_;
-    };
+	    Ogre::SceneNode* weaponNode_;
+	};
 }
 
 #endif /* _FpsPlayer_H__ */
