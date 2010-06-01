@@ -39,8 +39,8 @@
 #include <map>
 #include "QuestItem.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
     namespace QuestHintStatus
     {
         //! The state of the hint.
@@ -65,8 +65,9 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestsystemExport QuestHint : public QuestItem
-    {
+    class _QuestsystemExport QuestHint // tolua_export
+        : public QuestItem
+    { // tolua_export
 
         public:
             QuestHint(BaseObject* creator);
@@ -90,8 +91,8 @@ namespace orxonox
             Quest* quest_; //!< The Quest the QuestHint belongs to.
             std::map<const PlayerInfo*, QuestHintStatus::Value> playerStatus_; //!< List of the states for each player, with the Player-pointer as key.
 
-    };
+    }; // tolua_export
 
-}
+} // tolua_export
 
 #endif /* _QuestHint_H__ */

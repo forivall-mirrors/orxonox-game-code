@@ -35,7 +35,6 @@
 #define _QuestManager_H__
 
 #include "questsystem/QuestsystemPrereqs.h"
-#include <CEGUIForwardRefs.h>
 
 #include <list>
 #include <map>
@@ -43,8 +42,6 @@
 
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
-
-#include "QuestGUI.h"
 
 // tolua_begin
 namespace orxonox
@@ -62,7 +59,6 @@ namespace orxonox
     { // tolua_export
 
             friend class Singleton<QuestManager>;
-            friend class QuestGUI;
 
         public:
             QuestManager();
@@ -71,8 +67,19 @@ namespace orxonox
             //! Returns a reference to the single instance of the Quest Manager.
             static QuestManager& getInstance() { return Singleton<QuestManager>::getInstance(); } // tolua_export
 
-            //! Retrieve the main window for the GUI.
-            CEGUI::Window* getQuestGUI(const std::string & guiName); // tolua_export
+            // tolua_begin
+            int getNumParentQuests(orxonox::PlayerInfo* player);
+            Quest* getParentQuest(orxonox::PlayerInfo* player, int index);
+
+            int getNumSubQuests(Quest* quest, orxonox::PlayerInfo* player);
+            Quest* getSubQuest(Quest* quest, orxonox::PlayerInfo* player, int index);
+
+            int getNumHints(Quest* quest, orxonox::PlayerInfo* player);
+            QuestHint* getHints(Quest* quest, orxonox::PlayerInfo* player, int index);
+
+            QuestDescription* getDescription(Quest* item);
+            QuestDescription* getDescription(QuestHint* item);
+            // tolua_end
 
             bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
             bool unregisterQuest(Quest* quest); //!< Unregisters a Quest in the QuestManager.
@@ -91,8 +98,6 @@ namespace orxonox
 
             std::map<std::string, Quest*> questMap_; //!< All Quests registered by their id's.
             std::map<std::string, QuestHint*> hintMap_; //!< All QuestHints registered by their id's.
-
-            std::map<PlayerInfo*, QuestGUI*> questGUIs_; //!< All GUI's registered by the players.
 
     }; // tolua_export
 

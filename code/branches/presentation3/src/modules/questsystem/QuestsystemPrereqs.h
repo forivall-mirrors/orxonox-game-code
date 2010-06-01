@@ -76,8 +76,6 @@ namespace orxonox
     class QuestDescription;
     class QuestEffect;
     class QuestEffectBeacon;
-    class QuestGUI;
-    class QuestGUINode;
     class QuestHint;
     class QuestItem;
     class QuestListener;

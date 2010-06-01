@@ -61,6 +61,7 @@ ORXONOX_ADD_LIBRARY(orxonox
     MoodManager.h
     controllers/HumanController.h
     interfaces/Pickupable.h
+    infos/PlayerInfo.h
     sound/SoundManager.h
   DEFINE_SYMBOL
     "ORXONOX_SHARED_BUILD"

@@ -5,7 +5,6 @@
 
 <?lua
   include("templates/spaceship_assff.oxt")
-  include("templates/spaceship_pirate.oxt")
   include("templates/pickup_representation_templates.oxt")
   include("templates/lodinformation.oxt")
 ?>

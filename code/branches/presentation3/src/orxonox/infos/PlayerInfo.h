@@ -34,10 +34,11 @@
 #include "Info.h"
 #include "core/SubclassIdentifier.h"
 
-namespace orxonox
-{
-    class _OrxonoxExport PlayerInfo : public Info
-    {
+namespace orxonox // tolua_export
+{ // tolua_export
+    class _OrxonoxExport PlayerInfo // tolua_export
+        : public Info
+    { // tolua_export
         public:
             PlayerInfo(BaseObject* creator);
             virtual ~PlayerInfo();
@@ -102,7 +103,7 @@ namespace orxonox
 
             const GametypeInfo* gtinfo_;
             unsigned int gtinfoID_;
-    };
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _PlayerInfo_H__ */

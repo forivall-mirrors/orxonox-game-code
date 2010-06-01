@@ -246,7 +246,6 @@ function P.createDetailsWindow(pickupIndex)
     
 end
 
--- TODO: Smarter
 function P.getNewDetailNumber()
     local number = table.getn(P.detailsWindows)
     for k,v in pairs(P.detailsWindows) do

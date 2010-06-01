@@ -73,11 +73,7 @@ namespace orxonox
     */
     QuestManager::~QuestManager()
     {
-        for(std::map<PlayerInfo*, QuestGUI*>::iterator it = this->questGUIs_.begin(); it != this->questGUIs_.end(); it++)
-        {
-            it->second->destroy();
-        }
-        this->questGUIs_.clear();
+        
     }
 
     /**
@@ -243,23 +239,81 @@ namespace orxonox
 
     }
 
-    /**
-    @brief
-        Retreive the main window for the GUI.
-        This is for the use in the lua script tu start the QuestGUI.
-    @param guiName
-        The name of the GUI.
-    @return
-        Returns a CEGUI Window.
-    */
-    CEGUI::Window* QuestManager::getQuestGUI(const std::string & guiName)
+    int QuestManager::getNumParentQuests(PlayerInfo* player)
     {
-        PlayerInfo* player = this->retrievePlayer(guiName);
+        int numQuests = 0;
+        for(std::map<std::string, Quest*>::iterator it = this->questMap_.begin(); it != this->questMap_.end(); it++)
+        {
+            if(it->second->getParentQuest() == NULL && !it->second->isInactive(player))
+                numQuests++;
+        }
+        return numQuests;
+    }
+    
+    Quest* QuestManager::getParentQuest(PlayerInfo* player, int index)
+    {
+        for(std::map<std::string, Quest*>::iterator it = this->questMap_.begin(); it != this->questMap_.end(); it++)
+        {
+            if(it->second->getParentQuest() == NULL && !it->second->isInactive(player) && index-- == 0)
+                return it->second;
+        }
+        return NULL;
+    }
 
-        if(this->questGUIs_.find(player) == this->questGUIs_.end()) //!< Create a new GUI, if there is none, yet.
-            this->questGUIs_[player] = new QuestGUI(player);
+    int QuestManager::getNumSubQuests(Quest* quest, PlayerInfo* player)
+    {
+        std::list<Quest*> quests = quest->getSubQuestList();
+        int numQuests = 0;
+        for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
+        {
+            if(!(*it)->isInactive(player))
+                numQuests++;
+        }
+        return numQuests;
+    }
+    
+    Quest* QuestManager::getSubQuest(Quest* quest, PlayerInfo* player, int index)
+    {
+        std::list<Quest*> quests = quest->getSubQuestList();
+        for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
+        {
+            if(!(*it)->isInactive(player) && index-- == 0)
+                return *it;
+        }
+        return NULL;
+    }
 
-        return this->questGUIs_[player]->getGUI();
+    int QuestManager::getNumHints(Quest* quest, PlayerInfo* player)
+    {
+        std::list<QuestHint*> hints = quest->getHintsList();
+        int numHints = 0;
+        for(std::list<QuestHint*>::iterator it = hints.begin(); it != hints.end(); it++)
+        {
+            if((*it)->isActive(player))
+                numHints++;
+        }
+        return numHints;
+    }
+    
+    QuestHint* QuestManager::getHints(Quest* quest, PlayerInfo* player, int index)
+    {
+        std::list<QuestHint*> hints = quest->getHintsList();
+        for(std::list<QuestHint*>::iterator it = hints.begin(); it != hints.end(); it++)
+        {
+            if((*it)->isActive(player) && index-- == 0)
+                return *it;
+        }
+        return NULL;
+    }
+
+    QuestDescription* QuestManager::getDescription(Quest* item)
+    {
+        return item->getDescription();
+    }
+
+    QuestDescription* QuestManager::getDescription(QuestHint* item)
+    {
+        return item->getDescription();
     }
 
     /**

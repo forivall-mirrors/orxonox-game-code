@@ -157,7 +157,7 @@ gametype=TeamDeathmatch
 		<QuestEffectBeacon position="250,-300,-1500" times=1>
 					<attached>
 						<Billboard position="0,0,0" scale=3 colour="1.0,1.0,0" material="Examples/Flare" />
-						<DistanceTrigger name=questbeacon2  targetname=Me position="0,0,0" distance=400 target="Pawn" />
+						<DistanceTrigger name=questbeacon2 targetname=Me position="0,0,0" target=DistanceTriggerBeacon distance=400 />
 					</attached>
 					<effects>
 						<AddQuest questId="3159b4d4-bc86-4190-ba1d-4530668dfe31" />
