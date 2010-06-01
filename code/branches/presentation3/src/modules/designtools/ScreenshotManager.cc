@@ -38,14 +38,14 @@ namespace orxonox
         mWindowWidth   = pRenderWindow->getWidth();
         mWindowHeight  = pRenderWindow->getHeight();
         //create temporary texture
-        mTempTex = Ogre::TextureManager::getSingleton().createManual("ScreenShotTex", 
+        mTempTex = Ogre::TextureManager::getSingleton().createManual("ScreenShotTex",
                                                                   Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D,
-                                                                    mWindowWidth, mWindowHeight,0, Ogre::PF_B8G8R8, Ogre::TU_RENDERTARGET); 
-        
+                                                                    mWindowWidth, mWindowHeight,0, Ogre::PF_B8G8R8, Ogre::TU_RENDERTARGET);
+
         //get The current Render Target of the temp Texture
         mRT = mTempTex->getBuffer()->getRenderTarget();
 
-        //HardwarePixelBufferSharedPtr to the Buffer of the temp Texture 
+        //HardwarePixelBufferSharedPtr to the Buffer of the temp Texture
         mBuffer = mTempTex->getBuffer();
 
         //create PixelBox
@@ -71,13 +71,13 @@ namespace orxonox
         Ogre::Camera* camera = CameraManager::getInstance().getActiveCamera()->getOgreCamera();
         std::string fileName = PathConfig::getInstance().getLogPathString() + "screenshot_" + this->getTimestamp();
 
-        //Remove all viewports, so the added Viewport(camera) ist the only 
+        //Remove all viewports, so the added Viewport(camera) ist the only
         mRT->removeAllViewports();
         mRT->addViewport(camera);
-                
+
         //set the viewport settings
         Ogre::Viewport *vp = mRT->getViewport(0);
-        vp->setClearEveryFrame(true);  
+        vp->setClearEveryFrame(true);
         vp->setOverlaysEnabled(false);
 
         // remind current overlay flag
@@ -102,49 +102,49 @@ namespace orxonox
             Ogre::Real originalFrustumLeft, originalFrustumRight, originalFrustumTop, originalFrustumBottom;
             // set the original Frustum extents
             camera->getFrustumExtents(originalFrustumLeft, originalFrustumRight, originalFrustumTop, originalFrustumBottom);
-            
+
             // compute the Stepsize for the drid
             Ogre::Real frustumGridStepHorizontal  = (originalFrustumRight * 2) / mGridSize;
             Ogre::Real frustumGridStepVertical  = (originalFrustumTop * 2) / mGridSize;
 
             // process each grid
             Ogre::Real frustumLeft, frustumRight, frustumTop, frustumBottom;
-            for (unsigned int nbScreenshots = 0; nbScreenshots < mGridSize * mGridSize; nbScreenshots++) 
-            { 
-                int y = nbScreenshots / mGridSize; 
-                int x = nbScreenshots - y * mGridSize; 
-                
+            for (unsigned int nbScreenshots = 0; nbScreenshots < mGridSize * mGridSize; nbScreenshots++)
+            {
+                int y = nbScreenshots / mGridSize;
+                int x = nbScreenshots - y * mGridSize;
+
                 // Shoggoth frustum extents setting
                 // compute the new frustum extents
                 frustumLeft    = originalFrustumLeft + frustumGridStepHorizontal * x;
                 frustumRight  = frustumLeft + frustumGridStepHorizontal;
                 frustumTop    = originalFrustumTop - frustumGridStepVertical * y;
                 frustumBottom  = frustumTop - frustumGridStepVertical;
-                
+
                 // set the frustum extents value to the camera
                 camera->setFrustumExtents(frustumLeft, frustumRight, frustumTop, frustumBottom);
 
                 // ignore time duration between frames
                 Ogre::Root::getSingletonPtr()->clearEventTimes();
                 mRT->update();    //render
-                
-                //define the current 
+
+                //define the current
                 Ogre::Box subBox = Ogre::Box(x* mWindowWidth,y * mWindowHeight,x * mWindowWidth + mWindowWidth, y * mWindowHeight + mWindowHeight);
-                //copy the content from the temp buffer into the final picture PixelBox 
+                //copy the content from the temp buffer into the final picture PixelBox
                 //Place the tempBuffer content at the right position
                 mBuffer->blitToMemory(mFinalPicturePB.getSubVolume(subBox));
 
             }
-            
+
             // set frustum extents to previous settings
             camera->resetFrustumExtents();
-            
+
             Ogre::Image finalImage; //declare the final Image Object
             //insert the PixelBox data into the Image Object
             finalImage = finalImage.loadDynamicImage(static_cast<unsigned char*>(mFinalPicturePB.data), mFinalPicturePB.getWidth(),mFinalPicturePB.getHeight(),Ogre::PF_B8G8R8);
             // Save the Final image to a file
             finalImage.save(fileName + "." + mFileExtension);
-            
+
         }
 
         // do we have to re-enable our overlays?
@@ -162,7 +162,7 @@ namespace orxonox
         time_t ctTime; time(&ctTime);
         pTime = localtime( &ctTime );
         std::ostringstream oss;
-        oss	<< std::setw(2) << std::setfill('0') << (pTime->tm_mon + 1)
+        oss << std::setw(2) << std::setfill('0') << (pTime->tm_mon + 1)
             << std::setw(2) << std::setfill('0') << pTime->tm_mday
             << std::setw(2) << std::setfill('0') << (pTime->tm_year + 1900)
             << "_" << std::setw(2) << std::setfill('0') << pTime->tm_hour

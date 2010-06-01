@@ -79,7 +79,7 @@ namespace orxonox
         this->numberOf[piggy]=0;
         this->numberOf[killer]=0;
         this->tutorial=true;
-	this->pointsPerTime=0.0f;
+        this->pointsPerTime=0.0f;
         this->setHUDTemplate("DynamicmatchHUD");
     }
 
@@ -90,10 +90,10 @@ namespace orxonox
         SetConfigValue(tutorial, true);
         static ColourValue colours[] =
         {
-            ColourValue(1.0f, 0.3f, 0.3f),	//chasercolour
-            ColourValue(0.3f, 0.3f, 1.0f),	//piggycolour
-            ColourValue(0.3f, 1.0f, 0.3f)	//killercolour  what about black: 0.0f, 0.0f, 0.0f
-            
+            ColourValue(1.0f, 0.3f, 0.3f),  //chasercolour
+            ColourValue(0.3f, 0.3f, 1.0f),  //piggycolour
+            ColourValue(0.3f, 1.0f, 0.3f)   //killercolour  what about black: 0.0f, 0.0f, 0.0f
+
         };
         static std::vector<ColourValue> defaultcolours(colours, colours + sizeof(colours) / sizeof(ColourValue));
 
@@ -101,7 +101,7 @@ namespace orxonox
     }
 
     bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)
-    {	//TODO: static and fading message for the "human" player's
+    { //TODO: static and fading message for the "human" player's
         if (!originator||!victim)
             return false;
         if (!originator->getPlayer()||!victim->getPlayer())
@@ -114,12 +114,12 @@ namespace orxonox
             //Case: Not Enough Pigs: party change (= party management)
             if (notEnoughPigs)
             {
-                numberOf[target]--;				//decrease numberof victims's party
-                playerParty_[victim->getPlayer()]=piggy;	//victim's new party: pig
-                setPlayerColour(victim->getPlayer());		//victim's new colour
-                numberOf[piggy]++;				//party switch: number of players is not affected (decrease and increase)
+                numberOf[target]--; //decrease numberof victims's party
+                playerParty_[victim->getPlayer()]=piggy; //victim's new party: pig
+                setPlayerColour(victim->getPlayer()); //victim's new colour
+                numberOf[piggy]++; //party switch: number of players is not affected (decrease and increase)
 
-                    if(tutorial)				//announce party switch
+                    if(tutorial) //announce party switch
                     {
                          std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(victim->getPlayer());
                          if (it2 != this->players_.end())
@@ -128,14 +128,14 @@ namespace orxonox
                               this->gtinfo_->sendFadingMessage("You're now a victim.",it2->first->getClientID());
                          }
                     }
-                    if (notEnoughKillers) 			//reward the originator
+                    if (notEnoughKillers) //reward the originator
                     {
-                        numberOf[source]--;			//decrease numberof originator's party
-                        playerParty_[originator->getPlayer()]=killer;		//originator's new party: killer
-                        setPlayerColour(originator->getPlayer());		//originator's new colour
+                        numberOf[source]--; //decrease numberof originator's party
+                        playerParty_[originator->getPlayer()]=killer; //originator's new party: killer
+                        setPlayerColour(originator->getPlayer()); //originator's new colour
                         numberOf[killer]++;
 
-                        if(tutorial)				//announce party switch
+                        if(tutorial) //announce party switch
                         {
                              std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
                              if (it3 != this->players_.end())
@@ -145,8 +145,8 @@ namespace orxonox
                              }
                         }
                     }
-                evaluatePlayerParties(); 			//check if the party change has to trigger futher party changes
-			
+                evaluatePlayerParties(); //check if the party change has to trigger futher party changes
+
                 //Give new pig boost
                 SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
                 if (spaceship && spaceship->getEngine())
@@ -160,13 +160,13 @@ namespace orxonox
             //Case: notEnoughKillers: party change
             else if (notEnoughKillers)
             {
-                numberOf[source]--; 	//decrease numberof originator's party
-                playerParty_[originator->getPlayer()]=killer; 	//originator's new party: killer
-                setPlayerColour(originator->getPlayer()); 	//originator colour
-                numberOf[killer]++;				//party switch: number of players is not affected (decrease and increase)
+                numberOf[source]--; //decrease numberof originator's party
+                playerParty_[originator->getPlayer()]=killer; //originator's new party: killer
+                setPlayerColour(originator->getPlayer()); //originator colour
+                numberOf[killer]++; //party switch: number of players is not affected (decrease and increase)
 
 
-                if(tutorial)				//announce party switch
+                if(tutorial) //announce party switch
                 {
                      std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
                      if (it3 != this->players_.end())
@@ -175,30 +175,30 @@ namespace orxonox
                           this->gtinfo_->sendFadingMessage("You're now a killer.",it3->first->getClientID());
                      }
                 }
-                evaluatePlayerParties();			//check if the party change has to trigger futher party changes
+                evaluatePlayerParties(); //check if the party change has to trigger futher party changes
             }
             //Case: notEnoughChasers: party change
             else if (notEnoughChasers)
             {
-                numberOf[target]--; 	//decrease numberof victims's party
-                playerParty_[victim->getPlayer()]=chaser; 	//victim's new party: chaser
-                setPlayerColour(victim->getPlayer()); 		//victim colour
-                numberOf[chaser]++;				//party switch: number of players is not affected (decrease and increase)
+                numberOf[target]--; //decrease numberof victims's party
+                playerParty_[victim->getPlayer()]=chaser; //victim's new party: chaser
+                setPlayerColour(victim->getPlayer()); //victim colour
+                numberOf[chaser]++; //party switch: number of players is not affected (decrease and increase)
 
-                if(tutorial)					//announce party switch
+                if(tutorial) //announce party switch
                 {
                      std::map<PlayerInfo*, Player>::iterator it3 = this->players_.find(originator->getPlayer());
                      if (it3 != this->players_.end())
                      {
                           if (numberOf[killer]>0)
                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it3->first->getClientID(),partyColours_[piggy]);
-                              
+
                           else
                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible.",it3->first->getClientID(),partyColours_[piggy]);
                           this->gtinfo_->sendFadingMessage("You're now a chaser.",it3->first->getClientID());
                      }
                 }
-                evaluatePlayerParties();			//check if the party change has to trigger futher party changes
+                evaluatePlayerParties(); //check if the party change has to trigger futher party changes
             }
 
             //Case: chaser vs. killer
@@ -223,16 +223,16 @@ namespace orxonox
                 playerParty_[victim->getPlayer()]=piggy;
                 playerParty_[originator->getPlayer()]=chaser;
 
-                //party switch -> colour switch		
+                //party switch -> colour switch
                 setPlayerColour(victim->getPlayer()); //victim colour
                 setPlayerColour(originator->getPlayer());//originator colour
-                
+
                 //Announce pary switch
                 if(tutorial)
                 {
                      std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
                      if (it != this->players_.end())
-                     {    
+                     {
                           if (numberOf[killer]>0)
                               this->gtinfo_->sendStaticMessage("Shoot at the victim as often as possible. Defend yourself against the killers.",it->first->getClientID(), partyColours_[piggy]);
                           else
@@ -257,13 +257,13 @@ namespace orxonox
 
             }
             // killer vs piggy
-            else if (source==killer &&target==piggy)		//party and colour switch	
+            else if (source==killer &&target==piggy) //party and colour switch
             {
             playerParty_[victim->getPlayer()]=killer;
             playerParty_[originator->getPlayer()]=piggy;
 
-            setPlayerColour(victim->getPlayer()); 		//victim colour
-            setPlayerColour(originator->getPlayer());		//originator colour
+            setPlayerColour(victim->getPlayer()); //victim colour
+            setPlayerColour(originator->getPlayer()); //originator colour
 
             if(tutorial) //Announce pary switch
             {
@@ -297,30 +297,30 @@ namespace orxonox
 
 
     bool Dynamicmatch::allowPawnDeath(Pawn* victim, Pawn* originator)
-    {	
+    {
         //killers can kill chasers and killers can be killed by chasers
         if ((playerParty_[originator->getPlayer()] == killer && playerParty_[victim->getPlayer()] == chaser)||(playerParty_[victim->getPlayer()] == killer &&
         playerParty_[originator->getPlayer()] == chaser ))
         {
-            if (playerParty_[originator->getPlayer()] == killer)	//reward the killer
+            if (playerParty_[originator->getPlayer()] == killer) //reward the killer
             {
                 std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
                 if (it != this->players_.end())
                 {
-                    it->second.frags_+=20;	//value must be tested
+                    it->second.frags_+=20; //value must be tested
                 }
             }
         return true;
         }
         else return false;
     }
-    
+
     void Dynamicmatch::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn) //set party + colouring
     {
         if (!player)
             return;
-	
-        Dynamicmatch::setPlayerColour(player);	//Set playercolour
+
+        Dynamicmatch::setPlayerColour(player); //Set playercolour
         evaluatePlayerParties();
     }
 
@@ -328,7 +328,7 @@ namespace orxonox
     {
         if (!player)// only for safety
             return;
-        playerParty_[player]=chaser;		//Set playerparty
+        playerParty_[player]=chaser; //Set playerparty
         numberOf[chaser]++;
         Gametype::playerEntered(player);
         const std::string& message6 = player->getName() + " entered the game";
@@ -350,9 +350,9 @@ namespace orxonox
             const std::string& message = player->getName() + " left the game";
             COUT(0) << message << std::endl;
             Host::Broadcast(message);
-		//remove player from map
+            //remove player from map
             playerParty_.erase (player);
-		//adjust player parties
+            //adjust player parties
             evaluatePlayerParties();
         }
 
@@ -375,9 +375,9 @@ namespace orxonox
             if (gameTime_<= 0)
             {
                 this->gameEnded_ = true;
-                this->end();        
+                this->end();
             }
-	    if ( gameTime_ <= timesequence_ && gameTime_ > 0)
+            if ( gameTime_ <= timesequence_ && gameTime_ > 0)
             {
                 const std::string& message = multi_cast<std::string>(timesequence_) + " seconds left!";
 
@@ -396,7 +396,7 @@ namespace orxonox
                     timesequence_ = timesequence_ - 30;
                 }
             }
-	}
+        }
     }
 
     void Dynamicmatch::rewardPig()
@@ -432,7 +432,7 @@ namespace orxonox
                     }
                 }
             }
-	}
+    }
 
     void Dynamicmatch::evaluatePlayerParties() //manages the notEnough booleans (here the percentage of special players is implemented)
     {
@@ -482,7 +482,7 @@ namespace orxonox
                            //this->gtinfo_->sendFadingMessage("You're now a killer.",it->first->getClientID());
                        }
                   }
-                  
+
              }
         }
         //killers: every 4th player is a killer
@@ -531,9 +531,9 @@ namespace orxonox
                            //this->gtinfo_->sendFadingMessage("You're now a killer.",it->first->getClientID());
                        }
                   }
-                  
+
              }
-            
+
         }
         //chasers: there are more chasers than killers + pigs
         if (numberOf[piggy]+numberOf[killer] > numberOf[chaser])
@@ -581,9 +581,9 @@ namespace orxonox
                            //this->gtinfo_->sendFadingMessage("You're now a killer.",it->first->getClientID());
                        }
                   }
-                  
+
              }
-        }	
+        }
     }
 
     int Dynamicmatch::getParty(PlayerInfo* player) // helper function for ArtificialController
@@ -613,8 +613,8 @@ namespace orxonox
         return valid_player;
     }
 
-    void Dynamicmatch::start() 
-    {	
+    void Dynamicmatch::start()
+    {
         Gametype::start();
         if(!tutorial)
         {
@@ -631,7 +631,7 @@ namespace orxonox
                 this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
             }
         }
-    }	
+    }
 
     /*void Dynamicmatch::instructions()
     {

@@ -20,7 +20,7 @@ namespace orxonox
 {
 
 
-    /* Class encapsulates Screenshot functionality and provides a method for making multi grid screenshots.	
+    /* Class encapsulates Screenshot functionality and provides a method for making multi grid screenshots.
     *  pRenderWindow:    Pointer to the render window.  This could be "mWindow" from the ExampleApplication,
     *              the window automatically created obtained when calling
     *              Ogre::Root::getSingletonPtr()->initialise(false) and retrieved by calling
@@ -47,7 +47,7 @@ namespace orxonox
 
         static void makeScreenshot_s()
             { getInstance().makeScreenshot(); }
-      
+
     protected:
         static std::string getTimestamp();
 
