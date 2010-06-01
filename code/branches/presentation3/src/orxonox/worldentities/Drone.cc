@@ -43,12 +43,12 @@ namespace orxonox
         RegisterObject(Drone);
 
         this->myController_ = 0;
-        
+
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
         this->setRadarVisibility(false);
         this->setCollisionType(WorldEntity::Dynamic);
-        
+
         myController_ = new DroneController(static_cast<BaseObject*>(this)); //!< Creates a new controller and passes our this pointer to it as creator.
         myController_->setDrone(this);
 
@@ -62,7 +62,7 @@ namespace orxonox
     Drone::~Drone()
     {
         if( this->isInitialized() && this->myController_ )
-            delete this->myController_;
+            this->myController_->destroy();
     }
 
     /**
@@ -91,7 +91,7 @@ namespace orxonox
     void Drone::tick(float dt)
     {
         SUPER(Drone, tick, dt);
-        
+
         //if (this->hasLocalController())
         //{
             this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
@@ -102,13 +102,13 @@ namespace orxonox
               this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() * getMass() * this->primaryThrust_);
             this->physicalBody_->applyCentralForce(physicalBody_->getWorldTransform().getBasis() * this->localLinearAcceleration_);
             this->localLinearAcceleration_.setValue(0, 0, 0);
-        
+
             this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
             this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
             this->localAngularAcceleration_.setValue(0, 0, 0);
         //}
     }
-    
+
     /**
     @brief
         Moves the Drone in the negative z-direction (Front/Back) by an amount specified by the first component of the input 2-dim vector.
@@ -174,5 +174,5 @@ namespace orxonox
     {
         this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() + value.x);
     }
-    
+
 }

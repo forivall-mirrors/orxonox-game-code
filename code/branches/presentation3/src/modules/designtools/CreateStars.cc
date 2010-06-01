@@ -33,7 +33,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "graphics/Billboard.h"
- 
+
 namespace orxonox
 {
     CreateFactory(CreateStars);
@@ -55,9 +55,9 @@ namespace orxonox
 
     CreateStars::~CreateStars()
     {
-        while( billboards_.size()!=0 ) 
+        while( billboards_.size()!=0 )
         {
-            delete(billboards_.back());
+            billboards_.back()->destroy();
             billboards_.pop_back();
 
         }
@@ -68,7 +68,7 @@ namespace orxonox
     void CreateStars::createBillboards()
     {
 
-        for(int i=0; i < numStars_; i++) 
+        for(int i=0; i < numStars_; i++)
         {
             Billboard* bb = new Billboard(this);
 
@@ -87,7 +87,7 @@ namespace orxonox
             float phi;
             float teta;
 
-            while(1) 
+            while(1)
             {
                 phi = rnd(2*pi);
                 teta = rnd(pi);
@@ -100,7 +100,7 @@ namespace orxonox
         }
     }
 
-    Vector3 CreateStars::PolarToCartesian(float phi, float teta, float radius) 
+    Vector3 CreateStars::PolarToCartesian(float phi, float teta, float radius)
     {
         float x = radius * cos(phi) * sin(teta);
         float y = radius * sin(phi) * sin(teta);
