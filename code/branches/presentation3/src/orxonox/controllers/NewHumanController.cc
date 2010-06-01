@@ -377,7 +377,15 @@ namespace orxonox
             if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" /*&& itr->distance > 500*/)
             {
                 // Try to cast the user pointer
-                WorldEntity* wePtr = dynamic_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
+                WorldEntity* wePtr;
+                try
+                {
+                    wePtr = dynamic_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
+                }
+                catch (...)
+                {
+                    continue;
+                }
 
                 // make sure we don't shoot ourselves
                 if( wePtr==myWe )
