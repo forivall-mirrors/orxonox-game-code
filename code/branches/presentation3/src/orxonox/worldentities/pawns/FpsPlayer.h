@@ -57,21 +57,21 @@ namespace orxonox
             virtual void rotateYaw(const Vector2& value);
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
-	    
-	    
+
+
             inline void setMeshSource(const std::string& meshname)
                 { this->meshSrc_ = meshname; this->changedMesh(); }
             inline const std::string& getMeshSource() const
                 { return this->meshSrc_; }
-	    
-	    void boost();						//acctually jump
+
+            void boost(); //acctually jump
 
             virtual void fire();
-	    
-	    bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
 
-	    virtual void addedWeaponPack(WeaponPack* wPack);
-            
+            bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+
+            virtual void addedWeaponPack(WeaponPack* wPack);
+
         protected:
             virtual void setPlayer(PlayerInfo* player);
             virtual void startLocalHumanControl();
@@ -83,7 +83,7 @@ namespace orxonox
             float primaryThrust_;
             float auxilaryThrust_;
             float rotationThrust_;
-	    std::string weaponMashName_;
+            std::string weaponMashName_;
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
 
@@ -91,18 +91,18 @@ namespace orxonox
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
             float speed_;
 
-	    void changedMesh();
-	    Mesh mesh_;
-	    std::string meshSrc_;
+            void changedMesh();
+            Mesh mesh_;
+            std::string meshSrc_;
             float yaw_;
             float pitch_;
             float roll_;
             Vector3 localVelocity_;
-	    bool isFloor_;
-	    bool thisTickBoost_;
-	    Quaternion savedOrientation_;
-	    Ogre::SceneNode* weaponNode_;
-	};
+            bool isFloor_;
+            bool thisTickBoost_;
+            Quaternion savedOrientation_;
+            Ogre::SceneNode* weaponNode_;
+    };
 }
 
 #endif /* _FpsPlayer_H__ */

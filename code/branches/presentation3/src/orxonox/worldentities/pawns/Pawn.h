@@ -76,7 +76,7 @@ namespace orxonox // tolua_export
             { this->shieldHealth_ = shieldHealth; }
             inline float getShieldHealth()
             { return this->shieldHealth_; }
-            
+
             inline void setShieldAbsorption(float shieldAbsorption)
             { this->shieldAbsorption_ = shieldAbsorption; }
             inline float getShieldAbsorption()
@@ -100,8 +100,8 @@ namespace orxonox // tolua_export
             void addWeaponPack(WeaponPack * wPack);
             void addWeaponPackXML(WeaponPack * wPack);
             WeaponPack * getWeaponPack(unsigned int index) const;
-	    
-	    virtual void addedWeaponPack(WeaponPack* wPack) {}
+
+            virtual void addedWeaponPack(WeaponPack* wPack) {}
 
             inline const WorldEntity* getWorldEntity() const
                 { return const_cast<Pawn*>(this); }
@@ -127,7 +127,7 @@ namespace orxonox // tolua_export
                 { this->aimPosition_ = position; }
             Vector3 getAimPosition()
                 { return this->aimPosition_; }
-                
+
             virtual const Vector3& getCarrierPosition(void)
                 { return this->getWorldPosition(); };
 

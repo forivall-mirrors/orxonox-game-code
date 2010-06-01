@@ -215,11 +215,12 @@ namespace orxonox
                 if (!controlPaused_ )
                 {
                     if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
-                        {this->showOverlays();}
-			
-		    if (this->getControllableEntity() &&  this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))\
-			{this->showOverlays();
-			this->hideArrows();}
+                        this->showOverlays();
+                    else if (this->getControllableEntity() &&  this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))
+                    {
+                        this->showOverlays();
+                        this->hideArrows();
+                    }
 
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5f-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5f-overlaySize_/2));
 
@@ -377,11 +378,11 @@ namespace orxonox
             {
                 // Try to cast the user pointer
                 WorldEntity* wePtr = dynamic_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
-                
+
                 // make sure we don't shoot ourselves
                 if( wePtr==myWe )
                     continue;
-                
+
                 if (wePtr)
                 {
                     // go through all parents of object and look whether they are sightable or not
@@ -591,9 +592,9 @@ namespace orxonox
             this->arrowsOverlay4_->hide();
         }
     }
-        
 
-    
+
+
 
 
 }

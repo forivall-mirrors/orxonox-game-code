@@ -59,7 +59,7 @@ namespace orxonox
         RegisterObject(FpsPlayer);
         this->speed_ = 200;
         this->localVelocity_ = Vector3::ZERO;
-/* 
+/*
  *        this->primaryThrust_  = 100;
  *        this->auxilaryThrust_ =  30;
  *        this->rotationThrust_ =  10;
@@ -69,7 +69,7 @@ namespace orxonox
  *        this->bBoost_ = false;
  *        this->bPermanentBoost_ = false;
  *        this->steering_ = Vector3::ZERO;
-*/      
+*/
 
 
         this->bInvertYAxis_ = false;
@@ -85,25 +85,25 @@ namespace orxonox
         this->setConfigValues();
         this->registerVariables();
 
-	//this->weaponNode = this->cameraPositionRootNode_;
-	this->weaponNode_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
-	this->attachNode(this->weaponNode_);
+        //this->weaponNode = this->cameraPositionRootNode_;
+        this->weaponNode_ = this->getScene()->getRootSceneNode()->createChildSceneNode();
+        this->attachNode(this->weaponNode_);
     }
 
     FpsPlayer::~FpsPlayer()
     {
-	if (this->isInitialized() && this->mesh_.getEntity())
+        if (this->isInitialized() && this->mesh_.getEntity())
             this->detachOgreObject(this->mesh_.getEntity());
     }
 
     void FpsPlayer::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(FpsPlayer, XMLPort, xmlelement, mode);
-        
+
         XMLPortParamVariable(FpsPlayer, "primaryThrust",  primaryThrust_,  xmlelement, mode);
         XMLPortParamVariable(FpsPlayer, "auxilaryThrust", auxilaryThrust_, xmlelement, mode);
         XMLPortParamVariable(FpsPlayer, "rotationThrust", rotationThrust_, xmlelement, mode);
-	XMLPortParam(FpsPlayer, "weapon", setMeshSource, getMeshSource, xmlelement, mode);
+        XMLPortParam(FpsPlayer, "weapon", setMeshSource, getMeshSource, xmlelement, mode);
     }
 
     void FpsPlayer::registerVariables()
@@ -111,10 +111,10 @@ namespace orxonox
         registerVariable(this->primaryThrust_,  VariableDirection::ToClient);
         registerVariable(this->auxilaryThrust_, VariableDirection::ToClient);
         registerVariable(this->rotationThrust_, VariableDirection::ToClient);
-	registerVariable(this->weaponMashName_);
+        registerVariable(this->weaponMashName_, VariableDirection::ToClient);
     }
-    
-   
+
+
 
     void FpsPlayer::setConfigValues()
     {
@@ -138,10 +138,10 @@ namespace orxonox
         if (this->hasLocalController())
         {
             this->setOrientation(savedOrientation_);
-	    
-	    thisTickBoost_=false;
-	    
-	    float localSpeedSquared = this->localVelocity_.squaredLength();
+
+            this->thisTickBoost_ = false;
+
+            float localSpeedSquared = this->localVelocity_.squaredLength();
             float localSpeed;
             if (localSpeedSquared > 1.0)
                 localSpeed = this->speed_ / sqrtf(localSpeedSquared);
@@ -150,9 +150,11 @@ namespace orxonox
 
             this->localVelocity_.x *= localSpeed;
             this->localVelocity_.z *= localSpeed;
-	    Vector3 temp = this->getOrientation() * this->localVelocity_;
-	    if(localVelocity_.y==jumpValue_) this->setVelocity(Vector3(temp.x, temp.y + this->getVelocity().y, temp.z));
-	    else this->setVelocity(Vector3(temp.x, this->getVelocity().y, temp.z));
+            Vector3 temp = this->getOrientation() * this->localVelocity_;
+            if (localVelocity_.y == jumpValue_)
+                this->setVelocity(Vector3(temp.x, temp.y + this->getVelocity().y, temp.z));
+            else
+                this->setVelocity(Vector3(temp.x, this->getVelocity().y, temp.z));
             this->localVelocity_.x = 0;
             this->localVelocity_.y = 0;
             this->localVelocity_.z = 0;
@@ -160,40 +162,38 @@ namespace orxonox
             if (!this->isInMouseLook())
             {
                 this->yaw(Radian(this->yaw_ * this->getMouseLookSpeed()), WorldEntity::Parent);
-		
-		Radian pitch=this->cameraPositionRootNode_->getOrientation().getPitch();
-		if( pitch<Radian(1.5707) && pitch>Radian(-1.5707) ) {
-			this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
-			}
-		else if(pitch<Radian(-1.5707)){
-			if(this->pitch_>0.0) {
-				this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
-				}
-			else if(pitch<Radian(-1.571)){
-				this->cameraPositionRootNode_->pitch(-pitch+Radian(-1.570796));
-				}
-		}
-		else if(pitch>Radian(1.5707)){
-			if(this->pitch_<0.0) {
-				this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
-				}
-			else if(pitch>Radian(1.571)){ 
-				this->cameraPositionRootNode_->pitch(-pitch+Radian(1.570796));
-				}
-		}
-		this->weaponNode_->setOrientation(this->cameraPositionRootNode_->getOrientation());
-		
-	    }
+
+                Radian pitch = this->cameraPositionRootNode_->getOrientation().getPitch();
+                if (pitch < Radian(1.5707) && pitch > Radian(-1.5707))
+                {
+                    this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+                }
+                else if (pitch < Radian(-1.5707))
+                {
+                    if (this->pitch_ > 0.0)
+                        this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+                    else if (pitch < Radian(-1.571))
+                        this->cameraPositionRootNode_->pitch(-pitch + Radian(-1.570796));
+                }
+                else if (pitch > Radian(1.5707))
+                {
+                    if (this->pitch_ < 0.0)
+                        this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
+                    else if (pitch > Radian(1.571))
+                        this->cameraPositionRootNode_->pitch(-pitch + Radian(1.570796));
+                }
+                this->weaponNode_->setOrientation(this->cameraPositionRootNode_->getOrientation());
+            }
 
             this->yaw_ = this->pitch_ = this->roll_ = 0;
-	    
-	    this->setAngularVelocity(0.0, 0.0, 0.0);
-	    savedOrientation_=this->getOrientation();
+
+            this->setAngularVelocity(0.0, 0.0, 0.0);
+            this->savedOrientation_ = this->getOrientation();
         }
 
         SUPER(FpsPlayer, tick, dt);
     }
-    
+
     void FpsPlayer::changedMesh()
     {
         if (GameMode::showsGraphics())
@@ -221,7 +221,7 @@ namespace orxonox
     {
         ControllableEntity::startLocalHumanControl();
     }
-    
+
     void FpsPlayer::moveFrontBack(const Vector2& value)
     {
         this->localVelocity_.z -= value.x;
@@ -262,36 +262,40 @@ namespace orxonox
     void FpsPlayer::fire()
     {
     }
-    
-    void FpsPlayer::boost()					//acctually jump
+
+    void FpsPlayer::boost() //acctually jump
     {
-        if(isFloor_) { 
-		if(!thisTickBoost_) this->localVelocity_.y = jumpValue_;
-		//this->physicalBody_->applyCentralImpulse(btVector3(0, jumpvalue, 0));
-		thisTickBoost_=true;
-		isFloor_=false;
-	}
+        if (this->isFloor_)
+        {
+            if (!this->thisTickBoost_)
+                this->localVelocity_.y = jumpValue_;
+            //this->physicalBody_->applyCentralImpulse(btVector3(0, jumpvalue, 0));
+            this->thisTickBoost_ = true;
+            this->isFloor_ = false;
+        }
     }
 
     bool FpsPlayer::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-	if(contactPoint.m_normalWorldOnB.y() > 0.6) isFloor_=true;
-	else isFloor_=false;
-	
-	return false;
+        if (contactPoint.m_normalWorldOnB.y() > 0.6)
+            this->isFloor_ = true;
+        else
+            this->isFloor_ = false;
+
+        return false;
     }
-    
+
     void FpsPlayer::addedWeaponPack(WeaponPack* wPack)
     {
         for (size_t i = 0; i < wPack->getNumWeapons(); ++i)
-	{
-	    Weapon* weapon = wPack->getWeapon(i);
-	    if (weapon->getWeaponSlot())
-	    {
-	        weapon->getWeaponSlot()->removeWeapon();
-	        weapon->detachFromParent();
-		weapon->attachToNode(this->weaponNode_);
-	    }
-	}
+        {
+            Weapon* weapon = wPack->getWeapon(i);
+            if (weapon->getWeaponSlot())
+            {
+                weapon->getWeaponSlot()->removeWeapon();
+                weapon->detachFromParent();
+                weapon->attachToNode(this->weaponNode_);
+            }
+        }
     }
 }

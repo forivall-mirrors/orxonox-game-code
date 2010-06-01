@@ -52,7 +52,7 @@ namespace orxonox
 {
     CreateFactory(Pawn);
 
-    Pawn::Pawn(BaseObject* creator) 
+    Pawn::Pawn(BaseObject* creator)
         : ControllableEntity(creator)
         , RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
@@ -362,21 +362,21 @@ namespace orxonox
     void Pawn::addWeaponPack(WeaponPack * wPack)
     {
         if (this->weaponSystem_)
-	{
+        {
             this->weaponSystem_->addWeaponPack(wPack);
-	    this->addedWeaponPack(wPack);
-	}
+            this->addedWeaponPack(wPack);
+        }
     }
 
     void Pawn::addWeaponPackXML(WeaponPack * wPack)
     {
         if (this->weaponSystem_)
-	{
+        {
             if (!this->weaponSystem_->addWeaponPack(wPack))
                 wPack->destroy();
-	    else
+            else
                 this->addedWeaponPack(wPack);
-	}
+        }
     }
 
     WeaponPack * Pawn::getWeaponPack(unsigned int index) const
