@@ -215,7 +215,11 @@ namespace orxonox
                 if (!controlPaused_ )
                 {
                     if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
-                        this->showOverlays();
+                        {this->showOverlays();}
+			
+		    if (this->getControllableEntity() &&  this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))\
+			{this->showOverlays();
+			this->hideArrows();}
 
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5f-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5f-overlaySize_/2));
 
@@ -436,7 +440,8 @@ namespace orxonox
         if (this->controlMode_ == 0 || (this->controllableEntity_ && this->controllableEntity_->isInMouseLook()))
             HumanController::yaw(value);
 
-        this->currentYaw_ = value.x;
+        if (this->getControllableEntity() && !this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))
+            this->currentYaw_ = value.x;
     }
 
     void NewHumanController::pitch(const Vector2& value)
@@ -445,7 +450,8 @@ namespace orxonox
         if (this->controlMode_ == 0 || (this->controllableEntity_ && this->controllableEntity_->isInMouseLook()))
             HumanController::pitch(value);
 
-        this->currentPitch_ = value.x;
+        if (this->getControllableEntity() && !this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))
+            this->currentPitch_ = value.x;
     }
 
     void NewHumanController::changeMode()

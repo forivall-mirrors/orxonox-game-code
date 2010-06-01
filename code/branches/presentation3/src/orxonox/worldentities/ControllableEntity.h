@@ -163,6 +163,8 @@ namespace orxonox
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
 
+            Ogre::SceneNode* cameraPositionRootNode_;
+
         private:
             void setXMLController(Controller* controller);
 
@@ -209,7 +211,6 @@ namespace orxonox
             Camera* camera_;
             bool bMouseLook_;
             float mouseLookSpeed_;
-            Ogre::SceneNode* cameraPositionRootNode_;
             std::list<SmartPtr<CameraPosition> > cameraPositions_;
             CameraPosition* currentCameraPosition_;
             std::string cameraPositionTemplate_;

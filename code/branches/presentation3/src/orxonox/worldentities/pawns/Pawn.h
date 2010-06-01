@@ -100,6 +100,8 @@ namespace orxonox // tolua_export
             void addWeaponPack(WeaponPack * wPack);
             void addWeaponPackXML(WeaponPack * wPack);
             WeaponPack * getWeaponPack(unsigned int index) const;
+	    
+	    virtual void addedWeaponPack(WeaponPack* wPack) {}
 
             inline const WorldEntity* getWorldEntity() const
                 { return const_cast<Pawn*>(this); }

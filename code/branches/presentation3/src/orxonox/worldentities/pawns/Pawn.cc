@@ -362,14 +362,21 @@ namespace orxonox
     void Pawn::addWeaponPack(WeaponPack * wPack)
     {
         if (this->weaponSystem_)
+	{
             this->weaponSystem_->addWeaponPack(wPack);
+	    this->addedWeaponPack(wPack);
+	}
     }
 
     void Pawn::addWeaponPackXML(WeaponPack * wPack)
     {
         if (this->weaponSystem_)
+	{
             if (!this->weaponSystem_->addWeaponPack(wPack))
                 wPack->destroy();
+	    else
+                this->addedWeaponPack(wPack);
+	}
     }
 
     WeaponPack * Pawn::getWeaponPack(unsigned int index) const
