@@ -213,7 +213,8 @@ namespace orxonox
         unsigned int i = 0;
         Weapon* weapon = 0;
         while ((weapon = wPack->getWeapon(i++)))
-            weapon->getWeaponSlot()->removeWeapon();
+            if (weapon->getWeaponSlot())
+                weapon->getWeaponSlot()->removeWeapon();
 
         // Remove all added links from the WeaponSets
         for (std::map<unsigned int, WeaponSet *>::iterator it = this->weaponSets_.begin(); it != this->weaponSets_.end(); ++it)
