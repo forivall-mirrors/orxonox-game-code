@@ -759,6 +759,10 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             if (ArtificialController::sameTeam(this->getControllableEntity(), static_cast<ControllableEntity*>(*it), this->getGametype()))
                 continue;
 
+            /* So AI won't choose invisible Spaceships as target */
+            if (!it->getRadarVisibility())
+                continue;
+
             if (static_cast<ControllableEntity*>(*it) != this->getControllableEntity())
             {
                 float speed = this->getControllableEntity()->getVelocity().length();

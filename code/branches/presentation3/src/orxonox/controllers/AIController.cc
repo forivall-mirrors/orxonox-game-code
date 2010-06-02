@@ -32,6 +32,7 @@
 #include "core/CoreIncludes.h"
 #include "core/Executor.h"
 #include "worldentities/ControllableEntity.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -209,7 +210,11 @@ namespace orxonox
             if (this->specificMasterAction_ ==  NONE)
             {
                 if (this->target_)
-                    this->aimAtTarget();
+                {
+				if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
+                	this->forgetTarget();
+                else this->aimAtTarget();
+            }
 
                 if (this->bHasTargetPosition_)
                     this->moveToTargetPosition();
@@ -238,7 +243,11 @@ namespace orxonox
          if (this->state_ == FREE)
         {
             if (this->target_)
-                this->aimAtTarget();
+            {
+				if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
+                	this->forgetTarget();
+                else this->aimAtTarget();
+            }
 
             if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();

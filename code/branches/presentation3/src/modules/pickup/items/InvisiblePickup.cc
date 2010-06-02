@@ -42,11 +42,14 @@
 
 #include <sstream>
 
+#include <OgreEntity.h>
+#include <Ogre.h>
+
 namespace orxonox
 {
 
     CreateFactory(InvisiblePickup);
-    
+
     /**
     @brief
         Constructor. Registers the object and initializes the member variables.
@@ -55,18 +58,18 @@ namespace orxonox
     {
         RegisterObject(InvisiblePickup);
         //! Defines who is allowed to pick up the pickup.
-        this->initialize(); 
+        this->initialize();
     }
-    
+
     /**
     @brief
         Destructor.
     */
     InvisiblePickup::~InvisiblePickup()
-    {        
+    {
     }
-    
-    
+
+
     void InvisiblePickup::initializeIdentifier(void)
     {
         std::stringstream stream;
@@ -75,7 +78,7 @@ namespace orxonox
         std::string val1 = stream.str();
         this->pickupIdentifier_->addParameter(type1, val1);
     }
-    
+
     /**
     @brief
     Initializes the member variables.
@@ -92,12 +95,12 @@ namespace orxonox
     */
     void InvisiblePickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
-        SUPER(InvisiblePickup, XMLPort, xmlelement, mode);    
+        SUPER(InvisiblePickup, XMLPort, xmlelement, mode);
         XMLPortParam(InvisiblePickup, "duration", setDuration, getDuration, xmlelement, mode);
-        
+
         this->initializeIdentifier();
     }
-    
+
     /**
     @brief
         Is called when the pickup has transited from used to unused or the other way around.
@@ -105,11 +108,11 @@ namespace orxonox
     void InvisiblePickup::changedUsed(void)
     {
         SUPER(InvisiblePickup, changedUsed);
-        
+
         //! If the pickup is not picked up nothing must be done.
         if(!this->isPickedUp())
             return;
-        
+
         if (this->isUsed())
         {
             if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() > 0.0f)
@@ -120,12 +123,14 @@ namespace orxonox
             {
                 this->startPickupTimer(this->getDuration());
             }
+
             this->setInvisible(true);
+
         }
         else
         {
             this->setInvisible(false);
-        
+
             if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
             {
                 this->destroy();
@@ -135,9 +140,9 @@ namespace orxonox
                 this->getTimer()->pauseTimer();
             }
         }
-        
+
     }
-    
+
     /**
     @brief
         Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
@@ -148,14 +153,14 @@ namespace orxonox
     {
         PickupCarrier* carrier = this->getCarrier();
         Pawn* pawn = dynamic_cast<Pawn*>(carrier);
-        
+
         if(pawn == NULL)
         {
             COUT(1) << "Invalid PickupCarrier in InvisiblePickup." << std::endl;
         }
         return pawn;
     }
-    
+
     /**
     @brief
         Creates a duplicate of the input OrxonoxClass.
@@ -166,14 +171,14 @@ namespace orxonox
     {
         if(item == NULL)
             item = new InvisiblePickup(this);
-        
+
         SUPER(InvisiblePickup, clone, item);
-        
+
         InvisiblePickup* pickup = dynamic_cast<InvisiblePickup*>(item);
         pickup->setDuration(this->getDuration());
         pickup->initializeIdentifier();
     }
-    
+
     /**
     @brief
         Sets the invisibility.
@@ -185,11 +190,23 @@ namespace orxonox
         Pawn* pawn = this->carrierToPawnHelper();
         if(pawn == NULL)
             return false;
-        
+
         pawn->setVisible(!invisibility);
+        pawn->setRadarVisibility(!invisibility);
+
+// Test to change Material at runtime!
+
+//      Ogre::MaterialPtr mat = this->mesh_.getEntity()->getSubEntity(0)->getMaterial();
+//      mat->setDiffuse(0.4, 0.3, 0.1, 0.1);
+//      mat->setAmbient(0.3, 0.7, 0.8);
+//      mat->setSpecular(0.5, 0.5, 0.5, 0.1);
+//      Ogre::SceneBlendType sbt = Ogre::SBT_ADD;
+//
+//      mat->setSceneBlending(sbt);
+
         return true;
     }
-    
+
     /**
     @brief
         Sets the duration.
@@ -208,7 +225,7 @@ namespace orxonox
             this->duration_ = 0.0f;
         }
     }
-    
+
     void InvisiblePickup::pickupTimerCallback(void)
     {
         this->setUsed(false);
