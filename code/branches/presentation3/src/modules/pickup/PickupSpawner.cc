@@ -175,6 +175,8 @@ namespace orxonox
         //! If the PickupSpawner is active.
         if (this->isActive())
         {
+            SmartPtr<PickupSpawner> temp = this; // create a smart pointer to keep the PickupSpawner alive until we iterated through all Pawns (in case a Pawn takes the last pickup)
+            
             //! Iterate trough all Pawns.
             for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
             {
