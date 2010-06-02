@@ -92,8 +92,14 @@ namespace orxonox
 
     FpsPlayer::~FpsPlayer()
     {
-        if (this->isInitialized() && this->mesh_.getEntity())
-            this->detachOgreObject(this->mesh_.getEntity());
+        if (this->isInitialized())
+        {
+            if (this->mesh_.getEntity())
+                this->detachOgreObject(this->mesh_.getEntity());
+
+            if (this->weaponNode_ && this->getScene()->getSceneManager())
+                this->getScene()->getSceneManager()->destroySceneNode(this->weaponNode_->getName());
+        }
     }
 
     void FpsPlayer::XMLPort(Element& xmlelement, XMLPort::Mode mode)
