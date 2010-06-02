@@ -45,7 +45,7 @@
       <BoxCollisionShape position="0,0,7"      halfExtents="3, 2, 2" />
       <BoxCollisionShape position="0,0.1,-11"  halfExtents="2.2, 1.8, 6" />
       <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
-    </collisionShapes>  include("templates/lodinformation.oxt")
+    </collisionShapes>
 <?lua
   include("includes/weaponsettings3.oxi")
 ?>
@@ -58,9 +58,9 @@
   description="Our fleet is far ahead of us. We need to get rid of all the enemies in its back, because we do not want our enemies to attack from everywhere. So let us clear this Sector!"
   gametype=TeamDeathmatch
 >
-  <templates>
-    <Template link=lodtemplate_default />
-  </templates>
+	<templates>
+		<Template link=lodtemplate_default />
+	</templates>
 
 	<!-- Ausgang: Szene ===> ambientlight/skybox -->
 	<Scene

@@ -1,6 +1,7 @@
 <?lua
   include("stats.oxo")
   include("hudtemplates3.oxo")
+  include("templates/lodinformation.oxt")
 ?>
 
 <?lua
@@ -15,6 +16,7 @@
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
   >

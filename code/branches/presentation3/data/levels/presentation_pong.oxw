@@ -46,6 +46,10 @@
  description  = "A simple testlevel"
  gametype     = Pong
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
   <AmbientSound source="ambient/mainmenu.wav" playOnLoad=true />
 
   <Scene

@@ -4,12 +4,17 @@
   include("templates/spaceship_assff.oxt")
   include("templates/spaceship_H2.oxt")
   include("templates/fps.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
  name         = "fps"
  description  = "tests"
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
   <Scene
    ambientlight = "0.1, 0.1, 0.1"
    skybox       = "Orxonox/skypanoramagen1"

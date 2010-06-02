@@ -16,6 +16,7 @@
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"

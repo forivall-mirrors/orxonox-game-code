@@ -63,9 +63,10 @@
 	description="A simple level. The only goal is to defeat as much enemies as you can."
 	gametype=TeamDeathmatch
 >
-  <templates>
-    <Template link=lodtemplate_default />
-  </templates>
+	<templates>
+		<Template link=lodtemplate_default />
+	</templates>
+
 	<Scene
 		ambientlight="0.8,0.8,0.8"
 		skybox="Orxonox/skypanoramagen2"
