@@ -36,6 +36,7 @@
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
+#include "sound/WorldSound.h"
 
 namespace orxonox
 {
@@ -51,7 +52,8 @@ namespace orxonox
         this->damage_ = 100;
         this->speed_ = 500;
 
-        this->setMunitionName("LaserMunition");
+            this->setMunitionName("TargetSeeking Rockets");
+            this->setDefaultSoundWithVolume("sounds/Rocket_launch.ogg",0.4); 
         // The firing sound of the Rocket is played in Rocket.cc (because of OpenAl sound positioning)
     }
 

@@ -273,4 +273,12 @@ namespace orxonox
         else
             return BLANKSTRING;
     }
+
+    void WeaponMode::setDefaultSoundWithVolume(const std::string& soundPath, const float soundVolume){
+        if (this->defSndWpnFire_) {
+            this->defSndWpnFire_->setSource(soundPath);
+            this->defSndWpnFire_->setVolume(soundVolume);
+        }
+    }
+
 }
