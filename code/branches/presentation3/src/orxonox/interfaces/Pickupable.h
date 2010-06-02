@@ -114,7 +114,7 @@ namespace orxonox // tolua_export
                 
             bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
             bool setPickedUp(bool pickedUp); //!< Helper method to set the Pickupable to either picked up or not picked up.
-            bool setCarrier(PickupCarrier* carrier); //!< Sets the carrier of the pickup.
+            bool setCarrier(PickupCarrier* carrier, bool tell = false); //!< Sets the carrier of the pickup.
             
         protected:
             /**

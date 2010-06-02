@@ -212,7 +212,7 @@ namespace orxonox
     @param carrier
         Sets the input PickupCarrier as the carrier of the pickup.
     */
-    inline bool Pickupable::setCarrier(PickupCarrier* carrier)
+    inline bool Pickupable::setCarrier(PickupCarrier* carrier, bool tell)
     {
         if(this->carrier_ == carrier)
             return false;
@@ -221,6 +221,8 @@ namespace orxonox
         
         this->carrier_ = carrier;
         this->changedCarrier();
+        if(tell && carrier != NULL)
+            this->carrier_->pickups_.insert(this);
         return true;
     }
     

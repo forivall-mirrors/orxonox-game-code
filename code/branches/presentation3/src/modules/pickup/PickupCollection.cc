@@ -122,7 +122,7 @@ namespace orxonox
         //! Change the PickupCarrier for all Pickupables this PickupCollection consists of.
         for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
-            (*it).get()->setCarrier(this->getCarrier()->getTarget(*it));
+            (*it).get()->setCarrier(this->getCarrier()->getTarget(*it), true);
         }
     }
     
