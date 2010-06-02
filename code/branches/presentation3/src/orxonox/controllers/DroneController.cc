@@ -50,6 +50,7 @@ namespace orxonox
 
         this->owner_ = 0;
         this->drone_ = 0;
+        this->isShooting_ = false;
 
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, createExecutor(createFunctor(&DroneController::action, this)));
 
@@ -74,27 +75,14 @@ namespace orxonox
     {
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
-        float distanceToTargetSquared;
+        float distanceToTargetSquared = 0;
 
-        if (target_) {
-        const Vector3& locTargetDir = getDrone()->getOrientation().UnitInverse()*((getDrone()->getWorldPosition())-(target_->getWorldPosition())); //Vector from Drone To target out of drones local coordinate system
-            distanceToTargetSquared = locTargetDir.squaredLength();
-        }
+        if (this->target_)
+            distanceToTargetSquared = (getDrone()->getWorldPosition() - this->target_->getWorldPosition()).squaredLength();
 
         random = rnd(maxrand);
         if ( random < 30 || (!this->target_) || distanceToTargetSquared > (this->getDrone()->getMaxShootingRange()*this->getDrone()->getMaxShootingRange()))
             this->searchNewTarget();
-
-        if (random < 50 && this->target_ && distanceToTargetSquared < (this->getDrone()->getMaxShootingRange()*this->getDrone()->getMaxShootingRange()))
-        {
-            this->isShooting_ = true;
-            this->aimAtTarget();
-            drone_->rotateYaw(targetPosition_.x);   //face target
-            drone_->rotatePitch(targetPosition_.y);
-            drone_->fire(0);
-            this->isShooting_ = false;
-        }
-
     }
 
     /**
@@ -107,15 +95,29 @@ namespace orxonox
     {
         if (this->getDrone() && this->getOwner())
         {
+            if (this->target_)
+            {
+                float distanceToTargetSquared = (this->getDrone()->getWorldPosition() - this->target_->getWorldPosition()).squaredLength();
+                if (distanceToTargetSquared < (this->getDrone()->getMaxShootingRange()*this->getDrone()->getMaxShootingRange()))
+                {
+                    this->isShooting_ = true;
+                    this->aimAtTarget();
+                    this->getDrone()->fire(0);
+                }
+            }
+
             float maxDistanceSquared = this->getDrone()->getMaxDistanceToOwner()*this->getDrone()->getMaxDistanceToOwner();
             float minDistanceSquared = this->getDrone()->getMinDistanceToOwner()*this->getDrone()->getMinDistanceToOwner();
-            if ((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > maxDistanceSquared) {
+            if ((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength()  > maxDistanceSquared)
+            {
                 this->moveToPosition(this->getOwner()->getWorldPosition()); //fly towards owner
             }
-            else if((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength() < minDistanceSquared) {
+            else if((this->getDrone()->getWorldPosition() - this->getOwner()->getWorldPosition()).squaredLength() < minDistanceSquared)
+            {
                 this->moveToPosition(-this->getOwner()->getWorldPosition()); //fly away from owner
             }
-            else if(!isShooting_) {
+            else if (!this->isShooting_)
+            {
                 float random = rnd(2.0f);
                 float randomSelection = rnd(6.0f);
                 if((int)randomSelection==0) drone_->moveUpDown(random);
@@ -125,6 +127,8 @@ namespace orxonox
                 else if((int)randomSelection==4) drone_->rotatePitch(random);
                 else if((int)randomSelection==5) drone_->rotateRoll(random);
             }
+
+            this->isShooting_ = false;
         }
 
         SUPER(AIController, tick, dt);
