@@ -110,7 +110,7 @@ namespace orxonox
     {
         SUPER(Camera, tick, dt);
 
-        if (this->bDrag_)
+        if (this->bDrag_ && this->getTimeFactor() != 0)
         {
             // this stuff here may need some adjustments
             float poscoeff = 15.0f * dt / this->getTimeFactor();
