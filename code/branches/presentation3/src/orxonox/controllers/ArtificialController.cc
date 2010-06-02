@@ -94,8 +94,9 @@ namespace orxonox
         SUPER(ArtificialController, XMLPort, xmlelement, mode);
 
         XMLPortParam(ArtificialController, "team", setTeam, getTeam, xmlelement, mode).defaultValues(-1);
-        XMLPortParam(ArtificialController, "formationFlight", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(true);
+        XMLPortParam(ArtificialController, "formationFlight", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(false);
         XMLPortParam(ArtificialController, "formationSize", setFormationSize, getFormationSize, xmlelement, mode).defaultValues(STANDARD_MAX_FORMATION_SIZE);
+        XMLPortParam(ArtificialController, "passive", setPassive, getPassive, xmlelement, mode).defaultValues(false);
     }
 
 // Documentation only here to get a faster overview for creating a useful documentation...
@@ -108,10 +109,17 @@ namespace orxonox
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-            if (!it->getController())
+            Controller* controller = 0;
+            
+            if (it->getController())
+                controller = it->getController();
+            else if (it->getXMLController())
+                controller = it->getXMLController();
+                
+            if (!controller)
                 continue;
 
-            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(controller);
 
             if(aiController)
             {
@@ -133,10 +141,17 @@ namespace orxonox
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-            if (!it->getController())
+            Controller* controller = 0;
+            
+            if (it->getController())
+                controller = it->getController();
+            else if (it->getXMLController())
+                controller = it->getXMLController();
+                
+            if (!controller)
                 continue;
 
-            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(controller);
 
             if(aiController && aiController->state_ == MASTER)
             {
@@ -160,14 +175,21 @@ namespace orxonox
 
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-            if (!it->getController())
+            Controller* controller = 0;
+            
+            if (it->getController())
+                controller = it->getController();
+            else if (it->getXMLController())
+                controller = it->getXMLController();
+                
+            if (!controller)
                 continue;
 
-            currentHumanController = orxonox_cast<NewHumanController*>(it->getController());
+            currentHumanController = orxonox_cast<NewHumanController*>(controller);
 
             if(currentHumanController) humanPawn = *it;
 
-            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(controller);
 
             if(aiController && aiController->state_ == MASTER)
                 allMasters.push_back(aiController);
@@ -201,10 +223,17 @@ namespace orxonox
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-            if (!it->getController())
+            Controller* controller = 0;
+            
+            if (it->getController())
+                controller = it->getController();
+            else if (it->getXMLController())
+                controller = it->getXMLController();
+                
+            if (!controller)
                 continue;
 
-            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(controller);
 
             if(aiController)
             {
@@ -222,10 +251,17 @@ namespace orxonox
     {
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-            if (!it->getController())
+            Controller* controller = 0;
+            
+            if (it->getController())
+                controller = it->getController();
+            else if (it->getXMLController())
+                controller = it->getXMLController();
+                
+            if (!controller)
                 continue;
 
-            ArtificialController *aiController = orxonox_cast<ArtificialController*>(it->getController());
+            ArtificialController *aiController = orxonox_cast<ArtificialController*>(controller);
 
             if(aiController)
             {
@@ -355,7 +391,14 @@ namespace orxonox
                 continue;
 
             //has it an ArtificialController?
-            if (!it->getController())
+            Controller* controller = 0;
+            
+            if (it->getController())
+                controller = it->getController();
+            else if (it->getXMLController())
+                controller = it->getXMLController();
+                
+            if (!controller)
                 continue;
 
             //is pawn oneself?
@@ -364,7 +407,7 @@ namespace orxonox
 
             teamSize++;
 
-            ArtificialController *newMaster = orxonox_cast<ArtificialController*>(it->getController());
+            ArtificialController *newMaster = orxonox_cast<ArtificialController*>(controller);
 
             //is it a master?
             if (!newMaster || newMaster->state_ != MASTER)
