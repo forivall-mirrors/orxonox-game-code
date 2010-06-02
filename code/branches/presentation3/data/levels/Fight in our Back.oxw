@@ -7,6 +7,15 @@
 	include("templates/spaceship_Transporter.oxt")
 ?>
 
+<NotificationQueue
+	 name     = "notification"
+	 position = "0.40, 0.05"
+	 font     = "VeraMono"
+	 textsize = 0.020
+	 length   = 3
+	 width    = 50
+/>
+
 <!--*****************************************************************************************************************************************************************************************-->
 <!--Including Template for triggering on player-->
 
@@ -58,9 +67,9 @@
   description="Our fleet is far ahead of us. We need to get rid of all the enemies in its back, because we do not want our enemies to attack from everywhere. So let us clear this Sector!"
   gametype=TeamDeathmatch
 >
-	<templates>
-		<Template link=lodtemplate_default />
-	</templates>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
 
 	<!-- Ausgang: Szene ===> ambientlight/skybox -->
 	<Scene
@@ -74,7 +83,7 @@
 
 <!--*****************************************************************************************************************************************************************************************-->
 <!--Quests-->
-	<GlobalQuest id="FightInOurBack.DiscoveryMission_">    <!--QUESTIDS MUST HAVE AT LEAST 32 CHARACTERS-->
+	<GlobalQuest id="FightInOurBack.DiscoveryMission_">
 		<QuestDescription title="Discovery mission" description="Your team has to scout out this sector." failMessage="You failed!" completeMessage="You won. You have reached the end of this level." />
 		<subquests>
 			<GlobalQuest id="FightInOurBack.FollowYourGroupLeader">
@@ -96,7 +105,7 @@
 
 <!--Player's Spawnpoints______________________________________________________________________________________________________________________________________________________________________-->
 		<!--Spieler Spawnpoint ===> position/direction--> <!-- funktioniert noch nicht ab naechtem Mal wahrscheinlich-->
-		<SpawnPoint position="0,50,25" direction="2000,0,-1000" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0 active="true" /> 
+		<SpawnPoint position="0,50,25" direction="2000,0,-1000" spawnclass=SpaceShip pawndesign=spaceshipassffplayer team=0 active="true" > 
 <!--->			<events>
 				<activity>
 					<EventListener event="activateSecondSpawnpoint" />
@@ -110,6 +119,7 @@
 					<EventListener event="activateSecondSpawnpoint" />
 				</activity>  include("templates/lodinformation.oxt")
 			</events>
+<!---->
 		</SpawnPoint>
 		
 <!--Player's Spawnpoint_____END____________________________________________________________________________________________________________________________________________________-->
@@ -126,22 +136,25 @@
 				</execute>
 			</events>
 			<attached>
-				<Billboard position="0,0,0" colour="1.0,1.0,1.0" material="Examples/Flare" />
-				<DistanceTrigger name="FightInOurBack_MainStart_FollowStart" position="0,0,0" distance="50" target="DistanceTriggerBeacon" targetname="spaceshipassffplayer" invert=1 stayactive=1 activations=1 />
+				<!--<Billboard position="0,0,0" colour="1.0,1.0,1.0" material="Examples/Flare" />-->
 			</attached>
 		</QuestEffectBeacon>
+		
+		<DistanceTrigger name="FightInOurBack_MainStart_FollowStart" position="0,50,25" distance="50" target="DistanceTriggerBeacon" targetname="spaceshipassffplayer" />
 <!---->
 		<QuestEffectBeacon position="8000,0,3100" times=1 >
 			<effects>
-				<AddQuest questID="FightInOurBack.FollowYourGroupLeader" />
+				<AddQuest questID="FightInOurBack.TransportersAhead" />
 				<AddQuest questID="FightInOurBack.TheySentUsAssistance" />
 				<CompleteQuest questID="FightInOurBack.FollowYourGroupLeader" />
 			</effects>
 			<events>
-				<EventListener event="FightInOurBack_FollowEnd_DTranspStart_AssisStart" />
+				<execute>
+					<EventListener event="FightInOurBack_FollowEnd_DTranspStart_AssisStart" />
+				</execute>
 			</events>
 			<attached>
-				<Billboard position="0,0,0" colour="1,1,1" material="Examples/Flare" />
+				<!--<Billboard position="0,0,0" colour="1,1,1" material="Examples/Flare" />-->
 				<DistanceTrigger name="FightInOurBack_FollowEnd_DTranspStart_AssisStart" position="0,0,0" distance="1000" target="DistanceTriggerBeacon" targetname="PlayerDistanceTrigger" stayactive=1 activations=1 />
 			</attached>
 		</QuestEffectBeacon>
@@ -219,8 +232,8 @@ z=j*300
 					<waypoints>
 						<Model mesh="cube.mesh" scale=0 position="2050,0,-1000" />
 						<Model mesh="cube.mesh" scale=0 position="6050,0,0" />
-            					<Model mesh="cube.mesh" scale=0 position="10050,0,3000" />
-            					<Model mesh="cube.mesh" scale=0 position="3050,0,3000" />
+            			<Model mesh="cube.mesh" scale=0 position="10050,0,3000" />
+            			<Model mesh="cube.mesh" scale=0 position="3050,0,3000" />
 						<Model mesh="cube.mesh" scale=0 position="-4050,0,3000" />
 					</waypoints>
 				</WaypointPatrolController>
@@ -236,8 +249,8 @@ z=j*300
 					<waypoints>
 						<Model mesh="cube.mesh" scale=0 position="2000,0,-900" />
 						<Model mesh="cube.mesh" scale=0 position="6000,0,0" />
-            					<Model mesh="cube.mesh" scale=0 position="10000,0,3100" />
-            					<Model mesh="cube.mesh" scale=0 position="3000,0,3100" />
+            			<Model mesh="cube.mesh" scale=0 position="10000,0,3100" />
+            			<Model mesh="cube.mesh" scale=0 position="3000,0,3100" />
 						<Model mesh="cube.mesh" scale=0 position="-4000,0,3100"/>
 					</waypoints>
 				</WaypointPatrolController>
@@ -253,8 +266,8 @@ z=j*300
 					<waypoints>
 						<Model mesh="cube.mesh" scale=0 position="2000,0,-1100" />
 						<Model mesh="cube.mesh" scale=0 position="6000,0,-100" />
-            					<Model mesh="cube.mesh" scale=0 position="10000,0,2900" />
-            					<Model mesh="cube.mesh" scale=0 position="3000,0,2900" />
+            			<Model mesh="cube.mesh" scale=0 position="10000,0,2900" />
+            			<Model mesh="cube.mesh" scale=0 position="3000,0,2900" />
 						<Model mesh="cube.mesh" scale=0 position="-4000,0,2900" />
 					</waypoints>
 				</WaypointPatrolController>
@@ -431,7 +444,7 @@ z=math.random(-300,300)
 			<controller>
 				<WaypointPatrolController alertnessRadius=1500 team=1>
 					<waypoints>
-						<Model mesh="cube.mesh" scale=10 position="<?lua print(200+8000) ?>,0,1000" />
+						<Model mesh="cube.mesh" scale=0 position="<?lua print(200+8000) ?>,0,1000" />
 					</waypoints>
 				</WaypointPatrolController>
 			</controller>
