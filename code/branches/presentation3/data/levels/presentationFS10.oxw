@@ -49,7 +49,7 @@
 
     <!-- Health pickups -->
 
-    <PickupSpawner position="0,-50,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+    <PickupSpawner position="0,-75,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
       <pickup>
         <HealthPickup template=hugehealthpickup />
       </pickup>
@@ -57,13 +57,13 @@
 
     <!-- Speed pickups -->
 
-    <PickupSpawner position="50,-50,-500" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
+    <PickupSpawner position="25,-50,-500" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
       <pickup>
         <SpeedPickup template=hugespeedpickup />
       </pickup>
     </PickupSpawner>
 
-    <PickupSpawner position="50,-75,-500" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
+    <PickupSpawner position="50,-50,-500" triggerDistance="10" respawnTime="10" maxSpawnedItems="99">
       <pickup>
         <SpeedPickup template=smalljumppickup />
       </pickup>
@@ -71,17 +71,9 @@
 
     <!-- Invisible pickups -->
 
-    <PickupSpawner position="25,-75,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+    <PickupSpawner position="0,-50,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
       <pickup>
         <InvisiblePickup template=hugeinvisiblepickup />
-      </pickup>
-    </PickupSpawner>
-
-    <!-- Pickup Collection pickups -->
-
-    <PickupSpawner position="0,-75,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <PickupCollection template=triplehealthspeedinvisibilitypickup />
       </pickup>
     </PickupSpawner>
 
@@ -97,7 +89,7 @@
       </pickup>
     </PickupRepresentation>
 
-    <PickupSpawner position="25,-50,-500" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
+    <PickupSpawner position="25,-75,-500" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
       <pickup>
         <HealthPickup health=50 activationType=onUse durationType=once />
       </pickup>

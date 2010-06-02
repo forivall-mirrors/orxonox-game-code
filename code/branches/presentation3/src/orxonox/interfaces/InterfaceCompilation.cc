@@ -67,7 +67,8 @@ namespace orxonox
         std::set<Pickupable*>::iterator it = this->pickups_.begin();
         while(it != this->pickups_.end())
         {
-            (*(it++))->destroy();
+            (*it)->destroy();
+            it = this->pickups_.begin();
         }
 
         this->pickups_.clear();
