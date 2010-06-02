@@ -1,7 +1,5 @@
 <Template name=fps>
   <FpsPlayer
-   hudtemplate            = fpshud
-   
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 6
