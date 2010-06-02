@@ -7,12 +7,14 @@
   include("templates/lodinformation.oxt")
   include("templates/spaceship_assff.oxt")
   include("templates/spaceship_pirate.oxt")
+  include("templates/spaceship_swallow.oxt")
   include("templates/pickup_representation_templates.oxt")
 ?>
 
 <Level
  name         = "Sample"
  description  = "Just a few tests"
+ gametype     = TeamDeathmatch
 >
   <templates>
     <Template link=lodtemplate_default />
@@ -32,8 +34,68 @@
 
     <Billboard position="12.5, -30, -500" material="Banners/Pickups" scale="0.5"/>
     <Billboard position="500, -30, -500" material="Banners/Drone" scale="0.5"/>
+    <EventDispatcher>
+      <targets>
+        <EventTarget target=pirate />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="500, -50, -500" distance=20 target="SpaceShip" stayactive=true />
+        </activity>
+      </events>
+    </EventDispatcher>
 
-    <PickupSpawner position="500,-50,-500" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
+    <Billboard position="1000, -30, -500" material="Banners/Formation" scale="0.5"/>
+    <Billboard position="1000, -50, -500" material="Examples/Flare" scale="0.5"/>
+    <EventDispatcher>
+      <targets>
+        <EventTarget target=formation />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="1000, -50, -500" distance=20 target="SpaceShip" stayactive=true />
+        </activity>
+      </events>
+    </EventDispatcher>
+
+    <SpaceShip position="500,0,-1500">
+        <templates>
+          <Template link=spaceshippirate />
+        </templates>
+        <controller>
+          <AIController team=1 active=false name=pirate />
+        </controller>
+    </SpaceShip>
+
+
+    <?lua
+      for i = 1, 10, 1 do
+        ?>
+      <SpaceShip position="<?lua print(5000 + math.random() * 4000 - 2000) ?>,<?lua print(0 + math.random() * 2000 - 1000) ?>,<?lua print(math.random() * 2000 - 1000) ?>">
+        <templates>
+          <Template link=spaceshippirate />
+        </templates>
+        <controller>
+          <AIController formationFlight=true passive=true team=0 name=formation active=false />
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+
+
+    <?lua
+      for i = 1, 10, 1 do
+        ?>
+      <SpaceShip position="<?lua print(5000 + math.random() * 4000 - 2000) ?>,<?lua print(0 + math.random() * 2000 - 1000) ?>,<?lua print(math.random() * 2000 - 1000) ?>">
+        <templates>
+          <Template link=spaceshipassff />
+        </templates>
+        <controller>
+          <AIController formationFlight=true passive=true team=1 name=formation active=false/>
+        </controller>
+      </SpaceShip>
+    <?lua end ?>
+
+    <PickupSpawner position="500,-50,-500" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
       <pickup>
         <DronePickup template=dronepickup />
       </pickup>
