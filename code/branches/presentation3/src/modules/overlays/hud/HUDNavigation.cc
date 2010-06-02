@@ -353,9 +353,6 @@ void HUDNavigation::addObject ( RadarViewable* object )
 
 void HUDNavigation::removeObject ( RadarViewable* viewable )
 {
-    if( showObject(viewable)==false )
-        return;
-
     ObjectMap::iterator it = activeObjectList_.find ( viewable );
 
     if ( activeObjectList_.find ( viewable ) != activeObjectList_.end() )
@@ -371,10 +368,6 @@ void HUDNavigation::removeObject ( RadarViewable* viewable )
 
 
     }
-
-
-    else
-        COUT ( 2 ) << "Warning, HUDNavigation: Attempting to remove non-existent object" << std::endl;
 
     for ( sortedList::iterator listIt = sortedObjectList_.begin(); listIt != sortedObjectList_.end(); ++listIt )
     {
