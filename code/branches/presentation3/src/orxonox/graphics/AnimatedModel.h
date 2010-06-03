@@ -28,13 +28,12 @@
 
 #ifndef _AnimatedModel_H__
 #define _AnimatedModel_H__
-#include "Model.h"
-#include "tools/interfaces/Tickable.h"
+
 #include "OrxonoxPrereqs.h"
-#include <deque>
+
 #include <string>
-#include "tools/Mesh.h"
-#include "worldentities/StaticEntity.h"
+#include "tools/interfaces/Tickable.h"
+#include "Model.h"
 
 namespace orxonox
 {

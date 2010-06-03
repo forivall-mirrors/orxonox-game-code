@@ -33,17 +33,16 @@
 
 #include "InvisiblePickup.h"
 
+#include <sstream>
+#include <OgreEntity.h>
+#include <OgreAnimationState.h>
+
+#include "util/StringUtils.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/StringUtils.h"
 
 #include "worldentities/pawns/Pawn.h"
 #include "pickup/PickupIdentifier.h"
-
-#include <sstream>
-
-#include <OgreEntity.h>
-#include <Ogre.h>
 
 namespace orxonox
 {

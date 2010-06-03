@@ -37,9 +37,9 @@
 #include "pickup/PickupPrereqs.h"
 
 #include <string>
+
 #include <worldentities/pawns/Pawn.h>
 #include "worldentities/StaticEntity.h"
-
 #include "pickup/Pickup.h"
 
 namespace orxonox {

@@ -26,9 +26,9 @@
  */
 
 #include "AnimatedModel.h"
+
 #include <OgreEntity.h>
-#include <Ogre.h>
-#include <deque>
+#include <OgreAnimationState.h>
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
