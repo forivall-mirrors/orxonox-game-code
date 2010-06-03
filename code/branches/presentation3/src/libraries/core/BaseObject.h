@@ -190,12 +190,13 @@ namespace orxonox
             void addEventState(const std::string& name, EventState* container);
             EventState* getEventState(const std::string& name) const;
 
-            std::string name_;                                 //!< The name of the object
-            std::string oldName_;                              //!< The old name of the object
-            mbool       bActive_;                              //!< True = the object is active
-            mbool       bVisible_;                             //!< True = the object is visible
-            std::string mainStateName_;
-            Functor*    mainStateFunctor_;
+            std::string             name_;                     //!< The name of the object
+            std::string             oldName_;                  //!< The old name of the object
+            mbool                   bActive_;                  //!< True = the object is active
+            mbool                   bVisible_;                 //!< True = the object is visible
+            std::string             mainStateName_;
+            Functor*                mainStateFunctor_;
+            std::set<std::string>   networkTemplateNames_;
 
         private:
             /** @brief Adds an object which listens to the events of this object. */

@@ -34,6 +34,7 @@
 #include "network/synchronisable/Synchronisable.h"
 #include "tools/interfaces/Tickable.h"
 
+#include <set>
 
 typedef int TYPE;
 typedef unsigned int UTYPE;
@@ -77,8 +78,8 @@ namespace orxonox
 
       void printPointer();
 
-      static void printV1(){ instance_->checkU1(); }
-      static void printV2(){ instance_->checkU2(); }
+      static void printV1(){ instance_->blub(); }
+      static void printV2(){ instance_->blub2(); }
       static void printV3(){ instance_->checkU3(); }
       static void printV4(){ instance_->checkU4(); }
 
@@ -96,8 +97,16 @@ namespace orxonox
       TYPE s4;
 
       Test* pointer_;
+      
+      std::set<uint32_t> mySet_;
 
       static Test* instance_;
+      
+      void blub()
+      { mySet_.insert(2); }
+      
+      void blub2()
+      { for( std::set<uint32_t>::iterator it=mySet_.begin(); it!=mySet_.end(); ++it ) COUT(0) << *it << endl; }
   };
 }
 

@@ -37,6 +37,7 @@
 #include "UtilPrereqs.h"
 
 #include <cstring>
+#include <set>
 #include "Math.h"
 #include "mbool.h"
 
@@ -633,6 +634,71 @@ namespace orxonox{
     template <> inline bool checkEquality( const mbool& variable, uint8_t* mem )
     {
         return checkEquality( (unsigned char&)((mbool&)variable).getMemory(), mem );
+    }
+    
+    // =========== std::set
+    
+    template <class T> inline uint32_t returnSize( const std::set<T>& variable )
+    {
+        uint32_t tempsize = sizeof(uint32_t); // for the number of entries
+        for( typename std::set<T>::iterator it=((std::set<T>*)(&variable))->begin(); it!=((std::set<T>*)(&variable))->end(); ++it)
+            tempsize += returnSize( *it ); 
+        return tempsize; 
+    }
+    
+    template <class T> inline void saveAndIncrease(  const std::set<T>& variable, uint8_t*& mem )
+    {
+        typename std::set<T>::const_iterator it = variable.begin();
+        saveAndIncrease( (uint32_t)variable.size(), mem );
+        for( ; it!=variable.end(); ++it )
+            saveAndIncrease( *it, mem );
+    }
+    
+    template <class T> inline void loadAndIncrease( const std::set<T>& variable, uint8_t*& mem )
+    {
+        uint32_t nrOfElements = 0;
+        loadAndIncrease( nrOfElements, mem );
+        typename std::set<T>::const_iterator it = variable.begin();
+        for( uint32_t i = 0; i<nrOfElements; ++i )
+        {
+            T temp;
+            loadAndIncrease(temp, mem);
+            while( it!=variable.end() && *it!=temp )
+            {
+                ((std::set<T>*)(&variable))->erase(it++);
+                ++it;
+            }
+            if( it==variable.end() )
+            {
+                ((std::set<T>*)(&variable))->insert(temp);
+            }
+        }
+    }
+    
+    template <class T> inline bool checkEquality( const std::set<T>& variable, uint8_t* mem )
+    {
+        uint8_t* temp = mem;
+        uint32_t nrOfElements;
+        loadAndIncrease(nrOfElements, mem);
+        if( variable.size() == nrOfElements )
+        {
+            T tempT;
+            for( uint32_t i=0; i<nrOfElements; ++i )
+            {
+                loadAndIncrease(tempT, mem);
+                if( variable.find(tempT) == variable.end() )
+                {
+                    mem = temp;
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            mem = temp;
+            return false;
+        }
+        return true;
     }
 }
 

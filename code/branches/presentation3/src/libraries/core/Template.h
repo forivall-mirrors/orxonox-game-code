@@ -50,6 +50,8 @@ namespace orxonox
                 { this->link_ = link; this->bIsLink_ = !link.empty(); }
             inline const std::string& getLink() const
                 { return this->link_; }
+            inline bool isLink() const
+                { return this->bIsLink_; }
 
             inline void setLoadDefaults(bool bLoadDefaults)
                 { this->bLoadDefaults_ = bLoadDefaults; }

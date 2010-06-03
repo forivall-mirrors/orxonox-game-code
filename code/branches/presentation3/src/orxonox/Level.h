@@ -65,6 +65,7 @@ namespace orxonox
             BaseObject* getObject(unsigned int index) const;
 
             void addLodInfo(MeshLodInformation* object);
+            void networkCallbackTemplatesChanged();
 //            const MeshLodInformation* getLodInfo(std::string meshName) const;
 //            MeshLodInformation* getLodInfo(unsigned int index) const;
 

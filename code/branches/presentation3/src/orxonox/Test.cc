@@ -87,17 +87,19 @@ namespace orxonox
 
     void Test::registerVariables()
     {
-        registerVariable ( u1, VariableDirection::ToClient, new NetworkCallback<Test> ( this, &Test::checkU1 ));
-        registerVariable ( u2, VariableDirection::ToServer, new NetworkCallback<Test> ( this, &Test::checkU2 ));
-        registerVariable ( u3, Bidirectionality::ServerMaster, new NetworkCallback<Test> ( this, &Test::checkU3 ), true );
-        registerVariable ( u4, Bidirectionality::ClientMaster, new NetworkCallback<Test> ( this, &Test::checkU4 ), true );
+        registerVariable ( this->mySet_, VariableDirection::ToClient );
+      
+//         registerVariable ( u1, VariableDirection::ToClient, new NetworkCallback<Test> ( this, &Test::checkU1 ));
+//         registerVariable ( u2, VariableDirection::ToServer, new NetworkCallback<Test> ( this, &Test::checkU2 ));
+//         registerVariable ( u3, Bidirectionality::ServerMaster, new NetworkCallback<Test> ( this, &Test::checkU3 ), true );
+//         registerVariable ( u4, Bidirectionality::ClientMaster, new NetworkCallback<Test> ( this, &Test::checkU4 ), true );
     
-        registerVariable ( s1, VariableDirection::ToClient, new NetworkCallback<Test> ( this, &Test::checkS1 ));
-        registerVariable ( s2, VariableDirection::ToServer, new NetworkCallback<Test> ( this, &Test::checkS2 ));
-        registerVariable ( s3, Bidirectionality::ServerMaster, new NetworkCallback<Test> ( this, &Test::checkS3 ), true );
-        registerVariable ( s4, Bidirectionality::ClientMaster, new NetworkCallback<Test> ( this, &Test::checkS4 ), true );
+//         registerVariable ( s1, VariableDirection::ToClient, new NetworkCallback<Test> ( this, &Test::checkS1 ));
+//         registerVariable ( s2, VariableDirection::ToServer, new NetworkCallback<Test> ( this, &Test::checkS2 ));
+//         registerVariable ( s3, Bidirectionality::ServerMaster, new NetworkCallback<Test> ( this, &Test::checkS3 ), true );
+//         registerVariable ( s4, Bidirectionality::ClientMaster, new NetworkCallback<Test> ( this, &Test::checkS4 ), true );
     
-        registerVariable ( pointer_, VariableDirection::ToClient, new NetworkCallback<Test> ( this, &Test::printPointer ) );
+//         registerVariable ( pointer_, VariableDirection::ToClient, new NetworkCallback<Test> ( this, &Test::printPointer ) );
     }
   
   void Test::call(unsigned int clientID)

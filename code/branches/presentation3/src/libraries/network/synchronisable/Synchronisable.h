@@ -36,6 +36,7 @@
 #include <vector>
 #include <map>
 #include <queue>
+#include <set>
 
 #include "util/mbool.h"
 #include "core/OrxonoxClass.h"
@@ -137,6 +138,7 @@ namespace orxonox
   protected:
     Synchronisable(BaseObject* creator);
     template <class T> void registerVariable(T& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
+    template <class T> void registerVariable(std::set<T>& variable, uint8_t mode=0x1, NetworkCallbackBase *cb=0, bool bidirectional=false);
 
     void setPriority(unsigned int freq){ objectFrequency_ = freq; }
 
@@ -180,8 +182,20 @@ namespace orxonox
         this->dataSize_ += syncList.back()->getSize(state_);
     }
   }
+  
+  template <class T> void Synchronisable::registerVariable( std::set<T>& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
+  {
+    SynchronisableVariableBase* sv;
+    if (bidirectional)
+      sv = new SynchronisableVariableBidirectional<std::set<T> >(variable, mode, cb);
+    else
+      sv = new SynchronisableVariable<std::set<T> >(variable, mode, cb);
+    syncList.push_back(sv);
+    stringList.push_back(sv);
+  }
 
   template <> _NetworkExport void Synchronisable::registerVariable( std::string& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional);
+//   template <class T> _NetworkExport void Synchronisable::registerVariable<std::set<T> >( std::set<T>& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional);
 
 
 }

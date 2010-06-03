@@ -79,9 +79,10 @@ namespace orxonox
 
     void Level::registerVariables()
     {
-        registerVariable(this->xmlfilename_, VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
-        registerVariable(this->name_,        VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::changedName));
-        registerVariable(this->description_, VariableDirection::ToClient);
+        registerVariable(this->xmlfilename_,            VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
+        registerVariable(this->name_,                   VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::changedName));
+        registerVariable(this->description_,            VariableDirection::ToClient);
+        registerVariable(this->networkTemplateNames_,   VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::networkCallbackTemplatesChanged));
     }
 
     void Level::networkcallback_applyXMLFile()
@@ -96,6 +97,15 @@ namespace orxonox
         this->xmlfile_ = new XMLFile(mask, this->xmlfilename_);
 
         Loader::open(this->xmlfile_);
+    }
+    
+    void Level::networkCallbackTemplatesChanged()
+    {
+        for( std::set<std::string>::iterator it = this->networkTemplateNames_.begin(); it!=this->networkTemplateNames_.end(); ++it )
+        {
+            assert(Template::getTemplate(*it));
+            Template::getTemplate(*it)->applyOn(this);
+        }
     }
 
     void Level::setGametypeString(const std::string& gametype)
