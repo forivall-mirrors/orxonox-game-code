@@ -87,6 +87,34 @@ namespace orxonox
 
     ArtificialController::~ArtificialController()
     {
+        if (this->isInitialized())
+        {
+            this->removeFromFormation();
+            
+            for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it; ++it)
+            {
+                if (*it != this)
+                {
+                    if (it->myMaster_ == this)
+                    {
+                        COUT(1) << "error: " << this << " is still master in " << (*it) << std::endl;
+                        it->myMaster_ = 0;
+                    }
+                    
+                    while (true)
+                    {
+                        std::vector<ArtificialController*>::iterator it2 = std::find(it->slaves_.begin(), it->slaves_.end(), this);
+                        if (it2 != it->slaves_.end())
+                        {
+                            COUT(1) << "error: " << this << " is still slave in " << (*it) << std::endl;
+                            it->slaves_.erase(it2);
+                        }
+                        else
+                            break;
+                    }
+                }
+            }
+        }
     }
 
     void ArtificialController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -121,13 +149,12 @@ namespace orxonox
 
             ArtificialController *aiController = orxonox_cast<ArtificialController*>(controller);
 
-            if(aiController)
+            if (aiController)
             {
                 aiController->formationFlight_ = form;
-                if(!form)
+                if (!form)
                 {
-                    if(aiController->state_ == MASTER) aiController->freeSlaves();
-                    aiController->state_ = FREE;
+                    aiController->removeFromFormation();
                 }
             }
         }
@@ -275,17 +302,17 @@ namespace orxonox
     */
     void ArtificialController::changedControllableEntity()
     {
-        if(!getControllableEntity()) 
-        {
-        if (this->state_ == SLAVE) unregisterSlave();
-        if (this->state_ == MASTER) setNewMasterWithinFormation();
-        this->slaves_.clear();
-        this->state_ = FREE;
-        this->specificMasterAction_ = NONE;
-
-        }
+        if (!this->getControllableEntity()) 
+            this->removeFromFormation();
     }
 
+    void ArtificialController::removeFromFormation()
+    {
+        if (this->state_ == SLAVE || this->myMaster_) // slaves can also be temporary free, so check if myMaster_ is set
+            this->unregisterSlave();
+        else if (this->state_ == MASTER)
+            this->setNewMasterWithinFormation();
+    }
 
     void ArtificialController::moveToPosition(const Vector3& target)
     {
@@ -364,13 +391,17 @@ namespace orxonox
     /**
         @brief Unregisters a slave from its master. Initiated by a slave.
     */
-    void ArtificialController::unregisterSlave() {
-        if(myMaster_)
+    void ArtificialController::unregisterSlave()
+    {
+        if (this->myMaster_)
         {
-            std::vector<ArtificialController*>::iterator it = std::find(myMaster_->slaves_.begin(), myMaster_->slaves_.end(), this);
-            if( it != myMaster_->slaves_.end() )
-                myMaster_->slaves_.erase(it);
+            std::vector<ArtificialController*>::iterator it = std::find(this->myMaster_->slaves_.begin(), this->myMaster_->slaves_.end(), this);
+            if (it != this->myMaster_->slaves_.end())
+                this->myMaster_->slaves_.erase(it);
         }
+        
+        this->myMaster_ = 0;
+        this->state_ = FREE;
     }
 
     void ArtificialController::searchNewMaster()
@@ -385,7 +416,6 @@ namespace orxonox
         //go through all pawns
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
-
             //same team?
             if (!ArtificialController::sameTeam(this->getControllableEntity(), static_cast<ControllableEntity*>(*it), this->getGametype()))
                 continue;
@@ -435,8 +465,11 @@ namespace orxonox
             }
         }
 
-        if (state_ != SLAVE  && teamSize != 0) state_ = MASTER;
-
+        if (this->state_ != SLAVE  && teamSize != 0)
+        {
+            this->state_ = MASTER;
+            this->myMaster_ = 0;
+        }
     }
 
     /**
@@ -488,26 +521,24 @@ namespace orxonox
     {
         if(this->state_ != MASTER) return;
 
-        if (this->slaves_.empty())
-            return;
+        if (!this->slaves_.empty())
+        {
+            ArtificialController *newMaster = this->slaves_.back();
+            this->slaves_.pop_back();
 
-        ArtificialController *newMaster = this->slaves_.back();
-        this->slaves_.pop_back();
+            newMaster->state_ = MASTER;
+            newMaster->slaves_ = this->slaves_;
+            newMaster->myMaster_ = 0;
 
-        if(!newMaster) return;
-        newMaster->state_ = MASTER;
-        newMaster->slaves_ = this->slaves_;
+            for(std::vector<ArtificialController*>::iterator it = newMaster->slaves_.begin(); it != newMaster->slaves_.end(); it++)
+            {
+                (*it)->myMaster_ = newMaster;
+            }
+        }
 
         this->slaves_.clear();
         this->specificMasterAction_ = NONE;
-        this->state_ = SLAVE;
-        this->myMaster_ = newMaster;
-
-        for(std::vector<ArtificialController*>::iterator it = newMaster->slaves_.begin(); it != newMaster->slaves_.end(); it++)
-        {
-            (*it)->myMaster_ = newMaster;
-        }
-
+        this->state_ = FREE;
     }
 
     /**
@@ -520,6 +551,7 @@ namespace orxonox
         for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
         {
             (*it)->state_ = FREE;
+            (*it)->myMaster_ = 0;
         }
         this->slaves_.clear();
     }
