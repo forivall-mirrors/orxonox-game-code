@@ -50,7 +50,7 @@
     <Template link=lodtemplate_default />
   </templates>
 
-  <AmbientSound source="ambient/mainmenu.wav" playOnLoad=true />
+  <AmbientSound source="ambient/mainmenu.ogg" playOnLoad=true />
 
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
