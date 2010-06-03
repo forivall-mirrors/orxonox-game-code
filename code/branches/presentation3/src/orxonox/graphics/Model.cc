@@ -142,7 +142,7 @@ namespace orxonox
                         if( lodLevel_>0 )
                         {
     //                         float factor = scaleFactor*5/lodLevel_;
-                            float factor = pow(volume,2.0/3.0)*15/lodLevel_;
+                            float factor = pow(volume, 2.0f / 3.0f) * 15.0f / lodLevel_;
                             
                             COUT(4) << "LodLevel set with factor: " << factor << endl;
 
