@@ -325,7 +325,7 @@ gametype=TeamDeathmatch
             </StaticEntity>
     
     <ParticleSpawner position="4650,5350,-11050" source="Orxonox/explosion1" name=base visible=false active=false loop=0/>
-    <Model position="4800,5785,-10725" scale=3 mesh="Rocket.mesh" visible=true active=true name=base />
+    <Model position="4800,5785,-10725" scale=3 mesh="rocket.mesh" visible=true active=true name=base />
     <EventDispatcher>
                 <targets>
                     <EventTarget target=base />
