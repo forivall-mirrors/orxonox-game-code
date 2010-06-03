@@ -51,7 +51,7 @@ namespace orxonox
     // Register tolua_open function when loading the library
     DeclareToluaInterface(Pickup);
     
-    ManageScopedSingleton(PickupManager, ScopeID::Graphics, false);
+    ManageScopedSingleton(PickupManager, ScopeID::Root, false);
     
     /*static*/ const std::string PickupManager::guiName_s = "PickupInventory";
     
@@ -63,7 +63,10 @@ namespace orxonox
     {
         RegisterRootObject(PickupManager);
 
-        GUIManager::getInstance().loadGUI(PickupManager::guiName_s);
+        if( GameMode::showsGraphics() )
+        {
+            GUIManager::getInstance().loadGUI(PickupManager::guiName_s);
+        }
         this->defaultRepresentation_ = new PickupRepresentation();
         
         COUT(3) << "PickupManager created." << std::endl;
