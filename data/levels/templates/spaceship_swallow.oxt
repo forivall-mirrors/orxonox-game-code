@@ -41,9 +41,9 @@
 <Template name=spaceshipswallowcameras defaults=0>
   <SpaceShip>
     <camerapositions>
-      <CameraPosition position="0,20,80" drag=true mouselook=true />
-      <CameraPosition position="0,40,160" drag=true mouselook=true />
-      <CameraPosition position="0,50,200" drag=true mouselook=true />
+      <CameraPosition position="0,25,85" drag=true mouselook=true />
+      <CameraPosition position="0,40,140" drag=true mouselook=true />
+      <CameraPosition position="0,50,160" drag=true mouselook=true />
     </camerapositions>
   </SpaceShip>
 </Template>
@@ -66,6 +66,10 @@
     <EffectContainer condition="normal or boost">
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.6, 0, 22" colour="0.0, 0.0, 0.0, 0.5" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.6, 3, 22" colour="0.0, 0.0, 0.0, 0.5" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.02 name=bltest position=" 2.3, 1.66, 23.8" colour="0.5, 0.15, 0.0, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrailzwei" turnontime=1 turnofftime=500000 material="Examples/Flaredrei" />
+      <Backlight mainstate=activity active=false scale=0.02 name=bltest position="-2.3, 1.66, 23.8" colour="0.5, 0.15, 0.0, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrailzwei" turnontime=1 turnofftime=500000 material="Examples/Flaredrei" />      
+
+
     </EffectContainer>
     <EffectContainer condition="boost">
       <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.6, 0, 22" colour="0.0, 0.0, 0.0, 0.0" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
