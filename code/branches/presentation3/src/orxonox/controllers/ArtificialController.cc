@@ -682,7 +682,10 @@ namespace orxonox
     */
     void ArtificialController::follow()
     {
-        this->moveToPosition(this->target_->getPosition());
+        if (this->target_)
+            this->moveToPosition(this->target_->getPosition());
+        else
+            this->specificMasterActionHoldCount_ = 0;
 /*
         if (!this->getControllableEntity())
             return;
