@@ -64,24 +64,24 @@
    accelerationupdown    =  120
   >
     <EffectContainer condition="normal or boost">
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.6, 0, 22" colour="0.0, 0.0, 0.0, 0.5" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.6, 3, 22" colour="0.0, 0.0, 0.0, 0.5" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
-      <Backlight mainstate=activity active=false scale=0.02 name=bltest position=" 2.3, 1.66, 23.8" colour="0.5, 0.15, 0.0, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrailzwei" turnontime=1 turnofftime=500000 material="Examples/Flaredrei" />
-      <Backlight mainstate=activity active=false scale=0.02 name=bltest position="-2.3, 1.66, 23.8" colour="0.5, 0.15, 0.0, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrailzwei" turnontime=1 turnofftime=500000 material="Examples/Flaredrei" />      
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.6, 0, 22" colour="1.0, 1.0, 1.0, 0.5" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.6, 0, 22" colour="1.0, 1.0, 1.0, 0.5" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.023 name=bltest position=" 2.1, 1.66, 23.8" colour="0.5, 0.15, 0.0, 1.0" width=40 length=10 lifetime=1 elements=30 trailmaterial="Trail/backlighttrailzwei" turnontime=1 turnofftime=500000 material="Examples/Flaredrei" />
+      <Backlight mainstate=activity active=false scale=0.023 name=bltest position="-2.1, 1.66, 23.8" colour="0.5, 0.15, 0.0, 1.0" width=40 length=10 lifetime=1 elements=30 trailmaterial="Trail/backlighttrailzwei" turnontime=1 turnofftime=500000 material="Examples/Flaredrei" />      
 
 
     </EffectContainer>
     <EffectContainer condition="boost">
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.6, 0, 22" colour="0.0, 0.0, 0.0, 0.0" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
-      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.6, 0, 22" colour="0.0, 0.0, 0.0, 0.0" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 6.6, 0, 22" colour="1.0, 1.0, 1.0, 0.5" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-6.6, 0, 22" colour="1.0, 1.0, 1.0, 0.5" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
     </EffectContainer>
     <EffectContainer condition="not idle">
-      <FadingBillboard mainstate=activity active=false scale=0.4 position="6.6, 0, 22" colour="1, 1, 1, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
-      <FadingBillboard mainstate=activity active=false scale=0.4 position="-6.6, 0, 22" colour="1, 1, 1, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.4 position="6.6, 0, 22" colour="0, 0.6, 0.85, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=10000 />
+      <FadingBillboard mainstate=activity active=false scale=0.4 position="-6.9, 0, 22" colour="0, 0.6, 0.85, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=10000/>
     </EffectContainer>
     <EffectContainer condition="brake">
-      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.2, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
-      <FadingBillboard mainstate=activity active=false scale=0.3 position="-8, 0, 6" colour="0.2, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="1.0, 1.0, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position="-8, 0, 6" colour="1.0, 1.0, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
     </EffectContainer>
 </MultiStateEngine>
 </Template>
