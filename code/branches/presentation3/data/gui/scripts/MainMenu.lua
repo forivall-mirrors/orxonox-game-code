@@ -5,6 +5,7 @@ P.loadAlong = { "SingleplayerMenu", "MultiplayerMenu", "SettingsMenu", "CreditsM
 
 -- events for MainMenu
 function P.QuickGameTestButton_clicked(e)
+    hideAllMenuSheets()
     orxonox.execute("startGame")
 end
 
