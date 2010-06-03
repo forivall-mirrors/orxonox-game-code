@@ -63,7 +63,7 @@
           <Template link=spaceshippirate />
         </templates>
         <controller>
-          <AIController team=1 active=false name=pirate />
+          <AIController team=1 active=false name=pirate formationFlight=false passive=false />
         </controller>
     </SpaceShip>
 
