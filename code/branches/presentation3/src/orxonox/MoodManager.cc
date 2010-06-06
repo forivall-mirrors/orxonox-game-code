@@ -31,28 +31,41 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/ScopedSingletonManager.h"
+#include "core/Resource.h"
 
 namespace orxonox
 {
     ManageScopedSingleton(MoodManager, ScopeID::Root, false);
 
+    // Note: I'm (Kevin Young) not entirely sure whether that's good code style:
+    const std::string MoodManager::defaultMood_ = "default";
+
     MoodManager::MoodManager()
     {
         RegisterRootObject(MoodManager);
         this->setConfigValues();
+        
+        // Checking for the existence of the folder for the default mood
+        /* Note: Currently Resource::exists(path) will always return false when the path field points to a folder.
+           MoodManager::checkMoodValidity() performs the same check. Please help.
+        */
+        const std::string& path = "ambient/" + MoodManager::defaultMood_ + '/';
+        if (!Resource::exists(path))
+        {
+            // TODO: Non-fatal error handling (non-critical resource missing)
+            COUT(2) << "Mood Warning: Folder for default mood (" << MoodManager::defaultMood_ << ") does not exist!" << std::endl;
+        }
     }
 
     void MoodManager::setConfigValues()
     {
-        SetConfigValue(mood_, "default")
+        SetConfigValue(mood_, MoodManager::defaultMood_)
             .description("Sets the mood for the current level.")
             .callback(this, &MoodManager::checkMoodValidity);
     }
 
-    /** Sets the mood
-    @note
-        TODO: Inform dependent classes of mood change
-    */
+    /** Set a new mood
+     */
     void MoodManager::setMood(const std::string& mood)
     {
         ModifyConfigValue(mood_, set, mood);
@@ -60,9 +73,11 @@ namespace orxonox
 
     void MoodManager::checkMoodValidity()
     {
-        // TODO: Insert new moods here & make this generic
-        if (mood_ != "default" && mood_ != "dnb")
+        //  Generic mood validation
+        const std::string& path = "ambient/" + mood_ + '/';
+        if (!Resource::exists(path))
         {
+            COUT(3) << "Mood " << mood_ << " does not exist. Will not change." << std::endl;
             ResetConfigValue(mood_);
         }
         else
