@@ -39,7 +39,7 @@ namespace orxonox
 {
     DeclareGameState(GSClient, "client", false, false);
 
-    SetCommandLineArgument(ip, "127.0.0.1").information("Sever IP as string in the form #.#.#.#");
+    SetCommandLineArgument(dest, "127.0.0.1").information("Server hostname/IP (IP in the form of #.#.#.#)");
 
     GSClient::GSClient(const GameStateInfo& info)
         : GameState(info)
@@ -55,7 +55,7 @@ namespace orxonox
     {
         GameMode::setIsClient(true);
 
-        this->client_ = new Client(CommandLineParser::getValue("ip").getString(), CommandLineParser::getValue("port"));
+        this->client_ = new Client(CommandLineParser::getValue("dest").getString(), CommandLineParser::getValue("port"));
 
         if(!client_->establishConnection())
         {
