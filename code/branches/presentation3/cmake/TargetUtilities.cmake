@@ -39,6 +39,7 @@
  #      PCH_NO_DEFAULT:    Do not make precompiled header files default if
  #                         specified with PCH_FILE
  #      NO_INSTALL:        Do not install the target at all
+ #      NO_VERSION:        Prevents adding any version to a target
  #
  #    Lists:
  #      LINK_LIBRARIES:    Redirects to TARGET_LINK_LIBRARIES
@@ -81,7 +82,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  ${_additional_switches}
-                  PCH_NO_DEFAULT     NO_INSTALL        MODULE)
+                  PCH_NO_DEFAULT     NO_INSTALL        MODULE NO_VERSION)
   SET(_list_names LINK_LIBRARIES  VERSION   SOURCE_FILES  DEFINE_SYMBOL
                   TOLUA_FILES     PCH_FILE  PCH_EXCLUDE OUTPUT_NAME)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
@@ -229,7 +230,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # VERSION
   IF(_arg_VERSION)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES VERSION ${_arg_VERSION})
-  ELSEIF(NOT _arg_ORXONOX_EXTERNAL)
+  ELSEIF(NOT _arg_ORXONOX_EXTERNAL AND NOT _arg_NO_VERSION)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES VERSION ${ORXONOX_VERSION})
   ENDIF()
 
