@@ -31,7 +31,7 @@
  	d_render_sys->_disableTextureUnitsFrom(1);
 --- OgreCEGUIRenderer.h	Wed Jan 28 21:14:09 2009
 +++ OgreCEGUIRenderer.h	Wed Jan 28 21:06:46 2009
-@@ -29,9 +29,9 @@
+@@ -29,15 +29,15 @@
  #ifndef _OgreCEGUIRenderer_h_
  #define _OgreCEGUIRenderer_h_
  
@@ -44,6 +44,13 @@
  
  #include <OgreRenderQueueListener.h>
  #include <OgreSceneManagerEnumerator.h>
+ #include <OgreTextureUnitState.h>
+
+-#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !defined(OGRE_STATIC_LIB)
++#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !defined(OGRE_GUIRENDERER_STATIC_LIB)
+ #   ifdef OGRE_GUIRENDERER_EXPORTS
+ #       define OGRE_GUIRENDERER_API __declspec(dllexport)
+ #   else
 --- OgreCEGUIResourceProvider.cpp	Wed Jan 28 21:14:09 2009
 +++ OgreCEGUIResourceProvider.cpp	Wed Jan 28 21:07:15 2009
 @@ -25,7 +25,7 @@

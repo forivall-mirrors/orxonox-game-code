@@ -37,7 +37,7 @@
 #include <OgreSceneManagerEnumerator.h>
 #include <OgreTextureUnitState.h>
 
-#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !defined(OGRE_STATIC_LIB)
+#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !defined(OGRE_GUIRENDERER_STATIC_LIB)
 #   ifdef OGRE_GUIRENDERER_EXPORTS
 #       define OGRE_GUIRENDERER_API __declspec(dllexport)
 #   else
