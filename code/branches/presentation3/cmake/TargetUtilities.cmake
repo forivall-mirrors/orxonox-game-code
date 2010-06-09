@@ -46,6 +46,8 @@
  #      VERSION:           Set version to the binary
  #      SOURCE_FILES:      Source files for the target
  #      DEFINE_SYMBOL:     Sets the DEFINE_SYMBOL target property
+ #                         Usage: DEFINE_SYMBOL static "symbol" shared "symbol2"
+ #                         (or shared "symbol2" static "symbol")
  #      TOLUA_FILES:       Files with tolua interface
  #      PCH_FILE:          Precompiled header file
  #      PCH_EXCLUDE:       Source files to be excluded from PCH support
@@ -224,7 +226,22 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # DEFINE_SYMBOL
   IF(_arg_DEFINE_SYMBOL)
-    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES DEFINE_SYMBOL ${_arg_DEFINE_SYMBOL})
+    # Format is: static "static_symbol" shared "shared_symbol"
+    # but the order doesn't matter
+    LIST(LENGTH _arg_DEFINE_SYMBOL _define_symbol_length)
+    IF (_define_symbol_length LESS 2)
+      MESSAGE(FATAL_ERROR "Number of expected arguments for DEFINE_SYMBOL is at least 2: static \"STATIC_SYMBOL\" shared \"SHARED_SYMBOL\"")
+    ENDIF()
+    STRING(TOLOWER "${_arg_STATIC}${_arg_SHARED}" _static_shared_lower)
+    LIST(FIND _arg_DEFINE_SYMBOL ${_static_shared_lower} _symbol_definition_index)
+    MATH(EXPR _symbol_definition_index "${_symbol_definition_index} + 1")
+    IF(_symbol_definition_index LESS _define_symbol_length)
+      LIST(GET _arg_DEFINE_SYMBOL ${_symbol_definition_index} _symbol_definition)
+      SET_TARGET_PROPERTIES(${_target_name} PROPERTIES DEFINE_SYMBOL ${_symbol_definition})
+    ENDIF()
+  ELSEIF(NOT _arg_ORXONOX_EXTERNAL)
+    # Automatically add the macro definitions for our own libraries
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES DEFINE_SYMBOL "${_target_name_upper}_${_arg_STATIC}${_arg_SHARED}_BUILD")
   ENDIF()
 
   # VERSION

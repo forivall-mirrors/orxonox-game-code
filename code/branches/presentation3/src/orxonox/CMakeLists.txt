@@ -63,8 +63,6 @@ ORXONOX_ADD_LIBRARY(orxonox
     interfaces/Pickupable.h
     infos/PlayerInfo.h
     sound/SoundManager.h
-  DEFINE_SYMBOL
-    "ORXONOX_SHARED_BUILD"
   PCH_FILE
     OrxonoxPrecompiledHeaders.h
   LINK_LIBRARIES

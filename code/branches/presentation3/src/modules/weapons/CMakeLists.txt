@@ -12,8 +12,6 @@ ORXONOX_ADD_LIBRARY(weapons
   FIND_HEADER_FILES
   PCH_FILE
     WeaponsPrecompiledHeaders.h
-  DEFINE_SYMBOL
-    "WEAPONS_SHARED_BUILD"
   LINK_LIBRARIES
     orxonox
     # TODO: Remove this as soon as projectiles aren't hardcoded anymore buth rather defined in XML

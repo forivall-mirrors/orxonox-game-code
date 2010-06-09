@@ -59,8 +59,6 @@ ADD_SUBDIRECTORY(packet)
 ADD_SUBDIRECTORY(synchronisable)
 
 ORXONOX_ADD_LIBRARY(network
-  DEFINE_SYMBOL
-    "NETWORK_SHARED_BUILD"
   PCH_FILE
     NetworkPrecompiledHeaders.h
   LINK_LIBRARIES

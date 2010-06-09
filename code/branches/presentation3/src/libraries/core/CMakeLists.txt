@@ -95,8 +95,6 @@ ORXONOX_ADD_LIBRARY(core
     input/InputManager.h
     input/KeyBinder.h
     input/KeyBinderManager.h
-  DEFINE_SYMBOL
-    "CORE_SHARED_BUILD"
   PCH_FILE
     CorePrecompiledHeaders.h
   LINK_LIBRARIES

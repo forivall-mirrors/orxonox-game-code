@@ -28,8 +28,6 @@ ORXONOX_ADD_LIBRARY(questsystem
     QuestDescription.h
     Quest.h
     QuestHint.h
-  DEFINE_SYMBOL
-    "QUESTSYSTEM_SHARED_BUILD"
   PCH_FILE
     QuestsystemPrecompiledHeaders.h
   LINK_LIBRARIES
