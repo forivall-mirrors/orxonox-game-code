@@ -207,7 +207,11 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # (IntelliSense stops working when adding "-Zm1000" as compile flag. "/Zm1000"
   # would not work because of the slash)
   IF(_arg_ORXONOX_EXTERNAL AND MSVC)
-    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES COMPILE_FLAGS "-Zm1000")
+    GET_TARGET_PROPERTY(_compile_flags ${_target_name} COMPILE_FLAGS)
+    IF(NOT _compile_flags)
+      SET(_compile_flags)
+    ENDIF()
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES COMPILE_FLAGS "${_compile_flags} -Zm1000")
   ENDIF()
 
   # MODULE B
