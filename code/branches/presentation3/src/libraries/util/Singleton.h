@@ -32,6 +32,10 @@
 #include "UtilPrereqs.h"
 #include <cassert>
 
+#ifndef NULL
+#  define NULL 0
+#endif
+
 namespace orxonox
 {
     /**
