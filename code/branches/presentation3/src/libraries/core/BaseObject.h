@@ -153,7 +153,7 @@ namespace orxonox
             inline const SmartPtr<Gametype>& getGametype() const { return this->gametype_; }
             inline Gametype* getOldGametype() const { return this->oldGametype_; }
             virtual void changedGametype() {}
-            
+
             inline void setLevel(const SmartPtr<Level>& level)
             {
                 if (level != this->level_)

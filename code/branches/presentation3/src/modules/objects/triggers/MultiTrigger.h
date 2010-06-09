@@ -93,10 +93,10 @@ namespace orxonox
         public:
             MultiTrigger(BaseObject* creator); //!< Constructor. Registers the objects and initializes default values.
             ~MultiTrigger(); //!< Destructor.
-            
+
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a MultiTrigger object through XML.
             virtual void tick(float dt); //!< A method that is executed each tick.
-            
+
             bool isActive(BaseObject* triggerer = NULL); //!< Get whether the MultiTrigger is active for a given object.
 
             /**
@@ -214,15 +214,15 @@ namespace orxonox
                 { if(target == NULL) return true; else return targetMask_.isIncluded(target->getIdentifier()); }
             void addTargets(const std::string& targets); //!< Add some target to the MultiTrigger.
             void removeTargets(const std::string& targets); //!< Remove some target from the MultiTrigger.
-            
+
             void addTrigger(MultiTrigger* trigger); //!< Adds a MultiTrigger as a sub-trigger to the trigger.
             const MultiTrigger* getTrigger(unsigned int index) const; //!< Get the sub-trigger of this MultiTrigger at the given index.
-            
+
         protected:
             virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
 
             void changeTriggered(BaseObject* originator = NULL); //!< This method can be called by any class inheriting from MultiTrigger to change it's triggered status for a specified originator.
-            
+
             bool isModeTriggered(BaseObject* triggerer = NULL); //!< Checks whetherx the MultiTrigger is triggered concerning it's sub-triggers.
             bool isTriggered(BaseObject* triggerer = NULL); //!< Get whether the MultiTrigger is triggered for a given object.
 
@@ -235,7 +235,7 @@ namespace orxonox
             */
             inline void addParentTrigger(MultiTrigger* parent)
                 { this->parentTrigger_ = parent; }
-            
+
             /**
             @brief Get the target mask used to identify the targets of this MultiTrigger.
             @return Returns the target mask.
@@ -247,7 +247,7 @@ namespace orxonox
             */
             //TODO: Check if something mus be done here.
             virtual void notifyMaskUpdate(void) {}
-            
+
         private:
             static const int INF_s; //!< Magic number for infinity.
             //! Magic strings for the mode.
@@ -256,9 +256,9 @@ namespace orxonox
             static const std::string xor_s;
 
             void subTrigggerActivityChanged(BaseObject* originator); //!< This method is called by any sub-trigger to advertise changes in it's state to it's parent-trigger.
-            
+
             bool addState(MultiTriggerState* state); //!< Helper method. Adds a state to the state queue, where the state will wait to become active.
-            
+
             bool checkAnd(BaseObject* triggerer); //!< Checks whether the sub-triggers amount to true for the 'and' mode for a given object.
             bool checkOr(BaseObject* triggerer); //!< Checks whether the sub-triggers amount to true for the 'or' mode for a given object.
             bool checkXor(BaseObject* triggerer); //!< Checks whether the sub-triggers amount to true for the 'xor' mode for a given object.
@@ -275,7 +275,7 @@ namespace orxonox
             float delay_; //!< The delay that is imposed on all new trigger events.
             bool bSwitch_; //!< Bool for the switch-mode, if true the MultiTrigger behaves like a switch.
             bool bStayActive_; //!< Bool for the stay-active-mode, if true the MultiTrigger stays active after its last activation.;
-            
+
             int remainingActivations_; //!< The remaining activations of this MultiTrigger.
             int maxNumSimultaniousTriggerers_; //!< The maximum number of objects simultaniously trigggering this MultiTrigger.
 
@@ -286,14 +286,14 @@ namespace orxonox
 
             MultiTrigger* parentTrigger_;
             std::set<MultiTrigger*> subTriggers_; //!< The sub-triggers of this MultiTrigger.
-            
+
             std::set<BaseObject*> active_; //!< The set of all objects the MultiTrigger is active for.
             std::set<BaseObject*> triggered_; //!< The set of all objects the MultiTrigger is triggered for.
 
             std::deque< std::pair<float, MultiTriggerState*> > stateQueue_; //!< The queue of states waiting to become active.
-            
+
             ClassTreeMask targetMask_; //!< The target mask, masking all objects that can trigger this MultiTrigger.
-            
+
     };
 
 }

@@ -45,7 +45,7 @@
 #include "graphics/Camera.h"
 
 
- 
+
 namespace orxonox
 {
 
@@ -67,7 +67,7 @@ namespace orxonox
 
     }
 
-    void SkyboxGenerator::setConfigValues( ) 
+    void SkyboxGenerator::setConfigValues( )
     {
         SetConfigValue(skyboxPrefix_, "SkyboxFile_");
     }
@@ -82,15 +82,15 @@ namespace orxonox
                 this->captionsRemoved_ = true;
                 return;
             }
-            
+
             ControllableEntity* ce = HumanController::getLocalControllerSingleton()->getControllableEntity();
             Camera* camera = ce->getCamera();
             assert(ce);
-        
+
             Ogre::RenderWindow* w = GraphicsManager::getInstance().getRenderWindow();
 
 
-            switch (iterateOverDirections_) 
+            switch (iterateOverDirections_)
             {
             case 0 :
                 fovy_ = camera->getOgreCamera()->getFOVy();
@@ -104,29 +104,29 @@ namespace orxonox
                 ce->yaw(Degree(90));
                 iterateOverDirections_++;
                 break;
-                
+
             case 2 :
                 w->writeContentsToFile(skyboxPrefix_+"lf.png");
-                ce->yaw(Degree(90)); 
+                ce->yaw(Degree(90));
                 iterateOverDirections_++;
                 break;
 
             case 3 :
                 w->writeContentsToFile(skyboxPrefix_+"bk.png");
-                ce->yaw(Degree(90)); 
+                ce->yaw(Degree(90));
                 iterateOverDirections_++;
                 break;
 
             case 4 :
                 w->writeContentsToFile(skyboxPrefix_+"rt.png");
-                ce->yaw(Degree(90)); 
-                ce->pitch(Degree(90)); 
+                ce->yaw(Degree(90));
+                ce->pitch(Degree(90));
                 iterateOverDirections_++;
                 break;
 
             case 5 :
                 w->writeContentsToFile(skyboxPrefix_+"up.png");
-                ce->pitch(Degree(180)); 
+                ce->pitch(Degree(180));
                 iterateOverDirections_++;
                 break;
 
@@ -135,7 +135,7 @@ namespace orxonox
                 ce->pitch(Degree(90));
                 iterateOverDirections_++;
                 break;
-                
+
             case 7 :
                 camera->getOgreCamera()->setAspectRatio(aspectRatio_);
                 camera->getOgreCamera()->setFOVy(fovy_);
@@ -151,7 +151,7 @@ namespace orxonox
         }
     }
 
-    void SkyboxGenerator::createSkybox( ) 
+    void SkyboxGenerator::createSkybox( )
     {
         SkyboxGenerator::getInstance().takeScreenshot_ = true;
         CommandExecutor::execute("pause");

@@ -51,17 +51,17 @@ namespace orxonox
     {
         RegisterRootObject(GametypeMessageListener);
     }
-    
+
     //----------------------------
     // PickupCarrier
     //----------------------------
     PickupCarrier::PickupCarrier()
     {
         RegisterRootObject(PickupCarrier);
-        
+
         this->setCarrierName("PickupCarrier");
     }
-    
+
     PickupCarrier::~PickupCarrier()
     {
         std::set<Pickupable*>::iterator it = this->pickups_.begin();
@@ -84,7 +84,7 @@ namespace orxonox
         this->player_ = NULL;
         this->isForPlayer_ = true;
     }
-    
+
     //----------------------------
     // RadarListener
     //----------------------------

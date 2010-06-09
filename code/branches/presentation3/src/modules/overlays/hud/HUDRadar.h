@@ -68,7 +68,7 @@ namespace orxonox
         virtual void removeObject(RadarViewable* viewable);
         virtual void objectChanged( RadarViewable* rv );
         void radarTick(float dt);
-        
+
         void gatherObjects();
 
         std::map<RadarViewable::Shape, std::string> shapeMaterials_;

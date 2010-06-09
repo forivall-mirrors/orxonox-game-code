@@ -49,7 +49,7 @@ namespace orxonox
         public:
             RocketController(BaseObject* creator);
             virtual ~RocketController();
-            
+
             virtual void tick(float dt);
             SimpleRocket* getRocket() const
              {  return this->rocket_;  };
@@ -63,7 +63,7 @@ namespace orxonox
             SimpleRocket* rocket_; //!<The Rocket it controlls
             Vector3 targetPosition_;
             WeakPtr<PlayerInfo> player_;
-                        
+
             WeakPtr<WorldEntity> target_;
 
 

@@ -38,8 +38,8 @@ namespace orxonox
 
   /* constructor */
 #ifndef CHATTEST
-  //ChatHistory::ChatHistory( BaseObject* creator ) : BaseObject(creator) 
-  ChatHistory::ChatHistory() 
+  //ChatHistory::ChatHistory( BaseObject* creator ) : BaseObject(creator)
+  ChatHistory::ChatHistory()
 #else
   ChatHistory::ChatHistory()
 #endif
@@ -67,13 +67,13 @@ namespace orxonox
   ChatHistory::~ChatHistory()
   {
     chat_hist_closelog();
-    
+
     /* clear list */
     this->hist_buffer.clear();
   }
 
   /* react to incoming chat */
-  void ChatHistory::incomingChat(const std::string& message, 
+  void ChatHistory::incomingChat(const std::string& message,
     unsigned int senderID)
   {
     /* --> a) look up the actual name of the sender */
@@ -103,7 +103,7 @@ namespace orxonox
 
     /* add the line to the log */
     this->chat_hist_logline( text );
-  } 
+  }
 
   /* Synchronize logfile onto the hard drive */ /* MARK MARK */
   int ChatHistory::syncLog()
@@ -127,7 +127,7 @@ namespace orxonox
 
   /* log a line to a logfile */
   int ChatHistory::chat_hist_logline( const std::string& toadd )
-  { 
+  {
     /* output the line to the file if logging is enabled */
     if( this->hist_log_enabled )
       this->hist_logfile << toadd << std::endl;
@@ -137,7 +137,7 @@ namespace orxonox
   /* open logfile */
   int ChatHistory::chat_hist_openlog()
   {
-    /* TODO: find out the name of the file to log to via settings 
+    /* TODO: find out the name of the file to log to via settings
      *       and set the this->hist_logfile_path variable to it
      */
 #ifndef CHATTEST
@@ -166,7 +166,7 @@ namespace orxonox
   {
     /* see if we've actually got a logfile */
     if( this->hist_logfile )
-    { 
+    {
       /* yes, we've got one, add a line that shows we're closing it */
       this->chat_hist_logline( "--- Logfile closed ---" );
 

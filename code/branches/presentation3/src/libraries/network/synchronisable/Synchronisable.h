@@ -182,7 +182,7 @@ namespace orxonox
         this->dataSize_ += syncList.back()->getSize(state_);
     }
   }
-  
+
   template <class T> void Synchronisable::registerVariable( std::set<T>& variable, uint8_t mode, NetworkCallbackBase *cb, bool bidirectional)
   {
     SynchronisableVariableBase* sv;

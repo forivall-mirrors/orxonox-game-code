@@ -31,14 +31,14 @@
 #include "util/Singleton.h"
 #include "tools/interfaces/Tickable.h"
 #include <OgreMath.h>
- 
- 
+
+
 namespace orxonox
 {
     class SkyboxGenerator : public virtual OrxonoxClass, public Singleton<SkyboxGenerator>, public Tickable
     {
         friend class Singleton<SkyboxGenerator>;
-    
+
         public:
             SkyboxGenerator();
             virtual ~SkyboxGenerator();
@@ -48,7 +48,7 @@ namespace orxonox
 
         private:
             static SkyboxGenerator* singletonPtr_s;
-            std::string skyboxPrefix_; 
+            std::string skyboxPrefix_;
             bool takeScreenshot_;
             int iterateOverDirections_;
             float aspectRatio_;

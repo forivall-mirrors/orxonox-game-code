@@ -64,7 +64,7 @@ namespace orxonox
 
     RadarViewable::~RadarViewable()
     {
-        
+
         if( this->bInitialized_ )
         {
             if( GameMode::showsGraphics() )
@@ -108,7 +108,7 @@ namespace orxonox
             assert(0);
         }
     }
-    
+
     void RadarViewable::settingsChanged()
     {
         if( GameMode::showsGraphics() )

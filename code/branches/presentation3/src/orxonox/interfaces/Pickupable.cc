@@ -45,39 +45,39 @@
 
 namespace orxonox
 {
-    
+
     /**
     @brief
         Constructor. Registers the objects and initializes its member variables.
     */
     Pickupable::Pickupable() : pickupIdentifier_(NULL), used_(false), pickedUp_(false)
-    {        
+    {
         RegisterRootObject(Pickupable);
-        
+
         this->carrier_ = NULL;
-        
+
         this->pickupIdentifier_ = new PickupIdentifier(this);
     }
-    
+
     /**
     @brief
-        Destructor. 
+        Destructor.
     */
     Pickupable::~Pickupable()
     {
         if(this->isUsed())
             this->setUsed(false);
-        
+
         if(this->isPickedUp() && this->getCarrier() != NULL)
         {
             this->getCarrier()->drop(this, false);
             this->setCarrier(NULL);
         }
-        
+
         if(this->pickupIdentifier_ != NULL)
             this->pickupIdentifier_->destroy();
     }
-    
+
     /**
     @brief
         Sets the Pickupable to used or unused, depending on the input.
@@ -90,16 +90,16 @@ namespace orxonox
     {
         if(this->used_ == used)
             return false;
-        
+
         COUT(4) << "Pickupable (&" << this << ") set to used " << used << "." << std::endl;
-        
+
         this->used_ = used;
         this->changedUsed();
 
         GUIManager::getInstance().getLuaState()->doString("PickupInventory.update()");
         return true;
     }
-    
+
     /**
     @brief
         Get whether the given PickupCarrier is a target of this Pickupable.
@@ -114,7 +114,7 @@ namespace orxonox
             return false;
         return this->isTarget(carrier->getIdentifier());
     }
-    
+
     /**
     @brief
         Get whether the given Identififer is a target of this Pickupable.
@@ -133,7 +133,7 @@ namespace orxonox
         }
         return false;
     }
-        
+
     /**
     @brief
         Add a PickupCarrier as target of this Pickupable.
@@ -146,7 +146,7 @@ namespace orxonox
     {
         return this->addTarget(target->getIdentifier());
     }
-    
+
     /**
     @brief
         Add a class, representetd by the input Identifier, as target of this Pickupable.
@@ -159,14 +159,14 @@ namespace orxonox
     {
         if(this->isTarget(target)) //!< If the input target is already present in the list of targets.
             return false;
-        
+
         COUT(4) << "Target " << target->getName() << " added to Pickupable (&" << this << ")." << std::endl;
         this->targets_.push_back(target);
         return true;
     }
-    
+
     /**
-    @brief  
+    @brief
         Sets the Pickupable to picked up.
         This method will be called by the PickupCarrier picking the Pickupable up.
     @param carrier
@@ -178,13 +178,13 @@ namespace orxonox
     {
         if(this->isPickedUp()) //!< If the Pickupable is already picked up.
             return false;
-        
+
         COUT(4) << "Pickupable (&" << this << ") got picked up by a PickupCarrier (&" << carrier << ")." << std::endl;
         this->setCarrier(carrier);
         this->setPickedUp(true);
         return true;
     }
-    
+
     /**
     @brief
         Helper method to set the Pickupable to either picked up or not picked up.
@@ -197,15 +197,15 @@ namespace orxonox
     {
         if(this->pickedUp_ == pickedUp)
             return false;
-        
+
         COUT(4) << "Pickupable (&" << this << ") set to pickedUp " << pickedUp << "." << std::endl;
-        
+
         this->pickedUp_ = pickedUp;
         this->changedPickedUp();
         GUIManager::getInstance().getLuaState()->doString("PickupInventory.update()");
         return true;
     }
-        
+
     /**
     @brief
         Sets the carrier of the Pickupable.
@@ -216,18 +216,18 @@ namespace orxonox
     {
         if(this->carrier_ == carrier)
             return false;
-        
+
         COUT(4) << "Pickupable (&" << this << ") changed Carrier (& " << carrier << ")." << std::endl;
-        
+
         this->carrier_ = carrier;
         this->changedCarrier();
         if(tell && carrier != NULL)
             this->carrier_->pickups_.insert(this);
         return true;
     }
-    
+
     /**
-    @brief 
+    @brief
         Sets the Pickupable to not picked up or dropped.
         This method will be called by the PickupCarrier dropping the Pickupable.
     @return
@@ -237,23 +237,23 @@ namespace orxonox
     {
         if(!this->isPickedUp()) //!< If the Pickupable is not picked up.
             return false;
-        
+
         COUT(4) << "Pickupable (&" << this << ") got dropped up by a PickupCarrier (&" << this->getCarrier() << ")." << std::endl;
         this->setUsed(false);
         this->setPickedUp(false);
-        
+
         bool created = this->createSpawner();
-        
+
         this->setCarrier(NULL);
-        
+
         if(!created)
         {
             this->destroy();
         }
-        
+
         return true;
     }
-    
+
     /**
     @brief
         Creates a duplicate of the Pickupable.
@@ -264,13 +264,13 @@ namespace orxonox
     {
         OrxonoxClass* item = NULL;
         this->clone(item);
-        
+
         Pickupable* pickup = dynamic_cast<Pickupable*>(item);
-        
+
         COUT(4) << "Pickupable (&" << this << ") cloned. Clone is new Pickupable (&" << pickup << ")." << std::endl;
         return pickup;
     }
-    
+
     /**
     @brief
         Creates a duplicate of the input OrxonoxClass.
@@ -298,5 +298,5 @@ namespace orxonox
         PickupCarrier* carrier = static_cast<PickupCarrier*>(pawn);
         return carrier->pickup(this);
     }
-    
+
 }

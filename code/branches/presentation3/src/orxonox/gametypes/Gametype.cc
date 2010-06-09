@@ -329,7 +329,7 @@ namespace orxonox
             {
                 if (index == randomspawn)
                     return (*it);
-                
+
                 ++index;
             }
 

@@ -77,7 +77,7 @@ namespace orxonox {
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-            
+
             virtual void pickupTimerCallback(void); //!< Function that gets called when timer ends.
 
             void setDuration(float duration);

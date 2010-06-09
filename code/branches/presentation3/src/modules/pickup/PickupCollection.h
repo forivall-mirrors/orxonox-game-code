@@ -52,40 +52,40 @@ namespace orxonox
     */
     class _PickupExport PickupCollection : public Pickupable, public BaseObject
     {
-        
+
         public:
-            
+
             PickupCollection(BaseObject* creator); //!< Default Constructor.
             virtual ~PickupCollection(); //!< Destructor.
-            
+
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates an instance of this Class through XML.
 
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void changedCarrier(void); //!< Is called when the pickup has changed its PickupCarrier.
             virtual void changedPickedUp(void); //!< Is called when the pickup has transited from picked up to dropped or the other way around.
-            
+
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
-            
+
             virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
-            
+
             virtual const PickupIdentifier* getPickupIdentifier(void); //!< Get the PickupIdentifier of this PickupCollection.
-            
+
             bool addPickupable(Pickupable* pickup); //!< Add the input Pickupable to list of Pickupables combined by this PickupCollection.
             const Pickupable* getPickupable(unsigned int index); //!< Get the Pickupable at the given index.
-            
+
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier for this pickup.
-            
+
             virtual bool createSpawner(void); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
-            
+
             PickupCollectionIdentifier* pickupCollectionIdentifier_; //!< The PickupCollectionIdentifier of this PickupCollection. Is used to distinguish different PickupCollections amongst themselves.
-            
+
         private:
-            
+
             std::vector<WeakPtr<Pickupable> > pickups_; //!< The list of the pointers of all the Pickupables this PickupCollection consists of. They are weak pointers to facilitate testing, whether the pointers are still valid.
-        
+
     };
-    
+
 }
 
 #endif /* _PickupCollection_H__ */

@@ -102,11 +102,11 @@ namespace orxonox // tolua_export
         static void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); //tolua_export
 
         static GUIManager& getInstance() { return Singleton<GUIManager>::getInstance(); } // tolua_export
-        
+
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
         void executeCode(const std::string& str);
-        
+
         template <typename FunctionType>
         bool protectedCall(FunctionType function);
 

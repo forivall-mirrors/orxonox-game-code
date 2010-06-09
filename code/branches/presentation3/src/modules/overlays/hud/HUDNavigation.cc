@@ -401,7 +401,7 @@ bool HUDNavigation::showObject(RadarViewable* rv)
 
 void HUDNavigation::changedOwner()
 {
-    
+
     const std::set<RadarViewable*>& respawnObjects = this->getOwner()->getScene()->getRadar()->getRadarObjects();
     for ( std::set<RadarViewable*>::const_iterator it = respawnObjects.begin(); it != respawnObjects.end(); ++it )
     {

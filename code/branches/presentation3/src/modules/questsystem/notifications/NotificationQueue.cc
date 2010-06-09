@@ -56,7 +56,7 @@ namespace orxonox
     NotificationQueue::NotificationQueue(BaseObject* creator) : OverlayGroup(creator)
     {
         this->registered_ = false;
-        
+
         RegisterObject(NotificationQueue);
         this->initialize();
     }
@@ -430,7 +430,7 @@ namespace orxonox
 
         // Unregister the NotificationQueue with the NotificationManager.
         NotificationManager::getInstance().unregisterNotification(container->notification, this);
-        
+
         this->removeElement(container->overlay);
         this->containers_.erase(container);
         this->overlays_.erase(container->notification);

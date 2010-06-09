@@ -55,11 +55,11 @@ namespace orxonox
     */
     class _ObjectsExport DistanceMultiTrigger : public MultiTrigger
     {
-        
+
         public:
             DistanceMultiTrigger(BaseObject* creator); //!< Default Constructor. Registers the object and initializes default values.
             ~DistanceMultiTrigger(); //!< Destructor.
-            
+
             void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a DistanceMultiTrigger object through XML.
 
             /**
@@ -74,7 +74,7 @@ namespace orxonox
             */
             inline const std::string& getTargetName(void)
                 { return this->targetName_; }
-            
+
             /**
             @brief Set the distance at which the DistanceMultiTrigger triggers.
             @param distance The distance.
@@ -87,7 +87,7 @@ namespace orxonox
             */
             inline float getDistance() const
                 { return this->distance_; }
-                
+
         protected:
             virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
 
@@ -105,16 +105,16 @@ namespace orxonox
             */
             inline bool removeFromRange(WorldEntity* entity)
                 { WeakPtr<WorldEntity>* weakptr = this->range_.find(entity)->second; bool erased = this->range_.erase(entity) > 0; if(erased) delete weakptr; return erased; }
-                
+
         private:
             float distance_; //!< The distance at which the DistanceMultiTrigger triggers.
             std::string targetName_; //!< The target name, used in singleTargetMode.
             bool singleTargetMode_; //!< To indicate whe the MultiDistanceTrigger is in single-target-mode.
-            
+
             std::map<WorldEntity*, WeakPtr<WorldEntity>* > range_; //!< The set of entities that currently are in range of the DistanceMultiTrigger.
-        
+
     };
-    
+
 }
 
 #endif // _DistanceMultiTrigger_H__

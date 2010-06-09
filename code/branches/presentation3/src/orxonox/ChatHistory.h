@@ -33,7 +33,7 @@
 #include <cassert>
 
 /* define this if you're unit testing */
-//#define CHATTEST 
+//#define CHATTEST
 
 #ifndef CHATTEST
 #include <OrxonoxPrereqs.h>
@@ -61,7 +61,7 @@ namespace orxonox
     public Singleton<ChatHistory>
 
 #else
-  class ChatHistory 
+  class ChatHistory
 #endif
   {
     public:
@@ -74,17 +74,17 @@ namespace orxonox
 #endif
       virtual ~ChatHistory();
 
-  
+
     //protected:
-      /** what to do with incoming chat 
-       * 
-       * \param message The incoming message 
+      /** what to do with incoming chat
+       *
+       * \param message The incoming message
        * \param senderID Identification number of the sender
        */
-      virtual void incomingChat(const std::string& message, 
+      virtual void incomingChat(const std::string& message,
         unsigned int senderID);
-      
-      /** Synchronize logfile onto the hard drive 
+
+      /** Synchronize logfile onto the hard drive
        *
        * \return 0 for success, other for error
        */
@@ -92,7 +92,7 @@ namespace orxonox
 
       /** debug-print: output the whole history to stdout */
       void debug_printhist();
-      
+
     private:
       /* FIELDS */
       /** Vector to store the history in */

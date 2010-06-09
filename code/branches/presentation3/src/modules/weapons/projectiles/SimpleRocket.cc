@@ -70,7 +70,7 @@ namespace orxonox
 
             this->fire_ = new ParticleEmitter(this);
             this->attach(this->fire_);
-           
+
             this->fire_->setOrientation(this->getOrientation());
             this->fire_->setSource("Orxonox/simplerocketfire");
             this->enableCollisionCallback();
@@ -89,7 +89,7 @@ namespace orxonox
     }
 
 
-    
+
     /**
     * @brief updates state of rocket, disables fire if no fuel
     * @param dt tick-length
@@ -106,18 +106,18 @@ namespace orxonox
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
             this->localAngularVelocity_ = 0;
 
-        
+
             if (this->fuel_)
             {
-                if (this->destroyTimer_.getRemainingTime()<  (static_cast<float>(this->FUEL_PERCENTAGE)/100) *this->lifetime_ ) 
+                if (this->destroyTimer_.getRemainingTime()<  (static_cast<float>(this->FUEL_PERCENTAGE)/100) *this->lifetime_ )
                     this->fuel_=false;
             } else
                 this->disableFire();
 
-            if( this->bDestroy_ ) 
+            if( this->bDestroy_ )
                 this->destroy();
         }
-                
+
     }
 
     /**
@@ -126,7 +126,7 @@ namespace orxonox
     */
     void SimpleRocket::disableFire()
     {
-        this->setAcceleration(0,0,0);        
+        this->setAcceleration(0,0,0);
         this->fire_->detachFromParent();
     }
 
@@ -136,7 +136,7 @@ namespace orxonox
     */
     SimpleRocket::~SimpleRocket()
     {
-        if (this->isInitialized()) 
+        if (this->isInitialized())
         {
             if( GameMode::isMaster() )
             {

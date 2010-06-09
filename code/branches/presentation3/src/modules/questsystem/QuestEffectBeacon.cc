@@ -111,12 +111,12 @@ namespace orxonox
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
         MultiTriggerContainer* mTrigger = orxonox_cast<MultiTriggerContainer*>(trigger);
         Pawn* pawn = NULL;
-        
+
         //! If the trigger is neither a Playertrigger nor a MultiTrigger (i.e. a MultitriggerContainer) we can do anything with it.
         if(pTrigger == NULL && mTrigger == NULL)
             return false;
-        
-        // If the trigger is a PlayerTrigger.        
+
+        // If the trigger is a PlayerTrigger.
         if(pTrigger != NULL)
         {
             if(!pTrigger->isForPlayer())  //!< The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
@@ -124,7 +124,7 @@ namespace orxonox
             else
                 pawn = pTrigger->getTriggeringPlayer();
         }
-        
+
         // If the trigger is a MultiTrigger (i.e. a MultiTriggerContainer)
         if(mTrigger != NULL)
         {

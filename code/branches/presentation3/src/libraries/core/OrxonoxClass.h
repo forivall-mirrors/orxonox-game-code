@@ -107,7 +107,7 @@ namespace orxonox
             bool isDirectChildOf(const OrxonoxClass* object);
             bool isParentOf(const OrxonoxClass* object);
             bool isDirectParentOf(const OrxonoxClass* object);
-            
+
             virtual void clone(OrxonoxClass*& item) {}
 
             inline unsigned int getReferenceCount() const
@@ -171,9 +171,9 @@ namespace orxonox
             //! 'Fast map' that holds this-pointers of all derived types
             std::vector<std::pair<unsigned int, void*> > objectPointers_;
     };
-    
+
     SUPER_FUNCTION(11, OrxonoxClass, clone, false);
-    
+
 }
 
 #endif /* _OrxonoxClass_H__ */

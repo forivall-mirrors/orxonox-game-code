@@ -60,7 +60,7 @@ namespace orxonox
             COUT(2) << "Warning: Detected Event loop in EventListener \"" << this->getName() << '"' << std::endl;
             return;
         }
-        
+
         COUT(4) << "EventListener, processing event: originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << ")" << ", activate: " << event.activate_ << ", name: " << event.name_ << std::endl;
 
         this->bActive_ = true;

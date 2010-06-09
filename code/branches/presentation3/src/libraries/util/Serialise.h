@@ -635,17 +635,17 @@ namespace orxonox{
     {
         return checkEquality( (unsigned char&)((mbool&)variable).getMemory(), mem );
     }
-    
+
     // =========== std::set
-    
+
     template <class T> inline uint32_t returnSize( const std::set<T>& variable )
     {
         uint32_t tempsize = sizeof(uint32_t); // for the number of entries
         for( typename std::set<T>::iterator it=((std::set<T>*)(&variable))->begin(); it!=((std::set<T>*)(&variable))->end(); ++it)
-            tempsize += returnSize( *it ); 
-        return tempsize; 
+            tempsize += returnSize( *it );
+        return tempsize;
     }
-    
+
     template <class T> inline void saveAndIncrease(  const std::set<T>& variable, uint8_t*& mem )
     {
         typename std::set<T>::const_iterator it = variable.begin();
@@ -653,7 +653,7 @@ namespace orxonox{
         for( ; it!=variable.end(); ++it )
             saveAndIncrease( *it, mem );
     }
-    
+
     template <class T> inline void loadAndIncrease( const std::set<T>& variable, uint8_t*& mem )
     {
         uint32_t nrOfElements = 0;
@@ -674,7 +674,7 @@ namespace orxonox{
             }
         }
     }
-    
+
     template <class T> inline bool checkEquality( const std::set<T>& variable, uint8_t* mem )
     {
         uint8_t* temp = mem;

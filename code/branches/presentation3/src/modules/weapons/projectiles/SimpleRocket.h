@@ -97,14 +97,14 @@ namespace orxonox
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotatePitch(float value)
-            {   
+            {
                 this->rotatePitch(Vector2(value, 0)); }
             /**
             @brief Rotates the SimpleRocket around the z-axis by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotateRoll(float value)
-            { 
+            {
                 this->rotateRoll(Vector2(value, 0)); }
 
             void setOwner(Pawn* owner);
@@ -123,7 +123,7 @@ namespace orxonox
             WeakPtr<Pawn> owner_;
             Vector3 localAngularVelocity_;
             float damage_;
-            bool bDestroy_; 
+            bool bDestroy_;
             bool fuel_; //!< Bool is true while the rocket "has fuel"
 
 

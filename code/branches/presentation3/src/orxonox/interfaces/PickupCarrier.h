@@ -67,7 +67,7 @@ namespace orxonox
         //! So that the different Pickupables have full access to their PickupCarrier.
         friend class Pickupable;
         friend class PickupManager;
-        //! Friends. 
+        //! Friends.
         friend class Pickup;
         friend class HealthPickup;
         friend class InvisiblePickup;
@@ -169,14 +169,14 @@ namespace orxonox
             @return Returns the position as a Vector3.
             */
             virtual const Vector3& getCarrierPosition(void) = 0;
-            
+
             /**
             @brief Get the name of this PickupCarrier.
             @return Returns the name as a string.
             */
             const std::string& getCarrierName(void) { return this->carrierName_; } // tolua_export
-            
-        protected:        
+
+        protected:
             /**
             @brief Get all direct children of this PickupSpawner.
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
@@ -197,7 +197,7 @@ namespace orxonox
             */
             std::set<Pickupable*>& getPickups(void)
                 { return this->pickups_; }
-                
+
             /**
             @brief Set the name of this PickupCarrier.
                    The name needs to be set in the constructor of every class inheriting from PickupCarrier, by calling setCarrierName().
@@ -205,11 +205,11 @@ namespace orxonox
             */
             void setCarrierName(const std::string& name)
                 { this->carrierName_ = name; }
-        
+
         private:
             std::set<Pickupable*> pickups_; //!< The list of Pickupables carried by this PickupCarrier.
             std::string carrierName_; //!< The name of the PickupCarrier, as displayed in the PickupInventory.
-            
+
             /**
             @brief Get the number of carrier children this PickupCarrier has.
             @return Returns the number of carrier children.
@@ -221,7 +221,7 @@ namespace orxonox
                     delete list;
                     return size;
                 }
-            
+
             /**
             @brief Get the index-th child of this PickupCarrier.
             @param index The index of the child to return.
@@ -236,14 +236,14 @@ namespace orxonox
                     delete list;
                     return carrier;
                 }
-            
+
             /**
             @brief Get the number of Pickupables this PickupCarrier carries.
             @return returns the number of pickups.
             */
             unsigned int getNumPickups(void)
                 { return this->pickups_.size(); }
-            
+
             /**
             @brief Get the index-th Pickupable of this PickupCarrier.
             @param index The index of the Pickupable to return.
@@ -258,7 +258,7 @@ namespace orxonox
                         return NULL;
                     return *it;
                 }
-            
+
     };
 }
 

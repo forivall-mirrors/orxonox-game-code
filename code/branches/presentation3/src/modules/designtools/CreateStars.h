@@ -31,7 +31,7 @@
 #include <string>
 #include "util/Math.h"
 #include "core/BaseObject.h"
- 
+
 namespace orxonox
 {
     class CreateStars : public BaseObject
@@ -60,11 +60,11 @@ namespace orxonox
                 return this->material_;
             }
 
-            void setColour(const orxonox::ColourValue& colour) { 
+            void setColour(const orxonox::ColourValue& colour) {
                 this->colour_ = colour;
             }
 
-            const ColourValue& getColour() const { 
+            const ColourValue& getColour() const {
                 return this->colour_;
             }
 
@@ -108,7 +108,7 @@ namespace orxonox
             unsigned int getRadius()const {
                 return this->radius_;
             }
-            
+
             Vector3 PolarToCartesian(float alpha, float beta, float radius);
 
         private:
@@ -118,9 +118,9 @@ namespace orxonox
             std::vector<Billboard*> billboards_;
             unsigned int radius_;
             float alpha_;
-            float colourDiff_; 
+            float colourDiff_;
             float alphaDiff_;
             float radiusDiff_;
-            
+
     };
 }

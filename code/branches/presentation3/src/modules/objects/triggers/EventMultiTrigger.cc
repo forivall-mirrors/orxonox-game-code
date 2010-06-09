@@ -51,7 +51,7 @@ namespace orxonox
 
     EventMultiTrigger::~EventMultiTrigger()
     {
-        
+
     }
 
     void EventMultiTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -60,7 +60,7 @@ namespace orxonox
 
         this->setBroadcast(true);
     }
-    
+
     void EventMultiTrigger::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(EventMultiTrigger, XMLEventPort, xmlelement, mode);

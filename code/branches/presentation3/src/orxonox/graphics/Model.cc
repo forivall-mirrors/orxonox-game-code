@@ -41,7 +41,7 @@ namespace orxonox
 {
     CreateFactory(Model);
 
-    Model::Model(BaseObject* creator) : 
+    Model::Model(BaseObject* creator) :
         StaticEntity(creator), bCastShadows_(true), lodLevel_(5), bLodEnabled_(true), numLodLevels_(10), lodReductionRate_(.15)
     {
         RegisterObject(Model);
@@ -58,9 +58,9 @@ namespace orxonox
     void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Model, XMLPort, xmlelement, mode);
-        
+
         XMLPortParam(Model, "lodLevel", setLodLevel, getLodLevel, xmlelement, mode);
-        
+
         XMLPortParam(Model, "mesh", setMeshSource, getMeshSource, xmlelement, mode);
         XMLPortParam(Model, "shadow", setCastShadows, getCastShadows, xmlelement, mode).defaultValues(true);
     }
@@ -80,14 +80,14 @@ namespace orxonox
             scaleFactor = scale3d.z;
         return scaleFactor;
     }
-    
+
     void Model::changedMesh()
     {
         if (GameMode::showsGraphics())
         {
             if (this->mesh_.getEntity())
                 this->detachOgreObject(this->mesh_.getEntity());
-            
+
             this->mesh_.setMeshSource(this->getScene()->getSceneManager(), this->meshSrc_);
 
             if (this->mesh_.getEntity())
@@ -95,15 +95,15 @@ namespace orxonox
                 this->attachOgreObject(this->mesh_.getEntity());
                 this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
                 this->mesh_.setVisible(this->isVisible());
-                
-                
+
+
                 //LOD
                 if( this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1 )
                 {
                     Level* level = this->getLevel();
-                  
+
                     assert( level != 0 );
-                    
+
                     MeshLodInformation* lodInfo = level->getLodInfo(this->meshSrc_);
                     if( lodInfo )
                     {
@@ -121,16 +121,16 @@ namespace orxonox
                     {
                         float volume = this->mesh_.getEntity()->getBoundingBox().volume();
     //                     float scaleFactor = 1;
-                        
+
     //                     BaseObject* creatorPtr = this;
-    //                     
+    //
     //                     while(creatorPtr!=NULL&&orxonox_cast<WorldEntity*>(creatorPtr))
     //                     {
     //                         scaleFactor *= getBiggestScale(((WorldEntity*) creatorPtr)->getScale3D());
     //                         creatorPtr = creatorPtr->getCreator();
     //                     }
     //                     COUT(0) << "name: " << this->meshSrc_ << "scaleFactor: " << scaleFactor << ", volume: " << volume << endl;
-                        
+
                         COUT(4) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and volume: "<< volume << ":" << std::endl;
 
 #if OGRE_VERSION >= 0x010700
@@ -143,7 +143,7 @@ namespace orxonox
                         {
     //                         float factor = scaleFactor*5/lodLevel_;
                             float factor = pow(volume, 2.0f / 3.0f) * 15.0f / lodLevel_;
-                            
+
                             COUT(4) << "LodLevel set with factor: " << factor << endl;
 
                             distList.push_back(70.0f*factor);
@@ -159,7 +159,7 @@ namespace orxonox
                             while(distList.size()>this->numLodLevels_)
                                 distList.pop_back();
 
-                            
+
                             //Generiert LOD-Levels
                             this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, this->lodReductionRate_);
                         }
@@ -170,7 +170,7 @@ namespace orxonox
                                 what = ">5";
                             else
                                 what = "<0";
-                            
+
                             COUT(4)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"." << endl;
                         }
                     }

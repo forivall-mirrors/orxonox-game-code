@@ -136,7 +136,7 @@ namespace orxonox
         Engine* engine = this->carrierToEngineHelper();
         if(engine == NULL) //!< If the PickupCarrier is no Engine, then this pickup is useless and therefore is destroyed.
             this->destroy();
-        
+
         //! If the pickup has transited to used.
         if(this->isUsed())
         {
@@ -155,7 +155,7 @@ namespace orxonox
         {
             engine->setSpeedAdd(0.0f);
             engine->setSpeedMultiply(1.0f);
-            
+
             if(this->isOnce())
             {
                 if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
@@ -185,7 +185,7 @@ namespace orxonox
         {
             COUT(1) << "Invalid PickupCarrier in SpeedPickup." << std::endl;
         }
-        
+
         return engine;
     }
 
@@ -268,7 +268,7 @@ namespace orxonox
     }
 
     void SpeedPickup::pickupTimerCallback(void)
-    {       
+    {
         this->setUsed(false);
     }
 }

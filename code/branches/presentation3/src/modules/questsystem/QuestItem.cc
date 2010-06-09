@@ -41,7 +41,7 @@ namespace orxonox
 {
 
     CreateUnloadableFactory(QuestItem);
-    
+
     /**
     @brief
         Constructor. Registers and initializes the object.
@@ -49,7 +49,7 @@ namespace orxonox
     QuestItem::QuestItem(BaseObject* creator) : BaseObject(creator)
     {
         this->registered_ = false;
-        
+
         RegisterObject(QuestItem);
     }
 

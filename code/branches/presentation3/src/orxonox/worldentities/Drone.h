@@ -52,7 +52,7 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Drone through XML.
             virtual void tick(float dt); //!< Defines which actions the Drone has to take in each tick.
 
-            
+
             virtual void moveFrontBack(const Vector2& value);
             virtual void moveRightLeft(const Vector2& value);
             virtual void moveUpDown(const Vector2& value);
@@ -60,7 +60,7 @@ namespace orxonox
             virtual void rotateYaw(const Vector2& value);
             virtual void rotatePitch(const Vector2& value);
             virtual void rotateRoll(const Vector2& value);
-            
+
             /**
             @brief Moves the Drone in the Front/Back-direction by the specifed amount.
             @param value  The amount by which the drone is to be moved.
@@ -79,7 +79,7 @@ namespace orxonox
             */
             inline void moveUpDown(float value)
             { this->moveUpDown(Vector2(value, 0)); }
-            
+
             /**
             @brief Rotates the Drone around the y-axis by the specifed amount.
             @param value  The amount by which the drone is to be rotated.
@@ -98,17 +98,17 @@ namespace orxonox
             */
             inline void rotateRoll(float value)
             { this->rotateRoll(Vector2(value, 0)); }
-            
+
             /**
             @brief Sets the primary thrust to the input amount.
             @param thrust The amount of thrust.
             */
             inline void setPrimaryThrust( float thrust )
-                { this->primaryThrust_=thrust; }      
+                { this->primaryThrust_=thrust; }
             inline void setAuxilaryThrust( float thrust )
-                { this->auxilaryThrust_=thrust; }      
+                { this->auxilaryThrust_=thrust; }
             inline void setRotationThrust( float thrust )
-                { this->rotationThrust_=thrust; }      
+                { this->rotationThrust_=thrust; }
             inline void setMaxDistanceToOwner( float distance)
                 { this->maxDistanceToOwner_=distance; }
             inline void setMinDistanceToOwner( float distance)
@@ -116,7 +116,7 @@ namespace orxonox
             inline void setMaxShootingRange( float distance)
                 { this->maxShootingRange_=distance; }
 
-            
+
             /**
             @brief Gets the primary thrust to the input amount.
             @return The amount of thrust.
@@ -133,13 +133,13 @@ namespace orxonox
                 { return this->minDistanceToOwner_; }
             inline float getMaxShootingRange()
                 { return this->maxShootingRange_; }
-            
+
         private:
             DroneController *myController_; //!< The controller of the Drone.
-            
+
             btVector3 localLinearAcceleration_; //!< The linear acceleration that is used to move the Drone the next tick.
             btVector3 localAngularAcceleration_; //!< The linear angular acceleration that is used to move the Drone the next tick.
-            float primaryThrust_; //!< The amount of primary thrust. This is just used, when moving forward. 
+            float primaryThrust_; //!< The amount of primary thrust. This is just used, when moving forward.
             float auxilaryThrust_; //!< The amount of auxilary thrust. Used for all other movements (except for rotations).
             float rotationThrust_; //!< The amount of rotation thrust. Used for rotations only.
             float maxDistanceToOwner_; //Maximum Distance to owner

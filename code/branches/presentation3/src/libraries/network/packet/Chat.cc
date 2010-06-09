@@ -59,8 +59,8 @@ Chat::Chat( const std::string& message, unsigned int playerID )
   *(unsigned int *)(data_ + _PLAYERID ) = playerID;
   *(unsigned int *)(data_ + _MESSAGELENGTH ) = messageLength_;
 
-  /* cast the hell out of the message string, and copy it into the 
-   * data buffer. 
+  /* cast the hell out of the message string, and copy it into the
+   * data buffer.
    */
   memcpy( data_+_MESSAGE, static_cast<void*>(const_cast<char*>(message.c_str())), messageLength_ );
 }

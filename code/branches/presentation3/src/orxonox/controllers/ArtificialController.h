@@ -63,7 +63,7 @@ namespace orxonox
                 { this->maxFormationSize_ = size; }
             inline int getFormationSize() const
                 { return this->maxFormationSize_; }
-                
+
             inline void setPassive(bool passive)
                 { this->passive_ = passive; }
             inline bool getPassive() const

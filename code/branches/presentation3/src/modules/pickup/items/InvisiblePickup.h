@@ -43,7 +43,7 @@
 #include "pickup/Pickup.h"
 
 namespace orxonox {
-        
+
     /**
     @brief
         A pickup that makes the Pawn invisible.
@@ -56,13 +56,13 @@ namespace orxonox {
     class _PickupExport InvisiblePickup : public Pickup
     {
         public:
-        
+
             InvisiblePickup(BaseObject* creator); //!< Constructor.
             virtual ~InvisiblePickup(); //!< Destructor.
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
-            
+
             /**
             @brief Checks whether the Pawn is invisible.
             @return Returns if the Pawn is invisible.
@@ -71,13 +71,13 @@ namespace orxonox {
                 { return this->invisible_; }
             inline float getDuration()
                 { return this->duration_; }
- 
+
         protected:
             bool setInvisible(bool invisibility); //!< Set the Pawn to be invisible or visible again.
             void setDuration(float duration);
             void initializeIdentifier(void);
             virtual void pickupTimerCallback(void); //!< Function that gets called when the timer ends.
-        
+
         private:
             void initialize(void); //!< Initializes the member variables.
             Pawn* carrierToPawnHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.

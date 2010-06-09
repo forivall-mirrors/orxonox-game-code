@@ -106,7 +106,7 @@ namespace orxonox
             if (temp)
             {
                 this->bLoadDefaults_ = temp->bLoadDefaults_;
-                
+
                 if (!temp->bIsReturningXMLElement_)
                 {
                     this->bIsReturningXMLElement_ = true;

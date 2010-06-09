@@ -49,7 +49,7 @@ public:
     virtual ~HUDNavigation();
 
     void setConfigValues();
-    
+
     virtual void XMLPort ( Element& xmlElement, XMLPort::Mode mode );
     virtual void tick ( float dt );
 
@@ -75,7 +75,7 @@ private:
         bool wasOutOfView_;
 
     };
-    
+
     bool showObject( RadarViewable* rv );
 
     // XMLPort accessors

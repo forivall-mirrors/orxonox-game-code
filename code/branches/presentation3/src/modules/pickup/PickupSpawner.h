@@ -100,19 +100,19 @@ namespace orxonox
 
         protected:
             void decrementSpawnsRemaining(void); //!< Decrements the number of remaining spawns.
-                        
+
             void startRespawnTimer(void);
-            
+
             virtual Pickupable* getPickup(void); //!< Creates a new Pickupable.
-            
+
             void setPickupable(Pickupable* pickup); //!< Sets a Pickupable for the PickupSpawner to spawn.
             const Pickupable* getPickupable(void); //!< Get the Pickupable that is spawned by this PickupSpawner.
-            
+
             Pickupable* pickup_; //!< The pickup to be spawned.
 
         private:
             void initialize(void);
-            
+
             void trigger(Pawn* pawn); //!< Method called when a Pawn is close enough.
             void respawnTimerCallback(); //!< Method called when the timer runs out.
 

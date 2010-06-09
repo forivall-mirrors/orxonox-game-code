@@ -44,7 +44,7 @@ namespace orxonox
     {
         RegisterRootObject(MoodManager);
         this->setConfigValues();
-        
+
         // Checking for the existence of the folder for the default mood
         /* Note: Currently Resource::exists(path) will always return false when the path field points to a folder.
            MoodManager::checkMoodValidity() performs the same check. Please help.

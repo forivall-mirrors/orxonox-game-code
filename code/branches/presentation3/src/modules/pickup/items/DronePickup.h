@@ -46,33 +46,33 @@
 #include "tools/interfaces/Tickable.h"
 
 namespace orxonox {
-    
+
 
     class _PickupExport DronePickup : public Pickup, public Tickable
     {
         public:
-        
+
             DronePickup(BaseObject* creator); //!< Constructor.
             virtual ~DronePickup(); //!< Destructor.
-            
+
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a DronePickup object through XML.
-            
+
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
             void setDroneTemplate(std::string templatename);
-            const std::string& getDroneTemplate() const; 
-            
+            const std::string& getDroneTemplate() const;
+
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-        
+
         private:
             void initialize(void); //!< Initializes the member variables.
             std::string droneTemplate_;
             Pawn* carrierToPawnHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
-            
 
-        
+
+
     };
 }
 

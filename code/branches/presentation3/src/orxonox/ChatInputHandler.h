@@ -61,7 +61,7 @@ namespace orxonox // tolua_export
   { // tolua_export
     private:
       /** Input buffer, to be used to catch input from the
-       * keyboard 
+       * keyboard
        */
       InputBuffer *inpbuf;
       int disp_offset, width;
@@ -125,13 +125,13 @@ namespace orxonox // tolua_export
        * Deal with incoming chat (which means in our case: Add it to the
        * history window of the full chat window)
        */
-      void incomingChat( const std::string& message, 
+      void incomingChat( const std::string& message,
         unsigned int senderID );
 
       /** \param full true means show full chat window with history,
             false means show only an input line
-       * 
-       * Show the chat window and redirect the game's keyboard input 
+       *
+       * Show the chat window and redirect the game's keyboard input
        * into it.
        */
       void activate( bool full );

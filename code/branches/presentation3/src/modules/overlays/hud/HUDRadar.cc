@@ -44,7 +44,7 @@
 
 namespace orxonox
 {
-    CreateFactory(HUDRadar); 
+    CreateFactory(HUDRadar);
 
     HUDRadar::HUDRadar(BaseObject* creator)
         : OrxonoxOverlay(creator)

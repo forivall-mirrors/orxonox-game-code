@@ -50,7 +50,7 @@ namespace orxonox
         private:
             PlayerInfo* owner_;
             static bool noCaption_s;
-            
+
     };
 }
 #endif /* _GametypeStatus_H__ */

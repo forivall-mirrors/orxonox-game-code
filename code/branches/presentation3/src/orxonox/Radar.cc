@@ -86,7 +86,7 @@ namespace orxonox
             (*itListener)->addObject(rv);
         }
     }
-    
+
     void Radar::removeRadarObject(RadarViewable* rv)
     {
         assert( this->radarObjects_.find(rv) != this->radarObjects_.end() );
@@ -202,7 +202,7 @@ namespace orxonox
             COUT(3) << i++ << ": " << (*it)->getRVWorldPosition() << std::endl;
         }
     }
-    
+
     void Radar::radarObjectChanged(RadarViewable* rv)
     {
         for (ObjectList<RadarListener>::iterator itListener = ObjectList<RadarListener>::begin(); itListener; ++itListener)

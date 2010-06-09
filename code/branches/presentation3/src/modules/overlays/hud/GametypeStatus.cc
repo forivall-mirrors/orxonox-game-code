@@ -38,9 +38,9 @@
 
 namespace orxonox
 {
-    CreateFactory(GametypeStatus);  
+    CreateFactory(GametypeStatus);
 
-    /*static*/ bool GametypeStatus::noCaption_s = false; 
+    /*static*/ bool GametypeStatus::noCaption_s = false;
     SetConsoleCommand(GametypeStatus, setGametypeStatus, true);
 
     GametypeStatus::GametypeStatus(BaseObject* creator) : OverlayText(creator)
@@ -108,5 +108,5 @@ namespace orxonox
     {
         GametypeStatus::noCaption_s = !bValue;
     }
-    
+
 }

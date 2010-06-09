@@ -50,11 +50,11 @@ namespace orxonox
 {
     // Register tolua_open function when loading the library
     DeclareToluaInterface(Pickup);
-    
+
     ManageScopedSingleton(PickupManager, ScopeID::Root, false);
-    
+
     /*static*/ const std::string PickupManager::guiName_s = "PickupInventory";
-    
+
     /**
     @brief
         Constructor. Registers the PickupManager and creates the default PickupRepresentation.
@@ -68,10 +68,10 @@ namespace orxonox
             GUIManager::getInstance().loadGUI(PickupManager::guiName_s);
         }
         this->defaultRepresentation_ = new PickupRepresentation();
-        
+
         COUT(3) << "PickupManager created." << std::endl;
     }
-    
+
     /**
     @brief
         Destructor.
@@ -81,12 +81,12 @@ namespace orxonox
     {
         if(this->defaultRepresentation_ != NULL)
             this->defaultRepresentation_->destroy();
-        
+
         this->representations_.clear();
-        
+
         COUT(3) << "PickupManager destroyed." << std::endl;
     }
-    
+
     /**
     @brief
         Registers a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
@@ -99,16 +99,16 @@ namespace orxonox
         Returns true if successful and false if not.
     */
     bool PickupManager::registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
-    {       
+    {
         if(identifier == NULL || representation == NULL || this->representations_.find(identifier) != this->representations_.end()) //!< If the Pickupable already has a Representation registered.
             return false;
-        
+
         this->representations_[identifier] = representation;
-        
+
         COUT(4) << "PickupRepresentation " << representation << " registered with the PickupManager." << std::endl;
         return true;
     }
-    
+
     /**
     @brief
         Unegisters a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
@@ -120,20 +120,20 @@ namespace orxonox
         Returns true if successful and false if not.
     */
     bool PickupManager::unregisterRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
-    {       
+    {
         if(identifier == NULL || representation == NULL)
             return false;
-        
+
         std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare>::iterator it = this->representations_.find(identifier);
         if(it == this->representations_.end()) //!< If the Pickupable is not registered in the first place.
             return false;
-        
+
         this->representations_.erase(it);
-        
+
         COUT(4) << "PickupRepresentation " << representation << " unregistered with the PickupManager." << std::endl;
         return true;
     }
-    
+
     /**
     @brief
         Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
@@ -150,14 +150,14 @@ namespace orxonox
             COUT(4) << "PickupManager::getRepresentation() returned default representation." << std::endl;
             return this->defaultRepresentation_;
         }
-        
+
         return it->second;
     }
 
     int PickupManager::getNumPickups(void)
     {
         this->pickupsList_.clear();
-        
+
         PlayerInfo* player = GUIManager::getInstance().getPlayer(PickupManager::guiName_s);
         PickupCarrier* carrier = NULL;
         if (player != NULL)
@@ -220,7 +220,7 @@ namespace orxonox
         std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup);
         if(pickup == NULL || it == this->pickupsList_.end() || it->second.get() == NULL)
             return;
-        
+
         if(!pickup->isPickedUp())
             return;
 
@@ -228,5 +228,5 @@ namespace orxonox
         if(pickup != NULL && carrier != NULL)
             pickup->setUsed(use);
     }
-    
+
 }

@@ -59,17 +59,17 @@ namespace orxonox // tolua_export
         : public Singleton<PickupManager>, public OrxonoxClass
     { // tolua_export
         friend class Singleton<PickupManager>;
-        
+
         public:
             PickupManager();
             virtual ~PickupManager();
-            
+
             static PickupManager& getInstance() { return Singleton<PickupManager>::getInstance(); } // tolua_export
-            
+
             bool registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation); //!< Registers a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
             bool unregisterRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation); //!< Unegisters a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
             PickupRepresentation* getRepresentation(const PickupIdentifier* identifier); //!< Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
-            
+
             // tolua_begin
             int getNumPickups(void);
             orxonox::Pickupable* popPickup(void) { return (this->pickupsIterator_++)->first; }
@@ -79,11 +79,11 @@ namespace orxonox // tolua_export
             void usePickup(orxonox::Pickupable* pickup, bool use);
             bool isValidPickup(orxonox::Pickupable* pickup) { std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); if(it == this->pickupsList_.end()) return false; return it->second.get() != NULL; }
             // tolua_end
-            
+
         private:
             static PickupManager* singletonPtr_s;
             static const std::string guiName_s;
-            
+
             PickupRepresentation* defaultRepresentation_; //!< The default PickupRepresentation.
             std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types if Pickupables) and PickupRepresentations.
 
@@ -91,9 +91,9 @@ namespace orxonox // tolua_export
             std::map<Pickupable*, WeakPtr<Pickupable> >::iterator pickupsIterator_;
 
             std::vector<PickupCarrier*>* getAllCarriers(PickupCarrier* carrier);
-        
+
     }; // tolua_export
-    
+
 } // tolua_export
 
 #endif // _PickupManager_H__

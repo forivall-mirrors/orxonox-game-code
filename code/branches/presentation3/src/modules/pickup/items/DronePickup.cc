@@ -48,7 +48,7 @@ namespace orxonox
 {
 
     CreateFactory(DronePickup);
-    
+
     /**
     @brief
         Constructor. Registers the object and initializes the member variables.
@@ -56,21 +56,21 @@ namespace orxonox
     DronePickup::DronePickup(BaseObject* creator) : Pickup(creator)
     {
         RegisterObject(DronePickup);
-        
+
         this->initialize();
     }
-    
+
     /**
     @brief
         Destructor.
     */
     DronePickup::~DronePickup()
     {
-        
+
     }
-    
+
     /**
-    @brief 
+    @brief
         Initializes the member variables.
     */
     void DronePickup::initialize(void)
@@ -79,7 +79,7 @@ namespace orxonox
         this->setDurationTypeDirect(pickupDurationType::once);
         this->droneTemplate_ = "";
     }
-    
+
     /**
     @brief
         Initializes the PickupIdentifier of this pickup.
@@ -90,7 +90,7 @@ namespace orxonox
         std::string type = "droneTemplate";
         this->pickupIdentifier_->addParameter(type, val);
     }
-    
+
     /**
     @brief
         Method for creating a DronePickup object through XML.
@@ -99,14 +99,14 @@ namespace orxonox
     {
         SUPER(DronePickup, XMLPort, xmlelement, mode);
         XMLPortParam(DronePickup, "droneTemplate", setDroneTemplate, getDroneTemplate, xmlelement, mode);
-        
+
         this->initializeIdentifier();
     }
-    
+
     void DronePickup::setDroneTemplate(std::string templatename){
         droneTemplate_ = templatename;
-    } 
-    
+    }
+
     const std::string& DronePickup::getDroneTemplate() const
     {
         return droneTemplate_;
@@ -119,11 +119,11 @@ namespace orxonox
     void DronePickup::changedUsed(void)
     {
         SUPER(DronePickup, changedUsed);
-        
+
         //! If the pickup is not picked up nothing must be done.
         if(!this->isPickedUp())
             return;
-        
+
         //! If the pickup has transited to used.
         if(this->isUsed())
         {
@@ -131,7 +131,7 @@ namespace orxonox
                 Pawn* pawn = this->carrierToPawnHelper();
                 if(pawn == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
                     this->destroy();
-                
+
                 //Attach to pawn
                 Drone* drone = new Drone(pawn->getCreator()); // this is neccessary because the projectiles fired need a valid creator for the particlespawner (when colliding against something)
                 drone->addTemplate(this->getDroneTemplate());
@@ -142,10 +142,10 @@ namespace orxonox
                 {
                     droneController->setOwner(pawn);
                 }
-                
+
                 Vector3 spawnPosition = pawn->getWorldPosition() + Vector3(30,0,-30);
                 drone->setPosition(spawnPosition);
-                
+
                 //! The pickup has been used up.
                 this->setUsed(false);
         }
@@ -158,7 +158,7 @@ namespace orxonox
             }
         }
     }
-    
+
     /**
     @brief
         Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
@@ -169,15 +169,15 @@ namespace orxonox
     {
         PickupCarrier* carrier = this->getCarrier();
         Pawn* pawn = dynamic_cast<Pawn*>(carrier);
-        
+
         if(pawn == NULL)
         {
             COUT(1) << "Invalid PickupCarrier in DronePickup." << std::endl;
         }
-        
+
         return pawn;
     }
-    
+
     /**
     @brief
         Creates a duplicate of the input OrxonoxClass.
@@ -188,12 +188,12 @@ namespace orxonox
     {
         if(item == NULL)
             item = new DronePickup(this);
-        
+
         SUPER(DronePickup, clone, item);
-        
+
         DronePickup* pickup = dynamic_cast<DronePickup*>(item);
         pickup->setDroneTemplate(this->getDroneTemplate());
-        
+
         pickup->initializeIdentifier();
     }
 }

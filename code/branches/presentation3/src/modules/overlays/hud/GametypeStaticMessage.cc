@@ -36,8 +36,8 @@
 namespace orxonox
 {
     CreateFactory(GametypeStaticMessage);
-    
-    
+
+
     GametypeStaticMessage::GametypeStaticMessage(BaseObject* creator) : OverlayText(creator)
     {
         RegisterObject(GametypeStaticMessage);

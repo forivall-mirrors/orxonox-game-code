@@ -39,7 +39,7 @@ namespace orxonox
 {
 
     CreateUnloadableFactory(MultiTriggerContainer);
-    
+
     /**
     @brief
         Default constructor. Registers the object and creates an empty container.
@@ -72,7 +72,7 @@ namespace orxonox
     */
     MultiTriggerContainer::~MultiTriggerContainer()
     {
-        
+
     }
 
 

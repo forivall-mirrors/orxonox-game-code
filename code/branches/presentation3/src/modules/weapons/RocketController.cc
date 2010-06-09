@@ -27,7 +27,7 @@
 */
 
 #include "RocketController.h"
-#include "projectiles/SimpleRocket.h" 
+#include "projectiles/SimpleRocket.h"
 #include "util/Math.h"
 #include "weapons/projectiles/SimpleRocket.h"
 #include "util/Debug.h"
@@ -65,8 +65,8 @@ namespace orxonox
             this->setTargetPosition();
             this->moveToTargetPosition();
         }
-        
-        
+
+
     }
 
 
@@ -101,7 +101,7 @@ namespace orxonox
         float distance = (target - this->rocket_->getWorldPosition()).length();
 
 
-        if (distance > 1000 && this->rocket_->getVelocity().squaredLength()<160000) 
+        if (distance > 1000 && this->rocket_->getVelocity().squaredLength()<160000)
             this->rocket_->setAcceleration(this->rocket_->getOrientation()*Vector3(-20,-20,-20));
         if (distance <1000) this->rocket_->setAcceleration(0,0,0);
 

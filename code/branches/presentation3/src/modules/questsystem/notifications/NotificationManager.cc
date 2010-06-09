@@ -65,7 +65,7 @@ namespace orxonox
     */
     NotificationManager::~NotificationManager()
     {
-        
+
     }
 
     /**
@@ -226,7 +226,7 @@ namespace orxonox
 
         int identifier = this->listenerList_.find(listener)->second;
         std::multimap<std::time_t, Notification*>* map = this->notificationLists_.find(identifier)->second;
-        
+
         // Make sure all Notifications are removed.
         std::multimap<std::time_t, Notification*>::iterator it = map->begin();
         while(it != map->end())

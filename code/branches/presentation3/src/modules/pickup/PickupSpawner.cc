@@ -54,7 +54,7 @@ namespace orxonox
     PickupSpawner::PickupSpawner(BaseObject* creator) : StaticEntity(creator), pickup_(NULL)
     {
         RegisterObject(PickupSpawner);
-        
+
         this->initialize();
     }
 
@@ -75,15 +75,15 @@ namespace orxonox
     PickupSpawner::PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems) : StaticEntity(creator), pickup_(NULL)
     {
         RegisterObject(PickupSpawner);
-        
+
         this->initialize();
-  
+
         this->pickup_ = pickup;
 
         this->triggerDistance_ = triggerDistance;
         this->respawnTime_ = respawnTime;
         this->setMaxSpawnedItems(maxSpawnedItems);
-        
+
         if(this->pickup_ == NULL)
         {
             COUT(2) << "A PickupSpawner was created without a valid Pickupable. This won't work." << std::endl;
@@ -131,11 +131,11 @@ namespace orxonox
         SUPER(PickupSpawner, XMLPort, xmlelement, mode);
 
         XMLPortObject(PickupSpawner, Pickupable, "pickup", setPickupable, getPickupable, xmlelement, mode);
-        
+
         XMLPortParam(PickupSpawner, "triggerDistance", setTriggerDistance, getTriggerDistance, xmlelement, mode);
         XMLPortParam(PickupSpawner, "respawnTime", setRespawnTime, getRespawnTime, xmlelement, mode);
         XMLPortParam(PickupSpawner, "maxSpawnedItems", setMaxSpawnedItems, getMaxSpawnedItems, xmlelement, mode);
-        
+
         if(this->pickup_ == NULL)
         {
             COUT(2) << "A PickupSpawner was created without a valid Pickupable. This won't work." << std::endl;
@@ -149,7 +149,7 @@ namespace orxonox
             this->setActive(true);
         }
     }
-    
+
     /**
     @brief
         Invoked when the activity has changed. Sets visibility of attached objects.
@@ -160,7 +160,7 @@ namespace orxonox
 
         this->setVisible(this->isActive());
     }
-     
+
     /**
     @brief
         Tick, checks if any Pawn is close enough to trigger.
@@ -171,12 +171,12 @@ namespace orxonox
     void PickupSpawner::tick(float dt)
     {
         SUPER(PickupSpawner, tick, dt);
-        
+
         //! If the PickupSpawner is active.
         if (this->isActive())
         {
             SmartPtr<PickupSpawner> temp = this; // create a smart pointer to keep the PickupSpawner alive until we iterated through all Pawns (in case a Pawn takes the last pickup)
-            
+
             //! Iterate trough all Pawns.
             for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
             {
@@ -190,7 +190,7 @@ namespace orxonox
             }
         }
     }
-    
+
     /**
     @brief
         Sets the maximum number of spawned items.
@@ -202,7 +202,7 @@ namespace orxonox
         this->maxSpawnedItems_ = items;
         this->spawnsRemaining_ = items;
     }
-    
+
     /**
     @brief
         Decrements the number of remaining spawns.
@@ -229,7 +229,7 @@ namespace orxonox
             this->destroy();
         }
     }
-    
+
     /**
     @brief
         Starts the respawn timer.
@@ -238,7 +238,7 @@ namespace orxonox
     {
         this->respawnTimer_.setTimer(this->respawnTime_, false, createExecutor(createFunctor(&PickupSpawner::respawnTimerCallback, this)));
     }
-    
+
     /**
     @brief
         Sets a Pickupable for the PickupSpawner to spawn.
@@ -257,10 +257,10 @@ namespace orxonox
             COUT(1) << "In PickupSpawner (&" << this << "): Argument of setPickupable is NULL." << std::endl;
             return;
         }
-        
+
         this->pickup_ = pickup;
     }
-    
+
     /**
     @brief
         Get the Pickupable that is spawned by this PickupSpawner.
@@ -284,23 +284,23 @@ namespace orxonox
         if (this->isActive()) //!< Checks whether PickupSpawner is active.
         {
             COUT(4) << "PickupSpawner (&" << this << ") triggered and active." << std::endl;
-            
+
             PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
             if(carrier == NULL)
             {
                 COUT(1) << "This is bad. Pawn isn't PickupCarrier." << std::endl;
                 return;
             }
-            
+
             if(!carrier->isTarget(this->pickup_))
             {
                 COUT(4) << "PickupSpawner (&" << this << ") triggered but Pawn wasn't a target of the Pickupable." << std::endl;
                 return;
             }
-            
+
             PickupCarrier* target = carrier->getTarget(this->pickup_);
             Pickupable* pickup = this->getPickup();
-            
+
             if(target != NULL && pickup != NULL)
             {
                 if(target->pickup(pickup))
@@ -316,7 +316,7 @@ namespace orxonox
             {
                 if(target == NULL)
                     COUT(1) << "PickupSpawner (&" << this << "): Pickupable has no target." << std::endl;
-                
+
                 if(pickup == NULL)
                 {
                     COUT(1) << "PickupSpawner (&" << this << "): getPickup produced an error, no Pickupable created." << std::endl;
@@ -334,7 +334,7 @@ namespace orxonox
         Creates a new Pickupable.
     @return
         The Pickupable created.
-    */    
+    */
     Pickupable* PickupSpawner::getPickup(void)
     {
         if(this->spawnsRemaining_ == 0)
@@ -342,7 +342,7 @@ namespace orxonox
             COUT(1) << "Massive Error: PickupSpawner still alive until having spawned last item." << std::endl;
             return NULL;
         }
-        
+
         Pickupable* pickup = this->pickup_->clone();
         return pickup;
     }

@@ -73,7 +73,7 @@ namespace orxonox
     */
     QuestManager::~QuestManager()
     {
-        
+
     }
 
     /**
@@ -249,7 +249,7 @@ namespace orxonox
         }
         return numQuests;
     }
-    
+
     Quest* QuestManager::getParentQuest(PlayerInfo* player, int index)
     {
         for(std::map<std::string, Quest*>::iterator it = this->questMap_.begin(); it != this->questMap_.end(); it++)
@@ -271,7 +271,7 @@ namespace orxonox
         }
         return numQuests;
     }
-    
+
     Quest* QuestManager::getSubQuest(Quest* quest, PlayerInfo* player, int index)
     {
         std::list<Quest*> quests = quest->getSubQuestList();
@@ -294,7 +294,7 @@ namespace orxonox
         }
         return numHints;
     }
-    
+
     QuestHint* QuestManager::getHints(Quest* quest, PlayerInfo* player, int index)
     {
         std::list<QuestHint*> hints = quest->getHintsList();

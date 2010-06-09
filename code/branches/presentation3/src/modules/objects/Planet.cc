@@ -104,15 +104,15 @@ namespace orxonox
                 this->attachOgreObject(this->mesh_.getEntity());
                 this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
                 this->mesh_.setVisible(this->isVisible());
-                
+
                 float scaleFactor = this->getScale();
-                
+
     #if OGRE_VERSION >= 0x010700
                 Ogre::Mesh::LodValueList distList;
     #else
                 Ogre::Mesh::LodDistanceList distList;
     #endif
-                
+
                 distList.push_back(10.0f*scaleFactor);
                 distList.push_back(19.0f*scaleFactor);
                 distList.push_back(27.0f*scaleFactor);
@@ -123,12 +123,12 @@ namespace orxonox
                 distList.push_back(52.0f*scaleFactor);
                 distList.push_back(54.0f*scaleFactor);
                 distList.push_back(55.0f*scaleFactor);
-                
+
                 float reductionValue = 0.2f;
-                
+
                 this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, reductionValue);
                 billboard_.setBillboardSet(this->getScene()->getSceneManager(), this->atmosphere_, Vector3(0,0,0));
-                
+
                 this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.getBillboardSet()->setUseAccurateFacing(true);
                 this->setCastShadows(true);

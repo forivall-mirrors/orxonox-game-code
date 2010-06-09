@@ -48,7 +48,7 @@ namespace orxonox
     {
         RegisterObject(Level);
 
-        
+
         this->registerVariables();
         this->xmlfilename_ = this->getFilename();
         this->xmlfile_ = 0;
@@ -72,7 +72,7 @@ namespace orxonox
 
         XMLPortParam(Level, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(Level, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
-            
+
         XMLPortObject(Level, MeshLodInformation, "lodinformation", addLodInfo, getLodInfo, xmlelement, mode);
         XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
 }
@@ -98,7 +98,7 @@ namespace orxonox
 
         Loader::open(this->xmlfile_);
     }
-    
+
     void Level::networkCallbackTemplatesChanged()
     {
         for( std::set<std::string>::iterator it = this->networkTemplateNames_.begin(); it!=this->networkTemplateNames_.end(); ++it )
@@ -150,7 +150,7 @@ namespace orxonox
         }
         return 0;
     }
-    
+
     void Level::addLodInfo(MeshLodInformation* lodInformation)
     {
         std::string meshName = lodInformation->getMeshName();
@@ -164,7 +164,7 @@ namespace orxonox
     {
         if(this->lodInformation_.find(meshName)!=this->lodInformation_.end())
             return this->lodInformation_.find(meshName)->second;
-        
+
         return 0;
     }
 

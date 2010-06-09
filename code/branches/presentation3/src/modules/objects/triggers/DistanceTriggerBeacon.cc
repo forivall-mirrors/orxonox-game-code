@@ -34,10 +34,10 @@ namespace orxonox
 {
 
     CreateFactory(DistanceTriggerBeacon);
-    
+
     DistanceTriggerBeacon::DistanceTriggerBeacon(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(DistanceTriggerBeacon);
     }
-    
+
 }

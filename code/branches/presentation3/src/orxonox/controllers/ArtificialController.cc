@@ -90,7 +90,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->removeFromFormation();
-            
+
             for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it; ++it)
             {
                 if (*it != this)
@@ -100,7 +100,7 @@ namespace orxonox
                         COUT(1) << "error: " << this << " is still master in " << (*it) << std::endl;
                         it->myMaster_ = 0;
                     }
-                    
+
                     while (true)
                     {
                         std::vector<ArtificialController*>::iterator it2 = std::find(it->slaves_.begin(), it->slaves_.end(), this);
@@ -138,12 +138,12 @@ namespace orxonox
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
             Controller* controller = 0;
-            
+
             if (it->getController())
                 controller = it->getController();
             else if (it->getXMLController())
                 controller = it->getXMLController();
-                
+
             if (!controller)
                 continue;
 
@@ -161,7 +161,7 @@ namespace orxonox
     }
 
     /**
-        @brief Get all masters to do a "specific master action" 
+        @brief Get all masters to do a "specific master action"
         @param action which action to perform (integer, so it can be called with a console command (tmp solution))
     */
     void ArtificialController::masteraction(const int action)
@@ -169,12 +169,12 @@ namespace orxonox
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
             Controller* controller = 0;
-            
+
             if (it->getController())
                 controller = it->getController();
             else if (it->getXMLController())
                 controller = it->getXMLController();
-                
+
             if (!controller)
                 continue;
 
@@ -203,12 +203,12 @@ namespace orxonox
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
             Controller* controller = 0;
-            
+
             if (it->getController())
                 controller = it->getController();
             else if (it->getXMLController())
                 controller = it->getXMLController();
-                
+
             if (!controller)
                 continue;
 
@@ -251,12 +251,12 @@ namespace orxonox
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
             Controller* controller = 0;
-            
+
             if (it->getController())
                 controller = it->getController();
             else if (it->getXMLController())
                 controller = it->getXMLController();
-                
+
             if (!controller)
                 continue;
 
@@ -279,12 +279,12 @@ namespace orxonox
         for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it; ++it)
         {
             Controller* controller = 0;
-            
+
             if (it->getController())
                 controller = it->getController();
             else if (it->getXMLController())
                 controller = it->getXMLController();
-                
+
             if (!controller)
                 continue;
 
@@ -302,7 +302,7 @@ namespace orxonox
     */
     void ArtificialController::changedControllableEntity()
     {
-        if (!this->getControllableEntity()) 
+        if (!this->getControllableEntity())
             this->removeFromFormation();
     }
 
@@ -399,7 +399,7 @@ namespace orxonox
             if (it != this->myMaster_->slaves_.end())
                 this->myMaster_->slaves_.erase(it);
         }
-        
+
         this->myMaster_ = 0;
         this->state_ = FREE;
     }
@@ -422,12 +422,12 @@ namespace orxonox
 
             //has it an ArtificialController?
             Controller* controller = 0;
-            
+
             if (it->getController())
                 controller = it->getController();
             else if (it->getXMLController())
                 controller = it->getXMLController();
-                
+
             if (!controller)
                 continue;
 
@@ -475,7 +475,7 @@ namespace orxonox
     /**
         @brief Commands the slaves of a master into a formation. Sufficiently fast not to be called within tick. Initiated by a master.
     */
-    void ArtificialController::commandSlaves() 
+    void ArtificialController::commandSlaves()
     {
         if(this->state_ != MASTER) return;
 
@@ -488,7 +488,7 @@ namespace orxonox
             dest += 4*orient*WorldEntity::BACK;
             this->slaves_.front()->setTargetPosition(dest);
         }
-        else 
+        else
         {
             dest += 1.0f*orient*WorldEntity::BACK;
             Vector3 pos = Vector3::ZERO;
@@ -591,7 +591,7 @@ namespace orxonox
     */
     bool ArtificialController::forcedFree()
     {
-        if(this->freedomCount_ > 0) 
+        if(this->freedomCount_ > 0)
         {
             this->freedomCount_--;
             return true;
@@ -605,7 +605,7 @@ namespace orxonox
     {
         if(this->state_ != MASTER) return;
 
-        if (specificMasterActionHoldCount_ == 0) 
+        if (specificMasterActionHoldCount_ == 0)
          {
             this->specificMasterAction_ = NONE;
             this->searchNewTarget();
@@ -676,7 +676,7 @@ namespace orxonox
         this->setTarget(pawn);
         if (!always)
             this->specificMasterActionHoldCount_ = secondsToFollow;
-        else 
+        else
             this->specificMasterActionHoldCount_ = INT_MAX; //for now...
 
     }
@@ -697,7 +697,7 @@ namespace orxonox
                 continue;
 
             currentHumanController = orxonox_cast<NewHumanController*>(it->getController());
-            if(currentHumanController) 
+            if(currentHumanController)
             {
                 if (!ArtificialController::sameTeam(this->getControllableEntity(), *it, this->getGametype())) continue;
                 humanPawn = *it;

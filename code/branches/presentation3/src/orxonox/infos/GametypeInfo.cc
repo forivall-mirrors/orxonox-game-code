@@ -156,7 +156,7 @@ namespace orxonox
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->staticmessage(this, message, colour);
     }
-    
+
      void GametypeInfo::dispatchFadingMessage(const std::string& message)
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)

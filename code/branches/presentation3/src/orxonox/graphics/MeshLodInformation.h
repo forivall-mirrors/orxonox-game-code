@@ -42,13 +42,13 @@ namespace orxonox
         public:
             MeshLodInformation(BaseObject* creator);
             virtual ~MeshLodInformation();
-            
+
             float getLodLevel();
             std::string getMeshName();
             bool getEnabled(){ return this->bEnabled_; }
             unsigned int getNumLevels(){ return this->numLevels_; }
             float getReductionRate(){ return this->reductionRate_; }
-            
+
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         private:

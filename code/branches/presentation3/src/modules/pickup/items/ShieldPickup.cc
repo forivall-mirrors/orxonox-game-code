@@ -78,14 +78,14 @@ namespace orxonox
     {
         PickupCarrier* carrier = this->getCarrier();
         Pawn* pawn = dynamic_cast<Pawn*>(carrier);
-        
+
         if(pawn == NULL)
         {
             COUT(1) << "Invalid PickupCarrier in ShieldPickup." << std::endl;
         }
         return pawn;
     }
-    
+
     /**
     @brief
         Initializes the member variables.
@@ -116,7 +116,7 @@ namespace orxonox
         std::string type2 = "ShieldHealth";
         std::string val2 = stream.str();
         this->pickupIdentifier_->addParameter(type2, val2);
-        
+
         stream.clear();
         stream << this->getShieldAbsorption();
         std::string type3 = "ShieldAbsorption";
@@ -268,7 +268,7 @@ namespace orxonox
     }
 
     void ShieldPickup::pickupTimerCallback(void)
-    {       
+    {
         this->setUsed(false);
     }
 }

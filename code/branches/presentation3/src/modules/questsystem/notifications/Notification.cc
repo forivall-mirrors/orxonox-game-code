@@ -40,7 +40,7 @@ namespace orxonox
 {
 
     CreateUnloadableFactory(Notification);
-    
+
     /**
     @brief
         Default constructor. Initializes the object.
@@ -68,7 +68,7 @@ namespace orxonox
     */
     Notification::~Notification()
     {
-        
+
     }
 
     /**

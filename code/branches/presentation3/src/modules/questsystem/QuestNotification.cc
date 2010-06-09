@@ -34,7 +34,7 @@ namespace orxonox {
     /*static*/ const std::string QuestNotification::SENDER("questsystem");
 
     CreateUnloadableFactory(QuestNotification);
-    
+
     /**
     @brief
         Default Constructor. Creates a useless QuestNotification.

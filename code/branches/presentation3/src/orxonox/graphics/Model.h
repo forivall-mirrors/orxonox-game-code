@@ -60,11 +60,11 @@ namespace orxonox
                 { this->bCastShadows_ = bCastShadows; this->changedShadows(); }
             inline bool getCastShadows() const
                 { return this->bCastShadows_; }
-                
+
         protected:
             void changedMesh();
             void changedShadows();
-            
+
             //LoD
             inline void setLodLevel(float lodLevel)
                 { this->lodLevel_ =  lodLevel; }
@@ -75,13 +75,13 @@ namespace orxonox
             std::string meshSrc_;
             Mesh mesh_;
             bool bCastShadows_;
-            
+
             //LoD
             float lodLevel_;
             bool bLodEnabled_;
             unsigned int numLodLevels_;
             float lodReductionRate_;
-            
+
     };
 }
 

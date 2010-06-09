@@ -40,9 +40,9 @@
 
 namespace orxonox
 {
-    
+
     CreateFactory(DroppedPickup);
-    
+
     /**
     @brief
         Default constructor. Registers object and sets default values.
@@ -50,7 +50,7 @@ namespace orxonox
     DroppedPickup::DroppedPickup(BaseObject* creator) : PickupSpawner(creator)
     {
         RegisterObject(DroppedPickup);
-        
+
     }
 
     /**
@@ -66,12 +66,12 @@ namespace orxonox
         The distance at which the PickupSpawner triggers. Default is 10.
     */
     DroppedPickup::DroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance) : PickupSpawner(creator, pickup, triggerDistance, 5, 1)
-    {   
+    {
         RegisterObject(DroppedPickup);
 
         this->setPosition(carrier->getCarrierPosition());
         this->setActive(false);
-        
+
         //TODO: Do more elegantly.
         this->startRespawnTimer();
     }

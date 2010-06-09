@@ -48,7 +48,7 @@ namespace orxonox
             virtual void changedOwner();
 
             void staticmessage(const GametypeInfo* gtinfo, const std::string& message, const ColourValue& colour);
-            
+
         private:
             PlayerInfo* owner_;
     };

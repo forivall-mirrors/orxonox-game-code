@@ -51,7 +51,7 @@ namespace orxonox
         public:
             DroneController(BaseObject* creator);
             virtual ~DroneController();
-            
+
             virtual void tick(float dt); //!< The controlling happens here. This method defines what the controller has to do each tick.
 
             void setOwner(Pawn* owner);

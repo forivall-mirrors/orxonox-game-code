@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
- 
+
     CreateFactory(PickupCollection);
 
     /**
@@ -51,10 +51,10 @@ namespace orxonox
     PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(PickupCollection);
-        
+
         this->pickupCollectionIdentifier_ = new PickupCollectionIdentifier(this);
     }
-    
+
     /**
     @brief
         Destructor. Iterates through all Pickupables this PickupCollection consists of and destroys them if they haven't been already.
@@ -68,7 +68,7 @@ namespace orxonox
                 (*it).get()->destroy();
         }
     }
-    
+
     /**
     @brief
         Creates an instance of this Class through XML.
@@ -76,12 +76,12 @@ namespace orxonox
     void PickupCollection::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(PickupCollection, XMLPort, xmlelement, mode);
-        
+
         XMLPortObject(PickupCollection, Pickupable, "pickupables", addPickupable, getPickupable, xmlelement, mode);
-        
+
         this->initializeIdentifier();
     }
-    
+
     /**
     @brief
         Initializes the PickupIdentifier for this pickup.
@@ -93,7 +93,7 @@ namespace orxonox
             this->pickupCollectionIdentifier_->addPickup((*it).get()->getPickupIdentifier());
         }
     }
-    
+
     /**
     @brief
         Is called when the pickup has transited from used to unused or the other way around.
@@ -102,14 +102,14 @@ namespace orxonox
     void PickupCollection::changedUsed(void)
     {
         SUPER(PickupCollection, changedUsed);
-        
+
         //! Change used for all Pickupables this PickupCollection consists of.
         for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             (*it).get()->setUsed(this->isUsed());
         }
     }
-    
+
     /**
     @brief
         Is called when the pickup has changed its PickupCarrier.
@@ -118,14 +118,14 @@ namespace orxonox
     void PickupCollection::changedCarrier(void)
     {
         SUPER(PickupCollection, changedCarrier);
-        
+
         //! Change the PickupCarrier for all Pickupables this PickupCollection consists of.
         for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             (*it).get()->setCarrier(this->getCarrier()->getTarget(*it), true);
         }
     }
-    
+
     /**
     @brief
         Is called when the pickup has transited from picked up to dropped or the other way around.
@@ -134,14 +134,14 @@ namespace orxonox
     void PickupCollection::changedPickedUp()
     {
         SUPER(PickupCollection, changedPickedUp);
-        
+
         //! Change the pickedUp status for all Pickupables this PickupCollection consists of.
         for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
             (*it).get()->setPickedUp(this->isPickedUp());
         }
     }
-    
+
     /**
     @brief
         Creates a duplicate of the input OrxonoxClass.
@@ -153,9 +153,9 @@ namespace orxonox
     {
         if(item == NULL)
             item = new PickupCollection(this);
-        
+
         SUPER(PickupCollection, clone, item);
-        
+
         PickupCollection* pickup = dynamic_cast<PickupCollection*>(item);
         //! Clone all Pickupables this PickupCollection consist of.
         for(std::vector<WeakPtr<Pickupable> >::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
@@ -166,7 +166,7 @@ namespace orxonox
 
         pickup->initializeIdentifier();
     }
-    
+
     /**
     @brief
         Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
@@ -182,10 +182,10 @@ namespace orxonox
             if(!carrier->isTarget((*it).get()))
                 return false;
         }
-        
+
         return true;
     }
-    
+
     /**
     @brief
         Get the PickupIdentifier of this PickupCollection.
@@ -197,7 +197,7 @@ namespace orxonox
     {
         return this->pickupCollectionIdentifier_;
     }
-    
+
     /**
     @brief
         Add the input Pickupable to list of Pickupables combined by this PickupCollection.
@@ -210,12 +210,12 @@ namespace orxonox
     {
         if(pickup == NULL)
             return false;
-        
+
         WeakPtr<Pickupable> ptr = pickup; //!< Create a weak pointer to be able to test in the constructor if the Pointer is still valid.
         this->pickups_.push_back(ptr);
         return true;
     }
-    
+
     /**
     @brief
         Get the Pickupable at the given index.
@@ -228,7 +228,7 @@ namespace orxonox
     {
         return this->pickups_[index].get();
     }
-        
+
     /**
     @brief
         Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
@@ -244,5 +244,5 @@ namespace orxonox
         new DroppedPickup(this, this, this->getCarrier());
         return true;
     }
-    
+
 }

@@ -87,7 +87,7 @@ namespace orxonox
 //             { return this->radarObjectDescription_; }
 
         inline void setRadarVisibility(bool b)
-            { 
+            {
                 if(b!=this->bVisibility_)
                 {
                     this->bVisibility_ = b;

@@ -39,7 +39,7 @@
 #include <CEGUIWindowManager.h>
 #include <string>
 
-namespace orxonox 
+namespace orxonox
 {
   /* singleton */
   ManageScopedSingleton( ChatInputHandler, ScopeID::Graphics, false );
@@ -47,7 +47,7 @@ namespace orxonox
   /* add commands to console */
   SetConsoleCommandAlias( ChatInputHandler, activate_static, "startchat",
     true );
-  SetConsoleCommandAlias( ChatInputHandler, activate_small_static, 
+  SetConsoleCommandAlias( ChatInputHandler, activate_small_static,
     "startchat_small", true );
 
   /* constructor */
@@ -110,7 +110,7 @@ namespace orxonox
     CEGUI::Window *history = CEGUI::WindowManager::getSingleton().getWindow( "orxonox/ChatBox/history" );
 
     /* cast it to a listbox */
-    lb_history = dynamic_cast<CEGUI::Listbox*>(history); 
+    lb_history = dynamic_cast<CEGUI::Listbox*>(history);
 
     /* assert wee */
     assert( lb_history );
@@ -139,7 +139,7 @@ namespace orxonox
       red += 0.2, blue += 0.2;
     }
 
-    // blues 
+    // blues
     red = 0.5, green = 0.5, blue = 1;
     for( ; i < NumberOfColors; ++i )
     { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
@@ -170,7 +170,7 @@ namespace orxonox
     this->fullchat = full;
   }
 
-  void ChatInputHandler::deactivate() 
+  void ChatInputHandler::deactivate()
   {
     /* stop listening */
     InputManager::getInstance().leaveState("chatinput");
@@ -201,7 +201,7 @@ namespace orxonox
   }
 
   /* handle incoming chat */
-  void ChatInputHandler::incomingChat(const std::string& message, 
+  void ChatInputHandler::incomingChat(const std::string& message,
     unsigned int senderID)
   {
     /* look up the actual name of the sender */
@@ -209,7 +209,7 @@ namespace orxonox
 
     /* setup player name info */
     if (senderID != CLIENTID_UNKNOWN)
-    { 
+    {
        PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
        if (player)
          name = player->getName();
@@ -226,29 +226,29 @@ namespace orxonox
 
     /* now add */
     this->lb_history->addItem( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
-    this->lb_history->ensureItemIsVisible( 
+    this->lb_history->ensureItemIsVisible(
       dynamic_cast<CEGUI::ListboxItem*>(toadd) );
 
     /* make sure the history handles it */
     this->lb_history->handleUpdatedItemData();
-  } 
+  }
 
 
   /* sub for inputchanged */
-  void ChatInputHandler::sub_adjust_dispoffset( int maxlen, 
-    int cursorpos, 
+  void ChatInputHandler::sub_adjust_dispoffset( int maxlen,
+    int cursorpos,
     int inplen )
   {
     /* already start offsetting 5 characters before end */
     if( cursorpos+5 > maxlen )
-    { 
+    {
       /* always stay 5 characters ahead of end, looks better */
       ((disp_offset = cursorpos-maxlen+5) >= 0) ? 1 : disp_offset = 0;
 
       /* enforce visibility of cursor */
       (disp_offset > cursorpos ) ? disp_offset = 0 : 1;
     }
-     
+
     /* make sure we don't die at substr */
     if( inplen <= disp_offset ) disp_offset = 0;
   }
@@ -259,7 +259,7 @@ namespace orxonox
     /* update the cursor and the window */
     std::string raw = this->inpbuf->get();
     int cursorpos = this->inpbuf->getCursorPosition();
-    
+
     /* get string before cursor */
     std::string left = raw.substr( 0, cursorpos );
 
@@ -267,21 +267,21 @@ namespace orxonox
     std::string right = "";
     if( raw.length() >= left.length()+1 )
       right = raw.substr( cursorpos );
-      
+
     /* set the text */
     std::string assembled = "$ " + left + "|" + right;
 
     if( this->fullchat )
-    { 
+    {
       /* adjust curser position - magic number 5 for font width */
-      sub_adjust_dispoffset( (this->input->getUnclippedInnerRect().getWidth()/6), 
+      sub_adjust_dispoffset( (this->input->getUnclippedInnerRect().getWidth()/6),
         cursorpos, assembled.length() );
       this->input->setProperty( "Text", assembled.substr( disp_offset ) );
     }
     else
     {
       /* adjust curser position - magic number 5 for font width */
-      sub_adjust_dispoffset( (this->inputonly->getUnclippedInnerRect().getWidth()/6), 
+      sub_adjust_dispoffset( (this->inputonly->getUnclippedInnerRect().getWidth()/6),
         cursorpos, assembled.length() );
       this->inputonly->setProperty( "Text", assembled.substr( disp_offset) );
     }
@@ -322,10 +322,10 @@ namespace orxonox
 
   void ChatInputHandler::cursorRight()
   { this->inpbuf->increaseCursor(); }
-  
+
   void ChatInputHandler::cursorLeft()
   { this->inpbuf->decreaseCursor(); }
-  
+
   void ChatInputHandler::cursorEnd()
   { this->inpbuf->setCursorToEnd(); }
 

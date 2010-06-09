@@ -38,7 +38,7 @@ namespace orxonox
 
     class _ObjectsExport DistanceTriggerBeacon : public StaticEntity
     {
-        
+
         public:
 
             DistanceTriggerBeacon(BaseObject* creator);
