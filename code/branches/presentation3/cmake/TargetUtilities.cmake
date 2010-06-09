@@ -244,7 +244,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     PRECOMPILED_HEADER_FILES_POST_TARGET(${_target_name} ${_arg_PCH_FILE})
   ENDIF()
 
-  IF(NOT _arg_STATIC AND NOT _arg_NO_INSTALL)
+  IF((${_target_type} STREQUAL "EXECUTABLE" OR NOT _arg_STATIC) AND NOT _arg_NO_INSTALL)
     IF(_arg_MODULE)
       INSTALL(TARGETS ${_target_name}
         RUNTIME DESTINATION ${MODULE_INSTALL_DIRECTORY}
