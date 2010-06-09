@@ -78,6 +78,7 @@ ENDMACRO(ORXONOX_ADD_EXECUTABLE)
 
 MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   CAPITALISE_NAME(${_target_name} _target_name_capitalised)
+  STRING(TOUPPER "${_target_name}" _target_name_upper)
 
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
@@ -132,7 +133,6 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # First part (pre target) of precompiled header files
   IF(PCH_COMPILER_SUPPORT AND _arg_PCH_FILE)
     # Provide convenient option to control PCH
-    STRING(TOUPPER "${_target_name}" _target_name_upper)
     IF(_arg_PCH_NO_DEFAULT)
       SET(PCH_DEFAULT FALSE)
     ELSE()
