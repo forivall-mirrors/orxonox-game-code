@@ -42,7 +42,7 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(OVERLAYS_STATIC_BUILD)
 #  ifdef OVERLAYS_SHARED_BUILD
 #    define _OverlaysExport __declspec(dllexport)
 #  else

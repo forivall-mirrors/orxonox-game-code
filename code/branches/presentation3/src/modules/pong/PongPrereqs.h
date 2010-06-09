@@ -42,7 +42,7 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(PONG_STATIC_BUILD)
 #  ifdef PONG_SHARED_BUILD
 #    define _PongExport __declspec(dllexport)
 #  else

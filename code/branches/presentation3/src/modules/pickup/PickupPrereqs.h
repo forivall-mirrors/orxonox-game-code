@@ -42,7 +42,7 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(PICKUP_STATIC_BUILD)
 #  ifdef PICKUP_SHARED_BUILD
 #    define _PickupExport __declspec(dllexport)
 #  else

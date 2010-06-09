@@ -42,7 +42,7 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(DESIGNTOOLS_STATIC_BUILD)
 #  ifdef DESIGNTOOLS_SHARED_BUILD
 #    define _DesignToolsExport __declspec(dllexport)
 #  else
