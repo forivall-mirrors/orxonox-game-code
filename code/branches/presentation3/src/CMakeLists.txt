@@ -30,7 +30,7 @@ INCLUDE(TargetUtilities)
 # Configure the two headers and set some options
 INCLUDE(OrxonoxConfig.cmake)
 
-################ Library Defines ################
+####### Library Behaviour (dependencies) ########
 
 # Disable Boost auto linking completely
 ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")
@@ -45,8 +45,24 @@ ADD_COMPILER_FLAGS("-DCEGUI_STATIC"       WIN32 NOT LINK_CEGUI_DYNAMIC)
 ADD_COMPILER_FLAGS("-DOGRE_STATIC_LIB"    WIN32 NOT LINK_OGRE_DYNAMIC)
 ADD_COMPILER_FLAGS("-DSTATIC_BUILD"       WIN32 NOT LINK_TCL_DYNAMIC)
 
+######### Library Behaviour (external) ##########
+
 # Use TinyXML++
 ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
+
+# Default linking for externals is SHARED
+SET(ORXONOX_EXTERNAL_LINK_MODE SHARED CACHE STRING "Link mode for external libraries that we build ourselves. Note: on Windows, some libraries cannot be linked shared.")
+
+IF(ORXONOX_EXTERNAL_LINK_MODE STREQUAL "SHARED")
+  SET(_external_shared_link TRUE)
+ELSE()
+  SET(_external_shared_link FALSE)
+ENDIF()
+# If no defines are specified, these libs get linked dynamically
+ADD_COMPILER_FLAGS("-DCEGUILUA_STATIC"             WIN32 NOT _external_shared_link)
+ADD_COMPILER_FLAGS("-DOGRE_GUIRENDERER_STATIC_LIB" WIN32 NOT _external_shared_link)
+ADD_COMPILER_FLAGS("-DOIS_STATIC_LIB"              WIN32 NOT _external_shared_link)
+ADD_COMPILER_FLAGS("-DTOLUA_STATIC_BUILD"          WIN32 NOT _external_shared_link)
 
 ############## Include Directories ##############
 

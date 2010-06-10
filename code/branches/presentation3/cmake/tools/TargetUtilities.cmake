@@ -33,9 +33,8 @@
  #      ORXONOX_EXTERNAL:  Specify this for third party libraries
  #      NO_DLL_INTERFACE:  Link statically with MSVC
  #      NO_SOURCE_GROUPS:  Don't create msvc source groups
- #      STATIC/SHARED:     Inherited from ADD_LIBRARY
- #      MODULE:            For dynamic module libraries
- #      WIN32:             Inherited from ADD_EXECUTABLE
+ #      MODULE:            For dynamic module libraries (libraries only)
+ #      WIN32:             Inherited from ADD_EXECUTABLE (executables only)
  #      PCH_NO_DEFAULT:    Do not make precompiled header files default if
  #                         specified with PCH_FILE
  #      NO_INSTALL:        Do not install the target at all
@@ -46,8 +45,6 @@
  #      VERSION:           Set version to the binary
  #      SOURCE_FILES:      Source files for the target
  #      DEFINE_SYMBOL:     Sets the DEFINE_SYMBOL target property
- #                         Usage: DEFINE_SYMBOL static "symbol" shared "symbol2"
- #                         (or shared "symbol2" static "symbol")
  #      TOLUA_FILES:       Files with tolua interface
  #      PCH_FILE:          Precompiled header file
  #      PCH_EXCLUDE:       Source files to be excluded from PCH support
@@ -70,7 +67,7 @@ IF(PCH_COMPILER_SUPPORT)
 ENDIF()
 
 MACRO(ORXONOX_ADD_LIBRARY _target_name)
-  TU_ADD_TARGET(${_target_name} LIBRARY "STATIC;SHARED" ${ARGN})
+  TU_ADD_TARGET(${_target_name} LIBRARY "MODULE" ${ARGN})
 ENDMACRO(ORXONOX_ADD_LIBRARY)
 
 MACRO(ORXONOX_ADD_EXECUTABLE _target_name)
@@ -84,10 +81,10 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
-                  NO_DLL_INTERFACE   NO_SOURCE_GROUPS  ${_additional_switches}
-                  PCH_NO_DEFAULT     NO_INSTALL        MODULE NO_VERSION)
+                  NO_DLL_INTERFACE   NO_SOURCE_GROUPS  PCH_NO_DEFAULT 
+                  NO_INSTALL         NO_VERSION        ${_additional_switches})
   SET(_list_names LINK_LIBRARIES  VERSION   SOURCE_FILES  DEFINE_SYMBOL
-                  TOLUA_FILES     PCH_FILE  PCH_EXCLUDE OUTPUT_NAME)
+                  TOLUA_FILES     PCH_FILE  PCH_EXCLUDE   OUTPUT_NAME)
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
 
@@ -148,32 +145,22 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
   ENDIF()
 
-  # Certain libraries don't have dllexport/dllimport and can't be linked shared with msvc
+  # Set link mode (SHARED/STATIC)
   IF(MSVC AND _arg_NO_DLL_INTERFACE)
-    SET(_arg_SHARED)
-    SET(_arg_STATIC STATIC)
+    # Certain libraries don't have dllexport/dllimport and can't be linked shared with MSVC
+    SET(_link_mode STATIC)
+  ELSEIF(_arg_ORXONOX_EXTERNAL)
+    # Externals can be linked shared or statically
+    SET(_link_mode ${ORXONOX_EXTERNAL_LINK_MODE})
+  ELSE()
+    # All our own libraries are linked dynamically because of static symbols
+    SET(_link_mode SHARED)
   ENDIF()
 
   # No warnings needed from third party libraries
   IF(_arg_ORXONOX_EXTERNAL)
     REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
     ADD_COMPILER_FLAGS("-w")
-  ENDIF()
-
-  # Set default linking if required
-  IF(NOT _arg_SHARED AND NOT _arg_STATIC)
-    IF("${ORXONOX_DEFAULT_LINK}" STREQUAL "STATIC")
-      SET(_arg_STATIC STATIC)
-    ELSEIF("${ORXONOX_DEFAULT_LINK}" STREQUAL "SHARED")
-      SET(_arg_SHARED SHARED)
-    ENDIF()
-  ENDIF()
-
-  # MODULE A
-  # Always create shared libraries
-  IF(_arg_MODULE)
-    SET(_arg_SHARED SHARED)
-    SET(_arg_STATIC)
   ENDIF()
 
   # Don't compile header files
@@ -187,7 +174,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # Add the library/executable
   IF("${_target_type}" STREQUAL "LIBRARY")
-    ADD_LIBRARY(${_target_name} ${_arg_STATIC} ${_arg_SHARED}
+    ADD_LIBRARY(${_target_name} ${_link_mode}
                 ${_arg_EXCLUDE_FROM_ALL} ${_${_target_name}_files})
   ELSE()
     ADD_EXECUTABLE(${_target_name} ${_arg_WIN32} ${_arg_EXCLUDE_FROM_ALL}
@@ -214,7 +201,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES COMPILE_FLAGS "${_compile_flags} -Zm1000")
   ENDIF()
 
-  # MODULE B
+  # Configure modules
   IF (_arg_MODULE)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY ${CMAKE_MODULE_OUTPUT_DIRECTORY} # Windows
@@ -229,36 +216,11 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # DEFINE_SYMBOL
-  IF(_arg_DEFINE_SYMBOL OR NOT _arg_ORXONOX_EXTERNAL)
-    IF(_arg_DEFINE_SYMBOL)
-      # Format is: static "static_symbol" shared "shared_symbol"
-      # but the order doesn't matter
-      LIST(LENGTH _arg_DEFINE_SYMBOL _define_symbol_length)
-      IF (_define_symbol_length LESS 2)
-        MESSAGE(FATAL_ERROR "Number of expected arguments for DEFINE_SYMBOL is at least 2: static \"STATIC_SYMBOL\" shared \"SHARED_SYMBOL\"")
-      ENDIF()
-      STRING(TOLOWER "${_arg_STATIC}${_arg_SHARED}" _static_shared_lower)
-      LIST(FIND _arg_DEFINE_SYMBOL ${_static_shared_lower} _symbol_definition_index)
-      MATH(EXPR _symbol_definition_index "${_symbol_definition_index} + 1")
-      IF(_symbol_definition_index LESS _define_symbol_length)
-        LIST(GET _arg_DEFINE_SYMBOL ${_symbol_definition_index} _symbol_definition)
-      ENDIF()
-    ELSE()
-      # Automatically add the macro definitions for our own libraries
-      SET(_symbol_definition "${_target_name_upper}_${_arg_STATIC}${_arg_SHARED}_BUILD")
-    ENDIF()
-
-    # Use the DEFINE_SYMBOL property for shared builds (not used by CMake for static builds),
-    # but if we only use COMPILE_FLAGS, CMake will define a symbol anyway.
-    IF(_arg_SHARED)
-      SET_TARGET_PROPERTIES(${_target_name} PROPERTIES DEFINE_SYMBOL ${_symbol_definition})
-    ELSE()
-      GET_TARGET_PROPERTY(_compile_flags ${_target_name} COMPILE_FLAGS)
-      IF(NOT _compile_flags)
-        SET(_compile_flags)
-      ENDIF()
-      SET_TARGET_PROPERTIES(${_target_name} PROPERTIES COMPILE_FLAGS "${_compile_flags} -D${_symbol_definition}")
-    ENDIF()
+  IF(_arg_DEFINE_SYMBOL)
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES DEFINE_SYMBOL ${_arg_DEFINE_SYMBOL})
+  ELSEIF(NOT _arg_ORXONOX_EXTERNAL)
+    # Automatically add the macro definitions for our own libraries
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES DEFINE_SYMBOL "${_target_name_upper}_SHARED_BUILD")
   ENDIF()
 
   # VERSION
@@ -278,7 +240,8 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     PRECOMPILED_HEADER_FILES_POST_TARGET(${_target_name} ${_arg_PCH_FILE})
   ENDIF()
 
-  IF((${_target_type} STREQUAL "EXECUTABLE" OR NOT _arg_STATIC) AND NOT _arg_NO_INSTALL)
+  # Install all targets except for static ones (executables also have SHARED in _link_mode)
+  IF((${_link_mode} STREQUAL "SHARED") AND NOT _arg_NO_INSTALL)
     IF(_arg_MODULE)
       INSTALL(TARGETS ${_target_name}
         RUNTIME DESTINATION ${MODULE_INSTALL_DIRECTORY}
