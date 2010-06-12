@@ -81,6 +81,7 @@ namespace orxonox
 
             // config values
             std::string mood_;
+            std::string oldMood_;
             static const std::string defaultMood_;
 
             static MoodManager* singletonPtr_s;

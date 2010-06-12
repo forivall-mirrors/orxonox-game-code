@@ -45,11 +45,11 @@ namespace orxonox
         RegisterRootObject(MoodManager);
         this->setConfigValues();
 
+        // Need to use a variable to store old data because ResetConfigValues() doesn't seem to work.
+        oldMood_ = MoodManager::defaultMood_;
+        
         // Checking for the existence of the folder for the default mood
-        /* Note: Currently Resource::exists(path) will always return false when the path field points to a folder.
-           MoodManager::checkMoodValidity() performs the same check. Please help.
-        */
-        const std::string& path = "ambient/" + MoodManager::defaultMood_ + '/';
+        const std::string& path = "ambient/" + MoodManager::defaultMood_ + "/.";
         if (!Resource::exists(path))
         {
             // TODO: Non-fatal error handling (non-critical resource missing)
@@ -68,17 +68,18 @@ namespace orxonox
      */
     void MoodManager::setMood(const std::string& mood)
     {
+        oldMood_ = mood_;
         ModifyConfigValue(mood_, set, mood);
     }
 
     void MoodManager::checkMoodValidity()
     {
         //  Generic mood validation
-        const std::string& path = "ambient/" + mood_ + '/';
+        const std::string& path = "ambient/" + mood_ + "/.";
         if (!Resource::exists(path))
         {
             COUT(3) << "Mood " << mood_ << " does not exist. Will not change." << std::endl;
-            ResetConfigValue(mood_);
+            this->setMood(oldMood_);
         }
         else
         {
