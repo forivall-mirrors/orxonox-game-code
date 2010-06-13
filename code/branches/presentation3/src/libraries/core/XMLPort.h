@@ -196,7 +196,7 @@
     @param sectionname The name of the subsection in the XML file that encloses the sub-objects ("" means no subsection)
     @param loadfunction The function to add a new object to the class
     @param loadfunction The function to get all added objects from the class
-    @param xmlelement The XMLElement (recieved through the XMLPort function)
+    @param xmlelement The XMLElement (received through the XMLPort function)
     @param mode The mode (load/save) (received through the XMLPort function)
     @param bApplyLoaderMask If this is true, an added sub-object gets loaded only if it's class is included in the Loaders ClassTreeMask (this is usually false)
     @param bLoadBefore If this is true, the sub-object gets loaded (through XMLPort) BEFORE it gets added to the main class (this is usually true)

@@ -56,7 +56,7 @@ gametype=TeamDeathmatch
             <subquests>
                 <GlobalQuest id="3159b4d4-bc86-4190-ba1d-4530668dfe31">
                     <QuestDescription title="The stolen stick..."
-                    description="Now you can see it: There are more pirates... the pirates you killed were only a small part of the whole fleet. You recieved a message from your Headquarter: The pirates have stolen
+                    description="Now you can see it: There are more pirates... the pirates you killed were only a small part of the whole fleet. You received a message from your Headquarter: The pirates have stolen
                             a very important memory stick with secret infos (military locations etc.), the holy stick. You must get it back! Otherwise the humans are in great danger..."
                     failmessage=""
                     completeMessage="Unbelievable, you annihilated all pirates and got the stolen memory stick.

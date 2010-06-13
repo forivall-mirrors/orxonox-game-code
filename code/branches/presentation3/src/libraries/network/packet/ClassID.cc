@@ -144,7 +144,7 @@ bool ClassID::process(){
     id=ClassByString( std::string((const char*)classname) );
     COUT(3) << "processing classid: " << networkID << " name: " << classname << " id: " << id << std::endl;
     if(id==NULL){
-      COUT(0) << "Recieved a bad classname" << endl;
+      COUT(0) << "Received a bad classname" << endl;
       abort();
     }
     id->setNetworkID( networkID );
