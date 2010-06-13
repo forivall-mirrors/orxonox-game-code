@@ -58,7 +58,7 @@ namespace orxonox
             void setConfigValues();//done
 
             bool friendlyfire; //goal: player can switch it on/off
-            bool tutorial; //goal: new players recieve messages how the new gametype works - later it can be switched off.
+            bool tutorial; //goal: new players receive messages how the new gametype works - later it can be switched off.
 
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //ok - score function and management of parties
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //ok - simple
