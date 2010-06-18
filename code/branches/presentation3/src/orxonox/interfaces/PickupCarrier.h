@@ -80,39 +80,6 @@ namespace orxonox
             virtual ~PickupCarrier(); //!< Destructor.
 
             /**
-            @brief Can be called to pick up a Pickupable.
-            @param pickup A pointer to the Pickupable.
-            @return Returns true if the Pickupable was picked up, false if not.
-            */
-            bool pickup(Pickupable* pickup)
-                {
-                    bool pickedUp = this->pickups_.insert(pickup).second;
-                    if(pickedUp)
-                    {
-                        COUT(4) << "Picked up Pickupable " << pickup->getIdentifier()->getName() << "(&" << pickup << ")." << std::endl;
-                        pickup->pickedUp(this);
-                    }
-                    return pickedUp;
-                }
-
-            /**
-            @brief Can be called to drop a Pickupable.
-            @param pickup A pointer to the Pickupable.
-            @param drop If the Pickupable should just be removed from the PickupCarrier without further action, this can be set to false. true is default.
-            @return Returns true if the Pickupable has been dropped, false if not.
-            */
-            bool drop(Pickupable* pickup, bool drop = true)
-                {
-                    bool dropped = this->pickups_.erase(pickup) == 1;
-                    if(dropped && drop)
-                    {
-                        COUT(4) << "Dropping Pickupable " << pickup->getIdentifier()->getName() << "(&" << pickup << ")." << std::endl;
-                        pickup->dropped();
-                    }
-                    return dropped;
-                }
-
-            /**
             @brief Can be used to check whether the PickupCarrier or a child of his is a target ot the input Pickupable.
             @param pickup A pointer to the Pickupable.
             @return Returns true if the PickupCarrier or one of its children is a target, false if not.
@@ -190,6 +157,22 @@ namespace orxonox
             @return Returns a pointer to the parent.
             */
             virtual PickupCarrier* getCarrierParent(void) = 0;
+
+            /**
+            @brief Adds a Pickupable to the list of pickups that are carried by this PickupCarrier.
+            @param pickup A pointer to the pickup to be added.
+            @return Returns true if successfull, false if the Pickupable was already present.
+            */
+            bool addPickup(Pickupable* pickup)
+                { return this->pickups_.insert(pickup).second; }
+
+            /**
+            @brief Removes a Pickupable from the list of pickups that are carried by thsi PickupCarrier.
+            @param pickup A pointer to the pickup to be removed.
+            @return Returns true if successfull, false if the Pickupable was not present in the list.
+            */
+            bool removePickup(Pickupable* pickup)
+                { return this->pickups_.erase(pickup) == 1; }
 
             /**
             @brief Get all Pickupables this PickupCarrier has.

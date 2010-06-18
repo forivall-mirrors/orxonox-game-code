@@ -211,7 +211,7 @@ namespace orxonox
         PickupCarrier* carrier = pickup->getCarrier();
         if(pickup != NULL && carrier != NULL)
         {
-            carrier->drop(pickup);
+            pickup->drop(carrier);
         }
     }
 

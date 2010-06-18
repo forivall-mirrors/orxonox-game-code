@@ -135,7 +135,7 @@ namespace orxonox {
                     {
                         if(pickup != NULL && pickup != this)
                         {
-                            carrier->drop(pickup);
+                            pickup->drop(carrier);
                         }
                     }
                 }

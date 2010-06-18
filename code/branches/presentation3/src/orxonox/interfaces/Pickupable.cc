@@ -68,10 +68,9 @@ namespace orxonox
         if(this->isUsed())
             this->setUsed(false);
 
-        if(this->isPickedUp() && this->getCarrier() != NULL)
+        if(this->isPickedUp())
         {
-            this->getCarrier()->drop(this, false);
-            this->setCarrier(NULL);
+            this->drop(false);
         }
 
         if(this->pickupIdentifier_ != NULL)
@@ -167,21 +166,61 @@ namespace orxonox
 
     /**
     @brief
-        Sets the Pickupable to picked up.
-        This method will be called by the PickupCarrier picking the Pickupable up.
+        Can be called to pick up a Pickupable.
     @param carrier
-        The PickupCarrier that picked the Pickupable up.
+        A pointer to the PickupCarrier that picks up the Pickupable.
     @return
-        Returns false if, for some reason, the pickup could not be picked up, e.g. it was picked up already.
+        Returns true if the Pickupable was picked up, false if not.
     */
-    bool Pickupable::pickedUp(PickupCarrier* carrier)
+    bool Pickupable::pickup(PickupCarrier* carrier)
     {
-        if(this->isPickedUp()) //!< If the Pickupable is already picked up.
+        if(carrier == NULL || this->isPickedUp()) //!< If carrier is NULL or the Pickupable is already picked up.
             return false;
+
+        if(!carrier->addPickup(this))
+        {
+            COUT(3) << "A Pickupable (&" << this << ") was trying to be added to a PickupCarrier, but was already present." << std::endl;
+            return false;
+        }
 
         COUT(4) << "Pickupable (&" << this << ") got picked up by a PickupCarrier (&" << carrier << ")." << std::endl;
         this->setCarrier(carrier);
         this->setPickedUp(true);
+        return true;
+    }
+
+    /**
+    @brief
+        Can be called to drop a Pickupable.
+    @param createSpawner
+        If true a spawner is be created for the dropped Pickupable. True is default.
+    @return
+        Returns true if the Pickupable has been dropped, false if not.
+    */
+    bool Pickupable::drop(bool createSpawner)
+    {
+        if(!this->isPickedUp()) //!< If the Pickupable is not picked up.
+            return false;
+
+        assert(this->getCarrier()); //!> The Carrier cannot be NULL at this point. //TODO: Too conservative?
+        if(!this->getCarrier()->removePickup(this)) //TODO Shouldn't this be a little later?
+            COUT(2) << "Pickupable (&" << this << ") is being dropped, but it was not present in the PickupCarriers list of pickups." << std::endl;
+        
+        COUT(4) << "Pickupable (&" << this << ") got dropped up by a PickupCarrier (&" << this->getCarrier() << ")." << std::endl;
+        this->setUsed(false);
+        this->setPickedUp(false);
+
+        bool created = false;
+        if(createSpawner)
+            created = this->createSpawner();
+
+        this->setCarrier(NULL);
+
+        if(!created && createSpawner)
+        {
+            this->destroy();
+        }
+
         return true;
     }
 
@@ -228,34 +267,6 @@ namespace orxonox
 
     /**
     @brief
-        Sets the Pickupable to not picked up or dropped.
-        This method will be called by the PickupCarrier dropping the Pickupable.
-    @return
-        Returns false if the pickup could not be dropped.
-    */
-    bool Pickupable::dropped(void)
-    {
-        if(!this->isPickedUp()) //!< If the Pickupable is not picked up.
-            return false;
-
-        COUT(4) << "Pickupable (&" << this << ") got dropped up by a PickupCarrier (&" << this->getCarrier() << ")." << std::endl;
-        this->setUsed(false);
-        this->setPickedUp(false);
-
-        bool created = this->createSpawner();
-
-        this->setCarrier(NULL);
-
-        if(!created)
-        {
-            this->destroy();
-        }
-
-        return true;
-    }
-
-    /**
-    @brief
         Creates a duplicate of the Pickupable.
     @return
         Returns the clone of this pickup as a pointer to a Pickupable.
@@ -296,7 +307,7 @@ namespace orxonox
         ControllableEntity* entity = player->getControllableEntity();
         Pawn* pawn = static_cast<Pawn*>(entity);
         PickupCarrier* carrier = static_cast<PickupCarrier*>(pawn);
-        return carrier->pickup(this);
+        return this->pickup(carrier);
     }
 
 }

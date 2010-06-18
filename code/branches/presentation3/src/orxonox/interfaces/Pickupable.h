@@ -94,8 +94,8 @@ namespace orxonox // tolua_export
             */
             virtual void changedPickedUp(void) {}
 
-            bool pickedUp(PickupCarrier* carrier); //!< Sets the Pickupable to picked up.
-            bool dropped(void); //!< Sets the Pickupable to not picked up or dropped.
+            bool pickup(PickupCarrier* carrier);
+            bool drop(bool createSpawner = true);
 
             virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this pickup.
             bool isTarget(const Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this Pickupable.

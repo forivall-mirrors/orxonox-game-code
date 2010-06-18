@@ -303,7 +303,7 @@ namespace orxonox
 
             if(target != NULL && pickup != NULL)
             {
-                if(target->pickup(pickup))
+                if(pickup->pickup(target))
                 {
                     this->decrementSpawnsRemaining();
                 }
