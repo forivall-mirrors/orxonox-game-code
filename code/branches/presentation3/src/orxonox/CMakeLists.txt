@@ -76,8 +76,8 @@ ORXONOX_ADD_LIBRARY(orxonox
     ${VORBISFILE_LIBRARY}
     ${VORBIS_LIBRARY}
     ${OGG_LIBRARY}
-    tinyxml++_orxonox
-    tolua++_orxonox
+    tinyxml_orxonox
+    tolua_orxonox
     bullet_orxonox
     util
     core

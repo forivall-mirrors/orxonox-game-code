@@ -65,12 +65,12 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
 
   ADD_CUSTOM_COMMAND(
     OUTPUT ${_tolua_cxxfile} ${_tolua_hfile}
-    COMMAND tolua++app_orxonox -n ${_tolua_package}
-                               -w ${CMAKE_CURRENT_SOURCE_DIR}
-                               -o ${_tolua_cxxfile}
-                               -H ${_tolua_hfile}
-                               -s ${TOLUA_PARSER_SOURCE}
-                                  ${_tolua_pkgfile}
+    COMMAND toluaapp_orxonox -n ${_tolua_package}
+                             -w ${CMAKE_CURRENT_SOURCE_DIR}
+                             -o ${_tolua_cxxfile}
+                             -H ${_tolua_hfile}
+                             -s ${TOLUA_PARSER_SOURCE}
+                                ${_tolua_pkgfile}
     DEPENDS           ${TOLUA_PARSER_DEPENDENCIES}
     IMPLICIT_DEPENDS  ${_implicit_dependencies}
     WORKING_DIRECTORY ${RUNTIME_LIBRARY_DIRECTORY}

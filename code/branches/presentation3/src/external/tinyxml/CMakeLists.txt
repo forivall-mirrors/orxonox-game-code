@@ -17,7 +17,7 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-SET_SOURCE_FILES(TINYXML++_FILES
+SET_SOURCE_FILES(TINYXML_FILES
   ticpp.h
   ticpprc.h
   tinystr.h
@@ -32,11 +32,11 @@ COMPILATION_BEGIN TicppCompilation.cpp
 COMPILATION_END
 )
 
-ORXONOX_ADD_LIBRARY(tinyxml++_orxonox
+ORXONOX_ADD_LIBRARY(tinyxml_orxonox
   ORXONOX_EXTERNAL
   NO_DLL_INTERFACE
   VERSION
     2.5.3
   SOURCE_FILES
-    ${TINYXML++_FILES}
+    ${TINYXML_FILES}
 )

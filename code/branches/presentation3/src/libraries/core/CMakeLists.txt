@@ -109,8 +109,8 @@ ORXONOX_ADD_LIBRARY(core
     cpptcl_orxonox
     ogreceguirenderer_orxonox
     ois_orxonox
-    tinyxml++_orxonox
-    tolua++_orxonox
+    tinyxml_orxonox
+    tolua_orxonox
     util
   SOURCE_FILES
     ${CORE_SRC_FILES}
