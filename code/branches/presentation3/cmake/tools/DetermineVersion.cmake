@@ -21,9 +21,9 @@
  #    Reto Grieder
  #  Description:
  #    Inspects a given file for the following expressions
- #    "NAME_MAJOR_VERSION #"
- #    "NAME_MINOR_VERSION #"
- #    "NAME_PATCH_VERSION #"
+ #    "NAME_VERSION_MAJOR #"
+ #    "NAME_VERSION_MINOR #"
+ #    "NAME_VERSION_PATCH #"
  #    and sets NAME_VERSION accordingly. NAME_PART_VERSION variables are also
  #    set. If you wish to look for different parts (e.g. "first" "second", etc.)
  #    simply deliver them as additional arguments (have to be three though).
