@@ -40,6 +40,7 @@
 #include "infos/PlayerInfo.h"
 #include "controllers/Controller.h"
 #include "sound/WorldSound.h"
+#include "Scene.h"
 
 namespace orxonox
 {
@@ -115,8 +116,13 @@ namespace orxonox
     {
         if(this->isInitialized())
         {
-            if (GameMode::isMaster() && this->player_)
-                this->player_->stopTemporaryControl();
+            if (GameMode::isMaster())
+            {
+                this->destructionEffect();
+
+                if (this->getPlayer() && this->getController())
+                    this->player_->stopTemporaryControl();
+            }
 
             if ( this->defSndWpnEngine_ )
                 this->defSndWpnEngine_->destroy();
@@ -139,7 +145,6 @@ namespace orxonox
     void Rocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
-        this->originalControllableEntity_ = this->owner_->getPlayer()->getControllableEntity();
         this->player_ = this->owner_->getPlayer();
         this->owner_->getPlayer()->startTemporaryControl(this);
 
@@ -227,27 +232,37 @@ namespace orxonox
 
     void Rocket::fired(unsigned int firemode)
     {
-        if (this->owner_)
-        {
-            {
-                ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                effect->setPosition(this->getPosition());
-                effect->setOrientation(this->getOrientation());
-                effect->setDestroyAfterLife(true);
-                effect->setSource("Orxonox/explosion4");
-                effect->setLifetime(2.0f);
-            }
-
-            {
-                ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                effect->setPosition(this->getPosition());
-                effect->setOrientation(this->getOrientation());
-                effect->setDestroyAfterLife(true);
-                effect->setSource("Orxonox/smoke4");
-                effect->setLifetime(3.0f);
-            }
+//         if (this->owner_)
+//         {
             this->destroy();
+//         }
+    }
+    
+    void Rocket::destructionEffect()
+    {
+        ParticleSpawner *effect1, *effect2;
+        if( this->owner_ )
+        {
+            effect1 = new ParticleSpawner(this->owner_->getCreator());
+            effect2 = new ParticleSpawner(this->owner_->getCreator());
         }
+        else
+        {
+            effect1 = new ParticleSpawner(static_cast<BaseObject*>(this->getScene().get()));
+            effect2 = new ParticleSpawner(static_cast<BaseObject*>(this->getScene().get()));
+        }
+        
+        effect1->setPosition(this->getPosition());
+        effect1->setOrientation(this->getOrientation());
+        effect1->setDestroyAfterLife(true);
+        effect1->setSource("Orxonox/explosion4");
+        effect1->setLifetime(2.0f);
+        
+        effect2->setPosition(this->getPosition());
+        effect2->setOrientation(this->getOrientation());
+        effect2->setDestroyAfterLife(true);
+        effect2->setSource("Orxonox/smoke4");
+        effect2->setLifetime(3.0f);
     }
 
     /**
