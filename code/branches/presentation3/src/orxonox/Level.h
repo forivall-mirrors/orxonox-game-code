@@ -47,7 +47,6 @@ namespace orxonox
             virtual ~Level();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             inline void setDescription(const std::string& description)
                 { this->description_ = description; }
@@ -61,6 +60,7 @@ namespace orxonox
 
 
         private:
+            void registerVariables();
             void addObject(BaseObject* object);
             BaseObject* getObject(unsigned int index) const;
 

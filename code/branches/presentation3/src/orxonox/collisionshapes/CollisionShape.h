@@ -44,7 +44,6 @@ namespace orxonox
             virtual ~CollisionShape();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             inline void setPosition(const Vector3& position)
                 { this->position_ = position; this->updateParent(); }
@@ -87,6 +86,8 @@ namespace orxonox
             unsigned int            parentID_;
 
         private:
+            void registerVariables();
+
             Vector3                 position_;
             Quaternion              orientation_;
             Vector3                 scale_;

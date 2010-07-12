@@ -43,7 +43,6 @@ namespace orxonox
             ~ParticleEmitter();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void changedVisibility();
             virtual void changedActivity();
@@ -73,6 +72,9 @@ namespace orxonox
             ParticleInterface* particles_;
             std::string        source_;
             LODParticle::Value   LOD_;
+
+        private:
+            void registerVariables();
     };
 }
 

@@ -93,7 +93,6 @@ namespace orxonox
             virtual ~WorldEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             inline const Ogre::SceneNode* getNode() const
                 { return this->node_; }
@@ -213,6 +212,8 @@ namespace orxonox
             Ogre::SceneNode* node_;
 
         private:
+            void registerVariables();
+            
             inline void lookAt_xmlport(const Vector3& target)
                 { this->lookAt(target); }
             inline void setDirection_xmlport(const Vector3& direction)

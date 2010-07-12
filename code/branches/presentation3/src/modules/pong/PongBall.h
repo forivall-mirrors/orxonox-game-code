@@ -44,8 +44,6 @@ namespace orxonox
 
             virtual void tick(float dt);
 
-            void registerVariables();
-
             void setFieldDimension(float width, float height)
                 { this->fieldWidth_ = width; this->fieldHeight_ = height; }
             void setFieldDimension(const Vector2& dimension)
@@ -73,6 +71,8 @@ namespace orxonox
             static const float MAX_REL_Z_VELOCITY;
 
         private:
+            void registerVariables();
+
             float fieldWidth_;
             float fieldHeight_;
             float speed_;

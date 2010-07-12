@@ -73,7 +73,7 @@ namespace orxonox{
         if ( variable )
             return *(uint32_t*)(mem) == variable->getObjectID();
         else
-            return *(uint32_t*)(mem) == OBJECTID_UNKNOWN;
+            return variable == variable->getSynchronisable(*(uint32_t*)(mem));
     }
     
     // These functions implement loading / saving / etc. for SmartPtr<T>

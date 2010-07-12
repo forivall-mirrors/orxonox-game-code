@@ -48,7 +48,6 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
-            void registerVariables();
             void setConfigValues();
 
             virtual void changedPlayer() {}
@@ -166,6 +165,7 @@ namespace orxonox
             Ogre::SceneNode* cameraPositionRootNode_;
 
         private:
+            void registerVariables();
             void setXMLController(Controller* controller);
 
             void overwrite();

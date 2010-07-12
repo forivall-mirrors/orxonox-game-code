@@ -44,7 +44,6 @@ namespace orxonox
             virtual ~Model();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void changedVisibility();
 
@@ -62,6 +61,7 @@ namespace orxonox
                 { return this->bCastShadows_; }
 
         protected:
+            void registerVariables();
             void changedMesh();
             void changedShadows();
 

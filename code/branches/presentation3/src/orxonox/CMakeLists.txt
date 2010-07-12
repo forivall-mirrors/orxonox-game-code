@@ -33,6 +33,7 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   Radar.cc
   ChatHistory.cc
   ChatInputHandler.cc
+#  Test.cc
 COMPILATION_BEGIN SceneCompilation.cc
   CameraManager.cc
   Scene.cc

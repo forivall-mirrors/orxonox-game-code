@@ -42,7 +42,6 @@ namespace orxonox
             BoxCollisionShape(BaseObject* creator);
             virtual ~BoxCollisionShape();
 
-            void registerVariables();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             inline void setHalfExtents(const Vector3& extents)
@@ -66,6 +65,8 @@ namespace orxonox
                 { return this->halfExtents_.x * 2; }
 
         private:
+            void registerVariables();
+
             btCollisionShape* createNewShape() const;
 
             Vector3 halfExtents_;

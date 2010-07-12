@@ -44,7 +44,6 @@ namespace orxonox
             virtual ~Backlight();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void tick(float dt);
             virtual void changedVisibility();
@@ -80,6 +79,7 @@ namespace orxonox
             virtual void changedTimeFactor(float factor_new, float factor_old);
 
         private:
+            void registerVariables();
             virtual void startturnonoff();
             virtual void stopturnonoff();
             virtual void poststopturnonoff();

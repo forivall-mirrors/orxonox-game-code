@@ -75,7 +75,7 @@ namespace orxonox
     bool update();
     void sendGamestates();
 //     packet::Gamestate *popGameState(unsigned int clientID);
-    void finishGamestate( unsigned int clientID, packet::Gamestate** destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate );
+    void finishGamestate( unsigned int clientID, packet::Gamestate*& destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate );
 
     bool getSnapshot();
 

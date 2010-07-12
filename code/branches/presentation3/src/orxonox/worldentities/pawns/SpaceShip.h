@@ -46,7 +46,6 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
-            void registerVariables();
             void setConfigValues();
 
             virtual void moveFrontBack(const Vector2& value);
@@ -98,9 +97,9 @@ namespace orxonox
             btVector3 localAngularAcceleration_;
 
         private:
+            void registerVariables();
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
 
-        private:
             void loadEngineTemplate();
 
             std::string enginetemplate_;
