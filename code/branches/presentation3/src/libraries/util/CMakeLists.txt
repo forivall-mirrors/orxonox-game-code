@@ -26,6 +26,7 @@ SET_SOURCE_FILES(UTIL_SRC_FILES
 COMPILATION_BEGIN StableCompilation.cc
   Clipboard.cc
   Clock.cc
+  Convert.cc
   CRC32.cc
   ExprParser.cc
   OutputHandler.cc
