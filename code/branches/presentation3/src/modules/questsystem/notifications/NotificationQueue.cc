@@ -33,8 +33,7 @@
 
 #include "NotificationQueue.h"
 
-#include <sstream>
-
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "NotificationOverlay.h"
@@ -402,9 +401,7 @@ namespace orxonox
         container->time = time;
         std::string timeString = std::ctime(&time);
         timeString.erase(timeString.length()-1);
-        std::ostringstream stream;
-        stream << reinterpret_cast<unsigned long>(notification);
-        const std::string& addressString = stream.str();
+        const std::string& addressString = multi_cast<std::string>(reinterpret_cast<unsigned long>(notification));
         container->name = "NotificationOverlay(" + timeString + ")&" + addressString;
 
         this->containers_.insert(container);
