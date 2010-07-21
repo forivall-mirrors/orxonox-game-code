@@ -32,6 +32,7 @@
 #include <vector>
 #include <al.h>
 
+#include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/Resource.h"
