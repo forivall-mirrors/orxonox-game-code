@@ -88,9 +88,9 @@ namespace orxonox
       inline static uint32_t getSize()
         { return 14; }
       inline uint16_t getDataSize() const
-        { return (*(uint16_t*)data_) & 0x7FFF; } //only use the first 31 bits
+        { return (*(uint16_t*)data_) & 0x7FFF; } //only use the first 15 bits
       inline void setDataSize(uint16_t size)
-        { *(uint16_t*)(data_) = (size & 0x7FFFFFFF) | (*(uint16_t*)(data_) & 0x8000 ); }
+        { *(uint16_t*)(data_) = (size & 0x7FFF) | (*(uint16_t*)(data_) & 0x8000 ); }
       inline bool isDiffed() const
         { return ( (*(uint16_t*)data_) & 0x8000 ) == 0x8000; }
       inline void setDiffed( bool b)

@@ -404,15 +404,36 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
     while ( temp < baseData+baseLength )
     {
       SynchronisableHeader htemp(temp);
+      assert( htemp.getDataSize()!=0 );
       if ( htemp.getObjectID() == objectID )
       {
         assert( h.getClassID() == htemp.getClassID() );
         goto DODIFF;
       }
+//       {
+//         SynchronisableHeader htemp2(temp+htemp.getDataSize()+SynchronisableHeader::getSize());
+//         if( temp+htemp.getDataSize()+SynchronisableHeader::getSize() < baseData+baseLength )
+//         {
+//           assert(htemp2.getClassID()<500);
+//           assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
+//           assert(htemp2.isDiffed()==false);
+//         }
+//       }
       temp += htemp.getDataSize()+SynchronisableHeader::getSize();
+        
     }
     // If not found start looking at the beginning
+    assert( temp==baseData+baseLength );
     temp = baseData;
+//     {
+//       SynchronisableHeader htemp2(temp);
+//       if( temp < baseData+baseLength )
+//       {
+//         assert(htemp2.getClassID()<500);
+//         assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
+//         assert(htemp2.isDiffed()==false);
+//       }
+//     }
     while ( temp < baseData+baseOffset )
     {
       SynchronisableHeader htemp(temp);
@@ -421,6 +442,15 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
         assert( h.getClassID() == htemp.getClassID() );
         goto DODIFF;
       }
+//       {
+//         SynchronisableHeader htemp2(temp+htemp.getDataSize()+SynchronisableHeader::getSize());
+//         if( temp+htemp.getDataSize()+SynchronisableHeader::getSize() < baseData+baseLength )
+//         {
+//           assert(htemp2.getClassID()<500);
+//           assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
+//           assert(htemp2.isDiffed()==false);
+//         }
+//       }
       temp += htemp.getDataSize()+SynchronisableHeader::getSize();
     }
     // Object is new, thus never transmitted -> just copy over
@@ -429,6 +459,7 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
 
 DODIFF:
     {
+//       COUT(4) << "dodiff" << endl;
 //       if(baseOffset==0)
 //       {
 //         assert(origOffset==0);
@@ -437,12 +468,16 @@ DODIFF:
       // Check whether the whole object stayed the same
       if( memcmp( origData+origOffset+objectOffset, temp+objectOffset, h.getDataSize()) == 0 )
       {
+//         COUT(4) << "skip object" << Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() << endl;
         origOffset += objectOffset+ h.getDataSize(); // skip the whole object
         baseOffset = temp + h.getDataSize()+SynchronisableHeader::getSize() - baseData;
         sizes += Synchronisable::getSynchronisable(h.getObjectID())->getNrOfVariables();
       }
       else
       {
+//         if( Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() == "Bot" )
+//           COUT(0) << "blub" << endl;
+//         COUT(4) << "object diff: " << Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() << endl;
 //         COUT(4) << "diff " << h.getObjectID() << ":";
         // Now start to diff the Object
         SynchronisableHeaderLight h2(dest);
@@ -461,7 +496,7 @@ DODIFF:
           {
             if ( memcmp(origData+origOffset+objectOffset, temp+objectOffset, varSize) != 0 )
             {
-//               COUT(4) << " c" << varSize;
+//               COUT(4) << "copy variable" << endl;
               *(VariableID*)(dest+newObjectOffset) = variableID; // copy over the variableID
               newObjectOffset += sizeof(VariableID);
               memcpy( dest+newObjectOffset, origData+origOffset+objectOffset, varSize );
@@ -470,14 +505,17 @@ DODIFF:
             }
             else
             {
-//               COUT(4) << " s" << varSize;
+//               COUT(4) << "skip variable" << endl;
               objectOffset += varSize;
             }
           }
+//           else
+//             COUT(4) << "varsize 0" << endl;
 
           ++variableID;
           ++sizes;
         }
+        
         if( Synchronisable::getSynchronisable(h.getObjectID())->getNrOfVariables() != variableID )
           sizes += Synchronisable::getSynchronisable(h.getObjectID())->getNrOfVariables() - variableID;
 //         COUT(4) << endl;
@@ -485,7 +523,20 @@ DODIFF:
         h2.setDataSize(newObjectOffset-SynchronisableHeaderLight::getSize());
         assert(objectOffset == h.getDataSize()+SynchronisableHeader::getSize());
         origOffset += objectOffset;
-        baseOffset += temp + h.getDataSize()+SynchronisableHeader::getSize() - baseData;
+//         baseOffset += temp + h.getDataSize()+SynchronisableHeader::getSize() - baseData;
+        //baseOffset += objectOffset;
+//         SynchronisableHeader htemp(temp);
+//         baseOffset += SynchronisableHeader::getSize() + htemp.getDataSize();
+//         {
+//           SynchronisableHeader htemp2( baseData+(temp-baseData+objectOffset) );
+//           if( baseData+(temp-baseData+objectOffset) < baseData+baseLength )
+//           {
+//             assert(htemp2.getClassID()<500);
+//             assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
+//             assert(htemp2.isDiffed()==false);
+//           }
+//         }
+        baseOffset = temp-baseData + objectOffset;
         dest += newObjectOffset;
       }
 
@@ -494,6 +545,7 @@ DODIFF:
 
 DOCOPY:
     {
+//       COUT(4) << "docopy" << endl;
       // Just copy over the whole Object
       memcpy( dest, origData+origOffset, h.getDataSize()+SynchronisableHeader::getSize() );
       dest += h.getDataSize()+SynchronisableHeader::getSize();
