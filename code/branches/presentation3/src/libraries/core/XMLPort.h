@@ -494,6 +494,10 @@ namespace orxonox
                 { this->bApplyLoaderMask_ = false; }
             virtual ~XMLPortObjectContainer() {}
 
+            XMLPortObjectContainer& port(BaseObject* object, Element& xmlelement, XMLPort::Mode mode);
+
+            virtual void callLoadExecutor(BaseObject* object, BaseObject* newObject) = 0;
+
             inline const std::string& getName() const
                 { return this->sectionname_; }
 
@@ -507,6 +511,7 @@ namespace orxonox
             bool bApplyLoaderMask_;
             bool bLoadBefore_;
             Identifier* identifier_;
+            Identifier* objectIdentifier_;
     };
 
     template <class T, class O>
@@ -517,6 +522,8 @@ namespace orxonox
             {
                 this->sectionname_ = sectionname;
                 this->identifier_ = identifier;
+                assert(identifier->isA(ClassIdentifier<T>::getIdentifier()));
+                this->objectIdentifier_ = ClassIdentifier<O>::getIdentifier();
                 this->loadexecutor_ = loadexecutor;
                 this->saveexecutor_ = saveexecutor;
                 this->bApplyLoaderMask_ = bApplyLoaderMask;
@@ -531,108 +538,14 @@ namespace orxonox
                     delete this->saveexecutor_;
             }
 
-            XMLPortObjectContainer& port(T* object, Element& xmlelement, XMLPort::Mode mode)
+            void callLoadExecutor(BaseObject* object, BaseObject* newObject)
             {
-                if ((mode == XMLPort::LoadObject) || (mode == XMLPort::ExpandObject))
-                {
-                    try
-                    {
-                        Element* xmlsubelement;
-                        if (!this->sectionname_.empty())
-                            xmlsubelement = xmlelement.FirstChildElement(this->sectionname_, false);
-                        else
-                            xmlsubelement = &xmlelement;
+                T* castedObject = orxonox_cast<T*>(object);
+                assert(castedObject);
+                O* castedNewObject = orxonox_cast<O*>(newObject);
+                assert(castedNewObject);
 
-                        if (xmlsubelement)
-                        {
-                            for (ticpp::Iterator<ticpp::Element> child = xmlsubelement->FirstChildElement(false); child != child.end(); child++)
-                            {
-                                Identifier* identifier = Identifier::getIdentifierByString(child->Value());
-                                if (identifier)
-                                {
-                                    if (identifier->isA(ClassIdentifier<O>::getIdentifier()))
-                                    {
-                                        if (identifier->isLoadable())
-                                        {
-                                            if (this->identifierIsIncludedInLoaderMask(identifier))
-                                            {
-                                                try
-                                                {
-                                                    COUT(4) << object->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
-
-                                                    BaseObject* newObject = identifier->fabricate(static_cast<BaseObject*>(object));
-                                                    assert(newObject);
-                                                    newObject->setLoaderIndentation(object->getLoaderIndentation() + "  ");
-
-                                                    O* castedObject = orxonox_cast<O*>(newObject);
-                                                    assert(castedObject);
-
-                                                    if (this->bLoadBefore_)
-                                                    {
-                                                        newObject->XMLPort(*child, XMLPort::LoadObject);
-                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ')' << std::endl;
-                                                    }
-                                                    else
-                                                    {
-                                                        COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ')' << std::endl;
-                                                    }
-
-                                                    COUT(5) << object->getLoaderIndentation();
-                                                    (*this->loadexecutor_)(object, castedObject);
-
-                                                    if (!this->bLoadBefore_)
-                                                        newObject->XMLPort(*child, XMLPort::LoadObject);
-
-                                                    COUT(5) << object->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
-                                                }
-                                                catch (AbortLoadingException& ex)
-                                                {
-                                                    COUT(1) << "An error occurred while loading object, abort loading..." << std::endl;
-                                                    throw ex;
-                                                }
-                                                catch (...)
-                                                {
-                                                    COUT(1) << "An error occurred while loading object:" << std::endl;
-                                                    COUT(1) << Exception::handleMessage() << std::endl;
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not loadable." << std::endl;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a '" << ClassIdentifier<O>::getIdentifier()->getName() << "'." << std::endl;
-                                    }
-                                }
-                                else
-                                {
-                                    if (!this->sectionname_.empty())
-                                    {
-                                        COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a valid classname." << std::endl;
-                                    }
-                                    else
-                                    {
-                                        // It's probably just another subsection
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch (ticpp::Exception& ex)
-                    {
-                        COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading a '" << ClassIdentifier<O>::getIdentifier()->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << object->getName() << ") in " << object->getFilename() << ':' << std::endl;
-                        COUT(1) << ex.what() << std::endl;
-                    }
-                }
-                else if (mode == XMLPort::SaveObject)
-                {
-                }
-
-                return (*this);
+                (*this->loadexecutor_)(castedObject, castedNewObject);
             }
 
             virtual XMLPortObjectContainer& description(const std::string& description)
