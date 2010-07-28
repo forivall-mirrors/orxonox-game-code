@@ -43,7 +43,6 @@ namespace orxonox
 
     GSClient::GSClient(const GameStateInfo& info)
         : GameState(info)
-        , client_(0)
     {
     }
 
@@ -55,29 +54,29 @@ namespace orxonox
     {
         GameMode::setIsClient(true);
 
-        this->client_ = new Client(CommandLineParser::getValue("dest").getString(), CommandLineParser::getValue("port"));
+//         this->client_ = new Client();
+//         this->client_->setDestination(CommandLineParser::getValue("dest").getString(), CommandLineParser::getValue("port") );
 
-        if(!client_->establishConnection())
+        if( !Client::getInstance()->establishConnection() )
         {
-            delete this->client_;
             ThrowException(InitialisationFailed, "Could not establish connection with server.");
         }
 
-        client_->update(Game::getInstance().getGameClock());
+        Client::getInstance()->update(Game::getInstance().getGameClock());
     }
 
     void GSClient::deactivate()
     {
-        client_->closeConnection();
+        Client::getInstance()->closeConnection();
 
         // destroy client
-        delete this->client_;
+//         delete this->client_;
 
         GameMode::setIsClient(false);
     }
 
     void GSClient::update(const Clock& time)
     {
-        client_->update(time);
+        Client::getInstance()->update(time);
     }
 }

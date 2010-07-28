@@ -20,32 +20,33 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _GSClient_H__
-#define _GSClient_H__
+#ifndef _LANDISCOVERABLE_H__
+#define _LANDISCOVERABLE_H__
 
-#include "OrxonoxPrereqs.h"
-
-#include "core/GameState.h"
-#include "network/NetworkPrereqs.h"
+#include "NetworkPrereqs.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSClient : public GameState
-    {
+  
+  class LANDiscoverable
+  {
     public:
-        GSClient(const GameStateInfo& info);
-        ~GSClient();
+      LANDiscoverable();
+      ~LANDiscoverable();
+      void setActivity( bool bActive );
+      void update();
+      
+    private:
+      bool            bActive_;
+      ENetHost*       host_;
+  };
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
-    };
 }
 
-#endif /* _GSClient_H__ */
+#endif // LANDISCOVERABLE_H

@@ -20,32 +20,44 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _GSClient_H__
-#define _GSClient_H__
+#ifndef LANDISCOVERY_H
+#define LANDISCOVERY_H
 
-#include "OrxonoxPrereqs.h"
+#include "NetworkPrereqs.h"
+#include "packet/ServerInformation.h"
+#include "util/Singleton.h"
 
-#include "core/GameState.h"
-#include "network/NetworkPrereqs.h"
+#include <vector>
 
+// tolua_begin
 namespace orxonox
 {
-    class _OrxonoxExport GSClient : public GameState
-    {
+
+  class _NetworkExport LANDiscovery
+// tolua_end
+    : public Singleton<LANDiscovery>
+  { // tolua_export
+    friend class Singleton<LANDiscovery>;
     public:
-        GSClient(const GameStateInfo& info);
-        ~GSClient();
+      LANDiscovery();
+      ~LANDiscovery();
+      void discover(); // tolua_export
+      std::string getServerListItemName( unsigned int index ); // tolua_export
+      std::string getServerListItemIP( unsigned int index ); // tolua_export
+      static LANDiscovery& getInstance(){ return Singleton<LANDiscovery>::getInstance(); } // tolua_export
+      
+    private:
+      static LANDiscovery* singletonPtr_s;
+      ENetHost* host_;
+      std::vector<packet::ServerInformation> servers_;
+  }; // tolua_export
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
-    };
-}
+} // tolua_export
 
-#endif /* _GSClient_H__ */
+#endif // LANDISCOVERY_H

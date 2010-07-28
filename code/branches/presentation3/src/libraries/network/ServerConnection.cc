@@ -93,9 +93,9 @@ namespace orxonox
   }
 
   bool ServerConnection::addPacketAll(ENetPacket *packet) {
-    if ( !Connection::getInstance() )
-      return false;
-    enet_host_broadcast( Connection::getInstance()->getHost(), 0, packet);
+//     if ( !Connection::getInstance() )
+//       return false;
+    enet_host_broadcast( Connection::getHost(), 0, packet);
     return true;
   }
 

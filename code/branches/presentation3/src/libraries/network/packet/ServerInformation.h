@@ -20,32 +20,44 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _GSClient_H__
-#define _GSClient_H__
+#include "../NetworkPrereqs.h"
 
-#include "OrxonoxPrereqs.h"
+#include <string>
 
-#include "core/GameState.h"
-#include "network/NetworkPrereqs.h"
+#ifndef SERVERINFORMATION_H
+#define SERVERINFORMATION_H
 
 namespace orxonox
 {
-    class _OrxonoxExport GSClient : public GameState
-    {
-    public:
-        GSClient(const GameStateInfo& info);
-        ~GSClient();
+  namespace packet
+  {
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
+    class ServerInformation
+    {
+      public:
+        ServerInformation();
+        ServerInformation(ENetEvent* event);
+        ~ServerInformation();
+        
+        void          send( ENetPeer* peer );
+        std::string   getServerIP() { return this->serverIP_; }
+        std::string   getServerName() { return this->serverName_; }
+        void          setServerName(std::string name) { this->serverName_ = name; }
+        uint32_t      getServerRTT() { return this->serverRTT_; }
+        
+      private:
+        std::string   serverName_;
+        std::string   serverIP_;
+        uint32_t      serverRTT_;
     };
+
+  }
 }
 
-#endif /* _GSClient_H__ */
+#endif // SERVERINFORMATION_H

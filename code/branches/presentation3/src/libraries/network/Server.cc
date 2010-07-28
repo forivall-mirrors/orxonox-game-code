@@ -68,11 +68,13 @@ namespace orxonox
   * Constructor for default values (bindaddress is set to ENET_HOST_ANY
   *
   */
-  Server::Server() {
+  Server::Server()
+  {
     this->timeSinceLastUpdate_=0;
   }
 
-  Server::Server(int port){
+  Server::Server(int port)
+  {
     this->setPort( port );
     this->timeSinceLastUpdate_=0;
   }
@@ -82,7 +84,8 @@ namespace orxonox
   * @param port Port to listen on
   * @param bindAddress Address to listen on
   */
-  Server::Server(int port, const std::string& bindAddress) {
+  Server::Server(int port, const std::string& bindAddress)
+  {
     this->setPort( port );
     this->setBindAddress( bindAddress );
     this->timeSinceLastUpdate_=0;
@@ -91,29 +94,37 @@ namespace orxonox
   /**
   * @brief Destructor
   */
-  Server::~Server(){
+  Server::~Server()
+  {
   }
 
   /**
   * This function opens the server by creating the listener thread
   */
-  void Server::open() {
+  void Server::open()
+  {
+    Host::setActive(true);
     COUT(4) << "opening server" << endl;
     this->openListener();
+    LANDiscoverable::setActivity(true);
     return;
   }
 
   /**
   * This function closes the server
   */
-  void Server::close() {
+  void Server::close()
+  {
+    Host::setActive(false);
     COUT(4) << "closing server" << endl;
     this->disconnectClients();
     this->closeListener();
+    LANDiscoverable::setActivity(false);
     return;
   }
 
-  bool Server::processChat(const std::string& message, unsigned int playerID){
+  bool Server::processChat(const std::string& message, unsigned int playerID)
+  {
     ClientInformation *temp = ClientInformation::getBegin();
     packet::Chat *chat;
     while(temp){
@@ -133,9 +144,12 @@ namespace orxonox
   * calls processQueue and updateGamestate
   * @param time time since last tick
   */
-  void Server::update(const Clock& time) {
+  void Server::update(const Clock& time)
+  {
     // receive incoming packets
     Connection::processQueue();
+    // receive and process incoming discovery packets
+    LANDiscoverable::update();
 
     if ( ClientInformation::hasClients() )
     {
@@ -156,14 +170,16 @@ namespace orxonox
     }
   }
 
-  bool Server::queuePacket(ENetPacket *packet, int clientID){
+  bool Server::queuePacket(ENetPacket *packet, int clientID)
+  {
     return ServerConnection::addPacket(packet, clientID);
   }
 
   /**
    * @brief: returns ping time to client in milliseconds
    */
-  unsigned int Server::getRTT(unsigned int clientID){
+  unsigned int Server::getRTT(unsigned int clientID)
+  {
     assert(ClientInformation::findClient(clientID));
     return ClientInformation::findClient(clientID)->getRTT();
   }
@@ -177,7 +193,8 @@ namespace orxonox
   /**
    * @brief: return packet loss ratio to client (scales from 0 to 1)
    */
-  double Server::getPacketLoss(unsigned int clientID){
+  double Server::getPacketLoss(unsigned int clientID)
+  {
     assert(ClientInformation::findClient(clientID));
     return ClientInformation::findClient(clientID)->getPacketLoss();
   }
@@ -185,7 +202,8 @@ namespace orxonox
   /**
   * takes a new snapshot of the gamestate and sends it to the clients
   */
-  void Server::updateGamestate() {
+  void Server::updateGamestate()
+  {
     if( ClientInformation::getBegin()==NULL )
       //no client connected
       return;
@@ -207,7 +225,8 @@ namespace orxonox
   /**
   * sends the gamestate
   */
-  bool Server::sendGameState() {
+  bool Server::sendGameState()
+  {
 //     COUT(5) << "Server: starting function sendGameState" << std::endl;
 //     ClientInformation *temp = ClientInformation::getBegin();
 //     bool added=false;
@@ -243,7 +262,8 @@ namespace orxonox
     return true;
   }
 
-  bool Server::sendObjectDeletes(){
+  bool Server::sendObjectDeletes()
+  {
     ClientInformation *temp = ClientInformation::getBegin();
     if( temp == NULL )
       //no client connected
@@ -256,7 +276,8 @@ namespace orxonox
     }
 //     COUT(3) << "sending DeleteObjects" << std::endl;
     while(temp != NULL){
-      if( !(temp->getSynched()) ){
+      if( !(temp->getSynched()) )
+      {
         COUT(5) << "Server: not sending gamestate" << std::endl;
         temp=temp->next();
         continue;
@@ -275,12 +296,14 @@ namespace orxonox
   }
 
 
-  void Server::addPeer(ENetEvent *event){
+  void Server::addPeer(ENetEvent *event)
+  {
     static unsigned int newid=1;
 
     COUT(2) << "Server: adding client" << std::endl;
     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
-    if(!temp){
+    if(!temp)
+    {
       COUT(2) << "Server: could not add client" << std::endl;
     }
     temp->setID(newid);
@@ -309,9 +332,11 @@ namespace orxonox
     }
   }
 
-  bool Server::createClient(int clientID){
+  bool Server::createClient(int clientID)
+  {
     ClientInformation *temp = ClientInformation::findClient(clientID);
-    if(!temp){
+    if(!temp)
+    {
       COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
       return false;
     }
@@ -344,25 +369,30 @@ namespace orxonox
     return true;
   }
 
-  void Server::disconnectClient( ClientInformation *client ){
+  void Server::disconnectClient( ClientInformation *client )
+  {
     ServerConnection::disconnectClient( client );
     GamestateManager::removeClient(client);
     // inform all the listeners
     // ClientConnectionListener::broadcastClientDisconnected(client->getID()); // this is done in ClientInformation now
   }
 
-  bool Server::chat(const std::string& message){
+  bool Server::chat(const std::string& message)
+  {
       return this->sendChat(message, Host::getPlayerID());
   }
 
-  bool Server::broadcast(const std::string& message){
+  bool Server::broadcast(const std::string& message)
+  {
       return this->sendChat(message, CLIENTID_UNKNOWN);
   }
 
-  bool Server::sendChat(const std::string& message, unsigned int clientID){
+  bool Server::sendChat(const std::string& message, unsigned int clientID)
+  {
     ClientInformation *temp = ClientInformation::getBegin();
     packet::Chat *chat;
-    while(temp){
+    while(temp)
+    {
       chat = new packet::Chat(message, clientID);
       chat->setClientID(temp->getID());
       if(!chat->send())
@@ -376,7 +406,8 @@ namespace orxonox
     return true;
   }
 
-  void Server::syncClassid(unsigned int clientID) {
+  void Server::syncClassid(unsigned int clientID)
+  {
     int failures=0;
     packet::ClassID *classid = new packet::ClassID();
     classid->setClientID(clientID);

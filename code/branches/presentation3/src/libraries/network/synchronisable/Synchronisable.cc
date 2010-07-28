@@ -53,7 +53,7 @@ namespace orxonox
     RegisterRootObject(Synchronisable);
     static uint32_t idCounter=0;
     objectMode_=0x1; // by default do not send data to server
-    if ( GameMode::isMaster() || ( Host::running() && Host::isServer() ) )
+    if ( GameMode::isMaster()/* || ( Host::running() && Host::isServer() )*/ )
     {
       this->setObjectID( idCounter++ );
     }

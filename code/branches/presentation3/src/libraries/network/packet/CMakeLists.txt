@@ -10,6 +10,7 @@ COMPILATION_BEGIN PacketCompilation.cc
   Packet.cc
   Welcome.cc
 COMPILATION_END
+  ServerInformation.cc
 )
 
 ADD_SOURCE_FILES(NETWORK_HDR_FILES
@@ -22,5 +23,6 @@ ADD_SOURCE_FILES(NETWORK_HDR_FILES
   FunctionIDs.h
   Gamestate.h
   Packet.h
+  ServerInformation.h
   Welcome.h
 )

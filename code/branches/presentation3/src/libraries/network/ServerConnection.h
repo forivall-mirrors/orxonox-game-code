@@ -55,8 +55,8 @@ namespace orxonox
 
     bool openListener();
     bool closeListener();
-    static bool addPacket(ENetPacket *packet, unsigned int ID);
-    static bool addPacketAll(ENetPacket *packet);
+    bool addPacket(ENetPacket *packet, unsigned int ID);
+    bool addPacketAll(ENetPacket *packet);
     virtual void disconnectClient(ClientInformation *client);
     void disconnectClient(int clientID);
   protected:

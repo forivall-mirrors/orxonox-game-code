@@ -49,38 +49,30 @@
 #include "packet/Gamestate.h"
 #include "FunctionCallManager.h"
 #include "core/CoreIncludes.h"
+#include "core/CommandLineParser.h"
 #include "core/Game.h"
+#include "core/ScopedSingletonManager.h"
 
 namespace orxonox
 {
 
+  ManageScopedSingleton( Client, ScopeID::Root, true );
 
   /**
   * Constructor for the Client class
   * initializes the address and the port to default localhost:NETWORK_PORT
   */
   Client::Client():
+      gamestate(0),
       isSynched_(false),
       gameStateFailure_(false),
       timeSinceLastUpdate_(0)
   {
+    this->setDestination( CommandLineParser::getValue("dest").getString(), CommandLineParser::getValue("port") );
   }
 
-  /**
-  * Constructor for the Client class
-  * @param address the server address
-  * @param port port of the application on the server
-  */
-  Client::Client(const std::string& address, int port):
-      isSynched_(false),
-      gameStateFailure_(false),
-      timeSinceLastUpdate_(0)
+  Client::~Client()
   {
-      setPort( port );
-      setServerAddress( address );
-  }
-
-  Client::~Client(){
     if ( ClientConnection::isConnected() )
       closeConnection();
   }
@@ -89,31 +81,53 @@ namespace orxonox
   * Establish the Connection to the Server
   * @return true/false
   */
-  bool Client::establishConnection(){
+  bool Client::establishConnection()
+  {
     Synchronisable::setClient(true);
-    return ClientConnection::establishConnection();
+    this->gamestate = new GamestateClient();
+    if( ClientConnection::establishConnection() )
+    {
+      Host::setActive(true);
+      return true;
+    }
+    else
+      return false;
   }
 
   /**
   * closes the Connection to the Server
   * @return true/false
   */
-  bool Client::closeConnection(){
+  bool Client::closeConnection()
+  {
+    assert(this->gamestate);
+    delete this->gamestate;
+    this->gamestate = 0;
+    Host::setActive(false);
     return ClientConnection::closeConnection();
   }
+  
+  void Client::setDestination(const std::string& serverAddress, unsigned int port)
+  {
+    ClientConnection::setServerAddress(serverAddress);
+    ClientConnection::setPort(port);
+  }
 
-  bool Client::queuePacket(ENetPacket *packet, int clientID){
+  bool Client::queuePacket(ENetPacket *packet, int clientID)
+  {
     bool b = ClientConnection::addPacket(packet);
     assert(b);
     return b;
   }
 
-  bool Client::processChat(const std::string& message, unsigned int playerID){
+  bool Client::processChat(const std::string& message, unsigned int playerID)
+  {
 //    COUT(1) << "Player " << playerID << ": " << message << std::endl;
     return true;
   }
 
-  void Client::printRTT(){
+  void Client::printRTT()
+  {
     COUT(0) << "Round trip time to server is " << ClientConnection::getRTT() << " ms" << endl;
   }
 
@@ -122,7 +136,8 @@ namespace orxonox
    * @param message message to be sent
    * @return result(true/false)
    */
-  bool Client::chat(const std::string& message){
+  bool Client::chat(const std::string& message)
+  {
     packet::Chat *m = new packet::Chat(message, Host::getPlayerID());
     return m->send();
   }
@@ -132,7 +147,8 @@ namespace orxonox
    * Processes incoming packets, sends a gamestate to the server and does the cleanup
    * @param time
    */
-  void Client::update(const Clock& time){
+  void Client::update(const Clock& time)
+  {
     //this steers our network frequency
     timeSinceLastUpdate_+=time.getDeltaTime();
     if(timeSinceLastUpdate_>=NETWORK_PERIOD)
@@ -142,7 +158,7 @@ namespace orxonox
       if ( isConnected() && isSynched_ )
       {
         COUT(4) << "popping partial gamestate: " << std::endl;
-        packet::Gamestate *gs = gamestate.getGamestate();
+        packet::Gamestate *gs = gamestate->getGamestate();
         //assert(gs); <--- there might be the case that no data has to be sent, so its commented out now
         if(gs){
           COUT(4) << "client tick: sending gs " << gs << std::endl;
@@ -156,12 +172,12 @@ namespace orxonox
     sendPackets(); // flush the enet queue
 
     Connection::processQueue();
-    if(gamestate.processGamestates())
+    if(gamestate->processGamestates())
     {
       if(!isSynched_)
         isSynched_=true;
     }
-    gamestate.cleanup();
+    gamestate->cleanup();
     Connection::sendPackets();
 
     return;
@@ -182,5 +198,7 @@ namespace orxonox
     Game::getInstance().popState();
     Game::getInstance().popState();
   }
+
+
 
 }

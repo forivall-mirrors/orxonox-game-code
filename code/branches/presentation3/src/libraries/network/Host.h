@@ -32,6 +32,8 @@
 #include "NetworkPrereqs.h"
 #include "core/CorePrereqs.h"
 
+#include <vector>
+
 namespace orxonox {
 
   const unsigned int CLIENTID_SERVER = 0;
@@ -62,26 +64,31 @@ class _NetworkExport Host{
   protected:
     Host();
     virtual ~Host();
-    static Host *instance_;
-    unsigned int clientID_;
-    unsigned int shipID_;
+    void setActive( bool bActive ){ bIsActive_ = bActive; }
+//     static Host *instance_;
 
   public:
-    static bool running(){return instance_!=0;}
+//     static Host* getInstance(){ return instance_; }
+    static bool running(){ return instances_s.size(); }
     static bool addPacket(ENetPacket *packet, int clientID=0);
     //static bool chat(std::string& message);
 //     static bool receiveChat(packet::Chat *message, unsigned int clientID);
-    static unsigned int getPlayerID();
-    static unsigned int getShipID(){return instance_->shipID_;}
-    static void setClientID(unsigned int id){ instance_->clientID_ = id; }
-    static void setShipID(unsigned int id){ instance_->shipID_ = id; }
-    static bool isServer(){ return instance_->isServer_(); }
+    static unsigned int getPlayerID(){ return clientID_s; }
+    static unsigned int getShipID(){return shipID_s;}
+    static void setClientID(unsigned int id){ clientID_s = id; }
+    static void setShipID(unsigned int id){ shipID_s = id; }
+    static bool isServer();
     static bool Chat(const std::string& message);
     static bool Broadcast(const std::string& message);
     static bool incomingChat(const std::string& message, unsigned int playerID);
     virtual void printRTT()=0;
+    bool isActive(){ return bIsActive_; }
   private:
     ConsoleCommand* printRTTCC_;
+    static uint32_t clientID_s;
+    static uint32_t shipID_s;
+    static std::vector<Host*> instances_s;
+    bool bIsActive_;
 };
 
 }

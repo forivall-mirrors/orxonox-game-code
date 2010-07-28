@@ -52,6 +52,35 @@ namespace orxonox{
     /** @brief checks whether the variable of type T is the same as in the bytestream */
     template <class T> inline bool checkEquality( const T& variable, uint8_t* mem );
 
+  
+  // =========== char*
+    
+  inline uint32_t returnSize( char*& variable )
+  {
+    return strlen(variable)+1;
+  }
+      
+  inline void saveAndIncrease( char*& variable, uint8_t*& mem )
+  {
+    strcpy((char*)mem, variable);
+    mem += returnSize(variable);
+  }
+        
+  inline void loadAndIncrease( char*& variable, uint8_t*& mem )
+  {
+    if( variable )
+      delete variable;
+    uint32_t len = strlen((char*)mem)+1;
+    variable = new char[len];
+    strcpy((char*)variable, (char*)mem);
+    mem += len;
+  }
+          
+  inline bool checkEquality( char*& variable, uint8_t* mem )
+  {
+    return strcmp(variable, (char*)mem)==0;
+  }
+    
 // =================== Template specialisation stuff =============
 
 // =========== bool
@@ -393,7 +422,7 @@ namespace orxonox{
         double temp = static_cast<double>(variable);
         return memcmp(&temp, mem, sizeof(uint64_t))==0;
     }
-
+        
 // =========== string
 
     template <> inline uint32_t returnSize( const std::string& variable )

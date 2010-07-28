@@ -35,19 +35,19 @@
 
 namespace orxonox
 {
-  Connection *Connection::instance_=0;
+//   Connection *Connection::instance_=0;
 
   Connection::Connection():
     host_(0)
   {
-    assert(instance_==0);
-    Connection::instance_=this;
+//     assert(instance_==0);
+//     Connection::instance_=this;
     enet_initialize();
     atexit(enet_deinitialize);
   }
 
   Connection::~Connection(){
-    Connection::instance_=0;
+//     Connection::instance_=0;
   }
 
   int Connection::service(ENetEvent* event) {
@@ -66,7 +66,7 @@ namespace orxonox
   }
 
   bool Connection::sendPackets() {
-    if ( !Connection::instance_ || this->host_==NULL )
+    if ( /*!Connection::instance_ || */this->host_==NULL )
       return false;
     enet_host_flush(this->host_);
     return true;

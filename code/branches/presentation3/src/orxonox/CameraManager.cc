@@ -67,6 +67,7 @@ namespace orxonox
 
     void CameraManager::requestFocus(Camera* camera)
     {
+      COUT(0) << "bliub" << endl;
         // notify old camera (if it exists)
         if (!this->cameraList_.empty())
             this->cameraList_.front()->removeFocus();
