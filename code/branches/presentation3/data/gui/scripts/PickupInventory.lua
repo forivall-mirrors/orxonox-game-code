@@ -53,9 +53,15 @@ function P.update()
                     if pickup:isUsed() == true then
                         useButton:setText("unuse")
                         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseDetailButton_clicked")
+                        if pickup:isUsable() == false then
+                            useButton:setEnabled(false)
+                        end
                     else
                         useButton:setText("use")
                         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseDetailButton_clicked")
+                        if pickup:isUnusable() == false then
+                            useButton:setEnabled(false)
+                        end
                     end
 
                     if pickup:isPickedUp() == false then
@@ -129,9 +135,15 @@ function P.createPickupEntry(index, pickup)
     if pickup:isUsed() == false then
         useButton:setText("use")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseButton_clicked")
+        if pickup:isUsable() == false then
+            useButton:setEnabled(false)
+        end
     else
         useButton:setText("unuse")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseButton_clicked")
+        if pickup:isUnusable() == false then
+            useButton:setEnabled(false)
+        end
     end
     item:addChildWindow(useButton)
 
@@ -228,9 +240,15 @@ function P.createDetailsWindow(pickupIndex)
     if pickup:isUsed() == false then
         useButton:setText("use")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseDetailButton_clicked")
+        if pickup:isUsable() == false then
+            useButton:setEnabled(false)
+        end
     else
         useButton:setText("unuse")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseDetailButton_clicked")
+        if pickup:isUnusable() == false then
+            useButton:setEnabled(false)
+        end
     end
     wrapper:addChildWindow(useButton)
     

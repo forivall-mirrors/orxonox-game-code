@@ -135,6 +135,18 @@
       </pickup>
     </PickupSpawner>
 
+    <PickupSpawner position="25,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+      <pickup>
+        <MetaPickup metaType="destroy" />
+      </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="50,75,-125" triggerDistance="10" respawnTime="5" maxSpawnedItems="10">
+      <pickup>
+        <MetaPickup metaType="destroyCarrier" />
+      </pickup>
+    </PickupSpawner>
+
     <!-- Pickup Collection pickups -->
 
     <PickupSpawner position="-50,25,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
@@ -161,13 +173,13 @@
       inventoryRepresentation = "MediumHealth"
     >
       <pickup>
-        <HealthPickup health=50 activationType="onUse" durationType="once" />
+        <HealthPickup health=500 activationType=immediate healthRate=10 durationType=continuous />
       </pickup>
     </PickupRepresentation>
 
     <PickupSpawner position="-50,0,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
       <pickup>
-        <HealthPickup health=50 activationType=onUse durationType=once />
+        <HealthPickup health=500 activationType=immediate healthRate=10 durationType=continuous />
       </pickup>
     </PickupSpawner>
 

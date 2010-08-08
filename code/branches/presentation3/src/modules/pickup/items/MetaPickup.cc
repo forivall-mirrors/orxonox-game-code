@@ -33,6 +33,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "worldentities/pawns/Pawn.h"
 #include "interfaces/PickupCarrier.h"
 #include "pickup/PickupIdentifier.h"
 
@@ -46,6 +47,8 @@ namespace orxonox {
     /*static*/ const std::string MetaPickup::metaTypeNone_s = "none";
     /*static*/ const std::string MetaPickup::metaTypeUse_s = "use";
     /*static*/ const std::string MetaPickup::metaTypeDrop_s = "drop";
+    /*static*/ const std::string MetaPickup::metaTypeDestroy_s = "destroy";
+    /*static*/ const std::string MetaPickup::metaTypeDestroyCarrier_s = "destroyCarrier";
 
     /**
     @brief
@@ -119,8 +122,14 @@ namespace orxonox {
             PickupCarrier* carrier = this->getCarrier();
             if(this->getMetaTypeDirect() != pickupMetaType::none && carrier != NULL)
             {
+                if(this->getMetaTypeDirect() == pickupMetaType::destroyCarrier)
+                {
+                    Pawn* pawn = orxonox_cast<Pawn*>(carrier);
+                    pawn->kill();
+                    return;
+                }
                 std::set<Pickupable*> pickups = carrier->getPickups();
-                //! Set all Pickupables carried by the PickupCarrier either to used or drop them, depending o the meta type.
+                //! Set all Pickupables carried by the PickupCarrier either to used or drop them, depending on the meta type.
                 for(std::set<Pickupable*>::iterator it = pickups.begin(); it != pickups.end(); it++)
                 {
                     Pickup* pickup = dynamic_cast<Pickup*>(*it);
@@ -135,12 +144,19 @@ namespace orxonox {
                     {
                         if(pickup != NULL && pickup != this)
                         {
-                            pickup->drop(carrier);
+                            pickup->drop();
+                        }
+                    }
+                    if(this->getMetaTypeDirect() == pickupMetaType::destroy)
+                    {
+                        if(pickup != NULL && pickup != this)
+                        {
+                            pickup->Pickupable::destroy();
                         }
                     }
                 }
             }
-            this->destroy();
+            this->Pickupable::destroy();
         }
     }
 
@@ -179,6 +195,10 @@ namespace orxonox {
                 return MetaPickup::metaTypeUse_s;
             case pickupMetaType::drop:
                 return MetaPickup::metaTypeDrop_s;
+            case pickupMetaType::destroy:
+                return MetaPickup::metaTypeDestroy_s;
+            case pickupMetaType::destroyCarrier:
+                return MetaPickup::metaTypeDestroyCarrier_s;
             default:
                 return BLANKSTRING;
         }
@@ -204,6 +224,16 @@ namespace orxonox {
         {
             this->setMetaTypeDirect(pickupMetaType::drop);
         }
+        else if(type == MetaPickup::metaTypeDestroy_s)
+        {
+            this->setMetaTypeDirect(pickupMetaType::destroy);
+        }
+        else if(type == MetaPickup::metaTypeDestroyCarrier_s)
+        {
+            this->setMetaTypeDirect(pickupMetaType::destroyCarrier);
+        }
+        else
+            COUT(2) << "Invalid metaType '" << type << "' in MetaPickup." << std::endl;
     }
 
 }

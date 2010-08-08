@@ -104,7 +104,7 @@ namespace orxonox
             return this->parameters_.size()-identifier->parameters_.size();
         }
 
-        //! We iterate through all parameters and compar their values (which are strings). The first parameter is the most significant. The ordering is once again established by the alphabetical comparison of the two value strings.
+        //! We iterate through all parameters and compare their values (which are strings). The first parameter is the most significant. The ordering is once again established by the alphabetical comparison of the two value strings.
         for(std::map<std::string, std::string>::const_iterator it = this->parameters_.begin(); it != this->parameters_.end(); it++)
         {
             //!< If a parameter present in one of the identifiers is not found in the other, once again, something is very wrong.

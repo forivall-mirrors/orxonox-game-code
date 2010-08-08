@@ -63,7 +63,6 @@ namespace orxonox
 
         this->boostBlur_ = 0;
 
-        this->setCarrierName("Engine");
         this->speedAdd_ = 0.0;
         this->speedMultiply_ = 1.0;
 

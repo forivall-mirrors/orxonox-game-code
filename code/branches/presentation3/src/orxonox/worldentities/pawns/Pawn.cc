@@ -82,8 +82,6 @@ namespace orxonox
         else
             this->weaponSystem_ = 0;
 
-        this->setCarrierName("Pawn");
-
         this->setRadarObjectColour(ColourValue::Red);
         this->setRadarObjectShape(RadarViewable::Dot);
 

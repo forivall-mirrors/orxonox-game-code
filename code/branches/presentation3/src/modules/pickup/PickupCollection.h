@@ -36,8 +36,8 @@
 
 #include "PickupPrereqs.h"
 
-#include "interfaces/Pickupable.h"
 #include "core/BaseObject.h"
+#include "CollectiblePickup.h"
 
 #include <list>
 
@@ -46,15 +46,14 @@ namespace orxonox
 
     /**
     @brief
-        The PickupCollection combines different Pickupables to a coherent, single pickup and makes the seem (from the outside looking in) just as if they were just one Pickupable.
+        The PickupCollection combines different Pickupables to a coherent, single pickup and makes them seem (from the outside looking in) just as if they were just one Pickupable.
     @author
         Damian 'Mozork' Frick
     */
-    class _PickupExport PickupCollection : public Pickupable, public BaseObject
+    class _PickupExport PickupCollection : public CollectiblePickup, public BaseObject
     {
 
         public:
-
             PickupCollection(BaseObject* creator); //!< Default Constructor.
             virtual ~PickupCollection(); //!< Destructor.
 
@@ -70,8 +69,12 @@ namespace orxonox
 
             virtual const PickupIdentifier* getPickupIdentifier(void); //!< Get the PickupIdentifier of this PickupCollection.
 
-            bool addPickupable(Pickupable* pickup); //!< Add the input Pickupable to list of Pickupables combined by this PickupCollection.
+            bool addPickupable(CollectiblePickup* pickup); //!< Add the input Pickupable to list of Pickupables combined by this PickupCollection.
             const Pickupable* getPickupable(unsigned int index); //!< Get the Pickupable at the given index.
+
+            void pickupChangedUsed(bool changed); //!< Informs the PickupCollection, that one of its pickups has changed its used status to the input value.
+            void pickupChangedPickedUp(bool changed); //!< Informs the PickupCollection, that one of its pickups has changed its picked up status to the input value.
+            void pickupDisabled(void); //!< Informs the PickupCollection, that one of its pickups has been disabled.
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier for this pickup.
@@ -81,8 +84,17 @@ namespace orxonox
             PickupCollectionIdentifier* pickupCollectionIdentifier_; //!< The PickupCollectionIdentifier of this PickupCollection. Is used to distinguish different PickupCollections amongst themselves.
 
         private:
+            void changedUsedAction(void); //!< Helper method.
+            void changedPickedUpAction(void); //!< Helper method.
+            
+            std::vector<CollectiblePickup*> pickups_; //!< The list of the pointers of all the Pickupables this PickupCollection consists of. They are weak pointers to facilitate testing, whether the pointers are still valid.
 
-            std::vector<WeakPtr<Pickupable> > pickups_; //!< The list of the pointers of all the Pickupables this PickupCollection consists of. They are weak pointers to facilitate testing, whether the pointers are still valid.
+            unsigned int usedCounter_; //!< Keeps track of the number of pickups of this PickupCollection, that are in use.
+            unsigned int pickedUpCounter_; //!< Keeps track of the number of pickups of this PickupCollection, that are picked up.
+            unsigned int disabledCounter_; //!< Keeps track of the number of pickups of this PickupCollection, that are disabled.
+
+            bool processingUsed_; //!< Boolean to ensure, that the PickupCollection doesn't update its used status while its internal state is inconsistent.
+            bool processingPickedUp_; //!< Boolean to ensure, that the PickupCollection doesn't update its picked upp status while its internal state is inconsistent.
 
     };
 

@@ -142,7 +142,7 @@ namespace orxonox
         {
             Pawn* pawn = this->carrierToPawnHelper();
             if(pawn == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
-                this->destroy();
+                this->Pickupable::destroy();
 
             //! Calculate the health that is added this tick.
             float health = dt*this->getHealthRate();
@@ -190,7 +190,7 @@ namespace orxonox
         SUPER(HealthPickup, changedUsed);
 
         //! If the pickup is not picked up nothing must be done.
-        if(!this->isPickedUp())
+        if(!this->isPickedUp()) //TODO: Needed?
             return;
 
         //! If the pickup has transited to used.
@@ -200,7 +200,7 @@ namespace orxonox
             {
                 Pawn* pawn = this->carrierToPawnHelper();
                 if(pawn == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
-                    this->destroy();
+                    this->Pickupable::destroy();
 
                 float health = 0;
                 switch(this->getHealthTypeDirect())
@@ -240,7 +240,7 @@ namespace orxonox
                 if(pawn == NULL)
                 {
                     COUT(1) << "Something went horribly wrong in Health Pickup. PickupCarrier is no Pawn." << std::endl;
-                    this->destroy();
+                    this->Pickupable::destroy();
                     return;
                 }
 
@@ -255,7 +255,7 @@ namespace orxonox
             //! If either the pickup can only be used once or it is continuous and used up, it is destroyed upon setting it to unused.
             if(this->isOnce() || (this->isContinuous() && this->getHealth() == 0))
             {
-                this->destroy();
+                this->Pickupable::destroy();
             }
         }
     }

@@ -47,13 +47,19 @@ namespace orxonox {
         {
             none,
             use,
-            drop
+            drop,
+            destroy,
+            destroyCarrier
         };
     }
 
     /**
     @brief
-        The MetaPickup is a pickup that can, depending on the parameters, either drop all pickups of the PickupCarrier that picks it up, or use all the unused pickups of the PickupCarrier, that picks it up. The parameter to set for this is the metaType and it can be used with the values 'none', 'drop' and 'use'.
+        The MetaPickup is a pickup that can, depending on the parameter 'metaType', do different things. If the 'metaType' is set to
+        1) 'use', all the pickups, the PickupCarrier has, are immediately set to used upon pickup of the MetaPickup.
+        2) 'drop', all the pickups, the PickupCarrier has, are immediately dropped upon pickup of the MetaPickup.
+        3) 'destroy', all the pickups, the PickupCarrier has, are immediately destroyed upon pickup of the MetaPickup.
+        4) 'destroyCarrier', the PickupCarrier is immediately destroyed upon pickup of the MetaPickup.
     @author
         Damian 'Mozork' Frick
     */
@@ -97,6 +103,8 @@ namespace orxonox {
             static const std::string metaTypeNone_s;
             static const std::string metaTypeUse_s;
             static const std::string metaTypeDrop_s;
+            static const std::string metaTypeDestroy_s;
+            static const std::string metaTypeDestroyCarrier_s;
 
 
     };

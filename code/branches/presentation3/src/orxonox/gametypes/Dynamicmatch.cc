@@ -101,7 +101,8 @@ namespace orxonox
     }
 
     bool Dynamicmatch::allowPawnDamage(Pawn* victim, Pawn* originator)
-    { //TODO: static and fading message for the "human" player's
+    {
+        //TODO: static and fading message for the "human" player's
         if (!originator||!victim)
             return false;
         if (!originator->getPlayer()||!victim->getPlayer())

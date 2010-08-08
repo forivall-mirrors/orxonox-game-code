@@ -135,7 +135,7 @@ namespace orxonox
 
         Engine* engine = this->carrierToEngineHelper();
         if(engine == NULL) //!< If the PickupCarrier is no Engine, then this pickup is useless and therefore is destroyed.
-            this->destroy();
+            this->Pickupable::destroy();
 
         //! If the pickup has transited to used.
         if(this->isUsed())
@@ -160,7 +160,7 @@ namespace orxonox
             {
                 if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
                 {
-                    this->destroy();
+                    this->Pickupable::destroy();
                 }
                 else
                 {

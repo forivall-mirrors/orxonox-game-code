@@ -57,6 +57,8 @@ namespace orxonox
         this->carrier_ = NULL;
 
         this->pickupIdentifier_ = new PickupIdentifier(this);
+        this->beingDestroyed_ = false;
+        this->enabled_ = true;
     }
 
     /**
@@ -65,16 +67,43 @@ namespace orxonox
     */
     Pickupable::~Pickupable()
     {
-        if(this->isUsed())
-            this->setUsed(false);
-
-        if(this->isPickedUp())
-        {
-            this->drop(false);
-        }
-
+        COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") destroyed." << std::endl;
         if(this->pickupIdentifier_ != NULL)
             this->pickupIdentifier_->destroy();
+    }
+
+    /**
+    @brief
+        A method that is called by OrxonoxClass::destroy() before the object is actually destroyed.
+    */
+    void Pickupable::preDestroy(void)
+    {
+        this->beingDestroyed_ = true;
+
+        if(this->isPickedUp())
+            this->drop(false); // Drops the pickup without creating a PickupSpawner.
+    }
+
+    /**
+    @brief
+        Is called internally within the pickup module to destroy pickups.
+    */
+    void Pickupable::destroy(void)
+    {
+        this->destroyPickup();
+    }
+
+    /**
+    @brief
+        Destroys a Pickupable.
+        If the Pickupable is already in the process of being destroyed a warning is displayed and this method is skipped.
+    */
+    void Pickupable::destroyPickup(void)
+    {
+        if(!this->beingDestroyed_)
+            this->OrxonoxClass::destroy();
+        else
+            COUT(2) << this->getIdentifier()->getName() << " may be unsafe. " << std::endl;
     }
 
     /**
@@ -87,7 +116,10 @@ namespace orxonox
     */
     bool Pickupable::setUsed(bool used)
     {
-        if(this->used_ == used)
+        if(this->used_ == used || !this->isPickedUp()) // If either the used status of the Pickupable doesn't change or it isn't picked up.
+            return false;
+
+        if((!this->isUsable() && used) || (!this->isUnusable() && !used)) // If either the Pickupable is requested to be used but it is not usable or the Pickupable is requested to be unused, while it is not unusable.
             return false;
 
         COUT(4) << "Pickupable (&" << this << ") set to used " << used << "." << std::endl;
@@ -111,6 +143,7 @@ namespace orxonox
     {
         if(carrier == NULL)
             return false;
+
         return this->isTarget(carrier->getIdentifier());
     }
 
@@ -130,6 +163,7 @@ namespace orxonox
             if(identifier->isA(*it))
                 return true;
         }
+
         return false;
     }
 
@@ -177,15 +211,14 @@ namespace orxonox
         if(carrier == NULL || this->isPickedUp()) //!< If carrier is NULL or the Pickupable is already picked up.
             return false;
 
-        if(!carrier->addPickup(this))
+        if(!this->setCarrier(carrier))
         {
             COUT(3) << "A Pickupable (&" << this << ") was trying to be added to a PickupCarrier, but was already present." << std::endl;
             return false;
         }
-
-        COUT(4) << "Pickupable (&" << this << ") got picked up by a PickupCarrier (&" << carrier << ")." << std::endl;
-        this->setCarrier(carrier);
+        
         this->setPickedUp(true);
+        COUT(4) << "Pickupable (&" << this << ") got picked up by a PickupCarrier (&" << carrier << ")." << std::endl;
         return true;
     }
 
@@ -193,19 +226,19 @@ namespace orxonox
     @brief
         Can be called to drop a Pickupable.
     @param createSpawner
-        If true a spawner is be created for the dropped Pickupable. True is default.
+        If true a spawner is to be created for the dropped Pickupable. True is default.
     @return
         Returns true if the Pickupable has been dropped, false if not.
     */
     bool Pickupable::drop(bool createSpawner)
     {
-        if(!this->isPickedUp()) //!< If the Pickupable is not picked up.
+        if(!this->isPickedUp()) // If the Pickupable is not picked up.
             return false;
 
-        assert(this->getCarrier()); //!> The Carrier cannot be NULL at this point. //TODO: Too conservative?
+        assert(this->getCarrier()); // The Carrier cannot be NULL at this point.
         if(!this->getCarrier()->removePickup(this)) //TODO Shouldn't this be a little later?
-            COUT(2) << "Pickupable (&" << this << ") is being dropped, but it was not present in the PickupCarriers list of pickups." << std::endl;
-        
+            COUT(2) << "Pickupable (&" << this << ", " << this->getIdentifier()->getName() << ") is being dropped, but it was not present in the PickupCarriers list of pickups." << std::endl;
+
         COUT(4) << "Pickupable (&" << this << ") got dropped up by a PickupCarrier (&" << this->getCarrier() << ")." << std::endl;
         this->setUsed(false);
         this->setPickedUp(false);
@@ -216,10 +249,8 @@ namespace orxonox
 
         this->setCarrier(NULL);
 
-        if(!created && createSpawner)
-        {
+        if(!created && createSpawner) // If a PickupSpawner should have been created but wasn't.
             this->destroy();
-        }
 
         return true;
     }
@@ -234,12 +265,14 @@ namespace orxonox
     */
     bool Pickupable::setPickedUp(bool pickedUp)
     {
-        if(this->pickedUp_ == pickedUp)
+        if(this->pickedUp_ == pickedUp) // If the picked up status has not changed.
             return false;
 
         COUT(4) << "Pickupable (&" << this << ") set to pickedUp " << pickedUp << "." << std::endl;
 
         this->pickedUp_ = pickedUp;
+        if(!pickedUp) // if the Pickupable has been dropped it unregisters itself with its PickupCarrier.
+            this->getCarrier()->removePickup(this);
         this->changedPickedUp();
         GUIManager::getInstance().getLuaState()->doString("PickupInventory.update()");
         return true;
@@ -250,19 +283,36 @@ namespace orxonox
         Sets the carrier of the Pickupable.
     @param carrier
         Sets the input PickupCarrier as the carrier of the pickup.
+    @param tell
+        If true (default) the pickup is added to the list of pickups in the PickupCarrier.
+    @return
+        Returns true if successful, false if not.
     */
-    inline bool Pickupable::setCarrier(PickupCarrier* carrier, bool tell)
+    bool Pickupable::setCarrier(orxonox::PickupCarrier* carrier, bool tell)
     {
-        if(this->carrier_ == carrier)
+        if(this->carrier_ == carrier) // If the PickupCarrier doesn't change.
             return false;
 
         COUT(4) << "Pickupable (&" << this << ") changed Carrier (& " << carrier << ")." << std::endl;
 
+        if(carrier != NULL && tell)
+        {
+            if(!carrier->addPickup(this))
+                return false;
+        }
+        
         this->carrier_ = carrier;
         this->changedCarrier();
-        if(tell && carrier != NULL)
-            this->carrier_->pickups_.insert(this);
         return true;
+    }
+
+    /**
+    @brief
+        Is called by the PickupCarrier when it is being destroyed.
+    */
+    void Pickupable::carrierDestroyed(void)
+    {
+        this->destroy();
     }
 
     /**

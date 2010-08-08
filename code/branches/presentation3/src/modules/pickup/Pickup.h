@@ -39,7 +39,7 @@
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
 
-#include "interfaces/Pickupable.h"
+#include "CollectiblePickup.h"
 
 #include "tools/Timer.h"
 
@@ -73,7 +73,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _PickupExport Pickup : public Pickupable, public BaseObject
+    class _PickupExport Pickup : public CollectiblePickup, public BaseObject
     {
 
         public:

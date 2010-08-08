@@ -66,21 +66,21 @@ namespace orxonox
     */
     int PickupCollectionIdentifier::compare(const PickupIdentifier* identifier) const
     {
-        //! Slight un-niceity to cast the PickupIdentifier to a PickupCollectionIdentifier.
+        // Slight un-niceity to cast the PickupIdentifier to a PickupCollectionIdentifier.
         PickupIdentifier* temp = const_cast<PickupIdentifier*>(identifier);
         const PickupCollectionIdentifier* collectionIdentifier = dynamic_cast<PickupCollectionIdentifier*>(temp);
 
-        //! If the input PickupIdentifier 'identifier' is no PickupCollectionIdentifier then just the two PickupIdentifiers are compared.
+        // If the input PickupIdentifier 'identifier' is no PickupCollectionIdentifier then just the two PickupIdentifiers are compared.
         if(collectionIdentifier == NULL)
         {
             return this->PickupIdentifier::compare(identifier);
         }
 
-        //! If the number of Pickupables each of the two PickupCollectionIdentifiers contain differ, the one with less is considered smaller.
+        // If the number of Pickupables each of the two PickupCollectionIdentifiers contain differ, the one with less is considered smaller.
         if(this->identifiers_.size() != collectionIdentifier->identifiers_.size())
             return this->identifiers_.size()-collectionIdentifier->identifiers_.size();
 
-        //! Compare the Pickupables of the two PickupCollectionIdentifiers one after the other. the one with the first 'smaller' one is considered smaller.
+        // Compare the Pickupables of the two PickupCollectionIdentifiers one after the other. the one with the first 'smaller' one is considered smaller.
         std::set<const PickupIdentifier*, PickupIdentifierCompare>::const_iterator it2 = collectionIdentifier->identifiers_.begin();
         for(std::set<const PickupIdentifier*, PickupIdentifierCompare>::const_iterator it = this->identifiers_.begin(); it != this->identifiers_.end(); it++)
         {

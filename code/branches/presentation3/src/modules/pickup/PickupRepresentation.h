@@ -148,7 +148,7 @@ namespace orxonox // tolua_export
             std::string description_; //!< The description of the Pickupable represented by this PickupRepresentation.
             std::string spawnerTemplate_; //!<  The name of the template of this PickupRepresentation.
             StaticEntity* spawnerRepresentation_; //!< The spawnerRepresentation of this PickupRepresentation.
-            std::string inventoryRepresentation_; //!< The name of an image representing the pickup in the PickupInventory. TODO: Exact format and placement of image?
+            std::string inventoryRepresentation_; //!< The name of an image representing the pickup in the PickupInventory.
 
             Pickupable* pickup_; //!< The Pickupable that is represented by this PickupRepresentation.
 

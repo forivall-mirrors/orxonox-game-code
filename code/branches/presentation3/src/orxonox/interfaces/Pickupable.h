@@ -94,8 +94,28 @@ namespace orxonox // tolua_export
             */
             virtual void changedPickedUp(void) {}
 
-            bool pickup(PickupCarrier* carrier);
-            bool drop(bool createSpawner = true);
+            /**
+            @brief Returns whether the Pickupable can be used.
+            @return Returns true if it can be used.
+            */
+            inline bool isUsable(void) { return this->enabled_; } // tolua_export
+            
+            /**
+            @brief Returns whether the Pickupable can be unused.
+            @return Returns true if it can be unused.
+            */
+            inline bool isUnusable(void) { return this->enabled_; } // tolua_export
+
+            /**
+            @brief Returns whether the Pickupable is enabled.
+                   Once a Pickupable is disabled it cannot be enabled again. A Pickupable that is disabled can neither be used nor unused.
+            @return Returns true if the Pickupable is enabled.
+            */
+            inline bool isEnabled(void)
+                { return this->enabled_; }
+
+            bool pickup(PickupCarrier* carrier); //!< Can be called to pick up a Pickupable.
+            bool drop(bool createSpawner = true); //!< Can be called to drop a Pickupable.
 
             virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this pickup.
             bool isTarget(const Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this Pickupable.
@@ -114,13 +134,28 @@ namespace orxonox // tolua_export
 
             bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
             bool setPickedUp(bool pickedUp); //!< Helper method to set the Pickupable to either picked up or not picked up.
-            bool setCarrier(PickupCarrier* carrier, bool tell = false); //!< Sets the carrier of the pickup.
+            //TODO: private?
+            bool setCarrier(PickupCarrier* carrier, bool tell = true); //!< Sets the carrier of the pickup.
+
+            //TODO: private?
+            virtual void carrierDestroyed(void); //!< Is called by the PickupCarrier when it is being destroyed.
+
+            void destroy(void); //!< Is called internally within the pickup module to destroy pickups.
 
         protected:
             /**
             @brief Helper method to initialize the PickupIdentifier.
             */
             void initializeIdentifier(void) {}
+
+            virtual void preDestroy(void); //!< A method that is called by OrxonoxClass::destroy() before the object is actually destroyed.
+            virtual void destroyPickup(void); //!< Destroys a Pickupable.
+
+            /**
+            @brief Sets the Pickuapble to disabled.
+            */
+            inline void setDisabled(void)
+                { this->enabled_ = false; }
 
             /**
             @brief Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
@@ -135,11 +170,15 @@ namespace orxonox // tolua_export
 
         private:
 
-            bool used_; //!< Whether the pickup is currently in use or not.
-            bool pickedUp_; //!< Whether the pickup is currently picked up or not.
+            bool used_; //!< Whether the Pickupable is currently in use or not.
+            bool pickedUp_; //!< Whether the Pickupable is currently picked up or not.
 
-            PickupCarrier* carrier_; //!< The carrier of the pickup.
-            std::list<Identifier*> targets_; //!< The possible targets of this pickup.
+            bool enabled_; //!< Whether the Pickupable is enabled or not.
+
+            PickupCarrier* carrier_; //!< The PickupCarrier of the Pickupable.
+            std::list<Identifier*> targets_; //!< The possible targets of this Pickupable.
+
+            bool beingDestroyed_; //!< Is true if the Pickupable is in the process of being destroyed.
 
         // For implementing the Rewardable interface:
         public:

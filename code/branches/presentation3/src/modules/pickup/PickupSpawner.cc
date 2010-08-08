@@ -106,6 +106,7 @@ namespace orxonox
         this->respawnTime_ = 0;
         this->maxSpawnedItems_ = INF;
         this->spawnsRemaining_ = INF;
+        this->selfDestruct_ = false;
     }
 
     /**
@@ -114,7 +115,7 @@ namespace orxonox
     */
     PickupSpawner::~PickupSpawner()
     {
-        if(this->pickup_ != NULL)
+        if(this->selfDestruct_ && this->pickup_ != NULL)
             this->pickup_->destroy();
     }
 
@@ -175,7 +176,7 @@ namespace orxonox
         //! If the PickupSpawner is active.
         if (this->isActive())
         {
-            SmartPtr<PickupSpawner> temp = this; // create a smart pointer to keep the PickupSpawner alive until we iterated through all Pawns (in case a Pawn takes the last pickup)
+            SmartPtr<PickupSpawner> temp = this; //Create a smart pointer to keep the PickupSpawner alive until we iterated through all Pawns (in case a Pawn takes the last pickup)
 
             //! Iterate trough all Pawns.
             for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
@@ -304,11 +305,10 @@ namespace orxonox
             if(target != NULL && pickup != NULL)
             {
                 if(pickup->pickup(target))
-                {
                     this->decrementSpawnsRemaining();
-                }
                 else
                 {
+                    this->selfDestruct_ = true;
                     pickup->destroy();
                 }
             }
@@ -318,11 +318,10 @@ namespace orxonox
                     COUT(1) << "PickupSpawner (&" << this << "): Pickupable has no target." << std::endl;
 
                 if(pickup == NULL)
-                {
                     COUT(1) << "PickupSpawner (&" << this << "): getPickup produced an error, no Pickupable created." << std::endl;
-                }
                 else
                 {
+                    this->selfDestruct_ = true;
                     pickup->destroy();
                 }
             }

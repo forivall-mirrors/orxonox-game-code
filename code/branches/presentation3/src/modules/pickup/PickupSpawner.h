@@ -124,6 +124,8 @@ namespace orxonox
             float respawnTime_; //!< Time after which this gets re-actived.
             Timer respawnTimer_; //!< Timer used for re-activating.
 
+            bool selfDestruct_; //!< True if the PickupSpawner is selfdestructing.
+
             static const int INF = -1; //!< Constant for infinity.
     };
 }

@@ -42,6 +42,7 @@
 #include "interfaces/PickupCarrier.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
+#include "CollectiblePickup.h"
 #include "PickupRepresentation.h"
 
 #include "ToluaBindPickup.h"
@@ -63,6 +64,7 @@ namespace orxonox
     {
         RegisterRootObject(PickupManager);
 
+        //TODO: This doesn't work, yet.
         if( GameMode::showsGraphics() )
         {
             GUIManager::getInstance().loadGUI(PickupManager::guiName_s);
@@ -171,7 +173,9 @@ namespace orxonox
             std::set<Pickupable*> pickups = (*it)->getPickups();
             for(std::set<Pickupable*>::iterator pickup = pickups.begin(); pickup != pickups.end(); pickup++)
             {
-                this->pickupsList_.insert(std::pair<Pickupable*, WeakPtr<Pickupable> >(*pickup, WeakPtr<Pickupable>(*pickup)));
+                CollectiblePickup* collectible = orxonox_cast<CollectiblePickup*>(*pickup);
+                if(collectible == NULL || !collectible->isInCollection())
+                    this->pickupsList_.insert(std::pair<Pickupable*, WeakPtr<Pickupable> >(*pickup, WeakPtr<Pickupable>(*pickup)));
             }
         }
         delete carriers;

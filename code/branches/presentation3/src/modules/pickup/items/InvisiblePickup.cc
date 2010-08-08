@@ -132,7 +132,7 @@ namespace orxonox
 
             if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
             {
-                this->destroy();
+                this->Pickupable::destroy();
             }
             else
             {

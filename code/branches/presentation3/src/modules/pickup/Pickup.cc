@@ -193,7 +193,7 @@ namespace orxonox
         SUPER(Pickup, changedPickedUp);
 
         //! Sets the Pickup to used if the Pickup has activation type 'immediate' and gets picked up.
-        if(this->getCarrier() != NULL && this->isPickedUp() && this->isImmediate())
+        if(this->isPickedUp() && this->isImmediate())
         {
             this->setUsed(true);
         }

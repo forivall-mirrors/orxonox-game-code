@@ -130,7 +130,7 @@ namespace orxonox
 
                 Pawn* pawn = this->carrierToPawnHelper();
                 if(pawn == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
-                    this->destroy();
+                    this->Pickupable::destroy();
 
                 //Attach to pawn
                 Drone* drone = new Drone(pawn->getCreator()); // this is neccessary because the projectiles fired need a valid creator for the particlespawner (when colliding against something)
@@ -154,7 +154,7 @@ namespace orxonox
             //! If either the pickup can only be used once or it is continuous and used up, it is destroyed upon setting it to unused.
             if(this->isOnce() || (this->isContinuous() ))
             {
-                this->destroy();
+                this->Pickupable::destroy();
             }
         }
     }

@@ -154,7 +154,7 @@ namespace orxonox
 
         Pawn* pawn = this->carrierToPawnHelper();
         if(pawn == NULL)
-            this->destroy();
+            this->Pickupable::destroy();
 
         //! If the pickup has transited to used.
         if(this->isUsed())
@@ -180,7 +180,7 @@ namespace orxonox
             {
                 if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
                 {
-                    this->destroy();
+                    this->Pickupable::destroy();
                 }
                 else
                 {
