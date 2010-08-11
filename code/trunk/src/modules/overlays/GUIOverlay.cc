@@ -29,8 +29,8 @@
 #include "GUIOverlay.h"
 
 #include <string>
-#include <sstream>
 
+#include "util/Convert.h"
 #include "core/input/InputManager.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
@@ -72,9 +72,7 @@ namespace orxonox
 
         if (this->isVisible())
         {
-            std::ostringstream out;
-            out << reinterpret_cast<long>(this);
-            const std::string& str = out.str();
+            const std::string& str = multi_cast<std::string>(reinterpret_cast<long>(this));
             GUIManager::getInstance().showGUIExtra(this->guiName_, str);
 
             COUT(4) << "Showing GUI " << this->guiName_ << std::endl;

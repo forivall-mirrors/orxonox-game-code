@@ -69,7 +69,7 @@ namespace orxonox
 
         XMLPortObject(GlobalQuest, QuestEffect, "reward-effects", addRewardEffect, getRewardEffects, xmlelement, mode);
 
-        COUT(3) << "New GlobalQuest {" << this->getId() << "} created." << std::endl;
+        COUT(4) << "New GlobalQuest {" << this->getId() << "} created." << std::endl;
     }
 
     /**
@@ -252,7 +252,7 @@ namespace orxonox
 
         this->rewards_.push_back(effect); //!< Add the QuestEffect to the list.
 
-        COUT(3) << "Reward effect was added to Quest {" << this->getId() << "}." << std::endl;
+        COUT(4) << "Reward effect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
     }
 

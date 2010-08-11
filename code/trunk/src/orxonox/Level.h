@@ -33,8 +33,10 @@
 
 #include <list>
 #include <string>
+#include <map>
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
+#include "graphics/MeshLodInformation.h"
 
 namespace orxonox
 {
@@ -45,7 +47,6 @@ namespace orxonox
             virtual ~Level();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             inline void setDescription(const std::string& description)
                 { this->description_ = description; }
@@ -55,9 +56,18 @@ namespace orxonox
             void playerEntered(PlayerInfo* player);
             void playerLeft(PlayerInfo* player);
 
+            MeshLodInformation* getLodInfo(std::string meshName) const;
+
+
         private:
+            void registerVariables();
             void addObject(BaseObject* object);
             BaseObject* getObject(unsigned int index) const;
+
+            void addLodInfo(MeshLodInformation* object);
+            void networkCallbackTemplatesChanged();
+//            const MeshLodInformation* getLodInfo(std::string meshName) const;
+//            MeshLodInformation* getLodInfo(unsigned int index) const;
 
             void setGametypeString(const std::string& gametype);
             inline const std::string& getGametypeString() const
@@ -65,11 +75,12 @@ namespace orxonox
 
             void networkcallback_applyXMLFile();
 
-            std::string            description_;
-            std::string            gametype_;
-            std::string            xmlfilename_;
-            XMLFile*               xmlfile_;
-            std::list<BaseObject*> objects_;
+            std::string                    description_;
+            std::string                    gametype_;
+            std::string                    xmlfilename_;
+            XMLFile*                       xmlfile_;
+            std::list<BaseObject*>         objects_;
+            std::map<std::string,MeshLodInformation*>  lodInformation_;
     };
 }
 

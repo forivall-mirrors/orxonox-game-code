@@ -17,16 +17,16 @@
             <Model mesh="hs-w01.mesh"  roll="180" position="0.0, 0.5, 0.0" scale=2 />
             <Model mesh="hs-w01s.mesh" roll="180" position="0.1, 0.0, 0.0" scale=2 />
           </attached>
-          <HsW01 mode=0 munitionpershot=0 delay=0.125 material="Flares/point_lensflare" muzzleoffset=" 0.8, 0.9,-4" />
-          <HsW01 mode=0 munitionpershot=0 delay=0     material="Flares/point_lensflare" muzzleoffset="-0.8, 0.9,-4" />
+          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=2.5 material="Flares/point_lensflare" muzzleoffset=" 0.8, 0.9,-4" />
+          <HsW01 mode=0 munitionpershot=0 delay=0     damage=2.5 material="Flares/point_lensflare" muzzleoffset="-0.8, 0.9,-4" />
         </Weapon>
         <Weapon>
           <attached>
             <Model mesh="hs-w01.mesh"  roll="180" position=" 0.0, 0.5, 0.0" scale=2 />
             <Model mesh="hs-w01s.mesh" roll="180" position="-0.1, 0.0, 0.0" scale=2 />
           </attached>
-          <HsW01 mode=0 munitionpershot=0 delay=0     material="Flares/point_lensflare" muzzleoffset=" 0.8, 0.9, -4.0" />
-          <HsW01 mode=0 munitionpershot=0 delay=0.125 material="Flares/point_lensflare" muzzleoffset="-0.8, 0.9, -4.0" />
+          <HsW01 mode=0 munitionpershot=0 delay=0     damage=2.5 material="Flares/point_lensflare" muzzleoffset=" 0.8, 0.9, -4.0" />
+          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=2.5 material="Flares/point_lensflare" muzzleoffset="-0.8, 0.9, -4.0" />
         </Weapon>
       </WeaponPack>
       <WeaponPack>

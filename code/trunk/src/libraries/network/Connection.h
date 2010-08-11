@@ -60,7 +60,7 @@ namespace orxonox
 
   protected:
     Connection();
-    static Connection* getInstance(){ return Connection::instance_; }
+//     static Connection* getInstance(){ return Connection::instance_; }
 
     int service(ENetEvent* event);
     virtual void disconnectPeer(ENetPeer *peer);
@@ -74,7 +74,7 @@ namespace orxonox
   private:
     ENetAddress *bindAddress_;
 
-    static Connection *instance_;
+//     static Connection *instance_;
 
   };
 

@@ -40,11 +40,11 @@
 #include <string>
 #include "core/Identifier.h"
 
-#include "core/OrxonoxClass.h" 
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    
+
     /**
     @brief
         The purpose of the PickupIdentifier class is to identify different types of pickups allthough they are of the same class.
@@ -56,21 +56,21 @@ namespace orxonox
     */
     class _OrxonoxExport PickupIdentifier : virtual public OrxonoxClass
     {
-        
+
         public:
             PickupIdentifier(Pickupable* pickup); //!< Constructor.
             ~PickupIdentifier(); //!< Destructor.
-            
+
             virtual int compare(const PickupIdentifier* identifier) const; //!< Compares two PickupIdentifiers and returns 0 if a == b, <0 if a < b and >0 if a > b for a.compare(b).
-            
+
             bool addParameter(std::string & name, std::string & value); //!< Add a parameter to the PickupIdentifier.
-            
+
         private:
             Pickupable* pickup_; //!< The Pickupable the PickupIdentififer is for.
             std::map<std::string, std::string> parameters_; //!< The parameters identifying the type of the pickup beyond the class.
-            
+
     };
-    
+
     /**
     @brief
         Struct that overloads the compare operation between two PickupIdentifier pointers.
@@ -80,7 +80,7 @@ namespace orxonox
         bool operator() (const PickupIdentifier* lhs, const PickupIdentifier* rhs) const
             { return lhs->compare(rhs) < 0; }
     };
-    
+
 }
 
 #endif // _PickupIdentifier_H__

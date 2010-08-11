@@ -1,4 +1,5 @@
 SET_SOURCE_FILES(PICKUP_SRC_FILES
+  CollectiblePickup.cc
   DroppedPickup.cc
   Pickup.cc
   PickupCollection.cc
@@ -16,8 +17,6 @@ ORXONOX_ADD_LIBRARY(pickup
   TOLUA_FILES
     PickupManager.h
     PickupRepresentation.h
-  DEFINE_SYMBOL
-    "PICKUP_SHARED_BUILD"
   PCH_FILE
     PickupPrecompiledHeaders.h
   LINK_LIBRARIES

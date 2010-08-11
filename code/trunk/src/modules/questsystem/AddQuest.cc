@@ -67,7 +67,7 @@ namespace orxonox
     {
         SUPER(AddQuest, XMLPort, xmlelement, mode);
 
-        COUT(3) << "New AddQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
+        COUT(4) << "New AddQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
     /**
@@ -86,7 +86,7 @@ namespace orxonox
             return false;
         }
 
-        COUT(3) << "AddQuest on player: " << player << " ." << std::endl;
+        COUT(5) << "AddQuest on player: " << player << " ." << std::endl;
 
         try
         {
@@ -102,7 +102,7 @@ namespace orxonox
             return false;
         }
 
-        COUT(3) << "Quest {" << this->getQuestId() << "} successfully added to player: " << player << " ." << std::endl;
+        COUT(4) << "Quest {" << this->getQuestId() << "} successfully added to player: " << player << " ." << std::endl;
         return true;
     }
 

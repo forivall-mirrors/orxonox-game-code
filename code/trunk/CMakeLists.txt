@@ -75,7 +75,7 @@ SET(RUNTIME_LIBRARY_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 
 # This sets where to look for CMake modules (e.g. "Find*.cmake" files)
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/cmake/tools)
 
 # Set Debug build to default when not having multi-config generator like msvc
 IF(NOT CMAKE_CONFIGURATION_TYPES)

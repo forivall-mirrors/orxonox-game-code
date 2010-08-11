@@ -37,7 +37,9 @@ namespace orxonox
 {
     CreateFactory(CheckPoint);
 
-    CheckPoint::CheckPoint(BaseObject* creator) : DistanceTrigger(creator)
+    CheckPoint::CheckPoint(BaseObject* creator)
+        : DistanceTrigger(creator)
+        , RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
         RegisterObject(CheckPoint);
 

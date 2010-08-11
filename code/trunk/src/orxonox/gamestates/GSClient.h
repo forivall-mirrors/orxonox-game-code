@@ -45,9 +45,6 @@ namespace orxonox
         void activate();
         void deactivate();
         void update(const Clock& time);
-
-    private:
-        Client* client_;
     };
 }
 

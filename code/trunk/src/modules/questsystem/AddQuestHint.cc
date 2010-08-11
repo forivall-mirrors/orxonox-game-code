@@ -71,7 +71,7 @@ namespace orxonox
 
         XMLPortParam(AddQuestHint, "hintId", setHintId, getHintId, xmlelement, mode);
 
-        COUT(3) << "New AddQuestHint, with target QuestHint {" << this->getHintId() << "}, created." << std::endl;
+        COUT(4) << "New AddQuestHint, with target QuestHint {" << this->getHintId() << "}, created." << std::endl;
     }
 
     /**
@@ -84,7 +84,7 @@ namespace orxonox
     */
     bool AddQuestHint::setHintId(const std::string & id)
     {
-        if(!QuestItem::isId(id))
+        if(id.compare(BLANKSTRING) == 0)
         {
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return false;
@@ -110,7 +110,7 @@ namespace orxonox
             return false;
         }
 
-        COUT(3) << "AddQuestHint on player: " << player << " ." << std::endl;
+        COUT(5) << "AddQuestHint on player: " << player << " ." << std::endl;
 
         try
         {
@@ -126,7 +126,7 @@ namespace orxonox
            return false;
         }
 
-        COUT(3) << "QuestHint {" << this->getHintId() << "} successfully added to player: " << player << " ." << std::endl;
+        COUT(4) << "QuestHint {" << this->getHintId() << "} successfully added to player: " << player << " ." << std::endl;
         return true;
 
     }

@@ -46,12 +46,17 @@
 #include <string>
 
 #include "util/UtilPrereqs.h"
+#include "util/Singleton.h"
 #include "ClientConnection.h"
 #include "GamestateClient.h"
 #include "Host.h"
+#include "LANDiscovery.h"
+#include "packet/ServerInformation.h"
 
+// tolua_begin
 namespace orxonox
 {
+// tolua_end
   /**
   Client *client;
   * The network/Client class
@@ -59,13 +64,18 @@ namespace orxonox
   * It is the root class of the network module
   *
   */
-  class _NetworkExport Client : public Host, public ClientConnection{
+  class _NetworkExport Client // tolua_export
+    : public Host, protected ClientConnection, public Singleton<Client>
+  { // tolua_export
+  friend class Singleton<Client>;
   public:
     Client();
-    Client(const std::string& address, int port);
     ~Client();
+    
+    static Client* getInstance(){ return singletonPtr_s; } // tolua_export
 
     bool establishConnection();
+    void setDestination( const std::string& serverAddress, unsigned int port ); // tolua_export
     bool closeConnection();
     bool queuePacket(ENetPacket *packet, int clientID);
     bool processChat(const std::string& message, unsigned int playerID);
@@ -80,14 +90,15 @@ namespace orxonox
     Client(const Client& copy); // not used
     virtual bool isServer_(){return false;}
 
-    GamestateClient gamestate;
+    static Client* singletonPtr_s;
+    GamestateClient* gamestate;
     bool isSynched_;
 
     bool gameStateFailure_;
     float timeSinceLastUpdate_;
-  };
+  }; // tolua_export
 
 
-}
+} // tolua_export
 
 #endif /* _Client_H__ */

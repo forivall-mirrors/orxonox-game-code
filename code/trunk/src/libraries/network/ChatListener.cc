@@ -35,6 +35,16 @@ namespace orxonox
     {
         RegisterRootObject(ChatListener);
     }
+
+    //void ChatListener::incomingChat( const std::string& message,
+      //unsigned int senderID )
+    //{
+      //COUT(0) << "Chat: \"" << message << "\"\n";
+
+
+    //}
+
+
 }
 
 

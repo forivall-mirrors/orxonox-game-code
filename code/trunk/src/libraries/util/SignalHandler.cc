@@ -123,7 +123,7 @@ namespace orxonox
       // if the signalhandler has already been destroyed then don't do anything
       if( SignalHandler::singletonPtr_s == 0 )
       {
-        COUT(0) << "recieved signal " << sigName.c_str() << std::endl << "can't write backtrace because SignalHandler already destroyed" << std::endl;
+        COUT(0) << "received signal " << sigName.c_str() << std::endl << "can't write backtrace because SignalHandler already destroyed" << std::endl;
         exit(EXIT_FAILURE);
       }
 
@@ -133,7 +133,7 @@ namespace orxonox
       }
 
 
-      COUT(0) << "recieved signal " << sigName.c_str() << std::endl << "try to write backtrace to file orxonox_crash.log" << std::endl;
+      COUT(0) << "received signal " << sigName.c_str() << std::endl << "try to write backtrace to file orxonox_crash.log" << std::endl;
 
       int sigPipe[2];
       if ( pipe(sigPipe) == -1 )

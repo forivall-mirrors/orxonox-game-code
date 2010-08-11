@@ -39,12 +39,17 @@
 
 namespace orxonox
 {
+
+    CreateUnloadableFactory(QuestItem);
+
     /**
     @brief
         Constructor. Registers and initializes the object.
     */
     QuestItem::QuestItem(BaseObject* creator) : BaseObject(creator)
     {
+        this->registered_ = false;
+
         RegisterObject(QuestItem);
     }
 
@@ -78,26 +83,13 @@ namespace orxonox
     */
     void QuestItem::setId(const std::string & id)
     {
-        if(!isId(id)) //!< Checks whether the id is a valid id.
+        if(id.compare(BLANKSTRING) == 0) //!< Checks whether the id is a valid id.
         {
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return;
         }
 
         this->id_ = id;
-    }
-
-    /**
-    @brief
-        Checks whether an input id is of the required form.
-    @param id
-        The id to be checked.
-    @return
-        Returns true if the string is likely to be of the required form.
-    */
-    /*static*/ bool QuestItem::isId(const std::string & id)
-    {
-        return id.size() >= 32;
     }
 
 }

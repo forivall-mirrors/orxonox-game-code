@@ -38,7 +38,6 @@
 #include <boost/array.hpp>
 
 #include "util/Singleton.h"
-#include "util/StringUtils.h"
 
 namespace orxonox // tolua_export
 { // tolua_export

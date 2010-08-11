@@ -44,7 +44,6 @@ namespace orxonox
             virtual ~BlinkingBillboard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void tick(float dt);
 
@@ -69,6 +68,8 @@ namespace orxonox
                 { return this->bQuadratic_; }
 
         private:
+            void registerVariables();
+            
             float amplitude_;
             float frequency_;
             Degree phase_;

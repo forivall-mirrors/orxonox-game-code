@@ -39,17 +39,17 @@
 
 namespace orxonox
 {
-    
+
     CreateFactory(DistanceMultiTrigger);
 
     /**
     @brief
-        Default Constructor. Registers the object and initializes default values. 
+        Default Constructor. Registers the object and initializes default values.
     */
     DistanceMultiTrigger::DistanceMultiTrigger(BaseObject* creator) : MultiTrigger(creator)
     {
         RegisterObject(DistanceMultiTrigger);
-        
+
         this->distance_ = 100.0f;
         this->targetName_ = BLANKSTRING;
         this->singleTargetMode_ = false;
@@ -97,7 +97,7 @@ namespace orxonox
                 this->removeFromRange(key);
                 continue;
             }
-            
+
             Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
             // If the object is no longer in range.
             if (distanceVec.length() > this->distance_)
@@ -153,7 +153,7 @@ namespace orxonox
                 // Change the entity to the parent of the DistanceTriggerBeacon (if in single-target-mode), which is the entity to which the beacon is attached.
                 if(this->singleTargetMode_)
                     entity = entity->getParent();
-                
+
                 // If no queue has been created, yet.
                 if(queue == NULL)
                     queue = new std::queue<MultiTriggerState*>();
@@ -165,8 +165,8 @@ namespace orxonox
                 queue->push(state);
             }
         }
-        
+
         return queue;
     }
-    
+
 }

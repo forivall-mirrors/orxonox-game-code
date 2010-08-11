@@ -52,7 +52,7 @@ namespace orxonox
     {
         public:
             Notification(BaseObject* creator);
-            Notification(const std::string & message);
+            Notification(BaseObject* creator, const std::string & message);
             virtual ~Notification();
 
             bool send(void); //!< Sends the Notification to the Notificationmanager, with sender NotificationManager::NONE;

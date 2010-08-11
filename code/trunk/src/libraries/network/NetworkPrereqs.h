@@ -63,8 +63,11 @@
 
 namespace orxonox
 {
-  static const unsigned int GAMESTATEID_INITIAL = static_cast<unsigned int>(-1);
-  static const unsigned int CLIENTID_UNKNOWN    = static_cast<unsigned int>(-2);
+  static const unsigned int GAMESTATEID_INITIAL     = static_cast<unsigned int>(-1);
+  static const unsigned int CLIENTID_UNKNOWN        = static_cast<unsigned int>(-2);
+  extern const char* LAN_DISCOVERY_MESSAGE;
+  extern const char* LAN_DISCOVERY_ACK;
+  static const unsigned int LAN_DISCOVERY_PORT      = 55557;
 }
 
 //-----------------------------------------------------------------------

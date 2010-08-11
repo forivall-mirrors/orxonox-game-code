@@ -42,7 +42,7 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(OVERLAYS_STATIC_BUILD)
 #  ifdef OVERLAYS_SHARED_BUILD
 #    define _OverlaysExport __declspec(dllexport)
 #  else
@@ -77,6 +77,8 @@ namespace orxonox
     class BarColour;
     class ChatOverlay;
     class DeathMessage;
+    class GametypeFadingMessage;
+    class GametypeStaticMessage;
     class GametypeStatus;
     class HUDBar;
     class HUDHealthBar;

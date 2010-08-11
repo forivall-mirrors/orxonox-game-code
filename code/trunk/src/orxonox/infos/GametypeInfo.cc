@@ -41,6 +41,8 @@ namespace orxonox
     registerMemberNetworkFunction(GametypeInfo, dispatchAnnounceMessage);
     registerMemberNetworkFunction(GametypeInfo, dispatchKillMessage);
     registerMemberNetworkFunction(GametypeInfo, dispatchDeathMessage);
+    registerMemberNetworkFunction(GametypeInfo, dispatchStaticMessage);
+    registerMemberNetworkFunction(GametypeInfo, dispatchFadingMessage);
 
     GametypeInfo::GametypeInfo(BaseObject* creator) : Info(creator)
     {
@@ -109,6 +111,28 @@ namespace orxonox
         }
     }
 
+    void GametypeInfo::sendStaticMessage(const std::string& message, unsigned int clientID, const ColourValue& colour)
+    {
+        if (GameMode::isMaster())
+        {
+            if (clientID == CLIENTID_SERVER)
+                this->dispatchStaticMessage(message, colour);
+            else
+                callMemberNetworkFunction(GametypeInfo, dispatchStaticMessage, this->getObjectID(), clientID, message, colour);
+        }
+    }
+
+    void GametypeInfo::sendFadingMessage(const std::string& message, unsigned int clientID)
+    {
+        if (GameMode::isMaster())
+        {
+            if (clientID == CLIENTID_SERVER)
+                this->dispatchFadingMessage(message);
+            else
+                callMemberNetworkFunction(GametypeInfo, dispatchFadingMessage, this->getObjectID(), clientID, message);
+        }
+    }
+
     void GametypeInfo::dispatchAnnounceMessage(const std::string& message)
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
@@ -125,5 +149,17 @@ namespace orxonox
     {
         for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
             it->deathmessage(this, message);
+    }
+
+     void GametypeInfo::dispatchStaticMessage(const std::string& message, const ColourValue& colour)
+    {
+        for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
+            it->staticmessage(this, message, colour);
+    }
+
+     void GametypeInfo::dispatchFadingMessage(const std::string& message)
+    {
+        for (ObjectList<GametypeMessageListener>::iterator it = ObjectList<GametypeMessageListener>::begin(); it != ObjectList<GametypeMessageListener>::end(); ++it)
+            it->fadingmessage(this, message);
     }
 }

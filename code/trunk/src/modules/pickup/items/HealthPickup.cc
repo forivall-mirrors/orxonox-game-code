@@ -44,13 +44,13 @@
 
 namespace orxonox
 {
-    
+
     /*static*/ const std::string HealthPickup::healthTypeLimited_s = "limited";
     /*static*/ const std::string HealthPickup::healthTypeTemporary_s = "temporary";
     /*static*/ const std::string HealthPickup::healthTypePermanent_s = "permanent";
-    
+
     CreateFactory(HealthPickup);
-    
+
     /**
     @brief
         Constructor. Registers the object and initializes the member variables.
@@ -58,34 +58,34 @@ namespace orxonox
     HealthPickup::HealthPickup(BaseObject* creator) : Pickup(creator)
     {
         RegisterObject(HealthPickup);
-        
+
         this->initialize();
     }
-    
+
     /**
     @brief
         Destructor.
     */
     HealthPickup::~HealthPickup()
     {
-        
+
     }
-    
+
     /**
-    @brief 
+    @brief
         Initializes the member variables.
     */
     void HealthPickup::initialize(void)
-    {        
+    {
         this->health_ = 0;
         this->healthRate_ = 0;
         this->healthType_ = pickupHealthType::limited;
         this->maxHealthSave_ = 0;
         this->maxHealthOverwrite_ = 0;
-        
+
         this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
-    
+
     /**
     @brief
         Initializes the PickupIdentifier of this pickup.
@@ -97,18 +97,18 @@ namespace orxonox
         std::string type1 = "health";
         std::string val1 = stream.str();
         this->pickupIdentifier_->addParameter(type1, val1);
-        
+
         std::string val2 = this->getHealthType();
         std::string type2 = "healthType";
         this->pickupIdentifier_->addParameter(type2, val2);
-        
+
         stream.clear();
         stream << this->getHealthRate();
         std::string val3 = stream.str();
         std::string type3 = "healthRate";
         this->pickupIdentifier_->addParameter(type3, val3);
     }
-    
+
     /**
     @brief
         Method for creating a HealthPickup object through XML.
@@ -116,17 +116,17 @@ namespace orxonox
     void HealthPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
         SUPER(HealthPickup, XMLPort, xmlelement, mode);
-        
+
         XMLPortParam(HealthPickup, "health", setHealth, getHealth, xmlelement, mode);
         XMLPortParam(HealthPickup, "healthRate", setHealthRate, getHealthRate, xmlelement, mode);
         XMLPortParam(HealthPickup, "healthType", setHealthType, getHealthType, xmlelement, mode);
-        
+
         if(!this->isContinuous())
             this->healthRate_ = 0.0;
-        
+
         this->initializeIdentifier();
     }
-    
+
     /**
     @brief
         Is called every tick.
@@ -137,13 +137,13 @@ namespace orxonox
     void HealthPickup::tick(float dt)
     {
         SUPER(HealthPickup, tick, dt);
-        
+
         if(this->isContinuous() && this->isUsed())
         {
             Pawn* pawn = this->carrierToPawnHelper();
             if(pawn == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
-                this->destroy();
-            
+                this->Pickupable::destroy();
+
             //! Calculate the health that is added this tick.
             float health = dt*this->getHealthRate();
             if(health > this->getHealth())
@@ -151,7 +151,7 @@ namespace orxonox
             //! Calculate the health the Pawn will have once the health is added.
             float fullHealth = pawn->getHealth() + health;
             this->setHealth(this->getHealth()-health);
-                    
+
             switch(this->getHealthTypeDirect())
             {
                 case pickupHealthType::permanent:
@@ -172,7 +172,7 @@ namespace orxonox
                 default:
                     COUT(1) << "Invalid healthType in HealthPickup." << std::endl;
             }
-            
+
             //! If all health has been transfered.
             if(this->getHealth() == 0)
             {
@@ -180,7 +180,7 @@ namespace orxonox
             }
         }
     }
-    
+
     /**
     @brief
         Is called when the pickup has transited from used to unused or the other way around.
@@ -188,11 +188,11 @@ namespace orxonox
     void HealthPickup::changedUsed(void)
     {
         SUPER(HealthPickup, changedUsed);
-        
+
         //! If the pickup is not picked up nothing must be done.
-        if(!this->isPickedUp())
+        if(!this->isPickedUp()) //TODO: Needed?
             return;
-        
+
         //! If the pickup has transited to used.
         if(this->isUsed())
         {
@@ -200,8 +200,8 @@ namespace orxonox
             {
                 Pawn* pawn = this->carrierToPawnHelper();
                 if(pawn == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
-                    this->destroy();
-                
+                    this->Pickupable::destroy();
+
                 float health = 0;
                 switch(this->getHealthTypeDirect())
                 {
@@ -225,7 +225,7 @@ namespace orxonox
                     default:
                         COUT(1) << "Invalid healthType in HealthPickup." << std::endl;
                 }
-                
+
                 //! The pickup has been used up.
                 this->setUsed(false);
             }
@@ -236,14 +236,14 @@ namespace orxonox
             {
                 PickupCarrier* carrier = this->getCarrier();
                 Pawn* pawn = dynamic_cast<Pawn*>(carrier);
-                
+
                 if(pawn == NULL)
                 {
                     COUT(1) << "Something went horribly wrong in Health Pickup. PickupCarrier is no Pawn." << std::endl;
-                    this->destroy();
+                    this->Pickupable::destroy();
                     return;
                 }
-                
+
                 if(pawn->getMaxHealth() == this->maxHealthOverwrite_)
                 {
                     pawn->setMaxHealth(this->maxHealthSave_);
@@ -251,15 +251,15 @@ namespace orxonox
                     this->maxHealthSave_ = 0;
                 }
             }
-            
+
             //! If either the pickup can only be used once or it is continuous and used up, it is destroyed upon setting it to unused.
             if(this->isOnce() || (this->isContinuous() && this->getHealth() == 0))
             {
-                this->destroy();
+                this->Pickupable::destroy();
             }
         }
     }
-    
+
     /**
     @brief
         Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
@@ -270,15 +270,15 @@ namespace orxonox
     {
         PickupCarrier* carrier = this->getCarrier();
         Pawn* pawn = dynamic_cast<Pawn*>(carrier);
-        
+
         if(pawn == NULL)
         {
             COUT(1) << "Invalid PickupCarrier in HealthPickup." << std::endl;
         }
-        
+
         return pawn;
     }
-    
+
     /**
     @brief
         Creates a duplicate of the input OrxonoxClass.
@@ -289,17 +289,17 @@ namespace orxonox
     {
         if(item == NULL)
             item = new HealthPickup(this);
-        
+
         SUPER(HealthPickup, clone, item);
-        
+
         HealthPickup* pickup = dynamic_cast<HealthPickup*>(item);
         pickup->setHealth(this->getHealth());
         pickup->setHealthRate(this->getHealthRate());
         pickup->setHealthTypeDirect(this->getHealthTypeDirect());
-        
+
         pickup->initializeIdentifier();
     }
-    
+
     /**
     @brief
         Get the health type of this pickup.
@@ -321,7 +321,7 @@ namespace orxonox
                 return BLANKSTRING;
         }
     }
-    
+
     /**
     @brief
         Sets the health.
@@ -340,7 +340,7 @@ namespace orxonox
             this->health_ = 0.0;
         }
     }
-    
+
     /**
     @brief
         Set the rate at which health is transferred if the pickup is continuous.
@@ -355,10 +355,10 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid healthSpeed in HealthPickup." << std::endl; 
+            COUT(1) << "Invalid healthSpeed in HealthPickup." << std::endl;
         }
     }
-    
+
     /**
     @brief
         Set the type of the HealthPickup.

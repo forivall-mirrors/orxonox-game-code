@@ -65,6 +65,7 @@ namespace orxonox
     */
     NotificationManager::~NotificationManager()
     {
+
     }
 
     /**
@@ -100,12 +101,70 @@ namespace orxonox
             {
                 this->notificationLists_[it->second]->insert(std::pair<std::time_t,Notification*>(time,notification)); //!< Insert the Notification in the Notifications list of the current NotificationListener.
                 it->first->update(notification, time); //!< Update the listener.
+                std::map<Notification*, unsigned int>::iterator counterIt = this->listenerCounter_.find(notification);
+                if(counterIt == this->listenerCounter_.end())
+                    this->listenerCounter_[notification] = 1;
+                else
+                    this->listenerCounter_[notification] = counterIt->second + 1;
             }
         }
 
-        COUT(3) << "Notification registered with the NotificationManager." << std::endl;
+        COUT(4) << "Notification registered with the NotificationManager." << std::endl;
 
         return true;
+    }
+
+    /**
+    @brief
+        Unregisters a Notification within the NotificationManager.
+    @param notification
+        A pointer to the Notification to be unregistered.
+    @param listener
+        A pointer to the NotificationListener the Notification is unregistered for.
+    */
+    void NotificationManager::unregisterNotification(Notification* notification, NotificationListener* listener)
+    {
+        assert(notification);
+        assert(listener);
+
+        // If the Notification was removed from the list of Notifications of the input NotificationListener, the counter for the Notification of the number of NotificationListeners it is present in is decremented.
+        if(this->removeNotification(notification, *(this->notificationLists_.find(this->listenerList_.find(listener)->second)->second)))
+            this->listenerCounter_[notification] = this->listenerCounter_[notification] - 1;
+
+        // If the Notification is no longer present in any of the NotificationListeners it can be removed from the map of all Notifications and be destroyed.
+        if(this->listenerCounter_[notification] == (unsigned int) 0)
+        {
+            this->removeNotification(notification, this->allNotificationsList_);
+            this->listenerCounter_.erase(notification);
+            notification->destroy();
+        }
+
+        COUT(4) << "Notification unregistered with the NotificationManager." << std::endl;
+    }
+
+    /**
+    @brief
+        Helper method that removes an input notification form an input map.
+    @param notification
+        A pointer to the notification to be removed.
+    @param map
+        The map the notification should be removed from.
+    @return
+        Returns true if successful.
+    */
+    bool NotificationManager::removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map)
+    {
+        // Iterates through all items in the map until the Notification is found.
+        //TODO: Do more efficiently?
+        for(std::multimap<std::time_t, Notification*>::iterator it = map.begin(); it != map.end(); it++)
+        {
+            if(it->second == notification)
+            {
+                map.erase(it);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -129,7 +188,7 @@ namespace orxonox
         if(set.find(ALL) != set.end())
         {
             this->notificationLists_[index] = &this->allNotificationsList_;
-            COUT(3) << "NotificationListener registered with the NotificationManager." << std::endl;
+            COUT(4) << "NotificationListener registered with the NotificationManager." << std::endl;
             return true;
         }
 
@@ -141,15 +200,49 @@ namespace orxonox
         {
             if(set.find(it->second->getSender()) != set.end()) //!< Checks whether the overlay has the sender of the current notification as target.
             {
-                map.insert(std::pair<std::time_t,Notification*>(it->first, it->second));
+                map.insert(std::pair<std::time_t, Notification*>(it->first, it->second));
+                std::map<Notification*, unsigned int>::iterator counterIt = this->listenerCounter_.find(it->second);
+                if(counterIt == this->listenerCounter_.end())
+                    this->listenerCounter_[it->second] = 1;
+                else
+                    this->listenerCounter_[it->second] = counterIt->second + 1;
             }
         }
 
         listener->update(); //!< Update the listener.
 
-        COUT(3) << "NotificationListener registered with the NotificationManager." << std::endl;
+        COUT(4) << "NotificationListener registered with the NotificationManager." << std::endl;
 
         return true;
+    }
+
+    /**
+    @brief
+        Unregisters a NotificationListener withing the NotificationManager.
+    */
+    void NotificationManager::unregisterListener(NotificationListener* listener)
+    {
+        assert(listener);
+
+        int identifier = this->listenerList_.find(listener)->second;
+        std::multimap<std::time_t, Notification*>* map = this->notificationLists_.find(identifier)->second;
+
+        // Make sure all Notifications are removed.
+        std::multimap<std::time_t, Notification*>::iterator it = map->begin();
+        while(it != map->end())
+        {
+            this->unregisterNotification(it->second, listener);
+            it = map->begin();
+        }
+
+        this->listenerList_.erase(listener);
+        this->notificationLists_.erase(identifier);
+
+        // If the map is not the map of all notifications, delete it.
+        if(map != &this->allNotificationsList_)
+            delete map;
+
+        COUT(4) << "NotificationListener unregistered with the NotificationManager." << std::endl;
     }
 
     /**

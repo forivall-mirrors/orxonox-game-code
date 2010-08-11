@@ -80,7 +80,7 @@ namespace orxonox
 
         this->node_->setPosition(Vector3::ZERO);
         this->node_->setOrientation(Quaternion::IDENTITY);
-        
+
         // Activity and visibility memory.
         this->bActiveMem_ = true;
         this->bVisibleMem_ = true;
@@ -204,7 +204,7 @@ namespace orxonox
         // Attach to parent if necessary
         registerVariable(this->parentID_,       VariableDirection::ToClient, new NetworkCallback<WorldEntity>(this, &WorldEntity::networkcallback_parentChanged));
     }
-    
+
     /**
     @brief
         When the activity is changed, it is changed for all attached objects as well.
@@ -212,7 +212,7 @@ namespace orxonox
     void WorldEntity::changedActivity(void)
     {
         SUPER(WorldEntity, changedActivity);
-        
+
         for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
         {
             if(!this->isActive())
@@ -226,7 +226,7 @@ namespace orxonox
             }
         }
     }
-    
+
     /**
     @brief
         When the visibility is changed, it is changed for all attached objects as well.
@@ -234,7 +234,7 @@ namespace orxonox
     void WorldEntity::changedVisibility(void)
     {
         SUPER(WorldEntity, changedVisibility);
-        
+
         for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
         {
             if(!this->isVisible())

@@ -31,6 +31,9 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   PawnManager.cc
   PlayerManager.cc
   Radar.cc
+  ChatHistory.cc
+  ChatInputHandler.cc
+#  Test.cc
 COMPILATION_BEGIN SceneCompilation.cc
   CameraManager.cc
   Scene.cc
@@ -54,13 +57,13 @@ ADD_SUBDIRECTORY(worldentities)
 ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
+    ChatInputHandler.h
     LevelManager.h
     MoodManager.h
     controllers/HumanController.h
-    interfaces/PickupCarrier.h
+    interfaces/Pickupable.h
+    infos/PlayerInfo.h
     sound/SoundManager.h
-  DEFINE_SYMBOL
-    "ORXONOX_SHARED_BUILD"
   PCH_FILE
     OrxonoxPrecompiledHeaders.h
   LINK_LIBRARIES
@@ -74,8 +77,8 @@ ORXONOX_ADD_LIBRARY(orxonox
     ${VORBISFILE_LIBRARY}
     ${VORBIS_LIBRARY}
     ${OGG_LIBRARY}
-    tinyxml++_orxonox
-    tolua++_orxonox
+    tinyxml_orxonox
+    tolua_orxonox
     bullet_orxonox
     util
     core

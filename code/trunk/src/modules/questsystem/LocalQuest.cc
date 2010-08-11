@@ -67,7 +67,7 @@ namespace orxonox
     {
         SUPER(LocalQuest, XMLPort, xmlelement, mode);
 
-        COUT(3) << "New LocalQuest {" << this->getId() << "} created." << std::endl;
+        COUT(4) << "New LocalQuest {" << this->getId() << "} created." << std::endl;
     }
 
     /**

@@ -44,7 +44,7 @@
 #include "tools/interfaces/Tickable.h"
 
 namespace orxonox {
-    
+
     //! Enum for the type of the HealthPickup
     namespace pickupHealthType
     {
@@ -55,7 +55,7 @@ namespace orxonox {
             permanent
         };
     }
-    
+
     /**
     @brief
         A pickup that can do (dependent upon the parameters) lots of different things to the health of a Pawn.
@@ -70,16 +70,16 @@ namespace orxonox {
     class _PickupExport HealthPickup : public Pickup, public Tickable
     {
         public:
-        
+
             HealthPickup(BaseObject* creator); //!< Constructor.
             virtual ~HealthPickup(); //!< Destructor.
-            
+
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
             virtual void tick(float dt); //!< Is called every tick.
-            
+
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
-            
+
             /**
             @brief Get the health that is transfered to the Pawn upon usage of this pickup.
             @return Returns the health.
@@ -92,21 +92,21 @@ namespace orxonox {
             */
             inline float getHealthRate(void)
                 { return this->healthRate_; }
-                
+
             /**
             @brief Get the type of HealthPickup, this pickup is.
-            @return Returns the health type as an enum. 
+            @return Returns the health type as an enum.
             */
             inline pickupHealthType::Value getHealthTypeDirect(void)
                 { return this->healthType_; }
             const std::string& getHealthType(void); //!< Get the health type of this pickup.
-            
+
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
 
             void setHealth(float health); //!< Sets the health.
             void setHealthRate(float speed); //!< Set the rate at which health is transferred if the pickup is continuous.
-            
+
             /**
             @brief Set the health type of this pickup.
             @param type The type of this pickup as an enum.
@@ -114,22 +114,22 @@ namespace orxonox {
             inline void setHealthTypeDirect(pickupHealthType::Value type)
                 { this->healthType_ = type; }
             void setHealthType(std::string type); //!< Set the type of the HealthPickup.
-        
+
         private:
             void initialize(void); //!< Initializes the member variables.
             Pawn* carrierToPawnHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
-            
+
             float health_; //!< The health that is transferred to the Pawn.
             float healthRate_; //!< The rate at which the health is transferred.
             float maxHealthSave_; //!< Helper to remember what the actual maxHealth of the Pawn was before we changed it.
             float maxHealthOverwrite_; //!< Helper to remember with which value we overwrote the maxHealh, to detect if someone else changed it as well.
             pickupHealthType::Value healthType_; //!< The type of the HealthPickup.
-            
+
             //! Strings for the health types.
             static const std::string healthTypeLimited_s;
             static const std::string healthTypeTemporary_s;
             static const std::string healthTypePermanent_s;
-        
+
     };
 }
 

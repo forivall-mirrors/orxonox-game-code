@@ -48,7 +48,6 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
-            void registerVariables();
             void setConfigValues();
 
             virtual void changedPlayer() {}
@@ -136,6 +135,8 @@ namespace orxonox
                 { return this->bMouseLook_; }
             inline float getMouseLookSpeed() const
                 { return this->mouseLookSpeed_; }
+            inline CameraPosition* getCurrentCameraPosition()
+                { return this->currentCameraPosition_; }
 
             inline Controller* getXMLController() const
                 { return this->xmlcontroller_; }
@@ -161,7 +162,10 @@ namespace orxonox
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
 
+            Ogre::SceneNode* cameraPositionRootNode_;
+
         private:
+            void registerVariables();
             void setXMLController(Controller* controller);
 
             void overwrite();
@@ -207,7 +211,6 @@ namespace orxonox
             Camera* camera_;
             bool bMouseLook_;
             float mouseLookSpeed_;
-            Ogre::SceneNode* cameraPositionRootNode_;
             std::list<SmartPtr<CameraPosition> > cameraPositions_;
             CameraPosition* currentCameraPosition_;
             std::string cameraPositionTemplate_;

@@ -46,7 +46,7 @@ namespace orxonox
     /*static*/ const std::string MultiTrigger::and_s = "and";
     /*static*/ const std::string MultiTrigger::or_s = "or";
     /*static*/ const std::string MultiTrigger::xor_s = "xor";
-    
+
     CreateFactory(MultiTrigger);
 
     /**
@@ -64,7 +64,7 @@ namespace orxonox
         this->delay_ = 0.0f;
         this->bSwitch_ = false;
         this->bStayActive_ = false;
-        
+
         this->remainingActivations_ = INF_s;
         this->maxNumSimultaniousTriggerers_ = INF_s;
 
@@ -74,12 +74,12 @@ namespace orxonox
         this->bBroadcast_ = false;
 
         this->parentTrigger_ = NULL;
-        
+
         this->targetMask_.exclude(Class(BaseObject));
 
         this->setSyncMode(0x0);
     }
-    
+
     /**
     @brief
         Destructor. Cleans up the state queue.
@@ -94,7 +94,7 @@ namespace orxonox
             delete state;
         }
     }
-    
+
     /**
     @brief
         Method for creating a MultiTrigger object through XML.
@@ -116,10 +116,10 @@ namespace orxonox
 
         //TODO: Maybe nicer with explicit subgroup, e.g. triggers
         XMLPortObject(MultiTrigger, MultiTrigger, "", addTrigger, getTrigger, xmlelement, mode);
-        
+
         COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") created." << std::endl;
     }
-    
+
 
     /**
     @brief
@@ -130,7 +130,7 @@ namespace orxonox
     void MultiTrigger::tick(float dt)
     {
         // If this is the first tick.
-        //TODO: Determine need for this, else kick it out. 
+        //TODO: Determine need for this, else kick it out.
         if(this->bFirstTick_)
         {
             this->bFirstTick_ = false;
@@ -173,7 +173,7 @@ namespace orxonox
                     COUT(1) << "BUH" << std::endl;
                     delete state;
                 }
-                
+
                 queue->pop();
             }
             delete queue;
@@ -184,7 +184,7 @@ namespace orxonox
         {
             MultiTriggerState* state;
             float timeRemaining;
-            
+
             // Go through all pending states.
             for(int size = this->stateQueue_.size(); size >= 1; size--)
             {
@@ -211,7 +211,7 @@ namespace orxonox
                             {
                                 this->triggered_.erase(state->originator);
                             }
-                            
+
                             bStateChanged = true;
                         }
 
@@ -228,7 +228,7 @@ namespace orxonox
                         {
 
                             bool bFire = true;
-                            
+
                             // Add the originator to the objects activating this MultiTrigger.
                             if(bActive == true)
                             {
@@ -265,7 +265,7 @@ namespace orxonox
                                 }
                                 else
                                     this->fire(bActive, state->originator);
-                                
+
                                 bStateChanged = true;
                             }
                         }
@@ -288,7 +288,7 @@ namespace orxonox
                             COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") ran out of activations. Setting it to inactive." << std::endl;
                         }
                     }
-                    
+
                     // Remove the state from the state queue.
                     this->stateQueue_.pop_front();
                     delete state;
@@ -508,10 +508,10 @@ namespace orxonox
 
             return returnVal;
         }
-        
+
         return true;
     }
-    
+
     /**
     @brief
         Get whether the MultiTrigger is triggered for a given object.
@@ -546,7 +546,7 @@ namespace orxonox
             COUT(4) << "MultiTrigger '" <<  this->getName() << "' (&" << this << "): Fired event. status: " << status << "." << std::endl;
             return;
         }
-        
+
         MultiTriggerContainer* container = new MultiTriggerContainer(this, this, originator);
         this->fireEvent(status, container);
         COUT(4) << "MultiTrigger '" <<  this->getName() << "' (&" << this << "): Fired event. originator: " << originator->getIdentifier()->getName() << " (&" << originator << "), status: " << status << "." << std::endl;
@@ -562,7 +562,7 @@ namespace orxonox
     void MultiTrigger::broadcast(bool status)
     {
         ClassTreeMask& targetMask = this->getTargetMask();
-        
+
         for(ClassTreeMaskObjectIterator it = targetMask.begin(); it != targetMask.end(); ++it)
         {
             BaseObject* object = static_cast<BaseObject*>(*it);
@@ -579,11 +579,11 @@ namespace orxonox
     bool MultiTrigger::addState(MultiTriggerState* state)
     {
         assert(state);
-        
+
         // If the originator is no target of this MultiTrigger.
         if(!this->isTarget(state->originator))
             return false;
-        
+
         // Add it ot the state queue.
         this->stateQueue_.push_back(std::pair<float, MultiTriggerState*>(this->delay_, state));
 

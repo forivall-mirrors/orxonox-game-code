@@ -31,31 +31,48 @@
 
 namespace orxonox {
 
-    const std::string QuestNotification::SENDER("questsystem");
+    /*static*/ const std::string QuestNotification::SENDER("questsystem");
 
+    CreateUnloadableFactory(QuestNotification);
+
+    /**
+    @brief
+        Default Constructor. Creates a useless QuestNotification.
+    */
     QuestNotification::QuestNotification(BaseObject* creator) : Notification(creator)
     {
-        this->initialize();
+        RegisterObject(QuestNotification);
     }
 
-    QuestNotification::QuestNotification(const std::string & message) : Notification(message)
+    /**
+    @brief
+        Creates a QuestNotification with the input message.
+    @param message
+        The message to be sent.
+    */
+    QuestNotification::QuestNotification(BaseObject* creator, const std::string & message) : Notification(creator, message)
     {
-        this->initialize();
+        RegisterObject(QuestNotification);
     }
 
+    /**
+    @brief
+        Destructor.
+    */
     QuestNotification::~QuestNotification()
     {
 
     }
 
+    /**
+    @brief
+        Send the QuestNotification.
+    @return
+        Returns true if successful.
+    */
     bool QuestNotification::send(void)
     {
         return this->Notification::send(QuestNotification::SENDER);
-    }
-
-    void QuestNotification::initialize(void)
-    {
-        RegisterObject(QuestNotification);
     }
 
 

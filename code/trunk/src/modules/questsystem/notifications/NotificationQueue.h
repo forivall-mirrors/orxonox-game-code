@@ -70,6 +70,7 @@ namespace orxonox
         Beware! The NotificationQueue is an OverlayGruop and thus cannot be be a sub-element of an OverlayGroup (at least no for now.)
 
         Creating a NotificationQueue through XML goes as follows:
+        Be aware that the NotificationQueue must be inside the <Level></Level> tags or bad things will happen.
         <NotificationQueue
             name = "SuperQueue" //Name of your OverlayQueue.
             maxSize = "5" //The maximum size of Notifications displayed.
@@ -183,6 +184,8 @@ namespace orxonox
 
             float tickTime_; //!< Helper variable, to not have to check for overlays that have been displayed too long, every tick.
             NotificationOverlayContainer timeLimit_; //!< Helper object to check against to determine whether Notifications have expired.
+
+            bool registered_; //!< Helper variable to remember whether the NotificationQueue is registered already.
 
             void initialize(void); //!< Initializes the object.
             void setDefaults(void); //!< Helper method to set the default values.

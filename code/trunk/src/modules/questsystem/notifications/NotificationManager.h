@@ -59,11 +59,13 @@ namespace orxonox
             NotificationManager();
             virtual ~NotificationManager();
 
-            static const std::string ALL;
-            static const std::string NONE;
+            static const std::string ALL; //!< Static string to indicate a sender that sends to all NotificationListeners.
+            static const std::string NONE; //!< Static string to indicare a sender that sends to no specific NotificationListener.
 
             bool registerNotification(Notification* notification); //!< Registers a Notification within the NotificationManager.
+            void unregisterNotification(Notification* notification, NotificationListener* listener); //!< Unregisters a Notification within the NotificationManager.
             bool registerListener(NotificationListener* listener); //!< Registers a NotificationListener within the NotificationManager.
+            void unregisterListener(NotificationListener* listener); //!< Unregisters a NotificationListener withing the NotificationManager.
 
             bool getNotifications(NotificationListener* listener, std::multimap<std::time_t,Notification*>* map, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); //!< Returns the Notifications for a specific NotificationListener in a specified timeframe.
 
@@ -89,12 +91,14 @@ namespace orxonox
         private:
             static NotificationManager* singletonPtr_s;
 
-            int highestIndex_; //!< This variable holds the highest index (resp. key) in notificationLists_s, to secure that  no key appears twice.
+            int highestIndex_; //!< This variable holds the highest index (resp. key) in notificationLists_s, to secure that no key appears twice.
 
-            std::multimap<std::time_t,Notification*> allNotificationsList_; //!< Container where all notifications are stored (together with their respecive timestamps).
+            std::multimap<std::time_t,Notification*> allNotificationsList_; //!< Container where all notifications are stored.
             std::map<NotificationListener*,int> listenerList_; //!< Container where all NotificationListeners are stored with a number as identifier.
             std::map<int,std::multimap<std::time_t,Notification*>*> notificationLists_; //!< Container where all Notifications, for each identifier (associated with a NotificationListener), are stored.
+            std::map<Notification*, unsigned int> listenerCounter_; //!< A container to store the number of NotificationListeners a Notification is registered with.
 
+            bool removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map); //!< Helper method that removes an input notification form an input map.
 
     };
 

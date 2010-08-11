@@ -34,7 +34,6 @@
 #include "worldentities/pawns/Pawn.h"
 #include "gametypes/Gametype.h"
 #include "infos/PlayerInfo.h"
-#include "overlays/Map.h"
 #include "Radar.h"
 #include "Scene.h"
 
@@ -115,24 +114,12 @@ namespace orxonox
 
     void HumanController::yaw(const Vector2& value)
     {
-        //Hack to enable mouselook in map
-        if ( Map::getSingletonPtr() && Map::getSingletonPtr()->getVisibility() && HumanController::localController_s->controllableEntity_->isInMouseLook() )
-        {
-            Map::getSingletonPtr()->rotateYaw(value);
-            return;
-        }
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->rotateYaw(value);
     }
 
     void HumanController::pitch(const Vector2& value)
     {
-        //Hack to enable mouselook in map
-        if ( Map::getSingletonPtr() && Map::getSingletonPtr()->getVisibility() && HumanController::localController_s->controllableEntity_->isInMouseLook() )
-        {
-            Map::getSingletonPtr()->rotatePitch(value);
-            return;
-        }
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
             HumanController::localController_s->controllableEntity_->rotatePitch(value);
     }

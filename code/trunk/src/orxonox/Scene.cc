@@ -46,6 +46,7 @@
 #include "tools/BulletConversions.h"
 #include "Radar.h"
 #include "worldentities/WorldEntity.h"
+#include "Level.h"
 
 namespace orxonox
 {
@@ -132,6 +133,7 @@ namespace orxonox
         registerVariable(this->gravity_,            VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_gravity));
         registerVariable(this->bHasPhysics_,        VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_hasPhysics));
         registerVariable(this->bShadows_,           VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::networkcallback_applyShadows));
+        registerVariable(this->getLevel(),          VariableDirection::ToClient, new NetworkCallback<Scene>(this, &Scene::changedLevel));
     }
 
     void Scene::setNegativeWorldRange(const Vector3& range)

@@ -63,13 +63,14 @@
     operator has to be declared BEFORE this file gets parsed.
 
     Defining your own functions:
-    There are obviously 4 ways to specifiy a user defined conversion. What should I use?
+    There are obviously 4 ways to specify a user defined conversion. What should you use?
 
     Usually, ConverterFallback fits quite well. You won't have to deal with the conversion from
     'MyClass' to 'MyClass' by using another explicit template specialisation to avoid ambiguities.
 
     However if you want to overwrite an implicit conversion or an iostream operator, you really need to
-    make use of ConverterExplicit.
+    make use of ConverterExplicit. We have to do this for the Ogre classes for instance because they
+    define stream operators we don't particulary like.
 */
 
 namespace orxonox
@@ -387,34 +388,11 @@ namespace orxonox
         }
     };
 
-    // Declarations to avoid StringUtils.h include
-    _UtilExport std::string removeTrailingWhitespaces(const std::string& str);
-    _UtilExport std::string getLowercase(const std::string& str);
-
     // std::string to bool
     template <>
-    struct ConverterExplicit<std::string, bool>
+    struct _UtilExport ConverterExplicit<std::string, bool>
     {
-        static bool convert(bool* output, const std::string& input)
-        {
-            const std::string& stripped = getLowercase(removeTrailingWhitespaces(input));
-            if (stripped == "true" || stripped == "on" || stripped == "yes")
-            {
-                *output = true;
-                return true;
-            }
-            else if (stripped == "false" || stripped == "off" || stripped == "no")
-            {
-                *output = false;
-                return true;
-            }
-
-            std::istringstream iss(input);
-            if (iss >> (*output))
-                return true;
-            else
-                return false;
-        }
+        static bool convert(bool* output, const std::string& input);
     };
 }
 

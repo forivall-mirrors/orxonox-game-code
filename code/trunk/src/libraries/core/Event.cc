@@ -59,7 +59,7 @@ namespace orxonox
         this->bProcessingEvent_ = true;
 
         COUT(4) << "Processing event (EventState) : originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << "), activate: " << event.activate_ << ", name: " << event.name_ << ", statename: " << event.statename_ << ", object: " << object->getIdentifier()->getName() << " (&" << object << ")" << "." << std::endl;
-        
+
         // check if the originator is an instance of the requested class
         if (event.originator_->isA(this->subclass_))
         {

@@ -49,7 +49,6 @@ namespace orxonox // tolua_export
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
-            void registerVariables();
 
             inline bool isAlive() const
                 { return this->bAlive_; }
@@ -72,6 +71,16 @@ namespace orxonox // tolua_export
             inline float getInitialHealth() const
                 { return this->initialHealth_; }
 
+            inline void setShieldHealth(float shieldHealth)
+            { this->shieldHealth_ = shieldHealth; }
+            inline float getShieldHealth()
+            { return this->shieldHealth_; }
+
+            inline void setShieldAbsorption(float shieldAbsorption)
+            { this->shieldAbsorption_ = shieldAbsorption; }
+            inline float getShieldAbsorption()
+            { return this->shieldAbsorption_; }
+
             inline ControllableEntity* getLastHitOriginator() const
                 { return this->lastHitOriginator_; }
 
@@ -90,6 +99,8 @@ namespace orxonox // tolua_export
             void addWeaponPack(WeaponPack * wPack);
             void addWeaponPackXML(WeaponPack * wPack);
             WeaponPack * getWeaponPack(unsigned int index) const;
+
+            virtual void addedWeaponPack(WeaponPack* wPack) {}
 
             inline const WorldEntity* getWorldEntity() const
                 { return const_cast<Pawn*>(this); }
@@ -115,7 +126,7 @@ namespace orxonox // tolua_export
                 { this->aimPosition_ = position; }
             Vector3 getAimPosition()
                 { return this->aimPosition_; }
-                
+
             virtual const Vector3& getCarrierPosition(void)
                 { return this->getWorldPosition(); };
 
@@ -140,6 +151,8 @@ namespace orxonox // tolua_export
             float health_;
             float maxHealth_;
             float initialHealth_;
+            float shieldHealth_;
+            float shieldAbsorption_; // Has to be between 0 and 1
 
             Pawn* lastHitOriginator_;
 
@@ -151,6 +164,7 @@ namespace orxonox // tolua_export
             unsigned int numexplosionchunks_;
 
         private:
+            void registerVariables();
             inline void setWeaponSystem(WeaponSystem* weaponsystem)
                 { this->weaponSystem_ = weaponsystem; }
 

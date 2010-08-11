@@ -40,7 +40,7 @@
 
 namespace orxonox
 {
-    
+
     /**
     @brief
         Special PickupSpawner that is created whe a Pickupable is dropped. It just spawns one pickup, the one that was dropped.

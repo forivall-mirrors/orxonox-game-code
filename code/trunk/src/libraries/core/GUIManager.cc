@@ -320,13 +320,13 @@ namespace orxonox
         this->rootWindow_->setProperty("Image", image);
     }
 
-    void GUIManager::keyPressed(const KeyEvent& evt)
+    void GUIManager::buttonPressed(const KeyEvent& evt)
     {
         this->protectedCall(boost::bind(&CEGUI::System::injectKeyDown, _1, evt.getKeyCode()));
         this->protectedCall(boost::bind(&CEGUI::System::injectChar, _1, evt.getText()));
     }
 
-    void GUIManager::keyReleased(const KeyEvent& evt)
+    void GUIManager::buttonReleased(const KeyEvent& evt)
     {
         this->protectedCall(boost::bind(&CEGUI::System::injectKeyUp, _1, evt.getKeyCode()));
     }

@@ -100,13 +100,24 @@ namespace orxonox
         this->debrisEntity2_ = new MovableEntity(this);
         this->debrisEntity3_ = new MovableEntity(this);
         this->debrisEntity4_ = new MovableEntity(this);
+        
+        this->debrisEntity1_->setSyncMode(0);
+        this->debrisEntity2_->setSyncMode(0);
+        this->debrisEntity3_->setSyncMode(0);
+        this->debrisEntity4_->setSyncMode(0);
 
         this->debris1_ = new Model(this);
         this->debris2_ = new Model(this);
         this->debris3_ = new Model(this);
         this->debris4_ = new Model(this);
+        
+        this->debris1_->setSyncMode(0);
+        this->debris2_->setSyncMode(0);
+        this->debris3_->setSyncMode(0);
+        this->debris4_->setSyncMode(0);
 
         this->explosion_ = new StaticEntity(this);
+        this->explosion_->setSyncMode(0);
 
         this->debrisSmoke1_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
         this->debrisSmoke2_ =  new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
@@ -157,11 +168,13 @@ namespace orxonox
         effect->setDestroyAfterLife(true);
         effect->setSource("Orxonox/explosion2b");
         effect->setLifetime(4.0f);
+        effect->setSyncMode(0);
 
         ParticleSpawner* effect2 = new ParticleSpawner(this->getCreator());
         effect2->setDestroyAfterLife(true);
         effect2->setSource("Orxonox/smoke6");
         effect2->setLifetime(4.0f);
+        effect2->setSyncMode(0);
 
         this->explosion_->attach(effect);
         this->explosion_->attach(effect2);
@@ -180,6 +193,11 @@ namespace orxonox
 
             MovableEntity* partEntity1 = new MovableEntity(this);
             MovableEntity* partEntity2 = new MovableEntity(this);
+            
+            part1->setSyncMode(0);
+            part2->setSyncMode(0);
+            partEntity1->setSyncMode(0);
+            partEntity2->setSyncMode(0);
 
             partEntity1->setVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1))*rnd(10,100));
             partEntity1->setAngularVelocity(Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalisedCopy() * Degree(400).valueRadians());

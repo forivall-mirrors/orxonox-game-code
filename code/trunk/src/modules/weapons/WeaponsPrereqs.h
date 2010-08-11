@@ -42,7 +42,7 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(WEAPONS_STATIC_BUILD)
 #  ifdef WEAPONS_SHARED_BUILD
 #    define _WeaponsExport __declspec(dllexport)
 #  else

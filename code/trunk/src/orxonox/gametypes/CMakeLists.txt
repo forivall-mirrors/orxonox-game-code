@@ -5,4 +5,5 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   TeamBaseMatch.cc
   UnderAttack.cc
   Asteroids.cc
+  Dynamicmatch.cc
 )

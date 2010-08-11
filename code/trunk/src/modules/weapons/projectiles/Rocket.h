@@ -56,6 +56,7 @@ namespace orxonox
 
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
             void destroyObject();
+            void destructionEffect();
 
             virtual void moveFrontBack(const Vector2& value){}
             virtual void moveRightLeft(const Vector2& value){}
@@ -118,7 +119,6 @@ namespace orxonox
             Vector3 localAngularVelocity_;
             float damage_;
             bool bDestroy_;
-            ControllableEntity* originalControllableEntity_;
 
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;

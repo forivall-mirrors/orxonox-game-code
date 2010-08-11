@@ -27,9 +27,6 @@
 
 #################### Options ####################
 
-# Default linking is SHARED
-SET(ORXONOX_DEFAULT_LINK SHARED)
-
 # Use, i.e. don't skip the full RPATH for the build tree
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 

@@ -28,6 +28,8 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   GamestateManager.cc
   GamestateClient.cc
   GamestateHandler.cc
+  LANDiscoverable.cc
+  LANDiscovery.cc
   NetworkFunction.cc
   Host.cc
   Server.cc
@@ -47,6 +49,8 @@ SET_SOURCE_FILES(NETWORK_HDR_FILES
   GamestateHandler.h
   GamestateManager.h
   Host.h
+  LANDiscoverable.h
+  LANDiscovery.h
   NetworkFunction.h
   NetworkPrecompiledHeaders.h
   NetworkPrereqs.h
@@ -59,8 +63,9 @@ ADD_SUBDIRECTORY(packet)
 ADD_SUBDIRECTORY(synchronisable)
 
 ORXONOX_ADD_LIBRARY(network
-  DEFINE_SYMBOL
-    "NETWORK_SHARED_BUILD"
+  TOLUA_FILES
+    Client.h
+    LANDiscovery.h
   PCH_FILE
     NetworkPrecompiledHeaders.h
   LINK_LIBRARIES

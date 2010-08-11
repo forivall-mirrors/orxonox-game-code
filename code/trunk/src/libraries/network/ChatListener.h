@@ -37,9 +37,11 @@ namespace orxonox
     class _NetworkExport ChatListener : virtual public OrxonoxClass
     {
         public:
+            /* constructor, destructor */
             ChatListener();
             virtual ~ChatListener() {}
 
+            /* What to do with incoming chat */
             virtual void incomingChat(const std::string& message, unsigned int senderID) = 0;
     };
 }

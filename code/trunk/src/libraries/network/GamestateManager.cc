@@ -42,6 +42,7 @@
 
 #include <cassert>
 #include <queue>
+#include "util/Clock.h"
 // #include <boost/thread/mutex.hpp>
 
 #include "util/Debug.h"
@@ -157,7 +158,7 @@ namespace orxonox
       }
 
       clientGamestates.push(0);
-      finishGamestate( cid, &clientGamestates.back(), client, reference );
+      finishGamestate( cid, clientGamestates.back(), client, reference );
       //FunctorMember<GamestateManager>* functor =
 //       ExecutorMember<GamestateManager>* executor = createExecutor( createFunctor(&GamestateManager::finishGamestate, this) );
 //       executor->setDefaultValues( cid, &clientGamestates.back(), client, reference );
@@ -179,47 +180,52 @@ namespace orxonox
   }
 
 
-  void GamestateManager::finishGamestate( unsigned int clientID, packet::Gamestate** destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate ) {
+  void GamestateManager::finishGamestate( unsigned int clientID, packet::Gamestate*& destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate ) {
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
     // save the (undiffed) gamestate in the clients gamestate map
     //chose wheather the next gamestate is the first or not
 
-    packet::Gamestate *gs = gamestate->doSelection(clientID, 20000);
-//     packet::Gamestate *gs = new packet::Gamestate(*gamestate);
+//     packet::Gamestate *gs = gamestate->doSelection(clientID, 20000);
+//       packet::Gamestate* gs = new packet::Gamestate(*gamestate);
+//     packet::Gamestate* gs = gamestate;
+    packet::Gamestate *gs = new packet::Gamestate(*gamestate); //TODO: is this neccessary ?
 //     packet::Gamestate *gs = new packet::Gamestate();
 //     gs->collectData( id_, 0x1 );
 //     this->threadMutex_->lock();
     gamestateMap_[clientID][gamestate->getID()]=gs;
 //     this->threadMutex_->unlock();
+      Clock clock;
+      clock.capture();
 
     if(base)
     {
-
-//       COUT(3) << "diffing" << std::endl;
-//       packet::Gamestate* gs1  = gs;
-      packet::Gamestate *diffed = gs->diff(base);
-      //packet::Gamestate *gs2 = diffed->undiff(gs);
-//       assert(*gs == *gs2);
-      gs = diffed;
-//       packet::Gamestate* gs2 = gs->undiff(client);
-//       gs = new packet::Gamestate(*gs);
-//       assert(*gs1==*gs2);
+      packet::Gamestate *diffed1 = gs->diffVariables(base);
+      if( diffed1->getDataSize() == 0 )
+      {
+        delete diffed1;
+        destgamestate = 0;
+        return;
+      }
+      gs = diffed1;
     }
-    else{
+    else
+    {
       gs = new packet::Gamestate(*gs);
     }
 
 
     bool b = gs->compressData();
     assert(b);
-//     COUT(4) << "sending gamestate with id " << gs->getID();
+      clock.capture();
+      COUT(0) << "diff time: " << clock.getDeltaTime() << endl;
+//     COUT(5) << "sending gamestate with id " << gs->getID();
 //     if(gamestate->isDiffed())
-//     COUT(4) << " and baseid " << gs->getBaseID() << endl;
+//       COUT(5) << " and baseid " << gs->getBaseID() << endl;
 //     else
-//     COUT(4) << endl;
+//       COUT(5) << endl;
     gs->setClientID(clientID);
-    *destgamestate = gs;
+    destgamestate = gs;
   }
 
 

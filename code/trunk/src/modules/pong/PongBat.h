@@ -40,7 +40,6 @@ namespace orxonox
             PongBat(BaseObject* creator);
             virtual ~PongBat() {}
 
-            void registerVariables();
             virtual void tick(float dt);
 
             virtual void moveFrontBack(const Vector2& value);
@@ -64,6 +63,8 @@ namespace orxonox
                 { return this->length_; }
 
         private:
+            void registerVariables();
+
             float movement_;
             bool bMoveLocal_;
             float speed_;

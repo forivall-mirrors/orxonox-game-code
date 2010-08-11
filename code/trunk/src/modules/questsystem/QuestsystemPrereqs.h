@@ -42,7 +42,7 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(QUESTSYSTEM_STATIC_BUILD)
 #  ifdef QUESTSYSTEM_SHARED_BUILD
 #    define _QuestsystemExport __declspec(dllexport)
 #  else
@@ -76,8 +76,6 @@ namespace orxonox
     class QuestDescription;
     class QuestEffect;
     class QuestEffectBeacon;
-    class QuestGUI;
-    class QuestGUINode;
     class QuestHint;
     class QuestItem;
     class QuestListener;

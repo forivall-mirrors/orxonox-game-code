@@ -36,6 +36,8 @@ namespace orxonox {
 namespace packet {
 
 #define   PACKET_FLAGS_CHAT PacketFlag::Reliable
+
+/* Some lengths */
 #define   _PACKETID         0
 const int _PLAYERID     =   _PACKETID + sizeof(Type::Value);
 #define   _MESSAGELENGTH    _PLAYERID + sizeof(uint32_t)
@@ -44,12 +46,22 @@ const int _PLAYERID     =   _PACKETID + sizeof(Type::Value);
 Chat::Chat( const std::string& message, unsigned int playerID )
  : Packet()
 {
+  /* Add chat flag to packet flags */
   flags_ = flags_ | PACKET_FLAGS_CHAT;
+
+  /* set message length to length of input string + 1 */
   messageLength_ = message.length()+1;
+
+  /* allocate memory for the data */
   data_=new unsigned char[ getSize() ];
+
   *(Type::Value *)(data_ + _PACKETID ) = Type::Chat;
   *(unsigned int *)(data_ + _PLAYERID ) = playerID;
   *(unsigned int *)(data_ + _MESSAGELENGTH ) = messageLength_;
+
+  /* cast the hell out of the message string, and copy it into the
+   * data buffer.
+   */
   memcpy( data_+_MESSAGE, static_cast<void*>(const_cast<char*>(message.c_str())), messageLength_ );
 }
 

@@ -26,6 +26,7 @@ function P.onLoad()
             listbox:setItemSelectState(item, true)
         end
     end
+
 end
 
 function P.SingleplayerStartButton_clicked(e)

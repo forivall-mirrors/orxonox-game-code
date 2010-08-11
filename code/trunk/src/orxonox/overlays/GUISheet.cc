@@ -31,6 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/XMLPort.h"
+#include "core/GameMode.h"
 
 namespace orxonox
 {

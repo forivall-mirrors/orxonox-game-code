@@ -74,6 +74,7 @@ namespace orxonox
             this->setNamespace(this->creator_->getNamespace());
             this->setScene(this->creator_->getScene(), this->creator_->getSceneID());
             this->setGametype(this->creator_->getGametype());
+            this->setLevel(this->creator_->getLevel());
         }
         else
         {
@@ -82,6 +83,7 @@ namespace orxonox
             this->scene_ = 0;
             this->sceneID_ = OBJECTID_UNKNOWN;
             this->gametype_ = 0;
+            this->level_ = 0;
         }
     }
 
@@ -102,7 +104,7 @@ namespace orxonox
                 delete it->second;
         }
     }
-    
+
     /** @brief Adds an object which listens to the events of this object. */
     void BaseObject::registerEventListener(BaseObject* object)
     {
@@ -122,7 +124,7 @@ namespace orxonox
         XMLPortParam(BaseObject, "active", setActive, isActive, xmlelement, mode);
         XMLPortParam(BaseObject, "mainstate", setMainStateName, getMainStateName, xmlelement, mode);
         XMLPortParamTemplate(BaseObject, "template", addTemplate, getSingleTemplate, xmlelement, mode, const std::string&);
-        
+
         XMLPortObjectTemplate(BaseObject, Template, "templates", addTemplate, getTemplate, xmlelement, mode, Template*);
         XMLPortObject(BaseObject, BaseObject, "eventlisteners", addEventListener, getEventListener, xmlelement, mode);
 
@@ -193,6 +195,13 @@ namespace orxonox
     void BaseObject::addTemplate(Template* temp)
     {
         this->templates_.insert(temp);
+        if( temp->isLink() )
+        {
+          this->networkTemplateNames_.insert(temp->getLink());
+          assert( !Template::getTemplate(temp->getLink())->isLink() );
+        }
+        else
+          this->networkTemplateNames_.insert(temp->getName());
         temp->applyOn(this);
     }
 
@@ -362,7 +371,7 @@ namespace orxonox
     void BaseObject::processEvent(Event& event)
     {
         this->registerEventStates();
-        
+
         COUT(4) << this->getIdentifier()->getName() << " (&" << this << ") processing event. originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << "), activate: " << event.activate_ << ", name: " << event.name_ << ", statename: " << event.statename_ << "." << std::endl;
 
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(event.statename_);

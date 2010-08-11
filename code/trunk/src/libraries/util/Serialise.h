@@ -37,6 +37,7 @@
 #include "UtilPrereqs.h"
 
 #include <cstring>
+#include <set>
 #include "Math.h"
 #include "mbool.h"
 
@@ -51,6 +52,35 @@ namespace orxonox{
     /** @brief checks whether the variable of type T is the same as in the bytestream */
     template <class T> inline bool checkEquality( const T& variable, uint8_t* mem );
 
+  
+  // =========== char*
+    
+  inline uint32_t returnSize( char*& variable )
+  {
+    return strlen(variable)+1;
+  }
+      
+  inline void saveAndIncrease( char*& variable, uint8_t*& mem )
+  {
+    strcpy((char*)mem, variable);
+    mem += returnSize(variable);
+  }
+        
+  inline void loadAndIncrease( char*& variable, uint8_t*& mem )
+  {
+    if( variable )
+      delete variable;
+    uint32_t len = strlen((char*)mem)+1;
+    variable = new char[len];
+    strcpy((char*)variable, (char*)mem);
+    mem += len;
+  }
+          
+  inline bool checkEquality( char*& variable, uint8_t* mem )
+  {
+    return strcmp(variable, (char*)mem)==0;
+  }
+    
 // =================== Template specialisation stuff =============
 
 // =========== bool
@@ -392,7 +422,7 @@ namespace orxonox{
         double temp = static_cast<double>(variable);
         return memcmp(&temp, mem, sizeof(uint64_t))==0;
     }
-
+        
 // =========== string
 
     template <> inline uint32_t returnSize( const std::string& variable )
@@ -633,6 +663,71 @@ namespace orxonox{
     template <> inline bool checkEquality( const mbool& variable, uint8_t* mem )
     {
         return checkEquality( (unsigned char&)((mbool&)variable).getMemory(), mem );
+    }
+
+    // =========== std::set
+
+    template <class T> inline uint32_t returnSize( const std::set<T>& variable )
+    {
+        uint32_t tempsize = sizeof(uint32_t); // for the number of entries
+        for( typename std::set<T>::iterator it=((std::set<T>*)(&variable))->begin(); it!=((std::set<T>*)(&variable))->end(); ++it)
+            tempsize += returnSize( *it );
+        return tempsize;
+    }
+
+    template <class T> inline void saveAndIncrease(  const std::set<T>& variable, uint8_t*& mem )
+    {
+        typename std::set<T>::const_iterator it = variable.begin();
+        saveAndIncrease( (uint32_t)variable.size(), mem );
+        for( ; it!=variable.end(); ++it )
+            saveAndIncrease( *it, mem );
+    }
+
+    template <class T> inline void loadAndIncrease( const std::set<T>& variable, uint8_t*& mem )
+    {
+        uint32_t nrOfElements = 0;
+        loadAndIncrease( nrOfElements, mem );
+        typename std::set<T>::const_iterator it = variable.begin();
+        for( uint32_t i = 0; i<nrOfElements; ++i )
+        {
+            T temp;
+            loadAndIncrease(temp, mem);
+            while( it!=variable.end() && *it!=temp )
+            {
+                ((std::set<T>*)(&variable))->erase(it++);
+                ++it;
+            }
+            if( it==variable.end() )
+            {
+                ((std::set<T>*)(&variable))->insert(temp);
+            }
+        }
+    }
+
+    template <class T> inline bool checkEquality( const std::set<T>& variable, uint8_t* mem )
+    {
+        uint8_t* temp = mem;
+        uint32_t nrOfElements;
+        loadAndIncrease(nrOfElements, mem);
+        if( variable.size() == nrOfElements )
+        {
+            T tempT;
+            for( uint32_t i=0; i<nrOfElements; ++i )
+            {
+                loadAndIncrease(tempT, mem);
+                if( variable.find(tempT) == variable.end() )
+                {
+                    mem = temp;
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            mem = temp;
+            return false;
+        }
+        return true;
     }
 }
 

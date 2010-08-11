@@ -40,6 +40,7 @@
 
 #include <string>
 #include "core/BaseObject.h"
+#include "QuestManager.h"
 
 namespace orxonox
 {
@@ -70,10 +71,20 @@ namespace orxonox
             @brief Returns the QuestDescription of the QuestItem.
             @return Returns a pointer to the QuestDescription object of the QuestItem.
             */
-            inline const QuestDescription* getDescription(void) const
+            inline QuestDescription* getDescription(void) const
                 { return this->description_; }
 
-            static bool isId(const std::string & id); //!< Checks whether a given id is valid.
+            /**
+            @brief Check whether the QuestItem is registered with the QuestManager.
+            @return Returns true if the QuestItem is registered with the QuestManager.
+            */
+            inline bool isRegistered(void)
+                { return this->registered_; }
+            /**
+            @brief Set the QuestItem as being registered with the QuestManager.
+            */
+            inline void setRegistered(void)
+                { this->registered_ = true; }
 
         protected:
             void setId(const std::string & id); //!< Sets the id of the QuestItem.
@@ -88,6 +99,8 @@ namespace orxonox
         private:
             std::string id_; //!< Identifier. Should be of GUID form: http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
             QuestDescription* description_; //!< The QuestDescription of the QuestItem.
+
+            bool registered_;
 
     };
 

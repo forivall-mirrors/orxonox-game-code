@@ -42,7 +42,7 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_STATIC_BUILD)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(OBJECTS_STATIC_BUILD)
 #  ifdef OBJECTS_SHARED_BUILD
 #    define _ObjectsExport __declspec(dllexport)
 #  else

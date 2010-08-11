@@ -37,6 +37,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include <map>
+#include <set>
 #include <string>
 
 #include "core/ObjectListIterator.h"
@@ -47,6 +48,7 @@ namespace orxonox
 {
     class _OrxonoxExport Radar : public Tickable
     {
+        friend class RadarViewable;
     public:
         Radar();
         virtual ~Radar();
@@ -57,6 +59,8 @@ namespace orxonox
         RadarViewable::Shape addObjectDescription(const std::string& name);
 
         void listObjects() const;
+        const std::set<RadarViewable*>& getRadarObjects() const
+            { return this->radarObjects_; }
 
         void releaseFocus();
         void cycleFocus();
@@ -65,10 +69,14 @@ namespace orxonox
         Radar(Radar& instance);
 
         void updateFocus();
+        void addRadarObject(RadarViewable* rv);
+        void removeRadarObject(RadarViewable* rv);
+        void radarObjectChanged(RadarViewable* rv);
 
         ObjectListIterator<RadarViewable> itFocus_;
         RadarViewable* focus_;
         std::map<std::string, RadarViewable::Shape> objectTypes_;
+        std::set<RadarViewable*> radarObjects_;
         int objectTypeCounter_;
     };
 }

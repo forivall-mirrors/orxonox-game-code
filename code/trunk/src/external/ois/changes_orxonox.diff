@@ -1,3 +1,14 @@
+--- OISPrereqs.h	(revision 7141)
++++ OISPrereqs.h	(working copy)
+@@ -60,7 +60,7 @@
+ #		define OIS_XBOX_PLATFORM
+ #	else
+ #		define OIS_WIN32_PLATFORM
+-#		if defined( OIS_DYNAMIC_LIB )
++#		if !defined( OIS_STATIC_LIB )
+ #			undef _OISExport
+ 			//Ignorable Dll interface warning...
+ #           if !defined(OIS_MINGW_COMPILER)
 --- linux/EventHelpers.cpp	(revision 5668)
 +++ linux/EventHelpers.cpp	(working copy)
 @@ -35,6 +35,20 @@

@@ -54,7 +54,7 @@ namespace orxonox
             // Interacting with the default Firing sound
             void setDefaultSound(const std::string& soundPath);
             const std::string& getDefaultSound();
-
+            void setDefaultSoundWithVolume(const std::string& soundPath, const float soundVolume);
 
             // Munition
             inline Munition* getMunition() const

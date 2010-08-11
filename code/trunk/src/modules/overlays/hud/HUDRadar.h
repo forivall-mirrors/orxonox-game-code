@@ -64,13 +64,18 @@ namespace orxonox
         void setRadarSensitivity(float sensitivity) { this->sensitivity_ = sensitivity; }
 
         // RadarListener interface
-        void displayObject(RadarViewable* viewable, bool bIsMarked);
+        virtual void addObject(RadarViewable* viewable);
+        virtual void removeObject(RadarViewable* viewable);
+        virtual void objectChanged( RadarViewable* rv );
         void radarTick(float dt);
+
+        void gatherObjects();
 
         std::map<RadarViewable::Shape, std::string> shapeMaterials_;
 
-        std::vector<Ogre::PanelOverlayElement*> radarDots_;
-        std::vector<Ogre::PanelOverlayElement*>::iterator itRadarDots_;
+//         std::vector<Ogre::PanelOverlayElement*> radarDots_;
+//         std::vector<Ogre::PanelOverlayElement*>::iterator itRadarDots_;
+        std::map<RadarViewable*, Ogre::PanelOverlayElement*> radarObjects_;
         Ogre::PanelOverlayElement* marker_;
 
         float halfDotSizeDistance_;
