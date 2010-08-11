@@ -39,6 +39,8 @@
 namespace orxonox
 {
 
+    CreateUnloadableFactory(Notification);
+
     /**
     @brief
         Default constructor. Initializes the object.
@@ -55,7 +57,7 @@ namespace orxonox
     @param message
         The message of the Notification.
     */
-    Notification::Notification(const std::string & message) : BaseObject(NULL)
+    Notification::Notification(BaseObject* creator, const std::string & message) : BaseObject(creator)
     {
         this->message_ = message;
     }
@@ -66,6 +68,7 @@ namespace orxonox
     */
     Notification::~Notification()
     {
+
     }
 
     /**

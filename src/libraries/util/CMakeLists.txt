@@ -26,6 +26,7 @@ SET_SOURCE_FILES(UTIL_SRC_FILES
 COMPILATION_BEGIN StableCompilation.cc
   Clipboard.cc
   Clock.cc
+  Convert.cc
   CRC32.cc
   ExprParser.cc
   OutputHandler.cc
@@ -48,8 +49,6 @@ ENDIF()
 
 ORXONOX_ADD_LIBRARY(util
   FIND_HEADER_FILES
-  DEFINE_SYMBOL
-    "UTIL_SHARED_BUILD"
   LINK_LIBRARIES
     ${CEGUI_LIBRARY}
     ${OGRE_LIBRARY}

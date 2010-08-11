@@ -3,12 +3,17 @@
   include("stats.oxo")
   include("templates/spaceship_assff.oxt")
   include("templates/spaceship_H2.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
  name         = "Event testing"
  description  = "A simple level to test the event-system (with comments)"
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/skypanoramagen1"

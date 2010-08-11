@@ -77,7 +77,7 @@ namespace orxonox
 
         XMLPortEventSink(QuestEffectBeacon, BaseObject, "execute", execute, xmlelement, mode); //TODO: Change BaseObject to MultiTrigger as soon as MultiTrigger is the base of all triggers.
 
-        COUT(3) << "New QuestEffectBeacon created." << std::endl;
+        COUT(4) << "New QuestEffectBeacon created." << std::endl;
     }
 
     void QuestEffectBeacon::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
@@ -111,12 +111,12 @@ namespace orxonox
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
         MultiTriggerContainer* mTrigger = orxonox_cast<MultiTriggerContainer*>(trigger);
         Pawn* pawn = NULL;
-        
+
         //! If the trigger is neither a Playertrigger nor a MultiTrigger (i.e. a MultitriggerContainer) we can do anything with it.
         if(pTrigger == NULL && mTrigger == NULL)
             return false;
-        
-        // If the trigger is a PlayerTrigger.        
+
+        // If the trigger is a PlayerTrigger.
         if(pTrigger != NULL)
         {
             if(!pTrigger->isForPlayer())  //!< The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
@@ -124,7 +124,7 @@ namespace orxonox
             else
                 pawn = pTrigger->getTriggeringPlayer();
         }
-        
+
         // If the trigger is a MultiTrigger (i.e. a MultiTriggerContainer)
         if(mTrigger != NULL)
         {
@@ -133,7 +133,7 @@ namespace orxonox
 
         if(pawn == NULL)
         {
-            COUT(2) << "The QuestEffectBeacon was triggered by an entity other than a Pawn." << std::endl;
+            COUT(4) << "The QuestEffectBeacon was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
             return false;
         }
 
@@ -146,7 +146,7 @@ namespace orxonox
             return false;
         }
 
-        COUT(3) << "QuestEffectBeacon executed on player: " << player << " ." << std::endl;
+        COUT(4) << "QuestEffectBeacon executed on player: " << player << " ." << std::endl;
 
         bool check = QuestEffect::invokeEffects(player, this->effects_); //!< Invoke the QuestEffects on the PlayerInfo.
         if(check)
@@ -248,7 +248,7 @@ namespace orxonox
 
         this->effects_.push_back(effect);
 
-        COUT(3) << "A QuestEffect was added to a QuestEffectBeacon." << std::endl;
+        COUT(4) << "A QuestEffect was added to a QuestEffectBeacon." << std::endl;
         return true;
     }
 

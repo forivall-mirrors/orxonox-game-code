@@ -44,7 +44,6 @@ namespace orxonox
             virtual ~GlobalShader();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void changedVisibility();
 
@@ -52,6 +51,7 @@ namespace orxonox
                 { return this->shader_; }
 
         private:
+            void registerVariables();
             void changedCompositor();
 
             Shader shader_;

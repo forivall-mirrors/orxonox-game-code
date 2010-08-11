@@ -95,8 +95,6 @@ ORXONOX_ADD_LIBRARY(core
     input/InputManager.h
     input/KeyBinder.h
     input/KeyBinderManager.h
-  DEFINE_SYMBOL
-    "CORE_SHARED_BUILD"
   PCH_FILE
     CorePrecompiledHeaders.h
   LINK_LIBRARIES
@@ -111,8 +109,8 @@ ORXONOX_ADD_LIBRARY(core
     cpptcl_orxonox
     ogreceguirenderer_orxonox
     ois_orxonox
-    tinyxml++_orxonox
-    tolua++_orxonox
+    tinyxml_orxonox
+    tolua_orxonox
     util
   SOURCE_FILES
     ${CORE_SRC_FILES}

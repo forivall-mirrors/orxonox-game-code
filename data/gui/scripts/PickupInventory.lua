@@ -2,147 +2,177 @@
 
 local P = createMenuSheet("PickupInventory")
 
-P.carrierList = {}
 P.wrapper = nil
 P.detailsWindows = {}
+P.detailPickups = {}
+P.pickupsList = {}
+
+P.showing = false
+
+-- Design parameters
+P.imageHeight = 50
+P.detailImageSize = 100
+P.textHeight = 30
+P.buttonWidth = 85
 
 function P.onLoad()
-    carrierList = {}
+    P.wrapper = nil
+    P.detailsWindows = {}
+    P.detailPickups = {}
+    P.pickupsList = {}
 end
 
 function P.onShow()
     P.createInventory()
+    P.showing = true
 end
 
 function P.onHide()
-    P.cleanup()
+    P.showing = false
+    P.cleanup(true)
 end
 
 function P.update()
-    P.cleanup()
-    
+    if P.showing == false then
+        return
+    end
+
+    -- Update opened detail windows.
+    for k,v in pairs(P.detailsWindows) do
+        if v ~= nil then
+            local pickup = P.detailPickups[k]
+            if pickup ~= nil and pickup ~= 0 then
+                local useButton = winMgr:getWindow("orxonox/PickupInventory/Details" .. k .. "/UseButton")
+                local dropButton = winMgr:getWindow("orxonox/PickupInventory/Details" .. k .. "/DropButton")
+                if orxonox.PickupManager:getInstance():isValidPickup(pickup) == false then
+                    useButton:setEnabled(false)
+                    dropButton:setEnabled(false)
+                    P.detailPickups[k] = nil
+                else
+                    useButton:setEnabled(true)
+                    if pickup:isUsed() == true then
+                        useButton:setText("unuse")
+                        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseDetailButton_clicked")
+                        if pickup:isUsable() == false then
+                            useButton:setEnabled(false)
+                        end
+                    else
+                        useButton:setText("use")
+                        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseDetailButton_clicked")
+                        if pickup:isUnusable() == false then
+                            useButton:setEnabled(false)
+                        end
+                    end
+
+                    if pickup:isPickedUp() == false then
+                        useButton:setEnabled(false)
+                        dropButton:setEnabled(false)
+                        P.detailPickups[k] = nil
+                    end
+                end
+            end
+        end
+    end
+
+    -- Update main inventory.
+    P.cleanup(false)
     P.createInventory()
+    -- TODO: Recover scrolling position
+    
 end
 
 function P.createInventory()
     local pickupManager = orxonox.PickupManager:getInstance()
-    local carrier = pickupManager:getPawn()
     
     local root = winMgr:getWindow("orxonox/PickupInventory/Inventory")
     P.wrapper = winMgr:createWindow("MenuWidgets/ScrollablePane", "orxonox/PickupInventory/Inventory/Wrapper")
     P.wrapper:setSize(CEGUI.UVector2(CEGUI.UDim(1,0),CEGUI.UDim(1,0)))
     root:addChildWindow(P.wrapper)
     
-    P.carrierList = {}
-    
-    --Design parameters:
-    local space = 15
-    
-    P.getCarrierList(carrier)
+    P.pickupsList = {}
+
+    local numPickups = pickupManager:getNumPickups()
+    local counter = 1
     local offset = 0
-    for k,v in pairs(P.carrierList) do
-        local window = P.createCarrierBox(v,k)
+    while counter <= numPickups do
+        local pickup = pickupManager:popPickup()
+        table.insert(P.pickupsList, pickup)
+        local window = P.createPickupEntry(counter, pickup)
         window:setYPosition(CEGUI.UDim(0,offset))
-        offset = offset + window:getHeight():asAbsolute(1) + space
+        offset = offset + window:getHeight():asAbsolute(1)
         P.wrapper:addChildWindow(window)
+        counter = counter + 1
     end
+
 end
 
-function P.getCarrierList(carrier)
+function P.createPickupEntry(index, pickup)
+    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup)
 
-    -- TODO: Test for nil or 0?
-    if carrier == nil then
-        return
-    end
-    
-    table.insert(P.carrierList, carrier)
-    
-    local numCarriers = orxonox.PickupManager:getInstance():getNumCarrierChildren(carrier)
-    if numCarriers == 0 then
-        return
-    end
-    
-    for i=0,numCarriers-1,1 do
-        local child = orxonox.PickupManager:getInstance():getCarrierChild(i, carrier)
-        if child ~= nil then
-            P.getCarrierList(child)
-        end
-    end
-end
+    local name = "orxonox/PickupInventory/Box/Pickup" .. index
 
-function P.createCarrierBox(carrier, index)
+    local item = winMgr:createWindow("MenuWidgets/StaticText", name)
+    item:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, P.imageHeight)))
+    item:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
 
-    local name = "orxonox/PickupInventory/Carrier" .. index
-    
-    --Design parameters:
-    local imageHeight = 50
-    local textHeight = 30
-    local horizontalOffset = 20
-    local buttonWidth = 85
-    
-    local offset = 0
+    local image = winMgr:createWindow("MenuWidgets/StaticImage", name .. "/Image")
+    image:setProperty("Image", "set:PickupInventory image:" .. representation:getInventoryRepresentation())
+    image:setProperty("BackgroundEnabled", "set:False")
+    image:setProperty("FrameEnabled", "set:True")
+    image:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.imageHeight), CEGUI.UDim(0, P.imageHeight)))
+    item:addChildWindow(image)
 
-    local box = winMgr:createWindow("MenuWidgets/ScrollablePane", name .. "/Box")
-    box:setPosition(CEGUI.UVector2(CEGUI.UDim(0, horizontalOffset), CEGUI.UDim(0, 0)))
-    box:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, -horizontalOffset), CEGUI.UDim(1, 0)))
-    
-    local numPickups = orxonox.PickupManager:getInstance():getNumPickups(carrier)
-    for i=0,numPickups-1,1 do
-        local pickup = orxonox.PickupManager:getInstance():getPickupRepresentation(i, carrier)
-        
-        local item = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Box/Pickup" .. i)
-        item:setSize(CEGUI.UVector2(CEGUI.UDim(1, -horizontalOffset), CEGUI.UDim(0, imageHeight)))
-        item:setPosition(CEGUI.UVector2(CEGUI.UDim(0, horizontalOffset), CEGUI.UDim(0, offset)))
-        box:addChildWindow(item)
-        offset = offset + imageHeight+5
-        
-        local image = winMgr:createWindow("MenuWidgets/StaticImage", name .. "/Box/Pickup" .. i .. "/Image")
-        image:setProperty("Image", "set:PickupInventory image:" .. pickup:getInventoryRepresentation())
-        image:setProperty("BackgroundEnabled", "set:False")
-        image:setProperty("FrameEnabled", "set:True")
-        image:setSize(CEGUI.UVector2(CEGUI.UDim(0, imageHeight), CEGUI.UDim(0, imageHeight)))
-        item:addChildWindow(image)
-        
-        local title = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Box/Pickup" .. i .. "/Title")
-        title:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageHeight+5), CEGUI.UDim(0, (imageHeight-textHeight)/2)))
-        title:setSize(CEGUI.UVector2(CEGUI.UDim(0.4, 0), CEGUI.UDim(0, textHeight)))
-        title:setText(pickup:getPickupName())
-        title:setProperty("FrameEnabled", "set:False")
-        item:addChildWindow(title)
-        
-        local useButton = winMgr:createWindow("MenuWidgets/Button", name .. "/Box/Pickup" .. i .. "/UseButton")
-        useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, imageHeight+10),CEGUI.UDim(0, (imageHeight-textHeight)/2)))
-        useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, textHeight)))
+    local title = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Title")
+    title:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.imageHeight+5), CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
+    title:setSize(CEGUI.UVector2(CEGUI.UDim(0.3, 0), CEGUI.UDim(0, P.textHeight)))
+    title:setText(representation:getPickupName())
+    title:setProperty("FrameEnabled", "set:False")
+    item:addChildWindow(title)
+
+    local useButton = winMgr:createWindow("MenuWidgets/Button", name .. "/UseButton")
+    useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.3, P.imageHeight+10),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
+    useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
+    if pickup:isUsed() == false then
         useButton:setText("use")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseButton_clicked")
-        item:addChildWindow(useButton)
-        
-        local dropButton = winMgr:createWindow("MenuWidgets/Button", name .. "/Box/Pickup" .. i .. "/DropButton")
-        dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, imageHeight+15+buttonWidth),CEGUI.UDim(0, (imageHeight-textHeight)/2)))
-        dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, textHeight)))
-        dropButton:setText("drop")
-        orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropButton_clicked")
-        item:addChildWindow(dropButton)
-        
-        local detailsButton = winMgr:createWindow("MenuWidgets/Button", name .. "/Box/Pickup" .. i .. "/DetailsButton")
-        detailsButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.4, imageHeight+20+2*buttonWidth),CEGUI.UDim(0, (imageHeight-textHeight)/2)))
-        detailsButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, textHeight)))
-        detailsButton:setText("details")
-        orxonox.GUIManager:subscribeEventHelper(detailsButton, "Clicked", P.name .. ".InventoryDetailsButton_clicked")
-        item:addChildWindow(detailsButton)
+        if pickup:isUsable() == false then
+            useButton:setEnabled(false)
+        end
+    else
+        useButton:setText("unuse")
+        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseButton_clicked")
+        if pickup:isUnusable() == false then
+            useButton:setEnabled(false)
+        end
     end
-    
-    box:setHeight(CEGUI.UDim(0,offset))
-    
-    return box
+    item:addChildWindow(useButton)
+
+    local dropButton = winMgr:createWindow("MenuWidgets/Button", name .. "/DropButton")
+    dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.3, P.imageHeight+15+P.buttonWidth),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
+    dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
+    dropButton:setText("drop")
+    orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropButton_clicked")
+    item:addChildWindow(dropButton)
+
+    local detailsButton = winMgr:createWindow("MenuWidgets/Button", name .. "/DetailsButton")
+    detailsButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.3, P.imageHeight+20+2*P.buttonWidth),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
+    detailsButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
+    detailsButton:setText("details")
+    orxonox.GUIManager:subscribeEventHelper(detailsButton, "Clicked", P.name .. ".InventoryDetailsButton_clicked")
+    item:addChildWindow(detailsButton)
+
+    return item
 end
 
-function P.cleanup()
+function P.cleanup(destroyDetails)
     if P.wrapper ~= nil then
         winMgr:destroyWindow(P.wrapper)
     end
     
     --Destroy details windows.
+    if destroyDetails == false then
+        return
+    end
     for k,v in pairs(P.detailsWindows) do
         if v ~= nil then
             winMgr:destroyWindow(v)
@@ -150,31 +180,22 @@ function P.cleanup()
     end
 end
 
-function P.windowToCarrierHelper(e)
+function P.windowToPickupHelper(e)
     local we = CEGUI.toWindowEventArgs(e)
     local name = we.window:getName()
 
     local match = string.gmatch(name, "%d+")
-    local carrierNr = tonumber(match())
-    local pickupNr = tonumber(match())
+    local pickupIndex = tonumber(match())
 
-    local arguments = {}
-    arguments[1] = carrierNr
-    arguments[2] = pickupNr
-    return arguments
+    return pickupIndex
 end
 
-function P.createDetailsWindow(pickupIndex, carrierIndex)
-    local carrier = P.carrierList[carrierIndex]
-    local pickup = orxonox.PickupManager:getInstance():getPickupRepresentation(pickupIndex, carrier)
-    
-    local headerOffset = 35
-    --Design parameters
-    local titleHeight = 30
-    local imageSize = 100
-    local buttonWidth = 85
-    
-    local name = "orxonox/PickupInventory/Carrier" .. carrierIndex .. "/Pickup" .. pickupIndex .. "/Details" .. P.getNewDetailNumber()
+function P.createDetailsWindow(pickupIndex)
+    local pickup = P.pickupsList[pickupIndex]
+    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup)
+
+    local index = P.getNewDetailNumber()
+    local name = "orxonox/PickupInventory/Details" .. index
     
     local window = winMgr:createWindow("MenuWidgets/FrameWindow", name)
     window:setSize(CEGUI.UVector2(CEGUI.UDim(0.5,0),CEGUI.UDim(0.4,0)))
@@ -189,45 +210,57 @@ function P.createDetailsWindow(pickupIndex, carrierIndex)
     window:addChildWindow(wrapper)
     
     local title = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Title")
-    title:setText(pickup:getPickupName())
-    title:setHeight(CEGUI.UDim(0, titleHeight))
+    title:setText(representation:getPickupName())
+    title:setHeight(CEGUI.UDim(0, P.textHeight))
     title:setProperty("FrameEnabled", "set:False")
     title:setProperty("BackgroundEnabled", "set:False")
     wrapper:addChildWindow(title)
     
     local image = winMgr:createWindow("MenuWidgets/StaticImage", name .. "/Image")
-    image:setProperty("Image", "set:PickupInventory image:" .. pickup:getInventoryRepresentation())
+    image:setProperty("Image", "set:PickupInventory image:" .. representation:getInventoryRepresentation())
     image:setProperty("BackgroundEnabled", "set:False")
     image:setProperty("FrameEnabled", "set:True")
-    image:setSize(CEGUI.UVector2(CEGUI.UDim(0, imageSize), CEGUI.UDim(0, imageSize)))
-    image:setYPosition(CEGUI.UDim(0, titleHeight + 5))
+    image:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.detailImageSize), CEGUI.UDim(0, P.detailImageSize)))
+    image:setYPosition(CEGUI.UDim(0, P.textHeight + 5))
     wrapper:addChildWindow(image)
     
     local box = winMgr:createWindow("MenuWidgets/ScrollablePane", name .. "/Description")
-    box:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, -1*(imageSize + 10)),CEGUI.UDim(1, -(titleHeight + 5 + titleHeight + 20))))
-    box:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageSize + 10),CEGUI.UDim(0, titleHeight + 5)))
-    local description = winMgr:createWindow("TaharezLook/StaticText", name .. "/Description/Text")
-    description:setText(pickup:getPickupDescription())
+    box:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, -1*(P.detailImageSize + 10)),CEGUI.UDim(1, -(P.textHeight + 5 + P.textHeight + 20))))
+    box:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.detailImageSize + 10),CEGUI.UDim(0, P.textHeight + 5)))
+    local description = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Description/Text")
+    description:setText(representation:getPickupDescription())
     description:setProperty("HorzFormatting", "WordWrapLeftAligned")
     description:setProperty("VertFormatting", "TopAligned")
     box:addChildWindow(description)
     wrapper:addChildWindow(box)
-    
+
     local useButton = winMgr:createWindow("MenuWidgets/Button", name .. "/UseButton")
-    useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageSize+10),CEGUI.UDim(1, -40)))
-    useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, titleHeight)))
-    useButton:setText("use")
-    orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseButton_clicked")
+    useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.detailImageSize+10),CEGUI.UDim(1, -40)))
+    useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
+    if pickup:isUsed() == false then
+        useButton:setText("use")
+        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseDetailButton_clicked")
+        if pickup:isUsable() == false then
+            useButton:setEnabled(false)
+        end
+    else
+        useButton:setText("unuse")
+        orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseDetailButton_clicked")
+        if pickup:isUnusable() == false then
+            useButton:setEnabled(false)
+        end
+    end
     wrapper:addChildWindow(useButton)
     
     local dropButton = winMgr:createWindow("MenuWidgets/Button", name .. "/DropButton")
-    dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, imageSize+10+buttonWidth+10),CEGUI.UDim(1, -40)))
-    dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, buttonWidth), CEGUI.UDim(0, titleHeight)))
+    dropButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.detailImageSize+10+P.buttonWidth+10),CEGUI.UDim(1, -40)))
+    dropButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
     dropButton:setText("drop")
-    orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropButton_clicked")
+    orxonox.GUIManager:subscribeEventHelper(dropButton, "Clicked", P.name .. ".InventoryDropDetailButton_clicked")
     wrapper:addChildWindow(dropButton)
-    
-    table.insert(P.detailsWindows, window)
+
+    P.detailsWindows[index] = window
+    P.detailPickups[index] = pickup
     
 end
 
@@ -238,22 +271,42 @@ function P.getNewDetailNumber()
             number = k-1
         end
     end
-    return number
+    return number+1
 end
 
 function P.InventoryUseButton_clicked(e)
-    local arguments = P.windowToCarrierHelper(e)
-    orxonox.PickupManager:getInstance():usePickup(arguments[2], P.carrierList[arguments[1]], true)
+    local pickupIndex = P.windowToPickupHelper(e)
+    orxonox.PickupManager:getInstance():usePickup(P.pickupsList[pickupIndex], true)
+end
+
+function P.InventoryUnuseButton_clicked(e)
+    local pickupIndex = P.windowToPickupHelper(e)
+    orxonox.PickupManager:getInstance():usePickup(P.pickupsList[pickupIndex], false)
 end
 
 function P.InventoryDropButton_clicked(e)
-    local arguments = P.windowToCarrierHelper(e)
-    orxonox.PickupManager:getInstance():dropPickup(arguments[2], P.carrierList[arguments[1]])
+    local pickupIndex = P.windowToPickupHelper(e)
+    orxonox.PickupManager:getInstance():dropPickup(P.pickupsList[pickupIndex])
 end
 
 function P.InventoryDetailsButton_clicked(e)
-    local arguments = P.windowToCarrierHelper(e)
-    P.createDetailsWindow(arguments[2], arguments[1])
+    local pickupIndex = P.windowToPickupHelper(e)
+    P.createDetailsWindow(pickupIndex)
+end
+
+function P.InventoryUseDetailButton_clicked(e)
+    local pickupIndex = P.windowToPickupHelper(e)
+    orxonox.PickupManager:getInstance():usePickup(P.detailPickups[pickupIndex], true)
+end
+
+function P.InventoryUnuseDetailButton_clicked(e)
+    local pickupIndex = P.windowToPickupHelper(e)
+    orxonox.PickupManager:getInstance():usePickup(P.detailPickups[pickupIndex], false)
+end
+
+function P.InventoryDropDetailButton_clicked(e)
+    local pickupIndex = P.windowToPickupHelper(e)
+    orxonox.PickupManager:getInstance():dropPickup(P.detailPickups[pickupIndex])
 end
 
 function P.closeDetailWindow(e)
@@ -261,13 +314,12 @@ function P.closeDetailWindow(e)
     local we = CEGUI.toWindowEventArgs(e)
     local name = we.window:getName()
     local match = string.gmatch(name, "%d+")
-    local carrierNr = tonumber(match())
-    local pickupNr = tonumber(match())
     local detailNr = tonumber(match())
     
-    local window = P.detailsWindows[detailNr+1]
+    local window = P.detailsWindows[detailNr]
     winMgr:destroyWindow(window)
-    P.detailsWindows[detailNr+1] = nil
+    P.detailsWindows[detailNr] = nil
+    P.detailPickups[detailNr] = nil
 end
 
 function P.InventoryBackButton_clicked(e)

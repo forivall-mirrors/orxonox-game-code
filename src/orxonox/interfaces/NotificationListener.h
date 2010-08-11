@@ -46,6 +46,12 @@ namespace orxonox
 {
     class Notification;
 
+    /**
+    @brief
+        NotificationListener interface.
+    @author
+        Fabian 'x3n' Landau
+    */
     class _OrxonoxExport NotificationListener : virtual public OrxonoxClass
     {
         public:

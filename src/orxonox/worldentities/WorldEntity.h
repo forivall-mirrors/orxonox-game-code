@@ -93,7 +93,6 @@ namespace orxonox
             virtual ~WorldEntity();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             inline const Ogre::SceneNode* getNode() const
                 { return this->node_; }
@@ -104,7 +103,7 @@ namespace orxonox
             static const Vector3 RIGHT;
             static const Vector3 DOWN;
             static const Vector3 UP;
-            
+
             virtual void changedActivity(void);
             virtual void changedVisibility(void);
 
@@ -213,6 +212,8 @@ namespace orxonox
             Ogre::SceneNode* node_;
 
         private:
+            void registerVariables();
+            
             inline void lookAt_xmlport(const Vector3& target)
                 { this->lookAt(target); }
             inline void setDirection_xmlport(const Vector3& direction)
@@ -233,7 +234,7 @@ namespace orxonox
             unsigned int parentID_;
             std::set<WorldEntity*> children_;
             bool bDeleteWithParent_;
-            
+
             bool bActiveMem_;
             bool bVisibleMem_;
 

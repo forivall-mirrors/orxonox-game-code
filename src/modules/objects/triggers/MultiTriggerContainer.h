@@ -49,7 +49,7 @@ namespace orxonox
     */
     class _ObjectsExport MultiTriggerContainer : public BaseObject
     {
-        
+
         public:
             MultiTriggerContainer(BaseObject* creator); //!< Default constructor. Registers the object and creates an empty container.
             MultiTriggerContainer(BaseObject* creator, MultiTrigger* originator, BaseObject* data); //!< Constructor. Registers the object and sets the input values.
@@ -67,12 +67,12 @@ namespace orxonox
             */
             inline BaseObject* getData(void)
                 { return this->data_; }
-            
+
         private:
             MultiTrigger* originator_; //!< The originator.
             BaseObject* data_; //!< The data.
     };
-    
+
 }
 
 #endif // _MultiTriggerContainer_H__

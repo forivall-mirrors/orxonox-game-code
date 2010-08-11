@@ -4,6 +4,7 @@
   include("templates/spaceship_assff.oxt")
   include("templates/spaceship_H2.oxt")
   include("templates/spaceship_pirate.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
@@ -11,6 +12,10 @@
  description  = "Testing waypoings for AI controlled spaceships."
  gametype     = TeamDeathmatch
 >
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
   <Scene
    ambientlight = "0.7, 0.6, 0.6"
    skybox       = "Orxonox/skypanoramagen1"
@@ -33,44 +38,42 @@
     <TeamSpawnPoint team=2 position="1000,150,1500" direction="0,0,-1" spawnclass=SpaceShip pawndesign=spaceshipHtwo />
 
 
-<?lua
-for i = 1, 70, 1
-do ?>
-  <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 1000 + 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
-    <attached>
-      <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
-    </attached>
-  </MovableEntity>
-  <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * -1000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
-    <attached>
-      <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
-    </attached>
-  </MovableEntity>
+    <?lua
+      for i = 1, 70, 1 do
+    ?>
+      <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 1000 + 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
+        <attached>
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+        </attached>
+      </MovableEntity>
+      <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * -1000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
+        <attached>
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+        </attached>
+      </MovableEntity>
 
-  <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 1000 + 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
-    <attached>
-      <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
-    </attached>
-  </MovableEntity>
-  <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * -1000 - 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
-    <attached>
-      <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
-    </attached>
-  </MovableEntity>
+      <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 1000 + 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
+        <attached>
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+        </attached>
+      </MovableEntity>
+      <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * -1000 - 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
+        <attached>
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+        </attached>
+      </MovableEntity>
 
-  <MovableEntity position="<?lua print(math.random() * 1000 + 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
-    <attached>
-      <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
-    </attached>
-  </MovableEntity>
-  <MovableEntity position="<?lua print(math.random() * -1000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
-    <attached>
-      <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
-    </attached>
-  </MovableEntity>
-<?lua
-end
-?>
+      <MovableEntity position="<?lua print(math.random() * 1000 + 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
+        <attached>
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+        </attached>
+      </MovableEntity>
+      <MovableEntity position="<?lua print(math.random() * -1000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
+        <attached>
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+        </attached>
+      </MovableEntity>
+    <?lua end ?>
 
   </Scene>
 </Level>

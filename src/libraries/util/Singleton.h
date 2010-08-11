@@ -30,7 +30,9 @@
 #define __Util_Singleton_H__
 
 #include "UtilPrereqs.h"
+
 #include <cassert>
+#include <cstring>
 
 namespace orxonox
 {

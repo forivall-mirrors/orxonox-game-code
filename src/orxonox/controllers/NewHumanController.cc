@@ -216,6 +216,11 @@ namespace orxonox
                 {
                     if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
                         this->showOverlays();
+                    else if (this->getControllableEntity() &&  this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))
+                    {
+                        this->showOverlays();
+                        this->hideArrows();
+                    }
 
                     this->crossHairOverlay_->setPosition(Vector2(static_cast<float>(this->currentYaw_)/2*-1+.5f-overlaySize_/2, static_cast<float>(this->currentPitch_)/2*-1+.5f-overlaySize_/2));
 
@@ -363,14 +368,29 @@ namespace orxonox
 
         Ogre::RaySceneQueryResult& result = rsq->execute();
         Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
+        WorldEntity* myWe = static_cast<WorldEntity*>(this->getControllableEntity());
 
         Ogre::RaySceneQueryResult::iterator itr;
         for (itr = result.begin(); itr != result.end(); ++itr)
         {
-            if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" && itr->distance > 500)
+//             CCOUT(0) << "testing object as target" << endl;
+            if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" /*&& itr->distance > 500*/)
             {
                 // Try to cast the user pointer
-                WorldEntity* wePtr = dynamic_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
+                WorldEntity* wePtr;
+                try
+                {
+                    wePtr = dynamic_cast<WorldEntity*>(Ogre::any_cast<OrxonoxClass*>(itr->movable->getUserAny()));
+                }
+                catch (...)
+                {
+                    continue;
+                }
+
+                // make sure we don't shoot ourselves
+                if( wePtr==myWe )
+                    continue;
+
                 if (wePtr)
                 {
                     // go through all parents of object and look whether they are sightable or not
@@ -378,7 +398,7 @@ namespace orxonox
                     WorldEntity* parent = wePtr->getParent();
                     while (parent)
                     {
-                        if (this->targetMask_.isExcluded(parent->getIdentifier()))
+                        if (this->targetMask_.isExcluded(parent->getIdentifier()) || parent==myWe)
                         {
                             parent = parent->getParent();
                             continue;
@@ -429,7 +449,8 @@ namespace orxonox
         if (this->controlMode_ == 0 || (this->controllableEntity_ && this->controllableEntity_->isInMouseLook()))
             HumanController::yaw(value);
 
-        this->currentYaw_ = value.x;
+        if (this->getControllableEntity() && !this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))
+            this->currentYaw_ = value.x;
     }
 
     void NewHumanController::pitch(const Vector2& value)
@@ -438,7 +459,8 @@ namespace orxonox
         if (this->controlMode_ == 0 || (this->controllableEntity_ && this->controllableEntity_->isInMouseLook()))
             HumanController::pitch(value);
 
-        this->currentPitch_ = value.x;
+        if (this->getControllableEntity() && !this->getControllableEntity()->isExactlyA(ClassByString("FpsPlayer")))
+            this->currentPitch_ = value.x;
     }
 
     void NewHumanController::changeMode()
@@ -578,4 +600,9 @@ namespace orxonox
             this->arrowsOverlay4_->hide();
         }
     }
+
+
+
+
+
 }

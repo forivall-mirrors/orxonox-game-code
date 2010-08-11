@@ -40,7 +40,6 @@ namespace orxonox
             ConeCollisionShape(BaseObject* creator);
             virtual ~ConeCollisionShape();
 
-            void registerVariables();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             inline void setRadius(float value)
@@ -54,6 +53,8 @@ namespace orxonox
                 { return this->height_; }
 
         private:
+            void registerVariables();
+
             btCollisionShape* createNewShape() const;
 
             float radius_;

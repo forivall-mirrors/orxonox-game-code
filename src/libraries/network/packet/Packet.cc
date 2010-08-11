@@ -61,7 +61,8 @@ BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::NoAllocate) == static_cast<int>
 
 std::map<size_t, Packet *> Packet::packetMap_;
 
-Packet::Packet(){
+Packet::Packet()
+{
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = Direction::Outgoing;
   clientID_=0;
@@ -70,11 +71,8 @@ Packet::Packet(){
   bDataENetAllocated_ = false;
 }
 
-void blub(ENetPacket *packet){
-  COUT(4) << "blubb" << std::endl;
-}
-
-Packet::Packet(uint8_t *data, unsigned int clientID){
+Packet::Packet(uint8_t *data, unsigned int clientID)
+{
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = Direction::Incoming;
   clientID_=clientID;

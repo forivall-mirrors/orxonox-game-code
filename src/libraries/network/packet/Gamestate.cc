@@ -44,32 +44,54 @@ namespace packet {
 
 #define PACKET_FLAG_GAMESTATE  PacketFlag::Reliable
 
-
-Gamestate::Gamestate()
+inline bool memzero( uint8_t* data, uint32_t datalength)
 {
-  flags_ = flags_ | PACKET_FLAG_GAMESTATE;
-  header_ = 0;
+  uint64_t* d = (uint64_t*)data;
+
+  for( unsigned int i=0; i<datalength/8; i++ )
+  {
+    if( *(d+i) != 0 )
+      return false;
+  }
+  // now process the rest (when datalength isn't a multiple of 4)
+  for( unsigned int j = 8*(datalength/8); j<datalength; j++ )
+  {
+    if( *(data+j) != 0 )
+      return false;
+  }
+  return true;
 }
 
+
+Gamestate::Gamestate():
+  header_(0)
+{
+  flags_ = flags_ | PACKET_FLAG_GAMESTATE;
+}
+
+
 Gamestate::Gamestate(uint8_t *data, unsigned int clientID):
-    Packet(data, clientID)
+  Packet(data, clientID)
 {
   flags_ = flags_ | PACKET_FLAG_GAMESTATE;
   header_ = new GamestateHeader(data_);
 }
+
 
 Gamestate::Gamestate(uint8_t *data)
 {
   flags_ = flags_ | PACKET_FLAG_GAMESTATE;
-  data_=data;
+  data_ = data;
   header_ = new GamestateHeader(data_);
 }
 
+
 Gamestate::Gamestate(const Gamestate& g) :
-    Packet( *(Packet*)&g )
+    Packet( *(Packet*)&g ), nrOfVariables_(0)
 {
   flags_ = flags_ | PACKET_FLAG_GAMESTATE;
   header_ = new GamestateHeader(data_);
+  sizes_ = g.sizes_;
 }
 
 
@@ -78,6 +100,7 @@ Gamestate::~Gamestate()
   if( header_ )
     delete header_;
 }
+
 
 bool Gamestate::collectData(int id, uint8_t mode)
 {
@@ -90,7 +113,8 @@ bool Gamestate::collectData(int id, uint8_t mode)
   if(size==0)
     return false;
   data_ = new uint8_t[size + GamestateHeader::getSize()];
-  if(!data_){
+  if(!data_)
+  {
     COUT(2) << "GameStateManager: could not allocate memory" << std::endl;
     return false;
   }
@@ -100,19 +124,21 @@ bool Gamestate::collectData(int id, uint8_t mode)
   header_ = new GamestateHeader(data_);
 
   //start collect data synchronisable by synchronisable
-  uint8_t *mem=data_;
+  uint8_t *mem = data_; // in this stream store all data of the variables and the headers of the synchronisable
   mem += GamestateHeader::getSize();
   ObjectList<Synchronisable>::iterator it;
-  for(it = ObjectList<Synchronisable>::begin(); it; ++it){
+  for(it = ObjectList<Synchronisable>::begin(); it; ++it)
+  {
 
 //     tempsize=it->getSize(id, mode);
 
-    tempsize = it->getData(mem, id, mode);
+    tempsize = it->getData(mem, this->sizes_, id, mode);
     if ( tempsize != 0 )
       dataVector_.push_back( obj(it->getObjectID(), it->getCreatorID(), tempsize, mem-data_) );
 
 #ifndef NDEBUG
-    if(currentsize+tempsize > size){
+    if(currentsize+tempsize > size)
+    {
       assert(0); // if we don't use multithreading this part shouldn't be neccessary
       // start allocate additional memory
       COUT(3) << "G.St.Man: need additional memory" << std::endl;
@@ -147,17 +173,18 @@ bool Gamestate::collectData(int id, uint8_t mode)
   return true;
 }
 
+
 bool Gamestate::spreadData(uint8_t mode)
 {
   COUT(4) << "processing gamestate with id " << header_->getID() << endl;
   assert(data_);
   assert(!header_->isCompressed());
-  assert(!header_->isDiffed());
   uint8_t *mem=data_+GamestateHeader::getSize();
   Synchronisable *s;
 
   // update the data of the objects we received
-  while(mem < data_+GamestateHeader::getSize()+header_->getDataSize()){
+  while(mem < data_+GamestateHeader::getSize()+header_->getDataSize())
+  {
     SynchronisableHeader objectheader(mem);
 
     s = Synchronisable::getSynchronisable( objectheader.getObjectID() );
@@ -169,7 +196,7 @@ bool Gamestate::spreadData(uint8_t mode)
       }
       else
       {
-        mem += objectheader.getDataSize();
+        mem += objectheader.getDataSize() + ( objectheader.isDiffed() ? SynchronisableHeaderLight::getSize() : SynchronisableHeader::getSize() );
       }
     }
     else
@@ -180,22 +207,29 @@ bool Gamestate::spreadData(uint8_t mode)
   }
    // In debug mode, check first, whether there are no duplicate objectIDs
 #ifndef NDEBUG
-  if(this->getID()%1000==0){
+  if(this->getID()%1000==1)
+  {
     std::list<uint32_t> v1;
     ObjectList<Synchronisable>::iterator it;
-    for (it = ObjectList<Synchronisable>::begin(); it != ObjectList<Synchronisable>::end(); ++it) {
-      if (it->getObjectID() == OBJECTID_UNKNOWN) {
-        if (it->objectMode_ != 0x0) {
+    for (it = ObjectList<Synchronisable>::begin(); it != ObjectList<Synchronisable>::end(); ++it)
+    {
+      if (it->getObjectID() == OBJECTID_UNKNOWN)
+      {
+        if (it->objectMode_ != 0x0)
+        {
           COUT(0) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << std::endl;
           COUT(0) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
           COUT(0) << "Objects class: " << it->getIdentifier()->getName() << std::endl;
           assert(false);
         }
       }
-      else {
+      else
+      {
         std::list<uint32_t>::iterator it2;
-        for (it2 = v1.begin(); it2 != v1.end(); ++it2) {
-          if (it->getObjectID() == *it2) {
+        for (it2 = v1.begin(); it2 != v1.end(); ++it2)
+        {
+          if (it->getObjectID() == *it2)
+          {
             COUT(0) << "Found duplicate objectIDs on the client!" << std::endl
                     << "Are you sure you don't create a Sychnronisable objcect with 'new' \
                         that doesn't have objectMode = 0x0?" << std::endl;
@@ -210,6 +244,7 @@ bool Gamestate::spreadData(uint8_t mode)
   return true;
 }
 
+
 uint32_t Gamestate::getSize() const
 {
   assert(data_);
@@ -221,7 +256,9 @@ uint32_t Gamestate::getSize() const
   }
 }
 
-bool Gamestate::operator==(packet::Gamestate gs){
+
+bool Gamestate::operator==(packet::Gamestate gs)
+{
   uint8_t *d1 = data_+GamestateHeader::getSize();
   uint8_t *d2 = gs.data_+GamestateHeader::getSize();
   GamestateHeader* h1 = new GamestateHeader(data_);
@@ -232,11 +269,11 @@ bool Gamestate::operator==(packet::Gamestate gs){
   return memcmp(d1, d2, h1->getDataSize())==0;
 }
 
+
 bool Gamestate::process()
 {
   return GamestateHandler::addGamestate(this, getClientID());
 }
-
 
 
 bool Gamestate::compressData()
@@ -252,7 +289,8 @@ bool Gamestate::compressData()
   uint8_t *source = data_ + GamestateHeader::getSize();
   int retval;
   retval = compress( dest, &buffer, source, (uLong)(header_->getDataSize()) );
-  switch ( retval ) {
+  switch ( retval )
+  {
     case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
     case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; return false;
     case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl; return false;
@@ -269,9 +307,11 @@ bool Gamestate::compressData()
   data_ = ndata;
   header_->setCompSize( buffer );
   header_->setCompressed( true );
-  COUT(5) << "gamestate compress datasize: " << header_->getDataSize() << " compsize: " << header_->getCompSize() << std::endl;
+  COUT(0) << "gamestate compress datasize: " << header_->getDataSize() << " compsize: " << header_->getCompSize() << std::endl;
   return true;
 }
+
+
 bool Gamestate::decompressData()
 {
   assert(data_);
@@ -288,7 +328,8 @@ bool Gamestate::decompressData()
   int retval;
   uLongf length=bufsize;
   retval = uncompress( dest, &length, source, (uLong)compsize );
-  switch ( retval ) {
+  switch ( retval )
+  {
     case Z_OK: COUT(5) << "successfully decompressed" << std::endl; break;
     case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return false;
     case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return false;
@@ -300,12 +341,14 @@ bool Gamestate::decompressData()
   header_ = new GamestateHeader( data_, header_ );
   delete temp;
 
-  if (this->bDataENetAllocated_){
+  if (this->bDataENetAllocated_)
+  {
     // Memory was allocated by ENet. --> We let it be since enet_packet_destroy will
     // deallocated it anyway. So data and packet stay together.
     this->bDataENetAllocated_ = false;
   }
-  else{
+  else
+  {
     // We allocated the memory in the first place (unlikely). So we destroy the old data
     // and overwrite it with the new decompressed data.
     delete[] this->data_;
@@ -319,44 +362,223 @@ bool Gamestate::decompressData()
   return true;
 }
 
-/*Gamestate *Gamestate::diff(Gamestate *base)
+
+Gamestate* Gamestate::diffVariables(Gamestate *base)
 {
-  assert(data_);
-  assert(!header_->isCompressed());
+  assert(this && base); assert(data_ && base->data_);
+  assert(!header_->isCompressed() && !base->header_->isCompressed());
   assert(!header_->isDiffed());
-  GamestateHeader diffHeader(base->data_);
-  uint8_t *basep = GAMESTATE_START(base->data_), *gs = GAMESTATE_START(this->data_);
-  uint32_t of=0; // pointers offset
-  uint32_t dest_length=0;
-  dest_length=header_->getDataSize();
-  if(dest_length==0)
-    return NULL;
-  uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
-  uint8_t *dest = ndata + GamestateHeader::getSize();
-  while(of < diffHeader.getDataSize() && of < header_->getDataSize()){
-    *(dest+of)=*(basep+of)^*(gs+of); // do the xor
-    ++of;
-  }
-  if(diffHeader.getDataSize()!=header_->getDataSize()){
-    uint8_t n=0;
-    if(diffHeader.getDataSize() < header_->getDataSize()){
-      while(of<dest_length){
-        *(dest+of)=n^*(gs+of);
-        of++;
+
+
+  // *** first do a raw diff of the two gamestates
+
+  uint8_t *baseData = GAMESTATE_START(base->data_);
+  uint8_t *origData = GAMESTATE_START(this->data_);
+  uint32_t origLength = header_->getDataSize();
+  uint32_t baseLength = base->header_->getDataSize();
+
+  assert( origLength && baseLength );
+
+  uint8_t *nData = new uint8_t[origLength + GamestateHeader::getSize() + sizeof(uint32_t)*this->nrOfVariables_]; // this is the maximum size needed in the worst case
+  uint8_t *dest = GAMESTATE_START(nData);
+
+  uint32_t baseOffset = 0; //offset in the diffed stream
+  uint32_t origOffset = 0; //offset in the new stream with removed 0's
+  std::vector<uint32_t>::iterator sizes = this->sizes_.begin();
+
+  while( origOffset < origLength )
+  {
+    //iterate through all objects
+
+    SynchronisableHeader h(origData+origOffset);
+
+    // Find (if possible) the current object in the datastream of the old gamestate
+    // Start at the current offset position
+    if(baseOffset >= baseLength)
+      baseOffset = 0;
+    uint8_t* temp = baseData + baseOffset;
+    uint32_t objectID = h.getObjectID();
+    assert(temp < baseData+baseLength);
+    assert(dest < nData + origLength + GamestateHeader::getSize() + sizeof(uint32_t)*this->nrOfVariables_);
+    assert(sizes != this->sizes_.end());
+    while ( temp < baseData+baseLength )
+    {
+      SynchronisableHeader htemp(temp);
+      assert( htemp.getDataSize()!=0 );
+      if ( htemp.getObjectID() == objectID )
+      {
+        assert( h.getClassID() == htemp.getClassID() );
+        goto DODIFF;
       }
+//       {
+//         SynchronisableHeader htemp2(temp+htemp.getDataSize()+SynchronisableHeader::getSize());
+//         if( temp+htemp.getDataSize()+SynchronisableHeader::getSize() < baseData+baseLength )
+//         {
+//           assert(htemp2.getClassID()<500);
+//           assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
+//           assert(htemp2.isDiffed()==false);
+//         }
+//       }
+      temp += htemp.getDataSize()+SynchronisableHeader::getSize();
+        
+    }
+    // If not found start looking at the beginning
+    assert( temp==baseData+baseLength );
+    temp = baseData;
+//     {
+//       SynchronisableHeader htemp2(temp);
+//       if( temp < baseData+baseLength )
+//       {
+//         assert(htemp2.getClassID()<500);
+//         assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
+//         assert(htemp2.isDiffed()==false);
+//       }
+//     }
+    while ( temp < baseData+baseOffset )
+    {
+      SynchronisableHeader htemp(temp);
+      if ( htemp.getObjectID() == objectID )
+      {
+        assert( h.getClassID() == htemp.getClassID() );
+        goto DODIFF;
+      }
+//       {
+//         SynchronisableHeader htemp2(temp+htemp.getDataSize()+SynchronisableHeader::getSize());
+//         if( temp+htemp.getDataSize()+SynchronisableHeader::getSize() < baseData+baseLength )
+//         {
+//           assert(htemp2.getClassID()<500);
+//           assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
+//           assert(htemp2.isDiffed()==false);
+//         }
+//       }
+      temp += htemp.getDataSize()+SynchronisableHeader::getSize();
+    }
+    // Object is new, thus never transmitted -> just copy over
+    goto DOCOPY;
+
+
+DODIFF:
+    {
+//       COUT(4) << "dodiff" << endl;
+//       if(baseOffset==0)
+//       {
+//         assert(origOffset==0);
+//       }
+      uint32_t objectOffset = SynchronisableHeader::getSize(); // offset inside the object in the origData and baseData
+      // Check whether the whole object stayed the same
+      if( memcmp( origData+origOffset+objectOffset, temp+objectOffset, h.getDataSize()) == 0 )
+      {
+//         COUT(4) << "skip object" << Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() << endl;
+        origOffset += objectOffset+ h.getDataSize(); // skip the whole object
+        baseOffset = temp + h.getDataSize()+SynchronisableHeader::getSize() - baseData;
+        sizes += Synchronisable::getSynchronisable(h.getObjectID())->getNrOfVariables();
+      }
+      else
+      {
+//         if( Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() == "Bot" )
+//           COUT(0) << "blub" << endl;
+//         COUT(4) << "object diff: " << Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() << endl;
+//         COUT(4) << "diff " << h.getObjectID() << ":";
+        // Now start to diff the Object
+        SynchronisableHeaderLight h2(dest);
+        h2 = h; // copy over the objectheader
+        VariableID variableID = 0;
+        uint32_t newObjectOffset = SynchronisableHeaderLight::getSize();
+        // iterate through all variables
+        while( objectOffset < h.getDataSize()+SynchronisableHeader::getSize() )
+        {
+          // check whether variable changed and write id and copy over variable to the new stream
+          // otherwise skip variable
+          assert(sizes != this->sizes_.end());
+          uint32_t varSize = *sizes;
+          assert( varSize == Synchronisable::getSynchronisable(h.getObjectID())->getVarSize(variableID) );
+          if ( varSize != 0 )
+          {
+            if ( memcmp(origData+origOffset+objectOffset, temp+objectOffset, varSize) != 0 )
+            {
+//               COUT(4) << "copy variable" << endl;
+              *(VariableID*)(dest+newObjectOffset) = variableID; // copy over the variableID
+              newObjectOffset += sizeof(VariableID);
+              memcpy( dest+newObjectOffset, origData+origOffset+objectOffset, varSize );
+              newObjectOffset += varSize;
+              objectOffset += varSize;
+            }
+            else
+            {
+//               COUT(4) << "skip variable" << endl;
+              objectOffset += varSize;
+            }
+          }
+//           else
+//             COUT(4) << "varsize 0" << endl;
+
+          ++variableID;
+          ++sizes;
+        }
+        
+        if( Synchronisable::getSynchronisable(h.getObjectID())->getNrOfVariables() != variableID )
+          sizes += Synchronisable::getSynchronisable(h.getObjectID())->getNrOfVariables() - variableID;
+//         COUT(4) << endl;
+        h2.setDiffed(true);
+        h2.setDataSize(newObjectOffset-SynchronisableHeaderLight::getSize());
+        assert(objectOffset == h.getDataSize()+SynchronisableHeader::getSize());
+        origOffset += objectOffset;
+//         baseOffset += temp + h.getDataSize()+SynchronisableHeader::getSize() - baseData;
+        //baseOffset += objectOffset;
+//         SynchronisableHeader htemp(temp);
+//         baseOffset += SynchronisableHeader::getSize() + htemp.getDataSize();
+//         {
+//           SynchronisableHeader htemp2( baseData+(temp-baseData+objectOffset) );
+//           if( baseData+(temp-baseData+objectOffset) < baseData+baseLength )
+//           {
+//             assert(htemp2.getClassID()<500);
+//             assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
+//             assert(htemp2.isDiffed()==false);
+//           }
+//         }
+        baseOffset = temp-baseData + objectOffset;
+        dest += newObjectOffset;
+      }
+
+      continue;
+    }
+
+DOCOPY:
+    {
+//       COUT(4) << "docopy" << endl;
+      // Just copy over the whole Object
+      memcpy( dest, origData+origOffset, h.getDataSize()+SynchronisableHeader::getSize() );
+      dest += h.getDataSize()+SynchronisableHeader::getSize();
+      origOffset += h.getDataSize()+SynchronisableHeader::getSize();
+      assert( Synchronisable::getSynchronisable(h.getObjectID()) );
+//       COUT(4) << "copy " << h.getObjectID() << endl;
+//       COUT(4) << "copy " << h.getObjectID() << ":";
+      //sizes += Synchronisable::getSynchronisable(h.getObjectID())->getNrOfVariables();
+      for( unsigned int i = 0; i < Synchronisable::getSynchronisable(h.getObjectID())->getNrOfVariables(); ++i )
+      {
+//         COUT(4) << " " << *sizes;
+        ++sizes;
+      }
+//       COUT(4) << endl;
+      assert(sizes != this->sizes_.end() || origOffset>=origLength);
+      continue;
     }
   }
 
-  Gamestate *g = new Gamestate(ndata, getClientID());
+
+  Gamestate *g = new Gamestate(nData, getClientID());
+  assert(g->header_);
   *(g->header_) = *header_;
-  g->header_->setDiffed( true );
   g->header_->setBaseID( base->getID() );
+  g->header_->setDataSize(dest - nData - GamestateHeader::getSize());
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
+  assert(!g->isCompressed());
   return g;
-}*/
+}
 
-Gamestate *Gamestate::diff(Gamestate *base)
+
+Gamestate* Gamestate::diffData(Gamestate *base)
 {
   assert(this && base); assert(data_ && base->data_);
   assert(!header_->isCompressed() && !base->header_->isCompressed());
@@ -392,7 +614,8 @@ Gamestate *Gamestate::diff(Gamestate *base)
   return g;
 }
 
-Gamestate *Gamestate::undiff(Gamestate *base)
+
+Gamestate* Gamestate::undiff(Gamestate *base)
 {
   assert(this && base); assert(data_ && base->data_);
   assert(!header_->isCompressed() && !base->header_->isCompressed());
@@ -422,59 +645,6 @@ Gamestate *Gamestate::undiff(Gamestate *base)
 }
 
 
-// Gamestate *Gamestate::diff(Gamestate *base)
-// {
-//   assert(data_);
-//   assert(!header_->isCompressed());
-//   assert(!header_->isDiffed());
-//   GamestateHeader diffHeader(base->data_);
-//   uint8_t *basep = GAMESTATE_START(base->data_), *gs = GAMESTATE_START(this->data_);
-//   uint32_t of=0; // pointers offset
-//   uint32_t dest_length=0;
-//   dest_length=header_->getDataSize();
-//   if(dest_length==0)
-//     return NULL;
-//   uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
-//   uint8_t *dest = ndata + GamestateHeader::getSize();
-//
-//
-//   // LOOP-UNROLLED DIFFING
-//   uint32_t *dest32 = (uint32_t*)dest, *base32 = (uint32_t*)basep, *gs32 = (uint32_t*)gs;
-//   // diff in 4-byte steps
-//   while( of < (uint32_t)(header_->getDataSize())/4 ){
-//     if( of < (uint32_t)(diffHeader.getDataSize())/4 )
-//     {
-//       *(dest32+of)=*(base32+of) ^ *(gs32+of); // do the xor
-//       ++of;
-//     }
-//     else
-//     {
-//       *(dest32+of)=*(gs32+of); // same as 0 ^ *(gs32+of)
-//       ++of;
-//     }
-//   }
-//   for( unsigned int of2 = 0; of2 < header_->getDataSize()%4; ++of2 )
-//   {
-//     if( of*4+of2 < diffHeader.getDataSize() )
-//     {
-//       *(dest+4*of+of2)=*(basep+4*of+of2) ^ *(gs+4*of+of2); // do the xor
-//     }
-//     else
-//     {
-//       *(dest+4*of+of2)=*(gs+4*of+of2); // same as 0 ^ *(gs32+of)
-//     }
-//   }
-//
-//   Gamestate *g = new Gamestate(ndata, getClientID());
-//   *(g->header_) = *header_;
-//   g->header_->setDiffed( true );
-//   g->header_->setBaseID( base->getID() );
-//   g->flags_=flags_;
-//   g->packetDirection_ = packetDirection_;
-//   return g;
-// }
-
-
 void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uint32_t datalength, uint32_t baselength)
 {
   uint64_t* gd = (uint64_t*)data;
@@ -500,6 +670,7 @@ void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uin
   }
   assert(j==datalength);
 }
+
 
 Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize){
   assert(data_);
@@ -528,25 +699,23 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
 //   std::list<obj>::iterator itt;
 //   COUT(0) << "myvector contains:";
 //   for ( itt=dataVector_.begin() ; itt!=dataVector_.end(); itt++ )
-//     COUT(0) << ' ' << (*itt).objID;
+//     COUT(0) << " " << (*itt).objID;
 //   COUT(0) << endl;
   for(it=dataVector_.begin(); it!=dataVector_.end();){
     SynchronisableHeader oldobjectheader(origdata);
     SynchronisableHeader newobjectheader(newdata);
-    if ( it->objSize == 0 )
+    if ( (*it).objSize == 0 )
     {
       ++it;
       continue;
     }
-    objectsize = oldobjectheader.getDataSize();
+    objectsize = oldobjectheader.getDataSize()+SynchronisableHeader::getSize();
     objectOffset=SynchronisableHeader::getSize(); //skip the size and the availableData variables in the objectheader
-    if ( it->objID == oldobjectheader.getObjectID() ){
+    if ( (*it).objID == oldobjectheader.getObjectID() ){
       memcpy(newdata, origdata, objectsize);
-      assert(newobjectheader.isDataAvailable()==true);
       ++it;
     }else{
       newobjectheader = oldobjectheader;
-      newobjectheader.setDataAvailable(false);
       memset(newdata+objectOffset, 0, objectsize-objectOffset);
     }
     newdata += objectsize;
@@ -558,7 +727,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
   while ( origsize < header_->getDataSize() )
   {
     SynchronisableHeader oldobjectheader(origdata);
-    objectsize = oldobjectheader.getDataSize();
+    objectsize = oldobjectheader.getDataSize()+SynchronisableHeader::getSize();
     origdata += objectsize;
     origsize += objectsize;
   }
@@ -570,54 +739,22 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
 }
 
 
-/*Gamestate *Gamestate::undiff(Gamestate *base)
-{
-  assert(this && base);assert(data_);
-  assert(header_->isDiffed());
-  assert(!header_->isCompressed() && !base->header_->isCompressed());
-  uint8_t *basep = GAMESTATE_START(base->data_);
-  uint8_t *gs = GAMESTATE_START(this->data_);
-  uint32_t of=0; // pointers offset
-  uint32_t dest_length=0;
-  dest_length=header_->getDataSize();
-  if(dest_length==0)
-    return NULL;
-  uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
-  uint8_t *dest = ndata + GamestateHeader::getSize();
-  while(of < base->header_->getDataSize() && of < header_->getDataSize()){
-    *(dest+of)=*(basep+of)^*(gs+of); // do the xor
-    ++of;
-  }
-  if(base->header_->getDataSize()!=header_->getDataSize()){
-    uint8_t n=0;
-    if(base->header_->getDataSize() < header_->getDataSize()){
-      while(of < dest_length){
-        *(dest+of)=n^*(gs+of);
-        of++;
-      }
-    }
-  }
-  Gamestate *g = new Gamestate(ndata, getClientID());
-  assert(g->header_);
-  *(g->header_) = *header_;
-  g->header_->setDiffed( false );
-  g->flags_=flags_;
-  g->packetDirection_ = packetDirection_;
-  assert(!g->isDiffed());
-  assert(!g->isCompressed());
-  return g;
-}*/
-
 uint32_t Gamestate::calcGamestateSize(int32_t id, uint8_t mode)
 {
-  uint32_t size=0;
+  uint32_t size = 0;
+  uint32_t nrOfVariables = 0;
     // get the start of the Synchronisable list
   ObjectList<Synchronisable>::iterator it;
     // get total size of gamestate
-  for(it = ObjectList<Synchronisable>::begin(); it; ++it)
+  for(it = ObjectList<Synchronisable>::begin(); it; ++it){
     size+=it->getSize(id, mode); // size of the actual data of the synchronisable
+    nrOfVariables += it->getNrOfVariables();
+  }
+//   COUT(0) << "allocating " << nrOfVariables << " ints" << endl;
+  this->sizes_.reserve(nrOfVariables);
   return size;
 }
+
 
 } //namespace packet
 } //namespace orxonox

@@ -34,6 +34,7 @@
 #include "network/synchronisable/Synchronisable.h"
 #include "tools/interfaces/Tickable.h"
 
+#include <set>
 
 typedef int TYPE;
 typedef unsigned int UTYPE;
@@ -48,7 +49,6 @@ namespace orxonox
       virtual ~Test();
 
       void setConfigValues();
-      void registerVariables();
 
       static void call(unsigned int clientID);
       void call2(unsigned int clientID, std::string s1, std::string s2, std::string s3, std::string s4);
@@ -77,14 +77,16 @@ namespace orxonox
 
       void printPointer();
 
-      static void printV1(){ instance_->checkU1(); }
-      static void printV2(){ instance_->checkU2(); }
+      static void printV1(){ instance_->blub(); }
+      static void printV2(){ instance_->blub2(); }
       static void printV3(){ instance_->checkU3(); }
       static void printV4(){ instance_->checkU4(); }
 
       void printBlaBla(std::string s1, std::string s2, std::string s3, std::string s4, std::string s5);
 
     private:
+      void registerVariables();
+
       UTYPE u1;
       UTYPE u2;
       UTYPE u3;
@@ -96,8 +98,16 @@ namespace orxonox
       TYPE s4;
 
       Test* pointer_;
+      
+      std::set<uint32_t> mySet_;
 
       static Test* instance_;
+      
+      void blub()
+      { mySet_.insert(2); }
+      
+      void blub2()
+      { for( std::set<uint32_t>::iterator it=mySet_.begin(); it!=mySet_.end(); ++it ) COUT(0) << *it << endl; }
   };
 }
 

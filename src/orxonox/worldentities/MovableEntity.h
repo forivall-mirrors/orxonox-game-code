@@ -47,7 +47,6 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
-            void registerVariables();
 
             using WorldEntity::setPosition;
             using WorldEntity::setOrientation;
@@ -78,6 +77,7 @@ namespace orxonox
                 { return this->enableCollisionDamage_; }
 
         private:
+            void registerVariables();
             void clientConnected(unsigned int clientID);
             void clientDisconnected(unsigned int clientID);
             void resynchronize();

@@ -48,6 +48,7 @@ namespace orxonox
     {
         RegisterObject(Level);
 
+
         this->registerVariables();
         this->xmlfilename_ = this->getFilename();
         this->xmlfile_ = 0;
@@ -72,14 +73,16 @@ namespace orxonox
         XMLPortParam(Level, "description", setDescription, getDescription, xmlelement, mode);
         XMLPortParam(Level, "gametype", setGametypeString, getGametypeString, xmlelement, mode).defaultValues("Gametype");
 
+        XMLPortObject(Level, MeshLodInformation, "lodinformation", addLodInfo, getLodInfo, xmlelement, mode);
         XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
-    }
+}
 
     void Level::registerVariables()
     {
-        registerVariable(this->xmlfilename_, VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
-        registerVariable(this->name_,        VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::changedName));
-        registerVariable(this->description_, VariableDirection::ToClient);
+        registerVariable(this->xmlfilename_,            VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::networkcallback_applyXMLFile));
+        registerVariable(this->name_,                   VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::changedName));
+        registerVariable(this->description_,            VariableDirection::ToClient);
+        registerVariable(this->networkTemplateNames_,   VariableDirection::ToClient, new NetworkCallback<Level>(this, &Level::networkCallbackTemplatesChanged));
     }
 
     void Level::networkcallback_applyXMLFile()
@@ -94,6 +97,15 @@ namespace orxonox
         this->xmlfile_ = new XMLFile(mask, this->xmlfilename_);
 
         Loader::open(this->xmlfile_);
+    }
+
+    void Level::networkCallbackTemplatesChanged()
+    {
+        for( std::set<std::string>::iterator it = this->networkTemplateNames_.begin(); it!=this->networkTemplateNames_.end(); ++it )
+        {
+            assert(Template::getTemplate(*it));
+            Template::getTemplate(*it)->applyOn(this);
+        }
     }
 
     void Level::setGametypeString(const std::string& gametype)
@@ -124,6 +136,7 @@ namespace orxonox
     {
         this->objects_.push_back(object);
         object->setGametype(this->getGametype());
+        object->setLevel(this);
     }
 
     BaseObject* Level::getObject(unsigned int index) const
@@ -135,6 +148,23 @@ namespace orxonox
                 return (*it);
             ++i;
         }
+        return 0;
+    }
+
+    void Level::addLodInfo(MeshLodInformation* lodInformation)
+    {
+        std::string meshName = lodInformation->getMeshName();
+//         this->lodInformation_.insert(std::make_pair(meshName,lodInformation));
+        if( this->lodInformation_.find(meshName) != this->lodInformation_.end())
+          CCOUT(4) << "replacing lod information for " << meshName << endl;
+        this->lodInformation_[meshName] = lodInformation;
+    }
+
+    MeshLodInformation* Level::getLodInfo(std::string meshName) const
+    {
+        if(this->lodInformation_.find(meshName)!=this->lodInformation_.end())
+            return this->lodInformation_.find(meshName)->second;
+
         return 0;
     }
 

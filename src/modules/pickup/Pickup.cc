@@ -48,6 +48,8 @@ namespace orxonox
     /*static*/ const std::string Pickup::durationTypeOnce_s = "once";
     /*static*/ const std::string Pickup::durationTypeContinuous_s = "continuous";
 
+    CreateUnloadableFactory(Pickup);
+
     Pickup::Pickup(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Pickup);
@@ -145,11 +147,11 @@ namespace orxonox
     */
     void Pickup::setActivationType(const std::string& type)
     {
-        if(type == activationTypeImmediate_s)
+        if(Pickup::activationTypeImmediate_s.compare(type) == 0)
         {
             this->activationType_ = pickupActivationType::immediate;
         }
-        else if(type == activationTypeOnUse_s)
+        else if(Pickup::activationTypeOnUse_s.compare(type) == 0)
         {
             this->activationType_ = pickupActivationType::onUse;
         }
@@ -167,11 +169,11 @@ namespace orxonox
     */
     void Pickup::setDurationType(const std::string& type)
     {
-        if(type == durationTypeOnce_s)
+        if(Pickup::durationTypeOnce_s.compare(type) == 0)
         {
             this->durationType_ = pickupDurationType::once;
         }
-        else if(type == durationTypeContinuous_s)
+        else if(Pickup::durationTypeContinuous_s.compare(type) == 0)
         {
             this->durationType_ = pickupDurationType::continuous;
         }
@@ -191,7 +193,7 @@ namespace orxonox
         SUPER(Pickup, changedPickedUp);
 
         //! Sets the Pickup to used if the Pickup has activation type 'immediate' and gets picked up.
-        if(this->getCarrier() != NULL && this->isPickedUp() && this->isImmediate())
+        if(this->isPickedUp() && this->isImmediate())
         {
             this->setUsed(true);
         }

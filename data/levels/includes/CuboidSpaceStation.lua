@@ -328,7 +328,7 @@ bodyParts[topPartsIndex[1]][-1][0][3][0]=1
 
 -- Insert the SatelliteDish.
 topPartsIndex[2]=8
-bodyParts[topPartsIndex[2]][0][0][0][4]="SatelliteDish.mesh"
+bodyParts[topPartsIndex[2]][0][0][0][4]="satellitedish.mesh"
 bodyParts[topPartsIndex[2]][0][0][0][5]="pitch=-90"
 bodyParts[topPartsIndex[2]][0][0][0][8]="rotationaxis=\"0,1,0\" rotationrate=5"
 

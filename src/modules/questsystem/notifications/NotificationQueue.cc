@@ -33,8 +33,7 @@
 
 #include "NotificationQueue.h"
 
-#include <sstream>
-
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "NotificationOverlay.h"
@@ -55,6 +54,8 @@ namespace orxonox
     */
     NotificationQueue::NotificationQueue(BaseObject* creator) : OverlayGroup(creator)
     {
+        this->registered_ = false;
+
         RegisterObject(NotificationQueue);
         this->initialize();
     }
@@ -67,6 +68,9 @@ namespace orxonox
     {
         this->targets_.clear();
         this->clear();
+
+        if(this->registered_)
+            NotificationManager::getInstance().unregisterListener(this);
     }
 
     /**
@@ -80,6 +84,7 @@ namespace orxonox
         this->tickTime_ = 0.0;
 
         NotificationManager::getInstance().registerListener(this);
+        this->registered_ = true;
     }
 
     /**
@@ -117,7 +122,7 @@ namespace orxonox
         XMLPortParam(NotificationQueue, "fontSize", setFontSize, getFontSize, xmlElement, mode);
         XMLPortParam(NotificationQueue, "position", setPosition, getPosition, xmlElement, mode);
 
-        COUT(3) << "NotificationQueue created." << std::endl;
+        COUT(3) << "NotificationQueue '" << this->getName() << "' created." << std::endl;
     }
 
     /**
@@ -172,7 +177,7 @@ namespace orxonox
 
         delete notifications;
 
-        COUT(3) << "NotificationQueue updated." << std::endl;
+        COUT(4) << "NotificationQueue '" << this->getName() << "' updated." << std::endl;
     }
 
     /**
@@ -195,7 +200,7 @@ namespace orxonox
             this->scroll(Vector2(0.0f,-(1.1f*this->getFontSize())));
         }
 
-        COUT(3) << "NotificationQueue updated. A new Notifications has been added." << std::endl;
+        COUT(4) << "NotificationQueue '" << this->getName() << "' updated. A new Notifications has been added." << std::endl;
     }
 
     /**
@@ -396,9 +401,7 @@ namespace orxonox
         container->time = time;
         std::string timeString = std::ctime(&time);
         timeString.erase(timeString.length()-1);
-        std::ostringstream stream;
-        stream << reinterpret_cast<unsigned long>(notification);
-        const std::string& addressString = stream.str();
+        const std::string& addressString = multi_cast<std::string>(reinterpret_cast<unsigned long>(notification));
         container->name = "NotificationOverlay(" + timeString + ")&" + addressString;
 
         this->containers_.insert(container);
@@ -422,6 +425,9 @@ namespace orxonox
         if(this->size_ == 0) //!< You cannot remove anything if the queue is empty.
             return false;
 
+        // Unregister the NotificationQueue with the NotificationManager.
+        NotificationManager::getInstance().unregisterNotification(container->notification, this);
+
         this->removeElement(container->overlay);
         this->containers_.erase(container);
         this->overlays_.erase(container->notification);
@@ -442,7 +448,7 @@ namespace orxonox
         while(it != this->containers_.end())
         {
             this->removeContainer(*it);
-            it = this->containers_.begin(); //TODO: Needed?
+            it = this->containers_.begin();
         }
     }
 

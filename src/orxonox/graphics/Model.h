@@ -44,7 +44,6 @@ namespace orxonox
             virtual ~Model();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void changedVisibility();
 
@@ -61,13 +60,28 @@ namespace orxonox
             inline bool getCastShadows() const
                 { return this->bCastShadows_; }
 
-        private:
+        protected:
+            void registerVariables();
             void changedMesh();
             void changedShadows();
+
+            //LoD
+            inline void setLodLevel(float lodLevel)
+                { this->lodLevel_ =  lodLevel; }
+            inline float getLodLevel() const
+                { return this->lodLevel_; }
+            float getBiggestScale(Vector3 scale3d);
 
             std::string meshSrc_;
             Mesh mesh_;
             bool bCastShadows_;
+
+            //LoD
+            float lodLevel_;
+            bool bLodEnabled_;
+            unsigned int numLodLevels_;
+            float lodReductionRate_;
+
     };
 }
 

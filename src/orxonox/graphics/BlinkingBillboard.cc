@@ -65,16 +65,18 @@ namespace orxonox
 
     void BlinkingBillboard::registerVariables()
     {
-//        registerVariable(this->amplitude_, VariableDirection::ToClient);
-//        registerVariable(this->frequency_, VariableDirection::ToClient);
-//        registerVariable(this->phase_,     VariableDirection::ToClient);
+        unregisterVariable(this->getScale3D());
+        registerVariable(this->amplitude_,  VariableDirection::ToClient);
+        registerVariable(this->frequency_,  VariableDirection::ToClient);
+        registerVariable(this->phase_,      VariableDirection::ToClient);
+        registerVariable(this->bQuadratic_, VariableDirection::ToClient);
     }
 
     void BlinkingBillboard::tick(float dt)
     {
         SUPER(BlinkingBillboard, tick, dt);
 
-        if (GameMode::isMaster() && this->isActive())
+        if (this->isActive())
         {
             this->time_ += dt;
             if (this->bQuadratic_)

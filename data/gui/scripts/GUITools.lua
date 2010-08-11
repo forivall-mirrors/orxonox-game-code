@@ -44,3 +44,12 @@ function getScrollingStepSize(window)
     local ratio = height/maxHeight
     return 0.008*ratio/0.3204
 end
+
+function getStaticTextWindowHeight(window)
+    local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(window:getLookNFeel())
+    local formattedArea = lookAndFeel:getNamedArea("WithFrameTextRenderArea"):getArea():getPixelRect(window)
+    local frameHeight = window:getUnclippedPixelRect():getHeight() - formattedArea:getHeight()
+    local lines = window:getFont():getFormattedLineCount(window:getText(), formattedArea, CEGUI.WordWrapLeftAligned)
+    local height = lines * window:getFont():getLineSpacing() + frameHeight
+    return height
+end

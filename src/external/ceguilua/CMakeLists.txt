@@ -55,12 +55,12 @@ ENDIF()
 # Create the tolua bind file. We could use the orignal file though, but it is 1.6MB...
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CEGUILUA_BINARY_DIR}/${CMAKE_CFG_INTDIR}/lua_CEGUI.cpp
-  COMMAND tolua++app_orxonox -n CEGUI
-                             -w ${CEGUILUA_BINARY_DIR}
-                             -o ${CMAKE_CFG_INTDIR}/lua_CEGUI.cpp
-                             -L exceptions.lua
-                             -s ${TOLUA_PARSER_SOURCE}
-                                CEGUI.pkg
+  COMMAND toluaapp_orxonox -n CEGUI
+                           -w ${CEGUILUA_BINARY_DIR}
+                           -o ${CMAKE_CFG_INTDIR}/lua_CEGUI.cpp
+                           -L exceptions.lua
+                           -s ${TOLUA_PARSER_SOURCE}
+                              CEGUI.pkg
   DEPENDS              ${TOLUA_PARSER_DEPENDENCIES}
   WORKING_DIRECTORY    ${RUNTIME_LIBRARY_DIRECTORY}
   COMMENT "Generating tolua bind files for package CEGUILua"
@@ -78,7 +78,7 @@ ORXONOX_ADD_LIBRARY(${CEGUILUA_LIBRARY}
   VERSION
     ${CEGUI_VERSION}
   LINK_LIBRARIES
-    tolua++_orxonox
+    tolua_orxonox
     ${LUA_LIBRARIES}
     ${CEGUI_LIBRARY}
   SOURCE_FILES

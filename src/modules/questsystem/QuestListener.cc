@@ -73,9 +73,10 @@ namespace orxonox
         XMLPortParam(QuestListener, "questId", setQuestId, getQuestId, xmlelement, mode);
         XMLPortParam(QuestListener, "mode", setMode, getMode, xmlelement, mode);
 
-        this->quest_->addListener(this); //!< Adds the QuestListener to the Quests list of listeners.
+        if(this->quest_ != NULL)
+            this->quest_->addListener(this); //!< Adds the QuestListener to the Quests list of listeners.
 
-        COUT(3) << "QuestListener created for quest: {" << this->quest_->getId() << "} with mode '" << this->getMode() << "'." << std::endl;
+        COUT(4) << "QuestListener created for quest: {" << this->quest_->getId() << "} with mode '" << this->getMode() << "'." << std::endl;
     }
 
     /**

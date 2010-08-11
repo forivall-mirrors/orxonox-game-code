@@ -266,19 +266,19 @@
 
     #define SUPER_changedGametype(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
-        
+
     #define SUPER_changedUsed(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
-        
+
     #define SUPER_clone(classname, functionname, ...) \
         SUPER_ARGS(classname, functionname, __VA_ARGS__)
-        
+
     #define SUPER_changedCarrier(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
-        
+
     #define SUPER_changedPickedUp(classname, functionname, ...) \
         SUPER_NOARGS(classname, functionname)
-        
+
     // (1/3) --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <-- --> HERE <--
 
 
@@ -529,7 +529,7 @@ namespace orxonox
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(9, changedGametype, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
-        
+
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(10, changedUsed, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
@@ -537,11 +537,11 @@ namespace orxonox
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(11, clone, true, OrxonoxClass* item)
             (item)
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
-        
+
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(12, changedCarrier, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;
-        
+
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART1(13, changedPickedUp, false)
             ()
         SUPER_FUNCTION_GLOBAL_DECLARATION_PART2;

@@ -81,6 +81,7 @@ namespace orxonox
     class AIController;
     class ArtificialController;
     class Controller;
+    class DroneController;
     class HumanController;
     class ScriptController;
     class WaypointController;
@@ -89,6 +90,7 @@ namespace orxonox
     // gametypes
     class Asteroids;
     class Deathmatch;
+    class Dynamicmatch;
     class Gametype;
     class TeamBaseMatch;
     class TeamDeathmatch;
@@ -134,7 +136,7 @@ namespace orxonox
     class Map;
     class OrxonoxOverlay;
     class OverlayGroup;
-    
+
     // pickup
     class PickupIdentifier;
 
@@ -160,6 +162,7 @@ namespace orxonox
     class BigExplosion;
     class CameraPosition;
     class ControllableEntity;
+    class Drone;
     class EffectContainer;
     class ExplosionChunk;
     class MobileEntity;

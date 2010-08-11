@@ -45,8 +45,6 @@ namespace orxonox
         this->linearVelocity_      = Vector3::ZERO;
         this->angularAcceleration_ = Vector3::ZERO;
         this->angularVelocity_     = Vector3::ZERO;
-
-        this->registerVariables();
     }
 
     MobileEntity::~MobileEntity()

@@ -1,3 +1,83 @@
+<!-- Shield pickups: -->
+
+<Template name=smallshieldpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1,1,1" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1,1,1" material="Shield" scale=0.3 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=smallshieldpickup>
+  <ShieldPickup
+    duration = 10
+    shieldabsorption = 0.7
+    shieldhealth = 300
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
+
+<Template name=mediumshieldpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1,1,1" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1,1,1" material="Shield" scale=0.5 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=mediumshieldpickup>
+  <ShieldPickup
+    duration = 30
+    shieldabsorption = 0.8
+    shieldhealth = 500
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
+
+
+<Template name=hugeshieldpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1,1,1" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1,1,1" material="Shield" scale=0.7 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=hugeshieldpickup>
+  <ShieldPickup
+    duration = 60
+    shieldabsorption = 0.95
+    shieldhealth = 700
+    activationType = "immediate"
+    durationType = "once"
+  />
+</Template>
 
 <!-- Health pickups: -->
 
@@ -344,4 +424,58 @@
         </pickupables>
     </PickupCollection>
 </Template>
-    
+
+<!-- Drone Pickup -->
+
+<Template name=droneTemplate>
+    <Drone name="meineDrohne"  mass= "50" linearDamping = "0.7" angularDamping = "0.99999" maxDistanceToOwner_=150 minDistanceToOwner_=75 maxShootingRange_=1000 primaryThrust_=250 auxilaryThrust_=250 rotationThrust_=50>
+        <attached>
+            <Model scale="1" mesh="drone.mesh"/>
+        </attached>
+        <collisionShapes>
+            <BoxCollisionShape position="0,0,0"      halfExtents="1, 1, 1" />
+        </collisionShapes>
+        <weaponslots>
+            <WeaponSlot position="    0,   0,0" />
+        </weaponslots>
+        <weaponsets>
+            <WeaponSet firemode=0 />
+        </weaponsets>
+        <weapons>
+            <WeaponPack>
+                <links>
+                    <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
+                </links>
+                <Weapon>
+                    <attached>
+                        <Model mesh="hs-w01.mesh" roll="195" position="0,1,0" scale=2 />
+                        <Model mesh="hs-w01s.mesh" roll="195" position="0.1,0.5,0" scale=2 />
+                    </attached>
+                    <HsW01 mode=0 munitionpershot=0 delay=0.125 material="Flares/point_lensflare" muzzleoffset=" 0.7, 1.5,-4" />
+                    <HsW01 mode=0 munitionpershot=0 delay=0     material="Flares/point_lensflare" muzzleoffset="-0.9, 1.1,-4" />
+                </Weapon>
+            </WeaponPack>
+        </weapons>
+    </Drone>
+</Template>
+
+<Template name=dronepickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="0.96,0.35,0.02" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Model scale="5" mesh="drone.mesh"/>
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=dronepickup>
+    <DronePickup droneTemplate=droneTemplate />
+</Template>
+

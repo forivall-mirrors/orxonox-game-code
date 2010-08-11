@@ -43,7 +43,7 @@ namespace orxonox
 
     class _ObjectsExport EventMultiTrigger : public MultiTrigger
     {
-        
+
         public:
             EventMultiTrigger(BaseObject* creator);
             ~EventMultiTrigger();

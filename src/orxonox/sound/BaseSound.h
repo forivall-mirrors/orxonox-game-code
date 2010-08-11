@@ -111,7 +111,7 @@ namespace orxonox
         std::string     source_;
         float           volume_;
         bool            bLooping_;
-        State           state_;
+        uint8_t         state_;       // This Variable is actually of type State
         float           pitch_;
 
     private:

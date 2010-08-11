@@ -52,7 +52,6 @@ namespace orxonox
             virtual ~MultiStateEngine();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void tick(float dt);
 
@@ -67,6 +66,8 @@ namespace orxonox
             const std::string& getDefEngSndBoost();
 
         private:
+            void registerVariables();
+
             int state_;
             int oldState_;
             LuaState* lua_;

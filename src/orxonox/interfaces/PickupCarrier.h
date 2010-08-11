@@ -44,8 +44,8 @@
 
 #include "core/OrxonoxClass.h"
 
-namespace orxonox // tolua_export
-{ // tolua_export
+namespace orxonox
+{
 
     //! Forward-declarations.
     class PickupManager;
@@ -53,6 +53,7 @@ namespace orxonox // tolua_export
     class HealthPickup;
     class InvisiblePickup;
     class MetaPickup;
+    class DronePickup;
     class SpeedPickup;
 
     /**
@@ -61,55 +62,23 @@ namespace orxonox // tolua_export
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport PickupCarrier  // tolua_export
-        : virtual public OrxonoxClass
-    { // tolua_export
+    class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
+    {
         //! So that the different Pickupables have full access to their PickupCarrier.
         friend class Pickupable;
         friend class PickupManager;
-        //! Friends. 
+        //! Friends.
         friend class Pickup;
         friend class HealthPickup;
         friend class InvisiblePickup;
         friend class MetaPickup;
+        friend class DronePickup;
         friend class SpeedPickup;
 
         public:
             PickupCarrier(); //!< Constructor.
             virtual ~PickupCarrier(); //!< Destructor.
-
-            /**
-            @brief Can be called to pick up a Pickupable.
-            @param pickup A pointer to the Pickupable.
-            @return Returns true if the Pickupable was picked up, false if not.
-            */
-            bool pickup(Pickupable* pickup)
-                {
-                    bool pickedUp = this->pickups_.insert(pickup).second;
-                    if(pickedUp)
-                    {
-                        COUT(4) << "Picked up Pickupable " << pickup->getIdentifier()->getName() << "(&" << pickup << ")." << std::endl;
-                        pickup->pickedUp(this);
-                    }
-                    return pickedUp;
-                }
-
-            /**
-            @brief Can be called to drop a Pickupable.
-            @param pickup A pointer to the Pickupable.
-            @param drop If the Pickupable should just be removed from the PickupCarrier without further action, this can be set to false. true is default.
-            @return Returns true if the Pickupable has been dropped, false if not.
-            */
-            bool drop(Pickupable* pickup, bool drop = true)
-                {
-                    bool dropped = this->pickups_.erase(pickup) == 1;
-                    if(dropped && drop)
-                    {
-                        COUT(4) << "Dropping Pickupable " << pickup->getIdentifier()->getName() << "(&" << pickup << ")." << std::endl;
-                        pickup->dropped();
-                    }
-                    return dropped;
-                }
+            void preDestroy(void);
 
             /**
             @brief Can be used to check whether the PickupCarrier or a child of his is a target ot the input Pickupable.
@@ -168,14 +137,8 @@ namespace orxonox // tolua_export
             @return Returns the position as a Vector3.
             */
             virtual const Vector3& getCarrierPosition(void) = 0;
-            
-            /**
-            @brief Get the name of this PickupCarrier.
-            @return Returns the name as a string.
-            */
-            const std::string& getCarrierName(void) { return this->carrierName_; } // tolua_export
-            
-        protected:        
+
+        protected:
             /**
             @brief Get all direct children of this PickupSpawner.
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
@@ -196,69 +159,33 @@ namespace orxonox // tolua_export
             */
             std::set<Pickupable*>& getPickups(void)
                 { return this->pickups_; }
-                
-            /**
-            @brief Set the name of this PickupCarrier.
-                   The name needs to be set in the constructor of every class inheriting from PickupCarrier, by calling setCarrierName().
-            @param name The name to be set.
-            */
-            void setCarrierName(const std::string& name)
-                { this->carrierName_ = name; }
-        
+
         private:
             std::set<Pickupable*> pickups_; //!< The list of Pickupables carried by this PickupCarrier.
-            std::string carrierName_; //!< The name of the PickupCarrier, as displayed in the PickupInventory.
-            
+
             /**
-            @brief Get the number of carrier children this PickupCarrier has.
-            @return Returns the number of carrier children.
+            @brief Adds a Pickupable to the list of pickups that are carried by this PickupCarrier.
+            @param pickup A pointer to the pickup to be added.
+            @return Returns true if successfull, false if the Pickupable was already present.
             */
-            unsigned int getNumCarrierChildren(void)
+            bool addPickup(Pickupable* pickup)
                 {
-                    std::vector<PickupCarrier*>* list = this->getCarrierChildren();
-                    unsigned int size = list->size();
-                    delete list;
-                    return size;
+                    COUT(4) << "Adding Pickupable (&" << pickup << ") to PickupCarrier (&" << this << ")" << std::endl;
+                    return this->pickups_.insert(pickup).second;
                 }
-            
+
             /**
-            @brief Get the index-th child of this PickupCarrier.
-            @param index The index of the child to return.
-            @return Returns the index-th child.
+            @brief Removes a Pickupable from the list of pickups that are carried by thsi PickupCarrier.
+            @param pickup A pointer to the pickup to be removed.
+            @return Returns true if successfull, false if the Pickupable was not present in the list.
             */
-            PickupCarrier* getCarrierChild(unsigned int index)
+            bool removePickup(Pickupable* pickup)
                 {
-                    std::vector<PickupCarrier*>* list = this->getCarrierChildren();
-                    if(list->size() < index)
-                        return NULL;
-                    PickupCarrier* carrier = (*list)[index];
-                    delete list;
-                    return carrier;
+                    COUT(4) << "Removing Pickupable (&" << pickup << ") from PickupCarrier (&" << this << ")" << std::endl;
+                    return this->pickups_.erase(pickup) == 1;
                 }
-            
-            /**
-            @brief Get the number of Pickupables this PickupCarrier carries.
-            @return returns the number of pickups.
-            */
-            unsigned int getNumPickups(void)
-                { return this->pickups_.size(); }
-            
-            /**
-            @brief Get the index-th Pickupable of this PickupCarrier.
-            @param index The index of the Pickupable to return.
-            @return Returns the index-th pickup.
-            */
-            Pickupable* getPickup(unsigned int index)
-                {
-                    std::set<Pickupable*>::iterator it;
-                    for(it = this->pickups_.begin(); index != 0 && it != this->pickups_.end(); it++)
-                        index--;
-                    if(it == this->pickups_.end())
-                        return NULL;
-                    return *it;
-                }
-            
-    }; // tolua_export
-} // tolua_export
+
+    };
+}
 
 #endif /* _PickupCarrier_H__ */

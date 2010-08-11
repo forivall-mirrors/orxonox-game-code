@@ -53,20 +53,20 @@ namespace orxonox
     */
     class _PickupExport PickupCollectionIdentifier : public PickupIdentifier
     {
-        
+
         public:
             PickupCollectionIdentifier(Pickupable* pickup); //!< Constructor.
             ~PickupCollectionIdentifier(); //!< Destructor.
-            
+
             virtual int compare(const PickupIdentifier* identifier) const; //!< Compares a PickupCollectionIdentifier with a PickupIdentifier.
-            
+
             void addPickup(const PickupIdentifier* identifier); //!< Add a Pickupable to the PickupCollectionIdentifier.
-            
+
         private:
             std::set<const PickupIdentifier*, PickupIdentifierCompare> identifiers_; //!< The set of PickupIdentifiers of the Pickupables the PickupCollection with this PickupCollectionIdentifier consists of, ordered by the rule set by PickupIdentifierCompare.
-            
+
     };
-    
+
 }
 
 #endif // _PickupCollectionIdentifier_H_

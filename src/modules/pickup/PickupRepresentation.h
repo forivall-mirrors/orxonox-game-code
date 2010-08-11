@@ -55,14 +55,14 @@ namespace orxonox // tolua_export
     class _PickupExport PickupRepresentation // tolua_export
         : public BaseObject
     { // tolua_export
-        
+
         public:
             PickupRepresentation(); //!< Constructor
             PickupRepresentation(BaseObject* creator); //!< Default constructor.
             virtual ~PickupRepresentation(); //!< Destructor.
-            
+
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            
+
             /**
             @brief Set the name of the Pickupable represented by this PickupRepresentation.
             @param name The name.
@@ -101,7 +101,7 @@ namespace orxonox // tolua_export
             */
             inline void setPickup(Pickupable* pickup)
                 { this->pickup_ = pickup; }
-                
+
             /**
             @brief Get the name of the Pickupable represented by this PickupRepresentation.
             @return Returns the name.
@@ -137,23 +137,23 @@ namespace orxonox // tolua_export
             */
             inline const Pickupable* getPickup(unsigned int index)
                 { if(index == 0) return this->pickup_; return NULL; }
-                
+
             StaticEntity* getSpawnerRepresentation(PickupSpawner* spawner); //!< Get a spawnerRepresentation for a specific PickupSpawner.
-        
+
         private:
             void initialize(void); //!< Initializes the member variables of this PickupRepresentation.
             StaticEntity* getDefaultSpawnerRepresentation(PickupSpawner* spawner); //!< Get the default spawnerRepresentation for a specific PickupSpawner.
-            
+
             std::string name_; //!< The name of the Pickupable represented by this PickupRepresentation.
             std::string description_; //!< The description of the Pickupable represented by this PickupRepresentation.
             std::string spawnerTemplate_; //!<  The name of the template of this PickupRepresentation.
             StaticEntity* spawnerRepresentation_; //!< The spawnerRepresentation of this PickupRepresentation.
-            std::string inventoryRepresentation_; //!< The name of an image representing the pickup in the PickupInventory. TODO: Exact format and placement of image?
-            
+            std::string inventoryRepresentation_; //!< The name of an image representing the pickup in the PickupInventory.
+
             Pickupable* pickup_; //!< The Pickupable that is represented by this PickupRepresentation.
-            
+
     }; // tolua_export
 
 } // tolua_export
-    
+
 #endif // _PickupRepresentation_H__

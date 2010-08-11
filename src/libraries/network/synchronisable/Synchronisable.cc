@@ -48,11 +48,12 @@ namespace orxonox
   * Constructor:
   * Initializes all Variables and sets the right objectID_
   */
-  Synchronisable::Synchronisable(BaseObject* creator ){
+  Synchronisable::Synchronisable(BaseObject* creator )
+  {
     RegisterRootObject(Synchronisable);
     static uint32_t idCounter=0;
     objectMode_=0x1; // by default do not send data to server
-    if ( GameMode::isMaster() || ( Host::running() && Host::isServer() ) )
+    if ( GameMode::isMaster()/* || ( Host::running() && Host::isServer() )*/ )
     {
       this->setObjectID( idCounter++ );
     }
@@ -72,39 +73,25 @@ namespace orxonox
       this->creatorID_ = creator->getSceneID();
     else
       this->creatorID_ = OBJECTID_UNKNOWN;
-
-    /*searchcreatorID:
-    if (creator)
-    {
-        Synchronisable* synchronisable_creator = orxonox_cast<Synchronisable*>(creator);
-        if (synchronisable_creator && synchronisable_creator->objectMode_)
-        {
-            this->creatorID = synchronisable_creator->getScene()->getObjectID();
-        }
-        else if (creator != creator->getCreator())
-        {
-            creator = creator->getCreator();
-            goto searchcreatorID;
-        }
-    }*/
   }
 
   /**
    * Destructor:
    * Delete all callback objects and remove objectID_ from the objectMap_
    */
-  Synchronisable::~Synchronisable(){
+  Synchronisable::~Synchronisable()
+  {
     // delete callback function objects
     if(!Identifier::isCreatingHierarchy()){
       // remove object from the static objectMap
       if (this->objectMode_ != 0x0 && (Host::running() && Host::isServer()))
         deletedObjects_.push(objectID_);
     }
-    // delete all Synchronisable Variables from syncList ( which are also in stringList )
-    for(std::vector<SynchronisableVariableBase*>::iterator it = syncList.begin(); it!=syncList.end(); it++)
+    // delete all Synchronisable Variables from syncList_ ( which are also in stringList_ )
+    for(std::vector<SynchronisableVariableBase*>::iterator it = syncList_.begin(); it!=syncList_.end(); it++)
       delete (*it);
-    syncList.clear();
-    stringList.clear();
+    syncList_.clear();
+    stringList_.clear();
     std::map<uint32_t, Synchronisable*>::iterator it;
     it = objectMap_.find(objectID_);
     if (it != objectMap_.end())
@@ -117,7 +104,8 @@ namespace orxonox
    * This function sets the internal mode for synchronisation
    * @param b true if this object is located on a client or on a server
    */
-  void Synchronisable::setClient(bool b){
+  void Synchronisable::setClient(bool b)
+  {
     if(b) // client
       state_=0x2;
     else  // server
@@ -134,12 +122,7 @@ namespace orxonox
   Synchronisable *Synchronisable::fabricate(uint8_t*& mem, uint8_t mode)
   {
     SynchronisableHeader header(mem);
-
-    if(!header.isDataAvailable())
-    {
-      mem += header.getDataSize();
-      return 0;
-    }
+    assert( !header.isDiffed() );
 
     COUT(4) << "fabricating object with id: " << header.getObjectID() << std::endl;
 
@@ -159,7 +142,7 @@ namespace orxonox
       Synchronisable* synchronisable_creator = Synchronisable::getSynchronisable(header.getCreatorID());
       if (!synchronisable_creator)
       {
-        mem += header.getDataSize(); //.TODO: this suckz.... remove size from header
+        mem += header.getDataSize()+SynchronisableHeader::getSize(); //.TODO: this suckz.... remove size from header
         assert(0); // TODO: uncomment this if we have a clean objecthierarchy (with destruction of children of objects) ^^
         return 0;
       }
@@ -176,6 +159,8 @@ namespace orxonox
     //no->creatorID=header.getCreatorID(); //TODO: remove this
     no->setClassID(header.getClassID());
     assert(no->creatorID_ == header.getCreatorID());
+    if( creator )
+      bo->setLevel(creator->getLevel());          // Note: this ensures that the level is known on the client for child objects of the scene (and the scene itself)
     //assert(no->classID_ == header.getClassID());
     COUT(4) << "fabricate objectID_: " << no->objectID_ << " classID_: " << no->classID_ << std::endl;
           // update data and create object/entity...
@@ -195,7 +180,8 @@ namespace orxonox
    * @param objectID_ objectID_ of the Synchronisable
    * @return true/false
    */
-  bool Synchronisable::deleteObject(uint32_t objectID_){
+  bool Synchronisable::deleteObject(uint32_t objectID_)
+  {
     if(!getSynchronisable(objectID_))
       return false;
     assert(getSynchronisable(objectID_)->objectID_==objectID_);
@@ -212,19 +198,12 @@ namespace orxonox
    * @param objectID_ objectID_ of the Synchronisable
    * @return pointer to the Synchronisable with the objectID_
    */
-  Synchronisable* Synchronisable::getSynchronisable(uint32_t objectID_){
+  Synchronisable* Synchronisable::getSynchronisable(uint32_t objectID_)
+  {
     std::map<uint32_t, Synchronisable*>::iterator it1;
     it1 = objectMap_.find(objectID_);
     if (it1 != objectMap_.end())
       return it1->second;
-
-//     ObjectList<Synchronisable>::iterator it;
-//     for(it = ObjectList<Synchronisable>::begin(); it; ++it){
-//       if( it->getObjectID()==objectID_ ){
-//         objectMap_[objectID_] = *it;
-//         return *it;
-//       }
-//     }
     // if the objects not in the map it should'nt exist at all anymore
     return NULL;
   }
@@ -244,7 +223,9 @@ namespace orxonox
    *             0x3: bidirectional
    * @return true: if !doSync or if everything was successfully saved
    */
-  uint32_t Synchronisable::getData(uint8_t*& mem, int32_t id, uint8_t mode){
+  uint32_t Synchronisable::getData(uint8_t*& mem, std::vector<uint32_t>& sizes, int32_t id, uint8_t mode)
+  {
+    unsigned int test = 0;
     if(mode==0x0)
       mode=state_;
     //if this tick is we dont synchronise, then abort now
@@ -252,6 +233,7 @@ namespace orxonox
       return 0;
     uint32_t tempsize = 0;
 #ifndef NDEBUG
+    uint8_t* oldmem = mem;
     if (this->classID_==0)
       COUT(3) << "classid 0 " << this->getIdentifier()->getName() << std::endl;
 #endif
@@ -269,20 +251,28 @@ namespace orxonox
     mem += SynchronisableHeader::getSize();
     // end copy header
 
-
-    COUT(5) << "Synchronisable getting data from objectID_: " << objectID_ << " classID_: " << classID_ << std::endl;
+    CCOUT(5) << "getting data from objectID_: " << objectID_ << ", classID_: " << classID_ << std::endl;
+//     COUT(4) << "objectid: " << this->objectID_ << ":";
     // copy to location
-    for(i=syncList.begin(); i!=syncList.end(); ++i){
-      tempsize += (*i)->getData( mem, mode );
+    for(i=syncList_.begin(); i!=syncList_.end(); ++i)
+    {
+      uint32_t varsize = (*i)->getData( mem, mode );
+//       COUT(4) << " " << varsize;
+      tempsize += varsize;
+      sizes.push_back(varsize);
+      ++test;
       //tempsize += (*i)->getSize( mode );
     }
+//     COUT(4) << endl;
 
-    tempsize += SynchronisableHeader::getSize();
     header.setObjectID( this->objectID_ );
     header.setCreatorID( this->creatorID_ );
     header.setClassID( this->classID_ );
-    header.setDataAvailable( true );
     header.setDataSize( tempsize );
+    assert( tempsize == mem-oldmem-SynchronisableHeader::getSize() );
+    assert( test == this->getNrOfVariables() );
+    header.setDiffed(false);
+    tempsize += SynchronisableHeader::getSize();
 
 #ifndef NDEBUG
     uint32_t size;
@@ -299,37 +289,51 @@ namespace orxonox
    * @param mode same as in getData
    * @return true/false
    */
-  bool Synchronisable::updateData(uint8_t*& mem, uint8_t mode, bool forceCallback){
+  bool Synchronisable::updateData(uint8_t*& mem, uint8_t mode, bool forceCallback)
+  {
     if(mode==0x0)
       mode=state_;
-    std::vector<SynchronisableVariableBase *>::iterator i;
-    if(syncList.empty()){
+    if(syncList_.empty())
+    {
       assert(0);
-      COUT(4) << "Synchronisable::updateData syncList is empty" << std::endl;
+      COUT(2) << "Synchronisable::updateData syncList_ is empty" << std::endl;
       return false;
     }
 
     uint8_t* data=mem;
     // start extract header
-    SynchronisableHeader syncHeader(mem);
-    assert(syncHeader.getObjectID()==this->objectID_);
-    assert(syncHeader.getCreatorID()==this->creatorID_);
-    assert(syncHeader.getClassID()==this->classID_);
-    if(syncHeader.isDataAvailable()==false){
-      mem += syncHeader.getDataSize();
-      return true;
-    }
-
-    mem += SynchronisableHeader::getSize();
-    // stop extract header
+    SynchronisableHeaderLight syncHeaderLight(mem);
+    assert(syncHeaderLight.getObjectID()==this->getObjectID());
 
     //COUT(5) << "Synchronisable: objectID_ " << syncHeader.getObjectID() << ", classID_ " << syncHeader.getClassID() << " size: " << syncHeader.getDataSize() << " synchronising data" << std::endl;
-    for(i=syncList.begin(); i!=syncList.end(); i++)
+    if( !syncHeaderLight.isDiffed() )
     {
-      assert( mem <= data+syncHeader.getDataSize() ); // always make sure we don't exceed the datasize in our stream
-      (*i)->putData( mem, mode, forceCallback );
+      SynchronisableHeader syncHeader2(mem);
+      assert( this->getClassID() == syncHeader2.getClassID() );
+      assert( this->getCreatorID() == syncHeader2.getCreatorID() );
+      mem += SynchronisableHeader::getSize();
+      std::vector<SynchronisableVariableBase *>::iterator i;
+      for(i=syncList_.begin(); i!=syncList_.end(); i++)
+      {
+        assert( mem <= data+syncHeader2.getDataSize()+SynchronisableHeader::getSize() ); // always make sure we don't exceed the datasize in our stream
+        (*i)->putData( mem, mode, forceCallback );
+      }
+      assert(mem == data+syncHeaderLight.getDataSize()+SynchronisableHeader::getSize() );
     }
-    assert(mem == data+syncHeader.getDataSize());
+    else
+    {
+      mem += SynchronisableHeaderLight::getSize();
+//       COUT(0) << "objectID: " << this->objectID_ << endl;
+      while( mem < data+syncHeaderLight.getDataSize()+SynchronisableHeaderLight::getSize() )
+      {
+        VariableID varID = *(VariableID*)mem;
+//         COUT(0) << "varID: " << varID << endl;
+        assert( varID < syncList_.size() );
+        mem += sizeof(VariableID);
+        syncList_[varID]->putData( mem, mode, forceCallback );
+      }
+      assert(mem == data+syncHeaderLight.getDataSize()+SynchronisableHeaderLight::getSize() );
+    }
     return true;
   }
 
@@ -339,8 +343,9 @@ namespace orxonox
   * @param mode same as getData
   * @return amount of bytes
   */
-  uint32_t Synchronisable::getSize(int32_t id, uint8_t mode){
-    int tsize=SynchronisableHeader::getSize();
+  uint32_t Synchronisable::getSize(int32_t id, uint8_t mode)
+  {
+    uint32_t tsize=SynchronisableHeader::getSize();
     if (mode==0x0)
       mode=state_;
     if (!doSync(id, mode))
@@ -348,7 +353,8 @@ namespace orxonox
     assert( mode==state_ );
     tsize += this->dataSize_;
     std::vector<SynchronisableVariableBase*>::iterator i;
-    for(i=stringList.begin(); i!=stringList.end(); ++i){
+    for(i=stringList_.begin(); i!=stringList_.end(); ++i)
+    {
       tsize += (*i)->getSize( mode );
     }
     return tsize;
@@ -359,21 +365,11 @@ namespace orxonox
    * @param id gamestate id
    * @return true/false
    */
-  bool Synchronisable::doSync(int32_t id, uint8_t mode){
+  bool Synchronisable::doSync(int32_t id, uint8_t mode)
+  {
     if(mode==0x0)
       mode=state_;
-    return ( (this->objectMode_ & mode)!=0 && (!syncList.empty() ) );
-  }
-
-  /**
-   * This function looks at the header located in the bytestream and checks wheter objectID_ and classID_ match with the Synchronisables ones
-   * @param mem pointer to the bytestream
-   */
-  bool Synchronisable::isMyData(uint8_t* mem)
-  {
-    SynchronisableHeader header(mem);
-    assert(header.getObjectID()==this->objectID_);
-    return header.isDataAvailable();
+    return ( (this->objectMode_ & mode)!=0 && (!syncList_.empty() ) );
   }
 
   /**
@@ -384,7 +380,8 @@ namespace orxonox
    * If set to 0x3 variables will be synchronised bidirectionally (only if set so in registerVar)
    * @param mode same as in registerVar
    */
-  void Synchronisable::setSyncMode(uint8_t mode){
+  void Synchronisable::setSyncMode(uint8_t mode)
+  {
     assert(mode==0x0 || mode==0x1 || mode==0x2 || mode==0x3);
     this->objectMode_=mode;
   }
@@ -396,8 +393,43 @@ namespace orxonox
       sv = new SynchronisableVariableBidirectional<std::string>(variable, mode, cb);
     else
       sv = new SynchronisableVariable<std::string>(variable, mode, cb);
-    syncList.push_back(sv);
-    stringList.push_back(sv);
+    syncList_.push_back(sv);
+    stringList_.push_back(sv);
+  }
+
+template <> void Synchronisable::unregisterVariable( std::string& variable )
+  {
+    bool unregistered_nonexistent_variable = true;
+    std::vector<SynchronisableVariableBase*>::iterator it = syncList_.begin();
+    while(it!=syncList_.end())
+    {
+      if( ((*it)->getReference()) == &variable )
+      {
+        delete (*it);
+        syncList_.erase(it);
+        unregistered_nonexistent_variable = false;
+        break;
+      }
+      else
+        ++it;
+    }
+    assert(unregistered_nonexistent_variable == false);
+    
+    it = stringList_.begin();
+    while(it!=stringList_.end())
+    {
+      if( ((*it)->getReference()) == &variable )
+      {
+        delete (*it);
+        stringList_.erase(it);
+        return;
+      }
+      else
+        ++it;
+    }
+    unregistered_nonexistent_variable = true;
+    assert(unregistered_nonexistent_variable == false); //if we reach this point something went wrong:
+    // the variable has not been registered before
   }
 
 

@@ -37,6 +37,10 @@
 
 namespace orxonox
 {
+    /*
+    @brief
+        The MoodListener class is aware of a change in themes and directs that info to dependent classes.
+    */
     class _OrxonoxExport MoodListener : virtual public OrxonoxClass
     {
         friend class MoodManager;
@@ -54,6 +58,10 @@ namespace orxonox
             static std::string mood_s;
     };
 
+    /*
+    @brief
+        The MoodManager class serves to allow for different musical themes in the game.
+    */
     class _OrxonoxExport MoodManager : public Singleton<MoodManager>, public OrxonoxClass
     {
             friend class Singleton<MoodManager>;
@@ -73,6 +81,8 @@ namespace orxonox
 
             // config values
             std::string mood_;
+            std::string oldMood_;
+            static const std::string defaultMood_;
 
             static MoodManager* singletonPtr_s;
     };

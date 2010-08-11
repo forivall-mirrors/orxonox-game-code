@@ -11,8 +11,6 @@ SET_SOURCE_FILES(QUESTSYSTEM_SRC_FILES
   QuestDescription.cc
   QuestEffect.cc
   QuestEffectBeacon.cc
-  QuestGUINode.cc
-  QuestGUI.cc
   QuestHint.cc
   QuestItem.cc
   QuestListener.cc
@@ -27,8 +25,9 @@ ORXONOX_ADD_LIBRARY(questsystem
   FIND_HEADER_FILES
   TOLUA_FILES
     QuestManager.h
-  DEFINE_SYMBOL
-    "QUESTSYSTEM_SHARED_BUILD"
+    QuestDescription.h
+    Quest.h
+    QuestHint.h
   PCH_FILE
     QuestsystemPrecompiledHeaders.h
   LINK_LIBRARIES

@@ -36,6 +36,7 @@
 #include "Host.h"
 #include "GamestateManager.h"
 #include "ServerConnection.h"
+#include "LANDiscoverable.h"
 
 namespace orxonox
 {
@@ -44,7 +45,7 @@ namespace orxonox
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public Host, public ServerConnection, public GamestateManager{
+  class _NetworkExport Server : public Host, public ServerConnection, public GamestateManager, public LANDiscoverable{
   public:
     Server();
     Server(int port);

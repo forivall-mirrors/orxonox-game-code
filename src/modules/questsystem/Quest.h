@@ -40,8 +40,8 @@
 #include <list>
 #include "QuestItem.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
     namespace QuestStatus
     {
         //!Different states of a Quest.
@@ -66,8 +66,9 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestsystemExport Quest : public QuestItem
-    {
+    class _QuestsystemExport Quest // tolua_export
+        : public QuestItem
+    { // tolua_export
         public:
             Quest(BaseObject* creator);
             virtual ~Quest();
@@ -96,9 +97,9 @@ namespace orxonox
                 { return this->hints_; }
 
             bool isInactive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'inactive'.
-            bool isActive(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'active'.
-            bool isFailed(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'failed'.
-            bool isCompleted(const PlayerInfo* player) const; //!< Returns true if the quest status for the specific player is 'completed'.
+            bool isActive(const orxonox::PlayerInfo* player) const; // tolua_export //!< Returns true if the quest status for the specific player is 'active'.
+            bool isFailed(const orxonox::PlayerInfo* player) const; // tolua_export //!< Returns true if the quest status for the specific player is 'failed'.
+            bool isCompleted(const orxonox::PlayerInfo* player) const; // tolua_export //!< Returns true if the quest status for the specific player is 'completed'.
 
             bool start(PlayerInfo* player); //!< Sets a Quest to active.
             virtual bool fail(PlayerInfo* player); //!< Fails the Quest.
@@ -150,8 +151,8 @@ namespace orxonox
             bool addFailEffect(QuestEffect* effect); //!< Adds an QuestEffect to the list of fail QuestEffects.
             bool addCompleteEffect(QuestEffect* effect); //!< Adds an QuestEffect to the list of complete QuestEffects.
 
-    };
+    }; // tolua_export
 
-}
+} // tolua_export
 
 #endif /* _Quest_H__ */

@@ -32,6 +32,7 @@
 
 #include "util/Convert.h"
 #include "util/Math.h"
+#include "util/StringUtils.h"
 #include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"
 #include "PathConfig.h"

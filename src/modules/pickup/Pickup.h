@@ -39,7 +39,7 @@
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
 
-#include "interfaces/Pickupable.h"
+#include "CollectiblePickup.h"
 
 #include "tools/Timer.h"
 
@@ -73,13 +73,11 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _PickupExport Pickup : public Pickupable, public BaseObject
+    class _PickupExport Pickup : public CollectiblePickup, public BaseObject
     {
 
-        protected:
-            Pickup(BaseObject* creator); //!< Constructor.
-
         public:
+            Pickup(BaseObject* creator); //!< Constructor.
             virtual ~Pickup(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
@@ -166,7 +164,7 @@ namespace orxonox
 
         private:
             void initialize(void); //!< Initializes the member variables.
-            
+
             //TODO: Problems, when there are more Timers needed? Solutions?
             Timer durationTimer_; //!< Timer at the disposal of each Class implementing Pickup.
 

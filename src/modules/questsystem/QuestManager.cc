@@ -73,11 +73,7 @@ namespace orxonox
     */
     QuestManager::~QuestManager()
     {
-        for(std::map<PlayerInfo*, QuestGUI*>::iterator it = this->questGUIs_.begin(); it != this->questGUIs_.end(); it++)
-        {
-            it->second->destroy();
-        }
-        this->questGUIs_.clear();
+
     }
 
     /**
@@ -113,7 +109,8 @@ namespace orxonox
 
         if(result.second) //!< If inserting was a success.
         {
-            COUT(3) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
+            quest->setRegistered();
+            COUT(4) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
             return true;
         }
         else
@@ -121,6 +118,15 @@ namespace orxonox
            COUT(2) << "Quest with the same id was already present." << std::endl;
            return false;
         }
+    }
+
+    /**
+    @brief
+        Unregisters a Quest in the QuestManager.
+    */
+    bool QuestManager::unregisterQuest(Quest* quest)
+    {
+        return this->questMap_.erase(quest->getId()) == 1;
     }
 
     /**
@@ -145,7 +151,8 @@ namespace orxonox
 
         if(result.second) //!< If inserting was a success.
         {
-            COUT(3) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
+            hint->setRegistered();
+            COUT(4) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
             return true;
         }
         else
@@ -153,6 +160,15 @@ namespace orxonox
            COUT(2) << "QuestHint with the same id was already present." << std::endl;
            return false;
         }
+    }
+
+    /**
+    @brief
+        Unregisters a QuestHint in the QuestManager.
+    */
+    bool QuestManager::unregisterHint(QuestHint* hint)
+    {
+        return this->hintMap_.erase(hint->getId()) == 1;
     }
 
     /**
@@ -168,7 +184,7 @@ namespace orxonox
     */
     Quest* QuestManager::findQuest(const std::string & questId)
     {
-        if(!QuestItem::isId(questId)) //!< Check vor validity of the given id.
+        if(questId.compare(BLANKSTRING) == 1) //!< Check vor validity of the given id.
         {
             ThrowException(Argument, "Invalid questId.");
         }
@@ -202,7 +218,7 @@ namespace orxonox
     */
     QuestHint* QuestManager::findHint(const std::string & hintId)
     {
-        if(!QuestItem::isId(hintId)) //!< Check vor validity of the given id.
+        if(hintId.compare(BLANKSTRING) == 1) //!< Check vor validity of the given id.
         {
             ThrowException(Argument, "Invalid hintId.");
         }
@@ -223,23 +239,81 @@ namespace orxonox
 
     }
 
-    /**
-    @brief
-        Retreive the main window for the GUI.
-        This is for the use in the lua script tu start the QuestGUI.
-    @param guiName
-        The name of the GUI.
-    @return
-        Returns a CEGUI Window.
-    */
-    CEGUI::Window* QuestManager::getQuestGUI(const std::string & guiName)
+    int QuestManager::getNumParentQuests(PlayerInfo* player)
     {
-        PlayerInfo* player = this->retrievePlayer(guiName);
+        int numQuests = 0;
+        for(std::map<std::string, Quest*>::iterator it = this->questMap_.begin(); it != this->questMap_.end(); it++)
+        {
+            if(it->second->getParentQuest() == NULL && !it->second->isInactive(player))
+                numQuests++;
+        }
+        return numQuests;
+    }
 
-        if(this->questGUIs_.find(player) == this->questGUIs_.end()) //!< Create a new GUI, if there is none, yet.
-            this->questGUIs_[player] = new QuestGUI(player);
+    Quest* QuestManager::getParentQuest(PlayerInfo* player, int index)
+    {
+        for(std::map<std::string, Quest*>::iterator it = this->questMap_.begin(); it != this->questMap_.end(); it++)
+        {
+            if(it->second->getParentQuest() == NULL && !it->second->isInactive(player) && index-- == 0)
+                return it->second;
+        }
+        return NULL;
+    }
 
-        return this->questGUIs_[player]->getGUI();
+    int QuestManager::getNumSubQuests(Quest* quest, PlayerInfo* player)
+    {
+        std::list<Quest*> quests = quest->getSubQuestList();
+        int numQuests = 0;
+        for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
+        {
+            if(!(*it)->isInactive(player))
+                numQuests++;
+        }
+        return numQuests;
+    }
+
+    Quest* QuestManager::getSubQuest(Quest* quest, PlayerInfo* player, int index)
+    {
+        std::list<Quest*> quests = quest->getSubQuestList();
+        for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
+        {
+            if(!(*it)->isInactive(player) && index-- == 0)
+                return *it;
+        }
+        return NULL;
+    }
+
+    int QuestManager::getNumHints(Quest* quest, PlayerInfo* player)
+    {
+        std::list<QuestHint*> hints = quest->getHintsList();
+        int numHints = 0;
+        for(std::list<QuestHint*>::iterator it = hints.begin(); it != hints.end(); it++)
+        {
+            if((*it)->isActive(player))
+                numHints++;
+        }
+        return numHints;
+    }
+
+    QuestHint* QuestManager::getHints(Quest* quest, PlayerInfo* player, int index)
+    {
+        std::list<QuestHint*> hints = quest->getHintsList();
+        for(std::list<QuestHint*>::iterator it = hints.begin(); it != hints.end(); it++)
+        {
+            if((*it)->isActive(player) && index-- == 0)
+                return *it;
+        }
+        return NULL;
+    }
+
+    QuestDescription* QuestManager::getDescription(Quest* item)
+    {
+        return item->getDescription();
+    }
+
+    QuestDescription* QuestManager::getDescription(QuestHint* item)
+    {
+        return item->getDescription();
     }
 
     /**

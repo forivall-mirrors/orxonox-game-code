@@ -135,7 +135,7 @@ namespace orxonox
         else if(entity->getName().compare(this->targetName_) != 0)
           continue;
       }
-      
+
       Vector3 distanceVec = entity->getWorldPosition() - this->getWorldPosition();
       if (distanceVec.length() < this->distance_)
       {
@@ -154,6 +154,7 @@ namespace orxonox
         return true;
       }
     }
+
     return false;
   }
 

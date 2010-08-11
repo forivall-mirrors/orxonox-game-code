@@ -81,7 +81,12 @@
  	d_ownsState = false;
 --- CEGUILua.h	Sun Jan 25 18:32:57 2009
 +++ CEGUILua.h	Thu Jan 29 10:17:42 2009
-@@ -38,7 +38,11 @@
+@@ -34,11 +34,15 @@
+ /*************************************************************************
+ 	Import / Export control macros
+ *************************************************************************/
+-#if (defined( __WIN32__ ) || defined( _WIN32 )) && !defined(CEGUI_STATIC)
++#if (defined( __WIN32__ ) || defined( _WIN32 )) && !defined(CEGUILUA_STATIC)
  #   ifdef CEGUILUA_EXPORTS
  #       define CEGUILUA_API __declspec(dllexport)
  #   else

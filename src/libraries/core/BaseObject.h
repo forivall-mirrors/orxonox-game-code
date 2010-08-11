@@ -50,6 +50,7 @@ namespace orxonox
 {
     class Scene;
     class Gametype;
+    class Level;
 
     //! The BaseObject is the parent of all classes representing an instance in the game.
     class _CoreExport BaseObject : virtual public OrxonoxClass
@@ -153,6 +154,17 @@ namespace orxonox
             inline Gametype* getOldGametype() const { return this->oldGametype_; }
             virtual void changedGametype() {}
 
+            inline void setLevel(const SmartPtr<Level>& level)
+            {
+                if (level != this->level_)
+                {
+                    this->level_ = level;
+                    this->changedLevel();
+                }
+            }
+            inline const SmartPtr<Level>& getLevel() const { return this->level_; }
+            virtual void changedLevel() {}
+
             void addEventSource(BaseObject* source, const std::string& state);
             void removeEventSource(BaseObject* source);
             BaseObject* getEventSource(unsigned int index, const std::string& state) const;
@@ -178,12 +190,13 @@ namespace orxonox
             void addEventState(const std::string& name, EventState* container);
             EventState* getEventState(const std::string& name) const;
 
-            std::string name_;                                 //!< The name of the object
-            std::string oldName_;                              //!< The old name of the object
-            mbool       bActive_;                              //!< True = the object is active
-            mbool       bVisible_;                             //!< True = the object is visible
-            std::string mainStateName_;
-            Functor*    mainStateFunctor_;
+            std::string             name_;                     //!< The name of the object
+            std::string             oldName_;                  //!< The old name of the object
+            mbool                   bActive_;                  //!< True = the object is active
+            mbool                   bVisible_;                 //!< True = the object is visible
+            std::string             mainStateName_;
+            Functor*                mainStateFunctor_;
+            std::set<std::string>   networkTemplateNames_;
 
         private:
             /** @brief Adds an object which listens to the events of this object. */
@@ -208,6 +221,7 @@ namespace orxonox
             uint32_t               sceneID_;
             SmartPtr<Gametype>     gametype_;
             Gametype*              oldGametype_;
+            SmartPtr<Level>        level_;
             std::set<Template*>    templates_;
 
             std::map<BaseObject*, std::string>  eventSources_;           //!< List of objects which send events to this object, mapped to the state which they affect

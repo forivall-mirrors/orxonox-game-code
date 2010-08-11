@@ -35,11 +35,13 @@
 #include <cassert>
 
 #include "util/Math.h"
-#include "util/OgreForwardRefs.h"
 #include "core/OrxonoxClass.h"
+#include "core/SmartPtr.h"
 
 namespace orxonox
 {
+    class BaseObject;
+
     /**
     @brief Interface for receiving window events.
     */
@@ -55,55 +57,64 @@ namespace orxonox
 
 
     public:
-        RadarViewable();
+        RadarViewable(BaseObject* creator, const WorldEntity* wePtr);
         virtual ~RadarViewable();
 
         inline void setRadarObjectCamouflage(float camouflage)
-            { this->radarObjectCamouflage_ = camouflage; }
+            {
+                if( this->radarObjectCamouflage_ != camouflage )
+                {
+                    this->radarObjectCamouflage_ = camouflage;
+                    this->settingsChanged();
+                }
+            }
         inline float getRadarObjectCamouflage() const
             { return this->radarObjectCamouflage_; }
 
         inline void setRadarObjectColour(const ColourValue& colour)
-            { this->radarObjectColour_ = colour; }
+            {
+                if(this->radarObjectColour_ != colour)
+                {
+                    this->radarObjectColour_ = colour;
+                    this->settingsChanged();
+                }
+            }
         inline const ColourValue& getRadarObjectColour() const
             { return this->radarObjectColour_; }
 
-        void setRadarObjectDescription(const std::string& str);
-        inline const std::string& getRadarObjectDescription() const
-            { return this->radarObjectDescription_; }
+//         void setRadarObjectDescription(const std::string& str);
+//         inline const std::string& getRadarObjectDescription() const
+//             { return this->radarObjectDescription_; }
 
         inline void setRadarVisibility(bool b)
-            { this->bVisibility_ = b; }
+            {
+                if(b!=this->bVisibility_)
+                {
+                    this->bVisibility_ = b;
+                    this->settingsChanged();
+                }
+            }
         inline bool getRadarVisibility() const
             { return this->bVisibility_; }
 
-        virtual const WorldEntity* getWorldEntity() const = 0;
+        virtual const WorldEntity* getWorldEntity() const{ return this->wePtr_; }
 
         const Vector3& getRVWorldPosition() const;
         Vector3 getRVOrientedVelocity() const;
 
         inline void setRadarObjectShape(Shape shape)
-            { this->radarObjectShape_ = shape; }
+            {
+                if( this->radarObjectShape_ != shape )
+                {
+                    this->radarObjectShape_ = shape;
+                    this->settingsChanged();
+                }
+            }
         inline Shape getRadarObjectShape() const
             { return this->radarObjectShape_; }
+        void settingsChanged();
 
-/*
-        inline void setMapNode(Ogre::SceneNode * node)
-            { this->MapNode_ = node; }
-        inline Ogre::SceneNode * getMapNode() const
-            { return this->MapNode_; }
-        inline void setMapEntity(Ogre::Entity * ent)
-            { this->MapEntity_ = ent; }
-        inline Ogre::Entity * getMapEntity() const
-            { return this->MapEntity_; }
-*/
-        //Used for Map
-        Ogre::SceneNode * MapNode_;
-        Ogre::Entity * MapEntity_;
-        Ogre::DynamicLines* line_;
-        Ogre::SceneNode * LineNode_;
-        void addMapEntity();
-        void updateMapPosition();
+
         bool isHumanShip_;
         inline const std::string& getUniqueId()
         {
@@ -114,11 +125,15 @@ namespace orxonox
     private:
         void validate(const WorldEntity* object) const;
         bool bVisibility_;
+        bool bInitialized_;
         //Map
         std::string uniqueId_;
+        BaseObject* creator_;
 
 
         //Radar
+        const WorldEntity* wePtr_;
+        SmartPtr<Radar> radar_;
         float radarObjectCamouflage_;
         Shape radarObjectShape_;
         std::string radarObjectDescription_;

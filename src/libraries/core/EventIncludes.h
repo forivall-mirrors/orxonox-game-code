@@ -51,7 +51,7 @@
         this->addEventState(statename, containername##function); \
     } \
     XMLPortEventStateIntern(xmlportevent##function, classname, statename, xmlelement, mode)
-    
+
 #define XMLPortEventSink(classname, subclassname, statename, function, xmlelement, mode) \
     orxonox::EventState* containername##function = this->getEventState(statename); \
     if (!containername##function) \

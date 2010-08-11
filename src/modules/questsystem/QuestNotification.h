@@ -38,23 +38,21 @@ namespace orxonox {
 
     /**
     @brief
-
+        The QuestNotification is a special Notification that has the single property that it is only sent by the questsystem.
     @author
         Damian 'Mozork' Frick
     */
     class _QuestsystemExport QuestNotification : public Notification
     {
         public:
-            QuestNotification(BaseObject* creator);
-            QuestNotification(const std::string & message);
-            virtual ~QuestNotification();
+            QuestNotification(BaseObject* creator); //!< Default Constructor.
+            QuestNotification(BaseObject* creator, const std::string & message); //!< Constructor.
+            virtual ~QuestNotification(); //!< Destructor.
 
-            bool send(void);
+            bool send(void); //!< Send the QuestNotification.
 
         private:
-            static const std::string SENDER;
-
-            void initialize(void);
+            static const std::string SENDER; //!< A string identifying the questsystem as the sender.
 
     };
 

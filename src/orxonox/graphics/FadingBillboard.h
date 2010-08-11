@@ -45,7 +45,6 @@ namespace orxonox
             virtual ~FadingBillboard();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
 
             virtual void tick(float dt);
             virtual void changedActivity();
@@ -65,6 +64,7 @@ namespace orxonox
                 { return this->fadedColour_; }
 
         protected:
+            void registerVariables();
             virtual void startturnonoff();
             virtual void stopturnonoff();
             virtual void poststopturnonoff();

@@ -23,9 +23,8 @@ function P.SettingsAudioButton_clicked(e)
     showMenuSheet("AudioMenu", true)
 end
 
-function P.SettingsResetSettingsButton_clicked(e)
-    -- reset settings
-    logMessage(0, "event: reset settings")
+function P.SettingsMiscellaneousButton_clicked(e)
+    showMenuSheet("MiscConfigMenu", true)
 end
 
 function P.SettingsBackButton_clicked(e)

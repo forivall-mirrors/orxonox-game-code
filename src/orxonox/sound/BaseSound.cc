@@ -32,6 +32,7 @@
 #include <vector>
 #include <al.h>
 
+#include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/Resource.h"
@@ -247,7 +248,7 @@ namespace orxonox
         }
         else // No source acquired so far, but might be set to playing or paused
         {
-            State state = this->state_; // save
+            State state = static_cast<State>(this->state_); // save
             if (this->isPlaying() || this->isPaused())
                 doPlay();
             if (state == Paused)

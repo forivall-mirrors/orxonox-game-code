@@ -60,7 +60,7 @@ restrictions:
 #		define OIS_XBOX_PLATFORM
 #	else
 #		define OIS_WIN32_PLATFORM
-#		if defined( OIS_DYNAMIC_LIB )
+#		if !defined( OIS_STATIC_LIB )
 #			undef _OISExport
 			//Ignorable Dll interface warning...
 #           if !defined(OIS_MINGW_COMPILER)

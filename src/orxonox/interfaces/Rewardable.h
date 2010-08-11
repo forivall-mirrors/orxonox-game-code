@@ -47,7 +47,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport Rewardable : public OrxonoxClass
+    class _OrxonoxExport Rewardable : virtual public OrxonoxClass
     {
         public:
             Rewardable();
@@ -58,7 +58,7 @@ namespace orxonox
                 Method to transcribe a rewardable object to the player.
                 Must be implemented by every class inheriting from Rewardable.
             @param player
-                A pointer to the ControllableEntity, do whatever you want with it.
+                A pointer to the PlayerInfo, do whatever you want with it.
             @return
                 Return true if successful.
             */

@@ -176,13 +176,14 @@ namespace orxonox
         if (!entity)
             return;
 
-//         assert( this->temporaryControllableEntity_==0 );
+        assert( this->oldControllableEntity_==0 );
 
         this->oldControllableEntity_ = this->controllableEntity_;
         this->controllableEntity_ = entity;
         this->controllableEntityID_ = entity->getObjectID();
 
         entity->setPlayer(this);
+        entity->setController(this->controller_);
 
         if (this->controller_)
             this->controller_->setControllableEntity(entity);
@@ -221,6 +222,8 @@ namespace orxonox
         if( !entity || !this->oldControllableEntity_ )
             return;
 
+        this->controllableEntity_->setController(0);
+        
         this->controllableEntity_ = this->oldControllableEntity_;
         this->controllableEntityID_ = this->controllableEntity_->getObjectID();
         this->oldControllableEntity_ = 0;
