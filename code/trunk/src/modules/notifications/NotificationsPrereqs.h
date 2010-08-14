@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Damian 'Mozork' Frick
  *   Co-authors:
  *      ...
  *
@@ -32,8 +32,8 @@
     Shared library macros, enums, constants and forward declarations for the questsystem module
 */
 
-#ifndef _QuestsystemPrereqs_H__
-#define _QuestsystemPrereqs_H__
+#ifndef _NotificationsPrereqs_H__
+#define _NotificationsPrereqs_H__
 
 #include "OrxonoxConfig.h"
 #include "OrxonoxPrereqs.h"
@@ -42,20 +42,20 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(QUESTSYSTEM_STATIC_BUILD)
-#  ifdef QUESTSYSTEM_SHARED_BUILD
-#    define _QuestsystemExport __declspec(dllexport)
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(NOTIFICATIONS_STATIC_BUILD)
+#  ifdef NOTIFICATIONS_SHARED_BUILD
+#    define _NotificationsExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
-#      define _QuestsystemExport
+#      define _NotificationsExport
 #    else
-#      define _QuestsystemExport __declspec(dllimport)
+#      define _NotificationsExport __declspec(dllimport)
 #    endif
 #  endif
 #elif defined ( ORXONOX_GCC_VISIBILITY )
-#  define _QuestsystemExport  __attribute__ ((visibility("default")))
+#  define _NotificationsExport  __attribute__ ((visibility("default")))
 #else
-#  define _QuestsystemExport
+#  define _NotificationsExport
 #endif
 
 //-----------------------------------------------------------------------
@@ -64,23 +64,10 @@
 
 namespace orxonox
 {
-    class AddQuest;
-    class AddQuestHint;
-    class AddReward;
-    class ChangeQuestStatus;
-    class CompleteQuest;
-    class FailQuest;
-    class GlobalQuest;
-    class LocalQuest;
-    class Quest;
-    class QuestDescription;
-    class QuestEffect;
-    class QuestEffectBeacon;
-    class QuestHint;
-    class QuestItem;
-    class QuestListener;
-    class QuestManager;
-    class QuestNotification;
+    class Notification;
+    class NotificationManager;
+    class NotificationOverlay;
+    class NotificationQueue;
 }
 
-#endif /* _QuestsystemPrereqs_H__ */
+#endif /* _NotificationsPrereqs_H__ */

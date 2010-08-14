@@ -34,7 +34,7 @@
 #ifndef _NotificationOueue_H__
 #define _NotificationOueue_H__
 
-#include "questsystem/QuestsystemPrereqs.h"
+#include "notifications/NotificationsPrereqs.h"
 
 #include <ctime>
 #include <map>
@@ -73,19 +73,19 @@ namespace orxonox
         Be aware that the NotificationQueue must be inside the <Level></Level> tags or bad things will happen.
         <NotificationQueue
             name = "SuperQueue" //Name of your OverlayQueue.
-            maxSize = "5" //The maximum size of Notifications displayed.
-            notificationLength = "64" //The maximum number of characters of a Notification, that are displayed. (Default is 5)
+            maxSize = "5" //The maximum number of Notifications displayed. (Default is 5)
+            notificationLength = "64" //The maximum number of characters of a Notification, that are displayed. (Default is 64)
             displayTime = "30" //The time a Notification is displayed in seconds. (Default is 30)
             targets = "target1, target2" //The senders this NotificationQueue displays Notifications from. (all, if all Notifications should be displayed.)
             font = "VeraMono" //The font (Default is VeraMono)
             fontSize = '0.4' //The font size. (Default is 0.025)
-            position = "0.0, .0.0" //The position of the NotificationQueue. (Default is 0.0,0.0)
+            position = "0.0, 0.0" //The position of the NotificationQueue. (Default is 0.0,0.0)
         />
     @author
         Damian 'Mozork' Frick
     */
 
-    class _QuestsystemExport NotificationQueue : public OverlayGroup, public Tickable, public NotificationListener
+    class _NotificationsExport NotificationQueue : public OverlayGroup, public Tickable, public NotificationListener
     {
 
         public:
@@ -161,7 +161,7 @@ namespace orxonox
 
         private:
             static const int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
-            static const int DEFAULT_LENGTH = 64; //!< The default maximum number of Notifications displayed.
+            static const int DEFAULT_LENGTH = 64; //!< The default maximum number of characters displayed.
             static const int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
             static const float DEFAULT_FONT_SIZE; //!< The default font size.
 
