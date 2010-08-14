@@ -35,7 +35,7 @@
 #ifndef _NotificationOverlay_H__
 #define _NotificationOverlay_H__
 
-#include "questsystem/QuestsystemPrereqs.h"
+#include "notifications/NotificationsPrereqs.h"
 
 #include <string>
 #include "overlays/OverlayText.h"
@@ -45,11 +45,11 @@ namespace orxonox
 
     /**
     @brief
-        The NotificationOverlay is used to display single Notifications, then bundled in a NotificationQUeue.
+        The NotificationOverlay is used to display single Notifications, then bundled in a NotificationQueue.
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestsystemExport NotificationOverlay : public OverlayText
+    class _NotificationsExport NotificationOverlay : public OverlayText
     {
 
         public:

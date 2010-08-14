@@ -18,8 +18,6 @@ SET_SOURCE_FILES(QUESTSYSTEM_SRC_FILES
   QuestNotification.cc
 )
 
-ADD_SUBDIRECTORY(notifications)
-
 ORXONOX_ADD_LIBRARY(questsystem
   MODULE
   FIND_HEADER_FILES
@@ -32,7 +30,7 @@ ORXONOX_ADD_LIBRARY(questsystem
     QuestsystemPrecompiledHeaders.h
   LINK_LIBRARIES
     orxonox
+    notifications
     objects
-    overlays
   SOURCE_FILES ${QUESTSYSTEM_SRC_FILES}
 )
