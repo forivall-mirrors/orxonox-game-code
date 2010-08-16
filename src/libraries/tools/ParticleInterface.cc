@@ -94,8 +94,9 @@ namespace orxonox
 
     void ParticleInterface::setConfigValues()
     {
-        SetConfigValue(globalDetailLevel_, 2)
-            .description("O: off, 1: low, 2: normal, 3: high").callback(this, &ParticleInterface::detailLevelChanged);
+        SetConfigValueExternal(globalDetailLevel_, "GraphicsSettings", "particlesDetailLevel", 2)
+            .description("O: off, 1: low, 2: normal, 3: high")
+            .callback(this, &ParticleInterface::detailLevelChanged);
     }
 
     Ogre::ParticleEmitter* ParticleInterface::createNewEmitter()

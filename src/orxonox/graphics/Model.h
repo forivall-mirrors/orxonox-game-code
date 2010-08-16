@@ -43,6 +43,8 @@ namespace orxonox
             Model(BaseObject* creator);
             virtual ~Model();
 
+            void setConfigValues();
+
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             virtual void changedVisibility();
@@ -66,6 +68,8 @@ namespace orxonox
             void changedShadows();
 
             //LoD
+            void enableLod();
+
             inline void setLodLevel(float lodLevel)
                 { this->lodLevel_ =  lodLevel; }
             inline float getLodLevel() const
@@ -77,6 +81,7 @@ namespace orxonox
             bool bCastShadows_;
 
             //LoD
+            bool bGlobalEnableLod_;
             float lodLevel_;
             bool bLodEnabled_;
             unsigned int numLodLevels_;
