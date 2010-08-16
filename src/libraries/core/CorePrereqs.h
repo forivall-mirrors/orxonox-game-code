@@ -36,6 +36,7 @@
 #define _CorePrereqs_H__
 
 #include "OrxonoxConfig.h"
+#include <boost/version.hpp>
 
 //-----------------------------------------------------------------------
 // Shared library settings
@@ -243,12 +244,27 @@ namespace Tcl
 // Boost
 namespace boost
 {
+#if (BOOST_VERSION < 104400)
     namespace filesystem
     {
         struct path_traits;
         template <class String, class Traits> class basic_path;
         typedef basic_path<std::string, path_traits> path;
     }
+#else
+    namespace filesystem2
+    {
+        struct path_traits;
+        template <class String, class Traits> class basic_path;
+        typedef basic_path<std::string, path_traits> path;
+    }
+    namespace filesystem
+    {
+        using filesystem2::basic_path;
+        using filesystem2::path_traits;
+        using filesystem2::path;
+    }
+#endif
     class thread;
     class mutex;
     class shared_mutex;
