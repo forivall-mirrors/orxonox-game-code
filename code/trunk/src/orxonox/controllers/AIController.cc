@@ -211,10 +211,10 @@ namespace orxonox
             {
                 if (this->target_)
                 {
-				if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
-                	this->forgetTarget();
-                else this->aimAtTarget();
-            }
+                    if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
+                        this->forgetTarget();
+                    else this->aimAtTarget();
+                }
 
                 if (this->bHasTargetPosition_)
                     this->moveToTargetPosition();
@@ -244,8 +244,8 @@ namespace orxonox
         {
             if (this->target_)
             {
-				if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
-                	this->forgetTarget();
+                if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
+                    this->forgetTarget();
                 else this->aimAtTarget();
             }
 
