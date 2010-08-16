@@ -104,7 +104,7 @@ namespace orxonox
 #else
         const unsigned int defaultLevel = 3;
 #endif
-        setConfigValueGeneric(this, &softDebugLevel_, ConfigFileType::Settings, "OutputHandler", "softDebugLevel" + this->consoleName_, defaultLevel)
+        SetConfigValueExternal(softDebugLevel_, "OutputHandler", "softDebugLevel" + this->consoleName_, defaultLevel)
             .description("The maximal level of debug output shown in the Shell");
         this->setSoftDebugLevel(this->softDebugLevel_);
     }
