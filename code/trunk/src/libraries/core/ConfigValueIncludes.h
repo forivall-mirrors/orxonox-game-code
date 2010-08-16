@@ -95,6 +95,21 @@ namespace orxonox
 #define SetConfigValueAlias(variable, entryName, defaultValue) \
     orxonox::setConfigValueGeneric(this, &variable, ConfigFileType::Settings, this->getIdentifier()->getName(), entryName, defaultValue)
 
+/** Sets a runtime configurable value (simplified macro version of setConfigValueGeneric)
+    If the container for the value doesn't yet exist, a new one is created.
+    Also, the @a varname argument will be modified and set to the new value (default or from ini file).
+@param variable
+    Variable name as C++ identifier.
+@param sectionName
+    Name of the section in the ini file (e.g. [MySection])
+@param entryName
+    Name of the entry in the ini file (e.g. [MySection] myValue)
+@param defaultValue
+    Value to be used if it cannot be read from the ini file
+*/
+#define SetConfigValueExternal(variable, sectionName, entryName, defaultValue) \
+    orxonox::setConfigValueGeneric(this, &variable, ConfigFileType::Settings, sectionName, entryName, defaultValue)
+
 
 namespace orxonox
 {

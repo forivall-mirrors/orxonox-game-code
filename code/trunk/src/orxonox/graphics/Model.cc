@@ -31,6 +31,7 @@
 #include <OgreEntity.h>
 
 #include "core/CoreIncludes.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "Scene.h"
@@ -46,6 +47,7 @@ namespace orxonox
     {
         RegisterObject(Model);
 
+        this->setConfigValues();
         this->registerVariables();
     }
 
@@ -53,6 +55,12 @@ namespace orxonox
     {
         if (this->isInitialized() && this->mesh_.getEntity())
             this->detachOgreObject(this->mesh_.getEntity());
+    }
+
+    void Model::setConfigValues()
+    {
+        SetConfigValueExternal(bGlobalEnableLod_, "GraphicsSettings", "enableModelLoD", true)
+            .description("Enable level of detail for models");
     }
 
     void Model::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -96,87 +104,8 @@ namespace orxonox
                 this->mesh_.getEntity()->setCastShadows(this->bCastShadows_);
                 this->mesh_.setVisible(this->isVisible());
 
-
-                //LOD
-                if( this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1 )
-                {
-                    Level* level = this->getLevel();
-
-                    assert( level != 0 );
-
-                    MeshLodInformation* lodInfo = level->getLodInfo(this->meshSrc_);
-                    if( lodInfo )
-                    {
-                        setLodLevel(lodInfo->getLodLevel());
-                        this->bLodEnabled_ = lodInfo->getEnabled();
-                        this->numLodLevels_ = lodInfo->getNumLevels();
-                        this->lodReductionRate_ = lodInfo->getReductionRate();
-                    }
-                    if( this->numLodLevels_>10 )
-                    {
-                        CCOUT(2) << "More than 10 LoD levels requested. Creating only 10." << endl;
-                        this->numLodLevels_ = 10;
-                    }
-                    if( this->bLodEnabled_ )
-                    {
-                        float volume = this->mesh_.getEntity()->getBoundingBox().volume();
-    //                     float scaleFactor = 1;
-
-    //                     BaseObject* creatorPtr = this;
-    //
-    //                     while(creatorPtr!=NULL&&orxonox_cast<WorldEntity*>(creatorPtr))
-    //                     {
-    //                         scaleFactor *= getBiggestScale(((WorldEntity*) creatorPtr)->getScale3D());
-    //                         creatorPtr = creatorPtr->getCreator();
-    //                     }
-    //                     COUT(0) << "name: " << this->meshSrc_ << "scaleFactor: " << scaleFactor << ", volume: " << volume << endl;
-
-                        COUT(4) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and volume: "<< volume << ":" << std::endl;
-
-#if OGRE_VERSION >= 0x010700
-                        Ogre::Mesh::LodValueList distList;
-#else
-                        Ogre::Mesh::LodDistanceList distList;
-#endif
-
-                        if( lodLevel_>0 )
-                        {
-    //                         float factor = scaleFactor*5/lodLevel_;
-                            float factor = pow(volume, 2.0f / 3.0f) * 15.0f / lodLevel_;
-
-                            COUT(4) << "LodLevel set with factor: " << factor << endl;
-
-                            distList.push_back(70.0f*factor);
-                            distList.push_back(140.0f*factor);
-                            distList.push_back(170.0f*factor);
-                            distList.push_back(200.0f*factor);
-                            distList.push_back(230.0f*factor);
-                            distList.push_back(250.0f*factor);
-                            distList.push_back(270.0f*factor);
-                            distList.push_back(290.0f*factor);
-                            distList.push_back(310.0f*factor);
-                            distList.push_back(330.0f*factor);
-                            while(distList.size()>this->numLodLevels_)
-                                distList.pop_back();
-
-
-                            //Generiert LOD-Levels
-                            this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, this->lodReductionRate_);
-                        }
-                        else
-                        {
-                            std::string what;
-                            if(lodLevel_>5)
-                                what = ">5";
-                            else
-                                what = "<0";
-
-                            COUT(4)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"." << endl;
-                        }
-                    }
-                    else
-                        COUT(4) << "LodLevel for " << this->meshSrc_ << " not set because is disabled." << endl;
-                }
+                if (this->bGlobalEnableLod_)
+                    this->enableLod();
             }
         }
     }
@@ -191,5 +120,90 @@ namespace orxonox
         SUPER(Model, changedVisibility);
 
         this->mesh_.setVisible(this->isVisible());
+    }
+
+    void Model::enableLod()
+    {
+        //LOD
+        if( this->mesh_.getEntity()->getMesh()->getNumLodLevels()==1 )
+        {
+            Level* level = this->getLevel();
+
+            assert( level != 0 );
+
+            MeshLodInformation* lodInfo = level->getLodInfo(this->meshSrc_);
+            if( lodInfo )
+            {
+                setLodLevel(lodInfo->getLodLevel());
+                this->bLodEnabled_ = lodInfo->getEnabled();
+                this->numLodLevels_ = lodInfo->getNumLevels();
+                this->lodReductionRate_ = lodInfo->getReductionRate();
+            }
+            if( this->numLodLevels_>10 )
+            {
+                CCOUT(2) << "More than 10 LoD levels requested. Creating only 10." << endl;
+                this->numLodLevels_ = 10;
+            }
+            if( this->bLodEnabled_ )
+            {
+                float volume = this->mesh_.getEntity()->getBoundingBox().volume();
+/*
+                float scaleFactor = 1;
+
+                BaseObject* creatorPtr = this;
+
+                while(creatorPtr!=NULL&&orxonox_cast<WorldEntity*>(creatorPtr))
+                {
+                    scaleFactor *= getBiggestScale(((WorldEntity*) creatorPtr)->getScale3D());
+                    creatorPtr = creatorPtr->getCreator();
+                }
+                COUT(0) << "name: " << this->meshSrc_ << "scaleFactor: " << scaleFactor << ", volume: " << volume << endl;
+*/
+                COUT(4) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and volume: "<< volume << ":" << std::endl;
+
+#if OGRE_VERSION >= 0x010700
+                Ogre::Mesh::LodValueList distList;
+#else
+                Ogre::Mesh::LodDistanceList distList;
+#endif
+
+                if( lodLevel_>0 )
+                {
+//                    float factor = scaleFactor*5/lodLevel_;
+                    float factor = pow(volume, 2.0f / 3.0f) * 15.0f / lodLevel_;
+
+                    COUT(4) << "LodLevel set with factor: " << factor << endl;
+
+                    distList.push_back(70.0f*factor);
+                    distList.push_back(140.0f*factor);
+                    distList.push_back(170.0f*factor);
+                    distList.push_back(200.0f*factor);
+                    distList.push_back(230.0f*factor);
+                    distList.push_back(250.0f*factor);
+                    distList.push_back(270.0f*factor);
+                    distList.push_back(290.0f*factor);
+                    distList.push_back(310.0f*factor);
+                    distList.push_back(330.0f*factor);
+                    while(distList.size()>this->numLodLevels_)
+                        distList.pop_back();
+
+
+                    //Generiert LOD-Levels
+                    this->mesh_.getEntity()->getMesh()->generateLodLevels(distList, Ogre::ProgressiveMesh::VRQ_PROPORTIONAL, this->lodReductionRate_);
+                }
+                else
+                {
+                    std::string what;
+                    if(lodLevel_>5)
+                        what = ">5";
+                    else
+                        what = "<0";
+
+                    COUT(4)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"." << endl;
+                }
+            }
+            else
+                COUT(4) << "LodLevel for " << this->meshSrc_ << " not set because is disabled." << endl;
+        }
     }
 }
