@@ -620,7 +620,7 @@ namespace orxonox
         // Prepare the command-line arguments
         const int argc = 2;
         char* argv[argc];
-        argv[0] = "tclthread";
+        argv[0] = const_cast<char*>("tclthread");
         argv[1] = const_cast<char*>(file.c_str());
 
         // Start the Tcl-command Tcl_Main with the Tcl_OrxonoxAppInit hook

@@ -507,29 +507,29 @@ namespace orxonox
     template <> inline bool MultiType::convert<const orxonox::Radian&>()      { return this->convert<orxonox::Radian>();      } /** @brief Converts the current value to the given type. */
     template <> inline bool MultiType::convert<const orxonox::Degree&>()      { return this->convert<orxonox::Degree>();      } /** @brief Converts the current value to the given type. */
 
-    template <> void MultiType::createNewValueContainer(const char& value);
-    template <> void MultiType::createNewValueContainer(const unsigned char& value);
-    template <> void MultiType::createNewValueContainer(const short& value);
-    template <> void MultiType::createNewValueContainer(const unsigned short& value);
-    template <> void MultiType::createNewValueContainer(const int& value);
-    template <> void MultiType::createNewValueContainer(const unsigned int& value);
-    template <> void MultiType::createNewValueContainer(const long& value);
-    template <> void MultiType::createNewValueContainer(const unsigned long& value);
-    template <> void MultiType::createNewValueContainer(const long long& value);
-    template <> void MultiType::createNewValueContainer(const unsigned long long& value);
-    template <> void MultiType::createNewValueContainer(const float& value);
-    template <> void MultiType::createNewValueContainer(const double& value);
-    template <> void MultiType::createNewValueContainer(const bool& value);
-    template <> void MultiType::createNewValueContainer(const long double& value);
-    template <> void MultiType::createNewValueContainer(      void* const& value);
-    template <> void MultiType::createNewValueContainer(const std::string& value);
-    template <> void MultiType::createNewValueContainer(const orxonox::Vector2& value);
-    template <> void MultiType::createNewValueContainer(const orxonox::Vector3& value);
-    template <> void MultiType::createNewValueContainer(const orxonox::Vector4& value);
-    template <> void MultiType::createNewValueContainer(const orxonox::ColourValue& value);
-    template <> void MultiType::createNewValueContainer(const orxonox::Quaternion& value);
-    template <> void MultiType::createNewValueContainer(const orxonox::Radian& value);
-    template <> void MultiType::createNewValueContainer(const orxonox::Degree& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const char& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const unsigned char& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const short& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const unsigned short& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const int& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const unsigned int& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const long& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const unsigned long& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const long long& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const unsigned long long& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const float& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const double& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const bool& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const long double& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(      void* const& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const std::string& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const orxonox::Vector2& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const orxonox::Vector3& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const orxonox::Vector4& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const orxonox::ColourValue& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const orxonox::Quaternion& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const orxonox::Radian& value);
+    template <> _UtilExport void MultiType::createNewValueContainer(const orxonox::Degree& value);
 
     inline bool MultiType::setValue(const char& value)                  { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
     inline bool MultiType::setValue(const unsigned char& value)         { if (this->value_) { return this->value_->setValue(value); } else { return this->assignValue(value); } } /** @brief Assigns the given value and converts it to the current type. */
