@@ -190,7 +190,7 @@ namespace orxonox
 #else
         const unsigned int defaultLevelLogFile = 4;
 #endif
-        setConfigValueGeneric(this, &this->softDebugLevelLogFile_, ConfigFileType::Settings, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
+        SetConfigValueExternal(softDebugLevelLogFile_, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
             .description("The maximum level of debug output shown in the log file");
         OutputHandler::getInstance().setSoftDebugLevel(OutputHandler::logFileOutputListenerName_s, this->softDebugLevelLogFile_);
 
