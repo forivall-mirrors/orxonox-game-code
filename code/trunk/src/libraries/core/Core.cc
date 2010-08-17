@@ -228,7 +228,23 @@ namespace orxonox
         Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
 
         // Upgrade OGRE to receive a render window
-        graphicsManager_->upgradeToGraphics();
+        try
+        {
+            graphicsManager_->upgradeToGraphics();
+        }
+        catch (...)
+        {
+            // Recovery from this is very difficult. It requires to completely
+            // destroy Ogre related objects and load again (without graphics).
+            // However since Ogre 1.7 there seems to be a problem when Ogre
+            // throws an exception and the graphics engine then gets destroyed
+            // and reloaded between throw and catch (access violation in MSVC).
+            // That's why we abort completely and only display the exception.
+            COUT(0) << "An exception occurred during upgrade to graphics. "
+                    << "That is unrecoverable. The message was:" << endl
+                    << Exception::handleMessage() << endl;
+            abort();
+        }
 
         // Calls the InputManager which sets up the input devices.
         inputManager_.reset(new InputManager());
