@@ -305,17 +305,9 @@ namespace orxonox
             if (device == NULL)
                 continue;
             const std::string& className = device->getClassName();
-            try
-            {
-                delete device;
-                device = 0;
-                CCOUT(4) << className << " destroyed." << std::endl;
-            }
-            catch (...)
-            {
-                COUT(1) << className << " destruction failed: " << Exception::handleMessage() << std::endl
-                        << "    Potential resource leak!" << std::endl;
-            }
+            delete device;
+            device = 0;
+            CCOUT(4) << className << " destroyed." << std::endl;
         }
         devices_.resize(InputDeviceEnumerator::FirstJoyStick);
 
@@ -324,9 +316,9 @@ namespace orxonox
         {
             OIS::InputManager::destroyInputSystem(oisInputManager_);
         }
-        catch (...)
+        catch (const OIS::Exception& ex)
         {
-            COUT(1) << "OIS::InputManager destruction failed" << Exception::handleMessage() << std::endl
+            COUT(1) << "OIS::InputManager destruction failed" << ex.eText << std::endl
                     << "    Potential resource leak!" << std::endl;
         }
         oisInputManager_ = NULL;

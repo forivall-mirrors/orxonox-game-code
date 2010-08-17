@@ -71,9 +71,9 @@ namespace orxonox
             {
                 this->init();
             }
-            catch (...)
+            catch (const std::exception& ex)
             {
-                COUT(1) << "Error: Couln't load particle effect in BigExplosion: " << Exception::handleMessage() << std::endl;
+                COUT(1) << "Error: Couln't load particle effect in BigExplosion: " << ex.what() << std::endl;
                 this->initZero();
             }
         }

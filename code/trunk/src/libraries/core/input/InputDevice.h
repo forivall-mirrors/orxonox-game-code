@@ -39,6 +39,7 @@
 
 #include <vector>
 #include <ois/OISInputManager.h>
+#include <ois/OISException.h>
 
 #include "util/Clock.h"
 #include "util/Debug.h"
@@ -143,9 +144,9 @@ namespace orxonox
             {
                 oisInputManager_->destroyInputObject(oisDevice_);
             }
-            catch (...)
+            catch (const OIS::Exception& ex)
             {
-                COUT(1) << this->getClassName() << " destruction failed: " << Exception::handleMessage() << std::endl
+                COUT(1) << this->getClassName() << " destruction failed: " << ex.eText << std::endl
                         << "    Potential resource leak!" << std::endl;
             }
         }
