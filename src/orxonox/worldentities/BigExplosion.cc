@@ -236,8 +236,6 @@ namespace orxonox
 
     BigExplosion::~BigExplosion()
     {
-        CommandExecutor::execute("setTimeFactor 1", false);
-
         if (this->isInitialized())
         {
             if (this->debrisFire1_)
