@@ -28,42 +28,29 @@
 
 #include "BigExplosion.h"
 
-//#include <sstream>
-
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "core/CommandExecutor.h"
 #include "core/Executor.h"
 #include "core/GameMode.h"
 #include "tools/ParticleInterface.h"
 #include "Scene.h"
 #include "graphics/ParticleSpawner.h"
 #include "graphics/Model.h"
+#include "MovableEntity.h"
 
 namespace orxonox
 {
     CreateFactory(BigExplosion);
 
-    BigExplosion::BigExplosion(BaseObject* creator) : MovableEntity(creator)
+    BigExplosion::BigExplosion(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(BigExplosion);
 
         if ( GameMode::showsGraphics() && ( !this->getScene() || !this->getScene()->getSceneManager() ) )
             ThrowException(AbortLoading, "Can't create BigExplosion, no scene or no scene manager given.");
-/*
-        this->cps_ = 1;
-        this->firstTick_ = true;
-*/
+
         this->bStop_ = false;
         this->LOD_ = LODParticle::Normal;
-
-/*      this->stf_ = "setTimeFactor ";
-        this->timeFactor_ =  1;
-        std::ostringstream o;
-        o << stf_ << this->timeFactor_;
-        CommandExecutor::execute(o.str() ,false);
-        this->timeFactor_ = 0.1;
-*/
 
         if ( GameMode::showsGraphics() )
         {
@@ -84,13 +71,9 @@ namespace orxonox
 
         if (GameMode::isMaster())
         {
-            Vector3 velocity(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1));
-            velocity.normalise();
-            velocity *= rnd(20, 30);
-            this->setVelocity(velocity);
-
             this->destroyTimer_.setTimer(rnd(2, 4), false, createExecutor(createFunctor(&BigExplosion::stop, this)));
         }
+
         this->registerVariables();
     }
 
@@ -100,7 +83,7 @@ namespace orxonox
         this->debrisEntity2_ = new MovableEntity(this);
         this->debrisEntity3_ = new MovableEntity(this);
         this->debrisEntity4_ = new MovableEntity(this);
-        
+
         this->debrisEntity1_->setSyncMode(0);
         this->debrisEntity2_->setSyncMode(0);
         this->debrisEntity3_->setSyncMode(0);
@@ -110,7 +93,7 @@ namespace orxonox
         this->debris2_ = new Model(this);
         this->debris3_ = new Model(this);
         this->debris4_ = new Model(this);
-        
+
         this->debris1_->setSyncMode(0);
         this->debris2_->setSyncMode(0);
         this->debris3_->setSyncMode(0);
@@ -193,7 +176,7 @@ namespace orxonox
 
             MovableEntity* partEntity1 = new MovableEntity(this);
             MovableEntity* partEntity2 = new MovableEntity(this);
-            
+
             part1->setSyncMode(0);
             part2->setSyncMode(0);
             partEntity1->setSyncMode(0);
@@ -359,31 +342,4 @@ namespace orxonox
 
     }
 */
-
-     void BigExplosion::tick(float dt)
-    {
-//        static const unsigned int CHANGES_PER_SECOND = 10;
-
-
-/*        if (GameMode::isMaster() && rnd() < dt*(this->cps_))
-        {
-
-            if(this->timeFactor_ < 1 )
-                this->timeFactor_ += 0.05;
-
-            if(this->firstTick_)
-                this->cps_ = 256;
-
-            std::ostringstream o;
-            o << this->stf_ << this->timeFactor_;
-            CommandExecutor::execute(o.str() ,false);
-            if(this->cps_>50)
-                this->cps_/=2;
-            this->firstTick_ = false;
-            COUT(0) << timeFactor_ << std::endl;
-        }
-*/
-
-        SUPER(BigExplosion, tick, dt);
-    }
 }
