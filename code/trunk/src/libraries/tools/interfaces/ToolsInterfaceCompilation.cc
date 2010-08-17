@@ -37,15 +37,12 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "network/NetworkFunction.h"
 
 namespace orxonox
 {
     //----------------------------
     // TimeFactorListener
     //----------------------------
-    registerStaticNetworkFunction( &TimeFactorListener::setTimeFactorInternal );
-
     float TimeFactorListener::timefactor_s = 1.0f;
 
     TimeFactorListener::TimeFactorListener()
@@ -53,15 +50,11 @@ namespace orxonox
         RegisterRootObject(TimeFactorListener);
     }
 
-    /*static*/ void TimeFactorListener::setTimeFactor( float factor )
+    /*static*/ void TimeFactorListener::setTimeFactor(float factor)
     {
-        if ( !GameMode::isStandalone() )
-            callStaticNetworkFunction( &TimeFactorListener::setTimeFactorInternal, CLIENTID_UNKNOWN, factor );
-        TimeFactorListener::setTimeFactorInternal(factor);
-    }
+        if (factor == TimeFactorListener::timefactor_s)
+            return;
 
-    /*static*/ void TimeFactorListener::setTimeFactorInternal( float factor )
-    {
         float oldFactor = TimeFactorListener::timefactor_s;
         TimeFactorListener::timefactor_s = factor;
         for (ObjectList<TimeFactorListener>::iterator it = ObjectList<TimeFactorListener>::begin(); it != ObjectList<TimeFactorListener>::end(); ++it)

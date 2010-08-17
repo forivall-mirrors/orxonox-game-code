@@ -40,9 +40,9 @@ namespace orxonox
             TimeFactorListener();
             virtual ~TimeFactorListener() {}
 
-            static void setTimeFactor( float factor );
-            static void setTimeFactorInternal( float factor );
-            static inline float getTimeFactor(){ return TimeFactorListener::timefactor_s; }
+            static void setTimeFactor(float factor);
+            static inline float getTimeFactor()
+                { return TimeFactorListener::timefactor_s; }
 
         protected:
             virtual void changedTimeFactor(float factor_new, float factor_old) {}

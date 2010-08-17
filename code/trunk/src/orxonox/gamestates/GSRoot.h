@@ -31,10 +31,11 @@
 
 #include "OrxonoxPrereqs.h"
 #include "core/GameState.h"
+#include "tools/interfaces/TimeFactorListener.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public GameState
+    class _OrxonoxExport GSRoot : public GameState, public TimeFactorListener
     {
     public:
         GSRoot(const GameStateInfo& info);
@@ -50,7 +51,9 @@ namespace orxonox
         // when taking the function address.
         void setTimeFactor(float factor);
         void pause();
-        float getTimeFactor();
+
+    protected:
+        virtual void changedTimeFactor(float factor_new, float factor_old);
 
     private:
         bool                  bPaused_;
