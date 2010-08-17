@@ -61,9 +61,11 @@ FUNCTION(PREPARE_SOURCE_FILES)
         LIST(APPEND _fullpath_sources ${_compilation_file})
         # MSVC hack that excludes the compilations from the intellisense database
         # (There is a bug with the "-" instead of "/". Only works for "Zm#" argument)
-        IF(MSVC)
-          SET_SOURCE_FILES_PROPERTIES(${_compilation_file} PROPERTIES COMPILE_FLAGS "-Zm1000")
-        ENDIF()
+        # 2nd Note: Exploiting this results in a strange separation of the compilation
+        # file, causing the compiler not to use multi processing --> slower compiling.
+        #IF(MSVC)
+        #    SET_SOURCE_FILES_PROPERTIES(${_compilation_file} PROPERTIES COMPILE_FLAGS "-Zm1000")
+        #ENDIF()
       ENDIF()
       SET(_compilation_name)
       SET(_compilation)
