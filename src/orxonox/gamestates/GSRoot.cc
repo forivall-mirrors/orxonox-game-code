@@ -35,13 +35,14 @@
 #include "core/GameMode.h"
 #include "network/NetworkFunction.h"
 #include "tools/Timer.h"
-#include "tools/interfaces/TimeFactorListener.h"
 #include "tools/interfaces/Tickable.h"
 
 namespace orxonox
 {
     DeclareGameState(GSRoot, "root", false, false);
     SetConsoleCommandShortcut(GSRoot, printObjects);
+
+    registerStaticNetworkFunction(&TimeFactorListener::setTimeFactor);
 
     GSRoot::GSRoot(const GameStateInfo& info)
         : GameState(info)
@@ -152,8 +153,9 @@ namespace orxonox
         }
     }
 
-    float GSRoot::getTimeFactor()
+    void GSRoot::changedTimeFactor(float factor_new, float factor_old)
     {
-        return TimeFactorListener::getTimeFactor();
+        if (!GameMode::isStandalone())
+            callStaticNetworkFunction(&TimeFactorListener::setTimeFactor, CLIENTID_UNKNOWN, factor_new);
     }
 }
