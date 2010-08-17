@@ -182,26 +182,28 @@ namespace orxonox
 
             bool parse(T* object, const std::string& params, const std::string& delimiter = " ") const
             {
-                static_cast<FunctorMember<T>*>(this->functor_)->setObject(object);
-                if (Executor::parse(params, delimiter))
-                    return true;
-                else
-                {
-                    static_cast<FunctorMember<T>*>(this->functor_)->setObject((T*)NULL);
-                    return false;
-                }
+                FunctorMember<T>* functorMember = static_cast<FunctorMember<T>*>(this->functor_);
+
+                const typename FunctorMember<T>::Objects& objects = functorMember->getObjects();
+
+                functorMember->setObject(object);
+                bool result = Executor::parse(params, delimiter);
+                functorMember->setObjects(objects);
+
+                return result;
             }
 
             bool parse(const T* object, const std::string& params, const std::string& delimiter = " ") const
             {
-                static_cast<FunctorMember<T>*>(this->functor_)->setObject(object);
-                if (Executor::parse(params, delimiter))
-                    return true;
-                else
-                {
-                    static_cast<FunctorMember<T>*>(this->functor_)->setObject((T*)NULL);
-                    return false;
-                }
+                FunctorMember<T>* functorMember = static_cast<FunctorMember<T>*>(this->functor_);
+
+                const typename FunctorMember<T>::Objects& objects = functorMember->getObjects();
+
+                functorMember->setObject(object);
+                bool result = Executor::parse(params, delimiter);
+                functorMember->setObjects(objects);
+
+                return result;
             }
     };
 

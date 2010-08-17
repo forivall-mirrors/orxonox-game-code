@@ -134,9 +134,8 @@ namespace orxonox
         public:
             FunctorMember()
             {
-                constObject_ = 0;
-                object_ = 0;
-                bConstObject_ = false;
+                this->object_ = 0;
+                this->constObject_ = 0;
             }
             virtual ~FunctorMember() {}
 
@@ -145,46 +144,47 @@ namespace orxonox
 
             virtual void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null)
             {
-                if (this->bConstObject_)
-                {
-                    if (this->constObject_)
-                        (*this)(this->constObject_, param1, param2, param3, param4, param5);
-                    else
-                    {
-                        COUT(1) << "An error occurred in Functor.h:" << std::endl;
-                        COUT(1) << "Error: No const object set." << std::endl;
-                    }
-                }
+                if (this->object_)
+                    (*this)(this->object_, param1, param2, param3, param4, param5);
+                else if (this->constObject_)
+                    (*this)(this->constObject_, param1, param2, param3, param4, param5);
                 else
                 {
-                    if (this->object_)
-                        (*this)(this->object_, param1, param2, param3, param4, param5);
-                    else
-                    {
-                        COUT(1) << "An error occurred in Functor.h:" << std::endl;
-                        COUT(1) << "Error: No object set." << std::endl;
-                    }
+                    COUT(1) << "An error occurred in Functor.h:" << std::endl;
+                    COUT(1) << "Error: No object set." << std::endl;
                 }
             }
 
-            FunctorMember<T>* setObject(T* object)
+            inline FunctorMember<T>* setObject(T* object)
             {
-                this->bConstObject_ = false;
                 this->object_ = object;
+                this->constObject_ = 0;
                 return this;
             }
 
-            FunctorMember<T>* setObject(const T* object)
+            inline FunctorMember<T>* setObject(const T* object)
             {
-                this->bConstObject_ = true;
+                this->object_ = 0;
                 this->constObject_ = object;
                 return this;
             }
 
+            typedef std::pair<T*, const T*> Objects;
+
+            inline Objects getObjects() const
+            {
+                return Objects(this->object_, this->constObject_);
+            }
+
+            inline void setObjects(const Objects& objects)
+            {
+                this->object_ = objects.first;
+                this->constObject_ = objects.second;
+            }
+
         private:
-            const T* constObject_;
             T* object_;
-            bool bConstObject_;
+            const T* constObject_;
     };
 
 
