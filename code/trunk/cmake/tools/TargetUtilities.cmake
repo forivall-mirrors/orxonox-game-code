@@ -241,7 +241,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # Install all targets except for static ones (executables also have SHARED in _link_mode)
-  IF((${_link_mode} STREQUAL "SHARED") AND NOT _arg_NO_INSTALL)
+  IF(${_link_mode} STREQUAL "SHARED" AND NOT _arg_NO_INSTALL)
     IF(_arg_MODULE)
       INSTALL(TARGETS ${_target_name}
         RUNTIME DESTINATION ${MODULE_INSTALL_DIRECTORY}
