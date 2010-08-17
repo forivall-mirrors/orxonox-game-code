@@ -31,19 +31,16 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <string>
 #include "tools/Timer.h"
-#include "MovableEntity.h"
+#include "StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport BigExplosion : public MovableEntity
+    class _OrxonoxExport BigExplosion : public StaticEntity
     {
         public:
             BigExplosion(BaseObject* creator);
             virtual ~BigExplosion();
-
-            virtual void tick(float dt);
 
             inline void setLOD(LODParticle::Value level)
                 { this->LOD_ = level; this->LODchanged(); }
@@ -61,13 +58,6 @@ namespace orxonox
 
 
             bool                  bStop_;
-            bool                  firstTick_;
-
-            std::string           stf_;
-
-            unsigned int          cps_;
-
-            double                timeFactor_;
 
             StaticEntity*         explosion_;
 
