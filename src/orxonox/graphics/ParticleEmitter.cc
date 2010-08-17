@@ -113,10 +113,10 @@ namespace orxonox
                 this->particles_->setVisible(this->isVisible());
                 this->particles_->setEnabled(this->isActive());
             }
-            catch (...)
+            catch (const std::exception& ex)
             {
                 COUT(1) << "Error: Couln't load particle effect \"" << this->source_ << "\" because:" << std::endl
-                        << Exception::handleMessage() << std::endl;
+                        << ex.what() << std::endl;
             }
         }
     }

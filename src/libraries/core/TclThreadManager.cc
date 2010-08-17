@@ -286,8 +286,6 @@ namespace orxonox
         }
         catch (const Tcl::tcl_error& e)
         {   bundle->interpreter_ = 0; COUT(1) << "Tcl error while creating Tcl-interpreter (" << id_string << "): " << e.what() << std::endl;   }
-        catch (...)
-        {   bundle->interpreter_ = 0; COUT(1) << "Error while creating Tcl-interpreter (" << id_string << "): " << Exception::handleMessage() << std::endl;   }
     }
 
     /**

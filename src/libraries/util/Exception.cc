@@ -33,7 +33,9 @@
 */
 
 #include "Exception.h"
+
 #include <CEGUIExceptions.h>
+#include "Debug.h"
 
 namespace orxonox
 {
@@ -114,7 +116,9 @@ namespace orxonox
         }
         catch (...)
         {
-            return "Unknown exception";
+            COUT(0) << "BIG WARNING: Unknown exception type encountered."
+                    << "Rethrowing" << endl;
+            throw;
         }
     }
 }

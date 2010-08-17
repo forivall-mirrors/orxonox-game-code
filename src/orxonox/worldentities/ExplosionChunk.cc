@@ -58,9 +58,9 @@ namespace orxonox
                 this->smoke_ = new ParticleInterface(this->getScene()->getSceneManager(), "Orxonox/smoke7", this->LOD_);
                 this->attachOgreObject(this->smoke_->getParticleSystem());
             }
-            catch (...)
+            catch (const std::exception& ex)
             {
-                COUT(1) << "Error: Couln't load particle effect in ExplosionChunk: " << Exception::handleMessage() << std::endl;
+                COUT(1) << "Error: Couln't load particle effect in ExplosionChunk: " << ex.what() << std::endl;
                 this->fire_ = 0;
                 this->smoke_ = 0;
             }

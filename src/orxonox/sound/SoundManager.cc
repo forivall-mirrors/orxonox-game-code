@@ -520,9 +520,9 @@ namespace orxonox
             {
                 buffer.reset(new SoundBuffer(filename, this->effectsPool_.end()));
             }
-            catch (...)
+            catch (const std::exception& ex)
             {
-                COUT(1) << Exception::handleMessage() << std::endl;
+                COUT(1) << ex.what() << std::endl;
                 return buffer;
             }
             this->soundBuffers_[filename] = buffer;
