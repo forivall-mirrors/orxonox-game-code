@@ -154,7 +154,7 @@ namespace orxonox
             }
 
             // Remove all inactive SpawnPoints from the list.
-            for (std::set<SpawnPoint*>::const_iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); )
+            for (std::set<SpawnPoint*>::iterator it = teamSpawnPoints.begin(); it != teamSpawnPoints.end(); )
             {
                 if(!(*it)->isActive())
                 {

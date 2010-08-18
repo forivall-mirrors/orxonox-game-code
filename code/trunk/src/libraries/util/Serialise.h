@@ -683,23 +683,23 @@ namespace orxonox{
             saveAndIncrease( *it, mem );
     }
 
-    template <class T> inline void loadAndIncrease( const std::set<T>& variable, uint8_t*& mem )
+    template <class T> inline void loadAndIncrease(std::set<T>& variable, uint8_t*& mem )
     {
         uint32_t nrOfElements = 0;
         loadAndIncrease( nrOfElements, mem );
-        typename std::set<T>::const_iterator it = variable.begin();
+        typename std::set<T>::iterator it = variable.begin();
         for( uint32_t i = 0; i<nrOfElements; ++i )
         {
             T temp;
             loadAndIncrease(temp, mem);
             while( it!=variable.end() && *it!=temp )
             {
-                ((std::set<T>*)(&variable))->erase(it++);
+                variable.erase(it++);
                 ++it;
             }
             if( it==variable.end() )
             {
-                ((std::set<T>*)(&variable))->insert(temp);
+                variable.insert(temp);
             }
         }
     }
