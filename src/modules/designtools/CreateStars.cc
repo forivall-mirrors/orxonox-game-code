@@ -38,8 +38,6 @@ namespace orxonox
 {
     CreateFactory(CreateStars);
 
-    static const float pi = 3.14159265359f;
-
     CreateStars::CreateStars(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(CreateStars);
@@ -89,8 +87,8 @@ namespace orxonox
 
             while(1)
             {
-                phi = rnd(2*pi);
-                teta = rnd(pi);
+                phi = rnd(2*math::pi);
+                teta = rnd(math::pi);
                 float random = rnd(1);
                 if(sin(teta)>random) break;
             }

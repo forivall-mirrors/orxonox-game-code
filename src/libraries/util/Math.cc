@@ -184,7 +184,7 @@ namespace orxonox
 
         float distancelength = distance.length();
         if (distancelength == 0) return orxonox::Vector2(0, 0);
-        float radius = acos(clamp<float>(mydirection.dotProduct(distance) / distancelength, -1, 1)) / Ogre::Math::PI;
+        float radius = acos(clamp<float>(mydirection.dotProduct(distance) / distancelength, -1, 1)) / math::pi;
 
         if ((mydirection.crossProduct(myorthonormal)).dotProduct(distance) > 0)
             return orxonox::Vector2( sin_value * radius, cos_value * radius);

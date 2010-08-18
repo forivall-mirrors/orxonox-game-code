@@ -58,6 +58,24 @@
 
 namespace orxonox
 {
+    // C++ doesn't define any constants for pi, e, etc.
+    namespace math
+    {
+        const float pi      = 3.14159265f;
+        const float pi_2    = 1.57079633f;
+        const float pi_4    = 7.85398163e-1f;
+        const float e       = 2.71828183f;
+        const float sqrt2   = 1.41421356f;
+        const float sqrt2_2 = 7.07106781e-1f;
+
+        const double pi_d      = 3.14159265358979324;
+        const double pi_2_d    = 1.57079632679489662;
+        const double pi_4_d    = 7.85398163397448310e-1;
+        const double e_d       = 2.71828182845904524;
+        const double sqrt2_d   = 1.41421356237309505;
+        const double sqrt2_2_d = 7.07106781186547524e-1;
+    }
+
 #if OGRE_VERSION < 0x010603
     _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Radian& radian);
     _UtilExport std::ostream& operator<<(std::ostream& out, const orxonox::Degree& degree);

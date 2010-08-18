@@ -173,7 +173,7 @@ namespace orxonox
 
             // calc position on radar...
             Vector2 coord = get2DViewcoordinates(this->owner_->getPosition(), this->owner_->getOrientation() * WorldEntity::FRONT, this->owner_->getOrientation() * WorldEntity::UP, wePointer->getWorldPosition());
-            coord *= Ogre::Math::PI / 3.5f; // small adjustment to make it fit the texture
+            coord *= math::pi / 3.5f; // small adjustment to make it fit the texture
             it->second->setPosition((1.0f + coord.x - size) * 0.5f, (1.0f - coord.y - size) * 0.5f);
             it->second->show();
 

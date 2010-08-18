@@ -67,7 +67,7 @@ namespace orxonox
             if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();
 
-            if (this->getControllableEntity() && this->isCloseAtTarget(1000) && this->isLookingAtTarget(Ogre::Math::PI / 20.0f))
+            if (this->getControllableEntity() && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
                 this->getControllableEntity()->fire(0);
         }
         else
