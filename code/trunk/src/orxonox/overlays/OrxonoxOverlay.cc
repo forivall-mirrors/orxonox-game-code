@@ -281,9 +281,9 @@ namespace orxonox
         float angle = this->angle_.valueRadians();
         if (angle < 0.0)
             angle = -angle;
-        angle -= Ogre::Math::PI * static_cast<int>(angle / (Ogre::Math::PI));
-        if (angle > Ogre::Math::PI * 0.5)
-            angle = Ogre::Math::PI - angle;
+        angle -= math::pi * static_cast<int>(angle / (math::pi));
+        if (angle > math::pi * 0.5)
+            angle = math::pi - angle;
 
         // do some mathematical fiddling for a bounding box
         Vector2 actualSize = size_ * sizeCorrection_;

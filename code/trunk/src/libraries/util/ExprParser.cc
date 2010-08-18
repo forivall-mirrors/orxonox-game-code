@@ -32,9 +32,11 @@
 */
 
 #include "ExprParser.h"
+
 #include <cmath>
 #include <cstring>
 #include <cstdlib>
+#include "Math.h"
 
 // macros for easier if, else statements
 #define CASE_1(var) if (!strcmp(SWITCH,var))
@@ -49,8 +51,8 @@ namespace orxonox
     ExprParser::ExprParser()
     {
         this->failed_ = false;
-        this->variables_["pi"] = 3.1415926535897932;
-        this->variables_["e"] = 2.7182818284590452;
+        this->variables_["pi"] = math::pi_d;
+        this->variables_["e"] = math::e_d;
     }
 
     void ExprParser::setVariable(const std::string& varname, double value)
@@ -327,9 +329,9 @@ namespace orxonox
                 CASE("sqrt")
                     value = sqrt(parse_last_argument());
                 CASE("degrees")
-                    value = parse_last_argument()*180/3.1415926535897932;
+                    value = parse_last_argument()*180/math::pi_d;
                 CASE("radians")
-                    value = parse_last_argument()*3.1415926535897932/180;
+                    value = parse_last_argument()*math::pi_d/180;
                 CASE("mod")
                 {
                     value = parse_argument();
