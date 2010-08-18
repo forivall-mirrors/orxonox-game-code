@@ -92,10 +92,10 @@ namespace orxonox
       delete (*it);
     syncList_.clear();
     stringList_.clear();
-    std::map<uint32_t, Synchronisable*>::iterator it;
-    it = objectMap_.find(objectID_);
-    if (it != objectMap_.end())
-      objectMap_.erase(it);
+    std::map<uint32_t, Synchronisable*>::iterator it2;
+    it2 = objectMap_.find(objectID_);
+    if (it2 != objectMap_.end())
+      objectMap_.erase(it2);
 
   }
 

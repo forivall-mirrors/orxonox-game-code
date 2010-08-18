@@ -128,7 +128,7 @@ namespace orxonox
     for( i = 0; i < NumberOfColors/3; ++i )
     { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
       assert( this->text_colors[ i ] );
-      green += 0.2, blue += 0.2;
+      green += 0.2f, blue += 0.2f;
     }
 
     // greens
@@ -136,7 +136,7 @@ namespace orxonox
     for( ; i < NumberOfColors*2/3; ++i )
     { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
       assert( this->text_colors[ i ] );
-      red += 0.2, blue += 0.2;
+      red += 0.2f, blue += 0.2f;
     }
 
     // blues
@@ -144,7 +144,7 @@ namespace orxonox
     for( ; i < NumberOfColors; ++i )
     { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
       assert( this->text_colors[ i ] );
-      red += 0.2, green += 0.2;
+      red += 0.2f, green += 0.2f;
     }
   }
 
@@ -274,14 +274,14 @@ namespace orxonox
     if( this->fullchat )
     {
       /* adjust curser position - magic number 5 for font width */
-      sub_adjust_dispoffset( (this->input->getUnclippedInnerRect().getWidth()/6),
+      sub_adjust_dispoffset( (int)(this->input->getUnclippedInnerRect().getWidth()/6),
         cursorpos, assembled.length() );
       this->input->setProperty( "Text", assembled.substr( disp_offset ) );
     }
     else
     {
       /* adjust curser position - magic number 5 for font width */
-      sub_adjust_dispoffset( (this->inputonly->getUnclippedInnerRect().getWidth()/6),
+      sub_adjust_dispoffset( (int)(this->inputonly->getUnclippedInnerRect().getWidth()/6),
         cursorpos, assembled.length() );
       this->inputonly->setProperty( "Text", assembled.substr( disp_offset) );
     }
