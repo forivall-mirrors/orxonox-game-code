@@ -184,36 +184,36 @@ namespace orxonox
 
             void setBaseObject(BaseObject* object)
             {
-                this->bConstObject_ = false;
                 this->object_ = dynamic_cast<T*>(object);
+                this->constObject_ = 0;
             }
 
             void setBaseObject(const BaseObject* object)
             {
-                this->bConstObject_ = true;
+                this->object_ = 0;
                 this->constObject_ = dynamic_cast<const T*>(object);
             }
 
             BaseObject* getBaseObject() const
             {
-                if (this->bConstObject_)
-                    return const_cast<BaseObject*>(upcast<const BaseObject*>(this->constObject_));
-                else
+                if (this->object_)
                     return upcast<BaseObject*>(this->object_);
+                else
+                    return const_cast<BaseObject*>(upcast<const BaseObject*>(this->constObject_));
             }
 
             void setRawObjectPointer(void* object)
             {
-                this->bConstObject_ = false;
                 this->object_ = (T*)object;
+                this->constObject_ = 0;
             }
 
             void* getRawObjectPointer() const
             {
-                if (this->bConstObject_)
-                    return (void*)this->constObject_;
-                else
+                if (this->object_)
                     return (void*)this->object_;
+                else
+                    return (void*)this->constObject_;
             }
 
             typedef std::pair<T*, const T*> Objects;
