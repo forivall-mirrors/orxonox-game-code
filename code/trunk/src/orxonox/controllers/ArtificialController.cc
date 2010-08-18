@@ -497,14 +497,14 @@ namespace orxonox
             for(std::vector<ArtificialController*>::iterator it = slaves_.begin(); it != slaves_.end(); it++)
             {
                 pos = Vector3::ZERO;
-                if (i <= 1) pos += dest  + FORMATION_WIDTH*(orient*WorldEntity::LEFT);
-                if (i == 2) pos += dest  + FORMATION_WIDTH*(orient*WorldEntity::RIGHT);
-                if (i == 3) pos += dest  + FORMATION_WIDTH*(orient*WorldEntity::UP);
+                if (i <= 1) pos += dest  + (float)FORMATION_WIDTH*(orient*WorldEntity::LEFT);
+                if (i == 2) pos += dest  + (float)FORMATION_WIDTH*(orient*WorldEntity::RIGHT);
+                if (i == 3) pos += dest  + (float)FORMATION_WIDTH*(orient*WorldEntity::UP);
                 if (i >= 4)
                 {
-                    pos += dest  + FORMATION_WIDTH*(orient*WorldEntity::DOWN);
+                    pos += dest  + (float)FORMATION_WIDTH*(orient*WorldEntity::DOWN);
                     i = 1;
-                    dest += FORMATION_LENGTH*(orient*WorldEntity::BACK);
+                    dest += (float)FORMATION_LENGTH*(orient*WorldEntity::BACK);
                     (*it)->setTargetPosition(pos);
                     continue;
                 }

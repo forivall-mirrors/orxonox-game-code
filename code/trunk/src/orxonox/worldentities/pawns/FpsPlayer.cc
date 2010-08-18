@@ -170,23 +170,23 @@ namespace orxonox
                 this->yaw(Radian(this->yaw_ * this->getMouseLookSpeed()), WorldEntity::Parent);
 
                 Radian pitch = this->cameraPositionRootNode_->getOrientation().getPitch();
-                if (pitch < Radian(1.5707) && pitch > Radian(-1.5707))
+                if (pitch < Radian(1.5707f) && pitch > Radian(-1.5707f))
                 {
                     this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
                 }
-                else if (pitch < Radian(-1.5707))
+                else if (pitch < Radian(-1.5707f))
                 {
-                    if (this->pitch_ > 0.0)
+                    if (this->pitch_ > 0.0f)
                         this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
-                    else if (pitch < Radian(-1.571))
-                        this->cameraPositionRootNode_->pitch(-pitch + Radian(-1.570796));
+                    else if (pitch < Radian(-1.571f))
+                        this->cameraPositionRootNode_->pitch(-pitch + Radian(-1.570796f));
                 }
-                else if (pitch > Radian(1.5707))
+                else if (pitch > Radian(1.5707f))
                 {
-                    if (this->pitch_ < 0.0)
+                    if (this->pitch_ < 0.0f)
                         this->cameraPositionRootNode_->pitch(Radian(this->pitch_ * this->getMouseLookSpeed()));
-                    else if (pitch > Radian(1.571))
-                        this->cameraPositionRootNode_->pitch(-pitch + Radian(1.570796));
+                    else if (pitch > Radian(1.571f))
+                        this->cameraPositionRootNode_->pitch(-pitch + Radian(1.570796f));
                 }
                 this->weaponNode_->setOrientation(this->cameraPositionRootNode_->getOrientation());
             }

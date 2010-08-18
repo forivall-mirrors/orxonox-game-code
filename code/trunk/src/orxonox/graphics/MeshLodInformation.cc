@@ -40,7 +40,7 @@ namespace orxonox
     CreateFactory(MeshLodInformation);
 
     MeshLodInformation::MeshLodInformation(BaseObject* creator)
-    : BaseObject(creator), lodLevel_(5), bEnabled_(true), numLevels_(10), reductionRate_(0.15)
+    : BaseObject(creator), lodLevel_(5), bEnabled_(true), numLevels_(10), reductionRate_(0.15f)
     {
         RegisterObject(MeshLodInformation);
     }
