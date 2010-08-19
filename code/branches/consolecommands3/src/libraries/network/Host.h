@@ -78,7 +78,7 @@ class _NetworkExport Host{
     static void setClientID(unsigned int id){ clientID_s = id; }
     static void setShipID(unsigned int id){ shipID_s = id; }
     static bool isServer();
-    static bool Chat(const std::string& message);
+    static void Chat(const std::string& message);
     static bool Broadcast(const std::string& message);
     static bool incomingChat(const std::string& message, unsigned int playerID);
     virtual void printRTT()=0;

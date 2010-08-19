@@ -103,24 +103,24 @@ namespace orxonox
             OutputVectorIterator getOutputVectorEnd() const;
 
             //! Writes to all output devices
-            static inline const std::string& log(const std::string& text)
-                { OutputHandler::getOutStream(0).output(text) << std::endl; return text; }
+            static inline void log(const std::string& text)
+                { OutputHandler::getOutStream(0).output(text) << std::endl; }
 
             //! Writes an error message to the output
-            static inline const std::string& error(const std::string& text)
-                { OutputHandler::getOutStream(1).output(text) << std::endl; return text; }
+            static inline void error(const std::string& text)
+                { OutputHandler::getOutStream(1).output(text) << std::endl; }
 
             //! Writes a warning message to the output
-            static inline const std::string& warning(const std::string& text)
-                { OutputHandler::getOutStream(2).output(text) << std::endl; return text; }
+            static inline void warning(const std::string& text)
+                { OutputHandler::getOutStream(2).output(text) << std::endl; }
 
             //! Writes an informational message to the output
-            static inline const std::string& info(const std::string& text)
-                { OutputHandler::getOutStream(3).output(text) << std::endl; return text; }
+            static inline void info(const std::string& text)
+                { OutputHandler::getOutStream(3).output(text) << std::endl; }
 
             //! Writes a debug message to the output
-            static inline const std::string& debug(const std::string& text)
-                { OutputHandler::getOutStream(4).output(text) << std::endl; return text; }
+            static inline void debug(const std::string& text)
+                { OutputHandler::getOutStream(4).output(text) << std::endl; }
 
             //! Registers an object that receives output via a provided std::ostream
             void registerOutputListener(OutputListener* listener);

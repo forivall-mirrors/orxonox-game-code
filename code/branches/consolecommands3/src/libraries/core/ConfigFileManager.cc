@@ -542,14 +542,16 @@ namespace orxonox
         this->save();
     }
 
-    bool SettingsConfigFile::config(const std::string& section, const std::string& entry, const std::string& value)
+    void SettingsConfigFile::config(const std::string& section, const std::string& entry, const std::string& value)
     {
-        return this->configImpl(section, entry, value, &ConfigValueContainer::set);
+        if (!this->configImpl(section, entry, value, &ConfigValueContainer::set))
+            COUT(1) << "Error: Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << std::endl;
     }
 
-    bool SettingsConfigFile::tconfig(const std::string& section, const std::string& entry, const std::string& value)
+    void SettingsConfigFile::tconfig(const std::string& section, const std::string& entry, const std::string& value)
     {
-        return this->configImpl(section, entry, value, &ConfigValueContainer::tset);
+        if (!this->configImpl(section, entry, value, &ConfigValueContainer::tset))
+            COUT(1) << "Error: Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << std::endl;
     }
 
     bool SettingsConfigFile::configImpl(const std::string& section, const std::string& entry, const std::string& value, bool (ConfigValueContainer::*function)(const MultiType&))

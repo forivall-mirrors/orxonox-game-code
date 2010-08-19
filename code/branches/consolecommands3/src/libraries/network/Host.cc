@@ -88,13 +88,13 @@ namespace orxonox {
     return result;
   }
 
-  bool Host::Chat(const std::string& message)
+  void Host::Chat(const std::string& message)
   {
     if(instances_s.size()==0)
     {
       for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
         it->incomingChat(message, 0);
-      return true;
+//      return true;
     }
     else
     {
@@ -107,7 +107,7 @@ namespace orxonox {
             result = false;
         }
       }
-      return result;
+//      return result;
     }
   }
 
@@ -138,7 +138,7 @@ namespace orxonox {
   {
     for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
       it->incomingChat(message, playerID);
-    
+
     bool result = true;
     for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
     {
