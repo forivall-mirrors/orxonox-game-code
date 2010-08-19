@@ -221,6 +221,13 @@ namespace orxonox
 
     void Shell::addToHistory(const std::string& command)
     {
+        if (command == "")
+            return;
+
+        size_t previous_offset = mod(this->historyOffset_ - 1, this->maxHistoryLength_);
+        if (previous_offset < this->commandHistory_.size() && command == this->commandHistory_[previous_offset])
+            return;
+
         ModifyConfigValue(commandHistory_, set, this->historyOffset_, command);
         this->historyPosition_ = 0;
         ModifyConfigValue(historyOffset_, set, (this->historyOffset_ + 1) % this->maxHistoryLength_);
