@@ -397,7 +397,9 @@ namespace orxonox
                         if ((!attributeValue.empty()) || ((mode != XMLPort::ExpandObject) && this->loadexecutor_->allDefaultValuesSet()))
                         {
                             COUT(5) << this->owner_->getLoaderIndentation() << "Loading parameter " << this->paramname_ << " in " << this->identifier_->getName() << " (objectname " << this->owner_->getName() << ")." << std::endl << this->owner_->getLoaderIndentation();
-                            if (this->loadexecutor_->parse(object, attributeValue, ",") || (mode  == XMLPort::ExpandObject))
+                            bool success;
+                            this->loadexecutor_->parse(object, attributeValue, &success, ",");
+                            if (success || (mode  == XMLPort::ExpandObject))
                                 this->parseResult_ = PR_finished;
                             else
                                 this->parseResult_ = PR_waiting_for_default_values;

@@ -133,15 +133,14 @@ namespace orxonox
 
         const std::string& command = stripEnclosingBraces(args.get());
 
-        if (!CommandExecutor::execute(command, false))
+        bool success;
+        const std::string& result = CommandExecutor::query(command, &success, false);
+        if (!success)
         {
             COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
         }
 
-        if (CommandExecutor::getLastEvaluation().hasReturnvalue())
-            return CommandExecutor::getLastEvaluation().getReturnvalue().getString();
-
-        return "";
+        return result;
     }
 
     void TclBind::tcl_execute(Tcl::object const &args)
@@ -180,16 +179,20 @@ namespace orxonox
         COUT(1) << "Tcl background error: " << stripEnclosingBraces(error) << std::endl;
     }
 
-    bool TclBind::eval(const std::string& tclcode)
+    std::string TclBind::eval(const std::string& tclcode, bool* success)
     {
+        if (success)
+            *success = true;
+
         try
         {
-            TclBind::getInstance().interpreter_->eval(tclcode);
-            return true;
+            return TclBind::getInstance().interpreter_->eval(tclcode);
         }
         catch (Tcl::tcl_error const &e)
         {   COUT(1) << "Tcl error: " << e.what() << std::endl;   }
 
-        return false;
+        if (success)
+            *success = false;
+        return "";
     }
 }

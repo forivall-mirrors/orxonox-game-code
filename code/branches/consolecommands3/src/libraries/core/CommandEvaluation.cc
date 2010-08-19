@@ -73,14 +73,25 @@ namespace orxonox
 
     bool CommandEvaluation::execute() const
     {
+        bool success;
+        this->query(&success);
+        return success;
+    }
+
+    MultiType CommandEvaluation::query(bool* success) const
+    {
+        if (success)
+            *success = false;
+
         if (!this->isValid())
-            return false;
+            return MT_Type::Null;
 
         if (this->bEvaluatedParams_ && this->function_)
         {
+            if (success)
+                *success = true;
             COUT(6) << "CE_execute (evaluation): " << this->function_->getName() << ' ' << this->param_[0] << ' ' << this->param_[1] << ' ' << this->param_[2] << ' ' << this->param_[3] << ' ' << this->param_[4] << std::endl;
-            (*this->function_)(this->param_[0], this->param_[1], this->param_[2], this->param_[3], this->param_[4]);
-            return true;
+            return (*this->function_)(this->param_[0], this->param_[1], this->param_[2], this->param_[3], this->param_[4]);
         }
 
         if (!this->bCommandChanged_ || nocaseCmp(removeTrailingWhitespaces(this->command_), removeTrailingWhitespaces(this->originalCommand_)) == 0)
@@ -89,12 +100,12 @@ namespace orxonox
 
             unsigned int startindex = this->getStartindex();
             if (this->commandTokens_.size() > startindex)
-                return this->function_->parse(removeSlashes(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter()));
+                return this->function_->parse(removeSlashes(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter()), success);
             else
-                return this->function_->parse(removeSlashes(this->additionalParameter_));
+                return this->function_->parse(removeSlashes(this->additionalParameter_), success);
         }
 
-        return false;
+        return MT_Type::Null;
     }
 
     const std::string& CommandEvaluation::complete()
@@ -231,23 +242,6 @@ namespace orxonox
 
         return MT_Type::Null;
     }
-
-    bool CommandEvaluation::hasReturnvalue() const
-    {
-        if (this->function_)
-            return this->function_->hasReturnvalue();
-
-        return MT_Type::Null;
-    }
-
-    MultiType CommandEvaluation::getReturnvalue() const
-    {
-        if (this->function_)
-            return this->function_->getReturnvalue();
-
-        return MultiType();
-    }
-
 
     unsigned int CommandEvaluation::getStartindex() const
     {

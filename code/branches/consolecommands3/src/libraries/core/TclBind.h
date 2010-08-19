@@ -58,7 +58,7 @@ namespace orxonox
             static std::string tcl_query(Tcl::object const &args);
             static void tcl_execute(Tcl::object const &args);
 
-            static bool eval(const std::string& tclcode);
+            static std::string eval(const std::string& tclcode, bool* success = 0);
 
         private:
             TclBind(const TclBind& other);

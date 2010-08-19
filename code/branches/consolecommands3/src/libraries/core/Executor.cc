@@ -49,14 +49,17 @@ namespace orxonox
         delete this->functor_;
     }
 
-    bool Executor::parse(const std::string& params, const std::string& delimiter) const
+    MultiType Executor::parse(const std::string& params, bool* success, const std::string& delimiter) const
     {
+        if (success)
+            *success = true;
+
         unsigned int paramCount = this->functor_->getParamCount();
 
         if (paramCount == 0)
         {
             COUT(5) << "Calling Executor " << this->name_ << " through parser without parameters." << std::endl;
-            (*this->functor_)();
+            return (*this->functor_)();
         }
         else if (paramCount == 1)
         {
@@ -64,17 +67,19 @@ namespace orxonox
             if (!temp.empty())
             {
                 COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl;
-                (*this->functor_)(MultiType(params));
+                return (*this->functor_)(MultiType(params));
             }
             else if (!this->defaultValue_[0].null())
             {
                 COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using default value: " << this->defaultValue_[0] << std::endl;
-                (*this->functor_)(this->defaultValue_[0]);
+                return (*this->functor_)(this->defaultValue_[0]);
             }
             else
             {
                 COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl;
-                return false;
+                if (success)
+                    *success = false;
+                return MT_Type::Null;
             }
         }
         else
@@ -86,7 +91,9 @@ namespace orxonox
                 if (this->defaultValue_[i].null())
                 {
                     COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl;
-                    return false;
+                    if (success)
+                        *success = false;
+                    return MT_Type::Null;
                 }
             }
 
@@ -119,21 +126,17 @@ namespace orxonox
             switch(paramCount)
             {
                 case 2:
-                    (*this->functor_)(param[0], param[1]);
-                    break;
+                    return (*this->functor_)(param[0], param[1]);
                 case 3:
-                    (*this->functor_)(param[0], param[1], param[2]);
-                    break;
+                    return (*this->functor_)(param[0], param[1], param[2]);
                 case 4:
-                    (*this->functor_)(param[0], param[1], param[2], param[3]);
-                    break;
+                    return (*this->functor_)(param[0], param[1], param[2], param[3]);
                 case 5:
-                    (*this->functor_)(param[0], param[1], param[2], param[3], param[4]);
-                    break;
+                    return (*this->functor_)(param[0], param[1], param[2], param[3], param[4]);
             }
         }
 
-        return true;
+        return MT_Type::Null;
     }
 
     bool Executor::evaluate(const std::string& params, MultiType param[5], const std::string& delimiter) const

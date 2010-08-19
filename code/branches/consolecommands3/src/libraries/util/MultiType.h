@@ -77,6 +77,7 @@
 #include <OgreColourValue.h>
 
 #include "TypeTraits.h"
+#include "mbool.h"
 
 namespace orxonox
 {
@@ -265,6 +266,7 @@ namespace orxonox
             inline MultiType(const orxonox::Quaternion& value)  : value_(0) { this->assignValue(value); }           /** @brief Constructor: Assigns the given value and sets the type. */
             inline MultiType(const orxonox::Radian& value)      : value_(0) { this->assignValue(value); }           /** @brief Constructor: Assigns the given value and sets the type. */
             inline MultiType(const orxonox::Degree& value)      : value_(0) { this->assignValue(value); }           /** @brief Constructor: Assigns the given value and sets the type. */
+            inline MultiType(const orxonox::mbool& value)       : value_(0) { this->assignValue((bool)value); }     /** @brief Constructor: Assigns the given mbool and converts it to bool. */
             inline MultiType(const char* value)                 : value_(0) { this->setValue(std::string(value)); } /** @brief Constructor: Converts the char array to a std::string, assigns the value and sets the type. */
             inline MultiType(const MultiType& other)            : value_(0) { this->setValue(other); }              /** @brief Copyconstructor: Assigns value and type of the other MultiType. */
             inline MultiType(MT_Type::Value type)               : value_(0) { this->setType(type); }                /** @brief Constructor: Sets the type, the next assignment will determine the value. */

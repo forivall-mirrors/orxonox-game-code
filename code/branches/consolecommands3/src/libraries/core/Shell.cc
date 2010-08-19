@@ -307,10 +307,17 @@ namespace orxonox
         this->addToHistory(this->inputBuffer_->get());
         this->updateListeners<&ShellListener::executed>();
 
-        if (!CommandExecutor::execute(this->inputBuffer_->get()))
+        bool success;
+        const std::string& result = CommandExecutor::query(this->inputBuffer_->get(), &success);
+        if (!success)
         {
             this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\"." << std::endl;
             this->outputChanged(Error);
+        }
+        else if (result != "")
+        {
+            this->outputBuffer_ << result << std::endl;
+            this->outputChanged(Command);
         }
 
         this->clearInput();

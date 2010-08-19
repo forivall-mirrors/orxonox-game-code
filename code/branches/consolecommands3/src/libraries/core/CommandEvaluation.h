@@ -65,6 +65,8 @@ namespace orxonox
             void initialize(const std::string& command);
 
             bool execute() const;
+            MultiType query(bool* success = 0) const;
+
             const std::string& complete();
             std::string hint() const;
             void evaluateParams();
@@ -85,9 +87,6 @@ namespace orxonox
 
             void setEvaluatedParameter(unsigned int index, MultiType param);
             MultiType getEvaluatedParameter(unsigned int index) const;
-
-            bool hasReturnvalue() const;
-            MultiType getReturnvalue() const;
 
         private:
             unsigned int getStartindex() const;

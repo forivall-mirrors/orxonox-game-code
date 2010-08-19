@@ -103,20 +103,42 @@ namespace orxonox
     bool CommandExecutor::execute(const std::string& command, bool useTcl)
     {
         if (useTcl)
-            return TclBind::eval(command);
-
-        CommandExecutor::parseIfNeeded(command);
-        return CommandExecutor::getEvaluation().execute();
+        {
+            bool success;
+            TclBind::eval(command, &success);
+            return success;
+        }
+        else
+        {
+            CommandExecutor::parseIfNeeded(command);
+            return CommandExecutor::getEvaluation().execute();
+        }
     }
 
-    MultiType CommandExecutor::getReturnValue()
+    MultiType CommandExecutor::queryMT(const std::string& command, bool* success, bool useTcl)
     {
-        return CommandExecutor::getEvaluation().getReturnvalue();
+        if (useTcl)
+        {
+            return TclBind::eval(command, success);
+        }
+        else
+        {
+            CommandExecutor::parseIfNeeded(command);
+            return CommandExecutor::getEvaluation().query(success);
+        }
     }
 
-    std::string CommandExecutor::getReturnValueString()
+    std::string CommandExecutor::query(const std::string& command, bool* success, bool useTcl)
     {
-        return CommandExecutor::getEvaluation().getReturnvalue().getString();
+        if (useTcl)
+        {
+            return TclBind::eval(command, success);
+        }
+        else
+        {
+            CommandExecutor::parseIfNeeded(command);
+            return CommandExecutor::getEvaluation().query(success).getString();
+        }
     }
 
     std::string CommandExecutor::complete(const std::string& command)

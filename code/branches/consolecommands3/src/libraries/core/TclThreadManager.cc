@@ -438,11 +438,10 @@ namespace orxonox
                     {
                         // It's a query to the CommandExecutor
                         TclThreadManager::debug("TclThread_query -> CE: " + command);
-                        if (!CommandExecutor::execute(command, false))
+                        bool success;
+                        output = CommandExecutor::query(command, &success, false);
+                        if (!success)
                             TclThreadManager::error("Error: Can't execute command \"" + command + "\"!");
-
-                        if (CommandExecutor::getLastEvaluation().hasReturnvalue())
-                            output = CommandExecutor::getLastEvaluation().getReturnvalue().getString();
                     }
                     else
                     {
