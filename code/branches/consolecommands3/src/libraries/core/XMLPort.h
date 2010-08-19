@@ -316,8 +316,10 @@ namespace orxonox
             inline const std::string& getName() const
                 { return this->paramname_; }
 
-            virtual XMLPortParamContainer& description(const std::string& description) = 0;
-            virtual const std::string& getDescription() = 0;
+            inline XMLPortParamContainer& description(const std::string& description)
+                { this->description_ = description; return *this; }
+            inline const std::string& getDescription() const
+                { return this->description_; }
 
             virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiType& param) = 0;
             virtual XMLPortParamContainer& defaultValues(const MultiType& param1) = 0;
@@ -331,6 +333,7 @@ namespace orxonox
             ParseResult parseResult_;
             Identifier* identifier_;
             BaseObject* owner_;
+            std::string description_;
     };
 
     template <class T>
@@ -435,11 +438,6 @@ namespace orxonox
                     return (*this);
             }
 
-            virtual XMLPortParamContainer& description(const std::string& description)
-                { this->loadexecutor_->setDescription(description); return (*this); }
-            virtual const std::string& getDescription()
-                { return this->loadexecutor_->getDescription(); }
-
             virtual XMLPortParamContainer& defaultValue(unsigned int index, const MultiType& param)
             {
                 if (!this->loadexecutor_->defaultValueSet(index))
@@ -501,8 +499,10 @@ namespace orxonox
             inline const std::string& getName() const
                 { return this->sectionname_; }
 
-            virtual XMLPortObjectContainer& description(const std::string& description) = 0;
-            virtual const std::string& getDescription() = 0;
+            inline XMLPortObjectContainer& description(const std::string& description)
+                { this->description_ = description; return *this; }
+            const std::string& getDescription() const
+                { return this->description_; }
 
             bool identifierIsIncludedInLoaderMask(const Identifier* identifier);
 
@@ -512,6 +512,7 @@ namespace orxonox
             bool bLoadBefore_;
             Identifier* identifier_;
             Identifier* objectIdentifier_;
+            std::string description_;
     };
 
     template <class T, class O>
@@ -547,11 +548,6 @@ namespace orxonox
 
                 (*this->loadexecutor_)(castedObject, castedNewObject);
             }
-
-            virtual XMLPortObjectContainer& description(const std::string& description)
-                { this->loadexecutor_->setDescription(description); return (*this); }
-            virtual const std::string& getDescription()
-                { return this->loadexecutor_->getDescription(); }
 
         private:
             ExecutorMember<T>* loadexecutor_;

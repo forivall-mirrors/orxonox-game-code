@@ -89,12 +89,15 @@ namespace orxonox
         public:
             ConsoleCommand(Functor* functor, const std::string& name = "");
 
-            inline ConsoleCommand& description(const std::string& description)
-                { this->Executor::setDescription(description); return (*this); }
-            inline ConsoleCommand& descriptionParam(int param, const std::string& description)
-                { this->Executor::setDescriptionParam(param, description); return (*this); }
-            inline ConsoleCommand& descriptionReturnvalue(const std::string& description)
-                { this->Executor::setDescriptionReturnvalue(description); return (*this); }
+            ConsoleCommand& description(const std::string& description);
+            const std::string& getDescription() const;
+
+            ConsoleCommand& descriptionParam(unsigned int param, const std::string& description);
+            const std::string& getDescriptionParam(unsigned int param) const;
+
+            ConsoleCommand& descriptionReturnvalue(const std::string& description);
+            const std::string& getDescriptionReturnvalue(int param) const;
+
             inline ConsoleCommand& defaultValues(const MultiType& param1)
                 { this->Executor::setDefaultValues(param1); return (*this); }
             inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2)
@@ -149,6 +152,10 @@ namespace orxonox
 
             KeybindMode::Value keybindMode_;
             int inputConfiguredParam_;
+
+            LanguageEntryLabel description_;
+            LanguageEntryLabel descriptionReturnvalue_;
+            LanguageEntryLabel descriptionParam_[MAX_FUNCTOR_ARGUMENTS];
     };
 
     inline ConsoleCommand* createConsoleCommand(Functor* functor, const std::string& name = "")

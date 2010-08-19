@@ -35,7 +35,6 @@
 #include "util/Debug.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "Language.h"
 
 namespace orxonox
 {
@@ -43,15 +42,6 @@ namespace orxonox
     {
         this->functor_ = functor;
         this->name_ = name;
-
-        this->bAddedDescription_ = false;
-        this->bAddedDescriptionReturnvalue_ = false;
-
-        this->bAddedDescriptionParam_[0] = false;
-        this->bAddedDescriptionParam_[1] = false;
-        this->bAddedDescriptionParam_[2] = false;
-        this->bAddedDescriptionParam_[3] = false;
-        this->bAddedDescriptionParam_[4] = false;
 
         this->bAddedDefaultValue_[0] = false;
         this->bAddedDefaultValue_[1] = false;
@@ -68,7 +58,7 @@ namespace orxonox
     bool Executor::parse(const std::string& params, const std::string& delimiter) const
     {
         unsigned int paramCount = this->functor_->getParamCount();
-       
+
         if (paramCount == 0)
         {
             COUT(5) << "Calling Executor " << this->name_ << " through parser without parameters." << std::endl;
@@ -96,7 +86,7 @@ namespace orxonox
         else
         {
             SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0');
-           
+
             for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
             {
                 if (!this->bAddedDefaultValue_[i])
@@ -105,7 +95,7 @@ namespace orxonox
                     return false;
                 }
             }
-           
+
             MultiType param[MAX_FUNCTOR_ARGUMENTS];
             COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens (";
             for (unsigned int i = 0; i < tokens.size() && i < MAX_FUNCTOR_ARGUMENTS; i++)
@@ -128,10 +118,10 @@ namespace orxonox
                 COUT(5) << this->defaultValue_[i];
             }
             COUT(5) << ")." << std::endl;
-           
+
             if ((tokens.size() > paramCount) && (this->functor_->getTypenameParam(paramCount - 1) == "string"))
                 param[paramCount - 1] = tokens.subSet(paramCount - 1).join();
-           
+
             switch(paramCount)
             {
                 case 2:
@@ -197,64 +187,6 @@ namespace orxonox
 
             return true;
         }
-    }
-
-    Executor& Executor::setDescription(const std::string& description)
-    {
-        if (!this->bAddedDescription_)
-        {
-            this->description_ = std::string("ExecutorDescription::" + this->name_ + "::function");
-            AddLanguageEntry(this->description_, description);
-            this->bAddedDescription_ = true;
-        }
-        return (*this);
-    }
-
-    const std::string& Executor::getDescription() const
-    {
-        return GetLocalisation(this->description_);
-    }
-
-    Executor& Executor::setDescriptionParam(unsigned int param, const std::string& description)
-    {
-        if (param < MAX_FUNCTOR_ARGUMENTS)
-        {
-            if (!this->bAddedDescriptionParam_[param])
-            {
-                std::string paramnumber;
-                if (!convertValue(&paramnumber, param))
-                    return (*this);
-
-                this->descriptionParam_[param] = std::string("ExecutorDescription::" + this->name_ + "::param" + paramnumber);
-                AddLanguageEntry(this->descriptionParam_[param], description);
-                this->bAddedDescriptionParam_[param] = true;
-            }
-        }
-        return (*this);
-    }
-
-    const std::string& Executor::getDescriptionParam(unsigned int param) const
-    {
-        if (param < MAX_FUNCTOR_ARGUMENTS)
-            return GetLocalisation(this->descriptionParam_[param]);
-
-        return this->descriptionParam_[0];
-    }
-
-    Executor& Executor::setDescriptionReturnvalue(const std::string& description)
-    {
-        if (!this->bAddedDescriptionReturnvalue_)
-        {
-            this->descriptionReturnvalue_ = std::string("ExecutorDescription::" + this->name_ + "::returnvalue");
-            AddLanguageEntry(this->descriptionReturnvalue_, description);
-            this->bAddedDescriptionReturnvalue_ = true;
-        }
-        return (*this);
-    }
-
-    const std::string& Executor::getDescriptionReturnvalue(int param) const
-    {
-        return GetLocalisation(this->descriptionReturnvalue_);
     }
 
     Executor& Executor::setDefaultValues(const MultiType& param1)

@@ -61,15 +61,6 @@ namespace orxonox
 
             bool evaluate(const std::string& params, MultiType param[5], const std::string& delimiter = " ") const;
 
-            Executor& setDescription(const std::string& description);
-            const std::string& getDescription() const;
-
-            Executor& setDescriptionParam(unsigned int param, const std::string& description);
-            const std::string& getDescriptionParam(unsigned int param) const;
-
-            Executor& setDescriptionReturnvalue(const std::string& description);
-            const std::string& getDescriptionReturnvalue(int param) const;
-
             inline Functor* getFunctor() const
                 { return this->functor_; }
             inline unsigned int getParamCount() const
@@ -119,15 +110,6 @@ namespace orxonox
             std::string name_;
             MultiType defaultValue_[MAX_FUNCTOR_ARGUMENTS];
             bool bAddedDefaultValue_[MAX_FUNCTOR_ARGUMENTS];
-
-        private:
-            LanguageEntryLabel description_;
-            LanguageEntryLabel descriptionReturnvalue_;
-            LanguageEntryLabel descriptionParam_[MAX_FUNCTOR_ARGUMENTS];
-
-            bool bAddedDescription_;
-            bool bAddedDescriptionReturnvalue_;
-            bool bAddedDescriptionParam_[MAX_FUNCTOR_ARGUMENTS];
     };
 
     class _CoreExport ExecutorStatic : public Executor

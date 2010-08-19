@@ -29,6 +29,8 @@
 #include "ConsoleCommand.h"
 #include <cassert>
 
+#include "Language.h"
+
 namespace orxonox
 {
     ConsoleCommand::ConsoleCommand(Functor* functor, const std::string& name) : Executor(functor, name)
@@ -69,6 +71,48 @@ namespace orxonox
             this->argumentList_ = (*this->argumentCompleter_[param])(param1, param2, param3, param4, param5);
         else
             this->argumentList_.clear();
+    }
+
+    ConsoleCommand& ConsoleCommand::description(const std::string& description)
+    {
+        this->description_ = std::string("ConsoleCommandDescription::" + this->name_ + "::function");
+        AddLanguageEntry(this->description_, description);
+        return (*this);
+    }
+
+    const std::string& ConsoleCommand::getDescription() const
+    {
+        return GetLocalisation_noerror(this->description_);
+    }
+
+    ConsoleCommand& ConsoleCommand::descriptionParam(unsigned int param, const std::string& description)
+    {
+        if (param < MAX_FUNCTOR_ARGUMENTS)
+        {
+            this->descriptionParam_[param] = std::string("ConsoleCommandDescription::" + this->name_ + "::param" + multi_cast<std::string>(param));
+            AddLanguageEntry(this->descriptionParam_[param], description);
+        }
+        return (*this);
+    }
+
+    const std::string& ConsoleCommand::getDescriptionParam(unsigned int param) const
+    {
+        if (param < MAX_FUNCTOR_ARGUMENTS)
+            return GetLocalisation_noerror(this->descriptionParam_[param]);
+
+        return this->descriptionParam_[0];
+    }
+
+    ConsoleCommand& ConsoleCommand::descriptionReturnvalue(const std::string& description)
+    {
+        this->descriptionReturnvalue_ = std::string("ConsoleCommandDescription::" + this->name_ + "::returnvalue");
+        AddLanguageEntry(this->descriptionReturnvalue_, description);
+        return (*this);
+    }
+
+    const std::string& ConsoleCommand::getDescriptionReturnvalue(int param) const
+    {
+        return GetLocalisation_noerror(this->descriptionReturnvalue_);
     }
 }
 
