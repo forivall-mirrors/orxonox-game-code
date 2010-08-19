@@ -37,7 +37,6 @@
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/MultiType.h"
-#include "BaseObject.h"
 
 namespace orxonox
 {
@@ -115,10 +114,6 @@ namespace orxonox
 
             virtual void evaluateParam(unsigned int index, MultiType& param) const = 0;
 
-            virtual void setBaseObject(BaseObject* object) {}
-            virtual void setBaseObject(const BaseObject* object) {}
-            virtual BaseObject* getBaseObject() const { return 0; }
-
             virtual void setRawObjectPointer(void* object) {}
             virtual void* getRawObjectPointer() const { return 0; }
 
@@ -182,26 +177,6 @@ namespace orxonox
                 return this;
             }
 
-            void setBaseObject(BaseObject* object)
-            {
-                this->object_ = dynamic_cast<T*>(object);
-                this->constObject_ = 0;
-            }
-
-            void setBaseObject(const BaseObject* object)
-            {
-                this->object_ = 0;
-                this->constObject_ = dynamic_cast<const T*>(object);
-            }
-
-            BaseObject* getBaseObject() const
-            {
-                if (this->object_)
-                    return upcast<BaseObject*>(this->object_);
-                else
-                    return const_cast<BaseObject*>(upcast<const BaseObject*>(this->constObject_));
-            }
-
             void setRawObjectPointer(void* object)
             {
                 this->object_ = (T*)object;
@@ -236,7 +211,7 @@ namespace orxonox
 
 
 
-    template <int r, class R, class P1, class P2, class P3, class P4, class P5>
+    template <class R, class P1, class P2, class P3, class P4, class P5>
     struct FunctorHeaderIdentifier {};
 
 
@@ -353,12 +328,12 @@ namespace orxonox
 
 
 #define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES(returnvalue, numparams) FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES##numparams(returnvalue)
-#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES0(returnvalue) <returnvalue, FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), void, void, void, void, void>
-#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES1(returnvalue) <returnvalue, FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, void, void, void, void>
-#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES2(returnvalue) <returnvalue, FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, P2, void, void, void>
-#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES3(returnvalue) <returnvalue, FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, P2, P3, void, void>
-#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES4(returnvalue) <returnvalue, FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, P2, P3, P4, void>
-#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES5(returnvalue) <returnvalue, FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, P2, P3, P4, P5>
+#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES0(returnvalue) <FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), void, void, void, void, void>
+#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES1(returnvalue) <FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, void, void, void, void>
+#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES2(returnvalue) <FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, P2, void, void, void>
+#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES3(returnvalue) <FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, P2, P3, void, void>
+#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES4(returnvalue) <FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, P2, P3, P4, void>
+#define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES5(returnvalue) <FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue), P1, P2, P3, P4, P5>
 
 #define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE(returnvalue) FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE##returnvalue
 #define FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES_RETURNVALUE0 void

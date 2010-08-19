@@ -31,6 +31,7 @@
 
 #include "CorePrereqs.h"
 
+#include <stack>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
 
@@ -178,7 +179,7 @@ namespace orxonox
     _DeclareConsoleCommandGeneric(group, name, functionpointer)
 
 #define _DeclareConsoleCommandGeneric(group, name, functionpointer) \
-    orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::_createConsoleCommand(group, name, orxonox::createFunctor(functionpointer), orxonox::_ConsoleCommand::State::UninitializedActive))
+    orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::_createConsoleCommand(group, name, orxonox::createFunctor(functionpointer), false))
 
 
 #define _ModifyConsoleCommand(...) \
@@ -192,65 +193,41 @@ namespace orxonox
         friend struct _ConsoleCommandManipulator;
 
         public:
-            struct State
-            {
-                enum Enum
-                {
-                    UninitializedActive,
-                    UninitializedInactive,
-                    Active,
-                    Inactive
-                };
-            };
-
-            struct ObjectPointer
-            {
-                enum Enum
-                {
-                    Null,
-                    RawCopy,
-                    CastViaBaseObject
-                };
-            };
-
             struct _ConsoleCommandManipulator
             {
                 public:
                     _ConsoleCommandManipulator(const _ConsoleCommand* command) : command_(const_cast<_ConsoleCommand*>(command)) {}
 
                     template <class F>
-                    inline _ConsoleCommandManipulator& setFunction(F function, _ConsoleCommand::ObjectPointer::Enum mode = _ConsoleCommand::ObjectPointer::Null)
-                        { if (this->command_) { this->command_->setFunctor(createFunctor(function), mode); } return *this; }
+                    inline _ConsoleCommandManipulator& setFunction(F function, bool bForce = false)
+                        { if (this->command_) { this->command_->setFunctor(createFunctor(function), bForce); } return *this; }
                     template <class F, class O>
-                    inline _ConsoleCommandManipulator& setFunction(F function, O* object)
-                        { if (this->command_) { this->command_->setFunctor(createFunctor(function, object)); } return *this; }
-                    inline _ConsoleCommandManipulator& setFunction(Functor* functor)
-                        { if (this->command_) { this->command_->setFunctor(functor); } return *this; }
-                    inline _ConsoleCommandManipulator& setFunction(const _ConsoleCommand* command)
-                        { if (this->command_) { this->command_->setFunctor(command->functor_); } return *this; }
-                    inline _ConsoleCommandManipulator& setFunction(const _ConsoleCommandManipulator& manipulator)
-                        { if (this->command_) { this->command_->setFunctor(manipulator.command_->functor_); } return *this; }
+                    inline _ConsoleCommandManipulator& setFunction(F function, O* object, bool bForce = false)
+                        { if (this->command_) { this->command_->setFunctor(createFunctor(function, object), bForce); } return *this; }
+                    inline _ConsoleCommandManipulator& setFunction(Functor* functor, bool bForce = false)
+                        { if (this->command_) { this->command_->setFunctor(functor, bForce); } return *this; }
 
                     template <class F>
-                    inline _ConsoleCommandManipulator& pushFunction(F function, _ConsoleCommand::ObjectPointer::Enum mode = _ConsoleCommand::ObjectPointer::Null)
-                        { if (this->command_) { this->command_->pushFunctor(createFunctor(function), mode); } return *this; }
+                    inline _ConsoleCommandManipulator& pushFunction(F function, bool bForce = false)
+                        { if (this->command_) { this->command_->pushFunctor(createFunctor(function), bForce); } return *this; }
                     template <class F, class O>
-                    inline _ConsoleCommandManipulator& pushFunction(F function, O* object)
-                        { if (this->command_) { this->command_->pushFunctor(createFunctor(function, object)); } return *this; }
-                    inline _ConsoleCommandManipulator& pushFunction(Functor* functor)
-                        { if (this->command_) { this->command_->pushFunctor(functor); } return *this; }
-                    inline _ConsoleCommandManipulator& pushFunction(const _ConsoleCommand* command)
-                        { if (this->command_) { this->command_->pushFunctor(command->functor_); } return *this; }
-                    inline _ConsoleCommandManipulator& pushFunction(const _ConsoleCommandManipulator& manipulator)
-                        { if (this->command_) { this->command_->pushFunctor(manipulator.command_->functor_); } return *this; }
+                    inline _ConsoleCommandManipulator& pushFunction(F function, O* object, bool bForce = false)
+                        { if (this->command_) { this->command_->pushFunctor(createFunctor(function, object), bForce); } return *this; }
+                    inline _ConsoleCommandManipulator& pushFunction(Functor* functor, bool bForce = false)
+                        { if (this->command_) { this->command_->pushFunctor(functor, bForce); } return *this; }
 
                     inline _ConsoleCommandManipulator& popFunction()
                         { if (this->command_) { this->command_->popFunctor(); } return *this; }
 
                     inline _ConsoleCommandManipulator& setObject(void* object)
                         { if (this->command_) { this->command_->setObject(object); } return *this; }
-                    inline _ConsoleCommandManipulator& setObject(BaseObject* object)
-                        { if (this->command_) { this->command_->setObject(object); } return *this; }
+                    inline _ConsoleCommandManipulator& pushObject(void* object)
+                        { if (this->command_) { this->command_->pushObject(object); } return *this; }
+                    inline _ConsoleCommandManipulator& popObject()
+                        { if (this->command_) { this->command_->popObject(); } return *this; }
+
+                    inline void* getObject() const
+                        { if (this->command_) { return this->command_->getObject(); } else { return 0; } }
 
                     inline _ConsoleCommandManipulator& setActive(bool bActive)
                         { if (this->command_) { this->command_->setActive(bActive); } return *this; }
@@ -260,18 +237,20 @@ namespace orxonox
             };
 
         public:
-            _ConsoleCommand(const std::string& group, const std::string& name, Functor* functor, State::Enum state = State::Active);
+            _ConsoleCommand(const std::string& group, const std::string& name, Functor* functor, bool bInitialized = true);
 
             _ConsoleCommand& addShortcut();
             _ConsoleCommand& addShortcut(const std::string&  name);
             _ConsoleCommand& addGroup(const std::string& group);
             _ConsoleCommand& addGroup(const std::string& group, const std::string&  name);
 
-            void setActive(bool bActive);
-            inline State::Enum getState() const
-                { return this->state_; }
+            inline void setActive(bool bActive)
+                { this->bActive_ = bActive; }
             inline bool isActive() const
-                { return (this->state_ == State::Active); }
+                { return (this->bActive_ && this->bInitialized_); }
+
+            inline _ConsoleCommandManipulator getManipulator() const
+                { return this; }
 
             static inline const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommands()
                 { return _ConsoleCommand::getCommandMap(); }
@@ -280,35 +259,37 @@ namespace orxonox
                 { return _ConsoleCommand::getCommand("", name, bPrintError); }
             static const _ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
 
-            inline _ConsoleCommandManipulator getManipulator() const
-                { return this; }
-
         private:
             static std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommandMap();
             static void registerCommand(const std::string& group, const std::string& name, _ConsoleCommand* command);
 
-            void setInitialized(bool bInitialized);
-
-            void setFunctor(Functor* functor, _ConsoleCommand::ObjectPointer::Enum mode = _ConsoleCommand::ObjectPointer::Null);
-            void pushFunctor(Functor* functor, _ConsoleCommand::ObjectPointer::Enum mode = _ConsoleCommand::ObjectPointer::Null);
+            bool setFunctor(Functor* functor, bool bForce = false);
+            void pushFunctor(Functor* functor, bool bForce = false);
             void popFunctor();
+            Functor* getFunctor() const;
+
             bool functionHeaderMatches(Functor* functor) const;
 
             void setObject(void* object);
-            void setObject(BaseObject* object);
+            void pushObject(void* object);
+            void popObject();
+            void* getObject() const;
 
-            State::Enum state_;
+            bool bActive_;
+            bool bInitialized_;
             const std::type_info& functionHeader_;
+            std::stack<Functor*> functorStack_;
+            std::stack<void*> objectStack_;
     };
 
-    inline _ConsoleCommand* _createConsoleCommand(const std::string& name, Functor* functor, _ConsoleCommand::State::Enum state = _ConsoleCommand::State::Active)
+    inline _ConsoleCommand* _createConsoleCommand(const std::string& name, Functor* functor, bool bInitialized = true)
     {
-        return new _ConsoleCommand("", name, functor, state);
+        return new _ConsoleCommand("", name, functor, bInitialized);
     }
 
-    inline _ConsoleCommand* _createConsoleCommand(const std::string& group, const std::string& name, Functor* functor, _ConsoleCommand::State::Enum state = _ConsoleCommand::State::Active)
+    inline _ConsoleCommand* _createConsoleCommand(const std::string& group, const std::string& name, Functor* functor, bool bInitialized = true)
     {
-        return new _ConsoleCommand(group, name, functor, state);
+        return new _ConsoleCommand(group, name, functor, bInitialized);
     }
 }
 

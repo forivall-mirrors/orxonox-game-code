@@ -79,9 +79,10 @@ namespace orxonox
     _SetConsoleCommand("BaseObject", "setName", &BaseObject::setName, (BaseObject*)0);
     _ConsoleCommand::_ConsoleCommandManipulator test(_ModifyConsoleCommand("BaseObject", "setName").setFunction(&BaseObject::setActive));
 
-    _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, Functor* functor, State::Enum state) : Executor(functor, name), functionHeader_(functor->getHeaderIdentifier())
+    _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, Functor* functor, bool bInitialized) : Executor(functor, name), functionHeader_(functor->getHeaderIdentifier())
     {
-        this->state_ = state;
+        this->bActive_ = true;
+        this->bInitialized_ = bInitialized;
         _ConsoleCommand::registerCommand(group, name, this);
     }
 
@@ -109,87 +110,50 @@ namespace orxonox
         return *this;
     }
 
-    void _ConsoleCommand::setActive(bool bActive)
-    {
-        if (bActive)
-        {
-            if (this->state_ == State::Inactive)
-                this->state_ = State::Active;
-            else if (this->state_ == State::UninitializedInactive)
-                this->state_ = State::UninitializedActive;
-        }
-        else
-        {
-            if (this->state_ == State::Active)
-                this->state_ = State::Inactive;
-            else if (this->state_ == State::UninitializedActive)
-                this->state_ = State::UninitializedInactive;
-        }
-    }
-
-    void _ConsoleCommand::setInitialized(bool bInitialized)
-    {
-        if (bInitialized)
-        {
-            if (this->state_ == State::UninitializedActive)
-                this->state_ = State::Active;
-            else if (this->state_ == State::UninitializedInactive)
-                this->state_ = State::Inactive;
-        }
-        else
-        {
-            if (this->state_ == State::Active)
-                this->state_ = State::UninitializedActive;
-            else if (this->state_ == State::Inactive)
-                this->state_ = State::UninitializedInactive;
-        }
-    }
-
-    void _ConsoleCommand::setFunctor(Functor* functor, _ConsoleCommand::ObjectPointer::Enum mode)
+    bool _ConsoleCommand::setFunctor(Functor* functor, bool bForce)
     {
         if (!functor)
         {
-            this->setInitialized(false);
-            return;
+            this->bInitialized_ = false;
+            return true;
         }
 
-        if (!this->functionHeaderMatches(functor))
+        if (!bForce && !this->functionHeaderMatches(functor))
         {
             COUT(1) << "Error: Couldn't assign new function to console command with name \"" << this->getName() << "\", headers don't match." << std::endl;
-            return;
+            return false;
         }
 
-        switch (mode)
+        this->functor_ = functor;
+        this->bInitialized_ = true;
+        return true;
+    }
+
+    void _ConsoleCommand::pushFunctor(Functor* functor, bool bForce)
+    {
+        Functor* oldfunctor = this->getFunctor();
+
+        if (this->setFunctor(functor, bForce));
+            this->functorStack_.push(oldfunctor);
+    }
+
+    void _ConsoleCommand::popFunctor()
+    {
+        Functor* newfunctor = 0;
+        if (!this->functorStack_.empty())
         {
-            default:
-            case _ConsoleCommand::ObjectPointer::Null:
-            {
-                this->functor_ = functor;
-            }
-            break;
-
-            case _ConsoleCommand::ObjectPointer::RawCopy:
-            {
-                void* object = (this->functor_) ? this->functor_->getRawObjectPointer() : 0;
-
-                this->functor_ = functor;
-
-                if (!this->functor_->getBaseObject())
-                    this->functor_->setRawObjectPointer(object);
-            }
-            break;
-
-            case _ConsoleCommand::ObjectPointer::CastViaBaseObject:
-            {
-                BaseObject* object = (this->functor_) ? this->functor_->getBaseObject() : 0;
-
-                this->functor_ = functor;
-
-                if (!this->functor_->getBaseObject())
-                    this->functor_->setBaseObject(object);
-            }
-            break;
+            newfunctor = this->functorStack_.top();
+            this->functorStack_.pop();
         }
+        this->setFunctor(newfunctor);
+    }
+
+    Functor* _ConsoleCommand::getFunctor() const
+    {
+        if (this->bInitialized_)
+            return this->functor_;
+        else
+            return 0;
     }
 
     bool _ConsoleCommand::functionHeaderMatches(Functor* functor) const
@@ -197,21 +161,47 @@ namespace orxonox
         if (!this->functor_)
         {
             assert(false);
-            return false;
+            return true;
         }
-        return (functor->getHeaderIdentifier() == this->functor_->getHeaderIdentifier());
+        return (functor->getHeaderIdentifier() == this->functionHeader_);
     }
 
     void _ConsoleCommand::setObject(void* object)
     {
         if (this->functor_)
             this->functor_->setRawObjectPointer(object);
+        else if (object)
+            COUT(0) << "Error: Can't set object in console command \"" << this->getName() << "\", no functor set." << std::endl;
     }
 
-    void _ConsoleCommand::setObject(BaseObject* object)
+    void _ConsoleCommand::pushObject(void* object)
     {
         if (this->functor_)
-            this->functor_->setBaseObject(object);
+        {
+            this->objectStack_.push(this->getObject());
+            this->setObject(object);
+        }
+        else
+            COUT(0) << "Error: Can't set object in console command \"" << this->getName() << "\", no functor set." << std::endl;
+    }
+
+    void _ConsoleCommand::popObject()
+    {
+        void* newobject = 0;
+        if (!this->objectStack_.empty())
+        {
+            newobject = this->objectStack_.top();
+            this->objectStack_.pop();
+        }
+        this->setObject(newobject);
+    }
+
+    void* _ConsoleCommand::getObject() const
+    {
+        if (this->functor_)
+            return this->functor_->getRawObjectPointer();
+        else
+            return 0;
     }
 
     /* static */ const _ConsoleCommand* _ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
