@@ -100,7 +100,7 @@ namespace orxonox
             inline bool defaultValueSet(unsigned int index) const
             {
                 if (index < MAX_FUNCTOR_ARGUMENTS)
-                    return this->bAddedDefaultValue_[index];
+                    return !this->defaultValue_[index].null();
 
                 return false;
             }
@@ -109,7 +109,6 @@ namespace orxonox
             Functor* functor_;
             std::string name_;
             MultiType defaultValue_[MAX_FUNCTOR_ARGUMENTS];
-            bool bAddedDefaultValue_[MAX_FUNCTOR_ARGUMENTS];
     };
 
     class _CoreExport ExecutorStatic : public Executor

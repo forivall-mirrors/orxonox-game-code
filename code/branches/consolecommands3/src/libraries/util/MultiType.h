@@ -350,7 +350,10 @@ namespace orxonox
             inline uint32_t                   getNetworkSize() const { assert(this->value_); return this->value_->getSize() + sizeof(uint8_t); }
 
             /** @brief Checks whether the value is a default one. */
-            bool                              hasDefaultValue()         const { return this->value_->hasDefaultValue(); }
+            bool                              hasDefaultValue() const { return this->value_->hasDefaultValue(); }
+
+            /** @brief Checks if the MT contains no value. */
+            bool                              null() const { return (!this->value_); }
 
             operator char()                  const;
             operator unsigned char()         const;

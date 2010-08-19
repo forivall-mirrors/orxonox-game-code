@@ -42,12 +42,6 @@ namespace orxonox
     {
         this->functor_ = functor;
         this->name_ = name;
-
-        this->bAddedDefaultValue_[0] = false;
-        this->bAddedDefaultValue_[1] = false;
-        this->bAddedDefaultValue_[2] = false;
-        this->bAddedDefaultValue_[3] = false;
-        this->bAddedDefaultValue_[4] = false;
     }
 
     Executor::~Executor()
@@ -72,7 +66,7 @@ namespace orxonox
                 COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl;
                 (*this->functor_)(MultiType(params));
             }
-            else if (this->bAddedDefaultValue_[0])
+            else if (!this->defaultValue_[0].null())
             {
                 COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using default value: " << this->defaultValue_[0] << std::endl;
                 (*this->functor_)(this->defaultValue_[0]);
@@ -89,7 +83,7 @@ namespace orxonox
 
             for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
             {
-                if (!this->bAddedDefaultValue_[i])
+                if (this->defaultValue_[i].null())
                 {
                     COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl;
                     return false;
@@ -155,7 +149,7 @@ namespace orxonox
                 this->functor_->evaluateParam(0, param[0]);
                 return true;
             }
-            else if (this->bAddedDefaultValue_[0])
+            else if (!this->defaultValue_[0].null())
             {
                 param[0] = this->defaultValue_[0];
                 this->functor_->evaluateParam(0, param[0]);
@@ -170,7 +164,7 @@ namespace orxonox
 
             // if there are not enough params given, check if there are default values
             for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
-                if (!this->bAddedDefaultValue_[i])
+                if (this->defaultValue_[i].null())
                     return false;
 
             // assign all given arguments to the multitypes
@@ -192,7 +186,6 @@ namespace orxonox
     Executor& Executor::setDefaultValues(const MultiType& param1)
     {
         this->defaultValue_[0] = param1;
-        this->bAddedDefaultValue_[0] = true;
 
         return (*this);
     }
@@ -200,9 +193,7 @@ namespace orxonox
     Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2)
     {
         this->defaultValue_[0] = param1;
-        this->bAddedDefaultValue_[0] = true;
         this->defaultValue_[1] = param2;
-        this->bAddedDefaultValue_[1] = true;
 
         return (*this);
     }
@@ -210,11 +201,8 @@ namespace orxonox
     Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
     {
         this->defaultValue_[0] = param1;
-        this->bAddedDefaultValue_[0] = true;
         this->defaultValue_[1] = param2;
-        this->bAddedDefaultValue_[1] = true;
         this->defaultValue_[2] = param3;
-        this->bAddedDefaultValue_[2] = true;
 
         return (*this);
     }
@@ -222,13 +210,9 @@ namespace orxonox
     Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
     {
         this->defaultValue_[0] = param1;
-        this->bAddedDefaultValue_[0] = true;
         this->defaultValue_[1] = param2;
-        this->bAddedDefaultValue_[1] = true;
         this->defaultValue_[2] = param3;
-        this->bAddedDefaultValue_[2] = true;
         this->defaultValue_[3] = param4;
-        this->bAddedDefaultValue_[3] = true;
 
         return (*this);
     }
@@ -236,15 +220,10 @@ namespace orxonox
     Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
     {
         this->defaultValue_[0] = param1;
-        this->bAddedDefaultValue_[0] = true;
         this->defaultValue_[1] = param2;
-        this->bAddedDefaultValue_[1] = true;
         this->defaultValue_[2] = param3;
-        this->bAddedDefaultValue_[2] = true;
         this->defaultValue_[3] = param4;
-        this->bAddedDefaultValue_[3] = true;
         this->defaultValue_[4] = param5;
-        this->bAddedDefaultValue_[4] = true;
 
         return (*this);
     }
@@ -252,17 +231,15 @@ namespace orxonox
     Executor& Executor::setDefaultValue(unsigned int index, const MultiType& param)
     {
         if (index < MAX_FUNCTOR_ARGUMENTS)
-        {
             this->defaultValue_[index] = param;
-            this->bAddedDefaultValue_[index] = true;
-        }
+
         return (*this);
     }
 
     bool Executor::allDefaultValuesSet() const
     {
         for (unsigned int i = 0; i < this->functor_->getParamCount(); i++)
-            if (!this->bAddedDefaultValue_[i])
+            if (this->defaultValue_[i].null())
                 return false;
 
         return true;
