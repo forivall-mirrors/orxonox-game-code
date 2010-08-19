@@ -42,17 +42,6 @@ namespace orxonox
 {
     const unsigned int MAX_FUNCTOR_ARGUMENTS = 5;
 
-    namespace FunctionType
-    {
-        enum Value
-        {
-            Member,
-            ConstMember,
-            Static
-        };
-    }
-
-
     template <class T>
     inline std::string typeToString() { return "unknown"; }
 
@@ -99,18 +88,31 @@ namespace orxonox
     class _CoreExport Functor
     {
         public:
+            struct Type
+            {
+                enum Enum
+                {
+                    Member,
+                    ConstMember,
+                    Static,
+                    Lua
+                };
+            };
+
+        public:
             Functor() {}
             virtual ~Functor() {}
 
             virtual void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
 
-            inline unsigned int getParamCount() const { return this->numParams_; }
-            inline bool hasReturnvalue() const { return this->hasReturnValue_; }
-            inline FunctionType::Value getType() const { return this->type_; }
             inline const MultiType& getReturnvalue() const { return this->returnedValue_; }
 
-            const std::string& getTypenameParam(unsigned int param) const { return (param < 5) ? this->typeParam_[param] : BLANKSTRING; }
-            const std::string& getTypenameReturnvalue() const { return this->typeReturnvalue_; }
+            virtual Type::Enum getType() const = 0;
+            virtual unsigned int getParamCount() const = 0;
+            virtual bool hasReturnvalue() const = 0;
+
+            virtual std::string getTypenameParam(unsigned int param) const = 0;
+            virtual std::string getTypenameReturnvalue() const = 0;
 
             virtual void evaluateParam(unsigned int index, MultiType& param) const = 0;
 
@@ -120,13 +122,7 @@ namespace orxonox
             virtual const std::type_info& getHeaderIdentifier() const = 0;
 
         protected:
-            unsigned int numParams_;
-            bool hasReturnValue_;
-            FunctionType::Value type_;
             MultiType returnedValue_;
-
-            std::string typeReturnvalue_;
-            std::string typeParam_[MAX_FUNCTOR_ARGUMENTS];
     };
 
     class _CoreExport FunctorStatic : public Functor
@@ -285,17 +281,38 @@ namespace orxonox
 
 
 
-#define FUNCTOR_TYPENAME_PARAMS(numparams) FUNCTOR_TYPENAME_PARAMS##numparams
-#define FUNCTOR_TYPENAME_PARAMS0
-#define FUNCTOR_TYPENAME_PARAMS1 this->typeParam_[0] = typeToString<P1>();
-#define FUNCTOR_TYPENAME_PARAMS2 this->typeParam_[0] = typeToString<P1>(); this->typeParam_[1] = typeToString<P2>();
-#define FUNCTOR_TYPENAME_PARAMS3 this->typeParam_[0] = typeToString<P1>(); this->typeParam_[1] = typeToString<P2>(); this->typeParam_[2] = typeToString<P3>();
-#define FUNCTOR_TYPENAME_PARAMS4 this->typeParam_[0] = typeToString<P1>(); this->typeParam_[1] = typeToString<P2>(); this->typeParam_[2] = typeToString<P3>(); this->typeParam_[3] = typeToString<P4>();
-#define FUNCTOR_TYPENAME_PARAMS5 this->typeParam_[0] = typeToString<P1>(); this->typeParam_[1] = typeToString<P2>(); this->typeParam_[2] = typeToString<P3>(); this->typeParam_[3] = typeToString<P4>(); this->typeParam_[4] = typeToString<P5>();
+#define FUNCTOR_TYPENAME_PARAM(numparams) FUNCTOR_TYPENAME_PARAM##numparams
+#define FUNCTOR_TYPENAME_PARAM0 \
+    return BLANKSTRING
+#define FUNCTOR_TYPENAME_PARAM1 \
+    if (param == 0) { return typeToString<P1>(); } \
+    else { return BLANKSTRING; }
+#define FUNCTOR_TYPENAME_PARAM2 \
+    if (param == 0) { return typeToString<P1>(); } \
+    else if (param == 1) { return typeToString<P2>(); } \
+    else { return BLANKSTRING; }
+#define FUNCTOR_TYPENAME_PARAM3 \
+    if (param == 0) { return typeToString<P1>(); } \
+    else if (param == 1) { return typeToString<P2>(); } \
+    else if (param == 2) { return typeToString<P3>(); } \
+    else { return BLANKSTRING; }
+#define FUNCTOR_TYPENAME_PARAM4 \
+    if (param == 0) { return typeToString<P1>(); } \
+    else if (param == 1) { return typeToString<P2>(); } \
+    else if (param == 2) { return typeToString<P3>(); } \
+    else if (param == 3) { return typeToString<P4>(); } \
+    else { return BLANKSTRING; }
+#define FUNCTOR_TYPENAME_PARAM5 \
+    if (param == 0) { return typeToString<P1>(); } \
+    else if (param == 1) { return typeToString<P2>(); } \
+    else if (param == 2) { return typeToString<P3>(); } \
+    else if (param == 3) { return typeToString<P4>(); } \
+    else if (param == 4) { return typeToString<P5>(); } \
+    else { return BLANKSTRING; }
 
 #define FUNCTOR_TYPENAME_RETURN(returnvalue) FUNCTOR_TYPENAME_RETURN##returnvalue
-#define FUNCTOR_TYPENAME_RETURN0
-#define FUNCTOR_TYPENAME_RETURN1 this->typeReturnvalue_ = typeToString<R>();
+#define FUNCTOR_TYPENAME_RETURN0 BLANKSTRING
+#define FUNCTOR_TYPENAME_RETURN1 typeToString<R>()
 
 
 
@@ -374,13 +391,7 @@ namespace orxonox
         public: \
             FunctorStatic##returnvalue##numparams(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams))) \
             { \
-                this->numParams_ = numparams; \
-                this->hasReturnValue_ = returnvalue; \
-                this->type_ = FunctionType::Static; \
                 this->functionPointer_ = functionPointer; \
-                \
-                FUNCTOR_TYPENAME_PARAMS(numparams); \
-                FUNCTOR_TYPENAME_RETURN(returnvalue); \
             } \
     \
             void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) \
@@ -392,6 +403,12 @@ namespace orxonox
             { \
                 FUNCTOR_EVALUATE_PARAM(numparams); \
             } \
+    \
+            Functor::Type::Enum getType() const { return Functor::Type::Static; } \
+            unsigned int getParamCount() const { return numparams; } \
+            bool hasReturnvalue() const { return returnvalue; } \
+            std::string getTypenameParam(unsigned int param) const { FUNCTOR_TYPENAME_PARAM(numparams); } \
+            std::string getTypenameReturnvalue() const { return FUNCTOR_TYPENAME_RETURN(returnvalue); } \
     \
             const std::type_info& getHeaderIdentifier() const \
             { \
@@ -420,9 +437,6 @@ namespace orxonox
         public: \
             FunctorMember##returnvalue##numparams(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams))) \
             { \
-                this->numParams_ = numparams; \
-                this->hasReturnValue_ = returnvalue; \
-                this->type_ = FunctionType::Member; \
                 this->functionPointer_ = functionPointer; \
             } \
     \
@@ -442,6 +456,12 @@ namespace orxonox
                 FUNCTOR_EVALUATE_PARAM(numparams); \
             } \
     \
+            Functor::Type::Enum getType() const { return Functor::Type::Member; } \
+            unsigned int getParamCount() const { return numparams; } \
+            bool hasReturnvalue() const { return returnvalue; } \
+            std::string getTypenameParam(unsigned int param) const { FUNCTOR_TYPENAME_PARAM(numparams); } \
+            std::string getTypenameReturnvalue() const { return FUNCTOR_TYPENAME_RETURN(returnvalue); } \
+    \
             const std::type_info& getHeaderIdentifier() const \
             { \
                 return typeid(FunctorHeaderIdentifier FUNCTOR_HEADER_IDENTIFIER_TEMPLATE_CLASSES(returnvalue, numparams)); \
@@ -458,9 +478,6 @@ namespace orxonox
         public: \
             FunctorConstMember##returnvalue##numparams(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)) const) \
             { \
-                this->numParams_ = numparams; \
-                this->hasReturnValue_ = returnvalue; \
-                this->type_ = FunctionType::ConstMember; \
                 this->functionPointer_ = functionPointer; \
             } \
     \
@@ -478,6 +495,12 @@ namespace orxonox
             { \
                 FUNCTOR_EVALUATE_PARAM(numparams); \
             } \
+    \
+            Functor::Type::Enum getType() const { return Functor::Type::ConstMember; } \
+            unsigned int getParamCount() const { return numparams; } \
+            bool hasReturnvalue() const { return returnvalue; } \
+            std::string getTypenameParam(unsigned int param) const { FUNCTOR_TYPENAME_PARAM(numparams); } \
+            std::string getTypenameReturnvalue() const { return FUNCTOR_TYPENAME_RETURN(returnvalue); } \
     \
             const std::type_info& getHeaderIdentifier() const \
             { \

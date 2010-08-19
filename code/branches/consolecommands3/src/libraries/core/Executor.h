@@ -67,13 +67,13 @@ namespace orxonox
                 { return this->functor_->getParamCount(); }
             inline bool hasReturnvalue() const
                 { return this->functor_->hasReturnvalue(); }
-            inline FunctionType::Value getType() const
+            inline Functor::Type::Enum getType() const
                 { return this->functor_->getType(); }
             inline const MultiType& getReturnvalue() const
                 { return this->functor_->getReturnvalue(); }
-            inline const std::string& getTypenameParam(unsigned int param) const
+            inline std::string getTypenameParam(unsigned int param) const
                 { return this->functor_->getTypenameParam(param); }
-            inline const std::string& getTypenameReturnvalue() const
+            inline std::string getTypenameReturnvalue() const
                 { return this->functor_->getTypenameReturnvalue(); }
 
             inline void setName(const std::string& name)
