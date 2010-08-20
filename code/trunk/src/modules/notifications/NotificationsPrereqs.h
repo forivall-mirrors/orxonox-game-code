@@ -65,9 +65,13 @@
 namespace orxonox
 {
     class Notification;
+    class NotificationDispatcher;
     class NotificationManager;
     class NotificationOverlay;
     class NotificationQueue;
+    
+    //dispatchers
+    class CommandNotification;
 }
 
 #endif /* _NotificationsPrereqs_H__ */

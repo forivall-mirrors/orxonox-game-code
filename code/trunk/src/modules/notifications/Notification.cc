@@ -59,6 +59,8 @@ namespace orxonox
     */
     Notification::Notification(BaseObject* creator, const std::string & message) : BaseObject(creator)
     {
+        RegisterObject(Notification);
+        this->initialize();
         this->message_ = message;
     }
 
@@ -103,6 +105,9 @@ namespace orxonox
     */
     bool Notification::send(const std::string & sender)
     {
+        if(this->isSent()) //TODO: Needed?
+            return false;
+        
         this->sender_ = sender;
         bool successful = NotificationManager::getInstance().registerNotification(this);
         if(!successful)
