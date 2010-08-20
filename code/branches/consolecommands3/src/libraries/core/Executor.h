@@ -40,6 +40,8 @@ namespace orxonox
 {
     class _CoreExport Executor
     {
+        friend class SharedPtr<Executor>;
+
         public:
             Executor(Functor* functor, const std::string& name = "");
             virtual ~Executor();
@@ -107,6 +109,15 @@ namespace orxonox
             Functor* functor_;
             std::string name_;
             MultiType defaultValue_[MAX_FUNCTOR_ARGUMENTS];
+
+        private:
+            inline void incrementReferenceCount()
+                { ++this->references_; }
+            inline void decrementReferenceCount()
+                { --this->references_; if (this->references_ == 0) delete this; }
+
+            int references_;
+            static int instances_s;
     };
 
     class _CoreExport ExecutorStatic : public Executor
@@ -185,6 +196,23 @@ namespace orxonox
                 return result;
             }
     };
+
+
+
+    typedef SharedPtr<Executor> ExecutorPtr;
+
+    typedef SharedChildPtr<ExecutorStatic, Executor> ExecutorStaticPtr;
+
+    template <class T>
+    class ExecutorMemberPtr : public SharedChildPtr<ExecutorMember<T>, Executor>
+    {
+        public:
+            inline ExecutorMemberPtr() : SharedChildPtr<ExecutorMember<T>, Executor>() {}
+            inline ExecutorMemberPtr(ExecutorMember<T>* pointer) : SharedChildPtr<ExecutorMember<T>, Executor>(pointer) {}
+//            inline ExecutorMemberPtr(const ExecutorMemberPtr& other) : SharedChildPtr<ExecutorMember<T>, Executor>(other) {}
+    };
+
+
 
     inline Executor* createExecutor(Functor* functor, const std::string& name = "")
     {

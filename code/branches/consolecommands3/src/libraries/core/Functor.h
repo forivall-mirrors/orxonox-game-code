@@ -37,6 +37,7 @@
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/MultiType.h"
+#include "SharedPtr.h"
 
 namespace orxonox
 {
@@ -87,6 +88,8 @@ namespace orxonox
 
     class _CoreExport Functor
     {
+        friend class SharedPtr<Functor>;
+
         public:
             struct Type
             {
@@ -100,8 +103,8 @@ namespace orxonox
             };
 
         public:
-            Functor() {}
-            virtual ~Functor() {}
+            Functor() : references_(0) { ++instances_s; COUT(0) << "functor ++: " << instances_s << std::endl; }
+            virtual ~Functor() { --instances_s; COUT(0) << "functor --: " << instances_s << std::endl; }
 
             virtual MultiType operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
 
@@ -118,6 +121,15 @@ namespace orxonox
             virtual void* getRawObjectPointer() const { return 0; }
 
             virtual const std::type_info& getHeaderIdentifier() const = 0;
+
+        private:
+            inline void incrementReferenceCount()
+                { ++this->references_; }
+            inline void decrementReferenceCount()
+                { --this->references_; if (this->references_ == 0) delete this; }
+
+            int references_;
+            static int instances_s;
     };
 
     class _CoreExport FunctorStatic : public Functor
@@ -199,6 +211,21 @@ namespace orxonox
         private:
             T* object_;
             const T* constObject_;
+    };
+
+
+
+    typedef SharedPtr<Functor> FunctorPtr;
+
+    typedef SharedChildPtr<FunctorStatic, Functor> FunctorStaticPtr;
+
+    template <class T>
+    class FunctorMemberPtr : public SharedChildPtr<FunctorMember<T>, Functor>
+    {
+        public:
+            inline FunctorMemberPtr() : SharedChildPtr<FunctorMember<T>, Functor>() {}
+            inline FunctorMemberPtr(FunctorMember<T>* pointer) : SharedChildPtr<FunctorMember<T>, Functor>(pointer) {}
+//            inline FunctorMemberPtr(const FunctorMemberPtr& other) : SharedChildPtr<FunctorMember<T>, Functor>(other) {}
     };
 
 
