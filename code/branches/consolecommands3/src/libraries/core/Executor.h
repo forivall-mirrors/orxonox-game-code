@@ -108,9 +108,6 @@ namespace orxonox
             FunctorPtr functor_;
             std::string name_;
             MultiType defaultValue_[MAX_FUNCTOR_ARGUMENTS];
-
-        private:
-            static int instances_s;
     };
 
     class _CoreExport ExecutorStatic : public Executor

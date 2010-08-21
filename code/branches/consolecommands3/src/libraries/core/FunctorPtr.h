@@ -44,32 +44,8 @@ namespace orxonox
         public:
             inline FunctorMemberPtr() : SharedChildPtr<FunctorMember<T>, FunctorPtr>() {}
             inline FunctorMemberPtr(FunctorMember<T>* pointer) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(pointer) {}
-//            inline FunctorMemberPtr(const FunctorMemberPtr& other) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(other) {}
-//            template <class O>
-//            inline FunctorMemberPtr(const SharedPtr<O>& other) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(other) {}
-//            template <class O>
-//            inline FunctorMemberPtr(const SharedChildPtr<O, FunctorMember<T> >& other) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(other) {}
             inline FunctorMemberPtr(const SharedPtr<FunctorMember<T> >& other) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(other) {}
-
-/*
-            inline const FunctorMemberPtr& operator=(const FunctorMemberPtr& other) { this->SharedChildPtr<FunctorMember<T>, FunctorPtr>::operator=(other); return *this; }
-            template <class O>
-            inline const FunctorMemberPtr& operator=(const SharedPtr<O>& other) { this->SharedChildPtr<FunctorMember<T>, FunctorPtr>::operator=(other); return *this; }
-*/
-        private:
-//            inline FunctorMemberPtr(FunctorMember<T>* pointer, int* counter) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(pointer, counter) {}
     };
-/*
-    typedef SharedChildPtr<FunctorStatic, Functor> FunctorStaticPtr;
-
-    template <class T>
-    class FunctorMemberPtr : public SharedChildPtr<FunctorMember<T>, Functor>
-    {
-        public:
-            inline FunctorMemberPtr() : SharedChildPtr<FunctorMember<T>, Functor>() {}
-            inline FunctorMemberPtr(FunctorMember<T>* pointer) : SharedChildPtr<FunctorMember<T>, Functor>(pointer) {}
-    };
-*/
 }
 
 #endif /* _FunctorPtr_H__ */

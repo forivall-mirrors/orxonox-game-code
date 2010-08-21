@@ -101,8 +101,8 @@ namespace orxonox
             };
 
         public:
-            Functor() { ++instances_s; COUT(0) << "functor ++: " << instances_s << std::endl; }
-            virtual ~Functor() { --instances_s; COUT(0) << "functor --: " << instances_s << std::endl; }
+            Functor() {}
+            virtual ~Functor() {}
 
             virtual MultiType operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
 
@@ -119,9 +119,6 @@ namespace orxonox
             virtual void* getRawObjectPointer() const { return 0; }
 
             virtual const std::type_info& getHeaderIdentifier() const = 0;
-
-        private:
-            static int instances_s;
     };
 
     class _CoreExport FunctorStatic : public Functor

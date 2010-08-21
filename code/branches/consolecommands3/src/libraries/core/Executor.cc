@@ -38,19 +38,14 @@
 
 namespace orxonox
 {
-    int Functor::instances_s = 0;
-    int Executor::instances_s = 0;
-
     Executor::Executor(const FunctorPtr& functor, const std::string& name)
     {
         this->functor_ = functor;
         this->name_ = name;
-        ++instances_s; COUT(0) << "executor ++: " << instances_s << std::endl;
     }
 
     Executor::~Executor()
     {
-        --instances_s; COUT(0) << "executor --: " << instances_s << std::endl;
     }
 
     MultiType Executor::parse(const std::string& params, bool* success, const std::string& delimiter) const
