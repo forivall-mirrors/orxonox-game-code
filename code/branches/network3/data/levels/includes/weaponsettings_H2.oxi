@@ -1,0 +1,45 @@
+    <weaponslots>
+      <WeaponSlot position="-7.5, 4, 8.5" />
+      <WeaponSlot position=" 7.5, 4, 8.5" />
+      <WeaponSlot position=" 0.0, 0,-13" />
+    </weaponslots>
+    <weaponsets>
+      <WeaponSet firemode=0 />
+      <WeaponSet firemode=1 />
+    </weaponsets>
+    <weapons>
+      <WeaponPack>
+        <links>
+          <DefaultWeaponmodeLink firemode=0 weaponmode=0 />
+        </links>
+        <Weapon>
+          <attached>
+            <Model mesh="hs-w01.mesh"  roll="180" position="0.0, 0.5, 0.0" scale=2 />
+            <Model mesh="hs-w01s.mesh" roll="180" position="0.1, 0.0, 0.0" scale=2 />
+          </attached>
+          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=2.5 material="Flares/point_lensflare" muzzleoffset=" 0.8, 0.9,-4" />
+          <HsW01 mode=0 munitionpershot=0 delay=0     damage=2.5 material="Flares/point_lensflare" muzzleoffset="-0.8, 0.9,-4" />
+        </Weapon>
+        <Weapon>
+          <attached>
+            <Model mesh="hs-w01.mesh"  roll="180" position=" 0.0, 0.5, 0.0" scale=2 />
+            <Model mesh="hs-w01s.mesh" roll="180" position="-0.1, 0.0, 0.0" scale=2 />
+          </attached>
+          <HsW01 mode=0 munitionpershot=0 delay=0     damage=2.5 material="Flares/point_lensflare" muzzleoffset=" 0.8, 0.9, -4.0" />
+          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=2.5 material="Flares/point_lensflare" muzzleoffset="-0.8, 0.9, -4.0" />
+        </Weapon>
+      </WeaponPack>
+      <WeaponPack>
+        <links>
+          <DefaultWeaponmodeLink firemode=1 weaponmode=0 />
+        </links>
+        <Weapon>
+          <attached>
+            <Model mesh="LightningGun.mesh"   pitch="90" roll="90" yaw="90" position="0,  -1.3,0" />
+            <Model mesh="LightningGun-s.mesh" pitch="90" roll="90" yaw="90" position="0.2,-1.3,0" />
+          </attached>
+          <LightningGun mode=0 muzzleoffset="0,0,0" />
+        </Weapon>
+      </WeaponPack>
+    </weapons>
+
