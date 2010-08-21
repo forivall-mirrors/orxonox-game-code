@@ -369,9 +369,8 @@ namespace orxonox
         this->lua_ = luaState;
     }
 
-    MultiType LuaFunctor::operator()(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
+    void LuaFunctor::operator()()
     {
         lua_->doString(this->code_);
-        return MT_Type::Null;
     }
 }

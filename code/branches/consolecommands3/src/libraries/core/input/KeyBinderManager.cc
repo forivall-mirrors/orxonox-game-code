@@ -33,6 +33,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
+#include "core/LuaState.h"
 #include "core/ScopedSingletonManager.h"
 #include "InputManager.h"
 #include "KeyDetector.h"
@@ -185,5 +186,10 @@ namespace orxonox
             this->bBinding_ = false;
         }
         // else: A key was probably pressed within the same tick, ignore it.
+    }
+
+    void KeyBinderManager::registerKeybindCallback(LuaFunctor* function)
+    {
+        this->callbackFunction_ = function;
     }
 }

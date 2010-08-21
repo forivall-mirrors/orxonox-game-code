@@ -98,7 +98,7 @@ namespace orxonox //tolua_export
             { this->keybindInternal(command, true); }
         void unbind(const std::string& binding); //tolua_export
         void tunbind(const std::string& binding);
-        inline void registerKeybindCallback(const FunctorPtr& function) { this->callbackFunction_ = function; } // tolua//_//export // <-- FIXME
+        void registerKeybindCallback(LuaFunctor* function); //tolua_export
 
     private:
         KeyBinderManager(const KeyBinderManager&);
@@ -113,7 +113,7 @@ namespace orxonox //tolua_export
         std::string defaultFilename_;                //! Name of the file with the default key bindings
 
         // keybind command related
-        FunctorPtr callbackFunction_;                //! Function to be called when key was pressed after "keybind" command
+        SharedPtr<LuaFunctor> callbackFunction_;     //! Function to be called when key was pressed after "keybind" command
         bool bBinding_;                              //! Tells whether a key binding process is active
         bool bTemporary_;                            //! Stores tkeybind/keybind value
         std::string command_;                        //! Stores the command received by (t)keybind
