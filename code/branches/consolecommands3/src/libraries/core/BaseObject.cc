@@ -476,8 +476,8 @@ namespace orxonox
                 XMLPortClassObjectContainer<BaseObject, BaseObject>* container = (XMLPortClassObjectContainer<BaseObject, BaseObject>*)(identifier->getXMLPortObjectContainer(statename));
                 if (!container)
                 {
-                    ExecutorMember<BaseObject>* setfunctor = createExecutor(createFunctor(&BaseObject::addEventSource), std::string( "BaseObject" ) + "::" + "addEventSource" + '(' + statename + ')');
-                    ExecutorMember<BaseObject>* getfunctor = createExecutor(createFunctor(&BaseObject::getEventSource), std::string( "BaseObject" ) + "::" + "getEventSource" + '(' + statename + ')');
+                    const ExecutorMemberPtr<BaseObject>& setfunctor = createExecutor(createFunctor(&BaseObject::addEventSource), std::string( "BaseObject" ) + "::" + "addEventSource" + '(' + statename + ')');
+                    const ExecutorMemberPtr<BaseObject>& getfunctor = createExecutor(createFunctor(&BaseObject::getEventSource), std::string( "BaseObject" ) + "::" + "getEventSource" + '(' + statename + ')');
                     setfunctor->setDefaultValue(1, statename);
                     getfunctor->setDefaultValue(1, statename);
 

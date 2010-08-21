@@ -80,12 +80,12 @@ namespace orxonox
             inline const std::string& getName() const
                 { return this->name_; }
 
-            Executor& setDefaultValues(const MultiType& param1);
-            Executor& setDefaultValues(const MultiType& param1, const MultiType& param2);
-            Executor& setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3);
-            Executor& setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4);
-            Executor& setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5);
-            Executor& setDefaultValue(unsigned int index, const MultiType& param);
+            void setDefaultValues(const MultiType& param1);
+            void setDefaultValues(const MultiType& param1, const MultiType& param2);
+            void setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3);
+            void setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4);
+            void setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5);
+            void setDefaultValue(unsigned int index, const MultiType& param);
 
             inline MultiType getDefaultValue(unsigned int index) const
             {
@@ -168,7 +168,7 @@ namespace orxonox
                 const typename FunctorMember<T>::Objects& objects = this->functorMember_->getObjects();
 
                 this->functorMember_->setObject(object);
-                const MultiType& result = Executor::parse(params, success, delimiter);
+                const MultiType& result = this->Executor::parse(params, success, delimiter);
                 this->functorMember_->setObjects(objects);
 
                 return result;
@@ -179,7 +179,7 @@ namespace orxonox
                 const typename FunctorMember<T>::Objects& objects = this->functorMember_->getObjects();
 
                 this->functorMember_->setObject(object);
-                const MultiType& result = Executor::parse(params, success, delimiter);
+                const MultiType& result = this->Executor::parse(params, success, delimiter);
                 this->functorMember_->setObjects(objects);
 
                 return result;
@@ -189,18 +189,18 @@ namespace orxonox
             FunctorMemberPtr<T> functorMember_;
     };
 
-    inline Executor* createExecutor(const FunctorPtr& functor, const std::string& name = "")
+    inline ExecutorPtr createExecutor(const FunctorPtr& functor, const std::string& name = "")
     {
         return new Executor(functor, name);
     }
 
     template <class T>
-    inline ExecutorMember<T>* createExecutor(const FunctorMemberPtr<T>& functor, const std::string& name = "")
+    inline ExecutorMemberPtr<T> createExecutor(const FunctorMemberPtr<T>& functor, const std::string& name = "")
     {
         return new ExecutorMember<T>(functor, name);
     }
 
-    inline ExecutorStatic* createExecutor(const FunctorStaticPtr& functor, const std::string& name = "")
+    inline ExecutorStaticPtr createExecutor(const FunctorStaticPtr& functor, const std::string& name = "")
     {
         return new ExecutorStatic(functor, name);
     }

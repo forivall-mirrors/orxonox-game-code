@@ -190,57 +190,45 @@ namespace orxonox
         }
     }
 
-    Executor& Executor::setDefaultValues(const MultiType& param1)
+    void Executor::setDefaultValues(const MultiType& param1)
     {
         this->defaultValue_[0] = param1;
-
-        return (*this);
     }
 
-    Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2)
+    void Executor::setDefaultValues(const MultiType& param1, const MultiType& param2)
     {
         this->defaultValue_[0] = param1;
         this->defaultValue_[1] = param2;
-
-        return (*this);
     }
 
-    Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
+    void Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
     {
         this->defaultValue_[0] = param1;
         this->defaultValue_[1] = param2;
         this->defaultValue_[2] = param3;
-
-        return (*this);
     }
 
-    Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
+    void Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
     {
         this->defaultValue_[0] = param1;
         this->defaultValue_[1] = param2;
         this->defaultValue_[2] = param3;
         this->defaultValue_[3] = param4;
-
-        return (*this);
     }
 
-    Executor& Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
+    void Executor::setDefaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
     {
         this->defaultValue_[0] = param1;
         this->defaultValue_[1] = param2;
         this->defaultValue_[2] = param3;
         this->defaultValue_[3] = param4;
         this->defaultValue_[4] = param5;
-
-        return (*this);
     }
 
-    Executor& Executor::setDefaultValue(unsigned int index, const MultiType& param)
+    void Executor::setDefaultValue(unsigned int index, const MultiType& param)
     {
         if (index < MAX_FUNCTOR_ARGUMENTS)
             this->defaultValue_[index] = param;
-
-        return (*this);
     }
 
     bool Executor::allDefaultValuesSet() const

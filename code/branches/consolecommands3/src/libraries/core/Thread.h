@@ -45,17 +45,17 @@ namespace boost{
 
         bool isWorking();
         void waitUntilFinished();
-        bool evaluateExecutor( Executor* executor );
+        bool evaluateExecutor( const ExecutorPtr& executor );
 
     private:
         void            threadLoop();
 
-        Executor*       executor_;
+        ExecutorPtr     executor_;
         bool            isWorking_;
         bool            stopThread_;
         boost::thread*  workerThread_;
         boost::mutex*   executorMutex_;
-        boost::mutex*     isWorkingMutex_;
+        boost::mutex*   isWorkingMutex_;
         boost::mutex*   stopThreadMutex_;
     };
 

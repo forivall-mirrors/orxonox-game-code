@@ -80,7 +80,7 @@ namespace orxonox
         }
     }
 
-    bool ThreadPool::passFunction( Executor* executor, bool addThread )
+    bool ThreadPool::passFunction( const ExecutorPtr& executor, bool addThread )
     {
         std::vector<Thread*>::iterator it;
         for ( it=this->threadPool_.begin(); it!=this->threadPool_.end(); ++it )

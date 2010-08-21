@@ -53,7 +53,7 @@ namespace orxonox
         Timer* delaytimer = new Timer();
         delaytimerset.insert(delaytimer);
 
-        ExecutorStatic* delayexecutor = createExecutor(createFunctor(&executeDelayedCommand));
+        const ExecutorStaticPtr& delayexecutor = createExecutor(createFunctor(&executeDelayedCommand));
         delayexecutor->setDefaultValues(delaytimer, command);
         delaytimer->setTimer(delay, false, delayexecutor);
     }
@@ -96,20 +96,12 @@ namespace orxonox
         @param bLoop If true, the function gets called every 'interval' seconds
         @param exeuctor A executor of the function to call
     */
-    Timer::Timer(float interval, bool bLoop, Executor* executor, bool bKillAfterCall)
+    Timer::Timer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall)
     {
         this->init();
         RegisterObject(Timer);
 
         this->setTimer(interval, bLoop, executor, bKillAfterCall);
-    }
-
-    /**
-        @brief Deletes the executor.
-    */
-    Timer::~Timer()
-    {
-        this->deleteExecutor();
     }
 
     /**
@@ -137,15 +129,6 @@ namespace orxonox
 
         if (temp)
             this->destroy();
-    }
-
-    /**
-        @brief Deletes the executor.
-    */
-    void Timer::deleteExecutor()
-    {
-      if (this->executor_)
-          delete this->executor_;
     }
 
     /**

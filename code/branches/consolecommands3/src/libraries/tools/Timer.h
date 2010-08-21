@@ -77,9 +77,8 @@ namespace orxonox
     {
         public:
             Timer();
-            ~Timer();
 
-            Timer(float interval, bool bLoop, Executor* executor, bool bKillAfterCall = false);
+            Timer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall = false);
 
             /**
                 @brief Initializes the Timer with given values.
@@ -88,10 +87,8 @@ namespace orxonox
                 @param object The object owning the timer and the function
                 @param executor A executor of the function to call
             */
-            void setTimer(float interval, bool bLoop, Executor* executor, bool bKillAfterCall = false)
+            void setTimer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall = false)
             {
-                this->deleteExecutor();
-
                 this->setInterval(interval);
                 this->bLoop_ = bLoop;
                 this->executor_ = executor;
@@ -102,7 +99,6 @@ namespace orxonox
             }
 
             void run();
-            void deleteExecutor();
 
             /** @brief Starts the Timer: Function-call after 'interval' seconds. */
             inline void startTimer()
@@ -140,14 +136,14 @@ namespace orxonox
         private:
             void init();
 
-            Executor* executor_;  //!< The executor of the function that should be called when the time expires
+            ExecutorPtr executor_;  //!< The executor of the function that should be called when the time expires
 
-            long long interval_;  //!< The time-interval in micro seconds
-            bool bLoop_;          //!< If true, the function gets called every 'interval' seconds
-            bool bActive_;        //!< If true, the Timer ticks and calls the function if the time's up
-            bool bKillAfterCall_; //!< If true the timer gets deleted after it called the function
+            long long interval_;    //!< The time-interval in micro seconds
+            bool bLoop_;            //!< If true, the function gets called every 'interval' seconds
+            bool bActive_;          //!< If true, the Timer ticks and calls the function if the time's up
+            bool bKillAfterCall_;   //!< If true the timer gets deleted after it called the function
 
-            long long time_;      //!< Internal variable, counting the time till the next function-call
+            long long time_;        //!< Internal variable, counting the time till the next function-call
     };
 }
 
