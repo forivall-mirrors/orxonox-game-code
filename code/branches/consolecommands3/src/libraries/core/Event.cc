@@ -34,15 +34,6 @@
 namespace orxonox
 {
     /**
-        @brief Destructor: Deletes the functor of the event state.
-    */
-    EventState::~EventState()
-    {
-        if (this->statefunction_)
-            delete this->statefunction_;
-    }
-
-    /**
         @brief Processes an event (calls the set-function if the necessary conditions are met).
 
         @param event     The fired event

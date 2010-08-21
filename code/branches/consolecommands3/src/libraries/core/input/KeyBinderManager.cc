@@ -155,7 +155,7 @@ namespace orxonox
         if (!this->bBinding_)
         {
             COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
-            KeyDetector::getInstance().setCallback(shared_ptr<Functor>(createFunctor(&KeyBinderManager::keybindKeyPressed, this)));
+            KeyDetector::getInstance().setCallback(createFunctor(&KeyBinderManager::keybindKeyPressed, this));
             InputManager::getInstance().enterState("detector");
             this->command_ = command;
             this->bTemporary_ = bTemporary;

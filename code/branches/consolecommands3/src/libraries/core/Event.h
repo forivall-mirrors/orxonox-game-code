@@ -66,18 +66,17 @@ namespace orxonox
     class _CoreExport EventState
     {
         public:
-            EventState(Functor* statefunction, Identifier* subclass, bool bSink = false) : bProcessingEvent_(false), activeEvents_(0), statefunction_(statefunction), subclass_(subclass), bSink_(bSink) {}
-            virtual ~EventState();
+            EventState(const FunctorPtr& statefunction, Identifier* subclass, bool bSink = false) : bProcessingEvent_(false), activeEvents_(0), statefunction_(statefunction), subclass_(subclass), bSink_(bSink) {}
 
             void process(const Event& event, BaseObject* object);
 
-            Functor* getFunctor() const
+            const FunctorPtr& getFunctor() const
                 { return this->statefunction_; }
 
         private:
             bool        bProcessingEvent_;  //!< This becomes true while the container processes an event (used to prevent loops)
             int         activeEvents_;      //!< The number of events which affect this state and are currently active
-            Functor*    statefunction_;     //!< A functor to set the state
+            FunctorPtr  statefunction_;     //!< A functor to set the state
             Identifier* subclass_;          //!< Originators must be an instance of this class (usually BaseObject, but some statefunctions allow a second argument with an originator of a specific class)
             bool        bSink_;             //!< Determines whether the EventState acts as an EventSink forwarding any Event (even if the state didn't change) or in the normal manner, only processing Events that change the state.
     };

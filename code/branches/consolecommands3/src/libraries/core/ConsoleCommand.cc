@@ -33,7 +33,7 @@
 
 namespace orxonox
 {
-    ConsoleCommand::ConsoleCommand(Functor* functor, const std::string& name) : Executor(functor, name)
+    ConsoleCommand::ConsoleCommand(const FunctorPtr& functor, const std::string& name) : Executor(functor, name)
     {
         this->accessLevel_ = AccessLevel::None;
         this->argumentCompleter_[0] = 0;
@@ -123,7 +123,7 @@ namespace orxonox
     _SetConsoleCommand("BaseObject", "setName", &BaseObject::setName, (BaseObject*)0);
     _ConsoleCommand::_ConsoleCommandManipulator test(_ModifyConsoleCommand("BaseObject", "setName").setFunction(&BaseObject::setActive));
 
-    _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, Functor* functor, bool bInitialized) : Executor(functor, name), functionHeader_(functor->getHeaderIdentifier())
+    _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, const FunctorPtr& functor, bool bInitialized) : Executor(functor, name), functionHeader_(functor->getHeaderIdentifier())
     {
         this->bActive_ = true;
         this->bInitialized_ = bInitialized;
@@ -154,7 +154,7 @@ namespace orxonox
         return *this;
     }
 
-    bool _ConsoleCommand::setFunctor(Functor* functor, bool bForce)
+    bool _ConsoleCommand::setFunctor(const FunctorPtr& functor, bool bForce)
     {
         if (!functor)
         {
@@ -173,9 +173,9 @@ namespace orxonox
         return true;
     }
 
-    void _ConsoleCommand::pushFunctor(Functor* functor, bool bForce)
+    void _ConsoleCommand::pushFunctor(const FunctorPtr& functor, bool bForce)
     {
-        Functor* oldfunctor = this->getFunctor();
+        const FunctorPtr& oldfunctor = this->getFunctor();
 
         if (this->setFunctor(functor, bForce));
             this->functorStack_.push(oldfunctor);
@@ -183,7 +183,7 @@ namespace orxonox
 
     void _ConsoleCommand::popFunctor()
     {
-        Functor* newfunctor = 0;
+        FunctorPtr newfunctor;
         if (!this->functorStack_.empty())
         {
             newfunctor = this->functorStack_.top();
@@ -192,15 +192,15 @@ namespace orxonox
         this->setFunctor(newfunctor);
     }
 
-    Functor* _ConsoleCommand::getFunctor() const
+    const FunctorPtr& _ConsoleCommand::getFunctor() const
     {
-        if (this->bInitialized_)
+//        if (this->bInitialized_) // FIXME
             return this->functor_;
-        else
-            return 0;
+//        else
+//            return 0;
     }
 
-    bool _ConsoleCommand::functionHeaderMatches(Functor* functor) const
+    bool _ConsoleCommand::functionHeaderMatches(const FunctorPtr& functor) const
     {
         if (!this->functor_)
         {
@@ -215,7 +215,7 @@ namespace orxonox
         if (this->functor_)
             this->functor_->setRawObjectPointer(object);
         else if (object)
-            COUT(0) << "Error: Can't set object in console command \"" << this->getName() << "\", no functor set." << std::endl;
+            COUT(1) << "Error: Can't set object in console command \"" << this->getName() << "\", no functor set." << std::endl;
     }
 
     void _ConsoleCommand::pushObject(void* object)
@@ -226,7 +226,7 @@ namespace orxonox
             this->setObject(object);
         }
         else
-            COUT(0) << "Error: Can't set object in console command \"" << this->getName() << "\", no functor set." << std::endl;
+            COUT(1) << "Error: Can't set object in console command \"" << this->getName() << "\", no functor set." << std::endl;
     }
 
     void _ConsoleCommand::popObject()
@@ -262,9 +262,9 @@ namespace orxonox
         if (bPrintError)
         {
             if (group == "")
-                COUT(0) << "Error: Couldn't find console command with shortcut \"" << name << "\"" << std::endl;
+                COUT(1) << "Error: Couldn't find console command with shortcut \"" << name << "\"" << std::endl;
             else
-                COUT(0) << "Error: Couldn't find console command with group \"" << group << "\" and name \"" << name << "\"" << std::endl;
+                COUT(1) << "Error: Couldn't find console command with group \"" << group << "\" and name \"" << name << "\"" << std::endl;
         }
         return 0;
     }

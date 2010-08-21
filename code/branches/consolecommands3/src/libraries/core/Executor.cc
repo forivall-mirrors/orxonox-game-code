@@ -41,7 +41,7 @@ namespace orxonox
     int Functor::instances_s = 0;
     int Executor::instances_s = 0;
 
-    Executor::Executor(Functor* functor, const std::string& name)
+    Executor::Executor(const FunctorPtr& functor, const std::string& name)
     {
         this->functor_ = functor;
         this->name_ = name;
@@ -50,7 +50,6 @@ namespace orxonox
 
     Executor::~Executor()
     {
-        delete this->functor_;
         --instances_s; COUT(0) << "executor --: " << instances_s << std::endl;
     }
 

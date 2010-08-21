@@ -41,10 +41,8 @@ namespace orxonox
 {
     class _CoreExport Executor
     {
-        friend class SharedPtr<Executor>;
-
         public:
-            Executor(Functor* functor, const std::string& name = "");
+            Executor(const FunctorPtr& functor, const std::string& name = "");
             virtual ~Executor();
 
             inline MultiType operator()() const
@@ -64,7 +62,7 @@ namespace orxonox
 
             bool evaluate(const std::string& params, MultiType param[5], const std::string& delimiter = " ") const;
 
-            inline Functor* getFunctor() const
+            inline const FunctorPtr& getFunctor() const
                 { return this->functor_; }
             inline unsigned int getParamCount() const
                 { return this->functor_->getParamCount(); }
@@ -107,7 +105,7 @@ namespace orxonox
             }
 
         protected:
-            Functor* functor_;
+            FunctorPtr functor_;
             std::string name_;
             MultiType defaultValue_[MAX_FUNCTOR_ARGUMENTS];
 
@@ -118,7 +116,7 @@ namespace orxonox
     class _CoreExport ExecutorStatic : public Executor
     {
         public:
-            ExecutorStatic(FunctorStatic* functor, const std::string& name = "") : Executor(functor, name) {}
+            ExecutorStatic(const FunctorStaticPtr& functor, const std::string& name = "") : Executor(functor, name) {}
             virtual ~ExecutorStatic() {}
     };
 
@@ -126,84 +124,83 @@ namespace orxonox
     class ExecutorMember : public Executor
     {
         public:
-            ExecutorMember(FunctorMember<T>* functor, const std::string& name = "") : Executor(functor, name) {}
+            ExecutorMember(const FunctorMemberPtr<T>& functor, const std::string& name = "") : Executor(functor, name), functorMember_(functor) {}
             virtual ~ExecutorMember() {}
 
             using Executor::operator();
 
             inline MultiType operator()(T* object) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, this->defaultValue_[0], this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, this->defaultValue_[0], this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
             inline MultiType operator()(T* object, const MultiType& param1) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, param1, this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
             inline MultiType operator()(T* object, const MultiType& param1, const MultiType& param2) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, param2, this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, param1, param2, this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
             inline MultiType operator()(T* object, const MultiType& param1, const MultiType& param2, const MultiType& param3) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, this->defaultValue_[3], this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, param1, param2, param3, this->defaultValue_[3], this->defaultValue_[4]); }
             inline MultiType operator()(T* object, const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, param4, this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, param1, param2, param3, param4, this->defaultValue_[4]); }
             inline MultiType operator()(T* object, const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, param4, param5); }
+                { return (*this->functorMember_)(object, param1, param2, param3, param4, param5); }
 
 
             inline MultiType operator()(const T* object) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, this->defaultValue_[0], this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, this->defaultValue_[0], this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
             inline MultiType operator()(const T* object, const MultiType& param1) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, param1, this->defaultValue_[1], this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
             inline MultiType operator()(const T* object, const MultiType& param1, const MultiType& param2) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, param2, this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, param1, param2, this->defaultValue_[2], this->defaultValue_[3], this->defaultValue_[4]); }
             inline MultiType operator()(const T* object, const MultiType& param1, const MultiType& param2, const MultiType& param3) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, this->defaultValue_[3], this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, param1, param2, param3, this->defaultValue_[3], this->defaultValue_[4]); }
             inline MultiType operator()(const T* object, const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, param4, this->defaultValue_[4]); }
+                { return (*this->functorMember_)(object, param1, param2, param3, param4, this->defaultValue_[4]); }
             inline MultiType operator()(const T* object, const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5) const
-                { return (*((FunctorMember<T>*)this->functor_))(object, param1, param2, param3, param4, param5); }
+                { return (*this->functorMember_)(object, param1, param2, param3, param4, param5); }
 
             inline void setObject(T* object) const
-                { ((FunctorMember<T>*)this->functor_)->setObject(object); }
+                { this->functorMember_->setObject(object); }
             inline void setObject(const T* object) const
-                { ((FunctorMember<T>*)this->functor_)->setObject(object); }
+                { this->functorMember_->setObject(object); }
 
             using Executor::parse;
 
             MultiType parse(T* object, const std::string& params, bool* success = 0, const std::string& delimiter = " ") const
             {
-                FunctorMember<T>* functorMember = static_cast<FunctorMember<T>*>(this->functor_);
+                const typename FunctorMember<T>::Objects& objects = this->functorMember_->getObjects();
 
-                const typename FunctorMember<T>::Objects& objects = functorMember->getObjects();
-
-                functorMember->setObject(object);
+                this->functorMember_->setObject(object);
                 const MultiType& result = Executor::parse(params, success, delimiter);
-                functorMember->setObjects(objects);
+                this->functorMember_->setObjects(objects);
 
                 return result;
             }
 
             MultiType parse(const T* object, const std::string& params, bool* success = 0, const std::string& delimiter = " ") const
             {
-                FunctorMember<T>* functorMember = static_cast<FunctorMember<T>*>(this->functor_);
+                const typename FunctorMember<T>::Objects& objects = this->functorMember_->getObjects();
 
-                const typename FunctorMember<T>::Objects& objects = functorMember->getObjects();
-
-                functorMember->setObject(object);
+                this->functorMember_->setObject(object);
                 const MultiType& result = Executor::parse(params, success, delimiter);
-                functorMember->setObjects(objects);
+                this->functorMember_->setObjects(objects);
 
                 return result;
             }
+
+        protected:
+            FunctorMemberPtr<T> functorMember_;
     };
 
-    inline Executor* createExecutor(Functor* functor, const std::string& name = "")
+    inline Executor* createExecutor(const FunctorPtr& functor, const std::string& name = "")
     {
         return new Executor(functor, name);
     }
 
     template <class T>
-    inline ExecutorMember<T>* createExecutor(FunctorMember<T>* functor, const std::string& name = "")
+    inline ExecutorMember<T>* createExecutor(const FunctorMemberPtr<T>& functor, const std::string& name = "")
     {
         return new ExecutorMember<T>(functor, name);
     }
 
-    inline ExecutorStatic* createExecutor(FunctorStatic* functor, const std::string& name = "")
+    inline ExecutorStatic* createExecutor(const FunctorStaticPtr& functor, const std::string& name = "")
     {
         return new ExecutorStatic(functor, name);
     }

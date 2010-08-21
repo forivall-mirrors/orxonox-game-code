@@ -195,7 +195,7 @@ namespace orxonox
             mbool                   bActive_;                  //!< True = the object is active
             mbool                   bVisible_;                 //!< True = the object is visible
             std::string             mainStateName_;
-            Functor*                mainStateFunctor_;
+            FunctorPtr              mainStateFunctor_;
             std::set<std::string>   networkTemplateNames_;
 
         private:

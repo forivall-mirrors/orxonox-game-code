@@ -88,8 +88,6 @@ namespace orxonox
 
     class _CoreExport Functor
     {
-        friend class SharedPtr<Functor>;
-
         public:
             struct Type
             {
@@ -214,7 +212,7 @@ namespace orxonox
 
 
 
-    inline Functor* createFunctor(Functor* functor)
+    inline const FunctorPtr& createFunctor(const FunctorPtr& functor)
     {
         return functor;
     }
@@ -423,7 +421,7 @@ namespace orxonox
     \
     \
     FUNCTOR_TEMPLATE(0, returnvalue, numparams, 0) \
-    inline FunctorStatic##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(0, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams))) \
+    inline SharedChildPtr<FunctorStatic##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(0, returnvalue, numparams), FunctorStaticPtr> createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams))) \
     { \
         return new FunctorStatic##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(0, returnvalue, numparams) (functionPointer); \
     }
@@ -516,20 +514,20 @@ namespace orxonox
     \
     \
     FUNCTOR_TEMPLATE(1, returnvalue, numparams, 0) \
-    inline FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams))) \
+    inline SharedChildPtr<FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams), FunctorMemberPtr<T> > createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams))) \
     { \
         return new FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams) (functionPointer); \
     } \
     \
     \
     FUNCTOR_TEMPLATE(1, returnvalue, numparams, 0) \
-    inline FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)) const) \
+    inline SharedChildPtr<FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams), FunctorMemberPtr<T> > createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)) const) \
     { \
         return new FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams) (functionPointer); \
     } \
     \
     FUNCTOR_TEMPLATE(1, returnvalue, numparams, 1) \
-    inline FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)), O* object) \
+    inline SharedChildPtr<FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams), FunctorMemberPtr<T> > createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)), O* object) \
     { \
         FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* functor = new FunctorMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams) (functionPointer); \
         functor->setObject(object); \
@@ -538,7 +536,7 @@ namespace orxonox
     \
     \
     FUNCTOR_TEMPLATE(1, returnvalue, numparams, 1) \
-    inline FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)) const, O* object) \
+    inline SharedChildPtr<FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams), FunctorMemberPtr<T> > createFunctor(FUNCTOR_FUNCTION_RETURNVALUE(returnvalue) (T::*functionPointer)(FUNCTOR_FUNCTION_PARAMS(numparams)) const, O* object) \
     { \
         FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams)* functor = new FunctorConstMember##returnvalue##numparams FUNCTOR_TEMPLATE_CLASSES(1, returnvalue, numparams) (functionPointer); \
         functor->setObject(object); \
