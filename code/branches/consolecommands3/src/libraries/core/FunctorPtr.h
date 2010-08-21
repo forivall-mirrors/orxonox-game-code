@@ -36,24 +36,28 @@ namespace orxonox
 {
     typedef SharedPtr<Functor> FunctorPtr;
 
-    typedef SharedPtr<FunctorStatic> FunctorStaticPtr;
+    typedef SharedChildPtr<FunctorStatic, FunctorPtr> FunctorStaticPtr;
 
     template <class T>
-    class FunctorMemberPtr : public SharedPtr<FunctorMember<T> >
+    class FunctorMemberPtr : public SharedChildPtr<FunctorMember<T>, FunctorPtr>
     {
         public:
-            inline FunctorMemberPtr() : SharedPtr<FunctorMember<T> >() {}
-            inline FunctorMemberPtr(FunctorMember<T>* pointer) : SharedPtr<FunctorMember<T> >(pointer) {}
-//            inline FunctorMemberPtr(const FunctorMemberPtr& other) : SharedPtr<FunctorMember<T> >(other) {}
-            template <class O>
-            inline FunctorMemberPtr(const SharedPtr<O>& other) : SharedPtr<FunctorMember<T> >(other) {}
+            inline FunctorMemberPtr() : SharedChildPtr<FunctorMember<T>, FunctorPtr>() {}
+            inline FunctorMemberPtr(FunctorMember<T>* pointer) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(pointer) {}
+//            inline FunctorMemberPtr(const FunctorMemberPtr& other) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(other) {}
+//            template <class O>
+//            inline FunctorMemberPtr(const SharedPtr<O>& other) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(other) {}
+//            template <class O>
+//            inline FunctorMemberPtr(const SharedChildPtr<O, FunctorMember<T> >& other) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(other) {}
+            inline FunctorMemberPtr(const SharedPtr<FunctorMember<T> >& other) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(other) {}
+
 /*
-            inline const FunctorMemberPtr& operator=(const FunctorMemberPtr& other) { this->SharedPtr<FunctorMember<T> >::operator=(other); return *this; }
+            inline const FunctorMemberPtr& operator=(const FunctorMemberPtr& other) { this->SharedChildPtr<FunctorMember<T>, FunctorPtr>::operator=(other); return *this; }
             template <class O>
-            inline const FunctorMemberPtr& operator=(const SharedPtr<O>& other) { this->SharedPtr<FunctorMember<T> >::operator=(other); return *this; }
+            inline const FunctorMemberPtr& operator=(const SharedPtr<O>& other) { this->SharedChildPtr<FunctorMember<T>, FunctorPtr>::operator=(other); return *this; }
 */
         private:
-//            inline FunctorMemberPtr(FunctorMember<T>* pointer, int* counter) : SharedPtr<FunctorMember<T> >(pointer, counter) {}
+//            inline FunctorMemberPtr(FunctorMember<T>* pointer, int* counter) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(pointer, counter) {}
     };
 /*
     typedef SharedChildPtr<FunctorStatic, Functor> FunctorStaticPtr;

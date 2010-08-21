@@ -36,36 +36,16 @@ namespace orxonox
 {
     typedef SharedPtr<Executor> ExecutorPtr;
 
-    typedef SharedPtr<ExecutorStatic> ExecutorStaticPtr;
+    typedef SharedChildPtr<ExecutorStatic, ExecutorPtr> ExecutorStaticPtr;
 
     template <class T>
-    class ExecutorMemberPtr : public SharedPtr<ExecutorMember<T> >
+    class ExecutorMemberPtr : public SharedChildPtr<ExecutorMember<T>, ExecutorPtr>
     {
         public:
-            inline ExecutorMemberPtr() : SharedPtr<ExecutorMember<T> >() {}
-            inline ExecutorMemberPtr(ExecutorMember<T>* pointer) : SharedPtr<ExecutorMember<T> >(pointer) {}
-//            inline ExecutorMemberPtr(const ExecutorMemberPtr& other) : SharedPtr<ExecutorMember<T> >(other) {}
-            template <class O>
-            inline ExecutorMemberPtr(const SharedPtr<O>& other) : SharedPtr<ExecutorMember<T> >(other) {}
-/*
-            inline const ExecutorMemberPtr& operator=(const ExecutorMemberPtr& other) { this->SharedPtr<ExecutorMember<T> >::operator=(other); return *this; }
-            template <class O>
-            inline const ExecutorMemberPtr& operator=(const SharedPtr<O>& other) { this->SharedPtr<ExecutorMember<T> >::operator=(other); return *this; }
-*/
-        private:
-//            inline ExecutorMemberPtr(ExecutorMember<T>* pointer, int* counter) : SharedPtr<ExecutorMember<T> >(pointer, counter) {}
+            inline ExecutorMemberPtr() : SharedChildPtr<ExecutorMember<T>, ExecutorPtr>() {}
+            inline ExecutorMemberPtr(ExecutorMember<T>* pointer) : SharedChildPtr<ExecutorMember<T>, ExecutorPtr>(pointer) {}
+            inline ExecutorMemberPtr(const SharedPtr<ExecutorMember<T> >& other) : SharedChildPtr<ExecutorMember<T>, ExecutorPtr>(other) {}
     };
-/*
-    typedef SharedChildPtr<ExecutorStatic, Executor> ExecutorStaticPtr;
-
-    template <class T>
-    class ExecutorMemberPtr : public SharedChildPtr<ExecutorMember<T>, Executor>
-    {
-        public:
-            inline ExecutorMemberPtr() : SharedChildPtr<ExecutorMember<T>, Executor>() {}
-            inline ExecutorMemberPtr(ExecutorMember<T>* pointer) : SharedChildPtr<ExecutorMember<T>, Executor>(pointer) {}
-    };
-*/
 }
 
 #endif /* _ExecutorPtr_H__ */

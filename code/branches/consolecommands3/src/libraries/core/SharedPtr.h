@@ -31,6 +31,7 @@
 
 #include "CorePrereqs.h"
 #include <algorithm>
+#include <cassert>
 
 namespace orxonox
 {
@@ -167,19 +168,24 @@ namespace orxonox
             int* counter_;
             SharedPtrDestroyer* destroyer_;
     };
-/*
+
     template <class T, class Parent>
-    class SharedChildPtr : public SharedPtr<Parent>
+    class SharedChildPtr : public Parent
     {
         public:
-            inline SharedChildPtr() : SharedPtr<Parent>() {}
-            inline SharedChildPtr(T* pointer) : SharedPtr<Parent>(pointer) {}
-            inline SharedChildPtr(const SharedChildPtr& other) : SharedPtr<Parent>(other) {}
-            inline const SharedChildPtr& operator=(const SharedChildPtr& other) { SharedPtr<Parent>::operator=(other); return *this; }
-            inline T* operator->() const { return static_cast<T*>(SharedPtr<Parent>::operator->()); }
-            inline T& operator*() const { return *static_cast<T*>(SharedPtr<Parent>::operator->()); }
+            inline SharedChildPtr() : Parent() {}
+            inline SharedChildPtr(T* pointer) : Parent(pointer) {}
+//            inline SharedChildPtr(const SharedChildPtr& other) : Parent(other) {}
+//            template <class O>
+//            inline SharedChildPtr(const SharedChildPtr<O, T>& other) : Parent(other) {}
+            inline SharedChildPtr(const SharedPtr<T>& other) : Parent(other) {}
+
+//            inline const SharedChildPtr& operator=(const SharedChildPtr& other) { Parent::operator=(other); return *this; }
+
+            inline T* operator->() const { return static_cast<T*>(Parent::operator->()); }
+            inline T& operator*() const { return *static_cast<T*>(Parent::operator->()); }
     };
-*/
+
 }
 
 #endif /* _SharedPtr_H__ */

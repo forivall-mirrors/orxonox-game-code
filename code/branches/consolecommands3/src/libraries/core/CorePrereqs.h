@@ -234,6 +234,9 @@ namespace orxonox
     class SimpleCommand;
 }
 
+#include "FunctorPtr.h"
+#include "ExecutorPtr.h"
+
 // CppTcl
 namespace Tcl
 {
