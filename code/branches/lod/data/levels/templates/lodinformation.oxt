@@ -1,8 +1,0 @@
-<Template name=lodtemplate_default>
-  <Level>
-	<lodinformation>
-	  <MeshLodInformation mesh=Carrier.mesh lodQuality=1.8 />
-	  <MeshLodInformation mesh=assff.mesh lodQuality=3 />
-	</lodinformation>
-  </Level>
-</Template>
