@@ -30,50 +30,105 @@
 #define _SharedPtr_H__
 
 #include "CorePrereqs.h"
+#include <algorithm>
 
 namespace orxonox
 {
+    class SharedPtrDestroyer
+    {
+        public:
+            virtual void destroy() = 0;
+    };
+
+    template <class T>
+    class SharedPtrDestroyerImpl : public SharedPtrDestroyer
+    {
+        public:
+            SharedPtrDestroyerImpl(T* pointer) : pointer_(pointer) {}
+
+            void destroy()
+            {
+//                COUT(0) << "delete " << this->pointer_ << std::endl;
+                delete this->pointer_;
+            }
+
+        private:
+            T* pointer_;
+    };
+
     template <class T>
     class SharedPtr
     {
+        template <class O>
+        friend class SharedPtr;
+
         public:
-            inline SharedPtr() : pointer_(0)
+            inline SharedPtr() : pointer_(0), counter_(0), destroyer_(0)
             {
 //                COUT(0) << "SharedPtr (1): " << this->pointer_ << std::endl;
             }
 
-            inline SharedPtr(T* pointer) : pointer_(pointer)
+            inline SharedPtr(T* pointer) : pointer_(pointer), counter_(0), destroyer_(0)
             {
 //                COUT(0) << "SharedPtr (2): " << this->pointer_ << std::endl;
                 if (this->pointer_)
-                    this->pointer_->incrementReferenceCount();
+                {
+                    this->counter_ = new int(1);
+                    this->destroyer_ = new SharedPtrDestroyerImpl<T>(this->pointer_);
+                }
             }
 
-            inline SharedPtr(const SharedPtr& other) : pointer_(other.pointer_)
+            inline SharedPtr(const SharedPtr& other) : pointer_(other.pointer_), counter_(other.counter_), destroyer_(other.destroyer_)
             {
 //                COUT(0) << "SharedPtr (3): " << this->pointer_ << std::endl;
                 if (this->pointer_)
-                    this->pointer_->incrementReferenceCount();
+                    ++(*this->counter_);
+            }
+
+            template <class O>
+            inline SharedPtr(const SharedPtr<O>& other) : pointer_(other.pointer_), counter_(other.counter_), destroyer_(other.destroyer_)
+            {
+//                COUT(0) << "SharedPtr (4): " << this->pointer_ << std::endl;
+                if (this->pointer_)
+                    ++(*this->counter_);
             }
 
             inline ~SharedPtr()
             {
 //                COUT(0) << "~SharedPtr: " << this->pointer_ << std::endl;
                 if (this->pointer_)
-                    this->pointer_->decrementReferenceCount();
+                {
+                    --(*this->counter_);
+
+                    if (*this->counter_ == 0)
+                    {
+                        this->destroyer_->destroy();
+                        delete this->destroyer_;
+                        delete this->counter_;
+                    }
+                }
             }
 
             inline const SharedPtr& operator=(const SharedPtr& other)
             {
-//                COUT(0) << "SharedPtr=" << std::endl;
+//                COUT(0) << "SharedPtr= (1)" << std::endl;
                 SharedPtr(other).swap(*this);
                 return *this;
             }
 
-            inline void cast(const SharedPtr& other)
+            template <class O>
+            inline const SharedPtr& operator=(const SharedPtr<O>& other)
             {
-//                COUT(0) << "SharedPtr cast" << std::endl;
+//                COUT(0) << "SharedPtr= (2)" << std::endl;
                 SharedPtr(other).swap(*this);
+                return *this;
+            }
+
+            template <class O>
+            inline SharedPtr<O> cast() const
+            {
+                O* temp = static_cast<O*>(this->pointer_); // temp value for prettier compiler error in case of an invalid static_cast
+                return SharedPtr<O>(temp, this->counter_, this->destroyer_);
             }
 
             inline T* operator->() const
@@ -95,15 +150,24 @@ namespace orxonox
 
             inline void swap(SharedPtr& other)
             {
-                T* temp = this->pointer_;
-                this->pointer_ = other.pointer_;
-                other.pointer_ = temp;
+                std::swap(this->pointer_, other.pointer_);
+                std::swap(this->counter_, other.counter_);
+                std::swap(this->destroyer_, other.destroyer_);
             }
 
         private:
-            T* pointer_;
-    };
+            inline SharedPtr(T* pointer, int* counter, SharedPtrDestroyer* destroyer) : pointer_(pointer), counter_(counter), destroyer_(destroyer)
+            {
+//                COUT(0) << "SharedPtr (5): " << this->pointer_ << std::endl;
+                if (this->pointer_)
+                    ++(*this->counter_);
+            }
 
+            T* pointer_;
+            int* counter_;
+            SharedPtrDestroyer* destroyer_;
+    };
+/*
     template <class T, class Parent>
     class SharedChildPtr : public SharedPtr<Parent>
     {
@@ -115,6 +179,7 @@ namespace orxonox
             inline T* operator->() const { return static_cast<T*>(SharedPtr<Parent>::operator->()); }
             inline T& operator*() const { return *static_cast<T*>(SharedPtr<Parent>::operator->()); }
     };
+*/
 }
 
 #endif /* _SharedPtr_H__ */

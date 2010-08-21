@@ -43,7 +43,6 @@ namespace orxonox
 
     Executor::Executor(Functor* functor, const std::string& name)
     {
-        this->references_ = 0;
         this->functor_ = functor;
         this->name_ = name;
         ++instances_s; COUT(0) << "executor ++: " << instances_s << std::endl;
