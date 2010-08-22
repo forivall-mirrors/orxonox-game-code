@@ -18,6 +18,7 @@
  #
 
 SET_SOURCE_FILES(CORE_SRC_FILES
+  CommandLineParser.cc
   ConfigValueContainer.cc
   Core.cc
   DynLib.cc
@@ -28,7 +29,6 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   GameState.cc
   GraphicsManager.cc
   GUIManager.cc
-  IOConsole.cc
   Language.cc
   LuaState.cc
   ObjectListBase.cc
@@ -36,14 +36,6 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Resource.cc
   ScopedSingletonManager.cc
   WindowEventListener.cc
-
-  # command
-  CommandEvaluation.cc
-  CommandExecutor.cc
-  CommandLineParser.cc
-  ConsoleCommand.cc
-  ConsoleCommandCompilation.cc
-  Executor.cc
 
   # hierarchy
   Identifier.cc
@@ -59,13 +51,8 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   XMLPort.cc
   XMLNameListener.cc
 
-  # shell
-  IRC.cc
-  Shell.cc
-  TclBind.cc
-
 COMPILATION_BEGIN FilesystemCompilation.cc
-  ArgumentCompletionFunctions.cc
+  command/ArgumentCompletionFunctions.cc
   ConfigFileManager.cc
   MemoryArchive.cc
   PathConfig.cc
@@ -74,17 +61,18 @@ COMPILATION_END
   # multithreading
   ThreadPool.cc
 COMPILATION_BEGIN ThreadCompilation.cc
-  TclThreadManager.cc
+  command/TclThreadManager.cc
   Thread.cc
 COMPILATION_END
 )
 
+ADD_SUBDIRECTORY(command)
 ADD_SUBDIRECTORY(input)
 
 ORXONOX_ADD_LIBRARY(core
   FIND_HEADER_FILES
   TOLUA_FILES
-    CommandExecutor.h
+    command/CommandExecutor.h
     ConfigFileManager.h
     Game.h
     GameMode.h
