@@ -30,8 +30,8 @@
 #define _EventIncludes_H__
 
 #include "CorePrereqs.h"
-#include "Executor.h"
 #include "XMLPort.h"
+#include "command/Executor.h"
 
 /**
     @brief Defines a new event state (a state of the object which can be changed by events).

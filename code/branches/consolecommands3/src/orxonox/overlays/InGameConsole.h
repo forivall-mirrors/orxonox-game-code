@@ -36,8 +36,8 @@
 
 #include "util/OgreForwardRefs.h"
 #include "util/Singleton.h"
-#include "core/Shell.h"
 #include "core/WindowEventListener.h"
+#include "core/command/Shell.h"
 
 namespace orxonox
 {

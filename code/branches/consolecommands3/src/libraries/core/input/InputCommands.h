@@ -36,7 +36,7 @@
 #define _InputCommands_H__
 
 #include "InputPrereqs.h"
-#include "core/CommandEvaluation.h"
+#include "core/command/CommandEvaluation.h"
 
 namespace orxonox
 {

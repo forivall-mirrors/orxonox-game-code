@@ -43,7 +43,7 @@
         };
 
     source.cc:
-        include "core/Executor.h"
+        #include "core/command/Executor.h"
 
         ClassName::ClassName()
         {
@@ -62,8 +62,8 @@
 
 #include "tools/ToolsPrereqs.h"
 
-#include "core/Executor.h"
 #include "core/OrxonoxClass.h"
+#include "core/command/Executor.h"
 #include "tools/interfaces/TimeFactorListener.h"
 
 namespace orxonox

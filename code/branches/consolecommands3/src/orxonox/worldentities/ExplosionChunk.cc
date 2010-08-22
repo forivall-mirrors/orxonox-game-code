@@ -29,8 +29,8 @@
 #include "ExplosionChunk.h"
 
 #include "core/CoreIncludes.h"
-#include "core/Executor.h"
 #include "core/GameMode.h"
+#include "core/command/Executor.h"
 #include "util/Exception.h"
 #include "Scene.h"
 #include "tools/ParticleInterface.h"

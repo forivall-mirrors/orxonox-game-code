@@ -38,9 +38,9 @@
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
-#include "core/ConsoleCommand.h"
 #include "core/LuaState.h"
 #include "core/ScopedSingletonManager.h"
+#include "core/command/ConsoleCommand.h"
 #include "infos/PlayerInfo.h"
 #include "overlays/GUIOverlay.h"
 

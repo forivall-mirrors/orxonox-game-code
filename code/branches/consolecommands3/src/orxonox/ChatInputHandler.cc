@@ -28,10 +28,10 @@
 
 #include "ChatInputHandler.h"
 #include <core/ScopedSingletonManager.h>
-#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/CorePrereqs.h"
+#include "core/command/ConsoleCommand.h"
 #include <CEGUIWindow.h>
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>

@@ -11,7 +11,7 @@
 #include "core/GraphicsManager.h"
 #include "core/PathConfig.h"
 #include "core/ScopedSingletonManager.h"
-#include "core/ConsoleCommand.h"
+#include "core/command/ConsoleCommand.h"
 
 #include "CameraManager.h"
 #include "graphics/Camera.h"

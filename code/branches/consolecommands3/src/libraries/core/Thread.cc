@@ -35,7 +35,7 @@
 #include <boost/thread/thread_time.hpp>
 
 #include "util/Sleep.h"
-#include "Executor.h"
+#include "command/Executor.h"
 
 namespace orxonox
 {

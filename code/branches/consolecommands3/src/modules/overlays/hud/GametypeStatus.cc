@@ -29,8 +29,8 @@
 #include "GametypeStatus.h"
 
 #include "util/Convert.h"
-#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
+#include "core/command/ConsoleCommand.h"
 #include "infos/GametypeInfo.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/ControllableEntity.h"

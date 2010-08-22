@@ -46,10 +46,10 @@
 #include "util/ScopeGuard.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/ConsoleCommand.h"
 #include "core/CommandLineParser.h"
-#include "core/Functor.h"
 #include "core/GraphicsManager.h"
+#include "core/command/ConsoleCommand.h"
+#include "core/command/Functor.h"
 
 #include "InputBuffer.h"
 #include "JoyStick.h"

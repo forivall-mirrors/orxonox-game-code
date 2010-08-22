@@ -31,8 +31,8 @@
 #include <cassert>
 #include <string>
 
-#include "core/ConsoleCommand.h"
 #include "core/ObjectList.h"
+#include "core/command/ConsoleCommand.h"
 #include "ChatListener.h"
 
 namespace orxonox {

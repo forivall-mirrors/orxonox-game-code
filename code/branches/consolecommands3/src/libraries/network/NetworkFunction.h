@@ -38,8 +38,8 @@
 #include <boost/preprocessor/cat.hpp>
 #include <boost/static_assert.hpp>
 
-#include "core/Functor.h"
 #include "core/Identifier.h"
+#include "core/command/Functor.h"
 #include "FunctionCallManager.h"
 #include "synchronisable/Synchronisable.h"
 

@@ -35,7 +35,7 @@
 
 #include <cassert>
 #include "OrxonoxClass.h"
-#include "Functor.h"
+#include "command/Functor.h"
 
 namespace orxonox
 {

@@ -53,7 +53,6 @@
 #include "util/Scope.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
-#include "CommandExecutor.h"
 #include "CommandLineParser.h"
 #include "ConfigFileManager.h"
 #include "ConfigValueIncludes.h"
@@ -64,11 +63,12 @@
 #include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
-#include "IOConsole.h"
 #include "LuaState.h"
 #include "ScopedSingletonManager.h"
-#include "TclBind.h"
-#include "TclThreadManager.h"
+#include "command/CommandExecutor.h"
+#include "command/IOConsole.h"
+#include "command/TclBind.h"
+#include "command/TclThreadManager.h"
 #include "input/InputManager.h"
 
 namespace orxonox

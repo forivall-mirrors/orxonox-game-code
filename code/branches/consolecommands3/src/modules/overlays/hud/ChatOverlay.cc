@@ -35,7 +35,7 @@
 #include "util/DisplayStringConversions.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Executor.h"
+#include "core/command/Executor.h"
 
 #include "tools/Timer.h"
 #include "infos/PlayerInfo.h"

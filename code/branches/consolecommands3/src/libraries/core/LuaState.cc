@@ -38,9 +38,9 @@ extern "C" {
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/ScopeGuard.h"
-#include "IOConsole.h"
 #include "Resource.h"
 #include "ToluaBindCore.h"
+#include "command/IOConsole.h"
 
 namespace orxonox
 {

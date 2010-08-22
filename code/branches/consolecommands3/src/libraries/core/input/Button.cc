@@ -38,9 +38,9 @@
 #include "util/SubString.h"
 #include "util/StringUtils.h"
 #include "util/Debug.h"
-#include "core/ConsoleCommand.h"
-#include "core/CommandEvaluation.h"
-#include "core/CommandExecutor.h"
+#include "core/command/ConsoleCommand.h"
+#include "core/command/CommandEvaluation.h"
+#include "core/command/CommandExecutor.h"
 #include "core/ConfigFileManager.h"
 
 namespace orxonox

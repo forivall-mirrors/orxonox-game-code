@@ -30,8 +30,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Executor.h"
 #include "core/GameMode.h"
+#include "core/command/Executor.h"
 #include "objects/collisionshapes/SphereCollisionShape.h"
 #include "worldentities/pawns/Pawn.h"
 #include "graphics/ParticleSpawner.h"

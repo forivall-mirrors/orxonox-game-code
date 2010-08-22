@@ -51,7 +51,6 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "ConsoleCommand.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "Game.h"
@@ -61,6 +60,7 @@
 #include "PathConfig.h"
 #include "WindowEventListener.h"
 #include "XMLFile.h"
+#include "command/ConsoleCommand.h"
 
 namespace orxonox
 {

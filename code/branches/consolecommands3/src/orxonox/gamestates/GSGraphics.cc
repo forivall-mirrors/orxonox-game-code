@@ -34,10 +34,10 @@
 
 #include "GSGraphics.h"
 
-#include "core/CommandExecutor.h"
-#include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GUIManager.h"
+#include "core/command/ConsoleCommand.h"
+#include "core/command/CommandExecutor.h"
 
 namespace orxonox
 {

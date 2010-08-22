@@ -115,8 +115,6 @@ namespace orxonox
 {
     typedef std::string LanguageEntryLabel;
 
-    class ArgumentCompleter;
-    class ArgumentCompletionListElement;
     class BaseObject;
     template <class T>
     class ClassFactory;
@@ -126,7 +124,6 @@ namespace orxonox
     class ClassTreeMaskIterator;
     class ClassTreeMaskNode;
     class ClassTreeMaskObjectIterator;
-    class CommandEvaluation;
     class CommandLineParser;
     class CommandLineArgument;
     class ConfigFile;
@@ -136,21 +133,12 @@ namespace orxonox
     class ConfigFileManager;
     class ConfigFileSection;
     class ConfigValueContainer;
-    class ConsoleCommand;
     class Core;
     class DynLib;
     class DynLibManager;
     struct Event;
     class EventState;
-    class Executor;
-    template <class T>
-    class ExecutorMember;
-    class ExecutorStatic;
     class Factory;
-    class Functor;
-    template <class T>
-    class FunctorMember;
-    class FunctorStatic;
     class Game;
     class GameState;
     struct GameStateInfo;
@@ -158,8 +146,6 @@ namespace orxonox
     class GraphicsManager;
     class GUIManager;
     class Identifier;
-    class IOConsole;
-    class IRC;
     template <class T>
     class Iterator;
     class Language;
@@ -184,17 +170,10 @@ namespace orxonox
     class PathConfig;
     struct ResourceInfo;
     class SettingsConfigFile;
-    class Shell;
-    class ShellListener;
     template <class T>
     class SmartPtr;
     template <class T>
     class SubclassIdentifier;
-    class TclBind;
-    struct TclInterpreterBundle;
-    template <class T>
-    class TclThreadList;
-    class TclThreadManager;
     class Template;
     class Thread;
     class ThreadPool;
@@ -209,6 +188,29 @@ namespace orxonox
     class XMLPortClassParamContainer;
     class XMLPortObjectContainer;
     class XMLPortParamContainer;
+
+    // Command
+    class ArgumentCompleter;
+    class ArgumentCompletionListElement;
+    class CommandEvaluation;
+    class ConsoleCommand;
+    class Executor;
+    template <class T>
+    class ExecutorMember;
+    class ExecutorStatic;
+    class Functor;
+    template <class T>
+    class FunctorMember;
+    class FunctorStatic;
+    class IOConsole;
+    class IRC;
+    class Shell;
+    class ShellListener;
+    class TclBind;
+    struct TclInterpreterBundle;
+    template <class T>
+    class TclThreadList;
+    class TclThreadManager;
 
     // Input
     class BaseCommand;
@@ -235,8 +237,8 @@ namespace orxonox
     class SimpleCommand;
 }
 
-#include "FunctorPtr.h"
-#include "ExecutorPtr.h"
+#include "command/FunctorPtr.h"
+#include "command/ExecutorPtr.h"
 
 // CppTcl
 namespace Tcl
