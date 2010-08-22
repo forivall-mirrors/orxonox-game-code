@@ -30,8 +30,8 @@
 
 #include "util/Debug.h"
 #include "util/StringUtils.h"
+#include "core/Identifier.h"
 #include "ConsoleCommand.h"
-#include "Identifier.h"
 
 namespace orxonox
 {

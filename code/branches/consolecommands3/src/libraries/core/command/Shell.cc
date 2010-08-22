@@ -31,10 +31,10 @@
 #include "util/OutputHandler.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigFileManager.h"
+#include "core/ConfigValueIncludes.h"
 #include "CommandExecutor.h"
-#include "CoreIncludes.h"
-#include "ConfigFileManager.h"
-#include "ConfigValueIncludes.h"
 #include "ConsoleCommand.h"
 
 namespace orxonox

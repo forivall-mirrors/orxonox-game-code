@@ -36,9 +36,9 @@
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
+#include "core/PathConfig.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
-#include "PathConfig.h"
 #include "TclThreadManager.h"
 
 namespace orxonox

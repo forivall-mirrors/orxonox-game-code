@@ -30,7 +30,7 @@
 #ifndef _IOConsole_H__
 #define _IOConsole_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <sstream>
 #include <string>

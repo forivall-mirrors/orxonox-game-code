@@ -34,9 +34,9 @@
 
 #include "util/Convert.h"
 #include "util/StringUtils.h"
-#include "Identifier.h"
-#include "ConfigFileManager.h"
-#include "ConfigValueContainer.h"
+#include "core/Identifier.h"
+#include "core/ConfigFileManager.h"
+#include "core/ConfigValueContainer.h"
 #include "TclThreadManager.h"
 
 // Boost 1.36 has some issues with deprecated functions that have been omitted

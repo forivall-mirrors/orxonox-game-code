@@ -29,7 +29,7 @@
 #ifndef _CommandEvaluation_H__
 #define _CommandEvaluation_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <string>
 #include <list>

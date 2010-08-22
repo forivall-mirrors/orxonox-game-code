@@ -29,10 +29,10 @@
 #ifndef _IRC_H__
 #define _IRC_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <string>
-#include "OrxonoxClass.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {

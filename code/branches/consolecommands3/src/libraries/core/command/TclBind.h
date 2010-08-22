@@ -29,7 +29,7 @@
 #ifndef _TclBind_H__
 #define _TclBind_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cassert>
 #include <string>

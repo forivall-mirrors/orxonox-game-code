@@ -29,7 +29,7 @@
 #ifndef _CommandExecutor_H__
 #define _CommandExecutor_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <map>
 #include <set>

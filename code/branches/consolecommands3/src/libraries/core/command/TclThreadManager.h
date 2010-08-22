@@ -29,7 +29,7 @@
 #ifndef _TclThreadManager_H__
 #define _TclThreadManager_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cassert>
 #include <list>
@@ -37,7 +37,7 @@
 #include <string>
 
 #include "util/Singleton.h"
-#include "OrxonoxClass.h"
+#include "core/OrxonoxClass.h"
 
 struct Tcl_Interp;
 

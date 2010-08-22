@@ -29,7 +29,7 @@
 #ifndef _ArgumentCompleter_H__
 #define _ArgumentCompleter_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 #include "ArgumentCompletionListElement.h"
 
 namespace orxonox

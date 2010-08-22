@@ -32,7 +32,7 @@
 
 #include <typeinfo>
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include "util/Convert.h"
 #include "util/Debug.h"

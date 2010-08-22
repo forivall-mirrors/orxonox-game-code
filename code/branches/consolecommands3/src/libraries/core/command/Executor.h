@@ -30,7 +30,7 @@
 #ifndef _Executor_H__
 #define _Executor_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <string>
 #include "util/MultiType.h"

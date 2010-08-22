@@ -29,17 +29,17 @@
 #ifndef _ConsoleCommand_H__
 #define _ConsoleCommand_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <stack>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
 
 #include "util/VA_NARGS.h"
+#include "core/Identifier.h"
 #include "ArgumentCompletionFunctions.h"
 #include "CommandExecutor.h"
 #include "Executor.h"
-#include "Identifier.h"
 
 
 #define SetConsoleCommand(classname, function, bCreateShortcut) \

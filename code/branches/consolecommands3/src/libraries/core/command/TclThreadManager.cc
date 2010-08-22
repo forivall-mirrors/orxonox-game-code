@@ -39,9 +39,9 @@
 #include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
+#include "core/CoreIncludes.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
-#include "CoreIncludes.h"
 #include "TclBind.h"
 #include "TclThreadList.h"
 

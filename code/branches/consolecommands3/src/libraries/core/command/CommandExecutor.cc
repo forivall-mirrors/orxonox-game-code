@@ -30,9 +30,9 @@
 
 #include "util/Debug.h"
 #include "util/StringUtils.h"
+#include "core/Identifier.h"
+#include "core/Language.h"
 #include "ConsoleCommand.h"
-#include "Identifier.h"
-#include "Language.h"
 #include "TclBind.h"
 
 namespace orxonox

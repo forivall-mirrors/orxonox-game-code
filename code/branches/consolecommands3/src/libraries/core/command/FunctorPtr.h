@@ -29,8 +29,8 @@
 #ifndef _FunctorPtr_H__
 #define _FunctorPtr_H__
 
-#include "CorePrereqs.h"
-#include "SharedPtr.h"
+#include "core/CorePrereqs.h"
+#include "core/SharedPtr.h"
 
 namespace orxonox
 {

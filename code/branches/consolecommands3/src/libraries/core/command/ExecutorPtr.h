@@ -29,8 +29,8 @@
 #ifndef _ExecutorPtr_H__
 #define _ExecutorPtr_H__
 
-#include "CorePrereqs.h"
-#include "SharedPtr.h"
+#include "core/CorePrereqs.h"
+#include "core/SharedPtr.h"
 
 namespace orxonox
 {

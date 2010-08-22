@@ -29,7 +29,7 @@
 #ifndef _Shell_H__
 #define _Shell_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <list>
 #include <sstream>
@@ -37,8 +37,8 @@
 #include <vector>
 
 #include "util/OutputHandler.h"
-#include "OrxonoxClass.h"
-#include "input/InputBuffer.h"
+#include "core/OrxonoxClass.h"
+#include "core/input/InputBuffer.h"
 
 namespace orxonox
 {

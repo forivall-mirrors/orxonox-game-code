@@ -29,7 +29,7 @@
 #ifndef _ArgumentCompletionFunctions_H__
 #define _ArgumentCompletionFunctions_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 #include "ArgumentCompleter.h"
 
 

@@ -29,7 +29,7 @@
 #include "ConsoleCommand.h"
 #include <cassert>
 
-#include "Language.h"
+#include "core/Language.h"
 
 namespace orxonox
 {
@@ -116,7 +116,7 @@ namespace orxonox
     }
 }
 
-#include "BaseObject.h" // remove this
+#include "core/BaseObject.h" // remove this
 
 namespace orxonox
 {
