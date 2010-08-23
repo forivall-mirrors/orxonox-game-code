@@ -30,7 +30,7 @@
 #define _FunctorPtr_H__
 
 #include "core/CorePrereqs.h"
-#include "core/SharedPtr.h"
+#include "util/SharedPtr.h"
 
 namespace orxonox
 {

@@ -29,7 +29,7 @@
 #ifndef _SharedPtr_H__
 #define _SharedPtr_H__
 
-#include "CorePrereqs.h"
+#include "UtilPrereqs.h"
 #include <algorithm>
 #include <cassert>
 
