@@ -156,81 +156,143 @@ namespace orxonox
         return it->second;
     }
 
+    /**
+    @brief
+        Get the PickupRepresentation of an input Pickupable.
+        This method spares us the hassle to export the PickupIdentifier class to lua.
+    @param pickup
+        The Pickupable whose PickupRepresentation should be returned.
+    @return
+        Returns the PickupRepresentation of the input Pickupable or NULL if an error occurred.
+    */
+    orxonox::PickupRepresentation* PickupManager::getPickupRepresentation(orxonox::Pickupable* pickup)
+    {
+        if(pickup != NULL)
+            return this->getRepresentation(pickup->getPickupIdentifier());
+        
+        return NULL;
+    }
+
+    /**
+    @brief
+        Update the list of picked up Pickupables and get the number of Pickupables in the list.
+        This method is used in lua to populate the PickupInventory. The intended usage is to call this method to update the list of Pickupables and then use popPickup() to get the individual Pickupables.
+    @return
+        Returns the number of the players picked up Pickupables.
+    */
     int PickupManager::getNumPickups(void)
     {
-        this->pickupsList_.clear();
+        this->pickupsList_.clear(); // Clear the list if Pickupables.
 
         PlayerInfo* player = GUIManager::getInstance().getPlayer(PickupManager::guiName_s);
         PickupCarrier* carrier = NULL;
         if (player != NULL)
-            carrier =  dynamic_cast<PickupCarrier*>(player->getControllableEntity());
+            carrier =  orxonox_cast<PickupCarrier*>(player->getControllableEntity());
         else
             return 0;
 
-        std::vector<PickupCarrier*>* carriers = this->getAllCarriers(carrier);
+        std::vector<PickupCarrier*>* carriers = this->getAllCarriers(carrier); // Get a list of all the entities which carry the players Pickupables.
+        // Iterate through all the carriers and add their Pickupable to the list.
         for(std::vector<PickupCarrier*>::iterator it = carriers->begin(); it != carriers->end(); it++)
         {
             std::set<Pickupable*> pickups = (*it)->getPickups();
             for(std::set<Pickupable*>::iterator pickup = pickups.begin(); pickup != pickups.end(); pickup++)
             {
                 CollectiblePickup* collectible = orxonox_cast<CollectiblePickup*>(*pickup);
+                // If the Pickupable is in a PickupCollection it is not added to the list and thus not displayed in the PickupInventory.
                 if(collectible == NULL || !collectible->isInCollection())
                     this->pickupsList_.insert(std::pair<Pickupable*, WeakPtr<Pickupable> >(*pickup, WeakPtr<Pickupable>(*pickup)));
             }
         }
         delete carriers;
 
-        this->pickupsIterator_ = this->pickupsList_.begin();
+        this->pickupsIterator_ = this->pickupsList_.begin(); //Set the iterator to the start of the list.
         return this->pickupsList_.size();
     }
 
-    std::vector<PickupCarrier*>* PickupManager::getAllCarriers(PickupCarrier* carrier)
+    /**
+    @brief
+        Helper method. Get all the PickupCarriers that carry Pickupables, recursively.
+    @param carrier
+        The PickupCarrier whose children should be added to the list of PickupCarriers.
+    @param carriers
+        The list of PickupCarriers, used in "recursive-mode".
+        For the first instance this is just NULL (which is default and can be omitted) upon which a new list is allocated.
+    @return
+        Returns the list of PickupCarriers.
+    */
+    std::vector<PickupCarrier*>* PickupManager::getAllCarriers(PickupCarrier* carrier, std::vector<PickupCarrier*>* carriers)
     {
-        //TODO: More efficiently.
-        std::vector<PickupCarrier*>* carriers = new std::vector<PickupCarrier*>();
-        carriers->insert(carriers->end(), carrier);
-        std::vector<PickupCarrier*>* children = carrier->getCarrierChildren();
+        if(carriers == NULL) // Create a new list if no list was passed.
+            carriers = new std::vector<PickupCarrier*>();
+
+        carriers->insert(carriers->end(), carrier); // Add the input PickupCarrier to the list.
+
+        std::vector<PickupCarrier*>* children = carrier->getCarrierChildren(); // Get the children of the input PickupCarrier.
+        // Iterate through the children and add them (and their children) to the list by recursively executing getAllCarriers().
         for(std::vector<PickupCarrier*>::iterator it = children->begin(); it != children->end(); it++)
-        {
-            std::vector<PickupCarrier*>* childrensChildren = this->getAllCarriers(*it);
-            for(std::vector<PickupCarrier*>::iterator it2 = childrensChildren->begin(); it2 != childrensChildren->end(); it2++)
-            {
-                carriers->insert(carriers->end(), *it2);
-            }
-            delete childrensChildren;
-        }
+            this->getAllCarriers(*it, carriers);
         delete children;
+
         return carriers;
     }
 
+    /**
+    @brief
+        Drop the input Pickupable.
+        This method checks whether the inout Pickupable still exists and drops it, if so.
+    @param pickup
+        The Pickupable to be dropped.
+    */
     void PickupManager::dropPickup(orxonox::Pickupable* pickup)
     {
-        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup);
-        if(pickup == NULL || it == this->pickupsList_.end() || it->second.get() == NULL)
+        if(pickup == NULL)
             return;
 
-        if(!pickup->isPickedUp())
+        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); // Get the WeakPointer of the Pickupable.
+        // If either the input Pickupable is not in the PickupManagers list or it no longer exists, the method returns.
+        if(it == this->pickupsList_.end() || it->second.get() == NULL)
             return;
 
-        PickupCarrier* carrier = pickup->getCarrier();
-        if(pickup != NULL && carrier != NULL)
-        {
-            pickup->drop(carrier);
-        }
+        pickup->drop(); // The Pickupable is dropped.
     }
 
+    /**
+    @brief
+        Use (or unuse) the input Pickupable.
+        This method checks whether the input Pickupable still exists and uses (or unuses) it, if so,
+    @param pickup
+        The Pickupable to be used (or unused).
+    @param use
+        If true the input Pickupable is used, if false it is unused.
+    */
     void PickupManager::usePickup(orxonox::Pickupable* pickup, bool use)
     {
-        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup);
-        if(pickup == NULL || it == this->pickupsList_.end() || it->second.get() == NULL)
+        if(pickup == NULL)
+            return;
+        
+        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); // Get the WeakPointer of the Pickupable.
+        // If either the input Pickupable is not in the PickupManagers list or it no longer exists, the method returns.
+        if(it == this->pickupsList_.end() || it->second.get() == NULL)
             return;
 
-        if(!pickup->isPickedUp())
-            return;
+        pickup->setUsed(use); // The Pickupable is used (or unused).
+    }
 
-        PickupCarrier* carrier = pickup->getCarrier();
-        if(pickup != NULL && carrier != NULL)
-            pickup->setUsed(use);
+    /**
+    @brief
+        Check whether the input Pickupable is valid, meaning that it is in the PickupManager's list and still exists.
+    @param pickup
+        The Pickupable.
+    @return
+        Returns true if the input Pickupable is still valid, false if not.
+    */
+    bool PickupManager::isValidPickup(orxonox::Pickupable* pickup)
+    {
+        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); // Get the WeakPointer of the Pickupable.
+        if(it == this->pickupsList_.end()) // If the Pickupable is not in the PickupManager's list.
+            return false;
+        return it->second.get() != NULL; // Returns whether the Pickupable still exists.
     }
 
 }
