@@ -51,7 +51,6 @@ namespace orxonox // tolua_export
     @brief
         Manages Pickupables.
         In essence has two tasks to fulfill. Firstly it must link Pickupables (through their PickupIdentifiers) and their PickupRepresentations. Secondly it manages the PickupInventory.
-        //TODO: Manage Pickup GUI.
     @author
         Damian 'Mozork' Frick
     */
@@ -71,26 +70,32 @@ namespace orxonox // tolua_export
             PickupRepresentation* getRepresentation(const PickupIdentifier* identifier); //!< Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
 
             // tolua_begin
-            int getNumPickups(void);
-            orxonox::Pickupable* popPickup(void) { return (this->pickupsIterator_++)->first; }
-            orxonox::PickupRepresentation* getPickupRepresentation(orxonox::Pickupable* pickup) { if(pickup != NULL) return this->getRepresentation(pickup->getPickupIdentifier()); return NULL; }
+            orxonox::PickupRepresentation* getPickupRepresentation(orxonox::Pickupable* pickup); //!< Get the PickupRepresentation of an input Pickupable.
 
-            void dropPickup(orxonox::Pickupable* pickup);
-            void usePickup(orxonox::Pickupable* pickup, bool use);
-            bool isValidPickup(orxonox::Pickupable* pickup) { std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); if(it == this->pickupsList_.end()) return false; return it->second.get() != NULL; }
+            int getNumPickups(void); //!< Update the list of picked up Pickupables and get the number of Pickupables in the list.
+            /**
+            @brief Get the next Pickupable in the list.
+                   Use this, after having called getNumPickups() to access all the Pickupables individually and in succession.
+            @return Returns the next Pickupable in the list.
+            */
+            orxonox::Pickupable* popPickup(void) { return (this->pickupsIterator_++)->first; }
+
+            void dropPickup(orxonox::Pickupable* pickup); //!< Drop the input Pickupable.
+            void usePickup(orxonox::Pickupable* pickup, bool use); //!< Use (or unuse) the input Pickupable.
+            bool isValidPickup(orxonox::Pickupable* pickup); //!< Check whether the input Pickupable is valid, meaning that it is in the PickupManager's list and still exists.
             // tolua_end
 
         private:
             static PickupManager* singletonPtr_s;
-            static const std::string guiName_s;
+            static const std::string guiName_s; //!< The name of the PickupInventory
 
             PickupRepresentation* defaultRepresentation_; //!< The default PickupRepresentation.
             std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types if Pickupables) and PickupRepresentations.
 
-            std::map<Pickupable*, WeakPtr<Pickupable> > pickupsList_;
-            std::map<Pickupable*, WeakPtr<Pickupable> >::iterator pickupsIterator_;
+            std::map<Pickupable*, WeakPtr<Pickupable> > pickupsList_; //!< A list of all the picked up Pickupables.
+            std::map<Pickupable*, WeakPtr<Pickupable> >::iterator pickupsIterator_; //!< An iterator pointing to the current Pickupable in pickupsList_.
 
-            std::vector<PickupCarrier*>* getAllCarriers(PickupCarrier* carrier);
+            std::vector<PickupCarrier*>* getAllCarriers(PickupCarrier* carrier, std::vector<PickupCarrier*>* carriers = NULL); //!< Helper method. Get all the PickupCarriers that carry Pickupables, recursively.
 
     }; // tolua_export
 
