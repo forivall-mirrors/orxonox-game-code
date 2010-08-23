@@ -28,9 +28,9 @@
 
 #include "MoodManager.h"
 
+#include "util/ScopedSingletonManager.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
-#include "core/ScopedSingletonManager.h"
 #include "core/Resource.h"
 
 namespace orxonox
@@ -47,7 +47,7 @@ namespace orxonox
 
         // Need to use a variable to store old data because ResetConfigValues() doesn't seem to work.
         oldMood_ = MoodManager::defaultMood_;
-        
+
         // Checking for the existence of the folder for the default mood
         const std::string& path = "ambient/" + MoodManager::defaultMood_ + "/.";
         if (!Resource::exists(path))

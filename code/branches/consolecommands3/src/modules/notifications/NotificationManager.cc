@@ -35,8 +35,8 @@
 
 #include <set>
 
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
-#include "core/ScopedSingletonManager.h"
 #include "Notification.h"
 #include "interfaces/NotificationListener.h"
 

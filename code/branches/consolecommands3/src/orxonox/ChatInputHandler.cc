@@ -27,7 +27,7 @@
  */
 
 #include "ChatInputHandler.h"
-#include <core/ScopedSingletonManager.h>
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/CorePrereqs.h"

@@ -34,7 +34,6 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   ObjectListBase.cc
   OrxonoxClass.cc
   Resource.cc
-  ScopedSingletonManager.cc
   WindowEventListener.cc
 
   # hierarchy

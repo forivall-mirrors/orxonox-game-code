@@ -8,9 +8,9 @@
 #include <OgreCamera.h>
 #include <OgreRoot.h>
 
+#include "util/ScopedSingletonManager.h"
 #include "core/GraphicsManager.h"
 #include "core/PathConfig.h"
-#include "core/ScopedSingletonManager.h"
 #include "core/command/ConsoleCommand.h"
 
 #include "CameraManager.h"

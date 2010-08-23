@@ -30,6 +30,7 @@ COMPILATION_BEGIN StableCompilation.cc
   CRC32.cc
   ExprParser.cc
   OutputHandler.cc
+  ScopedSingletonManager.cc
   SignalHandler.cc
   Sleep.cc
   SubString.cc

@@ -28,8 +28,8 @@
 
 #include "KeyDetector.h"
 
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
-#include "core/ScopedSingletonManager.h"
 #include "core/command/ConsoleCommand.h"
 #include "Button.h"
 #include "InputManager.h"

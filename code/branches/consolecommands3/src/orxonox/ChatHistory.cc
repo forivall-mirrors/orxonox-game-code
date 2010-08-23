@@ -27,7 +27,7 @@
  */
 
 #include "ChatHistory.h"
-#include <core/ScopedSingletonManager.h>
+#include "util/ScopedSingletonManager.h"
 
 #ifndef CHATTEST
 namespace orxonox

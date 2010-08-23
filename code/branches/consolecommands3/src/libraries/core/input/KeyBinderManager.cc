@@ -30,10 +30,10 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/ScopedSingletonManager.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/LuaState.h"
-#include "core/ScopedSingletonManager.h"
 #include "core/command/ConsoleCommand.h"
 #include "InputManager.h"
 #include "KeyDetector.h"

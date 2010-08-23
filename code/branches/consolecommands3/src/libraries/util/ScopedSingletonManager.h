@@ -29,7 +29,7 @@
 #ifndef __ScopedSingletonManager_H__
 #define __ScopedSingletonManager_H__
 
-#include "CorePrereqs.h"
+#include "UtilPrereqs.h"
 
 #include <cassert>
 #include <map>
@@ -43,7 +43,9 @@
 
 namespace orxonox
 {
-    class _CoreExport ScopedSingletonManager
+    class OrxonoxClass;
+
+    class _UtilExport ScopedSingletonManager
     {
         public:
             ScopedSingletonManager(const std::string& className, ScopeID::Value scope)

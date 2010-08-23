@@ -33,10 +33,10 @@
 #include <OgreRenderWindow.h>
 #include <OgreCamera.h>
 
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
-#include "core/ScopedSingletonManager.h"
 #include "core/command/ConsoleCommand.h"
 #include "core/command/CommandExecutor.h"
 #include "controllers/HumanController.h"
