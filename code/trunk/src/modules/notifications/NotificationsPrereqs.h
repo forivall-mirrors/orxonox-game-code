@@ -72,6 +72,7 @@ namespace orxonox
     
     //dispatchers
     class CommandNotification;
+    class SimpleNotification;
 }
 
 #endif /* _NotificationsPrereqs_H__ */

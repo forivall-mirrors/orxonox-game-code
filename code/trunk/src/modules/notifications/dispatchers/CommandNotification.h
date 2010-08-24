@@ -55,7 +55,7 @@ namespace orxonox {
             CommandNotification(BaseObject* creator); //!< Default Constructor.
             virtual ~CommandNotification(); //!< Destructor.
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a NotificationDispatcher object through XML.
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a CommandNotification object through XML.
 
             /**
             @brief Get the command, whose key is displayed.
