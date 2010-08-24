@@ -38,6 +38,18 @@
             </trigger>
         </events>
     </CommandNotification>
+
+    <SimpleNotification message="Awesome!!!">
+        <events>
+            <trigger>
+                <DistanceTrigger name=trigger position="0,0,100" distance=10 target="Pawn">
+                    <attached>
+                        <Billboard position="0,0,0" colour="1.0,0,1.0" material="Examples/Flare" />
+                    </attached>
+                </DistanceTrigger>
+            </trigger>
+        </events>
+    </SimpleNotification>
   
 <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
   <attached>
