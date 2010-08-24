@@ -114,13 +114,13 @@ namespace orxonox
 
         if (this->isUsed())
         {
-            if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() > 0.0f)
+            if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
             {
-                this->getTimer()->unpauseTimer();
+                this->durationTimer_.unpauseTimer();
             }
             else
             {
-                this->startPickupTimer(this->getDuration());
+                this->durationTimer_.setTimer(this->getDuration(), false, createExecutor(createFunctor(&InvisiblePickup::pickupTimerCallback, this)));
             }
 
             this->setInvisible(true);
@@ -130,13 +130,13 @@ namespace orxonox
         {
             this->setInvisible(false);
 
-            if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
+            if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration())
             {
                 this->Pickupable::destroy();
             }
             else
             {
-                this->getTimer()->pauseTimer();
+                this->durationTimer_.pauseTimer();
             }
         }
 
