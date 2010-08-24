@@ -132,20 +132,6 @@ namespace orxonox
 
             virtual bool createSpawner(void); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
 
-            bool startPickupTimer(float durationTime); //!< Starts the pickup duration timer.
-            /**
-            @brief Get your Timer.
-            @return Returns a pointer to the Timer.
-            */
-            inline Timer* getTimer(void)
-                { return &this->durationTimer_; }
-
-            /**
-            @brief The callback method for the Timer.
-                   Can be overloaded to implement desired functionality.
-            */
-            virtual void pickupTimerCallback(void) {}
-
             /**
             @brief Set the activation type of the pickup.
             @param type The activation type of the pickup.
@@ -164,9 +150,6 @@ namespace orxonox
 
         private:
             void initialize(void); //!< Initializes the member variables.
-
-            //TODO: Problems, when there are more Timers needed? Solutions?
-            Timer durationTimer_; //!< Timer at the disposal of each Class implementing Pickup.
 
             pickupActivationType::Value activationType_; //!< The activation type of the Pickup.
             pickupDurationType::Value durationType_; //!< The duration type of the pickup.

@@ -78,7 +78,7 @@ namespace orxonox {
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
 
-            virtual void pickupTimerCallback(void); //!< Function that gets called when timer ends.
+            void pickupTimerCallback(void); //!< Function that gets called when timer ends.
 
             void setDuration(float duration);
             void setSpeedAdd(float speedAdd);
@@ -87,6 +87,8 @@ namespace orxonox {
         private:
             void initialize(void); //!< Initializes the member variables.
             Engine* carrierToEngineHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
+
+            Timer durationTimer_; //!< Timer.
 
             float duration_; //!< The health that is transferred to the Pawn.
             float speedAdd_;

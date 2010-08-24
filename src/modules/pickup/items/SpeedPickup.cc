@@ -140,13 +140,13 @@ namespace orxonox
         //! If the pickup has transited to used.
         if(this->isUsed())
         {
-            if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() > 0.0f)
+            if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
             {
-                this->getTimer()->unpauseTimer();
+                this->durationTimer_.unpauseTimer();
             }
             else
             {
-                this->startPickupTimer(this->getDuration());
+                this->durationTimer_.setTimer(this->getDuration(), false, createExecutor(createFunctor(&SpeedPickup::pickupTimerCallback, this)));
             }
             engine->setSpeedAdd(this->getSpeedAdd());
             engine->setSpeedMultiply(this->getSpeedMultiply());
@@ -158,13 +158,13 @@ namespace orxonox
 
             if(this->isOnce())
             {
-                if(!this->getTimer()->isActive() && this->getTimer()->getRemainingTime() == this->getDuration())
+                if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration())
                 {
                     this->Pickupable::destroy();
                 }
                 else
                 {
-                    this->getTimer()->pauseTimer();
+                    this->durationTimer_.pauseTimer();
                 }
             }
         }
