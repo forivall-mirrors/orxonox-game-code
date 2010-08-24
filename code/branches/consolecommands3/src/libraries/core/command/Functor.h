@@ -33,7 +33,6 @@
 
 #include "core/CorePrereqs.h"
 
-#include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/MultiType.h"
 #include "FunctorPtr.h"
@@ -113,6 +112,16 @@ namespace orxonox
             virtual const std::type_info& getHeaderIdentifier() const = 0;
     };
 
+    namespace detail
+    {
+        template <class O>
+        struct FunctorTypeStatic
+        { enum { result = false }; };
+        template <>
+        struct FunctorTypeStatic<void>
+        { enum { result = true }; };
+    }
+
     template <class O>
     class FunctorMember : public Functor
     {
@@ -123,7 +132,7 @@ namespace orxonox
 
             MultiType operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null)
             {
-                if (this->object_)
+                if (detail::FunctorTypeStatic<O>::result || this->object_)
                     return (*this)(this->object_, param1, param2, param3, param4, param5);
                 else
                 {
@@ -133,7 +142,7 @@ namespace orxonox
             }
 
             Functor::Type::Enum getType() const
-                { return Functor::Type::Member; }
+                { return detail::FunctorTypeStatic<O>::result ? Functor::Type::Static : Functor::Type::Member; }
 
             inline void setObject(O* object)
                 { this->object_ = object;}
@@ -149,26 +158,9 @@ namespace orxonox
             O* object_;
     };
 
-    template <>
-    class _CoreExport FunctorMember<void> : public Functor
-    {
-        public:
-            FunctorMember(void* = 0) {}
-
-            virtual MultiType operator()(void* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
-
-            MultiType operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null)
-            {
-                return (*this)(0, param1, param2, param3, param4, param5);
-            }
-
-            Functor::Type::Enum getType() const
-                { return Functor::Type::Static; }
-    };
-
     typedef FunctorMember<void> FunctorStatic;
 
-    template <class F, class O>
+    template <class F, class O = void>
     class FunctorPointer : public FunctorMember<O>
     {
         public:
@@ -237,7 +229,7 @@ namespace orxonox
         struct FunctorHeaderIdentifier
         {};
 
-        template <typename T>
+        template <class T>
         struct FunctorHasReturnvalue
         { enum { result = true }; };
         template <>
