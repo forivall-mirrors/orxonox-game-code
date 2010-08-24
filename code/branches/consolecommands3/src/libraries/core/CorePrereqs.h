@@ -199,9 +199,11 @@ namespace orxonox
     class ExecutorMember;
     class ExecutorStatic;
     class Functor;
-    template <class T>
+    template <class O>
     class FunctorMember;
-    class FunctorStatic;
+    typedef FunctorMember<void> FunctorStatic;
+    template <class F, class O>
+    class FunctorPointer;
     class IOConsole;
     class IRC;
     class Shell;

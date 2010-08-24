@@ -66,7 +66,7 @@ namespace orxonox
             if (!temp.empty())
             {
                 COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl;
-                return (*this->functor_)(MultiType(params));
+                return (*this->functor_)(params);
             }
             else if (!this->defaultValue_[0].null())
             {

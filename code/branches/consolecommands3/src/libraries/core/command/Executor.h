@@ -162,22 +162,22 @@ namespace orxonox
 
             MultiType parse(T* object, const std::string& params, bool* success = 0, const std::string& delimiter = " ") const
             {
-                const typename FunctorMember<T>::Objects& objects = this->functorMember_->getObjects();
+                T* oldobject = this->functorMember_->getObject();
 
                 this->functorMember_->setObject(object);
                 const MultiType& result = this->Executor::parse(params, success, delimiter);
-                this->functorMember_->setObjects(objects);
+                this->functorMember_->setObject(oldobject);
 
                 return result;
             }
 
             MultiType parse(const T* object, const std::string& params, bool* success = 0, const std::string& delimiter = " ") const
             {
-                const typename FunctorMember<T>::Objects& objects = this->functorMember_->getObjects();
+                T* oldobject = this->functorMember_->getObject();
 
                 this->functorMember_->setObject(object);
                 const MultiType& result = this->Executor::parse(params, success, delimiter);
-                this->functorMember_->setObjects(objects);
+                this->functorMember_->setObjects(oldobject);
 
                 return result;
             }

@@ -36,8 +36,6 @@ namespace orxonox
 {
     typedef SharedPtr<Functor> FunctorPtr;
 
-    typedef SharedChildPtr<FunctorStatic, FunctorPtr> FunctorStaticPtr;
-
     template <class T>
     class FunctorMemberPtr : public SharedChildPtr<FunctorMember<T>, FunctorPtr>
     {
@@ -45,6 +43,17 @@ namespace orxonox
             inline FunctorMemberPtr() : SharedChildPtr<FunctorMember<T>, FunctorPtr>() {}
             inline FunctorMemberPtr(FunctorMember<T>* pointer) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(pointer) {}
             inline FunctorMemberPtr(const SharedPtr<FunctorMember<T> >& other) : SharedChildPtr<FunctorMember<T>, FunctorPtr>(other) {}
+    };
+
+    typedef FunctorMemberPtr<void> FunctorStaticPtr;
+
+    template <class F, class T>
+    class FunctorPointerPtr : public SharedChildPtr<FunctorPointer<F, T>, FunctorMemberPtr<T> >
+    {
+        public:
+            inline FunctorPointerPtr() : SharedChildPtr<FunctorPointer<F, T>, FunctorMemberPtr<T> >() {}
+            inline FunctorPointerPtr(FunctorPointer<F, T>* pointer) : SharedChildPtr<FunctorPointer<F, T>, FunctorMemberPtr<T> >(pointer) {}
+            inline FunctorPointerPtr(const SharedPtr<FunctorPointer<F, T> >& other) : SharedChildPtr<FunctorPointer<F, T>, FunctorMemberPtr<T> >(other) {}
     };
 }
 

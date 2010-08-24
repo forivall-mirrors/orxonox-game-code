@@ -492,6 +492,8 @@ namespace orxonox
     template <> inline bool MultiType::isType<orxonox::Radian>()      const { return (this->value_ && this->value_->type_ == MT_Type::Radian);           } /** @brief Returns true if the current type equals the given type. */
     template <> inline bool MultiType::isType<orxonox::Degree>()      const { return (this->value_ && this->value_->type_ == MT_Type::Degree);           } /** @brief Returns true if the current type equals the given type. */
 
+    template <> inline bool MultiType::convert<void>()                 { this->reset(); return true; } /** @brief Deletes the content, type becomes MT_Type::Null. */
+
     // Specialization to avoid ambiguities with the conversion operator
     template <> inline bool MultiType::convert<std::string>()          { return this->setValue<std::string>         (this->operator std::string());          } /** @brief Converts the current value to the given type. */
     template <> inline bool MultiType::convert<orxonox::Vector2>()     { return this->setValue<orxonox::Vector2>    (this->operator orxonox::Vector2());     } /** @brief Converts the current value to the given type. */

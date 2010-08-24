@@ -136,6 +136,11 @@ namespace orxonox
                 return *this->pointer_;
             }
 
+            inline T* get() const
+            {
+                return this->pointer_;
+            }
+
             inline operator bool() const
             {
                 return (this->pointer_ != 0);
