@@ -175,18 +175,20 @@ namespace orxonox
     _SetConsoleCommandGeneric(group, name, orxonox::createFunctor(functionpointer, object))
 
 #define _SetConsoleCommandGeneric(group, name, functor) \
-    orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::_createConsoleCommand(group, name, functor))
+    orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::_createConsoleCommand(group, name, orxonox::createExecutor(functor)))
 
 
 #define _DeclareConsoleCommand(...) \
     BOOST_PP_CAT(_DeclareConsoleCommand, ORXONOX_VA_NARGS(__VA_ARGS__))(__VA_ARGS__)
 #define _DeclareConsoleCommand2(name, functionpointer) \
-    _DeclareConsoleCommandGeneric("", name, functionpointer)
+    _DeclareConsoleCommandGeneric("", name, orxonox::createFunctor(functionpointer))
 #define _DeclareConsoleCommand3(group, name, functionpointer) \
-    _DeclareConsoleCommandGeneric(group, name, functionpointer)
+    _DeclareConsoleCommandGeneric(group, name, orxonox::createFunctor(functionpointer))
+#define _DeclareConsoleCommand4(group, name, functionpointer, object) \
+    _DeclareConsoleCommandGeneric(group, name, orxonox::createFunctor(functionpointer, object))
 
-#define _DeclareConsoleCommandGeneric(group, name, functionpointer) \
-    orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::_createConsoleCommand(group, name, orxonox::createFunctor(functionpointer), false))
+#define _DeclareConsoleCommandGeneric(group, name, functor) \
+    orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = orxonox::_createConsoleCommand(group, name, orxonox::createExecutor(functor), false)
 
 
 #define _ModifyConsoleCommand(...) \
@@ -195,9 +197,15 @@ namespace orxonox
 
 namespace orxonox
 {
-    class _CoreExport _ConsoleCommand : protected Executor
+    class _CoreExport _ConsoleCommand
     {
         friend struct _ConsoleCommandManipulator;
+
+        struct Command
+        {
+            ExecutorPtr executor_;
+            FunctorPtr functor_;
+        };
 
         public:
             struct _ConsoleCommandManipulator
@@ -207,24 +215,53 @@ namespace orxonox
 
                     template <class F>
                     inline _ConsoleCommandManipulator& setFunction(F function, bool bForce = false)
-                        { if (this->command_) { this->command_->setFunctor(createFunctor(function), bForce); } return *this; }
+                        {
+                            if (this->command_)
+                            {
+                                if (this->command_->getExecutor() && this->command_->getFunctor() && this->command_->getFunctor()->getFullIdentifier() == typeid(F))
+                                {
+                                    FunctorPointer<F>* functor = static_cast<FunctorPointer<F>*>(this->command_->getFunctor().get());
+                                    functor->setFunction(function);
+                                    return *this;
+                                }
+                                this->command_->setFunction(createFunctor(function), bForce);
+                            }
+                            return *this;
+                        }
                     template <class F, class O>
                     inline _ConsoleCommandManipulator& setFunction(F function, O* object, bool bForce = false)
-                        { if (this->command_) { this->command_->setFunctor(createFunctor(function, object), bForce); } return *this; }
+                        {
+                            if (this->command_)
+                            {
+                                if (this->command_->getExecutor() && this->command_->getFunctor() && this->command_->getFunctor()->getFullIdentifier() == typeid(F))
+                                {
+                                    FunctorPointer<F, O>* functor = static_cast<FunctorPointer<F, O>*>(this->command_->getFunctor().get());
+                                    functor->setFunction(function);
+                                    functor->setObject(object);
+                                    return *this;
+                                }
+                                this->command_->setFunction(createFunctor(function, object), bForce);
+                            }
+                            return *this;
+                        }
                     inline _ConsoleCommandManipulator& setFunction(const FunctorPtr& functor, bool bForce = false)
-                        { if (this->command_) { this->command_->setFunctor(functor, bForce); } return *this; }
+                        { if (this->command_) { this->command_->setFunction(functor, bForce); } return *this; }
+                    inline _ConsoleCommandManipulator& setFunction(const ExecutorPtr& executor, bool bForce = false)
+                        { if (this->command_) { this->command_->setFunction(executor, bForce); } return *this; }
 
                     template <class F>
                     inline _ConsoleCommandManipulator& pushFunction(F function, bool bForce = false)
-                        { if (this->command_) { this->command_->pushFunctor(createFunctor(function), bForce); } return *this; }
+                        { if (this->command_) { this->command_->pushFunction(createFunctor(function), bForce); } return *this; }
                     template <class F, class O>
                     inline _ConsoleCommandManipulator& pushFunction(F function, O* object, bool bForce = false)
-                        { if (this->command_) { this->command_->pushFunctor(createFunctor(function, object), bForce); } return *this; }
+                        { if (this->command_) { this->command_->pushFunction(createFunctor(function, object), bForce); } return *this; }
                     inline _ConsoleCommandManipulator& pushFunction(const FunctorPtr& functor, bool bForce = false)
-                        { if (this->command_) { this->command_->pushFunctor(functor, bForce); } return *this; }
+                        { if (this->command_) { this->command_->pushFunction(functor, bForce); } return *this; }
+                    inline _ConsoleCommandManipulator& pushFunction(const ExecutorPtr& executor, bool bForce = false)
+                        { if (this->command_) { this->command_->pushFunction(executor, bForce); } return *this; }
 
                     inline _ConsoleCommandManipulator& popFunction()
-                        { if (this->command_) { this->command_->popFunctor(); } return *this; }
+                        { if (this->command_) { this->command_->popFunction(); } return *this; }
 
                     inline _ConsoleCommandManipulator& setObject(void* object)
                         { if (this->command_) { this->command_->setObject(object); } return *this; }
@@ -238,13 +275,23 @@ namespace orxonox
 
                     inline _ConsoleCommandManipulator& setActive(bool bActive)
                         { if (this->command_) { this->command_->setActive(bActive); } return *this; }
+                    inline _ConsoleCommandManipulator& activate()
+                        { return this->setActive(true); }
+                    inline _ConsoleCommandManipulator& deactivate()
+                        { return this->setActive(false); }
+
+                    inline bool isActive() const
+                        { return this->command_ ? this->command_->isActive() : false; }
+                    inline bool exists() const
+                        { return (this->command_ != 0); }
 
                 private:
                     _ConsoleCommand* command_;
             };
 
         public:
-            _ConsoleCommand(const std::string& group, const std::string& name, const FunctorPtr& functor, bool bInitialized = true);
+            _ConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized = true);
+            ~_ConsoleCommand();
 
             _ConsoleCommand& addShortcut();
             _ConsoleCommand& addShortcut(const std::string&  name);
@@ -253,8 +300,11 @@ namespace orxonox
 
             inline void setActive(bool bActive)
                 { this->bActive_ = bActive; }
-            inline bool isActive() const
-                { return (this->bActive_ && this->bInitialized_); }
+            inline void activate()
+                { this->setActive(true); }
+            inline void deactivate()
+                { this->setActive(false); }
+            bool isActive() const;
 
             inline _ConsoleCommandManipulator getManipulator() const
                 { return this; }
@@ -269,34 +319,43 @@ namespace orxonox
         private:
             static std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommandMap();
             static void registerCommand(const std::string& group, const std::string& name, _ConsoleCommand* command);
+            static void unregisterCommand(_ConsoleCommand* command);
 
-            bool setFunctor(const FunctorPtr& functor, bool bForce = false);
-            void pushFunctor(const FunctorPtr& functor, bool bForce = false);
-            void popFunctor();
+            bool headersMatch(const FunctorPtr& functor);
+            bool headersMatch(const ExecutorPtr& executor);
+
+            bool setFunction(const ExecutorPtr& executor, bool bForce = false);
+            bool setFunction(const FunctorPtr& functor, bool bForce = false);
+            void pushFunction(const ExecutorPtr& executor, bool bForce = false);
+            void pushFunction(const FunctorPtr& functor, bool bForce = false);
+            void pushFunction();
+            void popFunction();
+            const ExecutorPtr& getExecutor() const;
             const FunctorPtr& getFunctor() const;
 
-            bool functionHeaderMatches(const FunctorPtr& functor) const;
-
-            void setObject(void* object);
+            bool setObject(void* object);
             void pushObject(void* object);
             void popObject();
             void* getObject() const;
 
             bool bActive_;
-            bool bInitialized_;
-            const std::type_info& functionHeader_;
-            std::stack<FunctorPtr> functorStack_;
+//            const std::type_info& functionHeader_;
+            std::string baseName_;
+            ExecutorPtr baseExecutor_;
+
+            ExecutorPtr executor_;
+            std::stack<Command> commandStack_;
             std::stack<void*> objectStack_;
     };
 
-    inline _ConsoleCommand* _createConsoleCommand(const std::string& name, const FunctorPtr& functor, bool bInitialized = true)
+    inline _ConsoleCommand* _createConsoleCommand(const std::string& name, const ExecutorPtr& executor, bool bInitialized = true)
     {
-        return new _ConsoleCommand("", name, functor, bInitialized);
+        return new _ConsoleCommand("", name, executor, bInitialized);
     }
 
-    inline _ConsoleCommand* _createConsoleCommand(const std::string& group, const std::string& name, const FunctorPtr& functor, bool bInitialized = true)
+    inline _ConsoleCommand* _createConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized = true)
     {
-        return new _ConsoleCommand(group, name, functor, bInitialized);
+        return new _ConsoleCommand(group, name, executor, bInitialized);
     }
 }
 

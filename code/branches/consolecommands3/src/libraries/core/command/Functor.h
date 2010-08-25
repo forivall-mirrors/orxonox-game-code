@@ -110,6 +110,7 @@ namespace orxonox
 
             virtual const std::type_info& getFullIdentifier() const = 0;
             virtual const std::type_info& getHeaderIdentifier() const = 0;
+            virtual const std::type_info& getHeaderIdentifier(unsigned int params) const = 0;
     };
 
     namespace detail
@@ -293,11 +294,11 @@ namespace orxonox
             {
                 switch (param)
                 {
-                    case 0: return typeToString<P1>();
-                    case 1: return typeToString<P2>();
-                    case 2: return typeToString<P3>();
-                    case 3: return typeToString<P4>();
-                    case 4: return typeToString<P5>();
+                    case 0:  return typeToString<P1>();
+                    case 1:  return typeToString<P2>();
+                    case 2:  return typeToString<P3>();
+                    case 3:  return typeToString<P4>();
+                    case 4:  return typeToString<P5>();
                     default: return "";
                 }
             }
@@ -310,6 +311,19 @@ namespace orxonox
             const std::type_info& getHeaderIdentifier() const
             {
                 return typeid(detail::FunctorHeaderIdentifier<R, P1, P2, P3, P4, P5>);
+            }
+
+            const std::type_info& getHeaderIdentifier(unsigned int params) const
+            {
+                switch (params)
+                {
+                    case 0:  return typeid(detail::FunctorHeaderIdentifier<R, void, void, void, void, void>);
+                    case 1:  return typeid(detail::FunctorHeaderIdentifier<R, P1, void, void, void, void>);
+                    case 2:  return typeid(detail::FunctorHeaderIdentifier<R, P1, P2, void, void, void>);
+                    case 3:  return typeid(detail::FunctorHeaderIdentifier<R, P1, P2, P3, void, void>);
+                    case 4:  return typeid(detail::FunctorHeaderIdentifier<R, P1, P2, P3, P4, void>);
+                    default: return typeid(detail::FunctorHeaderIdentifier<R, P1, P2, P3, P4, P5>);
+                }
             }
     };
 

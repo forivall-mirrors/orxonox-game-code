@@ -29,6 +29,7 @@
 #include "ConsoleCommand.h"
 #include <cassert>
 
+#include "util/Convert.h"
 #include "core/Language.h"
 
 namespace orxonox
@@ -123,16 +124,26 @@ namespace orxonox
     _SetConsoleCommand("BaseObject", "setName", &BaseObject::setName, (BaseObject*)0);
     _ConsoleCommand::_ConsoleCommandManipulator test(_ModifyConsoleCommand("BaseObject", "setName").setFunction(&BaseObject::setActive));
 
-    _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, const FunctorPtr& functor, bool bInitialized) : Executor(functor, name), functionHeader_(functor->getHeaderIdentifier())
+    _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized)
     {
         this->bActive_ = true;
-        this->bInitialized_ = bInitialized;
+        this->baseName_ = name;
+        this->baseExecutor_ = executor;
+
+        if (bInitialized)
+            this->executor_ = executor;
+
         _ConsoleCommand::registerCommand(group, name, this);
+    }
+
+    _ConsoleCommand::~_ConsoleCommand()
+    {
+        _ConsoleCommand::unregisterCommand(this);
     }
 
     _ConsoleCommand& _ConsoleCommand::addShortcut()
     {
-        _ConsoleCommand::registerCommand("", this->getName(), this);
+        _ConsoleCommand::registerCommand("", this->baseName_, this);
         return *this;
     }
 
@@ -144,7 +155,7 @@ namespace orxonox
 
     _ConsoleCommand& _ConsoleCommand::addGroup(const std::string& group)
     {
-        _ConsoleCommand::registerCommand(group, this->getName(), this);
+        _ConsoleCommand::registerCommand(group, this->baseName_, this);
         return *this;
     }
 
@@ -154,79 +165,158 @@ namespace orxonox
         return *this;
     }
 
-    bool _ConsoleCommand::setFunctor(const FunctorPtr& functor, bool bForce)
+    bool _ConsoleCommand::isActive() const
     {
-        if (!functor)
+        return (this->bActive_ && this->executor_ && this->executor_->getFunctor());
+    }
+
+    bool _ConsoleCommand::headersMatch(const FunctorPtr& functor)
+    {
+        unsigned int minparams = std::min(this->baseExecutor_->getParamCount(), functor->getParamCount());
+
+        if (this->baseExecutor_->getFunctor()->getHeaderIdentifier(minparams) != functor->getHeaderIdentifier(minparams))
+            return false;
+        else if (functor->getParamCount() <= this->baseExecutor_->getParamCount())
+            return true;
+        else if (!this->executor_)
+            return false;
+        else
         {
-            this->bInitialized_ = false;
+            for (unsigned int i = this->baseExecutor_->getParamCount(); i < functor->getParamCount(); ++i)
+                if (!this->executor_->defaultValueSet(i))
+                    return false;
+
             return true;
         }
+    }
 
-        if (!bForce && !this->functionHeaderMatches(functor))
+    bool _ConsoleCommand::headersMatch(const ExecutorPtr& executor)
+    {
+        unsigned int minparams = std::min(this->baseExecutor_->getParamCount(), executor->getParamCount());
+
+        if (this->baseExecutor_->getFunctor()->getHeaderIdentifier(minparams) != executor->getFunctor()->getHeaderIdentifier(minparams))
+            return false;
+        else if (executor->getParamCount() <= this->baseExecutor_->getParamCount())
+            return true;
+        else
         {
-            COUT(1) << "Error: Couldn't assign new function to console command with name \"" << this->getName() << "\", headers don't match." << std::endl;
+            for (unsigned int i = this->baseExecutor_->getParamCount(); i < executor->getParamCount(); ++i)
+                if (!executor->defaultValueSet(i))
+                    return false;
+
+            return true;
+        }
+    }
+
+    bool _ConsoleCommand::setFunction(const ExecutorPtr& executor, bool bForce)
+    {
+        if (!executor || !executor->getFunctor() || bForce || this->headersMatch(executor))
+        {
+            this->executor_ = executor;
+            return true;
+        }
+        else
+        {
+            COUT(1) << "Error: Couldn't assign new executor to console command \"" << this->baseName_ << "\", headers don't match." << std::endl;
             return false;
         }
-
-        this->functor_ = functor;
-        this->bInitialized_ = true;
-        return true;
     }
 
-    void _ConsoleCommand::pushFunctor(const FunctorPtr& functor, bool bForce)
+    bool _ConsoleCommand::setFunction(const FunctorPtr& functor, bool bForce)
     {
-        const FunctorPtr& oldfunctor = this->getFunctor();
-
-        if (this->setFunctor(functor, bForce));
-            this->functorStack_.push(oldfunctor);
-    }
-
-    void _ConsoleCommand::popFunctor()
-    {
-        FunctorPtr newfunctor;
-        if (!this->functorStack_.empty())
+        if (!functor || bForce || this->headersMatch(functor))
         {
-            newfunctor = this->functorStack_.top();
-            this->functorStack_.pop();
+            if (this->executor_)
+                this->executor_->setFunctor(functor);
+            else
+                this->executor_ = createExecutor(functor);
+
+            return true;
         }
-        this->setFunctor(newfunctor);
+        else
+        {
+            COUT(1) << "Error: Couldn't assign new functor to console command \"" << this->baseName_ << "\", headers don't match." << std::endl;
+            return false;
+        }
+    }
+
+    void _ConsoleCommand::pushFunction(const ExecutorPtr& executor, bool bForce)
+    {
+        Command command;
+        command.executor_ = this->getExecutor();
+        if (command.executor_)
+            command.functor_ = this->getFunctor();
+
+        if (this->setFunction(executor, bForce))
+            this->commandStack_.push(command);
+    }
+
+    void _ConsoleCommand::pushFunction(const FunctorPtr& functor, bool bForce)
+    {
+        Command command;
+        command.executor_ = this->getExecutor();
+        if (command.executor_)
+            command.functor_ = this->getFunctor();
+
+        if (this->setFunction(functor, bForce))
+            this->commandStack_.push(command);
+    }
+
+    void _ConsoleCommand::pushFunction()
+    {
+        if (this->executor_)
+            this->pushFunction(new Executor(*this->executor_.get()));
+        else
+            COUT(1) << "Error: Couldn't push copy of executor in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+    }
+
+    void _ConsoleCommand::popFunction()
+    {
+        Command command;
+        if (!this->commandStack_.empty())
+        {
+            command = this->commandStack_.top();
+            this->commandStack_.pop();
+        }
+
+        this->executor_ = command.executor_;
+        if (command.executor_)
+            this->executor_->setFunctor(command.functor_);
+    }
+
+    const ExecutorPtr& _ConsoleCommand::getExecutor() const
+    {
+        return this->executor_;
     }
 
     const FunctorPtr& _ConsoleCommand::getFunctor() const
     {
-//        if (this->bInitialized_) // FIXME
-            return this->functor_;
-//        else
-//            return 0;
+        return this->executor_->getFunctor();
     }
 
-    bool _ConsoleCommand::functionHeaderMatches(const FunctorPtr& functor) const
+    bool _ConsoleCommand::setObject(void* object)
     {
-        if (!this->functor_)
+        if (this->executor_)
         {
-            assert(false);
-            return true;
+            if (this->executor_->getFunctor())
+            {
+                this->executor_->getFunctor()->setRawObjectPointer(object);
+                return true;
+            }
+            else if (object)
+                COUT(1) << "Error: Can't assign object to console command \"" << this->baseName_ << "\", no functor set." << std::endl;
         }
-        return (functor->getHeaderIdentifier() == this->functionHeader_);
-    }
-
-    void _ConsoleCommand::setObject(void* object)
-    {
-        if (this->functor_)
-            this->functor_->setRawObjectPointer(object);
         else if (object)
-            COUT(1) << "Error: Can't set object in console command \"" << this->getName() << "\", no functor set." << std::endl;
+            COUT(1) << "Error: Can't assign object to console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+
+        return false;
     }
 
     void _ConsoleCommand::pushObject(void* object)
     {
-        if (this->functor_)
-        {
-            this->objectStack_.push(this->getObject());
-            this->setObject(object);
-        }
-        else
-            COUT(1) << "Error: Can't set object in console command \"" << this->getName() << "\", no functor set." << std::endl;
+        void* oldobject = this->getObject();
+        if (this->setObject(object))
+            this->objectStack_.push(oldobject);
     }
 
     void _ConsoleCommand::popObject()
@@ -242,8 +332,8 @@ namespace orxonox
 
     void* _ConsoleCommand::getObject() const
     {
-        if (this->functor_)
-            return this->functor_->getRawObjectPointer();
+        if (this->executor_ && this->executor_->getFunctor())
+            return this->executor_->getFunctor()->getRawObjectPointer();
         else
             return 0;
     }
@@ -283,13 +373,32 @@ namespace orxonox
         if (_ConsoleCommand::getCommand(group, name) != 0)
         {
             if (group == "")
-                COUT(2) << "Warning: A console command with shortcut name \"" << name << "\" already exists." << std::endl;
+                COUT(2) << "Warning: A console command with shortcut \"" << name << "\" already exists." << std::endl;
             else
-                COUT(2) << "Warning: A console command with group \"" << group << "\" and name \"" << name << "\" already exists." << std::endl;
+                COUT(2) << "Warning: A console command with name \"" << name << "\" already exists in group \"" << group << "\"." << std::endl;
         }
         else
         {
             _ConsoleCommand::getCommandMap()[group][name] = command;
+        }
+    }
+
+    /* static */ void _ConsoleCommand::unregisterCommand(_ConsoleCommand* command)
+    {
+        for (std::map<std::string, std::map<std::string, _ConsoleCommand*> >::iterator it_group = _ConsoleCommand::getCommandMap().begin(); it_group != _ConsoleCommand::getCommandMap().end(); )
+        {
+            for (std::map<std::string, _ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
+            {
+                if (it_name->second == command)
+                    it_group->second.erase(it_name++);
+                else
+                    ++it_name;
+            }
+
+            if (it_group->second.empty())
+                _ConsoleCommand::getCommandMap().erase(it_group++);
+            else
+                ++it_group;
         }
     }
 }

@@ -62,8 +62,16 @@ namespace orxonox
 
             bool evaluate(const std::string& params, MultiType param[5], const std::string& delimiter = " ") const;
 
+            inline void setFunctor(const FunctorPtr& functor)
+                { this->functor_ = functor; }
             inline const FunctorPtr& getFunctor() const
                 { return this->functor_; }
+
+            inline void setName(const std::string& name)
+                { this->name_ = name; }
+            inline const std::string& getName() const
+                { return this->name_; }
+
             inline unsigned int getParamCount() const
                 { return this->functor_->getParamCount(); }
             inline bool hasReturnvalue() const
@@ -74,11 +82,6 @@ namespace orxonox
                 { return this->functor_->getTypenameParam(param); }
             inline std::string getTypenameReturnvalue() const
                 { return this->functor_->getTypenameReturnvalue(); }
-
-            inline void setName(const std::string& name)
-                { this->name_ = name; }
-            inline const std::string& getName() const
-                { return this->name_; }
 
             void setDefaultValues(const MultiType& param1);
             void setDefaultValues(const MultiType& param1, const MultiType& param2);
