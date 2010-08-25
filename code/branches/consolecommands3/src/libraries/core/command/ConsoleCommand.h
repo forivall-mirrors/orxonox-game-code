@@ -36,133 +36,8 @@
 #include <boost/preprocessor/facilities/expand.hpp>
 
 #include "util/VA_NARGS.h"
-#include "core/Identifier.h"
 #include "ArgumentCompletionFunctions.h"
-#include "CommandExecutor.h"
 #include "Executor.h"
-
-
-#define SetConsoleCommand(classname, function, bCreateShortcut) \
-    SetConsoleCommandGeneric(classname, function, #function, bCreateShortcut)
-#define SetConsoleCommandAlias(classname, function, name, bCreateShortcut) \
-    SetConsoleCommandGeneric(classname, function, name, bCreateShortcut)
-
-#define SetConsoleCommandGeneric(classname, function, name, bCreateShortcut) \
-    orxonox::ConsoleCommand& BOOST_PP_CAT(classname##function##consolecommand__, __LINE__) = orxonox::ClassIdentifier<classname>::getIdentifier(#classname)->addConsoleCommand(orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), name), bCreateShortcut)
-
-
-#define SetConsoleCommandShortcut(classname, function) \
-    SetConsoleCommandShortcutAliasGeneric(classname, function, #function)
-#define SetConsoleCommandShortcutAlias(classname, function, name) \
-    SetConsoleCommandShortcutAliasGeneric(classname, function, name)
-#define SetConsoleCommandShortcutAliasGeneric(classname, function, name) \
-    SetConsoleCommandShortcutGeneric(BOOST_PP_CAT(function##consolecommand__, __LINE__), orxonox::createConsoleCommand(orxonox::createFunctor(&classname::function), name))
-
-#define SetConsoleCommandShortcutExtern(function) \
-    SetConsoleCommandShortcutExternAliasGeneric(function, #function)
-#define SetConsoleCommandShortcutExternAlias(function, name) \
-    SetConsoleCommandShortcutExternAliasGeneric(function, name)
-#define SetConsoleCommandShortcutExternAliasGeneric(function, name) \
-    SetConsoleCommandShortcutGeneric(BOOST_PP_CAT(function##consolecommand__, __LINE__), orxonox::createConsoleCommand(orxonox::createFunctor(&function), name))
-
-#define SetConsoleCommandShortcutGeneric(fakevariable, command) \
-    orxonox::ConsoleCommand& fakevariable = orxonox::CommandExecutor::addConsoleCommandShortcut(command, true)
-
-
-namespace orxonox
-{
-    namespace AccessLevel
-    {
-        enum Value
-        {
-            None,
-            User,
-            Admin,
-            Offline,
-            Debug,
-            Disabled
-        };
-    }
-
-    class _CoreExport ConsoleCommand : public Executor
-    {
-        public:
-            ConsoleCommand(const FunctorPtr& functor, const std::string& name = "");
-
-            ConsoleCommand& description(const std::string& description);
-            const std::string& getDescription() const;
-
-            ConsoleCommand& descriptionParam(unsigned int param, const std::string& description);
-            const std::string& getDescriptionParam(unsigned int param) const;
-
-            ConsoleCommand& descriptionReturnvalue(const std::string& description);
-            const std::string& getDescriptionReturnvalue(int param) const;
-
-            inline ConsoleCommand& defaultValues(const MultiType& param1)
-                { this->Executor::setDefaultValues(param1); return (*this); }
-            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2)
-                { this->Executor::setDefaultValues(param1, param2); return (*this); }
-            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
-                { this->Executor::setDefaultValues(param1, param2, param3); return (*this); }
-            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
-                { this->Executor::setDefaultValues(param1, param2, param3, param4); return (*this); }
-            inline ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
-                { this->Executor::setDefaultValues(param1, param2, param3, param4, param5); return (*this); }
-            inline ConsoleCommand& defaultValue(unsigned int index, const MultiType& param)
-                { this->Executor::setDefaultValue(index, param); return (*this); }
-
-            inline ConsoleCommand& accessLevel(AccessLevel::Value level)
-                { this->accessLevel_ = level; return (*this); }
-            inline AccessLevel::Value getAccessLevel() const
-                { return this->accessLevel_; }
-
-            ConsoleCommand& argumentCompleter(unsigned int param, ArgumentCompleter* completer);
-            ArgumentCompleter* getArgumentCompleter(unsigned int param) const;
-
-            void createArgumentCompletionList(unsigned int param, const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "");
-            const ArgumentCompletionList& getArgumentCompletionList() const
-                { return this->argumentList_; }
-            ArgumentCompletionList::const_iterator getArgumentCompletionListBegin() const
-                { return this->argumentList_.begin(); }
-            ArgumentCompletionList::const_iterator getArgumentCompletionListEnd() const
-                { return this->argumentList_.end(); }
-
-            inline ConsoleCommand& setAsInputCommand()
-            {
-                this->keybindMode(KeybindMode::OnHold);
-                this->defaultValue(0, Vector2(0.0f, 0.0f));
-                this->inputConfiguredParam(0);
-                return *this;
-            }
-
-            inline ConsoleCommand& keybindMode(KeybindMode::Value mode)
-                { this->keybindMode_ = mode; return *this; }
-            inline KeybindMode::Value getKeybindMode() const
-                { return this->keybindMode_; }
-
-            inline ConsoleCommand& inputConfiguredParam(int index)
-                { this->inputConfiguredParam_ = index; return *this; }
-            inline int getInputConfiguredParam_() const
-                { return this->inputConfiguredParam_; }
-
-        private:
-            AccessLevel::Value accessLevel_;
-            ArgumentCompleter* argumentCompleter_[5];
-            ArgumentCompletionList argumentList_;
-
-            KeybindMode::Value keybindMode_;
-            int inputConfiguredParam_;
-
-            LanguageEntryLabel description_;
-            LanguageEntryLabel descriptionReturnvalue_;
-            LanguageEntryLabel descriptionParam_[MAX_FUNCTOR_ARGUMENTS];
-    };
-
-    inline ConsoleCommand* createConsoleCommand(const FunctorPtr& functor, const std::string& name = "")
-    {
-        return new ConsoleCommand(functor, name);
-    }
-}
 
 
 #define _SetConsoleCommand(...) \
@@ -450,6 +325,8 @@ namespace orxonox
             static inline const _ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
                 { return _ConsoleCommand::getCommand("", name, bPrintError); }
             static const _ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
+
+            static void destroyAll();
 
         private:
             static std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommandMap();

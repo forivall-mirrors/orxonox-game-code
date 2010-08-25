@@ -56,26 +56,6 @@ namespace orxonox
             static CommandEvaluation evaluate(const std::string& command);
             static const CommandEvaluation& getLastEvaluation();
 
-            static ConsoleCommand& addConsoleCommandShortcut(ConsoleCommand* command, bool bDeleteAtExit = false);
-            static ConsoleCommand* getConsoleCommandShortcut(const std::string& name);
-            static ConsoleCommand* getLowercaseConsoleCommandShortcut(const std::string& name);
-
-            /** @brief Returns the map that stores all console commands. @return The const_iterator */
-            static inline const std::map<std::string, ConsoleCommand*>& getConsoleCommandShortcutMap() { return CommandExecutor::getInstance().consoleCommandShortcuts_; }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all console commands. @return The const_iterator */
-            static inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandShortcutMapBegin() { return CommandExecutor::getInstance().consoleCommandShortcuts_.begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all console commands. @return The const_iterator */
-            static inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandShortcutMapEnd() { return CommandExecutor::getInstance().consoleCommandShortcuts_.end(); }
-
-            /** @brief Returns the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            static inline const std::map<std::string, ConsoleCommand*>& getLowercaseConsoleCommandShortcutMap() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_; }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            static inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandShortcutMapBegin() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_.begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            static inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandShortcutMapEnd() { return CommandExecutor::getInstance().consoleCommandShortcuts_LC_.end(); }
-
-            static void destroyExternalCommands();
-
         private:
             CommandExecutor() {}
             CommandExecutor(const CommandExecutor& other);
@@ -106,9 +86,6 @@ namespace orxonox
             static std::string getCommonBegin(const ArgumentCompletionList& list);
 
             CommandEvaluation evaluation_;
-            std::map<std::string, ConsoleCommand*> consoleCommandShortcuts_;
-            std::map<std::string, ConsoleCommand*> consoleCommandShortcuts_LC_;
-            std::set<ConsoleCommand*>              consoleCommandExternals_;
     }; // tolua_export
 } // tolua_export
 

@@ -53,53 +53,6 @@ namespace orxonox
         return CommandExecutor::getInstance().evaluation_;
     }
 
-    ConsoleCommand& CommandExecutor::addConsoleCommandShortcut(ConsoleCommand* command, bool bDeleteAtExit)
-    {
-        std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_.find(command->getName());
-        if (it != CommandExecutor::getInstance().consoleCommandShortcuts_.end())
-        {
-            COUT(2) << "Warning: Overwriting console-command shortcut with name " << command->getName() << '.' << std::endl;
-        }
-
-        // Make sure we can also delete the external ConsoleCommands that don't belong to an Identifier
-        if (command && bDeleteAtExit)
-        {
-            CommandExecutor::getInstance().consoleCommandExternals_.insert(command);
-        }
-
-        CommandExecutor::getInstance().consoleCommandShortcuts_[command->getName()] = command;
-        CommandExecutor::getInstance().consoleCommandShortcuts_LC_[getLowercase(command->getName())] = command;
-        return (*command);
-    }
-
-    /**
-        @brief Returns the executor of a console command shortcut with given name.
-        @brief name The name of the requested console command shortcut
-        @return The executor of the requested console command shortcut
-    */
-    ConsoleCommand* CommandExecutor::getConsoleCommandShortcut(const std::string& name)
-    {
-        std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_.find(name);
-        if (it != CommandExecutor::getInstance().consoleCommandShortcuts_.end())
-            return it->second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Returns the executor of a console command shortcut with given name in lowercase.
-        @brief name The name of the requested console command shortcut in lowercase
-        @return The executor of the requested console command shortcut
-    */
-    ConsoleCommand* CommandExecutor::getLowercaseConsoleCommandShortcut(const std::string& name)
-    {
-        std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandShortcuts_LC_.find(name);
-        if (it != CommandExecutor::getInstance().consoleCommandShortcuts_LC_.end())
-            return it->second;
-        else
-            return 0;
-    }
-
     bool CommandExecutor::execute(const std::string& command, bool useTcl)
     {
         if (useTcl)

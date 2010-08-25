@@ -27,96 +27,9 @@
  */
 
 #include "ConsoleCommand.h"
-#include <cassert>
 
 #include "util/Convert.h"
 #include "core/Language.h"
-
-namespace orxonox
-{
-    ConsoleCommand::ConsoleCommand(const FunctorPtr& functor, const std::string& name) : Executor(functor, name)
-    {
-        this->accessLevel_ = AccessLevel::None;
-        this->argumentCompleter_[0] = 0;
-        this->argumentCompleter_[1] = 0;
-        this->argumentCompleter_[2] = 0;
-        this->argumentCompleter_[3] = 0;
-        this->argumentCompleter_[4] = 0;
-
-        this->keybindMode_ = KeybindMode::OnPress;
-        this->inputConfiguredParam_ = -1;
-    }
-
-    ConsoleCommand& ConsoleCommand::argumentCompleter(unsigned int param, ArgumentCompleter* completer)
-    {
-        if (param < 5)
-            this->argumentCompleter_[param] = completer;
-        else
-        {
-            COUT(2) << "Warning: Couldn't add autocompletion-function for param " << param << ": index out of bound." << std::endl;
-        }
-        return (*this);
-    }
-
-    ArgumentCompleter* ConsoleCommand::getArgumentCompleter(unsigned int param) const
-    {
-        if (param < 5)
-            return this->argumentCompleter_[param];
-        else
-            return 0;
-    }
-
-    void ConsoleCommand::createArgumentCompletionList(unsigned int param, const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5)
-    {
-        if (param < 5 && this->argumentCompleter_[param])
-            this->argumentList_ = (*this->argumentCompleter_[param])(param1, param2, param3, param4, param5);
-        else
-            this->argumentList_.clear();
-    }
-
-    ConsoleCommand& ConsoleCommand::description(const std::string& description)
-    {
-        this->description_ = std::string("ConsoleCommandDescription::" + this->name_ + "::function");
-        AddLanguageEntry(this->description_, description);
-        return (*this);
-    }
-
-    const std::string& ConsoleCommand::getDescription() const
-    {
-        return GetLocalisation_noerror(this->description_);
-    }
-
-    ConsoleCommand& ConsoleCommand::descriptionParam(unsigned int param, const std::string& description)
-    {
-        if (param < MAX_FUNCTOR_ARGUMENTS)
-        {
-            this->descriptionParam_[param] = std::string("ConsoleCommandDescription::" + this->name_ + "::param" + multi_cast<std::string>(param));
-            AddLanguageEntry(this->descriptionParam_[param], description);
-        }
-        return (*this);
-    }
-
-    const std::string& ConsoleCommand::getDescriptionParam(unsigned int param) const
-    {
-        if (param < MAX_FUNCTOR_ARGUMENTS)
-            return GetLocalisation_noerror(this->descriptionParam_[param]);
-
-        return this->descriptionParam_[0];
-    }
-
-    ConsoleCommand& ConsoleCommand::descriptionReturnvalue(const std::string& description)
-    {
-        this->descriptionReturnvalue_ = std::string("ConsoleCommandDescription::" + this->name_ + "::returnvalue");
-        AddLanguageEntry(this->descriptionReturnvalue_, description);
-        return (*this);
-    }
-
-    const std::string& ConsoleCommand::getDescriptionReturnvalue(int param) const
-    {
-        return GetLocalisation_noerror(this->descriptionReturnvalue_);
-    }
-}
-
 #include "core/BaseObject.h" // remove this
 
 namespace orxonox
@@ -535,5 +448,11 @@ namespace orxonox
             else
                 ++it_group;
         }
+    }
+
+    /* static */ void _ConsoleCommand::destroyAll()
+    {
+        while (!_ConsoleCommand::getCommandMap().empty() && !_ConsoleCommand::getCommandMap().begin().empty())
+            _ConsoleCommand::getCommandMap().begin().erase(_ConsoleCommand::getCommandMap().begin().begin());
     }
 }
