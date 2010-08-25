@@ -50,7 +50,7 @@
     _SetConsoleCommandGeneric(group, name, orxonox::createFunctor(functionpointer, object))
 
 #define _SetConsoleCommandGeneric(group, name, functor) \
-    orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::_createConsoleCommand(group, name, orxonox::createExecutor(functor)))
+    static orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::_createConsoleCommand(group, name, orxonox::createExecutor(functor)))
 
 
 #define _DeclareConsoleCommand(...) \
@@ -63,11 +63,32 @@
     _DeclareConsoleCommandGeneric(group, name, orxonox::createFunctor(functionpointer, object))
 
 #define _DeclareConsoleCommandGeneric(group, name, functor) \
-    orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = orxonox::_createConsoleCommand(group, name, orxonox::createExecutor(functor), false)
+    static orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::_createConsoleCommand(group, name, orxonox::createExecutor(functor), false))
 
 
 namespace orxonox
 {
+    namespace prototype
+    {
+        inline void void__void(void) {}
+        inline void void__string(const std::string&) {}
+    }
+
+    namespace AccessLevel
+    {
+        enum Enum
+        {
+            All,
+            Standalone,
+            Master,
+            Server,
+            Client,
+            Online,
+            Offline,
+            None
+        };
+    }
+
     class _CoreExport _ConsoleCommand
     {
         friend struct _ConsoleCommandManipulator;
@@ -76,21 +97,6 @@ namespace orxonox
         {
             ExecutorPtr executor_;
             FunctorPtr functor_;
-        };
-
-        struct AccessLevel
-        {
-            enum Enum
-            {
-                All,
-                Standalone,
-                Master,
-                Server,
-                Client,
-                Online,
-                Offline,
-                None
-            };
         };
 
         public:
@@ -149,6 +155,9 @@ namespace orxonox
                     inline _ConsoleCommandManipulator& popFunction()
                         { if (this->command_) { this->command_->popFunction(); } return *this; }
 
+                    inline _ConsoleCommandManipulator& resetFunction()
+                        { if (this->command_) { this->command_->resetFunction(); } return *this; }
+
                     inline _ConsoleCommandManipulator& setObject(void* object)
                         { if (this->command_) { this->command_->setObject(object); } return *this; }
                     inline _ConsoleCommandManipulator& pushObject(void* object)
@@ -183,7 +192,7 @@ namespace orxonox
                     inline _ConsoleCommandManipulator& defaultValue(unsigned int index, const MultiType& param)
                         { if (this->command_) { this->command_->defaultValue(index, param); } return *this; }
 
-                    inline _ConsoleCommandManipulator& accessLevel(_ConsoleCommand::AccessLevel::Enum level)
+                    inline _ConsoleCommandManipulator& accessLevel(AccessLevel::Enum level)
                         { if (this->command_) { this->command_->accessLevel(level); } return *this; }
 
                     inline _ConsoleCommandManipulator& argumentCompleter(unsigned int param, ArgumentCompleter* completer)
@@ -209,11 +218,18 @@ namespace orxonox
             _ConsoleCommand& addGroup(const std::string& group);
             _ConsoleCommand& addGroup(const std::string& group, const std::string&  name);
 
-            inline _ConsoleCommand setActive(bool bActive)
+            inline const std::string& getName() const
+                { return this->baseName_; }
+
+            const ExecutorPtr& getExecutor() const;
+            inline const ExecutorPtr& getBaseExecutor() const
+                { return this->baseExecutor_; }
+
+            inline _ConsoleCommand& setActive(bool bActive)
                 { this->bActive_ = bActive; return *this; }
-            inline _ConsoleCommand activate()
+            inline _ConsoleCommand& activate()
                 { return this->setActive(true); }
-            inline _ConsoleCommand deactivate()
+            inline _ConsoleCommand& deactivate()
                 { return this->setActive(false); }
 
             inline _ConsoleCommand& setHidden(bool bHidden)
@@ -290,8 +306,7 @@ namespace orxonox
             void pushFunction(const FunctorPtr& functor, bool bForce = false);
             void pushFunction();
             void popFunction();
-            const ExecutorPtr& getExecutor() const;
-            const FunctorPtr& getFunctor() const;
+            void resetFunction();
 
             bool setObject(void* object);
             void pushObject(void* object);

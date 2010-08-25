@@ -92,7 +92,7 @@ namespace orxonox
 
     bool _ConsoleCommand::isActive() const
     {
-        return (this->bActive_ && this->executor_ && this->executor_->getFunctor());
+        return (this->bActive_ && this->executor_ && this->executor_->getFunctor() && (this->executor_->getFunctor()->getType() == Functor::Type::Static || this->executor_->getFunctor()->getRawObjectPointer()));
     }
 
     bool _ConsoleCommand::headersMatch(const FunctorPtr& functor)
@@ -153,7 +153,7 @@ namespace orxonox
         {
             if (this->executor_)
                 this->executor_->setFunctor(functor);
-            else
+            else if (functor)
                 this->executor_ = createExecutor(functor);
 
             return true;
@@ -207,6 +207,12 @@ namespace orxonox
         this->executor_ = command.executor_;
         if (command.executor_)
             this->executor_->setFunctor(command.functor_);
+    }
+
+    void _ConsoleCommand::resetFunction()
+    {
+        if (this->executor_)
+            this->executor_->setFunctor(0);
     }
 
     const ExecutorPtr& _ConsoleCommand::getExecutor() const
@@ -452,7 +458,7 @@ namespace orxonox
 
     /* static */ void _ConsoleCommand::destroyAll()
     {
-        while (!_ConsoleCommand::getCommandMap().empty() && !_ConsoleCommand::getCommandMap().begin().empty())
-            _ConsoleCommand::getCommandMap().begin().erase(_ConsoleCommand::getCommandMap().begin().begin());
+        while (!_ConsoleCommand::getCommandMap().empty() && !_ConsoleCommand::getCommandMap().begin()->second.empty())
+            delete _ConsoleCommand::getCommandMap().begin()->second.begin()->second;
     }
 }
