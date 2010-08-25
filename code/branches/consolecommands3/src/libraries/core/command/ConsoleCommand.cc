@@ -127,8 +127,20 @@ namespace orxonox
     _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized)
     {
         this->bActive_ = true;
+        this->bHidden_ = false;
+        this->accessLevel_ = AccessLevel::All;
+
         this->baseName_ = name;
         this->baseExecutor_ = executor;
+
+        this->argumentCompleter_[0] = 0;
+        this->argumentCompleter_[1] = 0;
+        this->argumentCompleter_[2] = 0;
+        this->argumentCompleter_[3] = 0;
+        this->argumentCompleter_[4] = 0;
+
+        this->keybindMode_ = KeybindMode::OnPress;
+        this->inputConfiguredParam_ = -1;
 
         if (bInitialized)
             this->executor_ = executor;
@@ -245,7 +257,7 @@ namespace orxonox
         Command command;
         command.executor_ = this->getExecutor();
         if (command.executor_)
-            command.functor_ = this->getFunctor();
+            command.functor_ = this->getExecutor()->getFunctor();
 
         if (this->setFunction(executor, bForce))
             this->commandStack_.push(command);
@@ -256,7 +268,7 @@ namespace orxonox
         Command command;
         command.executor_ = this->getExecutor();
         if (command.executor_)
-            command.functor_ = this->getFunctor();
+            command.functor_ = this->getExecutor()->getFunctor();
 
         if (this->setFunction(functor, bForce))
             this->commandStack_.push(command);
@@ -287,11 +299,6 @@ namespace orxonox
     const ExecutorPtr& _ConsoleCommand::getExecutor() const
     {
         return this->executor_;
-    }
-
-    const FunctorPtr& _ConsoleCommand::getFunctor() const
-    {
-        return this->executor_->getFunctor();
     }
 
     bool _ConsoleCommand::setObject(void* object)
@@ -336,6 +343,134 @@ namespace orxonox
             return this->executor_->getFunctor()->getRawObjectPointer();
         else
             return 0;
+    }
+
+    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1)
+    {
+        if (this->executor_)
+            this->executor_->setDefaultValues(param1);
+        else
+            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+
+        return *this;
+    }
+
+    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2)
+    {
+        if (this->executor_)
+            this->executor_->setDefaultValues(param1, param2);
+        else
+            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+
+        return *this;
+    }
+
+    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
+    {
+        if (this->executor_)
+            this->executor_->setDefaultValues(param1, param2, param3);
+        else
+            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+
+        return *this;
+    }
+
+    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
+    {
+        if (this->executor_)
+            this->executor_->setDefaultValues(param1, param2, param3, param4);
+        else
+            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+
+        return *this;
+    }
+
+    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
+    {
+        if (this->executor_)
+            this->executor_->setDefaultValues(param1, param2, param3, param4, param5);
+        else
+            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+
+        return *this;
+    }
+
+    _ConsoleCommand& _ConsoleCommand::defaultValue(unsigned int index, const MultiType& param)
+    {
+        if (this->executor_)
+            this->executor_->setDefaultValue(index, param);
+        else
+            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+
+        return *this;
+    }
+
+    _ConsoleCommand& _ConsoleCommand::argumentCompleter(unsigned int param, ArgumentCompleter* completer)
+    {
+        if (param < 5)
+            this->argumentCompleter_[param] = completer;
+        else
+            COUT(2) << "Warning: Couldn't add autocompletion-function for param " << param << " in console command \"" << this->baseName_ << "\": index out of bound." << std::endl;
+
+        return *this;
+    }
+
+    ArgumentCompleter* _ConsoleCommand::getArgumentCompleter(unsigned int param) const
+    {
+        if (param < 5)
+            return this->argumentCompleter_[param];
+        else
+            return 0;
+    }
+
+    void _ConsoleCommand::createArgumentCompletionList(unsigned int param, const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5)
+    {
+        if (param < 5 && this->argumentCompleter_[param])
+            this->argumentList_ = (*this->argumentCompleter_[param])(param1, param2, param3, param4, param5);
+        else
+            this->argumentList_.clear();
+    }
+
+    _ConsoleCommand& _ConsoleCommand::description(const std::string& description)
+    {
+        this->description_ = std::string("ConsoleCommandDescription::" + this->baseName_ + "::function");
+        AddLanguageEntry(this->description_, description);
+        return *this;
+    }
+
+    const std::string& _ConsoleCommand::getDescription() const
+    {
+        return GetLocalisation_noerror(this->description_);
+    }
+
+    _ConsoleCommand& _ConsoleCommand::descriptionParam(unsigned int param, const std::string& description)
+    {
+        if (param < MAX_FUNCTOR_ARGUMENTS)
+        {
+            this->descriptionParam_[param] = std::string("ConsoleCommandDescription::" + this->baseName_ + "::param" + multi_cast<std::string>(param));
+            AddLanguageEntry(this->descriptionParam_[param], description);
+        }
+        return *this;
+    }
+
+    const std::string& _ConsoleCommand::getDescriptionParam(unsigned int param) const
+    {
+        if (param < MAX_FUNCTOR_ARGUMENTS)
+            return GetLocalisation_noerror(this->descriptionParam_[param]);
+
+        return this->descriptionParam_[0];
+    }
+
+    _ConsoleCommand& _ConsoleCommand::descriptionReturnvalue(const std::string& description)
+    {
+        this->descriptionReturnvalue_ = std::string("ConsoleCommandDescription::" + this->baseName_ + "::returnvalue");
+        AddLanguageEntry(this->descriptionReturnvalue_, description);
+        return *this;
+    }
+
+    const std::string& _ConsoleCommand::getDescriptionReturnvalue(int param) const
+    {
+        return GetLocalisation_noerror(this->descriptionReturnvalue_);
     }
 
     /* static */ const _ConsoleCommand* _ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)

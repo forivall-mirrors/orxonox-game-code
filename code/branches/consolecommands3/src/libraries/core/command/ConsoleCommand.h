@@ -191,10 +191,6 @@ namespace orxonox
     orxonox::_ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = orxonox::_createConsoleCommand(group, name, orxonox::createExecutor(functor), false)
 
 
-#define _ModifyConsoleCommand(...) \
-    orxonox::_ConsoleCommand::getCommand(__VA_ARGS__, true)->getManipulator()
-
-
 namespace orxonox
 {
     class _CoreExport _ConsoleCommand
@@ -205,6 +201,21 @@ namespace orxonox
         {
             ExecutorPtr executor_;
             FunctorPtr functor_;
+        };
+
+        struct AccessLevel
+        {
+            enum Enum
+            {
+                All,
+                Standalone,
+                Master,
+                Server,
+                Client,
+                Online,
+                Offline,
+                None
+            };
         };
 
         public:
@@ -218,9 +229,9 @@ namespace orxonox
                         {
                             if (this->command_)
                             {
-                                if (this->command_->getExecutor() && this->command_->getFunctor() && this->command_->getFunctor()->getFullIdentifier() == typeid(F))
+                                if (this->command_->getExecutor() && this->command_->getExecutor()->getFunctor() && this->command_->getExecutor()->getFunctor()->getFullIdentifier() == typeid(F))
                                 {
-                                    FunctorPointer<F>* functor = static_cast<FunctorPointer<F>*>(this->command_->getFunctor().get());
+                                    FunctorPointer<F>* functor = static_cast<FunctorPointer<F>*>(this->command_->getExecutor()->getFunctor().get());
                                     functor->setFunction(function);
                                     return *this;
                                 }
@@ -233,9 +244,9 @@ namespace orxonox
                         {
                             if (this->command_)
                             {
-                                if (this->command_->getExecutor() && this->command_->getFunctor() && this->command_->getFunctor()->getFullIdentifier() == typeid(F))
+                                if (this->command_->getExecutor() && this->command_->getExecutor()->getFunctor() && this->command_->getExecutor()->getFunctor()->getFullIdentifier() == typeid(F))
                                 {
-                                    FunctorPointer<F, O>* functor = static_cast<FunctorPointer<F, O>*>(this->command_->getFunctor().get());
+                                    FunctorPointer<F, O>* functor = static_cast<FunctorPointer<F, O>*>(this->command_->getExecutor()->getFunctor().get());
                                     functor->setFunction(function);
                                     functor->setObject(object);
                                     return *this;
@@ -270,9 +281,6 @@ namespace orxonox
                     inline _ConsoleCommandManipulator& popObject()
                         { if (this->command_) { this->command_->popObject(); } return *this; }
 
-                    inline void* getObject() const
-                        { if (this->command_) { return this->command_->getObject(); } else { return 0; } }
-
                     inline _ConsoleCommandManipulator& setActive(bool bActive)
                         { if (this->command_) { this->command_->setActive(bActive); } return *this; }
                     inline _ConsoleCommandManipulator& activate()
@@ -280,10 +288,38 @@ namespace orxonox
                     inline _ConsoleCommandManipulator& deactivate()
                         { return this->setActive(false); }
 
-                    inline bool isActive() const
-                        { return this->command_ ? this->command_->isActive() : false; }
-                    inline bool exists() const
-                        { return (this->command_ != 0); }
+                    inline _ConsoleCommandManipulator& setHidden(bool bHidden)
+                        { if (this->command_) { this->command_->setHidden(bHidden); } return *this; }
+                    inline _ConsoleCommandManipulator& hide()
+                        { return this->setHidden(true); }
+                    inline _ConsoleCommandManipulator& show()
+                        { return this->setHidden(false); }
+
+                    inline _ConsoleCommandManipulator& defaultValues(const MultiType& param1)
+                        { if (this->command_) { this->command_->defaultValues(param1); } return *this; }
+                    inline _ConsoleCommandManipulator& defaultValues(const MultiType& param1, const MultiType& param2)
+                        { if (this->command_) { this->command_->defaultValues(param1, param2); } return *this; }
+                    inline _ConsoleCommandManipulator& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
+                        { if (this->command_) { this->command_->defaultValues(param1, param2, param3); } return *this; }
+                    inline _ConsoleCommandManipulator& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
+                        { if (this->command_) { this->command_->defaultValues(param1, param2, param3, param4); } return *this; }
+                    inline _ConsoleCommandManipulator& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
+                        { if (this->command_) { this->command_->defaultValues(param1, param2, param3, param4, param5); } return *this; }
+                    inline _ConsoleCommandManipulator& defaultValue(unsigned int index, const MultiType& param)
+                        { if (this->command_) { this->command_->defaultValue(index, param); } return *this; }
+
+                    inline _ConsoleCommandManipulator& accessLevel(_ConsoleCommand::AccessLevel::Enum level)
+                        { if (this->command_) { this->command_->accessLevel(level); } return *this; }
+
+                    inline _ConsoleCommandManipulator& argumentCompleter(unsigned int param, ArgumentCompleter* completer)
+                        { if (this->command_) { this->command_->argumentCompleter(param, completer); } return *this; }
+
+                    inline _ConsoleCommandManipulator& setAsInputCommand()
+                        { if (this->command_) { this->command_->setAsInputCommand(); } return *this; }
+                    inline _ConsoleCommandManipulator& keybindMode(KeybindMode::Value mode)
+                        { if (this->command_) { this->command_->keybindMode(mode); } return *this; }
+                    inline _ConsoleCommandManipulator& inputConfiguredParam(int index)
+                        { if (this->command_) { this->command_->inputConfiguredParam(index); } return *this; }
 
                 private:
                     _ConsoleCommand* command_;
@@ -298,29 +334,78 @@ namespace orxonox
             _ConsoleCommand& addGroup(const std::string& group);
             _ConsoleCommand& addGroup(const std::string& group, const std::string&  name);
 
-            inline void setActive(bool bActive)
-                { this->bActive_ = bActive; }
-            inline void activate()
-                { this->setActive(true); }
-            inline void deactivate()
-                { this->setActive(false); }
+            inline _ConsoleCommand setActive(bool bActive)
+                { this->bActive_ = bActive; return *this; }
+            inline _ConsoleCommand activate()
+                { return this->setActive(true); }
+            inline _ConsoleCommand deactivate()
+                { return this->setActive(false); }
+
+            inline _ConsoleCommand& setHidden(bool bHidden)
+                { this->bHidden_ = bHidden; return *this; }
+            inline _ConsoleCommand& hide()
+                { return this->setHidden(true); }
+            inline _ConsoleCommand& show()
+                { return this->setHidden(false); }
+
             bool isActive() const;
+            bool hasAccess() const;
+            bool isHidden() const;
+
+            _ConsoleCommand& description(const std::string& description);
+            const std::string& getDescription() const;
+
+            _ConsoleCommand& descriptionParam(unsigned int param, const std::string& description);
+            const std::string& getDescriptionParam(unsigned int param) const;
+
+            _ConsoleCommand& descriptionReturnvalue(const std::string& description);
+            const std::string& getDescriptionReturnvalue(int param) const;
+
+            _ConsoleCommand& defaultValues(const MultiType& param1);
+            _ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2);
+            _ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3);
+            _ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4);
+            _ConsoleCommand& defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5);
+            _ConsoleCommand& defaultValue(unsigned int index, const MultiType& param);
+
+            inline _ConsoleCommand& accessLevel(AccessLevel::Enum level)
+                { this->accessLevel_ = level; return *this; }
+            inline AccessLevel::Enum getAccessLevel() const
+                { return this->accessLevel_; }
+
+            _ConsoleCommand& argumentCompleter(unsigned int param, ArgumentCompleter* completer);
+            ArgumentCompleter* getArgumentCompleter(unsigned int param) const;
+
+            void createArgumentCompletionList(unsigned int param, const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "");
+            const ArgumentCompletionList& getArgumentCompletionList() const
+                { return this->argumentList_; }
+            ArgumentCompletionList::const_iterator getArgumentCompletionListBegin() const
+                { return this->argumentList_.begin(); }
+            ArgumentCompletionList::const_iterator getArgumentCompletionListEnd() const
+                { return this->argumentList_.end(); }
+
+            inline _ConsoleCommand& setAsInputCommand()
+            {
+                this->keybindMode(KeybindMode::OnHold);
+                this->defaultValue(0, Vector2(0.0f, 0.0f));
+                this->inputConfiguredParam(0);
+                return *this;
+            }
+
+            inline _ConsoleCommand& keybindMode(KeybindMode::Value mode)
+                { this->keybindMode_ = mode; return *this; }
+            inline KeybindMode::Value getKeybindMode() const
+                { return this->keybindMode_; }
+
+            inline _ConsoleCommand& inputConfiguredParam(int index)
+                { this->inputConfiguredParam_ = index; return *this; }
+            inline int getInputConfiguredParam_() const
+                { return this->inputConfiguredParam_; }
 
             inline _ConsoleCommandManipulator getManipulator() const
                 { return this; }
 
-            static inline const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommands()
-                { return _ConsoleCommand::getCommandMap(); }
-
-            static inline const _ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
-                { return _ConsoleCommand::getCommand("", name, bPrintError); }
-            static const _ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
-
         private:
-            static std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommandMap();
-            static void registerCommand(const std::string& group, const std::string& name, _ConsoleCommand* command);
-            static void unregisterCommand(_ConsoleCommand* command);
-
             bool headersMatch(const FunctorPtr& functor);
             bool headersMatch(const ExecutorPtr& executor);
 
@@ -339,24 +424,48 @@ namespace orxonox
             void* getObject() const;
 
             bool bActive_;
-//            const std::type_info& functionHeader_;
+            bool bHidden_;
+            AccessLevel::Enum accessLevel_;
             std::string baseName_;
             ExecutorPtr baseExecutor_;
 
             ExecutorPtr executor_;
             std::stack<Command> commandStack_;
             std::stack<void*> objectStack_;
+
+            ArgumentCompleter* argumentCompleter_[5];
+            ArgumentCompletionList argumentList_;
+
+            KeybindMode::Value keybindMode_;
+            int inputConfiguredParam_;
+
+            LanguageEntryLabel description_;
+            LanguageEntryLabel descriptionReturnvalue_;
+            LanguageEntryLabel descriptionParam_[MAX_FUNCTOR_ARGUMENTS];
+
+        public:
+            static inline const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommands()
+                { return _ConsoleCommand::getCommandMap(); }
+
+            static inline const _ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
+                { return _ConsoleCommand::getCommand("", name, bPrintError); }
+            static const _ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
+
+        private:
+            static std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommandMap();
+            static void registerCommand(const std::string& group, const std::string& name, _ConsoleCommand* command);
+            static void unregisterCommand(_ConsoleCommand* command);
     };
 
     inline _ConsoleCommand* _createConsoleCommand(const std::string& name, const ExecutorPtr& executor, bool bInitialized = true)
-    {
-        return new _ConsoleCommand("", name, executor, bInitialized);
-    }
-
+        { return new _ConsoleCommand("", name, executor, bInitialized); }
     inline _ConsoleCommand* _createConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized = true)
-    {
-        return new _ConsoleCommand(group, name, executor, bInitialized);
-    }
+        { return new _ConsoleCommand(group, name, executor, bInitialized); }
+
+    inline _ConsoleCommand::_ConsoleCommandManipulator _ModifyConsoleCommand(const std::string& name)
+        { return _ConsoleCommand::getCommand(name, true); }
+    inline _ConsoleCommand::_ConsoleCommandManipulator _ModifyConsoleCommand(const std::string& group, const std::string& name)
+        { return _ConsoleCommand::getCommand(group, name, true); }
 }
 
 #endif /* _ConsoleCommand_H__ */
