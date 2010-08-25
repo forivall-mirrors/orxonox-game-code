@@ -65,7 +65,7 @@
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
-#include "command/CommandExecutor.h"
+#include "command/ConsoleCommand.h"
 #include "command/IOConsole.h"
 #include "command/TclBind.h"
 #include "command/TclThreadManager.h"
@@ -87,7 +87,7 @@ namespace orxonox
         // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
         : identifierDestroyer_(Identifier::destroyAllIdentifiers)
         // Cleanup guard for external console commands that don't belong to an Identifier
-        , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
+        , consoleCommandDestroyer_(_ConsoleCommand::destroyAll)
         , bGraphicsLoaded_(false)
         , bStartIOConsole_(true)
     {

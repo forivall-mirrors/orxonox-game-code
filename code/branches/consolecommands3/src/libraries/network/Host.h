@@ -84,7 +84,6 @@ class _NetworkExport Host{
     virtual void printRTT()=0;
     bool isActive(){ return bIsActive_; }
   private:
-    ConsoleCommand* printRTTCC_;
     static uint32_t clientID_s;
     static uint32_t shipID_s;
     static std::vector<Host*> instances_s;

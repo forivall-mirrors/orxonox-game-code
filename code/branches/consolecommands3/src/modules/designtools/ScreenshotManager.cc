@@ -19,7 +19,7 @@
 namespace orxonox
 {
     ManageScopedSingleton(ScreenshotManager, ScopeID::Graphics, false);
-    SetConsoleCommandAlias(ScreenshotManager, makeScreenshot_s, "printScreenHD", true);
+    _SetConsoleCommand("printScreenHD", &ScreenshotManager::makeScreenshot_s);
 
     ScreenshotManager::ScreenshotManager()
     {

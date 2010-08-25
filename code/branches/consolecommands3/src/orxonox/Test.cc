@@ -37,12 +37,12 @@ namespace orxonox
 {
     CreateFactory ( Test );
 
-    SetConsoleCommand(Test, printV1, true).accessLevel(AccessLevel::User);
-    SetConsoleCommand(Test, printV2, true).accessLevel(AccessLevel::User);
-    SetConsoleCommand(Test, printV3, true).accessLevel(AccessLevel::User);
-    SetConsoleCommand(Test, printV4, true).accessLevel(AccessLevel::User);
-    SetConsoleCommand(Test, call, true).accessLevel(AccessLevel::User);
-    SetConsoleCommand(Test, call2, true).accessLevel(AccessLevel::User);
+    _SetConsoleCommand("Test", "printV1", &Test::printV1).addShortcut();
+    _SetConsoleCommand("Test", "printV2", &Test::printV2).addShortcut();
+    _SetConsoleCommand("Test", "printV3", &Test::printV3).addShortcut();
+    _SetConsoleCommand("Test", "printV4", &Test::printV4).addShortcut();
+    _SetConsoleCommand("Test", "call",    &Test::call).addShortcut();
+    _SetConsoleCommand("Test", "call2",   &Test::call2).addShortcut();
 
 
   //void=* aaaaa = copyPtr<sizeof(&Test::printV1)>( &NETWORK_FUNCTION_POINTER, &Test::printV1 );

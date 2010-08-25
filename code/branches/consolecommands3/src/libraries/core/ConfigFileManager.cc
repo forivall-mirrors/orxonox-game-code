@@ -424,25 +424,37 @@ namespace orxonox
     // SettingsConfigFile //
     ////////////////////////
 
+    static const std::string __CC_load_name = "reloadSettings";
+    static const std::string __CC_setFilename_name = "setSettingsFile";
+    static const std::string __CC_config_name = "config";
+    static const std::string __CC_tconfig_name = "tconfig";
+    static const std::string __CC_getConfig_name = "getConfig";
+
+    _SetConsoleCommand(__CC_load_name,            &ConfigFile::load);
+    _SetConsoleCommand(__CC_setFilename_name,     &SettingsConfigFile::setFilename);
+    _SetConsoleCommand(__CC_config_name,          &SettingsConfigFile::config).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
+    _SetConsoleCommand(__CC_tconfig_name,         &SettingsConfigFile::tconfig).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
+    _SetConsoleCommand(__CC_getConfig_name,       &SettingsConfigFile::getConfig).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries());
+
     SettingsConfigFile* SettingsConfigFile::singletonPtr_s = 0;
 
     SettingsConfigFile::SettingsConfigFile(const std::string& filename)
         : ConfigFile(filename)
     {
-        ConsoleCommand* command = createConsoleCommand(createFunctor(&ConfigFile::load, this), "reloadSettings");
-        CommandExecutor::addConsoleCommandShortcut(command);
-        command = createConsoleCommand(createFunctor(&SettingsConfigFile::setFilename, this), "setSettingsFile");
-        CommandExecutor::addConsoleCommandShortcut(command);
-        command = createConsoleCommand(createFunctor(&SettingsConfigFile::config, this), "config");
-        CommandExecutor::addConsoleCommandShortcut(command).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
-        command = createConsoleCommand(createFunctor(&SettingsConfigFile::tconfig, this), "tconfig");
-        CommandExecutor::addConsoleCommandShortcut(command).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
-        command = createConsoleCommand(createFunctor(&SettingsConfigFile::getConfig, this), "getConfig");
-        CommandExecutor::addConsoleCommandShortcut(command).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries());
+        _ModifyConsoleCommand(__CC_load_name).setObject(this);
+        _ModifyConsoleCommand(__CC_setFilename_name).setObject(this);
+        _ModifyConsoleCommand(__CC_config_name).setObject(this);
+        _ModifyConsoleCommand(__CC_tconfig_name).setObject(this);
+        _ModifyConsoleCommand(__CC_getConfig_name).setObject(this);
     }
 
     SettingsConfigFile::~SettingsConfigFile()
     {
+        _ModifyConsoleCommand(__CC_load_name).setObject(0);
+        _ModifyConsoleCommand(__CC_setFilename_name).setObject(0);
+        _ModifyConsoleCommand(__CC_config_name).setObject(0);
+        _ModifyConsoleCommand(__CC_tconfig_name).setObject(0);
+        _ModifyConsoleCommand(__CC_getConfig_name).setObject(0);
     }
 
     void SettingsConfigFile::load()

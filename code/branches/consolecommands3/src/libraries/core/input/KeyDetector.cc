@@ -37,15 +37,18 @@
 
 namespace orxonox
 {
-    std::string KeyDetector::callbackCommand_s = "KeyDetectorKeyPressed";
     ManageScopedSingleton(KeyDetector, ScopeID::Graphics, false);
+
+    static const std::string __CC_KeyDetector_callback_name = "KeyDetectorKeyPressed";
+    _DeclareConsoleCommand(__CC_KeyDetector_callback_name, &prototype::void__string);
 
     KeyDetector::KeyDetector()
         : KeyBinder("")
     {
         RegisterObject(KeyDetector);
 
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyDetector::callback,  this), callbackCommand_s));
+        _ModifyConsoleCommand(__CC_KeyDetector_callback_name).setFunction(&KeyDetector::callback, this);
+
         this->assignCommands();
 
         inputState_ = InputManager::getInstance().createInputState("detector", false, false, InputStatePriority::Detector);
@@ -58,13 +61,14 @@ namespace orxonox
     {
         inputState_->setHandler(NULL);
         InputManager::getInstance().destroyState("detector");
+        _ModifyConsoleCommand(__CC_KeyDetector_callback_name).resetFunction();
     }
 
     void KeyDetector::assignCommands()
     {
         // Assign every button/axis the same command, but with its name as argument
         for (std::map<std::string, Button*>::const_iterator it = allButtons_.begin(); it != allButtons_.end(); ++it)
-            it->second->parse(callbackCommand_s + ' ' + it->second->groupName_ + "." + it->second->name_);
+            it->second->parse(__CC_KeyDetector_callback_name + ' ' + it->second->groupName_ + "." + it->second->name_);
     }
 
     void KeyDetector::callback(const std::string& name)

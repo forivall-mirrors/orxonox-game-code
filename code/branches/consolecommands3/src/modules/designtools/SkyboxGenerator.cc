@@ -49,7 +49,7 @@
 namespace orxonox
 {
 
-    SetConsoleCommand(SkyboxGenerator, createSkybox, true);
+    _SetConsoleCommand("SkyboxGenerator", "createSkybox", &SkyboxGenerator::createSkybox).addShortcut();
 
     ManageScopedSingleton(SkyboxGenerator, ScopeID::Graphics, false);
 
@@ -78,7 +78,7 @@ namespace orxonox
         {
             if(!this->captionsRemoved_)
             {
-                CommandExecutor::execute("setGametypeStatus false");
+                CommandExecutor::execute("GametypeStatus displayCaption false");
                 this->captionsRemoved_ = true;
                 return;
             }
@@ -144,7 +144,7 @@ namespace orxonox
                 iterateOverDirections_ =0;
                 takeScreenshot_ = false;
                 CommandExecutor::execute("pause");
-                CommandExecutor::execute("setGametypeStatus true");
+                CommandExecutor::execute("GametypeStatus displayCaption true");
                 this->captionsRemoved_ = false;
             }
 

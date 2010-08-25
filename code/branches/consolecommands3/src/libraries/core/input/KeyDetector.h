@@ -56,7 +56,6 @@ namespace orxonox
 
         FunctorPtr callbackFunction_;
         InputState* inputState_;
-        static std::string callbackCommand_s;
         static KeyDetector* singletonPtr_s;
     };
 }

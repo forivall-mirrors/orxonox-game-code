@@ -46,11 +46,11 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(ArtificialController, formationflight, true);
-    SetConsoleCommand(ArtificialController, masteraction, true);
-    SetConsoleCommand(ArtificialController, followme, true);
-    SetConsoleCommand(ArtificialController, passivebehaviour, true);
-    SetConsoleCommand(ArtificialController, formationsize, true);
+    _SetConsoleCommand("ArtificialController", "formationflight",  &ArtificialController::formationflight);
+    _SetConsoleCommand("ArtificialController", "masteraction",     &ArtificialController::masteraction);
+    _SetConsoleCommand("ArtificialController", "followme",         &ArtificialController::followme);
+    _SetConsoleCommand("ArtificialController", "passivebehaviour", &ArtificialController::passivebehaviour);
+    _SetConsoleCommand("ArtificialController", "formationsize",    &ArtificialController::formationsize);
 
     static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
     static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;

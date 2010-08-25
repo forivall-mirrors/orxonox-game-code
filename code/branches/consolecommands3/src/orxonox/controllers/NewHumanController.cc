@@ -48,10 +48,10 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(NewHumanController, changeMode, false).keybindMode(KeybindMode::OnPress);
-    SetConsoleCommand(NewHumanController, accelerate, false).keybindMode(KeybindMode::OnPress);
-    SetConsoleCommand(NewHumanController, decelerate, false).keybindMode(KeybindMode::OnPress);
-    SetConsoleCommand(NewHumanController, unfire,      true).keybindMode(KeybindMode::OnRelease);
+    _SetConsoleCommand("NewHumanController", "changeMode", &NewHumanController::changeMode).keybindMode(KeybindMode::OnPress);
+    _SetConsoleCommand("NewHumanController", "accelerate", &NewHumanController::accelerate).keybindMode(KeybindMode::OnPress);
+    _SetConsoleCommand("NewHumanController", "decelerate", &NewHumanController::decelerate).keybindMode(KeybindMode::OnPress);
+    _SetConsoleCommand("NewHumanController", "unfire",     &NewHumanController::unfire    ).keybindMode(KeybindMode::OnRelease).addShortcut();
 
     CreateUnloadableFactory(NewHumanController);
 

@@ -47,6 +47,20 @@ namespace orxonox
 {
     DeclareGameState(GSMainMenu, "mainMenu", false, true);
 
+    static const std::string __CC_startStandalone_name      = "startGame";
+    static const std::string __CC_startServer_name          = "startServer";
+    static const std::string __CC_startClient_name          = "startClient";
+    static const std::string __CC_startDedicated_name       = "startDedicated";
+    static const std::string __CC_startMainMenu_name        = "startMainMenu";
+    static const std::string __CC_setMainMenuSoundPath_name = "setMMSoundPath";
+
+    _SetConsoleCommand(__CC_startStandalone_name,      &GSMainMenu::startStandalone).deactivate();
+    _SetConsoleCommand(__CC_startServer_name,          &GSMainMenu::startServer    ).deactivate();
+    _SetConsoleCommand(__CC_startClient_name,          &GSMainMenu::startClient    ).deactivate();
+    _SetConsoleCommand(__CC_startDedicated_name,       &GSMainMenu::startDedicated ).deactivate();
+    _SetConsoleCommand(__CC_startMainMenu_name,        &GSMainMenu::startMainMenu  ).deactivate();
+    _SetConsoleCommand(__CC_setMainMenuSoundPath_name, &GSMainMenu::setMainMenuSoundPath);
+
     GSMainMenu::GSMainMenu(const GameStateInfo& info)
         : GameState(info)
     {
@@ -88,14 +102,12 @@ namespace orxonox
 
         InputManager::getInstance().enterState("MainMenuHackery");
 
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startStandalone), "startGame"));
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startServer), "startServer"));
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startClient), "startClient"));
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startDedicated), "startDedicated"));
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::startMainMenu), "startMainMenu"));
-
-        // create command to change sound path
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&GSMainMenu::setMainMenuSoundPath, this), "setMMSoundPath"));
+        _ModifyConsoleCommand(__CC_startStandalone_name).activate();
+        _ModifyConsoleCommand(__CC_startServer_name    ).activate();
+        _ModifyConsoleCommand(__CC_startClient_name    ).activate();
+        _ModifyConsoleCommand(__CC_startDedicated_name ).activate();
+        _ModifyConsoleCommand(__CC_startMainMenu_name  ).activate();
+        _ModifyConsoleCommand(__CC_setMainMenuSoundPath_name).setObject(this);
 
         KeyBinderManager::getInstance().setToDefault();
 
@@ -121,6 +133,13 @@ namespace orxonox
         GUIManager::getInstance().setBackgroundImage("");
         GUIManager::hideGUI("MainMenu");
         GraphicsManager::getInstance().setCamera(0);
+
+        _ModifyConsoleCommand(__CC_startStandalone_name).deactivate();
+        _ModifyConsoleCommand(__CC_startServer_name    ).deactivate();
+        _ModifyConsoleCommand(__CC_startClient_name    ).deactivate();
+        _ModifyConsoleCommand(__CC_startDedicated_name ).deactivate();
+        _ModifyConsoleCommand(__CC_startMainMenu_name  ).deactivate();
+        _ModifyConsoleCommand(__CC_setMainMenuSoundPath_name).setObject(0);
     }
 
     void GSMainMenu::update(const Clock& time)

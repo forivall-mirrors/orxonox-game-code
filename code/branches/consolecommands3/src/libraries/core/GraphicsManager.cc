@@ -64,6 +64,9 @@
 
 namespace orxonox
 {
+    static const std::string __CC_printScreen_name = "printScreen";
+    _DeclareConsoleCommand(__CC_printScreen_name, &prototype::void__void);
+
     class OgreWindowEventListener : public Ogre::WindowEventListener
     {
     public:
@@ -130,7 +133,7 @@ namespace orxonox
         Loader::unload(debugOverlay_.get());
 
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_.get());
-        // TODO: Destroy the console command
+        _ModifyConsoleCommand(__CC_printScreen_name).resetFunction();
 
         // Undeclare the resources
         Loader::unload(resources_.get());
@@ -320,8 +323,7 @@ namespace orxonox
         Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(Ogre::MIP_UNLIMITED);
 
         // add console commands
-        ccPrintScreen_ = createConsoleCommand(createFunctor(&GraphicsManager::printScreen, this), "printScreen");
-        CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
+        _ModifyConsoleCommand(__CC_printScreen_name).setFunction(&GraphicsManager::printScreen, this);
     }
 
     void GraphicsManager::loadDebugOverlay()

@@ -113,9 +113,6 @@ namespace orxonox
         int                 ogreLogLevelNormal_;       //!< Corresponding Orxonox debug level for LL_NORMAL
         int                 ogreLogLevelCritical_;     //!< Corresponding Orxonox debug level for LL_CRITICAL
 
-        // console commands
-        ConsoleCommand*     ccPrintScreen_;
-
         static GraphicsManager* singletonPtr_s;        //!< Pointer to the Singleton
     };
 }

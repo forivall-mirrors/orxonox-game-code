@@ -49,13 +49,13 @@ namespace orxonox
 {
     const float TCLTHREADMANAGER_MAX_CPU_USAGE = 0.50f;
 
-    SetConsoleCommandShortcutAlias(TclThreadManager, execute, "tclexecute").argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommandShortcutAlias(TclThreadManager, query,   "tclquery"  ).argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, create,  false);
-    SetConsoleCommand(TclThreadManager, destroy, false).argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, execute, false).argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, query,   false).argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, source,  false).argumentCompleter(0, autocompletion::tclthreads());
+    _SetConsoleCommand("tclexecute", &TclThreadManager::execute).argumentCompleter(0, autocompletion::tclthreads());
+    _SetConsoleCommand("tclquery",   &TclThreadManager::query  ).argumentCompleter(0, autocompletion::tclthreads());
+    _SetConsoleCommand("TclThreadManager", "create",  &TclThreadManager::create);
+    _SetConsoleCommand("TclThreadManager", "destroy", &TclThreadManager::destroy).argumentCompleter(0, autocompletion::tclthreads());
+    _SetConsoleCommand("TclThreadManager", "execute", &TclThreadManager::execute).argumentCompleter(0, autocompletion::tclthreads());
+    _SetConsoleCommand("TclThreadManager", "query",   &TclThreadManager::query  ).argumentCompleter(0, autocompletion::tclthreads());
+    _SetConsoleCommand("TclThreadManager", "source",  &TclThreadManager::source ).argumentCompleter(0, autocompletion::tclthreads());
 
     /**
         @brief A struct containing all information about a Tcl-interpreter

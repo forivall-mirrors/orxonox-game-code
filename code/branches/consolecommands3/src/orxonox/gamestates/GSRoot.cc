@@ -40,7 +40,13 @@
 namespace orxonox
 {
     DeclareGameState(GSRoot, "root", false, false);
-    SetConsoleCommandShortcut(GSRoot, printObjects);
+
+    static const std::string __CC_setTimeFactor_name = "setTimeFactor";
+    static const std::string __CC_pause_name = "pause";
+
+    _SetConsoleCommand("printObjects", &GSRoot::printObjects);
+    _SetConsoleCommand(__CC_setTimeFactor_name, &GSRoot::setTimeFactor).accessLevel(AccessLevel::Master).defaultValues(1.0);
+    _SetConsoleCommand(__CC_pause_name,         &GSRoot::pause        ).accessLevel(AccessLevel::Master);
 
     registerStaticNetworkFunction(&TimeFactorListener::setTimeFactor);
 
@@ -75,17 +81,14 @@ namespace orxonox
         // reset game speed to normal
         TimeFactorListener::setTimeFactor(1.0f);
 
-        // time factor console command
-        ConsoleCommand* command = createConsoleCommand(createFunctor(&GSRoot::setTimeFactor, this), "setTimeFactor");
-        CommandExecutor::addConsoleCommandShortcut(command).accessLevel(AccessLevel::Offline).defaultValue(0, 1.0);
-
-        // time factor console command
-        command = createConsoleCommand(createFunctor(&GSRoot::pause, this), "pause");
-        CommandExecutor::addConsoleCommandShortcut(command).accessLevel(AccessLevel::Offline);
+        _ModifyConsoleCommand(__CC_setTimeFactor_name).setObject(this);
+        _ModifyConsoleCommand(__CC_pause_name).setObject(this);
     }
 
     void GSRoot::deactivate()
     {
+        _ModifyConsoleCommand(__CC_setTimeFactor_name).setObject(0);
+        _ModifyConsoleCommand(__CC_pause_name).setObject(0);
     }
 
     void GSRoot::update(const Clock& time)

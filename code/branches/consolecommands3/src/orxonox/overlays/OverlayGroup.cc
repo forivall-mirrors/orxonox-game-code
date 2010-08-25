@@ -42,9 +42,9 @@ namespace orxonox
 {
     CreateFactory(OverlayGroup);
 
-    SetConsoleCommand(OverlayGroup, toggleVisibility, false).accessLevel(AccessLevel::User);
-    SetConsoleCommand(OverlayGroup, scaleGroup, false).accessLevel(AccessLevel::User);
-    SetConsoleCommand(OverlayGroup, scrollGroup, false).accessLevel(AccessLevel::User);
+    _SetConsoleCommand("OverlayGroup", "toggleVisibility", &OverlayGroup::toggleVisibility);
+    _SetConsoleCommand("OverlayGroup", "scaleGroup",       &OverlayGroup::scaleGroup);
+    _SetConsoleCommand("OverlayGroup", "scrollGroup",      &OverlayGroup::scrollGroup);
 
     OverlayGroup::OverlayGroup(BaseObject* creator)
         : BaseObject(creator)

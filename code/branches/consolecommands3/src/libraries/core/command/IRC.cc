@@ -41,9 +41,9 @@ namespace orxonox
 {
     static const unsigned int IRC_TCL_THREADID  = 1421421421;
 
-    SetConsoleCommand(IRC, say,  true).accessLevel(AccessLevel::User);
-    SetConsoleCommand(IRC, msg,  false).accessLevel(AccessLevel::User);
-    SetConsoleCommand(IRC, nick, false).accessLevel(AccessLevel::User);
+    _SetConsoleCommand("IRC", "say",  &IRC::say);
+    _SetConsoleCommand("IRC", "msg",  &IRC::msg);
+    _SetConsoleCommand("IRC", "nick", &IRC::nick);
 
     IRC::IRC()
     {

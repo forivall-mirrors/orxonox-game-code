@@ -39,11 +39,11 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcut(OutputHandler, log);
-    SetConsoleCommandShortcut(OutputHandler, error);
-    SetConsoleCommandShortcut(OutputHandler, warning);
-    SetConsoleCommandShortcut(OutputHandler, info);
-    SetConsoleCommandShortcut(OutputHandler, debug);
+    _SetConsoleCommand("log",     OutputHandler::log    );
+    _SetConsoleCommand("error",   OutputHandler::error  );
+    _SetConsoleCommand("warning", OutputHandler::warning);
+    _SetConsoleCommand("info",    OutputHandler::info   );
+    _SetConsoleCommand("debug",   OutputHandler::debug  );
 
     Shell::Shell(const std::string& consoleName, bool bScrollable)
         : OutputListener(consoleName)

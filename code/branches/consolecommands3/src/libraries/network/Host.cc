@@ -37,7 +37,10 @@
 
 namespace orxonox {
 
-  SetConsoleCommandShortcut(Host, Chat);
+  static const std::string __CC_printRTT_name = "printRTT";
+
+  _SetConsoleCommand("chat", &Host::Chat);
+  _SetConsoleCommand(__CC_printRTT_name, &Host::printRTT);
 
   // Host*               Host::instance_=0;
   uint32_t            Host::clientID_s=0;
@@ -51,8 +54,7 @@ namespace orxonox {
   {
   //   assert(instance_==0);
     instances_s.push_back(this);
-    this->printRTTCC_ = createConsoleCommand( createFunctor(&Host::printRTT, this), "printRTT" );
-    CommandExecutor::addConsoleCommandShortcut( this->printRTTCC_ );
+    _ModifyConsoleCommand(__CC_printRTT_name).setObject(this);
     this->bIsActive_ = false;
   }
 
@@ -64,8 +66,7 @@ namespace orxonox {
   {
     assert( std::find( instances_s.begin(), instances_s.end(), this )!=instances_s.end() );
     instances_s.erase(std::find( instances_s.begin(), instances_s.end(), this ));
-    if( this->printRTTCC_ )
-      delete this->printRTTCC_;
+    _ModifyConsoleCommand(__CC_printRTT_name).setObject(0);
   }
 
   /**

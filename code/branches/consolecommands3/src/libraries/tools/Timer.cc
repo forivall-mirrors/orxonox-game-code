@@ -38,8 +38,8 @@
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutExtern(delay);
-    SetConsoleCommandShortcutExtern(killdelays);
+    _SetConsoleCommand("delay", &delay);
+    _SetConsoleCommand("killdelays", &killdelays);
 
     static std::set<Timer*> delaytimerset;
 

@@ -70,7 +70,7 @@ namespace orxonox
 {
     static void key_esc()
         { GUIManager::getInstance().keyESC(); }
-    SetConsoleCommandShortcutExternAlias(key_esc, "keyESC");
+    _SetConsoleCommand("keyESC", &key_esc);
 
     class CEGUILogger : public CEGUI::DefaultLogger
     {
@@ -98,8 +98,8 @@ namespace orxonox
 
     GUIManager* GUIManager::singletonPtr_s = 0;
 
-    SetConsoleCommandShortcut(GUIManager, showGUI).accessLevel(AccessLevel::User).defaultValue(1, false).defaultValue(2, true);
-    SetConsoleCommandShortcut(GUIManager, hideGUI).accessLevel(AccessLevel::User);
+    _SetConsoleCommand("showGUI", &GUIManager::showGUI).defaultValue(1, false).defaultValue(2, true);
+    _SetConsoleCommand("hideGUI", &GUIManager::hideGUI);
 
     /**
     @brief

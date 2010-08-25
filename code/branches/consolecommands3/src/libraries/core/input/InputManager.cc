@@ -61,6 +61,13 @@ namespace orxonox
 {
     SetCommandLineSwitch(keyboard_no_grab).information("Whether not to exclusively grab the keyboard");
 
+    static const std::string __CC_InputManager_name = "InputManager";
+    static const std::string __CC_calibrate_name = "calibrate";
+    static const std::string __CC_reload_name = "reload";
+
+    _SetConsoleCommand(__CC_InputManager_name, __CC_calibrate_name, &InputManager::calibrate).addShortcut();
+    _SetConsoleCommand(__CC_InputManager_name, __CC_reload_name,    &InputManager::reload   );
+
     // Abuse of this source file for the InputHandler
     InputHandler InputHandler::EMPTY;
 
@@ -117,10 +124,8 @@ namespace orxonox
 
         this->updateActiveStates();
 
-        // calibrate console command
-        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&InputManager::calibrate, this), "calibrate"), true);
-        // reload console command
-        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&InputManager::reload, this), "reload"), false);
+        _ModifyConsoleCommand(__CC_InputManager_name, __CC_calibrate_name).setObject(this);
+        _ModifyConsoleCommand(__CC_InputManager_name, __CC_reload_name).setObject(this);
 
         CCOUT(4) << "Construction complete." << std::endl;
         internalState_ = Nothing;
@@ -286,6 +291,10 @@ namespace orxonox
 
         if (!(internalState_ & Bad))
             this->destroyDevices();
+
+        // Reset console commands
+        _ModifyConsoleCommand(__CC_InputManager_name, __CC_calibrate_name).setObject(0);
+        _ModifyConsoleCommand(__CC_InputManager_name, __CC_reload_name).setObject(0);
 
         CCOUT(3) << "Destruction complete." << std::endl;
     }
