@@ -54,7 +54,6 @@ namespace orxonox
             static std::string hint(const std::string& command);
 
             static CommandEvaluation evaluate(const std::string& command);
-            static const CommandEvaluation& getLastEvaluation();
 
         private:
             CommandExecutor() {}
@@ -69,19 +68,19 @@ namespace orxonox
 
             static unsigned int argumentsFinished();
             static unsigned int argumentsGiven();
-            static bool enoughArgumentsGiven(ConsoleCommand* command);
+            static bool enoughArgumentsGiven(_ConsoleCommand* command);
             static const std::string& getArgument(unsigned int index);
             static const std::string& getLastArgument();
 
             static void createListOfPossibleIdentifiers(const std::string& fragment);
             static void createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier = 0);
-            static void createListOfPossibleArguments(const std::string& fragment, ConsoleCommand* command, unsigned int param);
+            static void createListOfPossibleArguments(const std::string& fragment, _ConsoleCommand* command, unsigned int param);
 
             static Identifier* getPossibleIdentifier(const std::string& name);
-            static ConsoleCommand* getPossibleCommand(const std::string& name, Identifier* identifier = 0);
-            static const std::string& getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param);
+            static _ConsoleCommand* getPossibleCommand(const std::string& name, Identifier* identifier = 0);
+            static const std::string& getPossibleArgument(const std::string& name, _ConsoleCommand* command, unsigned int param);
 
-            static void createArgumentCompletionList(ConsoleCommand* command, unsigned int param);
+            static void createArgumentCompletionList(_ConsoleCommand* command, unsigned int param);
             static std::string getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list);
             static std::string getCommonBegin(const ArgumentCompletionList& list);
 

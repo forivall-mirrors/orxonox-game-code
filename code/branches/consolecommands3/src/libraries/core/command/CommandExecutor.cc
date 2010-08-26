@@ -48,11 +48,6 @@ namespace orxonox
         return CommandExecutor::getInstance().evaluation_;
     }
 
-    const CommandEvaluation& CommandExecutor::getLastEvaluation()
-    {
-        return CommandExecutor::getInstance().evaluation_;
-    }
-
     bool CommandExecutor::execute(const std::string& command, bool useTcl)
     {
         if (useTcl)
@@ -215,7 +210,7 @@ namespace orxonox
                         CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                         CommandExecutor::getEvaluation().functionclass_ = 0;
                         CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().function_->getName();
-                        if (CommandExecutor::getEvaluation().function_->getParamCount() > 0)
+                        if (CommandExecutor::getEvaluation().function_->getExecutor()->getParamCount() > 0)
                         {
                             CommandExecutor::getEvaluation().command_ += ' ';
                             CommandExecutor::getEvaluation().bCommandChanged_ = true;
@@ -302,7 +297,7 @@ namespace orxonox
                             }
                             CommandExecutor::getEvaluation().state_ = CommandState::ParamPreparation;
                             CommandExecutor::getEvaluation().command_ = CommandExecutor::getEvaluation().functionclass_->getName() + ' ' + CommandExecutor::getEvaluation().function_->getName();
-                            if (CommandExecutor::getEvaluation().function_->getParamCount() > 0)
+                            if (CommandExecutor::getEvaluation().function_->getExecutor()->getParamCount() > 0)
                             {
                                 CommandExecutor::getEvaluation().command_ += ' ';
                                 CommandExecutor::getEvaluation().bCommandChanged_ = true;
@@ -334,7 +329,7 @@ namespace orxonox
             }
             case CommandState::ParamPreparation:
             {
-                if (CommandExecutor::getEvaluation().function_->getParamCount() == 0 || CommandExecutor::enoughArgumentsGiven(CommandExecutor::getEvaluation().function_))
+                if (CommandExecutor::getEvaluation().function_->getExecutor()->getParamCount() == 0 || CommandExecutor::enoughArgumentsGiven(CommandExecutor::getEvaluation().function_))
                 {
                     CommandExecutor::getEvaluation().state_ = CommandState::Finished;
                     return;
@@ -417,12 +412,12 @@ namespace orxonox
             return CommandExecutor::getEvaluation().commandTokens_.size();
     }
 
-    bool CommandExecutor::enoughArgumentsGiven(ConsoleCommand* command)
+    bool CommandExecutor::enoughArgumentsGiven(_ConsoleCommand* command)
     {
         if (CommandExecutor::getEvaluation().functionclass_)
-            return (CommandExecutor::argumentsGiven() > (2 + command->getParamCount()));
+            return (CommandExecutor::argumentsGiven() > (2 + command->getExecutor()->getParamCount()));
         else
-            return (CommandExecutor::argumentsGiven() > (1 + command->getParamCount()));
+            return (CommandExecutor::argumentsGiven() > (1 + command->getExecutor()->getParamCount()));
     }
 
     const std::string& CommandExecutor::getArgument(unsigned int index)
@@ -440,34 +435,39 @@ namespace orxonox
 
     void CommandExecutor::createListOfPossibleIdentifiers(const std::string& fragment)
     {
+/*
         CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.clear();
         const std::string& lowercase = getLowercase(fragment);
         for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseStringIdentifierMapBegin(); it != Identifier::getLowercaseStringIdentifierMapEnd(); ++it)
             if (it->second->hasConsoleCommands())
                 if (it->first.find(lowercase) == 0 || fragment.empty())
                     CommandExecutor::getEvaluation().listOfPossibleIdentifiers_.push_back(std::pair<const std::string*, const std::string*>(&it->first, &it->second->getName()));
+*/
     }
 
     void CommandExecutor::createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier)
     {
+/*
         CommandExecutor::getEvaluation().listOfPossibleFunctions_.clear();
         const std::string& lowercase = getLowercase(fragment);
         if (!identifier)
         {
-            for (std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMapBegin(); it != CommandExecutor::getLowercaseConsoleCommandShortcutMapEnd(); ++it)
+            for (std::map<std::string, _ConsoleCommand*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMapBegin(); it != CommandExecutor::getLowercaseConsoleCommandShortcutMapEnd(); ++it)
                 if (it->first.find(lowercase) == 0 || fragment.empty())
                     CommandExecutor::getEvaluation().listOfPossibleFunctions_.push_back(std::pair<const std::string*, const std::string*>(&it->first, &it->second->getName()));
         }
         else
         {
-            for (std::map<std::string, ConsoleCommand*>::const_iterator it = identifier->getLowercaseConsoleCommandMapBegin(); it != identifier->getLowercaseConsoleCommandMapEnd(); ++it)
+            for (std::map<std::string, _ConsoleCommand*>::const_iterator it = identifier->getLowercaseConsoleCommandMapBegin(); it != identifier->getLowercaseConsoleCommandMapEnd(); ++it)
                 if (it->first.find(lowercase) == 0 || fragment.empty())
                     CommandExecutor::getEvaluation().listOfPossibleFunctions_.push_back(std::pair<const std::string*, const std::string*>(&it->first, &it->second->getName()));
         }
+*/
     }
 
-    void CommandExecutor::createListOfPossibleArguments(const std::string& fragment, ConsoleCommand* command, unsigned int param)
+    void CommandExecutor::createListOfPossibleArguments(const std::string& fragment, _ConsoleCommand* command, unsigned int param)
     {
+/*
         CommandExecutor::createArgumentCompletionList(command, param);
 
         CommandExecutor::getEvaluation().listOfPossibleArguments_.clear();
@@ -485,38 +485,43 @@ namespace orxonox
                     CommandExecutor::getEvaluation().listOfPossibleArguments_.push_back(*it);
             }
         }
+*/
     }
 
     Identifier* CommandExecutor::getPossibleIdentifier(const std::string& name)
     {
+/*
         const std::string& lowercase = getLowercase(name);
         std::map<std::string, Identifier*>::const_iterator it = Identifier::getLowercaseStringIdentifierMap().find(lowercase);
         if ((it != Identifier::getLowercaseStringIdentifierMapEnd()) && it->second->hasConsoleCommands())
             return it->second;
-
+*/
         return 0;
     }
 
-    ConsoleCommand* CommandExecutor::getPossibleCommand(const std::string& name, Identifier* identifier)
+    _ConsoleCommand* CommandExecutor::getPossibleCommand(const std::string& name, Identifier* identifier)
     {
+/*
         const std::string& lowercase = getLowercase(name);
         if (!identifier)
         {
-            std::map<std::string, ConsoleCommand*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMap().find(lowercase);
+            std::map<std::string, _ConsoleCommand*>::const_iterator it = CommandExecutor::getLowercaseConsoleCommandShortcutMap().find(lowercase);
             if (it != CommandExecutor::getLowercaseConsoleCommandShortcutMapEnd())
                 return it->second;
         }
         else
         {
-            std::map<std::string, ConsoleCommand*>::const_iterator it = identifier->getLowercaseConsoleCommandMap().find(lowercase);
+            std::map<std::string, _ConsoleCommand*>::const_iterator it = identifier->getLowercaseConsoleCommandMap().find(lowercase);
             if (it != identifier->getLowercaseConsoleCommandMapEnd())
                 return it->second;
         }
+*/
         return 0;
     }
 
-    const std::string& CommandExecutor::getPossibleArgument(const std::string& name, ConsoleCommand* command, unsigned int param)
+    const std::string& CommandExecutor::getPossibleArgument(const std::string& name, _ConsoleCommand* command, unsigned int param)
     {
+/*
         CommandExecutor::createArgumentCompletionList(command, param);
 
         const std::string& lowercase = getLowercase(name);
@@ -533,12 +538,13 @@ namespace orxonox
                     return it->getString();
             }
         }
-
+*/
         return BLANKSTRING;
     }
 
-    void CommandExecutor::createArgumentCompletionList(ConsoleCommand* command, unsigned int param)
+    void CommandExecutor::createArgumentCompletionList(_ConsoleCommand* command, unsigned int param)
     {
+/*
         std::string params[5];
 
         unsigned int index = 0;
@@ -553,6 +559,7 @@ namespace orxonox
         }
 
         command->createArgumentCompletionList(param, params[0], params[1], params[2], params[3], params[4]);
+*/
     }
 
     std::string CommandExecutor::getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list)
@@ -641,12 +648,5 @@ namespace orxonox
             }
             return output;
         }
-    }
-
-    void CommandExecutor::destroyExternalCommands()
-    {
-        for (std::set<ConsoleCommand*>::const_iterator it = CommandExecutor::getInstance().consoleCommandExternals_.begin();
-            it != CommandExecutor::getInstance().consoleCommandExternals_.end(); ++it)
-            delete *it;
     }
 }

@@ -71,9 +71,10 @@ namespace orxonox
             std::string hint() const;
             void evaluateParams();
 
-            bool isValid() const;
+            bool isValid() const
+                { return this->function_; }
 
-            inline ConsoleCommand* getConsoleCommand() const
+            inline _ConsoleCommand* getConsoleCommand() const
                 { return this->function_; }
             inline const std::string& getOriginalCommand() const
                 { return this->originalCommand_; }
@@ -92,7 +93,7 @@ namespace orxonox
             unsigned int getStartindex() const;
             static std::string dump(const std::list<std::pair<const std::string*, const std::string*> >& list);
             static std::string dump(const ArgumentCompletionList& list);
-            static std::string dump(const ConsoleCommand* command);
+            static std::string dump(const _ConsoleCommand* command);
 
 
             bool bNewCommand_;
@@ -108,7 +109,7 @@ namespace orxonox
             ArgumentCompletionList listOfPossibleArguments_;
 
             Identifier* functionclass_;
-            ConsoleCommand* function_;
+            _ConsoleCommand* function_;
             std::string possibleArgument_;
             std::string argument_;
 

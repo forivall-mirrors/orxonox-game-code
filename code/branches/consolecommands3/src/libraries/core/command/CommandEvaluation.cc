@@ -66,11 +66,6 @@ namespace orxonox
         this->state_ = CommandState::Empty;
     }
 
-    bool CommandEvaluation::isValid() const
-    {
-        return (this->function_);
-    }
-
     bool CommandEvaluation::execute() const
     {
         bool success;
@@ -83,7 +78,7 @@ namespace orxonox
         if (success)
             *success = false;
 
-        if (!this->isValid())
+        if (!this->function_ || !this->function_->isActive())
             return MT_Type::Null;
 
         if (this->bEvaluatedParams_ && this->function_)
@@ -91,7 +86,7 @@ namespace orxonox
             if (success)
                 *success = true;
             COUT(6) << "CE_execute (evaluation): " << this->function_->getName() << ' ' << this->param_[0] << ' ' << this->param_[1] << ' ' << this->param_[2] << ' ' << this->param_[3] << ' ' << this->param_[4] << std::endl;
-            return (*this->function_)(this->param_[0], this->param_[1], this->param_[2], this->param_[3], this->param_[4]);
+            return (*this->function_->getExecutor())(this->param_[0], this->param_[1], this->param_[2], this->param_[3], this->param_[4]);
         }
 
         if (!this->bCommandChanged_ || nocaseCmp(removeTrailingWhitespaces(this->command_), removeTrailingWhitespaces(this->originalCommand_)) == 0)
@@ -100,9 +95,9 @@ namespace orxonox
 
             unsigned int startindex = this->getStartindex();
             if (this->commandTokens_.size() > startindex)
-                return this->function_->parse(removeSlashes(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter()), success);
+                return this->function_->getExecutor()->parse(removeSlashes(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter()), success);
             else
-                return this->function_->parse(removeSlashes(this->additionalParameter_), success);
+                return this->function_->getExecutor()->parse(removeSlashes(this->additionalParameter_), success);
         }
 
         return MT_Type::Null;
@@ -121,7 +116,7 @@ namespace orxonox
                 case CommandState::ShortcutOrIdentifier:
                     if (this->function_)
                     {
-                        if (this->function_->getParamCount() == 0)
+                        if (this->function_->getExecutor()->getParamCount() == 0)
                             return (this->command_ = this->function_->getName());
                         else
                             return (this->command_ = this->function_->getName() + ' ');
@@ -132,7 +127,7 @@ namespace orxonox
                 case CommandState::Function:
                     if (this->function_)
                     {
-                        if (this->function_->getParamCount() == 0)
+                        if (this->function_->getExecutor()->getParamCount() == 0)
                             return (this->command_ = this->functionclass_->getName() + ' ' + this->function_->getName());
                         else
                             return (this->command_ = this->functionclass_->getName() + ' ' + this->function_->getName() + ' ');
@@ -152,7 +147,7 @@ namespace orxonox
                     if (!this->possibleArgument_.empty())
                     {
                         this->argument_ = this->possibleArgument_;
-                        if (this->function_->getParamCount() > (maxIndex + 1 - this->getStartindex()))
+                        if (this->function_->getExecutor()->getParamCount() > (maxIndex + 1 - this->getStartindex()))
                             whitespace = " ";
                     }
 
@@ -212,19 +207,19 @@ namespace orxonox
         for (unsigned int i = 0; i < MAX_FUNCTOR_ARGUMENTS; i++)
             this->param_[i] = MT_Type::Null;
 
-        if (!this->isValid())
+        if (!this->function_)
             return;
 
         unsigned int startindex = this->getStartindex();
 
         if (this->commandTokens_.size() <= startindex)
         {
-            if (this->function_->evaluate(this->getAdditionalParameter(), this->param_, " "))
+            if (this->function_->getBaseExecutor()->evaluate(this->getAdditionalParameter(), this->param_, " "))
                 this->bEvaluatedParams_ = true;
         }
         else if (this->commandTokens_.size() > startindex)
         {
-            if (this->function_->evaluate(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter(), this->param_, " "))
+            if (this->function_->getBaseExecutor()->evaluate(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter(), this->param_, " "))
                 this->bEvaluatedParams_ = true;
         }
     }
@@ -279,26 +274,26 @@ namespace orxonox
         return output;
     }
 
-    std::string CommandEvaluation::dump(const ConsoleCommand* command)
+    std::string CommandEvaluation::dump(const _ConsoleCommand* command)
     {
         std::string output = command->getName();
-        if (command->getParamCount() > 0)
+        if (command->getExecutor()->getParamCount() > 0)
             output += ": ";
 
-        for (unsigned int i = 0; i < command->getParamCount(); i++)
+        for (unsigned int i = 0; i < command->getExecutor()->getParamCount(); i++)
         {
             if (i != 0)
                 output += ' ';
 
-            if (command->defaultValueSet(i))
+            if (command->getExecutor()->defaultValueSet(i))
                 output += '[';
             else
                 output += '{';
 
-            output += command->getTypenameParam(i);
+            output += command->getExecutor()->getTypenameParam(i);
 
-            if (command->defaultValueSet(i))
-                output += '=' + command->getDefaultValue(i).getString() + ']';
+            if (command->getExecutor()->defaultValueSet(i))
+                output += '=' + command->getExecutor()->getDefaultValue(i).getString() + ']';
             else
                 output += '}';
         }

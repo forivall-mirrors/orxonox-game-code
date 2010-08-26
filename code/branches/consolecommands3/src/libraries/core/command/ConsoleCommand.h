@@ -267,14 +267,6 @@ namespace orxonox
             _ConsoleCommand& argumentCompleter(unsigned int param, ArgumentCompleter* completer);
             ArgumentCompleter* getArgumentCompleter(unsigned int param) const;
 
-            void createArgumentCompletionList(unsigned int param, const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "");
-            const ArgumentCompletionList& getArgumentCompletionList() const
-                { return this->argumentList_; }
-            ArgumentCompletionList::const_iterator getArgumentCompletionListBegin() const
-                { return this->argumentList_.begin(); }
-            ArgumentCompletionList::const_iterator getArgumentCompletionListEnd() const
-                { return this->argumentList_.end(); }
-
             inline _ConsoleCommand& setAsInputCommand()
             {
                 this->keybindMode(KeybindMode::OnHold);
@@ -324,7 +316,6 @@ namespace orxonox
             std::stack<void*> objectStack_;
 
             ArgumentCompleter* argumentCompleter_[5];
-            ArgumentCompletionList argumentList_;
 
             KeybindMode::Value keybindMode_;
             int inputConfiguredParam_;

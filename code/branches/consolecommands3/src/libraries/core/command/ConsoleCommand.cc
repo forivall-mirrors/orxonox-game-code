@@ -342,14 +342,6 @@ namespace orxonox
             return 0;
     }
 
-    void _ConsoleCommand::createArgumentCompletionList(unsigned int param, const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5)
-    {
-        if (param < 5 && this->argumentCompleter_[param])
-            this->argumentList_ = (*this->argumentCompleter_[param])(param1, param2, param3, param4, param5);
-        else
-            this->argumentList_.clear();
-    }
-
     _ConsoleCommand& _ConsoleCommand::description(const std::string& description)
     {
         this->description_ = std::string("ConsoleCommandDescription::" + this->baseName_ + "::function");
