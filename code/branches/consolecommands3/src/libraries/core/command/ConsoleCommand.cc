@@ -30,13 +30,10 @@
 
 #include "util/Convert.h"
 #include "core/Language.h"
-#include "core/BaseObject.h" // remove this
+#include "core/GameMode.h"
 
 namespace orxonox
 {
-    _SetConsoleCommand("BaseObject", "setName", &BaseObject::setName, (BaseObject*)0);
-    _ConsoleCommand::_ConsoleCommandManipulator test(_ModifyConsoleCommand("BaseObject", "setName").setFunction(&BaseObject::setActive));
-
     _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized)
     {
         this->bActive_ = true;
@@ -93,6 +90,22 @@ namespace orxonox
     bool _ConsoleCommand::isActive() const
     {
         return (this->bActive_ && this->executor_ && this->executor_->getFunctor() && (this->executor_->getFunctor()->getType() == Functor::Type::Static || this->executor_->getFunctor()->getRawObjectPointer()));
+    }
+
+    bool _ConsoleCommand::hasAccess() const
+    {
+        switch (this->accessLevel_)
+        {
+            case AccessLevel::All:        return true;
+            case AccessLevel::Standalone: return GameMode::isStandalone();
+            case AccessLevel::Master:     return GameMode::isMaster();
+            case AccessLevel::Server:     return GameMode::hasServer();
+            case AccessLevel::Client:     return GameMode::isClient();
+            case AccessLevel::Online:     return (GameMode::hasServer() || GameMode::isClient());
+            case AccessLevel::Offline:    return GameMode::isStandalone();
+            case AccessLevel::None:       return false;
+            default:                      return false;
+        }
     }
 
     bool _ConsoleCommand::headersMatch(const FunctorPtr& functor)

@@ -241,7 +241,8 @@ namespace orxonox
 
             bool isActive() const;
             bool hasAccess() const;
-            bool isHidden() const;
+            inline bool isHidden() const
+                { return this->bHidden_; }
 
             _ConsoleCommand& description(const std::string& description);
             const std::string& getDescription() const;
