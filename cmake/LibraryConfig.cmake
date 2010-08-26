@@ -90,9 +90,12 @@ FIND_PACKAGE(Ogg             REQUIRED)
 FIND_PACKAGE(Vorbis          REQUIRED)
 FIND_PACKAGE(ALUT            REQUIRED)
 FIND_PACKAGE(ZLIB            REQUIRED)
+IF(POCO_REQUIRED)
+  FIND_PACKAGE(POCO          REQUIRED)
+ENDIF()
 IF(WIN32)
   FIND_PACKAGE(DirectX       REQUIRED)
-ENDIF(WIN32)
+ENDIF()
 
 ##### CEGUI #####
 # We make use of the CEGUI script module called CEGUILua.
