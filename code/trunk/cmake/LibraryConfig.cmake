@@ -51,13 +51,21 @@ INCLUDE(LibraryConfigApple)
 
 IF(DEPENDENCY_PACKAGE_ENABLE)
   GET_FILENAME_COMPONENT(_dep_dir_1 ${CMAKE_SOURCE_DIR}/../dependencies ABSOLUTE)
-  GET_FILENAME_COMPONENT(_dep_dir_2 ${CMAKE_SOURCE_DIR}/../lib_dist/dependencies ABSOLUTE)
+  GET_FILENAME_COMPONENT(_dep_dir_2 ${CMAKE_SOURCE_DIR}/../lib_dist ABSOLUTE)
+  IF(MINGW)
+    SET(_compiler_prefix mingw)
+  ELSEIF(MSVC80)
+    SET(_compiler_prefix msvc8)
+  ELSEIF(MSVC90)
+    SET(_compiler_prefix msvc9)
+  ENDIF()
   FIND_PATH(DEPENDENCY_PACKAGE_DIR
-    NAMES include
+    NAMES version.txt
     PATHS
       ${CMAKE_SOURCE_DIR}/dependencies
       ${_dep_dir_1}
       ${_dep_dir_2}
+    PATH_SUFFIXES ${_compiler_prefix} ${_compiler_prefix}/dependencies
     NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH
   )
   IF(NOT DEPENDENCY_PACKAGE_DIR)
