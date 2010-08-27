@@ -31,6 +31,8 @@
 
 #include "core/CorePrereqs.h"
 
+#include <map>
+#include <list>
 #include <string>
 
 #include "util/MultiType.h"
@@ -64,6 +66,18 @@ namespace orxonox
             ~CommandExecutor() {}
 
             static CommandExecutor& getInstance();
+
+            bool getCached(const std::string& command, CommandEvaluation& evaluation);
+            void cache(const std::string& command, const CommandEvaluation& evaluation);
+
+            struct CacheEntry
+            {
+                CommandEvaluation evaluation_;
+                std::list<std::string>::iterator iterator_;
+            };
+
+            std::map<std::string, CacheEntry> cache_;
+            std::list<std::string> cachelist_;
     }; // tolua_export
 } // tolua_export
 

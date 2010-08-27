@@ -112,6 +112,9 @@ namespace orxonox
             inline const std::string& getPromptPrefix() const { return this->promptPrefix_; }
             void setPromptPrefix(const std::string& str);
 
+            static inline unsigned int getCacheSize()
+                { return Shell::cacheSize_s; }
+
         private:
             Shell(const Shell& other);
 
@@ -166,6 +169,7 @@ namespace orxonox
             unsigned int              historyOffset_;
             std::vector<std::string>  commandHistory_;
             int                       softDebugLevel_;
+            static unsigned int       cacheSize_s;
     };
 }
 

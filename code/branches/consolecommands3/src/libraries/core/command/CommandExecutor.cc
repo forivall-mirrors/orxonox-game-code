@@ -60,7 +60,21 @@ namespace orxonox
         if (useTcl)
             return TclBind::eval(command, error);
         else
-            return CommandExecutor::evaluate(command).query(error);
+        {
+            CommandEvaluation evaluation;
+            if (!CommandExecutor::getInstance().getCached(command, evaluation))
+            {
+COUT(0) << "evaluate" << std::endl;
+                evaluation = CommandExecutor::evaluate(command);
+                CommandExecutor::getInstance().cache(command, evaluation);
+            }
+            else
+            {
+COUT(0) << "cached" << std::endl;
+            }
+
+            return evaluation.query(error);
+        }
     }
 
     /* static */ std::string CommandExecutor::query(const std::string& command, int* error, bool useTcl)
@@ -95,5 +109,47 @@ namespace orxonox
         }
 
         return evaluation;
+    }
+
+    bool CommandExecutor::getCached(const std::string& command, CommandEvaluation& evaluation)
+    {
+        if (Shell::getCacheSize() == 0)
+            return false;
+
+        std::map<std::string, CacheEntry>::iterator it = this->cache_.find(command);
+        if (it != this->cache_.end())
+        {
+            // update ordered list of cached commands (move it to the front)
+            this->cachelist_.erase(it->second.iterator_);
+            this->cachelist_.push_front(command);
+            it->second.iterator_ = this->cachelist_.begin();
+
+            // assign the cached evaluation
+            evaluation = it->second.evaluation_;
+            return true;
+        }
+        return false;
+    }
+
+    void CommandExecutor::cache(const std::string& command, const CommandEvaluation& evaluation)
+    {
+        if (Shell::getCacheSize() == 0)
+            return;
+
+        // push command to the front of the ordered list
+        this->cachelist_.push_front(command);
+
+        // create a cache entry and store it in the cache
+        CacheEntry entry;
+        entry.evaluation_ = evaluation;
+        entry.iterator_ = this->cachelist_.begin();
+        this->cache_[command] = entry;
+
+        // remove the last command in the ordered list from the cache if it exceeds the maximum size of the cache
+        if (this->cachelist_.size() > Shell::getCacheSize())
+        {
+            this->cache_.erase(this->cachelist_.back());
+            this->cachelist_.pop_back();
+        }
     }
 }

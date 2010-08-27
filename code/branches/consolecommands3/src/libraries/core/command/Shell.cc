@@ -45,6 +45,8 @@ namespace orxonox
     _SetConsoleCommand("info",    OutputHandler::info   );
     _SetConsoleCommand("debug",   OutputHandler::debug  );
 
+    unsigned int Shell::cacheSize_s;
+
     Shell::Shell(const std::string& consoleName, bool bScrollable)
         : OutputListener(consoleName)
         , inputBuffer_(new InputBuffer())
@@ -98,6 +100,7 @@ namespace orxonox
         SetConfigValue(historyOffset_, 0)
             .callback(this, &Shell::commandHistoryOffsetChanged);
         setConfigValueGeneric(this, &commandHistory_, ConfigFileType::CommandHistory, "Shell", "commandHistory_", std::vector<std::string>());
+        SetConfigValue(cacheSize_s, 32);
 
 #ifdef ORXONOX_RELEASE
         const unsigned int defaultLevel = 1;
