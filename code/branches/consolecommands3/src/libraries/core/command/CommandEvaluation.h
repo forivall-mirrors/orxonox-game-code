@@ -67,6 +67,9 @@ namespace orxonox
             const ArgumentCompletionList& getPossibleArguments() const
                 { return this->possibleArguments_; }
 
+            size_t getPossibleArgumentsSize() const
+                { return CommandEvaluation::getSize(this->possibleArguments_); }
+
         private:
             void initialize(const std::string& command);
 

@@ -68,24 +68,29 @@ namespace orxonox
                 return false;
             }
 
-            ArgumentCompletionList _groupsandcommands(bool bOnlyShowHidden)
+            ArgumentCompletionList _groupsandcommands(const std::string& fragment, bool bOnlyShowHidden)
             {
                 ArgumentCompletionList groupList;
+                std::string fragmentLC = getLowercase(fragment);
 
                 const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& commands = _ConsoleCommand::getCommands();
                 for (std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.begin(); it_group != commands.end(); ++it_group)
-                    if (groupIsVisible(it_group->second, bOnlyShowHidden) && it_group->first != "")
+                    if (groupIsVisible(it_group->second, bOnlyShowHidden) && it_group->first != "" && (fragmentLC == "" || getLowercase(it_group->first).find_first_of(fragmentLC) == 0))
                         groupList.push_back(ArgumentCompletionListElement(it_group->first, getLowercase(it_group->first)));
 
                 std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.find("");
                 if (it_group != commands.end())
                 {
-                    groupList.push_back(ArgumentCompletionListElement("", "", "\n"));
+                    if (!groupList.empty())
+                        groupList.push_back(ArgumentCompletionListElement("", "", "\n"));
 
                     for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
-                        if (it_command->second->isActive() && it_command->second->hasAccess() && (!it_command->second->isHidden())^bOnlyShowHidden)
+                        if (it_command->second->isActive() && it_command->second->hasAccess() && (!it_command->second->isHidden())^bOnlyShowHidden && (fragmentLC == "" || getLowercase(it_command->first).find_first_of(fragmentLC) == 0))
                             groupList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
                 }
+
+                if (!groupList.empty() && groupList.back().getDisplay() == "\n")
+                    groupList.pop_back();
 
                 return groupList;
             }
@@ -112,9 +117,9 @@ namespace orxonox
             }
         }
 
-        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(groupsandcommands)()
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(groupsandcommands)(const std::string& fragment)
         {
-            return detail::_groupsandcommands(false);
+            return detail::_groupsandcommands(fragment, false);
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(subcommands)(const std::string& fragment, const std::string& group)
@@ -127,7 +132,7 @@ namespace orxonox
             CommandEvaluation evaluation = CommandExecutor::evaluate(fragment);
             const std::string& hint = evaluation.hint();
 
-            if (evaluation.getPossibleArguments().size() > 0)
+            if (evaluation.getPossibleArguments().size() > 0 && evaluation.getPossibleArgumentsSize() > 0)
             {
                 return evaluation.getPossibleArguments();
             }
@@ -144,7 +149,7 @@ namespace orxonox
             SubString tokens(fragment, " ", SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0');
 
             if (tokens.size() == 0)
-                return detail::_groupsandcommands(true);
+                return detail::_groupsandcommands(fragment, true);
 
             if (_ConsoleCommand::getCommandLC(getLowercase(tokens[0])))
                 return ARGUMENT_COMPLETION_FUNCTION_CALL(command)(fragment);
@@ -155,7 +160,7 @@ namespace orxonox
                 if (it_group != _ConsoleCommand::getCommands().end())
                     return detail::_subcommands(fragment, tokens[0], true);
                 else
-                    return detail::_groupsandcommands(true);
+                    return detail::_groupsandcommands(fragment, true);
             }
 
             if (_ConsoleCommand::getCommandLC(getLowercase(tokens[0]), getLowercase(tokens[1])))

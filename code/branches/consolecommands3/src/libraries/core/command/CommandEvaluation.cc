@@ -196,7 +196,7 @@ namespace orxonox
         if (!this->bPossibleArgumentsRetrieved_)
             this->retrievePossibleArguments();
 
-        if (!this->possibleArguments_.empty())
+        if (CommandEvaluation::getSize(this->possibleArguments_) > 0 || (!this->possibleArguments_.empty() && this->isValid()))
             return CommandEvaluation::dump(this->possibleArguments_);
 
         if (this->isValid())
@@ -257,6 +257,15 @@ namespace orxonox
         }
     }
 
+    /* static */ size_t CommandEvaluation::getSize(const ArgumentCompletionList& list)
+    {
+        size_t count = 0;
+        for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
+            if (it->getComparable() != "")
+                ++count;
+        return count;
+    }
+
     /* static */ void CommandEvaluation::strip(ArgumentCompletionList& list, const std::string& fragment)
     {
         std::string fragmentLC = getLowercase(fragment);
@@ -293,54 +302,6 @@ namespace orxonox
                     ++it;
             }
         }
-    }
-
-    /* static */ size_t CommandEvaluation::getSize(const ArgumentCompletionList& list)
-    {
-        size_t count = 0;
-        for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
-            if (it->getComparable() != "")
-                ++count;
-        return count;
-    }
-
-    /* static */ std::string CommandEvaluation::dump(const ArgumentCompletionList& list)
-    {
-        std::string output;
-        for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
-        {
-            output += it->getDisplay();
-
-            if (it->getComparable() != "")
-                output += ' ';
-        }
-        return output;
-    }
-
-    /* static */ std::string CommandEvaluation::dump(const _ConsoleCommand* command)
-    {
-        std::string output = command->getName();
-        if (command->getExecutor()->getParamCount() > 0)
-            output += ": ";
-
-        for (unsigned int i = 0; i < command->getExecutor()->getParamCount(); i++)
-        {
-            if (i != 0)
-                output += ' ';
-
-            if (command->getExecutor()->defaultValueSet(i))
-                output += '[';
-            else
-                output += '{';
-
-            output += command->getExecutor()->getTypenameParam(i);
-
-            if (command->getExecutor()->defaultValueSet(i))
-                output += '=' + command->getExecutor()->getDefaultValue(i).getString() + ']';
-            else
-                output += '}';
-        }
-        return output;
     }
 
     /* static */ std::string CommandEvaluation::getCommonBegin(const ArgumentCompletionList& list)
@@ -403,5 +364,44 @@ namespace orxonox
             }
             return output;
         }
+    }
+
+    /* static */ std::string CommandEvaluation::dump(const ArgumentCompletionList& list)
+    {
+        std::string output;
+        for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
+        {
+            output += it->getDisplay();
+
+            if (it->getComparable() != "")
+                output += ' ';
+        }
+        return output;
+    }
+
+    /* static */ std::string CommandEvaluation::dump(const _ConsoleCommand* command)
+    {
+        std::string output = command->getName();
+        if (command->getExecutor()->getParamCount() > 0)
+            output += ": ";
+
+        for (unsigned int i = 0; i < command->getExecutor()->getParamCount(); i++)
+        {
+            if (i != 0)
+                output += ' ';
+
+            if (command->getExecutor()->defaultValueSet(i))
+                output += '[';
+            else
+                output += '{';
+
+            output += command->getExecutor()->getTypenameParam(i);
+
+            if (command->getExecutor()->defaultValueSet(i))
+                output += '=' + command->getExecutor()->getDefaultValue(i).getString() + ']';
+            else
+                output += '}';
+        }
+        return output;
     }
 }
