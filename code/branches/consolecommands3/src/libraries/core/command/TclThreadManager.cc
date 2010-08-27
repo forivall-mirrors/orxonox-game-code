@@ -438,10 +438,15 @@ namespace orxonox
                     {
                         // It's a query to the CommandExecutor
                         TclThreadManager::debug("TclThread_query -> CE: " + command);
-                        bool success;
-                        output = CommandExecutor::query(command, &success, false);
-                        if (!success)
-                            TclThreadManager::error("Error: Can't execute command \"" + command + "\"!");
+                        int error;
+                        output = CommandExecutor::query(command, &error, false);
+                        switch (error)
+                        {
+                            case CommandExecutor::Error:       TclThreadManager::error("Error: Can't execute command \"" + command + "\", command doesn't exist. (T)"); break;
+                            case CommandExecutor::Incomplete:  TclThreadManager::error("Error: Can't execute command \"" + command + "\", not enough arguments given. (T)"); break;
+                            case CommandExecutor::Deactivated: TclThreadManager::error("Error: Can't execute command \"" + command + "\", command is not active. (T)"); break;
+                            case CommandExecutor::Denied:      TclThreadManager::error("Error: Can't execute command \"" + command + "\", access denied. (T)"); break;
+                        }
                     }
                     else
                     {

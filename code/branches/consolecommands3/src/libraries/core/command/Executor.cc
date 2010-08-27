@@ -35,6 +35,7 @@
 #include "util/Debug.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
+#include "CommandExecutor.h"
 
 namespace orxonox
 {
@@ -48,10 +49,10 @@ namespace orxonox
     {
     }
 
-    MultiType Executor::parse(const std::string& params, bool* success, const std::string& delimiter) const
+    MultiType Executor::parse(const std::string& params, int* error, const std::string& delimiter, bool bPrintError) const
     {
-        if (success)
-            *success = true;
+        if (error)
+            *error = CommandExecutor::Success;
 
         unsigned int paramCount = this->functor_->getParamCount();
 
@@ -75,9 +76,10 @@ namespace orxonox
             }
             else
             {
-                COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl;
-                if (success)
-                    *success = false;
+                if (bPrintError)
+                    COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl;
+                if (error)
+                    *error = CommandExecutor::Incomplete;
                 return MT_Type::Null;
             }
         }
@@ -89,9 +91,10 @@ namespace orxonox
             {
                 if (this->defaultValue_[i].null())
                 {
-                    COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input:" << params << ")." << std::endl;
-                    if (success)
-                        *success = false;
+                    if (bPrintError)
+                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << params << ")." << std::endl;
+                    if (error)
+                        *error = CommandExecutor::Incomplete;
                     return MT_Type::Null;
                 }
             }

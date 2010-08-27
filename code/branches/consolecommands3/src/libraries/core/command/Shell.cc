@@ -314,11 +314,17 @@ namespace orxonox
         this->addToHistory(this->inputBuffer_->get());
         this->updateListeners<&ShellListener::executed>();
 
-        bool success;
-        const std::string& result = CommandExecutor::query(this->inputBuffer_->get(), &success);
-        if (!success)
+        int error;
+        const std::string& result = CommandExecutor::query(this->inputBuffer_->get(), &error);
+        if (error)
         {
-            this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\"." << std::endl;
+            switch (error)
+            {
+                case CommandExecutor::Error:       this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", command doesn't exist. (S)" << std::endl; break;
+                case CommandExecutor::Incomplete:  this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", not enough arguments given. (S)" << std::endl; break;
+                case CommandExecutor::Deactivated: this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", command is not active. (S)" << std::endl; break;
+                case CommandExecutor::Denied:      this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", access denied. (S)" << std::endl; break;
+            }
             this->outputChanged(Error);
         }
         else if (result != "")
@@ -332,8 +338,8 @@ namespace orxonox
 
     void Shell::hintAndComplete()
     {
-        this->inputBuffer_->set(CommandExecutor::complete(this->inputBuffer_->get()));
-        this->outputBuffer_ << CommandExecutor::hint(this->inputBuffer_->get()) << std::endl;
+        this->inputBuffer_->set(CommandExecutor::evaluate(this->inputBuffer_->get()).complete());
+        this->outputBuffer_ << CommandExecutor::evaluate(this->inputBuffer_->get()).hint() << std::endl;
         this->outputChanged(Hint);
 
         this->inputChanged();

@@ -38,6 +38,7 @@
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueContainer.h"
 #include "TclThreadManager.h"
+#include "ConsoleCommand.h"
 
 // Boost 1.36 has some issues with deprecated functions that have been omitted
 #if (BOOST_VERSION == 103600)
@@ -53,6 +54,49 @@ namespace orxonox
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(fallback)()
         {
             return ArgumentCompletionList();
+        }
+
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(groupsandcommands)()
+        {
+            ArgumentCompletionList groupList;
+
+            const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& commands = _ConsoleCommand::getCommands();
+            for (std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.begin(); it_group != commands.end(); ++it_group)
+                // todo: check if active / not hidden / not denied
+                groupList.push_back(ArgumentCompletionListElement(it_group->first, getLowercase(it_group->first)));
+
+            std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.find("");
+            if (it_group != commands.end())
+            {
+                groupList.push_back(ArgumentCompletionListElement("\n"));
+
+                for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
+                    // todo: check if active / not hidden / not denied
+                    groupList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
+            }
+
+            return groupList;
+        }
+
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(subcommands)(const std::string& fragment, const std::string& group)
+        {
+            ArgumentCompletionList commandList;
+
+            std::string groupLC = getLowercase(group);
+
+            std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommands().begin();
+            for ( ; it_group != _ConsoleCommand::getCommands().end(); ++it_group)
+                if (getLowercase(it_group->first) == groupLC)
+                    break;
+
+            if (it_group != _ConsoleCommand::getCommands().end())
+            {
+                for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
+                    // todo: check if active / not hidden / not denied
+                    commandList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
+            }
+
+            return commandList;
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(files)(const std::string& fragment)

@@ -29,6 +29,7 @@
 #include "ConsoleCommand.h"
 
 #include "util/Convert.h"
+#include "util/StringUtils.h"
 #include "core/Language.h"
 #include "core/GameMode.h"
 
@@ -397,12 +398,36 @@ namespace orxonox
         return GetLocalisation_noerror(this->descriptionReturnvalue_);
     }
 
-    /* static */ const _ConsoleCommand* _ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
+    /* static */ _ConsoleCommand* _ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
     {
         std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommandMap().find(group);
         if (it_group != _ConsoleCommand::getCommandMap().end())
         {
             std::map<std::string, _ConsoleCommand*>::const_iterator it_name = it_group->second.find(name);
+            if (it_name != it_group->second.end())
+            {
+                return it_name->second;
+            }
+        }
+        if (bPrintError)
+        {
+            if (group == "")
+                COUT(1) << "Error: Couldn't find console command with shortcut \"" << name << "\"" << std::endl;
+            else
+                COUT(1) << "Error: Couldn't find console command with group \"" << group << "\" and name \"" << name << "\"" << std::endl;
+        }
+        return 0;
+    }
+
+    /* static */ _ConsoleCommand* _ConsoleCommand::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
+    {
+        std::string groupLC = getLowercase(group);
+        std::string nameLC = getLowercase(name);
+
+        std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommandMapLC().find(groupLC);
+        if (it_group != _ConsoleCommand::getCommandMapLC().end())
+        {
+            std::map<std::string, _ConsoleCommand*>::const_iterator it_name = it_group->second.find(nameLC);
             if (it_name != it_group->second.end())
             {
                 return it_name->second;
@@ -424,6 +449,12 @@ namespace orxonox
         return commandMap;
     }
 
+    /* static */ std::map<std::string, std::map<std::string, _ConsoleCommand*> >& _ConsoleCommand::getCommandMapLC()
+    {
+        static std::map<std::string, std::map<std::string, _ConsoleCommand*> > commandMapLC;
+        return commandMapLC;
+    }
+
     /* static */ void _ConsoleCommand::registerCommand(const std::string& group, const std::string& name, _ConsoleCommand* command)
     {
         if (name == "")
@@ -439,6 +470,7 @@ namespace orxonox
         else
         {
             _ConsoleCommand::getCommandMap()[group][name] = command;
+            _ConsoleCommand::getCommandMapLC()[getLowercase(group)][getLowercase(name)] = command;
         }
     }
 
@@ -456,6 +488,22 @@ namespace orxonox
 
             if (it_group->second.empty())
                 _ConsoleCommand::getCommandMap().erase(it_group++);
+            else
+                ++it_group;
+        }
+
+        for (std::map<std::string, std::map<std::string, _ConsoleCommand*> >::iterator it_group = _ConsoleCommand::getCommandMapLC().begin(); it_group != _ConsoleCommand::getCommandMapLC().end(); )
+        {
+            for (std::map<std::string, _ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
+            {
+                if (it_name->second == command)
+                    it_group->second.erase(it_name++);
+                else
+                    ++it_name;
+            }
+
+            if (it_group->second.empty())
+                _ConsoleCommand::getCommandMapLC().erase(it_group++);
             else
                 ++it_group;
         }

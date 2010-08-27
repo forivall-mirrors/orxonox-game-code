@@ -28,9 +28,8 @@
 
 #include "CommandEvaluation.h"
 
-#include "util/Debug.h"
 #include "util/StringUtils.h"
-#include "core/Identifier.h"
+#include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 
 namespace orxonox
@@ -38,230 +37,190 @@ namespace orxonox
     CommandEvaluation::CommandEvaluation()
     {
         this->initialize("");
-        this->state_ = CommandState::Uninitialized;
     }
 
     void CommandEvaluation::initialize(const std::string& command)
     {
-        this->bNewCommand_ = true;
-        this->bCommandChanged_ = false;
-        this->originalCommand_ = command;
-        this->command_ = command;
-        this->commandTokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
+        this->execCommand_ = 0;
+        this->hintCommand_ = 0;
+        this->string_ = command;
+        this->execArgumentsOffset_ = 0;
+        this->hintArgumentsOffset_ = 0;
+        this->bPossibleArgumentsRetrieved_ = false;
+        this->possibleArguments_.clear();
 
-        this->additionalParameter_.clear();
-
-        this->bEvaluatedParams_ = false;
-
-        this->listOfPossibleIdentifiers_.clear();
-        this->listOfPossibleFunctions_.clear();
-        this->listOfPossibleArguments_.clear();
-
-        this->functionclass_ = 0;
-        this->function_ = 0;
-        this->possibleArgument_.clear();
-        this->argument_.clear();
-
-        this->errorMessage_.clear();
-        this->state_ = CommandState::Empty;
+        this->tokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
     }
 
-    bool CommandEvaluation::execute() const
+    unsigned int CommandEvaluation::getNumberOfArguments() const
     {
-        bool success;
-        this->query(&success);
-        return success;
+        unsigned int count = this->tokens_.size();
+        if (count > 0 && this->string_[this->string_.size() - 1] != ' ')
+            return count;
+        else
+            return count + 1;
     }
 
-    MultiType CommandEvaluation::query(bool* success) const
+    const std::string& CommandEvaluation::getLastArgument() const
     {
-        if (success)
-            *success = false;
+        if (this->tokens_.size() > 0 && this->string_[this->string_.size() - 1] != ' ')
+            return this->tokens_.back();
+        else
+            return BLANKSTRING;
+    }
 
-        if (!this->function_ || !this->function_->isActive())
+    const std::string& CommandEvaluation::getToken(unsigned int i) const
+    {
+        if (i < this->tokens_.size())
+            return this->tokens_[i];
+        else
+            return BLANKSTRING;
+    }
+
+    int CommandEvaluation::execute() const
+    {
+        int error;
+        this->query(&error);
+        return error;
+    }
+
+    MultiType CommandEvaluation::query(int* error) const
+    {
+        if (error)
+        {
+            *error = CommandExecutor::Success;
+
+            if (!this->execCommand_)
+                *error = CommandExecutor::Error;
+            else if (!this->execCommand_->isActive())
+                *error = CommandExecutor::Deactivated;
+            else if (!this->execCommand_->hasAccess())
+                *error = CommandExecutor::Denied;
+
+            if (*error != CommandExecutor::Success)
+                return MT_Type::Null;
+        }
+
+        if (this->execCommand_ && this->execCommand_->isActive() && this->execCommand_->hasAccess())
+            return this->execCommand_->getExecutor()->parse(this->tokens_.subSet(this->execArgumentsOffset_).join(), error, " ", false);
+        else
             return MT_Type::Null;
-
-        if (this->bEvaluatedParams_ && this->function_)
-        {
-            if (success)
-                *success = true;
-            COUT(6) << "CE_execute (evaluation): " << this->function_->getName() << ' ' << this->param_[0] << ' ' << this->param_[1] << ' ' << this->param_[2] << ' ' << this->param_[3] << ' ' << this->param_[4] << std::endl;
-            return (*this->function_->getExecutor())(this->param_[0], this->param_[1], this->param_[2], this->param_[3], this->param_[4]);
-        }
-
-        if (!this->bCommandChanged_ || nocaseCmp(removeTrailingWhitespaces(this->command_), removeTrailingWhitespaces(this->originalCommand_)) == 0)
-        {
-            COUT(4) << "CE_execute: " << this->command_ << "\n";
-
-            unsigned int startindex = this->getStartindex();
-            if (this->commandTokens_.size() > startindex)
-                return this->function_->getExecutor()->parse(removeSlashes(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter()), success);
-            else
-                return this->function_->getExecutor()->parse(removeSlashes(this->additionalParameter_), success);
-        }
-
-        return MT_Type::Null;
     }
 
-    const std::string& CommandEvaluation::complete()
+    std::string CommandEvaluation::complete() const
     {
-        if (!this->bNewCommand_)
+        if (!this->hintCommand_ || !this->hintCommand_->isActive())
+            return this->string_;
+
+        if (!this->bPossibleArgumentsRetrieved_)
+            this->retrievePossibleArguments();
+
+        if (this->possibleArguments_.empty())
         {
-            switch (this->state_)
-            {
-                case CommandState::Uninitialized:
-                    break;
-                case CommandState::Empty:
-                    break;
-                case CommandState::ShortcutOrIdentifier:
-                    if (this->function_)
-                    {
-                        if (this->function_->getExecutor()->getParamCount() == 0)
-                            return (this->command_ = this->function_->getName());
-                        else
-                            return (this->command_ = this->function_->getName() + ' ');
-                    }
-                    else if (this->functionclass_)
-                        return (this->command_ = this->functionclass_->getName() + ' ');
-                    break;
-                case CommandState::Function:
-                    if (this->function_)
-                    {
-                        if (this->function_->getExecutor()->getParamCount() == 0)
-                            return (this->command_ = this->functionclass_->getName() + ' ' + this->function_->getName());
-                        else
-                            return (this->command_ = this->functionclass_->getName() + ' ' + this->function_->getName() + ' ');
-                    }
-                    break;
-                case CommandState::ParamPreparation:
-                case CommandState::Params:
-                {
-                    if (this->argument_.empty() && this->possibleArgument_.empty())
-                        break;
-
-                    unsigned int maxIndex = this->commandTokens_.size();
-                    if (this->command_[this->command_.size() - 1] != ' ')
-                        maxIndex -= 1;
-                    std::string whitespace;
-
-                    if (!this->possibleArgument_.empty())
-                    {
-                        this->argument_ = this->possibleArgument_;
-                        if (this->function_->getExecutor()->getParamCount() > (maxIndex + 1 - this->getStartindex()))
-                            whitespace = " ";
-                    }
-
-                    return (this->command_ = this->commandTokens_.subSet(0, maxIndex).join() + ' ' + this->argument_ + whitespace);
-                    break;
-                }
-                case CommandState::Finished:
-                    break;
-                case CommandState::Error:
-                    break;
-            }
+            return this->string_;
         }
-        this->bNewCommand_ = false;
-        return this->command_;
+        else
+        {
+            std::string output;
+            for (unsigned int i = 0; i < this->getNumberOfArguments() - 1; ++i)
+                output += this->getToken(i) + ' ';
+
+            output += CommandEvaluation::getCommonBegin(this->possibleArguments_);
+            return output;
+        }
     }
 
     std::string CommandEvaluation::hint() const
     {
-        switch (this->state_)
+        if (!this->hintCommand_ || !this->hintCommand_->isActive())
+            return "";
+
+        if (!this->bPossibleArgumentsRetrieved_)
+            this->retrievePossibleArguments();
+
+        if (!this->possibleArguments_.empty())
+            return CommandEvaluation::dump(this->possibleArguments_);
+
+        if (this->isValid())
         {
-            case CommandState::Uninitialized:
-                break;
-            case CommandState::Empty:
-            case CommandState::ShortcutOrIdentifier:
-                if (this->listOfPossibleFunctions_.size() == 0)
-                    return CommandEvaluation::dump(this->listOfPossibleIdentifiers_);
-                else if (this->listOfPossibleIdentifiers_.size() == 0)
-                    return CommandEvaluation::dump(this->listOfPossibleFunctions_);
-                else
-                    return (CommandEvaluation::dump(this->listOfPossibleFunctions_) + "\n" + CommandEvaluation::dump(this->listOfPossibleIdentifiers_));
-                break;
-            case CommandState::Function:
-                return CommandEvaluation::dump(this->listOfPossibleFunctions_);
-                break;
-            case CommandState::ParamPreparation:
-            case CommandState::Params:
-                if (this->listOfPossibleArguments_.size() > 0)
-                    return CommandEvaluation::dump(this->listOfPossibleArguments_);
-                else
-                    return CommandEvaluation::dump(this->function_);
-            case CommandState::Finished:
-                if (this->function_)
-                    return CommandEvaluation::dump(this->function_);
-                break;
-            case CommandState::Error:
-                return this->errorMessage_;
-                break;
+            return CommandEvaluation::dump(this->hintCommand_);
         }
-
-        return "";
-    }
-
-    void CommandEvaluation::evaluateParams()
-    {
-        this->bEvaluatedParams_ = false;
-
-        for (unsigned int i = 0; i < MAX_FUNCTOR_ARGUMENTS; i++)
-            this->param_[i] = MT_Type::Null;
-
-        if (!this->function_)
-            return;
-
-        unsigned int startindex = this->getStartindex();
-
-        if (this->commandTokens_.size() <= startindex)
-        {
-            if (this->function_->getBaseExecutor()->evaluate(this->getAdditionalParameter(), this->param_, " "))
-                this->bEvaluatedParams_ = true;
-        }
-        else if (this->commandTokens_.size() > startindex)
-        {
-            if (this->function_->getBaseExecutor()->evaluate(this->commandTokens_.subSet(startindex).join() + this->getAdditionalParameter(), this->param_, " "))
-                this->bEvaluatedParams_ = true;
-        }
-    }
-
-    void CommandEvaluation::setEvaluatedParameter(unsigned int index, MultiType param)
-    {
-        if (index < MAX_FUNCTOR_ARGUMENTS)
-            this->param_[index] = param;
-    }
-
-    MultiType CommandEvaluation::getEvaluatedParameter(unsigned int index) const
-    {
-        if (index < MAX_FUNCTOR_ARGUMENTS)
-            return this->param_[index];
-
-        return MT_Type::Null;
-    }
-
-    unsigned int CommandEvaluation::getStartindex() const
-    {
-        if (this->functionclass_ && this->function_)
-            return 2;
-        else if (this->function_)
-            return 1;
         else
-            return 0;
-    }
-
-    std::string CommandEvaluation::dump(const std::list<std::pair<const std::string*, const std::string*> >& list)
-    {
-        std::string output;
-        for (std::list<std::pair<const std::string*, const std::string*> >::const_iterator it = list.begin(); it != list.end(); ++it)
         {
-            if (it != list.begin())
-                output += ' ';
+            if (this->getNumberOfArguments() > 2)
+            {
+                return std::string("Error: There is no command with name \"") + this->getToken(0) + " " + this->getToken(1) + "\".";
+            }
+            else
+            {
+                std::string groupLC = getLowercase(this->getToken(0));
+                std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommands().begin();
+                for ( ; it_group != _ConsoleCommand::getCommands().end(); ++it_group)
+                    if (getLowercase(it_group->first) == groupLC)
+                        return std::string("Error: There is no command in group \"") + this->getToken(0) + "\" starting with \"" + this->getToken(1) + "\".";
 
-            output += *(it->second);
+                return std::string("Error: There is no command starting with \"") + this->getToken(0) + "\".";
+            }
         }
-        return output;
     }
 
-    std::string CommandEvaluation::dump(const ArgumentCompletionList& list)
+    void CommandEvaluation::retrievePossibleArguments() const
+    {
+        this->bPossibleArgumentsRetrieved_ = true;
+        unsigned int argumentID = std::min(this->getNumberOfArguments() - this->hintArgumentsOffset_, this->hintCommand_->getExecutor()->getParamCount());
+        ArgumentCompleter* ac = this->hintCommand_->getArgumentCompleter(argumentID - 1);
+
+COUT(0) << "hint: args: " << this->getNumberOfArguments() << ", aID: " << argumentID << ", offset: " << this->hintArgumentsOffset_ << ", ac: " << ac << std::endl;
+        if (ac)
+        {
+            MultiType param[MAX_FUNCTOR_ARGUMENTS];
+
+            for (size_t i = 0; i < argumentID; ++i)
+            {
+                param[i] = this->getToken(this->getNumberOfArguments() - i - 1);
+COUT(0) << i << ": " << (this->getNumberOfArguments() - i - 1) << " -> " << this->getToken(this->getNumberOfArguments() - i - 1) << " / " << param[i] << std::endl;
+            }
+
+COUT(0) << "hint: 1: " << param[0] << ", 2: " << param[1] << ", 3: " << param[2] << ", 4: " << param[3] << ", 5: " << param[4] << std::endl;
+            this->possibleArguments_ = (*ac)(param[0], param[1], param[2], param[3], param[4]);
+
+            CommandEvaluation::strip(this->possibleArguments_, param[0]);
+        }
+    }
+
+    /* static */ void CommandEvaluation::strip(ArgumentCompletionList& list, const std::string& fragment)
+    {
+        std::string fragmentLC = getLowercase(fragment);
+
+        for (ArgumentCompletionList::iterator it = list.begin(); it != list.end(); )
+        {
+            const std::string& entry = it->getComparable();
+
+            if (entry.size() < fragmentLC.size())
+            {
+                list.erase(it++);
+            }
+            else
+            {
+                bool bErase = false;
+                for (size_t i = 0; i < fragmentLC.size(); ++i)
+                {
+                    if (fragmentLC[i] != entry[i])
+                    {
+                        bErase = true;
+                        break;
+                    }
+                }
+
+                if (bErase)
+                    list.erase(it++);
+                else
+                    ++it;
+            }
+        }
+    }
+
+    /* static */ std::string CommandEvaluation::dump(const ArgumentCompletionList& list)
     {
         std::string output;
         for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
@@ -274,7 +233,7 @@ namespace orxonox
         return output;
     }
 
-    std::string CommandEvaluation::dump(const _ConsoleCommand* command)
+    /* static */ std::string CommandEvaluation::dump(const _ConsoleCommand* command)
     {
         std::string output = command->getName();
         if (command->getExecutor()->getParamCount() > 0)
@@ -298,5 +257,55 @@ namespace orxonox
                 output += '}';
         }
         return output;
+    }
+
+    /* static */ std::string CommandEvaluation::getCommonBegin(const ArgumentCompletionList& list)
+    {
+        if (list.size() == 0)
+        {
+            return "";
+        }
+        else if (list.size() == 1)
+        {
+            if (list.begin()->hasDisplay())
+                return (list.begin()->getString());
+            else
+                return (list.begin()->getString() + ' ');
+        }
+        else
+        {
+            std::string output;
+            for (unsigned int i = 0; true; i++)
+            {
+                char tempComparable = 0;
+                char temp = 0;
+                for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
+                {
+                    const std::string& argumentComparable = it->getComparable();
+                    const std::string& argument = it->getString();
+                    if (argument.size() > i)
+                    {
+                        if (it == list.begin())
+                        {
+                            tempComparable = argumentComparable[i];
+                            temp = argument[i];
+                        }
+                        else
+                        {
+                            if (tempComparable != argumentComparable[i])
+                                return output;
+                            else if (temp != argument[i])
+                                temp = tempComparable;
+                        }
+                    }
+                    else
+                    {
+                        return output;
+                    }
+                }
+                output += temp;
+            }
+            return output;
+        }
     }
 }

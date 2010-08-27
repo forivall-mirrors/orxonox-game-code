@@ -133,11 +133,14 @@ namespace orxonox
 
         const std::string& command = stripEnclosingBraces(args.get());
 
-        bool success;
-        const std::string& result = CommandExecutor::query(command, &success, false);
-        if (!success)
+        int error;
+        const std::string& result = CommandExecutor::query(command, &error, false);
+        switch (error)
         {
-            COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
+            case CommandExecutor::Error:       COUT(1) << "Error: Can't execute command \"" << command << "\", command doesn't exist. (B)" << std::endl; break;
+            case CommandExecutor::Incomplete:  COUT(1) << "Error: Can't execute command \"" << command << "\", not enough arguments given. (B)" << std::endl; break;
+            case CommandExecutor::Deactivated: COUT(1) << "Error: Can't execute command \"" << command << "\", command is not active. (B)" << std::endl; break;
+            case CommandExecutor::Denied:      COUT(1) << "Error: Can't execute command \"" << command << "\", access denied. (B)" << std::endl; break;
         }
 
         return result;
@@ -148,7 +151,7 @@ namespace orxonox
         COUT(4) << "Tcl_execute: " << args.get() << std::endl;
         const std::string& command = stripEnclosingBraces(args.get());
 
-        if (!CommandExecutor::execute(command, false))
+        if (CommandExecutor::execute(command, false))
         {
             COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
         }
@@ -179,10 +182,10 @@ namespace orxonox
         COUT(1) << "Tcl background error: " << stripEnclosingBraces(error) << std::endl;
     }
 
-    std::string TclBind::eval(const std::string& tclcode, bool* success)
+    std::string TclBind::eval(const std::string& tclcode, int* error)
     {
-        if (success)
-            *success = true;
+        if (error)
+            *error = CommandExecutor::Success;
 
         try
         {
@@ -191,8 +194,8 @@ namespace orxonox
         catch (Tcl::tcl_error const &e)
         {   COUT(1) << "Tcl error: " << e.what() << std::endl;   }
 
-        if (success)
-            *success = false;
+        if (error)
+            *error = CommandExecutor::Error;
         return "";
     }
 }

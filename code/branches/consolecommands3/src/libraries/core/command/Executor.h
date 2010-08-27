@@ -58,7 +58,7 @@ namespace orxonox
             inline MultiType operator()(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5) const
                 { return (*this->functor_)(param1, param2, param3, param4, param5); }
 
-            MultiType parse(const std::string& params, bool* success = 0, const std::string& delimiter = " ") const;
+            MultiType parse(const std::string& params, int* error = 0, const std::string& delimiter = " ", bool bPrintError = false) const;
 
             bool evaluate(const std::string& params, MultiType param[5], const std::string& delimiter = " ") const;
 
@@ -163,23 +163,23 @@ namespace orxonox
 
             using Executor::parse;
 
-            MultiType parse(T* object, const std::string& params, bool* success = 0, const std::string& delimiter = " ") const
+            MultiType parse(T* object, const std::string& params, int* error = 0, const std::string& delimiter = " ", bool bPrintError = false) const
             {
                 T* oldobject = this->functorMember_->getObject();
 
                 this->functorMember_->setObject(object);
-                const MultiType& result = this->Executor::parse(params, success, delimiter);
+                const MultiType& result = this->Executor::parse(params, error, delimiter, bPrintError);
                 this->functorMember_->setObject(oldobject);
 
                 return result;
             }
 
-            MultiType parse(const T* object, const std::string& params, bool* success = 0, const std::string& delimiter = " ") const
+            MultiType parse(const T* object, const std::string& params, int* error = 0, const std::string& delimiter = " ", bool bPrintError = false) const
             {
                 T* oldobject = this->functorMember_->getObject();
 
                 this->functorMember_->setObject(object);
-                const MultiType& result = this->Executor::parse(params, success, delimiter);
+                const MultiType& result = this->Executor::parse(params, error, delimiter, bPrintError);
                 this->functorMember_->setObjects(oldobject);
 
                 return result;

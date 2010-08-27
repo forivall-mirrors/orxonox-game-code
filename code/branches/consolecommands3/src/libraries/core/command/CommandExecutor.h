@@ -31,8 +31,6 @@
 
 #include "core/CorePrereqs.h"
 
-#include <map>
-#include <set>
 #include <string>
 
 #include "util/MultiType.h"
@@ -45,15 +43,20 @@ namespace orxonox
     {
 // tolua_end
         public:
-            static bool execute(const std::string& command, bool useTcl = true); // tolua_export
+            static int execute(const std::string& command, bool useTcl = true); // tolua_export
 
-            static MultiType queryMT(const std::string& command, bool* success = 0, bool useTcl = true);
-            static std::string query(const std::string& command, bool* success = 0, bool useTcl = true); // tolua_export
-
-            static std::string complete(const std::string& command);
-            static std::string hint(const std::string& command);
+            static MultiType queryMT(const std::string& command, int* error = 0, bool useTcl = true);
+            static std::string query(const std::string& command, int* error = 0, bool useTcl = true); // tolua_export
 
             static CommandEvaluation evaluate(const std::string& command);
+
+            static const int Success = 0;
+            static const int Error = 1;
+            static const int Incomplete = 2;
+            static const int Deactivated = 3;
+            static const int Denied = 4;
+
+            static void _autocomplete(const std::string& group, const std::string& name) {}
 
         private:
             CommandExecutor() {}
@@ -61,30 +64,6 @@ namespace orxonox
             ~CommandExecutor() {}
 
             static CommandExecutor& getInstance();
-            static CommandEvaluation& getEvaluation();
-
-            static void parseIfNeeded(const std::string& command);
-            static void parse(const std::string& command, bool bInitialize = true);
-
-            static unsigned int argumentsFinished();
-            static unsigned int argumentsGiven();
-            static bool enoughArgumentsGiven(_ConsoleCommand* command);
-            static const std::string& getArgument(unsigned int index);
-            static const std::string& getLastArgument();
-
-            static void createListOfPossibleIdentifiers(const std::string& fragment);
-            static void createListOfPossibleFunctions(const std::string& fragment, Identifier* identifier = 0);
-            static void createListOfPossibleArguments(const std::string& fragment, _ConsoleCommand* command, unsigned int param);
-
-            static Identifier* getPossibleIdentifier(const std::string& name);
-            static _ConsoleCommand* getPossibleCommand(const std::string& name, Identifier* identifier = 0);
-            static const std::string& getPossibleArgument(const std::string& name, _ConsoleCommand* command, unsigned int param);
-
-            static void createArgumentCompletionList(_ConsoleCommand* command, unsigned int param);
-            static std::string getCommonBegin(const std::list<std::pair<const std::string*, const std::string*> >& list);
-            static std::string getCommonBegin(const ArgumentCompletionList& list);
-
-            CommandEvaluation evaluation_;
     }; // tolua_export
 } // tolua_export
 

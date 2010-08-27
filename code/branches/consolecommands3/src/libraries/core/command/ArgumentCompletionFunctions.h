@@ -52,6 +52,8 @@ namespace orxonox
     namespace autocompletion
     {
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(fallback)();
+        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(groupsandcommands)();
+        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(subcommands)(const std::string& fragment, const std::string& group);
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(files)(const std::string& fragment);
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(settingssections)();
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(settingsentries)(const std::string& fragment, const std::string& section);

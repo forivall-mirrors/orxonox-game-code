@@ -52,7 +52,7 @@ namespace orxonox
     {
         if (this->abs_ != 0.0f || this->rel_ != 0.0f)
         {
-            evaluation_.setEvaluatedParameter(paramIndex_, Vector2(abs_, rel_));
+//            evaluation_.setEvaluatedParameter(paramIndex_, Vector2(abs_, rel_));
             // reset
             rel_ = 0.0;
             abs_ = 0.0;

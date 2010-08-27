@@ -328,15 +328,23 @@ namespace orxonox
         public:
             static inline const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommands()
                 { return _ConsoleCommand::getCommandMap(); }
+            static inline const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommandsLC()
+                { return _ConsoleCommand::getCommandMapLC(); }
 
-            static inline const _ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
+            static inline _ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
                 { return _ConsoleCommand::getCommand("", name, bPrintError); }
-            static const _ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
+            static inline _ConsoleCommand* getCommandLC(const std::string& name, bool bPrintError = false)
+                { return _ConsoleCommand::getCommandLC("", name, bPrintError); }
+
+            static _ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
+            static _ConsoleCommand* getCommandLC(const std::string& group, const std::string& name, bool bPrintError = false);
 
             static void destroyAll();
 
         private:
             static std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommandMap();
+            static std::map<std::string, std::map<std::string, _ConsoleCommand*> >& getCommandMapLC();
+
             static void registerCommand(const std::string& group, const std::string& name, _ConsoleCommand* command);
             static void unregisterCommand(_ConsoleCommand* command);
     };

@@ -32,7 +32,6 @@
 #include "core/CorePrereqs.h"
 
 #include <string>
-#include <list>
 
 #include "ArgumentCompletionListElement.h"
 #include "util/SubString.h"
@@ -40,21 +39,6 @@
 
 namespace orxonox
 {
-    namespace CommandState
-    {
-        enum Value
-        {
-            Uninitialized,
-            Empty,
-            ShortcutOrIdentifier,
-            Function,
-            ParamPreparation,
-            Params,
-            Finished,
-            Error
-        };
-    }
-
     class _CoreExport CommandEvaluation
     {
         friend class CommandExecutor;
@@ -62,62 +46,45 @@ namespace orxonox
         public:
             CommandEvaluation();
 
-            void initialize(const std::string& command);
+            int execute() const;
+            MultiType query(int* error = 0) const;
 
-            bool execute() const;
-            MultiType query(bool* success = 0) const;
-
-            const std::string& complete();
+            std::string complete() const;
             std::string hint() const;
-            void evaluateParams();
 
-            bool isValid() const
-                { return this->function_; }
+            inline bool isValid() const
+                { return (this->execCommand_ != 0); }
 
             inline _ConsoleCommand* getConsoleCommand() const
-                { return this->function_; }
-            inline const std::string& getOriginalCommand() const
-                { return this->originalCommand_; }
-            inline const std::string& getCommand() const
-                { return this->command_; }
+                { return this->execCommand_; }
 
-            inline void setAdditionalParameter(const std::string& param)
-                { this->additionalParameter_ = param; this->bEvaluatedParams_ = false; }
-            inline std::string getAdditionalParameter() const
-                { return (!this->additionalParameter_.empty()) ? (' ' + this->additionalParameter_) : ""; }
-
-            void setEvaluatedParameter(unsigned int index, MultiType param);
-            MultiType getEvaluatedParameter(unsigned int index) const;
+//            void setEvaluatedParameter(unsigned int index, MultiType param);
+//            MultiType getEvaluatedParameter(unsigned int index) const;
 
         private:
-            unsigned int getStartindex() const;
-            static std::string dump(const std::list<std::pair<const std::string*, const std::string*> >& list);
+            void initialize(const std::string& command);
+
+            unsigned int getNumberOfArguments() const;
+            const std::string& getLastArgument() const;
+            const std::string& getToken(unsigned int i) const;
+
+            void retrievePossibleArguments() const;
+
+            static void strip(ArgumentCompletionList& list, const std::string& fragment);
+
             static std::string dump(const ArgumentCompletionList& list);
             static std::string dump(const _ConsoleCommand* command);
 
+            static std::string getCommonBegin(const ArgumentCompletionList& list);
 
-            bool bNewCommand_;
-            bool bCommandChanged_;
-
-            std::string originalCommand_;
-            std::string command_;
-            SubString commandTokens_;
-            std::string additionalParameter_;
-
-            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleIdentifiers_;
-            std::list<std::pair<const std::string*, const std::string*> > listOfPossibleFunctions_;
-            ArgumentCompletionList listOfPossibleArguments_;
-
-            Identifier* functionclass_;
-            _ConsoleCommand* function_;
-            std::string possibleArgument_;
-            std::string argument_;
-
-            std::string errorMessage_;
-            CommandState::Value state_;
-
-            bool bEvaluatedParams_;
-            MultiType param_[5];
+            _ConsoleCommand* execCommand_;
+            _ConsoleCommand* hintCommand_;
+            SubString tokens_;
+            std::string string_;
+            unsigned int execArgumentsOffset_;
+            unsigned int hintArgumentsOffset_;
+            mutable bool bPossibleArgumentsRetrieved_;
+            mutable ArgumentCompletionList possibleArguments_;
     };
 }
 
