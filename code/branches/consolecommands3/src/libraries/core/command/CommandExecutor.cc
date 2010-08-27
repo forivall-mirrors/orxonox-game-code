@@ -66,6 +66,7 @@ namespace orxonox
             {
 COUT(0) << "evaluate" << std::endl;
                 evaluation = CommandExecutor::evaluate(command);
+                evaluation.evaluateParams();
                 CommandExecutor::getInstance().cache(command, evaluation);
             }
             else

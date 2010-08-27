@@ -33,9 +33,10 @@
 
 #include <string>
 
-#include "ArgumentCompletionListElement.h"
 #include "util/SubString.h"
 #include "util/MultiType.h"
+#include "ArgumentCompletionListElement.h"
+#include "Functor.h"
 
 namespace orxonox
 {
@@ -46,11 +47,13 @@ namespace orxonox
         public:
             CommandEvaluation();
 
-            int execute() const;
-            MultiType query(int* error = 0) const;
+            int execute();
+            MultiType query(int* error = 0);
 
-            std::string complete() const;
-            std::string hint() const;
+            std::string complete();
+            std::string hint();
+
+            int evaluateParams(bool bPrintError = false);
 
             inline bool isValid() const
                 { return (this->execCommand_ != 0); }
@@ -58,8 +61,8 @@ namespace orxonox
             inline _ConsoleCommand* getConsoleCommand() const
                 { return this->execCommand_; }
 
-//            void setEvaluatedParameter(unsigned int index, MultiType param);
-//            MultiType getEvaluatedParameter(unsigned int index) const;
+            void setEvaluatedParameter(unsigned int index, const MultiType& param);
+            MultiType getEvaluatedParameter(unsigned int index) const;
 
         private:
             void initialize(const std::string& command);
@@ -68,7 +71,7 @@ namespace orxonox
             const std::string& getLastArgument() const;
             const std::string& getToken(unsigned int i) const;
 
-            void retrievePossibleArguments() const;
+            void retrievePossibleArguments();
 
             static void strip(ArgumentCompletionList& list, const std::string& fragment);
 
@@ -83,8 +86,13 @@ namespace orxonox
             std::string string_;
             unsigned int execArgumentsOffset_;
             unsigned int hintArgumentsOffset_;
-            mutable bool bPossibleArgumentsRetrieved_;
-            mutable ArgumentCompletionList possibleArguments_;
+            bool bPossibleArgumentsRetrieved_;
+            ArgumentCompletionList possibleArguments_;
+
+            bool bEvaluatedParams_;
+            bool bTriedToEvaluatedParams_;
+            unsigned int numberOfEvaluatedParams_;
+            MultiType param_[MAX_FUNCTOR_ARGUMENTS];
     };
 }
 

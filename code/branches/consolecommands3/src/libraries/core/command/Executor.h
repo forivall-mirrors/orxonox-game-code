@@ -58,9 +58,10 @@ namespace orxonox
             inline MultiType operator()(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5) const
                 { return (*this->functor_)(param1, param2, param3, param4, param5); }
 
-            MultiType parse(const std::string& params, int* error = 0, const std::string& delimiter = " ", bool bPrintError = false) const;
+            MultiType parse(const std::string& arguments, int* error = 0, const std::string& delimiter = " ", bool bPrintError = false) const;
+            MultiType parse(const SubString& arguments, int* error = 0, const std::string& delimiter = " ", bool bPrintError = false) const;
 
-            bool evaluate(const std::string& params, MultiType param[5], const std::string& delimiter = " ") const;
+            int evaluateParams(const SubString& arguments, MultiType param[MAX_FUNCTOR_ARGUMENTS], int* error = 0, const std::string& delimiter = " ") const;
 
             inline void setFunctor(const FunctorPtr& functor)
                 { this->functor_ = functor; }

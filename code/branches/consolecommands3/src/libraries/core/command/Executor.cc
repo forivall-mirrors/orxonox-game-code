@@ -49,143 +49,70 @@ namespace orxonox
     {
     }
 
-    MultiType Executor::parse(const std::string& params, int* error, const std::string& delimiter, bool bPrintError) const
+    MultiType Executor::parse(const std::string& arguments, int* error, const std::string& delimiter, bool bPrintError) const
     {
-        if (error)
-            *error = CommandExecutor::Success;
-
-        unsigned int paramCount = this->functor_->getParamCount();
-
-        if (paramCount == 0)
-        {
-            COUT(5) << "Calling Executor " << this->name_ << " through parser without parameters." << std::endl;
-            return (*this->functor_)();
-        }
-        else if (paramCount == 1)
-        {
-            const std::string& temp = getStripped(params);
-            if (!temp.empty())
-            {
-                COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using whole string: " << params << std::endl;
-                return (*this->functor_)(params);
-            }
-            else if (!this->defaultValue_[0].null())
-            {
-                COUT(5) << "Calling Executor " << this->name_ << " through parser with one parameter, using default value: " << this->defaultValue_[0] << std::endl;
-                return (*this->functor_)(this->defaultValue_[0]);
-            }
-            else
-            {
-                if (bPrintError)
-                    COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << temp << ")." << std::endl;
-                if (error)
-                    *error = CommandExecutor::Incomplete;
-                return MT_Type::Null;
-            }
-        }
-        else
-        {
-            SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0');
-
-            for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
-            {
-                if (this->defaultValue_[i].null())
-                {
-                    if (bPrintError)
-                        COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << params << ")." << std::endl;
-                    if (error)
-                        *error = CommandExecutor::Incomplete;
-                    return MT_Type::Null;
-                }
-            }
-
-            MultiType param[MAX_FUNCTOR_ARGUMENTS];
-            COUT(5) << "Calling Executor " << this->name_ << " through parser with " << paramCount << " parameters, using " << tokens.size() << " tokens (";
-            for (unsigned int i = 0; i < tokens.size() && i < MAX_FUNCTOR_ARGUMENTS; i++)
-            {
-                param[i] = tokens[i];
-                if (i != 0)
-                {
-                    COUT(5) << ", ";
-                }
-                COUT(5) << tokens[i];
-            }
-            COUT(5) << ") and " << std::max((int)paramCount - (int)tokens.size(), 0) << " default values (";
-            for (unsigned int i = tokens.size(); i < paramCount; i++)
-            {
-                param[i] = this->defaultValue_[i];
-                if (i != 0)
-                {
-                    COUT(5) << ", ";
-                }
-                COUT(5) << this->defaultValue_[i];
-            }
-            COUT(5) << ")." << std::endl;
-
-            if ((tokens.size() > paramCount) && (this->functor_->getTypenameParam(paramCount - 1) == "string"))
-                param[paramCount - 1] = tokens.subSet(paramCount - 1).join();
-
-            switch(paramCount)
-            {
-                case 2:
-                    return (*this->functor_)(param[0], param[1]);
-                case 3:
-                    return (*this->functor_)(param[0], param[1], param[2]);
-                case 4:
-                    return (*this->functor_)(param[0], param[1], param[2], param[3]);
-                case 5:
-                    return (*this->functor_)(param[0], param[1], param[2], param[3], param[4]);
-            }
-        }
-
-        return MT_Type::Null;
+        return this->parse(SubString(arguments, delimiter, SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0'), error, delimiter, bPrintError);
     }
 
-    bool Executor::evaluate(const std::string& params, MultiType param[5], const std::string& delimiter) const
+    MultiType Executor::parse(const SubString& arguments, int* error, const std::string& delimiter, bool bPrintError) const
+    {
+        MultiType param[MAX_FUNCTOR_ARGUMENTS];
+        unsigned int paramCount = this->evaluateParams(arguments, param, error, delimiter);
+
+        if (error && *error)
+        {
+            if (bPrintError)
+                COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough parameters or default values given (input: " << arguments.join() << ")." << std::endl;
+            return MT_Type::Null;
+        }
+
+        switch (paramCount)
+        {
+            case 0:  return (*this->functor_)();
+            case 1:  return (*this->functor_)(param[0]);
+            case 2:  return (*this->functor_)(param[0], param[1]);
+            case 3:  return (*this->functor_)(param[0], param[1], param[2]);
+            case 4:  return (*this->functor_)(param[0], param[1], param[2], param[3]);
+            case 5:
+            default: return (*this->functor_)(param[0], param[1], param[2], param[3], param[4]);
+        }
+    }
+
+    int Executor::evaluateParams(const SubString& arguments, MultiType param[MAX_FUNCTOR_ARGUMENTS], int* error, const std::string& delimiter) const
     {
         unsigned int paramCount = this->functor_->getParamCount();
+        unsigned int argumentCount = arguments.size();
 
-        if (paramCount == 1)
+        // if there are not enough params given, check if there are default values
+        for (unsigned int i = argumentCount; i < paramCount; i++)
         {
-            // only one param: check if there are params given, otherwise try to use default values
-            if (!getStripped(params).empty())
+            if (this->defaultValue_[i].null())
             {
-                param[0] = params;
-                this->functor_->evaluateParam(0, param[0]);
-                return true;
+                if (error)
+                    *error = CommandExecutor::Incomplete;
+                return 0;
             }
-            else if (!this->defaultValue_[0].null())
-            {
-                param[0] = this->defaultValue_[0];
-                this->functor_->evaluateParam(0, param[0]);
-                return true;
-            }
-            return false;
         }
-        else
-        {
-            // more than one param
-            SubString tokens(params, delimiter, SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0');
 
-            // if there are not enough params given, check if there are default values
-            for (unsigned int i = tokens.size(); i < this->functor_->getParamCount(); i++)
-                if (this->defaultValue_[i].null())
-                    return false;
+        // assign all given arguments to the multitypes
+        for (unsigned int i = 0; i < std::min(argumentCount, MAX_FUNCTOR_ARGUMENTS); i++)
+            param[i] = arguments[i];
 
-            // assign all given arguments to the multitypes
-            for (unsigned int i = 0; i < std::min(tokens.size(), MAX_FUNCTOR_ARGUMENTS); i++)
-                param[i] = tokens[i];
+        // fill the remaining multitypes with default values
+        for (unsigned int i = argumentCount; i < std::min(paramCount, MAX_FUNCTOR_ARGUMENTS); i++)
+            param[i] = this->defaultValue_[i];
 
-            // fill the remaining multitypes with default values
-            for (unsigned int i = tokens.size(); i < std::min(paramCount, MAX_FUNCTOR_ARGUMENTS); i++)
-                param[i] = this->defaultValue_[i];
+        // assign the remaining arguments all to the last parameter if it is a string
+        if ((paramCount <= MAX_FUNCTOR_ARGUMENTS) &&(argumentCount > paramCount) && (paramCount == 1 || this->functor_->getTypenameParam(paramCount - 1) == "string"))
+            param[paramCount - 1] = arguments.subSet(paramCount - 1).join(delimiter);
 
-            // evaluate the param types through the functor
-            for (unsigned int i = 0; i < std::min(paramCount, MAX_FUNCTOR_ARGUMENTS); i++)
-                this->functor_->evaluateParam(i, param[i]);
+        // evaluate the param types through the functor
+        for (unsigned int i = 0; i < std::min(paramCount, MAX_FUNCTOR_ARGUMENTS); i++)
+            this->functor_->evaluateParam(i, param[i]);
 
-            return true;
-        }
+        if (error)
+            *error = CommandExecutor::Success;
+        return paramCount;
     }
 
     void Executor::setDefaultValues(const MultiType& param1)

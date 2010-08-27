@@ -174,8 +174,8 @@ namespace orxonox
                 }
 
                 // evaluate the command
-                const CommandEvaluation& eval = CommandExecutor::evaluate(commandStr);
-                if (!eval.isValid())
+                CommandEvaluation eval = CommandExecutor::evaluate(commandStr);
+                if (!eval.isValid() || eval.evaluateParams(true))
                 {
                     parseError("Command evaluation of \"" + commandStr + "\"failed.", true);
                     continue;

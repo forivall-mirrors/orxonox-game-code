@@ -48,8 +48,11 @@ namespace orxonox
         this->hintArgumentsOffset_ = 0;
         this->bPossibleArgumentsRetrieved_ = false;
         this->possibleArguments_.clear();
+        this->bEvaluatedParams_ = false;
+        this->bTriedToEvaluatedParams_ = false;
+        this->numberOfEvaluatedParams_ = 0;
 
-        this->tokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', false, '"', false, '(', ')', false, '\0');
+        this->tokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0');
     }
 
     unsigned int CommandEvaluation::getNumberOfArguments() const
@@ -77,14 +80,14 @@ namespace orxonox
             return BLANKSTRING;
     }
 
-    int CommandEvaluation::execute() const
+    int CommandEvaluation::execute()
     {
         int error;
         this->query(&error);
         return error;
     }
 
-    MultiType CommandEvaluation::query(int* error) const
+    MultiType CommandEvaluation::query(int* error)
     {
         if (error)
         {
@@ -102,12 +105,73 @@ namespace orxonox
         }
 
         if (this->execCommand_ && this->execCommand_->isActive() && this->execCommand_->hasAccess())
-            return this->execCommand_->getExecutor()->parse(this->tokens_.subSet(this->execArgumentsOffset_).join(), error, " ", false);
+        {
+            if (!this->bTriedToEvaluatedParams_)
+                this->evaluateParams(false);
+
+            if (this->bEvaluatedParams_)
+            {
+                COUT(0) << "call evaluated" << std::endl;
+                COUT(6) << "CE_execute (evaluation): " << this->execCommand_->getName() << " with " << this->numberOfEvaluatedParams_ << " params: " << this->param_[0] << ' ' << this->param_[1] << ' ' << this->param_[2] << ' ' << this->param_[3] << ' ' << this->param_[4] << std::endl;
+                switch (this->numberOfEvaluatedParams_)
+                {
+                    case 0:  return (*this->execCommand_->getExecutor())();
+                    case 1:  return (*this->execCommand_->getExecutor())(this->param_[0]);
+                    case 2:  return (*this->execCommand_->getExecutor())(this->param_[0], this->param_[1]);
+                    case 3:  return (*this->execCommand_->getExecutor())(this->param_[0], this->param_[1], this->param_[2]);
+                    case 4:  return (*this->execCommand_->getExecutor())(this->param_[0], this->param_[1], this->param_[2], this->param_[3]);
+                    case 5:
+                    default: return (*this->execCommand_->getExecutor())(this->param_[0], this->param_[1], this->param_[2], this->param_[3], this->param_[4]);
+                }
+            }
+            else
+            {
+                COUT(0) << "call parsed" << std::endl;
+                COUT(5) << "CE_execute: " << this->string_ << "\n";
+                return this->execCommand_->getExecutor()->parse(this->tokens_.subSet(this->execArgumentsOffset_), error, " ");
+            }
+        }
         else
             return MT_Type::Null;
     }
 
-    std::string CommandEvaluation::complete() const
+    int CommandEvaluation::evaluateParams(bool bPrintError)
+    {
+COUT(0) << "evaluate params" << std::endl;
+        this->bTriedToEvaluatedParams_ = true;
+
+        if (!this->execCommand_)
+        {
+            if (bPrintError)
+                COUT(1) << "Error: Can't evaluate params, no console command assigned." << std::endl;
+            return CommandExecutor::Error;
+        }
+
+        int error;
+        this->numberOfEvaluatedParams_ = this->execCommand_->getExecutor()->evaluateParams(this->tokens_.subSet(this->execArgumentsOffset_), this->param_, &error, " ");
+        if (!error)
+            this->bEvaluatedParams_ = true;
+        else if (bPrintError)
+            COUT(1) << "Error: Can't evaluate params, not enough arguments given." << std::endl;
+
+        return error;
+    }
+
+    void CommandEvaluation::setEvaluatedParameter(unsigned int index, const MultiType& param)
+    {
+        if (index < MAX_FUNCTOR_ARGUMENTS)
+            this->param_[index] = param;
+    }
+
+    MultiType CommandEvaluation::getEvaluatedParameter(unsigned int index) const
+    {
+        if (index < MAX_FUNCTOR_ARGUMENTS)
+            return this->param_[index];
+
+        return MT_Type::Null;
+    }
+
+    std::string CommandEvaluation::complete()
     {
         if (!this->hintCommand_ || !this->hintCommand_->isActive())
             return this->string_;
@@ -121,16 +185,16 @@ namespace orxonox
         }
         else
         {
-            std::string output;
-            for (unsigned int i = 0; i < this->getNumberOfArguments() - 1; ++i)
-                output += this->getToken(i) + ' ';
+            std::string output = this->string_.substr(0, this->string_.find_last_of(' ') + 1);
+//            for (unsigned int i = 0; i < this->getNumberOfArguments() - 1; ++i)
+//                output += this->getToken(i) + ' ';
 
             output += CommandEvaluation::getCommonBegin(this->possibleArguments_);
             return output;
         }
     }
 
-    std::string CommandEvaluation::hint() const
+    std::string CommandEvaluation::hint()
     {
         if (!this->hintCommand_ || !this->hintCommand_->isActive())
             return "";
@@ -164,7 +228,7 @@ namespace orxonox
         }
     }
 
-    void CommandEvaluation::retrievePossibleArguments() const
+    void CommandEvaluation::retrievePossibleArguments()
     {
         this->bPossibleArgumentsRetrieved_ = true;
         unsigned int argumentID = std::min(this->getNumberOfArguments() - this->hintArgumentsOffset_, this->hintCommand_->getExecutor()->getParamCount());
