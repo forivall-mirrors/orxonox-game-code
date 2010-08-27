@@ -122,16 +122,6 @@ namespace orxonox
             return detail::_subcommands(fragment, group, false);
         }
 
-        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(hiddengroupsandcommands)()
-        {
-            return detail::_groupsandcommands(true);
-        }
-
-        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(hiddensubcommands)(const std::string& fragment, const std::string& group)
-        {
-            return detail::_subcommands(fragment, group, true);
-        }
-
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION_MULTI(command)(const std::string& fragment)
         {
             CommandEvaluation evaluation = CommandExecutor::evaluate(fragment);
@@ -147,6 +137,31 @@ namespace orxonox
                 list.push_back(ArgumentCompletionListElement("", "", hint));
                 return list;
             }
+        }
+
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION_MULTI(hiddencommand)(const std::string& fragment)
+        {
+            SubString tokens(fragment, " ", SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0');
+
+            if (tokens.size() == 0)
+                return detail::_groupsandcommands(true);
+
+            if (_ConsoleCommand::getCommandLC(getLowercase(tokens[0])))
+                return ARGUMENT_COMPLETION_FUNCTION_CALL(command)(fragment);
+
+            if (tokens.size() == 1)
+            {
+                std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommands().find(tokens[0]);
+                if (it_group != _ConsoleCommand::getCommands().end())
+                    return detail::_subcommands(fragment, tokens[0], true);
+                else
+                    return detail::_groupsandcommands(true);
+            }
+
+            if (_ConsoleCommand::getCommandLC(getLowercase(tokens[0]), getLowercase(tokens[1])))
+                return ARGUMENT_COMPLETION_FUNCTION_CALL(command)(fragment);
+
+            return ArgumentCompletionList();
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(files)(const std::string& fragment)

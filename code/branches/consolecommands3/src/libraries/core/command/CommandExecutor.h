@@ -58,7 +58,7 @@ namespace orxonox
             static const int Deactivated = 3;
             static const int Denied = 4;
 
-            static MultiType unhide(const std::string& group, const std::string& name, const std::string& arguments);
+            static MultiType unhide(const std::string& command);
             static void _autocomplete(const std::string& group, const std::string& name) {}
 
         private:
