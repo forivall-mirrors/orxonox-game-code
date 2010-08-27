@@ -111,7 +111,6 @@ namespace orxonox
 
             if (this->bEvaluatedParams_)
             {
-                COUT(0) << "call evaluated" << std::endl;
                 COUT(6) << "CE_execute (evaluation): " << this->execCommand_->getName() << " with " << this->numberOfEvaluatedParams_ << " params: " << this->param_[0] << ' ' << this->param_[1] << ' ' << this->param_[2] << ' ' << this->param_[3] << ' ' << this->param_[4] << std::endl;
                 switch (this->numberOfEvaluatedParams_)
                 {
@@ -126,7 +125,6 @@ namespace orxonox
             }
             else
             {
-                COUT(0) << "call parsed" << std::endl;
                 COUT(5) << "CE_execute: " << this->string_ << "\n";
                 return this->execCommand_->getExecutor()->parse(this->tokens_.subSet(this->execArgumentsOffset_), error, " ");
             }
@@ -137,7 +135,6 @@ namespace orxonox
 
     int CommandEvaluation::evaluateParams(bool bPrintError)
     {
-COUT(0) << "evaluate params" << std::endl;
         this->bTriedToEvaluatedParams_ = true;
 
         if (!this->execCommand_)
@@ -186,8 +183,6 @@ COUT(0) << "evaluate params" << std::endl;
         else
         {
             std::string output = this->string_.substr(0, this->string_.find_last_of(' ') + 1);
-//            for (unsigned int i = 0; i < this->getNumberOfArguments() - 1; ++i)
-//                output += this->getToken(i) + ' ';
 
             output += CommandEvaluation::getCommonBegin(this->possibleArguments_);
             return output;
@@ -234,18 +229,13 @@ COUT(0) << "evaluate params" << std::endl;
         unsigned int argumentID = std::min(this->getNumberOfArguments() - this->hintArgumentsOffset_, this->hintCommand_->getExecutor()->getParamCount());
         ArgumentCompleter* ac = this->hintCommand_->getArgumentCompleter(argumentID - 1);
 
-COUT(0) << "hint: args: " << this->getNumberOfArguments() << ", aID: " << argumentID << ", offset: " << this->hintArgumentsOffset_ << ", ac: " << ac << std::endl;
         if (ac)
         {
             MultiType param[MAX_FUNCTOR_ARGUMENTS];
 
             for (size_t i = 0; i < argumentID; ++i)
-            {
                 param[i] = this->getToken(this->getNumberOfArguments() - i - 1);
-COUT(0) << i << ": " << (this->getNumberOfArguments() - i - 1) << " -> " << this->getToken(this->getNumberOfArguments() - i - 1) << " / " << param[i] << std::endl;
-            }
 
-COUT(0) << "hint: 1: " << param[0] << ", 2: " << param[1] << ", 3: " << param[2] << ", 4: " << param[3] << ", 5: " << param[4] << std::endl;
             this->possibleArguments_ = (*ac)(param[0], param[1], param[2], param[3], param[4]);
 
             CommandEvaluation::strip(this->possibleArguments_, param[0]);

@@ -64,14 +64,9 @@ namespace orxonox
             CommandEvaluation evaluation;
             if (!CommandExecutor::getInstance().getCached(command, evaluation))
             {
-COUT(0) << "evaluate" << std::endl;
                 evaluation = CommandExecutor::evaluate(command);
                 evaluation.evaluateParams();
                 CommandExecutor::getInstance().cache(command, evaluation);
-            }
-            else
-            {
-COUT(0) << "cached" << std::endl;
             }
 
             return evaluation.query(error);
