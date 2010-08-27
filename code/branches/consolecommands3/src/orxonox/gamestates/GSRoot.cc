@@ -44,7 +44,7 @@ namespace orxonox
     static const std::string __CC_setTimeFactor_name = "setTimeFactor";
     static const std::string __CC_pause_name = "pause";
 
-    _SetConsoleCommand("printObjects", &GSRoot::printObjects);
+    _SetConsoleCommand("printObjects", &GSRoot::printObjects).hide();
     _SetConsoleCommand(__CC_setTimeFactor_name, &GSRoot::setTimeFactor).accessLevel(AccessLevel::Master).defaultValues(1.0);
     _SetConsoleCommand(__CC_pause_name,         &GSRoot::pause        ).accessLevel(AccessLevel::Master);
 

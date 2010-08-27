@@ -37,12 +37,12 @@ namespace orxonox
     class _CoreExport ArgumentCompleter
     {
         public:
-            ArgumentCompleter(ArgumentCompletionList (*function) (void)) : paramCount_(0), function_0_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1)) : paramCount_(1), function_1_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2)) : paramCount_(2), function_2_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3)) : paramCount_(3), function_3_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4)) : paramCount_(4), function_4_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5)) : paramCount_(5), function_5_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (void), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(0), function_0_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(1), function_1_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(2), function_2_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(3), function_3_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(4), function_4_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(5), function_5_(function) {}
 
             ArgumentCompletionList operator()(const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "")
             {
@@ -65,7 +65,11 @@ namespace orxonox
                 }
             }
 
+            inline bool useMultipleWords() const
+                { return this->bUseMultipleWords_; }
+
         private:
+            bool bUseMultipleWords_;
             unsigned char paramCount_;
             ArgumentCompletionList (*function_0_) (void);
             ArgumentCompletionList (*function_1_) (const std::string& param1);

@@ -176,14 +176,13 @@ namespace orxonox
         if (!this->bPossibleArgumentsRetrieved_)
             this->retrievePossibleArguments();
 
-        if (this->possibleArguments_.empty())
+        if (CommandEvaluation::getSize(this->possibleArguments_) == 0)
         {
             return this->string_;
         }
         else
         {
             std::string output = this->string_.substr(0, this->string_.find_last_of(' ') + 1);
-
             output += CommandEvaluation::getCommonBegin(this->possibleArguments_);
             return output;
         }
@@ -233,12 +232,28 @@ namespace orxonox
         {
             MultiType param[MAX_FUNCTOR_ARGUMENTS];
 
+            size_t max = this->hintArgumentsOffset_ + this->hintCommand_->getExecutor()->getParamCount();
+
             for (size_t i = 0; i < argumentID; ++i)
-                param[i] = this->getToken(this->getNumberOfArguments() - i - 1);
+                param[i] = this->getToken(std::min(this->getNumberOfArguments(), max) - i - 1);
 
-            this->possibleArguments_ = (*ac)(param[0], param[1], param[2], param[3], param[4]);
+            if (this->getNumberOfArguments() > max)
+            {
+                if (ac->useMultipleWords())
+                {
+                    std::string surplusArguments = this->tokens_.subSet(max - 1).join();
+                    if (this->string_[this->string_.size() - 1] == ' ')
+                        surplusArguments += ' ';
 
-            CommandEvaluation::strip(this->possibleArguments_, param[0]);
+                    this->possibleArguments_ = (*ac)(surplusArguments, param[1], param[2], param[3], param[4]);
+                    CommandEvaluation::strip(this->possibleArguments_, this->getToken(this->getNumberOfArguments() - 1));
+                }
+            }
+            else
+            {
+                this->possibleArguments_ = (*ac)(param[0], param[1], param[2], param[3], param[4]);
+                CommandEvaluation::strip(this->possibleArguments_, param[0]);
+            }
         }
     }
 
@@ -249,6 +264,12 @@ namespace orxonox
         for (ArgumentCompletionList::iterator it = list.begin(); it != list.end(); )
         {
             const std::string& entry = it->getComparable();
+
+            if (entry == "")
+            {
+                ++it;
+                continue;
+            }
 
             if (entry.size() < fragmentLC.size())
             {
@@ -274,15 +295,24 @@ namespace orxonox
         }
     }
 
+    /* static */ size_t CommandEvaluation::getSize(const ArgumentCompletionList& list)
+    {
+        size_t count = 0;
+        for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
+            if (it->getComparable() != "")
+                ++count;
+        return count;
+    }
+
     /* static */ std::string CommandEvaluation::dump(const ArgumentCompletionList& list)
     {
         std::string output;
         for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
         {
-            if (it != list.begin())
-                output += ' ';
-
             output += it->getDisplay();
+
+            if (it->getComparable() != "")
+                output += ' ';
         }
         return output;
     }
@@ -315,16 +345,24 @@ namespace orxonox
 
     /* static */ std::string CommandEvaluation::getCommonBegin(const ArgumentCompletionList& list)
     {
-        if (list.size() == 0)
+        if (CommandEvaluation::getSize(list) == 0)
         {
             return "";
         }
-        else if (list.size() == 1)
+        else if (CommandEvaluation::getSize(list) == 1)
         {
-            if (list.begin()->hasDisplay())
-                return (list.begin()->getString());
-            else
-                return (list.begin()->getString() + ' ');
+            for (ArgumentCompletionList::const_iterator it = list.begin(); it != list.end(); ++it)
+            {
+                if (it->getComparable() != "")
+                {
+                    if (it->hasDisplay())
+                        return (it->getString());
+                    else
+                        return (it->getString() + ' ');
+                }
+            }
+
+            return "";
         }
         else
         {
@@ -337,9 +375,13 @@ namespace orxonox
                 {
                     const std::string& argumentComparable = it->getComparable();
                     const std::string& argument = it->getString();
+
+                    if (argumentComparable == "")
+                        continue;
+
                     if (argument.size() > i)
                     {
-                        if (it == list.begin())
+                        if (tempComparable == 0)
                         {
                             tempComparable = argumentComparable[i];
                             temp = argument[i];

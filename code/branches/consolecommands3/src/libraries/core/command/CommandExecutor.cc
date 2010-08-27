@@ -42,6 +42,12 @@ namespace orxonox
         .argumentCompleter(0, autocompletion::groupsandcommands())
         .argumentCompleter(1, autocompletion::subcommands());
 
+    _SetConsoleCommand("unhide", &CommandExecutor::unhide)
+        .argumentCompleter(0, autocompletion::hiddengroupsandcommands())
+        .argumentCompleter(1, autocompletion::hiddensubcommands())
+        .defaultValue(1, "")
+        .defaultValue(2, "");
+
     /* static */ CommandExecutor& CommandExecutor::getInstance()
     {
         static CommandExecutor instance;
@@ -147,5 +153,10 @@ namespace orxonox
             this->cache_.erase(this->cachelist_.back());
             this->cachelist_.pop_back();
         }
+    }
+
+    /* static */ MultiType CommandExecutor::unhide(const std::string& group, const std::string& name, const std::string& arguments)
+    {
+        return CommandExecutor::queryMT(group + " " + name + " " + arguments);
     }
 }

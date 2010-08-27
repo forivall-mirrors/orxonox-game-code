@@ -64,6 +64,9 @@ namespace orxonox
             void setEvaluatedParameter(unsigned int index, const MultiType& param);
             MultiType getEvaluatedParameter(unsigned int index) const;
 
+            const ArgumentCompletionList& getPossibleArguments() const
+                { return this->possibleArguments_; }
+
         private:
             void initialize(const std::string& command);
 
@@ -74,6 +77,7 @@ namespace orxonox
             void retrievePossibleArguments();
 
             static void strip(ArgumentCompletionList& list, const std::string& fragment);
+            static size_t getSize(const ArgumentCompletionList& list);
 
             static std::string dump(const ArgumentCompletionList& list);
             static std::string dump(const _ConsoleCommand* command);

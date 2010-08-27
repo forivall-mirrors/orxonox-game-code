@@ -37,8 +37,9 @@
 #include "core/Identifier.h"
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueContainer.h"
-#include "TclThreadManager.h"
+#include "CommandExecutor.h"
 #include "ConsoleCommand.h"
+#include "TclThreadManager.h"
 
 // Boost 1.36 has some issues with deprecated functions that have been omitted
 #if (BOOST_VERSION == 103600)
@@ -56,56 +57,96 @@ namespace orxonox
             return ArgumentCompletionList();
         }
 
-        bool groupIsVisible(const std::map<std::string, _ConsoleCommand*>& group)
+        namespace detail
         {
-            for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = group.begin(); it_command != group.end(); ++it_command)
-                if (it_command->second->isActive() && it_command->second->hasAccess() && !it_command->second->isHidden())
-                    return true;
+            bool groupIsVisible(const std::map<std::string, _ConsoleCommand*>& group, bool bOnlyShowHidden)
+            {
+                for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = group.begin(); it_command != group.end(); ++it_command)
+                    if (it_command->second->isActive() && it_command->second->hasAccess() && (!it_command->second->isHidden())^bOnlyShowHidden)
+                        return true;
 
-            return false;
+                return false;
+            }
+
+            ArgumentCompletionList _groupsandcommands(bool bOnlyShowHidden)
+            {
+                ArgumentCompletionList groupList;
+
+                const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& commands = _ConsoleCommand::getCommands();
+                for (std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.begin(); it_group != commands.end(); ++it_group)
+                    if (groupIsVisible(it_group->second, bOnlyShowHidden) && it_group->first != "")
+                        groupList.push_back(ArgumentCompletionListElement(it_group->first, getLowercase(it_group->first)));
+
+                std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.find("");
+                if (it_group != commands.end())
+                {
+                    groupList.push_back(ArgumentCompletionListElement("", "", "\n"));
+
+                    for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
+                        if (it_command->second->isActive() && it_command->second->hasAccess() && (!it_command->second->isHidden())^bOnlyShowHidden)
+                            groupList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
+                }
+
+                return groupList;
+            }
+
+            ArgumentCompletionList _subcommands(const std::string& fragment, const std::string& group, bool bOnlyShowHidden)
+            {
+                ArgumentCompletionList commandList;
+
+                std::string groupLC = getLowercase(group);
+
+                std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommands().begin();
+                for ( ; it_group != _ConsoleCommand::getCommands().end(); ++it_group)
+                    if (getLowercase(it_group->first) == groupLC)
+                        break;
+
+                if (it_group != _ConsoleCommand::getCommands().end())
+                {
+                    for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
+                        if (it_command->second->isActive() && it_command->second->hasAccess() && (!it_command->second->isHidden())^bOnlyShowHidden)
+                            commandList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
+                }
+
+                return commandList;
+            }
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(groupsandcommands)()
         {
-            ArgumentCompletionList groupList;
-
-            const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& commands = _ConsoleCommand::getCommands();
-            for (std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.begin(); it_group != commands.end(); ++it_group)
-                if (groupIsVisible(it_group->second))
-                    groupList.push_back(ArgumentCompletionListElement(it_group->first, getLowercase(it_group->first)));
-
-            std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.find("");
-            if (it_group != commands.end())
-            {
-                groupList.push_back(ArgumentCompletionListElement("\n"));
-
-                for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
-                    if (it_command->second->isActive() && it_command->second->hasAccess() && !it_command->second->isHidden())
-                        groupList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
-            }
-
-            return groupList;
+            return detail::_groupsandcommands(false);
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(subcommands)(const std::string& fragment, const std::string& group)
         {
-            ArgumentCompletionList commandList;
+            return detail::_subcommands(fragment, group, false);
+        }
 
-            std::string groupLC = getLowercase(group);
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(hiddengroupsandcommands)()
+        {
+            return detail::_groupsandcommands(true);
+        }
 
-            std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommands().begin();
-            for ( ; it_group != _ConsoleCommand::getCommands().end(); ++it_group)
-                if (getLowercase(it_group->first) == groupLC)
-                    break;
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(hiddensubcommands)(const std::string& fragment, const std::string& group)
+        {
+            return detail::_subcommands(fragment, group, true);
+        }
 
-            if (it_group != _ConsoleCommand::getCommands().end())
+        ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION_MULTI(command)(const std::string& fragment)
+        {
+            CommandEvaluation evaluation = CommandExecutor::evaluate(fragment);
+            const std::string& hint = evaluation.hint();
+
+            if (evaluation.getPossibleArguments().size() > 0)
             {
-                for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
-                    if (it_command->second->isActive() && it_command->second->hasAccess() && !it_command->second->isHidden())
-                        commandList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
+                return evaluation.getPossibleArguments();
             }
-
-            return commandList;
+            else
+            {
+                ArgumentCompletionList list;
+                list.push_back(ArgumentCompletionListElement("", "", hint));
+                return list;
+            }
         }
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(files)(const std::string& fragment)
