@@ -56,14 +56,23 @@ namespace orxonox
             return ArgumentCompletionList();
         }
 
+        bool groupIsVisible(const std::map<std::string, _ConsoleCommand*>& group)
+        {
+            for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = group.begin(); it_command != group.end(); ++it_command)
+                if (it_command->second->isActive() && it_command->second->hasAccess() && !it_command->second->isHidden())
+                    return true;
+
+            return false;
+        }
+
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(groupsandcommands)()
         {
             ArgumentCompletionList groupList;
 
             const std::map<std::string, std::map<std::string, _ConsoleCommand*> >& commands = _ConsoleCommand::getCommands();
             for (std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.begin(); it_group != commands.end(); ++it_group)
-                // todo: check if active / not hidden / not denied
-                groupList.push_back(ArgumentCompletionListElement(it_group->first, getLowercase(it_group->first)));
+                if (groupIsVisible(it_group->second))
+                    groupList.push_back(ArgumentCompletionListElement(it_group->first, getLowercase(it_group->first)));
 
             std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = commands.find("");
             if (it_group != commands.end())
@@ -71,8 +80,8 @@ namespace orxonox
                 groupList.push_back(ArgumentCompletionListElement("\n"));
 
                 for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
-                    // todo: check if active / not hidden / not denied
-                    groupList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
+                    if (it_command->second->isActive() && it_command->second->hasAccess() && !it_command->second->isHidden())
+                        groupList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
             }
 
             return groupList;
@@ -92,8 +101,8 @@ namespace orxonox
             if (it_group != _ConsoleCommand::getCommands().end())
             {
                 for (std::map<std::string, _ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
-                    // todo: check if active / not hidden / not denied
-                    commandList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
+                    if (it_command->second->isActive() && it_command->second->hasAccess() && !it_command->second->isHidden())
+                        commandList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
             }
 
             return commandList;
