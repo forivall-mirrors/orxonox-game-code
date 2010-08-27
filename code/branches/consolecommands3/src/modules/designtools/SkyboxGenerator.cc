@@ -49,7 +49,7 @@
 namespace orxonox
 {
 
-    _SetConsoleCommand("SkyboxGenerator", "createSkybox", &SkyboxGenerator::createSkybox).addShortcut();
+    SetConsoleCommand("SkyboxGenerator", "createSkybox", &SkyboxGenerator::createSkybox).addShortcut();
 
     ManageScopedSingleton(SkyboxGenerator, ScopeID::Graphics, false);
 

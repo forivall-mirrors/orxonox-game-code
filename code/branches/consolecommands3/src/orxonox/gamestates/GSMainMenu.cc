@@ -54,12 +54,12 @@ namespace orxonox
     static const std::string __CC_startMainMenu_name        = "startMainMenu";
     static const std::string __CC_setMainMenuSoundPath_name = "setMMSoundPath";
 
-    _SetConsoleCommand(__CC_startStandalone_name,      &GSMainMenu::startStandalone).deactivate();
-    _SetConsoleCommand(__CC_startServer_name,          &GSMainMenu::startServer    ).deactivate();
-    _SetConsoleCommand(__CC_startClient_name,          &GSMainMenu::startClient    ).deactivate();
-    _SetConsoleCommand(__CC_startDedicated_name,       &GSMainMenu::startDedicated ).deactivate();
-    _SetConsoleCommand(__CC_startMainMenu_name,        &GSMainMenu::startMainMenu  ).deactivate();
-    _SetConsoleCommand(__CC_setMainMenuSoundPath_name, &GSMainMenu::setMainMenuSoundPath).hide();
+    SetConsoleCommand(__CC_startStandalone_name,      &GSMainMenu::startStandalone).deactivate();
+    SetConsoleCommand(__CC_startServer_name,          &GSMainMenu::startServer    ).deactivate();
+    SetConsoleCommand(__CC_startClient_name,          &GSMainMenu::startClient    ).deactivate();
+    SetConsoleCommand(__CC_startDedicated_name,       &GSMainMenu::startDedicated ).deactivate();
+    SetConsoleCommand(__CC_startMainMenu_name,        &GSMainMenu::startMainMenu  ).deactivate();
+    SetConsoleCommand(__CC_setMainMenuSoundPath_name, &GSMainMenu::setMainMenuSoundPath).hide();
 
     GSMainMenu::GSMainMenu(const GameStateInfo& info)
         : GameState(info)
@@ -102,12 +102,12 @@ namespace orxonox
 
         InputManager::getInstance().enterState("MainMenuHackery");
 
-        _ModifyConsoleCommand(__CC_startStandalone_name).activate();
-        _ModifyConsoleCommand(__CC_startServer_name    ).activate();
-        _ModifyConsoleCommand(__CC_startClient_name    ).activate();
-        _ModifyConsoleCommand(__CC_startDedicated_name ).activate();
-        _ModifyConsoleCommand(__CC_startMainMenu_name  ).activate();
-        _ModifyConsoleCommand(__CC_setMainMenuSoundPath_name).setObject(this);
+        ModifyConsoleCommand(__CC_startStandalone_name).activate();
+        ModifyConsoleCommand(__CC_startServer_name    ).activate();
+        ModifyConsoleCommand(__CC_startClient_name    ).activate();
+        ModifyConsoleCommand(__CC_startDedicated_name ).activate();
+        ModifyConsoleCommand(__CC_startMainMenu_name  ).activate();
+        ModifyConsoleCommand(__CC_setMainMenuSoundPath_name).setObject(this);
 
         KeyBinderManager::getInstance().setToDefault();
 
@@ -134,12 +134,12 @@ namespace orxonox
         GUIManager::hideGUI("MainMenu");
         GraphicsManager::getInstance().setCamera(0);
 
-        _ModifyConsoleCommand(__CC_startStandalone_name).deactivate();
-        _ModifyConsoleCommand(__CC_startServer_name    ).deactivate();
-        _ModifyConsoleCommand(__CC_startClient_name    ).deactivate();
-        _ModifyConsoleCommand(__CC_startDedicated_name ).deactivate();
-        _ModifyConsoleCommand(__CC_startMainMenu_name  ).deactivate();
-        _ModifyConsoleCommand(__CC_setMainMenuSoundPath_name).setObject(0);
+        ModifyConsoleCommand(__CC_startStandalone_name).deactivate();
+        ModifyConsoleCommand(__CC_startServer_name    ).deactivate();
+        ModifyConsoleCommand(__CC_startClient_name    ).deactivate();
+        ModifyConsoleCommand(__CC_startDedicated_name ).deactivate();
+        ModifyConsoleCommand(__CC_startMainMenu_name  ).deactivate();
+        ModifyConsoleCommand(__CC_setMainMenuSoundPath_name).setObject(0);
     }
 
     void GSMainMenu::update(const Clock& time)

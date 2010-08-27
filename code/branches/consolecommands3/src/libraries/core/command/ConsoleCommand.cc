@@ -35,7 +35,7 @@
 
 namespace orxonox
 {
-    _ConsoleCommand::_ConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized)
+    ConsoleCommand::ConsoleCommand(const std::string& group, const std::string& name, const ExecutorPtr& executor, bool bInitialized)
     {
         this->bActive_ = true;
         this->bHidden_ = false;
@@ -56,44 +56,44 @@ namespace orxonox
         if (bInitialized)
             this->executor_ = executor;
 
-        _ConsoleCommand::registerCommand(group, name, this);
+        ConsoleCommand::registerCommand(group, name, this);
     }
 
-    _ConsoleCommand::~_ConsoleCommand()
+    ConsoleCommand::~ConsoleCommand()
     {
-        _ConsoleCommand::unregisterCommand(this);
+        ConsoleCommand::unregisterCommand(this);
     }
 
-    _ConsoleCommand& _ConsoleCommand::addShortcut()
+    ConsoleCommand& ConsoleCommand::addShortcut()
     {
-        _ConsoleCommand::registerCommand("", this->baseName_, this);
+        ConsoleCommand::registerCommand("", this->baseName_, this);
         return *this;
     }
 
-    _ConsoleCommand& _ConsoleCommand::addShortcut(const std::string&  name)
+    ConsoleCommand& ConsoleCommand::addShortcut(const std::string&  name)
     {
-        _ConsoleCommand::registerCommand("", name, this);
+        ConsoleCommand::registerCommand("", name, this);
         return *this;
     }
 
-    _ConsoleCommand& _ConsoleCommand::addGroup(const std::string& group)
+    ConsoleCommand& ConsoleCommand::addGroup(const std::string& group)
     {
-        _ConsoleCommand::registerCommand(group, this->baseName_, this);
+        ConsoleCommand::registerCommand(group, this->baseName_, this);
         return *this;
     }
 
-    _ConsoleCommand& _ConsoleCommand::addGroup(const std::string& group, const std::string&  name)
+    ConsoleCommand& ConsoleCommand::addGroup(const std::string& group, const std::string&  name)
     {
-        _ConsoleCommand::registerCommand(group, name, this);
+        ConsoleCommand::registerCommand(group, name, this);
         return *this;
     }
 
-    bool _ConsoleCommand::isActive() const
+    bool ConsoleCommand::isActive() const
     {
         return (this->bActive_ && this->executor_ && this->executor_->getFunctor() && (this->executor_->getFunctor()->getType() == Functor::Type::Static || this->executor_->getFunctor()->getRawObjectPointer()));
     }
 
-    bool _ConsoleCommand::hasAccess() const
+    bool ConsoleCommand::hasAccess() const
     {
         switch (this->accessLevel_)
         {
@@ -109,7 +109,7 @@ namespace orxonox
         }
     }
 
-    bool _ConsoleCommand::headersMatch(const FunctorPtr& functor)
+    bool ConsoleCommand::headersMatch(const FunctorPtr& functor)
     {
         unsigned int minparams = std::min(this->baseExecutor_->getParamCount(), functor->getParamCount());
 
@@ -129,7 +129,7 @@ namespace orxonox
         }
     }
 
-    bool _ConsoleCommand::headersMatch(const ExecutorPtr& executor)
+    bool ConsoleCommand::headersMatch(const ExecutorPtr& executor)
     {
         unsigned int minparams = std::min(this->baseExecutor_->getParamCount(), executor->getParamCount());
 
@@ -147,7 +147,7 @@ namespace orxonox
         }
     }
 
-    bool _ConsoleCommand::setFunction(const ExecutorPtr& executor, bool bForce)
+    bool ConsoleCommand::setFunction(const ExecutorPtr& executor, bool bForce)
     {
         if (!executor || !executor->getFunctor() || bForce || this->headersMatch(executor))
         {
@@ -161,7 +161,7 @@ namespace orxonox
         }
     }
 
-    bool _ConsoleCommand::setFunction(const FunctorPtr& functor, bool bForce)
+    bool ConsoleCommand::setFunction(const FunctorPtr& functor, bool bForce)
     {
         if (!functor || bForce || this->headersMatch(functor))
         {
@@ -179,7 +179,7 @@ namespace orxonox
         }
     }
 
-    void _ConsoleCommand::pushFunction(const ExecutorPtr& executor, bool bForce)
+    void ConsoleCommand::pushFunction(const ExecutorPtr& executor, bool bForce)
     {
         Command command;
         command.executor_ = this->getExecutor();
@@ -190,7 +190,7 @@ namespace orxonox
             this->commandStack_.push(command);
     }
 
-    void _ConsoleCommand::pushFunction(const FunctorPtr& functor, bool bForce)
+    void ConsoleCommand::pushFunction(const FunctorPtr& functor, bool bForce)
     {
         Command command;
         command.executor_ = this->getExecutor();
@@ -201,7 +201,7 @@ namespace orxonox
             this->commandStack_.push(command);
     }
 
-    void _ConsoleCommand::pushFunction()
+    void ConsoleCommand::pushFunction()
     {
         if (this->executor_)
             this->pushFunction(new Executor(*this->executor_.get()));
@@ -209,7 +209,7 @@ namespace orxonox
             COUT(1) << "Error: Couldn't push copy of executor in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
     }
 
-    void _ConsoleCommand::popFunction()
+    void ConsoleCommand::popFunction()
     {
         Command command;
         if (!this->commandStack_.empty())
@@ -223,18 +223,18 @@ namespace orxonox
             this->executor_->setFunctor(command.functor_);
     }
 
-    void _ConsoleCommand::resetFunction()
+    void ConsoleCommand::resetFunction()
     {
         if (this->executor_)
             this->executor_->setFunctor(0);
     }
 
-    const ExecutorPtr& _ConsoleCommand::getExecutor() const
+    const ExecutorPtr& ConsoleCommand::getExecutor() const
     {
         return this->executor_;
     }
 
-    bool _ConsoleCommand::setObject(void* object)
+    bool ConsoleCommand::setObject(void* object)
     {
         if (this->executor_)
         {
@@ -252,14 +252,14 @@ namespace orxonox
         return false;
     }
 
-    void _ConsoleCommand::pushObject(void* object)
+    void ConsoleCommand::pushObject(void* object)
     {
         void* oldobject = this->getObject();
         if (this->setObject(object))
             this->objectStack_.push(oldobject);
     }
 
-    void _ConsoleCommand::popObject()
+    void ConsoleCommand::popObject()
     {
         void* newobject = 0;
         if (!this->objectStack_.empty())
@@ -270,7 +270,7 @@ namespace orxonox
         this->setObject(newobject);
     }
 
-    void* _ConsoleCommand::getObject() const
+    void* ConsoleCommand::getObject() const
     {
         if (this->executor_ && this->executor_->getFunctor())
             return this->executor_->getFunctor()->getRawObjectPointer();
@@ -278,7 +278,7 @@ namespace orxonox
             return 0;
     }
 
-    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1)
+    ConsoleCommand& ConsoleCommand::defaultValues(const MultiType& param1)
     {
         if (this->executor_)
             this->executor_->setDefaultValues(param1);
@@ -288,7 +288,7 @@ namespace orxonox
         return *this;
     }
 
-    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2)
+    ConsoleCommand& ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2)
     {
         if (this->executor_)
             this->executor_->setDefaultValues(param1, param2);
@@ -298,7 +298,7 @@ namespace orxonox
         return *this;
     }
 
-    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
+    ConsoleCommand& ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3)
     {
         if (this->executor_)
             this->executor_->setDefaultValues(param1, param2, param3);
@@ -308,7 +308,7 @@ namespace orxonox
         return *this;
     }
 
-    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
+    ConsoleCommand& ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4)
     {
         if (this->executor_)
             this->executor_->setDefaultValues(param1, param2, param3, param4);
@@ -318,7 +318,7 @@ namespace orxonox
         return *this;
     }
 
-    _ConsoleCommand& _ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
+    ConsoleCommand& ConsoleCommand::defaultValues(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
     {
         if (this->executor_)
             this->executor_->setDefaultValues(param1, param2, param3, param4, param5);
@@ -328,7 +328,7 @@ namespace orxonox
         return *this;
     }
 
-    _ConsoleCommand& _ConsoleCommand::defaultValue(unsigned int index, const MultiType& param)
+    ConsoleCommand& ConsoleCommand::defaultValue(unsigned int index, const MultiType& param)
     {
         if (this->executor_)
             this->executor_->setDefaultValue(index, param);
@@ -338,7 +338,7 @@ namespace orxonox
         return *this;
     }
 
-    _ConsoleCommand& _ConsoleCommand::argumentCompleter(unsigned int param, ArgumentCompleter* completer)
+    ConsoleCommand& ConsoleCommand::argumentCompleter(unsigned int param, ArgumentCompleter* completer)
     {
         if (param < 5)
             this->argumentCompleter_[param] = completer;
@@ -348,7 +348,7 @@ namespace orxonox
         return *this;
     }
 
-    ArgumentCompleter* _ConsoleCommand::getArgumentCompleter(unsigned int param) const
+    ArgumentCompleter* ConsoleCommand::getArgumentCompleter(unsigned int param) const
     {
         if (param < 5)
             return this->argumentCompleter_[param];
@@ -356,19 +356,19 @@ namespace orxonox
             return 0;
     }
 
-    _ConsoleCommand& _ConsoleCommand::description(const std::string& description)
+    ConsoleCommand& ConsoleCommand::description(const std::string& description)
     {
         this->description_ = std::string("ConsoleCommandDescription::" + this->baseName_ + "::function");
         AddLanguageEntry(this->description_, description);
         return *this;
     }
 
-    const std::string& _ConsoleCommand::getDescription() const
+    const std::string& ConsoleCommand::getDescription() const
     {
         return GetLocalisation_noerror(this->description_);
     }
 
-    _ConsoleCommand& _ConsoleCommand::descriptionParam(unsigned int param, const std::string& description)
+    ConsoleCommand& ConsoleCommand::descriptionParam(unsigned int param, const std::string& description)
     {
         if (param < MAX_FUNCTOR_ARGUMENTS)
         {
@@ -378,7 +378,7 @@ namespace orxonox
         return *this;
     }
 
-    const std::string& _ConsoleCommand::getDescriptionParam(unsigned int param) const
+    const std::string& ConsoleCommand::getDescriptionParam(unsigned int param) const
     {
         if (param < MAX_FUNCTOR_ARGUMENTS)
             return GetLocalisation_noerror(this->descriptionParam_[param]);
@@ -386,24 +386,24 @@ namespace orxonox
         return this->descriptionParam_[0];
     }
 
-    _ConsoleCommand& _ConsoleCommand::descriptionReturnvalue(const std::string& description)
+    ConsoleCommand& ConsoleCommand::descriptionReturnvalue(const std::string& description)
     {
         this->descriptionReturnvalue_ = std::string("ConsoleCommandDescription::" + this->baseName_ + "::returnvalue");
         AddLanguageEntry(this->descriptionReturnvalue_, description);
         return *this;
     }
 
-    const std::string& _ConsoleCommand::getDescriptionReturnvalue(int param) const
+    const std::string& ConsoleCommand::getDescriptionReturnvalue(int param) const
     {
         return GetLocalisation_noerror(this->descriptionReturnvalue_);
     }
 
-    /* static */ _ConsoleCommand* _ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
+    /* static */ ConsoleCommand* ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
     {
-        std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommandMap().find(group);
-        if (it_group != _ConsoleCommand::getCommandMap().end())
+        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommandMap().find(group);
+        if (it_group != ConsoleCommand::getCommandMap().end())
         {
-            std::map<std::string, _ConsoleCommand*>::const_iterator it_name = it_group->second.find(name);
+            std::map<std::string, ConsoleCommand*>::const_iterator it_name = it_group->second.find(name);
             if (it_name != it_group->second.end())
             {
                 return it_name->second;
@@ -419,15 +419,15 @@ namespace orxonox
         return 0;
     }
 
-    /* static */ _ConsoleCommand* _ConsoleCommand::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
+    /* static */ ConsoleCommand* ConsoleCommand::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
     {
         std::string groupLC = getLowercase(group);
         std::string nameLC = getLowercase(name);
 
-        std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommandMapLC().find(groupLC);
-        if (it_group != _ConsoleCommand::getCommandMapLC().end())
+        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommandMapLC().find(groupLC);
+        if (it_group != ConsoleCommand::getCommandMapLC().end())
         {
-            std::map<std::string, _ConsoleCommand*>::const_iterator it_name = it_group->second.find(nameLC);
+            std::map<std::string, ConsoleCommand*>::const_iterator it_name = it_group->second.find(nameLC);
             if (it_name != it_group->second.end())
             {
                 return it_name->second;
@@ -443,24 +443,24 @@ namespace orxonox
         return 0;
     }
 
-    /* static */ std::map<std::string, std::map<std::string, _ConsoleCommand*> >& _ConsoleCommand::getCommandMap()
+    /* static */ std::map<std::string, std::map<std::string, ConsoleCommand*> >& ConsoleCommand::getCommandMap()
     {
-        static std::map<std::string, std::map<std::string, _ConsoleCommand*> > commandMap;
+        static std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMap;
         return commandMap;
     }
 
-    /* static */ std::map<std::string, std::map<std::string, _ConsoleCommand*> >& _ConsoleCommand::getCommandMapLC()
+    /* static */ std::map<std::string, std::map<std::string, ConsoleCommand*> >& ConsoleCommand::getCommandMapLC()
     {
-        static std::map<std::string, std::map<std::string, _ConsoleCommand*> > commandMapLC;
+        static std::map<std::string, std::map<std::string, ConsoleCommand*> > commandMapLC;
         return commandMapLC;
     }
 
-    /* static */ void _ConsoleCommand::registerCommand(const std::string& group, const std::string& name, _ConsoleCommand* command)
+    /* static */ void ConsoleCommand::registerCommand(const std::string& group, const std::string& name, ConsoleCommand* command)
     {
         if (name == "")
             return;
 
-        if (_ConsoleCommand::getCommand(group, name) != 0)
+        if (ConsoleCommand::getCommand(group, name) != 0)
         {
             if (group == "")
                 COUT(2) << "Warning: A console command with shortcut \"" << name << "\" already exists." << std::endl;
@@ -469,16 +469,16 @@ namespace orxonox
         }
         else
         {
-            _ConsoleCommand::getCommandMap()[group][name] = command;
-            _ConsoleCommand::getCommandMapLC()[getLowercase(group)][getLowercase(name)] = command;
+            ConsoleCommand::getCommandMap()[group][name] = command;
+            ConsoleCommand::getCommandMapLC()[getLowercase(group)][getLowercase(name)] = command;
         }
     }
 
-    /* static */ void _ConsoleCommand::unregisterCommand(_ConsoleCommand* command)
+    /* static */ void ConsoleCommand::unregisterCommand(ConsoleCommand* command)
     {
-        for (std::map<std::string, std::map<std::string, _ConsoleCommand*> >::iterator it_group = _ConsoleCommand::getCommandMap().begin(); it_group != _ConsoleCommand::getCommandMap().end(); )
+        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::iterator it_group = ConsoleCommand::getCommandMap().begin(); it_group != ConsoleCommand::getCommandMap().end(); )
         {
-            for (std::map<std::string, _ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
+            for (std::map<std::string, ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
             {
                 if (it_name->second == command)
                     it_group->second.erase(it_name++);
@@ -487,14 +487,14 @@ namespace orxonox
             }
 
             if (it_group->second.empty())
-                _ConsoleCommand::getCommandMap().erase(it_group++);
+                ConsoleCommand::getCommandMap().erase(it_group++);
             else
                 ++it_group;
         }
 
-        for (std::map<std::string, std::map<std::string, _ConsoleCommand*> >::iterator it_group = _ConsoleCommand::getCommandMapLC().begin(); it_group != _ConsoleCommand::getCommandMapLC().end(); )
+        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::iterator it_group = ConsoleCommand::getCommandMapLC().begin(); it_group != ConsoleCommand::getCommandMapLC().end(); )
         {
-            for (std::map<std::string, _ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
+            for (std::map<std::string, ConsoleCommand*>::iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); )
             {
                 if (it_name->second == command)
                     it_group->second.erase(it_name++);
@@ -503,15 +503,15 @@ namespace orxonox
             }
 
             if (it_group->second.empty())
-                _ConsoleCommand::getCommandMapLC().erase(it_group++);
+                ConsoleCommand::getCommandMapLC().erase(it_group++);
             else
                 ++it_group;
         }
     }
 
-    /* static */ void _ConsoleCommand::destroyAll()
+    /* static */ void ConsoleCommand::destroyAll()
     {
-        while (!_ConsoleCommand::getCommandMap().empty() && !_ConsoleCommand::getCommandMap().begin()->second.empty())
-            delete _ConsoleCommand::getCommandMap().begin()->second.begin()->second;
+        while (!ConsoleCommand::getCommandMap().empty() && !ConsoleCommand::getCommandMap().begin()->second.empty())
+            delete ConsoleCommand::getCommandMap().begin()->second.begin()->second;
     }
 }

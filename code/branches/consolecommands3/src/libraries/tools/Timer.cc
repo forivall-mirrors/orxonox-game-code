@@ -38,8 +38,8 @@
 
 namespace orxonox
 {
-    _SetConsoleCommand("delay", &delay).argumentCompleter(1, autocompletion::command());
-    _SetConsoleCommand("killdelays", &killdelays);
+    SetConsoleCommand("delay", &delay).argumentCompleter(1, autocompletion::command());
+    SetConsoleCommand("killdelays", &killdelays);
 
     static std::set<Timer*> delaytimerset;
 

@@ -43,8 +43,8 @@
 
 namespace orxonox
 {
-    _SetConsoleCommand("tcl", &TclBind::tcl);
-    _SetConsoleCommand("bgerror", &TclBind::bgerror);
+    SetConsoleCommand("tcl", &TclBind::tcl);
+    SetConsoleCommand("bgerror", &TclBind::bgerror);
 
     TclBind* TclBind::singletonPtr_s = 0;
 

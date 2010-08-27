@@ -58,7 +58,7 @@ namespace orxonox
             inline bool isValid() const
                 { return (this->execCommand_ != 0); }
 
-            inline _ConsoleCommand* getConsoleCommand() const
+            inline ConsoleCommand* getConsoleCommand() const
                 { return this->execCommand_; }
 
             void setEvaluatedParameter(unsigned int index, const MultiType& param);
@@ -83,12 +83,12 @@ namespace orxonox
             static size_t getSize(const ArgumentCompletionList& list);
 
             static std::string dump(const ArgumentCompletionList& list);
-            static std::string dump(const _ConsoleCommand* command);
+            static std::string dump(const ConsoleCommand* command);
 
             static std::string getCommonBegin(const ArgumentCompletionList& list);
 
-            _ConsoleCommand* execCommand_;
-            _ConsoleCommand* hintCommand_;
+            ConsoleCommand* execCommand_;
+            ConsoleCommand* hintCommand_;
             SubString tokens_;
             std::string string_;
             unsigned int execArgumentsOffset_;

@@ -41,9 +41,9 @@ namespace orxonox
 {
     static const unsigned int IRC_TCL_THREADID  = 1421421421;
 
-    _SetConsoleCommand("IRC", "say",  &IRC::say);
-    _SetConsoleCommand("IRC", "msg",  &IRC::msg);
-    _SetConsoleCommand("IRC", "nick", &IRC::nick);
+    SetConsoleCommand("IRC", "say",  &IRC::say);
+    SetConsoleCommand("IRC", "msg",  &IRC::msg);
+    SetConsoleCommand("IRC", "nick", &IRC::nick);
 
     IRC::IRC()
     {

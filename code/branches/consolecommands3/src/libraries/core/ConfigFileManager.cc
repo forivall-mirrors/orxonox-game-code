@@ -430,31 +430,31 @@ namespace orxonox
     static const std::string __CC_tconfig_name = "tconfig";
     static const std::string __CC_getConfig_name = "getConfig";
 
-    _SetConsoleCommand(__CC_load_name,            &ConfigFile::load);
-    _SetConsoleCommand(__CC_setFilename_name,     &SettingsConfigFile::setFilename);
-    _SetConsoleCommand(__CC_config_name,          &SettingsConfigFile::config).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
-    _SetConsoleCommand(__CC_tconfig_name,         &SettingsConfigFile::tconfig).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
-    _SetConsoleCommand(__CC_getConfig_name,       &SettingsConfigFile::getConfig).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries());
+    SetConsoleCommand(__CC_load_name,            &ConfigFile::load);
+    SetConsoleCommand(__CC_setFilename_name,     &SettingsConfigFile::setFilename);
+    SetConsoleCommand(__CC_config_name,          &SettingsConfigFile::config).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
+    SetConsoleCommand(__CC_tconfig_name,         &SettingsConfigFile::tconfig).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
+    SetConsoleCommand(__CC_getConfig_name,       &SettingsConfigFile::getConfig).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries());
 
     SettingsConfigFile* SettingsConfigFile::singletonPtr_s = 0;
 
     SettingsConfigFile::SettingsConfigFile(const std::string& filename)
         : ConfigFile(filename)
     {
-        _ModifyConsoleCommand(__CC_load_name).setObject(this);
-        _ModifyConsoleCommand(__CC_setFilename_name).setObject(this);
-        _ModifyConsoleCommand(__CC_config_name).setObject(this);
-        _ModifyConsoleCommand(__CC_tconfig_name).setObject(this);
-        _ModifyConsoleCommand(__CC_getConfig_name).setObject(this);
+        ModifyConsoleCommand(__CC_load_name).setObject(this);
+        ModifyConsoleCommand(__CC_setFilename_name).setObject(this);
+        ModifyConsoleCommand(__CC_config_name).setObject(this);
+        ModifyConsoleCommand(__CC_tconfig_name).setObject(this);
+        ModifyConsoleCommand(__CC_getConfig_name).setObject(this);
     }
 
     SettingsConfigFile::~SettingsConfigFile()
     {
-        _ModifyConsoleCommand(__CC_load_name).setObject(0);
-        _ModifyConsoleCommand(__CC_setFilename_name).setObject(0);
-        _ModifyConsoleCommand(__CC_config_name).setObject(0);
-        _ModifyConsoleCommand(__CC_tconfig_name).setObject(0);
-        _ModifyConsoleCommand(__CC_getConfig_name).setObject(0);
+        ModifyConsoleCommand(__CC_load_name).setObject(0);
+        ModifyConsoleCommand(__CC_setFilename_name).setObject(0);
+        ModifyConsoleCommand(__CC_config_name).setObject(0);
+        ModifyConsoleCommand(__CC_tconfig_name).setObject(0);
+        ModifyConsoleCommand(__CC_getConfig_name).setObject(0);
     }
 
     void SettingsConfigFile::load()

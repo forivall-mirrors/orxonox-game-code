@@ -47,10 +47,10 @@ namespace orxonox
     static const std::string __CC_unbind_name = "unbind";
     static const std::string __CC_tunbind_name = "tunbind";
 
-    _SetConsoleCommand(__CC_keybind_name,  &KeyBinderManager::keybind).defaultValues("");
-    _SetConsoleCommand(__CC_tkeybind_name, &KeyBinderManager::tkeybind).defaultValues("");
-    _SetConsoleCommand(__CC_unbind_name,   &KeyBinderManager::unbind).defaultValues("");
-    _SetConsoleCommand(__CC_tunbind_name,  &KeyBinderManager::tunbind).defaultValues("");
+    SetConsoleCommand(__CC_keybind_name,  &KeyBinderManager::keybind).defaultValues("");
+    SetConsoleCommand(__CC_tkeybind_name, &KeyBinderManager::tkeybind).defaultValues("");
+    SetConsoleCommand(__CC_unbind_name,   &KeyBinderManager::unbind).defaultValues("");
+    SetConsoleCommand(__CC_tunbind_name,  &KeyBinderManager::tunbind).defaultValues("");
 
     KeyBinderManager::KeyBinderManager()
         : currentBinder_(NULL)
@@ -61,10 +61,10 @@ namespace orxonox
         this->setConfigValues();
 
         // keybind console commands
-        _ModifyConsoleCommand(__CC_keybind_name ).setObject(this);
-        _ModifyConsoleCommand(__CC_tkeybind_name).setObject(this);
-        _ModifyConsoleCommand(__CC_unbind_name  ).setObject(this);
-        _ModifyConsoleCommand(__CC_tunbind_name ).setObject(this);
+        ModifyConsoleCommand(__CC_keybind_name ).setObject(this);
+        ModifyConsoleCommand(__CC_tkeybind_name).setObject(this);
+        ModifyConsoleCommand(__CC_unbind_name  ).setObject(this);
+        ModifyConsoleCommand(__CC_tunbind_name ).setObject(this);
 
         // Load default key binder
         this->setCurrent(defaultFilename_);
@@ -77,10 +77,10 @@ namespace orxonox
             delete it->second;
 
         // Reset console commands
-        _ModifyConsoleCommand(__CC_keybind_name ).setObject(0);
-        _ModifyConsoleCommand(__CC_tkeybind_name).setObject(0);
-        _ModifyConsoleCommand(__CC_unbind_name  ).setObject(0);
-        _ModifyConsoleCommand(__CC_tunbind_name ).setObject(0);
+        ModifyConsoleCommand(__CC_keybind_name ).setObject(0);
+        ModifyConsoleCommand(__CC_tkeybind_name).setObject(0);
+        ModifyConsoleCommand(__CC_unbind_name  ).setObject(0);
+        ModifyConsoleCommand(__CC_tunbind_name ).setObject(0);
     }
 
     void KeyBinderManager::setConfigValues()

@@ -40,14 +40,14 @@ namespace orxonox
     ManageScopedSingleton(KeyDetector, ScopeID::Graphics, false);
 
     static const std::string __CC_KeyDetector_callback_name = "KeyDetectorKeyPressed";
-    _DeclareConsoleCommand(__CC_KeyDetector_callback_name, &prototype::void__string);
+    DeclareConsoleCommand(__CC_KeyDetector_callback_name, &prototype::void__string);
 
     KeyDetector::KeyDetector()
         : KeyBinder("")
     {
         RegisterObject(KeyDetector);
 
-        _ModifyConsoleCommand(__CC_KeyDetector_callback_name).setFunction(&KeyDetector::callback, this);
+        ModifyConsoleCommand(__CC_KeyDetector_callback_name).setFunction(&KeyDetector::callback, this);
 
         this->assignCommands();
 
@@ -61,7 +61,7 @@ namespace orxonox
     {
         inputState_->setHandler(NULL);
         InputManager::getInstance().destroyState("detector");
-        _ModifyConsoleCommand(__CC_KeyDetector_callback_name).resetFunction();
+        ModifyConsoleCommand(__CC_KeyDetector_callback_name).resetFunction();
     }
 
     void KeyDetector::assignCommands()

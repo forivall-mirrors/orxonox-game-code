@@ -87,7 +87,7 @@ namespace orxonox
         // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
         : identifierDestroyer_(Identifier::destroyAllIdentifiers)
         // Cleanup guard for external console commands that don't belong to an Identifier
-        , consoleCommandDestroyer_(_ConsoleCommand::destroyAll)
+        , consoleCommandDestroyer_(ConsoleCommand::destroyAll)
         , bGraphicsLoaded_(false)
         , bStartIOConsole_(true)
     {

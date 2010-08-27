@@ -43,7 +43,7 @@ namespace orxonox
     static const std::string __CC_GametypeStatus_name = "GametypeStatus";
     static const std::string __CC_displayCaption_name = "displayCaption";
 
-    _SetConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name, &GametypeStatus::setDisplayCaption);
+    SetConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name, &GametypeStatus::setDisplayCaption);
 
     GametypeStatus::GametypeStatus(BaseObject* creator) : OverlayText(creator)
     {
@@ -52,12 +52,12 @@ namespace orxonox
         this->owner_ = 0;
         this->bNoCaption_ = false;
 
-        _ModifyConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name).setObject(this);
+        ModifyConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name).setObject(this);
     }
 
     GametypeStatus::~GametypeStatus()
     {
-        _ModifyConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name).setObject(0);
+        ModifyConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name).setObject(0);
     }
 
     void GametypeStatus::tick(float dt)

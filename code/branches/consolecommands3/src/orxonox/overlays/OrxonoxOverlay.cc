@@ -56,10 +56,10 @@ namespace orxonox
     unsigned int OrxonoxOverlay::hudOverlayCounter_s = 0;
     std::map<std::string, OrxonoxOverlay*> OrxonoxOverlay::overlays_s;
 
-    _SetConsoleCommand("OrxonoxOverlay", "scaleOverlay",     &OrxonoxOverlay::scaleOverlay);
-    _SetConsoleCommand("OrxonoxOverlay", "scrollOverlay",    &OrxonoxOverlay::scrollOverlay);
-    _SetConsoleCommand("OrxonoxOverlay", "toggleVisibility", &OrxonoxOverlay::toggleVisibility);
-    _SetConsoleCommand("OrxonoxOverlay", "rotateOverlay",    &OrxonoxOverlay::rotateOverlay);
+    SetConsoleCommand("OrxonoxOverlay", "scaleOverlay",     &OrxonoxOverlay::scaleOverlay);
+    SetConsoleCommand("OrxonoxOverlay", "scrollOverlay",    &OrxonoxOverlay::scrollOverlay);
+    SetConsoleCommand("OrxonoxOverlay", "toggleVisibility", &OrxonoxOverlay::toggleVisibility);
+    SetConsoleCommand("OrxonoxOverlay", "rotateOverlay",    &OrxonoxOverlay::rotateOverlay);
 
     OrxonoxOverlay::OrxonoxOverlay(BaseObject* creator)
         : BaseObject(creator)

@@ -212,8 +212,8 @@ namespace orxonox
             else
             {
                 std::string groupLC = getLowercase(this->getToken(0));
-                std::map<std::string, std::map<std::string, _ConsoleCommand*> >::const_iterator it_group = _ConsoleCommand::getCommands().begin();
-                for ( ; it_group != _ConsoleCommand::getCommands().end(); ++it_group)
+                std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommands().begin();
+                for ( ; it_group != ConsoleCommand::getCommands().end(); ++it_group)
                     if (getLowercase(it_group->first) == groupLC)
                         return std::string("Error: There is no command in group \"") + this->getToken(0) + "\" starting with \"" + this->getToken(1) + "\".";
 
@@ -379,7 +379,7 @@ namespace orxonox
         return output;
     }
 
-    /* static */ std::string CommandEvaluation::dump(const _ConsoleCommand* command)
+    /* static */ std::string CommandEvaluation::dump(const ConsoleCommand* command)
     {
         std::string output = command->getName();
         if (command->getExecutor()->getParamCount() > 0)

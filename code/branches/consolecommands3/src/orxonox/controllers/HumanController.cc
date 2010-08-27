@@ -39,26 +39,26 @@
 
 namespace orxonox
 {
-    _SetConsoleCommand("HumanController", "moveFrontBack",          &HumanController::moveFrontBack ).addShortcut().setAsInputCommand();
-    _SetConsoleCommand("HumanController", "moveRightLeft",          &HumanController::moveRightLeft ).addShortcut().setAsInputCommand();
-    _SetConsoleCommand("HumanController", "moveUpDown",             &HumanController::moveUpDown    ).addShortcut().setAsInputCommand();
-    _SetConsoleCommand("HumanController", "rotateYaw",              &HumanController::rotateYaw     ).addShortcut().setAsInputCommand();
-    _SetConsoleCommand("HumanController", "rotatePitch",            &HumanController::rotatePitch   ).addShortcut().setAsInputCommand();
-    _SetConsoleCommand("HumanController", "rotateRoll",             &HumanController::rotateRoll    ).addShortcut().setAsInputCommand();
-    _SetConsoleCommand("HumanController", "fire",                   &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
-    _SetConsoleCommand("HumanController", "reload",                 &HumanController::reload        ).addShortcut();
-    _SetConsoleCommand("HumanController", "boost",                  &HumanController::boost         ).addShortcut().keybindMode(KeybindMode::OnHold);
-    _SetConsoleCommand("HumanController", "greet",                  &HumanController::greet         ).addShortcut();
-    _SetConsoleCommand("HumanController", "switchCamera",           &HumanController::switchCamera  ).addShortcut();
-    _SetConsoleCommand("HumanController", "mouseLook",              &HumanController::mouseLook     ).addShortcut();
-    _SetConsoleCommand("HumanController", "suicide",                &HumanController::suicide       ).addShortcut();
-    _SetConsoleCommand("HumanController", "toggleGodMode",          &HumanController::toggleGodMode ).addShortcut();
-    _SetConsoleCommand("HumanController", "addBots",                &HumanController::addBots       ).addShortcut().defaultValues(1);
-    _SetConsoleCommand("HumanController", "killBots",               &HumanController::killBots      ).addShortcut().defaultValues(0);
-    _SetConsoleCommand("HumanController", "dropItems",              &HumanController::dropItems     ).addShortcut();
-    _SetConsoleCommand("HumanController", "useItem",                &HumanController::useItem       ).addShortcut();
-    _SetConsoleCommand("HumanController", "cycleNavigationFocus",   &HumanController::cycleNavigationFocus).addShortcut();
-    _SetConsoleCommand("HumanController", "releaseNavigationFocus", &HumanController::releaseNavigationFocus).addShortcut();
+    SetConsoleCommand("HumanController", "moveFrontBack",          &HumanController::moveFrontBack ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "moveRightLeft",          &HumanController::moveRightLeft ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "moveUpDown",             &HumanController::moveUpDown    ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "rotateYaw",              &HumanController::rotateYaw     ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "rotatePitch",            &HumanController::rotatePitch   ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "rotateRoll",             &HumanController::rotateRoll    ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "fire",                   &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand("HumanController", "reload",                 &HumanController::reload        ).addShortcut();
+    SetConsoleCommand("HumanController", "boost",                  &HumanController::boost         ).addShortcut().keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand("HumanController", "greet",                  &HumanController::greet         ).addShortcut();
+    SetConsoleCommand("HumanController", "switchCamera",           &HumanController::switchCamera  ).addShortcut();
+    SetConsoleCommand("HumanController", "mouseLook",              &HumanController::mouseLook     ).addShortcut();
+    SetConsoleCommand("HumanController", "suicide",                &HumanController::suicide       ).addShortcut();
+    SetConsoleCommand("HumanController", "toggleGodMode",          &HumanController::toggleGodMode ).addShortcut();
+    SetConsoleCommand("HumanController", "addBots",                &HumanController::addBots       ).addShortcut().defaultValues(1);
+    SetConsoleCommand("HumanController", "killBots",               &HumanController::killBots      ).addShortcut().defaultValues(0);
+    SetConsoleCommand("HumanController", "dropItems",              &HumanController::dropItems     ).addShortcut();
+    SetConsoleCommand("HumanController", "useItem",                &HumanController::useItem       ).addShortcut();
+    SetConsoleCommand("HumanController", "cycleNavigationFocus",   &HumanController::cycleNavigationFocus).addShortcut();
+    SetConsoleCommand("HumanController", "releaseNavigationFocus", &HumanController::releaseNavigationFocus).addShortcut();
 
     CreateUnloadableFactory(HumanController);
 

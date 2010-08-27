@@ -37,12 +37,12 @@ namespace orxonox
     static const std::string __CC_CommandExecutor_name = "CommandExecutor";
     static const std::string __CC_autocomplete_name = "autocomplete";
 
-    _SetConsoleCommand(__CC_CommandExecutor_name, __CC_autocomplete_name, &CommandExecutor::_autocomplete)
+    SetConsoleCommand(__CC_CommandExecutor_name, __CC_autocomplete_name, &CommandExecutor::_autocomplete)
         .hide()
         .argumentCompleter(0, autocompletion::groupsandcommands())
         .argumentCompleter(1, autocompletion::subcommands());
 
-    _SetConsoleCommand("unhide", &CommandExecutor::unhide)
+    SetConsoleCommand("unhide", &CommandExecutor::unhide)
         .argumentCompleter(0, autocompletion::hiddencommand());
 
     /* static */ CommandExecutor& CommandExecutor::getInstance()
@@ -86,16 +86,16 @@ namespace orxonox
         CommandEvaluation evaluation;
         evaluation.initialize(command);
 
-        evaluation.hintCommand_ = _ConsoleCommand::getCommand(__CC_CommandExecutor_name, __CC_autocomplete_name);
+        evaluation.hintCommand_ = ConsoleCommand::getCommand(__CC_CommandExecutor_name, __CC_autocomplete_name);
 
         if (evaluation.getNumberOfArguments() >= 1)
         {
-            evaluation.execCommand_ = _ConsoleCommand::getCommandLC(evaluation.getToken(0));
+            evaluation.execCommand_ = ConsoleCommand::getCommandLC(evaluation.getToken(0));
             if (evaluation.execCommand_)
                 evaluation.execArgumentsOffset_ = 1;
             else if (evaluation.getNumberOfArguments() >= 2)
             {
-                evaluation.execCommand_ = _ConsoleCommand::getCommandLC(evaluation.getToken(0), evaluation.getToken(1));
+                evaluation.execCommand_ = ConsoleCommand::getCommandLC(evaluation.getToken(0), evaluation.getToken(1));
                 if (evaluation.execCommand_)
                     evaluation.execArgumentsOffset_ = 2;
             }

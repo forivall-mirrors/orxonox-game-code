@@ -45,8 +45,8 @@ namespace orxonox
   ManageScopedSingleton( ChatInputHandler, ScopeID::Graphics, false );
 
   /* add commands to console */
-  _SetConsoleCommand( "startchat", &ChatInputHandler::activate_static );
-  _SetConsoleCommand( "startchat_small", &ChatInputHandler::activate_small_static );
+  SetConsoleCommand( "startchat", &ChatInputHandler::activate_static );
+  SetConsoleCommand( "startchat_small", &ChatInputHandler::activate_small_static );
 
   /* constructor */
   ChatInputHandler::ChatInputHandler()

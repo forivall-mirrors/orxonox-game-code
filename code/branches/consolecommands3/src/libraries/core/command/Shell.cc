@@ -39,11 +39,11 @@
 
 namespace orxonox
 {
-    _SetConsoleCommand("log",     OutputHandler::log    );
-    _SetConsoleCommand("error",   OutputHandler::error  );
-    _SetConsoleCommand("warning", OutputHandler::warning);
-    _SetConsoleCommand("info",    OutputHandler::info   );
-    _SetConsoleCommand("debug",   OutputHandler::debug  );
+    SetConsoleCommand("log",     OutputHandler::log    );
+    SetConsoleCommand("error",   OutputHandler::error  );
+    SetConsoleCommand("warning", OutputHandler::warning);
+    SetConsoleCommand("info",    OutputHandler::info   );
+    SetConsoleCommand("debug",   OutputHandler::debug  );
 
     unsigned int Shell::cacheSize_s;
 

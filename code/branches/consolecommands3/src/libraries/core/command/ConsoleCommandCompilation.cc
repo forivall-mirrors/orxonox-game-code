@@ -40,15 +40,15 @@
 
 namespace orxonox
 {
-    _SetConsoleCommand("source", source).argumentCompleter(0, autocompletion::files());
-    _SetConsoleCommand("echo", echo);
-    _SetConsoleCommand("puts", puts);
+    SetConsoleCommand("source", source).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommand("echo", echo);
+    SetConsoleCommand("puts", puts);
 
-    _SetConsoleCommand("read", read).argumentCompleter(0, autocompletion::files());
-    _SetConsoleCommand("append", append).argumentCompleter(0, autocompletion::files());
-    _SetConsoleCommand("write", write).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommand("read", read).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommand("append", append).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommand("write", write).argumentCompleter(0, autocompletion::files());
 
-    _SetConsoleCommand("calculate", calculate);
+    SetConsoleCommand("calculate", calculate);
 
     void source(const std::string& filename)
     {

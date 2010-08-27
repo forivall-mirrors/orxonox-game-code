@@ -193,7 +193,7 @@ namespace orxonox
     class ArgumentCompleter;
     class ArgumentCompletionListElement;
     class CommandEvaluation;
-    class _ConsoleCommand;
+    class ConsoleCommand;
     class Executor;
     template <class T>
     class ExecutorMember;

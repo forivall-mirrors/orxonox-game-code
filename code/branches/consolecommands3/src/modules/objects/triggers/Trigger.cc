@@ -37,7 +37,7 @@
 namespace orxonox
 {
 
-  _SetConsoleCommand("Trigger", "debugFlares", &Trigger::debugFlares).defaultValues(false);
+  SetConsoleCommand("Trigger", "debugFlares", &Trigger::debugFlares).defaultValues(false);
 
   CreateFactory(Trigger);
 
