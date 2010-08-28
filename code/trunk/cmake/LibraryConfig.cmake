@@ -158,7 +158,8 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(TCL DEFAULT_MSG TCL_LIBRARY TCL_INCLUDE_PATH)
 
 ##### Boost #####
 # Expand the next statement if newer boost versions than 1.36.1 are released
-SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0 1.38 1.38.0 1.39 1.39.0 1.40 1.40.0)
+SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0 1.38 1.38.0 1.39 1.39.0 1.40 1.40.0
+                              1.41 1.41.0 1.42 1.42.0 1.43 1.43.0 1.44 1.44.0)
 IF( NOT TARDIS )
   FIND_PACKAGE(Boost 1.35 REQUIRED thread filesystem system date_time)
 ENDIF()
