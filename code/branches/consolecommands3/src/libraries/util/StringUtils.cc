@@ -537,25 +537,29 @@ namespace orxonox
     {
         size_t cols = str1.size() + 1;
         size_t rows = str2.size() + 1;
-        int matrix[rows][cols];
+        int* matrix = new int[rows * cols];
 
         for (size_t r = 0; r < rows; ++r)
             for (size_t c = 0; c < cols; ++c)
-                matrix[r][c] = 0;
+                matrix[r*cols + c] = 0;
 
         for (size_t i = 1; i < cols; ++i)
-            matrix[0][i] = i;
+            matrix[0*cols + i] = i;
         for (size_t i = 1; i < rows; ++i)
-            matrix[i][0] = i;
+            matrix[i*cols + 0] = i;
 
         for (size_t r = 1; r < rows; ++r)
             for (size_t c = 1; c < cols; ++c)
-                matrix[r][c] = (str1[c-1] != str2[r-1]);
+                matrix[r*cols + c] = (str1[c-1] != str2[r-1]);
 
         for (size_t r = 1; r < rows; ++r)
             for (size_t c = 1; c < cols; ++c)
-                matrix[r][c] = std::min(std::min(matrix[r-1][c] + 1, matrix[r][c-1] + 1), matrix[r-1][c-1] + (str1[c-1] != str2[r-1]));
+                matrix[r*cols + c] = std::min(std::min(matrix[(r-1)*cols + c] + 1,
+                                                       matrix[r*cols + c-1] + 1),
+                                              matrix[(r-1)*cols + c-1] + (str1[c-1] != str2[r-1]));
 
-        return matrix[rows-1][cols-1];
+        int result = matrix[(rows-1)*cols + cols-1];
+        delete[] matrix;
+        return result;
     }
 }
