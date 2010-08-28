@@ -34,6 +34,7 @@
 #include "StringUtils.h"
 
 #include <cctype>
+#include <boost/scoped_array.hpp>
 #include "Convert.h"
 #include "Math.h"
 
@@ -537,7 +538,7 @@ namespace orxonox
     {
         size_t cols = str1.size() + 1;
         size_t rows = str2.size() + 1;
-        int* matrix = new int[rows * cols];
+        boost::scoped_array<int> matrix(new int[rows * cols]);
 
         for (size_t r = 0; r < rows; ++r)
             for (size_t c = 0; c < cols; ++c)
@@ -558,8 +559,6 @@ namespace orxonox
                                                        matrix[r*cols + c-1] + 1),
                                               matrix[(r-1)*cols + c-1] + (str1[c-1] != str2[r-1]));
 
-        int result = matrix[(rows-1)*cols + cols-1];
-        delete[] matrix;
-        return result;
+        return matrix[(rows-1)*cols + cols-1];
     }
 }
