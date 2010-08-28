@@ -53,6 +53,8 @@ namespace orxonox
             std::string complete();
             std::string hint();
 
+            std::string getCommandSuggestion() const;
+
             int evaluateParams(bool bPrintError = false);
 
             inline bool isValid() const

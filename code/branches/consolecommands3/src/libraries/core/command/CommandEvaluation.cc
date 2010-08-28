@@ -123,14 +123,11 @@ namespace orxonox
                     default: return (*this->execCommand_->getExecutor())(this->param_[0], this->param_[1], this->param_[2], this->param_[3], this->param_[4]);
                 }
             }
-            else
-            {
-                COUT(5) << "CE_execute: " << this->string_ << "\n";
-                return this->execCommand_->getExecutor()->parse(this->tokens_.subSet(this->execArgumentsOffset_), error, " ");
-            }
+            else if (error)
+                *error = CommandExecutor::Incomplete;
         }
-        else
-            return MT_Type::Null;
+
+        return MT_Type::Null;
     }
 
     int CommandEvaluation::evaluateParams(bool bPrintError)
@@ -212,14 +209,56 @@ namespace orxonox
             else
             {
                 std::string groupLC = getLowercase(this->getToken(0));
-                std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommands().begin();
-                for ( ; it_group != ConsoleCommand::getCommands().end(); ++it_group)
-                    if (getLowercase(it_group->first) == groupLC)
+                for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommandsLC().begin(); it_group != ConsoleCommand::getCommandsLC().end(); ++it_group)
+                    if (it_group->first == groupLC)
                         return std::string("Error: There is no command in group \"") + this->getToken(0) + "\" starting with \"" + this->getToken(1) + "\".";
 
                 return std::string("Error: There is no command starting with \"") + this->getToken(0) + "\".";
             }
         }
+    }
+
+    std::string CommandEvaluation::getCommandSuggestion() const
+    {
+        std::string token0_LC = getLowercase(this->getToken(0));
+        std::string token1_LC = getLowercase(this->getToken(1));
+
+        std::string nearestCommand;
+        unsigned int nearestDistance = (unsigned int)-1;
+
+        for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommandsLC().begin(); it_group != ConsoleCommand::getCommandsLC().end(); ++it_group)
+        {
+            if (it_group->first != "")
+            {
+                for (std::map<std::string, ConsoleCommand*>::const_iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); ++it_name)
+                {
+                    std::string command = it_group->first + " " + it_name->first;
+                    unsigned int distance = getLevenshteinDistance(command, token0_LC + " " + token1_LC);
+                    if (distance < nearestDistance)
+                    {
+                        nearestCommand = command;
+                        nearestDistance = distance;
+                    }
+                }
+            }
+        }
+
+        std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommandsLC().find("");
+        if (it_group !=  ConsoleCommand::getCommandsLC().end())
+        {
+            for (std::map<std::string, ConsoleCommand*>::const_iterator it_name = it_group->second.begin(); it_name != it_group->second.end(); ++it_name)
+            {
+                std::string command = it_name->first;
+                unsigned int distance = getLevenshteinDistance(command, token0_LC);
+                if (distance < nearestDistance)
+                {
+                    nearestCommand = command;
+                    nearestDistance = distance;
+                }
+            }
+        }
+
+        return nearestCommand;
     }
 
     void CommandEvaluation::retrievePossibleArguments()

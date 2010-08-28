@@ -134,7 +134,8 @@ namespace orxonox
         const std::string& command = stripEnclosingBraces(args.get());
 
         int error;
-        const std::string& result = CommandExecutor::query(command, &error, false);
+        CommandEvaluation evaluation = CommandExecutor::evaluate(command);
+        const std::string& result = evaluation.query(&error);
         switch (error)
         {
             case CommandExecutor::Error:       COUT(1) << "Error: Can't execute command \"" << command << "\", command doesn't exist. (B)" << std::endl; break;
@@ -142,6 +143,9 @@ namespace orxonox
             case CommandExecutor::Deactivated: COUT(1) << "Error: Can't execute command \"" << command << "\", command is not active. (B)" << std::endl; break;
             case CommandExecutor::Denied:      COUT(1) << "Error: Can't execute command \"" << command << "\", access denied. (B)" << std::endl; break;
         }
+
+        if (error == CommandExecutor::Error)
+            COUT(3) << "Did you mean \"" << evaluation.getCommandSuggestion() << "\"?" << std::endl;
 
         return result;
     }
