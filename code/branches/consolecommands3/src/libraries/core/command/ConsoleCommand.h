@@ -54,7 +54,7 @@
 
 
 #define DeclareConsoleCommand(...) \
-    BOOST_PP_CAT(DeclareConsoleCommand, ORXONOX_VA_NARGS(__VA_ARGS__))(__VA_ARGS__)
+    BOOST_PP_EXPAND(BOOST_PP_CAT(DeclareConsoleCommand, ORXONOX_VA_NARGS(__VA_ARGS__))(__VA_ARGS__))
 #define DeclareConsoleCommand2(name, functionpointer) \
     DeclareConsoleCommandGeneric("", name, orxonox::createFunctor(functionpointer))
 #define DeclareConsoleCommand3(group, name, functionpointer) \
