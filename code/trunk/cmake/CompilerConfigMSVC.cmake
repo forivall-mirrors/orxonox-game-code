@@ -61,20 +61,20 @@ SET(PCH_COMPILER_SUPPORT TRUE)
 # -wdX   Disable specific warning X
 # -wnX   Set warning level of specific warning X to level n
 
-# Overwrite CMake default flags first. Be careful with this
-# Only add (not set) the general compiler flags.
+# Only add (not set) some general compiler flags.
 # CMake default flags : -DWIN32 -D_WINDOWS -W3 -Zm1000
 # additionally for CXX: -EHsc -GR
-ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32"      CACHE)
+# -MP is for multiprocessed compiling
+ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32 -MP"  CACHE)
 ADD_COMPILER_FLAGS("-D_CRT_SECURE_NO_WARNINGS" CACHE)
 ADD_COMPILER_FLAGS("-D_SCL_SECURE_NO_WARNINGS" CACHE)
 
-# Overwrite CMake default flags here.
-SET_COMPILER_FLAGS("-MDd -Od -Zi -D_DEBUG -MP -RTC1" Debug          CACHE)
-SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG -MP"       Release        CACHE)
-SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG -MP"       RelWithDebInfo CACHE)
-SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG -MP"       MinSizeRel     CACHE)
-ADD_COMPILER_FLAGS("-D_SECURE_SCL=0" MSVC9 ReleaseAll CACHE)
+# Overwrite CMake default flags here for the individual configurations
+SET_COMPILER_FLAGS("-MDd -Od -Zi -D_DEBUG -RTC1" Debug          CACHE)
+SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG"       Release        CACHE)
+SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG"       RelWithDebInfo CACHE)
+SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG"       MinSizeRel     CACHE)
+ADD_COMPILER_FLAGS("-D_SECURE_SCL=0"       MSVC9 ReleaseAll     CACHE)
 
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
 IF(ORXONOX_RELEASE)
