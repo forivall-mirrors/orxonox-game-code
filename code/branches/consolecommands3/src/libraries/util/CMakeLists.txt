@@ -31,8 +31,10 @@ COMPILATION_BEGIN StableCompilation.cc
   ExprParser.cc
   OutputHandler.cc
   ScopedSingletonManager.cc
+  SharedPtr.cc
   SignalHandler.cc
   Sleep.cc
+  SmallObjectAllocator.cc
   SubString.cc
 COMPILATION_END
 )

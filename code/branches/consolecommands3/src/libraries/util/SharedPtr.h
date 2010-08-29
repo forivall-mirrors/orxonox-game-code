@@ -30,22 +30,28 @@
 #define _SharedPtr_H__
 
 #include "UtilPrereqs.h"
+
 #include <algorithm>
 #include <cassert>
 
+#include "SmallObjectAllocator.h"
+
 namespace orxonox
 {
-    class SharedPtrDestroyer
+    class SharedCounter
     {
         public:
+            SharedCounter() : count_(1) {}
             virtual void destroy() = 0;
+
+            int count_;
     };
 
     template <class T>
-    class SharedPtrDestroyerImpl : public SharedPtrDestroyer
+    class SharedCounterImpl : public SharedCounter
     {
         public:
-            SharedPtrDestroyerImpl(T* pointer) : pointer_(pointer) {}
+            SharedCounterImpl(T* pointer) : pointer_(pointer) {}
 
             void destroy()
             {
@@ -56,6 +62,14 @@ namespace orxonox
             T* pointer_;
     };
 
+    _UtilExport SmallObjectAllocator& createSharedCounterPool();
+
+    FORCEINLINE SmallObjectAllocator& getSharedCounterPool()
+    {
+        static SmallObjectAllocator& instance = createSharedCounterPool();
+        return instance;
+    }
+
     template <class T>
     class SharedPtr
     {
@@ -63,43 +77,42 @@ namespace orxonox
         friend class SharedPtr;
 
         public:
-            inline SharedPtr() : pointer_(0), counter_(0), destroyer_(0)
+            inline SharedPtr() : pointer_(0), counter_(0)
             {
             }
 
-            inline SharedPtr(T* pointer) : pointer_(pointer), counter_(0), destroyer_(0)
+            inline SharedPtr(T* pointer) : pointer_(pointer), counter_(0)
             {
                 if (this->pointer_)
                 {
-                    this->counter_ = new int(1);
-                    this->destroyer_ = new SharedPtrDestroyerImpl<T>(this->pointer_);
+                    void* chunk = getSharedCounterPool().alloc();
+                    this->counter_ = new (chunk) SharedCounterImpl<T>(this->pointer_);
                 }
             }
 
-            inline SharedPtr(const SharedPtr& other) : pointer_(other.pointer_), counter_(other.counter_), destroyer_(other.destroyer_)
+            inline SharedPtr(const SharedPtr& other) : pointer_(other.pointer_), counter_(other.counter_)
             {
                 if (this->pointer_)
-                    ++(*this->counter_);
+                    ++this->counter_->count_;
             }
 
             template <class O>
-            inline SharedPtr(const SharedPtr<O>& other) : pointer_(other.pointer_), counter_(other.counter_), destroyer_(other.destroyer_)
+            inline SharedPtr(const SharedPtr<O>& other) : pointer_(other.pointer_), counter_(other.counter_)
             {
                 if (this->pointer_)
-                    ++(*this->counter_);
+                    ++this->counter_->count_;
             }
 
             inline ~SharedPtr()
             {
                 if (this->pointer_)
                 {
-                    --(*this->counter_);
+                    --this->counter_->count_;
 
-                    if (*this->counter_ == 0)
+                    if (this->counter_->count_ == 0)
                     {
-                        this->destroyer_->destroy();
-                        delete this->destroyer_;
-                        delete this->counter_;
+                        this->counter_->destroy();
+                        getSharedCounterPool().free(this->counter_);
                     }
                 }
             }
@@ -121,7 +134,7 @@ namespace orxonox
             inline SharedPtr<O> cast() const
             {
                 O* temp = static_cast<O*>(this->pointer_); // temp value for prettier compiler error in case of an invalid static_cast
-                return SharedPtr<O>(temp, this->counter_, this->destroyer_);
+                return SharedPtr<O>(temp, this->counter_);
             }
 
             inline T* operator->() const
@@ -150,19 +163,17 @@ namespace orxonox
             {
                 std::swap(this->pointer_, other.pointer_);
                 std::swap(this->counter_, other.counter_);
-                std::swap(this->destroyer_, other.destroyer_);
             }
 
         private:
-            inline SharedPtr(T* pointer, int* counter, SharedPtrDestroyer* destroyer) : pointer_(pointer), counter_(counter), destroyer_(destroyer)
+            inline SharedPtr(T* pointer, SharedCounter* counter) : pointer_(pointer), counter_(counter)
             {
                 if (this->pointer_)
-                    ++(*this->counter_);
+                    ++this->counter_->count_;
             }
 
             T* pointer_;
-            int* counter_;
-            SharedPtrDestroyer* destroyer_;
+            SharedCounter* counter_;
     };
 
     template <class T, class Parent>
