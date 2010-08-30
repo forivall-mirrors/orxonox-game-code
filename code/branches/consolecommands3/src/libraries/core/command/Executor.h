@@ -43,6 +43,7 @@ namespace orxonox
     {
         public:
             Executor(const FunctorPtr& functor, const std::string& name = "");
+            Executor(const Executor& other);
             virtual ~Executor();
 
             inline MultiType operator()() const

@@ -192,9 +192,9 @@ namespace orxonox
     void ConsoleCommand::pushFunction(const ExecutorPtr& executor, bool bForce)
     {
         Command command;
-        command.executor_ = this->getExecutor();
+        command.executor_ = this->executor_;
         if (command.executor_)
-            command.functor_ = this->getExecutor()->getFunctor();
+            command.functor_ = this->executor_->getFunctor();
 
         if (this->setFunction(executor, bForce))
             this->commandStack_.push(command);
@@ -203,9 +203,9 @@ namespace orxonox
     void ConsoleCommand::pushFunction(const FunctorPtr& functor, bool bForce)
     {
         Command command;
-        command.executor_ = this->getExecutor();
+        command.executor_ = this->executor_;
         if (command.executor_)
-            command.functor_ = this->getExecutor()->getFunctor();
+            command.functor_ = this->executor_->getFunctor();
 
         if (this->setFunction(functor, bForce))
             this->commandStack_.push(command);

@@ -141,6 +141,8 @@ namespace orxonox
                     inline ConsoleCommandManipulator& setFunction(const ExecutorPtr& executor, bool bForce = false)
                         { if (this->command_) { this->command_->setFunction(executor, bForce); } return *this; }
 
+                    inline ConsoleCommandManipulator& pushFunction()
+                        { if (this->command_) { this->command_->pushFunction(); } return *this; }
                     template <class F>
                     inline ConsoleCommandManipulator& pushFunction(F function, bool bForce = false)
                         { if (this->command_) { this->command_->pushFunction(createFunctor(function), bForce); } return *this; }

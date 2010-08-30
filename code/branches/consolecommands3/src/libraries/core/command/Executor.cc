@@ -45,6 +45,11 @@ namespace orxonox
         this->name_ = name;
     }
 
+    Executor::Executor(const Executor& other) : name_(other.name_), defaultValue_(other.defaultValue_)
+    {
+        this->functor_ = other.functor_->clone();
+    }
+
     Executor::~Executor()
     {
     }

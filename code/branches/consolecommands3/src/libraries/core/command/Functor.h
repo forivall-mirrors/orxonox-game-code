@@ -85,6 +85,8 @@ namespace orxonox
         public:
             virtual MultiType operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
 
+            virtual FunctorPtr clone() = 0;
+
             virtual Type::Enum getType() const = 0;
             virtual unsigned int getParamCount() const = 0;
             virtual bool hasReturnvalue() const = 0;
@@ -266,6 +268,11 @@ namespace orxonox
             MultiType operator()(O* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null)
             {
                 return detail::FunctorCaller<R, O, isconst, P1, P2, P3, P4, P5>::call(this->functionPointer_, object, param1, param2, param3, param4, param5);
+            }
+
+            FunctorPtr clone()
+            {
+                return new FunctorTemplate(*this);
             }
 
             void evaluateParam(unsigned int index, MultiType& param) const
