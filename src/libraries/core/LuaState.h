@@ -37,8 +37,8 @@
 #include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <loki/ScopeGuard.h>
 
-#include "util/ScopeGuard.h"
 #include "Functor.h"
 #include "ToluaInterface.h"
 

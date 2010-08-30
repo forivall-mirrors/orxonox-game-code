@@ -75,8 +75,7 @@
 #include <OgreVector4.h>
 #include <OgreQuaternion.h>
 #include <OgreColourValue.h>
-
-#include "TypeTraits.h"
+#include <loki/TypeTraits.h>
 
 namespace orxonox
 {

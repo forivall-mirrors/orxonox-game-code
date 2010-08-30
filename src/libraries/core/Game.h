@@ -45,9 +45,9 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/preprocessor/cat.hpp>
+#include <loki/ScopeGuard.h>
 
 #include "util/Debug.h"
-#include "util/ScopeGuard.h"
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"
 

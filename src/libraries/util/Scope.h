@@ -34,9 +34,9 @@
 #include <cassert>
 #include <map>
 #include <set>
+#include <loki/ScopeGuard.h>
 
 #include "Debug.h"
-#include "ScopeGuard.h"
 
 namespace orxonox
 {

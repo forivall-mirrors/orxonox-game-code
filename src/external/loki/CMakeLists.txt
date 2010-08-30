@@ -17,23 +17,13 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-################ Sub Directories ################
+SET(LOKI_FILES
+  NullType.h
+  RefToValue.h
+  ScopeGuard.h
+  static_check.h
+  TypeManip.h
+  TypeTraits.h
+)
 
-ADD_SUBDIRECTORY(tolua)
-
-# Include CEGUILua if not requested otherwise
-IF(CEGUILUA_USE_INTERNAL_LIBRARY)
-  IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
-    MESSAGE(FATAL_ERROR "CEGUILua version not found in src folder. Update list of supported versions in LibraryConfig.cmake!")
-  ENDIF()
-
-  ADD_SUBDIRECTORY(ceguilua)
-  SET(CEGUILUA_LIBRARY ${CEGUILUA_LIBRARY} PARENT_SCOPE)
-ENDIF()
-
-ADD_SUBDIRECTORY(bullet)
-ADD_SUBDIRECTORY(cpptcl)
-ADD_SUBDIRECTORY(loki)
-ADD_SUBDIRECTORY(ogreceguirenderer)
-ADD_SUBDIRECTORY(ois)
-ADD_SUBDIRECTORY(tinyxml)
+ADD_CUSTOM_TARGET(loki_orxonox SOURCES ${LOKI_FILES})
