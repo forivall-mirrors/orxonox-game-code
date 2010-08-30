@@ -32,6 +32,7 @@
 #include "core/CorePrereqs.h"
 
 #include <stack>
+#include <vector>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/facilities/expand.hpp>
 
@@ -97,6 +98,7 @@ namespace orxonox
         {
             ExecutorPtr executor_;
             FunctorPtr functor_;
+            std::vector<void*> objectStack_;
         };
 
         public:
@@ -316,7 +318,7 @@ namespace orxonox
 
             ExecutorPtr executor_;
             std::stack<Command> commandStack_;
-            std::stack<void*> objectStack_;
+            std::vector<void*> objectStack_;
 
             ArgumentCompleter* argumentCompleter_[5];
 

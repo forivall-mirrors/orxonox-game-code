@@ -162,6 +162,7 @@ namespace orxonox
         if (!executor || !executor->getFunctor() || bForce || this->headersMatch(executor))
         {
             this->executor_ = executor;
+            this->objectStack_.clear();
             return true;
         }
         else
@@ -179,6 +180,7 @@ namespace orxonox
                 this->executor_->setFunctor(functor);
             else if (functor)
                 this->executor_ = createExecutor(functor);
+            this->objectStack_.clear();
 
             return true;
         }
@@ -195,6 +197,7 @@ namespace orxonox
         command.executor_ = this->executor_;
         if (command.executor_)
             command.functor_ = this->executor_->getFunctor();
+        command.objectStack_ = this->objectStack_;
 
         if (this->setFunction(executor, bForce))
             this->commandStack_.push(command);
@@ -206,6 +209,7 @@ namespace orxonox
         command.executor_ = this->executor_;
         if (command.executor_)
             command.functor_ = this->executor_->getFunctor();
+        command.objectStack_ = this->objectStack_;
 
         if (this->setFunction(functor, bForce))
             this->commandStack_.push(command);
@@ -231,12 +235,14 @@ namespace orxonox
         this->executor_ = command.executor_;
         if (command.executor_)
             this->executor_->setFunctor(command.functor_);
+        this->objectStack_ = command.objectStack_;
     }
 
     void ConsoleCommand::resetFunction()
     {
         if (this->executor_)
             this->executor_->setFunctor(0);
+        this->objectStack_.clear();
     }
 
     const ExecutorPtr& ConsoleCommand::getExecutor() const
@@ -266,7 +272,7 @@ namespace orxonox
     {
         void* oldobject = this->getObject();
         if (this->setObject(object))
-            this->objectStack_.push(oldobject);
+            this->objectStack_.push_back(oldobject);
     }
 
     void ConsoleCommand::popObject()
@@ -274,8 +280,8 @@ namespace orxonox
         void* newobject = 0;
         if (!this->objectStack_.empty())
         {
-            newobject = this->objectStack_.top();
-            this->objectStack_.pop();
+            newobject = this->objectStack_.back();
+            this->objectStack_.pop_back();
         }
         this->setObject(newobject);
     }
