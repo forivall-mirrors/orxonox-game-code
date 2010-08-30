@@ -56,9 +56,9 @@
 #include <set>
 #include <string>
 #include <typeinfo>
+#include <loki/TypeTraits.h>
 
 #include "util/Debug.h"
-#include "util/TypeTraits.h"
 #include "MetaObjectList.h"
 #include "ObjectList.h"
 #include "ObjectListBase.h"

@@ -52,7 +52,7 @@
 #include <set>      // 20
 
 #include "util/Debug.h"      // 20
-#include "util/TypeTraits.h" // 18
+#include <loki/TypeTraits.h> // 18
 
 #ifdef ORXONOX_COMPILER_MSVC
 

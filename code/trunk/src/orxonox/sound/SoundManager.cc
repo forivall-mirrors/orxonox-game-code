@@ -32,10 +32,10 @@
 
 #include <AL/alut.h>
 #include <utility>
+#include <loki/ScopeGuard.h>
 
 #include "util/Exception.h"
 #include "util/Math.h"
-#include "util/ScopeGuard.h"
 #include "util/Clock.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"

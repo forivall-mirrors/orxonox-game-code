@@ -56,7 +56,7 @@
 #include <list>     // 44
 #include <cmath>    // 42
 
-#include "util/ScopeGuard.h" // 38
+#include <loki/ScopeGuard.h> // 38
 
 #include <OgreMath.h>        // 36
 #include <OgreVector2.h>     // 36

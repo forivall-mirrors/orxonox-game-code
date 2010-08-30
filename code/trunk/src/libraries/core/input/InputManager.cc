@@ -39,11 +39,11 @@
 #include <ois/OISException.h>
 #include <ois/OISInputManager.h>
 #include <boost/foreach.hpp>
+#include <loki/ScopeGuard.h>
 
 #include "util/Clock.h"
 #include "util/Convert.h"
 #include "util/Exception.h"
-#include "util/ScopeGuard.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/ConsoleCommand.h"

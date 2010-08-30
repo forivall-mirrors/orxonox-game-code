@@ -11,6 +11,10 @@
 // The author makes no representations about the 
 //     suitability of this software for any purpose. It is provided "as is" 
 //     without express or implied warranty.
+//
+// Changes by Orxonox (Reto Grieder)
+//     Moved one protected variable to the public section to allow the use of
+//     the ScopeGuard in a class definition.
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef LOKI_SCOPEGUARD_INC_
 #define LOKI_SCOPEGUARD_INC_
@@ -18,7 +22,7 @@
 // $Id: ScopeGuard.h 799 2006-12-20 00:37:13Z rich_sposato $
 
 
-#include "RefToValue.h"
+#include <loki/RefToValue.h>
 
 /// \defgroup ExceptionGroup Exception-safe code
 

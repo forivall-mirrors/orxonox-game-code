@@ -35,7 +35,8 @@
 #include <cassert>
 #include <string>
 #include <boost/scoped_ptr.hpp>
-#include "util/ScopeGuard.h"
+#include <loki/ScopeGuard.h>
+
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"
 

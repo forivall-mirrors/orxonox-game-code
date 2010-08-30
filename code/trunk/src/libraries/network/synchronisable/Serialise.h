@@ -34,8 +34,11 @@
 #ifndef _NetworkSerialise_H__
 #define _NetworkSerialise_H__
 
+#include "network/NetworkPrereqs.h"
+
+#include <loki/TypeTraits.h>
+
 #include "util/Serialise.h"
-#include "util/TypeTraits.h"
 #include "core/CorePrereqs.h"
 #include "core/CoreIncludes.h"
 #include "core/SmartPtr.h"
