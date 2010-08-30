@@ -320,7 +320,7 @@ namespace orxonox
             /** @brief Copies the other MultiType by assigning value and type. */
             inline void                       copy(const MultiType& other)    { if (this == &other) { return; } if (this->value_) { delete this->value_; } this->value_ = (other.value_) ? other.value_->clone() : 0; }
 
-            template <typename T> inline bool convert()                       { return this->setValue<T>((T)(*this));  } /** @brief Converts the current value to type T. */
+            template <typename T> inline bool convert()                       { return this->setValue<T>((typename Loki::TypeTraits<T>::UnqualifiedReferredType)(*this));  } /** @brief Converts the current value to type T. */
             inline bool                       convert(const MultiType& other) { return this->convert(other.getType()); } /** @brief Converts the current value to the type of the other MultiType. */
             bool                              convert(MT_Type::Value type);
 

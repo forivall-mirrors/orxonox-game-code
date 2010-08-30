@@ -66,6 +66,8 @@ namespace orxonox
             return MT_Type::Null;
         }
 
+        COUT(5) << "Executor::parse: \"" << arguments.join(delimiter) << "\" -> " << paramCount << " params: " << param[0] << " / " << param[1] << " / " << param[2] << " / " << param[3] << " / " << param[4] << std::endl;
+
         switch (paramCount)
         {
             case 0:  return (*this->functor_)();
@@ -95,7 +97,7 @@ namespace orxonox
         }
 
         // assign all given arguments to the multitypes
-        for (unsigned int i = 0; i < std::min(argumentCount, MAX_FUNCTOR_ARGUMENTS); i++)
+        for (unsigned int i = 0; i < std::min(std::min(argumentCount, paramCount), MAX_FUNCTOR_ARGUMENTS); i++)
             param[i] = arguments[i];
 
         // fill the remaining multitypes with default values
