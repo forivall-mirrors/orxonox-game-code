@@ -301,7 +301,7 @@ namespace orxonox
     */
     bool ConfigValueContainer::callFunctionWithIndex(bool (ConfigValueContainer::* function) (unsigned int, const MultiType&), const std::string& input)
     {
-        SubString token(input, " ", SubString::WhiteSpaces, true, '\\', false, '"', false, '(', ')', false, '\0');
+        SubString token(input, " ", SubString::WhiteSpaces, true, '\\', false, '"', false, '\0', '\0', false, '\0');
         int index = -1;
         bool success = false;
 

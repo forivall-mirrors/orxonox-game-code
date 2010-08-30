@@ -146,7 +146,7 @@ namespace orxonox
 
         ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION_MULTI(hiddencommand)(const std::string& fragment)
         {
-            SubString tokens(fragment, " ", SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0');
+            SubString tokens(fragment, " ", SubString::WhiteSpaces, false, '\\', true, '"', true, '{', '}', true, '\0');
 
             if (tokens.size() == 0)
                 return detail::_groupsandcommands(fragment, true);

@@ -58,7 +58,7 @@ namespace orxonox
 
     MultiType Executor::parse(const std::string& arguments, int* error, const std::string& delimiter, bool bPrintError) const
     {
-        return this->parse(SubString(arguments, delimiter, SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0'), error, delimiter, bPrintError);
+        return this->parse(SubString(arguments, delimiter, SubString::WhiteSpaces, false, '\\', true, '"', true, '{', '}', true, '\0'), error, delimiter, bPrintError);
     }
 
     MultiType Executor::parse(const SubString& arguments, int* error, const std::string& delimiter, bool bPrintError) const

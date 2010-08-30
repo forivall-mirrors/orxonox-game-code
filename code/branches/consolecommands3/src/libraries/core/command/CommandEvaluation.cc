@@ -52,7 +52,7 @@ namespace orxonox
         this->bTriedToEvaluatedParams_ = false;
         this->numberOfEvaluatedParams_ = 0;
 
-        this->tokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', true, '"', true, '(', ')', true, '\0');
+        this->tokens_.split(command, " ", SubString::WhiteSpaces, false, '\\', true, '"', true, '{', '}', true, '\0');
     }
 
     unsigned int CommandEvaluation::getNumberOfArguments() const

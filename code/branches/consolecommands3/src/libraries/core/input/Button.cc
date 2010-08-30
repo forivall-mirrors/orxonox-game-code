@@ -116,14 +116,14 @@ namespace orxonox
 
         // separate the commands
         SubString commandStrings(bindingString_, "|", SubString::WhiteSpaces, false,
-            '\\', false, '"', false, '(', ')', false, '\0');
+            '\\', false, '"', false, '{', '}', false, '\0');
 
         for (unsigned int iCommand = 0; iCommand < commandStrings.size(); iCommand++)
         {
             if (!commandStrings[iCommand].empty())
             {
                 SubString tokens(commandStrings[iCommand], " ", SubString::WhiteSpaces, false,
-                    '\\', false, '"', false, '(', ')', false, '\0');
+                    '\\', false, '"', false, '{', '}', false, '\0');
 
                 KeybindMode::Value mode = KeybindMode::None;
                 float paramModifier = 1.0f;
