@@ -540,12 +540,12 @@ namespace orxonox
 
             void callLoadExecutor(BaseObject* object, BaseObject* newObject)
             {
-                T* castedObject = orxonox_cast<T*>(object);
-                assert(castedObject);
-                O* castedNewObject = orxonox_cast<O*>(newObject);
-                assert(castedNewObject);
+                T* castObject = orxonox_cast<T*>(object);
+                assert(castObject);
+                O* castNewObject = orxonox_cast<O*>(newObject);
+                assert(castNewObject);
 
-                (*this->loadexecutor_)(castedObject, castedNewObject);
+                (*this->loadexecutor_)(castObject, castNewObject);
             }
 
             virtual XMLPortObjectContainer& description(const std::string& description)

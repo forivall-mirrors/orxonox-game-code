@@ -102,8 +102,8 @@ namespace orxonox
                     else
                     {
                         // else cast the pointer to the desired class
-                        void* castedOriginator = event.originator_->getDerivedPointer(this->subclass_->getClassID());
-                        (*this->statefunction_)(event.activate_, castedOriginator);
+                        void* castOriginator = event.originator_->getDerivedPointer(this->subclass_->getClassID());
+                        (*this->statefunction_)(event.activate_, castOriginator);
                     }
                 }
             }

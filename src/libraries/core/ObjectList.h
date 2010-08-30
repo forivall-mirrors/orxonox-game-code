@@ -60,19 +60,31 @@ namespace orxonox
 
             /** @brief Returns an Iterator to the first element in the list. @return The Iterator */
             inline static ObjectListElement<T>* begin()
-                { return ((ObjectListElement<T>*)ClassIdentifier<T>::getIdentifier()->getObjects()->begin().element_); }
+            {
+                ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
+                return static_cast<ObjectListElement<T>*>(list->begin().element_);
+            }
 
             /** @brief Returns an Iterator to the element after the last element in the list. @return The Iterator */
             inline static ObjectListElement<T>* end()
-                { return ((ObjectListElement<T>*)ClassIdentifier<T>::getIdentifier()->getObjects()->end().element_); }
+            {
+                ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
+                return static_cast<ObjectListElement<T>*>(list->end().element_);
+            }
 
             /** @brief Returns an Iterator to the last element in the list. @return The Iterator */
             inline static ObjectListElement<T>* rbegin()
-                { return ((ObjectListElement<T>*)ClassIdentifier<T>::getIdentifier()->getObjects()->rbegin().element_); }
+            {
+                ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
+                return static_cast<ObjectListElement<T>*>(list->rbegin().element_);
+            }
 
             /** @brief Returns an Iterator to the element before the first element in the list. @return The Iterator */
             inline static ObjectListElement<T>* rend()
-                { return ((ObjectListElement<T>*)ClassIdentifier<T>::getIdentifier()->getObjects()->rend().element_); }
+            {
+                ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
+                return static_cast<ObjectListElement<T>*>(list->rend().element_);
+            }
     };
 }
 

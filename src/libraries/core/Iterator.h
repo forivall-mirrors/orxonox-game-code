@@ -31,7 +31,7 @@
     @brief Definition and implementation of the Iterator class.
 
     The Iterator of a given class allows to iterate through an ObjectList. Objects in
-    this list are casted to the template argument of the Iterator.
+    this list are cast to the template argument of the Iterator.
 
     Usage:
     for (Iterator<myClass> it = anyidentifier->getObjects()->begin(); it != anyidentifier->getObjects()->end(); ++it)
@@ -94,7 +94,7 @@ namespace orxonox
             template <class O>
             inline Iterator(ObjectListElement<O>* element)
             {
-                this->element_ = (element) ? static_cast<ObjectListBaseElement*>(element) : 0;
+                this->element_ = element;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
                 this->list_->registerIterator(this);
             }
@@ -106,7 +106,7 @@ namespace orxonox
             template <class O>
             inline Iterator(const ObjectListIterator<O>& other)
             {
-                this->element_ = (other.element_) ? static_cast<ObjectListBaseElement*>(other.element_) : 0;
+                this->element_ = other.element_;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
                 this->list_->registerIterator(this);
             }
@@ -161,7 +161,7 @@ namespace orxonox
                 if (this->list_)
                     this->list_->unregisterIterator(this);
 
-                this->element_ = (element) ? static_cast<ObjectListBaseElement*>(element) : 0;
+                this->element_ = element;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
                 this->list_->registerIterator(this);
 
@@ -178,7 +178,7 @@ namespace orxonox
                 if (this->list_)
                     this->list_->unregisterIterator(this);
 
-                this->element_ = (other.element_) ? static_cast<ObjectListBaseElement*>(other.element_) : 0;
+                this->element_ = other.element_;
                 this->list_ = ClassIdentifier<O>::getIdentifier()->getObjects();
                 this->list_->registerIterator(this);
 

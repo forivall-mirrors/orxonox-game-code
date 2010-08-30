@@ -131,7 +131,7 @@ namespace orxonox
             , oisInputManager_(oisInputManager)
         {
             oisDevice_ = static_cast<OISDeviceClass*>(oisInputManager_->createInputObject(OISDeviceValue, true));
-            // Note: after the static_cast here, the casted this pointer becomes
+            // Note: after the static_cast here, the cast this pointer becomes
             //       invalid right until the subclass has been constructed!
             oisDevice_->setEventCallback(static_cast<DeviceClass*>(this));
             COUT(4) << "Instantiated a " << this->getClassName() << std::endl;
