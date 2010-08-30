@@ -525,7 +525,7 @@ namespace orxonox
         @param other The other mask
         @return A reference to the mask itself
     */
-    const ClassTreeMask& ClassTreeMask::operator=(const ClassTreeMask& other)
+    ClassTreeMask& ClassTreeMask::operator=(const ClassTreeMask& other)
     {
         // Make a copy to avoid troubles with self-assignments (like A = A).
         ClassTreeMask temp(other);
@@ -842,7 +842,7 @@ namespace orxonox
         @brief Initializes the iterator from a given ClassTreeMask.
         @param mask The mask
     */
-    const ClassTreeMaskObjectIterator& ClassTreeMaskObjectIterator::operator=(const ClassTreeMask& mask)
+    ClassTreeMaskObjectIterator& ClassTreeMaskObjectIterator::operator=(const ClassTreeMask& mask)
     {
         // Clear everything, use a cleaned copy of the mask
         this->subclasses_.clear();

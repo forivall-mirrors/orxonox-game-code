@@ -100,7 +100,7 @@ namespace orxonox
                 @brief Assigns an ObjectListElement.
                 @param element The ObjectListElement
             */
-            inline const ObjectListIterator<T>& operator=(ObjectListElement<T>* element)
+            inline ObjectListIterator<T>& operator=(ObjectListElement<T>* element)
             {
                 this->element_ = element;
                 return (*this);
@@ -110,7 +110,7 @@ namespace orxonox
                 @brief Assigns the element of another ObjectListIterator.
                 @param element The other ObjectListIterator
             */
-            inline const ObjectListIterator<T>& operator=(const ObjectListIterator<T>& other)
+            inline ObjectListIterator<T>& operator=(const ObjectListIterator<T>& other)
             {
                 this->element_ = other.element_;
                 return (*this);

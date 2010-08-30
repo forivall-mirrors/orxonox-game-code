@@ -34,6 +34,7 @@
 #include "CorePrereqs.h"
 
 #include <cassert>
+#include "Identifier.h"
 #include "OrxonoxClass.h"
 #include "Functor.h"
 
@@ -81,26 +82,26 @@ namespace orxonox
 
             }
 
-            inline const WeakPtr& operator=(int)
+            inline WeakPtr& operator=(int)
             {
                 WeakPtr(0).swap(*this);
                 return *this;
             }
 
-            inline const WeakPtr& operator=(T* pointer)
+            inline WeakPtr& operator=(T* pointer)
             {
                 WeakPtr(pointer).swap(*this);
                 return *this;
             }
 
-            inline const WeakPtr& operator=(const WeakPtr& other)
+            inline WeakPtr& operator=(const WeakPtr& other)
             {
                 WeakPtr(other).swap(*this);
                 return *this;
             }
 
             template <class O>
-            inline const WeakPtr& operator=(const WeakPtr<O>& other)
+            inline WeakPtr& operator=(const WeakPtr<O>& other)
             {
                 WeakPtr(other).swap(*this);
                 return *this;
@@ -212,7 +213,7 @@ namespace orxonox
     template <class T, class U>
     WeakPtr<T> dynamic_pointer_cast(const WeakPtr<U>& p)
     {
-        return dynamic_cast<T*>(p.get());
+        return orxonox_cast<T*>(p.get());
     }
 }
 

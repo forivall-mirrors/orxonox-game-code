@@ -90,7 +90,7 @@ namespace orxonox
                 @param identifier The Identifier to assign
                 @return The SubclassIdentifier itself
             */
-            const SubclassIdentifier<T>& operator=(Identifier* identifier)
+            SubclassIdentifier<T>& operator=(Identifier* identifier)
             {
                 if (!identifier || !identifier->isA(ClassIdentifier<T>::getIdentifier()))
                 {
@@ -117,7 +117,7 @@ namespace orxonox
                 @param identifier The other SublcassIdentifier
             */
             template <class O>
-            const SubclassIdentifier<T>& operator=(const SubclassIdentifier<O>& identifier)
+            SubclassIdentifier<T>& operator=(const SubclassIdentifier<O>& identifier)
             {
                 return this->operator=(identifier.getIdentifier());
             }
