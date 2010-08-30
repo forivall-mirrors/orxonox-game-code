@@ -47,8 +47,8 @@ namespace orxonox
     static const std::string __CC_unbind_name = "unbind";
     static const std::string __CC_tunbind_name = "tunbind";
 
-    SetConsoleCommand(__CC_keybind_name,  &KeyBinderManager::keybind).defaultValues("");
-    SetConsoleCommand(__CC_tkeybind_name, &KeyBinderManager::tkeybind).defaultValues("");
+    SetConsoleCommand(__CC_keybind_name,  &KeyBinderManager::keybind).defaultValues("").argumentCompleter(0, autocompletion::command());
+    SetConsoleCommand(__CC_tkeybind_name, &KeyBinderManager::tkeybind).defaultValues("").argumentCompleter(0, autocompletion::command());
     SetConsoleCommand(__CC_unbind_name,   &KeyBinderManager::unbind).defaultValues("");
     SetConsoleCommand(__CC_tunbind_name,  &KeyBinderManager::tunbind).defaultValues("");
 
