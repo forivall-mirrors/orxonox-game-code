@@ -193,7 +193,7 @@ namespace orxonox
             /** @brief End of the ClassTreeMaskObjectIterator. */
             inline BaseObject*          end()   const { return 0; }
 
-            const ClassTreeMask& operator=(const ClassTreeMask& other);
+            ClassTreeMask& operator=(const ClassTreeMask& other);
 
             bool operator==(const ClassTreeMask& other) const;
             bool operator!=(const ClassTreeMask& other) const;
@@ -259,7 +259,7 @@ namespace orxonox
             /** @brief Constructor: Initializes the iterator from a given ClassTreeMask. @param mask The mask */
             inline ClassTreeMaskObjectIterator(const ClassTreeMask& mask) { (*this) = mask; }
 
-            const ClassTreeMaskObjectIterator& operator=(const ClassTreeMask& mask);
+            ClassTreeMaskObjectIterator& operator=(const ClassTreeMask& mask);
 
             const ClassTreeMaskObjectIterator& operator++();
 

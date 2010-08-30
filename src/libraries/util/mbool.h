@@ -41,9 +41,9 @@ namespace orxonox
             inline mbool(const mbool& value)
                 { this->value_.memory_ = value.value_.memory_; }
 
-            inline const mbool& operator=(bool value)
+            inline mbool& operator=(bool value)
                 { if (value != this->value_.bool_) { ++this->value_.memory_; } return (*this); }
-            inline const mbool& operator=(const mbool& value)
+            inline mbool& operator=(const mbool& value)
                 { this->value_.memory_ = value.value_.memory_; return (*this); }
 
             inline mbool& operator++()

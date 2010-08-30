@@ -271,10 +271,10 @@ namespace orxonox
             /** @brief Destructor: Deletes the MT_Value. */
             inline ~MultiType() { if (this->value_) { delete this->value_; } }
 
-            template <typename V> inline const MultiType& operator=(const V& value)         { this->setValue(value); return (*this); } /** @brief Assigns a new value. The value will be converted to the current type of the MultiType. */
-            template <typename V> inline const MultiType& operator=(V* value)               { this->setValue(value); return (*this); } /** @brief Assigns a pointer. */
-            inline                       const MultiType& operator=(const MultiType& other) { this->setValue(other); return (*this); } /** @brief Assigns the value of the other MultiType and converts it to the current type of the MultiType. */
-            inline                       const MultiType& operator=(MT_Type::Value type)    { this->setType(type);   return (*this); } /** @brief Resets the value and changes the type. */
+            template <typename V> inline MultiType& operator=(const V& value)         { this->setValue(value); return (*this); } /** @brief Assigns a new value. The value will be converted to the current type of the MultiType. */
+            template <typename V> inline MultiType& operator=(V* value)               { this->setValue(value); return (*this); } /** @brief Assigns a pointer. */
+            inline                       MultiType& operator=(const MultiType& other) { this->setValue(other); return (*this); } /** @brief Assigns the value of the other MultiType and converts it to the current type of the MultiType. */
+            inline                       MultiType& operator=(MT_Type::Value type)    { this->setType(type);   return (*this); } /** @brief Resets the value and changes the type. */
 
             inline bool                                   setValue(const char& value);
             inline bool                                   setValue(const unsigned char& value);

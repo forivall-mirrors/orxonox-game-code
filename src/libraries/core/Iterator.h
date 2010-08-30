@@ -123,7 +123,7 @@ namespace orxonox
                 @brief Assigns an exported element.
                 @param exp The exported element
             */
-            inline const Iterator<T>& operator=(const ObjectListBase::Export& exp)
+            inline Iterator<T>& operator=(const ObjectListBase::Export& exp)
             {
                 if (this->list_)
                     this->list_->unregisterIterator(this);
@@ -139,7 +139,7 @@ namespace orxonox
                 @brief Assigns the element of another Iterator.
                 @param other The other Iterator
             */
-            inline const Iterator<T>& operator=(const Iterator<T>& other)
+            inline Iterator<T>& operator=(const Iterator<T>& other)
             {
                 if (this->list_)
                     this->list_->unregisterIterator(this);
@@ -156,7 +156,7 @@ namespace orxonox
                 @param element The element
             */
             template <class O>
-            inline const Iterator<T>& operator=(ObjectListElement<O>* element)
+            inline Iterator<T>& operator=(ObjectListElement<O>* element)
             {
                 if (this->list_)
                     this->list_->unregisterIterator(this);
@@ -173,7 +173,7 @@ namespace orxonox
                 @param other The ObjectListIterator
             */
             template <class O>
-            inline const Iterator<T>& operator=(const ObjectListIterator<O>& other)
+            inline Iterator<T>& operator=(const ObjectListIterator<O>& other)
             {
                 if (this->list_)
                     this->list_->unregisterIterator(this);

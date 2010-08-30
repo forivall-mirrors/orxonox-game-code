@@ -35,6 +35,7 @@
 
 #include <cassert>
 
+#include "Identifier.h"
 #include "OrxonoxClass.h"
 #include "WeakPtr.h"
 
@@ -84,33 +85,33 @@ namespace orxonox
                     this->base_->decrementReferenceCount();
             }
 
-            inline const SmartPtr& operator=(int)
+            inline SmartPtr& operator=(int)
             {
                 SmartPtr(0).swap(*this);
                 return *this;
             }
 
-            inline const SmartPtr& operator=(T* pointer)
+            inline SmartPtr& operator=(T* pointer)
             {
                 SmartPtr(pointer).swap(*this);
                 return *this;
             }
 
-            inline const SmartPtr& operator=(const SmartPtr& other)
+            inline SmartPtr& operator=(const SmartPtr& other)
             {
                 SmartPtr(other).swap(*this);
                 return *this;
             }
 
             template <class O>
-            inline const SmartPtr& operator=(const SmartPtr<O>& other)
+            inline SmartPtr& operator=(const SmartPtr<O>& other)
             {
                 SmartPtr(other).swap(*this);
                 return *this;
             }
 
             template <class O>
-            inline const SmartPtr& operator=(const WeakPtr<O>& other)
+            inline SmartPtr& operator=(const WeakPtr<O>& other)
             {
                 SmartPtr(other).swap(*this);
                 return *this;
@@ -193,7 +194,7 @@ namespace orxonox
     template <class T, class U>
     SmartPtr<T> dynamic_pointer_cast(const SmartPtr<U>& p)
     {
-        return dynamic_cast<T*>(p.get());
+        return orxonox_cast<T*>(p.get());
     }
 }
 
