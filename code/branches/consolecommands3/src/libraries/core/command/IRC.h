@@ -32,11 +32,10 @@
 #include "core/CorePrereqs.h"
 
 #include <string>
-#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _CoreExport IRC : public OrxonoxClass
+    class _CoreExport IRC
     {
         public:
             static IRC& getInstance();
