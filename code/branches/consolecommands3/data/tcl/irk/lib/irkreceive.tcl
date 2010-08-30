@@ -36,7 +36,7 @@ namespace eval irk {
 	set rest [eval concat $rest]
 	append state($token,ERRORS) "$nick $dest $rest\n"
 #	puts "Got ERROR: $token $nick ---> $dest: $rest"
-	orxonox::execute error "Got ERROR: $token $nick ---> $dest: $rest"
+	::orxonox::execute error "Got ERROR: $token $nick ---> $dest: $rest"
 
 	return ""
     }
@@ -52,7 +52,7 @@ namespace eval irk {
 
 	return ""
     }
-    
+
     # This procedure deals with the WHOIS USER message:
 
     proc RECV,WHOIS,NICK,USER {token nick user comm dest rest} {
@@ -115,7 +115,7 @@ namespace eval irk {
 	# Save the information for a regular user:
 
 	set state($token,ident,$unick,ident) 1
-    }	
+    }
 
     # This procedure deals with the WHOIS CONNECTTIME message:
 
@@ -248,12 +248,12 @@ namespace eval irk {
 
 	if {[isus $token $nick]} {
 #	    puts "You joined $dest"
-          orxonox::irc::info $token "You joined $dest"
+          ::orxonox::irc::info $token "You joined $dest"
 
 	    addChannel $token $dest
 	} else {
 #	    puts "$nick joined $dest"
-          orxonox::irc::info $token "$nick joined $dest"
+          ::orxonox::irc::info $token "$nick joined $dest"
 
 	    addToChannel $token $nick $dest
 	}
@@ -270,11 +270,11 @@ namespace eval irk {
 
 	if {[isus $token $nick]} {
 #	    puts "You left channel $chan"
-          orxonox::irc::info $token "You left channel $chan"
+          ::orxonox::irc::info $token "You left channel $chan"
 	} else {
 #	    puts "$nick left [string tolower $dest]"
-          orxonox::irc::info $token "$nick left [string tolower $dest]"
-	}	    
+          ::orxonox::irc::info $token "$nick left [string tolower $dest]"
+	}
 	removeFromChannel $token $nick $chan
 	removeFromChannel $token @$nick $chan
 
@@ -286,7 +286,7 @@ namespace eval irk {
     proc RECV,MODE {token nick user comm dest rest} {
 	set rest [eval concat $rest]
 #	puts "$nick sets mode $dest $rest"
-      orxonox::irc::info "$nick $token sets mode $dest $rest"
+      ::orxonox::irc::info "$nick $token sets mode $dest $rest"
 
 	return ""
     }
@@ -312,7 +312,7 @@ namespace eval irk {
 	replaceAllChannels $token $nick $newnick
 
 #	puts "$nick ${user} ($token) changes his/her nickname to $newnick"
-      orxonox::irc::info $token "$nick changes his/her nickname to $newnick"
+      ::orxonox::irc::info $token "$nick changes his/her nickname to $newnick"
 
 	return ""
     }
@@ -324,14 +324,14 @@ namespace eval irk {
 
 	set rest [eval concat $rest]
 #	puts "Received QUIT $token $nick $rest"
-      orxonox::irc::info $token "Received QUIT $token $nick $rest"
+      ::orxonox::irc::info $token "Received QUIT $token $nick $rest"
 
 	if {[string match ":*" $dest]} {
 	    set dest [string range $dest 1 end]
 	}
 	if {[isus $token $nick]} {
 #	    puts "You left the server $state($token,host) ($dest $rest)"
-          orxonox::irc::info $token "You left the server $state($token,host) ($dest $rest)"
+          ::orxonox::irc::info $token "You left the server $state($token,host) ($dest $rest)"
 	    forgetConnection $token
 	} else {
 	    puts "$nick quits IRK ($dest $rest)"
@@ -351,7 +351,7 @@ namespace eval irk {
 		    [lindex $rest 0] [lrange $rest 1 end]
 	} else {
 #	    puts "$nick$dest: [eval concat $rest]"
-          orxonox::irc::say $token $nick [eval concat $rest]
+          ::orxonox::irc::say $token $nick [eval concat $rest]
 	}
 
 	return ""
@@ -425,7 +425,7 @@ namespace eval irk {
 		    [lindex $rest 0] [lrange $rest 1 end]
 	} else {
 #	    puts "$nick: [eval concat $rest]"
-          orxonox::irc::privmsg $nick $nick [eval concat $rest]
+          ::orxonox::irc::privmsg $nick $nick [eval concat $rest]
 	}
 
 	return ""
@@ -463,12 +463,12 @@ namespace eval irk {
 
 	if {[isus $token $kicked]} {
 #	    puts "$nick kicked you from $dest because $reason"
-          orxonox::irc::info $token "$nick kicked you from $dest because $reason"
+          ::orxonox::irc::info $token "$nick kicked you from $dest because $reason"
 
 	    removeChannel $token $dest
 	} else {
 #	    puts "$nick kicks $kicked from $dest because $reason"
-          orxonox::irc::info $token "$nick kicks $kicked from $dest because $reason"
+          ::orxonox::irc::info $token "$nick kicks $kicked from $dest because $reason"
 
 	    removeFromChannel $token $kicked $dest
 	    removeFromChannel $token @$kicked $dest
@@ -583,7 +583,7 @@ namespace eval irk {
 
     proc RECV,CTCP,ACTION {token nick user comm dest action rest} {
 #	puts "$nick $rest"
-      orxonox::irc::action $token $nick $rest
+      ::orxonox::irc::action $token $nick $rest
 
 	return ""
     }
@@ -611,7 +611,7 @@ namespace eval irk {
 
     proc defaultAction {token nick user comm dest rest} {
 #	puts "$token: $nick $user: $comm -> $dest ... [eval concat $rest]"
-      orxonox::execute log "$token: $nick $user: $comm -> $dest ... [eval concat $rest]"
+      ::orxonox::execute log "$token: $nick $user: $comm -> $dest ... [eval concat $rest]"
 
 	return ""
     }
