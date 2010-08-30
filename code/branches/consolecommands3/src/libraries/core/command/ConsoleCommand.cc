@@ -42,7 +42,7 @@ namespace orxonox
         this->accessLevel_ = AccessLevel::All;
 
         this->baseName_ = name;
-        this->baseExecutor_ = executor;
+        this->baseFunctor_ = executor->getFunctor();
 
         this->argumentCompleter_[0] = 0;
         this->argumentCompleter_[1] = 0;
@@ -111,19 +111,24 @@ namespace orxonox
 
     bool ConsoleCommand::headersMatch(const FunctorPtr& functor)
     {
-        unsigned int minparams = std::min(this->baseExecutor_->getParamCount(), functor->getParamCount());
+        unsigned int minparams = std::min(this->baseFunctor_->getParamCount(), functor->getParamCount());
 
-        if (this->baseExecutor_->getFunctor()->getHeaderIdentifier(minparams) != functor->getHeaderIdentifier(minparams))
+        if (this->baseFunctor_->getHeaderIdentifier(minparams) != functor->getHeaderIdentifier(minparams))
             return false;
-        else if (functor->getParamCount() <= this->baseExecutor_->getParamCount())
+        else if (functor->getParamCount() <= this->baseFunctor_->getParamCount())
             return true;
         else if (!this->executor_)
             return false;
         else
         {
-            for (unsigned int i = this->baseExecutor_->getParamCount(); i < functor->getParamCount(); ++i)
+            for (unsigned int i = this->baseFunctor_->getParamCount(); i < functor->getParamCount(); ++i)
+            {
                 if (!this->executor_->defaultValueSet(i))
+                {
+                    COUT(2) << "Default value " << i << " is missing" << std::endl;
                     return false;
+                }
+            }
 
             return true;
         }
@@ -131,17 +136,22 @@ namespace orxonox
 
     bool ConsoleCommand::headersMatch(const ExecutorPtr& executor)
     {
-        unsigned int minparams = std::min(this->baseExecutor_->getParamCount(), executor->getParamCount());
+        unsigned int minparams = std::min(this->baseFunctor_->getParamCount(), executor->getParamCount());
 
-        if (this->baseExecutor_->getFunctor()->getHeaderIdentifier(minparams) != executor->getFunctor()->getHeaderIdentifier(minparams))
+        if (this->baseFunctor_->getHeaderIdentifier(minparams) != executor->getFunctor()->getHeaderIdentifier(minparams))
             return false;
-        else if (executor->getParamCount() <= this->baseExecutor_->getParamCount())
+        else if (executor->getParamCount() <= this->baseFunctor_->getParamCount())
             return true;
         else
         {
-            for (unsigned int i = this->baseExecutor_->getParamCount(); i < executor->getParamCount(); ++i)
+            for (unsigned int i = this->baseFunctor_->getParamCount(); i < executor->getParamCount(); ++i)
+            {
                 if (!executor->defaultValueSet(i))
+                {
+                    COUT(2) << "Default value " << i << " is missing" << std::endl;
                     return false;
+                }
+            }
 
             return true;
         }

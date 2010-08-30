@@ -222,8 +222,8 @@ namespace orxonox
                 { return this->baseName_; }
 
             const ExecutorPtr& getExecutor() const;
-            inline const ExecutorPtr& getBaseExecutor() const
-                { return this->baseExecutor_; }
+            inline const FunctorPtr& getBaseFunctor() const
+                { return this->baseFunctor_; }
 
             inline ConsoleCommand& setActive(bool bActive)
                 { this->bActive_ = bActive; return *this; }
@@ -310,7 +310,7 @@ namespace orxonox
             bool bHidden_;
             AccessLevel::Enum accessLevel_;
             std::string baseName_;
-            ExecutorPtr baseExecutor_;
+            FunctorPtr baseFunctor_;
 
             ExecutorPtr executor_;
             std::stack<Command> commandStack_;
