@@ -117,14 +117,14 @@ namespace orxonox
                 }
             }
 
-            inline const SharedPtr& operator=(const SharedPtr& other)
+            inline SharedPtr& operator=(const SharedPtr& other)
             {
                 SharedPtr(other).swap(*this);
                 return *this;
             }
 
             template <class O>
-            inline const SharedPtr& operator=(const SharedPtr<O>& other)
+            inline SharedPtr& operator=(const SharedPtr<O>& other)
             {
                 SharedPtr(other).swap(*this);
                 return *this;
