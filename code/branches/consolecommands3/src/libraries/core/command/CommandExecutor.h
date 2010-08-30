@@ -59,6 +59,7 @@ namespace orxonox
             static const int Denied = 4;
 
             static MultiType unhide(const std::string& command);
+            static void alias(const std::string& alias, const std::string& command);
             static void _autocomplete(const std::string& group, const std::string& name) {}
 
         private:

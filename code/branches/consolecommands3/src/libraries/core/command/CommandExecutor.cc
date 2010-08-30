@@ -45,6 +45,9 @@ namespace orxonox
     SetConsoleCommand("unhide", &CommandExecutor::unhide)
         .argumentCompleter(0, autocompletion::hiddencommand());
 
+    SetConsoleCommand("alias", &CommandExecutor::alias)
+        .argumentCompleter(1, autocompletion::command());
+
     /* static */ CommandExecutor& CommandExecutor::getInstance()
     {
         static CommandExecutor instance;
@@ -155,5 +158,37 @@ namespace orxonox
     /* static */ MultiType CommandExecutor::unhide(const std::string& command)
     {
         return CommandExecutor::queryMT(command);
+    }
+
+    /* static */ void CommandExecutor::alias(const std::string& alias, const std::string& command)
+    {
+        CommandEvaluation evaluation = CommandExecutor::evaluate(command);
+        if (evaluation.isValid())
+        {
+            ExecutorPtr executor = new Executor(*evaluation.getConsoleCommand()->getExecutor().get());
+
+            if (!evaluation.evaluateParams())
+            {
+                for (size_t i = 0; i < MAX_FUNCTOR_ARGUMENTS; ++i)
+                    executor->setDefaultValue(i, evaluation.getEvaluatedParameter(i));
+            }
+
+            SubString tokens(alias, " ");
+
+            if ((tokens.size() == 1 && ConsoleCommand::getCommand(tokens[0])) || (tokens.size() == 2 && ConsoleCommand::getCommand(tokens[0], tokens[1])))
+            {
+                COUT(1) << "Error: A command with name \"" << alias << "\" already exists." << std::endl;
+                return;
+            }
+
+            if (tokens.size() == 1)
+                createConsoleCommand(tokens[0], executor);
+            else if (tokens.size() == 2)
+                createConsoleCommand(tokens[0], tokens[1], executor);
+            else
+                COUT(1) << "Error: \"" << alias << "\" is not a valid alias name (must have one or two words)." << std::endl;
+        }
+        else
+            COUT(1) << "Error: \"" << command << "\" is not a valid command (did you mean \"" << evaluation.getCommandSuggestion() << "\"?)." << std::endl;
     }
 }
