@@ -115,6 +115,9 @@ namespace orxonox
 {
     typedef std::string LanguageEntryLabel;
 
+    template <class T, class U>
+    T orxonox_cast(U*);
+
     class ArgumentCompleter;
     class ArgumentCompletionListElement;
     class BaseObject;
