@@ -129,6 +129,10 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
       ENDIF(NOT _is_header)
     ENDFOREACH(_file)
 
+    # Makefile dependency scanner requires the PCH file to be part of the
+    # target files in order to work properly
+    LIST(APPEND _source_files ${_pch_file})
+
   ENDIF()
 
 ENDMACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET)
