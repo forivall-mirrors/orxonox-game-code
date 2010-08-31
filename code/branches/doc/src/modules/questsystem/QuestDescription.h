@@ -49,7 +49,9 @@ namespace orxonox
 
         Creating a QuestDescription through XML goes as follows:
 
+        @code
         <QuestDescription title="Title" description="Description Text" failMessage="You fail." completeMessage="You win!" />
+        @endcode
     @author
         Damian 'Mozork' Frick
     */

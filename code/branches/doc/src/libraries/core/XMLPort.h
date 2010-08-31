@@ -68,7 +68,9 @@
     @param mode The mode (load or save), you get this from the XMLPort function
 
     In the XML file, a param or attribute will be set like this:
+    @code
     <classname paramname="value" />
+    @endcode
 
     The macro will then call loadfunction(value) to set the given value (or call savefunction() to
     write an existing value to an XML file).
@@ -87,7 +89,9 @@
     @param mode The mode (load or save), you get this from the XMLPort function
 
     In the XML file, a param or attribute will be set like this:
+    @code
     <classname paramname="value" />
+    @endcode
 
     The macro will then store "value" in the variable or read it when saving.
 */
@@ -211,19 +215,24 @@
     If bLoadBefore is true, an added object already has all attributes set (like it's name). This is most
     likely the best option, so this is usually true.
 
-    @note
+    @details
     The load- and savefunctions have to follow an exactly defined protocol.
     Loadfunction:
       The loadfunction gets a pointer to the object.
-      > void loadfunction(objectclass* pointer);
+      @code
+      void loadfunction(objectclass* pointer);
+      @endcode
 
     Savefunction:
       The savefunction gets an index, starting with 0. For every returnvalue != 0, the savefunction
       gets called again, but with index + 1. It's the functions responsibility to do something smart
       with the index and to return 0 if all objects were returned.
-      > objectclass* savefunction(unsigned int index) const;
+      @code
+      objectclass* savefunction(unsigned int index) const;
+      @endcode
 
       Possible implementation:
+      @code
         objectclass* savefunction(unsigned int index) const
         {
           if (index < number_of_added_objects_)
@@ -231,12 +240,16 @@
           else
             return 0;
         }
+      @endcode
 
     Example:
     Possible usage of the macro:
-    > XMLPortObject(SpaceShip, Weapon, "weapons", addWeapon, getWeapon, xmlelement, mode, false, true);
+    @code
+    XMLPortObject(SpaceShip, Weapon, "weapons", addWeapon, getWeapon, xmlelement, mode, false, true);
+    @endcode
 
     Now you can add weapons through the XML file:
+    @code
     <SpaceShip someattribute="..." ...>
       <weapons>
         <Weapon someattribute="..." ... />
@@ -244,6 +257,7 @@
         <Weapon someattribute="..." ... />
       </weapons>
     </SpaceShip>
+    @endcode
 
     Note that "weapons" is the subsection. This allows you to add more types of sub-objects. In our example,
     you could add pilots, blinking lights or other stuff. If you don't want a subsection, just use "" (an

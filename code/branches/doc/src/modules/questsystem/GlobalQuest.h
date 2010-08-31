@@ -49,6 +49,7 @@ namespace orxonox
 
         Creating a GlobalQuest through XML goes as follows:
 
+        @code
         <GlobalQuest id="questId"> //Where questId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
             <QuestDescription title="Title" description="Description." /> //The description of the quest.
             <subquests>
@@ -77,6 +78,7 @@ namespace orxonox
                 <QuestEffect />
             </reward-effects>
         </GlobalQuest>
+        @endcode
     @author
         Damian 'Mozork' Frick
     */
