@@ -62,7 +62,7 @@ namespace orxonox
   }
 
   bool ServerConnection::openListener() {
-    this->host_ = enet_host_create(this->bindAddress_, NETWORK_MAX_CONNECTIONS, 0, 0);
+    this->host_ = enet_host_create(this->bindAddress_, NETWORK_MAX_CONNECTIONS, 0, 0, 0);
     if ( this->host_ == NULL )
       return false;
     else

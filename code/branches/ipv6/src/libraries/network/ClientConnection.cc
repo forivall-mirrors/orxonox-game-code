@@ -69,14 +69,14 @@ namespace orxonox
   {
     ENetEvent event;
 
-    this->host_ = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0);
+    this->host_ = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0, 0);
     if ( this->host_ == NULL )
     {
       COUT(2) << "ClientConnection: host_ == NULL" << std::endl;
       // error handling
       return false;
     }
-    this->server_ = enet_host_connect(this->host_, serverAddress_, NETWORK_CLIENT_CHANNELS);
+    this->server_ = enet_host_connect(this->host_, serverAddress_, NETWORK_CLIENT_CHANNELS, 0);
     if ( this->server_==NULL )
     {
       COUT(2) << "ClientConnection: server == NULL" << std::endl;

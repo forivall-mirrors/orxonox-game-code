@@ -41,7 +41,7 @@ namespace orxonox
 
   LANDiscovery::LANDiscovery()
   {
-    this->host_ = enet_host_create(NULL, 10, 0, 0 );
+    this->host_ = enet_host_create(NULL, 10, 0, 0, 0 );
   }
 
   LANDiscovery::~LANDiscovery()
@@ -57,7 +57,7 @@ namespace orxonox
     address.port = LAN_DISCOVERY_PORT;
 
     ENetPeer* peer;
-    peer = enet_host_connect(this->host_, &address, 0);
+    peer = enet_host_connect(this->host_, &address, 0, 0);
 
     ENetEvent event;
     while( enet_host_service(this->host_, &event, 1000 ) )

@@ -65,7 +65,7 @@ namespace orxonox
     {
       ENetAddress bindAddress = { ENET_HOST_ANY, LAN_DISCOVERY_PORT };
       assert( this->host_ == 0 );
-      this->host_ = enet_host_create( &bindAddress, 10, 0, 0 );
+      this->host_ = enet_host_create( &bindAddress, 10, 0, 0, 0 );
     }
     else
     {
