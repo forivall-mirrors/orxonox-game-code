@@ -26,6 +26,11 @@
  *
 */
 
+/**
+    @file DistanceTriggerBeacon.cc
+    @brief Implementation of the DistanceTriggerBeacon class.
+*/
+
 #include "DistanceTriggerBeacon.h"
 
 #include "core/CoreIncludes.h"
@@ -35,6 +40,12 @@ namespace orxonox
 
     CreateFactory(DistanceTriggerBeacon);
 
+    /**
+    @brief
+        Constructor. Registers the object.
+    @param creator
+        The creator of this object.
+    */
     DistanceTriggerBeacon::DistanceTriggerBeacon(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(DistanceTriggerBeacon);

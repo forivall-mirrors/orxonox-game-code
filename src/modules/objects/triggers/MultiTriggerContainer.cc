@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Damian 'Mozork' Frick
  *   Co-authors:
  *      ...
  *
@@ -57,7 +57,7 @@ namespace orxonox
     @param creator
         The creator.
     @param originator
-        A pointer to the originator of the Event, i.e. the MultiTrigger that fired the Event. (or is about to)
+        A pointer to the originator of the Event, i.e. the MultiTrigger that fired the Event. (or is about to fire)
     @param data
         A pointer to the data that should be sent with the container.
     */

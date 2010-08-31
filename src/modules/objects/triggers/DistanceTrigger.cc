@@ -128,10 +128,16 @@ namespace orxonox
       if (!entity)
         continue;
 
+      // If the DistanceTrigger is in single-target mode.
       if(this->singleTargetMode_)
       {
+        // If the object that is a target is no DistanceTriggerBeacon, then the DistanceTrigger can't be in single-target-mode.
         if(!(*it)->isA(ClassIdentifier<DistanceTriggerBeacon>::getIdentifier()))
+        {
           this->singleTargetMode_ = false;
+          COUT(2) << "DistanceTrigger " << this->getName() << " (&" << this <<  ")" << "is in single-target mode but the target is '" << entity->getIdentifier()->getName() << "' instead of DistanceTriggerBeacon. Setting single-target mode to false." << std::endl;
+        }
+        // If the target name and the name of the DistancTriggerBeacon don't match.
         else if(entity->getName().compare(this->targetName_) != 0)
           continue;
       }
@@ -144,6 +150,7 @@ namespace orxonox
         if(this->isForPlayer())
         {
 
+          // Change the entity to the parent of the DistanceTriggerBeacon (if in single-target-mode), which is the entity to which the beacon is attached.
           if(this->singleTargetMode_)
             entity = entity->getParent();
 
