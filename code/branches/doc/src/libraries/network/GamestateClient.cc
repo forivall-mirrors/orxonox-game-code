@@ -104,8 +104,8 @@ namespace orxonox
   * @param it iterator of the list pointing to the object
   * @return iterator pointing to the next object in the list
   */
-  void GamestateClient::removeObject(ObjectList<Synchronisable>::iterator &it) {
-    ObjectList<Synchronisable>::iterator temp=it;
+  void GamestateClient::removeObject(ObjectListIterator<Synchronisable> &it) {
+    ObjectListIterator<Synchronisable> temp=it;
     ++it;
     temp->destroy(); // or delete?
   }

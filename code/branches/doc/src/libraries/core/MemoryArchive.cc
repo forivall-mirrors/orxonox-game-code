@@ -53,7 +53,7 @@ namespace orxonox
             OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR, this->getName() + " - MemoryArchive not found.", "MemoryArchive");
     }
 
-    DataStreamPtr MemoryArchive::open(const String& filename) const
+    DataStreamPtr MemoryArchive::open(const Ogre::String& filename) const
     {
         const FileMap& files = archives_s[this->getName()];
         FileMap::const_iterator itFile = files.find(filename);
@@ -63,8 +63,8 @@ namespace orxonox
             return MemoryDataStreamPtr(new MemoryDataStream(itFile->second.first.get(), itFile->second.second));
     }
 
-    void MemoryArchive::findFiles(const String& pattern, bool bRecursive,
-        bool bDirs, StringVector* simpleList, FileInfoList* detailList)
+    void MemoryArchive::findFiles(const Ogre::String& pattern, bool bRecursive,
+        bool bDirs, Ogre::StringVector* simpleList, Ogre::FileInfoList* detailList)
     {
         const FileMap& files = archives_s[this->getName()];
 
@@ -109,7 +109,7 @@ namespace orxonox
         return ret;
     }
 
-    StringVectorPtr MemoryArchive::find(const String& pattern,
+    StringVectorPtr MemoryArchive::find(const Ogre::String& pattern,
                                             bool recursive, bool dirs)
     {
         StringVectorPtr ret(new StringVector());
@@ -117,7 +117,7 @@ namespace orxonox
         return ret;
     }
 
-    FileInfoListPtr MemoryArchive::findFileInfo(const String& pattern,
+    FileInfoListPtr MemoryArchive::findFileInfo(const Ogre::String& pattern,
         bool recursive, bool dirs)
     {
         FileInfoListPtr ret(new FileInfoList());
@@ -125,7 +125,7 @@ namespace orxonox
         return ret;
     }
 
-    bool MemoryArchive::exists(const String& filename)
+    bool MemoryArchive::exists(const Ogre::String& filename)
     {
         const FileMap& files = archives_s[this->getName()];
         return files.find(filename) != files.end();

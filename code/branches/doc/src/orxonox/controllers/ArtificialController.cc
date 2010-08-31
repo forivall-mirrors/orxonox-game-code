@@ -557,7 +557,7 @@ namespace orxonox
     }
 
     /**
-        @brief Master sets its slaves free for @var FREEDOM_COUNT seconds.
+        @brief Master sets its slaves free for @ref FREEDOM_COUNT seconds.
     */
     void ArtificialController::forceFreeSlaves()
     {

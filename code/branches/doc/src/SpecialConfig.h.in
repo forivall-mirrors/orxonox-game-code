@@ -42,30 +42,16 @@
 #include "OrxonoxConfig.h"
 #include <boost/preprocessor/stringize.hpp>
 
-/**
-@def CEGUILUA_USE_INTERNAL_LIBRARY
-    Set whether we must suffix "ceguilua/" for the CEGUILua.h include
-*/
+/// Set whether we must suffix "ceguilua/" for the CEGUILua.h include
 #cmakedefine CEGUILUA_USE_INTERNAL_LIBRARY
 
-/**
-@def DEPENDENCY_PACKAGE_ENABLE
-    Defined if a precompiled depdency package was used. We then copy all libraries
-    too when installing.
-*/
+/// Defined if a precompiled depdency package was used. We then copy all libraries too when installing.
 #cmakedefine DEPENDENCY_PACKAGE_ENABLE
 
-/**
-@def INSTALL_COPYABLE
-    Orxonox either gets installed to the system or just into a folder.
-    The latter uses relative paths.
-*/
+/// Orxonox either gets installed to the system or just into a folder. The latter uses relative paths.
 #cmakedefine INSTALL_COPYABLE
 
-/**
-@def CMAKE_CONFIGURATION_TYPES
-    Using MSVC or XCode IDE
-*/
+/// Using MSVC or XCode IDE
 #cmakedefine CMAKE_CONFIGURATION_TYPES
 
 // Handle default ConfigValues
@@ -125,10 +111,7 @@ namespace orxonox { namespace specialConfig
 #endif
 } }
 
-/**
-@def ORXONOX_USE_WINMAIN
-    Use main() or WinMain()?
-*/
+/// Use main() or WinMain()?
 #cmakedefine ORXONOX_USE_WINMAIN
 
 #endif /* _SpecialConfig_H__ */

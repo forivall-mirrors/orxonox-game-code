@@ -144,10 +144,7 @@
 /*---------------------------------
  * Options
  *-------------------------------*/
-/**
-@def ORXONOX_RELEASE
-    Enables expensive (build time) optimisations and disables certain features
-*/
+/// Enables expensive (build time) optimisations and disables certain features
 #cmakedefine ORXONOX_RELEASE
 
 
