@@ -47,7 +47,7 @@ namespace orxonox
 
     Executor::Executor(const Executor& other) : name_(other.name_)
     {
-        for (int i = 0; i < MAX_FUNCTOR_ARGUMENTS; ++i)
+        for (size_t i = 0; i < MAX_FUNCTOR_ARGUMENTS; ++i)
             defaultValue_[i] = other.defaultValue_[i];
         this->functor_ = other.functor_->clone();
     }

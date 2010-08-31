@@ -276,13 +276,16 @@ namespace orxonox
                             std::string value, comment;
                             if (commentposition == std::string::npos)
                             {
-                                value = removeTrailingWhitespaces(line.substr(pos1 + 1));
+                                value = line.substr(pos1 + 1);
                             }
                             else
                             {
-                                value = removeTrailingWhitespaces(line.substr(pos1 + 1, commentposition - pos1 - 1));
+                                value = line.substr(pos1 + 1, commentposition - pos1 - 1);
                                 comment = removeTrailingWhitespaces(line.substr(commentposition));
                             }
+
+                            value = removeTrailingWhitespaces(value);
+                            value = removeSlashes(value);
 
                             if (pos2 != std::string::npos && pos3 != std::string::npos && pos3 > pos2 + 1)
                             {
