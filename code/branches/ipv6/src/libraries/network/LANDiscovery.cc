@@ -66,7 +66,7 @@ namespace orxonox
       {
         case ENET_EVENT_TYPE_CONNECT:
         {
-          COUT(0) << "connect from server: " << event.peer->address.host << endl;
+          //COUT(0) << "connect from server: " << event.peer->address.host << endl; FIXME
           ENetPacket* packet = enet_packet_create(LAN_DISCOVERY_MESSAGE, strlen(LAN_DISCOVERY_MESSAGE)+1, ENET_PACKET_FLAG_RELIABLE);
           enet_peer_send(event.peer, 0, packet);
           break;

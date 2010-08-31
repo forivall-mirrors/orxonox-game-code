@@ -43,6 +43,7 @@ namespace orxonox
     bListening_(false)
   {
     this->bindAddress_ = new ENetAddress();
+    memset(this->bindAddress_, 0, sizeof(ENetAddress));
     this->bindAddress_->host = ENET_HOST_ANY;
     this->bindAddress_->port = NETWORK_PORT;
   }
