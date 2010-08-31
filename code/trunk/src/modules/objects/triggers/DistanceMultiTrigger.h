@@ -47,7 +47,21 @@ namespace orxonox
 
     /**
     @brief
-        The DistanceMultiTrigger is a trigger that triggers whenever an object (that is of the specified target type) is in a specified range of the DistanceMultiTrigger. The object can be specified further by adding a DistanceTriggerBeacon (just attaching it) to the objects that can trigger this DistanceMultiTrigger and specify the name of the DistanceTriggerBeacon with the parameter targetname and only objects that hav a DistanceTriggerBeacon with that name attached will trigger the DistanceMultiTrigger.
+        The DistanceMultiTrigger is a trigger that triggers whenever an object (that is of the specified target type) is in a specified range of the DistanceMultiTrigger. The object can be specified further by adding a DistanceTriggerBeacon (just attaching it) to the objects that can trigger this DistanceMultiTrigger and specify the name of the DistanceTriggerBeacon with the parameter targetname and only objects that have a DistanceTriggerBeacon with that name attached will trigger the DistanceMultiTrigger.
+        Parameters are (additional to the ones of MultiTrigger):
+            'distance', which specifies the maximum distance at which the DistanceMultiTrigger still triggers. Default is 100.
+            'targetname', which, if not left blank, causes the DistancMultiTrigger to be in single-target mode, meaning, that it only reacts to objects that have a DistanceTriggerBeacon (therefore the target has to be set to DistanceTriggerBeacon for it to work), with the name specified by targetname, attached.
+
+        A simple DistanceMultiTrigger would look like this:
+        @code
+        <DistanceMultiTrigger position="0,0,0" switch="true" target="Pawn" distance="20" />
+        @endcode
+
+        An implementation that only reacts to objects with a DistanceTriggerBeacon attached would look like this:
+        @code
+        <DistanceMultiTrigger position="0,0,0" target="DistanceMultiTrigger" targetname="beacon1" distance="30" />
+        @endcode
+        This particular DistanceMultiTrigger would only react if an object was in range, that had a DistanceTriggerBeacon with the name 'beacon1' attached.
     @see MultiTrigger.h
         For more information on MultiTriggers.
     @author
@@ -58,16 +72,11 @@ namespace orxonox
 
         public:
             DistanceMultiTrigger(BaseObject* creator); //!< Default Constructor. Registers the object and initializes default values.
-            ~DistanceMultiTrigger(); //!< Destructor.
+            virtual ~DistanceMultiTrigger(); //!< Destructor.
 
             void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a DistanceMultiTrigger object through XML.
 
-            /**
-            @brief Set the target name of DistanceTriggerBeacons that triggers this DistanceMultiTrigger.
-            @param targename The name of the DistanceTriggerBeacon as a string.
-            */
-            inline void setTargetName(const std::string& targetname)
-                { if(targetname.compare(BLANKSTRING) != 0) this->singleTargetMode_ = true; else this->singleTargetMode_ = false; this->targetName_ = targetname; }
+            void setTargetName(const std::string& targetname); //!< Set the target name of DistanceTriggerBeacons that triggers this DistanceMultiTrigger.
             /**
             @brief Get the target name of the DistanceTriggerbeacon, that triggers this DistanceMultiTrigger.
             @return Returns the target name as a string.
@@ -91,20 +100,8 @@ namespace orxonox
         protected:
             virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
 
-            /**
-            @brief Add a given entity to the entities, that currently are in range of the DistanceMultiTrigger.
-            @param entity A pointer to the entity.
-            @return Returns true if successful, false if not.
-            */
-            inline bool addToRange(WorldEntity* entity)
-                { std::pair<std::map<WorldEntity*, WeakPtr<WorldEntity>* >::iterator, bool> pair = this->range_.insert(std::pair<WorldEntity*, WeakPtr<WorldEntity>* >(entity, new WeakPtr<WorldEntity>(entity))); return pair.second; }
-            /**
-            @brief Remove a given entity from the set of entities, that currently are in range of the DistanceMultiTrigger.
-            @param entity A pointer ot the entity.
-            @return Returns true if successful.
-            */
-            inline bool removeFromRange(WorldEntity* entity)
-                { WeakPtr<WorldEntity>* weakptr = this->range_.find(entity)->second; bool erased = this->range_.erase(entity) > 0; if(erased) delete weakptr; return erased; }
+            bool addToRange(WorldEntity* entity); //!< Add a given entity to the entities, that currently are in range of the DistanceMultiTrigger.
+            bool removeFromRange(WorldEntity* entity); //!< Remove a given entity from the set of entities, that currently are in range of the DistanceMultiTrigger.
 
         private:
             float distance_; //!< The distance at which the DistanceMultiTrigger triggers.

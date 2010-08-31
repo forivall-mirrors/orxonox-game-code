@@ -61,6 +61,7 @@ namespace orxonox
     */
     DistanceMultiTrigger::~DistanceMultiTrigger()
     {
+
     }
 
     /**
@@ -80,6 +81,8 @@ namespace orxonox
         This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
 
         In this implementation we iterate through all possible objects and check whether the fact that they are in range or not has changed and fire and hand a state ofer to the MultiTrigger if so.
+    @return
+        Returns a pointer to a queue of MultiTriggerState pointers, containing all the necessary information to decide whether these states should indeed become new states of the MultiTrigger.
     */
     std::queue<MultiTriggerState*>* DistanceMultiTrigger::letTrigger(void)
     {
@@ -91,9 +94,10 @@ namespace orxonox
         {
             WorldEntity* entity = it->second->get();
             WorldEntity* key = it->first;
+            it++; // Incrementing the iterator in advance, since we don't need the current anymore and we potentially are going to delete the current element thus invalidating the iterator.
+            // If the entity no longer exists.
             if(entity == NULL)
             {
-                ++it;
                 this->removeFromRange(key);
                 continue;
             }
@@ -102,11 +106,9 @@ namespace orxonox
             // If the object is no longer in range.
             if (distanceVec.length() > this->distance_)
             {
+                // If for some reason the entity could not be removed.
                 if(!this->removeFromRange(key))
-                {
-                    ++it;
                     continue;
-                }
 
                 // If no queue has been created, yet.
                 if(queue == NULL)
@@ -114,30 +116,27 @@ namespace orxonox
 
                 // Create a state and append it to the queue.
                 MultiTriggerState* state = new MultiTriggerState;
-                state->bTriggered = false;
+                state->bTriggered = false; // Because the entity went out of range.
                 state->originator = entity;
                 queue->push(state);
             }
-            else
-                ++it;
         }
 
-        ClassTreeMask& targetMask = this->getTargetMask();
-
         // Check for new objects that are in range
-        for(ClassTreeMaskObjectIterator it = targetMask.begin(); it != targetMask.end(); ++it)
+        for(ClassTreeMaskObjectIterator it = this->getTargetMask().begin(); it != this->getTargetMask().end(); ++it)
         {
             WorldEntity* entity = static_cast<WorldEntity*>(*it);
-            if (entity == NULL) //If the object is no WorldEntity or is already in range.
-                continue;
 
-            // If the DistanceMultiTrigger is in single-target-mode.
+            // If the DistanceMultiTrigger is in single-target mode.
             if(this->singleTargetMode_)
             {
                 // If the object that is a target is no DistanceTriggerBeacon, then the DistanceMultiTrigger can't be in single-target-mode.
-                if(!(*it)->isA(ClassIdentifier<DistanceTriggerBeacon>::getIdentifier()))
+                if(!entity->isA(ClassIdentifier<DistanceTriggerBeacon>::getIdentifier()))
+                {
                     this->singleTargetMode_ = false;
-                // If the target name and the name of the DistancTriggreBeacon don't match.
+                    COUT(2) << "DistanceMultiTrigger " << this->getName() << " (&" << this <<  ")" << "is in single-target mode but the target is '" << entity->getIdentifier()->getName() << "' instead of DistanceTriggerBeacon. Setting single-target mode to false." << std::endl;
+                }
+                // If the target name and the name of the DistancTriggerBeacon don't match.
                 else if(entity->getName().compare(this->targetName_) != 0)
                     continue;
             }
@@ -147,6 +146,7 @@ namespace orxonox
             if (distanceVec.length() <= this->distance_)
             {
                 // Add the object to the objects that are in range.
+                // Objects that already are in range are not added twice, because in a map (this->range_) each key can only exist once and thus addToRange() will reject all attempts of duplicate entries.
                 if(!this->addToRange(entity))
                     continue;
 
@@ -160,13 +160,69 @@ namespace orxonox
 
                 // Create a state and append it to the queue.
                 MultiTriggerState* state = new MultiTriggerState;
-                state->bTriggered = true;
+                state->bTriggered = true; // Because the entity came into range.
                 state->originator = entity;
                 queue->push(state);
             }
         }
 
         return queue;
+    }
+
+    /**
+    @brief
+        Set the target name of DistanceTriggerBeacons that triggers this DistanceMultiTrigger.
+    @param targetname
+        The name of the DistanceTriggerBeacon as a string.
+    */
+    void DistanceMultiTrigger::setTargetName(const std::string& targetname)
+    {
+        // If the targetname is no blank string single-target mode is enabled.
+        if(targetname.compare(BLANKSTRING) != 0)
+            this->singleTargetMode_ = true;
+        else
+            this->singleTargetMode_ = false;
+
+        this->targetName_ = targetname;
+    }
+
+    /**
+    @brief
+        Add a given entity to the entities, that currently are in range of the DistanceMultiTrigger.
+    @param entity
+        A pointer to the entity.
+    @return
+        Returns true if successful, false if not.
+    */
+    bool DistanceMultiTrigger::addToRange(WorldEntity* entity)
+    {
+        WeakPtr<WorldEntity>* weakptr = new WeakPtr<WorldEntity>(entity);
+        std::pair<std::map<WorldEntity*, WeakPtr<WorldEntity>* >::iterator, bool> pair = this->range_.insert(std::pair<WorldEntity*, WeakPtr<WorldEntity>* >(entity, weakptr));
+
+        if(!pair.second)
+        {
+            delete weakptr;
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+    @brief
+        Remove a given entity from the set of entities, that currently are in range of the DistanceMultiTrigger.
+    @param entity
+        A pointer ot the entity.
+    @return
+        Returns true if successful.
+    */
+    bool DistanceMultiTrigger::removeFromRange(WorldEntity* entity)
+    {
+        WeakPtr<WorldEntity>* weakptr = this->range_.find(entity)->second;
+        bool erased = this->range_.erase(entity) > 0;
+        if(erased)
+            delete weakptr;
+        return erased;
     }
 
 }

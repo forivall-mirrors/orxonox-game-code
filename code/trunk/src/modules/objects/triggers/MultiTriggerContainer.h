@@ -53,7 +53,7 @@ namespace orxonox
         public:
             MultiTriggerContainer(BaseObject* creator); //!< Default constructor. Registers the object and creates an empty container.
             MultiTriggerContainer(BaseObject* creator, MultiTrigger* originator, BaseObject* data); //!< Constructor. Registers the object and sets the input values.
-            ~MultiTriggerContainer(); //!< Destructor.
+            virtual ~MultiTriggerContainer(); //!< Destructor.
 
             /**
             @brief Get the originator of the Event. (The MultiTrigger that fired the Event)

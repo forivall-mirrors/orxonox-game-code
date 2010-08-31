@@ -22,7 +22,7 @@
  *   Author:
  *      Benjamin Knecht
  *   Co-authors:
- *      ...
+ *      Damian 'Mozork' Frick
  *
  */
 

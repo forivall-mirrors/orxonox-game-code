@@ -41,21 +41,41 @@
 namespace orxonox
 {
 
+    /**
+    @brief
+        The EventMultiTrigger class is the equivalent of the EventTrigger class for MultiTriggers.
+        Consequentially what it does is it provides a way to have a MultiTrigger triggered by any kinds of events.
+        Events that are not caused by a MultiTrigger or by a MultiTrigger with an originator that is no target of this EventMultiTrigger are broadcasted to all entities that are the target of this EventMultitrigger. Events that are caused by MultiTriggers with an originator that is a target of this EventMultiTrigger just trigger the EventMultiTrigger for the originator that caused the MultiTrigger to trigger. Thus showing the equivalent behavior to the EventTrigger.
+
+        Example:
+        @code
+        <EventMultiTrigger invert="true">
+            <events>
+                <trigger>
+                    <MultiTrigger ... />
+                    <EventListener ... />
+                </trigger>
+            </events>
+        </EventMultiTrigger>
+        @endcode
+    @see MultiTrigger.h
+        For more information on MultiTriggers.
+    @author
+        Damian 'Mozork' Frick
+    */
     class _ObjectsExport EventMultiTrigger : public MultiTrigger
     {
 
         public:
-            EventMultiTrigger(BaseObject* creator);
-            ~EventMultiTrigger();
+            EventMultiTrigger(BaseObject* creator); //!< Constructor. Registers the object.
+            virtual ~EventMultiTrigger(); //!< Destructor.
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating an EventMultiTrigger object through XML.
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
-            inline void trigger(bool bTriggered)
-                { this->bEventTriggered_ = bTriggered; this->changeTriggered(); }
-
         private:
-            bool bEventTriggered_;
+            void trigger(bool bTriggered, BaseObject* originator); //!< Method that causes the EventMultiTrigger to trigger upon receiving an event.
+
     };
 
 }
