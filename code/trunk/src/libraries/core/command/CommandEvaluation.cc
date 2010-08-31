@@ -274,7 +274,7 @@ namespace orxonox
             size_t max = this->hintArgumentsOffset_ + this->hintCommand_->getExecutor()->getParamCount();
 
             for (size_t i = 0; i < argumentID; ++i)
-                param[i] = this->getToken(std::min(this->getNumberOfArguments(), max) - i - 1);
+                param[i] = this->getToken(std::min(this->getNumberOfArguments(), (unsigned int)max) - i - 1);
 
             if (this->getNumberOfArguments() > max)
             {
