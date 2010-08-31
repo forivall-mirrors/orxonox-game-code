@@ -124,14 +124,10 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
         ENDIF()
         SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES
           COMPILE_FLAGS "${_old_flags} -include ${_pch_header_filename}"
-          OBJECT_DEPENDS "${_pch_header_file};${_pch_file}"
+          OBJECT_DEPENDS "${_pch_header_file}"
         )
       ENDIF(NOT _is_header)
     ENDFOREACH(_file)
-
-    # Makefile dependency scanner requires the PCH file to be part of the
-    # target files in order to work properly
-    LIST(APPEND _source_files ${_pch_file})
 
   ENDIF()
 
@@ -160,6 +156,8 @@ FUNCTION(PRECOMPILED_HEADER_FILES_POST_TARGET _target_name)
         IMPLICIT_DEPENDS CXX ${_pch_header_file}
         VERBATIM
       )
+      ADD_CUSTOM_TARGET(${_target_name}PrecompiledHeader DEPENDS ${_pch_file})
+      ADD_DEPENDENCIES(${_target_name} ${_target_name}PrecompiledHeader)
 
     ENDIF(CMAKE_COMPILER_IS_GNU)
 ENDFUNCTION(PRECOMPILED_HEADER_FILES_POST_TARGET)
