@@ -154,7 +154,9 @@ namespace orxonox
                 {
                     spaceship->getEngine()->setSpeedFactor(5);
                     WeakPtr<Engine>* ptr = new WeakPtr<Engine>(spaceship->getEngine());
-                    new Timer(10, false, &createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this))->setDefaultValue(0, ptr), true);
+                    ExecutorPtr executor = createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this));
+                    executor->setDefaultValue(0, ptr);
+                    new Timer(10, false, executor, true);
                 }
             }
 
@@ -253,7 +255,9 @@ namespace orxonox
                 {
                     spaceship->getEngine()->setSpeedFactor(5);
                     WeakPtr<Engine>* ptr = new WeakPtr<Engine>(spaceship->getEngine());
-                    new Timer(10, false, &createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this))->setDefaultValue(0, ptr), true);
+                    ExecutorPtr executor = createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this));
+                    executor->setDefaultValue(0, ptr);
+                    new Timer(10, false, executor, true);
                 }
 
             }

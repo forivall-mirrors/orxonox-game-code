@@ -34,20 +34,18 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "ConsoleCommand.h"
-#include "CoreIncludes.h"
 #include "TclThreadManager.h"
 
 namespace orxonox
 {
     static const unsigned int IRC_TCL_THREADID  = 1421421421;
 
-    SetConsoleCommand(IRC, say,  true).accessLevel(AccessLevel::User);
-    SetConsoleCommand(IRC, msg,  false).accessLevel(AccessLevel::User);
-    SetConsoleCommand(IRC, nick, false).accessLevel(AccessLevel::User);
+    SetConsoleCommand("IRC", "say",  &IRC::say);
+    SetConsoleCommand("IRC", "msg",  &IRC::msg);
+    SetConsoleCommand("IRC", "nick", &IRC::nick);
 
     IRC::IRC()
     {
-        RegisterRootObject(IRC);
         this->interpreter_ = 0;
     }
 

@@ -233,8 +233,8 @@ namespace orxonox
     // std::string to Vector2
     bool ConverterFallback<std::string, orxonox::Vector2>::convert(orxonox::Vector2* output, const std::string& input)
     {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos)
+        size_t opening_parenthesis, closing_parenthesis = input.find('}');
+        if ((opening_parenthesis = input.find('{')) == std::string::npos)
             opening_parenthesis = 0;
         else
             opening_parenthesis++;
@@ -256,8 +256,8 @@ namespace orxonox
     // std::string to Vector3
     bool ConverterFallback<std::string, orxonox::Vector3>::convert(orxonox::Vector3* output, const std::string& input)
     {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos)
+        size_t opening_parenthesis, closing_parenthesis = input.find('}');
+        if ((opening_parenthesis = input.find('{')) == std::string::npos)
             opening_parenthesis = 0;
         else
             opening_parenthesis++;
@@ -281,8 +281,8 @@ namespace orxonox
     // std::string to Vector4
     bool ConverterFallback<std::string, orxonox::Vector4>::convert(orxonox::Vector4* output, const std::string& input)
     {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos)
+        size_t opening_parenthesis, closing_parenthesis = input.find('}');
+        if ((opening_parenthesis = input.find('{')) == std::string::npos)
             opening_parenthesis = 0;
         else
             opening_parenthesis++;
@@ -308,8 +308,11 @@ namespace orxonox
     // std::string to Quaternion
     bool ConverterFallback<std::string, orxonox::Quaternion>::convert(orxonox::Quaternion* output, const std::string& input)
     {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+        size_t opening_parenthesis, closing_parenthesis = input.find('}');
+        if ((opening_parenthesis = input.find('{')) == std::string::npos)
+            opening_parenthesis = 0;
+        else
+            opening_parenthesis++;
 
         SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
         if (tokens.size() >= 4)
@@ -331,8 +334,11 @@ namespace orxonox
     // std::string to ColourValue
     bool ConverterFallback<std::string, orxonox::ColourValue>::convert(orxonox::ColourValue* output, const std::string& input)
     {
-        size_t opening_parenthesis, closing_parenthesis = input.find(')');
-        if ((opening_parenthesis = input.find('(')) == std::string::npos) { opening_parenthesis = 0; } else { opening_parenthesis++; }
+        size_t opening_parenthesis, closing_parenthesis = input.find('}');
+        if ((opening_parenthesis = input.find('{')) == std::string::npos)
+            opening_parenthesis = 0;
+        else
+            opening_parenthesis++;
 
         SubString tokens(input.substr(opening_parenthesis, closing_parenthesis - opening_parenthesis), ",", SubString::WhiteSpaces, false, '\\', true, '"', true, '\0', '\0', true, '\0');
         if (tokens.size() >= 3)

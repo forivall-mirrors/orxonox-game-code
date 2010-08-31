@@ -35,7 +35,7 @@
 #include "util/DisplayStringConversions.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/Executor.h"
+#include "core/command/Executor.h"
 
 #include "tools/Timer.h"
 #include "infos/PlayerInfo.h"
@@ -90,7 +90,7 @@ namespace orxonox
 
         Timer* timer = new Timer();
         this->timers_.insert(timer); // store the timer in a set to destroy it in the destructor
-        Executor* executor = createExecutor(createFunctor(&ChatOverlay::dropMessage, this));
+        const ExecutorPtr& executor = createExecutor(createFunctor(&ChatOverlay::dropMessage, this));
         executor->setDefaultValues(timer);
         timer->setTimer(this->displayTime_, false, executor, true);
 

@@ -44,25 +44,25 @@
 #include "util/Sleep.h"
 #include "util/SubString.h"
 #include "CommandLineParser.h"
-#include "ConsoleCommand.h"
 #include "Core.h"
 #include "CoreIncludes.h"
 #include "ConfigValueIncludes.h"
 #include "GameMode.h"
 #include "GameState.h"
 #include "GUIManager.h"
+#include "command/ConsoleCommand.h"
 
 namespace orxonox
 {
     static void stop_game()
         { Game::getInstance().stop(); }
-    SetConsoleCommandShortcutExternAlias(stop_game, "exit");
+    SetConsoleCommand("exit", &stop_game);
     static void printFPS()
         { COUT(0) << Game::getInstance().getAvgFPS() << std::endl; }
-    SetConsoleCommandShortcutExternAlias(printFPS, "printFPS");
+    SetConsoleCommand("printFPS", &printFPS);
     static void printTickTime()
         { COUT(0) << Game::getInstance().getAvgTickTime() << std::endl; }
-    SetConsoleCommandShortcutExternAlias(printTickTime, "printTickTime");
+    SetConsoleCommand("printTickTime", &printTickTime);
 
     std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
     Game* Game::singletonPtr_s = 0;

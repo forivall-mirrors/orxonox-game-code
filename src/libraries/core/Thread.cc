@@ -35,7 +35,7 @@
 #include <boost/thread/thread_time.hpp>
 
 #include "util/Sleep.h"
-#include "Executor.h"
+#include "command/Executor.h"
 
 namespace orxonox
 {
@@ -74,7 +74,7 @@ namespace orxonox
       return isWorking;
     }
 
-    bool Thread::evaluateExecutor( Executor* executor )
+    bool Thread::evaluateExecutor( const ExecutorPtr& executor )
     {
         this->isWorkingMutex_->lock();
         this->isWorking_=true;
@@ -91,13 +91,12 @@ namespace orxonox
         while( !stopThread )
         {
             //this->executorMutex_->lock();
-            Executor* executor = this->executor_;
+            ExecutorPtr executor = this->executor_;
             //this->executorMutex_->unlock();
             if( executor )
             {
                 (*executor)();
                 this->executorMutex_->lock();
-                delete this->executor_;
                 this->executor_ = 0;
                 this->executorMutex_->unlock();
                 this->isWorkingMutex_->lock();

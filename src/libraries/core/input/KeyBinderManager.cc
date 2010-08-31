@@ -30,16 +30,27 @@
 
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/ScopedSingletonManager.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
-#include "core/ScopedSingletonManager.h"
+#include "core/LuaState.h"
+#include "core/command/ConsoleCommand.h"
 #include "InputManager.h"
 #include "KeyDetector.h"
 
 namespace orxonox
 {
     ManageScopedSingleton(KeyBinderManager, ScopeID::Graphics, false);
+
+    static const std::string __CC_keybind_name = "keybind";
+    static const std::string __CC_tkeybind_name = "tkeybind";
+    static const std::string __CC_unbind_name = "unbind";
+    static const std::string __CC_tunbind_name = "tunbind";
+
+    SetConsoleCommand(__CC_keybind_name,  &KeyBinderManager::keybind).defaultValues("").argumentCompleter(0, autocompletion::command());
+    SetConsoleCommand(__CC_tkeybind_name, &KeyBinderManager::tkeybind).defaultValues("").argumentCompleter(0, autocompletion::command());
+    SetConsoleCommand(__CC_unbind_name,   &KeyBinderManager::unbind).defaultValues("");
+    SetConsoleCommand(__CC_tunbind_name,  &KeyBinderManager::tunbind).defaultValues("");
 
     KeyBinderManager::KeyBinderManager()
         : currentBinder_(NULL)
@@ -50,14 +61,10 @@ namespace orxonox
         this->setConfigValues();
 
         // keybind console commands
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::keybind,  this), "keybind" ))
-            .defaultValues("");
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::tkeybind, this), "tkeybind"))
-            .defaultValues("");
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::unbind, this), "unbind"))
-            .defaultValues("");
-        CommandExecutor::addConsoleCommandShortcut(createConsoleCommand(createFunctor(&KeyBinderManager::tunbind, this), "tunbind"))
-            .defaultValues("");
+        ModifyConsoleCommand(__CC_keybind_name ).setObject(this);
+        ModifyConsoleCommand(__CC_tkeybind_name).setObject(this);
+        ModifyConsoleCommand(__CC_unbind_name  ).setObject(this);
+        ModifyConsoleCommand(__CC_tunbind_name ).setObject(this);
 
         // Load default key binder
         this->setCurrent(defaultFilename_);
@@ -68,6 +75,12 @@ namespace orxonox
         // Delete all remaining KeyBinders
         for (std::map<std::string, KeyBinder*>::const_iterator it = this->binders_.begin(); it != this->binders_.end(); ++it)
             delete it->second;
+
+        // Reset console commands
+        ModifyConsoleCommand(__CC_keybind_name ).setObject(0);
+        ModifyConsoleCommand(__CC_tkeybind_name).setObject(0);
+        ModifyConsoleCommand(__CC_unbind_name  ).setObject(0);
+        ModifyConsoleCommand(__CC_tunbind_name ).setObject(0);
     }
 
     void KeyBinderManager::setConfigValues()
@@ -155,7 +168,7 @@ namespace orxonox
         if (!this->bBinding_)
         {
             COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
-            KeyDetector::getInstance().setCallback(shared_ptr<Functor>(createFunctor(&KeyBinderManager::keybindKeyPressed, this)));
+            KeyDetector::getInstance().setCallback(createFunctor(&KeyBinderManager::keybindKeyPressed, this));
             InputManager::getInstance().enterState("detector");
             this->command_ = command;
             this->bTemporary_ = bTemporary;
@@ -185,5 +198,10 @@ namespace orxonox
             this->bBinding_ = false;
         }
         // else: A key was probably pressed within the same tick, ignore it.
+    }
+
+    void KeyBinderManager::registerKeybindCallback(LuaFunctor* function)
+    {
+        this->callbackFunction_ = function;
     }
 }

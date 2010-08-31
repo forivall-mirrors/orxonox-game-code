@@ -149,9 +149,9 @@ namespace orxonox
         //! Called upon deactivation of the state
         void left();
         //! Sets a functor to be called upon activation of the state
-        void setEnterFunctor(Functor* functor) { this->enterFunctor_ = functor; }
+        void setEnterFunctor(const FunctorPtr& functor) { this->enterFunctor_ = functor; }
         //! Sets a functor to be called upon deactivation of the state
-        void setLeaveFunctor(Functor* functor) { this->leaveFunctor_ = functor; }
+        void setLeaveFunctor(const FunctorPtr& functor) { this->leaveFunctor_ = functor; }
 
     private:
         InputState(const std::string& name, bool bAlwaysGetsInput, bool bTransparent, InputStatePriority priority);
@@ -171,8 +171,8 @@ namespace orxonox
         std::vector<InputHandler*>  handlers_;              //!< Vector with all handlers where the index is the device ID
         //! Handler to be used for all joy sticks (needs to be saved in case another joy stick gets attached)
         InputHandler*               joyStickHandlerAll_;
-        Functor*                    enterFunctor_;          //!< Functor to be executed on enter
-        Functor*                    leaveFunctor_;          //!< Functor to be executed on leave
+        FunctorPtr                  enterFunctor_;          //!< Functor to be executed on enter
+        FunctorPtr                  leaveFunctor_;          //!< Functor to be executed on leave
     };
 
     FORCEINLINE void InputState::update(float dt)

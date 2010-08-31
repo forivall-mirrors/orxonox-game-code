@@ -33,15 +33,15 @@
 #include <OgreRenderWindow.h>
 #include <OgreCamera.h>
 
-#include "core/ConsoleCommand.h"
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/ScopedSingletonManager.h"
+#include "core/GraphicsManager.h"
+#include "core/command/ConsoleCommand.h"
+#include "core/command/CommandExecutor.h"
 #include "controllers/HumanController.h"
 #include "worldentities/CameraPosition.h"
 #include "worldentities/ControllableEntity.h"
-#include "core/GraphicsManager.h"
-#include "core/CommandExecutor.h"
 #include "graphics/Camera.h"
 
 
@@ -49,7 +49,7 @@
 namespace orxonox
 {
 
-    SetConsoleCommand(SkyboxGenerator, createSkybox, true);
+    SetConsoleCommand("SkyboxGenerator", "createSkybox", &SkyboxGenerator::createSkybox).addShortcut();
 
     ManageScopedSingleton(SkyboxGenerator, ScopeID::Graphics, false);
 
@@ -78,7 +78,7 @@ namespace orxonox
         {
             if(!this->captionsRemoved_)
             {
-                CommandExecutor::execute("setGametypeStatus false");
+                CommandExecutor::execute("GametypeStatus displayCaption false");
                 this->captionsRemoved_ = true;
                 return;
             }
@@ -144,7 +144,7 @@ namespace orxonox
                 iterateOverDirections_ =0;
                 takeScreenshot_ = false;
                 CommandExecutor::execute("pause");
-                CommandExecutor::execute("setGametypeStatus true");
+                CommandExecutor::execute("GametypeStatus displayCaption true");
                 this->captionsRemoved_ = false;
             }
 

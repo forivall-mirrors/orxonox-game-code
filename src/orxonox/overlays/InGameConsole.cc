@@ -44,10 +44,10 @@
 #include "util/Convert.h"
 #include "util/Math.h"
 #include "util/DisplayStringConversions.h"
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "core/ConsoleCommand.h"
-#include "core/ScopedSingletonManager.h"
+#include "core/command/ConsoleCommand.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/input/InputBuffer.h"
@@ -57,8 +57,8 @@ namespace orxonox
     const int LINES = 30;
     const float CHAR_WIDTH = 7.45f; // fix this please - determine the char-width dynamically
 
-    SetConsoleCommand(InGameConsole, openConsole, true);
-    SetConsoleCommand(InGameConsole, closeConsole, true);
+    SetConsoleCommand("InGameConsole", "openConsole", &InGameConsole::openConsole).addShortcut();
+    SetConsoleCommand("InGameConsole", "closeConsole", &InGameConsole::closeConsole).addShortcut();
 
     ManageScopedSingleton(InGameConsole, ScopeID::Graphics, false);
 

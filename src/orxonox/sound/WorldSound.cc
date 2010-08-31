@@ -36,7 +36,6 @@
 #include "core/XMLPort.h"
 #include "Scene.h"
 #include "SoundManager.h"
-#include <core/ConsoleCommandCompilation.h>
 
 namespace orxonox
 {

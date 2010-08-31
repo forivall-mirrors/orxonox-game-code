@@ -80,7 +80,7 @@ namespace orxonox
             SL_SAFEMODE,          //!< In safe mode (between "" mostly).
             SL_SAFEESCAPE,        //!< In safe mode with the internal escape character, that escapes even the savemode character.
             SL_COMMENT,           //!< In Comment mode.
-            SL_PARENTHESES,       //!< Between parentheses (usually '(' and ')')
+            SL_PARENTHESES,       //!< Between parentheses (usually '{' and '}')
             SL_PARENTHESESESCAPE, //!< Between parentheses with the internal escape character, that escapes even the closing paranthesis character.
         } SPLIT_LINE_STATE;
 
@@ -91,7 +91,7 @@ namespace orxonox
         SubString(const std::string& string,
                   const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries=false,
                   char escapeChar ='\\', bool removeEscapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
-                  char openparenthesis_char = '(', char closeparenthesis_char = ')',  bool removeParenthesisChars = true, char comment_char = '\0');
+                  char openparenthesis_char = '{', char closeparenthesis_char = '}',  bool removeParenthesisChars = true, char comment_char = '\0');
         SubString(unsigned int argc, const char** argv);
         /** @brief create a Substring as a copy of another one. @param subString the SubString to copy. */
         SubString(const SubString& subString) { *this = subString; };
@@ -115,7 +115,7 @@ namespace orxonox
         unsigned int split(const std::string& string,
                            const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries = false,
                            char escapeChar ='\\', bool removeExcapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
-                           char openparenthesis_char = '(', char closeparenthesis_char = ')',  bool removeParenthesisChars = true, char comment_char = '\0');
+                           char openparenthesis_char = '{', char closeparenthesis_char = '}',  bool removeParenthesisChars = true, char comment_char = '\0');
         std::string join(const std::string& delimiter = " ") const;
         ////////////////////////////////////////
 
@@ -154,8 +154,8 @@ namespace orxonox
                                           bool removeExcapeChar = true,
                                           char safemode_char = '"',
                                           bool removeSafemodeChar = true,
-                                          char openparenthesis_char = '(',
-                                          char closeparenthesis_char = ')',
+                                          char openparenthesis_char = '{',
+                                          char closeparenthesis_char = '}',
                                           bool removeParenthesisChars = true,
                                           char comment_char = '\0',
                                           SPLIT_LINE_STATE start_state = SL_NORMAL);

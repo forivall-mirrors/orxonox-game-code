@@ -44,6 +44,7 @@
 
 #include "util/Clock.h"
 #include "util/Debug.h"
+#include "util/ScopedSingletonManager.h"
 #include "synchronisable/Synchronisable.h"
 #include "packet/Chat.h"
 #include "packet/Gamestate.h"
@@ -51,7 +52,6 @@
 #include "core/CoreIncludes.h"
 #include "core/CommandLineParser.h"
 #include "core/Game.h"
-#include "core/ScopedSingletonManager.h"
 
 namespace orxonox
 {
@@ -106,7 +106,7 @@ namespace orxonox
     Host::setActive(false);
     return ClientConnection::closeConnection();
   }
-  
+
   void Client::setDestination(const std::string& serverAddress, unsigned int port)
   {
     ClientConnection::setServerAddress(serverAddress);

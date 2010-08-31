@@ -37,7 +37,6 @@
 
 #include "util/StringUtils.h"
 #include "ConfigValueContainer.h"
-#include "ConsoleCommand.h"
 #include "ClassFactory.h"
 #include "XMLPort.h"
 
@@ -63,7 +62,6 @@ namespace orxonox
         this->bLoadable_ = false;
 
         this->bHasConfigValues_ = false;
-        this->bHasConsoleCommands_ = false;
 
         // Default network ID is the class ID
         this->networkID_ = this->classID_;
@@ -79,8 +77,6 @@ namespace orxonox
         if (this->factory_)
             delete this->factory_;
 
-        for (std::map<std::string, ConsoleCommand*>::iterator it = this->consoleCommands_.begin(); it != this->consoleCommands_.end(); ++it)
-            delete (it->second);
         for (std::map<std::string, ConfigValueContainer*>::iterator it = this->configValues_.begin(); it != this->configValues_.end(); ++it)
             delete (it->second);
         for (std::map<std::string, XMLPortParamContainer*>::iterator it = this->xmlportParamContainers_.begin(); it != this->xmlportParamContainers_.end(); ++it)
@@ -426,59 +422,6 @@ namespace orxonox
     {
         std::map<std::string, ConfigValueContainer*>::const_iterator it = configValues_.find(varname);
         if (it != configValues_.end())
-            return it->second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Adds a new console command of this class.
-        @param executor The executor of the command
-        @param bCreateShortcut If this is true a shortcut gets created so you don't have to add the classname to access this command
-        @return The executor of the command
-    */
-    ConsoleCommand& Identifier::addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut)
-    {
-        std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_.find(command->getName());
-        if (it != this->consoleCommands_.end())
-        {
-            COUT(2) << "Warning: Overwriting console-command with name " << command->getName() << " in class " << this->getName() << '.' << std::endl;
-            delete (it->second);
-        }
-
-        this->bHasConsoleCommands_ = true;
-        this->consoleCommands_[command->getName()] = command;
-        this->consoleCommands_LC_[getLowercase(command->getName())] = command;
-
-        if (bCreateShortcut)
-            CommandExecutor::addConsoleCommandShortcut(command);
-
-        return (*command);
-    }
-
-    /**
-        @brief Returns the executor of a console command with given name.
-        @brief name The name of the requested console command
-        @return The executor of the requested console command
-    */
-    ConsoleCommand* Identifier::getConsoleCommand(const std::string& name) const
-    {
-        std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_.find(name);
-        if (it != this->consoleCommands_.end())
-            return it->second;
-        else
-            return 0;
-    }
-
-    /**
-        @brief Returns the executor of a console command with given name in lowercase.
-        @brief name The name of the requested console command in lowercae
-        @return The executor of the requested console command
-    */
-    ConsoleCommand* Identifier::getLowercaseConsoleCommand(const std::string& name) const
-    {
-        std::map<std::string, ConsoleCommand*>::const_iterator it = this->consoleCommands_LC_.find(name);
-        if (it != this->consoleCommands_LC_.end())
             return it->second;
         else
             return 0;

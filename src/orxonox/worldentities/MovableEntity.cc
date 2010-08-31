@@ -30,9 +30,9 @@
 #include "MovableEntity.h"
 
 #include "core/CoreIncludes.h"
-#include "core/Executor.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
+#include "core/command/Executor.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox

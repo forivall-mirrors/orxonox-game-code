@@ -36,7 +36,7 @@
 #include <cassert>
 #include "Identifier.h"
 #include "OrxonoxClass.h"
-#include "Functor.h"
+#include "command/Functor.h"
 
 namespace orxonox
 {
@@ -77,8 +77,6 @@ namespace orxonox
             {
                 if (this->base_)
                     this->base_->unregisterWeakPtr(this);
-                if (this->callback_)
-                    delete this->callback_;
 
             }
 
@@ -168,12 +166,12 @@ namespace orxonox
                 WeakPtr().swap(*this);
             }
 
-            inline void setCallback(Functor* callback)
+            inline void setCallback(const FunctorPtr& callback)
             {
                 this->callback_ = callback;
             }
 
-            inline Functor* getFunctor() const
+            inline const FunctorPtr& getCallback() const
             {
                 return this->callback_;
             }
@@ -189,7 +187,7 @@ namespace orxonox
 
             T* pointer_;
             OrxonoxClass* base_;
-            Functor* callback_;
+            FunctorPtr callback_;
     };
 
     template <class T>

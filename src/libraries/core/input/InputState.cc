@@ -27,7 +27,7 @@
  */
 
 #include "InputState.h"
-#include "core/Functor.h"
+#include "core/command/Functor.h"
 
 namespace orxonox
 {

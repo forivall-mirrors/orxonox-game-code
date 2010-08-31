@@ -101,8 +101,7 @@ function P.createLine(k)
 
     local configvalue = winMgr:createWindow("MenuWidgets/Editbox", "orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. k .. "/Configvalue")
     configvalue:setProperty("ReadOnly", "set:False")
-    orxonox.CommandExecutor:execute("getConfig " .. P.commandList[k])
-    local value = orxonox.CommandExecutor:getReturnValueString()
+    local value = orxonox.CommandExecutor:query("getConfig " .. P.commandList[k])
     configvalue:setText(value)
     P.sampleWindow:setText(value)
     local size = getMinTextSize(P.sampleWindow)
@@ -167,8 +166,7 @@ function P.MiscConfigConfigure_clicked(e)
     local window = winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigPane/ConfigCommand" .. commandNr .. "/Configvalue")
 
     orxonox.CommandExecutor:execute("config " .. P.commandList[commandNr] .. " " .. window:getText())
-    orxonox.CommandExecutor:execute("getConfig " .. P.commandList[commandNr])
-    local value = orxonox.CommandExecutor:getReturnValueString()
+    local value = orxonox.CommandExecutor:query("getConfig " .. P.commandList[commandNr])
     window:setText(value)
 end
 

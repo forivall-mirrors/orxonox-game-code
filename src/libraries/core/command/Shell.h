@@ -29,7 +29,7 @@
 #ifndef _Shell_H__
 #define _Shell_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <list>
 #include <sstream>
@@ -37,8 +37,8 @@
 #include <vector>
 
 #include "util/OutputHandler.h"
-#include "OrxonoxClass.h"
-#include "input/InputBuffer.h"
+#include "core/OrxonoxClass.h"
+#include "core/input/InputBuffer.h"
 
 namespace orxonox
 {
@@ -112,6 +112,9 @@ namespace orxonox
             inline const std::string& getPromptPrefix() const { return this->promptPrefix_; }
             void setPromptPrefix(const std::string& str);
 
+            static inline unsigned int getCacheSize()
+                { return Shell::cacheSize_s; }
+
         private:
             Shell(const Shell& other);
 
@@ -166,6 +169,7 @@ namespace orxonox
             unsigned int              historyOffset_;
             std::vector<std::string>  commandHistory_;
             int                       softDebugLevel_;
+            static unsigned int       cacheSize_s;
     };
 }
 

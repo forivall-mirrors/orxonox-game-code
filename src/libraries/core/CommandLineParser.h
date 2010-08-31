@@ -63,7 +63,7 @@ namespace orxonox
         There is a possibility to define a short cut so you can write "-p 20" instead of "--port 20".
         Note the difference between "-" and "--"!
         Also, there is no restriction to the number of strings you add after --name.
-        So "--startVector (2, 4, 5)" is perfectly legal.
+        So "--startVector {2, 4, 5}" is perfectly legal.
 
         Retrieving an argument is possible with the getCommandLineArgument function of the
         CommandLineParser class. It is a Singleton, but the public interface is static.

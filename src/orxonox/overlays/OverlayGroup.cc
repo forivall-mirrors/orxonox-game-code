@@ -33,18 +33,18 @@
 
 #include "OverlayGroup.h"
 
-#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "core/command/ConsoleCommand.h"
 #include "OrxonoxOverlay.h"
 
 namespace orxonox
 {
     CreateFactory(OverlayGroup);
 
-    SetConsoleCommand(OverlayGroup, toggleVisibility, false).accessLevel(AccessLevel::User);
-    SetConsoleCommand(OverlayGroup, scaleGroup, false).accessLevel(AccessLevel::User);
-    SetConsoleCommand(OverlayGroup, scrollGroup, false).accessLevel(AccessLevel::User);
+    SetConsoleCommand("OverlayGroup", "toggleVisibility", &OverlayGroup::toggleVisibility);
+    SetConsoleCommand("OverlayGroup", "scaleGroup",       &OverlayGroup::scaleGroup);
+    SetConsoleCommand("OverlayGroup", "scrollGroup",      &OverlayGroup::scrollGroup);
 
     OverlayGroup::OverlayGroup(BaseObject* creator)
         : BaseObject(creator)

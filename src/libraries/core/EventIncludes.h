@@ -30,8 +30,8 @@
 #define _EventIncludes_H__
 
 #include "CorePrereqs.h"
-#include "Executor.h"
 #include "XMLPort.h"
+#include "command/Executor.h"
 
 /**
     @brief Defines a new event state (a state of the object which can be changed by events).
@@ -75,8 +75,10 @@
     XMLPortEventStateIntern(xmlportevent##function, classname, statename, xmlelement, mode)
 
 #define XMLPortEventStateIntern(name, classname, statename, xmlelement, mode) \
-    static orxonox::ExecutorMember<classname>* xmlsetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::addEventSource), std::string( #classname ) + "::" + "addEventSource" + '(' + statename + ')')->setDefaultValue(1, statename); \
-    static orxonox::ExecutorMember<classname>* xmlgetfunctor##name = (orxonox::ExecutorMember<classname>*)&orxonox::createExecutor(orxonox::createFunctor(&classname::getEventSource), std::string( #classname ) + "::" + "getEventSource" + '(' + statename + ')')->setDefaultValue(1, statename); \
+    static orxonox::ExecutorMemberPtr<classname> xmlsetfunctor##name = orxonox::createExecutor(orxonox::createFunctor(&classname::addEventSource), std::string( #classname ) + "::" + "addEventSource" + '(' + statename + ')').cast<orxonox::ExecutorMember<classname> >(); \
+    static orxonox::ExecutorMemberPtr<classname> xmlgetfunctor##name = orxonox::createExecutor(orxonox::createFunctor(&classname::getEventSource), std::string( #classname ) + "::" + "getEventSource" + '(' + statename + ')').cast<orxonox::ExecutorMember<classname> >(); \
+    xmlsetfunctor##name->setDefaultValue(1, statename); \
+    xmlgetfunctor##name->setDefaultValue(1, statename); \
     XMLPortObjectGeneric(xmlport##name, classname, orxonox::BaseObject, statename, xmlsetfunctor##name, xmlgetfunctor##name, xmlelement, mode, false, true)
 
 

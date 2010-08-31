@@ -36,7 +36,7 @@
 #include <bullet/BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
 
 #include "core/CoreIncludes.h"
-#include "core/ConsoleCommand.h"
+#include "core/command/ConsoleCommand.h"
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 #include "infos/PlayerInfo.h"
@@ -48,10 +48,10 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(NewHumanController, changeMode, false).keybindMode(KeybindMode::OnPress);
-    SetConsoleCommand(NewHumanController, accelerate, false).keybindMode(KeybindMode::OnPress);
-    SetConsoleCommand(NewHumanController, decelerate, false).keybindMode(KeybindMode::OnPress);
-    SetConsoleCommand(NewHumanController, unfire,      true).keybindMode(KeybindMode::OnRelease);
+    SetConsoleCommand("NewHumanController", "changeMode", &NewHumanController::changeMode).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand("NewHumanController", "accelerate", &NewHumanController::accelerate).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand("NewHumanController", "decelerate", &NewHumanController::decelerate).keybindMode(KeybindMode::OnPress);
+    SetConsoleCommand("NewHumanController", "unfire",     &NewHumanController::unfire    ).keybindMode(KeybindMode::OnRelease).addShortcut();
 
     CreateUnloadableFactory(NewHumanController);
 

@@ -308,7 +308,7 @@ namespace orxonox
      * to the beginning of the current token is stored
      * @param line the inputLine to split
      * @param delimiters a String of Delimiters (here the input will be splitted)
-     * @param delimiterNeighbours Naighbours to the Delimitter, that will be removed if they are to the left or the right of a Delimiter.
+     * @param delimiterNeighbours Neighbours to the Delimiter, that will be removed if they are to the left or the right of a Delimiter.
      * @param emptyEntries: if empty Strings are added to the List of Strings.
      * @param escape_char: Escape carater (escapes splitters)
      * @param safemode_char: the beginning of the safemode is marked with this

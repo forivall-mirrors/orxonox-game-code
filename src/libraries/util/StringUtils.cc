@@ -34,6 +34,7 @@
 #include "StringUtils.h"
 
 #include <cctype>
+#include <boost/scoped_array.hpp>
 #include "Convert.h"
 #include "Math.h"
 
@@ -513,7 +514,7 @@ namespace orxonox
         @param replacement Replacement character
         @return Number of replacements
     */
-    _UtilExport size_t replaceCharacters(std::string& str, char target, char replacement)
+    size_t replaceCharacters(std::string& str, char target, char replacement)
     {
         size_t j = 0;
         for (size_t i = 0; i < str.size(); ++i)
@@ -525,5 +526,39 @@ namespace orxonox
             }
         }
         return j;
+    }
+
+    /**
+        @brief Calculates the Levenshtein distance between two strings.
+
+        The Levenshtein distance is defined by the number of transformations needed to convert str1
+        into str2. Possible transformations are substituted, added, or removed characters.
+    */
+    unsigned int getLevenshteinDistance(const std::string& str1, const std::string& str2)
+    {
+        size_t cols = str1.size() + 1;
+        size_t rows = str2.size() + 1;
+        boost::scoped_array<int> matrix(new int[rows * cols]);
+
+        for (size_t r = 0; r < rows; ++r)
+            for (size_t c = 0; c < cols; ++c)
+                matrix[r*cols + c] = 0;
+
+        for (size_t i = 1; i < cols; ++i)
+            matrix[0*cols + i] = i;
+        for (size_t i = 1; i < rows; ++i)
+            matrix[i*cols + 0] = i;
+
+        for (size_t r = 1; r < rows; ++r)
+            for (size_t c = 1; c < cols; ++c)
+                matrix[r*cols + c] = (str1[c-1] != str2[r-1]);
+
+        for (size_t r = 1; r < rows; ++r)
+            for (size_t c = 1; c < cols; ++c)
+                matrix[r*cols + c] = std::min(std::min(matrix[(r-1)*cols + c] + 1,
+                                                       matrix[r*cols + c-1] + 1),
+                                              matrix[(r-1)*cols + c-1] + (str1[c-1] != str2[r-1]));
+
+        return matrix[(rows-1)*cols + cols-1];
     }
 }

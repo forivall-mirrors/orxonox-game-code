@@ -29,8 +29,8 @@
 #include "GametypeStatus.h"
 
 #include "util/Convert.h"
-#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
+#include "core/command/ConsoleCommand.h"
 #include "infos/GametypeInfo.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/ControllableEntity.h"
@@ -40,18 +40,24 @@ namespace orxonox
 {
     CreateFactory(GametypeStatus);
 
-    /*static*/ bool GametypeStatus::noCaption_s = false;
-    SetConsoleCommand(GametypeStatus, setGametypeStatus, true);
+    static const std::string __CC_GametypeStatus_name = "GametypeStatus";
+    static const std::string __CC_displayCaption_name = "displayCaption";
+
+    SetConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name, &GametypeStatus::setDisplayCaption);
 
     GametypeStatus::GametypeStatus(BaseObject* creator) : OverlayText(creator)
     {
         RegisterObject(GametypeStatus);
 
         this->owner_ = 0;
+        this->bNoCaption_ = false;
+
+        ModifyConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name).setObject(this);
     }
 
     GametypeStatus::~GametypeStatus()
     {
+        ModifyConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name).setObject(0);
     }
 
     void GametypeStatus::tick(float dt)
@@ -63,7 +69,7 @@ namespace orxonox
             const GametypeInfo* gtinfo = this->owner_->getGametypeInfo();
             ControllableEntity* ce = this->owner_->getControllableEntity();
 
-            if(GametypeStatus::noCaption_s) // No captions are displayed.
+            if (this->bNoCaption_) // No captions are displayed.
             {
                 this->setCaption("");
                 return;
@@ -104,9 +110,9 @@ namespace orxonox
     @param bValue
         If true captions are displayed, if false, not.
     */
-    /*static*/ void GametypeStatus::setGametypeStatus(bool bValue)
+    void GametypeStatus::setDisplayCaption(bool bValue)
     {
-        GametypeStatus::noCaption_s = !bValue;
+        this->bNoCaption_ = !bValue;
     }
 
 }

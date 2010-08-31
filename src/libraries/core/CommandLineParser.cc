@@ -334,7 +334,7 @@ namespace orxonox
     void CommandLineParser::_parseCommandLine(const std::string& cmdLine)
     {
         std::vector<std::string> args;
-        SubString tokens(cmdLine, " ", " ", false, '\\', true, '"', true, '(', ')', false);
+        SubString tokens(cmdLine, " ", " ", false, '\\', true, '"', true, '\0', '\0', false);
         for (unsigned i = 0; i < tokens.size(); ++i)
             args.push_back(tokens[i]);
         this->_parse(args, false);
@@ -362,7 +362,7 @@ namespace orxonox
                 line = removeTrailingWhitespaces(line);
                 //if (!(line[0] == '#' || line[0] == '%'))
                 //{
-                SubString tokens(line, " ", " ", false, '\\', true, '"', true, '(', ')', false, '#');
+                SubString tokens(line, " ", " ", false, '\\', true, '"', true, '\0', '\0', false, '#');
                 for (unsigned i = 0; i < tokens.size(); ++i)
                     if (tokens[i][0] != '#')
                         args.push_back(tokens[i]);

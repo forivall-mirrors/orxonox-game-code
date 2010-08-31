@@ -148,8 +148,10 @@ namespace orxonox
 
   uint32_t ClientConnection::getRTT()
   {
-    assert(server_);
-    return server_->roundTripTime;
+    if (server_)
+        return server_->roundTripTime;
+    else
+        return 0;
   }
 
 }

@@ -33,11 +33,11 @@
 #include <OgreCompositorManager.h>
 
 #include "util/StringUtils.h"
+#include "util/ScopedSingletonManager.h"
 #include "core/GameMode.h"
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "core/ObjectList.h"
-#include "core/ScopedSingletonManager.h"
 #include "tools/Shader.h"
 #include "graphics/Camera.h"
 #include "Scene.h"

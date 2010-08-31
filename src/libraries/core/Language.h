@@ -115,7 +115,7 @@ namespace orxonox
             ~Language();
 
             void addEntry(const LanguageEntryLabel& label, const std::string& entry);
-            const std::string& getLocalisation(const LanguageEntryLabel& label) const;
+            const std::string& getLocalisation(const LanguageEntryLabel& label, bool bError = true) const;
 
         private:
             Language(const Language&);
@@ -143,6 +143,12 @@ namespace orxonox
     inline const std::string& GetLocalisation(const LanguageEntryLabel& label)
     {
         return Language::getInstance().getLocalisation(label);
+    }
+
+    //! Shortcut function for Language::getLocalisation without printing an error in case the label doesn't exist
+    inline const std::string& GetLocalisation_noerror(const LanguageEntryLabel& label)
+    {
+        return Language::getInstance().getLocalisation(label, false);
     }
 }
 

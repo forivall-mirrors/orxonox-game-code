@@ -51,9 +51,9 @@
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/Scope.h"
+#include "util/ScopedSingletonManager.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
-#include "CommandExecutor.h"
 #include "CommandLineParser.h"
 #include "ConfigFileManager.h"
 #include "ConfigValueIncludes.h"
@@ -64,11 +64,11 @@
 #include "GUIManager.h"
 #include "Identifier.h"
 #include "Language.h"
-#include "IOConsole.h"
 #include "LuaState.h"
-#include "ScopedSingletonManager.h"
-#include "TclBind.h"
-#include "TclThreadManager.h"
+#include "command/ConsoleCommand.h"
+#include "command/IOConsole.h"
+#include "command/TclBind.h"
+#include "command/TclThreadManager.h"
 #include "input/InputManager.h"
 
 namespace orxonox
@@ -87,7 +87,7 @@ namespace orxonox
         // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
         : identifierDestroyer_(Identifier::destroyAllIdentifiers)
         // Cleanup guard for external console commands that don't belong to an Identifier
-        , consoleCommandDestroyer_(CommandExecutor::destroyExternalCommands)
+        , consoleCommandDestroyer_(ConsoleCommand::destroyAll)
         , bGraphicsLoaded_(false)
         , bStartIOConsole_(true)
     {

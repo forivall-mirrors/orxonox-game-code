@@ -45,7 +45,7 @@ namespace orxonox
         KeyDetector();
         ~KeyDetector();
 
-        void setCallback(const shared_ptr<Functor>& function) { this->callbackFunction_ = function; }
+        void setCallback(const FunctorPtr& function) { this->callbackFunction_ = function; }
 
     private:
         KeyDetector(const KeyDetector&);
@@ -54,9 +54,8 @@ namespace orxonox
         void JoyStickQuantityChanged(const std::vector<JoyStick*>& joyStickList);
         void assignCommands();
 
-        shared_ptr<Functor> callbackFunction_;
+        FunctorPtr callbackFunction_;
         InputState* inputState_;
-        static std::string callbackCommand_s;
         static KeyDetector* singletonPtr_s;
     };
 }

@@ -203,31 +203,6 @@ namespace orxonox
             ConfigValueContainer* getConfigValueContainer(const std::string& varname);
 
 
-            ////////////////////////////
-            ///// Console Commands /////
-            ////////////////////////////
-            /** @brief Returns true if this class has at least one console command. @return True if this class has at least one console command */
-            inline bool hasConsoleCommands() const { return this->bHasConsoleCommands_; }
-
-            /** @brief Returns the map that stores all console commands. @return The const_iterator */
-            inline const std::map<std::string, ConsoleCommand*>& getConsoleCommandMap() const { return this->consoleCommands_; }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all console commands. @return The const_iterator */
-            inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapBegin() const { return this->consoleCommands_.begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all console commands. @return The const_iterator */
-            inline std::map<std::string, ConsoleCommand*>::const_iterator getConsoleCommandMapEnd() const { return this->consoleCommands_.end(); }
-
-            /** @brief Returns the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            inline const std::map<std::string, ConsoleCommand*>& getLowercaseConsoleCommandMap() const { return this->consoleCommands_LC_; }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapBegin() const { return this->consoleCommands_LC_.begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all console commands with their names in lowercase. @return The const_iterator */
-            inline std::map<std::string, ConsoleCommand*>::const_iterator getLowercaseConsoleCommandMapEnd() const { return this->consoleCommands_LC_.end(); }
-
-            ConsoleCommand& addConsoleCommand(ConsoleCommand* command, bool bCreateShortcut);
-            ConsoleCommand* getConsoleCommand(const std::string& name) const;
-            ConsoleCommand* getLowercaseConsoleCommand(const std::string& name) const;
-
-
             ///////////////////
             ///// XMLPort /////
             ///////////////////
@@ -304,10 +279,6 @@ namespace orxonox
 
             bool bHasConfigValues_;                                        //!< True if this class has at least one assigned config value
             std::map<std::string, ConfigValueContainer*> configValues_;    //!< A map to link the string of configurable variables with their ConfigValueContainer
-
-            bool bHasConsoleCommands_;                                     //!< True if this class has at least one assigned console command
-            std::map<std::string, ConsoleCommand*> consoleCommands_;       //!< All console commands of this class
-            std::map<std::string, ConsoleCommand*> consoleCommands_LC_;    //!< All console commands of this class with their names in lowercase
 
             std::map<std::string, XMLPortParamContainer*> xmlportParamContainers_;     //!< All loadable parameters
             std::map<std::string, XMLPortObjectContainer*> xmlportObjectContainers_;   //!< All attachable objects

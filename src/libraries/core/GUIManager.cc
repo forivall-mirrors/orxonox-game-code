@@ -56,12 +56,12 @@ extern "C" {
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
-#include "ConsoleCommand.h"
 #include "Core.h"
 #include "GraphicsManager.h"
 #include "LuaState.h"
 #include "PathConfig.h"
 #include "Resource.h"
+#include "command/ConsoleCommand.h"
 #include "input/InputManager.h"
 #include "input/InputState.h"
 #include "input/KeyBinderManager.h"
@@ -70,7 +70,7 @@ namespace orxonox
 {
     static void key_esc()
         { GUIManager::getInstance().keyESC(); }
-    SetConsoleCommandShortcutExternAlias(key_esc, "keyESC");
+    SetConsoleCommand("keyESC", &key_esc);
 
     class CEGUILogger : public CEGUI::DefaultLogger
     {
@@ -98,8 +98,8 @@ namespace orxonox
 
     GUIManager* GUIManager::singletonPtr_s = 0;
 
-    SetConsoleCommandShortcut(GUIManager, showGUI).accessLevel(AccessLevel::User).defaultValue(1, false).defaultValue(2, true);
-    SetConsoleCommandShortcut(GUIManager, hideGUI).accessLevel(AccessLevel::User);
+    SetConsoleCommand("showGUI", &GUIManager::showGUI).defaultValue(1, false).defaultValue(2, true);
+    SetConsoleCommand("hideGUI", &GUIManager::hideGUI);
 
     /**
     @brief

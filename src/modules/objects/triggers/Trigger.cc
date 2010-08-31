@@ -29,15 +29,15 @@
 #include "Trigger.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConsoleCommand.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
+#include "core/command/ConsoleCommand.h"
 #include "Scene.h"
 
 namespace orxonox
 {
 
-  SetConsoleCommand(Trigger, debugFlares, false).defaultValues(false);
+  SetConsoleCommand("Trigger", "debugFlares", &Trigger::debugFlares).defaultValues(false);
 
   CreateFactory(Trigger);
 

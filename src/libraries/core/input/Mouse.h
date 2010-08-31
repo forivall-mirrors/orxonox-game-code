@@ -63,7 +63,7 @@ namespace orxonox
     public:
         //! Only sets the clipping size. Initialising is done in the base class.
         Mouse(unsigned int id, OIS::InputManager* oisInputManager);
-        ~Mouse() { }
+        ~Mouse();
 
 #ifdef ORXONOX_PLATFORM_LINUX
         // TODO: Make this a feature rather than a hack

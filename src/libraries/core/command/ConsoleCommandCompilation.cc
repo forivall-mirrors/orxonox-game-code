@@ -36,18 +36,19 @@
 #include "util/ExprParser.h"
 #include "util/StringUtils.h"
 #include "ConsoleCommand.h"
+#include "CommandExecutor.h"
 
 namespace orxonox
 {
-    SetConsoleCommandShortcutExtern(source).argumentCompleter(0, autocompletion::files());
-    SetConsoleCommandShortcutExtern(echo);
-    SetConsoleCommandShortcutExtern(puts);
+    SetConsoleCommand("source", source).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommand("echo", echo);
+    SetConsoleCommand("puts", puts);
 
-    SetConsoleCommandShortcutExtern(read).argumentCompleter(0, autocompletion::files());
-    SetConsoleCommandShortcutExtern(append).argumentCompleter(0, autocompletion::files());
-    SetConsoleCommandShortcutExtern(write).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommand("read", read).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommand("append", append).argumentCompleter(0, autocompletion::files());
+    SetConsoleCommand("write", write).argumentCompleter(0, autocompletion::files());
 
-    SetConsoleCommandShortcutExtern(calculate);
+    SetConsoleCommand("calculate", calculate);
 
     void source(const std::string& filename)
     {
