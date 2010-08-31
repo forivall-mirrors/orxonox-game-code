@@ -52,7 +52,7 @@
 #include "OrxonoxClass.h"
 
 /**
-@def
+@brief
     Adds a new GameState to the Game. The second parameter is the name as string
     and every following paramter is a constructor argument (which is usually non existent)
 */

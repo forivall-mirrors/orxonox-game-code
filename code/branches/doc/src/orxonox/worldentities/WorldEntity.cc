@@ -266,7 +266,7 @@ namespace orxonox
     /**
     @brief
         Attaches this object to a parent SceneNode.
-    @Remarks
+    @remarks
         Only use this method if you know exactly what you're doing!
         Normally, attaching works internally by attaching WE's.
     */
@@ -281,7 +281,7 @@ namespace orxonox
     /**
     @brief
         Detaches this object from a parent SceneNode.
-    @Remarks
+    @remarks
         Only use this method if you know exactly what you're doing!
         Normally, attaching works internally by attaching WE's.
     */
@@ -354,7 +354,7 @@ namespace orxonox
     @brief
         Attaches a child WorldEntity to this object. This calls notifyBeingAttached()
         of the child WE.
-    @Note
+    @note
         The collision shape of the child object gets attached nevertheless. That also means
         that you can change the collision shape of the child and it correctly cascadeds the changes to this instance.
         Be aware of this implication: When implementing attaching of kinematic objects to others, you have to change
@@ -627,7 +627,7 @@ namespace orxonox
     /**
     @brief
         Sets the three dimensional scaling of this object.
-    @Note
+    @note
         Scaling physical objects has not yet been implemented and is therefore forbidden.
     */
     void WorldEntity::setScale3D(const Vector3& scale)
@@ -773,7 +773,7 @@ HACK HACK HACK
     /**
     @brief
         Sets the CollisionType. This alters the object significantly! @see CollisionType.
-    @Note
+    @note
         Operation does not work on attached WorldEntities.
     */
     void WorldEntity::setCollisionType(CollisionType type)
@@ -899,7 +899,7 @@ HACK HACK HACK
     @brief
         Recalculates the accumulated child mass and calls recalculateMassProps()
         and notifies the parent of the change.
-    @Note
+    @note
         Called by a child WE
     */
     void WorldEntity::notifyChildMassChanged()
@@ -918,7 +918,7 @@ HACK HACK HACK
     /**
     @brief
         Undertakes the necessary steps to change the collision shape in Bullet, even at runtime.
-    @Note
+    @note
         - called by this->collisionShape_
         - May have a REALLY big overhead when called continuously at runtime, because then we need
           to remove the physical body from Bullet and add it again.
