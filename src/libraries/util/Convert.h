@@ -43,7 +43,7 @@
 #include <loki/TypeManip.h>
 
 #include "Debug.h"
-#include "TemplateUtils.h"
+#include "ImplicitConversion.h"
 
 ////////////////////////////////////
 //// ACTUAL CONVERSION SEQUENCE ////
