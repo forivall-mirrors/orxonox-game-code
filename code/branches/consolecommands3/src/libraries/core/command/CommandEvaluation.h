@@ -60,7 +60,7 @@ namespace orxonox
             inline bool isValid() const
                 { return (this->execCommand_ != 0); }
 
-            inline ConsoleCommand* getConsoleCommand() const
+            inline const ConsoleCommand* getConsoleCommand() const
                 { return this->execCommand_; }
 
             void setEvaluatedParameter(unsigned int index, const MultiType& param);
@@ -89,8 +89,8 @@ namespace orxonox
 
             static std::string getCommonBegin(const ArgumentCompletionList& list);
 
-            ConsoleCommand* execCommand_;
-            ConsoleCommand* hintCommand_;
+            const ConsoleCommand* execCommand_;
+            const ConsoleCommand* hintCommand_;
             SubString tokens_;
             std::string string_;
             unsigned int execArgumentsOffset_;

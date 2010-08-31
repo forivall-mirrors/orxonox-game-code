@@ -37,7 +37,6 @@
 #include <string>
 
 #include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
 
 struct Tcl_Interp;
 

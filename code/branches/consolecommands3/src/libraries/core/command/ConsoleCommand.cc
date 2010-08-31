@@ -414,7 +414,7 @@ namespace orxonox
         return GetLocalisation_noerror(this->descriptionReturnvalue_);
     }
 
-    /* static */ ConsoleCommand* ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
+    /* static */ const ConsoleCommand* ConsoleCommand::getCommand(const std::string& group, const std::string& name, bool bPrintError)
     {
         std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = ConsoleCommand::getCommandMap().find(group);
         if (it_group != ConsoleCommand::getCommandMap().end())
@@ -435,7 +435,7 @@ namespace orxonox
         return 0;
     }
 
-    /* static */ ConsoleCommand* ConsoleCommand::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
+    /* static */ const ConsoleCommand* ConsoleCommand::getCommandLC(const std::string& group, const std::string& name, bool bPrintError)
     {
         std::string groupLC = getLowercase(group);
         std::string nameLC = getLowercase(name);

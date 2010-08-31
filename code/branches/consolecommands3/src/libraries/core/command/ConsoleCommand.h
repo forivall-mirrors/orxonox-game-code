@@ -335,13 +335,13 @@ namespace orxonox
             static inline const std::map<std::string, std::map<std::string, ConsoleCommand*> >& getCommandsLC()
                 { return ConsoleCommand::getCommandMapLC(); }
 
-            static inline ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
+            static inline const ConsoleCommand* getCommand(const std::string& name, bool bPrintError = false)
                 { return ConsoleCommand::getCommand("", name, bPrintError); }
-            static inline ConsoleCommand* getCommandLC(const std::string& name, bool bPrintError = false)
+            static inline const ConsoleCommand* getCommandLC(const std::string& name, bool bPrintError = false)
                 { return ConsoleCommand::getCommandLC("", name, bPrintError); }
 
-            static ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
-            static ConsoleCommand* getCommandLC(const std::string& group, const std::string& name, bool bPrintError = false);
+            static const ConsoleCommand* getCommand(const std::string& group, const std::string& name, bool bPrintError = false);
+            static const ConsoleCommand* getCommandLC(const std::string& group, const std::string& name, bool bPrintError = false);
 
             static void destroyAll();
 
