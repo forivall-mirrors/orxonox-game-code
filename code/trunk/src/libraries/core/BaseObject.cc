@@ -38,12 +38,12 @@
 #include "CoreIncludes.h"
 #include "Event.h"
 #include "EventIncludes.h"
-#include "Functor.h"
 #include "Iterator.h"
 #include "Template.h"
 #include "XMLFile.h"
 #include "XMLNameListener.h"
 #include "XMLPort.h"
+#include "command/Functor.h"
 
 namespace orxonox
 {
@@ -476,8 +476,8 @@ namespace orxonox
                 XMLPortClassObjectContainer<BaseObject, BaseObject>* container = (XMLPortClassObjectContainer<BaseObject, BaseObject>*)(identifier->getXMLPortObjectContainer(statename));
                 if (!container)
                 {
-                    ExecutorMember<BaseObject>* setfunctor = createExecutor(createFunctor(&BaseObject::addEventSource), std::string( "BaseObject" ) + "::" + "addEventSource" + '(' + statename + ')');
-                    ExecutorMember<BaseObject>* getfunctor = createExecutor(createFunctor(&BaseObject::getEventSource), std::string( "BaseObject" ) + "::" + "getEventSource" + '(' + statename + ')');
+                    const ExecutorMemberPtr<BaseObject>& setfunctor = createExecutor(createFunctor(&BaseObject::addEventSource), std::string( "BaseObject" ) + "::" + "addEventSource" + '(' + statename + ')');
+                    const ExecutorMemberPtr<BaseObject>& getfunctor = createExecutor(createFunctor(&BaseObject::getEventSource), std::string( "BaseObject" ) + "::" + "getEventSource" + '(' + statename + ')');
                     setfunctor->setDefaultValue(1, statename);
                     getfunctor->setDefaultValue(1, statename);
 

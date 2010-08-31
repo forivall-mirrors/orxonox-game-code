@@ -33,12 +33,12 @@
 
 #include "PickupManager.h"
 
+#include "util/Convert.h"
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/LuaState.h"
 #include "core/GUIManager.h"
-#include "core/ScopedSingletonManager.h"
 #include "core/Identifier.h"
-#include "util/Convert.h"
 #include "interfaces/PickupCarrier.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"

@@ -30,8 +30,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
-#include "core/Executor.h"
 #include "core/XMLPort.h"
+#include "core/command/Executor.h"
 #include "tools/ParticleInterface.h"
 
 namespace orxonox

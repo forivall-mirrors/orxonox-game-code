@@ -32,9 +32,9 @@
 #include <climits>
 
 #include "util/Math.h"
-#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "core/command/ConsoleCommand.h"
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/TeamBaseMatchBase.h"
@@ -46,11 +46,11 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(ArtificialController, formationflight, true);
-    SetConsoleCommand(ArtificialController, masteraction, true);
-    SetConsoleCommand(ArtificialController, followme, true);
-    SetConsoleCommand(ArtificialController, passivebehaviour, true);
-    SetConsoleCommand(ArtificialController, formationsize, true);
+    SetConsoleCommand("ArtificialController", "formationflight",  &ArtificialController::formationflight);
+    SetConsoleCommand("ArtificialController", "masteraction",     &ArtificialController::masteraction);
+    SetConsoleCommand("ArtificialController", "followme",         &ArtificialController::followme);
+    SetConsoleCommand("ArtificialController", "passivebehaviour", &ArtificialController::passivebehaviour);
+    SetConsoleCommand("ArtificialController", "formationsize",    &ArtificialController::formationsize);
 
     static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
     static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;

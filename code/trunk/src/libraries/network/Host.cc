@@ -31,13 +31,16 @@
 #include <cassert>
 #include <string>
 
-#include "core/ConsoleCommand.h"
 #include "core/ObjectList.h"
+#include "core/command/ConsoleCommand.h"
 #include "ChatListener.h"
 
 namespace orxonox {
 
-  SetConsoleCommandShortcut(Host, Chat);
+  static const std::string __CC_printRTT_name = "printRTT";
+
+  SetConsoleCommand("chat", &Host::Chat);
+  SetConsoleCommand(__CC_printRTT_name, &Host::printRTT);
 
   // Host*               Host::instance_=0;
   uint32_t            Host::clientID_s=0;
@@ -51,8 +54,7 @@ namespace orxonox {
   {
   //   assert(instance_==0);
     instances_s.push_back(this);
-    this->printRTTCC_ = createConsoleCommand( createFunctor(&Host::printRTT, this), "printRTT" );
-    CommandExecutor::addConsoleCommandShortcut( this->printRTTCC_ );
+    ModifyConsoleCommand(__CC_printRTT_name).setObject(this);
     this->bIsActive_ = false;
   }
 
@@ -64,8 +66,7 @@ namespace orxonox {
   {
     assert( std::find( instances_s.begin(), instances_s.end(), this )!=instances_s.end() );
     instances_s.erase(std::find( instances_s.begin(), instances_s.end(), this ));
-    if( this->printRTTCC_ )
-      delete this->printRTTCC_;
+    ModifyConsoleCommand(__CC_printRTT_name).setObject(0);
   }
 
   /**
@@ -88,13 +89,13 @@ namespace orxonox {
     return result;
   }
 
-  bool Host::Chat(const std::string& message)
+  void Host::Chat(const std::string& message)
   {
     if(instances_s.size()==0)
     {
       for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
         it->incomingChat(message, 0);
-      return true;
+//      return true;
     }
     else
     {
@@ -107,7 +108,7 @@ namespace orxonox {
             result = false;
         }
       }
-      return result;
+//      return result;
     }
   }
 
@@ -138,7 +139,7 @@ namespace orxonox {
   {
     for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
       it->incomingChat(message, playerID);
-    
+
     bool result = true;
     for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
     {

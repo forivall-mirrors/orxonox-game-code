@@ -38,9 +38,9 @@ extern "C" {
 
 #include "util/Debug.h"
 #include "util/Exception.h"
-#include "IOConsole.h"
 #include "Resource.h"
 #include "ToluaBindCore.h"
+#include "command/IOConsole.h"
 
 namespace orxonox
 {
@@ -369,7 +369,7 @@ namespace orxonox
         this->lua_ = luaState;
     }
 
-    void LuaFunctor::operator()(const MultiType& param1, const MultiType& param2, const MultiType& param3, const MultiType& param4, const MultiType& param5)
+    void LuaFunctor::operator()()
     {
         lua_->doString(this->code_);
     }

@@ -29,7 +29,7 @@
 #ifndef _ConsoleCommandCompilation_H__
 #define _ConsoleCommandCompilation_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 namespace orxonox
 {

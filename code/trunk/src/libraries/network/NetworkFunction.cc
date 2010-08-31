@@ -67,7 +67,7 @@ namespace orxonox
   }
 
 
-  NetworkFunctionStatic::NetworkFunctionStatic(FunctorStatic* functor, const std::string& name, const NetworkFunctionPointer& p):
+  NetworkFunctionStatic::NetworkFunctionStatic(const FunctorStaticPtr& functor, const std::string& name, const NetworkFunctionPointer& p):
     NetworkFunctionBase(name)
   {
     RegisterObject(NetworkFunctionStatic);
@@ -75,11 +75,6 @@ namespace orxonox
     this->functor_ = functor;
     NetworkFunctionStatic::getFunctorMap()[p] = this;
     NetworkFunctionStatic::getIdMap()[ this->getNetworkID() ] = this;
-  }
-
-  NetworkFunctionStatic::~NetworkFunctionStatic()
-  {
-    delete this->functor_;
   }
 
   /*static*/ std::map<NetworkFunctionPointer, NetworkFunctionStatic*>& NetworkFunctionStatic::getFunctorMap()

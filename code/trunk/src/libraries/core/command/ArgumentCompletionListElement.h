@@ -29,7 +29,7 @@
 #ifndef _ArgumentCompletionListElement_H__
 #define _ArgumentCompletionListElement_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <list>
 #include <string>
@@ -37,7 +37,7 @@
 namespace orxonox
 {
     const int ACL_MODE_NORMAL    = 1;
-    const int ACL_MODE_LOWERCASE = 2;
+    const int ACL_MODE_COMPARABLE = 2;
     const int ACL_MODE_DISPLAY   = 4;
 
     typedef std::list<ArgumentCompletionListElement> ArgumentCompletionList;
@@ -45,27 +45,29 @@ namespace orxonox
     class _CoreExport ArgumentCompletionListElement
     {
         public:
-            ArgumentCompletionListElement(const std::string& normalcase) : mode_(ACL_MODE_NORMAL), normalCase_(normalcase) {}
-            ArgumentCompletionListElement(const std::string& normalcase, const std::string& lowercase) : mode_(ACL_MODE_NORMAL | ACL_MODE_LOWERCASE), normalCase_(normalcase), lowerCase_(lowercase) {}
-            ArgumentCompletionListElement(const std::string& normalcase, const std::string& lowercase, const std::string& display) : mode_(ACL_MODE_NORMAL | ACL_MODE_LOWERCASE | ACL_MODE_DISPLAY), normalCase_(normalcase), lowerCase_(lowercase), display_(display) {}
+            ArgumentCompletionListElement(const std::string& normalcase) : mode_(ACL_MODE_NORMAL), normal_(normalcase) {}
+            ArgumentCompletionListElement(const std::string& normalcase, const std::string& lowercase) : mode_(ACL_MODE_NORMAL | ACL_MODE_COMPARABLE), normal_(normalcase), comparable_(lowercase) {}
+            ArgumentCompletionListElement(const std::string& normalcase, const std::string& lowercase, const std::string& display) : mode_(ACL_MODE_NORMAL | ACL_MODE_COMPARABLE | ACL_MODE_DISPLAY), normal_(normalcase), comparable_(lowercase), display_(display) {}
 
             const std::string& getString() const
-                { return this->normalCase_; }
+                { return this->normal_; }
             const std::string& getComparable() const
-                { if (this->mode_ & ACL_MODE_LOWERCASE) { return this->lowerCase_; } else { return this->normalCase_; } }
+                { return (this->mode_ & ACL_MODE_COMPARABLE) ? this->comparable_ : this->normal_; }
             const std::string& getDisplay() const
-                { if (this->mode_ & ACL_MODE_DISPLAY) { return this->display_; } else { return this->normalCase_; } }
+                { return (this->mode_ & ACL_MODE_DISPLAY) ? this->display_ : this->normal_; }
 
-            bool lowercaseComparison() const
-                { return (this->mode_ & ACL_MODE_LOWERCASE); }
+            bool hasComparable() const
+                { return (this->mode_ & ACL_MODE_COMPARABLE); }
+            bool hasDisplay() const
+                { return (this->mode_ & ACL_MODE_DISPLAY); }
 
             bool operator<(const ArgumentCompletionListElement& other) const
                 { return (this->getComparable() < other.getComparable()); }
 
         private:
             unsigned char mode_;
-            std::string normalCase_;
-            std::string lowerCase_;
+            std::string normal_;
+            std::string comparable_;
             std::string display_;
     };
 }

@@ -35,12 +35,12 @@
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/input/KeyBinderManager.h"
-#include "core/ConsoleCommand.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "core/GUIManager.h"
 #include "core/Loader.h"
 #include "core/XMLFile.h"
+#include "core/command/ConsoleCommand.h"
 
 #include "LevelManager.h"
 #include "PlayerManager.h"

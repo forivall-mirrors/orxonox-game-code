@@ -108,6 +108,34 @@ namespace orxonox
                 return false;
         }
     };
+
+    ////////////
+    // upcast //
+    ////////////
+    namespace detail
+    {
+        // perform a static cast if ToType is a base of FromType
+        template<class ToType, class FromType>
+        FORCEINLINE ToType upcast(FromType input, Loki::Int2Type<true>)
+        {
+            return static_cast<ToType>(input);
+        }
+
+        // return zero if ToType is not a base of FromType
+        template<class ToType, class FromType>
+        FORCEINLINE ToType upcast(FromType input, Loki::Int2Type<false>)
+        {
+            return 0;
+        }
+    }
+
+    // performs an upcast if ToType is a base of FromType, returns zero otherwise
+    template <class ToType, class FromType>
+    FORCEINLINE ToType upcast(FromType input)
+    {
+        enum { probe = ImplicitConversion<FromType, ToType>::exists };
+        return detail::upcast<ToType, FromType>(input, Loki::Int2Type<probe>());
+    }
 }
 
 

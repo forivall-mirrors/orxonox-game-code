@@ -29,7 +29,7 @@
 #ifndef _TclBind_H__
 #define _TclBind_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cassert>
 #include <string>
@@ -58,7 +58,7 @@ namespace orxonox
             static std::string tcl_query(Tcl::object const &args);
             static void tcl_execute(Tcl::object const &args);
 
-            static bool eval(const std::string& tclcode);
+            static std::string eval(const std::string& tclcode, int* error = 0);
 
         private:
             TclBind(const TclBind& other);

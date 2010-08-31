@@ -30,7 +30,7 @@
 
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
-#include "core/Executor.h"
+#include "core/command/Executor.h"
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 

@@ -76,6 +76,7 @@
 #include <OgreQuaternion.h>
 #include <OgreColourValue.h>
 #include <loki/TypeTraits.h>
+#include "mbool.h"
 
 namespace orxonox
 {
@@ -264,6 +265,7 @@ namespace orxonox
             inline MultiType(const orxonox::Quaternion& value)  : value_(0) { this->assignValue(value); }           /** @brief Constructor: Assigns the given value and sets the type. */
             inline MultiType(const orxonox::Radian& value)      : value_(0) { this->assignValue(value); }           /** @brief Constructor: Assigns the given value and sets the type. */
             inline MultiType(const orxonox::Degree& value)      : value_(0) { this->assignValue(value); }           /** @brief Constructor: Assigns the given value and sets the type. */
+            inline MultiType(const orxonox::mbool& value)       : value_(0) { this->assignValue((bool)value); }     /** @brief Constructor: Assigns the given mbool and converts it to bool. */
             inline MultiType(const char* value)                 : value_(0) { this->setValue(std::string(value)); } /** @brief Constructor: Converts the char array to a std::string, assigns the value and sets the type. */
             inline MultiType(const MultiType& other)            : value_(0) { this->setValue(other); }              /** @brief Copyconstructor: Assigns value and type of the other MultiType. */
             inline MultiType(MT_Type::Value type)               : value_(0) { this->setType(type); }                /** @brief Constructor: Sets the type, the next assignment will determine the value. */
@@ -317,7 +319,7 @@ namespace orxonox
             /** @brief Copies the other MultiType by assigning value and type. */
             inline void                       copy(const MultiType& other)    { if (this == &other) { return; } if (this->value_) { delete this->value_; } this->value_ = (other.value_) ? other.value_->clone() : 0; }
 
-            template <typename T> inline bool convert()                       { return this->setValue<T>((T)(*this));  } /** @brief Converts the current value to type T. */
+            template <typename T> inline bool convert()                       { return this->setValue<T>((typename Loki::TypeTraits<T>::UnqualifiedReferredType)(*this));  } /** @brief Converts the current value to type T. */
             inline bool                       convert(const MultiType& other) { return this->convert(other.getType()); } /** @brief Converts the current value to the type of the other MultiType. */
             bool                              convert(MT_Type::Value type);
 
@@ -349,7 +351,10 @@ namespace orxonox
             inline uint32_t                   getNetworkSize() const { assert(this->value_); return this->value_->getSize() + sizeof(uint8_t); }
 
             /** @brief Checks whether the value is a default one. */
-            bool                              hasDefaultValue()         const { return this->value_->hasDefaultValue(); }
+            bool                              hasDefaultValue() const { return this->value_->hasDefaultValue(); }
+
+            /** @brief Checks if the MT contains no value. */
+            bool                              null() const { return (!this->value_); }
 
             operator char()                  const;
             operator unsigned char()         const;
@@ -485,6 +490,8 @@ namespace orxonox
     template <> inline bool MultiType::isType<orxonox::Quaternion>()  const { return (this->value_ && this->value_->type_ == MT_Type::Quaternion);       } /** @brief Returns true if the current type equals the given type. */
     template <> inline bool MultiType::isType<orxonox::Radian>()      const { return (this->value_ && this->value_->type_ == MT_Type::Radian);           } /** @brief Returns true if the current type equals the given type. */
     template <> inline bool MultiType::isType<orxonox::Degree>()      const { return (this->value_ && this->value_->type_ == MT_Type::Degree);           } /** @brief Returns true if the current type equals the given type. */
+
+    template <> inline bool MultiType::convert<void>()                 { this->reset(); return true; } /** @brief Deletes the content, type becomes MT_Type::Null. */
 
     // Specialization to avoid ambiguities with the conversion operator
     template <> inline bool MultiType::convert<std::string>()          { return this->setValue<std::string>         (this->operator std::string());          } /** @brief Converts the current value to the given type. */

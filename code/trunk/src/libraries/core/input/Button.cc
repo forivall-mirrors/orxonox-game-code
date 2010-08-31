@@ -38,9 +38,9 @@
 #include "util/SubString.h"
 #include "util/StringUtils.h"
 #include "util/Debug.h"
-#include "core/ConsoleCommand.h"
-#include "core/CommandEvaluation.h"
-#include "core/CommandExecutor.h"
+#include "core/command/ConsoleCommand.h"
+#include "core/command/CommandEvaluation.h"
+#include "core/command/CommandExecutor.h"
 #include "core/ConfigFileManager.h"
 
 namespace orxonox
@@ -116,14 +116,14 @@ namespace orxonox
 
         // separate the commands
         SubString commandStrings(bindingString_, "|", SubString::WhiteSpaces, false,
-            '\\', false, '"', false, '(', ')', false, '\0');
+            '\\', false, '"', false, '{', '}', false, '\0');
 
         for (unsigned int iCommand = 0; iCommand < commandStrings.size(); iCommand++)
         {
             if (!commandStrings[iCommand].empty())
             {
                 SubString tokens(commandStrings[iCommand], " ", SubString::WhiteSpaces, false,
-                    '\\', false, '"', false, '(', ')', false, '\0');
+                    '\\', false, '"', false, '{', '}', false, '\0');
 
                 KeybindMode::Value mode = KeybindMode::None;
                 float paramModifier = 1.0f;
@@ -174,8 +174,8 @@ namespace orxonox
                 }
 
                 // evaluate the command
-                const CommandEvaluation& eval = CommandExecutor::evaluate(commandStr);
-                if (!eval.isValid())
+                CommandEvaluation eval = CommandExecutor::evaluate(commandStr);
+                if (!eval.isValid() || eval.evaluateParams(true))
                 {
                     parseError("Command evaluation of \"" + commandStr + "\"failed.", true);
                     continue;

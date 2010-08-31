@@ -39,20 +39,18 @@
 #include <boost/shared_ptr.hpp>
 #include <loki/ScopeGuard.h>
 
-#include "Functor.h"
 #include "ToluaInterface.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
-    class Functor; // tolua_export
+    class LuaFunctor; // tolua_export
 
-    //! Functor subclass that simply executes code with 0 arguments.
-    class _CoreExport LuaFunctor : public Functor
+    //! callback class that executes lua code
+    class _CoreExport LuaFunctor
     {
         public:
             LuaFunctor(const std::string& code, LuaState* luaState);
-            void operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null);
-            void evaluateParam(unsigned int index, MultiType& param) const {}
+            void operator()();
 
         private:
             std::string code_;
@@ -90,7 +88,7 @@ namespace orxonox // tolua_export
         void setDefaultResourceInfo(const shared_ptr<ResourceInfo>& sourceFileInfo) { this->sourceFileInfo_ = sourceFileInfo; }
         const shared_ptr<ResourceInfo>& getDefaultResourceInfo() { return this->sourceFileInfo_; }
 
-        Functor* createLuaFunctor(const std::string& code) { return new LuaFunctor(code, this); } // tolua_export
+        LuaFunctor* createLuaFunctor(const std::string& code) { return new LuaFunctor(code, this); } // tolua_export
         //! Tells about whether IOConsole was activated. The Lua debugger only works with a normal console.
         bool usingIOConsole() const; // tolua_export
 

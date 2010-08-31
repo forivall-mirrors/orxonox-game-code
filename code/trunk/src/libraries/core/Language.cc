@@ -35,6 +35,7 @@
 
 #include <fstream>
 #include "util/Debug.h"
+#include "util/StringUtils.h"
 #include "Core.h"
 #include "PathConfig.h"
 
@@ -168,17 +169,19 @@ namespace orxonox
         @param label The label of the entry
         @return The localisation
     */
-    const std::string& Language::getLocalisation(const LanguageEntryLabel& label) const
+    const std::string& Language::getLocalisation(const LanguageEntryLabel& label, bool bError) const
     {
         std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(label);
         if (it != this->languageEntries_.end())
             return it->second->getLocalisation();
-        else
+        else if (bError)
         {
             // Uh, oh, an undefined entry was requested: return the default string
             COUT(2) << "Warning: Language entry \"" << label << "\" not found!" << std::endl;
             return this->defaultLocalisation_;
         }
+        else
+            return BLANKSTRING;
     }
 
     /**

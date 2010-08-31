@@ -29,7 +29,7 @@
 #ifndef _TclThreadList_H__
 #define _TclThreadList_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <list>
 

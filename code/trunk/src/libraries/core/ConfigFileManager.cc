@@ -33,9 +33,9 @@
 #include "util/Convert.h"
 #include "util/Math.h"
 #include "util/StringUtils.h"
-#include "ConsoleCommand.h"
 #include "ConfigValueContainer.h"
 #include "PathConfig.h"
+#include "command/ConsoleCommand.h"
 
 namespace orxonox
 {
@@ -276,13 +276,16 @@ namespace orxonox
                             std::string value, comment;
                             if (commentposition == std::string::npos)
                             {
-                                value = removeTrailingWhitespaces(line.substr(pos1 + 1));
+                                value = line.substr(pos1 + 1);
                             }
                             else
                             {
-                                value = removeTrailingWhitespaces(line.substr(pos1 + 1, commentposition - pos1 - 1));
+                                value = line.substr(pos1 + 1, commentposition - pos1 - 1);
                                 comment = removeTrailingWhitespaces(line.substr(commentposition));
                             }
+
+                            value = removeTrailingWhitespaces(value);
+                            value = removeSlashes(value);
 
                             if (pos2 != std::string::npos && pos3 != std::string::npos && pos3 > pos2 + 1)
                             {
@@ -424,25 +427,37 @@ namespace orxonox
     // SettingsConfigFile //
     ////////////////////////
 
+    static const std::string __CC_load_name = "reloadSettings";
+    static const std::string __CC_setFilename_name = "setSettingsFile";
+    static const std::string __CC_config_name = "config";
+    static const std::string __CC_tconfig_name = "tconfig";
+    static const std::string __CC_getConfig_name = "getConfig";
+
+    SetConsoleCommand(__CC_load_name,            &ConfigFile::load);
+    SetConsoleCommand(__CC_setFilename_name,     &SettingsConfigFile::setFilename);
+    SetConsoleCommand(__CC_config_name,          &SettingsConfigFile::config).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
+    SetConsoleCommand(__CC_tconfig_name,         &SettingsConfigFile::tconfig).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
+    SetConsoleCommand(__CC_getConfig_name,       &SettingsConfigFile::getConfig).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries());
+
     SettingsConfigFile* SettingsConfigFile::singletonPtr_s = 0;
 
     SettingsConfigFile::SettingsConfigFile(const std::string& filename)
         : ConfigFile(filename)
     {
-        ConsoleCommand* command = createConsoleCommand(createFunctor(&ConfigFile::load, this), "reloadSettings");
-        CommandExecutor::addConsoleCommandShortcut(command);
-        command = createConsoleCommand(createFunctor(&SettingsConfigFile::setFilename, this), "setSettingsFile");
-        CommandExecutor::addConsoleCommandShortcut(command);
-        command = createConsoleCommand(createFunctor(&SettingsConfigFile::config, this), "config");
-        CommandExecutor::addConsoleCommandShortcut(command).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
-        command = createConsoleCommand(createFunctor(&SettingsConfigFile::tconfig, this), "tconfig");
-        CommandExecutor::addConsoleCommandShortcut(command).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries()).argumentCompleter(2, autocompletion::settingsvalue());
-        command = createConsoleCommand(createFunctor(&SettingsConfigFile::getConfig, this), "getConfig");
-        CommandExecutor::addConsoleCommandShortcut(command).argumentCompleter(0, autocompletion::settingssections()).argumentCompleter(1, autocompletion::settingsentries());
+        ModifyConsoleCommand(__CC_load_name).setObject(this);
+        ModifyConsoleCommand(__CC_setFilename_name).setObject(this);
+        ModifyConsoleCommand(__CC_config_name).setObject(this);
+        ModifyConsoleCommand(__CC_tconfig_name).setObject(this);
+        ModifyConsoleCommand(__CC_getConfig_name).setObject(this);
     }
 
     SettingsConfigFile::~SettingsConfigFile()
     {
+        ModifyConsoleCommand(__CC_load_name).setObject(0);
+        ModifyConsoleCommand(__CC_setFilename_name).setObject(0);
+        ModifyConsoleCommand(__CC_config_name).setObject(0);
+        ModifyConsoleCommand(__CC_tconfig_name).setObject(0);
+        ModifyConsoleCommand(__CC_getConfig_name).setObject(0);
     }
 
     void SettingsConfigFile::load()
@@ -542,14 +557,16 @@ namespace orxonox
         this->save();
     }
 
-    bool SettingsConfigFile::config(const std::string& section, const std::string& entry, const std::string& value)
+    void SettingsConfigFile::config(const std::string& section, const std::string& entry, const std::string& value)
     {
-        return this->configImpl(section, entry, value, &ConfigValueContainer::set);
+        if (!this->configImpl(section, entry, value, &ConfigValueContainer::set))
+            COUT(1) << "Error: Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << std::endl;
     }
 
-    bool SettingsConfigFile::tconfig(const std::string& section, const std::string& entry, const std::string& value)
+    void SettingsConfigFile::tconfig(const std::string& section, const std::string& entry, const std::string& value)
     {
-        return this->configImpl(section, entry, value, &ConfigValueContainer::tset);
+        if (!this->configImpl(section, entry, value, &ConfigValueContainer::tset))
+            COUT(1) << "Error: Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << std::endl;
     }
 
     bool SettingsConfigFile::configImpl(const std::string& section, const std::string& entry, const std::string& value, bool (ConfigValueContainer::*function)(const MultiType&))

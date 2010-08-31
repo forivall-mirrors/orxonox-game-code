@@ -27,11 +27,11 @@
  */
 
 #include "ChatInputHandler.h"
-#include <core/ScopedSingletonManager.h>
-#include "core/ConsoleCommand.h"
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/CorePrereqs.h"
+#include "core/command/ConsoleCommand.h"
 #include <CEGUIWindow.h>
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
@@ -45,10 +45,8 @@ namespace orxonox
   ManageScopedSingleton( ChatInputHandler, ScopeID::Graphics, false );
 
   /* add commands to console */
-  SetConsoleCommandAlias( ChatInputHandler, activate_static, "startchat",
-    true );
-  SetConsoleCommandAlias( ChatInputHandler, activate_small_static,
-    "startchat_small", true );
+  SetConsoleCommand( "startchat", &ChatInputHandler::activate_static );
+  SetConsoleCommand( "startchat_small", &ChatInputHandler::activate_small_static );
 
   /* constructor */
   ChatInputHandler::ChatInputHandler()

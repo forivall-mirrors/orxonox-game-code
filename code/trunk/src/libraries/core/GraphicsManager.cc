@@ -51,7 +51,6 @@
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
-#include "ConsoleCommand.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
 #include "Game.h"
@@ -61,9 +60,13 @@
 #include "PathConfig.h"
 #include "WindowEventListener.h"
 #include "XMLFile.h"
+#include "command/ConsoleCommand.h"
 
 namespace orxonox
 {
+    static const std::string __CC_printScreen_name = "printScreen";
+    DeclareConsoleCommand(__CC_printScreen_name, &prototype::void__void);
+
     class OgreWindowEventListener : public Ogre::WindowEventListener
     {
     public:
@@ -130,7 +133,7 @@ namespace orxonox
         Loader::unload(debugOverlay_.get());
 
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_.get());
-        // TODO: Destroy the console command
+        ModifyConsoleCommand(__CC_printScreen_name).resetFunction();
 
         // Undeclare the resources
         Loader::unload(resources_.get());
@@ -289,7 +292,7 @@ namespace orxonox
 
         boost::filesystem::path folder(ogrePluginsDirectory_);
         // Do some SubString magic to get the comma separated list of plugins
-        SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '(', ')', false, '\0');
+        SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '{', '}', false, '\0');
         // Use backslash paths on Windows! file_string() already does that though.
         for (unsigned int i = 0; i < plugins.size(); ++i)
             ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
@@ -320,8 +323,7 @@ namespace orxonox
         Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(Ogre::MIP_UNLIMITED);
 
         // add console commands
-        ccPrintScreen_ = createConsoleCommand(createFunctor(&GraphicsManager::printScreen, this), "printScreen");
-        CommandExecutor::addConsoleCommandShortcut(ccPrintScreen_);
+        ModifyConsoleCommand(__CC_printScreen_name).setFunction(&GraphicsManager::printScreen, this);
     }
 
     void GraphicsManager::loadDebugOverlay()

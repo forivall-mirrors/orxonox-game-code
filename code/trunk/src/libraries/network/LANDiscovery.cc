@@ -31,14 +31,14 @@
 #include <enet/enet.h>
 #include <cstring>
 
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
-#include "core/ScopedSingletonManager.h"
 
 
 namespace orxonox
-{ 
+{
   ManageScopedSingleton(LANDiscovery, ScopeID::Root, true);
-  
+
   LANDiscovery::LANDiscovery()
   {
     this->host_ = enet_host_create(NULL, 10, 0, 0 );
@@ -48,17 +48,17 @@ namespace orxonox
   {
     enet_host_destroy(this->host_);
   }
-  
+
   void LANDiscovery::discover()
   {
     this->servers_.clear();
     ENetAddress address;
     enet_address_set_host(&address, "255.255.255.255");
     address.port = LAN_DISCOVERY_PORT;
-    
+
     ENetPeer* peer;
     peer = enet_host_connect(this->host_, &address, 0);
-    
+
     ENetEvent event;
     while( enet_host_service(this->host_, &event, 1000 ) )
     {
@@ -92,7 +92,7 @@ namespace orxonox
       }
     }
   }
-  
+
   std::string LANDiscovery::getServerListItemName(unsigned int index)
   {
     if( index >= this->servers_.size() )
@@ -100,7 +100,7 @@ namespace orxonox
     else
       return this->servers_[index].getServerName();
   }
-  
+
   std::string LANDiscovery::getServerListItemIP(unsigned int index)
   {
     if( index >= this->servers_.size() )
@@ -108,6 +108,6 @@ namespace orxonox
     else
       return this->servers_[index].getServerIP();
   }
-  
-  
+
+
 } // namespace orxonox

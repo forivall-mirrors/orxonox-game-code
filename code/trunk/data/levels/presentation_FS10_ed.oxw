@@ -19,8 +19,8 @@
    ambientlight = "0.1, 0.1, 0.1"
    skybox       = "Orxonox/skypanoramagen1"
    gravity      = "0,-1000,0"
-   negativeWorldRange = "(-100000, -100000, -100000)"
-   positiveWorldRange = "( 100000,  100000,  100000)"
+   negativeWorldRange = "-100000, -100000, -100000"
+   positiveWorldRange = " 100000,  100000,  100000"
    hasPhysics   = true
   >
     <Light type=directional position="0,-100000,0" direction="0.02, -1, 0.05" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />

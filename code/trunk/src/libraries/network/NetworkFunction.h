@@ -38,8 +38,8 @@
 #include <boost/preprocessor/cat.hpp>
 #include <boost/static_assert.hpp>
 
-#include "core/Functor.h"
 #include "core/Identifier.h"
+#include "core/command/Functor.h"
 #include "FunctionCallManager.h"
 #include "synchronisable/Synchronisable.h"
 
@@ -101,8 +101,7 @@ class _NetworkExport NetworkFunctionBase: virtual public OrxonoxClass {
 
 class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
   public:
-    NetworkFunctionStatic(FunctorStatic* functor, const std::string& name, const NetworkFunctionPointer& p);
-    ~NetworkFunctionStatic();
+    NetworkFunctionStatic(const FunctorStaticPtr& functor, const std::string& name, const NetworkFunctionPointer& p);
 
     inline void call(){ (*this->functor_)(); }
     inline void call(const MultiType& mt1){ (*this->functor_)(mt1); }
@@ -123,7 +122,7 @@ class _NetworkExport NetworkFunctionStatic: public NetworkFunctionBase {
   private:
     static std::map<NetworkFunctionPointer, NetworkFunctionStatic*>& getFunctorMap();
     static std::map<uint32_t, NetworkFunctionStatic*>& getIdMap();
-    FunctorStatic* functor_;
+    FunctorStaticPtr functor_;
 
 };
 
@@ -154,8 +153,7 @@ class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
 
 template <class T> class NetworkMemberFunction: public NetworkMemberFunctionBase {
   public:
-    NetworkMemberFunction(FunctorMember<T>* functor, const std::string& name, const NetworkFunctionPointer& p);
-    ~NetworkMemberFunction();
+    NetworkMemberFunction(const FunctorMemberPtr<T>& functor, const std::string& name, const NetworkFunctionPointer& p);
 
     inline void call(uint32_t objectID)
     {
@@ -189,16 +187,12 @@ template <class T> class NetworkMemberFunction: public NetworkMemberFunctionBase
     }
 
   private:
-    FunctorMember<T>* functor_;
+    FunctorMemberPtr<T> functor_;
 };
 
-template <class T> NetworkMemberFunction<T>::NetworkMemberFunction(FunctorMember<T>* functor, const std::string& name, const NetworkFunctionPointer& p):
+template <class T> NetworkMemberFunction<T>::NetworkMemberFunction(const FunctorMemberPtr<T>& functor, const std::string& name, const NetworkFunctionPointer& p):
     NetworkMemberFunctionBase(name, p), functor_(functor)
 {
-}
-template <class T> NetworkMemberFunction<T>::~NetworkMemberFunction()
-{
-  delete this->functor_;
 }
 
 template<class T> inline void copyPtr( T ptr, NetworkFunctionPointer& destptr)

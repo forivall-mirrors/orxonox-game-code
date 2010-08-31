@@ -29,7 +29,7 @@
 #ifndef _TclThreadManager_H__
 #define _TclThreadManager_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <cassert>
 #include <list>
@@ -37,13 +37,12 @@
 #include <string>
 
 #include "util/Singleton.h"
-#include "OrxonoxClass.h"
 
 struct Tcl_Interp;
 
 namespace orxonox
 {
-    class _CoreExport TclThreadManager : public Singleton<TclThreadManager>, public OrxonoxClass
+    class _CoreExport TclThreadManager : public Singleton<TclThreadManager>
     {
         friend class Singleton<TclThreadManager>;
         friend class TclBind;

@@ -12,8 +12,8 @@
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/Starbox"
-   negativeWorldRange = "(-100000, -100000, -100000)"
-   positiveWorldRange = "( 100000,  100000,  100000)"
+   negativeWorldRange = "-100000, -100000, -100000"
+   positiveWorldRange = " 100000,  100000,  100000"
    hasPhysics   = true
   >
       <!--SpawnPoint position="0,   0,  100"           spawnclass=SpaceShip pawndesign=spaceshipassff />

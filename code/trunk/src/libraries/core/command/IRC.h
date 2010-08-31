@@ -29,14 +29,13 @@
 #ifndef _IRC_H__
 #define _IRC_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 
 #include <string>
-#include "OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _CoreExport IRC : public OrxonoxClass
+    class _CoreExport IRC
     {
         public:
             static IRC& getInstance();

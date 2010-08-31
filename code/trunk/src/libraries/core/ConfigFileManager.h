@@ -330,8 +330,8 @@ namespace orxonox // tolua_export
             void setFilename(const std::string& filename); // tolua_export
             void clean(bool bCleanComments = false); // tolua_export
 
-            bool config(const std::string& section, const std::string& entry, const std::string& value); // tolua_export
-            bool tconfig(const std::string& section, const std::string& entry, const std::string& value); // tolua_export
+            void config(const std::string& section, const std::string& entry, const std::string& value); // tolua_export
+            void tconfig(const std::string& section, const std::string& entry, const std::string& value); // tolua_export
             std::string getConfig(const std::string& section, const std::string& entry); // tolua_export
 
             void addConfigValueContainer(ConfigValueContainer* container);

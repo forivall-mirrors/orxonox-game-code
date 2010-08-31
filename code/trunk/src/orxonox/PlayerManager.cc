@@ -28,9 +28,9 @@
 
 #include "PlayerManager.h"
 
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "core/ScopedSingletonManager.h"
 #include "Level.h"
 #include "infos/HumanPlayer.h"
 #include "LevelManager.h"

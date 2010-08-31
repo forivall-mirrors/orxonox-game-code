@@ -460,7 +460,7 @@ namespace orxonox
 
         if (bUseReloadTime && (munition->reloadTime_ > 0 || munition->bStackMunition_))
         {
-            Executor* executor = createExecutor(createFunctor(&Magazine::loaded, this));
+            const ExecutorPtr& executor = createExecutor(createFunctor(&Magazine::loaded, this));
             executor->setDefaultValues(munition);
 
             this->loadTimer_.setTimer(munition->reloadTime_, false, executor);

@@ -29,7 +29,7 @@
 #ifndef _ArgumentCompletionFunctions_H__
 #define _ArgumentCompletionFunctions_H__
 
-#include "CorePrereqs.h"
+#include "core/CorePrereqs.h"
 #include "ArgumentCompleter.h"
 
 
@@ -38,13 +38,20 @@
     _CoreExport ArgumentCompletionList acf_##functionname
 
 #define ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION(functionname) \
+    _ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION_INTERNAL(functionname, false)
+#define ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION_MULTI(functionname) \
+    _ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION_INTERNAL(functionname, true)
+
+#define _ARGUMENT_COMPLETION_FUNCTION_IMPLEMENTATION_INTERNAL(functionname, bUseMultipleWords) \
     ArgumentCompleter* functionname() \
     { \
-        static ArgumentCompleter completer = ArgumentCompleter(&acf_##functionname); \
+        static ArgumentCompleter completer = ArgumentCompleter(&acf_##functionname, bUseMultipleWords); \
         return &completer; \
     } \
     \
     ArgumentCompletionList acf_##functionname
+
+#define ARGUMENT_COMPLETION_FUNCTION_CALL(functionname) acf_##functionname
 
 
 namespace orxonox
@@ -52,6 +59,10 @@ namespace orxonox
     namespace autocompletion
     {
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(fallback)();
+        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(groupsandcommands)(const std::string& fragment);
+        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(subcommands)(const std::string& fragment, const std::string& group);
+        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(command)(const std::string& fragment);
+        ARGUMENT_COMPLETION_FUNCTION_DECLARATION(hiddencommand)(const std::string& fragment);
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(files)(const std::string& fragment);
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(settingssections)();
         ARGUMENT_COMPLETION_FUNCTION_DECLARATION(settingsentries)(const std::string& fragment, const std::string& section);

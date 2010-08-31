@@ -31,19 +31,21 @@
 #include "util/OutputHandler.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
+#include "core/CoreIncludes.h"
+#include "core/ConfigFileManager.h"
+#include "core/ConfigValueIncludes.h"
 #include "CommandExecutor.h"
-#include "CoreIncludes.h"
-#include "ConfigFileManager.h"
-#include "ConfigValueIncludes.h"
 #include "ConsoleCommand.h"
 
 namespace orxonox
 {
-    SetConsoleCommandShortcut(OutputHandler, log);
-    SetConsoleCommandShortcut(OutputHandler, error);
-    SetConsoleCommandShortcut(OutputHandler, warning);
-    SetConsoleCommandShortcut(OutputHandler, info);
-    SetConsoleCommandShortcut(OutputHandler, debug);
+    SetConsoleCommand("log",     OutputHandler::log    );
+    SetConsoleCommand("error",   OutputHandler::error  );
+    SetConsoleCommand("warning", OutputHandler::warning);
+    SetConsoleCommand("info",    OutputHandler::info   );
+    SetConsoleCommand("debug",   OutputHandler::debug  );
+
+    unsigned int Shell::cacheSize_s;
 
     Shell::Shell(const std::string& consoleName, bool bScrollable)
         : OutputListener(consoleName)
@@ -98,6 +100,7 @@ namespace orxonox
         SetConfigValue(historyOffset_, 0)
             .callback(this, &Shell::commandHistoryOffsetChanged);
         setConfigValueGeneric(this, &commandHistory_, ConfigFileType::CommandHistory, "Shell", "commandHistory_", std::vector<std::string>());
+        SetConfigValue(cacheSize_s, 32);
 
 #ifdef ORXONOX_RELEASE
         const unsigned int defaultLevel = 1;
@@ -221,6 +224,13 @@ namespace orxonox
 
     void Shell::addToHistory(const std::string& command)
     {
+        if (command == "")
+            return;
+
+        size_t previous_offset = mod(this->historyOffset_ - 1, this->maxHistoryLength_);
+        if (previous_offset < this->commandHistory_.size() && command == this->commandHistory_[previous_offset])
+            return;
+
         ModifyConfigValue(commandHistory_, set, this->historyOffset_, command);
         this->historyPosition_ = 0;
         ModifyConfigValue(historyOffset_, set, (this->historyOffset_ + 1) % this->maxHistoryLength_);
@@ -307,10 +317,23 @@ namespace orxonox
         this->addToHistory(this->inputBuffer_->get());
         this->updateListeners<&ShellListener::executed>();
 
-        if (!CommandExecutor::execute(this->inputBuffer_->get()))
+        int error;
+        const std::string& result = CommandExecutor::query(this->inputBuffer_->get(), &error);
+        if (error)
         {
-            this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\"." << std::endl;
+            switch (error)
+            {
+                case CommandExecutor::Error:       this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", command doesn't exist. (S)" << std::endl; break;
+                case CommandExecutor::Incomplete:  this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", not enough arguments given. (S)" << std::endl; break;
+                case CommandExecutor::Deactivated: this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", command is not active. (S)" << std::endl; break;
+                case CommandExecutor::Denied:      this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", access denied. (S)" << std::endl; break;
+            }
             this->outputChanged(Error);
+        }
+        else if (result != "")
+        {
+            this->outputBuffer_ << result << std::endl;
+            this->outputChanged(Command);
         }
 
         this->clearInput();
@@ -318,8 +341,8 @@ namespace orxonox
 
     void Shell::hintAndComplete()
     {
-        this->inputBuffer_->set(CommandExecutor::complete(this->inputBuffer_->get()));
-        this->outputBuffer_ << CommandExecutor::hint(this->inputBuffer_->get()) << std::endl;
+        this->inputBuffer_->set(CommandExecutor::evaluate(this->inputBuffer_->get()).complete());
+        this->outputBuffer_ << CommandExecutor::evaluate(this->inputBuffer_->get()).hint() << std::endl;
         this->outputChanged(Hint);
 
         this->inputChanged();

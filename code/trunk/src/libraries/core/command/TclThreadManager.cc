@@ -39,9 +39,9 @@
 #include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
+#include "core/CoreIncludes.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
-#include "CoreIncludes.h"
 #include "TclBind.h"
 #include "TclThreadList.h"
 
@@ -49,13 +49,13 @@ namespace orxonox
 {
     const float TCLTHREADMANAGER_MAX_CPU_USAGE = 0.50f;
 
-    SetConsoleCommandShortcutAlias(TclThreadManager, execute, "tclexecute").argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommandShortcutAlias(TclThreadManager, query,   "tclquery"  ).argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, create,  false);
-    SetConsoleCommand(TclThreadManager, destroy, false).argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, execute, false).argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, query,   false).argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand(TclThreadManager, source,  false).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand("tclexecute", &TclThreadManager::execute).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand("tclquery",   &TclThreadManager::query  ).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand("TclThreadManager", "create",  &TclThreadManager::create);
+    SetConsoleCommand("TclThreadManager", "destroy", &TclThreadManager::destroy).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand("TclThreadManager", "execute", &TclThreadManager::execute).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand("TclThreadManager", "query",   &TclThreadManager::query  ).argumentCompleter(0, autocompletion::tclthreads());
+    SetConsoleCommand("TclThreadManager", "source",  &TclThreadManager::source ).argumentCompleter(0, autocompletion::tclthreads());
 
     /**
         @brief A struct containing all information about a Tcl-interpreter
@@ -90,8 +90,6 @@ namespace orxonox
     */
     TclThreadManager::TclThreadManager(Tcl::interpreter* interpreter)
     {
-        RegisterRootObject(TclThreadManager);
-
         this->numInterpreterBundles_ = 0;
 
         this->interpreterBundlesMutex_ = new boost::shared_mutex();
@@ -438,11 +436,15 @@ namespace orxonox
                     {
                         // It's a query to the CommandExecutor
                         TclThreadManager::debug("TclThread_query -> CE: " + command);
-                        if (!CommandExecutor::execute(command, false))
-                            TclThreadManager::error("Error: Can't execute command \"" + command + "\"!");
-
-                        if (CommandExecutor::getLastEvaluation().hasReturnvalue())
-                            output = CommandExecutor::getLastEvaluation().getReturnvalue().getString();
+                        int error;
+                        output = CommandExecutor::query(command, &error, false);
+                        switch (error)
+                        {
+                            case CommandExecutor::Error:       TclThreadManager::error("Error: Can't execute command \"" + command + "\", command doesn't exist. (T)"); break;
+                            case CommandExecutor::Incomplete:  TclThreadManager::error("Error: Can't execute command \"" + command + "\", not enough arguments given. (T)"); break;
+                            case CommandExecutor::Deactivated: TclThreadManager::error("Error: Can't execute command \"" + command + "\", command is not active. (T)"); break;
+                            case CommandExecutor::Denied:      TclThreadManager::error("Error: Can't execute command \"" + command + "\", access denied. (T)"); break;
+                        }
                     }
                     else
                     {

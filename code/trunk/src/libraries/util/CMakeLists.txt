@@ -30,8 +30,11 @@ COMPILATION_BEGIN StableCompilation.cc
   Convert.cc
   CRC32.cc
   OutputHandler.cc
+  ScopedSingletonManager.cc
+  SharedPtr.cc
   SignalHandler.cc
   Sleep.cc
+  SmallObjectAllocator.cc
   SubString.cc
 COMPILATION_END
 )

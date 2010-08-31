@@ -29,7 +29,7 @@
 #include "HumanController.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConsoleCommand.h"
+#include "core/command/ConsoleCommand.h"
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 #include "gametypes/Gametype.h"
@@ -39,26 +39,26 @@
 
 namespace orxonox
 {
-    SetConsoleCommand(HumanController, moveFrontBack, true).setAsInputCommand();
-    SetConsoleCommand(HumanController, moveRightLeft, true).setAsInputCommand();
-    SetConsoleCommand(HumanController, moveUpDown,    true).setAsInputCommand();
-    SetConsoleCommand(HumanController, rotateYaw,     true).setAsInputCommand();
-    SetConsoleCommand(HumanController, rotatePitch,   true).setAsInputCommand();
-    SetConsoleCommand(HumanController, rotateRoll,    true).setAsInputCommand();
-    SetConsoleCommand(HumanController, fire,          true).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, reload,        true);
-    SetConsoleCommand(HumanController, boost,         true).keybindMode(KeybindMode::OnHold);
-    SetConsoleCommand(HumanController, greet,         true);
-    SetConsoleCommand(HumanController, switchCamera,  true);
-    SetConsoleCommand(HumanController, mouseLook,     true);
-    SetConsoleCommand(HumanController, suicide,       true);
-    SetConsoleCommand(HumanController, toggleGodMode, true);
-    SetConsoleCommand(HumanController, addBots,       true).defaultValues(1);
-    SetConsoleCommand(HumanController, killBots,      true).defaultValues(0);
-    SetConsoleCommand(HumanController, dropItems,     true);
-    SetConsoleCommand(HumanController, useItem,       true);
-    SetConsoleCommand(HumanController, cycleNavigationFocus,   true);
-    SetConsoleCommand(HumanController, releaseNavigationFocus, true);
+    SetConsoleCommand("HumanController", "moveFrontBack",          &HumanController::moveFrontBack ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "moveRightLeft",          &HumanController::moveRightLeft ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "moveUpDown",             &HumanController::moveUpDown    ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "rotateYaw",              &HumanController::rotateYaw     ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "rotatePitch",            &HumanController::rotatePitch   ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "rotateRoll",             &HumanController::rotateRoll    ).addShortcut().setAsInputCommand();
+    SetConsoleCommand("HumanController", "fire",                   &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand("HumanController", "reload",                 &HumanController::reload        ).addShortcut();
+    SetConsoleCommand("HumanController", "boost",                  &HumanController::boost         ).addShortcut().keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand("HumanController", "greet",                  &HumanController::greet         ).addShortcut();
+    SetConsoleCommand("HumanController", "switchCamera",           &HumanController::switchCamera  ).addShortcut();
+    SetConsoleCommand("HumanController", "mouseLook",              &HumanController::mouseLook     ).addShortcut();
+    SetConsoleCommand("HumanController", "suicide",                &HumanController::suicide       ).addShortcut();
+    SetConsoleCommand("HumanController", "toggleGodMode",          &HumanController::toggleGodMode ).addShortcut();
+    SetConsoleCommand("HumanController", "addBots",                &HumanController::addBots       ).addShortcut().defaultValues(1);
+    SetConsoleCommand("HumanController", "killBots",               &HumanController::killBots      ).addShortcut().defaultValues(0);
+    SetConsoleCommand("HumanController", "dropItems",              &HumanController::dropItems     ).addShortcut();
+    SetConsoleCommand("HumanController", "useItem",                &HumanController::useItem       ).addShortcut();
+    SetConsoleCommand("HumanController", "cycleNavigationFocus",   &HumanController::cycleNavigationFocus).addShortcut();
+    SetConsoleCommand("HumanController", "releaseNavigationFocus", &HumanController::releaseNavigationFocus).addShortcut();
 
     CreateUnloadableFactory(HumanController);
 

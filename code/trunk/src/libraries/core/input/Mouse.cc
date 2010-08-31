@@ -29,8 +29,8 @@
 #include "Mouse.h"
 
 #include <ois/OISMouse.h>
-#include "core/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
+#include "core/command/ConsoleCommand.h"
 #include "InputState.h"
 
 #ifdef ORXONOX_PLATFORM_LINUX
@@ -40,6 +40,15 @@
 
 namespace orxonox
 {
+#ifdef ORXONOX_PLATFORM_LINUX
+    static const std::string __CC_Mouse_name = "Mouse";
+    static const std::string __CC_grab_name = "grab";
+    static const std::string __CC_ungrab_name = "ungrab";
+
+    SetConsoleCommand(__CC_Mouse_name, __CC_grab_name,   &Mouse::grab);
+    SetConsoleCommand(__CC_Mouse_name, __CC_ungrab_name, &Mouse::ungrab);
+#endif
+
     Mouse::Mouse(unsigned int id, OIS::InputManager* oisInputManager)
         : super(id, oisInputManager)
     {
@@ -47,10 +56,16 @@ namespace orxonox
         this->windowResized(this->getWindowWidth(), this->getWindowHeight());
 
 #ifdef ORXONOX_PLATFORM_LINUX
-        // Mouse grab console command
-        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&Mouse::grab, this), "grab"), false);
-        // Mouse ungrab console command
-        this->getIdentifier()->addConsoleCommand(createConsoleCommand(createFunctor(&Mouse::ungrab, this), "ungrab"), false);
+        ModifyConsoleCommand(__CC_Mouse_name, __CC_grab_name).setObject(this);
+        ModifyConsoleCommand(__CC_Mouse_name, __CC_ungrab_name).setObject(this);
+#endif
+    }
+
+    Mouse::~Mouse()
+    {
+#ifdef ORXONOX_PLATFORM_LINUX
+        ModifyConsoleCommand(__CC_Mouse_name, __CC_grab_name).setObject(0);
+        ModifyConsoleCommand(__CC_Mouse_name, __CC_ungrab_name).setObject(0);
 #endif
     }
 

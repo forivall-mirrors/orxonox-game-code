@@ -30,12 +30,12 @@
 
 #include <map>
 
+#include "util/ScopedSingletonManager.h"
 #include "core/CommandLineParser.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
 #include "core/Resource.h"
-#include "core/ScopedSingletonManager.h"
 #include "PlayerManager.h"
 #include "Level.h"
 

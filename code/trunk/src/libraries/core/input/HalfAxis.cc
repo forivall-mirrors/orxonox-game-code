@@ -33,7 +33,7 @@
 */
 
 #include "HalfAxis.h"
-#include "core/CommandEvaluation.h"
+#include "core/command/CommandEvaluation.h"
 
 namespace orxonox
 {

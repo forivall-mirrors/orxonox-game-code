@@ -30,7 +30,7 @@
 #include "MuzzleFlash.h"
 
 #include "core/CoreIncludes.h"
-#include "core/Executor.h"
+#include "core/command/Executor.h"
 
 namespace orxonox
 {
