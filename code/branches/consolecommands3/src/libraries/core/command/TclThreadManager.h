@@ -43,7 +43,7 @@ struct Tcl_Interp;
 
 namespace orxonox
 {
-    class _CoreExport TclThreadManager : public Singleton<TclThreadManager>, public OrxonoxClass
+    class _CoreExport TclThreadManager : public Singleton<TclThreadManager>
     {
         friend class Singleton<TclThreadManager>;
         friend class TclBind;

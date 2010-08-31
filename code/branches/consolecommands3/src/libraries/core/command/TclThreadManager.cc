@@ -90,8 +90,6 @@ namespace orxonox
     */
     TclThreadManager::TclThreadManager(Tcl::interpreter* interpreter)
     {
-        RegisterRootObject(TclThreadManager);
-
         this->numInterpreterBundles_ = 0;
 
         this->interpreterBundlesMutex_ = new boost::shared_mutex();
