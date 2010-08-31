@@ -302,9 +302,9 @@ namespace orxonox
     template <class T>
     class ClassIdentifier : public Identifier
     {
-        #if true // doxygen workaround: doxygen ignores the following #include because of this #if, removes some warnings
-        #define SUPER_INTRUSIVE_DECLARATION_INCLUDE
-        #include "Super.h"
+        #ifndef DOXYGEN_SHOULD_SKIP_THIS
+          #define SUPER_INTRUSIVE_DECLARATION_INCLUDE
+          #include "Super.h"
         #endif
 
         public:
