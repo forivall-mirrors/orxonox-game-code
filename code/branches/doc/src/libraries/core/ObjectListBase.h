@@ -53,7 +53,7 @@ namespace orxonox
         public:
             /**
                 @brief Constructor: Creates the list-element with an object.
-                @param object The object to store
+                @param objectBase The object to store
             */
             ObjectListBaseElement(OrxonoxClass* objectBase) : next_(0), prev_(0), objectBase_(objectBase) {}
 

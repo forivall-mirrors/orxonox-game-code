@@ -51,11 +51,11 @@ namespace orxonox
     {
     }
 
-    void GUIOverlay::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void GUIOverlay::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(GUIOverlay, XMLPort, xmlElement, mode);
+        SUPER(GUIOverlay, XMLPort, xmlelement, mode);
 
-        XMLPortParam(GUIOverlay, "guiname", setGUIName, getGUIName, xmlElement, mode);
+        XMLPortParam(GUIOverlay, "guiname", setGUIName, getGUIName, xmlelement, mode);
     }
 
     void GUIOverlay::changedVisibility()

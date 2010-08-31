@@ -91,6 +91,8 @@ namespace orxonox
     @brief
         Executes the QuestEffectBeacon.
         This means extracting the Pawn from the PlayerTrigger, provided by the Event causing the execution, and the extracting the PlayerInfo from the received Pawn and invoking the QuestEffectbeacon's QuestEffects on the received PlayerInfo.
+    @param b
+        true means the trigger was activated while false means it was deactivated
     @param trigger
         A pointer to the PlayerTrigger that threw the Event.
     @return

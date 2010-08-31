@@ -121,6 +121,10 @@ namespace orxonox
             means it gets deleted when the InputManager is destroyed!
         @param name
             Unique name of the InputState when referenced as string
+        @param bAlwaysGetsInput
+            FIXME - add doc!
+        @param bTransparent
+            FIXME - add doc!
         @param priority
             Priority matters when multiple states are active. You can specify any
             number, but 1 - 99 is preferred (99 means high priority).

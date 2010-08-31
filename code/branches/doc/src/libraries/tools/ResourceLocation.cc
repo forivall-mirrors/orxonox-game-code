@@ -55,11 +55,11 @@ namespace orxonox
     {
     }
 
-    void ResourceLocation::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void ResourceLocation::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        XMLPortParam(ResourceLocation, "path",        setPath,        getPath,        xmlElement, mode);
-        XMLPortParam(ResourceLocation, "archiveType", setArchiveType, getArchiveType, xmlElement, mode);
-        XMLPortParam(ResourceLocation, "recursive",   setRecursive,   getRecursive,   xmlElement, mode);
+        XMLPortParam(ResourceLocation, "path",        setPath,        getPath,        xmlelement, mode);
+        XMLPortParam(ResourceLocation, "archiveType", setArchiveType, getArchiveType, xmlelement, mode);
+        XMLPortParam(ResourceLocation, "recursive",   setRecursive,   getRecursive,   xmlelement, mode);
         if (path_.empty())
             ThrowException(AbortLoading, "ResourceLocation: No path given.");
     }

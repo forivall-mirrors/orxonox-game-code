@@ -43,7 +43,6 @@ namespace orxonox
         Scoreboard(BaseObject* creator);
         virtual ~Scoreboard();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
         virtual void tick(float dt);
 
         inline void setCreateLines(CreateLines* cl)

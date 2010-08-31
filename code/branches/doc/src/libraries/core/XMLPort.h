@@ -147,7 +147,9 @@
     @param object The name of the object of the extern class (a member of the main class)
     @param paramname The name of the attribute
     @param loadfunction The function to set the attribute inside of the member object.
-    @param loadfunction The function to get the attribute from the member object
+    @param savefunction The function to get the attribute from the member object
+    @param xmlelement The XML-element that is parsed by this macro
+    @param mode Loading or saving
 
     Sometimes you'll have a member object in your class, which has it's own load- and savefunctions.
     With this macro, you can simply use them instead of writing your own functions.
@@ -195,7 +197,7 @@
     @param objectclass The baseclass of objects that can be added
     @param sectionname The name of the subsection in the XML file that encloses the sub-objects ("" means no subsection)
     @param loadfunction The function to add a new object to the class
-    @param loadfunction The function to get all added objects from the class
+    @param savefunction The function to get all added objects from the class
     @param xmlelement The XMLElement (received through the XMLPort function)
     @param mode The mode (load/save) (received through the XMLPort function)
     @param bApplyLoaderMask If this is true, an added sub-object gets loaded only if it's class is included in the Loaders ClassTreeMask (this is usually false)

@@ -302,7 +302,7 @@ namespace orxonox
 
     /**
         @brief Sends a command to the queue of a given Tcl-interpreter
-        @param id The id of the target interpreter
+        @param target_id The id of the target interpreter
         @param command The command to be sent
     */
     void TclThreadManager::execute(unsigned int target_id, const std::string& command)
@@ -325,6 +325,7 @@ namespace orxonox
     /**
         @brief This function can be called from Tcl to send a command to the queue of any interpreter.
         @param target_id The id of the target thread
+        @param args Contains the content of the command
     */
     void TclThreadManager::tcl_crossexecute(int target_id, const Tcl::object& args)
     {
@@ -333,7 +334,7 @@ namespace orxonox
 
     /**
         @brief Sends a command to the queue of a given Tcl-interpreter
-        @param id The id of the target interpreter
+        @param target_id The id of the target interpreter
         @param command The command to be sent
     */
     void TclThreadManager::_execute(unsigned int target_id, const std::string& command)
@@ -346,7 +347,7 @@ namespace orxonox
 
     /**
         @brief Sends a query to a given Tcl-interpreter and waits for the result
-        @param id The id of the target interpreter
+        @param target_id The id of the target interpreter
         @param command The command to be sent
         @return The result of the command
     */
@@ -358,6 +359,7 @@ namespace orxonox
     /**
         @brief This function can be called from Tcl to send a query to the main thread.
         @param source_id The id of the calling thread
+        @param args Contains the content of the query
 
         A query waits for the result of the command. This means, the calling thread will be blocked until
         the main thread answers the query. In return, the main thread sends the result of the console
@@ -372,6 +374,7 @@ namespace orxonox
         @brief This function can be called from Tcl to send a query to another thread.
         @param source_id The id of the calling thread
         @param target_id The id of the target thread
+        @param args Contains the content of the query
     */
     std::string TclThreadManager::tcl_crossquery(int source_id, int target_id, const Tcl::object& args)
     {

@@ -277,6 +277,10 @@ namespace orxonox
         Otherwise, the conversion will generate a runtime warning and return false.
         For information about the different conversion methods (user defined too), see the section
         'Actual conversion sequence' in this file above.
+    @param output
+        A pointer to the variable where the converted value will be stored
+    @param input
+        The original value
     */
     template <class FromType, class ToType>
     FORCEINLINE bool convertValue(ToType* output, const FromType& input)
@@ -293,6 +297,10 @@ namespace orxonox
         For information about the different conversion methods (user defined too), see the section
         'Actual conversion sequence' in this file above.
         If the conversion doesn't succeed, 'fallback' is written to '*output'.
+    @param output
+        A pointer to the variable where the converted value will be stored
+    @param input
+        The original value
     @param fallback
         A default value that gets written to '*output' if there is no conversion.
     */

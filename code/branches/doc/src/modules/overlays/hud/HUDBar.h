@@ -49,7 +49,7 @@ namespace orxonox
         BarColour(BaseObject* creator);
         virtual ~BarColour() { }
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         void setColour(const ColourValue& colour) { this->colour_ = colour; }
         const ColourValue& getColour() const { return this->colour_; }
@@ -69,7 +69,7 @@ namespace orxonox
         HUDBar(BaseObject* creator);
         virtual ~HUDBar();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         void clearColours();
 

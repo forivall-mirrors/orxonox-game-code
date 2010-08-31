@@ -307,7 +307,7 @@ namespace orxonox
     /**
     @brief
         Get whether the MultiTrigger is active for a given object.
-    @param triggerers
+    @param triggerer
         A pointer to the object.
     @return
         Returns true if the MultiTrigger is active, false if not.

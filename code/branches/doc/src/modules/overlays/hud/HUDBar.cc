@@ -54,12 +54,12 @@ namespace orxonox
         this->setPosition(0.0);
     }
 
-    void BarColour::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void BarColour::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(BarColour, XMLPort, xmlElement, mode);
+        SUPER(BarColour, XMLPort, xmlelement, mode);
 
-        XMLPortParam(BarColour, "colour", setColour, getColour, xmlElement, mode);
-        XMLPortParam(BarColour, "position", setPosition, getPosition, xmlElement, mode);
+        XMLPortParam(BarColour, "colour", setColour, getColour, xmlelement, mode);
+        XMLPortParam(BarColour, "position", setPosition, getPosition, xmlelement, mode);
     }
 
 
@@ -103,15 +103,15 @@ namespace orxonox
         }
     }
 
-    void HUDBar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void HUDBar::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(HUDBar, XMLPort, xmlElement, mode);
+        SUPER(HUDBar, XMLPort, xmlelement, mode);
 
-        XMLPortParam(HUDBar, "initialvalue", setValue,       getValue,       xmlElement, mode);
-        XMLPortParam(HUDBar, "righttoleft",  setRightToLeft, getRightToLeft, xmlElement, mode);
-        XMLPortParam(HUDBar, "autocolour",   setAutoColour,  getAutoColour,  xmlElement, mode);
-        XMLPortParam(HUDBar, "bartexture",   setBarTexture,  getBarTexture, xmlElement, mode);
-        XMLPortObject(HUDBar, BarColour, "", addColour, getColour, xmlElement, mode);
+        XMLPortParam(HUDBar, "initialvalue", setValue,       getValue,       xmlelement, mode);
+        XMLPortParam(HUDBar, "righttoleft",  setRightToLeft, getRightToLeft, xmlelement, mode);
+        XMLPortParam(HUDBar, "autocolour",   setAutoColour,  getAutoColour,  xmlelement, mode);
+        XMLPortParam(HUDBar, "bartexture",   setBarTexture,  getBarTexture, xmlelement, mode);
+        XMLPortObject(HUDBar, BarColour, "", addColour, getColour, xmlelement, mode);
     }
 
     void HUDBar::valueChanged()

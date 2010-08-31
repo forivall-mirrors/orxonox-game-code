@@ -386,6 +386,8 @@ namespace orxonox
     /**
         @brief Adds an object of the given type to the ObjectList.
         @param object The object to add
+        @param className The name of the class T
+        @param bRootClass True if this is a root class (i.e. it inherits directly from OrxonoxClass)
     */
     template <class T>
     bool ClassIdentifier<T>::initialiseObject(T* object, const std::string& className, bool bRootClass)

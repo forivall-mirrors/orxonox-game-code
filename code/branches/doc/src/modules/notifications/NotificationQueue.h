@@ -92,7 +92,7 @@ namespace orxonox
             NotificationQueue(BaseObject* creator);
             virtual ~NotificationQueue();
 
-            virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode); //!< Method for creating a NotificationQueue object through XML.
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a NotificationQueue object through XML.
 
             virtual void tick(float dt); //!< To update from time to time.
 

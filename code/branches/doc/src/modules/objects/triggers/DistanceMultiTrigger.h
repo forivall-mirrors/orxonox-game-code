@@ -64,7 +64,7 @@ namespace orxonox
 
             /**
             @brief Set the target name of DistanceTriggerBeacons that triggers this DistanceMultiTrigger.
-            @param targename The name of the DistanceTriggerBeacon as a string.
+            @param targetname The name of the DistanceTriggerBeacon as a string.
             */
             inline void setTargetName(const std::string& targetname)
                 { if(targetname.compare(BLANKSTRING) != 0) this->singleTargetMode_ = true; else this->singleTargetMode_ = false; this->targetName_ = targetname; }

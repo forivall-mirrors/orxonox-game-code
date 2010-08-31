@@ -206,6 +206,8 @@ namespace orxonox
         Name of the argument. Shortcut can be added later.
     @param defaultValue
         Default value that is used when argument was not given.
+    @param bCommandLineOnly
+        FIXME - add doc!
     */
     template <class T>
     CommandLineArgument& CommandLineParser::addArgument(const std::string& name, T defaultValue, bool bCommandLineOnly)

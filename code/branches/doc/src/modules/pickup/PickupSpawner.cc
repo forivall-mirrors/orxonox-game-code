@@ -69,7 +69,7 @@ namespace orxonox
         The distance at which the PickupSpawner will trigger.
     @param respawnTime
         The minimum time between two spawns.
-    @param maySpawnedItems
+    @param maxSpawnedItems
         The maximum number of items spawned by this PickupSpawner.
     */
     PickupSpawner::PickupSpawner(BaseObject* creator, Pickupable* pickup, float triggerDistance, float respawnTime, int maxSpawnedItems) : StaticEntity(creator), pickup_(NULL)

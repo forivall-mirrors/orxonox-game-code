@@ -114,7 +114,7 @@ namespace orxonox
         unsigned int split(const std::string& string = "", char delimiter = ',');
         unsigned int split(const std::string& string,
                            const std::string& delimiters, const std::string& delimiterNeighbours = "", bool emptyEntries = false,
-                           char escapeChar ='\\', bool removeExcapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
+                           char escapeChar ='\\', bool removeEscapeChar = true, char safemode_char = '"', bool removeSafemodeChar = true,
                            char openparenthesis_char = '{', char closeparenthesis_char = '}',  bool removeParenthesisChars = true, char comment_char = '\0');
         std::string join(const std::string& delimiter = " ") const;
         ////////////////////////////////////////
@@ -151,7 +151,7 @@ namespace orxonox
                                           const std::string& delimiterNeighbours = "",
                                           bool emptyEntries = false,
                                           char escape_char = '\\',
-                                          bool removeExcapeChar = true,
+                                          bool removeEscapeChar = true,
                                           char safemode_char = '"',
                                           bool removeSafemodeChar = true,
                                           char openparenthesis_char = '{',

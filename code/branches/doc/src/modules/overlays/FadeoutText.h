@@ -43,7 +43,7 @@ namespace orxonox
             FadeoutText(BaseObject* creator);
             virtual ~FadeoutText() {}
 
-            virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
             inline void setDelay(float delay)

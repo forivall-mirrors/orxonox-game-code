@@ -70,7 +70,7 @@ namespace orxonox
                 { return this->list_; }
 
             /**
-                @brief Returns a reference to the mutex which might be useful if you want to iterate through the list (see @ref begin and @ref end).
+                @brief Returns a reference to the mutex which might be useful if you want to iterate through the list (see @ref getList()).
             */
             inline boost::shared_mutex& getMutex() const
                 { return this->mutex_; }

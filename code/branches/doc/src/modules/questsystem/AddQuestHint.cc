@@ -79,7 +79,7 @@ namespace orxonox
         Sets the id of the QuestHint to be added to the player the QuestEffect is invoked on.
     @param id
         The QuestHint id.
-    @param
+    @return
         Returns true if successful.
     */
     bool AddQuestHint::setHintId(const std::string & id)

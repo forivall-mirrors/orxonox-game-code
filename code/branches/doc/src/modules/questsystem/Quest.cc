@@ -196,7 +196,7 @@ namespace orxonox
     /**
     @brief
         Returns the subquest at the given index.
-    @param
+    @param index
         The index.
     @return
         Returns a pointer to the subquest at the given index. NULL if there is no element at the given index.
@@ -221,7 +221,7 @@ namespace orxonox
     /**
     @brief
         Returns the QuestHint at the given index.
-    @param
+    @param index
         The index.
     @return
         Returns a pointer to the QuestHint at the given index. NULL if there is no element at the given index.
@@ -245,7 +245,7 @@ namespace orxonox
     /**
     @brief
         Returns the fail QuestEffect at the given index.
-    @param
+    @param index
         The index.
     @return
         Returns a pointer to the fail QuestEffect at the given index. NULL if there is no element at the given index.
@@ -269,7 +269,7 @@ namespace orxonox
     /**
     @brief
         Returns the complete QuestEffect at the given index.
-    @param
+    @param index
         The index.
     @return
         Returns a pointer to the complete QuestEffect at the given index. NULL if there is no element at the given index.

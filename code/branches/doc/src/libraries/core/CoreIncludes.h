@@ -100,7 +100,7 @@ namespace orxonox
 {
     /**
         @brief Returns the Identifier with a given name.
-        @param String The name of the class
+        @param name The name of the class
     */
     inline Identifier* ClassByString(const std::string& name)
     {
@@ -109,7 +109,7 @@ namespace orxonox
 
     /**
         @brief Returns the Identifier with a given lowercase name.
-        @param String The lowercase name of the class
+        @param name The lowercase name of the class
     */
     inline Identifier* ClassByLowercaseString(const std::string& name)
     {
@@ -118,7 +118,7 @@ namespace orxonox
 
     /**
         @brief Returns the Identifier with a given network ID.
-        @param networkID The network ID of the class
+        @param id The network ID of the class
     */
     inline Identifier* ClassByID(uint32_t id)
     {
@@ -129,7 +129,7 @@ namespace orxonox
         @brief Returns the Identifier with a given 'this' pointer.
         @note This of course only works with OrxonoxClasses.
               The only use is in conjunction with macros that don't know the class type.
-        @param Pointer to an OrxonoxClass
+        @param object Pointer to an OrxonoxClass
     */
     template <class T>
     inline Identifier* ClassByObjectType(const T* object)

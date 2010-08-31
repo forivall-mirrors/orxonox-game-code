@@ -141,7 +141,7 @@ namespace orxonox
 
     /**
         @brief Returns true if the string contains something like '..."between quotes"...'.
-        @param The string
+        @param str The string
         @return True if there is something between quotes
     */
     bool hasStringBetweenQuotes(const std::string& str)
@@ -153,8 +153,7 @@ namespace orxonox
 
     /**
         @brief If the string contains something like '..."between quotes"...' then 'between quotes' gets returned (without quotes).
-        @param The string
-        @param The string between the quotes
+        @param str The string between the quotes
     */
     std::string getStringBetweenQuotes(const std::string& str)
     {
@@ -168,7 +167,7 @@ namespace orxonox
 
     /**
         @brief Removes enclosing quotes if available (including whitespaces at the outside of the quotes).
-        @brief str The string to strip
+        @param str The string to strip
         @return The string with removed quotes
     */
     std::string stripEnclosingQuotes(const std::string& str)

@@ -116,8 +116,10 @@ namespace orxonox
                 @brief Constructor: Converts the default-value to a string, checks the config-file for a changed value, sets the intern value variable.
                 @param type The type of the corresponding config-file
                 @param identifier The identifier of the class the variable belongs to
+                @param sectionname Name of the section the configValue should be put in.
                 @param varname The name of the variable
                 @param defvalue The default-value
+                @param value Only needed do determine the right type.
             */
             template <class D, class V>
             ConfigValueContainer(ConfigFileType::Value type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<D>& defvalue, const std::vector<V>& value)

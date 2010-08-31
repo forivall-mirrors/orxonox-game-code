@@ -139,10 +139,6 @@ namespace orxonox
     @brief
         Creates the OIS::InputMananger, the keyboard, the mouse and
         the joys ticks. If either of the first two fail, this method throws an exception.
-    @param windowWidth
-        The width of the render window
-    @param windowHeight
-        The height of the render window
     */
     void InputManager::loadDevices()
     {

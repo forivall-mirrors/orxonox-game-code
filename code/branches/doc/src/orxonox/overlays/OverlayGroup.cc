@@ -70,14 +70,14 @@ namespace orxonox
     @copydoc
         BaseObject::XMLPort()
     */
-    void OverlayGroup::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void OverlayGroup::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(OverlayGroup, XMLPort, xmlElement, mode);
+        SUPER(OverlayGroup, XMLPort, xmlelement, mode);
 
-        XMLPortParam(OverlayGroup, "scale",  setScale,  getScale,  xmlElement, mode);
-        XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlElement, mode);
+        XMLPortParam(OverlayGroup, "scale",  setScale,  getScale,  xmlelement, mode);
+        XMLPortParam(OverlayGroup, "scroll", setScroll, getScroll, xmlelement, mode);
         // loads all the child elements
-        XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlElement, mode);
+        XMLPortObject(OverlayGroup, OrxonoxOverlay, "", addElement, getElement, xmlelement, mode);
     }
 
     //! Scales every element in the set.
@@ -113,8 +113,8 @@ namespace orxonox
     /**
     @brief
         Removes an element from the map.
-    @param name
-        The name of the element that is removed.
+    @param element
+        A pointer to the element that is removed.
     @return
         Returns true if there was such an element to remove, false if not.
     */
@@ -180,6 +180,8 @@ namespace orxonox
     @param name
         The name of the group defined BaseObject::setName() (usually done with the "name"
         attribute in the xml file).
+    @param scale
+        The scaling factor
     */
     /*static*/ void OverlayGroup::scaleGroup(const std::string& name, float scale)
     {
@@ -196,6 +198,8 @@ namespace orxonox
     @param name
         The name of the group defined BaseObject::setName() (usually done with the "name"
         attribute in the xml file).
+    @param scroll
+        The relative translation of the overlay group
     */
     /*static*/ void OverlayGroup::scrollGroup(const std::string& name, const Vector2& scroll)
     {

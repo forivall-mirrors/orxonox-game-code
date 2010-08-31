@@ -125,16 +125,16 @@ namespace orxonox
     @copydoc
         BaseObject::XMLPort()
     */
-    void OrxonoxOverlay::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void OrxonoxOverlay::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(OrxonoxOverlay, XMLPort, xmlElement, mode);
+        SUPER(OrxonoxOverlay, XMLPort, xmlelement, mode);
 
-        XMLPortParam(OrxonoxOverlay, "size",      setSize,      getSize,      xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "pickpoint", setPickPoint, getPickPoint, xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "position",  setPosition,  getPosition,  xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "rotation",  setRotation,  getRotation,  xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "correctaspect", setAspectCorrection,   getAspectCorrection,   xmlElement, mode);
-        XMLPortParam(OrxonoxOverlay, "background",    setBackgroundMaterial, getBackgroundMaterial, xmlElement, mode);
+        XMLPortParam(OrxonoxOverlay, "size",      setSize,      getSize,      xmlelement, mode);
+        XMLPortParam(OrxonoxOverlay, "pickpoint", setPickPoint, getPickPoint, xmlelement, mode);
+        XMLPortParam(OrxonoxOverlay, "position",  setPosition,  getPosition,  xmlelement, mode);
+        XMLPortParam(OrxonoxOverlay, "rotation",  setRotation,  getRotation,  xmlelement, mode);
+        XMLPortParam(OrxonoxOverlay, "correctaspect", setAspectCorrection,   getAspectCorrection,   xmlelement, mode);
+        XMLPortParam(OrxonoxOverlay, "background",    setBackgroundMaterial, getBackgroundMaterial, xmlelement, mode);
     }
 
     void OrxonoxOverlay::changedName()
@@ -305,6 +305,8 @@ namespace orxonox
     @param name
         The name of the overlay defined BaseObject::setName() (usually done with the "name"
         attribute in the xml file).
+    @param scale
+        The scaling factor
     */
     /*static*/ void OrxonoxOverlay::scaleOverlay(const std::string& name, float scale)
     {
@@ -345,6 +347,8 @@ namespace orxonox
     @param name
         The name of the overlay defined BaseObject::setName() (usually done with the "name"
         attribute in the xml file).
+    @param scroll
+        The relative translation of the overlay
     */
     /*static*/ void OrxonoxOverlay::scrollOverlay(const std::string& name, const Vector2& scroll)
     {
@@ -359,6 +363,8 @@ namespace orxonox
     @param name
         The name of the overlay defined BaseObject::setName() (usually done with the "name"
         attribute in the xml file).
+    @param angle
+        The rotation angle in degree
     */
     /*static*/ void OrxonoxOverlay::rotateOverlay(const std::string& name, const Degree& angle)
     {

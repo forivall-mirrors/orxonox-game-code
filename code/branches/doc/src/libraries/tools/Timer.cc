@@ -94,7 +94,8 @@ namespace orxonox
         @brief Constructor: Initializes the Timer with given values.
         @param interval The timer-interval in seconds
         @param bLoop If true, the function gets called every 'interval' seconds
-        @param exeuctor A executor of the function to call
+        @param executor A executor of the function to call
+        @param bKillAfterCall If true, the timer will be deleted after the function was executed
     */
     Timer::Timer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall)
     {

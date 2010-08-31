@@ -43,7 +43,7 @@ namespace orxonox
             GUIOverlay(BaseObject* creator);
             virtual ~GUIOverlay();
 
-            virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void setGUIName(const std::string& name);
             inline const std::string& getGUIName() const { return this->guiName_; }

@@ -108,7 +108,7 @@ namespace orxonox
 
             /**
                 @brief Assigns the element of another ObjectListIterator.
-                @param element The other ObjectListIterator
+                @param other The other ObjectListIterator
             */
             inline ObjectListIterator<T>& operator=(const ObjectListIterator<T>& other)
             {

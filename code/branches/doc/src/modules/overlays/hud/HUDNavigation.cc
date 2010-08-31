@@ -89,13 +89,13 @@ HUDNavigation::~HUDNavigation()
     sortedObjectList_.clear();
 }
 
-void HUDNavigation::XMLPort ( Element& xmlElement, XMLPort::Mode mode )
+void HUDNavigation::XMLPort ( Element& xmlelement, XMLPort::Mode mode )
 {
-    SUPER ( HUDNavigation, XMLPort, xmlElement, mode );
+    SUPER ( HUDNavigation, XMLPort, xmlelement, mode );
 
-    XMLPortParam ( HUDNavigation, "font",          setFont,          getFont,          xmlElement, mode );
-    XMLPortParam ( HUDNavigation, "textSize",      setTextSize,      getTextSize,      xmlElement, mode );
-    XMLPortParam ( HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlElement, mode );
+    XMLPortParam ( HUDNavigation, "font",          setFont,          getFont,          xmlelement, mode );
+    XMLPortParam ( HUDNavigation, "textSize",      setTextSize,      getTextSize,      xmlelement, mode );
+    XMLPortParam ( HUDNavigation, "navMarkerSize", setNavMarkerSize, getNavMarkerSize, xmlelement, mode );
 }
 
 void HUDNavigation::setFont ( const std::string& font )

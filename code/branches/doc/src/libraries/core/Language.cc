@@ -167,6 +167,7 @@ namespace orxonox
     /**
         @brief Returns the localisation of a given entry.
         @param label The label of the entry
+        @param bError If true, an error is printed if the label doesn't exist and the default localisation is returned. If false, no error is printed and an empty string is returned.
         @return The localisation
     */
     const std::string& Language::getLocalisation(const LanguageEntryLabel& label, bool bError) const

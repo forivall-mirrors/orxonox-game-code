@@ -115,7 +115,7 @@ namespace orxonox
     /**
         @brief XML loading and saving.
         @param xmlelement The XML-element
-        @param loading Loading (true) or saving (false)
+        @param mode The mode defines the operation that is being executed: loading or saving the object (from or to XML respectively)
     */
     void BaseObject::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -140,7 +140,7 @@ namespace orxonox
     /**
         @brief Defines the possible event states of this object and parses eventsources from an XML file.
         @param xmlelement The XML-element
-        @param loading Loading (true) or saving (false)
+        @param mode The mode defines the operation that is being executed: loading or saving the object (from or to XML respectively)
     */
     void BaseObject::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {

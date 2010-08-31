@@ -57,7 +57,7 @@ namespace orxonox
         //! Empty destructor.
         ~OverlayGroup();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         static void toggleVisibility(const std::string& name);
         static void scaleGroup(const std::string& name, float scale);

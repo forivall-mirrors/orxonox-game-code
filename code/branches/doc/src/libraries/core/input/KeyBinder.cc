@@ -494,8 +494,12 @@ namespace orxonox
     /**
     @brief
         Event handler for the mouseMoved Event.
-    @param e
-        Mouse state information
+    @param abs_
+        The absolute position of the mouse
+    @param rel_
+        The relative movement of the mouse
+    @param clippingSize
+        FIXME - no doc? param not even used?
     */
     void KeyBinder::mouseMoved(IntVector2 abs_, IntVector2 rel_, IntVector2 clippingSize)
     {
@@ -550,7 +554,8 @@ namespace orxonox
 
     /**
     @brief Event handler for the mouseScrolled Event.
-    @param e Mouse state information
+    @param abs The absolute position of the scroll wheel
+    @param rel The relative movement of the scroll wheel
     */
     void KeyBinder::mouseScrolled(int abs, int rel)
     {

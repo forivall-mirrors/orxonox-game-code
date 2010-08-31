@@ -59,6 +59,12 @@ namespace orxonox
             Creates the exception but doesn't yet compose the full descrption (because of the virtual functions)
         @param description
             Exception description as string. This message is supposed to help developers!
+        @param lineNumber
+            The number of the code-line in which the exception occurred
+        @param filename
+            The file in which the exception occurred
+        @param functionName
+            The function in which the exception occurred
         */
         Exception(const std::string& description, unsigned int lineNumber,
                   const char* filename, const char* functionName);

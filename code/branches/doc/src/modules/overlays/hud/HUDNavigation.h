@@ -50,7 +50,7 @@ public:
 
     void setConfigValues();
 
-    virtual void XMLPort ( Element& xmlElement, XMLPort::Mode mode );
+    virtual void XMLPort ( Element& xmlelement, XMLPort::Mode mode );
     virtual void tick ( float dt );
 
     virtual void addObject ( RadarViewable* object );

@@ -43,7 +43,7 @@ namespace orxonox
         ResourceCollection(BaseObject* creator);
         virtual ~ResourceCollection();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         void setResourceGroup(const std::string& resourceGroup);
         const std::string& getResourceGroup() const { return resourceGroup_; }

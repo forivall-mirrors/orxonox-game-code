@@ -84,8 +84,8 @@ namespace orxonox
                 @brief Initializes the Timer with given values.
                 @param interval The timer-interval in seconds
                 @param bLoop If true, the function gets called every 'interval' seconds
-                @param object The object owning the timer and the function
                 @param executor A executor of the function to call
+                @param bKillAfterCall If true, the timer will be deleted after the function was executed
             */
             void setTimer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall = false)
             {

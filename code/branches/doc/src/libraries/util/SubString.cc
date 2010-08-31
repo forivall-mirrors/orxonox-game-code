@@ -61,14 +61,19 @@ namespace orxonox
 
 
     /**
-     * @brief Splits a String into multiple splitters.
-     * @param string the String to split
-     * @param delimiters multiple set of characters at what to split. (delimiters)
-     * @param delimiterNeighbours neighbours of the delimiters, that will be erased only when near a delimiter.
-     * @param emptyEntries If empty entries should be allewed or removed.
-     * @param escapeChar The Escape Character that overrides splitters commends and so on...
-     * @param safemode_char within these characters splitting won't happen
-     * @param comment_char the Comment character.
+     * @brief Splits a string into multiple tokens.
+     * @param string The string to split
+     * @param delimiters Multiple set of characters at what to split. (delimiters)
+     * @param delimiterNeighbours Neighbours of the delimiters that will be erased as well.
+     * @param emptyEntries If empty entries are added to the list of SubStrings
+     * @param escapeChar The escape character that overrides splitters commends and so on...
+     * @param removeEscapeChar If true, the escape char is removed from the tokens
+     * @param safemode_char Within these characters splitting won't happen
+     * @param removeSafemodeChar Removes the safemode_char from the beginning and the ending of a token
+     * @param openparenthesis_char The beginning of a safemode is marked with this
+     * @param closeparenthesis_char The ending of a safemode is marked with this
+     * @param removeParenthesisChars Removes the parenthesis from the beginning and the ending of a token
+     * @param comment_char The comment character.
      */
     SubString::SubString(const std::string& string,
                          const std::string& delimiters, const std::string& delimiterNeighbours, bool emptyEntries,
@@ -233,23 +238,28 @@ namespace orxonox
 
 
     /**
-     * @brief Splits a String into multiple splitters.
-     * @param string the String to split
-     * @param delimiters multiple set of characters at what to split. (delimiters)
-     * @param delimiterNeighbours: Neighbours to the Delimiters that will be erased too.
-     * @param emptyEntries: If empty entries are added to the List of SubStrings
-     * @param escapeChar The Escape Character that overrides splitters commends and so on...
-     * @param safemode_char within these characters splitting won't happen
-     * @param comment_char the Comment character.
+     * @brief Splits a string into multiple tokens.
+     * @param string The string to split
+     * @param delimiters Multiple set of characters at what to split. (delimiters)
+     * @param delimiterNeighbours: Neighbours of the delimiters that will be erased too.
+     * @param emptyEntries: If empty entries are added to the list of SubStrings
+     * @param escapeChar The escape character that overrides splitters commends and so on...
+     * @param removeEscapeChar If true, the escape char is removed from the tokens
+     * @param safemode_char Within these characters splitting won't happen
+     * @param removeSafemodeChar Removes the safemode_char from the beginning and the ending of a token
+     * @param openparenthesis_char The beginning of a safemode is marked with this
+     * @param closeparenthesis_char The ending of a safemode is marked with this
+     * @param removeParenthesisChars Removes the parenthesis from the beginning and the ending of a token
+     * @param comment_char The comment character.
      */
     unsigned int SubString::split(const std::string& string,
                                   const std::string& delimiters, const std::string& delimiterNeighbours, bool emptyEntries,
-                                  char escapeChar, bool removeExcapeChar, char safemode_char, bool removeSafemodeChar,
+                                  char escapeChar, bool removeEscapeChar, char safemode_char, bool removeSafemodeChar,
                                   char openparenthesis_char, char closeparenthesis_char, bool removeParenthesisChars, char comment_char)
     {
         this->strings.clear();
         this->bInSafemode.clear();
-        SubString::splitLine(this->strings, this->bInSafemode, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, removeExcapeChar, safemode_char, removeSafemodeChar, openparenthesis_char, closeparenthesis_char, removeParenthesisChars, comment_char);
+        SubString::splitLine(this->strings, this->bInSafemode, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, removeEscapeChar, safemode_char, removeSafemodeChar, openparenthesis_char, closeparenthesis_char, removeParenthesisChars, comment_char);
         return this->strings.size();
     }
 
@@ -303,21 +313,22 @@ namespace orxonox
 
 
     /**
-     * @brief splits line into tokens and stores them in ret.
-     * @param ret the Array, where the Splitted strings will be stored in
-     * to the beginning of the current token is stored
-     * @param line the inputLine to split
-     * @param delimiters a String of Delimiters (here the input will be splitted)
-     * @param delimiterNeighbours Neighbours to the Delimiter, that will be removed if they are to the left or the right of a Delimiter.
-     * @param emptyEntries: if empty Strings are added to the List of Strings.
-     * @param escape_char: Escape carater (escapes splitters)
-     * @param safemode_char: the beginning of the safemode is marked with this
-     * @param removeSafemodeChar removes the safemode_char from the beginning and the ending of a token
-     * @param openparenthesis_char the beginning of a safemode is marked with this
-     * @param closeparenthesis_char the ending of a safemode is marked with this
-     * @param removeParenthesisChars removes the parenthesis from the beginning and the ending of a token
-     * @param comment_char: the beginning of a comment is marked with this: (until the end of a Line)
-     * @param start_state: the Initial state on how to parse the String.
+     * @brief Splits a line into tokens and stores them in ret.
+     * @param ret The array, where the splitted strings will be stored in
+     * @param bInSafemode A vector wich stores for each character of the string if it is in safemode or not
+     * @param line The inputLine to split
+     * @param delimiters A string of delimiters (here the input will be splitted)
+     * @param delimiterNeighbours Neighbours of the delimiter, that will be removed if they are to the left or the right of a delimiter.
+     * @param emptyEntries If empty strings are added to the list of strings.
+     * @param escape_char Escape carater (escapes splitters)
+     * @param removeEscapeChar If true, the escape char is removed from the tokens
+     * @param safemode_char The beginning of the safemode is marked with this
+     * @param removeSafemodeChar Removes the safemode_char from the beginning and the ending of a token
+     * @param openparenthesis_char The beginning of a safemode is marked with this
+     * @param closeparenthesis_char The ending of a safemode is marked with this
+     * @param removeParenthesisChars Removes the parenthesis from the beginning and the ending of a token
+     * @param comment_char The beginning of a comment is marked with this: (until the end of a line)
+     * @param start_state The initial state on how to parse the string.
      * @return SPLIT_LINE_STATE the parser was in when returning
      *
      * This is the Actual Splitting Algorithm from Clemens Wacha
@@ -332,7 +343,7 @@ namespace orxonox
                          const std::string& delimiterNeighbours,
                          bool emptyEntries,
                          char escape_char,
-                         bool removeExcapeChar,
+                         bool removeEscapeChar,
                          char safemode_char,
                          bool removeSafemodeChar,
                          char openparenthesis_char,
@@ -367,7 +378,7 @@ namespace orxonox
                 if(line[i] == escape_char)
                 {
                     state = SL_ESCAPE;
-                    if (!removeExcapeChar)
+                    if (!removeEscapeChar)
                         token += line[i];
                 }
                 else if(line[i] == safemode_char)

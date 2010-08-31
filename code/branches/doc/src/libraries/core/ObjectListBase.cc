@@ -69,7 +69,7 @@ namespace orxonox
 
     /**
         @brief Increases all Iterators that currently point on the given element (because it gets removed).
-        @param element The element that gets removed
+        @param object The object that gets removed
     */
     void ObjectListBase::notifyIterators(OrxonoxClass* object) const
     {
@@ -81,7 +81,7 @@ namespace orxonox
 
     /**
         @brief Adds a new object to the end of the list.
-        @param object The object to add
+        @param element The element to add
         @return The pointer to the new ObjectListBaseElement, needed by the MetaObjectList of the added object
     */
     ObjectListBaseElement* ObjectListBase::add(ObjectListBaseElement* element)

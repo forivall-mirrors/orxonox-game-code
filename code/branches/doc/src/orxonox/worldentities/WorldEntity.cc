@@ -649,8 +649,10 @@ HACK HACK HACK
     /**
     @brief
         Translates this WorldEntity by a vector.
+    @param distance
+        The relative distance of the translation
     @param relativeTo
-        @see WorldEntity::TransformSpace
+        The TransformSpace of this translation
     */
     void WorldEntity::translate(const Vector3& distance, TransformSpace relativeTo)
     {
@@ -677,8 +679,10 @@ HACK HACK HACK
     /**
     @brief
         Rotates this WorldEntity by a quaternion.
+    @param rotation
+        The desired relative rotation
     @param relativeTo
-        @see WorldEntity::TransformSpace
+        The TransformSpace of this translation
     */
     void WorldEntity::rotate(const Quaternion& rotation, TransformSpace relativeTo)
     {
@@ -702,8 +706,10 @@ HACK HACK HACK
     /**
     @brief
         Makes this WorldEntity look at a specific target location.
+    @param target
+        An absolute point in the space which defines the direction of the entity
     @param relativeTo
-        @see WorldEntity::TransformSpace
+        The TransformSpace of this translation
     @param localDirectionVector
         The vector which normally describes the natural direction of the object, usually -Z.
     */
@@ -728,8 +734,10 @@ HACK HACK HACK
     /**
     @brief
         Makes this WorldEntity look in specific direction.
+    @param direction
+        A point relative to the position of the WorldEntity which defines its orientation
     @param relativeTo
-        @see WorldEntity::TransformSpace
+        The TransformSpace of this translation
     @param localDirectionVector
         The vector which normally describes the natural direction of the object, usually -Z.
     */
@@ -772,7 +780,7 @@ HACK HACK HACK
 
     /**
     @brief
-        Sets the CollisionType. This alters the object significantly! @see CollisionType.
+        Sets the CollisionType. This alters the object significantly!
     @note
         Operation does not work on attached WorldEntities.
     */

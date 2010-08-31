@@ -55,30 +55,38 @@ namespace orxonox
             DynLibList mLibList;
 
         public:
-            /** Default constructor.
-                @note
-                    <br>Should never be called as the singleton is automatically
-                    created during the creation of the Root object.
-                @see
-                    Root::Root
+            /**
+            @brief
+                Default constructor.
+            @note
+                Should never be called as the singleton is automatically
+                created during the creation of the Root object.
+            @see
+                Root::Root
             */
             DynLibManager();
 
-            /** Default destructor.
-                @see
-                    Root::~Root
+            /**
+            @brief
+                Default destructor.
+            @see
+                Root::~Root
             */
             virtual ~DynLibManager();
 
-            /** Loads the passed library.
-                @param
-                    filename The name of the library. The extension can be omitted
+            /**
+            @brief
+                Loads the passed library.
+            @param filename
+                The name of the library. The extension can be omitted
             */
             DynLib* load(const std::string& filename);
 
-            /** Unloads the passed library.
-            @param
-            filename The name of the library. The extension can be omitted
+            /**
+            @brief
+                Unloads the passed library.
+            @param lib
+                A pointer to the library object
             */
             void unload(DynLib* lib);
 

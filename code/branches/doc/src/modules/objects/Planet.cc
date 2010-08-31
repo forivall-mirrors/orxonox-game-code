@@ -143,12 +143,6 @@ namespace orxonox
         this->mesh_.setCastShadows(this->bCastShadows_);
     }
 
-    /**
-        @brief XML loading and saving.
-        @param xmlelement The XML-element
-        @param loading Loading (true) or saving (false)
-        @return The XML-element
-    */
     void Planet::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Planet, XMLPort, xmlelement, mode);

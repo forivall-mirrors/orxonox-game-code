@@ -66,9 +66,6 @@ namespace orxonox
         /**
         @brief
             Gets temporary log path and starts the log file
-        @param outputHandler
-            This is only required to avoid another call to getInstance (this c'tor was
-            called from getInstance!)
         */
         LogFileWriter()
             : OutputListener(OutputHandler::logFileOutputListenerName_s)
@@ -161,9 +158,6 @@ namespace orxonox
         /**
         @brief
             Sets the right soft debug level and registers itself
-        @param outputHandler
-            This is only required to avoid another call to getInstance (this c'tor was
-            called from getInstance!)
         */
         MemoryLogWriter()
             : OutputListener("memoryLog")
