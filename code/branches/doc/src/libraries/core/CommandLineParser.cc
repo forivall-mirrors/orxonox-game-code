@@ -126,7 +126,7 @@ namespace orxonox
     @param arguments
         Vector of space separated strings.
     @param bParsingFile
-        FIXME - add doc!
+        Parsing a file or the command line itself
     */
     void CommandLineParser::_parse(const std::vector<std::string>& arguments, bool bParsingFile)
     {
@@ -246,7 +246,7 @@ namespace orxonox
     @param value
         String containing the value
     @param bParsingFile
-        FIXME - add doc!
+        Parsing a file or the command line itself
     */
     void CommandLineParser::checkFullArgument(const std::string& name, const std::string& value, bool bParsingFile)
     {
@@ -261,11 +261,11 @@ namespace orxonox
     @brief
         Parses an argument based on its shortcut.
     @param shortcut
-        Shotcut to the argument
+        Shortcut to the argument
     @param value
         String containing the value
     @param bParsingFile
-        FIXME - add doc!
+        Parsing a file or the command line itself
     */
     void CommandLineParser::checkShortcut(const std::string& shortcut, const std::string& value, bool bParsingFile)
     {

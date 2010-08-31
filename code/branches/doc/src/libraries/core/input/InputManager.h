@@ -122,9 +122,9 @@ namespace orxonox
         @param name
             Unique name of the InputState when referenced as string
         @param bAlwaysGetsInput
-            FIXME - add doc!
+            InputState always gets the input when activated
         @param bTransparent
-            FIXME - add doc!
+            InputState will not prevent underlaying state from receiving input
         @param priority
             Priority matters when multiple states are active. You can specify any
             number, but 1 - 99 is preferred (99 means high priority).

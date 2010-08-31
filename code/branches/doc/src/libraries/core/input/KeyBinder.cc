@@ -499,7 +499,7 @@ namespace orxonox
     @param rel_
         The relative movement of the mouse
     @param clippingSize
-        FIXME - no doc? param not even used?
+        Mouse screen area in pixels (usually 1024x1024)
     */
     void KeyBinder::mouseMoved(IntVector2 abs_, IntVector2 rel_, IntVector2 clippingSize)
     {

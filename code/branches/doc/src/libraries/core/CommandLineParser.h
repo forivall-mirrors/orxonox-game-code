@@ -207,7 +207,7 @@ namespace orxonox
     @param defaultValue
         Default value that is used when argument was not given.
     @param bCommandLineOnly
-        FIXME - add doc!
+        Parsing a file or the command line itself
     */
     template <class T>
     CommandLineArgument& CommandLineParser::addArgument(const std::string& name, T defaultValue, bool bCommandLineOnly)
