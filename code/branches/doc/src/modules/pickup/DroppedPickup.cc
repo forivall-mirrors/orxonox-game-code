@@ -61,7 +61,7 @@ namespace orxonox
     @param pickup
         The Pickupable that was dropped.
     @param carrier
-        FIXME - add doc!
+        The PickupCarrier that carried the input pickup before it was dropped.
     @param triggerDistance
         The distance at which the PickupSpawner triggers. Default is 10.
     */

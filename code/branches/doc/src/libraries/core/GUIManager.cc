@@ -235,7 +235,7 @@ namespace orxonox
     @param name
         The name of the GUI
     @param bHidePrevious
-        FIXME - add doc!
+        If true all displayed GUIs on the stack, that are below this GUI are hidden.
 
         The function executes the Lua function with the same name in case the GUIManager is ready.
     */
