@@ -51,12 +51,14 @@
      5: More debug information
      6: Crazy debug information
 
-@example
+    Example:
+    @code
     COUT(0) << "Very important output" << std::endl;
     COUT(1) << "Error: Something went wrong!" << std::endl;
     COUT(2) << "Warning: There might be a problem." << std::endl;
     COUT(3) << "Info: It's Monday" << std::endl;
     COUT(4) << "Debug: x is 1.23456" << std::endl;
+    @endcode
 */
 
 #ifndef _Util_Debug_H__
@@ -95,8 +97,11 @@ namespace orxonox
     (a > b ? 0 : c << "text") is equivalent to (a > b ? 0 : (c << "text"))
     where (a > b ? 0 : ) stands for COUT(x). This should explain how
     this macro magic can possibly even work ;)
-@example
+
+    Example:
+    @code
     COUT(3) << "Some info" << std::endl;
+    @endcode
 @note
     The ? : operator requires both possible results to have the type of
     the first. This is achieved by the int conversion operator dummy

@@ -92,7 +92,7 @@ namespace orxonox
         @param otherposition The position of the other object
         @return The angle
 
-        @example
+        Examples:
         If the other object is exactly in front of me, the function returns 0.
         If the other object is exactly behind me, the function returns pi.
         If the other object is exactly right/left to me (or above/below), the function returns pi/2.
@@ -115,7 +115,7 @@ namespace orxonox
         @param otherposition The position of the other object
         @return The viewing direction
 
-        @example
+        Examples:
         If the other object is exactly in front of me, the function returns Vector2(0, 0).
         If the other object is exactly at my left, the function returns Vector2(-1, 0).
         If the other object is exactly at my right, the function returns Vector2(1, 0).
@@ -155,7 +155,7 @@ namespace orxonox
         @param otherposition The position of the other object
         @return The viewing direction
 
-        @example
+        Examples:
         If the other object is exactly in front of me, the function returns Vector2(0, 0).
         If the other object is exactly at my left, the function returns Vector2(-0.5, 0).
         If the other object is exactly at my right, the function returns Vector2(0.5, 0).

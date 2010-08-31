@@ -46,10 +46,10 @@
  * Substring is Advanced, and it is possible, to split a string by ','
  * but also removing leading and trailing spaces around the comma.
  *
- * @example
+ * Example:
  * Split the String std::string st = "1345, The new empire   , is , orxonox"
  * is splitted with:
- * SubString(st, ',', " \n\t")
+ * @code SubString(st, ',', " \n\t") @endcode
  * into
  * "1345", "The new empire", "is", "orxonox"
  * As you can see, the useless spaces around ',' were removed.

@@ -152,7 +152,7 @@
     Sometimes you'll have a member object in your class, which has it's own load- and savefunctions.
     With this macro, you can simply use them instead of writing your own functions.
 
-    @example
+    Example:
     Your class is called SpaceShip and this class has an object (myPilot_) of class Pilot. Pilot has a name
     and two functions, setName(name) and getName(). Now you want an attribute "pilotname" in your
     SpaceShip class. Instead of writing wrapper functions, you can simply use the XMLPortParamExtern
@@ -230,7 +230,7 @@
             return 0;
         }
 
-    @example
+    Example:
     Possible usage of the macro:
     > XMLPortObject(SpaceShip, Weapon, "weapons", addWeapon, getWeapon, xmlelement, mode, false, true);
 

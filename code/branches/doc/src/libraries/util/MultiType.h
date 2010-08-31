@@ -51,12 +51,14 @@
      - setType<T>() set's the type to T and resets the value
      - setValue<T>(value) assigns a new value and changes the type to T.
 
-    @example
+    Examples:
+    @code
     MultiType a = 10;;         // a has now the type int and the value 10
     a.setValue("3.14");        // a has still the type int and "3.14" gets converted, therefore the value is now 3
     a.setValue<float>("3.14"); // a has now the type float and "3.14" gets converted to 3.14
     a.convert<bool>();         // converts 3.14 to bool, which is true
     a = false;                 // assigns false, this is equivalent to a.setValue(false)
+    @endcode
 
     @note
     Whenever a value gets converted, there is a boolean return value telling you whether it was
