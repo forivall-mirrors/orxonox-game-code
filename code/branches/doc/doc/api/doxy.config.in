@@ -627,7 +627,9 @@ EXCLUDE                = @CMAKE_SOURCE_DIR@/src/external/bullet/ \
                          @CMAKE_SOURCE_DIR@/src/external/ceguilua/ceguilua-0.5.0 \
                          @CMAKE_SOURCE_DIR@/src/external/ceguilua/ceguilua-0.6.0 \
                          @CMAKE_SOURCE_DIR@/src/external/ceguilua/ceguilua-0.6.1 \
-                         @CMAKE_SOURCE_DIR@/src/libraries/tools/bsp
+                         @CMAKE_SOURCE_DIR@/src/libraries/core/command/IOConsoleWindows.h \
+                         @CMAKE_SOURCE_DIR@/src/libraries/core/command/IOConsoleWindows.cc \
+                         @CMAKE_SOURCE_DIR@/src/libraries/tools/bsp \
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or
 # directories that are symbolic links (a Unix filesystem feature) are excluded
