@@ -17,10 +17,7 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-INCLUDE_DIRECTORIES(
-  ${CMAKE_SOURCE_DIR}/src/external
-  ${CMAKE_CURRENT_SOURCE_DIR}
-)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 ################ Sub Directories ################
 
