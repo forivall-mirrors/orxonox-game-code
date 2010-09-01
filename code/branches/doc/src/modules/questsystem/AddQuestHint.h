@@ -48,7 +48,7 @@ namespace orxonox
         Creating a AddQuestHint through XML goes as follows:
 
         @code
-        <AddQuestHint hintId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the QuestHint that should be added.
+        <AddQuestHint hintId="id" />  //Where id identifies the QuestHint that should be added.
         @endcode
     @author
         Damian 'Mozork' Frick

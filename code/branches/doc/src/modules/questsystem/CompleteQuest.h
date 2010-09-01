@@ -46,7 +46,7 @@ namespace orxonox
         Creating a CompleteQuest through XML goes as follows:
 
         @code
-        <CompleteQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be completed.
+        <CompleteQuest questId="id" />  //Where id identifies the Quest that should be completed.
         @endcode
     @author
         Damian 'Mozork' Frick

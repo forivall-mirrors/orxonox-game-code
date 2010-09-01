@@ -60,7 +60,7 @@ namespace orxonox // tolua_export
         Creating a QuestHint through XML goes as follows:
 
         @code
-        <QuestHint id="hintId">  //Where hintId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
+        <QuestHint id="hintId">
             <QuestDesctription title="" description="" />
         </QuestHint>
         @endcode

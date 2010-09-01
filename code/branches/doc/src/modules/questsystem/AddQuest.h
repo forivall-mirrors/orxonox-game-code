@@ -46,7 +46,7 @@ namespace orxonox
         Creating a AddQuest through XML goes as follows:
 
         @code
-        <AddQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be added.
+        <AddQuest questId="id" />  //Where id identifies the Quest that should be added.
         @endcode
     @author
         Damian 'Mozork' Frick

@@ -97,7 +97,7 @@ namespace orxonox
                 { this->description_ = description; }
 
         private:
-            std::string id_; //!< Identifier. Should be of GUID form: http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
+            std::string id_; //!< Identifier. Must be unique.
             QuestDescription* description_; //!< The QuestDescription of the QuestItem.
 
             bool registered_;
