@@ -37,7 +37,7 @@
 #include "questsystem/QuestsystemPrereqs.h"
 
 #include <list>
-#include "QuestEffect.h"
+#include "questsystem/QuestEffect.h"
 
 namespace orxonox
 {
