@@ -1,0 +1,129 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Reto Grieder
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+/**
+@file
+@brief
+    Compiles all the interfaces in the orxonox library with mostly just a constructor.
+*/
+
+#include "GametypeMessageListener.h"
+#include "PickupCarrier.h"
+#include "PlayerTrigger.h"
+#include "RadarListener.h"
+#include "Rewardable.h"
+#include "TeamColourable.h"
+#include "NotificationListener.h"
+
+#include "core/CoreIncludes.h"
+
+namespace orxonox
+{
+    //----------------------------
+    // GametypeMessageListener
+    //----------------------------
+    GametypeMessageListener::GametypeMessageListener()
+    {
+        RegisterRootObject(GametypeMessageListener);
+    }
+
+    //----------------------------
+    // PickupCarrier
+    //----------------------------
+    PickupCarrier::PickupCarrier()
+    {
+        RegisterRootObject(PickupCarrier);
+    }
+
+    PickupCarrier::~PickupCarrier()
+    {
+
+    }
+
+    void PickupCarrier::preDestroy(void)
+    {
+        std::set<Pickupable*>::iterator it = this->pickups_.begin();
+        std::set<Pickupable*>::iterator temp;
+        while(it != this->pickups_.end())
+        {
+            (*it)->carrierDestroyed();
+            temp = it;
+            it = this->pickups_.begin();
+            if(it == temp) // Infinite loop avoidance, in case the pickup wasn't removed from the carrier somewhere in the carrierDestroy() procedure.
+            {
+                COUT(2) << "Oops. In a PickupCarrier, while cleaning up, a Pickupable (&" << (*temp) << ") didn't unregister itself as it should have." << std::endl;;
+                it++;
+            }
+        }
+
+        this->pickups_.clear();
+    }
+
+    //----------------------------
+    // PlayerTrigger
+    //----------------------------
+    PlayerTrigger::PlayerTrigger()
+    {
+        RegisterRootObject(PlayerTrigger);
+
+        this->player_ = NULL;
+        this->isForPlayer_ = true;
+    }
+
+    //----------------------------
+    // RadarListener
+    //----------------------------
+    RadarListener::RadarListener()
+    {
+        RegisterRootObject(RadarListener);
+    }
+
+    //----------------------------
+    // TeamColourable
+    //----------------------------
+    TeamColourable::TeamColourable()
+    {
+        RegisterRootObject(TeamColourable);
+    }
+
+    //----------------------------
+    // Rewardable
+    //----------------------------
+    Rewardable::Rewardable()
+    {
+        RegisterRootObject(Rewardable);
+    }
+
+    //----------------------------
+    // NotificationListener
+    //----------------------------
+    NotificationListener::NotificationListener()
+    {
+        RegisterRootObject(NotificationListener);
+    }
+}
