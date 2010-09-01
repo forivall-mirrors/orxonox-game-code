@@ -115,7 +115,7 @@ ADD_SUBDIRECTORY(libraries)
 ADD_SUBDIRECTORY(orxonox)
 ADD_SUBDIRECTORY(modules)
 
-################ Executable ################
+################## Executable ###################
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/libraries
@@ -160,3 +160,15 @@ IF(MSVC)
          VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcproj.user")
 ENDIF(MSVC)
+
+#################### Doxygen ####################
+
+# Prepare include paths for Doxygen. This is necessary to display
+# the correct path to use when including a file, e.g.
+# core/XMLPort.h instead of src/core/XMLPort.h
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/modules)
+GET_DIRECTORY_PROPERTY(_temp INCLUDE_DIRECTORIES)
+# Replace ';' by spaces
+STRING(REPLACE ";" " " _temp "${_temp}")
+SET(DOXYGEN_INCLUDE_DIRECTORIES "${_temp}" PARENT_SCOPE)
