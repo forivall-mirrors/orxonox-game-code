@@ -48,9 +48,9 @@ namespace orxonox
     {
       // Save Server Round Trip Time
       this->serverRTT_ = event->peer->roundTripTime;
-      // Save Server IP
-      char* serverIP = new char[16];
-      enet_address_get_host_ip(&event->peer->address, serverIP, 16);
+      // Save Server IP, leave some space for scope ID
+      char* serverIP = new char[64];
+      enet_address_get_host_ip(&event->peer->address, serverIP, 64);
       this->serverIP_ = std::string(serverIP);
       // Save ACK
       uint8_t* temp = event->packet->data;
