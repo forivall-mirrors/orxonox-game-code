@@ -30,26 +30,27 @@
 /**
 @file
 @brief
-    Handles different output-levels of errors, warnings, infos and debug information.
+    Handles different output-levels of errors, warnings, infos, and debug information.
 
-    The COUT(level) macro acts like std::cout, but the output is only performed if the given
+    The COUT(level) macro acts like @c std::cout, but the output is only performed if the given
     level is <= the soft debug level.
 
     There are two used values in this file:
      - The hard debug level is used during compile time. It describes the highest allowed output level.
      - The soft debug level is used during runtime and is the maximum of the three configurable
-       output-levels for console, log file and in game shell.
+       output-levels for console, log file, and in game shell.
 
     The separation between the three devices is done by the OutputHandler.
 
+    @anchor COUTlevels
     Possible levels are:
-     0: Very important output
-     1: Errors
-     2: Warnings
-     3: Information
-     4: Debug information
-     5: More debug information
-     6: Crazy debug information
+     - 0: Very important output
+     - 1: Errors
+     - 2: Warnings
+     - 3: Information
+     - 4: Debug information
+     - 5: More debug information
+     - 6: Crazy debug information
 
     Example:
     @code
@@ -91,21 +92,22 @@ namespace orxonox
 
 /**
 @brief
-    Logs text output: use exactly like std::cout, but specify an output
-    level as argument.
-@details
-    (a > b ? 0 : c << "text") is equivalent to (a > b ? 0 : (c << "text"))
-    where (a > b ? 0 : ) stands for COUT(x). This should explain how
-    this macro magic can possibly even work ;)
+    Logs text output: You can use COUT(level) exactly like @c std::cout, but you have to specify an output level as argument.
+@param level
+    The level of the following output (passed with <tt><< "text"</tt>). Lower levels are more important. See @ref COUTlevels "the description above" for a list of possible output levels.
 
     Example:
     @code
-    COUT(3) << "Some info" << std::endl;
+    COUT(3) << "Some info" << std::endl; // Output with level 3
     @endcode
 @note
-    The ? : operator requires both possible results to have the type of
+    <tt>(a > b ? 0 : c << "text")</tt> is equivalent to <tt>(a > b ? 0 : (c << "text")</tt>
+    where <tt>(a > b ? 0 : )</tt> stands for COUT(x). This should explain how
+    this macro magic can possibly even work ;)
+@remarks
+    The <tt>? :</tt> operator requires both possible results to have the type of
     the first. This is achieved by the int conversion operator dummy
-    in the OutputHandler.
+    in the @ref orxonox::OutputHandler.
 */
 #define COUT(level)                                                    \
     /*if*/ (level > orxonox::hardDebugLevel) ?                         \
