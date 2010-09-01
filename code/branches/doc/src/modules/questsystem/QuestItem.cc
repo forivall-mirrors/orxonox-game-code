@@ -76,8 +76,9 @@ namespace orxonox
 
     /**
     @brief
-        Sets the id of the QuestItem.
-    The id must be of GUID form. See 'http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure' for more information.
+        Sets the id of the QuestItem. The id must be of GUID form.
+    @see
+        http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
     @param id
         The id to be set.
     */

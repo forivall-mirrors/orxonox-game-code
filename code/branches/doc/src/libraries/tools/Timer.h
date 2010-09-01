@@ -32,8 +32,9 @@
 
     The Timer is a callback-object, calling a given function after a given time-interval.
 
-    Usage:
+    Usage: <br>
     header.h:
+    @code
         class ClassName
         {
             public:
@@ -41,8 +42,10 @@
                 void functionName();
                 Timer myTimer;
         };
+    @endcode
 
     source.cc:
+    @code
         #include "core/command/Executor.h"
 
         ClassName::ClassName()
@@ -55,6 +58,7 @@
             whateveryouwant();
             something(else);
         }
+    @endcode
 */
 
 #ifndef _Timer_H__
