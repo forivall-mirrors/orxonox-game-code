@@ -15,7 +15,6 @@ COMPILATION_END
 
 ADD_SOURCE_FILES(NETWORK_HDR_FILES
   Acknowledgement.h
-  Chat.cc
   Chat.h
   ClassID.h
   DeleteObjects.h

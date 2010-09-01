@@ -7,6 +7,7 @@ ADD_SOURCE_FILES(NETWORK_SRC_FILES
 ADD_SOURCE_FILES(NETWORK_HDR_FILES
   NetworkCallback.h
   NetworkCallbackManager.h
+  Serialise.h
   Synchronisable.h
   SynchronisableVariable.h
 )
