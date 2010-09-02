@@ -26,6 +26,86 @@
  *
  */
 
+/**
+    @defgroup SingletonScope Singletons and Scope
+    @ingroup Util
+*/
+
+/**
+    @file
+    @ingroup Util SingletonScope
+    @brief Definition of the Singleton template that is used as base class for classes that allow only one instance.
+
+    @anchor SingletonExample
+
+    Classes that inherit from orxonox::Singleton follow the singleton pattern and thus
+    allow only one instance of the class to exist. This istance is stored in a static
+    variable called @c singletonPtr_s. orxonox::Singleton will access this variable, but
+    it must be implemented in the deriving class.
+
+    Example:
+    @code
+    class TestSingleton : public Singleton<TestSingleton>   // inherit from Singleton, pass the own class as template argument
+    {
+        friend class Singleton<TestSingleton>;              // friend declaration so Singleton can access singletonPtr_s
+
+        public:
+            TestSingleton();                                // public constructor because we may want to manage this singleton
+                                                            //     with an orxonox::ScopedSingletonManager (see below)
+            virtual ~TestSingleton();                       // public destructor
+
+            void testFunction();                            // put your functions here
+
+        private:
+            int testValue_;                                 // put your variables here
+
+            static TestSingleton* singletonPtr_s;           // static singleton instance pointer, used by the Singleton template
+    };
+    @endcode
+
+    And don't forget to initialize the static singleton pointer in the source (*.cc) %file:
+    @code
+    TestSingleton* TestSingleton::singletonPtr_s = NULL;
+    @endcode
+
+    Usually a singleton gets created automatically when it is first used, but it will never
+    be destroyed (unless the singleton explicitly deletes itself). To allow controlled
+    construction and destruction, the singleton can be put within a virtual scope. This is
+    done by registering the singleton class with orxonox::ScopedSingletonManager. To
+    do so, the ManageScopedSingleton() macro has to be called:
+
+    @code
+    ManageScopedSingleton(TestSingleton, ScopeID::Graphics, false); // muste be called in a source (*.cc) file
+    @endcode
+
+    @b Important: If you call ManageScopedSingleton(), you don't have to initialize singletonPtr_s anymore,
+    because that's already done by the macro.
+
+    Now the singleton TestSingleton gets automatically created if the scope Graphics becomes
+    active and also gets destroyed if the scope is deactivated.
+
+    Note that not all singletons must register with a scope, but it's recommended.
+
+    If a class inherits from orxonox::Singleton, it also inherits its functions. The most important
+    function is orxonox::Singleton::getInstance() which returns a reference to the only instance
+    of the singleton.
+
+    Example:
+    @code
+    TestSingleton::TestSingleton()                          // implement the constructor
+    {
+        this->testValue_ = 15;
+    }
+
+    void TestSingleton::testFunction()                      // implement testFunction
+    {
+        COUT(0) << "My value is " << this->testValue_ << std::endl;
+    }
+
+    TestSingleton::getInstance().testFunction();            // prints "My value is 15"
+    @endcode
+*/
+
 #ifndef __Util_Singleton_H__
 #define __Util_Singleton_H__
 
@@ -41,9 +121,10 @@ namespace orxonox
         Base for singleton classes.
 
         Usage:
-        Inherit publicly from Singleton<MyClass> and provide access to
-        MyClass::singletonPtr_s.
+        Inherit publicly from Singleton<MyClass> and provide access to MyClass::singletonPtr_s.
         This can easily be done with a friend declaration.
+
+        See @ref SingletonExample "this example" for an exemplary implementation.
     */
     template <class T>
     class Singleton
@@ -79,7 +160,7 @@ namespace orxonox
             T::singletonPtr_s = static_cast<T*>(this);
         }
 
-        //! Constructor resets the singleton instance pointer
+        //! Destructor resets the singleton instance pointer
         ~Singleton()
         {
             assert(T::singletonPtr_s != NULL);

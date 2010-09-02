@@ -199,7 +199,7 @@ namespace orxonox
                 @brief Overloading of the it++ operator: Iterator points to the next object in the list.
                 @return The Iterator itself
             */
-            inline Iterator<T> operator++(int i)
+            inline Iterator<T> operator++(int)
             {
                 Iterator<T> copy = *this;
                 this->element_ = this->element_->next_;

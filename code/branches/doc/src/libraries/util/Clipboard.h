@@ -28,14 +28,15 @@
 
 /**
     @file
-    @brief Some functions to exchange text between the OS clipboard and Orxonox.
+    @ingroup Util Command
+    @brief Some functions to exchange text between the OS clipboard and the Shell in Orxonox.
 
     Use fromClipboard() to get text from the clipboard (if there is any text) and
-    toClipboard(text) to put text into the clipboard.
+    toClipboard() to put text into the clipboard.
 
-    Those functions can only work properly if there's an OS-specific implementation.
-    If an OS isn't supported, the clipboard only works within Orxonox, but exchange
-    with other programs isn't possible.
+    These functions can only work properly if there's an OS-specific implementation
+    in Clipboard.cc. If a specific OS is not supported, the clipboard only works
+    within Orxonox, but the exchange with other programs is not possible.
 */
 
 #ifndef _Clipboard_H__

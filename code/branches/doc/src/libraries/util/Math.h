@@ -27,7 +27,13 @@
  */
 
 /**
+   @defgroup Math Mathematical functions
+   @ingroup Util
+*/
+
+/**
     @file
+    @ingroup Util Math
     @brief Declaration and implementation of several math-functions, typedefs of some Ogre::Math classes to the orxonox namespace.
 */
 
@@ -61,19 +67,19 @@ namespace orxonox
     // C++ doesn't define any constants for pi, e, etc.
     namespace math
     {
-        const float pi      = 3.14159265f;
-        const float pi_2    = 1.57079633f;
-        const float pi_4    = 7.85398163e-1f;
-        const float e       = 2.71828183f;
-        const float sqrt2   = 1.41421356f;
-        const float sqrt2_2 = 7.07106781e-1f;
+        const float pi      = 3.14159265f;      ///< PI
+        const float pi_2    = 1.57079633f;      ///< PI / 2
+        const float pi_4    = 7.85398163e-1f;   ///< PI / 4
+        const float e       = 2.71828183f;      ///< e
+        const float sqrt2   = 1.41421356f;      ///< sqrt(2)
+        const float sqrt2_2 = 7.07106781e-1f;   ///< sqrt(2) / 2
 
-        const double pi_d      = 3.14159265358979324;
-        const double pi_2_d    = 1.57079632679489662;
-        const double pi_4_d    = 7.85398163397448310e-1;
-        const double e_d       = 2.71828182845904524;
-        const double sqrt2_d   = 1.41421356237309505;
-        const double sqrt2_2_d = 7.07106781186547524e-1;
+        const double pi_d      = 3.14159265358979324;       ///< PI (double)
+        const double pi_2_d    = 1.57079632679489662;       ///< PI / 2 (double)
+        const double pi_4_d    = 7.85398163397448310e-1;    ///< PI / 4 (double)
+        const double e_d       = 2.71828182845904524;       ///< e (double)
+        const double sqrt2_d   = 1.41421356237309505;       ///< sqrt(2) (double)
+        const double sqrt2_2_d = 7.07106781186547524e-1;    ///< sqrt(2) / 2 (double)
     }
 
 #if OGRE_VERSION < 0x010603
@@ -100,7 +106,7 @@ namespace orxonox
     }
 
     /**
-        @brief Keeps a value between a lower and an upper limit.
+        @brief Keeps a value between a lower and an upper limit. Values beyond these limits are limited to either @a min or @a max.
         @param x The value
         @param min The lower limit
         @param max The upper limit
@@ -118,7 +124,7 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the square value (x^2).
+        @brief Returns the squared value (x^2).
     */
     template <typename T>
     inline T square(T x)
@@ -127,7 +133,7 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the cube value (x^3).
+        @brief Returns the cubed value (x^3).
     */
     template <typename T>
     inline T cube(T x)
@@ -136,7 +142,7 @@ namespace orxonox
     }
 
     /**
-        @brief Rounds the value.
+        @brief Rounds the value to the nearest integer.
     */
     template <typename T>
     inline int round(T x)
@@ -148,6 +154,19 @@ namespace orxonox
         @brief The modulo operation, enhanced to work properly with negative values.
         @param x The value
         @param max The operand
+
+        The built in modulo operator % yields a strange behavior with negative values.
+        This function corrects this - the result is guaranteed to lie always between
+        zero and (max-1).
+
+        Example:
+        @code
+        int var = 11 % 10;      //  1
+        int var = -1 % 10;      // -1
+
+        int var = mod(11, 10);  //  1
+        int var = mod(-1, 10);  //  9
+        @endcode
     */
     template <typename T>
     inline int mod(T x, int max)
@@ -158,6 +177,14 @@ namespace orxonox
             return ((x % max) + max);
     }
 
+    /**
+        @brief Returns a "zero" value for the given type.
+        @note This is the default template of the zeroise() function. The template is spezialized for each supported type.
+
+        The exact return value of the function depends on the type. For @c int this is 0,
+        for @c float it's 0.0f. For a @c std::string the function returns "" and for
+        @c Vector3 you get <tt>Vector3(0, 0, 0)</tt>.
+    */
     template <typename T>
     inline T zeroise()
     {
@@ -191,7 +218,10 @@ namespace orxonox
     template <> inline orxonox::ColourValue zeroise<orxonox::ColourValue>() { return orxonox::ColourValue(0, 0, 0, 0); }
     template <> inline orxonox::Quaternion  zeroise<orxonox::Quaternion>()  { return orxonox::Quaternion (0, 0, 0, 0); }
 
-    //! Provides zero value symbols that can be returned as reference
+    /**
+        @brief Provides zero value symbols that can be returned as reference
+        @see zeroise()
+    */
     template <typename T>
     struct NilValue
     {
@@ -206,10 +236,10 @@ namespace orxonox
 
     /**
         @brief Interpolates between two values for a time between 0 and 1.
-        @param time The time is a value between 0 and 1 - the function returns start if time is 0 and end if time is 1 and interpolates if time is between 0 and 1.
-        @param start The value at time = 0
-        @param end The value at time = 1
-        @return The interpolation at a given time
+        @param time The time is a value between 0 and 1 - the function returns @a start if @a time is 0, @a end if @a time is 1, and interpolates if @a time is between 0 and 1.
+        @param start The value at @a time = 0
+        @param end The value at @a time = 1
+        @return The interpolated value at a given time
     */
     template <typename T>
     inline T interpolate(float time, const T& start, const T& end)
@@ -219,10 +249,10 @@ namespace orxonox
 
     /**
         @brief Interpolates smoothly between two values for a time between 0 and 1. The function starts slowly, increases faster and stops slowly again.
-        @param time The time is a value between 0 and 1 - the function returns start if time is 0 and end if time is 1 and interpolates if time is between 0 and 1.
-        @param start The value at time = 0
-        @param end The value at time = 1
-        @return The smoothed interpolation at a given time
+        @param time The time is a value between 0 and 1 - the function returns @a start if @a time is 0, @a end if @a time is 1, and interpolates if @a time is between 0 and 1.
+        @param start The value at @a time = 0
+        @param end The value at @a time = 1
+        @return The interpolated value at a given time
     */
     template <typename T>
     inline T interpolateSmooth(float time, const T& start, const T& end)
@@ -231,7 +261,7 @@ namespace orxonox
     }
 
     /**
-        @brief Returns a random number between 0 and almost 1: 0 <= rnd < 1.
+        @brief Returns a random number between 0 and almost 1: <tt>0 <= rnd < 1</tt>.
     */
     inline float rnd()
     {
@@ -239,7 +269,7 @@ namespace orxonox
     }
 
     /**
-        @brief Returns a random number between 0 and almost max: 0 <= rnd < max.
+        @brief Returns a random number between 0 and almost @a max: <tt>0 <= rnd < max</tt>.
         @param max The maximum
     */
     inline float rnd(float max)
@@ -248,7 +278,7 @@ namespace orxonox
     }
 
     /**
-        @brief Returns a random number between min and almost max: min <= rnd < max.
+        @brief Returns a random number between @a min and almost @a max: <tt>min <= rnd < max</tt>.
         @param min The minimum
         @param max The maximum
     */
@@ -267,6 +297,9 @@ namespace orxonox
 
     _UtilExport unsigned long getUniqueNumber();
 
+    /**
+        @brief A Vector class containing two integers @a x and @a y.
+    */
     class IntVector2
     {
     public:
@@ -276,6 +309,9 @@ namespace orxonox
         int y;
     };
 
+    /**
+        @brief A Vector class containing three integers @a x, @a y, and @a z.
+    */
     class IntVector3
     {
     public:

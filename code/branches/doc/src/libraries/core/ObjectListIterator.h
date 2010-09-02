@@ -130,7 +130,7 @@ namespace orxonox
                 @brief Overloading of the it++ operator: ObjectListIterator points to the next object in the list.
                 @return The ObjectListIterator itself
             */
-            inline ObjectListIterator<T> operator++(int i)
+            inline ObjectListIterator<T> operator++(int)
             {
                 ObjectListIterator<T> copy = *this;
                 this->element_ = static_cast<ObjectListElement<T>*>(this->element_->next_);

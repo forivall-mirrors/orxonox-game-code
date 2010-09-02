@@ -28,8 +28,9 @@
 
 /**
 @file
+@ingroup Util Output
 @brief
-    Declaration of classes related to output (logging).
+    Declaration of classes related to output (logging), most notably OutputHandler and OutputListener.
 */
 
 #ifndef _OutputHandler_H__
@@ -49,13 +50,13 @@ namespace orxonox
     @brief
         Denotes different levels of text output (log output)
 
-        0, None   : Very important output
-        1, Error  : Errors
-        2, Warning: Warnings
-        3, Info   : Information
-        4, Debug  : Debug information
-        5, Verbose: More debug information
-        6, Ultra  : Crazy debug information
+         - 0, None   : Very important output
+         - 1, Error  : Errors
+         - 2, Warning: Warnings
+         - 3, Info   : Information
+         - 4, Debug  : Debug information
+         - 5, Verbose: More debug information
+         - 6, Ultra  : Crazy debug information
     */
     namespace OutputLevel
     {
@@ -78,13 +79,18 @@ namespace orxonox
 
     /**
     @brief
-        The OutputHandler acts like std::cout, but output isn't only shown in the console.
+        The OutputHandler acts like @c std::cout, but output isn't only shown in the console.
 
-        You can register your own listener for output by inheriting from OutputListner.
+        Output passed to the OutputHandler is distributed to all registered listeners,
+        for example the console, the logfile, or the ingame shell.
+
+        You can register your own listener for output by inheriting from OutputListener.
         And if you need the output previously processed, iterate over it with
-        OutputHandler::getOutputVector[Begin/End].
+        OutputHandler::getOutputVectorBegin and OutputHandler::getOutputVectorEnd.
+
         The way to output text is to first set the desired output level with
-        OutputHandler::getOutStream(level) and then use the "<<" operator like with std::cout.
+        @ref getOutStream "OutputHandler::getOutStream(level)" and then use
+        the "<<" operator like with @c std::cout. Alternatively you can use the COUT() macro.
     */
     class _UtilExport OutputHandler
     {
@@ -212,7 +218,7 @@ namespace orxonox
         private:
             OutputHandler();
             ~OutputHandler();
-            OutputHandler(const OutputHandler& rhs); //! Unused and undefined
+            OutputHandler(const OutputHandler& rhs);      //!< Copy-constructor: Unused and undefined
 
             std::list<OutputListener*> listeners_;        //!< Array with all registered output listeners
             int                        outputLevel_;      //!< The level of the incoming output

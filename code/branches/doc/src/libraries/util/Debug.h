@@ -29,12 +29,12 @@
 
 /**
     @defgroup COUT COUT(x) output macro
-    @ingroup Output
+    @ingroup Util Output
 */
 
 /**
 @file
-@ingroup COUT
+@ingroup Util COUT
 @brief
     Handles different output-levels of errors, warnings, infos, and debug information.
 

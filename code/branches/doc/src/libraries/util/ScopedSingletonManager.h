@@ -26,6 +26,21 @@
  *
  */
 
+/**
+    @file
+    @ingroup Util SingletonScope
+    @brief Definition of orxonox::ScopedSingletonManager, orxonox::ClassScopedSingletonManager, and the ManageScopedSingleton macro.
+
+    ScopedSingletonManager is used to create and destroy Singletons that belong to
+    a given Scope. For each one of these singletons, the macro ManageScopedSingleton()
+    has to be called to register the singleton with orxonox::ScopedSingletonManager.
+
+    See @ref SingletonExample "this code" for an example.
+
+    @see orxonox::Singleton
+    @see orxonox::Scope
+*/
+
 #ifndef __ScopedSingletonManager_H__
 #define __ScopedSingletonManager_H__
 
@@ -37,6 +52,15 @@
 #include "util/Scope.h"
 #include "util/Singleton.h"
 
+/**
+    @brief Registers an orxonox::Singleton with orxonox::ScopedSingletonManager.
+    @param className The name of the singleton class
+    @param scope The scope in which the singleton should exist
+    @param allowedToFail If true, the singleton is allowed to fail and thus a try-catch block is used when creating the singleton.
+
+    If this macro is called for a singleton, it is registered with ScopedSingletonManager
+    and will thus be created if its scope becomes active and destroyed if is deactivated.
+*/
 #define ManageScopedSingleton(className, scope, allowedToFail) \
     className* className::singletonPtr_s = NULL; \
     static ClassScopedSingletonManager<className, scope, allowedToFail> className##ScopedSingletonManager(#className)
@@ -45,16 +69,26 @@ namespace orxonox
 {
     class OrxonoxClass;
 
+    /**
+        @brief Base class of ClassScopedSingletonManager, implements some static functions
+        used to dispatch calls to preUpdate and postUpdate to all instances of this class.
+        It also keeps track of all existing ScopedSingletonManagers and stores them in a
+        map, sorted by the scope they belong to.
+    */
     class _UtilExport ScopedSingletonManager
     {
         public:
+            /// Constructor: Initializes all the values
             ScopedSingletonManager(const std::string& className, ScopeID::Value scope)
                 : className_(className)
                 , scope_(scope)
             { }
             virtual ~ScopedSingletonManager() { }
+
+            /// Adds a new instance of ScopedSingletonManager to the map.
             static void addManager(ScopedSingletonManager* manager);
 
+            /// Calls preUpdate in all instances of ScopedSingletonManager that are registered in the map.
             template<ScopeID::Value scope>
             static void preUpdate(const Clock& time)
             {
@@ -63,6 +97,8 @@ namespace orxonox
                     it->second->preUpdate(time);
             }
             virtual void preUpdate(const Clock& time) = 0;
+
+            /// Calls postUpdate in all instances of ScopedSingletonManager that are registered in the map.
             template<ScopeID::Value scope>
             static void postUpdate(const Clock& time)
             {
@@ -77,14 +113,31 @@ namespace orxonox
             static ManagerMultiMap& getManagersByScope();
 
         protected:
-            const std::string className_;
-            const ScopeID::Value scope_;
+            const std::string className_;   ///< The name of the scoped singleton class that is managed by this object
+            const ScopeID::Value scope_;    ///< The scope of the singleton that is managed by this object
     };
 
+    /**
+        @anchor ClassScopedSingletonManager
+
+        @brief Manages a scoped singleton for a given scope.
+        @param T The managed singleton class
+        @param scope The scope in which the singleton @a T should be active
+        @param allowedToFail If true, a specialization of this template is used, that uses try-catch blocks to handle possible failures.
+
+        This class inherits from ScopeListener for the given scope and thus its functions
+        activated() and deactivated() are called whenever the Scope changes its state.
+
+        If the Scope is activated, a new instance of @a T (which must be a singleton) is created.
+        If the Scope is deactivated, the singleton is destroyed.
+
+        @see Singleton
+    */
     template <class T, ScopeID::Value scope, bool allowedToFail>
     class ClassScopedSingletonManager : public ScopedSingletonManager, public ScopeListener
     {
     public:
+        //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonManager and ScopeListener
         ClassScopedSingletonManager(const std::string& className)
             : ScopedSingletonManager(className, scope)
             , ScopeListener(scope)
@@ -112,10 +165,12 @@ namespace orxonox
             singletonPtr_ = NULL;
         }
 
+        //! Destroys the singleton instance - overloaded for OrxonoxClass, calls OrxonoxClass::destroy()
         void destroy(OrxonoxClass*)
         {
             singletonPtr_->destroy();
         }
+        //! Destroys the singleton instance - overloaded for all other pointers, calls delete
         void destroy(void*)
         {
             delete singletonPtr_;
@@ -138,13 +193,24 @@ namespace orxonox
         }
 
     private:
-        T* singletonPtr_;
+        T* singletonPtr_;   ///< Unique instance of the singleton class @a T
     };
 
+    /**
+        @brief This class partially spezializes ClassScopedSingletonManager for classes @a T that are allowed to fail.
+        @param T The managed singleton class
+        @param scope The scope in which the singleton @a T should be active
+
+        Because @a T could fail when being created, this partial spezialization of ClassScopedSingletonManager
+        uses a try-catch block to handle exceptions.
+
+        See @ref ClassScopedSingletonManager for a full documentation of the basis template.
+    */
     template <class T, ScopeID::Value scope>
     class ClassScopedSingletonManager<T, scope, true> : public ScopedSingletonManager, public ScopeListener
     {
     public:
+        //! Constructor: Initializes the singleton pointer and passes the scope to ScopedSingletonManager and ScopeListener
         ClassScopedSingletonManager(const std::string& className)
             : ScopedSingletonManager(className, scope)
             , ScopeListener(scope)
@@ -179,10 +245,12 @@ namespace orxonox
             }
         }
 
+        //! Destroys the singleton instance - overloaded for OrxonoxClass, calls OrxonoxClass::destroy()
         void destroy(OrxonoxClass* ptr)
         {
             singletonPtr_->destroy();
         }
+        //! Destroys the singleton instance - overloaded for void*, calls delete
         void destroy(void* ptr)
         {
             delete singletonPtr_;
@@ -207,7 +275,7 @@ namespace orxonox
         }
 
     private:
-        T* singletonPtr_;
+        T* singletonPtr_;   ///< Unique instance of the singleton class @a T
     };
 }
 

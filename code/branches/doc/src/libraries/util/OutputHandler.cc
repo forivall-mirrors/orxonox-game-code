@@ -113,8 +113,8 @@ namespace orxonox
         }
 
     private:
-        std::ofstream logFile_;     //! File handle for the log file
-        std::string   logFilename_; //! Filename of the log file
+        std::ofstream logFile_;     //!< File handle for the log file
+        std::string   logFilename_; //!< Filename of the log file
     };
 
 
@@ -179,8 +179,8 @@ namespace orxonox
         }
 
     private:
-        std::ostringstream                        buffer_; //! Stream object used to process the output
-        std::vector<std::pair<int, std::string> > output_; //! Vector containing ALL output
+        std::ostringstream                        buffer_; //!< Stream object used to process the output
+        std::vector<std::pair<int, std::string> > output_; //!< Vector containing ALL output
     };
 
 

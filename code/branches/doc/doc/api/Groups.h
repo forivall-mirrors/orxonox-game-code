@@ -25,7 +25,7 @@
  *      ...
  *
  */
- 
+
 /**
     @defgroup Util Util
 
@@ -36,7 +36,7 @@
 
 /**
     @defgroup Core Core
-    
+
     The core library contains the framework of Orxonox - all important classes, functions, and macros
     that are used to create and manage classes and objects. Almost all classes in Orxonox need at least
     one of the core features.
@@ -84,7 +84,7 @@
 
 /**
     @defgroup Network Network
-    
+
     The network library is used to connect clients and server, to synchronize objects and variables, and
     to transmit network function calls. It contains the central @ref orxonox::Server "Server" and
     @ref orxonox::Client "Client" classes as well as several functions and macros for
@@ -93,14 +93,14 @@
 
 /**
     @defgroup Tools Tools
-    
+
     The tools are a bunch of utilities that belong to the Orxonox library, but are independent of other
     features.
 */
 
 /**
     @defgroup Orxonox Orxonox
-    
+
     The Orxonox library contains the central and most important classes of the game. Managers, interfaces,
     base-classes, and more are located in Orxonox. More specialized classes that inherit of the base-classes
     in Orxonox are often sourced out to the modules.
@@ -108,7 +108,7 @@
 
 /**
     @defgroup Modules Modules
-    
+
     The modules are libraries that depend on the Orxonox library and that are loaded dynamically on runtime
     (in contrast to statically loaded libraries like util and core). Each module contains some classes that
     are usually connected to each other, but they are independent of other modules. However modules can still
