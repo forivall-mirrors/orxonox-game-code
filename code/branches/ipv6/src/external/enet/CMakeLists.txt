@@ -17,24 +17,39 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-################ Sub Directories ################
+SET_SOURCE_FILES(ENET_FILES
+	include/enet/callbacks.h
+	include/enet/enet.h
+	include/enet/list.h
+	include/enet/protocol.h
+	include/enet/time.h
+	include/enet/types.h
+	include/enet/unix.h
+	include/enet/utility.h
+	#include/enet/win32.h
 
-ADD_SUBDIRECTORY(tolua)
+COMPILATION_BEGIN ENetCompilation.cpp
+	callbacks.c
+	compress.c
+	host.c
+	list.c
+	packet.c
+	peer.c
+	protocol.c
+	unix.c
+	#win32.c
+COMPILATION_END
+)
 
-# Include CEGUILua if not requested otherwise
-IF(CEGUILUA_USE_INTERNAL_LIBRARY)
-  IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
-    MESSAGE(FATAL_ERROR "CEGUILua version not found in src folder. Update list of supported versions in LibraryConfig.cmake!")
-  ENDIF()
+INCLUDE_DIRECTORIES(include)
 
-  ADD_SUBDIRECTORY(ceguilua)
-  SET(CEGUILUA_LIBRARY ${CEGUILUA_LIBRARY} PARENT_SCOPE)
-ENDIF()
+ORXONOX_ADD_LIBRARY(enet_orxonox
+	ORXONOX_EXTERNAL
+	VERSION 1.3.0
+	SOURCE_FILES ${ENET_FILES}
+)
 
-ADD_SUBDIRECTORY(bullet)
-ADD_SUBDIRECTORY(cpptcl)
-ADD_SUBDIRECTORY(enet)
-ADD_SUBDIRECTORY(loki)
-ADD_SUBDIRECTORY(ogreceguirenderer)
-ADD_SUBDIRECTORY(ois)
-ADD_SUBDIRECTORY(tinyxml)
+SET_TARGET_PROPERTIES(enet_orxonox PROPERTIES DEFINE_SYMBOL "HAS_POLL")
+SET_TARGET_PROPERTIES(enet_orxonox PROPERTIES DEFINE_SYMBOL "HAS_FCNTL")
+SET_TARGET_PROPERTIES(enet_orxonox PROPERTIES DEFINE_SYMBOL "HAS_MSGHDR_FLAGS")
+SET_TARGET_PROPERTIES(enet_orxonox PROPERTIES DEFINE_SYMBOL "HAS_SOCKLEN_T")

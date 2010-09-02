@@ -93,7 +93,7 @@ ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
 # Performs the search and sets the variables    #
 
 FIND_PACKAGE(OGRE  1.4       REQUIRED)
-FIND_PACKAGE(ENet  1.1       REQUIRED)
+#FIND_PACKAGE(ENet  1.1       REQUIRED)
 FIND_PACKAGE(Ogg             REQUIRED)
 FIND_PACKAGE(Vorbis          REQUIRED)
 FIND_PACKAGE(ALUT            REQUIRED)
