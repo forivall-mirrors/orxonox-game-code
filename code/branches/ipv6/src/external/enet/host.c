@@ -49,6 +49,8 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
     memset (host -> peers, 0, peerCount * sizeof (ENetPeer));
 
     host -> socket = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM);
+    enet_socket_set_option (host -> socket, ENET_SOCKOPT_V6ONLY, 0); // Needs to be set before bind.
+
     if (host -> socket == ENET_SOCKET_NULL || (address != NULL && enet_socket_bind (host -> socket, address) < 0))
     {
        if (host -> socket != ENET_SOCKET_NULL)

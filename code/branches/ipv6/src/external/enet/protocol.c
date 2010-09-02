@@ -9,6 +9,9 @@
 #include "enet/time.h"
 #include "enet/enet.h"
 
+const ENetHostAddress ENET_HOST_ANY = { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } };
+const ENetHostAddress ENET_HOST_BROADCAST = { { 0,0,0,0,0,0,0,0,0,0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff } };
+
 static size_t commandSizes [ENET_PROTOCOL_COMMAND_COUNT] =
 {
     0,
@@ -262,9 +265,9 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
          ++ currentPeer)
     {
         if (currentPeer -> state != ENET_PEER_STATE_DISCONNECTED &&
-            currentPeer -> address.host == host -> receivedAddress.host &&
             currentPeer -> address.port == host -> receivedAddress.port &&
-            currentPeer -> connectID == command -> connect.connectID)
+            currentPeer -> connectID == command -> connect.connectID &&
+            !memcmp(& currentPeer -> address.host, & host -> receivedAddress.host, sizeof (ENetHostAddress)))
           return NULL;
     }
 
@@ -848,10 +851,11 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event)
 
        if (peer -> state == ENET_PEER_STATE_DISCONNECTED ||
            peer -> state == ENET_PEER_STATE_ZOMBIE ||
-           (host -> receivedAddress.host != peer -> address.host &&
-             peer -> address.host != ENET_HOST_BROADCAST) ||
            (peer -> outgoingPeerID < ENET_PROTOCOL_MAXIMUM_PEER_ID &&
-            sessionID != peer -> incomingSessionID))
+            sessionID != peer -> incomingSessionID) ||
+           ( memcmp(& peer -> address.host, & host -> receivedAddress.host, sizeof (ENetHostAddress)) &&
+             memcmp(& peer -> address.host, & ENET_HOST_BROADCAST, sizeof (ENetHostAddress)) &&
+             peer -> address.host.addr[0] != 0xff ) )
          return 0;
     }
  
@@ -891,8 +895,7 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event)
        
     if (peer != NULL)
     {
-       peer -> address.host = host -> receivedAddress.host;
-       peer -> address.port = host -> receivedAddress.port;
+       peer -> address = host -> receivedAddress;
        peer -> incomingDataTotal += host -> receivedDataLength;
     }
     

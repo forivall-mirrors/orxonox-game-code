@@ -50,16 +50,18 @@ typedef enum _ENetSocketOption
    ENET_SOCKOPT_BROADCAST = 2,
    ENET_SOCKOPT_RCVBUF    = 3,
    ENET_SOCKOPT_SNDBUF    = 4,
-   ENET_SOCKOPT_REUSEADDR = 5
+   ENET_SOCKOPT_REUSEADDR = 5,
+   ENET_SOCKOPT_V6ONLY = 6
 } ENetSocketOption;
 
-enum
+typedef struct _ENetHostAddress
 {
-   ENET_HOST_ANY       = 0,            /**< specifies the default server host */
-   ENET_HOST_BROADCAST = 0xFFFFFFFF,   /**< specifies a subnet-wide broadcast */
+   enet_uint8 addr[16];
+} ENetHostAddress;
 
-   ENET_PORT_ANY       = 0             /**< specifies that a port should be automatically chosen */
-};
+extern const ENetHostAddress ENET_HOST_ANY;       /**< specifies the default server host */
+extern const ENetHostAddress ENET_HOST_BROADCAST; /**< specifies a IPv4 subnet-wide broadcast */
+#define ENET_PORT_ANY 0                           /**< specifies that a port should be automatically chosen */
 
 /**
  * Portable internet address structure. 
@@ -73,7 +75,8 @@ enum
  */
 typedef struct _ENetAddress
 {
-   enet_uint32 host;
+   ENetHostAddress host;
+   enet_uint32 scopeID; //FIXME: this is of different size on Windows
    enet_uint16 port;
 } ENetAddress;
 
@@ -487,6 +490,18 @@ ENET_API int enet_address_get_host_ip (const ENetAddress * address, char * hostN
     @retval < 0 on failure
 */
 ENET_API int enet_address_get_host (const ENetAddress * address, char * hostName, size_t nameLength);
+
+/** Maps an IPv4 Address to an IPv6 address.
+    @param address IPv4 address in network byte order
+    @returns the IPv4-mapped IPv6 address in network byte order
+*/
+static inline ENetHostAddress enet_address_map4 (enet_uint32 address)
+{
+   ENetHostAddress addr = ENET_HOST_ANY;
+   ((enet_uint16 *)addr.addr)[5] = 0xffff;
+   ((enet_uint32 *)addr.addr)[3] = address;
+   return addr;
+}
 
 /** @} */
 
