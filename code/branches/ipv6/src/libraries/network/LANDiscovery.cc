@@ -52,11 +52,18 @@ namespace orxonox
   void LANDiscovery::discover()
   {
     this->servers_.clear();
+    ENetPeer* peer;
     ENetAddress address;
-    enet_address_set_host(&address, "255.255.255.255");
+    memset(&address, 0, sizeof(ENetAddress));
     address.port = LAN_DISCOVERY_PORT;
 
-    ENetPeer* peer;
+    /* TODO: check for availability of each protocol */
+    /* IPv4 */
+    address.host = ENET_HOST_BROADCAST;
+    peer = enet_host_connect(this->host_, &address, 0, 0);
+
+    /* IPv6 */
+    enet_address_set_host(&address, "ff02::1"); // TODO: use a multicast group
     peer = enet_host_connect(this->host_, &address, 0, 0);
 
     ENetEvent event;
