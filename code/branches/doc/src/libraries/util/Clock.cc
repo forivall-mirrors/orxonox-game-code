@@ -49,7 +49,7 @@ namespace orxonox
         Mind the types! Ogre::Timer::getMicroseconds() will return an unsigned
         long, which will eventually overflow. But if you use the subtraction of
         the current time minus the last time the timer gave us and sum these up to
-        a 64 bit integer, we get the desired result.
+        a 64 bit integer, we get the desired result. <br>
         Also mind that we don't have to store the last timer's time as unsigned long
         as well because (unsigned long)tickTime_ will do exactly that.
     */
