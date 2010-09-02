@@ -159,7 +159,6 @@ namespace orxonox
 
   void Trigger::triggered(bool bIsTriggered)
   {
-      COUT(1) << "Trigger triggered." << std::endl; //TODO: Remove debug.
     this->fireEvent(bIsTriggered);
   }
 

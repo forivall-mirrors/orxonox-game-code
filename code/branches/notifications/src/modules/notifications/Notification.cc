@@ -34,6 +34,7 @@
 #include "Notification.h"
 
 #include "core/CoreIncludes.h"
+#include "network/NetworkFunction.h"
 #include "NotificationManager.h"
 
 namespace orxonox
@@ -41,14 +42,17 @@ namespace orxonox
 
     CreateUnloadableFactory(Notification);
 
+    registerMemberNetworkFunction(Notification, send);
+
     /**
     @brief
         Default constructor. Initializes the object.
     */
-    Notification::Notification(BaseObject* creator) : BaseObject(creator)
+    Notification::Notification(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Notification);
         this->initialize();
+        this->registerVariables();
     }
 
     /**
@@ -57,11 +61,12 @@ namespace orxonox
     @param message
         The message of the Notification.
     */
-    Notification::Notification(BaseObject* creator, const std::string & message) : BaseObject(creator)
+    Notification::Notification(BaseObject* creator, const std::string & message) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Notification);
         this->initialize();
         this->message_ = message;
+        this->registerVariables();
     }
 
     /**
@@ -84,15 +89,11 @@ namespace orxonox
         this->sent_ = false;
     }
 
-    /**
-    @brief
-        Sends the Notification to the Notificationmanager, with sender NetificationManager::NONE.
-    @return
-        Returns true if successful.
-    */
-    bool Notification::send(void)
+    void Notification::registerVariables(void)
     {
-        return this->send(NotificationManager::NONE);
+        registerVariable(this->message_);
+        registerVariable(this->sender_);
+        registerVariable(this->sent_);
     }
 
     /**
@@ -103,18 +104,25 @@ namespace orxonox
     @return
         Returns true if successful.
     */
-    bool Notification::send(const std::string & sender)
+    bool Notification::send(unsigned int clientId, const std::string & sender = NotificationManager::NONE)
     {
-        if(this->isSent()) //TODO: Needed?
-            return false;
-        
-        this->sender_ = sender;
-        bool successful = NotificationManager::getInstance().registerNotification(this);
-        if(!successful)
-            return false;
-        this->sent_ = true;
+        if(GameMode::isMaster())
+        {
+            if(this->isSent()) //TODO: Needed?
+                return false;
 
-        COUT(3) << "Notification \"" << this->getMessage() << "\" sent." << std::endl;
+            this->sender_ = sender;
+            bool successful = NotificationManager::getInstance().registerNotification(this);
+            if(!successful)
+                return false;
+            this->sent_ = true;
+
+            COUT(3) << "Notification \"" << this->getMessage() << "\" sent." << std::endl;
+        }
+        else
+        {
+            callMemberNetworkFunction(Notification, send, this->getObjectID(), clientId, clientId, sender);
+        }
 
         return true;
     }

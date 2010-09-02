@@ -72,7 +72,7 @@ namespace orxonox {
     */
     bool QuestNotification::send(void)
     {
-        return this->Notification::send(QuestNotification::SENDER);
+        return true;//this->Notification::send(QuestNotification::SENDER); //TODO: Adjust.
     }
 
 

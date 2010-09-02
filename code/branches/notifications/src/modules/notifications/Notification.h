@@ -38,6 +38,7 @@
 
 #include <string>
 #include "core/BaseObject.h"
+#include "network/synchronisable/Synchronisable.h"
 
 namespace orxonox
 {
@@ -48,15 +49,14 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _NotificationsExport Notification : public BaseObject
+    class _NotificationsExport Notification : public BaseObject, public Synchronisable
     {
         public:
             Notification(BaseObject* creator);
             Notification(BaseObject* creator, const std::string & message);
             virtual ~Notification();
 
-            bool send(void); //!< Sends the Notification to the Notificationmanager, with sender NotificationManager::NONE;
-            bool send(const std::string & sender); //!< Sends the Notification to the Notificationmanager.
+            bool send(unsigned int clientId, const std::string & sender); //!< Sends the Notification to the Notificationmanager.
 
             /**
             @brief Checks whether the Notification was sent.
@@ -82,6 +82,7 @@ namespace orxonox
             bool sent_; //!< Whether Notification has been sent, if so it cannot be changed.
 
             void initialize(void);
+            void registerVariables(void);
 
     };
 
