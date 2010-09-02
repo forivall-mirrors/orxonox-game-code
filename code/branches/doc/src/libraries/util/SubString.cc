@@ -39,317 +39,256 @@
 
 #include "SubString.h"
 #include <cstdio>
+#include "Debug.h"
 
 namespace orxonox
 {
+    const std::string SubString::WhiteSpaces          = " \n\t";
+    const std::string SubString::WhiteSpacesWithComma = " \n\t,";
+    const SubString SubString::NullSubString          = SubString();
+
     /**
-     * @brief default constructor
-     */
+        @brief Default constructor.
+    */
     SubString::SubString()
-    {}
-
-
-    /**
-     * @brief create a SubString from
-     * @param string the String to Split
-     * @param delimiter the Character at which to split string (delimiter)
-     */
-    SubString::SubString(const std::string& string, char delimiter)
     {
-        this->split(string, delimiter);
-    }
-
-
-    /**
-     * @brief Splits a string into multiple tokens.
-     * @param string The string to split
-     * @param delimiters Multiple set of characters at what to split. (delimiters)
-     * @param delimiterNeighbours Neighbours of the delimiters that will be erased as well.
-     * @param emptyEntries If empty entries are added to the list of SubStrings
-     * @param escapeChar The escape character that overrides splitters commends and so on...
-     * @param removeEscapeChar If true, the escape char is removed from the tokens
-     * @param safemode_char Within these characters splitting won't happen
-     * @param removeSafemodeChar Removes the safemode_char from the beginning and the ending of a token
-     * @param openparenthesis_char The beginning of a safemode is marked with this
-     * @param closeparenthesis_char The ending of a safemode is marked with this
-     * @param removeParenthesisChars Removes the parenthesis from the beginning and the ending of a token
-     * @param comment_char The comment character.
-     */
-    SubString::SubString(const std::string& string,
-                         const std::string& delimiters, const std::string& delimiterNeighbours, bool emptyEntries,
-                         char escapeChar, bool removeEscapeChar, char safemode_char, bool removeSafemodeChar,
-                         char openparenthesis_char, char closeparenthesis_char, bool removeParenthesisChars, char comment_char)
-    {
-        SubString::splitLine(this->strings, this->bInSafemode, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, removeEscapeChar, safemode_char, removeSafemodeChar, openparenthesis_char, closeparenthesis_char, removeParenthesisChars, comment_char);
     }
 
     /**
-     * @brief creates a SubSet of a SubString.
-     * @param subString the SubString to take a set from.
-     * @param subSetBegin the beginning to the end
-     */
-    SubString::SubString(const SubString& subString, unsigned int subSetBegin)
+        @brief Splits a string into multiple tokens.
+        @param line The line to split
+        @param delimiters Multiple characters at which to split the line
+        @param delimiterNeighbours Neighbours of the delimiters that will be erased as well (for example white-spaces)
+        @param bAllowEmptyEntries If true, empty tokens are also added to the SubString (if there are two delimiters without a char in between)
+        @param escapeChar The escape character that is used to escape safemode chars (for example if you want to use a quotation mark between two other quotation marks).
+        @param bRemoveEscapeChar If true, the escape char is removed from the tokens
+        @param safemodeChar Within these characters splitting won't happen (usually the quotation marks)
+        @param bRemoveSafemodeChar Removes the safemodeChar from the beginning and the ending of a token
+        @param openparenthesisChar The beginning of a safemode is marked with this (usually an opening brace)
+        @param closeparenthesisChar The ending of a safemode is marked with this (usually a closing brace)
+        @param bRemoveParenthesisChars Removes the parenthesis chars from the beginning and the ending of a token
+        @param commentChar The comment character (used to ignore the part of the line after the comment char).
+    */
+    SubString::SubString(const std::string& line,
+                         const std::string& delimiters, const std::string& delimiterNeighbours, bool bAllowEmptyEntries,
+                         char escapeChar, bool bRemoveEscapeChar, char safemodeChar, bool bRemoveSafemodeChar,
+                         char openparenthesisChar, char closeparenthesisChar, bool bRemoveParenthesisChars, char commentChar)
     {
-        for (unsigned int i = subSetBegin; i < subString.size(); i++)
+        SubString::splitLine(this->tokens_, this->bTokenInSafemode_, line, delimiters, delimiterNeighbours, bAllowEmptyEntries, escapeChar, bRemoveEscapeChar, safemodeChar, bRemoveSafemodeChar, openparenthesisChar, closeparenthesisChar, bRemoveParenthesisChars, commentChar);
+    }
+
+    /**
+        @brief creates a new SubString based on a subset of an other SubString.
+        @param other The other SubString
+        @param begin The beginning of the subset
+
+        The subset ranges from the token with index @a begin to the end of the tokens.
+        If @a begin is greater than the greatest index, the new SubString will be empty.
+    */
+    SubString::SubString(const SubString& other, unsigned int begin)
+    {
+        for (unsigned int i = begin; i < other.size(); ++i)
         {
-            this->strings.push_back(subString[i]);
-            this->bInSafemode.push_back(subString.isInSafemode(i));
-        }
-    }
-
-
-    /**
-     * @brief creates a SubSet of a SubString.
-     * @param subString the SubString to take a Set from
-     * @param subSetBegin the beginning to the end
-     * @param subSetEnd the end of the SubSet (max subString.size() will be checked internaly)
-     */
-    SubString::SubString(const SubString& subString, unsigned int subSetBegin, unsigned int subSetEnd)
-    {
-        for (unsigned int i = subSetBegin; i < subString.size() && i < subSetEnd; i++)
-        {
-            this->strings.push_back(subString[i]);
-            this->bInSafemode.push_back(subString.isInSafemode(i));
+            this->tokens_.push_back(other[i]);
+            this->bTokenInSafemode_.push_back(other.isInSafemode(i));
         }
     }
 
     /**
-     * @brief creates a Substring from a count and values set.
-     * @param argc: the Arguments Count.
-     * @param argv: Argument Values.
-     */
+        @brief creates a new SubString based on a subset of an other SubString.
+        @param other The other SubString
+        @param begin The beginning of the subset
+        @param end The end of the subset
+
+        The subset ranges from the token with index @a begin until (but not including) the token with index @a end.
+        If @a begin or @a end are beyond the allowed index, the resulting SubString will be empty.
+    */
+    SubString::SubString(const SubString& other, unsigned int begin, unsigned int end)
+    {
+        for (unsigned int i = begin; i < std::min(other.size(), end); ++i)
+        {
+            this->tokens_.push_back(other[i]);
+            this->bTokenInSafemode_.push_back(other.isInSafemode(i));
+        }
+    }
+
+    /**
+        @brief Creates a SubString from a count and values set.
+        @param argc The number of arguments
+        @param argv An array of pointers to the arguments
+    */
     SubString::SubString(unsigned int argc, const char** argv)
     {
         for(unsigned int i = 0; i < argc; ++i)
         {
-            this->strings.push_back(std::string(argv[i]));
-            this->bInSafemode.push_back(false);
+            this->tokens_.push_back(std::string(argv[i]));
+            this->bTokenInSafemode_.push_back(false);
         }
     }
 
     /**
-     * @brief removes the object from memory
-     */
+        @brief Destructor
+    */
     SubString::~SubString()
     { }
 
-    /** @brief An empty String */
-    // const std::string SubString::emptyString = "";
-    /** @brief Helper that gets you a String consisting of all White Spaces */
-    const std::string SubString::WhiteSpaces = " \n\t";
-    /** @brief Helper that gets you a String consisting of all WhiteSpaces and the Comma */
-    const std::string SubString::WhiteSpacesWithComma = " \n\t,";
-    /** An Empty SubString */
-    const SubString SubString::NullSubString = SubString();
-
     /**
-     * @brief stores the Value of subString in this SubString
-     * @param subString will be copied into this String.
-     * @returns this SubString.
-     */
-    SubString& SubString::operator=(const SubString& subString)
+        @brief Stores the tokens of @a other in this SubString
+        @return This SubString.
+    */
+    SubString& SubString::operator=(const SubString& other)
     {
-        this->strings = subString.strings;
-        this->bInSafemode = subString.bInSafemode;
+        this->tokens_ = other.tokens_;
+        this->bTokenInSafemode_ = other.bTokenInSafemode_;
         return *this;
     }
 
-
     /**
-     * @brief comparator.
-     * @param subString the SubString to compare against this one.
-     * @returns true if the Stored Strings match
-     */
-    bool SubString::operator==(const SubString& subString) const
+        @brief Compares this SubString to another SubString and returns true if they contain the same values.
+    */
+    bool SubString::operator==(const SubString& other) const
     {
-        return ((this->strings == subString.strings) && (this->bInSafemode == subString.bInSafemode));
+        return ((this->tokens_ == other.tokens_) && (this->bTokenInSafemode_ == other.bTokenInSafemode_));
     }
 
     /**
-     * @brief comparator.
-     * @param subString the SubString to compare against this one.
-     * @returns true if the Stored Strings match
-     */
-    bool SubString::compare(const SubString& subString) const
+        @copydoc operator==
+    */
+    bool SubString::compare(const SubString& other) const
     {
-        return (*this == subString);
+        return (*this == other);
     }
 
     /**
-     * @brief comparator.
-     * @param subString the SubString to compare against this one.
-     * @param length how many entries to compare. (from 0 to length)
-     * @returns true if the Stored Strings match
-     */
-    bool SubString::compare(const SubString& subString, unsigned int length) const
+        @brief Compares this SubString to another SubString and returns true if the first @a length values match.
+        @param other The other SubString
+        @param length How many tokens to compare
+    */
+    bool SubString::compare(const SubString& other, unsigned int length) const
     {
-        if (length > this->size() || length > subString.size())
+        if (length > this->size() || length > other.size())
             return false;
 
-        for (unsigned int i = 0; i < length; i++)
-            if ((this->strings[i] != subString.strings[i]) || (this->bInSafemode[i] != subString.bInSafemode[i]))
+        for (unsigned int i = 0; i < length; ++i)
+            if ((this->tokens_[i] != other.tokens_[i]) || (this->bTokenInSafemode_[i] != other.bTokenInSafemode_[i]))
                 return false;
         return true;
     }
 
-
     /**
-     * @brief append operator
-     * @param subString the String to append.
-     * @returns a SubString where this and subString are appended.
-     */
-    SubString SubString::operator+(const SubString& subString) const
+        @brief Concatenates the tokens of two SubStrings and returns the resulting new SubString
+        @return A new SubString that contains the tokens of this and the other SubString
+    */
+    SubString SubString::operator+(const SubString& other) const
     {
-        return SubString(*this) += subString;
+        return SubString(*this) += other;
     }
 
-
     /**
-     * @brief append operator.
-     * @param subString append subString to this SubString.
-     * @returns this substring appended with subString
-     */
-    SubString& SubString::operator+=(const SubString& subString)
+        @brief Appends the tokens of @a other to this SubString
+        @return This SubString
+    */
+    SubString& SubString::operator+=(const SubString& other)
     {
-        for (unsigned int i = 0; i < subString.size(); i++)
+        for (unsigned int i = 0; i < other.size(); ++i)
         {
-            this->strings.push_back(subString[i]);
-            this->bInSafemode.push_back(subString.isInSafemode(i));
+            this->tokens_.push_back(other[i]);
+            this->bTokenInSafemode_.push_back(other.isInSafemode(i));
         }
         return *this;
     }
 
-
     /**
-     * @brief Split the String at
-     * @param string where to split
-     * @param splitter delimiter.
-     */
-    unsigned int SubString::split(const std::string& string, char splitter)
+        @copydoc SubString(const std::string&,const std::string&,const std::string&,bool,char,bool,char,bool,char,char,bool,char)
+    */
+    unsigned int SubString::split(const std::string& line,
+                                  const std::string& delimiters, const std::string& delimiterNeighbours, bool bAllowEmptyEntries,
+                                  char escapeChar, bool bRemoveEscapeChar, char safemodeChar, bool bRemoveSafemodeChar,
+                                  char openparenthesisChar, char closeparenthesisChar, bool bRemoveParenthesisChars, char commentChar)
     {
-        this->strings.clear();
-        this->bInSafemode.clear();
-        char split[2];
-        split[0] = splitter;
-        split[1] = '\0';
-        SubString::splitLine(this->strings, this->bInSafemode, string, split);
-        return strings.size();
+        this->tokens_.clear();
+        this->bTokenInSafemode_.clear();
+        SubString::splitLine(this->tokens_, this->bTokenInSafemode_, line, delimiters, delimiterNeighbours, bAllowEmptyEntries, escapeChar, bRemoveEscapeChar, safemodeChar, bRemoveSafemodeChar, openparenthesisChar, closeparenthesisChar, bRemoveParenthesisChars, commentChar);
+        return this->tokens_.size();
     }
 
-
     /**
-     * @brief Splits a string into multiple tokens.
-     * @param string The string to split
-     * @param delimiters Multiple set of characters at what to split. (delimiters)
-     * @param delimiterNeighbours: Neighbours of the delimiters that will be erased too.
-     * @param emptyEntries: If empty entries are added to the list of SubStrings
-     * @param escapeChar The escape character that overrides splitters commends and so on...
-     * @param removeEscapeChar If true, the escape char is removed from the tokens
-     * @param safemode_char Within these characters splitting won't happen
-     * @param removeSafemodeChar Removes the safemode_char from the beginning and the ending of a token
-     * @param openparenthesis_char The beginning of a safemode is marked with this
-     * @param closeparenthesis_char The ending of a safemode is marked with this
-     * @param removeParenthesisChars Removes the parenthesis from the beginning and the ending of a token
-     * @param comment_char The comment character.
-     */
-    unsigned int SubString::split(const std::string& string,
-                                  const std::string& delimiters, const std::string& delimiterNeighbours, bool emptyEntries,
-                                  char escapeChar, bool removeEscapeChar, char safemode_char, bool removeSafemodeChar,
-                                  char openparenthesis_char, char closeparenthesis_char, bool removeParenthesisChars, char comment_char)
-    {
-        this->strings.clear();
-        this->bInSafemode.clear();
-        SubString::splitLine(this->strings, this->bInSafemode, string, delimiters, delimiterNeighbours, emptyEntries, escapeChar, removeEscapeChar, safemode_char, removeSafemodeChar, openparenthesis_char, closeparenthesis_char, removeParenthesisChars, comment_char);
-        return this->strings.size();
-    }
-
-
-    /**
-     * @brief joins together all Strings of this Substring.
-     * @param delimiter the String between the subStrings.
-     * @returns the joined String.
-     */
+        @brief Joins the tokens of this SubString using the given delimiter and returns a string.
+        @param delimiter This delimiter will be placed between each two tokens
+        @return The joined string.
+    */
     std::string SubString::join(const std::string& delimiter) const
     {
-        if (!this->strings.empty())
+        if (!this->tokens_.empty())
         {
-            std::string retVal = this->strings[0];
-            for (unsigned int i = 1; i < this->strings.size(); i++)
-                retVal += delimiter + this->strings[i];
+            std::string retVal = this->tokens_[0];
+            for (unsigned int i = 1; i < this->tokens_.size(); ++i)
+                retVal += delimiter + this->tokens_[i];
             return retVal;
         }
         else
             return "";
     }
 
-
     /**
-     * @brief creates a SubSet of a SubString.
-     * @param subSetBegin the beginning to the end
-     * @returns the SubSet
-     *
-     * This function is added for your convenience, and does the same as
-     * SubString::SubString(const SubString& subString, unsigned int subSetBegin)
-     */
-    SubString SubString::subSet(unsigned int subSetBegin) const
+        @brief Creates a subset of this SubString.
+        @param begin The beginning of the subset
+        @return A new SubString containing the defined subset.
+
+        The subset ranges from the token with index @a begin to the end of the tokens.
+        If @a begin is greater than the greatest index, the new SubString will be empty.
+
+        This function is added for your convenience, and does the same as
+        SubString::SubString(const SubString& other, unsigned int begin)
+    */
+    SubString SubString::subSet(unsigned int begin) const
     {
-        return SubString(*this, subSetBegin);
+        return SubString(*this, begin);
     }
 
-
     /**
-     * @brief creates a SubSet of a SubString.
-     * @param subSetBegin the beginning to
-     * @param subSetEnd the end of the SubSet to select (if bigger than subString.size() it will be downset.)
-     * @returns the SubSet
-     *
-     * This function is added for your convenience, and does the same as
-     * SubString::SubString(const SubString& subString, unsigned int subSetBegin)
-     */
-    SubString SubString::subSet(unsigned int subSetBegin, unsigned int subSetEnd) const
+        @brief Creates a subset of this SubString.
+        @param begin The beginning of the subset
+        @param end The ending of the subset
+        @return A new SubString containing the defined subset.
+
+        The subset ranges from the token with index @a begin until (but not including) the token with index @a end.
+        If @a begin or @a end are beyond the allowed index, the resulting SubString will be empty.
+
+        This function is added for your convenience, and does the same as
+        SubString::SubString(const SubString& other, unsigned int begin, unsigned int end)
+    */
+    SubString SubString::subSet(unsigned int begin, unsigned int end) const
     {
-        return SubString(*this, subSetBegin, subSetEnd);
+        return SubString(*this, begin, end);
     }
 
-
     /**
-     * @brief Splits a line into tokens and stores them in ret.
-     * @param ret The array, where the splitted strings will be stored in
-     * @param bInSafemode A vector wich stores for each character of the string if it is in safemode or not
-     * @param line The inputLine to split
-     * @param delimiters A string of delimiters (here the input will be splitted)
-     * @param delimiterNeighbours Neighbours of the delimiter, that will be removed if they are to the left or the right of a delimiter.
-     * @param emptyEntries If empty strings are added to the list of strings.
-     * @param escape_char Escape carater (escapes splitters)
-     * @param removeEscapeChar If true, the escape char is removed from the tokens
-     * @param safemode_char The beginning of the safemode is marked with this
-     * @param removeSafemodeChar Removes the safemode_char from the beginning and the ending of a token
-     * @param openparenthesis_char The beginning of a safemode is marked with this
-     * @param closeparenthesis_char The ending of a safemode is marked with this
-     * @param removeParenthesisChars Removes the parenthesis from the beginning and the ending of a token
-     * @param comment_char The beginning of a comment is marked with this: (until the end of a line)
-     * @param start_state The initial state on how to parse the string.
-     * @return SPLIT_LINE_STATE the parser was in when returning
-     *
-     * This is the Actual Splitting Algorithm from Clemens Wacha
-     * Supports delimiters, escape characters,
-     * ignores special  characters between safemode_char and between comment_char and linend '\n'.
-     */
+        @copydoc SubString(const std::string&,const std::string&,const std::string&,bool,char,bool,char,bool,char,char,bool,char)
+        @param tokens The array, where the splitted strings will be stored in
+        @param bTokenInSafemode A vector wich stores for each character of the string if it is in safemode or not
+        @param start_state The internal state of the parser
+
+        This is the actual splitting algorithm from Clemens Wacha.
+        Supports delimiters, escape characters, ignores special characters between safemodeChar and between commentChar and line end "\n".
+
+        Extended by Orxonox to support parenthesis as additional safe-mode.
+    */
     SubString::SPLIT_LINE_STATE
-    SubString::splitLine(std::vector<std::string>& ret,
-                         std::vector<bool>& bInSafemode,
+    SubString::splitLine(std::vector<std::string>& tokens,
+                         std::vector<bool>& bTokenInSafemode,
                          const std::string& line,
                          const std::string& delimiters,
                          const std::string& delimiterNeighbours,
-                         bool emptyEntries,
-                         char escape_char,
-                         bool removeEscapeChar,
-                         char safemode_char,
-                         bool removeSafemodeChar,
-                         char openparenthesis_char,
-                         char closeparenthesis_char,
-                         bool removeParenthesisChars,
-                         char comment_char,
+                         bool bAllowEmptyEntries,
+                         char escapeChar,
+                         bool bRemoveEscapeChar,
+                         char safemodeChar,
+                         bool bRemoveSafemodeChar,
+                         char openparenthesisChar,
+                         char closeparenthesisChar,
+                         bool bRemoveParenthesisChars,
+                         char commentChar,
                          SPLIT_LINE_STATE start_state)
     {
         SPLIT_LINE_STATE state = start_state;
@@ -359,15 +298,15 @@ namespace orxonox
         std::string token;
         bool inSafemode = false;
 
-        if(start_state != SL_NORMAL && ret.size() > 0)
+        if(start_state != SL_NORMAL && tokens.size() > 0)
         {
-            token = ret[ret.size()-1];
-            ret.pop_back();
+            token = tokens[tokens.size()-1];
+            tokens.pop_back();
         }
-        if(start_state != SL_NORMAL && bInSafemode.size() > 0)
+        if(start_state != SL_NORMAL && bTokenInSafemode.size() > 0)
         {
-            inSafemode = bInSafemode[bInSafemode.size()-1];
-            bInSafemode.pop_back();
+            inSafemode = bTokenInSafemode[bTokenInSafemode.size()-1];
+            bTokenInSafemode.pop_back();
         }
 
         while(i < line.size())
@@ -375,36 +314,36 @@ namespace orxonox
             switch(state)
             {
             case SL_NORMAL:
-                if(line[i] == escape_char)
+                if(line[i] == escapeChar)
                 {
                     state = SL_ESCAPE;
-                    if (!removeEscapeChar)
+                    if (!bRemoveEscapeChar)
                         token += line[i];
                 }
-                else if(line[i] == safemode_char)
+                else if(line[i] == safemodeChar)
                 {
                     state = SL_SAFEMODE;
                     inSafemode = true;
-                    if (!removeSafemodeChar)
+                    if (!bRemoveSafemodeChar)
                         token += line[i];
                 }
-                else if(line[i] == openparenthesis_char)
+                else if(line[i] == openparenthesisChar)
                 {
                     state = SL_PARENTHESES;
                     inSafemode = true;
-                    if (!removeParenthesisChars)
+                    if (!bRemoveParenthesisChars)
                         token += line[i];
                 }
-                else if(line[i] == comment_char)
+                else if(line[i] == commentChar)
                 {
                     if (fallBackNeighbours > 0)
                         token = token.substr(0, token.size() - fallBackNeighbours);
-                    /// FINISH
-                    if(emptyEntries || token.size() > 0)
+                    // FINISH
+                    if(bAllowEmptyEntries || token.size() > 0)
                     {
-                        ret.push_back(token);
+                        tokens.push_back(token);
                         token.clear();
-                        bInSafemode.push_back(inSafemode);
+                        bTokenInSafemode.push_back(inSafemode);
                         inSafemode = false;
                     }
                     token += line[i];       // EAT
@@ -415,12 +354,12 @@ namespace orxonox
                     // line[i] is a delimiter
                     if (fallBackNeighbours > 0)
                         token = token.substr(0, token.size() - fallBackNeighbours);
-                    /// FINISH
-                    if(emptyEntries || token.size() > 0)
+                    // FINISH
+                    if(bAllowEmptyEntries || token.size() > 0)
                     {
-                        ret.push_back(token);
+                        tokens.push_back(token);
                         token.clear();
-                        bInSafemode.push_back(inSafemode);
+                        bTokenInSafemode.push_back(inSafemode);
                         inSafemode = false;
                     }
                     state = SL_NORMAL;
@@ -433,7 +372,7 @@ namespace orxonox
                             ++fallBackNeighbours;
                         else
                         {
-                            i++;
+                            ++i;
                             continue;
                         }
                     }
@@ -443,7 +382,7 @@ namespace orxonox
                 }
                 break;
             case SL_ESCAPE:
-                if (!removeSafemodeChar)
+                if (!bRemoveSafemodeChar)
                     token += line[i];
                 else
                 {
@@ -460,13 +399,13 @@ namespace orxonox
                 state = SL_NORMAL;
                 break;
             case SL_SAFEMODE:
-                if(line[i] == safemode_char)
+                if(line[i] == safemodeChar)
                 {
                     state = SL_NORMAL;
-                    if (!removeSafemodeChar)
+                    if (!bRemoveSafemodeChar)
                         token += line[i];
                 }
-                else if(line[i] == escape_char)
+                else if(line[i] == escapeChar)
                 {
                     state = SL_SAFEESCAPE;
                 }
@@ -490,13 +429,13 @@ namespace orxonox
                 break;
 
             case SL_PARENTHESES:
-                if(line[i] == closeparenthesis_char)
+                if(line[i] == closeparenthesisChar)
                 {
                     state = SL_NORMAL;
-                    if (!removeParenthesisChars)
+                    if (!bRemoveParenthesisChars)
                         token += line[i];
                 }
-                else if(line[i] == escape_char)
+                else if(line[i] == escapeChar)
                 {
                     state = SL_PARENTHESESESCAPE;
                 }
@@ -522,12 +461,12 @@ namespace orxonox
             case SL_COMMENT:
                 if(line[i] == '\n')
                 {
-                    /// FINISH
+                    // FINISH
                     if(token.size() > 0)
                     {
-                        ret.push_back(token);
+                        tokens.push_back(token);
                         token.clear();
-                        bInSafemode.push_back(inSafemode);
+                        bTokenInSafemode.push_back(inSafemode);
                         inSafemode = false;
                     }
                     state = SL_NORMAL;
@@ -542,31 +481,30 @@ namespace orxonox
                 // nothing
                 break;
             }
-            i++;
+            ++i;
         }
 
-        /// FINISH
+        // FINISH
         if (fallBackNeighbours > 0)
             token = token.substr(0, token.size() - fallBackNeighbours);
-        if(emptyEntries || token.size() > 0)
+        if(bAllowEmptyEntries || token.size() > 0)
         {
-            ret.push_back(token);
+            tokens.push_back(token);
             token.clear();
-            bInSafemode.push_back(inSafemode);
+            bTokenInSafemode.push_back(inSafemode);
             inSafemode = false;
         }
         return(state);
     }
 
-
     /**
-     * @brief Some nice debug information about this SubString
-     */
+        @brief Some nice debug information about this SubString.
+    */
     void SubString::debug() const
     {
-        printf("Substring-information::count=%d ::", this->strings.size());
-        for (unsigned int i = 0; i < this->strings.size(); i++)
-            printf("s%d='%s'::", i, this->strings[i].c_str());
-        printf("\n");
+        COUT(0) << "Substring-information::count=" << this->tokens_.size() << " ::";
+        for (unsigned int i = 0; i < this->tokens_.size(); ++i)
+            COUT(0) << "s" << i << "='" << this->tokens_[i].c_str() << "'::";
+        COUT(0) << std::endl;
     }
 }

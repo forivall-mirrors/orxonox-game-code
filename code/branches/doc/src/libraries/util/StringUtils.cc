@@ -40,17 +40,16 @@
 
 namespace orxonox
 {
+    /// A blank string (""). Used to return a blank string by reference.
     std::string BLANKSTRING;
 
+    /// Returns a string of a unique number. This function is guaranteed to never return the same string twice.
     std::string getUniqueNumberString()
     {
         return multi_cast<std::string>(getUniqueNumber());
     }
 
-    /**
-        @brief Removes all whitespaces from a string.
-        @param str The string to strip
-    */
+    /// Removes all whitespaces from a string.
     void strip(std::string* str)
     {
         size_t pos;
@@ -62,11 +61,7 @@ namespace orxonox
             str->erase(pos, 1);
     }
 
-    /**
-        @brief Returns a copy of a string without whitespaces.
-        @param str The string to strip
-        @return The stripped line
-    */
+    /// Returns a copy of a string without whitespaces.
     std::string getStripped(const std::string& str)
     {
         std::string output(str);
@@ -74,11 +69,7 @@ namespace orxonox
         return output;
     }
 
-    /**
-        @brief Returns a copy of a string without trailing whitespaces.
-        @param str The string
-        @return The modified copy
-    */
+    /// Returns a copy of a string without trailing whitespaces.
     std::string removeTrailingWhitespaces(const std::string& str)
     {
         size_t pos1 = 0;
@@ -89,10 +80,10 @@ namespace orxonox
     }
 
     /**
-        @brief Returns the position of the next quote in the string, starting with start.
+        @brief Returns the position of the next quotation mark in the string, starting with start.
         @param str The string
-        @param start The startposition
-        @return The position of the next quote (std::string::npos if there is no next quote)
+        @param start The first position to look at
+        @return The position of the next quotation mark (@c std::string::npos if there is none)
     */
     size_t getNextQuote(const std::string& str, size_t start)
     {
@@ -114,10 +105,10 @@ namespace orxonox
     }
 
     /**
-        @brief Returns true if pos is between two quotes.
+        @brief Returns true if pos is between two quotation marks.
         @param str The string
         @param pos The position to check
-        @return True if pos is between two quotes
+        @return True if pos is between two quotation marks
     */
     bool isBetweenQuotes(const std::string& str, size_t pos)
     {
@@ -139,11 +130,7 @@ namespace orxonox
         return ((quotecount % 2) == 1);
     }
 
-    /**
-        @brief Returns true if the string contains something like '..."between quotes"...'.
-        @param str The string
-        @return True if there is something between quotes
-    */
+    /// Returns true if the string contains something like '..."between quotaton marks"...'.
     bool hasStringBetweenQuotes(const std::string& str)
     {
         size_t pos1 = getNextQuote(str, 0);
@@ -151,10 +138,7 @@ namespace orxonox
         return (pos1 != std::string::npos && pos2 != std::string::npos && pos2 > pos1 + 1);
     }
 
-    /**
-        @brief If the string contains something like '..."between quotes"...' then 'between quotes' gets returned (without quotes).
-        @param str The string between the quotes
-    */
+    /// If the string contains something like '..."between quotaton marks"...' then 'between quotaton marks' gets returned, otherwise "".
     std::string getStringBetweenQuotes(const std::string& str)
     {
         size_t pos1 = getNextQuote(str, 0);
@@ -166,9 +150,8 @@ namespace orxonox
     }
 
     /**
-        @brief Removes enclosing quotes if available (including whitespaces at the outside of the quotes).
-        @param str The string to strip
-        @return The string with removed quotes
+        @brief Removes enclosing quotation marks if available (including whitespaces at the outside of the quotation marks).
+        @return The striped string without quotation marks
     */
     std::string stripEnclosingQuotes(const std::string& str)
     {
@@ -206,9 +189,8 @@ namespace orxonox
     }
 
     /**
-        @brief Removes enclosing {braces} (braces must be exactly on the beginning and the end of the string).
-        @param str The string to strip
-        @return The striped string
+        @brief Removes enclosing braces '{' and '}' (the braces must be exactly on the beginning and the end of the string).
+        @return The striped string without braces
     */
     std::string stripEnclosingBraces(const std::string& str)
     {
@@ -222,8 +204,6 @@ namespace orxonox
 
     /**
         @brief Determines if a string is a comment (starts with a comment-symbol).
-        @param str The string to check
-        @return True = it's a comment
 
         A comment is defined by a leading '#', '%', ';' or '//'.
     */
@@ -251,21 +231,13 @@ namespace orxonox
         return false;
     }
 
-    /**
-        @brief Determines if a string is empty (contains only whitespaces).
-        @param str The string to check
-        @return True = it's empty
-    */
+    /// Determines if a string is empty (contains only whitespaces).
     bool isEmpty(const std::string& str)
     {
         return getStripped(str).empty();
     }
 
-    /**
-        @brief Determines if a string contains only numbers and maximal one '.'.
-        @param str The string to check
-        @return True = it's a number
-    */
+    /// Determines if a string contains only numbers and maximal one '.'.
     bool isNumeric(const std::string& str)
     {
         bool foundPoint = false;
@@ -286,8 +258,14 @@ namespace orxonox
 
     /**
         @brief Adds backslashes to the given string which makes special chars visible. Existing slashes will be doubled.
-        @param str The string to manipulate
-        @return The string with added slashes
+
+        This function converts all special chars like line breaks, tabs, quotation marks etc. into
+        a human readable format by adding a backslash. So for example "\n" will be converted to
+        "\\" + "n".
+
+        This is usually used when a string is written to a file.
+
+        @see removeSlashes
     */
     std::string addSlashes(const std::string& str)
     {
@@ -318,8 +296,13 @@ namespace orxonox
 
     /**
         @brief Removes backslashes from the given string. Double backslashes are interpreted as one backslash.
-        @param str The string to manipulate
-        @return The string with removed slashes
+
+        This function removes all backslashes and converts the human readable equivalents of
+        special chars like "\\" + "n" into their real meaning (in this case a line break or "\n").
+
+        This is usually used when reading a string from a file.
+
+        @see addSlashes
     */
     std::string removeSlashes(const std::string& str)
     {
@@ -359,10 +342,7 @@ namespace orxonox
         return output;
     }
 
-    /**
-        @brief Replaces each char between A and Z with its lowercase equivalent.
-        @param str The string to convert
-    */
+    /// Replaces each char between A and Z with its lowercase equivalent.
     void lowercase(std::string* str)
     {
         for (size_t i = 0; i < str->size(); ++i)
@@ -371,11 +351,7 @@ namespace orxonox
         }
     }
 
-    /**
-        @brief Returns a copy of the given string without uppercase chars.
-        @param str The string
-        @return The copy
-    */
+    /// Returns a copy of the given string where all chars are converted to lowercase.
     std::string getLowercase(const std::string& str)
     {
         std::string output(str);
@@ -383,10 +359,7 @@ namespace orxonox
         return output;
     }
 
-    /**
-        @brief Replaces each char between a and z with its uppercase equivalent.
-        @param str The string to convert
-    */
+    /// Replaces each char between a and z with its uppercase equivalent.
     void uppercase(std::string* str)
     {
         for (size_t i = 0; i < str->size(); ++i)
@@ -395,11 +368,7 @@ namespace orxonox
         }
     }
 
-    /**
-        @brief Returns a copy of the given string without lowercase chars.
-        @param str The string
-        @return The copy
-    */
+    /// Returns a copy of the given string where all chars are converted to uppercase.
     std::string getUppercase(const std::string& str)
     {
         std::string output(str);
@@ -409,8 +378,7 @@ namespace orxonox
 
     /**
         @brief Compares two strings ignoring different casing.
-        @param s1 First string
-        @param s2 Second string
+        @return s1 == s1 -> returns 0 / s1 < s2 -> returns -1 / s1 >= s2 -> returns 1
     */
     int nocaseCmp(const std::string& s1, const std::string& s2)
     {
@@ -436,7 +404,7 @@ namespace orxonox
 
 
     /**
-        @brief Compares the first 'len' chars of two strings ignoring different casing.
+        @brief Compares the first @a len chars of two strings ignoring different casing.
         @param s1 First string
         @param s2 Second string
         @param len Maximal number of chars to compare
@@ -461,41 +429,28 @@ namespace orxonox
         return 0;
     }
 
-    /**
-        @brief Returns true if the string contains a comment, introduced by #, %, ; or //.
-        @param str The string
-        @return True if the string contains a comment
-    */
+    /// Returns true if the string contains a comment, introduced by #, %, ; or //.
     bool hasComment(const std::string& str)
     {
         return (getCommentPosition(str) != std::string::npos);
     }
 
-    /**
-        @brief If the string contains a comment, the comment gets returned (including the comment symbol), an empty string otherwise.
-        @param str The string
-        @return The comment
-    */
+    /// If the string contains a comment, the comment gets returned (including the comment symbol), an empty string otherwise.
     std::string getComment(const std::string& str)
     {
         return str.substr(getCommentPosition(str));
     }
 
-    /**
-        @brief If the string contains a comment, the position of the comment-symbol gets returned, std::string::npos otherwise.
-        @param str The string
-        @return The position
-    */
+    /// If the string contains a comment, the position of the comment-symbol gets returned, @c std::string::npos otherwise.
     size_t getCommentPosition(const std::string& str)
     {
         return getNextCommentPosition(str, 0);
     }
 
     /**
-        @brief Returns the position of the next comment-symbol, starting with start.
+        @brief Returns the position of the next comment-symbol, starting with @a start.
         @param str The string
-        @param start The startposition
-        @return The position
+        @param start The first position to look at
     */
     size_t getNextCommentPosition(const std::string& str, size_t start)
     {

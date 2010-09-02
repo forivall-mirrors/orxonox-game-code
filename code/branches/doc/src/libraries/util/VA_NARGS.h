@@ -28,6 +28,7 @@
 
 /**
     @file
+    @ingroup Util
     @brief Declaration of the ORXONOX_VA_NARGS macro which returns the number of arguments passed to a variadic macro.
 */
 

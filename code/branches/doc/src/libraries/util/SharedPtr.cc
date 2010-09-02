@@ -26,13 +26,21 @@
  *
  */
 
+/**
+    @file
+    @brief Static linkage of the SmallObjectAllocator used by SharedPtr.
+*/
+
 #include "SharedPtr.h"
 
 namespace orxonox
 {
-    SmallObjectAllocator& createSharedCounterPool()
+    namespace detail
     {
-        static SmallObjectAllocator instance(sizeof(SharedCounterImpl<void>));
-        return instance;
+        SmallObjectAllocator& createSharedCounterPool()
+        {
+            static SmallObjectAllocator instance(sizeof(SharedCounterImpl<void>));
+            return instance;
+        }
     }
 }

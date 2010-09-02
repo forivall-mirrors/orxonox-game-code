@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup String String functions
+    @ingroup Util
+*/
+
+/**
     @file
+    @ingroup Util String
     @brief Declaration of several string manipulation functions, used in many parts of the game.
 */
 
