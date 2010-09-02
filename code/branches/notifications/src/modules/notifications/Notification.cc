@@ -42,7 +42,7 @@ namespace orxonox
 
     CreateUnloadableFactory(Notification);
 
-    registerMemberNetworkFunction(Notification, send);
+    registerMemberNetworkFunction(Notification, sendHelper);
 
     /**
     @brief
@@ -106,23 +106,24 @@ namespace orxonox
     */
     bool Notification::send(unsigned int clientId, const std::string & sender = NotificationManager::NONE)
     {
-        if(GameMode::isMaster())
-        {
-            if(this->isSent()) //TODO: Needed?
-                return false;
 
-            this->sender_ = sender;
-            bool successful = NotificationManager::getInstance().registerNotification(this);
-            if(!successful)
-                return false;
-            this->sent_ = true;
+        callMemberNetworkFunction(Notification, sendHelper, this->getObjectID(), clientId, clientId, sender);
 
-            COUT(3) << "Notification \"" << this->getMessage() << "\" sent." << std::endl;
-        }
-        else
-        {
-            callMemberNetworkFunction(Notification, send, this->getObjectID(), clientId, clientId, sender);
-        }
+        return true;
+    }
+
+    bool Notification::sendHelper(unsigned int clientId, const std::string& sender)
+    {
+        if(this->isSent()) //TODO: Needed?
+            return false;
+
+        this->sender_ = sender;
+        bool successful = NotificationManager::getInstance().registerNotification(this);
+        if(!successful)
+            return false;
+        this->sent_ = true;
+
+        COUT(3) << "Notification \"" << this->getMessage() << "\" sent." << std::endl;
 
         return true;
     }

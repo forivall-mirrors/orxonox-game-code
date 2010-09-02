@@ -15,7 +15,6 @@ ORXONOX_ADD_LIBRARY(notifications
   PCH_FILE
     NotificationsPrecompiledHeaders.h
   LINK_LIBRARIES
-    objects
     orxonox
     overlays
   SOURCE_FILES ${NOTIFICATIONS_SRC_FILES}

@@ -57,6 +57,7 @@ namespace orxonox
             virtual ~Notification();
 
             bool send(unsigned int clientId, const std::string & sender); //!< Sends the Notification to the Notificationmanager.
+            bool sendHelper(unsigned int clientId, const std::string& sender);
 
             /**
             @brief Checks whether the Notification was sent.
