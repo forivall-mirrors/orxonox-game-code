@@ -60,10 +60,13 @@ namespace orxonox
 
         this->highestIndex_ = 0;
 
-        //TODO: What if no graphics?
-        GUIManager::getInstance().loadGUI("NotificationLayer");
-        // Create first queue:
-        NotificationQueue* queue = new NotificationQueue("general");
+        if(GameMode::showsGraphics())
+        {
+            GUIManager::getInstance().loadGUI("NotificationLayer");
+
+            // Create first queue:
+            NotificationQueue* queue = new NotificationQueue("all");
+        }
     }
 
     /**
@@ -93,21 +96,21 @@ namespace orxonox
 
         this->allNotificationsList_.insert(std::pair<std::time_t,Notification*>(time,notification));
 
-        if(notification->getSender() == NONE) //!< If the sender has no specific name, then the Notification is only added to the list of all Notifications.
+        if(notification->getSender() == NONE) // If the sender has no specific name, then the Notification is only added to the list of all Notifications.
             return true;
 
         bool all = false;
-        if(notification->getSender() == ALL) //!< If all are the sender, then the Notifications is added to every NotificationListener.
+        if(notification->getSender() == ALL) // If all are the sender, then the Notifications is added to every NotificationListener.
             all = true;
 
-        //!< Insert the notification in all listeners that have its sender as target.
-        for(std::map<NotificationListener*,int>::iterator it = this->listenerList_.begin(); it != this->listenerList_.end(); it++) //!< Iterate through all listeners.
+        // Insert the notification in all listeners that have its sender as target.
+        for(std::map<NotificationListener*,int>::iterator it = this->listenerList_.begin(); it != this->listenerList_.end(); it++) // Iterate through all listeners.
         {
             std::set<std::string> set = it->first->getTargetsSet();
             if(all || set.find(notification->getSender()) != set.end() || set.find(ALL) != set.end()) //TODO: Make sure this works.
             {
-                this->notificationLists_[it->second]->insert(std::pair<std::time_t,Notification*>(time,notification)); //!< Insert the Notification in the Notifications list of the current NotificationListener.
-                it->first->update(notification, time); //!< Update the listener.
+                this->notificationLists_[it->second]->insert(std::pair<std::time_t,Notification*>(time,notification)); // Insert the Notification in the Notifications list of the current NotificationListener.
+                it->first->update(notification, time); // Update the listener.
                 std::map<Notification*, unsigned int>::iterator counterIt = this->listenerCounter_.find(notification);
                 if(counterIt == this->listenerCounter_.end())
                     this->listenerCounter_[notification] = 1;
@@ -159,6 +162,7 @@ namespace orxonox
     @return
         Returns true if successful.
     */
+    //TODO: Needed?
     bool NotificationManager::removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map)
     {
         // Iterates through all items in the map until the Notification is found.
@@ -187,11 +191,11 @@ namespace orxonox
         this->highestIndex_ += 1;
         int index = this->highestIndex_;
 
-        this->listenerList_[listener] = index; //!< Add the NotificationListener to the list of listeners.
+        this->listenerList_[listener] = index; // Add the NotificationListener to the list of listeners.
 
         std::set<std::string> set = listener->getTargetsSet(); //TODO: Does this work?
 
-        //! If all senders are the target of the listener, then the list of notification for that specific listener is te same as the list of all Notifications.
+        // If all senders are the target of the listener, then the list of notification for that specific listener is te same as the list of all Notifications.
         if(set.find(ALL) != set.end())
         {
             this->notificationLists_[index] = &this->allNotificationsList_;
@@ -202,10 +206,10 @@ namespace orxonox
         this->notificationLists_[index] = new std::multimap<std::time_t,Notification*>;
         std::multimap<std::time_t,Notification*> map = *this->notificationLists_[index];
 
-        //! Iterate through all Notifications to determine whether any of them should belong to the newly registered NotificationListener.
+        // Iterate through all Notifications to determine whether any of them should belong to the newly registered NotificationListener.
         for(std::multimap<std::time_t,Notification*>::iterator it = this->allNotificationsList_.begin(); it != this->allNotificationsList_.end(); it++)
         {
-            if(set.find(it->second->getSender()) != set.end()) //!< Checks whether the overlay has the sender of the current notification as target.
+            if(set.find(it->second->getSender()) != set.end()) // Checks whether the overlay has the sender of the current notification as target.
             {
                 map.insert(std::pair<std::time_t, Notification*>(it->first, it->second));
                 std::map<Notification*, unsigned int>::iterator counterIt = this->listenerCounter_.find(it->second);
@@ -216,7 +220,7 @@ namespace orxonox
             }
         }
 
-        listener->update(); //!< Update the listener.
+        listener->update(); // Update the listener.
 
         COUT(4) << "NotificationListener registered with the NotificationManager." << std::endl;
 
@@ -271,18 +275,18 @@ namespace orxonox
         if(listener == NULL || map == NULL)
             return false;
 
-        std::multimap<std::time_t,Notification*>* notifications = this->notificationLists_[this->listenerList_[listener]]; //!< The Notifications for the input NotificationListener.
+        std::multimap<std::time_t,Notification*>* notifications = this->notificationLists_[this->listenerList_[listener]]; // The Notifications for the input NotificationListener.
 
-        if(notifications == NULL) //!< Returns NULL, if there are no Notifications.
+        if(notifications == NULL) // Returns NULL, if there are no Notifications.
             return true;
 
         std::multimap<std::time_t,Notification*>::iterator it, itLowest, itHighest;
         itLowest = notifications->lower_bound(timeFrameStart);
         itHighest = notifications->upper_bound(timeFrameStart);
 
-        for(it = itLowest; it != itHighest; it++) //!< Iterate through the Notifications from the start of the time Frame to the end of it.
+        for(it = itLowest; it != itHighest; it++) // Iterate through the Notifications from the start of the time Frame to the end of it.
         {
-            map->insert(std::pair<std::time_t,Notification*>(it->first,it->second)); //!< Add the found Notifications to the map.
+            map->insert(std::pair<std::time_t,Notification*>(it->first,it->second)); // Add the found Notifications to the map.
         }
 
         return true;

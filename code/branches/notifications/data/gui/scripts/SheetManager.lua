@@ -209,7 +209,7 @@ function keyESC()
     end
 
     -- If the first sheet that needs input is the MainMenu.
-    if counter > 0 and activeMenuSheets.size == counter and activeMenuSheets[counter].sheet.name == "MainMenu" then
+    if counter == 1 and activeMenuSheets[1].sheet.name == "MainMenu" then
         orxonox.execute("exit")
     -- If there is at least one sheet that needs input.
     elseif counter > 0 then
