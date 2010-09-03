@@ -319,6 +319,7 @@ namespace orxonox
                     state = SL_ESCAPE;
                     if (!bRemoveEscapeChar)
                         token += line[i];
+                    fallBackNeighbours = 0;
                 }
                 else if(line[i] == safemodeChar)
                 {
@@ -326,6 +327,7 @@ namespace orxonox
                     inSafemode = true;
                     if (!bRemoveSafemodeChar)
                         token += line[i];
+                    fallBackNeighbours = 0;
                 }
                 else if(line[i] == openparenthesisChar)
                 {
@@ -333,11 +335,13 @@ namespace orxonox
                     inSafemode = true;
                     if (!bRemoveParenthesisChars)
                         token += line[i];
+                    fallBackNeighbours = 0;
                 }
                 else if(line[i] == commentChar)
                 {
                     if (fallBackNeighbours > 0)
                         token = token.substr(0, token.size() - fallBackNeighbours);
+                    fallBackNeighbours = 0;
                     // FINISH
                     if(bAllowEmptyEntries || token.size() > 0)
                     {
@@ -354,6 +358,7 @@ namespace orxonox
                     // line[i] is a delimiter
                     if (fallBackNeighbours > 0)
                         token = token.substr(0, token.size() - fallBackNeighbours);
+                    fallBackNeighbours = 0;
                     // FINISH
                     if(bAllowEmptyEntries || token.size() > 0)
                     {
