@@ -75,7 +75,7 @@ namespace orxonox
     {
 
         public:
-            NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, const Vector2& position = NotificationQueue::DEFAULT_POSITION, unsigned int length = NotificationQueue::DEFAULT_LENGTH, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
+            NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, const Vector2& position = NotificationQueue::DEFAULT_POSITION, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
             virtual ~NotificationQueue();
 
             virtual void tick(float dt); //!< To update from time to time.
@@ -103,12 +103,6 @@ namespace orxonox
             inline unsigned int getSize() const
                 { return this->size_; }
             /**
-            @brief Returns the maximum length in characters a Notification message is allowed to have.
-            @return Returns the maximum Notification length.
-            */
-            inline unsigned int getNotificationLength() const
-                { return this->notificationLength_; }
-            /**
             @brief Returns the time interval the Notification is displayed.
             @return Returns the display time.
             */
@@ -120,18 +114,6 @@ namespace orxonox
             */
             inline const Vector2 & getPosition() const
                 { return this->position_; }
-            /**
-            @brief Returns the font size used to display the Notifications.
-            @return  Returns the font size.
-            */
-            inline float getFontSize() const
-                { return this->fontSize_; }
-            /**
-            @brief Returns the font used to display the Notifications.
-            @return Returns the font.
-            */
-            inline const std::string & getFont() const
-                { return this->font_; }
 
             /**
             @brief Returns the targets of this queue, reps. the senders which Notifications are displayed in this queue.
@@ -150,11 +132,8 @@ namespace orxonox
 
         private:
             static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
-            static const unsigned int DEFAULT_LENGTH = 64; //!< The default maximum number of characters displayed.
             static const unsigned int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
-            static const float DEFAULT_FONT_SIZE; //!< The default font size.
 
-            static const std::string DEFAULT_FONT; //!< The default font.
             static const Vector2 DEFAULT_POSITION; //!< the default position.
 
             std::string name_; //!< The name of the NotificationQueue.
@@ -166,9 +145,6 @@ namespace orxonox
             Vector2 position_; //!< The position of the NotificationQueue.
 
             std::set<std::string> targets_; //!< The targets the Queue displays Notifications of.
-
-            float fontSize_; //!< The font size.
-            std::string font_; //!< The font.
 
             std::multiset<NotificationContainer*, NotificationContainerCompare> ordering_; //!< Multiset, because the ordering is based on, not necessarily unique, timestamps. //TODO: Would set work as well?
             std::vector<NotificationContainer*> notifications_;
@@ -184,13 +160,9 @@ namespace orxonox
             bool setName(const std::string& name); //!< Sets the name of the NotificationQueue.
 
             void setMaxSize(unsigned int size); //!< Sets the maximum number of displayed Notifications.
-            void setNotificationLength(unsigned int length); //!< Sets the maximum number of characters a Notification message displayed by this queue is allowed to have.
             void setDisplayTime(unsigned int time); //!< Sets the maximum number of seconds a Notification is displayed.
 
             bool setTargets(const std::string & targets); //!< Set the targets of this queue.
-
-            bool setFontSize(float size); //!< Set the font size.
-            bool setFont(const std::string & font); //!< Set the font.
 
             void positionChanged(void); //!< Aligns all the Notifications to the position of the NotificationQueue.
 

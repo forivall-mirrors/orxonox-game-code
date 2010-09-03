@@ -27,32 +27,30 @@
  */
 
 /**
-    @file
+    @file NotificationQueue.cc
     @brief Implementation of the NotificationQueue class.
 */
 
 #include "NotificationQueue.h"
 
+#include <algorithm>
+
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-#include "Notification.h"
 #include "core/GUIManager.h"
 #include "core/LuaState.h"
-#include <algorithm>
+#include "Notification.h"
 
 namespace orxonox
 {
 
-    const std::string NotificationQueue::DEFAULT_FONT("VeraMono");
     const Vector2 NotificationQueue::DEFAULT_POSITION(0.0,0.0);
-    const float NotificationQueue::DEFAULT_FONT_SIZE = 0.025f;
 
     /**
     @brief
         Constructor. Creates and initializes the object.
     */
-    NotificationQueue::NotificationQueue(const std::string& name, const std::string& senders, unsigned int size, const Vector2& position, unsigned int length, unsigned int displayTime)
+    NotificationQueue::NotificationQueue(const std::string& name, const std::string& senders, unsigned int size, const Vector2& position, unsigned int displayTime)
     {
         this->registered_ = false;
 
@@ -64,10 +62,10 @@ namespace orxonox
         this->name_ = name;
         this->maxSize_ = size;
         this->position_ = position;
-        this->notificationLength_ = length;
         this->setDisplayTime(displayTime);
 
         this->create();
+        this->positionChanged();
 
         NotificationManager::getInstance().registerListener(this);
         this->registered_ = true;
@@ -100,13 +98,12 @@ namespace orxonox
     }
 
     /**
-    //TODO: Document.
+    @brief
+        Creates the NotificationQueue in lua.
     */
     void NotificationQueue::create(void)
     {
-        //TODO: Also transfer font and fontsize.
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.createQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
-        this->positionChanged();
     }
 
     /**
@@ -117,34 +114,34 @@ namespace orxonox
     */
     void NotificationQueue::tick(float dt)
     {
-        this->tickTime_ += dt; //!< Add the time interval that has passed to the time counter.
-        if(this->tickTime_ >= 1.0) //!< If the time counter is greater than 1s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
+        this->tickTime_ += dt; // Add the time interval that has passed to the time counter.
+        if(this->tickTime_ >= 1.0) // If the time counter is greater than 1s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
         {
-            this->timeLimit_.time = std::time(0)-this->displayTime_; //!< Container containig the current time.
+            this->timeLimit_.time = std::time(0)-this->displayTime_; // Container containig the current time.
 
             std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator it = this->ordering_.begin();
-            while(it != this->ordering_.upper_bound(&this->timeLimit_)) //!< Iterate through all elements whose creation time is smaller than the current time minus the display time.
+            while(it != this->ordering_.upper_bound(&this->timeLimit_)) // Iterate through all elements whose creation time is smaller than the current time minus the display time.
             {
                 NotificationContainer* temp = *it;
                 it++;
                 this->remove(temp);
             }
 
-            this->tickTime_ = this->tickTime_ - (int)this->tickTime_; //!< Reset time counter.
+            this->tickTime_ = this->tickTime_ - (int)this->tickTime_; // Reset time counter.
         }
     }
 
     /**
     @brief
         Updates the NotificationQueue.
-        Updates by clearing the queue and requesting all relevant Notifications from the NotificationManager and inserting the in the queue.
+        Updates by clearing the queue and requesting all relevant Notifications from the NotificationManager and inserting them into the queue.
     */
     void NotificationQueue::update(void)
     {
         this->clear();
 
         std::multimap<std::time_t, Notification*>* notifications = new std::multimap<std::time_t, Notification*>;
-        if(!NotificationManager::getInstance().getNotifications(this, notifications, this->displayTime_)) //!< Get the Notifications sent in the interval form now to minus the display time.
+        if(!NotificationManager::getInstance().getNotifications(this, notifications, this->displayTime_)) // Get the Notifications sent in the interval form now to minus the display time.
         {
             COUT(1) << "NotificationQueue update failed due to undetermined cause." << std::endl;
             return;
@@ -153,7 +150,7 @@ namespace orxonox
         if(notifications->empty())
             return;
 
-        for(std::multimap<std::time_t, Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++) //!> Add all Notifications.
+        for(std::multimap<std::time_t, Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++) // Add all Notifications.
             this->push(it->second, it->first);
 
         delete notifications;
@@ -174,6 +171,80 @@ namespace orxonox
         this->push(notification, time);
 
         COUT(4) << "NotificationQueue '" << this->getName() << "' updated. A new Notification has been added." << std::endl;
+    }
+
+    /**
+    @brief
+        Adds a Notification, to the queue.
+        It inserts it into the storage containers, creates a corresponding container and pushes the Notification message to the GUI.
+    @param notification
+        The Notification.
+    @param time
+        The time.
+    */
+    void NotificationQueue::push(Notification* notification, const std::time_t & time)
+    {
+        NotificationContainer* container = new NotificationContainer;
+        container->notification = notification;
+        container->time = time;
+
+        // If the maximum size of the NotificationQueue has been reached the last (least recently added) Notification is removed.
+        if(this->getSize() >= this->getMaxSize())
+            this->pop();
+
+        this->size_++;
+
+        this->ordering_.insert(container);
+        this->notifications_.insert(this->notifications_.begin(), container);
+
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
+    }
+
+    /**
+    @brief
+        Removes the least recently added Notification form the NotificationQueue.
+    */
+    void NotificationQueue::pop(void)
+    {
+        NotificationContainer* container = this->notifications_.back();
+        this->ordering_.erase(container);
+        this->notifications_.pop_back();
+        this->size_--;
+        delete container;
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.popNotification(\"" + this->getName() + "\")");
+    }
+
+    /**
+    @brief
+        Removes the Notification that is stored in the input container.
+    @param container
+        The NotificationContainer with the Notification to be removed.
+    */
+    void NotificationQueue::remove(NotificationContainer* container)
+    {
+        std::vector<NotificationContainer*>::iterator it = std::find(this->notifications_.begin(), this->notifications_.end(), container);
+        std::vector<NotificationContainer*>::difference_type index = it - this->notifications_.begin ();
+        this->ordering_.erase(container);
+        this->notifications_.erase(it);
+        this->size_--;
+        delete container;
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
+    }
+
+    /**
+    @brief
+        Clears the queue by removing all containers.
+    */
+    void NotificationQueue::clear(void)
+    {
+        this->ordering_.clear();
+        for(std::vector<NotificationContainer*>::iterator it = this->notifications_.begin(); it != this->notifications_.end(); it++)
+        {
+            delete *it;
+        }
+        this->notifications_.clear();
+        this->size_ = 0;
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.clearQueue(\"" + this->getName() + "\")");
     }
 
     /**
@@ -202,20 +273,6 @@ namespace orxonox
     void NotificationQueue::setMaxSize(unsigned int size)
     {
         this->maxSize_ = size;
-        this->update();
-    }
-
-    /**
-    @brief
-        Sets the maximum number of characters a Notification message displayed by this queue is allowed to have.
-    @param length
-        The length to be set.
-    @return
-        Returns true if successful.
-    */
-    void NotificationQueue::setNotificationLength(unsigned int length)
-    {
-        this->notificationLength_ = length;
         this->update();
     }
 
@@ -298,116 +355,11 @@ namespace orxonox
 
     /**
     @brief
-        Sets the font size.
-    @param size
-        The font size.
-    @return
-        Returns true if successful.
-    */
-    bool NotificationQueue::setFontSize(float size)
-    {
-        if(size <= 0)
-            return false;
-        
-        return true;
-    }
-
-    /**
-    @brief
-        Sets the font.
-    @param font
-        The font.
-    @return
-        Returns true if successful.
-    */
-    bool NotificationQueue::setFont(const std::string & font)
-    {
-        
-        return true;
-    }
-
-    /**
-    @brief
         Aligns all the Notifications to the position of the NotificationQueue.
     */
     void NotificationQueue::positionChanged(void)
     {
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changePosition(\"" + this->getName() + "\", " + multi_cast<std::string>(this->getPosition().x) + ", " + multi_cast<std::string>(this->getPosition().y) + ")");
-    }
-
-    /**
-    @brief
-        Adds a Notification, to the queue.
-        It inserts it into the storage containers, creates a corresponding container and pushes the Notification message to the GUI.
-    @param notification
-        The Notification.
-    @param time
-        The time.
-    */
-    void NotificationQueue::push(Notification* notification, const std::time_t & time)
-    {
-        NotificationContainer* container = new NotificationContainer;
-        container->notification = notification;
-        container->time = time;
-        
-        // If the maximum size of the NotificationQueue has been reached the last (least recently added) Notification is removed.
-        if(this->getSize() >= this->getMaxSize())
-            this->pop();
-
-        this->size_++;
-
-        this->ordering_.insert(container);
-        this->notifications_.insert(this->notifications_.begin(), container);
-
-        //TODO: Clip message if necessary.
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
-    }
-
-    /**
-    @brief
-        Removes the least recently added Notification form the NotificationQueue.
-    */
-    void NotificationQueue::pop(void)
-    {
-        NotificationContainer* container = this->notifications_.back();
-        this->ordering_.erase(container);
-        this->notifications_.pop_back();
-        this->size_--;
-        delete container;
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.popNotification(\"" + this->getName() + "\")");
-    }
-
-    /**
-    @brief
-        Removes the Notification that is stored in the input container.
-    @param container
-        The NotificationContainer with the Notification to be removed.
-    */
-    void NotificationQueue::remove(NotificationContainer* container)
-    {
-        std::vector<NotificationContainer*>::iterator it = std::find(this->notifications_.begin(), this->notifications_.end(), container);
-        std::vector<NotificationContainer*>::difference_type index = it - this->notifications_.begin ();
-        this->ordering_.erase(container);
-        this->notifications_.erase(it);
-        this->size_--;
-        delete container;
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
-    }
-
-    /**
-    @brief
-        Clears the queue by removing all containers.
-    */
-    void NotificationQueue::clear(void)
-    {
-        this->ordering_.clear();
-        for(std::vector<NotificationContainer*>::iterator it = this->notifications_.begin(); it != this->notifications_.end(); it++)
-        {
-            delete *it;
-        }
-        this->notifications_.clear();
-        this->size_ = 0;
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.clearQueue(\"" + this->getName() + "\")");
     }
 
 }

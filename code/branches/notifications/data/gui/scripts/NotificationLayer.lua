@@ -8,9 +8,11 @@ P.nameList = {}
 function P.createQueue(name, size)
     local root = winMgr:getWindow("orxonox/NotificationLayer/Root")
     local queue = winMgr:createWindow("MenuWidgets/Listbox", "orxonox/NotificationLayer/Root/Queue/" .. name)
-    queue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
-    queue:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0.2, 0)))
     root:addChildWindow(queue)
+
+    queue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
+    queue:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, 0), CEGUI.UDim(0, P.queueHeightHelper(queue, size))))
+
     table.insert(P.queueList, queue)
     table.insert(P.nameList, name)
     --TODO: Check name for uniqueness.
@@ -34,7 +36,7 @@ function P.removeQueue(name)
 end
 
 function P.changePosition(name, xPos, yPos)
-    local queue = P.nameToQueue(name)
+    local queue = P.nameToQueueHelper(name)
     if queue == nil then
         cout(0, "Queue is nil!")
         return
@@ -43,7 +45,7 @@ function P.changePosition(name, xPos, yPos)
 end
 
 function P.pushNotification(queueName, notification)
-    local queue = P.nameToQueue(queueName)
+    local queue = P.nameToQueueHelper(queueName)
     if queue == nil then
         cout(0, "Queue is nil!")
         return
@@ -58,7 +60,7 @@ function P.pushNotification(queueName, notification)
 end
 
 function P.popNotification(queueName)
-    local queue = P.nameToQueue(queueName)
+    local queue = P.nameToQueueHelper(queueName)
     if queue == nil then
         cout(0, "Queue is nil!")
         return
@@ -68,7 +70,7 @@ function P.popNotification(queueName)
 end
 
 function P.removeNotification(queueName, index)
-    local queue = P.nameToQueue(queueName)
+    local queue = P.nameToQueueHelper(queueName)
     if queue == nil then
         cout(0, "Queue is nil!")
         return
@@ -78,7 +80,7 @@ function P.removeNotification(queueName, index)
 end
 
 function P.clearQueue(name)
-    local queue = P.nameToQueue(name)
+    local queue = P.nameToQueueHelper(name)
     if queue == nil then
         cout(0, "Queue is nil!")
         return
@@ -87,7 +89,7 @@ function P.clearQueue(name)
     CEGUI.toListbox(queue):resetList()
 end
 
-function P.nameToQueue(name)
+function P.nameToQueueHelper(name)
     local queue = nil
     for k,v in pairs(P.nameList) do
         if v == name then
@@ -96,6 +98,18 @@ function P.nameToQueue(name)
         end
     end
     return queue
+end
+
+function P.queueHeightHelper(queue, size)
+    local listbox = CEGUI.toListbox(queue)
+    local item = CEGUI.createListboxTextItem("Text")
+    listbox:addItem(item)
+    local singleItemHeight = listbox:getTotalItemsHeight()
+    local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(queue:getLookNFeel())
+    local formattedArea = lookAndFeel:getNamedArea("ItemRenderingArea"):getArea():getPixelRect(queue)
+    local frameHeight = queue:getUnclippedPixelRect():getHeight() - formattedArea:getHeight()
+    listbox:removeItem(item)
+    return frameHeight + singleItemHeight*size
 end
 
 return P

@@ -68,10 +68,7 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     end
 
     -- Count the number of sheets that don't need input till the first that does.
-    local counter = activeMenuSheets.size
-    while counter > 0 and activeMenuSheets[counter].bNoInput do
-        counter = counter - 1
-    end
+    local counter = noInputSheetCounter()
     -- Pause game control if this is the first menu to be displayed
     -- HUGE HACK?
     if bNoInput == false and counter == 0 then
@@ -181,10 +178,7 @@ function hideMenuSheet(name)
     end
 
     -- Count the number of sheets that don't need input till the first that does.
-    local counter = activeMenuSheets.size
-    while counter > 0 and activeMenuSheets[counter].bNoInput do
-        counter = counter - 1
-    end
+    local counter = noInputSheetCounter()
     -- Resume control if the last (non-noInput) menu is hidden
     if counter == 0 then
         orxonox.HumanController:resumeControl()
@@ -203,10 +197,7 @@ function keyESC()
     -- HUGE, very HUGE hacks!
 
     -- Count the number of sheets that don't need input till the first that does.
-    local counter = activeMenuSheets.size
-    while counter > 0 and activeMenuSheets[counter].bNoInput do
-        counter = counter - 1
-    end
+    local counter = noInputSheetCounter()
 
     -- If the first sheet that needs input is the MainMenu.
     if counter == 1 and activeMenuSheets[1].sheet.name == "MainMenu" then
@@ -221,6 +212,15 @@ end
 
 function setBackgroundImage(imageSet, imageName)
     guiMgr:setBackgroundImage(imageSet, imageName)
+end
+
+function noInputSheetCounter()
+    -- Count the number of sheets that don't need input till the first that does.
+    local counter = activeMenuSheets.size
+    while counter > 0 and activeMenuSheets[counter].bNoInput do
+        counter = counter - 1
+    end
+    return counter
 end
 
 ----------------------

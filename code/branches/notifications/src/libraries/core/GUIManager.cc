@@ -236,6 +236,8 @@ namespace orxonox
         Displays specified GUI on screen
     @param name
         The name of the GUI
+    @param bNoInput
+        If true the GUI is transparent to input.
 
         The function executes the Lua function with the same name in case the GUIManager is ready.
     */
