@@ -70,15 +70,6 @@ namespace orxonox
             bool getNotifications(NotificationListener* listener, std::multimap<std::time_t,Notification*>* map, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); //!< Returns the Notifications for a specific NotificationListener in a specified timeframe.
 
             /**
-            @brief Fetches the Notifications for a specific NotificationListener starting at a specified time.
-            @param listener The NotificationListener the Notifications are fetched for.
-            @param map A multimap, in which the notifications are stored.
-            @param timeFrameStart The start time the Notifications are fetched from.
-            @return Returns true if successful.
-            */
-            bool getNotifications(NotificationListener* listener, std::multimap<std::time_t,Notification*>* map, const std::time_t & timeFrameStart)
-                { return this->getNotifications(listener, map, timeFrameStart, std::time(0)); }
-            /**
             @brief Fetches the Notifications for a specific NotificationListener starting at a specified timespan before now.
             @param listener The NotificationListener the Notifications are fetched for.
             @param map A multimap, in which the notifications are stored.

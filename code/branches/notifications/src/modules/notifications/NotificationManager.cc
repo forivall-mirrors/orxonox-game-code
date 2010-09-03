@@ -39,6 +39,8 @@
 #include "core/CoreIncludes.h"
 #include "Notification.h"
 #include "interfaces/NotificationListener.h"
+#include "core/GUIManager.h"
+#include "NotificationQueue.h"
 
 namespace orxonox
 {
@@ -46,7 +48,7 @@ namespace orxonox
     const std::string NotificationManager::ALL("all");
     const std::string NotificationManager::NONE("none");
 
-    ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
+    ManageScopedSingleton(NotificationManager, ScopeID::Graphics, false);
 
     /**
     @brief
@@ -57,6 +59,11 @@ namespace orxonox
         RegisterRootObject(NotificationManager);
 
         this->highestIndex_ = 0;
+
+        //TODO: What if no graphics?
+        GUIManager::getInstance().loadGUI("NotificationLayer");
+        // Create first queue:
+        NotificationQueue* queue = new NotificationQueue("general");
     }
 
     /**

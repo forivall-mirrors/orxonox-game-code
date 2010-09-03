@@ -42,14 +42,14 @@ function loadSheet(name)
 end
 
 -- ?
-function showMenuSheet(name, bHidePrevious, ptr)
-    local sheet = showMenuSheet(name, bHidePrevious)
+function showMenuSheet(name, bHidePrevious, bNoInput, ptr)
+    local sheet = showMenuSheet(name, bHidePrevious, bNoInput)
     sheet.overlay = ptr
     return sheet
 end
 
 -- Shows the specified menu sheet and loads it if neccessary
-function showMenuSheet(name, bHidePrevious)
+function showMenuSheet(name, bHidePrevious, bNoInput)
     if name == "" then
         return nil
     end
@@ -60,6 +60,10 @@ function showMenuSheet(name, bHidePrevious)
     if bHidePrevious == nil then
         bHidePrevious = menuSheet.bHidePrevious
         assert(bHidePrevious ~= nil)
+    end
+
+    if bNoInput == nil then
+        bNoInput = false
     end
 
     -- Pause game control if this is the first menu to be displayed
@@ -73,11 +77,14 @@ function showMenuSheet(name, bHidePrevious)
         hideMenuSheet(name)
     end
 
+    menuSheet.tShowCursor = TriBool.Dontcare
+
     -- Add the sheet in a tuple of additional information
     local sheetTuple =
     {
         ["sheet"]          = menuSheet,
-        ["bHidePrevious"]  = bHidePrevious
+        ["bHidePrevious"]  = bHidePrevious,
+        ["bNoInput"]       = bNoInput
     }
     table.insert(activeMenuSheets, sheetTuple) -- indexed array access
     activeMenuSheets[name] = sheetTuple -- name access
@@ -88,7 +95,9 @@ function showMenuSheet(name, bHidePrevious)
     menuSheetsRoot:addChildWindow(menuSheet.window)
 
     -- Handle input distribution
-    inputMgr:enterState(menuSheet.inputState)
+    if bNoInput == false then
+        inputMgr:enterState(menuSheet.inputState)
+    end
 
     -- Only change cursor situation if menuSheet.tShowCursor ~= TriBool.Dontcare
     if menuSheet.tShowCursor == TriBool.True then
@@ -147,7 +156,9 @@ function hideMenuSheet(name)
     activeMenuSheets.topSheetTuple = activeMenuSheets[activeMenuSheets.size]
 
     -- Leave the input state
-    inputMgr:leaveState(sheetTuple.sheet.inputState)
+    if not sheetTuple.bNoInput then
+        inputMgr:leaveState(sheetTuple.sheet.inputState)
+    end
     
     -- CURSOR SHOWING
     local i = activeMenuSheets.size
@@ -177,10 +188,19 @@ end
 
 function keyESC()
     -- HUGE, very HUGE hacks!
-    if activeMenuSheets.size == 1 and activeMenuSheets[1].sheet.name == "MainMenu" then
+
+    -- Count the number of sheets that don't need input till the first that does.
+    local counter = activeMenuSheets.size
+    while counter > 0 and activeMenuSheets[counter].bNoInput do
+        counter = counter - 1
+    end
+
+    -- If the first sheet that needs input is the MainMenu.
+    if counter > 0 and activeMenuSheets.size == counter and activeMenuSheets[counter].sheet.name == "MainMenu" then
         orxonox.execute("exit")
-    elseif activeMenuSheets.size > 0 then
-        orxonox.execute("hideGUI "..activeMenuSheets.topSheetTuple.sheet.name)
+    -- If there is at least one sheet that needs input.
+    elseif counter > 0 then
+        orxonox.execute("hideGUI "..activeMenuSheets[counter].sheet.name)
     else
         showMenuSheet("InGameMenu")
     end

@@ -239,18 +239,18 @@ namespace orxonox
 
         The function executes the Lua function with the same name in case the GUIManager is ready.
     */
-    /*static*/ void GUIManager::showGUI(const std::string& name, bool bHidePrevious)
+    /*static*/ void GUIManager::showGUI(const std::string& name, bool bHidePrevious, bool bNoInput)
     {
-        GUIManager::getInstance().executeCode("showMenuSheet(\"" + name + "\", " + multi_cast<std::string>(bHidePrevious) + ")");
+        GUIManager::getInstance().executeCode("showMenuSheet(\"" + name + "\", " + multi_cast<std::string>(bHidePrevious) + ", " + multi_cast<std::string>(bNoInput) + ")");
     }
 
     /**
     @brief
         Hack-ish. Needed for GUIOverlay.
     */
-    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool bHidePrevious)
+    void GUIManager::showGUIExtra(const std::string& name, const std::string& ptr, bool bHidePrevious, bool bNoInput)
     {
-        this->executeCode("showMenuSheet(\"" + name + "\", " + multi_cast<std::string>(bHidePrevious) + ", " + ptr + ")");
+        this->executeCode("showMenuSheet(\"" + name + "\", " + multi_cast<std::string>(bHidePrevious) + ", " + multi_cast<std::string>(bNoInput) + ", " + ptr + ")");
     }
 
     /**

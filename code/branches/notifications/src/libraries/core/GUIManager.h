@@ -74,8 +74,8 @@ namespace orxonox // tolua_export
         void preUpdate(const Clock& time);
 
         void loadGUI(const std::string& name);
-        static void showGUI(const std::string& name, bool bHidePrevious = false);
-        void showGUIExtra(const std::string& name, const std::string& ptr, bool bHidePrevious = false);
+        static void showGUI(const std::string& name, bool bHidePrevious = false, bool bNoInput = false);
+        void showGUIExtra(const std::string& name, const std::string& ptr, bool bHidePrevious = false, bool bNoInput = false);
         static void hideGUI(const std::string& name);
         void keyESC();
         void setBackgroundImage(const std::string& imageSet, const std::string imageName); // tolua_export

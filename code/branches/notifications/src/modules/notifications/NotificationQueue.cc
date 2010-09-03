@@ -36,13 +36,13 @@
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "NotificationOverlay.h"
-#include "NotificationManager.h"
+#include "Notification.h"
+#include "core/GUIManager.h"
+#include "core/LuaState.h"
+#include <algorithm>
 
 namespace orxonox
 {
-
-    CreateFactory(NotificationQueue);
 
     const std::string NotificationQueue::DEFAULT_FONT("VeraMono");
     const Vector2 NotificationQueue::DEFAULT_POSITION(0.0,0.0);
@@ -52,12 +52,27 @@ namespace orxonox
     @brief
         Constructor. Creates and initializes the object.
     */
-    NotificationQueue::NotificationQueue(BaseObject* creator) : OverlayGroup(creator)
+    NotificationQueue::NotificationQueue(const std::string& name, const std::string& senders, unsigned int size, const Vector2& position, unsigned int length, unsigned int displayTime)
     {
         this->registered_ = false;
 
-        RegisterObject(NotificationQueue);
+        RegisterRootObject(NotificationQueue);
+
         this->initialize();
+
+        this->setTargets(senders);
+        this->name_ = name;
+        this->maxSize_ = size;
+        this->position_ = position;
+        this->notificationLength_ = length;
+        this->setDisplayTime(displayTime);
+
+        this->create();
+
+        NotificationManager::getInstance().registerListener(this);
+        this->registered_ = true;
+
+        COUT(3) << "NotificationQueue '" << this->getName() << "' created." << std::endl;
     }
 
     /**
@@ -82,47 +97,16 @@ namespace orxonox
     {
         this->size_ = 0;
         this->tickTime_ = 0.0;
-
-        NotificationManager::getInstance().registerListener(this);
-        this->registered_ = true;
     }
 
     /**
-    @brief
-        Sets the defaults.
+    //TODO: Document.
     */
-    void NotificationQueue::setDefaults(void)
+    void NotificationQueue::create(void)
     {
-        this->setMaxSize(DEFAULT_SIZE);
-        this->setNotificationLength(DEFAULT_LENGTH);
-        this->setDisplayTime(DEFAULT_DISPLAY_TIME);
-        this->setPosition(DEFAULT_POSITION);
-
-        this->setTargets(NotificationManager::ALL);
-
-        this->setFontSize(DEFAULT_FONT_SIZE);
-        this->setFont(DEFAULT_FONT);
-    }
-
-    /**
-    @brief
-        Method for creating a NotificationQueue object through XML.
-    */
-    void NotificationQueue::XMLPort(Element& xmlElement, XMLPort::Mode mode)
-    {
-        SUPER(NotificationQueue, XMLPort, xmlElement, mode);
-
-        this->setDefaults();
-
-        XMLPortParam(NotificationQueue, "maxSize", setMaxSize, getMaxSize, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "notificationLength", setNotificationLength, getNotificationLength, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "displayTime", setDisplayTime, getDisplayTime, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "targets", setTargets, getTargets, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "font", setFont, getFont, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "fontSize", setFontSize, getFontSize, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "position", setPosition, getPosition, xmlElement, mode);
-
-        COUT(3) << "NotificationQueue '" << this->getName() << "' created." << std::endl;
+        //TODO: Also transfer font and fontsize.
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.createQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
+        this->positionChanged();
     }
 
     /**
@@ -138,16 +122,15 @@ namespace orxonox
         {
             this->timeLimit_.time = std::time(0)-this->displayTime_; //!< Container containig the current time.
 
-            std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it;
-            it = this->containers_.begin();
-            while(it != this->containers_.upper_bound(&this->timeLimit_)) //!< Iterate through all elements whose creation time is smaller than the current time minus the display time.
+            std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator it = this->ordering_.begin();
+            while(it != this->ordering_.upper_bound(&this->timeLimit_)) //!< Iterate through all elements whose creation time is smaller than the current time minus the display time.
             {
-                this->removeContainer(*it);
-                this->scroll(Vector2(0.0f,-(1.1f*this->getFontSize())));
-                it = this->containers_.begin(); //TODO: Needed?
+                NotificationContainer* temp = *it;
+                it++;
+                this->remove(temp);
             }
 
-            this->tickTime_ = 0.0f; //!< Reset time counter.
+            this->tickTime_ = this->tickTime_ - (int)this->tickTime_; //!< Reset time counter.
         }
     }
 
@@ -160,7 +143,7 @@ namespace orxonox
     {
         this->clear();
 
-        std::multimap<std::time_t,Notification*>* notifications = new std::multimap<std::time_t,Notification*>;
+        std::multimap<std::time_t, Notification*>* notifications = new std::multimap<std::time_t, Notification*>;
         if(!NotificationManager::getInstance().getNotifications(this, notifications, this->displayTime_)) //!< Get the Notifications sent in the interval form now to minus the display time.
         {
             COUT(1) << "NotificationQueue update failed due to undetermined cause." << std::endl;
@@ -170,10 +153,8 @@ namespace orxonox
         if(notifications->empty())
             return;
 
-        for(std::multimap<std::time_t,Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++) //!> Add all Notifications.
-        {
-            this->addNotification(it->second, it->first);
-        }
+        for(std::multimap<std::time_t, Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++) //!> Add all Notifications.
+            this->push(it->second, it->first);
 
         delete notifications;
 
@@ -190,17 +171,24 @@ namespace orxonox
     */
     void NotificationQueue::update(Notification* notification, const std::time_t & time)
     {
-        this->addNotification(notification, time);
+        this->push(notification, time);
 
-        std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it;
-        while(this->getSize() > this->getMaxSize())
-        {
-            it = this->containers_.begin();
-            this->removeContainer(*it);
-            this->scroll(Vector2(0.0f,-(1.1f*this->getFontSize())));
-        }
+        COUT(4) << "NotificationQueue '" << this->getName() << "' updated. A new Notification has been added." << std::endl;
+    }
 
-        COUT(4) << "NotificationQueue '" << this->getName() << "' updated. A new Notifications has been added." << std::endl;
+    /**
+    @brief
+        Sets the name of the NotificationQueue.
+    @param name
+        The name to be set.
+    @return
+        returns true if successful.
+    */
+    bool NotificationQueue::setName(const std::string& name)
+    {
+        //TODO: Test uniqueness of name.
+        this->name_ = name;
+        return true;
     }
 
     /**
@@ -211,13 +199,10 @@ namespace orxonox
     @return
         Returns true if successful.
     */
-    bool NotificationQueue::setMaxSize(int size)
+    void NotificationQueue::setMaxSize(unsigned int size)
     {
-        if(size < 0)
-            return false;
         this->maxSize_ = size;
         this->update();
-        return true;
     }
 
     /**
@@ -228,13 +213,10 @@ namespace orxonox
     @return
         Returns true if successful.
     */
-    bool NotificationQueue::setNotificationLength(int length)
+    void NotificationQueue::setNotificationLength(unsigned int length)
     {
-        if(length < 0)
-            return false;
         this->notificationLength_ = length;
         this->update();
-        return true;
     }
 
     /**
@@ -245,13 +227,10 @@ namespace orxonox
     @return
         Returns true if successful.
     */
-    bool NotificationQueue::setDisplayTime(int time)
+    void NotificationQueue::setDisplayTime(unsigned int time)
     {
-        if(time < 0)
-            return false;
         this->displayTime_ = time;
         this->update();
-        return true;
     }
 
     /**
@@ -329,11 +308,7 @@ namespace orxonox
     {
         if(size <= 0)
             return false;
-        this->fontSize_ = size;
-        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); it++) //!< Set the font size for each overlay.
-        {
-            it->second->overlay->setFontSize(size);
-        }
+        
         return true;
     }
 
@@ -347,26 +322,8 @@ namespace orxonox
     */
     bool NotificationQueue::setFont(const std::string & font)
     {
-        this->font_ = font;
-        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); it++) //!< Set the font for each overlay.
-        {
-            it->second->overlay->setFont(font);
-        }
+        
         return true;
-    }
-
-    /**
-    @brief
-        Scrolls the NotificationQueue, meaning all NotificationOverlays are moved the input vector.
-    @param pos
-        The vector the NotificationQueue is scrolled.
-    */
-    void NotificationQueue::scroll(const Vector2 pos)
-    {
-        for (std::map<Notification*, NotificationOverlayContainer*>::iterator it = this->overlays_.begin(); it != this->overlays_.end(); ++it) //!< Scroll each overlay.
-        {
-            it->second->overlay->scroll(pos);
-        }
     }
 
     /**
@@ -375,67 +332,66 @@ namespace orxonox
     */
     void NotificationQueue::positionChanged(void)
     {
-        int counter = 0;
-        for (std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it = this->containers_.begin(); it != this->containers_.end(); it++) //!< Set the position for each overlay.
-        {
-            (*it)->overlay->setPosition(this->getPosition());
-            (*it)->overlay->scroll(Vector2(0.0f,(1.1f*this->getFontSize())*counter));
-            counter++;
-        }
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changePosition(\"" + this->getName() + "\", " + multi_cast<std::string>(this->getPosition().x) + ", " + multi_cast<std::string>(this->getPosition().y) + ")");
     }
 
     /**
     @brief
         Adds a Notification, to the queue.
-        It inserts it into the storage containers, creates an corresponding overlay and a container.
+        It inserts it into the storage containers, creates a corresponding container and pushes the Notification message to the GUI.
     @param notification
         The Notification.
     @param time
         The time.
     */
-    void NotificationQueue::addNotification(Notification* notification, const std::time_t & time)
+    void NotificationQueue::push(Notification* notification, const std::time_t & time)
     {
-        NotificationOverlayContainer* container = new NotificationOverlayContainer;
-        container->overlay = new NotificationOverlay(this, notification);
+        NotificationContainer* container = new NotificationContainer;
         container->notification = notification;
         container->time = time;
-        std::string timeString = std::ctime(&time);
-        timeString.erase(timeString.length()-1);
-        const std::string& addressString = multi_cast<std::string>(reinterpret_cast<unsigned long>(notification));
-        container->name = "NotificationOverlay(" + timeString + ")&" + addressString;
+        
+        // If the maximum size of the NotificationQueue has been reached the last (least recently added) Notification is removed.
+        if(this->getSize() >= this->getMaxSize())
+            this->pop();
 
-        this->containers_.insert(container);
-        this->overlays_[notification] = container;
-        this->addElement(container->overlay);
-        this->size_= this->size_+1;
+        this->size_++;
 
-        container->overlay->scroll(Vector2(0.0f,(1.1f*this->getFontSize())*(this->getSize()-1)));
+        this->ordering_.insert(container);
+        this->notifications_.insert(this->notifications_.begin(), container);
+
+        //TODO: Clip message if necessary.
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
     }
 
     /**
     @brief
-        Removes a container from the queue.
-    @param container
-        A pointer to the container.
-    @return
-        Returns true if successful.
+        Removes the least recently added Notification form the NotificationQueue.
     */
-    bool NotificationQueue::removeContainer(NotificationOverlayContainer* container)
+    void NotificationQueue::pop(void)
     {
-        if(this->size_ == 0) //!< You cannot remove anything if the queue is empty.
-            return false;
-
-        // Unregister the NotificationQueue with the NotificationManager.
-        NotificationManager::getInstance().unregisterNotification(container->notification, this);
-
-        this->removeElement(container->overlay);
-        this->containers_.erase(container);
-        this->overlays_.erase(container->notification);
-        container->overlay->destroy();
+        NotificationContainer* container = this->notifications_.back();
+        this->ordering_.erase(container);
+        this->notifications_.pop_back();
+        this->size_--;
         delete container;
-        this->size_= this->size_-1;
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.popNotification(\"" + this->getName() + "\")");
+    }
 
-        return true;
+    /**
+    @brief
+        Removes the Notification that is stored in the input container.
+    @param container
+        The NotificationContainer with the Notification to be removed.
+    */
+    void NotificationQueue::remove(NotificationContainer* container)
+    {
+        std::vector<NotificationContainer*>::iterator it = std::find(this->notifications_.begin(), this->notifications_.end(), container);
+        std::vector<NotificationContainer*>::difference_type index = it - this->notifications_.begin ();
+        this->ordering_.erase(container);
+        this->notifications_.erase(it);
+        this->size_--;
+        delete container;
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
     }
 
     /**
@@ -444,12 +400,14 @@ namespace orxonox
     */
     void NotificationQueue::clear(void)
     {
-        std::multiset<NotificationOverlayContainer*, NotificationOverlayContainerCompare>::iterator it = this->containers_.begin();
-        while(it != this->containers_.end())
+        this->ordering_.clear();
+        for(std::vector<NotificationContainer*>::iterator it = this->notifications_.begin(); it != this->notifications_.end(); it++)
         {
-            this->removeContainer(*it);
-            it = this->containers_.begin();
+            delete *it;
         }
+        this->notifications_.clear();
+        this->size_ = 0;
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.clearQueue(\"" + this->getName() + "\")");
     }
 
 }
