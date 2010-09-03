@@ -77,7 +77,9 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
         hideMenuSheet(name)
     end
 
-    menuSheet.tShowCursor = TriBool.Dontcare
+    if bNoInput == false then
+        menuSheet.tShowCursor = TriBool.Dontcare
+    end
 
     -- Add the sheet in a tuple of additional information
     local sheetTuple =
