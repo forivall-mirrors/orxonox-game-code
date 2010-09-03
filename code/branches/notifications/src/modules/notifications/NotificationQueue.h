@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file NotificationQueue.h
     @brief Definition of the NotificationQueue class.
 */
 
@@ -54,11 +54,11 @@ namespace orxonox
     //! Container to allow easy handling.
     struct NotificationContainer
     {
-        Notification* notification; //!< The Notification displayed by the overlay.
+        Notification* notification; //!< The Notification displayed.
         time_t time; //!< The time the Notification was sent and thus first displayed.
     };
 
-    //! Struct to allow ordering of NotificationOverlayContainers.
+    //! Struct to allow ordering of NotificationContainers.
     struct NotificationContainerCompare {
         bool operator() (const NotificationContainer* const & a, const NotificationContainer* const & b) const
             { return a->time < b->time; } //!< Ordered by time.
@@ -70,7 +70,6 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-
     class _NotificationsExport NotificationQueue : public Tickable, public NotificationListener
     {
 
@@ -133,7 +132,6 @@ namespace orxonox
         private:
             static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
             static const unsigned int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
-
             static const Vector2 DEFAULT_POSITION; //!< the default position.
 
             std::string name_; //!< The name of the NotificationQueue.
@@ -146,31 +144,32 @@ namespace orxonox
 
             std::set<std::string> targets_; //!< The targets the Queue displays Notifications of.
 
-            std::multiset<NotificationContainer*, NotificationContainerCompare> ordering_; //!< Multiset, because the ordering is based on, not necessarily unique, timestamps. //TODO: Would set work as well?
-            std::vector<NotificationContainer*> notifications_;
+            std::multiset<NotificationContainer*, NotificationContainerCompare> ordering_; //!< The NotificationContainers ordered by the time they were registered. //TODO: Would set work as well?
+            std::vector<NotificationContainer*> notifications_; //!< The NotificationContainers in the order they were added to the NotificationQueue.
 
-            float tickTime_; //!< Helper variable, to not have to check for overlays that have been displayed too long, every tick.
+            float tickTime_; //!< Helper variable, to not have to check for Notifications that have been displayed too long, every tick.
             NotificationContainer timeLimit_; //!< Helper object to check against to determine whether Notifications have expired.
 
             bool registered_; //!< Helper variable to remember whether the NotificationQueue is registered already.
 
             void initialize(void); //!< Initializes the object.
-            void create(void);
+            void create(void); //!< Creates the NotificationQueue in lua.
 
             bool setName(const std::string& name); //!< Sets the name of the NotificationQueue.
 
             void setMaxSize(unsigned int size); //!< Sets the maximum number of displayed Notifications.
             void setDisplayTime(unsigned int time); //!< Sets the maximum number of seconds a Notification is displayed.
 
-            bool setTargets(const std::string & targets); //!< Set the targets of this queue.
+            bool setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
 
             void positionChanged(void); //!< Aligns all the Notifications to the position of the NotificationQueue.
+            void sizeChanged(void); //!< Adjusts the NotificationQueue, when the maximum size has changed.
 
-            void push(Notification* notification, const std::time_t & time); //!< Add a notification to the queue.
-            void pop(void);
-            void remove(NotificationContainer* container);
+            void push(Notification* notification, const std::time_t & time); //!< Add a Notification to the NotificationQueue.
+            void pop(void); //!< Removes the least recently added Notification form the NotificationQueue.
+            void remove(NotificationContainer* container); //!< Removes the Notification that is stored in the input container.
 
-            void clear(void); //!< Clear the queue.
+            void clear(void); //!< Clears the queue by removing all Notifications.
 
     };
 

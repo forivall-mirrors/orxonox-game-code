@@ -8,6 +8,8 @@ P.nameList = {}
 function P.createQueue(name, size)
     local root = winMgr:getWindow("orxonox/NotificationLayer/Root")
     local queue = winMgr:createWindow("MenuWidgets/Listbox", "orxonox/NotificationLayer/Root/Queue/" .. name)
+    queue:setProperty("Alpha", 0.3)
+    queue:setProperty("InheritsAlpha", "setFalse")
     root:addChildWindow(queue)
 
     queue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
@@ -33,15 +35,6 @@ function P.removeQueue(name)
     if queue ~= nil then
         winMgr:destroyWindow(queue)
     end
-end
-
-function P.changePosition(name, xPos, yPos)
-    local queue = P.nameToQueueHelper(name)
-    if queue == nil then
-        cout(0, "Queue is nil!")
-        return
-    end
-    queue:setPosition(CEGUI.UVector2(CEGUI.UDim(tonumber(xPos), 0), CEGUI.UDim(tonumber(yPos), 0)))
 end
 
 function P.pushNotification(queueName, notification)
@@ -87,6 +80,25 @@ function P.clearQueue(name)
     end
     local listbox = CEGUI.toListbox(queue)
     CEGUI.toListbox(queue):resetList()
+end
+
+function P.changePosition(name, xPos, yPos)
+    local queue = P.nameToQueueHelper(name)
+    if queue == nil then
+        cout(0, "Queue is nil!")
+        return
+    end
+    queue:setPosition(CEGUI.UVector2(CEGUI.UDim(tonumber(xPos), 0), CEGUI.UDim(tonumber(yPos), 0)))
+    queue:setWidth(CEGUI.UDim(1.0, -xPos))
+end
+
+function P.changeSize(name, size)
+    local queue = P.nameToQueueHelper(name)
+    if queue == nil then
+        cout(0, "Queue is nil!")
+        return
+    end
+    queue:setHeight(CEGUI.UDim(0, P.queueHeightHelper(queue, size)))
 end
 
 function P.nameToQueueHelper(name)

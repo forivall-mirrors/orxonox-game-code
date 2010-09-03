@@ -175,7 +175,7 @@ namespace orxonox
 
     /**
     @brief
-        Adds a Notification, to the queue.
+        Adds a Notification to the NotificationQueue.
         It inserts it into the storage containers, creates a corresponding container and pushes the Notification message to the GUI.
     @param notification
         The Notification.
@@ -233,18 +233,26 @@ namespace orxonox
 
     /**
     @brief
-        Clears the queue by removing all containers.
+        Clears the queue by removing all Notifications.
     */
     void NotificationQueue::clear(void)
     {
         this->ordering_.clear();
         for(std::vector<NotificationContainer*>::iterator it = this->notifications_.begin(); it != this->notifications_.end(); it++)
-        {
             delete *it;
-        }
+
         this->notifications_.clear();
         this->size_ = 0;
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.clearQueue(\"" + this->getName() + "\")");
+    }
+
+    /**
+    @brief
+        Adjusts the NotificationQueue, when the position has changed.
+    */
+    void NotificationQueue::positionChanged(void)
+    {
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changePosition(\"" + this->getName() + "\", " + multi_cast<std::string>(this->getPosition().x) + ", " + multi_cast<std::string>(this->getPosition().y) + ")");
     }
 
     /**
@@ -273,6 +281,16 @@ namespace orxonox
     void NotificationQueue::setMaxSize(unsigned int size)
     {
         this->maxSize_ = size;
+        this->sizeChanged();
+    }
+
+    /**
+    @brief
+        Adjusts the NotificationQueue, when the maximum size has changed.
+    */
+    void NotificationQueue::sizeChanged(void)
+    {
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeSize(\"" + this->getName() + "\", " + multi_cast<std::string>(this->getSize()) + ")");
         this->update();
     }
 
@@ -307,16 +325,12 @@ namespace orxonox
         }
         string->clear();
         bool first = true;
-        for(std::set<std::string>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++) //!< Iterate through the set of targets.
+        for(std::set<std::string>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++) // Iterate through the set of targets.
         {
             if(!first)
-            {
                 *string += ',';
-            }
             else
-            {
                 first = false;
-            }
             *string += *it;
         }
 
@@ -338,7 +352,7 @@ namespace orxonox
 
         std::string* pTemp;
         unsigned int index = 0;
-        while( index < targets.size() ) //!< Go through the string, character by character until the end is reached.
+        while(index < targets.size()) // Go through the string, character by character until the end is reached.
         {
             pTemp = new std::string();
             while(index < targets.size() && targets[index] != ',' && targets[index] != ' ')
@@ -351,15 +365,6 @@ namespace orxonox
         }
 
         return true;
-    }
-
-    /**
-    @brief
-        Aligns all the Notifications to the position of the NotificationQueue.
-    */
-    void NotificationQueue::positionChanged(void)
-    {
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changePosition(\"" + this->getName() + "\", " + multi_cast<std::string>(this->getPosition().x) + ", " + multi_cast<std::string>(this->getPosition().y) + ")");
     }
 
 }
