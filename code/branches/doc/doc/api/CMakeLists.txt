@@ -59,6 +59,9 @@ IF (DOXYGEN_FOUND)
     COMMENT "Generating additional Doxygen documentation from Orxonox executable"
   )
   ADD_CUSTOM_TARGET(doc_internal DEPENDS ${INTERNAL_DOCFILE})
+  IF (NOT ${INTERAL_DOCFILE} EXISTS)
+    FILE(WRITE ${INTERNAL_DOCFILE} "// empty...")
+  ENDIF()
 
   IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in)
     # use (configured) doxy.config from (out of place) BUILD tree:
