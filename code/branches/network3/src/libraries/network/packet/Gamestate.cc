@@ -372,7 +372,7 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newData, uint8_t*& origData, ui
   //       }
   uint32_t objectOffset = SynchronisableHeader::getSize(); // offset inside the object in the origData and baseData
   // Check whether the whole object stayed the same
-  if( memcmp( origData+objectOffset, newData+objectOffset, objectHeader.getDataSize()) == 0 )
+  if( memcmp( origData+objectOffset, baseData+objectOffset, objectHeader.getDataSize()) == 0 )
   {
     //         COUT(4) << "skip object" << Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() << endl;
     origData += objectOffset + objectHeader.getDataSize(); // skip the whole object
@@ -429,6 +429,7 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newData, uint8_t*& origData, ui
     h2.setDiffed(true);
     h2.setDataSize(newObjectOffset-SynchronisableHeaderLight::getSize());
     assert(objectOffset == objectHeader.getDataSize()+SynchronisableHeader::getSize());
+    assert(h2.getDataSize()>0);
     origData += objectOffset;
     //         baseOffset += temp + h.getDataSize()+SynchronisableHeader::getSize() - baseData;
     //baseOffset += objectOffset;
