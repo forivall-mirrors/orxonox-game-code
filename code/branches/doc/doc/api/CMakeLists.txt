@@ -45,6 +45,21 @@ IF (DOXYGEN_FOUND)
   #  MESSAGE(STATUS "dvips command DVIPS_CONVERTER not found but usually required.")
   #ENDIF (NOT DVIPS_CONVERTER)
 
+  SET(INTERNAL_DOCFILE ${CMAKE_CURRENT_BINARY_DIR}/Internal.dox)
+  IF(WIN32)
+    SET(_working_dir ${RUNTIME_LIBRARY_DIRECTORY})
+  ELSE()
+    SET(_working_dir ${CMAKE_CURRENT_BINARY_DIR})
+  ENDIF()
+  ADD_CUSTOM_COMMAND(
+    OUTPUT ${INTERNAL_DOCFILE}
+    COMMAND orxonox-main
+    ARGS --noIOConsole --generateDoc ${INTERNAL_DOCFILE}
+    WORKING_DIRECTORY ${_working_dir}
+    COMMENT "Generating additional Doxygen documentation from Orxonox executable"
+  )
+  ADD_CUSTOM_TARGET(doc_internal DEPENDS ${INTERNAL_DOCFILE})
+
   IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in)
     # use (configured) doxy.config from (out of place) BUILD tree:
     SET(DOXY_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/doxy.config)

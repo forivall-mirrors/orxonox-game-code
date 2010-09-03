@@ -60,6 +60,10 @@ namespace orxonox
     //! @cmdarg
     SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
 
+    //! @cmdarg
+    SetCommandLineArgument(generateDoc, "Internal.dox")
+        .information("Generates a Doxygen file from things like SetConsoleCommand");
+
     /**
     @brief
         Starting point of orxonox (however not the entry point of the program!)
@@ -68,36 +72,46 @@ namespace orxonox
     {
         Game* game = new Game(strCmdLine);
 
-        game->setStateHierarchy(
-        "root"
-        " graphics"
-        "  mainMenu"
-        "  standalone,server,client"
-        "   level"
-        " server,client"
-        "  level"
-        );
-
-        game->requestState("root");
-
-        // Some development hacks (not really, but in the future, this calls won't make sense anymore)
-        if (CommandLineParser::getValue("standalone").getBool())
-            Game::getInstance().requestStates("graphics, standalone, level");
-        else if (CommandLineParser::getValue("server").getBool())
-            Game::getInstance().requestStates("graphics, server, level");
-        else if (CommandLineParser::getValue("client").getBool())
-            Game::getInstance().requestStates("graphics, client, level");
-        else if (CommandLineParser::getValue("dedicated").getBool())
-            Game::getInstance().requestStates("server, level");
-        else if (CommandLineParser::getValue("dedicatedClient").getBool())
-            Game::getInstance().requestStates("client, level");
+        if (CommandLineParser::existsArgument("generateDoc"))
+        {
+            // Generate additional documentation written to ONE file
+            std::string filename;
+            CommandLineParser::getValue("generateDoc", &filename);
+        }
         else
         {
-            if (!CommandLineParser::getValue("console").getBool())
-                Game::getInstance().requestStates("graphics, mainMenu");
+            game->setStateHierarchy(
+            "root"
+            " graphics"
+            "  mainMenu"
+            "  standalone,server,client"
+            "   level"
+            " server,client"
+            "  level"
+            );
+
+            game->requestState("root");
+
+            // Some development hacks (not really, but in the future, this calls won't make sense anymore)
+            if (CommandLineParser::getValue("standalone").getBool())
+                Game::getInstance().requestStates("graphics, standalone, level");
+            else if (CommandLineParser::getValue("server").getBool())
+                Game::getInstance().requestStates("graphics, server, level");
+            else if (CommandLineParser::getValue("client").getBool())
+                Game::getInstance().requestStates("graphics, client, level");
+            else if (CommandLineParser::getValue("dedicated").getBool())
+                Game::getInstance().requestStates("server, level");
+            else if (CommandLineParser::getValue("dedicatedClient").getBool())
+                Game::getInstance().requestStates("client, level");
+            else
+            {
+                if (!CommandLineParser::getValue("console").getBool())
+                    Game::getInstance().requestStates("graphics, mainMenu");
+            }
+
+            game->run();
         }
 
-        game->run();
         delete game;
 
         return 0;
