@@ -62,13 +62,19 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
         assert(bHidePrevious ~= nil)
     end
 
+    -- Set bNoInput to false if it hasn't been set.
     if bNoInput == nil then
         bNoInput = false
     end
 
+    -- Count the number of sheets that don't need input till the first that does.
+    local counter = activeMenuSheets.size
+    while counter > 0 and activeMenuSheets[counter].bNoInput do
+        counter = counter - 1
+    end
     -- Pause game control if this is the first menu to be displayed
     -- HUGE HACK?
-    if activeMenuSheets.size == 0 then
+    if bNoInput == false and counter == 0 then
         orxonox.HumanController:pauseControl()
     end
 
@@ -77,7 +83,7 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
         hideMenuSheet(name)
     end
 
-    if bNoInput == false then
+    if bNoInput == true then
         menuSheet.tShowCursor = TriBool.Dontcare
     end
 
@@ -174,8 +180,13 @@ function hideMenuSheet(name)
         hideCursor()
     end
 
-    -- Resume control if the last menu is hidden
-    if activeMenuSheets.size == 0 then
+    -- Count the number of sheets that don't need input till the first that does.
+    local counter = activeMenuSheets.size
+    while counter > 0 and activeMenuSheets[counter].bNoInput do
+        counter = counter - 1
+    end
+    -- Resume control if the last (non-noInput) menu is hidden
+    if counter == 0 then
         orxonox.HumanController:resumeControl()
         hideCursor()
     end
