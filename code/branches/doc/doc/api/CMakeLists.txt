@@ -46,10 +46,10 @@ IF (DOXYGEN_FOUND)
   #ENDIF (NOT DVIPS_CONVERTER)
 
   IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in)
-    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in ${CMAKE_CURRENT_BINARY_DIR}/doxy.config @ONLY)
     # use (configured) doxy.config from (out of place) BUILD tree:
     SET(DOXY_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/doxy.config)
     SET(DOXY_LOGFILE ${CMAKE_CURRENT_BINARY_DIR}/doxy.log)
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in ${CMAKE_CURRENT_BINARY_DIR}/doxy.config @ONLY)
   ELSE()
     MESSAGE(FATAL_ERROR "Warning: Could not find dox.config.in in the root directory.")
   ENDIF()
