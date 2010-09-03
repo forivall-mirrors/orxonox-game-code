@@ -136,6 +136,8 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
     Orxonox.cc
   OUTPUT_NAME orxonox
 )
+# Main executable should depend on all modules
+ADD_DEPENDENCIES(orxonox-main ${ORXONOX_MODULES})
 
 # Get name to configure the run scripts
 GET_TARGET_PROPERTY(_exec_loc orxonox-main LOCATION)
