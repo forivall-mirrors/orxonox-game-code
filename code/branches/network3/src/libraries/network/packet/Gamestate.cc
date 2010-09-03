@@ -509,6 +509,7 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
     assert(baseData < baseDataEnd);
     assert(dest < newData + newDataSize);
     assert(sizes != this->sizes_.end());
+    bool diffedObject = false;
     while ( baseData < baseDataEnd )
     {
       SynchronisableHeader htemp(baseData);
@@ -518,6 +519,8 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
         assert( h.getClassID() == htemp.getClassID() );
 //         goto DODIFF;
         diffObject(dest, origData, baseData, h, sizes);
+        diffedObject = true;
+        break;
       }
       {
         SynchronisableHeader htemp2(baseData+htemp.getDataSize()+SynchronisableHeader::getSize());
@@ -528,12 +531,13 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
           assert(htemp2.isDiffed()==false);
         }
       }
+      baseData += htemp.getDataSize()+SynchronisableHeader::getSize();
 //       assert( baseData+htemp.getDataSize()+SynchronisableHeader::getSize() <=baseData+baseLength );
 //       temp += htemp.getDataSize()+SynchronisableHeader::getSize();
-        
+      
     }
     // If not found start looking at the beginning
-    assert( baseData == baseDataEnd );
+    assert( diffedObject || baseData == baseDataEnd );
     baseData = GAMESTATE_START(base->data_);
     {
       SynchronisableHeader htemp2(baseData);
@@ -544,7 +548,7 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
         assert(htemp2.isDiffed()==false);
       }
     }
-    while ( baseData < baseDataEnd )
+    while ( !diffedObject && baseData < baseDataEnd )
     {
       SynchronisableHeader htemp(baseData);
       if ( htemp.getObjectID() == objectID )
@@ -573,8 +577,8 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
       copyObject(dest, origData, baseData, h, sizes);
       assert(sizes != this->sizes_.end() || origData>=origDataEnd);
     }
-    
   }
+  assert(sizes==this->sizes_.end());
 
 
   Gamestate *g = new Gamestate(newData, getClientID());
