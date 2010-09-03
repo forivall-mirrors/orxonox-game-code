@@ -129,6 +129,8 @@ class _NetworkExport Gamestate: public Packet{
     virtual uint32_t getSize() const;
     virtual inline bool process();
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
+//     inline void diffObject( uint8_t*& newData, uint8_t*& origData, uint8_t*& baseData, SynchronisableHeader& objectHeader, std::vector<uint32_t>::iterator& sizes );
+//     inline void copyObject( uint8_t*& newData, uint8_t*& origData, uint8_t*& baseData, SynchronisableHeader& objectHeader, std::vector<uint32_t>::iterator& sizes );
     
     std::list<obj>          dataVector_;
     GamestateHeader*        header_;
