@@ -39,6 +39,7 @@ namespace orxonox
 {
     DeclareGameState(GSClient, "client", false, false);
 
+    //! @cmdarg
     SetCommandLineArgument(dest, "127.0.0.1").information("Server hostname/IP (IP in the form of #.#.#.#)");
 
     GSClient::GSClient(const GameStateInfo& info)

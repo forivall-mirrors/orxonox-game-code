@@ -40,6 +40,7 @@
 
 namespace orxonox
 {
+    //! @cmdarg
     SetCommandLineOnlyArgument(optionsFile, "start.ini").shortcut("o");
 
     /**

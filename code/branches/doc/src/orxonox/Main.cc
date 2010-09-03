@@ -42,19 +42,24 @@
 #include "ToluaBindNetwork.h"
 #include "Main.h"
 
-SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
-// Shortcuts for easy direct loading
-SetCommandLineSwitch(server).information("Start in server mode");
-SetCommandLineSwitch(client).information("Start in client mode");
-SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
-SetCommandLineSwitch(standalone).information("Start in standalone mode");
-SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
-
 DeclareToluaInterface(Orxonox);
 DeclareToluaInterface(Network);
 
 namespace orxonox
 {
+    //! @cmdarg
+    SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
+    //! @cmdarg
+    SetCommandLineSwitch(server).information("Start in server mode");
+    //! @cmdarg
+    SetCommandLineSwitch(client).information("Start in client mode");
+    //! @cmdarg
+    SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
+    //! @cmdarg
+    SetCommandLineSwitch(standalone).information("Start in standalone mode");
+    //! @cmdarg
+    SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
+
     /**
     @brief
         Starting point of orxonox (however not the entry point of the program!)

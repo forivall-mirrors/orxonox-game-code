@@ -58,6 +58,12 @@
 */
 
 /**
+    @defgroup CmdArgs Commandline Arguments
+    @ingroup Command
+    @brief For a reference see @ref cmdargs
+*/
+
+/**
     @defgroup Config Config
     @ingroup Core
 */
