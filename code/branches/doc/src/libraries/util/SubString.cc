@@ -37,6 +37,11 @@
  *   Extended by Fabian 'x3n' Landau by the SL_PARENTHESES mode.
  */
 
+/**
+    @file
+    @brief Implementation of the SubString class.
+*/
+
 #include "SubString.h"
 #include <cstdio>
 #include "Debug.h"

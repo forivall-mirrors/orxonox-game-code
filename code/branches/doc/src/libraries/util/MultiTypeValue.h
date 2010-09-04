@@ -28,7 +28,7 @@
 
 /**
     @file
-    @ingroup Util MultiType
+    @ingroup MultiType
     @brief Declaration and Implementation of the MT_Value<T> class.
 
     The MT_Value<T> class is used to hold a value of type T within a MultiType.

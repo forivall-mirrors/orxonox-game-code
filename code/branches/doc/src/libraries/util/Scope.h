@@ -28,7 +28,7 @@
 
 /**
 @file
-@ingroup Util SingletonScope
+@ingroup SingletonScope
 @brief Declaration of the classes that are needed to use Scopes:
 orxonox::Scope, orxonox::ScopeListener, and orxonox::ScopeManager.
 

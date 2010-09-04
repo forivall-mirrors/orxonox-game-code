@@ -33,7 +33,7 @@
 
 /**
     @file
-    @ingroup Util String
+    @ingroup String
     @brief Declaration of several string manipulation functions, used in many parts of the game.
 */
 

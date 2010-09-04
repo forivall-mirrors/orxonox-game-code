@@ -33,7 +33,7 @@
 
 /**
     @file
-    @ingroup Util Math
+    @ingroup Math
     @brief Declaration and implementation of several math-functions, typedefs of some Ogre::Math classes to the orxonox namespace.
 */
 

@@ -28,7 +28,7 @@
 
 /**
     @file
-    @ingroup Util SingletonScope
+    @ingroup SingletonScope
     @brief Definition of orxonox::ScopedSingletonManager, orxonox::ClassScopedSingletonManager, and the ManageScopedSingleton macro.
 
     ScopedSingletonManager is used to create and destroy Singletons that belong to

@@ -34,7 +34,7 @@
 
 /**
 @file
-@ingroup Util COUT
+@ingroup COUT
 @brief
     Handles different output-levels of errors, warnings, infos, and debug information.
 

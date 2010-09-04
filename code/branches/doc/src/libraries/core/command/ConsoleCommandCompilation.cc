@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of some console commands.
+*/
+
 #include "ConsoleCommandCompilation.h"
 
 #include <fstream>
@@ -50,6 +55,9 @@ namespace orxonox
 
     SetConsoleCommand("calculate", calculate);
 
+    /**
+        @brief Reads the content of a file and executes the commands in it line by line.
+    */
     void source(const std::string& filename)
     {
         static std::set<std::string> executingFiles;
@@ -85,11 +93,17 @@ namespace orxonox
         file.close();
     }
 
+    /**
+        @brief Simply returns the arguments.
+    */
     std::string echo(const std::string& text)
     {
         return text;
     }
 
+    /**
+        @brief Writes text to the console, depending on the first argument with or without a line-break after it.
+    */
     void puts(bool newline, const std::string& text)
     {
         if (newline)
@@ -102,6 +116,9 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Writes text to a file.
+    */
     void write(const std::string& filename, const std::string& text)
     {
         std::ofstream file;
@@ -117,6 +134,9 @@ namespace orxonox
         file.close();
     }
 
+    /**
+        @brief Appends text to a file.
+    */
     void append(const std::string& filename, const std::string& text)
     {
         std::ofstream file;
@@ -132,6 +152,9 @@ namespace orxonox
         file.close();
     }
 
+    /**
+        @brief Reads text from a file
+    */
     std::string read(const std::string& filename)
     {
         std::ifstream file;
@@ -157,6 +180,9 @@ namespace orxonox
         return output;
     }
 
+    /**
+        @brief Parses the mathematical expression and returns the result.
+    */
     float calculate(const std::string& calculation)
     {
         ExprParser expr;

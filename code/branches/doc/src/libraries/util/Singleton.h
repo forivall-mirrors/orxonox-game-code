@@ -33,7 +33,7 @@
 
 /**
     @file
-    @ingroup Util SingletonScope
+    @ingroup SingletonScope
     @brief Definition of the Singleton template that is used as base class for classes that allow only one instance.
 
     @anchor SingletonExample

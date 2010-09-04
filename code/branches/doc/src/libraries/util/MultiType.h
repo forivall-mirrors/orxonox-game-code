@@ -33,7 +33,7 @@
 
 /**
     @file
-    @ingroup Util MultiType
+    @ingroup MultiType
     @brief Declaration of the MultiType and some helper constructs.
 
     @anchor MultiTypeExamples

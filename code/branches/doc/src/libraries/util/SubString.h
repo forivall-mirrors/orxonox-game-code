@@ -38,8 +38,8 @@
 
  /**
     @file
-    @ingroup Util String
-    @brief a small class to get the parts of a string separated by commas
+    @ingroup String
+    @brief A helper class to split a string into several tokens.
 
     @anchor SubStringExample
 

@@ -28,12 +28,12 @@
 
 /**
     @defgroup SmallObjectAllocator SmallObjectAllocator
-    @ingroup Util Object
+    @ingroup Util
 */
 
 /**
     @file
-    @ingroup Util SmallObjectAllocator
+    @ingroup SmallObjectAllocator
     @brief Declaration of SmallObjectAllocator
 
     @anchor SmallObjectAllocatorExample

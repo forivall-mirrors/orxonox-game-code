@@ -28,12 +28,12 @@
 
 /**
     @defgroup SharedPtr SharedPtr<T>
-    @ingroup Util Object
+    @ingroup Util
 */
 
 /**
     @file
-    @ingroup Util SharedPtr
+    @ingroup SharedPtr
     @brief Definition of the SharedPtr template that is used to manage pointers.
 
     @anchor SharedPtrExample
