@@ -4,15 +4,18 @@ local P = createMenuSheet("NotificationLayer")
 
 P.queueList = {}
 P.nameList = {}
+P.visible = nil
 
 function P.createQueue(name, size)
     local root = winMgr:getWindow("orxonox/NotificationLayer/Root")
     local queue = winMgr:createWindow("MenuWidgets/Listbox", "orxonox/NotificationLayer/Root/Queue/" .. name)
-    queue:setProperty("BackgroundColor", "00FFFFFF")
+    queue:setProperty("BackgroundColor", "66FFFFFF")
     root:addChildWindow(queue)
 
     queue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
     queue:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, 0), CEGUI.UDim(0, P.queueHeightHelper(queue, size))))
+
+    P.setVisible(queue, false)
 
     table.insert(P.queueList, queue)
     table.insert(P.nameList, name)
@@ -49,6 +52,10 @@ function P.pushNotification(queueName, notification)
     else
         listbox:insertItem(item, listbox:getListboxItemFromIndex(0))
     end
+
+    if P.visible == false then
+        P.setVisible(queue, true)
+    end
 end
 
 function P.popNotification(queueName)
@@ -59,6 +66,10 @@ function P.popNotification(queueName)
     end
     local listbox = CEGUI.toListbox(queue)
     listbox:removeItem(listbox:getListboxItemFromIndex(listbox:getItemCount()-1))
+
+    if listbox:getItemCount() == 0 then
+        P.setVisible(queue, false)
+    end
 end
 
 function P.removeNotification(queueName, index)
@@ -69,6 +80,10 @@ function P.removeNotification(queueName, index)
     end
     local listbox = CEGUI.toListbox(queue)
     listbox:removeItem(listbox:getListboxItemFromIndex(tonumber(index)))
+
+    if listbox:getItemCount() == 0 then
+        P.setVisible(queue, false)
+    end
 end
 
 function P.clearQueue(name)
@@ -79,6 +94,8 @@ function P.clearQueue(name)
     end
     local listbox = CEGUI.toListbox(queue)
     CEGUI.toListbox(queue):resetList()
+
+    P.setVisible(queue, false)
 end
 
 function P.changePosition(name, xPos, yPos)
@@ -98,6 +115,11 @@ function P.changeSize(name, size)
         return
     end
     queue:setHeight(CEGUI.UDim(0, P.queueHeightHelper(queue, size)))
+end
+
+function P.setVisible(queue, visible)
+    queue:setVisible(visible)
+    P.visible = visible
 end
 
 function P.nameToQueueHelper(name)

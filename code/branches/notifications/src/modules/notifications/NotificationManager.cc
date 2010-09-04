@@ -73,7 +73,7 @@ namespace orxonox
     */
     NotificationManager::~NotificationManager()
     {
-        this->queue_->destroy();
+        //this->queue_->destroy();
     }
 
     /**
