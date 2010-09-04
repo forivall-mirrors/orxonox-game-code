@@ -93,7 +93,7 @@ namespace orxonox
     {
         registerVariable(this->message_);
         registerVariable(this->sender_);
-        registerVariable(this->sent_, ObjectDirection::Bidirectional);
+        registerVariable(this->sent_);
     }
 
     /**
@@ -107,7 +107,7 @@ namespace orxonox
     bool Notification::send(unsigned int clientId, const std::string & sender = NotificationManager::NONE)
     {
 
-        if(GameMode::isMaster())
+        if(GameMode::isStandalone())
         {
             this->sendHelper(sender);
         }
