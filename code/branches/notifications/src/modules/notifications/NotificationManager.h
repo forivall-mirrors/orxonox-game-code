@@ -82,6 +82,8 @@ namespace orxonox
         private:
             static NotificationManager* singletonPtr_s;
 
+            NotificationQueue* queue_; //!< Initial, first, NotificationQueue.
+
             int highestIndex_; //!< This variable holds the highest index (resp. key) in notificationLists_s, to secure that no key appears twice.
 
             std::multimap<std::time_t,Notification*> allNotificationsList_; //!< Container where all notifications are stored.

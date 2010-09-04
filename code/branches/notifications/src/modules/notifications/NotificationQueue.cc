@@ -33,12 +33,12 @@
 
 #include "NotificationQueue.h"
 
-#include <algorithm>
+#include <map>
 
-#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/LuaState.h"
+#include "util/Convert.h"
 #include "Notification.h"
 
 namespace orxonox

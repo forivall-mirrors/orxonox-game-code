@@ -33,13 +33,11 @@
 
 #include "NotificationManager.h"
 
-#include <set>
-
-#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
-#include "Notification.h"
-#include "interfaces/NotificationListener.h"
 #include "core/GUIManager.h"
+#include "util/ScopedSingletonManager.h"
+#include "interfaces/NotificationListener.h"
+#include "Notification.h"
 #include "NotificationQueue.h"
 
 namespace orxonox
@@ -65,7 +63,7 @@ namespace orxonox
             GUIManager::getInstance().loadGUI("NotificationLayer");
 
             // Create first queue:
-            NotificationQueue* queue = new NotificationQueue("all");
+            this->queue_ = new NotificationQueue("all");
         }
     }
 
@@ -75,7 +73,7 @@ namespace orxonox
     */
     NotificationManager::~NotificationManager()
     {
-
+        this->queue_->destroy();
     }
 
     /**

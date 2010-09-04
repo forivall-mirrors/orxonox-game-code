@@ -8,8 +8,7 @@ P.nameList = {}
 function P.createQueue(name, size)
     local root = winMgr:getWindow("orxonox/NotificationLayer/Root")
     local queue = winMgr:createWindow("MenuWidgets/Listbox", "orxonox/NotificationLayer/Root/Queue/" .. name)
-    queue:setProperty("Alpha", 0.3)
-    queue:setProperty("InheritsAlpha", "setFalse")
+    queue:setProperty("BackgroundColor", "00FFFFFF")
     root:addChildWindow(queue)
 
     queue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))

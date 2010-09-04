@@ -37,14 +37,12 @@
 #include "notifications/NotificationsPrereqs.h"
 
 #include <ctime>
-#include <map>
 #include <set>
 #include <string>
 #include <vector>
 
-#include "util/Math.h"
-#include "core/OrxonoxClass.h"
 #include "tools/interfaces/Tickable.h"
+#include "util/Math.h"
 #include "interfaces/NotificationListener.h"
 #include "NotificationManager.h"
 
