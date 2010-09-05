@@ -63,6 +63,21 @@ IF (DOXYGEN_FOUND)
     FILE(WRITE ${INTERNAL_DOCFILE} "// empty...")
   ENDIF()
 
+  # Take care of most of the conditional compilation problems
+  # (Doxygen requires separate input for that)
+  IF(WIN32)
+    SET(DOXY_PLATFORM_DEF "ORXONOX_PLATFORM_WINDOWS")
+  ELSEIF(APPLE)
+    SET(DOXY_PLATFORM_DEF "ORXONOX_PLATFORM_APPLE ORXONOX_PLATFORM_UNIX")
+  ELSE()
+    SET(DOXY_PLATFORM_DEF "ORXONOX_PLATFORM_LINUX ORXONOX_PLATFORM_UNIX")
+  ENDIF()
+  IF(MSVC)
+    SET(DOXY_COMPILER_DEF "ORXONOX_COMPILER_MSVC")
+  ELSE()
+    SET(DOXY_COMPILER_DEF "ORXONOX_COMPILER_GCC")
+  ENDIF()
+
   IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in)
     # use (configured) doxy.config from (out of place) BUILD tree:
     SET(DOXY_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/doxy.config)
