@@ -51,7 +51,7 @@ namespace orxonox
     ManageScopedSingleton(NotificationManager, ScopeID::Graphics, false);
 
     //TODO: Make work.
-    SetConsoleCommand("enterEditMode", &NotificationManager::enterEditMode).description("Enter the NotificationLayer edit mode.");
+    SetConsoleCommand("enterEditMode", &NotificationManager::enterEditMode);
 
     /**
     @brief
