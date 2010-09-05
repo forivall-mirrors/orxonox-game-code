@@ -51,7 +51,7 @@ namespace orxonox
     ManageScopedSingleton(NotificationManager, ScopeID::Graphics, false);
 
     //TODO: Make work.
-    //SetConsoleCommand("enterEditMode", &NotificationManager::enterEditMode).description("Enter the NotificationLayer edit mode.");
+    SetConsoleCommand("enterEditMode", &NotificationManager::enterEditMode).description("Enter the NotificationLayer edit mode.");
 
     /**
     @brief
@@ -305,6 +305,11 @@ namespace orxonox
     void NotificationManager::createQueue(const std::string& name, const std::string& targets, unsigned int size, unsigned int displayTime)
     {
         this->queues_.push_back(new NotificationQueue(name, targets, size, displayTime));
+    }
+
+    void NotificationManager::enterEditMode(void)
+    {
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.enterEditMode()");
     }
 
 }
