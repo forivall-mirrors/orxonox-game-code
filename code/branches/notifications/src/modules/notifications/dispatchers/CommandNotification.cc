@@ -37,6 +37,7 @@
 #include "core/XMLPort.h"
 #include "core/input/KeyBinderManager.h"
 #include "core/input/KeyBinder.h"
+#include "util/SubString.h"
 
 #include <sstream>
 
@@ -87,11 +88,41 @@ namespace orxonox {
     {
         std::stringstream stream;
         stream << this->getPreMessage();
-        //TODO: Add niceifyer.
-        stream << KeyBinderManager::getInstance().getCurrent()->getBinding(this->getCommand());
+        stream << this->bindingNiceifyer(KeyBinderManager::getInstance().getCurrent()->getBinding(this->getCommand()));
         stream << this->getPostMessage();
-        std::string* message = new std::string(stream.str());
-        return *message;
+        return *(new std::string(stream.str()));
+    }
+
+    /**
+    @brief
+        Transforms the input binding into a human readable form.
+    @param binding
+        The binding to be transformed
+    @return
+        Returns a human readable version of the input binding.
+    */
+    const std::string& CommandNotification::bindingNiceifyer(const std::string& binding)
+    {
+        SubString* string = new SubString(binding, '.');
+        std::string name = string->getString(1);
+        std::string group = string->getString(0);
+
+        std::stringstream stream;
+        if(group.compare("Keys") == 0)
+            stream << "Key " << name.substr(3);
+        else if(group.compare("MouseButtons") == 0)
+            stream << "Mouse " << name;
+        else if(group.compare("JoyStickButtons") == 0)
+            stream << "Joystick " << name;
+        else if(group.compare("JoyStickAxes") == 0)
+            stream << "Joystick Axis" << name.substr(5, 6) << name.substr(name.find("Axis")+6);
+        else if(group.compare("MouseAxes") == 0)
+            stream << "Mouse " << name.substr(1,3) << " " << name.substr(0, 1) << "-Axis";
+        else
+            stream << binding;
+
+        delete string;
+        return *(new std::string(stream.str()));
     }
     
 }

@@ -18,7 +18,7 @@
    skybox       = "Orxonox/skypanoramagen1"
   >
 
-      <CommandNotification preMessage="Press '" postMessage="' to fire your primary weapon." command="fire 0">
+      <CommandNotification preMessage="Move '" postMessage="' to look left." command="scale 1 rotateYaw">
         <events>
             <trigger>
                 <DistanceTrigger name=trigger position="0,0,-100" distance=10 target="Pawn" />

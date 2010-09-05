@@ -103,6 +103,8 @@ namespace orxonox {
             void setPostMessage(const std::string& message)
                  { this->postMessage_ = message; }
 
+            const std::string& bindingNiceifyer(const std::string& binding);
+
     };
 
 }
