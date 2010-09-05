@@ -61,8 +61,11 @@ namespace orxonox
     SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
 
     //! @cmdarg
-    SetCommandLineArgument(generateDoc, "Internal.dox")
+    SetCommandLineSwitch(generateDoc)
         .information("Generates a Doxygen file from things like SetConsoleCommand");
+    //! @cmdarg
+    SetCommandLineArgument(docFile, "Internal.dox")
+        .information("Name of the doc file to be generated with --generateDoc");
 
     /**
     @brief
@@ -72,11 +75,11 @@ namespace orxonox
     {
         Game* game = new Game(strCmdLine);
 
-        if (CommandLineParser::existsArgument("generateDoc"))
+        if (CommandLineParser::getValue("generateDoc").getBool())
         {
             // Generate additional documentation written to ONE file
             std::string filename;
-            CommandLineParser::getValue("generateDoc", &filename);
+            CommandLineParser::getValue("docFile", &filename);
         }
         else
         {
