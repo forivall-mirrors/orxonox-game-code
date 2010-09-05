@@ -83,12 +83,12 @@ namespace orxonox
         The item the QuestDescription is for.
     @param status
         The status the QuestDescription us for.
+    @param player
+        The player the Notification is sent to.
     @return
         Returns true if successful.
-    @todo
-        Make sure the messages meet the conditions.
     */
-    bool QuestDescription::notificationHelper(const std::string & item, const std::string & status)
+    bool QuestDescription::notificationHelper(const std::string & item, const std::string & status, PlayerInfo* player)
     {
         std::string message;
         if(item == "hint")
@@ -122,7 +122,7 @@ namespace orxonox
         }
 
         QuestNotification* notification = new QuestNotification(this, message);
-        notification->send();
+        notification->send(player);
         return true;
     }
 

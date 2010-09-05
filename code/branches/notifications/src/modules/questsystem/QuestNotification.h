@@ -49,7 +49,7 @@ namespace orxonox {
             QuestNotification(BaseObject* creator, const std::string & message); //!< Constructor.
             virtual ~QuestNotification(); //!< Destructor.
 
-            bool send(void); //!< Send the QuestNotification.
+            bool send(PlayerInfo* player); //!< Send the QuestNotification.
 
         private:
             static const std::string SENDER; //!< A string identifying the questsystem as the sender.

@@ -94,31 +94,35 @@ namespace orxonox
 
             /**
             @brief Sends a Notification displaying that a QuestHint was added.
+            @param player The player the Notification is sent to.
             @return Returns true if successful.
             */
-            inline bool sendAddHintNotification(void)
-                { return notificationHelper("hint", ""); }
+            inline bool sendAddHintNotification(PlayerInfo* player)
+                { return notificationHelper("hint", "", player); }
 
             /**
             @brief Sends a Notification displaying that a Quest was added.
+            @param player The player the Notification is sent to.
             @return Returns true if successful.
             */
-            inline bool sendAddQuestNotification(void)
-                { return notificationHelper("quest", "start"); }
+            inline bool sendAddQuestNotification(PlayerInfo* player)
+                { return notificationHelper("quest", "start", player); }
 
             /**
             @brief Sends a Notification displaying that a Quest was failed.
+            @param player The player the Notification is sent to.
             @return Returns true if successful.
             */
-            inline bool sendFailQuestNotification(void)
-                { return notificationHelper("quest", "fail"); }
+            inline bool sendFailQuestNotification(PlayerInfo* player)
+                { return notificationHelper("quest", "fail", player); }
 
             /**
             @brief Sends a Notification displaying that a Quest was completed.
+            @param player The player the Notification is sent to.
             @return Returns true if successful.
             */
-            inline bool sendCompleteQuestNotification(void)
-                { return notificationHelper("quest", "complete"); }
+            inline bool sendCompleteQuestNotification(PlayerInfo* player)
+                { return notificationHelper("quest", "complete", player); }
 
         private:
             std::string title_; //!< The title.
@@ -126,7 +130,7 @@ namespace orxonox
             std::string failMessage_; //!< The message displayed when the Quest is failed.
             std::string completeMessage_; //!< The message displayed when the Quest is completed.
 
-            bool notificationHelper(const std::string & item, const std::string & status); //!< Helper for sending QuestDescriptions as Notifications.
+            bool notificationHelper(const std::string & item, const std::string & status, PlayerInfo* player); //!< Helper for sending QuestDescriptions as Notifications.
 
             /**
             @brief Sets the title.
