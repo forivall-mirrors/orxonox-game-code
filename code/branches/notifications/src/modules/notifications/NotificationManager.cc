@@ -63,6 +63,8 @@ namespace orxonox
 
         this->highestIndex_ = 0;
 
+        ModifyConsoleCommand("enterEditMode").setObject(this);
+
         if(GameMode::showsGraphics())
         {
             GUIManager::getInstance().loadGUI("NotificationLayer");
@@ -78,7 +80,7 @@ namespace orxonox
     */
     NotificationManager::~NotificationManager()
     {
-        
+        ModifyConsoleCommand("enterEditMode").setObject(NULL);
     }
 
     void NotificationManager::preDestroy(void)
@@ -309,6 +311,8 @@ namespace orxonox
 
     void NotificationManager::enterEditMode(void)
     {
+        GUIManager::getInstance().hideGUI("NotificationLayer");
+        GUIManager::getInstance().showGUI("NotificationLayer", false, false);
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.enterEditMode()");
     }
 

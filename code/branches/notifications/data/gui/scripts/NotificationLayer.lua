@@ -132,8 +132,9 @@ function P.enterEditMode()
     for k,v in pairs(P.queueList) do
         if v ~= nil then
             root:removeChildWindow(v)
-            local frame = winMgr:createWindow("MenuWidgets/FrameWindow", "orxonox/NotificationLayer/Root/EditMode/" .. P.nameList(k))
+            local frame = winMgr:createWindow("MenuWidgets/FrameWindow", "orxonox/NotificationLayer/Root/EditMode/" .. P.nameList[k])
             frame:setArea(v:getArea())
+            root:addChildWindow(frame)
             P.editList[k] = frame
         end
     end
@@ -152,6 +153,8 @@ function P.leaveEditMode()
             P.editList[k] = nil
         end
     end
+
+    showMenuSheet(P.name, false, true)
 end
 
 function P.onHide()
