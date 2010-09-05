@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file
+    @ingroup Command Tcl
+    @brief Definition of TclThreadList.
+*/
+
 #ifndef _TclThreadList_H__
 #define _TclThreadList_H__
 
@@ -39,6 +45,9 @@
 
 namespace orxonox
 {
+    /**
+        @brief A thread-safe implementation of a message queue, used by TclThreadManager.
+    */
     template <class T>
     class TclThreadList
     {

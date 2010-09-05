@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of TclThreadManager.
+*/
+
 #include "TclThreadManager.h"
 
 #include <boost/bind.hpp>
@@ -386,7 +391,7 @@ namespace orxonox
         @param source_id The id of the calling thread
         @param target_id The id of the target thread
         @param command The command to send as a query
-        @param bUseCommandExecutor Only used if the target_id is 0 (which references the main interpreter). In this case it means if the command should be passed to the CommandExecutor (true) or to the main Tcl interpreter (false). This is true when called by tcl_query and false when called by tcl_crossquery.
+        @param bUseCommandExecutor Only used if the target_id is 0 (which references the main interpreter). In this case it means if the command should be passed to the CommandExecutor (true) or to the main Tcl interpreter (false). This is true when called by tcl_query() and false when called by tcl_crossquery().
     */
     std::string TclThreadManager::_query(unsigned int source_id, unsigned int target_id, const std::string& command, bool bUseCommandExecutor)
     {

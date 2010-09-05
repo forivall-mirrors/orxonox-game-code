@@ -26,6 +26,17 @@
  *
  */
 
+/**
+    @defgroup CmdArgs Commandline Arguments
+    @ingroup Config
+    @brief For a reference of all commandline arguments see @ref cmdargspage
+*/
+
+/**
+    @file
+    @ingroup Config CmdArgs
+*/
+
 #ifndef _CommandLine_H__
 #define _CommandLine_H__
 

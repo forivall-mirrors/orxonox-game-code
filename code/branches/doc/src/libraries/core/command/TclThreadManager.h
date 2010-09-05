@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file
+    @ingroup Command Tcl
+    @brief Declaration of TclThreadManager, used to create multithreaded Tcl interpreters.
+*/
+
 #ifndef _TclThreadManager_H__
 #define _TclThreadManager_H__
 

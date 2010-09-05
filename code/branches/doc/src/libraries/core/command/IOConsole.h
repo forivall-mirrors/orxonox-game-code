@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Command ShellConsole
+*/
+
 #include "OrxonoxConfig.h"
 
 #if defined(ORXONOX_PLATFORM_UNIX)

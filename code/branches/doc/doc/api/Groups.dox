@@ -58,12 +58,6 @@
 */
 
 /**
-    @defgroup CmdArgs Commandline Arguments
-    @ingroup Command
-    @brief For a reference see @ref cmdargspage
-*/
-
-/**
     @defgroup Config Config
     @ingroup Core
 */
@@ -75,11 +69,6 @@
 
 /**
     @defgroup Input Input
-    @ingroup Core
-*/
-
-/**
-    @defgroup Output Output
     @ingroup Core
 */
 

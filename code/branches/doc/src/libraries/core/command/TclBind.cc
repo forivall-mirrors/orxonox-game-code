@@ -48,6 +48,10 @@ namespace orxonox
 
     TclBind* TclBind::singletonPtr_s = 0;
 
+    /**
+        @brief Constructor: Initializes the Tcl-interpreter with a given data path.
+        @param datapath Path to the directory that contains the Orxonox-specific Tcl-files
+    */
     TclBind::TclBind(const std::string& datapath)
     {
         this->interpreter_ = 0;
@@ -55,12 +59,18 @@ namespace orxonox
         this->setDataPath(datapath);
     }
 
+    /**
+        @brief Destructor: Deletes the Tcl-interpreter.
+    */
     TclBind::~TclBind()
     {
         if (this->interpreter_)
             delete this->interpreter_;
     }
 
+    /**
+        @brief Defines the path to the directory that contains the Orxonox-specific Tcl-files and initializes the Tcl-interpreter accordingly.
+    */
     void TclBind::setDataPath(const std::string& datapath)
     {
         // String has POSIX slashes
@@ -70,6 +80,9 @@ namespace orxonox
         this->initializeTclInterpreter();
     }
 
+    /**
+        @brief Creates and initializes the Tcl-interpreter by registering all callbacks and defining some useful functions.
+    */
     void TclBind::initializeTclInterpreter()
     {
         if (this->bSetTclDataPath_ && !this->interpreter_)
@@ -95,6 +108,10 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Creates and initializes a new Tcl-interpreter and calls the Orxonox-specific
+        init.tcl script that defines some special functions which are required by Orxonox.
+    */
     Tcl::interpreter* TclBind::createTclInterpreter()
     {
         Tcl::interpreter* interpreter = new Tcl::interpreter();
@@ -115,6 +132,9 @@ namespace orxonox
         return interpreter;
     }
 
+    /**
+        @brief Returns the path to the Tcl-library (not the Orxonox-specific Tcl-files).
+    */
     std::string TclBind::getTclLibraryPath()
     {
 #ifdef DEPENDENCY_PACKAGE_ENABLE
@@ -127,6 +147,9 @@ namespace orxonox
 #endif
     }
 
+    /**
+        @brief Callback: Used to send an Orxonox-command from Tcl to the CommandExecutor and to send its result back to Tcl.
+    */
     std::string TclBind::tcl_query(Tcl::object const &args)
     {
         COUT(4) << "Tcl_query: " << args.get() << std::endl;
@@ -150,6 +173,9 @@ namespace orxonox
         return result;
     }
 
+    /**
+        @brief Callback: Used to send an Orxonox-command from Tcl to the CommandExecutor.
+    */
     void TclBind::tcl_execute(Tcl::object const &args)
     {
         COUT(4) << "Tcl_execute: " << args.get() << std::endl;
@@ -161,6 +187,10 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Console command, executes Tcl code. Can be used to bind Tcl-commands to a key, because native
+        Tcl-commands can not be evaluated and are thus not supported by the key-binder.
+    */
     std::string TclBind::tcl(const std::string& tclcode)
     {
         if (TclBind::getInstance().interpreter_)
@@ -181,11 +211,21 @@ namespace orxonox
         return "";
     }
 
+    /**
+        @brief Console command and implementation of the Tcl-feature "bgerror" which is called if an error
+        occurred in the background of a Tcl-script.
+    */
     void TclBind::bgerror(const std::string& error)
     {
         COUT(1) << "Tcl background error: " << stripEnclosingBraces(error) << std::endl;
     }
 
+    /**
+        @brief Executes Tcl-code and returns the return-value.
+        @param tclcode A string that contains Tcl-code
+        @param error A pointer to an integer (or NULL) that is used to write an error-code (see @ref CommandExecutorErrorCodes "CommandExecutor error codes")
+        @return Returns the return-value of the executed code (or an empty string if there's no return-value)
+    */
     std::string TclBind::eval(const std::string& tclcode, int* error)
     {
         if (error)
@@ -193,6 +233,7 @@ namespace orxonox
 
         try
         {
+            // execute the code
             return TclBind::getInstance().interpreter_->eval(tclcode);
         }
         catch (Tcl::tcl_error const &e)

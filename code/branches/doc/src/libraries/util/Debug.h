@@ -29,7 +29,7 @@
 
 /**
     @defgroup COUT COUT(x) output macro
-    @ingroup Util Output
+    @ingroup Util
 */
 
 /**

@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of the IRC class and the IRC console commands.
+*/
+
 #include "IRC.h"
 
 #include <cpptcl/cpptcl.h>
@@ -38,17 +43,34 @@
 
 namespace orxonox
 {
-    static const unsigned int IRC_TCL_THREADID  = 1421421421;
+    static const unsigned int IRC_TCL_THREADID  = 1421421421;   ///< The ID of the thread in TclThreadManager that is used for the IRC connection
 
     SetConsoleCommand("IRC", "say",  &IRC::say);
     SetConsoleCommand("IRC", "msg",  &IRC::msg);
     SetConsoleCommand("IRC", "nick", &IRC::nick);
 
+    /**
+        @brief Returns the only existing instance of IRC.
+    */
+    IRC& IRC::getInstance()
+    {
+        static IRC instance;
+        return instance;
+    }
+
+    /**
+        @brief Constructor: Doesn't yet connect to IRC nor does it create a Tcl interpreter.
+        The IRC object will automatically connect to the IRC server if one of the registered
+        console commands is used the first time.
+    */
     IRC::IRC()
     {
         this->interpreter_ = 0;
     }
 
+    /**
+        @brief Creates and initializes a new multithreaded Tcl-interpreter and defines some callbacks to display IRC-messages in the console.
+    */
     void IRC::initialize()
     {
         unsigned int threadID = IRC_TCL_THREADID;
@@ -69,12 +91,9 @@ namespace orxonox
         TclThreadManager::execute(threadID, "source irc.tcl");
     }
 
-    IRC& IRC::getInstance()
-    {
-        static IRC instance;
-        return instance;
-    }
-
+    /**
+        @brief Executes a Tcl-command on the Tcl-interpreter.
+    */
     bool IRC::eval(const std::string& command)
     {
         if (!IRC::getInstance().interpreter_)
@@ -95,39 +114,46 @@ namespace orxonox
         return false;
     }
 
+    /// Console command: Sends a message to the current channel on the IRC server.
     void IRC::say(const std::string& message)
     {
         if (IRC::eval("irk::say $conn #orxonox {" + message + '}'))
             IRC::tcl_say(Tcl::object(), Tcl::object(IRC::getInstance().nickname_), Tcl::object(message));
     }
 
+    /// Console command: Sends a message to a given channel or nickname on the IRC server.
     void IRC::msg(const std::string& channel, const std::string& message)
     {
         if (IRC::eval("irk::say $conn " + channel + " {" + message + '}'))
             IRC::tcl_privmsg(Tcl::object(channel), Tcl::object(IRC::getInstance().nickname_), Tcl::object(message));
     }
 
+    /// Console command: Changes the nickname on the IRC server.
     void IRC::nick(const std::string& nickname)
     {
         if (IRC::eval("irk::nick $conn " + nickname))
             IRC::getInstance().nickname_ = nickname;
     }
 
+    /// Tcl-callback: Prints a message that was received from the current IRC channel to the console.
     void IRC::tcl_say(Tcl::object const &channel, Tcl::object const &nick, Tcl::object const &args)
     {
         COUT(0) << "IRC> " << nick.get() << ": " << stripEnclosingBraces(args.get()) << std::endl;
     }
 
+    /// Tcl-callback: Prints a private message that was received from a user to the console.
     void IRC::tcl_privmsg(Tcl::object const &query, Tcl::object const &nick, Tcl::object const &args)
     {
         COUT(0) << "IRC (" << query.get() << ")> " << nick.get() << ": " << stripEnclosingBraces(args.get()) << std::endl;
     }
 
+    /// Tcl-callback: Prints an action-message (usually /me ...) that was received from the current IRC channel to the console.
     void IRC::tcl_action(Tcl::object const &channel, Tcl::object const &nick, Tcl::object const &args)
     {
         COUT(0) << "IRC> * " << nick.get() << ' ' << stripEnclosingBraces(args.get()) << std::endl;
     }
 
+    /// Tcl-callback: Prints all kinds of information that were received from the IRC server or channel (connection info, join, part, modes, ...) to the console.
     void IRC::tcl_info(Tcl::object const &channel, Tcl::object const &args)
     {
         COUT(0) << "IRC> --> " << stripEnclosingBraces(args.get()) << std::endl;
