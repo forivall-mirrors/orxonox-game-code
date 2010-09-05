@@ -42,7 +42,6 @@
 #include <vector>
 
 #include "tools/interfaces/Tickable.h"
-#include "util/Math.h"
 #include "interfaces/NotificationListener.h"
 #include "NotificationManager.h"
 
@@ -72,7 +71,7 @@ namespace orxonox
     {
 
         public:
-            NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, const Vector2& position = NotificationQueue::DEFAULT_POSITION, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
+            NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
             virtual ~NotificationQueue();
 
             virtual void tick(float dt); //!< To update from time to time.
@@ -105,12 +104,6 @@ namespace orxonox
             */
             inline float getDisplayTime() const
                 { return this->displayTime_; }
-            /**
-            @brief Returns the position of the NotificationQueue.
-            @return Returns the position.
-            */
-            inline const Vector2 & getPosition() const
-                { return this->position_; }
 
             /**
             @brief Returns the targets of this queue, reps. the senders which Notifications are displayed in this queue.
@@ -120,25 +113,15 @@ namespace orxonox
                 { return this->targets_; }
             bool getTargets(std::string* string) const; //!< Returns a string consisting of the concatination of the targets.
 
-            /**
-            @brief Sets the position of the NotificationQueue.
-            @param pos The position.
-            */
-            inline void setPosition(Vector2 pos)
-                { this->position_ = pos; this->positionChanged(); }
-
         private:
             static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
             static const unsigned int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
-            static const Vector2 DEFAULT_POSITION; //!< the default position.
 
             std::string name_; //!< The name of the NotificationQueue.
 
             unsigned int maxSize_; //!< The maximal number of Notifications displayed.
             unsigned int size_; //!< The number of Notifications displayed.
-            unsigned int notificationLength_; //!< The maximal number of characters a Notification-message is allowed to have.
             unsigned int displayTime_; //!< The time a Notification is displayed.
-            Vector2 position_; //!< The position of the NotificationQueue.
 
             std::set<std::string> targets_; //!< The targets the Queue displays Notifications of.
 
@@ -160,7 +143,6 @@ namespace orxonox
 
             bool setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
 
-            void positionChanged(void); //!< Aligns all the Notifications to the position of the NotificationQueue.
             void sizeChanged(void); //!< Adjusts the NotificationQueue, when the maximum size has changed.
 
             void push(Notification* notification, const std::time_t & time); //!< Add a Notification to the NotificationQueue.

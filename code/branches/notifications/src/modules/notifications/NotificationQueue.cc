@@ -44,13 +44,11 @@
 namespace orxonox
 {
 
-    const Vector2 NotificationQueue::DEFAULT_POSITION(0.0,0.0);
-
     /**
     @brief
         Constructor. Creates and initializes the object.
     */
-    NotificationQueue::NotificationQueue(const std::string& name, const std::string& senders, unsigned int size, const Vector2& position, unsigned int displayTime)
+    NotificationQueue::NotificationQueue(const std::string& name, const std::string& senders, unsigned int size, unsigned int displayTime)
     {
         this->registered_ = false;
 
@@ -61,11 +59,9 @@ namespace orxonox
         this->setTargets(senders);
         this->name_ = name;
         this->maxSize_ = size;
-        this->position_ = position;
         this->setDisplayTime(displayTime);
 
         this->create();
-        this->positionChanged();
 
         NotificationManager::getInstance().registerListener(this);
         this->registered_ = true;
@@ -244,15 +240,6 @@ namespace orxonox
         this->notifications_.clear();
         this->size_ = 0;
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.clearQueue(\"" + this->getName() + "\")");
-    }
-
-    /**
-    @brief
-        Adjusts the NotificationQueue, when the position has changed.
-    */
-    void NotificationQueue::positionChanged(void)
-    {
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changePosition(\"" + this->getName() + "\", " + multi_cast<std::string>(this->getPosition().x) + ", " + multi_cast<std::string>(this->getPosition().y) + ")");
     }
 
     /**

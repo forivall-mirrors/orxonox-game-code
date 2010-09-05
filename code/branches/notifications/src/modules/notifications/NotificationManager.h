@@ -39,12 +39,14 @@
 #include <ctime>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
+
     /**
     @brief
         The Singleton NotificationManager functions as a gateway between Notifications and NotificationListeners.
@@ -52,12 +54,17 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _NotificationsExport NotificationManager : public Singleton<NotificationManager>, public OrxonoxClass
-    {
+    class _NotificationsExport NotificationManager  // tolua_export
+        : public Singleton<NotificationManager>, public OrxonoxClass
+    { // tolua_export
             friend class Singleton<NotificationManager>;
         public:
             NotificationManager();
             virtual ~NotificationManager();
+
+            virtual void preDestroy(void);
+
+            static NotificationManager& getInstance() { return Singleton<NotificationManager>::getInstance(); } // tolua_export
 
             static const std::string ALL; //!< Static string to indicate a sender that sends to all NotificationListeners.
             static const std::string NONE; //!< Static string to indicare a sender that sends to no specific NotificationListener.
@@ -79,10 +86,14 @@ namespace orxonox
             bool getNotifications(NotificationListener* listener, std::multimap<std::time_t,Notification*>* map, int timeDelay)
                 { return this->getNotifications(listener, map, std::time(0)-timeDelay, std::time(0)); }
 
+            void enterEditMode(void);
+
+            void createQueue(const std::string& name, const std::string& targets, unsigned int size, unsigned int displayTime); // tolua_export
+
         private:
             static NotificationManager* singletonPtr_s;
 
-            NotificationQueue* queue_; //!< Initial, first, NotificationQueue.
+            std::vector<NotificationQueue*> queues_; //!< The list of NotificationQueues created by the NotificationManager.
 
             int highestIndex_; //!< This variable holds the highest index (resp. key) in notificationLists_s, to secure that no key appears twice.
 
@@ -93,8 +104,8 @@ namespace orxonox
 
             bool removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map); //!< Helper method that removes an input notification form an input map.
 
-    };
+    }; // tolua_export
 
-}
+} // tolua_export
 
 #endif /* _NotificationManager_H__ */

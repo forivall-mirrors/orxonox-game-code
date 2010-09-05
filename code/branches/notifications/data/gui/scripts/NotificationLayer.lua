@@ -5,11 +5,13 @@ local P = createMenuSheet("NotificationLayer")
 P.queueList = {}
 P.nameList = {}
 P.visible = nil
+P.editMode = false
+P.editList = {}
 
 function P.createQueue(name, size)
     local root = winMgr:getWindow("orxonox/NotificationLayer/Root")
     local queue = winMgr:createWindow("MenuWidgets/Listbox", "orxonox/NotificationLayer/Root/Queue/" .. name)
-    queue:setProperty("BackgroundColor", "66FFFFFF")
+    queue:setProperty("BackgroundColor", "00FFFFFF")
     root:addChildWindow(queue)
 
     queue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
@@ -120,6 +122,42 @@ end
 function P.setVisible(queue, visible)
     queue:setVisible(visible)
     P.visible = visible
+end
+
+function P.enterEditMode()
+    P.editMode = true
+
+    local root = winMgr:getWindow("orxonox/NotificationLayer/Root")
+    --Replace all queues with FrameWindows
+    for k,v in pairs(P.queueList) do
+        if v ~= nil then
+            root:removeChildWindow(v)
+            local frame = winMgr:createWindow("MenuWidgets/FrameWindow", "orxonox/NotificationLayer/Root/EditMode/" .. P.nameList(k))
+            frame:setArea(v:getArea())
+            P.editList[k] = frame
+        end
+    end
+end
+
+function P.leaveEditMode()
+    P.editMode = false
+
+    local root = winMgr:getWindow("orxonox/NotificationLayer/Root")
+    --Replace all queues with FrameWindows
+    for k,v in pairs(P.queueList) do
+        if v ~= nil then
+            root:addChildWindow(v)
+            v:setArea(P.editList[k]:getArea())
+            winMgr:destroyWindow(P.editList[k])
+            P.editList[k] = nil
+        end
+    end
+end
+
+function P.onHide()
+    if P.editMode then
+        P.leaveEditMode()
+    end
 end
 
 function P.nameToQueueHelper(name)

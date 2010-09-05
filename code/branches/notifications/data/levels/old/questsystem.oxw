@@ -4,12 +4,6 @@
   include("templates/spaceship_assff.oxt")
 ?>
 
-<NotificationQueue
- name  = "notification"
- position = "1.0, 1.0"
- targets = "all"
-/>
-
 <Level
  name         = "Questsystem"
  description  = "Just a few tests"

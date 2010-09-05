@@ -33,8 +33,10 @@
 
 #include "NotificationManager.h"
 
+#include "core/command/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
+#include "core/LuaState.h"
 #include "util/ScopedSingletonManager.h"
 #include "interfaces/NotificationListener.h"
 #include "Notification.h"
@@ -47,6 +49,9 @@ namespace orxonox
     const std::string NotificationManager::NONE("none");
 
     ManageScopedSingleton(NotificationManager, ScopeID::Graphics, false);
+
+    //TODO: Make work.
+    //SetConsoleCommand("enterEditMode", &NotificationManager::enterEditMode).description("Enter the NotificationLayer edit mode.");
 
     /**
     @brief
@@ -63,7 +68,7 @@ namespace orxonox
             GUIManager::getInstance().loadGUI("NotificationLayer");
 
             // Create first queue:
-            this->queue_ = new NotificationQueue("all");
+            this->queues_.push_back(new NotificationQueue("all"));
         }
     }
 
@@ -73,7 +78,14 @@ namespace orxonox
     */
     NotificationManager::~NotificationManager()
     {
-        //this->queue_->destroy();
+        
+    }
+
+    void NotificationManager::preDestroy(void)
+    {
+        for(std::vector<NotificationQueue*>::iterator it = this->queues_.begin(); it != this->queues_.end(); it++)
+            (*it)->destroy();
+        this->queues_.clear();
     }
 
     /**
@@ -288,6 +300,11 @@ namespace orxonox
         }
 
         return true;
+    }
+
+    void NotificationManager::createQueue(const std::string& name, const std::string& targets, unsigned int size, unsigned int displayTime)
+    {
+        this->queues_.push_back(new NotificationQueue(name, targets, size, displayTime));
     }
 
 }

@@ -7,15 +7,6 @@
     include("templates/spaceship_Transporter.oxt")
 ?>
 
-<NotificationQueue
-    name     = "notification"
-    position = "0.40, 0.05"
-    font     = "VeraMono"
-    textsize = 0.020
-    length   = 3
-    width    = 50
-/>
-
 <!--*****************************************************************************************************************************************************************************************-->
 <!--Including Template for triggering on player-->
 
