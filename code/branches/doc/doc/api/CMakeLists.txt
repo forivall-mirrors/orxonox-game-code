@@ -54,7 +54,7 @@ IF (DOXYGEN_FOUND)
   ADD_CUSTOM_COMMAND(
     OUTPUT ${INTERNAL_DOCFILE}
     COMMAND orxonox-main
-    ARGS --noIOConsole --generateDoc --docFile ${INTERNAL_DOCFILE}
+    ARGS --noIOConsole --generateDoc ${INTERNAL_DOCFILE}
     WORKING_DIRECTORY ${_working_dir}
     COMMENT "Generating additional Doxygen documentation from Orxonox executable"
   )

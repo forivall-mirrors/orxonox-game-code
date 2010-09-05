@@ -59,7 +59,6 @@
 
 namespace orxonox
 {
-    //! @cmdarg
     SetCommandLineSwitch(keyboard_no_grab).information("Whether not to exclusively grab the keyboard");
 
     static const std::string __CC_InputManager_name = "InputManager";

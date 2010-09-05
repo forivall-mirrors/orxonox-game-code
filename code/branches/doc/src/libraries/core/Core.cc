@@ -36,6 +36,7 @@
 #include "Core.h"
 
 #include <cassert>
+#include <fstream>
 #include <vector>
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
@@ -76,13 +77,10 @@ namespace orxonox
     //! Static pointer to the singleton
     Core* Core::singletonPtr_s  = 0;
 
-    //! @cmdarg
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
-    //! @cmdarg
     SetCommandLineSwitch(noIOConsole).information("Use this if you don't want to use the IOConsole (for instance for Lua debugging)");
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
-    //! @cmdarg
     SetCommandLineArgument(limitToCPU, 1).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is the first core (faster than off)");
 #endif
 
@@ -173,6 +171,21 @@ namespace orxonox
 
         // Create singletons that always exist (in other libraries)
         this->rootScope_.reset(new Scope<ScopeID::Root>());
+
+        // Generate documentation instead of normal run?
+        std::string docFilename;
+        CommandLineParser::getValue("generateDoc", &docFilename);
+        if (!docFilename.empty())
+        {
+            std::ofstream docFile(docFilename.c_str());
+            if (docFile.is_open())
+            {
+                CommandLineParser::generateDoc(docFile);
+                docFile.close();
+            }
+            else
+                COUT(0) << "Error: Could not open file for documentation writing" << endl;
+        }
     }
 
     /**

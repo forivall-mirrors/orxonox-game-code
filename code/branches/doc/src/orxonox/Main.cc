@@ -47,25 +47,15 @@ DeclareToluaInterface(Network);
 
 namespace orxonox
 {
-    //! @cmdarg
     SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
-    //! @cmdarg
     SetCommandLineSwitch(server).information("Start in server mode");
-    //! @cmdarg
     SetCommandLineSwitch(client).information("Start in client mode");
-    //! @cmdarg
     SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
-    //! @cmdarg
     SetCommandLineSwitch(standalone).information("Start in standalone mode");
-    //! @cmdarg
     SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
 
-    //! @cmdarg
-    SetCommandLineSwitch(generateDoc)
+    SetCommandLineArgument(generateDoc, "")
         .information("Generates a Doxygen file from things like SetConsoleCommand");
-    //! @cmdarg
-    SetCommandLineArgument(docFile, "Internal.dox")
-        .information("Name of the doc file to be generated with --generateDoc");
 
     /**
     @brief
@@ -75,13 +65,7 @@ namespace orxonox
     {
         Game* game = new Game(strCmdLine);
 
-        if (CommandLineParser::getValue("generateDoc").getBool())
-        {
-            // Generate additional documentation written to ONE file
-            std::string filename;
-            CommandLineParser::getValue("docFile", &filename);
-        }
-        else
+        if (CommandLineParser::getValue("generateDoc").getString().empty())
         {
             game->setStateHierarchy(
             "root"
@@ -95,7 +79,7 @@ namespace orxonox
 
             game->requestState("root");
 
-            // Some development hacks (not really, but in the future, this calls won't make sense anymore)
+            // Some development hacks (not really, but in the future, these calls won't make sense anymore)
             if (CommandLineParser::getValue("standalone").getBool())
                 Game::getInstance().requestStates("graphics, standalone, level");
             else if (CommandLineParser::getValue("server").getBool())

@@ -31,6 +31,7 @@
 
 #include "CorePrereqs.h"
 
+#include <fstream>
 #include <map>
 #include "util/OrxAssert.h"
 #include "util/MultiType.h"
@@ -163,6 +164,8 @@ namespace orxonox
         }
 
         static void destroyAllArguments();
+
+        static void generateDoc(std::ofstream& file);
 
     private:
         //! Constructor initialises bFirstTimeParse_ with true.

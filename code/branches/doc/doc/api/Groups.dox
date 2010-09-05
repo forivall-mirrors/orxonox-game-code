@@ -60,7 +60,7 @@
 /**
     @defgroup CmdArgs Commandline Arguments
     @ingroup Command
-    @brief For a reference see @ref cmdargs
+    @brief For a reference see @ref cmdargspage
 */
 
 /**

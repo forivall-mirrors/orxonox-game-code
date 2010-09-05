@@ -69,9 +69,7 @@ namespace orxonox
     //! Static pointer to the singleton
     PathConfig* PathConfig::singletonPtr_s  = 0;
 
-    //! @cmdarg
     SetCommandLineArgument(externalDataPath, "").information("Path to the external data files");
-    //! @cmdarg
     SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
 
     PathConfig::PathConfig()

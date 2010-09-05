@@ -38,7 +38,6 @@ namespace orxonox
 {
     DeclareGameState(GSServer, "server", false, false);
 
-    //! @cmdarg
     SetCommandLineArgument(port, 55556).shortcut("p").information("Network communication port to be used 0-65535 (default: 55556)");
 
     GSServer::GSServer(const GameStateInfo& info)

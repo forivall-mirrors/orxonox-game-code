@@ -32,7 +32,6 @@
 
 #include "CorePrereqs.h"
 
-#include <cassert>
 #include <string>
 #include <boost/scoped_ptr.hpp>
 #include <loki/ScopeGuard.h>

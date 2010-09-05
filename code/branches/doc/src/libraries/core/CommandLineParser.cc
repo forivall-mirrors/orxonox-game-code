@@ -40,7 +40,6 @@
 
 namespace orxonox
 {
-    //! @cmdarg
     SetCommandLineOnlyArgument(optionsFile, "start.ini").shortcut("o");
 
     /**
@@ -314,12 +313,21 @@ namespace orxonox
         return infoStr.str();
     }
 
+    void CommandLineParser::generateDoc(std::ofstream& file)
+    {
+        file << "/** @page cmdargspage Command Line Arguments Reference" << endl;
+        file << "    @verbatim"; /*no endl*/
+        file << getUsageInformation(); /*no endl*/
+        file << "    @endverbatim" << endl;
+        file << "*/" << endl;
+    }
+
     /**
     @brief
         Retrieves a CommandLineArgument.
         The method throws an exception if 'name' was not found or the value could not be converted.
     @note
-        You shold of course not call this method before the command line has been parsed.
+        You should of course not call this method before the command line has been parsed.
     */
     const CommandLineArgument* CommandLineParser::getArgument(const std::string& name)
     {
