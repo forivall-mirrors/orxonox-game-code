@@ -27,9 +27,90 @@
  *      ...
  */
 
-/*!
-    @file
-    @brief Definition and Implementation of the Convert class.
+/** Functions that convert values between different types.
+@file
+@par Usage
+    There are three ways to use the conversions depending on what you need. <br>
+    - For simply converting values without having to know whether the conversion
+      was successful (for instance float --> string), use orxonox::multi_cast
+      which effectively works exactly like static_cast, etc.
+      @code
+        float input = 42.0;
+        std::string output = multi_cast<std::string>(input);
+      @endcode
+    - If you care about whether the conversion was successful,
+      use orxonox::convertValue.
+      @code
+        std::string input("3.4");
+        float output;
+        bool success = convertValue(&output, input);
+      @endcode
+    - If you care about success and if you can also feed a fallback value,
+      use orxonox::convertValue.
+      @code
+        std::string input("3.4");
+        float output;
+        bool success = convertValue(&output, input, 0.0);
+      @endcode
+    - If success doesn't matter but you can feed a fallback value,
+      use orxonox::getConvertedValue.
+      @code
+        std::string input("3.4");
+        float output = getConvertedValue(input, 0.0);
+      @endcode
+@details
+    The back end of these functions are the actual implementations for the
+    specific conversions, for instance from Ogre::Vector3 to std::string and
+    vice versa. Some of them also use the iostream operators. <br>
+    The real deal is evaluating which function is needed for a conversion based
+    on the input and output type. But there are lots of catches in conjunction
+    with templates which explains why there are so many functions in this file.
+    <br> <br>
+@par Search Order
+    Finding the right function is governed by priority rules: <br>
+    -# (Partial) template specialisation of orxonox::ConverterExplicit::convert()
+    -# An implicit conversion. This includes 'FooBar' to 'int' if FooBar
+       defines operator int() or float().
+    -# Global or member operators for iostream when converting from or
+       to std::string (and FROM const char*)
+    -# (Partial) template specialisation of orxonox::ConverterFallback::convert()
+    -# Fallback function that displays "Could not convert value" with type
+       information obtained from typeid().
+@par Implementing conversion functions
+    To do that you probably need to know a thing or two about the types
+    involved. So, get ready with that. <br>
+    Usually the best way to do it is specialising of the orxonox::ConverterFallback
+    template, like this:
+    @code
+    template <>
+    struct _UtilExport ConverterFallback<std::string, MyType>
+    {
+        static bool convert(MyType* output, const std::string& input)
+        {
+           ...
+           return success;
+        }
+    };
+    @endcode
+    This piece of code converts an std::string to MyType and returns whether the
+    conversion was successful. You can also use partial specialisation.<br>
+    The advantage with orxonox::ConverterFallback is that it has a low priority
+    meaning that when there is an implicit conversion or an iostream method, that
+    comes first and you don't have to deal with it (and the accompanying
+    function call ambiguity). <br>
+    However sometimes you would like to explicitely replace such a conversion.
+    That's where orxonox::ConverterExplicit comes in handy (for instance we
+    replaced the operator << conversions for Ogre::VectorX with our own functions).
+@note
+    There has to be an exact type match when using template specialisations. <br>
+    Template specialisations can be defined after including this file.
+    But any implicit cast function or iostream operator has to be included
+    in this file!
+@par Understanding the Code
+    In order to understand how the templates work, it is probably best to study
+    the functions in order of calling. There are lots of comments explaining
+    what happens, but you'll need to understand a deal about partial template
+    specialisation and function headers are matched in C++.
 */
 
 #ifndef _Converter_H__
@@ -45,42 +126,13 @@
 #include "Debug.h"
 #include "TemplateUtils.h"
 
-////////////////////////////////////
-//// ACTUAL CONVERSION SEQUENCE ////
-////////////////////////////////////
-/*
-    There is a distinct priority when choosing the right conversion function:
-    Overwrite:
-    1. (Partial) template specialisation of ConverterExplicit::convert()
-    Fallbacks:
-    2. Any possible implicit conversion. This includes 'FooBar' --> 'int' if FooBar defines operator float().
-    3. Global or member operators for stringstream when converting from or to std::string (or FROM const char*)
-    4. (Partial) template specialisation of ConverterFallback::convert()
-    5. Function that simply displays "Could not convert value" with type information obtained from typeid().
-
-    Notes:
-    There has to be an exact type match when using template specialisations.
-    Template specialisations can be defined after including this file. Any implicit cast function or iostream
-    operator has to be declared BEFORE this file gets parsed.
-
-    Defining your own functions:
-    There are obviously 4 ways to specify a user defined conversion. What should you use?
-
-    Usually, ConverterFallback fits quite well. You won't have to deal with the conversion from
-    'MyClass' to 'MyClass' by using another explicit template specialisation to avoid ambiguities.
-
-    However if you want to overwrite an implicit conversion or an iostream operator, you really need to
-    make use of ConverterExplicit. We have to do this for the Ogre classes for instance because they
-    define stream operators we don't particulary like.
-*/
-
 namespace orxonox
 {
     ///////////////////
     // No Conversion //
     ///////////////////
 
-    // Default template. No conversion available at all.
+    /// Default template. No conversion available at all.
     template <class FromType, class ToType>
     struct ConverterFallback
     {
@@ -92,7 +144,7 @@ namespace orxonox
         }
     };
 
-    // If all else fails, try a dynamic_cast for pointer types.
+    /// If all else fails, try a dynamic_cast for pointer types.
     template <class FromType, class ToType>
     struct ConverterFallback<FromType*, ToType*>
     {
@@ -143,7 +195,11 @@ namespace orxonox
 // ConverterFallback //
 ///////////////////////
 
-// Default template for stringstream
+/** Fallback template for stringstream
+@details
+    Neither FromType nor ToType was std::string, therefore
+    delegate to orxonox::ConverterFallback
+*/
 template <class FromType, class ToType>
 struct ConverterStringStream
 {
@@ -158,8 +214,10 @@ struct ConverterStringStream
 // OStream //
 /////////////
 
+/// Extra namespace to avoid exposing the iostream operators in it
 namespace fallbackTemplates
 {
+    /// Fallback operator <<() (delegates to orxonox::ConverterFallback)
     template <class FromType>
     FORCEINLINE bool operator <<(std::ostream& outstream,  const FromType& input)
     {
@@ -174,15 +232,17 @@ namespace fallbackTemplates
     }
 }
 
-// template that evaluates whether we can convert to std::string via ostringstream
+/// Template that evaluates whether we can convert to std::string via ostringstream
 template <class FromType>
 struct ConverterStringStream<FromType, std::string>
 {
     FORCEINLINE static bool convert(std::string* output, const FromType& input)
     {
         using namespace fallbackTemplates;
-        // this operator call only chooses fallbackTemplates::operator<< if there's no other fitting function
+        // this operator call only chooses fallbackTemplates::operator<<()
+        // if there's no other fitting function
         std::ostringstream oss;
+        // Note: std::ostream has operator!() to tell whether any error flag was set
         if (oss << input)
         {
             (*output) = oss.str();
@@ -200,23 +260,26 @@ struct ConverterStringStream<FromType, std::string>
 
 namespace fallbackTemplates
 {
+    /// Fallback operator >>() (delegates to orxonox::ConverterFallback)
     template <class ToType>
     FORCEINLINE bool operator >>(std::istream& instream, ToType& output)
     {
-        return orxonox::ConverterFallback<std::string, ToType>
-            ::convert(&output, static_cast<std::istringstream&>(instream).str());
+        std::string input(static_cast<std::istringstream&>(instream).str());
+        return orxonox::ConverterFallback<std::string, ToType>::convert(&output, input);
     }
 }
 
-// template that evaluates whether we can convert from std::string via ostringstream
+/// Template that evaluates whether we can convert from std::string via istringstream
 template <class ToType>
 struct ConverterStringStream<std::string, ToType>
 {
     FORCEINLINE static bool convert(ToType* output, const std::string& input)
     {
         using namespace fallbackTemplates;
+        // this operator call chooses fallbackTemplates::operator>>()
+        // only if there's no other fitting function
         std::istringstream iss(input);
-        // this operator call only chooses fallbackTemplates::operator>> if there's no other fitting function
+        // Note: std::istream has operator!() to tell whether any error flag was set
         if (iss >> (*output))
         {
             return true;
@@ -228,19 +291,18 @@ struct ConverterStringStream<std::string, ToType>
 
 namespace orxonox
 {
-
     ///////////////////
     // Implicit Cast //
     ///////////////////
 
-    // implicit cast not possible, try stringstream conversion next
+    /// %Template delegates to ::ConverterStringStream
     template <class FromType, class ToType>
     FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, Loki::Int2Type<false>)
     {
         return ConverterStringStream<FromType, ToType>::convert(output, input);
     }
 
-    // We can cast implicitely
+    /// Makes an implicit cast from \a FromType to \a ToType
     template <class FromType, class ToType>
     FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, Loki::Int2Type<true>)
     {
@@ -253,15 +315,18 @@ namespace orxonox
     // ConverterExplicit Fallback //
     ////////////////////////////////
 
-    // Default template if no specialisation is available
+    /** Default template if no orxonox::ConverterExplicit is available
+    @details
+        Evaluates whether \a FromType can be implicitly converted to \a ToType
+        by the use the ImplicitConversion magic.
+    */
     template <class FromType, class ToType>
     struct ConverterExplicit
     {
         enum { probe = ImplicitConversion<FromType, ToType>::exists };
         FORCEINLINE static bool convert(ToType* output, const FromType& input)
         {
-            // Try implict cast and probe first. If a simple cast is not possible, it will not compile
-            // We therefore have to out source it into another template function
+            // Use the probe's value to delegate to the right function
             return convertImplicitely(output, input, Loki::Int2Type<probe>());
         }
     };
@@ -274,9 +339,9 @@ namespace orxonox
     /**
     @brief
         Converts any value to any other as long as there exists a conversion.
+    @details
         Otherwise, the conversion will generate a runtime warning and return false.
-        For information about the different conversion methods (user defined too), see the section
-        'Actual conversion sequence' in this file above.
+    @see Convert.h
     @param output
         A pointer to the variable where the converted value will be stored
     @param input
@@ -294,9 +359,8 @@ namespace orxonox
     @brief
         Converts any value to any other as long as there exists a conversion.
         Otherwise, the conversion will generate a runtime warning and return false.
-        For information about the different conversion methods (user defined too), see the section
-        'Actual conversion sequence' in this file above.
-        If the conversion doesn't succeed, 'fallback' is written to '*output'.
+        If the conversion doesn't succeed, \a fallback is written to \a output.
+    @see Convert.h
     @param output
         A pointer to the variable where the converted value will be stored
     @param input
@@ -316,7 +380,6 @@ namespace orxonox
         }
     }
 
-    // Directly returns the converted value, even if the conversion was not successful.
     template<class FromType, class ToType>
     FORCEINLINE ToType getConvertedValue(const FromType& input)
     {
@@ -325,7 +388,7 @@ namespace orxonox
         return output;
     }
 
-    // Directly returns the converted value, but uses the fallback on failure.
+    /// Directly returns the converted value, but uses the fallback on failure. @see convertValue
     template<class FromType, class ToType>
     FORCEINLINE ToType getConvertedValue(const FromType& input, const ToType& fallback)
     {
@@ -334,8 +397,17 @@ namespace orxonox
         return output;
     }
 
-    // Like getConvertedValue, but the template argument order is in reverse.
-    // That means you can call it exactly like static_cast<ToType>(fromTypeValue).
+    /**
+    @brief
+        Converts any value to any other as long as there exists a conversion.
+    @details
+        Use exactly the way you use static_cast, etc. <br>
+        A failed conversion will return a default instance of \a ToType
+        (possibly uninitialised)
+    @see Convert.h
+    @param input
+        The original value
+    */
     template<class ToType, class FromType>
     FORCEINLINE ToType multi_cast(const FromType& input)
     {
@@ -348,7 +420,7 @@ namespace orxonox
     // Special string conversions //
     ////////////////////////////////
 
-    // Delegate conversion from const char* to std::string
+    /// Delegates conversion from const char* to std::string
     template <class ToType>
     struct ConverterExplicit<const char*, ToType>
     {
@@ -358,7 +430,7 @@ namespace orxonox
         }
     };
 
-    // These conversions would exhibit ambiguous << or >> operators when using stringstream
+    /// Conversion would exhibit ambiguous << or >> operators when using iostream
     template <>
     struct ConverterExplicit<char, std::string>
     {
@@ -368,6 +440,8 @@ namespace orxonox
             return true;
         }
     };
+    /// Conversion would exhibit ambiguous << or >> operators when using iostream
+    template <>
     template <>
     struct ConverterExplicit<unsigned char, std::string>
     {
@@ -377,6 +451,8 @@ namespace orxonox
             return true;
         }
     };
+    /// Conversion would exhibit ambiguous << or >> operators when using iostream
+    template <>
     template <>
     struct ConverterExplicit<std::string, char>
     {
@@ -389,6 +465,7 @@ namespace orxonox
             return true;
         }
     };
+    /// Conversion would exhibit ambiguous << or >> operators when using iostream
     template <>
     struct ConverterExplicit<std::string, unsigned char>
     {
@@ -403,7 +480,7 @@ namespace orxonox
     };
 
 
-    // bool to std::string
+    /// Conversion from bool to std::string
     template <>
     struct ConverterExplicit<bool, std::string>
     {
@@ -417,7 +494,7 @@ namespace orxonox
         }
     };
 
-    // std::string to bool
+    /// Conversion from std::string to bool
     template <>
     struct _UtilExport ConverterExplicit<std::string, bool>
     {
