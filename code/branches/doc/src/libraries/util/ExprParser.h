@@ -28,6 +28,7 @@
 
 /**
 @file
+@ingroup Util
 @brief Declaration of FloatParser
 */
 

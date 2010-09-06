@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Util
+*/
+
 #ifndef _TriBool_H__
 #define _TriBool_H__
 

@@ -27,8 +27,14 @@
  *      ...
  */
 
+/**
+    @defgroup Convert Conversion functions
+    @ingroup Util
+*/
+
 /** Functions that convert values between different types.
 @file
+@ingroup Convert
 @par Usage
     There are three ways to use the conversions depending on what you need. <br>
     - For simply converting values without having to know whether the conversion

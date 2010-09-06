@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup ExceptionAssertion Exceptions and assertions
+    @ingroup Util
+*/
+
+/**
 @file
+@ingroup ExceptionAssertion
 @brief
     Declaration of facilities to handle exceptions.
 @details

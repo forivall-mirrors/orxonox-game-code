@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Util
+*/
+
 #ifndef _OrxEnum_H__
 #define _OrxEnum_H__
 

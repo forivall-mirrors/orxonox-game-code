@@ -28,6 +28,7 @@
 
 /**
 @file
+@ingroup Convert
 @brief
     Conversion functions for Math types like Ogre::Vector3 (definitions are in Math.cc)
 */

@@ -28,6 +28,7 @@
 
 /**
 @file
+@ingroup ExceptionAssertion
 @brief
     Declaration of custom assertion facilities
 */

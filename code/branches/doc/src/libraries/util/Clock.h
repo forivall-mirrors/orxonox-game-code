@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Util
+*/
+
 #ifndef _Clock_H__
 #define _Clock_H__
 
@@ -42,7 +47,7 @@ namespace orxonox
         Precision: <br>
     @par Precision
         The maximum precision is given by the Ogre::Timer and that is somewhere
-        in the microsecond range for both Windows and UNIX. 
+        in the microsecond range for both Windows and UNIX.
     @par Remarks for Usage on Windows
         For proper functionality this class MUST be used in the same thread! <br>
         Furthermore it might be possible that the Ogre::Timer has a performance
