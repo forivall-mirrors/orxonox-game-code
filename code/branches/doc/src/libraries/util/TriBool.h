@@ -34,6 +34,11 @@
 // tolua_begin
 namespace orxonox
 {
+    /** Sort of a boolean value that also has state \c Dontcare
+    @remarks
+        Even though \c False has the value 0, both \c True and \c Dontcare have
+        a value other than 0. Keep that in mind when using TriBools in if statements.
+    */
     namespace TriBool
     {
         enum Value

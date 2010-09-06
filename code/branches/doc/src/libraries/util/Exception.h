@@ -30,6 +30,22 @@
 @file
 @brief
     Declaration of facilities to handle exceptions.
+@details
+    Any exception thrown should inherit from orxonox::Exception. There is a macro
+    \ref CREATE_ORXONOX_EXCEPTION to create a new exception (you can find a list of
+    available exceptions in the docs of this file). <br>
+    Throwing exception is also very simple:
+    @code
+        ThrowException(General, "Something went wrong");
+    @endcode
+    (\c General is a type of exception, see docs of this file) <br>
+    The exception will automatically contain information about file, line number
+    and function name it occurred in. <br><br>
+    There is also some magic you can do for numbers, etc.:
+    @code
+        ThrowException(General, "Error code: " << myInt << ". more info...");
+    @endcode
+    It works with an std::ostringstream, so you can feed it all sorts of values.
 */
 
 #ifndef _Exception_H__
@@ -44,12 +60,11 @@
 
 namespace orxonox
 {
-    /**
-    @brief
-        Base class for all exceptions (derived from std::exception).
+    /** Base class for all exceptions (derived from std::exception).
     @details
         This class provides support for information about the file, the line
-        and the function the error occured.
+        and the function the error occurred.
+    @see Exception.h
     */
     class _UtilExport Exception : public std::exception
     {
@@ -73,9 +88,15 @@ namespace orxonox
 
         //! Needed for compatibility with std::exception
         virtual ~Exception() throw() { }
+        //! Returns the error description
         const char* what() const throw();
 
-        //! Returns a full description with type, line, file and function
+        /** Returns a full description with type, line, file and function
+        @remarks
+            The composed full description gets stored to fullDescription_. But for compliance
+            with std::exception, this method has to be const. Hence fullDescription_ is declared
+            as mutable.
+        */
         virtual const std::string& getFullDescription() const;
         //! Returns the string name of the exception type
         virtual std::string        getTypeName()        const = 0;
@@ -106,7 +127,7 @@ namespace orxonox
         mutable std::string fullDescription_; //!< Full description with line, file and function
     };
 
-//! Creates a new type of exception that inherits from tracker::Exception
+//! Creates a new type of exception that inherits from orxonox::Exception
 #define CREATE_ORXONOX_EXCEPTION(ExceptionName)                                     \
     class ExceptionName##Exception : public Exception                               \
     {                                                                               \
@@ -128,7 +149,6 @@ namespace orxonox
 
     // Creates all possible exception types.
     // If you want to add a new type, simply copy and adjust a new line here.
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
     CREATE_ORXONOX_EXCEPTION(General);
     CREATE_ORXONOX_EXCEPTION(FileNotFound);
     CREATE_ORXONOX_EXCEPTION(Argument);
@@ -141,11 +161,8 @@ namespace orxonox
     CREATE_ORXONOX_EXCEPTION(GameState);
     CREATE_ORXONOX_EXCEPTION(NoGraphics);
     CREATE_ORXONOX_EXCEPTION(AbortLoading);
-#endif
 
-    /**
-    @brief
-        Helper function that forwards an exception and displays the message.
+    /** Helper function that forwards an exception and displays the message.
     @details
         This is necessary because only when using 'throw' the objects storage is managed.
     */
@@ -157,13 +174,12 @@ namespace orxonox
         return exception;
     }
 
-/**
-@brief
-    Throws an exception and logs a message beforehand.
+/** Throws an exception and logs a message beforehand.
 @param type
     Type of the exception as literal (General, Initialisation, etc.)
 @param description
     Exception description as string
+@see Exception.h
 */
 #define ThrowException(type, description) \
     throw orxonox::exceptionThrowerHelper(type##Exception(static_cast<std::ostringstream&>(std::ostringstream().flush() << description).str(), __LINE__, __FILE__, __FUNCTIONNAME__))

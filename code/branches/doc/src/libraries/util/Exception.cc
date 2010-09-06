@@ -52,12 +52,6 @@ namespace orxonox
         , lineNumber_(0)
     { }
 
-    /**
-    @remarks
-        The composed full description gets stored to fullDescription_. But for compliance
-        with std::exception, this method has to be const. Hence fullDescription_ is declared
-        as mutable.
-    */
     const std::string& Exception::getFullDescription() const
     {
         if (fullDescription_.empty())
@@ -88,7 +82,6 @@ namespace orxonox
         return fullDescription_;
     }
 
-    //! Returns the error description
     const char* Exception::what() const throw()
     {
         return getDescription().c_str();
