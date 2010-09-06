@@ -29,17 +29,25 @@
 /**
     @file
     @ingroup Object ObjectList
-    @brief Definition and implementation of the Iterator class.
+    @brief Definition of the Iterator class.
 
-    The Iterator of a given class allows to iterate through an ObjectList. Objects in
-    this list are cast to the template argument of the Iterator.
+    @anchor IteratorExample
+
+    @ref orxonox::Iterator "Iterator" allows to iterate through an @ref orxonox::ObjectListBase
+    "ObjectListBase". Objects in this list are cast to the template argument @a T of Iterator<T> using
+    @c dynamic_cast. In contrast to @ref orxonox::ObjectListIterator "ObjectListIterator<T>",
+    @ref orxonox::Iterator "Iterator<T>" can iterate through every object-list. In practice though it
+    is limited to objects of type @a T and its subclasses. Because of the @c dynamic_cast, this iterator
+    is much slower than ObjectListIterator.
 
     Usage:
+    @code
     for (Iterator<myClass> it = anyidentifier->getObjects()->begin(); it != anyidentifier->getObjects()->end(); ++it)
     {
         it->someFunction(...);
         myClass* myObject = *it;
     }
+    @endcode
 */
 
 #ifndef _Iterator_H__
@@ -52,7 +60,14 @@
 
 namespace orxonox
 {
-    //! The Iterator allows to iterate through a given ObjectList
+    /**
+        @brief The Iterator allows to iterate through a given ObjectList.
+
+        Independent of the object-list's type, the objects in the list are always casted
+        to @a T using @c dynamic_cast.
+
+        @see See @ref IteratorExample "Iterator.h" for more information an example.
+    */
     template <class T = OrxonoxClass>
     class Iterator
     {

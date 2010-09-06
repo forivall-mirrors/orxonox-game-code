@@ -28,7 +28,7 @@
 
 /**
     @file
-    @brief Implementation of the ClassTreeMask, ClassTreeMaskNode and ClassTreeMaskIterator classes.
+    @brief Implementation of the ClassTreeMask, ClassTreeMaskNode, and ClassTreeMaskIterator classes.
 */
 
 #include "ClassTreeMask.h"
@@ -92,7 +92,6 @@ namespace orxonox
 
     /**
         @brief Adds a new subnode to the list of subnodes.
-        @param subnode The new subnode
     */
     void ClassTreeMaskNode::addSubnode(ClassTreeMaskNode* subnode)
     {
@@ -177,7 +176,6 @@ namespace orxonox
 
     /**
         @brief Returns a pointer to the ClassTreeMaskNode whereon the iterator points.
-        @return The pointer to the node
     */
     ClassTreeMaskNode* ClassTreeMaskIterator::operator*() const
     {
@@ -186,7 +184,6 @@ namespace orxonox
 
     /**
         @brief Returns a pointer to the ClassTreeMaskNode whereon the iterator points.
-        @return The pointer to the node
     */
     ClassTreeMaskNode* ClassTreeMaskIterator::operator->() const
     {
@@ -195,7 +192,6 @@ namespace orxonox
 
     /**
         @brief Returns true if the stack is empty, meaning we've reached the end of the tree.
-        @return True if we've reached the end of the tree
     */
     ClassTreeMaskIterator::operator bool() const
     {
@@ -204,8 +200,6 @@ namespace orxonox
 
     /**
         @brief Compares the current node with the given one and returns true if they match.
-        @param compare The node to compare with
-        @return The result of the comparison (true if they match)
     */
     bool ClassTreeMaskIterator::operator==(ClassTreeMaskNode* compare) const
     {
@@ -217,8 +211,6 @@ namespace orxonox
 
     /**
         @brief Compares the current node with the given one and returns true if they don't match.
-        @param compare The node to compare with
-        @return The result of the comparison (true if they don't match)
     */
     bool ClassTreeMaskIterator::operator!=(ClassTreeMaskNode* compare) const
     {
@@ -241,8 +233,7 @@ namespace orxonox
     }
 
     /**
-        @brief Copyconstructor: Adds the root-node of the tree with the first rule ("include everything") and adds all rules from the other mask.
-        @param other The other mask
+        @brief Copy-constructor: Adds the root-node of the tree with the first rule ("include everything") and adds all rules from the other mask.
     */
     ClassTreeMask::ClassTreeMask(const ClassTreeMask& other)
     {

@@ -34,7 +34,9 @@
 /**
     @file
     @ingroup Language
-    @brief Definition of the Language and the LanguageEntry class.
+    @brief Declaration of the Language and the LanguageEntry class, as well as some helper functions.
+
+    @anchor LanguageExample
 
     The Language class is used, to get a localisation of a string in the configured language.
     The string is identified by another string, the label of the entry.
@@ -42,10 +44,46 @@
 
     Usage:
      - Set the entry with the default string:
+       @code
        Language::getInstance()->addEntry("label of the entry", "the string to translate");
+       @endcode
 
      - Get the localisation of the entry in the configured language:
+       @code
        std::cout << Language::getInstance()->getLocalisation("name of the entry") << std::endl;
+       @endcode
+
+    Example:
+    @code
+    int age = 20;
+    AddLanguageEntry("user_age", "Age");
+    std::cout << GetLocalisation("user_age") << ": " << age << std::endl;
+    @endcode
+
+    Resulting output:
+    @code
+    Age: 20
+    @endcode
+
+    The language entry is now defined in @a translation_default.lang:
+    @code
+    user_age=Age
+    @endcode
+
+    We can add a translation for another language, for example @a translation_german.lang:
+    @code
+    user_age=Alter
+    @endcode
+
+    Now change the language in @a orxonox.ini to "german":
+    @code
+    language_ = "german"
+    @endcode
+
+    Now you will see the translated language entry in the resulting output of the above code:
+    @code
+    Alter: 20
+    @endcode
 */
 
 #ifndef _Language_H__
@@ -63,7 +101,11 @@ namespace orxonox
     // ###############################
     // ###      LanguageEntry      ###
     // ###############################
-    //! The LanguageEntry class stores the default- and the translated string of a given entry in the language file.
+    /**
+        @brief The LanguageEntry class stores the default- and the translated string of a given entry in the language file.
+
+        This class belongs to the Language class.
+    */
     class _CoreExport LanguageEntry
     {
         public:
@@ -110,7 +152,11 @@ namespace orxonox
     // ###############################
     // ###         Language        ###
     // ###############################
-    //! The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
+    /**
+        @brief The Language class manges the language files and entries and stores the LanguageEntry objects in a map.
+
+        @see See @ref LanguageExample "Language.h" for some examples.
+    */
     class _CoreExport Language : public Singleton<Language>
     {
         friend class Singleton<Language>;
@@ -139,19 +185,19 @@ namespace orxonox
             static Language* singletonPtr_s;
     };
 
-    //! Shortcut function for Language::addEntry
+    /// Shortcut function for Language::addEntry
     inline void AddLanguageEntry(const LanguageEntryLabel& label, const std::string& fallbackString)
     {
         Language::getInstance().addEntry(label, fallbackString);
     }
 
-    //! Shortcut function for Language::getLocalisation
+    /// Shortcut function for Language::getLocalisation
     inline const std::string& GetLocalisation(const LanguageEntryLabel& label)
     {
         return Language::getInstance().getLocalisation(label);
     }
 
-    //! Shortcut function for Language::getLocalisation without printing an error in case the label doesn't exist
+    /// Shortcut function for Language::getLocalisation without printing an error in case the label doesn't exist
     inline const std::string& GetLocalisation_noerror(const LanguageEntryLabel& label)
     {
         return Language::getInstance().getLocalisation(label, false);

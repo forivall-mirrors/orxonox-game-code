@@ -29,9 +29,6 @@
 /**
     @file
     @brief Implementation of the ObjectListBase class.
-
-    The ObjectListBase is a double-linked list, used by Identifiers to store all objects of a given class.
-    Newly created objects are added through the RegisterObject-macro in its constructor.
 */
 
 #include "ObjectListBase.h"

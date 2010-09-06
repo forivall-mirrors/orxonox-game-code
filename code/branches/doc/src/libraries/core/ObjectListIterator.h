@@ -29,18 +29,26 @@
 /**
     @file
     @ingroup Object ObjectList
-    @brief Definition and implementation of the Iterator class.
+    @brief Definition of the ObjectListIterator class.
 
-    The ObjectListIterator of a given class allows to iterate through the
-    ObjectList of this class, containing all objects of that type.
-    This is the only way to access the objects stored in an ObjectList.
+    @anchor ObjectListIteratorExample
+
+    @ref orxonox::ObjectListIterator "ObjectListIterator<T>" allows to iterate through
+    @ref orxonox::ObjectList "ObjectList<T>", containing all objects of type @a T. In contrast to
+    @ref orxonox::Iterator "Iterator<T>", this iterator is limited to the object-list of type @a T.
+    It is, however, much faster as it doesn't need a @c dynamic_cast.
 
     Usage:
+    @code
     for (ObjectListIterator<myClass> it = ObjectList<myClass>::begin(); it != ObjectList<myClass>::end(); ++it)
     {
         it->someFunction(...);
         myClass* myObject = *it;
     }
+    @endcode
+
+    @note @ref orxonox::ObjectList::iterator "ObjectList<T>::iterator" is identical to
+          @ref orxonox::ObjectListIterator "ObjectListIterator<T>" (it's just a typedef).
 */
 
 #ifndef _ObjectListIterator_H__
@@ -52,7 +60,11 @@
 
 namespace orxonox
 {
-    //! The Iterator allows to iterate through the ObjectList of a given class.
+    /**
+        @brief ObjectListIterator<T> allows to iterate through the ObjectList of class @a T.
+
+        @see See @ref ObjectListIteratorExample "ObjectListIterator.h" for more information an example.
+    */
     template <class T>
     class ObjectListIterator
     {
@@ -217,7 +229,7 @@ namespace orxonox
             }
 
         private:
-            ObjectListElement<T>* element_;        //!< The element the Iterator points at
+            ObjectListElement<T>* element_;        //!< The element the iterator points at
     };
 }
 

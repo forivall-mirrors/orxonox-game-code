@@ -31,8 +31,35 @@
     @ingroup Class Identifier
     @brief Definition of SubclassIdentifier.
 
+    @anchor SubclassIdentifierExample
+
     SubclassIdentifier is a separated class, acting like an Identifier, but has a given class.
     You can only assign Identifiers of exactly the given class or of a derivative to a SubclassIdentifier.
+
+    Example:
+
+    You can assign an Identifier either through the constructor or by using the assignment @c operator=:
+    @code
+    SubclassIdentifier<BaseClass> identifier = Class(SubClass);
+    @endcode
+
+    The @c operator-> is overloaded an returns the assigned Identifier. That way you can just call
+    functions of the assigned Identifier by using @c ->function():
+    @code
+    SubclassIdentifier<BaseClass> identifier = Class(SubClass);
+    identifier->getName();      // returns "SubClass"
+    @endcode
+
+    There are two possibilities to create an object out of a SubclassIdentifier: Either you just use
+    the @c fabricate() function of the assigned Identifier through the overloaded @c operator->, which
+    returns a @c BaseObject* pointer, or you use the function of SubclassIdentifier, this time by using
+    @c operator., which returns a @c BaseClass* pointer (@a BaseClass is the baseclass specified by the
+    template argument):
+    @code
+    identifier->fabricate();    // calls Identifier::fabricate(), creates a SubClass, returns a BaseObject* pointer
+
+    identifier.fabricate();     // calls SubclassIdentifier::fabricate(), creates a SubClass, returns a BaseClass* pointer
+    @endcode
 */
 
 #ifndef _SubclassIdentifier_H__
@@ -49,37 +76,33 @@ namespace orxonox
     // ###############################
     // ###   SubclassIdentifier    ###
     // ###############################
-    //! The SubclassIdentifier acts almost like an Identifier, but has some prerequisites.
     /**
+        @brief The SubclassIdentifier acts almost like an Identifier, but has some prerequisites.
+
         You can only assign an Identifier that belongs to a class T (or derived) to a SubclassIdentifier<T>.
-        If you assign something else, the program aborts.
-        Because we know the minimum type, a dynamic_cast is done, which makes it easier to create a new object.
+        If you assign something else, the program prints an error.
+
+        Because we know the base-type, a @c dynamic_cast is done, which makes it easier to create a new object.
+
+        @see See @ref SubclassIdentifierExample "SubclassIdentifier.h" for some examples.
     */
     template <class T>
     class SubclassIdentifier
     {
         public:
-            /**
-                @brief Constructor: Automaticaly assigns the Identifier of the given class.
-            */
+            /// Constructor: Automaticaly assigns the Identifier of the given class.
             SubclassIdentifier()
             {
                 this->identifier_ = ClassIdentifier<T>::getIdentifier();
             }
 
-            /**
-                @brief Constructor: Assigns the given Identifier.
-                @param identifier The Identifier
-            */
+            /// Constructor: Assigns the given Identifier.
             SubclassIdentifier(Identifier* identifier)
             {
                 this->operator=(identifier);
             }
 
-            /**
-                @brief Copyconstructor: Assigns the identifier of the other SubclassIdentifier.
-                @param identifier The other SublcassIdentifier
-            */
+            /// Copyconstructor: Assigns the identifier of another SubclassIdentifier.
             template <class O>
             SubclassIdentifier(const SubclassIdentifier<O>& identifier)
             {
@@ -113,44 +136,32 @@ namespace orxonox
                 return *this;
             }
 
-            /**
-                @brief Overloading of the = operator: assigns the identifier of the other SubclassIdentifier.
-                @param identifier The other SublcassIdentifier
-            */
+            /// Overloading of the = operator: assigns the identifier of another SubclassIdentifier.
             template <class O>
             SubclassIdentifier<T>& operator=(const SubclassIdentifier<O>& identifier)
             {
                 return this->operator=(identifier.getIdentifier());
             }
 
-            /**
-                @brief Overloading of the * operator: returns the assigned identifier.
-            */
+            /// Overloading of the * operator: returns the assigned identifier.
             inline Identifier* operator*() const
             {
                 return this->identifier_;
             }
 
-            /**
-                @brief Overloading of the -> operator: returns the assigned identifier.
-            */
+            /// Overloading of the -> operator: returns the assigned identifier.
             inline Identifier* operator->() const
             {
                 return this->identifier_;
             }
 
-            /**
-                @brief Returns the assigned identifier. This allows you to assign a SubclassIdentifier to a normal Identifier*.
-            */
+            /// Returns the assigned identifier. This allows you to assign a SubclassIdentifier to a normal Identifier*.
             inline operator Identifier*() const
             {
                 return this->identifier_;
             }
 
-            /**
-                @brief Creates a new object of the type of the assigned Identifier and dynamic_casts it to the minimal type given by T.
-                @return The new object
-            */
+            /// Creates a new object of the type of the assigned Identifier and dynamic_casts it to the minimal type given by T.
             T* fabricate(BaseObject* creator) const
             {
                 BaseObject* newObject = this->identifier_->fabricate(creator);
@@ -181,7 +192,7 @@ namespace orxonox
                 }
             }
 
-            /** @brief Returns the assigned identifier. @return The identifier */
+            /// Returns the assigned identifier.
             inline Identifier* getIdentifier() const
                 { return this->identifier_; }
 

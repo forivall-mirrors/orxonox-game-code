@@ -35,6 +35,7 @@
 /**
     @file
     @ingroup Config CmdArgs
+    @brief Declaration of CommandLineParser and CommandLineArgument, definition of the SetCommandLineArgument() macros.
 */
 
 #ifndef _CommandLine_H__

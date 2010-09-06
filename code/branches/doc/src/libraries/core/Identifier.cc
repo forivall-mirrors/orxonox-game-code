@@ -216,7 +216,6 @@ namespace orxonox
 
     /**
         @brief Sets the name of the class.
-        @param name The name
     */
     void Identifier::setName(const std::string& name)
     {
@@ -252,7 +251,6 @@ namespace orxonox
 
     /**
         @brief Sets the network ID to a new value and changes the entry in the ID-Identifier-map.
-        @param id The new network ID
     */
     void Identifier::setNetworkID(uint32_t id)
     {

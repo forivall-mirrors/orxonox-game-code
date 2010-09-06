@@ -58,7 +58,7 @@ namespace orxonox
     class Gametype;
     class Level;
 
-    //! The BaseObject is the parent of all classes representing an instance in the game.
+    /// The BaseObject is the parent of all classes representing an instance in the game.
     class _CoreExport BaseObject : virtual public OrxonoxClass
     {
         template <class T> friend class XMLPortClassParamContainer;

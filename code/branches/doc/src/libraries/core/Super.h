@@ -36,36 +36,35 @@
     @ingroup Class Super
     @brief Definition of all super-function related macros.
 
-    This file defines all macros needed to add a new "super-function".
-    If you add a super-function, you can call SUPER(myclass, functionname) inside your
-    code and the function of the parentclass gets called. This is comparable with
-    super.functionname() in Java or other languages.
+    This file defines all macros needed to add a new "super-function". If you add
+    a super-function, you can call <tt>SUPER(myclass, functionname, arguments)</tt>
+    inside your code and the function of the parent-class gets called. This is comparable
+    to <tt>super.functionname(arguments)</tt> in Java or other languages.
 
-    This works only with virtual functions that return nothing (void) and belong to
-    classes that have an Identifier. Arguments however are supported.
+    This works only with virtual functions that return nothing (@c void) and belong to
+    classes that have an @ref orxonox::Identifier "Identifier". Arguments however are
+    supported, there's no limitation for their number and type, except that the type has
+    to be known in Super.h.
 
-    To add a new super-function, you have process 4 steps:
+    To add a new super-function, you have to process 4 steps:
 
-    1) Add a new SUPER macro
-       This allows you to call the super-function in your code.
-       Location: This file (Super.h), marked with --> HERE <-- comments (1/3)
-
-    2) Call the SUPER_FUNCTION_GLOBAL_DECLARATION_PART1/2 macros.
-       This defines some global classes and templates, needed to create and call the super-functions.
-       Location: This file (Super.h), marked with --> HERE <-- comments (2/3)
-
-    3) Call the SUPER_INTRUSIVE_DECLARATION macro.
-       This will be included into the declaration of ClassIdentifier<T>.
-       Location: This file (Super.h), marked with --> HERE <-- comments (3/3)
-
-    4) Call the SUPER_FUNCTION macro.
+    -# Add a new @c SUPER macro <br />
+       This allows you to call the super-function in your code. <br />
+       Location: This file (Super.h), marked with "--> HERE <--" comments (1/3)
+    -# Call the @c SUPER_FUNCTION_GLOBAL_DECLARATION_PART1/2 macros. <br />
+       This defines some global classes and templates, needed to create and call the super-functions. <br />
+       Location: This file (Super.h), marked with "--> HERE <--" comments (2/3)
+    -# Call the @c SUPER_INTRUSIVE_DECLARATION macro. <br />
+       This will be included into the declaration of @c ClassIdentifier<T>. <br />
+       Location: This file (Super.h), marked with "--> HERE <--" comments (3/3)
+    -# Call the @c SUPER_FUNCTION macro. <br />
        This defines a partially specialized template that will decide if a class is "super" to another class.
-       If the check returns true, a SuperFunctionCaller gets created, which will be used by the SUPER macro.
+       If the check returns true, a @c SuperFunctionCaller gets created, which will be used by the @c SUPER macro.
        You have to add this into the header-file of the baseclass of the super-function (the class that first
        implements the function), below the class declaration. You can't call it directly in this file, because
-       otherwise you had to include the headerfile right here, which would cause some ugly backdependencies,
-       include loops and slower compilation.
-       Dont forget to include Super.h in the header-file.
+       otherwise you had to include the headerfile right here, which would cause some ugly back-dependencies,
+       include loops and slower compilation. <br />
+       Dont forget to include Super.h in the header-file. <br />
        Location: The header-file of the baseclass (Baseclass.h), below the class declaration
 */
 
@@ -210,7 +209,7 @@
         };
     */
 
-    // SUPER-macro: Calls Parent::functionname() where Parent is the direct parent of classname
+    /// SUPER-macro: Calls Parent::functionname(...) where Parent is the direct parent of @a classname
     #ifdef ORXONOX_COMPILER_MSVC
         #define SUPER(classname, functionname, ...) \
             __super::functionname(__VA_ARGS__)

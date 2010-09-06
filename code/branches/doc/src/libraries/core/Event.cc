@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of the classes Event and EventState.
+*/
+
 #include "Event.h"
 
 #include "BaseObject.h"

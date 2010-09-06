@@ -29,7 +29,7 @@
 /**
     @file
     @ingroup Config ConfigFile
-    @brief Definition of the ConfigValueContainer class.
+    @brief Declaration of the ConfigValueContainer class.
 
     The ConfigValueContainer class contains all needed information about a configurable variable:
      - the name of the variable
@@ -78,8 +78,9 @@ namespace orxonox
     };
 
 
-    //! The ConfigValuecontainer contains all needed information about a configurable variable.
     /**
+        @brief The ConfigValuecontainer contains all needed information about a configurable variable.
+
         The ConfigValueContainer class contains all needed information about a configurable variable:
          - the name of the variable
          - the name of the class the variable belongs to
@@ -215,19 +216,19 @@ namespace orxonox
                 return *this;
             }
 
-            /** @brief Returns the name of this container. */
+            /// Returns the name of this container.
             inline const std::string& getName() const
                 { return this->varname_; }
-            /** @brief Returns the name of the section this config value is in. */
+            /// Returns the name of the section this config value is in.
             inline const std::string& getSectionName() const
                 { return this->sectionname_; }
-            /** @brief Returns the associated identifier (can be NULL). */
+            /// Returns the associated identifier (can be NULL).
             inline Identifier* getIdentifier() const
                 { return this->identifier_; }
-            /** @brief Returns true if this config-value is a vector */
+            /// Returns true if this config-value is a vector.
             inline bool isVector() const
                 { return this->bIsVector_; }
-            /** @brief Returns the vectors size (or zero if it's not a vector). */
+            /// Returns the vectors size (or zero if it's not a vector).
             inline unsigned int getVectorSize() const
                 { return this->valueVector_.size(); }
 
@@ -267,10 +268,10 @@ namespace orxonox
             bool reset();
             void update();
 
-            /** @brief Converts the config-value to a string. @return The string */
+            /// Converts the config-value to a string.
             inline std::string toString() const
                 { return this->value_; }
-            /** @brief Returns the typename of the assigned config-value. @return The typename */
+            /// Returns the typename of the assigned config-value.
             inline std::string getTypename() const
                 { return this->value_.getTypename(); }
 
