@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup XMLPort XMLPort
+    @ingroup XML
+*/
+
+/**
     @file
+    @ingroup XML XMLPort
     @brief Declaration of the XMLPort helper classes and macros.
 
     XMLPort is a virtual function of every BaseObject. Every object can change this function.

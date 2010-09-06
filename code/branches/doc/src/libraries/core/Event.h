@@ -26,6 +26,16 @@
  *
  */
 
+/**
+    @defgroup Event Events
+    @ingroup Core
+*/
+
+/**
+    @file
+    @ingroup Event
+*/
+
 #ifndef _Event_H__
 #define _Event_H__
 

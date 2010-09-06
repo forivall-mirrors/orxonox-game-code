@@ -28,6 +28,7 @@
 
 /**
     @file
+    @ingroup Class
     @brief Definition of the ClassTreeMask, ClassTreeMaskNode and ClassTreeMaskIterator classes.
 
     ClassTreeMask is a class to define a mask of the class-tree beginning with BaseObject.

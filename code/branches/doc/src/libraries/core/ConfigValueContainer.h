@@ -28,6 +28,7 @@
 
 /**
     @file
+    @ingroup Config ConfigFile
     @brief Definition of the ConfigValueContainer class.
 
     The ConfigValueContainer class contains all needed information about a configurable variable:

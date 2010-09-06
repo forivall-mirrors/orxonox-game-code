@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup Identifier Identifier
+    @ingroup Class
+*/
+
+/**
     @file
+    @ingroup Class Identifier
     @brief Definition of the Identifier class, definition and implementation of the ClassIdentifier class.
 
     The Identifier contains all needed information about the class it belongs to:

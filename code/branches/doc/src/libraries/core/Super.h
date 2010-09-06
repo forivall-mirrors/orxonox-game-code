@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup Super Super
+    @ingroup Class
+*/
+
+/**
     @file
+    @ingroup Class Super
     @brief Definition of all super-function related macros.
 
     This file defines all macros needed to add a new "super-function".

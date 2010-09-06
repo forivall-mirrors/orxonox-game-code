@@ -63,12 +63,12 @@
 */
 
 /**
-    @defgroup Events Events
+    @defgroup Input Input
     @ingroup Core
 */
 
 /**
-    @defgroup Input Input
+    @defgroup Management Management
     @ingroup Core
 */
 

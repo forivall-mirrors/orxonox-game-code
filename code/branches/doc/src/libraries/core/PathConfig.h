@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Management Resources
+*/
+
 #ifndef _PathConfig_H__
 #define _PathConfig_H__
 

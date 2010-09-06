@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup Factory RegisterObject() and CreateFactory()
+    @ingroup Object
+*/
+
+/**
     @file
+    @ingroup Object Factory
     @brief Definition of macros for Identifiers
 
     Every class needs the RegisterObject(class) macro in its constructor. If the class is an interface

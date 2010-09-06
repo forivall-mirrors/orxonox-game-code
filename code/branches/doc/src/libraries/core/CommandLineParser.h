@@ -27,7 +27,7 @@
  */
 
 /**
-    @defgroup CmdArgs Commandline Arguments
+    @defgroup CmdArgs Commandline arguments
     @ingroup Config
     @brief For a reference of all commandline arguments see @ref cmdargspage
 */

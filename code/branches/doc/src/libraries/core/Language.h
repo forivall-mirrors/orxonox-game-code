@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup Language Language
+    @ingroup Core
+*/
+
+/**
     @file
+    @ingroup Language
     @brief Definition of the Language and the LanguageEntry class.
 
     The Language class is used, to get a localisation of a string in the configured language.

@@ -28,6 +28,7 @@
 
 /**
     @file
+    @ingroup Object ObjectList
     @brief Definition of the ObjectListBase class.
 
     The ObjectListBase is a double-linked list, used by Identifiers to store all objects of a given class.

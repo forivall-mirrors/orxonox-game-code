@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Event
+*/
+
 #ifndef _EventIncludes_H__
 #define _EventIncludes_H__
 

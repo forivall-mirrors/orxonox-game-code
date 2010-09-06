@@ -28,6 +28,7 @@
 
 /**
     @file
+    @ingroup Object Factory
     @brief Definition and implementation of the ClassFactory class
 
     The ClassFactory is able to create new objects of a specific class.

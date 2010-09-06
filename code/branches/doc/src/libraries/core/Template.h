@@ -26,6 +26,16 @@
  *
  */
 
+/**
+    @defgroup Template Template
+    @ingroup XML
+*/
+
+/**
+    @file
+    @ingroup XML Template
+*/
+
 #ifndef _Template_H__
 #define _Template_H__
 

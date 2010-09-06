@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup ObjectList Object-lists and iterators
+    @ingroup Object
+*/
+
+/**
     @file
+    @ingroup Object ObjectList
     @brief Definition and implementation of the ObjectList class.
 
     The ObjectList is a wrapper of an ObjectListBase of a given class.

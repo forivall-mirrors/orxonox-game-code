@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Config ConfigFile
+*/
+
 #ifndef _ConfigFileManager_H__
 #define _ConfigFileManager_H__
 

@@ -28,6 +28,7 @@
 
 /**
     @file
+    @ingroup Object ObjectList
     @brief Definition and implementation of the Iterator class.
 
     The ObjectListIterator of a given class allows to iterate through the

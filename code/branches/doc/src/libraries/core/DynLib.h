@@ -29,6 +29,11 @@ Torus Knot Software Ltd.
 
 // 08/11/2009: Small adjustments for Orxonox by Fabian 'x3n' Landau
 
+/**
+    @file
+    @ingroup Management CoreGame
+*/
+
 #ifndef _Core_DynLib_H__
 #define _Core_DynLib_H__
 

@@ -28,6 +28,7 @@
 
 /**
     @file
+    @ingroup Management CoreGame
     @brief Declaration of the GameMode class.
 */
 

@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup ConfigFile Config file
+    @ingroup Config
+*/
+
+/**
 @file
+@ingroup Config ConfigFile
 @brief
     Definition of macros and functions for config-values.
 */

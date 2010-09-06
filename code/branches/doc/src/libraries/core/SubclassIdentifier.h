@@ -28,6 +28,7 @@
 
 /**
     @file
+    @ingroup Class Identifier
     @brief Definition of SubclassIdentifier.
 
     SubclassIdentifier is a separated class, acting like an Identifier, but has a given class.

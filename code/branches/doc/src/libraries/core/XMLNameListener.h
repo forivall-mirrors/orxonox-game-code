@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup XML XMLPort
+*/
+
 #ifndef _XMLNameListener_H__
 #define _XMLNameListener_H__
 

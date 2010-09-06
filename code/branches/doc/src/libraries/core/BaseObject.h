@@ -27,7 +27,13 @@
  */
 
 /**
+    @defgroup BaseObject BaseObject
+    @ingroup Core
+*/
+
+/**
     @file
+    @ingroup BaseObject
     @brief Definition of the BaseObject class.
 
     The BaseObject is the parent of all classes representing an instance in the game.

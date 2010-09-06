@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Graphics
+*/
+
 #ifndef _WindowEventListener_H__
 #define _WindowEventListener_H__
 

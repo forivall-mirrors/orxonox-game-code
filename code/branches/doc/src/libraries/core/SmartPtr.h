@@ -28,6 +28,16 @@
 
 // Inspired by boost::intrusive_ptr by Peter Dimov
 
+/**
+    @defgroup SmartPtr SmartPtr<T> and WeakPtr<T>
+    @ingroup Object
+*/
+
+/**
+    @file
+    @ingroup Object SmartPtr
+*/
+
 #ifndef _SmartPtr_H__
 #define _SmartPtr_H__
 

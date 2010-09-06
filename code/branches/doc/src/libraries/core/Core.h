@@ -27,6 +27,16 @@
  *
  */
 
+/**
+    @defgroup CoreGame Core and Game
+    @ingroup Management
+*/
+
+/**
+    @file
+    @ingroup Management CoreGame
+*/
+
 #ifndef _Core_H__
 #define _Core_H__
 

@@ -26,6 +26,16 @@
  *
  */
 
+/**
+    @defgroup Resources Resources
+    @ingroup Management
+*/
+
+/**
+    @file
+    @ingroup Management Resources
+*/
+
 #ifndef _Core_Resource_H__
 #define _Core_Resource_H__
 

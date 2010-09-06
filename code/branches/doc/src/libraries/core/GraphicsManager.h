@@ -28,7 +28,13 @@
  */
 
 /**
+    @defgroup Graphics Graphics and GUI
+    @ingroup Core
+*/
+
+/**
 @file
+@ingroup Graphics
 @brief
     Declaration of GraphicsManager Singleton.
  */
