@@ -255,7 +255,7 @@ namespace orxonox
 
     void TclThreadManager::initialize(TclInterpreterBundle* bundle)
     {
-        const std::string& id_string = getConvertedValue<unsigned int, std::string>(bundle->id_);
+        const std::string& id_string = multi_cast<std::string>(bundle->id_);
 
         // Initialize the new interpreter
         try
@@ -407,10 +407,10 @@ namespace orxonox
             if ((source_bundle->id_ == target_bundle->id_) || source_bundle->queriers_.is_in(target_bundle->id_))
             {
                 // This query would lead to a deadlock - return with an error
-                TclThreadManager::error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + ' ' + getConvertedValue<unsigned int, std::string>(source_bundle->id_) \
-                            + " -> " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
-                            + "), couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
-                            + " from other interpreter with ID " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) + '.');
+                TclThreadManager::error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + ' ' + multi_cast<std::string>(source_bundle->id_) \
+                            + " -> " + multi_cast<std::string>(target_bundle->id_) \
+                            + "), couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(target_bundle->id_) \
+                            + " from other interpreter with ID " + multi_cast<std::string>(source_bundle->id_) + '.');
             }
             else
             {
@@ -476,7 +476,7 @@ namespace orxonox
                 {
                     // This happens if the main thread tries to query a busy interpreter
                     // To avoid a lock of the main thread, we simply don't proceed with the query in this case
-                    TclThreadManager::error("Error: Couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) + ", interpreter is busy right now.");
+                    TclThreadManager::error("Error: Couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(target_bundle->id_) + ", interpreter is busy right now.");
                 }
             }
 
@@ -522,7 +522,7 @@ namespace orxonox
         }
         else
         {
-            TclThreadManager::error("Error: No Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(id) + " existing.");
+            TclThreadManager::error("Error: No Tcl-interpreter with ID " + multi_cast<std::string>(id) + " existing.");
             return 0;
         }
     }
@@ -538,7 +538,7 @@ namespace orxonox
             if (it != list.begin())
                 output += ' ';
 
-            output += getConvertedValue<unsigned int, std::string>(*it);
+            output += multi_cast<std::string>(*it);
         }
         return output;
     }
@@ -590,7 +590,7 @@ namespace orxonox
 
         if (cc != TCL_OK)
         {
-            TclThreadManager::error("Tcl error (" + action + ", ID " + getConvertedValue<unsigned int, std::string>(bundle->id_) + "): " + static_cast<std::string>(result));
+            TclThreadManager::error("Tcl error (" + action + ", ID " + multi_cast<std::string>(bundle->id_) + "): " + static_cast<std::string>(result));
             return "";
         }
         else

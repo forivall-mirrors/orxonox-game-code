@@ -160,34 +160,6 @@ namespace orxonox
                 return false;
         }
     };
-
-    ////////////
-    // upcast //
-    ////////////
-    namespace detail
-    {
-        // perform a static cast if ToType is a base of FromType
-        template<class ToType, class FromType>
-        FORCEINLINE ToType upcast(FromType input, Loki::Int2Type<true>)
-        {
-            return static_cast<ToType>(input);
-        }
-
-        // return zero if ToType is not a base of FromType
-        template<class ToType, class FromType>
-        FORCEINLINE ToType upcast(FromType input, Loki::Int2Type<false>)
-        {
-            return 0;
-        }
-    }
-
-    // performs an upcast if ToType is a base of FromType, returns zero otherwise
-    template <class ToType, class FromType>
-    FORCEINLINE ToType upcast(FromType input)
-    {
-        enum { probe = ImplicitConversion<FromType, ToType>::exists };
-        return detail::upcast<ToType, FromType>(input, Loki::Int2Type<probe>());
-    }
 }
 
 
@@ -380,14 +352,6 @@ namespace orxonox
         }
     }
 
-    template<class FromType, class ToType>
-    FORCEINLINE ToType getConvertedValue(const FromType& input)
-    {
-        ToType output;
-        convertValue(&output, input);
-        return output;
-    }
-
     /// Directly returns the converted value, but uses the fallback on failure. @see convertValue
     template<class FromType, class ToType>
     FORCEINLINE ToType getConvertedValue(const FromType& input, const ToType& fallback)
@@ -442,7 +406,6 @@ namespace orxonox
     };
     /// Conversion would exhibit ambiguous << or >> operators when using iostream
     template <>
-    template <>
     struct ConverterExplicit<unsigned char, std::string>
     {
         FORCEINLINE static bool convert(std::string* output, const unsigned char input)
@@ -452,7 +415,6 @@ namespace orxonox
         }
     };
     /// Conversion would exhibit ambiguous << or >> operators when using iostream
-    template <>
     template <>
     struct ConverterExplicit<std::string, char>
     {
