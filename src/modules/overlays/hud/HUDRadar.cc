@@ -61,9 +61,9 @@ namespace orxonox
         this->setHalfDotSizeDistance(3000.0f);
         this->setMaximumDotSize(0.1f);
 
-        this->shapeMaterials_[RadarViewable::Dot]      = "RadarDot.tga";
-        this->shapeMaterials_[RadarViewable::Triangle] = "RadarTriangle.tga";
-        this->shapeMaterials_[RadarViewable::Square]   = "RadarSquare.tga";
+        this->shapeMaterials_[RadarViewable::Dot]      = "RadarDot.png";
+        this->shapeMaterials_[RadarViewable::Triangle] = "RadarTriangle.png";
+        this->shapeMaterials_[RadarViewable::Square]   = "RadarSquare.png";
 
         this->owner_ = 0;
     }

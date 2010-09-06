@@ -199,7 +199,7 @@ void HUDNavigation::tick ( float dt )
                 // Change material only if outOfView changed
                 if ( !it->second.wasOutOfView_ )
                 {
-                    it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "arrows.tga", it->first->getRadarObjectColour()) );
+                    it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "arrows.png", it->first->getRadarObjectColour()) );
                     it->second.wasOutOfView_ = true;
                 }
 
@@ -257,7 +257,7 @@ void HUDNavigation::tick ( float dt )
                 if ( it->second.wasOutOfView_ )
                 {
                   //it->second.panel_->setMaterialName ( "Orxonox/NavTDC" );
-                    it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "tdc.tga", it->first->getRadarObjectColour()) );
+                    it->second.panel_->setMaterialName( TextureGenerator::getMaterialName( "tdc.png", it->first->getRadarObjectColour()) );
                     it->second.wasOutOfView_ = false;
                 }
 
@@ -327,7 +327,7 @@ void HUDNavigation::addObject ( RadarViewable* object )
     Ogre::PanelOverlayElement* panel = static_cast<Ogre::PanelOverlayElement*> ( Ogre::OverlayManager::getSingleton()
                                        .createOverlayElement ( "Panel", "HUDNavigation_navMarker_" + getUniqueNumberString() ) );
 //     panel->setMaterialName ( "Orxonox/NavTDC" );
-    panel->setMaterialName( TextureGenerator::getMaterialName( "tdc.tga", object->getRadarObjectColour()) );
+    panel->setMaterialName( TextureGenerator::getMaterialName( "tdc.png", object->getRadarObjectColour()) );
     panel->setDimensions ( navMarkerSize_ * xScale, navMarkerSize_ * yScale );
 //     panel->setColour( object->getRadarObjectColour() );
 

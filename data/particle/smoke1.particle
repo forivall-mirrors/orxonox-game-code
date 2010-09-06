@@ -24,7 +24,7 @@ particle_system Examples/Smoke
 
 	affector ColourImage
 	{
-		image		smokecolors.tga
+		image		smokecolors.png
 	}
 
    	affector Rotator
