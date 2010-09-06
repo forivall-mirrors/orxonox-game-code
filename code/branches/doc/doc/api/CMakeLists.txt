@@ -59,7 +59,7 @@ IF (DOXYGEN_FOUND)
     COMMENT "Generating additional Doxygen documentation from Orxonox executable"
   )
   ADD_CUSTOM_TARGET(doc_internal DEPENDS ${INTERNAL_DOCFILE})
-  IF (NOT ${INTERAL_DOCFILE} EXISTS)
+  IF (NOT EXISTS ${INTERNAL_DOCFILE})
     FILE(WRITE ${INTERNAL_DOCFILE} "// empty...")
   ENDIF()
 
