@@ -75,7 +75,7 @@ namespace orxonox
         Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(materialname, "General"));
         material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
         this->textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
-        this->textureUnitState_->setTextureName("bar2.tga");
+        this->textureUnitState_->setTextureName("bar2.png");
         this->textureUnitState_->setNumMipmaps(0);
         // use the default colour
         this->textureUnitState_->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, ColourValue(0.2f, 0.7f, 0.2f));

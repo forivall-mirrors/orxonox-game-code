@@ -6,7 +6,7 @@
      size                 = "0.45, 0.0875"
      position             = "0.99 , 0.01"
      pickpoint            = "1, 0"
-     bartexture           = "healthbar_bar.tga"
+     bartexture           = "healthbar_bar.png"
      textfont             = "VeraMono"
      textusebarcolour     = true
      textsize             = 0.039
