@@ -136,9 +136,9 @@ namespace orxonox
             case AccessLevel::All:        return true;
             case AccessLevel::Standalone: return GameMode::isStandalone();
             case AccessLevel::Master:     return GameMode::isMaster();
-            case AccessLevel::Server:     return GameMode::hasServer();
+            case AccessLevel::Server:     return GameMode::isServer();
             case AccessLevel::Client:     return GameMode::isClient();
-            case AccessLevel::Online:     return (GameMode::hasServer() || GameMode::isClient());
+            case AccessLevel::Online:     return (GameMode::isServer() || GameMode::isClient());
             case AccessLevel::Offline:    return GameMode::isStandalone();
             case AccessLevel::None:       return false;
             default:                      return false;
