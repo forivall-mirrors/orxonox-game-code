@@ -29,7 +29,7 @@
 /**
     @file
     @ingroup Config ConfigFile
-    @brief Declaration of the ConfigValueContainer class.
+    @brief Declaration of the ConfigValueContainer class, caches a config-value.
 
     The ConfigValueContainer class contains all needed information about a configurable variable:
      - the name of the variable

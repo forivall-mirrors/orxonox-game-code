@@ -34,7 +34,7 @@
 /**
     @file
     @ingroup Object Factory
-    @brief Definition of macros for Identifiers
+    @brief Defines several very important macros used to register objects, create factories, and to work with identifiers.
 
     Every class needs the @c RegisterObject(class) macro in its constructor. If the class is an interface
     or the @c BaseObject itself, it needs the macro @c RegisterRootObject(class) instead.

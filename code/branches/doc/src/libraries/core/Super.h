@@ -34,7 +34,7 @@
 /**
     @file
     @ingroup Class Super
-    @brief Definition of all super-function related macros.
+    @brief Definition of all super-function related macros, used to call functions of the base class.
 
     This file defines all macros needed to add a new "super-function". If you add
     a super-function, you can call <tt>SUPER(myclass, functionname, arguments)</tt>

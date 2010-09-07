@@ -36,7 +36,7 @@
 /**
     @file
     @ingroup Object SmartPtr
-    @brief Definition of SmartPtr<T>.
+    @brief Definition of SmartPtr<T>, wraps a pointer to an object and keeps it alive.
 
     @anchor SmartPtrExample
 

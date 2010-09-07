@@ -28,7 +28,7 @@
 
 /**
     @file
-    @brief Implementation of the OrxonoxClass Class.
+    @brief Implementation of OrxonoxClass.
 */
 
 #include "OrxonoxClass.h"

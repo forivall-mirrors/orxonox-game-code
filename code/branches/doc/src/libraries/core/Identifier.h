@@ -34,7 +34,7 @@
 /**
     @file
     @ingroup Class Identifier
-    @brief Declaration of Identifier, definition of ClassIdentifier<T>.
+    @brief Declaration of Identifier, definition of ClassIdentifier<T>; used to identify the class of an object.
 
     @anchor IdentifierExample
 

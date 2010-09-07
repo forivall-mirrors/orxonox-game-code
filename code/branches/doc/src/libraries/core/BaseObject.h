@@ -34,7 +34,7 @@
 /**
     @file
     @ingroup BaseObject
-    @brief Definition of the BaseObject class.
+    @brief Declaration of BaseObject, the base class of all objects in Orxonox.
 
     The BaseObject is the parent of all classes representing an instance in the game.
 */

@@ -32,6 +32,7 @@ Torus Knot Software Ltd.
 /**
     @file
     @ingroup Management CoreGame
+    @brief Declaration of DynLibManager, used to load modules at runtime.
 */
 
 #ifndef _Core_DynLibManager_H__

@@ -30,7 +30,7 @@
 @file
 @ingroup Management CoreGame
 @brief
-    Declaration of Game Singleton.
+    Declaration of Game Singleton which is responsible for running the game.
  */
 
 #ifndef _Game_H__

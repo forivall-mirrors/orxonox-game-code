@@ -29,7 +29,7 @@
 /**
     @file
     @ingroup Object ObjectList
-    @brief Declaration of the ObjectListBase class.
+    @brief Declaration of the ObjectListBase class which stores all objects of each class.
 
     orxonox::ObjectListBase is a double-linked list, used by @ref orxonox::Identifier "Identifiers"
     to store all objects of a given class. Newly created objects are added to the list through the

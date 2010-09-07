@@ -26,39 +26,51 @@
  *
  */
 
-/*!
-    @file
-    @brief Definition and Implementation of the Timer class.
+/**
+    @defgroup Timer Timer
+    @ingroup Tools
+*/
 
-    The Timer is a callback-object, calling a given function after a given time-interval.
+/**
+    @file
+    @ingroup Timer
+    @brief Declaration of the Timer class, used to call functions after a given time-interval.
+
+    @anchor TimerExample
+
+    Timer is a helper class that executes a function after a given amount of time.
 
     Usage: <br>
     header.h:
     @code
-        class ClassName
-        {
-            public:
-                ClassName();
-                void functionName();
-                Timer myTimer;
-        };
+    class MyClass
+    {
+        public:
+            MyClass();
+            void functionName();
+
+        private:
+            Timer myTimer;
+    };
     @endcode
 
     source.cc:
     @code
-        #include "core/command/Executor.h"
+    #include "core/command/Executor.h"
 
-        ClassName::ClassName()
-        {
-            myTimer.setTimer(interval_in_seconds, bLoop, createExecutor(createFunctor(&ClassName::functionName, this)));
-        }
+    MyClass::MyClass()
+    {
+        myTimer.setTimer(3, false, createExecutor(createFunctor(&ClassName::myFunction, this)));
+    }
 
-        void ClassName::functionName()
-        {
-            whateveryouwant();
-            something(else);
-        }
+    void MyClass::myFunction()
+    {
+        COUT(0) << "Hello World" << std::endl;
+    }
     @endcode
+
+    The code in this example prints "Hello World" to the console, 3 seconds after creating
+    an instance of MyClass.
 */
 
 #ifndef _Timer_H__
@@ -76,7 +88,11 @@ namespace orxonox
     void killdelays();
     void executeDelayedCommand(Timer* timer, const std::string& command);
 
-    //! The Timer is a callback-object, calling a given function after a given time-interval.
+    /**
+        @brief Timer is a helper class that executes a function after a given amount of time.
+
+        @see See @ref TimerExample "Timer.h" for an example.
+    */
     class _ToolsExport Timer : public TimeFactorListener
     {
         public:
@@ -85,11 +101,11 @@ namespace orxonox
             Timer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall = false);
 
             /**
-                @brief Initializes the Timer with given values.
-                @param interval The timer-interval in seconds
-                @param bLoop If true, the function gets called every 'interval' seconds
-                @param executor A executor of the function to call
-                @param bKillAfterCall If true, the timer will be deleted after the function was executed
+                @brief Initializes and starts the timer, which will call an executor after some time.
+                @param interval         The timer-interval in seconds
+                @param bLoop            If true, the executor gets called every @a interval seconds
+                @param executor         The executor that will be called
+                @param bKillAfterCall   If true, the timer will be deleted after the executor was called
             */
             void setTimer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall = false)
             {
@@ -104,34 +120,34 @@ namespace orxonox
 
             void run();
 
-            /** @brief Starts the Timer: Function-call after 'interval' seconds. */
+            /// Re-starts the Timer: The executor will be called after @a interval seconds.
             inline void startTimer()
                 { this->bActive_ = true; this->time_ = this->interval_; }
-            /** @brief Stops the Timer. */
+            /// Stops the Timer.
             inline void stopTimer()
                 { this->bActive_ = false; this->time_ = this->interval_; }
-            /** @brief Pauses the Timer - it will continue with the actual state if you unpause it. */
+            /// Pauses the Timer - it will continue with the actual state if you call unpauseTimer().
             inline void pauseTimer()
                 { this->bActive_ = false; }
-            /** @brief Unpauses the Timer - continues with the given state. */
+            /// Unpauses the Timer - continues with the given state.
             inline void unpauseTimer()
                 { this->bActive_ = true; }
-            /** @brief Returns true if the Timer is active (= not stoped, not paused). @return True = Time is active */
+            /// Returns true if the Timer is active (neither stoped nor paused).
             inline bool isActive() const
                 { return this->bActive_; }
-            /** @brief Returns the remaining time until the Timer calls the function. @return The remaining time */
+            /// Returns the remaining time until the Timer calls the executor.
             inline float getRemainingTime() const
                 { return static_cast<float>(this->time_ / 1000000.0f); }
-            /** @brief Gives the Timer some extra time. @param time The amount of extra time in seconds */
+            /// Increases the remaining time of the Timer by the given amount of time (in seconds).
             inline void addTime(float time)
                 { if (time > 0.0f) this->time_ += static_cast<long long>(time * 1000000.0f); }
-            /** @brief Decreases the remaining time of the Timer. @param time The amount of time to remove */
+            /// Decreases the remaining time of the Timer by the given amount of time (in seconds)
             inline void removeTime(float time)
                 { if (time > 0.0f) this->time_ -= static_cast<long long>(time * 1000000.0f); }
-            /** @brief Sets the interval of the Timer. @param interval The interval */
+            /// Changes the calling interval.
             inline void setInterval(float interval)
                 { this->interval_ = static_cast<long long>(interval * 1000000.0f); }
-            /** @brief Sets bLoop to a given value. @param bLoop True = loop */
+            /// Defines if the timer call the executor every @a interval seconds or only once.
             inline void setLoop(bool bLoop)
                 { this->bLoop_ = bLoop; }
 
@@ -140,14 +156,14 @@ namespace orxonox
         private:
             void init();
 
-            ExecutorPtr executor_;  //!< The executor of the function that should be called when the time expires
+            ExecutorPtr executor_;  //!< The executor of the function that will be called when the time expires
 
             long long interval_;    //!< The time-interval in micro seconds
-            bool bLoop_;            //!< If true, the function gets called every 'interval' seconds
-            bool bActive_;          //!< If true, the Timer ticks and calls the function if the time's up
-            bool bKillAfterCall_;   //!< If true the timer gets deleted after it called the function
+            bool bLoop_;            //!< If true, the executor gets called every @a interval seconds
+            bool bActive_;          //!< If true, the Timer ticks and calls the executor if the time's up
+            bool bKillAfterCall_;   //!< If true the timer gets deleted after it expired and called the executor
 
-            long long time_;        //!< Internal variable, counting the time till the next function-call
+            long long time_;        //!< Internal variable, counting the time untill the next executor-call
     };
 }
 

@@ -34,7 +34,7 @@
 /**
     @file
     @ingroup Object ObjectList
-    @brief Definition of the ObjectList class.
+    @brief Definition of the ObjectList class, a wrapper of ObjectListBase.
 
     @ref orxonox::ObjectList "ObjectList<T>" is a wrapper of an @ref orxonox::ObjectListBase
     "ObjectListBase" of class @a T. Use @ref orxonox::ObjectListIterator "ObjectListIterator<T>"

@@ -29,7 +29,7 @@
 /**
     @file
     @ingroup Config ConfigFile
-    @brief Declaration of ConfigFileManager and its helper classes.
+    @brief Declaration of ConfigFileManager and its helper classes, used to load and save config files.
 */
 
 #ifndef _ConfigFileManager_H__

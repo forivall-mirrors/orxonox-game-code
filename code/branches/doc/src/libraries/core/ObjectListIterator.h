@@ -29,7 +29,7 @@
 /**
     @file
     @ingroup Object ObjectList
-    @brief Definition of the ObjectListIterator class.
+    @brief Definition of the ObjectListIterator class, used to iterate through object-lists.
 
     @anchor ObjectListIteratorExample
 

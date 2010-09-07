@@ -31,7 +31,7 @@
 /**
     @file
     @ingroup Object SmartPtr
-    @brief Definition of WeakPtr<T>.
+    @brief Definition of WeakPtr<T>, wraps a pointer to an object.
 
     @anchor WeakPtrExample
 

@@ -35,6 +35,7 @@
 /**
     @file
     @ingroup Management CoreGame
+    @brief Declaration of the Core singleton which is used to configure the program basics.
 */
 
 #ifndef _Core_H__

@@ -32,6 +32,7 @@ Torus Knot Software Ltd.
 /**
     @file
     @ingroup Management CoreGame
+    @brief Declaration of DynLib which represents a dynamically loaded module.
 */
 
 #ifndef _Core_DynLib_H__
@@ -65,7 +66,7 @@ typedef struct HINSTANCE__* hInstance;
 
 namespace orxonox
 {
-    /** Resource holding data about a dynamic library.
+    /** %Resource holding data about a dynamic library.
         @remarks
             This class holds the data required to get symbols from
             libraries loaded at run-time (i.e. from DLL's for so's)
@@ -73,8 +74,6 @@ namespace orxonox
             Adrian Cearnãu (cearny@cearny.ro)
         @since
             27 January 2002
-        @see
-            Resource
     */
     class _CoreExport DynLib
     {

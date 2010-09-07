@@ -29,7 +29,7 @@
 /**
     @file
     @ingroup Management CoreGame
-    @brief Declaration of the GameMode class.
+    @brief Declaration of the GameMode class which stores and returns the current mode of the game.
 */
 
 #ifndef _GameMode_H__

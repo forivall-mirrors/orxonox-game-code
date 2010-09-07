@@ -34,7 +34,7 @@
 /**
     @file
     @ingroup Class OrxonoxClass
-    @brief Declaration of the OrxonoxClass Class.
+    @brief Declaration of OrxonoxClass, the base class of all objects and interfaces in Orxonox.
 
     All objects and interfaces of the game-logic (not the engine) are derived from OrxonoxClass.
     It stores the Identifier and the MetaObjectList and has all needed functions to create and use the class-hierarchy.
