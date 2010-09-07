@@ -62,7 +62,8 @@ namespace orxonox
         @brief The class all objects and interfaces of the game-logic (not the engine) are derived from.
 
         The BaseObject and Interfaces are derived with @c virtual @c public @c OrxonoxClass from OrxonoxClass.
-        OrxonoxClass is needed to create the class-hierarchy at startup and to store the Identifier and the MetaObjectList.
+        OrxonoxClass is needed to create the class-hierarchy at startup and to store the Identifier and the
+        MetaObjectList, as well as to provide an interface for SmartPtr and WeakPtr.
     */
     class _CoreExport OrxonoxClass
     {
@@ -95,16 +96,22 @@ namespace orxonox
             bool isParentOf(const Identifier* identifier);
             bool isDirectParentOf(const Identifier* identifier);
 
+            /// Returns true if the object's class is of the given type or a derivative.
             template <class B> inline bool isA(const SubclassIdentifier<B>* identifier)
                 { return this->isA(*identifier); }
+            /// Returns true if the object's class is exactly of the given type.
             template <class B> inline bool isExactlyA(const SubclassIdentifier<B>* identifier)
                 { return this->isExactlyA(*identifier); }
+            /// Returns true if the object's class is a child of the given type.
             template <class B> inline bool isChildOf(const SubclassIdentifier<B>* identifier)
                 { return this->isChildOf(*identifier); }
+            /// Returns true if the object's class is a direct child of the given type.
             template <class B> inline bool isDirectChildOf(const SubclassIdentifier<B>* identifier)
                 { return this->isDirectChildOf(*identifier); }
+            /// Returns true if the object's class is a parent of the given type.
             template <class B> inline bool isParentOf(const SubclassIdentifier<B>* identifier)
                 { return this->isParentOf(*identifier); }
+            /// Returns true if the object's class is a direct parent of the given type.
             template <class B> inline bool isDirectParentOf(const SubclassIdentifier<B>* identifier)
                 { return this->isDirectParentOf(*identifier); }
 
@@ -117,6 +124,7 @@ namespace orxonox
 
             virtual void clone(OrxonoxClass*& item) {}
 
+            /// Returns the number of @ref orxonox::SmartPtr "smart pointers" that point to this object.
             inline unsigned int getReferenceCount() const
                 { return this->referenceCount_; }
 
@@ -145,6 +153,7 @@ namespace orxonox
             {   return const_cast<OrxonoxClass*>(this)->getDerivedPointer<T>(classID);   }
 
         protected:
+            /// This virtual function is called if destroy() is called and no SmartPtr points to this object. Used in some cases to create a new SmartPtr to prevent destruction.
             virtual void preDestroy() {}
 
         private:
@@ -168,12 +177,12 @@ namespace orxonox
             inline void unregisterWeakPtr(WeakPtr<T>* pointer)
                 { this->weakPointers_.erase(reinterpret_cast<WeakPtr<OrxonoxClass>*>(pointer)); }
 
-            Identifier* identifier_;                   //!< The Identifier of the object
-            std::set<const Identifier*>* parents_;     //!< List of all parents of the object
-            MetaObjectList* metaList_;                 //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
-            int referenceCount_;                       //!< Counts the references from smart pointers to this object
-            bool requestedDestruction_;                //!< Becomes true after someone called delete on this object
-            std::set<WeakPtr<OrxonoxClass>*> weakPointers_; //!< All weak pointers which point to this object (and like to get notified if it dies)
+            Identifier* identifier_;                            //!< The Identifier of the object
+            std::set<const Identifier*>* parents_;              //!< List of all parents of the object
+            MetaObjectList* metaList_;                          //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
+            int referenceCount_;                                //!< Counts the references from smart pointers to this object
+            bool requestedDestruction_;                         //!< Becomes true after someone called delete on this object
+            std::set<WeakPtr<OrxonoxClass>*> weakPointers_;     //!< All weak pointers which point to this object (and like to get notified if it dies)
 
             /// 'Fast map' that holds this-pointers of all derived types
             std::vector<std::pair<unsigned int, void*> > objectPointers_;
