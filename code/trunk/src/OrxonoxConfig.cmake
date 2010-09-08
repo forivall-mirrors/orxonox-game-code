@@ -78,13 +78,6 @@ ENDIF(MSVC)
 INCLUDE(CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(iso646.h HAVE_ISO646_H)
 
-# XCode and Visual Studio support multiple configurations. In order to tell
-# about the active one we have to define the macro for each configuration
-ADD_COMPILER_FLAGS("-DCMAKE_BUILD_TYPE=Debug"          Debug)
-ADD_COMPILER_FLAGS("-DCMAKE_BUILD_TYPE=Release"        Release)
-ADD_COMPILER_FLAGS("-DCMAKE_BUILD_TYPE=RelWithDebInfo" RelWithDebInfo)
-ADD_COMPILER_FLAGS("-DCMAKE_BUILD_TYPE=MinSizeRel"     MinSizeRel)
-
 ############## Configured Headers ###############
 
 SET(GENERATED_FILE_COMMENT
