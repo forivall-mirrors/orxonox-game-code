@@ -119,7 +119,7 @@ enet_address_set_sin (struct sockaddr * sin, const ENetAddress * address, ENetAd
     memset (sin, 0, enet_sa_size(family));
     if (family == ENET_IPV4 &&
       (enet_get_address_family (address) == ENET_IPV4 ||
-      !memcmp (address, & ENET_HOST_ANY, sizeof(ENetHostAddress))))
+      !memcmp (& address -> host, & ENET_HOST_ANY, sizeof(ENetHostAddress))))
     {
         ((struct sockaddr_in *) sin) -> sin_family = AF_INET;
         ((struct sockaddr_in *) sin) -> sin_addr = * (struct in_addr *) & address -> host.addr[12];
@@ -397,15 +397,22 @@ enet_socketset_select (ENetSocket maxSocket, ENetSocketSet * readSet, ENetSocket
 int
 enet_socket_wait (ENetSocket socket4, ENetSocket socket6, enet_uint32 * condition, enet_uint32 timeout)
 {
-    //FIXME allow only one of the sockets being available
 //#ifdef HAS_POLL
     struct pollfd pollSocket[2];
     int pollCount;
-    
+
     pollSocket[0].fd = socket4;
     pollSocket[1].fd = socket6;
     pollSocket[0].events = 0;
     pollSocket[1].events = 0;
+    //pollSocket[0].revents = 0;
+    pollSocket[1].revents = 0;
+
+    if (pollSocket[0].fd == ENET_SOCKET_NULL)
+    {
+        pollSocket[0].fd = pollSocket[1].fd;
+        pollSocket[1].fd = ENET_SOCKET_NULL;
+    }
 
     if (* condition & ENET_SOCKET_WAIT_SEND)
     {
@@ -419,7 +426,7 @@ enet_socket_wait (ENetSocket socket4, ENetSocket socket6, enet_uint32 * conditio
         pollSocket[1].events |= POLLIN;
     }
 
-    pollCount = poll (pollSocket, 2, timeout);
+    pollCount = poll (pollSocket, pollSocket[1].fd != ENET_SOCKET_NULL ? 2 : 1, timeout);
 
     if (pollCount < 0)
       return -1;
@@ -437,7 +444,7 @@ enet_socket_wait (ENetSocket socket4, ENetSocket socket6, enet_uint32 * conditio
 
     return 0;
 /*
-FIXME: implement this
+FIXME: implement or remove this
 #else
     fd_set readSet, writeSet;
     struct timeval timeVal;

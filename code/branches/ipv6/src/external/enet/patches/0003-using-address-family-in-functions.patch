@@ -1,4 +1,4 @@
-From 130babc6f69e07830f73f7757222597117eb1cba Mon Sep 17 00:00:00 2001
+From af3c0910bd25d73b1a3c06bbfa4e0a3c6b96ddc5 Mon Sep 17 00:00:00 2001
 From: Adrian Friedli <adi@koalatux.ch>
 Date: Mon, 6 Sep 2010 14:58:50 +0200
 Subject: [PATCH 3/4] using address family in functions
@@ -26,7 +26,7 @@ index 8bb2433..9ccf894 100644
         if (host -> socket != ENET_SOCKET_NULL)
           enet_socket_destroy (host -> socket);
 diff --git a/include/enet/enet.h b/include/enet/enet.h
-index d3ca971..97f0556 100644
+index d3ca971..7f5876f 100644
 --- a/include/enet/enet.h
 +++ b/include/enet/enet.h
 @@ -82,6 +82,16 @@ typedef struct _ENetAddress
@@ -38,8 +38,8 @@ index d3ca971..97f0556 100644
 +typedef enum _ENetAddressFamily
 +{
 +    ENET_NO_ADDRESS_FAMILY = 0,
-+    ENET_IPV4 = 1,
-+    ENET_IPV6 = 2
++    ENET_IPV4 = (1 << 0),
++    ENET_IPV6 = (1 << 1)
 +} ENetAddressFamily;
 +
 +/**

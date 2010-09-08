@@ -1,88 +1,99 @@
-From d61448922c08e6801f07c38077623d3bcc513ad4 Mon Sep 17 00:00:00 2001
+From 9801a6bcd072870248a6b07245fc09a9492f8f51 Mon Sep 17 00:00:00 2001
 From: Adrian Friedli <adi@koalatux.ch>
 Date: Wed, 8 Sep 2010 12:50:04 +0200
 Subject: [PATCH 4/4] using two separate sockets for IPv4 and IPv6
 
 ---
- host.c              |   45 ++++++++++++++++++++++++++++++++++++---------
- include/enet/enet.h |   11 +++++++++--
- protocol.c          |   42 ++++++++++++++++++++++++++++++++++++------
- unix.c              |   38 ++++++++++++++++++++++++++------------
- 4 files changed, 107 insertions(+), 29 deletions(-)
+ host.c              |   53 +++++++++++++++++++++++++++++++++++++-------------
+ include/enet/enet.h |   11 ++++++++-
+ protocol.c          |   47 +++++++++++++++++++++++++++++++++++++++-----
+ unix.c              |   47 ++++++++++++++++++++++++++++++++------------
+ 4 files changed, 123 insertions(+), 35 deletions(-)
 
 diff --git a/host.c b/host.c
-index 9ccf894..85dfa3c 100644
+index 9ccf894..46e52c9 100644
 --- a/host.c
 +++ b/host.c
-@@ -48,11 +48,15 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
+@@ -7,6 +7,27 @@
+ #include <time.h>
+ #include "enet/enet.h"
+ 
++static ENetSocket
++enet_socket_create_bind (const ENetAddress * address, ENetAddressFamily family)
++{
++    ENetSocket socket = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM, family);
++    if (socket == ENET_SOCKET_NULL)
++        return ENET_SOCKET_NULL;
++
++    if (address != NULL && enet_socket_bind (socket, address, family) < 0)
++    {
++        enet_socket_destroy (socket);
++        return ENET_SOCKET_NULL;
++    }
++
++    enet_socket_set_option (socket, ENET_SOCKOPT_NONBLOCK, 1);
++    enet_socket_set_option (socket, ENET_SOCKOPT_BROADCAST, 1);
++    enet_socket_set_option (socket, ENET_SOCKOPT_RCVBUF, ENET_HOST_RECEIVE_BUFFER_SIZE);
++    enet_socket_set_option (socket, ENET_SOCKOPT_SNDBUF, ENET_HOST_SEND_BUFFER_SIZE);
++
++    return socket;
++}
++
+ /** @defgroup host ENet host functions
+     @{
+ */
+@@ -48,23 +69,24 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
      }
      memset (host -> peers, 0, peerCount * sizeof (ENetPeer));
  
 -    host -> socket = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM, ENET_IPV6);
 -    if (host -> socket == ENET_SOCKET_NULL || (address != NULL && enet_socket_bind (host -> socket, address, ENET_IPV6) < 0))
-+
-+    // FIXME: check address for ANY_ADRESS if not only bind to specific protocol
-+    // FIXME: allow to fail one of the two protocols
-+    /* IPv4 */
-+    host -> socket4 = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM, ENET_IPV4);
-+    if (host -> socket4 == ENET_SOCKET_NULL || (address != NULL && enet_socket_bind (host -> socket4, address, ENET_IPV4) < 0))
-     {
+-    {
 -       if (host -> socket != ENET_SOCKET_NULL)
 -         enet_socket_destroy (host -> socket);
-+       if (host -> socket4 != ENET_SOCKET_NULL)
-+         enet_socket_destroy (host -> socket4);
++    int family = (address == NULL || !memcmp (& address -> host, & ENET_HOST_ANY, sizeof (ENetHostAddress))) ?
++        ENET_IPV4 | ENET_IPV6 :
++        enet_get_address_family (address);
  
-        enet_free (host -> peers);
-        enet_free (host);
-@@ -60,10 +64,32 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
-        return NULL;
+-       enet_free (host -> peers);
+-       enet_free (host);
++    host -> socket4 = (family & ENET_IPV4) ?
++      enet_socket_create_bind (address, ENET_IPV4) :
++      ENET_SOCKET_NULL;
++    host -> socket6 = (family & ENET_IPV6) ?
++      enet_socket_create_bind (address, ENET_IPV6) :
++      ENET_SOCKET_NULL;
+ 
+-       return NULL;
++    if (host -> socket4 == ENET_SOCKET_NULL && host -> socket6 == ENET_SOCKET_NULL)
++    {
++        enet_free (host -> peers);
++        enet_free (host);
++        return NULL;
      }
  
 -    enet_socket_set_option (host -> socket, ENET_SOCKOPT_NONBLOCK, 1);
 -    enet_socket_set_option (host -> socket, ENET_SOCKOPT_BROADCAST, 1);
 -    enet_socket_set_option (host -> socket, ENET_SOCKOPT_RCVBUF, ENET_HOST_RECEIVE_BUFFER_SIZE);
 -    enet_socket_set_option (host -> socket, ENET_SOCKOPT_SNDBUF, ENET_HOST_SEND_BUFFER_SIZE);
-+    enet_socket_set_option (host -> socket4, ENET_SOCKOPT_NONBLOCK, 1);
-+    enet_socket_set_option (host -> socket4, ENET_SOCKOPT_BROADCAST, 1);
-+    enet_socket_set_option (host -> socket4, ENET_SOCKOPT_RCVBUF, ENET_HOST_RECEIVE_BUFFER_SIZE);
-+    enet_socket_set_option (host -> socket4, ENET_SOCKOPT_SNDBUF, ENET_HOST_SEND_BUFFER_SIZE);
-+
-+    /* IPv6 */
-+    host -> socket6 = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM, ENET_IPV6);
-+    if (host -> socket6 == ENET_SOCKET_NULL || (address != NULL && enet_socket_bind (host -> socket6, address, ENET_IPV6) < 0))
-+    {
-+       if (host -> socket6 != ENET_SOCKET_NULL)
-+       {
-+           enet_socket_destroy (host -> socket4);
-+           enet_socket_destroy (host -> socket6);
-+       }
-+
-+       enet_free (host -> peers);
-+       enet_free (host);
-+
-+       return NULL;
-+    }
-+
-+    enet_socket_set_option (host -> socket6, ENET_SOCKOPT_NONBLOCK, 1);
-+    enet_socket_set_option (host -> socket6, ENET_SOCKOPT_BROADCAST, 1);
-+    enet_socket_set_option (host -> socket6, ENET_SOCKOPT_RCVBUF, ENET_HOST_RECEIVE_BUFFER_SIZE);
-+    enet_socket_set_option (host -> socket6, ENET_SOCKOPT_SNDBUF, ENET_HOST_SEND_BUFFER_SIZE);
-+
- 
+-
      if (address != NULL)
        host -> address = * address;
-@@ -133,7 +159,8 @@ enet_host_destroy (ENetHost * host)
+ 
+@@ -133,7 +155,10 @@ enet_host_destroy (ENetHost * host)
  {
      ENetPeer * currentPeer;
  
 -    enet_socket_destroy (host -> socket);
-+    enet_socket_destroy (host -> socket4);
-+    enet_socket_destroy (host -> socket6);
++    if (host -> socket4 != ENET_SOCKET_NULL)
++      enet_socket_destroy (host -> socket4);
++    if (host -> socket6 != ENET_SOCKET_NULL)
++      enet_socket_destroy (host -> socket6);
  
      for (currentPeer = host -> peers;
           currentPeer < & host -> peers [host -> peerCount];
 diff --git a/include/enet/enet.h b/include/enet/enet.h
-index 97f0556..39cf93e 100644
+index 7f5876f..616fe7f 100644
 --- a/include/enet/enet.h
 +++ b/include/enet/enet.h
 @@ -335,7 +335,8 @@ typedef enet_uint32 (ENET_CALLBACK * ENetChecksumCallback) (const ENetBuffer * b
@@ -118,7 +129,7 @@ index 97f0556..39cf93e 100644
  
  ENET_API ENetPacket * enet_packet_create (const void *, size_t, enet_uint32);
 diff --git a/protocol.c b/protocol.c
-index 4c4850a..37f6387 100644
+index 4c4850a..505c684 100644
 --- a/protocol.c
 +++ b/protocol.c
 @@ -37,6 +37,14 @@ enet_address_map4 (enet_uint32 address)
@@ -169,13 +180,16 @@ index 4c4850a..37f6387 100644
         host -> receivedData = host -> packetData [0];
         host -> receivedDataLength = receivedLength;
        
-@@ -1510,7 +1521,12 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
+@@ -1510,7 +1521,15 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
  
          currentPeer -> lastSendTime = host -> serviceTime;
  
 -        sentLength = enet_socket_send (host -> socket, & currentPeer -> address, host -> buffers, host -> bufferCount, ENET_IPV6);
 +        ENetAddressFamily family = enet_get_address_family (& currentPeer -> address);
-+        sentLength = enet_socket_send (family == ENET_IPV4 ? host -> socket4 : host -> socket6,
++        ENetSocket socket = family == ENET_IPV4 ? host -> socket4 : host -> socket6;
++        if (socket == ENET_SOCKET_NULL)
++          return -1;
++        sentLength = enet_socket_send (socket,
 +                                           & currentPeer -> address,
 +                                           host -> buffers,
 +                                           host -> bufferCount,
@@ -183,12 +197,13 @@ index 4c4850a..37f6387 100644
  
          enet_protocol_remove_sent_unreliable_commands (currentPeer);
  
-@@ -1621,7 +1637,21 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
+@@ -1621,7 +1640,23 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
            break;
         }
  
 -       switch (enet_protocol_receive_incoming_commands (host, event))
-+       switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV4))
++       if (host -> socket4 != ENET_SOCKET_NULL)
++         switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV4))
 +       {
 +       case 1:
 +          return 1;
@@ -202,11 +217,12 @@ index 4c4850a..37f6387 100644
 +          break;
 +       }
 +
-+       switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV6))
++       if (host -> socket6 != ENET_SOCKET_NULL)
++         switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV6))
         {
         case 1:
            return 1;
-@@ -1673,7 +1703,7 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
+@@ -1673,7 +1708,7 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
  
         waitCondition = ENET_SOCKET_WAIT_RECEIVE;
  
@@ -216,7 +232,7 @@ index 4c4850a..37f6387 100644
         
         host -> serviceTime = enet_time_get ();
 diff --git a/unix.c b/unix.c
-index 13a24d8..96d17f8 100644
+index 13a24d8..22ffb76 100644
 --- a/unix.c
 +++ b/unix.c
 @@ -117,7 +117,9 @@ static int
@@ -226,7 +242,7 @@ index 13a24d8..96d17f8 100644
 -    if (family == ENET_IPV4)
 +    if (family == ENET_IPV4 &&
 +      (enet_get_address_family (address) == ENET_IPV4 ||
-+      !memcmp (address, & ENET_HOST_ANY, sizeof(ENetHostAddress))))
++      !memcmp (& address -> host, & ENET_HOST_ANY, sizeof(ENetHostAddress))))
      {
          ((struct sockaddr_in *) sin) -> sin_family = AF_INET;
          ((struct sockaddr_in *) sin) -> sin_addr = * (struct in_addr *) & address -> host.addr[12];
@@ -239,7 +255,7 @@ index 13a24d8..96d17f8 100644
          setsockopt (sock, IPPROTO_IPV6, IPV6_V6ONLY, & value, sizeof (int));
      }
  #endif // IPV6_V6ONLY
-@@ -393,22 +395,31 @@ enet_socketset_select (ENetSocket maxSocket, ENetSocketSet * readSet, ENetSocket
+@@ -393,22 +395,38 @@ enet_socketset_select (ENetSocket maxSocket, ENetSocketSet * readSet, ENetSocket
  }
  
  int
@@ -248,17 +264,25 @@ index 13a24d8..96d17f8 100644
  {
 -#ifdef HAS_POLL
 -    struct pollfd pollSocket;
-+    //FIXME allow only one of the sockets being available
 +//#ifdef HAS_POLL
 +    struct pollfd pollSocket[2];
      int pollCount;
-     
+-    
 -    pollSocket.fd = socket;
 -    pollSocket.events = 0;
++
 +    pollSocket[0].fd = socket4;
 +    pollSocket[1].fd = socket6;
 +    pollSocket[0].events = 0;
 +    pollSocket[1].events = 0;
++    //pollSocket[0].revents = 0;
++    pollSocket[1].revents = 0;
++
++    if (pollSocket[0].fd == ENET_SOCKET_NULL)
++    {
++        pollSocket[0].fd = pollSocket[1].fd;
++        pollSocket[1].fd = ENET_SOCKET_NULL;
++    }
  
      if (* condition & ENET_SOCKET_WAIT_SEND)
 -      pollSocket.events |= POLLOUT;
@@ -275,11 +299,11 @@ index 13a24d8..96d17f8 100644
 +    }
  
 -    pollCount = poll (& pollSocket, 1, timeout);
-+    pollCount = poll (pollSocket, 2, timeout);
++    pollCount = poll (pollSocket, pollSocket[1].fd != ENET_SOCKET_NULL ? 2 : 1, timeout);
  
      if (pollCount < 0)
        return -1;
-@@ -418,13 +429,15 @@ enet_socket_wait (ENetSocket socket, enet_uint32 * condition, enet_uint32 timeou
+@@ -418,13 +436,15 @@ enet_socket_wait (ENetSocket socket, enet_uint32 * condition, enet_uint32 timeou
      if (pollCount == 0)
        return 0;
  
@@ -293,11 +317,11 @@ index 13a24d8..96d17f8 100644
  
      return 0;
 +/*
-+FIXME: implement this
++FIXME: implement or remove this
  #else
      fd_set readSet, writeSet;
      struct timeval timeVal;
-@@ -460,6 +473,7 @@ enet_socket_wait (ENetSocket socket, enet_uint32 * condition, enet_uint32 timeou
+@@ -460,6 +480,7 @@ enet_socket_wait (ENetSocket socket, enet_uint32 * condition, enet_uint32 timeou
  
      return 0;
  #endif

@@ -1522,7 +1522,10 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
         currentPeer -> lastSendTime = host -> serviceTime;
 
         ENetAddressFamily family = enet_get_address_family (& currentPeer -> address);
-        sentLength = enet_socket_send (family == ENET_IPV4 ? host -> socket4 : host -> socket6,
+        ENetSocket socket = family == ENET_IPV4 ? host -> socket4 : host -> socket6;
+        if (socket == ENET_SOCKET_NULL)
+          return -1;
+        sentLength = enet_socket_send (socket,
                                            & currentPeer -> address,
                                            host -> buffers,
                                            host -> bufferCount,
@@ -1637,7 +1640,8 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
           break;
        }
 
-       switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV4))
+       if (host -> socket4 != ENET_SOCKET_NULL)
+         switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV4))
        {
        case 1:
           return 1;
@@ -1651,7 +1655,8 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
           break;
        }
 
-       switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV6))
+       if (host -> socket6 != ENET_SOCKET_NULL)
+         switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV6))
        {
        case 1:
           return 1;

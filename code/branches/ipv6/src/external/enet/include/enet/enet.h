@@ -87,8 +87,8 @@ typedef struct _ENetAddress
 typedef enum _ENetAddressFamily
 {
     ENET_NO_ADDRESS_FAMILY = 0,
-    ENET_IPV4 = 1,
-    ENET_IPV6 = 2
+    ENET_IPV4 = (1 << 0),
+    ENET_IPV6 = (1 << 1)
 } ENetAddressFamily;
 
 /**
