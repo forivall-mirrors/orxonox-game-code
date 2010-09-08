@@ -72,7 +72,6 @@ INCLUDE_DIRECTORIES(
   ${OGRE_INCLUDE_DIR}
   ${CEGUI_INCLUDE_DIR}
   #${ENET_INCLUDE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/enet/include
   ${Boost_INCLUDE_DIRS}
   ${POCO_INCLUDE_DIR}
   ${OPENAL_INCLUDE_DIRS}
@@ -91,6 +90,7 @@ INCLUDE_DIRECTORIES(
   # Include directories needed even if only included by Orxonox
   ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
   ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/enet/include
 
   # OrxonoxConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}

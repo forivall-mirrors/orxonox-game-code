@@ -18,35 +18,34 @@
  #
 
 SET_SOURCE_FILES(ENET_FILES
-	include/enet/callbacks.h
-	include/enet/enet.h
-	include/enet/list.h
-	include/enet/protocol.h
-	include/enet/time.h
-	include/enet/types.h
-	include/enet/unix.h
-	include/enet/utility.h
-	#include/enet/win32.h
+    include/enet/callbacks.h
+    include/enet/enet.h
+    include/enet/list.h
+    include/enet/protocol.h
+    include/enet/time.h
+    include/enet/types.h
+    include/enet/unix.h
+    include/enet/utility.h
+    #include/enet/win32.h
 
 COMPILATION_BEGIN ENetCompilation.cpp
-	callbacks.c
-	compress.c
-	host.c
-	list.c
-	packet.c
-	peer.c
-	protocol.c
-	unix.c
-	#win32.c
+    callbacks.c
+    compress.c
+    host.c
+    list.c
+    packet.c
+    peer.c
+    protocol.c
+    unix.c
+    #win32.c
 COMPILATION_END
 )
 
-INCLUDE_DIRECTORIES(include)
+ADD_COMPILER_FLAGS("-DHAS_POLL -DHAS_FCNTL -DHAS_MSGHDR_FLAGS -DHAS_SOCKLEN_T")
 
 ORXONOX_ADD_LIBRARY(enet_orxonox
-	ORXONOX_EXTERNAL
-	VERSION 1.3.0
-	SOURCE_FILES ${ENET_FILES}
+    ORXONOX_EXTERNAL
+    VERSION        1.3.0
+    DEFINE_SYMBOL  "ENET_BUILDING_LIB"
+    SOURCE_FILES   ${ENET_FILES}
 )
-
-ADD_DEFINITIONS(-DHAS_POLL -DHAS_FCNTL -DHAS_MSGHDR_FLAGS -DHAS_SOCKLEN_T)
