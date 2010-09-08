@@ -40,7 +40,6 @@
 #define _SpecialConfig_H__
 
 #include "OrxonoxConfig.h"
-#include <boost/preprocessor/stringize.hpp>
 
 /**
 @def CEGUILUA_USE_INTERNAL_LIBRARY
@@ -91,9 +90,9 @@ namespace orxonox { namespace specialConfig
     const char dataDevDirectory[]           = "@DATA_DIRECTORY@";
     const char externalDataDevDirectory[]   = "@EXTERNAL_DATA_DIRECTORY@";
 #ifdef CMAKE_CONFIGURATION_TYPES
-    const char moduleDevDirectory[]         = "@CMAKE_MODULE_OUTPUT_DIRECTORY@/" BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
-    const char configDevDirectory[]         = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@/" BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
-    const char logDevDirectory[]            = "@CMAKE_LOG_OUTPUT_DIRECTORY@/"    BOOST_PP_STRINGIZE(CMAKE_BUILD_TYPE);
+    const char moduleDevDirectory[]         = "@CMAKE_MODULE_OUTPUT_DIRECTORY@/" CMAKE_INTDIR;
+    const char configDevDirectory[]         = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@/" CMAKE_INTDIR;
+    const char logDevDirectory[]            = "@CMAKE_LOG_OUTPUT_DIRECTORY@/"    CMAKE_INTDIR;
 #else
     const char moduleDevDirectory[]         = "@CMAKE_MODULE_OUTPUT_DIRECTORY@";
     const char configDevDirectory[]         = "@CMAKE_CONFIG_OUTPUT_DIRECTORY@";
