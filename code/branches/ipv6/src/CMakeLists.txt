@@ -37,7 +37,7 @@ ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")
 
 # If no defines are specified, these libs get linked statically
 ADD_COMPILER_FLAGS("-DBOOST_ALL_DYN_LINK" WIN32 LINK_BOOST_DYNAMIC)
-ADD_COMPILER_FLAGS("-DENET_DLL"           WIN32 LINK_ENET_DYNAMIC)
+#ADD_COMPILER_FLAGS("-DENET_DLL"           WIN32 LINK_ENET_DYNAMIC)
 ADD_COMPILER_FLAGS("-DLUA_BUILD_AS_DLL"   WIN32 LINK_LUA_DYNAMIC)
 ADD_COMPILER_FLAGS("-DZLIB_DLL"           WIN32 LINK_ZLIB_DYNAMIC)
 # If no defines are specified, these libs get linked dynamically
@@ -60,6 +60,7 @@ ELSE()
 ENDIF()
 # If no defines are specified, these libs get linked dynamically
 ADD_COMPILER_FLAGS("-DCEGUILUA_STATIC"             WIN32 NOT _external_shared_link)
+ADD_COMPILER_FLAGS("-DENET_DLL"                    WIN32 NOT _external_shared_link)
 ADD_COMPILER_FLAGS("-DOGRE_GUIRENDERER_STATIC_LIB" WIN32 NOT _external_shared_link)
 ADD_COMPILER_FLAGS("-DOIS_STATIC_LIB"              WIN32 NOT _external_shared_link)
 ADD_COMPILER_FLAGS("-DTOLUA_STATIC_BUILD"          WIN32 NOT _external_shared_link)
