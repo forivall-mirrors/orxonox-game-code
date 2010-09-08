@@ -23,7 +23,11 @@
  #    Configures some basics and controls the configuration scripts
  #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
+IF(WIN32)
+  CMAKE_MINIMUM_REQUIRED(VERSION 2.6.3 FATAL_ERROR)
+ELSE()
+  CMAKE_MINIMUM_REQUIRED(VERSION 2.6   FATAL_ERROR)
+ENDIF()
 
 # Keep devs from using the root directory as binary directory (messes up the source tree)
 IF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
