@@ -10,6 +10,7 @@
 #include "enet/enet.h"
 
 const ENetHostAddress ENET_HOST_ANY = { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } };
+const ENetHostAddress ENET_IPV4MAPPED_PREFIX = { { 0,0,0,0,0,0,0,0,0,0, 0xff, 0xff, 0,0,0,0 } };
 const ENetHostAddress ENET_HOST_BROADCAST = { { 0,0,0,0,0,0,0,0,0,0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff } };
 
 static size_t commandSizes [ENET_PROTOCOL_COMMAND_COUNT] =
@@ -27,6 +28,22 @@ static size_t commandSizes [ENET_PROTOCOL_COMMAND_COUNT] =
     sizeof (ENetProtocolBandwidthLimit),
     sizeof (ENetProtocolThrottleConfigure),
 };
+
+ENetHostAddress
+enet_address_map4 (enet_uint32 address)
+{
+    ENetHostAddress addr = ENET_IPV4MAPPED_PREFIX;
+    ((enet_uint32 *)addr.addr)[3] = address;
+    return addr;
+}
+
+ENetAddressFamily
+enet_get_address_family (const ENetAddress * address)
+{
+    if (!memcmp(& address->host, & ENET_IPV4MAPPED_PREFIX, ENET_IPV4MAPPED_PREFIX_LEN))
+        return ENET_IPV4;
+    return ENET_IPV6;
+}
 
 size_t
 enet_protocol_command_size (enet_uint8 commandNumber)
@@ -1024,7 +1041,7 @@ commandError:
 }
  
 static int
-enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
+enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event, ENetAddressFamily family)
 {
     for (;;)
     {
@@ -1034,16 +1051,20 @@ enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
        buffer.data = host -> packetData [0];
        buffer.dataLength = sizeof (host -> packetData [0]);
 
-       receivedLength = enet_socket_receive (host -> socket,
+       receivedLength = enet_socket_receive (family == ENET_IPV4 ? host -> socket4 : host -> socket6,
                                              & host -> receivedAddress,
                                              & buffer,
-                                             1);
+                                             1,
+                                             family);
 
        if (receivedLength < 0)
          return -1;
 
        if (receivedLength == 0)
          return 0;
+
+       if (enet_get_address_family (& host -> receivedAddress) != family)
+         return -1;
 
        host -> receivedData = host -> packetData [0];
        host -> receivedDataLength = receivedLength;
@@ -1500,7 +1521,12 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
 
         currentPeer -> lastSendTime = host -> serviceTime;
 
-        sentLength = enet_socket_send (host -> socket, & currentPeer -> address, host -> buffers, host -> bufferCount);
+        ENetAddressFamily family = enet_get_address_family (& currentPeer -> address);
+        sentLength = enet_socket_send (family == ENET_IPV4 ? host -> socket4 : host -> socket6,
+                                           & currentPeer -> address,
+                                           host -> buffers,
+                                           host -> bufferCount,
+                                           family);
 
         enet_protocol_remove_sent_unreliable_commands (currentPeer);
 
@@ -1611,7 +1637,21 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
           break;
        }
 
-       switch (enet_protocol_receive_incoming_commands (host, event))
+       switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV4))
+       {
+       case 1:
+          return 1;
+
+       case -1:
+          perror ("Error receiving incoming packets");
+
+          return -1;
+
+       default:
+          break;
+       }
+
+       switch (enet_protocol_receive_incoming_commands (host, event, ENET_IPV6))
        {
        case 1:
           return 1;
@@ -1663,7 +1703,7 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
 
        waitCondition = ENET_SOCKET_WAIT_RECEIVE;
 
-       if (enet_socket_wait (host -> socket, & waitCondition, ENET_TIME_DIFFERENCE (timeout, host -> serviceTime)) != 0)
+       if (enet_socket_wait (host -> socket4, host -> socket6, & waitCondition, ENET_TIME_DIFFERENCE (timeout, host -> serviceTime)) != 0)
          return -1;
        
        host -> serviceTime = enet_time_get ();

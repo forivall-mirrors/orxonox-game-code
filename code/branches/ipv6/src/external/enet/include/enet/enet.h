@@ -50,8 +50,7 @@ typedef enum _ENetSocketOption
    ENET_SOCKOPT_BROADCAST = 2,
    ENET_SOCKOPT_RCVBUF    = 3,
    ENET_SOCKOPT_SNDBUF    = 4,
-   ENET_SOCKOPT_REUSEADDR = 5,
-   ENET_SOCKOPT_V6ONLY = 6
+   ENET_SOCKOPT_REUSEADDR = 5
 } ENetSocketOption;
 
 typedef struct _ENetHostAddress
@@ -59,9 +58,11 @@ typedef struct _ENetHostAddress
    enet_uint8 addr[16];
 } ENetHostAddress;
 
-extern const ENetHostAddress ENET_HOST_ANY;       /**< specifies the default server host */
-extern const ENetHostAddress ENET_HOST_BROADCAST; /**< specifies a IPv4 subnet-wide broadcast */
-#define ENET_PORT_ANY 0                           /**< specifies that a port should be automatically chosen */
+extern const ENetHostAddress ENET_HOST_ANY;          /**< specifies the default server host */
+extern const ENetHostAddress ENET_IPV4MAPPED_PREFIX; /**< specifies the IPv4-mapped IPv6 prefix */
+extern const ENetHostAddress ENET_HOST_BROADCAST;    /**< specifies a IPv4 subnet-wide broadcast */
+#define ENET_IPV4MAPPED_PREFIX_LEN 12                /**< specifies the length of the IPv4-mapped IPv6 prefix */
+#define ENET_PORT_ANY 0                              /**< specifies that a port should be automatically chosen */
 
 /**
  * Portable internet address structure. 
@@ -79,6 +80,16 @@ typedef struct _ENetAddress
    enet_uint32 scopeID; //FIXME: this is of different size on Windows
    enet_uint16 port;
 } ENetAddress;
+
+/**
+ * The address family type.
+ */
+typedef enum _ENetAddressFamily
+{
+    ENET_NO_ADDRESS_FAMILY = 0,
+    ENET_IPV4 = 1,
+    ENET_IPV6 = 2
+} ENetAddressFamily;
 
 /**
  * Packet flag bit constants.
@@ -324,7 +335,8 @@ typedef enet_uint32 (ENET_CALLBACK * ENetChecksumCallback) (const ENetBuffer * b
   */
 typedef struct _ENetHost
 {
-   ENetSocket           socket;
+   ENetSocket           socket4;
+   ENetSocket           socket6;
    ENetAddress          address;                     /**< Internet address of the host */
    enet_uint32          incomingBandwidth;           /**< downstream bandwidth of the host */
    enet_uint32          outgoingBandwidth;           /**< upstream bandwidth of the host */
@@ -444,14 +456,14 @@ ENET_API void enet_time_set (enet_uint32);
 /** @defgroup socket ENet socket functions
     @{
 */
-ENET_API ENetSocket enet_socket_create (ENetSocketType);
-ENET_API int        enet_socket_bind (ENetSocket, const ENetAddress *);
+ENET_API ENetSocket enet_socket_create (ENetSocketType, ENetAddressFamily);
+ENET_API int        enet_socket_bind (ENetSocket, const ENetAddress *, ENetAddressFamily);
 ENET_API int        enet_socket_listen (ENetSocket, int);
-ENET_API ENetSocket enet_socket_accept (ENetSocket, ENetAddress *);
-ENET_API int        enet_socket_connect (ENetSocket, const ENetAddress *);
-ENET_API int        enet_socket_send (ENetSocket, const ENetAddress *, const ENetBuffer *, size_t);
-ENET_API int        enet_socket_receive (ENetSocket, ENetAddress *, ENetBuffer *, size_t);
-ENET_API int        enet_socket_wait (ENetSocket, enet_uint32 *, enet_uint32);
+ENET_API ENetSocket enet_socket_accept (ENetSocket, ENetAddress *, ENetAddressFamily);
+ENET_API int        enet_socket_connect (ENetSocket, const ENetAddress *, ENetAddressFamily);
+ENET_API int        enet_socket_send (ENetSocket, const ENetAddress *, const ENetBuffer *, size_t, ENetAddressFamily);
+ENET_API int        enet_socket_receive (ENetSocket, ENetAddress *, ENetBuffer *, size_t, ENetAddressFamily);
+ENET_API int        enet_socket_wait (ENetSocket, ENetSocket, enet_uint32 *, enet_uint32);
 ENET_API int        enet_socket_set_option (ENetSocket, ENetSocketOption, int);
 ENET_API void       enet_socket_destroy (ENetSocket);
 ENET_API int        enet_socketset_select (ENetSocket, ENetSocketSet *, ENetSocketSet *, enet_uint32);
@@ -495,13 +507,13 @@ ENET_API int enet_address_get_host (const ENetAddress * address, char * hostName
     @param address IPv4 address in network byte order
     @returns the IPv4-mapped IPv6 address in network byte order
 */
-static inline ENetHostAddress enet_address_map4 (enet_uint32 address)
-{
-   ENetHostAddress addr = ENET_HOST_ANY;
-   ((enet_uint16 *)addr.addr)[5] = 0xffff;
-   ((enet_uint32 *)addr.addr)[3] = address;
-   return addr;
-}
+ENET_API ENetHostAddress enet_address_map4 (enet_uint32 address);
+
+/** Returns the Address family of an (IPv4-mapped) IPv6 address.
+    @param address IPv6 address
+    @returns address family
+*/
+ENET_API ENetAddressFamily enet_get_address_family (const ENetAddress * address);
 
 /** @} */
 

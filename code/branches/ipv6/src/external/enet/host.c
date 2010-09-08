@@ -48,13 +48,15 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
     }
     memset (host -> peers, 0, peerCount * sizeof (ENetPeer));
 
-    host -> socket = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM);
-    enet_socket_set_option (host -> socket, ENET_SOCKOPT_V6ONLY, 0); // Needs to be set before bind.
 
-    if (host -> socket == ENET_SOCKET_NULL || (address != NULL && enet_socket_bind (host -> socket, address) < 0))
+    // FIXME: check address for ANY_ADRESS if not only bind to specific protocol
+    // FIXME: allow to fail one of the two protocols
+    /* IPv4 */
+    host -> socket4 = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM, ENET_IPV4);
+    if (host -> socket4 == ENET_SOCKET_NULL || (address != NULL && enet_socket_bind (host -> socket4, address, ENET_IPV4) < 0))
     {
-       if (host -> socket != ENET_SOCKET_NULL)
-         enet_socket_destroy (host -> socket);
+       if (host -> socket4 != ENET_SOCKET_NULL)
+         enet_socket_destroy (host -> socket4);
 
        enet_free (host -> peers);
        enet_free (host);
@@ -62,10 +64,32 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
        return NULL;
     }
 
-    enet_socket_set_option (host -> socket, ENET_SOCKOPT_NONBLOCK, 1);
-    enet_socket_set_option (host -> socket, ENET_SOCKOPT_BROADCAST, 1);
-    enet_socket_set_option (host -> socket, ENET_SOCKOPT_RCVBUF, ENET_HOST_RECEIVE_BUFFER_SIZE);
-    enet_socket_set_option (host -> socket, ENET_SOCKOPT_SNDBUF, ENET_HOST_SEND_BUFFER_SIZE);
+    enet_socket_set_option (host -> socket4, ENET_SOCKOPT_NONBLOCK, 1);
+    enet_socket_set_option (host -> socket4, ENET_SOCKOPT_BROADCAST, 1);
+    enet_socket_set_option (host -> socket4, ENET_SOCKOPT_RCVBUF, ENET_HOST_RECEIVE_BUFFER_SIZE);
+    enet_socket_set_option (host -> socket4, ENET_SOCKOPT_SNDBUF, ENET_HOST_SEND_BUFFER_SIZE);
+
+    /* IPv6 */
+    host -> socket6 = enet_socket_create (ENET_SOCKET_TYPE_DATAGRAM, ENET_IPV6);
+    if (host -> socket6 == ENET_SOCKET_NULL || (address != NULL && enet_socket_bind (host -> socket6, address, ENET_IPV6) < 0))
+    {
+       if (host -> socket6 != ENET_SOCKET_NULL)
+       {
+           enet_socket_destroy (host -> socket4);
+           enet_socket_destroy (host -> socket6);
+       }
+
+       enet_free (host -> peers);
+       enet_free (host);
+
+       return NULL;
+    }
+
+    enet_socket_set_option (host -> socket6, ENET_SOCKOPT_NONBLOCK, 1);
+    enet_socket_set_option (host -> socket6, ENET_SOCKOPT_BROADCAST, 1);
+    enet_socket_set_option (host -> socket6, ENET_SOCKOPT_RCVBUF, ENET_HOST_RECEIVE_BUFFER_SIZE);
+    enet_socket_set_option (host -> socket6, ENET_SOCKOPT_SNDBUF, ENET_HOST_SEND_BUFFER_SIZE);
+
 
     if (address != NULL)
       host -> address = * address;
@@ -135,7 +159,8 @@ enet_host_destroy (ENetHost * host)
 {
     ENetPeer * currentPeer;
 
-    enet_socket_destroy (host -> socket);
+    enet_socket_destroy (host -> socket4);
+    enet_socket_destroy (host -> socket6);
 
     for (currentPeer = host -> peers;
          currentPeer < & host -> peers [host -> peerCount];
