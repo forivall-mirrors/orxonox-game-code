@@ -104,6 +104,9 @@ ADD_COMPILER_FLAGS("-w44522" CACHE)
 # Forcing values to bool
 ADD_COMPILER_FLAGS("-w44800" CACHE)
 
+# TODO: Resolve the cause of this warning!
+ADD_COMPILER_FLAGS("-w44250" CACHE)
+
 # This warns about truncation to 255 characters in debug/browse info
 # ADD_COMPILER_FLAGS("-w44786 -w44503" CACHE)
 
