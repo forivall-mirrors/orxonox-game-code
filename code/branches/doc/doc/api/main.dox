@@ -1,6 +1,8 @@
 /**
     @mainpage
 
+    @image html orxonox.jpg
+
     This is the documentation of Orxonox. It contains descriptions of our classes and functions and
     explains their usage with several examples and background information. Because Orxonox is so big,
     we can't document all of our code - sorry for that! But we do your best to document the most
