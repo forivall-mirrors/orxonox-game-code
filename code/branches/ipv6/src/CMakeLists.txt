@@ -60,7 +60,7 @@ ELSE()
 ENDIF()
 # If no defines are specified, these libs get linked dynamically
 ADD_COMPILER_FLAGS("-DCEGUILUA_STATIC"             WIN32 NOT _external_shared_link)
-ADD_COMPILER_FLAGS("-DENET_DLL"                    WIN32 NOT _external_shared_link)
+ADD_COMPILER_FLAGS("-DENET_DLL"                    WIN32     _external_shared_link)
 ADD_COMPILER_FLAGS("-DOGRE_GUIRENDERER_STATIC_LIB" WIN32 NOT _external_shared_link)
 ADD_COMPILER_FLAGS("-DOIS_STATIC_LIB"              WIN32 NOT _external_shared_link)
 ADD_COMPILER_FLAGS("-DTOLUA_STATIC_BUILD"          WIN32 NOT _external_shared_link)
