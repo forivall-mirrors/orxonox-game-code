@@ -77,7 +77,11 @@ extern const ENetHostAddress ENET_HOST_BROADCAST;    /**< specifies a IPv4 subne
 typedef struct _ENetAddress
 {
    ENetHostAddress host;
-   enet_uint32 scopeID; //FIXME: this is of different size on Windows
+#ifdef WIN32
+   u_long scopeID;
+#else
+   uint32_t scopeID;
+#endif
    enet_uint16 port;
 } ENetAddress;
 

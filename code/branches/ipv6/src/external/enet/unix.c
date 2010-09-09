@@ -91,7 +91,6 @@ enet_sa_size (ENetAddressFamily family)
     return 0;
 }
 
-
 static ENetAddressFamily
 enet_address_set_address (ENetAddress * address, const struct sockaddr * sin)
 {
@@ -397,7 +396,7 @@ enet_socketset_select (ENetSocket maxSocket, ENetSocketSet * readSet, ENetSocket
 int
 enet_socket_wait (ENetSocket socket4, ENetSocket socket6, enet_uint32 * condition, enet_uint32 timeout)
 {
-//#ifdef HAS_POLL
+#ifdef HAS_POLL
     struct pollfd pollSocket[2];
     int pollCount;
 
@@ -443,8 +442,6 @@ enet_socket_wait (ENetSocket socket4, ENetSocket socket6, enet_uint32 * conditio
       * condition |= ENET_SOCKET_WAIT_RECEIVE;
 
     return 0;
-/*
-FIXME: implement or remove this
 #else
     fd_set readSet, writeSet;
     struct timeval timeVal;
@@ -457,12 +454,28 @@ FIXME: implement or remove this
     FD_ZERO (& writeSet);
 
     if (* condition & ENET_SOCKET_WAIT_SEND)
-      FD_SET (socket, & writeSet);
+    {
+        if (socket4 != ENET_SOCKET_NULL)
+            FD_SET (socket4, & writeSet);
+        if (socket6 != ENET_SOCKET_NULL)
+            FD_SET (socket6, & writeSet);
+    }
 
     if (* condition & ENET_SOCKET_WAIT_RECEIVE)
-      FD_SET (socket, & readSet);
+    {
+        if (socket4 != ENET_SOCKET_NULL)
+            FD_SET (socket4, & readSet);
+        if (socket6 != ENET_SOCKET_NULL)
+            FD_SET (socket6, & readSet);
+    }
 
-    selectCount = select (socket + 1, & readSet, & writeSet, NULL, & timeVal);
+    ENetSocket maxSocket = 0;
+    if (socket4 != ENET_SOCKET_NULL)
+        maxSocket = socket4;
+    if (socket6 != ENET_SOCKET_NULL && socket6 > maxSocket)
+        maxSocket = socket6;
+
+    selectCount = select (maxSocket + 1, & readSet, & writeSet, NULL, & timeVal);
 
     if (selectCount < 0)
       return -1;
@@ -472,15 +485,16 @@ FIXME: implement or remove this
     if (selectCount == 0)
       return 0;
 
-    if (FD_ISSET (socket, & writeSet))
-      * condition |= ENET_SOCKET_WAIT_SEND;
+    if ( (socket4 != ENET_SOCKET_NULL && FD_ISSET (socket4, & writeSet)) ||
+        (socket6 != ENET_SOCKET_NULL && FD_ISSET (socket6, & writeSet)) )
+        * condition |= ENET_SOCKET_WAIT_SEND;
 
-    if (FD_ISSET (socket, & readSet))
-      * condition |= ENET_SOCKET_WAIT_RECEIVE;
+    if ( (socket4 != ENET_SOCKET_NULL && FD_ISSET (socket4, & readSet)) ||
+        (socket6 != ENET_SOCKET_NULL && FD_ISSET (socket6, & readSet)) )
+        * condition |= ENET_SOCKET_WAIT_RECEIVE;
 
     return 0;
 #endif
-*/
 }
 
 #endif

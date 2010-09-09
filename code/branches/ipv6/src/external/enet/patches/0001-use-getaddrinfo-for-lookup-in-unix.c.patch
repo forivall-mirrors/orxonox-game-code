@@ -1,7 +1,7 @@
 From e4638515a1ade5a23f3b8eb9ca7dad249a3d6903 Mon Sep 17 00:00:00 2001
 From: Adrian Friedli <adi@koalatux.ch>
 Date: Thu, 2 Sep 2010 14:26:42 +0200
-Subject: [PATCH 1/4] use getaddrinfo for lookup in unix.c
+Subject: [PATCH 1/5] use getaddrinfo for lookup in unix.c
 
 ---
  unix.c |   99 +++++++++++++++++++++++++--------------------------------------

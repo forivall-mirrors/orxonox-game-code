@@ -26,7 +26,7 @@ SET_SOURCE_FILES(ENET_FILES
     include/enet/types.h
     include/enet/unix.h
     include/enet/utility.h
-    #include/enet/win32.h
+    include/enet/win32.h
 
 COMPILATION_BEGIN ENetCompilation.cpp
     callbacks.c
@@ -37,7 +37,7 @@ COMPILATION_BEGIN ENetCompilation.cpp
     peer.c
     protocol.c
     unix.c
-    #win32.c
+    win32.c
 COMPILATION_END
 )
 

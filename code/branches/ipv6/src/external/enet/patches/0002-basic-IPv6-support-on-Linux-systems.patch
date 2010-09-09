@@ -1,7 +1,7 @@
 From fc72c66f6b8a6b1d924ffa86861ce00a1c591839 Mon Sep 17 00:00:00 2001
 From: Adrian Friedli <adi@koalatux.ch>
 Date: Thu, 2 Sep 2010 14:27:07 +0200
-Subject: [PATCH 2/4] basic IPv6 support on Linux systems
+Subject: [PATCH 2/5] basic IPv6 support on Linux systems
 
 this uses IPv4-mapped IPv6 addresses
 ---

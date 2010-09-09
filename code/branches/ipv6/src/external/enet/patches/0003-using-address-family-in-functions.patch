@@ -1,14 +1,14 @@
-From af3c0910bd25d73b1a3c06bbfa4e0a3c6b96ddc5 Mon Sep 17 00:00:00 2001
+From b26e4ef3fa9c0139fc2ec086d2243b809365d683 Mon Sep 17 00:00:00 2001
 From: Adrian Friedli <adi@koalatux.ch>
 Date: Mon, 6 Sep 2010 14:58:50 +0200
-Subject: [PATCH 3/4] using address family in functions
+Subject: [PATCH 3/5] using address family in functions
 
 ---
  host.c              |    4 +-
  include/enet/enet.h |   22 +++++++++---
  protocol.c          |    5 ++-
- unix.c              |   87 ++++++++++++++++++++++++++++++++------------------
- 4 files changed, 77 insertions(+), 41 deletions(-)
+ unix.c              |   86 ++++++++++++++++++++++++++++++++------------------
+ 4 files changed, 76 insertions(+), 41 deletions(-)
 
 diff --git a/host.c b/host.c
 index 8bb2433..9ccf894 100644
@@ -90,10 +90,10 @@ index 930835e..4c4850a 100644
          enet_protocol_remove_sent_unreliable_commands (currentPeer);
  
 diff --git a/unix.c b/unix.c
-index de032bb..13a24d8 100644
+index de032bb..475c6e3 100644
 --- a/unix.c
 +++ b/unix.c
-@@ -71,7 +71,28 @@ enet_time_set (enet_uint32 newTimeBase)
+@@ -71,7 +71,27 @@ enet_time_set (enet_uint32 newTimeBase)
      timeBase = timeVal.tv_sec * 1000 + timeVal.tv_usec / 1000 - newTimeBase;
  }
  
@@ -118,12 +118,11 @@ index de032bb..13a24d8 100644
 +    return 0;
 +}
 +
-+
 +static ENetAddressFamily
  enet_address_set_address (ENetAddress * address, const struct sockaddr * sin)
  {
      memset (address, 0, sizeof (ENetAddress));
-@@ -80,32 +101,31 @@ enet_address_set_address (ENetAddress * address, const struct sockaddr * sin)
+@@ -80,32 +100,31 @@ enet_address_set_address (ENetAddress * address, const struct sockaddr * sin)
          address -> host = enet_address_map4 ((((struct sockaddr_in *) sin) -> sin_addr.s_addr));
          //address -> scopeID = 0;
          address -> port = ENET_NET_TO_HOST_16 (((struct sockaddr_in *) sin) -> sin_port);
@@ -163,7 +162,7 @@ index de032bb..13a24d8 100644
          ((struct sockaddr_in6 *) sin) -> sin6_family = AF_INET6;
          ((struct sockaddr_in6 *) sin) -> sin6_addr = * (struct in6_addr *) & address -> host;
          ((struct sockaddr_in6 *) sin) -> sin6_scope_id = address -> scopeID;
-@@ -132,7 +152,7 @@ enet_address_set_host (ENetAddress * address, const char * name)
+@@ -132,7 +151,7 @@ enet_address_set_host (ENetAddress * address, const char * name)
  
      for (res = result; res != NULL; res = res -> ai_next)
      {
@@ -172,7 +171,7 @@ index de032bb..13a24d8 100644
              break;
      }
  
-@@ -147,9 +167,9 @@ static int
+@@ -147,9 +166,9 @@ static int
  enet_address_get_host_x (const ENetAddress * address, char * name, size_t nameLength, int flags)
  {
      struct sockaddr_storage sin;
@@ -184,7 +183,7 @@ index de032bb..13a24d8 100644
          return -1;
  
      return 0;
-@@ -168,21 +188,21 @@ enet_address_get_host (const ENetAddress * address, char * name, size_t nameLeng
+@@ -168,21 +187,21 @@ enet_address_get_host (const ENetAddress * address, char * name, size_t nameLeng
  }
  
  int
@@ -210,7 +209,7 @@ index de032bb..13a24d8 100644
  }
  
  int
-@@ -192,13 +212,16 @@ enet_socket_listen (ENetSocket socket, int backlog)
+@@ -192,13 +211,16 @@ enet_socket_listen (ENetSocket socket, int backlog)
  }
  
  ENetSocket
@@ -231,7 +230,7 @@ index de032bb..13a24d8 100644
  #endif // IPV6_V6ONLY
  
      return sock;
-@@ -241,25 +264,25 @@ enet_socket_set_option (ENetSocket socket, ENetSocketOption option, int value)
+@@ -241,25 +263,25 @@ enet_socket_set_option (ENetSocket socket, ENetSocketOption option, int value)
  }
  
  int
@@ -263,7 +262,7 @@ index de032bb..13a24d8 100644
      if (result == -1)
        return ENET_SOCKET_NULL;
  
-@@ -281,7 +304,8 @@ int
+@@ -281,7 +303,8 @@ int
  enet_socket_send (ENetSocket socket,
                    const ENetAddress * address,
                    const ENetBuffer * buffers,
@@ -273,7 +272,7 @@ index de032bb..13a24d8 100644
  {
      struct msghdr msgHdr;
      struct sockaddr_storage sin;
-@@ -291,9 +315,9 @@ enet_socket_send (ENetSocket socket,
+@@ -291,9 +314,9 @@ enet_socket_send (ENetSocket socket,
  
      if (address != NULL)
      {
@@ -285,7 +284,7 @@ index de032bb..13a24d8 100644
      }
  
      msgHdr.msg_iov = (struct iovec *) buffers;
-@@ -316,7 +340,8 @@ int
+@@ -316,7 +339,8 @@ int
  enet_socket_receive (ENetSocket socket,
                       ENetAddress * address,
                       ENetBuffer * buffers,
@@ -295,7 +294,7 @@ index de032bb..13a24d8 100644
  {
      struct msghdr msgHdr;
      struct sockaddr_storage sin;
-@@ -327,7 +352,7 @@ enet_socket_receive (ENetSocket socket,
+@@ -327,7 +351,7 @@ enet_socket_receive (ENetSocket socket,
      if (address != NULL)
      {
          msgHdr.msg_name = & sin;
