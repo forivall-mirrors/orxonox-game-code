@@ -34,6 +34,7 @@
 #include "NotificationQueue.h"
 
 #include <map>
+#include <sstream>
 
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
@@ -61,10 +62,25 @@ namespace orxonox
         this->maxSize_ = size;
         this->setDisplayTime(displayTime);
 
-        this->create();
-
-        NotificationManager::getInstance().registerListener(this);
+        bool queueRegistered = NotificationManager::getInstance().registerQueue(this);
         this->registered_ = true;
+        if(!queueRegistered)
+        {
+            this->registered_ = false;
+            COUT(1) << "Error: Notification Queue '" << this->getName() << "' could not be registered." << std::endl;
+            return;
+        }
+
+        this->create();
+        
+        bool listenerRegistered = NotificationManager::getInstance().registerListener(this);
+        if(!listenerRegistered)
+        {
+            this->registered_ = false;
+            NotificationManager::getInstance().unregisterQueue(this);
+            COUT(1) << "Error: Notification Queue '" << this->getName() << "' could not be registered." << std::endl;
+            return;
+        }
 
         COUT(3) << "NotificationQueue '" << this->getName() << "' created." << std::endl;
     }
@@ -76,10 +92,14 @@ namespace orxonox
     NotificationQueue::~NotificationQueue()
     {
         this->targets_.clear();
-        this->clear();
 
         if(this->registered_)
+        {
+            this->clear();
+            
             NotificationManager::getInstance().unregisterListener(this);
+            NotificationManager::getInstance().unregisterQueue(this);
+        }
     }
 
     /**
@@ -99,7 +119,7 @@ namespace orxonox
     */
     void NotificationQueue::create(void)
     {
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.createQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.createQueue(\"" + this->getName() +  "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
     }
 
     /**
@@ -143,15 +163,17 @@ namespace orxonox
             return;
         }
 
-        if(notifications->empty())
-            return;
-
-        for(std::multimap<std::time_t, Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++) // Add all Notifications.
-            this->push(it->second, it->first);
+        if(!notifications->empty())
+        {
+            for(std::multimap<std::time_t, Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++) // Add all Notifications.
+            {
+                this->push(it->second, it->first);
+            }
+        }
 
         delete notifications;
 
-        COUT(4) << "NotificationQueue '" << this->getName() << "' updated." << std::endl;
+        COUT(3) << "NotificationQueue '" << this->getName() << "' updated." << std::endl; //TODO: Level 4.
     }
 
     /**
@@ -166,7 +188,7 @@ namespace orxonox
     {
         this->push(notification, time);
 
-        COUT(4) << "NotificationQueue '" << this->getName() << "' updated. A new Notification has been added." << std::endl;
+        COUT(3) << "NotificationQueue '" << this->getName() << "' updated. A new Notification has been added." << std::endl; //TODO: Level 4.
     }
 
     /**
@@ -252,7 +274,6 @@ namespace orxonox
     */
     bool NotificationQueue::setName(const std::string& name)
     {
-        //TODO: Test uniqueness of name.
         this->name_ = name;
         return true;
     }
@@ -267,6 +288,9 @@ namespace orxonox
     */
     void NotificationQueue::setMaxSize(unsigned int size)
     {
+        if(this->maxSize_ == size)
+            return;
+        
         this->maxSize_ = size;
         this->sizeChanged();
     }
@@ -291,37 +315,35 @@ namespace orxonox
     */
     void NotificationQueue::setDisplayTime(unsigned int time)
     {
+        if(this->displayTime_ == time)
+            return;
+
         this->displayTime_ = time;
-        this->update();
+
+        if(this->registered_)
+            this->update();
     }
 
     /**
     @brief
         Produces all targets concatinated as string, with kommas (',') as seperators.
-    @param string
-        Pointer to a string which will be used by the method to fill with the concatination of the targets.
     @return
-        Returns true if successful.
+        Returns the targets as a string.
     */
-    bool NotificationQueue::getTargets(std::string* string) const
+    const std::string& NotificationQueue::getTargets(void) const
     {
-        if(string == NULL)
-        {
-            COUT(4) << "Input string must have memory allocated." << std::endl;
-            return false;
-        }
-        string->clear();
+        std::stringstream stream;
         bool first = true;
-        for(std::set<std::string>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++) // Iterate through the set of targets.
+        for(std::set<std::string, NotificationListenerStringCompare>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++) // Iterate through the set of targets.
         {
             if(!first)
-                *string += ',';
+                stream << ',';
             else
                 first = false;
-            *string += *it;
+            stream << *it;
         }
 
-        return true;
+        return *(new std::string(stream.str()));
     }
 
     /**
@@ -349,6 +371,12 @@ namespace orxonox
             }
             index++;
             this->targets_.insert(*pTemp);
+        }
+
+        if(this->registered_)
+        {
+            NotificationManager::getInstance().unregisterListener(this);
+            NotificationManager::getInstance().registerListener(this);
         }
 
         return true;

@@ -12,6 +12,7 @@ ORXONOX_ADD_LIBRARY(notifications
   FIND_HEADER_FILES
   TOLUA_FILES
     NotificationManager.h
+    NotificationQueue.h
   PCH_FILE
     NotificationsPrecompiledHeaders.h
   LINK_LIBRARIES

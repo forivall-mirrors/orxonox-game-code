@@ -45,8 +45,8 @@
 #include "interfaces/NotificationListener.h"
 #include "NotificationManager.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
 
     //! Container to allow easy handling.
     struct NotificationContainer
@@ -67,8 +67,9 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _NotificationsExport NotificationQueue : public Tickable, public NotificationListener
-    {
+    class _NotificationsExport NotificationQueue // tolua_export
+        : public Tickable, public NotificationListener
+    { // tolua_export
 
         public:
             NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
@@ -79,6 +80,7 @@ namespace orxonox
             void update(void); //!< Updates the queue.
             void update(Notification* notification, const std::time_t & time); //!< Adds a Notification to the queue.
 
+            // tolua_begin
             /**
             @brief Get the name of the NotificationQueue.
             @return Returns the name.
@@ -86,32 +88,41 @@ namespace orxonox
             inline const std::string& getName() const
                 { return this->name_; }
 
+            void setMaxSize(unsigned int size); //!< Sets the maximum number of displayed Notifications.
             /**
             @brief Returns the maximum number of Notifications displayed.
             @return Returns maximum size.
             */
             inline unsigned int getMaxSize() const
                 { return this->maxSize_; }
-            /**
-            @brief Returns the current number of Notifications displayed.
-            @return Returns the size of the queue.
-            */
-            inline unsigned int getSize() const
-                { return this->size_; }
+
+            void setDisplayTime(unsigned int time); //!< Sets the maximum number of seconds a Notification is displayed.
             /**
             @brief Returns the time interval the Notification is displayed.
             @return Returns the display time.
             */
             inline float getDisplayTime() const
                 { return this->displayTime_; }
+            // tolua_end
+
+            /**
+            @brief Returns the current number of Notifications displayed.
+            @return Returns the size of the queue.
+            */
+            inline unsigned int getSize() const
+                { return this->size_; }
 
             /**
             @brief Returns the targets of this queue, reps. the senders which Notifications are displayed in this queue.
             @return Retuns a set of string holding the different targets.
             */
-            inline const std::set<std::string> & getTargetsSet()
+            inline const std::set<std::string, NotificationListenerStringCompare> & getTargetsSet()
                 { return this->targets_; }
-            bool getTargets(std::string* string) const; //!< Returns a string consisting of the concatination of the targets.
+
+            // tolua_begin
+            bool setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
+            const std::string& getTargets(void) const; //!< Returns a string consisting of the concatination of the targets.
+            // tolua_end
 
         private:
             static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
@@ -123,7 +134,7 @@ namespace orxonox
             unsigned int size_; //!< The number of Notifications displayed.
             unsigned int displayTime_; //!< The time a Notification is displayed.
 
-            std::set<std::string> targets_; //!< The targets the Queue displays Notifications of.
+            std::set<std::string, NotificationListenerStringCompare> targets_; //!< The targets the Queue displays Notifications of.
 
             std::multiset<NotificationContainer*, NotificationContainerCompare> ordering_; //!< The NotificationContainers ordered by the time they were registered. //TODO: Would set work as well?
             std::vector<NotificationContainer*> notifications_; //!< The NotificationContainers in the order they were added to the NotificationQueue.
@@ -138,11 +149,6 @@ namespace orxonox
 
             bool setName(const std::string& name); //!< Sets the name of the NotificationQueue.
 
-            void setMaxSize(unsigned int size); //!< Sets the maximum number of displayed Notifications.
-            void setDisplayTime(unsigned int time); //!< Sets the maximum number of seconds a Notification is displayed.
-
-            bool setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
-
             void sizeChanged(void); //!< Adjusts the NotificationQueue, when the maximum size has changed.
 
             void push(Notification* notification, const std::time_t & time); //!< Add a Notification to the NotificationQueue.
@@ -151,8 +157,8 @@ namespace orxonox
 
             void clear(void); //!< Clears the queue by removing all Notifications.
 
-    };
+    }; // tolua_export
 
-}
+} // tolua_export
 
 #endif /* _NotificationOverlay_H__ */

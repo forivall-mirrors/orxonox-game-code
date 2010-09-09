@@ -50,7 +50,7 @@ function P.onLoad()
     table.insert(P.nameList, "Autostart")
     table.insert(P.nameList, "Number of Bots")
     table.insert(P.nameList, "UnderAttack: game time")
-    table.insert(P.nameList, "TeamDeathmatch: Numer of teams")
+    table.insert(P.nameList, "TeamDeathmatch: Number of teams")
     table.insert(P.nameList, "Playername")
     table.insert(P.nameList, "Chat: display time")
 

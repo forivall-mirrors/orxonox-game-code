@@ -184,6 +184,8 @@ function hideMenuSheet(name)
         orxonox.HumanController:resumeControl()
         hideCursor()
     end
+
+    sheetTuple.sheet:afterHide()
 end
 
 -- Hides all menu GUI sheets

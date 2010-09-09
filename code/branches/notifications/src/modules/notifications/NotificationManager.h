@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file NotificationManager.h
     @brief Definition of the NotificationManager class.
 */
 
@@ -39,7 +39,6 @@
 #include <ctime>
 #include <map>
 #include <string>
-#include <vector>
 
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
@@ -54,7 +53,7 @@ namespace orxonox // tolua_export
     @author
         Damian 'Mozork' Frick
     */
-    class _NotificationsExport NotificationManager  // tolua_export
+    class _NotificationsExport NotificationManager // tolua_export
         : public Singleton<NotificationManager>, public OrxonoxClass
     { // tolua_export
             friend class Singleton<NotificationManager>;
@@ -74,7 +73,7 @@ namespace orxonox // tolua_export
             bool registerListener(NotificationListener* listener); //!< Registers a NotificationListener within the NotificationManager.
             void unregisterListener(NotificationListener* listener); //!< Unregisters a NotificationListener withing the NotificationManager.
 
-            bool getNotifications(NotificationListener* listener, std::multimap<std::time_t,Notification*>* map, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); //!< Returns the Notifications for a specific NotificationListener in a specified timeframe.
+            bool getNotifications(NotificationListener* listener, std::multimap<std::time_t, Notification*>* map, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); //!< Returns the Notifications for a specific NotificationListener in a specified timeframe.
 
             /**
             @brief Fetches the Notifications for a specific NotificationListener starting at a specified timespan before now.
@@ -83,23 +82,31 @@ namespace orxonox // tolua_export
             @param timeDelay The timespan.
             @return Returns true if successful.
             */
-            bool getNotifications(NotificationListener* listener, std::multimap<std::time_t,Notification*>* map, int timeDelay)
+            bool getNotifications(NotificationListener* listener, std::multimap<std::time_t, Notification*>* map, int timeDelay)
                 { return this->getNotifications(listener, map, std::time(0)-timeDelay, std::time(0)); }
 
             void enterEditMode(void);
 
-            void createQueue(const std::string& name, const std::string& targets, unsigned int size, unsigned int displayTime); // tolua_export
+            // tolua_begin
+            void loadQueues(void);
+            
+            void createQueue(const std::string& name);
+            orxonox::NotificationQueue* getQueue(const std::string & name);
+            // tolua_end
+
+            bool registerQueue(NotificationQueue* queue);
+            void unregisterQueue(NotificationQueue* queue);
 
         private:
             static NotificationManager* singletonPtr_s;
 
-            std::vector<NotificationQueue*> queues_; //!< The list of NotificationQueues created by the NotificationManager.
+            std::map<const std::string, NotificationQueue*> queues_; //!< The list of NotificationQueues created by the NotificationManager.
 
             int highestIndex_; //!< This variable holds the highest index (resp. key) in notificationLists_s, to secure that no key appears twice.
 
-            std::multimap<std::time_t,Notification*> allNotificationsList_; //!< Container where all notifications are stored.
-            std::map<NotificationListener*,int> listenerList_; //!< Container where all NotificationListeners are stored with a number as identifier.
-            std::map<int,std::multimap<std::time_t,Notification*>*> notificationLists_; //!< Container where all Notifications, for each identifier (associated with a NotificationListener), are stored.
+            std::multimap<std::time_t, Notification*> allNotificationsList_; //!< Container where all notifications are stored.
+            std::map<NotificationListener*, int> listenerList_; //!< Container where all NotificationListeners are stored with a number as identifier.
+            std::map<int,std::multimap<std::time_t, Notification*>*> notificationLists_; //!< Container where all Notifications, for each identifier (associated with a NotificationListener), are stored.
             std::map<Notification*, unsigned int> listenerCounter_; //!< A container to store the number of NotificationListeners a Notification is registered with.
 
             bool removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map); //!< Helper method that removes an input notification form an input map.
