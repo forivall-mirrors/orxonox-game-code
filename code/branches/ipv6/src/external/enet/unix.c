@@ -98,7 +98,7 @@ enet_address_set_address (ENetAddress * address, const struct sockaddr * sin)
     if (sin -> sa_family == AF_INET)
     {
         address -> host = enet_address_map4 ((((struct sockaddr_in *) sin) -> sin_addr.s_addr));
-        //address -> scopeID = 0;
+        /* address -> scopeID = 0; */
         address -> port = ENET_NET_TO_HOST_16 (((struct sockaddr_in *) sin) -> sin_port);
         return ENET_IPV4;
     }
@@ -199,7 +199,10 @@ enet_socket_bind (ENetSocket socket, const ENetAddress * address, ENetAddressFam
     }
     else
     {
-        ENetAddress address_ = { ENET_HOST_ANY, 0, 0 };
+        ENetAddress address_;
+        address_.host = ENET_HOST_ANY;
+        address_.scopeID = 0;
+        address_.port = 0;
         enet_address_set_sin((struct sockaddr *) & sin, & address_, family);
     }
 
@@ -223,7 +226,7 @@ enet_socket_create (ENetSocketType type, ENetAddressFamily family)
         int value = 1;
         setsockopt (sock, IPPROTO_IPV6, IPV6_V6ONLY, & value, sizeof (int));
     }
-#endif // IPV6_V6ONLY
+#endif /* IPV6_V6ONLY */
 
     return sock;
 }
@@ -404,7 +407,7 @@ enet_socket_wait (ENetSocket socket4, ENetSocket socket6, enet_uint32 * conditio
     pollSocket[1].fd = socket6;
     pollSocket[0].events = 0;
     pollSocket[1].events = 0;
-    //pollSocket[0].revents = 0;
+    /* pollSocket[0].revents = 0; */
     pollSocket[1].revents = 0;
 
     if (pollSocket[0].fd == ENET_SOCKET_NULL)
