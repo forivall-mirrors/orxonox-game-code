@@ -180,7 +180,10 @@ enet_socket_bind (ENetSocket socket, const ENetAddress * address, ENetAddressFam
     }
     else
     {
-        ENetAddress address_ = { ENET_HOST_ANY, 0, 0 };
+        ENetAddress address_;
+        address_.host = ENET_HOST_ANY;
+        address_.scopeID = 0;
+        address_.port = 0;
         enet_address_set_sin((SOCKADDR *) & sin, & address_, family);
     }
 
@@ -365,6 +368,7 @@ enet_socket_wait (ENetSocket socket4, ENetSocket socket6, enet_uint32 * conditio
     fd_set readSet, writeSet;
     struct timeval timeVal;
     int selectCount;
+    ENetSocket maxSocket;
 
     timeVal.tv_sec = timeout / 1000;
     timeVal.tv_usec = (timeout % 1000) * 1000;
@@ -388,7 +392,7 @@ enet_socket_wait (ENetSocket socket4, ENetSocket socket6, enet_uint32 * conditio
             FD_SET (socket6, & readSet);
     }
 
-    ENetSocket maxSocket = 0;
+    maxSocket = 0;
     if (socket4 != ENET_SOCKET_NULL)
         maxSocket = socket4;
     if (socket6 != ENET_SOCKET_NULL && socket6 > maxSocket)

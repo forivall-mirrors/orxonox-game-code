@@ -52,6 +52,7 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
 {
     ENetHost * host;
     ENetPeer * currentPeer;
+    int family;
 
     if (peerCount > ENET_PROTOCOL_MAXIMUM_PEER_ID)
       return NULL;
@@ -69,7 +70,7 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
     }
     memset (host -> peers, 0, peerCount * sizeof (ENetPeer));
 
-    int family = (address == NULL || !memcmp (& address -> host, & ENET_HOST_ANY, sizeof (ENetHostAddress))) ?
+    family = (address == NULL || !memcmp (& address -> host, & ENET_HOST_ANY, sizeof (ENetHostAddress))) ?
         ENET_IPV4 | ENET_IPV6 :
         enet_get_address_family (address);
 

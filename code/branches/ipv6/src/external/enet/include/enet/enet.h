@@ -58,9 +58,9 @@ typedef struct _ENetHostAddress
    enet_uint8 addr[16];
 } ENetHostAddress;
 
-extern const ENetHostAddress ENET_HOST_ANY;          /**< specifies the default server host */
-extern const ENetHostAddress ENET_IPV4MAPPED_PREFIX; /**< specifies the IPv4-mapped IPv6 prefix */
-extern const ENetHostAddress ENET_HOST_BROADCAST;    /**< specifies a IPv4 subnet-wide broadcast */
+extern ENET_API const ENetHostAddress ENET_HOST_ANY;          /**< specifies the default server host */
+extern ENET_API const ENetHostAddress ENET_IPV4MAPPED_PREFIX; /**< specifies the IPv4-mapped IPv6 prefix */
+extern ENET_API const ENetHostAddress ENET_HOST_BROADCAST;    /**< specifies a IPv4 subnet-wide broadcast */
 #define ENET_IPV4MAPPED_PREFIX_LEN 12                /**< specifies the length of the IPv4-mapped IPv6 prefix */
 #define ENET_PORT_ANY 0                              /**< specifies that a port should be automatically chosen */
 

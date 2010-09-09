@@ -28,7 +28,7 @@ SET_SOURCE_FILES(ENET_FILES
     include/enet/utility.h
     include/enet/win32.h
 
-COMPILATION_BEGIN ENetCompilation.cpp
+COMPILATION_BEGIN ENetCompilation.c
     callbacks.c
     compress.c
     host.c

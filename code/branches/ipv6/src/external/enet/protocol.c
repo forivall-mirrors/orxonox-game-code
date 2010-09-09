@@ -1397,6 +1397,9 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
          currentPeer < & host -> peers [host -> peerCount];
          ++ currentPeer)
     {
+        ENetAddressFamily family;
+        ENetSocket socket;
+
         if (currentPeer -> state == ENET_PEER_STATE_DISCONNECTED ||
             currentPeer -> state == ENET_PEER_STATE_ZOMBIE)
           continue;
@@ -1521,8 +1524,8 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
 
         currentPeer -> lastSendTime = host -> serviceTime;
 
-        ENetAddressFamily family = enet_get_address_family (& currentPeer -> address);
-        ENetSocket socket = family == ENET_IPV4 ? host -> socket4 : host -> socket6;
+        family = enet_get_address_family (& currentPeer -> address);
+        socket = family == ENET_IPV4 ? host -> socket4 : host -> socket6;
         if (socket == ENET_SOCKET_NULL)
           return -1;
         sentLength = enet_socket_send (socket,
