@@ -79,7 +79,7 @@ enet_address_set_address (ENetAddress * address, const SOCKADDR * sin)
     if (sin -> sa_family == AF_INET)
     {
         address -> host = enet_address_map4 ((((SOCKADDR_IN *) sin) -> sin_addr.s_addr));
-        //address -> scopeID = 0;
+        /* address -> scopeID = 0; */
         address -> port = ENET_NET_TO_HOST_16 (((SOCKADDR_IN *) sin) -> sin_port);
         return ENET_IPV4;
     }
@@ -199,7 +199,7 @@ enet_socket_listen (ENetSocket socket, int backlog)
 ENetSocket
 enet_socket_create (ENetSocketType type, ENetAddressFamily family)
 {
-    return socket (PF_INET, type == ENET_SOCKET_TYPE_DATAGRAM ? SOCK_DGRAM : SOCK_STREAM, 0);
+    return socket (enet_af (family), type == ENET_SOCKET_TYPE_DATAGRAM ? SOCK_DGRAM : SOCK_STREAM, 0);
 }
 
 int
