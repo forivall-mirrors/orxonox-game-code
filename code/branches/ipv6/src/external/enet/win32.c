@@ -13,14 +13,14 @@ static enet_uint32 timeBase = 0;
 int
 enet_initialize (void)
 {
-    WORD versionRequested = MAKEWORD (1, 1);
+    WORD versionRequested = MAKEWORD (2, 2);
     WSADATA wsaData;
    
     if (WSAStartup (versionRequested, & wsaData))
        return -1;
 
-    if (LOBYTE (wsaData.wVersion) != 1||
-        HIBYTE (wsaData.wVersion) != 1)
+    if (LOBYTE (wsaData.wVersion) != 2||
+        HIBYTE (wsaData.wVersion) != 2)
     {
        WSACleanup ();
        
