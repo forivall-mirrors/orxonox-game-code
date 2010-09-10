@@ -14,7 +14,7 @@ enet_socket_create_bind (const ENetAddress * address, ENetAddressFamily family)
     if (socket == ENET_SOCKET_NULL)
         return ENET_SOCKET_NULL;
 
-    if (address != NULL && enet_socket_bind (socket, address, family) < 0)
+    if (enet_socket_bind (socket, address, family) < 0)
     {
         enet_socket_destroy (socket);
         return ENET_SOCKET_NULL;
