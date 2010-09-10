@@ -42,6 +42,7 @@
 #include <vector>
 
 #include "tools/interfaces/Tickable.h"
+
 #include "interfaces/NotificationListener.h"
 #include "NotificationManager.h"
 
@@ -75,12 +76,16 @@ namespace orxonox // tolua_export
             NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
             virtual ~NotificationQueue();
 
+            /**
+            @brief Destroys the NotificationQueue.
+                   Used in lua.
+            */
             void destroy(void) { this->OrxonoxClass::destroy(); } // tolua_export
 
             virtual void tick(float dt); //!< To update from time to time.
 
-            void update(void); //!< Updates the queue.
-            void update(Notification* notification, const std::time_t & time); //!< Adds a Notification to the queue.
+            void update(void); //!< Updates the NotificationQueue.
+            void update(Notification* notification, const std::time_t & time); //!< Updates the NotificationQueue by adding an new Notification.
 
             // tolua_begin
             /**
@@ -109,20 +114,20 @@ namespace orxonox // tolua_export
 
             /**
             @brief Returns the current number of Notifications displayed.
-            @return Returns the size of the queue.
+            @return Returns the size of the NotificationQueue.
             */
             inline unsigned int getSize() const
                 { return this->size_; }
 
             /**
-            @brief Returns the targets of this queue, reps. the senders which Notifications are displayed in this queue.
-            @return Retuns a set of string holding the different targets.
+            @brief Returns the targets of this NotificationQueue, reps. the senders which Notifications are displayed in this NotificationQueue.
+            @return Returns a set of strings holding the different targets.
             */
             inline const std::set<std::string, NotificationListenerStringCompare> & getTargetsSet()
                 { return this->targets_; }
 
             // tolua_begin
-            bool setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
+            void setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
             const std::string& getTargets(void) const; //!< Returns a string consisting of the concatination of the targets.
             // tolua_end
 
@@ -136,28 +141,25 @@ namespace orxonox // tolua_export
             unsigned int size_; //!< The number of Notifications displayed.
             unsigned int displayTime_; //!< The time a Notification is displayed.
 
-            std::set<std::string, NotificationListenerStringCompare> targets_; //!< The targets the Queue displays Notifications of.
+            bool registered_; //!< Helper variable to remember whether the NotificationQueue is registered already.
 
-            std::multiset<NotificationContainer*, NotificationContainerCompare> ordering_; //!< The NotificationContainers ordered by the time they were registered. //TODO: Would set work as well?
+            std::set<std::string, NotificationListenerStringCompare> targets_; //!< The targets the NotificationQueue displays Notifications of.
+
+            std::multiset<NotificationContainer*, NotificationContainerCompare> ordering_; //!< The NotificationContainers ordered by the time they were registered.
             std::vector<NotificationContainer*> notifications_; //!< The NotificationContainers in the order they were added to the NotificationQueue.
 
             float tickTime_; //!< Helper variable, to not have to check for Notifications that have been displayed too long, every tick.
             NotificationContainer timeLimit_; //!< Helper object to check against to determine whether Notifications have expired.
 
-            bool registered_; //!< Helper variable to remember whether the NotificationQueue is registered already.
-
-            void initialize(void); //!< Initializes the object.
             void create(void); //!< Creates the NotificationQueue in lua.
 
-            bool setName(const std::string& name); //!< Sets the name of the NotificationQueue.
+            void setName(const std::string& name); //!< Sets the name of the NotificationQueue.
 
-            void sizeChanged(void); //!< Adjusts the NotificationQueue, when the maximum size has changed.
+            void push(Notification* notification, const std::time_t & time); //!< Adds (pushes) a Notification to the NotificationQueue.
+            void pop(void); //!< Removes (pops) the least recently added Notification form the NotificationQueue.
+            void remove(NotificationContainer* container); //!< Removes the Notification that is stored in the input NotificationContainer.
 
-            void push(Notification* notification, const std::time_t & time); //!< Add a Notification to the NotificationQueue.
-            void pop(void); //!< Removes the least recently added Notification form the NotificationQueue.
-            void remove(NotificationContainer* container); //!< Removes the Notification that is stored in the input container.
-
-            void clear(void); //!< Clears the queue by removing all Notifications.
+            void clear(void); //!< Clears the NotificationQueue by removing all NotificationContainers.
 
     }; // tolua_export
 
