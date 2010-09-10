@@ -44,7 +44,7 @@ namespace orxonox
             HUDHealthBar(BaseObject* creator);
             virtual ~HUDHealthBar();
 
-            virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
             virtual void changedOwner();
             virtual void changedOverlayGroup();

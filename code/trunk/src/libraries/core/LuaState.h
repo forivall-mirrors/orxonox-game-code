@@ -27,6 +27,16 @@
  *
  */
 
+/**
+    @defgroup Lua Lua
+    @ingroup Core
+*/
+
+/**
+    @file
+    @ingroup Lua
+*/
+
 #ifndef _LuaState_H__
 #define _LuaState_H__
 

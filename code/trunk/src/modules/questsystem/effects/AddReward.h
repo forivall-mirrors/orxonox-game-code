@@ -37,7 +37,7 @@
 #include "questsystem/QuestsystemPrereqs.h"
 
 #include <list>
-#include "QuestEffect.h"
+#include "questsystem/QuestEffect.h"
 
 namespace orxonox
 {
@@ -47,11 +47,13 @@ namespace orxonox
 
         Creating a AddReward through XML goes as follows:
 
+        @code
         <AddReward>
             <Rewardable /> //A list of Rewardable objects to be rewarded the player, see the specific Rewardables for their respective XML representations.
             ...
             <Rewardable />
         </AddReward>
+        @endcode
     @author
         Damian 'Mozork' Frick
     */

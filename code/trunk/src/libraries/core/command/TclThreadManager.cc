@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of TclThreadManager.
+*/
+
 #include "TclThreadManager.h"
 
 #include <boost/bind.hpp>
@@ -250,7 +255,7 @@ namespace orxonox
 
     void TclThreadManager::initialize(TclInterpreterBundle* bundle)
     {
-        const std::string& id_string = getConvertedValue<unsigned int, std::string>(bundle->id_);
+        const std::string& id_string = multi_cast<std::string>(bundle->id_);
 
         // Initialize the new interpreter
         try
@@ -302,7 +307,7 @@ namespace orxonox
 
     /**
         @brief Sends a command to the queue of a given Tcl-interpreter
-        @param id The id of the target interpreter
+        @param target_id The id of the target interpreter
         @param command The command to be sent
     */
     void TclThreadManager::execute(unsigned int target_id, const std::string& command)
@@ -325,6 +330,7 @@ namespace orxonox
     /**
         @brief This function can be called from Tcl to send a command to the queue of any interpreter.
         @param target_id The id of the target thread
+        @param args Contains the content of the command
     */
     void TclThreadManager::tcl_crossexecute(int target_id, const Tcl::object& args)
     {
@@ -333,7 +339,7 @@ namespace orxonox
 
     /**
         @brief Sends a command to the queue of a given Tcl-interpreter
-        @param id The id of the target interpreter
+        @param target_id The id of the target interpreter
         @param command The command to be sent
     */
     void TclThreadManager::_execute(unsigned int target_id, const std::string& command)
@@ -346,7 +352,7 @@ namespace orxonox
 
     /**
         @brief Sends a query to a given Tcl-interpreter and waits for the result
-        @param id The id of the target interpreter
+        @param target_id The id of the target interpreter
         @param command The command to be sent
         @return The result of the command
     */
@@ -358,6 +364,7 @@ namespace orxonox
     /**
         @brief This function can be called from Tcl to send a query to the main thread.
         @param source_id The id of the calling thread
+        @param args Contains the content of the query
 
         A query waits for the result of the command. This means, the calling thread will be blocked until
         the main thread answers the query. In return, the main thread sends the result of the console
@@ -372,6 +379,7 @@ namespace orxonox
         @brief This function can be called from Tcl to send a query to another thread.
         @param source_id The id of the calling thread
         @param target_id The id of the target thread
+        @param args Contains the content of the query
     */
     std::string TclThreadManager::tcl_crossquery(int source_id, int target_id, const Tcl::object& args)
     {
@@ -383,7 +391,7 @@ namespace orxonox
         @param source_id The id of the calling thread
         @param target_id The id of the target thread
         @param command The command to send as a query
-        @param bUseCommandExecutor Only used if the target_id is 0 (which references the main interpreter). In this case it means if the command should be passed to the CommandExecutor (true) or to the main Tcl interpreter (false). This is true when called by tcl_query and false when called by tcl_crossquery.
+        @param bUseCommandExecutor Only used if the target_id is 0 (which references the main interpreter). In this case it means if the command should be passed to the CommandExecutor (true) or to the main Tcl interpreter (false). This is true when called by tcl_query() and false when called by tcl_crossquery().
     */
     std::string TclThreadManager::_query(unsigned int source_id, unsigned int target_id, const std::string& command, bool bUseCommandExecutor)
     {
@@ -399,10 +407,10 @@ namespace orxonox
             if ((source_bundle->id_ == target_bundle->id_) || source_bundle->queriers_.is_in(target_bundle->id_))
             {
                 // This query would lead to a deadlock - return with an error
-                TclThreadManager::error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + ' ' + getConvertedValue<unsigned int, std::string>(source_bundle->id_) \
-                            + " -> " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
-                            + "), couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) \
-                            + " from other interpreter with ID " + getConvertedValue<unsigned int, std::string>(source_bundle->id_) + '.');
+                TclThreadManager::error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + ' ' + multi_cast<std::string>(source_bundle->id_) \
+                            + " -> " + multi_cast<std::string>(target_bundle->id_) \
+                            + "), couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(target_bundle->id_) \
+                            + " from other interpreter with ID " + multi_cast<std::string>(source_bundle->id_) + '.');
             }
             else
             {
@@ -468,7 +476,7 @@ namespace orxonox
                 {
                     // This happens if the main thread tries to query a busy interpreter
                     // To avoid a lock of the main thread, we simply don't proceed with the query in this case
-                    TclThreadManager::error("Error: Couldn't query Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(target_bundle->id_) + ", interpreter is busy right now.");
+                    TclThreadManager::error("Error: Couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(target_bundle->id_) + ", interpreter is busy right now.");
                 }
             }
 
@@ -514,7 +522,7 @@ namespace orxonox
         }
         else
         {
-            TclThreadManager::error("Error: No Tcl-interpreter with ID " + getConvertedValue<unsigned int, std::string>(id) + " existing.");
+            TclThreadManager::error("Error: No Tcl-interpreter with ID " + multi_cast<std::string>(id) + " existing.");
             return 0;
         }
     }
@@ -530,7 +538,7 @@ namespace orxonox
             if (it != list.begin())
                 output += ' ';
 
-            output += getConvertedValue<unsigned int, std::string>(*it);
+            output += multi_cast<std::string>(*it);
         }
         return output;
     }
@@ -582,7 +590,7 @@ namespace orxonox
 
         if (cc != TCL_OK)
         {
-            TclThreadManager::error("Tcl error (" + action + ", ID " + getConvertedValue<unsigned int, std::string>(bundle->id_) + "): " + static_cast<std::string>(result));
+            TclThreadManager::error("Tcl error (" + action + ", ID " + multi_cast<std::string>(bundle->id_) + "): " + static_cast<std::string>(result));
             return "";
         }
         else

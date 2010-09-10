@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of the Timer class.
+*/
+
 #include "Timer.h"
 
 #include <set>
@@ -44,7 +49,7 @@ namespace orxonox
     static std::set<Timer*> delaytimerset;
 
     /**
-        @brief Calls a console command after 'delay' seconds.
+        @brief Console-command: Calls another console command after @a delay seconds.
         @param delay The delay in seconds
         @param command The console command
     */
@@ -59,8 +64,8 @@ namespace orxonox
     }
 
     /**
-        @brief Executes the command.
-        @param timer The timer to destroy after the command-execution
+        @brief Helper function for delay(), executes the command and destroys the timer.
+        @param timer The timer which called this function.
         @param command The command to execute
     */
     void executeDelayedCommand(Timer* timer, const std::string& command)
@@ -71,7 +76,7 @@ namespace orxonox
     }
 
     /**
-        @brief Kills all delayed commands.
+        @brief Console-command: Kills all scheduled commands that were delayed using delay().
     */
     void killdelays()
     {
@@ -91,10 +96,11 @@ namespace orxonox
     }
 
     /**
-        @brief Constructor: Initializes the Timer with given values.
-        @param interval The timer-interval in seconds
-        @param bLoop If true, the function gets called every 'interval' seconds
-        @param exeuctor A executor of the function to call
+        @brief Constructor: Initializes and starts the timer, which will call an executor after some time.
+        @param interval         The timer-interval in seconds
+        @param bLoop            If true, the executor gets called every @a interval seconds
+        @param executor         The executor that will be called
+        @param bKillAfterCall   If true, the timer will be deleted after the executor was called
     */
     Timer::Timer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall)
     {
@@ -119,7 +125,7 @@ namespace orxonox
     }
 
     /**
-        @brief Executes the executor.
+        @brief Calls the executor and destroys the timer if requested.
     */
     void Timer::run()
     {

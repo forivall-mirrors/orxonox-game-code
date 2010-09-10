@@ -28,7 +28,39 @@
 
 /**
     @file
+    @ingroup Util
     @brief Declaration of the ORXONOX_VA_NARGS macro which returns the number of arguments passed to a variadic macro.
+
+    With this utility you can overload a macro for different numbers of arguments
+    (of course overloading is not possible for different types, as macros are not
+    type aware, but for different numbers of arguments is still very powerful).
+
+    Example: A macro to call functions
+    @code
+    myfunction();                                           // A static function
+    MyClass::myStaticFunction();                            // A static class function
+    MyClass::myFunction();                                  // A member function
+
+    #define CallFunction(...) \                             // Define a variadic macro that passes the arguments to the overloaded implementations
+        BOOST_PP_EXPAND(BOOST_PP_CAT(CallFunction, ORXONOX_VA_NARGS(__VA_ARGS__))(__VA_ARGS__))
+
+    #define CallFunction1(function) \                       // Overloaded macro for 1 argument
+        function()                                          // Calls the static function
+
+    #define CallFunction2(class, function) \                // Overloaded macro for 2 arguments
+        class::function()                                   // Calls the static class function
+
+    #define CallFunction3(class, function, object) \        // Overloaded macro for 3 arguments
+        object->class::function()                           // Calls the function on the object
+
+
+    CallFunction(myFunction);                               // Call the macro with 1 argument
+    CallFunction(MyClass, myStaticFunction);                // Call the macro with 2 arguments
+    CallFunction(MyClass, myFunction, new MyClass());       // Call the macro with 3 arguments
+    @endcode
+
+    Note that the first (variadic) macro concatenates the name "CallFunction" with
+    the number of arguments ("1" - "N"). Then all arguments are passed to the right macro.
 */
 
 #include <boost/preprocessor/facilities/expand.hpp>

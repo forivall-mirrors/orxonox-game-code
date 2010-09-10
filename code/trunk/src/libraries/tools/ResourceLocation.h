@@ -45,7 +45,7 @@ namespace orxonox
         ResourceLocation(BaseObject* creator);
         virtual ~ResourceLocation();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         void setPath(const std::string& path) { path_ = path; }
         const std::string& getPath() const { return path_; }

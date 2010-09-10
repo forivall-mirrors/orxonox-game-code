@@ -98,7 +98,7 @@ namespace orxonox
     /**
     @brief
         Add a Pickupable to the PickupCollectionIdentifier.
-    @param
+    @param identifier
         A pointer to the PickupIdentifier of the Pickupable to be added.
     */
     void PickupCollectionIdentifier::addPickup(const PickupIdentifier* identifier)

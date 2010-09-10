@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file
+    @ingroup Event
+    @brief Definition of the XMLPortEventState() macro, as well as some more useful macros.
+*/
+
 #ifndef _EventIncludes_H__
 #define _EventIncludes_H__
 

@@ -54,12 +54,6 @@ namespace orxonox
                 delete (*it);
     }
 
-    /**
-        @brief XML loading and saving.
-        @param xmlelement The XML-element
-        @param loading Loading (true) or saving (false)
-        @return The XML-element
-    */
     void Namespace::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Namespace, XMLPort, xmlelement, mode);

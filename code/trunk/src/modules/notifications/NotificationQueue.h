@@ -70,7 +70,9 @@ namespace orxonox
         Beware! The NotificationQueue is an OverlayGruop and thus cannot be be a sub-element of an OverlayGroup (at least no for now.)
 
         Creating a NotificationQueue through XML goes as follows:
-        Be aware that the NotificationQueue must be inside the <Level></Level> tags or bad things will happen.
+        Be aware that the NotificationQueue must be inside the @code <Level></Level> @endcode tags or bad things will happen.
+        
+        @code
         <NotificationQueue
             name = "SuperQueue" //Name of your OverlayQueue.
             maxSize = "5" //The maximum number of Notifications displayed. (Default is 5)
@@ -81,6 +83,7 @@ namespace orxonox
             fontSize = '0.4' //The font size. (Default is 0.025)
             position = "0.0, 0.0" //The position of the NotificationQueue. (Default is 0.0,0.0)
         />
+        @endcode
     @author
         Damian 'Mozork' Frick
     */
@@ -92,7 +95,7 @@ namespace orxonox
             NotificationQueue(BaseObject* creator);
             virtual ~NotificationQueue();
 
-            virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode); //!< Method for creating a NotificationQueue object through XML.
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a NotificationQueue object through XML.
 
             virtual void tick(float dt); //!< To update from time to time.
 

@@ -27,14 +27,49 @@
  */
 
 /**
+    @defgroup Factory RegisterObject() and CreateFactory()
+    @ingroup Object
+*/
+
+/**
     @file
-    @brief Definition of macros for Identifiers
+    @ingroup Object Factory
+    @brief Defines several very important macros used to register objects, create factories, and to work with identifiers.
 
-    Every class needs the RegisterObject(class) macro in its constructor. If the class is an interface
-    or the BaseObject itself, it needs the macro RegisterRootObject(class) instead.
+    Every class needs the @c RegisterObject(class) macro in its constructor. If the class is an interface
+    or the @c BaseObject itself, it needs the macro @c RegisterRootObject(class) instead.
 
-    To allow the object being created through the factory, use the CreateFactory(class) macro outside
-    the of the class implementation, so it gets executed before main().
+    To allow the object being created through the factory, use the @c CreateFactory(class) macro outside
+    of the class implementation, so it gets executed statically before @c main(). This will at the same time
+    register @a class in the class-hierarchy. If you don't want @a class to be loadable, but still
+    register it, call @c CreateUnloadableFactory(class).
+
+    Example:
+    @code
+    // Create the factory for MyClass
+    CreateFactory(MyClass);
+
+    // Constructor:
+    MyClass::MyClass()
+    {
+        // Register the object in the Identifier of MyClass
+        RegisterObject(MyClass);
+    }
+    @endcode
+
+    This file also defines a number of other useful macros, like, for example, @c Class(class) which
+    returns the @ref orxonox::Identifier "Identifier" of @a class, or @c ClassByString("class") which
+    returns the Identifier of a class with name @a "class".
+
+    Example:
+    @code
+    // Assigns the Identifier of MyClass
+    Identifier* identifier = Class(MyClass);
+    @endcode
+    @code
+    // Assigns the Identifier of a class named "MyClass"
+    Identifier* identifier = ClassByString("MyClass");
+    @endcode
 */
 
 #ifndef _CoreIncludes_H__
@@ -50,9 +85,9 @@
 
 
 /**
-    @brief Intern macro, containing the common parts of RegisterObject and RegisterRootObject.
+    @brief Intern macro, containing the common parts of @c RegisterObject and @c RegisterRootObject.
     @param ClassName The name of the class
-    @param bRootClass True if the class is directly derived from OrxonoxClass
+    @param bRootClass True if the class is directly derived from orxonox::OrxonoxClass
 */
 #define InternRegisterObject(ClassName, bRootClass) \
     if (ClassIdentifier<ClassName>::getIdentifier(#ClassName)->initialiseObject(this, #ClassName, bRootClass)) \
@@ -61,15 +96,18 @@
         ((void)0)
 
 /**
-    @brief RegisterObject - with and without debug output.
+    @brief Registers a newly created object in the core. Has to be called at the beginning of the constructor of @a ClassName.
     @param ClassName The name of the class
 */
 #define RegisterObject(ClassName) \
     InternRegisterObject(ClassName, false)
 
 /**
-    @brief RegisterRootObject - with and without debug output.
+    @brief Registers a newly created object in the core. Has to be called at the beginning of the constructor of @a ClassName.
     @param ClassName The name of the class
+
+    In contrast to RegisterObject, this is used for classes that inherit directly from
+    orxonox::OrxonoxClass, namely all interfaces and orxonox::BaseObject.
 */
 #define RegisterRootObject(ClassName) \
     InternRegisterObject(ClassName, true)
@@ -100,7 +138,7 @@ namespace orxonox
 {
     /**
         @brief Returns the Identifier with a given name.
-        @param String The name of the class
+        @param name The name of the class
     */
     inline Identifier* ClassByString(const std::string& name)
     {
@@ -109,7 +147,7 @@ namespace orxonox
 
     /**
         @brief Returns the Identifier with a given lowercase name.
-        @param String The lowercase name of the class
+        @param name The lowercase name of the class
     */
     inline Identifier* ClassByLowercaseString(const std::string& name)
     {
@@ -118,7 +156,7 @@ namespace orxonox
 
     /**
         @brief Returns the Identifier with a given network ID.
-        @param networkID The network ID of the class
+        @param id The network ID of the class
     */
     inline Identifier* ClassByID(uint32_t id)
     {
@@ -129,7 +167,7 @@ namespace orxonox
         @brief Returns the Identifier with a given 'this' pointer.
         @note This of course only works with OrxonoxClasses.
               The only use is in conjunction with macros that don't know the class type.
-        @param Pointer to an OrxonoxClass
+        @param object Pointer to an OrxonoxClass
     */
     template <class T>
     inline Identifier* ClassByObjectType(const T* object)

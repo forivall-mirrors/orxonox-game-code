@@ -28,6 +28,8 @@
 
 /**
 @file
+@ingroup Lua
+@brief
     This is required because tolua would parse this macro in LuaState.h and fail
 */
 

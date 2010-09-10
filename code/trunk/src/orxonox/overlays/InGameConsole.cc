@@ -453,7 +453,10 @@ namespace orxonox
 
     /**
         @brief Prints string to bottom line.
-        @param s String to be printed
+        @param text The string to be printed
+        @param type The type of the text, defines the color
+        @param index The index of the text overlay in which the string will be displayed
+        @param alwaysShift If true the ohter lines in the console are always shifted by one line
     */
     void InGameConsole::print(const std::string& text, Shell::LineType type, int index, bool alwaysShift)
     {

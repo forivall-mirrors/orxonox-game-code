@@ -45,7 +45,9 @@ namespace orxonox
 
         Creating a FailQuest through XML goes as follows:
 
-        <FailQuest questId="id" />  //Where id is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information, and identifies the Quest that should be failed.
+        @code
+        <FailQuest questId="id" />  //Where id identifies the Quest that should be failed.
+        @endcode
     @author
         Damian 'Mozork' Frick
     */

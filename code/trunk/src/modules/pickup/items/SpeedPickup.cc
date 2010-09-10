@@ -251,7 +251,7 @@ namespace orxonox
     /**
     @brief
         Sets the SpeedMultiply
-    @param speedAdd
+    @param speedMultiply
         The multiplied Speed
     */
     void SpeedPickup::setSpeedMultiply(float speedMultiply)

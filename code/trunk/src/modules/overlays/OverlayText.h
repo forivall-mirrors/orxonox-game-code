@@ -51,7 +51,7 @@ namespace orxonox
         OverlayText(BaseObject* creator);
         virtual ~OverlayText();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         void setCaption(const std::string& caption);
         std::string getCaption() const;

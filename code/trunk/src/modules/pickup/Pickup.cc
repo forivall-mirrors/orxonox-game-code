@@ -224,8 +224,6 @@ namespace orxonox
         Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
         This method must be implemented by any class directly inheriting from Pickupable. It is most easily done by just creating a new DroppedPickup, e.g.:
         DroppedPickup(BaseObject* creator, Pickupable* pickup, const Vector3& position);
-    @param position
-        The position at which the PickupSpawner should be placed.
     @return
         Returns true if a spawner was created, false if not.
     */

@@ -28,46 +28,46 @@
 
 /**
     @file
-    @brief Implementation of the FailQuest class.
+    @brief Implementation of the CompleteQuest class.
 */
 
-#include "FailQuest.h"
+#include "CompleteQuest.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "QuestManager.h"
-#include "Quest.h"
+#include "questsystem/QuestManager.h"
+#include "questsystem/Quest.h"
 
 namespace orxonox
 {
-    CreateFactory(FailQuest);
+    CreateFactory(CompleteQuest);
 
     /**
     @brief
         Constructor. Registers the object.
     */
-    FailQuest::FailQuest(BaseObject* creator) : ChangeQuestStatus(creator)
+    CompleteQuest::CompleteQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
-        RegisterObject(FailQuest);
+        RegisterObject(CompleteQuest);
     }
 
     /**
     @brief
         Destructor.
     */
-    FailQuest::~FailQuest()
+    CompleteQuest::~CompleteQuest()
     {
     }
 
     /**
     @brief
-        Method for creating a FailQuest object through XML.
+        Method for creating a CompleteQuest object through XML.
     */
-    void FailQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void CompleteQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(FailQuest, XMLPort, xmlelement, mode);
+        SUPER(CompleteQuest, XMLPort, xmlelement, mode);
 
-        COUT(4) << "New FailQUest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
+        COUT(4) << "New CompleteQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
     /**
@@ -78,21 +78,22 @@ namespace orxonox
     @return
         Returns true if the QuestEffect was invoked successfully.
     */
-    bool FailQuest::invoke(PlayerInfo* player)
+    bool CompleteQuest::invoke(PlayerInfo* player)
     {
-        if(player == NULL) //!< We don't know what to do with no player.
+        if(player == NULL) //!< You know, what we think of NULL-pointers...
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;
         }
 
-        COUT(4) << "FailQuest on player: " << player << " ." << std::endl;
+        COUT(5) << "CompleteQuest on player: " << player << " ." << std::endl;
 
         Quest* quest;
+
         try
         {
             quest = QuestManager::getInstance().findQuest(this->getQuestId());
-            if(quest == NULL || !quest->fail(player))
+            if(quest == NULL || !quest->complete(player))
             {
                return false;
             }
@@ -103,7 +104,7 @@ namespace orxonox
             return false;
         }
 
-        COUT(4) << "Quest {" << quest->getId() << "} failed by player: " << player << " ." << std::endl;
+        COUT(4) << "Quest {" << quest->getId() << "} successfully completed by player: " << player << " ." << std::endl;
         return true;
     }
 

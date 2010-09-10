@@ -90,12 +90,12 @@ namespace orxonox
         @param myposition My position
         @param mydirection My viewing direction
         @param otherposition The position of the other object
-        @return The angle
+        @return The angle in radian
 
-        @example
-        If the other object is exactly in front of me, the function returns 0.
-        If the other object is exactly behind me, the function returns pi.
-        If the other object is exactly right/left to me (or above/below), the function returns pi/2.
+        Examples:
+         - If the other object is exactly in front of me, the function returns 0.
+         - If the other object is exactly behind me, the function returns pi.
+         - If the other object is exactly right/left to me (or above/below), the function returns pi/2.
     */
     float getAngle(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& otherposition)
     {
@@ -115,12 +115,12 @@ namespace orxonox
         @param otherposition The position of the other object
         @return The viewing direction
 
-        @example
-        If the other object is exactly in front of me, the function returns Vector2(0, 0).
-        If the other object is exactly at my left, the function returns Vector2(-1, 0).
-        If the other object is exactly at my right, the function returns Vector2(1, 0).
-        If the other object is only a bit at my right, the function still returns Vector2(1, 0).
-        If the other object is exactly above me, the function returns Vector2(0, 1).
+        Examples:
+         - If the other object is exactly in front of me, the function returns <tt>Vector2(0, 0)</tt>.
+         - If the other object is exactly at my left, the function returns <tt>Vector2(-1, 0)</tt>.
+         - If the other object is exactly at my right, the function returns <tt>Vector2(1, 0)</tt>.
+         - If the other object is only a bit at my right, the function still returns <tt>Vector2(1, 0)</tt>.
+         - If the other object is exactly above me, the function returns <tt>Vector2(0, 1)</tt>.
     */
     orxonox::Vector2 get2DViewdirection(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition)
     {
@@ -155,12 +155,12 @@ namespace orxonox
         @param otherposition The position of the other object
         @return The viewing direction
 
-        @example
-        If the other object is exactly in front of me, the function returns Vector2(0, 0).
-        If the other object is exactly at my left, the function returns Vector2(-0.5, 0).
-        If the other object is exactly at my right, the function returns Vector2(0.5, 0).
-        If the other object is only a bit at my right, the function still returns Vector2(0.01, 0).
-        If the other object is exactly above me, the function returns Vector2(0, 0.5).
+        Examples:
+         - If the other object is exactly in front of me, the function returns <tt>Vector2(0, 0)</tt>.
+         - If the other object is exactly at my left, the function returns <tt>Vector2(-0.5, 0)</tt>.
+         - If the other object is exactly at my right, the function returns <tt>Vector2(0.5, 0)</tt>.
+         - If the other object is only a bit at my right, the function still returns <tt>Vector2(0.01, 0)</tt>.
+         - If the other object is exactly above me, the function returns <tt>Vector2(0, 0.5)</tt>.
     */
     orxonox::Vector2 get2DViewcoordinates(const orxonox::Vector3& myposition, const orxonox::Vector3& mydirection, const orxonox::Vector3& myorthonormal, const orxonox::Vector3& otherposition)
     {
@@ -219,6 +219,9 @@ namespace orxonox
         return (targetposition + targetvelocity * time);
     }
 
+    /**
+        @brief Returns a unique number. This function will never return the same value twice.
+    */
     unsigned long getUniqueNumber()
     {
         static unsigned long aNumber = 135;

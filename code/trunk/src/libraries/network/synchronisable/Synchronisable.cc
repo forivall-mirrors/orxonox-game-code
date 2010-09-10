@@ -216,6 +216,7 @@ namespace orxonox
    * |totalsize,objectID_,classID_,var1,var2,string1_length,string1,var3,...|
    * length of varx: size saved int syncvarlist
    * @param mem pointer to allocated memory with enough size
+   * @param sizes FIXME - add doc!
    * @param id gamestateid of the gamestate to be saved (important for priorities)
    * @param mode defines the direction in which the data will be send/received
    *             0x1: server->client
@@ -287,6 +288,7 @@ namespace orxonox
    * This function takes a bytestream and loads the data into the registered variables
    * @param mem pointer to the bytestream
    * @param mode same as in getData
+   * @param forceCallback FIXME - add doc!
    * @return true/false
    */
   bool Synchronisable::updateData(uint8_t*& mem, uint8_t mode, bool forceCallback)
@@ -363,6 +365,7 @@ namespace orxonox
   /**
    * This function determines, wheter the object should be saved to the bytestream (according to its syncmode/direction)
    * @param id gamestate id
+   * @param mode FIXME - add doc!
    * @return true/false
    */
   bool Synchronisable::doSync(int32_t id, uint8_t mode)

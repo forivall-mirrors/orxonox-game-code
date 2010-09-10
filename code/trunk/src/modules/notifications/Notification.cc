@@ -54,6 +54,8 @@ namespace orxonox
     /**
     @brief
         Constructor. Creates a Notification with the input message.
+    @param creator
+        The object that created this Notification
     @param message
         The message of the Notification.
     */

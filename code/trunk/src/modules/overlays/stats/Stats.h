@@ -45,8 +45,6 @@ namespace orxonox
 
         void setConfigValues();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
-
         virtual void tick(float dt);
 
     private: // variables

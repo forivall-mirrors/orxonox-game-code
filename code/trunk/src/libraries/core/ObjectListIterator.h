@@ -28,18 +28,27 @@
 
 /**
     @file
-    @brief Definition and implementation of the Iterator class.
+    @ingroup Object ObjectList
+    @brief Definition of the ObjectListIterator class, used to iterate through object-lists.
 
-    The ObjectListIterator of a given class allows to iterate through the
-    ObjectList of this class, containing all objects of that type.
-    This is the only way to access the objects stored in an ObjectList.
+    @anchor ObjectListIteratorExample
+
+    @ref orxonox::ObjectListIterator "ObjectListIterator<T>" allows to iterate through
+    @ref orxonox::ObjectList "ObjectList<T>", containing all objects of type @a T. In contrast to
+    @ref orxonox::Iterator "Iterator<T>", this iterator is limited to the object-list of type @a T.
+    It is, however, much faster as it doesn't need a @c dynamic_cast.
 
     Usage:
+    @code
     for (ObjectListIterator<myClass> it = ObjectList<myClass>::begin(); it != ObjectList<myClass>::end(); ++it)
     {
         it->someFunction(...);
         myClass* myObject = *it;
     }
+    @endcode
+
+    @note @ref orxonox::ObjectList::iterator "ObjectList<T>::iterator" is identical to
+          @ref orxonox::ObjectListIterator "ObjectListIterator<T>" (it's just a typedef).
 */
 
 #ifndef _ObjectListIterator_H__
@@ -51,7 +60,11 @@
 
 namespace orxonox
 {
-    //! The Iterator allows to iterate through the ObjectList of a given class.
+    /**
+        @brief ObjectListIterator<T> allows to iterate through the ObjectList of class @a T.
+
+        @see See @ref ObjectListIteratorExample "ObjectListIterator.h" for more information an example.
+    */
     template <class T>
     class ObjectListIterator
     {
@@ -108,7 +121,7 @@ namespace orxonox
 
             /**
                 @brief Assigns the element of another ObjectListIterator.
-                @param element The other ObjectListIterator
+                @param other The other ObjectListIterator
             */
             inline ObjectListIterator<T>& operator=(const ObjectListIterator<T>& other)
             {
@@ -130,7 +143,7 @@ namespace orxonox
                 @brief Overloading of the it++ operator: ObjectListIterator points to the next object in the list.
                 @return The ObjectListIterator itself
             */
-            inline ObjectListIterator<T> operator++(int i)
+            inline ObjectListIterator<T> operator++(int)
             {
                 ObjectListIterator<T> copy = *this;
                 this->element_ = static_cast<ObjectListElement<T>*>(this->element_->next_);
@@ -216,7 +229,7 @@ namespace orxonox
             }
 
         private:
-            ObjectListElement<T>* element_;        //!< The element the Iterator points at
+            ObjectListElement<T>* element_;        //!< The element the iterator points at
     };
 }
 

@@ -48,7 +48,7 @@ namespace orxonox
         HUDRadar(BaseObject* creator);
         virtual ~HUDRadar();
 
-        virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         virtual void changedOwner();
 
     private:

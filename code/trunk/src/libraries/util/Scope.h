@@ -26,6 +26,29 @@
  *
  */
 
+/**
+@file
+@ingroup SingletonScope
+@brief Declaration of the classes that are needed to use Scopes:
+orxonox::Scope, orxonox::ScopeListener, and orxonox::ScopeManager.
+
+@anchor Scope
+
+A virtual scope can be represented by an instance of class orxonox::Scope. orxonox::Scope<@a scope> is a template
+an its template argument defines the name of the virtual scope. See orxonox::ScopeID for an enumeration of the
+available values for @a scope. The orxonox::Scope object for a given @a scope can be activated or deactivated.
+Instances of orxonox::ScopeListener can register for a given @a scope and will get a notification if the
+corresponding orxonox::Scope object changes its state.
+
+To avoid multiple instances of orxonox::Scope<@a scope> in different libraries, each instance of orxonox::Scope
+registers in orxonox::ScopeManager, where they are linked statically in the util library.
+
+Scopes are usually used to control the creation and destruction of Singletons.
+
+@see orxonox::ScopedSingletonManager
+@see orxonox::Singleton
+*/
+
 #ifndef __Util_Scope_H__
 #define __Util_Scope_H__
 
@@ -41,7 +64,13 @@
 namespace orxonox
 {
     /**
-        @brief The ScopeManager stores the variables of the scope templates in a statically linked context.
+        @brief The ScopeManager stores the variables of the Scope templates in a statically linked context.
+
+        If all Scope objects are managed by this class, they are statically linked in the util library.
+        Without this, a new instance of Scope<T> for each T would be created in every library of Orxonox,
+        which is of course not the desired behavior.
+
+        @see See @ref Scope "this description" for details about the interrelationship of Scope, ScopeListener, and ScopeManager.
     */
     class _UtilExport ScopeManager
     {
@@ -55,7 +84,10 @@ namespace orxonox
     };
 
     /**
-        @brief ScopeListeners register themselves in the corresponding scope and wait for notifications.
+        @brief ScopeListeners register themselves in the corresponding Scope and wait for notifications.
+        Notifications are sent if a Scope is activated or deactivated.
+
+        @see See @ref Scope "this description" for details about the interrelationship of Scope, ScopeListener, and ScopeManager.
     */
     class _UtilExport ScopeListener
     {
@@ -85,6 +117,8 @@ namespace orxonox
 
         Objects inheriting from a ScopeListener are registered in a list (different for each scope).
         If the scope gets activated or deactivated, all objects in this list are notified.
+
+        @see See @ref Scope "this description" for details about the interrelationship of Scope, ScopeListener, and ScopeManager.
     */
     template <ScopeID::Value scope>
     class Scope
@@ -129,6 +163,7 @@ namespace orxonox
                     this->deactivateListeners();
             }
 
+            //! Deactivates the listeners of this scope in case the scope is destroyed or the construction fails.
             void deactivateListeners()
             {
                 for (typename std::set<ScopeListener*>::iterator it = ScopeManager::listeners_s[scope].begin(); it != ScopeManager::listeners_s[scope].end(); )

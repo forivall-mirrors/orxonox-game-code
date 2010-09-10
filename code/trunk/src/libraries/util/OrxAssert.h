@@ -28,6 +28,7 @@
 
 /**
 @file
+@ingroup ExceptionAssertion
 @brief
     Declaration of custom assertion facilities
 */
@@ -40,8 +41,15 @@
 #include <cassert>
 #include "OutputHandler.h"
 
-// define an assert macro that can display a message
 #ifndef NDEBUG
+/** Run time assertion like assert(), but with an embedded message.
+@details
+    The message will be printed as error with COUT(1). <br>
+    You can use the same magic here as you can with \ref ThrowException
+    @code
+        OrxAssert(condition, "Text: " << number << " more text");
+    @endcode
+*/
 #define OrxAssert(Assertion, ErrorMessage) \
     Assertion ? ((void)0) : (void)(orxonox::OutputHandler::getOutStream(1) << ErrorMessage << std::endl); \
     assert(Assertion)

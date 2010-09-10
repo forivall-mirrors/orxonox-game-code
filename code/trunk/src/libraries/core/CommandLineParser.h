@@ -26,11 +26,24 @@
  *
  */
 
+/**
+    @defgroup CmdArgs Commandline arguments
+    @ingroup Config
+    @brief For a reference of all commandline arguments see @ref cmdargspage
+*/
+
+/**
+    @file
+    @ingroup Config CmdArgs
+    @brief Declaration of CommandLineParser and CommandLineArgument, definition of the SetCommandLineArgument() macros.
+*/
+
 #ifndef _CommandLine_H__
 #define _CommandLine_H__
 
 #include "CorePrereqs.h"
 
+#include <fstream>
 #include <map>
 #include "util/OrxAssert.h"
 #include "util/MultiType.h"
@@ -164,6 +177,8 @@ namespace orxonox
 
         static void destroyAllArguments();
 
+        static void generateDoc(std::ofstream& file);
+
     private:
         //! Constructor initialises bFirstTimeParse_ with true.
         CommandLineParser() : bFirstTimeParse_(true) { }
@@ -206,6 +221,8 @@ namespace orxonox
         Name of the argument. Shortcut can be added later.
     @param defaultValue
         Default value that is used when argument was not given.
+    @param bCommandLineOnly
+        Parsing a file or the command line itself
     */
     template <class T>
     CommandLineArgument& CommandLineParser::addArgument(const std::string& name, T defaultValue, bool bCommandLineOnly)

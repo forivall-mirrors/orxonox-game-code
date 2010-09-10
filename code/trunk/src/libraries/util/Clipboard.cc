@@ -53,8 +53,7 @@ namespace orxonox
 {
 
     /**
-        @brief Puts text into the windows-clipboard
-        @param text The text
+        @brief Puts text into the Windows-clipboard
         @return True if the action was successful
     */
     bool toClipboard(const std::string& text)
@@ -118,12 +117,11 @@ namespace orxonox
 
 namespace orxonox
 {
-    static std::string clipboard; //!< Keeps the text of our internal clipboard
+    static std::string clipboard; ///< Keeps the text of our internal clipboard
 
     /**
         @brief Default implementation if there is no OS-specific implementation or no clipboard. Copies the text into an internal clipboard.
-        @param text The text
-        @return True
+        @see fromClipboard()
     */
     bool toClipboard(const std::string& text)
     {
@@ -133,7 +131,7 @@ namespace orxonox
 
     /**
         @brief Default implementation if there is no OS-specific implementation or no clipboard. Gets the text from the internal clipboard.
-        @return The text
+        @see toClipboard()
     */
     std::string fromClipboard()
     {

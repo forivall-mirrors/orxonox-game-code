@@ -35,7 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "QuestItem.h"
+#include "questsystem/QuestItem.h"
 
 namespace orxonox
 {

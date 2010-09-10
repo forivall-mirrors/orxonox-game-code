@@ -60,8 +60,8 @@ namespace orxonox
         The creator of the DroppedPickup.
     @param pickup
         The Pickupable that was dropped.
-    @param position
-        The position at which the DroppedPickup should be created.
+    @param carrier
+        The PickupCarrier that carried the input pickup before it was dropped.
     @param triggerDistance
         The distance at which the PickupSpawner triggers. Default is 10.
     */

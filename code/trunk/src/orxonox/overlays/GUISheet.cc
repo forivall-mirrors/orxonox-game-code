@@ -53,14 +53,14 @@ namespace orxonox
     {
     }
 
-    void GUISheet::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void GUISheet::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(GUISheet, XMLPort, xmlElement, mode);
+        SUPER(GUISheet, XMLPort, xmlelement, mode);
 
-        XMLPortParam(GUISheet, "showOnLoad",   setShowOnLoad,     getShowOnLoad,     xmlElement, mode);
-        XMLPortParam(GUISheet, "hidePrevious", setPreviousHiding, getPreviousHiding, xmlElement, mode);
-        XMLPortParam(GUISheet, "sheetName",    setSheetName,      getSheetName,      xmlElement, mode);
-        XMLPortParam(GUISheet, "backgroundImage",  setBackgroundImage,  getBackgroundImage,  xmlElement, mode);
+        XMLPortParam(GUISheet, "showOnLoad",   setShowOnLoad,     getShowOnLoad,     xmlelement, mode);
+        XMLPortParam(GUISheet, "hidePrevious", setPreviousHiding, getPreviousHiding, xmlelement, mode);
+        XMLPortParam(GUISheet, "sheetName",    setSheetName,      getSheetName,      xmlelement, mode);
+        XMLPortParam(GUISheet, "backgroundImage",  setBackgroundImage,  getBackgroundImage,  xmlelement, mode);
 
         if (this->bShowOnLoad_)
             this->show();

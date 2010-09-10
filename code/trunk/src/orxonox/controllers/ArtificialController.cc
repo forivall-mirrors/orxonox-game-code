@@ -557,7 +557,7 @@ namespace orxonox
     }
 
     /**
-        @brief Master sets its slaves free for @var FREEDOM_COUNT seconds.
+        @brief Master sets its slaves free for @ref FREEDOM_COUNT seconds.
     */
     void ArtificialController::forceFreeSlaves()
     {
@@ -664,7 +664,7 @@ namespace orxonox
     /**
         @brief Master begins to follow a pawn. Is a "specific master action".
         @param pawn pawn to follow.
-        @param alaways follows pawn forever if true (false if omitted).
+        @param always follows pawn forever if true (false if omitted).
         @param secondsToFollow seconds to follow the pawn if always is false. Will follow pawn 100 seconds if omitted (set in header).
     */
     void ArtificialController::followInit(Pawn* pawn, const bool always, const int secondsToFollow)

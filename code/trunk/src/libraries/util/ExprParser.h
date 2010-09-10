@@ -27,8 +27,9 @@
  */
 
 /**
-  @file
-  @brief Declaration of FloatParser
+@file
+@ingroup Util
+@brief Declaration of FloatParser
 */
 
 #ifndef _FloatParser_H__
@@ -41,6 +42,54 @@
 
 namespace orxonox
 {
+    /** Parser for expressions like \c "3 * cos(5 + 4) / a" where \a a is a predeclared
+        variable.
+    @par Usage
+        Using it is rather simple:
+        @code
+        std::string str("3 + 4");
+        ExprParser expr;
+        expr.parse(str);
+        if (expr.getSuccess())
+        {
+            if (!expr.getRemains().empty())
+            {
+                COUT(2) << "Warning: Expression could not be parsed to the end! Remains: '" << expr.getRemains() << '\'' << std::endl;
+            }
+            double result = expr.getResult();
+        }
+        else
+            COUT(1) << "Error: Cannot calculate expression: Parse error." << std::endl;
+        @endcode
+        getRemains() returns the expression after what could be parsed. For instance
+        \c "2*3 text" will return \c "text" as remains.
+    @details
+        The implementation of this class is really old and sort of a trial for
+        a first C++ class by Reto. That explains why it looks more like C than
+        C++... Also some of the variable names are in German. <br>
+        Explaining how it works exactly is probably not possible anymore, but it
+        is based on recursively parsing the expression character by character.
+        That much I can remember.
+    @par Functions, operators and variables supported
+        - Variables:
+            - e
+            - pi
+        - Functions:
+            - sin, asin, sinh, asinh
+            - cos, acos, cosh, acosh
+            - tan, atan, tanh, atanh
+            - int, floor, ceil, abs, sign
+            - pow, sqrt, exp, ln, log
+            - mod, div
+            - min, max
+            - radians, degrees
+        - Operators:
+            - +, -, ! (unary)
+            - +, -, *, /, %, ^, |, &, !, <, >, !=, <=, >=, =
+    @note
+        Operators may not be very consistent with C++ rules, but using the class
+        for plus and minus should be perfectly ok.
+    */
     class _UtilExport ExprParser
     {
     public:

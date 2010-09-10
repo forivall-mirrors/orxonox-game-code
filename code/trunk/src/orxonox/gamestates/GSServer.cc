@@ -52,7 +52,7 @@ namespace orxonox
 
     void GSServer::activate()
     {
-        GameMode::setHasServer(true);
+        GameMode::setIsServer(true);
 
         this->server_ = new Server(CommandLineParser::getValue("port"));
         COUT(0) << "Loading scene in server mode" << std::endl;
@@ -65,7 +65,7 @@ namespace orxonox
         this->server_->close();
         delete this->server_;
 
-        GameMode::setHasServer(false);
+        GameMode::setIsServer(false);
     }
 
     void GSServer::update(const Clock& time)

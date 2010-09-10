@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Static linkage of the two maps in orxonox::ScopeManager.
+*/
+
 #include "Scope.h"
 
 namespace orxonox

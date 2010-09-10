@@ -298,7 +298,7 @@ namespace orxonox
             /**
             @brief
                 Returns the diagonal elements of the inertia tensor when calculated in local coordinates.
-            @Note
+            @note
                 The local inertia tensor cannot be set, but is calculated by Bullet according to the collisionShape.
                 With compound collision shapes, an approximation is used.
             */
@@ -366,11 +366,11 @@ namespace orxonox
                 Virtual function that gets called when this object collides with another.
             @param otherObject
                 The object this one has collided into.
-            @pram contactPoint
+            @param contactPoint
                 Contact point provided by Bullet. Holds more information and can me modified. See return value.
-            @Return
+            @return
                 Returning false means that no modification to the contactPoint has been made. Return true otherwise!
-            @Note
+            @note
                 Condition is that enableCollisionCallback() was called.
             */
             virtual inline bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)

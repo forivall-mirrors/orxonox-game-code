@@ -26,6 +26,16 @@
  *
  */
 
+/**
+    @defgroup Loader Loader
+    @ingroup XML
+*/
+
+/**
+    @file
+    @ingroup XML Loader
+*/
+
 #ifndef _Loader_H__
 #define _Loader_H__
 

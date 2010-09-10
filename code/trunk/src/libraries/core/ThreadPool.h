@@ -26,6 +26,16 @@
  *
  */
 
+/**
+    @defgroup ThreadPool Thread pool
+    @ingroup Core
+*/
+
+/**
+    @file
+    @ingroup ThreadPool
+*/
+
 #ifndef _ThreadPool_H__
 #define _ThreadPool_H__
 

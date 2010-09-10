@@ -81,13 +81,13 @@ namespace orxonox
         }
     }
 
-    void HUDRadar::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void HUDRadar::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(HUDRadar, XMLPort, xmlElement, mode);
+        SUPER(HUDRadar, XMLPort, xmlelement, mode);
 
-        XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlElement, mode);
-        XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance, xmlElement, mode);
-        XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlElement, mode);
+        XMLPortParam(HUDRadar, "sensitivity", setRadarSensitivity, getRadarSensitivity, xmlelement, mode);
+        XMLPortParam(HUDRadar, "halfDotSizeDistance", setHalfDotSizeDistance, getHalfDotSizeDistance, xmlelement, mode);
+        XMLPortParam(HUDRadar, "maximumDotSize", setMaximumDotSize, getMaximumDotSize, xmlelement, mode);
     }
 
     void HUDRadar::addObject(RadarViewable* object)

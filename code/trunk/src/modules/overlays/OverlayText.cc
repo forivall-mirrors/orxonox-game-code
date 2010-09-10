@@ -70,16 +70,16 @@ namespace orxonox
             Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->text_);
     }
 
-    void OverlayText::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void OverlayText::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(OverlayText, XMLPort, xmlElement, mode);
+        SUPER(OverlayText, XMLPort, xmlelement, mode);
 
-        XMLPortParam(OverlayText, "font",       setFont,            getFont,            xmlElement, mode);
-        XMLPortParam(OverlayText, "colour",     setColour,          getColour,          xmlElement, mode);
-        XMLPortParam(OverlayText, "caption",    setCaption,         getCaption,         xmlElement, mode);
-        XMLPortParam(OverlayText, "textsize",   setTextSize,        getTextSize,        xmlElement, mode);
-        XMLPortParam(OverlayText, "align",      setAlignmentString, getAlignmentString, xmlElement, mode);
-        XMLPortParam(OverlayText, "spacewidth", setSpaceWidth,      getSpaceWidth,      xmlElement, mode);
+        XMLPortParam(OverlayText, "font",       setFont,            getFont,            xmlelement, mode);
+        XMLPortParam(OverlayText, "colour",     setColour,          getColour,          xmlelement, mode);
+        XMLPortParam(OverlayText, "caption",    setCaption,         getCaption,         xmlelement, mode);
+        XMLPortParam(OverlayText, "textsize",   setTextSize,        getTextSize,        xmlelement, mode);
+        XMLPortParam(OverlayText, "align",      setAlignmentString, getAlignmentString, xmlelement, mode);
+        XMLPortParam(OverlayText, "spacewidth", setSpaceWidth,      getSpaceWidth,      xmlelement, mode);
     }
 
     void OverlayText::setAlignmentString(const std::string& alignment)

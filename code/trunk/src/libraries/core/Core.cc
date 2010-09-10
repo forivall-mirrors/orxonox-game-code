@@ -36,6 +36,7 @@
 #include "Core.h"
 
 #include <cassert>
+#include <fstream>
 #include <vector>
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
@@ -170,6 +171,21 @@ namespace orxonox
 
         // Create singletons that always exist (in other libraries)
         this->rootScope_.reset(new Scope<ScopeID::Root>());
+
+        // Generate documentation instead of normal run?
+        std::string docFilename;
+        CommandLineParser::getValue("generateDoc", &docFilename);
+        if (!docFilename.empty())
+        {
+            std::ofstream docFile(docFilename.c_str());
+            if (docFile.is_open())
+            {
+                CommandLineParser::generateDoc(docFile);
+                docFile.close();
+            }
+            else
+                COUT(0) << "Error: Could not open file for documentation writing" << endl;
+        }
     }
 
     /**

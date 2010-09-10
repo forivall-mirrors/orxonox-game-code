@@ -229,6 +229,7 @@ namespace orxonox
   * This function goes forward through the list and looks for an element with clientID
   * This function should only be applied to the head of the list
   * @param clientID id to look for
+  * @param look_backwards FIXME - add doc? parameter unused?
   * @return pointer to the last element in the list or 0 if the search was unsuccessfull
   */
   ClientInformation *ClientInformation::findClient(unsigned int clientID, bool look_backwards) {
@@ -243,7 +244,8 @@ namespace orxonox
   /**
   * This function goes forward through the list and looks for an element with clientID
   * This function should only be applied to the head of the list
-  * @param peer peer to look for
+  * @param address peer to look for
+  * @param look_backwards FIXME - add doc? parameter unused?
   * @return pointer to the element in the list
   */
   ClientInformation *ClientInformation::findClient(ENetAddress *address, bool look_backwards) {

@@ -28,7 +28,8 @@
 
 /**
     @file
-    @brief Definition of the MetaObjectList class.
+    @ingroup Object ObjectList
+    @brief Declaration of the MetaObjectList class.
 
     The MetaObjectList is a single-linked list, containing all list-elements and their
     lists wherein the object, owning the MetaObjectList, is registered.
@@ -45,7 +46,7 @@ namespace orxonox
     // ###############################
     // ###  MetaObjectListElement  ###
     // ###############################
-    //! The list-element of the MetaObjectList
+    /// The list-element of the MetaObjectList
     class _CoreExport MetaObjectListElement
     {
         public:
@@ -64,8 +65,9 @@ namespace orxonox
     // ###############################
     // ###     MetaObjectList      ###
     // ###############################
-    //!  The MetaObjectList contains ObjectListBaseElements and their ObjectListBases.
     /**
+        @brief The MetaObjectList contains ObjectListBaseElements and their ObjectListBases.
+
         The MetaObjectList is a single-linked list, containing all list-elements and their
         lists wherein the object that owns the MetaObjectList is registered.
         This allows much faster deletion of objects because no iteration is needed.
