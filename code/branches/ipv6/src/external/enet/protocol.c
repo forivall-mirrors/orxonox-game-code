@@ -9,9 +9,9 @@
 #include "enet/time.h"
 #include "enet/enet.h"
 
-const ENetHostAddress ENET_HOST_ANY = { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } };
-const ENetHostAddress ENET_IPV4MAPPED_PREFIX = { { 0,0,0,0,0,0,0,0,0,0, 0xff, 0xff, 0,0,0,0 } };
-const ENetHostAddress ENET_HOST_BROADCAST = { { 0,0,0,0,0,0,0,0,0,0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff } };
+const ENetHostAddress ENET_HOST_ANY = ENET_HOST_ANY_INIT;
+const ENetHostAddress ENET_IPV4MAPPED_PREFIX = ENET_IPV4MAPPED_PREFIX_INIT;
+const ENetHostAddress ENET_HOST_BROADCAST = ENET_HOST_BROADCAST_INIT;
 
 static size_t commandSizes [ENET_PROTOCOL_COMMAND_COUNT] =
 {
@@ -32,7 +32,7 @@ static size_t commandSizes [ENET_PROTOCOL_COMMAND_COUNT] =
 ENetHostAddress
 enet_address_map4 (enet_uint32 address)
 {
-    ENetHostAddress addr = ENET_IPV4MAPPED_PREFIX;
+    ENetHostAddress addr = ENET_IPV4MAPPED_PREFIX_INIT;
     ((enet_uint32 *)addr.addr)[3] = address;
     return addr;
 }

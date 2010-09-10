@@ -58,11 +58,16 @@ typedef struct _ENetHostAddress
    enet_uint8 addr[16];
 } ENetHostAddress;
 
-ENET_API const ENetHostAddress ENET_HOST_ANY;          /**< specifies the default server host */
-ENET_API const ENetHostAddress ENET_IPV4MAPPED_PREFIX; /**< specifies the IPv4-mapped IPv6 prefix */
-ENET_API const ENetHostAddress ENET_HOST_BROADCAST;    /**< specifies a IPv4 subnet-wide broadcast */
-#define ENET_IPV4MAPPED_PREFIX_LEN 12                  /**< specifies the length of the IPv4-mapped IPv6 prefix */
-#define ENET_PORT_ANY 0                                /**< specifies that a port should be automatically chosen */
+#define ENET_HOST_ANY_INIT { { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 } }                         /**< specifies the default server host (macro for variable initialization) */
+ENET_API const ENetHostAddress ENET_HOST_ANY;                                              /**< specifies the default server host (global constant variable) */
+#define ENET_IPV4MAPPED_PREFIX_INIT { { 0,0,0,0,0,0,0,0,0,0,0xff,0xff,0,0,0,0 } }          /**< specifies the IPv4-mapped IPv6 prefix (macro for variable initialization) */
+ENET_API const ENetHostAddress ENET_IPV4MAPPED_PREFIX;                                     /**< specifies the IPv4-mapped IPv6 prefix (global constant variable) */
+#define ENET_HOST_BROADCAST_INIT { { 0,0,0,0,0,0,0,0,0,0,0xff,0xff,0xff,0xff,0xff,0xff } } /**< specifies a IPv4 subnet-wide broadcast (macro for variable initialization) */
+ENET_API const ENetHostAddress ENET_HOST_BROADCAST;                                        /**< specifies a IPv4 subnet-wide broadcast (global constant variable) */
+enum {
+    ENET_IPV4MAPPED_PREFIX_LEN = 12,                                                       /**< specifies the length of the IPv4-mapped IPv6 prefix */
+    ENET_PORT_ANY              = 0                                                         /**< specifies that a port should be automatically chosen */
+};
 
 /**
  * Portable internet address structure. 

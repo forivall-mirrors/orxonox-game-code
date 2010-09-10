@@ -199,10 +199,7 @@ enet_socket_bind (ENetSocket socket, const ENetAddress * address, ENetAddressFam
     }
     else
     {
-        ENetAddress address_;
-        address_.host = ENET_HOST_ANY;
-        address_.scopeID = 0;
-        address_.port = 0;
+        ENetAddress address_ = { ENET_HOST_ANY_INIT, 0, 0 };
         enet_address_set_sin((struct sockaddr *) & sin, & address_, family);
     }
 

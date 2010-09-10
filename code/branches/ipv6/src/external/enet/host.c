@@ -14,6 +14,9 @@ enet_socket_create_bind (const ENetAddress * address, ENetAddressFamily family)
     if (socket == ENET_SOCKET_NULL)
         return ENET_SOCKET_NULL;
 
+    /* This is not a conditional bind anymore,
+     * because WSARecvFrom returned WSAEINVAL on the IPv6 socket.
+     * TODO: Check for it's consequences. */
     if (enet_socket_bind (socket, address, family) < 0)
     {
         enet_socket_destroy (socket);
