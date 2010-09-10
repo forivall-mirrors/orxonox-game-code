@@ -47,6 +47,8 @@ namespace orxonox
     /**
     @brief
         Default constructor. Initializes the object.
+    @param creator
+        The creator.
     */
     Notification::Notification(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
@@ -58,6 +60,8 @@ namespace orxonox
     /**
     @brief
         Constructor. Creates a Notification with the input message.
+    @param creator
+        The creator.
     @param message
         The message of the Notification.
     */
