@@ -75,6 +75,8 @@ namespace orxonox // tolua_export
             NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
             virtual ~NotificationQueue();
 
+            void destroy(void) { this->OrxonoxClass::destroy(); } // tolua_export
+
             virtual void tick(float dt); //!< To update from time to time.
 
             void update(void); //!< Updates the queue.

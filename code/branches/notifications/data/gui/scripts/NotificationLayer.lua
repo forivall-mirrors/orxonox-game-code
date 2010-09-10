@@ -39,7 +39,7 @@ function P.removeQueue(name)
     if queue ~= nil then
         winMgr:destroyWindow(queue.window)
     end
-    queue = nil
+    P.queueList[name] = nil
 end
 
 function P.pushNotification(queueName, notification)
@@ -193,7 +193,8 @@ function P.createQueueEditFrame(name)
     local root = winMgr:getWindow("orxonox/NotificationLayer/Root")
     window = winMgr:createWindow("MenuWidgets/FrameWindow", "orxonox/NotificationLayer/Root/EditMode/" .. name)
     local frame = tolua.cast(window, "CEGUI::FrameWindow")
-    frame:setCloseButtonEnabled(false)
+    frame:setCloseButtonEnabled(true)
+    orxonox.GUIManager:subscribeEventHelper(frame, "CloseClicked", P.name .. ".closeQueue_clicked")
     frame:setText("NotificationQueue \"" .. name .. "\"")
     root:addChildWindow(window)
     local pane = winMgr:createWindow("MenuWidgets/ScrollablePane", "orxonox/NotificationLayer/Root/EditMode/" .. name .. "/ScrollingPane")
@@ -220,7 +221,6 @@ function P.createQueueEditFrame(name)
     size = getMinTextSize(P.sampleWindow)
     targets:setSize(CEGUI.UVector2(CEGUI.UDim(0, size[2]*2+20), CEGUI.UDim(0, textHeight)))
     targets:setPosition(CEGUI.UVector2(CEGUI.UDim(0, horzOffset), CEGUI.UDim(0, vertOffset)))
-    cout(0, horzOffset .. "|" .. targets:getXPosition():asAbsolute(1) .. "|" .. size[2]*2+20)
     horzOffset = horzOffset + size[2]*2+20 + 5
     pane:addChildWindow(targets)
     local save = winMgr:createWindow("MenuWidgets/Button", "orxonox/NotificationLayer/Root/EditMode/" .. name .. "/Targets/Save")
@@ -230,7 +230,6 @@ function P.createQueueEditFrame(name)
     local saveTextWidth = size[2]+20
     save:setSize(CEGUI.UVector2(CEGUI.UDim(0, saveTextWidth), CEGUI.UDim(0, textHeight)))
     save:setPosition(CEGUI.UVector2(CEGUI.UDim(0, horzOffset), CEGUI.UDim(0, vertOffset)))
-    cout(0, horzOffset .. "|" .. save:getXPosition():asAbsolute(1))
     orxonox.GUIManager:subscribeEventHelper(save, "Clicked", P.name .. ".saveTargets_clicked")
     pane:addChildWindow(save)
     horzOffset = horzOffset + saveTextWidth
@@ -334,7 +333,7 @@ function P. saveTargets_clicked(e)
 
     local window = winMgr:getWindow("orxonox/NotificationLayer/Root/EditMode/" .. queueName .. "/Targets")
     local save = winMgr:getWindow("orxonox/NotificationLayer/Root/EditMode/" .. queueName .. "/Targets/Save")
-    local width = window:getXPosition():asAbsolute(1)
+    local width = window:getWidth():asAbsolute(1)
 
     local queue = orxonox.NotificationManager:getInstance():getQueue(queueName)
     queue:setTargets(window:getText())
@@ -344,7 +343,6 @@ function P. saveTargets_clicked(e)
     P.sampleWindow:setText(targets)
     local size = getMinTextSize(P.sampleWindow)
     window:setWidth(CEGUI.UDim(0, size[2]*2+20))
-    cout(0, width .. "|" .. size[2]*2+20 .. "|" .. window:getWidth():asAbsolute(1) .. "|" .. save:getXPosition():asAbsolute(1))
     save:setXPosition(CEGUI.UDim(0, save:getXPosition():asAbsolute(1)-width+window:getWidth():asAbsolute(1)))
 end
 
@@ -358,7 +356,7 @@ function P. saveSize_clicked(e)
 
     local window = winMgr:getWindow("orxonox/NotificationLayer/Root/EditMode/" .. queueName .. "/Size")
     local save = winMgr:getWindow("orxonox/NotificationLayer/Root/EditMode/" .. queueName .. "/Size/Save")
-    local width = window:getXPosition():asAbsolute(1)
+    local width = window:getWidth():asAbsolute(1)
 
     local queue = orxonox.NotificationManager:getInstance():getQueue(queueName)
     queue:setMaxSize(tonumber(window:getText()))
@@ -381,7 +379,7 @@ function P. saveDisplayTime_clicked(e)
 
     local window = winMgr:getWindow("orxonox/NotificationLayer/Root/EditMode/" .. queueName .. "/DisplayTime")
     local save = winMgr:getWindow("orxonox/NotificationLayer/Root/EditMode/" .. queueName .. "/DisplayTime/Save")
-    local width = window:getXPosition():asAbsolute(1)
+    local width = window:getWidth():asAbsolute(1)
 
     local queue = orxonox.NotificationManager:getInstance():getQueue(queueName)
     queue:setDisplayTime(tonumber(window:getText()))
@@ -416,6 +414,19 @@ end
 
 function P.leaveEditMode_clicked(e)
     hideMenuSheet(P.name)
+end
+
+function P.closeQueue_clicked(e)
+    local we = CEGUI.toWindowEventArgs(e)
+    local name = we.window:getName()
+
+    local match = string.gmatch(name, "EditMode/.*")
+    local nameStr = match()
+    local queueName = string.sub(nameStr, 10, string.len(nameStr))
+
+    winMgr:destroyWindow(P.queueList[queueName].edit)
+    P.queueList[queueName].edit = nil
+    orxonox.NotificationManager:getInstance():getQueue(queueName):destroy()
 end
 
 function P.queueHeightHelper(queue, size)

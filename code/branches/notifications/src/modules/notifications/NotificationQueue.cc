@@ -99,6 +99,8 @@ namespace orxonox
             
             NotificationManager::getInstance().unregisterListener(this);
             NotificationManager::getInstance().unregisterQueue(this);
+
+            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
         }
     }
 
@@ -359,6 +361,7 @@ namespace orxonox
     {
         this->targets_.clear();
 
+        //TODO: Do with SubString.
         std::string* pTemp;
         unsigned int index = 0;
         while(index < targets.size()) // Go through the string, character by character until the end is reached.

@@ -164,7 +164,7 @@ namespace orxonox
         if(this->removeNotification(notification, *(this->notificationLists_.find(this->listenerList_.find(listener)->second)->second)))
             this->listenerCounter_[notification] = this->listenerCounter_[notification] - 1;
 
-        COUT(4) << "Notification (&" << notification << ")unregistered with the NotificationManager from listener (&" << listener << ")" << std::endl;
+        COUT(4) << "Notification (&" << notification << ") unregistered with the NotificationManager from listener (&" << listener << ")" << std::endl;
     }
 
     /**
@@ -211,13 +211,13 @@ namespace orxonox
 
         // If all senders are the target of the listener, then the list of notification for that specific listener is te same as the list of all Notifications.
         bool bAll = set.find(NotificationManager::ALL) != set.end();
-        std::multimap<std::time_t, Notification*> map;
+        std::multimap<std::time_t, Notification*>* map;
         if(bAll)
             this->notificationLists_[index] = &this->allNotificationsList_;
         else
         {
             this->notificationLists_[index] = new std::multimap<std::time_t, Notification*>;
-            map = *this->notificationLists_[index];
+            map = this->notificationLists_[index];
         }
 
         // Iterate through all Notifications to determine whether any of them should belong to the newly registered NotificationListener.
@@ -226,7 +226,7 @@ namespace orxonox
             if(bAll || set.find(it->second->getSender()) != set.end()) // Checks whether the listener has the sender of the current notification as target.
             {
                 if(!bAll)
-                    map.insert(std::pair<std::time_t, Notification*>(it->first, it->second));
+                    map->insert(std::pair<std::time_t, Notification*>(it->first, it->second));
                 std::map<Notification*, unsigned int>::iterator counterIt = this->listenerCounter_.find(it->second);
                 if(counterIt == this->listenerCounter_.end())
                     this->listenerCounter_[it->second] = 1;
@@ -253,20 +253,20 @@ namespace orxonox
         int identifier = this->listenerList_.find(listener)->second;
         std::multimap<std::time_t, Notification*>* map = this->notificationLists_.find(identifier)->second;
 
-        // Make sure all Notifications are removed.
+        // If the map is not the map of all notifications, make sure all Notifications are removed and delete it.
         std::multimap<std::time_t, Notification*>::iterator it = map->begin();
-        while(it != map->end())
+        if(map != &this->allNotificationsList_)
         {
-            this->unregisterNotification(it->second, listener);
-            it = map->begin();
+            while(it != map->end())
+            {
+                this->unregisterNotification(it->second, listener);
+                it = map->begin();
+            }
+            delete map;
         }
 
         this->listenerList_.erase(listener);
         this->notificationLists_.erase(identifier);
-
-        // If the map is not the map of all notifications, delete it.
-        if(map != &this->allNotificationsList_)
-            delete map;
 
         COUT(4) << "NotificationListener unregistered with the NotificationManager." << std::endl;
     }
