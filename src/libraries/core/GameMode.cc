@@ -32,7 +32,7 @@ namespace orxonox
 {
     bool GameMode::bShowsGraphics_s = false;
     bool GameMode::bPlaysSound_s    = false;
-    bool GameMode::bHasServer_s     = false;
+    bool GameMode::bIsServer_s      = false;
     bool GameMode::bIsClient_s      = false;
     bool GameMode::bIsStandalone_s  = false;
     bool GameMode::bIsMaster_s      = false;

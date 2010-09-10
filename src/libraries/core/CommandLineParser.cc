@@ -125,6 +125,8 @@ namespace orxonox
         a whole string, simply use getAllStrings() of SubString.
     @param arguments
         Vector of space separated strings.
+    @param bParsingFile
+        Parsing a file or the command line itself
     */
     void CommandLineParser::_parse(const std::vector<std::string>& arguments, bool bParsingFile)
     {
@@ -243,6 +245,8 @@ namespace orxonox
         Full name of the argument
     @param value
         String containing the value
+    @param bParsingFile
+        Parsing a file or the command line itself
     */
     void CommandLineParser::checkFullArgument(const std::string& name, const std::string& value, bool bParsingFile)
     {
@@ -257,9 +261,11 @@ namespace orxonox
     @brief
         Parses an argument based on its shortcut.
     @param shortcut
-        Shotcut to the argument
+        Shortcut to the argument
     @param value
         String containing the value
+    @param bParsingFile
+        Parsing a file or the command line itself
     */
     void CommandLineParser::checkShortcut(const std::string& shortcut, const std::string& value, bool bParsingFile)
     {
@@ -307,12 +313,21 @@ namespace orxonox
         return infoStr.str();
     }
 
+    void CommandLineParser::generateDoc(std::ofstream& file)
+    {
+        file << "/** @page cmdargspage Command Line Arguments Reference" << endl;
+        file << "    @verbatim"; /*no endl*/
+        file << getUsageInformation(); /*no endl*/
+        file << "    @endverbatim" << endl;
+        file << "*/" << endl;
+    }
+
     /**
     @brief
         Retrieves a CommandLineArgument.
         The method throws an exception if 'name' was not found or the value could not be converted.
     @note
-        You shold of course not call this method before the command line has been parsed.
+        You should of course not call this method before the command line has been parsed.
     */
     const CommandLineArgument* CommandLineParser::getArgument(const std::string& name)
     {

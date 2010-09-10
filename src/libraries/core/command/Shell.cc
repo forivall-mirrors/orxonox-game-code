@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of the Shell class.
+*/
+
 #include "Shell.h"
 
 #include "util/OutputHandler.h"
@@ -47,6 +52,11 @@ namespace orxonox
 
     unsigned int Shell::cacheSize_s;
 
+    /**
+        @brief Constructor: Initializes the values and registers itself at OutputHandler.
+        @param consoleName The name of the shell - used to define the name of the soft-debug-level config-value
+        @param bScrollable If true, the user is allowed to scroll through the output-lines
+    */
     Shell::Shell(const std::string& consoleName, bool bScrollable)
         : OutputListener(consoleName)
         , inputBuffer_(new InputBuffer())
@@ -87,12 +97,18 @@ namespace orxonox
         OutputHandler::getInstance().registerOutputListener(this);
     }
 
+    /**
+        @brief Destructor: Unregisters the shell from OutputHandler.
+    */
     Shell::~Shell()
     {
         OutputHandler::getInstance().unregisterOutputListener(this);
         this->inputBuffer_->destroy();
     }
 
+    /**
+        @brief Defines the config values.
+    */
     void Shell::setConfigValues()
     {
         SetConfigValue(maxHistoryLength_, 100)
@@ -112,12 +128,18 @@ namespace orxonox
         this->setSoftDebugLevel(this->softDebugLevel_);
     }
 
+    /**
+        @brief Config-value callback: Called when the history offset has changed in the config-file.
+    */
     void Shell::commandHistoryOffsetChanged()
     {
         if (this->historyOffset_ >= this->maxHistoryLength_)
             this->historyOffset_ = 0;
     }
 
+    /**
+        @brief Config-value callback: Called when the length of the command history has changed in the config-file.
+    */
     void Shell::commandHistoryLengthChanged()
     {
         this->commandHistoryOffsetChanged();
@@ -130,6 +152,9 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Registers this object as listener for different key-events at the input buffer.
+    */
     void Shell::configureInputBuffer()
     {
         this->inputBuffer_->registerListener(this, &Shell::inputChanged, true);
@@ -158,23 +183,17 @@ namespace orxonox
         }
     }
 
-    /*
-    void Shell::history()
-    {
-        Shell& instance = Shell::getInstance();
-
-        for (unsigned int i = instance.historyOffset_; i < instance.commandHistory_.size(); ++i)
-            instance.addOutput(instance.commandHistory_[i] + '\n', -1);
-        for (unsigned int i =  0; i < instance.historyOffset_; ++i)
-            instance.addOutput(instance.commandHistory_[i] + '\n', -1);
-    }
+    /**
+        @brief Registers a shell listener which listens for changes in this shell.
     */
-
     void Shell::registerListener(ShellListener* listener)
     {
         this->listeners_.push_back(listener);
     }
 
+    /**
+        @brief Unregisters a shell listener.
+    */
     void Shell::unregisterListener(ShellListener* listener)
     {
         for (std::list<ShellListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); )
@@ -186,18 +205,27 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Changes the position of the cursor in the input buffer.
+    */
     void Shell::setCursorPosition(unsigned int cursor)
     {
         this->inputBuffer_->setCursorPosition(cursor);
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
+    /**
+        @brief Sends output to the internal output buffer.
+    */
     void Shell::addOutput(const std::string& text, LineType type)
     {
         this->outputBuffer_ << text;
         this->outputChanged(type);
     }
 
+    /**
+        @brief Clears the list of output-lines.
+    */
     void Shell::clearOutput()
     {
         this->outputLines_.clear();
@@ -209,6 +237,9 @@ namespace orxonox
         this->updateListeners<&ShellListener::linesChanged>();
     }
 
+    /**
+        @brief Returns an iterator to the newest line of output (except if the user is currently scrolling through the output).
+    */
     Shell::LineList::const_iterator Shell::getNewestLineIterator() const
     {
         if (this->scrollPosition_)
@@ -217,11 +248,17 @@ namespace orxonox
             return this->outputLines_.begin();
     }
 
+    /**
+        @brief Returns the end() iterator of the list of output-lines.
+    */
     Shell::LineList::const_iterator Shell::getEndIterator() const
     {
         return this->outputLines_.end();
     }
 
+    /**
+        @brief Adds a command to the history of entered commands and writes it to the config-file.
+    */
     void Shell::addToHistory(const std::string& command)
     {
         if (command == "")
@@ -236,6 +273,9 @@ namespace orxonox
         ModifyConfigValue(historyOffset_, set, (this->historyOffset_ + 1) % this->maxHistoryLength_);
     }
 
+    /**
+        @brief Returns a command from the history of entered commands (usually the most recent history entry, but the user can scroll through the history).
+    */
     const std::string& Shell::getFromHistory() const
     {
         unsigned int index = mod(static_cast<int>(this->historyOffset_) - static_cast<int>(this->historyPosition_), this->maxHistoryLength_);
@@ -245,50 +285,64 @@ namespace orxonox
             return BLANKSTRING;
     }
 
+    /**
+        @brief Called by OutputHandler or internally whenever output was sent to the output buffer. Reads from the buffer and writes the new output-lines to the list.
+    */
     void Shell::outputChanged(int lineType)
     {
         bool newline = false;
         do
         {
+            // get the first line from the buffer
             std::string output;
             std::getline(this->outputBuffer_, output);
 
+            // check the state of the buffer
             bool eof = this->outputBuffer_.eof();
             bool fail = this->outputBuffer_.fail();
             if (eof)
-                this->outputBuffer_.flush();
+                this->outputBuffer_.flush(); // check if more output was received in the meantime
             if (eof || fail)
-                this->outputBuffer_.clear();
+                this->outputBuffer_.clear(); // clear the error flags
+
+            // the line is terminated with a line-break if neither an error occurred nor the end of the file was reached
             newline = (!eof && !fail);
 
+            // no output retrieved - break the loop
             if (!newline && output.empty())
                 break;
 
+            // check if the last line was terminated with a line-break
             if (this->bFinishedLastLine_)
             {
+                // yes it was - push the new line to the list
                 this->outputLines_.push_front(std::make_pair(output, static_cast<LineType>(lineType)));
 
+                // adjust the scroll position if needed
                 if (this->scrollPosition_)
                     this->scrollPosition_++;
                 else
                     this->scrollIterator_ = this->outputLines_.begin();
-
-                this->bFinishedLastLine_ = newline;
 
                 if (!this->scrollPosition_)
                     this->updateListeners<&ShellListener::lineAdded>();
             }
             else
             {
+                // no it wasn't - add the new output to the last line
                 this->outputLines_.front().first += output;
-                this->bFinishedLastLine_ = newline;
                 this->updateListeners<&ShellListener::onlyLastLineChanged>();
             }
+
+            // remember if the last line was terminated with a line-break
             this->bFinishedLastLine_ = newline;
 
-        } while (newline);
+        } while (newline); // loop as long as more lines are in the buffer
     }
 
+    /**
+        @brief Clears the text in the input buffer.
+    */
     void Shell::clearInput()
     {
         this->inputBuffer_->clear();
@@ -297,21 +351,19 @@ namespace orxonox
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::setPromptPrefix(const std::string& str)
-    {
-    }
-
 
     // ##########################################
     // ###   InputBuffer callback functions   ###
     // ##########################################
 
+    /// InputBuffer callback: Called if the input changes.
     void Shell::inputChanged()
     {
         this->updateListeners<&ShellListener::inputChanged>();
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
+    /// InputBuffer callback: Called if a key was pressed that executes a command (usually [return]).
     void Shell::execute()
     {
         this->addToHistory(this->inputBuffer_->get());
@@ -339,6 +391,7 @@ namespace orxonox
         this->clearInput();
     }
 
+    /// InputBuffer callback: Called if a key was pressed that shows hints and completes a command (usually [tab]).
     void Shell::hintAndComplete()
     {
         this->inputBuffer_->set(CommandExecutor::evaluate(this->inputBuffer_->get()).complete());
@@ -348,6 +401,7 @@ namespace orxonox
         this->inputChanged();
     }
 
+    /// InputBuffer callback: Called if a key was pressed that deletes the character before the cursor (usually [backspace]).
     void Shell::backspace()
     {
         this->inputBuffer_->removeBehindCursor();
@@ -355,51 +409,42 @@ namespace orxonox
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
-    void Shell::exit()
-    {
-        if (this->inputBuffer_->getSize() > 0)
-        {
-            this->clearInput();
-            return;
-        }
-
-        this->clearInput();
-        this->scrollPosition_ = 0;
-        this->scrollIterator_ = this->outputLines_.begin();
-
-        this->updateListeners<&ShellListener::exit>();
-    }
-
+    /// InputBuffer callback: Called if a key was pressed that deletes the character after the cursor (usually [delete]).
     void Shell::deleteChar()
     {
         this->inputBuffer_->removeAtCursor();
         this->updateListeners<&ShellListener::inputChanged>();
     }
 
+    /// InputBuffer callback: Called if a key was pressed that moves the input cursor the right (usually [arrow right]).
     void Shell::cursorRight()
     {
         this->inputBuffer_->increaseCursor();
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
+    /// InputBuffer callback: Called if a key was pressed that moves the input cursor the left (usually [arrow left]).
     void Shell::cursorLeft()
     {
         this->inputBuffer_->decreaseCursor();
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
+    /// InputBuffer callback: Called if a key was pressed that moves the input cursor the end of the input line (usually [end]).
     void Shell::cursorEnd()
     {
         this->inputBuffer_->setCursorToEnd();
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
+    /// InputBuffer callback: Called if a key was pressed that moves the input cursor the beginning of the input line (usually [home]).
     void Shell::cursorHome()
     {
         this->inputBuffer_->setCursorToBegin();
         this->updateListeners<&ShellListener::cursorChanged>();
     }
 
+    /// InputBuffer callback: Called if a key was pressed that scrolls upwards through the history of entered commands (usually [arrow up]).
     void Shell::historyUp()
     {
         if (this->historyPosition_ < this->commandHistory_.size())
@@ -409,6 +454,7 @@ namespace orxonox
         }
     }
 
+    /// InputBuffer callback: Called if a key was pressed that scrolls downwards through the history of entered commands (usually [arrow down]).
     void Shell::historyDown()
     {
         if (this->historyPosition_ > 0)
@@ -418,6 +464,7 @@ namespace orxonox
         }
     }
 
+    /// InputBuffer callback: Called if a key was pressed that searches upwards through the history for a command stat starts like the one the user is currently typing (usually [page up]). Only if the shell is not scrollable.
     void Shell::historySearchUp()
     {
         if (this->historyPosition_ == this->historyOffset_)
@@ -436,6 +483,7 @@ namespace orxonox
         }
     }
 
+    /// InputBuffer callback: Called if a key was pressed that searches downwards through the history for a command stat starts like the one the user is currently typing (usually [page down]). Only if the shell is not scrollable.
     void Shell::historySearchDown()
     {
         if (this->historyPosition_ == 0)
@@ -454,6 +502,7 @@ namespace orxonox
         }
     }
 
+    /// InputBuffer callback: Called if a key was pressed that scrolls upwards through the output history (usually [page up]). Only if the shell is scrollable.
     void Shell::scrollUp()
     {
         if (this->scrollIterator_ != this->outputLines_.end())
@@ -465,6 +514,7 @@ namespace orxonox
         }
     }
 
+    /// InputBuffer callback: Called if a key was pressed that scrolls downwards through the output history (usually [page down]). Only if the shell is scrollable.
     void Shell::scrollDown()
     {
         if (this->scrollIterator_ != this->outputLines_.begin())
@@ -474,5 +524,21 @@ namespace orxonox
 
             this->updateListeners<&ShellListener::linesChanged>();
         }
+    }
+
+    /// InputBuffer callback: Called if a key was pressed that clears the text in the input buffer or closes the shell (usually [esc]).
+    void Shell::exit()
+    {
+        if (this->inputBuffer_->getSize() > 0)
+        {
+            this->clearInput();
+            return;
+        }
+
+        this->clearInput();
+        this->scrollPosition_ = 0;
+        this->scrollIterator_ = this->outputLines_.begin();
+
+        this->updateListeners<&ShellListener::exit>();
     }
 }

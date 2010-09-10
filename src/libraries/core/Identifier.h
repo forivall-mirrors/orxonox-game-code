@@ -27,23 +27,53 @@
  */
 
 /**
+    @defgroup Identifier Identifier
+    @ingroup Class
+*/
+
+/**
     @file
-    @brief Definition of the Identifier class, definition and implementation of the ClassIdentifier class.
+    @ingroup Class Identifier
+    @brief Declaration of Identifier, definition of ClassIdentifier<T>; used to identify the class of an object.
 
-    The Identifier contains all needed information about the class it belongs to:
-     - the name
-     - a list with all objects
-     - parents and children
-     - the factory (if available)
-     - the networkID that can be synchronised with the server
-     - all configurable variables (if available)
+    @anchor IdentifierExample
 
-    Every object has a pointer to the Identifier of its class. This allows the use isA(...),
-    isExactlyA(...), isChildOf(...) and isParentOf(...).
+    An Identifier "identifies" the class of an object. It contains different information about
+    the class: Its name and ID, a list of all instances of this class, a factory to create new
+    instances of this class, and more.
 
-    To create the class-hierarchy, the Identifier has some intern functions and variables.
+    It also contains information about the inheritance of this class: It stores a list of the
+    Identifiers of all parent-classes as well as a list of all child-classes. These relationships
+    can be tested using functions like @c isA(), @c isChildOf(), @c isParentOf(), and more.
 
-    Every Identifier is in fact a ClassIdentifier, but they are derived from Identifier.
+    Every Identifier is in fact a ClassIdentifier<T> (where T is the class that is identified
+    by the Identifier), Identifier is just the common base-class.
+
+    Example:
+    @code
+    MyClass* object = new MyClass();                                            // create an instance of MyClass
+
+    object->getIdentifier()->getName();                                         // returns "MyClass"
+
+    BaseObject* other = object->getIdentifier()->fabricate(0);                  // fabricates a new instance of MyClass
+
+
+    // iterate through all objects of type MyClass:
+    ObjectListBase* objects = object->getIdentifier()->getObjects();            // get a pointer to the object-list
+    int count;
+    for (Iterator<BaseObject> it = objects.begin(); it != objects.end(); ++it)  // iterate through the objects
+        ++count;
+    COUT(0) << count << std::endl;                                              // prints "2" because we created 2 instances of MyClass so far
+
+
+    // test the class hierarchy
+    object->getIdentifier()->isA(Class(MyClass));                               // returns true
+    object->isA(Class(MyClass));                                                // returns true (short version)
+
+    object->isA(Class(BaseClass));                                              // returns true if MyClass is a child of BaseClass
+
+    Class(ChildClass)->isChildOf(object->getIdentifier());                      // returns true if ChildClass is a child of MyClass
+    @endcode
 */
 
 #ifndef _Identifier_H__
@@ -69,48 +99,44 @@ namespace orxonox
     // ###############################
     // ###       Identifier        ###
     // ###############################
-    //! The Identifier is used to identify the class of an object and to store information about the class.
     /**
-        The Identifier contains all needed information about the class it belongs to:
-         - the name
-         - a list with all objects
-         - parents and children
-         - the factory (if available)
-         - the networkID that can be synchronised with the server
-         - all configurable variables (if available)
+        @brief The Identifier is used to identify the class of an object and to store information about the class.
 
-        Every object has a pointer to the Identifier of its class. This allows the use isA(...),
-        isExactlyA(...), isChildOf(...) and isParentOf(...).
+        Each Identifier stores information about one class. The Identifier can then be used to identify
+        this class. On the other hand it's also possible to get the corresponding Identifier of a class,
+        for example by using the macro Class().
 
-        You can't directly create an Identifier, it's just the base-class for ClassIdentifier.
+        @see See @ref IdentifierExample "Identifier.h" for more information and some examples.
+
+        @note You can't directly create an Identifier, it's just the base-class of ClassIdentifier<T>.
     */
     class _CoreExport Identifier
     {
         public:
-            /** @brief Returns the name of the class the Identifier belongs to. @return The name */
+            /// Returns the name of the class the Identifier belongs to.
             inline const std::string& getName() const { return this->name_; }
             void setName(const std::string& name);
 
-            /** @brief Returns the network ID to identify a class through the network. @return the network ID */
+            /// Returns the network ID to identify a class through the network.
             inline const uint32_t getNetworkID() const { return this->networkID_; }
             void setNetworkID(uint32_t id);
 
-            /** @brief Returns the unique ID of the class */
+            /// Returns the unique ID of the class.
             FORCEINLINE unsigned int getClassID() const { return this->classID_; }
 
-            /** @brief Returns the list of all existing objects of this class. @return The list */
+            /// Returns the list of all existing objects of this class.
             inline ObjectListBase* getObjects() const { return this->objects_; }
 
-            /** @brief Sets the Factory. @param factory The factory to assign */
+            /// Sets the Factory.
             inline void addFactory(Factory* factory) { this->factory_ = factory; }
-            /** @brief Returns true if the Identifier has a Factory. */
+            /// Returns true if the Identifier has a Factory.
             inline bool hasFactory() const { return (this->factory_ != 0); }
 
             BaseObject* fabricate(BaseObject* creator);
 
-            /** @brief Returns true if the class can be loaded through XML. */
+            /// Returns true if the class can be loaded through XML.
             inline bool isLoadable() const { return this->bLoadable_; }
-            /** @brief Set the class to be loadable through XML or not. */
+            /// Set the class to be loadable through XML or not.
             inline void setLoadable(bool bLoadable) { this->bLoadable_ = bLoadable; }
 
             bool isA(const Identifier* identifier) const;
@@ -126,35 +152,35 @@ namespace orxonox
             /////////////////////////////
             static void createClassHierarchy();
 
-            /** @brief Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents. @return The status of the class-hierarchy creation */
+            /// Returns true, if a branch of the class-hierarchy is being created, causing all new objects to store their parents.
             inline static bool isCreatingHierarchy() { return (hierarchyCreatingCounter_s > 0); }
 
-            /** @brief Returns the parents of the class the Identifier belongs to. @return The list of all parents */
+            /// Returns the parents of the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getParents() const { return this->parents_; }
-            /** @brief Returns the begin-iterator of the parents-list. @return The begin-iterator */
+            /// Returns the begin-iterator of the parents-list.
             inline std::set<const Identifier*>::const_iterator getParentsBegin() const { return this->parents_.begin(); }
-            /** @brief Returns the end-iterator of the parents-list. @return The end-iterator */
+            /// Returns the end-iterator of the parents-list.
             inline std::set<const Identifier*>::const_iterator getParentsEnd() const { return this->parents_.end(); }
 
-            /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
+            /// Returns the children of the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getChildren() const { return this->children_; }
-            /** @brief Returns the begin-iterator of the children-list. @return The begin-iterator */
+            /// Returns the begin-iterator of the children-list.
             inline std::set<const Identifier*>::const_iterator getChildrenBegin() const { return this->children_.begin(); }
-            /** @brief Returns the end-iterator of the children-list. @return The end-iterator */
+            /// Returns the end-iterator of the children-list.
             inline std::set<const Identifier*>::const_iterator getChildrenEnd() const { return this->children_.end(); }
 
-            /** @brief Returns the direct parents of the class the Identifier belongs to. @return The list of all direct parents */
+            /// Returns the direct parents of the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getDirectParents() const { return this->directParents_; }
-            /** @brief Returns the begin-iterator of the direct-parents-list. @return The begin-iterator */
+            /// Returns the begin-iterator of the direct-parents-list.
             inline std::set<const Identifier*>::const_iterator getDirectParentsBegin() const { return this->directParents_.begin(); }
-            /** @brief Returns the end-iterator of the direct-parents-list. @return The end-iterator */
+            /// Returns the end-iterator of the direct-parents-list.
             inline std::set<const Identifier*>::const_iterator getDirectParentsEnd() const { return this->directParents_.end(); }
 
-            /** @brief Returns the direct children the class the Identifier belongs to. @return The list of all direct children */
+            /// Returns the direct children the class the Identifier belongs to.
             inline const std::set<const Identifier*>& getDirectChildren() const { return this->directChildren_; }
-            /** @brief Returns the begin-iterator of the direct-children-list. @return The begin-iterator */
+            /// Returns the begin-iterator of the direct-children-list.
             inline std::set<const Identifier*>::const_iterator getDirectChildrenBegin() const { return this->directChildren_.begin(); }
-            /** @brief Returns the end-iterator of the direct-children-list. @return The end-iterator */
+            /// Returns the end-iterator of the direct-children-list.
             inline std::set<const Identifier*>::const_iterator getDirectChildrenEnd() const { return this->directChildren_.end(); }
 
 
@@ -169,25 +195,25 @@ namespace orxonox
 
             static void clearNetworkIDs();
 
-            /** @brief Returns the map that stores all Identifiers with their names. @return The map */
+            /// Returns the map that stores all Identifiers with their names.
             static inline const std::map<std::string, Identifier*>& getStringIdentifierMap() { return Identifier::getStringIdentifierMapIntern(); }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers with their names. @return The const_iterator */
+            /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their names.
             static inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapBegin() { return Identifier::getStringIdentifierMap().begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all Identifiers with their names. @return The const_iterator */
+            /// Returns a const_iterator to the end of the map that stores all Identifiers with their names.
             static inline std::map<std::string, Identifier*>::const_iterator getStringIdentifierMapEnd() { return Identifier::getStringIdentifierMap().end(); }
 
-            /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
+            /// Returns the map that stores all Identifiers with their names in lowercase.
             static inline const std::map<std::string, Identifier*>& getLowercaseStringIdentifierMap() { return Identifier::getLowercaseStringIdentifierMapIntern(); }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers with their names in lowercase. @return The const_iterator */
+            /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their names in lowercase.
             static inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapBegin() { return Identifier::getLowercaseStringIdentifierMap().begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all Identifiers with their names in lowercase. @return The const_iterator */
+            /// Returns a const_iterator to the end of the map that stores all Identifiers with their names in lowercase.
             static inline std::map<std::string, Identifier*>::const_iterator getLowercaseStringIdentifierMapEnd() { return Identifier::getLowercaseStringIdentifierMap().end(); }
 
-            /** @brief Returns the map that stores all Identifiers with their IDs. @return The map */
+            /// Returns the map that stores all Identifiers with their IDs.
             static inline const std::map<uint32_t, Identifier*>& getIDIdentifierMap() { return Identifier::getIDIdentifierMapIntern(); }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all Identifiers with their IDs. @return The const_iterator */
+            /// Returns a const_iterator to the beginning of the map that stores all Identifiers with their IDs.
             static inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapBegin() { return Identifier::getIDIdentifierMap().begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all Identifiers with their IDs. @return The const_iterator */
+            /// Returns a const_iterator to the end of the map that stores all Identifiers with their IDs.
             static inline std::map<uint32_t, Identifier*>::const_iterator getIDIdentifierMapEnd() { return Identifier::getIDIdentifierMap().end(); }
 
 
@@ -196,7 +222,7 @@ namespace orxonox
             /////////////////////////
             virtual void updateConfigValues(bool updateChildren = true) const = 0;
 
-            /** @brief Returns true if this class has at least one config value. @return True if this class has at least one config value */
+            /// Returns true if this class has at least one config value.
             inline bool hasConfigValues() const { return this->bHasConfigValues_; }
 
             void addConfigValueContainer(const std::string& varname, ConfigValueContainer* container);
@@ -206,18 +232,18 @@ namespace orxonox
             ///////////////////
             ///// XMLPort /////
             ///////////////////
-            /** @brief Returns the map that stores all XMLPort params. @return The const_iterator */
+            /// Returns the map that stores all XMLPort params.
             inline const std::map<std::string, XMLPortParamContainer*>& getXMLPortParamMap() const { return this->xmlportParamContainers_; }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort params. @return The const_iterator */
+            /// Returns a const_iterator to the beginning of the map that stores all XMLPort params.
             inline std::map<std::string, XMLPortParamContainer*>::const_iterator getXMLPortParamMapBegin() const { return this->xmlportParamContainers_.begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all XMLPort params. @return The const_iterator */
+            /// Returns a const_iterator to the end of the map that stores all XMLPort params.
             inline std::map<std::string, XMLPortParamContainer*>::const_iterator getXMLPortParamMapEnd() const { return this->xmlportParamContainers_.end(); }
 
-            /** @brief Returns the map that stores all XMLPort objects. @return The const_iterator */
+            /// Returns the map that stores all XMLPort objects.
             inline const std::map<std::string, XMLPortObjectContainer*>& getXMLPortObjectMap() const { return this->xmlportObjectContainers_; }
-            /** @brief Returns a const_iterator to the beginning of the map that stores all XMLPort objects. @return The const_iterator */
+            /// Returns a const_iterator to the beginning of the map that stores all XMLPort objects.
             inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortObjectMapBegin() const { return this->xmlportObjectContainers_.begin(); }
-            /** @brief Returns a const_iterator to the end of the map that stores all XMLPort objects. @return The const_iterator */
+            /// Returns a const_iterator to the end of the map that stores all XMLPort objects.
             inline std::map<std::string, XMLPortObjectContainer*>::const_iterator getXMLPortObjectMapEnd() const { return this->xmlportObjectContainers_.end(); }
 
             void addXMLPortParamContainer(const std::string& paramname, XMLPortParamContainer* container);
@@ -237,24 +263,24 @@ namespace orxonox
 
             void initializeClassHierarchy(std::set<const Identifier*>* parents, bool bRootClass);
 
-            /** @brief Returns the map that stores all Identifiers with their names. @return The map */
+            /// Returns the map that stores all Identifiers with their names.
             static std::map<std::string, Identifier*>& getStringIdentifierMapIntern();
-            /** @brief Returns the map that stores all Identifiers with their names in lowercase. @return The map */
+            /// Returns the map that stores all Identifiers with their names in lowercase.
             static std::map<std::string, Identifier*>& getLowercaseStringIdentifierMapIntern();
-            /** @brief Returns the map that stores all Identifiers with their network IDs. @return The map */
+            /// Returns the map that stores all Identifiers with their network IDs.
             static std::map<uint32_t, Identifier*>& getIDIdentifierMapIntern();
 
-            /** @brief Returns the children of the class the Identifier belongs to. @return The list of all children */
+            /// Returns the children of the class the Identifier belongs to.
             inline std::set<const Identifier*>& getChildrenIntern() const { return this->children_; }
-            /** @brief Returns the direct children of the class the Identifier belongs to. @return The list of all direct children */
+            /// Returns the direct children of the class the Identifier belongs to.
             inline std::set<const Identifier*>& getDirectChildrenIntern() const { return this->directChildren_; }
 
             ObjectListBase* objects_;                                      //!< The list of all objects of this class
 
         private:
-            /** @brief Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents. */
+            /// Increases the hierarchyCreatingCounter_s variable, causing all new objects to store their parents.
             inline static void startCreatingHierarchy() { hierarchyCreatingCounter_s++; }
-            /** @brief Decreases the hierarchyCreatingCounter_s variable, causing the objects to stop storing their parents. */
+            /// Decreases the hierarchyCreatingCounter_s variable, causing the objects to stop storing their parents.
             inline static void stopCreatingHierarchy()  { hierarchyCreatingCounter_s--; }
 
             static std::map<std::string, Identifier*>& getTypeIDIdentifierMap();
@@ -290,20 +316,23 @@ namespace orxonox
     // ###############################
     // ###     ClassIdentifier     ###
     // ###############################
-    //! The ClassIdentifier is derived from Identifier and holds all class-specific functions and variables the Identifier cannot have.
     /**
-        ClassIdentifier is a Singleton, which means that only one object of a given type T exists.
+        @brief The ClassIdentifier is derived from Identifier and holds all class-specific functions and variables the Identifier cannot have.
+
+        ClassIdentifier is a Singleton, which means that only one ClassIdentifier for a given type T exists.
         This makes it possible to store information about a class, sharing them with all
         objects of that class without defining static variables in every class.
 
         To be really sure that not more than exactly one object exists (even with libraries),
-        ClassIdentifiers are stored in the Identifier Singleton.
+        ClassIdentifiers are stored in a static map in Identifier.
     */
     template <class T>
     class ClassIdentifier : public Identifier
     {
-        #define SUPER_INTRUSIVE_DECLARATION_INCLUDE
-        #include "Super.h"
+        #ifndef DOXYGEN_SHOULD_SKIP_THIS
+          #define SUPER_INTRUSIVE_DECLARATION_INCLUDE
+          #include "Super.h"
+        #endif
 
         public:
             static ClassIdentifier<T>* getIdentifier();
@@ -386,6 +415,8 @@ namespace orxonox
     /**
         @brief Adds an object of the given type to the ObjectList.
         @param object The object to add
+        @param className The name of the class T
+        @param bRootClass True if this is a root class (i.e. it inherits directly from OrxonoxClass)
     */
     template <class T>
     bool ClassIdentifier<T>::initialiseObject(T* object, const std::string& className, bool bRootClass)

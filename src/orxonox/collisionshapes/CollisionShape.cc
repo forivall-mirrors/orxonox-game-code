@@ -149,7 +149,7 @@ namespace orxonox
             delete oldShape;
     }
 
-    void CollisionShape::calculateLocalInertia(btScalar mass, btVector3& inertia) const
+    void CollisionShape::calculateLocalInertia(float mass, btVector3& inertia) const
     {
         if (this->collisionShape_)
             this->collisionShape_->calculateLocalInertia(mass, inertia);

@@ -42,19 +42,21 @@
 #include "ToluaBindNetwork.h"
 #include "Main.h"
 
-SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
-// Shortcuts for easy direct loading
-SetCommandLineSwitch(server).information("Start in server mode");
-SetCommandLineSwitch(client).information("Start in client mode");
-SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
-SetCommandLineSwitch(standalone).information("Start in standalone mode");
-SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
-
 DeclareToluaInterface(Orxonox);
 DeclareToluaInterface(Network);
 
 namespace orxonox
 {
+    SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
+    SetCommandLineSwitch(server).information("Start in server mode");
+    SetCommandLineSwitch(client).information("Start in client mode");
+    SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
+    SetCommandLineSwitch(standalone).information("Start in standalone mode");
+    SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
+
+    SetCommandLineArgument(generateDoc, "")
+        .information("Generates a Doxygen file from things like SetConsoleCommand");
+
     /**
     @brief
         Starting point of orxonox (however not the entry point of the program!)
@@ -63,36 +65,40 @@ namespace orxonox
     {
         Game* game = new Game(strCmdLine);
 
-        game->setStateHierarchy(
-        "root"
-        " graphics"
-        "  mainMenu"
-        "  standalone,server,client"
-        "   level"
-        " server,client"
-        "  level"
-        );
-
-        game->requestState("root");
-
-        // Some development hacks (not really, but in the future, this calls won't make sense anymore)
-        if (CommandLineParser::getValue("standalone").getBool())
-            Game::getInstance().requestStates("graphics, standalone, level");
-        else if (CommandLineParser::getValue("server").getBool())
-            Game::getInstance().requestStates("graphics, server, level");
-        else if (CommandLineParser::getValue("client").getBool())
-            Game::getInstance().requestStates("graphics, client, level");
-        else if (CommandLineParser::getValue("dedicated").getBool())
-            Game::getInstance().requestStates("server, level");
-        else if (CommandLineParser::getValue("dedicatedClient").getBool())
-            Game::getInstance().requestStates("client, level");
-        else
+        if (CommandLineParser::getValue("generateDoc").getString().empty())
         {
-            if (!CommandLineParser::getValue("console").getBool())
-                Game::getInstance().requestStates("graphics, mainMenu");
+            game->setStateHierarchy(
+            "root"
+            " graphics"
+            "  mainMenu"
+            "  standalone,server,client"
+            "   level"
+            " server,client"
+            "  level"
+            );
+
+            game->requestState("root");
+
+            // Some development hacks (not really, but in the future, these calls won't make sense anymore)
+            if (CommandLineParser::getValue("standalone").getBool())
+                Game::getInstance().requestStates("graphics, standalone, level");
+            else if (CommandLineParser::getValue("server").getBool())
+                Game::getInstance().requestStates("graphics, server, level");
+            else if (CommandLineParser::getValue("client").getBool())
+                Game::getInstance().requestStates("graphics, client, level");
+            else if (CommandLineParser::getValue("dedicated").getBool())
+                Game::getInstance().requestStates("server, level");
+            else if (CommandLineParser::getValue("dedicatedClient").getBool())
+                Game::getInstance().requestStates("client, level");
+            else
+            {
+                if (!CommandLineParser::getValue("console").getBool())
+                    Game::getInstance().requestStates("graphics, mainMenu");
+            }
+
+            game->run();
         }
 
-        game->run();
         delete game;
 
         return 0;

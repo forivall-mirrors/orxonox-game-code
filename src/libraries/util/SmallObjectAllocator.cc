@@ -26,61 +26,96 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of SmallObjectAllocator
+*/
+
 #include "SmallObjectAllocator.h"
 
 namespace orxonox
 {
+    /**
+        @brief Constructor: initializes the allocator and its values.
+        @param objectSize The size in bytes (returned by sizeof()) of the allocated objects
+        @param numObjects The number of objects that are allocated in one block of memory
+    */
     SmallObjectAllocator::SmallObjectAllocator(size_t objectSize, size_t numObjects)
     {
-        this->objectSize_ = std::max(objectSize, sizeof(Chunk));
-        this->numObjects_ = numObjects;
+        this->chunkSize_ = std::max(objectSize, sizeof(Chunk)); // the chunk's size will be the maximum of the object's size and the size of a Chunk object itself
+        this->numChunksPerBlock_ = numObjects;
         this->first_ = 0;
     }
 
+    /**
+        @brief Destructor: deletes the allocated memory blocks.
+    */
     SmallObjectAllocator::~SmallObjectAllocator()
     {
         for (std::vector<char*>::iterator it = this->blocks_.begin(); it != this->blocks_.end(); ++it)
             delete[] *it;
     }
 
+    /**
+        @brief Helper function, used to set the next_ pointer of a Chunk.
+    */
     /* static */ void SmallObjectAllocator::setNext(void* chunk, void* next)
     {
         static_cast<Chunk*>(chunk)->next_ = static_cast<Chunk*>(next);
     }
 
+    /**
+        @brief Helper function, returns the next_ pointer of a Chunk
+    */
     /* static */ void* SmallObjectAllocator::getNext(void* chunk)
     {
         return static_cast<Chunk*>(chunk)->next_;
     }
 
+    /**
+        @brief Returns the first free memory chunk or allocates a new block of memory.
+    */
     void* SmallObjectAllocator::alloc()
     {
+        // get the first free chunk
         void* chunk = this->first_;
 
+        // check if the chunk exists
         if (chunk)
         {
+            // yes it does - the first_ pointer now points to the second element in the list
             this->first_ = getNext(chunk);
         }
         else
         {
-            char* block = new char[this->objectSize_ * this->numObjects_];
+            // no it doesnt - allocate a new block of memory
+            char* block = new char[this->chunkSize_ * this->numChunksPerBlock_];
             this->blocks_.push_back(block);
 
-            for (size_t i = 1; i < this->numObjects_ - 1; ++i)
-                setNext(block + i * this->objectSize_, block + (i + 1) * this->objectSize_);
+            // iterate through the chunks in the new memory block and link them together to a single linked list
+            for (size_t i = 1; i < this->numChunksPerBlock_ - 1; ++i)
+                setNext(block + i * this->chunkSize_, block + (i + 1) * this->chunkSize_);
 
-            setNext(block + (this->numObjects_ - 1) * this->objectSize_, 0);
+            // the next_ pointer of the last chunk must point to NULL
+            setNext(block + (this->numChunksPerBlock_ - 1) * this->chunkSize_, 0);
 
-            this->first_ = block + this->objectSize_;
+            // The second chunk in the block is assigned to the first_ pointer
+            this->first_ = block + this->chunkSize_;
 
+            // The first chunk in the block is returned
             chunk = block;
         }
 
+        // return the pointer to the chunk
         return chunk;
     }
 
+    /**
+        @brief Puts the memory chunk back on the list of free memory.
+    */
     void SmallObjectAllocator::free(void* chunk)
     {
+        // The first_ pointer points to the freed chunk, its next_ pointer points to the rest of the list
         setNext(chunk, this->first_);
         this->first_ = chunk;
     }

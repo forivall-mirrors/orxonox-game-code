@@ -97,14 +97,6 @@ namespace orxonox
         SetConfigValue(noiseSize_, 1.0f);
     }
 
-    /**
-        @brief Initializes the Stats panel.
-    */
-    void Stats::XMLPort(Element& xmlElement, XMLPort::Mode mode)
-    {
-        OrxonoxOverlay::XMLPort(xmlElement, mode);
-    }
-
     void Stats::tick(float dt)
     {
         // SUPER(Stats, tick, dt);

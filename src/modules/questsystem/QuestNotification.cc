@@ -47,6 +47,8 @@ namespace orxonox {
     /**
     @brief
         Creates a QuestNotification with the input message.
+    @param creator
+        The creator of this object
     @param message
         The message to be sent.
     */

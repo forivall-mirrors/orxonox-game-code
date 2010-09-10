@@ -28,46 +28,46 @@
 
 /**
     @file
-    @brief Implementation of the CompleteQuest class.
+    @brief Implementation of the AddQuest class.
 */
 
-#include "CompleteQuest.h"
+#include "AddQuest.h"
 
+#include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-#include "QuestManager.h"
-#include "Quest.h"
+#include "questsystem/QuestManager.h"
+#include "questsystem/Quest.h"
 
 namespace orxonox
 {
-    CreateFactory(CompleteQuest);
+    CreateFactory(AddQuest);
 
     /**
     @brief
         Constructor. Registers the object.
     */
-    CompleteQuest::CompleteQuest(BaseObject* creator) : ChangeQuestStatus(creator)
+    AddQuest::AddQuest(BaseObject* creator) : ChangeQuestStatus(creator)
     {
-        RegisterObject(CompleteQuest);
+        RegisterObject(AddQuest);
     }
 
     /**
     @brief
         Destructor.
     */
-    CompleteQuest::~CompleteQuest()
+    AddQuest::~AddQuest()
     {
     }
 
     /**
     @brief
-        Method for creating a CompleteQuest object through XML.
+        Method for creating a AddQuest object through XML.
     */
-    void CompleteQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void AddQuest::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(CompleteQuest, XMLPort, xmlelement, mode);
+        SUPER(AddQuest, XMLPort, xmlelement, mode);
 
-        COUT(4) << "New CompleteQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
+        COUT(4) << "New AddQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
     /**
@@ -76,35 +76,33 @@ namespace orxonox
     @param player
         The player the QuestEffect is invoked on.
     @return
-        Returns true if the QuestEffect was invoked successfully.
+        Returns true if the QuestEffect was successfully invoked.
     */
-    bool CompleteQuest::invoke(PlayerInfo* player)
+    bool AddQuest::invoke(PlayerInfo* player)
     {
-        if(player == NULL) //!< You know, what we think of NULL-pointers...
+        if(player == NULL) //!< Null-pointers are badass.
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;
         }
 
-        COUT(5) << "CompleteQuest on player: " << player << " ." << std::endl;
-
-        Quest* quest;
+        COUT(5) << "AddQuest on player: " << player << " ." << std::endl;
 
         try
         {
-            quest = QuestManager::getInstance().findQuest(this->getQuestId());
-            if(quest == NULL || !quest->complete(player))
+            Quest* quest = QuestManager::getInstance().findQuest(this->getQuestId());
+            if(quest == NULL || !quest->start(player))
             {
                return false;
             }
         }
-        catch(const Exception& e)
+        catch(const orxonox::Exception& ex)
         {
-            COUT(2) << e.getFullDescription() << std::endl;
+            COUT(2) << ex.getFullDescription() << std::endl;
             return false;
         }
 
-        COUT(4) << "Quest {" << quest->getId() << "} successfully completed by player: " << player << " ." << std::endl;
+        COUT(4) << "Quest {" << this->getQuestId() << "} successfully added to player: " << player << " ." << std::endl;
         return true;
     }
 

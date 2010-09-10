@@ -27,8 +27,14 @@
  */
 
 /**
+    @defgroup BaseObject BaseObject
+    @ingroup Core
+*/
+
+/**
     @file
-    @brief Definition of the BaseObject class.
+    @ingroup BaseObject
+    @brief Declaration of BaseObject, the base class of all objects in Orxonox.
 
     The BaseObject is the parent of all classes representing an instance in the game.
 */
@@ -52,7 +58,7 @@ namespace orxonox
     class Gametype;
     class Level;
 
-    //! The BaseObject is the parent of all classes representing an instance in the game.
+    /// The BaseObject is the parent of all classes representing an instance in the game.
     class _CoreExport BaseObject : virtual public OrxonoxClass
     {
         template <class T> friend class XMLPortClassParamContainer;

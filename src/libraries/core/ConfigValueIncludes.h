@@ -27,9 +27,74 @@
  */
 
 /**
-@file
-@brief
-    Definition of macros and functions for config-values.
+    @defgroup ConfigFile Config file
+    @ingroup Config
+*/
+
+/**
+    @file
+    @ingroup Config ConfigFile
+    @brief Definition of macros and functions for config-values.
+
+    An example of how to use SetConfigValue():
+
+    Definition of a class in the header-file:
+    @code
+    class MyClass : public BaseObject
+    {
+        public:
+            MyClass();              // Constructor
+            void setConfigValues(); // Inherited function
+
+            const std::string& getName()
+                { return this->name_; }
+
+            float getVersion()
+                { return this->version_; }
+
+        private:
+            std::string name_;
+            float version_;
+    };
+    @endcode
+
+    Implementation of the class source-file:
+    @code
+    MyClass::MyClass()
+    {
+        // Macro-call to create an Identifier
+        RegisterObject(MyClass);
+
+        // Function-call to assign the config-values to the new object
+        this->setConfigValues();
+    }
+
+    void MyClass::setConfigValues()
+    {
+        SetConfigValue(name_, "Orxonox").description("The name of the game");
+        SetConfigValue(version_, "1.0").description("The version-number");
+    }
+    @endcode
+
+    Extract of orxonox.ini:
+    @code
+    [MyClass]
+    name_ = "Orxonox"
+    version_ = 1.1 // We have changed this value from 1.0 to 1.1
+    @endcode
+
+    Some other code:
+    @code
+    MyObject orxonoxobject;
+    std::cout << "Name:    " << orxonoxobject.getName() << std::endl;
+    std::cout << "Version: " << orxonoxobject.getVersion() << std::endl;
+    @endcode
+
+    Output:
+    @code
+    Name:    Orxonox
+    Version: 1.1
+    @endcode
 */
 
 #ifndef _ConfigValueIncludes_H__

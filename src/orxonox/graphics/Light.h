@@ -82,11 +82,12 @@ namespace orxonox
 
             /**
                 @brief Sets the attenuation parameters of the light source i.e. how it diminishes with distance.
+                @param attenuation The parameters of the attenuation (see description)
 
-                @param attenuation.x range (The absolute upper range of the light in world units)
-                @param attenuation.y constant (The constant factor in the attenuation formula: 1.0 means never attenuate, 0.0 is complete attenuation)
-                @param attenuation.z linear (The linear factor in the attenuation formula: 1 means attenuate evenly over the distance)
-                @param attenuation.w quadratic (The quadratic factor in the attenuation formula: adds a curvature to the attenuation formula)
+                 - @a attenuation.x range (The absolute upper range of the light in world units)
+                 - @a attenuation.y constant (The constant factor in the attenuation formula: 1.0 means never attenuate, 0.0 is complete attenuation)
+                 - @a attenuation.z linear (The linear factor in the attenuation formula: 1 means attenuate evenly over the distance)
+                 - @a attenuation.w quadratic (The quadratic factor in the attenuation formula: adds a curvature to the attenuation formula)
 
                 Quote from the Ogre API:
                 Lights normally get fainter the further they are away. Also, each light is given a maximum range beyond which it cannot affect any objects.
@@ -119,10 +120,11 @@ namespace orxonox
 
             /**
                 @brief Sets the range of a spotlight, i.e. the angle of the inner and outer cones and the rate of falloff between them.
-
-                @param spotlightRange.x innerAngle (The angle covered by the bright inner cone)
-                @param spotlightRange.x outerAngle (The angle covered by the outer cone)
-                @param spotlightRange.x falloff (The rate of falloff between the inner and outer cones. 1.0 means a linear falloff, less means slower falloff, higher means faster falloff.)
+                @param spotlightRange The parameters of the spotlight (see description)
+                
+                 - @a spotlightRange.x innerAngle (The angle covered by the bright inner cone)
+                 - @a spotlightRange.x outerAngle (The angle covered by the outer cone)
+                 - @a spotlightRange.x falloff (The rate of falloff between the inner and outer cones. 1.0 means a linear falloff, less means slower falloff, higher means faster falloff.)
             */
             inline void setSpotlightRange(const Vector3& spotlightRange)
                 { this->spotlightRange_ = spotlightRange; this->updateSpotlightRange(); }

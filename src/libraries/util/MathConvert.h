@@ -27,9 +27,10 @@
  */
 
 /**
-    @file
-    @brief
-        Math conversion functions. Definitions are in Math.cc
+@file
+@ingroup Convert
+@brief
+    Conversion functions for Math types like Ogre::Vector3 (definitions are in Math.cc)
 */
 
 #ifndef _MathConvert_H__
@@ -45,7 +46,7 @@ namespace orxonox
     // Math to string //
     ////////////////////
 
-    // Vector2 to std::string
+    /// Ogre::Vector2 to std::string conversion
     template <>
     struct ConverterExplicit<orxonox::Vector2, std::string>
     {
@@ -61,7 +62,7 @@ namespace orxonox
         }
     };
 
-    // Vector3 to std::string
+    /// Ogre::Vector3 to std::string conversion
     template <>
     struct ConverterExplicit<orxonox::Vector3, std::string>
     {
@@ -77,7 +78,7 @@ namespace orxonox
         }
     };
 
-    // Vector4 to std::string
+    /// Ogre::Vector4 to std::string conversion
     template <>
     struct ConverterExplicit<orxonox::Vector4, std::string>
     {
@@ -93,7 +94,7 @@ namespace orxonox
         }
     };
 
-    // Quaternion to std::string
+    /// Ogre::Quaternion to std::string conversion
     template <>
     struct ConverterExplicit<orxonox::Quaternion, std::string>
     {
@@ -109,7 +110,7 @@ namespace orxonox
         }
     };
 
-    // ColourValue to std::string
+    /// Ogre::ColourValue to std::string conversion
     template <>
     struct ConverterExplicit<orxonox::ColourValue, std::string>
     {
@@ -130,19 +131,19 @@ namespace orxonox
     // string to Math //
     ////////////////////
 
-    // std::string to Vector2
+    /// std::string to Ogre::Vector2 conversion
     template <> struct _UtilExport ConverterFallback<std::string, orxonox::Vector2>
     { static bool convert(orxonox::Vector2*     output, const std::string& input); };
-    // std::string to Vector3
+    /// std::string to Ogre::Vector3 conversion
     template <> struct _UtilExport ConverterFallback<std::string, orxonox::Vector3>
     { static bool convert(orxonox::Vector3*     output, const std::string& input); };
-    // std::string to Vector4
+    /// std::string to Ogre::Vector4 conversion
     template <> struct _UtilExport ConverterFallback<std::string, orxonox::Vector4>
     { static bool convert(orxonox::Vector4*     output, const std::string& input); };
-    // std::string to Quaternion
+    /// std::string to Ogre::Quaternion conversion
     template <> struct _UtilExport ConverterFallback<std::string, orxonox::Quaternion>
     { static bool convert(orxonox::Quaternion*  output, const std::string& input); };
-    // std::string to ColourValue
+    /// std::string to Ogre::ColourValue conversion
     template <> struct _UtilExport ConverterFallback<std::string, orxonox::ColourValue>
     { static bool convert(orxonox::ColourValue* output, const std::string& input); };
 
@@ -151,7 +152,7 @@ namespace orxonox
     // From and to Radian/Degree //
     ///////////////////////////////
 
-    // From Radian
+    /// Delegates conversions from Radian to conversions from float
     template <class ToType>
     struct ConverterFallback<orxonox::Radian, ToType>
     {
@@ -161,7 +162,7 @@ namespace orxonox
         }
     };
 
-    // From Degree
+    /// Delegates conversions from Degree to conversions from float
     template <class ToType>
     struct ConverterFallback<orxonox::Degree, ToType>
     {
@@ -171,7 +172,7 @@ namespace orxonox
         }
     };
 
-    // To Radian
+    /// Delegates conversions to Radian to conversions to float
     template <class FromType>
     struct ConverterFallback<FromType, orxonox::Radian>
     {
@@ -188,7 +189,7 @@ namespace orxonox
         }
     };
 
-    // To Degree
+    /// Delegates conversions to Degree to conversions to float
     template <class FromType>
     struct ConverterFallback<FromType, orxonox::Degree>
     {

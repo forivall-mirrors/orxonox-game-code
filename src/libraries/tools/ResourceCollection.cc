@@ -51,10 +51,10 @@ namespace orxonox
     {
     }
 
-    void ResourceCollection::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void ResourceCollection::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        XMLPortParam(ResourceCollection, "resourceGroup", setResourceGroup, getResourceGroup, xmlElement, mode);
-        XMLPortObject(ResourceCollection, ResourceLocation, "", addResourceLocation, getResourceLocation, xmlElement, mode);
+        XMLPortParam(ResourceCollection, "resourceGroup", setResourceGroup, getResourceGroup, xmlelement, mode);
+        XMLPortObject(ResourceCollection, ResourceLocation, "", addResourceLocation, getResourceLocation, xmlelement, mode);
     }
 
     void ResourceCollection::setResourceGroup(const std::string& resourceGroup)

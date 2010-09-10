@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup XML Loader
+*/
+
 #ifndef _NamespaceNode_H__
 #define _NamespaceNode_H__
 

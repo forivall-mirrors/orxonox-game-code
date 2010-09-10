@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file
+    @ingroup Command Tcl
+    @brief Declaration of IRC helper class, used for IRC connections using Tcl.
+*/
+
 #ifndef _IRC_H__
 #define _IRC_H__
 
@@ -35,6 +41,10 @@
 
 namespace orxonox
 {
+    /**
+        @brief The IRC class creates a Tcl-thread (see TclThreadManager) and connects to an IRC server.
+        It provides different console commands to send messages and to perform other actions on the IRC server.
+    */
     class _CoreExport IRC
     {
         public:
@@ -54,11 +64,11 @@ namespace orxonox
             void initialize();
 
             IRC();
-            IRC(const IRC& other);
-            ~IRC() {}
+            IRC(const IRC& other);              ///< Copy-constructor: Not implemented
+            ~IRC() {}                           ///< Destructor
 
-            Tcl::interpreter* interpreter_;
-            std::string nickname_;
+            Tcl::interpreter* interpreter_;     ///< The Tcl interpreter that is used for the IRC connection
+            std::string nickname_;              ///< The user's nickname on the IRC server
     };
 }
 

@@ -77,7 +77,9 @@ namespace orxonox
     /**
     @brief
         Sets the id of the QuestItem.
-    The id must be of GUID form. See 'http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure' for more information.
+        The id can be any string and must be unique in the context it is used (commonly a level file). To ensure uniqueness one could use GUIDs, however they are in general less readable, so make your own choice.
+    @see
+        http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure
     @param id
         The id to be set.
     */

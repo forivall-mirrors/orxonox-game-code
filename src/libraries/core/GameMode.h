@@ -28,7 +28,8 @@
 
 /**
     @file
-    @brief Declaration of the GameMode class.
+    @ingroup Management CoreGame
+    @brief Declaration of the GameMode class which stores and returns the current mode of the game.
 */
 
 #ifndef _GameMode_H__
@@ -39,6 +40,7 @@
 // tolua_begin
 namespace orxonox
 {
+    /// Helper class, stores and returns the current mode of the game.
     class _CoreExport GameMode
     {
 // tolua_end
@@ -46,35 +48,36 @@ namespace orxonox
 
         public:
 // tolua_begin
-            static bool showsGraphics() { return bShowsGraphics_s; }
-            static bool playsSound()    { return bPlaysSound_s; }
-            static bool hasServer()     { return bHasServer_s; }
-            static bool isClient()      { return bIsClient_s; }
-            static bool isStandalone()  { return bIsStandalone_s; }
-            static bool isMaster()      { return bIsMaster_s; }
+            static bool showsGraphics() { return bShowsGraphics_s; }    ///< Returns true if the game shows graphics, false if it is in text-console mode
+            static bool playsSound()    { return bPlaysSound_s; }       ///< Returns true if the game is able to play sounds
+            static bool isServer()      { return bIsServer_s; }         ///< Returns true if we're currently a server (online)
+            static bool isClient()      { return bIsClient_s; }         ///< Returns true if we're currently a client (online)
+            static bool isStandalone()  { return bIsStandalone_s; }     ///< Returns true if we're in standalone mode (offline)
+            static bool isMaster()      { return bIsMaster_s; }         ///< Returns true if we're in control of the game (either standalone or server)
 // tolua_end
 
-            static void setPlaysSound   (bool val) { bPlaysSound_s    = val; }
-            static void setHasServer    (bool val) { bHasServer_s     = val; updateIsMaster(); }
-            static void setIsClient     (bool val) { bIsClient_s      = val; updateIsMaster(); }
-            static void setIsStandalone (bool val) { bIsStandalone_s  = val; updateIsMaster(); }
+            static void setPlaysSound   (bool val) { bPlaysSound_s    = val; }                      ///< Defines if the game can play sounds
+            static void setIsServer     (bool val) { bIsServer_s      = val; updateIsMaster(); }    ///< Defines if the program is in server mode (online)
+            static void setIsClient     (bool val) { bIsClient_s      = val; updateIsMaster(); }    ///< Defines if the program is in client mode (online)
+            static void setIsStandalone (bool val) { bIsStandalone_s  = val; updateIsMaster(); }    ///< Defines if the program is in standalone mode (offline)
 
         private:
             GameMode();
             GameMode(const GameMode& inst);
             ~GameMode();
 
+            /// Checks if we're in control of the game (either standalone or server).
             static void updateIsMaster()
             {
-                bIsMaster_s = (bHasServer_s || bIsStandalone_s);
+                bIsMaster_s = (bIsServer_s || bIsStandalone_s);
             }
 
             static bool bShowsGraphics_s;                   //!< global variable that tells whether to show graphics
             static bool bPlaysSound_s;                      //!< global variable that tells whether to sound works
-            static bool bHasServer_s;                       //!< global variable that tells whether this is a server
-            static bool bIsClient_s;
-            static bool bIsStandalone_s;
-            static bool bIsMaster_s;
+            static bool bIsServer_s;                        //!< global variable that tells whether this is a server (online)
+            static bool bIsClient_s;                        //!< global variable that tells whether this is a client (online)
+            static bool bIsStandalone_s;                    //!< global variable that tells whether the game is running in standalone mode (offline)
+            static bool bIsMaster_s;                        //!< global variable that tells whether we're in control of the game (standalone or server)
     }; // tolua_export
 } // tolua_export
 

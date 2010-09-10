@@ -26,6 +26,24 @@
  *
  */
 
+/**
+    @file
+    @ingroup Command FunctorExecutor
+    @brief Typedefs and definitions of ExecutorPtr, ExecutorStaticPtr, and ExecutorMemberPtr
+
+    Instances of orxonox::Executor are usually managed by an orxonox::SharedPtr. This ensures
+    that Executors will be destroyed after usage. To make things easier, there's a typedef
+    that defines ExecutorPtr as SharedPtr<Executor>.
+
+    Because there's not only orxonox::Executor, but also orxonox::ExecutorStatic, and
+    orxonox::ExecutorMember, the shared pointers need to store them all and also reflect
+    their hierarchy - ExecutorStatic and ExecutorMember should not be mixed, but both can
+    be converted to Executor. This is achieved by using orxonox::SharedChildPtr.
+
+    Because it's not possible to use a typedef for a template, we have to define the
+    helper class ExecutorMemberPtr<T> that makes it easier to use ExecutorMember.
+*/
+
 #ifndef _ExecutorPtr_H__
 #define _ExecutorPtr_H__
 
@@ -34,10 +52,13 @@
 
 namespace orxonox
 {
+    /// ExecutorPtr is just a typedef of SharedPtr
     typedef SharedPtr<Executor> ExecutorPtr;
 
+    /// ExecutorStaticPtr is just a typedef of SharedChildPtr
     typedef SharedChildPtr<ExecutorStatic, ExecutorPtr> ExecutorStaticPtr;
 
+    /// It's not possible to use a typedef for ExecutorMemberPtr<T>, so we have to create a child-class instead. It inherits all functions from SharedChildPtr, but needs to (re-)implement some constructors.
     template <class T>
     class ExecutorMemberPtr : public SharedChildPtr<ExecutorMember<T>, ExecutorPtr>
     {

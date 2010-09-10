@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file
+    @ingroup Command ConsoleCommand
+    @brief Declaration of some console commands.
+*/
+
 #ifndef _ConsoleCommandCompilation_H__
 #define _ConsoleCommandCompilation_H__
 

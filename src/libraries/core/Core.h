@@ -27,12 +27,22 @@
  *
  */
 
+/**
+    @defgroup CoreGame Core and Game
+    @ingroup Management
+*/
+
+/**
+    @file
+    @ingroup Management CoreGame
+    @brief Declaration of the Core singleton which is used to configure the program basics.
+*/
+
 #ifndef _Core_H__
 #define _Core_H__
 
 #include "CorePrereqs.h"
 
-#include <cassert>
 #include <string>
 #include <boost/scoped_ptr.hpp>
 #include <loki/ScopeGuard.h>

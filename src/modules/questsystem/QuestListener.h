@@ -61,6 +61,7 @@ namespace orxonox
         The XML representation goes as follows:
         You can use the QuestListener as if it were a Trigger or EventListener, that fires an Event when the status (depending on the set mode) of the given Quest changes.
 
+        @code
         <BaseObject> // The object that should react to the status change of a Quest.
             <events>
                 <function> // Where function is the method of the object that should be executed. Normally this would be visibility or activity.
@@ -68,6 +69,7 @@ namespace orxonox
                 </function>
             </events>
         </BaseObject>
+        @endcode
     @author
     Damian 'Mozork' Frick
     */

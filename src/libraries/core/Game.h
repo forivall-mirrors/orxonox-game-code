@@ -28,8 +28,9 @@
 
 /**
 @file
+@ingroup Management CoreGame
 @brief
-    Declaration of Game Singleton.
+    Declaration of Game Singleton which is responsible for running the game.
  */
 
 #ifndef _Game_H__
@@ -52,7 +53,7 @@
 #include "OrxonoxClass.h"
 
 /**
-@def
+@brief
     Adds a new GameState to the Game. The second parameter is the name as string
     and every following paramter is a constructor argument (which is usually non existent)
 */

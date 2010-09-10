@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of ConfigFileManager and its helper classes.
+*/
+
 #include "ConfigFileManager.h"
 
 #include <boost/filesystem.hpp>
@@ -42,7 +47,9 @@ namespace orxonox
     //////////////////////////
     // ConfigFileEntryValue //
     //////////////////////////
-
+    /**
+        @brief Updates the string that will be stored in the file after one of it's components (name, value, comment) has changed.
+    */
     void ConfigFileEntryValue::update()
     {
         // Make sure we remove the quotes when bString changes
@@ -62,6 +69,9 @@ namespace orxonox
     ////////////////////////////////
     // ConfigFileEntryVectorValue //
     ////////////////////////////////
+    /**
+        @brief Updates the string that will be stored in the file after one of it's components (name, value, index, comment) has changed.
+    */
     void ConfigFileEntryVectorValue::update()
     {
         this->keyString_ = this->name_ + '[' + multi_cast<std::string>(this->index_) + ']';
@@ -72,12 +82,21 @@ namespace orxonox
     ///////////////////////
     // ConfigFileSection //
     ///////////////////////
+    /**
+        @brief Destructor: Deletes all entries.
+    */
     ConfigFileSection::~ConfigFileSection()
     {
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); )
             delete (*(it++));
     }
 
+    /**
+        @brief Deletes all elements of a config vector if their index is greater or equal to @a startindex.
+
+        @param name         The name of the vector
+        @param startindex   The index of the first element that will be deleted
+    */
     void ConfigFileSection::deleteVectorEntries(const std::string& name, unsigned int startindex)
     {
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); )
@@ -94,6 +113,10 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Returns the size of a config vector.
+        @param name     The name of the vector
+    */
     unsigned int ConfigFileSection::getVectorSize(const std::string& name) const
     {
         unsigned int size = 0;
@@ -107,6 +130,9 @@ namespace orxonox
             return (size + 1);
     }
 
+    /**
+        @brief Returns the title and comment of the section as it will be stored in the file.
+    */
     std::string ConfigFileSection::getFileEntry() const
     {
         if (this->additionalComment_.empty())
@@ -115,6 +141,11 @@ namespace orxonox
             return ('[' + this->name_ + "] " + this->additionalComment_);
     }
 
+    /**
+        @brief Returns the entry with given name (or NULL if it doesn't exist).
+
+        @param name     The name of the entry
+    */
     ConfigFileEntry* ConfigFileSection::getEntry(const std::string& name) const
     {
         for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
@@ -125,6 +156,12 @@ namespace orxonox
         return NULL;
     }
 
+    /**
+        @brief Returns the entry of a vector element with given name and index (or NULL if it doesn't exist).
+
+        @param name     The name of the vector
+        @param index    The index of the element in the vector
+    */
     ConfigFileEntry* ConfigFileSection::getEntry(const std::string& name, unsigned int index) const
     {
         for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
@@ -135,6 +172,13 @@ namespace orxonox
         return NULL;
     }
 
+    /**
+        @brief Returns the iterator to the entry with given name. If the entry doesn't exist, it is created using the fallback value.
+
+        @param name     The name of the entry
+        @param fallback The value that will be used if the entry doesn't exist
+        @param bString  If true, the value is treated as string which means some special treatment of special characters.
+    */
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getOrCreateEntryIterator(const std::string& name, const std::string& fallback, bool bString)
     {
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
@@ -151,6 +195,14 @@ namespace orxonox
         return this->entries_.insert(this->entries_.end(), new ConfigFileEntryValue(name, fallback, bString));
     }
 
+    /**
+        @brief Returns the iterator to the entry of a vector element with given name and index. If the entry doesn't exist, it is created using the fallback value.
+
+        @param name     The name of the vector
+        @param index    The index of the element in the vector
+        @param fallback The value that will be used if the entry doesn't exist
+        @param bString  If true, the value is treated as string which means some special treatment of special characters.
+    */
     std::list<ConfigFileEntry*>::iterator ConfigFileSection::getOrCreateEntryIterator(const std::string& name, unsigned int index, const std::string& fallback, bool bString)
     {
         for (std::list<ConfigFileEntry*>::iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
@@ -177,6 +229,11 @@ namespace orxonox
 
     const char* ConfigFile::DEFAULT_CONFIG_FOLDER = "defaultConfig";
 
+    /**
+        @brief Constructor: Initializes the config file.
+        @param filename The file-name of this config file
+        @param bCopyFallbackFile If true, the default config file is copied into the config-directory before loading the file
+    */
     ConfigFile::ConfigFile(const std::string& filename, bool bCopyFallbackFile)
         : filename_(filename)
         , bCopyFallbackFile_(bCopyFallbackFile)
@@ -184,11 +241,17 @@ namespace orxonox
     {
     }
 
+    /**
+        @brief Destructor: Deletes all sections and entries.
+    */
     ConfigFile::~ConfigFile()
     {
         this->clear();
     }
 
+    /**
+        @brief Loads the config file from the hard-disk and reads the sections and their values.
+    */
     void ConfigFile::load()
     {
         // Be sure we start from new in the memory
@@ -317,11 +380,17 @@ namespace orxonox
         } // end file.is_open()
     }
 
+    /**
+        @brief Writes the sections and values to the hard-disk.
+    */
     void ConfigFile::save() const
     {
         this->saveAs(this->filename_);
     }
 
+    /**
+        @brief Writes the sections and values to a given file on the hard-disk.
+    */
     void ConfigFile::saveAs(const std::string& filename) const
     {
         boost::filesystem::path filepath(filename);
@@ -353,6 +422,9 @@ namespace orxonox
         COUT(4) << "Saved config file \"" << filename << "\"." << std::endl;
     }
 
+    /**
+        @brief Deletes all sections (which again delete all their values) and clears the list of sections.
+    */
     void ConfigFile::clear()
     {
         for (std::list<ConfigFileSection*>::iterator it = this->sections_.begin(); it != this->sections_.end(); )
@@ -360,20 +432,13 @@ namespace orxonox
         this->sections_.clear();
     }
 
-    const std::string& ConfigFile::getOrCreateValue(const std::string& section, const std::string& name, const std::string& fallback, bool bString)
-    {
-        const std::string& output = this->getOrCreateSection(section)->getOrCreateValue(name, fallback, bString);
-        this->saveIfUpdated();
-        return output;
-    }
+    /**
+        @brief Deletes all elements of a config vector if their index is greater or equal to @a startindex.
 
-    const std::string& ConfigFile::getOrCreateValue(const std::string& section, const std::string& name, unsigned int index, const std::string& fallback, bool bString)
-    {
-        const std::string& output = this->getOrCreateSection(section)->getOrCreateValue(name, index, fallback, bString);
-        this->saveIfUpdated();
-        return output;
-    }
-
+        @param section      The name of the section
+        @param name         The name of the vector
+        @param startindex   The index of the first element that will be deleted
+    */
     void ConfigFile::deleteVectorEntries(const std::string& section, const std::string& name, unsigned int startindex)
     {
         if (ConfigFileSection* sectionPtr = this->getSection(section))
@@ -383,6 +448,9 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Returns a pointer to the section with given name (or NULL if the section doesn't exist).
+    */
     ConfigFileSection* ConfigFile::getSection(const std::string& section) const
     {
         for (std::list<ConfigFileSection*>::const_iterator it = this->sections_.begin(); it != this->sections_.end(); ++it)
@@ -391,6 +459,9 @@ namespace orxonox
         return NULL;
     }
 
+    /**
+        @brief Returns a pointer to the section with given name. If it doesn't exist, the section is created.
+    */
     ConfigFileSection* ConfigFile::getOrCreateSection(const std::string& section)
     {
         for (std::list<ConfigFileSection*>::iterator it = this->sections_.begin(); it != this->sections_.end(); ++it)
@@ -402,6 +473,9 @@ namespace orxonox
         return (*this->sections_.insert(this->sections_.end(), new ConfigFileSection(section)));
     }
 
+    /**
+        @brief Saves the config file if it was updated (or if any of its sections were updated).
+    */
     void ConfigFile::saveIfUpdated()
     {
         bool sectionsUpdated = false;
@@ -441,6 +515,9 @@ namespace orxonox
 
     SettingsConfigFile* SettingsConfigFile::singletonPtr_s = 0;
 
+    /**
+        @brief Constructor: Activates the console commands.
+    */
     SettingsConfigFile::SettingsConfigFile(const std::string& filename)
         : ConfigFile(filename)
     {
@@ -451,6 +528,9 @@ namespace orxonox
         ModifyConsoleCommand(__CC_getConfig_name).setObject(this);
     }
 
+    /**
+        @brief Destructor: Deactivates the console commands.
+    */
     SettingsConfigFile::~SettingsConfigFile()
     {
         ModifyConsoleCommand(__CC_load_name).setObject(0);
@@ -460,17 +540,26 @@ namespace orxonox
         ModifyConsoleCommand(__CC_getConfig_name).setObject(0);
     }
 
+    /**
+        @brief Loads the config file and updates the @ref ConfigValueContainer "config value containers".
+    */
     void SettingsConfigFile::load()
     {
         ConfigFile::load();
         this->updateConfigValues();
     }
 
+    /**
+        @brief Changes the file-name.
+    */
     void SettingsConfigFile::setFilename(const std::string& filename)
     {
         ConfigFileManager::getInstance().setFilename(ConfigFileType::Settings, filename);
     }
 
+    /**
+        @brief Registers a new @ref ConfigValueContainer "config value container".
+    */
     void SettingsConfigFile::addConfigValueContainer(ConfigValueContainer* container)
     {
         if (container == NULL)
@@ -480,6 +569,9 @@ namespace orxonox
         this->sectionNames_.insert(container->getSectionName());
     }
 
+    /**
+        @brief Unregisters a @ref ConfigValueContainer "config value container".
+    */
     void SettingsConfigFile::removeConfigValueContainer(ConfigValueContainer* container)
     {
         if (container == NULL)
@@ -499,8 +591,13 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Updates all @ref ConfigValueContainer "config value containers".
+    */
     void SettingsConfigFile::updateConfigValues()
     {
+        // todo: can this be done more efficiently? looks like some identifiers will be updated multiple times.
+
         for (ContainerMap::const_iterator it = this->containers_.begin(); it != this->containers_.end(); ++it)
         {
             it->second.second->update();
@@ -508,6 +605,10 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Removes entries and sections from the file that don't exist anymore (i.e. if there's no corresponding @ref ConfigValueContainer "config value container").
+        @param bCleanComments If true, comments are also removed from the file
+    */
     void SettingsConfigFile::clean(bool bCleanComments)
     {
         for (std::list<ConfigFileSection*>::iterator itSection = this->sections_.begin(); itSection != this->sections_.end(); )
@@ -557,18 +658,40 @@ namespace orxonox
         this->save();
     }
 
+    /**
+        @brief Console-command: Changes the value of an entry and stores it the file.
+
+        @param section  The section of the config value
+        @param entry    The name of the config value
+        @param value    The new value
+    */
     void SettingsConfigFile::config(const std::string& section, const std::string& entry, const std::string& value)
     {
         if (!this->configImpl(section, entry, value, &ConfigValueContainer::set))
             COUT(1) << "Error: Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << std::endl;
     }
 
+    /**
+        @brief Console-command: Changes the value of an entry, but doesn't store it in the file (it's only a temporary change).
+
+        @param section  The section of the config value
+        @param entry    The name of the config value
+        @param value    The new value
+    */
     void SettingsConfigFile::tconfig(const std::string& section, const std::string& entry, const std::string& value)
     {
         if (!this->configImpl(section, entry, value, &ConfigValueContainer::tset))
             COUT(1) << "Error: Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << std::endl;
     }
 
+    /**
+        @brief Changes the value of an entry, depending on @a function, either by using "set" or "tset"
+
+        @param section  The section of the config value
+        @param entry    The name of the config value
+        @param value    The new value
+        @param function The function ("set" or "tset") that will be used to change the value.
+    */
     bool SettingsConfigFile::configImpl(const std::string& section, const std::string& entry, const std::string& value, bool (ConfigValueContainer::*function)(const MultiType&))
     {
         const std::string& sectionLC = getLowercase(section);
@@ -585,6 +708,12 @@ namespace orxonox
         return false;
     }
 
+    /**
+        @brief Console-command: Returns the value of a given entry.
+
+        @param section  The section of the config value
+        @param entry    The name of the config value
+    */
     std::string SettingsConfigFile::getConfig(const std::string& section, const std::string& entry)
     {
         const std::string& sectionLC = getLowercase(section);
@@ -610,11 +739,13 @@ namespace orxonox
 
     ConfigFileManager* ConfigFileManager::singletonPtr_s = 0;
 
+    /// Constructor: Initializes the array of config files with NULL.
     ConfigFileManager::ConfigFileManager()
     {
         this->configFiles_.assign(NULL);
     }
 
+    /// Destructor: Deletes the config files.
     ConfigFileManager::~ConfigFileManager()
     {
         for (boost::array<ConfigFile*, 3>::const_iterator it = this->configFiles_.begin(); it != this->configFiles_.end(); ++it)
@@ -622,6 +753,7 @@ namespace orxonox
                 delete (*it);
     }
 
+    /// Defines the file-name for the config file of a given type (settings, calibration, etc.).
     void ConfigFileManager::setFilename(ConfigFileType::Value type, const std::string& filename)
     {
         if (this->getConfigFile(type))

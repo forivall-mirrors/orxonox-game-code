@@ -26,6 +26,29 @@
  *
  */
 
+/**
+    @defgroup ArgumentCompletion Argument completion
+    @ingroup Command
+*/
+
+/**
+    @file
+    @ingroup Command ArgumentCompletion
+    @brief Definition of the orxonox::ArgumentCompleter class that is used to execute @ref ArgumentCompletionFunctions.h "argument completion functions".
+
+    An ArgumentCompleter can be assigned to an orxonox::ConsoleCommand using
+    @ref orxonox::ConsoleCommand::argumentCompleter "argumentCompleter()".
+    The ArgumentCompleter calls an argument completion function that is defined
+    in ArgumentCompletionFunctions.h. This can be used to list possible arguments
+    for console commands and to allow auto-completion.
+
+    Instances of ArgumentCompleter are usually not created manually but rather
+    by the macros defined in ArgumentCompletionFunctions.h. There you'll also
+    find some examples.
+
+    @see See the @ref ArgumentCompletionExample "examples".
+*/
+
 #ifndef _ArgumentCompleter_H__
 #define _ArgumentCompleter_H__
 
@@ -34,16 +57,30 @@
 
 namespace orxonox
 {
+    /**
+        @brief This class executes an argument completion function and returns a list of the possible arguments.
+
+        ArgumentCompleter is used to wrap argument completion functions as defined
+        in ArgumentCompletionFunctions.h and can be assigned to a ConsoleCommand to
+        create a list of possible arguments.
+
+        @see See ArgumentCompleter.h for more information.
+        @see See @ref ArgumentCompletionExample "ArgumentCompletionFunctions.h" for an example.
+    */
     class _CoreExport ArgumentCompleter
     {
         public:
-            ArgumentCompleter(ArgumentCompletionList (*function) (void), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(0), function_0_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(1), function_1_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(2), function_2_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(3), function_3_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(4), function_4_(function) {}
-            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(5), function_5_(function) {}
+            ArgumentCompleter(ArgumentCompletionList (*function) (void), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(0), function_0_(function) {} ///< Constructor, assigns a function-pointer with no arguments.
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(1), function_1_(function) {} ///< Constructor, assigns a function-pointer with one argument.
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(2), function_2_(function) {} ///< Constructor, assigns a function-pointer with two arguments.
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(3), function_3_(function) {} ///< Constructor, assigns a function-pointer with three arguments.
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(4), function_4_(function) {} ///< Constructor, assigns a function-pointer with four arguments.
+            ArgumentCompleter(ArgumentCompletionList (*function) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5), bool bUseMultipleWords) : bUseMultipleWords_(bUseMultipleWords), paramCount_(5), function_5_(function) {} ///< Constructor, assigns a function-pointer with five arguments.
 
+            /**
+                @brief Calls the argument completion function with a maximum of five parameters.
+                @return Returns the list of possible arguments, created by the argument completion function
+            */
             ArgumentCompletionList operator()(const std::string& param1 = "", const std::string& param2 = "", const std::string& param3 = "", const std::string& param4 = "", const std::string& param5 = "")
             {
                 switch (this->paramCount_)
@@ -65,18 +102,19 @@ namespace orxonox
                 }
             }
 
+            /// Returns true if the argument completion list supports multiple words.
             inline bool useMultipleWords() const
                 { return this->bUseMultipleWords_; }
 
         private:
-            bool bUseMultipleWords_;
-            unsigned char paramCount_;
-            ArgumentCompletionList (*function_0_) (void);
-            ArgumentCompletionList (*function_1_) (const std::string& param1);
-            ArgumentCompletionList (*function_2_) (const std::string& param1, const std::string& param2);
-            ArgumentCompletionList (*function_3_) (const std::string& param1, const std::string& param2, const std::string& param3);
-            ArgumentCompletionList (*function_4_) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4);
-            ArgumentCompletionList (*function_5_) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5);
+            bool bUseMultipleWords_;    ///< If true, the argument completion list supports multiple words
+            unsigned char paramCount_;  ///< The number of parameters of the argument completion function
+            ArgumentCompletionList (*function_0_) (void);   ///< Function-pointer for an argument completion function with no arguments
+            ArgumentCompletionList (*function_1_) (const std::string& param1);   ///< Function-pointer for an argument completion function with one argument
+            ArgumentCompletionList (*function_2_) (const std::string& param1, const std::string& param2);   ///< Function-pointer for an argument completion function with two arguments
+            ArgumentCompletionList (*function_3_) (const std::string& param1, const std::string& param2, const std::string& param3);   ///< Function-pointer for an argument completion function with three arguments
+            ArgumentCompletionList (*function_4_) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4);   ///< Function-pointer for an argument completion function with four arguments
+            ArgumentCompletionList (*function_5_) (const std::string& param1, const std::string& param2, const std::string& param3, const std::string& param4, const std::string& param5);   ///< Function-pointer for an argument completion function with five arguments
     };
 }
 

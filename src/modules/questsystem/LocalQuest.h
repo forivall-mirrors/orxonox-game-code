@@ -48,7 +48,8 @@ namespace orxonox
 
         Creating a LocalQuest through XML goes as follows:
 
-        <LocalQuest id="questId"> //Where questId is a GUID, see http://en.wikipedia.org/wiki/Globally_Unique_Identifier#Basic_structure for more information
+        @code
+        <LocalQuest id="questId">
             <QuestDescription title="Title" description="Description." /> //The description of the quest.
             <subquests>
                 <Quest id ="questId1" /> //A list of n subquest, be aware, each of the <Quest /> tags must have a description and so on and so forth as well.
@@ -71,6 +72,7 @@ namespace orxonox
                 <QuestEffect />
             </complete-effects>
         </LocalQuest>
+        @endcode
     @author
         Damian 'Mozork' Frick
     */

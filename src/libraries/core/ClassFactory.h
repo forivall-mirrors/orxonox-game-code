@@ -28,9 +28,10 @@
 
 /**
     @file
+    @ingroup Object Factory
     @brief Definition and implementation of the ClassFactory class
 
-    The ClassFactory is able to create new objects of a specific class.
+    The ClassFactory is able to create new objects of a specific class which creates objects.
 */
 
 #ifndef _ClassFactory_H__
@@ -48,7 +49,7 @@ namespace orxonox
     // ###########################
     // ###       Factory       ###
     // ###########################
-    //! Base-class of ClassFactory.
+    /// Base-class of ClassFactory.
     class _CoreExport Factory
     {
         public:
@@ -59,7 +60,7 @@ namespace orxonox
     // ###############################
     // ###      ClassFactory       ###
     // ###############################
-    //! The ClassFactory is able to create new objects of a specific class.
+    /// The ClassFactory is able to create new objects of a specific class.
     template <class T>
     class ClassFactory : public Factory
     {

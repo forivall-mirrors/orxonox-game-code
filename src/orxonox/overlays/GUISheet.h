@@ -43,7 +43,7 @@ namespace orxonox
         GUISheet(BaseObject* creator);
         ~GUISheet();
 
-        void XMLPort(Element& xmlElement, XMLPort::Mode mode);
+        void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         void show();
         void hide();

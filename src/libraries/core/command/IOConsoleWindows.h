@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Command ShellConsole
+*/
+
 #ifndef _IOConsole_H__
 #define _IOConsole_H__
 

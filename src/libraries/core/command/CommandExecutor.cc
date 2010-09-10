@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of CommandExecutor
+*/
+
 #include "CommandExecutor.h"
 
 #include "ConsoleCommand.h"
@@ -48,12 +53,21 @@ namespace orxonox
     SetConsoleCommand("alias", &CommandExecutor::alias)
         .argumentCompleter(1, autocompletion::command());
 
+    /**
+        @brief Returns a reference to the only instance of CommandExecutor.
+    */
     /* static */ CommandExecutor& CommandExecutor::getInstance()
     {
         static CommandExecutor instance;
         return instance;
     }
 
+    /**
+        @brief Executes a command.
+        @param command A string containing the command
+        @param useTcl If true, the command is passed to tcl (see TclBind)
+        @return Returns the error-code (see @ref CommandExecutorErrorCodes "error codes")
+    */
     /* static */ int CommandExecutor::execute(const std::string& command, bool useTcl)
     {
         int error;
@@ -61,49 +75,92 @@ namespace orxonox
         return error;
     }
 
+    /**
+        @brief Executes a command and returns its return-value.
+        @param command A string containing the command
+        @param error A pointer to a value (or NULL) where the error-code should be written to (see @ref CommandExecutorErrorCodes "error codes")
+        @param useTcl If true, the command is passed to tcl (see TclBind)
+        @return Returns the return-value of the command (if any - MT_Type::Null otherwise)
+    */
     /* static */ MultiType CommandExecutor::queryMT(const std::string& command, int* error, bool useTcl)
     {
         if (useTcl)
+        {
+            // pass the command to tcl
             return TclBind::eval(command, error);
+        }
         else
         {
             CommandEvaluation evaluation;
+
+            // try to get the command evaluation from the cache
             if (!CommandExecutor::getInstance().getCached(command, evaluation))
             {
+                // it wasn't in the cache - evaluate the command
                 evaluation = CommandExecutor::evaluate(command);
-                evaluation.evaluateParams();
+
+                // evaluate its arguments
+                evaluation.evaluateArguments();
+
+                // write the evaluation to the cache
                 CommandExecutor::getInstance().cache(command, evaluation);
             }
 
+            // query the command and return its return-value
             return evaluation.query(error);
         }
     }
 
+    /**
+        @brief Executes a command and returns its return-value as string.
+        @param command A string containing the command
+        @param error A pointer to a value (or NULL) where the error-code should be written to (see @ref CommandExecutorErrorCodes "error codes")
+        @param useTcl If true, the command is passed to tcl (see TclBind)
+        @return Returns the return-value of the command converted to a string (or "" if there's no return value)
+    */
     /* static */ std::string CommandExecutor::query(const std::string& command, int* error, bool useTcl)
     {
         return CommandExecutor::queryMT(command, error, useTcl).getString();
     }
 
+    /**
+        @brief Evaluates the given command.
+        @param command A string containing the command
+        @return Returns an instance of CommandEvaluation, which contains the evaluated ConsoleCommand, if the command is valid.
+
+        Evaluates the given command string and returns an instance of CommandEvaluation.
+        If the command is valid, this contains the evaluated ConsoleCommand. Otherwise it
+        can still be used to print hints or complete the command.
+
+        @note Tcl commands can not be evaluated. You have to pass them to execute() or to
+        TclBind directly.
+    */
     /* static */ CommandEvaluation CommandExecutor::evaluate(const std::string& command)
     {
+        // initialize the command evaluation
         CommandEvaluation evaluation;
         evaluation.initialize(command);
 
+        // assign the fallback-command to get hints about the possible commands and groups
         evaluation.hintCommand_ = ConsoleCommand::getCommand(__CC_CommandExecutor_name, __CC_autocomplete_name);
 
+        // check if there's at least one argument
         if (evaluation.getNumberOfArguments() >= 1)
         {
+            // try to get a command from the first token
             evaluation.execCommand_ = ConsoleCommand::getCommandLC(evaluation.getToken(0));
             if (evaluation.execCommand_)
                 evaluation.execArgumentsOffset_ = 1;
             else if (evaluation.getNumberOfArguments() >= 2)
             {
+                // try to get a command from the first two tokens
                 evaluation.execCommand_ = ConsoleCommand::getCommandLC(evaluation.getToken(0), evaluation.getToken(1));
                 if (evaluation.execCommand_)
                     evaluation.execArgumentsOffset_ = 2;
             }
         }
 
+        // if a valid command was found and the user is already entering arguments, overwrite hintCommand_ with execCommand_
         if (evaluation.execCommand_ && evaluation.getNumberOfArguments() > evaluation.execArgumentsOffset_)
         {
             evaluation.hintCommand_ = evaluation.execCommand_;
@@ -113,11 +170,18 @@ namespace orxonox
         return evaluation;
     }
 
+    /**
+        @brief Gets an evaluated command from the cache.
+        @param command The command that should be looked up in the cache
+        @param evaluation Reference to a CommandEvaluation that will be used to return the cached evaluation.
+        @return Returns true if the command was found in the cache
+    */
     bool CommandExecutor::getCached(const std::string& command, CommandEvaluation& evaluation)
     {
         if (Shell::getCacheSize() == 0)
             return false;
 
+        // check if the command is in the cache
         std::map<std::string, CacheEntry>::iterator it = this->cache_.find(command);
         if (it != this->cache_.end())
         {
@@ -133,6 +197,9 @@ namespace orxonox
         return false;
     }
 
+    /**
+        @brief Writes a command evaluation for a given command to the cache.
+    */
     void CommandExecutor::cache(const std::string& command, const CommandEvaluation& evaluation)
     {
         if (Shell::getCacheSize() == 0)
@@ -155,32 +222,49 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief This function is used as console command which executes commands that are usually hidden.
+
+        The argument completion function of this console commands is used to find
+        and enter hidden commands and their arguments.
+    */
     /* static */ MultiType CommandExecutor::unhide(const std::string& command)
     {
         return CommandExecutor::queryMT(command);
     }
 
+    /**
+        @brief This function is used as console command which saves a command and optionally also it's arguments as a new console command with a new name.
+        @param alias The name of the new command alias
+        @param command The existing command and (optionally) its arguments
+    */
     /* static */ void CommandExecutor::alias(const std::string& alias, const std::string& command)
     {
+        // first check if the given command is valid, else print an error
         CommandEvaluation evaluation = CommandExecutor::evaluate(command);
         if (evaluation.isValid())
         {
+            // it is valid - copy the executor of this command
             ExecutorPtr executor = new Executor(*evaluation.getConsoleCommand()->getExecutor().get());
 
-            if (!evaluation.evaluateParams())
+            // evaluate the arguments and if this returns no error, store them as default values
+            if (!evaluation.evaluateArguments())
             {
                 for (size_t i = 0; i < MAX_FUNCTOR_ARGUMENTS; ++i)
-                    executor->setDefaultValue(i, evaluation.getEvaluatedParameter(i));
+                    executor->setDefaultValue(i, evaluation.getEvaluatedArgument(i));
             }
 
+            // split the alias in tokens
             SubString tokens(alias, " ");
 
+            // check if the alias already exists - print an error and return if it does
             if ((tokens.size() == 1 && ConsoleCommand::getCommand(tokens[0])) || (tokens.size() == 2 && ConsoleCommand::getCommand(tokens[0], tokens[1])))
             {
                 COUT(1) << "Error: A command with name \"" << alias << "\" already exists." << std::endl;
                 return;
             }
 
+            // create a new console command with the given alias as its name
             if (tokens.size() == 1)
                 createConsoleCommand(tokens[0], executor);
             else if (tokens.size() == 2)

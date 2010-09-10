@@ -1,10 +1,4 @@
 SET_SOURCE_FILES(QUESTSYSTEM_SRC_FILES
-  AddQuest.cc
-  AddQuestHint.cc
-  AddReward.cc
-  ChangeQuestStatus.cc
-  CompleteQuest.cc
-  FailQuest.cc
   GlobalQuest.cc
   LocalQuest.cc
   Quest.cc
@@ -17,6 +11,8 @@ SET_SOURCE_FILES(QUESTSYSTEM_SRC_FILES
   QuestManager.cc
   QuestNotification.cc
 )
+
+ADD_SUBDIRECTORY(effects)
 
 ORXONOX_ADD_LIBRARY(questsystem
   MODULE

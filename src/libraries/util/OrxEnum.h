@@ -27,9 +27,8 @@
  */
 
 /**
-@file
-@brief
-    Declaration of the OrxEnum class.
+    @file
+    @ingroup Util
 */
 
 #ifndef _OrxEnum_H__
@@ -39,15 +38,33 @@
 
 namespace orxonox
 {
+    /** Lightweight enumeration class that can be extended at run time.
+    @details
+        The class accepts type int and also defines operator int(). Therefore
+        int and OrxEnum can be used interchangeably so you can extend the content
+        of the enumeration at run time by adding ints.
+    @par Declaring an OrxEnum
+        Write a struct that inherits OrxEnum and use some macros:
+        @code
+        struct MyEnum : OrxEnum<MyEnum>
+        {
+            OrxEnumConstructors(MyEnum);
+
+            static const int Value1 = -1;
+            static const int Value2 = 0;
+            static const int Value3 = Value2 + 10;
+        };
+        @endcode
+    */
     template <class T>
     struct OrxEnum
     {
         public:
             OrxEnum() { }
-            OrxEnum(int type)                  { type_ = type; }
+            OrxEnum(int type)            { type_ = type; }
             OrxEnum(const T& instance)   { type_ = instance.type_; }
 
-            operator int()                     { return type_; }
+            operator int()               { return type_; }
             T& operator =(int type)      { type_ = type; return *this; }
             bool operator <(const T& right) const { return (type_ < right.type_); }
             bool operator >(const T& right) const { return (type_ > right.type_); }
@@ -58,6 +75,7 @@ namespace orxonox
     };
 }
 
+/// See orxonox::OrxEnum for more info
 #define OrxEnumConstructors(enumName)                        \
 enumName() { }                                               \
 enumName(int type) : OrxEnum<enumName>(type)             { } \

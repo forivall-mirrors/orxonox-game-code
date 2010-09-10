@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Static linkage of the ScopedSingletonManager maps.
+*/
+
 #include "ScopedSingletonManager.h"
 
 namespace orxonox

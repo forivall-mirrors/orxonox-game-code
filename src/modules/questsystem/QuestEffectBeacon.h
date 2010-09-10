@@ -60,6 +60,7 @@ namespace orxonox
 
         Creating a QuestEffectBeacon through XML goes as follows:
 
+        @code
         <QuestEffectBeacon times=n> //Where 'n' is eighter a number >= 0, which means the QuestEffectBeacon can be executed n times. Or n = -1, which means the QuestEffectBeacon can be executed an infinite number of times.
             <effects>
                 <QuestEffect /> //A list of QuestEffects, invoked when the QuestEffectBeacon is executed, see QuestEffect for the full XML representation.
@@ -75,6 +76,7 @@ namespace orxonox
                 <PlayerTrigger name=eventIdString /> //A PlayerTrigger triggering the execution of the QuestEffectBeacon.
             </attached>
         </QuestEffectBeacon>
+        @endcode
     @author
         Damian 'Mozork' Frick
     */
@@ -87,7 +89,7 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a QuestEffectBeacon object through XML.
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
-            bool execute(bool b, BaseObject* trigger); //!< Executes the QuestEffects of the QuestEffectBeacon.
+            bool execute(bool bTriggered, BaseObject* trigger); //!< Executes the QuestEffects of the QuestEffectBeacon.
 
             /**
             @brief Tests whether the QuestEffectBeacon is active.

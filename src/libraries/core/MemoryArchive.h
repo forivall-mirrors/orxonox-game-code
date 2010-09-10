@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Management Resources
+*/
+
 #ifndef _MemoryArchive_H__
 #define _MemoryArchive_H__
 

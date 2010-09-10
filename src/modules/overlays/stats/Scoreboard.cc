@@ -55,14 +55,6 @@ namespace orxonox
         }
     }
 
-    /**
-        @brief Initializes the lines.
-    */
-    void Scoreboard::XMLPort(Element& xmlElement, XMLPort::Mode mode)
-    {
-        SUPER(Scoreboard, XMLPort, xmlElement, mode);
-    }
-
     void Scoreboard::changedVisibility()
     {
         SUPER(Scoreboard, changedVisibility);

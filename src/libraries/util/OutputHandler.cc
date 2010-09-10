@@ -66,9 +66,6 @@ namespace orxonox
         /**
         @brief
             Gets temporary log path and starts the log file
-        @param outputHandler
-            This is only required to avoid another call to getInstance (this c'tor was
-            called from getInstance!)
         */
         LogFileWriter()
             : OutputListener(OutputHandler::logFileOutputListenerName_s)
@@ -116,8 +113,8 @@ namespace orxonox
         }
 
     private:
-        std::ofstream logFile_;     //! File handle for the log file
-        std::string   logFilename_; //! Filename of the log file
+        std::ofstream logFile_;     //!< File handle for the log file
+        std::string   logFilename_; //!< Filename of the log file
     };
 
 
@@ -161,9 +158,6 @@ namespace orxonox
         /**
         @brief
             Sets the right soft debug level and registers itself
-        @param outputHandler
-            This is only required to avoid another call to getInstance (this c'tor was
-            called from getInstance!)
         */
         MemoryLogWriter()
             : OutputListener("memoryLog")
@@ -185,8 +179,8 @@ namespace orxonox
         }
 
     private:
-        std::ostringstream                        buffer_; //! Stream object used to process the output
-        std::vector<std::pair<int, std::string> > output_; //! Vector containing ALL output
+        std::ostringstream                        buffer_; //!< Stream object used to process the output
+        std::vector<std::pair<int, std::string> > output_; //!< Vector containing ALL output
     };
 
 

@@ -28,6 +28,7 @@
 
 /**
     @file
+    @ingroup Util
     @brief Declaration of the SignalHandler class.
 */
 
@@ -67,6 +68,7 @@ namespace orxonox
     typedef std::list<SignalRec> SignalRecList;
     typedef std::list<SignalCallbackRec> SignalCallbackList;
 
+    /// The SignalHandler is used to catch signals like SIGSEGV and write a backtrace to the logfile.
     class SignalHandler : public Singleton<SignalHandler>
     {
         friend class Singleton<SignalHandler>;
@@ -98,6 +100,7 @@ namespace orxonox
 
 namespace orxonox
 {
+    /// The SignalHandler is used to catch signals like SIGSEGV and write a backtrace to the logfile. Not implemented on Windows.
     class _UtilExport SignalHandler : public Singleton<SignalHandler>
     {
         friend class Singleton<SignalHandler>;

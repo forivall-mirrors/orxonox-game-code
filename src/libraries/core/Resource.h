@@ -26,6 +26,16 @@
  *
  */
 
+/**
+    @defgroup Resources Resources
+    @ingroup Management
+*/
+
+/**
+    @file
+    @ingroup Management Resources
+*/
+
 #ifndef _Core_Resource_H__
 #define _Core_Resource_H__
 
@@ -104,14 +114,14 @@ namespace orxonox
 
         /**
             Find out if the named file exists.
-        @param filename
+        @param name
             Fully qualified name of the file to test for
         */
         static bool exists(const std::string& name);
 
         /**
             Get struct with information about path and size.
-        @param filename
+        @param name
             Fully qualified name of the file to test for
         */
         static shared_ptr<ResourceInfo> getInfo(const std::string& name);

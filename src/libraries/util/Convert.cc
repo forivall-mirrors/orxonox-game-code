@@ -31,7 +31,6 @@
 
 namespace orxonox
 {
-    //template <class FromType, class ToType>
     bool ConverterExplicit<std::string, bool>::convert(bool* output, const std::string& input)
     {
         const std::string& stripped = getLowercase(removeTrailingWhitespaces(input));

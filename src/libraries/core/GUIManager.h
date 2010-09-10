@@ -27,6 +27,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup Graphics
+*/
+
 #ifndef _GUIManager_H__
 #define _GUIManager_H__
 

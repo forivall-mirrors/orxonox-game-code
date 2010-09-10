@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @ingroup ThreadPool
+*/
+
 #ifndef _Thread_H__
 #define _Thread_H__
 

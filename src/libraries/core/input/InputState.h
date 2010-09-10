@@ -127,7 +127,7 @@ namespace orxonox
         //! Call this if you have applied the changes resulting from changed handlers
         void resetExpiration() { bExpired_ = false; }
 
-        //! Updates one specific device handler with #device#Updated
+        //! Updates one specific device handler with deviceUpdated
         void update(float dt, unsigned int device);
         //! Updates all handlers with allDevicesUpdated
         void update(float dt);

@@ -27,11 +27,18 @@
  */
 
 /**
-    @file
-    @brief Definition and implementation of the ObjectList class.
+    @defgroup ObjectList Object-lists and iterators
+    @ingroup Object
+*/
 
-    The ObjectList is a wrapper of an ObjectListBase of a given class.
-    Use Iterator<class> to iterate through all objects of the class.
+/**
+    @file
+    @ingroup Object ObjectList
+    @brief Definition of the ObjectList class, a wrapper of ObjectListBase.
+
+    @ref orxonox::ObjectList "ObjectList<T>" is a wrapper of an @ref orxonox::ObjectListBase
+    "ObjectListBase" of class @a T. Use @ref orxonox::ObjectListIterator "ObjectListIterator<T>"
+    to iterate through the list.
 */
 
 #ifndef _ObjectList_H__
@@ -48,10 +55,12 @@ namespace orxonox
     // ###############################
     // ###       ObjectList        ###
     // ###############################
-    //! The ObjectList contains all objects of the given class.
     /**
-        Wraps the ObjectListBase of the corresponding Identifier.
-        Use ObjectListIterator<class> to iterate through all objects in the list.
+        @brief The ObjectList contains all objects of the given class.
+
+        Wraps the ObjectListBase which contains all objects of type @a T. Use @ref ObjectListIterator
+        "ObjectListIterator<T>" or its typedef ObjectList<T>::iterator to iterate through all objects
+        in the list.
     */
     template <class T>
     class ObjectList
@@ -59,28 +68,28 @@ namespace orxonox
         public:
             typedef ObjectListIterator<T> iterator;
 
-            /** @brief Returns an Iterator to the first element in the list. @return The Iterator */
+            /// Returns an Iterator to the first element in the list.
             inline static ObjectListElement<T>* begin()
             {
                 ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
                 return static_cast<ObjectListElement<T>*>(list->begin().element_);
             }
 
-            /** @brief Returns an Iterator to the element after the last element in the list. @return The Iterator */
+            /// Returns an Iterator to the element after the last element in the list.
             inline static ObjectListElement<T>* end()
             {
                 ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
                 return static_cast<ObjectListElement<T>*>(list->end().element_);
             }
 
-            /** @brief Returns an Iterator to the last element in the list. @return The Iterator */
+            /// Returns an Iterator to the last element in the list.
             inline static ObjectListElement<T>* rbegin()
             {
                 ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();
                 return static_cast<ObjectListElement<T>*>(list->rbegin().element_);
             }
 
-            /** @brief Returns an Iterator to the element before the first element in the list. @return The Iterator */
+            /// Returns an Iterator to the element before the first element in the list.
             inline static ObjectListElement<T>* rend()
             {
                 ObjectListBase* list = ClassIdentifier<T>::getIdentifier()->getObjects();

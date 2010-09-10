@@ -108,19 +108,19 @@ namespace orxonox
     @brief
         Method for creating a NotificationQueue object through XML.
     */
-    void NotificationQueue::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void NotificationQueue::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(NotificationQueue, XMLPort, xmlElement, mode);
+        SUPER(NotificationQueue, XMLPort, xmlelement, mode);
 
         this->setDefaults();
 
-        XMLPortParam(NotificationQueue, "maxSize", setMaxSize, getMaxSize, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "notificationLength", setNotificationLength, getNotificationLength, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "displayTime", setDisplayTime, getDisplayTime, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "targets", setTargets, getTargets, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "font", setFont, getFont, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "fontSize", setFontSize, getFontSize, xmlElement, mode);
-        XMLPortParam(NotificationQueue, "position", setPosition, getPosition, xmlElement, mode);
+        XMLPortParam(NotificationQueue, "maxSize", setMaxSize, getMaxSize, xmlelement, mode);
+        XMLPortParam(NotificationQueue, "notificationLength", setNotificationLength, getNotificationLength, xmlelement, mode);
+        XMLPortParam(NotificationQueue, "displayTime", setDisplayTime, getDisplayTime, xmlelement, mode);
+        XMLPortParam(NotificationQueue, "targets", setTargets, getTargets, xmlelement, mode);
+        XMLPortParam(NotificationQueue, "font", setFont, getFont, xmlelement, mode);
+        XMLPortParam(NotificationQueue, "fontSize", setFontSize, getFontSize, xmlelement, mode);
+        XMLPortParam(NotificationQueue, "position", setPosition, getPosition, xmlelement, mode);
 
         COUT(3) << "NotificationQueue '" << this->getName() << "' created." << std::endl;
     }

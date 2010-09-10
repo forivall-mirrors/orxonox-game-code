@@ -36,9 +36,9 @@
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "QuestManager.h"
-#include "QuestItem.h"
-#include "QuestHint.h"
+#include "questsystem/QuestManager.h"
+#include "questsystem/QuestItem.h"
+#include "questsystem/QuestHint.h"
 
 namespace orxonox
 {
@@ -79,7 +79,7 @@ namespace orxonox
         Sets the id of the QuestHint to be added to the player the QuestEffect is invoked on.
     @param id
         The QuestHint id.
-    @param
+    @return
         Returns true if successful.
     */
     bool AddQuestHint::setHintId(const std::string & id)

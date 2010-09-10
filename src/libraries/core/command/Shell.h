@@ -26,6 +26,17 @@
  *
  */
 
+/**
+    @defgroup ShellConsole Shell and console
+    @ingroup Command
+*/
+
+/**
+    @file
+    @ingroup Command ShellConsole
+    @brief Declaration of the Shell and ShellListener classes.
+*/
+
 #ifndef _Shell_H__
 #define _Shell_H__
 
@@ -42,6 +53,9 @@
 
 namespace orxonox
 {
+    /**
+        @brief An interface, used to get a notification if the state of the Shell changes.
+    */
     class _CoreExport ShellListener
     {
         friend class Shell;
@@ -50,19 +64,30 @@ namespace orxonox
             virtual ~ShellListener() {}
 
         private:
-            virtual void linesChanged() {}
-            virtual void onlyLastLineChanged() {}
-            virtual void lineAdded() {}
-            virtual void inputChanged() {}
-            virtual void cursorChanged() {}
-            virtual void executed() {}
-            virtual void exit() {}
+            virtual void linesChanged() {}          ///< Called if all output-lines have changed
+            virtual void onlyLastLineChanged() {}   ///< Called if only the last output-line has changed
+            virtual void lineAdded() {}             ///< Called if a new line was added to the output
+            virtual void inputChanged() {}          ///< Called if the input has changed
+            virtual void cursorChanged() {}         ///< Called if the cursor in the input line has changed
+            virtual void executed() {}              ///< Called if a command from the input line was executed
+            virtual void exit() {}                  ///< Called if the console should be closed
     };
 
 
+    /**
+        @brief The Shell is the logical component of the console that displays output to the user and allows him to enter commands.
+
+        The Shell gathers output sent from OutputHandler by inheriting from OutputListener.
+        The output-lines are stored in the shell, so they can be displayed in a graphical
+        console. Additionally the Shell has an InputBuffer which is needed by the user to
+        enter commands.
+
+        Different graphical consoles build upon a Shell, for example InGameConsole and IOConsole.
+    */
     class _CoreExport Shell : virtual public OrxonoxClass, public OutputListener
     {
         public:
+            /// Defines the type of a line of text in the Shell - some types depend on the output level, others are of internal use.
             enum LineType
             {
                 None    = OutputLevel::None,
@@ -87,13 +112,16 @@ namespace orxonox
             void registerListener(ShellListener* listener);
             void unregisterListener(ShellListener* listener);
 
+            /// Returns the input buffer which is needed by the user to enter text into the shell.
             inline InputBuffer* getInputBuffer()
                 { return this->inputBuffer_; }
 
             void setCursorPosition(unsigned int cursor);
+            /// Returns the current position of the cursor in the input buffer.
             inline unsigned int getCursorPosition() const
                 { return this->inputBuffer_->getCursorPosition(); }
 
+            /// Returns the current content of the input buffer (the text which was entered by the user)
             inline const std::string& getInput() const
                 { return this->inputBuffer_->get(); }
 
@@ -104,14 +132,14 @@ namespace orxonox
             void addOutput(const std::string& text, LineType type = None);
             void clearOutput();
 
+            /// Returns the number of output-lines that are displayed in the shell.
             inline unsigned int getNumLines() const
                 { return this->outputLines_.size(); }
+            /// Returns the line which is currently viewed if the user scrolls through the older output-lines in the shell.
             inline unsigned int getScrollPosition() const
                 { return this->scrollPosition_; }
 
-            inline const std::string& getPromptPrefix() const { return this->promptPrefix_; }
-            void setPromptPrefix(const std::string& str);
-
+            /// Returns the cache size that is actually used in CommandExecutor, but placed here for better readability of the config file.
             static inline unsigned int getCacheSize()
                 { return Shell::cacheSize_s; }
 
@@ -144,6 +172,7 @@ namespace orxonox
             void scrollDown();
             void exit();
 
+            /// Iterates through all registered @ref ShellListener "shell listeners" and calls the function @a F.
             template <void (ShellListener::*F)()>
             void updateListeners()
             {
@@ -151,25 +180,24 @@ namespace orxonox
                     ((*(it++))->*F)();
             }
 
-            std::list<ShellListener*> listeners_;
-            InputBuffer*              inputBuffer_;
-            std::stringstream         outputBuffer_;
-            bool                      bFinishedLastLine_;
-            LineList                  outputLines_;
-            LineList::const_iterator  scrollIterator_;
-            unsigned int              scrollPosition_;
-            unsigned int              historyPosition_;
+            std::list<ShellListener*> listeners_;           ///< The registered shell listeners
+            InputBuffer*              inputBuffer_;         ///< The input buffer that is needed by the user to enter text
+            std::stringstream         outputBuffer_;        ///< The output buffer that is used to retrieve lines of output from OutputListener
+            bool                      bFinishedLastLine_;   ///< Stores if the most recent output-line was terminated with a line-break or if more output is expected for this line
+            LineList                  outputLines_;         ///< A list of all output-lines that were displayed in the shell so far
+            LineList::const_iterator  scrollIterator_;      ///< An iterator to an entry of the list of output-lines, changes if the user scrolls through the output in the shell
+            unsigned int              scrollPosition_;      ///< The number of the line that is currently being referenced by scrollIterator_
+            unsigned int              historyPosition_;     ///< If the user scrolls through the history of entered commands (stored in commandHistory_), this contains the currently viewed history entry
 
-            std::string               promptPrefix_;
-            const std::string         consoleName_;
-            const bool                bScrollable_;
+            const std::string         consoleName_;         ///< The name of this shell - used to define the name of the soft-debug-level config-value
+            const bool                bScrollable_;         ///< If true, the user can scroll through the output-lines
 
             // Config values
-            unsigned int              maxHistoryLength_;
-            unsigned int              historyOffset_;
-            std::vector<std::string>  commandHistory_;
-            int                       softDebugLevel_;
-            static unsigned int       cacheSize_s;
+            unsigned int              maxHistoryLength_;    ///< The maximum number of saved commands
+            unsigned int              historyOffset_;       ///< The command history is a circular buffer, this variable defines the current write-offset
+            std::vector<std::string>  commandHistory_;      ///< The history of commands that were entered by the user
+            int                       softDebugLevel_;      ///< The maximum level of output that is displayed in the shell (will be passed to OutputListener to filter output)
+            static unsigned int       cacheSize_s;          ///< The maximum cache size of the CommandExecutor - this is stored here for better readability of the config file and because CommandExecutor is no OrxonoxClass
     };
 }
 

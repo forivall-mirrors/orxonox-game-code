@@ -109,8 +109,6 @@ namespace orxonox
         The log is set up and connected to the CEGUILogger.
         After Lua setup tolua++-elements are linked to Lua-state to give Lua access to C++-code.
         Finally initial Lua code is executed (maybe we can do this with the CEGUI startup script automatically).
-    @param renderWindow
-        Ogre's render window. Without this, the GUI cannot be displayed.
     @return true if success, otherwise false
     */
     GUIManager::GUIManager(const std::pair<int, int>& mousePosition)
@@ -236,6 +234,8 @@ namespace orxonox
         Displays specified GUI on screen
     @param name
         The name of the GUI
+    @param bHidePrevious
+        If true all displayed GUIs on the stack, that are below this GUI are hidden.
 
         The function executes the Lua function with the same name in case the GUIManager is ready.
     */
