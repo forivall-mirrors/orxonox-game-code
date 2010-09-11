@@ -117,8 +117,8 @@ FUNCTION(GENERATE_SOURCE_GROUPS)
       STRING(REPLACE "/" "\\\\" _group_path "${_relative_path}")
       SOURCE_GROUP("Source\\${_group_path}" FILES ${_file})
     ELSE()
-      # Has to be a compilation
-      SOURCE_GROUP("Compilations" FILES ${_file})
+      # File is being generated in the binary directory
+      SOURCE_GROUP("Generated" FILES ${_file})
     ENDIF()
   ENDFOREACH(_file)
 
