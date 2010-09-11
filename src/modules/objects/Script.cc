@@ -72,21 +72,21 @@ namespace orxonox
     /**
     @brief
         Method for creating a Script object through XML.
-    @param xmlElement
+    @param xmlelement
         The element.
     @param mode
         The mode.
     */
-    void Script::XMLPort(Element& xmlElement, XMLPort::Mode mode)
+    void Script::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Script, XMLPort, xmlElement, mode);
 
-        XMLPortParam(Script, "code", setCode, getCode, xmlElement, mode);
-        XMLPortParamTemplate(Script, "mode", setMode, getMode, xmlElement, mode, const std::string&).defaultValues(Script::NORMAL);
-        XMLPortParam(Script, "onLoad", setOnLoad, isOnLoad, xmlElement, mode).defaultValues(true);
-        XMLPortParam(Script, "times", setTimes, getTimes, xmlElement, mode).defaultValues(Script::INF);
+        XMLPortParam(Script, "code", setCode, getCode, xmlelement, mode);
+        XMLPortParamTemplate(Script, "mode", setMode, getMode, xmlelement, mode, const std::string&).defaultValues(Script::NORMAL);
+        XMLPortParam(Script, "onLoad", setOnLoad, isOnLoad, xmlelement, mode).defaultValues(true);
+        XMLPortParam(Script, "times", setTimes, getTimes, xmlelement, mode).defaultValues(Script::INF);
 
-        XMLPortEventSink(Script, BaseObject, "trigger", trigger, xmlElement, mode);
+        XMLPortEventSink(Script, BaseObject, "trigger", trigger, xmlelement, mode);
 
         if(this->isOnLoad()) // If the object is onLoad the code is executed at once.
             this->execute();
@@ -95,16 +95,16 @@ namespace orxonox
     /**
     @brief
         Creates a port that can be used to channel events and react to them.
-    @param xmlElement
+    @param xmlelement
         The element.
     @param mode
         The mode.
     */
-    void Script::XMLEventPort(Element& xmlElement, XMLPort::Mode mode)
+    void Script::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(Script, XMLEventPort, xmlElement, mode);
 
-        XMLPortEventState(Script, BaseObject, "trigger", trigger, xmlElement, mode);
+        XMLPortEventState(Script, BaseObject, "trigger", trigger, xmlelement, mode);
     }
 
     /**
