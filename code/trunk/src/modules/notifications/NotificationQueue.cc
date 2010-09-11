@@ -152,7 +152,7 @@ namespace orxonox
             // Iterate through all elements whose creation time is smaller than the current time minus the display time.
             while(it != this->ordering_.upper_bound(&this->timeLimit_))
             {
-                NotificationContainer* temp = *it;
+                std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator temp = it;
                 it++;
                 this->remove(temp); // Remove the Notifications that have expired.
             }
@@ -237,7 +237,17 @@ namespace orxonox
     void NotificationQueue::pop(void)
     {
         NotificationContainer* container = this->notifications_.back();
-        this->ordering_.erase(container);
+        // Get all the NotificationContainers that were sent the same time the NotificationContainer we want to pop was sent.
+        std::pair<std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator, std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator> iterators = this->ordering_.equal_range(container);
+        // Iterate thourgh all suspects and remove the container as soon as we find it.
+        for(std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator it = iterators.first; it != iterators.second; it++)
+        {
+            if(container == *it)
+            {
+                this->ordering_.erase(it);
+                break;
+            }
+        }
         this->notifications_.pop_back();
 
         this->size_--;
@@ -251,20 +261,20 @@ namespace orxonox
     /**
     @brief
         Removes the Notification that is stored in the input NotificationContainer.
-    @param container
-        The NotificationContainer with the Notification to be removed.
+    @param containerIterator
+        An iterator to the NotificationContainer to be removed.
     */
-    void NotificationQueue::remove(NotificationContainer* container)
+    void NotificationQueue::remove(const std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator& containerIterator)
     {
-        std::vector<NotificationContainer*>::iterator it = std::find(this->notifications_.begin(), this->notifications_.end(), container);
+        std::vector<NotificationContainer*>::iterator it = std::find(this->notifications_.begin(), this->notifications_.end(), *containerIterator);
         // Get the index at which the Notification is.
         std::vector<NotificationContainer*>::difference_type index = it - this->notifications_.begin ();
-        this->ordering_.erase(container);
+        this->ordering_.erase(containerIterator);
         this->notifications_.erase(it);
 
         this->size_--;
 
-        delete container;
+        delete *containerIterator;
 
         // Removes the Notification from the GUI.
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
