@@ -83,8 +83,10 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  PCH_NO_DEFAULT 
                   NO_INSTALL         NO_VERSION        ${_additional_switches})
-  SET(_list_names LINK_LIBRARIES  VERSION   SOURCE_FILES  DEFINE_SYMBOL
-                  TOLUA_FILES     PCH_FILE  PCH_EXCLUDE   OUTPUT_NAME)
+  SET(_list_names LINK_LIBRARIES     VERSION           SOURCE_FILES
+                  DEFINE_SYMBOL      TOLUA_FILES       PCH_FILE
+                  PCH_EXCLUDE        OUTPUT_NAME)
+
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
 
@@ -104,24 +106,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     GET_ALL_HEADER_FILES(_${_target_name}_header_files)
   ENDIF()
 
+  # Combine source and header files
+  SET(_${_target_name}_files
+    ${_${_target_name}_header_files}
+    ${_${_target_name}_source_files}
+  )
   # Remove potential duplicates
-  SET(_${_target_name}_files ${_${_target_name}_header_files} ${_${_target_name}_source_files})
   LIST(REMOVE_DUPLICATES _${_target_name}_files)
-
-  # Generate the source groups
-  IF(NOT _arg_NO_SOURCE_GROUPS)
-    GENERATE_SOURCE_GROUPS(${_${_target_name}_files})
-
-    IF(NOT _arg_ORXONOX_EXTERNAL)
-      # Move the prereqs.h file to the config section
-      IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_target_name_capitalised}Prereqs.h)
-        SOURCE_GROUP("Config" FILES ${_target_name_capitalised}Prereqs.h)
-      ENDIF()
-      # Add the config files in a special source group
-      LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES})
-      SOURCE_GROUP("Config" FILES ${ORXONOX_CONFIG_FILES})
-    ENDIF()
-  ENDIF(NOT _arg_NO_SOURCE_GROUPS)
 
   # TOLUA_FILES
   IF(_arg_TOLUA_FILES)
@@ -144,6 +135,21 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
       PRECOMPILED_HEADER_FILES_PRE_TARGET(${_target_name} ${_arg_PCH_FILE} _${_target_name}_files EXCLUDE ${_arg_PCH_EXCLUDE})
     ENDIF()
   ENDIF()
+
+  # Generate the source groups
+  IF(MSVC AND NOT _arg_NO_SOURCE_GROUPS)
+    GENERATE_SOURCE_GROUPS(${_${_target_name}_files})
+
+    IF(NOT _arg_ORXONOX_EXTERNAL)
+      # Move the prereqs.h file to the config section
+      IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_target_name_capitalised}Prereqs.h)
+        SOURCE_GROUP("Config" FILES ${_target_name_capitalised}Prereqs.h)
+      ENDIF()
+      # Add config files to the config section
+      LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES})
+      SOURCE_GROUP("Config" FILES ${ORXONOX_CONFIG_FILES})
+    ENDIF()
+  ENDIF(NOT _arg_NO_SOURCE_GROUPS)
 
   # Set link mode (SHARED/STATIC)
   IF(MSVC AND _arg_NO_DLL_INTERFACE)
