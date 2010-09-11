@@ -150,7 +150,7 @@ namespace orxonox
 
             std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator it = this->ordering_.begin();
             // Iterate through all elements whose creation time is smaller than the current time minus the display time.
-            while(it != this->ordering_.upper_bound(&this->timeLimit_) && it != this->ordering_.end())
+            while(it != this->ordering_.upper_bound(&this->timeLimit_))
             {
                 NotificationContainer* temp = *it;
                 it++;

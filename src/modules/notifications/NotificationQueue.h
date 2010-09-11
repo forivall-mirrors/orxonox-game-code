@@ -108,7 +108,7 @@ namespace orxonox // tolua_export
             @brief Returns the time interval the Notification is displayed.
             @return Returns the display time.
             */
-            inline float getDisplayTime() const
+            inline unsigned int getDisplayTime() const
                 { return this->displayTime_; }
             // tolua_end
 
