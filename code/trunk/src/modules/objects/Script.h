@@ -82,7 +82,7 @@ namespace orxonox
             virtual ~Script();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Script object through XML.
-            virtual void XMLEventPort(Element& xmlElement, XMLPort::Mode mode); //!< Creates a port that can be used to channel events and react to them.
+            virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates a port that can be used to channel events and react to them.
 
             void trigger(bool triggered); //!< Is called when an event comes in trough the event port.
             void execute(); //!< Executes the Scripts code, depending on the mode.
