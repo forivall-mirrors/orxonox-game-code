@@ -75,10 +75,10 @@ IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
   ADD_COMPILER_FLAGS("-fPIC" CACHE)
 ENDIF()
 
-# We have some uncoformant code, disable an optimisation feature
+# We have some unconformant code, disable an optimisation feature
 ADD_COMPILER_FLAGS("-fno-strict-aliasing" CACHE)
 
-# For GCC older than version 4, do not display sign compare warings
+# For GCC older than version 4, do not display sign compare warnings
 # because of boost::filesystem (which creates about a hundred per include)
 ADD_COMPILER_FLAGS("-Wno-sign-compare" GCC_NO_SYSTEM_HEADER_SUPPORT CACHE)
 

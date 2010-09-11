@@ -149,7 +149,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
       LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES})
       SOURCE_GROUP("Config" FILES ${ORXONOX_CONFIG_FILES})
     ENDIF()
-  ENDIF(NOT _arg_NO_SOURCE_GROUPS)
+  ENDIF()
 
   # Set link mode (SHARED/STATIC)
   IF(MSVC AND _arg_NO_DLL_INTERFACE)
