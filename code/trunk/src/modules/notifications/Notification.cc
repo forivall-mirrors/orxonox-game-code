@@ -103,7 +103,7 @@ namespace orxonox
     /**
     @brief
         Sends the Notification to the Notificationmanager, which then in turn distributes it to the different NotificationQueues.
-    @param clientID
+    @param clientId
         The id of the client that this Notification is sent to.
     @param sender
         The sender the Notification was sent by. Used by the NotificationManager to distributes the notification to the correct NotificationQueues.

@@ -40,22 +40,13 @@
 #include <set>
 #include <string>
 
+#include "util/StringUtils.h"
+
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
     class Notification;
-
-    /**
-    @brief
-        Struct that overloads the compare operation between two PickupIdentifier pointers.
-    */
-    //TODO: 
-    struct NotificationListenerStringCompare
-    {
-        bool operator() (const std::string& lhs, const std::string& rhs) const
-            { return lhs.compare(rhs) < 0; }
-    };
 
     /**
     @brief
@@ -69,7 +60,7 @@ namespace orxonox
             NotificationListener();
             virtual ~NotificationListener() {}
 
-            virtual const std::set<std::string, NotificationListenerStringCompare> & getTargetsSet() = 0;
+            virtual const std::set<std::string, StringCompare> & getTargetsSet() = 0;
             virtual void update(void) = 0;
             virtual void update(Notification* notification, const std::time_t & time) = 0;
     };

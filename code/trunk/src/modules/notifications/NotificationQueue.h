@@ -123,7 +123,7 @@ namespace orxonox // tolua_export
             @brief Returns the targets of this NotificationQueue, reps. the senders which Notifications are displayed in this NotificationQueue.
             @return Returns a set of strings holding the different targets.
             */
-            inline const std::set<std::string, NotificationListenerStringCompare> & getTargetsSet()
+            inline const std::set<std::string, StringCompare> & getTargetsSet()
                 { return this->targets_; }
 
             // tolua_begin
@@ -143,7 +143,7 @@ namespace orxonox // tolua_export
 
             bool registered_; //!< Helper variable to remember whether the NotificationQueue is registered already.
 
-            std::set<std::string, NotificationListenerStringCompare> targets_; //!< The targets the NotificationQueue displays Notifications of.
+            std::set<std::string, StringCompare> targets_; //!< The targets the NotificationQueue displays Notifications of.
 
             std::multiset<NotificationContainer*, NotificationContainerCompare> ordering_; //!< The NotificationContainers ordered by the time they were registered.
             std::vector<NotificationContainer*> notifications_; //!< The NotificationContainers in the order they were added to the NotificationQueue.

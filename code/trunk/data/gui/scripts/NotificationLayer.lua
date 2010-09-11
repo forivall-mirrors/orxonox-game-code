@@ -425,10 +425,18 @@ end
 function P.createNewQueue_clicked(e)
     local window = winMgr:getWindow("orxonox/NotificationLayer/Root/EditMode/ControlWindow/NewQueueName")
     local name = window:getText()
+
+    local queue = P.queueList[name]
+    -- Test if a queue with that name already exists.
+    if queue ~= nil then
+        window:setText("Queue with that name already exists.")
+        return
+    end
+
     -- Creates the new queue.
     orxonox.NotificationManager:getInstance():createQueue(name)
 
-    local queue = P.queueList[name]
+    queue = P.queueList[name]
     if queue == nil then
         return
     end
