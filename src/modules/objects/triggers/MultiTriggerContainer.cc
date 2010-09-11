@@ -34,6 +34,7 @@
 #include "MultiTriggerContainer.h"
 
 #include "core/CoreIncludes.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -64,6 +65,13 @@ namespace orxonox
     MultiTriggerContainer::MultiTriggerContainer(BaseObject* creator, MultiTrigger* originator, BaseObject* data) : BaseObject(creator), originator_(originator), data_(data)
     {
         RegisterObject(MultiTriggerContainer);
+
+        Pawn* pawn = orxonox_cast<Pawn*>(data);
+        if(pawn != NULL)
+        {
+            this->setForPlayer(true);
+            this->setTriggeringPlayer(pawn);
+        }
     }
 
     /**

@@ -34,6 +34,7 @@
 #include "Notification.h"
 
 #include "core/CoreIncludes.h"
+#include "network/NetworkFunction.h"
 #include "NotificationManager.h"
 
 namespace orxonox
@@ -41,29 +42,35 @@ namespace orxonox
 
     CreateUnloadableFactory(Notification);
 
+    registerMemberNetworkFunction(Notification, sendHelper);
+
     /**
     @brief
         Default constructor. Initializes the object.
+    @param creator
+        The object that created this Notification 
     */
-    Notification::Notification(BaseObject* creator) : BaseObject(creator)
+    Notification::Notification(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Notification);
         this->initialize();
+        this->registerVariables();
     }
 
     /**
     @brief
         Constructor. Creates a Notification with the input message.
     @param creator
-        The object that created this Notification
+        The creator.
     @param message
         The message of the Notification.
     */
-    Notification::Notification(BaseObject* creator, const std::string & message) : BaseObject(creator)
+    Notification::Notification(BaseObject* creator, const std::string & message) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Notification);
         this->initialize();
         this->message_ = message;
+        this->registerVariables();
     }
 
     /**
@@ -86,15 +93,11 @@ namespace orxonox
         this->sent_ = false;
     }
 
-    /**
-    @brief
-        Sends the Notification to the Notificationmanager, with sender NetificationManager::NONE.
-    @return
-        Returns true if successful.
-    */
-    bool Notification::send(void)
+    void Notification::registerVariables(void)
     {
-        return this->send(NotificationManager::NONE);
+        registerVariable(this->message_);
+        registerVariable(this->sender_);
+        registerVariable(this->sent_);
     }
 
     /**
@@ -105,11 +108,26 @@ namespace orxonox
     @return
         Returns true if successful.
     */
-    bool Notification::send(const std::string & sender)
+    bool Notification::send(unsigned int clientId, const std::string & sender = NotificationManager::NONE)
+    {
+
+        if(GameMode::isStandalone())
+        {
+            this->sendHelper(sender);
+        }
+        else
+        {
+            callMemberNetworkFunction(Notification, sendHelper, this->getObjectID(), clientId, sender);
+        }
+
+        return true;
+    }
+
+    bool Notification::sendHelper(const std::string& sender)
     {
         if(this->isSent()) //TODO: Needed?
             return false;
-        
+
         this->sender_ = sender;
         bool successful = NotificationManager::getInstance().registerNotification(this);
         if(!successful)

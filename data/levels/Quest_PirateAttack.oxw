@@ -18,17 +18,6 @@
 <?lua
     dofile("includes/CuboidSpaceStation.lua")
 ?>
-
-<NotificationQueue
-     name     = "notification"
-     position = "0.40, 0.05"
-     font     = "VeraMono"
-     textsize = 0.020
-     length   = 3
-     width    = 50
-/>
-    
-    
     
 <Level
 name="Dani's Testlevel"

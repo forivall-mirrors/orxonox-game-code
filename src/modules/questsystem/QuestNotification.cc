@@ -28,6 +28,7 @@
 
 #include "QuestNotification.h"
 #include "core/CoreIncludes.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox {
 
@@ -69,12 +70,14 @@ namespace orxonox {
     /**
     @brief
         Send the QuestNotification.
+    @param player
+        The player the Notification is sent to.
     @return
         Returns true if successful.
     */
-    bool QuestNotification::send(void)
+    bool QuestNotification::send(PlayerInfo* player)
     {
-        return this->Notification::send(QuestNotification::SENDER);
+        return this->Notification::send(player->getClientID(), QuestNotification::SENDER);
     }
 
 

@@ -8,12 +8,6 @@
     dofile("includes/CuboidSpaceStation.lua")
 ?>
 
-<NotificationQueue
- name  = "notification"
- position = "1.0, 1.0"
- targets = "questsystem"
-/>
-
 <Level
  name         = "The Tale of Princess Aeryn"
  description  = "The Tale of Princess Aeryn"

@@ -42,14 +42,14 @@ function loadSheet(name)
 end
 
 -- ?
-function showMenuSheet(name, bHidePrevious, ptr)
-    local sheet = showMenuSheet(name, bHidePrevious)
+function showMenuSheet(name, bHidePrevious, bNoInput, ptr)
+    local sheet = showMenuSheet(name, bHidePrevious, bNoInput)
     sheet.overlay = ptr
     return sheet
 end
 
 -- Shows the specified menu sheet and loads it if neccessary
-function showMenuSheet(name, bHidePrevious)
+function showMenuSheet(name, bHidePrevious, bNoInput)
     if name == "" then
         return nil
     end
@@ -62,9 +62,16 @@ function showMenuSheet(name, bHidePrevious)
         assert(bHidePrevious ~= nil)
     end
 
+    -- Set bNoInput to false if it hasn't been set.
+    if bNoInput == nil then
+        bNoInput = false
+    end
+
+    -- Count the number of sheets that don't need input till the first that does.
+    local counter = noInputSheetCounter()
     -- Pause game control if this is the first menu to be displayed
     -- HUGE HACK?
-    if activeMenuSheets.size == 0 then
+    if bNoInput == false and counter == 0 then
         orxonox.HumanController:pauseControl()
     end
 
@@ -73,11 +80,16 @@ function showMenuSheet(name, bHidePrevious)
         hideMenuSheet(name)
     end
 
+    if bNoInput == true then
+        menuSheet.tShowCursor = TriBool.Dontcare
+    end
+
     -- Add the sheet in a tuple of additional information
     local sheetTuple =
     {
         ["sheet"]          = menuSheet,
-        ["bHidePrevious"]  = bHidePrevious
+        ["bHidePrevious"]  = bHidePrevious,
+        ["bNoInput"]       = bNoInput
     }
     table.insert(activeMenuSheets, sheetTuple) -- indexed array access
     activeMenuSheets[name] = sheetTuple -- name access
@@ -88,7 +100,9 @@ function showMenuSheet(name, bHidePrevious)
     menuSheetsRoot:addChildWindow(menuSheet.window)
 
     -- Handle input distribution
-    inputMgr:enterState(menuSheet.inputState)
+    if bNoInput == false then
+        inputMgr:enterState(menuSheet.inputState)
+    end
 
     -- Only change cursor situation if menuSheet.tShowCursor ~= TriBool.Dontcare
     if menuSheet.tShowCursor == TriBool.True then
@@ -147,7 +161,9 @@ function hideMenuSheet(name)
     activeMenuSheets.topSheetTuple = activeMenuSheets[activeMenuSheets.size]
 
     -- Leave the input state
-    inputMgr:leaveState(sheetTuple.sheet.inputState)
+    if not sheetTuple.bNoInput then
+        inputMgr:leaveState(sheetTuple.sheet.inputState)
+    end
     
     -- CURSOR SHOWING
     local i = activeMenuSheets.size
@@ -161,11 +177,15 @@ function hideMenuSheet(name)
         hideCursor()
     end
 
-    -- Resume control if the last menu is hidden
-    if activeMenuSheets.size == 0 then
+    -- Count the number of sheets that don't need input till the first that does.
+    local counter = noInputSheetCounter()
+    -- Resume control if the last (non-noInput) menu is hidden
+    if counter == 0 then
         orxonox.HumanController:resumeControl()
         hideCursor()
     end
+
+    sheetTuple.sheet:afterHide()
 end
 
 -- Hides all menu GUI sheets
@@ -177,10 +197,16 @@ end
 
 function keyESC()
     -- HUGE, very HUGE hacks!
-    if activeMenuSheets.size == 1 and activeMenuSheets[1].sheet.name == "MainMenu" then
+
+    -- Count the number of sheets that don't need input till the first that does.
+    local counter = noInputSheetCounter()
+
+    -- If the first sheet that needs input is the MainMenu.
+    if counter == 1 and activeMenuSheets[1].sheet.name == "MainMenu" then
         orxonox.execute("exit")
-    elseif activeMenuSheets.size > 0 then
-        orxonox.execute("hideGUI "..activeMenuSheets.topSheetTuple.sheet.name)
+    -- If there is at least one sheet that needs input.
+    elseif counter > 0 then
+        orxonox.execute("hideGUI "..activeMenuSheets[counter].sheet.name)
     else
         showMenuSheet("InGameMenu")
     end
@@ -188,6 +214,15 @@ end
 
 function setBackgroundImage(imageSet, imageName)
     guiMgr:setBackgroundImage(imageSet, imageName)
+end
+
+function noInputSheetCounter()
+    -- Count the number of sheets that don't need input till the first that does.
+    local counter = activeMenuSheets.size
+    while counter > 0 and activeMenuSheets[counter].bNoInput do
+        counter = counter - 1
+    end
+    return counter
 end
 
 ----------------------
