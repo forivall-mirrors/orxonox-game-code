@@ -68,6 +68,8 @@
      skybox="Orxonox/skypanoramagen1"
     >
 
+        <Script code="showGUI NotificationLayer false true" />
+
         <!--Light: noch zu aendern -->
         <Light type=directional position="0,0,0" direction="0, 0, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 1.0, 0.9" />
 

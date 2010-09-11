@@ -13,6 +13,8 @@
     skybox       = "Orxonox/Starbox"
     >
 
+        <Script code="showGUI NotificationLayer false true" />
+
         <GlobalQuest id="b80c2c60-e62c-4637-80f8-5aa18dc93b34">
             <QuestDescription title="The Main QUest" description="This is the main quest hooray. Solve it!" failMessage="You fail. Looser." completeMessage="You Win." />
             <hints>

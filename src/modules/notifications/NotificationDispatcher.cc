@@ -71,18 +71,18 @@ namespace orxonox
     @brief
         Method for creating a NotificationDispatcher object through XML.
     */
-    void NotificationDispatcher::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void NotificationDispatcher::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        SUPER(NotificationDispatcher, XMLPort, xmlelement, mode);
+        SUPER(NotificationDispatcher, XMLPort, xmlElement, mode);
 
-        XMLPortEventSink(NotificationDispatcher, BaseObject, "trigger", trigger, xmlelement, mode); //TODO: Change BaseObject to MultiTrigger as soon as MultiTrigger is the base of all triggers.
+        XMLPortEventSink(NotificationDispatcher, BaseObject, "trigger", trigger, xmlElement, mode); //TODO: Change BaseObject to MultiTrigger as soon as MultiTrigger is the base of all triggers.
     }
 
-    void NotificationDispatcher::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
+    void NotificationDispatcher::XMLEventPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        SUPER(NotificationDispatcher, XMLEventPort, xmlelement, mode);
+        SUPER(NotificationDispatcher, XMLEventPort, xmlElement, mode);
 
-        XMLPortEventState(NotificationDispatcher, BaseObject, "trigger", trigger, xmlelement, mode);
+        XMLPortEventState(NotificationDispatcher, BaseObject, "trigger", trigger, xmlElement, mode);
     }
 
     /**

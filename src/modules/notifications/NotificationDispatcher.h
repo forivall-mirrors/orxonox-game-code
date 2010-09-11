@@ -54,8 +54,8 @@ namespace orxonox
             NotificationDispatcher(BaseObject* creator); //!< Default constructor. Initializes the object.
             virtual ~NotificationDispatcher(); //!< Destructor.
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a NotificationDispatcher object through XML.
-            virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlElement, XMLPort::Mode mode); //!< Method for creating a NotificationDispatcher object through XML.
+            virtual void XMLEventPort(Element& xmlElement, XMLPort::Mode mode);
 
             /**
             @brief Get the sender of the Notification dispatched by this NotificationDispatcher.

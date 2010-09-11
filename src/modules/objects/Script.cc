@@ -22,13 +22,15 @@
  *   Author:
  *      Benjamin Knecht
  *   Co-authors:
- *      ...
+ *      Damian 'Mozork' Frick
  *
  */
 
 #include "Script.h"
 
+#include "core/command/CommandExecutor.h"
 #include "core/CoreIncludes.h"
+#include "core/EventIncludes.h"
 #include "core/LuaState.h"
 #include "core/XMLPort.h"
 
@@ -36,29 +38,167 @@ namespace orxonox
 {
     CreateFactory(Script);
 
+    // Initializing constants.
+    /*static*/ const std::string Script::NORMAL = "normal";
+    /*static*/ const std::string Script::LUA = "lua";
+
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    @param creator
+        The creator of this object.
+    */
     Script::Script(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Script);
 
-        // Get a new LuaState
-        luaState_ = new LuaState();
+        // Initialize variables.
+        this->luaState_ = NULL;
+        this->remainingExecutions_ = Script::INF;
+
     }
 
+    /**
+    @brief
+        Destructor. Cleans up.
+    */
     Script::~Script()
     {
-        if (this->isInitialized())
-            delete luaState_;
+        if(this->isInitialized() && this->luaState_ != NULL)
+            delete this->luaState_;
     }
 
-    void Script::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    /**
+    @brief
+        Method for creating a Script object through XML.
+    @param xmlElement
+        The element.
+    @param mode
+        The mode.
+    */
+    void Script::XMLPort(Element& xmlElement, XMLPort::Mode mode)
     {
-        BaseObject::XMLPort(xmlelement, mode);
+        SUPER(Script, XMLPort, xmlElement, mode);
 
-        XMLPortParam(Script, "code", setCode, getCode, xmlelement, mode);
+        XMLPortParam(Script, "code", setCode, getCode, xmlElement, mode);
+        XMLPortParamTemplate(Script, "mode", setMode, getMode, xmlElement, mode, const std::string&).defaultValues(Script::NORMAL);
+        XMLPortParam(Script, "onLoad", setOnLoad, isOnLoad, xmlElement, mode).defaultValues(true);
+        XMLPortParam(Script, "times", setTimes, getTimes, xmlElement, mode).defaultValues(Script::INF);
+
+        XMLPortEventSink(Script, BaseObject, "trigger", trigger, xmlElement, mode);
+
+        if(this->isOnLoad()) // If the object is onLoad the code is executed at once.
+            this->execute();
     }
 
+    /**
+    @brief
+        Creates a port that can be used to channel events and react to them.
+    @param xmlElement
+        The element.
+    @param mode
+        The mode.
+    */
+    void Script::XMLEventPort(Element& xmlElement, XMLPort::Mode mode)
+    {
+        SUPER(Script, XMLEventPort, xmlElement, mode);
+
+        XMLPortEventState(Script, BaseObject, "trigger", trigger, xmlElement, mode);
+    }
+
+    /**
+    @brief
+        Is called when an event comes in trough the event port.
+    @param triggered
+        Whether the event is triggering or un-triggering.
+    */
+    void Script::trigger(bool triggered)
+    {
+        if(triggered) // If the event is triggering (instead of un-triggering) the code of this Script  is executed.
+            this->execute();
+    }
+
+    /**
+    @brief
+        Executes the Scripts code, depending on the mode.
+    */
     void Script::execute()
     {
-        luaState_->doString(code_);
+        if(this->times_ != Script::INF && this->remainingExecutions_ == 0)
+            return;
+
+        if(this->mode_ == ScriptMode::normal) // If the mode is 'normal'.
+            CommandExecutor::execute(this->code_);
+        else if(this->mode_ == ScriptMode::lua) // If it's 'lua'.
+        {
+            assert(this->luaState_);
+            this->luaState_->doString(this->code_);
+        }
+
+        if(this->times_ != Script::INF)
+            this->remainingExecutions_--;
     }
+
+    /**
+    @brief
+        Sets the mode of the Script.
+    @param mode
+        The mode as a string.
+    */
+    void Script::setMode(const std::string& mode)
+    {
+        if(mode == Script::NORMAL)
+            this->setMode(ScriptMode::normal);
+        else if(mode == Script::LUA)
+        {
+            this->setMode(ScriptMode::lua);
+            // Creates a new LuaState.
+            if(this->luaState_ == NULL)
+                this->luaState_ = new LuaState();
+        }
+        else
+        {
+            COUT(2) << "Invalid mode '" << mode << "' in Script object." << std::endl;
+            this->setMode(ScriptMode::normal);
+        }
+    }
+
+    /**
+    @brief
+        Get the mode of the Script.
+    @return
+        Returns the mode as a string.
+    */
+    const std::string& Script::getMode(void)
+    {
+        switch(this->mode_)
+        {
+            case ScriptMode::normal:
+                return Script::NORMAL;
+            case ScriptMode::lua:
+                return Script::LUA;
+        }
+    }
+
+    /**
+    @brief
+        Set the number of times this Script is executed at the most.
+        -1 denotes infinity.
+    @param times
+        The number of times to be set.
+    */
+    void Script::setTimes(int times)
+    {
+        if(times >= -1)
+        {
+            this->times_ = times;
+            this->remainingExecutions_ = times;
+        }
+        else
+        {
+            COUT(2) << "Invalid times '" << times << "' in Script." << std::endl;
+            this->times_ = Script::INF;
+        }
+    }
+
 }
