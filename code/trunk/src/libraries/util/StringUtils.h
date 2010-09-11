@@ -47,13 +47,6 @@ namespace orxonox
 {
     extern _UtilExport std::string BLANKSTRING;
 
-    //!< Struct that can be used as a comparison object for strings in stl containers.
-    _UtilExport struct StringCompare
-    {
-        bool operator() (const std::string& lhs, const std::string& rhs) const
-            { return lhs.compare(rhs) < 0; }
-    };
-
     _UtilExport std::string getUniqueNumberString();
 
     _UtilExport void         strip(std::string* str);

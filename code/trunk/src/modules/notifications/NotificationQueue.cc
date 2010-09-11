@@ -355,7 +355,7 @@ namespace orxonox
         std::stringstream stream;
         bool first = true;
         // Iterate through the set of targets.
-        for(std::set<std::string, StringCompare>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++)
+        for(std::set<std::string>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++)
         {
             if(!first)
                 stream << ", ";
