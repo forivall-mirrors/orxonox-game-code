@@ -157,7 +157,7 @@ namespace orxonox // tolua_export
 
             void push(Notification* notification, const std::time_t & time); //!< Adds (pushes) a Notification to the NotificationQueue.
             void pop(void); //!< Removes (pops) the least recently added Notification form the NotificationQueue.
-            void remove(NotificationContainer* container); //!< Removes the Notification that is stored in the input NotificationContainer.
+            void remove(const std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator& containerIterator); //!< Removes the Notification that is stored in the input NotificationContainer.
 
             void clear(void); //!< Clears the NotificationQueue by removing all NotificationContainers.
 
