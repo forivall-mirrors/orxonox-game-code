@@ -46,10 +46,11 @@ namespace orxonox
     
     ServerInformation::ServerInformation(ENetEvent* event)
     {
+      char serverIP[64];
+
       // Save Server Round Trip Time
       this->serverRTT_ = event->peer->roundTripTime;
-      // Save Server IP, leave some space for scope ID
-      char* serverIP = new char[64];
+      // Save Server Address, leave some space for scope ID
       enet_address_get_host_ip(&event->peer->address, serverIP, 64);
       this->serverIP_ = std::string(serverIP);
       // Save ACK
@@ -80,5 +81,13 @@ namespace orxonox
     }
   
   } // namespace packet
+
+  std::ostream& operator<<(std::ostream& out, const ENetAddress& address)
+  {
+      char addr[64];
+      if (!enet_address_get_host_ip(&address, addr, 64))
+          out << addr;
+      return out;
+  }
 } // namespace orxonox
 

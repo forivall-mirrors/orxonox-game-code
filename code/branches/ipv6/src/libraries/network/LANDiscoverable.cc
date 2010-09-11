@@ -99,6 +99,7 @@ namespace orxonox
         case ENET_EVENT_TYPE_RECEIVE:
           if( strcmp( LAN_DISCOVERY_MESSAGE, (char*)event.packet->data ) == 0 )      // check for a suitable orxonox client
           {
+            COUT(4) << "Received LAN discovery message from " << event.peer->host << std::endl;
             packet::ServerInformation info;
             info.setServerName("Orxonox Server");
             info.send(event.peer);
