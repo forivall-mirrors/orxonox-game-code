@@ -41,6 +41,7 @@ namespace orxonox
     // Initializing constants.
     /*static*/ const std::string Script::NORMAL = "normal";
     /*static*/ const std::string Script::LUA = "lua";
+    /*static*/ const int Script::INF = -1;
 
     /**
     @brief
