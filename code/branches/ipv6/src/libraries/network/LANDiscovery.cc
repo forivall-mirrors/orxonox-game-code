@@ -79,7 +79,7 @@ namespace orxonox
       {
         case ENET_EVENT_TYPE_CONNECT:
         {
-          COUT(4) << "connect from server: " << event.peer->address << endl;
+          COUT(4) << "Received LAN discovery connect from server " << event.peer->host->receivedAddress << std::endl;
           ENetPacket* packet = enet_packet_create(LAN_DISCOVERY_MESSAGE, strlen(LAN_DISCOVERY_MESSAGE)+1, ENET_PACKET_FLAG_RELIABLE);
           enet_peer_send(event.peer, 0, packet);
           break;
@@ -87,7 +87,7 @@ namespace orxonox
         case ENET_EVENT_TYPE_RECEIVE:
           {
             packet::ServerInformation info(&event);
-            COUT(3) << "received server information; Name: " << info.getServerName() << ", Address: " << info.getServerIP() << ", RTT: " << info.getServerRTT() << endl;
+            COUT(3) << "Received LAN discovery server information; Name: " << info.getServerName() << ", Address: " << info.getServerIP() << ", RTT: " << info.getServerRTT() << endl;
             std::vector<packet::ServerInformation>::iterator it;
             for( it=this->servers_.begin(); it!=this->servers_.end(); ++it )
             {
