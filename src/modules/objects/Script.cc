@@ -79,7 +79,7 @@ namespace orxonox
     */
     void Script::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(Script, XMLPort, xmlElement, mode);
+        SUPER(Script, XMLPort, xmlelement, mode);
 
         XMLPortParam(Script, "code", setCode, getCode, xmlelement, mode);
         XMLPortParamTemplate(Script, "mode", setMode, getMode, xmlelement, mode, const std::string&).defaultValues(Script::NORMAL);
@@ -102,7 +102,7 @@ namespace orxonox
     */
     void Script::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        SUPER(Script, XMLEventPort, xmlElement, mode);
+        SUPER(Script, XMLEventPort, xmlelement, mode);
 
         XMLPortEventState(Script, BaseObject, "trigger", trigger, xmlelement, mode);
     }

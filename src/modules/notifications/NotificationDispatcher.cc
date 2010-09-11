@@ -104,6 +104,8 @@ namespace orxonox
         Is called when the NotificationDispatcher is triggered.
     @param triggered
         Whether it has been triggered or untriggered. The NotificationDispatcher only reacts to the first kind of events.
+    @param trigger
+        The object that caused the event to be fired.
     @return
         Returns true if the NotificationDispatcher was successfully triggered.
     */
