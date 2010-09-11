@@ -178,6 +178,8 @@ namespace orxonox
                 return Script::NORMAL;
             case ScriptMode::lua:
                 return Script::LUA;
+            default: // This will never happen...
+                return Script::NORMAL;
         }
     }
 
