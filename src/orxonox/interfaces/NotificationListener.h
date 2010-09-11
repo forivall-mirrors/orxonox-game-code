@@ -60,7 +60,7 @@ namespace orxonox
             NotificationListener();
             virtual ~NotificationListener() {}
 
-            virtual const std::set<std::string, StringCompare> & getTargetsSet() = 0;
+            virtual const std::set<std::string> & getTargetsSet() = 0;
             virtual void update(void) = 0;
             virtual void update(Notification* notification, const std::time_t & time) = 0;
     };
