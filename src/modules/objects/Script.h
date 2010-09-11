@@ -128,7 +128,7 @@ namespace orxonox
             //! Static variables to avoid magic strings.
             static const std::string NORMAL;
             static const std::string LUA;
-            static const int INF = -1;
+            static const int INF;
 
             std::string code_; //!< The code that is executed by this Script.
             ScriptMode::Value mode_; //!< The mode the Script is in. Determines whether the code is executed the normal way or in lua.
