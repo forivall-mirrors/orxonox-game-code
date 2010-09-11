@@ -120,7 +120,7 @@ namespace orxonox
             {
                 this->playerStatus_[player] = QuestHintStatus::Active;
 
-                this->getDescription()->sendAddHintNotification();
+                this->getDescription()->sendAddHintNotification(player);
                 return true;
             }
             else

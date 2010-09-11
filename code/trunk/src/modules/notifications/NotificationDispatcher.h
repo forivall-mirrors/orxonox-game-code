@@ -64,8 +64,8 @@ namespace orxonox
             const std::string& getSender(void)
                 { return this->sender_; }
 
-            void dispatch(void); //!< Dispatches a specific Notification.
-            bool trigger(bool triggered); //!< Is called when the NotificationDispatcher is triggered.
+            void dispatch(unsigned int clientId); //!< Dispatches a specific Notification.
+            bool trigger(bool triggered, BaseObject* trigger); //!< Is called when the NotificationDispatcher is triggered.
 
         protected:
             std::string sender_; //!< The name of the sender of the Notification dispatched by this NotificationDispatcher.

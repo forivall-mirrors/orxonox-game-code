@@ -366,7 +366,7 @@ namespace orxonox
 
         COUT(4) << "Quest {" << this->getId() << "} is failed for player: " << player << " ." <<std::endl;
 
-        this->getDescription()->sendFailQuestNotification();
+        this->getDescription()->sendFailQuestNotification(player);
         return true;
     }
 
@@ -385,7 +385,7 @@ namespace orxonox
 
         COUT(4) << "Quest {" << this->getId() << "} is completed for player: " << player << " ." <<std::endl;
 
-        this->getDescription()->sendCompleteQuestNotification();
+        this->getDescription()->sendCompleteQuestNotification(player);
         return true;
     }
 
@@ -411,7 +411,7 @@ namespace orxonox
 
         this->setStatus(player, QuestStatus::Active);
 
-        this->getDescription()->sendAddQuestNotification();
+        this->getDescription()->sendAddQuestNotification(player);
         return true;
     }
 

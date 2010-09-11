@@ -48,6 +48,17 @@ namespace orxonox
 
     /**
     @brief
+        Struct that overloads the compare operation between two PickupIdentifier pointers.
+    */
+    //TODO: 
+    struct NotificationListenerStringCompare
+    {
+        bool operator() (const std::string& lhs, const std::string& rhs) const
+            { return lhs.compare(rhs) < 0; }
+    };
+
+    /**
+    @brief
         NotificationListener interface.
     @author
         Fabian 'x3n' Landau
@@ -58,7 +69,7 @@ namespace orxonox
             NotificationListener();
             virtual ~NotificationListener() {}
 
-            virtual const std::set<std::string> & getTargetsSet() = 0;
+            virtual const std::set<std::string, NotificationListenerStringCompare> & getTargetsSet() = 0;
             virtual void update(void) = 0;
             virtual void update(Notification* notification, const std::time_t & time) = 0;
     };

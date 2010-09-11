@@ -14,15 +14,6 @@
  description  = "The Tale of Princess Aeryn"
 >
 
-  <NotificationQueue
-   name   = "notification"
-   position = "0.55, 0.05"
-   font   = "VeraMono"
-   textsize = 0.020
-   length   = 3
-   width  = 50
-  />
-
   <templates>
     <Template link=lodtemplate_default />
   </templates>

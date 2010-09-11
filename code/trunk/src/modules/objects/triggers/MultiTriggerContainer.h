@@ -37,6 +37,7 @@
 #include "objects/ObjectsPrereqs.h"
 
 #include "core/BaseObject.h"
+#include "interfaces/PlayerTrigger.h"
 
 namespace orxonox
 {
@@ -47,7 +48,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _ObjectsExport MultiTriggerContainer : public BaseObject
+    class _ObjectsExport MultiTriggerContainer : public BaseObject, public PlayerTrigger
     {
 
         public:
@@ -71,6 +72,7 @@ namespace orxonox
         private:
             MultiTrigger* originator_; //!< The originator.
             BaseObject* data_; //!< The data.
+
     };
 
 }

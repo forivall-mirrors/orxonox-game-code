@@ -39,6 +39,10 @@ end
 function P:onHide()
 end
 
+-- Override this function if you need to do work just after the sheet has been hidden
+function P:afterHide()
+end
+
 function P:load()
     -- Load the layout that describes the sheet
     self.window = winMgr:loadWindowLayout(self.name .. ".layout")
