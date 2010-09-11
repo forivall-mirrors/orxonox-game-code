@@ -42,6 +42,8 @@ namespace orxonox
   LANDiscovery::LANDiscovery()
   {
     this->host_ = enet_host_create(NULL, 10, 0, 0, 0 );
+    if ( this->host_ == NULL )
+        COUT(1) << "LANDiscovery: host_ == NULL" << std::endl;
   }
 
   LANDiscovery::~LANDiscovery()
@@ -61,10 +63,14 @@ namespace orxonox
     /* IPv4 */
     address.host = ENET_HOST_BROADCAST;
     peer = enet_host_connect(this->host_, &address, 0, 0);
+    if (peer == NULL)
+        COUT(1) << "Error: Could not send LAN discovery to IPv4 Broadcast." << std::endl;
 
     /* IPv6 */
     enet_address_set_host(&address, "ff02::1"); // TODO: use a multicast group
     peer = enet_host_connect(this->host_, &address, 0, 0);
+    if (peer == NULL)
+        COUT(1) << "Error: Could not send LAN discovery to IPv6 Multicast." << std::endl;
 
     ENetEvent event;
     while( enet_host_service(this->host_, &event, 1000 ) )

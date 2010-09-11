@@ -47,7 +47,7 @@ namespace orxonox
   {
     this->serverAddress_ = new ENetAddress();
     //set standard address and port
-    enet_address_set_host(this->serverAddress_, "127.0.0.1");
+    enet_address_set_host(this->serverAddress_, "127.0.0.1"); // TODO: check for IPv6 and connect to ::1 instead
     serverAddress_->port = NETWORK_PORT;
   }
 
@@ -58,7 +58,8 @@ namespace orxonox
   }
 
   void ClientConnection::setServerAddress( const std::string& serverAddress ) {
-    enet_address_set_host (this->serverAddress_, serverAddress.c_str());
+    if (enet_address_set_host (this->serverAddress_, serverAddress.c_str()) < 0)
+        COUT(1) << "Error: Could not resolve \"" << serverAddress << "\"." << std::endl;
   }
 
   void ClientConnection::setPort( unsigned int port ) {
@@ -72,14 +73,22 @@ namespace orxonox
     this->host_ = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0, 0);
     if ( this->host_ == NULL )
     {
-      COUT(2) << "ClientConnection: host_ == NULL" << std::endl;
+      COUT(1) << "ClientConnection: host_ == NULL" << std::endl;
       // error handling
       return false;
     }
+    assert( this->host_->socket4 != ENET_SOCKET_NULL || this->host_->socket6 != ENET_SOCKET_NULL );
+    if (this->host_->socket4 == ENET_SOCKET_NULL)
+        COUT(2) << "Warning: IPv4 Socket failed." << std::endl;
+    else if (this->host_->socket6 == ENET_SOCKET_NULL)
+        COUT(2) << "Warning: IPv6 Socket failed." << std::endl;
+    else
+        COUT(3) << "Info: Using IPv4 and IPv6 Sockets." << std::endl;
+
     this->server_ = enet_host_connect(this->host_, serverAddress_, NETWORK_CLIENT_CHANNELS, 0);
     if ( this->server_==NULL )
     {
-      COUT(2) << "ClientConnection: server == NULL" << std::endl;
+      COUT(1) << "ClientConnection: server_ == NULL" << std::endl;
       // error handling
       return false;
     }

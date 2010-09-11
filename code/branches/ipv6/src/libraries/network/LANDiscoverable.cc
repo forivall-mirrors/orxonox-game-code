@@ -69,6 +69,8 @@ namespace orxonox
       bindAddress.port = LAN_DISCOVERY_PORT;
       assert( this->host_ == 0 );
       this->host_ = enet_host_create( &bindAddress, 10, 0, 0, 0 );
+      if ( this->host_ == NULL )
+          COUT(1) << "LANDiscoverable: host_ == NULL" << std::endl;
     }
     else
     {
