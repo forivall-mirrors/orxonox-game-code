@@ -68,7 +68,7 @@ namespace orxonox
 
         // Initialize.
         this->size_ = 0;
-        this->tickTime_ = 0.0;
+        this->tickTime_ = 0.0f;
 
         // Sets the input values.
         this->setTargets(senders);
@@ -76,15 +76,13 @@ namespace orxonox
         this->maxSize_ = size;
         this->setDisplayTime(displayTime);
 
-        //TODO: Destroy if registration fails?
-
         // Register the NotificationQueue with the NotificationManager.
         bool queueRegistered = NotificationManager::getInstance().registerQueue(this);
         this->registered_ = true;
         if(!queueRegistered) // If the registration has failed.
         {
             this->registered_ = false;
-            COUT(1) << "Error: Notification Queue '" << this->getName() << "' could not be registered." << std::endl;
+            COUT(1) << "Error: NotificationQueue '" << this->getName() << "' could not be registered." << std::endl;
             return;
         }
 
@@ -98,7 +96,7 @@ namespace orxonox
             // Remove the NotificationQueue in lua.
             GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
             NotificationManager::getInstance().unregisterQueue(this);
-            COUT(1) << "Error: Notification Queue '" << this->getName() << "' could not be registered." << std::endl;
+            COUT(1) << "Error: NotificationQueue '" << this->getName() << "' could not be registered." << std::endl;
             return;
         }
 
@@ -357,7 +355,7 @@ namespace orxonox
         std::stringstream stream;
         bool first = true;
         // Iterate through the set of targets.
-        for(std::set<std::string, NotificationListenerStringCompare>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++)
+        for(std::set<std::string, StringCompare>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++)
         {
             if(!first)
                 stream << ", ";

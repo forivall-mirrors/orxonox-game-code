@@ -128,7 +128,7 @@ namespace orxonox
         // Insert the Notification in all NotificationListeners that have its sender as target.
         for(std::map<NotificationListener*, unsigned int>::iterator it = this->listenerList_.begin(); it != this->listenerList_.end(); it++) // Iterate through all NotificationListeners.
         {
-            std::set<std::string, NotificationListenerStringCompare> set = it->first->getTargetsSet();
+            std::set<std::string, StringCompare> set = it->first->getTargetsSet();
             bool bAll = set.find(NotificationManager::ALL) != set.end();
             // If either the Notification has as sender 'all', the NotificationListener displays all Notifications or the NotificationListener has the sender of the Notification as target.
             if(all || bAll || set.find(notification->getSender()) != set.end())
@@ -209,7 +209,7 @@ namespace orxonox
 
         this->listenerList_[listener] = index; // Add the NotificationListener to the list of NotificationListeners.
 
-        std::set<std::string, NotificationListenerStringCompare> set = listener->getTargetsSet();
+        std::set<std::string, StringCompare> set = listener->getTargetsSet();
 
         // If all senders are the target of the NotificationListener, then the list of Notifications for that specific NotificationListener is the same as the list of all Notifications.
         bool bAll = set.find(NotificationManager::ALL) != set.end();
@@ -247,7 +247,6 @@ namespace orxonox
     {
         assert(listener);
 
-        //TODO: Make unsigned int.
         unsigned int identifier = this->listenerList_.find(listener)->second;
         std::multimap<std::time_t, Notification*>* map = this->notificationLists_.find(identifier)->second;
 
