@@ -145,7 +145,7 @@ enet_address_set_host (ENetAddress * address, const char * name)
     struct addrinfo * res;
 
     memset(& hints, 0, sizeof (hints));
-    hints.ai_flags = AI_NUMERICSERV | AI_ADDRCONFIG;
+    hints.ai_flags = AI_ADDRCONFIG;
     hints.ai_family = AF_UNSPEC;
 
     if ( getaddrinfo(name, NULL, &hints, &result) )
@@ -281,7 +281,7 @@ enet_socket_accept (ENetSocket socket, ENetAddress * address, ENetAddressFamily 
     socklen_t sinLength = enet_sa_size (family);
 
     result = accept (socket, 
-                     address != NULL ? (struct sockaddr *) & sin : NULL, 
+                     address != NULL ? (struct sockaddr *) & sin : NULL,
                      address != NULL ? & sinLength : NULL);
 
     if (result == -1)
@@ -293,8 +293,8 @@ enet_socket_accept (ENetSocket socket, ENetAddress * address, ENetAddressFamily 
     }
 
     return result;
-} 
-    
+}
+
 void
 enet_socket_destroy (ENetSocket socket)
 {
