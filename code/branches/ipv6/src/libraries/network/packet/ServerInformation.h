@@ -59,7 +59,7 @@ namespace orxonox
 
   }
 
-  _UtilExport std::ostream& operator<<(std::ostream& out, const ENetAddress& address);
+  _NetworkExport std::ostream& operator<<(std::ostream& out, const ENetAddress& address);
 }
 
 #endif // SERVERINFORMATION_H
