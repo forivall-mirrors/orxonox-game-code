@@ -318,13 +318,15 @@ namespace orxonox
 
     void IOConsole::getTerminalSize()
     {
+        this->terminalWidth_  = 0;
+        this->terminalHeight_ = 0;
+
 #ifdef TIOCGSIZE
         struct ttysize win;
         if (!ioctl(STDIN_FILENO, TIOCGSIZE, &win))
         {
             this->terminalWidth_  = win.ts_cols;
             this->terminalHeight_ = win.ts_lines;
-            return;
         }
 #elif defined TIOCGWINSZ
         struct winsize win;
@@ -332,17 +334,18 @@ namespace orxonox
         {
             this->terminalWidth_  = win.ws_col;
             this->terminalHeight_ = win.ws_row;
-            return;
         }
-#else
-        const char* s = getenv("COLUMNS");
-        this->terminalWidth_  = s ? strtol(s, NULL, 10) : 80;
-        s = getenv("LINES");
-        this->terminalHeight_ = s ? strtol(s, NULL, 10) : 24;
-        return;
 #endif
-        this->terminalWidth_  = 80;
-        this->terminalHeight_ = 24;
+
+        const char* s;
+        if (!this->terminalWidth_ && (s = getenv("COLUMNS")))
+            this->terminalWidth_  = strtol(s, NULL, 10);
+        if (!this->terminalWidth_)
+            this->terminalWidth_ = 80;
+        if (!this->terminalHeight_ && (s = getenv("LINES")))
+            this->terminalHeight_ = strtol(s, NULL, 10);
+        if (!this->terminalHeight_)
+            this->terminalHeight_ = 24;
     }
 
     inline bool IOConsole::willPrintStatusLines()
