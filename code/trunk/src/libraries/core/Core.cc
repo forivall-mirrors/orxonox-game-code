@@ -36,6 +36,8 @@
 #include "Core.h"
 
 #include <cassert>
+#include <cstdlib>
+#include <ctime>
 #include <fstream>
 #include <vector>
 

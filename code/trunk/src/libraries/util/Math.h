@@ -44,6 +44,7 @@
 
 #include <string>
 #include <cmath>
+#include <cstdlib>
 
 #include <OgreMath.h>
 #include <OgreVector2.h>

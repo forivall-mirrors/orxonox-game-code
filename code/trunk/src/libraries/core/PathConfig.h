@@ -65,7 +65,7 @@ namespace orxonox
         public:
             /**
             @brief
-                Retrievs the executable path and sets all hard coded fixed paths (currently only the module path)
+                Retrieves the executable path and sets all hard coded fixed paths (currently only the module path)
                 Also checks for "orxonox_dev_build.keep_me" in the executable diretory.
                 If found it means that this is not an installed run, hence we
                 don't write the logs and config files to ~/.orxonox
