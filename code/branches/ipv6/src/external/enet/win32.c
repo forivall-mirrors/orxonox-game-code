@@ -4,6 +4,8 @@
 */
 #ifdef WIN32
 
+#define _WIN32_WINNT 0x0501
+
 #include <time.h>
 #define ENET_BUILDING_LIB 1
 #include "enet/enet.h"
@@ -126,7 +128,11 @@ enet_address_set_host (ENetAddress * address, const char * name)
     struct addrinfo * res;
 
     memset(& hints, 0, sizeof (hints));
+#ifdef AI_ADDRCONFIG
     hints.ai_flags = AI_ADDRCONFIG;
+#else
+    hints.ai_flags = 0x0400; // AI_ADDRCONFIG is defined as 0x0400
+#endif
     hints.ai_family = AF_UNSPEC;
 
     if ( getaddrinfo(name, NULL, &hints, &result) )

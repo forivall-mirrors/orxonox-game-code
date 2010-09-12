@@ -9,10 +9,6 @@
 #include "enet/time.h"
 #include "enet/enet.h"
 
-const ENetHostAddress ENET_HOST_ANY = ENET_HOST_ANY_INIT;
-const ENetHostAddress ENET_IPV4MAPPED_PREFIX = ENET_IPV4MAPPED_PREFIX_INIT;
-const ENetHostAddress ENET_HOST_BROADCAST = ENET_HOST_BROADCAST_INIT;
-
 static size_t commandSizes [ENET_PROTOCOL_COMMAND_COUNT] =
 {
     0,
