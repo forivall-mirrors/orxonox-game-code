@@ -33,14 +33,13 @@
     The main function of Orxonox (but not the entry point of the program!)
 */
 
-#include "OrxonoxPrereqs.h"
+#include "Main.h"
 
 #include "core/CommandLineParser.h"
 #include "core/Game.h"
 #include "core/LuaState.h"
 #include "ToluaBindOrxonox.h"
 #include "ToluaBindNetwork.h"
-#include "Main.h"
 
 DeclareToluaInterface(Orxonox);
 DeclareToluaInterface(Network);
