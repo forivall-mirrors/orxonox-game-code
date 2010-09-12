@@ -99,3 +99,8 @@ ENDIF()
 
 # General linker flags
 SET_LINKER_FLAGS("--no-undefined" CACHE)
+
+# Add linker flags for MinGW
+IF (MINGW)
+  ADD_LINKER_FLAGS("-enable-auto-import" CACHE)
+ENDIF()
