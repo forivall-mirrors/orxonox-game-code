@@ -148,14 +148,16 @@ ADD_COMPILER_FLAGS("-w44250" CACHE)
 
 # CMake default flags: -MANIFEST -STACK:10000000 -machine:I386
 # and INCREMENTAL and DEBUG for debug versions
-ADD_LINKER_FLAGS("-OPT:REF -OPT:ICF" Release MinSizeRel CACHE)
+SET_LINKER_FLAGS("-debug -INCREMENTAL:YES" Debug              CACHE)
+SET_LINKER_FLAGS("-debug"                  RelWithDebInfo     CACHE)
+SET_LINKER_FLAGS(""                        Release MinSizeRel CACHE)
+
 ADD_LINKER_FLAGS("-OPT:NOWIN98" MSVC80 CACHE)
-REMOVE_LINKER_FLAGS("-INCREMENTAL:NO"  RelWithDebInfo CACHE)
-ADD_LINKER_FLAGS   ("-INCREMENTAL:YES" RelWithDebInfo CACHE)
 
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
 IF(ORXONOX_RELEASE)
-  REMOVE_LINKER_FLAGS("-INCREMENTAL:YES" ReleaseAll CACHE)
-  ADD_LINKER_FLAGS   ("-INCREMENTAL:NO"  ReleaseAll CACHE)
-  ADD_LINKER_FLAGS   ("-LTCG"            ReleaseAll CACHE)
+  ADD_LINKER_FLAGS("-INCREMENTAL:NO -OPT:ICF -OPT:REF -LTCG" ReleaseAll   CACHE)
+ELSE()
+  ADD_LINKER_FLAGS("-INCREMENTAL:YES"                  RelWithDebInfo     CACHE)
+  ADD_LINKER_FLAGS("-INCREMENTAL:NO -OPT:ICF -OPT:REF" Release MinSizeRel CACHE)
 ENDIF()
