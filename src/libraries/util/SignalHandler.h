@@ -38,16 +38,18 @@
 #include "UtilPrereqs.h"
 
 #include <cassert>
-#include <list>
 #include <string>
 #include "Singleton.h"
+#include "SpecialConfig.h"
 
 namespace orxonox
 {
     typedef int (*SignalCallback)( void * someData );
 }
 
-#ifdef ORXONOX_PLATFORM_LINUX
+#if defined(ORXONOX_PLATFORM_LINUX)
+
+#include <list>
 #include <signal.h>
 
 namespace orxonox
@@ -96,26 +98,58 @@ namespace orxonox
     };
 }
 
-#else /* ORXONOX_PLATFORM_LINUX */
+#elif defined(ORXONOX_PLATFORM_WINDOWS) && defined(DBGHELP_FOUND)
+
+#include <windows.h>
 
 namespace orxonox
 {
-    /// The SignalHandler is used to catch signals like SIGSEGV and write a backtrace to the logfile. Not implemented on Windows.
+    /// The SignalHandler is used to catch unhandled exceptions like access violations and write a backtrace to the logfile.
     class _UtilExport SignalHandler : public Singleton<SignalHandler>
     {
         friend class Singleton<SignalHandler>;
     public:
-        SignalHandler()  { }
-        ~SignalHandler() { }
+        SignalHandler();
+        ~SignalHandler();
+
+        void doCatch( const std::string & appName, const std::string & filename );
+
+    private:
+        static LONG WINAPI exceptionFilter(PEXCEPTION_POINTERS pExceptionInfo);
+
+        static std::string getStackTrace(PEXCEPTION_POINTERS pExceptionInfo = NULL);
+        static std::string getExceptionType(PEXCEPTION_POINTERS pExceptionInfo);
+        static std::string getModuleName(const std::string& path);
+        static DWORD getModuleBase(DWORD dwAddress);
+
+        template <typename T>
+        static std::string pointerToString(T pointer);
+        template <typename T>
+        static std::string pointerToString(T* pointer);
+
+        static SignalHandler* singletonPtr_s;
+
+        std::string filename_;
+        LPTOP_LEVEL_EXCEPTION_FILTER prevExceptionFilter_;
+    };
+}
+
+#else
+
+namespace orxonox
+{
+    /// The SignalHandler is used to catch signals like SIGSEGV and write a backtrace to the logfile. Not implemented on systems except Linux and Windows.
+    class _UtilExport SignalHandler : public Singleton<SignalHandler>
+    {
+        friend class Singleton<SignalHandler>;
+    public:
         void doCatch( const std::string & appName, const std::string & filename ) {}
-        void dontCatch() {}
-        void registerCallback( SignalCallback cb, void * someData ) {}
 
     private:
         static SignalHandler* singletonPtr_s;
     };
 }
 
-#endif /* ORXONOX_PLATFORM_LINUX */
+#endif
 
 #endif /* _SignalHandler_H__ */

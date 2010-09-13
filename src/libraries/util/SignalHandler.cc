@@ -43,7 +43,7 @@ namespace orxonox
     SignalHandler* SignalHandler::singletonPtr_s = NULL;
 }
 
-#ifdef ORXONOX_PLATFORM_LINUX
+#if defined(ORXONOX_PLATFORM_LINUX)
 
 #include <wait.h>
 #include <X11/Xlib.h>
@@ -123,7 +123,7 @@ namespace orxonox
       // if the signalhandler has already been destroyed then don't do anything
       if( SignalHandler::singletonPtr_s == 0 )
       {
-        COUT(0) << "received signal " << sigName.c_str() << std::endl << "can't write backtrace because SignalHandler already destroyed" << std::endl;
+        COUT(0) << "Received signal " << sigName.c_str() << std::endl << "Can't write backtrace because SignalHandler is already destroyed" << std::endl;
         exit(EXIT_FAILURE);
       }
 
@@ -133,7 +133,7 @@ namespace orxonox
       }
 
 
-      COUT(0) << "received signal " << sigName.c_str() << std::endl << "try to write backtrace to file orxonox_crash.log" << std::endl;
+      COUT(0) << "Received signal " << sigName.c_str() << std::endl << "Try to write backtrace to file orxonox_crash.log" << std::endl;
 
       int sigPipe[2];
       if ( pipe(sigPipe) == -1 )
@@ -327,4 +327,347 @@ namespace orxonox
     }
 }
 
-#endif /* ORXONOX_PLATFORM_LINUX */
+#elif defined(ORXONOX_PLATFORM_WINDOWS) && defined(DBGHELP_FOUND)
+
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <dbghelp.h>
+
+namespace orxonox
+{
+    /// Constructor: Initializes the values, but doesn't register the exception handler.
+    SignalHandler::SignalHandler()
+    {
+        this->prevExceptionFilter_ = NULL;
+    }
+
+    /// Destructor: Removes the exception handler.
+    SignalHandler::~SignalHandler()
+    {
+        if (this->prevExceptionFilter_ != NULL)
+        {
+            // Remove the unhandled exception filter function
+            SetUnhandledExceptionFilter(this->prevExceptionFilter_);
+            this->prevExceptionFilter_ = NULL;
+        }
+    }
+
+    /// Registers an exception handler and initializes the filename of the crash log.
+    void SignalHandler::doCatch(const std::string&, const std::string& filename)
+    {
+        this->filename_ = filename;
+
+        // don't register twice
+        assert(this->prevExceptionFilter_ == NULL);
+
+        if (this->prevExceptionFilter_ == NULL)
+        {
+            // Install the unhandled exception filter function
+            this->prevExceptionFilter_ = SetUnhandledExceptionFilter(&SignalHandler::exceptionFilter);
+        }
+    }
+
+    /// Exception handler: Will be called by Windows if an unhandled exceptions occurs.
+    /* static */ LONG WINAPI SignalHandler::exceptionFilter(PEXCEPTION_POINTERS pExceptionInfo)
+    {
+        // avoid loops
+        static bool bExecuting = false;
+
+        if (!bExecuting)
+        {
+            bExecuting = true;
+
+
+            // if the signalhandler has already been destroyed then don't do anything
+            if (SignalHandler::singletonPtr_s == 0)
+            {
+                COUT(1) << "Catched an unhandled exception" << std::endl << "Can't write backtrace because SignalHandler is already destroyed" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+
+            COUT(1) << "Catched an unhandled exception" << std::endl << "Try to write backtrace to orxonox_crash.log..." << std::endl;
+
+            // write the crash log
+            std::ofstream crashlog(SignalHandler::getInstance().filename_.c_str());
+
+            time_t now = time(NULL);
+
+            crashlog << "=======================================================" << std::endl;
+            crashlog << "= Time: " << std::string(ctime(&now));
+            crashlog << "=======================================================" << std::endl;
+            crashlog << std::endl;
+
+            const std::string& error = SignalHandler::getExceptionType(pExceptionInfo);
+
+            crashlog << error << std::endl;
+            crashlog << std::endl;
+
+            const std::string& callstack = SignalHandler::getStackTrace(pExceptionInfo);
+
+            crashlog << "Call stack:" << std::endl;
+            crashlog << callstack << std::endl;
+
+            crashlog.close();
+
+            // print the same information also to the console
+            COUT(1) << std::endl;
+            COUT(1) << error << std::endl;
+            COUT(1) << std::endl;
+            COUT(1) << "Call stack:" << std::endl;
+            COUT(1) << callstack << std::endl;
+
+            bExecuting = false;
+        }
+        else
+        {
+            COUT(1) << "An error occurred while writing the backtrace" << std::endl;
+        }
+
+        if (SignalHandler::getInstance().prevExceptionFilter_)
+            return SignalHandler::getInstance().prevExceptionFilter_(pExceptionInfo);
+        else
+            return EXCEPTION_CONTINUE_SEARCH;
+    }
+
+    /// Returns the stack trace for either the current function, or, if @a pExceptionInfo is not NULL, for the given exception context.
+    /* static */ std::string SignalHandler::getStackTrace(PEXCEPTION_POINTERS pExceptionInfo)
+    {
+        // Initialise the symbol table to get function names:
+        SymInitialize(GetCurrentProcess(), 0, true);
+
+        // Store the current stack frame here:
+        STACKFRAME frame;
+        memset(&frame, 0, sizeof(STACKFRAME));
+
+        // Get processor information for the current thread:
+        CONTEXT context;
+        memset(&context, 0, sizeof(CONTEXT));
+
+        if (pExceptionInfo)
+        {
+            // get the context of the exception
+            context = *pExceptionInfo->ContextRecord;
+        }
+        else
+        {
+            context.ContextFlags = CONTEXT_FULL;
+
+            // Load the RTLCapture context function:
+            HINSTANCE kernel32 = LoadLibrary("Kernel32.dll");
+            typedef void (*RtlCaptureContextFunc) (CONTEXT* ContextRecord);
+            RtlCaptureContextFunc rtlCaptureContext = (RtlCaptureContextFunc) GetProcAddress(kernel32, "RtlCaptureContext");
+
+            // Capture the thread context
+            rtlCaptureContext(&context);
+        }
+
+        DWORD type;
+
+        // set the flags and initialize the stackframe struct
+    #ifdef _M_IX86
+        type = IMAGE_FILE_MACHINE_I386;
+
+        frame.AddrPC.Offset         = context.Eip;      // Current location in program
+        frame.AddrPC.Mode           = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
+        frame.AddrStack.Offset      = context.Esp;      // Stack pointers current value
+        frame.AddrStack.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
+        frame.AddrFrame.Offset      = context.Ebp;      // Value of register used to access local function variables.
+        frame.AddrFrame.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
+    #elif _M_X64
+        type = IMAGE_FILE_MACHINE_AMD64;
+
+        frame.AddrPC.Offset         = context.Rip;      // Current location in program
+        frame.AddrPC.Mode           = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
+        frame.AddrStack.Offset      = context.Rsp;      // Stack pointers current value
+        frame.AddrStack.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
+        frame.AddrFrame.Offset      = context.Rsp;      // Value of register used to access local function variables.
+        frame.AddrFrame.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
+    #elif _M_IA64
+        type = IMAGE_FILE_MACHINE_IA64;
+
+        frame.AddrPC.Offset         = context.StIIP;    // Current location in program
+        frame.AddrPC.Mode           = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
+        frame.AddrStack.Offset      = context.IntSp;    // Stack pointers current value
+        frame.AddrStack.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
+        frame.AddrFrame.Offset      = context.IntSp;    // Value of register used to access local function variables.
+        frame.AddrFrame.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
+        frame.AddrBStore.Offset     = context.RsBSP;    //
+        frame.AddrBStore.Mode       = AddrModeFlat;     //
+    #else
+        return
+    #endif
+
+        std::string output;
+
+        // Keep getting stack frames from windows till there are no more left:
+        for (int i = 0;
+            StackWalk
+            (
+                type                     ,      // MachineType
+                GetCurrentProcess()      ,      // Process to get stack trace for
+                GetCurrentThread()       ,      // Thread to get stack trace for
+                &frame                   ,      // Where to store next stack frame
+                &context                 ,      // Pointer to processor context record
+                0                        ,      // Routine to read process memory: use the default ReadProcessMemory
+                &SymFunctionTableAccess  ,      // Routine to access the modules symbol table
+                &SymGetModuleBase        ,      // Routine to access the modules base address
+                0                               // Something to do with 16-bit code. Not needed.
+            );
+            ++i
+        )
+        {
+            //------------------------------------------------------------------
+            // Declare an image help symbol structure to hold symbol info and
+            // name up to 256 chars This struct is of variable lenght though so
+            // it must be declared as a raw byte buffer.
+            //------------------------------------------------------------------
+            static char symbolBuffer[sizeof(IMAGEHLP_SYMBOL) + 255];
+            memset(symbolBuffer, 0, sizeof(IMAGEHLP_SYMBOL) + 255);
+
+            // Cast it to a symbol struct:
+            IMAGEHLP_SYMBOL * symbol = (IMAGEHLP_SYMBOL*) symbolBuffer;
+
+            // Need to set the first two fields of this symbol before obtaining name info:
+            symbol->SizeOfStruct    = sizeof(IMAGEHLP_SYMBOL) + 255;
+            symbol->MaxNameLength   = 254;
+
+            // The displacement from the beginning of the symbol is stored here: pretty useless
+            unsigned displacement = 0;
+
+            output += multi_cast<std::string>(i) + ": ";
+
+            // Get the symbol information from the address of the instruction pointer register:
+            if
+            (
+                SymGetSymFromAddr
+                (
+                    GetCurrentProcess()    ,   // Process to get symbol information for
+                    frame.AddrPC.Offset    ,   // Address to get symbol for: instruction pointer register
+                    (DWORD*) &displacement ,   // Displacement from the beginning of the symbol: what is this for ?
+                    symbol                     // Where to save the symbol
+                )
+            )
+            {
+                // Add the name of the function to the function list:
+                output += SignalHandler::pointerToString(frame.AddrPC.Offset) + " " + symbol->Name;
+            }
+            else
+            {
+                // Print an unknown location:
+                output += SignalHandler::pointerToString(frame.AddrPC.Offset);
+            }
+
+//            output += " (" + SignalHandler::pointerToString(displacement) + ")";
+            output += "\n";
+        }
+
+        // Cleanup the symbol table:
+        SymCleanup(GetCurrentProcess());
+
+        return output;
+    }
+
+    /// Returns a description of the given exception.
+    // Based on code from Dr. Mingw by José Fonseca
+    /* static */ std::string SignalHandler::getExceptionType(PEXCEPTION_POINTERS pExceptionInfo)
+    {
+        PEXCEPTION_RECORD pExceptionRecord = pExceptionInfo->ExceptionRecord;
+        TCHAR szModule[MAX_PATH];
+        HMODULE hModule;
+
+        std::string output = (GetModuleFileName(NULL, szModule, MAX_PATH) ? SignalHandler::getModuleName(szModule) : "Application");
+        output += " caused ";
+
+        switch(pExceptionRecord->ExceptionCode)
+        {
+            case EXCEPTION_ACCESS_VIOLATION:            output += "an Access Violation";        break;
+            case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:       output += "an Array Bound Exceeded";    break;
+            case EXCEPTION_BREAKPOINT:                  output += "a Breakpoint";               break;
+            case EXCEPTION_DATATYPE_MISALIGNMENT:       output += "a Datatype Misalignment";    break;
+            case EXCEPTION_FLT_DENORMAL_OPERAND:        output += "a Float Denormal Operand";   break;
+            case EXCEPTION_FLT_DIVIDE_BY_ZERO:          output += "a Float Divide By Zero";     break;
+            case EXCEPTION_FLT_INEXACT_RESULT:          output += "a Float Inexact Result";     break;
+            case EXCEPTION_FLT_INVALID_OPERATION:       output += "a Float Invalid Operation";  break;
+            case EXCEPTION_FLT_OVERFLOW:                output += "a Float Overflow";           break;
+            case EXCEPTION_FLT_STACK_CHECK:             output += "a Float Stack Check";        break;
+            case EXCEPTION_FLT_UNDERFLOW:               output += "a Float Underflow";          break;
+            case EXCEPTION_GUARD_PAGE:                  output += "a Guard Page";               break;
+            case EXCEPTION_ILLEGAL_INSTRUCTION:         output += "an Illegal Instruction";     break;
+            case EXCEPTION_IN_PAGE_ERROR:               output += "an In Page Error";           break;
+            case EXCEPTION_INT_DIVIDE_BY_ZERO:          output += "an Integer Divide By Zero";  break;
+            case EXCEPTION_INT_OVERFLOW:                output += "an Integer Overflow";        break;
+            case EXCEPTION_INVALID_DISPOSITION:         output += "an Invalid Disposition";     break;
+            case EXCEPTION_INVALID_HANDLE:              output += "an Invalid Handle";          break;
+            case EXCEPTION_NONCONTINUABLE_EXCEPTION:    output += "a Noncontinuable Exception"; break;
+            case EXCEPTION_PRIV_INSTRUCTION:            output += "a Privileged Instruction";   break;
+            case EXCEPTION_SINGLE_STEP:                 output += "a Single Step";              break;
+            case EXCEPTION_STACK_OVERFLOW:              output += "a Stack Overflow";           break;
+            case DBG_CONTROL_C:                         output += "a Control+C";                break;
+            case DBG_CONTROL_BREAK:                     output += "a Control+Break";            break;
+            case DBG_TERMINATE_THREAD:                  output += "a Terminate Thread";         break;
+            case DBG_TERMINATE_PROCESS:                 output += "a Terminate Process";        break;
+            case RPC_S_UNKNOWN_IF:                      output += "an Unknown Interface";       break;
+            case RPC_S_SERVER_UNAVAILABLE:              output += "a Server Unavailable";       break;
+            default:                                    output += "an Unknown Exception (" + SignalHandler::pointerToString(pExceptionRecord->ExceptionCode) + ")"; break;
+        }
+
+        // Now print information about where the fault occured
+        output += " at location " + SignalHandler::pointerToString(pExceptionRecord->ExceptionAddress);
+        if ((hModule = (HMODULE) SignalHandler::getModuleBase((DWORD) pExceptionRecord->ExceptionAddress)) && GetModuleFileName(hModule, szModule, MAX_PATH))
+        {
+            output += " in module ";
+            output += SignalHandler::getModuleName(szModule);
+        }
+
+        // If the exception was an access violation, print out some additional information, to the error log and the debugger.
+        if(pExceptionRecord->ExceptionCode == EXCEPTION_ACCESS_VIOLATION && pExceptionRecord->NumberParameters >= 2)
+        {
+            output += " ";
+            output += pExceptionRecord->ExceptionInformation[0] ? "writing to" : "reading from";
+            output += " location ";
+            output += SignalHandler::pointerToString(pExceptionRecord->ExceptionInformation[1]);
+        }
+
+        return output;
+    }
+
+    /// Strips the directories from the path to the module and returns the module's name only.
+    /* static */ std::string SignalHandler::getModuleName(const std::string& path)
+    {
+        return path.substr(path.find_last_of('\\') + 1);
+    }
+
+    /// Retrieves the base address of the module that contains the specified address.
+    // Code from Dr. Mingw by José Fonseca
+    /* static */ DWORD SignalHandler::getModuleBase(DWORD dwAddress)
+    {
+        MEMORY_BASIC_INFORMATION Buffer;
+
+        return VirtualQuery((LPCVOID) dwAddress, &Buffer, sizeof(Buffer)) ? (DWORD) Buffer.AllocationBase : 0;
+    }
+
+    /// Converts a value to string, formatted as pointer.
+    template <typename T>
+    /* static */ std::string SignalHandler::pointerToString(T pointer)
+    {
+        std::ostringstream oss;
+
+        oss << std::setw(8) << std::setfill('0') << std::hex << pointer;
+
+        return std::string("0x") + oss.str();
+    }
+
+    /// Converts a pointer to string.
+    template <typename T>
+    /* static */ std::string SignalHandler::pointerToString(T* pointer)
+    {
+        std::ostringstream oss;
+
+        oss << pointer;
+
+        return oss.str();
+    }
+}
+
+#endif
