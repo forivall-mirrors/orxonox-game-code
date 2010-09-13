@@ -69,7 +69,6 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
   IF(_list_index EQUAL -1) # Header file could already be included with GET_ALL_HEADER_FILES
     LIST(APPEND ${_sourcefile_var} ${_pch_header_file})
   ENDIF()
-  SOURCE_GROUP("PCH" FILES ${_pch_header_file})
 
   IF(MSVC)
 
@@ -80,7 +79,6 @@ MACRO(PRECOMPILED_HEADER_FILES_PRE_TARGET _target_name _header_file_arg _sourcef
     ENDIF()
     SET_SOURCE_FILES_PROPERTIES(_pch_source_file PROPERTIES GENERATED TRUE)
     LIST(APPEND ${_sourcefile_var} ${_pch_source_file})
-    SOURCE_GROUP("PCH" FILES ${_pch_source_file})
 
     SET(_pch_file "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${_pch_header_filename}.pch")
     # Set compile flags for generated source file

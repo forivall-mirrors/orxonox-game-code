@@ -57,7 +57,10 @@ FUNCTION(GET_GCC_COMPILER_FLAGS _target _flagsvar)
   GET_DIRECTORY_PROPERTY(_directory_defs_build_type      COMPILE_DEFINITIONS_${_build_type_upper})
   GET_TARGET_PROPERTY(_target_defs            ${_target} COMPILE_DEFINITIONS)
   GET_TARGET_PROPERTY(_target_defs_build_type ${_target} COMPILE_DEFINITIONS_${_build_type_upper})
-  GET_TARGET_PROPERTY(_target_def_symbol      ${_target} DEFINE_SYMBOL)
+  IF(${_target_type} STREQUAL SHARED_LIBRARY)
+    GET_TARGET_PROPERTY(_target_def_symbol    ${_target} DEFINE_SYMBOL)
+  ENDIF()
+
   # Prefix them all with a "-D" if the property was found
   FOREACH(_def ${_directory_defs} ${_directory_defs_build_type} ${_target_defs}
                ${_target_defs_build_type} ${_target_def_symbol})
