@@ -27,22 +27,6 @@
     <?lua end ?>
 
     <!-- TODO: Insert drone here. -->
-    <!-- TODO: Remove. -->
-    <AutonomousDrone
-      primaryThrust = 100
-      auxiliaryThrust = 30
-      rotationThrust = 25
-      mass = 50
-      linearDamping = 0.9
-      angularDamping = 0.7
-    >
-      <attached>
-        <Model scale="10" mesh="drone.mesh"/>
-      </attached>
-      <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="10, 10, 10" />
-      </collisionShapes>
-    </AutonomousDrone>
 
   </Scene>
 </Level>

@@ -45,8 +45,6 @@ namespace orxonox
         //TODO: Place your code here:
         // Make sure to register the object in the factory.
         // Do some kind of initialisation.
-        //TODO: Remove.
-        RegisterObject(AutonomousDroneController);
 
         // This checks that our creator really is a drone
         // and saves the pointer to the drone for the controlling commands
@@ -79,10 +77,6 @@ namespace orxonox
         // - moveFrontBack, moveRightLeft, moveUpDown
         // - rotatePitch, rotateYaw, rotateRoll
         // Apply the to myDrone (e.g. myDrone->rotateYaw(..) )
-        //TODO: Remove:
-        myDrone->rotateRoll(dt*2);
-        myDrone->moveFrontBack(dt*50);
-        myDrone->rotateYaw(dt);
 
     }
 }

@@ -35,8 +35,6 @@ namespace orxonox
 {
     //TODO: Put your code in here:
     // Create the factory for the drone.
-    //TODO: Remove.
-    CreateFactory(AutonomousDrone);
 
     /**
     @brief
@@ -48,8 +46,6 @@ namespace orxonox
     {
         //TODO: Put your code in here:
         // Register the drone class to the core.
-        //TODO: Remove.
-        RegisterObject(AutonomousDrone);
 
         this->myController_ = NULL;
 
@@ -90,9 +86,6 @@ namespace orxonox
         // Make sure that the set- and get-functions exist.
         // Variables can be added by the following command
         // XMLPortParam(Classname, "xml-attribute-name (i.e. variablename)", setFunction, getFunction, xmlelement, mode)
-        //TODO: Remove.
-        XMLPortParam(AutonomousDrone, "auxiliaryThrus", setAuxiliaryThrust, getAuxiliaryThrust, xmlelement, mode);
-        XMLPortParam(AutonomousDrone, "rotationThrust", setRotationThrust, getRotationThrust, xmlelement, mode);
 
     }
 
