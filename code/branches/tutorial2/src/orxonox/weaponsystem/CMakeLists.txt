@@ -1,0 +1,10 @@
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+  Munition.cc
+  Weapon.cc
+  WeaponMode.cc
+  WeaponPack.cc
+  WeaponSet.cc
+  WeaponSlot.cc
+  WeaponSystem.cc
+  DefaultWeaponmodeLink.cc
+)
