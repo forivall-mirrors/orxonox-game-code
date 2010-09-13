@@ -382,11 +382,11 @@ namespace orxonox
             // if the signalhandler has already been destroyed then don't do anything
             if (SignalHandler::singletonPtr_s == 0)
             {
-                COUT(1) << "Catched an unhandled exception" << std::endl << "Can't write backtrace because SignalHandler is already destroyed" << std::endl;
+                COUT(1) << "Caught an unhandled exception" << std::endl << "Can't write backtrace because SignalHandler is already destroyed" << std::endl;
                 exit(EXIT_FAILURE);
             }
 
-            COUT(1) << "Catched an unhandled exception" << std::endl << "Try to write backtrace to orxonox_crash.log..." << std::endl;
+            COUT(1) << "Caught an unhandled exception" << std::endl << "Try to write backtrace to orxonox_crash.log..." << std::endl;
 
             // write the crash log
             std::ofstream crashlog(SignalHandler::getInstance().filename_.c_str());

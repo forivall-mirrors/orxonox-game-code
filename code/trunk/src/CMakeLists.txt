@@ -83,6 +83,7 @@ INCLUDE_DIRECTORIES(
   ${DIRECTX_INCLUDE_DIR}
   ${ZLIB_INCLUDE_DIR}
   ${VLD_INCLUDE_DIR}
+  ${DBGHELP_INCLUDE_DIR}
 
   # All includes in "externals" should be prefixed with the path
   # relative to "external" to avoid conflicts
@@ -97,10 +98,6 @@ INCLUDE_DIRECTORIES(
 
 IF(CEGUILUA_USE_INTERNAL_LIBRARY)
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/external/ceguilua/ceguilua-${CEGUI_VERSION})
-ENDIF()
-
-IF (DBGHELP_FOUND)
-  INCLUDE_DIRECTORIES(${DBGHELP_INCLUDE_DIR})
 ENDIF()
 
 ################### Tolua Bind ##################
