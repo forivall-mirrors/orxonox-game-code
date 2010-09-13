@@ -99,6 +99,10 @@ IF(CEGUILUA_USE_INTERNAL_LIBRARY)
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/external/ceguilua/ceguilua-${CEGUI_VERSION})
 ENDIF()
 
+IF (DBGHELP_FOUND)
+  INCLUDE_DIRECTORIES(${DBGHELP_INCLUDE_DIR})
+ENDIF()
+
 ################### Tolua Bind ##################
 
 # Create directory because the tolua application doesn't work otherwise

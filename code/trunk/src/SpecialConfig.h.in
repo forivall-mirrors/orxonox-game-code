@@ -49,6 +49,8 @@
 
 #cmakedefine CMAKE_CONFIGURATION_TYPES      ///< Using MSVC or XCode IDE
 
+#cmakedefine DBGHELP_FOUND                  ///< If DbgHelp was found on windows
+
 // Handle default ConfigValues
 namespace orxonox { namespace specialConfig
 {
