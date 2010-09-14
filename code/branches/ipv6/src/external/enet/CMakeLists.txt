@@ -18,15 +18,15 @@
  #
 
 SET_SOURCE_FILES(ENET_FILES
-    include/enet/callbacks.h
-    include/enet/enet.h
-    include/enet/list.h
-    include/enet/protocol.h
-    include/enet/time.h
-    include/enet/types.h
-    include/enet/unix.h
-    include/enet/utility.h
-    include/enet/win32.h
+    callbacks.h
+    enet.h
+    list.h
+    protocol.h
+    time.h
+    types.h
+    unix.h
+    utility.h
+    win32.h
 
     win32.c
 
