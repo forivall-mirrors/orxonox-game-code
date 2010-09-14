@@ -334,6 +334,10 @@ namespace orxonox
 #include <fstream>
 #include <dbghelp.h>
 
+#ifdef ORXONOX_COMPILER_GCC
+#   include <cxxabi.h>
+#endif
+
 namespace orxonox
 {
     /// Constructor: Initializes the values, but doesn't register the exception handler.
@@ -434,11 +438,18 @@ namespace orxonox
     /* static */ std::string SignalHandler::getStackTrace(PEXCEPTION_POINTERS pExceptionInfo)
     {
         // Initialise the symbol table to get function names:
+        SymSetOptions
+        (
+            SYMOPT_DEFERRED_LOADS
+#ifndef ORXONOX_COMPILER_GCC
+            | SYMOPT_UNDNAME
+#endif
+        );
         SymInitialize(GetCurrentProcess(), 0, true);
 
         // Store the current stack frame here:
-        STACKFRAME frame;
-        memset(&frame, 0, sizeof(STACKFRAME));
+        STACKFRAME64 frame;
+        memset(&frame, 0, sizeof(STACKFRAME64));
 
         // Get processor information for the current thread:
         CONTEXT context;
@@ -465,54 +476,54 @@ namespace orxonox
         DWORD type;
 
         // set the flags and initialize the stackframe struct
-    #ifdef _M_IX86
+#ifdef _M_IX86
         type = IMAGE_FILE_MACHINE_I386;
 
-        frame.AddrPC.Offset         = context.Eip;      // Current location in program
-        frame.AddrPC.Mode           = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
-        frame.AddrStack.Offset      = context.Esp;      // Stack pointers current value
-        frame.AddrStack.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
-        frame.AddrFrame.Offset      = context.Ebp;      // Value of register used to access local function variables.
-        frame.AddrFrame.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
-    #elif _M_X64
+        frame.AddrPC.Offset         = context.Eip;              // program counter
+        frame.AddrPC.Mode           = AddrModeFlat;
+        frame.AddrFrame.Offset      = context.Ebp;              // frame pointer (for function arguments)
+        frame.AddrFrame.Mode        = AddrModeFlat;
+        frame.AddrStack.Offset      = context.Esp;              // stack pointer
+        frame.AddrStack.Mode        = AddrModeFlat;
+#elif _M_X64
         type = IMAGE_FILE_MACHINE_AMD64;
 
-        frame.AddrPC.Offset         = context.Rip;      // Current location in program
-        frame.AddrPC.Mode           = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
-        frame.AddrStack.Offset      = context.Rsp;      // Stack pointers current value
-        frame.AddrStack.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
-        frame.AddrFrame.Offset      = context.Rsp;      // Value of register used to access local function variables.
-        frame.AddrFrame.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
-    #elif _M_IA64
+        frame.AddrPC.Offset         = context.Rip;              // program counter
+        frame.AddrPC.Mode           = AddrModeFlat;
+        frame.AddrFrame.Offset      = context.Rbp; // (or Rdi)  // frame pointer (for function arguments)
+        frame.AddrFrame.Mode        = AddrModeFlat;
+        frame.AddrStack.Offset      = context.Rsp;              // stack pointer
+        frame.AddrStack.Mode        = AddrModeFlat;
+#elif _M_IA64
         type = IMAGE_FILE_MACHINE_IA64;
 
-        frame.AddrPC.Offset         = context.StIIP;    // Current location in program
-        frame.AddrPC.Mode           = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
-        frame.AddrStack.Offset      = context.IntSp;    // Stack pointers current value
-        frame.AddrStack.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
-        frame.AddrFrame.Offset      = context.IntSp;    // Value of register used to access local function variables.
-        frame.AddrFrame.Mode        = AddrModeFlat;     // Address mode for this pointer: flat 32 bit addressing
-        frame.AddrBStore.Offset     = context.RsBSP;    //
-        frame.AddrBStore.Mode       = AddrModeFlat;     //
-    #else
+        frame.AddrPC.Offset         = context.StIIP;            // program counter
+        frame.AddrPC.Mode           = AddrModeFlat;
+        frame.AddrFrame.Offset      = context.RsBSP;            // frame pointer (for function arguments) // <-- unneeded on Intel IPF, may be removed
+        frame.AddrFrame.Mode        = AddrModeFlat;
+        frame.AddrStack.Offset      = context.IntSp;            // stack pointer
+        frame.AddrStack.Mode        = AddrModeFlat;
+        frame.AddrBStore.Offset     = context.RsBSP;            // backing store
+        frame.AddrBStore.Mode       = AddrModeFlat;
+#else
         return
-    #endif
+#endif
 
         std::string output;
 
         // Keep getting stack frames from windows till there are no more left:
         for (int i = 0;
-            StackWalk
+            StackWalk64
             (
-                type                     ,      // MachineType
-                GetCurrentProcess()      ,      // Process to get stack trace for
-                GetCurrentThread()       ,      // Thread to get stack trace for
-                &frame                   ,      // Where to store next stack frame
-                &context                 ,      // Pointer to processor context record
-                0                        ,      // Routine to read process memory: use the default ReadProcessMemory
-                &SymFunctionTableAccess  ,      // Routine to access the modules symbol table
-                &SymGetModuleBase        ,      // Routine to access the modules base address
-                0                               // Something to do with 16-bit code. Not needed.
+                type                      ,      // MachineType
+                GetCurrentProcess()       ,      // Process to get stack trace for
+                GetCurrentThread()        ,      // Thread to get stack trace for
+                &frame                    ,      // Where to store next stack frame
+                &context                  ,      // Pointer to processor context record
+                0                         ,      // Routine to read process memory: use the default ReadProcessMemory
+                &SymFunctionTableAccess64 ,      // Routine to access the modules symbol table
+                &SymGetModuleBase64       ,      // Routine to access the modules base address
+                0                                // Something to do with 16-bit code. Not needed.
             );
             ++i
         )
@@ -522,43 +533,58 @@ namespace orxonox
             // name up to 256 chars This struct is of variable lenght though so
             // it must be declared as a raw byte buffer.
             //------------------------------------------------------------------
-            static char symbolBuffer[sizeof(IMAGEHLP_SYMBOL) + 255];
-            memset(symbolBuffer, 0, sizeof(IMAGEHLP_SYMBOL) + 255);
+            static char symbolBuffer[sizeof(SYMBOL_INFO) + 255];
+            memset(symbolBuffer, 0, sizeof(symbolBuffer));
 
             // Cast it to a symbol struct:
-            IMAGEHLP_SYMBOL * symbol = (IMAGEHLP_SYMBOL*) symbolBuffer;
+            SYMBOL_INFO* symbol = (SYMBOL_INFO*)symbolBuffer;
 
-            // Need to set the first two fields of this symbol before obtaining name info:
-            symbol->SizeOfStruct    = sizeof(IMAGEHLP_SYMBOL) + 255;
-            symbol->MaxNameLength   = 254;
+            // Need to set two fields of this symbol before obtaining name info:
+            symbol->SizeOfStruct    = sizeof(SYMBOL_INFO);
+            symbol->MaxNameLen      = 255;
 
             // The displacement from the beginning of the symbol is stored here: pretty useless
-            unsigned displacement = 0;
+            long long unsigned int displacement = 0;
 
+            if (i < 10)
+                output += " ";
             output += multi_cast<std::string>(i) + ": ";
+
+            // Print the function's address:
+            output += SignalHandler::pointerToString(frame.AddrPC.Offset);
 
             // Get the symbol information from the address of the instruction pointer register:
             if
             (
-                SymGetSymFromAddr
+                SymFromAddr
                 (
-                    GetCurrentProcess()    ,   // Process to get symbol information for
-                    frame.AddrPC.Offset    ,   // Address to get symbol for: instruction pointer register
-                    (DWORD*) &displacement ,   // Displacement from the beginning of the symbol: what is this for ?
-                    symbol                     // Where to save the symbol
+                    GetCurrentProcess() ,   // Process to get symbol information for
+                    frame.AddrPC.Offset ,   // Address to get symbol for: instruction pointer register
+                    &displacement       ,   // Displacement from the beginning of the symbol
+                    symbol                  // Where to save the symbol
                 )
             )
             {
                 // Add the name of the function to the function list:
-                output += SignalHandler::pointerToString(frame.AddrPC.Offset) + " " + symbol->Name;
-            }
-            else
-            {
-                // Print an unknown location:
-                output += SignalHandler::pointerToString(frame.AddrPC.Offset);
+                output += " ";
+
+#ifdef ORXONOX_COMPILER_GCC
+                int status;
+                char* demangled = __cxxabiv1::__cxa_demangle(symbol->Name, NULL, NULL, &status);
+                if (demangled)
+                {
+                    output += demangled;
+                    free(demangled);
+                }
+                else
+#endif
+                {
+                    output += symbol->Name;
+                }
             }
 
-//            output += " (" + SignalHandler::pointerToString(displacement) + ")";
+//            output += " (+" + SignalHandler::pointerToString(displacement) + ")";
+
             output += "\n";
         }
 

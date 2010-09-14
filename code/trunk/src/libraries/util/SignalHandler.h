@@ -114,11 +114,12 @@ namespace orxonox
 
         void doCatch( const std::string & appName, const std::string & filename );
 
+        static std::string getStackTrace(PEXCEPTION_POINTERS pExceptionInfo = NULL);
+        static std::string getExceptionType(PEXCEPTION_POINTERS pExceptionInfo);
+
     private:
         static LONG WINAPI exceptionFilter(PEXCEPTION_POINTERS pExceptionInfo);
 
-        static std::string getStackTrace(PEXCEPTION_POINTERS pExceptionInfo = NULL);
-        static std::string getExceptionType(PEXCEPTION_POINTERS pExceptionInfo);
         static std::string getModuleName(const std::string& path);
         static DWORD getModuleBase(DWORD dwAddress);
 
