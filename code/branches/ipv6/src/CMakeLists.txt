@@ -91,7 +91,6 @@ INCLUDE_DIRECTORIES(
   # Include directories needed even if only included by Orxonox
   ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
   ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/enet/include
 
   # OrxonoxConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}
