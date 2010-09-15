@@ -332,10 +332,31 @@ namespace orxonox
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <ctime>
 #include <dbghelp.h>
+#include <tlhelp32.h>
+
+#include "Convert.h"
 
 #ifdef ORXONOX_COMPILER_GCC
 #   include <cxxabi.h>
+#endif
+
+#ifdef ORXONOX_COMPILER_GCC
+_UtilExport void __cdecl abort()
+{
+    COUT(1) << "This application has requested the Runtime to terminate it in an unusual way." << std::endl;
+    COUT(1) << "Please contact the application's support team for more information." << std::endl;
+    DebugBreak();
+    exit(0x3);
+}
+
+_UtilExport void __cdecl _assert(const char* expression, const char* file, int line)
+{
+    COUT(1) << "Assertion failed: " << expression << ", file " << file << ", line " << line << std::endl;
+    COUT(1) << std::endl;
+    abort();
+}
 #endif
 
 namespace orxonox
@@ -369,6 +390,40 @@ namespace orxonox
         {
             // Install the unhandled exception filter function
             this->prevExceptionFilter_ = SetUnhandledExceptionFilter(&SignalHandler::exceptionFilter);
+
+//            std::set_terminate(&myterminate);
+/*
+#ifdef ORXONOX_COMPILER_GCC
+            MODULEENTRY32 module;
+            memset(&module, 0, sizeof(MODULEENTRY32));
+            module.dwSize = sizeof(MODULEENTRY32);
+
+            HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
+
+            BOOL result = Module32First(snapshot, &module);
+
+            COUT(0) << SignalHandler::pointerToString((unsigned)_assert) << std::endl;
+
+            while (result)
+            {
+                COUT(0) << module.szModule << std::endl;
+                COUT(0) << SignalHandler::pointerToString((unsigned)module.modBaseAddr) << " / " << SignalHandler::pointerToString(*module.modBaseAddr) << std::endl;;
+
+                FARPROC procAssert = GetProcAddress(module.hModule, "__ZSt13set_terminatePFvvE");
+                if (procAssert)
+                {
+                    COUT(0) << "yes1 --------------------------------------------------------" << std::endl;
+                    COUT(0) << SignalHandler::pointerToString((unsigned)procAssert) << std::endl;
+                    // *(volatile unsigned*)procAssert = 0xcc;
+                }
+
+                result = Module32Next(snapshot, &module);
+            }
+
+//            *(volatile unsigned*)abort = 0xcc;
+//            *(volatile unsigned*)_assert = 0xcc;
+#endif
+*/
         }
     }
 
@@ -382,6 +437,7 @@ namespace orxonox
         {
             bExecuting = true;
 
+            COUT(1) << std::endl;
 
             // if the signalhandler has already been destroyed then don't do anything
             if (SignalHandler::singletonPtr_s == 0)
@@ -465,7 +521,7 @@ namespace orxonox
             context.ContextFlags = CONTEXT_FULL;
 
             // Load the RTLCapture context function:
-            HINSTANCE kernel32 = LoadLibrary("Kernel32.dll");
+            HMODULE kernel32 = LoadLibrary("Kernel32.dll");
             typedef void (*RtlCaptureContextFunc) (CONTEXT* ContextRecord);
             RtlCaptureContextFunc rtlCaptureContext = (RtlCaptureContextFunc) GetProcAddress(kernel32, "RtlCaptureContext");
 
@@ -480,34 +536,29 @@ namespace orxonox
         type = IMAGE_FILE_MACHINE_I386;
 
         frame.AddrPC.Offset         = context.Eip;              // program counter
-        frame.AddrPC.Mode           = AddrModeFlat;
         frame.AddrFrame.Offset      = context.Ebp;              // frame pointer (for function arguments)
-        frame.AddrFrame.Mode        = AddrModeFlat;
         frame.AddrStack.Offset      = context.Esp;              // stack pointer
-        frame.AddrStack.Mode        = AddrModeFlat;
 #elif _M_X64
         type = IMAGE_FILE_MACHINE_AMD64;
 
         frame.AddrPC.Offset         = context.Rip;              // program counter
-        frame.AddrPC.Mode           = AddrModeFlat;
         frame.AddrFrame.Offset      = context.Rbp; // (or Rdi)  // frame pointer (for function arguments)
-        frame.AddrFrame.Mode        = AddrModeFlat;
         frame.AddrStack.Offset      = context.Rsp;              // stack pointer
-        frame.AddrStack.Mode        = AddrModeFlat;
 #elif _M_IA64
         type = IMAGE_FILE_MACHINE_IA64;
 
         frame.AddrPC.Offset         = context.StIIP;            // program counter
-        frame.AddrPC.Mode           = AddrModeFlat;
         frame.AddrFrame.Offset      = context.RsBSP;            // frame pointer (for function arguments) // <-- unneeded on Intel IPF, may be removed
-        frame.AddrFrame.Mode        = AddrModeFlat;
         frame.AddrStack.Offset      = context.IntSp;            // stack pointer
-        frame.AddrStack.Mode        = AddrModeFlat;
         frame.AddrBStore.Offset     = context.RsBSP;            // backing store
         frame.AddrBStore.Mode       = AddrModeFlat;
 #else
-        return
+        return "";
 #endif
+
+        frame.AddrPC.Mode           = AddrModeFlat;
+        frame.AddrFrame.Mode        = AddrModeFlat;
+        frame.AddrStack.Mode        = AddrModeFlat;
 
         std::string output;
 
@@ -581,10 +632,50 @@ namespace orxonox
                 {
                     output += symbol->Name;
                 }
+
+                output += " +" + SignalHandler::pointerToString(displacement, false);
             }
 
-//            output += " (+" + SignalHandler::pointerToString(displacement) + ")";
+/*
+            IMAGEHLP_MODULE64 module;
+            memset(&module, 0, sizeof(IMAGEHLP_MODULE64));
+            module.SizeOfStruct = sizeof(IMAGEHLP_MODULE64);
 
+            if
+            (
+                SymGetModuleInfo64
+                (
+                    GetCurrentProcess(),
+                    frame.AddrPC.Offset,
+                    &module
+                )
+            )
+            {
+                IMAGEHLP_LINE64 line;
+                memset(&line, 0, sizeof(IMAGEHLP_LINE64));
+                line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+
+                DWORD displacement2 = displacement;
+
+                if
+                (
+                    SymGetLineFromAddr64
+                    (
+                        GetCurrentProcess(),
+                        frame.AddrPC.Offset,
+                        &displacement2,
+                        &line
+                    )
+                )
+                {
+                    output += "\n";
+                    output += "               ";
+                    output += line.FileName;
+                    output += ":";
+                    output += multi_cast<std::string>(line.LineNumber);
+                }
+            }
+*/
             output += "\n";
         }
 
@@ -675,11 +766,14 @@ namespace orxonox
 
     /// Converts a value to string, formatted as pointer.
     template <typename T>
-    /* static */ std::string SignalHandler::pointerToString(T pointer)
+    /* static */ std::string SignalHandler::pointerToString(T pointer, bool bFillZeros)
     {
         std::ostringstream oss;
 
-        oss << std::setw(8) << std::setfill('0') << std::hex << pointer;
+        if (bFillZeros)
+            oss << std::setw(8) << std::setfill('0');
+
+        oss << std::hex << pointer;
 
         return std::string("0x") + oss.str();
     }

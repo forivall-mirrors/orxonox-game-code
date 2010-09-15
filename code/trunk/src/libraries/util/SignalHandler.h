@@ -42,11 +42,6 @@
 #include "Singleton.h"
 #include "SpecialConfig.h"
 
-namespace orxonox
-{
-    typedef int (*SignalCallback)( void * someData );
-}
-
 #if defined(ORXONOX_PLATFORM_LINUX)
 
 #include <list>
@@ -54,6 +49,8 @@ namespace orxonox
 
 namespace orxonox
 {
+    typedef int (*SignalCallback)( void * someData );
+
     struct SignalRec
     {
         int signal;
@@ -108,30 +105,31 @@ namespace orxonox
     class _UtilExport SignalHandler : public Singleton<SignalHandler>
     {
         friend class Singleton<SignalHandler>;
-    public:
-        SignalHandler();
-        ~SignalHandler();
 
-        void doCatch( const std::string & appName, const std::string & filename );
+        public:
+            SignalHandler();
+            ~SignalHandler();
 
-        static std::string getStackTrace(PEXCEPTION_POINTERS pExceptionInfo = NULL);
-        static std::string getExceptionType(PEXCEPTION_POINTERS pExceptionInfo);
+            void doCatch(const std::string& appName, const std::string& filename);
 
-    private:
-        static LONG WINAPI exceptionFilter(PEXCEPTION_POINTERS pExceptionInfo);
+            static std::string getStackTrace(PEXCEPTION_POINTERS pExceptionInfo = NULL);
+            static std::string getExceptionType(PEXCEPTION_POINTERS pExceptionInfo);
 
-        static std::string getModuleName(const std::string& path);
-        static DWORD getModuleBase(DWORD dwAddress);
+        private:
+            static LONG WINAPI exceptionFilter(PEXCEPTION_POINTERS pExceptionInfo);
 
-        template <typename T>
-        static std::string pointerToString(T pointer);
-        template <typename T>
-        static std::string pointerToString(T* pointer);
+            static std::string getModuleName(const std::string& path);
+            static DWORD getModuleBase(DWORD dwAddress);
 
-        static SignalHandler* singletonPtr_s;
+            template <typename T>
+            static std::string pointerToString(T pointer, bool bFillZeros = true);
+            template <typename T>
+            static std::string pointerToString(T* pointer);
 
-        std::string filename_;
-        LPTOP_LEVEL_EXCEPTION_FILTER prevExceptionFilter_;
+            static SignalHandler* singletonPtr_s;
+
+            std::string filename_;
+            LPTOP_LEVEL_EXCEPTION_FILTER prevExceptionFilter_;
     };
 }
 
@@ -143,11 +141,12 @@ namespace orxonox
     class _UtilExport SignalHandler : public Singleton<SignalHandler>
     {
         friend class Singleton<SignalHandler>;
-    public:
-        void doCatch( const std::string & appName, const std::string & filename ) {}
 
-    private:
-        static SignalHandler* singletonPtr_s;
+        public:
+            void doCatch(const std::string& appName, const std::string& filename) {}
+
+        private:
+            static SignalHandler* singletonPtr_s;
     };
 }
 
