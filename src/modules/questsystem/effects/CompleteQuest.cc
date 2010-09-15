@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file CompleteQuest.cc
     @brief Implementation of the CompleteQuest class.
 */
 
@@ -35,8 +35,9 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "questsystem/QuestManager.h"
+
 #include "questsystem/Quest.h"
+#include "questsystem/QuestManager.h"
 
 namespace orxonox
 {
@@ -57,6 +58,7 @@ namespace orxonox
     */
     CompleteQuest::~CompleteQuest()
     {
+
     }
 
     /**
@@ -80,7 +82,8 @@ namespace orxonox
     */
     bool CompleteQuest::invoke(PlayerInfo* player)
     {
-        if(player == NULL) //!< You know, what we think of NULL-pointers...
+        //TODO: Replace with assert?
+        if(player == NULL) // You know, what we think of NULL-pointers...
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;
@@ -94,9 +97,7 @@ namespace orxonox
         {
             quest = QuestManager::getInstance().findQuest(this->getQuestId());
             if(quest == NULL || !quest->complete(player))
-            {
                return false;
-            }
         }
         catch(const Exception& e)
         {

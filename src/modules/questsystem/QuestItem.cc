@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestItem.cc
     @brief Implementation of the QuestItem class.
 */
 
@@ -35,6 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "QuestDescription.h"
 
 namespace orxonox
@@ -85,7 +86,7 @@ namespace orxonox
     */
     void QuestItem::setId(const std::string & id)
     {
-        if(id.compare(BLANKSTRING) == 0) //!< Checks whether the id is a valid id.
+        if(id.compare(BLANKSTRING) == 0) // Checks whether the id is a valid id.
         {
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return;

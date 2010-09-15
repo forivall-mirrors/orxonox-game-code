@@ -29,6 +29,7 @@
 /**
     @file PickupSpawner.h
     @brief Definition of the PickupSpawner class.
+    @ingroup Pickup
 */
 
 #ifndef _PickupSpawner_H__

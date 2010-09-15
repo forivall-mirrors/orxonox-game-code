@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file QuestEffectBeacon.h
     @brief Definition of the QuestEffectBeacon class.
+    @ingroup Questsystem
 */
 
 #ifndef _QuestEffectBeacon_H__
@@ -43,7 +44,7 @@ namespace orxonox
 {
     namespace QuestEffectBeaconStatus
     {
-        //! The status of the beacon, can be either active or inactive.
+        //! The status of the @ref orxonox::QuestEffectBeacon "QuestEffectBeacon", can be either active or inactive.
         enum Value
         {
             Inactive,
@@ -53,13 +54,12 @@ namespace orxonox
 
     /**
     @brief
-        A QuestEffectBeacon is a physical entity in the game which can (under some condition(s)) invoke a number QuestEffects on players meeting the condition(s).
-        The conditions under which the QuestEffects are invoked on the player are defined by Triggers.
+        A QuestEffectBeacon is a physical entity in the game which can (under some condition(s)) invoke a number of @ref orxonox::QuestEffect "QuestEffects" on players meeting the condition(s).
+        The conditions under which the @ref orxonox::QuestEffect "QuestEffects" are invoked on the player are defined by @ref orxonox::Trigger "Triggers" (or really any kind of entity firing events, e.g. @ref oroxnox::EventListener "EventListeners"). The trigger the event originates from, however has to be a @ref orxonox::PlayerTrigger PlayerTrigger.
         A QuestEffectBeacon can be executed a defined number of times.
-        A QuestEffectBeacon can be inactive or active.
+        A QuestEffectBeacon can be inactive or active. While inactive it can't be executed.
 
         Creating a QuestEffectBeacon through XML goes as follows:
-
         @code
         <QuestEffectBeacon times=n> //Where 'n' is eighter a number >= 0, which means the QuestEffectBeacon can be executed n times. Or n = -1, which means the QuestEffectBeacon can be executed an infinite number of times.
             <effects>

@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file GlobalQuest.cc
     @brief Implementation of the GlobalQuest class.
 */
 
@@ -35,6 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "QuestEffect.h"
 
 namespace orxonox
@@ -83,7 +84,7 @@ namespace orxonox
     */
     bool GlobalQuest::fail(PlayerInfo* player)
     {
-        if(!this->isFailable(player)) //!< Check whether the Quest can be failed.
+        if(!this->isFailable(player)) // Check whether the Quest can be failed.
         {
             COUT(4) << "A non-completable quest was trying to be failed." << std::endl;
             return false;
@@ -91,13 +92,11 @@ namespace orxonox
 
         Quest::fail(player);
 
-    //! Iterate through all players possessing this Quest.
-    for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
-    {
-        QuestEffect::invokeEffects(*it, this->getFailEffectList());
-    }
+        // Iterate through all players possessing this Quest.
+        for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
+            QuestEffect::invokeEffects(*it, this->getFailEffectList());
 
-    return true;
+        return true;
     }
 
     /**
@@ -112,21 +111,19 @@ namespace orxonox
     */
     bool GlobalQuest::complete(PlayerInfo* player)
     {
-        if(!this->isCompletable(player)) //!< Check whether the Quest can be completed.
+        if(!this->isCompletable(player)) // Check whether the Quest can be completed.
         {
             COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
             return false;
         }
 
-        //! Iterate through all players possessing the Quest.
+        // Iterate through all players possessing the Quest.
         for(std::set<PlayerInfo*>::const_iterator it = players_.begin(); it != players_.end(); it++)
-        {
             QuestEffect::invokeEffects(*it, this->getCompleteEffectList());
-        }
 
         Quest::complete(player);
 
-        QuestEffect::invokeEffects(player, this->rewards_); //!< Invoke reward QuestEffects on the player completing the Quest.
+        QuestEffect::invokeEffects(player, this->rewards_); // Invoke reward QuestEffects on the player completing the Quest.
         return true;
     }
 
@@ -143,9 +140,8 @@ namespace orxonox
     bool GlobalQuest::isStartable(const PlayerInfo* player) const
     {
         if(!(this->getParentQuest() == NULL || this->getParentQuest()->isActive(player)))
-        {
             return false;
-        }
+
         return (this->isInactive(player) && !(this->status_ == QuestStatus::Completed || this->status_ == QuestStatus::Failed));
     }
 
@@ -190,17 +186,14 @@ namespace orxonox
     */
     QuestStatus::Value GlobalQuest::getStatus(const PlayerInfo* player) const
     {
-        if(player == NULL) //!< We don't want NULL-Pointers!
-        {
+        //TODO: Replace with assert.
+        if(player == NULL) // We don't want NULL-Pointers!
             ThrowException(Argument, "The input PlayerInfo* is NULL.");
-        }
 
-        //! Find the player.
+        // Find the player.
         std::set<PlayerInfo*>::const_iterator it = this->players_.find((PlayerInfo*)(void*)player);
-        if (it != this->players_.end()) //!< If the player was found.
-        {
+        if (it != this->players_.end()) // If the player was found.
             return this->status_;
-        }
 
         return QuestStatus::Inactive;
     }
@@ -218,19 +211,16 @@ namespace orxonox
     */
     bool GlobalQuest::setStatus(PlayerInfo* player, const QuestStatus::Value & status)
     {
-        if(player == NULL) //!< We don't want NULL-Pointers!
-        {
+        //TODO: Replace with assert.
+        if(player == NULL) // We don't want NULL-Pointers!
             return false;
-        }
 
-        //! Find the player.
+        // Find the player.
         std::set<PlayerInfo*>::const_iterator it = this->players_.find(player);
-        if (it == this->players_.end()) //!< Player is not yet in the list.
-        {
-            this->players_.insert(player); //!< Add the player to the set.
-        }
+        if (it == this->players_.end()) // Player is not yet in the list.
+            this->players_.insert(player); // Add the player to the set.
 
-        this->status_ = status; //!< Set the status, which is global, remember...?
+        this->status_ = status; // Set the status, which is global, remember...?
         return true;
     }
 
@@ -244,13 +234,14 @@ namespace orxonox
     */
     bool GlobalQuest::addRewardEffect(QuestEffect* effect)
     {
-        if(effect == NULL) //!< We don't want NULL-Pointers!
+        //TODO: Replace with assert?
+        if(effect == NULL) // We don't want NULL-Pointers!
         {
             COUT(2) << "The reward effect to be added to quest {" << this->getId() << "} was NULL." << std::endl;
             return false;
         }
 
-        this->rewards_.push_back(effect); //!< Add the QuestEffect to the list.
+        this->rewards_.push_back(effect); // Add the QuestEffect to the list.
 
         COUT(4) << "Reward effect was added to Quest {" << this->getId() << "}." << std::endl;
         return true;
@@ -270,13 +261,11 @@ namespace orxonox
         for (std::list<QuestEffect*>::const_iterator effect = this->rewards_.begin(); effect != this->rewards_.end(); ++effect)
         {
             if(i == 0)
-            {
                return *effect;
-            }
+
             i--;
         }
         return NULL;
     }
-
 
 }

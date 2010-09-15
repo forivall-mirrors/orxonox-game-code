@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file QuestNotification.h
+    @brief Definition of the QuestNotification class.
+    @ingroup Questsystem
+*/
+
 #ifndef _QuestNotification_H__
 #define _QuestNotification_H__
 

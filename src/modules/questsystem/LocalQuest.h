@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file LocalQuest.h
     @brief Definition of the LocalQuest class.
+    @ingroup Questsystem
 */
 
 #ifndef _LocalQuest_H__
@@ -43,11 +44,10 @@ namespace orxonox
 {
     /**
     @brief
-        Handles Quests which have different states for different players.
-        LocalQuests have (as opposed to GlobalQuests) a different state for each player, that means if for one player the status of the Quest changes it does not for all the other players which also possess this quest.
+        Handles @ref orxonox::Quest "Quests" which have different states for different players.
+        LocalQuests have (as opposed to @ref orxonox::GlobalQuest "GlobalQuests") a different state for each player, that means if for one player the status of the @ref orxonox::Quest "Quest" changes it does not for all the other players which also possess this quest.
 
         Creating a LocalQuest through XML goes as follows:
-
         @code
         <LocalQuest id="questId">
             <QuestDescription title="Title" description="Description." /> //The description of the quest.

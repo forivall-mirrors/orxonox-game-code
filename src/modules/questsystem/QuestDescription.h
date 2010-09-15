@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file QuestDescription.h
     @brief Definition of the QuestDescription class.
+    @ingroup Questsystem
 */
 
 #ifndef _QuestDescription_H__
@@ -44,11 +45,10 @@ namespace orxonox
 {
     /**
     @brief
-        This class is a description of a QuestItem.
-        It holds a title and a description.
+        This class is a description of a QuestItem (@ref orxonox::Quest "Quest" and @ref orxonox::QuestHint "QuestHint").
+        It holds a title and a description. For quests also messages that are sent, when failing or completing the quest can be added.
 
         Creating a QuestDescription through XML goes as follows:
-
         @code
         <QuestDescription title="Title" description="Description Text" failMessage="You fail." completeMessage="You win!" />
         @endcode

@@ -29,6 +29,7 @@
 /**
     @file DroppedPickup.h
     @brief Definition of the DroppedPickup class.
+    @ingroup Pickup
 */
 
 #ifndef _DroppedPickup_H__

@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file SimpleNotification.h
+    @brief Declaration of the SimpleNotification class.
+    @ingroup NotificationDispatchers
+*/
+
 #ifndef _SimpleNotification_H__
 #define _SimpleNotification_H__
 

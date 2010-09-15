@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file Notification.cc
     @brief Implementation of the Notification class.
 */
 

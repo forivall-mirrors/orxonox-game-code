@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file Notification.h
     @brief Definition of the Notification class.
+    @ingroup Notifications
 */
 
 #ifndef _Notification_H__

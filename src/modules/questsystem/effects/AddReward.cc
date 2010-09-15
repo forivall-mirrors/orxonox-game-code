@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file AddReward.cc
     @brief Implementation of the AddReward class.
 */
 
@@ -35,6 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "interfaces/Rewardable.h"
 
 namespace orxonox
@@ -56,6 +57,7 @@ namespace orxonox
     */
     AddReward::~AddReward()
     {
+
     }
 
     /**
@@ -84,9 +86,7 @@ namespace orxonox
         for (std::list<Rewardable*>::const_iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward)
         {
             if(i == 0)
-            {
                return *reward;
-            }
             i--;
         }
         return NULL;
@@ -106,9 +106,7 @@ namespace orxonox
 
         bool check = true;
         for ( std::list<Rewardable*>::iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward )
-        {
             check = check && (*reward)->reward(player);
-        }
 
         COUT(4) << "Rewardable successfully added to player." << player << " ." << std::endl;
 

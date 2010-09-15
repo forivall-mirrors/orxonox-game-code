@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestEffectBeacon.cc
     @brief Implementation of the QuestEffectBeacon class.
 */
 
@@ -36,8 +36,10 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/EventIncludes.h"
-#include "worldentities/pawns/Pawn.h"
+
 #include "interfaces/PlayerTrigger.h"
+#include "worldentities/pawns/Pawn.h"
+
 #include "objects/triggers/MultiTriggerContainer.h"
 #include "QuestEffect.h"
 
@@ -49,6 +51,7 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes defaults.
     */
+    //TODO: Make just BaseObject?
     QuestEffectBeacon::QuestEffectBeacon(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(QuestEffectBeacon);
@@ -98,13 +101,14 @@ namespace orxonox
     @return
         Returns true if successfully executed, false if not.
     */
+    //TODO: Eliminate MultiTriggerContainer stuff, since they are now PlayerTriggers as well.
     bool QuestEffectBeacon::execute(bool bTriggered, BaseObject* trigger)
     {
         if(!bTriggered)
         {
             return false;
         }
-        if(!(this->isActive())) //!< If the QuestEffectBeacon is inactive it cannot be executed.
+        if(!(this->isActive())) // If the QuestEffectBeacon is inactive it cannot be executed.
         {
             COUT(4) << "The QuestEffectBeacon is inactive." << std::endl;
             return false;
@@ -114,14 +118,14 @@ namespace orxonox
         MultiTriggerContainer* mTrigger = orxonox_cast<MultiTriggerContainer*>(trigger);
         Pawn* pawn = NULL;
 
-        //! If the trigger is neither a Playertrigger nor a MultiTrigger (i.e. a MultitriggerContainer) we can do anything with it.
+        // If the trigger is neither a Playertrigger nor a MultiTrigger (i.e. a MultitriggerContainer) we can do anything with it.
         if(pTrigger == NULL && mTrigger == NULL)
             return false;
 
         // If the trigger is a PlayerTrigger.
         if(pTrigger != NULL)
         {
-            if(!pTrigger->isForPlayer())  //!< The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+            if(!pTrigger->isForPlayer())  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
                 return false;
             else
                 pawn = pTrigger->getTriggeringPlayer();
@@ -139,7 +143,7 @@ namespace orxonox
             return false;
         }
 
-        //! Extract the PlayerInfo from the Pawn.
+        // Extract the PlayerInfo from the Pawn.
         PlayerInfo* player = pawn->getPlayer();
 
         if(player == NULL)
@@ -150,10 +154,10 @@ namespace orxonox
 
         COUT(4) << "QuestEffectBeacon executed on player: " << player << " ." << std::endl;
 
-        bool check = QuestEffect::invokeEffects(player, this->effects_); //!< Invoke the QuestEffects on the PlayerInfo.
+        bool check = QuestEffect::invokeEffects(player, this->effects_); // Invoke the QuestEffects on the PlayerInfo.
         if(check)
         {
-            this->decrementTimes(); //!< Decrement the number of times the beacon can be used.
+            this->decrementTimes(); // Decrement the number of times the beacon can be used.
             return true;
         }
 
@@ -170,15 +174,13 @@ namespace orxonox
     */
     bool QuestEffectBeacon::setActive(bool activate)
     {
-        if(this->getTimes() == 0 && activate) //!< A QuestEffectBeacon that can be executed only 0 times is always inactive.
-        {
+        if(this->getTimes() == 0 && activate) // A QuestEffectBeacon that can be executed only 0 times is always inactive.
             return false;
-        }
 
         if(activate)
         {
-        this->status_ = QuestEffectBeaconStatus::Active;
-        return true;
+            this->status_ = QuestEffectBeaconStatus::Active;
+            return true;
         }
 
         this->status_ = QuestEffectBeaconStatus::Inactive;
@@ -193,20 +195,15 @@ namespace orxonox
     */
     bool QuestEffectBeacon::decrementTimes(void)
     {
-        if(!(this->isActive())) //!< The QuestEffectBeacon mus be active to decrement the number of times it can be executed.
-        {
+        if(!(this->isActive())) // The QuestEffectBeacon mus be active to decrement the number of times it can be executed.
             return false;
-        }
-        if(this->getTimes() == INFINITE_TIME) //!< If times is infinity the QuestEffectBeacon can be executed an infinite number fo times.
-        {
-            return true;
-        }
 
-        this->times_ = this->times_ - 1; //!< Decrement number of times the QuestEffectBeacon can be executed.
-        if(this->getTimes() == 0) //!< Set the QuestEffectBeacon to inactive when the number of times it can be executed is reduced to 0.
-        {
+        if(this->getTimes() == INFINITE_TIME) // If times is infinity the QuestEffectBeacon can be executed an infinite number fo times.
+            return true;
+
+        this->times_ = this->times_ - 1; // Decrement number of times the QuestEffectBeacon can be executed.
+        if(this->getTimes() == 0) // Set the QuestEffectBeacon to inactive when the number of times it can be executed is reduced to 0.
             this->status_ = QuestEffectBeaconStatus::Inactive;
-        }
 
         return true;
     }
@@ -224,9 +221,7 @@ namespace orxonox
     bool QuestEffectBeacon::setTimes(const int & n)
     {
         if(n < 0 && n != INFINITE_TIME)
-        {
             return false;
-        }
 
         this->times_ = n;
         return true;
@@ -242,7 +237,8 @@ namespace orxonox
     */
     bool QuestEffectBeacon::addEffect(QuestEffect* effect)
     {
-        if(effect == NULL) //!< NULL-pointers are not well liked here...
+        //TODO: Replace with assert.
+        if(effect == NULL) // NULL-pointers are not well liked here...
         {
             COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
             return false;
@@ -268,9 +264,8 @@ namespace orxonox
         for (std::list<QuestEffect*>::const_iterator effect = this->effects_.begin(); effect != this->effects_.end(); ++effect)
         {
             if(i == 0)
-            {
                return *effect;
-            }
+
             i--;
         }
         return NULL;

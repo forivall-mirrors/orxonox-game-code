@@ -29,6 +29,7 @@
 /**
     @file NotificationQueue.h
     @brief Definition of the NotificationQueue class.
+    @ingroup Notifications
 */
 
 #ifndef _NotificationOueue_H__

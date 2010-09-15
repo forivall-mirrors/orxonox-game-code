@@ -29,6 +29,7 @@
 /**
     @file PickupIdentifier.h
     @brief Definition of the PickupIdentifier class.
+    @ingroup Pickup
 */
 
 #ifndef _PickupIdentifier_H__

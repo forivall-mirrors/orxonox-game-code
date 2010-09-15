@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file QuestManager.h
     @brief Definition of the QuestManager class.
+    @ingroup Questsystem
 */
 
 #ifndef _QuestManager_H__
@@ -43,18 +44,16 @@
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
-// tolua_begin
-namespace orxonox
-{
+namespace orxonox  // tolua_export
+{  // tolua_export
     /**
     @brief
-        Is a Singleton and manages Quests, by registering every Quest/QuestHint (through registerX()) and making them globally accessible (through findX()).
-        Quests (and QuestHints) are registered in the QuestManager with their id, and can be accessed in the same way.
+        Is a Singleton and manages @ref orxonox::Quest "Quests", by registering every @ref orxonox::Quest "Quest" / @ref orxonox::QuestHint "QuestHint" (through registerX()) and making them globally accessible (through findX()).
+        @ref orxonox::Quest "Quests" (and @ref orxonox::QuestHint 2) are registered in the QuestManager with their id, and can be accessed in the same way.
     @author
         Damian 'Mozork' Frick
     */
-    class _QuestsystemExport QuestManager
-// tolua_end
+    class _QuestsystemExport QuestManager  // tolua_export
         : public Singleton<QuestManager>, public orxonox::OrxonoxClass
     { // tolua_export
 
@@ -64,18 +63,18 @@ namespace orxonox
             QuestManager();
             virtual ~QuestManager();
 
-            //! Returns a reference to the single instance of the Quest Manager.
+            //! Returns a reference to the single instance of the QuestManager.
             static QuestManager& getInstance() { return Singleton<QuestManager>::getInstance(); } // tolua_export
 
             // tolua_begin
-            int getNumParentQuests(orxonox::PlayerInfo* player);
-            Quest* getParentQuest(orxonox::PlayerInfo* player, int index);
+            int getNumRootQuests(orxonox::PlayerInfo* player); //!< Get the number of Quests the input player has, that are root quests.
+            Quest* getRootQuest(orxonox::PlayerInfo* player, int index); //!< Get the index-th root quest of the input player.
 
-            int getNumSubQuests(Quest* quest, orxonox::PlayerInfo* player);
-            Quest* getSubQuest(Quest* quest, orxonox::PlayerInfo* player, int index);
+            int getNumSubQuests(Quest* quest, orxonox::PlayerInfo* player); //!< Get the number of sub-quest of an input Quest for an input player.
+            Quest* getSubQuest(Quest* quest, orxonox::PlayerInfo* player, int index); //!< Get the index-th sub-quest of the input Quest for the input player.
 
-            int getNumHints(Quest* quest, orxonox::PlayerInfo* player);
-            QuestHint* getHints(Quest* quest, orxonox::PlayerInfo* player, int index);
+            int getNumHints(Quest* quest, orxonox::PlayerInfo* player); //!< Get the number of QuestHints of the input Quest for the input player.
+            QuestHint* getHints(Quest* quest, orxonox::PlayerInfo* player, int index); //!< Get the index-th QuestHint of the input Quest for the input player.
 
             QuestDescription* getDescription(Quest* item);
             QuestDescription* getDescription(QuestHint* item);

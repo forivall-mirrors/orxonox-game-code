@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file CompleteQuest.h
     @brief Definition of the CompleteQuest class.
+    @ingroup QuestEffects
 */
 
 #ifndef _CompleteQuest_H__
@@ -41,10 +42,9 @@ namespace orxonox
 {
     /**
     @brief
-        Completes a Quest (with a specified id) for the player invoking the QuestEffect.
+        Completes a @ref orxonox::Quest "Quest" (with a specified id) for the player invoking the QuestEffect.
 
         Creating a CompleteQuest through XML goes as follows:
-
         @code
         <CompleteQuest questId="id" />  //Where id identifies the Quest that should be completed.
         @endcode

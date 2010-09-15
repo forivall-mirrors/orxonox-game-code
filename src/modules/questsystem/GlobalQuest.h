@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file GlobalQuest.h
     @brief Definition of the GlobalQuest class.
+    @ingroup Questsystem
 */
 
 #ifndef _GlobalQuest_H__
@@ -44,11 +45,10 @@ namespace orxonox
 {
     /**
     @brief
-        GlobalQuests are Quests, that have the same status for all players.
+        GlobalQuests are @ref orxonox::Quest "Quests", that have the same status for all players.
         This means, that when a player successfully completes a GlobalQuest, it is completed for all players that have it.
 
         Creating a GlobalQuest through XML goes as follows:
-
         @code
         <GlobalQuest id="questId">
             <QuestDescription title="Title" description="Description." /> //The description of the quest.

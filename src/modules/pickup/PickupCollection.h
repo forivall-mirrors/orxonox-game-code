@@ -29,6 +29,7 @@
 /**
     @file PickupCollection.h
     @brief Declaration of PickupCollection.
+    @ingroup Pickup
 */
 
 #ifndef _PickupCollection_H__

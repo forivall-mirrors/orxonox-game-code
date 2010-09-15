@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file QuestNotification.cc
+    @brief Implementation of the QuestNotification class.
+*/
+
 #include "QuestNotification.h"
 #include "core/CoreIncludes.h"
 #include "infos/PlayerInfo.h"

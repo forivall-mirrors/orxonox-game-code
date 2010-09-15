@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestListener.cc
     @brief Implementation of the QuestListener class.
 */
 
@@ -35,12 +35,19 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "Quest.h"
 #include "QuestManager.h"
 
 namespace orxonox
 {
     CreateFactory(QuestListener);
+
+    //! Initialization of the static variables for the modes as strings.
+    /*static*/ const std::string QuestListener::ALL = "all";
+    /*static*/ const std::string QuestListener::START = "start";
+    /*static*/ const std::string QuestListener::FAIL = "fail";
+    /*static*/ const std::string QuestListener::COMPLETE = "complete";
 
     /**
     @brief
@@ -74,7 +81,7 @@ namespace orxonox
         XMLPortParam(QuestListener, "mode", setMode, getMode, xmlelement, mode);
 
         if(this->quest_ != NULL)
-            this->quest_->addListener(this); //!< Adds the QuestListener to the Quests list of listeners.
+            this->quest_->addListener(this); // Adds the QuestListener to the Quests list of listeners.
 
         COUT(4) << "QuestListener created for quest: {" << this->quest_->getId() << "} with mode '" << this->getMode() << "'." << std::endl;
     }
@@ -89,13 +96,11 @@ namespace orxonox
     */
     /* static */ void QuestListener::advertiseStatusChange(std::list<QuestListener*> & listeners, const std::string & status)
     {
-        for (std::list<QuestListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) //!< Iterate through all QuestListeners
+        for (std::list<QuestListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) // Iterate through all QuestListeners
         {
             QuestListener* listener = *it;
-            if(listener->getMode() == status || listener->getMode() == "all") //!< Check whether the status change affects the give QuestListener.
-            {
+            if(listener->getMode() == status || listener->getMode() == QuestListener::ALL) // Check whether the status change affects the give QuestListener.
                 listener->execute();
-            }
         }
     }
 
@@ -109,9 +114,9 @@ namespace orxonox
     */
     bool QuestListener::setQuestId(const std::string & id)
     {
-        this->quest_ = QuestManager::getInstance().findQuest(id); //!< Find the Quest corresponding to the given questId.
+        this->quest_ = QuestManager::getInstance().findQuest(id); // Find the Quest corresponding to the given questId.
 
-        if(this->quest_ == NULL) //!< If there is no such Quest.
+        if(this->quest_ == NULL) // If there is no such Quest.
         {
             ThrowException(Argument, "This is bad! The QuestListener has not found a Quest with a corresponding id..");
             return false;
@@ -130,27 +135,19 @@ namespace orxonox
     */
     bool QuestListener::setMode(const std::string & mode)
     {
-        if(mode == "all")
-        {
+        if(mode == QuestListener::ALL)
             this->mode_ = QuestListenerMode::All;
-        }
-        else if(mode == "start")
-        {
+        else if(mode == QuestListener::START)
             this->mode_ = QuestListenerMode::Start;
-        }
-        else if(mode == "fail")
-        {
+        else if(mode == QuestListener::FAIL)
             this->mode_ = QuestListenerMode::Fail;
-        }
-        else if(mode == "complete")
-        {
+        else if(mode == QuestListener::COMPLETE)
             this->mode_ = QuestListenerMode::Complete;
-        }
         else
         {
             COUT(2) << "QuestListener with invalid mode '" << mode << "' created. Mode set to 'all'." << std::endl;
-        this->mode_ = QuestListenerMode::All;
-        return false;
+            this->mode_ = QuestListenerMode::All;
+            return false;
         }
 
         return true;
@@ -160,30 +157,22 @@ namespace orxonox
     @brief
         Get the mode of the QuestListener.
     @return
-        Return the mode of the QuestListener. Can be eighter 'all', 'start', 'fail' or 'complete'.
+        Return the mode of the QuestListener. Can be either 'all', 'start', 'fail' or 'complete'.
     */
     std::string QuestListener::getMode(void)
     {
-        if(this->mode_ == QuestListenerMode::All)
+        switch(this->mode_)
         {
-            return "all";
-        }
-        else if(this->mode_ == QuestListenerMode::Start)
-        {
-            return "start";
-        }
-        else if(this->mode_ == QuestListenerMode::Fail)
-        {
-            return "fail";
-        }
-        else if(this->mode_ == QuestListenerMode::Complete)
-        {
-            return "complete";
-        }
-        else
-        {
-            COUT(1) << "An unforseen, never to happen, Error has occurred. This is impossible!" << std::endl;
-            return "";
+            case QuestListenerMode::All:
+                return QuestListener::ALL;
+            case QuestListenerMode::Start:
+                return QuestListener::START;
+            case QuestListenerMode::Fail:
+                return QuestListener::FAIL;
+            case QuestListenerMode::Complete:
+                return QuestListener::COMPLETE;
+            default: // This will never happen.
+                return QuestListener::ALL;
         }
     }
 

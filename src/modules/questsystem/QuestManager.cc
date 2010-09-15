@@ -27,27 +27,26 @@
  */
 
 /**
-    @file
+    @file QuestManager.cc
     @brief Implementation of the QuestManager class.
 */
 
 #include "QuestManager.h"
 
-#include <CEGUIWindow.h>
-
 #include "util/Exception.h"
 #include "util/ScopedSingletonManager.h"
+#include "core/command/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/LuaState.h"
-#include "core/command/ConsoleCommand.h"
-#include "infos/PlayerInfo.h"
-#include "overlays/GUIOverlay.h"
 
-#include "ToluaBindQuestsystem.h"
+#include "infos/PlayerInfo.h"
+
 #include "Quest.h"
 #include "QuestHint.h"
 #include "QuestItem.h"
+
+#include "ToluaBindQuestsystem.h"
 
 namespace orxonox
 {
@@ -65,6 +64,8 @@ namespace orxonox
     QuestManager::QuestManager()
     {
         RegisterRootObject(QuestManager);
+
+        COUT(3) << "QuestManager created." << std::endl;
     }
 
     /**
@@ -73,7 +74,7 @@ namespace orxonox
     */
     QuestManager::~QuestManager()
     {
-
+        COUT(3) << "QuestManager destroyed." << std::endl;
     }
 
     /**
@@ -98,16 +99,17 @@ namespace orxonox
     */
     bool QuestManager::registerQuest(Quest* quest)
     {
-        if(quest == NULL) //!< Doh! Just as if there were actual quests behind NULL-pointers.
+        //TODO: Replace with assert.
+        if(quest == NULL) // Doh! Just as if there were actual quests behind NULL-pointers.
         {
             COUT(2) << "Registration of Quest in QuestManager failed, because inserted Quest-pointer was NULL." << std::endl;
             return false;
         }
 
         std::pair<std::map<std::string, Quest*>::iterator,bool> result;
-        result = this->questMap_.insert( std::pair<std::string,Quest*>(quest->getId(),quest) ); //!< Inserting the Quest.
+        result = this->questMap_.insert( std::pair<std::string,Quest*>(quest->getId(),quest) ); // Inserting the Quest.
 
-        if(result.second) //!< If inserting was a success.
+        if(result.second) // If inserting was a success.
         {
             quest->setRegistered();
             COUT(4) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
@@ -140,16 +142,17 @@ namespace orxonox
     */
     bool QuestManager::registerHint(QuestHint* hint)
     {
-        if(hint == NULL) //!< Still not liking NULL-pointers.
+        //TODO: Replace with assert.
+        if(hint == NULL) // Still not liking NULL-pointers.
         {
             COUT(2) << "Registration of QuestHint in QuestManager failed, because inserted QuestHint-pointer was NULL." << std::endl;
             return false;
         }
 
         std::pair<std::map<std::string, QuestHint*>::iterator,bool> result;
-        result = this->hintMap_.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) ); //!< Inserting the QuestHSint.
+        result = this->hintMap_.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) ); // Inserting the QuestHSint.
 
-        if(result.second) //!< If inserting was a success.
+        if(result.second) // If inserting was a success.
         {
             hint->setRegistered();
             COUT(4) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
@@ -184,17 +187,13 @@ namespace orxonox
     */
     Quest* QuestManager::findQuest(const std::string & questId)
     {
-        if(questId.compare(BLANKSTRING) == 1) //!< Check vor validity of the given id.
-        {
+        if(questId.compare(BLANKSTRING) == 1) // Check vor validity of the given id.
             ThrowException(Argument, "Invalid questId.");
-        }
 
         Quest* quest;
         std::map<std::string, Quest*>::iterator it = this->questMap_.find(questId);
-        if (it != this->questMap_.end()) //!< If the Quest is registered.
-        {
+        if (it != this->questMap_.end()) // If the Quest is registered.
             quest = it->second;
-        }
         else
         {
            quest = NULL;
@@ -202,7 +201,6 @@ namespace orxonox
         }
 
         return quest;
-
     }
 
     /**
@@ -218,17 +216,13 @@ namespace orxonox
     */
     QuestHint* QuestManager::findHint(const std::string & hintId)
     {
-        if(hintId.compare(BLANKSTRING) == 1) //!< Check vor validity of the given id.
-        {
+        if(hintId.compare(BLANKSTRING) == 1) // Check vor validity of the given id.
             ThrowException(Argument, "Invalid hintId.");
-        }
 
         QuestHint* hint;
         std::map<std::string, QuestHint*>::iterator it = this->hintMap_.find(hintId);
-        if (it != this->hintMap_.end()) //!< If the QuestHint is registered.
-        {
+        if (it != this->hintMap_.end()) // If the QuestHint is registered.
             hint = it->second;
-        }
         else
         {
            hint = NULL;
@@ -236,10 +230,17 @@ namespace orxonox
         }
 
         return hint;
-
     }
 
-    int QuestManager::getNumParentQuests(PlayerInfo* player)
+    /**
+    @brief
+        Get the number of Quests the input player has, that are root quests.
+    @param player
+        The player.
+    @return
+        Returns the number of Quests the input player has, that are root quests.
+    */
+    int QuestManager::getNumRootQuests(PlayerInfo* player)
     {
         int numQuests = 0;
         for(std::map<std::string, Quest*>::iterator it = this->questMap_.begin(); it != this->questMap_.end(); it++)
@@ -250,7 +251,17 @@ namespace orxonox
         return numQuests;
     }
 
-    Quest* QuestManager::getParentQuest(PlayerInfo* player, int index)
+    /**
+    @brief
+        Get the index-th root quest of the input player.
+    @param player
+        The player.
+    @param index
+        The index of the root quest.
+    @return
+        Returns the index-th root quest of the input player.
+    */
+    Quest* QuestManager::getRootQuest(PlayerInfo* player, int index)
     {
         for(std::map<std::string, Quest*>::iterator it = this->questMap_.begin(); it != this->questMap_.end(); it++)
         {
@@ -260,6 +271,16 @@ namespace orxonox
         return NULL;
     }
 
+    /**
+    @brief
+        Get the number of sub-quest of an input Quest for the input player.
+    @param quest
+        The quest to get the sub-quests of.
+    @param player
+        The player.
+    @return
+        Returns the number of sub-quest of an input Quest for the input player.
+    */
     int QuestManager::getNumSubQuests(Quest* quest, PlayerInfo* player)
     {
         std::list<Quest*> quests = quest->getSubQuestList();
@@ -272,6 +293,16 @@ namespace orxonox
         return numQuests;
     }
 
+    /**
+    @brief
+        Get the index-th sub-quest of the input Quest for the input player.
+    @param quest
+        The Quest to get the sub-quest of.
+    @param player
+        The player.
+    @param index
+        The index of the sub-quest.
+    */
     Quest* QuestManager::getSubQuest(Quest* quest, PlayerInfo* player, int index)
     {
         std::list<Quest*> quests = quest->getSubQuestList();
@@ -283,6 +314,15 @@ namespace orxonox
         return NULL;
     }
 
+    /**
+    @brief
+        Get the number of QuestHints of the input Quest for the input player.
+    @param quest
+        The quest to get the hints of.
+    @param player
+        The player.
+    @return Returns the number of QuestHints of the input Quest for the input player.
+    */
     int QuestManager::getNumHints(Quest* quest, PlayerInfo* player)
     {
         std::list<QuestHint*> hints = quest->getHintsList();
@@ -295,6 +335,16 @@ namespace orxonox
         return numHints;
     }
 
+    /**
+    @brief
+        Get the index-th QuestHint of the input Quest for the input player.
+    @param quest
+        The Quest to get the QuestHint of.
+    @param player
+        The player.
+    @param index
+        The index of the QuestHint.
+    */
     QuestHint* QuestManager::getHints(Quest* quest, PlayerInfo* player, int index)
     {
         std::list<QuestHint*> hints = quest->getHintsList();
@@ -306,11 +356,27 @@ namespace orxonox
         return NULL;
     }
 
+    /**
+    @brief
+        Get the QuestDescription of the input Quest.
+    @param item
+        The Quest to get the QuestDescription of.
+    @return
+        Return a pointer ot the QuestDescription of the input Quest.
+    */
     QuestDescription* QuestManager::getDescription(Quest* item)
     {
         return item->getDescription();
     }
 
+    /**
+    @brief
+        Get the QuestDescription of the input QuestHint.
+    @param item
+        The QuestHint to get the QuestDescription of.
+    @return
+        Returns a pointer to the QuestDescription of the input QuestHint.
+    */
     QuestDescription* QuestManager::getDescription(QuestHint* item)
     {
         return item->getDescription();

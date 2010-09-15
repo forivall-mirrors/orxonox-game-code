@@ -38,11 +38,11 @@ function P.createQuestGUI()
     local questWindow = winMgr:createWindow("MenuWidgets/ScrollablePane", "orxonox/QuestGUI/Quests")
     questWindow:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0),CEGUI.UDim(1, 0)))
 
-    -- Iterate through all parent-quests.
-    local numParentQuests = orxonox.QuestManager:getInstance():getNumParentQuests(P.player)
+    -- Iterate through all root-quests.
+    local numRootQuests = orxonox.QuestManager:getInstance():getNumRootQuests(P.player)
     local i = 0
-    while i <= numParentQuests-1 do
-        local quest = orxonox.QuestManager:getInstance():getParentQuest(P.player, i)
+    while i <= numRootQuests-1 do
+        local quest = orxonox.QuestManager:getInstance():getRootQuest(P.player, i)
         index = P.createQuestNodes(questWindow, quest, depth, index)
         i = i+1
     end

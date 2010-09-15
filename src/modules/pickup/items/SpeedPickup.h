@@ -29,6 +29,7 @@
 /**
     @file SpeedPickup.h
     @brief Declaration of the SpeedPickup class.
+    @ingroup PickupItems
 */
 
 #ifndef _SpeedPickup_H__

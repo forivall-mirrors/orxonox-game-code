@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file AddQuest.h
     @brief Definition of the AddQuest class.
+    @ingroup QuestEffects
 */
 
 #ifndef _AddQuest_H__
@@ -41,10 +42,9 @@ namespace orxonox
 {
     /**
     @brief
-        Adds a Quest, resp. changes the quests status to active for the player invoking the Quest.
+        Adds a @ref orxonox::Quest "Quest", resp. changes the @ref orxonox::Quest "Quests" status to active for the player invoking the @ref orxonox::Quest "Quest".
 
-        Creating a AddQuest through XML goes as follows:
-
+        Creating an AddQuest through XML goes as follows:
         @code
         <AddQuest questId="id" />  //Where id identifies the Quest that should be added.
         @endcode

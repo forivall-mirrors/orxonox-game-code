@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file CommandNotification.h
     @brief Definition of the CommandNotification class.
+    @ingroup NotificationDispatchers
 */
 
 #ifndef _CommandNotification_H__

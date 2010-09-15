@@ -29,6 +29,7 @@
 /**
     @file NotificationManager.h
     @brief Definition of the NotificationManager class.
+    @ingroup Notifications
 */
 
 #ifndef _NotificationManager_H__

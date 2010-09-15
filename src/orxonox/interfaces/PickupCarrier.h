@@ -29,6 +29,7 @@
 /**
     @file PickupCarrier.h
     @brief Definition of the PickupCarrier class.
+    @ingroup Pickup
 */
 
 #ifndef _PickupCarrier_H__
