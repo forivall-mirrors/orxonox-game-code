@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestHint.cc
     @brief Implementation of the QuestHint class.
 */
 
@@ -35,9 +35,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "QuestManager.h"
-#include "QuestDescription.h"
+
 #include "Quest.h"
+#include "QuestDescription.h"
+#include "QuestManager.h"
 
 namespace orxonox
 {
@@ -70,7 +71,7 @@ namespace orxonox
     {
         SUPER(QuestHint, XMLPort, xmlelement, mode);
 
-        QuestManager::getInstance().registerHint(this); //!< Registers the QuestHint with the QuestManager.
+        QuestManager::getInstance().registerHint(this); // Registers the QuestHint with the QuestManager.
 
         COUT(4) << "New QuestHint {" << this->getId() << "} created." << std::endl;
     }
@@ -88,18 +89,17 @@ namespace orxonox
     */
     bool QuestHint::isActive(const PlayerInfo* player) const
     {
-        if(player == NULL) //!< NULL-Pointers are ugly!
+        //TODO: Replace with asser.
+        if(player == NULL) // NULL-Pointers are ugly!
         {
             ThrowException(Argument, "The input PlayerInfo* is NULL.");
             return false;
         }
 
-        //! Find the player.
+        // Find the player.
         std::map<const PlayerInfo*, QuestHintStatus::Value>::const_iterator it = this->playerStatus_.find(player);
-        if (it != this->playerStatus_.end()) //!< If the player is in the map.
-        {
+        if (it != this->playerStatus_.end()) // If the player is in the map.
             return it->second;
-        }
 
         return QuestStatus::Inactive;
     }
@@ -114,9 +114,9 @@ namespace orxonox
     */
     bool QuestHint::setActive(PlayerInfo* player)
     {
-        if(this->quest_->isActive(player)) //!< For a hint to get activated the quest must be active.
+        if(this->quest_->isActive(player)) // For a hint to get activated the quest must be active.
         {
-            if(!(this->isActive(player)))  //!< If the hint is already active, activation is pointless.
+            if(!(this->isActive(player)))  // If the hint is already active, activation is pointless.
             {
                 this->playerStatus_[player] = QuestHintStatus::Active;
 
@@ -144,7 +144,8 @@ namespace orxonox
     */
     bool QuestHint::setQuest(Quest* quest)
     {
-        if(quest == NULL) //!< NULL-Pointer. Again..?
+        //TODO: Replace with assert.
+        if(quest == NULL) // NULL-Pointer. Again..?
         {
             COUT(2) << "The input Quest* is NULL." << std::endl;
             return false;

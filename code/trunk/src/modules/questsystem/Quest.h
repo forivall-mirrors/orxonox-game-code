@@ -27,9 +27,10 @@
  */
 
 /**
-    @file
+    @file Quest.h
     @brief Definition of the Quest class.
-        The Quest is the parent class of LocalQuest and GlobalQuest.
+        The Quest class is the parent class of @ref orxonox::LocalQuest "LocalQuest" and @ref orxonox::GlobalQuest "GlobalQuest".
+    @ingroup Questsystem
 */
 
 #ifndef _Quest_H__
@@ -44,7 +45,7 @@ namespace orxonox // tolua_export
 { // tolua_export
     namespace QuestStatus
     {
-        //!Different states of a Quest.
+        //! Different states of a @ref orxonox::Quest "Quest".
         enum Value
         {
             Inactive,
@@ -56,13 +57,14 @@ namespace orxonox // tolua_export
 
     /**
     @brief
-        Represents a Quest in the game.
-        A Quest has a list of subquests and a parentquest (if it is not a rootquest).
-        Each Quest exists only once but it has a different status (inactive, active, failed or completed) for each player.
-        A Quest has several hints (QuestHint) that can be unlocked through QuestEffects and then display aid in solving the Quest.
-        A Quest has a list of QuestEffects that are invoked when the quest is failed and also a list of QuestEffects that are invoked, when the Quest is completed.
+        Represents a Quest in the game. A Quest is a task that the player can (or has to) fulfill upon which he will (possibly) receive some kind of reward.
 
-        Quest itself should not be instantiated, if you want to create a quest either go for LocalQuest or GlobalQuest, whichever suits you needs better.
+        A Quest can have a list of sub-quests and has a parent-quest (if it is not a root-quest).
+        Each Quest exists only once but it has a different status (inactive, active, failed or completed) for each player.
+        A Quest can have several hints (QuestHint) that can be unlocked through @ref orxonox::QuestEffect "QuestEffects" and then display aid in solving the Quest.
+        A Quest can have a list of @ref orxonox::QuestEffect "QuestEffects" that are invoked when the quest is failed and also a list of @ref orxonox::QuestEffect "QuestEffects" that are invoked, when the Quest is completed.
+
+        Quest itself should not be instantiated, if you want to create a quest either use LocalQuest or GlobalQuest, whichever suits you needs better.
     @author
         Damian 'Mozork' Frick
     */
@@ -76,15 +78,15 @@ namespace orxonox // tolua_export
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Quest object through XML.
 
             /**
-            @brief Returns the parentquest of the Quest.
-            @return Returns a pointer to the parentquest of the Quest.
+            @brief Returns the parent-quest of the Quest.
+            @return Returns a pointer to the parent-quest of the Quest.
             */
             inline Quest* getParentQuest(void) const
                 { return this->parentQuest_; }
 
             /**
-            @brief Returns the list of subquests.
-            @return Returns a reference to the list of subquests of the quest.
+            @brief Returns the list of sub-quests.
+            @return Returns a reference to the list of sub-quests of the quest.
             */
             inline const std::list<Quest*> & getSubQuestList(void) const
                 { return this->subQuests_; }
@@ -112,7 +114,7 @@ namespace orxonox // tolua_export
             virtual bool isFailable(const PlayerInfo* player) const = 0; //!< Checks whether the Quest can be failed.
             virtual bool isCompletable(const PlayerInfo* player) const = 0; //!< Checks whether the Quest can be completed.
 
-            const Quest* getSubQuest(unsigned int index) const; //!<Returns the subquest at the given index.
+            const Quest* getSubQuest(unsigned int index) const; //!<Returns the sub-quest at the given index.
             const QuestHint* getHint(unsigned int index) const; //!< Returns the QuestHint at the given index.
             const QuestEffect* getFailEffect(unsigned int index) const; //!< Returns the fail QuestEffect at the given index.
             const QuestEffect* getCompleteEffect(unsigned int index) const; //!< Returns the complete QuestEffect at the given index.
@@ -135,8 +137,8 @@ namespace orxonox // tolua_export
             virtual bool setStatus(PlayerInfo* player, const QuestStatus::Value & status) = 0; //!< Changes the status for a specific player.
 
         private:
-            Quest* parentQuest_; //!< Pointer to the parentquest.
-            std::list<Quest*> subQuests_; //!< List of all the subquests.
+            Quest* parentQuest_; //!< Pointer to the parent-quest.
+            std::list<Quest*> subQuests_; //!< List of all the sub-quests.
 
             std::list<QuestHint*> hints_; //!< A list of all the QuestHints tied to this Quest.
 
@@ -145,8 +147,8 @@ namespace orxonox // tolua_export
 
             std::list<QuestListener*> listeners_; //!< A list of QuestListeners, that listen to what exactly happens with this Quest.
 
-            bool setParentQuest(Quest* quest); //!< Sets the parentquest of the Quest.
-            bool addSubQuest(Quest* quest); //!< Adds a subquest to the Quest.
+            bool setParentQuest(Quest* quest); //!< Sets the parent-quest of the Quest.
+            bool addSubQuest(Quest* quest); //!< Adds a sub-quest to the Quest.
             bool addHint(QuestHint* hint); //!< Add a QuestHint to the list of QuestHints.
             bool addFailEffect(QuestEffect* effect); //!< Adds an QuestEffect to the list of fail QuestEffects.
             bool addCompleteEffect(QuestEffect* effect); //!< Adds an QuestEffect to the list of complete QuestEffects.

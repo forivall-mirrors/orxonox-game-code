@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file NotificationDispatcher.cc
     @brief Implementation of the NotificationDispatcher class.
 */
 

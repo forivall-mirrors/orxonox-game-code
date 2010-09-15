@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestDescription.cc
     @brief Implementation of the QuestDescription class.
 */
 
@@ -36,6 +36,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "QuestNotification.h"
 
 namespace orxonox
@@ -92,23 +93,15 @@ namespace orxonox
     {
         std::string message;
         if(item == "hint")
-        {
             message = "You received a hint: '" + this->title_ + '\'';
-        }
         else if(item == "quest")
         {
             if(status == "start")
-            {
                 message = "You received a new quest: '" + this->title_ + '\'';
-            }
             else if(status == "fail")
-            {
                 message = "You failed the quest: '" + this->title_ + '\'';
-            }
             else if(status == "complete")
-            {
                 message = "You successfully completed the quest: '" + this->title_ + '\'';
-            }
             else
             {
                 COUT(2) << "Bad input in notificationHelper, this should not be happening!" << std::endl;

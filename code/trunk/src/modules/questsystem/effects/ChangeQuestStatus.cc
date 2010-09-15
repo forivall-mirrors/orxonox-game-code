@@ -27,14 +27,16 @@
  */
 
 /**
-    @file
+    @file ChangeQuestStatus.cc
     @brief Implementation of the ChangeQuestStatus class.
+    @ingroup QuestEffects
 */
 
 #include "ChangeQuestStatus.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "questsystem/QuestItem.h"
 
 namespace orxonox
@@ -54,6 +56,7 @@ namespace orxonox
     */
     ChangeQuestStatus::~ChangeQuestStatus()
     {
+
     }
 
     /**

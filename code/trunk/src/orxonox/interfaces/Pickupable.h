@@ -29,6 +29,7 @@
 /**
     @file Pickupable.h
     @brief Definition of the Pickupable class.
+    @ingroup Pickup
 */
 
 #ifndef _Pickupable_H__

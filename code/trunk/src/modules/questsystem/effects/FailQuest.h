@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file FailQuest.h
     @brief Definition of the FailQuest class.
+    @ingroup QuestEffects
 */
 
 #ifndef _FailQuest_H__
@@ -41,10 +42,9 @@ namespace orxonox
 {
     /**
     @brief
-        Fails a quest (with a specified id) for the player invoking the QuestEffect.
+        Fails a @ref orxonox::Quest "Quest" (with a specified id) for the player invoking the QuestEffect.
 
         Creating a FailQuest through XML goes as follows:
-
         @code
         <FailQuest questId="id" />  //Where id identifies the Quest that should be failed.
         @endcode

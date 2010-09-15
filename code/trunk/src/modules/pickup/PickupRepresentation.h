@@ -29,6 +29,7 @@
 /**
     @file PickupRepresentation.h
     @brief Definition of the PickupRepresentation class.
+    @ingroup Pickup
 */
 
 #ifndef _PickupRepresentation_H__

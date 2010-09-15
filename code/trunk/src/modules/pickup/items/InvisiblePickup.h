@@ -29,6 +29,7 @@
 /**
     @file InvisiblePickup.h
     @brief Declaration of the InvisiblePickup class.
+    @ingroup PickupItems
 */
 
 #ifndef _InvisiblePickup_H__

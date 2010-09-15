@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file AddReward.h
     @brief Definition of the AddReward class.
+    @ingroup QuestEffects
 */
 
 #ifndef _AddReward_H__
@@ -43,10 +44,9 @@ namespace orxonox
 {
     /**
     @brief
-        Adds a list of Rewardables to a player.
+        Adds a list of @ref orxonox::Rewardable "Rewardables" to a player.
 
         Creating a AddReward through XML goes as follows:
-
         @code
         <AddReward>
             <Rewardable /> //A list of Rewardable objects to be rewarded the player, see the specific Rewardables for their respective XML representations.

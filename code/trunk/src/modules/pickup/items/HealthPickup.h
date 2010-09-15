@@ -29,6 +29,7 @@
 /**
     @file HealthPickup.h
     @brief Declaration of the HealthPickup class.
+    @ingroup PickupItems
 */
 
 #ifndef _HealthPickup_H__

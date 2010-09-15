@@ -29,6 +29,7 @@
 /**
     @file CollectiblePickup.h
     @brief Definition of the CollectiblePickup class.
+    @ingroup Pickup
 */
 
 #ifndef _CollectiblePickup_H__

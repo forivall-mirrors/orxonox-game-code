@@ -27,18 +27,19 @@
  */
 
 /**
-    @file
+    @file AddQuestHint.cc
     @brief Implementation of the AddQuestHint class.
 */
 
 #include "AddQuestHint.h"
 
-#include "util/Exception.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "util/Exception.h"
+
+#include "questsystem/QuestHint.h"
 #include "questsystem/QuestManager.h"
 #include "questsystem/QuestItem.h"
-#include "questsystem/QuestHint.h"
 
 namespace orxonox
 {
@@ -104,7 +105,8 @@ namespace orxonox
     */
     bool AddQuestHint::invoke(PlayerInfo* player)
     {
-        if(player == NULL) //!< NULL-pointers are evil!
+        //TODO: Replace with assert?
+        if(player == NULL) // NULL-pointers are evil!
         {
             COUT(2) << "The input player is NULL." << std::endl;
             return false;
@@ -116,9 +118,7 @@ namespace orxonox
         {
             QuestHint* hint = QuestManager::getInstance().findHint(this->hintId_);
             if(hint == NULL || !hint->setActive(player))
-            {
                 return false;
-            }
         }
         catch(const Exception& e)
         {

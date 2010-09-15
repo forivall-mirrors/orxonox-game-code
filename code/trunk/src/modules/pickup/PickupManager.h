@@ -29,6 +29,7 @@
 /**
     @file PickupManager.h
     @brief Definition of the PickupManager class.
+    @ingroup Pickup
 */
 
 #ifndef _PickupManager_H__

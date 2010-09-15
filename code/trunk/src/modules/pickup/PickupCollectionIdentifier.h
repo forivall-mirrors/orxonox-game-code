@@ -29,6 +29,7 @@
 /**
     @file PickupCollectionIdentifier.h
     @brief Declaration of PickupCollectionIdentifier.
+    @ingroup Pickup
 */
 
 #ifndef _PickupCollectionIdentifier_H__

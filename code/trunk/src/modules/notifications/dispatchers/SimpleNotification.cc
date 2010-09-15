@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file SimpleNotification.cc
+    @brief Implementation of the SimpleNotification class.
+*/
+
 #include "SimpleNotification.h"
 
 #include "core/CoreIncludes.h"

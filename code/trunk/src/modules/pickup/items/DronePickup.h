@@ -29,6 +29,7 @@
 /**
     @file DronePickup.h
     @brief Declaration of the DronePickup class.
+    @ingroup PickupItems
 */
 
 #ifndef _DronePickup_H__

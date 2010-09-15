@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file AddQuestHint.h
     @brief Definition of the AddQuestHint class.
+    @ingroup QuestEffects
 */
 
 #ifndef _AddQuestHint_H__
@@ -43,10 +44,9 @@ namespace orxonox
 {
     /**
     @brief
-        Adds a QuestHint, resp. activates the QuestHint of the given id for the player the QuestEffect is invoked on.
+        Adds a @ref orxonox::QuestHint "QuestHint", resp. activates the @ref orxonox::QuestHint "QuestHint" of the given id for the player the QuestEffect is invoked on.
 
         Creating a AddQuestHint through XML goes as follows:
-
         @code
         <AddQuestHint hintId="id" />  //Where id identifies the QuestHint that should be added.
         @endcode

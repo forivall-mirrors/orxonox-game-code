@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file CommandNotification.cc
     @brief Implementation of the CommandNotification class.
 */
 

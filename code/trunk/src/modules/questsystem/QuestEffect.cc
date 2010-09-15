@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file QuestEffect.cc
     @brief Implementation of the QuestEffect class.
 */
 
@@ -63,7 +63,7 @@ namespace orxonox
     @param effects
         A list of all the QuestEffects to be invoked.
     @return
-        Returns false if there was an error, view console of log for further detail.
+        Returns false if there was an error, view console or log for further details.
     */
     /*static*/ bool QuestEffect::invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects)
     {
@@ -72,9 +72,8 @@ namespace orxonox
         COUT(4) << "Invoking QuestEffects on player: " << player << " ."  << std::endl;
 
         for (std::list<QuestEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
-        {
             check = check && (*effect)->invoke(player);
-        }
+
         return check;
     }
 

@@ -27,16 +27,18 @@
  */
 
 /**
-    @file
+    @file AddQuest.cc
     @brief Implementation of the AddQuest class.
 */
 
 #include "AddQuest.h"
 
-#include "util/Exception.h"
 #include "core/CoreIncludes.h"
-#include "questsystem/QuestManager.h"
+#include "core/XMLPort.h"
+#include "util/Exception.h"
+
 #include "questsystem/Quest.h"
+#include "questsystem/QuestManager.h"
 
 namespace orxonox
 {
@@ -80,7 +82,8 @@ namespace orxonox
     */
     bool AddQuest::invoke(PlayerInfo* player)
     {
-        if(player == NULL) //!< Null-pointers are badass.
+        //TODO: Replace with assert?
+        if(player == NULL) // Null-pointers are badass.
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;
@@ -92,9 +95,7 @@ namespace orxonox
         {
             Quest* quest = QuestManager::getInstance().findQuest(this->getQuestId());
             if(quest == NULL || !quest->start(player))
-            {
                return false;
-            }
         }
         catch(const orxonox::Exception& ex)
         {

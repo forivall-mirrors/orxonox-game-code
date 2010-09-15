@@ -30,6 +30,7 @@
 /**
     @file ShieldPickup.h
     @brief Declaration of the ShieldPickup class.
+    @ingroup PickupItems
 */
 
 #ifndef _ShieldPickup_H__

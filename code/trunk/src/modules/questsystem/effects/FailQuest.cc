@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file FailQuest.cc
     @brief Implementation of the FailQuest class.
 */
 
@@ -35,8 +35,9 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "questsystem/QuestManager.h"
+
 #include "questsystem/Quest.h"
+#include "questsystem/QuestManager.h"
 
 namespace orxonox
 {
@@ -57,6 +58,7 @@ namespace orxonox
     */
     FailQuest::~FailQuest()
     {
+
     }
 
     /**
@@ -67,7 +69,7 @@ namespace orxonox
     {
         SUPER(FailQuest, XMLPort, xmlelement, mode);
 
-        COUT(4) << "New FailQUest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
+        COUT(4) << "New FailQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
     }
 
     /**
@@ -80,7 +82,8 @@ namespace orxonox
     */
     bool FailQuest::invoke(PlayerInfo* player)
     {
-        if(player == NULL) //!< We don't know what to do with no player.
+        //TODO: Replace with assert?
+        if(player == NULL) // We don't know what to do with no player.
         {
             COUT(2) << "Input player is NULL." << std::endl;
             return false;
@@ -93,9 +96,7 @@ namespace orxonox
         {
             quest = QuestManager::getInstance().findQuest(this->getQuestId());
             if(quest == NULL || !quest->fail(player))
-            {
                return false;
-            }
         }
         catch(const Exception& e)
         {

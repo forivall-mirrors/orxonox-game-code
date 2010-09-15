@@ -27,9 +27,10 @@
  */
 
 /**
-    @file
+    @file QuestItem.h
     @brief Definition of the QuestItem class.
-        The QuestItem is the parent class of Quest and QuestHint.
+        The @ref orxonox::QuestItem "QuestItem" is the parent class of @ref orxonox::Quest "Quest" and @ref orxonox::QuestHint "QuestHint".
+    @ingroup Questsystem
 */
 
 
@@ -46,8 +47,8 @@ namespace orxonox
 {
     /**
     @brief
-        Functions as a base class for quest classes such as Quest or QuestHint.
-        Has a unique identifier and a description.
+        Functions as a base class for quest classes such as @ref orxonox::Quest "Quest" or @ref orxonox::QuestHint "QuestHint".
+        Has a unique identifier and a @ref orxonox::QuestDescription "QuestDescription".
     @author
         Damian 'Mozork' Frick
     */

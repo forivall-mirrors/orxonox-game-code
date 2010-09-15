@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file ChangeQuestStatus.h
     @brief Definition of the ChangeQuestStatus class.
+    @ingroup QuestEffects
 */
 
 #ifndef _ChangeQuestStatus_H__
@@ -43,7 +44,7 @@ namespace orxonox
 {
     /**
     @brief
-        A QuestEffect which changes the status of a specified Quest for the player invoking the QuestEffect.
+        A QuestEffect which changes the status of a specified @ref orxonox::Quest "Quest" for the player invoking the QuestEffect.
     @author
         Damian 'Mozork' Frick
     */

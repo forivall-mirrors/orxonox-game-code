@@ -29,6 +29,7 @@
 /**
     @file MetaPickup.h
     @brief Definition of the MetaPickup class.
+    @ingroup PickupItems
 */
 
 #ifndef _MetaPickup_H__

@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file NotificationDispatcher.h
     @brief Definition of the NotificationDispatcher class.
+    @ingroup Notifications
 */
 
 #ifndef _NotificationDispatcher_H__

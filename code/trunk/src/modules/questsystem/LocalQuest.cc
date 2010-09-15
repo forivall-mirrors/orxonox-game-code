@@ -27,7 +27,7 @@
  */
 
 /**
-    @file
+    @file LocalQuest.cc
     @brief Implementation of the LocalQuest class.
 */
 
@@ -35,6 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "QuestEffect.h"
 
 namespace orxonox
@@ -81,7 +82,7 @@ namespace orxonox
     */
     bool LocalQuest::fail(PlayerInfo* player)
     {
-        if(!this->isFailable(player)) //!< Checks whether the quest can be failed.
+        if(!this->isFailable(player)) // Checks whether the quest can be failed.
         {
             COUT(4) << "A non-failable quest was trying to be failed." << std::endl;
             return false;
@@ -89,7 +90,7 @@ namespace orxonox
 
         Quest::fail(player);
 
-        QuestEffect::invokeEffects(player, this->getFailEffectList()); //!< Invoke the failEffects.
+        QuestEffect::invokeEffects(player, this->getFailEffectList()); // Invoke the failEffects.
         return true;
     }
 
@@ -104,7 +105,7 @@ namespace orxonox
     */
     bool LocalQuest::complete(PlayerInfo* player)
     {
-        if(!this->isCompletable(player)) //!< Checks whether the Quest can be completed.
+        if(!this->isCompletable(player)) // Checks whether the Quest can be completed.
         {
             COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
             return false;
@@ -112,7 +113,7 @@ namespace orxonox
 
         Quest::complete(player);
 
-        QuestEffect::invokeEffects(player, this->getCompleteEffectList()); //!< Invoke the complete QuestEffects.
+        QuestEffect::invokeEffects(player, this->getCompleteEffectList()); // Invoke the complete QuestEffects.
         return true;
     }
 
@@ -129,9 +130,8 @@ namespace orxonox
     bool LocalQuest::isStartable(const PlayerInfo* player) const
     {
         if(!(this->getParentQuest() == NULL || this->getParentQuest()->isActive(player)))
-        {
             return false;
-        }
+
         return this->isInactive(player);
     }
 
@@ -177,18 +177,15 @@ namespace orxonox
     */
     QuestStatus::Value LocalQuest::getStatus(const PlayerInfo* player) const
     {
-        if(player == NULL) //!< No player has no defined status.
-        {
+        //TODO: Replace with assert.
+        if(player == NULL) // No player has no defined status.
             ThrowException(Argument, "The input PlayerInfo* is NULL.");
-        }
 
         std::map<const PlayerInfo*, QuestStatus::Value>::const_iterator it = this->playerStatus_.find(player);
-        if (it != this->playerStatus_.end()) //!< If there is a player in the map.
-        {
+        if (it != this->playerStatus_.end()) // If there is a player in the map.
             return it->second;
-        }
 
-        return QuestStatus::Inactive; //!< If the player is not yet in the map, that means the status of the quest form him is 'inactive'.
+        return QuestStatus::Inactive; // If the player is not yet in the map, that means the status of the quest form him is 'inactive'.
     }
 
     /**
@@ -204,10 +201,9 @@ namespace orxonox
     */
     bool LocalQuest::setStatus(PlayerInfo* player, const QuestStatus::Value & status)
     {
-        if(player == NULL) //!< We can't set a status for no player.
-        {
+        //TODO: Replace with assert.
+        if(player == NULL) // We can't set a status for no player.
             return false;
-        }
 
         this->playerStatus_[player] = status;
         return true;
