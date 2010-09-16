@@ -215,7 +215,7 @@ namespace orxonox
       return false;
     ClientInformation *temp = head_;
     while(temp!=0){
-      if(temp->getPeer()->address.host==peer->address.host && temp->getPeer()->address.port==peer->address.port)
+      if(!memcmp(& temp->getPeer()->address, & peer->address, sizeof(peer->address)))
         break;
       temp = temp->next();
     }
@@ -251,7 +251,7 @@ namespace orxonox
   ClientInformation *ClientInformation::findClient(ENetAddress *address, bool look_backwards) {
     ClientInformation *temp = head_;
     while(temp!=0){
-      if(temp->getPeer()->address.host==address->host && temp->getPeer()->address.port == address->port)
+      if(!memcmp(& temp->getPeer()->address, address, sizeof(*address)))
         break;
       temp = temp->next();
     }

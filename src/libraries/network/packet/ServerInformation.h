@@ -58,6 +58,8 @@ namespace orxonox
     };
 
   }
+
+  _NetworkExport std::ostream& operator<<(std::ostream& out, const ENetAddress& address);
 }
 
 #endif // SERVERINFORMATION_H

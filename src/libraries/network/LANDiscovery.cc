@@ -41,7 +41,9 @@ namespace orxonox
 
   LANDiscovery::LANDiscovery()
   {
-    this->host_ = enet_host_create(NULL, 10, 0, 0 );
+    this->host_ = enet_host_create(NULL, 10, 0, 0, 0 );
+    if ( this->host_ == NULL )
+        COUT(1) << "LANDiscovery: host_ == NULL" << std::endl;
   }
 
   LANDiscovery::~LANDiscovery()
@@ -52,12 +54,23 @@ namespace orxonox
   void LANDiscovery::discover()
   {
     this->servers_.clear();
+    ENetPeer* peer;
     ENetAddress address;
-    enet_address_set_host(&address, "255.255.255.255");
+    memset(&address, 0, sizeof(ENetAddress));
     address.port = LAN_DISCOVERY_PORT;
 
-    ENetPeer* peer;
-    peer = enet_host_connect(this->host_, &address, 0);
+    /* TODO: check for availability of each protocol */
+    /* IPv4 */
+    address.host = ENET_HOST_BROADCAST;
+    peer = enet_host_connect(this->host_, &address, 0, 0);
+    if (peer == NULL)
+        COUT(1) << "Error: Could not send LAN discovery to IPv4 Broadcast." << std::endl;
+
+    /* IPv6 */
+    enet_address_set_host(&address, "ff02::1"); // TODO: use a multicast group
+    peer = enet_host_connect(this->host_, &address, 0, 0);
+    if (peer == NULL)
+        COUT(1) << "Error: Could not send LAN discovery to IPv6 Multicast." << std::endl;
 
     ENetEvent event;
     while( enet_host_service(this->host_, &event, 1000 ) )
@@ -66,7 +79,7 @@ namespace orxonox
       {
         case ENET_EVENT_TYPE_CONNECT:
         {
-          COUT(0) << "connect from server: " << event.peer->address.host << endl;
+          COUT(4) << "Received LAN discovery connect from server " << event.peer->host->receivedAddress << std::endl;
           ENetPacket* packet = enet_packet_create(LAN_DISCOVERY_MESSAGE, strlen(LAN_DISCOVERY_MESSAGE)+1, ENET_PACKET_FLAG_RELIABLE);
           enet_peer_send(event.peer, 0, packet);
           break;
@@ -74,7 +87,7 @@ namespace orxonox
         case ENET_EVENT_TYPE_RECEIVE:
           {
             packet::ServerInformation info(&event);
-            COUT(0) << "received server information; name: " << info.getServerName() << ", IP: " << info.getServerIP() << ", RTT: " << info.getServerRTT() << endl;
+            COUT(3) << "Received LAN discovery server information; Name: " << info.getServerName() << ", Address: " << info.getServerIP() << ", RTT: " << info.getServerRTT() << endl;
             std::vector<packet::ServerInformation>::iterator it;
             for( it=this->servers_.begin(); it!=this->servers_.end(); ++it )
             {

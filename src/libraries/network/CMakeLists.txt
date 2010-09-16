@@ -70,7 +70,8 @@ ORXONOX_ADD_LIBRARY(network
     NetworkPrecompiledHeaders.h
   LINK_LIBRARIES
     ${ZLIB_LIBRARY}
-    ${ENET_LIBRARY}
+    #${ENET_LIBRARY}
+    enet_orxonox
     ${Boost_THREAD_LIBRARY}
     util
     core
