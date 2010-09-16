@@ -63,9 +63,14 @@ namespace orxonox
     
     if( bActive )
     {
-      ENetAddress bindAddress = { ENET_HOST_ANY, LAN_DISCOVERY_PORT };
+      ENetAddress bindAddress;
+      memset(& bindAddress, 0, sizeof(ENetAddress));
+      bindAddress.host = ENET_HOST_ANY;
+      bindAddress.port = LAN_DISCOVERY_PORT;
       assert( this->host_ == 0 );
-      this->host_ = enet_host_create( &bindAddress, 10, 0, 0 );
+      this->host_ = enet_host_create( &bindAddress, 10, 0, 0, 0 );
+      if ( this->host_ == NULL )
+          COUT(1) << "LANDiscoverable: host_ == NULL" << std::endl;
     }
     else
     {
@@ -88,12 +93,15 @@ namespace orxonox
       switch(event.type)
       {
         case ENET_EVENT_TYPE_CONNECT:
+            COUT(4) << "Received LAN discovery connect from client " << event.peer->host->receivedAddress << std::endl;
+            break;
         case ENET_EVENT_TYPE_DISCONNECT:
         case ENET_EVENT_TYPE_NONE:
           break;
         case ENET_EVENT_TYPE_RECEIVE:
           if( strcmp( LAN_DISCOVERY_MESSAGE, (char*)event.packet->data ) == 0 )      // check for a suitable orxonox client
           {
+            COUT(3) << "Received LAN discovery message from client " << event.peer->host->receivedAddress << std::endl;
             packet::ServerInformation info;
             info.setServerName("Orxonox Server");
             info.send(event.peer);

@@ -17,24 +17,41 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-################ Sub Directories ################
+SET_SOURCE_FILES(ENET_FILES
+    callbacks.h
+    enet.h
+    list.h
+    protocol.h
+    time.h
+    types.h
+    unix.h
+    utility.h
+    win32.h
 
-ADD_SUBDIRECTORY(tolua)
+    win32.c
 
-# Include CEGUILua if not requested otherwise
-IF(CEGUILUA_USE_INTERNAL_LIBRARY)
-  IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
-    MESSAGE(FATAL_ERROR "CEGUILua version not found in src folder. Update list of supported versions in LibraryConfig.cmake!")
-  ENDIF()
+COMPILATION_BEGIN ENetCompilation.c
+    callbacks.c
+    compress.c
+    host.c
+    list.c
+    packet.c
+    peer.c
+    protocol.c
+    unix.c
+COMPILATION_END
+)
 
-  ADD_SUBDIRECTORY(ceguilua)
-  SET(CEGUILUA_LIBRARY ${CEGUILUA_LIBRARY} PARENT_SCOPE)
+ADD_COMPILER_FLAGS("-DHAS_POLL -DHAS_FCNTL -DHAS_MSGHDR_FLAGS -DHAS_SOCKLEN_T")
+
+IF(WIN32)
+    SET(ENET_WIN_LIBS odbc32 odbccp32 winmm ws2_32)
 ENDIF()
 
-ADD_SUBDIRECTORY(bullet)
-ADD_SUBDIRECTORY(cpptcl)
-ADD_SUBDIRECTORY(enet)
-ADD_SUBDIRECTORY(loki)
-ADD_SUBDIRECTORY(ogreceguirenderer)
-ADD_SUBDIRECTORY(ois)
-ADD_SUBDIRECTORY(tinyxml)
+ORXONOX_ADD_LIBRARY(enet_orxonox
+    ORXONOX_EXTERNAL
+    VERSION        1.3.0
+    DEFINE_SYMBOL  "ENET_BUILDING_LIB"
+    LINK_LIBRARIES ${ENET_WIN_LIBS}
+    SOURCE_FILES   ${ENET_FILES}
+)
