@@ -100,7 +100,10 @@ ENDIF()
 # General linker flags
 SET_LINKER_FLAGS("--no-undefined" CACHE)
 
-# Add linker flags for MinGW
+# Add compiler and linker flags for MinGW
 IF (MINGW)
+  ADD_COMPILER_FLAGS("-gstabs+" Debug          CACHE)
+  ADD_COMPILER_FLAGS("-gstabs+" RelWithDebInfo CACHE)
+
   ADD_LINKER_FLAGS("-enable-auto-import" CACHE)
 ENDIF()
