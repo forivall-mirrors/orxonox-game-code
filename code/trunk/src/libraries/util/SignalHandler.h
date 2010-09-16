@@ -39,6 +39,7 @@
 
 #include <cassert>
 #include <string>
+
 #include "Singleton.h"
 #include "SpecialConfig.h"
 
@@ -71,27 +72,25 @@ namespace orxonox
     class SignalHandler : public Singleton<SignalHandler>
     {
         friend class Singleton<SignalHandler>;
-    public:
-        SignalHandler()  { }
-        ~SignalHandler() { }
 
-        void registerCallback( SignalCallback cb, void * someData );
+        public:
+            void registerCallback( SignalCallback cb, void * someData );
 
-        void doCatch( const std::string & appName, const std::string & filename );
-        void dontCatch();
+            void doCatch( const std::string & appName, const std::string & filename );
+            void dontCatch();
 
-    private:
-        static void sigHandler( int sig );
+        private:
+            static void sigHandler( int sig );
 
-        void catchSignal( int sig );
-        SignalRecList sigRecList;
+            void catchSignal( int sig );
+            SignalRecList sigRecList;
 
-        SignalCallbackList callbackList;
+            SignalCallbackList callbackList;
 
-        static SignalHandler* singletonPtr_s;
+            static SignalHandler* singletonPtr_s;
 
-        std::string appName;
-        std::string filename;
+            std::string appName;
+            std::string filename;
     };
 }
 

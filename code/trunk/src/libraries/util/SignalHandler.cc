@@ -36,6 +36,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+
 #include "Debug.h"
 
 namespace orxonox
@@ -343,6 +344,7 @@ namespace orxonox
 #endif
 
 #ifdef ORXONOX_COMPILER_GCC
+/// Overwrite the original abort() function in MinGW to enable a break point.
 _UtilExport void __cdecl abort()
 {
     COUT(1) << "This application has requested the Runtime to terminate it in an unusual way." << std::endl;
@@ -351,6 +353,7 @@ _UtilExport void __cdecl abort()
     exit(0x3);
 }
 
+/// Overwrite the original _abort() function in MinGW to enable a break point.
 _UtilExport void __cdecl _assert(const char* expression, const char* file, int line)
 {
     COUT(1) << "Assertion failed: " << expression << ", file " << file << ", line " << line << std::endl;
@@ -390,40 +393,6 @@ namespace orxonox
         {
             // Install the unhandled exception filter function
             this->prevExceptionFilter_ = SetUnhandledExceptionFilter(&SignalHandler::exceptionFilter);
-
-//            std::set_terminate(&myterminate);
-/*
-#ifdef ORXONOX_COMPILER_GCC
-            MODULEENTRY32 module;
-            memset(&module, 0, sizeof(MODULEENTRY32));
-            module.dwSize = sizeof(MODULEENTRY32);
-
-            HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
-
-            BOOL result = Module32First(snapshot, &module);
-
-            COUT(0) << SignalHandler::pointerToString((unsigned)_assert) << std::endl;
-
-            while (result)
-            {
-                COUT(0) << module.szModule << std::endl;
-                COUT(0) << SignalHandler::pointerToString((unsigned)module.modBaseAddr) << " / " << SignalHandler::pointerToString(*module.modBaseAddr) << std::endl;;
-
-                FARPROC procAssert = GetProcAddress(module.hModule, "__ZSt13set_terminatePFvvE");
-                if (procAssert)
-                {
-                    COUT(0) << "yes1 --------------------------------------------------------" << std::endl;
-                    COUT(0) << SignalHandler::pointerToString((unsigned)procAssert) << std::endl;
-                    // *(volatile unsigned*)procAssert = 0xcc;
-                }
-
-                result = Module32Next(snapshot, &module);
-            }
-
-//            *(volatile unsigned*)abort = 0xcc;
-//            *(volatile unsigned*)_assert = 0xcc;
-#endif
-*/
         }
     }
 
@@ -605,16 +574,30 @@ namespace orxonox
             output += SignalHandler::pointerToString(frame.AddrPC.Offset);
 
             // Get the symbol information from the address of the instruction pointer register:
-            if
+            bool bCorrected = false;
+            BOOL result = SymFromAddr
             (
-                SymFromAddr
+                GetCurrentProcess() ,   // Process to get symbol information for
+                frame.AddrPC.Offset ,   // Address to get symbol for: instruction pointer register
+                &displacement       ,   // Displacement from the beginning of the symbol
+                symbol                  // Where to save the symbol
+            );
+
+            // If the symbol was found, but the displacement is 0, we likely got the wrong symbol - decrease the program counter and try again
+            if (result && displacement == 0)
+            {
+                bCorrected = true;
+                result = SymFromAddr
                 (
-                    GetCurrentProcess() ,   // Process to get symbol information for
-                    frame.AddrPC.Offset ,   // Address to get symbol for: instruction pointer register
-                    &displacement       ,   // Displacement from the beginning of the symbol
-                    symbol                  // Where to save the symbol
-                )
-            )
+                    GetCurrentProcess()     ,
+                    frame.AddrPC.Offset - 1 ,
+                    &displacement           ,
+                    symbol
+                );
+            }
+
+            // Display the function name + offset
+            if (result)
             {
                 // Add the name of the function to the function list:
                 output += " ";
@@ -634,49 +617,36 @@ namespace orxonox
                 }
 
                 output += " +" + SignalHandler::pointerToString(displacement, false);
+                if (bCorrected)
+                    output += " (?)";
             }
 
-/*
-            IMAGEHLP_MODULE64 module;
-            memset(&module, 0, sizeof(IMAGEHLP_MODULE64));
-            module.SizeOfStruct = sizeof(IMAGEHLP_MODULE64);
+            output += "\n";
+
+            // Get the file name and line number
+            IMAGEHLP_LINE64 line;
+            memset(&line, 0, sizeof(IMAGEHLP_LINE64));
+            line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+
+            DWORD displacement2 = 0;
 
             if
             (
-                SymGetModuleInfo64
+                SymGetLineFromAddr64
                 (
                     GetCurrentProcess(),
-                    frame.AddrPC.Offset,
-                    &module
+                    frame.AddrPC.Offset - bCorrected ? 1 : 0,
+                    &displacement2,
+                    &line
                 )
             )
             {
-                IMAGEHLP_LINE64 line;
-                memset(&line, 0, sizeof(IMAGEHLP_LINE64));
-                line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
-
-                DWORD displacement2 = displacement;
-
-                if
-                (
-                    SymGetLineFromAddr64
-                    (
-                        GetCurrentProcess(),
-                        frame.AddrPC.Offset,
-                        &displacement2,
-                        &line
-                    )
-                )
-                {
-                    output += "\n";
-                    output += "               ";
-                    output += line.FileName;
-                    output += ":";
-                    output += multi_cast<std::string>(line.LineNumber);
-                }
+                output += "               ";
+                output += line.FileName;
+                output += ":";
+                output += multi_cast<std::string>(line.LineNumber);
+                output += "\n";
             }
-*/
-            output += "\n";
         }
 
         // Cleanup the symbol table:
