@@ -60,8 +60,6 @@ namespace orxonox
       assert(strcmp(ack, (const char*)LAN_DISCOVERY_ACK)==0);
       // Save Server Name
       loadAndIncrease(this->serverName_, temp);
-
-      delete[] serverIP;
     }
 
     ServerInformation::~ServerInformation()
