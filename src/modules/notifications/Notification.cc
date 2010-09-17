@@ -113,6 +113,7 @@ namespace orxonox
     */
     bool Notification::send(unsigned int clientId, const std::string & sender = NotificationManager::NONE)
     {
+        COUT(0) << "MUP: " << Host::getPlayerID() << "|" << clientId << std::endl;
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
         {
             this->sendHelper(sender);

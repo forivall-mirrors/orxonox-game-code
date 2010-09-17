@@ -34,7 +34,7 @@ gametype=TeamDeathmatch
         skybox       = "Orxonox/skypanoramagen1"
     >
 
-        <Script code="showGUI NotificationLayer false true" />
+        <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
 
         <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 

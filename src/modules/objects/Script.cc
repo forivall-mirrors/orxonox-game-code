@@ -31,6 +31,7 @@
 #include "core/command/CommandExecutor.h"
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"
+#include "core/GameMode.h"
 #include "core/LuaState.h"
 #include "core/XMLPort.h"
 
@@ -56,6 +57,10 @@ namespace orxonox
         // Initialize variables.
         this->luaState_ = NULL;
         this->remainingExecutions_ = Script::INF;
+        this->mode_ = ScriptMode::normal;
+        this->onLoad_ = true;
+        this->times_ = Script::INF;
+        this->needsGraphics_ = false;
 
     }
 
@@ -85,6 +90,7 @@ namespace orxonox
         XMLPortParamTemplate(Script, "mode", setMode, getMode, xmlelement, mode, const std::string&).defaultValues(Script::NORMAL);
         XMLPortParam(Script, "onLoad", setOnLoad, isOnLoad, xmlelement, mode).defaultValues(true);
         XMLPortParam(Script, "times", setTimes, getTimes, xmlelement, mode).defaultValues(Script::INF);
+        XMLPortParam(Script, "needsGraphics", setNeedsGraphics, getNeedsGraphics, xmlelement, mode).defaultValues(false);
 
         XMLPortEventSink(Script, BaseObject, "trigger", trigger, xmlelement, mode);
 
@@ -126,6 +132,10 @@ namespace orxonox
     void Script::execute()
     {
         if(this->times_ != Script::INF && this->remainingExecutions_ == 0)
+            return;
+
+        // If the code needs graphics to be executed but the GameMode doesn't show graphics the code isn't executed.
+        if(this->needsGraphics_ && !GameMode::showsGraphics())
             return;
 
         if(this->mode_ == ScriptMode::normal) // If the mode is 'normal'.
