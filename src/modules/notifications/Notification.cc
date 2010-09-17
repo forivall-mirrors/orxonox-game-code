@@ -35,6 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "network/NetworkFunction.h"
+#include "network/Host.h"
 #include "NotificationManager.h"
 
 namespace orxonox
@@ -42,7 +43,7 @@ namespace orxonox
 
     CreateUnloadableFactory(Notification);
 
-    registerMemberNetworkFunction(Notification, sendHelper);
+    registerMemberNetworkFunction(Notification, send);
 
     /**
     @brief
@@ -112,14 +113,13 @@ namespace orxonox
     */
     bool Notification::send(unsigned int clientId, const std::string & sender = NotificationManager::NONE)
     {
-
-        if(GameMode::isStandalone())
+        if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
         {
             this->sendHelper(sender);
         }
-        else
+        else if(GameMode::isServer())
         {
-            callMemberNetworkFunction(Notification, sendHelper, this->getObjectID(), clientId, sender);
+            callMemberNetworkFunction(Notification, send, this->getObjectID(), clientId, clientId, sender);
         }
 
         return true;
