@@ -54,15 +54,16 @@ namespace orxonox
         'code': The code that should be executed.
         'mode': The mode, specifying whether the set code should be executed the normal way ('normal') or in lua ('lua'). Default is 'normal'.
         'onLoad': Whether the code is executed upon loading (creation) of this object. Default is true.
+        'needsGraphics': Whether the code needs graphics to be executed or not. Default is false.
 
         Here are two examples illustrating the usage:
         @code
-        <Script code="showGUI QuestGUI" />
+        <Script code="showGUI QuestGUI" needsGraphics=true />
         @endcode
-        This would show the QuestGUI opon creation of the object. The mode is 'normal', not specified here since that is the default, also onLoad is true, also not specified, since it is the default as well.
+        This would show the QuestGUI opon creation of the object. The mode is 'normal', not specified here since that is the default, also onLoad is true, also not specified, since it is the default as well. Also needsGraphics is set to true because showGUI needs graphics to work.
 
         @code
-        <Script code="hideGUI QuestGUI" mode="normal" onLoad="false">
+        <Script code="hideGUI QuestGUI" mode="normal" onLoad="false" needsGraphics=true >
             <events>
                 <trigger>
                     <DistanceTrigger distance=10 target="Pawn" />
@@ -70,7 +71,7 @@ namespace orxonox
             </events>
         </Script>
         @endcode
-        This would hide the QuestGUI as soon as a Pawn got in range of the DistanceTrigger. The mode is 'normal', it is specified here, but could be ommitted as well, since it is the default. OnLoad is false, that is why it can't be ommitted.
+        This would hide the QuestGUI as soon as a Pawn got in range of the DistanceTrigger. The mode is 'normal', it is specified here, but could be ommitted as well, since it is the default. OnLoad is false, that is why it can't be ommitted. Also needsGraphics is set to true because showGUI needs graphics to work.
     @author
         Benjamin Knecht
         Damian 'Mozork' Frick
@@ -124,6 +125,19 @@ namespace orxonox
             inline int getTimes(void)
                 { return this->times_; }
 
+            /**
+            @brief Set whether the code to be executed needs graphics to work.
+            @param needsGraphics True if the cde needs graphics to be executed properly.
+            */
+            void setNeedsGraphics(bool needsGraphics)
+                { this->needsGraphics_ = needsGraphics; }
+            /**
+            @brief Get whether the code to be executed needs graphics to work.
+            @return Returns true if the code needs graphic, false if not.
+            */
+            bool getNeedsGraphics(void)
+                { return this->needsGraphics_; }
+
         private:
             //! Static variables to avoid magic strings.
             static const std::string NORMAL;
@@ -134,6 +148,7 @@ namespace orxonox
             ScriptMode::Value mode_; //!< The mode the Script is in. Determines whether the code is executed the normal way or in lua.
             bool onLoad_; //!< Whether the Scripts code is executed upon loading (creation) of this Script.
             int times_; //!< The number of times the Scripts code is executed at the most. -1 denotes infinity.
+            bool needsGraphics_; //!< Whether the code to be executed needs graphics.
 
             LuaState* luaState_; //!< The LuaState to execute the code in lua.
             int remainingExecutions_; //!< The number of remainign executions. -1 denotes infinity.
