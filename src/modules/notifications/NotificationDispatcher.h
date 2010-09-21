@@ -39,6 +39,7 @@
 
 #include <string>
 #include "core/BaseObject.h"
+#include "network/synchronisable/Synchronisable.h"
 
 namespace orxonox
 {
@@ -49,7 +50,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _NotificationsExport NotificationDispatcher : public BaseObject
+    class _NotificationsExport NotificationDispatcher : public BaseObject, public Synchronisable
     {
         public:
             NotificationDispatcher(BaseObject* creator); //!< Default constructor. Initializes the object.
@@ -70,6 +71,8 @@ namespace orxonox
 
         protected:
             std::string sender_; //!< The name of the sender of the Notification dispatched by this NotificationDispatcher.
+
+           void registerVariables(void);
 
             /**
             @brief Set the sender of the Notification dispatched by this NotificationDispatcher.

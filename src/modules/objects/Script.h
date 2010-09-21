@@ -32,7 +32,12 @@
 #include "objects/ObjectsPrereqs.h"
 
 #include <string>
+#include <vector>
+
 #include "core/BaseObject.h"
+#include "tools/interfaces/Tickable.h"
+#include "network/synchronisable/Synchronisable.h"
+#include "network/ClientConnectionListener.h"
 
 namespace orxonox
 {
@@ -53,8 +58,9 @@ namespace orxonox
         There are three parameters:
         'code': The code that should be executed.
         'mode': The mode, specifying whether the set code should be executed the normal way ('normal') or in lua ('lua'). Default is 'normal'.
-        'onLoad': Whether the code is executed upon loading (creation) of this object. Default is true.
+        'onLoad': Whether the code is executed upon loading (creation) of this object. If this is set the code is executed ofr all players, regardless of the value of parameter 'forAll'. Default is true.
         'needsGraphics': Whether the code needs graphics to be executed or not. Default is false.
+        'forAll': Whether the code is executed for all players each time the Script is triggered or jut for the player triggering the Script. If forAll is false, which is default, the event that triggers the Script must come from a PlayerTrigger.
 
         Here are two examples illustrating the usage:
         @code
@@ -76,7 +82,7 @@ namespace orxonox
         Benjamin Knecht
         Damian 'Mozork' Frick
     */
-    class _ObjectsExport Script : public BaseObject
+    class _ObjectsExport Script : public BaseObject, public Synchronisable, public ClientConnectionListener, public Tickable
     {
         public:
             Script(BaseObject* creator);
@@ -85,8 +91,10 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Script object through XML.
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates a port that can be used to channel events and react to them.
 
-            void trigger(bool triggered); //!< Is called when an event comes in trough the event port.
-            void execute(); //!< Executes the Scripts code, depending on the mode.
+            virtual void tick(float dt);
+
+            bool trigger(bool triggered, BaseObject* trigger); //!< Is called when an event comes in trough the event port.
+            void execute(unsigned int clientId, bool fromCallback = false); //!< Executes the Scripts code for the input client, depending on the mode.
 
             /**
             @brief Sets the code that is executed by this Script.
@@ -138,6 +146,22 @@ namespace orxonox
             bool getNeedsGraphics(void)
                 { return this->needsGraphics_; }
 
+            /**
+            @brief Set whether the code is executed for all players or just for the player triggering the Script.
+            @param forAll If true the code is executed for all players.
+            */
+            void setForAll(bool forAll)
+                { this->forAll_ = forAll; }
+            /**
+            @brief Get whether the Script executes its code for all players or just for the player triggering the Script.
+            @return Returns true if the code is executed for all players, false if not.
+            */
+            bool isForAll(void)
+                { return this->forAll_; }
+
+            virtual void clientConnected(unsigned int clientId);
+            virtual void clientDisconnected(unsigned int clientid) {}
+
         private:
             //! Static variables to avoid magic strings.
             static const std::string NORMAL;
@@ -149,9 +173,18 @@ namespace orxonox
             bool onLoad_; //!< Whether the Scripts code is executed upon loading (creation) of this Script.
             int times_; //!< The number of times the Scripts code is executed at the most. -1 denotes infinity.
             bool needsGraphics_; //!< Whether the code to be executed needs graphics.
+            bool forAll_; //!< Whether the code is executed for all players (in a multiplayer setup) or just for the one triggering the Script.
+
+            std::string modeStr_;
+
+            std::vector<unsigned int> clientCallbacks_;
+            float counter_;
 
             LuaState* luaState_; //!< The LuaState to execute the code in lua.
             int remainingExecutions_; //!< The number of remainign executions. -1 denotes infinity.
+
+            void registerVariables(void);
+            void modeChanged();
 
             /**
             @brief Sets the mode of the Script.

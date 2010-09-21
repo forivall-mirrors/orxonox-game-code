@@ -28,12 +28,13 @@
 
 #include "PlayerManager.h"
 
-#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
+#include "util/ScopedSingletonManager.h"
+
 #include "Level.h"
-#include "infos/HumanPlayer.h"
 #include "LevelManager.h"
+#include "infos/HumanPlayer.h"
 
 namespace orxonox
 {

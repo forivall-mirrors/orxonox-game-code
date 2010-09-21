@@ -54,6 +54,7 @@ namespace orxonox {
         RegisterObject(CommandNotification);
 
         this->setSender("commandNotification");
+        this->registerVariables();
     }
 
     /**
@@ -76,6 +77,13 @@ namespace orxonox {
         XMLPortParam(CommandNotification, "command", setCommand, getCommand, xmlelement, mode);
         XMLPortParam(CommandNotification, "preMessage", setPreMessage, getPreMessage, xmlelement, mode);
         XMLPortParam(CommandNotification, "postMessage", setPostMessage, getPostMessage, xmlelement, mode);
+    }
+
+    void CommandNotification::registerVariables(void)
+    {
+        registerVariable(this->command_, VariableDirection::ToClient);
+        registerVariable(this->preMessage_, VariableDirection::ToClient);
+        registerVariable(this->postMessage_, VariableDirection::ToClient);
     }
 
     /**

@@ -50,15 +50,14 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _NotificationsExport Notification : public BaseObject, public Synchronisable
+    class _NotificationsExport Notification : public OrxonoxClass
     {
         public:
-            Notification(BaseObject* creator);
-            Notification(BaseObject* creator, const std::string & message);
+            Notification();
+            Notification(const std::string & message);
             virtual ~Notification();
 
-            bool send(unsigned int clientId, const std::string & sender); //!< Sends the Notification to the Notificationmanager.
-            bool sendHelper(const std::string& sender);
+            bool send(const std::string & sender); //!< Sends the Notification to the Notificationmanager.
 
             /**
             @brief Checks whether the Notification was sent.

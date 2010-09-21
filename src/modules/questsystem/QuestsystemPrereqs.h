@@ -80,7 +80,6 @@ namespace orxonox
     class QuestItem;
     class QuestListener;
     class QuestManager;
-    class QuestNotification;
 }
 
 #endif /* _QuestsystemPrereqs_H__ */

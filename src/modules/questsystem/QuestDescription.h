@@ -127,6 +127,8 @@ namespace orxonox
                 { return notificationHelper("quest", "complete", player); }
 
         private:
+            static const std::string SENDER;
+
             std::string title_; //!< The title.
             std::string description_; //!< The description.
             std::string failMessage_; //!< The message displayed when the Quest is failed.

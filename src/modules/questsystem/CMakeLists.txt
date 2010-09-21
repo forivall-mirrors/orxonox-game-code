@@ -9,7 +9,6 @@ SET_SOURCE_FILES(QUESTSYSTEM_SRC_FILES
   QuestItem.cc
   QuestListener.cc
   QuestManager.cc
-  QuestNotification.cc
 )
 
 ADD_SUBDIRECTORY(effects)
