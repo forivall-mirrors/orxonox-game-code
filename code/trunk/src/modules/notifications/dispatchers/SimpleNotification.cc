@@ -49,6 +49,8 @@ namespace orxonox {
         RegisterObject(SimpleNotification);
 
         this->setSender("simpleNotification");
+
+        this->setSyncMode(0x0);
     }
 
     /**

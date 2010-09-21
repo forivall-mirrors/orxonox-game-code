@@ -34,28 +34,35 @@
 #include "NotificationDispatcher.h"
 
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
 #include "core/EventIncludes.h"
+#include "core/XMLPort.h"
+#include "network/NetworkFunction.h"
+#include "network/Host.h"
+
+#include "infos/PlayerInfo.h"
+#include "interfaces/PlayerTrigger.h"
+#include "worldentities/pawns/Pawn.h"
+
 #include "Notification.h"
 #include "NotificationManager.h"
-#include "interfaces/PlayerTrigger.h"
-#include "infos/PlayerInfo.h"
-#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
 
     CreateUnloadableFactory(NotificationDispatcher);
 
+    registerMemberNetworkFunction(NotificationDispatcher, dispatch);
+
     /**
     @brief
         Default constructor. Initializes the object.
     */
-    NotificationDispatcher::NotificationDispatcher(BaseObject* creator) : BaseObject(creator)
+    NotificationDispatcher::NotificationDispatcher(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(NotificationDispatcher);
 
         this->sender_ = NotificationManager::NONE;
+        this->registerVariables();
     }
 
     /**
@@ -85,6 +92,11 @@ namespace orxonox
         XMLPortEventState(NotificationDispatcher, BaseObject, "trigger", trigger, xmlelement, mode);
     }
 
+    void NotificationDispatcher::registerVariables(void)
+    {
+        registerVariable(this->sender_, VariableDirection::ToClient);
+    }
+
     /**
     @brief
         Dispatches a Notification with a message supplied by the createNotificationMessage() method, which can be overloaded.
@@ -93,10 +105,15 @@ namespace orxonox
     */
     void NotificationDispatcher::dispatch(unsigned int clientId)
     {
-        const std::string message = this->createNotificationMessage();
-        Notification* notification = new Notification(this, message);
-
-        notification->send(clientId, this->getSender());
+        if(GameMode::isStandalone() || Host::getPlayerID() == clientId || this->getSyncMode() == 0x0)
+        {
+            const std::string message = this->createNotificationMessage();
+            NotificationManager::sendNotification(message, clientId, this->getSender());
+        }
+        else if(GameMode::isServer())
+        {
+            callMemberNetworkFunction(NotificationDispatcher, dispatch, this->getObjectID(), clientId, clientId);
+        }
     }
 
     /**
@@ -122,7 +139,7 @@ namespace orxonox
         // If the trigger is a PlayerTrigger.
         if(pTrigger != NULL)
         {
-            if(!pTrigger->isForPlayer())  //!< The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+            if(!pTrigger->isForPlayer())  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
                 return false;
             else
                 pawn = pTrigger->getTriggeringPlayer();
@@ -132,11 +149,11 @@ namespace orxonox
 
         if(pawn == NULL)
         {
-            COUT(4) << "The QuestEffectBeacon was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
+            COUT(4) << "The NotificationDispatcher was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
             return false;
         }
 
-        //! Extract the PlayerInfo from the Pawn.
+        // Extract the PlayerInfo from the Pawn.
         PlayerInfo* player = pawn->getPlayer();
 
         if(player == NULL)

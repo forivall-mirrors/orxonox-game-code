@@ -34,10 +34,19 @@
 #include "core/GameMode.h"
 #include "core/LuaState.h"
 #include "core/XMLPort.h"
+#include "network/Host.h"
+#include "network/NetworkFunction.h"
+
+#include "PlayerManager.h"
+#include "infos/PlayerInfo.h"
+#include "interfaces/PlayerTrigger.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
     CreateFactory(Script);
+
+    registerMemberNetworkFunction(Script, execute);
 
     // Initializing constants.
     /*static*/ const std::string Script::NORMAL = "normal";
@@ -50,7 +59,7 @@ namespace orxonox
     @param creator
         The creator of this object.
     */
-    Script::Script(BaseObject* creator) : BaseObject(creator)
+    Script::Script(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
     {
         RegisterObject(Script);
 
@@ -62,6 +71,9 @@ namespace orxonox
         this->times_ = Script::INF;
         this->needsGraphics_ = false;
 
+        this->counter_ = 0.0f;
+
+        this->registerVariables();
     }
 
     /**
@@ -91,11 +103,12 @@ namespace orxonox
         XMLPortParam(Script, "onLoad", setOnLoad, isOnLoad, xmlelement, mode).defaultValues(true);
         XMLPortParam(Script, "times", setTimes, getTimes, xmlelement, mode).defaultValues(Script::INF);
         XMLPortParam(Script, "needsGraphics", setNeedsGraphics, getNeedsGraphics, xmlelement, mode).defaultValues(false);
+        XMLPortParam(Script, "forAll", setForAll, isForAll, xmlelement, mode).defaultValues(false);
 
         XMLPortEventSink(Script, BaseObject, "trigger", trigger, xmlelement, mode);
 
-        if(this->isOnLoad()) // If the object is onLoad the code is executed at once.
-            this->execute();
+        if(this->isOnLoad()) // If the object is onLoad the code is executed at once for all clients.
+            this->execute(0);
     }
 
     /**
@@ -115,39 +128,153 @@ namespace orxonox
 
     /**
     @brief
-        Is called when an event comes in trough the event port.
-    @param triggered
-        Whether the event is triggering or un-triggering.
+        Register the variables that need to be synchronized.
     */
-    void Script::trigger(bool triggered)
+    void Script::registerVariables(void)
     {
-        if(triggered) // If the event is triggering (instead of un-triggering) the code of this Script  is executed.
-            this->execute();
+        registerVariable(code_, VariableDirection::ToClient);
+        registerVariable(needsGraphics_, VariableDirection::ToClient);
+        registerVariable(modeStr_, VariableDirection::ToClient, new NetworkCallback<Script>(this, &Script::modeChanged));
+    }
+
+    void Script::modeChanged(void)
+    {
+        this->setMode(this->modeStr_);
+    }
+
+    void Script::tick(float dt)
+    {
+        SUPER(Script, tick, dt);
+
+        if(!this->clientCallbacks_.empty())
+        {
+            if(this->counter_ < 2.0f)
+            {
+                this->counter_ += dt;
+            }
+            else
+            {
+                for(std::vector<unsigned int>::iterator it = this->clientCallbacks_.begin(); it != this->clientCallbacks_.end(); it++)
+                {
+                    this->execute(*it, true);
+                }
+                this->clientCallbacks_.clear();
+                this->counter_ = 0.0f;
+            }
+        }
     }
 
     /**
     @brief
-        Executes the Scripts code, depending on the mode.
+        Is called when an event comes in trough the event port.
+    @param triggered
+        Whether the event is triggering or un-triggering.
+    @param trigger
+        The object that caused the event to be fired.
+    @return
+        Returns true if successful.
     */
-    void Script::execute()
+    bool Script::trigger(bool triggered, BaseObject* trigger)
     {
-        if(this->times_ != Script::INF && this->remainingExecutions_ == 0)
-            return;
+        if(!triggered || !this->isActive()) // If the Script is inactive it cannot be executed.
+            return false;
 
-        // If the code needs graphics to be executed but the GameMode doesn't show graphics the code isn't executed.
-        if(this->needsGraphics_ && !GameMode::showsGraphics())
-            return;
+        COUT(4) << "Script (&" << this << ") triggered." << std::endl;
 
-        if(this->mode_ == ScriptMode::normal) // If the mode is 'normal'.
-            CommandExecutor::execute(this->code_);
-        else if(this->mode_ == ScriptMode::lua) // If it's 'lua'.
+        PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
+        Pawn* pawn = NULL;
+
+        // If the trigger is a PlayerTrigger.
+        if(pTrigger != NULL)
         {
-            assert(this->luaState_);
-            this->luaState_->doString(this->code_);
+            if(!pTrigger->isForPlayer())  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+                return false;
+            else
+                pawn = pTrigger->getTriggeringPlayer();
+        }
+        else
+            return false;
+
+        if(pawn == NULL)  //TODO: Will this ever happen? If not, change in NotificationDispatcher as well.
+        {
+            COUT(4) << "The Script was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
+            return false;
         }
 
-        if(this->times_ != Script::INF)
-            this->remainingExecutions_--;
+        // Extract the PlayerInfo from the Pawn.
+        PlayerInfo* player = pawn->getPlayer();
+
+        if(player == NULL)
+        {
+            COUT(3) << "The PlayerInfo* is NULL." << std::endl;
+            return false;
+        }
+
+        this->execute(player->getClientID());
+        return true;
+    }
+
+    /**
+    @brief
+        Executes the Scripts code for the input client, depending on the mode.
+    @param clientId
+        The Id of the client the Script should be executed for.
+    @param fromCallback
+        Whether this method is executed in response to the connectedCallback().
+    */
+    void Script::execute(unsigned int clientId, bool fromCallback)
+    {
+        if(GameMode::isServer())
+        {
+            // If the number of executions have been used up.
+            if(this->times_ != Script::INF && this->remainingExecutions_ == 0)
+                return;
+
+            // Decrement the number of remaining executions.
+            if(this->times_ != Script::INF)
+                this->remainingExecutions_--;
+        }
+
+        if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
+        {
+            // If the code needs graphics to be executed but the GameMode doesn't show graphics the code isn't executed.
+            if(this->needsGraphics_ && !GameMode::showsGraphics())
+                return;
+
+            if(this->mode_ == ScriptMode::normal) // If the mode is 'normal'.
+                CommandExecutor::execute(this->code_);
+            else if(this->mode_ == ScriptMode::lua) // If it's 'lua'.
+            {
+                if(this->luaState_ == NULL)
+                    this->luaState_ = new LuaState();
+                this->luaState_->doString(this->code_);
+            }
+        }
+        if(!GameMode::isStandalone() && GameMode::isServer() && Host::getPlayerID() != clientId)
+        {
+            if(!fromCallback && this->isForAll())
+            {
+                const std::map<unsigned int, PlayerInfo*> clients = PlayerManager::getInstance().getClients();
+                for(std::map<unsigned int, PlayerInfo*>::const_iterator it = clients.begin(); it != clients.end(); it++)
+                {
+                    callMemberNetworkFunction(Script, execute, this->getObjectID(), it->first, it->first, false);
+                }
+            }
+            else
+            {
+                callMemberNetworkFunction(Script, execute, this->getObjectID(), clientId, clientId, false);
+            }
+        }
+    }
+
+    void Script::clientConnected(unsigned int clientId)
+    {
+        if(!GameMode::isStandalone() && GameMode::isServer() && this->isOnLoad())
+        {
+            if(clientId != 0)
+                //TODO: Do better. This is only a temporary fix.
+                this->clientCallbacks_.push_back(clientId);
+        }
     }
 
     /**
@@ -159,18 +286,23 @@ namespace orxonox
     void Script::setMode(const std::string& mode)
     {
         if(mode == Script::NORMAL)
+        {
             this->setMode(ScriptMode::normal);
+            this->modeStr_ = Script::NORMAL;
+        }
         else if(mode == Script::LUA)
         {
             this->setMode(ScriptMode::lua);
+            this->modeStr_ = Script::LUA;
             // Creates a new LuaState.
             if(this->luaState_ == NULL)
                 this->luaState_ = new LuaState();
         }
         else
         {
-            COUT(2) << "Invalid mode '" << mode << "' in Script object." << std::endl;
+            COUT(2) << "Invalid mode '" << mode << "' in Script object. Setting to 'normal'." << std::endl;
             this->setMode(ScriptMode::normal);
+            this->modeStr_ = Script::NORMAL;
         }
     }
 
@@ -209,8 +341,9 @@ namespace orxonox
         }
         else
         {
-            COUT(2) << "Invalid times '" << times << "' in Script." << std::endl;
+            COUT(2) << "Invalid times '" << times << "' in Script. Setting to infinity." << std::endl;
             this->times_ = Script::INF;
+            this->remainingExecutions_ = Script::INF;
         }
     }
 

@@ -41,19 +41,13 @@
 namespace orxonox
 {
 
-    CreateUnloadableFactory(Notification);
-
-    registerMemberNetworkFunction(Notification, send);
-
     /**
     @brief
         Default constructor. Initializes the object.
-    @param creator
-        The object that created this Notification 
     */
-    Notification::Notification(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    Notification::Notification()
     {
-        RegisterObject(Notification);
+        RegisterRootObject(Notification);
         this->initialize();
         this->registerVariables();
     }
@@ -66,12 +60,11 @@ namespace orxonox
     @param message
         The message of the Notification.
     */
-    Notification::Notification(BaseObject* creator, const std::string & message) : BaseObject(creator), Synchronisable(creator)
+    Notification::Notification(const std::string & message)
     {
-        RegisterObject(Notification);
+        RegisterRootObject(Notification);
         this->initialize();
         this->message_ = message;
-        this->registerVariables();
     }
 
     /**
@@ -94,39 +87,15 @@ namespace orxonox
         this->sent_ = false;
     }
 
-    void Notification::registerVariables(void)
-    {
-        registerVariable(this->message_);
-        registerVariable(this->sender_);
-        registerVariable(this->sent_);
-    }
-
     /**
     @brief
         Sends the Notification to the Notificationmanager, which then in turn distributes it to the different NotificationQueues.
-    @param clientId
-        The id of the client that this Notification is sent to.
     @param sender
         The sender the Notification was sent by. Used by the NotificationManager to distributes the notification to the correct NotificationQueues.
     @return
         Returns true if successful.
     */
-    bool Notification::send(unsigned int clientId, const std::string & sender = NotificationManager::NONE)
-    {
-        COUT(0) << "MUP: " << Host::getPlayerID() << "|" << clientId << std::endl;
-        if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
-        {
-            this->sendHelper(sender);
-        }
-        else if(GameMode::isServer())
-        {
-            callMemberNetworkFunction(Notification, send, this->getObjectID(), clientId, clientId, sender);
-        }
-
-        return true;
-    }
-
-    bool Notification::sendHelper(const std::string& sender)
+    bool Notification::send(const std::string & sender)
     {
         if(this->isSent()) //TODO: Needed?
             return false;

@@ -37,8 +37,8 @@
 
 #include "notifications/NotificationsPrereqs.h"
 
-#include "notifications/NotificationDispatcher.h"
 #include <string>
+#include "notifications/NotificationDispatcher.h"
 
 namespace orxonox {
 
@@ -84,6 +84,8 @@ namespace orxonox {
             std::string command_; //!< The name of the command.
             std::string preMessage_; //!< The first part of the displayed message.
             std::string postMessage_; //!< The last part of the displayed message.
+
+            void registerVariables(void);
 
             /**
             @brief Set the command, whose key is displayed.

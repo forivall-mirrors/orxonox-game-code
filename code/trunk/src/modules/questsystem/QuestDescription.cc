@@ -37,11 +37,15 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "QuestNotification.h"
+#include "infos/PlayerInfo.h"
+
+#include "notifications/NotificationManager.h"
 
 namespace orxonox
 {
     CreateFactory(QuestDescription);
+
+    /*static*/ const std::string QuestDescription::SENDER = "questsystem";
 
     /**
     @brief
@@ -114,8 +118,7 @@ namespace orxonox
             return false;
         }
 
-        QuestNotification* notification = new QuestNotification(this, message);
-        notification->send(player);
+        NotificationManager::sendNotification(message, player->getClientID(), QuestDescription::SENDER);
         return true;
     }
 

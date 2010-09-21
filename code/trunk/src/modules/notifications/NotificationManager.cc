@@ -37,6 +37,8 @@
 #include "core/CoreIncludes.h"
 #include "core/GUIManager.h"
 #include "core/LuaState.h"
+#include "network/Host.h"
+#include "network/NetworkFunction.h"
 #include "util/ScopedSingletonManager.h"
 
 #include "interfaces/NotificationListener.h"
@@ -58,6 +60,8 @@ namespace orxonox
     ManageScopedSingleton(NotificationManager, ScopeID::Graphics, false);
 
     SetConsoleCommand("enterEditMode", &NotificationManager::enterEditMode);
+
+    registerStaticNetworkFunction(NotificationManager::sendNotification);
 
     /**
     @brief
@@ -99,6 +103,19 @@ namespace orxonox
             queue->destroy();
         }
         this->queues_.clear();
+    }
+
+    /*static*/ void NotificationManager::sendNotification(const std::string& message, unsigned int clientId, const std::string& sender)
+    {
+        if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
+        {
+            Notification* notification = new Notification(message);
+            notification->send(sender);
+        }
+        else if(GameMode::isServer())
+        {
+            callStaticNetworkFunction(NotificationManager::sendNotification, clientId, message, clientId, sender);
+        }
     }
 
     /**
