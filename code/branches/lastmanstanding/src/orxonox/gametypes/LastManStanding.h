@@ -1,0 +1,89 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Johannes Ritz
+ *   Co-authors:
+ *      ...
+ *
+ */
+/**
+    @file LastManStanding.h
+    @brief Declaration of the Gametype "Last Man Standing".
+*/
+/* BY THE WAY
+//You have to add bots (or any other further players) before actually starting a match.
+//Whenever there is only on player in the game, this player will be declared as winner.
+//How "death" is managed: Death players become invisivle and aren't allowed to damage any player.
+//Though they can recieve damage and they are not invisible on the radar-
+*/
+#ifndef _LastManStanding_H__
+#define _LastManStanding_H__
+
+#include "OrxonoxPrereqs.h"
+#include "Gametype.h"
+#include <map>
+#include <vector>
+
+namespace orxonox
+{
+    class _OrxonoxExport LastManStanding : public Gametype
+    {
+    /**
+    @brief
+        Last Man Standing is a gametype where each player fights against each other, until one player remains. 
+    @author
+        Johannes Ritz
+    */
+        protected:
+            int lives; //!< Standard amount of lives.
+            std::map< PlayerInfo*, int > playerLives_; //!< Each player's lives are stored here.
+            int playersAlive; //!< Counter counting players with more than 0 lives.
+            float timeRemaining; //!< Each player has a certain time where he or she has to hit an opponent or will be punished.
+            std::map<PlayerInfo*, float> timeToAct_; //!< Each player's time till she/he will be punished is stored here.
+
+        public:
+            LastManStanding(BaseObject* creator); //!< Default Constructor.
+            virtual ~LastManStanding() {} //!< Default Destructor.
+            void setConfigValues(); //!< Makes values configurable.
+
+            virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0); //!< Prevents hits by players with no lives.
+            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //!< If a player shoot's an opponet, his punishment countdown will be resetted. Prevents damage by players with no lives.
+            virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //!< Manages each lives.
+
+            virtual void start(); //!< Sends a start message.
+            virtual void end(); //!< Sends an end message.
+            virtual void playerEntered(PlayerInfo* player);
+            virtual bool playerLeft(PlayerInfo* player);
+            virtual bool playerChangedName(PlayerInfo* player);
+
+            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);//makes dead players invisible
+            virtual void pawnPostSpawn(Pawn* pawn); //just for test case
+            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
+
+            const int playerGetLives(PlayerInfo* player);
+            void killPlayer(PlayerInfo* player);
+            //void removePlayer(PlayerInfo* player);
+            void tick (float dt);// used to end the game
+    };
+}
+
+#endif /* _LastManStanding_H__ */
