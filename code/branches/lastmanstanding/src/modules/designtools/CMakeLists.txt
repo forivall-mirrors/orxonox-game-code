@@ -1,0 +1,13 @@
+SET_SOURCE_FILES(DESIGNTOOLS_SRC_FILES
+  SkyboxGenerator.cc
+  CreateStars.cc
+  ScreenshotManager.cc
+)
+
+ORXONOX_ADD_LIBRARY(designtools
+  MODULE
+  FIND_HEADER_FILES
+  LINK_LIBRARIES
+    orxonox
+  SOURCE_FILES ${DESIGNTOOLS_SRC_FILES}
+)
