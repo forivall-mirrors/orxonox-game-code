@@ -26,7 +26,7 @@
  *
  */
 //Haupt-Problem: Wie kann ich Spieler vom Spiel ausschliessen, wenn sie alle Leben verlohren haben? (Kann man respawn unterbinden?)
-//PfuschAmBau1: Spieler wird unsichtbar und kann keinen Schaden austeilen, aber: setradarinvisibility funktioniert scheinbar nicht
+//Aktuelle Notloesung: Spieler wird unsichtbar und kann keinen Schaden austeilen, aber: setradarinvisibility funktioniert scheinbar nicht
 //Lösungsidee2: Spieler werden als passive Drohnen respawned, wenn sie keine Leben mehr haben (noch nicht implementiert)
 //
 #include "LastManStanding.h"
