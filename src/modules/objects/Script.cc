@@ -60,7 +60,7 @@ namespace orxonox
     @param creator
         The creator of this object.
     */
-    Script::Script(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    Script::Script(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Script);
 
@@ -78,8 +78,7 @@ namespace orxonox
     */
     Script::~Script()
     {
-        //if(this->isInitialized() && this->luaState_ != NULL)
-        //    delete this->luaState_;
+
     }
 
     /**
@@ -104,7 +103,7 @@ namespace orxonox
         XMLPortEventSink(Script, BaseObject, "trigger", trigger, xmlelement, mode);
 
         if(this->isOnLoad()) // If the object is onLoad the code is executed at once for the server.
-            this->execute(0);
+            this->execute(0, true);
     }
 
     /**
@@ -177,13 +176,13 @@ namespace orxonox
         Executes the Scripts code for the input client, depending on the mode.
     @param clientId
         The Id of the client the Script should be executed for.
-    @param fromCallback
-        Whether this method is executed in response to the connectedCallback().
+    @param onLoad
+        Whether this method is executed as a result of the onLoad parameter being set to true. Default is false.
     */
-    void Script::execute(unsigned int clientId, bool fromCallback)
+    void Script::execute(unsigned int clientId, bool onLoad)
     {
         // If this is the server or we're in standalone mode we check whether we still want to execute the code and if so decrease the number of remaining executions.
-        if(GameMode::isServer() || GameMode::isStandalone())
+        if(GameMode::isMaster())
         {
             // If the number of executions have been used up.
             if(this->times_ != Script::INF && this->remainingExecutions_ == 0)
@@ -193,15 +192,16 @@ namespace orxonox
         // If this is either the standalone mode or we're on the client we want to be.
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
         {
-           this->executeHelper(this->getCode(), this->getMode(), this->getNeedsGraphics());
+            this->executeHelper(this->getCode(), this->getMode(), this->getNeedsGraphics());
+            if(GameMode::isMaster() && !onLoad && this->times_ != Script::INF) // Decrement the number of remaining executions.
+                this->remainingExecutions_--;
         }
 
         // If this is the server and we're not on the client we want to be.
-        if(!GameMode::isStandalone() && GameMode::isServer() && Host::getPlayerID() != clientId)
+        if(GameMode::isServer() && Host::getPlayerID() != clientId)
         {
-            // If this is not the result of a clientConnected callback and we want to execute the code for all clients.
-            //TODO: In this case does the server get executed as well?
-            if(!fromCallback && this->isForAll())
+            // If we want to execute the code for all clients and the server.
+            if(this->isForAll())
             {
                 const std::map<unsigned int, PlayerInfo*> clients = PlayerManager::getInstance().getClients();
                 for(std::map<unsigned int, PlayerInfo*>::const_iterator it = clients.begin(); it != clients.end(); it++)
@@ -250,9 +250,9 @@ namespace orxonox
     void Script::clientConnected(unsigned int clientId)
     {
         // If this is the server and the Script is specified as being 'onLoad'.
-        if(!GameMode::isStandalone() && GameMode::isServer() && this->isOnLoad())
+        if(GameMode::isServer() && this->isOnLoad())
         {
-            this->execute(clientId, true);
+            callStaticNetworkFunction(Script::executeHelper, clientId, this->getCode(), this->getMode(), this->getNeedsGraphics());
         }
     }
 
