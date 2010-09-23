@@ -51,7 +51,7 @@ namespace orxonox
     @brief
         Constructor. Creates and initializes the object.
     @param name
-        The name of the new NotificationQueue.
+        The name of the new NotificationQueue. It needs to be unique
     @param senders
         The senders that are targets of this NotificationQueue, i.e. the names of senders whose Notifications this NotificationQueue displays.
         The senders need to be seperated by commas.

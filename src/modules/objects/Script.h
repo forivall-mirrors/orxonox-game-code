@@ -80,6 +80,7 @@ namespace orxonox
         This would hide the QuestGUI as soon as a Pawn got in range of the DistanceTrigger. The mode is 'normal', it is specified here, but could be ommitted as well, since it is the default. OnLoad is false, that is why it can't be ommitted. Also needsGraphics is set to true because showGUI needs graphics to work.
     @author
         Benjamin Knecht
+    @author
         Damian 'Mozork' Frick
     */
     class _ObjectsExport Script : public BaseObject, public Synchronisable, public ClientConnectionListener

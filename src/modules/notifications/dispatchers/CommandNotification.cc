@@ -79,6 +79,10 @@ namespace orxonox {
         XMLPortParam(CommandNotification, "postMessage", setPostMessage, getPostMessage, xmlelement, mode);
     }
 
+    /**
+    @brief
+        Register some variables for synchronisation.
+    */
     void CommandNotification::registerVariables(void)
     {
         registerVariable(this->command_, VariableDirection::ToClient);

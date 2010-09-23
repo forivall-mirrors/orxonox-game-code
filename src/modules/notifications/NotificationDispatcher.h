@@ -46,7 +46,19 @@ namespace orxonox
 
     /**
     @brief
-        A NotificationDispatcher is an entity that, upon being triggered, dispatches (or sends) a specified Notification.
+        A NotificationDispatcher is an entity that, upon being triggered, dispatches (or sends) a specified @ref orxonox::Notification "Notification".
+
+        Its standard usage is:
+        @code
+        <NotificationDispatcher>
+            <events>
+                <trigger>
+                    <PlayerTrigger />
+                </trigger>
+            </event>
+        </NotificationDispatcher>
+        @endcode
+        But keep in mind, that NotificationDispatcher is an abstract class and in this example @ref orxonox::PlayerTrigger "PlayerTrigger" stands for any event that is caused by a @ref orxonox::PlayerTrigger "PlayerTrigger", so instead of @ref orxonox::PlayerTrigger "PlayerTrigger", there could be a @ref orxonox::DistanceTrigger "DistanceTrigger", or a @ref orxonox::DistanceMultiTrigger "DistanceMutliTrigger", or even an @ref orxonox::EventListener "EventListener" that waits for an event coming from any kind of @ref orxonox::PlayerTrigger "PlayerTrigger".
     @author
         Damian 'Mozork' Frick
     */
@@ -72,7 +84,7 @@ namespace orxonox
         protected:
             std::string sender_; //!< The name of the sender of the Notification dispatched by this NotificationDispatcher.
 
-           void registerVariables(void);
+            void registerVariables(void); //!< Register some variables for synchronisation.
 
             /**
             @brief Set the sender of the Notification dispatched by this NotificationDispatcher.

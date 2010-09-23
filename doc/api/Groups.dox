@@ -335,7 +335,9 @@
 
     @section SampleQuest Sample quest
     To get your head around all of this and see some of the things mentioned here in action you might want to check out the "The Tale of Princess Aeryn"-Quest (Levelfile: princessaeryn.oxw) in the level-folder.
+*/
 
+/**
     @defgroup QuestEffects Effects
     @ingroup Questsystem
 

@@ -92,6 +92,10 @@ namespace orxonox
         XMLPortEventState(NotificationDispatcher, BaseObject, "trigger", trigger, xmlelement, mode);
     }
 
+    /**
+    @brief
+        Registers variables for synchronisation.
+    */
     void NotificationDispatcher::registerVariables(void)
     {
         registerVariable(this->sender_, VariableDirection::ToClient);
@@ -112,6 +116,7 @@ namespace orxonox
         }
         else if(GameMode::isServer())
         {
+            //TODO: This may fail if the object has not been synchronized, yet.
             callMemberNetworkFunction(NotificationDispatcher, dispatch, this->getObjectID(), clientId, clientId);
         }
     }

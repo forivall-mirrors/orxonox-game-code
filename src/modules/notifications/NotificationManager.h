@@ -49,8 +49,9 @@ namespace orxonox // tolua_export
 
     /**
     @brief
-        The Singleton NotificationManager functions as a gateway between Notifications and NotificationListeners.
-        It receives, organizes Notifications and the redistributes them to the specific NotificationListeners.
+        The Singleton NotificationManager functions as a gateway between @ref orxonox::Notification "Notifications" and @ref orxonox::NotificationListener "NotificationListeners".
+        It receives, organizes @ref orxonox::Notification "Notifications" and the redistributes them to the specific @ref orxonox::NotificationListener "NotificationListeners".
+        It also provides a static function to send @ref orxonox::Notification "Notifications" and works as a liaison between the @ref orxonox>>NotificationQueue "NotificationQueues" and the GUI that displays notification, called NotificationLayer.
     @author
         Damian 'Mozork' Frick
     */
@@ -64,11 +65,16 @@ namespace orxonox // tolua_export
 
             virtual void preDestroy(void); //!< Is called before the object is destroyed.
 
+            /**
+            @brief Get the instance of the NotificationManager Singleton.
+            @return Returns a reference to the NotificationManager.
+            */
             static NotificationManager& getInstance() { return Singleton<NotificationManager>::getInstance(); } // tolua_export
 
             static const std::string ALL; //!< Static string to indicate a sender that sends to all NotificationListeners.
             static const std::string NONE; //!< Static string to indicare a sender that sends to no specific NotificationListener.
 
+            //! Sends a Notification with the specified message to the specified client from the specified sender.
             static void sendNotification(const std::string& message, unsigned int clientId, const std::string& sender = NotificationManager::NONE);
 
             bool registerNotification(Notification* notification); //!< Registers a Notification within the NotificationManager.
