@@ -25,10 +25,7 @@
  *      ...
  *
  */
-//Haupt-Problem: Wie kann ich Spieler vom Spiel ausschliessen, wenn sie alle Leben verlohren haben? (Kann man respawn unterbinden?)
-//Aktuelle Notloesung: Spieler wird unsichtbar und kann keinen Schaden austeilen, aber: setradarinvisibility funktioniert scheinbar nicht
-//Lösungsidee2: Spieler werden als passive Drohnen respawned, wenn sie keine Leben mehr haben (noch nicht implementiert)
-//
+
 #include "LastManStanding.h"
 
 #include "core/CoreIncludes.h"
@@ -45,24 +42,15 @@ namespace orxonox
     {
         RegisterObject(LastManStanding);
         this->bForceSpawn_=true;
-        this->lives=2;
+        this->lives=4;
         this->playersAlive=0;
         this->timeRemaining=20.0f;
     }
 
     void LastManStanding::setConfigValues()
     {
-         SetConfigValue(lives, 2);
-    }
-
-    bool LastManStanding::allowPawnHit(Pawn* victim, Pawn* originator)
-    {
-        if (originator && originator->getPlayer())// only for safety
-        {
-            if(playerLives_[originator->getPlayer()]< 0) //dead players shouldn't be able to hit any pawn
-                return false;
-        }
-        return true;
+        SetConfigValue(lives, 4);
+        SetConfigValue(timeRemaining, 20.0f);
     }
 
     bool LastManStanding::allowPawnDamage(Pawn* victim, Pawn* originator)
@@ -70,8 +58,6 @@ namespace orxonox
         if (originator && originator->getPlayer())// only for safety
         {
             this->timeToAct_[originator->getPlayer()]=timeRemaining;
-            if(playerLives_[originator->getPlayer()]< 0) //dead players shouldn't be able to damage any pawn
-                return false;
         }
 
         return true;
@@ -162,24 +148,6 @@ namespace orxonox
         return valid_player;
     }
 
-    void LastManStanding::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)//makes dead players invisible
-    {
-        if (playerLives_[pawn->getPlayer()]<=0)//if player is dead
-        {
-            pawn->setVisible(false);
-            pawn->setRadarVisibility(false);
-            //removePlayer(pawn->getPlayer());
-        }
-    }
-    void LastManStanding::pawnPostSpawn(Pawn* pawn)
-    {/*
-        if (playerLives_[pawn->getPlayer()]<=0)//if player is dead
-        {
-            pawn->setVisible(false);  --->Seltsames Verhalten, wenn diese Zeile aktiv ist
-            pawn->setRadarVisibility(false);
-        }  */
-    }
-
     void LastManStanding::pawnKilled(Pawn* victim, Pawn* killer)
     {
         if (victim && victim->getPlayer())
@@ -228,19 +196,6 @@ namespace orxonox
                 COUT(0) << message << std::endl;
                 Host::Broadcast(message);
             }
-            /*
-                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
-                if (victim->getCamera())
-                {
-                    entity->setPosition(victim->getCamera()->getWorldPosition());
-                    entity->setOrientation(victim->getCamera()->getWorldOrientation());
-                }
-                else
-                {
-                    entity->setPosition(victim->getWorldPosition());
-                    entity->setOrientation(victim->getWorldOrientation());
-                }
-                it->first->startControl(entity);*/
         }
     }
     
@@ -266,33 +221,15 @@ namespace orxonox
         }
     }
 
-    /*void LastManStanding::removePlayer(PlayerInfo* player) //----------> Dieser Versuch führt zu einem Programmabsturz 
+    void LastManStanding::spawnDeadPlayersIfRequested()
     {
-        std::map<PlayerInfo*, Player>::const_iterator it = this->players_.find(player);
-        if (it != this->players_.end())
-        {
-            if (it->first->getControllableEntity())
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (it->second.state_ == PlayerState::Dead)
             {
-                ControllableEntity* oldentity = it->first->getControllableEntity();
-
-                ControllableEntity* entity = this->defaultControllableEntity_.fabricate(oldentity);
-                if (oldentity->getCamera())
-                {
-                    entity->setPosition(oldentity->getCamera()->getWorldPosition());
-                    entity->setOrientation(oldentity->getCamera()->getWorldOrientation());
-                }
-                else
-                {
-                    entity->setPosition(oldentity->getWorldPosition());
-                    entity->setOrientation(oldentity->getWorldOrientation());
-                }
-
-                it->first->startControl(entity);
-            }
-            else
-                this->spawnPlayerAsDefaultPawn(it->first);
-        }
-
-    }*/
+                bool alive = (0<playerLives_[it->first]);
+                if (alive&&(it->first->isReadyToSpawn() || this->bForceSpawn_))
+                    this->spawnPlayer(it->first);
+             }
+    }
 
 }

@@ -30,10 +30,10 @@
     @brief Declaration of the Gametype "Last Man Standing".
 */
 /* BY THE WAY
-//You have to add bots (or any other further players) before actually starting a match.
+//!You have to ADD BOTS (or any other further players) BEFORE actually starting a match!
+//Maybe a warning should be added in the menu, if a player starts a Last Man Standing match alone.
 //Whenever there is only on player in the game, this player will be declared as winner.
-//How "death" is managed: Death players become invisivle and aren't allowed to damage any player.
-//Though they can recieve damage and they are not invisible on the radar-
+//How "death" is managed: dead players cannot respawn.
 */
 #ifndef _LastManStanding_H__
 #define _LastManStanding_H__
@@ -54,19 +54,19 @@ namespace orxonox
         Johannes Ritz
     */
         protected:
-            int lives; //!< Standard amount of lives.
+            int lives; //!< Standard amount of lives. Each player starts a game with so many lives.
             std::map< PlayerInfo*, int > playerLives_; //!< Each player's lives are stored here.
             int playersAlive; //!< Counter counting players with more than 0 lives.
             float timeRemaining; //!< Each player has a certain time where he or she has to hit an opponent or will be punished.
             std::map<PlayerInfo*, float> timeToAct_; //!< Each player's time till she/he will be punished is stored here.
+            virtual void spawnDeadPlayersIfRequested();
 
         public:
             LastManStanding(BaseObject* creator); //!< Default Constructor.
             virtual ~LastManStanding() {} //!< Default Destructor.
             void setConfigValues(); //!< Makes values configurable.
 
-            virtual bool allowPawnHit(Pawn* victim, Pawn* originator = 0); //!< Prevents hits by players with no lives.
-            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //!< If a player shoot's an opponet, his punishment countdown will be resetted. Prevents damage by players with no lives.
+            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //!< If a player shoot's an opponet, his punishment countdown will be resetted.
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //!< Manages each lives.
 
             virtual void start(); //!< Sends a start message.
@@ -75,13 +75,10 @@ namespace orxonox
             virtual bool playerLeft(PlayerInfo* player);
             virtual bool playerChangedName(PlayerInfo* player);
 
-            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn);//makes dead players invisible
-            virtual void pawnPostSpawn(Pawn* pawn); //just for test case
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
 
             const int playerGetLives(PlayerInfo* player);
             void killPlayer(PlayerInfo* player);
-            //void removePlayer(PlayerInfo* player);
             void tick (float dt);// used to end the game
     };
 }
