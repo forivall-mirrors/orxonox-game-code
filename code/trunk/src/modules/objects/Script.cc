@@ -1,3 +1,4 @@
+
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
  *                    > www.orxonox.net <
@@ -46,12 +47,14 @@ namespace orxonox
 {
     CreateFactory(Script);
 
-    registerMemberNetworkFunction(Script, execute);
+    registerStaticNetworkFunction(Script::executeHelper);
 
     // Initializing constants.
     /*static*/ const std::string Script::NORMAL = "normal";
     /*static*/ const std::string Script::LUA = "lua";
     /*static*/ const int Script::INF = -1;
+
+    /*static*/ LuaState* Script::LUA_STATE = NULL;
 
     /**
     @brief
@@ -64,16 +67,11 @@ namespace orxonox
         RegisterObject(Script);
 
         // Initialize variables.
-        this->luaState_ = NULL;
         this->remainingExecutions_ = Script::INF;
         this->mode_ = ScriptMode::normal;
         this->onLoad_ = true;
         this->times_ = Script::INF;
         this->needsGraphics_ = false;
-
-        this->counter_ = 0.0f;
-
-        this->registerVariables();
     }
 
     /**
@@ -82,8 +80,8 @@ namespace orxonox
     */
     Script::~Script()
     {
-        if(this->isInitialized() && this->luaState_ != NULL)
-            delete this->luaState_;
+        //if(this->isInitialized() && this->luaState_ != NULL)
+        //    delete this->luaState_;
     }
 
     /**
@@ -107,7 +105,7 @@ namespace orxonox
 
         XMLPortEventSink(Script, BaseObject, "trigger", trigger, xmlelement, mode);
 
-        if(this->isOnLoad()) // If the object is onLoad the code is executed at once for all clients.
+        if(this->isOnLoad()) // If the object is onLoad the code is executed at once for the server.
             this->execute(0);
     }
 
@@ -124,44 +122,6 @@ namespace orxonox
         SUPER(Script, XMLEventPort, xmlelement, mode);
 
         XMLPortEventState(Script, BaseObject, "trigger", trigger, xmlelement, mode);
-    }
-
-    /**
-    @brief
-        Register the variables that need to be synchronized.
-    */
-    void Script::registerVariables(void)
-    {
-        registerVariable(code_, VariableDirection::ToClient);
-        registerVariable(needsGraphics_, VariableDirection::ToClient);
-        registerVariable(modeStr_, VariableDirection::ToClient, new NetworkCallback<Script>(this, &Script::modeChanged));
-    }
-
-    void Script::modeChanged(void)
-    {
-        this->setMode(this->modeStr_);
-    }
-
-    void Script::tick(float dt)
-    {
-        SUPER(Script, tick, dt);
-
-        if(!this->clientCallbacks_.empty())
-        {
-            if(this->counter_ < 2.0f)
-            {
-                this->counter_ += dt;
-            }
-            else
-            {
-                for(std::vector<unsigned int>::iterator it = this->clientCallbacks_.begin(); it != this->clientCallbacks_.end(); it++)
-                {
-                    this->execute(*it, true);
-                }
-                this->clientCallbacks_.clear();
-                this->counter_ = 0.0f;
-            }
-        }
     }
 
     /**
@@ -224,56 +184,84 @@ namespace orxonox
     */
     void Script::execute(unsigned int clientId, bool fromCallback)
     {
-        if(GameMode::isServer())
+        COUT(0) << "EXECUTE: " << Host::getPlayerID() << " | " << clientId << std::endl; //TODO: Remove.
+        // If this is the server or we're in standalone mode we check whether we still want to execute the code and if so decrease the number of remaining executions.
+        if(GameMode::isServer() || GameMode::isStandalone())
         {
             // If the number of executions have been used up.
             if(this->times_ != Script::INF && this->remainingExecutions_ == 0)
                 return;
 
             // Decrement the number of remaining executions.
+            //TODO: Mode such that this is consistent in any case.
             if(this->times_ != Script::INF)
                 this->remainingExecutions_--;
         }
 
+        // If this is either the standalone mode or we're on the client we want to be.
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
         {
-            // If the code needs graphics to be executed but the GameMode doesn't show graphics the code isn't executed.
-            if(this->needsGraphics_ && !GameMode::showsGraphics())
-                return;
-
-            if(this->mode_ == ScriptMode::normal) // If the mode is 'normal'.
-                CommandExecutor::execute(this->code_);
-            else if(this->mode_ == ScriptMode::lua) // If it's 'lua'.
-            {
-                if(this->luaState_ == NULL)
-                    this->luaState_ = new LuaState();
-                this->luaState_->doString(this->code_);
-            }
+           this->executeHelper(this->getCode(), this->getMode(), this->getNeedsGraphics());
         }
+
+        // If this is the server and we're not on the client we want to be.
         if(!GameMode::isStandalone() && GameMode::isServer() && Host::getPlayerID() != clientId)
         {
+            COUT(0) << "1" << std::endl; //TODO: Remove.
+            // If this is not the result of a clientConnected callback and we want to execute the code for all clients.
+            //TODO: In this case does the server get executed as well?
             if(!fromCallback && this->isForAll())
             {
                 const std::map<unsigned int, PlayerInfo*> clients = PlayerManager::getInstance().getClients();
                 for(std::map<unsigned int, PlayerInfo*>::const_iterator it = clients.begin(); it != clients.end(); it++)
                 {
-                    callMemberNetworkFunction(Script, execute, this->getObjectID(), it->first, it->first, false);
+                    callStaticNetworkFunction(Script::executeHelper, it->first, this->getCode(), this->getMode(), this->getNeedsGraphics());
                 }
             }
+            // Else we execute the code just for the specified client.
             else
             {
-                callMemberNetworkFunction(Script, execute, this->getObjectID(), clientId, clientId, false);
+                COUT(0) << "2" << std::endl; //TODO: Remove.
+                callStaticNetworkFunction(Script::executeHelper, clientId, this->getCode(), this->getMode(), this->getNeedsGraphics());
             }
         }
     }
 
+    /**
+    @brief
+        Helper method that is used to reach this Script object on other clients.
+    */
+    /*static*/ void Script::executeHelper(const std::string& code, const std::string& mode, bool needsGraphics)
+    {
+        COUT(0) << "HELPER: " << code << " | " << mode << " | " << needsGraphics << std::endl; //TODO: Remove.
+
+        // If the code needs graphics to be executed but the GameMode doesn't show graphics the code isn't executed.
+        if(needsGraphics && !GameMode::showsGraphics())
+            return;
+
+        if(mode == Script::NORMAL) // If the mode is 'normal'.
+            CommandExecutor::execute(code);
+        else if(mode == Script::LUA) // If it's 'lua'.
+        {
+            if(Script::LUA_STATE == NULL)
+                Script::LUA_STATE = new LuaState();
+            Script::LUA_STATE->doString(code);
+        }
+    }
+
+    /**
+    @brief
+        Callback that is called when a new client has connected.
+    @param clientId
+        The clientId of the new client that has connected.
+    */
     void Script::clientConnected(unsigned int clientId)
     {
+        // If this is the server and the Script is specified as being 'onLoad'.
         if(!GameMode::isStandalone() && GameMode::isServer() && this->isOnLoad())
         {
-            if(clientId != 0)
-                //TODO: Do better. This is only a temporary fix.
-                this->clientCallbacks_.push_back(clientId);
+            if(clientId != 0) //TODO: Remove if not needed.
+                this->execute(clientId, true);
         }
     }
 
@@ -294,9 +282,6 @@ namespace orxonox
         {
             this->setMode(ScriptMode::lua);
             this->modeStr_ = Script::LUA;
-            // Creates a new LuaState.
-            if(this->luaState_ == NULL)
-                this->luaState_ = new LuaState();
         }
         else
         {
@@ -304,6 +289,16 @@ namespace orxonox
             this->setMode(ScriptMode::normal);
             this->modeStr_ = Script::NORMAL;
         }
+    }
+
+    /**
+    @brief
+        Sets the mode to the mode specified in this->modeStr_.
+        This is used internally for networking purposes.
+    */
+    void Script::modeChanged(void)
+    {
+        this->setMode(this->modeStr_);
     }
 
     /**
