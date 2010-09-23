@@ -119,6 +119,56 @@
     @defgroup Notifications Notifications
     @ingroup Modules
 
+    @ref orxonox::Notification "Notifications" are short messages, that can be sent from anywhere in Orxonox and then are displayed on the screen to inform the user about some occurence he has to know about. Such an occurence could be, that he just shot and killed his Archnemesis Overlord3, that he just got a new Pickup or that he received a Quest and needs to have a look at the Quest-Menu.
+
+    @section NotificationsUsage Usage
+    Let's very briefly talk about what you have to do to either send @ref orxonox::Notification "Notifications" from some part of Orxonox or display Notifications on your screen.
+
+    @subsection NotifictionsSending Sending notifications
+    Sending a new @ref orxonox::Notification "Notification" from (almost) anywhere in Orxonox is fairly easy.
+    You first have to decide on a message, it shouldn't be too long but be long enough to get your point accross.
+    Then you have to decide on a sender. The sender is a string by which the different @ref orxonox::NotificationQueue "NotificationQueues" (the entities that display the @ref orxonox::Notification "Notifications") can decide whether they should display the @ref orxonox::Notification "Notification" or not. So the sender is some string that identifies a group of @ref orxonox::Notification "Notifications" that have something in common or some entity that is sending them. For example: All @ref orxonox::Notification "Notifications" sent by any part of the Questsystem have "questsystem" as sender and thus we could create a @ref orxonox::NotificationQueue "NotificationQueue" that only displays @ref orxonox::Notification "Notifications" from the Questsystem, but more to that later.
+    And lastly you have to decide to whom you want to send this @ref orxonox::Notification "Notification". You have to get the clientId of the intended recipient (e.g. trought a @ref orxonox::PlayerInfo "PlayerInfo") or you only send the @ref orxonox::Notification "Notification" locally, either by setting the clientId to Host::getPlayerID() or by setting the variable 'isLocal' to true, and setting clientId to what ever you want, since it will be ignored.
+    Once you have decided all that you can send the Notification by calling:
+    @code
+    NotificationManager::sendNotification(message, clientId, sender, isLocal); // isLocal = false can be ommitted since that is the default value.
+    @endcode
+
+    @subsection NotificationsDisplay Displaying notifications
+    Displaying @ref oroxnox::Notification "Notifications" is even easier, all you need to do is to load the NotificationLayer in the level, where you want @ref orxonox::Notification "Notifications" displayed. You can either do this manually by executing the following command in the console:
+    @code
+    showGUI NotificationLayer false true
+    @endcode
+    Or automatically, by adding a @ref orxonox::Script "Script" to the levelfile that does it for you:
+    @code
+    <Script code="showGUI NotificationLayer false true" needsGraphics="true" />
+    @endcode
+
+    If you want to change the way the @ref orxonox::Notification "Notifications" are displayed, you can enter the (at this point rather rudimentary) edit mode and add new @ref orxonox::NotificationQueue "NotificationQueues" or change position and properties of the existing ones, by executing the following command in the console:
+    @code
+    enterEditMode
+    @endcode
+
+    @section NotificationsTechincalDetails Technical details
+    The Notifications module has three major parts that interact with each other. First there is the @ref orxonox::NotificationQueue "NotificationQueue", this is the entity that (logically, not effectively) displays @ref orxonox::Notification "Notifications" according to some rules, then there is the NotificationLayer, which is the GUI which (actually) displays @ref orxonox::Notification "Notifications" by visualizing the @ref orxonox::NotificationQueue "NotificationQueues" and as a result also the @ref orxonox::Notification "Notifications", that are displayed by the respective @ref orxonox::NotificationQueue "NotificationQueues" and lastly there is the @ref orxonox::NotificationManager "NotificationManager", which connects these two.
+
+    @subsection NotificationLayer NotificationLayer
+    The NotificationLayer is a GUI sheet, that displays all the @ref orxonox::NotificationQueue "NotificationQueues" and their @ref orxonox::Notification "Notifications". In its normal mode of operation it is transparent to input, meaning that it only functions as a means of displaying, however if switched to edit mode the NotificationLayer no longer is transparent to input and allows for the adding, removal and modification of @ref orxonox::NotificationQueue "NotificationQueues".
+
+    @subsection NotificationQueue NotificationQueue
+    ...
+
+    @subsection NotificationManager NotificationManager
+    ...
+
+    @subsection Notification Notification
+    The @ref orxonox::Notification "Notification" class is more or less a data structure that groups the notification message and the sender, and possibly other future parameters together to form a comprehensive structure that we call Notification.
+
+    Additionally there is another important class of objects belonging to the Notifications module. The @ref orxonox::NotificationDispatcher "NotificationDispatchers".
+
+    @subsection NotificationDispatcher NotificationDispatcher
+    @ref orxonox::NotificationDispatcher "NotificationDispatchers" are entities that are instantiated in a level file (through XML) and that dispatch (or send) a specific @ref orxonox::Notification "Notification" upon having received a triggering event.
+
     @defgroup NotificationDispatchers Dispatchers
     @ingroup Notifications
 */
@@ -152,7 +202,7 @@
 
     The Questsystem is a module that enhances Orxonox with @ref orxonox::Quest "Quests". @ref orxonox::Quest "Quests" are objects that challenge the player that receives such an object to fulfill some specific task (e.g. Rescue a princess, fetch some rare metal alloy, destroy the evil pirates den, ...). Upon having fulfilled that task the player can be rewarded with some kind of reward. Quests can be hierarchically structured, meaning that to fulfill some @ref orxonox::Quest "Quest" you first have to fulfill all (or some, depending on the quest) sub-quests.
 
-    @section TechnicalDetails Technical details
+    @section QuestsystemTechnicalDetails Technical details
     The Questsystem essentially consists of the @ref orxonox::Quest "Quest" entity which is the quest itself (and sub- or helper-entities, such as @ref orxonox::QuestHint "QuestHint" (hints for quests) or @ref orxonox::QuestDescription "QuestDescription" (descriptions for quests and hints, to separate content from function)), the @ref orxonox::QuestEffect "QuestEffect" and @ref orxonox::QuestListener "QuestListener" entities which are the only tools for quests to have any influence on the game world. By enabling quests to have @ref orxonox::QuestEffect "QuestEffects" they are able to (for example) fail or complete other quests, activate hints, give rewards or even add a quest to a player. @ref orxonox::QuestListener "QuestListeners" on the other hand can be used by any object to react to a status change of a quest. The @ref orxonox::QuestEffectBeacon "QuestEffectBeacon" is the physical entity which finally makes quests available for the player in the game, by being able to invoke a @ref orxonox::QuestEffect "QuestEffect" on a player (under some conditions).
     @image html questsystem.png
 
@@ -226,7 +276,7 @@
     </GlobalQuest>
     @endcode
 
-    As you may see that another difference between a @ref orxonox::GlobalQuest "GlobalQuest" and a @ref orxonox::LocalQuest "LocalQuest" is, that with a \ref orxonox::GlobalQuest "GlobalQuest" having @ref orxonox::AddReward "RewardEffects", the RewardEffects are only executed on the player completing the quest. Additionally \ref orxonox::CompleteQuest "CompleteEffects" are executed on all players having obtained the quest before it was completed, when it is completed., while with a @ref orxonox::LocalQuest "LocalQuest" each player that completes a quest, completes it for himself alone, but also gets the reward, regardless whether another player completed the quest before him.
+    As you may see that another difference between a @ref orxonox::GlobalQuest "GlobalQuest" and a @ref orxonox::LocalQuest "LocalQuest" is, that with a @ref orxonox::GlobalQuest "GlobalQuest" having @ref orxonox::AddReward "RewardEffects", the RewardEffects are only executed on the player completing the quest. Additionally @ref orxonox::CompleteQuest "CompleteEffects" are executed on all players having obtained the quest before it was completed, when it is completed., while with a @ref orxonox::LocalQuest "LocalQuest" each player that completes a quest, completes it for himself alone, but also gets the reward, regardless whether another player completed the quest before him.
 
     @subsubsection QuestHint QuestHint
     @ref orxonox::QuestHint "QuestHints" can be used to give a player useful information for @ref orxonox::Quest "Quests" he is working on completing. @ref orxonox::QuestHint "QuestHints" cannot have any side effects, but also have an identifier which follows the same form as in the @ref orxonox::Quest "Quests".
@@ -250,7 +300,7 @@
     @ref orxonox::Quest "Quests" can have side effects, in fact that is mostly what they are about. This means that they can have an influence on the game world. @ref orxonox::Quest "Quests" do that through two distinct devices, @ref orxonox::QuestEffect "QuestEffects" (active) and @ref orxonox::QuestListener "QuestListeners" (passive).
 
     @subsubsection QuestEffect QuestEffect
-    A @ref orxonox::QuestEffect "QuestEffect" is the first (and probably most important) device for @ref orxonox::Quest "Quests" to have side effects. There are two entities that can have @ref orxonox::QuestEffect "QuestEffects": @ref orxonox::Quest "Quests" and \ref orxonox::QuestEffectBeacon "QuestEffectBeacons" (which will be explained later on). @ref orxonox::QuestEffect "QuestEffects", for example, can start a @ref orxonox::Quest "Quest" for a player, complete/fail @ref orxonox::Quest "Quests" for a player, add a @ref orxonox::QuestHint "QuestHint" or a @ref orxonox::Rewardable "Reward" to a player, and potentially much, much more.
+    A @ref orxonox::QuestEffect "QuestEffect" is the first (and probably most important) device for @ref orxonox::Quest "Quests" to have side effects. There are two entities that can have @ref orxonox::QuestEffect "QuestEffects": @ref orxonox::Quest "Quests" and @ref orxonox::QuestEffectBeacon "QuestEffectBeacons" (which will be explained later on). @ref orxonox::QuestEffect "QuestEffects", for example, can start a @ref orxonox::Quest "Quest" for a player, complete/fail @ref orxonox::Quest "Quests" for a player, add a @ref orxonox::QuestHint "QuestHint" or a @ref orxonox::Rewardable "Reward" to a player, and potentially much, much more.
 
     These @ref orxonox::QuestEffect "QuestEffects" are implemented so far, but feel free to <a href="http://www.orxonox.net/wiki/DamianFrick">contact me</a> if you have suggestions for new @ref orxonox::QuestEffect "QuestEffects" or if you need help implementing a new one yourself.
 
