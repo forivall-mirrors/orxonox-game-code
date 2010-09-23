@@ -36,7 +36,6 @@
 #include <vector>
 
 #include "core/BaseObject.h"
-#include "network/synchronisable/Synchronisable.h"
 #include "network/ClientConnectionListener.h"
 
 namespace orxonox
@@ -83,7 +82,7 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _ObjectsExport Script : public BaseObject, public Synchronisable, public ClientConnectionListener
+    class _ObjectsExport Script : public BaseObject, public ClientConnectionListener
     {
         public:
             Script(BaseObject* creator);
@@ -93,7 +92,7 @@ namespace orxonox
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates a port that can be used to channel events and react to them.
 
             bool trigger(bool triggered, BaseObject* trigger); //!< Is called when an event comes in trough the event port.
-            void execute(unsigned int clientId, bool fromCallback = false); //!< Executes the Scripts code for the input client, depending on the mode.
+            void execute(unsigned int clientId, bool onLoad = false); //!< Executes the Scripts code for the input client, depending on the mode.
             static void executeHelper(const std::string& code, const std::string& mode, bool needsGraphics); //!< Helper method that is used to reach this Script object on other clients.
 
             /**

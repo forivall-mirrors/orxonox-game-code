@@ -39,7 +39,6 @@
 
 #include <string>
 #include "core/BaseObject.h"
-#include "network/synchronisable/Synchronisable.h"
 
 namespace orxonox
 {

@@ -75,7 +75,7 @@ namespace orxonox // tolua_export
             static const std::string NONE; //!< Static string to indicare a sender that sends to no specific NotificationListener.
 
             //! Sends a Notification with the specified message to the specified client from the specified sender.
-            static void sendNotification(const std::string& message, unsigned int clientId, const std::string& sender = NotificationManager::NONE);
+            static void sendNotification(const std::string& message, unsigned int clientId, const std::string& sender = NotificationManager::NONE, bool isLocal = false);
 
             bool registerNotification(Notification* notification); //!< Registers a Notification within the NotificationManager.
             void unregisterNotification(Notification* notification, NotificationListener* listener); //!< Unregisters a Notification within the NotificationManager for a given NotificationListener.

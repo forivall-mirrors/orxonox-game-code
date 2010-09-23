@@ -115,11 +115,13 @@ namespace orxonox
         The id of the client the notification should be sent to.
     @param sender
         The sender that sent the notification.
+    @param isLocal
+        If this is set to true (false is default), then the Notification is sent to the client where this function is executed, meaning the Notification is sent locally.
     */
-    /*static*/ void NotificationManager::sendNotification(const std::string& message, unsigned int clientId, const std::string& sender)
+    /*static*/ void NotificationManager::sendNotification(const std::string& message, unsigned int clientId, const std::string& sender, bool isLocal)
     {
         // If we're in standalone mode or we're already no the right client we create and send the Notification.
-        if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
+        if(GameMode::isStandalone() || isLocal || Host::getPlayerID() == clientId)
         {
             Notification* notification = new Notification(message);
             notification->send(sender);
