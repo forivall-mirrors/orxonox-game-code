@@ -46,6 +46,19 @@ namespace orxonox {
     @brief
         This class implements a method of displaying a Notification with information to an input command and the key the command is mapped to.
         The message that is displayed is a string made out uf the concatenation of the preMessage, the key the specified command is mapped to and the postMessage.
+
+        In use it would like this:
+        @code
+        <CommandNotification preMessage="Please press " command="someCommand" postMessage=" to do something." >
+            <events>
+                <trigger>
+                    <PlayerTrigger />
+                </trigger>
+            </events>
+        </CommandNotification>
+        @endcode
+        Upon being triggered this would display the @ref orxonox::Notification "Notification" "Please press {the binding of the specified command} to do something".
+        For more information on what can be used for @code <PlayerTrigger /> @endcode see the @ref orxonox::NotificationDispatcher "NotificationDispatcher" documentation.
     @author
         Damian 'Mozork' Frick
     */
@@ -85,7 +98,7 @@ namespace orxonox {
             std::string preMessage_; //!< The first part of the displayed message.
             std::string postMessage_; //!< The last part of the displayed message.
 
-            void registerVariables(void);
+            void registerVariables(void); //!< Register some variables for synchronisation.
 
             /**
             @brief Set the command, whose key is displayed.

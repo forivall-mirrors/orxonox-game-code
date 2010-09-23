@@ -49,7 +49,6 @@ namespace orxonox
     {
         RegisterRootObject(Notification);
         this->initialize();
-        this->registerVariables();
     }
 
     /**
@@ -121,7 +120,7 @@ namespace orxonox
     */
     bool Notification::setMessage(const std::string & message)
     {
-        if(this->isSent()) //!< The message cannot be changed if the message has already been sent.
+        if(this->isSent()) // The message cannot be changed if the message has already been sent.
             return false;
         this->message_ = message;
         return true;

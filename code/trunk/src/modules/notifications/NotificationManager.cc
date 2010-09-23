@@ -59,6 +59,7 @@ namespace orxonox
 
     ManageScopedSingleton(NotificationManager, ScopeID::Graphics, false);
 
+    // Setting console command to enter the edit mode.
     SetConsoleCommand("enterEditMode", &NotificationManager::enterEditMode);
 
     registerStaticNetworkFunction(NotificationManager::sendNotification);
@@ -105,13 +106,25 @@ namespace orxonox
         this->queues_.clear();
     }
 
+    /**
+    @brief
+        Sends a Notification with the specified message to the specified client from the specified sender.
+    @param message
+        The message that should be sent.
+    @param clientId
+        The id of the client the notification should be sent to.
+    @param sender
+        The sender that sent the notification.
+    */
     /*static*/ void NotificationManager::sendNotification(const std::string& message, unsigned int clientId, const std::string& sender)
     {
+        // If we're in standalone mode or we're already no the right client we create and send the Notification.
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
         {
             Notification* notification = new Notification(message);
             notification->send(sender);
         }
+        // If we're on the server (and the server is not the intended recipient of the Notification) we send it over the network.
         else if(GameMode::isServer())
         {
             callStaticNetworkFunction(NotificationManager::sendNotification, clientId, message, clientId, sender);

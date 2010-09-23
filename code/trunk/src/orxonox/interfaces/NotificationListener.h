@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
+    @file NotificationListener.h
     @brief Definition of the NotificationListener class.
+    @ingroup Notifications
 */
 
 #ifndef _NotificationListener_H__
@@ -51,17 +52,35 @@ namespace orxonox
     /**
     @brief
         NotificationListener interface.
+
+        The NotificationListener interface presents a means to being informed when @ref orxonox::Notification "Notifications" in the target set of this NotificationListener change. (e.g. @ref orxonox::Notification "Notifications" were added or removed)
+        When inheriting from a NotificationListener it is important to register (in the constructor) and unregister (in the destructor) it to and from the @ref orxonox::NotificationManager "NotificationManager".
     @author
         Fabian 'x3n' Landau
     */
+    //TODO: Needed? Remove or move some NotificationQueue things over here.
     class _OrxonoxExport NotificationListener : virtual public OrxonoxClass
     {
         public:
             NotificationListener();
             virtual ~NotificationListener() {}
 
-            virtual const std::set<std::string> & getTargetsSet() = 0;
+            /**
+            @brief Get the senders that are targets of this NotificationListener.
+            @return Returns the set of senders that are targets of this NotificationListener.
+            */
+            virtual const std::set<std::string> & getTargetsSet(void) = 0;
+
+            /**
+            @brief Updates the whole NotificationListener.
+                   This is called by the @ref orxonox::NotificationManager "NotificationManager" when the @ref orxonox::Notification "Notifications" have changed so much, that the NotificationListener may have to re-initialize his operations.
+            */
             virtual void update(void) = 0;
+            /**
+            @brief Updates the NotificationListener, when a new Notification has come in at the specified time.
+            @param notification A pointer to the @ref orxonox::Notification "Notification".
+            @param time The time the @ref orxonox::Notification "Notification" has come in.
+            */
             virtual void update(Notification* notification, const std::time_t & time) = 0;
     };
 }

@@ -46,7 +46,7 @@ namespace orxonox
 
     /**
     @brief
-        A Notification is a short message used to inform the player about something that just happened. A Notification can be sent from any part of orxonox and is then displayed in the proper NotificationQueue (depending on which senders the specific NotificationQueue accepts).
+        A Notification is a short message used to inform the player about something that just happened. A Notification can be sent from any part of orxonox and is then displayed in the proper @ref orxonox::NotificationQueue "NotificationQueue" (depending on which senders the specific @ref orxonox::NotificationQueue "NotificationQueue" accepts).
     @author
         Damian 'Mozork' Frick
     */
@@ -82,8 +82,7 @@ namespace orxonox
             std::string sender_; //!< The sender of the notification.
             bool sent_; //!< Whether Notification has been sent, if so it cannot be changed.
 
-            void initialize(void);
-            void registerVariables(void);
+            void initialize(void); //!< Registers the object and sets some default values.
 
     };
 

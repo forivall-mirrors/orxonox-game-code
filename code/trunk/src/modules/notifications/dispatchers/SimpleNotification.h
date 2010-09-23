@@ -45,6 +45,18 @@ namespace orxonox {
     /**
     @brief
         The SimpleNotification class enables the sending of (in XML) predefined Notifications upon some kind of triggering event.
+
+        In use it would like this:
+        @code
+        <SimpleNotification message="some message..." >
+            <events>
+                <trigger>
+                    <PlayerTrigger />
+                </trigger>
+            </events>
+        </SimpleNotification>
+        @endcode
+        For more information on what can be used for @code <PlayerTrigger /> @endcode see the @ref orxonox::NotificationDispatcher "NotificationDispatcher" documentation.
     @author
         Damian 'Mozork' Frick
     */

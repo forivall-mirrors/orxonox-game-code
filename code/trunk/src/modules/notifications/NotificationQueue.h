@@ -53,19 +53,25 @@ namespace orxonox // tolua_export
     //! Container to allow easy handling.
     struct NotificationContainer
     {
-        Notification* notification; //!< The Notification displayed.
-        time_t time; //!< The time the Notification was sent and thus first displayed.
+        Notification* notification; // The Notification displayed.
+        time_t time; // The time the Notification was sent and thus first displayed.
     };
 
     //! Struct to allow ordering of NotificationContainers.
     struct NotificationContainerCompare {
         bool operator() (const NotificationContainer* const & a, const NotificationContainer* const & b) const
-            { return a->time < b->time; } //!< Ordered by time.
+            { return a->time < b->time; } // Ordered by time.
     };
 
     /**
     @brief
-        Displays Notifications from specific senders.
+        Displays @ref orxonox::Notification "Notifications" from specific senders.
+
+        There are quite some parameters that influence the behaviour of the NotificationQueue:
+        - 'name': The name of the NotificationQueue. It needs to be unique.
+        - 'senders': The senders that are targets of this NotificationQueue, i.e. the names of senders whose Notifications this NotificationQueue displays.
+        - 'size': The size of the NotificationQueue, it specifies how many @ref orxonox::Notification "Notifications" are displayed at once at the most.
+        - 'displayTime': The time a @ref orxonox::Notification "Notification" is displayed with this NotificationQueue.
     @author
         Damian 'Mozork' Frick
     */
