@@ -1,3 +1,4 @@
+
 /*
  *   ORXONOX - the hottest 3D action shooter ever to exist
  *                    > www.orxonox.net <
@@ -35,7 +36,6 @@
 #include <vector>
 
 #include "core/BaseObject.h"
-#include "tools/interfaces/Tickable.h"
 #include "network/synchronisable/Synchronisable.h"
 #include "network/ClientConnectionListener.h"
 
@@ -82,7 +82,7 @@ namespace orxonox
         Benjamin Knecht
         Damian 'Mozork' Frick
     */
-    class _ObjectsExport Script : public BaseObject, public Synchronisable, public ClientConnectionListener, public Tickable
+    class _ObjectsExport Script : public BaseObject, public Synchronisable, public ClientConnectionListener
     {
         public:
             Script(BaseObject* creator);
@@ -91,10 +91,9 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a Script object through XML.
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates a port that can be used to channel events and react to them.
 
-            virtual void tick(float dt);
-
             bool trigger(bool triggered, BaseObject* trigger); //!< Is called when an event comes in trough the event port.
             void execute(unsigned int clientId, bool fromCallback = false); //!< Executes the Scripts code for the input client, depending on the mode.
+            static void executeHelper(const std::string& code, const std::string& mode, bool needsGraphics); //!< Helper method that is used to reach this Script object on other clients.
 
             /**
             @brief Sets the code that is executed by this Script.
@@ -159,7 +158,7 @@ namespace orxonox
             bool isForAll(void)
                 { return this->forAll_; }
 
-            virtual void clientConnected(unsigned int clientId);
+            virtual void clientConnected(unsigned int clientId); //!< Callback that is called when a new client has connected.
             virtual void clientDisconnected(unsigned int clientid) {}
 
         private:
@@ -170,21 +169,16 @@ namespace orxonox
 
             std::string code_; //!< The code that is executed by this Script.
             ScriptMode::Value mode_; //!< The mode the Script is in. Determines whether the code is executed the normal way or in lua.
+            std::string modeStr_; //!< The mode the Script is in, as a string. Is used for networking purposes.
             bool onLoad_; //!< Whether the Scripts code is executed upon loading (creation) of this Script.
             int times_; //!< The number of times the Scripts code is executed at the most. -1 denotes infinity.
             bool needsGraphics_; //!< Whether the code to be executed needs graphics.
             bool forAll_; //!< Whether the code is executed for all players (in a multiplayer setup) or just for the one triggering the Script.
 
-            std::string modeStr_;
-
-            std::vector<unsigned int> clientCallbacks_;
-            float counter_;
-
-            LuaState* luaState_; //!< The LuaState to execute the code in lua.
+            static LuaState* LUA_STATE; //!< The LuaState to execute the code in lua.
             int remainingExecutions_; //!< The number of remainign executions. -1 denotes infinity.
 
-            void registerVariables(void);
-            void modeChanged();
+            void modeChanged(); //!< Sets the mode to the mode specified in this->modeStr_.
 
             /**
             @brief Sets the mode of the Script.
