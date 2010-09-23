@@ -54,8 +54,6 @@ namespace orxonox
     /*static*/ const std::string Script::LUA = "lua";
     /*static*/ const int Script::INF = -1;
 
-    /*static*/ LuaState* Script::LUA_STATE = NULL;
-
     /**
     @brief
         Constructor. Registers and initializes the object.
@@ -184,18 +182,12 @@ namespace orxonox
     */
     void Script::execute(unsigned int clientId, bool fromCallback)
     {
-        COUT(0) << "EXECUTE: " << Host::getPlayerID() << " | " << clientId << std::endl; //TODO: Remove.
         // If this is the server or we're in standalone mode we check whether we still want to execute the code and if so decrease the number of remaining executions.
         if(GameMode::isServer() || GameMode::isStandalone())
         {
             // If the number of executions have been used up.
             if(this->times_ != Script::INF && this->remainingExecutions_ == 0)
                 return;
-
-            // Decrement the number of remaining executions.
-            //TODO: Mode such that this is consistent in any case.
-            if(this->times_ != Script::INF)
-                this->remainingExecutions_--;
         }
 
         // If this is either the standalone mode or we're on the client we want to be.
@@ -207,7 +199,6 @@ namespace orxonox
         // If this is the server and we're not on the client we want to be.
         if(!GameMode::isStandalone() && GameMode::isServer() && Host::getPlayerID() != clientId)
         {
-            COUT(0) << "1" << std::endl; //TODO: Remove.
             // If this is not the result of a clientConnected callback and we want to execute the code for all clients.
             //TODO: In this case does the server get executed as well?
             if(!fromCallback && this->isForAll())
@@ -216,13 +207,16 @@ namespace orxonox
                 for(std::map<unsigned int, PlayerInfo*>::const_iterator it = clients.begin(); it != clients.end(); it++)
                 {
                     callStaticNetworkFunction(Script::executeHelper, it->first, this->getCode(), this->getMode(), this->getNeedsGraphics());
+                    if(this->times_ != Script::INF) // Decrement the number of remaining executions.
+                        this->remainingExecutions_--;
                 }
             }
             // Else we execute the code just for the specified client.
             else
             {
-                COUT(0) << "2" << std::endl; //TODO: Remove.
                 callStaticNetworkFunction(Script::executeHelper, clientId, this->getCode(), this->getMode(), this->getNeedsGraphics());
+                if(this->times_ != Script::INF) // Decrement the number of remaining executions.
+                    this->remainingExecutions_--;
             }
         }
     }
@@ -233,8 +227,6 @@ namespace orxonox
     */
     /*static*/ void Script::executeHelper(const std::string& code, const std::string& mode, bool needsGraphics)
     {
-        COUT(0) << "HELPER: " << code << " | " << mode << " | " << needsGraphics << std::endl; //TODO: Remove.
-
         // If the code needs graphics to be executed but the GameMode doesn't show graphics the code isn't executed.
         if(needsGraphics && !GameMode::showsGraphics())
             return;
@@ -243,9 +235,9 @@ namespace orxonox
             CommandExecutor::execute(code);
         else if(mode == Script::LUA) // If it's 'lua'.
         {
-            if(Script::LUA_STATE == NULL)
-                Script::LUA_STATE = new LuaState();
-            Script::LUA_STATE->doString(code);
+            LuaState* luaState = new LuaState();
+            luaState->doString(code);
+            delete luaState;
         }
     }
 
@@ -260,8 +252,7 @@ namespace orxonox
         // If this is the server and the Script is specified as being 'onLoad'.
         if(!GameMode::isStandalone() && GameMode::isServer() && this->isOnLoad())
         {
-            if(clientId != 0) //TODO: Remove if not needed.
-                this->execute(clientId, true);
+            this->execute(clientId, true);
         }
     }
 

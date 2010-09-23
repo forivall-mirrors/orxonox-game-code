@@ -175,7 +175,6 @@ namespace orxonox
             bool needsGraphics_; //!< Whether the code to be executed needs graphics.
             bool forAll_; //!< Whether the code is executed for all players (in a multiplayer setup) or just for the one triggering the Script.
 
-            static LuaState* LUA_STATE; //!< The LuaState to execute the code in lua.
             int remainingExecutions_; //!< The number of remainign executions. -1 denotes infinity.
 
             void modeChanged(); //!< Sets the mode to the mode specified in this->modeStr_.
