@@ -103,9 +103,8 @@ namespace orxonox
     {
         // Destroys all NotificationQueues that have been registered with the NotificationManager.
         for(std::map<const std::string, NotificationQueue*>::iterator it = this->queues_.begin(); it != this->queues_.end(); it++)
-        {
             it->second->destroy(true);
-        }
+
         this->queues_.clear();
     }
 
@@ -342,9 +341,12 @@ namespace orxonox
     */
     void NotificationManager::enterEditMode(void)
     {
-        GUIManager::getInstance().hideGUI("NotificationLayer");
-        GUIManager::getInstance().showGUI("NotificationLayer", false, false);
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.enterEditMode()");
+        if(GameMode::showsGraphics())
+        {
+            GUIManager::getInstance().hideGUI("NotificationLayer");
+            GUIManager::getInstance().showGUI("NotificationLayer", false, false);
+            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.enterEditMode()");
+        }
     }
 
     /**

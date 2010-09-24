@@ -42,10 +42,10 @@
 #include <string>
 #include <vector>
 
-#include "tools/interfaces/Tickable.h"
-
-#include "interfaces/NotificationListener.h"
 #include "NotificationManager.h"
+
+#include "tools/interfaces/Tickable.h"
+#include "interfaces/NotificationListener.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -53,14 +53,14 @@ namespace orxonox // tolua_export
     //! Container to allow easy handling.
     struct NotificationContainer
     {
-        Notification* notification; // The Notification displayed.
-        time_t time; // The time the Notification was sent and thus first displayed.
+        Notification* notification; //!< The Notification displayed.
+        time_t time; //!< The time the Notification was sent and thus first displayed.
     };
 
     //! Struct to allow ordering of @ref orxonox::NotificationContainer "NotificationContainers".
     struct NotificationContainerCompare {
         bool operator() (const NotificationContainer* const & a, const NotificationContainer* const & b) const
-            { return a->time < b->time; } // Ordered by time.
+            { return a->time < b->time; } //!< Ordering by time.
     };
 
     /**

@@ -38,31 +38,36 @@
 #include "notifications/NotificationsPrereqs.h"
 
 #include <string>
-#include "core/BaseObject.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
 
     /**
     @brief
-        A Notification is a short message used to inform the player about something that just happened. A Notification can be sent from any part of orxonox and is then displayed in the proper @ref orxonox::NotificationQueue "NotificationQueue" (depending on which senders the specific @ref orxonox::NotificationQueue "NotificationQueue" accepts).
+        A Notification represents a short message used to inform the player about something that just happened. With the @ref orxonox::NotificationManager "NotificationManager" a Notification can be sent from any part of orxonox and is then displayed by the proper @ref orxonox::NotificationQueue "NotificationQueue(s)" (depending on which senders the specific @ref orxonox::NotificationQueue "NotificationQueues" accepts).
+
+        A Notification is just a datastructure that is used internally by the Notifications module.
     @author
         Damian 'Mozork' Frick
     */
     class _NotificationsExport Notification : public OrxonoxClass
     {
         public:
-            Notification();
             Notification(const std::string& message, const std::string& sender);
             virtual ~Notification();
 
             /**
-            @brief Returns the message of the Notification.
+            @brief Get the message of the Notification.
             @return Returns the message of the Notification.
             */
             inline const std::string & getMessage(void) const
                 { return this->message_; }
 
+            /**
+            @brief Get the sender of the Notification.
+            @return Returns the sender of the Notification.
+            */
             inline const std::string & getSender(void) const
                 { return this->sender_; }
 

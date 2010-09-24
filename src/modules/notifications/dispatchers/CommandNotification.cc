@@ -63,7 +63,7 @@ namespace orxonox {
     */
     CommandNotification::~CommandNotification()
     {
-        
+
     }
 
     /**
@@ -113,6 +113,7 @@ namespace orxonox {
     @return
         Returns a human readable version of the input binding.
     */
+    //TODO: Move to KeyBinderManager...
     const std::string& CommandNotification::bindingNiceifyer(const std::string& binding)
     {
         SubString string = SubString(binding, ".");

@@ -55,7 +55,7 @@ namespace orxonox
     /**
     @brief
         A QuestEffectBeacon is a physical entity in the game which can (under some condition(s)) invoke a number of @ref orxonox::QuestEffect "QuestEffects" on players meeting the condition(s).
-        The conditions under which the @ref orxonox::QuestEffect "QuestEffects" are invoked on the player are defined by @ref orxonox::Trigger "Triggers" (or really any kind of entity firing events, e.g. @ref oroxnox::EventListener "EventListeners"). The trigger the event originates from, however has to be a @ref orxonox::PlayerTrigger PlayerTrigger.
+        The conditions under which the @ref orxonox::QuestEffect "QuestEffects" are invoked on the player are defined by @ref orxonox::Trigger "Triggers" (or really any kind of entity firing events, e.g. @ref orxonox::EventListener "EventListeners"). The trigger the event originates from, however has to be a @ref orxonox::PlayerTrigger PlayerTrigger.
         A QuestEffectBeacon can be executed a defined number of times.
         A QuestEffectBeacon can be inactive or active. While inactive it can't be executed.
 
