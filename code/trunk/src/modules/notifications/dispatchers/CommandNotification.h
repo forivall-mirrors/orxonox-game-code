@@ -45,7 +45,7 @@ namespace orxonox {
     /**
     @brief
         This class implements a method of displaying a Notification with information to an input command and the key the command is mapped to.
-        The message that is displayed is a string made out uf the concatenation of the preMessage, the key the specified command is mapped to and the postMessage.
+        The message that is displayed is a string made out of the concatenation of the preMessage, the key the specified command is mapped to and the postMessage.
 
         In use it would like this:
         @code
@@ -119,7 +119,7 @@ namespace orxonox {
             void setPostMessage(const std::string& message)
                  { this->postMessage_ = message; }
 
-            const std::string& bindingNiceifyer(const std::string& binding);
+            const std::string& bindingNiceifyer(const std::string& binding); //!< Transforms the input binding into a human readable form.
 
     };
 

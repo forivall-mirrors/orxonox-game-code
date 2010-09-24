@@ -89,13 +89,14 @@ namespace orxonox
 
         this->create(); // Creates the NotificationQueue in lua.
 
-        // register the NotificationQueue as NotificationListener with the NotificationManager.
+        // Register the NotificationQueue as NotificationListener with the NotificationManager.
         bool listenerRegistered = NotificationManager::getInstance().registerListener(this);
         if(!listenerRegistered) // If the registration has failed.
         {
             this->registered_ = false;
             // Remove the NotificationQueue in lua.
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
+            if(GameMode::showsGraphics())
+                GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
             NotificationManager::getInstance().unregisterQueue(this);
             COUT(1) << "Error: NotificationQueue '" << this->getName() << "' could not be registered." << std::endl;
             return;
@@ -209,6 +210,8 @@ namespace orxonox
     */
     void NotificationQueue::update(Notification* notification, const std::time_t & time)
     {
+        assert(notification);
+
         this->push(notification, time);
 
         COUT(4) << "NotificationQueue '" << this->getName() << "' updated. A new Notification has been added." << std::endl;
@@ -225,6 +228,8 @@ namespace orxonox
     */
     void NotificationQueue::push(Notification* notification, const std::time_t & time)
     {
+        assert(notification);
+
         NotificationContainer* container = new NotificationContainer;
         container->notification = notification;
         container->time = time;
@@ -253,7 +258,7 @@ namespace orxonox
         NotificationContainer* container = this->notifications_.back();
         // Get all the NotificationContainers that were sent the same time the NotificationContainer we want to pop was sent.
         std::pair<std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator, std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator> iterators = this->ordering_.equal_range(container);
-        // Iterate thourgh all suspects and remove the container as soon as we find it.
+        // Iterate through all suspects and remove the container as soon as we find it.
         for(std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator it = iterators.first; it != iterators.second; it++)
         {
             if(container == *it)
@@ -310,7 +315,6 @@ namespace orxonox
             delete *it;
 
         this->notifications_.clear();
-
         this->size_ = 0;
 
         // Clear the NotificationQueue in the GUI.

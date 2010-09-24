@@ -34,8 +34,6 @@
 #include "Notification.h"
 
 #include "core/CoreIncludes.h"
-#include "network/NetworkFunction.h"
-#include "network/Host.h"
 #include "NotificationManager.h"
 
 namespace orxonox
@@ -43,21 +41,11 @@ namespace orxonox
 
     /**
     @brief
-        Default constructor. Initializes the object.
-    */
-    Notification::Notification()
-    {
-        RegisterRootObject(Notification);
-        this->initialize();
-    }
-
-    /**
-    @brief
-        Constructor. Creates a Notification with the input message.
-    @param creator
-        The creator.
+        Constructor. Creates a Notification with the input message and sender.
     @param message
         The message of the Notification.
+    @param sender
+        The sender of the Notification.
     */
     Notification::Notification(const std::string& message, const std::string& sender)
     {

@@ -43,7 +43,6 @@
 #include "interfaces/PlayerTrigger.h"
 #include "worldentities/pawns/Pawn.h"
 
-#include "Notification.h"
 #include "NotificationManager.h"
 
 namespace orxonox
