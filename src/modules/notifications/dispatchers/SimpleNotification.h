@@ -48,7 +48,7 @@ namespace orxonox {
 
         In use it would like this:
         @code
-        <SimpleNotification message="some message..." >
+        <SimpleNotification message="some message..." sender="me">
             <events>
                 <trigger>
                     <PlayerTrigger />

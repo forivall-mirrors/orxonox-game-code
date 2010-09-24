@@ -37,6 +37,7 @@
 #include <sstream>
 
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "core/GUIManager.h"
 #include "core/LuaState.h"
 #include "util/Convert.h"
@@ -111,17 +112,30 @@ namespace orxonox
     {
         this->targets_.clear();
 
-        if(this->registered_) // If the 
+        if(this->registered_) // If the NotificationQueue is registered.
         {
-            this->clear();
+            this->clear(true);
 
             // Unregister with the NotificationManager.
             NotificationManager::getInstance().unregisterListener(this);
             NotificationManager::getInstance().unregisterQueue(this);
-
-            // Remove the NotificationQueue in lua.
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
         }
+    }
+
+    /**
+    @brief
+        Destroys the NotificationQueue.
+        Used in lua and NotificationManager.
+    @param noGraphics
+        If this is set to true (false is default), then the queue is not removed in lua. This is used to destroy the queue, after the GUIManager has been destroyed.
+    */
+    void NotificationQueue::destroy(bool noGraphics)
+    {
+        // Remove the NotificationQueue in lua.
+        if(GameMode::showsGraphics() && !noGraphics)
+            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
+
+        this->OrxonoxClass::destroy();
     }
 
     /**
@@ -130,7 +144,8 @@ namespace orxonox
     */
     void NotificationQueue::create(void)
     {
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.createQueue(\"" + this->getName() +  "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
+        if(GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.createQueue(\"" + this->getName() +  "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
     }
 
     /**
@@ -225,7 +240,8 @@ namespace orxonox
         this->notifications_.insert(this->notifications_.begin(), container);
 
         // Push the Notification to the GUI.
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
+        if(GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
     }
 
     /**
@@ -253,7 +269,8 @@ namespace orxonox
         delete container;
 
         // Pops the Notification from the GUI.
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.popNotification(\"" + this->getName() + "\")");
+        if(GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.popNotification(\"" + this->getName() + "\")");
     }
 
     /**
@@ -275,14 +292,17 @@ namespace orxonox
         delete *containerIterator;
 
         // Removes the Notification from the GUI.
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
+        if(GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
     }
 
     /**
     @brief
         Clears the NotificationQueue by removing all NotificationContainers.
+    @param noGraphics
+        If this is eset to true the GUI is not informed of the clearing of the NotificationQueue. This is needed only internally.
     */
-    void NotificationQueue::clear(void)
+    void NotificationQueue::clear(bool noGraphics)
     {
         this->ordering_.clear();
         // Delete all NotificationContainers in the list.
@@ -294,7 +314,8 @@ namespace orxonox
         this->size_ = 0;
 
         // Clear the NotificationQueue in the GUI.
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.clearQueue(\"" + this->getName() + "\")");
+        if(GameMode::showsGraphics() && !noGraphics)
+            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.clearQueue(\"" + this->getName() + "\")");
     }
 
     /**

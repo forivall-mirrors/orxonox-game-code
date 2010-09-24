@@ -68,10 +68,10 @@ namespace orxonox // tolua_export
         Displays @ref orxonox::Notification "Notifications" from specific senders.
 
         There are quite some parameters that influence the behaviour of the NotificationQueue:
-        - 'name': The name of the NotificationQueue. It needs to be unique.
-        - 'senders': The senders that are targets of this NotificationQueue, i.e. the names of senders whose Notifications this NotificationQueue displays.
-        - 'size': The size of the NotificationQueue, it specifies how many @ref orxonox::Notification "Notifications" are displayed at once at the most.
-        - 'displayTime': The time a @ref orxonox::Notification "Notification" is displayed with this NotificationQueue.
+        - @b name The name of the NotificationQueue. It needs to be unique.
+        - @b senders The senders that are targets of this NotificationQueue, i.e. the names of senders whose Notifications this NotificationQueue displays.
+        - @b size The size of the NotificationQueue, it specifies how many @ref orxonox::Notification "Notifications" are displayed at once at the most.
+        - @b displayTime The time a @ref orxonox::Notification "Notification" is displayed with this NotificationQueue.
 
     @author
         Damian 'Mozork' Frick
@@ -84,11 +84,8 @@ namespace orxonox // tolua_export
             NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
             virtual ~NotificationQueue();
 
-            /**
-            @brief Destroys the NotificationQueue.
-                   Used in lua.
-            */
-            void destroy(void) { this->OrxonoxClass::destroy(); } // tolua_export
+            //! Destroys the NotificationQueue.
+            void destroy(bool noGraphics = false); // tolua_export
 
             virtual void tick(float dt); //!< To update from time to time.
 
@@ -167,7 +164,7 @@ namespace orxonox // tolua_export
             void pop(void); //!< Removes (pops) the least recently added Notification form the NotificationQueue.
             void remove(const std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator& containerIterator); //!< Removes the Notification that is stored in the input NotificationContainer.
 
-            void clear(void); //!< Clears the NotificationQueue by removing all NotificationContainers.
+            void clear(bool noGraphics = false); //!< Clears the NotificationQueue by removing all NotificationContainers.
 
     }; // tolua_export
 

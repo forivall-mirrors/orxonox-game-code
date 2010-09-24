@@ -152,14 +152,17 @@
     @section NotificationsTechincalDetails Technical details
     The Notifications module has three major parts that interact with each other. First there is the @ref orxonox::NotificationQueue "NotificationQueue", this is the entity that (logically, not effectively) displays @ref orxonox::Notification "Notifications" according to some rules, then there is the NotificationLayer, which is the GUI which (actually) displays @ref orxonox::Notification "Notifications" by visualizing the @ref orxonox::NotificationQueue "NotificationQueues" and as a result also the @ref orxonox::Notification "Notifications", that are displayed by the respective @ref orxonox::NotificationQueue "NotificationQueues" and lastly there is the @ref orxonox::NotificationManager "NotificationManager", which connects these two.
 
+    @subsection NotificationQueue NotificationQueue
+    The @ref orxonox::NotificationQueue "NotificationQueue" is the entity, that (as said earlier) logically displays @ref orxonox::Notification "Notifications". Furthermore a @ref orxonox::NotificationQueue "NotificationQueue" displays only a subset of all the @ref orxonox::Notification "Notifications". The parameters that reduce the range of @ref orxonox::Notification "Notifications" are:
+    - @b senders The senders, set of targets of a @ref orxonox::NotificationQueue "NotificationQueue" is the set of senders a @ref orxonox::NotificationQueue "NotificationQueue" displays  @ref orxonox::Notification "Notifications" from. E.g. If one would set the senders to "questsystem" then only  @ref orxonox::Notification "Notifications" from the Questsystem wouuld be displayed in that particular queue. If you set senders to "all" then all Notifications will be displayed. Different senders can be concatinated with commas.
+    - @b size The size specifies how many @ref orxonox::Notification "Notifications" are displayed at the most, if there are more @ref orxonox::Notification "Notifications" that could be displayed but the size is smaller than the number of @ref orxonox::Notification "Notifications", then only the most recent are displayed.
+    - @b displayTime The display time specifies how long a @ref orxonox::Notification "Notification" is displayed at the most.
+
     @subsection NotificationLayer NotificationLayer
     The NotificationLayer is a GUI sheet, that displays all the @ref orxonox::NotificationQueue "NotificationQueues" and their @ref orxonox::Notification "Notifications". In its normal mode of operation it is transparent to input, meaning that it only functions as a means of displaying, however if switched to edit mode the NotificationLayer no longer is transparent to input and allows for the adding, removal and modification of @ref orxonox::NotificationQueue "NotificationQueues".
 
-    @subsection NotificationQueue NotificationQueue
-    ...
-
     @subsection NotificationManager NotificationManager
-    ...
+    The @ref orxonox::NotificationManager "NotificationManager" is (hence the name) the managing entity in this setting. It is responsible for the registering and unregistering of @ref orxonox::NotificationListener "NotificationListeners" (which the @ref orxonox::NotificationQueue "NotificationQueue" is) and also informs them about changes related to @ref orxonox::Notification "Notifications". It is also responsible for the creation and destruction of @ref orxonox::NotificationQueue "NotificationQueues" through the NotificationLayer and is also the point of approach for the NotificationLayer to get information it needs. Finally the @ref orxonox::NotificationManager "NotificationManager" is responsible for sending (and in the process creating) @ref orxonox::Notification "Notifications" and is a means for the @ref orxonox::NotificationQueue "NotificationQueues" to get the information they need about @ref orxonox::Notification "Notifications".
 
     @subsection Notification Notification
     The @ref orxonox::Notification "Notification" class is more or less a data structure that groups the notification message and the sender, and possibly other future parameters together to form a comprehensive structure that we call Notification.
@@ -171,6 +174,10 @@
 
     @defgroup NotificationDispatchers Dispatchers
     @ingroup Notifications
+
+    @ref orxonox::NotificationDispatcher "NotificationDispatchers" are entities that are instantiated in a level file (through XML) and that dispatch (or send) a specific @ref orxonox::Notification "Notification" upon having received a triggering event.
+
+    At this point there are two @ref orxonox::NotificationDispatcher "NotificationDispatchers", the @ref orxonox::SimpleNotification "SimpleNotification", which just displays a specified message, and the @ref orxonox::CommandNotification "CommandNotification" which displays a message with a binding for a specified command in it.
 */
 
 /**
