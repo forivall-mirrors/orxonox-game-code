@@ -57,7 +57,7 @@ namespace orxonox
     // Register tolua_open function when loading the library.
     DeclareToluaInterface(Notifications);
 
-    ManageScopedSingleton(NotificationManager, ScopeID::Graphics, false);
+    ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
 
     // Setting console command to enter the edit mode.
     SetConsoleCommand("enterEditMode", &NotificationManager::enterEditMode);
@@ -87,6 +87,11 @@ namespace orxonox
     {
         ModifyConsoleCommand("enterEditMode").setObject(NULL);
 
+        // Destroys all Notifications.
+        for(std::multimap<std::time_t, Notification*>::iterator it = this->allNotificationsList_.begin(); it!= this->allNotificationsList_.end(); it++)
+            it->second->destroy();
+        this->allNotificationsList_.clear();
+
         COUT(3) << "NotificationManager destroyed." << std::endl;
     }
 
@@ -97,11 +102,9 @@ namespace orxonox
     void NotificationManager::preDestroy(void)
     {
         // Destroys all NotificationQueues that have been registered with the NotificationManager.
-        for(std::map<const std::string, NotificationQueue*>::iterator it = this->queues_.begin(); it != this->queues_.end(); )
+        for(std::map<const std::string, NotificationQueue*>::iterator it = this->queues_.begin(); it != this->queues_.end(); it++)
         {
-            NotificationQueue* queue = (*it).second;
-            it++;
-            queue->destroy();
+            it->second->destroy(true);
         }
         this->queues_.clear();
     }
@@ -123,8 +126,9 @@ namespace orxonox
         // If we're in standalone mode or we're already no the right client we create and send the Notification.
         if(GameMode::isStandalone() || isLocal || Host::getPlayerID() == clientId)
         {
-            Notification* notification = new Notification(message);
-            notification->send(sender);
+            Notification* notification = new Notification(message, sender);
+            if(NotificationManager::getInstance().registerNotification(notification))
+                COUT(3) << "Notification \"" << notification->getMessage() << "\" sent." << std::endl;
         }
         // If we're on the server (and the server is not the intended recipient of the Notification) we send it over the network.
         else if(GameMode::isServer())

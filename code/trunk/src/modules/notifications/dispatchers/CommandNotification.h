@@ -49,7 +49,7 @@ namespace orxonox {
 
         In use it would like this:
         @code
-        <CommandNotification preMessage="Please press " command="someCommand" postMessage=" to do something." >
+        <CommandNotification preMessage="Please press " command="someCommand" postMessage=" to do something." sender="me">
             <events>
                 <trigger>
                     <PlayerTrigger />

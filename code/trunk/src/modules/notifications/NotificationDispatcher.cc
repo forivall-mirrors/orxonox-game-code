@@ -82,6 +82,8 @@ namespace orxonox
     {
         SUPER(NotificationDispatcher, XMLPort, xmlelement, mode);
 
+        XMLPortParam(NotificationDispatcher, "sender", getSender, setSender, xmlelement, mode);
+        
         XMLPortEventSink(NotificationDispatcher, BaseObject, "trigger", trigger, xmlelement, mode); //TODO: Change BaseObject to MultiTrigger as soon as MultiTrigger is the base of all triggers.
     }
 

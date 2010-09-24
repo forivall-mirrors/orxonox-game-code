@@ -48,9 +48,11 @@ namespace orxonox
     @brief
         A NotificationDispatcher is an entity that, upon being triggered, dispatches (or sends) a specified @ref orxonox::Notification "Notification".
 
+        There is one parameter to be set, the @b sender . The sender specifies the part of Orxonox the sent @ref orxonox::Notification "Notification" comes from. The default value is set by the classes implementing NotificationDispatcher.
+
         Its standard usage is:
         @code
-        <NotificationDispatcher>
+        <NotificationDispatcher sender="me">
             <events>
                 <trigger>
                     <PlayerTrigger />
@@ -75,8 +77,14 @@ namespace orxonox
             @brief Get the sender of the Notification dispatched by this NotificationDispatcher.
             @return Returns the name of the sender.
             */
-            const std::string& getSender(void)
+            const std::string& getSender(void) const
                 { return this->sender_; }
+                        /**
+            @brief Set the sender of the Notification dispatched by this NotificationDispatcher.
+            @param sender The name of the sender.
+            */
+            void setSender(const std::string& sender)
+                { this->sender_ = sender; }
 
             void dispatch(unsigned int clientId); //!< Dispatches a specific Notification.
             bool trigger(bool triggered, BaseObject* trigger); //!< Is called when the NotificationDispatcher is triggered.
@@ -85,13 +93,6 @@ namespace orxonox
             std::string sender_; //!< The name of the sender of the Notification dispatched by this NotificationDispatcher.
 
             void registerVariables(void); //!< Register some variables for synchronisation.
-
-            /**
-            @brief Set the sender of the Notification dispatched by this NotificationDispatcher.
-            @param sender The name of the sender.
-            */
-            void setSender(const std::string& sender)
-                { this->sender_ = sender; }
 
             /**
             @brief Creates the notification message that should be sent upon the NotificationDispatcher triggering.
