@@ -26,45 +26,44 @@
  *
  */
 
-#ifndef _FunctionCalls_H__
-#define _FunctionCalls_H__
+#ifndef _FunctionCall_H__
+#define _FunctionCall_H__
 
 #include "network/NetworkPrereqs.h"
+#include "util/UtilPrereqs.h"
 
 #include <cassert>
-#include <queue>
-#include "Packet.h"
-#include "network/FunctionCall.h"
+#include <vector>
 
 namespace orxonox {
-
-namespace packet {
 /**
     @author
 */
 
 
-class _NetworkExport FunctionCalls : public Packet
+class _NetworkExport FunctionCall
 {
 public:
-  FunctionCalls();
-  FunctionCalls( uint8_t* data, unsigned int clientID );
-  ~FunctionCalls();
+  FunctionCall();
+  ~FunctionCall();
 
-  inline unsigned int getSize() const
-    { assert(!this->isDataENetAllocated()); return currentSize_; }
-  bool process();
+  inline unsigned int getSize() const { return this->size_; }
+  bool execute();
 
-  void addCallStatic( uint32_t networkID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
-  void addCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
-  virtual bool send();
+  void setCallStatic( uint32_t networkID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
+  void setCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
+  
+  void saveData( uint8_t*& mem );
+  void loadData( uint8_t*& mem );
 private:
-  std::queue<orxonox::FunctionCall> functionCalls_;
-  unsigned int                      clientID_;
-  uint32_t                          currentSize_;
+  uint32_t                  nrOfArguments_;
+  bool                      bIsStatic_;
+  uint32_t                  functionID_;
+  uint32_t                  objectID_;
+  uint32_t                  size_;
+  std::vector<MultiType>    arguments_;
 };
 
-} //namespace packet
 } //namespace orxonox
 
 #endif /* _FunctionCalls_H__ */

@@ -114,6 +114,7 @@ namespace orxonox
   class ClientConnectionListener;
   class ClientInformation;
   class Connection;
+  class FunctionCall;
   class FunctionCallManager;
   class GamestateClient;
   class GamestateHandler;

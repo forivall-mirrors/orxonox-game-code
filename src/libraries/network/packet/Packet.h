@@ -75,7 +75,7 @@ class _NetworkExport Packet{
     inline void setClientID( int id )
       { clientID_ = id; }
 
-    bool send();
+    virtual bool send();
   protected:
     Packet();
     Packet(uint8_t *data, unsigned int clientID);
