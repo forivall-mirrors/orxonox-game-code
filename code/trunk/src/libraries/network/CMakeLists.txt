@@ -24,6 +24,7 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   ClientInformation.cc
   ClientConnectionListener.cc
   Connection.cc
+  FunctionCall.cc
   FunctionCallManager.cc
   GamestateManager.cc
   GamestateClient.cc
@@ -44,6 +45,7 @@ SET_SOURCE_FILES(NETWORK_HDR_FILES
   ClientConnectionListener.h
   ClientInformation.h
   Connection.h
+  FunctionCall.h
   FunctionCallManager.h
   GamestateClient.h
   GamestateHandler.h
