@@ -28,6 +28,9 @@
 
 #include "Billboard.h"
 
+#include "OgreBillboard.h"
+#include "OgreBillboardSet.h"
+
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
@@ -42,7 +45,7 @@ namespace orxonox
         RegisterObject(Billboard);
 
         this->colour_ = ColourValue::White;
-//        this->rotation_ = 0;
+        this->rotation_ = 0;
 
         this->registerVariables();
     }
@@ -62,14 +65,14 @@ namespace orxonox
 
         XMLPortParam(Billboard, "material", setMaterial, getMaterial, xmlelement, mode);
         XMLPortParam(Billboard, "colour",   setColour,   getColour,   xmlelement, mode).defaultValues(ColourValue::White);
-//        XMLPortParam(Billboard, "rotation", setRotation, getRotation, xmlelement, mode).defaultValues(0);
+        XMLPortParam(Billboard, "rotation", setRotation, getRotation, xmlelement, mode).defaultValues(0);
     }
 
     void Billboard::registerVariables()
     {
         registerVariable(this->material_, VariableDirection::ToClient, new NetworkCallback<Billboard>(this, &Billboard::changedMaterial));
         registerVariable(this->colour_,   VariableDirection::ToClient, new NetworkCallback<Billboard>(this, &Billboard::changedColour));
-//        registerVariable(this->rotation_, VariableDirection::ToClient, new NetworkCallback<Billboard>(this, &Billboard::changedRotation));
+        registerVariable(this->rotation_, VariableDirection::ToClient, new NetworkCallback<Billboard>(this, &Billboard::changedRotation));
     }
 
     void Billboard::changedMaterial()
@@ -85,7 +88,7 @@ namespace orxonox
                 if (this->billboard_.getBillboardSet())
                      this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
-//                this->changedRotation();
+                this->changedRotation();
             }
         }
         else
@@ -110,13 +113,19 @@ namespace orxonox
             this->billboard_.setColour(this->colour_);
     }
 
-/*
     void Billboard::changedRotation()
     {
         if (this->billboard_.getBillboardSet())
-            this->billboard_.getBillboardSet()->setRotation(this->rotation_);
+        {
+            Ogre::BillboardSet* set = this->billboard_.getBillboardSet();
+            set->setBillboardRotationType(Ogre::BBR_VERTEX);
+            unsigned int size = set->getPoolSize();
+            for(unsigned int i = 0; i < size; i++)
+            {
+                set->getBillboard(i)->setRotation(this->rotation_);
+            }
+        }
     }
-*/
 
     void Billboard::changedVisibility()
     {
