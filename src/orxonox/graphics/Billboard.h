@@ -60,12 +60,12 @@ namespace orxonox
                 { this->colour_ = colour; this->changedColour(); }
             inline const ColourValue& getColour() const
                 { return this->colour_; }
-/*
+
             inline void setRotation(const Radian& rotation)
                 { this->rotation_ = rotation; this->changedRotation(); }
             inline const Radian& getRotation() const
                 { return this->rotation_; }
-*/
+
             virtual void setTeamColour(const ColourValue& colour)
                 { this->setColour(colour); }
 
@@ -78,12 +78,12 @@ namespace orxonox
         private:
             void registerVariables();
             void changedMaterial();
-//            void changedRotation();
+            void changedRotation();
 
             BillboardSet billboard_;
             std::string material_;
             ColourValue colour_;
-//            Radian rotation_;
+            Radian rotation_;
     };
 }
 
