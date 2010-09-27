@@ -61,10 +61,10 @@ namespace orxonox {
     @brief
         A pickup that can do (dependent upon the parameters) lots of different things to the health of a Pawn.
         There are 4 parameters that can be chosen:
-        1) The health. The amount of health that (in a way dependent on the other parameters) is transfered to the Pawn.
-        2) The activation type: It can be chosen to be either 'immediate' or 'onUse'. The activation type essentially (as indicated by the name) defines when the health is transfered, either immediately after being picked up or only after the player uses it.
-        3) The duration type: It can be chosen to be either 'once' or 'continuous'. For 'once' the specified health is transfered once to the Pawn, for 'continuous' the set health is transfered over a span of time at a rate defined by the health rate parameter.
-        4) The health type: The health type can be chosen to be 'limited', 'temporary' or 'permanent'. 'limited' means that the health is increased only to the maximum health of the Pawn. 'temporary' means that the maximum health is temporarily elevated but will be set back as soon as the pickup is no longer in use. 'permanent' means that the maximum health of the Pawn is increased such that the health provided by the pickup will fit in and the maximum health stays that way.
+        - The @b health The amount of health that (in a way dependent on the other parameters) is transfered to the Pawn.
+        - The @b activation @b type It can be chosen to be either 'immediate' or 'onUse'. The activation type essentially (as indicated by the name) defines when the health is transfered, either immediately after being picked up or only after the player uses it.
+        - The @b duration @b type It can be chosen to be either 'once' or 'continuous'. For 'once' the specified health is transfered once to the Pawn, for 'continuous' the set health is transfered over a span of time at a rate defined by the health rate parameter.
+        - The @b health @b type The health type can be chosen to be 'limited', 'temporary' or 'permanent'. 'limited' means that the health is increased only to the maximum health of the Pawn. 'temporary' means that the maximum health is temporarily elevated but will be set back as soon as the pickup is no longer in use. 'permanent' means that the maximum health of the Pawn is increased such that the health provided by the pickup will fit in and the maximum health stays that way.
     @author
         Damian 'Mozork' Frick
     */

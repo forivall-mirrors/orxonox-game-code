@@ -49,10 +49,11 @@ namespace orxonox {
     @brief
         A Pickup which can manipulate the Speed of a Pawn.
 
-        1) The speed multiplier:
-           The additional (forward) speed:
-        2) The activation type: 'immediate' or 'onUse'. defines if the item is used when it's picked up or only after the player chooses to use it.
-        4) The duration: the activation time of the pickup.
+        There are 4 parameters that can be cosen:
+        - The @b speed @b multiplier
+        - The @b additional (forward) @b speed
+        - The @b activation @b type 'immediate' or 'onUse'. defines if the item is used when it's picked up or only after the player chooses to use it.
+        - The @b duration The activation time of the pickup.
 
     @author
         Eric Beier
