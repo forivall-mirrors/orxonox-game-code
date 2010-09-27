@@ -43,7 +43,10 @@ namespace orxonox {
 
     /**
     @brief
-        Collectible Pickup class. Any pickup inheriting from this class can be added to a PickupCollection and thus be part uf such.
+        The CollectiblePickup class encompasses all @ref orxonox::Pickupable "Pickupables" that can be added to a @ref orxonox::PickupCollection "PickupCollection" and thus be part of such.
+
+        All you need to do to make your @ref orxonox:.Pickupable "Pickupable" a CollectiblePickup is to, in some way, inherit from it. (The @ref orxonox::Pickup Pickup class, for example, is already a CollectiblePickup).
+
     @author
         Damian 'Mozork' Frick
     */

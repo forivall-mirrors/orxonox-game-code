@@ -50,7 +50,6 @@ namespace orxonox
     DroppedPickup::DroppedPickup(BaseObject* creator) : PickupSpawner(creator)
     {
         RegisterObject(DroppedPickup);
-
     }
 
     /**
@@ -82,10 +81,7 @@ namespace orxonox
     */
     DroppedPickup::~DroppedPickup()
     {
-        if(this->pickup_ != NULL && this->pickup_->isPickedUp())
-        {
-            this->pickup_ = NULL;
-        }
+
     }
 
     /**
@@ -95,7 +91,9 @@ namespace orxonox
     */
     Pickupable* DroppedPickup::getPickup(void)
     {
-        return this->pickup_;
+        Pickupable* pickup = this->pickup_;
+        this->pickup_ = NULL;
+        return pickup;
     }
 
 }

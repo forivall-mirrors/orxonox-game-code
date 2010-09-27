@@ -185,7 +185,7 @@ namespace orxonox
         if(GameMode::isMaster())
         {
             // If the number of executions have been used up.
-            if(this->times_ != Script::INF && this->remainingExecutions_ == 0)
+            if(this->times_ != Script::INF && this->remainingExecutions_ <= 0)
                 return;
         }
 
@@ -208,7 +208,11 @@ namespace orxonox
                 {
                     callStaticNetworkFunction(Script::executeHelper, it->first, this->getCode(), this->getMode(), this->getNeedsGraphics());
                     if(this->times_ != Script::INF) // Decrement the number of remaining executions.
+                    {
                         this->remainingExecutions_--;
+                        if(this->remainingExecutions_ <= 0)
+                            break;
+                    }
                 }
             }
             // Else we execute the code just for the specified client.

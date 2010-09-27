@@ -57,10 +57,10 @@ namespace orxonox {
     /**
     @brief
         The MetaPickup is a pickup that can, depending on the parameter 'metaType', do different things. If the 'metaType' is set to
-        1) 'use', all the pickups, the PickupCarrier has, are immediately set to used upon pickup of the MetaPickup.
-        2) 'drop', all the pickups, the PickupCarrier has, are immediately dropped upon pickup of the MetaPickup.
-        3) 'destroy', all the pickups, the PickupCarrier has, are immediately destroyed upon pickup of the MetaPickup.
-        4) 'destroyCarrier', the PickupCarrier is immediately destroyed upon pickup of the MetaPickup.
+        - @b use All the pickups, the PickupCarrier has, are immediately set to used upon pickup of the MetaPickup.
+        - @b drop All the pickups, the PickupCarrier has, are immediately dropped upon pickup of the MetaPickup.
+        - @b destroy All the pickups, the PickupCarrier has, are immediately destroyed upon pickup of the MetaPickup.
+        - @b destroyCarrier The PickupCarrier is immediately destroyed upon pickup of the MetaPickup.
     @author
         Damian 'Mozork' Frick
     */

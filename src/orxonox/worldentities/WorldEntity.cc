@@ -213,16 +213,19 @@ namespace orxonox
     {
         SUPER(WorldEntity, changedActivity);
 
-        for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
+        if(GameMode::isMaster())
         {
-            if(!this->isActive())
+            for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
             {
-                (*it)->bActiveMem_ = (*it)->isActive();
-                (*it)->setActive(this->isActive());
-            }
-            else
-            {
-                (*it)->setActive((*it)->bActiveMem_);
+                if(!this->isActive())
+                {
+                    (*it)->bActiveMem_ = (*it)->isActive();
+                    (*it)->setActive(this->isActive());
+                }
+                else
+                {
+                    (*it)->setActive((*it)->bActiveMem_);
+                }
             }
         }
     }
@@ -235,16 +238,19 @@ namespace orxonox
     {
         SUPER(WorldEntity, changedVisibility);
 
-        for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
+        if(GameMode::isMaster())
         {
-            if(!this->isVisible())
+            for (std::set<WorldEntity*>::const_iterator it = this->getAttachedObjects().begin(); it != this->getAttachedObjects().end(); it++)
             {
-                (*it)->bVisibleMem_ = (*it)->isVisible();
-                (*it)->setVisible(this->isVisible());
-            }
-            else
-            {
-                (*it)->setVisible((*it)->bVisibleMem_);
+                if(!this->isVisible())
+                {
+                    (*it)->bVisibleMem_ = (*it)->isVisible();
+                    (*it)->setVisible(this->isVisible());
+                }
+                else
+                {
+                    (*it)->setVisible((*it)->bVisibleMem_);
+                }
             }
         }
     }

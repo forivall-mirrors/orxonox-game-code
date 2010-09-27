@@ -67,9 +67,11 @@ namespace orxonox
     */
     Pickupable::~Pickupable()
     {
-        COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") destroyed." << std::endl;
         if(this->pickupIdentifier_ != NULL)
+        {
+            COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") destroyed." << std::endl;
             this->pickupIdentifier_->destroy();
+        }
     }
 
     /**
