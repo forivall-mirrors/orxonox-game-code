@@ -138,12 +138,12 @@ class _NetworkExport NetworkMemberFunctionBase: public NetworkFunctionBase {
     static NetworkMemberFunctionBase* getFunction( const NetworkFunctionPointer& p ){ assert( functorMap_.find(p) != functorMap_.end() ); return functorMap_[p]; }
 
     //
-    virtual void call(uint32_t objectID)=0;
-    virtual void call(uint32_t objectID, const MultiType& mt1)=0;
-    virtual void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2)=0;
-    virtual void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)=0;
-    virtual void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)=0;
-    virtual void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)=0;
+    virtual bool call(uint32_t objectID)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)=0;
+    virtual bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)=0;
 
   private:
     static std::map<NetworkFunctionPointer, NetworkMemberFunctionBase*> functorMap_;
@@ -155,35 +155,65 @@ template <class T> class NetworkMemberFunction: public NetworkMemberFunctionBase
   public:
     NetworkMemberFunction(const FunctorMemberPtr<T>& functor, const std::string& name, const NetworkFunctionPointer& p);
 
-    inline void call(uint32_t objectID)
+    inline bool call(uint32_t objectID)
     {
       if ( Synchronisable::getSynchronisable(objectID)!=0 )
+      {
         (*this->functor_)(orxonox_cast<T*>(Synchronisable::getSynchronisable(objectID)));
+        return true;
+      }
+      else
+        return false;
     }
-    inline void call(uint32_t objectID, const MultiType& mt1)
+    inline bool call(uint32_t objectID, const MultiType& mt1)
     {
       if ( Synchronisable::getSynchronisable(objectID)!=0 )
+      {
         (*this->functor_)(orxonox_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1);
+        return true;
+      }
+      else
+        return false;
     }
-    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2)
+    inline bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2)
     {
       if ( Synchronisable::getSynchronisable(objectID)!=0 )
+      {
         (*this->functor_)(orxonox_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2);
+        return true;
+      }
+      else
+        return false;
     }
-    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
+    inline bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
     {
       if ( Synchronisable::getSynchronisable(objectID)!=0 )
+      {
         (*this->functor_)(orxonox_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3);
+        return true;
+      }
+      else
+        return false;
     }
-    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
+    inline bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
     {
       if ( Synchronisable::getSynchronisable(objectID)!=0 )
+      {
         (*this->functor_)(orxonox_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3, mt4);
+        return true;
+      }
+      else
+        return false;
     }
-    inline void call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
+    inline bool call(uint32_t objectID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
     {
       if ( Synchronisable::getSynchronisable(objectID)!=0 )
+      {
         (*this->functor_)(orxonox_cast<T*>(Synchronisable::getSynchronisable(objectID)), mt1, mt2, mt3, mt4, mt5);
+        return true;
+      }
+      else
+        return false;
     }
 
   private:

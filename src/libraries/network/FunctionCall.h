@@ -31,6 +31,7 @@
 
 #include "network/NetworkPrereqs.h"
 #include "util/UtilPrereqs.h"
+#include "util/MultiType.h"
 
 #include <cassert>
 #include <vector>

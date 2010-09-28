@@ -32,7 +32,9 @@
 #include "NetworkPrereqs.h"
 
 #include <map>
+#include <vector>
 #include "util/UtilPrereqs.h"
+#include "FunctionCall.h"
 
 namespace orxonox {
 /**
@@ -57,8 +59,12 @@ public:
   static void addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5);
 
   static void sendCalls();
+  
+  static void bufferIncomingFunctionCall( const FunctionCall& fctCall );
+  static void processBufferedFunctionCalls();
 
-  static std::map<uint32_t, packet::FunctionCalls*> clientMap_;
+  static std::map<uint32_t, packet::FunctionCalls*> sClientMap_;
+  static std::vector<FunctionCall>                  sIncomingFunctionCallBuffer_;
 protected:
   FunctionCallManager();
   ~FunctionCallManager();

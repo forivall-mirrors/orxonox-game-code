@@ -174,6 +174,7 @@ namespace orxonox
     Connection::processQueue();
     if(gamestate->processGamestates())
     {
+      FunctionCallManager::processBufferedFunctionCalls();
       if(!isSynched_)
         isSynched_=true;
     }

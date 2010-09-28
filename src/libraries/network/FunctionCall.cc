@@ -79,22 +79,28 @@ bool FunctionCall::execute(){
     switch(this->nrOfArguments_)
     {
       case 0:
-        fct->call(this->objectID_);
+        if( !fct->call(this->objectID_) )
+          return false;
         break;
       case 1:
-        fct->call(this->objectID_, this->arguments_[0]);
+        if( !fct->call(this->objectID_, this->arguments_[0]) )
+          return false;
         break;
       case 2:
-        fct->call(this->objectID_, this->arguments_[0], this->arguments_[1]);
+        if( !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1]) )
+          return false;
         break;
       case 3:
-        fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2]);
+        if( !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2]) )
+          return false;
         break;
       case 4:
-        fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3]);
+        if( !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3]) )
+          return false;
         break;
       case 5:
-        fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3], this->arguments_[4]);
+        if( !fct->call(this->objectID_, this->arguments_[0], this->arguments_[1], this->arguments_[2], this->arguments_[3], this->arguments_[4]) )
+          return false;
         break;
       default:
         assert(0);
