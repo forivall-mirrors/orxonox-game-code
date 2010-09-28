@@ -122,7 +122,12 @@ namespace orxonox
   Synchronisable *Synchronisable::fabricate(uint8_t*& mem, uint8_t mode)
   {
     SynchronisableHeader header(mem);
-    assert( !header.isDiffed() );
+    if( header.isDiffed() )
+    {
+      mem += header.getDataSize() + header.getSize();
+      return 0;
+    }
+//     assert( !header.isDiffed() );
 
     COUT(4) << "fabricating object with id: " << header.getObjectID() << std::endl;
 
