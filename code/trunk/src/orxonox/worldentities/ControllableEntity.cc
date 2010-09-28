@@ -86,6 +86,9 @@ namespace orxonox
         this->setConfigValues();
         this->setPriority( Priority::VeryHigh );
         this->registerVariables();
+        COUT(0) << "CE creator" << endl;
+        if( GameMode::isMaster() )
+          callMemberNetworkFunction(ControllableEntity, fire, this->getObjectID(), 1, 0);
     }
 
     ControllableEntity::~ControllableEntity()
@@ -240,6 +243,7 @@ namespace orxonox
 
     void ControllableEntity::fire(unsigned int firemode)
     {
+        COUT(0) << "fire........." << endl;
         if(GameMode::isMaster())
         {
             this->fired(firemode);

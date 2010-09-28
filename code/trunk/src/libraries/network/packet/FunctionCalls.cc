@@ -30,6 +30,7 @@
 
 #include <cassert>
 #include "network/FunctionCall.h"
+#include "network/FunctionCallManager.h"
 
 namespace orxonox {
 namespace packet {
@@ -65,7 +66,8 @@ bool FunctionCalls::process(){
   {
     FunctionCall fctCall;
     fctCall.loadData(temp);
-    fctCall.execute();
+    if( !fctCall.execute() )
+      FunctionCallManager::bufferIncomingFunctionCall( fctCall );
   }
   
   delete this;

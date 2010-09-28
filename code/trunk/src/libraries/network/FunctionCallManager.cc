@@ -28,66 +28,68 @@
 
 #include "FunctionCallManager.h"
 #include "packet/FunctionCalls.h"
+#include "core/GameMode.h"
 
 namespace orxonox {
 
-std::map<uint32_t, packet::FunctionCalls*> FunctionCallManager::clientMap_;
+std::map<uint32_t, packet::FunctionCalls*> FunctionCallManager::sClientMap_;
+std::vector<FunctionCall> FunctionCallManager::sIncomingFunctionCallBuffer_;
 
 // Static calls
 
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager::clientMap_[clientID]->addCallStatic(functionID);
+  FunctionCallManager::sClientMap_[clientID]->addCallStatic(functionID);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1);
+  FunctionCallManager:: sClientMap_[clientID]->addCallStatic(functionID, &mt1);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2);
+  FunctionCallManager:: sClientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2, &mt3);
+  FunctionCallManager:: sClientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2, &mt3);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2, &mt3, &mt4);
+  FunctionCallManager:: sClientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2, &mt3, &mt4);
 }
 void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager:: clientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2, &mt3, &mt4, &mt5);
+  FunctionCallManager:: sClientMap_[clientID]->addCallStatic(functionID, &mt1, &mt2, &mt3, &mt4, &mt5);
 }
 
 
@@ -95,57 +97,57 @@ void FunctionCallManager::addCallStatic(uint32_t functionID, uint32_t clientID, 
 
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID);
+  FunctionCallManager::sClientMap_[clientID]->addCallMember(functionID, objectID);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1);
+  FunctionCallManager::sClientMap_[clientID]->addCallMember(functionID, objectID, &mt1);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2);
+  FunctionCallManager::sClientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3);
+  FunctionCallManager::sClientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3, &mt4);
+  FunctionCallManager::sClientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3, &mt4);
 }
 void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, uint32_t clientID, const MultiType& mt1, const MultiType& mt2, const MultiType& mt3, const MultiType& mt4, const MultiType& mt5)
 {
-  if(clientMap_.find(clientID)==clientMap_.end())
+  if(sClientMap_.find(clientID)==sClientMap_.end())
   {
-    FunctionCallManager::clientMap_[clientID] = new packet::FunctionCalls;
-    FunctionCallManager::clientMap_[clientID]->setClientID(clientID);
+    FunctionCallManager::sClientMap_[clientID] = new packet::FunctionCalls;
+    FunctionCallManager::sClientMap_[clientID]->setClientID(clientID);
   }
-  FunctionCallManager::clientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3, &mt4, &mt5);
+  FunctionCallManager::sClientMap_[clientID]->addCallMember(functionID, objectID, &mt1, &mt2, &mt3, &mt4, &mt5);
 }
 
 // Send calls
@@ -153,12 +155,30 @@ void FunctionCallManager::addCallMember(uint32_t functionID, uint32_t objectID, 
 void FunctionCallManager::sendCalls()
 {
   std::map<uint32_t, packet::FunctionCalls*>::iterator it;
-  for (it = FunctionCallManager::clientMap_.begin(); it != FunctionCallManager::clientMap_.end(); it++ )
+  for (it = FunctionCallManager::sClientMap_.begin(); it != FunctionCallManager::sClientMap_.end(); ++it )
   {
-    assert(!FunctionCallManager::clientMap_.empty());
+    assert(!FunctionCallManager::sClientMap_.empty());
     it->second->send();
   }
-  FunctionCallManager::clientMap_.clear();
+  FunctionCallManager::sClientMap_.clear();
+}
+
+void FunctionCallManager::bufferIncomingFunctionCall(const orxonox::FunctionCall& fctCall)
+{
+  if( !GameMode::isMaster() )
+    FunctionCallManager::sIncomingFunctionCallBuffer_.push_back( fctCall );
+}
+
+void FunctionCallManager::processBufferedFunctionCalls()
+{
+  std::vector<FunctionCall>::iterator it = FunctionCallManager::sIncomingFunctionCallBuffer_.begin();
+  while( it!=FunctionCallManager::sIncomingFunctionCallBuffer_.end() )
+  {
+    if( it->execute() )
+      FunctionCallManager::sIncomingFunctionCallBuffer_.erase(it);
+    else
+      ++it;
+  }
 }
 
 
