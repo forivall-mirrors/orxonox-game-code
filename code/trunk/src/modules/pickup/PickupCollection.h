@@ -47,7 +47,21 @@ namespace orxonox
 
     /**
     @brief
-        The PickupCollection combines different Pickupables to a coherent, single pickup and makes them seem (from the outside looking in) just as if they were just one Pickupable.
+        The PickupCollection combines different @ref orxonox::Pickupable "Pickupables" (more precisely @ref orxonox::CollectiblePickup "CollectiblePickups") to a coherent, single pickup and makes them seem (from the outside looking in) just as if they were just one @ref orxonox::Pickupable "Pickupable".
+
+        To differentiate between different types of @ref orxonox::PickupCollection "PickupCollections" (just as we differentiate between different types of @ref orxonox::Pickupable "Pickupables") we define a new identifyer called the @ref orxonox::PickupCollectionIdentifier "PickupCollectionIdentifier" which has pretty much the same properties as the @ref orxonox::PickupIdentifier "PickupIdentifier" but extende to @ref orxonox::PickupCollection "PickupCollections".
+
+        A PickupCollection can be created in XML as follows:
+        @code
+        <PickupCollection>
+            <pickupables>
+                <CollectiblePickup ... />
+                ...
+                <CollectiblePickup ... />
+            </pickupables>
+        </PickupCollection>
+        @endcode
+
     @author
         Damian 'Mozork' Frick
     */
@@ -64,7 +78,7 @@ namespace orxonox
             virtual void changedCarrier(void); //!< Is called when the pickup has changed its PickupCarrier.
             virtual void changedPickedUp(void); //!< Is called when the pickup has transited from picked up to dropped or the other way around.
 
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
+            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input pickup.
 
             virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
 
@@ -87,7 +101,7 @@ namespace orxonox
         private:
             void changedUsedAction(void); //!< Helper method.
             void changedPickedUpAction(void); //!< Helper method.
-            
+
             std::vector<CollectiblePickup*> pickups_; //!< The list of the pointers of all the Pickupables this PickupCollection consists of. They are weak pointers to facilitate testing, whether the pointers are still valid.
 
             unsigned int usedCounter_; //!< Keeps track of the number of pickups of this PickupCollection, that are in use.

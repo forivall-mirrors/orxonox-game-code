@@ -37,18 +37,15 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <list>
 #include <set>
-#include "Pickupable.h"
-#include "core/Identifier.h"
-#include "core/WeakPtr.h"
+#include <vector>
 
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
 
-    //! Forward-declarations.
+    // Forward-declarations.
     class PickupManager;
     class Pickup;
     class HealthPickup;
@@ -59,16 +56,25 @@ namespace orxonox
 
     /**
     @brief
-        The PickupCarrier interface provides the means, for any class implementing it, to possess Pickupables.
+        The PickupCarrier interface provides the means, for any class implementing it, to possess @ref orxonox::Pickupable "Pickupables".
+
+        For a class to use the PickupCarrier interface it must implement the follwing three methods:
+        - <b>getCarrierPosition()</b> The getCarrierPosition() method returns the absolute position (in space) of the PickupCarrier.
+
+        Different PickupCarriers are structured hierarchically, a pickup can be picked up by a PickupCarrier that can't really carry that particular pickup but one of its children (or one of their children) can, and thus it gets "handed down" until it is at the right place.
+        But this structure has to be established first.
+        - <b>getCarrierChildren()</b> To this end a PickupCarrier needs to implement getCarrierChildren() which returns a list of its direct PickupCarrier children. If you need an example, have a look at @ref orxonox::Pawn "Pawn" and @ref orxonx::Engine "Engine".
+        - <b>getCarrierParent()</b> This is the method in the other direction. It returns the parent of this PickupCarrier, or NULL if the PickupCarrier is a root node in this hierarchy.
+
     @author
         Damian 'Mozork' Frick
     */
     class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
     {
-        //! So that the different Pickupables have full access to their PickupCarrier.
+        // So that the different Pickupables have full access to their PickupCarrier.
         friend class Pickupable;
         friend class PickupManager;
-        //! Friends.
+        // Friends.
         friend class Pickup;
         friend class HealthPickup;
         friend class InvisiblePickup;
@@ -79,58 +85,10 @@ namespace orxonox
         public:
             PickupCarrier(); //!< Constructor.
             virtual ~PickupCarrier(); //!< Destructor.
-            void preDestroy(void);
+            void preDestroy(void); //!< Is called before the PickupCarrier is effectively destroyed.
 
-            /**
-            @brief Can be used to check whether the PickupCarrier or a child of his is a target ot the input Pickupable.
-            @param pickup A pointer to the Pickupable.
-            @return Returns true if the PickupCarrier or one of its children is a target, false if not.
-            */
-            bool isTarget(const Pickupable* pickup)
-                {
-                    if(pickup->isTarget(this)) //!< If the PickupCarrier itself is a target.
-                        return true;
-
-                    //! Go recursively through all children to check whether they are a target.
-                    std::vector<PickupCarrier*>* children = this->getCarrierChildren();
-                    for(std::vector<PickupCarrier*>::const_iterator it = children->begin(); it != children->end(); it++)
-                    {
-                        if((*it)->isTarget(pickup))
-                            return true;
-                    }
-
-                    children->clear();
-                    delete children;
-
-                    return false;
-                }
-
-            /**
-            @brief Get the carrier that is both a child of the PickupCarrier (or the PickupCarrier itself) and a target of the input Pickupable.
-            @param pickup A pounter to the Pickupable.
-            @return Returns a pointer to the PickupCarrier that is the target of the input Pickupable.
-            */
-            PickupCarrier* getTarget(const Pickupable* pickup)
-                {
-                    if(!this->isTarget(pickup))
-                        return NULL;
-
-                    if(pickup->isTarget(this)) //!< If the PickupCarrier itself is a target.
-                        return this;
-
-                    //! Go recursively through all children to check whether they are the target.
-                    std::vector<PickupCarrier*>* children = this->getCarrierChildren();
-                    for(std::vector<PickupCarrier*>::iterator it = children->begin(); it != children->end(); it++)
-                    {
-                        if(pickup->isTarget(*it))
-                            return *it;
-                    }
-
-                    children->clear();
-                    delete children;
-
-                    return NULL;
-                }
+            bool isTarget(const Pickupable* pickup); //!< Can be used to check whether the PickupCarrier or a child of his is a target ot the input Pickupable.
+            PickupCarrier* getTarget(const Pickupable* pickup); //!< Get the carrier that is both a child of the PickupCarrier (or the PickupCarrier itself) and a target of the input Pickupable.
 
             /**
             @brief Get the (absolute) position of the PickupCarrier.
@@ -148,7 +106,7 @@ namespace orxonox
             */
             virtual std::vector<PickupCarrier*>* getCarrierChildren(void) = 0;
             /**
-            @brief Get the parent of this PickupSpawner
+            @brief Get the parent of this PickupSpawner.
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
             @return Returns a pointer to the parent.
             */
@@ -164,27 +122,8 @@ namespace orxonox
         private:
             std::set<Pickupable*> pickups_; //!< The list of Pickupables carried by this PickupCarrier.
 
-            /**
-            @brief Adds a Pickupable to the list of pickups that are carried by this PickupCarrier.
-            @param pickup A pointer to the pickup to be added.
-            @return Returns true if successfull, false if the Pickupable was already present.
-            */
-            bool addPickup(Pickupable* pickup)
-                {
-                    COUT(4) << "Adding Pickupable (&" << pickup << ") to PickupCarrier (&" << this << ")" << std::endl;
-                    return this->pickups_.insert(pickup).second;
-                }
-
-            /**
-            @brief Removes a Pickupable from the list of pickups that are carried by thsi PickupCarrier.
-            @param pickup A pointer to the pickup to be removed.
-            @return Returns true if successfull, false if the Pickupable was not present in the list.
-            */
-            bool removePickup(Pickupable* pickup)
-                {
-                    COUT(4) << "Removing Pickupable (&" << pickup << ") from PickupCarrier (&" << this << ")" << std::endl;
-                    return this->pickups_.erase(pickup) == 1;
-                }
+            bool addPickup(Pickupable* pickup); //!< Adds a Pickupable to the list of pickups that are carried by this PickupCarrier.
+            bool removePickup(Pickupable* pickup); //!< Removes a Pickupable from the list of pickups that are carried by this PickupCarrier.
 
     };
 }

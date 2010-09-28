@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      ...
+ *      Damian 'Mozork' Frick
  *   Co-authors:
  *      ...
  *
@@ -99,12 +99,15 @@ namespace orxonox
     */
     bool PickupManager::registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
     {
-        if(identifier == NULL || representation == NULL || this->representations_.find(identifier) != this->representations_.end()) //!< If the Pickupable already has a Representation registered.
+        assert(identifier);
+        assert(representation);
+
+        if(this->representations_.find(identifier) != this->representations_.end()) // If the Pickupable already has a Representation registered.
             return false;
 
         this->representations_[identifier] = representation;
 
-        COUT(4) << "PickupRepresentation " << representation << " registered with the PickupManager." << std::endl;
+        COUT(4) << "PickupRepresentation &" << representation << " registered with the PickupManager." << std::endl;
         return true;
     }
 
@@ -120,8 +123,8 @@ namespace orxonox
     */
     bool PickupManager::unregisterRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation)
     {
-        if(identifier == NULL || representation == NULL)
-            return false;
+        assert(identifier);
+        assert(representation);
 
         std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare>::iterator it = this->representations_.find(identifier);
         if(it == this->representations_.end()) //!< If the Pickupable is not registered in the first place.
@@ -129,7 +132,7 @@ namespace orxonox
 
         this->representations_.erase(it);
 
-        COUT(4) << "PickupRepresentation " << representation << " unregistered with the PickupManager." << std::endl;
+        COUT(4) << "PickupRepresentation &" << representation << " unregistered with the PickupManager." << std::endl;
         return true;
     }
 
@@ -166,7 +169,7 @@ namespace orxonox
     {
         if(pickup != NULL)
             return this->getRepresentation(pickup->getPickupIdentifier());
-        
+
         return NULL;
     }
 
@@ -267,7 +270,7 @@ namespace orxonox
     {
         if(pickup == NULL)
             return;
-        
+
         std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); // Get the WeakPointer of the Pickupable.
         // If either the input Pickupable is not in the PickupManagers list or it no longer exists, the method returns.
         if(it == this->pickupsList_.end() || it->second.get() == NULL)

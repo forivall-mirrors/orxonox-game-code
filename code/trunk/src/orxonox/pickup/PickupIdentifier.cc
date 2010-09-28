@@ -34,6 +34,8 @@
 #include "PickupIdentifier.h"
 
 #include "core/CoreIncludes.h"
+#include "core/Identifier.h"
+
 #include "interfaces/Pickupable.h"
 
 namespace orxonox
@@ -68,46 +70,26 @@ namespace orxonox
     */
     int PickupIdentifier::compare(const PickupIdentifier* identifier) const
     {
-        if(identifier == NULL)
-        {
-            return 1;
-            COUT(1) << "Error in PickupIdentifier::compare: Input Identifier is NULL." << std::endl;
-        }
+        assert(identifier);
+        assert(identifier->pickup_);
+        assert(this->pickup_);
 
-        if(identifier->pickup_ == NULL && this->pickup_ == NULL)
-        {
-            return 0;
-            COUT(1) << "Error in PickupIdentifier::compare: Pickup stored by Identifier is NULL." << std::endl;
-        }
-
-        if(identifier->pickup_ == NULL)
-        {
-            return 1;
-            COUT(1) << "Error in PickupIdentifier::compare: Pickup stored by Identifier is NULL." << std::endl;
-        }
-
-        if(this->pickup_ == NULL)
-        {
-            return -1;
-            COUT(1) << "Error in PickupIdentifier::compare: Pickup stored by Identifier is NULL." << std::endl;
-        }
-
-        //! If the classIdentifiers are not the same (meaning the PickupIdentifiers identify different classes), the obviously the two Pickupables identified by the PickupIdentifiers cannot be the same. An ordering is established through the alphabetical ordering of the respective classnames.
+        // If the classIdentifiers are not the same (meaning the PickupIdentifiers identify different classes), the obviously the two Pickupables identified by the PickupIdentifiers cannot be the same. An ordering is established through the alphabetical ordering of the respective classnames.
         if(!identifier->pickup_->getIdentifier()->isExactlyA(this->pickup_->getIdentifier()))
             return this->pickup_->getIdentifier()->getName().compare(identifier->pickup_->getIdentifier()->getName());
 
-        //! If the class is the same for both PickupIdentifiers we go on to check the parameters of the class.
-        //! If the two have a different number of parameters then obviusly something is very wrong.
+        // If the class is the same for both PickupIdentifiers we go on to check the parameters of the class.
+        // If the two have a different number of parameters then obviously something is very wrong.
         if(!(this->parameters_.size() == identifier->parameters_.size()))
         {
             COUT(1) << "Something went wrong in PickupIdentifier!" << std::endl;
             return this->parameters_.size()-identifier->parameters_.size();
         }
 
-        //! We iterate through all parameters and compare their values (which are strings). The first parameter is the most significant. The ordering is once again established by the alphabetical comparison of the two value strings.
+        // We iterate through all parameters and compare their values (which are strings). The first parameter is the most significant. The ordering is once again established by the alphabetical comparison of the two value strings.
         for(std::map<std::string, std::string>::const_iterator it = this->parameters_.begin(); it != this->parameters_.end(); it++)
         {
-            //!< If a parameter present in one of the identifiers is not found in the other, once again, something is very wrong.
+            // If a parameter present in one of the identifiers is not found in the other, once again, something is very wrong.
             if(identifier->parameters_.find(it->first) == identifier->parameters_.end())
             {
                 COUT(1) << "Something went wrong in PickupIdentifier!" << std::endl;

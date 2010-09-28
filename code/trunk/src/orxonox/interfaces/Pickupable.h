@@ -49,6 +49,11 @@ namespace orxonox // tolua_export
     /**
     @brief
         An Interface (or more precisely an abstract class) to model and represent different (all kinds of) pickups.
+
+        Pickups (@ref orxonox:Pickupable "Pickupables") are objects that (quite unsurprisingly) can be picked up. Additionally they can be used and unused (transition from used to not used), and also dropped.
+
+        A class of Pickups can incorporate many different types of pickups (see @ref orxonox::PickupIdentifier "PickupIdentifier"), each type is uniquely defined by a @ref orxonox::PickupIdentifier "PickupIdentifier". Each pickup has such an identifier identiying its type. This means that two pickups of the same type have identifiers which are equal.
+
     @author
         Damian 'Mozork' Frick
     */
@@ -62,24 +67,24 @@ namespace orxonox // tolua_export
             virtual ~Pickupable(); //!< Default destructor.
 
             /**
-            @brief Get whether the pickup is currently in use or not.
-            @return Returns true if the pickup is currently in use.
+            @brief Get whether the Pickupable is currently in use or not.
+            @return Returns true if the Pickupable is currently in use.
             */
             inline bool isUsed(void) { return this->used_; }  // tolua_export
             /**
-            @brief  Should be called when the pickup has transited from used to unused or the other way around.
+            @brief  Should be called when the Pickupable has transited from used to unused or the other way around.
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedUsed); to their changdeUsed method.
             */
             virtual void changedUsed(void) {}
 
             /**
-            @brief Get the carrier of the pickup.
-            @return Returns a pointer to the carrier of the pickup.
+            @brief Get the carrier of the Pickupable.
+            @return Returns a pointer to the carrier of the Pickupable.
             */
             inline PickupCarrier* getCarrier(void)
                 { return this->carrier_; }
             /**
-            @brief Should be called when the pickup has changed its PickupCarrier.
+            @brief Should be called when the Pickupable has changed its PickupCarrier.
                    Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedCarrier); to their changedCarrier method.
             */
             virtual void changedCarrier(void) {}
@@ -90,7 +95,7 @@ namespace orxonox // tolua_export
             */
             inline bool isPickedUp(void) { return this->pickedUp_; }  // tolua_export
             /**
-            @brief  Should be called when the pickup has transited from picked up to dropped or the other way around.
+            @brief  Should be called when the Pickupable has transited from picked up to dropped or the other way around.
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedPickedUp); to their changedPickedUp method.
             */
             virtual void changedPickedUp(void) {}
@@ -118,10 +123,10 @@ namespace orxonox // tolua_export
             bool pickup(PickupCarrier* carrier); //!< Can be called to pick up a Pickupable.
             bool drop(bool createSpawner = true); //!< Can be called to drop a Pickupable.
 
-            virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this pickup.
+            virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this Pickupable.
             bool isTarget(const Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this Pickupable.
-            bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this pickup.
-            bool addTarget(Identifier* identifier); //!< Add a class, representetd by the input Identifier, as target of this pickup.
+            bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this Pickupable.
+            bool addTarget(Identifier* identifier); //!< Add a class, representetd by the input Identifier, as target of this Pickupable.
 
             Pickupable* clone(void); //!< Creates a duplicate of the Pickupable.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
@@ -136,12 +141,12 @@ namespace orxonox // tolua_export
             bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
             bool setPickedUp(bool pickedUp); //!< Helper method to set the Pickupable to either picked up or not picked up.
             //TODO: private?
-            bool setCarrier(PickupCarrier* carrier, bool tell = true); //!< Sets the carrier of the pickup.
+            bool setCarrier(PickupCarrier* carrier, bool tell = true); //!< Sets the carrier of the Pickupable.
 
             //TODO: private?
             virtual void carrierDestroyed(void); //!< Is called by the PickupCarrier when it is being destroyed.
 
-            void destroy(void); //!< Is called internally within the pickup module to destroy pickups.
+            void destroy(void); //!< Is called internally within the Pickupable module to destroy pickups.
 
         protected:
             /**
@@ -186,6 +191,7 @@ namespace orxonox // tolua_export
 
     };  // tolua_export
 
+    //! SUPER functions.
     SUPER_FUNCTION(10, Pickupable, changedUsed, false);
     SUPER_FUNCTION(12, Pickupable, changedCarrier, false);
     SUPER_FUNCTION(13, Pickupable, changedPickedUp, false);

@@ -45,7 +45,7 @@ namespace orxonox {
     @brief
         The CollectiblePickup class encompasses all @ref orxonox::Pickupable "Pickupables" that can be added to a @ref orxonox::PickupCollection "PickupCollection" and thus be part of such.
 
-        All you need to do to make your @ref orxonox:.Pickupable "Pickupable" a CollectiblePickup is to, in some way, inherit from it. (The @ref orxonox::Pickup Pickup class, for example, is already a CollectiblePickup).
+        All you need to do to make your @ref orxonox::Pickupable "Pickupable" a CollectiblePickup is to, in some way, inherit from it. (The @ref orxonox::Pickup "Pickup" class, for example, is already a CollectiblePickup).
 
     @author
         Damian 'Mozork' Frick
@@ -62,11 +62,11 @@ namespace orxonox {
 
             /**
             @brief Check whether the given CollectiblePickup is par of a PickupCollection.
-            @return Returns true if the ColelctiblePickup is part of a PickupCollection.
+            @return Returns true if the CollectiblePickup is part of a PickupCollection.
             */
             bool isInCollection(void)
                 { return this->isInCollection_; }
-            
+
             bool addToCollection(PickupCollection* collection); //!< Adds this CollectiblePickup to the input PickupCollection.
             bool removeFromCollection(void); //!< Removes this CollectiblePickup from its PickupCollection.
 
@@ -74,7 +74,7 @@ namespace orxonox {
 
         protected:
             virtual void preDestroy(void); //!< Is called by OrxonoxClass::destroy() before the object is actually destroyed.
-            virtual void destroyPickup(void); //!< //!< Destroys a Pickupable.
+            virtual void destroyPickup(void); //!< Destroys a Pickupable.
 
         private:
             bool isInCollection_; //!< True if the CollectiblePickup is in a PickupCollection.

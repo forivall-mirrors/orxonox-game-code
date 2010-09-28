@@ -35,10 +35,10 @@
 
 #include "core/CoreIncludes.h"
 #include "util/StringUtils.h"
-#include "pickup/PickupIdentifier.h"
-#include "DroppedPickup.h"
 
-#include "tools/Timer.h"
+#include "pickup/PickupIdentifier.h"
+
+#include "DroppedPickup.h"
 
 namespace orxonox
 {
@@ -50,6 +50,12 @@ namespace orxonox
 
     CreateUnloadableFactory(Pickup);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    @param creator
+        The objects creator.
+    */
     Pickup::Pickup(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(Pickup);
@@ -57,6 +63,10 @@ namespace orxonox
         this->initialize();
     }
 
+    /**
+    @brief
+        Destructor.
+    */
     Pickup::~Pickup()
     {
 
@@ -157,7 +167,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid activationType in pickup." << std::endl;
+            COUT(1) << "Invalid activationType '" << type << "' in pickup." << std::endl;
         }
     }
 
@@ -179,7 +189,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid durationType in pickup." << std::endl;
+            COUT(1) << "Invalid durationType '" << type << "' in pickup." << std::endl;
         }
     }
 
@@ -192,18 +202,16 @@ namespace orxonox
     {
         SUPER(Pickup, changedPickedUp);
 
-        //! Sets the Pickup to used if the Pickup has activation type 'immediate' and gets picked up.
+        // Sets the Pickup to used if the Pickup has activation type 'immediate' and gets picked up.
         if(this->isPickedUp() && this->isImmediate())
-        {
             this->setUsed(true);
-        }
     }
 
     /**
     @brief
-        Creates a duplicate of the Pickup.
-    @return
-        Returns the clone of this pickup as a pointer to a Pickupable.
+        Creates a duplicate of the OrxonoxClass.
+    @param item
+        A reference to the pointer of the item that we're duplicating.
     */
     void Pickup::clone(OrxonoxClass*& item)
     {

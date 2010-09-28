@@ -37,18 +37,19 @@
 
 #include "PickupPrereqs.h"
 
-#include "pickup/PickupIdentifier.h"
-
 #include <set>
+
+#include "pickup/PickupIdentifier.h"
 
 namespace orxonox
 {
 
     /**
     @brief
-        The PickupCollectionIdentifier is the specialization of the PickupIdentifier for the PickupCollection class.
-        It identifies PickupCollections based on the different Pickupables they consist of.
-        Pickupables can be added to the PickupCollectionIdentifier via the addPickup method.
+        The PickupCollectionIdentifier is the specialization of the PickupIdentifier for the @ref orxonox::PickupCollection "PickupCollection" class.
+        It identifies @ref orxonox::PickupCollection "PickupCollections" based on the different @ref orxonox::CollectiblePickup "CollectiblePickups" they consist of.
+
+        @ref orxonox::Pickupable "Pickupables" (resp. @ref orxonox::CollectiblePickup "CollectiblePickups") can be added to the PickupCollectionIdentifier via the addPickup method.
     @author
         Damian 'Mozork' Frick
     */
@@ -61,10 +62,10 @@ namespace orxonox
 
             virtual int compare(const PickupIdentifier* identifier) const; //!< Compares a PickupCollectionIdentifier with a PickupIdentifier.
 
-            void addPickup(const PickupIdentifier* identifier); //!< Add a Pickupable to the PickupCollectionIdentifier.
+            void addPickup(const PickupIdentifier* identifier); //!< Add a @ref orxonox::Pickupable "Pickupable" to the PickupCollectionIdentifier.
 
         private:
-            std::set<const PickupIdentifier*, PickupIdentifierCompare> identifiers_; //!< The set of PickupIdentifiers of the Pickupables the PickupCollection with this PickupCollectionIdentifier consists of, ordered by the rule set by PickupIdentifierCompare.
+            std::set<const PickupIdentifier*, PickupIdentifierCompare> identifiers_; //!< The set of PickupIdentifiers of the @ref orxonox::Pickupable "Pickupables", the @ref orxonox::PickupCollection "PickupCollection" with this PickupCollectionIdentifier consists of, ordered by the rule set by @ref orxonox::PickupIdentifierCompare "PickupIdentifierCompare".
 
     };
 
