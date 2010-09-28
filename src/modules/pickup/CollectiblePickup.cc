@@ -34,6 +34,7 @@
 #include "CollectiblePickup.h"
 
 #include "core/CoreIncludes.h"
+
 #include "PickupCollection.h"
 
 namespace orxonox {

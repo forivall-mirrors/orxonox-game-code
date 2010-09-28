@@ -50,8 +50,10 @@ namespace orxonox
         @brief
             The PickupSpawner class is responsible for spawning pickups of a specific type.
             Forthermore it can be specified how long the time interval between spawning two items is and how many pickups are spawned at maximum, amongst other things.
+
         @author
             Daniel 'Huty' Haggenmueller
+        @author
             Damian 'Mozork' Frick
     */
     class _PickupExport PickupSpawner : public StaticEntity, public Tickable

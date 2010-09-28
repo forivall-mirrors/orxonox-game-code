@@ -33,7 +33,6 @@
 */
 
 #include "GametypeMessageListener.h"
-#include "PickupCarrier.h"
 #include "PlayerTrigger.h"
 #include "RadarListener.h"
 #include "Rewardable.h"
@@ -50,38 +49,6 @@ namespace orxonox
     GametypeMessageListener::GametypeMessageListener()
     {
         RegisterRootObject(GametypeMessageListener);
-    }
-
-    //----------------------------
-    // PickupCarrier
-    //----------------------------
-    PickupCarrier::PickupCarrier()
-    {
-        RegisterRootObject(PickupCarrier);
-    }
-
-    PickupCarrier::~PickupCarrier()
-    {
-
-    }
-
-    void PickupCarrier::preDestroy(void)
-    {
-        std::set<Pickupable*>::iterator it = this->pickups_.begin();
-        std::set<Pickupable*>::iterator temp;
-        while(it != this->pickups_.end())
-        {
-            (*it)->carrierDestroyed();
-            temp = it;
-            it = this->pickups_.begin();
-            if(it == temp) // Infinite loop avoidance, in case the pickup wasn't removed from the carrier somewhere in the carrierDestroy() procedure.
-            {
-                COUT(2) << "Oops. In a PickupCarrier, while cleaning up, a Pickupable (&" << (*temp) << ") didn't unregister itself as it should have." << std::endl;;
-                it++;
-            }
-        }
-
-        this->pickups_.clear();
     }
 
     //----------------------------

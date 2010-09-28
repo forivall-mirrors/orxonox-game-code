@@ -34,9 +34,9 @@
 #include "DroppedPickup.h"
 
 #include "core/CoreIncludes.h"
+
 #include "interfaces/Pickupable.h"
 #include "interfaces/PickupCarrier.h"
-#include "graphics/Model.h"
 
 namespace orxonox
 {

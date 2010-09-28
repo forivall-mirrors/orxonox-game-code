@@ -47,30 +47,40 @@
 namespace orxonox
 {
 
-    //! Enum for the activation type.
+    //! Enum for the @ref orxonox::Pickup "Pickup" activation type.
     namespace pickupActivationType
     {
         enum Value
         {
-            immediate,
-            onUse,
+            immediate, //!< Means that the @ref orxonox::Pickup "Pickup" will be used immediately after pickup.
+            onUse, //!< Means that the @ref orxonox::Pickup "Pickup" will be used at a later point trough some external influence.
         };
     }
 
-    //! Enum for the duration tyoe.
+    //! Enum for the @ref orxonox::Pickup "Pickup" duration type.
     namespace pickupDurationType
     {
         enum Value
         {
-            once,
-            continuous,
+            once, //!< Means that the @ref orxonox::Pickup "Pickup" will be used only once at a singular time instant.
+            continuous, //!< Means that the @ref orxonox::Pickup "Pickup" will be used over a continuous timespan.
         };
     }
 
     /**
     @brief
-        Pickup class. Offers base functionality for a wide range of pickups.
-        Pickups ingeriting from this class cann choose an activation type and a duration type.
+        The Pickup class offers (useful) base functionality for a wide range of pickups.
+
+        Pickups ingeriting from this class can choose an activation type and a duration type.
+        - The <b>activation type</b> deals with what happens to the Pickup as soon as it is picked up. It can either be set to <em>immediate</em>, which means that the Pickup is activated/used immediately upon being picked up. Or to <em>onUse</em>, which means, that the Pickup will be activated/used if some outside entity (most commonly the player through the PickupInventory) decides to use it.
+        - The <b>duration type</b> deals with whether the Pickup has a continuous effect or whether its effect is focused on a singular instant. It can either be set to <em>once</em>, which means, that the Pickup just has an effect (at a singular instant in time) and is done once that effect has been applied. Or to <em>continuous</em>, which means that the effect of the Pickup unfolds over some timespan.
+
+        If it were not an abstract class it could for example be used as follows in XML.
+        @code
+        <Pickup activationType="onUse" durationType="continuous" />
+        @endcode
+        In reality you can (naturally) use the parameters <b>activation type</b> and <b>duration type</b> in any pickup inheriting from Pickup, unless the pickup already specifies one (or both) of the parameters.
+
     @author
         Damian 'Mozork' Frick
     */
@@ -84,20 +94,20 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             /**
-            @brief Get the activation type of the pickup.
-            @return Returns the activation type of the pickup.
+            @brief Get the activation type of the Pickup.
+            @return Returns the activation type of the Pickup.
             */
             inline pickupActivationType::Value getActivationTypeDirect(void)
                 { return this->activationType_; }
             /**
-            @brief Get the duration type of the pickup.
-            @return Returns the duration type of the pickup.
+            @brief Get the duration type of the Pickup.
+            @return Returns the duration type of the Pickup.
             */
             inline pickupDurationType::Value getDurationTypeDirect(void)
                 { return this->durationType_; }
 
-            const std::string& getActivationType(void); //!< Get the activation type of the pickup.
-            const std::string& getDurationType(void); //!< Get the duration type of the pickup.
+            const std::string& getActivationType(void); //!< Get the activation type of the Pickup.
+            const std::string& getDurationType(void); //!< Get the duration type of the Pickup.
 
             /**
             @brief Get whether the activation type is 'immediate'.
@@ -126,7 +136,7 @@ namespace orxonox
 
             virtual void changedPickedUp(void); //!< Should be called when the pickup has transited from picked up to dropped or the other way around.
 
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the Pickup.
+            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the OrxonoxClass.
 
         protected:
             void initializeIdentifier(void);
@@ -134,26 +144,26 @@ namespace orxonox
             virtual bool createSpawner(void); //!< Facilitates the creation of a PickupSpawner upon dropping of the Pickupable.
 
             /**
-            @brief Set the activation type of the pickup.
-            @param type The activation type of the pickup.
+            @brief Set the activation type of the Pickup.
+            @param type The activation type of the Pickup.
             */
             inline void setActivationTypeDirect(pickupActivationType::Value type)
                 { this->activationType_ = type; }
             /**
-            @brief Set the duration type of the pickup.
-            @param type The duration type of the pickup.
+            @brief Set the duration type of the Pickup.
+            @param type The duration type of the Pickup.
             */
             inline void setDurationTypeDirect(pickupDurationType::Value type)
                 { this->durationType_ = type; }
 
-            void setActivationType(const std::string& type); //!< Set the activation type of the pickup.
-            void setDurationType(const std::string& type); //!< Set the duration type of the pickup
+            void setActivationType(const std::string& type); //!< Set the activation type of the Pickup.
+            void setDurationType(const std::string& type); //!< Set the duration type of the Pickup.
 
         private:
             void initialize(void); //!< Initializes the member variables.
 
             pickupActivationType::Value activationType_; //!< The activation type of the Pickup.
-            pickupDurationType::Value durationType_; //!< The duration type of the pickup.
+            pickupDurationType::Value durationType_; //!< The duration type of the Pickup.
 
             //! Strings for the activation and duration types.
             static const std::string activationTypeImmediate_s;

@@ -39,7 +39,6 @@
 
 #include <map>
 #include <string>
-#include "core/Identifier.h"
 
 #include "core/OrxonoxClass.h"
 
@@ -48,10 +47,15 @@ namespace orxonox
 
     /**
     @brief
-        The purpose of the PickupIdentifier class is to identify different types of pickups allthough they are of the same class.
-        This allows for more generic classes (or pickups in this case) that can be a number of different pickup types and can be identified as such without the need for a lot of different classes. An example is the HealthPickup class that encompasses a wide variety of different types of health pickups, e.g a HealthPickup that adds 10 health every second for 10 seconds or a HealthPickup that adds 100 health as soon as it is picked up, a.s.o.
-        To that purpose this class provides functionality to compare two PickupIdentifier (and since all Pickupables have an Identifier through that Pickupables can be compared). It als provides functionality to add parameters that distinguish between different types of pickups in the same pickup class.
-        Lastly a struct is provided that can be used in stl containers to establish a strictly lesser ordering between PickupIdentifiers (and thus Pickupables).
+        The purpose of the PickupIdentifier class is to identify (or differentiate between) different types of pickups although they are of the same class.
+
+        This allows for more generic classes (or pickups in this case) that can be a number of different pickup types and can be identified as such without the need for a lot of different classes.
+
+        An example is the @ref orxonox::HealthPickup "HealthPickup" class that encompasses a wide variety of different types of health pickups, e.g a @ref orxonox::HealthPickup "HealthPickup" that adds 10 health every second for 10 seconds or a @ref orxonox::HealthPickup "HealthPickup" that adds 100 health as soon as it is picked up, a.s.o.
+
+        To that purpose this class provides functionality to compare two @ref orxonox::PickupIdentifier "PickupIdentifiers" (and since all @ref orxonox::Pickupable "Pickupables" have an identifier, we can use it to compare pickups). It als provides functionality to add parameters that distinguish between different types of pickups in the same pickup class.
+
+        Lastly a struct (@ref orxonox::PickupIdentifierCompare "PickupIdentifierCompare") is provided that can be used in stl containers to establish a strictly lesser ordering between @ref orxonox::PickupIdentifier "PickupIdentifiers" (and thus @ref orxonox::Pickupable "Pickupables").
     @author
         Damian 'Mozork' Frick
     */
@@ -74,7 +78,7 @@ namespace orxonox
 
     /**
     @brief
-        Struct that overloads the compare operation between two PickupIdentifier pointers.
+        Struct that overloads the compare operation between two @ref orxonox::PickupIdentifier "PickupIdentifier" pointers.
     */
     struct PickupIdentifierCompare
     {

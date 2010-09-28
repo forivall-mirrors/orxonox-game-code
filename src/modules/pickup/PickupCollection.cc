@@ -33,7 +33,9 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "interfaces/PickupCarrier.h"
+
 #include "CollectiblePickup.h"
 #include "DroppedPickup.h"
 #include "PickupCollectionIdentifier.h"
@@ -48,6 +50,8 @@ namespace orxonox
     /**
     @brief
         Default Constructor.
+    @param creator
+        The creator of the object.
     */
     PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator)
     {
@@ -200,7 +204,7 @@ namespace orxonox
 
     /**
     @brief
-        Creates a duplicate of the input OrxonoxClass.
+        Creates a duplicate of the input Pickupable.
         This method needs to be implemented by any Class inheriting from Pickupable.
     @param item
         A reference to a pointer to the OrxonoxClass that is to be duplicated.

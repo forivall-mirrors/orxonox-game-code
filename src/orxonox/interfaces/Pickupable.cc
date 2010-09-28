@@ -38,9 +38,11 @@
 #include "core/Identifier.h"
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
+
 #include "infos/PlayerInfo.h"
 #include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
+
 #include "PickupCarrier.h"
 
 namespace orxonox
@@ -129,6 +131,7 @@ namespace orxonox
         this->used_ = used;
         this->changedUsed();
 
+        //TODO: Synchronize & make safe for dedicated server.
         GUIManager::getInstance().getLuaState()->doString("PickupInventory.update()");
         return true;
     }
@@ -276,6 +279,8 @@ namespace orxonox
         if(!pickedUp) // if the Pickupable has been dropped it unregisters itself with its PickupCarrier.
             this->getCarrier()->removePickup(this);
         this->changedPickedUp();
+
+        //TODO: Synchronize & make safe for dedicated server.
         GUIManager::getInstance().getLuaState()->doString("PickupInventory.update()");
         return true;
     }
@@ -302,7 +307,7 @@ namespace orxonox
             if(!carrier->addPickup(this))
                 return false;
         }
-        
+
         this->carrier_ = carrier;
         this->changedCarrier();
         return true;

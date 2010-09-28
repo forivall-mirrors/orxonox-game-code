@@ -66,9 +66,11 @@ namespace orxonox
     */
     int PickupCollectionIdentifier::compare(const PickupIdentifier* identifier) const
     {
+        assert(identifier);
+
         // Slight un-niceity to cast the PickupIdentifier to a PickupCollectionIdentifier.
         PickupIdentifier* temp = const_cast<PickupIdentifier*>(identifier);
-        const PickupCollectionIdentifier* collectionIdentifier = dynamic_cast<PickupCollectionIdentifier*>(temp);
+        const PickupCollectionIdentifier* collectionIdentifier = orxonox_cast<PickupCollectionIdentifier*>(temp);
 
         // If the input PickupIdentifier 'identifier' is no PickupCollectionIdentifier then just the two PickupIdentifiers are compared.
         if(collectionIdentifier == NULL)
@@ -91,7 +93,7 @@ namespace orxonox
                 return 1;
         }
 
-        //! Means they are equal.
+        // Means they are equal.
         return 0;
     }
 
