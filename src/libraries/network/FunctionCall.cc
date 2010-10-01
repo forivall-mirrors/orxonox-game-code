@@ -223,6 +223,7 @@ void FunctionCall::saveData(uint8_t*& mem)
   {
     mem += 2*sizeof(uint32_t)+sizeof(uint8_t);
   }
+  else
   {
     *(uint32_t*)(mem+2*sizeof(uint32_t)+sizeof(uint8_t)) = this->objectID_;
     mem += 3*sizeof(uint32_t)+sizeof(uint8_t);
