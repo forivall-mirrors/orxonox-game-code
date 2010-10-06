@@ -43,8 +43,8 @@
 #include "core/OrxonoxClass.h"
 #include "Rewardable.h"
 
-namespace orxonox // tolua_export
-{ // tolua_export
+namespace orxonox
+{
 
     /**
     @brief
@@ -57,9 +57,8 @@ namespace orxonox // tolua_export
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport Pickupable  // tolua_export
-        : virtual public OrxonoxClass, public Rewardable
-    {  // tolua_export
+    class _OrxonoxExport Pickupable : virtual public OrxonoxClass, public Rewardable
+    {
         protected:
             Pickupable(); //!< Default constructor.
 
@@ -70,7 +69,8 @@ namespace orxonox // tolua_export
             @brief Get whether the Pickupable is currently in use or not.
             @return Returns true if the Pickupable is currently in use.
             */
-            inline bool isUsed(void) { return this->used_; }  // tolua_export
+            inline bool isUsed(void)
+                { return this->used_; }
             /**
             @brief  Should be called when the Pickupable has transited from used to unused or the other way around.
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedUsed); to their changdeUsed method.
@@ -93,7 +93,8 @@ namespace orxonox // tolua_export
             @brief Returns whether the Pickupable is currently picked up.
             @return Returns true if the Pickupable is currently picked up, false if not.
             */
-            inline bool isPickedUp(void) { return this->pickedUp_; }  // tolua_export
+            inline bool isPickedUp(void)
+                { return this->pickedUp_; }
             /**
             @brief  Should be called when the Pickupable has transited from picked up to dropped or the other way around.
                     Any Class overwriting this method must call its SUPER function by adding SUPER(Classname, changedPickedUp); to their changedPickedUp method.
@@ -104,13 +105,15 @@ namespace orxonox // tolua_export
             @brief Returns whether the Pickupable can be used.
             @return Returns true if it can be used.
             */
-            inline bool isUsable(void) { return this->enabled_; } // tolua_export
-            
+            inline bool isUsable(void)
+                { return this->enabled_; }
+
             /**
             @brief Returns whether the Pickupable can be unused.
             @return Returns true if it can be unused.
             */
-            inline bool isUnusable(void) { return this->enabled_; } // tolua_export
+            inline bool isUnusable(void)
+                { return this->enabled_; }
 
             /**
             @brief Returns whether the Pickupable is enabled.
@@ -189,12 +192,12 @@ namespace orxonox // tolua_export
         public:
             virtual bool reward(PlayerInfo* player); //!< Method to transcribe a Pickupable as a Rewardable to the player.
 
-    };  // tolua_export
+    };
 
     //! SUPER functions.
     SUPER_FUNCTION(10, Pickupable, changedUsed, false);
     SUPER_FUNCTION(12, Pickupable, changedCarrier, false);
     SUPER_FUNCTION(13, Pickupable, changedPickedUp, false);
-}  // tolua_export
+}
 
 #endif /* _Pickupable_H__ */

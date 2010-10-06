@@ -248,7 +248,7 @@ namespace orxonox
 
         // If all senders are the target of the NotificationListener, then the list of Notifications for that specific NotificationListener is the same as the list of all Notifications.
         bool bAll = set.find(NotificationManager::ALL) != set.end();
-        std::multimap<std::time_t, Notification*>* map;
+        std::multimap<std::time_t, Notification*>* map = NULL;
         if(bAll)
             this->notificationLists_[index] = &this->allNotificationsList_;
         // Else a new list (resp. multimap) is created and added to the list of Notification lists for NotificationListeners.

@@ -44,27 +44,27 @@ function P.update()
             if pickup ~= nil and pickup ~= 0 then
                 local useButton = winMgr:getWindow("orxonox/PickupInventory/Details" .. k .. "/UseButton")
                 local dropButton = winMgr:getWindow("orxonox/PickupInventory/Details" .. k .. "/DropButton")
-                if orxonox.PickupManager:getInstance():isValidPickup(pickup) == false then
+                if orxonox.PickupManager:getInstance():isValidPickup(pickup.pickup) == false then
                     useButton:setEnabled(false)
                     dropButton:setEnabled(false)
                     P.detailPickups[k] = nil
                 else
                     useButton:setEnabled(true)
-                    if pickup:isUsed() == true then
+                    if pickup.inUse == true then
                         useButton:setText("unuse")
                         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseDetailButton_clicked")
-                        if pickup:isUsable() == false then
+                        if pickup.usable == false then
                             useButton:setEnabled(false)
                         end
                     else
                         useButton:setText("use")
                         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseDetailButton_clicked")
-                        if pickup:isUnusable() == false then
+                        if pickup.unusable == false then
                             useButton:setEnabled(false)
                         end
                     end
 
-                    if pickup:isPickedUp() == false then
+                    if pickup.pickedUp == false then
                         useButton:setEnabled(false)
                         dropButton:setEnabled(false)
                         P.detailPickups[k] = nil
@@ -107,7 +107,7 @@ function P.createInventory()
 end
 
 function P.createPickupEntry(index, pickup)
-    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup)
+    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup.pickup)
 
     local name = "orxonox/PickupInventory/Box/Pickup" .. index
 
@@ -132,16 +132,16 @@ function P.createPickupEntry(index, pickup)
     local useButton = winMgr:createWindow("MenuWidgets/Button", name .. "/UseButton")
     useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0.3, P.imageHeight+10),CEGUI.UDim(0, (P.imageHeight-P.textHeight)/2)))
     useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
-    if pickup:isUsed() == false then
+    if pickup.inUse == false then
         useButton:setText("use")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseButton_clicked")
-        if pickup:isUsable() == false then
+        if pickup.usable == false then
             useButton:setEnabled(false)
         end
     else
         useButton:setText("unuse")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseButton_clicked")
-        if pickup:isUnusable() == false then
+        if pickup.unusable == false then
             useButton:setEnabled(false)
         end
     end
@@ -192,7 +192,7 @@ end
 
 function P.createDetailsWindow(pickupIndex)
     local pickup = P.pickupsList[pickupIndex]
-    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup)
+    local representation = orxonox.PickupManager:getInstance():getPickupRepresentation(pickup.pickup)
 
     local index = P.getNewDetailNumber()
     local name = "orxonox/PickupInventory/Details" .. index
@@ -237,16 +237,16 @@ function P.createDetailsWindow(pickupIndex)
     local useButton = winMgr:createWindow("MenuWidgets/Button", name .. "/UseButton")
     useButton:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.detailImageSize+10),CEGUI.UDim(1, -40)))
     useButton:setSize(CEGUI.UVector2(CEGUI.UDim(0, P.buttonWidth), CEGUI.UDim(0, P.textHeight)))
-    if pickup:isUsed() == false then
+    if pickup.inUse == false then
         useButton:setText("use")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUseDetailButton_clicked")
-        if pickup:isUsable() == false then
+        if pickup.usable == false then
             useButton:setEnabled(false)
         end
     else
         useButton:setText("unuse")
         orxonox.GUIManager:subscribeEventHelper(useButton, "Clicked", P.name .. ".InventoryUnuseDetailButton_clicked")
-        if pickup:isUnusable() == false then
+        if pickup.unusable == false then
             useButton:setEnabled(false)
         end
     end
@@ -276,17 +276,20 @@ end
 
 function P.InventoryUseButton_clicked(e)
     local pickupIndex = P.windowToPickupHelper(e)
-    orxonox.PickupManager:getInstance():usePickup(P.pickupsList[pickupIndex], true)
+    local pickup = P.pickupsList[pickupIndex]
+    orxonox.PickupManager:getInstance():usePickup(pickup.pickup, true)
 end
 
 function P.InventoryUnuseButton_clicked(e)
     local pickupIndex = P.windowToPickupHelper(e)
-    orxonox.PickupManager:getInstance():usePickup(P.pickupsList[pickupIndex], false)
+    local pickup = P.pickupsList[pickupIndex]
+    orxonox.PickupManager:getInstance():usePickup(pickup.pickup, false)
 end
 
 function P.InventoryDropButton_clicked(e)
     local pickupIndex = P.windowToPickupHelper(e)
-    orxonox.PickupManager:getInstance():dropPickup(P.pickupsList[pickupIndex])
+    local pickup = P.pickupsList[pickupIndex]
+    orxonox.PickupManager:getInstance():dropPickup(pickup.pickup)
 end
 
 function P.InventoryDetailsButton_clicked(e)
@@ -296,17 +299,20 @@ end
 
 function P.InventoryUseDetailButton_clicked(e)
     local pickupIndex = P.windowToPickupHelper(e)
-    orxonox.PickupManager:getInstance():usePickup(P.detailPickups[pickupIndex], true)
+    local pickup = P.detailPickups[pickupIndex]
+    orxonox.PickupManager:getInstance():usePickup(pickup.pickup, true)
 end
 
 function P.InventoryUnuseDetailButton_clicked(e)
     local pickupIndex = P.windowToPickupHelper(e)
-    orxonox.PickupManager:getInstance():usePickup(P.detailPickups[pickupIndex], false)
+    local pickup = P.detailPickups[pickupIndex]
+    orxonox.PickupManager:getInstance():usePickup(pickup.pickup, false)
 end
 
 function P.InventoryDropDetailButton_clicked(e)
     local pickupIndex = P.windowToPickupHelper(e)
-    orxonox.PickupManager:getInstance():dropPickup(P.detailPickups[pickupIndex])
+    local pickup = P.detailPickups[pickupIndex]
+    orxonox.PickupManager:getInstance():dropPickup(pickup.pickup)
 end
 
 function P.closeDetailWindow(e)

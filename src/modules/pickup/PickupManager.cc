@@ -39,6 +39,8 @@
 #include "core/LuaState.h"
 #include "core/GUIManager.h"
 #include "core/Identifier.h"
+#include "network/Host.h"
+#include "network/NetworkFunction.h"
 #include "interfaces/PickupCarrier.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
@@ -52,19 +54,22 @@ namespace orxonox
     // Register tolua_open function when loading the library
     DeclareToluaInterface(Pickup);
 
-    ManageScopedSingleton(PickupManager, ScopeID::Graphics, false);
+    ManageScopedSingleton(PickupManager, ScopeID::Root, false);
 
     /*static*/ const std::string PickupManager::guiName_s = "PickupInventory";
+
+    registerStaticNetworkFunction(PickupManager::pickupChangedUsedNetwork);
+    registerStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork);
+    registerStaticNetworkFunction(PickupManager::dropPickupNetworked);
+    registerStaticNetworkFunction(PickupManager::usePickupNetworked);
 
     /**
     @brief
         Constructor. Registers the PickupManager and creates the default PickupRepresentation.
     */
-    PickupManager::PickupManager() : defaultRepresentation_(NULL)
+    PickupManager::PickupManager() : guiLoaded_(false), pickupIndex_(0), defaultRepresentation_(NULL)
     {
-        RegisterRootObject(PickupManager);
-
-        GUIManager::getInstance().loadGUI(PickupManager::guiName_s);
+        RegisterObject(PickupManager);
 
         this->defaultRepresentation_ = new PickupRepresentation();
 
@@ -82,6 +87,8 @@ namespace orxonox
             this->defaultRepresentation_->destroy();
 
         this->representations_.clear();
+
+        //TODO: Destroy properly...
 
         COUT(3) << "PickupManager destroyed." << std::endl;
     }
@@ -102,12 +109,23 @@ namespace orxonox
         assert(identifier);
         assert(representation);
 
-        if(this->representations_.find(identifier) != this->representations_.end()) // If the Pickupable already has a Representation registered.
+        if(!this->representations_.empty() && this->representations_.find(identifier) != this->representations_.end()) // If the Pickupable already has a Representation registered.
             return false;
 
         this->representations_[identifier] = representation;
 
         COUT(4) << "PickupRepresentation &" << representation << " registered with the PickupManager." << std::endl;
+        return true;
+    }
+
+    bool PickupManager::registerRepresentation(PickupRepresentation* representation)
+    {
+        assert(representation);
+
+        if(!this->representationsNetworked_.empty() && this->representationsNetworked_.find(representation->getObjectID()) != this->representationsNetworked_.end()) // If the PickupRepresentation is already registered.
+            return false;
+
+        this->representationsNetworked_[representation->getObjectID()] = representation;
         return true;
     }
 
@@ -133,6 +151,18 @@ namespace orxonox
         this->representations_.erase(it);
 
         COUT(4) << "PickupRepresentation &" << representation << " unregistered with the PickupManager." << std::endl;
+        return true;
+    }
+
+    bool PickupManager::unregisterRepresentation(PickupRepresentation* representation)
+    {
+        assert(representation);
+
+        std::map<uint32_t, PickupRepresentation*>::iterator it = this->representationsNetworked_.find(representation->getObjectID());
+        if(it == this->representationsNetworked_.end()) //!< If the Pickupable is not registered in the first place.
+            return false;
+
+        this->representationsNetworked_.erase(it);
         return true;
     }
 
@@ -165,12 +195,21 @@ namespace orxonox
     @return
         Returns the PickupRepresentation of the input Pickupable or NULL if an error occurred.
     */
-    orxonox::PickupRepresentation* PickupManager::getPickupRepresentation(orxonox::Pickupable* pickup)
+    orxonox::PickupRepresentation* PickupManager::getPickupRepresentation(uint64_t pickup)
     {
-        if(pickup != NULL)
-            return this->getRepresentation(pickup->getPickupIdentifier());
+        this->representationsNetworked_.clear();
+        for(ObjectList<PickupRepresentation>::iterator it = ObjectList<PickupRepresentation>::begin(); it != ObjectList<PickupRepresentation>::end(); ++it)
+            this->representationsNetworked_[it->getObjectID()] = *it;
 
-        return NULL;
+        std::map<uint64_t, PickupInventoryContainer*>::iterator it = this->pickupInventoryContainers_.find(pickup);
+        if(it == this->pickupInventoryContainers_.end())
+            return this->defaultRepresentation_;
+
+        std::map<uint32_t, PickupRepresentation*>::iterator it2 = this->representationsNetworked_.find(it->second->representationObjectId);
+        if(it2 == this->representationsNetworked_.end())
+            return this->defaultRepresentation_;
+
+        return it2->second;
     }
 
     /**
@@ -182,59 +221,8 @@ namespace orxonox
     */
     int PickupManager::getNumPickups(void)
     {
-        this->pickupsList_.clear(); // Clear the list if Pickupables.
-
-        PlayerInfo* player = GUIManager::getInstance().getPlayer(PickupManager::guiName_s);
-        PickupCarrier* carrier = NULL;
-        if (player != NULL)
-            carrier =  orxonox_cast<PickupCarrier*>(player->getControllableEntity());
-        else
-            return 0;
-
-        std::vector<PickupCarrier*>* carriers = this->getAllCarriers(carrier); // Get a list of all the entities which carry the players Pickupables.
-        // Iterate through all the carriers and add their Pickupable to the list.
-        for(std::vector<PickupCarrier*>::iterator it = carriers->begin(); it != carriers->end(); it++)
-        {
-            std::set<Pickupable*> pickups = (*it)->getPickups();
-            for(std::set<Pickupable*>::iterator pickup = pickups.begin(); pickup != pickups.end(); pickup++)
-            {
-                CollectiblePickup* collectible = orxonox_cast<CollectiblePickup*>(*pickup);
-                // If the Pickupable is in a PickupCollection it is not added to the list and thus not displayed in the PickupInventory.
-                if(collectible == NULL || !collectible->isInCollection())
-                    this->pickupsList_.insert(std::pair<Pickupable*, WeakPtr<Pickupable> >(*pickup, WeakPtr<Pickupable>(*pickup)));
-            }
-        }
-        delete carriers;
-
-        this->pickupsIterator_ = this->pickupsList_.begin(); //Set the iterator to the start of the list.
-        return this->pickupsList_.size();
-    }
-
-    /**
-    @brief
-        Helper method. Get all the PickupCarriers that carry Pickupables, recursively.
-    @param carrier
-        The PickupCarrier whose children should be added to the list of PickupCarriers.
-    @param carriers
-        The list of PickupCarriers, used in "recursive-mode".
-        For the first instance this is just NULL (which is default and can be omitted) upon which a new list is allocated.
-    @return
-        Returns the list of PickupCarriers.
-    */
-    std::vector<PickupCarrier*>* PickupManager::getAllCarriers(PickupCarrier* carrier, std::vector<PickupCarrier*>* carriers)
-    {
-        if(carriers == NULL) // Create a new list if no list was passed.
-            carriers = new std::vector<PickupCarrier*>();
-
-        carriers->insert(carriers->end(), carrier); // Add the input PickupCarrier to the list.
-
-        std::vector<PickupCarrier*>* children = carrier->getCarrierChildren(); // Get the children of the input PickupCarrier.
-        // Iterate through the children and add them (and their children) to the list by recursively executing getAllCarriers().
-        for(std::vector<PickupCarrier*>::iterator it = children->begin(); it != children->end(); it++)
-            this->getAllCarriers(*it, carriers);
-        delete children;
-
-        return carriers;
+        this->pickupsIterator_ = this->pickupInventoryContainers_.begin();
+        return this->pickupInventoryContainers_.size();
     }
 
     /**
@@ -244,17 +232,31 @@ namespace orxonox
     @param pickup
         The Pickupable to be dropped.
     */
-    void PickupManager::dropPickup(orxonox::Pickupable* pickup)
+    void PickupManager::dropPickup(uint64_t pickup)
     {
-        if(pickup == NULL)
-            return;
+        if(GameMode::isMaster() && !this->pickups_.empty())
+        {
+            Pickupable* pickupable = this->pickups_.find(pickup)->second->get();
+            if(pickupable != NULL)
+                pickupable->drop();
+        }
+        else
+        {
+            callStaticNetworkFunction(PickupManager::dropPickupNetworked, 0, pickup);
+        }
+    }
 
-        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); // Get the WeakPointer of the Pickupable.
-        // If either the input Pickupable is not in the PickupManagers list or it no longer exists, the method returns.
-        if(it == this->pickupsList_.end() || it->second.get() == NULL)
-            return;
-
-        pickup->drop(); // The Pickupable is dropped.
+    /*static*/ void PickupManager::dropPickupNetworked(uint64_t pickup)
+    {
+        if(GameMode::isServer())
+        {
+            PickupManager& manager = PickupManager::getInstance();
+            if(manager.pickups_.empty())
+                return;
+            Pickupable* pickupable = manager.pickups_.find(pickup)->second->get();
+            if(pickupable != NULL)
+                pickupable->drop();
+        }
     }
 
     /**
@@ -266,17 +268,31 @@ namespace orxonox
     @param use
         If true the input Pickupable is used, if false it is unused.
     */
-    void PickupManager::usePickup(orxonox::Pickupable* pickup, bool use)
+    void PickupManager::usePickup(uint64_t pickup, bool use)
     {
-        if(pickup == NULL)
-            return;
+        if(GameMode::isMaster() && !this->pickups_.empty())
+        {
+            Pickupable* pickupable = this->pickups_.find(pickup)->second->get();
+            if(pickupable != NULL)
+                pickupable->setUsed(use);
+        }
+        else
+        {
+            callStaticNetworkFunction(PickupManager::usePickupNetworked, 0, pickup, use);
+        }
+    }
 
-        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); // Get the WeakPointer of the Pickupable.
-        // If either the input Pickupable is not in the PickupManagers list or it no longer exists, the method returns.
-        if(it == this->pickupsList_.end() || it->second.get() == NULL)
-            return;
-
-        pickup->setUsed(use); // The Pickupable is used (or unused).
+    /*static*/ void PickupManager::usePickupNetworked(uint64_t pickup, bool use)
+    {
+        if(GameMode::isServer())
+        {
+            PickupManager& manager = PickupManager::getInstance();
+            if(manager.pickups_.empty())
+                return;
+            Pickupable* pickupable = manager.pickups_.find(pickup)->second->get();
+            if(pickupable != NULL)
+                pickupable->setUsed(use);
+        }
     }
 
     /**
@@ -287,12 +303,168 @@ namespace orxonox
     @return
         Returns true if the input Pickupable is still valid, false if not.
     */
-    bool PickupManager::isValidPickup(orxonox::Pickupable* pickup)
+    bool PickupManager::isValidPickup(uint64_t pickup)
     {
-        std::map<Pickupable*, WeakPtr<Pickupable> >::iterator it = this->pickupsList_.find(pickup); // Get the WeakPointer of the Pickupable.
-        if(it == this->pickupsList_.end()) // If the Pickupable is not in the PickupManager's list.
-            return false;
-        return it->second.get() != NULL; // Returns whether the Pickupable still exists.
+        return this->pickups_.find(pickup) != this->pickups_.end();
+    }
+
+    void PickupManager::pickupChangedUsed(Pickupable* pickup, bool used)
+    {
+        assert(pickup);
+
+        if(!GameMode::isMaster()) // If this is neither standalone nor the server.
+            return;
+
+        CollectiblePickup* collectible = orxonox_cast<CollectiblePickup*>(pickup);
+        // If the Picupable is part of a PickupCollection it isn't displayed in the PickupInventory, just the PickupCollection is.
+        if(collectible != NULL && collectible->isInCollection())
+            return;
+
+        PickupCarrier* carrier = pickup->getCarrier();
+        while(carrier->getCarrierParent() != NULL)
+            carrier = carrier->getCarrierParent();
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
+        if(pawn == NULL)
+            return;
+        PlayerInfo* info = pawn->getPlayer();
+        if(info == NULL)
+            return;
+        unsigned int clientId = info->getClientID();
+
+        std::map<Pickupable*, uint64_t>::iterator it = this->indexes_.find(pickup);
+        assert(it != this->indexes_.end());
+
+        uint64_t index = it->second;
+        if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
+        {
+            PickupManager::pickupChangedUsedNetwork(index, used, pickup->isUsable(), pickup->isUnusable());
+        }
+        else
+        {
+            callStaticNetworkFunction(PickupManager::pickupChangedUsedNetwork, clientId, index, used, pickup->isUsable(), pickup->isUnusable());
+        }
+    }
+
+    /*static*/ void PickupManager::pickupChangedUsedNetwork(uint64_t pickup, bool inUse, bool usable, bool unusable)
+    {
+        PickupManager& manager = PickupManager::getInstance();
+        if(manager.pickupInventoryContainers_.find(pickup) == manager.pickupInventoryContainers_.end())
+        {
+            COUT(1) << "Error: Pickupable &(" << pickup << ") was not registered with PickupManager for the PickupInventory, when it changed used." << std::endl;
+            return;
+        }
+
+        manager.pickupInventoryContainers_[pickup]->inUse = inUse;
+        manager.pickupInventoryContainers_[pickup]->usable = usable;
+        manager.pickupInventoryContainers_[pickup]->unusable = unusable;
+
+        manager.updateGUI();
+    }
+
+    void PickupManager::pickupChangedPickedUp(Pickupable* pickup, bool pickedUp)
+    {
+        assert(pickup);
+
+        if(!GameMode::isMaster())
+            return;
+
+        CollectiblePickup* collectible = orxonox_cast<CollectiblePickup*>(pickup);
+        // If the Picupable is part of a PickupCollection it isn't displayed in the PickupInventory, just the PickupCollection is.
+        if(collectible != NULL && collectible->isInCollection())
+            return;
+
+        PickupCarrier* carrier = pickup->getCarrier();
+        while(carrier->getCarrierParent() != NULL)
+            carrier = carrier->getCarrierParent();
+        Pawn* pawn = orxonox_cast<Pawn*>(carrier);
+        if(pawn == NULL)
+            return;
+        PlayerInfo* info = pawn->getPlayer();
+        if(info == NULL)
+            return;
+        unsigned int clientId = info->getClientID();
+
+        uint64_t index = 0;
+        if(pickedUp)
+        {
+            index = this->getPickupIndex();
+            this->indexes_[pickup] = index;
+            this->pickups_[index] = new WeakPtr<Pickupable>(pickup);
+        }
+        else
+        {
+            std::map<Pickupable*, uint64_t>::iterator it = this->indexes_.find(pickup);
+            index = it->second;
+            WeakPtr<Pickupable>* ptr = this->pickups_[index];
+            this->indexes_.erase(it);
+            this->pickups_.erase(index);
+            delete ptr;
+        }
+
+        if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
+        {
+            PickupManager::pickupChangedPickedUpNetwork(index, pickup->isUsable(), this->representations_[pickup->getPickupIdentifier()]->getObjectID(), pickedUp);
+        }
+        else
+        {
+            callStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->representations_[pickup->getPickupIdentifier()]->getObjectID(), pickedUp);
+        }
+
+    }
+
+    /*static*/ void PickupManager::pickupChangedPickedUpNetwork(uint64_t pickup, bool usable, uint32_t representationObjectId, bool pickedUp)
+    {
+        PickupManager& manager = PickupManager::getInstance();
+        if(pickedUp)
+        {
+            PickupInventoryContainer* container = new PickupInventoryContainer;
+            container->pickup = pickup;
+            container->inUse = false;
+            container->pickedUp = pickedUp;
+            container->usable = usable;
+            container->unusable = false;
+            container->representationObjectId = representationObjectId;
+            manager.pickupInventoryContainers_.insert(std::pair<uint64_t, PickupInventoryContainer*>(pickup, container));
+
+            if(GameMode::showsGraphics())
+            {
+                if(!manager.guiLoaded_)
+                {
+                    GUIManager::getInstance().loadGUI(PickupManager::guiName_s);
+                    manager.guiLoaded_ = true;
+                }
+                GUIManager::getInstance().getLuaState()->doString(PickupManager::guiName_s + ".update()");
+            }
+        }
+        else
+        {
+            std::map<uint64_t, PickupInventoryContainer*>::iterator it = manager.pickupInventoryContainers_.find(pickup);
+            if(it != manager.pickupInventoryContainers_.end())
+                delete it->second;
+            manager.pickupInventoryContainers_.erase(pickup);
+
+            manager.updateGUI();
+        }
+    }
+
+    inline void PickupManager::updateGUI(void)
+    {
+        if(GameMode::showsGraphics())
+        {
+            if(!this->guiLoaded_)
+            {
+                GUIManager::getInstance().loadGUI(PickupManager::guiName_s);
+                this->guiLoaded_ = true;
+            }
+            GUIManager::getInstance().getLuaState()->doString(PickupManager::guiName_s + ".update()");
+        }
+    }
+
+    uint64_t PickupManager::getPickupIndex(void)
+    {
+        if(this->pickupIndex_ == uint64_t(~0x0)-1)
+            this->pickupIndex_ = 0;
+        return this->pickupIndex_++;
     }
 
 }

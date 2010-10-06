@@ -34,6 +34,7 @@
 #include "PickupRepresentation.h"
 
 #include "core/CoreIncludes.h"
+#include "core/GameMode.h"
 #include "graphics/Billboard.h"
 #include "util/StringUtils.h"
 #include "PickupManager.h"
@@ -48,22 +49,26 @@ namespace orxonox
         Constructor. Registers the object and initializes its member variables.
         This is primarily for use of the PickupManager in creating a default PickupRepresentation.
     */
-    PickupRepresentation::PickupRepresentation() : BaseObject(NULL), spawnerRepresentation_(NULL), pickup_(NULL)
+    PickupRepresentation::PickupRepresentation() : BaseObject(NULL), Synchronisable(NULL), spawnerRepresentation_(NULL), pickup_(NULL)
     {
         RegisterObject(PickupRepresentation);
 
         this->initialize();
+        this->setSyncMode(0x0);
     }
 
     /**
     @brief
         Default Constructor. Registers the object and initializes its member variables.
     */
-    PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator), spawnerRepresentation_(NULL), pickup_(NULL)
+    PickupRepresentation::PickupRepresentation(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), spawnerRepresentation_(NULL), pickup_(NULL)
     {
         RegisterObject(PickupRepresentation);
 
         this->initialize();
+        this->registerVariables();
+
+        PickupManager::getInstance().registerRepresentation(this); //!< Registers the PickupRepresentation with the PickupManager.
     }
 
     /**
@@ -75,8 +80,17 @@ namespace orxonox
         if(this->spawnerRepresentation_ != NULL)
             this->spawnerRepresentation_->destroy();
 
-        if(this->pickup_ != NULL)
-            PickupManager::getInstance().unregisterRepresentation(this->pickup_->getPickupIdentifier(), this);
+        if(this->isInitialized())
+        {
+            if(GameMode::isMaster() && this->pickup_ != NULL)
+            {
+                PickupManager::getInstance().unregisterRepresentation(this->pickup_->getPickupIdentifier(), this);
+            }
+            if(!GameMode::isMaster())
+            {
+                PickupManager::getInstance().unregisterRepresentation(this);
+            }
+        }
     }
 
     /**
@@ -89,6 +103,13 @@ namespace orxonox
         this->name_ = "Pickup";
         this->spawnerTemplate_ = "";
         this->inventoryRepresentation_ = "Default";
+    }
+
+    void PickupRepresentation::registerVariables(void)
+    {
+        registerVariable(this->description_, VariableDirection::ToClient);
+        registerVariable(this->name_, VariableDirection::ToClient);
+        registerVariable(this->inventoryRepresentation_, VariableDirection::ToClient);
     }
 
     /**
@@ -106,7 +127,10 @@ namespace orxonox
         XMLPortObject(PickupRepresentation, Pickupable, "pickup", setPickup, getPickup, xmlelement, mode);
         XMLPortObject(PickupRepresentation, StaticEntity, "spawner-representation", setSpawnerRepresentation, getSpawnerRepresentationIndex, xmlelement, mode);
 
-        PickupManager::getInstance().registerRepresentation(this->pickup_->getPickupIdentifier(), this); //!< Registers the PickupRepresentation with the PickupManager through the PickupIdentifier of the Pickupable it represents.
+        if(GameMode::isMaster())
+        {
+            PickupManager::getInstance().registerRepresentation(this->pickup_->getPickupIdentifier(), this); //!< Registers the PickupRepresentation with the PickupManager through the PickupIdentifier of the Pickupable it represents.
+        }
 
         if(this->spawnerRepresentation_ != NULL)
             this->spawnerRepresentation_->setVisible(false);

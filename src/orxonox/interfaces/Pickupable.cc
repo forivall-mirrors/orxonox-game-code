@@ -33,8 +33,6 @@
 
 #include "Pickupable.h"
 
-#include "core/LuaState.h"
-#include "core/GUIManager.h"
 #include "core/Identifier.h"
 #include "core/CoreIncludes.h"
 #include "util/Convert.h"
@@ -44,6 +42,7 @@
 #include "worldentities/pawns/Pawn.h"
 
 #include "PickupCarrier.h"
+#include "PickupListener.h"
 
 namespace orxonox
 {
@@ -129,10 +128,13 @@ namespace orxonox
         COUT(4) << "Pickupable (&" << this << ") set to used " << used << "." << std::endl;
 
         this->used_ = used;
+
+        // Notify all the PickupListeners of the change.
+        PickupListener::broadcastPickupChangedUsed(this, used);
+
         this->changedUsed();
 
-        //TODO: Synchronize & make safe for dedicated server.
-        GUIManager::getInstance().getLuaState()->doString("PickupInventory.update()");
+
         return true;
     }
 
@@ -221,7 +223,7 @@ namespace orxonox
             COUT(3) << "A Pickupable (&" << this << ") was trying to be added to a PickupCarrier, but was already present." << std::endl;
             return false;
         }
-        
+
         this->setPickedUp(true);
         COUT(4) << "Pickupable (&" << this << ") got picked up by a PickupCarrier (&" << carrier << ")." << std::endl;
         return true;
@@ -276,12 +278,14 @@ namespace orxonox
         COUT(4) << "Pickupable (&" << this << ") set to pickedUp " << pickedUp << "." << std::endl;
 
         this->pickedUp_ = pickedUp;
+
+        // Notify all the PickupListeners of the change.
+        PickupListener::broadcastPickupChangedPickedUp(this, pickedUp);
+
         if(!pickedUp) // if the Pickupable has been dropped it unregisters itself with its PickupCarrier.
             this->getCarrier()->removePickup(this);
         this->changedPickedUp();
 
-        //TODO: Synchronize & make safe for dedicated server.
-        GUIManager::getInstance().getLuaState()->doString("PickupInventory.update()");
         return true;
     }
 

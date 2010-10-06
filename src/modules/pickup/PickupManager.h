@@ -38,15 +38,30 @@
 #include "PickupPrereqs.h"
 
 #include <map>
-#include "util/Singleton.h"
+
 #include "core/WeakPtr.h"
+
 #include "pickup/PickupIdentifier.h"
+
 #include "PickupRepresentation.h"
 
-#include "core/OrxonoxClass.h"
+#include "util/Singleton.h"
+#include "interfaces/PickupListener.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
+
+    // tolua_begin
+    struct PickupInventoryContainer
+    {
+        uint64_t pickup;
+        bool inUse;
+        bool pickedUp;
+        bool usable;
+        bool unusable;
+        uint32_t representationObjectId;
+    };
+    // tolua_end
 
     /**
     @brief
@@ -56,7 +71,7 @@ namespace orxonox // tolua_export
         Damian 'Mozork' Frick
     */
     class _PickupExport PickupManager // tolua_export
-        : public Singleton<PickupManager>, public OrxonoxClass
+        : public Singleton<PickupManager>, public PickupListener
     { // tolua_export
         friend class Singleton<PickupManager>;
 
@@ -67,11 +82,13 @@ namespace orxonox // tolua_export
             static PickupManager& getInstance() { return Singleton<PickupManager>::getInstance(); } // tolua_export
 
             bool registerRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation); //!< Registers a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
+            bool registerRepresentation(PickupRepresentation* representation);
             bool unregisterRepresentation(const PickupIdentifier* identifier, PickupRepresentation* representation); //!< Unegisters a PickupRepresentation together with the PickupIdentifier of the Pickupable the PickupRepresentation represents.
+            bool unregisterRepresentation(PickupRepresentation* representation);
             PickupRepresentation* getRepresentation(const PickupIdentifier* identifier); //!< Get the PickupRepresentation representing the Pickupable with the input PickupIdentifier.
 
             // tolua_begin
-            orxonox::PickupRepresentation* getPickupRepresentation(orxonox::Pickupable* pickup); //!< Get the PickupRepresentation of an input Pickupable.
+            orxonox::PickupRepresentation* getPickupRepresentation(uint64_t pickup); //!< Get the PickupRepresentation of an input Pickupable.
 
             int getNumPickups(void); //!< Update the list of picked up Pickupables and get the number of Pickupables in the list.
             /**
@@ -79,24 +96,39 @@ namespace orxonox // tolua_export
                    Use this, after having called getNumPickups() to access all the Pickupables individually and in succession.
             @return Returns the next Pickupable in the list.
             */
-            orxonox::Pickupable* popPickup(void) { return (this->pickupsIterator_++)->first; }
+            orxonox::PickupInventoryContainer* popPickup(void) { return (this->pickupsIterator_++)->second; }
 
-            void dropPickup(orxonox::Pickupable* pickup); //!< Drop the input Pickupable.
-            void usePickup(orxonox::Pickupable* pickup, bool use); //!< Use (or unuse) the input Pickupable.
-            bool isValidPickup(orxonox::Pickupable* pickup); //!< Check whether the input Pickupable is valid, meaning that it is in the PickupManager's list and still exists.
+            void dropPickup(uint64_t pickup); //!< Drop the input Pickupable.
+            void usePickup(uint64_t pickup, bool use); //!< Use (or unuse) the input Pickupable.
+            bool isValidPickup(uint64_t pickup); //!< Check whether the input Pickupable is valid, meaning that it is in the PickupManager's list and still exists.
             // tolua_end
+
+            static void dropPickupNetworked(uint64_t pickup);
+            static void usePickupNetworked(uint64_t pickup, bool use);
+
+            virtual void pickupChangedUsed(Pickupable* pickup, bool used);
+            static void pickupChangedUsedNetwork(uint64_t pickup, bool inUse, bool usable, bool unusable);
+            virtual void pickupChangedPickedUp(Pickupable* pickup, bool pickedUp);
+            static void pickupChangedPickedUpNetwork(uint64_t pickup, bool usable, uint32_t representationObjectId, bool pickedUp);
 
         private:
             static PickupManager* singletonPtr_s;
             static const std::string guiName_s; //!< The name of the PickupInventory
+            bool guiLoaded_;
+            uint64_t pickupIndex_;
 
             PickupRepresentation* defaultRepresentation_; //!< The default PickupRepresentation.
             std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types if Pickupables) and PickupRepresentations.
+            std::map<uint32_t, PickupRepresentation*> representationsNetworked_;
 
-            std::map<Pickupable*, WeakPtr<Pickupable> > pickupsList_; //!< A list of all the picked up Pickupables.
-            std::map<Pickupable*, WeakPtr<Pickupable> >::iterator pickupsIterator_; //!< An iterator pointing to the current Pickupable in pickupsList_.
+            std::map<uint64_t, PickupInventoryContainer*> pickupInventoryContainers_;
+            std::map<uint64_t, PickupInventoryContainer*>::iterator pickupsIterator_; //!< An iterator pointing to the current Pickupable in pickupsList_.
 
-            std::vector<PickupCarrier*>* getAllCarriers(PickupCarrier* carrier, std::vector<PickupCarrier*>* carriers = NULL); //!< Helper method. Get all the PickupCarriers that carry Pickupables, recursively.
+            std::map<uint64_t, WeakPtr<Pickupable>*> pickups_;
+            std::map<Pickupable*, uint64_t> indexes_;
+
+            void updateGUI(void);
+            uint64_t getPickupIndex(void);
 
     }; // tolua_export
 
