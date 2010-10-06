@@ -44,6 +44,7 @@
 #include "PickupSpawner.h"
 
 #include "core/BaseObject.h"
+#include "network/synchronisable/Synchronisable.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -54,7 +55,7 @@ namespace orxonox // tolua_export
         They are created through XML and are registered with the PickupManager.
     */
     class _PickupExport PickupRepresentation // tolua_export
-        : public BaseObject
+        : public BaseObject, public Synchronisable
     { // tolua_export
 
         public:
@@ -144,6 +145,8 @@ namespace orxonox // tolua_export
         private:
             void initialize(void); //!< Initializes the member variables of this PickupRepresentation.
             StaticEntity* getDefaultSpawnerRepresentation(PickupSpawner* spawner); //!< Get the default spawnerRepresentation for a specific PickupSpawner.
+
+            void registerVariables(void); //!< Register some variables for synchronisation.
 
             std::string name_; //!< The name of the Pickupable represented by this PickupRepresentation.
             std::string description_; //!< The description of the Pickupable represented by this PickupRepresentation.
