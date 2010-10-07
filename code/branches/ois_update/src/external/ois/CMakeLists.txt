@@ -30,6 +30,7 @@ SET_SOURCE_FILES(OIS_FILES
   OISJoyStick.h
   OISKeyboard.h
   OISMouse.h
+  OISMultiTouch.h
   OISObject.h
   OISPrereqs.h
 
