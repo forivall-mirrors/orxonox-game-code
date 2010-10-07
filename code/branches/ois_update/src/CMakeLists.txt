@@ -69,6 +69,16 @@ ADD_COMPILER_FLAGS("-DTOLUA_STATIC_BUILD"          WIN32 NOT _external_shared_li
 
 # Set the search paths for include files
 INCLUDE_DIRECTORIES(
+  # OrxonoxConfig.h
+  ${CMAKE_CURRENT_BINARY_DIR}
+
+  # All includes in "externals" should be prefixed with the path
+  # relative to "external" to avoid conflicts
+  ${CMAKE_CURRENT_SOURCE_DIR}/external
+  # Include directories needed even if only included by Orxonox
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
+
   # External
   ${OGRE_INCLUDE_DIR}
   ${CEGUI_INCLUDE_DIR}
@@ -84,16 +94,6 @@ INCLUDE_DIRECTORIES(
   ${DIRECTX_INCLUDE_DIR}
   ${ZLIB_INCLUDE_DIR}
   ${VLD_INCLUDE_DIR}
-
-  # All includes in "externals" should be prefixed with the path
-  # relative to "external" to avoid conflicts
-  ${CMAKE_CURRENT_SOURCE_DIR}/external
-  # Include directories needed even if only included by Orxonox
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
-
-  # OrxonoxConfig.h
-  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 IF(CEGUILUA_USE_INTERNAL_LIBRARY)
