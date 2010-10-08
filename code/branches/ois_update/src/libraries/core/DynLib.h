@@ -58,10 +58,10 @@ typedef struct HINSTANCE__* hInstance;
 #    define DYNLIB_UNLOAD( a ) dlclose( a )
 
 #elif defined(ORXONOX_PLATFORM_APPLE)
-#    define DYNLIB_HANDLE CFBundleRef
-#    define DYNLIB_LOAD( a ) Ogre::mac_loadExeBundle( a )
-#    define DYNLIB_GETSYM( a, b ) Ogre::mac_getBundleSym( a, b )
-#    define DYNLIB_UNLOAD( a ) Ogre::mac_unloadExeBundle( a )
+#    define DYNLIB_HANDLE void*
+#    define DYNLIB_LOAD( a ) Ogre::mac_loadDylib( a )
+#    define DYNLIB_GETSYM( a, b ) dlsym( a, b )
+#    define DYNLIB_UNLOAD( a ) dlclose( a )
 #endif
 
 namespace orxonox
