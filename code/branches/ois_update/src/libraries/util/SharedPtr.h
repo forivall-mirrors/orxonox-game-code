@@ -162,6 +162,7 @@ namespace orxonox
         {
             public:
                 SharedCounter() : count_(1) {}
+                virtual ~SharedCounter() {}
                 virtual void destroy() = 0;
 
                 int count_;

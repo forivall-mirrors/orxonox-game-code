@@ -157,8 +157,10 @@
 #  include <iso646.h>
 #endif
 
-#cmakedefine HAVE_STDINT_H
-#ifdef HAVE_STDINT_H
+// On OS X some headers already define HAVE_STDINT_H and that spits out
+// some warnings. Therefore we use this syntax.
+// Note: This requires some extra code in OrxonoxConfig.cmake
+#if @HAVE_STDINT_H@
 #  include <stdint.h>
 #elif defined(ORXONOX_COMPILER_MSVC)
 typedef __int8            int8_t;

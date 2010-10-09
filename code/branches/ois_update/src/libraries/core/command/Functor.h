@@ -185,6 +185,8 @@ namespace orxonox
             };
 
         public:
+            virtual ~Functor() {}
+
             /// Calls the function-pointer with up to five arguments. In case of a member-function, the assigned object-pointer is used to call the function. @return Returns the return-value of the function (if any; MT_Type::Null otherwise)
             virtual MultiType operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
 
@@ -247,6 +249,7 @@ namespace orxonox
         public:
             /// Constructor: Stores the object-pointer.
             FunctorMember(O* object = 0) : object_(object) {}
+            virtual ~FunctorMember() {}
 
             /// Calls the function-pointer with up to five arguments and an object. In case of a static-function, the object can be NULL. @return Returns the return-value of the function (if any; MT_Type::Null otherwise)
             virtual MultiType operator()(O* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;

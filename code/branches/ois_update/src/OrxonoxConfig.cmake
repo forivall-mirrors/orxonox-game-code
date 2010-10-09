@@ -74,6 +74,13 @@ IF(MSVC)
   CHECK_CXX_SOURCE_COMPILES("${_source}" HAVE_FORCEINLINE)
 ENDIF(MSVC)
 
+# Part of a woraround for OS X warnings. See OrxonoxConfig.h.in
+IF(HAVE_STDINT_H)
+  SET(HAVE_STDINT_H 1)
+ELSE()
+  SET(HAVE_STDINT_H 0)
+ENDIF()
+
 # Check iso646.h include (literal operators)
 INCLUDE(CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(iso646.h HAVE_ISO646_H)
