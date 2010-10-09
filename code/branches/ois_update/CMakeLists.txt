@@ -100,6 +100,19 @@ ENDIF()
 # Enable expensive optimisations: use this for a binary release build
 OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
 
+IF(APPLE)
+  IF(NOT CMAKE_OSX_ARCHITECTURES)
+    SET(CMAKE_OSX_ARCHITECTURES "i386")
+  ENDIF()
+  
+  # 10.6 sets x86_64 as the default architecture.
+  # Because Carbon isn't supported on 64-bit and we still need it, force the architectures to ppc and i386
+  IF(CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" OR CMAKE_OSX_ARCHITECTURES MATCHES "ppc64")
+    STRING(REPLACE "x86_64" "" CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES})
+    STRING(REPLACE "ppc64" "" CMAKE_OSX_ARCHITECTURES ${CMAKE_OSX_ARCHITECTURES})
+  ENDIF()
+ENDIF()
+
 ########### Subfolders and Subscripts ###########
 
 # General build and compiler options and configurations
