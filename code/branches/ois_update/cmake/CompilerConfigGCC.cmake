@@ -36,14 +36,6 @@ EXEC_PROGRAM(
   OUTPUT_VARIABLE GCC_VERSION
 )
 
-# Complain about incompatibilities
-COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.4.0" _compare_result)
-IF(NOT _compare_result LESS 0)
-  IF(${Boost_VERSION} LESS 103700)
-    MESSAGE(STATUS "Warning: Boost versions earlier than 1.37 may not compile with GCC 4.4 or later!")
-  ENDIF()
-ENDIF()
-
 # GCC may not support #pragma GCC system_header correctly when using
 # templates. According to Bugzilla, it was fixed March 07 but tests
 # have confirmed that GCC 4.0.0 does not pose a problem for our cases.

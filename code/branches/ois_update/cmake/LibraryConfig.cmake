@@ -166,6 +166,13 @@ IF( NOT TARDIS )
 ENDIF()
 # No auto linking, so this option is useless anyway
 MARK_AS_ADVANCED(Boost_LIB_DIAGNOSTIC_DEFINITIONS)
+# Complain about incompatibilities
+COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.4.0" _compare_result)
+IF(NOT _compare_result LESS 0)
+  IF(${Boost_VERSION} LESS 103700)
+    MESSAGE(STATUS "Warning: Boost versions earlier than 1.37 may not compile with GCC 4.4 or later!")
+  ENDIF()
+ENDIF()
 
 
 ####### Static/Dynamic linking options ##########
