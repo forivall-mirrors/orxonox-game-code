@@ -102,11 +102,11 @@ OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
 
 ########### Subfolders and Subscripts ###########
 
-# Library finding
-INCLUDE(LibraryConfig)
-
 # General build and compiler options and configurations
 INCLUDE(CompilerConfig)
+
+# Library finding
+INCLUDE(LibraryConfig)
 
 # Configure installation paths and options
 INCLUDE(InstallConfig)
