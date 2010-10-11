@@ -52,10 +52,13 @@
 #      define _CoreExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _CorePrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _CoreExport  __attribute__ ((visibility("default")))
+#  define _CorePrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _CoreExport
+#  define _CorePrivate
 #endif
 
 //-----------------------------------------------------------------------

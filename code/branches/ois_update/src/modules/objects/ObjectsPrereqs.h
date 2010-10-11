@@ -52,10 +52,13 @@
 #      define _ObjectsExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _ObjectsPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _ObjectsExport  __attribute__ ((visibility("default")))
+#  define _ObjectsPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _ObjectsExport
+#  define _ObjectsPrivate
 #endif
 
 //-----------------------------------------------------------------------
