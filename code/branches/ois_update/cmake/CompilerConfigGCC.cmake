@@ -70,12 +70,12 @@ IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 ENDIF()
 
 # Use SSE if possible
-#CHECK_CXX_COMPILER_FLAG(-msse _gcc_have_sse)
-#IF(_gcc_have_sse)
-#  ADD_COMPILER_FLAGS("-msse" CACHE)
-#ENDIF()
+CHECK_CXX_COMPILER_FLAG(-msse _gcc_have_sse)
+IF(_gcc_have_sse)
+  ADD_COMPILER_FLAGS("-msse" CACHE)
+ENDIF()
 
-IF(NOT MINGW)
+IF(FALSE AND NOT MINGW)
   # Have GCC visibility?
   CHECK_CXX_COMPILER_FLAG("-fvisibility=hidden" _gcc_have_visibility)
   IF(_gcc_have_visibility)
@@ -85,7 +85,7 @@ IF(NOT MINGW)
       ADD_COMPILER_FLAGS("-DORXONOX_GCC_VISIBILITY -fvisibility=hidden -fvisibility-inlines-hidden" CACHE)
     ENDIF()
   ENDIF(_gcc_have_visibility)
-ENDIF(NOT MINGW)
+ENDIF(FALSE AND NOT MINGW)
 
 # We have some unconformant code, disable an optimisation feature
 ADD_COMPILER_FLAGS("-fno-strict-aliasing" CACHE)
