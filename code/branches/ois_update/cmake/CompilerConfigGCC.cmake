@@ -70,10 +70,11 @@ IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 ENDIF()
 
 # Use SSE if possible
-CHECK_CXX_COMPILER_FLAG(-msse _gcc_have_sse)
-IF(_gcc_have_sse)
-  ADD_COMPILER_FLAGS("-msse" CACHE)
-ENDIF()
+# Commented because this might not work for cross compiling
+#CHECK_CXX_COMPILER_FLAG(-msse _gcc_have_sse)
+#IF(_gcc_have_sse)
+#  ADD_COMPILER_FLAGS("-msse" CACHE)
+#ENDIF()
 
 IF(FALSE AND NOT MINGW)
   # Have GCC visibility?
