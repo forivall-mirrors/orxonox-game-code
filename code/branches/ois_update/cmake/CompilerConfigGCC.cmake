@@ -25,6 +25,7 @@
 
 INCLUDE(FlagUtilities)
 INCLUDE(CompareVersionStrings)
+INCLUDE(CheckCXXCompilerFlag)
 
 # Shortcut for CMAKE_COMPILER_IS_GNUCXX and ..._GNUC
 SET(CMAKE_COMPILER_IS_GNU TRUE)
@@ -63,9 +64,28 @@ ADD_COMPILER_FLAGS("-O2 -g -ggdb"          RelWithDebInfo CACHE)
 ADD_COMPILER_FLAGS("-Os"                   MinSizeRel     CACHE)
 
 # CMake doesn't seem to set the PIC flags right on certain 64 bit systems
+# Todo: MinGW too?
 IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
   ADD_COMPILER_FLAGS("-fPIC" CACHE)
 ENDIF()
+
+# Use SSE if possible
+#CHECK_CXX_COMPILER_FLAG(-msse _gcc_have_sse)
+#IF(_gcc_have_sse)
+#  ADD_COMPILER_FLAGS("-msse" CACHE)
+#ENDIF()
+
+IF(NOT MINGW)
+  # Have GCC visibility?
+  CHECK_CXX_COMPILER_FLAG("-fvisibility=hidden" _gcc_have_visibility)
+  IF(_gcc_have_visibility)
+    # Note: There is a possible bug with the flag in gcc < 4.2 and Debug versions
+    COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.2.0" _compare_result)
+    IF(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" OR _compare_result SMALLER GREATER -1)
+      ADD_COMPILER_FLAGS("-DORXONOX_GCC_VISIBILITY -fvisibility=hidden -fvisibility-inlines-hidden" CACHE)
+    ENDIF()
+  ENDIF(_have_gcc_visibility)
+ENDIF(NOT MINGW)
 
 # We have some unconformant code, disable an optimisation feature
 ADD_COMPILER_FLAGS("-fno-strict-aliasing" CACHE)

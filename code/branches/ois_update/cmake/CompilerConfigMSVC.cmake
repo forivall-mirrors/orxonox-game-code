@@ -70,11 +70,15 @@ ADD_COMPILER_FLAGS("-D_CRT_SECURE_NO_WARNINGS" CACHE)
 ADD_COMPILER_FLAGS("-D_SCL_SECURE_NO_WARNINGS" CACHE)
 
 # Overwrite CMake default flags here for the individual configurations
-SET_COMPILER_FLAGS("-MDd -Od -Zi -D_DEBUG -RTC1" Debug          CACHE)
-SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG"       Release        CACHE)
-SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG"       RelWithDebInfo CACHE)
-SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG"       MinSizeRel     CACHE)
-ADD_COMPILER_FLAGS("-D_SECURE_SCL=0"       MSVC9 ReleaseAll     CACHE)
+SET_COMPILER_FLAGS("-MDd -Od -Oi -Zi -D_DEBUG -RTC1" Debug          CACHE)
+SET_COMPILER_FLAGS("-MD  -O2         -DNDEBUG"       Release        CACHE)
+SET_COMPILER_FLAGS("-MD  -O2 -Zi     -DNDEBUG"       RelWithDebInfo CACHE)
+SET_COMPILER_FLAGS("-MD  -O1         -DNDEBUG"       MinSizeRel     CACHE)
+ADD_COMPILER_FLAGS("-D_SECURE_SCL=0"           MSVC9 ReleaseAll     CACHE)
+
+# Enable non standard floating point optimisations
+# Note: It hasn't been checked yet whether we have code that might break
+#ADD_COMPILER_FLAGS("-fp:fast" CACHE)
 
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
 IF(ORXONOX_RELEASE)
