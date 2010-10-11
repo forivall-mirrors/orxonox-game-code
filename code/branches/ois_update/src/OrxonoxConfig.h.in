@@ -79,8 +79,11 @@
 #cmakedefine ORXONOX_LITTLE_ENDIAN
 
 // Architecture
-#cmakedefine ORXONOX_ARCH_32
-#cmakedefine ORXONOX_ARCH_64
+#if defined(__x86_64__) || defined(_M_X64) || defined(__powerpc64__) || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__)
+#   define ORXONOX_ARCH_64
+#else
+#   define ORXONOX_ARCH_32
+#endif
 
 // See if we can use __forceinline or if we need to use __inline instead
 #cmakedefine HAVE_FORCEINLINE
