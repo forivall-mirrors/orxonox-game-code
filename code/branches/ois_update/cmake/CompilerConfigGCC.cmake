@@ -81,10 +81,10 @@ IF(NOT MINGW)
   IF(_gcc_have_visibility)
     # Note: There is a possible bug with the flag in gcc < 4.2 and Debug versions
     COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.2.0" _compare_result)
-    IF(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" OR _compare_result SMALLER GREATER -1)
+    IF(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" OR _compare_result GREATER -1)
       ADD_COMPILER_FLAGS("-DORXONOX_GCC_VISIBILITY -fvisibility=hidden -fvisibility-inlines-hidden" CACHE)
     ENDIF()
-  ENDIF(_have_gcc_visibility)
+  ENDIF(_gcc_have_visibility)
 ENDIF(NOT MINGW)
 
 # We have some unconformant code, disable an optimisation feature
