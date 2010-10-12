@@ -73,6 +73,9 @@
 
 #include "CorePrereqs.h"
 
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/expand.hpp>
+
 #include "util/Debug.h"
 #include "Event.h"
 
@@ -568,6 +571,9 @@ namespace orxonox
 
         template <int functionnumber, class TT, int templatehack1, int templatehack2>
         friend struct SuperFunctionCondition;
+
+        class BOOST_PP_CAT(BOOST_PP_EXPAND(check), __Test) {};
+        struct BOOST_PP_CAT(BOOST_PP_EXPAND(check), __Test) {};
 
         // Creates the super-function-callers by calling the first SuperFunctionCondition check
         // This get's called within the initialization of an Identifier
