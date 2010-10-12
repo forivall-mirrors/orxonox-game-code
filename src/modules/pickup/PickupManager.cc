@@ -403,11 +403,21 @@ namespace orxonox
 
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
         {
-            PickupManager::pickupChangedPickedUpNetwork(index, pickup->isUsable(), this->representations_[pickup->getPickupIdentifier()]->getObjectID(), pickedUp);
+            if(this->representations_.find(pickup->getPickupIdentifier()) == this->representations_.end())
+                PickupManager::pickupChangedPickedUpNetwork(index, pickup->isUsable(), this->defaultRepresentation_->getObjectID(), pickedUp);
+            else
+                PickupManager::pickupChangedPickedUpNetwork(index, pickup->isUsable(), this->representations_[pickup->getPickupIdentifier()]->getObjectID(), pickedUp);
         }
         else
         {
-            callStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->representations_[pickup->getPickupIdentifier()]->getObjectID(), pickedUp);
+            if(this->representations_.find(pickup->getPickupIdentifier()) == this->representations_.end())
+            {
+                callStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->defaultRepresentation_->getObjectID(), pickedUp);
+            }
+            else
+            {
+                callStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork, clientId, index, pickup->isUsable(), this->representations_[pickup->getPickupIdentifier()]->getObjectID(), pickedUp);
+            }
         }
 
     }
