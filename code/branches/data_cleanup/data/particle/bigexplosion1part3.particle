@@ -1,0 +1,64 @@
+
+particle_system Orxonox/BigExplosion1part3
+{
+	quota	120
+	material	PE/point_lensflare
+	particle_width	18
+	particle_height	18
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	texcoord
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter Ring
+	{
+		angle	0
+		colour	0 0 0 1
+		colour_range_start	0 0 0 1
+		colour_range_end	0 0 0 1
+		direction	0 1 0
+		emission_rate	1200
+		position	0 0 0
+		velocity	0
+		velocity_min	0
+		velocity_max	0
+		time_to_live	1
+		time_to_live_min	1
+		time_to_live_max	1
+		duration	0.1
+		duration_min	0.1
+		duration_max	0.1
+		repeat_delay	1000000
+		repeat_delay_min	1000000
+		repeat_delay_max	1000000
+		width	150
+		height	150
+		depth	0
+		inner_width	0.99
+		inner_height	0.99
+	}
+
+	affector ColourInterpolator
+	{
+		colour0	0 0 0 0
+		time0	0
+		colour1	1 1 1 0
+		time1	0.5
+		colour2	0 0 0 0
+		time2	1
+		colour3	0.5 0.5 0.5 0
+		time3	1
+		colour4	0.5 0.5 0.5 0
+		time4	1
+		colour5	0.5 0.5 0.5 0
+		time5	1
+	}
+}
