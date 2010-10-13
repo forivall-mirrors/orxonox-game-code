@@ -61,6 +61,7 @@ namespace orxonox
         this->server_overwrite_ = 0;
         this->client_overwrite_ = 0;
         this->player_ = 0;
+        this->formerPlayer_ = NULL;
         this->playerID_ = OBJECTID_UNKNOWN;
         this->hud_ = 0;
         this->camera_ = 0;
