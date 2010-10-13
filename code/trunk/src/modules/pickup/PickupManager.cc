@@ -33,17 +33,16 @@
 
 #include "PickupManager.h"
 
-#include "util/Convert.h"
-#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "core/LuaState.h"
 #include "core/GUIManager.h"
 #include "core/Identifier.h"
 #include "network/Host.h"
 #include "network/NetworkFunction.h"
+#include "util/ScopedSingletonManager.h"
 
-#include "interfaces/PickupCarrier.h"
 #include "infos/PlayerInfo.h"
+#include "interfaces/PickupCarrier.h"
 #include "worldentities/pawns/Pawn.h"
 
 #include "CollectiblePickup.h"
@@ -95,8 +94,6 @@ namespace orxonox
         this->representations_.clear();
         this->representationsNetworked_.clear();
 
-        //TODO: Destroying properly?
-        //TODO: Shouldnt these list be empty, to avoid problems when switching levels?
         // Destroying all the PickupInventoryContainers that are still there.
         for(std::map<uint32_t, PickupInventoryContainer*>::iterator it = this->pickupInventoryContainers_.begin(); it != this->pickupInventoryContainers_.end(); it++)
             delete it->second;
@@ -483,8 +480,10 @@ namespace orxonox
     void PickupManager::dropPickup(uint32_t pickup)
     {
         // If we're either server or standalone and the list of pickups is not empty, we find and drop the input pickup.
-        if(GameMode::isMaster() && !this->pickups_.empty())
+        if(GameMode::isMaster())
         {
+            if(this->pickups_.empty())
+                return;
             Pickupable* pickupable = this->pickups_.find(pickup)->second->get();
             if(pickupable != NULL)
                 pickupable->drop();
@@ -508,12 +507,7 @@ namespace orxonox
         if(GameMode::isServer()) // Obviously we only want to do this on the server.
         {
             PickupManager& manager = PickupManager::getInstance();
-            //TODO: Just call dropPickup() on manager?
-            if(manager.pickups_.empty())
-                return;
-            Pickupable* pickupable = manager.pickups_.find(pickup)->second->get();
-            if(pickupable != NULL)
-                pickupable->drop();
+            manager.dropPickup(pickup);
         }
     }
 
@@ -529,8 +523,10 @@ namespace orxonox
     void PickupManager::usePickup(uint32_t pickup, bool use)
     {
         // If we're either server or standalone and the list of pickups is not empty, we find and change the used status of the input pickup.
-        if(GameMode::isMaster() && !this->pickups_.empty())
+        if(GameMode::isMaster())
         {
+            if(this->pickups_.empty())
+                return;
             Pickupable* pickupable = this->pickups_.find(pickup)->second->get();
             if(pickupable != NULL)
                 pickupable->setUsed(use);
@@ -556,12 +552,7 @@ namespace orxonox
         if(GameMode::isServer())
         {
             PickupManager& manager = PickupManager::getInstance();
-            //TODO: Just call usePickup() on manager?
-            if(manager.pickups_.empty())
-                return;
-            Pickupable* pickupable = manager.pickups_.find(pickup)->second->get();
-            if(pickupable != NULL)
-                pickupable->setUsed(use);
+            manager.usePickup(pickup, use);
         }
     }
 
