@@ -53,6 +53,11 @@ namespace orxonox // tolua_export
     @brief
         The PickupRepresentation class represents a specific pickup type (identified by its PickupIdentifier). It defines the information displayed in the GUI and how PickupSpawners that spawn the pickup type look like.
         They are created through XML and are registered with the PickupManager.
+
+    @author
+        Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _PickupExport PickupRepresentation // tolua_export
         : public BaseObject, public Synchronisable
