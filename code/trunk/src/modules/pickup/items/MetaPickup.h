@@ -107,7 +107,6 @@ namespace orxonox {
             static const std::string metaTypeDestroy_s;
             static const std::string metaTypeDestroyCarrier_s;
 
-
     };
 
 }

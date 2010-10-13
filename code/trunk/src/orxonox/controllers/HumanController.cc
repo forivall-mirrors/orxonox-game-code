@@ -55,8 +55,6 @@ namespace orxonox
     SetConsoleCommand("HumanController", "toggleGodMode",          &HumanController::toggleGodMode ).addShortcut();
     SetConsoleCommand("HumanController", "addBots",                &HumanController::addBots       ).addShortcut().defaultValues(1);
     SetConsoleCommand("HumanController", "killBots",               &HumanController::killBots      ).addShortcut().defaultValues(0);
-    SetConsoleCommand("HumanController", "dropItems",              &HumanController::dropItems     ).addShortcut();
-    SetConsoleCommand("HumanController", "useItem",                &HumanController::useItem       ).addShortcut();
     SetConsoleCommand("HumanController", "cycleNavigationFocus",   &HumanController::cycleNavigationFocus).addShortcut();
     SetConsoleCommand("HumanController", "releaseNavigationFocus", &HumanController::releaseNavigationFocus).addShortcut();
 
@@ -201,12 +199,6 @@ namespace orxonox
         HumanController::getLocalControllerSingleton()->setGodMode( !HumanController::getLocalControllerSingleton()->getGodMode() );
     }
 
-    void HumanController::useItem()
-    {
-        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->useItem();
-    }
-
     void HumanController::addBots(unsigned int amount)
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && HumanController::localController_s->controllableEntity_->getGametype())
@@ -217,12 +209,6 @@ namespace orxonox
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_ && HumanController::localController_s->controllableEntity_->getGametype())
             HumanController::localController_s->controllableEntity_->getGametype()->killBots(amount);
-    }
-
-    void HumanController::dropItems()
-    {
-        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->dropItems();
     }
 
     Pawn* HumanController::getLocalControllerEntityAsPawn()

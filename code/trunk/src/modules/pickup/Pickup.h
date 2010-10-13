@@ -47,7 +47,12 @@
 namespace orxonox
 {
 
-    //! Enum for the @ref orxonox::Pickup "Pickup" activation type.
+    /**
+    @brief
+        Enum for the @ref orxonox::Pickup "Pickup" activation type.
+
+    @ingroup Pickup
+    */
     namespace pickupActivationType
     {
         enum Value
@@ -57,7 +62,12 @@ namespace orxonox
         };
     }
 
-    //! Enum for the @ref orxonox::Pickup "Pickup" duration type.
+    /**
+    @brief
+        Enum for the @ref orxonox::Pickup "Pickup" duration type.
+
+    @ingroup Pickup
+    */
     namespace pickupDurationType
     {
         enum Value
@@ -83,6 +93,8 @@ namespace orxonox
 
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _PickupExport Pickup : public CollectiblePickup, public BaseObject
     {

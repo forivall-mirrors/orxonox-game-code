@@ -67,8 +67,6 @@ namespace orxonox
             static void greet();
             static void switchCamera();
             static void mouseLook();
-            static void dropItems();
-            static void useItem();
             static void cycleNavigationFocus();
             static void releaseNavigationFocus();
 

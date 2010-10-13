@@ -54,6 +54,12 @@ namespace orxonox
 
             inline PlayerInfo* getPlayer() const
                 { return this->player_; }
+            /**
+            @brief Get the player even after the ControllableEntity has stopped being the players ControllableEntity.
+            @return Returns the most recent PlayerInfo.
+            */
+            inline PlayerInfo* getFormerPlayer() const
+                { return this->formerPlayer_; }
 
             inline void setDestroyWhenPlayerLeft(bool bDestroy)
                 { this->bDestroyWhenPlayerLeft_ = bDestroy; }
@@ -88,8 +94,6 @@ namespace orxonox
 
             virtual void boost() {}
             virtual void greet() {}
-            virtual void useItem() {}
-            virtual void dropItems() {}
             virtual void switchCamera();
             virtual void mouseLook();
 
@@ -203,6 +207,7 @@ namespace orxonox
             Vector3 client_angular_velocity_;
 
             PlayerInfo* player_;
+            PlayerInfo* formerPlayer_;
             unsigned int playerID_;
 
             std::string hudtemplate_;

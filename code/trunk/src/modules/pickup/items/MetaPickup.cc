@@ -124,6 +124,7 @@ namespace orxonox {
             {
                 if(this->getMetaTypeDirect() == pickupMetaType::destroyCarrier)
                 {
+                    this->Pickupable::destroy(); //TODO: Needed?
                     Pawn* pawn = orxonox_cast<Pawn*>(carrier);
                     pawn->kill();
                     return;

@@ -43,6 +43,7 @@
 namespace orxonox
 {
 
+    //! Initializing the static strings.
     /*static*/ const std::string Pickup::activationTypeImmediate_s = "immediate";
     /*static*/ const std::string Pickup::activationTypeOnUse_s = "onUse";
     /*static*/ const std::string Pickup::durationTypeOnce_s = "once";

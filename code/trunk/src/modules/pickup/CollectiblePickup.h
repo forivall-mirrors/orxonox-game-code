@@ -49,6 +49,8 @@ namespace orxonox {
 
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _PickupExport CollectiblePickup : public Pickupable
     {

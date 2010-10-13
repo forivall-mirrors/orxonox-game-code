@@ -64,6 +64,8 @@ namespace orxonox
 
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _PickupExport PickupCollection : public CollectiblePickup, public BaseObject
     {

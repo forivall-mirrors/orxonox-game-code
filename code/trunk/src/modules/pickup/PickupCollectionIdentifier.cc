@@ -68,7 +68,7 @@ namespace orxonox
     {
         assert(identifier);
 
-        // Slight un-niceity to cast the PickupIdentifier to a PickupCollectionIdentifier.
+        // Slight un-niceity to cast the const PickupIdentifier to a const PickupCollectionIdentifier, but since we cast to a const, there is no harm done.
         PickupIdentifier* temp = const_cast<PickupIdentifier*>(identifier);
         const PickupCollectionIdentifier* collectionIdentifier = orxonox_cast<PickupCollectionIdentifier*>(temp);
 
@@ -93,7 +93,7 @@ namespace orxonox
                 return 1;
         }
 
-        // Means they are equal.
+        // This means they are equal.
         return 0;
     }
 

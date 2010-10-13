@@ -82,6 +82,7 @@ namespace orxonox
 
         if(this->isInitialized())
         {
+            //TODO: Also (network) unregister for master.
             if(GameMode::isMaster() && this->pickup_ != NULL)
             {
                 PickupManager::getInstance().unregisterRepresentation(this->pickup_->getPickupIdentifier(), this);

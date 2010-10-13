@@ -50,13 +50,15 @@ namespace orxonox
         Daniel 'Huty' Haggenmueller
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _PickupExport DroppedPickup : public PickupSpawner
     {
         public:
-            DroppedPickup(BaseObject* creator); //!< Default constructor.
+            DroppedPickup(BaseObject* creator);
             DroppedPickup(BaseObject* creator, Pickupable* pickup, PickupCarrier* carrier, float triggerDistance = 10.0); //!< Constructor.
-            virtual ~DroppedPickup(); //!< Destructor.
+            virtual ~DroppedPickup();
 
         protected:
             virtual Pickupable* getPickup(void); //!< Creates the Pickupable that is going to get picked up.
