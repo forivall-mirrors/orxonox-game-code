@@ -280,6 +280,7 @@ namespace orxonox
         }
 
         this->player_ = player;
+        this->formerPlayer_ = player;
         this->playerID_ = player->getObjectID();
         this->bHasLocalController_ = player->isLocalPlayer();
         this->bHasHumanController_ = player->isHumanPlayer();

@@ -50,8 +50,11 @@ namespace orxonox
         It identifies @ref orxonox::PickupCollection "PickupCollections" based on the different @ref orxonox::CollectiblePickup "CollectiblePickups" they consist of.
 
         @ref orxonox::Pickupable "Pickupables" (resp. @ref orxonox::CollectiblePickup "CollectiblePickups") can be added to the PickupCollectionIdentifier via the addPickup method.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _PickupExport PickupCollectionIdentifier : public PickupIdentifier
     {

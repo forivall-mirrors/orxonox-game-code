@@ -117,9 +117,8 @@ namespace orxonox
         this->processingUsed_ = true;
         // Change used for all Pickupables this PickupCollection consists of.
         for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
             (*it)->setUsed(this->isUsed());
-        }
+
         this->processingUsed_ = false;
 
         this->changedUsedAction();
@@ -175,9 +174,8 @@ namespace orxonox
         this->processingPickedUp_ = true;
         // Change the pickedUp status for all Pickupables this PickupCollection consists of.
         for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
-        {
             (*it)->setPickedUp(this->isPickedUp());
-        }
+
         this->processingPickedUp_ = false;
 
         this->changedPickedUpAction();

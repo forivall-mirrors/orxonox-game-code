@@ -247,8 +247,6 @@ namespace orxonox
 
             this->setDestroyWhenPlayerLeft(false);
 
-            this->dropItems();
-
             if (this->getGametype())
                 this->getGametype()->pawnKilled(this, this->lastHitOriginator_);
 
