@@ -35,8 +35,10 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "graphics/Billboard.h"
 #include "util/StringUtils.h"
+
+#include "graphics/Billboard.h"
+
 #include "PickupManager.h"
 
 namespace orxonox
@@ -54,7 +56,7 @@ namespace orxonox
         RegisterObject(PickupRepresentation);
 
         this->initialize();
-        this->setSyncMode(0x0);
+        this->setSyncMode(0x0); // The default PickupRperesentation created by each PickupManager is not synchronised, since it only exists locally.
     }
 
     /**
@@ -68,7 +70,7 @@ namespace orxonox
         this->initialize();
         this->registerVariables();
 
-        PickupManager::getInstance().registerRepresentation(this); //!< Registers the PickupRepresentation with the PickupManager.
+        PickupManager::getInstance().registerRepresentation(this); // Registers the PickupRepresentation with the PickupManager.
     }
 
     /**
@@ -106,6 +108,10 @@ namespace orxonox
         this->inventoryRepresentation_ = "Default";
     }
 
+    /**
+    @brief
+        Registers the variables that need to be synchornised.
+    */
     void PickupRepresentation::registerVariables(void)
     {
         registerVariable(this->description_, VariableDirection::ToClient);
@@ -130,7 +136,8 @@ namespace orxonox
 
         if(GameMode::isMaster())
         {
-            PickupManager::getInstance().registerRepresentation(this->pickup_->getPickupIdentifier(), this); //!< Registers the PickupRepresentation with the PickupManager through the PickupIdentifier of the Pickupable it represents.
+            // Registers the PickupRepresentation with the PickupManager through the PickupIdentifier of the Pickupable it represents.
+            PickupManager::getInstance().registerRepresentation(this->pickup_->getPickupIdentifier(), this);
         }
 
         if(this->spawnerRepresentation_ != NULL)
@@ -155,7 +162,7 @@ namespace orxonox
             if(this->spawnerTemplate_ == BLANKSTRING)
             {
                 COUT(4) << "PickupRepresentation: Spawner template is empty." << std::endl;
-                //!< If neither spawnerRepresentation nor spawnerTemplate was specified
+                // If neither spawnerRepresentation nor spawnerTemplate was specified
                 return this->getDefaultSpawnerRepresentation(spawner);
             }
             this->addTemplate(this->spawnerTemplate_);
@@ -179,7 +186,7 @@ namespace orxonox
     @return
         Returns a pointer to the StaticEntity.
     */
-    //TODO: Possibility to define default representation through XML.
+    //TODO: Possibility to define default representation through XML?
     StaticEntity* PickupRepresentation::getDefaultSpawnerRepresentation(PickupSpawner* spawner)
     {
         StaticEntity* representation = new StaticEntity(spawner);

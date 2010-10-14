@@ -41,6 +41,7 @@
 #include "interfaces/Pickupable.h"
 #include "pickup/PickupIdentifier.h"
 #include "worldentities/StaticEntity.h"
+
 #include "PickupSpawner.h"
 
 #include "core/BaseObject.h"
@@ -51,8 +52,40 @@ namespace orxonox // tolua_export
 
     /**
     @brief
-        The PickupRepresentation class represents a specific pickup type (identified by its PickupIdentifier). It defines the information displayed in the GUI and how PickupSpawners that spawn the pickup type look like.
-        They are created through XML and are registered with the PickupManager.
+        The PickupRepresentation class represents a specific pickup type (identified by its @ref orxonox::PickupIdentififer "PickupIdentifier"). It defines the information displayed in the GUI (PickupInventory) and how @ref orxonox::PickupSpawner "PickupSpawners" that spawn the pickup type look like.
+        They are created through XML and are registered with the @ref orxonox::PickupManager "PickupManager".
+
+        Creating a PickupRepresentation in XML could look as follows:
+        @code
+        <PickupRepresentation
+            name = "My awesome Pickup"
+            description = "This is the most awesome Pickup ever to exist."
+            spawnerTemplate = "awesomePickupRepresentation"
+            inventoryRepresentation = "AwesomePickup"
+        >
+            <pickup>
+                <SomePickup />
+            </pickup>
+        </PickupRepresentation>
+        @endcode
+        As you might have noticed, there is a parameter called <em>spawnerTemplate</em> and also another parameter called <em>inventoryRepresentation</em>. Let's first explain the second one, <em>inventoryRepresentation</em>.
+        - The <b>inventoryRepresentation</b> specifies the image that is displayed in the PickupInventory for the specific type of @ref orxonox::Pickupable "Pickupable". More technically, it is the name of an image located in the <code>PickupInventory.imageset</code>, which in turn is located in <code>data_extern/gui/imagesets/</code>.
+        - The <b>spawnerTemplate</b> specifies how the type of @ref orxonox::Pickupable "Pickupable" (or more precisely the @ref orxonox::PickupSpawner "PickupSpawner", that spawns that type of @ref orxonox::Pickupable "Pickupable") is displayed ingame. It is a @ref orxnox::Template "Template" defined in XML. The <em>spawnerTemplate</em> can be specified as follows (keep in mind, that the template needs to have been specified before the definition of the PickupRepresentation that uses it).
+        @code
+        <Template name="awesomePickupRepresentation">
+            <PickupRepresentation>
+                <spawner-representation>
+                    <StaticEntity>
+                        <attached>
+                            <!-- Here you can put all the objects which define the look of the spawner. -->
+                        </attached>
+                    </StaticEntity>
+                </spawner-representation>
+            </PickupRepresentation>
+        </Template>
+        @endcode
+
+        For the purpose of them working over the network, they are synchronised.
 
     @author
         Damian 'Mozork' Frick
@@ -68,7 +101,7 @@ namespace orxonox // tolua_export
             PickupRepresentation(BaseObject* creator); //!< Default constructor.
             virtual ~PickupRepresentation(); //!< Destructor.
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a PickupRepresentation object through XML.
 
             /**
             @brief Set the name of the Pickupable represented by this PickupRepresentation.
@@ -151,7 +184,7 @@ namespace orxonox // tolua_export
             void initialize(void); //!< Initializes the member variables of this PickupRepresentation.
             StaticEntity* getDefaultSpawnerRepresentation(PickupSpawner* spawner); //!< Get the default spawnerRepresentation for a specific PickupSpawner.
 
-            void registerVariables(void); //!< Register some variables for synchronisation.
+            void registerVariables(void); //!< Registers the variables that need to be synchronised.
 
             std::string name_; //!< The name of the Pickupable represented by this PickupRepresentation.
             std::string description_; //!< The description of the Pickupable represented by this PickupRepresentation.

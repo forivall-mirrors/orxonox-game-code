@@ -38,8 +38,10 @@
 #include "PickupPrereqs.h"
 
 #include <string>
-#include "interfaces/Pickupable.h"
+
 #include "tools/Timer.h"
+
+#include "interfaces/Pickupable.h"
 
 #include "tools/interfaces/Tickable.h"
 #include "worldentities/StaticEntity.h"
@@ -48,13 +50,28 @@ namespace orxonox
 {
     /**
         @brief
-            The PickupSpawner class is responsible for spawning pickups of a specific type.
-            Forthermore it can be specified how long the time interval between spawning two items is and how many pickups are spawned at maximum, amongst other things.
+            The PickupSpawner class is responsible for spawning @ref orxonox::Pickupable "Pickupables" of a specific type.
+            Furthermore it can be specified how long the time interval between spawning two items is and how many @ref orxonox::Pickupable "Pickupables" are spawned at maximum, amongst other things. The parameters that can be used to further specify the behaviour of the PickupSpawner are:
+            - The <b>triggerDistance</b> can be used to specify how far away an entity has to be to still trigger the PickupSPawner (and thus receive a @ref orxonox::Pickupable "Pickupable" form it). The default is 10.
+            - The <b>respawnTime</b> is the time in seconds that passes until the PickupSpawner is enabled again, after having spawned a @ref orxonox::Pickupable "Pickupable". The default is 0.
+            - The <b>maxSpawnedItems</b> is the number of @ref orxonox::Pickupable "Pickupables" that are spawned by this PickupSpawner at the most. The default is -1, which denotes infinity.
+
+            A PickupSpawner is created in XML, which can be done in the following fashion:
+            @code
+            <PickupSpawner position="-100,0,-100" respawnTime="30" maxSpawnedItems="10">
+                <pickup>
+                    <SomePickup >
+                </pickup>
+            </PickupSpawner>
+            @endcode
+            As we can see, since the PickupSpawner is a StaticEntity, it also has spatial coordinates. We can also see, that the type of @ref orxonox::Pickupable "Pickupable" which is spawned hast to be specified as well.
 
         @author
             Daniel 'Huty' Haggenmueller
         @author
             Damian 'Mozork' Frick
+
+        @ingroup Pickup
     */
     class _PickupExport PickupSpawner : public StaticEntity, public Tickable
     {
@@ -65,7 +82,7 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);  //!< Method for creating a PickupSpawner through XML.
             virtual void changedActivity(); //!< Invoked when activity has changed (set visibilty).
-            virtual void tick(float dt);
+            virtual void tick(float dt); //!< Tick, checks if any Pawn is close enough to trigger.
 
             /**
             @brief Get the distance in which to trigger.
