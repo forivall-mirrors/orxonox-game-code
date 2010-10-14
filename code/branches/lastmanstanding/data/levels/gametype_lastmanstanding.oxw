@@ -22,7 +22,7 @@
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
   >
-
+<!----- Spawnpoints ----->
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <SpawnPoint team=0 position="-200,200,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
@@ -30,7 +30,90 @@
     <SpawnPoint team=0 position="200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <SpawnPoint team=0 position="200,200,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <SpawnPoint team=0 position="200,0,200" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
-    
+
+<!-- ----------------random fog ------>
+<?lua
+for i = 1, 100, 1
+do
+j = math.random()
+?>
+
+    <StaticEntity position="<?lua print(math.random() * 5000-2000) ?>,<?lua print(math.random() * 5000-2000) ?>,<?lua print(math.random() * 5000 - 2000) ?>">
+      <attached>
+        <ParticleEmitter position="0,0,0" source="Orxonox/Steam" />
+      </attached>
+    </StaticEntity>
+
+<?lua
+end
+?>
+<!-- Carrier with guns not implemented yet-->
+    <MovableEntity position="-2000,-1000,-2000" pitch="-90" roll="90">
+      <attached>
+        <Model position="0,0,0" scale=10 mesh="Carrier.mesh" />
+        <Model position="0,30,20" scale=10 mesh="pirate.mesh" roll="180" />
+        <Model position="-80,-30,20" scale=10 mesh="pirate.mesh" roll="180" />
+      </attached>
+	      <collisionShapes>
+        <BoxCollisionShape position="70,0,-25"      halfExtents="150, 50, 25" />
+        <BoxCollisionShape position="95,75,-16"     halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="95,-75,-16"    halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="77,47,30"      halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,-47,30"     halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,0,50"       halfExtents="110, 45, 6" />
+        <BoxCollisionShape position="167,0,70"      halfExtents="17, 20, 20" />
+      </collisionShapes>
+    </MovableEntity>
+
+<!-- ---------------- Space Station --------------- -->
+<?lua
+    dofile("includes/CuboidSpaceStation.lua")
+  ?>
+      <StaticEntity scale=1 position="-5000,100,1000" roll=30>
+        <attached>
+          <?lua
+            createSpaceStationPar(65461,2,1,2,1,2,1,100)
+          ?>
+            <attached>
+              <Billboard position="0,0,0" colour="1.0,1.0,0" material="Examples/Flare" />
+            </attached>
+        </attached>
+      </StaticEntity>
+<!--
+    <Destroyer position="3500, -2000, -1000" collisionType=dynamic linearDamping=0.8 angularDamping=0 mass=500>
+      <attached>
+        <CheckPoint />
+        <Model position="0,0,0" scale="5" mesh="Carrier.mesh"/>
+        <Backlight
+          mainstate=activity
+          active=false
+          scale=0.4
+          name=bltest
+          position=" 7.6, 0, 6"
+          colour="0.2, 0.65, 1.0, 1.0"
+          width=15
+          length=1500
+          lifetime=2
+          elements=50
+          trailmaterial="Trail/backlighttrail"
+          turnontime=1
+          turnofftime=1
+          material="Flares/ThrusterFlare1"
+        />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="70,0,-25"      halfExtents="150, 50, 25" />
+        <BoxCollisionShape position="95,75,-16"     halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="95,-75,-16"    halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="77,47,30"      halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,-47,30"     halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,0,50"       halfExtents="110, 45, 6" />
+        <BoxCollisionShape position="167,0,70"      halfExtents="17, 20, 20" />
+      </collisionShapes>
+    </Destroyer>
+-->
+
+
   </Scene>
 </Level>
 

@@ -47,6 +47,18 @@ namespace orxonox
         this->timeRemaining=20.0f;
     }
 
+    void LastManStanding::spawnDeadPlayersIfRequested()
+    {
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (it->second.state_ == PlayerState::Dead)
+            {
+                bool alive = (0<playerLives_[it->first]);
+                if (alive&&(it->first->isReadyToSpawn() || this->bForceSpawn_))
+                    this->spawnPlayer(it->first);
+             }
+    }
+
+
     void LastManStanding::setConfigValues()
     {
         SetConfigValue(lives, 4);
@@ -65,10 +77,10 @@ namespace orxonox
 
     bool LastManStanding::allowPawnDeath(Pawn* victim, Pawn* originator)
     {
-        if (!victim)// only for safety
+        if (!victim||!victim->getPlayer())// only for safety
             return true;
-        playerLives_[victim->getPlayer()]--;
-        if (!playerLives_[victim->getPlayer()])//if player lost all lives
+        playerLives_[victim->getPlayer()]=playerLives_[victim->getPlayer()]-1;
+        if (playerLives_[victim->getPlayer()]<=0)//if player lost all lives
         {
             this->playersAlive--;
             const std::string& message = victim->getPlayer()->getName() + " has lost all lives";
@@ -182,20 +194,21 @@ namespace orxonox
     {
         if(!player)
             return;
-        std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
+        std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);//!!!!!!!!!!!
         if (it != this->players_.end())
         {
             it->second.state_ = PlayerState::Dead;//-------------killpart
             it->second.killed_++;
 
-            playerLives_[player]--;//-----------datapart
-            if (!playerLives_[player])//if player lost all lives
+            playerLives_[player]=playerLives_[player]-1;//-----------datapart
+            if (playerLives_[player]<=0)//if player lost all lives
             {
                 this->playersAlive--;
-                const std::string& message = player->getName() + " has lost all lives";
+                const std::string& message = player->getName() + " is out";
                 COUT(0) << message << std::endl;
                 Host::Broadcast(message);
             }
+            this->timeToAct_[player]=timeRemaining+3.0f;//reset timer
         }
     }
     
@@ -214,22 +227,12 @@ namespace orxonox
                 it->second-=dt;
                 if (it->second<0.0f)
                 {
-                    it->second=timeRemaining+3.0f;
-                    this->killPlayer(it->first);
+                    it->second=timeRemaining+3.0f;//reset timer
+                    if (playerGetLives(it->first)>0)
+                        this->killPlayer(it->first);
                 }
             }
         }
-    }
-
-    void LastManStanding::spawnDeadPlayersIfRequested()
-    {
-        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-            if (it->second.state_ == PlayerState::Dead)
-            {
-                bool alive = (0<playerLives_[it->first]);
-                if (alive&&(it->first->isReadyToSpawn() || this->bForceSpawn_))
-                    this->spawnPlayer(it->first);
-             }
     }
 
 }

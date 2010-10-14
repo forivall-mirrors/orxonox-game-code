@@ -59,15 +59,15 @@ namespace orxonox
             int playersAlive; //!< Counter counting players with more than 0 lives.
             float timeRemaining; //!< Each player has a certain time where he or she has to hit an opponent or will be punished.
             std::map<PlayerInfo*, float> timeToAct_; //!< Each player's time till she/he will be punished is stored here.
-            virtual void spawnDeadPlayersIfRequested();
+            virtual void spawnDeadPlayersIfRequested(); //!< Prevents dead players to respawn
 
         public:
             LastManStanding(BaseObject* creator); //!< Default Constructor.
             virtual ~LastManStanding() {} //!< Default Destructor.
             void setConfigValues(); //!< Makes values configurable.
 
-            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //!< If a player shoot's an opponet, his punishment countdown will be resetted.
-            virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //!< Manages each lives.
+            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //!< If a player shoot's an opponent, his punishment countdown will be resetted.
+            virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //!< Manages each players lives.
 
             virtual void start(); //!< Sends a start message.
             virtual void end(); //!< Sends an end message.
@@ -77,9 +77,9 @@ namespace orxonox
 
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
 
-            const int playerGetLives(PlayerInfo* player);
-            void killPlayer(PlayerInfo* player);
-            void tick (float dt);// used to end the game
+            const int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_"
+            void killPlayer(PlayerInfo* player); //!< Function in order to kill a player. Punishment for hiding longer than "timeRemaining".
+            void tick (float dt); //!< used to end the game
     };
 }
 
