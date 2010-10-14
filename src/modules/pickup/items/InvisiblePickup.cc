@@ -56,7 +56,6 @@ namespace orxonox
     InvisiblePickup::InvisiblePickup(BaseObject* creator) : Pickup(creator)
     {
         RegisterObject(InvisiblePickup);
-        //! Defines who is allowed to pick up the pickup.
         this->initialize();
     }
 
@@ -85,6 +84,7 @@ namespace orxonox
     void InvisiblePickup::initialize(void)
     {
         this->duration_ = 0.0f;
+        // Defines who is allowed to pick up the pickup.
         this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
 
@@ -98,6 +98,7 @@ namespace orxonox
         XMLPortParam(InvisiblePickup, "duration", setDuration, getDuration, xmlelement, mode);
 
         this->initializeIdentifier();
+        this->setDurationType(Pickup::durationTypeOnce_s); // The duration type is always once.
     }
 
     /**
@@ -108,19 +109,22 @@ namespace orxonox
     {
         SUPER(InvisiblePickup, changedUsed);
 
-        //! If the pickup is not picked up nothing must be done.
+        // If the pickup is not picked up nothing must be done.
         if(!this->isPickedUp())
             return;
 
         if (this->isUsed())
         {
-            if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
+            if(this->isContinuous()
             {
-                this->durationTimer_.unpauseTimer();
-            }
-            else
-            {
-                this->durationTimer_.setTimer(this->getDuration(), false, createExecutor(createFunctor(&InvisiblePickup::pickupTimerCallback, this)));
+                if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
+                {
+                    this->durationTimer_.unpauseTimer();
+                }
+                else
+                {
+                    this->durationTimer_.setTimer(this->getDuration(), false, createExecutor(createFunctor(&InvisiblePickup::pickupTimerCallback, this)));
+                }
             }
 
             this->setInvisible(true);
