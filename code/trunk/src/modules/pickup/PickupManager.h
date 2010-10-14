@@ -163,14 +163,14 @@ namespace orxonox // tolua_export
 
             PickupRepresentation* defaultRepresentation_; //!< The default PickupRepresentation.
 
-            std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking @ref oroxnox::PickupIdentifier "PickupIdentifiers" (representing types of @ref orxonox::Pickupable "Pickupables") and @ref orxonox::PickupRepresentation "PickupRepresentations".
-            std::map<uint32_t, PickupRepresentation*> representationsNetworked_; //!< Map linking the @ref orxonox::PickupRepresentation "PickupRepresentation's" objectId to the @ref orxonox::PickupRepresentation "PickupRepresentation" itself. It is used for networking purposes.
+            std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare> representations_; //!< Map linking PickupIdentifiers (representing types of Pickupables) and PickupRepresentations.
+            std::map<uint32_t, PickupRepresentation*> representationsNetworked_; //!< Map linking the PickupRepresentation's objectId to the PickupRepresentation itself. It is used for networking purposes.
 
-            std::map<uint32_t, PickupInventoryContainer*> pickupInventoryContainers_; //!< Map linking a number identifying a @ref orxonox::Pickupable "Pickupable" to a @ref orxonox::PickupInventoryContainer "PickupInventoryContainer", which contains all necessary information about that @ref orxonox::Pickupable "Pickupable".
+            std::map<uint32_t, PickupInventoryContainer*> pickupInventoryContainers_; //!< Map linking a number identifying a Pickupable to a PickupInventoryContainer, which contains all necessary information about that Pickupable.
             std::map<uint32_t, PickupInventoryContainer*>::iterator pickupsIterator_; //!< An iterator pointing to the current Pickupable in pickupsList_.
 
-            std::map<uint32_t, WeakPtr<Pickupable>*> pickups_; //!< Map linking a number identifying a @ref orxonox::Pickupable "Pickupable" to a weak pointer of a @ref orxonox::Pickupable "Pickupable".
-            std::map<Pickupable*, uint32_t> indexes_;//!< Map linking @ref orxonox::Pickupable "Pickupable" to the number identifying it.
+            std::map<uint32_t, WeakPtr<Pickupable>*> pickups_; //!< Map linking a number identifying a Pickupable to a weak pointer of a Pickupable.
+            std::map<Pickupable*, uint32_t> indexes_;//!< Map linking Pickupable to the number identifying it.
 
             void updateGUI(void); //!< Updates the PickupInventory GUI.
             uint32_t getPickupIndex(void); //!< Get a new index for a Pickupable.

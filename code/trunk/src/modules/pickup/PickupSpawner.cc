@@ -105,7 +105,7 @@ namespace orxonox
     void PickupSpawner::initialize(void)
     {
         this->triggerDistance_ = 10;
-        this->respawnTime_ = 0;
+        this->respawnTime_ = 0; //TODO: Smart? Shouldn't we have a better mechanism to prevent unwanted multiple pickups?
         this->maxSpawnedItems_ = INF;
         this->spawnsRemaining_ = INF;
         this->selfDestruct_ = false;
