@@ -46,27 +46,45 @@
 
 namespace orxonox {
 
-    //! Enum for the type of the HealthPickup
+    /**
+    @brief
+        Enum for the type of the @ref orxonox::HealthPickup "HealthPickup".
+
+    @ingroup PickupItems
+    */
     namespace pickupHealthType
     {
         enum Value
         {
-            limited,
-            temporary,
-            permanent
+            limited, //!< Means that the @ref orxonox::HealthPickup "HealthPickup" only increases the users health to its maximum health.
+            temporary, //!< Means that the @ref orxonox::HealthPickup "HealthPickup" temporarily increases the users health even above its maximum health, but only as long as it is in use.
+            permanent //!< Means that the @ref orxonox::HealthPickup "HealthPickup" increases the users health even above its maximum health and increases the maximum health permanently such that it matches the new health.
         };
     }
 
     /**
     @brief
-        A pickup that can do (dependent upon the parameters) lots of different things to the health of a Pawn.
+        The Health Pickup is a Pickupable that can do (dependent upon the parameters) lots of different things to the health of a Pawn.
         There are 4 parameters that can be chosen:
-        - The @b health The amount of health that (in a way dependent on the other parameters) is transfered to the Pawn.
-        - The @b activation @b type It can be chosen to be either 'immediate' or 'onUse'. The activation type essentially (as indicated by the name) defines when the health is transfered, either immediately after being picked up or only after the player uses it.
-        - The @b duration @b type It can be chosen to be either 'once' or 'continuous'. For 'once' the specified health is transfered once to the Pawn, for 'continuous' the set health is transfered over a span of time at a rate defined by the health rate parameter.
-        - The @b health @b type The health type can be chosen to be 'limited', 'temporary' or 'permanent'. 'limited' means that the health is increased only to the maximum health of the Pawn. 'temporary' means that the maximum health is temporarily elevated but will be set back as soon as the pickup is no longer in use. 'permanent' means that the maximum health of the Pawn is increased such that the health provided by the pickup will fit in and the maximum health stays that way.
+        - The <b>health</b> The amount of health that (in a way dependent on the other parameters) is transferred to the Pawn.
+        - The <b>activation type</b> It can be chosen to be either <em>immediate</em> or <em>onUse</em>. The activation type essentially (as indicated by the name) defines when the health is transferred, either immediately after being picked up or only after the player uses it.
+        - The <b>duration type</b> It can be chosen to be either <em>once</em> or <em>continuous</em>. For <em>once</em> the specified health is transferred once to the Pawn, for <em>continuous</em> the set health is transferred over a span of time at a rate defined by the health rate parameter.
+        - The <b>health type</b> The health type can be chosen to be <em>limited</em>, <em>temporary</em> or <em>permanent</em>. <em>limited</em> means that the health is increased only to the maximum health of the Pawn. 'temporary' means that the maximum health is temporarily elevated but will be set back as soon as the pickup is no longer in use. <em>permanent</em> means that the maximum health of the Pawn is increased such that the health provided by the pickup will fit in and the maximum health stays that way.
+
+        An examle of a XML implementation of a HealthPickup would be:
+        @code
+        <HealthPickup
+            health = 33
+            healthType = "limited"
+            activationType = "immediate"
+            durationType = "once"
+        />
+        @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup PickupItems
     */
     class _PickupExport HealthPickup : public Pickup, public Tickable
     {
@@ -82,7 +100,7 @@ namespace orxonox {
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
             /**
-            @brief Get the health that is transfered to the Pawn upon usage of this pickup.
+            @brief Get the health that is transferred to the Pawn upon usage of this pickup.
             @return Returns the health.
             */
             inline float getHealth(void)

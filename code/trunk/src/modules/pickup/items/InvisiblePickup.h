@@ -49,10 +49,14 @@ namespace orxonox {
     @brief
         A pickup that makes the Pawn invisible.
         There are 2 parameters that can be chosen:
-        - The @b activation @b type It can be chosen to be either 'immediate' or 'onUse'. The activation type essentially (as indicated by the name) defines when the Pawn will be invisible, either immediately after being picked up or only after the player uses it.
-        - The @b duration @b type It can be chosen how long the Pawn will be invisibel.
+        - The <b>activation type</b> It can be chosen to be either <em>immediate</em> or <em>onUse</em>. The activation type essentially (as indicated by the name) defines when the Pawn will be invisible, either immediately after being picked up or only after the player uses it.
+        - The <b>duration type</b> It can be chosen to be either <em>once</em> or <em>continuous</em>. For <em>once</em> the InvisiblePickup just makes the Pawn invisible for as long as it is used, for <em>continuous</em> the Pawn is invisible for the specified duration.
+        - The <b>duration</b> Specifies how long (in seconds) the invisibility lasts.
+
     @author
         Benedict Simlinger
+
+    @ingroup PickupItems
     */
     class _PickupExport InvisiblePickup : public Pickup
     {

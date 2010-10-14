@@ -38,17 +38,26 @@
 #include "pickup/PickupPrereqs.h"
 
 #include <string>
-#include <worldentities/pawns/Pawn.h>
-#include <worldentities/Drone.h>
-
-#include "worldentities/StaticEntity.h"
 
 #include "pickup/Pickup.h"
 #include "tools/interfaces/Tickable.h"
 
 namespace orxonox {
 
+    /**
+    @brief
+        The DronePickup adds a Drone to the Pawn upon being picked up.
+        It can be used in XML as follows:
+        @code
+        <DronePickup droneTemplate="myDroneTemplate" />
+        @endcode
+        Where <em>droneTemplate</em> specifies a @ref orxonox::Template "Template" based on which the Drone is created.
 
+    @author
+        Lukas Gassner
+
+    @ingroup PickupItems
+    */
     class _PickupExport DronePickup : public Pickup, public Tickable
     {
         public:
@@ -61,15 +70,15 @@ namespace orxonox {
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
-            void setDroneTemplate(std::string templatename);
-            const std::string& getDroneTemplate() const;
+            void setDroneTemplate(std::string templatename); //!< Set the droneTemplate.
+            const std::string& getDroneTemplate() const; //!< Get the name of the droneTemplate.
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
 
         private:
             void initialize(void); //!< Initializes the member variables.
-            std::string droneTemplate_;
+            std::string droneTemplate_; //!< The name of the template, based upon which the Drone is created.
             Pawn* carrierToPawnHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
 
 

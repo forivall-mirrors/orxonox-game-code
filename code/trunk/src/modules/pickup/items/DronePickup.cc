@@ -32,17 +32,18 @@
 */
 
 #include "DronePickup.h"
-#include "worldentities/Drone.h"
-#include "controllers/DroneController.h"
+
+#include <sstream>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "util/StringUtils.h"
 
-#include "worldentities/pawns/Pawn.h"
+#include "controllers/DroneController.h"
 #include "pickup/PickupIdentifier.h"
-
-#include <sstream>
+#include "worldentities/pawns/Pawn.h"
+#include "worldentities/Drone.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {
@@ -103,10 +104,22 @@ namespace orxonox
         this->initializeIdentifier();
     }
 
+    /**
+    @brief
+        Set the droneTemplate.
+    @param templatename
+        The name of the Template to e set.
+    */
     void DronePickup::setDroneTemplate(std::string templatename){
         droneTemplate_ = templatename;
     }
 
+    /**
+    @brief
+        Get the name of the droneTemplate.
+    @return
+        Returns the name of the droneTemplate.
+    */
     const std::string& DronePickup::getDroneTemplate() const
     {
         return droneTemplate_;
@@ -120,16 +133,16 @@ namespace orxonox
     {
         SUPER(DronePickup, changedUsed);
 
-        //! If the pickup is not picked up nothing must be done.
+        // If the pickup is not picked up nothing must be done.
         if(!this->isPickedUp())
             return;
 
-        //! If the pickup has transited to used.
+        // If the pickup has transited to used.
         if(this->isUsed())
         {
 
                 Pawn* pawn = this->carrierToPawnHelper();
-                if(pawn == NULL) //!< If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+                if(pawn == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
                     this->Pickupable::destroy();
 
                 //Attach to pawn
@@ -146,12 +159,12 @@ namespace orxonox
                 Vector3 spawnPosition = pawn->getWorldPosition() + Vector3(30,0,-30);
                 drone->setPosition(spawnPosition);
 
-                //! The pickup has been used up.
+                // The pickup has been used up.
                 this->setUsed(false);
         }
         else
         {
-            //! If either the pickup can only be used once or it is continuous and used up, it is destroyed upon setting it to unused.
+            // If either the pickup can only be used once or it is continuous and used up, it is destroyed upon setting it to unused.
             if(this->isOnce() || (this->isContinuous() ))
             {
                 this->Pickupable::destroy();
