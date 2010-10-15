@@ -132,7 +132,7 @@ namespace orxonox
             /// Unpauses the Timer - continues with the given state.
             inline void unpauseTimer()
                 { this->bActive_ = true; }
-            /// Returns true if the Timer is active (neither stoped nor paused).
+            /// Returns true if the Timer is active (neither stopped nor paused).
             inline bool isActive() const
                 { return this->bActive_; }
             /// Returns the remaining time until the Timer calls the executor.
