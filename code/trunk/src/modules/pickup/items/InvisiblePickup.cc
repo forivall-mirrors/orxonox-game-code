@@ -133,11 +133,11 @@ namespace orxonox
         {
             this->setInvisible(false);
 
-            if((!this->isContinuous() && this->isImmediate()) || (!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration()))
+            if((!this->isContinuous() && this->isImmediate()) || (this->isContinuous() && !this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration()))
             {
                 this->Pickupable::destroy();
             }
-            else if(this->durationTimer_.isActive())
+            else if(this->isContinuous() && this->durationTimer_.isActive())
             {
                 this->durationTimer_.pauseTimer();
             }
