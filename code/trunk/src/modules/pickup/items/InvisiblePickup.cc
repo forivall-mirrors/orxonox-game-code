@@ -115,7 +115,7 @@ namespace orxonox
 
         if (this->isUsed())
         {
-            if(this->isContinuous()
+            if(this->isContinuous())
             {
                 if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
                 {
@@ -134,7 +134,7 @@ namespace orxonox
         {
             this->setInvisible(false);
 
-            if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration())
+            if(this->isContinuous() || !this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration())
             {
                 this->Pickupable::destroy();
             }
@@ -212,9 +212,9 @@ namespace orxonox
 
     /**
     @brief
-        Sets the duration.
+        Sets the time the InvisibilityPickup will last.
     @param duration
-        The duration
+        The duration in seconds.
     */
     void InvisiblePickup::setDuration(float duration)
     {
@@ -229,6 +229,10 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Helper method. Is called by the Timer as soon as it expires.
+    */
     void InvisiblePickup::pickupTimerCallback(void)
     {
         this->setUsed(false);

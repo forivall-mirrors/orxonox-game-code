@@ -64,6 +64,7 @@ namespace orxonox {
 
             InvisiblePickup(BaseObject* creator); //!< Constructor.
             virtual ~InvisiblePickup(); //!< Destructor.
+            
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode); //!< Method for creating a HealthPickup object through XML.
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
@@ -74,14 +75,20 @@ namespace orxonox {
             */
             inline bool getInvisibility(bool)
                 { return this->invisible_; }
-            inline float getDuration()
+            /**
+            @brief Get the time the InvisibilityPickup lasts.
+            @return Returns the time in seconds the InvisibiltyPickup lasts.
+            */
+            inline float getDuration(void)
                 { return this->duration_; }
 
         protected:
-            bool setInvisible(bool invisibility); //!< Set the Pawn to be invisible or visible again.
-            void setDuration(float duration);
             void initializeIdentifier(void);
-            void pickupTimerCallback(void); //!< Function that gets called when the timer ends.
+
+            bool setInvisible(bool invisibility); //!< Set the Pawn to be invisible or visible again.
+            void setDuration(float duration); //!< Sets the time the InvisibilityPickup will last.
+
+            void pickupTimerCallback(void); //!< Helper method. Is called by the Timer as soon as it expires.
 
         private:
             void initialize(void); //!< Initializes the member variables.

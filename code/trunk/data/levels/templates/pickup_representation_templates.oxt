@@ -343,7 +343,7 @@
   <InvisiblePickup 
     duration = 5.0
     activaionType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 
@@ -367,7 +367,7 @@
   <InvisiblePickup 
     duration = 10.0
     activaionType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 
@@ -391,7 +391,7 @@
   <InvisiblePickup 
     duration = 20.0
     activaionType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 
