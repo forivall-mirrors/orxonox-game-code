@@ -53,6 +53,15 @@ namespace orxonox {
         - The <b>duration type</b> It can be chosen to be either <em>once</em> or <em>continuous</em>. For <em>once</em> the InvisiblePickup just makes the Pawn invisible for as long as it is used, for <em>continuous</em> the Pawn is invisible for the specified duration.
         - The <b>duration</b> Specifies how long (in seconds) the invisibility lasts.
 
+        An examle of a XML implementation of a InvisiblePickup would be:
+        @code
+        <HealthPickup
+            activationType = "immediate"
+            durationType = "continuous"
+            duration = 30.0
+        />
+        @endcode
+
     @author
         Benedict Simlinger
 

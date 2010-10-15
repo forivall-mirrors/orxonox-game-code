@@ -98,7 +98,6 @@ namespace orxonox
         XMLPortParam(InvisiblePickup, "duration", setDuration, getDuration, xmlelement, mode);
 
         this->initializeIdentifier();
-        this->setDurationType(Pickup::durationTypeOnce_s); // The duration type is always once.
     }
 
     /**
@@ -134,11 +133,11 @@ namespace orxonox
         {
             this->setInvisible(false);
 
-            if(this->isContinuous() || !this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration())
+            if((!this->isContinuous() && this->isImmediate()) || (!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration()))
             {
                 this->Pickupable::destroy();
             }
-            else
+            else if(this->durationTimer_.isActive())
             {
                 this->durationTimer_.pauseTimer();
             }
