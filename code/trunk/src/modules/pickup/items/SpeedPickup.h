@@ -38,8 +38,6 @@
 #include "pickup/PickupPrereqs.h"
 
 #include <string>
-#include "worldentities/pawns/Pawn.h"
-#include "worldentities/StaticEntity.h"
 
 #include "pickup/Pickup.h"
 
@@ -49,14 +47,28 @@ namespace orxonox {
     @brief
         A Pickup which can manipulate the Speed of a Pawn.
 
-        There are 4 parameters that can be cosen:
-        - The @b speed @b multiplier
-        - The @b additional (forward) @b speed
-        - The @b activation @b type 'immediate' or 'onUse'. defines if the item is used when it's picked up or only after the player chooses to use it.
-        - The @b duration The activation time of the pickup.
+        There are 5 parameters that can be cosen:
+        - The @b speedMultiply, specifies a factor by which the Spaceships speed is multiplied. The default is 1.
+        - The @b speedAdd, specifies a value that is added to the speed of the Spaceship. The default is 0.
+        - The @b activationType <em>immediate</em> or <em>onUse</em>, defines if the SpeedPickup is used when it's picked up or only after the player chooses to use it. The default is <em>immediate</em>.
+        - The @b durationType Can be either <em>once</em> or <em>continuous</em>. For <em>once</em> the SpeedPickup is just active for as long as it is used, for <em>continuous</em> the SpeedPickup is active only for the specified duration. The default is <em>once</em>.
+        - The @b duration The time in seconds the SpeedPickup is active at the most. The default is 0.
+
+        An example, how a SpeedPickup could be defined in XML could be:
+        @code
+        <SpeedPickup
+            speedMultiply = 2.0
+            speedAdd = 10.0
+            activationType = "immediate"
+            durationType = "continuous"
+            duration = 30.0
+        />
+        @endcode
 
     @author
         Eric Beier
+
+    @ingroup PickupItems
     */
     class _PickupExport SpeedPickup : public Pickup
     {
@@ -70,21 +82,32 @@ namespace orxonox {
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
-            inline float getDuration(void)
+            /**
+            @brief Get the duration, the time the SpeedPickup is active.
+            @return Returns the duration in seconds.
+            */
+            inline float getDuration(void) const
                 { return this->duration_; }
-            inline float getSpeedAdd(void)
+            /**
+            @brief Get the value that is added to the speed of the Pawn.
+            @return Returns the speedAdd.
+            */
+            inline float getSpeedAdd(void) const
                 { return this->speedAdd_; }
-            inline float getSpeedMultiply(void)
+            /**
+            @brief Get the factor by wich the speed of the Pawn is multplied.
+            @return Returns the speedMultiply.
+            */
+            inline float getSpeedMultiply(void) const
                 { return this->speedMultiply_; }
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
-
             void pickupTimerCallback(void); //!< Function that gets called when timer ends.
 
-            void setDuration(float duration);
-            void setSpeedAdd(float speedAdd);
-            void setSpeedMultiply(float speedMultiply);
+            void setDuration(float duration); //!< Sets the duration.
+            void setSpeedAdd(float speedAdd); //!< Sets the SpeedAdd, the value that is added to the speed of the Pawn.
+            void setSpeedMultiply(float speedMultiply); //!< Sets the speedMultiply, the factor by which the speed of the Pawn is multiplied.
 
         private:
             void initialize(void); //!< Initializes the member variables.
@@ -92,9 +115,9 @@ namespace orxonox {
 
             Timer durationTimer_; //!< Timer.
 
-            float duration_; //!< The health that is transferred to the Pawn.
-            float speedAdd_;
-            float speedMultiply_;
+            float duration_; //!< The time in seconds for which the SpeedPickup stays active.
+            float speedAdd_; //!< The value that is added to the speed of the Pawn.
+            float speedMultiply_; //!< The factor by which the speed of the Pawn is multiplied.
     };
 }
 

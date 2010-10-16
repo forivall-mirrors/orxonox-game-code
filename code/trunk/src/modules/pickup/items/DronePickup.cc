@@ -34,16 +34,13 @@
 #include "DronePickup.h"
 
 #include <sstream>
-
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/StringUtils.h"
 
 #include "controllers/DroneController.h"
 #include "pickup/PickupIdentifier.h"
-#include "worldentities/pawns/Pawn.h"
 #include "worldentities/Drone.h"
-#include "worldentities/StaticEntity.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

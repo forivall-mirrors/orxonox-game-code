@@ -118,7 +118,7 @@ namespace orxonox
     @return
         Returns a string containing the activation type.
     */
-    const std::string& Pickup::getActivationType(void)
+    const std::string& Pickup::getActivationType(void) const
     {
         switch(this->activationType_)
         {
@@ -137,7 +137,7 @@ namespace orxonox
     @return
         Returns a string containing the duration type.
     */
-    const std::string& Pickup::getDurationType(void)
+    const std::string& Pickup::getDurationType(void) const
     {
         switch(this->durationType_)
         {

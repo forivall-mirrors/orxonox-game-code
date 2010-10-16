@@ -35,6 +35,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/Identifier.h"
+
 #include "Pickupable.h"
 
 namespace orxonox {
@@ -88,7 +89,7 @@ namespace orxonox {
     @return
         Returns true if the PickupCarrier or one of its children is a target, false if not.
     */
-    bool PickupCarrier::isTarget(const Pickupable* pickup)
+    bool PickupCarrier::isTarget(const Pickupable* pickup) const
     {
         if(pickup->isTarget(this)) // If the PickupCarrier itself is a target.
             return true;

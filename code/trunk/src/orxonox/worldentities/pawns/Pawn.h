@@ -127,7 +127,7 @@ namespace orxonox // tolua_export
             Vector3 getAimPosition()
                 { return this->aimPosition_; }
 
-            virtual const Vector3& getCarrierPosition(void)
+            virtual const Vector3& getCarrierPosition(void) const
                 { return this->getWorldPosition(); };
 
         protected:
@@ -143,9 +143,9 @@ namespace orxonox // tolua_export
 
             bool bAlive_;
 
-            virtual std::vector<PickupCarrier*>* getCarrierChildren(void)
+            virtual std::vector<PickupCarrier*>* getCarrierChildren(void) const
                 { return new std::vector<PickupCarrier*>(); }
-            virtual PickupCarrier* getCarrierParent(void)
+            virtual PickupCarrier* getCarrierParent(void) const
                 { return NULL; }
 
             float health_;

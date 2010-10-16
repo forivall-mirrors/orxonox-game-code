@@ -34,15 +34,13 @@
 #include "InvisiblePickup.h"
 
 #include <sstream>
-#include <OgreEntity.h>
-#include <OgreAnimationState.h>
-
-#include "util/StringUtils.h"
+//#include <OgreEntity.h>
+//#include <OgreAnimationState.h>
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "worldentities/pawns/Pawn.h"
 #include "pickup/PickupIdentifier.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -67,16 +65,6 @@ namespace orxonox
     {
     }
 
-
-    void InvisiblePickup::initializeIdentifier(void)
-    {
-        std::stringstream stream;
-        stream << this->getDuration();
-        std::string type1 = "duration";
-        std::string val1 = stream.str();
-        this->pickupIdentifier_->addParameter(type1, val1);
-    }
-
     /**
     @brief
     Initializes the member variables.
@@ -86,6 +74,19 @@ namespace orxonox
         this->duration_ = 0.0f;
         // Defines who is allowed to pick up the pickup.
         this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
+    }
+
+    /**
+    @brief
+        Initializes the PickupIdentifier of this pickup.
+    */
+    void InvisiblePickup::initializeIdentifier(void)
+    {
+        std::stringstream stream;
+        stream << this->getDuration();
+        std::string type1 = "duration";
+        std::string val1 = stream.str();
+        this->pickupIdentifier_->addParameter(type1, val1);
     }
 
     /**
@@ -112,8 +113,10 @@ namespace orxonox
         if(!this->isPickedUp())
             return;
 
+        // If the pickup has transited to used.
         if (this->isUsed())
         {
+            // If its durationType is continuous, we set a Timer to be reminded, when the time has run out.
             if(this->isContinuous())
             {
                 if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
@@ -133,34 +136,17 @@ namespace orxonox
         {
             this->setInvisible(false);
 
+            // We destroy the pickup if either, the pickup has activationType immediate and durationType once or it has durationType continuous and the duration was exceeded.
             if((!this->isContinuous() && this->isImmediate()) || (this->isContinuous() && !this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration()))
             {
                 this->Pickupable::destroy();
             }
+            // We pause the Timer if the pickup is continuous and the duration is not yet exceeded,
             else if(this->isContinuous() && this->durationTimer_.isActive())
             {
                 this->durationTimer_.pauseTimer();
             }
         }
-
-    }
-
-    /**
-    @brief
-        Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
-    @return
-        A pointer to the Pawn, or NULL if the conversion failed.
-    */
-    Pawn* InvisiblePickup::carrierToPawnHelper(void)
-    {
-        PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
-
-        if(pawn == NULL)
-        {
-            COUT(1) << "Invalid PickupCarrier in InvisiblePickup." << std::endl;
-        }
-        return pawn;
     }
 
     /**
@@ -207,6 +193,24 @@ namespace orxonox
 //      mat->setSceneBlending(sbt);
 
         return true;
+    }
+
+    /**
+    @brief
+        Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
+    @return
+        A pointer to the Pawn, or NULL if the conversion failed.
+    */
+    Pawn* InvisiblePickup::carrierToPawnHelper(void)
+    {
+        PickupCarrier* carrier = this->getCarrier();
+        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+
+        if(pawn == NULL)
+        {
+            COUT(1) << "Invalid PickupCarrier in InvisiblePickup." << std::endl;
+        }
+        return pawn;
     }
 
     /**

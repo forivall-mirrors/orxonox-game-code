@@ -38,8 +38,6 @@
 #include "pickup/PickupPrereqs.h"
 
 #include <string>
-#include <worldentities/pawns/Pawn.h>
-#include "worldentities/StaticEntity.h"
 
 #include "pickup/Pickup.h"
 #include "tools/interfaces/Tickable.h"
@@ -64,14 +62,15 @@ namespace orxonox {
 
     /**
     @brief
-        The Health Pickup is a Pickupable that can do (dependent upon the parameters) lots of different things to the health of a Pawn.
-        There are 4 parameters that can be chosen:
-        - The <b>health</b> The amount of health that (in a way dependent on the other parameters) is transferred to the Pawn.
-        - The <b>activation type</b> It can be chosen to be either <em>immediate</em> or <em>onUse</em>. The activation type essentially (as indicated by the name) defines when the health is transferred, either immediately after being picked up or only after the player uses it.
-        - The <b>duration type</b> It can be chosen to be either <em>once</em> or <em>continuous</em>. For <em>once</em> the specified health is transferred once to the Pawn, for <em>continuous</em> the set health is transferred over a span of time at a rate defined by the health rate parameter.
-        - The <b>health type</b> The health type can be chosen to be <em>limited</em>, <em>temporary</em> or <em>permanent</em>. <em>limited</em> means that the health is increased only to the maximum health of the Pawn. 'temporary' means that the maximum health is temporarily elevated but will be set back as soon as the pickup is no longer in use. <em>permanent</em> means that the maximum health of the Pawn is increased such that the health provided by the pickup will fit in and the maximum health stays that way.
+        The HealthPickup is a Pickupable that can do (dependent upon the parameters) lots of different things to the health of a Pawn.
+        There are 5 parameters that can be chosen:
+        - The @b activationType It can be chosen to be either <em>immediate</em> or <em>onUse</em>. The activation type essentially (as indicated by the name) defines when the health is transferred, either immediately after being picked up or only after the player uses it. The default is <em>immediate</em>.
+        - The @b durationType It can be chosen to be either <em>once</em> or <em>continuous</em>. For <em>once</em> the specified health is transferred once to the Pawn, for <em>continuous</em> the set health is transferred over a span of time at a rate defined by the health rate parameter. The default is <em>once</em>.
+        - The @b health The amount of health that (in a way dependent on the other parameters) is transferred to the Pawn. Default is 0.
+        - The @b healthType The health type can be chosen to be <em>limited</em>, <em>temporary</em> or <em>permanent</em>. <em>limited</em> means that the health is increased only to the maximum health of the Pawn. 'temporary' means that the maximum health is temporarily elevated but will be set back as soon as the pickup is no longer in use. <em>permanent</em> means that the maximum health of the Pawn is increased such that the health provided by the pickup will fit in and the maximum health stays that way. The default is <em>limited</em>.
+        - The @b healthRate If set to continuous, the health that is transferred per second is the <em>healthRate</em>. There is health transferred until the health set by <em>health</em> is depleted. The default is 0.
 
-        An examle of a XML implementation of a HealthPickup would be:
+        An example of a XML implementation of a HealthPickup would be:
         @code
         <HealthPickup
             health = 33
@@ -103,22 +102,22 @@ namespace orxonox {
             @brief Get the health that is transferred to the Pawn upon usage of this pickup.
             @return Returns the health.
             */
-            inline float getHealth(void)
+            inline float getHealth(void) const
                 { return this->health_; }
             /**
             @brief Get the rate at which the health is transferred to the Pawn, if this pickup has duration type 'continuous'.
             @return Returns the rate.
             */
-            inline float getHealthRate(void)
+            inline float getHealthRate(void) const
                 { return this->healthRate_; }
 
             /**
             @brief Get the type of HealthPickup, this pickup is.
             @return Returns the health type as an enum.
             */
-            inline pickupHealthType::Value getHealthTypeDirect(void)
+            inline pickupHealthType::Value getHealthTypeDirect(void) const
                 { return this->healthType_; }
-            const std::string& getHealthType(void); //!< Get the health type of this pickup.
+            const std::string& getHealthType(void) const; //!< Get the health type of this pickup.
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.

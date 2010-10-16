@@ -33,16 +33,13 @@
 
 #include "SpeedPickup.h"
 
+#include <sstream>
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/StringUtils.h"
 
-#include "worldentities/pawns/SpaceShip.h"
 #include "items/Engine.h"
 #include "pickup/PickupIdentifier.h"
-
-#include <sstream>
-
+#include "worldentities/pawns/SpaceShip.h"
 
 namespace orxonox
 {
@@ -129,25 +126,30 @@ namespace orxonox
     {
         SUPER(SpeedPickup, changedUsed);
 
-        //! If the pickup is not picked up nothing must be done.
+        // If the pickup is not picked up nothing must be done.
         if(!this->isPickedUp())
             return;
 
         Engine* engine = this->carrierToEngineHelper();
-        if(engine == NULL) //!< If the PickupCarrier is no Engine, then this pickup is useless and therefore is destroyed.
+        if(engine == NULL) // If the PickupCarrier is no Engine, then this pickup is useless and therefore is destroyed.
             this->Pickupable::destroy();
 
-        //! If the pickup has transited to used.
+        // If the pickup has transited to used.
         if(this->isUsed())
         {
-            if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
+            // If its durationType is continuous, we set a Timer to be reminded, when the time has run out.
+            if(this->isContinuous())
             {
-                this->durationTimer_.unpauseTimer();
+                if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
+                {
+                    this->durationTimer_.unpauseTimer();
+                }
+                else
+                {
+                    this->durationTimer_.setTimer(this->getDuration(), false, createExecutor(createFunctor(&SpeedPickup::pickupTimerCallback, this)));
+                }
             }
-            else
-            {
-                this->durationTimer_.setTimer(this->getDuration(), false, createExecutor(createFunctor(&SpeedPickup::pickupTimerCallback, this)));
-            }
+
             engine->setSpeedAdd(this->getSpeedAdd());
             engine->setSpeedMultiply(this->getSpeedMultiply());
         }
@@ -156,16 +158,15 @@ namespace orxonox
             engine->setSpeedAdd(0.0f);
             engine->setSpeedMultiply(1.0f);
 
-            if(this->isOnce())
+            // We destroy the pickup if either, the pickup has activationType immediate and durationType once or it has durationType continuous and the duration was exceeded.
+            if((!this->isContinuous() && this->isImmediate()) || (this->isContinuous() && !this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration()))
             {
-                if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration())
-                {
-                    this->Pickupable::destroy();
-                }
-                else
-                {
-                    this->durationTimer_.pauseTimer();
-                }
+                this->Pickupable::destroy();
+            }
+            // We pause the Timer if the pickup is continuous and the duration is not yet exceeded,
+            else if(this->isContinuous() && this->durationTimer_.isActive())
+            {
+                this->durationTimer_.pauseTimer();
             }
         }
     }
@@ -212,9 +213,9 @@ namespace orxonox
 
     /**
     @brief
-        Sets the duration.
+        Sets the duration for which the SpeedPickup stays active.
     @param duration
-        The duration
+        The duration in seconds.
     */
     void SpeedPickup::setDuration(float duration)
     {
@@ -231,9 +232,9 @@ namespace orxonox
 
     /**
     @brief
-        Sets the SpeedAdd
+        Sets the speedAdd, the value that is added to the speed of the Pawn.
     @param speedAdd
-        The added Speed
+        The added speed.
     */
     void SpeedPickup::setSpeedAdd(float speedAdd)
     {
@@ -250,9 +251,9 @@ namespace orxonox
 
     /**
     @brief
-        Sets the SpeedMultiply
+        Sets the speedMultiply, the factor by which the speed of the Pawn is multiplied.
     @param speedMultiply
-        The multiplied Speed
+        The factor by which the speed is mutiplied.
     */
     void SpeedPickup::setSpeedMultiply(float speedMultiply)
     {

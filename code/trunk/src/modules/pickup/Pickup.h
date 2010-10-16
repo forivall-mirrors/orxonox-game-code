@@ -39,10 +39,9 @@
 
 #include "core/BaseObject.h"
 #include "core/XMLPort.h"
+#include "tools/Timer.h"
 
 #include "CollectiblePickup.h"
-
-#include "tools/Timer.h"
 
 namespace orxonox
 {
@@ -82,8 +81,8 @@ namespace orxonox
         The Pickup class offers (useful) base functionality for a wide range of pickups.
 
         Pickups ingeriting from this class can choose an activation type and a duration type.
-        - The <b>activation type</b> deals with what happens to the Pickup as soon as it is picked up. It can either be set to <em>immediate</em>, which means that the Pickup is activated/used immediately upon being picked up. Or to <em>onUse</em>, which means, that the Pickup will be activated/used if some outside entity (most commonly the player through the PickupInventory) decides to use it.
-        - The <b>duration type</b> deals with whether the Pickup has a continuous effect or whether its effect is focused on a singular instant. It can either be set to <em>once</em>, which means, that the Pickup just has an effect (at a singular instant in time) and is done once that effect has been applied. Or to <em>continuous</em>, which means that the effect of the Pickup unfolds over some timespan.
+        - The <b>activationType</b> deals with what happens to the Pickup as soon as it is picked up. It can either be set to <em>immediate</em>, which means that the Pickup is activated/used immediately upon being picked up. Or to <em>onUse</em>, which means, that the Pickup will be activated/used if some outside entity (most commonly the player through the PickupInventory) decides to use it. Default is <em>immediate</em>.
+        - The <b>durationType</b> deals with whether the Pickup has a continuous effect or whether its effect is focused on a singular instant. It can either be set to <em>once</em>, which means, that the Pickup just has an effect (at a singular instant in time) and is done once that effect has been applied. Or to <em>continuous</em>, which means that the effect of the Pickup unfolds over some timespan. Default is <em>once</em>.
 
         If it were not an abstract class it could for example be used as follows in XML.
         @code
@@ -109,45 +108,44 @@ namespace orxonox
             @brief Get the activation type of the Pickup.
             @return Returns the activation type of the Pickup.
             */
-            inline pickupActivationType::Value getActivationTypeDirect(void)
+            inline pickupActivationType::Value getActivationTypeDirect(void) const
                 { return this->activationType_; }
             /**
             @brief Get the duration type of the Pickup.
             @return Returns the duration type of the Pickup.
             */
-            inline pickupDurationType::Value getDurationTypeDirect(void)
+            inline pickupDurationType::Value getDurationTypeDirect(void) const
                 { return this->durationType_; }
 
-            const std::string& getActivationType(void); //!< Get the activation type of the Pickup.
-            const std::string& getDurationType(void); //!< Get the duration type of the Pickup.
+            const std::string& getActivationType(void) const; //!< Get the activation type of the Pickup.
+            const std::string& getDurationType(void) const; //!< Get the duration type of the Pickup.
 
             /**
             @brief Get whether the activation type is 'immediate'.
             @return Returns true if the activation type is 'immediate'.
             */
-            inline bool isImmediate(void)
+            inline bool isImmediate(void) const
                 { return this->getActivationTypeDirect() == pickupActivationType::immediate; }
             /**
             @brief Get whether the activation type is 'onUse'.
             @return Returns true if the activation type is 'onUse'.
             */
-            inline bool isOnUse(void)
+            inline bool isOnUse(void) const
                 { return this->getActivationTypeDirect() == pickupActivationType::onUse; }
             /**
             @brief Get whether the duration type is 'once'.
             @return Returns true if the duration type is 'once'.
             */
-            inline bool isOnce(void)
+            inline bool isOnce(void) const
                 { return this->getDurationTypeDirect() == pickupDurationType::once; }
             /**
             @brief Get whether the duration type is 'continuous'.
             @return Returns true if the duration type is 'continuous'.
             */
-            inline bool isContinuous(void)
+            inline bool isContinuous(void) const
                 { return this->getDurationTypeDirect() == pickupDurationType::continuous; }
 
             virtual void changedPickedUp(void); //!< Should be called when the pickup has transited from picked up to dropped or the other way around.
-
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the OrxonoxClass.
 
         protected:

@@ -38,6 +38,7 @@
 #include "PickupPrereqs.h"
 
 #include "core/XMLPort.h"
+
 #include "interfaces/Pickupable.h"
 #include "pickup/PickupIdentifier.h"
 #include "worldentities/StaticEntity.h"
@@ -52,7 +53,7 @@ namespace orxonox // tolua_export
 
     /**
     @brief
-        The PickupRepresentation class represents a specific pickup type (identified by its @ref orxonox::PickupIdentififer "PickupIdentifier"). It defines the information displayed in the GUI (PickupInventory) and how @ref orxonox::PickupSpawner "PickupSpawners" that spawn the pickup type look like.
+        The PickupRepresentation class represents a specific pickup type (identified by its @ref orxonox::PickupIdentifier "PickupIdentifier"). It defines the information displayed in the GUI (PickupInventory) and how @ref orxonox::PickupSpawner "PickupSpawners" that spawn the pickup type look like.
         They are created through XML and are registered with the @ref orxonox::PickupManager "PickupManager".
 
         Creating a PickupRepresentation in XML could look as follows:
@@ -70,7 +71,7 @@ namespace orxonox // tolua_export
         @endcode
         As you might have noticed, there is a parameter called <em>spawnerTemplate</em> and also another parameter called <em>inventoryRepresentation</em>. Let's first explain the second one, <em>inventoryRepresentation</em>.
         - The <b>inventoryRepresentation</b> specifies the image that is displayed in the PickupInventory for the specific type of @ref orxonox::Pickupable "Pickupable". More technically, it is the name of an image located in the <code>PickupInventory.imageset</code>, which in turn is located in <code>data_extern/gui/imagesets/</code>.
-        - The <b>spawnerTemplate</b> specifies how the type of @ref orxonox::Pickupable "Pickupable" (or more precisely the @ref orxonox::PickupSpawner "PickupSpawner", that spawns that type of @ref orxonox::Pickupable "Pickupable") is displayed ingame. It is a @ref orxnox::Template "Template" defined in XML. The <em>spawnerTemplate</em> can be specified as follows (keep in mind, that the template needs to have been specified before the definition of the PickupRepresentation that uses it).
+        - The <b>spawnerTemplate</b> specifies how the type of @ref orxonox::Pickupable "Pickupable" (or more precisely the @ref orxonox::PickupSpawner "PickupSpawner", that spawns that type of @ref orxonox::Pickupable "Pickupable") is displayed ingame. It is a @ref orxonox::Template "Template" defined in XML. The <em>spawnerTemplate</em> can be specified as follows (keep in mind, that the template needs to have been specified before the definition of the PickupRepresentation that uses it).
         @code
         <Template name="awesomePickupRepresentation">
             <PickupRepresentation>
@@ -103,6 +104,45 @@ namespace orxonox // tolua_export
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a PickupRepresentation object through XML.
 
+            /**
+            @brief Get the name of the Pickupable represented by this PickupRepresentation.
+            @return Returns the name.
+            */
+            inline const std::string& getPickupName(void) const { return this->name_; } // tolua_export
+            /**
+            @brief Get the description of the Pickupable represented by this PickupRepresentation.
+            @return Returns the description.
+            */
+            inline const std::string& getPickupDescription(void) const { return this->description_; } // tolua_export
+            /**
+            @brief Get the name of spawnerTemplate the Pickupable represented by this PickupRepresentation.
+            @return Returns the name of the spawnerTemplate.
+            */
+            inline const std::string& getSpawnerTemplate(void) const
+                { return this->spawnerTemplate_; }
+            /**
+            @brief Get the StaticEntity that defines how the PickupSpawner of the Pickupable represented by this PickupRepresentation looks like.
+            @param index The index.
+            @return Returns (for index = 0) a pointer to the StaticEntity. For index > 0 it returns NULL.
+            */
+            inline const StaticEntity* getSpawnerRepresentationIndex(unsigned int index) const
+                { if(index == 0) return this->spawnerRepresentation_; return NULL; }
+            /**
+            @brief Get the name of the image representing the pickup in the PickupInventory.
+            @return Returns the name of the image as a string.
+            */
+            inline const std::string& getInventoryRepresentation(void) const { return this->inventoryRepresentation_; } // tolua_export
+            /**
+            @brief Get the Pickupable represented by this PickupRepresentation.
+            @param index The index.
+            @return Returns (for index = 0) a pointer to the Pickupable. For index > 0 it returns NULL.
+            */
+            inline const Pickupable* getPickup(unsigned int index) const
+                { if(index == 0) return this->pickup_; return NULL; }
+
+            StaticEntity* getSpawnerRepresentation(PickupSpawner* spawner); //!< Get a spawnerRepresentation for a specific PickupSpawner.
+
+        protected:
             /**
             @brief Set the name of the Pickupable represented by this PickupRepresentation.
             @param name The name.
@@ -141,44 +181,6 @@ namespace orxonox // tolua_export
             */
             inline void setPickup(Pickupable* pickup)
                 { this->pickup_ = pickup; }
-
-            /**
-            @brief Get the name of the Pickupable represented by this PickupRepresentation.
-            @return Returns the name.
-            */
-            inline const std::string& getPickupName(void) { return this->name_; } // tolua_export
-            /**
-            @brief Get the description of the Pickupable represented by this PickupRepresentation.
-            @return Returns the description.
-            */
-            inline const std::string& getPickupDescription(void) { return this->description_; } // tolua_export
-            /**
-            @brief Get the name of spawnerTemplate the Pickupable represented by this PickupRepresentation.
-            @return Returns the name of the spawnerTemplate.
-            */
-            inline const std::string& getSpawnerTemplate(void)
-                { return this->spawnerTemplate_; }
-            /**
-            @brief Get the StaticEntity that defines how the PickupSpawner of the Pickupable represented by this PickupRepresentation looks like.
-            @param index The index.
-            @return Returns (for index = 0) a pointer to the StaticEntity. For index > 0 it returns NULL.
-            */
-            inline const StaticEntity* getSpawnerRepresentationIndex(unsigned int index)
-                { if(index == 0) return this->spawnerRepresentation_; return NULL; }
-            /**
-            @brief Get the name of the image representing the pickup in the PickupInventory.
-            @return Returns the name of the image as a string.
-            */
-            inline const std::string& getInventoryRepresentation(void) { return this->inventoryRepresentation_; } // tolua_export
-            /**
-            @brief Get the Pickupable represented by this PickupRepresentation.
-            @param index The index.
-            @return Returns (for index = 0) a pointer to the Pickupable. For index > 0 it returns NULL.
-            */
-            inline const Pickupable* getPickup(unsigned int index)
-                { if(index == 0) return this->pickup_; return NULL; }
-
-            StaticEntity* getSpawnerRepresentation(PickupSpawner* spawner); //!< Get a spawnerRepresentation for a specific PickupSpawner.
 
         private:
             void initialize(void); //!< Initializes the member variables of this PickupRepresentation.

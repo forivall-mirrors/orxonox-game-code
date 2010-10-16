@@ -39,8 +39,6 @@
 #include "pickup/PickupPrereqs.h"
 
 #include <string>
-#include "worldentities/pawns/Pawn.h"
-#include "worldentities/StaticEntity.h"
 
 #include "pickup/Pickup.h"
 
@@ -50,14 +48,28 @@ namespace orxonox {
     @brief
         A Pickup which can add a Shield to the Pawn.
 
-        There are 4 parameters that can be cosen.
-        - The @b percentage The percentage the shield takes from the damage dealt to a Pawn
-        - The @b hit @b points The amount of damage points a shield can teake before collapsing
-        - The @b activation @b type 'immediate' or 'onUse'. defines if the item is used when it's picked up or only after the player chooses to use it.
-        - The @b duration the activation time of the pickup.
+        There are 5 parameters that can be cosen.
+        - The @b shieldhealth< The amount of damage points a shield can take before collapsing. The default is 0.
+        - The @b shieldabsorption The percentage the shield takes from the damage dealt to a Pawn. The default is 0.
+        - The @b activationType, <em>immediate</em> or <em>onUse</em>. defines if the ShiedlPickup is used when it's picked up or only after the player chooses to use it. The default is <em>immediate</em>.
+        - The @b durationType, <em>once</em> means, that the shield will stay until it collapses, <em>continuous</em> means, that the shield only stays for a limited amount of time, specifiey by the duration. The default is <em>once</em>.
+        - The @b duration the time in seconds the shield is active at the most. The default is 0.
+
+        An example of a XML implementation of a ShieldPickup would be:
+        @code
+        <ShieldPickup
+            shieldhealth = 30
+            shieldabsorption = 0.8
+            activationType = "immediate"
+            durationtype = "continuous"
+            duration = 20.0
+        />
+        @endcode
 
     @author
         Eric Beier
+
+    @ingroup PickupItems
     */
     class _PickupExport ShieldPickup : public Pickup
     {
@@ -71,21 +83,32 @@ namespace orxonox {
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
-            inline float getDuration(void)
+            /**
+            @brief Get the duration, the time the shield is actvie at the most.
+            @return Returns the duration in seconds.
+            */
+            inline float getDuration(void) const
                 { return this->duration_; }
-            inline float getShieldHealth()
+            /**
+            @brief Get the shield health, the amount of damage the shield can sustain.
+            @return Returns the shield health.
+            */
+            inline float getShieldHealth() const
                 { return this->shieldHealth_; }
-            inline float getShieldAbsorption()
+            /**
+            @brief Get the shield absorption, the percentage of damage that is absorbed by the shield.
+            @return Returns the shield absorption.
+            */
+            inline float getShieldAbsorption() const
                 { return this->shieldAbsorption_; }
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
+            void pickupTimerCallback(void); //!< Helper method. Is called by the Timer as soon as it expires.
 
-            void pickupTimerCallback(void); //!< Function that gets called when timer ends.
-
-            void setDuration(float duration);
-            void setShieldHealth(float shieldHealth);
-            void setShieldAbsorption(float shieldAbsorption);
+            void setDuration(float duration); //!< Sets the duration.
+            void setShieldHealth(float shieldHealth); //!< Sets the health of the shield.
+            void setShieldAbsorption(float shieldAbsorption); //!< Sets the percentage the shield absorbs of the dealt damage.
 
         private:
             void initialize(void); //!< Initializes the member variables.
@@ -94,8 +117,8 @@ namespace orxonox {
             Timer durationTimer_; //!< Timer.
 
             float duration_; //!< The health that is transferred to the Pawn.
-            float shieldHealth_;
-            float shieldAbsorption_; // Has to be between 0 and 1
+            float shieldHealth_; //!< The amount of damage the shield can sustain.
+            float shieldAbsorption_; //!< The percentage of damage that is absorbed by the shield.
 
     };
 }

@@ -37,7 +37,9 @@
 #include "core/GameMode.h"
 #include "core/Template.h"
 #include "core/XMLPort.h"
+
 #include "worldentities/pawns/Pawn.h"
+
 #include "PickupManager.h"
 #include "PickupRepresentation.h"
 
@@ -186,9 +188,10 @@ namespace orxonox
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
                 PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(*it);
                 // If a Pawn, that fits the target-range of the item spawned by this Pickup, is in trigger-distance.
-                if (distance.length() < this->triggerDistance_ && carrier != NULL && carrier->isTarget(this->pickup_))
+                if (distance.length() < this->triggerDistance_ && carrier != NULL)
                 {
-                    this->trigger(*it);
+                    if(carrier->isTarget(this->pickup_))
+                        this->trigger(*it);
                 }
             }
         }
@@ -269,7 +272,7 @@ namespace orxonox
     @return
         Returns the Pickupable that is spawned by this PickupSpawner.
     */
-    const Pickupable* PickupSpawner::getPickupable(void)
+    const Pickupable* PickupSpawner::getPickupable(void) const
     {
         return this->pickup_;
     }

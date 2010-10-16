@@ -220,7 +220,7 @@ namespace orxonox
             engine->addToSpaceShip(this);
     }
 
-    std::vector<PickupCarrier*>* SpaceShip::getCarrierChildren(void)
+    std::vector<PickupCarrier*>* SpaceShip::getCarrierChildren(void) const
     {
         std::vector<PickupCarrier*>* list = new std::vector<PickupCarrier*>();
         list->push_back(this->engine_);
