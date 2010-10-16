@@ -69,10 +69,7 @@ namespace orxonox
         RegisterObject(DroppedPickup);
 
         this->setPosition(carrier->getCarrierPosition());
-        this->setActive(false);
-
-        //TODO: Do more elegantly.
-        this->startRespawnTimer();
+        this->block(carrier, DEFAULT_BLOCKED_TIME);
     }
 
     /**

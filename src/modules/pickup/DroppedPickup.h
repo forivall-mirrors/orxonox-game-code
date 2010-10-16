@@ -63,6 +63,9 @@ namespace orxonox
         protected:
             virtual Pickupable* getPickup(void); //!< Creates the Pickupable that is going to get picked up.
 
+        private:
+            static const unsigned int DEFAULT_BLOCKED_TIME = 10; //!< The default time a PickupCarrier is blocked from picking up the pickupable again, after it has dropped it.
+
     };
 }
 

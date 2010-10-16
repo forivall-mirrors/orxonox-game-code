@@ -37,6 +37,7 @@
 
 #include "PickupPrereqs.h"
 
+#include <map>
 #include <string>
 #include "tools/Timer.h"
 
@@ -101,11 +102,18 @@ namespace orxonox
             */
             inline int getMaxSpawnedItems(void) const
                 { return this->maxSpawnedItems_; }
-            
 
         protected:
             void decrementSpawnsRemaining(void); //!< Decrements the number of remaining spawns.
-            void startRespawnTimer(void);
+            void startRespawnTimer(void); //!< Invoked by the timer, re-activates the PickupSpawner.
+
+            /**
+            @brief Helper method. Adds a PickupCarrier to the list of PickupCarrier that are blocked form getting a Pickupable from the PickupSpawner for a specified time.
+            @param carrier A pointer to the PickupCarrier to be blocked.
+            @param time The time for which the Pawn is blocked. Default is 5.
+            */
+            void block(PickupCarrier* carrier, unsigned int time = DEFAULT_BLOCKED_TIME)
+                { this->blocked_.insert(std::pair<PickupCarrier*, std::time_t>(carrier, std::time(0)+time)); }
 
             /**
             @brief Set the distance in which to trigger.
@@ -141,10 +149,12 @@ namespace orxonox
 
             float respawnTime_; //!< Time after which this gets re-actived.
             Timer respawnTimer_; //!< Timer used for re-activating.
+            std::map<PickupCarrier*, std::time_t> blocked_;
 
             bool selfDestruct_; //!< True if the PickupSpawner is selfdestructing.
 
             static const int INF = -1; //!< Constant for infinity.
+            static const unsigned int DEFAULT_BLOCKED_TIME = 5; //!< The default time a PickupCarrier is blocked after picking up a Pickupable.
     };
 }
 

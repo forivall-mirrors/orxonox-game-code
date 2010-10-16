@@ -107,7 +107,7 @@ namespace orxonox
     void PickupSpawner::initialize(void)
     {
         this->triggerDistance_ = 10;
-        this->respawnTime_ = 0; //TODO: Smart? Shouldn't we have a better mechanism to prevent unwanted multiple pickups?
+        this->respawnTime_ = 5.0f;
         this->maxSpawnedItems_ = INF;
         this->spawnsRemaining_ = INF;
         this->selfDestruct_ = false;
@@ -150,7 +150,7 @@ namespace orxonox
         {
             PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
             this->attach(representation->getSpawnerRepresentation(this));
-            this->setActive(true); //TODO: Needed?
+            this->setActive(true);
         }
     }
 
@@ -182,13 +182,22 @@ namespace orxonox
         {
             SmartPtr<PickupSpawner> temp = this; //Create a smart pointer to keep the PickupSpawner alive until we iterated through all Pawns (in case a Pawn takes the last pickup)
 
+            // Remove PickupCarriers from the blocked list if they have exceeded their time.
+            for(std::map<PickupCarrier*, std::time_t>::iterator it = this->blocked_.begin(); it != this->blocked_.end(); )
+            {
+                std::map<PickupCarrier*, std::time_t>::iterator temp = it;
+                it++;
+                if(temp->second < std::time(0))
+                    this->blocked_.erase(temp);
+            }
+
             // Iterate trough all Pawns.
-            for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
+            for(ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++it)
             {
                 Vector3 distance = it->getWorldPosition() - this->getWorldPosition();
                 PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(*it);
-                // If a Pawn, that fits the target-range of the item spawned by this Pickup, is in trigger-distance.
-                if (distance.length() < this->triggerDistance_ && carrier != NULL)
+                // If a PickupCarrier, that fits the target-range of the Pickupable spawned by this PickupSpawnder, is in trigger-distance and the carrier is not blocked.
+                if(distance.length() < this->triggerDistance_ && carrier != NULL && this->blocked_.find(carrier) == this->blocked_.end())
                 {
                     if(carrier->isTarget(this->pickup_))
                         this->trigger(*it);
@@ -291,12 +300,9 @@ namespace orxonox
             COUT(4) << "PickupSpawner (&" << this << ") triggered and active." << std::endl;
 
             PickupCarrier* carrier = dynamic_cast<PickupCarrier*>(pawn);
-            if(carrier == NULL)
-            {
-                COUT(1) << "This is bad. Pawn isn't PickupCarrier." << std::endl;
-                return;
-            }
+            assert(carrier);
 
+            // If the Pawn isn't a target of the Pickupable.
             if(!carrier->isTarget(this->pickup_))
             {
                 COUT(4) << "PickupSpawner (&" << this << ") triggered but Pawn wasn't a target of the Pickupable." << std::endl;
@@ -305,6 +311,8 @@ namespace orxonox
 
             PickupCarrier* target = carrier->getTarget(this->pickup_);
             Pickupable* pickup = this->getPickup();
+
+            this->block(carrier);
 
             assert(pickup);
             assert(target);
