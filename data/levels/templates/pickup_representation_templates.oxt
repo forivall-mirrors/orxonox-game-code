@@ -428,7 +428,7 @@
 <!-- Drone Pickup -->
 
 <Template name=droneTemplate>
-    <Drone name="meineDrohne"  mass= "50" linearDamping = "0.7" angularDamping = "0.99999" maxDistanceToOwner_=150 minDistanceToOwner_=75 maxShootingRange_=1000 primaryThrust_=250 auxilaryThrust_=250 rotationThrust_=50>
+    <Drone name="Drone"  mass= "50" linearDamping = "0.7" angularDamping = "0.99999" maxDistanceToOwner_=150 minDistanceToOwner_=75 maxShootingRange_=1000 primaryThrust_=250 auxilaryThrust_=250 rotationThrust_=50>
         <attached>
             <Model scale="1" mesh="drone.mesh"/>
         </attached>
@@ -451,8 +451,8 @@
                         <Model mesh="hs-w01.mesh" roll="195" position="0,1,0" scale=2 />
                         <Model mesh="hs-w01s.mesh" roll="195" position="0.1,0.5,0" scale=2 />
                     </attached>
-                    <HsW01 mode=0 munitionpershot=0 delay=0.125 material="Flares/point_lensflare" muzzleoffset=" 0.7, 1.5,-4" />
-                    <HsW01 mode=0 munitionpershot=0 delay=0     material="Flares/point_lensflare" muzzleoffset="-0.9, 1.1,-4" />
+                    <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=1.5708 material="Flares/point_lensflare" muzzleoffset=" 0.7, 1.5,-4" />
+                    <HsW01 mode=0 munitionpershot=0 delay=0     damage=1.5708 material="Flares/point_lensflare" muzzleoffset="-0.9, 1.1,-4" />
                 </Weapon>
             </WeaponPack>
         </weapons>
