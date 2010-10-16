@@ -74,7 +74,6 @@ namespace orxonox
     {
         RegisterObject(PickupManager);
 
-        //TODO: Only create if isMaster().
         this->defaultRepresentation_ = new PickupRepresentation();
 
         COUT(3) << "PickupManager created." << std::endl;
@@ -355,7 +354,6 @@ namespace orxonox
         }
 
         // If we're either in standalone mode or this is the host whom the change of the pickup's status concerns.
-        //TODO: Needs to be added to server even if is was not picked up by it?
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId)
         {
             // If there is no PickupRepresentation registered the default representation is used.
