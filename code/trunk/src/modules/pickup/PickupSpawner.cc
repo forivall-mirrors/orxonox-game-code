@@ -96,7 +96,7 @@ namespace orxonox
         {
             PickupRepresentation* representation = PickupManager::getInstance().getRepresentation(this->pickup_->getPickupIdentifier());
             this->attach(representation->getSpawnerRepresentation(this));
-            this->setActive(true); //TODO: Needed?
+            this->setActive(true);
         }
     }
 

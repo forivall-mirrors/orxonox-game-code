@@ -208,7 +208,6 @@ namespace orxonox
     @return
         Returns a pointer to the PickupRepresentation.
     */
-    //TODO: Why not return a const?
     PickupRepresentation* PickupManager::getRepresentation(const PickupIdentifier* identifier)
     {
         std::map<const PickupIdentifier*, PickupRepresentation*, PickupIdentifierCompare>::iterator it = this->representations_.find(identifier);

@@ -130,10 +130,6 @@ namespace orxonox
     {
         SUPER(DronePickup, changedUsed);
 
-        // If the pickup is not picked up nothing must be done.
-        if(!this->isPickedUp())
-            return;
-
         // If the pickup has transited to used.
         if(this->isUsed())
         {
