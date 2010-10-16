@@ -89,7 +89,7 @@ namespace orxonox
     */
     bool QuestHint::isActive(const PlayerInfo* player) const
     {
-        //TODO: Replace with asser.
+        //TODO: Replace with assert.
         if(player == NULL) // NULL-Pointers are ugly!
         {
             ThrowException(Argument, "The input PlayerInfo* is NULL.");

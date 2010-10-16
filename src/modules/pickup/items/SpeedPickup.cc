@@ -126,10 +126,6 @@ namespace orxonox
     {
         SUPER(SpeedPickup, changedUsed);
 
-        // If the pickup is not picked up nothing must be done.
-        if(!this->isPickedUp())
-            return;
-
         Engine* engine = this->carrierToEngineHelper();
         if(engine == NULL) // If the PickupCarrier is no Engine, then this pickup is useless and therefore is destroyed.
             this->Pickupable::destroy();

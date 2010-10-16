@@ -126,10 +126,6 @@ namespace orxonox
     {
         SUPER(ShieldPickup, changedUsed);
 
-        // If the pickup is not picked up nothing must be done.
-        if(!this->isPickedUp())
-            return;
-
         Pawn* pawn = this->carrierToPawnHelper();
         if(pawn == NULL)
             this->Pickupable::destroy();
