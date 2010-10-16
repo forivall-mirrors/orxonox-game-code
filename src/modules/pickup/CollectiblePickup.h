@@ -66,7 +66,7 @@ namespace orxonox {
             @brief Check whether the given CollectiblePickup is par of a PickupCollection.
             @return Returns true if the CollectiblePickup is part of a PickupCollection.
             */
-            bool isInCollection(void)
+            bool isInCollection(void) const
                 { return this->isInCollection_; }
 
             bool addToCollection(PickupCollection* collection); //!< Adds this CollectiblePickup to the input PickupCollection.

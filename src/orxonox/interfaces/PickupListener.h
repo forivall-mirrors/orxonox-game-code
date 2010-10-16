@@ -47,9 +47,12 @@ namespace orxonox
     @brief
         The PickupListener class facilitates the flow of information regarding the picking up, dropping, using and unusing of @ref orxonox::Pickupable "Pickupables" to interested parties (such as the @ref orxonox::PickupManager "PickupManager").
 
-        All you need to to do be notified is to inherit from PickupListener and implement the two methods pickupChangedUsed() and pickupChangedPickedUp().
+        All you need to to do be notified is to inherit from PickupListener and implement the two methods <code>pickupChangedUsed()</code> and <code>pickupChangedPickedUp()</code>.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _OrxonoxExport PickupListener : virtual public OrxonoxClass
     {

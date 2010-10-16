@@ -146,7 +146,7 @@ namespace orxonox
     @return
         Returns true if the given PickupCarrier is a target.
     */
-    bool Pickupable::isTarget(PickupCarrier* carrier) const
+    bool Pickupable::isTarget(const PickupCarrier* carrier) const
     {
         if(carrier == NULL)
             return false;
@@ -164,7 +164,7 @@ namespace orxonox
     */
     bool Pickupable::isTarget(const Identifier* identifier) const
     {
-        //! Iterate through all targets of this Pickupable.
+        // Iterate through all targets of this Pickupable.
         for(std::list<Identifier*>::const_iterator it = this->targets_.begin(); it != this->targets_.end(); it++)
         {
             if(identifier->isA(*it))
@@ -197,7 +197,7 @@ namespace orxonox
     */
     bool Pickupable::addTarget(Identifier* target)
     {
-        if(this->isTarget(target)) //!< If the input target is already present in the list of targets.
+        if(this->isTarget(target)) // If the input target is already present in the list of targets.
             return false;
 
         COUT(4) << "Target " << target->getName() << " added to Pickupable (&" << this << ")." << std::endl;
@@ -215,7 +215,7 @@ namespace orxonox
     */
     bool Pickupable::pickup(PickupCarrier* carrier)
     {
-        if(carrier == NULL || this->isPickedUp()) //!< If carrier is NULL or the Pickupable is already picked up.
+        if(carrier == NULL || this->isPickedUp()) // If carrier is NULL or the Pickupable is already picked up.
             return false;
 
         if(!this->setCarrier(carrier))

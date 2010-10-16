@@ -84,7 +84,7 @@ namespace orxonox
                 { return this->bPermanentBoost_; }
 
         protected:
-            virtual std::vector<PickupCarrier*>* getCarrierChildren(void);
+            virtual std::vector<PickupCarrier*>* getCarrierChildren(void) const;
             bool bInvertYAxis_;
 
             bool bBoost_;

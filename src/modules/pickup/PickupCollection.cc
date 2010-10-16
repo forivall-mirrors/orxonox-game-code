@@ -234,7 +234,7 @@ namespace orxonox
     @return
         Returns true if the PickupCarrier identified by the input PickupIdentififer it is a target of this PickupCollection, false if not.
     */
-    bool PickupCollection::isTarget(PickupCarrier* carrier) const
+    bool PickupCollection::isTarget(const PickupCarrier* carrier) const
     {
         for(std::vector<CollectiblePickup*>::const_iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
         {
@@ -252,7 +252,7 @@ namespace orxonox
     @return
         Returns a pointer to the PickupIdentifier of this PickupCollection.
     */
-    const PickupIdentifier* PickupCollection::getPickupIdentifier(void)
+    const PickupIdentifier* PickupCollection::getPickupIdentifier(void) const
     {
         return this->pickupCollectionIdentifier_;
     }
@@ -283,7 +283,7 @@ namespace orxonox
     @return
         Returns a pointer to the Pickupable at the index given by index.
     */
-    const Pickupable* PickupCollection::getPickupable(unsigned int index)
+    const Pickupable* PickupCollection::getPickupable(unsigned int index) const
     {
         return this->pickups_[index];
     }

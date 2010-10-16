@@ -247,12 +247,12 @@ namespace orxonox
             return Vector3::ZERO;
     }
 
-    PickupCarrier* Engine::getCarrierParent(void)
+    PickupCarrier* Engine::getCarrierParent(void) const
     {
         return this->ship_;
     }
 
-    const Vector3& Engine::getCarrierPosition(void)
+    const Vector3& Engine::getCarrierPosition(void) const
     {
         return this->ship_->getWorldPosition();
     }

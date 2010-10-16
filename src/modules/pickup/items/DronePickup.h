@@ -47,6 +47,7 @@ namespace orxonox {
     /**
     @brief
         The DronePickup adds a Drone to the Pawn upon being picked up.
+
         It can be used in XML as follows:
         @code
         <DronePickup droneTemplate="myDroneTemplate" />
@@ -70,11 +71,12 @@ namespace orxonox {
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
 
-            void setDroneTemplate(std::string templatename); //!< Set the droneTemplate.
             const std::string& getDroneTemplate() const; //!< Get the name of the droneTemplate.
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
+
+            void setDroneTemplate(std::string templatename); //!< Set the droneTemplate.
 
         private:
             void initialize(void); //!< Initializes the member variables.

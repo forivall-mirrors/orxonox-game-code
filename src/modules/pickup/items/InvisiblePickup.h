@@ -39,8 +39,6 @@
 
 #include <string>
 
-#include <worldentities/pawns/Pawn.h>
-#include "worldentities/StaticEntity.h"
 #include "pickup/Pickup.h"
 
 namespace orxonox {
@@ -48,14 +46,14 @@ namespace orxonox {
     /**
     @brief
         A pickup that makes the Pawn invisible.
-        There are 2 parameters that can be chosen:
-        - The <b>activation type</b> It can be chosen to be either <em>immediate</em> or <em>onUse</em>. The activation type essentially (as indicated by the name) defines when the Pawn will be invisible, either immediately after being picked up or only after the player uses it.
-        - The <b>duration type</b> It can be chosen to be either <em>once</em> or <em>continuous</em>. For <em>once</em> the InvisiblePickup just makes the Pawn invisible for as long as it is used, for <em>continuous</em> the Pawn is invisible for the specified duration.
-        - The <b>duration</b> Specifies how long (in seconds) the invisibility lasts.
+        There are 3 parameters that can be chosen:
+        - The @b activationType It can be chosen to be either <em>immediate</em> or <em>onUse</em>. The activation type essentially (as indicated by the name) defines when the Pawn will be invisible, either immediately after being picked up or only after the player uses it. The default is <em>immediate</em>.
+        - The @b durationType< It can be chosen to be either <em>once</em> or <em>continuous</em>. For <em>once</em> the InvisiblePickup just makes the Pawn invisible for as long as it is used, for <em>continuous</em> the Pawn is invisible for the specified duration. The default is <em>once</em>.
+        - The @b duration Specifies how long (in seconds) the invisibility lasts. The default is 0.
 
-        An examle of a XML implementation of a InvisiblePickup would be:
+        An example of a XML implementation of a InvisiblePickup would be:
         @code
-        <HealthPickup
+        <InvisiblePickup
             activationType = "immediate"
             durationType = "continuous"
             duration = 30.0
@@ -82,17 +80,17 @@ namespace orxonox {
             @brief Checks whether the Pawn is invisible.
             @return Returns if the Pawn is invisible.
             */
-            inline bool getInvisibility(bool)
+            inline bool getInvisibility(bool) const
                 { return this->invisible_; }
             /**
             @brief Get the time the InvisibilityPickup lasts.
             @return Returns the time in seconds the InvisibiltyPickup lasts.
             */
-            inline float getDuration(void)
+            inline float getDuration(void) const
                 { return this->duration_; }
 
         protected:
-            void initializeIdentifier(void);
+            void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.
 
             bool setInvisible(bool invisibility); //!< Set the Pawn to be invisible or visible again.
             void setDuration(float duration); //!< Sets the time the InvisibilityPickup will last.

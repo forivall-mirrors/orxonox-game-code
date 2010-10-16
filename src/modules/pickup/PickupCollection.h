@@ -37,10 +37,10 @@
 
 #include "PickupPrereqs.h"
 
-#include "core/BaseObject.h"
-#include "CollectiblePickup.h"
-
 #include <list>
+
+#include "CollectiblePickup.h"
+#include "core/BaseObject.h"
 
 namespace orxonox
 {
@@ -82,12 +82,12 @@ namespace orxonox
 
             virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input pickup.
 
-            virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
+            virtual bool isTarget(const PickupCarrier* carrier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this PickupCollection.
 
-            virtual const PickupIdentifier* getPickupIdentifier(void); //!< Get the PickupIdentifier of this PickupCollection.
+            virtual const PickupIdentifier* getPickupIdentifier(void) const; //!< Get the PickupIdentifier of this PickupCollection.
 
             bool addPickupable(CollectiblePickup* pickup); //!< Add the input Pickupable to list of Pickupables combined by this PickupCollection.
-            const Pickupable* getPickupable(unsigned int index); //!< Get the Pickupable at the given index.
+            const Pickupable* getPickupable(unsigned int index) const; //!< Get the Pickupable at the given index.
 
             void pickupChangedUsed(bool changed); //!< Informs the PickupCollection, that one of its pickups has changed its used status to the input value.
             void pickupChangedPickedUp(bool changed); //!< Informs the PickupCollection, that one of its pickups has changed its picked up status to the input value.

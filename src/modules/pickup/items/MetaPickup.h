@@ -41,28 +41,48 @@
 
 namespace orxonox {
 
-    //! The meta type, deciding what the pickup does exactly.
+    /**
+    @brief
+        The meta type, specifying what the @ref orxonox::MetaPickup "MetaPickup" does exactly.
+
+    @ingroup PickupItems
+    */
     namespace pickupMetaType
     {
         enum Value
         {
-            none,
-            use,
-            drop,
-            destroy,
-            destroyCarrier
+            none, //!< The @ref orxonox::MetaPickup "MetaPickup" does nothing.
+            use, //!< The @ref orxonox::MetaPickup "MetaPickup" uses all the @ref orxonox::PickupCarrier "PickupCarriers'" @ref orxonox::Pickupable "Pickupables".
+            drop, //!< The @ref orxonox::MetaPickup "MetaPickup" drops all the @ref orxonox::PickupCarrier "PickupCarriers'" @ref orxonox::Pickupable "Pickupables".
+            destroy, //!< The @ref orxonox::MetaPickup "MetaPickup" destroys all the @ref orxonox::PickupCarrier "PickupCarriers'" @ref orxonox::Pickupable "Pickupables".
+            destroyCarrier //!< The @ref orxonox::MetaPickup "MetaPickup" destroys the @ref orxonox::PickupCarrier "PickupCarrier".
         };
     }
 
     /**
     @brief
-        The MetaPickup is a pickup that can, depending on the parameter 'metaType', do different things. If the 'metaType' is set to
-        - @b use All the pickups, the PickupCarrier has, are immediately set to used upon pickup of the MetaPickup.
-        - @b drop All the pickups, the PickupCarrier has, are immediately dropped upon pickup of the MetaPickup.
-        - @b destroy All the pickups, the PickupCarrier has, are immediately destroyed upon pickup of the MetaPickup.
-        - @b destroyCarrier The PickupCarrier is immediately destroyed upon pickup of the MetaPickup.
+        The MetaPickup is a Pickupable that can, depending on the parameter <em>metaTye</em>, do different things. If the <em>metaTye</em> is set to
+        - @b use All the @ref orxonox::Pickupable "Pickupables", the PickupCarrier has, are immediately set to used upon using the MetaPickup.
+        - @b drop All the @ref orxonox::Pickupable "Pickupables", the PickupCarrier has, are immediately dropped upon using the MetaPickup.
+        - @b destroy All the @ref orxonox::Pickupable "Pickupables", the PickupCarrier has, are immediately destroyed upon using the MetaPickup.
+        - @b destroyCarrier The PickupCarrier is immediately destroyed upon using the MetaPickup.
+
+        The default value is <em>none</em>, which basically does nothing.
+        
+        The parameter <b>activation type</b> can be used to specify, whether the MetaPickup is used upon pickup (<em>immediate</em>) or not (<em>onUse</em>). With <em>immediate</em> being the default.
+
+        An example of a XML implementation of a MetaPickup would be:
+        @code
+        <MetaPickup
+            activationType = "immediate"
+            metaType = "use"
+        />
+        @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup PickupItems
     */
     class _PickupExport MetaPickup : public Pickup
     {
@@ -80,9 +100,9 @@ namespace orxonox {
             @brief Returns the meta type of the MetaPickup.
             @return Returns an enum with the meta type of the MetaPickup.
             */
-            inline pickupMetaType::Value getMetaTypeDirect(void)
+            inline pickupMetaType::Value getMetaTypeDirect(void) const
                 { return this->metaType_; }
-            const std::string& getMetaType(void); //!< Get the meta type of this MetaPickup.
+            const std::string& getMetaType(void) const; //!< Get the meta type of this MetaPickup.
 
         protected:
             void initializeIdentifier(void); //!< Initializes the PickupIdentifier of this pickup.

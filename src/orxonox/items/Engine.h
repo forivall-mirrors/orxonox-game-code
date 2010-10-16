@@ -111,7 +111,7 @@ namespace orxonox
 
             virtual const Vector3& getDirection() const;
 
-            virtual const Vector3& getCarrierPosition(void);
+            virtual const Vector3& getCarrierPosition(void) const;
 
             //TODO: Move to protected or private. How?
             inline void setSpeedAdd(float speedAdd)
@@ -120,9 +120,9 @@ namespace orxonox
                 { this->speedMultiply_=speedMultiply; }
 
         protected:
-            virtual std::vector<PickupCarrier*>* getCarrierChildren(void)
+            virtual std::vector<PickupCarrier*>* getCarrierChildren(void) const
                 { return new std::vector<PickupCarrier*>(); }
-            virtual PickupCarrier* getCarrierParent(void);
+            virtual PickupCarrier* getCarrierParent(void) const;
 
         private:
             void registerVariables();

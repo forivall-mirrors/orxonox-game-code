@@ -50,12 +50,14 @@ namespace orxonox
     @brief
         An Interface (or more precisely an abstract class) to model and represent different (all kinds of) pickups.
 
-        Pickups (@ref orxonox:Pickupable "Pickupables") are objects that (quite unsurprisingly) can be picked up. Additionally they can be used and unused (transition from used to not used), and also dropped.
+        Pickups (@ref orxonox::Pickupable "Pickupables") are objects that (quite unsurprisingly) can be picked up. Additionally they can be used and unused (transition from used to not used), and also dropped.
 
         A class of Pickups can incorporate many different types of pickups (see @ref orxonox::PickupIdentifier "PickupIdentifier"), each type is uniquely defined by a @ref orxonox::PickupIdentifier "PickupIdentifier". Each pickup has such an identifier identiying its type. This means that two pickups of the same type have identifiers which are equal.
 
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _OrxonoxExport Pickupable : virtual public OrxonoxClass, public Rewardable
     {
@@ -69,7 +71,7 @@ namespace orxonox
             @brief Get whether the Pickupable is currently in use or not.
             @return Returns true if the Pickupable is currently in use.
             */
-            inline bool isUsed(void)
+            inline bool isUsed(void) const
                 { return this->used_; }
             /**
             @brief  Should be called when the Pickupable has transited from used to unused or the other way around.
@@ -93,7 +95,7 @@ namespace orxonox
             @brief Returns whether the Pickupable is currently picked up.
             @return Returns true if the Pickupable is currently picked up, false if not.
             */
-            inline bool isPickedUp(void)
+            inline bool isPickedUp(void) const
                 { return this->pickedUp_; }
             /**
             @brief  Should be called when the Pickupable has transited from picked up to dropped or the other way around.
@@ -105,14 +107,14 @@ namespace orxonox
             @brief Returns whether the Pickupable can be used.
             @return Returns true if it can be used.
             */
-            inline bool isUsable(void)
+            inline bool isUsable(void) const
                 { return this->enabled_; }
 
             /**
             @brief Returns whether the Pickupable can be unused.
             @return Returns true if it can be unused.
             */
-            inline bool isUnusable(void)
+            inline bool isUnusable(void) const
                 { return this->enabled_; }
 
             /**
@@ -120,13 +122,13 @@ namespace orxonox
                    Once a Pickupable is disabled it cannot be enabled again. A Pickupable that is disabled can neither be used nor unused.
             @return Returns true if the Pickupable is enabled.
             */
-            inline bool isEnabled(void)
+            inline bool isEnabled(void) const
                 { return this->enabled_; }
 
             bool pickup(PickupCarrier* carrier); //!< Can be called to pick up a Pickupable.
             bool drop(bool createSpawner = true); //!< Can be called to drop a Pickupable.
 
-            virtual bool isTarget(PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this Pickupable.
+            virtual bool isTarget(const PickupCarrier* carrier) const; //!< Get whether the given PickupCarrier is a target of this Pickupable.
             bool isTarget(const Identifier* identifier) const; //!< Get whether a given class, represented by the input Identifier, is a target of this Pickupable.
             bool addTarget(PickupCarrier* target); //!< Add a PickupCarrier as target of this Pickupable.
             bool addTarget(Identifier* identifier); //!< Add a class, representetd by the input Identifier, as target of this Pickupable.
@@ -138,7 +140,7 @@ namespace orxonox
             @brief Get the PickupIdentifier of this Pickupable.
             @return Returns a pointer to the PickupIdentifier of this Pickupable.
             */
-            virtual const PickupIdentifier* getPickupIdentifier(void)
+            virtual const PickupIdentifier* getPickupIdentifier(void) const
                 { return this->pickupIdentifier_; }
 
             bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.

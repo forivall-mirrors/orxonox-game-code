@@ -33,14 +33,12 @@
 
 #include "HealthPickup.h"
 
+#include <sstream>
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/StringUtils.h"
 
-#include "worldentities/pawns/Pawn.h"
 #include "pickup/PickupIdentifier.h"
-
-#include <sstream>
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -306,7 +304,7 @@ namespace orxonox
     @return
         Returns the health type as a string.
     */
-    const std::string& HealthPickup::getHealthType(void)
+    const std::string& HealthPickup::getHealthType(void) const
     {
         switch(this->getHealthTypeDirect())
         {

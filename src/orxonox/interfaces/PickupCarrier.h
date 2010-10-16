@@ -63,11 +63,13 @@ namespace orxonox
 
         Different PickupCarriers are structured hierarchically, a pickup can be picked up by a PickupCarrier that can't really carry that particular pickup but one of its children (or one of their children) can, and thus it gets "handed down" until it is at the right place.
         But this structure has to be established first.
-        - <b>getCarrierChildren()</b> To this end a PickupCarrier needs to implement getCarrierChildren() which returns a list of its direct PickupCarrier children. If you need an example, have a look at @ref orxonox::Pawn "Pawn" and @ref orxonx::Engine "Engine".
+        - <b>getCarrierChildren()</b> To this end a PickupCarrier needs to implement getCarrierChildren() which returns a list of its direct PickupCarrier children. If you need an example, have a look at @ref orxonox::Pawn "Pawn" and @ref orxonox::Engine "Engine".
         - <b>getCarrierParent()</b> This is the method in the other direction. It returns the parent of this PickupCarrier, or NULL if the PickupCarrier is a root node in this hierarchy.
 
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _OrxonoxExport PickupCarrier : virtual public OrxonoxClass
     {
@@ -87,7 +89,7 @@ namespace orxonox
             virtual ~PickupCarrier(); //!< Destructor.
             void preDestroy(void); //!< Is called before the PickupCarrier is effectively destroyed.
 
-            bool isTarget(const Pickupable* pickup); //!< Can be used to check whether the PickupCarrier or a child of his is a target ot the input Pickupable.
+            bool isTarget(const Pickupable* pickup) const; //!< Can be used to check whether the PickupCarrier or a child of his is a target ot the input Pickupable.
             PickupCarrier* getTarget(const Pickupable* pickup); //!< Get the carrier that is both a child of the PickupCarrier (or the PickupCarrier itself) and a target of the input Pickupable.
 
             /**
@@ -95,7 +97,7 @@ namespace orxonox
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
             @return Returns the position as a Vector3.
             */
-            virtual const Vector3& getCarrierPosition(void) = 0;
+            virtual const Vector3& getCarrierPosition(void) const = 0;
 
         protected:
             /**
@@ -104,13 +106,13 @@ namespace orxonox
                    The returned list will be deleted by the methods calling this function.
             @return Returns a pointer to a list of all direct children.
             */
-            virtual std::vector<PickupCarrier*>* getCarrierChildren(void) = 0;
+            virtual std::vector<PickupCarrier*>* getCarrierChildren(void) const = 0;
             /**
             @brief Get the parent of this PickupSpawner.
                    This method needs to be implemented by any direct derivative class of PickupCarrier.
             @return Returns a pointer to the parent.
             */
-            virtual PickupCarrier* getCarrierParent(void) = 0;
+            virtual PickupCarrier* getCarrierParent(void) const = 0;
 
             /**
             @brief Get all Pickupables this PickupCarrier has.

@@ -388,8 +388,8 @@ namespace orxonox
         The parameters that are given are used to update the information (i.e. the PickupInventoryContainer) the concerning PickupManager has about the Pickupable that changed.
     @param pickup
         A number identifying the Pickupable that changed its pickedUp status.
-    @param unusable
-        Whether the Pickupable's used status can be changed to unused in the PickupInventory.
+    @param usable
+        Whether the Pickupable's used status can be changed to used in the PickupInventory.
     @param representationObjectId
         The objectId identifying (over the network) the PickupRepresentation that represents this Pickupable.
     @param pickedUp

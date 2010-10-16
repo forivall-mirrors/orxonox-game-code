@@ -33,16 +33,12 @@
 
 #include "ShieldPickup.h"
 
+#include <sstream>
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/StringUtils.h"
 
-#include "worldentities/pawns/SpaceShip.h"
-#include "items/Engine.h"
 #include "pickup/PickupIdentifier.h"
-
-#include <sstream>
-
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
@@ -66,24 +62,6 @@ namespace orxonox
     ShieldPickup::~ShieldPickup()
     {
 
-    }
-
-    /**
-    @brief
-    Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
-    @return
-    A pointer to the Pawn, or NULL if the conversion failed.
-    */
-    Pawn* ShieldPickup::carrierToPawnHelper(void)
-    {
-        PickupCarrier* carrier = this->getCarrier();
-        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
-
-        if(pawn == NULL)
-        {
-            COUT(1) << "Invalid PickupCarrier in ShieldPickup." << std::endl;
-        }
-        return pawn;
     }
 
     /**
@@ -133,9 +111,9 @@ namespace orxonox
     {
         SUPER(ShieldPickup, XMLPort, xmlelement, mode);
 
-        XMLPortParam(ShieldPickup, "duration", setDuration, getDuration, xmlelement, mode);
         XMLPortParam(ShieldPickup, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode);
         XMLPortParam(ShieldPickup, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode);
+        XMLPortParam(ShieldPickup, "duration", setDuration, getDuration, xmlelement, mode);
 
         this->initializeIdentifier();
     }
@@ -148,7 +126,7 @@ namespace orxonox
     {
         SUPER(ShieldPickup, changedUsed);
 
-        //! If the pickup is not picked up nothing must be done.
+        // If the pickup is not picked up nothing must be done.
         if(!this->isPickedUp())
             return;
 
@@ -156,16 +134,20 @@ namespace orxonox
         if(pawn == NULL)
             this->Pickupable::destroy();
 
-        //! If the pickup has transited to used.
+        // If the pickup has transited to used.
         if(this->isUsed())
         {
-            if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
+            // If its durationType is continuous, we set a Timer to be reminded, when the time has run out.
+            if(this->isContinuous())
             {
-                this->durationTimer_.unpauseTimer();
-            }
-            else
-            {
-                this->durationTimer_.setTimer(this->getDuration(), false, createExecutor(createFunctor(&ShieldPickup::pickupTimerCallback, this)));
+                if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() > 0.0f)
+                {
+                    this->durationTimer_.unpauseTimer();
+                }
+                else
+                {
+                    this->durationTimer_.setTimer(this->getDuration(), false, createExecutor(createFunctor(&ShieldPickup::pickupTimerCallback, this)));
+                }
             }
             pawn->setShieldAbsorption(this->getShieldAbsorption());
             pawn->setShieldHealth(this->getShieldHealth());
@@ -176,18 +158,35 @@ namespace orxonox
             this->setShieldHealth(pawn->getShieldHealth());
             pawn->setShieldHealth(0.0f);
 
-            if(this->isOnce())
+            // We destroy the pickup if either, the pickup has activationType immediate and durationType once or it has durationType continuous and the duration was exceeded.
+            if((!this->isContinuous() && this->isImmediate()) || (this->isContinuous() && !this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration()))
             {
-                if(!this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration())
-                {
-                    this->Pickupable::destroy();
-                }
-                else
-                {
-                    this->durationTimer_.pauseTimer();
-                }
+                this->Pickupable::destroy();
+            }
+            // We pause the Timer if the pickup is continuous and the duration is not yet exceeded,
+            else if(this->isContinuous() && this->durationTimer_.isActive())
+            {
+                this->durationTimer_.pauseTimer();
             }
         }
+    }
+
+    /**
+    @brief
+    Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
+    @return
+    A pointer to the Pawn, or NULL if the conversion failed.
+    */
+    Pawn* ShieldPickup::carrierToPawnHelper(void)
+    {
+        PickupCarrier* carrier = this->getCarrier();
+        Pawn* pawn = dynamic_cast<Pawn*>(carrier);
+
+        if(pawn == NULL)
+        {
+            COUT(1) << "Invalid PickupCarrier in ShieldPickup." << std::endl;
+        }
+        return pawn;
     }
 
     /**
@@ -212,28 +211,28 @@ namespace orxonox
 
     /**
     @brief
-    Sets the percentage the shield absorbs of the dealt damage.
-    @param shieldAbsorption
-    The shieldAbsorption. Has to be between 0 and 1
+        Sets the duration.
+    @param duration
+        The duration in seconds.
     */
-    void ShieldPickup::setShieldAbsorption(float shieldAbsorption)
+    void ShieldPickup::setDuration(float duration)
     {
-        if (shieldAbsorption>=0 && shieldAbsorption<=1)
+        if(duration >= 0.0f)
         {
-            this->shieldAbsorption_=shieldAbsorption;
+            this->duration_ = duration;
         }
         else
         {
-            COUT(1) << "Invalid Absorption in ShieldPickup." << std::endl;
-            this->shieldAbsorption_=0;
+            COUT(1) << "Invalid duration in ShieldPickup." << std::endl;
+            this->duration_ = 0.0f;
         }
     }
 
     /**
     @brief
-    Sets the health of the shield.
+        Sets the health of the shield.
     @param shieldHealth
-    The shieldHealth
+        The shieldHealth.
     */
     void ShieldPickup::setShieldHealth(float shieldHealth)
     {
@@ -250,23 +249,27 @@ namespace orxonox
 
     /**
     @brief
-        Sets the duration.
-    @param duration
-        The duration
+        Sets the percentage the shield absorbs of the dealt damage.
+    @param shieldAbsorption
+        The shieldAbsorption. Has to be between 0 and 1.
     */
-    void ShieldPickup::setDuration(float duration)
+    void ShieldPickup::setShieldAbsorption(float shieldAbsorption)
     {
-        if(duration >= 0.0f)
+        if (shieldAbsorption>=0 && shieldAbsorption<=1)
         {
-            this->duration_ = duration;
+            this->shieldAbsorption_=shieldAbsorption;
         }
         else
         {
-            COUT(1) << "Invalid duration in ShieldPickup." << std::endl;
-            this->duration_ = 0.0f;
+            COUT(1) << "Invalid Absorption in ShieldPickup." << std::endl;
+            this->shieldAbsorption_=0;
         }
     }
 
+    /**
+    @brief
+        Helper method. Is called by the Timer as soon as it expires.
+    */
     void ShieldPickup::pickupTimerCallback(void)
     {
         this->setUsed(false);

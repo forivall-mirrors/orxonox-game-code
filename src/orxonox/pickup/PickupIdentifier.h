@@ -56,8 +56,11 @@ namespace orxonox
         To that purpose this class provides functionality to compare two @ref orxonox::PickupIdentifier "PickupIdentifiers" (and since all @ref orxonox::Pickupable "Pickupables" have an identifier, we can use it to compare pickups). It als provides functionality to add parameters that distinguish between different types of pickups in the same pickup class.
 
         Lastly a struct (@ref orxonox::PickupIdentifierCompare "PickupIdentifierCompare") is provided that can be used in stl containers to establish a strictly lesser ordering between @ref orxonox::PickupIdentifier "PickupIdentifiers" (and thus @ref orxonox::Pickupable "Pickupables").
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Pickup
     */
     class _OrxonoxExport PickupIdentifier : virtual public OrxonoxClass
     {

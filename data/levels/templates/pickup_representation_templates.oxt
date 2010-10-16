@@ -22,7 +22,7 @@
     shieldabsorption = 0.7
     shieldhealth = 300
     activationType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 
@@ -48,7 +48,7 @@
     shieldabsorption = 0.8
     shieldhealth = 500
     activationType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 
@@ -75,7 +75,7 @@
     shieldabsorption = 0.95
     shieldhealth = 700
     activationType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 
@@ -239,7 +239,7 @@
     speedAdd = 0.0
     SpeedMultiply = 10.0
     activationType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 
@@ -265,7 +265,7 @@
     speedAdd = 0.0
     SpeedMultiply = 25.0
     activationType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 
@@ -291,7 +291,7 @@
     speedAdd = 0.0
     SpeedMultiply = 50.0
     activationType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 
@@ -317,7 +317,7 @@
     speedAdd = 5000.0
     SpeedMultiply = 1.0
     activationType = "immediate"
-    durationType = "once"
+    durationType = "continuous"
   />
 </Template>
 

@@ -38,7 +38,6 @@
 #include "PickupPrereqs.h"
 
 #include <string>
-
 #include "tools/Timer.h"
 
 #include "interfaces/Pickupable.h"
@@ -91,42 +90,41 @@ namespace orxonox
             inline float getTriggerDistance() const
                 { return this->triggerDistance_; }
             /**
-            @brief Set the distance in which to trigger.
-            @param value The new distance in which to trigger.
-            */
-            inline void setTriggerDistance(float value)
-                { this->triggerDistance_ = value; }
-
-            /**
             @brief Get the time to respawn.
             @returns Returns the time after which this gets re-actived.
             */
             inline float getRespawnTime() const
                 { return this->respawnTime_; }
             /**
+            @brief Get the maximum number of items that will be spawned by this PickupSpawner.
+            @return Returns the maximum number of items spawned by this PickupSpawner.
+            */
+            inline int getMaxSpawnedItems(void) const
+                { return this->maxSpawnedItems_; }
+            
+
+        protected:
+            void decrementSpawnsRemaining(void); //!< Decrements the number of remaining spawns.
+            void startRespawnTimer(void);
+
+            /**
+            @brief Set the distance in which to trigger.
+            @param value The new distance in which to trigger.
+            */
+            inline void setTriggerDistance(float value)
+                { this->triggerDistance_ = value; }
+            /**
             @brief Set the time to respawn.
             @param time New time after which this gets re-actived.
             */
             inline void setRespawnTime(float time)
                 { this->respawnTime_ = time; }
-
-            /**
-            @brief Get the maximum number of items that will be spawned by this PickupSpawner.
-            @return Returns the maximum number of items spawned by this PickupSpawner.
-            */
-            inline int getMaxSpawnedItems(void)
-                { return this->maxSpawnedItems_; }
             void setMaxSpawnedItems(int items); //!< Sets the maximum number of spawned items.
-
-        protected:
-            void decrementSpawnsRemaining(void); //!< Decrements the number of remaining spawns.
-
-            void startRespawnTimer(void);
 
             virtual Pickupable* getPickup(void); //!< Creates a new Pickupable.
 
             void setPickupable(Pickupable* pickup); //!< Sets a Pickupable for the PickupSpawner to spawn.
-            const Pickupable* getPickupable(void); //!< Get the Pickupable that is spawned by this PickupSpawner.
+            const Pickupable* getPickupable(void) const; //!< Get the Pickupable that is spawned by this PickupSpawner.
 
             Pickupable* pickup_; //!< The pickup to be spawned.
 
