@@ -73,7 +73,7 @@ namespace orxonox {
         An example of a XML implementation of a HealthPickup would be:
         @code
         <HealthPickup
-            health = 33
+            health = 50
             healthType = "limited"
             activationType = "immediate"
             durationType = "once"
