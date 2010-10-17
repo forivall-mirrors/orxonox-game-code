@@ -82,6 +82,8 @@ namespace orxonox
     /**
     @brief
         Struct that overloads the compare operation between two @ref orxonox::PickupIdentifier "PickupIdentifier" pointers.
+
+    @ingroup Pickup
     */
     struct PickupIdentifierCompare
     {
