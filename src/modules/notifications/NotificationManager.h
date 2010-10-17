@@ -52,8 +52,11 @@ namespace orxonox // tolua_export
         The Singleton NotificationManager functions as a gateway between @ref orxonox::Notification "Notifications" and @ref orxonox::NotificationListener "NotificationListeners".
         It receives, organizes @ref orxonox::Notification "Notifications" and the redistributes them to the specific @ref orxonox::NotificationListener "NotificationListeners".
         It also provides a static function to send @ref orxonox::Notification "Notifications" and works as a liaison between the @ref orxonox::NotificationQueue "NotificationQueues" and the GUI that displays notification, called NotificationLayer.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Notifications
     */
     class _NotificationsExport NotificationManager // tolua_export
         : public Singleton<NotificationManager>, public OrxonoxClass

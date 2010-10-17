@@ -40,7 +40,6 @@
 #include "interfaces/PlayerTrigger.h"
 #include "worldentities/pawns/Pawn.h"
 
-#include "objects/triggers/MultiTriggerContainer.h"
 #include "QuestEffect.h"
 
 namespace orxonox
@@ -100,7 +99,6 @@ namespace orxonox
     @return
         Returns true if successfully executed, false if not.
     */
-    //TODO: Eliminate MultiTriggerContainer stuff, since they are now PlayerTriggers as well.
     bool QuestEffectBeacon::execute(bool bTriggered, BaseObject* trigger)
     {
         if(!bTriggered)
@@ -114,12 +112,7 @@ namespace orxonox
         }
 
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
-        MultiTriggerContainer* mTrigger = orxonox_cast<MultiTriggerContainer*>(trigger);
         Pawn* pawn = NULL;
-
-        // If the trigger is neither a Playertrigger nor a MultiTrigger (i.e. a MultitriggerContainer) we can do anything with it.
-        if(pTrigger == NULL && mTrigger == NULL)
-            return false;
 
         // If the trigger is a PlayerTrigger.
         if(pTrigger != NULL)
@@ -129,12 +122,8 @@ namespace orxonox
             else
                 pawn = pTrigger->getTriggeringPlayer();
         }
-
-        // If the trigger is a MultiTrigger (i.e. a MultiTriggerContainer)
-        if(mTrigger != NULL)
-        {
-            pawn = orxonox_cast<Pawn*>(mTrigger->getData());
-        }
+        else
+            return false;
 
         if(pawn == NULL)
         {
@@ -236,12 +225,7 @@ namespace orxonox
     */
     bool QuestEffectBeacon::addEffect(QuestEffect* effect)
     {
-        //TODO: Replace with assert.
-        if(effect == NULL) // NULL-pointers are not well liked here...
-        {
-            COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
-            return false;
-        }
+        assert(effect);
 
         this->effects_.push_back(effect);
 

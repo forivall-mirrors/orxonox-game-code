@@ -134,8 +134,6 @@ namespace orxonox
         The player for whom is to be checked.
     @return
         Returns true if the quest can be started, false if not.
-    @throws
-        Throws an exception if either isInactive() of isActive() throws one.
     */
     bool GlobalQuest::isStartable(const PlayerInfo* player) const
     {
@@ -152,8 +150,6 @@ namespace orxonox
         The player for whom is to be checked.
     @return
         Returns true if the Quest can be failed, false if not.
-    @throws
-        Throws an Exception if isActive() throws one.
     */
     bool GlobalQuest::isFailable(const PlayerInfo* player) const
     {
@@ -168,8 +164,6 @@ namespace orxonox
         The player for whom is to be checked.
     @return
         Returns true if the Quest can be completed, false if not.
-    @throws
-        Throws an Exception if isActive() throws one.
     */
     bool GlobalQuest::isCompletable(const PlayerInfo* player) const
     {
@@ -181,14 +175,10 @@ namespace orxonox
         Returns the status of the Quest for a specific player.
     @param player
         The player.
-    @throws
-        Throws an Exception if player is NULL.
     */
     QuestStatus::Value GlobalQuest::getStatus(const PlayerInfo* player) const
     {
-        //TODO: Replace with assert.
-        if(player == NULL) // We don't want NULL-Pointers!
-            ThrowException(Argument, "The input PlayerInfo* is NULL.");
+        assert(player);
 
         // Find the player.
         std::set<PlayerInfo*>::const_iterator it = this->players_.find((PlayerInfo*)(void*)player);
@@ -211,9 +201,7 @@ namespace orxonox
     */
     bool GlobalQuest::setStatus(PlayerInfo* player, const QuestStatus::Value & status)
     {
-        //TODO: Replace with assert.
-        if(player == NULL) // We don't want NULL-Pointers!
-            return false;
+        assert(player);
 
         // Find the player.
         std::set<PlayerInfo*>::const_iterator it = this->players_.find(player);
@@ -234,12 +222,7 @@ namespace orxonox
     */
     bool GlobalQuest::addRewardEffect(QuestEffect* effect)
     {
-        //TODO: Replace with assert?
-        if(effect == NULL) // We don't want NULL-Pointers!
-        {
-            COUT(2) << "The reward effect to be added to quest {" << this->getId() << "} was NULL." << std::endl;
-            return false;
-        }
+        assert(effect);
 
         this->rewards_.push_back(effect); // Add the QuestEffect to the list.
 

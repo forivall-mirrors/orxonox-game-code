@@ -46,12 +46,16 @@
 
 namespace orxonox  // tolua_export
 {  // tolua_export
+
     /**
     @brief
         Is a Singleton and manages @ref orxonox::Quest "Quests", by registering every @ref orxonox::Quest "Quest" / @ref orxonox::QuestHint "QuestHint" (through registerX()) and making them globally accessible (through findX()).
         @ref orxonox::Quest "Quests" (and @ref orxonox::QuestHint "QuestHints") are registered in the QuestManager with their id, and can be accessed in the same way.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport QuestManager  // tolua_export
         : public Singleton<QuestManager>, public orxonox::OrxonoxClass

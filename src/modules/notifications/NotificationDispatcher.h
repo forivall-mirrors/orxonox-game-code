@@ -38,6 +38,7 @@
 #include "notifications/NotificationsPrereqs.h"
 
 #include <string>
+
 #include "core/BaseObject.h"
 #include "network/synchronisable/Synchronisable.h"
 
@@ -61,8 +62,11 @@ namespace orxonox
         </NotificationDispatcher>
         @endcode
         But keep in mind, that NotificationDispatcher is an abstract class and in this example @ref orxonox::PlayerTrigger "PlayerTrigger" stands for any event that is caused by a @ref orxonox::PlayerTrigger "PlayerTrigger", so instead of @ref orxonox::PlayerTrigger "PlayerTrigger", there could be a @ref orxonox::DistanceTrigger "DistanceTrigger", or a @ref orxonox::DistanceMultiTrigger "DistanceMutliTrigger", or even an @ref orxonox::EventListener "EventListener" that waits for an event coming from any kind of @ref orxonox::PlayerTrigger "PlayerTrigger".
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Notifications
     */
     class _NotificationsExport NotificationDispatcher : public BaseObject, public Synchronisable
     {

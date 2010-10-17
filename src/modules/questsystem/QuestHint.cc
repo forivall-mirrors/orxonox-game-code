@@ -82,19 +82,13 @@ namespace orxonox
         Checks whether the QuestHint is active for a specific player.
     @param player
         The player.
-    @throws
-        Throws an Argument Exception if the input Player-pointer is NULL.
     @return
         Returns true if the QuestHint is active for the specified player.
     */
     bool QuestHint::isActive(const PlayerInfo* player) const
     {
-        //TODO: Replace with assert.
-        if(player == NULL) // NULL-Pointers are ugly!
-        {
-            ThrowException(Argument, "The input PlayerInfo* is NULL.");
+        if(player == NULL) // If the player is NULL, the Quest obviously can't be active.
             return false;
-        }
 
         // Find the player.
         std::map<const PlayerInfo*, QuestHintStatus::Value>::const_iterator it = this->playerStatus_.find(player);
@@ -144,12 +138,7 @@ namespace orxonox
     */
     bool QuestHint::setQuest(Quest* quest)
     {
-        //TODO: Replace with assert.
-        if(quest == NULL) // NULL-Pointer. Again..?
-        {
-            COUT(2) << "The input Quest* is NULL." << std::endl;
-            return false;
-        }
+        assert(quest);
 
         this->quest_ = quest;
         return true;

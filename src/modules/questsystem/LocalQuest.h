@@ -42,6 +42,7 @@
 
 namespace orxonox
 {
+
     /**
     @brief
         Handles @ref orxonox::Quest "Quests" which have different states for different players.
@@ -73,8 +74,11 @@ namespace orxonox
             </complete-effects>
         </LocalQuest>
         @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport LocalQuest : public Quest
     {

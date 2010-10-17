@@ -42,6 +42,7 @@
 
 namespace orxonox
 {
+
     /**
     @brief
         Adds a @ref orxonox::QuestHint "QuestHint", resp. activates the @ref orxonox::QuestHint "QuestHint" of the given id for the player the QuestEffect is invoked on.
@@ -50,8 +51,11 @@ namespace orxonox
         @code
         <AddQuestHint hintId="id" />  //Where id identifies the QuestHint that should be added.
         @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup QuestEffects
     */
     class _QuestsystemExport AddQuestHint : public QuestEffect
     {

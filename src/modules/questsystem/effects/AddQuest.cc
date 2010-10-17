@@ -82,12 +82,7 @@ namespace orxonox
     */
     bool AddQuest::invoke(PlayerInfo* player)
     {
-        //TODO: Replace with assert?
-        if(player == NULL) // Null-pointers are badass.
-        {
-            COUT(2) << "Input player is NULL." << std::endl;
-            return false;
-        }
+        assert(player);
 
         COUT(5) << "AddQuest on player: " << player << " ." << std::endl;
 

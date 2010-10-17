@@ -332,14 +332,6 @@
     @subsection CreatingAPickupClass Creating the class
     For a new @ref orxonox::Pickupable "Pickupable" you need to create a new class in <code>>modules/pickup/items</code>. Your class needs to be derived from another pickup class, normally this would either be @ref orxonox::Pickupable "Pickupable", @ref orxonox::CollectiblePickup "CollectiblePickup" or @ref orxonox::Pickup "Pickup". @ref orxonox::Pickupable "Pickupable" is (as mentioned earlier) the base class of all things that can be picked up, thus of all pickups. @ref orxonox::CollectiblePickup "CollectiblePickup" is a (directly) derived class of @ref orxonox::Pickupable  "Pickupable" and provides the additional functionality of enabling your pickup to be used in a @ref orxonox::PickupCollection "PickupCollection". However you are probably going to want to derive your class form @ref orxonox::Pickup "Pickup", because it is a @ref orxonox::CollectiblePickup "CollectiblePickup" and provides some useful methods. So have a look at @ref orxonox::Pickup "Pickup".
     Once you have created your new pickup class you have to insert it in the <code>PickupPrereqs.h</code> file in the <code>modules/pickup</code> folder and in the <code>CMakeList.txt</code> file in the <code>modules/pickup/items</code> folder. Also have a look at other pickups to make sure you include all the necessary files in your class.
-    Additionally you have to add your pickup as a friend of the @ref orxonox::PickupCarrier "PickupCarrier" class. To that end open <code>PickupCarrier.h</code> in the <code>orxonox/interfaces</code> folder and add your class under
-    @code
-    // Forward-declarations.
-    @endcode
-    and under
-    @code
-    // Friends
-    @endcode
 
     @subsection ChoosingTheCarriers Coosing the carriers
     You also have to choose the entities that are allowed to pick your pickup up. After you have chosen the entity that carries your pickup, you need to do the following.
@@ -412,6 +404,8 @@
 
     @defgroup PickupItems Items
     @ingroup Pickup
+
+    The actual pickups can be found here.
 */
 
 /**

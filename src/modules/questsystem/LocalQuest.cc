@@ -124,8 +124,6 @@ namespace orxonox
         The player for whom is to be checked.
     @return
         Returns true if the Quest can be started, false if not.
-    @throws
-        Throws an exception if isInactive(PlayerInfo*) throws one.
     */
     bool LocalQuest::isStartable(const PlayerInfo* player) const
     {
@@ -142,8 +140,6 @@ namespace orxonox
         The player for whom is to be checked.
     @return
         Returns true if the Quest can be failed, false if not.
-    @throws
-        Throws an exception if isActive(PlayerInfo*) throws one.
     */
     bool LocalQuest::isFailable(const PlayerInfo* player) const
     {
@@ -157,8 +153,6 @@ namespace orxonox
         The player for whom is to be checked.
     @return
         Returns true if the Quest can be completed, false if not.
-    @throws
-        Throws an exception if isInactive(PlayerInfo*) throws one.
     */
     bool LocalQuest::isCompletable(const PlayerInfo* player) const
     {
@@ -172,14 +166,10 @@ namespace orxonox
         The player.
     @return
         Returns the status of the Quest for the input player.
-    @throws
-        Throws an Exception if player is NULL.
     */
     QuestStatus::Value LocalQuest::getStatus(const PlayerInfo* player) const
     {
-        //TODO: Replace with assert.
-        if(player == NULL) // No player has no defined status.
-            ThrowException(Argument, "The input PlayerInfo* is NULL.");
+        assert(player);
 
         std::map<const PlayerInfo*, QuestStatus::Value>::const_iterator it = this->playerStatus_.find(player);
         if (it != this->playerStatus_.end()) // If there is a player in the map.
@@ -201,9 +191,7 @@ namespace orxonox
     */
     bool LocalQuest::setStatus(PlayerInfo* player, const QuestStatus::Value & status)
     {
-        //TODO: Replace with assert.
-        if(player == NULL) // We can't set a status for no player.
-            return false;
+        assert(player);
 
         this->playerStatus_[player] = status;
         return true;

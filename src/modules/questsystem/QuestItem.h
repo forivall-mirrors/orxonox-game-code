@@ -49,8 +49,11 @@ namespace orxonox
     @brief
         Functions as a base class for quest classes such as @ref orxonox::Quest "Quest" or @ref orxonox::QuestHint "QuestHint".
         Has a unique identifier and a @ref orxonox::QuestDescription "QuestDescription".
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport QuestItem : public BaseObject
     {

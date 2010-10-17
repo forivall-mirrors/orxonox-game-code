@@ -42,13 +42,19 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        The status of the @ref orxonox::QuestEffectBeacon "QuestEffectBeacon", can be either active or inactive.
+
+    @ingroup Questsystem
+    */
     namespace QuestEffectBeaconStatus
     {
-        //! The status of the @ref orxonox::QuestEffectBeacon "QuestEffectBeacon", can be either active or inactive.
         enum Value
         {
-            Inactive,
-            Active
+            Inactive, //!< The @ref orxonox::QuestEffectBeacon "QuestEffectBeacon" is inactive.
+            Active //!< The @ref orxonox::QuestEffectBeacon "QuestEffectBeacon" is active.
         };
     }
 
@@ -77,8 +83,11 @@ namespace orxonox
             </attached>
         </QuestEffectBeacon>
         @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport QuestEffectBeacon : public StaticEntity
     {

@@ -42,11 +42,15 @@
 
 namespace orxonox
 {
+
     /**
     @brief
         A QuestEffect which changes the status of a specified @ref orxonox::Quest "Quest" for the player invoking the QuestEffect.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup QuestEffects
     */
     class _QuestsystemExport ChangeQuestStatus : public QuestEffect
     {
