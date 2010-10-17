@@ -43,15 +43,20 @@
 
 namespace orxonox
 {
+    /**
+    @brief
+        The mode of the @ref orxonox::QuestListener "QuestListener".
+
+    @ingroup Questsystem
+    */
     namespace QuestListenerMode
     {
-        //! The mode of the @ref orxonox::QuestListener "QuestListener".
         enum Value
         {
-            All,
-            Start,
-            Fail,
-            Complete
+            All, //!< Listens to all events.
+            Start, //!< Only listens to events pertaining the starting of @ref orxonox::Quest "Quests".
+            Fail, //!< Only listens to events pertaining the failing of @ref orxonox::Quest "Quests".
+            Complete //!< Only listens to events pertaining the completing of @ref orxonox::Quest "Quests".
         };
     }
 
@@ -71,8 +76,11 @@ namespace orxonox
         @endcode
 
         You can use the QuestListener as if it were a @ref orxonox::Trigger "Trigger" or @ref orxonox::EventListener "EventListener", that fires an Event when the status (depending on the set mode) of the given @ref orxonox::Quest "Quest" changes.
+
     @author
-    Damian 'Mozork' Frick
+        Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport QuestListener : public BaseObject
     {

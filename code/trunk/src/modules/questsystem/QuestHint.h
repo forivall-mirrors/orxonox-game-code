@@ -43,13 +43,18 @@
 namespace orxonox // tolua_export
 { // tolua_export
 
+    /**
+    @brief
+        The state of the @ref orxonox::QuestHint "QuestHint".
+
+    @ingroup Questsystem
+    */
     namespace QuestHintStatus
     {
-        //! The state of the @ref orxonox::QuestHint "QuestHint".
         enum Value
         {
-            Inactive,
-            Active
+            Inactive, //!< The @ref orxonox::QuestHint "QuestHint" is inactive.
+            Active //!< The @ref orxonox::QuestHint "QuestHint" is active.
         };
     }
 
@@ -65,8 +70,11 @@ namespace orxonox // tolua_export
             <QuestDesctription title="" description="" />
         </QuestHint>
         @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport QuestHint // tolua_export
         : public QuestItem

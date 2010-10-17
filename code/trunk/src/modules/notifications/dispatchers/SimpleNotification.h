@@ -57,8 +57,11 @@ namespace orxonox {
         </SimpleNotification>
         @endcode
         For more information on what can be used for @code <PlayerTrigger /> @endcode see the @ref orxonox::NotificationDispatcher "NotificationDispatcher" documentation.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup NotificationDispatchers
     */
     class _NotificationsExport SimpleNotification : public NotificationDispatcher
     {

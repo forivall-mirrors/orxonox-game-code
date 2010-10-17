@@ -43,6 +43,7 @@
 
 namespace orxonox
 {
+
     /**
     @brief
         GlobalQuests are @ref orxonox::Quest "Quests", that have the same status for all players.
@@ -79,8 +80,11 @@ namespace orxonox
             </reward-effects>
         </GlobalQuest>
         @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport GlobalQuest : public Quest
     {

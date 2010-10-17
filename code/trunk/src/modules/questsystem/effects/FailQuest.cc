@@ -82,12 +82,7 @@ namespace orxonox
     */
     bool FailQuest::invoke(PlayerInfo* player)
     {
-        //TODO: Replace with assert?
-        if(player == NULL) // We don't know what to do with no player.
-        {
-            COUT(2) << "Input player is NULL." << std::endl;
-            return false;
-        }
+        assert(player);
 
         COUT(4) << "FailQuest on player: " << player << " ." << std::endl;
 

@@ -48,8 +48,11 @@ namespace orxonox
         A Notification represents a short message used to inform the player about something that just happened. With the @ref orxonox::NotificationManager "NotificationManager" a Notification can be sent from any part of orxonox and is then displayed by the proper @ref orxonox::NotificationQueue "NotificationQueue(s)" (depending on which senders the specific @ref orxonox::NotificationQueue "NotificationQueues" accepts).
 
         A Notification is just a datastructure that is used internally by the Notifications module.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Notifications
     */
     class _NotificationsExport Notification : public OrxonoxClass
     {

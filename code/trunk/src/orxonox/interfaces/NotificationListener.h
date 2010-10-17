@@ -55,10 +55,12 @@ namespace orxonox
 
         The NotificationListener interface presents a means to being informed when @ref orxonox::Notification "Notifications" in the target set of this NotificationListener change. (e.g. @ref orxonox::Notification "Notifications" were added or removed)
         When inheriting from a NotificationListener it is important to register (in the constructor) and unregister (in the destructor) it to and from the @ref orxonox::NotificationManager "NotificationManager".
+
     @author
         Fabian 'x3n' Landau
+
+    @ingroup Notifications
     */
-    //TODO: Needed? Remove or move some NotificationQueue things over here.
     class _OrxonoxExport NotificationListener : virtual public OrxonoxClass
     {
         public:

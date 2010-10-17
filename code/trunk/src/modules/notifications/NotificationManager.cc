@@ -148,7 +148,7 @@ namespace orxonox
     {
         assert(notification);
 
-        std::time_t time = std::time(0); //TODO: Doesn't this expire? //!< Get current time.
+        std::time_t time = std::time(0); // Get current time.
 
         // Add the Notification to the list that holds all Notifications.
         this->allNotificationsList_.insert(std::pair<std::time_t, Notification*>(time, notification));

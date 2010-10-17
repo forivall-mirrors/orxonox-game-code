@@ -117,7 +117,6 @@ namespace orxonox
         }
         else if(GameMode::isServer())
         {
-            //TODO: This may fail if the object has not been synchronized, yet.
             callMemberNetworkFunction(NotificationDispatcher, dispatch, this->getObjectID(), clientId, clientId);
         }
     }

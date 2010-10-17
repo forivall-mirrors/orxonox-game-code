@@ -42,6 +42,7 @@
 
 namespace orxonox
 {
+    
     /**
     @brief
         Adds a list of @ref orxonox::Rewardable "Rewardables" to a player.
@@ -54,8 +55,11 @@ namespace orxonox
             <Rewardable />
         </AddReward>
         @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup QuestEffects
     */
     class _QuestsystemExport AddReward : public QuestEffect
     {

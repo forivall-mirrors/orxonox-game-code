@@ -43,15 +43,21 @@
 
 namespace orxonox // tolua_export
 { // tolua_export
+
+    /**
+    @brief
+        Different states of a @ref orxonox::Quest "Quest".
+
+    @ingroup Questsystem
+    */
     namespace QuestStatus
     {
-        //! Different states of a @ref orxonox::Quest "Quest".
         enum Value
         {
-            Inactive,
-            Active,
-            Failed,
-            Completed
+            Inactive, //!< The @ref orxonox::Quest "Quest" is inactive.
+            Active, //!< The @ref orxonox::Quest "Quest" is active.
+            Failed, //!< The @ref orxonox::Quest "Quest" has been failed.
+            Completed //!< The @ref orxonox::Quest "Quest" has been completed.
         };
     }
 
@@ -65,8 +71,11 @@ namespace orxonox // tolua_export
         A Quest can have a list of @ref orxonox::QuestEffect "QuestEffects" that are invoked when the quest is failed and also a list of @ref orxonox::QuestEffect "QuestEffects" that are invoked, when the Quest is completed.
 
         Quest itself should not be instantiated, if you want to create a quest either use LocalQuest or GlobalQuest, whichever suits you needs better.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport Quest // tolua_export
         : public QuestItem

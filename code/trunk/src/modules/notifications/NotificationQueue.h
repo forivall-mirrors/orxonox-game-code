@@ -50,14 +50,24 @@
 namespace orxonox // tolua_export
 { // tolua_export
 
-    //! Container to allow easy handling.
+    /**
+    @brief
+        Container to allow easy handling of the @ref orxonox::Notification "Notifications".
+
+    @ingroup Notifications
+    */
     struct NotificationContainer
     {
         Notification* notification; //!< The Notification displayed.
         time_t time; //!< The time the Notification was sent and thus first displayed.
     };
 
-    //! Struct to allow ordering of @ref orxonox::NotificationContainer "NotificationContainers".
+    /**
+    @brief
+        Struct to allow ordering of @ref orxonox::NotificationContainer "NotificationContainers".
+
+    @ingroup Notifications
+    */
     struct NotificationContainerCompare {
         bool operator() (const NotificationContainer* const & a, const NotificationContainer* const & b) const
             { return a->time < b->time; } //!< Ordering by time.
@@ -75,6 +85,8 @@ namespace orxonox // tolua_export
 
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Notifications
     */
     class _NotificationsExport NotificationQueue // tolua_export
         : public Tickable, public NotificationListener

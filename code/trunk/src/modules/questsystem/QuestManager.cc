@@ -99,12 +99,7 @@ namespace orxonox
     */
     bool QuestManager::registerQuest(Quest* quest)
     {
-        //TODO: Replace with assert.
-        if(quest == NULL) // Doh! Just as if there were actual quests behind NULL-pointers.
-        {
-            COUT(2) << "Registration of Quest in QuestManager failed, because inserted Quest-pointer was NULL." << std::endl;
-            return false;
-        }
+        assert(quest);
 
         std::pair<std::map<std::string, Quest*>::iterator,bool> result;
         result = this->questMap_.insert( std::pair<std::string,Quest*>(quest->getId(),quest) ); // Inserting the Quest.
@@ -142,12 +137,7 @@ namespace orxonox
     */
     bool QuestManager::registerHint(QuestHint* hint)
     {
-        //TODO: Replace with assert.
-        if(hint == NULL) // Still not liking NULL-pointers.
-        {
-            COUT(2) << "Registration of QuestHint in QuestManager failed, because inserted QuestHint-pointer was NULL." << std::endl;
-            return false;
-        }
+        assert(hint);
 
         std::pair<std::map<std::string, QuestHint*>::iterator,bool> result;
         result = this->hintMap_.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) ); // Inserting the QuestHSint.

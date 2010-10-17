@@ -43,6 +43,7 @@
 // tolua_begin
 namespace orxonox
 {
+
     /**
     @brief
         This class is a description of a QuestItem (@ref orxonox::Quest "Quest" and @ref orxonox::QuestHint "QuestHint").
@@ -52,8 +53,11 @@ namespace orxonox
         @code
         <QuestDescription title="Title" description="Description Text" failMessage="You fail." completeMessage="You win!" />
         @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport QuestDescription : public BaseObject
     {

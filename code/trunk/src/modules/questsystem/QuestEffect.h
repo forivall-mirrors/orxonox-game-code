@@ -42,12 +42,16 @@
 
 namespace orxonox
 {
+
     /**
     @brief
         Handles QuestEffects for @ref orxonox::Quest "Quests".
         QuestEffects are one of the ways for @ref orxonox::Quest "Quests" to have any side effects on the game world and for the game world to influence the @ref orxonox::Quest "Quests".
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Questsystem
     */
     class _QuestsystemExport QuestEffect : public BaseObject
     {

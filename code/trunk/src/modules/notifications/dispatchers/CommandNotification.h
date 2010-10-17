@@ -59,8 +59,11 @@ namespace orxonox {
         @endcode
         Upon being triggered this would display the @ref orxonox::Notification "Notification" "Please press {the binding of the specified command} to do something".
         For more information on what can be used for @code <PlayerTrigger /> @endcode see the @ref orxonox::NotificationDispatcher "NotificationDispatcher" documentation.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup NotificationDispatchers
     */
     class _NotificationsExport CommandNotification : public NotificationDispatcher
     {

@@ -40,6 +40,7 @@
 
 namespace orxonox
 {
+
     /**
     @brief
         Completes a @ref orxonox::Quest "Quest" (with a specified id) for the player invoking the QuestEffect.
@@ -48,8 +49,11 @@ namespace orxonox
         @code
         <CompleteQuest questId="id" />  //Where id identifies the Quest that should be completed.
         @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup QuestEffects
     */
     class _QuestsystemExport CompleteQuest : public ChangeQuestStatus
     {

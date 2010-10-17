@@ -46,13 +46,7 @@ namespace orxonox
 {
 
     // Forward-declarations.
-    class PickupManager;
-    class Pickup;
-    class HealthPickup;
-    class InvisiblePickup;
     class MetaPickup;
-    class DronePickup;
-    class SpeedPickup;
 
     /**
     @brief
@@ -77,12 +71,7 @@ namespace orxonox
         friend class Pickupable;
         friend class PickupManager;
         // Friends.
-        friend class Pickup;
-        friend class HealthPickup;
-        friend class InvisiblePickup;
         friend class MetaPickup;
-        friend class DronePickup;
-        friend class SpeedPickup;
 
         public:
             PickupCarrier(); //!< Constructor.

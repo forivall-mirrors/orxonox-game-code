@@ -40,6 +40,7 @@
 
 namespace orxonox
 {
+
     /**
     @brief
         Adds a @ref orxonox::Quest "Quest", resp. changes the @ref orxonox::Quest "Quests" status to active for the player invoking the @ref orxonox::Quest "Quest".
@@ -48,8 +49,11 @@ namespace orxonox
         @code
         <AddQuest questId="id" />  //Where id identifies the Quest that should be added.
         @endcode
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup QuestEffects
     */
     class _QuestsystemExport AddQuest : public ChangeQuestStatus
     {

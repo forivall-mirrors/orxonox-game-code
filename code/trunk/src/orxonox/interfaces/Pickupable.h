@@ -61,6 +61,8 @@ namespace orxonox
     */
     class _OrxonoxExport Pickupable : virtual public OrxonoxClass, public Rewardable
     {
+        friend class PickupCarrier;
+
         protected:
             Pickupable(); //!< Default constructor.
 
@@ -145,11 +147,7 @@ namespace orxonox
 
             bool setUsed(bool used); //!< Sets the Pickupable to used or unused, depending on the input.
             bool setPickedUp(bool pickedUp); //!< Helper method to set the Pickupable to either picked up or not picked up.
-            //TODO: private?
             bool setCarrier(PickupCarrier* carrier, bool tell = true); //!< Sets the carrier of the Pickupable.
-
-            //TODO: private?
-            virtual void carrierDestroyed(void); //!< Is called by the PickupCarrier when it is being destroyed.
 
             void destroy(void); //!< Is called internally within the Pickupable module to destroy pickups.
 
@@ -161,6 +159,7 @@ namespace orxonox
 
             virtual void preDestroy(void); //!< A method that is called by OrxonoxClass::destroy() before the object is actually destroyed.
             virtual void destroyPickup(void); //!< Destroys a Pickupable.
+            virtual void carrierDestroyed(void); //!< Is called by the PickupCarrier when it is being destroyed.
 
             /**
             @brief Sets the Pickuapble to disabled.

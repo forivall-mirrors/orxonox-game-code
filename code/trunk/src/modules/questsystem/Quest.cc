@@ -91,12 +91,7 @@ namespace orxonox
     */
     bool Quest::setParentQuest(Quest* quest)
     {
-        //TODO: Replace with assert.
-        if(quest == NULL) // We don't want to set NULL-Pointers.
-        {
-            COUT(2) << "The parentquest to be added to quest {" << this->getId() << "} was NULL." << std::endl;
-            return false;
-        }
+        assert(quest);
 
         this->parentQuest_ = quest;
 
@@ -114,12 +109,7 @@ namespace orxonox
     */
     bool Quest::addSubQuest(Quest* quest)
     {
-        //TODO: Replace with assert.
-        if(quest == NULL) // We don't want to set NULL-Pointers.
-        {
-            COUT(2) << "The subquest to be added to quest {" << this->getId() << "} was NULL." << std::endl;
-            return false;
-        }
+        assert(quest);
 
         quest->setParentQuest(this); // Sets the currentQuest (this) as parent-quest for the added sub-quest.
         this->subQuests_.push_back(quest); // Adds the Quest to the end of the list of sub-quests.
@@ -139,12 +129,7 @@ namespace orxonox
     */
     bool Quest::addHint(QuestHint* hint)
     {
-        //TODO: Replace with assert.
-        if(hint == NULL) // We don't want to set NULL-Pointers. Seriously!
-        {
-            COUT(2) << "A NULL-QuestHint was trying to be added." << std::endl;
-            return false;
-        }
+        assert(hint);
 
         hint->setQuest(this); // Sets the current Quest (this) as Quest for the added QuestHint.
         this->hints_.push_back(hint); // Adds the QuestHint to the end of the list of QuestHints.
@@ -163,12 +148,7 @@ namespace orxonox
     */
     bool Quest::addFailEffect(QuestEffect* effect)
     {
-        //TODO: Replace with assert.
-        if(effect == NULL) // We don't want to set NULL-Pointers.
-        {
-            COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
-            return false;
-        }
+        assert(effect);
 
         this->failEffects_.push_back(effect); // Adds the QuestEffect to the end of the list of fail QuestEffects.
 
@@ -186,12 +166,7 @@ namespace orxonox
     */
     bool Quest::addCompleteEffect(QuestEffect* effect)
     {
-        //TODO: Replace with assert.
-        if(effect == NULL) // We don't want to set NULL-Pointers.
-        {
-            COUT(2) << "A NULL-QuestEffect was trying to be added" << std::endl;
-            return false;
-        }
+        assert(effect);
 
         this->completeEffects_.push_back(effect); // Adds the QuestEffect to the end of the list of complete QuestEffects.
 
@@ -299,11 +274,11 @@ namespace orxonox
         The player.
     @return
         Returns true if the quest status for the specific player is 'inactive'.
-    @throws
-        Throws an exception if getStatus throws one.
     */
     bool Quest::isInactive(const PlayerInfo* player) const
     {
+        if(player == NULL)
+            return true;
         return this->getStatus(player) == QuestStatus::Inactive;
     }
 
@@ -314,11 +289,11 @@ namespace orxonox
         The player.
     @return
         Returns true if the quest status for the specific player is 'active'.
-    @throws
-        Throws an exception if getStatus throws one.
     */
     bool Quest::isActive(const PlayerInfo* player) const
     {
+        if(player == NULL)
+            return false;
         return this->getStatus(player) == QuestStatus::Active;
     }
 
@@ -329,11 +304,11 @@ namespace orxonox
         The player.
     @return
         Returns true if the quest status for the specific player is 'failed'.
-    @throws
-        Throws an exception if getStatus throws one.
     */
     bool Quest::isFailed(const PlayerInfo* player) const
     {
+        if(player == NULL)
+            return false;
         return this->getStatus(player) == QuestStatus::Failed;
     }
 
@@ -344,11 +319,11 @@ namespace orxonox
         The player.
     @return
         Returns true if the quest status for the specific player is 'completed'.
-    @throws
-        Throws an exception if getStatus throws one.
     */
     bool Quest::isCompleted(const PlayerInfo* player) const
     {
+        if(player == NULL)
+            return false;
         return this->getStatus(player) == QuestStatus::Completed;
     }
 
@@ -426,12 +401,7 @@ namespace orxonox
     */
     bool Quest::addListener(QuestListener* listener)
     {
-        //TODO: Replace with assert?
-        if(listener == NULL)
-        {
-            COUT(2) << "A NULL-QuestListener was trying to be added to a Quests listeners." << std::endl;
-            return false;
-        }
+        assert(listener);
 
         this->listeners_.push_back(listener);
         return true;
