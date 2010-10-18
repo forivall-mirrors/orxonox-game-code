@@ -40,14 +40,6 @@
 // Do not remove this include, it avoids linker errors.
 #include "mbool.h"
 
-#ifdef ORXONOX_ARCH_64
-class IsArch64 {};
-struct IsArch64 {};
-#else
-class IsArch32 {};
-struct IsArch32 {};
-#endif
-
 namespace orxonox
 {
 #if OGRE_VERSION < 0x010603
