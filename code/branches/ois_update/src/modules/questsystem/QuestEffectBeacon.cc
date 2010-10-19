@@ -153,8 +153,8 @@ namespace orxonox
 
         COUT(4) << "QuestEffectBeacon executed on player: " << player << " ." << std::endl;
 
-        bool check = QuestEffect::invokeEffects(player, this->effects_); // Invoke the QuestEffects on the PlayerInfo.
-        if(check)
+        bool temp = QuestEffect::invokeEffects(player, this->effects_); // Invoke the QuestEffects on the PlayerInfo.
+        if(temp)
         {
             this->decrementTimes(); // Decrement the number of times the beacon can be used.
             return true;
