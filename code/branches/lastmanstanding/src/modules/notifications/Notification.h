@@ -83,7 +83,7 @@ namespace orxonox
             bool sent_; //!< Whether Notification has been sent, if so it cannot be changed.
 
             void initialize(void);
-            void registerVariables(void);
+            void registerVariables(void) {}
 
     };
 
