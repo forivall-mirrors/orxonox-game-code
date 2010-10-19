@@ -68,8 +68,8 @@
        Location: The header-file of the baseclass (Baseclass.h), below the class declaration
 */
 
-#ifndef _Super_H__
-#define _Super_H__
+#ifndef _SuperDuper_H__
+#define _SuperDuper_H__
 
 #include "CorePrereqs.h"
 
@@ -555,7 +555,7 @@ namespace orxonox
 
 }
 
-#else /* _Super_H__ */
+#else /* _SuperDuper_H__ */
   #ifdef SUPER_INTRUSIVE_DECLARATION_INCLUDE
 
 //////////////////////////////////////////////////////////////////////////
@@ -613,4 +613,4 @@ namespace orxonox
 
     #undef SUPER_INTRUSIVE_DECLARATION_INCLUDE
   #endif /* SUPER_INTRUSIVE_DECLARATION_INCLUDE */
-#endif /* _Super_H__ */
+#endif /* _SuperDuper_H__ */
