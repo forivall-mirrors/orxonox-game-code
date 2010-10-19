@@ -76,6 +76,31 @@
 #include "util/Debug.h"
 #include "Event.h"
 
+#ifdef SUPER
+struct CompilerError1
+{
+    void CompilerError1() {}
+};
+#endif
+#ifdef SUPER_FUNCTION
+struct CompilerError2
+{
+    void CompilerError2() {}
+};
+#endif
+#ifdef SUPER_NOARGS
+struct CompilerError3
+{
+    void CompilerError3() {}
+};
+#endif
+#ifdef SUPER_ARGS
+struct CompilerError4
+{
+    void CompilerError4() {}
+};
+#endif
+
 ///////////////////////
 // Macro definitions //
 ///////////////////////
