@@ -237,6 +237,12 @@ namespace orxonox
             bool                                bRegisteredEventStates_; //!< Becomes true after the object registered its event states (with XMLEventPort)
     };
 
+#ifdef check
+    struct CompilerError
+    {
+        void CompilerError() {}
+    };
+#endif
 
     template <class T, int templatehack2>
     struct SuperFunctionCondition<0, T, 0, templatehack2>
