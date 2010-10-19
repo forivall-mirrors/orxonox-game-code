@@ -68,38 +68,13 @@
        Location: The header-file of the baseclass (Baseclass.h), below the class declaration
 */
 
-#ifndef _SuperDuper_H__
-#define _SuperDuper_H__
+#ifndef _Super_H__
+#define _Super_H__
 
 #include "CorePrereqs.h"
 
 #include "util/Debug.h"
 #include "Event.h"
-
-#ifdef SUPER
-struct CompilerError1
-{
-    void CompilerError1() {}
-};
-#endif
-#ifdef SUPER_FUNCTION
-struct CompilerError2
-{
-    void CompilerError2() {}
-};
-#endif
-#ifdef SUPER_NOARGS
-struct CompilerError3
-{
-    void CompilerError3() {}
-};
-#endif
-#ifdef SUPER_ARGS
-struct CompilerError4
-{
-    void CompilerError4() {}
-};
-#endif
 
 ///////////////////////
 // Macro definitions //
@@ -580,7 +555,7 @@ namespace orxonox
 
 }
 
-#else /* _SuperDuper_H__ */
+#else /* _Super_H__ */
   #ifdef SUPER_INTRUSIVE_DECLARATION_INCLUDE
 
 //////////////////////////////////////////////////////////////////////////
@@ -638,4 +613,4 @@ namespace orxonox
 
     #undef SUPER_INTRUSIVE_DECLARATION_INCLUDE
   #endif /* SUPER_INTRUSIVE_DECLARATION_INCLUDE */
-#endif /* _SuperDuper_H__ */
+#endif /* _Super_H__ */
