@@ -74,9 +74,7 @@ end
           <?lua
             createSpaceStationPar(65461,2,1,2,1,2,1,100)
           ?>
-            <attached>
-              <Billboard position="0,0,0" colour="1.0,1.0,0" material="Examples/Flare" />
-            </attached>
+          <Billboard position="0,0,0" colour="1.0,1.0,0" material="Examples/Flare" />
         </attached>
       </StaticEntity>
 <!--
