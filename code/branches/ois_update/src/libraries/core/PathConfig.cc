@@ -94,7 +94,7 @@ namespace orxonox
 
 #elif defined(ORXONOX_PLATFORM_APPLE)
         char buffer[1024];
-        unsigned long path_len = 1023;
+        uint32_t path_len = 1023;
         if (_NSGetExecutablePath(buffer, &path_len))
             ThrowException(General, "Could not retrieve executable path.");
 

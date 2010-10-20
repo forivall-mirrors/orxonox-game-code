@@ -237,13 +237,20 @@ namespace orxonox
             bool                                bRegisteredEventStates_; //!< Becomes true after the object registered its event states (with XMLEventPort)
     };
 
+#ifdef csadasdasf
+struct CompilerError
+{
+   void CompilerError() {}
+};
+#endif
+
     template <class T, int templatehack2>
     struct SuperFunctionCondition<0, T, 0, templatehack2>
     {
-        static void verify()
+        static void superCheck()
         {
             SuperFunctionCondition<0, T, 0, templatehack2>::apply(static_cast<T*>(0));
-            SuperFunctionCondition<0 + 1, T, 0, templatehack2>::verify();
+            SuperFunctionCondition<0 + 1, T, 0, templatehack2>::superCheck();
         }
        
         static void apply(void* temp) {}
