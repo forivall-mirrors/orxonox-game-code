@@ -36,13 +36,14 @@
     <StaticEntity position="0,20,0">
        <attached>
            <Model position="0,0,0" scale=140 mesh="asteroid_UV.mesh" shadow=true />
-           <!--ParticleEmitter position="0,0,0" source="Orxonox/Steam" /-->
-           <collisionShapes>
-               <SphereCollisionShape radius="30" />
-           </collisionShapes>
+           <!-- ParticleEmitter position="0,0,0" source="Orxonox/Steam" / -->
        </attached>
     </StaticEntity>
-
+<StaticEntity position="0,0,0" collisionType=static>
+      <collisionShapes>
+        <SphereCollisionShape radius="145" />
+      </collisionShapes>
+    </StaticEntity>
 
 <!-- ---------------asteroid dome----------------- -->
 <?lua
@@ -82,7 +83,7 @@ j = math.random()
 
     <StaticEntity position="<?lua print(y) ?>,-100,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> >
       <attached>
-        <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i*13,6) + 1) ?>.mesh">
+        <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i*13+1,6) + 1) ?>.mesh">
 	</Model>
       </attached>
     </StaticEntity>
@@ -93,6 +94,15 @@ j = math.random()
 	</Model>
       </attached>
     </StaticEntity>
+
+
+
+  <MovableEntity position="<?lua print(y) ?>,300,<?lua print(z) ?>" scale=<?lua print(j * 2.1) ?> pitch="90" roll="180" yaw="<?lua print(-90+i*360/max) ?>" >
+       <attached>
+           <Model position="0,0,0" scale=25 mesh="ast6.mesh" shadow=true />
+           <!--ParticleEmitter position="0,0,0" source="Orxonox/Steam" /-->
+       </attached>
+  </MovableEntity>
 
 <?lua
 end
