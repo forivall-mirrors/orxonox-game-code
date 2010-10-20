@@ -237,47 +237,7 @@ namespace orxonox
             bool                                bRegisteredEventStates_; //!< Becomes true after the object registered its event states (with XMLEventPort)
     };
 
-#ifdef csadasdasf
-struct CompilerError
-{
-   void CompilerError() {}
-};
-#endif
-
-    template <class T, int templatehack2>
-    struct SuperFunctionCondition<0, T, 0, templatehack2>
-    {
-        static void superCheck()
-        {
-            SuperFunctionCondition<0, T, 0, templatehack2>::apply(static_cast<T*>(0));
-            SuperFunctionCondition<0 + 1, T, 0, templatehack2>::superCheck();
-        }
-       
-        static void apply(void* temp) {}
-       
-        static void apply(BaseObject* temp)
-        {
-            ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier();
-            for (std::set<const Identifier*>::iterator it = identifier->getDirectChildrenIntern().begin(); it != identifier->getDirectChildrenIntern().end(); ++it)
-            {
-                if (((ClassIdentifier<T>*)(*it))->bSuperFunctionCaller_XMLPort_isFallback_ && ((ClassIdentifier<T>*)(*it))->superFunctionCaller_XMLPort_)
-                {
-                    delete ((ClassIdentifier<T>*)(*it))->superFunctionCaller_XMLPort_;
-                    ((ClassIdentifier<T>*)(*it))->superFunctionCaller_XMLPort_ = 0;
-                    ((ClassIdentifier<T>*)(*it))->bSuperFunctionCaller_XMLPort_isFallback_ = false;
-                }
-               
-                if (!((ClassIdentifier<T>*)(*it))->superFunctionCaller_XMLPort_)
-                {
-                    COUT(5) << "Added SuperFunctionCaller for " << "XMLPort" << ": " << ClassIdentifier<T>::getIdentifier()->getName() << " <- " << ((ClassIdentifier<T>*)(*it))->getName() << std::endl;
-                    ((ClassIdentifier<T>*)(*it))->superFunctionCaller_XMLPort_ = new SuperFunctionClassCaller_XMLPort <T>;
-                }
-            }
-        }
-    };
-
-
-    //SUPER_FUNCTION(0, BaseObject, XMLPort, false);
+    SUPER_FUNCTION(0, BaseObject, XMLPort, false);
     SUPER_FUNCTION(2, BaseObject, changedActivity, false);
     SUPER_FUNCTION(3, BaseObject, changedVisibility, false);
     SUPER_FUNCTION(4, BaseObject, XMLEventPort, false);
