@@ -64,4 +64,6 @@ ORXONOX_ADD_LIBRARY(ois_orxonox
 
 IF(WIN32)
   TARGET_LINK_LIBRARIES(ois_orxonox ${DIRECTX_LIBRARIES})
+ELSEIF(APPLE)
+  TARGET_LINK_LIBRARIES(ois_orxonox "/System/Library/Frameworks/IOKit.framework" "/System/Library/Frameworks/Carbon.framework")
 ENDIF()

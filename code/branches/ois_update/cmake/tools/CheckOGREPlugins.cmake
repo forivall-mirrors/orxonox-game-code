@@ -52,12 +52,12 @@ FUNCTION(CHECK_OGRE_PLUGINS)
     FIND_LIBRARY(OGRE_PLUGIN_${_plugin}_OPTIMIZED
       NAMES ${_plugin}
       PATHS $ENV{OGRE_HOME} $ENV{OGRE_PLUGIN_DIR}
-      PATH_SUFFIXES bin/Release bin/release Release release lib lib/OGRE bin
+      PATH_SUFFIXES bin/Release bin/release Release release lib lib/OGRE bin Ogre.framework/Resources
     )
     FIND_LIBRARY(OGRE_PLUGIN_${_plugin}_DEBUG
       NAMES ${_plugin}d ${_plugin}_d ${_plugin}
       PATHS $ENV{OGRE_HOME} $ENV{OGRE_PLUGIN_DIR}
-      PATH_SUFFIXES bin/Debug bin/debug Debug debug lib lib/OGRE bin
+      PATH_SUFFIXES bin/Debug bin/debug Debug debug lib lib/OGRE bin Ogre.framework/Resources
     )
     # We only need at least one render system. Check at the end.
     IF(NOT ${_plugin} MATCHES "RenderSystem")
