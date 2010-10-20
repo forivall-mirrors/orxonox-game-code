@@ -31,7 +31,7 @@
 
 #include <list>
 #include <string>
-#include "ServerInformation.h"
+#include <network/packet/ServerInformation.h>
 
 /* methods necessary */
 namespace orxonox 
@@ -53,7 +53,7 @@ namespace orxonox
        * 
        * Add server to the game server list
        */
-      int addServer( ServerInformation *toadd );
+      int addServer( packet::ServerInformation *toadd );
 
       /** \param name Name of the server to remove
        * 
@@ -78,7 +78,7 @@ namespace orxonox
 
     private:
       /** the list of servers for internal storage */
-      std::list<ServerInformation *> serverlist;
+      std::list<packet::ServerInformation *> serverlist;
   };
 }
 

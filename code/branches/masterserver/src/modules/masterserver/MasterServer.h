@@ -3,15 +3,15 @@
 
 /* orxonox includes */
 #include <enet/enet.h>
-#include "packet/Chat.h"
-#include "packet/ClassID.h"
-#include "packet/DeleteObjects.h"
-#include "packet/FunctionIDs.h"
-#include "packet/Gamestate.h"
-#include "packet/Welcome.h"
+#include <network/packet/Chat.h>
+#include <network/packet/ClassID.h>
+#include <network/packet/DeleteObjects.h>
+#include <network/packet/FunctionIDs.h>
+#include <network/packet/Gamestate.h>
+#include <network/packet/Welcome.h>
 
 /* my includes */
-#include <ServerList.h>
+#include "ServerList.h"
 
 /* c compatibility */
 #include <cstdio>

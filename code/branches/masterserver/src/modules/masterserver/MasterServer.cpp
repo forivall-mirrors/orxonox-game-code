@@ -5,8 +5,7 @@ using namespace std;
 /***** EVENTS *****/
 /* connect event */
 int eventConnect( ENetEvent *event )
-{ 
-  /* check for bad parameters */
+{ /* check for bad parameters */
   if( !event )
   { fprintf( stderr, "No event given.\n" );
     return -1;
@@ -34,8 +33,7 @@ int eventConnect( ENetEvent *event )
 
 /* disconnect event */
 int eventDisconnect( ENetEvent *event )
-{ 
-  /* check for bad parameters */
+{ /* check for bad parameters */
   if( !event )
   { fprintf( stderr, "No event given.\n" );
     return -1;
@@ -53,14 +51,13 @@ int eventDisconnect( ENetEvent *event )
 
 /* data event */
 int eventData( ENetEvent *event )
-{ 
-  /* output what's in the packet (to be removed later) */
+{ /* output what's in the packet (to be removed later) */
   if( !event || !(event->packet) || !(event->peer) || !(event->channelID) )
   { fprintf( stderr, "No complete event given.\n" );
     return -1;
   }
 
-
+  /* output debug info about the data that has come, to be removed */
   printf( "A packet of length %u containing %s was received from %s on channel %u.\n",
       event->packet->dataLength,
       event->packet->data,
@@ -122,19 +119,23 @@ int main( int argc, char *argv[] )
   }
 
   /***** INITIALIZE GAME SERVER LIST *****/
-  ServerList mainlist = new ServerList();
-  if( !mainlist )
-  { fprintf( stderr, "Error creating server list.\n" );
-    exit( EXIT_FAILURE );
-  }
+  orxonox::ServerList *mainlist = new orxonox::ServerList();
+  //if( mainlist == NULL )
+  //{ fprintf( stderr, "Error creating server list.\n" );
+    //exit( EXIT_FAILURE );
+  //}
 
   /***** ENTER MAIN LOOP *****/
-  ENetEvent *event = calloc(sizeof(ENetEvent));
-  if( !event )
+  ENetEvent *event = calloc(sizeof(ENetEvent), sizeof(char));
+  if( event == NULL )
   { fprintf( stderr, "Could not create ENetEvent structure, exiting.\n" );
     exit( EXIT_FAILURE );
   }
 
+  /* NOTE this only waits on one client, we need to find some way to 
+   * actually listen on all active connections. This will be implemented 
+   * together with the list of active connections.
+   */
   /* Wait up to 1000 milliseconds for an event. */
   while (enet_host_service (client, event, 1000) > 0)
   { /* check what type of event it is and react accordingly */
