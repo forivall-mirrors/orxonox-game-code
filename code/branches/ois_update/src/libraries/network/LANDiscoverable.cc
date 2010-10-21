@@ -28,12 +28,12 @@
 
 #include "LANDiscoverable.h"
 
-#include "NetworkPrereqs.h"
-#include "packet/ServerInformation.h"
-
 #include <enet/enet.h>
 #include <cassert>
 #include <cstring>
+
+#include "util/Debug.h"
+#include "packet/ServerInformation.h"
 
 namespace orxonox
 {
