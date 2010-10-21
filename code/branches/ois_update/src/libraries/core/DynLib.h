@@ -116,7 +116,7 @@ namespace orxonox
 
     protected:
 
-#elif defined(ORXONOX_PLATFORM_APPLE)
+#ifdef ORXONOX_PLATFORM_APPLE
         // From macUtils.h in OGRE
         static void* mac_loadDylib(const char* name);
 #endif

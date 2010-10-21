@@ -142,7 +142,7 @@ namespace orxonox
 #endif
     }
 
-#if defined(ORXONOX_PLATFORM_APPLE)
+#ifdef ORXONOX_PLATFORM_APPLE
     /*static*/ void* DynLib::mac_loadDylib(const char* name)
     {
         std::string fullPath=name;
