@@ -51,15 +51,9 @@ Torus Knot Software Ltd.
 struct HINSTANCE__;
 typedef struct HINSTANCE__* hInstance;
 
-#elif defined(ORXONOX_PLATFORM_LINUX)
+#elif defined(ORXONOX_PLATFORM_UNIX)
 #    define DYNLIB_HANDLE void*
 #    define DYNLIB_LOAD( a ) dlopen( a, RTLD_LAZY | RTLD_GLOBAL)
-#    define DYNLIB_GETSYM( a, b ) dlsym( a, b )
-#    define DYNLIB_UNLOAD( a ) dlclose( a )
-
-#elif defined(ORXONOX_PLATFORM_APPLE)
-#    define DYNLIB_HANDLE void*
-#    define DYNLIB_LOAD( a ) DynLib::mac_loadDylib( a )
 #    define DYNLIB_GETSYM( a, b ) dlsym( a, b )
 #    define DYNLIB_UNLOAD( a ) dlclose( a )
 #endif
@@ -115,12 +109,6 @@ namespace orxonox
         void* getSymbol( const std::string& strName ) const throw();
 
     protected:
-
-#ifdef ORXONOX_PLATFORM_APPLE
-        // From macUtils.h in OGRE
-        static void* mac_loadDylib(const char* name);
-#endif
-
         /// Handle to the loaded library.
         DYNLIB_HANDLE m_hInst;
     };

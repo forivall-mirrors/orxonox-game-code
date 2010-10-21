@@ -141,15 +141,4 @@ namespace orxonox
         return "";
 #endif
     }
-
-#ifdef ORXONOX_PLATFORM_APPLE
-    /*static*/ void* DynLib::mac_loadDylib(const char* name)
-    {
-        std::string fullPath=name;
-        if(name[0]!='/')
-            fullPath = macPluginPath()+"/"+fullPath;
-
-            return dlopen(fullPath.c_str(), RTLD_LAZY | RTLD_GLOBAL);
-    }
-#endif
 }
