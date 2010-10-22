@@ -33,6 +33,7 @@
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
 #include "core/ConfigValueIncludes.h"
+#include "util/Convert.h"
 
 namespace orxonox
 {
@@ -45,6 +46,7 @@ namespace orxonox
         this->lives=4;
         this->playersAlive=0;
         this->timeRemaining=20.0f;
+        this->setHUDTemplate("LastmanstandingHUD");
     }
 
     void LastManStanding::spawnDeadPlayersIfRequested()
@@ -127,6 +129,15 @@ namespace orxonox
         const std::string& message = player->getName() + " entered the game";
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
+        //Update: EachPlayer's "Players in Game"-HUD
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
+            if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                continue;
+            const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
+            this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
+        }
+        
     }
 
     bool LastManStanding::playerLeft(PlayerInfo* player)
@@ -141,6 +152,14 @@ namespace orxonox
             const std::string& message = player->getName() + " left the game";
             COUT(0) << message << std::endl;
             Host::Broadcast(message);
+            //Update: EachPlayer's "Players in Game"-HUD
+            for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            {
+                if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                    continue;
+                const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
+                this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
+            }
         }
 
         return valid_player;
@@ -158,6 +177,33 @@ namespace orxonox
         }
 
         return valid_player;
+    }
+
+    void LastManStanding::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)
+    {
+        if (!player)
+            return;
+        //Update: Individual Players "lifes"-HUD
+        std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(player);
+        if (it2 != this->players_.end())
+        {
+            const std::string& message = "Your Lives: " +multi_cast<std::string>(playerLives_[player]);
+            this->gtinfo_->sendFadingMessage(message,it2->first->getClientID());
+
+        }
+    }
+
+    void LastManStanding::playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn)
+    {
+        //Update: EachPlayer's "Players in Game"-HUD
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
+            if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                continue;
+            const std::string& message1 = "Remaining Players : "+ multi_cast<std::string>(playersAlive);
+            this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
+        }
+    
     }
 
     void LastManStanding::pawnKilled(Pawn* victim, Pawn* killer)
@@ -223,10 +269,10 @@ namespace orxonox
 
                 this->timeToAct_[player]=timeRemaining+3.0f;//reset timer
             }
+
         }
     }
     
-
     void LastManStanding::tick(float dt)
     {
         SUPER(LastManStanding, tick, dt);

@@ -29,12 +29,7 @@
     @file LastManStanding.h
     @brief Declaration of the Gametype "Last Man Standing".
 */
-/* BY THE WAY
-//!You have to ADD BOTS (or any other further players) BEFORE actually starting a match!
-//Maybe a warning should be added in the menu, if a player starts a Last Man Standing match alone.
-//Whenever there is only on player in the game, this player will be declared as winner.
-//How "death" is managed: dead players cannot respawn.
-*/
+
 #ifndef _LastManStanding_H__
 #define _LastManStanding_H__
 
@@ -71,13 +66,14 @@ namespace orxonox
 
             virtual void start(); //!< Sends a start message.
             virtual void end(); //!< Sends an end message.
-            virtual void playerEntered(PlayerInfo* player);
-            virtual bool playerLeft(PlayerInfo* player);
+            virtual void playerEntered(PlayerInfo* player); //!< Initializes values. Manages the gametype's HUD. #Players alive via StaticMessage.
+            virtual bool playerLeft(PlayerInfo* player); //!< Manages the gametype's HUD. #Players alive via StaticMessage.
             virtual bool playerChangedName(PlayerInfo* player);
-
+            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn); //!< Manages the gametype's HUD. player's lives via FadingMessage.
+            virtual void playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn);  //!< Manages the gametype's HUD. #Players alive via StaticMessage.
             virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
 
-            const int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_"
+            const int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_".
             void killPlayer(PlayerInfo* player); //!< Function in order to kill a player. Punishment for hiding longer than "timeRemaining".
             void tick (float dt); //!< used to end the game
     };

@@ -2,6 +2,7 @@
   include("stats.oxo")
   include("hudtemplates3.oxo")
   include("templates/lodinformation.oxt")
+  include("lastmanstandinghud.oxo")
 ?>
 
 <?lua
@@ -102,6 +103,11 @@ j = math.random()
            <Model position="0,0,0" scale=25 mesh="ast6.mesh" shadow=true />
            <!--ParticleEmitter position="0,0,0" source="Orxonox/Steam" /-->
        </attached>
+
+      <!--collisionShapes>
+        <BoxCollisionShape position="<?lua print(y) ?>,0,<?lua print(z) ?>"      halfExtents="50, 200, 50" />
+      </collisionShapes-->
+
   </MovableEntity>
 
 <?lua
