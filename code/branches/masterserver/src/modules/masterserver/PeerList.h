@@ -48,16 +48,18 @@ namespace orxonox
       ~PeerList();
 
       /** \param toadd The peer to add
+       * \return 0 for success, -1 for error.
        * 
        * Add new peer to list 
        */
       int addPeer( ENetPeer *toadd );
 
       /** \param addr Address to look for
+       * \return if the peer was found or not
        * 
        * Remove peer from list by address 
        */
-      int remPeerByAddr( ENetAddress addr );
+      bool remPeerByAddr( ENetAddress addr );
 
       /** \param addr The address to find by
        * 

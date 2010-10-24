@@ -40,9 +40,9 @@ int eventConnect( ENetEvent *event )
   }
 
   /* output debug info */
-  printf( "A new client connected from %x:%u.\n", 
-      event->peer->address.host,
-      event->peer->address.port);
+  //printf( "A new client connected from %x:%u.\n", 
+      //event->peer->address.host,
+      //event->peer->address.port);
 
   /* game server or client connection? */
     /* game server */
@@ -68,7 +68,7 @@ int eventDisconnect( ENetEvent *event )
   }
 
   /* output that the disconnect happened, to be removed at a later time. */
-  printf ("%s disconnected.\n", event.peer -> data);
+  //printf ("%s disconnected.\n", event->peer -> data);
 
   /* remove the server from the list it belongs to */
 
@@ -86,11 +86,11 @@ int eventData( ENetEvent *event )
   }
 
   /* output debug info about the data that has come, to be removed */
-  printf( "A packet of length %u containing %s was received from %s on channel %u.\n",
-      event->packet->dataLength,
-      event->packet->data,
-      event->peer->data,
-      event->channelID );
+  //printf( "A packet of length %u containing %s was received from %s on channel %u.\n",
+      //event->packet->dataLength,
+      //event->packet->data,
+      //event->peer->data,
+      //event->channelID );
  
   /* game server or client connection? */
     /* game server */
@@ -154,7 +154,7 @@ int main( int argc, char *argv[] )
   //}
 
   /***** ENTER MAIN LOOP *****/
-  ENetEvent *event = calloc(sizeof(ENetEvent), sizeof(char));
+  ENetEvent *event = (ENetEvent *)calloc(sizeof(ENetEvent), sizeof(char));
   if( event == NULL )
   { fprintf( stderr, "Could not create ENetEvent structure, exiting.\n" );
     exit( EXIT_FAILURE );

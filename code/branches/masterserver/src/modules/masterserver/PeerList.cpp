@@ -27,6 +27,7 @@
  */
 
 #include "PeerList.h"
+#include <cstdio>
 
 namespace orxonox
 {
@@ -35,27 +36,49 @@ namespace orxonox
 
   int 
   PeerList::addPeer( ENetPeer *toadd )
-  {
+  { /* error correction */
+    if( toadd == NULL ) 
+    { fprintf( stderr, "PeerList::addPeer: empty peer given.\n" );
+      return -1;
+    }
 
-
+    /* if all went well, push to back of list */
+    this->peerlist.push_back( toadd );
     return 0;
   }
 
-  int 
+  bool sub_compAddr( ENetAddress addr1, ENetAddress addr2 )
+  { return ( (addr1.host == addr2.host) && (addr1.port == addr2.port) ); }
+
+  bool
   PeerList::remPeerByAddr( ENetAddress addr )
-  {
+  { /* get an iterator */
+    list<packet::ENetPeer *>::iterator i;
 
+    /* loop through list elements */
+    for( i = peerlist.begin(); i != peerlist.end(); ++i ) 
+      if( sub_compAddr((*i)->address, addr ) )
+      { /* found this name, remove and quit */
+        this->peerlist.remove( i );
+        return true;
+      }
 
-
-    return 0;
+    /* not found */
+    return false;
   }
 
   ENetPeer *
   PeerList::findPeerByAddr( ENetAddress addr )
-  {
+  { /* get an iterator */
+    list<packet::ENetPeer *>::iterator i;
 
+    /* loop through list elements */
+    for( i = peerlist.begin(); i != peerlist.end(); ++i ) 
+      if( sub_compAddr((*i)->address, addr ) )
+        /* found this name, remove and quit */
+        return i;
 
-
+    /* not found */
     return NULL;
   }
 
