@@ -20,24 +20,29 @@
  #  Author:
  #    Reto Grieder
  #  Description:
- #    General package configuration. Merely sets the include paths.
- #    Library files are treated separately.
+ #    OS X package configuration
  #
 
 INCLUDE(CheckPackageVersion)
 
-CHECK_PACKAGE_VERSION(3.1 4.0 5.0)
+CHECK_PACKAGE_VERSION(1.0)
 
 IF(NOT _INTERNAL_PACKAGE_MESSAGE)
   MESSAGE(STATUS "Using library package for the dependencies.")
   SET(_INTERNAL_PACKAGE_MESSAGE 1 CACHE INTERNAL "Do not edit!" FORCE)
 ENDIF()
 
-# Ogre versions >= 1.7 require the POCO library on Windows with MSVC for threading
-COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} 5 _result TRUE)
-IF(NOT _result EQUAL -1 AND NOT MINGW)
-    SET(POCO_REQUIRED TRUE)
-ENDIF()
+SET(DEP_INCLUDE_DIR ${DEPENDENCY_PACKAGE_DIR}/include)
+SET(DEP_LIBRARY_DIR ${DEPENDENCY_PACKAGE_DIR}/lib)
+SET(DEP_BINARY_DIR  ${DEPENDENCY_PACKAGE_DIR}/bin)
+
+# Sets the library path for the FIND_LIBRARY
+SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
+
+# Certain find scripts don't behave as ecpected so we have
+# to specify the libraries ourselves.
+SET(TCL_LIBRARY  ${DEP_BINARY_DIR}/tcl85.dll CACHE FILEPATH "")
+SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/zlib1.dll CACHE FILEPATH "")
 
 # Include paths and other special treatments
 SET(ENV{ALUTDIR}               ${DEP_INCLUDE_DIR}/freealut)
@@ -59,13 +64,14 @@ LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib/include)
 ### INSTALL ###
 
 # Tcl script library
-INSTALL(
-  DIRECTORY ${DEP_LIBRARY_DIR}/tcl/
-  DESTINATION lib/tcl
-)
+# TODO: How does this work on OS X?
+#INSTALL(
+#  DIRECTORY ${DEP_LIBRARY_DIR}/tcl/
+#  DESTINATION lib/tcl
+#)
 
-# On Windows, DLLs have to be in the executable folder, install them
-IF(WIN32 AND DEP_BINARY_DIR)
+# TODO: Install on OSX
+IF(FALSE)
   ## DEBUG
   # When installing a debug version, we really can't know which libraries
   # are used in released mode because there might be deps of deps.

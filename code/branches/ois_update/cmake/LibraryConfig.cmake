@@ -39,15 +39,14 @@ ENDIF()
 
 # On Windows using a package causes way less problems
 SET(_option_msg "Set this to true to use precompiled dependecy archives")
-IF(WIN32)
+IF(WIN32 OR APPLE)
   OPTION(DEPENDENCY_PACKAGE_ENABLE "${_option_msg}" ON)
-ELSE(WIN32)
+ELSE()
   OPTION(DEPENDENCY_PACKAGE_ENABLE "${_option_msg}" FALSE)
-ENDIF(WIN32)
+ENDIF()
 
 # Scripts for specific library and CMake config
 INCLUDE(LibraryConfigTardis)
-INCLUDE(LibraryConfigApple)
 
 IF(DEPENDENCY_PACKAGE_ENABLE)
   GET_FILENAME_COMPONENT(_dep_dir_1 ${CMAKE_SOURCE_DIR}/../dependencies ABSOLUTE)
@@ -72,9 +71,13 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
     MESSAGE(STATUS "Warning: Could not find dependency directory."
                    "Disable LIBRARY_USE_PACKAGE if you have none intalled.")
   ELSE()
-    INCLUDE(PackageConfigMinGW)
-    INCLUDE(PackageConfigMSVC)
-    INCLUDE(PackageConfig) # For both msvc and mingw
+    IF(WIN32)
+      INCLUDE(PackageConfigMinGW)
+      INCLUDE(PackageConfigMSVC)
+      INCLUDE(PackageConfig) # For both msvc and mingw
+    ELSEIF(APPLE)
+      INCLUDE(PackageConfigOSX)
+    ENDIF(WIN32)
   ENDIF()
 ENDIF(DEPENDENCY_PACKAGE_ENABLE)
 
