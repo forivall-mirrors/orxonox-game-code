@@ -39,7 +39,7 @@ namespace orxonox
 {
     CreateUnloadableFactory(LastManStanding);
 
-    LastManStanding::LastManStanding(BaseObject* creator) : Gametype(creator)
+    LastManStanding::LastManStanding(BaseObject* creator) : Deathmatch(creator)
     {
         RegisterObject(LastManStanding);
         this->bForceSpawn_=true;
@@ -73,7 +73,6 @@ namespace orxonox
         {
             this->timeToAct_[originator->getPlayer()]=timeRemaining;
         }
-
         return true;
     }
 
@@ -90,15 +89,6 @@ namespace orxonox
             Host::Broadcast(message);
         }
         return true;
-    }
-
-    void LastManStanding::start()
-    {
-        Gametype::start();
-
-        std::string message("Try to survive!");
-        COUT(0) << message << std::endl;
-        Host::Broadcast(message);
     }
 
     void LastManStanding::end()
@@ -121,14 +111,11 @@ namespace orxonox
     {
         if (!player)// only for safety
             return;
-        Gametype::playerEntered(player);
+        Deathmatch::playerEntered(player);
 
         playerLives_[player]=lives;
         this->playersAlive++;
         this->timeToAct_[player]=timeRemaining;
-        const std::string& message = player->getName() + " entered the game";
-        COUT(0) << message << std::endl;
-        Host::Broadcast(message);
         //Update: EachPlayer's "Players in Game"-HUD
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
@@ -137,21 +124,15 @@ namespace orxonox
             const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
             this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
         }
-        
     }
 
     bool LastManStanding::playerLeft(PlayerInfo* player)
     {
-        bool valid_player = Gametype::playerLeft(player);
-
+        bool valid_player = Deathmatch::playerLeft(player);
         if (valid_player)
         {
             this->playersAlive--;
             //this->playerLives_[player].erase (player); not necessary?
-            //
-            const std::string& message = player->getName() + " left the game";
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
             //Update: EachPlayer's "Players in Game"-HUD
             for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
             {
@@ -160,20 +141,6 @@ namespace orxonox
                 const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
                 this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
             }
-        }
-
-        return valid_player;
-    }
-
-    bool LastManStanding::playerChangedName(PlayerInfo* player)
-    {
-        bool valid_player = Gametype::playerChangedName(player);
-
-        if (valid_player)
-        {
-            const std::string& message = player->getOldName() + " changed name to " + player->getName();
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
         }
 
         return valid_player;
@@ -189,7 +156,6 @@ namespace orxonox
         {
             const std::string& message = "Your Lives: " +multi_cast<std::string>(playerLives_[player]);
             this->gtinfo_->sendFadingMessage(message,it2->first->getClientID());
-
         }
     }
 
@@ -203,29 +169,6 @@ namespace orxonox
             const std::string& message1 = "Remaining Players : "+ multi_cast<std::string>(playersAlive);
             this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
         }
-    
-    }
-
-    void LastManStanding::pawnKilled(Pawn* victim, Pawn* killer)
-    {
-        if (victim && victim->getPlayer())
-        {
-            std::string message;
-            if (killer)
-            {
-                if (killer->getPlayer())
-                    message = victim->getPlayer()->getName() + " was killed by " + killer->getPlayer()->getName();
-                else
-                    message = victim->getPlayer()->getName() + " was killed";
-            }
-            else
-                message = victim->getPlayer()->getName() + " died";
-
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
-        }
-
-        Gametype::pawnKilled(victim, killer);
     }
 
     const int LastManStanding::playerGetLives(PlayerInfo* player)

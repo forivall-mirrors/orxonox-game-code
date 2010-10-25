@@ -34,13 +34,13 @@
 #define _LastManStanding_H__
 
 #include "OrxonoxPrereqs.h"
-#include "Gametype.h"
+#include "Deathmatch.h"
 #include <map>
 #include <vector>
 
 namespace orxonox
 {
-    class _OrxonoxExport LastManStanding : public Gametype
+    class _OrxonoxExport LastManStanding : public Deathmatch
     {
     /**
     @brief
@@ -64,14 +64,11 @@ namespace orxonox
             virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //!< If a player shoot's an opponent, his punishment countdown will be resetted.
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //!< Manages each players lives.
 
-            virtual void start(); //!< Sends a start message.
             virtual void end(); //!< Sends an end message.
             virtual void playerEntered(PlayerInfo* player); //!< Initializes values. Manages the gametype's HUD. #Players alive via StaticMessage.
             virtual bool playerLeft(PlayerInfo* player); //!< Manages the gametype's HUD. #Players alive via StaticMessage.
-            virtual bool playerChangedName(PlayerInfo* player);
             virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn); //!< Manages the gametype's HUD. player's lives via FadingMessage.
             virtual void playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn);  //!< Manages the gametype's HUD. #Players alive via StaticMessage.
-            virtual void pawnKilled(Pawn* victim, Pawn* killer = 0);
 
             const int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_".
             void killPlayer(PlayerInfo* player); //!< Function in order to kill a player. Punishment for hiding longer than "timeRemaining".
