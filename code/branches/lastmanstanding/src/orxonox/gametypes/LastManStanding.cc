@@ -235,15 +235,7 @@ namespace orxonox
         else
             return 0;
     }
-    /*BUG-Description:
-    *There are two ways for a player to be killed: Either receiving damage, or through the following function.
-    *The function works fine - until the last call, when a player looses his last live. Than the kill part
-    *(it->second.state_ = PlayerState::Dead;) somehow isn't executed:
-    *The player isn't killed (he doesn't leave play). Although the corresponding code is reached.
-    *
-    *How to reproduce this bug: Start a new Lastmanstanding-Match. Immdiately add 8 bots(before actually entering the level).
-    *Just fly around and wait. Don't shoot, since only passive behaviour triggers the killPlayer-Function.
-    */
+
     void LastManStanding::killPlayer(PlayerInfo* player)
     {
         if(!player)
@@ -251,34 +243,22 @@ namespace orxonox
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
         {
-            if (playerLives_[player]<=1)//if player lost all lives
-            {
-                this->playersAlive--;
-                const std::string& message = player->getName() + " is out";
-                COUT(0) << message << std::endl;
-                Host::Broadcast(message);
-                playerLives_[player]=playerLives_[player]-1;//-----------datapart
-                it->second.killed_++;
-                it->second.state_ = PlayerState::Dead;//-------------killpart
-            }
-            else
-            {
-                playerLives_[player]=playerLives_[player]-1;//-----------datapart
-                it->second.killed_++;
-                it->second.state_ = PlayerState::Dead;//-------------killpart
-
-                this->timeToAct_[player]=timeRemaining+3.0f;//reset timer
-            }
-
+            if(!player->getControllableEntity())
+                {return;}
+            Pawn* pawn = dynamic_cast<Pawn*>(player->getControllableEntity());
+            if(!pawn)
+                {return;}
+            pawn->kill();
+            this->timeToAct_[player]=timeRemaining+3.0f;//reset timer
         }
     }
     
     void LastManStanding::tick(float dt)
     {
         SUPER(LastManStanding, tick, dt);
-        if(!this->hasEnded())
+        if(this->hasStarted()&&(!this->hasEnded()))
         {
-            if ((this->hasStarted()&&(playersAlive==1)))//last player remaining
+            if ((this->hasStarted()&&(playersAlive<=1)))//last player remaining
             {
             this->end();
             }
