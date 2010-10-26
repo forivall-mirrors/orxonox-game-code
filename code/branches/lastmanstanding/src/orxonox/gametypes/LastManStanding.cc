@@ -157,6 +157,8 @@ namespace orxonox
         {
             const std::string& message = "Your Lives: " +multi_cast<std::string>(playerLives_[player]);
             this->gtinfo_->sendFadingMessage(message,it2->first->getClientID());
+            const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
+            this->gtinfo_->sendStaticMessage(message1,it2->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
         }
     }
 
