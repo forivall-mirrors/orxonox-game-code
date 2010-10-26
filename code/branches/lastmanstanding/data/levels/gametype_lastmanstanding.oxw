@@ -3,9 +3,6 @@
   include("hudtemplates3.oxo")
   include("templates/lodinformation.oxt")
   include("lastmanstandinghud.oxo")
-?>
-
-<?lua
   include("templates/spaceship_assff.oxt")
   include("templates/spaceship_pirate.oxt")
 ?>
@@ -34,17 +31,20 @@
 <Bot />
 
 <!-- ------------ middle asteroid -------------- -->
-    <StaticEntity position="0,20,0">
+    <StaticEntity position="0,20,0" collisionType=static>
        <attached>
            <Model position="0,0,0" scale=140 mesh="asteroid_UV.mesh" shadow=true />
            <!-- ParticleEmitter position="0,0,0" source="Orxonox/Steam" / -->
        </attached>
-    </StaticEntity>
-<StaticEntity position="0,0,0" collisionType=static>
       <collisionShapes>
         <SphereCollisionShape radius="145" />
       </collisionShapes>
     </StaticEntity>
+<!--StaticEntity position="0,0,0" collisionType=static>
+      <collisionShapes>
+        <SphereCollisionShape radius="145" />
+      </collisionShapes>
+    </StaticEntity-->
 
 <!-- ---------------asteroid dome----------------- -->
 <?lua
@@ -56,44 +56,59 @@ do
     x = i*10
     ?>
 <?lua
-for k = 1, 25, 1
+for k = 1, 17, 1
 do
 j = math.random()
 ?>
 
-    <StaticEntity position="<?lua print(y) ?>,0,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> >
+    <StaticEntity position="<?lua print(y) ?>,0,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh">
 	</Model>
       </attached>
+      <collisionShapes>
+        <BoxCollisionShape    halfExtents="<?lua print(j * 2) ?>,100,<?lua print(j * 2) ?>" position = "0,0,0" />
+      </collisionShapes>
     </StaticEntity>
 
-    <StaticEntity position="<?lua print(y) ?>,100,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> >
+    <StaticEntity position="<?lua print(y) ?>,100,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i+3,6) + 1) ?>.mesh">
 	</Model>
       </attached>
+      <collisionShapes>
+        <BoxCollisionShape    halfExtents="45,100,45" position = "0,0,0" />
+      </collisionShapes>
     </StaticEntity>#
 
-    <StaticEntity position="<?lua print(y) ?>,200,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> >
+    <StaticEntity position="<?lua print(y) ?>,200,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i*5,6) + 1) ?>.mesh">
 	</Model>
       </attached>
+      <collisionShapes>
+        <BoxCollisionShape    halfExtents="45,100,45" position = "0,0,0" />
+      </collisionShapes>
     </StaticEntity>
 
-    <StaticEntity position="<?lua print(y) ?>,-100,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> >
+    <StaticEntity position="<?lua print(y) ?>,-100,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i*13+1,6) + 1) ?>.mesh">
 	</Model>
       </attached>
+      <collisionShapes>
+        <BoxCollisionShape    halfExtents="45,100,45" position = "0,0,0" />
+      </collisionShapes>
     </StaticEntity>
 
-    <StaticEntity position="<?lua print(y) ?>,-200,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> >
+    <StaticEntity position="<?lua print(y) ?>,-200,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i*17,6) + 1) ?>.mesh">
 	</Model>
       </attached>
+      <collisionShapes>
+        <BoxCollisionShape    halfExtents="45,100,45" position = "0,0,0" />
+      </collisionShapes>
     </StaticEntity>
 
 
@@ -101,14 +116,12 @@ j = math.random()
   <MovableEntity position="<?lua print(y) ?>,300,<?lua print(z) ?>" scale=<?lua print(j * 2.1) ?> pitch="90" roll="180" yaw="<?lua print(-90+i*360/max) ?>" >
        <attached>
            <Model position="0,0,0" scale=25 mesh="ast6.mesh" shadow=true />
-           <!--ParticleEmitter position="0,0,0" source="Orxonox/Steam" /-->
        </attached>
-
       <!--collisionShapes>
-        <BoxCollisionShape position="<?lua print(y) ?>,0,<?lua print(z) ?>"      halfExtents="50, 200, 50" />
+        <BoxCollisionShape position="<?lua print(y) ?>,0,<?lua print(z) ?>"      halfExtents="5, 5, 5" />
       </collisionShapes-->
-
   </MovableEntity>
+
 
 <?lua
 end

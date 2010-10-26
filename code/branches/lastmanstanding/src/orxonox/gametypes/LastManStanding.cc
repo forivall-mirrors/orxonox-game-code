@@ -150,6 +150,7 @@ namespace orxonox
     {
         if (!player)
             return;
+        this->timeToAct_[player]=timeRemaining+3.0f;//reset timer
         //Update: Individual Players "lifes"-HUD
         std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(player);
         if (it2 != this->players_.end())
@@ -208,6 +209,11 @@ namespace orxonox
             for (std::map<PlayerInfo*, float>::iterator it = this->timeToAct_.begin(); it != this->timeToAct_.end(); ++it)
             {        
                 it->second-=dt;
+                if (it->second<timeRemaining/6)//Warning message
+                {
+                    const std::string& message = "Camper Warning! Don't forget to shoot.";
+                    this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
+                }
                 if (it->second<0.0f)
                 {
                     it->second=timeRemaining+3.0f;//reset timer
