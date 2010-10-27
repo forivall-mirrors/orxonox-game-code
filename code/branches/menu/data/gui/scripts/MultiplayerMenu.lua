@@ -7,24 +7,7 @@ function P.onLoad()
 end
 
 function P.onShow()
-    if P.multiplayerMode == "startClient" then
-        local window = winMgr:getWindow("orxonox/MultiplayerJoinButton")
-        local button = tolua.cast(window,"CEGUI::RadioButton")
-        button:setSelected(true)
-        P.showServerList()
-    end
-    if P.multiplayerMode == "startServer" then
-        local window = winMgr:getWindow("orxonox/MultiplayerHostButton")
-        local button = tolua.cast(window,"CEGUI::RadioButton")
-        button:setSelected(true)
-        P.showLevelList()
-    end
-    if P.multiplayerMode == "startDedicated" then
-        local window = winMgr:getWindow("orxonox/MultiplayerDedicatedButton")
-        local button = tolua.cast(window,"CEGUI::RadioButton")
-        button:setSelected(true)
-        P.showLevelList()
-    end
+    P.showServerList()
 end
 
 function P.MultiplayerJoinButton_clicked(e)
@@ -42,24 +25,21 @@ function P.MultiplayerDedicatedButton_clicked(e)
     P.showLevelList()
 end
 
-function P.MultiplayerStartButton_clicked(e)
+function P.MultiplayerHostButton2_clicked(e)
+    showMenuSheet("HostMenu", true)
+end
+
+
+function P.MultiplayerJoinButton2_clicked(e)
     local choice = winMgr:getWindow("orxonox/MultiplayerListbox"):getFirstSelectedItem()
-    if P.multiplayerMode == "startClient" then
-        if choice then
-            local client = orxonox.Client:getInstance()
-            local index = tolua.cast(choice, "CEGUI::ListboxItem"):getID()
-            client:setDestination( P.serverList[index][2], 55556 )
-        else
-            return
-        end
+    if choice then
+        local client = orxonox.Client:getInstance()
+        local index = tolua.cast(choice, "CEGUI::ListboxItem"):getID()
+        client:setDestination( P.serverList[index][2], 55556 )
     else
-        if choice then
-            orxonox.LevelManager:getInstance():setDefaultLevel(choice:getText() .. ".oxw")
-        else
-            return
-        end
+        return
     end
-    orxonox.execute(P.multiplayerMode)
+    orxonox.execute("startClient")
     hideAllMenuSheets()
 end
 

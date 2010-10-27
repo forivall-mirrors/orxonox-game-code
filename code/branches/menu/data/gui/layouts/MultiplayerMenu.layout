@@ -7,6 +7,8 @@
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Property Name="BackgroundEnabled" Value="False" />
+
+
         <Window Type="MenuWidgets/StaticText" Name="orxonox/MultiplayerWindow" >
             <Property Name="Text" Value="Multiplayer" />
             <Property Name="Alpha" Value="0.8" />
@@ -19,16 +21,24 @@
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                 <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.8,0}}" />
             </Window>
+
+        </Window>
+	    <!--
+		Die Radiobuttons brauchen wir nicht mehr, dafuer ihre Funktionen.
+		Neue Buttons:
+		>join<          >host<      
+	
+
             <Window Type="MenuWidgets/RadioButton" Name="orxonox/MultiplayerJoinButton" >
                 <Property Name="Text" Value="Join" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.85,0},{0.3,0},{0.95,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.85,0},{0.4,0},{0.95,0}}" />
                 <Event Name="SelectStateChanged" Function="MultiplayerMenu.MultiplayerJoinButton_clicked"/>
             </Window>
             <Window Type="MenuWidgets/RadioButton" Name="orxonox/MultiplayerHostButton" >
-                <Property Name="Text" Value="Host" />
+                <Property Name="Text" Value="Build Server"/>
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.85,0},{0.6,0},{0.95,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.6,0},{0.85,0},{0.8,0},{0.95,0}}" />
                 <Event Name="SelectStateChanged" Function="MultiplayerMenu.MultiplayerHostButton_clicked"/>
             </Window>
             <Window Type="MenuWidgets/RadioButton" Name="orxonox/MultiplayerDedicatedButton" >
@@ -37,7 +47,32 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.7,0},{0.85,0},{0.9,0},{0.95,0}}" />
                 <Event Name="SelectStateChanged" Function="MultiplayerMenu.MultiplayerDedicatedButton_clicked"/>
             </Window>
-        </Window>
+
+	     -->
+
+	         <Window Type="MenuWidgets/Button" Name="orxonox/MultiplayerBackButton" >
+	            <Property Name="Text" Value="Back" />
+	            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+	            <Property Name="UnifiedAreaRect" Value="{{0.7125,0},{0.8625,0},{0.9125,0},{0.9125,0}}" />
+	            <Event Name="Clicked" Function="MultiplayerMenu.MultiplayerBackButton_clicked"/>
+	        </Window>
+
+	        <Window Type="MenuWidgets/Button" Name="orxonox/MultiplayerJoinButton2" >
+	            <Property Name="Text" Value="Join" />
+	            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+	            <Property Name="UnifiedAreaRect" Value="{{0.2875,0},{0.6625,0},{0.4875,0},{0.7125,0}}" />
+	            <Event Name="Clicked" Function="MultiplayerMenu.MultiplayerJoinButton2_clicked"/>
+	        </Window>
+
+	        <Window Type="MenuWidgets/Button" Name="orxonox/MultiplayerHostButton2" >
+	            <Property Name="Text" Value="Host" />
+	            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+	            <Property Name="UnifiedAreaRect" Value="{{0.5125,0},{0.6625,0},{0.7125,0},{0.7125,0}}" />
+	            <Event Name="Clicked" Function="MultiplayerMenu.MultiplayerHostButton2_clicked"/>
+	        </Window>
+
+	<!--
+
         <Window Type="MenuWidgets/Button" Name="orxonox/MultiplayerStartButton" >
             <Property Name="Text" Value="Start" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -50,5 +85,9 @@
             <Property Name="UnifiedAreaRect" Value="{{0.5125,0},{0.6625,0},{0.7125,0},{0.7125,0}}" />
             <Event Name="Clicked" Function="MultiplayerMenu.MultiplayerBackButton_clicked"/>
         </Window>
+	
+	-->
+
     </Window>
 </GUILayout>
+
