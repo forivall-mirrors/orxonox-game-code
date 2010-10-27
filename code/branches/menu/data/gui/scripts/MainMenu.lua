@@ -41,6 +41,9 @@ function P.Key_clicked(e)
             P.index = 1
         end
         local child = window:getChildAtIdx(P.index-1)
+        child:setProperty("NormalImageRightEdge", string.sub(child:getProperty("NormalImageRightEdge"),1,-7) .. "Highlight")
+        child:setProperty("NormalImageLeftEdge", string.sub(child:getProperty("NormalImageLeftEdge"),1,-7) .. "Highlight")
+        child:setProperty("NormalImageBackground", string.sub(child:getProperty("NormalImageBackground"),1,-7) .. "Highlight")
     elseif tostring(we.scancode) == "28" and P.index ~= 0 then
         if P.index == 1 then
             P.QuickGameTestButton_clicked()
