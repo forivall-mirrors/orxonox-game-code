@@ -3,6 +3,8 @@
 local P = createMenuSheet("MainMenu")
 P.loadAlong = { "SingleplayerMenu", "MultiplayerMenu", "SettingsMenu", "CreditsMenu" }
 
+P.index = 0
+
 -- events for MainMenu
 function P.QuickGameTestButton_clicked(e)
     hideAllMenuSheets()
@@ -27,6 +29,33 @@ end
 
 function P.ExitButton_clicked(e)
     orxonox.execute("exit")
+end
+
+function P.Key_clicked(e)
+    local we = tolua.cast(e, "CEGUI::KeyEventArgs")
+    cout(0, tostring(we.scancode))
+    if tostring(we.scancode) == "15" then
+        P.index = P.index + 1
+        local window = winMgr:getWindow("orxonox/MainMenuBackground")
+        if P.index == window:getChildCount() then
+            P.index = 1
+        end
+        local child = window:getChildAtIdx(P.index-1)
+    elseif tostring(we.scancode) == "28" and P.index ~= 0 then
+        if P.index == 1 then
+            P.QuickGameTestButton_clicked()
+        elseif P.index == 2 then
+            P.SingleplayerButton_clicked()
+        elseif P.index == 3 then
+            P.MultiplayerButton_clicked()
+        elseif P.index == 4 then
+            P.SettingsButton_clicked()
+        elseif P.index == 5 then
+            P.CreditsButton_clicked()
+        elseif P.index == 6 then
+            P.ExitButton_clicked()
+        end
+    end
 end
 
 return P
