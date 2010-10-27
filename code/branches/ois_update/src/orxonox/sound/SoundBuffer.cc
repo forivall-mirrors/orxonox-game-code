@@ -29,7 +29,11 @@
 
 #include "SoundBuffer.h"
 
+#if defined(__APPLE__)
+#include <ALUT/alut.h>
+#else
 #include <AL/alut.h>
+#endif
 #include <vorbis/vorbisfile.h>
 
 #include "util/Exception.h"

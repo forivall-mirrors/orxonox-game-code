@@ -35,31 +35,32 @@ ENDIF()
 SET(DEP_INCLUDE_DIR ${DEPENDENCY_PACKAGE_DIR}/include)
 SET(DEP_LIBRARY_DIR ${DEPENDENCY_PACKAGE_DIR}/lib)
 SET(DEP_BINARY_DIR  ${DEPENDENCY_PACKAGE_DIR}/bin)
+SET(DEP_FRAMEWORK_DIR ${DEPENDENCY_PACKAGE_DIR}/Library/Frameworks)
 
 # Sets the library path for the FIND_LIBRARY
 SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
 
 # Certain find scripts don't behave as ecpected so we have
 # to specify the libraries ourselves.
-SET(TCL_LIBRARY  ${DEP_BINARY_DIR}/tcl85.dll CACHE FILEPATH "")
-SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/zlib1.dll CACHE FILEPATH "")
+#SET(TCL_LIBRARY  ${DEP_BINARY_DIR}/tcl85.dll CACHE FILEPATH "")
+#SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/zlib1.dll CACHE FILEPATH "")
 
 # Include paths and other special treatments
-SET(ENV{ALUTDIR}               ${DEP_INCLUDE_DIR}/freealut)
-SET(ENV{BOOST_ROOT}            ${DEP_INCLUDE_DIR}/boost)
-SET(ENV{CEGUIDIR}              ${DEP_INCLUDE_DIR}/cegui)
-SET(ENV{DBGHELP_DIR}           ${DEP_INCLUDE_DIR}/dbghelp)
-SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx)
+#SET(ENV{ALUTDIR}               ${DEP_FRAMEWORK_DIR})
+SET(ENV{BOOST_ROOT}            ${DEPENDENCY_PACKAGE_DIR})
+SET(ENV{CEGUIDIR}              ${DEP_FRAMEWORK_DIR})
+#SET(ENV{DBGHELP_DIR}           ${DEP_INCLUDE_DIR}/dbghelp)
+#SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx)
 #SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet)
 SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua)
-SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR}/libogg)
-SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR}/libvorbis)
-SET(ENV{OGRE_HOME}             ${DEP_INCLUDE_DIR}/ogre)
+SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR})
+SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR})
+SET(ENV{OGRE_HOME}             ${DEP_FRAMEWORK_DIR})
 SET(ENV{OGRE_PLUGIN_DIR}       ${DEP_BINARY_DIR})
-SET(ENV{OPENALDIR}             ${DEP_INCLUDE_DIR}/openal)
-SET(ENV{POCODIR}               ${DEP_INCLUDE_DIR}/poco)
-LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl/include)
-LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib/include)
+#SET(ENV{OPENALDIR}             ${DEP_INCLUDE_DIR}/openal)
+#SET(ENV{POCODIR}               ${DEP_INCLUDE_DIR}/poco)
+#LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl/include)
+#LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib/include)
 
 ### INSTALL ###
 
