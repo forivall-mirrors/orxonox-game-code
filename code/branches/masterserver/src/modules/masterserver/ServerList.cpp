@@ -26,7 +26,7 @@
  *
  */
 
- #include "ServerList.h"
+#include "ServerList.h"
 
 namespace orxonox
 { 
@@ -35,24 +35,26 @@ namespace orxonox
 
   ServerList::~ServerList()
   { /* delete the list */
-    serverlist.clear();}
+    serverlist.clear();
   }
 
-  int ServerList::addServer( ServerInformation *toadd )
+  int 
+  ServerList::addServer( packet::ServerInformation *toadd )
   { this->serverlist.push_back( toadd ); 
     return 0;
   }
 
-  bool ServerList::delServerByName( std::string name )
+  bool 
+  ServerList::delServerByName( std::string name )
   { 
     /* get an iterator */
-    list<ServerInformation *>::iterator i;
+    std::list<packet::ServerInformation *>::iterator i;
 
     /* loop through list elements */
     for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
-      if( (*i)->serverName_ == name )
+      if( (*i)->getServerName() == name )
       { /* found this name, remove and quit */
-        this->serverlist.remove( i );
+        this->serverlist.remove( *i );
         return true;
       }
     return false;
@@ -61,13 +63,13 @@ namespace orxonox
   bool ServerList::delServerByAddress( std::string address )
   { 
     /* get an iterator */
-    list<ServerInformation *>::iterator i;
+    std::list<packet::ServerInformation *>::iterator i;
 
     /* loop through list elements */
     for( i=serverlist.begin(); i != serverlist.end(); ++i ) 
-      if( (*i)->serverIP_ == address )
+      if( (*i)->getServerIP() == address )
       { /* found this name, remove and quit */
-        this->serverlist.remove( i );
+        this->serverlist.remove( *i );
         return true;
       }
     return false;
@@ -75,8 +77,9 @@ namespace orxonox
 
 
   /* sort by name */
-  bool sub_compare_names( ServerInformation *no1, ServerInformation *no2 )
-  { return no1->serverName_ > no2->serverName_; }
+  bool sub_compare_names( packet::ServerInformation *no1, 
+    packet::ServerInformation *no2 )
+  { return no1->getServerName() > no2->getServerName(); }
 
   void ServerList::sortByName()
   { 
@@ -84,8 +87,12 @@ namespace orxonox
   }
   
   /* sort by ping */
-  bool sub_compare_pings( ServerInformation *no1, ServerInformation *no2 )
-  { TODO return no1->serverName_ > no2->serverName_; }
+  bool sub_compare_pings( packet::ServerInformation *no1, 
+    packet::ServerInformation *no2 )
+  { 
+    /* TODO */
+    return no1->getServerName() > no2->getServerName();
+  }
 
   void ServerList::sortByPing()
   {

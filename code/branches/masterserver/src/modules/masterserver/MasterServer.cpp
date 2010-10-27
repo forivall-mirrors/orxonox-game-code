@@ -32,7 +32,9 @@ using namespace std;
 
 /***** EVENTS *****/
 /* connect event */
-int eventConnect( ENetEvent *event )
+int eventConnect( ENetEvent *event, 
+  orxonox::ServerList *serverlist,
+  orxonox::PeerList *peers )
 { /* check for bad parameters */
   if( !event )
   { fprintf( stderr, "No event given.\n" );
@@ -40,13 +42,16 @@ int eventConnect( ENetEvent *event )
   }
 
   /* output debug info */
-  //printf( "A new client connected from %x:%u.\n", 
-      //event->peer->address.host,
-      //event->peer->address.port);
+  printf( "A new client connected from %x:%u.\n", 
+      event->peer->address.host,
+      event->peer->address.port);
 
   /* game server or client connection? */
+  /* -> decide in protocol */
     /* game server */
       /* add to game server list */
+      /*  */
+
     /* client */
       /* add to client list */
  
@@ -60,7 +65,9 @@ int eventConnect( ENetEvent *event )
 }
 
 /* disconnect event */
-int eventDisconnect( ENetEvent *event )
+int eventDisconnect( ENetEvent *event,
+  orxonox::ServerList *serverlist,
+  orxonox::PeerList *peers )
 { /* check for bad parameters */
   if( !event )
   { fprintf( stderr, "No event given.\n" );
@@ -68,7 +75,7 @@ int eventDisconnect( ENetEvent *event )
   }
 
   /* output that the disconnect happened, to be removed at a later time. */
-  //printf ("%s disconnected.\n", event->peer -> data);
+  printf( "%s disconnected.\n", event->peer->data );
 
   /* remove the server from the list it belongs to */
 
@@ -125,19 +132,14 @@ int main( int argc, char *argv[] )
   ENetAddress address;
   ENetHost *server;
 
-  /* Bind the server to the default localhost.     */
-  /* A specific host address can be specified by   */
-  /* enet_address_set_host (& address, "x.x.x.x"); */
+  /* Bind the server to the default localhost and port ORX_MSERVER_PORT */
   address.host = ENET_HOST_ANY;
-
-  /* Bind the server to port 1234. */
   address.port = ORX_MSERVER_PORT;
 
-  server = enet_host_create( & address /* the address to bind the server host to */, 
-      ORX_MSERVER_MAXCONNS      /* allow up to 32 clients and/or outgoing connections */,
-      ORX_MSERVER_MAXCHANS      /* allow up to 2 channels to be used, 0 and 1 */,
-      0      /* assume any amount of incoming bandwidth */,
-      0      /* assume any amount of outgoing bandwidth */);
+  /* create a host with the above settings (the last two 0 mean: accept 
+   * any input/output bandwidth */
+  server = enet_host_create( &address, ORX_MSERVER_MAXCONNS, 
+    ORX_MSERVER_MAXCHANS, 0, 0 );     
 
   /* see if creation worked */
   if( !server )
@@ -148,10 +150,13 @@ int main( int argc, char *argv[] )
 
   /***** INITIALIZE GAME SERVER LIST *****/
   orxonox::ServerList *mainlist = new orxonox::ServerList();
-  //if( mainlist == NULL )
-  //{ fprintf( stderr, "Error creating server list.\n" );
-    //exit( EXIT_FAILURE );
-  //}
+  if( mainlist == NULL )
+  { fprintf( stderr, "Error creating server list.\n" );
+    exit( EXIT_FAILURE );
+  }
+
+  /***** INITIALIZE PEER LIST *****/
+  orxonox::PeerList *peers = new orxonox::PeerList();
 
   /***** ENTER MAIN LOOP *****/
   ENetEvent *event = (ENetEvent *)calloc(sizeof(ENetEvent), sizeof(char));
@@ -160,22 +165,21 @@ int main( int argc, char *argv[] )
     exit( EXIT_FAILURE );
   }
 
-  /* NOTE this only waits on one client, we need to find some way to 
-   * actually listen on all active connections. This will be implemented 
-   * together with the list of active connections.
-   */
-  /* Wait up to 1000 milliseconds for an event. */
-  while (enet_host_service (client, event, 1000) > 0)
+  /* create an iterator for the loop */
+  while( enet_host_service( server, event, 1000 ) > 0 )
   { /* check what type of event it is and react accordingly */
-    switch (event.type)
+    switch (event->type)
     { /* new connection */
-      case ENET_EVENT_TYPE_CONNECT: eventConnect( event ); break;
+      case ENET_EVENT_TYPE_CONNECT: 
+        eventConnect( event, mainlist, peers ); break;
 
       /* disconnect */
-      case ENET_EVENT_TYPE_DISCONNECT: eventDisconnect( event ); break;
+      case ENET_EVENT_TYPE_DISCONNECT: 
+        eventDisconnect( event, mainlist, peers ); break;
 
       /* incoming data */
       case ENET_EVENT_TYPE_RECEIVE: eventData( event ); break;
+      default: break;
     }
   }
 

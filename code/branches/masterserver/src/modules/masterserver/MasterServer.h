@@ -40,6 +40,7 @@
 
 /* my includes */
 #include "ServerList.h"
+#include "PeerList.h"
 
 /* c compatibility */
 #include <cstdio>

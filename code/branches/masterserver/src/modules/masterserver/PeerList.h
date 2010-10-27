@@ -66,9 +66,15 @@ namespace orxonox
        * Find a connection by address */
       ENetPeer *findPeerByAddr( ENetAddress addr );
 
-    private:
+      /* NOTE: making this list public so it can easily 
+       * be iterated. This makes sense since iterating it
+       * will happen all the time, and using getter methods
+       * for the next in list would slow things down unnecessarily.
+       */
       /** the list of servers for internal storage */
-      std::list<packet::ENetPeer *> peerlist;
+      std::list<ENetPeer *> peerlist;
+    private:
+      /* nothing so far. */
   };
 }
 
