@@ -37,6 +37,7 @@
 #include <network/packet/FunctionIDs.h>
 #include <network/packet/Gamestate.h>
 #include <network/packet/Welcome.h>
+#include <util/Singleton.h>
 
 /* my includes */
 #include "ServerList.h"
@@ -48,5 +49,31 @@
 #define ORX_MSERVER_PORT 1234
 #define ORX_MSERVER_MAXCONNS 32
 #define ORX_MSERVER_MAXCHANS 2
+
+namespace orxonox 
+{
+  /* singleton */
+  class MasterServer: public Singleton<MasterServer>
+  {
+    public:
+      MasterServer();
+      ~MasterServer();
+
+      friend class Singleton<MasterServer>;
+      static MasterServer& getInstance(void) 
+      { return Singleton<MasterServer>::getInstance(); }
+
+      /* data fields */
+      static MasterServer* singletonPtr_s;
+    
+    private:
+      ENetAddress address;
+      ENetHost *server;
+      ServerList *mainlist;
+      PeerList *peers;
+      int run();
+
+  };
+}
 
 #endif /* _MasterServer_ */

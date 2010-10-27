@@ -27,6 +27,7 @@
  */
 
 #include "PeerList.h"
+#include <network/packet/ServerInformation.h>
 #include <cstdio>
 
 namespace orxonox
@@ -48,18 +49,27 @@ namespace orxonox
   }
 
   bool sub_compAddr( ENetAddress addr1, ENetAddress addr2 )
-  { return ( (addr1.host == addr2.host) && (addr1.port == addr2.port) ); }
+  { 
+    for( int i = 0; i < 16; ++i )
+      if( addr1.host.addr[i] < addr2.host.addr[i] )
+        return -i;
+      else if( addr1.host.addr[i] > addr2.host.addr[i] )
+        return i;
+
+    return 0;
+  }
+    
 
   bool
   PeerList::remPeerByAddr( ENetAddress addr )
   { /* get an iterator */
-    list<packet::ENetPeer *>::iterator i;
+    std::list<ENetPeer *>::iterator i;
 
     /* loop through list elements */
     for( i = peerlist.begin(); i != peerlist.end(); ++i ) 
-      if( sub_compAddr((*i)->address, addr ) )
+      if( !sub_compAddr((*i)->address, addr ) )
       { /* found this name, remove and quit */
-        this->peerlist.remove( i );
+        this->peerlist.remove( *i );
         return true;
       }
 
@@ -70,13 +80,13 @@ namespace orxonox
   ENetPeer *
   PeerList::findPeerByAddr( ENetAddress addr )
   { /* get an iterator */
-    list<packet::ENetPeer *>::iterator i;
+    std::list<ENetPeer *>::iterator i;
 
     /* loop through list elements */
     for( i = peerlist.begin(); i != peerlist.end(); ++i ) 
-      if( sub_compAddr((*i)->address, addr ) )
+      if( !sub_compAddr((*i)->address, addr ) )
         /* found this name, remove and quit */
-        return i;
+        return *i;
 
     /* not found */
     return NULL;
