@@ -54,6 +54,9 @@ namespace orxonox
             int playersAlive; //!< Counter counting players with more than 0 lives.
             float timeRemaining; //!< Each player has a certain time where he or she has to hit an opponent or will be punished.
             std::map<PlayerInfo*, float> timeToAct_; //!< Each player's time till she/he will be punished is stored here.
+            float respawnDelay;
+            std::map<PlayerInfo*, float> playerDelayTime_; //!< Stores each Player's delay time.
+            std::map<PlayerInfo*, bool> inGame_; //!< Indicates each Player's state.
             virtual void spawnDeadPlayersIfRequested(); //!< Prevents dead players to respawn
 
         public:

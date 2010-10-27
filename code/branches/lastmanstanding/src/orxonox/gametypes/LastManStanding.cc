@@ -34,7 +34,7 @@
 #include "worldentities/pawns/Pawn.h"
 #include "core/ConfigValueIncludes.h"
 #include "util/Convert.h"
-
+//TODO: respawn delay
 namespace orxonox
 {
     CreateUnloadableFactory(LastManStanding);
@@ -46,6 +46,7 @@ namespace orxonox
         this->lives=4;
         this->playersAlive=0;
         this->timeRemaining=20.0f;
+        this->respawnDelay=4.0f;
         this->setHUDTemplate("LastmanstandingHUD");
     }
 
@@ -54,10 +55,26 @@ namespace orxonox
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
             if (it->second.state_ == PlayerState::Dead)
             {
-                bool alive = (0<playerLives_[it->first]);
+                bool alive = (0<playerLives_[it->first]&&(inGame_[it->first]));
                 if (alive&&(it->first->isReadyToSpawn() || this->bForceSpawn_))
+                {
                     this->spawnPlayer(it->first);
-             }
+                }
+                else if ((!inGame_[it->first])&&(0<playerLives_[it->first]))
+                {
+                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                        return;
+                    const std::string& message = "Respawn in " +multi_cast<std::string>(respawnDelay)+ " seconds." ;
+                    this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
+                }
+                else if (0>=playerLives_[it->first])
+                {
+                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                        return;
+                    const std::string& message2 = "You have lost all " +multi_cast<std::string>(lives)+ " lives." ;
+                    this->gtinfo_->sendFadingMessage(message2,it->first->getClientID());
+                }
+            }
     }
 
 
@@ -65,6 +82,7 @@ namespace orxonox
     {
         SetConfigValue(lives, 4);
         SetConfigValue(timeRemaining, 20.0f);
+        SetConfigValue(respawnDelay, 4.0f);
     }
 
     bool LastManStanding::allowPawnDamage(Pawn* victim, Pawn* originator)
@@ -81,6 +99,7 @@ namespace orxonox
         if (!victim||!victim->getPlayer())// only for safety
             return true;
         playerLives_[victim->getPlayer()]=playerLives_[victim->getPlayer()]-1;
+        this->inGame_[victim->getPlayer()]=false;//if player dies he, isn't allowed to respawn immediately
         if (playerLives_[victim->getPlayer()]<=0)//if player lost all lives
         {
             this->playersAlive--;
@@ -116,6 +135,8 @@ namespace orxonox
         playerLives_[player]=lives;
         this->playersAlive++;
         this->timeToAct_[player]=timeRemaining;
+        this->playerDelayTime_[player]=respawnDelay;
+        this->inGame_[player]=true;
         //Update: EachPlayer's "Players in Game"-HUD
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
@@ -150,11 +171,14 @@ namespace orxonox
     {
         if (!player)
             return;
-        this->timeToAct_[player]=timeRemaining+3.0f;//reset timer
+        this->timeToAct_[player]=timeRemaining+3.0f+respawnDelay;//reset timer
+        this->playerDelayTime_[player]=respawnDelay;
         //Update: Individual Players "lifes"-HUD
         std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(player);
         if (it2 != this->players_.end())
         {
+            if (it2->first->getClientID()== CLIENTID_UNKNOWN)
+                return;
             const std::string& message = "Your Lives: " +multi_cast<std::string>(playerLives_[player]);
             this->gtinfo_->sendFadingMessage(message,it2->first->getClientID());
             const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
@@ -169,7 +193,7 @@ namespace orxonox
         {
             if (it->first->getClientID() == CLIENTID_UNKNOWN)
                 continue;
-            const std::string& message1 = "Remaining Players : "+ multi_cast<std::string>(playersAlive);
+            const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
             this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
         }
     }
@@ -195,7 +219,7 @@ namespace orxonox
             if(!pawn)
                 {return;}
             pawn->kill();
-            this->timeToAct_[player]=timeRemaining+3.0f;//reset timer
+            this->timeToAct_[player]=timeRemaining+3.0f+respawnDelay;//reset timer
         }
     }
     
@@ -209,18 +233,28 @@ namespace orxonox
             this->end();
             }
             for (std::map<PlayerInfo*, float>::iterator it = this->timeToAct_.begin(); it != this->timeToAct_.end(); ++it)
-            {        
-                it->second-=dt;
-                if (it->second<timeRemaining/6)//Warning message
+            {   
+                if (playerGetLives(it->first)<=0)//Players without lives shouldn't be affected by time.
+                    return;     
+                it->second-=dt;//Decreases punishment time.
+                if (!inGame_[it->first])//Manages respawn delay - player is forced to respawn after the delaytime is used up. 
                 {
-                    const std::string& message = "Camper Warning! Don't forget to shoot.";
-                    this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
+                    playerDelayTime_[it->first]-=dt;
+                    if (playerDelayTime_[it->first]<=0)
+                    this->inGame_[it->first]=true;
                 }
-                if (it->second<0.0f)
+                else if (it->second<0.0f)
                 {
-                    it->second=timeRemaining+3.0f;//reset timer
+                    it->second=timeRemaining+3.0f;//reset punishment-timer
                     if (playerGetLives(it->first)>0)
                         this->killPlayer(it->first);
+                }
+                else if (it->second<timeRemaining/6)//Warning message
+                {
+                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                        return;
+                    const std::string& message = "Camper Warning! Don't forget to shoot.";
+                    this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
                 }
             }
         }

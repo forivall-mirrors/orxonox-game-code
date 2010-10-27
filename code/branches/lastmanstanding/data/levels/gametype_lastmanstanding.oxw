@@ -111,16 +111,18 @@ j = math.random()
       </collisionShapes>
     </StaticEntity>
 
+<!-- ---------Top Asteroid----------- -->
 
+    <StaticEntity position="<?lua print(y) ?>,300,<?lua print(z) ?>" scale=<?lua print(j * 2.1) ?> pitch="90" roll="180" yaw="<?lua print(-90+i*360/max) ?>" collisionType=static >
+      <attached>
+        <Model position="0,0,0" scale=25 mesh="ast6.mesh">
+	</Model>
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape    halfExtents="50,25,50" position="0,0,0" yaw="<?lua print(-90+i*360/max) ?>"/>
+      </collisionShapes>
+    </StaticEntity>
 
-  <MovableEntity position="<?lua print(y) ?>,300,<?lua print(z) ?>" scale=<?lua print(j * 2.1) ?> pitch="90" roll="180" yaw="<?lua print(-90+i*360/max) ?>" >
-       <attached>
-           <Model position="0,0,0" scale=25 mesh="ast6.mesh" shadow=true />
-       </attached>
-      <!--collisionShapes>
-        <BoxCollisionShape position="<?lua print(y) ?>,0,<?lua print(z) ?>"      halfExtents="5, 5, 5" />
-      </collisionShapes-->
-  </MovableEntity>
 
 
 <?lua
