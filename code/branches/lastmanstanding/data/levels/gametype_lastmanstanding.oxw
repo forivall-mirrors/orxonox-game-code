@@ -61,6 +61,9 @@ do
 j = math.random()
 ?>
 
+
+    <!--SpawnPoint team=0 position="<?lua print(y*1.4) ?>,0,<?lua print(z*1.4) ?>" spawnclass=SpaceShip pawndesign=spaceshipassff /-->
+
     <StaticEntity position="<?lua print(y) ?>,0,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> collisionType=static >
       <attached>
         <Model position="0,0,0" scale=15 mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh">

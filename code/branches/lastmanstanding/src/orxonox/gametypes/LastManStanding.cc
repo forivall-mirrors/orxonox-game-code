@@ -45,7 +45,7 @@ namespace orxonox
         this->bForceSpawn_=true;
         this->lives=4;
         this->playersAlive=0;
-        this->timeRemaining=20.0f;
+        this->timeRemaining=10.0f;
         this->respawnDelay=4.0f;
         this->setHUDTemplate("LastmanstandingHUD");
     }
@@ -63,14 +63,14 @@ namespace orxonox
                 else if ((!inGame_[it->first])&&(0<playerLives_[it->first]))
                 {
                     if (it->first->getClientID()== CLIENTID_UNKNOWN)
-                        return;
+                        continue;
                     const std::string& message = "Respawn in " +multi_cast<std::string>(respawnDelay)+ " seconds." ;
                     this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
                 }
                 else if (0>=playerLives_[it->first])
                 {
                     if (it->first->getClientID()== CLIENTID_UNKNOWN)
-                        return;
+                        continue;
                     const std::string& message2 = "You have lost all " +multi_cast<std::string>(lives)+ " lives." ;
                     this->gtinfo_->sendFadingMessage(message2,it->first->getClientID());
                 }
@@ -235,7 +235,7 @@ namespace orxonox
             for (std::map<PlayerInfo*, float>::iterator it = this->timeToAct_.begin(); it != this->timeToAct_.end(); ++it)
             {   
                 if (playerGetLives(it->first)<=0)//Players without lives shouldn't be affected by time.
-                    return;     
+                    continue;     
                 it->second-=dt;//Decreases punishment time.
                 if (!inGame_[it->first])//Manages respawn delay - player is forced to respawn after the delaytime is used up. 
                 {
@@ -252,7 +252,7 @@ namespace orxonox
                 else if (it->second<timeRemaining/6)//Warning message
                 {
                     if (it->first->getClientID()== CLIENTID_UNKNOWN)
-                        return;
+                        continue;
                     const std::string& message = "Camper Warning! Don't forget to shoot.";
                     this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
                 }
