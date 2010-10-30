@@ -92,6 +92,7 @@ namespace orxonox
     class MultiTrigger;
     class MultiTriggerContainer;
     class Trigger;
+    class TriggerBase;
 }
 
 #endif /* _ObjectsPrereqs_H__ */

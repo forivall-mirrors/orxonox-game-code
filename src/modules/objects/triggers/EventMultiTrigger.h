@@ -29,6 +29,7 @@
 /**
     @file EventMultiTrigger.h
     @brief Definition of the EventMultiTrigger class.
+    @ingroup MultiTrigger
 */
 
 #ifndef _EventMultiTrigger_H__
@@ -43,9 +44,9 @@ namespace orxonox
 
     /**
     @brief
-        The EventMultiTrigger class is the equivalent of the EventTrigger class for MultiTriggers.
-        Consequentially what it does is it provides a way to have a MultiTrigger triggered by any kinds of events.
-        Events that are not caused by a MultiTrigger or by a MultiTrigger with an originator that is no target of this EventMultiTrigger are broadcasted to all entities that are the target of this EventMultitrigger. Events that are caused by MultiTriggers with an originator that is a target of this EventMultiTrigger just trigger the EventMultiTrigger for the originator that caused the MultiTrigger to trigger. Thus showing the equivalent behavior to the EventTrigger.
+        The EventMultiTrigger class is the equivalent of the @ref orxonox::EventTrigger "EventTrigger" class for MultiTriggers.
+        Consequentially what it does is it provides a way to have a MultiTrigger triggered by any kinds of @ref orxonox::Event "Events".
+        @ref orxonox::Event "Events" that are not caused by a MultiTrigger, or that are caused by a MultiTrigger with an originator that is no target of this EventMultiTrigger, are broadcasted to all entities that are the target of this EventMultiTrigger. @ref orxonox::Event "Events" that are caused by @ref orxonox::MultiTrigger "MultiTriggers" with an originator that is a target of this EventMultiTrigger just trigger the EventMultiTrigger for the originator that caused the MultiTrigger to trigger. Thus showing the equivalent behavior to the @ref orxonox::EventTrigger "EventTrigger".
 
         Example:
         @code
@@ -58,10 +59,14 @@ namespace orxonox
             </events>
         </EventMultiTrigger>
         @endcode
-    @see MultiTrigger.h
+
+    @see MultiTrigger
         For more information on MultiTriggers.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup MultiTrigger
     */
     class _ObjectsExport EventMultiTrigger : public MultiTrigger
     {
@@ -74,7 +79,7 @@ namespace orxonox
             virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
         private:
-            void trigger(bool bTriggered, BaseObject* originator); //!< Method that causes the EventMultiTrigger to trigger upon receiving an event.
+            void trigger(bool bTriggered, BaseObject* originator); //!< Method that causes the EventMultiTrigger to trigger upon receiving an @ref orxonox::Event "Event".
 
     };
 

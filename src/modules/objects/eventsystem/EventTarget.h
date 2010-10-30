@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file EventTarget.h
+    @brief Definition of the EventTarget class.
+    @ingroup Eventsystem
+*/
+
 #ifndef _EventTarget_H__
 #define _EventTarget_H__
 

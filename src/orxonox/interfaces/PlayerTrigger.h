@@ -27,24 +27,28 @@
  */
 
 /**
-    @file
-    @brief
-    Definition of the PlayerTrigger class.
+    @file PlayerTrigger.h
+    @brief Definition of the PlayerTrigger class.
+    @ingroup Triggers
 */
 
 #ifndef _PlayerTrigger_H__
 #define _PlayerTrigger_H__
 
 #include "OrxonoxPrereqs.h"
+
 #include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
     /**
     @brief
-        A PlayerTrigger is a trigger which is normally triggered by Pawns and can as such return a pointer to the Pawn which triggered it.
+        PlayerTrigger is an interface if implemented by a specific trigger can be used to recover the Player (or more precisely the @ref orxonox::Pawn "Pawn") that triggered it.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Triggers
     */
     class _OrxonoxExport PlayerTrigger : virtual public OrxonoxClass
     {
@@ -74,10 +78,10 @@ namespace orxonox
         inline void setTriggeringPlayer(Pawn* player)
            { this->player_ = player; }
 
-            /**
-            @brief Set whether the PlayerTrigger normally is triggered by Pawns.
-            @param isForPlayer Should be true when the PlayerTrigger should be set to normally be triggered by Pawns, false if not.
-            */
+        /**
+        @brief Set whether the PlayerTrigger normally is triggered by Pawns.
+        @param isForPlayer Should be true when the PlayerTrigger should be set to normally be triggered by Pawns, false if not.
+        */
         inline void setForPlayer(bool isForPlayer)
            { this->isForPlayer_ = isForPlayer; }
 

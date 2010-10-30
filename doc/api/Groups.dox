@@ -183,6 +183,21 @@
 /**
     @defgroup Objects Objects
     @ingroup Modules
+
+    @defgroup Collisionshapes Collisionshapes
+    @ingroup Objects
+
+    @defgroup Eventsystem Eventsystem
+    @ingroup Objects
+
+    @defgroup Triggers Triggers
+    @ingroup Objects
+
+    @defgroup NormalTrigger Trigger
+    @ingroup Triggers
+
+    @defgroup MultiTrigger MultiTrigger
+    @ingroup Triggers
 */
 
 /**

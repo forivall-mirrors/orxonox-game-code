@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file Planet.h
+    @brief Definition of the Planet class.
+    @ingroup Objects
+*/
+
 #ifndef _Planet_H__
 #define _Planet_H__
 

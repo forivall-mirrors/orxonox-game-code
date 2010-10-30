@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file EventTrigger.cc
+    @brief Implementation of the EventTrigger class.
+    @ingroup NormalTrigger
+*/
+
 #include "EventTrigger.h"
 
 #include "core/CoreIncludes.h"

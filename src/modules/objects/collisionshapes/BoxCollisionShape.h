@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file BoxCollisionShape.h
+    @brief Definition of the BoxCollisionShape class.
+    @ingroup Collisionshapes
+*/
+
 #ifndef _BoxCollisionShape_H__
 #define _BoxCollisionShape_H__
 

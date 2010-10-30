@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file ConeCollisionShape.h
+    @brief Definition of the ConeCollisionShape class.
+    @ingroup Collisionshapes
+*/
+
 #ifndef _ConeCollisionShape_H__
 #define _ConeCollisionShape_H__
 

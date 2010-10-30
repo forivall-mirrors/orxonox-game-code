@@ -29,6 +29,7 @@
 /**
     @file MultiTrigger.cc
     @brief Implementation of the MultiTrigger class.
+    @ingroup MultiTrigger
 */
 
 #include "MultiTrigger.h"
@@ -41,12 +42,6 @@
 namespace orxonox
 {
 
-    // Initialization of some static (magic) variables.
-    /*static*/ const int MultiTrigger::INF_s = -1;
-    /*static*/ const std::string MultiTrigger::and_s = "and";
-    /*static*/ const std::string MultiTrigger::or_s = "or";
-    /*static*/ const std::string MultiTrigger::xor_s = "xor";
-
     CreateFactory(MultiTrigger);
 
     /**
@@ -55,27 +50,17 @@ namespace orxonox
     @param creator
         The creator.
     */
-    MultiTrigger::MultiTrigger(BaseObject* creator) : StaticEntity(creator)
+    MultiTrigger::MultiTrigger(BaseObject* creator) : TriggerBase(creator)
     {
         RegisterObject(MultiTrigger);
 
-        this->bFirstTick_ = true;
-
-        this->delay_ = 0.0f;
-        this->bSwitch_ = false;
-        this->bStayActive_ = false;
-
-        this->remainingActivations_ = INF_s;
         this->maxNumSimultaneousTriggerers_ = INF_s;
-
-        this->bInvertMode_ = false;
-        this->mode_ = MultiTriggerMode::EventTriggerAND;
 
         this->bBroadcast_ = false;
 
-        this->parentTrigger_ = NULL;
-
         this->targetMask_.exclude(Class(BaseObject));
+
+        this->bMultiTrigger_ = true;
 
         this->setSyncMode(0x0);
     }
@@ -104,17 +89,9 @@ namespace orxonox
     {
         SUPER(MultiTrigger, XMLPort, xmlelement, mode);
 
-        XMLPortParam(MultiTrigger, "delay", setDelay, getDelay, xmlelement, mode);
-        XMLPortParam(MultiTrigger, "switch", setSwitch, getSwitch, xmlelement, mode);
-        XMLPortParam(MultiTrigger, "stayactive", setStayActive, getStayActive, xmlelement, mode);
-        XMLPortParam(MultiTrigger, "activations", setActivations, getActivations, xmlelement, mode);
         XMLPortParam(MultiTrigger, "simultaneousTriggerers", setSimultaneousTriggerers, getSimultaneousTriggerers, xmlelement, mode);
-        XMLPortParam(MultiTrigger, "invert", setInvert, getInvert, xmlelement, mode);
-        XMLPortParamTemplate(MultiTrigger, "mode", setMode, getModeString, xmlelement, mode, const std::string&);
         XMLPortParam(MultiTrigger, "broadcast", setBroadcast, getBroadcast, xmlelement, mode);
         XMLPortParamLoadOnly(MultiTrigger, "target", addTargets, xmlelement, mode).defaultValues("Pawn"); //TODO: Remove load only
-
-        XMLPortObject(MultiTrigger, MultiTrigger, "", addTrigger, getTrigger, xmlelement, mode);
 
         COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") created." << std::endl;
     }
@@ -123,9 +100,11 @@ namespace orxonox
     /**
     @brief
         A method that is executed each tick.
+        Most of the magic of MultiTriggers happens here.
     @param dt
         The duration of the last tick.
     */
+    //TODO: Segment into some helper methods?
     void MultiTrigger::tick(float dt)
     {
         // If this is the first tick.
@@ -158,10 +137,10 @@ namespace orxonox
                 }
 
                 // The new triggered state dependent on the requested state, the mode and the invert-mode.
-                bool bTriggered = (state->bTriggered & this->isModeTriggered(state->originator)) ^ this->bInvertMode_;
+                bool bTriggered = (state->bTriggered & this->isModeTriggered(state->originator)) ^ this->getInvert();
 
                 // If the 'triggered' state has changed or the MultiTrigger has delay and thus we don't know whether this state will actually change the 'triggered' state, a new state is added to the state queue.
-                if(this->delay_ > 0.0f || bTriggered ^ this->isTriggered(state->originator))
+                if(this->getDelay() > 0.0f || bTriggered ^ this->isTriggered(state->originator))
                 {
                     state->bTriggered = bTriggered;
                     this->addState(state);
@@ -191,7 +170,7 @@ namespace orxonox
                 if(timeRemaining <= dt)
                 {
                     // If the maximum number of objects simultaneously triggering this MultiTrigger is not exceeded.
-                    if(this->maxNumSimultaneousTriggerers_ == INF_s || this->triggered_.size() < (unsigned int)this->maxNumSimultaneousTriggerers_)
+                    if(this->getSimultaneousTriggerers() == TriggerBase::INF_s || this->triggered_.size() < (unsigned int)this->getSimultaneousTriggerers())
                     {
                         bool bStateChanged = false;
                         // If the 'triggered' state is different from what it is now, change it.
@@ -210,7 +189,7 @@ namespace orxonox
                         // Get the activity of the new state.
                         bool bActive;
                         // If the MultiTrigger is in switch mode the 'active'-state only changes of the state changed to triggered.
-                        if(this->bSwitch_ && !state->bTriggered)
+                        if(this->getSwitch() && !state->bTriggered)
                             bActive = this->isActive(state->originator);
                         else
                             bActive = !this->isActive(state->originator);
@@ -238,7 +217,7 @@ namespace orxonox
                             else
                             {
                                 // If the MultiTrigger doesn't stay active or hasn't' exceeded its remaining activations.
-                                if(!this->bStayActive_ || this->remainingActivations_ > 0)
+                                if(!this->getStayActive() || this->remainingActivations_ > 0)
                                     this->active_.erase(state->originator);
                                 else
                                     bFire = false;
@@ -248,7 +227,7 @@ namespace orxonox
                             if(bFire)
                             {
                                 // If the MultiTrigger is set to broadcast and has no originator a boradcast is fired.
-                                if(this->bBroadcast_ && state->originator == NULL)
+                                if(this->getBroadcast() && state->originator == NULL)
                                     this->broadcast(bActive);
                                 // Else a normal event is fired.
                                 else
@@ -266,9 +245,9 @@ namespace orxonox
                             else
                                 COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") changed state. originator: NULL, active: " << bActive << ", triggered: " << state->bTriggered << "." << std::endl;
 
-                            // If the MultiTrigger has a parent trigger it needs to call a method to notify him, that its activity has changed.
-                            if(this->parentTrigger_ != NULL)
-                                this->parentTrigger_->subTriggerActivityChanged(state->originator);
+                            // If the MultiTrigger has a parent trigger, that is itself a MultiTrigger, it needs to call a method to notify him, that its activity has changed.
+                            if(this->parent_ != NULL && this->parent_->isMultiTrigger())
+                                static_cast<MultiTrigger*>(this->parent_)->childActivityChanged(state->originator);
                         }
 
                         // If the MultiTrigger has exceeded its amount of activations and it doesn't stay active, it has to be deactivated.
@@ -301,48 +280,12 @@ namespace orxonox
     @return
         Returns true if the MultiTrigger is active, false if not.
     */
-    bool MultiTrigger::isActive(BaseObject* triggerer)
+    bool MultiTrigger::isActive(BaseObject* triggerer) const
     {
-        std::set<BaseObject*>::iterator it = this->active_.find(triggerer);
+        std::set<BaseObject*>::const_iterator it = this->active_.find(triggerer);
         if(it == this->active_.end())
             return false;
         return true;
-    }
-
-    /**
-    @brief
-        Set the mode of the MultiTrigger.
-    @param modeName
-        The name of the mode as a string.
-    */
-    void MultiTrigger::setMode(const std::string& modeName)
-    {
-        if (modeName == MultiTrigger::and_s)
-            this->setMode(MultiTriggerMode::EventTriggerAND);
-        else if (modeName == MultiTrigger::or_s)
-            this->setMode(MultiTriggerMode::EventTriggerOR);
-        else if (modeName == MultiTrigger::xor_s)
-            this->setMode(MultiTriggerMode::EventTriggerXOR);
-        else
-            COUT(2) << "Invalid mode '" << modeName << "' in MultiTrigger " << this->getName() << " &(" << this << "). Leaving mode at '" << this->getModeString() << "'." << std::endl;
-    }
-
-    /**
-    @brief
-        Get the mode of the MultiTrigger.
-    @return
-        Returns the mode as a string.
-    */
-    const std::string& MultiTrigger::getModeString() const
-    {
-        if (this->mode_ == MultiTriggerMode::EventTriggerAND)
-            return MultiTrigger::and_s;
-        else if (this->mode_ == MultiTriggerMode::EventTriggerOR)
-            return MultiTrigger::or_s;
-        else if (this->mode_ == MultiTriggerMode::EventTriggerXOR)
-            return MultiTrigger::xor_s;
-        else // This can never happen, but the compiler needs it to feel secure.
-            return MultiTrigger::and_s;
     }
 
     /**
@@ -396,43 +339,6 @@ namespace orxonox
 
     /**
     @brief
-        Adds a MultiTrigger as a sub-trigger to the trigger.
-        Beware: Loops are not prevented and potentially very bad, so just don't create any loops.
-    @param trigger
-        The MultiTrigger to be added.
-    */
-    void MultiTrigger::addTrigger(MultiTrigger* trigger)
-    {
-        if (this != trigger && trigger != NULL)
-            this->subTriggers_.insert(trigger);
-        trigger->addParentTrigger(this);
-    }
-
-    /**
-    @brief
-        Get the sub-trigger of this MultiTrigger at the given index.
-    @param index
-        The index.
-    @return
-        Returns a pointer ot the MultiTrigger. NULL if no such trigger exists.
-    */
-    const MultiTrigger* MultiTrigger::getTrigger(unsigned int index) const
-    {
-        // If the index is greater than the number of sub-triggers.
-        if (this->subTriggers_.size() <= index)
-            return NULL;
-
-        std::set<MultiTrigger*>::const_iterator it;
-        it = this->subTriggers_.begin();
-
-        for (unsigned int i = 0; i != index; ++i)
-            ++it;
-
-        return (*it);
-    }
-
-    /**
-    @brief
         This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
         This method is the device for the behavior (the conditions under which the MultiTrigger triggers) of any derived class of MultiTrigger.
     @return
@@ -455,57 +361,57 @@ namespace orxonox
     void MultiTrigger::changeTriggered(BaseObject* originator)
     {
         MultiTriggerState* state = new MultiTriggerState;
-        state->bTriggered = (!this->isTriggered(originator) & this->isModeTriggered(originator)) ^ this->bInvertMode_;
+        state->bTriggered = (!this->isTriggered(originator) & this->isModeTriggered(originator)) ^ this->getInvert();
         state->originator = originator;
         this->addState(state);
     }
 
     /**
     @brief
-        This method is called by any sub-trigger to advertise changes in its state to its parent-trigger.
+        This method is called by any child to advertise changes in its state to its parent.
     @param originator
         The object that caused the change in activity.
     */
-    void MultiTrigger::subTriggerActivityChanged(BaseObject* originator)
+    void MultiTrigger::childActivityChanged(BaseObject* originator)
     {
         MultiTriggerState* state = new MultiTriggerState;
-        state->bTriggered = (this->isTriggered(originator) & this->isModeTriggered(originator)) ^ this->bInvertMode_;
+        state->bTriggered = (this->isTriggered(originator) & this->isModeTriggered(originator)) ^ this->getInvert();
         state->originator = originator;
         this->addState(state);
     }
 
     /**
     @brief
-        Checks whether the sub-triggers are in such a way that, according to the mode of the MultiTrigger, the MultiTrigger is triggered (only considering the sub-triggers, not the state of MultiTrigger itself), for a given object.
-        To make an example: When the mode is 'and', then this would be true or a given object if all the sub-triggers were triggered for the given object.
+        Checks whether the children are in such a way that, according to the mode of the MultiTrigger, the MultiTrigger is triggered (only considering the children, not the state of MultiTrigger itself), for a given object.
+        To make an example: When the mode is <em>and</em>, then this would be true or a given object if all the children were triggered for the given object.
     @param triggerer
         The object.
     @return
-        Returns true if the MultiTrigger is triggered concerning it's sub-triggers.
+        Returns true if the MultiTrigger is triggered concerning it's children.
     */
     bool MultiTrigger::isModeTriggered(BaseObject* triggerer)
     {
-        if(this->subTriggers_.size() != 0)
+        if(this->children_.size() != 0)
         {
-            bool returnVal = false;
+            bool triggered = false;
 
             switch(this->mode_)
             {
-                case MultiTriggerMode::EventTriggerAND:
-                    returnVal = checkAnd(triggerer);
+                case TriggerMode::EventTriggerAND:
+                    triggered = checkAnd(triggerer);
                     break;
-                case MultiTriggerMode::EventTriggerOR:
-                    returnVal = checkOr(triggerer);
+                case TriggerMode::EventTriggerOR:
+                    triggered = checkOr(triggerer);
                     break;
-                case MultiTriggerMode::EventTriggerXOR:
-                    returnVal = checkXor(triggerer);
+                case TriggerMode::EventTriggerXOR:
+                    triggered = checkXor(triggerer);
                     break;
                 default: // This will never happen.
-                    returnVal = false;
+                    triggered = false;
                     break;
             }
 
-            return returnVal;
+            return triggered;
         }
 
         return true;
@@ -584,14 +490,14 @@ namespace orxonox
         }
 
         // Add it ot the state queue with the delay specified for the MultiTrigger.
-        this->stateQueue_.push_back(std::pair<float, MultiTriggerState*>(this->delay_, state));
+        this->stateQueue_.push_back(std::pair<float, MultiTriggerState*>(this->getDelay(), state));
 
         return true;
     }
 
     /**
     @brief
-        Checks whether the sub-triggers amount to true for the 'and' mode for a given object.
+        Checks whether the children amount to true for the <em>and</em> mode for a given object.
     @param triggerer
         The object.
     @return
@@ -599,17 +505,26 @@ namespace orxonox
     */
     bool MultiTrigger::checkAnd(BaseObject* triggerer)
     {
-        for(std::set<MultiTrigger*>::iterator it = this->subTriggers_.begin(); it != this->subTriggers_.end(); ++it)
+        for(std::set<TriggerBase*>::iterator it = this->children_.begin(); it != this->children_.end(); ++it)
         {
-            if(!(*it)->isActive(triggerer))
-                return false;
+            TriggerBase* trigger = *it;
+            if(trigger->isMultiTrigger())
+            {
+                if(!static_cast<MultiTrigger*>(trigger)->isActive(triggerer))
+                    return false;
+            }
+            else
+            {
+                if(!trigger->isActive())
+                    return false;
+            }
         }
         return true;
     }
 
     /**
     @brief
-        Checks whether the sub-triggers amount to true for the 'or' mode for a given object.
+        Checks whether the children amount to true for the <em>or</em> mode for a given object.
     @param triggerer
         The object.
     @return
@@ -617,17 +532,26 @@ namespace orxonox
     */
     bool MultiTrigger::checkOr(BaseObject* triggerer)
     {
-        for(std::set<MultiTrigger*>::iterator it = this->subTriggers_.begin(); it != this->subTriggers_.end(); ++it)
+        for(std::set<TriggerBase*>::iterator it = this->children_.begin(); it != this->children_.end(); ++it)
         {
-            if((*it)->isActive(triggerer))
-                return true;
+            TriggerBase* trigger = *it;
+            if(trigger->isMultiTrigger())
+            {
+                if(static_cast<MultiTrigger*>(trigger)->isActive(triggerer))
+                    return true;
+            }
+            else
+            {
+                if(trigger->isActive())
+                    return true;
+            }
         }
         return false;
     }
 
     /**
     @brief
-        Checks whether the sub-triggers amount to true for the 'xor' mode for a given object.
+        Checks whether the children amount to true for the <em>xor</em> mode for a given object.
     @param triggerer
         The object.
     @return
@@ -635,16 +559,36 @@ namespace orxonox
     */
     bool MultiTrigger::checkXor(BaseObject* triggerer)
     {
-        bool test = false;
-        for(std::set<MultiTrigger*>::iterator it = this->subTriggers_.begin(); it != this->subTriggers_.end(); ++it)
+        bool triggered = false;
+        for(std::set<TriggerBase*>::iterator it = this->children_.begin(); it != this->children_.end(); ++it)
         {
-            if(test && (*it)->isActive(triggerer))
-                return false;
+            TriggerBase* trigger = *it;
+            if(triggered)
+            {
+                if(trigger->isMultiTrigger())
+                {
+                    if(static_cast<MultiTrigger*>(trigger)->isActive(triggerer))
+                        return false;
+                }
+                else
+                {
+                    if(trigger->isActive())
+                        return false;
+                }
+            }
 
-            if((*it)->isActive(triggerer))
-                test = true;
+            if(trigger->isMultiTrigger())
+            {
+                if(static_cast<MultiTrigger*>(trigger)->isActive(triggerer))
+                    triggered = true;
+            }
+            else
+            {
+                if(trigger->isActive())
+                    triggered = true;
+            }
         }
-        return test;
+        return triggered;
     }
 
 }

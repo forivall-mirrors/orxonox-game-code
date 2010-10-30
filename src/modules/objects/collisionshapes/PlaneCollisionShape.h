@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file PlaneCollisionShape.h
+    @brief Definition of the PlaneCollisionShape class.
+    @ingroup Collisionshapes
+*/
+
 #ifndef _PlaneCollisionShape_H__
 #define _PlaneCollisionShape_H__
 

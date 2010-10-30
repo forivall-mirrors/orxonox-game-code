@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file CheckPoint.cc
+    @brief Implementation of the CheckPoint class.
+    @ingroup NormalTrigger
+*/
+
 #include "CheckPoint.h"
 
 #include "core/CoreIncludes.h"

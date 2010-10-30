@@ -29,6 +29,7 @@
 /**
     @file DistanceTriggerBeacon.cc
     @brief Implementation of the DistanceTriggerBeacon class.
+    @ingroup Triggers
 */
 
 #include "DistanceTriggerBeacon.h"

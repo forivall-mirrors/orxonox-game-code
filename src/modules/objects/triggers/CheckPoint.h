@@ -27,8 +27,9 @@
  */
 
 /**
-    @file
-    @brief
+    @file CheckPoint.h
+    @brief Definition of the CheckPoint class.
+    @ingroup NormalTrigger
 */
 
 #ifndef _CheckPoint_H__
@@ -41,6 +42,15 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+
+    @author
+        Aurelian Jaggi
+
+    @ingroup NormalTrigger
+    */
     class _ObjectsExport CheckPoint : public DistanceTrigger, public RadarViewable
     {
     public:
