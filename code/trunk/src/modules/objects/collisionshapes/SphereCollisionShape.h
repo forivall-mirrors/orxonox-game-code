@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file SphereCollisionShape.h
+    @brief Definition of the SphereCollisionShape class.
+    @ingroup Collisionshapes
+*/
+
 #ifndef _SphereCollisionShape_H__
 #define _SphereCollisionShape_H__
 

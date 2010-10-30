@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file EventFilter.h
+    @brief Definition of the EventFilter class.
+    @ingroup Eventsystem
+*/
+
 #ifndef _EventFilter_H__
 #define _EventFilter_H__
 

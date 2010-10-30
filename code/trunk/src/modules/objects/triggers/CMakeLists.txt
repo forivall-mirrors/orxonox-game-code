@@ -8,4 +8,5 @@ ADD_SOURCE_FILES(OBJECTS_SRC_FILES
   MultiTrigger.cc
   MultiTriggerContainer.cc
   Trigger.cc
+  TriggerBase.cc
 )

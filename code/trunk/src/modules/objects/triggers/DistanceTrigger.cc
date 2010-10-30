@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file DistanceTrigger.cc
+    @brief Implementation of the DistanceTrigger class.
+    @ingroup NormalTrigger
+*/
+
 #include "DistanceTrigger.h"
 
 #include "core/CoreIncludes.h"
@@ -45,7 +51,6 @@ namespace orxonox
     this->targetMask_.exclude(Class(BaseObject));
     this->targetName_ = BLANKSTRING;
     this->singleTargetMode_ = false;
-    this->setForPlayer(false); //!< Normally hasn't just players as targets.
   }
 
   DistanceTrigger::~DistanceTrigger()

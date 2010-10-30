@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file EventListener.h
+    @brief Definition of the EventListener class.
+    @ingroup Eventsystem
+*/
+
 #ifndef _EventListener_H__
 #define _EventListener_H__
 

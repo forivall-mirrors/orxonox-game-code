@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file Attacher.h
+    @brief Definition of the Attacher class.
+    @ingroup Objects
+*/
+
 #ifndef _Attacher_H__
 #define _Attacher_H__
 

@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file Trigger.cc
+    @brief Implementation of the Trigger class.
+    @ingroup NormalTrigger
+*/
+
 #include "Trigger.h"
 
 #include "core/CoreIncludes.h"
@@ -41,24 +47,16 @@ namespace orxonox
 
   CreateFactory(Trigger);
 
-  Trigger::Trigger(BaseObject* creator) : StaticEntity(creator)
+  Trigger::Trigger(BaseObject* creator) : TriggerBase(creator)
   {
     RegisterObject(Trigger);
 
-    this->mode_ = TriggerMode::EventTriggerAND;
-
-    this->bFirstTick_ = true;
     this->bActive_ = false;
     this->bTriggered_ = false;
     this->latestState_ = 0x0;
 
-    this->bInvertMode_ = false;
-    this->bSwitch_ = false;
-    this->bStayActive_ = false;
-    this->delay_ = 0.0f;
     this->remainingTime_ = 0.0f;
     this->timeSinceLastEvent_ = 0.0f;
-    this->remainingActivations_ = -1;
 
 //    this->bUpdating_ = false;
 
@@ -81,20 +79,11 @@ namespace orxonox
   void Trigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
   {
     SUPER(Trigger, XMLPort, xmlelement, mode);
-
-    XMLPortParam(Trigger, "delay",       setDelay,       getDelay,       xmlelement, mode).defaultValues(0.0f);
-    XMLPortParam(Trigger, "switch",      setSwitch,      getSwitch,      xmlelement, mode).defaultValues(false);
-    XMLPortParam(Trigger, "stayactive",  setStayActive,  getStayActive,  xmlelement, mode).defaultValues(false);
-    XMLPortParam(Trigger, "activations", setActivations, getActivations, xmlelement, mode).defaultValues(-1);
-    XMLPortParam(Trigger, "invert",      setInvert,      getInvert,      xmlelement, mode).defaultValues(false);
-    XMLPortParamTemplate(Trigger, "mode", setMode, getModeString, xmlelement, mode, const std::string&).defaultValues("or");
-
-    XMLPortObject(Trigger, Trigger, "", addTrigger, getTrigger, xmlelement, mode);
   }
 
   void Trigger::tick(float dt)
   {
-    if (this->bFirstTick_)
+    if(this->bFirstTick_)
     {
       this->bFirstTick_ = false;
       this->triggered(false);
@@ -106,7 +95,7 @@ namespace orxonox
 
     SUPER(Trigger, tick, dt);
 
-    bool newTriggered = this->isTriggered() ^ this->bInvertMode_;
+    bool newTriggered = this->isTriggered() ^ this->getInvert();
 
     // check if new triggering event is really new
     if ((this->latestState_ & 0x1) != newTriggered)
@@ -120,7 +109,7 @@ namespace orxonox
       else
       {
         this->latestState_ &= 0xFE; // set trigger bit to 0
-        if (!this->bSwitch_)
+        if (!this->getSwitch())
           this->switchState();
       }
     }
@@ -144,7 +133,7 @@ namespace orxonox
       if (this->stateChanges_.size() != 0)
         this->remainingTime_ = this->stateChanges_.front().first;
       else
-        this->timeSinceLastEvent_ = this->delay_;
+        this->timeSinceLastEvent_ = this->getDelay();
     }
 
     if (this->bTriggered_ && this->bActive_)
@@ -196,7 +185,7 @@ namespace orxonox
 
   bool Trigger::checkAnd()
   {
-    std::set<Trigger*>::iterator it;
+    std::set<TriggerBase*>::iterator it;
     for(it = this->children_.begin(); it != this->children_.end(); ++it)
     {
       if (!(*it)->isActive())
@@ -207,7 +196,7 @@ namespace orxonox
 
   bool Trigger::checkOr()
   {
-    std::set<Trigger*>::iterator it;
+    std::set<TriggerBase*>::iterator it;
     for(it = this->children_.begin(); it != this->children_.end(); ++it)
     {
       if ((*it)->isActive())
@@ -218,7 +207,7 @@ namespace orxonox
 
   bool Trigger::checkXor()
   {
-    std::set<Trigger*>::iterator it;
+    std::set<TriggerBase*>::iterator it;
     bool test = false;
     for(it = this->children_.begin(); it != this->children_.end(); ++it)
     {
@@ -232,8 +221,8 @@ namespace orxonox
 
   bool Trigger::switchState()
   {
-    if (( (this->latestState_ & 2) && this->bStayActive_ && (this->remainingActivations_ <= 0))
-     || (!(this->latestState_ & 2)                       && (this->remainingActivations_ == 0)))
+    if (( (this->latestState_ & 2) && this->getStayActive() && (this->remainingActivations_ <= 0))
+     || (!(this->latestState_ & 2)                          && (this->remainingActivations_ == 0)))
       return false;
     else
     {
@@ -260,52 +249,9 @@ namespace orxonox
       this->remainingTime_ = this->stateChanges_.front().first;
   }
 
-  void Trigger::setDelay(float delay)
+  void Trigger::delayChanged(void)
   {
-    this->delay_ = delay;
-    this->timeSinceLastEvent_ = delay;
-  }
-
-  void Trigger::setMode(const std::string& modeName)
-  {
-    if (modeName == "and")
-      this->setMode(TriggerMode::EventTriggerAND);
-    else if (modeName == "or")
-      this->setMode(TriggerMode::EventTriggerOR);
-    else if (modeName == "xor")
-      this->setMode(TriggerMode::EventTriggerXOR);
-  }
-
-  std::string Trigger::getModeString() const
-  {
-    if (this->mode_ == TriggerMode::EventTriggerAND)
-      return "and";
-    else if (this->mode_ == TriggerMode::EventTriggerOR)
-      return "or";
-    else if (this->mode_ == TriggerMode::EventTriggerXOR)
-      return "xor";
-    else
-      return "and";
-  }
-
-  void Trigger::addTrigger(Trigger* trigger)
-  {
-    if (this != trigger)
-      this->children_.insert(trigger);
-  }
-
-  const Trigger* Trigger::getTrigger(unsigned int index) const
-  {
-    if (this->children_.size() <= index)
-      return NULL;
-
-    std::set<Trigger*>::const_iterator it;
-    it = this->children_.begin();
-
-    for (unsigned int i = 0; i != index; ++i)
-      ++it;
-
-    return (*it);
+    this->timeSinceLastEvent_ = this->getDelay();
   }
 
   void Trigger::debugFlares(bool bVisible)

@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file EventDispatcher.h
+    @brief Definition of the EventDispatcher class.
+    @ingroup Eventsystem
+*/
+
 #ifndef _EventDispatcher_H__
 #define _EventDispatcher_H__
 

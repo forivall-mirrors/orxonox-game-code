@@ -29,12 +29,14 @@
 /**
     @file DistanceMultiTrigger.cc
     @brief Implementation of the DistanceMultiTrigger class.
+    @ingroup MultiTrigger
 */
 
 #include "DistanceMultiTrigger.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "DistanceTriggerBeacon.h"
 
 namespace orxonox
@@ -130,7 +132,7 @@ namespace orxonox
             // If the DistanceMultiTrigger is in single-target mode.
             if(this->singleTargetMode_)
             {
-                // If the object that is a target is no DistanceTriggerBeacon, then the DistanceMultiTrigger can't be in single-target-mode.
+                // If the object that is a target is no DistanceTriggerBeacon, then the DistanceMultiTrigger can't be in single-target mode.
                 if(!entity->isA(ClassIdentifier<DistanceTriggerBeacon>::getIdentifier()))
                 {
                     this->singleTargetMode_ = false;

@@ -29,6 +29,7 @@
 /**
     @file DistanceMultiTrigger.h
     @brief Definition of the DistanceMultiTrigger class.
+    @ingroup MultiTrigger
 */
 
 #ifndef _DistanceMultiTrigger_H__
@@ -36,9 +37,11 @@
 
 #include "objects/ObjectsPrereqs.h"
 
-#include "worldentities/WorldEntity.h"
-#include "core/WeakPtr.h"
 #include <map>
+
+#include "core/WeakPtr.h"
+
+#include "worldentities/WorldEntity.h"
 
 #include "MultiTrigger.h"
 
@@ -47,25 +50,29 @@ namespace orxonox
 
     /**
     @brief
-        The DistanceMultiTrigger is a trigger that triggers whenever an object (that is of the specified target type) is in a specified range of the DistanceMultiTrigger. The object can be specified further by adding a DistanceTriggerBeacon (just attaching it) to the objects that can trigger this DistanceMultiTrigger and specify the name of the DistanceTriggerBeacon with the parameter targetname and only objects that have a DistanceTriggerBeacon with that name attached will trigger the DistanceMultiTrigger.
+        The DistanceMultiTrigger is a MultiTrigger that triggers whenever an object (that is of the specified target type) is in a specified range of the DistanceMultiTrigger. The object can be specified further by adding a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" (by just attaching it) to the objects that can trigger this DistanceMultiTrigger and specify the name of the @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" with the parameter <em>targetname</em> and only objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" with that name will trigger the DistanceMultiTrigger.
         Parameters are (additional to the ones of MultiTrigger):
-            'distance', which specifies the maximum distance at which the DistanceMultiTrigger still triggers. Default is 100.
-            'targetname', which, if not left blank, causes the DistancMultiTrigger to be in single-target mode, meaning, that it only reacts to objects that have a DistanceTriggerBeacon (therefore the target has to be set to DistanceTriggerBeacon for it to work), with the name specified by targetname, attached.
+        - @b distance Which specifies the maximum distance at which the DistanceMultiTrigger still triggers. Default is 100.
+        - @b targetname Which, if not left blank, causes the DistancMultiTrigger to be in <em>single-target</em> mode, meaning, that it only reacts to objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" (therefore the target has to be set to @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" for it to work), with the name specified by <em>targetname</em>, attached.
 
         A simple DistanceMultiTrigger would look like this:
         @code
         <DistanceMultiTrigger position="0,0,0" switch="true" target="Pawn" distance="20" />
         @endcode
 
-        An implementation that only reacts to objects with a DistanceTriggerBeacon attached would look like this:
+        An implementation that only reacts to objects with a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" attached would look like this:
         @code
         <DistanceMultiTrigger position="0,0,0" target="DistanceMultiTrigger" targetname="beacon1" distance="30" />
         @endcode
-        This particular DistanceMultiTrigger would only react if an object was in range, that had a DistanceTriggerBeacon with the name 'beacon1' attached.
-    @see MultiTrigger.h
+        This particular DistanceMultiTrigger would only react if an object was in range, that had a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" with the name <em>beacon1</em> attached.
+
+    @see MultiTrigger
         For more information on MultiTriggers.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup MultiTrigger
     */
     class _ObjectsExport DistanceMultiTrigger : public MultiTrigger
     {
@@ -105,8 +112,8 @@ namespace orxonox
 
         private:
             float distance_; //!< The distance at which the DistanceMultiTrigger triggers.
-            std::string targetName_; //!< The target name, used in singleTargetMode.
-            bool singleTargetMode_; //!< To indicate whe the MultiDistanceTrigger is in single-target-mode.
+            std::string targetName_; //!< The target name, used in <em>single-target</em> mode.
+            bool singleTargetMode_; //!< To indicate whe the MultiDistanceTrigger is in <em>single-target</em> mode.
 
             std::map<WorldEntity*, WeakPtr<WorldEntity>* > range_; //!< The set of entities that currently are in range of the DistanceMultiTrigger.
 

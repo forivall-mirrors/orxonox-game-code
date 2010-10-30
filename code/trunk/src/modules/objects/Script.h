@@ -27,6 +27,12 @@
  *
  */
 
+/**
+    @file Script.h
+    @brief Definition of the Script class.
+    @ingroup Objects
+*/
+
 #ifndef _Script_H__
 #define _Script_H__
 
@@ -41,13 +47,15 @@
 namespace orxonox
 {
 
+    /**
+    @brief The mode a specific @ref orxonox::Script "Script" is in.
+    */
     namespace ScriptMode
     {
-        //! Modes of the Script class.
         enum Value
         {
-            normal,
-            lua
+            normal, //!< The @ref orxonox::Script "Scripts'" code is executed through the @ref orxonox::CommandExecutor "CommandExecutor".
+            lua //!< The @ref orxonox::Script "Scripts'" code is executed through lua.
         };
     }
 
@@ -55,17 +63,17 @@ namespace orxonox
     @brief
         The Script class lets you execute a piece of code, either the normal way or in lua, through XML. It can be specified whether the code is executed upon loading (creation) of the object. Additionally the code is executed each time a trigger event comes in.
         There are three parameters:
-        'code': The code that should be executed.
-        'mode': The mode, specifying whether the set code should be executed the normal way ('normal') or in lua ('lua'). Default is 'normal'.
-        'onLoad': Whether the code is executed upon loading (creation) of this object. If this is set the code is executed ofr all players, regardless of the value of parameter 'forAll'. Default is true.
-        'needsGraphics': Whether the code needs graphics to be executed or not. Default is false.
-        'forAll': Whether the code is executed for all players each time the Script is triggered or jut for the player triggering the Script. If forAll is false, which is default, the event that triggers the Script must come from a PlayerTrigger.
+        - @b code The code that should be executed.
+        - @b mode The mode, specifying whether the set code should be executed the normal way (<em>normal</em>) or in lua (<em>lua</em>). Default is <em>normal</em>.
+        - @b onLoad Whether the code is executed upon loading (creation) of this object. If this is set the code is executed ofr all players, regardless of the value of parameter <em>forAll</em>. Default is true.
+        - @b needsGraphics Whether the code needs graphics to be executed or not. Default is false.
+        - @b forAll Whether the code is executed for all players each time the Script is triggered or jut for the player triggering the Script. If forAll is false, which is default, the event that triggers the Script must come from a @ref orxonox::PlayerTrigger "PlayerTrigger".
 
         Here are two examples illustrating the usage:
         @code
         <Script code="showGUI QuestGUI" needsGraphics=true />
         @endcode
-        This would show the QuestGUI opon creation of the object. The mode is 'normal', not specified here since that is the default, also onLoad is true, also not specified, since it is the default as well. Also needsGraphics is set to true because showGUI needs graphics to work.
+        This would show the QuestGUI opon creation of the object. The <em>mode</em> is <em>normal</em>, not specified here since that is the default, also <em>onLoad</em> is true, also not specified, since it is the default as well. Also <em>needsGraphics</em> is set to true because showGUI needs graphics to work.
 
         @code
         <Script code="hideGUI QuestGUI" mode="normal" onLoad="false" needsGraphics=true >
@@ -76,7 +84,8 @@ namespace orxonox
             </events>
         </Script>
         @endcode
-        This would hide the QuestGUI as soon as a Pawn got in range of the DistanceTrigger. The mode is 'normal', it is specified here, but could be ommitted as well, since it is the default. OnLoad is false, that is why it can't be ommitted. Also needsGraphics is set to true because showGUI needs graphics to work.
+        This would hide the QuestGUI as soon as a @ref orxonox::Pawn "Pawn" got in range of the @ref orxonox::DistanceTrigger "DistanceTrigger". The mode is <em>normal</em>, it is specified here, but could be ommitted as well, since it is the default. <em>OnLoad</em> is false, that is why it can't be ommitted. Also <em>needsGraphics</em> is set to true because showGUI needs graphics to work.
+
     @author
         Benjamin Knecht
     @author

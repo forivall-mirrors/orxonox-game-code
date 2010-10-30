@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file DistanceTrigger.h
+    @brief Definition of the DistanceTrigger class.
+    @ingroup NormalTrigger
+*/
+
 #ifndef _DistanceTrigger_H__
 #define _DistanceTrigger_H__
 
@@ -38,6 +44,17 @@
 
 namespace orxonox
 {
+
+  /**
+  @brief
+
+  @author
+    Benjamin Knecht
+  @author
+    Damian 'Mozork' Frick
+
+  @ingroup NormalTrigger
+  */
   class _ObjectsExport DistanceTrigger : public Trigger, public PlayerTrigger
   {
     public:

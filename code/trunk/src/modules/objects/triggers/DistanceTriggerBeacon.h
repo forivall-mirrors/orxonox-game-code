@@ -29,6 +29,7 @@
 /**
     @file DistanceTriggerBeacon.h
     @brief Definition of the DistanceTriggerBeacon class.
+    @ingroup Triggers
 */
 
 #ifndef _DistanceTriggerBeacon_H__
@@ -43,10 +44,13 @@ namespace orxonox
 
     /**
     @brief
-        A DistanceTriggerBeacon can be used together with a DistanceTrigger or a DistanceMultiTrigger to make them only react to specific objects.
-        This can be done by attaching a DistanceTriggerBeacon to an object, giving it a unique name and setting the targetname in the DistanceTrigger (or DistanceMultiTrigger) to that name and the target to DistanceTriggerBeacon.
+        A DistanceTriggerBeacon can be used together with a @ref orxonox::DistanceTrigger "DistanceTrigger" or a @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger" to make them only react to specific objects.
+        This can be done by attaching a DistanceTriggerBeacon to an object, giving it a unique name and setting the targetname in the @ref orxonox::DistanceTrigger "DistanceTrigger" (or @ref orxonox::DistanceMultiTrigger "DistanceMultiTrigger") to that name and the target to DistanceTriggerBeacon.
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Triggers
     */
     class _ObjectsExport DistanceTriggerBeacon : public StaticEntity
     {

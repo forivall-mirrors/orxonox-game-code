@@ -29,6 +29,7 @@
 /**
     @file EventMultiTrigger.cc
     @brief Implementation of the EventMultiTrigger class.
+    @ingroup MultiTrigger
 */
 
 #include "EventMultiTrigger.h"

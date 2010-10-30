@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file EventName.h
+    @brief Definition of the EventName class.
+    @ingroup Eventsystem
+*/
+
 #ifndef _EventName_H__
 #define _EventName_H__
 

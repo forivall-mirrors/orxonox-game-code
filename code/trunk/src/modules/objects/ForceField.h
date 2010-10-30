@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file ForceField.h
+    @brief Definition of the ForceField class.
+    @ingroup Objects
+*/
 
 #ifndef _ForceField_H__
 #define _ForceField_H__

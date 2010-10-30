@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file Trigger.h
+    @brief Definition of the Trigger class.
+    @ingroup NormalTrigger
+*/
+
 #ifndef _Trigger_H__
 #define _Trigger_H__
 
@@ -35,22 +41,21 @@
 #include <queue>
 
 #include "tools/BillboardSet.h"
-#include "tools/interfaces/Tickable.h"
-#include "worldentities/StaticEntity.h"
+
+#include "TriggerBase.h"
 
 namespace orxonox
 {
-  namespace TriggerMode
-  {
-    enum Value
-    {
-      EventTriggerAND,
-      EventTriggerOR,
-      EventTriggerXOR,
-    };
-  }
 
-  class _ObjectsExport Trigger : public StaticEntity, public Tickable
+  /**
+  @brief
+    
+  @author
+    Benjamin Knecht
+
+  @ingroup NormalTrigger
+  */
+  class _ObjectsExport Trigger : public TriggerBase
   {
     public:
       Trigger(BaseObject* creator);
@@ -59,44 +64,13 @@ namespace orxonox
       virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
       virtual void tick(float dt);
 
-      inline bool isActive() const
-        { return bActive_; }
-
-      void addTrigger(Trigger* trigger);
-      const Trigger* getTrigger(unsigned int index) const;
-
-      void setMode(const std::string& modeName);
-      inline void setMode(TriggerMode::Value mode)
-        { this->mode_ = mode; }
-      inline TriggerMode::Value getMode() const
-        { return mode_; }
-
-      inline void setInvert(bool bInvert)
-        { this->bInvertMode_ = bInvert; }
-      inline bool getInvert() const
-        { return this->bInvertMode_; }
-
-      inline void setSwitch(bool bSwitch)
-        { this->bSwitch_ = bSwitch; }
-      inline bool getSwitch() const
-        { return this->bSwitch_; }
-
-      inline void setStayActive(bool bStayActive)
-        { this->bStayActive_ = bStayActive; }
-      inline bool getStayActive() const
-        { return this->bStayActive_; }
-
-      inline void setActivations(int activations)
-        { this->remainingActivations_ = activations; }
-      inline int getActivations() const
-        { return this->remainingActivations_; }
+      inline bool isActive(void) const
+        { return this->bActive_; }
 
       inline void setVisible(bool visibility)
         { this->debugBillboard_.setVisible(visibility); }
 
-      void setDelay(float delay);
-      inline float getDelay() const
-        { return this->delay_; }
+      void delayChanged(void);
 
       bool switchState();
 
@@ -114,18 +88,9 @@ namespace orxonox
       bool checkXor();
       void setBillboardColour(const ColourValue& colour);
       void storeState();
-      std::string getModeString() const;
 
       bool bActive_;
       bool bTriggered_;
-      bool bFirstTick_;
-
-      TriggerMode::Value mode_;
-      bool bInvertMode_;
-      bool bSwitch_;
-      bool bStayActive_;
-      float delay_;
-      int remainingActivations_;
 
       char latestState_;
       float remainingTime_;
@@ -134,7 +99,6 @@ namespace orxonox
 //      bool bUpdating_;
       BillboardSet debugBillboard_;
 
-      std::set<Trigger*> children_;
       std::queue<std::pair<float, char> > stateChanges_;
   };
 

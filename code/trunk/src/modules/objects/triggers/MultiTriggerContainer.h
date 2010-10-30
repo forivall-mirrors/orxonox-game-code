@@ -29,6 +29,7 @@
 /**
     @file MultiTriggerContainer.h
     @brief Definition of the MultiTriggerContainer class.
+    @ingroup MultiTrigger
 */
 
 #ifndef _MultiTriggerContainer_H__
@@ -37,6 +38,7 @@
 #include "objects/ObjectsPrereqs.h"
 
 #include "core/BaseObject.h"
+
 #include "interfaces/PlayerTrigger.h"
 
 namespace orxonox
@@ -44,9 +46,12 @@ namespace orxonox
 
     /**
     @brief
-        This class is used by the MultiTrigger class to transport additional data via Events.
+        This class is used by the MultiTrigger class to transport additional data via @ref orxonox::Event "Events".
+
     @author
         Damian 'Mozork' Frick
+
+    @ingroup MultiTrigger
     */
     class _ObjectsExport MultiTriggerContainer : public BaseObject, public PlayerTrigger
     {

@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file EventTrigger.h
+    @brief Definition of the EventTrigger class.
+    @ingroup NormalTrigger
+*/
+
 #ifndef _EventTrigger_H__
 #define _EventTrigger_H__
 
@@ -34,6 +40,15 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+
+    @author
+        Fabian 'x3n' Landau
+
+    @ingroup NormalTrigger
+    */
     class _ObjectsExport EventTrigger : public Trigger
     {
         public:

@@ -29,11 +29,13 @@
 /**
     @file MultiTriggerContainer.cc
     @brief Implementation of the MultiTriggerContainer class.
+    @ingroup MultiTrigger
 */
 
 #include "MultiTriggerContainer.h"
 
 #include "core/CoreIncludes.h"
+
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
