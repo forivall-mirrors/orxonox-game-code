@@ -45,7 +45,7 @@ namespace orxonox
         this->bForceSpawn_=true;
         this->lives=4;
         this->playersAlive=0;
-        this->timeRemaining=10.0f;
+        this->timeRemaining=15.0f;
         this->respawnDelay=4.0f;
         this->setHUDTemplate("LastmanstandingHUD");
     }
@@ -81,7 +81,7 @@ namespace orxonox
     void LastManStanding::setConfigValues()
     {
         SetConfigValue(lives, 4);
-        SetConfigValue(timeRemaining, 20.0f);
+        SetConfigValue(timeRemaining, 15.0f);
         SetConfigValue(respawnDelay, 4.0f);
     }
 
