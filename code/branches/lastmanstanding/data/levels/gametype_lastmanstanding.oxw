@@ -120,10 +120,9 @@ j = math.random()
       <attached>
         <Model position="0,0,0" scale=25 mesh="ast6.mesh">
 	</Model>
-        <Model position="0,0,0" mesh="cube.mesh" scale3D="25,70,15" />
       </attached>
       <collisionShapes>
-        <BoxCollisionShape    halfExtents="25,70,15" position="0,0,0"/>
+        <BoxCollisionShape    halfExtents="50,140,30" position="0,0,0"/>
       </collisionShapes>
     </StaticEntity>
 
