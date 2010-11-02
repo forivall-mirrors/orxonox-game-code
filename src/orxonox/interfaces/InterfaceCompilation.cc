@@ -59,7 +59,7 @@ namespace orxonox
         RegisterRootObject(PlayerTrigger);
 
         this->player_ = NULL;
-        this->isForPlayer_ = true;
+        this->isForPlayer_ = false;
     }
 
     //----------------------------
