@@ -4,6 +4,7 @@ local cursor = CEGUI.MouseCursor:getSingleton()
 local loadedSheets = {}
 local activeMenuSheets = {size = 0, topSheetTuple = nil}
 local menuSheetsRoot = guiMgr:getMenuRootWindow()
+orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
 
 -----------------------
 --- Local functions ---
@@ -119,6 +120,7 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     end
 
     menuSheet:show()
+    menuSheetsRoot:activate()
 
     return menuSheet
 end
@@ -210,6 +212,13 @@ function keyESC()
     else
         showMenuSheet("InGameMenu")
     end
+end
+
+function keyPressed(e)
+    local we = tolua.cast(e, "CEGUI::KeyEventArgs")
+    local sheet = activeMenuSheets[activeMenuSheets.size]
+    code = tostring(we.scancode)
+    sheet.sheet:onKeyPressed()
 end
 
 function setBackgroundImage(imageSet, imageName)
