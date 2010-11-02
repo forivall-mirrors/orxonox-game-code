@@ -7,7 +7,6 @@
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1.0,0},{1.0,0}}" />
         <Property Name="BackgroundEnabled" Value="False" />
-        <Event Name="KeyDown" Function="MainMenu.Key_clicked"/>
         <Window Type="MenuWidgets/Button" Name="orxonox/QuickGameTestButton" >
             <Property Name="Text" Value="Quickstart" />
             <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.2875,0},{0.6,0},{0.3375,0}}" />
