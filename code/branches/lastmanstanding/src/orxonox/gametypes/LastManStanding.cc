@@ -34,7 +34,7 @@
 #include "worldentities/pawns/Pawn.h"
 #include "core/ConfigValueIncludes.h"
 #include "util/Convert.h"
-//TODO: respawn delay
+
 namespace orxonox
 {
     CreateUnloadableFactory(LastManStanding);
@@ -47,6 +47,9 @@ namespace orxonox
         this->playersAlive=0;
         this->timeRemaining=15.0f;
         this->respawnDelay=4.0f;
+        this->noPunishment=false;
+        this->hardPunishment=false;
+        this->punishDamageRate=0.4f;
         this->setHUDTemplate("LastmanstandingHUD");
     }
 
@@ -83,6 +86,8 @@ namespace orxonox
         SetConfigValue(lives, 4);
         SetConfigValue(timeRemaining, 15.0f);
         SetConfigValue(respawnDelay, 4.0f);
+        SetConfigValue(noPunishment, false);
+        SetConfigValue(hardPunishment, false);
     }
 
     bool LastManStanding::allowPawnDamage(Pawn* victim, Pawn* originator)
@@ -90,6 +95,15 @@ namespace orxonox
         if (originator && originator->getPlayer())// only for safety
         {
             this->timeToAct_[originator->getPlayer()]=timeRemaining;
+
+            std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
+            if (it != this->players_.end())
+            {
+                if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                    return true;
+                const std::string& message = ""; // set blank - erases Camper-Warning-message
+                this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
+            }    
         }
         return true;
     }
@@ -110,6 +124,19 @@ namespace orxonox
         return true;
     }
 
+    int LastManStanding::getMinLives()
+    {
+        int min=lives;
+        for (std::map<PlayerInfo*, int>::iterator it = this->playerLives_.begin(); it != this->playerLives_.end(); ++it)
+        {
+            if (it->second<=0)
+                continue;
+            if (it->second<lives)
+                min=it->second;
+        }
+        return min;
+    }
+
     void LastManStanding::end()
     {
         Gametype::end();
@@ -126,13 +153,16 @@ namespace orxonox
         }
     }
 
+
     void LastManStanding::playerEntered(PlayerInfo* player)
     {
         if (!player)// only for safety
             return;
         Deathmatch::playerEntered(player);
-
-        playerLives_[player]=lives;
+        if (playersAlive<=1)
+            playerLives_[player]=lives;
+        else
+            playerLives_[player]=getMinLives();//new players only get minimum of lives
         this->playersAlive++;
         this->timeToAct_[player]=timeRemaining;
         this->playerDelayTime_[player]=respawnDelay;
@@ -153,7 +183,9 @@ namespace orxonox
         if (valid_player)
         {
             this->playersAlive--;
-            //this->playerLives_[player].erase (player); not necessary?
+            this->playerLives_.erase (player);
+            this->playerDelayTime_.erase (player);
+            this->inGame_.erase (player);
             //Update: EachPlayer's "Players in Game"-HUD
             for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
             {
@@ -206,23 +238,34 @@ namespace orxonox
             return 0;
     }
 
-    void LastManStanding::killPlayer(PlayerInfo* player)
+    void LastManStanding::punishPlayer(PlayerInfo* player)
     {
         if(!player)
+            return;
+        if(noPunishment)
             return;
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
         {
             if(!player->getControllableEntity())
-                {return;}
+                return;
             Pawn* pawn = dynamic_cast<Pawn*>(player->getControllableEntity());
             if(!pawn)
-                {return;}
-            pawn->kill();
-            this->timeToAct_[player]=timeRemaining+3.0f+respawnDelay;//reset timer
+                return;
+            if(hardPunishment)
+            {
+                pawn->kill();
+                this->timeToAct_[player]=timeRemaining+3.0f+respawnDelay;//reset timer
+            }
+            /*else
+            {
+                float damage=pawn->getMaxHealth()*punishDamageRate*0.5;
+                pawn->removeHealth(damage);
+                this->timeToAct_[player]=timeRemaining;//reset timer
+            }*/
         }
     }
-    
+
     void LastManStanding::tick(float dt)
     {
         SUPER(LastManStanding, tick, dt);
@@ -230,7 +273,7 @@ namespace orxonox
         {
             if ((this->hasStarted()&&(playersAlive<=1)))//last player remaining
             {
-            this->end();
+                this->end();
             }
             for (std::map<PlayerInfo*, float>::iterator it = this->timeToAct_.begin(); it != this->timeToAct_.end(); ++it)
             {   
@@ -242,14 +285,20 @@ namespace orxonox
                     playerDelayTime_[it->first]-=dt;
                     if (playerDelayTime_[it->first]<=0)
                     this->inGame_[it->first]=true;
+
+                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                        continue;
+                    int output=1+playerDelayTime_[it->first];
+                    const std::string& message = "Respawn in " +multi_cast<std::string>(output)+ " seconds." ;//Countdown
+                    this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
                 }
                 else if (it->second<0.0f)
                 {
                     it->second=timeRemaining+3.0f;//reset punishment-timer
                     if (playerGetLives(it->first)>0)
-                        this->killPlayer(it->first);
+                        this->punishPlayer(it->first);
                 }
-                else if (it->second<timeRemaining/6)//Warning message
+                else if (it->second<timeRemaining/5)//Warning message
                 {
                     if (it->first->getClientID()== CLIENTID_UNKNOWN)
                         continue;

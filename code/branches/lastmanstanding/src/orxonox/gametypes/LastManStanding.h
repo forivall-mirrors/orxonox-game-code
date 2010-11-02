@@ -57,7 +57,11 @@ namespace orxonox
             float respawnDelay;
             std::map<PlayerInfo*, float> playerDelayTime_; //!< Stores each Player's delay time.
             std::map<PlayerInfo*, bool> inGame_; //!< Indicates each Player's state.
-            virtual void spawnDeadPlayersIfRequested(); //!< Prevents dead players to respawn
+            bool noPunishment;
+            bool hardPunishment;
+            float punishDamageRate;
+            virtual void spawnDeadPlayersIfRequested(); //!< Prevents dead players to respawn.
+            virtual int getMinLives(); //!< Returns minimum of each player's lives; players with 0 lives are skipped; 
 
         public:
             LastManStanding(BaseObject* creator); //!< Default Constructor.
@@ -74,7 +78,7 @@ namespace orxonox
             virtual void playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn);  //!< Manages the gametype's HUD. #Players alive via StaticMessage.
 
             const int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_".
-            void killPlayer(PlayerInfo* player); //!< Function in order to kill a player. Punishment for hiding longer than "timeRemaining".
+            void punishPlayer(PlayerInfo* player); //!< Function in order to kill a player. Punishment for hiding longer than "timeRemaining".
             void tick (float dt); //!< used to end the game
     };
 }
