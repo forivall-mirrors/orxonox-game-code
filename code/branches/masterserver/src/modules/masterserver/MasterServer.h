@@ -67,10 +67,18 @@ namespace orxonox
       static MasterServer* singletonPtr_s;
     
     private:
+      /* methods */
+      int eventConnect( ENetEvent *event );
+      int eventDisconnect( ENetEvent *event );
+      int eventData( ENetEvent *event );
+
+      /* members */
       ENetAddress address;
       ENetHost *server;
       ServerList *mainlist;
       PeerList *peers;
+
+      /* main routine */
       int run();
 
   };

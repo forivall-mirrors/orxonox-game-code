@@ -39,17 +39,22 @@ namespace orxonox
   /***** EVENTS *****/
   /* connect event */
   int 
-  eventConnect( ENetEvent *event )
+  MasterServer::eventConnect( ENetEvent *event )
   { /* check for bad parameters */
     if( !event )
-    { fprintf( stderr, "No event given.\n" );
+    { COUT(2) << "MasterServer::eventConnect: No event given.\n" ;
       return -1;
     }
 
+    /* convert address to string. */
+    char *addrconv = (char *) calloc( 50, 1 );
+    enet_address_get_host_ip( &(event->peer->address), addrconv, 49 );
+
     /* output debug info */
-    printf( "A new client connected from %x:%u.\n", 
-        (event->peer->address.host),
-        event->peer->address.port );
+    COUT(4) << "A new client connected from " 
+      << addrconv 
+      << " on port " 
+      << event->peer->address.port << "\n";
 
     /* game server or client connection? */
     /* -> decide in protocol */
@@ -60,49 +65,71 @@ namespace orxonox
     /* client */
     /* add to client list */
 
-    /* NOTE this seems to be some weird snipped from the tutorial as peer.data
-     * is a uint_32 of some kind and hence shouldn't be assigned a c string? :S 
-     */
-    /* Store any relevant client information here. */
-    /* event->peer->data = "Client information"; */
-    /* /NOTE */
+    /* store string form of address here */
+    event->peer->data = addrconv; 
+
+    /* all fine. */
     return 0;
   }
 
   /* disconnect event */
   int 
-  eventDisconnect( ENetEvent *event )
+  MasterServer::eventDisconnect( ENetEvent *event )
   { /* check for bad parameters */
     if( !event )
-    { fprintf( stderr, "No event given.\n" );
+    { COUT(2) << "No event given.\n";
       return -1;
     }
 
     /* output that the disconnect happened, to be removed at a later time. */
-    printf( "%s disconnected.\n", (char*)event->peer->data );
+    COUT(4) << (char*)event->peer->data << " disconnected.\n";
 
     /* remove the server from the list it belongs to */
 
     /* Reset the peer's client information. */
-    event->peer->data = NULL;
+    if( event->peer->data ) free( event->peer->data );
     return 0;
   }
 
   /* data event */
   int 
-  eventData( ENetEvent *event )
+  MasterServer::eventData( ENetEvent *event )
   { /* output what's in the packet (to be removed later) */
-    if( !event || !(event->packet) || !(event->peer) || !(event->channelID) )
-    { fprintf( stderr, "No complete event given.\n" );
+    if( !event || !(event->packet) || !(event->peer) )
+    { COUT(2) << "No complete event given.\n";
       return -1;
     }
+     
+    /* generate address in readable form */
+    char *addrconv = (char *) calloc( 50, 1 );
+    enet_address_get_host_ip( &(event->peer->address), addrconv, 49 );
 
+    /* DEBUG */
     /* output debug info about the data that has come, to be removed */
-    //printf( "A packet of length %u containing %s was received from %s on channel %u.\n",
-    //event->packet->dataLength,
-    //event->packet->data,
-    //event->peer->data,
-    //event->channelID );
+    COUT(4) << "A packet of length" 
+      << event->packet->dataLength
+      << " containing "
+      << event->packet->data
+      << " was received from "
+      << addrconv 
+      << " on channel "
+      << event->channelID << "\n";
+
+    /* send some packet back for testing */
+    /* TESTING */
+
+    /* Create a reliable reply of size 7 containing "reply\0" */
+    ENetPacket * reply = enet_packet_create ("reply", 
+        strlen ("reply") + 1, 
+        ENET_PACKET_FLAG_RELIABLE);
+
+    /* Send the reply to the peer over channel id 0. */
+    enet_peer_send( event->peer, 0, reply );
+
+    /* One could just use enet_host_service() instead. */
+    enet_host_flush( this->server );
+
+    /* /TESTING */
 
     /* game server or client connection? */
     /* game server */
@@ -114,26 +141,32 @@ namespace orxonox
     /* start actions */
     /* and send reply */
 
+    /* delete addrconv */
+    if( addrconv ) free( addrconv );
+
     /* Clean up the packet now that we're done using it. */
     enet_packet_destroy( event->packet );
     return 0;
   }
 
+
   /**** MAIN ROUTINE *****/
   int 
   MasterServer::run()
   {
-    COUT(0) << "omg, i got baschtl'd!\n";
-
     /***** ENTER MAIN LOOP *****/
     ENetEvent *event = (ENetEvent *)calloc(sizeof(ENetEvent), sizeof(char));
     if( event == NULL )
-    { fprintf( stderr, "Could not create ENetEvent structure, exiting.\n" );
+    { 
+      COUT(1) << "Could not create ENetEvent structure, exiting.\n";
       exit( EXIT_FAILURE );
     }
 
+    /* tell people we're now initialized and blocking. */
+    COUT(0) << "MasterServer initialized, waiting for connections.\n";
+
     /* create an iterator for the loop */
-    while( enet_host_service( this->server, event, 1000 ) > 0 )
+    while( enet_host_service( this->server, event, 1000 ) >= 0 )
     { /* check what type of event it is and react accordingly */
       switch (event->type)
       { /* new connection */
@@ -162,7 +195,7 @@ namespace orxonox
   {
     /***** INITIALIZE NETWORKING *****/
     if( enet_initialize () != 0)
-    { fprintf( stderr, "An error occurred while initializing ENet.\n");
+    { COUT(1) << "An error occurred while initializing ENet.\n";
       exit( EXIT_FAILURE );
     }
 
@@ -180,20 +213,18 @@ namespace orxonox
 
     /* see if creation worked */
     if( !this->server )
-    { fprintf( stderr, 
-        "An error occurred while trying to create an ENet server host.\n" );
-    exit( EXIT_FAILURE );
-    }
-
-    /***** INITIALIZE GAME SERVER LIST *****/
-    this->mainlist = new ServerList();
-    if( this->mainlist == NULL )
-    { fprintf( stderr, "Error creating server list.\n" );
+    { COUT(1) << 
+        "An error occurred while trying to create an ENet server host.\n";
       exit( EXIT_FAILURE );
     }
 
-    /***** INITIALIZE PEER LIST *****/
+    /***** INITIALIZE GAME SERVER AND PEER LISTS *****/
+    this->mainlist = new ServerList();
     this->peers = new PeerList();
+    if( this->mainlist == NULL || this->peers == NULL )
+    { COUT(1) << "Error creating server or peer list.\n";
+      exit( EXIT_FAILURE );
+    }
 
     /* run the main method */
     run();
@@ -206,10 +237,9 @@ namespace orxonox
     /* terminate all networking connections */
     enet_host_destroy( this->server );
 
+    /* free all used memory */
     /* clear the list of connected game servers */
     /* clear the list of connected game clients */
-
-    /* free all used memory */
 
   }
 
