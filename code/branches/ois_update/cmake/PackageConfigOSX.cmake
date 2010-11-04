@@ -46,7 +46,7 @@ SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
 #SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/zlib1.dll CACHE FILEPATH "")
 
 # Include paths and other special treatments
-#SET(ENV{ALUTDIR}               ${DEP_FRAMEWORK_DIR})
+SET(ENV{ALUTDIR}               ${DEP_FRAMEWORK_DIR})
 SET(ENV{BOOST_ROOT}            ${DEPENDENCY_PACKAGE_DIR})
 SET(ENV{CEGUIDIR}              ${DEP_FRAMEWORK_DIR})
 #SET(ENV{DBGHELP_DIR}           ${DEP_INCLUDE_DIR}/dbghelp)
