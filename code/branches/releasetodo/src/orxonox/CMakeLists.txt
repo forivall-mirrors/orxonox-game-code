@@ -24,6 +24,7 @@ INCLUDE_DIRECTORIES(
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
   Level.cc
+  LevelInfo.cc
   LevelManager.cc
   Main.cc
   MoodManager.cc
@@ -57,6 +58,7 @@ ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
     ChatInputHandler.h
+    LevelInfo.h
     LevelManager.h
     MoodManager.h
     controllers/HumanController.h

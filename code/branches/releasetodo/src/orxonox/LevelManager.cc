@@ -31,13 +31,16 @@
 #include <map>
 
 #include "util/ScopedSingletonManager.h"
+#include "core/ClassTreeMask.h"
 #include "core/CommandLineParser.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
 #include "core/Resource.h"
+#include "core/XMLFile.h"
 #include "PlayerManager.h"
 #include "Level.h"
+#include "LevelInfo.h"
 
 namespace orxonox
 {
@@ -141,8 +144,16 @@ namespace orxonox
             if (it->find("old/") != 0)
             {
                 size_t pos = it->find(".oxw");
+                COUT(0) << *it << std::endl;
+                XMLFile file = XMLFile(*it);
+                ClassTreeMask mask = ClassTreeMask();
+                mask.exclude(ClassIdentifier<BaseObject>::getIdentifier());
+                mask.include(ClassIdentifier<LevelInfo>::getIdentifier());
+                Loader::load(&file, mask);
+                
                 this->availableLevels_.push_back(it->substr(0, pos));
             }
         }
+
     }
 }
