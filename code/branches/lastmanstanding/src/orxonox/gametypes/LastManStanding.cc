@@ -47,8 +47,8 @@ namespace orxonox
         this->playersAlive=0;
         this->timeRemaining=15.0f;
         this->respawnDelay=4.0f;
-        this->noPunishment=false;
-        this->hardPunishment=false;
+        this->bNoPunishment=false;
+        this->bHardPunishment=false;
         this->punishDamageRate=0.4f;
         this->setHUDTemplate("LastmanstandingHUD");
     }
@@ -62,13 +62,6 @@ namespace orxonox
                 if (alive&&(it->first->isReadyToSpawn() || this->bForceSpawn_))
                 {
                     this->spawnPlayer(it->first);
-                }
-                else if ((!inGame_[it->first])&&(0<playerLives_[it->first]))
-                {
-                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
-                        continue;
-                    const std::string& message = "Respawn in " +multi_cast<std::string>(respawnDelay)+ " seconds." ;
-                    this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
                 }
                 else if (0>=playerLives_[it->first])
                 {
@@ -86,8 +79,8 @@ namespace orxonox
         SetConfigValue(lives, 4);
         SetConfigValue(timeRemaining, 15.0f);
         SetConfigValue(respawnDelay, 4.0f);
-        SetConfigValue(noPunishment, false);
-        SetConfigValue(hardPunishment, false);
+        SetConfigValue(bNoPunishment, false);
+        SetConfigValue(bHardPunishment, false);
     }
 
     bool LastManStanding::allowPawnDamage(Pawn* victim, Pawn* originator)
@@ -101,7 +94,7 @@ namespace orxonox
             {
                 if (it->first->getClientID()== CLIENTID_UNKNOWN)
                     return true;
-                const std::string& message = ""; // set blank - erases Camper-Warning-message
+                const std::string& message = ""; // resets Camper-Warning-message
                 this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
             }    
         }
@@ -242,7 +235,7 @@ namespace orxonox
     {
         if(!player)
             return;
-        if(noPunishment)
+        if(bNoPunishment)
             return;
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
@@ -252,17 +245,17 @@ namespace orxonox
             Pawn* pawn = dynamic_cast<Pawn*>(player->getControllableEntity());
             if(!pawn)
                 return;
-            if(hardPunishment)
+            if(bHardPunishment)
             {
                 pawn->kill();
                 this->timeToAct_[player]=timeRemaining+3.0f+respawnDelay;//reset timer
             }
-            /*else
+            else
             {
-                float damage=pawn->getMaxHealth()*punishDamageRate*0.5;
+                float damage=pawn->getMaxHealth()*punishDamageRate*0.5;//TODO: Factor 0.5 is hard coded. Where is the ratio between MaxHealth actually defined?
                 pawn->removeHealth(damage);
                 this->timeToAct_[player]=timeRemaining;//reset timer
-            }*/
+            }
         }
     }
 
@@ -296,7 +289,13 @@ namespace orxonox
                 {
                     it->second=timeRemaining+3.0f;//reset punishment-timer
                     if (playerGetLives(it->first)>0)
+                    {
                         this->punishPlayer(it->first);
+                        if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                            return;
+                        const std::string& message = ""; // resets Camper-Warning-message
+                        this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
+                    }
                 }
                 else if (it->second<timeRemaining/5)//Warning message
                 {

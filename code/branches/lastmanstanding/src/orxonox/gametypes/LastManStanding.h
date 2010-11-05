@@ -54,12 +54,12 @@ namespace orxonox
             int playersAlive; //!< Counter counting players with more than 0 lives.
             float timeRemaining; //!< Each player has a certain time where he or she has to hit an opponent or will be punished.
             std::map<PlayerInfo*, float> timeToAct_; //!< Each player's time till she/he will be punished is stored here.
-            float respawnDelay;
+            float respawnDelay; //!<Time in seconds when a player will respawn after death.
             std::map<PlayerInfo*, float> playerDelayTime_; //!< Stores each Player's delay time.
             std::map<PlayerInfo*, bool> inGame_; //!< Indicates each Player's state.
-            bool noPunishment;
-            bool hardPunishment;
-            float punishDamageRate;
+            bool bNoPunishment; //!< Config value to switch off Punishment function if it is set to true.
+            bool bHardPunishment; //!< Switches between damage and death as punishment.
+            float punishDamageRate; //!< Makes Damage adjustable.
             virtual void spawnDeadPlayersIfRequested(); //!< Prevents dead players to respawn.
             virtual int getMinLives(); //!< Returns minimum of each player's lives; players with 0 lives are skipped; 
 

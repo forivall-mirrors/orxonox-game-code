@@ -65,17 +65,13 @@
 
 <!-- ---------------asteroid dome----------------- -->
 <?lua
-max = 17
-for i = 1, max, 1
+max = 16
+for i = 0, max, 1
 do
     y = math.sin(i/max*6)*750
     z = math.cos(i/max*6)*750
+    j = 1
     ?>
-<?lua
-for k = 1, 17, 1
-do
-j = math.random()
-?>
 
     <SpawnPoint team=0 position="<?lua print(y*1.4+z*0.2) ?>,0,<?lua print(z*1.4-y*0.2) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
@@ -141,9 +137,6 @@ j = math.random()
     </StaticEntity>
 
 
-<?lua
-end
-?>
 <?lua end ?>
 
   </Scene>
