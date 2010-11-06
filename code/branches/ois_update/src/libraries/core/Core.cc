@@ -80,7 +80,9 @@ namespace orxonox
     Core* Core::singletonPtr_s  = 0;
 
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
+#ifndef ORXONOX_PLATFORM_APPLE
     SetCommandLineSwitch(noIOConsole).information("Use this if you don't want to use the IOConsole (for instance for Lua debugging)");
+#endif
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
     SetCommandLineArgument(limitToCPU, 1).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is the first core (faster than off)");
@@ -153,13 +155,15 @@ namespace orxonox
         ClassIdentifier<Core>::getIdentifier("Core")->initialiseObject(this, "Core", true);
         this->setConfigValues();
 
-        // create persistent io console
+#ifndef ORXONOX_PLATFORM_APPLE
+        // Create persistent IO console
         if (CommandLineParser::getValue("noIOConsole").getBool())
         {
             ModifyConfigValue(bStartIOConsole_, tset, false);
         }
         if (this->bStartIOConsole_)
             this->ioConsole_.reset(new IOConsole());
+#endif
 
         // creates the class hierarchy for all classes with factories
         Identifier::createClassHierarchy();
