@@ -52,6 +52,14 @@ IF(NOT "${_CEGUI_VERSION_REF}" STREQUAL "${CEGUI_VERSION}"
   ENDFOREACH(_version)
 ENDIF()
 
+# Workaround for XCode: The folder where the bind files are written to has
+# to be present beforehand.
+IF(CMAKE_CONFIGURATION_TYPES)
+  FOREACH(_dir ${CMAKE_CONFIGURATION_TYPES})
+    FILE(MAKE_DIRECTORY ${CEGUILUA_BINARY_DIR}/${_dir})
+  ENDFOREACH(_dir)
+ENDIF()
+
 # Create the tolua bind file. We could use the orignal file though, but it is 1.6MB...
 ADD_CUSTOM_COMMAND(
   OUTPUT ${CEGUILUA_BINARY_DIR}/${CMAKE_CFG_INTDIR}/lua_CEGUI.cpp
