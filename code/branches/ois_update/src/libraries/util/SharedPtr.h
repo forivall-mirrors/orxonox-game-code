@@ -186,7 +186,7 @@ namespace orxonox
 
         _UtilExport SmallObjectAllocator& createSharedCounterPool();
 
-        FORCEINLINE SmallObjectAllocator& getSharedCounterPool()
+        ORX_FORCEINLINE SmallObjectAllocator& getSharedCounterPool()
         {
             static SmallObjectAllocator& instance = createSharedCounterPool();
             return instance;
