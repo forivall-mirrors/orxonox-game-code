@@ -118,6 +118,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   IF(_arg_TOLUA_FILES)
     GENERATE_TOLUA_BINDINGS(${_target_name_capitalised} _${_target_name}_files
                             INPUTFILES ${_arg_TOLUA_FILES})
+    # Workaround for XCode: The folder where the bind files are written to has
+    # to be present beforehand.
+    IF(CMAKE_CONFIGURATION_TYPES)
+      FOREACH(_dir ${CMAKE_CONFIGURATION_TYPES})
+        FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_dir})
+      ENDFOREACH(_dir)
+    ENDIF()
   ENDIF()
 
   # First part (pre target) of precompiled header files
