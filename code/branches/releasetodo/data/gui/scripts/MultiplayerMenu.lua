@@ -2,6 +2,10 @@
 
 local P = createMenuSheet("MultiplayerMenu")
 
+P.levelList = {}
+P.itemList = {}
+P.showAll = false
+
 function P.onLoad()
     P.multiplayerMode = "startClient"
 end
@@ -68,35 +72,43 @@ function P.MultiplayerBackButton_clicked(e)
 end
 
 function P.showLevelList()
-    local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
-    CEGUI.toListbox(listbox):resetList()
+    P.createLevelList()
+end
+
+function P.createLevelList()
+    P.levelList = {}
+    P.itemList = {}
+    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/MultiplayerListbox"))
+    listbox:resetList()
     local preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
-    orxonox.LevelManager:getInstance():compileAvailableLevelList()
-    local levelList = {}
+    local size = orxonox.LevelManager:getInstance():getNumberOfLevels()
     local index = 0
-    local level = ""
-    while true do
+    local level = nil
+    while index < size do
         level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
-        if level == "" then
-            break
+        if level ~= nil then
+            if P.showAll or not level:hasTag("test") then
+                table.insert(P.levelList, level)
+            end
         end
-        table.insert(levelList, level)
         index = index + 1
     end
-    table.sort(levelList)
-    index = 1
-    for k,v in pairs(levelList) do
-        local item = CEGUI.createListboxTextItem(v)
+    --TODO: Reintroduce sorting, if needed.
+    --table.sort(levelList)
+    for k,v in pairs(P.levelList) do
+        local item = CEGUI.createListboxTextItem(v:getName())
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
-        item:setID(index)
-        index = index + 1
-        CEGUI.toListbox(listbox):addItem(item)
-        if v .. ".oxw" == preselect then
+        listbox:addItem(item)
+        if v:getXMLFilename() == preselect then
             listbox:setItemSelectState(item, true)
         end
+        P.itemList[k] = listbox:getListboxItemFromIndex(k-1)
+        --TODO: The description as tooltip would be nice.
+        --local lItem = tolua.cast("CEGUI::ListboxItem", P.itemList[k])
+        --lItem:setTooltipText(v:getDescription())
     end
-    end
-    
+end
+
 function P.showServerList()
     local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
     CEGUI.toListbox(listbox):resetList()

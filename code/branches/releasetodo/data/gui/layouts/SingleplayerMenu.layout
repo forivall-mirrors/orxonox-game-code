@@ -14,22 +14,34 @@
             <Property Name="HorzFormatting" Value="HorzCentred" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
             <Property Name="VertFormatting" Value="TopAligned" />
-            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.2875,0},{0.75,0},{0.6375,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.2875,0},{0.75,0},{0.7,0}}" />
             <Window Type="MenuWidgets/Listbox" Name="orxonox/SingleplayerLevelListbox" >
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.92,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.15,0},{0.95,0},{0.85,0}}" />
+            </Window>
+            <Window Type="MenuWidgets/RadioButton" Name="orxonox/SingleplayerShowRestrictedButton" >
+                <Property Name="Text" Value="show only restricted" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.15,0},{0.87,0},{0.5,0},{.97,0}}" />
+                <Event Name="SelectStateChanged" Function="SingleplayerMenu.SingleplayerShowRestrictedButton_clicked"/>
+            </Window>
+            <Window Type="MenuWidgets/RadioButton" Name="orxonox/SingleplayerShowAllButton" >
+                <Property Name="Text" Value="show all" />
+                <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.65,0},{0.87,0},{0.85,0},{.97,0}}" />
+                <Event Name="SelectStateChanged" Function="SingleplayerMenu.SingleplayerShowAllButton_clicked"/>
             </Window>
         </Window>
         <Window Type="MenuWidgets/Button" Name="orxonox/SingleplayerStartButton" >
             <Property Name="Text" Value="Start" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.2875,0},{0.6625,0},{0.4875,0},{0.7125,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.2875,0},{0.725,0},{0.4875,0},{0.775,0}}" />
             <Event Name="Clicked" Function="SingleplayerMenu.SingleplayerStartButton_clicked"/>
         </Window>
         <Window Type="MenuWidgets/Button" Name="orxonox/SingleplayerBackButton" >
             <Property Name="Text" Value="Back" />
             <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
-            <Property Name="UnifiedAreaRect" Value="{{0.5125,0},{0.6625,0},{0.7125,0},{0.7125,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.5125,0},{0.725,0},{0.7125,0},{0.775,0}}" />
             <Event Name="Clicked" Function="SingleplayerMenu.SingleplayerBackButton_clicked"/>
         </Window>
     </Window>

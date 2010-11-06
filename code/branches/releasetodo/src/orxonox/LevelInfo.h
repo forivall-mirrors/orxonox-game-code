@@ -43,8 +43,8 @@
 #include "core/BaseObject.h"
 #include "core/OrxonoxClass.h"
 
-namespace orxonox
-{
+namespace orxonox // tolua_export
+{ // tolua_export
 
     /**
     @brief
@@ -54,8 +54,9 @@ namespace orxonox
     @author
         Damian 'Mozork' Frick
     */
-    class _OrxonoxExport LevelInfoItem : virtual public OrxonoxClass
-    {
+    class _OrxonoxExport LevelInfoItem // tolua_export
+        : virtual public OrxonoxClass
+    { // tolua_export
         public:
             LevelInfoItem(); //!< Default constructor.
             LevelInfoItem(const std::string& name, const std::string filename); //!< Constructor. Initializes the object.
@@ -71,8 +72,7 @@ namespace orxonox
             @brief Get the name of the Level.
             @return Returns the name of the Level.
             */
-            inline const std::string& getName(void)
-                { return this->name_; }
+            inline const std::string& getName(void) { return this->name_; } // tolua_export
 
             /**
             @brief Set the description of the Level.
@@ -84,8 +84,7 @@ namespace orxonox
             @brief Get the description of the Level.
             @return Returns the description of the Level.
             */
-            inline const std::string& getDescription() const
-                { return this->description_; }
+            inline const std::string& getDescription() const { return this->description_; } // tolua_export
 
             void setTags(const std::string& tags); //!< Set the tags the Level is tagged with.
             bool addTag(const std::string& tag, bool update = true); //!< Add a tag to the set of tags the Level is tagged with.
@@ -100,15 +99,13 @@ namespace orxonox
             @param tag The tag for which is checked.
             @return Returns true if the Level is tagged with the input tag.
             */
-            bool hasTag(const std::string& tag) const
-                { return this->tags_.find(tag) != this->tags_.end(); }
+            inline bool hasTag(const std::string& tag) const { return this->tags_.find(tag) != this->tags_.end(); } // tolua_export
 
             /**
             @brief Get the XML-filename of the Level.
             @return Returns the XML-filename (including *.oxw extension) of the Level.
             */
-            inline const std::string& getXMLFilename(void)
-                { return this->xmlfilename_; }
+            inline const std::string& getXMLFilename(void) { return this->xmlfilename_; } // tolua_export
 
         protected:
             /**
@@ -127,7 +124,7 @@ namespace orxonox
             std::string description_; //!< The description of the Level.
             std::set<std::string> tags_; //!< The set of tags the Level is tagged with.
             std::string tagsString_; //!< The comma-seperated string of all the tags the Level is tagged with.
-    };
+    }; // tolua_export
 
     /**
     @brief
@@ -187,6 +184,6 @@ namespace orxonox
             LevelInfoItem* copy(void); //!< Copies the contents of this LevelInfo object to a new LevelInfoItem object.
 
     };
-}
+} // tolua_export
 
 #endif /* _LevelInfo_H__ */

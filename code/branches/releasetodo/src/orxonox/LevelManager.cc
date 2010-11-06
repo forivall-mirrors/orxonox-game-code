@@ -133,20 +133,17 @@ namespace orxonox
     {
         this->updateAvailableLevelList();
 
-        COUT(0) << "Number of Levels: " << this->infos_.size() << std::endl;
-
         return this->availableLevels_.size();
     }
 
-    const std::string& LevelManager::getAvailableLevelListItem(unsigned int index) const
+    LevelInfoItem* LevelManager::getAvailableLevelListItem(unsigned int index) const
     {
         if (index >= this->availableLevels_.size())
-            return BLANKSTRING;
+            return NULL;
         else
         {
             std::map<std::string, LevelInfoItem*>::const_iterator it = this->infos_.find(this->availableLevels_[index]);
-            assert(it->second);
-            return it->second->getName();
+            return it->second;
         }
     }
 
@@ -171,7 +168,6 @@ namespace orxonox
                 for(ObjectList<LevelInfo>::iterator item = ObjectList<LevelInfo>::begin(); item != ObjectList<LevelInfo>::end(); ++item)
                 {
                     LevelInfoItem* info = item->copy();
-                    COUT(0) << "BUUUUUUUUUH: " << info->getName() << " | " << info->getXMLFilename() << " | " << it->substr(0, pos) << std::endl;
                     if(info->getXMLFilename() == *it)
                     {
                         this->infos_.insert(std::pair<std::string, LevelInfoItem*>(it->substr(0, pos),info));
