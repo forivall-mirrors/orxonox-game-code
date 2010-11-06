@@ -89,10 +89,9 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // get executable module
         TCHAR buffer[1024];
-        if (GetModuleFileName(NULL, buffer, 1024) == 0){
+        if (GetModuleFileName(NULL, buffer, 1024) == 0)
             ThrowException(General, "Could not retrieve executable path.");
-		}
-		
+
 #elif defined(ORXONOX_PLATFORM_APPLE)
         char buffer[1024];
         uint32_t path_len = 1023;
@@ -125,15 +124,13 @@ namespace orxonox
         buffer[ret] = 0;
 #endif
 
-        executablePath_ = bf::path(buffer);
-//#ifndef ORXONOX_PLATFORM_APPLE
-        executablePath_ = executablePath_.branch_path(); // remove executable name
-//#endif
-		
+        // Remove executable filename
+        executablePath_ = bf::path(buffer).branch_path();
+
         /////////////////////
         // SET MODULE PATH //
         /////////////////////
-		
+
         if (bf::exists(executablePath_ / "orxonox_dev_build.keep_me"))
         {
             COUT(1) << "Running from the build tree." << std::endl;
