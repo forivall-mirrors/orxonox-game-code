@@ -58,6 +58,8 @@ namespace orxonox
         {
             ModifyConfigValue(defaultLevelName_, tset, CommandLineParser::getValue("level").getString());
         }
+
+        this->compileAvailableLevelList();
     }
 
     LevelManager::~LevelManager()
@@ -127,33 +129,68 @@ namespace orxonox
         return defaultLevelName_;
     }
 
+    unsigned int LevelManager::getNumberOfLevels()
+    {
+        this->updateAvailableLevelList();
+
+        COUT(0) << "Number of Levels: " << this->infos_.size() << std::endl;
+
+        return this->availableLevels_.size();
+    }
+
     const std::string& LevelManager::getAvailableLevelListItem(unsigned int index) const
     {
-        if (index >= availableLevels_.size())
+        if (index >= this->availableLevels_.size())
             return BLANKSTRING;
         else
-            return availableLevels_[index];
+        {
+            std::map<std::string, LevelInfoItem*>::const_iterator it = this->infos_.find(this->availableLevels_[index]);
+            assert(it->second);
+            return it->second->getName();
+        }
     }
 
     void LevelManager::compileAvailableLevelList()
     {
-        this->availableLevels_.clear();
         Ogre::StringVectorPtr levels = Resource::findResourceNames("*.oxw");
+        // Iterate over all *.oxw level files.
         for (Ogre::StringVector::const_iterator it = levels->begin(); it != levels->end(); ++it)
         {
+            //TODO: Replace with tag,
             if (it->find("old/") != 0)
             {
                 size_t pos = it->find(".oxw");
-                COUT(0) << *it << std::endl;
+
+                bool infoExists = false;
+                // Load the LevelInfo object from the level file.
                 XMLFile file = XMLFile(*it);
                 ClassTreeMask mask = ClassTreeMask();
                 mask.exclude(ClassIdentifier<BaseObject>::getIdentifier());
                 mask.include(ClassIdentifier<LevelInfo>::getIdentifier());
                 Loader::load(&file, mask);
-                
+                for(ObjectList<LevelInfo>::iterator item = ObjectList<LevelInfo>::begin(); item != ObjectList<LevelInfo>::end(); ++item)
+                {
+                    LevelInfoItem* info = item->copy();
+                    COUT(0) << "BUUUUUUUUUH: " << info->getName() << " | " << info->getXMLFilename() << " | " << it->substr(0, pos) << std::endl;
+                    if(info->getXMLFilename() == *it)
+                    {
+                        this->infos_.insert(std::pair<std::string, LevelInfoItem*>(it->substr(0, pos),info));
+                        infoExists = true;
+                    }
+                }
+                Loader::unload(&file, mask);
+                if(!infoExists)
+                {
+                    this->infos_.insert(std::pair<std::string, LevelInfoItem*>(it->substr(0, pos), new LevelInfoItem(it->substr(0, pos), *it)));
+                }
+
                 this->availableLevels_.push_back(it->substr(0, pos));
             }
         }
+    }
 
+    void LevelManager::updateAvailableLevelList(void)
+    {
+        //TODO: Implement some kind of update?
     }
 }

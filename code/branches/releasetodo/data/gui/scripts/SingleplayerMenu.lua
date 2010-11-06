@@ -5,15 +5,12 @@ local P = createMenuSheet("SingleplayerMenu")
 function P.onLoad()
     listbox = winMgr:getWindow("orxonox/SingleplayerLevelListbox")
     preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
-    orxonox.LevelManager:getInstance():compileAvailableLevelList()
+    size = orxonox.LevelManager:getInstance():getNumberOfLevels()
     local levelList = {}
     local index = 0
     local level = ""
-    while true do
+    while index < size do
       level = orxonox.LevelManager:getInstance():getAvailableLevelListItem(index)
-      if level == "" then
-        break
-      end
       table.insert(levelList, level)
       index = index + 1
     end
