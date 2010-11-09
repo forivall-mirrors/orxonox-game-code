@@ -80,6 +80,7 @@ function P.createLevelList()
     P.itemList = {}
     local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/MultiplayerListbox"))
     listbox:resetList()
+    orxonox.GUIManager:setItemTooltipsEnabledHelper(listbox, true)
     local preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
     local size = orxonox.LevelManager:getInstance():getNumberOfLevels()
     local index = 0
@@ -104,8 +105,9 @@ function P.createLevelList()
         end
         P.itemList[k] = listbox:getListboxItemFromIndex(k-1)
         --TODO: The description as tooltip would be nice.
-        --local lItem = tolua.cast("CEGUI::ListboxItem", P.itemList[k])
+        --local lItem = P.itemList[k]
         --lItem:setTooltipText(v:getDescription())
+        orxonox.GUIManager:setTooltipTextHelper(P.itemList[k], v:getDescription())
     end
 end
 

@@ -42,6 +42,8 @@ extern "C" {
 #include <CEGUISystem.h>
 #include <CEGUIWindow.h>
 #include <CEGUIWindowManager.h>
+#include <CEGUI/elements/CEGUIListbox.h>
+#include <CEGUI/elements/CEGUIListboxItem.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
 #include "SpecialConfig.h" // Configures the macro below
@@ -439,4 +441,16 @@ namespace orxonox
     {
         window->subscribeScriptedEvent(event, function);
     }
+
+    void GUIManager::setTooltipTextHelper(CEGUI::ListboxItem* item, const std::string& tooltip)
+    {
+        item->setTooltipText(tooltip);
+    }
+
+    void GUIManager::setItemTooltipsEnabledHelper(CEGUI::Listbox* listbox, bool enabled)
+    {
+        listbox->setItemTooltipsEnabled(enabled);
+    }
+
+    
 }
