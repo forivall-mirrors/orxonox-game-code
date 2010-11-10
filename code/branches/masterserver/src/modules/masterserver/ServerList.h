@@ -68,7 +68,7 @@ namespace orxonox
       bool delServerByAddress( std::string address );
 
 
-      /* SORTING */
+      /* SORTING (to be implemented) */
 
       /** sort by name  */
       void sortByName();

@@ -31,6 +31,8 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   GamestateHandler.cc
   LANDiscoverable.cc
   LANDiscovery.cc
+  WANDiscovery.cc
+  MasterServerComm.cc
   NetworkFunction.cc
   Host.cc
   Server.cc
@@ -53,6 +55,8 @@ SET_SOURCE_FILES(NETWORK_HDR_FILES
   Host.h
   LANDiscoverable.h
   LANDiscovery.h
+  WANDiscovery.h
+  MasterServerComm.h
   NetworkFunction.h
   NetworkPrecompiledHeaders.h
   NetworkPrereqs.h

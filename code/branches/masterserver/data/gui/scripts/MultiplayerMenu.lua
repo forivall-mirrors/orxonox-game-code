@@ -128,5 +128,38 @@ function P.showServerList()
     end
 end
 
+
+-- same as above, but use WAN Discovery
+function P.showServerList()
+    local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
+    CEGUI.toListbox(listbox):resetList()
+    local discovery = orxonox.WANDiscovery:getInstance()
+    discovery:discover()
+    P.serverList = {}
+    local index = 0
+    local servername = ""
+    local serverip = ""
+    while true do
+        servername = discovery:getServerListItemName(index)
+        if servername == "" then
+            break
+        end
+        serverip = discovery:getServerListItemIP(index)
+        if serverip == "" then
+          break
+        end
+        table.insert(P.serverList, {servername, serverip})
+        index = index + 1
+    end
+    index = 1
+    for k,v in pairs(P.serverList) do
+        local item = CEGUI.createListboxTextItem( v[1] .. ": " .. v[2] )
+        item:setID(index)
+        index = index + 1
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
+        CEGUI.toListbox(listbox):addItem(item)
+    end
+end
+
 return P
 

@@ -20,8 +20,9 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Fabian 'x3n' Landau (original)
  *   Co-authors:
+ *      Sandro 'smerkli' Merkli (adaptions to WAN)
  *      ...
  *
  */
@@ -41,25 +42,70 @@ namespace orxonox
 
   WANDiscovery::WANDiscovery()
   {
+    /* create master server communications object */
+    this->msc = MasterServerComm();
+
+    /* initialize it and see if it worked */
+    if( msc.initialize() )
+      COUT(1) << "Error: could not initialize master server communications!\n";
+
+    /* connect and see if it worked */
+    if( msc.connect( MS_ADDRESS, 1234 ) )
+      COUT(1) << "Error: could not connect to master server!\n";
   }
 
   WANDiscovery::~WANDiscovery()
-  {
+  { 
+    /* clear server list */
+    this->servers_.clear();  
   }
 
+  /* callback for the network reply poller */
+  /* NOTE implement protocol-specific part here. */
+  int replyhandler( char *addr, ENetEvent *ev )
+  { 
+    /* handle incoming data
+     * if a list entry arrives add to list
+     * if a done entry arrives set done to true
+     */
+
+    /* done handling, return all ok code 0 */
+    return 0;
+  }
+ 
   void WANDiscovery::discover()
   {
+    /* clear list */
     this->servers_.clear();
+
+    /* send request to server */
+    msc.sendRequest( MSPROTO_CLIENT MSPROTO_REQ_LIST );
+
+    /* deal with replies */
+    while( msc.pollForReply( replyhandler ) ) 
+      /* nothing */;
+
+    /* done receiving. */
   }
 
   std::string WANDiscovery::getServerListItemName(unsigned int index)
   {
-
+    /* if the index is out of range, return empty */
+    if( index >= this->servers_.size() )
+      return BLANKSTRING;
+    else
+      /* else return the name of the server */
+      return this->servers_[index].getServerName();
   }
 
   std::string WANDiscovery::getServerListItemIP(unsigned int index)
   {
-
+    /* if the index is out of range, return empty */
+    if( index >= this->servers_.size() )
+      return BLANKSTRING;
+    else
+      /* else return the IP of the server */
+      return this->servers_[index].getServerIP();
   }
 
 

@@ -32,8 +32,16 @@
 #include "NetworkPrereqs.h"
 #include "packet/ServerInformation.h"
 #include "util/Singleton.h"
+#include "MasterServerComm.h"
 
 #include <vector>
+
+/* master server address (to be moved elsewhere later) */
+#define MS_ADDRESS "localhost"
+
+/* protocol (to be moved elsewhere later) */
+#define MSPROTO_CLIENT "CL "
+#define MSPROTO_REQ_LIST "REQ:LIST"
 
 // tolua_begin
 namespace orxonox
@@ -45,17 +53,45 @@ namespace orxonox
   { // tolua_export
     friend class Singleton<WANDiscovery>;
     public:
+      /** constructor */
       WANDiscovery();
+
+      /** destructor */
       ~WANDiscovery();
+
+      /** ask server for server list  */
       void discover(); // tolua_export
+
+      /** \param index Index to get the name of 
+       * \return The name of the server
+       * 
+       * Get the name of the server at index index. 
+       */
       std::string getServerListItemName( unsigned int index ); // tolua_export
+
+      /** \param index Index to get the IP of 
+       * \return The IP of the server
+       * 
+       * Get the IP of the server at index index. 
+       */
       std::string getServerListItemIP( unsigned int index ); // tolua_export
-      static WANDiscovery& getInstance(){ return Singleton<WANDiscovery>::getInstance(); } // tolua_export
+
+      /** \return an instance of WANDiscovery
+       * 
+       * Create and return an instance of WANDiscovery.
+       */
+      static WANDiscovery& getInstance() { return Singleton<WANDiscovery>::getInstance(); } // tolua_export
       
     private:
+      /** Singleton pointer */
       static WANDiscovery* singletonPtr_s;
-      ENetHost* host_;
+
+      /** Master server communications object */
+      MasterServerComm msc;
+
+      /** game server list */
       std::vector<packet::ServerInformation> servers_;
+
   }; // tolua_export
 
 } // tolua_export
