@@ -42,8 +42,8 @@ extern "C" {
 #include <CEGUISystem.h>
 #include <CEGUIWindow.h>
 #include <CEGUIWindowManager.h>
-#include <CEGUI/elements/CEGUIListbox.h>
-#include <CEGUI/elements/CEGUIListboxItem.h>
+#include <elements/CEGUIListbox.h>
+#include <elements/CEGUIListboxItem.h>
 #include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
 #include "SpecialConfig.h" // Configures the macro below

@@ -164,7 +164,7 @@ namespace orxonox
                 ClassTreeMask mask = ClassTreeMask();
                 mask.exclude(ClassIdentifier<BaseObject>::getIdentifier());
                 mask.include(ClassIdentifier<LevelInfo>::getIdentifier());
-                Loader::load(&file, mask);
+                Loader::load(&file, mask, false);
                 for(ObjectList<LevelInfo>::iterator item = ObjectList<LevelInfo>::begin(); item != ObjectList<LevelInfo>::end(); ++item)
                 {
                     LevelInfoItem* info = item->copy();
