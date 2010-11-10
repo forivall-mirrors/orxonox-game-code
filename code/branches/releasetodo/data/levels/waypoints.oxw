@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Waypoints Testlevel"
+ description = "Testing waypoings for AI controlled spaceships."
+ tags = "test, waypoints"
+/>
+
 <?lua
   include("hudtemplates3.oxo")
   include("stats.oxo")

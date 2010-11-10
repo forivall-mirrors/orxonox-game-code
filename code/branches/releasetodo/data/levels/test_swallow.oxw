@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Swallow Testlevel"
+ description = "Level to test the swallow spaceship."
+ tags = "test, swallow"
+/>
+
 <?lua
   include("hudtemplates3.oxo")
   include("stats.oxo")
