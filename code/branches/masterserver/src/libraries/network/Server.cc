@@ -100,9 +100,18 @@ namespace orxonox
 
 
   /* TODO */
-  void helper_ConnectToMasterserver()
+  void Server::helper_ConnectToMasterserver()
   {
-    /* TODO connect to master server here and say you're there */
+    /* initialize it and see if it worked */
+    if( msc.initialize() )
+      COUT(1) << "Error: could not initialize master server communications!\n";
+
+    /* connect and see if it worked */
+    if( msc.connect( MS_ADDRESS, 1234 ) )
+      COUT(1) << "Error: could not connect to master server!\n";
+
+    /* TODO */
+    /* now send the master server some note we're here */
   }
 
   /**
@@ -153,6 +162,20 @@ namespace orxonox
   }
 
 
+  /* TODO */
+  int replyhandler( char *addr, ENetEvent *ev )
+  { 
+    /* handle incoming data */
+
+    /* done handling, return all ok code 0 */
+    return 0;
+  }
+
+  void Server::helper_HandleMasterServerRequests()
+  { 
+    this->msc.pollForReply( replyhandler ); 
+  }
+
   /**
   * Run this function once every tick
   * calls processQueue and updateGamestate
@@ -166,7 +189,8 @@ namespace orxonox
     // receive and process incoming discovery packets
     LANDiscoverable::update();
 
-    // TODO receive and process requests from master server
+    // receive and process requests from master server
+    helper_HandleMasterServerRequests();
 
     if ( ClientInformation::hasClients() )
     {

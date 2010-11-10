@@ -37,6 +37,10 @@
 #include "GamestateManager.h"
 #include "ServerConnection.h"
 #include "LANDiscoverable.h"
+#include "MasterServerComm.h"
+
+/* proto (move to central point soon) */ 
+#define MS_ADDRESS "localhost"
 
 namespace orxonox
 {
@@ -52,6 +56,7 @@ namespace orxonox
     Server(int port, const std::string& bindAddress);
     ~Server();
 
+    void helper_ConnectToMasterserver();
     void open();
     void close();
     bool processChat(const std::string& message, unsigned int playerID);
@@ -81,6 +86,7 @@ namespace orxonox
     void syncClassid(unsigned int clientID);
 
     float timeSinceLastUpdate_;
+    MasterServerComm msc;
   };
 
 
