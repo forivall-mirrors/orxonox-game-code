@@ -62,6 +62,8 @@ namespace orxonox
     { COUT(1) << "An error occurred while trying to create an ENet client host.\n";
       return 1;
     }
+
+    return 0;
   }
 
   MasterServerComm::~MasterServerComm()
@@ -163,6 +165,9 @@ namespace orxonox
     /* One could just use enet_host_service() instead. */
     enet_host_flush( this->client );
     if( packet ) free( packet );
+
+    /* all done. */
+    return 0;
   }
 
 }

@@ -107,6 +107,8 @@ namespace orxonox
     COUT(4) << "opening server" << endl;
     this->openListener();
     LANDiscoverable::setActivity(true);
+
+    /* TODO connect to master server here and say you're there */
     return;
   }
 
@@ -148,6 +150,7 @@ namespace orxonox
   {
     // receive incoming packets
     Connection::processQueue();
+
     // receive and process incoming discovery packets
     LANDiscoverable::update();
 

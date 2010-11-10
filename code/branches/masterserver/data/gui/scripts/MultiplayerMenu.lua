@@ -130,7 +130,7 @@ end
 
 
 -- same as above, but use WAN Discovery
-function P.showServerList()
+function P.showServerListWAN()
     local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
     CEGUI.toListbox(listbox):resetList()
     local discovery = orxonox.WANDiscovery:getInstance()
