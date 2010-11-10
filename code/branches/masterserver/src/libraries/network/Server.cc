@@ -98,6 +98,13 @@ namespace orxonox
   {
   }
 
+
+  /* TODO */
+  void helper_ConnectToMasterserver()
+  {
+    /* TODO connect to master server here and say you're there */
+  }
+
   /**
   * This function opens the server by creating the listener thread
   */
@@ -106,9 +113,14 @@ namespace orxonox
     Host::setActive(true);
     COUT(4) << "opening server" << endl;
     this->openListener();
+    
+    /* make discoverable on LAN */
     LANDiscoverable::setActivity(true);
 
-    /* TODO connect to master server here and say you're there */
+    /* make discoverable on WAN */
+    helper_ConnectToMasterserver();
+
+    /* done */
     return;
   }
 
@@ -153,6 +165,8 @@ namespace orxonox
 
     // receive and process incoming discovery packets
     LANDiscoverable::update();
+
+    // TODO receive and process requests from master server
 
     if ( ClientInformation::hasClients() )
     {
