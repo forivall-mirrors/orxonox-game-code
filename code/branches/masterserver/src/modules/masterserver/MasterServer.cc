@@ -115,27 +115,29 @@ namespace orxonox
       << " on channel "
       << event->channelID << "\n";
 
-    /* send some packet back for testing */
-    /* TESTING */
+    //[> send some packet back for testing <]
+    //[> TESTING <]
 
-    /* Create a reliable reply of size 7 containing "reply\0" */
-    ENetPacket * reply = enet_packet_create ("reply", 
-        strlen ("reply") + 1, 
-        ENET_PACKET_FLAG_RELIABLE);
+    //[> Create a reliable reply of size 7 containing "reply\0" <]
+    //ENetPacket * reply = enet_packet_create ("reply", 
+        //strlen ("reply") + 1, 
+        //ENET_PACKET_FLAG_RELIABLE);
 
-    /* Send the reply to the peer over channel id 0. */
-    enet_peer_send( event->peer, 0, reply );
+    //[> Send the reply to the peer over channel id 0. <]
+    //enet_peer_send( event->peer, 0, reply );
 
-    /* One could just use enet_host_service() instead. */
-    enet_host_flush( this->server );
+    //[> One could just use enet_host_service() instead. <]
+    //enet_host_flush( this->server );
 
-    /* /TESTING */
+    //[> /TESTING <]
 
-    /* game server or client connection? */
-    /* game server */
+    /* GAME SERVER OR CLIENT CONNECTION? */
+
+    /* Game server */
     /* parse data */
     /* start actions */
     /* and send reply */
+
     /* client */
     /* parse data */
     /* start actions */

@@ -75,7 +75,8 @@ MasterServerComm::connect( char *address, unsigned int port )
   if (this->peer == NULL )
   { fprintf( stderr, 
         "No available peers for initiating an ENet connection.\n");
-    exit (EXIT_FAILURE);
+    //exit (EXIT_FAILURE);
+    return -1;
   }
 
   /* Wait up to 2 seconds for the connection attempt to succeed. */
@@ -86,7 +87,8 @@ MasterServerComm::connect( char *address, unsigned int port )
   {
     enet_peer_reset (this->peer);
     fprintf( stdout, "Connection to %s failed.", address );
-    exit(EXIT_FAILURE);
+    //exit(EXIT_FAILURE);
+    return -1;
   }
 
   return 0;
@@ -170,7 +172,8 @@ main( int argc, char *argv[] )
 {
   /* setup object and connect */
   MasterServerComm msc = MasterServerComm();
-  msc.connect( argv[1], 1234 );
+  if( msc.connect( argv[1], 1234 ) )
+    exit(EXIT_FAILURE);
   
   /* send some data and poll for replies */
   char *theinput = (char *)calloc( 100,1 );
