@@ -146,6 +146,23 @@ namespace orxonox
         }
     }
 
+    int LastManStanding::pawnGetLives(Pawn* pawn)
+    {
+        if(!pawn)
+            return -1;
+        PlayerInfo* player= dynamic_cast<PlayerInfo*>(pawn);
+        if(!player)
+            return -2;
+        return playerLives_[player];
+    }
+
+    const int LastManStanding::playerGetLives(PlayerInfo* player)
+    {
+        if (player)
+            return  playerLives_[player];
+        else
+            return 0;
+    }
 
     void LastManStanding::playerEntered(PlayerInfo* player)
     {
@@ -221,14 +238,6 @@ namespace orxonox
             const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
             this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
         }
-    }
-
-    const int LastManStanding::playerGetLives(PlayerInfo* player)
-    {
-        if (player)
-            return  playerLives_[player];
-        else
-            return 0;
     }
 
     void LastManStanding::punishPlayer(PlayerInfo* player)

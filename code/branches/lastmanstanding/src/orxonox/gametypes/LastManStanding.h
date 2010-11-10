@@ -72,12 +72,13 @@ namespace orxonox
             virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //!< Manages each players lives.
 
             virtual void end(); //!< Sends an end message.
+            virtual int pawnGetLives(Pawn* pawn); //!< Returns amount of Lives of a certain player.
+            const int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_".
             virtual void playerEntered(PlayerInfo* player); //!< Initializes values. Manages the gametype's HUD. #Players alive via StaticMessage.
             virtual bool playerLeft(PlayerInfo* player); //!< Manages the gametype's HUD. #Players alive via StaticMessage.
             virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn); //!< Manages the gametype's HUD. player's lives via FadingMessage.
             virtual void playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn);  //!< Manages the gametype's HUD. #Players alive via StaticMessage.
 
-            const int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_".
             void punishPlayer(PlayerInfo* player); //!< Function in order to kill a player. Punishment for hiding longer than "timeRemaining".
             void tick (float dt); //!< used to end the game
     };
