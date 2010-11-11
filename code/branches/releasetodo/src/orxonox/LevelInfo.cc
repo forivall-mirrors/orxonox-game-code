@@ -41,6 +41,9 @@ namespace orxonox
 {
 
     // LevelInfoItem
+    
+    //! The list of allowed tags.
+    /*static*/ std::set<std::string> LevelInfoItem::possibleTags_s = std::set<std::string>();
 
     /**
     @brief
@@ -73,6 +76,18 @@ namespace orxonox
     {
 
     }
+    
+    void LevelInfoItem::initializeTags(void)
+    {
+        if(!LevelInfoItem::initialized_s)
+        {
+            LevelInfoItem::possibleTags_s.insert("test");
+            LevelInfoItem::possibleTags_s.insert("singleplayer");
+            LevelInfoItem::possibleTags_s.insert("multiplayer");
+            LevelInfoItem::possibleTags_s.insert("showcase");
+            LevelInfoItem::possibleTags_s.insert("tutorial");
+        }
+    }
 
     /**
     @brief
@@ -102,6 +117,11 @@ namespace orxonox
     */
     bool LevelInfoItem::addTag(const std::string& tag, bool update)
     {
+        if(!this->validateTag(tag))
+        {
+            COUT(2) << "Bad tag '" << tag << "' in " << this->getXMLFilename() << ". Ignoring..." << std::endl;
+            return false;
+        }
         bool success = this->tags_.insert(std::string(tag)).second;
         if(update && success)
             this->tagsUpdated();

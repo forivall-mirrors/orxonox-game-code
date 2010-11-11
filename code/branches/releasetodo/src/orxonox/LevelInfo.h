@@ -37,6 +37,7 @@
 
 #include "OrxonoxPrereqs.h"
 
+#include <map>
 #include <set>
 #include <string>
 
@@ -119,6 +120,12 @@ namespace orxonox // tolua_export
 
         private:
             void tagsUpdated(void); //!< Updates the comma-seperated string of all tags, if the set of tags has changed.
+            
+            static std::set<std::string> possibleTags_s;
+            static const bool initialized_s = false;
+            void initializeTags(void);
+            bool validateTag(const std::string& tag)
+                { this->initializeTags(); return LevelInfoItem::possibleTags_s.find(tag) != LevelInfoItem::possibleTags_s.end(); }
 
             std::string name_; //!< The name of the Level.
             std::string description_; //!< The description of the Level.
