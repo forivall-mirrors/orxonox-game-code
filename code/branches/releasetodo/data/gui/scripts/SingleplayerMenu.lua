@@ -7,9 +7,9 @@ P.itemList = {}
 P.showAll = false
 
 function P.onLoad()
-    local window = winMgr:getWindow("orxonox/SingleplayerShowRestrictedButton")
-    local button = tolua.cast(window,"CEGUI::RadioButton")
-    button:setSelected(true)
+    local window = winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox")
+    local button = tolua.cast(window,"CEGUI::Checkbox")
+    button:setSelected(false)
     P.createLevelList()
 end
 
@@ -63,14 +63,13 @@ function P.SingleplayerStartButton_clicked(e)
     end
 end
 
-function P.SingleplayerShowRestrictedButton_clicked(e)
-    P.showAll = false
-    P.createLevelList()
-end
-
-function P.SingleplayerShowAllButton_clicked(e)
-    P.showAll = true
-    P.createLevelList()
+function P.SingleplayerShowAll_clicked(e)
+    local checkbox = tolua.cast(winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox"), "CEGUI::Checkbox")
+    local show = checkbox:isSelected()
+    if show ~= P.showAll then
+        P.showAll = show
+        P.createLevelList()
+   end
 end
 
 function P.SingleplayerBackButton_clicked(e)
