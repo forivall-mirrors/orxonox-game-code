@@ -87,6 +87,7 @@ namespace orxonox
     class HUDSpeedBar;
     class HUDTimer;
     class KillMessage;
+    class LastManStandingInfos;
     class TeamBaseMatchScore;
     class UnderAttackHealthBar;
 

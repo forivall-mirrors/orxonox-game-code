@@ -42,7 +42,8 @@ namespace orxonox
     {
         RegisterObject(LastManStandingInfos);
 
-        this->owner_ = 0;
+        this->lms_ = 0;
+        this->player_ = 0;
         this->bShowLives_ = false;
         this->bShowPlayers_ = false;
     }
@@ -63,24 +64,34 @@ namespace orxonox
     {
         SUPER(LastManStandingInfos, tick, dt);
 
-        if (this->owner_)
+        if (this->player_ && this->lms_)
         {
-
-            Pawn* pawn = dynamic_cast<Pawn*>(this->getOwner()->getControllableEntity());
-            /*LastManStanding* */ owner_ = dynamic_cast<LastManStanding*>(this->getOwner()->getGametype());
-            int iLives = this->owner_->pawnGetLives(pawn);
-            const std::string& lives = multi_cast<std::string>(iLives);
-
-            const std::string& players = multi_cast<std::string>(this->owner_->playersAlive);
-
             if (this->bShowLives_)
             {
+                const std::string& lives = multi_cast<std::string>(this->lms_->playerGetLives(this->player_));
                 this->setCaption(lives);
             }
             else if(this->bShowPlayers_)
             {
+                const std::string& players = multi_cast<std::string>(this->lms_->getNumPlayersAlive());
                 this->setCaption(players);
             }
+        }
+    }
+
+    void LastManStandingInfos::changedOwner()
+    {
+        SUPER(LastManStandingInfos, changedOwner);
+
+        if (this->getOwner() && this->getOwner()->getGametype())
+        {
+            this->player_ = orxonox_cast<PlayerInfo*>(this->getOwner());
+            this->lms_ = orxonox_cast<LastManStanding*>(this->getOwner()->getGametype().get());
+        }
+        else
+        {
+            this->player_ = 0;
+            this->lms_ = 0;
         }
     }
 }

@@ -44,6 +44,7 @@ namespace orxonox
 
             virtual void tick(float dt);
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void changedOwner();
 
             inline void setShowLives(bool value)
                 { this->bShowLives_ = value; }
@@ -56,7 +57,8 @@ namespace orxonox
                 { return this->bShowPlayers_; }
 
         private:
-            LastManStanding* owner_;
+            LastManStanding* lms_;
+            PlayerInfo* player_;
             bool bShowLives_;
             bool bShowPlayers_;
     };

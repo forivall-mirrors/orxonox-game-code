@@ -19,7 +19,7 @@
      colour   = "1.0, 1.0, 0.5, 1.0"
      align    = "center"
     />
-    <!--LastManStandingInfos
+    <LastManStandingInfos
      position  = "0.63, 0.05"
      pickpoint = "0.0, 0.0"
      font      = "ShareTechMono"
@@ -29,7 +29,7 @@
 
      showlives     = true
      showplayers     = false
-    /-->
+    />
 
     <OverlayText
      position  = "0.02, 0.02"

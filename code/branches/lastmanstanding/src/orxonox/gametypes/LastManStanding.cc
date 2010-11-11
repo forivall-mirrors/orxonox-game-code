@@ -146,22 +146,17 @@ namespace orxonox
         }
     }
 
-    int LastManStanding::pawnGetLives(Pawn* pawn)
-    {
-        if(!pawn)
-            return -1;
-        PlayerInfo* player= dynamic_cast<PlayerInfo*>(pawn);
-        if(!player)
-            return -2;
-        return playerLives_[player];
-    }
-
-    const int LastManStanding::playerGetLives(PlayerInfo* player)
+    int LastManStanding::playerGetLives(PlayerInfo* player)
     {
         if (player)
             return  playerLives_[player];
         else
             return 0;
+    }
+    
+    int LastManStanding::getNumPlayersAlive() const
+    {
+        return this->playersAlive;
     }
 
     void LastManStanding::playerEntered(PlayerInfo* player)
