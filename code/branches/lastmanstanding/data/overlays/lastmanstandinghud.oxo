@@ -1,7 +1,7 @@
 <Template name="LastmanstandingHUD">
   <OverlayGroup name="DynamicmatcHUD" scale = "1, 1">
    
- <GametypeStaticMessage
+ <!--GametypeStaticMessage
    name     = "staticmessage"
    position = "0.5, 0.01"
    font     = "VeraMono"
@@ -9,26 +9,15 @@
    textsize = 0.033
    colour   = "1.0, 1.0, 0.5, 1.0"
    align    = "center"
-  />
+  /-->
 
 <GametypeFadingMessage
      name     = "fadingmessage"
-     position = "0.5, 0.05"
+     position = "0.5, 0.01"
      font     = "VeraMono"
      textsize = 0.04
      colour   = "1.0, 1.0, 0.5, 1.0"
      align    = "center"
-    />
-    <LastManStandingInfos
-     position  = "0.63, 0.05"
-     pickpoint = "0.0, 0.0"
-     font      = "ShareTechMono"
-     textsize  = 0.04
-     colour    = "0.8, 0.8, 1.0, 1.0"
-     align     = "right"
-
-     showlives     = true
-     showplayers     = false
     />
 
     <OverlayText
@@ -41,6 +30,18 @@
      caption   = "Lives:   "
     />
 
+    <LastManStandingInfos
+     position  = "0.15, 0.02"
+     pickpoint = "0.0, 0.0"
+     font      = "ShareTechMono"
+     textsize  = 0.04
+     colour    = "1.0, 1.0, 1.0, 1.0"
+     align     = "left"
+
+     showlives     = true
+     showplayers     = false
+    />
+
     <OverlayText
      position  = "0.02, 0.055"
      pickpoint = "0.0, 0.0"
@@ -49,6 +50,18 @@
      colour    = "1.0, 1.0, 1.0, 1.0"
      align     = "left"
      caption   = "Players: "
+    />
+
+    <LastManStandingInfos
+     position  = "0.15, 0.055"
+     pickpoint = "0.0, 0.0"
+     font      = "ShareTechMono"
+     textsize  = 0.04
+     colour    = "1.0, 1.0, 1.0, 1.0"
+     align     = "left"
+
+     showlives     = false
+     showplayers     = true
     />
 
     <OverlayText

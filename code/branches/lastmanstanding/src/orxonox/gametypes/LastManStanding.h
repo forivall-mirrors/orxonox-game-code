@@ -74,10 +74,9 @@ namespace orxonox
             virtual void end(); //!< Sends an end message.
             int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_".
             int getNumPlayersAlive() const; //!< Returns the number of players that are still alive.
-            virtual void playerEntered(PlayerInfo* player); //!< Initializes values. Manages the gametype's HUD. #Players alive via StaticMessage.
-            virtual bool playerLeft(PlayerInfo* player); //!< Manages the gametype's HUD. #Players alive via StaticMessage.
-            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn); //!< Manages the gametype's HUD. player's lives via FadingMessage.
-            virtual void playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn);  //!< Manages the gametype's HUD. #Players alive via StaticMessage.
+            virtual void playerEntered(PlayerInfo* player); //!< Initializes values.
+            virtual bool playerLeft(PlayerInfo* player); //!< Manages all local variables.
+            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn); //!< Resets punishment time and respawn delay.
 
             void punishPlayer(PlayerInfo* player); //!< Function in order to kill a player. Punishment for hiding longer than "timeRemaining".
             void tick (float dt); //!< used to end the game

@@ -63,13 +63,6 @@ namespace orxonox
                 {
                     this->spawnPlayer(it->first);
                 }
-                else if (0>=playerLives_[it->first])
-                {
-                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
-                        continue;
-                    const std::string& message2 = "You have lost all " +multi_cast<std::string>(lives)+ " lives." ;
-                    this->gtinfo_->sendFadingMessage(message2,it->first->getClientID());
-                }
             }
     }
 
@@ -114,6 +107,7 @@ namespace orxonox
             COUT(0) << message << std::endl;
             Host::Broadcast(message);
         }
+
         return true;
     }
 
@@ -172,14 +166,6 @@ namespace orxonox
         this->timeToAct_[player]=timeRemaining;
         this->playerDelayTime_[player]=respawnDelay;
         this->inGame_[player]=true;
-        //Update: EachPlayer's "Players in Game"-HUD
-        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-        {
-            if (it->first->getClientID() == CLIENTID_UNKNOWN)
-                continue;
-            const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
-            this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
-        }
     }
 
     bool LastManStanding::playerLeft(PlayerInfo* player)
@@ -191,14 +177,6 @@ namespace orxonox
             this->playerLives_.erase (player);
             this->playerDelayTime_.erase (player);
             this->inGame_.erase (player);
-            //Update: EachPlayer's "Players in Game"-HUD
-            for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-            {
-                if (it->first->getClientID() == CLIENTID_UNKNOWN)
-                    continue;
-                const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
-                this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
-            }
         }
 
         return valid_player;
@@ -210,29 +188,15 @@ namespace orxonox
             return;
         this->timeToAct_[player]=timeRemaining+3.0f+respawnDelay;//reset timer
         this->playerDelayTime_[player]=respawnDelay;
-        //Update: Individual Players "lifes"-HUD
-        std::map<PlayerInfo*, Player>::iterator it2 = this->players_.find(player);
-        if (it2 != this->players_.end())
+        
+        std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
+        if (it != this->players_.end())
         {
-            if (it2->first->getClientID()== CLIENTID_UNKNOWN)
+            if (it->first->getClientID()== CLIENTID_UNKNOWN)
                 return;
-            const std::string& message = "Your Lives: " +multi_cast<std::string>(playerLives_[player]);
-            this->gtinfo_->sendFadingMessage(message,it2->first->getClientID());
-            const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
-            this->gtinfo_->sendStaticMessage(message1,it2->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
-        }
-    }
-
-    void LastManStanding::playerStopsControllingPawn(PlayerInfo* player, Pawn* pawn)
-    {
-        //Update: EachPlayer's "Players in Game"-HUD
-        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-        {
-            if (it->first->getClientID() == CLIENTID_UNKNOWN)
-                continue;
-            const std::string& message1 = "Remaining Players: "+ multi_cast<std::string>(playersAlive);
-            this->gtinfo_->sendStaticMessage(message1,it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
-        }
+            const std::string& message = ""; // resets Camper-Warning-message
+            this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
+        }  
     }
 
     void LastManStanding::punishPlayer(PlayerInfo* player)
