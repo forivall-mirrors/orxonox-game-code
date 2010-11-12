@@ -31,7 +31,7 @@
     />
 
     <LastManStandingInfos
-     position  = "0.15, 0.02"
+     position  = "0.14, 0.02"
      pickpoint = "0.0, 0.0"
      font      = "ShareTechMono"
      textsize  = 0.04
@@ -53,7 +53,7 @@
     />
 
     <LastManStandingInfos
-     position  = "0.15, 0.055"
+     position  = "0.14, 0.055"
      pickpoint = "0.0, 0.0"
      font      = "ShareTechMono"
      textsize  = 0.04
