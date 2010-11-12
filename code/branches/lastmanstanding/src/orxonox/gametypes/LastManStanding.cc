@@ -177,6 +177,7 @@ namespace orxonox
             this->playerLives_.erase (player);
             this->playerDelayTime_.erase (player);
             this->inGame_.erase (player);
+            this->timeToAct_.erase(player);
         }
 
         return valid_player;
