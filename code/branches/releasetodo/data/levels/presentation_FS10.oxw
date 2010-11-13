@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Presentation XI FPS"
  description = "2nd Presentation level for Orxonox Convention XI, FPS"
- tags = "presentation, fps"
+ tags = "presentation"
 />
 
 <?lua

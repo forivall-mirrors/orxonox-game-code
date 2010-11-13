@@ -437,20 +437,46 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Subscribe the input function to the input event for the input window.
+        This is a helper to be used in lua, because subscribeScriptedEvent() doesn't work in lua.
+    @param window
+        The window for which the event is subscribed.
+    @param event
+        The type of event to which we subscribe.
+    @param function
+        The function that is called when the event occurs.
+    */
     void GUIManager::subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function)
     {
         window->subscribeScriptedEvent(event, function);
     }
 
+    /**
+    @brief
+        Set the input tooltip text for the input ListboxItem.
+    @param item
+        The ListboxItem for which the tooltip should be set.
+    @param tooltip
+        The tooltip text that should be set.
+    */
     void GUIManager::setTooltipTextHelper(CEGUI::ListboxItem* item, const std::string& tooltip)
     {
         item->setTooltipText(tooltip);
     }
 
+    /**
+    @brief
+        Set whether the tooltips for the input Listbox are enabled.
+    @param listbox
+        The Listbox for which to enable (or disable) tooltips.
+    @param enabled
+        Whether to enable or disabel the tooltips.
+    */
     void GUIManager::setItemTooltipsEnabledHelper(CEGUI::Listbox* listbox, bool enabled)
     {
         listbox->setItemTooltipsEnabled(enabled);
     }
 
-    
 }

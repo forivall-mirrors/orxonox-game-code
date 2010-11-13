@@ -76,8 +76,12 @@ namespace orxonox
     {
 
     }
-    
-    void LevelInfoItem::initializeTags(void)
+
+    /**
+    @brief
+        Initialize the set of allowed tags.
+    */
+    /*static*/ void LevelInfoItem::initializeTags(void)
     {
         if(!LevelInfoItem::initialized_s)
         {
@@ -86,6 +90,7 @@ namespace orxonox
             LevelInfoItem::possibleTags_s.insert("multiplayer");
             LevelInfoItem::possibleTags_s.insert("showcase");
             LevelInfoItem::possibleTags_s.insert("tutorial");
+            LevelInfoItem::possibleTags_s.insert("presentation");
         }
     }
 

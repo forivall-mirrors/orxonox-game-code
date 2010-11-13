@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Pickups showcase"
  description = "Level to test and showcase pickups."
- tags = "test, showcase, pickups"
+ tags = "test, showcase"
 />
 
 <?lua

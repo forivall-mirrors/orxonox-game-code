@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Stars Testlevel"
  description = "Level to test stars"
- tags = "test, stars"
+ tags = "test"
 />
 
 <?lua

@@ -37,7 +37,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <map>
 #include <set>
 #include <string>
 
@@ -120,12 +119,18 @@ namespace orxonox // tolua_export
 
         private:
             void tagsUpdated(void); //!< Updates the comma-seperated string of all tags, if the set of tags has changed.
-            
-            static std::set<std::string> possibleTags_s;
-            static const bool initialized_s = false;
-            void initializeTags(void);
-            bool validateTag(const std::string& tag)
-                { this->initializeTags(); return LevelInfoItem::possibleTags_s.find(tag) != LevelInfoItem::possibleTags_s.end(); }
+
+            static void initializeTags(void); //!< Initialize the set of allowed tags.
+            /**
+            @brief Check whether an input tag is allowed.
+            @param tag The tag to check.
+            @return Returns true if the input tag is allowed, false if not.
+            */
+            static bool validateTag(const std::string& tag)
+                { LevelInfoItem::initializeTags(); return LevelInfoItem::possibleTags_s.find(tag) != LevelInfoItem::possibleTags_s.end(); }
+
+            static std::set<std::string> possibleTags_s; //!< The set of allowed tags.
+            static const bool initialized_s = false; //!< Whether the set of allowed tags has been inizialized.
 
             std::string name_; //!< The name of the Level.
             std::string description_; //!< The description of the Level.
@@ -139,7 +144,7 @@ namespace orxonox // tolua_export
         The following parameters can be specified:
         - @b name The name of the level.
         - @b description The description of the level.
-        - @b tags A comma-seperated string of tags.
+        - @b tags A comma-seperated string of tags. Allowed tags are: <em>test</em>, <em>singleplayer</em>, <em>multiplayer</em>, <em>showcase</em>, <em>tutorial</em>, <em>presentation</em>.
 
         An example would be:
         @code

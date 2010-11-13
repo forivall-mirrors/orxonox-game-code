@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Waypoints Testlevel"
  description = "Testing waypoings for AI controlled spaceships."
- tags = "test, waypoints"
+ tags = "test"
 />
 
 <?lua
