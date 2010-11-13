@@ -32,7 +32,7 @@ function P.createLevelList()
         end
         index = index + 1
     end
-    --TODO: Reintroduce sorting, if needed.
+    --TODO: Reintroduce sorting, if needed. At the moment it's sorted by filename.
     --table.sort(levelList)
     for k,v in pairs(P.levelList) do
         local item = CEGUI.createListboxTextItem(v:getName())
@@ -42,9 +42,6 @@ function P.createLevelList()
             listbox:setItemSelectState(item, true)
         end
         P.itemList[k] = listbox:getListboxItemFromIndex(k-1)
-        --TODO: The description as tooltip would be nice.
-        --local lItem = tolua.cast("CEGUI::ListboxItem", P.itemList[k])
-        --lItem:setTooltipText(v:getDescription())
         orxonox.GUIManager:setTooltipTextHelper(P.itemList[k], v:getDescription())
     end
 end

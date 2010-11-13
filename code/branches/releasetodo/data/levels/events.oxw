@@ -1,7 +1,7 @@
 <LevelInfo
   name = "Events showcase"
   description = "Level to test and showcase events."
-  tags = "test, showcase, events" 
+  tags = "test, showcase" 
 />
 
 <?lua

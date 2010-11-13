@@ -15,35 +15,56 @@ function P.onShow()
         local window = winMgr:getWindow("orxonox/MultiplayerJoinButton")
         local button = tolua.cast(window,"CEGUI::RadioButton")
         button:setSelected(true)
+        local checkbox = winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox")
+        checkbox:setProperty("Disabled", "True")
         P.showServerList()
     end
     if P.multiplayerMode == "startServer" then
         local window = winMgr:getWindow("orxonox/MultiplayerHostButton")
         local button = tolua.cast(window,"CEGUI::RadioButton")
         button:setSelected(true)
+        local checkbox = winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox")
+        checkbox:setProperty("Disabled", "False")
         P.showLevelList()
     end
     if P.multiplayerMode == "startDedicated" then
         local window = winMgr:getWindow("orxonox/MultiplayerDedicatedButton")
         local button = tolua.cast(window,"CEGUI::RadioButton")
         button:setSelected(true)
+        local checkbox = winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox")
+        checkbox:setProperty("Disabled", "True")
         P.showLevelList()
     end
 end
 
 function P.MultiplayerJoinButton_clicked(e)
     P.multiplayerMode = "startClient"
+    local checkbox = winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox")
+    checkbox:setProperty("Disabled", "True")
     P.showServerList()
 end
 
 function P.MultiplayerHostButton_clicked(e)
     P.multiplayerMode = "startServer"
+    local checkbox = winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox")
+    checkbox:setProperty("Disabled", "False")
     P.showLevelList()
 end
 
 function P.MultiplayerDedicatedButton_clicked(e)
     P.multiplayerMode = "startDedicated"
+    local checkbox = winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox")
+    checkbox:setProperty("Disabled", "True")
     P.showLevelList()
+end
+
+function P.MultiplayerShowAll_clicked(e)
+    local checkbox = tolua.cast(winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox"), "CEGUI::Checkbox")
+    local show = checkbox:isSelected()
+    if show ~= P.showAll then
+        P.showAll = show
+        P.createLevelList()
+    end
 end
 
 function P.MultiplayerStartButton_clicked(e)
@@ -94,7 +115,7 @@ function P.createLevelList()
         end
         index = index + 1
     end
-    --TODO: Reintroduce sorting, if needed.
+    --TODO: Reintroduce sorting, if needed. At the moment it's sorted by filename.
     --table.sort(levelList)
     for k,v in pairs(P.levelList) do
         local item = CEGUI.createListboxTextItem(v:getName())
@@ -104,9 +125,6 @@ function P.createLevelList()
             listbox:setItemSelectState(item, true)
         end
         P.itemList[k] = listbox:getListboxItemFromIndex(k-1)
-        --TODO: The description as tooltip would be nice.
-        --local lItem = P.itemList[k]
-        --lItem:setTooltipText(v:getDescription())
         orxonox.GUIManager:setTooltipTextHelper(P.itemList[k], v:getDescription())
     end
 end
