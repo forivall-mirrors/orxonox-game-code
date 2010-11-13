@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Stars Testlevel"
+ description = "Level to test stars"
+ tags = "test"
+/>
+
 <?lua
   include("stats.oxo")
   include("hudtemplates3.oxo")

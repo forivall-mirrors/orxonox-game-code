@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Teambase Match"
+ description = "Fight for the bases."
+ tags = ""
+/>
+
 <?lua
   include("hudtemplates3.oxo")
   include("stats.oxo")

@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "The Tale of Princess Aeryn"
+ description = "The Tale of the elusive but beautiful Princess Aeryn"
+ tags = ""
+/>
+
 <?lua
   include("hudtemplates3.oxo")
   include("stats.oxo")

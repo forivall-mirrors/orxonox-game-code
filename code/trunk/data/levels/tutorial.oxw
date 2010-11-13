@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Coding Tutorial"
+ description = "Level for the coding tutorial."
+ tags = "tutorial"
+/>
+
 <?lua
   include("hudtemplates3.oxo")
   include("stats.oxo")

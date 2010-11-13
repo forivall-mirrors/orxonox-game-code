@@ -33,6 +33,7 @@
 
 #include <cassert>
 #include <list>
+#include <map>
 #include <string>
 
 #include "util/Singleton.h"
@@ -58,8 +59,8 @@ namespace orxonox
 
             void setDefaultLevel(const std::string& levelName); //tolua_export
             const std::string& getDefaultLevel() const; //tolua_export
-            void compileAvailableLevelList(); //tolua_export
-            const std::string& getAvailableLevelListItem(unsigned int index) const; //tolua_export
+            unsigned int getNumberOfLevels(void); //tolua_export
+            LevelInfoItem* getAvailableLevelListItem(unsigned int index) const; //tolua_export
 
             static LevelManager& getInstance()    { return Singleton<LevelManager>::getInstance(); } // tolua_export
 
@@ -68,8 +69,12 @@ namespace orxonox
 
             void activateNextLevel();
 
+            void compileAvailableLevelList(void);
+            void updateAvailableLevelList(void);
+
             std::list<Level*> levels_s;
             std::vector<std::string> availableLevels_;
+            std::map<std::string, LevelInfoItem*> infos_;
 
             // config values
             std::string defaultLevelName_;

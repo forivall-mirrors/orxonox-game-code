@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Presentation"
+ description = "Presentation Level"
+ tags = "presentation"
+/>
+
 <?lua
   include("hudtemplates3.oxo")
   include("stats.oxo")
