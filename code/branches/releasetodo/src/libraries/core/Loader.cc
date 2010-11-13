@@ -87,6 +87,16 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Loads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
+    @param mask
+        A ClassTreeMask, which defines which types of classes are loaded and which aren't.
+    @param verbose
+        Whether the loader is verbose (prints its progress in a low output level) or not.
+    @return
+        Returns true if successful.
+    */
     bool Loader::load(const ClassTreeMask& mask, bool verbose)
     {
         bool success = true;
@@ -108,12 +118,34 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Reloads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
+    @param mask
+        A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
+    @param verbose
+        Whether the loader is verbose (prints its progress in a low output level) or not.
+    @return
+        Returns true if successful.
+    */
     bool Loader::reload(const ClassTreeMask& mask, bool verbose)
     {
         Loader::unload(mask);
         return Loader::load(mask, verbose);
     }
 
+    /**
+    @brief
+        Loads the input file, while conforming to the restrictions given by the input ClassTreeMask.
+    @param file
+        The file to be loaded.
+    @param mask
+        A ClassTreeMask, which defines which types of classes are loaded and which aren't.
+    @param verbose
+        Whether the loader is verbose (prints its progress in a low output level) or not.
+    @return
+        Returns true if successful.
+    */
     bool Loader::load(const XMLFile* file, const ClassTreeMask& mask, bool verbose)
     {
         if (!file)
@@ -220,6 +252,18 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Reloads the input file, while conforming to the restrictions given by the input ClassTreeMask.
+    @param file
+        The file to be reloaded.
+    @param mask
+        A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
+    @param verbose
+        Whether the loader is verbose (prints its progress in a low output level) or not.
+    @return
+        Returns true if successful.
+    */
     bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask, bool verbose)
     {
         Loader::unload(file, mask);
