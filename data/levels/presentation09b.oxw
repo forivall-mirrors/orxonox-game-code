@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Presentation X2"
+ description = "2nd Presentation level for Orxonox Convention X"
+ tags = "presentation"
+/>
+
 <?lua
   include("hudtemplates3.oxo")
   include("stats.oxo")

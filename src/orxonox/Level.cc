@@ -75,7 +75,7 @@ namespace orxonox
 
         XMLPortObject(Level, MeshLodInformation, "lodinformation", addLodInfo, getLodInfo, xmlelement, mode);
         XMLPortObjectExtended(Level, BaseObject, "", addObject, getObject, xmlelement, mode, true, false);
-}
+    }
 
     void Level::registerVariables()
     {

@@ -56,13 +56,13 @@ namespace orxonox
             static void add(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
             static void remove(const XMLFile* file);
 
-            static bool load(const ClassTreeMask& mask = ClassTreeMask());
+            static bool load(const ClassTreeMask& mask = ClassTreeMask(), bool verbose = true);
             static void unload(const ClassTreeMask& mask = ClassTreeMask());
-            static bool reload(const ClassTreeMask& mask = ClassTreeMask());
+            static bool reload(const ClassTreeMask& mask = ClassTreeMask(), bool verbose = true);
 
-            static bool load(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
+            static bool load(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool verbose = true);
             static void unload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
-            static bool reload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
+            static bool reload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool verbose = true);
 
             static std::string replaceLuaTags(const std::string& text);
 

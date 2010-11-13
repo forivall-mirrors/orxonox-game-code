@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Screenshot"
+ description = "Level to make awesome screenshots in."
+ tags = "test"
+/>
+
 <?lua
   include("hudtemplates3.oxo")
   include("stats.oxo")

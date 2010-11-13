@@ -31,13 +31,16 @@
 #include <map>
 
 #include "util/ScopedSingletonManager.h"
+#include "core/ClassTreeMask.h"
 #include "core/CommandLineParser.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
 #include "core/Loader.h"
 #include "core/Resource.h"
+#include "core/XMLFile.h"
 #include "PlayerManager.h"
 #include "Level.h"
+#include "LevelInfo.h"
 
 namespace orxonox
 {
@@ -55,6 +58,8 @@ namespace orxonox
         {
             ModifyConfigValue(defaultLevelName_, tset, CommandLineParser::getValue("level").getString());
         }
+
+        this->compileAvailableLevelList();
     }
 
     LevelManager::~LevelManager()
@@ -124,25 +129,64 @@ namespace orxonox
         return defaultLevelName_;
     }
 
-    const std::string& LevelManager::getAvailableLevelListItem(unsigned int index) const
+    unsigned int LevelManager::getNumberOfLevels()
     {
-        if (index >= availableLevels_.size())
-            return BLANKSTRING;
+        this->updateAvailableLevelList();
+
+        return this->availableLevels_.size();
+    }
+
+    LevelInfoItem* LevelManager::getAvailableLevelListItem(unsigned int index) const
+    {
+        if (index >= this->availableLevels_.size())
+            return NULL;
         else
-            return availableLevels_[index];
+        {
+            std::map<std::string, LevelInfoItem*>::const_iterator it = this->infos_.find(this->availableLevels_[index]);
+            return it->second;
+        }
     }
 
     void LevelManager::compileAvailableLevelList()
     {
-        this->availableLevels_.clear();
         Ogre::StringVectorPtr levels = Resource::findResourceNames("*.oxw");
+        // Iterate over all *.oxw level files.
         for (Ogre::StringVector::const_iterator it = levels->begin(); it != levels->end(); ++it)
         {
+            //TODO: Replace with tag,
             if (it->find("old/") != 0)
             {
                 size_t pos = it->find(".oxw");
+
+                bool infoExists = false;
+                // Load the LevelInfo object from the level file.
+                XMLFile file = XMLFile(*it);
+                ClassTreeMask mask = ClassTreeMask();
+                mask.exclude(ClassIdentifier<BaseObject>::getIdentifier());
+                mask.include(ClassIdentifier<LevelInfo>::getIdentifier());
+                Loader::load(&file, mask, false);
+                for(ObjectList<LevelInfo>::iterator item = ObjectList<LevelInfo>::begin(); item != ObjectList<LevelInfo>::end(); ++item)
+                {
+                    LevelInfoItem* info = item->copy();
+                    if(info->getXMLFilename() == *it)
+                    {
+                        this->infos_.insert(std::pair<std::string, LevelInfoItem*>(it->substr(0, pos),info));
+                        infoExists = true;
+                    }
+                }
+                Loader::unload(&file, mask);
+                if(!infoExists)
+                {
+                    this->infos_.insert(std::pair<std::string, LevelInfoItem*>(it->substr(0, pos), new LevelInfoItem(it->substr(0, pos), *it)));
+                }
+
                 this->availableLevels_.push_back(it->substr(0, pos));
             }
         }
+    }
+
+    void LevelManager::updateAvailableLevelList(void)
+    {
+        //TODO: Implement some kind of update?
     }
 }

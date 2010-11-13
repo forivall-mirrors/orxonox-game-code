@@ -87,11 +87,21 @@ namespace orxonox
         }
     }
 
-    bool Loader::load(const ClassTreeMask& mask)
+    /**
+    @brief
+        Loads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
+    @param mask
+        A ClassTreeMask, which defines which types of classes are loaded and which aren't.
+    @param verbose
+        Whether the loader is verbose (prints its progress in a low output level) or not.
+    @return
+        Returns true if successful.
+    */
+    bool Loader::load(const ClassTreeMask& mask, bool verbose)
     {
         bool success = true;
         for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
-            if (!Loader::load(it->first, it->second * mask))
+            if (!Loader::load(it->first, it->second * mask, verbose))
                 success = false;
 
         return success;
@@ -108,13 +118,35 @@ namespace orxonox
         }
     }
 
-    bool Loader::reload(const ClassTreeMask& mask)
+    /**
+    @brief
+        Reloads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
+    @param mask
+        A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
+    @param verbose
+        Whether the loader is verbose (prints its progress in a low output level) or not.
+    @return
+        Returns true if successful.
+    */
+    bool Loader::reload(const ClassTreeMask& mask, bool verbose)
     {
         Loader::unload(mask);
-        return Loader::load(mask);
+        return Loader::load(mask, verbose);
     }
 
-    bool Loader::load(const XMLFile* file, const ClassTreeMask& mask)
+    /**
+    @brief
+        Loads the input file, while conforming to the restrictions given by the input ClassTreeMask.
+    @param file
+        The file to be loaded.
+    @param mask
+        A ClassTreeMask, which defines which types of classes are loaded and which aren't.
+    @param verbose
+        Whether the loader is verbose (prints its progress in a low output level) or not.
+    @return
+        Returns true if successful.
+    */
+    bool Loader::load(const XMLFile* file, const ClassTreeMask& mask, bool verbose)
     {
         if (!file)
             return false;
@@ -143,8 +175,16 @@ namespace orxonox
 
         try
         {
-            COUT(0) << "Start loading " << file->getFilename() << "..." << std::endl;
-            COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
+            if(verbose)
+            {
+                COUT(0) << "Start loading " << file->getFilename() << "..." << std::endl;
+                COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
+            }
+            else
+            {
+                COUT(4) << "Start loading " << file->getFilename() << "..." << std::endl;
+                COUT(4) << "Mask: " << Loader::currentMask_s << std::endl;
+            }
 
             ticpp::Document xmlfile(file->getFilename());
             xmlfile.Parse(xmlInput, true);
@@ -164,7 +204,10 @@ namespace orxonox
             rootNamespace->setRoot(true);
             rootNamespace->XMLPort(rootElement, XMLPort::LoadObject);
 
-            COUT(0) << "Finished loading " << file->getFilename() << '.' << std::endl;
+            if(verbose)
+                COUT(0) << "Finished loading " << file->getFilename() << '.' << std::endl;
+            else
+                COUT(4) << "Finished loading " << file->getFilename() << '.' << std::endl;
 
             COUT(4) << "Namespace-tree:" << std::endl << rootNamespace->toString("  ") << std::endl;
 
@@ -209,10 +252,22 @@ namespace orxonox
         }
     }
 
-    bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask)
+    /**
+    @brief
+        Reloads the input file, while conforming to the restrictions given by the input ClassTreeMask.
+    @param file
+        The file to be reloaded.
+    @param mask
+        A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
+    @param verbose
+        Whether the loader is verbose (prints its progress in a low output level) or not.
+    @return
+        Returns true if successful.
+    */
+    bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask, bool verbose)
     {
         Loader::unload(file, mask);
-        return Loader::load(file, mask);
+        return Loader::load(file, mask, verbose);
     }
 
     std::string Loader::replaceLuaTags(const std::string& text)

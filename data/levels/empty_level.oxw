@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Empty level"
+ description = "A level with absolutely nothing in it."
+ tags = "test"
+/>
+
 <?lua
   include("stats.oxo")
   include("hudtemplates3.oxo")
