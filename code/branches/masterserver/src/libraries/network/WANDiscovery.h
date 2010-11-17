@@ -76,6 +76,8 @@ namespace orxonox
        * Create and return an instance of WANDiscovery.
        */
       static WANDiscovery& getInstance() { return Singleton<WANDiscovery>::getInstance(); } // tolua_export
+    
+      int rhandler( char *addr, ENetEvent *ev );
       
     private:
       /** Singleton pointer */

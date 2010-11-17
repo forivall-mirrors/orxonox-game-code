@@ -38,6 +38,7 @@
 #include <network/packet/Gamestate.h>
 #include <network/packet/Welcome.h>
 #include <util/Singleton.h>
+#include <network/MasterServerProtocol.h>
 
 /* my includes */
 #include "ServerList.h"
@@ -45,10 +46,6 @@
 
 /* c compatibility */
 #include <cstdio>
-
-#define ORX_MSERVER_PORT 1234
-#define ORX_MSERVER_MAXCONNS 32
-#define ORX_MSERVER_MAXCHANS 2
 
 namespace orxonox 
 {

@@ -61,27 +61,28 @@ namespace orxonox
   }
 
   /* callback for the network reply poller */
+  /* WORK MARK WORK WORK */
   /* NOTE implement protocol-specific part here. */
-  int rhandler( char *addr, ENetEvent *ev )
+  int WANDiscovery::rhandler( char *addr, ENetEvent *ev )
   { 
     /* handle incoming data */
     /* if a list entry arrives add to list */
-    if( !strncmp( ev->packet->data, MSPROTO_SERVERLIST_ITEM,
+    if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_ITEM,
       MSPROTO_SERVERLIST_ITEM_LEN ) )
     { 
       /* create server structure from that item */
-      ServerInformation toadd;
+      packet::ServerInformation toadd;
 
       /* fill in data */
-      toadd->setName( std::string(ev->packet->data + 
+      toadd.setServerName( std::string((char*)ev->packet->data + 
         MSPROTO_SERVERLIST_ITEM_LEN) );
-      toadd->setIP( std::string(ev->packet->data + 
+      toadd.setServerIP( std::string((char*)ev->packet->data + 
         MSPROTO_SERVERLIST_ITEM_LEN) );
 
       /* add to list */
-      this->servers_.add( toadd );
+      this->servers_.push_back( toadd );
     }
-    else if( !strncmp( ev->packet->data, MSPROTO_SERVERLIST_END,
+    else if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_END,
       MSPROTO_SERVERLIST_END_LEN ) )
     { return 1; }
 
@@ -98,7 +99,7 @@ namespace orxonox
     msc.sendRequest( MSPROTO_CLIENT " " MSPROTO_REQ_LIST );
 
     /* deal with replies */
-    while( !msc.pollForReply( rhandler ) ) 
+    while( !msc.pollForReply( WANDiscovery::rhandler ) ) 
       /* nothing */;
 
     /* done receiving. */

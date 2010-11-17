@@ -56,15 +56,6 @@ namespace orxonox
       << " on port " 
       << event->peer->address.port << "\n";
 
-    /* game server or client connection? */
-    /* -> decide in protocol */
-    /* game server */
-    /* add to game server list */
-    /*  */
-
-    /* client */
-    /* add to client list */
-
     /* store string form of address here */
     event->peer->data = addrconv; 
 
@@ -81,21 +72,28 @@ namespace orxonox
       return -1;
     }
 
-    /* output that the disconnect happened, to be removed at a later time. */
+    /* output that the disconnect happened */
     COUT(4) << (char*)event->peer->data << " disconnected.\n";
 
+    /* create string from peer data */
+    std::string name = std::string( (char*)event->peer->data );
+
     /* remove the server from the list it belongs to */
+    this->mainlist->delServerByName( name );
 
     /* Reset the peer's client information. */
     if( event->peer->data ) free( event->peer->data );
+
+    /* done */
     return 0;
   }
 
   /* data event */
   int 
   MasterServer::eventData( ENetEvent *event )
-  { /* output what's in the packet (to be removed later) */
+  { /* validate packet */
     if( !event || !(event->packet) || !(event->peer) )
+      //|| !(event->packet->data) || !strlen(event->packet->data) )
     { COUT(2) << "No complete event given.\n";
       return -1;
     }
@@ -109,12 +107,13 @@ namespace orxonox
     COUT(4) << "A packet of length" 
       << event->packet->dataLength
       << " containing "
-      << event->packet->data
+      << (const char*)event->packet->data
       << " was received from "
       << addrconv 
       << " on channel "
       << event->channelID << "\n";
 
+    /*
     //[> send some packet back for testing <]
     //[> TESTING <]
 
@@ -130,18 +129,55 @@ namespace orxonox
     //enet_host_flush( this->server );
 
     //[> /TESTING <]
+    */
 
     /* GAME SERVER OR CLIENT CONNECTION? */
+    if( !strncmp( (char *)event->packet->data, MSPROTO_GAME_SERVER, 
+      MSPROTO_GAME_SERVER_LEN ) )
+    { /* Game server */
 
-    /* Game server */
-    /* parse data */
-    /* start actions */
-    /* and send reply */
+      if( !strncmp( (char *)event->packet->data 
+        + MSPROTO_GAME_SERVER_LEN+1, 
+        MSPROTO_REGISTER_SERVER, MSPROTO_REGISTER_SERVER_LEN ) )
+      { /* register new server */
+        mainlist->addServer( packet::ServerInformation( event ) );
+      }
+    }
+    else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT, 
+      MSPROTO_CLIENT_LEN) )
+    { /* client */
+      
+      if( !strncmp( (char *)event->packet->data + MSPROTO_CLIENT_LEN+1,
+        MSPROTO_REQ_LIST ) )
+      { /* send server list */
+        
+        /* get an iterator */
+        std::list<packet::ServerInformation *>::iterator i;
 
-    /* client */
-    /* parse data */
-    /* start actions */
-    /* and send reply */
+        /* loop through list elements */
+        for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
+        {
+          /* WORK MARK */
+          /* send this particular server */
+          /* build reply string */
+          char *tosend = (char *)calloc( (*i)->getServerIP().length() + 1,1 );
+          snprintf( "%s %s", MSPROTO_SERVERLIST_ITEM, (*i)->getServerIP() );
+
+          /* create packet from it */
+          ENetPacket * reply = enet_packet_create( tosend,
+            strlen( tosend ) + 1, 
+            ENET_PACKET_FLAG_RELIABLE);
+
+          /* Send the reply to the peer over channel id 0. */
+          enet_peer_send( event->peer, 0, reply );
+
+          /* One could just use enet_host_service() instead. */
+          enet_host_flush( this->server );
+        } 
+      }
+    }
+    else
+    { /* bad message, don't do anything. */ } 
 
     /* delete addrconv */
     if( addrconv ) free( addrconv );

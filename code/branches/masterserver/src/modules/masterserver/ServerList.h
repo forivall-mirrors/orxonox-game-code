@@ -76,9 +76,9 @@ namespace orxonox
       /** sort by ping */
       void sortByPing();
 
-    private:
       /** the list of servers for internal storage */
       std::list<packet::ServerInformation *> serverlist;
+    private:
   };
 }
 
