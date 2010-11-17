@@ -62,12 +62,28 @@ namespace orxonox
 
   /* callback for the network reply poller */
   /* NOTE implement protocol-specific part here. */
-  int replyhandler( char *addr, ENetEvent *ev )
+  int rhandler( char *addr, ENetEvent *ev )
   { 
-    /* handle incoming data
-     * if a list entry arrives add to list
-     * if a done entry arrives set done to true
-     */
+    /* handle incoming data */
+    /* if a list entry arrives add to list */
+    if( !strncmp( ev->packet->data, MSPROTO_SERVERLIST_ITEM,
+      MSPROTO_SERVERLIST_ITEM_LEN ) )
+    { 
+      /* create server structure from that item */
+      ServerInformation toadd;
+
+      /* fill in data */
+      toadd->setName( std::string(ev->packet->data + 
+        MSPROTO_SERVERLIST_ITEM_LEN) );
+      toadd->setIP( std::string(ev->packet->data + 
+        MSPROTO_SERVERLIST_ITEM_LEN) );
+
+      /* add to list */
+      this->servers_.add( toadd );
+    }
+    else if( !strncmp( ev->packet->data, MSPROTO_SERVERLIST_END,
+      MSPROTO_SERVERLIST_END_LEN ) )
+    { return 1; }
 
     /* done handling, return all ok code 0 */
     return 0;
@@ -79,10 +95,10 @@ namespace orxonox
     this->servers_.clear();
 
     /* send request to server */
-    msc.sendRequest( MSPROTO_CLIENT MSPROTO_REQ_LIST );
+    msc.sendRequest( MSPROTO_CLIENT " " MSPROTO_REQ_LIST );
 
     /* deal with replies */
-    while( msc.pollForReply( replyhandler ) ) 
+    while( !msc.pollForReply( rhandler ) ) 
       /* nothing */;
 
     /* done receiving. */

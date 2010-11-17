@@ -104,14 +104,18 @@ namespace orxonox
   {
     /* initialize it and see if it worked */
     if( msc.initialize() )
-      COUT(1) << "Error: could not initialize master server communications!\n";
+    { COUT(1) << "Error: could not initialize master server communications!\n";
+      return;
+    }
 
     /* connect and see if it worked */
     if( msc.connect( MS_ADDRESS, 1234 ) )
-      COUT(1) << "Error: could not connect to master server!\n";
+    { COUT(1) << "Error: could not connect to master server!\n";
+      return;
+    }
 
-    /* TODO */
     /* now send the master server some note we're here */
+    msc.sendRequest( MSPROTO_GAME_SERVER " " MSPROTO_REGISTER_SERVER );
   }
 
   /**
@@ -163,7 +167,7 @@ namespace orxonox
 
 
   /* TODO */
-  int replyhandler( char *addr, ENetEvent *ev )
+  int rephandler( char *addr, ENetEvent *ev )
   { 
     /* handle incoming data */
 
@@ -173,7 +177,7 @@ namespace orxonox
 
   void Server::helper_HandleMasterServerRequests()
   { 
-    this->msc.pollForReply( replyhandler ); 
+    this->msc.pollForReply( rephandler ); 
   }
 
   /**

@@ -28,6 +28,7 @@
 
 #include <cstdlib>
 #include <cstdio>
+#include <string>
 #include <cstring>
 #include <enet/enet.h>
 
@@ -63,6 +64,14 @@ namespace orxonox
        * Send a request to the master server containing data specified in data
        */
       int sendRequest( char *data );
+
+      /** \param data The data to be sent. 
+       * \return 0 for success, other for error. 
+       * 
+       * Send a request to the master server containing data specified in data
+       * (string version)
+       */
+      int sendRequest( std::string data );
 
       /** \param callback The callback function to call with data receivced.
        * \return 0 for success, other for error

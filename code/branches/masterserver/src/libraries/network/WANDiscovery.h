@@ -33,15 +33,10 @@
 #include "packet/ServerInformation.h"
 #include "util/Singleton.h"
 #include "MasterServerComm.h"
+#include "MasterServerProtocol.h"
 
 #include <vector>
 
-/* master server address (to be moved elsewhere later) */
-#define MS_ADDRESS "localhost"
-
-/* protocol (to be moved elsewhere later) */
-#define MSPROTO_CLIENT "CL "
-#define MSPROTO_REQ_LIST "REQ:LIST"
 
 // tolua_begin
 namespace orxonox

@@ -110,6 +110,7 @@ namespace orxonox
     { 
       /* address buffer */
       char *addrconv = NULL;
+      int retval = 0;
 
       /* check what type of event it is and react accordingly */
       switch (this->event.type)
@@ -135,7 +136,7 @@ namespace orxonox
 
           /* call the supplied callback, if any. */
           if( (*callback) != NULL )
-            (*callback)( addrconv, &(this->event) );
+            retval = (*callback)( addrconv, &(this->event) );
 
           enet_packet_destroy( event.packet );
           if( addrconv ) free( addrconv );
@@ -144,7 +145,7 @@ namespace orxonox
       }
 
       /* event handled, return 0 */
-      return 0;
+      return retval;
     }
 
     /* show that no event occured */
@@ -157,6 +158,25 @@ namespace orxonox
     /* Create a reliable packet of size 7 containing "packet\0" */
     ENetPacket * packet = enet_packet_create( data, 
         strlen( data ) + 1, 
+        ENET_PACKET_FLAG_RELIABLE);
+
+    /* Send the packet to the peer over channel id 0. */
+    enet_peer_send (this->peer, 0, packet);
+
+    /* One could just use enet_host_service() instead. */
+    enet_host_flush( this->client );
+    if( packet ) free( packet );
+
+    /* all done. */
+    return 0;
+  }
+
+  int MasterServerComm::sendRequest( std::string data )
+  {
+    /* send the data to the friend */
+    /* Create a reliable packet of size 7 containing "packet\0" */
+    ENetPacket * packet = enet_packet_create( data.c_str(), 
+        data.length() + 1, 
         ENET_PACKET_FLAG_RELIABLE);
 
     /* Send the packet to the peer over channel id 0. */

@@ -38,9 +38,8 @@
 #include "ServerConnection.h"
 #include "LANDiscoverable.h"
 #include "MasterServerComm.h"
+#include "MasterServerProtocol.h"
 
-/* proto (move to central point soon) */ 
-#define MS_ADDRESS "localhost"
 
 namespace orxonox
 {
@@ -56,7 +55,11 @@ namespace orxonox
     Server(int port, const std::string& bindAddress);
     ~Server();
 
+    /* helpers */
     void helper_ConnectToMasterserver();
+    void helper_HandleMasterServerRequests();
+    int replyhandler( char *addr, ENetEvent *ev );
+
     void open();
     void close();
     bool processChat(const std::string& message, unsigned int playerID);
