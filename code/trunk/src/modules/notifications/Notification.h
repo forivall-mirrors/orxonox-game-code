@@ -79,6 +79,7 @@ namespace orxonox
             std::string sender_; //!< The sender of the notification.
 
             void initialize(void); //!< Registers the object and sets some default values.
+            void registerVariables(void) {}
 
     };
 

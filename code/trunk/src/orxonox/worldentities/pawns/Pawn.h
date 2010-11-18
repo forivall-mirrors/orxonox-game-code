@@ -154,7 +154,7 @@ namespace orxonox // tolua_export
             float shieldHealth_;
             float shieldAbsorption_; // Has to be between 0 and 1
 
-            Pawn* lastHitOriginator_;
+            WeakPtr<Pawn> lastHitOriginator_;
 
             WeaponSystem* weaponSystem_;
             bool bReload_;

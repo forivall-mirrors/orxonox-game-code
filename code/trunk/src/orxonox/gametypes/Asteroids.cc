@@ -40,6 +40,7 @@ namespace orxonox
     {
         RegisterObject(Asteroids);
         this->firstCheckpointReached_ = false;
+        this->numberOfBots_=0; //sets number of default bots temporarly to 0
     }
 
     void Asteroids::tick(float dt)
@@ -74,6 +75,7 @@ namespace orxonox
         std::string message("The match has started! Reach the first chekpoint within 15 seconds! But be aware, there may be pirates around...");
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
+
     }
 
     void Asteroids::end()

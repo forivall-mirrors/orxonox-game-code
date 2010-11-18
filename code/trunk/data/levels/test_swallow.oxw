@@ -9,6 +9,7 @@
   include("stats.oxo")
   include("templates/spaceship_swallow.oxt")
   include("templates/spaceship_pirate.oxt")
+  include("templates/lodinformation.oxt")
 ?>
 
 <Level
@@ -16,12 +17,16 @@
  description  = "presentation level for Orxonox Convention X"
 
 >
+
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/skypanoramagen1"
   >
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
-
 
 <SpawnPoint position="<?lua print(math.sin(1.5) *40000) ?>,<?lua print(math.cos(1.5) *40000) ?>,<?lua print(500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow />
 
