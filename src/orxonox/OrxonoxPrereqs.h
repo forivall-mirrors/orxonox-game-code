@@ -94,6 +94,7 @@ namespace orxonox
     class Deathmatch;
     class Dynamicmatch;
     class Gametype;
+    class LastManStanding;
     class TeamBaseMatch;
     class TeamDeathmatch;
     class UnderAttack;
