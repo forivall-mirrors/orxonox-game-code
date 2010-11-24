@@ -53,3 +53,279 @@ function getStaticTextWindowHeight(window)
     local height = lines * window:getFont():getLineSpacing() + frameHeight
     return height
 end
+
+
+--@arguments:
+--  list: 2-dimensional table, arguments are items that contain a button and its function
+--  code: code of any key on the keyboard
+--  P: menusheet
+--  n: number of rows
+--  m: number of colums
+
+function buttonIteratorHelper(list, code, P, n, m)
+
+    --key down
+    if code == "208" then
+        if P.index < 0 then     -- initial status
+            P.index = 0
+            P.oldindex = -1
+        else
+            P.oldindex = P.index
+            P.index = (P.index + m) % (m*n)
+
+            while list[P.index+1] == nil do
+                P.oldindex = P.index
+                P.index = (P.index + m) % (m*n)
+            end
+        end
+
+    --key up
+    elseif code == "200" then
+        if P.index < 0 then
+            P.index = 0
+            P.oldindex = -1
+        elseif(P.index == 0) then
+            P.oldindex = P.index
+            P.index = m*n-m
+
+            while list[P.index+1] == nil do
+                P.oldindex = P.index
+                P.index = (P.index-m)%(m*n)
+            end
+        else
+            P.oldindex = P.index
+            P.index = (P.index -m) % (m*n)
+
+            while list[P.index+1] == nil do
+                cout(0,P.index)
+                P.oldindex = P.index
+                P.index = (P.index-m)%(m*n)
+            end
+        end
+
+    --key right
+    elseif code == "205" then
+        if P.index < 0 then
+            P.index = 0
+            P.oldindex = -1
+        elseif (P.index+1) % m == 0 then     -- we are at the right-end of a row
+            P.oldindex = P.index
+            P.index = P.index + 1 -m
+
+            while list[P.index+1] == nil do
+                P.oldindex = P.index
+                P.index = P.index + 1
+            end
+        else
+            P.oldindex = P.index
+            P.index = P.index + 1
+
+            while list[P.index+1] == nil do
+                if (P.index+1) % m == 0 then     -- we are at the right-end of a row
+                    P.oldindex = P.index
+                    P.index = P.index + 1-m
+
+                else    
+                    P.oldindex = P.index
+                    P.index = P.index + 1
+                end
+            end
+        end    
+
+    --key left
+    elseif code == "203" then
+        if P.index < 0 then
+            P.index = 0
+            P.oldindex = -1
+        elseif P.index % m == 0 then         -- we are at the left-end of a row 
+            P.oldindex = P.index
+            P.index = P.index +m-1
+
+            while list[P.index+1] == nil do
+                P.oldindex = P.index
+                P.index = P.index -1
+            end
+        else
+            P.oldindex = P.index
+            P.index = P.index -1
+
+            while list[P.index+1] == nil do
+                if P.index % m == 0 then     -- we are at the left-end of a row 
+                    P.oldindex = P.index
+                    P.index = P.index -1 + m
+                else                
+                    P.oldindex = P.index
+                    P.index = P.index -1
+                end
+            end   
+        end
+    end
+       
+    if (code == "208" or code == "200" or code == "203" or code == "205") and P.oldindex~= P.index then
+
+        local system = CEGUI.System:getSingleton()
+        local window = winMgr:getWindow("orxonox/MainMenuBackground")
+
+        local item = list[P.index+1]
+        local child = item["button"] 
+
+        --teste ob der Button nicht schon gehighlightet ist
+        cout(0,child:getProperty("NormalImageRightEdge"))
+        if child:getProperty("NormalImageRightEdge") == "set:TaharezGreenLook image:ButtonRightHighlight" then
+            --nop
+        else
+            child:setProperty("NormalImageRightEdge", string.sub(child:getProperty("NormalImageRightEdge"),1,-7) .. "Highlight")
+            child:setProperty("NormalImageLeftEdge", string.sub(child:getProperty("NormalImageLeftEdge"),1,-7) .. "Highlight")
+            child:setProperty("NormalImageBackground", string.sub(child:getProperty("NormalImageBackground"),1,-7) .. "Highlight")
+            if P.oldindex >= 0 then
+                if list[P.oldindex+1] ~= nil then
+                    local item = list[P.oldindex+1]
+                    local oldChild = item["button"]
+                    oldChild:setProperty("NormalImageRightEdge", string.sub(oldChild:getProperty("NormalImageRightEdge"),1,-10) .. "Normal")
+                    oldChild:setProperty("NormalImageLeftEdge", string.sub(oldChild:getProperty("NormalImageLeftEdge"),1,-10) .. "Normal")
+                    oldChild:setProperty("NormalImageBackground", string.sub(oldChild:getProperty("NormalImageBackground"),1,-10) .. "Normal")
+                end
+            end
+        end
+
+        local i = 1
+        while i < (n*m) do
+            if i == P.index +1 then 
+                i = i+1
+            else
+                if list[i] ~= nil then 
+                local item = list[i]
+                local child = item["button"]
+                    if child:getProperty("NormalImageRightEdge") == "set:TaharezGreenLook image:ButtonRightHighlight" then
+                        child:setProperty("NormalImageRightEdge", string.sub(child:getProperty("NormalImageRightEdge"),1,-10) .. "Normal")
+                        child:setProperty("NormalImageLeftEdge", string.sub(child:getProperty("NormalImageLeftEdge"),1,-10) .. "Normal")
+                        child:setProperty("NormalImageBackground", string.sub(child:getProperty("NormalImageBackground"),1,-10) .. "Normal")
+                    end
+                end
+            end
+                i=i+1
+        end
+    end
+    
+    --enter
+    if code == "28" then
+        local item = list[P.index+1]
+        local child = item["button"] 
+        child:setProperty("NormalImageRightEdge", string.sub(child:getProperty("NormalImageRightEdge"),1,-10) .. "Normal")
+        child:setProperty("NormalImageLeftEdge", string.sub(child:getProperty("NormalImageLeftEdge"),1,-10) .. "Normal")
+        child:setProperty("NormalImageBackground", string.sub(child:getProperty("NormalImageBackground"),1,-10) .. "Normal")
+
+        local foo = item["function"]
+        foo()
+    end
+
+    cout(0, P.oldindex)
+    cout(0, P.index)
+
+end
+
+function indexTester(list,code,P,n,m)
+    --key down
+    if code == "208" then
+        if P.index < 0 then     -- initial status
+            P.index = 0
+            P.oldindex = -1
+        else
+            P.oldindex = P.index
+            P.index = (P.index + m) % (m*n)
+
+            while list[P.index+1] == nil do
+                P.oldindex = P.index
+                P.index = (P.index + m) % (m*n)
+            end
+        end
+
+    --key up
+    elseif code == "200" then
+        if P.index < 0 then
+            P.index = 0
+            P.oldindex = -1
+        elseif(P.index == 0) then
+            P.oldindex = P.index
+            P.index = m*n-m
+
+            while list[P.index+1] == nil do
+                P.oldindex = P.index
+                P.index = (P.index-m)%(m*n)
+            end
+        else
+            P.oldindex = P.index
+            P.index = (P.index -m) % (m*n)
+
+            while list[P.index+1] == nil do
+                P.oldindex = P.index
+                P.index = P.index -m
+            end
+        end
+
+    --key right
+    elseif code == "205" then
+        if P.index < 0 then
+            P.index = 0
+            P.oldindex = -1
+        elseif (P.index+1) % m == 0 then     -- we are at the right-end of a row
+            P.oldindex = P.index
+            P.index = P.index + 1 -m
+
+            while list[P.index+1] == nil do
+                P.oldindex = P.index
+                P.index = P.index + 1
+            end
+        else
+            P.oldindex = P.index
+            P.index = P.index + 1
+
+            while list[P.index+1] == nil do
+                if (P.index+1) % m == 0 then     -- we are at the right-end of a row
+                    P.oldindex = P.index
+                    P.index = P.index + 1-m
+
+                else    
+                    P.oldindex = P.index
+                    P.index = P.index + 1
+                end
+            end
+        end    
+
+    --key left
+    elseif code == "203" then
+        if P.index < 0 then
+            P.index = 0
+            P.oldindex = -1
+        elseif P.index % m == 0 then         -- we are at the left-end of a row 
+            P.oldindex = P.index
+            P.index = P.index +m-1
+
+            while list[P.index+1] == nil do
+                P.oldindex = P.index
+                P.index = P.index -1
+            end
+        else
+            P.oldindex = P.index
+            P.index = P.index -1
+
+            while list[P.index+1] == nil do
+                if P.index % m == 0 then     -- we are at the left-end of a row 
+                    P.oldindex = P.index
+                    P.index = P.index -1 + m
+                else                
+                    P.oldindex = P.index
+                    P.index = P.index -1
+                end
+            end   
+        end
+    end    
+
+    cout(0, P.oldindex)
+    cout(0, P.index)
+
+end
+
+
+
+

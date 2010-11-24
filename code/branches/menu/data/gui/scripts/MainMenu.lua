@@ -3,16 +3,58 @@
 local P = createMenuSheet("MainMenu")
 P.loadAlong = { "SingleplayerMenu", "MultiplayerMenu", "SettingsMenu", "CreditsMenu" }
 
-P.index = 0
+P.buttonList = {}
+
+P.testArray = {}
+
+
+function P.onLoad()
+    local item = {
+            ["button"] = winMgr:getWindow("orxonox/QuickGameTestButton"),
+            ["function"]  = P.QuickGameTestButton_clicked
+    }
+    table.insert(P.buttonList,item)
+
+    item = {
+            ["button"] = winMgr:getWindow("orxonox/SingleplayerButton"),
+            ["function"]  = P.SingleplayerButton_clicked
+    }
+    table.insert(P.buttonList,item)
+
+    item = {
+            ["button"] = winMgr:getWindow("orxonox/MultiplayerButton"),
+            ["function"]  = P.MultiplayerButton_clicked
+    }
+    table.insert(P.buttonList,item)
+
+    item = {
+            ["button"] = winMgr:getWindow("orxonox/SettingsButton"),
+            ["function"]  = P.SettingsButton_clicked
+    }
+    table.insert(P.buttonList,item)
+
+    item = {
+            ["button"] = winMgr:getWindow("orxonox/CreditsButton"),
+            ["function"]  = P.CreditsButton_clicked
+    }
+    table.insert(P.buttonList,item)
+
+    item = {
+            ["button"] = winMgr:getWindow("orxonox/ExitButton"),
+            ["function"]  = P.ExitButton_clicked
+    }
+    table.insert(P.buttonList,item) 
+end
+
+function P.onShow()
+    P.oldindex = -2
+    P.index = -1
+end
 
 -- events for MainMenu
 function P.QuickGameTestButton_clicked(e)
     hideAllMenuSheets()
     orxonox.execute("startGame")
-end
-
-function P.onShow()
-
 end
 
 function P.SingleplayerButton_clicked(e)
@@ -35,34 +77,43 @@ function P.ExitButton_clicked(e)
     orxonox.execute("exit")
 end
 
-function P.onKeyPressed()
-    --local we = tolua.cast(e, "CEGUI::KeyEventArgs")
-    cout(0, code)
-    if code == "15" then
-        P.index = P.index + 1
-        local window = winMgr:getWindow("orxonox/MainMenuBackground")
-        if P.index == window:getChildCount() then
-            P.index = 1
-        end
-        local child = window:getChildAtIdx(P.index-1)
-        child:setProperty("NormalImageRightEdge", string.sub(child:getProperty("NormalImageRightEdge"),1,-7) .. "Highlight")
-        child:setProperty("NormalImageLeftEdge", string.sub(child:getProperty("NormalImageLeftEdge"),1,-7) .. "Highlight")
-        child:setProperty("NormalImageBackground", string.sub(child:getProperty("NormalImageBackground"),1,-7) .. "Highlight")
-    elseif code == "28" and P.index ~= 0 then
-        if P.index == 1 then
-            P.QuickGameTestButton_clicked()
-        elseif P.index == 2 then
-            P.SingleplayerButton_clicked()
-        elseif P.index == 3 then
-            P.MultiplayerButton_clicked()
-        elseif P.index == 4 then
-            P.SettingsButton_clicked()
-        elseif P.index == 5 then
-            P.CreditsButton_clicked()
-        elseif P.index == 6 then
-            P.ExitButton_clicked()
-        end
+
+--[[
+list = {}
+local item =
+{
+    ["button"] = buttonWindow,
+    ["function"]  = buttonFunction,
+}
+table.insert(list, item)
+item = list[i]
+
+for i,item in pairs(list) do
+    button = item["button"]
+end
+
+--]]
+--[[
+function createList()
+    list = {}
+
+    local j 
+    while j < P.loadAlong 
+        local item =
+        {
+            ["button"] = buttonWindow,
+            ["function"]  = buttonFunction,
+        }
+        table.insert(list, item)
     end
+
+--]]
+
+function P.onKeyPressed() 
+    cout(0,code)
+    buttonIteratorHelper(P.buttonList, code, P, 6, 1)
+    --indexTester(P.buttonList,code,P,6,1)
 end
 
 return P
+

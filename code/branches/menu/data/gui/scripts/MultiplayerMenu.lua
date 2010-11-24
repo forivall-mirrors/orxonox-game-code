@@ -2,12 +2,35 @@
 
 local P = createMenuSheet("MultiplayerMenu")
 
+P.buttonList = {}
+
 function P.onLoad()
-    P.multiplayerMode = "startClient"
+    P.multiplayerMode = "startClient" 
+
+    local item = {
+            ["button"] = winMgr:getWindow("orxonox/MultiplayerJoinButton2"),
+            ["function"]  = P.MultiplayerJoinButton_clicked
+    }
+    P.buttonList[1] = item
+
+    local item = {
+            ["button"] = winMgr:getWindow("orxonox/MultiplayerHostButton2"),
+            ["function"]  = P.MultiplayerHostButton_clicked
+    }
+    P.buttonList[2] = item
+
+    local item = {
+            ["button"] = winMgr:getWindow("orxonox/MultiplayerBackButton"),
+            ["function"]  = P.MultiplayerBackButton_clicked
+    }
+    P.buttonList[4] = item
+
 end
 
 function P.onShow()
     P.showServerList()
+    P.oldindex = -2
+    P.index = -1
 end
 
 function P.MultiplayerJoinButton_clicked(e)
@@ -106,6 +129,12 @@ function P.showServerList()
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         CEGUI.toListbox(listbox):addItem(item)
     end
+end
+
+function P.onKeyPressed() 
+    cout(0,code)
+    buttonIteratorHelper(P.buttonList, code, P, 2, 2)
+    --indexTester(P.buttonList,code,P,2,3)
 end
 
 return P
