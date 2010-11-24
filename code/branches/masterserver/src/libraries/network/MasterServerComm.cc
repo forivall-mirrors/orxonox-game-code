@@ -105,7 +105,10 @@ namespace orxonox
   int MasterServerComm::pollForReply( int (*callback)( char*, ENetEvent* ) )
   { 
     /* see whether anything happened */
-    if( enet_host_service( this->client, &this->event, 100 ) >= 0 )
+    /* WORK MARK REMOVE THIS OUTPUT */
+    COUT(2) << "MARK polling...\n";
+
+    if( enet_host_service( this->client, &this->event, 1000 ) >= 0 )
     { 
       /* address buffer */
       char *addrconv = NULL;
@@ -148,7 +151,7 @@ namespace orxonox
     }
 
     /* show that no event occured */
-    return 1;
+    return 0;
   }
 
   int MasterServerComm::sendRequest( char *data )
@@ -164,6 +167,7 @@ namespace orxonox
 
     /* One could just use enet_host_service() instead. */
     enet_host_flush( this->client );
+   
     if( packet ) free( packet );
 
     /* all done. */
