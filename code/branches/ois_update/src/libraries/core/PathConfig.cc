@@ -203,11 +203,13 @@ namespace orxonox
             dataPath_  = specialConfig::dataInstallDirectory;
 
             // Get user directory
-#  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */
+#ifdef ORXONOX_PLATFORM_UNIX
             char* userDataPathPtr(getenv("HOME"));
-#  else
+#elif ORXONOX_PLATFORM_APPLE
+            char* userDataPathPtr(getenv("HOME"));
+#else
             char* userDataPathPtr(getenv("APPDATA"));
-#  endif
+#endif
             if (userDataPathPtr == NULL)
                 ThrowException(General, "Could not retrieve user data path.");
             bf::path userDataPath(userDataPathPtr);
