@@ -158,6 +158,9 @@ namespace orxonox
         /* get an iterator */
         std::list<packet::ServerInformation>::iterator i;
 
+        /* packet holder */
+        ENetPacket *reply;
+
         /* loop through list elements */
         for( i = mainlist.serverlist.begin(); i != mainlist.serverlist.end(); ++i ) 
         {
@@ -168,7 +171,7 @@ namespace orxonox
           sprintf( tosend, "%s %s", MSPROTO_SERVERLIST_ITEM, (*i).getServerIP().c_str() );
 
           /* create packet from it */
-          ENetPacket * reply = enet_packet_create( tosend,
+           reply = enet_packet_create( tosend,
             strlen( tosend ) + 1, 
             ENET_PACKET_FLAG_RELIABLE);
 
@@ -178,6 +181,17 @@ namespace orxonox
           /* One could just use enet_host_service() instead. */
           enet_host_flush( this->server );
         } 
+
+        /* send end-of-list packet */
+        reply = enet_packet_create( MSPROTO_SERVERLIST_END,
+          MSPROTO_SERVERLIST_END_LEN + 1,
+          ENET_PACKET_FLAG_RELIABLE );
+
+        enet_peer_send( event->peer, 0, reply );
+
+        /* One could just use enet_host_service() instead. */
+        enet_host_flush( this->server );
+
       }
     }
     else
