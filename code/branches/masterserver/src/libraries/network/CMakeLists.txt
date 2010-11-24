@@ -72,6 +72,7 @@ ORXONOX_ADD_LIBRARY(network
   TOLUA_FILES
     Client.h
     LANDiscovery.h
+    WANDiscovery.h
   PCH_FILE
     NetworkPrecompiledHeaders.h
   LINK_LIBRARIES

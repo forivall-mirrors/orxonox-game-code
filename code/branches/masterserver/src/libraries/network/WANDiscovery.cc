@@ -42,6 +42,7 @@ namespace orxonox
 
   WANDiscovery::WANDiscovery()
   {
+    COUT(0) << "WANDiscovery created.\n";
     /* create master server communications object */
     //this->msc = MasterServerComm();
 
