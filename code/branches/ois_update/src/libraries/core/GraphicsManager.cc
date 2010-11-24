@@ -313,7 +313,16 @@ namespace orxonox
         this->ogreWindowEventListener_->windowResized(renderWindow_);
 
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_.get());
-
+		
+// HACK
+#ifdef __APPLE_CC__
+        //INFO: This will give our window focus, and not lock it to the terminal
+        ProcessSerialNumber psn = {0, kCurrentProcess};
+        TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+        SetFrontProcess(&psn);
+#endif
+// End of HACK
+		
         // create a full screen default viewport
         // Note: This may throw when adding a viewport with an existing z-order!
         //       But in our case we only have one viewport for now anyway, therefore
