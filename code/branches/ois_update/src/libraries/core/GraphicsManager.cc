@@ -315,7 +315,7 @@ namespace orxonox
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_.get());
 		
 // HACK
-#ifdef __APPLE_CC__
+#ifdef ORXONOX_PLATFORM_APPLE
         //INFO: This will give our window focus, and not lock it to the terminal
         ProcessSerialNumber psn = {0, kCurrentProcess};
         TransformProcessType(&psn, kProcessTransformToForegroundApplication);

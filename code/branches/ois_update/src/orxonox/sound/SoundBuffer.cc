@@ -29,7 +29,7 @@
 
 #include "SoundBuffer.h"
 
-#if defined(__APPLE__)
+#if defined(ORXONOX_PLATFORM_APPLE)
 #include <ALUT/alut.h>
 #else
 #include <AL/alut.h>
