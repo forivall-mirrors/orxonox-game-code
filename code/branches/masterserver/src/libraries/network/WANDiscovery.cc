@@ -48,11 +48,13 @@ namespace orxonox
 
     /* initialize it and see if it worked */
     if( msc.initialize() )
-      COUT(1) << "Error: could not initialize master server communications!\n";
+      COUT(0) << "Error: could not initialize master server communications!\n";
 
     /* connect and see if it worked */
     if( msc.connect( MS_ADDRESS, 1234 ) )
-      COUT(1) << "Error: could not connect to master server!\n";
+      COUT(0) << "Error: could not connect to master server!\n";
+
+    COUT(0) << "Initialization of WANDiscovery complete.\n";
   }
 
   WANDiscovery::~WANDiscovery()
@@ -104,7 +106,7 @@ namespace orxonox
     this->msc.sendRequest( MSPROTO_CLIENT " " MSPROTO_REQ_LIST );
 
     /* deal with replies */
-    while( !(this->msc).pollForReply( rhandler ) )
+    while( !((this->msc).pollForReply( rhandler )) )
       /* nothing */;
 
     /* done receiving. */
