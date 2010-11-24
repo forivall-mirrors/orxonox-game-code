@@ -43,7 +43,7 @@ namespace orxonox
   WANDiscovery::WANDiscovery()
   {
     /* create master server communications object */
-    this->msc = MasterServerComm();
+    //this->msc = MasterServerComm();
 
     /* initialize it and see if it worked */
     if( msc.initialize() )

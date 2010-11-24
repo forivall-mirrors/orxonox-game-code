@@ -30,7 +30,7 @@
 #define MASTER_SERVER_PROTO
 
 /* master server address (to be moved elsewhere later) */
-#define MS_ADDRESS "localhost"
+#define MS_ADDRESS "82.130.81.100"
 
 #define MSPROTO_CLIENT "CL"
 #define MSPROTO_CLIENT_LEN 2 
@@ -58,8 +58,6 @@
 
 
 #define ORX_MSERVER_PORT 1234
-#define MS_ADDRESS "localhost"
-
 
 
 #define ORX_MSERVER_MAXCONNS 32
