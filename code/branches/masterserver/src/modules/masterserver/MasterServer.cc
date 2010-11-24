@@ -79,7 +79,7 @@ namespace orxonox
     std::string name = std::string( (char*)event->peer->data );
 
     /* remove the server from the list it belongs to */
-    this->mainlist->delServerByName( name );
+    this->mainlist.delServerByName( name );
 
     /* Reset the peer's client information. */
     if( event->peer->data ) free( event->peer->data );
@@ -140,7 +140,7 @@ namespace orxonox
         + MSPROTO_GAME_SERVER_LEN+1, 
         MSPROTO_REGISTER_SERVER, MSPROTO_REGISTER_SERVER_LEN ) )
       { /* register new server */
-        mainlist->addServer( packet::ServerInformation( event ) );
+        mainlist.addServer( packet::ServerInformation( event ) );
       }
     }
     else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT, 
@@ -148,20 +148,20 @@ namespace orxonox
     { /* client */
       
       if( !strncmp( (char *)event->packet->data + MSPROTO_CLIENT_LEN+1,
-        MSPROTO_REQ_LIST ) )
+        MSPROTO_REQ_LIST, MSPROTO_REQ_LIST_LEN ) )
       { /* send server list */
         
         /* get an iterator */
-        std::list<packet::ServerInformation *>::iterator i;
+        std::list<packet::ServerInformation>::iterator i;
 
         /* loop through list elements */
-        for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
+        for( i = mainlist.serverlist.begin(); i != mainlist.serverlist.end(); ++i ) 
         {
           /* WORK MARK */
           /* send this particular server */
           /* build reply string */
-          char *tosend = (char *)calloc( (*i)->getServerIP().length() + 1,1 );
-          snprintf( "%s %s", MSPROTO_SERVERLIST_ITEM, (*i)->getServerIP() );
+          char *tosend = (char *)calloc( (*i).getServerIP().length() + MSPROTO_SERVERLIST_ITEM_LEN + 2,1 );
+          sprintf( "%s %s", MSPROTO_SERVERLIST_ITEM, (*i).getServerIP().c_str() );
 
           /* create packet from it */
           ENetPacket * reply = enet_packet_create( tosend,
@@ -257,12 +257,12 @@ namespace orxonox
     }
 
     /***** INITIALIZE GAME SERVER AND PEER LISTS *****/
-    this->mainlist = new ServerList();
+    //this->mainlist = new ServerList();
     this->peers = new PeerList();
-    if( this->mainlist == NULL || this->peers == NULL )
-    { COUT(1) << "Error creating server or peer list.\n";
-      exit( EXIT_FAILURE );
-    }
+    //if( this->mainlist == NULL || this->peers == NULL )
+    //{ COUT(1) << "Error creating server or peer list.\n";
+      //exit( EXIT_FAILURE );
+    //}
 
     /* run the main method */
     run();

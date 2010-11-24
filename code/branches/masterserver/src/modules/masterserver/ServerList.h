@@ -53,7 +53,7 @@ namespace orxonox
        * 
        * Add server to the game server list
        */
-      int addServer( packet::ServerInformation *toadd );
+      int addServer( packet::ServerInformation toadd );
 
       /** \param name Name of the server to remove
        * 
@@ -77,7 +77,7 @@ namespace orxonox
       void sortByPing();
 
       /** the list of servers for internal storage */
-      std::list<packet::ServerInformation *> serverlist;
+      std::list<packet::ServerInformation> serverlist;
     private:
   };
 }

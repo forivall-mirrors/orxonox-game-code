@@ -77,7 +77,8 @@ namespace orxonox
        */
       static WANDiscovery& getInstance() { return Singleton<WANDiscovery>::getInstance(); } // tolua_export
     
-      int rhandler( char *addr, ENetEvent *ev );
+      /** game server list */
+      std::vector<packet::ServerInformation> servers_;
       
     private:
       /** Singleton pointer */
@@ -85,9 +86,6 @@ namespace orxonox
 
       /** Master server communications object */
       MasterServerComm msc;
-
-      /** game server list */
-      std::vector<packet::ServerInformation> servers_;
 
   }; // tolua_export
 

@@ -89,6 +89,8 @@ namespace orxonox
                 Game::getInstance().requestStates("server, level");
             else if (CommandLineParser::getValue("dedicatedClient").getBool())
                 Game::getInstance().requestStates("client, level");
+            //else if (CommandLineParser::getValue("masterserver").getBool())
+                //Game::getInstance().requestStates("client, level");
             else
             {
                 if (!CommandLineParser::getValue("console").getBool())

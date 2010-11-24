@@ -61,10 +61,14 @@ namespace orxonox
   }
 
   /* callback for the network reply poller */
-  /* WORK MARK WORK WORK */
-  /* NOTE implement protocol-specific part here. */
-  int WANDiscovery::rhandler( char *addr, ENetEvent *ev )
+  int rhandler( char *addr, ENetEvent *ev )
   { 
+    /* error recognition */
+    if( !ev || !ev->packet || !ev->packet->data )
+    { COUT(2) << "Bad arguments received in WANDiscovery's reply handler.\n";
+      return 0;
+    }
+
     /* handle incoming data */
     /* if a list entry arrives add to list */
     if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_ITEM,
@@ -80,7 +84,7 @@ namespace orxonox
         MSPROTO_SERVERLIST_ITEM_LEN) );
 
       /* add to list */
-      this->servers_.push_back( toadd );
+      WANDiscovery::getInstance().servers_.push_back( toadd );
     }
     else if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_END,
       MSPROTO_SERVERLIST_END_LEN ) )
@@ -96,10 +100,10 @@ namespace orxonox
     this->servers_.clear();
 
     /* send request to server */
-    msc.sendRequest( MSPROTO_CLIENT " " MSPROTO_REQ_LIST );
+    this->msc.sendRequest( MSPROTO_CLIENT " " MSPROTO_REQ_LIST );
 
     /* deal with replies */
-    while( !msc.pollForReply( WANDiscovery::rhandler ) ) 
+    while( !(this->msc).pollForReply( rhandler ) )
       /* nothing */;
 
     /* done receiving. */

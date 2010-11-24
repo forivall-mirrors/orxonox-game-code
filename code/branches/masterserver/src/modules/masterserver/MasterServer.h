@@ -72,7 +72,7 @@ namespace orxonox
       /* members */
       ENetAddress address;
       ENetHost *server;
-      ServerList *mainlist;
+      ServerList mainlist;
       PeerList *peers;
 
       /* main routine */

@@ -36,6 +36,7 @@
 #define MSPROTO_CLIENT_LEN 2 
 
 #define MSPROTO_REQ_LIST "REQ:LIST"
+#define MSPROTO_REQ_LIST_LEN 8
 
 
 
