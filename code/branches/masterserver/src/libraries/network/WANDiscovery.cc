@@ -42,19 +42,17 @@ namespace orxonox
 
   WANDiscovery::WANDiscovery()
   {
-    COUT(0) << "WANDiscovery created.\n";
-    /* create master server communications object */
-    //this->msc = MasterServerComm();
+    COUT(4) << "Creating WANDiscovery.\n";
 
     /* initialize it and see if it worked */
     if( msc.initialize() )
-      COUT(0) << "Error: could not initialize master server communications!\n";
+      COUT(2) << "Error: could not initialize master server communications!\n";
 
     /* connect and see if it worked */
     if( msc.connect( MS_ADDRESS, 1234 ) )
-      COUT(0) << "Error: could not connect to master server!\n";
+      COUT(2) << "Error: could not connect to master server!\n";
 
-    COUT(0) << "Initialization of WANDiscovery complete.\n";
+    COUT(4) << "Initialization of WANDiscovery complete.\n";
   }
 
   WANDiscovery::~WANDiscovery()
@@ -91,7 +89,13 @@ namespace orxonox
     }
     else if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_END,
       MSPROTO_SERVERLIST_END_LEN ) )
-    { return 1; }
+    { 
+      /* this is the only case where 1 should be returned,
+       * as 1 is used to signal that we're done receiving
+       * the list
+       */
+      return 1; 
+    }
 
     /* done handling, return all ok code 0 */
     return 0;
@@ -105,7 +109,8 @@ namespace orxonox
     /* send request to server */
     this->msc.sendRequest( MSPROTO_CLIENT " " MSPROTO_REQ_LIST );
 
-    /* deal with replies */
+    /* poll for replies */
+    /* TODO add some timeout here so we don't wait indefinitely */
     while( !((this->msc).pollForReply( rhandler )) )
       /* nothing */;
 

@@ -108,7 +108,9 @@ namespace orxonox
     /* WORK MARK REMOVE THIS OUTPUT */
     COUT(2) << "MARK polling...\n";
 
-    if( enet_host_service( this->client, &this->event, 1000 ) >= 0 )
+    /* enet_host_service returns 0 if no event occured */
+    /* just newly set below test to >0 from >= 0, to be tested */
+    if( enet_host_service( this->client, &this->event, 1000 ) > 0 )
     { 
       /* address buffer */
       char *addrconv = NULL;

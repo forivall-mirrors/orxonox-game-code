@@ -77,6 +77,9 @@ namespace orxonox
        */
       static WANDiscovery& getInstance() { return Singleton<WANDiscovery>::getInstance(); } // tolua_export
     
+      /* todo: might make this private and use getter/setter methods
+       * at some later time. 
+       */
       /** game server list */
       std::vector<packet::ServerInformation> servers_;
       
