@@ -11,7 +11,6 @@ end
 function P.button_mainmenu_clicked(e)
     orxonox.Game:getInstance():popState()
     orxonox.Game:getInstance():popState()
-    orxonox.Game:getInstance():requestState("mainmenu")
     hideMenuSheet("InGameMenu")
 end
 
