@@ -82,8 +82,7 @@ namespace orxonox
     this->peer = enet_host_connect(this->client, &this->address, 2, 0);    
 
     if (this->peer == NULL )
-    { fprintf( stderr, 
-        "No available peers for initiating an ENet connection.\n");
+    { COUT(2) << "ERROR: No available peers for initiating an ENet connection.\n";
     //exit (EXIT_FAILURE);
     return -1;
     }

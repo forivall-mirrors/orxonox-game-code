@@ -34,7 +34,7 @@
 namespace orxonox 
 {
   /* singleton stuff */
-  ManageScopedSingleton( MasterServer, ScopeID::Root, false );
+  //ManageScopedSingleton( MasterServer, ScopeID::Root, false );
 
   /***** EVENTS *****/
   /* connect event */
@@ -165,7 +165,7 @@ namespace orxonox
           /* send this particular server */
           /* build reply string */
           char *tosend = (char *)calloc( (*i).getServerIP().length() + MSPROTO_SERVERLIST_ITEM_LEN + 2,1 );
-          sprintf( "%s %s", MSPROTO_SERVERLIST_ITEM, (*i).getServerIP().c_str() );
+          sprintf( tosend, "%s %s", MSPROTO_SERVERLIST_ITEM, (*i).getServerIP().c_str() );
 
           /* create packet from it */
           ENetPacket * reply = enet_packet_create( tosend,
