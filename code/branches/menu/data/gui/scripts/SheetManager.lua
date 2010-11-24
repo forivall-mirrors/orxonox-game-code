@@ -255,7 +255,6 @@ function noInputSheetIndex()
     -- Count the number of sheets that don't need input till the first that does.
     local index = activeMenuSheets.size
     while index > 0 and activeMenuSheets[index].bNoInput do
-        cout(0, activeMenuSheets[index].sheet.name)
         index = index - 1
     end
     return index
