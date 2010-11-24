@@ -141,6 +141,10 @@ namespace orxonox
         MSPROTO_REGISTER_SERVER, MSPROTO_REGISTER_SERVER_LEN ) )
       { /* register new server */
         mainlist.addServer( packet::ServerInformation( event ) );
+        
+        /* tell people we did so */
+        COUT(2) << "Added new server to list: " << 
+          packet::ServerInformation( event ).getServerIP() << "\n";
       }
     }
     else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT, 
