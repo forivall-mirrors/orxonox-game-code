@@ -172,6 +172,94 @@
 <!--Triggers (used for the Time Machine effect)_____________________________________________________________________________________________________________________________________________-->
 
 <!--Creating Spaceships_____________________________________________________________________________________________________________________________________________________________________-->
+    
+<?lua for i=0,5,1 do 
+    y=math.random(-500,500)
+    z=math.random(-1000,1000)
+    y2=math.random(-500,500)
+    z2=math.random(-1000,1000)
+    health=230
+    addh=100
+?>
+    
+        <EventTrigger name="BotDied" >
+            <events>
+                <trigger>
+                    <SpaceShip position="-4000,<?lua print(y) ?>,<?lua print(z) ?>" lookat="1000,<?lua print(y) ?>,<?lua print(z) ?>" health=<?lua print(health) ?> maxhealth=<?lua print(health) ?> initialhealth=<?lua print(health) ?> >
+                        <templates>
+                            <Template link=spaceshipassff />
+                         </templates>
+                          <controller>
+                            <WaypointPatrolController alertnessradius=1000 team=0 active=1 >
+                                <waypoints>
+                                    <Model mesh="cube.mesh" scale=0 position="1000,<?lua print(math.random(-1000,1000)) ?>,<?lua print(math.random(-1000,1000)) ?>" />
+                                </waypoints>
+                                <events>
+                                    <activity>
+                                        <Trigger mode=or>
+                                            <EventTrigger invert=true>
+                                                <events>
+                                                    <trigger>
+                                                        <EventListener event=EnterTimeMachine />
+                                                    </trigger>
+                                                </events>
+                                            </EventTrigger>
+                                            <EventTrigger>
+                                                <events>
+                                                    <trigger>
+                                                        <EventListener event=trigger2 />
+                                                    </trigger>
+                                                </events>
+                                            </EventTrigger>
+                                        </Trigger>
+                                    </activity>
+                                </events>
+                            </WaypointPatrolController>
+                          </controller>
+                    </SpaceShip>
+                </trigger>
+            </events>
+        </EventTrigger>
+
+        <EventTrigger name="BotDied" >
+            <events>
+                <trigger>
+                    <SpaceShip position="4000,<?lua print(y2) ?>,<?lua print(z2) ?>" lookat="-1000,<?lua print(y2) ?>, <?lua print(z2) ?>" health=<?lua print(health+addh) ?> maxhealth=<?lua print(health+addh) ?> initialhealth=<?lua print(health+addh) ?> >
+                        <templates>
+                            <Template link=spaceshippirate />
+                         </templates>
+                          <controller>
+                            <WaypointPatrolController alertnessradius=1000 team=1 active=1 >
+                                <waypoints>
+                                    <Model mesh="cube.mesh" scale=0 position="-1000,<?lua print(math.random(-1000,1000)) ?>, <?lua print(math.random(-1000,1000)) ?>" />
+                                </waypoints>
+                                <events>
+                                    <activity>
+                                        <Trigger mode=or>
+                                            <EventTrigger invert=true>
+                                                <events>
+                                                    <trigger>
+                                                        <EventListener event=EnterTimeMachine />
+                                                    </trigger>
+                                                </events>
+                                            </EventTrigger>
+                                            <EventTrigger>
+                                                <events>
+                                                    <trigger>
+                                                        <EventListener event=trigger2 />
+                                                    </trigger>
+                                                </events>
+                                            </EventTrigger>
+                                        </Trigger>
+                                    </activity>
+                                </events>
+                            </WaypointPatrolController>
+                          </controller>
+                    </SpaceShip>
+                </trigger>
+            </events>
+        </EventTrigger>
+<?lua end ?>
 
 <!--Creating Spaceships_____END_____________________________________________________________________________________________________________________________________________________________-->
 
