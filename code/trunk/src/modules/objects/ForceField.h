@@ -55,7 +55,7 @@ namespace orxonox
     
     @inGroup Objects
     */
-    namespace ForceFieldMode
+    namespace forceFieldMode
     {
         enum Value {
             tube, //!< The ForceField has a tube shape.
@@ -115,15 +115,15 @@ namespace orxonox
             inline const std::string& getMode(void);
 
         private:
-            static const std::string modeStringTube_s;
-            static const std::string modeStringSphere_s;
+            static const std::string modeTube_s;
+            static const std::string modeSphere_s;
         
             float velocity_;
             float diameter_;
             float radius_;
             float length_;
             float halfLength_;
-            ForceFieldMode::Value mode_;
+            forceFieldMode::Value mode_;
   };
 }
 

@@ -41,8 +41,8 @@ namespace orxonox
 {
     CreateFactory(ForceField);
     
-    /*static*/ const std::string modeStringNormal_s = "tube";
-    /*static*/ const std::string modeStringSphere_s = "sphere";
+    /*static*/ const std::string ForceField::modeTube_s = "tube";
+    /*static*/ const std::string ForceField::modeSphere_s = "sphere";
 
     ForceField::ForceField(BaseObject* creator) : StaticEntity(creator)
     {
@@ -53,7 +53,7 @@ namespace orxonox
         this->velocity_ = 100;
         this->diameter_ = 500;
         this->length_ = 5000;
-        this->mode_ = ForceFieldMode::tube;
+        this->mode_ = forceFieldMode::tube;
     }
 
     ForceField::~ForceField()
@@ -69,14 +69,15 @@ namespace orxonox
         XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(500);
         XMLPortParam(ForceField, "length"  , setLength  , getLength  , xmlelement, mode).defaultValues(2000);
         XMLPortParam(ForceField, "mode", setMode, getMode, xmlelement, mode);
+        COUT(0) << "ForceField created " << this->velocity_ << " " << this->diameter_ << " " << this->radius_ << " " << this->length_ << " " << this->halfLength_ << " " << this->getMode() << std::endl;
     }
 
     void ForceField::tick(float dt)
     {
-        // Iterate over all objects that could possibly be affected by the ForceField.
-        for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
+        if(this->mode_ == forceFieldMode::tube)
         {
-            if(this->mode_ == ForceFieldMode::tube)
+            // Iterate over all objects that could possibly be affected by the ForceField.
+            for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
             {
                 // The direction of the orientation of the force field.
                 Vector3 direction = this->getOrientation() * WorldEntity::FRONT;
@@ -88,20 +89,24 @@ namespace orxonox
                 
                 // The object is outside of the length of the ForceField.
                 if(distanceVector.length() > this->halfLength_)
-                    return;
+                    continue;
 
                 // The distance of the object form the orientation vector. (Or rather the smallest distance from the orientation vector)
                 float distanceFromDirectionVector = ((it->getWorldPosition() - this->getWorldPosition()).crossProduct(direction)).length();
                 
                 // If the object in a tube of radius diameter/2 around the direction of orientation.
                 if(distanceFromDirectionVector >= this->radius_)
-                    return;
+                    continue;
 
                 // Apply a force to the object in the direction of the orientation.
                 // The force is highest when the object is directly on the direction vector, with a linear decrease, finally reaching zero, when distanceFromDirectionVector = radius.
-                it->applyCentralForce(((this->radius_ - distanceFromDirectionVector)/(this->radius_)) * this->velocity_ * direction);
+                it->applyCentralForce((this->radius_ - distanceFromDirectionVector)/this->radius_ * this->velocity_ * direction);
             }
-            else if(this->mode_ == ForceFieldMode::sphere)
+        }
+        else if(this->mode_ == forceFieldMode::sphere)
+        {
+            // Iterate over all objects that could possibly be affected by the ForceField.
+            for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
             {
                 Vector3 distanceVector = it->getWorldPosition() - this->getWorldPosition();
                 float distance = distanceVector.length();
@@ -116,14 +121,14 @@ namespace orxonox
     
     void ForceField::setMode(const std::string& mode)
     {
-        if(mode == ForceField::modeStringTube_s)
-            this->mode_ = ForceFieldMode::tube;
-        else if(mode == ForceField::modeStringSphere_s)
-            this->mode_ = ForceFieldMode::sphere;
+        if(mode == ForceField::modeTube_s)
+            this->mode_ = forceFieldMode::tube;
+        else if(mode == ForceField::modeSphere_s)
+            this->mode_ = forceFieldMode::sphere;
         else
         {
             COUT(2) << "Wrong mode '" << mode << "' in ForceField. Setting to 'tube'." << std::endl;
-            this->mode_ = ForceFieldMode::tube;
+            this->mode_ = forceFieldMode::tube;
         }
     }
     
@@ -131,12 +136,12 @@ namespace orxonox
     {
         switch(this->mode_)
         {
-            case ForceFieldMode::tube:
-                return ForceField::modeStringTube_s;
-            case ForceFieldMode::sphere:
-                return ForceField::modeStringSphere_s;
+            case forceFieldMode::tube:
+                return ForceField::modeTube_s;
+            case forceFieldMode::sphere:
+                return ForceField::modeSphere_s;
             default:
-                return ForceField::modeStringTube_s;
+                return ForceField::modeTube_s;
         }
     }
 }
