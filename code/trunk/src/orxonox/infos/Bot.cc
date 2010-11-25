@@ -81,10 +81,11 @@ namespace orxonox
             "General Orlov",
             "Max Zorin",
             "Brad Whitaker",
-            "General Koskov",
+            "General Georgi Koskov",
             "Franz Sanchez",
             "Alec Trevelyan",
             "Elliot Carver",
+            "Elektra King"
             "Viktor Zokas",
             "Gustav Graves",
             "Le Chiffre",
