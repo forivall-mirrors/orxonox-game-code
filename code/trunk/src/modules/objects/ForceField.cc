@@ -43,6 +43,7 @@ namespace orxonox
 
     /*static*/ const std::string ForceField::modeTube_s = "tube";
     /*static*/ const std::string ForceField::modeSphere_s = "sphere";
+    /*static*/ const std::string ForceField::modeInvertedSphere_s = "invertedSphere";
 
     /**
     @brief
@@ -78,7 +79,7 @@ namespace orxonox
 
         XMLPortParam(ForceField, "velocity", setVelocity, getVelocity, xmlelement, mode).defaultValues(100);
         XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(500);
-        XMLPortParam(ForceField, "length"  , setLength  , getLength  , xmlelement, mode).defaultValues(2000);
+        XMLPortParam(ForceField, "length", setLength  , getLength  , xmlelement, mode).defaultValues(2000);
         XMLPortParam(ForceField, "mode", setMode, getMode, xmlelement, mode);
     }
 
@@ -101,10 +102,9 @@ namespace orxonox
                 direction.normalise();
 
                 // Vector from the center of the force field to the object its acting on.
-                // TODO: This could probably be simplified.
                 Vector3 distanceVector = it->getWorldPosition() - (this->getWorldPosition() + (this->halfLength_ * direction));
 
-                // The object is outside of the length of the ForceField.
+                // The object is outside a ball around the center with radius length/2 of the ForceField.
                 if(distanceVector.length() > this->halfLength_)
                     continue;
 
@@ -136,6 +136,23 @@ namespace orxonox
                 }
             }
         }
+        else if(this->mode_ == forceFieldMode::invertedSphere)
+        {
+            // Iterate over all objects that could possibly be affected by the ForceField.
+            for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
+            {
+                Vector3 distanceVector = this->getWorldPosition() - it->getWorldPosition();
+                float distance = distanceVector.length();
+                // If the object is within 'radius' distance and no more than 'length' away from the boundary of the sphere.
+                float range = this->radius_ - this->halfLength_*2;
+                if (distance < this->radius_ && distance > range)
+                {
+                    distanceVector.normalise();
+                    // Apply a force proportional to the velocity, with highest force at the boundary of the sphere, linear decreasing until reaching a distance of 'radius-length' from the origin, where the force reaches zero.
+                    it->applyCentralForce((distance-range)/range * this->velocity_ * distanceVector);
+                }
+            }
+        }
     }
 
     /**
@@ -150,6 +167,8 @@ namespace orxonox
             this->mode_ = forceFieldMode::tube;
         else if(mode == ForceField::modeSphere_s)
             this->mode_ = forceFieldMode::sphere;
+        else if(mode == ForceField::modeInvertedSphere_s)
+            this->mode_ = forceFieldMode::invertedSphere;
         else
         {
             COUT(2) << "Wrong mode '" << mode << "' in ForceField. Setting to 'tube'." << std::endl;
@@ -171,6 +190,8 @@ namespace orxonox
                 return ForceField::modeTube_s;
             case forceFieldMode::sphere:
                 return ForceField::modeSphere_s;
+            case forceFieldMode::invertedSphere:
+                return ForceField::modeInvertedSphere_s;
             default:
                 return ForceField::modeTube_s;
         }

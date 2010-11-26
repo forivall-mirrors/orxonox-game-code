@@ -53,7 +53,8 @@ namespace orxonox
     {
         enum Value {
             tube, //!< The ForceField has a tube shape.
-            sphere //!< The ForceField has a spherical shape.
+            sphere, //!< The ForceField has a spherical shape.
+            invertedSphere //!< The ForceField has a spherical shape but "inverted" behavior.
         };
     }
 
@@ -66,9 +67,10 @@ namespace orxonox
         - @b diameter The diameter of the ForceField. Default is 500.
         - @b length The length of the ForceField. Default is 2000.
         - @b mode The mode the ForceField is in. For mode:
-            - <em>tube</em> A ForceField which exerts force only in the direction it is oriented. The force is only exerted on objects that are in a tube of length <em>length</em> and diameter <em>diameter</em>. The magintude of the force is proportional to the <em>velocity</em>, being highest when an object is in the middle of the tube (radius-wise), linearly decreasing with greater radii and finally reaching zero, when the object is <code>diameter/2</code> away from the orientation vector.
+            - <em>tube</em> A ForceField which exerts force only in the direction it is oriented. The force is only exerted on objects that are in a tube of length <em>length</em> and diameter <em>diameter</em> (with rounded start and end faces, so in fact the <em>length</em> parameter specifies a ball with <code>origin + length/2</code> as the center and <code>length/2</code> as the radius). The magintude of the force is proportional to the <em>velocity</em>, being highest when an object is in the middle of the tube (radius-wise), linearly decreasing with greater radii and finally reaching zero, when the object is <code>diameter/2</code> away from the orientation vector.
             - <em>sphere</em> A Force Field which exerts force radially away from itself, with the greatest magnitude (proportional to <em>velocity</em>) being in the origin of the ForceField, linearly decreasing with respect to the distance to the origin and finally reaching zero at distance <code>diameter/2</code>.
             Default is <em>tube</em>.
+            - <em>invertedSphere</em> 
 
     @author
         Aurelian Jaggi
@@ -133,6 +135,7 @@ namespace orxonox
             //! Strings to represent the modes.
             static const std::string modeTube_s;
             static const std::string modeSphere_s;
+            static const std::string modeInvertedSphere_s;
 
             float velocity_; //!< The velocity of the ForceField.
             float radius_; //!< The radius of the ForceField.
