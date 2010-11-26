@@ -32,12 +32,6 @@
     @ingroup Objects
 */
 
-/**
-@file ForceField.h
-@brief Definition of the ForceField class.
-@inGroup Objects
-*/
-
 #ifndef _ForceField_H__
 #define _ForceField_H__
 
@@ -52,80 +46,99 @@ namespace orxonox
     /**
     @brief
         The mode of the ForceField.
-    
-    @inGroup Objects
+
+    @ingroup Objects
     */
     namespace forceFieldMode
     {
         enum Value {
             tube, //!< The ForceField has a tube shape.
             sphere //!< The ForceField has a spherical shape.
-            
         };
     }
 
     /**
     @brief
         Implements a force field, that applies a force to any @ref orxonox::MoblieEnity "MobileEntity" that enters its range.
-        
+
         The following parameters can be set to specify the behavior of the ForceField.
-        - @b velocity The amount of force the ForceField excerts.
-        - @b diameter The diameter of the ForceField.
-        - @b length The length of the ForceField.
+        - @b velocity The amount of force the ForceField excerts. Default is 100.
+        - @b diameter The diameter of the ForceField. Default is 500.
+        - @b length The length of the ForceField. Default is 2000.
         - @b mode The mode the ForceField is in. For mode:
-        -- <em>tube</em> A ForceField which exerts force only in the direction it is oriented. The force is only exerted on objects that are in a tube of length <em>length</em> and diameter <em>diameter</em>. The magintude of the force is proportional to the <em><velocity/em>, being highest when an object is in the middle of the tube (radius-wise), linearly decreasing with greater radii and finally reaching zero, when the object is <code>diameter/2</code> away from the orientation vector.
-        -- <em>sphere</em> A Force Field which exerts force radially away from itself, with the greatest magnitude (proportional to <em>velocity</em>) being in the origin of the ForceField, linearly decreasing with respect to the distance to the origin and finally reaching zero at distance <code>diameter/2</code>.
-        
+            - <em>tube</em> A ForceField which exerts force only in the direction it is oriented. The force is only exerted on objects that are in a tube of length <em>length</em> and diameter <em>diameter</em>. The magintude of the force is proportional to the <em>velocity</em>, being highest when an object is in the middle of the tube (radius-wise), linearly decreasing with greater radii and finally reaching zero, when the object is <code>diameter/2</code> away from the orientation vector.
+            - <em>sphere</em> A Force Field which exerts force radially away from itself, with the greatest magnitude (proportional to <em>velocity</em>) being in the origin of the ForceField, linearly decreasing with respect to the distance to the origin and finally reaching zero at distance <code>diameter/2</code>.
+            Default is <em>tube</em>.
+
     @author
         Aurelian Jaggi
-        
+
     @author
         Damian 'Mozork' Frick
-        
-    @inGroup Objects
+
+    @ingroup Objects
     */
     class _ObjectsExport ForceField : public StaticEntity, public Tickable
     {
         public:
             ForceField(BaseObject* creator);
             virtual ~ForceField();
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void tick(float dt);
 
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates a ForceField object through XML.
+            virtual void tick(float dt); //!< A method that is called every tick.
+
+            /**
+            @brief Set the velocity of the ForceField.
+            @param vel The velocity to be set.
+            */
             inline void setVelocity(float vel)
                 { this->velocity_ = vel; }
-
+            /**
+            @brief Get the velocity of the ForceField.
+            @return Returns the velocity of the ForceField.
+            */
             inline float getVelocity()
                 { return this->velocity_; }
 
+            /**
+            @brief Set the diameter of the ForceField.
+            @param diam The diameter to be set.
+            */
             inline void setDiameter(float diam)
-                { this->diameter_ = diam; this->radius_ = diam/2; }
-
+                { this->radius_ = diam/2; }
+            /**
+            @brief Get the diameter of the ForceField.
+            @return Returns the diameter of the ForceField.
+            */
             inline float getDiameter()
-                { return this->diameter_; }
+                { return this->radius_*2; }
 
+            /**
+            @brief Set the length of the ForceField.
+            @param l The length to be set.
+            */
             inline void setLength(float l)
-                { this->length_ = l; this->halfLength_ = l/2; }
-
+                { this->halfLength_ = l/2; }
+            /**
+            @brief Get the length of the ForceField.
+            @return Returns the length of the ForceField.
+            */
             inline float getLength()
-                { return this->length_; }
-                
-            void setMode(const std::string& mode);
-                
-            inline const std::string& getMode(void);
+                { return this->halfLength_*2; }
+
+            void setMode(const std::string& mode); //!< Set the mode of the ForceField.
+            const std::string& getMode(void); //!< Get the mode of the ForceField.
 
         private:
+            //! Strings to represent the modes.
             static const std::string modeTube_s;
             static const std::string modeSphere_s;
-        
-            float velocity_;
-            float diameter_;
-            float radius_;
-            float length_;
-            float halfLength_;
-            forceFieldMode::Value mode_;
+
+            float velocity_; //!< The velocity of the ForceField.
+            float radius_; //!< The radius of the ForceField.
+            float halfLength_; //!< Half of the length of the ForceField.
+            forceFieldMode::Value mode_; //!< The mode of the ForceField.
   };
 }
 
 #endif
-

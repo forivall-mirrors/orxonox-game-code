@@ -27,8 +27,8 @@
  */
 
 /**
-@file ForceField.cc
-@brief Implementation of the ForceField class.
+    @file ForceField.cc
+    @brief Implementation of the ForceField class.
 */
 
 #include "ForceField.h"
@@ -40,38 +40,55 @@
 namespace orxonox
 {
     CreateFactory(ForceField);
-    
+
     /*static*/ const std::string ForceField::modeTube_s = "tube";
     /*static*/ const std::string ForceField::modeSphere_s = "sphere";
 
+    /**
+    @brief
+        Constructor. Registers the object and initializes some values.
+    */
     ForceField::ForceField(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(ForceField);
 
         //Standard Values
         this->setDirection(Vector3::ZERO);
-        this->velocity_ = 100;
-        this->diameter_ = 500;
-        this->length_ = 5000;
+        this->setVelocity(100);
+        this->setDiameter(500);
+        this->setLength(2000);
         this->mode_ = forceFieldMode::tube;
     }
 
+    /**
+    @brief
+        Destructor.
+    */
     ForceField::~ForceField()
     {
     }
 
+    /**
+    @brief
+        Creates a ForceField object through XML.
+    */
     void ForceField::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(ForceField, XMLPort, xmlelement, mode);
 
-        //For correct xml import use: position, direction, velocity, scale
         XMLPortParam(ForceField, "velocity", setVelocity, getVelocity, xmlelement, mode).defaultValues(100);
         XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(500);
         XMLPortParam(ForceField, "length"  , setLength  , getLength  , xmlelement, mode).defaultValues(2000);
         XMLPortParam(ForceField, "mode", setMode, getMode, xmlelement, mode);
-        COUT(0) << "ForceField created " << this->velocity_ << " " << this->diameter_ << " " << this->radius_ << " " << this->length_ << " " << this->halfLength_ << " " << this->getMode() << std::endl;
     }
 
+    /**
+    @brief
+        A method that is called every tick.
+        Implements the behavior of teh ForceField.
+    @param dt
+        The amount of time that elapsed since the last tick.
+    */
     void ForceField::tick(float dt)
     {
         if(this->mode_ == forceFieldMode::tube)
@@ -86,15 +103,15 @@ namespace orxonox
                 // Vector from the center of the force field to the object its acting on.
                 // TODO: This could probably be simplified.
                 Vector3 distanceVector = it->getWorldPosition() - (this->getWorldPosition() + (this->halfLength_ * direction));
-                
+
                 // The object is outside of the length of the ForceField.
                 if(distanceVector.length() > this->halfLength_)
                     continue;
 
                 // The distance of the object form the orientation vector. (Or rather the smallest distance from the orientation vector)
                 float distanceFromDirectionVector = ((it->getWorldPosition() - this->getWorldPosition()).crossProduct(direction)).length();
-                
-                // If the object in a tube of radius diameter/2 around the direction of orientation.
+
+                // If the object in a tube of radius 'radius' around the direction of orientation.
                 if(distanceFromDirectionVector >= this->radius_)
                     continue;
 
@@ -110,15 +127,23 @@ namespace orxonox
             {
                 Vector3 distanceVector = it->getWorldPosition() - this->getWorldPosition();
                 float distance = distanceVector.length();
+                // If the object is within 'radius' distance.
                 if (distance < this->radius_)
                 {
                     distanceVector.normalise();
+                    // Apply a force proportional to the velocity, with highest force at the origin of the sphere, linear decreasing until reaching a distance of 'radius' from the origin, where the force reaches zero. 
                     it->applyCentralForce((this->radius_ - distance)/this->radius_ * this->velocity_ * distanceVector);
                 }
             }
         }
     }
-    
+
+    /**
+    @brief
+        Set the mode of the ForceField.
+    @param mode
+        The mode as a string.
+    */
     void ForceField::setMode(const std::string& mode)
     {
         if(mode == ForceField::modeTube_s)
@@ -131,8 +156,14 @@ namespace orxonox
             this->mode_ = forceFieldMode::tube;
         }
     }
-    
-    inline const std::string& ForceField::getMode(void)
+
+    /**
+    @brief
+        Get the mode of the ForceField.
+    @return
+        Returns the mode of the ForceField as a string.
+    */
+    const std::string& ForceField::getMode(void)
     {
         switch(this->mode_)
         {
@@ -144,9 +175,5 @@ namespace orxonox
                 return ForceField::modeTube_s;
         }
     }
+
 }
-
-
-
-
-
