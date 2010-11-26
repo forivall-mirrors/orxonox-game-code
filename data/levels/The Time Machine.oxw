@@ -12,7 +12,6 @@
     include("templates/spaceship_pirate.oxt")
 ?>
 
-
 <!--*****************************************************************************************************************************************************************************************-->
 <!--Including Template for triggering on player-->
 
@@ -72,7 +71,7 @@
         ambientlight="0.8,0.8,0.8"
         skybox="Orxonox/skypanoramagen2"
     >
-    
+
         <Light type=directional position="0,0,0" direction="0, 0, 0" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 1.0, 0.9" />
 
 <!--CREATING SPAWNPOINTS_____________________________________________________________________________________________________________________________________________________________________-->
@@ -267,6 +266,7 @@
         <Billboard position="0,0,0" colour="1.0,1.0,1.0" material="Flares/backlightflare" scale=1 />
     
 <!--TIME MACHINE____________________________________________________________________________________________________________________________________________________________________________-->
+<ForceField mode="invertedSphere" position="0,0,0" velocity=50000 diameter=6500 length=500 />
         <StaticEntity>
             <attached>
                 <MovableEntity position="0,0,0">
