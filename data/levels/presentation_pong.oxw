@@ -1,8 +1,8 @@
 <?lua
-  include("hudtemplates3.oxo")
+  include("HUDTemplates3.oxo")
   include("stats.oxo")
-  include("ponghud.oxo")
-  include("templates/lodinformation.oxt")
+  include("pongHUD.oxo")
+  include("templates/lodInformation.oxt")
 ?>
 
 <Template name=pongbatcameras defaults=0>

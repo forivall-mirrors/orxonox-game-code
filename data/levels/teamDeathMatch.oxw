@@ -1,113 +1,85 @@
 <LevelInfo
- name = "Coding Tutorial"
- description = "Level for the coding tutorial."
- tags = "tutorial"
+ name = "Team Deathmatch"
+ description = "Fight against each other in teams."
+ tags = ""
 />
 
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipH2.oxt")
+  include("templates/spaceshipPirate.oxt")
   include("templates/lodInformation.oxt")
 ?>
 
 <Level
- name         = "Presentation"
- description  = "A simple testlevel"
+ name         = "Waypoints"
+ description  = "Testing waypoings for AI controlled spaceships."
+ gametype     = TeamDeathmatch
 >
   <templates>
     <Template link=lodtemplate_default />
   </templates>
 
   <Scene
-   ambientlight = "0.5, 0.5, 0.5"
+   ambientlight = "0.7, 0.6, 0.6"
    skybox       = "Orxonox/skypanoramagen1"
   >
-
-
-
-
-<Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
-  <attached>
-    <Model scale="1" mesh="drone.mesh"/>
-  </attached>
-  <collisionShapes>
-    <BoxCollisionShape position="0,0,0"      halfExtents="10, 10, 10" />
-  </collisionShapes>
-</Drone>
-
-    <Drone name="meineDrohne" primarythrust="80" auxilarythrust="10" rotationthrust="10" mass= "50" linearDamping = "0.9" angularDamping = "0.7">
-      <attached>
-        <Model scale="1" mesh="rocket.mesh"/>
-      </attached>
-      <collisionShapes>
-        <BoxCollisionShape position="0,0,0"      halfExtents="10, 10, 10" />
-      </collisionShapes>
-    </Drone>
-
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 
-    <Model mesh="hs-w01.mesh" scale=10 position="0,0,-100" />
-    <Model mesh="hs-w01s.mesh" scale=10 position="0,0,-100" />
+    <TeamSpawnPoint team=0 position="0,  0,0" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <TeamSpawnPoint team=0 position="0, 50,0" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <TeamSpawnPoint team=0 position="0,100,0" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <TeamSpawnPoint team=0 position="0,150,0" direction="1,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
-    <?lua
-      for i = 1, 10, 1 do
-    ?>
-      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
-    <?lua end ?>
+    <TeamSpawnPoint team=1 position="2000,  0,0" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate />
+    <TeamSpawnPoint team=1 position="2000, 50,0" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate />
+    <TeamSpawnPoint team=1 position="2000,100,0" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate />
+    <TeamSpawnPoint team=1 position="2000,150,0" direction="-1,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate />
 
-    <GlobalShader compositor="Bloom" visible=false>
-      <events>
-        <visibility>
-          <DistanceTrigger position="0,0,0" distance=30 target="Spectator" switch=true />
-        </visibility>
-      </events>
-    </GlobalShader>
-    <Model position="0,0,0" scale=8 mesh="ast1.mesh" />
-    <StaticEntity position="0,0,0" collisionType=static>
-      <collisionShapes>
-        <SphereCollisionShape radius="20" />
-      </collisionShapes>
-    </StaticEntity>
+    <TeamSpawnPoint team=2 position="1000,  0,1500" direction="0,0,-1" spawnclass=SpaceShip pawndesign=spaceshipHtwo />
+    <TeamSpawnPoint team=2 position="1000, 50,1500" direction="0,0,-1" spawnclass=SpaceShip pawndesign=spaceshipHtwo />
+    <TeamSpawnPoint team=2 position="1000,100,1500" direction="0,0,-1" spawnclass=SpaceShip pawndesign=spaceshipHtwo />
+    <TeamSpawnPoint team=2 position="1000,150,1500" direction="0,0,-1" spawnclass=SpaceShip pawndesign=spaceshipHtwo />
 
-<!--
+
     <?lua
       for i = 1, 70, 1 do
     ?>
       <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 1000 + 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
         <attached>
-          <Model scale="<?lua print(math.random() * 30 + 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
         </attached>
       </MovableEntity>
       <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * -1000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
         <attached>
-          <Model scale="<?lua print(math.random() * 30 + 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
         </attached>
       </MovableEntity>
 
       <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * 1000 + 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
         <attached>
-          <Model scale="<?lua print(math.random() * 30 + 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
         </attached>
       </MovableEntity>
       <MovableEntity position="<?lua print(math.random() * 6000 - 3000)?>, <?lua print(math.random() * -1000 - 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
         <attached>
-          <Model scale="<?lua print(math.random() * 30 + 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
         </attached>
       </MovableEntity>
 
       <MovableEntity position="<?lua print(math.random() * 1000 + 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
         <attached>
-          <Model scale="<?lua print(math.random() * 30 + 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
         </attached>
       </MovableEntity>
       <MovableEntity position="<?lua print(math.random() * -1000 - 3000)?>, <?lua print(math.random() * 6000 - 3000) ?>, <?lua print(math.random() * 6000 - 3000) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
         <attached>
-          <Model scale="<?lua print(math.random() * 30 + 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
+          <Model scale="<?lua print(math.random() * 50 + 20) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false />
         </attached>
       </MovableEntity>
     <?lua end ?>
--->
 
   </Scene>
 </Level>

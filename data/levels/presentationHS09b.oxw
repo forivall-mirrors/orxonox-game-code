@@ -6,18 +6,18 @@
 
 <?lua
   include("stats.oxo")
-  include("hudtemplates3.oxo")
-  include("templates/lodinformation.oxt")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
 ?>
 
 <?lua
-  include("templates/spaceship_assff.oxt")
-  include("templates/spaceship_pirate.oxt")
-  include("templates/spaceship_ghost.oxt")
-  include("templates/spaceship_HXY.oxt")
-  include("templates/spaceship_Transporter.oxt")
-  include("templates/spaceship_HXY_SL.oxt")
-  include("templates/spaceship_Transporter_SL.oxt")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipGhost.oxt")
+  include("templates/spaceshipHXY.oxt")
+  include("templates/spaceshipTransporter.oxt")
+  include("templates/spaceshipHXYSL.oxt")
+  include("templates/spaceshipTransporterSL.oxt")
 ?>
 
 <Level
