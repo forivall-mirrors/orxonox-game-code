@@ -290,17 +290,17 @@
     - The entity that actually gives a @ref orxonox::Pickupable "Pickupable" to a @ref orxonox::PickupCarrier "PickupCarrier" is called a @ref orxonox::PickupSpawner "PickupSpawner". A @ref orxonox::PickupSpawner "PickupSpawner" creates (based on some parameters) @ref orxonox::Pickupable "Pickupables" which then is picked up by the @ref orxonox::PickupCarrier "PickupCarrier", that caused the @ref orxonox::PickupSpawner "PickupSpawner" to spawn a new pickup. How the spawner looks in the game is defined by the @ref orxonox::PickupRepresentation "PickupRepresentation" of the @ref orxonox::Pickupable "Pickupable" it spawns.
 
     @subsection UsingPredifinedPickups Using predefined pickups
-    There is a file called <code>pickup_representation_templates.oxt</code> in <code>levels/templates</code>, which holds the templates for the @ref orxonox::PickupRepresentation "PickupRepresentations" and also templates for @ref orxonox::Pickupable "Pickupables". The templates for the @ref orxonox::PickupRepresentation "PickupRepresentations" define the @ref orxonox::StaticEntity "StaticEntities" that are attached to the @ref orxonox::PickupSpawner "PickupSpawners" to make them look like the @ref orxonox::Pickupable "Pickupable" they are spawning. The templates for the @ref orxonox::Pickupable "Pickupables" can be added just for ease of use.
+    There is a file called <code>pickupRepresentationTemplates.oxt</code> in <code>levels/templates</code>, which holds the templates for the @ref orxonox::PickupRepresentation "PickupRepresentations" and also templates for @ref orxonox::Pickupable "Pickupables". The templates for the @ref orxonox::PickupRepresentation "PickupRepresentations" define the @ref orxonox::StaticEntity "StaticEntities" that are attached to the @ref orxonox::PickupSpawner "PickupSpawners" to make them look like the @ref orxonox::Pickupable "Pickupable" they are spawning. The templates for the @ref orxonox::Pickupable "Pickupables" can be added just for ease of use.
     If you want to use pickups you will have to include this file in your level file, somewhere above the Level-tag.
     @code
     <?lua
-        include("templates/pickup_representation_templates.oxt")
+        include("templates/pickupRepresentationTemplates.oxt")
     ?>
     ...
     <Level>
     ...
     @endcode
-    There is another file called <code>pickups.oxi</code> in <code>level/includes</code> which creates all @ref orxonox::PickupRepresentation "PickupRepresentations" needed for the @ref orxonox::Pickupable "Pickupable" supplied by the <code>pickup_representation_templates.oxt</code> file. This file will have to be included as well. It has to be somewhere after the opening Scene-tag and your first use of a pickup.
+    There is another file called <code>pickups.oxi</code> in <code>level/includes</code> which creates all @ref orxonox::PickupRepresentation "PickupRepresentations" needed for the @ref orxonox::Pickupable "Pickupable" supplied by the <code>pickupRepresentationTemplates.oxt</code> file. This file will have to be included as well. It has to be somewhere after the opening Scene-tag and your first use of a pickup.
     @code
     <Scene>
     ...
@@ -323,7 +323,7 @@
     </PickupSpawner>
     @endcode
     Please be aware, that the @ref orxonox::Pickupable "Pickupable" specified for the @ref orxonox::PickupSpawner "PickupSpawner", has to be exactly the same (including all parameters) to the one specified in the <code>pickups.oxi</code> file.
-    To make things simpler, one could just use the templates specified in the <code>pickup_representation_templates.oxt</code> file. Which, following the previous example, would look like this:
+    To make things simpler, one could just use the templates specified in the <code>pickupRepresentationTemplates.oxt</code> file. Which, following the previous example, would look like this:
     @code
     <PickupSpawner position="-100,0,-100" respawnTime="30" maxSpawnedItems="10">
         <pickup>
@@ -346,7 +346,7 @@
     </pickup>
     </PickupSpawner>
     @endcode
-    As can be seen in the <code>pickup_representation_templates.oxt</code> file and the <code>pickups.oxi</code> file there is no @ref orxonox::PickupRepresentation "PickupRepresentation" defined for this type of pickup. Thus the default representation will be used.
+    As can be seen in the <code>pickupRepresentationTemplates.oxt</code> file and the <code>pickups.oxi</code> file there is no @ref orxonox::PickupRepresentation "PickupRepresentation" defined for this type of pickup. Thus the default representation will be used.
 
     To create an appropriate @ref orxonox::PickupRepresentation "PickupRepresentation" for the inserted pickup above, you can just create a @ref orxonox::PickupRepresentation "PickupRepresentation" within the scene (Within the Scene-tags).
     @code
@@ -387,7 +387,7 @@
         </PickupRepresentation>
     </Template>
     @endcode
-    Please refer to the <code>pickup_representation_templates.oxt</code> for more examples.
+    Please refer to the <code>pickupRepresentationTemplates.oxt</code> for more examples.
 
     The @ref orxonox::PickupRepresentation "PickupRepresentation" also needs another parameter the <em>inventoryRepresentation</em>. This parameter defined how the @ref orxonox::Pickupable "Pickupable" is displayed in the PickupInventory (a menu to browse the currently equipped pickups).
     @code
@@ -395,7 +395,7 @@
     @endcode
     This is the name of an image defined in the PickupInventory imageset (<code>PickupInventory.imageset</code>), which can be found in <code>data_extern/gui/imagesets</code>.
 
-    This is all that has to be done. Now you have a new pickup type with an appropriate @ref orxonox::PickupRepresentation "PickupRepresentation" for your use. If you feel that your pickup is useful in general, please don't hesitate to create a template for the pickup and add your pickup to the <code>pickup_representation_templates.oxt</code> file and the <code>pickups.oxi</code> file, so that anyone who wants to use it can do so quite easily.
+    This is all that has to be done. Now you have a new pickup type with an appropriate @ref orxonox::PickupRepresentation "PickupRepresentation" for your use. If you feel that your pickup is useful in general, please don't hesitate to create a template for the pickup and add your pickup to the <code>pickupRepresentationTemplates.oxt</code> file and the <code>pickups.oxi</code> file, so that anyone who wants to use it can do so quite easily.
 
     There is also an additional way to create new types of pickups to be used in a level (without having to do any coding). There is a @ref orxonox::Pickupable "Pickupable" called the @ref orxonox::PickupCollection "PickupCollection", which is just a collection (hence the name) of @ref orxonox::Pickupable "Pickupables" (more precisely of @ref orxonox::CollectiblePickup "CollectiblePickups"), behaving as if it was just one @ref orxonox::Pickupable "Pickupable".
     A @ref orxonox::PickupCollection "PickupCollection" can be created as follows:
@@ -685,7 +685,7 @@
     A @ref orxonox::PlayerTrigger "PlayerTrigger" is a special sort of @ref orxonox::Trigger "Trigger" that knows the player that triggered it and therefore can be asked who that was. This allows the @ref orxonox::QuestEffect "QuestEffects" to be executed on the right player.
 
     @section SampleQuest Sample quest
-    To get your head around all of this and see some of the things mentioned here in action you might want to check out the "The Tale of Princess Aeryn"-Quest (Levelfile: princessaeryn.oxw) in the level-folder.
+    To get your head around all of this and see some of the things mentioned here in action you might want to check out the "The Tale of Princess Aeryn"-Quest (Levelfile: princessAeryn.oxw) in the level-folder.
 */
 
 /**

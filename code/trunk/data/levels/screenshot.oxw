@@ -5,12 +5,12 @@
 />
 
 <?lua
-  include("hudtemplates3.oxo")
+  include("HUDTemplates3.oxo")
   include("stats.oxo")
-  include("templates/spaceship_assff.oxt")
-  include("templates/spaceship_H2.oxt")
-  include("templates/spaceship_pirate.oxt")
-  include("templates/lodinformation.oxt")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipH2.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/lodInformation.oxt")
 ?>
 
 <Level

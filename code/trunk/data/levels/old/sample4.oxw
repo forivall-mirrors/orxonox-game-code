@@ -1,9 +1,9 @@
 <?lua
-  include("hudtemplates3.oxo")
+  include("HUDTemplates3.oxo")
 ?>
 
 <?lua
-  include("templates/spaceship_assff.oxt")
+  include("templates/spaceshipAssff.oxt")
 ?>
 
 <Level

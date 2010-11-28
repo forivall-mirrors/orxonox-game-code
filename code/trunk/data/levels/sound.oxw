@@ -6,13 +6,13 @@
 
 <?lua
   include("stats.oxo")
-  include("hudtemplates3.oxo")
-  include("templates/lodinformation.oxt")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
 ?>
 
 <?lua
-  include("templates/spaceship_assff.oxt")
-  include("templates/spaceship_pirate.oxt")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
 ?>
 
 <Level

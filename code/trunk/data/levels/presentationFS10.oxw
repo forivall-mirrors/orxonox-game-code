@@ -6,15 +6,15 @@
 
 <?lua
   include("stats.oxo")
-  include("hudtemplates3.oxo")
+  include("HUDTemplates3.oxo")
 ?>
 
 <?lua
-  include("templates/lodinformation.oxt")
-  include("templates/spaceship_assff.oxt")
-  include("templates/spaceship_pirate.oxt")
-  include("templates/spaceship_swallow.oxt")
-  include("templates/pickup_representation_templates.oxt")
+  include("templates/lodInformation.oxt")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipSwallow.oxt")
+  include("templates/pickupRepresentationTemplates.oxt")
 ?>
 
 <Level
