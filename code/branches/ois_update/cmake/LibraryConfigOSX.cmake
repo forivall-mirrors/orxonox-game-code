@@ -18,26 +18,12 @@
  #
  #
  #  Author:
- #    Yuning Chai
+ #    Kevin Young
  #  Description:
  #    Sets necessary library options and paths on Mac.
  #
 
 IF(APPLE)
   MESSAGE(STATUS "Running on Apple. Using customized paths and options.")
-
-  SET(ENV{OGRE_HOME} "/Developer/SDKs/OgreSDK/Dependencies")
-  SET(ENV{CEGUIDIR} "/Developer/SDKs/OgreSDK/Dependencies")
-
-  #MESSAGE(STATUS $ENV{OGRE_HOME})
-
-  SET(CMAKE_FIND_FRAMEWORK "FIRST")
-
-#  SET(OGRE_LIBRARY_OPTIMIZED "/Developer/SDKs/OgreSDK/Dependencies/Ogre.framework/Ogre")
-
-#  SET(CEGUI_LIBRARY_OPTIMIZED "/Developer/SDKs/OgreSDK/Dependencies/CEGUI.framework/CEGUI")
-
-#  SET(OGRE_LIBRARY_OPTIMIZED  "/Developer/SDKs/OgreSDK/Dependencies/Ogre.framework" CACHE STRING "Ogre lib for OSX")
-#  SET(CEGUI_LIBRARY_OPTIMIZED  "/Developer/SDKs/OgreSDK/Dependencies/CEGUI.framework" CACHE STRING "CEGUI lib for OSX")
-
+  
 ENDIF(APPLE)

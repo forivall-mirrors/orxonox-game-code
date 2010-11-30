@@ -93,17 +93,27 @@ namespace orxonox { namespace specialConfig
     const char moduleExtension[] = "@ORXONOX_MODULE_EXTENSION@";
 
     // OGRE PLUGINS
+    // Apple has trouble finding OGRE plugins because of its install-name convention
+    // Adopting the executable_path structure for later use in app bundles
 #ifdef NDEBUG
     const char ogrePlugins[] = "@OGRE_PLUGINS_RELEASE@";
 #  ifdef DEPENDENCY_PACKAGE_ENABLE
-    const char ogrePluginsDirectory[] = ".";
+#    ifdef ORXONOX_PLATFORM_APPLE
+       const char ogrePluginsDirectory[] = "@executable_path/../Plugins";
+#    else
+       const char ogrePluginsDirectory[] = ".";
+#    endif
 #  else
     const char ogrePluginsDirectory[] = "@OGRE_PLUGINS_FOLDER_RELEASE@";
 #  endif
 #else
     const char ogrePlugins[] = "@OGRE_PLUGINS_DEBUG@";
 #  ifdef DEPENDENCY_PACKAGE_ENABLE
-    const char ogrePluginsDirectory[] = ".";
+#    ifdef ORXONOX_PLATFORM_APPLE
+       const char ogrePluginsDirectory[] = "@OGRE_PLUGINS_FOLDER_DEBUG@";
+#    else
+       const char ogrePluginsDirectory[] = ".";
+#    endif
 #  else
     const char ogrePluginsDirectory[] = "@OGRE_PLUGINS_FOLDER_DEBUG@";
 #  endif

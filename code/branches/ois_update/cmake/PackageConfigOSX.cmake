@@ -40,27 +40,23 @@ SET(DEP_FRAMEWORK_DIR ${DEPENDENCY_PACKAGE_DIR}/Library/Frameworks)
 # Sets the library path for the FIND_LIBRARY
 SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
 
-# Certain find scripts don't behave as ecpected so we have
-# to specify the libraries ourselves.
-#SET(TCL_LIBRARY  ${DEP_BINARY_DIR}/tcl85.dll CACHE FILEPATH "")
-#SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/zlib1.dll CACHE FILEPATH "")
-
 # Include paths and other special treatments
 SET(ENV{ALUTDIR}               ${DEP_FRAMEWORK_DIR})
 SET(ENV{BOOST_ROOT}            ${DEPENDENCY_PACKAGE_DIR})
 SET(ENV{CEGUIDIR}              ${DEP_FRAMEWORK_DIR})
-#SET(ENV{DBGHELP_DIR}           ${DEP_INCLUDE_DIR}/dbghelp)
-#SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx)
-#SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet)
 SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua)
 SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR})
 SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR})
 SET(ENV{OGRE_HOME}             ${DEP_FRAMEWORK_DIR})
 SET(ENV{OGRE_PLUGIN_DIR}       ${DEP_BINARY_DIR})
-#SET(ENV{OPENALDIR}             ${DEP_INCLUDE_DIR}/openal)
-#SET(ENV{POCODIR}               ${DEP_INCLUDE_DIR}/poco)
-#LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl/include)
-#LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib/include)
+
+# Xcode won't be able to run the toluabind code generation if we're using the dependency package
+#IF(DEPENDENCY_PACKAGE_ENABLE)
+#  IF(${CMAKE_GENERATOR} STREQUAL "Xcode")
+#    SET(ENV{DYLD_LIBRARY_PATH}               ${DEPENDENCY_PACKAGE_DIR}/lib)
+#    SET(ENV{DYLD_FRAMEWORK_PATH}             ${DEPENDENCY_PACKAGE_DIR}/Library/Frameworks)
+#  ENDIF(${CMAKE_GENERATOR} STREQUAL "Xcode")
+#ENDIF(DEPENDENCY_PACKAGE_ENABLE)
 
 ### INSTALL ###
 
