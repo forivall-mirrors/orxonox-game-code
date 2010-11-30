@@ -31,7 +31,8 @@
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 
 # Global switch to disable Precompiled Header Files
-IF(PCH_COMPILER_SUPPORT)
+# Note: PCH temporarily disabled on Mac because of severe problems
+IF(PCH_COMPILER_SUPPORT AND NOT APPLE)
   OPTION(PCH_ENABLE "Global PCH switch" TRUE)
 ENDIF()
 
