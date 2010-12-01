@@ -97,7 +97,7 @@ function P.showLevelList()
     end
     end
     
-function P.showServerList()
+function P.showServerListmeow()
     local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
     CEGUI.toListbox(listbox):resetList()
     local discovery = orxonox.LANDiscovery:getInstance()
@@ -130,11 +130,13 @@ end
 
 
 -- same as above, but use WAN Discovery
-function P.showServerListWAN()
+function P.showServerList()
     local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
     CEGUI.toListbox(listbox):resetList()
     local discovery = orxonox.WANDiscovery:getInstance()
+    cout(0, "discovering.\n" )
     discovery:discover()
+    cout(0, "discovered.\n" )
     P.serverList = {}
     local index = 0
     local servername = ""

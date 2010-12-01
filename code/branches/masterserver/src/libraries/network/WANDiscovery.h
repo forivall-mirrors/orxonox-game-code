@@ -37,6 +37,7 @@
 
 #include <vector>
 
+#define WANDISC_MAXTRIES 5
 
 // tolua_begin
 namespace orxonox

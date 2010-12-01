@@ -109,16 +109,16 @@ namespace orxonox
   { 
     /* see whether anything happened */
     /* WORK MARK REMOVE THIS OUTPUT */
-    //COUT(2) << "MARK polling...\n";
+    COUT(2) << "polling masterserver...\n";
+
+    /* address buffer */
+    char *addrconv = NULL;
+    int retval = 0;
 
     /* enet_host_service returns 0 if no event occured */
     /* just newly set below test to >0 from >= 0, to be tested */
     if( enet_host_service( this->client, this->event, 1000 ) > 0 )
     { 
-      /* address buffer */
-      char *addrconv = NULL;
-      int retval = 0;
-
       /* check what type of event it is and react accordingly */
       switch (this->event->type)
       { /* new connection, not supposed to happen. */
@@ -130,6 +130,12 @@ namespace orxonox
         /* incoming data */
         case ENET_EVENT_TYPE_RECEIVE: 
           addrconv = (char *) calloc( 50, 1 );
+          if( !addrconv ) 
+          { COUT(2) << "MasterServerComm.cc: Could not allocate memory!\n";
+            break;
+          }
+
+          /* resolve IP */
           enet_address_get_host_ip( &(this->event->peer->address), 
             addrconv, 49 );
 
@@ -174,7 +180,8 @@ namespace orxonox
     /* One could just use enet_host_service() instead. */
     enet_host_flush( this->client );
    
-    if( packet ) free( packet );
+    /* free the packet */
+    enet_packet_destroy( packet );
 
     /* all done. */
     return 0;

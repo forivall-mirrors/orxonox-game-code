@@ -95,11 +95,11 @@ namespace orxonox
        * as 1 is used to signal that we're done receiving
        * the list
        */
-      return 1; 
+      return 2; 
     }
 
     /* done handling, return all ok code 0 */
-    return 0;
+    return 1;
   }
  
   void WANDiscovery::discover()
@@ -111,11 +111,19 @@ namespace orxonox
     this->msc.sendRequest( MSPROTO_CLIENT " " MSPROTO_REQ_LIST );
 
     /* poll for replies */
-    /* TODO add some timeout here so we don't wait indefinitely */
-    while( !((this->msc).pollForReply( rhandler )) )
-      /* nothing */;
-
-    /* done receiving. */
+    int i = WANDISC_MAXTRIES;
+    while( i > 0 )
+    {
+      /* poll for reply and act according to what was received */
+      switch( this->msc.pollForReply( rhandler ) )
+      { case 0: /* no event occured, decrease timeout */
+          --i; break;
+        case 1: /* got a list element, continue */ 
+          break;
+        case 2: /* done. */
+          i = 0; break;
+      }
+    }
   }
 
   std::string WANDiscovery::getServerListItemName(unsigned int index)

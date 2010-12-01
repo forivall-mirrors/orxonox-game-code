@@ -34,7 +34,7 @@
 namespace orxonox 
 {
   /* singleton stuff */
-  ManageScopedSingleton( MasterServer, ScopeID::Root, false );
+  //ManageScopedSingleton( MasterServer, ScopeID::Root, false );
 
   /* helpers */
   static void 
