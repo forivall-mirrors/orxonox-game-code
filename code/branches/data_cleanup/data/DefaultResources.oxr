@@ -7,7 +7,6 @@
 
     <ResourceLocation path = "gui/configs" />
     <ResourceLocation path = "gui/layouts" />
-    <ResourceLocation path = "gui/looknfeels" />
     <ResourceLocation path = "gui/schemes" />
     <ResourceLocation path = "gui/scripts" />
 </ResourceCollection>
