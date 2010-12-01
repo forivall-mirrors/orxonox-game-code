@@ -30,7 +30,7 @@
 #define MASTER_SERVER_PROTO
 
 /* master server address (to be moved elsewhere later) */
-#define MS_ADDRESS "129.132.3.227"
+#define MS_ADDRESS "172.16.113.1"
 
 #define MSPROTO_CLIENT "CL"
 #define MSPROTO_CLIENT_LEN 2 

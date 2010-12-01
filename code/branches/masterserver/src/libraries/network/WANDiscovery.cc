@@ -50,7 +50,8 @@ namespace orxonox
 
     /* connect and see if it worked */
     if( msc.connect( MS_ADDRESS, 1234 ) )
-      COUT(2) << "Error: could not connect to master server!\n";
+      COUT(2) << "Error: could not connect to master server at " 
+        << MS_ADDRESS << std::endl;
 
     COUT(4) << "Initialization of WANDiscovery complete.\n";
   }
