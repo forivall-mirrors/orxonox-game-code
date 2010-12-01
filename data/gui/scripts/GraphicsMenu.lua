@@ -2,6 +2,14 @@
 
 local P = createMenuSheet("GraphicsMenu")
 
+P.buttonList = {}
+
+function P.onShow()
+    --indices to iterate through buttonlist (trivial in this menu sheet)
+    P.oldindex = -2
+    P.index = -1
+end
+
 function P.onLoad()
     block = true
     file = orxonox.PathConfig:getConfigPathString() .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
@@ -82,6 +90,12 @@ function P.onLoad()
     end
     scrollbar_active = false
     block = false
+
+    local item = {
+            ["button"] = winMgr:getWindow("orxonox/GraphicsBackButton"),
+            ["function"]  = P.GraphicsBackButton_clicked
+    }
+    P.buttonList[1] = item
 end
 
 function P.GraphicsResolutionListbox_changed(e)
@@ -192,6 +206,10 @@ end
 
 function P.GraphicsBackButton_clicked(e)
     hideMenuSheet(P.name)
+end
+
+function P.onKeyPressed() 
+    buttonIteratorHelper(P.buttonList, code, P, 1, 1)
 end
 
 return P

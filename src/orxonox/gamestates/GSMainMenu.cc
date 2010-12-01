@@ -66,7 +66,7 @@ namespace orxonox
     {
         RegisterRootObject(GSMainMenu);
 
-        InputManager::getInstance().createInputState("MainMenuHackery")->setKeyHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
+        InputManager::getInstance().createInputState("MainMenuHackery", true, true)->setKeyHandler(KeyBinderManager::getInstance().getDefaultAsHandler());
 
         // create an empty Scene
         this->scene_ = new Scene(NULL);
