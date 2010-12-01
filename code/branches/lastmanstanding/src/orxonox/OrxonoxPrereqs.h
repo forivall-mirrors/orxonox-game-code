@@ -66,6 +66,8 @@ namespace orxonox
 {
     class CameraManager;
     class Level;
+    class LevelInfo;
+    class LevelInfoItem;
     class LevelManager;
     class PawnManager;
     class PlayerManager;
@@ -93,6 +95,7 @@ namespace orxonox
     class Dynamicmatch;
     class Gametype;
     class LastManStanding;
+    class LastTeamStanding;
     class TeamBaseMatch;
     class TeamDeathmatch;
     class UnderAttack;

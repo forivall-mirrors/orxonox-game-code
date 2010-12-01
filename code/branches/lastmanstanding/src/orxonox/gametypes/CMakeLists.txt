@@ -7,4 +7,5 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   Asteroids.cc
   Dynamicmatch.cc
   LastManStanding.cc
+  LastTeamStanding.cc
 )
