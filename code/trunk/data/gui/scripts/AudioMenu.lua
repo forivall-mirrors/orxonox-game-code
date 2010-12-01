@@ -2,6 +2,13 @@
 
 local P = createMenuSheet("AudioMenu")
 
+P.buttonList = {}
+
+function P.onShow()
+    P.oldindex = -2
+    P.index = -1
+end
+
 function P.onLoad()
     soundMgr = orxonox.SoundManager:getInstance()
     block = false
@@ -41,6 +48,12 @@ function P.onLoad()
     else
         listboxwindow:setItemSelectState(0,true)
     end
+
+    local item = {
+            ["button"] = winMgr:getWindow("orxonox/AudioBackButton"),
+            ["function"]  = P.AudioBackButton_clicked
+    }
+    P.buttonList[1] = item
 end
 
 function P.AudioMasterScrollbar_changed(e)
@@ -169,6 +182,10 @@ end
 
 function P.AudioBackButton_clicked(e)
     hideMenuSheet(P.name)
+end
+
+function P.onKeyPressed() 
+    buttonIteratorHelper(P.buttonList, code, P, 1, 1)
 end
 
 return P

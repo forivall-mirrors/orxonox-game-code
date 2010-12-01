@@ -63,4 +63,7 @@ function P:load()
     return self
 end
 
+function P:onKeyPressed(e)
+end
+
 return P

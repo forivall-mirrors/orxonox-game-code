@@ -1,6 +1,8 @@
--- SingleplayerMenu.lua
+-- HostMenu.lua
 
-local P = createMenuSheet("SingleplayerMenu")
+local P = createMenuSheet("HostMenu")
+
+P.multiplayerMode = "startServer"
 
 P.buttonList = {}
 P.levelList = {}
@@ -8,29 +10,49 @@ P.itemList = {}
 P.showAll = false
 
 function P.onLoad()
-    local window = winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox")
+    P.multiplayerMode = "startServer" 
+    local window = winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox")
     local button = tolua.cast(window,"CEGUI::Checkbox")
     button:setSelected(false)
     P.createLevelList()
 
-    --buttons are arranged in a 1x2 matrix
     local item = {
-            ["button"] = winMgr:getWindow("orxonox/SingleplayerStartButton"),
-            ["function"]  = P.SingleplayerStartButton_clicked
+            ["button"] = winMgr:getWindow("orxonox/HostMenuStartButton"),
+            ["function"]  = P.HostMenuStartButton_clicked
     }
     P.buttonList[1] = item
 
     local item = {
-            ["button"] = winMgr:getWindow("orxonox/SingleplayerBackButton"),
-            ["function"]  = P.SingleplayerBackButton_clicked
+            ["button"] = winMgr:getWindow("orxonox/HostMenuBackButton"),
+            ["function"]  = P.HostMenuBackButton_clicked
     }
     P.buttonList[2] = item
+end
+
+function P.onShow()
+    if P.multiplayerMode == "startServer" then
+        local window = winMgr:getWindow("orxonox/HostMenuHostButton")
+        local button = tolua.cast(window,"CEGUI::RadioButton")
+        button:setSelected(true)
+        P.createLevelList()
+    end
+
+    if P.multiplayerMode == "startDedicated" then
+        local window = winMgr:getWindow("orxonox/HostMenuDedicatedButton")
+        local button = tolua.cast(window,"CEGUI::RadioButton")
+        button:setSelected(true)
+        P.createLevelList()
+    end
+
+    P.oldindex = -2
+    P.index = -1
+
 end
 
 function P.createLevelList()
     P.levelList = {}
     P.itemList = {}
-    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/SingleplayerLevelListbox"))
+    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/HostMenuListbox"))
     listbox:resetList()
     orxonox.GUIManager:setItemTooltipsEnabledHelper(listbox, true)
     local preselect = orxonox.LevelManager:getInstance():getDefaultLevel()
@@ -60,28 +82,36 @@ function P.createLevelList()
     end
 end
 
-function P.onShow()
-    --indices to iterate through buttonlist
-    P.oldindex = -2
-    P.index = -1
+function P.HostMenuBuildServerButton_clicked(e)
+    P.multiplayerMode = "startServer"
+    P.createLevelList()
 end
 
-function P.SingleplayerStartButton_clicked(e)
-    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/SingleplayerLevelListbox"))
+function P.HostMenuDedicatedButton_clicked(e)
+    P.multiplayerMode = "startDedicated"
+    P.createLevelList()
+end
+
+function P.HostMenuBackButton_clicked(e)
+    hideMenuSheet(P.name)
+end
+
+function P.HostMenuStartButton_clicked(e)    
+    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/HostMenuListbox"))
     local choice = listbox:getFirstSelectedItem()
     if choice ~= nil then
         local index = listbox:getItemIndex(choice)
         local level = P.levelList[index+1]
         if level ~= nil then
             orxonox.LevelManager:getInstance():setDefaultLevel(level:getXMLFilename())
-            orxonox.execute("startGame")
+            orxonox.execute(P.multiplayerMode)
             hideAllMenuSheets()
         end
     end
 end
 
-function P.SingleplayerShowAll_clicked(e)
-    local checkbox = tolua.cast(winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox"), "CEGUI::Checkbox")
+function P.MultiplayerShowAll_clicked(e)
+    local checkbox = tolua.cast(winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox"), "CEGUI::Checkbox")
     local show = checkbox:isSelected()
     if show ~= P.showAll then
         P.showAll = show
@@ -89,13 +119,8 @@ function P.SingleplayerShowAll_clicked(e)
    end
 end
 
-function P.SingleplayerBackButton_clicked(e)
-    hideMenuSheet(P.name)
-end
-
 function P.onKeyPressed() 
     buttonIteratorHelper(P.buttonList, code, P, 1, 2)
 end
 
 return P
-

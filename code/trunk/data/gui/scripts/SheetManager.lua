@@ -4,6 +4,9 @@ local cursor = CEGUI.MouseCursor:getSingleton()
 local loadedSheets = {}
 local activeMenuSheets = {size = 0, topSheetTuple = nil}
 local menuSheetsRoot = guiMgr:getMenuRootWindow()
+local bInGameConsoleClosed = false
+local mainMenuLoaded = false
+orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
 
 -----------------------
 --- Local functions ---
@@ -68,7 +71,7 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     end
 
     -- Count the number of sheets that don't need input till the first that does.
-    local counter = noInputSheetCounter()
+    local counter = noInputSheetIndex()
     -- Pause game control if this is the first menu to be displayed
     -- HUGE HACK?
     if bNoInput == false and counter == 0 then
@@ -99,6 +102,11 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     -- Add sheet to the root window
     menuSheetsRoot:addChildWindow(menuSheet.window)
 
+    -- If sheet is the MainMenu
+    if name == "MainMenu" then
+        mainMenuLoaded = true
+    end
+
     -- Handle input distribution
     if bNoInput == false then
         inputMgr:enterState(menuSheet.inputState)
@@ -117,8 +125,9 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
             activeMenuSheets[i].sheet:hide()
         end
     end
-
+    
     menuSheet:show()
+    menuSheetsRoot:activate()
 
     return menuSheet
 end
@@ -160,6 +169,11 @@ function hideMenuSheet(name)
     activeMenuSheets.size = activeMenuSheets.size - 1
     activeMenuSheets.topSheetTuple = activeMenuSheets[activeMenuSheets.size]
 
+    -- If sheet is the MainMenu
+    if name == "MainMenu" then
+        mainMenuLoaded = false
+    end
+
     -- Leave the input state
     if not sheetTuple.bNoInput then
         inputMgr:leaveState(sheetTuple.sheet.inputState)
@@ -178,7 +192,7 @@ function hideMenuSheet(name)
     end
 
     -- Count the number of sheets that don't need input till the first that does.
-    local counter = noInputSheetCounter()
+    local counter = noInputSheetIndex()
     -- Resume control if the last (non-noInput) menu is hidden
     if counter == 0 then
         orxonox.HumanController:resumeControl()
@@ -198,11 +212,17 @@ end
 function keyESC()
     -- HUGE, very HUGE hacks!
 
+    -- If the InGameConsole is active, ignore the ESC command.
+    if bInGameConsoleClosed == true then
+        bInGameConsoleClosed = false
+        return
+    end
+
     -- Count the number of sheets that don't need input till the first that does.
-    local counter = noInputSheetCounter()
+    local counter = noInputSheetIndex()
 
     -- If the first sheet that needs input is the MainMenu.
-    if counter == 1 and activeMenuSheets[1].sheet.name == "MainMenu" then
+    if noInputSheetCounter() == 1 and activeMenuSheets[counter].sheet.name == "MainMenu" then
         orxonox.execute("exit")
     -- If there is at least one sheet that needs input.
     elseif counter > 0 then
@@ -212,17 +232,47 @@ function keyESC()
     end
 end
 
+function keyPressed(e)
+    local we = tolua.cast(e, "CEGUI::KeyEventArgs")
+    local sheet = activeMenuSheets[activeMenuSheets.size]
+    code = tostring(we.scancode)
+    -- Some preprocessing
+    if not mainMenuLoaded and not sheet.bNoInput then
+        if code == "1" then
+            keyESC()
+        elseif code == "0"then
+            orxonox.CommandExecutor:execute("openConsole")
+        end
+    end
+    sheet.sheet:onKeyPressed()
+end
+
 function setBackgroundImage(imageSet, imageName)
     guiMgr:setBackgroundImage(imageSet, imageName)
 end
 
-function noInputSheetCounter()
+function noInputSheetIndex()
     -- Count the number of sheets that don't need input till the first that does.
+    local index = activeMenuSheets.size
+    while index > 0 and activeMenuSheets[index].bNoInput do
+        index = index - 1
+    end
+    return index
+end
+
+function noInputSheetCounter()
+    -- Count the number of sheets that do need input.
     local counter = activeMenuSheets.size
-    while counter > 0 and activeMenuSheets[counter].bNoInput do
-        counter = counter - 1
+    for i = 1,activeMenuSheets.size do
+        if activeMenuSheets[i].bNoInput then
+            counter = counter - 1
+        end
     end
     return counter
+end
+
+function inGameConsoleClosed()
+    bInGameConsoleClosed = not bInGameConsoleClosed;
 end
 
 ----------------------

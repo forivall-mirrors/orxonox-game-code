@@ -48,9 +48,11 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommand.h"
+#include "core/GUIManager.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/input/InputBuffer.h"
+#include "core/LuaState.h"
 
 namespace orxonox
 {
@@ -118,7 +120,7 @@ namespace orxonox
                 for (int i = 0; i < LINES; i++)
                 {
                     if (this->consoleOverlayTextAreas_[i])
-                      Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayTextAreas_[i]);
+                        Ogre::OverlayManager::getSingleton().destroyOverlayElement(this->consoleOverlayTextAreas_[i]);
                     this->consoleOverlayTextAreas_[i] = 0;
                 }
 
@@ -494,7 +496,7 @@ namespace orxonox
                     output = output.substr(this->inputWindowStart_, this->maxCharsPerLine_);
                 }
                 else
-                  this->inputWindowStart_ = 0;
+                    this->inputWindowStart_ = 0;
                 this->displayedText_ = output;
                 this->consoleOverlayTextAreas_[index]->setCaption(multi_cast<Ogre::DisplayString>(output));
             }
@@ -531,6 +533,7 @@ namespace orxonox
         if (this->bActive_)
         {
             this->bActive_ = false;
+            GUIManager::getInstance().getLuaState()->doString("inGameConsoleClosed()"); // Notify the SheetManager in lua, that the console has been closed.
             InputManager::getInstance().leaveState("console");
             this->shell_->unregisterListener(this);
 
@@ -607,6 +610,8 @@ namespace orxonox
     */
     /*static*/ void InGameConsole::closeConsole()
     {
+        GUIManager::getInstance().getLuaState()->doString("inGameConsoleClosed()");  // Notify the SheetManager in lua, that the console has been closed, but not by ESC.
         InGameConsole::getInstance().deactivate();
     }
+
 }
