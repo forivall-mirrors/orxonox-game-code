@@ -4,6 +4,24 @@ local P = createMenuSheet("HostMenu")
 
 P.multiplayerMode = "startServer"
 
+P.buttonList = {}
+
+function P.onLoad()
+    P.multiplayerMode = "startClient" 
+
+    local item = {
+            ["button"] = winMgr:getWindow("orxonox/HostMenuStartButton"),
+            ["function"]  = P.HostMenuStartButton_clicked
+    }
+    P.buttonList[1] = item
+
+    local item = {
+            ["button"] = winMgr:getWindow("orxonox/HostMenuBackButton"),
+            ["function"]  = P.HostMenuBackButton_clicked
+    }
+    P.buttonList[2] = item
+end
+
 function P.onShow()
     if P.multiplayerMode == "startServer" then
         local window = winMgr:getWindow("orxonox/HostMenuHostButton")
@@ -18,6 +36,9 @@ function P.onShow()
         button:setSelected(true)
         P.showLevelList()
     end
+
+    P.oldindex = -2
+    P.index = -1
 
 end
 
@@ -76,6 +97,11 @@ function P.showLevelList()
             listbox:setItemSelectState(item, true)
         end
     end
+end
+
+
+function P.onKeyPressed() 
+    buttonIteratorHelper(P.buttonList, code, P, 1, 2)
 end
 
 

@@ -7,7 +7,7 @@ P.buttonList = {}
 
 function P.onLoad()
     --"Gameplay" and "Multiplayer Options" are not integrated in the list
-    
+    --buttons are arranged in a 4x2 matrix. The lower-right element is not in the matrix!
     local item = {
             ["button"] = winMgr:getWindow("orxonox/SettingsMenu/GraphicsButton"),
             ["function"]  = P.SettingsGraphicsButton_clicked
@@ -42,6 +42,7 @@ function P.onLoad()
 end
 
 function P.onShow()
+    --indices to iterate through buttonlist
     P.oldindex = 3
     P.index = 2
 end
@@ -75,9 +76,7 @@ function P.SettingsBackButton_clicked(e)
 end
 
 function P.onKeyPressed() 
-    cout(0,code)
     buttonIteratorHelper(P.buttonList, code, P, 4, 2)
-    --indexTester(P.buttonList,code,P,4,2)
 end
 
 return P

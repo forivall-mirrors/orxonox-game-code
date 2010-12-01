@@ -5,10 +5,8 @@ P.loadAlong = { "SingleplayerMenu", "MultiplayerMenu", "SettingsMenu", "CreditsM
 
 P.buttonList = {}
 
-P.testArray = {}
-
-
 function P.onLoad()
+    --buttons are arranged in a 6x1 Matrix (list)
     local item = {
             ["button"] = winMgr:getWindow("orxonox/QuickGameTestButton"),
             ["function"]  = P.QuickGameTestButton_clicked
@@ -47,6 +45,7 @@ function P.onLoad()
 end
 
 function P.onShow()
+    --indices to iterate through buttonlist
     P.oldindex = -2
     P.index = -1
 end
@@ -77,42 +76,8 @@ function P.ExitButton_clicked(e)
     orxonox.execute("exit")
 end
 
-
---[[
-list = {}
-local item =
-{
-    ["button"] = buttonWindow,
-    ["function"]  = buttonFunction,
-}
-table.insert(list, item)
-item = list[i]
-
-for i,item in pairs(list) do
-    button = item["button"]
-end
-
---]]
---[[
-function createList()
-    list = {}
-
-    local j 
-    while j < P.loadAlong 
-        local item =
-        {
-            ["button"] = buttonWindow,
-            ["function"]  = buttonFunction,
-        }
-        table.insert(list, item)
-    end
-
---]]
-
 function P.onKeyPressed() 
-    cout(0,code)
     buttonIteratorHelper(P.buttonList, code, P, 6, 1)
-    --indexTester(P.buttonList,code,P,6,1)
 end
 
 return P

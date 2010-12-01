@@ -7,15 +7,16 @@ P.buttonList = {}
 function P.onLoad()
     P.multiplayerMode = "startClient" 
 
+    --button are arranged in a 2x2 matrix, the left lower item is nil
     local item = {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerJoinButton2"),
-            ["function"]  = P.MultiplayerJoinButton_clicked
+            ["function"]  = P.MultiplayerJoinButton2_clicked
     }
     P.buttonList[1] = item
 
     local item = {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerHostButton2"),
-            ["function"]  = P.MultiplayerHostButton_clicked
+            ["function"]  = P.MultiplayerHostButton2_clicked
     }
     P.buttonList[2] = item
 
@@ -29,6 +30,8 @@ end
 
 function P.onShow()
     P.showServerList()
+
+    --indices to iterate through buttonlist
     P.oldindex = -2
     P.index = -1
 end
@@ -132,9 +135,7 @@ function P.showServerList()
 end
 
 function P.onKeyPressed() 
-    cout(0,code)
     buttonIteratorHelper(P.buttonList, code, P, 2, 2)
-    --indexTester(P.buttonList,code,P,2,3)
 end
 
 return P

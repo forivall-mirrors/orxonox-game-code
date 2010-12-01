@@ -13,6 +13,7 @@ function P.onLoad()
 end
 
 function P.onShow()
+    --indices to iterate through buttonlist
     P.oldindex = -2
     P.index = -1
 end

@@ -54,15 +54,19 @@ function getStaticTextWindowHeight(window)
     return height
 end
 
+--function to iterate through a menu sheet by using arrowkeys
 
 --@arguments:
 --  list: 2-dimensional table, arguments are items that contain a button and its function
+--        !!note: each button can only be in the list once!!
 --  code: code of any key on the keyboard
 --  P: menusheet
---  n: number of rows
---  m: number of colums
+--  n: number of rows of the buttontable
+--  m: number of colums of the buttontable
 
 function buttonIteratorHelper(list, code, P, n, m)
+
+    --after a key (down,up,left,right) is pressed the index of the current button has to be updated    
 
     --key down
     if code == "208" then
@@ -71,9 +75,9 @@ function buttonIteratorHelper(list, code, P, n, m)
             P.oldindex = -1
         else
             P.oldindex = P.index
-            P.index = (P.index + m) % (m*n)
-
-            while list[P.index+1] == nil do
+            P.index = (P.index + m) % (m*n)     --modulo operation works as a "wrap around" in the button menu
+                                                
+            while list[P.index+1] == nil do     
                 P.oldindex = P.index
                 P.index = (P.index + m) % (m*n)
             end
@@ -97,7 +101,6 @@ function buttonIteratorHelper(list, code, P, n, m)
             P.index = (P.index -m) % (m*n)
 
             while list[P.index+1] == nil do
-                cout(0,P.index)
                 P.oldindex = P.index
                 P.index = (P.index-m)%(m*n)
             end
@@ -161,6 +164,7 @@ function buttonIteratorHelper(list, code, P, n, m)
         end
     end
        
+    --to update the new current button
     if (code == "208" or code == "200" or code == "203" or code == "205") and P.oldindex~= P.index then
 
         local system = CEGUI.System:getSingleton()
@@ -170,7 +174,6 @@ function buttonIteratorHelper(list, code, P, n, m)
         local child = item["button"] 
 
         --teste ob der Button nicht schon gehighlightet ist
-        cout(0,child:getProperty("NormalImageRightEdge"))
         if child:getProperty("NormalImageRightEdge") == "set:TaharezGreenLook image:ButtonRightHighlight" then
             --nop
         else
@@ -188,6 +191,7 @@ function buttonIteratorHelper(list, code, P, n, m)
             end
         end
 
+        --for every highlighted button check if index is on its position. If not, set imageproperty on "normal"
         local i = 1
         while i < (n*m) do
             if i == P.index +1 then 
@@ -219,11 +223,10 @@ function buttonIteratorHelper(list, code, P, n, m)
         foo()
     end
 
-    cout(0, P.oldindex)
-    cout(0, P.index)
-
 end
 
+--write index and oldindex on the console
+--works like buttonIteratorHelper
 function indexTester(list,code,P,n,m)
     --key down
     if code == "208" then
