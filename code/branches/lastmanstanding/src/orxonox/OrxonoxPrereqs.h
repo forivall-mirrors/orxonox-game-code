@@ -66,8 +66,6 @@ namespace orxonox
 {
     class CameraManager;
     class Level;
-    class LevelInfo;
-    class LevelInfoItem;
     class LevelManager;
     class PawnManager;
     class PlayerManager;
