@@ -69,6 +69,9 @@ namespace orxonox
       int eventDisconnect( ENetEvent *event );
       int eventData( ENetEvent *event );
 
+      /* helpers */
+      void helper_sendlist( ENetEvent *event );
+
       /* members */
       ENetAddress address;
       ENetHost *server;

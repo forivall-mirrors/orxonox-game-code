@@ -45,6 +45,9 @@ namespace orxonox
     { COUT(1) << "An error occurred while initializing ENet.\n";
       return 1;
     }
+
+    /* initialize the event holder */
+    this->event = (ENetEvent *)calloc( sizeof(ENetEvent), 1 );
     
     /* install atexit handler for enet */
     atexit( enet_deinitialize );
@@ -88,8 +91,8 @@ namespace orxonox
     }
 
     /* Wait up to 2 seconds for the connection attempt to succeed. */
-    if (enet_host_service (this->client, &this->event, 2000) > 0 &&
-        this->event.type == ENET_EVENT_TYPE_CONNECT )
+    if (enet_host_service (this->client, this->event, 2000) > 0 &&
+        this->event->type == ENET_EVENT_TYPE_CONNECT )
       fprintf( stdout, "Connection to server succeeded." );
     else
     {
@@ -106,18 +109,18 @@ namespace orxonox
   { 
     /* see whether anything happened */
     /* WORK MARK REMOVE THIS OUTPUT */
-    COUT(2) << "MARK polling...\n";
+    //COUT(2) << "MARK polling...\n";
 
     /* enet_host_service returns 0 if no event occured */
     /* just newly set below test to >0 from >= 0, to be tested */
-    if( enet_host_service( this->client, &this->event, 1000 ) > 0 )
+    if( enet_host_service( this->client, this->event, 1000 ) > 0 )
     { 
       /* address buffer */
       char *addrconv = NULL;
       int retval = 0;
 
       /* check what type of event it is and react accordingly */
-      switch (this->event.type)
+      switch (this->event->type)
       { /* new connection, not supposed to happen. */
         case ENET_EVENT_TYPE_CONNECT: break;
 
@@ -127,22 +130,23 @@ namespace orxonox
         /* incoming data */
         case ENET_EVENT_TYPE_RECEIVE: 
           addrconv = (char *) calloc( 50, 1 );
-          enet_address_get_host_ip( &(this->event.peer->address), addrconv, 49 );
+          enet_address_get_host_ip( &(this->event->peer->address), 
+            addrconv, 49 );
 
           /* DEBUG */
           printf( "A packet of length %u containing %s was "
             "received from %s on channel %u.\n",
-            this->event.packet->dataLength,
-            this->event.packet->data,
+            this->event->packet->dataLength,
+            this->event->packet->data,
             addrconv,
-            this->event.channelID );
+            this->event->channelID );
           /* END DEBUG */
 
           /* call the supplied callback, if any. */
           if( (*callback) != NULL )
-            retval = (*callback)( addrconv, &(this->event) );
+            retval = (*callback)( addrconv, (this->event) );
 
-          enet_packet_destroy( event.packet );
+          enet_packet_destroy( event->packet );
           if( addrconv ) free( addrconv );
           break;
         default: break;

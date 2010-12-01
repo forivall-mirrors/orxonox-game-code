@@ -36,6 +36,74 @@ namespace orxonox
   /* singleton stuff */
   //ManageScopedSingleton( MasterServer, ScopeID::Root, false );
 
+  /* helpers */
+  static void 
+  helper_output_debug( ENetEvent *event, char *addrconv )
+  {
+    COUT(4) << "A packet of length" 
+      << event->packet->dataLength
+      << " containing "
+      << (const char*)event->packet->data
+      << " was received from "
+      << addrconv 
+      << " on channel "
+      << event->channelID << "\n";
+  }
+
+  void
+  MasterServer::helper_sendlist( ENetEvent *event )
+  {
+    /* get an iterator */
+    std::list<packet::ServerInformation>::iterator i;
+
+    /* packet holder */
+    ENetPacket *reply;
+
+    /* loop through list elements */
+    for( i = mainlist.serverlist.begin(); i 
+        != mainlist.serverlist.end(); ++i ) 
+    {
+      /* WORK MARK */
+      /* send this particular server */
+      /* build reply string */
+      char *tosend = (char *)calloc( (*i).getServerIP().length() 
+          + MSPROTO_SERVERLIST_ITEM_LEN + 2,1 );
+      if( !tosend ) 
+      { COUT(2) << "Masterserver.cc: Memory allocation failed.\n";
+        continue;
+      } 
+      sprintf( tosend, "%s %s", MSPROTO_SERVERLIST_ITEM, 
+          (*i).getServerIP().c_str() );
+
+      /* create packet from it */
+      reply = enet_packet_create( tosend,
+          strlen( tosend ) + 1, 
+          ENET_PACKET_FLAG_RELIABLE);
+
+      /* Send the reply to the peer over channel id 0. */
+      enet_peer_send( event->peer, 0, reply );
+
+      /* One could just use enet_host_service() instead. */
+      enet_host_flush( this->server );
+
+      /* free the tosend buffer */
+      free( tosend );
+    } 
+
+    /* send end-of-list packet */
+    reply = enet_packet_create( MSPROTO_SERVERLIST_END,
+        MSPROTO_SERVERLIST_END_LEN + 1,
+        ENET_PACKET_FLAG_RELIABLE );
+
+    enet_peer_send( event->peer, 0, reply );
+
+    /* One could just use enet_host_service() instead. */
+    enet_host_flush( this->server );
+  }
+
+
+
+
   /***** EVENTS *****/
   /* connect event */
   int 
@@ -104,32 +172,7 @@ namespace orxonox
 
     /* DEBUG */
     /* output debug info about the data that has come, to be removed */
-    COUT(4) << "A packet of length" 
-      << event->packet->dataLength
-      << " containing "
-      << (const char*)event->packet->data
-      << " was received from "
-      << addrconv 
-      << " on channel "
-      << event->channelID << "\n";
-
-    /*
-    //[> send some packet back for testing <]
-    //[> TESTING <]
-
-    //[> Create a reliable reply of size 7 containing "reply\0" <]
-    //ENetPacket * reply = enet_packet_create ("reply", 
-        //strlen ("reply") + 1, 
-        //ENET_PACKET_FLAG_RELIABLE);
-
-    //[> Send the reply to the peer over channel id 0. <]
-    //enet_peer_send( event->peer, 0, reply );
-
-    //[> One could just use enet_host_service() instead. <]
-    //enet_host_flush( this->server );
-
-    //[> /TESTING <]
-    */
+    helper_output_debug( event, addrconv );
 
     /* GAME SERVER OR CLIENT CONNECTION? */
     if( !strncmp( (char *)event->packet->data, MSPROTO_GAME_SERVER, 
@@ -150,49 +193,10 @@ namespace orxonox
     else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT, 
       MSPROTO_CLIENT_LEN) )
     { /* client */
-      
       if( !strncmp( (char *)event->packet->data + MSPROTO_CLIENT_LEN+1,
         MSPROTO_REQ_LIST, MSPROTO_REQ_LIST_LEN ) )
-      { /* send server list */
-        
-        /* get an iterator */
-        std::list<packet::ServerInformation>::iterator i;
-
-        /* packet holder */
-        ENetPacket *reply;
-
-        /* loop through list elements */
-        for( i = mainlist.serverlist.begin(); i != mainlist.serverlist.end(); ++i ) 
-        {
-          /* WORK MARK */
-          /* send this particular server */
-          /* build reply string */
-          char *tosend = (char *)calloc( (*i).getServerIP().length() + MSPROTO_SERVERLIST_ITEM_LEN + 2,1 );
-          sprintf( tosend, "%s %s", MSPROTO_SERVERLIST_ITEM, (*i).getServerIP().c_str() );
-
-          /* create packet from it */
-           reply = enet_packet_create( tosend,
-            strlen( tosend ) + 1, 
-            ENET_PACKET_FLAG_RELIABLE);
-
-          /* Send the reply to the peer over channel id 0. */
-          enet_peer_send( event->peer, 0, reply );
-
-          /* One could just use enet_host_service() instead. */
-          enet_host_flush( this->server );
-        } 
-
-        /* send end-of-list packet */
-        reply = enet_packet_create( MSPROTO_SERVERLIST_END,
-          MSPROTO_SERVERLIST_END_LEN + 1,
-          ENET_PACKET_FLAG_RELIABLE );
-
-        enet_peer_send( event->peer, 0, reply );
-
-        /* One could just use enet_host_service() instead. */
-        enet_host_flush( this->server );
-
-      }
+        /* send server list */
+        helper_sendlist( event );
     }
     else
     { /* bad message, don't do anything. */ } 

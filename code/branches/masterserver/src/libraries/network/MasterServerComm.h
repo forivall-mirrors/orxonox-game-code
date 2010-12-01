@@ -84,7 +84,7 @@ namespace orxonox
       ENetHost *client;
 
       /** event data holder */
-      ENetEvent event;
+      ENetEvent *event;
 
       /** address holder */
       ENetAddress address;
