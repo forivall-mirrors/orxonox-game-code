@@ -52,12 +52,12 @@ namespace orxonox
         this->bHardPunishment=false;
         this->punishDamageRate=0.4f;
         this->setHUDTemplate("LastTeamStandingHUD");
-        this->eachTeamsPlayers = new eachTeamsPlayers[teams_];
+        this->eachTeamsPlayers = new int[teams_];
     }
     
     void LastTeamStanding::~LastTeamStanding()
     {
-        delete this->eachTeamsPlayers;
+        delete[] this->eachTeamsPlayers;
     }   
 
     void LastTeamStanding::spawnDeadPlayersIfRequested()
