@@ -10,13 +10,13 @@ function P.onLoad()
     --button are arranged in a 2x2 matrix, the left lower item is nil
     local item = {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerJoinButton"),
-            ["function"]  = P.MultiplayerJoinButton2_clicked
+            ["function"]  = P.MultiplayerJoinButton_clicked
     }
     P.buttonList[1] = item
 
     local item = {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerHostButton"),
-            ["function"]  = P.MultiplayerHostButton2_clicked
+            ["function"]  = P.MultiplayerHostButton_clicked
     }
     P.buttonList[2] = item
 

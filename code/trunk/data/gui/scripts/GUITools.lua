@@ -212,7 +212,7 @@ function buttonIteratorHelper(list, code, P, n, m)
     end
     
     --enter
-    if code == "28" then
+    if code == "28" and P.index >= 0 then
         local item = list[P.index+1]
         local child = item["button"] 
         child:setProperty("NormalImageRightEdge", string.sub(child:getProperty("NormalImageRightEdge"),1,-10) .. "Normal")
