@@ -34,9 +34,11 @@
 #define _LastTeamStanding_H__
 
 #include "OrxonoxPrereqs.h"
-#include "Deathmatch.h"
+#include "TeamDeathmatch.h"
 #include <map>
 #include <vector>
+
+//TODO: Hud doesn load; problem with destructor; teams are not assigned properly; 
 
 namespace orxonox
 {
@@ -62,7 +64,8 @@ namespace orxonox
             float punishDamageRate; //!< Makes Damage adjustable.
             virtual void spawnDeadPlayersIfRequested(); //!< Prevents dead players to respawn.
             virtual int getMinLives(); //!< Returns minimum of each player's lives; players with 0 lives are skipped;
-            unsigned int * eachTeamsPlayers; //!<Each teams player's alive.
+            int * eachTeamsPlayers; //!<Each teams player's alive.
+            bool bMinPlayersReached;
 
         public:
             LastTeamStanding(BaseObject* creator); //!< Default Constructor.

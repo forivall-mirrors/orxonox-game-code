@@ -51,11 +51,12 @@ namespace orxonox
         this->bNoPunishment=false;
         this->bHardPunishment=false;
         this->punishDamageRate=0.4f;
-        this->setHUDTemplate("LastTeamStandingHUD");
+        this->setHUDTemplate("LastTeamStandingHUD");//tolowercase:-)
         this->eachTeamsPlayers = new int[teams_];
+        this->bMinPlayersReached = false;
     }
     
-    void LastTeamStanding::~LastTeamStanding()
+    LastTeamStanding::~LastTeamStanding()
     {
         delete[] this->eachTeamsPlayers;
     }   
@@ -137,7 +138,7 @@ namespace orxonox
         return min;
     }
 
-    void LastTeamStanding::end()
+    void LastTeamStanding::end()//TODO!
     {
         Gametype::end();
         
@@ -170,7 +171,7 @@ namespace orxonox
     {
         if (!player)// only for safety
             return;
-        Deathmatch::playerEntered(player);
+        TeamDeathmatch::playerEntered(player);
         if (teamsAlive<=1)
             playerLives_[player]=lives;
         else
@@ -179,7 +180,8 @@ namespace orxonox
         if(this->eachTeamsPlayers[getTeam(player)]==0)
             this->teamsAlive++;
         this->eachTeamsPlayers[getTeam(player)]++;
-        
+        if (teamsAlive>1) // Now the game is allowed to end, since there are at least two teams.
+            bMinPlayersReached=true;
         this->timeToAct_[player]=timeRemaining;
         this->playerDelayTime_[player]=respawnDelay;
         this->inGame_[player]=true;
@@ -187,7 +189,7 @@ namespace orxonox
 
     bool LastTeamStanding::playerLeft(PlayerInfo* player)
     {
-        bool valid_player = Deathmatch::playerLeft(player);
+        bool valid_player = TeamDeathmatch::playerLeft(player);
         if (valid_player)
         {
             this->eachTeamsPlayers[getTeam(player)]--;
@@ -254,7 +256,7 @@ namespace orxonox
         SUPER(LastTeamStanding, tick, dt);
         if(this->hasStarted()&&(!this->hasEnded()))
         {
-            if ((this->hasStarted()&&(teamsAlive<=1)))//last team remaining
+            if (bMinPlayersReached &&(this->hasStarted()&&(teamsAlive<=1)))//last team remaining
             {
                 this->end();
             }

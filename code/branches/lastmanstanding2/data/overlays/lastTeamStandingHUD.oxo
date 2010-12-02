@@ -1,5 +1,5 @@
 <Template name="LastteamstandingHUD">
-  <OverlayGroup name="DynamicmatcHUD" scale = "1, 1">
+  <OverlayGroup name="LastteamstandingHUD" scale = "1, 1">
 
 <GametypeFadingMessage
      name     = "fadingmessage"
@@ -29,7 +29,7 @@
      align     = "left"
 
      showlives     = true
-     showplayers     = false
+     showteams     = false
     />
 
     <OverlayText
@@ -39,7 +39,7 @@
      textsize  = 0.04
      colour    = "1.0, 1.0, 1.0, 1.0"
      align     = "left"
-     caption   = "Players: "
+     caption   = "Teams: "
     />
 
     <LastTeamStandingInfos
@@ -51,7 +51,7 @@
      align     = "left"
 
      showlives     = false
-     showplayers     = true
+     showteams     = true
     />
 
     <OverlayText
