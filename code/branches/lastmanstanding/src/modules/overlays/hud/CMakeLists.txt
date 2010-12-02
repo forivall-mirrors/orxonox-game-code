@@ -15,5 +15,4 @@ ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
   GametypeStaticMessage.cc
   GametypeFadingMessage.cc
   LastManStandingInfos.cc
-  LastTeamStandingInfos.cc
 )
