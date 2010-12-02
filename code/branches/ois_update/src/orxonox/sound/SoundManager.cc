@@ -74,6 +74,10 @@ namespace orxonox
     {
         RegisterRootObject(SoundManager);
 
+        // Clear error messages (might be problematic on some systems)
+        alGetError();
+        alutGetError();
+
         // See whether we even want to load
         bool bDisableSound_ = false;
         SetConfigValue(bDisableSound_, false);
