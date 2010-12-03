@@ -48,7 +48,7 @@ namespace orxonox
 
         // Default values
         archiveType_ = "FileSystem";
-        bRecursive_  = true;
+        bRecursive_  = false;
     }
 
     ResourceLocation::~ResourceLocation()
