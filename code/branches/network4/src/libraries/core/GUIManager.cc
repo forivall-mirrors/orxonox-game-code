@@ -122,7 +122,7 @@ namespace orxonox
         // Note: No SceneManager specified yet
         guiRenderer_.reset(new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
         resourceProvider_ = guiRenderer_->createResourceProvider();
-        resourceProvider_->setDefaultResourceGroup("GUI");
+        resourceProvider_->setDefaultResourceGroup("General");
 
         // Setup scripting
         luaState_.reset(new LuaState());
