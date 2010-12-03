@@ -1,12 +1,10 @@
 <ResourceCollection resourceGroup = "General" >
-    <ResourceLocation path = "levels" />
+    <ResourceLocation path = "levels" recursive=true/>
     <ResourceLocation path = "lua" />
     <ResourceLocation path = "overlays" />
     <ResourceLocation path = "particle" />
     <ResourceLocation path = "tcl" />
-</ResourceCollection>
 
-<ResourceCollection resourceGroup = "GUI" >
     <ResourceLocation path = "gui/configs" />
     <ResourceLocation path = "gui/layouts" />
     <ResourceLocation path = "gui/schemes" />
