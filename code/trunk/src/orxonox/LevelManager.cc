@@ -68,7 +68,7 @@ namespace orxonox
 
     void LevelManager::setConfigValues()
     {
-        SetConfigValue(defaultLevelName_, "presentation_dm.oxw")
+        SetConfigValue(defaultLevelName_, "presentationDM.oxw")
             .description("Sets the pre selection of the level in the main menu.");
     }
 
