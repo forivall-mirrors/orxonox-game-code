@@ -56,14 +56,14 @@ namespace orxonox
        * 
        * Connect to the master server with the given address on the given port. 
        */
-      int connect( char *address, unsigned int port );
+      int connect( const char *address, unsigned int port );
 
       /** \param data The data to be sent. 
        * \return 0 for success, other for error. 
        * 
        * Send a request to the master server containing data specified in data
        */
-      int sendRequest( char *data );
+      int sendRequest( const char *data );
 
       /** \param data The data to be sent. 
        * \return 0 for success, other for error. 

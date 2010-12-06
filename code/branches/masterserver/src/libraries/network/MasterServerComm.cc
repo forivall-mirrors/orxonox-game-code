@@ -75,7 +75,7 @@ namespace orxonox
     enet_host_destroy(this->client);
   }
 
-  int MasterServerComm::connect( char *address, unsigned int port )
+  int MasterServerComm::connect( const char *address, unsigned int port )
   {
     /* Connect to address:port. */
     enet_address_set_host( &this->address, address );
@@ -140,12 +140,16 @@ namespace orxonox
             addrconv, 49 );
 
           /* DEBUG */
-          printf( "A packet of length %u containing %s was "
-            "received from %s on channel %u.\n",
-            this->event->packet->dataLength,
-            this->event->packet->data,
-            addrconv,
-            this->event->channelID );
+          COUT(3) << "A packet of length " << this->event->packet->dataLength 
+            << " containing " << this->event->packet->data
+            << " was received from " << addrconv 
+            << " on channel " << this->event->channelID;
+          //printf( "A packet of length %u containing %s was "
+            //"received from %s on channel %u.\n",
+            //this->event->packet->dataLength,
+            //this->event->packet->data,
+            //addrconv,
+            //this->event->channelID );
           /* END DEBUG */
 
           /* call the supplied callback, if any. */
@@ -166,7 +170,7 @@ namespace orxonox
     return 0;
   }
 
-  int MasterServerComm::sendRequest( char *data )
+  int MasterServerComm::sendRequest( const char *data )
   {
     /* send the data to the friend */
     /* Create a reliable packet of size 7 containing "packet\0" */
