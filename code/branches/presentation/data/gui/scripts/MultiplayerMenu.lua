@@ -5,8 +5,8 @@ local P = createMenuSheet("MultiplayerMenu")
 P.buttonList = {}
 
 --joinMode is 1 for choice "LAN" and 2 for "Internet"
---initial status 0
-P.joinMode = 0
+--initial status 1
+P.joinMode = 1
 
 function P.onLoad()
     P.multiplayerMode = "startClient" 
@@ -32,21 +32,40 @@ function P.onLoad()
 end
 
 function P.onShow()
-    P.showServerList()
+    --P.showServerList()
 
     --indices to iterate through buttonlist
     P.oldindex = -2
     P.index = -1
+    
+    if P.joinMode == 1 then
+        local window = winMgr:getWindow("orxonox/MultiplayerLanButton")
+        local button = tolua.cast(window,"CEGUI::RadioButton")
+        button:setSelected(true)
+    end
+    if P.joinMode == 2 then
+        local window = winMgr:getWindow("orxonox/MultiplayerInternetButton")
+        local button = tolua.cast(window,"CEGUI::RadioButton")
+        button:setSelected(true)
+    end
 end
 
 function P.LanButton_clicked(e)
+    local we = CEGUI.toWindowEventArgs(e)
+    local button = tolua.cast(we.window,"CEGUI::RadioButton")
     P.joinMode = 1
-	P.showServerList()
+    if button:isSelected() == true then
+	    P.showServerList()
+    end
 end
 
 function P.InternetButton_clicked(e)
+    local we = CEGUI.toWindowEventArgs(e)
+    local button = tolua.cast(we.window,"CEGUI::RadioButton")
     P.joinMode = 2
-	P.showServerList()
+    if button:isSelected() == true then
+	    P.showServerList()
+	end
 end
 
 function P.MultiplayerHostButton_clicked(e)
