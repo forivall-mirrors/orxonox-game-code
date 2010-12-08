@@ -76,7 +76,7 @@ namespace orxonox
             "  mainMenu"
             "  standalone,server,client"
             "   level"
-            " server,client"
+            " server,client,masterserver"
             "  level"
             );
 

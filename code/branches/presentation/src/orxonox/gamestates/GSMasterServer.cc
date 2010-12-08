@@ -62,5 +62,7 @@ namespace orxonox
   { /* nothing so far */ }
 
   void GSMasterServer::update(const Clock& time)
-  { /* nothing so far */ }
+  { 
+    this->mserver->run();
+  }
 }

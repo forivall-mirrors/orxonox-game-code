@@ -219,29 +219,23 @@ namespace orxonox
       exit( EXIT_FAILURE );
     }
 
-    /* tell people we're now initialized and blocking. */
-    COUT(0) << "MasterServer initialized, waiting for connections.\n";
     
-    /* endless loop until we quit */
-    while( this->quit == false )
-    {
-      /* create an iterator for the loop */
-      while( enet_host_service( this->server, event, 1000 ) >= 0 )
-      { /* check what type of event it is and react accordingly */
-        switch (event->type)
-        { /* new connection */
-          case ENET_EVENT_TYPE_CONNECT: 
-            eventConnect( event ); break;
+    /* create an iterator for the loop */
+    enet_host_service( this->server, event, 100 );
 
-            /* disconnect */
-          case ENET_EVENT_TYPE_DISCONNECT: 
-            eventDisconnect( event ); break;
+    /* check what type of event it is and react accordingly */
+    switch (event->type)
+    { /* new connection */
+      case ENET_EVENT_TYPE_CONNECT: 
+        eventConnect( event ); break;
 
-            /* incoming data */
-          case ENET_EVENT_TYPE_RECEIVE: eventData( event ); break;
-          default: break;
-        }
-      }
+        /* disconnect */
+      case ENET_EVENT_TYPE_DISCONNECT: 
+        eventDisconnect( event ); break;
+
+        /* incoming data */
+      case ENET_EVENT_TYPE_RECEIVE: eventData( event ); break;
+      default: break;
     }
 
     /* done */
@@ -282,6 +276,9 @@ namespace orxonox
     /***** INITIALIZE GAME SERVER AND PEER LISTS *****/
     //this->mainlist = new ServerList();
     this->peers = new PeerList();
+
+    /* tell people we're now initialized */
+    COUT(0) << "MasterServer initialized, waiting for connections.\n";
   }
 
   /* destructor */
