@@ -95,9 +95,9 @@ namespace orxonox
 
       /* fill in data, -1 for the index: index should be length -1 */
       toadd.setServerName( std::string((char*)ev->packet->data + 
-        MSPROTO_SERVERLIST_ITEM_LEN-1) );
+        MSPROTO_SERVERLIST_ITEM_LEN+1) );
       toadd.setServerIP( std::string((char*)ev->packet->data + 
-        MSPROTO_SERVERLIST_ITEM_LEN-1) );
+        MSPROTO_SERVERLIST_ITEM_LEN+1) );
 
       /* add to list */
       WANDiscovery::getInstance().servers_.push_back( toadd );
@@ -105,7 +105,7 @@ namespace orxonox
     else if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_END,
       MSPROTO_SERVERLIST_END_LEN ) )
     { 
-      /* this is the only case where 1 should be returned,
+      /* this is the only case where 2 should be returned,
        * as 1 is used to signal that we're done receiving
        * the list
        */
