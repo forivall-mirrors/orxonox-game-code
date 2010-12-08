@@ -40,10 +40,6 @@ namespace orxonox
 {
   ManageScopedSingleton(WANDiscovery, ScopeID::Root, true);
 
-  void WANDiscovery::setConfigValues()
-  {
-    SetConfigValue(this->msaddr, "msaddr");
-  } 
 
   WANDiscovery::WANDiscovery()
   {
@@ -53,9 +49,6 @@ namespace orxonox
     /* register object with orxonox main class */
     RegisterObject(WANDiscovery);
 
-    /* set default string for this->msaddr */
-    this->msaddr = "localhost";
-
     /* ... and register a config value function for it */
     this->setConfigValues();
 
@@ -64,13 +57,18 @@ namespace orxonox
       COUT(2) << "Error: could not initialize master server communications!\n";
 
     /* connect and see if it worked */
-    if( msc.connect( this->msaddr.c_str(), 1234 ) )
+    if( msc.connect( this->msaddress.c_str(), 1234 ) )
       COUT(2) << "Error: could not connect to master server at " 
-        << this->msaddr << std::endl;
+        << this->msaddress << std::endl;
 
     /* debugging output */
     COUT(4) << "Initialization of WANDiscovery complete.\n";
   }
+
+  void WANDiscovery::setConfigValues()
+  {
+    SetConfigValue( msaddress, "localhost");
+  } 
 
   WANDiscovery::~WANDiscovery()
   { 

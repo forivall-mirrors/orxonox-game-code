@@ -99,7 +99,7 @@ namespace orxonox
       MasterServerComm msc;
 
       /** master server address */
-      std::string msaddr;
+      std::string msaddress;
 
   }; // tolua_export
 
