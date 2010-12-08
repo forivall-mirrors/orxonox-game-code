@@ -57,7 +57,7 @@ namespace orxonox
       COUT(2) << "Error: could not initialize master server communications!\n";
 
     /* connect and see if it worked */
-    if( msc.connect( this->msaddress.c_str(), 1234 ) )
+    if( msc.connect( this->msaddress.c_str(), ORX_MSERVER_PORT ) )
       COUT(2) << "Error: could not connect to master server at " 
         << this->msaddress << std::endl;
 
