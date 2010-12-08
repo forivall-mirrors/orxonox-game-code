@@ -45,7 +45,6 @@ namespace orxonox
 
   GSMasterServer::~GSMasterServer()
   {
-    this->mserver->~MasterServer();
   }
 
   void GSMasterServer::activate()

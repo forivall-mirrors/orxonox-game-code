@@ -78,7 +78,6 @@ namespace orxonox
             "   level"
             " server,client"
             "  level"
-            " masterserver"
             );
 
             game->requestState("root");
