@@ -6,6 +6,7 @@ winMgr    = CEGUI.WindowManager:getSingleton()
 
 -- Load all required skins
 schemeMgr:loadScheme("TaharezGreenLook.scheme")
+--schemeMgr:loadScheme("OrxonoxLook.scheme")
 --schemeMgr:loadScheme("TaharezLook.scheme")
 --schemeMgr:loadScheme("WindowsLook.scheme")
 --schemeMgr:loadScheme("VanillaLook.scheme")
@@ -18,6 +19,10 @@ schemeMgr:loadScheme("TaharezGreenMenuWidgets.scheme")
 menuImageSet = "TaharezGreenLook"
 schemeMgr:loadScheme("TaharezGreenHUDWidgets.scheme")
 hudImageSet = "TaharezGreenLook"
+--schemeMgr:loadScheme("OrxonoxLookMenuWidgets.scheme")
+--menuImageSet = "OrxonoxLook"
+--schemeMgr:loadScheme("OrxonoxLookHUDWidgets.scheme")
+--hudImageSet = "OrxonoxLook"
 
 -- Just a remaining test hack
 schemeMgr:loadScheme("OrxonoxGUIScheme.scheme")
