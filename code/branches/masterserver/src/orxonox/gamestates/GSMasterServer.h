@@ -34,22 +34,25 @@
 
 #include "core/GameState.h"
 #include "network/NetworkPrereqs.h"
+#include "network/MasterServer.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSMasterServer : public GameState
-    {
+  class _OrxonoxExport GSMasterServer : public GameState
+  {
     public:
-        GSMasterServer(const GameStateInfo& info);
-        ~GSMasterServer();
+      GSMasterServer(const GameStateInfo& info);
+      ~GSMasterServer();
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
+      void activate();
+      void deactivate();
+      void update(const Clock& time);
 
     private:
-        
-    };
+      MasterServer *mserver;
+
+
+  };
 }
 
 #endif /* _GSServer_H__ */

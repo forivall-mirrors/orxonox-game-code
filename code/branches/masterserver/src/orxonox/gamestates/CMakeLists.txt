@@ -5,5 +5,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   GSMainMenu.cc
   GSRoot.cc
   GSServer.cc
+  GSMasterServer.cc
   GSStandalone.cc
 )

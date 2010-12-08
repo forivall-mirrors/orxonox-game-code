@@ -36,6 +36,9 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   NetworkFunction.cc
   Host.cc
   Server.cc
+  MasterServer.cc
+  PeerList.cc
+  ServerList.cc
   ServerConnection.cc
   TrafficControl.cc
 )
@@ -61,13 +64,15 @@ SET_SOURCE_FILES(NETWORK_HDR_FILES
   NetworkPrecompiledHeaders.h
   NetworkPrereqs.h
   Server.h
+  MasterServer.h
+  PeerList.h
+  ServerList.h
   ServerConnection.h
   TrafficControl.h
 )
 
 ADD_SUBDIRECTORY(packet)
 ADD_SUBDIRECTORY(synchronisable)
-ADD_SUBDIRECTORY(masterserver)
 
 ORXONOX_ADD_LIBRARY(network
   TOLUA_FILES

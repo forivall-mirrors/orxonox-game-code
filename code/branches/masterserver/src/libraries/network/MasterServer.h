@@ -55,6 +55,9 @@ namespace orxonox
       MasterServer();
       ~MasterServer();
 
+      /* main routine */
+      int run();
+
     private:
       /* methods */
       int eventConnect( ENetEvent *event );
@@ -73,8 +76,6 @@ namespace orxonox
       unsigned int port;
       bool quit;
 
-      /* main routine */
-      int run();
   };
 }
 

@@ -30,47 +30,38 @@
 #include "GSMasterServer.h"
 
 #include "util/Debug.h"
-#include "core/CommandLineParser.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
-#include "network/Server.h"
 
 namespace orxonox
 {
-    DeclareGameState(GSMasterServer, "masterserver", false, false);
+  DeclareGameState(GSMasterServer, "masterserver", false, false);
 
-    SetCommandLineArgument(port, 55566).shortcut("p").information("Network communication port to be used 0-65535 (default: 55566)");
+  GSMasterServer::GSMasterServer(const GameStateInfo& info)
+    : GameState(info)
+  {
 
-    GSMasterServer::GSMasterServer(const GameStateInfo& info)
-        : GameState(info)
-        , server_(0)
-    {
-    }
+  }
 
-    GSMasterServer::~GSMasterServer()
-    {
-    }
+  GSMasterServer::~GSMasterServer()
+  {
+    this->mserver->~MasterServer();
+  }
 
-    void GSMasterServer::activate()
-    {
-        GameMode::setIsServer(true);
+  void GSMasterServer::activate()
+  {
+    /* TODO make this work for masterserver as well */
+    //GameMode::setIsServer(true);
 
-        this->server_ = new Server(CommandLineParser::getValue("port"));
-        COUT(0) << "Loading scene in server mode" << std::endl;
+    this->mserver = new MasterServer();
+    COUT(0) << "Loading masterserver mode" << std::endl;
 
-        server_->open();
-    }
+    this->mserver->run();
+  }
 
-    void GSMasterServer::deactivate()
-    {
-        this->server_->close();
-        delete this->server_;
+  void GSMasterServer::deactivate()
+  { /* nothing so far */ }
 
-        GameMode::setIsServer(false);
-    }
-
-    void GSMasterServer::update(const Clock& time)
-    {
-        server_->update(time);
-    }
+  void GSMasterServer::update(const Clock& time)
+  { /* nothing so far */ }
 }
