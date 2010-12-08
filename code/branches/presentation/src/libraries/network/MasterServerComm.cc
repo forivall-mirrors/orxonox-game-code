@@ -86,19 +86,18 @@ namespace orxonox
 
     if (this->peer == NULL )
     { COUT(2) << "ERROR: No available peers for initiating an ENet connection.\n";
-    //exit (EXIT_FAILURE);
     return -1;
     }
 
     /* Wait up to 2 seconds for the connection attempt to succeed. */
     if (enet_host_service (this->client, this->event, 2000) > 0 &&
         this->event->type == ENET_EVENT_TYPE_CONNECT )
-      fprintf( stdout, "Connection to server succeeded." );
+      COUT(3) << "Connection to master server succeeded.\n";
     else
     {
       enet_peer_reset (this->peer);
       fprintf( stdout, "Connection to %s failed.", address );
-      //exit(EXIT_FAILURE);
+      COUT(2) << "ERROR: connection to " << address << " failed.\n";
       return -1;
     }
 

@@ -26,6 +26,9 @@
  *
  */
 
+#ifndef MASTERSERVERCOMM_H
+#define MASTERSERVERCOMM_H
+
 #include <cstdlib>
 #include <cstdio>
 #include <string>
@@ -94,3 +97,5 @@ namespace orxonox
   };
 
 }
+
+#endif /* MASTERSERVERCOMM_H */

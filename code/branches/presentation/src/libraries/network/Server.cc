@@ -59,6 +59,7 @@
 #include "ClientInformation.h"
 #include "FunctionCallManager.h"
 #include "GamestateManager.h"
+#include "WANDiscovery.h"
 
 namespace orxonox
 {
@@ -109,7 +110,8 @@ namespace orxonox
     }
 
     /* connect and see if it worked */
-    if( msc.connect( MS_ADDRESS, ORX_MSERVER_PORT ) )
+    if( msc.connect( WANDiscovery::getInstance().getMSAddress().c_str(), 
+      ORX_MSERVER_PORT ) )
     { COUT(1) << "Error: could not connect to master server!\n";
       return;
     }

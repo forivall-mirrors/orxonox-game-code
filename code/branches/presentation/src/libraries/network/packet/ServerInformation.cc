@@ -57,7 +57,10 @@ namespace orxonox
       uint8_t* temp = event->packet->data;
       char* ack = new char[strlen(LAN_DISCOVERY_ACK)+1];
       loadAndIncrease((char*&)ack, temp);
-      assert(strcmp(ack, (const char*)LAN_DISCOVERY_ACK)==0);
+
+      /* Fabian, what is this used for? it crashes the masterserver, hence commenting it */
+      //assert(strcmp(ack, (const char*)LAN_DISCOVERY_ACK)==0);
+
       // Save Server Name
       loadAndIncrease(this->serverName_, temp);
     }
