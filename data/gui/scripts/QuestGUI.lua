@@ -20,7 +20,7 @@ function P.onShow()
     local questsList = winMgr:getWindow("orxonox/QuestGUI/QuestsList")
 
     P.player = orxonox.GUIManager:getInstance():getPlayer(P.name)
-    P.rootWindow = P.createQuestGUI();
+    P.rootWindow = P.createQuestGUI()
 
     questsList:addChildWindow(P.rootWindow)
 end
@@ -73,7 +73,7 @@ function P.createQuestNodes(root, parent, depth, index)
         i = i+1
     end
 
-    return index;
+    return index
 end
 
 function P.cleanup()
@@ -139,7 +139,7 @@ function P.openDetails_clicked(e)
     status:setHeight(CEGUI.UDim(0, height))
     offset = offset + height
 
-    local descriptionTitle = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Description/Title");
+    local descriptionTitle = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Description/Title")
     window:addChildWindow(descriptionTitle)
     descriptionTitle:setProperty("HorzFormatting", "HorzCentred")
     descriptionTitle:setProperty("VertFormatting", "TopAligned")
@@ -150,7 +150,7 @@ function P.openDetails_clicked(e)
     descriptionTitle:setHeight(CEGUI.UDim(0, height))
     offset = offset + height
 
-    local description = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Description");
+    local description = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Description")
     window:addChildWindow(description)
     description:setProperty("HorzFormatting", "WordWrapLeftAligned")
     description:setProperty("VertFormatting", "TopAligned")
@@ -164,7 +164,7 @@ function P.openDetails_clicked(e)
     -- Display the hints of this quest
     local numHints = orxonox.QuestManager:getInstance():getNumHints(quest, P.player)
     if numHints > 0 then
-        local hintsTitle = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Hints/Title");
+        local hintsTitle = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Hints/Title")
         window:addChildWindow(hintsTitle)
         hintsTitle:setProperty("HorzFormatting", "HorzCentred")
         hintsTitle:setProperty("VertFormatting", "TopAligned")
@@ -246,7 +246,7 @@ function P.openHintDetails_clicked(e)
 
     local offset = 0
     
-    local descriptionTitle = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Description/Title");
+    local descriptionTitle = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Description/Title")
     window:addChildWindow(descriptionTitle)
     descriptionTitle:setProperty("HorzFormatting", "HorzCentred")
     descriptionTitle:setProperty("VertFormatting", "TopAligned")
@@ -257,7 +257,7 @@ function P.openHintDetails_clicked(e)
     descriptionTitle:setHeight(CEGUI.UDim(0, height))
     offset = offset + height
 
-    local description = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Description");
+    local description = winMgr:createWindow("MenuWidgets/StaticText", name .. "/Description")
     window:addChildWindow(description)
     description:setProperty("HorzFormatting", "WordWrapLeftAligned")
     description:setProperty("VertFormatting", "TopAligned")
