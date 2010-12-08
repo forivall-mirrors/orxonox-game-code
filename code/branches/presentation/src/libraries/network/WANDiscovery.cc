@@ -93,11 +93,11 @@ namespace orxonox
       /* create server structure from that item */
       packet::ServerInformation toadd;
 
-      /* fill in data */
+      /* fill in data, -1 for the index: index should be length -1 */
       toadd.setServerName( std::string((char*)ev->packet->data + 
-        MSPROTO_SERVERLIST_ITEM_LEN) );
+        MSPROTO_SERVERLIST_ITEM_LEN)-1 );
       toadd.setServerIP( std::string((char*)ev->packet->data + 
-        MSPROTO_SERVERLIST_ITEM_LEN) );
+        MSPROTO_SERVERLIST_ITEM_LEN)-1 );
 
       /* add to list */
       WANDiscovery::getInstance().servers_.push_back( toadd );
