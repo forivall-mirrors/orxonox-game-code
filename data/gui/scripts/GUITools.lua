@@ -171,10 +171,11 @@ function buttonIteratorHelper(list, code, P, n, m)
         local window = winMgr:getWindow("orxonox/MainMenuBackground")
 
         local item = list[P.index+1]
-        local child = item["button"] 
+        local child = item["button"]
+        local s = child:getProperty("NormalImageRightEdge") 
 
         --teste ob der Button nicht schon gehighlightet ist
-        if child:getProperty("NormalImageRightEdge") == "set:TaharezGreenLook image:ButtonRightHighlight" then
+        if string.sub(s,string.len(s)-8,string.len(s)) == "Highlight" then
             --nop
         else
             child:setProperty("NormalImageRightEdge", string.sub(child:getProperty("NormalImageRightEdge"),1,-7) .. "Highlight")
@@ -200,7 +201,8 @@ function buttonIteratorHelper(list, code, P, n, m)
                 if list[i] ~= nil then 
                 local item = list[i]
                 local child = item["button"]
-                    if child:getProperty("NormalImageRightEdge") == "set:TaharezGreenLook image:ButtonRightHighlight" then
+                local s = child:getProperty("NormalImageRightEdge")
+                    if string.sub(s,string.len(s)-8,string.len(s)) == "Highlight" then
                         child:setProperty("NormalImageRightEdge", string.sub(child:getProperty("NormalImageRightEdge"),1,-10) .. "Normal")
                         child:setProperty("NormalImageLeftEdge", string.sub(child:getProperty("NormalImageLeftEdge"),1,-10) .. "Normal")
                         child:setProperty("NormalImageBackground", string.sub(child:getProperty("NormalImageBackground"),1,-10) .. "Normal")
@@ -209,10 +211,10 @@ function buttonIteratorHelper(list, code, P, n, m)
             end
                 i=i+1
         end
-    end
-    
+    end  
+
     --enter
-    if code == "28" and P.index >= 0 then
+    if code == "28" then
         local item = list[P.index+1]
         local child = item["button"] 
         child:setProperty("NormalImageRightEdge", string.sub(child:getProperty("NormalImageRightEdge"),1,-10) .. "Normal")
