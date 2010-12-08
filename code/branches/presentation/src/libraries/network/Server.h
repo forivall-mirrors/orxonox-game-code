@@ -37,6 +37,9 @@
 #include "GamestateManager.h"
 #include "ServerConnection.h"
 #include "LANDiscoverable.h"
+#include "MasterServerComm.h"
+#include "MasterServerProtocol.h"
+
 
 namespace orxonox
 {
@@ -51,6 +54,11 @@ namespace orxonox
     Server(int port);
     Server(int port, const std::string& bindAddress);
     ~Server();
+
+    /* helpers */
+    void helper_ConnectToMasterserver();
+    void helper_HandleMasterServerRequests();
+    int replyhandler( char *addr, ENetEvent *ev );
 
     void open();
     void close();
@@ -81,6 +89,7 @@ namespace orxonox
     void syncClassid(unsigned int clientID);
 
     float timeSinceLastUpdate_;
+    MasterServerComm msc;
   };
 
 

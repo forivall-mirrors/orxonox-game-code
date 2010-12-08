@@ -98,6 +98,26 @@ namespace orxonox
   {
   }
 
+
+  /* TODO */
+  void Server::helper_ConnectToMasterserver()
+  {
+    /* initialize it and see if it worked */
+    if( msc.initialize() )
+    { COUT(1) << "Error: could not initialize master server communications!\n";
+      return;
+    }
+
+    /* connect and see if it worked */
+    if( msc.connect( MS_ADDRESS, 1234 ) )
+    { COUT(1) << "Error: could not connect to master server!\n";
+      return;
+    }
+
+    /* now send the master server some note we're here */
+    msc.sendRequest( MSPROTO_GAME_SERVER " " MSPROTO_REGISTER_SERVER );
+  }
+
   /**
   * This function opens the server by creating the listener thread
   */
@@ -106,7 +126,14 @@ namespace orxonox
     Host::setActive(true);
     COUT(4) << "opening server" << endl;
     this->openListener();
+    
+    /* make discoverable on LAN */
     LANDiscoverable::setActivity(true);
+
+    /* make discoverable on WAN */
+    helper_ConnectToMasterserver();
+
+    /* done */
     return;
   }
 
@@ -139,6 +166,20 @@ namespace orxonox
   }
 
 
+  /* TODO */
+  int rephandler( char *addr, ENetEvent *ev )
+  { 
+    /* handle incoming data */
+
+    /* done handling, return all ok code 0 */
+    return 0;
+  }
+
+  void Server::helper_HandleMasterServerRequests()
+  { 
+    this->msc.pollForReply( rephandler ); 
+  }
+
   /**
   * Run this function once every tick
   * calls processQueue and updateGamestate
@@ -148,8 +189,12 @@ namespace orxonox
   {
     // receive incoming packets
     Connection::processQueue();
+
     // receive and process incoming discovery packets
     LANDiscoverable::update();
+
+    // receive and process requests from master server
+    helper_HandleMasterServerRequests();
 
     if ( ClientInformation::hasClients() )
     {

@@ -41,10 +41,12 @@ end
 
 function P.LanButton_clicked(e)
     P.joinMode = 1
+	P.showServerList()
 end
 
 function P.InternetButton_clicked(e)
     P.joinMode = 2
+	P.showServerList()
 end
 
 function P.MultiplayerHostButton_clicked(e)
@@ -54,21 +56,15 @@ end
 
 function P.MultiplayerJoinButton_clicked(e)
     local choice = winMgr:getWindow("orxonox/MultiplayerListbox"):getFirstSelectedItem()   
-
-    if P.joinMode == 2 then
-        if choice then
-            local client = orxonox.Client:getInstance()
-            local index = tolua.cast(choice, "CEGUI::ListboxItem"):getID()
-            client:setDestination( P.serverList[index][2], 55556 )
-        else
-            return
-        end
-        orxonox.execute("startClient")
-        hideAllMenuSheets()
+    if choice then
+        local client = orxonox.Client:getInstance()
+        local index = tolua.cast(choice, "CEGUI::ListboxItem"):getID()
+        client:setDestination( P.serverList[index][2], 55556 )
     else
-        --wait for Sandro's function
+        return
     end
-
+    orxonox.execute("startClient")
+    hideAllMenuSheets()
 end
 
 function P.MultiplayerBackButton_clicked(e)
@@ -76,34 +72,70 @@ function P.MultiplayerBackButton_clicked(e)
 end
 
 function P.showServerList()
-    local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
-    CEGUI.toListbox(listbox):resetList()
-    local discovery = orxonox.LANDiscovery:getInstance()
-    discovery:discover()
-    P.serverList = {}
-    local index = 0
-    local servername = ""
-    local serverip = ""
-    while true do
-        servername = discovery:getServerListItemName(index)
-        if servername == "" then
-            break
-        end
-        serverip = discovery:getServerListItemIP(index)
-        if serverip == "" then
-          break
-        end
-        table.insert(P.serverList, {servername, serverip})
-        index = index + 1
-    end
-    index = 1
-    for k,v in pairs(P.serverList) do
-        local item = CEGUI.createListboxTextItem( v[1] .. ": " .. v[2] )
-        item:setID(index)
-        index = index + 1
-        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
-        CEGUI.toListbox(listbox):addItem(item)
-    end
+	-- LAN Discovery
+	if P.joinMode == 1 then
+		local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
+		CEGUI.toListbox(listbox):resetList()
+		local discovery = orxonox.LANDiscovery:getInstance()
+		discovery:discover()
+		P.serverList = {}
+		local index = 0
+		local servername = ""
+		local serverip = ""
+		while true do
+		    servername = discovery:getServerListItemName(index)
+		    if servername == "" then
+		        break
+		    end
+		    serverip = discovery:getServerListItemIP(index)
+		    if serverip == "" then
+		      break
+		    end
+		    table.insert(P.serverList, {servername, serverip})
+		    index = index + 1
+		end
+		index = 1
+		for k,v in pairs(P.serverList) do
+		    local item = CEGUI.createListboxTextItem( v[1] .. ": " .. v[2] )
+		    item:setID(index)
+		    index = index + 1
+		    item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
+		    CEGUI.toListbox(listbox):addItem(item)
+		end
+	-- WAN Discovery
+	elseif P.joinMode == 2 then
+		local listbox = winMgr:getWindow("orxonox/MultiplayerListbox")
+		CEGUI.toListbox(listbox):resetList()
+		local discovery = orxonox.WANDiscovery:getInstance()
+		cout(0, "discovering.\n" )
+		discovery:discover()
+		cout(0, "discovered.\n" )
+		P.serverList = {}
+		local index = 0
+		local servername = ""
+		local serverip = ""
+		while true do
+		    servername = discovery:getServerListItemName(index)
+		    if servername == "" then
+		        break
+		    end
+		    serverip = discovery:getServerListItemIP(index)
+		    if serverip == "" then
+		      break
+		    end
+		    table.insert(P.serverList, {servername, serverip})
+		    index = index + 1
+		end
+		index = 1
+		for k,v in pairs(P.serverList) do
+		    local item = CEGUI.createListboxTextItem( v[1] .. ": " .. v[2] )
+		    item:setID(index)
+		    index = index + 1
+		    item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
+		    CEGUI.toListbox(listbox):addItem(item)
+		end
+	end
+	
 end
 
 function P.onKeyPressed() 
