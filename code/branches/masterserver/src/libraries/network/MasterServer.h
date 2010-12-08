@@ -37,7 +37,6 @@
 #include <network/packet/FunctionIDs.h>
 #include <network/packet/Gamestate.h>
 #include <network/packet/Welcome.h>
-#include <util/Singleton.h>
 #include <network/MasterServerProtocol.h>
 
 /* my includes */
@@ -50,19 +49,12 @@
 namespace orxonox 
 {
   /* singleton */
-  class MasterServer: public Singleton<MasterServer>
+  class MasterServer
   {
     public:
       MasterServer();
       ~MasterServer();
 
-      friend class Singleton<MasterServer>;
-      static MasterServer& getInstance(void) 
-      { return Singleton<MasterServer>::getInstance(); }
-
-      /* data fields */
-      static MasterServer* singletonPtr_s;
-    
     private:
       /* methods */
       int eventConnect( ENetEvent *event );
@@ -78,9 +70,11 @@ namespace orxonox
       ServerList mainlist;
       PeerList *peers;
 
+      unsigned int port;
+      bool quit;
+
       /* main routine */
       int run();
-
   };
 }
 

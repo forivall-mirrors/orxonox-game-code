@@ -33,9 +33,6 @@
 
 namespace orxonox 
 {
-  /* singleton stuff */
-  //ManageScopedSingleton( MasterServer, ScopeID::Root, false );
-
   /* helpers */
   static void 
   helper_output_debug( ENetEvent *event, char *addrconv )
@@ -224,27 +221,28 @@ namespace orxonox
 
     /* tell people we're now initialized and blocking. */
     COUT(0) << "MasterServer initialized, waiting for connections.\n";
+    
+    /* endless loop until we quit */
+    while( this->quit == false )
+    {
+      /* create an iterator for the loop */
+      while( enet_host_service( this->server, event, 1000 ) >= 0 )
+      { /* check what type of event it is and react accordingly */
+        switch (event->type)
+        { /* new connection */
+          case ENET_EVENT_TYPE_CONNECT: 
+            eventConnect( event ); break;
 
-    /* create an iterator for the loop */
-    while( enet_host_service( this->server, event, 1000 ) >= 0 )
-    { /* check what type of event it is and react accordingly */
-      switch (event->type)
-      { /* new connection */
-        case ENET_EVENT_TYPE_CONNECT: 
-          eventConnect( event ); break;
+            /* disconnect */
+          case ENET_EVENT_TYPE_DISCONNECT: 
+            eventDisconnect( event ); break;
 
-          /* disconnect */
-        case ENET_EVENT_TYPE_DISCONNECT: 
-          eventDisconnect( event ); break;
-
-          /* incoming data */
-        case ENET_EVENT_TYPE_RECEIVE: eventData( event ); break;
-        default: break;
+            /* incoming data */
+          case ENET_EVENT_TYPE_RECEIVE: eventData( event ); break;
+          default: break;
+        }
       }
     }
-
-    /* free the event */
-    if( event ) free( event );
 
     /* done */
     return 0;
@@ -261,6 +259,9 @@ namespace orxonox
 
     /* register deinitialization */
     atexit( enet_deinitialize );
+
+    /* set the quit flag to false */
+    this->quit = false;
 
     /* Bind the server to the default localhost and port ORX_MSERVER_PORT */
     this->address.host = ENET_HOST_ANY;
@@ -281,13 +282,6 @@ namespace orxonox
     /***** INITIALIZE GAME SERVER AND PEER LISTS *****/
     //this->mainlist = new ServerList();
     this->peers = new PeerList();
-    //if( this->mainlist == NULL || this->peers == NULL )
-    //{ COUT(1) << "Error creating server or peer list.\n";
-      //exit( EXIT_FAILURE );
-    //}
-
-    /* run the main method */
-    run();
   }
 
   /* destructor */
