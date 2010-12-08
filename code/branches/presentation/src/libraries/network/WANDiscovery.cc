@@ -46,10 +46,10 @@ namespace orxonox
     /* debugging output */
     COUT(4) << "Creating WANDiscovery.\n";
   
-    /* register object with orxonox main class */
+    /* register object in orxonox */
     RegisterObject(WANDiscovery);
 
-    /* ... and register a config value function for it */
+    /* check for the masterserver address option in orxonox.ini */
     this->setConfigValues();
 
     /* initialize it and see if it worked */
@@ -67,6 +67,9 @@ namespace orxonox
 
   void WANDiscovery::setConfigValues()
   {
+    /* update msaddress string from orxonox.ini config file, if it 
+     * has changed. 
+     */
     SetConfigValue( msaddress, "localhost");
   } 
 

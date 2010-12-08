@@ -60,7 +60,6 @@ namespace orxonox
     for( i = mainlist.serverlist.begin(); i 
         != mainlist.serverlist.end(); ++i ) 
     {
-      /* WORK MARK */
       /* send this particular server */
       /* build reply string */
       char *tosend = (char *)calloc( (*i).getServerIP().length() 
@@ -87,11 +86,12 @@ namespace orxonox
       free( tosend );
     } 
 
-    /* send end-of-list packet */
+    /* create end-of-list packet */
     reply = enet_packet_create( MSPROTO_SERVERLIST_END,
         MSPROTO_SERVERLIST_END_LEN + 1,
         ENET_PACKET_FLAG_RELIABLE );
 
+    /* send end-of-list packet */
     enet_peer_send( event->peer, 0, reply );
 
     /* One could just use enet_host_service() instead. */
@@ -158,7 +158,6 @@ namespace orxonox
   MasterServer::eventData( ENetEvent *event )
   { /* validate packet */
     if( !event || !(event->packet) || !(event->peer) )
-      //|| !(event->packet->data) || !strlen(event->packet->data) )
     { COUT(2) << "No complete event given.\n";
       return -1;
     }
@@ -167,8 +166,7 @@ namespace orxonox
     char *addrconv = (char *) calloc( 50, 1 );
     enet_address_get_host_ip( &(event->peer->address), addrconv, 49 );
 
-    /* DEBUG */
-    /* output debug info about the data that has come, to be removed */
+    /* output debug info about the data that has come */
     helper_output_debug( event, addrconv );
 
     /* GAME SERVER OR CLIENT CONNECTION? */
@@ -274,7 +272,6 @@ namespace orxonox
     }
 
     /***** INITIALIZE GAME SERVER AND PEER LISTS *****/
-    //this->mainlist = new ServerList();
     this->peers = new PeerList();
 
     /* tell people we're now initialized */
@@ -291,7 +288,6 @@ namespace orxonox
     /* free all used memory */
     /* clear the list of connected game servers */
     /* clear the list of connected game clients */
-
   }
 
 /* end of namespace */

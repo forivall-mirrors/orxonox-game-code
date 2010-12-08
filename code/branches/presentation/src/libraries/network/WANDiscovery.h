@@ -56,7 +56,10 @@ namespace orxonox
       /** destructor */
       ~WANDiscovery();
 
-      /** get content of msaddress */
+      /** \return Address of the master server
+       * 
+       * Get the master server address 
+       */
       std::string getMSAddress()
       { return this->msaddress; }
 

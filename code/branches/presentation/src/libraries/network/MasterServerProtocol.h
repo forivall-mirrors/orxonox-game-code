@@ -32,38 +32,46 @@
 /* master server address (to be moved elsewhere later) */
 #define MS_ADDRESS "129.132.3.8"
 
+/* Client token (shows that the party sending data is a client */
 #define MSPROTO_CLIENT "CL"
 #define MSPROTO_CLIENT_LEN 2 
 
+/* Request: Serverlist (requiest made from client to master server */
 #define MSPROTO_REQ_LIST "REQ:LIST"
 #define MSPROTO_REQ_LIST_LEN 8
 
 
 
 
+/* Game server token (shows that the party sending data is a game server) */
 #define MSPROTO_GAME_SERVER "GS"
 #define MSPROTO_GAME_SERVER_LEN 2
 
+/* Register game server at the master server, meaning request to be taken into$
+ * the master servers game server list.
+ */
 #define MSPROTO_REGISTER_SERVER "REG:SER"
 #define MSPROTO_REGISTER_SERVER_LEN 7
 
+/* Server list item token */
 #define MSPROTO_SERVERLIST_ITEM "SI"
 #define MSPROTO_SERVERLIST_ITEM_LEN 2
+
+/* server list end token */
 #define MSPROTO_SERVERLIST_END "SL_END"
 #define MSPROTO_SERVERLIST_END_LEN 6
 
 
 
-
-
-
+/* default master server port */
 #define ORX_MSERVER_PORT 55566
 
 
+/* some constants for the networking of the master server, not very important.
+ * play with those if things don't work out well.$
+ */
 #define ORX_MSERVER_MAXCONNS 32
 #define ORX_MSERVER_MAXCHANS 2
-
-
 
 
 #endif /* MASTER_SERVER_PROTO */

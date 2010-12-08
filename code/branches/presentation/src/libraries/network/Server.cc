@@ -100,7 +100,7 @@ namespace orxonox
   }
 
 
-  /* TODO */
+  /** helper that connects to the master server */
   void Server::helper_ConnectToMasterserver()
   {
     /* initialize it and see if it worked */
@@ -172,6 +172,7 @@ namespace orxonox
   int rephandler( char *addr, ENetEvent *ev )
   { 
     /* handle incoming data */
+    /* TODO this is to be implemented. */
 
     /* done handling, return all ok code 0 */
     return 0;
@@ -179,6 +180,9 @@ namespace orxonox
 
   void Server::helper_HandleMasterServerRequests()
   { 
+    /* poll the master server for replies and see whether something 
+     * has to be done or changed.
+     */
     this->msc.pollForReply( rephandler ); 
   }
 
