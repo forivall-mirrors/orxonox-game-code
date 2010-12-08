@@ -4,6 +4,10 @@ local P = createMenuSheet("MultiplayerMenu")
 
 P.buttonList = {}
 
+--joinMode is 1 for choice "LAN" and 2 for "Internet"
+--initial status 0
+P.joinMode = 0
+
 function P.onLoad()
     P.multiplayerMode = "startClient" 
 
@@ -25,7 +29,6 @@ function P.onLoad()
             ["function"]  = P.MultiplayerBackButton_clicked
     }
     P.buttonList[4] = item
-
 end
 
 function P.onShow()
@@ -36,22 +39,36 @@ function P.onShow()
     P.index = -1
 end
 
+function P.LanButton_clicked(e)
+    P.joinMode = 1
+end
+
+function P.InternetButton_clicked(e)
+    P.joinMode = 2
+end
+
 function P.MultiplayerHostButton_clicked(e)
     showMenuSheet("HostMenu", true)
 end
 
 
 function P.MultiplayerJoinButton_clicked(e)
-    local choice = winMgr:getWindow("orxonox/MultiplayerListbox"):getFirstSelectedItem()
-    if choice then
-        local client = orxonox.Client:getInstance()
-        local index = tolua.cast(choice, "CEGUI::ListboxItem"):getID()
-        client:setDestination( P.serverList[index][2], 55556 )
+    local choice = winMgr:getWindow("orxonox/MultiplayerListbox"):getFirstSelectedItem()   
+
+    if P.joinMode == 2 then
+        if choice then
+            local client = orxonox.Client:getInstance()
+            local index = tolua.cast(choice, "CEGUI::ListboxItem"):getID()
+            client:setDestination( P.serverList[index][2], 55556 )
+        else
+            return
+        end
+        orxonox.execute("startClient")
+        hideAllMenuSheets()
     else
-        return
+        --wait for Sandro's function
     end
-    orxonox.execute("startClient")
-    hideAllMenuSheets()
+
 end
 
 function P.MultiplayerBackButton_clicked(e)
