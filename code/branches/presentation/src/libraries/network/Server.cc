@@ -109,7 +109,7 @@ namespace orxonox
     }
 
     /* connect and see if it worked */
-    if( msc.connect( MS_ADDRESS, 1234 ) )
+    if( msc.connect( MS_ADDRESS, ORX_MSERVER_PORT ) )
     { COUT(1) << "Error: could not connect to master server!\n";
       return;
     }
@@ -194,7 +194,8 @@ namespace orxonox
     LANDiscoverable::update();
 
     // receive and process requests from master server
-    helper_HandleMasterServerRequests();
+    /* todo */
+    //helper_HandleMasterServerRequests();
 
     if ( ClientInformation::hasClients() )
     {
