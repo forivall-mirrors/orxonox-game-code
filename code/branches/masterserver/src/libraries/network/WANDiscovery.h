@@ -31,7 +31,11 @@
 
 #include "NetworkPrereqs.h"
 #include "packet/ServerInformation.h"
+#include "core/ConfigFileManager.h"
 #include "util/Singleton.h"
+#include "core/OrxonoxClass.h"
+#include "core/ConfigValueIncludes.h"
+#include "core/CoreIncludes.h"
 #include "MasterServerComm.h"
 #include "MasterServerProtocol.h"
 
@@ -45,7 +49,7 @@ namespace orxonox
 
   class _NetworkExport WANDiscovery
 // tolua_end
-    : public Singleton<WANDiscovery>
+    : public Singleton<WANDiscovery>, public OrxonoxClass
   { // tolua_export
     friend class Singleton<WANDiscovery>;
     public:
@@ -83,6 +87,9 @@ namespace orxonox
        */
       /** game server list */
       std::vector<packet::ServerInformation> servers_;
+
+      /** Function used for the configuration file parameter update */
+      void setConfigValues();
       
     private:
       /** Singleton pointer */
@@ -90,6 +97,9 @@ namespace orxonox
 
       /** Master server communications object */
       MasterServerComm msc;
+
+      /** master server address */
+      std::string msaddr;
 
   }; // tolua_export
 
