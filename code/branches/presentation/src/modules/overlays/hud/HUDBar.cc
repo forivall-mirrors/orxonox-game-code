@@ -84,7 +84,7 @@ namespace orxonox
             .createOverlayElement("Panel", "HUDBar_bar_" + getUniqueNumberString()));
         this->bar_->setMaterialName(materialname);
 
-        this->value_ = 1.0f;  // initielize with 1.0f to trigger a change when calling setValue(0.0f) on the line below
+        this->value_ = 1.0f;  // initialize with 1.0f to trigger a change when calling setValue(0.0f) on the line below
         this->setAutoColour(true);
         this->setValue(0.0f); // <--
         this->setRightToLeft(false);
@@ -160,7 +160,7 @@ namespace orxonox
         // set value
         if (this->right2Left_)
         {
-            // backward casew
+            // backward case
             this->bar_->setPosition(0.06f + 0.88f * (1 - this->value_), 0.0f);
             this->bar_->setDimensions(0.88f * this->value_, 1.0f);
         }

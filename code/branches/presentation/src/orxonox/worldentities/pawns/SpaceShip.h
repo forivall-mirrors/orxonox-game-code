@@ -33,6 +33,7 @@
 
 #include <string>
 #include <LinearMath/btVector3.h>
+#include "tools/Timer.h"
 #include "util/Math.h"
 #include "Pawn.h"
 
@@ -68,8 +69,7 @@ namespace orxonox
             inline const Vector3& getSteeringDirection() const
                 { return this->steering_; }
 
-            inline void setBoost(bool bBoost)
-                { this->bBoost_ = bBoost; }
+            void setBoost(bool bBoost);
             inline bool getBoost() const
                 { return this->bBoost_; }
 
@@ -88,7 +88,13 @@ namespace orxonox
             bool bInvertYAxis_;
 
             bool bBoost_;
+            bool bBoostCooldown_;
             bool bPermanentBoost_;
+            float boostPower_;
+            float initialBoostPower_;
+            float boostRate_;
+            float boostPowerRate_;
+            float boostCooldownDuration_;
             Vector3 steering_;
             float primaryThrust_;
             float auxilaryThrust_;
@@ -101,9 +107,12 @@ namespace orxonox
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
 
             void loadEngineTemplate();
+            
+            void boostCooledDown(void);
 
             std::string enginetemplate_;
             Engine* engine_;
+            Timer timer_;
     };
 }
 
