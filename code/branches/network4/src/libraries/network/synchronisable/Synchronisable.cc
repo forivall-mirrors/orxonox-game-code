@@ -320,7 +320,7 @@ namespace orxonox
       assert( this->getCreatorID() == syncHeader2.getCreatorID() );
       mem += SynchronisableHeader::getSize();
       std::vector<SynchronisableVariableBase *>::iterator i;
-      for(i=syncList_.begin(); i!=syncList_.end(); i++)
+      for(i=syncList_.begin(); i!=syncList_.end(); ++i)
       {
         assert( mem <= data+syncHeader2.getDataSize()+SynchronisableHeader::getSize() ); // always make sure we don't exceed the datasize in our stream
         (*i)->putData( mem, mode, forceCallback );

@@ -71,40 +71,35 @@ Gamestate::Gamestate():
 
 
 Gamestate::Gamestate(uint8_t *data, unsigned int clientID):
-  Packet(data, clientID)
+  Packet(data, clientID), header_(data)
 {
   flags_ = flags_ | PACKET_FLAG_GAMESTATE;
-  header_ = new GamestateHeader(data_);
 }
 
 
-Gamestate::Gamestate(uint8_t *data)
+Gamestate::Gamestate(uint8_t *data):
+  header_(data)
 {
   flags_ = flags_ | PACKET_FLAG_GAMESTATE;
   data_ = data;
-  header_ = new GamestateHeader(data_);
 }
 
 
 Gamestate::Gamestate(const Gamestate& g) :
-    Packet( *(Packet*)&g ), nrOfVariables_(0)
+  Packet( *(Packet*)&g ), header_(this->data_), nrOfVariables_(0)
 {
   flags_ = flags_ | PACKET_FLAG_GAMESTATE;
-  header_ = new GamestateHeader(data_);
   sizes_ = g.sizes_;
 }
 
 
 Gamestate::~Gamestate()
 {
-  if( header_ )
-    delete header_;
 }
 
 
 bool Gamestate::collectData(int id, uint8_t mode)
 {
-  assert(this->header_==0); // make sure the header didn't exist before
   uint32_t tempsize=0, currentsize=0;
   assert(data_==0);
   uint32_t size = calcGamestateSize(id, mode);
@@ -119,9 +114,8 @@ bool Gamestate::collectData(int id, uint8_t mode)
     return false;
   }
 
-  // create the header object
-  assert( header_ == 0 );
-  header_ = new GamestateHeader(data_);
+  // tell the gamestate header where to store the data
+  header_.setData(this->data_);
 
   //start collect data synchronisable by synchronisable
   uint8_t *mem = data_; // in this stream store all data of the variables and the headers of the synchronisable
@@ -160,12 +154,12 @@ bool Gamestate::collectData(int id, uint8_t mode)
 
 
   //start write gamestate header
-  header_->setDataSize( currentsize );
-  header_->setID( id );
-  header_->setBaseID( GAMESTATEID_INITIAL );
-  header_->setDiffed( false );
-  header_->setComplete( true );
-  header_->setCompressed( false );
+  header_.setDataSize( currentsize );
+  header_.setID( id );
+  header_.setBaseID( GAMESTATEID_INITIAL );
+  header_.setDiffed( false );
+  header_.setComplete( true );
+  header_.setCompressed( false );
   //stop write gamestate header
 
   COUT(5) << "G.ST.Man: Gamestate size: " << currentsize << std::endl;
@@ -176,14 +170,14 @@ bool Gamestate::collectData(int id, uint8_t mode)
 
 bool Gamestate::spreadData(uint8_t mode)
 {
-  COUT(4) << "processing gamestate with id " << header_->getID() << endl;
+  COUT(4) << "processing gamestate with id " << header_.getID() << endl;
   assert(data_);
-  assert(!header_->isCompressed());
+  assert(!header_.isCompressed());
   uint8_t *mem=data_+GamestateHeader::getSize();
   Synchronisable *s;
 
   // update the data of the objects we received
-  while(mem < data_+GamestateHeader::getSize()+header_->getDataSize())
+  while(mem < data_+GamestateHeader::getSize()+header_.getDataSize())
   {
     SynchronisableHeader objectheader(mem);
 
@@ -248,11 +242,11 @@ bool Gamestate::spreadData(uint8_t mode)
 uint32_t Gamestate::getSize() const
 {
   assert(data_);
-  if(header_->isCompressed())
-    return header_->getCompSize()+GamestateHeader::getSize();
+  if(header_.isCompressed())
+    return header_.getCompSize()+GamestateHeader::getSize();
   else
   {
-    return header_->getDataSize()+GamestateHeader::getSize();
+    return header_.getDataSize()+GamestateHeader::getSize();
   }
 }
 
@@ -279,8 +273,8 @@ bool Gamestate::process()
 bool Gamestate::compressData()
 {
   assert(data_);
-  assert(!header_->isCompressed());
-  uLongf buffer = (uLongf)(((header_->getDataSize() + 12)*1.01)+1);
+  assert(!header_.isCompressed());
+  uLongf buffer = (uLongf)(((header_.getDataSize() + 12)*1.01)+1);
   if(buffer==0)
     return false;
 
@@ -288,7 +282,7 @@ bool Gamestate::compressData()
   uint8_t *dest = ndata + GamestateHeader::getSize();
   uint8_t *source = data_ + GamestateHeader::getSize();
   int retval;
-  retval = compress( dest, &buffer, source, (uLong)(header_->getDataSize()) );
+  retval = compress( dest, &buffer, source, (uLong)(header_.getDataSize()) );
   switch ( retval )
   {
     case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
@@ -298,16 +292,17 @@ bool Gamestate::compressData()
   }
 
   //copy and modify header
-  GamestateHeader *temp = header_;
-  header_ = new GamestateHeader(ndata, temp);
+  GamestateHeader *temp = new GamestateHeader(data_);
+  header_.setData(ndata);
+  header_ = *temp;
   delete temp;
   //delete old data
   delete[] data_;
   //save new data
   data_ = ndata;
-  header_->setCompSize( buffer );
-  header_->setCompressed( true );
-  COUT(0) << "gamestate compress datasize: " << header_->getDataSize() << " compsize: " << header_->getCompSize() << std::endl;
+  header_.setCompSize( buffer );
+  header_.setCompressed( true );
+  COUT(0) << "gamestate compress datasize: " << header_.getDataSize() << " compsize: " << header_.getCompSize() << std::endl;
   return true;
 }
 
@@ -315,10 +310,10 @@ bool Gamestate::compressData()
 bool Gamestate::decompressData()
 {
   assert(data_);
-  assert(header_->isCompressed());
-  COUT(4) << "GameStateClient: uncompressing gamestate. id: " << header_->getID() << ", baseid: " << header_->getBaseID() << ", datasize: " << header_->getDataSize() << ", compsize: " << header_->getCompSize() << std::endl;
-  uint32_t datasize = header_->getDataSize();
-  uint32_t compsize = header_->getCompSize();
+  assert(header_.isCompressed());
+  COUT(4) << "GameStateClient: uncompressing gamestate. id: " << header_.getID() << ", baseid: " << header_.getBaseID() << ", datasize: " << header_.getDataSize() << ", compsize: " << header_.getCompSize() << std::endl;
+  uint32_t datasize = header_.getDataSize();
+  uint32_t compsize = header_.getCompSize();
   uint32_t bufsize;
   bufsize = datasize;
   assert(bufsize!=0);
@@ -337,8 +332,9 @@ bool Gamestate::decompressData()
   }
 
   //copy over the header
-  GamestateHeader *temp = header_;
-  header_ = new GamestateHeader( data_, header_ );
+  GamestateHeader* temp = new GamestateHeader( data_ );
+  header_.setData(ndata);
+  header_ = *temp;
   delete temp;
 
   if (this->bDataENetAllocated_)
@@ -356,9 +352,9 @@ bool Gamestate::decompressData()
 
   //set new pointers
   data_ = ndata;
-  header_->setCompressed( false );
-  assert(header_->getDataSize()==datasize);
-  assert(header_->getCompSize()==compsize);
+  header_.setCompressed( false );
+  assert(header_.getDataSize()==datasize);
+  assert(header_.getCompSize()==compsize);
   return true;
 }
 
@@ -511,22 +507,22 @@ inline bool findObject(uint8_t*& dataPtr, uint8_t* endPtr, SynchronisableHeader&
 Gamestate* Gamestate::diffVariables(Gamestate *base)
 {
   assert(this && base); assert(data_ && base->data_);
-  assert(!header_->isCompressed() && !base->header_->isCompressed());
-  assert(!header_->isDiffed());
-  assert( header_->getDataSize() && base->header_->getDataSize() );
+  assert(!header_.isCompressed() && !base->header_.isCompressed());
+  assert(!header_.isDiffed());
+  assert( header_.getDataSize() && base->header_.getDataSize() );
 
 
   // *** first do a raw diff of the two gamestates
 
   uint8_t *baseDataPtr = GAMESTATE_START(base->data_);
   uint8_t *origDataPtr = GAMESTATE_START(this->data_);
-  uint8_t *origDataEnd = origDataPtr + header_->getDataSize();
-  uint8_t *baseDataEnd = baseDataPtr + base->header_->getDataSize();
-//   uint32_t origLength = header_->getDataSize();
-//   uint32_t baseLength = base->header_->getDataSize();
+  uint8_t *origDataEnd = origDataPtr + header_.getDataSize();
+  uint8_t *baseDataEnd = baseDataPtr + base->header_.getDataSize();
+//   uint32_t origLength = header_.getDataSize();
+//   uint32_t baseLength = base->header_.getDataSize();
 
   // Allocate new space for diffed gamestate
-  uint32_t newDataSize = header_->getDataSize() + GamestateHeader::getSize() + sizeof(uint32_t)*this->nrOfVariables_;
+  uint32_t newDataSize = header_.getDataSize() + GamestateHeader::getSize() + sizeof(uint32_t)*this->nrOfVariables_;
   uint8_t *newData = new uint8_t[newDataSize]; // this is the maximum size needed in the worst case
   uint8_t *destDataPtr = GAMESTATE_START(newData);
 
@@ -597,10 +593,9 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
 
 
   Gamestate *g = new Gamestate(newData, getClientID());
-  assert(g->header_);
-  *(g->header_) = *header_;
-  g->header_->setBaseID( base->getID() );
-  g->header_->setDataSize(destDataPtr - newData - GamestateHeader::getSize());
+  (g->header_) = header_;
+  g->header_.setBaseID( base->getID() );
+  g->header_.setDataSize(destDataPtr - newData - GamestateHeader::getSize());
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
   assert(!g->isCompressed());
@@ -611,12 +606,12 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
 /*Gamestate* Gamestate::diffData(Gamestate *base)
 {
   assert(this && base); assert(data_ && base->data_);
-  assert(!header_->isCompressed() && !base->header_->isCompressed());
-  assert(!header_->isDiffed());
+  assert(!header_.isCompressed() && !base->header_.isCompressed());
+  assert(!header_.isDiffed());
 
   uint8_t *basep = GAMESTATE_START(base->data_);
   uint8_t *gs = GAMESTATE_START(this->data_);
-  uint32_t dest_length = header_->getDataSize();
+  uint32_t dest_length = header_.getDataSize();
 
   if(dest_length==0)
     return NULL;
@@ -624,10 +619,10 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
   uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
   uint8_t *dest = GAMESTATE_START(ndata);
 
-  rawDiff( dest, gs, basep, header_->getDataSize(), base->header_->getDataSize() );
+  rawDiff( dest, gs, basep, header_.getDataSize(), base->header_.getDataSize() );
 #ifndef NDEBUG
   uint8_t *dest2 = new uint8_t[dest_length];
-  rawDiff( dest2, dest, basep, header_->getDataSize(), base->header_->getDataSize() );
+  rawDiff( dest2, dest, basep, header_.getDataSize(), base->header_.getDataSize() );
   assert( memcmp( dest2, gs, dest_length) == 0 );
   delete dest2;
 #endif
@@ -635,8 +630,8 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
   Gamestate *g = new Gamestate(ndata, getClientID());
   assert(g->header_);
   *(g->header_) = *header_;
-  g->header_->setDiffed( true );
-  g->header_->setBaseID( base->getID() );
+  g->header_.setDiffed( true );
+  g->header_.setBaseID( base->getID() );
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
   assert(g->isDiffed());
@@ -648,12 +643,12 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
 Gamestate* Gamestate::undiff(Gamestate *base)
 {
   assert(this && base); assert(data_ && base->data_);
-  assert(!header_->isCompressed() && !base->header_->isCompressed());
-  assert(header_->isDiffed());
+  assert(!header_.isCompressed() && !base->header_.isCompressed());
+  assert(header_.isDiffed());
 
   uint8_t *basep = GAMESTATE_START(base->data_);
   uint8_t *gs = GAMESTATE_START(this->data_);
-  uint32_t dest_length = header_->getDataSize();
+  uint32_t dest_length = header_.getDataSize();
 
   if(dest_length==0)
     return NULL;
@@ -661,12 +656,12 @@ Gamestate* Gamestate::undiff(Gamestate *base)
   uint8_t *ndata = new uint8_t[dest_length*sizeof(uint8_t)+GamestateHeader::getSize()];
   uint8_t *dest = ndata + GamestateHeader::getSize();
 
-  rawDiff( dest, gs, basep, header_->getDataSize(), base->header_->getDataSize() );
+  rawDiff( dest, gs, basep, header_.getDataSize(), base->header_.getDataSize() );
 
   Gamestate *g = new Gamestate(ndata, getClientID());
   assert(g->header_);
   *(g->header_) = *header_;
-  g->header_->setDiffed( false );
+  g->header_.setDiffed( false );
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
   assert(!g->isDiffed());
@@ -707,7 +702,7 @@ void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uin
   std::list<obj>::iterator it;
 
   // allocate memory for new data
-  uint8_t *gdata = new uint8_t[header_->getDataSize()+GamestateHeader::getSize()];
+  uint8_t *gdata = new uint8_t[header_.getDataSize()+GamestateHeader::getSize()];
   // create a gamestate out of it
   Gamestate *gs = new Gamestate(gdata);
   uint8_t *newdata = gdata + GamestateHeader::getSize();
@@ -723,7 +718,7 @@ void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uin
   //Synchronisable *object;
 
   //call TrafficControl
-  TrafficControl::getInstance()->processObjectList( clientID, header_->getID(), dataVector_ );
+  TrafficControl::getInstance()->processObjectList( clientID, header_.getID(), dataVector_ );
 
   //copy in the zeros
 //   std::list<obj>::iterator itt;
@@ -754,17 +749,17 @@ void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uin
   }
 #ifndef NDEBUG
   uint32_t origsize = destsize;
-  while ( origsize < header_->getDataSize() )
+  while ( origsize < header_.getDataSize() )
   {
     SynchronisableHeader oldobjectheader(origdata);
     objectsize = oldobjectheader.getDataSize()+SynchronisableHeader::getSize();
     origdata += objectsize;
     origsize += objectsize;
   }
-  assert(origsize==header_->getDataSize());
+  assert(origsize==header_.getDataSize());
   assert(destsize!=0);
 #endif
-  gs->header_->setDataSize( destsize );
+  gs->header_.setDataSize( destsize );
   return gs;
 }*/
 
