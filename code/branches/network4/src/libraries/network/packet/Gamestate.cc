@@ -363,33 +363,35 @@ bool Gamestate::decompressData()
 }
 
 
-inline void /*Gamestate::*/diffObject( uint8_t*& newData, uint8_t*& origData, uint8_t*& baseData, SynchronisableHeader& objectHeader, std::vector<uint32_t>::iterator& sizes )
+inline void /*Gamestate::*/diffObject( uint8_t*& newDataPtr, uint8_t*& origDataPtr, uint8_t*& baseDataPtr, SynchronisableHeader& objectHeader, std::vector<uint32_t>::iterator& sizes )
 {
   //       COUT(4) << "dodiff" << endl;
   //       if(baseOffset==0)
   //       {
   //         assert(origOffset==0);
   //       }
+  assert( objectHeader.getDataSize() == SynchronisableHeader(baseDataPtr).getDataSize() );
+  
   uint32_t objectOffset = SynchronisableHeader::getSize(); // offset inside the object in the origData and baseData
   // Check whether the whole object stayed the same
-  if( memcmp( origData+objectOffset, baseData+objectOffset, objectHeader.getDataSize()) == 0 )
+  if( memcmp( origDataPtr+objectOffset, baseDataPtr+objectOffset, objectHeader.getDataSize()) == 0 )
   {
-    //         COUT(4) << "skip object" << Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() << endl;
-    origData += objectOffset + objectHeader.getDataSize(); // skip the whole object
-    baseData += objectOffset + objectHeader.getDataSize();
+//     COUT(4) << "skip object " << Synchronisable::getSynchronisable(objectHeader.getObjectID())->getIdentifier()->getName() << endl;
+    origDataPtr += objectOffset + objectHeader.getDataSize(); // skip the whole object
+    baseDataPtr += objectOffset + objectHeader.getDataSize();
     sizes += Synchronisable::getSynchronisable(objectHeader.getObjectID())->getNrOfVariables();
   }
   else
   {
-    //         if( Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() == "Bot" )
+    //         if( Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() == "Bot" )
     //           COUT(0) << "blub" << endl;
     //         COUT(4) << "object diff: " << Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() << endl;
     //         COUT(4) << "diff " << h.getObjectID() << ":";
     // Now start to diff the Object
-    SynchronisableHeaderLight h2(newData);
-    h2 = objectHeader; // copy over the objectheader
+    SynchronisableHeaderLight newObjectHeader(newDataPtr);
+    newObjectHeader = objectHeader; // copy over the objectheader
     VariableID variableID = 0;
-    uint32_t newObjectOffset = SynchronisableHeaderLight::getSize();
+    uint32_t diffedObjectOffset = SynchronisableHeaderLight::getSize();
     // iterate through all variables
     while( objectOffset < objectHeader.getDataSize()+SynchronisableHeader::getSize() )
     {
@@ -400,13 +402,13 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newData, uint8_t*& origData, ui
       assert( varSize == Synchronisable::getSynchronisable(objectHeader.getObjectID())->getVarSize(variableID) );
       if ( varSize != 0 )
       {
-        if ( memcmp(origData+objectOffset, baseData+objectOffset, varSize) != 0 )
+        if ( memcmp(origDataPtr+objectOffset, baseDataPtr+objectOffset, varSize) != 0 )
         {
           //               COUT(4) << "copy variable" << endl;
-          *(VariableID*)(newData+newObjectOffset) = variableID; // copy over the variableID
-          newObjectOffset += sizeof(VariableID);
-          memcpy( newData+newObjectOffset, origData+objectOffset, varSize );
-          newObjectOffset += varSize;
+          *(VariableID*)(newDataPtr+diffedObjectOffset) = variableID; // copy over the variableID
+          diffedObjectOffset += sizeof(VariableID);
+          memcpy( newDataPtr+diffedObjectOffset, origDataPtr+objectOffset, varSize );
+          diffedObjectOffset += varSize;
           objectOffset += varSize;
         }
         else
@@ -426,11 +428,11 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newData, uint8_t*& origData, ui
       sizes += Synchronisable::getSynchronisable(objectHeader.getObjectID())->getNrOfVariables() - variableID;
     //         COUT(4) << endl;
     
-    h2.setDiffed(true);
-    h2.setDataSize(newObjectOffset-SynchronisableHeaderLight::getSize());
+    newObjectHeader.setDiffed(true);
+    newObjectHeader.setDataSize(diffedObjectOffset-SynchronisableHeaderLight::getSize());
     assert(objectOffset == objectHeader.getDataSize()+SynchronisableHeader::getSize());
-    assert(h2.getDataSize()>0);
-    origData += objectOffset;
+    assert(newObjectHeader.getDataSize()>0);
+    origDataPtr += objectOffset;
     //         baseOffset += temp + h.getDataSize()+SynchronisableHeader::getSize() - baseData;
     //baseOffset += objectOffset;
     //         SynchronisableHeader htemp(temp);
@@ -444,8 +446,8 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newData, uint8_t*& origData, ui
     //             assert(htemp2.isDiffed()==false);
     //           }
     //         }
-    baseData += objectOffset;
-    newData += newObjectOffset;
+    baseDataPtr += objectOffset;
+    newDataPtr += diffedObjectOffset;
   }
 }
 
@@ -456,8 +458,8 @@ inline void /*Gamestate::*/copyObject( uint8_t*& newData, uint8_t*& origData, ui
   memcpy( newData, origData, objectHeader.getDataSize()+SynchronisableHeader::getSize() );
   newData += objectHeader.getDataSize()+SynchronisableHeader::getSize();
   origData += objectHeader.getDataSize()+SynchronisableHeader::getSize();
-  SynchronisableHeader baseHeader( baseData );
-  baseData += baseHeader.getDataSize()+SynchronisableHeader::getSize();
+//   SynchronisableHeader baseHeader( baseData );
+//   baseData += baseHeader.getDataSize()+SynchronisableHeader::getSize();
   //       COUT(4) << "copy " << h.getObjectID() << endl;
   //       COUT(4) << "copy " << h.getObjectID() << ":";
   sizes += Synchronisable::getSynchronisable(objectHeader.getObjectID())->getNrOfVariables();
@@ -469,124 +471,136 @@ inline void /*Gamestate::*/copyObject( uint8_t*& newData, uint8_t*& origData, ui
     //       COUT(4) << endl;
 }
 
-Gamestate* Gamestate::diffVariables(Gamestate *base)
+inline bool findObject(uint8_t*& dataPtr, uint8_t* endPtr, SynchronisableHeader& objectHeader)
 {
-  assert(this && base); assert(data_ && base->data_);
-  assert(!header_->isCompressed() && !base->header_->isCompressed());
-  assert(!header_->isDiffed());
-
-
-  // *** first do a raw diff of the two gamestates
-
-  uint8_t *baseData = GAMESTATE_START(base->data_);
-  uint8_t *origData = GAMESTATE_START(this->data_);
-  uint8_t *origDataEnd = origData + header_->getDataSize();
-  uint8_t *baseDataEnd = baseData + base->header_->getDataSize();
-//   uint32_t origLength = header_->getDataSize();
-//   uint32_t baseLength = base->header_->getDataSize();
-
-  assert( header_->getDataSize() && base->header_->getDataSize() );
-  
-  uint32_t newDataSize = header_->getDataSize() + GamestateHeader::getSize() + sizeof(uint32_t)*this->nrOfVariables_;
-  uint8_t *newData = new uint8_t[newDataSize]; // this is the maximum size needed in the worst case
-  uint8_t *dest = GAMESTATE_START(newData);
-
-//   uint32_t baseOffset = 0; //offset in the diffed stream
-//   uint32_t origOffset = 0; //offset in the new stream with removed 0's
-  std::vector<uint32_t>::iterator sizes = this->sizes_.begin();
-
-  while( origData < origDataEnd )
+  // Some assertions to make sure the dataPtr is valid (pointing to a SynchronisableHeader)
   {
-    //iterate through all objects
-
-    SynchronisableHeader h(origData);
-
-    // Find (if possible) the current object in the datastream of the old gamestate
-    // Start at the current offset position
-    if(baseData >= baseDataEnd)
-      baseData = GAMESTATE_START(base->data_);
-//     uint8_t* temp = baseData + baseOffset;
-    uint32_t objectID = h.getObjectID();
-    assert(baseData < baseDataEnd);
-    assert(dest < newData + newDataSize);
-    assert(sizes != this->sizes_.end());
-    bool diffedObject = false;
-    while ( baseData < baseDataEnd )
+    SynchronisableHeader htemp2(dataPtr);
+    assert(htemp2.getClassID()<500);
+    assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
+    assert(htemp2.isDiffed()==false);
+  }
+  uint32_t objectID = objectHeader.getObjectID();
+  while ( dataPtr < endPtr )
+  {
+    SynchronisableHeader htemp(dataPtr);
+    assert( htemp.getDataSize()!=0 );
+    if ( htemp.getObjectID() == objectID )
     {
-      SynchronisableHeader htemp(baseData);
-      assert( htemp.getDataSize()!=0 );
-      if ( htemp.getObjectID() == objectID )
-      {
-        assert( h.getClassID() == htemp.getClassID() );
-//         goto DODIFF;
-        diffObject(dest, origData, baseData, h, sizes);
-        diffedObject = true;
-        break;
-      }
-      {
-        SynchronisableHeader htemp2(baseData+htemp.getDataSize()+SynchronisableHeader::getSize());
-        if( baseData+htemp.getDataSize()+SynchronisableHeader::getSize() < baseDataEnd )
-        {
-          assert(htemp2.getClassID()<500);
-          assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
-          assert(htemp2.isDiffed()==false);
-        }
-      }
-      baseData += htemp.getDataSize()+SynchronisableHeader::getSize();
-//       assert( baseData+htemp.getDataSize()+SynchronisableHeader::getSize() <=baseData+baseLength );
-//       temp += htemp.getDataSize()+SynchronisableHeader::getSize();
-      
+      assert( objectHeader.getClassID() == htemp.getClassID() );
+      assert( objectHeader.getCreatorID() == htemp.getCreatorID() );
+      return true;
     }
-    // If not found start looking at the beginning
-    assert( diffedObject || baseData == baseDataEnd );
-    baseData = GAMESTATE_START(base->data_);
     {
-      SynchronisableHeader htemp2(baseData);
-      if( baseData < baseDataEnd )
+      if( dataPtr+htemp.getDataSize()+SynchronisableHeader::getSize() < endPtr )
       {
+        SynchronisableHeader htemp2(dataPtr+htemp.getDataSize()+SynchronisableHeader::getSize());
         assert(htemp2.getClassID()<500);
         assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
         assert(htemp2.isDiffed()==false);
       }
     }
-    while ( !diffedObject && baseData < baseDataEnd )
+    dataPtr += htemp.getDataSize()+SynchronisableHeader::getSize();
+    
+  }
+  assert(dataPtr == endPtr);
+  
+  return false;
+}
+
+Gamestate* Gamestate::diffVariables(Gamestate *base)
+{
+  assert(this && base); assert(data_ && base->data_);
+  assert(!header_->isCompressed() && !base->header_->isCompressed());
+  assert(!header_->isDiffed());
+  assert( header_->getDataSize() && base->header_->getDataSize() );
+
+
+  // *** first do a raw diff of the two gamestates
+
+  uint8_t *baseDataPtr = GAMESTATE_START(base->data_);
+  uint8_t *origDataPtr = GAMESTATE_START(this->data_);
+  uint8_t *origDataEnd = origDataPtr + header_->getDataSize();
+  uint8_t *baseDataEnd = baseDataPtr + base->header_->getDataSize();
+//   uint32_t origLength = header_->getDataSize();
+//   uint32_t baseLength = base->header_->getDataSize();
+
+  // Allocate new space for diffed gamestate
+  uint32_t newDataSize = header_->getDataSize() + GamestateHeader::getSize() + sizeof(uint32_t)*this->nrOfVariables_;
+  uint8_t *newData = new uint8_t[newDataSize]; // this is the maximum size needed in the worst case
+  uint8_t *destDataPtr = GAMESTATE_START(newData);
+
+  std::vector<uint32_t>::iterator sizesIt = this->sizes_.begin();
+
+  while( origDataPtr < origDataEnd )
+  {
+    //iterate through all objects
+
+    SynchronisableHeader origHeader(origDataPtr);
+
+    // Find (if possible) the current object in the datastream of the old gamestate
+    // Start at the current offset position
+    if(baseDataPtr == baseDataEnd)
+      baseDataPtr = GAMESTATE_START(base->data_);
+    uint8_t* oldBaseDataPtr = baseDataPtr;
+    
+    assert(baseDataPtr < baseDataEnd);
+    assert(destDataPtr < newData + newDataSize);
+    assert(sizesIt != this->sizes_.end());
+    
+    bool diffedObject = false;
+    if( findObject(baseDataPtr, baseDataEnd, origHeader) )
     {
-      SynchronisableHeader htemp(baseData);
-      if ( htemp.getObjectID() == objectID )
+      if( SynchronisableHeader(baseDataPtr).getDataSize()==origHeader.getDataSize() )
       {
-        assert( h.getClassID() == htemp.getClassID() );
-//         goto DODIFF;
-        diffObject(dest, origData, baseData, h, sizes);
-        break;
+//         COUT(4) << "diffing object in order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+        diffObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
+        diffedObject = true;
       }
-//       {
-//         SynchronisableHeader htemp2(baseData+htemp.getDataSize()+SynchronisableHeader::getSize());
-//         if( baseData+htemp.getDataSize()+SynchronisableHeader::getSize() < baseDataEnd )
-//         {
-//           assert(htemp2.getClassID()<500);
-//           assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
-//           assert(htemp2.isDiffed()==false);
-//         }
-//       }
-      baseData += htemp.getDataSize()+SynchronisableHeader::getSize();
+      else
+      {
+//         COUT(4) << "copy object because of different data sizes (1): " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+        copyObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
+        assert(sizesIt != this->sizes_.end() || origDataPtr==origDataEnd);
+      }
+        
     }
-    // Object is new, thus never transmitted -> just copy over
-//     goto DOCOPY;
-    if ( baseData >= baseDataEnd )
+    else
     {
-      assert(baseData == baseDataEnd);
-      copyObject(dest, origData, baseData, h, sizes);
-      assert(sizes != this->sizes_.end() || origData>=origDataEnd);
+      assert( baseDataPtr == baseDataEnd );
+      baseDataPtr = GAMESTATE_START(base->data_);
+      if( findObject(baseDataPtr, oldBaseDataPtr, origHeader) )
+      {
+        if( SynchronisableHeader(baseDataPtr).getDataSize()==origHeader.getDataSize() )
+        {
+//           COUT(4) << "diffing object out of order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+          diffObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
+          diffedObject = true;
+        }
+        else
+        {
+//           COUT(4) << "copy object because of different data sizes (2): " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+          copyObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
+          assert(sizesIt != this->sizes_.end() || origDataPtr==origDataEnd);
+        }
+      }
+      else
+      {
+//         COUT(4) << "copy object: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+        assert(baseDataPtr == oldBaseDataPtr);
+        copyObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
+        assert(sizesIt != this->sizes_.end() || origDataPtr==origDataEnd);
+      }
     }
   }
-  assert(sizes==this->sizes_.end());
+  assert(sizesIt==this->sizes_.end());
 
 
   Gamestate *g = new Gamestate(newData, getClientID());
   assert(g->header_);
   *(g->header_) = *header_;
   g->header_->setBaseID( base->getID() );
-  g->header_->setDataSize(dest - newData - GamestateHeader::getSize());
+  g->header_->setDataSize(destDataPtr - newData - GamestateHeader::getSize());
   g->flags_=flags_;
   g->packetDirection_ = packetDirection_;
   assert(!g->isCompressed());
@@ -594,7 +608,7 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
 }
 
 
-Gamestate* Gamestate::diffData(Gamestate *base)
+/*Gamestate* Gamestate::diffData(Gamestate *base)
 {
   assert(this && base); assert(data_ && base->data_);
   assert(!header_->isCompressed() && !base->header_->isCompressed());
@@ -685,10 +699,10 @@ void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uin
       *(newdata+j) = *(data+j); // just copy
   }
   assert(j==datalength);
-}
+}*/
 
 
-Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize){
+/*Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize){
   assert(data_);
   std::list<obj>::iterator it;
 
@@ -752,7 +766,7 @@ Gamestate* Gamestate::doSelection(unsigned int clientID, unsigned int targetSize
 #endif
   gs->header_->setDataSize( destsize );
   return gs;
-}
+}*/
 
 
 uint32_t Gamestate::calcGamestateSize(int32_t id, uint8_t mode)

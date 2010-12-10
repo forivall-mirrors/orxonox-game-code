@@ -115,17 +115,17 @@ class _NetworkExport Gamestate: public Packet{
     inline int32_t getBaseID() const { return header_->getBaseID(); }
     inline uint32_t getDataSize() const { return header_->getDataSize(); }
     Gamestate* diffVariables(Gamestate *base);
-    Gamestate* diffData(Gamestate *base);
-    Gamestate *undiff(Gamestate *base);
-    Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
+//     Gamestate* diffData(Gamestate *base);
+//     Gamestate *undiff(Gamestate *base);
+//     Gamestate* doSelection(unsigned int clientID, unsigned int targetSize);
     bool compressData();
     bool decompressData();
     bool operator ==(packet::Gamestate gs);
 
     // Packet functions
   private:
-    void rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uint32_t datalength, uint32_t baselength);
-    inline uint32_t findObject( const SynchronisableHeader& header, uint8_t* mem, uint32_t dataLength, uint32_t startPosition = 0 );
+//     void rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uint32_t datalength, uint32_t baselength);
+//     inline uint32_t findObject( const SynchronisableHeader& header, uint8_t* mem, uint32_t dataLength, uint32_t startPosition = 0 );
     virtual uint32_t getSize() const;
     virtual inline bool process();
     uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
