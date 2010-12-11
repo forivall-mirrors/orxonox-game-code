@@ -64,7 +64,7 @@ inline bool memzero( uint8_t* data, uint32_t datalength)
 
 
 Gamestate::Gamestate():
-  header_(0)
+  header_()
 {
   flags_ = flags_ | PACKET_FLAG_GAMESTATE;
 }
@@ -175,7 +175,7 @@ bool Gamestate::spreadData(uint8_t mode)
   assert(!header_.isCompressed());
   uint8_t *mem=data_+GamestateHeader::getSize();
   Synchronisable *s;
-
+  
   // update the data of the objects we received
   while(mem < data_+GamestateHeader::getSize()+header_.getDataSize())
   {
@@ -190,11 +190,13 @@ bool Gamestate::spreadData(uint8_t mode)
       }
       else
       {
+//         COUT(4) << "not creating object of classid " << objectheader.getClassID() << endl;
         mem += objectheader.getDataSize() + ( objectheader.isDiffed() ? SynchronisableHeaderLight::getSize() : SynchronisableHeader::getSize() );
       }
     }
     else
     {
+//       COUT(4) << "updating object of classid " << objectheader.getClassID() << endl;
       bool b = s->updateData(mem, mode);
       assert(b);
     }
@@ -302,7 +304,7 @@ bool Gamestate::compressData()
   data_ = ndata;
   header_.setCompSize( buffer );
   header_.setCompressed( true );
-  COUT(0) << "gamestate compress datasize: " << header_.getDataSize() << " compsize: " << header_.getCompSize() << std::endl;
+  COUT(4) << "gamestate compress datasize: " << header_.getDataSize() << " compsize: " << header_.getCompSize() << std::endl;
   return true;
 }
 

@@ -47,7 +47,7 @@ namespace packet {
 
 class _NetworkExport GamestateHeader{
   public:
-    GamestateHeader();
+    GamestateHeader(){ data_=0; }
     GamestateHeader(uint8_t* data)
       { assert(data); data_ = data; *(uint32_t*)data_ = Type::Gamestate; }
     /*GamestateHeader(uint8_t* data, GamestateHeader* h)

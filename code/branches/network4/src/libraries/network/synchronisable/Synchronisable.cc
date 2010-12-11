@@ -221,11 +221,11 @@ namespace orxonox
    * |totalsize,objectID_,classID_,var1,var2,string1_length,string1,var3,...|
    * length of varx: size saved int syncvarlist
    * @param mem pointer to allocated memory with enough size
-   * @param sizes FIXME - add doc!
+   * @param sizes vector containing sizes of all objects in gamestate (to be appended)
    * @param id gamestateid of the gamestate to be saved (important for priorities)
    * @param mode defines the direction in which the data will be send/received
    *             0x1: server->client
-   *             0x2: client->server (not recommended)
+   *             0x2: client->server
    *             0x3: bidirectional
    * @return true: if !doSync or if everything was successfully saved
    */
@@ -269,6 +269,7 @@ namespace orxonox
       ++test;
       //tempsize += (*i)->getSize( mode );
     }
+    assert(tempsize!=0);  // if this happens an empty object (with no variables) would be transmitted
 //     COUT(4) << endl;
 
     header.setObjectID( this->objectID_ );

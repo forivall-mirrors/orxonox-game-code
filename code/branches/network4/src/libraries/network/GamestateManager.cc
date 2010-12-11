@@ -218,7 +218,7 @@ namespace orxonox
     bool b = gs->compressData();
     assert(b);
       clock.capture();
-      COUT(0) << "diff time: " << clock.getDeltaTime() << endl;
+      COUT(4) << "diff and compress time: " << clock.getDeltaTime() << endl;
 //     COUT(5) << "sending gamestate with id " << gs->getID();
 //     if(gamestate->isDiffed())
 //       COUT(5) << " and baseid " << gs->getBaseID() << endl;
