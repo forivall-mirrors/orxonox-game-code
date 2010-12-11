@@ -184,6 +184,8 @@ namespace orxonox
         COUT(2) << "Added new server to list: " << 
           packet::ServerInformation( event ).getServerIP() << "\n";
       }
+
+      /* TODO add hook for disconnect here */
     }
     else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT, 
       MSPROTO_CLIENT_LEN) )
@@ -217,6 +219,7 @@ namespace orxonox
       exit( EXIT_FAILURE );
     }
 
+    /* TODO schedule pings for servers somewhere here */
     
     /* create an iterator for the loop */
     enet_host_service( this->server, event, 100 );

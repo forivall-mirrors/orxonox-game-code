@@ -133,6 +133,9 @@ namespace orxonox
     LANDiscoverable::setActivity(true);
 
     /* make discoverable on WAN */
+    /* TODO this needs to be optional, we need a switch from the UI to
+     * enable/disable this 
+     */
     helper_ConnectToMasterserver();
 
     /* done */
@@ -168,11 +171,17 @@ namespace orxonox
   }
 
 
-  /* TODO */
+  /* handle incoming data */
   int rephandler( char *addr, ENetEvent *ev )
   { 
-    /* handle incoming data */
-    /* TODO this is to be implemented. */
+    /* reply to pings */
+    if( !strncmp( (char *)ev->packet->data, MSPROTO_PING_GAMESERVER, 
+      MSPROTO_PING_GAMESERVER_LEN ) )
+      //this->msc.sendRequest( MSPROTO_ACK );
+      /* NOTE implement this after pollForReply
+       * reimplementation 
+       */
+      return 0;
 
     /* done handling, return all ok code 0 */
     return 0;
@@ -183,7 +192,7 @@ namespace orxonox
     /* poll the master server for replies and see whether something 
      * has to be done or changed.
      */
-    this->msc.pollForReply( rephandler ); 
+    this->msc.pollForReply( rephandler, 10 ); 
   }
 
   /**

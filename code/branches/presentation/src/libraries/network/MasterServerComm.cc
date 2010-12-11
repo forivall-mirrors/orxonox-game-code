@@ -37,7 +37,6 @@ namespace orxonox
      */
   } 
 
-
   int MasterServerComm::initialize()
   {
     /* initialize Enet */
@@ -51,7 +50,6 @@ namespace orxonox
     
     /* install atexit handler for enet */
     atexit( enet_deinitialize );
-
 
     /* initiate the client */
     this->client = enet_host_create( NULL /* create a client host */,
@@ -86,7 +84,7 @@ namespace orxonox
 
     if (this->peer == NULL )
     { COUT(2) << "ERROR: No available peers for initiating an ENet connection.\n";
-    return -1;
+      return -1;
     }
 
     /* Wait up to 2 seconds for the connection attempt to succeed. */
@@ -101,10 +99,18 @@ namespace orxonox
       return -1;
     }
 
+    /* all fine */
     return 0;
   }
 
-  int MasterServerComm::pollForReply( int (*callback)( char*, ENetEvent* ) )
+  /* NOTE this is to be reimplemented soon to return 
+   * a structure containing 
+   * - addrconv
+   * - the event
+   * so we can also make callbacks from objects
+   */
+  int MasterServerComm::pollForReply( int (*callback)( char*, ENetEvent* ),
+    int delayms )
   { 
     /* see whether anything happened */
     /* WORK MARK REMOVE THIS OUTPUT */
@@ -116,7 +122,7 @@ namespace orxonox
 
     /* enet_host_service returns 0 if no event occured */
     /* just newly set below test to >0 from >= 0, to be tested */
-    if( enet_host_service( this->client, this->event, 1000 ) > 0 )
+    if( enet_host_service( this->client, this->event, delayms ) > 0 )
     { 
       /* check what type of event it is and react accordingly */
       switch (this->event->type)
@@ -139,24 +145,22 @@ namespace orxonox
             addrconv, 49 );
 
           /* DEBUG */
-          COUT(3) << "A packet of length " << this->event->packet->dataLength 
+          COUT(3) << "MasterServer Debug: A packet of length " 
+            << this->event->packet->dataLength 
             << " containing " << this->event->packet->data
             << " was received from " << addrconv 
             << " on channel " << this->event->channelID;
-          //printf( "A packet of length %u containing %s was "
-            //"received from %s on channel %u.\n",
-            //this->event->packet->dataLength,
-            //this->event->packet->data,
-            //addrconv,
-            //this->event->channelID );
           /* END DEBUG */
 
           /* call the supplied callback, if any. */
           if( (*callback) != NULL )
             retval = (*callback)( addrconv, (this->event) );
 
+          /* clean up */
           enet_packet_destroy( event->packet );
-          if( addrconv ) free( addrconv );
+          if( addrconv ) 
+            free( addrconv );
+
           break;
         default: break;
       }
@@ -210,43 +214,3 @@ namespace orxonox
   }
 
 }
-
-
-/* DON'T DELETE THIS I MIGHT NEED IT AGAIN -smerkli */
-/* not needed anymore, only here for testing purposes */
-/*
-//[> sample callback to output debugging info. <]
-//int callb( char *addr, ENetEvent *ev )
-//{ 
-  //printf( "A packet of length %u containing %s was "
-      //"received from %s on channel %u.\n",
-      //ev->packet->dataLength,
-      //ev->packet->data,
-      //addr,
-      //ev->channelID );
-  //return 0;
-//}
-
-//[> small testing implementation <]
-//int
-//main( int argc, char *argv[] )
-//{
-  //[> setup object and connect <]
-  //MasterServerComm msc = MasterServerComm();
-  //if( msc.connect( argv[1], 1234 ) )
-    //exit(EXIT_FAILURE);
-  
-  //[> send some data and poll for replies <]
-  //char *theinput = (char *)calloc( 100,1 );
-  //while( true )
-  //{ 
-    //fgets( theinput, 90, stdin );
-    //if( !strncmp( theinput, "quit", 4 ) )
-      //break;
-
-    //msc.sendRequest( theinput );
-    //msc.pollForReply( &callb );
-  //}
-
-//}
-*/

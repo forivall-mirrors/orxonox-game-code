@@ -32,6 +32,8 @@
 /* master server address (to be moved elsewhere later) */
 #define MS_ADDRESS "129.132.3.8"
 
+
+/*** CLIENT COMMUNICATIONS ***/
 /* Client token (shows that the party sending data is a client */
 #define MSPROTO_CLIENT "CL"
 #define MSPROTO_CLIENT_LEN 2 
@@ -43,6 +45,7 @@
 
 
 
+/*** GAME SERVER COMMUNICATIONS ***/
 /* Game server token (shows that the party sending data is a game server) */
 #define MSPROTO_GAME_SERVER "GS"
 #define MSPROTO_GAME_SERVER_LEN 2
@@ -60,6 +63,14 @@
 /* server list end token */
 #define MSPROTO_SERVERLIST_END "SL_END"
 #define MSPROTO_SERVERLIST_END_LEN 6
+
+/* ping request from server */
+#define MSPROTO_PING_GAMESERVER "PING"
+#define MSPROTO_PING_GAMESERVER_LEN 4 
+
+/* ping reply */
+#define MSPROTO_ACK "ACK"
+#define MSPROTO_ACK_LEN 3 
 
 
 

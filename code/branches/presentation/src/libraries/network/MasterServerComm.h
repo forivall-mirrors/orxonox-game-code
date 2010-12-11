@@ -80,7 +80,7 @@ namespace orxonox
        * \return 0 for success, other for error
        * 
        * Poll the master server for new data and act accordingly */
-      int pollForReply( int (*callback)( char*, ENetEvent* ) );
+      int pollForReply( int (*callback)( char*, ENetEvent* ), int delayms );
 
     private:
       /** client handle */
