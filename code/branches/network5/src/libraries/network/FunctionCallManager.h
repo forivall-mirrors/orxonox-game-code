@@ -33,6 +33,7 @@
 
 #include <map>
 #include <vector>
+#include <utility>
 #include "util/UtilPrereqs.h"
 #include "FunctionCall.h"
 
@@ -60,11 +61,11 @@ public:
 
   static void sendCalls();
   
-  static void bufferIncomingFunctionCall( const FunctionCall& fctCall );
+  static void bufferIncomingFunctionCall( const FunctionCall& fctCall, uint32_t minGamestateID, uint32_t clientID );
   static void processBufferedFunctionCalls();
 
-  static std::map<uint32_t, packet::FunctionCalls*> sClientMap_;
-  static std::vector<FunctionCall>                  sIncomingFunctionCallBuffer_;
+  static std::map<uint32_t, packet::FunctionCalls*>                           sClientMap_;
+  static std::vector<std::pair<FunctionCall,std::pair<uint32_t, uint32_t> > > sIncomingFunctionCallBuffer_;
 protected:
   FunctionCallManager();
   ~FunctionCallManager();

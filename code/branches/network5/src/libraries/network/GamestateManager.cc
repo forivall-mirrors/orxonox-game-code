@@ -257,6 +257,15 @@ namespace orxonox
     TrafficControl::processAck(clientID, gamestateID);
     return true;
   }
+  
+  uint32_t GamestateManager::getLastProcessedGamestateID(unsigned int clientID)
+  {
+    assert( this->lastProcessedGamestateID_.find(clientID) != this->lastProcessedGamestateID_.end() );
+    if( this->lastProcessedGamestateID_.find(clientID) != this->lastProcessedGamestateID_.end() )
+      return this->lastProcessedGamestateID_[clientID];
+    else
+      return GAMESTATEID_INITIAL;
+  }
 
   void GamestateManager::removeClient(ClientInformation* client){
     assert(client);
@@ -276,7 +285,13 @@ namespace orxonox
        assert(b);
     }
     assert(!gs->isDiffed());
-    return gs->spreadData(0x1);
+    if( gs->spreadData(0x1) )
+    {
+      this->lastProcessedGamestateID_[gs->getClientID()] = gs->getID();
+      return true;
+    }
+    else
+      return false;
   }
 
 }

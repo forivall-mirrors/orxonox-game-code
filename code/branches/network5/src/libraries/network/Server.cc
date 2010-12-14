@@ -216,6 +216,7 @@ namespace orxonox
     {
       // process incoming gamestates
       GamestateManager::processGamestates();
+      FunctionCallManager::processBufferedFunctionCalls();
 
       // send function calls to clients
       FunctionCallManager::sendCalls();

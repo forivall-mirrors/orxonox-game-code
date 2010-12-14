@@ -68,6 +68,7 @@ namespace orxonox
   extern const char* LAN_DISCOVERY_MESSAGE;
   extern const char* LAN_DISCOVERY_ACK;
   static const unsigned int LAN_DISCOVERY_PORT      = 55557;
+  static const unsigned int NETWORK_PEER_ID_SERVER = 0;
 }
 
 //-----------------------------------------------------------------------
@@ -82,9 +83,9 @@ namespace orxonox
     {
       enum Value
       {
-        Reliable   = 1,
-        Unsequence = 2,
-        NoAllocate = 4
+        Reliable    = 1,
+        Unsequenced = 2,
+        NoAllocate  = 4
       };
     }
   }

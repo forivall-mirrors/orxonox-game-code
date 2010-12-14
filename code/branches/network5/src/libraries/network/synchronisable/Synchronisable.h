@@ -64,52 +64,6 @@ namespace orxonox
       VeryLow     = 100
     };
   }
-  
-  typedef uint8_t VariableID;
-
-  /**
-   * @brief: stores information about a Synchronisable
-   *
-   * This class stores the information about a Synchronisable (objectID_, classID_, creatorID_, dataSize)
-   * in an emulated bitset.
-   * Bit 1 to 31 store the size of the Data the synchronisable consumes in the stream
-   * Bit 32 is a bool and defines whether the variables are stored in diff mode
-   * Byte 5 to 8: objectID_
-   * Byte 9 to 12: classID_
-   * Byte 13 to 16: creatorID_
-   */
-  class _NetworkExport SynchronisableHeader{
-    friend class SynchronisableHeaderLight;
-    private:
-      uint8_t* data_;
-    public:
-      SynchronisableHeader(uint8_t* data)
-        { data_ = data; }
-      inline static uint32_t getSize()
-        { return 14; }
-      inline uint16_t getDataSize() const
-        { return (*(uint16_t*)data_) & 0x7FFF; } //only use the first 15 bits
-      inline void setDataSize(uint16_t size)
-        { *(uint16_t*)(data_) = (size & 0x7FFF) | (*(uint16_t*)(data_) & 0x8000 ); }
-      inline bool isDiffed() const
-        { return ( (*(uint16_t*)data_) & 0x8000 ) == 0x8000; }
-      inline void setDiffed( bool b)
-        { *(uint16_t*)(data_) = (b << 15) | (*(uint16_t*)(data_) & 0x7FFF ); }
-      inline uint32_t getObjectID() const
-        { return *(uint32_t*)(data_+2); }
-      inline void setObjectID(uint32_t objectID_)
-        { *(uint32_t*)(data_+2) = objectID_; }
-      inline uint32_t getClassID() const
-        { return *(uint32_t*)(data_+6); }
-      inline void setClassID(uint32_t classID_)
-        { *(uint32_t*)(data_+6) = classID_; }
-      inline uint32_t getCreatorID() const
-        { return *(uint32_t*)(data_+10); }
-      inline void setCreatorID(uint32_t creatorID_)
-        { *(uint32_t*)(data_+10) = creatorID_; }
-      inline void operator=(SynchronisableHeader& h)
-        { memcpy(data_, h.data_, getSize()); }
-  };
 
     /**
    * @brief: stores information about a Synchronisable (light version)
@@ -120,8 +74,9 @@ namespace orxonox
    * Bit 32 is a bool and defines whether the variables are stored in diff mode
    * Byte 5 to 8: objectID_
    */
-  class _NetworkExport SynchronisableHeaderLight{
-    private:
+  class _NetworkExport SynchronisableHeaderLight
+  {
+    protected:
       uint8_t* data_;
     public:
       SynchronisableHeaderLight(uint8_t* data)
@@ -140,9 +95,46 @@ namespace orxonox
         { return *(uint32_t*)(data_+2); }
       inline void setObjectID(uint32_t objectID_)
         { *(uint32_t*)(data_+2) = objectID_; }
+      inline void operator=(SynchronisableHeaderLight& h)
+        { memcpy(data_, h.data_, SynchronisableHeaderLight::getSize()); }
+  };
+  
+  typedef uint8_t VariableID;
+  
+  /**
+   * @brief: stores information about a Synchronisable
+   *
+   * This class stores the information about a Synchronisable (objectID_, classID_, creatorID_, dataSize)
+   * in an emulated bitset.
+   * Bit 1 to 31 store the size of the Data the synchronisable consumes in the stream
+   * Bit 32 is a bool and defines whether the variables are stored in diff mode
+   * Byte 5 to 8: objectID_
+   * Byte 9 to 12: classID_
+   * Byte 13 to 16: creatorID_
+   */
+  class _NetworkExport SynchronisableHeader: public SynchronisableHeaderLight
+  {
+    public:
+      SynchronisableHeader(uint8_t* data): SynchronisableHeaderLight(data)
+        {}
+      inline static uint32_t getSize()
+        { return SynchronisableHeaderLight::getSize()+8; }
+      inline uint32_t getClassID() const
+        { return *(uint32_t*)(data_+SynchronisableHeaderLight::getSize()); }
+      inline void setClassID(uint32_t classID_)
+        { *(uint32_t*)(data_+SynchronisableHeaderLight::getSize()) = classID_; }
+      inline uint32_t getCreatorID() const
+        { return *(uint32_t*)(data_+SynchronisableHeaderLight::getSize()+4); }
+      inline void setCreatorID(uint32_t creatorID_)
+        { *(uint32_t*)(data_+SynchronisableHeaderLight::getSize()+4) = creatorID_; }
       inline void operator=(SynchronisableHeader& h)
         { memcpy(data_, h.data_, getSize()); }
   };
+  
+//   inline void operator=(SynchronisableHeaderLight& h1, SynchronisableHeader& h2)
+//   {
+//     memcpy(h1.data_, h2.data_, h1.getSize());
+//   }
 
   /**
   * This class is the base class of all the Objects in the universe that need to be synchronised over the network

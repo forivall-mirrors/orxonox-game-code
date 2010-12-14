@@ -61,6 +61,7 @@ public:
 private:
   std::queue<orxonox::FunctionCall> functionCalls_;
   unsigned int                      clientID_;
+  uint32_t                          minGamestateID_;
   uint32_t                          currentSize_;
 };
 

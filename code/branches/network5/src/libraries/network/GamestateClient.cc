@@ -38,19 +38,22 @@
 
 namespace orxonox
 {
-  struct _NetworkExport GameStateItem{
+  struct _NetworkExport GameStateItem
+  {
     packet::Gamestate *state;
     unsigned int id;
   };
 
-  GamestateClient::GamestateClient() {
+  GamestateClient::GamestateClient()
+  {
     COUT(5) << "this: " << this << std::endl;
-    last_diff_=0;
-    last_gamestate_=GAMESTATEID_INITIAL-1;
+    lastAckedGamestateID_=GAMESTATEID_INITIAL-1;
+    lastProcessedGamestateID_=GAMESTATEID_INITIAL-1;
     tempGamestate_=NULL;
   }
 
-  GamestateClient::~GamestateClient() {
+  GamestateClient::~GamestateClient()
+  {
       std::map<unsigned int, packet::Gamestate *>::iterator it;
       for ( it = this->gamestateMap_.begin(); it != this->gamestateMap_.end(); ++it )
           delete it->second;
@@ -58,12 +61,15 @@ namespace orxonox
           delete this->tempGamestate_;
   }
 
-  bool GamestateClient::ack(unsigned int gamestateID, unsigned int clientID){
+  bool GamestateClient::ack(unsigned int gamestateID, unsigned int clientID)
+  {
     return true;
   }
 
-  bool GamestateClient::add(packet::Gamestate *gs, unsigned int clientID){
-    if(tempGamestate_!=NULL){
+  bool GamestateClient::add(packet::Gamestate *gs, unsigned int clientID)
+  {
+    if(tempGamestate_!=NULL)
+    {
       //delete the obsolete gamestate
       if(tempGamestate_->getID()>gs->getID())
         return false;
@@ -73,7 +79,8 @@ namespace orxonox
     return true;
   }
 
-  bool GamestateClient::processGamestates(){
+  bool GamestateClient::processGamestates()
+  {
     if(tempGamestate_==NULL)
       return false;
     bool isDiffed = tempGamestate_->isDiffed();
@@ -84,15 +91,18 @@ namespace orxonox
     //now call the queued callbacks
     NetworkCallbackManager::callCallbacks();
 
-    if (!processed){
+    if (!processed)
+    {
+      assert(0);
       sendAck(0);
       return false;
     }
     //successfully loaded data from gamestate. now save gamestate for diff and delete the old gs
     tempGamestate_=NULL;
     gamestateMap_[processed->getID()]=processed;
+    lastProcessedGamestateID_ = processed->getID();
     if(isDiffed)
-      last_diff_ = processed->getBaseID();
+      lastAckedGamestateID_ = processed->getBaseID();
     id = processed->getID();
     sendAck(id);
     return true;
@@ -104,25 +114,30 @@ namespace orxonox
   * @param it iterator of the list pointing to the object
   * @return iterator pointing to the next object in the list
   */
-  void GamestateClient::removeObject(ObjectListIterator<Synchronisable> &it) {
+  void GamestateClient::removeObject(ObjectListIterator<Synchronisable> &it)
+  {
     ObjectListIterator<Synchronisable> temp=it;
     ++it;
     temp->destroy(); // or delete?
   }
 
-  packet::Gamestate *GamestateClient::getGamestate(){
+  packet::Gamestate *GamestateClient::getGamestate()
+  {
     packet::Gamestate *gs = new packet::Gamestate();
-    if(!gs->collectData(0,0x2)){
+    if(!gs->collectData(this->getLastProcessedGamestateID(NETWORK_PEER_ID_SERVER), 0x2))
+    {
       delete gs;
       return 0;
     }
     return gs;
   }
 
-  void GamestateClient::cleanup(){
+  void GamestateClient::cleanup()
+  {
     std::map<unsigned int, packet::Gamestate*>::iterator temp, it = gamestateMap_.begin();
-    while(it!=gamestateMap_.end()){
-      if(it->first>=last_diff_)
+    while(it!=gamestateMap_.end())
+    {
+      if(it->first>=lastAckedGamestateID_)
         break;
       // otherwise delete that stuff
       delete it->second;
@@ -132,29 +147,35 @@ namespace orxonox
     tempGamestate_=NULL;
   }
 
-  void GamestateClient::printGamestateMap(){
+  void GamestateClient::printGamestateMap()
+  {
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     COUT(4) << "gamestates: ";
-    for(it=gamestateMap_.begin(); it!=gamestateMap_.end(); it++){
+    for(it=gamestateMap_.begin(); it!=gamestateMap_.end(); it++)
+    {
       COUT(4) << it->first << ':' << it->second << '|';
     }
     COUT(4) << std::endl;
 
   }
 
-  bool GamestateClient::sendAck(unsigned int gamestateID){
+  bool GamestateClient::sendAck(unsigned int gamestateID)
+  {
     packet::Acknowledgement *ack = new packet::Acknowledgement(gamestateID, 0);
-    if(!ack->send()){
+    if(!ack->send())
+    {
       COUT(3) << "could not ack gamestate: " << gamestateID << std::endl;
       return false;
     }
-    else{
+    else
+    {
       COUT(5) << "acked a gamestate: " << gamestateID << std::endl;
       return true;
     }
   }
 
-  packet::Gamestate *GamestateClient::processGamestate(packet::Gamestate *gs){
+  packet::Gamestate *GamestateClient::processGamestate(packet::Gamestate *gs)
+  {
     if(gs->isCompressed())
     {
       bool b = gs->decompressData();

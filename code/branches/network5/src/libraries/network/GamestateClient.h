@@ -56,8 +56,10 @@ namespace orxonox
     GamestateClient();
     ~GamestateClient();
 
-    bool add(packet::Gamestate *gs, unsigned int clientID);
-    bool ack(unsigned int gamestateID, unsigned int clientID);
+    virtual bool      add(packet::Gamestate *gs, unsigned int clientID);
+    virtual bool      ack(unsigned int gamestateID, unsigned int clientID);
+    virtual uint32_t  getLastProcessedGamestateID(unsigned int clientID) { return this->lastProcessedGamestateID_; }
+    virtual uint32_t  getCurrentGamestateID(){ return this->lastProcessedGamestateID_; }
 
     bool processGamestates();
     packet::Gamestate *getGamestate();
@@ -68,8 +70,8 @@ namespace orxonox
     void printGamestateMap();
     bool sendAck(unsigned int gamestateID);
 
-    unsigned int           last_diff_;
-    unsigned int           last_gamestate_;
+    unsigned int           lastAckedGamestateID_;
+    unsigned int           lastProcessedGamestateID_;
     std::map<unsigned int, packet::Gamestate *> gamestateMap_;
     packet::Gamestate *tempGamestate_; // we save the received gamestates here during processQueue
 

@@ -42,7 +42,9 @@ namespace packet {
 
 #define GAMESTATE_START(data) (data + GamestateHeader::getSize())
 
-#define PACKET_FLAG_GAMESTATE  0 //PacketFlag::Reliable
+// #define PACKET_FLAG_GAMESTATE  PacketFlag::Unsequenced
+// #define PACKET_FLAG_GAMESTATE  0
+#define PACKET_FLAG_GAMESTATE  PacketFlag::Reliable
 
 inline bool memzero( uint8_t* data, uint32_t datalength)
 {
@@ -363,11 +365,6 @@ bool Gamestate::decompressData()
 
 inline void /*Gamestate::*/diffObject( uint8_t*& newDataPtr, uint8_t*& origDataPtr, uint8_t*& baseDataPtr, SynchronisableHeader& objectHeader, std::vector<uint32_t>::iterator& sizes )
 {
-  //       COUT(4) << "dodiff" << endl;
-  //       if(baseOffset==0)
-  //       {
-  //         assert(origOffset==0);
-  //       }
   assert( objectHeader.getDataSize() == SynchronisableHeader(baseDataPtr).getDataSize() );
   
   uint32_t objectOffset = SynchronisableHeader::getSize(); // offset inside the object in the origData and baseData
@@ -381,10 +378,6 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newDataPtr, uint8_t*& origDataP
   }
   else
   {
-    //         if( Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() == "Bot" )
-    //           COUT(0) << "blub" << endl;
-    //         COUT(4) << "object diff: " << Synchronisable::getSynchronisable(h.getObjectID())->getIdentifier()->getName() << endl;
-    //         COUT(4) << "diff " << h.getObjectID() << ":";
     // Now start to diff the Object
     SynchronisableHeaderLight newObjectHeader(newDataPtr);
     newObjectHeader = objectHeader; // copy over the objectheader
@@ -395,14 +388,12 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newDataPtr, uint8_t*& origDataP
     {
       // check whether variable changed and write id and copy over variable to the new stream
       // otherwise skip variable
-//       assert(sizes != this->sizes_.end());
       uint32_t varSize = *sizes;
       assert( varSize == Synchronisable::getSynchronisable(objectHeader.getObjectID())->getVarSize(variableID) );
       if ( varSize != 0 )
       {
         if ( memcmp(origDataPtr+objectOffset, baseDataPtr+objectOffset, varSize) != 0 )
         {
-          //               COUT(4) << "copy variable" << endl;
           *(VariableID*)(newDataPtr+diffedObjectOffset) = variableID; // copy over the variableID
           diffedObjectOffset += sizeof(VariableID);
           memcpy( newDataPtr+diffedObjectOffset, origDataPtr+objectOffset, varSize );
@@ -411,39 +402,24 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newDataPtr, uint8_t*& origDataP
         }
         else
         {
-          //               COUT(4) << "skip variable" << endl;
           objectOffset += varSize;
         }
       }
-//           else
-//             COUT(4) << "varsize 0" << endl;
 
       ++variableID;
       ++sizes;
     }
-            
+    
+    // if there are variables from this object with 0 size left in sizes
     if( Synchronisable::getSynchronisable(objectHeader.getObjectID())->getNrOfVariables() != variableID )
       sizes += Synchronisable::getSynchronisable(objectHeader.getObjectID())->getNrOfVariables() - variableID;
-    //         COUT(4) << endl;
     
     newObjectHeader.setDiffed(true);
     newObjectHeader.setDataSize(diffedObjectOffset-SynchronisableHeaderLight::getSize());
     assert(objectOffset == objectHeader.getDataSize()+SynchronisableHeader::getSize());
     assert(newObjectHeader.getDataSize()>0);
+    
     origDataPtr += objectOffset;
-    //         baseOffset += temp + h.getDataSize()+SynchronisableHeader::getSize() - baseData;
-    //baseOffset += objectOffset;
-    //         SynchronisableHeader htemp(temp);
-    //         baseOffset += SynchronisableHeader::getSize() + htemp.getDataSize();
-    //         {
-      //           SynchronisableHeader htemp2( baseData+(temp-baseData+objectOffset) );
-    //           if( baseData+(temp-baseData+objectOffset) < baseData+baseLength )
-    //           {
-      //             assert(htemp2.getClassID()<500);
-    //             assert(htemp2.getDataSize()!=0 && htemp2.getDataSize()<1000);
-    //             assert(htemp2.isDiffed()==false);
-    //           }
-    //         }
     baseDataPtr += objectOffset;
     newDataPtr += diffedObjectOffset;
   }
@@ -454,6 +430,8 @@ inline void /*Gamestate::*/copyObject( uint8_t*& newData, uint8_t*& origData, ui
   //       COUT(4) << "docopy" << endl;
   // Just copy over the whole Object
   memcpy( newData, origData, objectHeader.getDataSize()+SynchronisableHeader::getSize() );
+  SynchronisableHeader(newData).setDiffed(false);
+  
   newData += objectHeader.getDataSize()+SynchronisableHeader::getSize();
   origData += objectHeader.getDataSize()+SynchronisableHeader::getSize();
 //   SynchronisableHeader baseHeader( baseData );
@@ -546,9 +524,17 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
     assert(destDataPtr < newData + newDataSize);
     assert(sizesIt != this->sizes_.end());
     
+    assert(Synchronisable::getSynchronisable(origHeader.getObjectID()));
+    assert(ClassByID(origHeader.getClassID()));
+    assert(origHeader.getDataSize() < 500);
+    
     bool diffedObject = false;
     if( findObject(baseDataPtr, baseDataEnd, origHeader) )
     {
+      SynchronisableHeader baseHeader(baseDataPtr);
+      assert(Synchronisable::getSynchronisable(baseHeader.getObjectID()));
+      assert(ClassByID(baseHeader.getClassID()));
+      assert(baseHeader.getDataSize() < 500);
       if( SynchronisableHeader(baseDataPtr).getDataSize()==origHeader.getDataSize() )
       {
 //         COUT(4) << "diffing object in order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
@@ -569,6 +555,10 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
       baseDataPtr = GAMESTATE_START(base->data_);
       if( findObject(baseDataPtr, oldBaseDataPtr, origHeader) )
       {
+        SynchronisableHeader baseHeader(baseDataPtr);
+        assert(Synchronisable::getSynchronisable(baseHeader.getObjectID()));
+        assert(ClassByID(baseHeader.getClassID()));
+        assert(baseHeader.getDataSize() < 500);
         if( SynchronisableHeader(baseDataPtr).getDataSize()==origHeader.getDataSize() )
         {
 //           COUT(4) << "diffing object out of order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;

@@ -88,7 +88,7 @@ namespace orxonox
     }
 
     /* Wait up to 2 seconds for the connection attempt to succeed. */
-    if (enet_host_service (this->client, this->event, 2000) > 0 &&
+    if (enet_host_service (this->client, this->event, 500) > 0 &&
         this->event->type == ENET_EVENT_TYPE_CONNECT )
       COUT(3) << "Connection to master server succeeded.\n";
     else

@@ -29,11 +29,12 @@
 #include "FunctionCallManager.h"
 #include "packet/FunctionCalls.h"
 #include "core/GameMode.h"
+#include "GamestateHandler.h"
 
 namespace orxonox {
 
 std::map<uint32_t, packet::FunctionCalls*> FunctionCallManager::sClientMap_;
-std::vector<FunctionCall> FunctionCallManager::sIncomingFunctionCallBuffer_;
+std::vector<std::pair<FunctionCall, std::pair<uint32_t, uint32_t> > > FunctionCallManager::sIncomingFunctionCallBuffer_;
 
 // Static calls
 
@@ -163,21 +164,24 @@ void FunctionCallManager::sendCalls()
   FunctionCallManager::sClientMap_.clear();
 }
 
-void FunctionCallManager::bufferIncomingFunctionCall(const orxonox::FunctionCall& fctCall)
+void FunctionCallManager::bufferIncomingFunctionCall(const orxonox::FunctionCall& fctCall, uint32_t minGamestateID, uint32_t clientID)
 {
-  if( !GameMode::isMaster() )
-    FunctionCallManager::sIncomingFunctionCallBuffer_.push_back( fctCall );
+  FunctionCallManager::sIncomingFunctionCallBuffer_.push_back( std::make_pair(fctCall, std::make_pair(minGamestateID, clientID)));
 }
 
 void FunctionCallManager::processBufferedFunctionCalls()
 {
-  std::vector<FunctionCall>::iterator it = FunctionCallManager::sIncomingFunctionCallBuffer_.begin();
+  std::vector<std::pair<FunctionCall, std::pair<uint32_t, uint32_t> > >::iterator it = FunctionCallManager::sIncomingFunctionCallBuffer_.begin();
   while( it!=FunctionCallManager::sIncomingFunctionCallBuffer_.end() )
   {
-    if( it->execute() )
+    uint32_t minGamestateID = it->second.first;
+    uint32_t clientID       = it->second.second;
+    if( minGamestateID <= GamestateHandler::getInstance()->getLastProcessedGamestateID(clientID) && it->first.execute() )
       FunctionCallManager::sIncomingFunctionCallBuffer_.erase(it);
     else
+    {
       ++it;
+    }
   }
 }
 

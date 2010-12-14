@@ -163,7 +163,7 @@ namespace orxonox
         if(gs){
           COUT(4) << "client tick: sending gs " << gs << std::endl;
           if( !gs->send() )
-            COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
+            COUT(2) << "Problem adding partial gamestate to queue" << std::endl;
         // gs gets automatically deleted by enet callback
         }
         FunctionCallManager::sendCalls();

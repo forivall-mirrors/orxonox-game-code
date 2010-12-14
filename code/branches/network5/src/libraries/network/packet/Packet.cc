@@ -52,9 +52,9 @@ namespace orxonox{
 namespace packet{
 
 // Make sure we assume the right values
-BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Reliable)   == static_cast<int>(ENET_PACKET_FLAG_RELIABLE));
-BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Unsequence) == static_cast<int>(ENET_PACKET_FLAG_UNSEQUENCED));
-BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::NoAllocate) == static_cast<int>(ENET_PACKET_FLAG_NO_ALLOCATE));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Reliable)    == static_cast<int>(ENET_PACKET_FLAG_RELIABLE));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Unsequenced) == static_cast<int>(ENET_PACKET_FLAG_UNSEQUENCED));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::NoAllocate)  == static_cast<int>(ENET_PACKET_FLAG_NO_ALLOCATE));
 
 #define PACKET_FLAG_DEFAULT PacketFlag::NoAllocate
 #define _PACKETID           0
@@ -173,44 +173,43 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   assert(ClientInformation::findClient(&peer->address)->getID() != static_cast<unsigned int>(-2) || !Host::isServer());
   unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p = 0;
-  COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
+//   COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
   switch( *(Type::Value *)(data + _PACKETID) )
   {
     case Type::Acknowledgement:
-      COUT(5) << "ack" << std::endl;
+//       COUT(5) << "ack" << std::endl;
       p = new Acknowledgement( data, clientID );
       break;
     case Type::Chat:
-      COUT(5) << "chat" << std::endl;
+//       COUT(5) << "chat" << std::endl;
       p = new Chat( data, clientID );
       break;
     case Type::ClassID:
-      COUT(5) << "classid" << std::endl;
+//       COUT(5) << "classid" << std::endl;
       p = new ClassID( data, clientID );
       break;
     case Type::Gamestate:
-      COUT(5) << "gamestate" << std::endl;
-      // TODO: remove brackets
+//       COUT(5) << "gamestate" << std::endl;
       p = new Gamestate( data, clientID );
       break;
     case Type::Welcome:
-      COUT(5) << "welcome" << std::endl;
+//       COUT(5) << "welcome" << std::endl;
       p = new Welcome( data, clientID );
       break;
     case Type::DeleteObjects:
-      COUT(5) << "deleteobjects" << std::endl;
+//       COUT(5) << "deleteobjects" << std::endl;
       p = new DeleteObjects( data, clientID );
       break;
     case Type::FunctionCalls:
-      COUT(5) << "functionCalls" << std::endl;
+//       COUT(5) << "functionCalls" << std::endl;
       p = new FunctionCalls( data, clientID );
       break;
     case Type::FunctionIDs:
-      COUT(5) << "functionIDs" << std::endl;
+//       COUT(5) << "functionIDs" << std::endl;
       p = new FunctionIDs( data, clientID );
       break;
     default:
-      assert(0); //TODO: repair this
+      assert(0);
       break;
   }
 
@@ -234,7 +233,7 @@ void Packet::deletePacket(ENetPacket *enetPacket){
   it->second->enetPacket_ = 0;
   delete it->second;
   packetMap_.erase(it);
-  COUT(6) << "PacketMap size: " << packetMap_.size() << std::endl;
+//   COUT(6) << "PacketMap size: " << packetMap_.size() << std::endl;
 }
 
 } // namespace packet
