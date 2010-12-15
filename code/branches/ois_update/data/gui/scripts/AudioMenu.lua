@@ -31,6 +31,8 @@ function P.onLoad()
     local themeList = {}
     table.insert(themeList, "Default")
     table.insert(themeList, "Drum n' Bass")
+    table.insert(themeList, "8-Bit Style")
+    table.insert(themeList, "Corny Jazz")
     for k,v in pairs(themeList) do
         item = CEGUI.createListboxTextItem(v)
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
@@ -38,6 +40,10 @@ function P.onLoad()
     end
     if orxonox.getConfig("MoodManager", "mood_") == "dnb" then
         listboxwindow:setItemSelectState(1,true)
+    elseif orxonox.getConfig("MoodManager", "mood_") == "eightbit" then
+        listboxwindow:setItemSelectState(2,true)
+    elseif orxonox.getConfig("MoodManager", "mood_") == "jazzy" then
+        listboxwindow:setItemSelectState(3,true)
     else
         listboxwindow:setItemSelectState(0,true)
     end
@@ -162,6 +168,10 @@ end
 function P.AudioThemeListbox_changed(e)
     if listboxwindow:isItemSelected(1) then
         orxonox.config("MoodManager", "mood_", "dnb")
+    elseif listboxwindow:isItemSelected(2) then
+        orxonox.config("MoodManager", "mood_", "eightbit")
+    elseif listboxwindow:isItemSelected(3) then
+        orxonox.config("MoodManager", "mood_", "jazzy")
     else
         orxonox.config("MoodManager", "mood_", "default")
     end
