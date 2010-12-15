@@ -65,7 +65,7 @@ namespace orxonox
        * 
        * Disconnect from master server.
        */
-      int disconnect();
+      int disconnect( void );
 
       /** \param data The data to be sent. 
        * \return 0 for success, other for error. 

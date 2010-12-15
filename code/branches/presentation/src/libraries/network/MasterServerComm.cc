@@ -40,7 +40,7 @@ namespace orxonox
   int MasterServerComm::initialize()
   {
     /* initialize Enet */
-    if (enet_initialize () != 0)
+    if( enet_initialize () != 0 )
     { COUT(1) << "An error occurred while initializing ENet.\n";
       return 1;
     }
@@ -58,7 +58,8 @@ namespace orxonox
 
     /* see if it worked */
     if (this->client == NULL)
-    { COUT(1) << "An error occurred while trying to create an ENet client host.\n";
+    { COUT(1) << "An error occurred while trying to create an " 
+        << "ENet client host.\n";
       return 1;
     }
 
@@ -69,9 +70,6 @@ namespace orxonox
   {
     /* destroy the enet facilities */
     enet_host_destroy(this->client);
-
-    /* install atexit handler for enet */
-    enet_deinitialize();
   }
 
   int MasterServerComm::connect( const char *address, unsigned int port )
@@ -83,8 +81,9 @@ namespace orxonox
     /* Initiate the connection, allocating the two channels 0 and 1. */
     this->peer = enet_host_connect(this->client, &this->address, 2, 0);    
 
-    if (this->peer == NULL )
-    { COUT(2) << "ERROR: No available peers for initiating an ENet connection.\n";
+    if( this->peer == NULL )
+    { COUT(2) << "ERROR: No available peers for initiating an ENet"
+        << " connection.\n";
       return -1;
     }
 
@@ -95,7 +94,6 @@ namespace orxonox
     else
     {
       enet_peer_reset (this->peer);
-      fprintf( stdout, "Connection to %s failed.", address );
       COUT(2) << "ERROR: connection to " << address << " failed.\n";
       return -1;
     }
@@ -239,7 +237,7 @@ namespace orxonox
 
     /* One could just use enet_host_service() instead. */
     enet_host_flush( this->client );
-    if( packet ) free( packet );
+    enet_packet_destroy( packet );
 
     /* all done. */
     return 0;

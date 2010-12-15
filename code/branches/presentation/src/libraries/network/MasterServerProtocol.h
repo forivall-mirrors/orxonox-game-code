@@ -68,6 +68,10 @@
 #define MSPROTO_PING_GAMESERVER "PING"
 #define MSPROTO_PING_GAMESERVER_LEN 4 
 
+/* server disconnect */
+#define MSPROTO_SERVERDC "DC"
+#define MSPROTO_SERVERDC_LEN 2
+
 /* ping reply */
 #define MSPROTO_ACK "ACK"
 #define MSPROTO_ACK_LEN 3 

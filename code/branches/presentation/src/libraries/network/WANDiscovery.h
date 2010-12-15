@@ -94,13 +94,13 @@ namespace orxonox
 
       /** Function used for the configuration file parameter update */
       void setConfigValues();
+
+      /** Master server communications object */
+      MasterServerComm msc;
       
     private:
       /** Singleton pointer */
       static WANDiscovery* singletonPtr_s;
-
-      /** Master server communications object */
-      MasterServerComm msc;
 
       /** master server address */
       std::string msaddress;

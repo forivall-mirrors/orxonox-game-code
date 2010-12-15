@@ -132,7 +132,7 @@ namespace orxonox
     while( i > 0 )
     {
       /* poll for reply and act according to what was received */
-      switch( this->msc.pollForReply( rhandler, 1000 ) )
+      switch( this->msc.pollForReply( rhandler, 500 ) )
       { case 0: /* no event occured, decrease timeout */
           --i; break;
         case 1: /* got a list element, continue */ 

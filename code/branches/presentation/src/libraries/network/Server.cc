@@ -103,21 +103,23 @@ namespace orxonox
   /** helper that connects to the master server */
   void Server::helper_ConnectToMasterserver()
   {
-    /* initialize it and see if it worked */
-    if( msc.initialize() )
-    { COUT(1) << "Error: could not initialize master server communications!\n";
-      return;
-    }
+    //[> initialize it and see if it worked <]
+    //if( msc.initialize() )
+    //{ COUT(1) << "Error: could not initialize master server communications!\n";
+      //return;
+    //}
 
-    /* connect and see if it worked */
-    if( msc.connect( WANDiscovery::getInstance().getMSAddress().c_str(), 
-      ORX_MSERVER_PORT ) )
-    { COUT(1) << "Error: could not connect to master server!\n";
-      return;
-    }
+    //[> connect and see if it worked <]
+    //if( msc.connect( WANDiscovery::getInstance().getMSAddress().c_str(), 
+      //ORX_MSERVER_PORT ) )
+    //{ COUT(1) << "Error: could not connect to master server!\n";
+      //return;
+    //}
 
     /* now send the master server some note we're here */
-    msc.sendRequest( MSPROTO_GAME_SERVER " " MSPROTO_REGISTER_SERVER );
+    //msc.sendRequest( MSPROTO_GAME_SERVER " " MSPROTO_REGISTER_SERVER );
+    WANDiscovery::getInstance().msc.sendRequest( MSPROTO_GAME_SERVER " " 
+      MSPROTO_REGISTER_SERVER );
   }
 
   /**
@@ -151,9 +153,13 @@ namespace orxonox
     COUT(4) << "closing server" << endl;
     this->disconnectClients();
     this->closeListener();
+
+    /* tell master server we're closing */
     COUT(2) << "disconnecting." << endl;
-    this->msc.disconnect();
+    WANDiscovery::getInstance().msc.sendRequest( MSPROTO_GAME_SERVER " " 
+      MSPROTO_SERVERDC );
     COUT(2) << "disconnecting done" << endl;
+
     LANDiscoverable::setActivity(false);
     return;
   }
@@ -195,7 +201,7 @@ namespace orxonox
     /* poll the master server for replies and see whether something 
      * has to be done or changed.
      */
-    this->msc.pollForReply( rephandler, 10 ); 
+    //WANDiscovery::getInstance().msc.pollForReply( rhandler, 10 );
   }
 
   /**

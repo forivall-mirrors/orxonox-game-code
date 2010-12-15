@@ -185,6 +185,20 @@ namespace orxonox
           packet::ServerInformation( event ).getServerIP() << "\n";
       }
 
+      else if( !strncmp( (char *)event->packet->data
+        + MSPROTO_GAME_SERVER_LEN+1,
+        MSPROTO_SERVERDC, MSPROTO_SERVERDC_LEN ) )
+      {
+        /* create string from peer data */
+        std::string name = std::string( addrconv );
+
+        /* remove the server from the list it belongs to */
+        this->mainlist.delServerByName( name );
+
+        /* tell the user */
+        COUT(2) << "Removed server " << name << " from list.\n";
+      }
+
       /* TODO add hook for disconnect here */
     }
     else if( !strncmp( (char *)event->packet->data, MSPROTO_CLIENT, 
