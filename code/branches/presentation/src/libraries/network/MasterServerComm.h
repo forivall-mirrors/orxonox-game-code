@@ -61,6 +61,12 @@ namespace orxonox
        */
       int connect( const char *address, unsigned int port );
 
+      /** \return 0 for success, other for error
+       * 
+       * Disconnect from master server.
+       */
+      int disconnect();
+
       /** \param data The data to be sent. 
        * \return 0 for success, other for error. 
        * 

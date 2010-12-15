@@ -151,6 +151,7 @@ namespace orxonox
     COUT(4) << "closing server" << endl;
     this->disconnectClients();
     this->closeListener();
+    this->msc.disconnect();
     LANDiscoverable::setActivity(false);
     return;
   }

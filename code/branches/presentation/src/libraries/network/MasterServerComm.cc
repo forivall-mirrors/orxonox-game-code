@@ -48,8 +48,6 @@ namespace orxonox
     /* initialize the event holder */
     this->event = (ENetEvent *)calloc( sizeof(ENetEvent), 1 );
     
-    /* install atexit handler for enet */
-    atexit( enet_deinitialize );
 
     /* initiate the client */
     this->client = enet_host_create( NULL /* create a client host */,
@@ -71,6 +69,9 @@ namespace orxonox
   {
     /* destroy the enet facilities */
     enet_host_destroy(this->client);
+
+    /* install atexit handler for enet */
+    enet_deinitialize();
   }
 
   int MasterServerComm::connect( const char *address, unsigned int port )
@@ -100,6 +101,37 @@ namespace orxonox
     }
 
     /* all fine */
+    return 0;
+  }
+
+  int MasterServerComm::disconnect( void )
+  {
+    enet_peer_disconnect( this->peer, 0 );
+
+    /* Allow up to 1 second for the disconnect to succeed
+     * and drop any packets received packets.
+     */
+    while (enet_host_service (this->client, this->event, 1000) > 0)
+    {
+      switch (this->event->type)
+      {
+        case ENET_EVENT_TYPE_RECEIVE:
+          enet_packet_destroy (event->packet);
+          break;
+
+        case ENET_EVENT_TYPE_DISCONNECT:
+          COUT(4) << "Disconnect from master server successful.\n"; 
+          return 0;
+        default: break;
+      }
+    }
+
+    /* We've arrived here, so the disconnect attempt didn't
+     * succeed yet, hence: force the connection down.            
+     */
+    enet_peer_reset( this->peer );
+
+    /* done */
     return 0;
   }
 
