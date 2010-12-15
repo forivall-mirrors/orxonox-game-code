@@ -34,11 +34,16 @@
 #include <string>
 #include <cstring>
 #include <enet/enet.h>
+#include "util/Singleton.h"
+#include "core/OrxonoxClass.h"
+#include "core/CoreIncludes.h"
+#include "NetworkPrereqs.h"
 
 // tolua_begin
 namespace orxonox
 {
   class _NetworkExport MasterServerComm 
+  // tolua_end
     : public Singleton<MasterServerComm>, public OrxonoxClass
   { // tolua_export
     friend class Singleton<MasterServerComm>;
@@ -91,9 +96,9 @@ namespace orxonox
        * Poll the master server for new data and act accordingly */
       int pollForReply( int (*callback)( char*, ENetEvent* ), int delayms );
 
-      /** \return an instance of WANDiscovery
+      /** \return an instance of MasterServerComm 
        * 
-       * Create and return an instance of WANDiscovery.
+       * Create and return an instance of  MasterServerComm.
        */
       static MasterServerComm& getInstance() { return Singleton<MasterServerComm>::getInstance(); } // tolua_export
 
@@ -111,7 +116,7 @@ namespace orxonox
       ENetPeer *peer;
 
       /** Singleton pointer */
-      static MasterServerComm* singletonPtr_s;
+      static MasterServerComm *singletonPtr_s;
   }; // tolua_export
 
 } // tolua_export

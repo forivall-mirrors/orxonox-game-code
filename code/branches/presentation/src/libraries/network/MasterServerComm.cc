@@ -27,15 +27,19 @@
  */
 
 #include "MasterServerComm.h"
+#include "util/ScopedSingletonManager.h"
+#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
   ManageScopedSingleton(MasterServerComm, ScopeID::Root, true);
- 
+
   MasterServerComm::MasterServerComm()
   { /* nothing anymore, everything's been outsourced to 
      * the initialize method to facilitate debugging
      */
+    /* register object in orxonox */
+    RegisterObject(MasterServerComm);
   } 
 
   int MasterServerComm::initialize()

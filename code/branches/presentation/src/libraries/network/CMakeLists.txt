@@ -79,6 +79,7 @@ ORXONOX_ADD_LIBRARY(network
     Client.h
     LANDiscovery.h
     WANDiscovery.h
+    MasterServerComm.h
   PCH_FILE
     NetworkPrecompiledHeaders.h
   LINK_LIBRARIES
