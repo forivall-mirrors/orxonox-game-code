@@ -193,7 +193,7 @@ namespace orxonox
         std::string name = std::string( addrconv );
 
         /* remove the server from the list it belongs to */
-        this->mainlist.delServerByName( name );
+        this->mainlist.delServerByAddress( name );
 
         /* tell the user */
         COUT(2) << "Removed server " << name << " from list.\n";

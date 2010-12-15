@@ -30,6 +30,7 @@
 
 namespace orxonox
 {
+  ManageScopedSingleton(MasterServerComm, ScopeID::Root, true);
  
   MasterServerComm::MasterServerComm()
   { /* nothing anymore, everything's been outsourced to 
