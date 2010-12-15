@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef MASTERSERVERCOMM_H
-#define MASTERSERVERCOMM_H
+#ifndef _MasterServerComm_H__
+#define _MasterServerComm_H__
 
 #include <cstdlib>
 #include <cstdio>
@@ -105,4 +105,4 @@ namespace orxonox
 
 } 
 
-#endif /* MASTERSERVERCOMM_H */
+#endif /* _MasterServerComm_H__ */

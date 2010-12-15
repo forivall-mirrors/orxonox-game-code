@@ -23,8 +23,8 @@
  *
  */
 
-#ifndef WANDISCOVERY_H 
-#define WANDISCOVERY_H
+#ifndef _WANDiscovery_H__
+#define _WANDiscovery_H__
 
 #include "NetworkPrereqs.h"
 #include "packet/ServerInformation.h"
@@ -109,4 +109,4 @@ namespace orxonox
 
 } // tolua_export
 
-#endif // WANDISCOVERY_H
+#endif // _WANDiscovery_H__

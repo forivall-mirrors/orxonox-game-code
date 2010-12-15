@@ -60,7 +60,7 @@ namespace orxonox
     // Initialization of the name of the PickupInventory GUI.
     /*static*/ const std::string PickupManager::guiName_s = "PickupInventory";
 
-    // Register static newtork functions that are used to communicate changes to pickups over the network, such that the PickupInventory can display the information about the pickups properly.
+    // Register static network functions that are used to communicate changes to pickups over the network, such that the PickupInventory can display the information about the pickups properly.
     registerStaticNetworkFunction(PickupManager::pickupChangedUsedNetwork);
     registerStaticNetworkFunction(PickupManager::pickupChangedPickedUpNetwork);
     registerStaticNetworkFunction(PickupManager::dropPickupNetworked);

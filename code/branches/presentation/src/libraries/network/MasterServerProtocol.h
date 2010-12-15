@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef MASTER_SERVER_PROTO
-#define MASTER_SERVER_PROTO
+#ifndef _MasterServerProtocol_H__
+#define _MasterServerProtocol_H__
 
 /* master server address (to be moved elsewhere later) */
 #define MS_ADDRESS "129.132.3.8"
@@ -79,7 +79,7 @@
 
 
 /* default master server port */
-#define ORX_MSERVER_PORT 55566
+#define ORX_MSERVER_PORT 55557
 
 
 /* some constants for the networking of the master server, not very important.
@@ -89,4 +89,4 @@
 #define ORX_MSERVER_MAXCHANS 2
 
 
-#endif /* MASTER_SERVER_PROTO */
+#endif /* _MasterServerProtocol_H__ */

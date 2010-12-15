@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _MasterServer_
-#define _MasterServer_
+#ifndef _MasterServer_H__
+#define _MasterServer_H__
 
 /* orxonox includes */
 #include <enet/enet.h>
@@ -79,4 +79,4 @@ namespace orxonox
   };
 }
 
-#endif /* _MasterServer_ */
+#endif /* _MasterServer_H__ */
