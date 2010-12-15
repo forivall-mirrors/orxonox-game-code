@@ -103,21 +103,6 @@ namespace orxonox
   /** helper that connects to the master server */
   void Server::helper_ConnectToMasterserver()
   {
-    //[> initialize it and see if it worked <]
-    //if( msc.initialize() )
-    //{ COUT(1) << "Error: could not initialize master server communications!\n";
-      //return;
-    //}
-
-    //[> connect and see if it worked <]
-    //if( msc.connect( WANDiscovery::getInstance().getMSAddress().c_str(), 
-      //ORX_MSERVER_PORT ) )
-    //{ COUT(1) << "Error: could not connect to master server!\n";
-      //return;
-    //}
-
-    /* now send the master server some note we're here */
-    //msc.sendRequest( MSPROTO_GAME_SERVER " " MSPROTO_REGISTER_SERVER );
     WANDiscovery::getInstance().msc.sendRequest( MSPROTO_GAME_SERVER " " 
       MSPROTO_REGISTER_SERVER );
   }

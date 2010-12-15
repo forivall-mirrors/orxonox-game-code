@@ -89,7 +89,6 @@ namespace orxonox
     void syncClassid(unsigned int clientID);
 
     float timeSinceLastUpdate_;
-    //MasterServerComm msc;
   };
 
 
