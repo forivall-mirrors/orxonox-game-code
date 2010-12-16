@@ -573,7 +573,7 @@ namespace orxonox
         // This get's called within the initialization of an Identifier
         virtual void createSuperFunctionCaller() const
         {
-            //SuperFunctionCondition<0, T, 0, 0>::superCheck();
+            SuperFunctionCondition<0, T, 0, 0>::superCheck();
         }
 
 
