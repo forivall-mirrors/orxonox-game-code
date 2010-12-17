@@ -50,7 +50,7 @@ namespace orxonox
     virtual bool establishConnection();
     virtual bool closeConnection();
     // add a packet to queue for the server
-    bool addPacket(ENetPacket *packet);
+    void addPacket(ENetPacket *packet, uint8_t channelID);
     inline bool isConnected(){ return this->established_; }
   protected:
     virtual void connectionClosed()=0;

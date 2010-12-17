@@ -42,27 +42,57 @@
 
 #include "NetworkPrereqs.h"
 
+#include <deque>
+
+namespace boost
+{
+  class thread;
+  class mutex;
+}
+
 namespace orxonox
 {
-    const unsigned int NETWORK_PORT = 55556;
-    const unsigned int NETWORK_MAX_CONNECTIONS = 50;
-    const unsigned int NETWORK_WAIT_TIMEOUT = 0;
-    const unsigned int NETWORK_DEFAULT_CHANNEL = 0;
-    const unsigned int NETWORK_MAX_QUEUE_PROCESS_TIME = 5;
-
-  class _NetworkExport Connection{
+  const unsigned int NETWORK_PORT                   = 55556;
+  const unsigned int NETWORK_MAX_CONNECTIONS        = 50;
+  const unsigned int NETWORK_WAIT_TIMEOUT           = 1;
+  const unsigned int NETWORK_MAX_QUEUE_PROCESS_TIME = 5;
+  
+  namespace outgoingEventType
+  {
+    enum Value
+    {
+      sendPacket      = 1,
+      disconnectPeer  = 2,
+      broadcastPacket = 3
+    };
+    
+  }
+  
+  struct _NetworkExport outgoingEvent
+  {
+    ENetPeer*                 peer;
+    outgoingEventType::Value  type;
+    ENetPacket*               packet;
+    ENetChannelID             channelID;
+  };
+  
+  class _NetworkExport Connection
+  {
   public:
     virtual ~Connection();
 
-    static bool addPacket(ENetPacket *packet, ENetPeer *peer);
-    bool sendPackets();
+    void addPacket(ENetPacket *packet, ENetPeer *peer, uint8_t channelID);
+    void broadcastPacket(ENetPacket* packet, uint8_t channelID);
     ENetHost* getHost(){ return this->host_; }
 
   protected:
     Connection();
 //     static Connection* getInstance(){ return Connection::instance_; }
 
-    int service(ENetEvent* event);
+//     int service(ENetEvent* event);
+    void startCommunicationThread();
+    void stopCommunicationThread();
+    void communicationThread();
     virtual void disconnectPeer(ENetPeer *peer);
 
     void processQueue();
@@ -70,9 +100,15 @@ namespace orxonox
     virtual void removePeer(ENetEvent* event)=0;
     virtual bool processPacket(ENetEvent* event);
 
-    ENetHost *host_;
+    ENetHost*                   host_;
+    boost::mutex*               incomingEventsMutex_;
+    boost::mutex*               outgoingEventsMutex_;
   private:
-    ENetAddress *bindAddress_;
+    boost::thread*              communicationThread_;
+    bool                        bCommunicationThreadRunning_;
+    ENetAddress*                bindAddress_;
+    std::deque<ENetEvent>       incomingEvents_;
+    std::deque<outgoingEvent>   outgoingEvents_;
 
 //     static Connection *instance_;
 

@@ -228,13 +228,13 @@ namespace orxonox
         timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
         updateGamestate();
       }
-      sendPackets(); // flush the enet queue
+//       sendPackets(); // flush the enet queue
     }
   }
 
-  bool Server::queuePacket(ENetPacket *packet, int clientID)
+  void Server::queuePacket(ENetPacket *packet, int clientID, uint8_t channelID)
   {
-    return ServerConnection::addPacket(packet, clientID);
+    ServerConnection::addPacket(packet, clientID, channelID);
   }
 
   /**

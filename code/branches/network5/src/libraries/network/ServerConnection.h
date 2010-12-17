@@ -55,8 +55,7 @@ namespace orxonox
 
     bool openListener();
     bool closeListener();
-    bool addPacket(ENetPacket *packet, unsigned int ID);
-    bool addPacketAll(ENetPacket *packet);
+    void addPacket(ENetPacket *packet, unsigned int ID, uint8_t channelID);
     virtual void disconnectClient(ClientInformation *client);
     void disconnectClient(int clientID);
   protected:

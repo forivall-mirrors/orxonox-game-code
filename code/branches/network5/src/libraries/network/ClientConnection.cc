@@ -98,6 +98,7 @@ namespace orxonox
       if( enet_host_service(this->host_, &event, NETWORK_CLIENT_WAIT_TIME)>=0 && event.type == ENET_EVENT_TYPE_CONNECT )
       {
         this->established_=true;
+        Connection::startCommunicationThread();
         return true;
       }
     }
@@ -111,6 +112,7 @@ namespace orxonox
     if ( !this->established_ )
       return true;
     this->established_ = false;
+    Connection::stopCommunicationThread();
     enet_peer_disconnect(this->server_, 0);
     for( unsigned int i=0; i<NETWORK_CLIENT_CONNECTION_TIMEOUT/NETWORK_CLIENT_WAIT_TIME; i++)
     {
@@ -137,10 +139,10 @@ namespace orxonox
   }
 
 
-  bool ClientConnection::addPacket(ENetPacket *packet) {
+  void ClientConnection::addPacket(ENetPacket *packet, uint8_t channelID) {
     assert( this->server_ );
     assert( packet );
-    return Connection::addPacket( packet, this->server_ );
+    return Connection::addPacket( packet, this->server_, channelID );
   }
 
   void ClientConnection::addPeer(ENetEvent* event)

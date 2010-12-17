@@ -95,6 +95,7 @@ class _NetworkExport Packet{
     bool bDataENetAllocated_;
   private:
     static std::map<size_t, Packet *> packetMap_;
+    static boost::mutex               packetMapMutex_;
     ENetPacket *enetPacket_;
 };
 

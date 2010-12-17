@@ -63,12 +63,14 @@
 
 namespace orxonox
 {
-  static const unsigned int GAMESTATEID_INITIAL     = static_cast<unsigned int>(-1);
-  static const unsigned int CLIENTID_UNKNOWN        = static_cast<unsigned int>(-2);
+  static const unsigned int GAMESTATEID_INITIAL       = static_cast<unsigned int>(-1);
+  static const unsigned int CLIENTID_UNKNOWN          = static_cast<unsigned int>(-2);
   extern const char* LAN_DISCOVERY_MESSAGE;
   extern const char* LAN_DISCOVERY_ACK;
-  static const unsigned int LAN_DISCOVERY_PORT      = 55557;
-  static const unsigned int NETWORK_PEER_ID_SERVER = 0;
+  static const unsigned int LAN_DISCOVERY_PORT        = 55557;
+  static const unsigned int NETWORK_PEER_ID_SERVER    = 0;
+  static const unsigned int NETWORK_CHANNEL_DEFAULT   = 0;
+  static const unsigned int NETWORK_CHANNEL_RELIABLE  = 1;
 }
 
 //-----------------------------------------------------------------------
@@ -97,15 +99,16 @@ namespace orxonox
 
 // from ENet
 struct _ENetPeer;
-typedef _ENetPeer ENetPeer;
+typedef _ENetPeer     ENetPeer;
 struct _ENetPacket;
-typedef _ENetPacket ENetPacket;
+typedef _ENetPacket   ENetPacket;
 struct _ENetEvent;
-typedef _ENetEvent ENetEvent;
+typedef _ENetEvent    ENetEvent;
 struct _ENetHost;
-typedef _ENetHost ENetHost;
+typedef _ENetHost     ENetHost;
 struct _ENetAddress;
-typedef _ENetAddress ENetAddress;
+typedef _ENetAddress  ENetAddress;
+typedef uint8_t       ENetChannelID;
 
 namespace orxonox
 {
@@ -159,6 +162,12 @@ namespace orxonox
   class SynchronisableVariableBase;
   template <class T>
   class SynchronisableVariableBidirectional;
+}
+
+namespace boost
+{
+  class mutex;
+  class thread;
 }
 
 #endif /* _NetworkPrereqs_H__ */

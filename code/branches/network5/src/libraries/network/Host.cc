@@ -75,18 +75,15 @@ namespace orxonox {
   * @param clientID ID of the client the packet should be sent to
   * @return success?
   */
-  bool Host::addPacket(ENetPacket *packet, int clientID)
+  void Host::addPacket(ENetPacket *packet, int clientID, uint8_t channelID)
   {
-    bool result = true;
     for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
     {
       if( (*it)->isActive() )
       {
-        if( !(*it)->queuePacket(packet, clientID) )
-          result = false;
+        (*it)->queuePacket(packet, clientID, channelID);
       }
     }
-    return result;
   }
 
   void Host::Chat(const std::string& message)

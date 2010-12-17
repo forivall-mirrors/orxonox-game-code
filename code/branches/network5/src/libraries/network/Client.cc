@@ -113,11 +113,9 @@ namespace orxonox
     ClientConnection::setPort(port);
   }
 
-  bool Client::queuePacket(ENetPacket *packet, int clientID)
+  void Client::queuePacket(ENetPacket *packet, int clientID, uint8_t channelID)
   {
-    bool b = ClientConnection::addPacket(packet);
-    assert(b);
-    return b;
+    ClientConnection::addPacket(packet, channelID);
   }
 
   bool Client::processChat(const std::string& message, unsigned int playerID)
@@ -169,7 +167,7 @@ namespace orxonox
         FunctionCallManager::sendCalls();
       }
     }
-    sendPackets(); // flush the enet queue
+//     sendPackets(); // flush the enet queue
 
     Connection::processQueue();
     if(gamestate->processGamestates())
@@ -179,7 +177,7 @@ namespace orxonox
         isSynched_=true;
     }
     gamestate->cleanup();
-    Connection::sendPackets();
+//     Connection::sendPackets();
 
     return;
   }

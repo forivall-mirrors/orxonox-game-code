@@ -34,6 +34,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <enet/enet.h>
 #include <boost/static_assert.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include "util/Debug.h"
 #include "Acknowledgement.h"
@@ -60,6 +61,7 @@ BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::NoAllocate)  == static_cast<int
 #define _PACKETID           0
 
 std::map<size_t, Packet *> Packet::packetMap_;
+boost::mutex Packet::packetMapMutex_;
 
 Packet::Packet()
 {
@@ -141,7 +143,9 @@ bool Packet::send(){
     {
       // Assures we don't create a packet and destroy it right after in another thread
       // without having a reference in the packetMap_
+      Packet::packetMapMutex_.lock();
       packetMap_[reinterpret_cast<size_t>(enetPacket_)] = this;
+      Packet::packetMapMutex_.unlock();
     }
   }
 #ifndef NDEBUG
@@ -163,8 +167,10 @@ bool Packet::send(){
 #endif
 //  ENetPacket *temp = enetPacket_;
 //  enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
-  if(!Host::addPacket( enetPacket_, clientID_))
-    enet_packet_destroy(this->enetPacket_); // if we could not add the packet to the enet queue delete it manually
+  if( this->flags_ & PacketFlag::Reliable )
+    Host::addPacket( enetPacket_, clientID_, 0);
+  else
+    Host::addPacket( enetPacket_, clientID_, 0);
   return true;
 }
 
@@ -227,12 +233,14 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
 */
 void Packet::deletePacket(ENetPacket *enetPacket){
   // Get our Packet from a global map with all Packets created in the send() method of Packet.
+  Packet::packetMapMutex_.lock();
   std::map<size_t, Packet*>::iterator it = packetMap_.find(reinterpret_cast<size_t>(enetPacket));
   assert(it != packetMap_.end());
   // Make sure we don't delete it again in the destructor
   it->second->enetPacket_ = 0;
   delete it->second;
   packetMap_.erase(it);
+  Packet::packetMapMutex_.unlock();
 //   COUT(6) << "PacketMap size: " << packetMap_.size() << std::endl;
 }
 

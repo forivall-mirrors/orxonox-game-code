@@ -63,7 +63,7 @@ namespace orxonox
     void open();
     void close();
     bool processChat(const std::string& message, unsigned int playerID);
-    bool queuePacket(ENetPacket *packet, int clientID);
+    void queuePacket(ENetPacket *packet, int clientID, uint8_t channelID);
     void update(const Clock& time);
     unsigned int getRTT(unsigned int clientID);
     virtual void printRTT();
