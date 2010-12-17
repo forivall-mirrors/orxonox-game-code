@@ -67,7 +67,7 @@ namespace orxonox
 
   bool ServerConnection::openListener()
   {
-    this->host_ = enet_host_create(this->bindAddress_, NETWORK_MAX_CONNECTIONS, 0, 0, 0);
+    this->host_ = enet_host_create(this->bindAddress_, NETWORK_MAX_CONNECTIONS, NETWORK_CHANNEL_COUNT, 0, 0);
     if ( this->host_ == NULL )
     {
         COUT(1) << "ServerConnection: host_ == NULL" << std::endl;
@@ -90,6 +90,7 @@ namespace orxonox
   {
     this->bListening_=false;
     disconnectClients();
+    Connection::stopCommunicationThread();
     enet_host_destroy(this->host_);
     return true;
   }

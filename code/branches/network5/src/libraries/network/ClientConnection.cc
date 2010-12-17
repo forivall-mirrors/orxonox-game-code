@@ -38,7 +38,6 @@ namespace orxonox
   const unsigned int NETWORK_CLIENT_WAIT_TIME = 1;
   const unsigned int NETWORK_CLIENT_CONNECTION_TIMEOUT = 3000; //millisecs
   const unsigned int NETWORK_CLIENT_MAX_CONNECTIONS = 1;
-  const unsigned int NETWORK_CLIENT_CHANNELS = 1;
 
 
   ClientConnection::ClientConnection():
@@ -70,7 +69,7 @@ namespace orxonox
   {
     ENetEvent event;
 
-    this->host_ = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0, 0);
+    this->host_ = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, NETWORK_CHANNEL_COUNT, 0, 0);
     if ( this->host_ == NULL )
     {
       COUT(1) << "ClientConnection: host_ == NULL" << std::endl;
@@ -85,7 +84,7 @@ namespace orxonox
     else
         COUT(3) << "Info: Using IPv4 and IPv6 Sockets." << std::endl;
 
-    this->server_ = enet_host_connect(this->host_, serverAddress_, NETWORK_CLIENT_CHANNELS, 0);
+    this->server_ = enet_host_connect(this->host_, serverAddress_, NETWORK_CHANNEL_COUNT, 0);
     if ( this->server_==NULL )
     {
       COUT(1) << "ClientConnection: server_ == NULL" << std::endl;
@@ -154,6 +153,7 @@ namespace orxonox
     this->established_=false;
     COUT(1) << "Received disconnect Packet from Server!" << endl;
         // server closed the connection
+    this->stopCommunicationThread();
     this->connectionClosed();
   }
 

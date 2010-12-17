@@ -168,9 +168,9 @@ bool Packet::send(){
 //  ENetPacket *temp = enetPacket_;
 //  enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
   if( this->flags_ & PacketFlag::Reliable )
-    Host::addPacket( enetPacket_, clientID_, 0);
+    Host::addPacket( enetPacket_, clientID_, NETWORK_CHANNEL_DEFAULT);
   else
-    Host::addPacket( enetPacket_, clientID_, 0);
+    Host::addPacket( enetPacket_, clientID_, NETWORK_CHANNEL_UNRELIABLE);
   return true;
 }
 

@@ -424,8 +424,8 @@ namespace orxonox
     b = g->collectData(0,0x1);
     if(!b)
       return false; //no data for the client
-    b = g->compressData();
-    assert(b);
+//     b = g->compressData();
+//     assert(b);
     b = g->send();
     assert(b);
     return true;
