@@ -94,6 +94,8 @@ namespace orxonox
     void stopCommunicationThread();
     void communicationThread();
     virtual void disconnectPeer(ENetPeer *peer);
+    
+    void enableCompression();
 
     void processQueue();
     virtual void addPeer(ENetEvent* event)=0;

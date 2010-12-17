@@ -209,5 +209,11 @@ namespace orxonox
     packet::Packet *p = packet::Packet::createPacket(event->packet, event->peer);
     return p->process();
   }
+  
+  void Connection::enableCompression()
+  {
+    enet_host_compress_with_range_coder( this->host_ );
+  }
+
 
 }

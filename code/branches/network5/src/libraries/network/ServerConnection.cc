@@ -67,12 +67,17 @@ namespace orxonox
 
   bool ServerConnection::openListener()
   {
+    // create host
     this->host_ = enet_host_create(this->bindAddress_, NETWORK_MAX_CONNECTIONS, NETWORK_CHANNEL_COUNT, 0, 0);
+    
     if ( this->host_ == NULL )
     {
         COUT(1) << "ServerConnection: host_ == NULL" << std::endl;
         return false;
     }
+    
+    // enable compression
+    this->enableCompression();
     assert( this->host_->socket4 != ENET_SOCKET_NULL || this->host_->socket6 != ENET_SOCKET_NULL );
     if (this->host_->socket4 == ENET_SOCKET_NULL)
         COUT(2) << "Warning: IPv4 Socket failed." << std::endl;
@@ -81,6 +86,7 @@ namespace orxonox
     else
         COUT(3) << "Info: Using IPv4 and IPv6 Sockets." << std::endl;
     
+    // start communication thread
     Connection::startCommunicationThread();
 
     return true;
