@@ -36,7 +36,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
-#include <sys/prctl.h>
 
 #include "Debug.h"
 
@@ -51,6 +50,7 @@ namespace orxonox
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
+#include <sys/prctl.h>
 
 namespace orxonox
 {
@@ -202,8 +202,10 @@ namespace orxonox
         getInstance().dontCatch();
         
         // make sure gdb is allowed to attach to our PID even if there are some system restrictions
+#ifdef PR_SET_PTRACER
         if( prctl(PR_SET_PTRACER, gdbPid, 0, 0, 0) == -1 )
           COUT(0) << "could not set proper permissions for GDB to attach to process..." << endl;
+#endif
         
         // wait for message from parent when it has attached gdb
         int someData;
