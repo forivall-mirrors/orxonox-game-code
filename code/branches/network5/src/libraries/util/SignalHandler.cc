@@ -36,6 +36,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <sys/prctl.h>
 
 #include "Debug.h"
 
@@ -136,10 +137,52 @@ namespace orxonox
 
       COUT(0) << "Received signal " << sigName.c_str() << std::endl << "Try to write backtrace to file orxonox_crash.log" << std::endl;
 
+      
+      // First start GDB which will be attached to this process later on
+      
+      int gdbIn[2];
+      int gdbOut[2];
+      int gdbErr[2];
+      
+      if ( pipe(gdbIn) == -1 || pipe(gdbOut) == -1 || pipe(gdbErr) == -1 )
+      {
+        perror("pipe failed!\n");
+        exit(EXIT_FAILURE);
+      }
+      
+      int gdbPid = fork();
+      // this process will run gdb
+      
+      if ( gdbPid == -1 )
+      {
+        perror("fork failed\n");
+        exit(EXIT_FAILURE);
+      }
+      
+      if ( gdbPid == 0 )
+      {
+        // start gdb
+        
+        close(gdbIn[1]);
+        close(gdbOut[0]);
+        close(gdbErr[0]);
+        
+        dup2( gdbIn[0], STDIN_FILENO );
+        dup2( gdbOut[1], STDOUT_FILENO );
+        dup2( gdbErr[1], STDERR_FILENO );
+        
+        execlp( "sh", "sh", "-c", "gdb", static_cast<void*>(NULL));
+      }
+      
+      
+      // Now start a fork of this process on which GDB will be attached on
+      
       int sigPipe[2];
       if ( pipe(sigPipe) == -1 )
       {
         perror("pipe failed!\n");
+        kill( gdbPid, SIGTERM );
+        waitpid( gdbPid, NULL, 0 );
         exit(EXIT_FAILURE);
       }
 
@@ -148,6 +191,8 @@ namespace orxonox
       if ( sigPid == -1 )
       {
         perror("fork failed!\n");
+        kill( gdbPid, SIGTERM );
+        waitpid( gdbPid, NULL, 0 );
         exit(EXIT_FAILURE);
       }
 
@@ -155,10 +200,16 @@ namespace orxonox
       if ( sigPid == 0 )
       {
         getInstance().dontCatch();
+        
+        // make sure gdb is allowed to attach to our PID even if there are some system restrictions
+        if( prctl(PR_SET_PTRACER, gdbPid, 0, 0, 0) == -1 )
+          COUT(0) << "could not set proper permissions for GDB to attach to process..." << endl;
+        
         // wait for message from parent when it has attached gdb
         int someData;
 
-        read( sigPipe[0], &someData, sizeof(someData) );
+        if( read( sigPipe[0], &someData, sizeof(someData) ) != sizeof(someData) )
+          COUT(0) << "something went wrong :(" << std::endl;
 
         if ( someData != 0x12345678 )
         {
@@ -166,44 +217,6 @@ namespace orxonox
         }
 
         return;
-      }
-
-      int gdbIn[2];
-      int gdbOut[2];
-      int gdbErr[2];
-
-      if ( pipe(gdbIn) == -1 || pipe(gdbOut) == -1 || pipe(gdbErr) == -1 )
-      {
-        perror("pipe failed!\n");
-        kill( sigPid, SIGTERM );
-        waitpid( sigPid, NULL, 0 );
-        exit(EXIT_FAILURE);
-      }
-
-      int gdbPid = fork();
-      // this process will run gdb
-
-      if ( gdbPid == -1 )
-      {
-        perror("fork failed\n");
-        kill( sigPid, SIGTERM );
-        waitpid( sigPid, NULL, 0 );
-        exit(EXIT_FAILURE);
-      }
-
-      if ( gdbPid == 0 )
-      {
-        // start gdb
-
-        close(gdbIn[1]);
-        close(gdbOut[0]);
-        close(gdbErr[0]);
-
-        dup2( gdbIn[0], STDIN_FILENO );
-        dup2( gdbOut[1], STDOUT_FILENO );
-        dup2( gdbErr[1], STDERR_FILENO );
-
-        execlp( "sh", "sh", "-c", "gdb", static_cast<void*>(NULL));
       }
 
       char cmd[256];
