@@ -112,7 +112,7 @@
             <Window Type="MenuWidgets/StaticText" Name="orxonox/AudioInfo" >
                 <Property Name="Text" >Theme changes might take
 up to a minute.</Property>
-                <Property Name="TextColours" Value="FF4444FF" />
+                <Property Name="TextColours" Value="FFFFFFFF" />
                 <Property Name="InheritsAlpha" Value="False" />
                 <Property Name="HorzFormatting" Value="HorzCentred" />
                 <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
