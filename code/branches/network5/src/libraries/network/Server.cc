@@ -161,8 +161,8 @@ namespace orxonox
     packet::Chat *chat;
     while(temp){
       chat = new packet::Chat(message, playerID);
-      chat->setClientID(temp->getID());
-      if(!chat->send())
+      chat->setPeerID(temp->getID());
+      if(!chat->send( static_cast<Host*>(this) ))
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
       temp = temp->next();
     }
@@ -219,7 +219,7 @@ namespace orxonox
       FunctionCallManager::processBufferedFunctionCalls();
 
       // send function calls to clients
-      FunctionCallManager::sendCalls();
+      FunctionCallManager::sendCalls( static_cast<Host*>(this) );
 
       //this steers our network frequency
       timeSinceLastUpdate_+=time.getDeltaTime();
@@ -270,59 +270,29 @@ namespace orxonox
       //no client connected
       return;
     GamestateManager::update();
-    COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
+//     COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
     //std::cout << "updated gamestate, sending it" << std::endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
-    sendGameState();
+    sendGameStates();
     sendObjectDeletes();
-    COUT(5) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
+//     COUT(5) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
     //std::cout << "sent gamestate" << std::endl;
   }
 
-  bool Server::processPacket( ENetPacket *packet, ENetPeer *peer ){
-    packet::Packet *p = packet::Packet::createPacket(packet, peer);
-    return p->process();
-  }
-
   /**
-  * sends the gamestate
+  * sends the current gamestate to all peers
   */
-  bool Server::sendGameState()
+  bool Server::sendGameStates()
   {
-//     COUT(5) << "Server: starting function sendGameState" << std::endl;
-//     ClientInformation *temp = ClientInformation::getBegin();
-//     bool added=false;
-//     while(temp != NULL){
-//       if( !(temp->getSynched()) ){
-//         COUT(5) << "Server: not sending gamestate" << std::endl;
-//         temp=temp->next();
-//         if(!temp)
-//           break;
-//         continue;
-//       }
-//       COUT(4) << "client id: " << temp->getID() << " RTT: " << temp->getRTT() << " loss: " << temp->getPacketLoss() << std::endl;
-//       COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
-//       int cid = temp->getID(); //get client id
-//       packet::Gamestate *gs = GamestateManager::popGameState(cid);
-//       if(gs==NULL){
-//         COUT(2) << "Server: could not generate gamestate (NULL from compress)" << std::endl;
-//         temp = temp->next();
-//         continue;
-//       }
-//       //std::cout << "adding gamestate" << std::endl;
-//       gs->setClientID(cid);
-//       if ( !gs->send() ){
-//         COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl;
-//         temp->addFailure();
-//       }else
-//         temp->resetFailures();
-//       added=true;
-//       temp=temp->next();
-//       // gs gets automatically deleted by enet callback
-//     }
-    GamestateManager::sendGamestates();
+    std::vector<packet::Gamestate*> gamestates = GamestateManager::getGamestates();
+    std::vector<packet::Gamestate*>::iterator it;
+    for( it = gamestates.begin(); it != gamestates.end(); ++it )
+    {
+      (*it)->send(static_cast<Host*>(this));
+    }
     return true;
   }
+
 
   bool Server::sendObjectDeletes()
   {
@@ -347,9 +317,9 @@ namespace orxonox
       int cid = temp->getID(); //get client id
       packet::DeleteObjects *cd = new packet::DeleteObjects(*del);
       assert(cd);
-      cd->setClientID(cid);
-      if ( !cd->send() )
-        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended: " << temp->getFailures() << std::endl;
+      cd->setPeerID(cid);
+      if ( !cd->send( static_cast<Host*>(this) ) )
+        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended" << std::endl;
       temp=temp->next();
       // gs gets automatically deleted by enet callback
     }
@@ -373,6 +343,7 @@ namespace orxonox
 
     // inform all the listeners
     ClientConnectionListener::broadcastClientConnected(newid);
+    GamestateManager::addPeer(newid);
 
     ++newid;
 
@@ -393,6 +364,20 @@ namespace orxonox
       delete client;
     }
   }
+  
+  void Server::processPacket(packet::Packet* packet)
+  {
+    if( packet->isReliable() )
+    {
+      if( this->getLastProcessedGamestateID(packet->getPeerID()) >= packet->getRequiredGamestateID() )
+        packet->process(static_cast<Host*>(this));
+      else
+        this->packetQueue_.push_back(packet);
+    }
+    else
+      packet->process(static_cast<Host*>(this));
+  }
+
 
   bool Server::createClient(int clientID)
   {
@@ -402,31 +387,34 @@ namespace orxonox
       COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
       return false;
     }
-    COUT(5) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+    COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
 
     // synchronise class ids
     syncClassid(temp->getID());
 
     // now synchronise functionIDs
     packet::FunctionIDs *fIDs = new packet::FunctionIDs();
-    fIDs->setClientID(clientID);
-    bool b = fIDs->send();
+    fIDs->setPeerID(clientID);
+    bool b = fIDs->send( static_cast<Host*>(this) );
     assert(b);
 
     temp->setSynched(true);
+    GamestateManager::setSynched(clientID);
+    
     COUT(4) << "sending welcome" << std::endl;
     packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
-    w->setClientID(temp->getID());
-    b = w->send();
+    w->setPeerID(temp->getID());
+    b = w->send( static_cast<Host*>(this) );
     assert(b);
     packet::Gamestate *g = new packet::Gamestate();
-    g->setClientID(temp->getID());
-    b = g->collectData(0,0x1);
+    g->setPeerID(temp->getID());
+    b = g->collectData(0,packet::GAMESTATE_MODE_SERVER);
+    assert(b);
     if(!b)
       return false; //no data for the client
 //     b = g->compressData();
 //     assert(b);
-    b = g->send();
+    b = g->send( static_cast<Host*>(this) );
     assert(b);
     return true;
   }
@@ -434,7 +422,7 @@ namespace orxonox
   void Server::disconnectClient( ClientInformation *client )
   {
     ServerConnection::disconnectClient( client );
-    GamestateManager::removeClient(client);
+    GamestateManager::removePeer(client->getID());
     // inform all the listeners
     // ClientConnectionListener::broadcastClientDisconnected(client->getID()); // this is done in ClientInformation now
   }
@@ -456,8 +444,8 @@ namespace orxonox
     while(temp)
     {
       chat = new packet::Chat(message, clientID);
-      chat->setClientID(temp->getID());
-      if(!chat->send())
+      chat->setPeerID(temp->getID());
+      if(!chat->send( static_cast<Host*>(this) ))
         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
       temp = temp->next();
     }
@@ -472,8 +460,8 @@ namespace orxonox
   {
     int failures=0;
     packet::ClassID *classid = new packet::ClassID();
-    classid->setClientID(clientID);
-    while(!classid->send() && failures < 10){
+    classid->setPeerID(clientID);
+    while(!classid->send( static_cast<Host*>(this) ) && failures < 10){
       failures++;
     }
     assert(failures<10);

@@ -31,8 +31,10 @@
 #include "network/NetworkPrereqs.h"
 #include "Packet.h"
 
-namespace orxonox {
-namespace packet {
+namespace orxonox
+{
+namespace packet
+{
 /**
     @author
 */
@@ -46,7 +48,7 @@ public:
   bool fetchIDs();
 
   inline unsigned int getSize() const;
-  bool process();
+  virtual bool process(orxonox::Host* host);
 
 private:
 };

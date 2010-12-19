@@ -38,12 +38,9 @@ namespace orxonox {
 /**
     @author Oliver Scheuss
 */
-class _NetworkExport GamestateHandler{
+class _NetworkExport GamestateHandler
+{
   private:
-    virtual bool      add(packet::Gamestate *gs, unsigned int clientID)=0;
-    virtual bool      ack(unsigned int gamestateID, unsigned int clientID)=0;
-
-    static GamestateHandler* instance_;
 
 
   protected:
@@ -51,10 +48,8 @@ class _NetworkExport GamestateHandler{
     virtual ~GamestateHandler();
 
   public:
-    static bool     addGamestate(packet::Gamestate *gs, unsigned int clientID){ return instance_->add(gs, clientID); }
-    static bool     ackGamestate(unsigned int gamestateID, unsigned int clientID){ return instance_->ack(gamestateID, clientID); }
-    static GamestateHandler* getInstance(){ assert(instance_); return instance_; }
-    
+    virtual bool      addGamestate(packet::Gamestate* gs, unsigned int clientID) = 0;
+    virtual bool      ackGamestate(unsigned int gamestateID, unsigned int clientID) = 0;
     virtual uint32_t  getLastProcessedGamestateID( unsigned int clientID )=0;
     virtual uint32_t  getCurrentGamestateID()=0;
 };

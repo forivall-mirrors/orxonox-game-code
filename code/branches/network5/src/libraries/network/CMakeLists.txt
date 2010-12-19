@@ -27,7 +27,7 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   FunctionCall.cc
   FunctionCallManager.cc
   GamestateManager.cc
-  GamestateClient.cc
+  #GamestateClient.cc
   GamestateHandler.cc
   LANDiscoverable.cc
   LANDiscovery.cc
@@ -52,7 +52,7 @@ SET_SOURCE_FILES(NETWORK_HDR_FILES
   Connection.h
   FunctionCall.h
   FunctionCallManager.h
-  GamestateClient.h
+  #GamestateClient.h
   GamestateHandler.h
   GamestateManager.h
   Host.h

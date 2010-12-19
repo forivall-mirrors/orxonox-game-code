@@ -43,9 +43,9 @@ namespace orxonox
     void setServerAddress( const std::string& serverAddress );
     void setPort( unsigned int port );
 
-    ENetEvent *getEvent();
+//     ENetEvent *getEvent();
     // check wheter the packet queue is empty
-    bool queueEmpty();
+//     bool queueEmpty();
     // create a new listener thread
     virtual bool establishConnection();
     virtual bool closeConnection();

@@ -31,10 +31,12 @@
 
 #include "NetworkPrereqs.h"
 
+#include <deque>
+
 #include "util/UtilPrereqs.h"
 #include "core/CorePrereqs.h"
 #include "Host.h"
-#include "GamestateManager.h"
+// #include "GamestateManager.h"
 #include "ServerConnection.h"
 #include "LANDiscoverable.h"
 #include "MasterServerComm.h"
@@ -48,7 +50,7 @@ namespace orxonox
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public Host, public ServerConnection, public GamestateManager, public LANDiscoverable{
+  class _NetworkExport Server : public Host, public ServerConnection, public LANDiscoverable{
   public:
     Server();
     Server(int port);
@@ -72,16 +74,15 @@ namespace orxonox
     void updateGamestate();
   private:
     virtual bool isServer_(){return true;}
-    unsigned int shipID(){return 0;}
     unsigned int playerID(){return 0;}
 
     void addPeer(ENetEvent *event);
     void removePeer(ENetEvent *event);
+    void processPacket(packet::Packet* packet);
 
     bool createClient(int clientID);
     void disconnectClient( ClientInformation *client);
-    bool processPacket( ENetPacket *packet, ENetPeer *peer );
-    bool sendGameState();
+    bool sendGameStates();
     bool sendObjectDeletes();
     virtual bool chat(const std::string& message);
     virtual bool broadcast(const std::string& message);
@@ -90,6 +91,7 @@ namespace orxonox
 
     float timeSinceLastUpdate_;
     MasterServerComm msc;
+    std::deque<packet::Packet*> packetQueue_;
   };
 
 

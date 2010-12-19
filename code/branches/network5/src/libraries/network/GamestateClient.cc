@@ -61,12 +61,12 @@ namespace orxonox
           delete this->tempGamestate_;
   }
 
-  bool GamestateClient::ack(unsigned int gamestateID, unsigned int clientID)
+  bool GamestateClient::ackGamestate(unsigned int gamestateID, unsigned int clientID)
   {
     return true;
   }
 
-  bool GamestateClient::add(packet::Gamestate *gs, unsigned int clientID)
+  bool GamestateClient::addGamestate(packet::Gamestate *gs, unsigned int clientID)
   {
     if(tempGamestate_!=NULL)
     {

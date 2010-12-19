@@ -44,11 +44,12 @@
 #include "NetworkPrereqs.h"
 
 #include <string>
+#include <deque>
 
 #include "util/UtilPrereqs.h"
 #include "util/Singleton.h"
 #include "ClientConnection.h"
-#include "GamestateClient.h"
+// #include "GamestateClient.h"
 #include "Host.h"
 #include "LANDiscovery.h"
 #include "packet/ServerInformation.h"
@@ -89,10 +90,11 @@ namespace orxonox
   private:
     Client(const Client& copy); // not used
     virtual bool isServer_(){return false;}
+    void processPacket(packet::Packet* packet);
 
     static Client* singletonPtr_s;
-    GamestateClient* gamestate;
     bool isSynched_;
+    std::deque<packet::Packet*> packetQueue_;
 
     bool gameStateFailure_;
     float timeSinceLastUpdate_;

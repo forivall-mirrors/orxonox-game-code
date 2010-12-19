@@ -42,6 +42,7 @@ namespace orxonox
 
     Spectator::Spectator(BaseObject* creator) : ControllableEntity(creator)
     {
+      COUT(0) << "creating specator" << endl;
         RegisterObject(Spectator);
 
         this->speed_ = 200;

@@ -57,7 +57,8 @@ FunctionCalls::~FunctionCalls()
 }
 
 
-bool FunctionCalls::process(){
+bool FunctionCalls::process(orxonox::Host* host)
+{
   assert(isDataENetAllocated());
   
   uint8_t* temp = data_+sizeof(uint32_t); //skip packetid
@@ -69,9 +70,9 @@ bool FunctionCalls::process(){
   {
     FunctionCall fctCall;
     fctCall.loadData(temp);
-    if( this->minGamestateID_ > GamestateHandler::getInstance()->getLastProcessedGamestateID(this->getClientID()) || !fctCall.execute() )
+    if( this->minGamestateID_ > host->getLastProcessedGamestateID(this->getPeerID()) || !fctCall.execute() )
     {
-      FunctionCallManager::bufferIncomingFunctionCall( fctCall, minGamestateID_, this->getClientID() );
+      FunctionCallManager::bufferIncomingFunctionCall( fctCall, minGamestateID_, this->getPeerID() );
     }
   }
   
@@ -79,7 +80,8 @@ bool FunctionCalls::process(){
   return true;
 }
 
-void FunctionCalls::addCallStatic( uint32_t networkID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
+void FunctionCalls::addCallStatic( uint32_t networkID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5)
+{
   assert(!isDataENetAllocated());
   
   this->functionCalls_.push(orxonox::FunctionCall());
@@ -87,7 +89,8 @@ void FunctionCalls::addCallStatic( uint32_t networkID, const MultiType* mt1, con
   this->currentSize_ += this->functionCalls_.back().getSize();
 }
 
-void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5){
+void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1, const MultiType* mt2, const MultiType* mt3, const MultiType* mt4, const MultiType* mt5)
+{
   assert(!isDataENetAllocated());
   
   this->functionCalls_.push(orxonox::FunctionCall());
@@ -95,9 +98,9 @@ void FunctionCalls::addCallMember( uint32_t networkID, uint32_t objectID, const 
   this->currentSize_ += this->functionCalls_.back().getSize();
 }
 
-bool FunctionCalls::send()
+bool FunctionCalls::send(orxonox::Host* host)
 {
-  this->minGamestateID_ = GamestateHandler::getInstance()->getCurrentGamestateID();
+  this->minGamestateID_ = host->getCurrentGamestateID();
   assert(this->functionCalls_.size());
   data_=new uint8_t[ currentSize_ ];
   *(Type::Value *)(data_ + _PACKETID ) = Type::FunctionCalls; // Set the Packet ID
@@ -113,7 +116,7 @@ bool FunctionCalls::send()
   
   assert( temp==data_+currentSize_ );
   
-  Packet::send();
+  Packet::send(host);
   return true;
 }
 

@@ -67,17 +67,17 @@ Packet::Packet()
 {
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = Direction::Outgoing;
-  clientID_=0;
+  peerID_=0;
   data_=0;
   enetPacket_=0;
   bDataENetAllocated_ = false;
 }
 
-Packet::Packet(uint8_t *data, unsigned int clientID)
+Packet::Packet(uint8_t *data, unsigned int peerID)
 {
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = Direction::Incoming;
-  clientID_=clientID;
+  peerID_=peerID;
   data_=data;
   enetPacket_=0;
   bDataENetAllocated_ = false;
@@ -88,7 +88,7 @@ Packet::Packet(const Packet &p){
   enetPacket_=p.enetPacket_;
   flags_=p.flags_;
   packetDirection_ = p.packetDirection_;
-  clientID_ = p.clientID_;
+  peerID_ = p.peerID_;
   if(p.data_){
     data_ = new uint8_t[p.getSize()];
     memcpy(data_, p.data_, p.getSize());
@@ -124,7 +124,7 @@ Packet::~Packet(){
   }
 }
 
-bool Packet::send(){
+bool Packet::send(orxonox::Host* host){
   if(packetDirection_ != Direction::Outgoing && packetDirection_ != Direction::Bidirectional ){
     assert(0);
     return false;
@@ -168,51 +168,51 @@ bool Packet::send(){
 //  ENetPacket *temp = enetPacket_;
 //  enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
   if( this->flags_ & PacketFlag::Reliable )
-    Host::addPacket( enetPacket_, clientID_, NETWORK_CHANNEL_DEFAULT);
+    host->addPacket( enetPacket_, peerID_, NETWORK_CHANNEL_DEFAULT);
   else
-    Host::addPacket( enetPacket_, clientID_, NETWORK_CHANNEL_UNRELIABLE);
+    host->addPacket( enetPacket_, peerID_, NETWORK_CHANNEL_UNRELIABLE);
   return true;
 }
 
 Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   uint8_t *data = packet->data;
   assert(ClientInformation::findClient(&peer->address)->getID() != static_cast<unsigned int>(-2) || !Host::isServer());
-  unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
+  unsigned int peerID = ClientInformation::findClient(&peer->address)->getID();
   Packet *p = 0;
 //   COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
   switch( *(Type::Value *)(data + _PACKETID) )
   {
     case Type::Acknowledgement:
 //       COUT(5) << "ack" << std::endl;
-      p = new Acknowledgement( data, clientID );
+    p = new Acknowledgement( data, peerID );
       break;
     case Type::Chat:
 //       COUT(5) << "chat" << std::endl;
-      p = new Chat( data, clientID );
+      p = new Chat( data, peerID );
       break;
     case Type::ClassID:
 //       COUT(5) << "classid" << std::endl;
-      p = new ClassID( data, clientID );
+      p = new ClassID( data, peerID );
       break;
     case Type::Gamestate:
 //       COUT(5) << "gamestate" << std::endl;
-      p = new Gamestate( data, clientID );
+      p = new Gamestate( data, peerID );
       break;
     case Type::Welcome:
 //       COUT(5) << "welcome" << std::endl;
-      p = new Welcome( data, clientID );
+      p = new Welcome( data, peerID );
       break;
     case Type::DeleteObjects:
 //       COUT(5) << "deleteobjects" << std::endl;
-      p = new DeleteObjects( data, clientID );
+      p = new DeleteObjects( data, peerID );
       break;
     case Type::FunctionCalls:
 //       COUT(5) << "functionCalls" << std::endl;
-      p = new FunctionCalls( data, clientID );
+      p = new FunctionCalls( data, peerID );
       break;
     case Type::FunctionIDs:
 //       COUT(5) << "functionIDs" << std::endl;
-      p = new FunctionIDs( data, clientID );
+      p = new FunctionIDs( data, peerID );
       break;
     default:
       assert(0);

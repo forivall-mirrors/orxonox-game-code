@@ -83,7 +83,7 @@ namespace orxonox
 
     void addPacket(ENetPacket *packet, ENetPeer *peer, uint8_t channelID);
     void broadcastPacket(ENetPacket* packet, uint8_t channelID);
-    ENetHost* getHost(){ return this->host_; }
+//     ENetHost* getHost(){ return this->host_; }
 
   protected:
     Connection();
@@ -100,17 +100,18 @@ namespace orxonox
     void processQueue();
     virtual void addPeer(ENetEvent* event)=0;
     virtual void removePeer(ENetEvent* event)=0;
-    virtual bool processPacket(ENetEvent* event);
+    virtual void processPacket( packet::Packet* packet)=0;
+    virtual packet::Packet* createPacket(ENetEvent* event);
 
     ENetHost*                   host_;
-    boost::mutex*               incomingEventsMutex_;
-    boost::mutex*               outgoingEventsMutex_;
   private:
     boost::thread*              communicationThread_;
     bool                        bCommunicationThreadRunning_;
     ENetAddress*                bindAddress_;
     std::deque<ENetEvent>       incomingEvents_;
     std::deque<outgoingEvent>   outgoingEvents_;
+    boost::mutex*               incomingEventsMutex_;
+    boost::mutex*               outgoingEventsMutex_;
 
 //     static Connection *instance_;
 

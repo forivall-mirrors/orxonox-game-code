@@ -53,6 +53,7 @@ namespace orxonox
 
     void PlayerManager::clientConnected(unsigned int clientID)
     {
+      COUT(0) << "PlayerManager: client connected with id: " << clientID << endl;
         if (GameMode::isMaster())
         {
             if (clientID != 0)

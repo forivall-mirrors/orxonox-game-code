@@ -41,11 +41,17 @@
 #include "network/TrafficControl.h"
 #include "Packet.h"
 
-namespace orxonox {
+namespace orxonox
+{
 
-namespace packet {
+namespace packet
+{
+    
+static const uint8_t GAMESTATE_MODE_SERVER = 0x1;
+static const uint8_t GAMESTATE_MODE_CLIENT = 0x2;
 
-class _NetworkExport GamestateHeader{
+class _NetworkExport GamestateHeader
+{
   public:
     GamestateHeader(){ data_=0; }
     GamestateHeader(uint8_t* data)
@@ -57,15 +63,15 @@ class _NetworkExport GamestateHeader{
     static inline uint32_t getSize()
       { return 21; }
 
-    inline int32_t getID() const
-      { assert(data_); return *(int32_t*)(data_+4); }
-    inline void setID(int32_t id)
-      { assert(data_); *(int32_t*)(data_+4) = id; }
+    inline uint32_t getID() const
+      { assert(data_); return *(uint32_t*)(data_+4); }
+    inline void setID(uint32_t id)
+      { assert(data_); *(uint32_t*)(data_+4) = id; }
 
-    inline int32_t getBaseID() const
-      { assert(data_); return *(int32_t*)(data_+8); }
-    inline void setBaseID(int32_t id)
-      { assert(data_); *(int32_t*)(data_+8) = id; }
+    inline uint32_t getBaseID() const
+      { assert(data_); return *(uint32_t*)(data_+8); }
+    inline void setBaseID(uint32_t id)
+      { assert(data_); *(uint32_t*)(data_+8) = id; }
 
     inline uint32_t getDataSize() const
       { assert(data_); return *(uint32_t*)(data_+12); }
@@ -102,7 +108,8 @@ class _NetworkExport GamestateHeader{
 /**
     @author Oliver Scheuss
 */
-class _NetworkExport Gamestate: public Packet{
+class _NetworkExport Gamestate: public Packet
+{
   public:
     Gamestate();
     Gamestate(uint8_t *data, unsigned int clientID);
@@ -113,7 +120,7 @@ class _NetworkExport Gamestate: public Packet{
 
     bool collectData(int id, uint8_t mode=0x0);
     bool spreadData( uint8_t mode=0x0);
-    inline int32_t getID() const { return header_.getID(); }
+    inline uint32_t getID() const { return header_.getID(); }
     inline bool isDiffed() const { return header_.isDiffed(); }
     inline bool isCompressed() const { return header_.isCompressed(); }
     inline int32_t getBaseID() const { return header_.getBaseID(); }
@@ -131,8 +138,8 @@ class _NetworkExport Gamestate: public Packet{
 //     void rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uint32_t datalength, uint32_t baselength);
 //     inline uint32_t findObject( const SynchronisableHeader& header, uint8_t* mem, uint32_t dataLength, uint32_t startPosition = 0 );
     virtual uint32_t getSize() const;
-    virtual inline bool process();
-    uint32_t calcGamestateSize(int32_t id, uint8_t mode=0x0);
+    virtual bool process(orxonox::Host* host);
+    uint32_t calcGamestateSize(uint32_t id, uint8_t mode=0x0);
 //     inline void diffObject( uint8_t*& newData, uint8_t*& origData, uint8_t*& baseData, SynchronisableHeader& objectHeader, std::vector<uint32_t>::iterator& sizes );
 //     inline void copyObject( uint8_t*& newData, uint8_t*& origData, uint8_t*& baseData, SynchronisableHeader& objectHeader, std::vector<uint32_t>::iterator& sizes );
     

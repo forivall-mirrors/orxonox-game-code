@@ -176,6 +176,7 @@ namespace orxonox
     this->incomingEventsMutex_->unlock();
     while( incomingEventsCount > 0 )
     {
+      packet::Packet* p;
       this->incomingEventsMutex_->lock();
       event = this->incomingEvents_.front();
       this->incomingEvents_.pop_front();
@@ -192,7 +193,8 @@ namespace orxonox
           break;
         case ENET_EVENT_TYPE_RECEIVE:
 //           COUT(0) << "ENET_EVENT_TYPE_RECEIVE" << endl;
-          processPacket( &event );
+          p = createPacket( &event );
+          processPacket(p);
           break;
         case ENET_EVENT_TYPE_NONE:
           break;
@@ -204,10 +206,11 @@ namespace orxonox
     }
   }
 
-  bool Connection::processPacket(ENetEvent* event)
+  packet::Packet* Connection::createPacket(ENetEvent* event)
   {
     packet::Packet *p = packet::Packet::createPacket(event->packet, event->peer);
-    return p->process();
+    return p;
+//     return p->process();
   }
   
   void Connection::enableCompression()

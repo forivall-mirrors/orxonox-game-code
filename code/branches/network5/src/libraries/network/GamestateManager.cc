@@ -42,42 +42,43 @@
 
 #include <cassert>
 #include <queue>
-#include "util/Clock.h"
 // #include <boost/thread/mutex.hpp>
 
-#include "util/Debug.h"
-#include "core/ThreadPool.h"
-#include "core/command/Executor.h"
-#include "ClientInformation.h"
 #include "packet/Acknowledgement.h"
 #include "packet/Gamestate.h"
 #include "synchronisable/NetworkCallbackManager.h"
-#include "TrafficControl.h"
+
+#include "core/ThreadPool.h"
+#include "core/command/Executor.h"
+#include "core/GameMode.h"
+#include "util/Debug.h"
+#include "util/Clock.h"
+// #include "TrafficControl.h"
 
 namespace orxonox
 {
   GamestateManager::GamestateManager() :
-  reference(0), id_(0)
+  currentGamestate_(0), id_(0)
   {
-    trafficControl_ = new TrafficControl();
+//     trafficControl_ = new TrafficControl();
 //     threadMutex_ = new boost::mutex();
 //     threadPool_ = new ThreadPool();
   }
 
   GamestateManager::~GamestateManager()
   {
-    if( this->reference )
-        delete this->reference;std::map<unsigned int, packet::Gamestate*>::iterator it;
+    if( this->currentGamestate_ )
+        delete this->currentGamestate_;std::map<unsigned int, packet::Gamestate*>::iterator it;
     for( it = gamestateQueue.begin(); it != gamestateQueue.end(); ++it )
       delete it->second;
-    std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> >::iterator it1;
-    std::map<unsigned int, packet::Gamestate*>::iterator it2;
-    for( it1 = gamestateMap_.begin(); it1 != gamestateMap_.end(); ++it1 )
+    std::map<uint32_t, peerInfo>::iterator peerIt;
+    std::map<uint32_t, packet::Gamestate*>::iterator gamestateIt;
+    for( peerIt = peerMap_.begin(); peerIt != peerMap_.end(); ++peerIt )
     {
-      for( it2 = it1->second.begin(); it2 != it1->second.end(); ++it2 )
-        delete it2->second;
+      for( gamestateIt = peerIt->second.gamestates.begin(); gamestateIt != peerIt->second.gamestates.end(); ++gamestateIt )
+        delete gamestateIt->second;
     }
-    this->trafficControl_->destroy();
+//     this->trafficControl_->destroy();
 //     delete this->threadMutex_;
 //     delete this->threadPool_;
   }
@@ -87,7 +88,8 @@ namespace orxonox
     return getSnapshot();
   }
 
-  bool GamestateManager::add(packet::Gamestate *gs, unsigned int clientID){
+  bool GamestateManager::addGamestate(packet::Gamestate *gs, unsigned int clientID)
+  {
     assert(gs);
     std::map<unsigned int, packet::Gamestate*>::iterator it = gamestateQueue.find(clientID);
     if(it!=gamestateQueue.end()){
@@ -98,7 +100,8 @@ namespace orxonox
     return true;
   }
 
-  bool GamestateManager::processGamestates(){
+  bool GamestateManager::processGamestates()
+  {
     if( this->gamestateQueue.empty() )
         return true;
     std::map<unsigned int, packet::Gamestate*>::iterator it;
@@ -117,70 +120,73 @@ namespace orxonox
 
 
   bool GamestateManager::getSnapshot(){
-    if ( reference != 0 )
-      delete reference;
-    reference = new packet::Gamestate();
-    if(!reference->collectData(++id_, 0x1)){ //we have no data to send
-      delete reference;
-      reference=0;
+    if ( currentGamestate_ != 0 )
+      delete currentGamestate_;
+    currentGamestate_ = new packet::Gamestate();
+    uint8_t gsMode;
+    if( GameMode::isMaster() )
+      gsMode = packet::GAMESTATE_MODE_SERVER;
+    else
+      gsMode = packet::GAMESTATE_MODE_CLIENT;
+    uint32_t newID;
+    if( GameMode::isMaster() )
+      newID = ++id_;
+    else
+      newID = peerMap_[NETWORK_PEER_ID_SERVER].lastProcessedGamestateID;
+    
+    if(!currentGamestate_->collectData(newID, gsMode)){ //we have no data to send
+      delete currentGamestate_;
+      currentGamestate_=0;
     }
     return true;
   }
 
-  void GamestateManager::sendGamestates()
+  std::vector<packet::Gamestate*> GamestateManager::getGamestates()
   {
-    ClientInformation *temp = ClientInformation::getBegin();
-    std::queue<packet::Gamestate*> clientGamestates;
-    while(temp != NULL){
-      if( !(temp->getSynched()) ){
+    if(!currentGamestate_)
+      return std::vector<packet::Gamestate*>();
+    std::vector<packet::Gamestate*> peerGamestates;
+    
+    std::map<uint32_t, peerInfo>::iterator peerIt;
+    for( peerIt=peerMap_.begin(); peerIt!=peerMap_.end(); ++peerIt )
+    {
+      if( !peerIt->second.isSynched )
+      {
         COUT(5) << "Server: not sending gamestate" << std::endl;
-        temp=temp->next();
-        if(!temp)
-          break;
         continue;
       }
-      COUT(4) << "client id: " << temp->getID() << " RTT: " << temp->getRTT() << " loss: " << temp->getPacketLoss() << std::endl;
+      COUT(4) << "client id: " << peerIt->first << std::endl;
       COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
-      int cid = temp->getID(); //get client id
+      int peerID = peerIt->first; //get client id
 
-      unsigned int gID = temp->getGamestateID();
-      if(!reference)
-        return;
+      unsigned int lastAckedGamestateID = peerIt->second.lastAckedGamestateID;
 
-      packet::Gamestate *client=0;
-      if(gID != GAMESTATEID_INITIAL){
-        assert(gamestateMap_.find(cid)!=gamestateMap_.end());
-        std::map<unsigned int, packet::Gamestate*>::iterator it = gamestateMap_[cid].find(gID);
-        if(it!=gamestateMap_[cid].end())
-        {
-          client = it->second;
-        }
+      packet::Gamestate* baseGamestate=0;
+      if(lastAckedGamestateID != GAMESTATEID_INITIAL)
+      {
+        assert(peerMap_.find(peerID)!=peerMap_.end());
+        std::map<uint32_t, packet::Gamestate*>::iterator it = peerMap_[peerID].gamestates.find(lastAckedGamestateID);
+        assert(it!=peerMap_[peerID].gamestates.end());
+        baseGamestate = it->second;
       }
 
-      clientGamestates.push(0);
-      finishGamestate( cid, clientGamestates.back(), client, reference );
+      peerGamestates.push_back(0);  // insert an empty gamestate* to change
+      finishGamestate( peerID, peerGamestates.back(), baseGamestate, currentGamestate_ );
       //FunctorMember<GamestateManager>* functor =
 //       ExecutorMember<GamestateManager>* executor = createExecutor( createFunctor(&GamestateManager::finishGamestate, this) );
-//       executor->setDefaultValues( cid, &clientGamestates.back(), client, reference );
+//       executor->setDefaultValues( cid, &clientGamestates.back(), client, currentGamestate_ );
 //       (*static_cast<Executor*>(executor))();
 //       this->threadPool_->passFunction( executor, true );
-//       (*functor)( cid, &(clientGamestates.back()), client, reference );
-
-      temp = temp->next();
+//       (*functor)( cid, &(clientGamestates.back()), client, currentGamestate_ );
     }
 
 //     threadPool_->synchronise();
 
-    while( !clientGamestates.empty() )
-    {
-      if(clientGamestates.front())
-        clientGamestates.front()->send();
-      clientGamestates.pop();
-    }
+    return peerGamestates;
   }
 
 
-  void GamestateManager::finishGamestate( unsigned int clientID, packet::Gamestate*& destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate ) {
+  void GamestateManager::finishGamestate( unsigned int peerID, packet::Gamestate*& destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate ) {
     //why are we searching the same client's gamestate id as we searched in
     //Server::sendGameState?
     // save the (undiffed) gamestate in the clients gamestate map
@@ -193,10 +199,10 @@ namespace orxonox
 //     packet::Gamestate *gs = new packet::Gamestate();
 //     gs->collectData( id_, 0x1 );
 //     this->threadMutex_->lock();
-    gamestateMap_[clientID][gamestate->getID()]=gs;
+    peerMap_[peerID].gamestates[gamestate->getID()]=gs;
 //     this->threadMutex_->unlock();
-      Clock clock;
-      clock.capture();
+    Clock clock;
+    clock.capture();
 
     if(base)
     {
@@ -217,77 +223,123 @@ namespace orxonox
 
 //     bool b = gs->compressData();
 //     assert(b);
-      clock.capture();
-      COUT(4) << "diff and compress time: " << clock.getDeltaTime() << endl;
+    clock.capture();
+    COUT(4) << "diff and compress time: " << clock.getDeltaTime() << endl;
 //     COUT(5) << "sending gamestate with id " << gs->getID();
 //     if(gamestate->isDiffed())
 //       COUT(5) << " and baseid " << gs->getBaseID() << endl;
 //     else
 //       COUT(5) << endl;
-    gs->setClientID(clientID);
+    gs->setPeerID(peerID);
     destgamestate = gs;
   }
 
 
-  bool GamestateManager::ack(unsigned int gamestateID, unsigned int clientID) {
-    ClientInformation *temp = ClientInformation::findClient(clientID);
-    assert(temp);
-    unsigned int curid = temp->getGamestateID();
+  bool GamestateManager::ackGamestate(unsigned int gamestateID, unsigned int peerID) {
+//     ClientInformation *temp = ClientInformation::findClient(peerID);
+//     assert(temp);
+    std::map<uint32_t, peerInfo>::iterator it = this->peerMap_.find(peerID);
+    assert(it!=this->peerMap_.end());
+    unsigned int curid = it->second.lastAckedGamestateID;
 
     if(gamestateID == ACKID_NACK){
-      temp->setGamestateID(GAMESTATEID_INITIAL);
+      it->second.lastAckedGamestateID = GAMESTATEID_INITIAL;
+//       temp->setGamestateID(GAMESTATEID_INITIAL);
       // now delete all saved gamestates for this client
-      std::map<unsigned int, packet::Gamestate*>::iterator it;
-      for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end(); ){
-        delete it->second;
-
-        gamestateMap_[clientID].erase(it++);
+      std::map<uint32_t, packet::Gamestate*>::iterator it2;
+      for(it2 = it->second.gamestates.begin(); it2!=it->second.gamestates.end(); ++it2 ){
+        delete it2->second;
       }
+      it->second.gamestates.clear();
       return true;
     }
 
     assert(curid==GAMESTATEID_INITIAL || curid<gamestateID);
-    COUT(5) << "acking gamestate " << gamestateID << " for clientid: " << clientID << " curid: " << curid << std::endl;
-    std::map<unsigned int, packet::Gamestate*>::iterator it;
-    for(it = gamestateMap_[clientID].begin(); it!=gamestateMap_[clientID].end() && it->first<gamestateID; ){
-      delete it->second;
-      gamestateMap_[clientID].erase(it++);
+    COUT(5) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " curid: " << curid << std::endl;
+    std::map<uint32_t, packet::Gamestate*>::iterator it2;
+    for( it2=it->second.gamestates.begin(); it2!=it->second.gamestates.end(); )
+    {
+      if( it2->second->getID() < gamestateID )
+      {
+        delete it2->second;
+        it->second.gamestates.erase(it2++);
+      }
+      else
+        ++it2;
     }
-    temp->setGamestateID(gamestateID);
-    TrafficControl::processAck(clientID, gamestateID);
+    
+//     std::map<unsigned int, packet::Gamestate*>::iterator it;
+//     for(it = gamestateMap_[peerID].begin(); it!=gamestateMap_[peerID].end() && it->first<gamestateID; ){
+//       delete it->second;
+//       gamestateMap_[peerID].erase(it++);
+//     }
+    it->second.lastAckedGamestateID = gamestateID;
+//     temp->setGamestateID(gamestateID);
+//     TrafficControl::processAck(peerID, gamestateID);
     return true;
   }
   
-  uint32_t GamestateManager::getLastProcessedGamestateID(unsigned int clientID)
+  uint32_t GamestateManager::getLastProcessedGamestateID(unsigned int peerID)
   {
-    assert( this->lastProcessedGamestateID_.find(clientID) != this->lastProcessedGamestateID_.end() );
-    if( this->lastProcessedGamestateID_.find(clientID) != this->lastProcessedGamestateID_.end() )
-      return this->lastProcessedGamestateID_[clientID];
+    assert( this->peerMap_.find(peerID)!=this->peerMap_.end() );
+    if( this->peerMap_.find(peerID) != this->peerMap_.end() )
+      return this->peerMap_[peerID].lastProcessedGamestateID;
     else
       return GAMESTATEID_INITIAL;
   }
-
-  void GamestateManager::removeClient(ClientInformation* client){
-    assert(client);
-    std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> >::iterator clientMap = gamestateMap_.find(client->getID());
-    // first delete all remained gamestates
-    std::map<unsigned int, packet::Gamestate*>::iterator it;
-    for(it=clientMap->second.begin(); it!=clientMap->second.end(); it++)
-      delete it->second;
-    // now delete the clients gamestatemap
-    gamestateMap_.erase(clientMap);
+  
+  
+  void GamestateManager::addPeer(uint32_t peerID)
+  {
+    assert(peerMap_.find(peerID)==peerMap_.end());
+    peerMap_[peerID].peerID = peerID;
+    peerMap_[peerID].lastProcessedGamestateID = GAMESTATEID_INITIAL;
+    peerMap_[peerID].lastAckedGamestateID = GAMESTATEID_INITIAL;
+    if( GameMode::isMaster() )
+      peerMap_[peerID].isSynched = false;
+    else
+      peerMap_[peerID].isSynched = true;
   }
 
-  bool GamestateManager::processGamestate(packet::Gamestate *gs){
+  void GamestateManager::removePeer(uint32_t peerID)
+  {
+    assert(peerMap_.find(peerID)!=peerMap_.end());
+    std::map<uint32_t, packet::Gamestate*>::iterator peerIt;
+    for( peerIt = peerMap_[peerID].gamestates.begin(); peerIt!=peerMap_[peerID].gamestates.end(); ++peerIt )
+    {
+      delete peerIt->second;
+    }
+    peerMap_.erase(peerMap_.find(peerID));
+  }
+
+
+//   void GamestateManager::removeClient(ClientInformation* client){
+//     assert(client);
+//     std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> >::iterator clientMap = gamestateMap_.find(client->getID());
+//     // first delete all remained gamestates
+//     std::map<unsigned int, packet::Gamestate*>::iterator it;
+//     for(it=clientMap->second.begin(); it!=clientMap->second.end(); it++)
+//       delete it->second;
+//     // now delete the clients gamestatemap
+//     gamestateMap_.erase(clientMap);
+//   }
+
+  bool GamestateManager::processGamestate(packet::Gamestate *gs)
+  {
     if(gs->isCompressed())
     {
        bool b = gs->decompressData();
        assert(b);
     }
     assert(!gs->isDiffed());
-    if( gs->spreadData(0x1) )
+    uint8_t gsMode;
+    if( GameMode::isMaster() )
+      gsMode = packet::GAMESTATE_MODE_SERVER;
+    else
+      gsMode = packet::GAMESTATE_MODE_CLIENT;
+    if( gs->spreadData(gsMode) )
     {
-      this->lastProcessedGamestateID_[gs->getClientID()] = gs->getID();
+      this->peerMap_[gs->getPeerID()].lastProcessedGamestateID = gs->getID();
       return true;
     }
     else

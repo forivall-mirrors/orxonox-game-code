@@ -170,6 +170,7 @@ namespace orxonox
 
     void Gametype::playerEntered(PlayerInfo* player)
     {
+      COUT(0) << "Gametype: playerentered" << endl;
         this->players_[player].state_ = PlayerState::Joined;
     }
 
@@ -410,6 +411,7 @@ namespace orxonox
 
     void Gametype::spawnPlayer(PlayerInfo* player)
     {
+      COUT(0) << "Gametype: spawnPlayer" << endl;
         SpawnPoint* spawnpoint = this->getBestSpawnPoint(player);
         if (spawnpoint)
         {

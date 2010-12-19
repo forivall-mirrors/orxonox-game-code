@@ -67,24 +67,29 @@ class _NetworkExport Packet{
 
     virtual unsigned char *getData(){ return data_; };
     virtual unsigned int getSize() const =0;
-    virtual bool process()=0;
+    virtual bool process(orxonox::Host* host)=0;
     inline uint32_t getFlags()
       { return flags_; }
-    inline int getClientID()
-      { return clientID_; }
-    inline void setClientID( int id )
-      { clientID_ = id; }
+    inline int getPeerID()
+      { return peerID_; }
+    inline void setPeerID( int id )
+      { peerID_ = id; }
+    inline bool isReliable()
+      { return this->flags_ & PacketFlag::Reliable; }
+    inline uint32_t getRequiredGamestateID()
+      { return this->requiredGamestateID_; }
 
-    virtual bool send();
+    virtual bool send(orxonox::Host* host);
   protected:
     Packet();
-    Packet(uint8_t *data, unsigned int clientID);
+    Packet(uint8_t *data, unsigned int peerID);
 //    Packet(ENetPacket *packet, ENetPeer *peer);
     inline bool isDataENetAllocated() const
       { return bDataENetAllocated_; }
 
     uint32_t flags_;
-    unsigned int clientID_;
+    unsigned int peerID_;
+    uint32_t requiredGamestateID_;
     Direction::Value packetDirection_;
     /** Pointer to the data. Be careful when deleting it because it might
         point to a location that was allocated by ENet.

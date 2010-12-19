@@ -44,7 +44,7 @@ namespace orxonox {
 
   // Host*               Host::instance_=0;
   uint32_t            Host::clientID_s=0;
-  uint32_t            Host::shipID_s=-1;
+//   uint32_t            Host::shipID_s=-1;
   std::vector<Host*>  Host::instances_s;
 
   /**

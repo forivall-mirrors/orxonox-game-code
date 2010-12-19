@@ -35,6 +35,7 @@
 #include "core/ObjectList.h"
 #include "network/synchronisable/Synchronisable.h"
 #include "network/GamestateHandler.h"
+#include "network/Host.h"
 
 namespace orxonox {
 
@@ -43,8 +44,8 @@ namespace packet {
 #define GAMESTATE_START(data) (data + GamestateHeader::getSize())
 
 // #define PACKET_FLAG_GAMESTATE  PacketFlag::Unsequenced
-// #define PACKET_FLAG_GAMESTATE  0
-#define PACKET_FLAG_GAMESTATE  PacketFlag::Reliable
+#define PACKET_FLAG_GAMESTATE  0
+// #define PACKET_FLAG_GAMESTATE  PacketFlag::Reliable
 
 inline bool memzero( uint8_t* data, uint32_t datalength)
 {
@@ -137,7 +138,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
     {
       assert(0); // if we don't use multithreading this part shouldn't be neccessary
       // start allocate additional memory
-      COUT(3) << "G.St.Man: need additional memory" << std::endl;
+      COUT(3) << "Gamestate: need additional memory" << std::endl;
       ObjectList<Synchronisable>::iterator temp = it;
       uint32_t addsize=tempsize;
       while(++temp)
@@ -164,15 +165,15 @@ bool Gamestate::collectData(int id, uint8_t mode)
   header_.setCompressed( false );
   //stop write gamestate header
 
-  COUT(5) << "G.ST.Man: Gamestate size: " << currentsize << std::endl;
-  COUT(5) << "G.ST.Man: 'estimated' (and corrected) Gamestate size: " << size << std::endl;
+  COUT(5) << "Gamestate: Gamestate size: " << currentsize << std::endl;
+  COUT(5) << "Gamestate: 'estimated' (and corrected) Gamestate size: " << size << std::endl;
   return true;
 }
 
 
 bool Gamestate::spreadData(uint8_t mode)
 {
-  COUT(4) << "processing gamestate with id " << header_.getID() << endl;
+  COUT(5) << "processing gamestate with id " << header_.getID() << endl;
   assert(data_);
   assert(!header_.isCompressed());
   uint8_t *mem=data_+GamestateHeader::getSize();
@@ -203,6 +204,8 @@ bool Gamestate::spreadData(uint8_t mode)
       assert(b);
     }
   }
+  assert(mem-data_ == GamestateHeader::getSize()+header_.getDataSize());
+  
    // In debug mode, check first, whether there are no duplicate objectIDs
 #ifndef NDEBUG
   if(this->getID()%1000==1)
@@ -268,9 +271,9 @@ bool Gamestate::operator==(packet::Gamestate gs)
 }
 
 
-bool Gamestate::process()
+bool Gamestate::process(orxonox::Host* host)
 {
-  return GamestateHandler::addGamestate(this, getClientID());
+  return host->addGamestate(this, getPeerID());
 }
 
 
@@ -584,7 +587,7 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
   assert(sizesIt==this->sizes_.end());
 
 
-  Gamestate *g = new Gamestate(newData, getClientID());
+  Gamestate *g = new Gamestate(newData, getPeerID());
   (g->header_) = header_;
   g->header_.setBaseID( base->getID() );
   g->header_.setDataSize(destDataPtr - newData - GamestateHeader::getSize());
@@ -756,7 +759,7 @@ void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uin
 }*/
 
 
-uint32_t Gamestate::calcGamestateSize(int32_t id, uint8_t mode)
+uint32_t Gamestate::calcGamestateSize(uint32_t id, uint8_t mode)
 {
   uint32_t size = 0;
   uint32_t nrOfVariables = 0;

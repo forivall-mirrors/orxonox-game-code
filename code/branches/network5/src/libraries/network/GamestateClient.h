@@ -56,9 +56,9 @@ namespace orxonox
     GamestateClient();
     ~GamestateClient();
 
-    virtual bool      add(packet::Gamestate *gs, unsigned int clientID);
-    virtual bool      ack(unsigned int gamestateID, unsigned int clientID);
-    virtual uint32_t  getLastProcessedGamestateID(unsigned int clientID) { return this->lastProcessedGamestateID_; }
+    virtual bool      addGamestate(packet::Gamestate *gs, unsigned int clientID);
+    virtual bool      ackGamestate(unsigned int gamestateID, unsigned int clientID);
+    virtual uint32_t  getLastProcessedGamestateID(unsigned int clientID=0) { return this->lastProcessedGamestateID_; }
     virtual uint32_t  getCurrentGamestateID(){ return this->lastProcessedGamestateID_; }
 
     bool processGamestates();
