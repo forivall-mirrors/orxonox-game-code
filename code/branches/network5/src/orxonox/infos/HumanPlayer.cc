@@ -44,7 +44,6 @@ namespace orxonox
 
     HumanPlayer::HumanPlayer(BaseObject* creator) : PlayerInfo(creator)
     {
-      COUT(0) << "new HumanPlayer" << endl;
         RegisterObject(HumanPlayer);
 
         this->server_initialized_ = GameMode::isMaster();
@@ -133,7 +132,6 @@ namespace orxonox
 
     void HumanPlayer::networkcallback_client_initialized()
     {
-      COUT(0) << "networkcallback_client_initialized" << endl;
         if (this->getGametype())
             this->getGametype()->playerEntered(this);
     }
