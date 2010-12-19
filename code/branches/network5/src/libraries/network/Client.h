@@ -79,6 +79,7 @@ namespace orxonox
     void setDestination( const std::string& serverAddress, unsigned int port ); // tolua_export
     bool closeConnection();
     void queuePacket(ENetPacket* packet, int clientID, uint8_t channelID);
+    virtual bool sendPacket( packet::Packet* packet ){ return packet->send( static_cast<Host*>(this) ); }
     bool processChat(const std::string& message, unsigned int playerID);
     virtual bool chat(const std::string& message);
     virtual bool broadcast(const std::string& message) { return false; }

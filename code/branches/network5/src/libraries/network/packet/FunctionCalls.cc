@@ -70,7 +70,7 @@ bool FunctionCalls::process(orxonox::Host* host)
   {
     FunctionCall fctCall;
     fctCall.loadData(temp);
-    if( this->minGamestateID_ > host->getLastProcessedGamestateID(this->getPeerID()) || !fctCall.execute() )
+    if( !fctCall.execute() )
     {
       FunctionCallManager::bufferIncomingFunctionCall( fctCall, minGamestateID_, this->getPeerID() );
     }

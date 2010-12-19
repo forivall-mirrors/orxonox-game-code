@@ -359,6 +359,7 @@ namespace orxonox
       return;
     else
     {
+      GamestateManager::removePeer(client->getID());
       //ServerConnection::disconnectClient( client );
       //ClientConnectionListener::broadcastClientDisconnected( client->getID() ); //this is done in ClientInformation now
       delete client;

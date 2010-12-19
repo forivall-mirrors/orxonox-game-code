@@ -89,6 +89,7 @@ namespace orxonox
     virtual uint32_t  getCurrentGamestateID(){ return currentGamestate_->getID(); }
     
     bool processGamestates();
+    bool sendAck(unsigned int gamestateID, uint32_t peerID);
     bool update();
     std::vector<packet::Gamestate*> getGamestates();
     void finishGamestate( unsigned int peerID, packet::Gamestate*& destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate );
@@ -100,6 +101,8 @@ namespace orxonox
       { assert(peerMap_.find(peerID)!=peerMap_.end()); peerMap_[peerID].isSynched = true; }
     void removePeer( uint32_t peerID );
 //     void removeClient(ClientInformation *client);
+  protected:
+    virtual bool sendPacket( packet::Packet* packet ) = 0;
   private:
     bool processGamestate(packet::Gamestate *gs);
 

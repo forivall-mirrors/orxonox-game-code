@@ -81,6 +81,7 @@ namespace orxonox
 
   void Connection::disconnectPeer(ENetPeer *peer)
   {
+    assert(peer);
     outgoingEvent outEvent = { peer, outgoingEventType::disconnectPeer, (ENetPacket*)10, 15 };
     
     this->outgoingEventsMutex_->lock();
@@ -90,6 +91,7 @@ namespace orxonox
 
   void Connection::addPacket(ENetPacket *packet, ENetPeer *peer, uint8_t channelID)
   {
+    assert(peer);
     outgoingEvent outEvent = { peer, outgoingEventType::sendPacket, packet, channelID };
     
     this->outgoingEventsMutex_->lock();
@@ -99,7 +101,7 @@ namespace orxonox
   
   void Connection::broadcastPacket(ENetPacket* packet, uint8_t channelID)
   {
-    outgoingEvent outEvent = { 0, outgoingEventType::broadcastPacket, packet, channelID };
+    outgoingEvent outEvent = { (ENetPeer*)15, outgoingEventType::broadcastPacket, packet, channelID };
     
     this->outgoingEventsMutex_->lock();
     this->outgoingEvents_.push_back(outEvent);

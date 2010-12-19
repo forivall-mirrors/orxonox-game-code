@@ -178,6 +178,9 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   uint8_t *data = packet->data;
   assert(ClientInformation::findClient(&peer->address)->getID() != static_cast<unsigned int>(-2) || !Host::isServer());
   unsigned int peerID = ClientInformation::findClient(&peer->address)->getID();
+  // HACK
+  if( peerID==static_cast<unsigned int>(-2))
+    peerID = NETWORK_PEER_ID_SERVER;
   Packet *p = 0;
 //   COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
   switch( *(Type::Value *)(data + _PACKETID) )

@@ -109,6 +109,7 @@ namespace orxonox
     for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
       bool b = processGamestate(it->second);
       assert(b);
+      sendAck( it->second->getID(), it->second->getPeerID() );
       delete it->second;
     }
     // now clear the queue
@@ -116,6 +117,21 @@ namespace orxonox
     //and call all queued callbacks
     NetworkCallbackManager::callCallbacks();
     return true;
+  }
+  
+  bool GamestateManager::sendAck(unsigned int gamestateID, uint32_t peerID)
+  {
+    packet::Acknowledgement *ack = new packet::Acknowledgement(gamestateID, peerID);
+    if( !this->sendPacket(ack))
+    {
+      COUT(3) << "could not ack gamestate: " << gamestateID << std::endl;
+      return false;
+    }
+    else
+    {
+      COUT(5) << "acked a gamestate: " << gamestateID << std::endl;
+      return true;
+    }
   }
 
 
@@ -172,6 +188,9 @@ namespace orxonox
 
       peerGamestates.push_back(0);  // insert an empty gamestate* to change
       finishGamestate( peerID, peerGamestates.back(), baseGamestate, currentGamestate_ );
+      if( peerGamestates.back()==0 )
+        // nothing to send to remove pointer from vector
+        peerGamestates.pop_back();
       //FunctorMember<GamestateManager>* functor =
 //       ExecutorMember<GamestateManager>* executor = createExecutor( createFunctor(&GamestateManager::finishGamestate, this) );
 //       executor->setDefaultValues( cid, &clientGamestates.back(), client, currentGamestate_ );
@@ -235,7 +254,8 @@ namespace orxonox
   }
 
 
-  bool GamestateManager::ackGamestate(unsigned int gamestateID, unsigned int peerID) {
+  bool GamestateManager::ackGamestate(unsigned int gamestateID, unsigned int peerID)
+  {
 //     ClientInformation *temp = ClientInformation::findClient(peerID);
 //     assert(temp);
     std::map<uint32_t, peerInfo>::iterator it = this->peerMap_.find(peerID);
@@ -254,7 +274,7 @@ namespace orxonox
       return true;
     }
 
-    assert(curid==GAMESTATEID_INITIAL || curid<gamestateID);
+    assert(curid==GAMESTATEID_INITIAL || curid<=gamestateID);
     COUT(5) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " curid: " << curid << std::endl;
     std::map<uint32_t, packet::Gamestate*>::iterator it2;
     for( it2=it->second.gamestates.begin(); it2!=it->second.gamestates.end(); )
