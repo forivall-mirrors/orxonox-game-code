@@ -25,7 +25,7 @@ FIND_PATH(ALUT_INCLUDE_DIR alut.h
   PATH_SUFFIXES include include/AL ALUT
 )
 FIND_LIBRARY(ALUT_LIBRARY_OPTIMIZED
-  NAMES ALUT 
+  NAMES ALUT alut
   PATHS $ENV{ALUTDIR}
   PATH_SUFFIXES lib bin/Release bin/release Release release ALUT
 )
