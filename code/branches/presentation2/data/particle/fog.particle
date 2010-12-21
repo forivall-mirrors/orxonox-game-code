@@ -1,0 +1,241 @@
+
+particle_system Orxonox/fog
+{
+	quota	1000
+	material	PE/smoke4
+	particle_width	2000
+	particle_height	1500
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	vertex
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter Ellipsoid
+	{
+		angle	180
+		colour	0.3 0.3 0.3 0.25
+		colour_range_start	0.3 0.3 0.3 0.1
+		colour_range_end	0.3 0.3 0.3 0.25
+		direction	0 1 0
+		emission_rate	16
+		position	0 0 0
+		velocity	2
+		velocity_min	2
+		velocity_max	2
+		time_to_live	100000
+		time_to_live_min	100000
+		time_to_live_max	100000
+		duration	5
+		duration_min	4
+		duration_max	7
+		repeat_delay	0
+		repeat_delay_min	0
+		repeat_delay_max	0
+		width	6000
+		height	1800
+		depth	100
+	}
+
+	affector Scaler
+	{
+		rate	3
+	}
+
+    affector Rotator
+    {
+        rotation_range_start 0
+        rotation_range_end 360
+        rotation_speed_range_start 0
+        rotation_speed_range_end 0
+    }
+
+}
+
+
+particle_system Orxonox/fog2
+{
+	quota	1000
+	material	PE/smoke4
+	particle_width	2000
+	particle_height	1500
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	vertex
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter Ellipsoid
+	{
+		angle	180
+		colour	0.3 0.3 0.3 0.3
+		colour_range_start	0.3 0.3 0.3 0.1
+		colour_range_end	0.3 0.3 0.3 0.3
+		direction	0 1 0
+		emission_rate	16
+		position	0 0 0
+		velocity	2
+		velocity_min	2
+		velocity_max	2
+		time_to_live	100000
+		time_to_live_min	100000
+		time_to_live_max	100000
+		duration	5
+		duration_min	4
+		duration_max	7
+		repeat_delay	0
+		repeat_delay_min	0
+		repeat_delay_max	0
+		width	10000
+		height	4000
+		depth	100
+	}
+
+	affector Scaler
+	{
+		rate	3
+	}
+
+    affector Rotator
+    {
+        rotation_range_start 0
+        rotation_range_end 360
+        rotation_speed_range_start 0
+        rotation_speed_range_end 0
+    }
+
+}
+
+particle_system Orxonox/fog3
+{
+	quota	1000
+	material	PE/smoke4
+	particle_width	2000
+	particle_height	1500
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	vertex
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter Ellipsoid
+	{
+		angle	180
+		colour	0.3 0.3 0.3 0.3
+		colour_range_start	0.3 0.3 0.3 0.1
+		colour_range_end	0.3 0.3 0.3 0.25
+		direction	0 1 0
+		emission_rate	22
+		position	0 0 0
+		velocity	2
+		velocity_min	2
+		velocity_max	2
+		time_to_live	100000
+		time_to_live_min	100000
+		time_to_live_max	100000
+		duration	5
+		duration_min	4
+		duration_max	7
+		repeat_delay	0
+		repeat_delay_min	0
+		repeat_delay_max	0
+		width	8000
+		height	10000
+		depth	6000
+	}
+
+	affector Scaler
+	{
+		rate	3
+	}
+
+    affector Rotator
+    {
+        rotation_range_start 0
+        rotation_range_end 360
+        rotation_speed_range_start 0
+        rotation_speed_range_end 0
+    }
+
+}
+
+particle_system Orxonox/fog4
+{
+	quota	1000
+	material	PE/smoke4
+	particle_width	2000
+	particle_height	1500
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	vertex
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter Ellipsoid
+	{
+		angle	180
+		colour	0.3 0.3 0.3 0.3
+		colour_range_start	0.3 0.3 0.3 0.1
+		colour_range_end	0.3 0.3 0.3 0.25
+		direction	0 1 0
+		emission_rate	22
+		position	0 0 0
+		velocity	2
+		velocity_min	2
+		velocity_max	2
+		time_to_live	100000
+		time_to_live_min	100000
+		time_to_live_max	100000
+		duration	5
+		duration_min	4
+		duration_max	7
+		repeat_delay	0
+		repeat_delay_min	0
+		repeat_delay_max	0
+		width	10000
+		height	10000
+		depth	10000
+	}
+
+	affector Scaler
+	{
+		rate	3
+	}
+
+    affector Rotator
+    {
+        rotation_range_start 0
+        rotation_range_end 360
+        rotation_speed_range_start 0
+        rotation_speed_range_end 0
+    }
+
+}
