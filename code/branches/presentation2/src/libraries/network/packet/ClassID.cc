@@ -119,7 +119,7 @@ uint32_t ClassID::getSize() const{
 }
 
 
-bool ClassID::process(){
+bool ClassID::process(orxonox::Host* host){
   int nrOfClasses;
   uint8_t *temp = data_+sizeof(uint32_t); //skip the packetid
   uint32_t networkID;

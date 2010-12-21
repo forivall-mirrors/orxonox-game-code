@@ -78,6 +78,11 @@ namespace orxonox
         }
         else
             this->scoreboard_ = 0;
+
+        /* HACK HACK HACK */
+        this->dedicatedAddBots_ = createConsoleCommand( "dedicatedAddBots", createExecutor( createFunctor(&Gametype::addBots, this) ) );
+        this->dedicatedKillBots_ = createConsoleCommand( "dedicatedKillBots", createExecutor( createFunctor(&Gametype::killBots, this) ) );
+        /* HACK HACK HACK */
     }
 
     Gametype::~Gametype()
@@ -85,6 +90,10 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->gtinfo_->destroy();
+            if( this->dedicatedAddBots_ )
+                delete this->dedicatedAddBots_;
+            if( this->dedicatedKillBots_ )
+                delete this->dedicatedKillBots_;
         }
     }
 

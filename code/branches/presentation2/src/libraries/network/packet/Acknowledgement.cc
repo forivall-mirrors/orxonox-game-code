@@ -30,6 +30,7 @@
 
 #include "util/Debug.h"
 #include "network/GamestateHandler.h"
+#include "network/Host.h"
 
 namespace orxonox {
 namespace packet {
@@ -38,18 +39,18 @@ namespace packet {
 #define _PACKETID           0
 #define _ACKID              _PACKETID + sizeof(packet::Type::Value)
 
-Acknowledgement::Acknowledgement( unsigned int id, unsigned int clientID )
+Acknowledgement::Acknowledgement( unsigned int id, unsigned int peerID )
  : Packet()
 {
   flags_ = flags_ | PACKET_FLAGS_ACK;
   data_=new uint8_t[ getSize() ];
   *(Type::Value *)(data_ + _PACKETID ) = Type::Acknowledgement;
   *(uint32_t *)(data_ + _ACKID ) = id;
-  clientID_=clientID;
+  peerID_=peerID;
 }
 
-Acknowledgement::Acknowledgement( uint8_t *data, unsigned int clientID )
-  : Packet(data, clientID)
+Acknowledgement::Acknowledgement( uint8_t *data, unsigned int peerID )
+  : Packet(data, peerID)
 {
 }
 
@@ -61,9 +62,9 @@ unsigned int Acknowledgement::getSize() const{
   return _ACKID + sizeof(uint32_t);
 }
 
-bool Acknowledgement::process(){
+bool Acknowledgement::process(orxonox::Host* host){
   COUT(5) << "processing ACK with ID: " << getAckID() << endl;
-  bool b = GamestateHandler::ackGamestate(getAckID(), clientID_);
+  bool b = host->ackGamestate(getAckID(), peerID_);
   delete this;
   return b;
 }

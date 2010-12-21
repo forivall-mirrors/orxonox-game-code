@@ -65,19 +65,14 @@ namespace orxonox
     void setID(int clientID);
     bool setPeer(ENetPeer *peer);
     bool setGamestateID(int id);
-    bool setPartialGamestateID(int id);
     inline void setShipID(unsigned int id){ShipID_=id;}
 
     // get functions
     inline unsigned int getShipID(){return ShipID_;}
     unsigned int getID();
     unsigned int getGamestateID();
-    unsigned int getPartialGamestateID();
     ENetPeer *getPeer();
 
-    int getFailures();
-    void addFailure();
-    void resetFailures();
     uint32_t getRTT();
     double getPacketLoss();
 
@@ -105,10 +100,8 @@ namespace orxonox
     ENetPeer *peer_;
     unsigned int clientID_;
     unsigned int gamestateID_;
-    unsigned int partialGamestateID_;
     unsigned int ShipID_;   // this is the unique objectID
     bool synched_;
-    unsigned short failures_;
 
   };
 

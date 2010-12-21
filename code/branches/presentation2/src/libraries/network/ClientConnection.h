@@ -43,14 +43,14 @@ namespace orxonox
     void setServerAddress( const std::string& serverAddress );
     void setPort( unsigned int port );
 
-    ENetEvent *getEvent();
+//     ENetEvent *getEvent();
     // check wheter the packet queue is empty
-    bool queueEmpty();
+//     bool queueEmpty();
     // create a new listener thread
     virtual bool establishConnection();
     virtual bool closeConnection();
     // add a packet to queue for the server
-    bool addPacket(ENetPacket *packet);
+    void addPacket(ENetPacket *packet, uint8_t channelID);
     inline bool isConnected(){ return this->established_; }
   protected:
     virtual void connectionClosed()=0;

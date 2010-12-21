@@ -70,7 +70,7 @@ namespace orxonox
     /* update msaddress string from orxonox.ini config file, if it 
      * has changed. 
      */
-    SetConfigValue( msaddress, "localhost");
+    SetConfigValue( msaddress, "orxonox.net");
   } 
 
   WANDiscovery::~WANDiscovery()

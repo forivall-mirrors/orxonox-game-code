@@ -56,7 +56,8 @@ DeleteObjects::~DeleteObjects()
 {
 }
 
-bool DeleteObjects::fetchIDs(){
+bool DeleteObjects::fetchIDs()
+{
   unsigned int number = Synchronisable::getNumberOfDeletedObject();
   if(number==0)
     return false;
@@ -78,13 +79,16 @@ bool DeleteObjects::fetchIDs(){
   return true;
 }
 
-unsigned int DeleteObjects::getSize() const{
+unsigned int DeleteObjects::getSize() const
+{
   assert(data_);
   return _OBJECTIDS + *(uint32_t*)(data_+_QUANTITY)*sizeof(uint32_t);
 }
 
-bool DeleteObjects::process(){
-  for(unsigned int i=0; i<*(unsigned int *)(data_+_QUANTITY); i++){
+bool DeleteObjects::process(orxonox::Host* host)
+{
+  for(unsigned int i=0; i<*(unsigned int *)(data_+_QUANTITY); i++)
+  {
     COUT(4) << "deleting object with id: " << *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) << std::endl;
     Synchronisable::deleteObject( *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) );
   }

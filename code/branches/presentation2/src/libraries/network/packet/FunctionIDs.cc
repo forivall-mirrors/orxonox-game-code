@@ -45,7 +45,8 @@ namespace packet {
 #define _PACKETID                 0
 
 
-FunctionIDs::FunctionIDs( ) : Packet(){
+FunctionIDs::FunctionIDs( ) : Packet()
+{
   unsigned int nrOfFunctions=0;
   unsigned int packetSize=2*sizeof(uint32_t); //space for the packetID and for the nroffunctions
   uint32_t networkID;
@@ -54,7 +55,8 @@ FunctionIDs::FunctionIDs( ) : Packet(){
 
   //calculate total needed size (for all strings and integers)
   ObjectList<NetworkFunctionBase>::iterator it;
-  for(it = ObjectList<NetworkFunctionBase>::begin(); it; ++it){
+  for(it = ObjectList<NetworkFunctionBase>::begin(); it; ++it)
+  {
     const std::string& functionname = it->getName();
     networkID = it->getNetworkID();
     // now push the network id and the classname to the stack
@@ -75,7 +77,8 @@ FunctionIDs::FunctionIDs( ) : Packet(){
 
   // now save all classids and classnames
   std::pair<uint32_t, std::string> tempPair;
-  while( !tempQueue.empty() ){
+  while( !tempQueue.empty() )
+  {
     tempPair = tempQueue.front();
     tempQueue.pop();
     *(uint32_t*)temp = tempPair.first;
@@ -97,7 +100,8 @@ FunctionIDs::~FunctionIDs()
 {
 }
 
-uint32_t FunctionIDs::getSize() const{
+uint32_t FunctionIDs::getSize() const
+{
   assert(this->data_);
   uint8_t *temp = data_+sizeof(uint32_t); // packet identification
   uint32_t totalsize = sizeof(uint32_t); // data size
@@ -113,7 +117,8 @@ uint32_t FunctionIDs::getSize() const{
 }
 
 
-bool FunctionIDs::process(){
+bool FunctionIDs::process(orxonox::Host* host)
+{
   int nrOfFunctions;
   uint8_t *temp = data_+sizeof(uint32_t); //skip the packetid
   uint32_t networkID;
@@ -126,7 +131,8 @@ bool FunctionIDs::process(){
   nrOfFunctions = *(uint32_t*)temp;
   temp += sizeof(uint32_t);
 
-  for( int i=0; i<nrOfFunctions; i++){
+  for( int i=0; i<nrOfFunctions; i++)
+  {
     networkID = *(uint32_t*)temp;
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
     functionname = temp+2*sizeof(uint32_t);
