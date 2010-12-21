@@ -67,7 +67,7 @@ namespace orxonox
   static const unsigned int CLIENTID_UNKNOWN          = static_cast<unsigned int>(-2);
   extern const char* LAN_DISCOVERY_MESSAGE;
   extern const char* LAN_DISCOVERY_ACK;
-  static const unsigned int LAN_DISCOVERY_PORT          = 55557;
+  static const unsigned int LAN_DISCOVERY_PORT          = 55558;
   static const unsigned int NETWORK_PEER_ID_SERVER      = 0;
   static const unsigned int NETWORK_CHANNEL_DEFAULT     = 0;
   static const unsigned int NETWORK_CHANNEL_UNRELIABLE  = 1;

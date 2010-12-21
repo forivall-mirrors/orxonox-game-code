@@ -44,7 +44,7 @@ namespace orxonox
   {
     this->host_ = 0;
     this->bActive_ = false;
-    this->setActivity(true);
+//     this->setActivity(true);
   }
 
   LANDiscoverable::~LANDiscoverable()

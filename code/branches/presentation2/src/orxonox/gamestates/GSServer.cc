@@ -33,12 +33,13 @@
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "network/Server.h"
+#include "network/Connection.h"
 
 namespace orxonox
 {
     DeclareGameState(GSServer, "server", false, false);
 
-    SetCommandLineArgument(port, 55556).shortcut("p").information("Network communication port to be used 0-65535 (default: 55556)");
+    SetCommandLineArgument(port, NETWORK_PORT).shortcut("p").information("Network communication port to be used 0-65535 (default: 55556)");
 
     GSServer::GSServer(const GameStateInfo& info)
         : GameState(info)

@@ -279,7 +279,8 @@ namespace orxonox
     /* create a host with the above settings (the last two 0 mean: accept 
      * any input/output bandwidth */
     this->server = enet_host_create( &this->address, ORX_MSERVER_MAXCONNS, 
-        ORX_MSERVER_MAXCHANS, 0, 0 );     
+        ORX_MSERVER_MAXCHANS, 0, 0 );
+    assert(this->server);
 
     /* see if creation worked */
     if( !this->server )
