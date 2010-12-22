@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-  ManageScopedSingleton(WANDiscovery, ScopeID::Root, true);
+  ManageScopedSingleton(WANDiscovery, ScopeID::Graphics, true);
 
 
   WANDiscovery::WANDiscovery()

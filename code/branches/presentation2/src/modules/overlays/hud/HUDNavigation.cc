@@ -23,6 +23,7 @@
  *      Felix Schulthess
  *   Co-authors:
  *      Reto Grieder
+ *      Oliver Scheuss
  *
  */
 
