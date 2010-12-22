@@ -68,7 +68,7 @@ namespace orxonox
         RegisterObject(ArtificialController);
 
         this->target_ = 0;
-        this->formationFlight_ = true;
+        this->formationFlight_ = false;
         this->passive_ = false;
         this->maxFormationSize_ = STANDARD_MAX_FORMATION_SIZE;
         this->myMaster_ = 0;
