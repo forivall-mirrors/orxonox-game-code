@@ -87,7 +87,9 @@ namespace orxonox
             virtual ~ForceField();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Creates a ForceField object through XML.
+            void registerVariables(); //!< Registers the variables that should get synchronised over the network
             virtual void tick(float dt); //!< A method that is called every tick.
+            
 
             /**
             @brief Set the velocity of the ForceField.
@@ -140,7 +142,7 @@ namespace orxonox
             float velocity_; //!< The velocity of the ForceField.
             float radius_; //!< The radius of the ForceField.
             float halfLength_; //!< Half of the length of the ForceField.
-            forceFieldMode::Value mode_; //!< The mode of the ForceField.
+            int mode_; //!< The mode of the ForceField.
   };
 }
 

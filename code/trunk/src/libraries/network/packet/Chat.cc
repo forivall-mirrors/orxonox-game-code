@@ -79,8 +79,8 @@ unsigned int Chat::getSize() const{
   return _MESSAGE + messageLength_;
 }
 
-bool Chat::process(){
-  bool b = Host::incomingChat(std::string((const char*)data_+_MESSAGE), *(uint32_t *)(data_+_PLAYERID));
+bool Chat::process(orxonox::Host* host){
+  bool b = host->incomingChat(std::string((const char*)data_+_MESSAGE), *(uint32_t *)(data_+_PLAYERID));
   delete this;
   return b;
 }

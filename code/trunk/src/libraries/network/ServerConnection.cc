@@ -48,13 +48,15 @@ namespace orxonox
     this->bindAddress_->port = NETWORK_PORT;
   }
 
-  ServerConnection::~ServerConnection(){
+  ServerConnection::~ServerConnection()
+  {
     if ( this->bListening_ )
       closeListener();
     delete this->bindAddress_;
   }
 
-  void ServerConnection::setBindAddress( const std::string& bindAddress ) {
+  void ServerConnection::setBindAddress( const std::string& bindAddress )
+  {
     if (enet_address_set_host (this->bindAddress_, bindAddress.c_str()) < 0)
         COUT(1) << "Error: Could not resolve \"" << bindAddress << "\"." << std::endl;
   }
@@ -63,13 +65,19 @@ namespace orxonox
       this->bindAddress_->port = port;
   }
 
-  bool ServerConnection::openListener() {
-    this->host_ = enet_host_create(this->bindAddress_, NETWORK_MAX_CONNECTIONS, 0, 0, 0);
+  bool ServerConnection::openListener()
+  {
+    // create host
+    this->host_ = enet_host_create(this->bindAddress_, NETWORK_MAX_CONNECTIONS, NETWORK_CHANNEL_COUNT, 0, 0);
+    
     if ( this->host_ == NULL )
     {
         COUT(1) << "ServerConnection: host_ == NULL" << std::endl;
         return false;
     }
+    
+    // enable compression
+    this->enableCompression();
     assert( this->host_->socket4 != ENET_SOCKET_NULL || this->host_->socket6 != ENET_SOCKET_NULL );
     if (this->host_->socket4 == ENET_SOCKET_NULL)
         COUT(2) << "Warning: IPv4 Socket failed." << std::endl;
@@ -77,38 +85,36 @@ namespace orxonox
         COUT(2) << "Warning: IPv6 Socket failed." << std::endl;
     else
         COUT(3) << "Info: Using IPv4 and IPv6 Sockets." << std::endl;
+    
+    // start communication thread
+    Connection::startCommunicationThread();
 
     return true;
   }
 
-  bool ServerConnection::closeListener() {
+  bool ServerConnection::closeListener()
+  {
     this->bListening_=false;
     disconnectClients();
+    Connection::stopCommunicationThread();
     enet_host_destroy(this->host_);
     return true;
   }
 
-  bool ServerConnection::addPacket(ENetPacket *packet, unsigned int clientID) {
+  void ServerConnection::addPacket(ENetPacket *packet, unsigned int clientID, uint8_t channelID)
+  {
     if ( clientID == CLIENTID_UNKNOWN )
     {
-      return addPacketAll(packet);
+      broadcastPacket(packet, channelID);
     }
     else
     {
       ClientInformation *temp = ClientInformation::findClient(clientID);
       if(!temp){
         COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
-        return false;
       }
-      return Connection::addPacket(packet, temp->getPeer());
+      Connection::addPacket(packet, temp->getPeer(), channelID);
     }
-  }
-
-  bool ServerConnection::addPacketAll(ENetPacket *packet) {
-//     if ( !Connection::getInstance() )
-//       return false;
-    enet_host_broadcast( Connection::getHost(), 0, packet);
-    return true;
   }
 
   void ServerConnection::disconnectClient(ClientInformation *client)
@@ -116,50 +122,37 @@ namespace orxonox
     Connection::disconnectPeer( client->getPeer() );
   }
 
-  void ServerConnection::disconnectClient(int clientID){
+  void ServerConnection::disconnectClient(int clientID)
+  {
     ClientInformation *client = ClientInformation::findClient(clientID);
     if(client)
       ServerConnection::disconnectClient(client);
   }
 
-  void ServerConnection::disconnectClients() {
-    ENetEvent event;
+  void ServerConnection::disconnectClients()
+  {
     ClientInformation *temp = ClientInformation::getBegin();
-    while(temp!=0){
+    while(temp!=0)
+    {
       ServerConnection::disconnectClient( temp );
       temp = temp->next();
-    }
-    temp = ClientInformation::getBegin();
-    while( temp!=0 ){
-      if( service( &event ) )
-      {
-        switch (event.type)
-        {
-        case ENET_EVENT_TYPE_NONE: break;
-        case ENET_EVENT_TYPE_CONNECT: break;
-        case ENET_EVENT_TYPE_RECEIVE:
-          enet_packet_destroy(event.packet);
-          break;
-        case ENET_EVENT_TYPE_DISCONNECT:
-          removePeer( &event );
-          temp = ClientInformation::getBegin();
-          break;
-        }
-      }
     }
     return;
   }
 
 
-  int ServerConnection::getClientID(ENetPeer* peer) {
+  int ServerConnection::getClientID(ENetPeer* peer)
+  {
     return getClientID(&(peer->address));
   }
 
-  int ServerConnection::getClientID(ENetAddress* address) {
+  int ServerConnection::getClientID(ENetAddress* address)
+  {
     return ClientInformation::findClient(address)->getID();
   }
 
-  ENetPeer *ServerConnection::getClientPeer(int clientID) {
+  ENetPeer *ServerConnection::getClientPeer(int clientID)
+  {
     return ClientInformation::findClient(clientID)->getPeer();
   }
 

@@ -34,6 +34,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <enet/enet.h>
 #include <boost/static_assert.hpp>
+#include <boost/thread/mutex.hpp>
 
 #include "util/Debug.h"
 #include "Acknowledgement.h"
@@ -52,30 +53,31 @@ namespace orxonox{
 namespace packet{
 
 // Make sure we assume the right values
-BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Reliable)   == static_cast<int>(ENET_PACKET_FLAG_RELIABLE));
-BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Unsequence) == static_cast<int>(ENET_PACKET_FLAG_UNSEQUENCED));
-BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::NoAllocate) == static_cast<int>(ENET_PACKET_FLAG_NO_ALLOCATE));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Reliable)    == static_cast<int>(ENET_PACKET_FLAG_RELIABLE));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::Unsequenced) == static_cast<int>(ENET_PACKET_FLAG_UNSEQUENCED));
+BOOST_STATIC_ASSERT(static_cast<int>(PacketFlag::NoAllocate)  == static_cast<int>(ENET_PACKET_FLAG_NO_ALLOCATE));
 
 #define PACKET_FLAG_DEFAULT PacketFlag::NoAllocate
 #define _PACKETID           0
 
 std::map<size_t, Packet *> Packet::packetMap_;
+boost::mutex Packet::packetMapMutex_;
 
 Packet::Packet()
 {
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = Direction::Outgoing;
-  clientID_=0;
+  peerID_=0;
   data_=0;
   enetPacket_=0;
   bDataENetAllocated_ = false;
 }
 
-Packet::Packet(uint8_t *data, unsigned int clientID)
+Packet::Packet(uint8_t *data, unsigned int peerID)
 {
   flags_ = PACKET_FLAG_DEFAULT;
   packetDirection_ = Direction::Incoming;
-  clientID_=clientID;
+  peerID_=peerID;
   data_=data;
   enetPacket_=0;
   bDataENetAllocated_ = false;
@@ -86,7 +88,7 @@ Packet::Packet(const Packet &p){
   enetPacket_=p.enetPacket_;
   flags_=p.flags_;
   packetDirection_ = p.packetDirection_;
-  clientID_ = p.clientID_;
+  peerID_ = p.peerID_;
   if(p.data_){
     data_ = new uint8_t[p.getSize()];
     memcpy(data_, p.data_, p.getSize());
@@ -122,7 +124,7 @@ Packet::~Packet(){
   }
 }
 
-bool Packet::send(){
+bool Packet::send(orxonox::Host* host){
   if(packetDirection_ != Direction::Outgoing && packetDirection_ != Direction::Bidirectional ){
     assert(0);
     return false;
@@ -141,7 +143,9 @@ bool Packet::send(){
     {
       // Assures we don't create a packet and destroy it right after in another thread
       // without having a reference in the packetMap_
+      Packet::packetMapMutex_.lock();
       packetMap_[reinterpret_cast<size_t>(enetPacket_)] = this;
+      Packet::packetMapMutex_.unlock();
     }
   }
 #ifndef NDEBUG
@@ -163,54 +167,58 @@ bool Packet::send(){
 #endif
 //  ENetPacket *temp = enetPacket_;
 //  enetPacket_ = 0; // otherwise we have a double free because enet already handles the deallocation of the packet
-  if(!Host::addPacket( enetPacket_, clientID_))
-    enet_packet_destroy(this->enetPacket_); // if we could not add the packet to the enet queue delete it manually
+  if( this->flags_ & PacketFlag::Reliable )
+    host->addPacket( enetPacket_, peerID_, NETWORK_CHANNEL_DEFAULT);
+  else
+    host->addPacket( enetPacket_, peerID_, NETWORK_CHANNEL_UNRELIABLE);
   return true;
 }
 
 Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
   uint8_t *data = packet->data;
   assert(ClientInformation::findClient(&peer->address)->getID() != static_cast<unsigned int>(-2) || !Host::isServer());
-  unsigned int clientID = ClientInformation::findClient(&peer->address)->getID();
+  unsigned int peerID = ClientInformation::findClient(&peer->address)->getID();
+  // HACK
+  if( peerID==static_cast<unsigned int>(-2))
+    peerID = NETWORK_PEER_ID_SERVER;
   Packet *p = 0;
-  COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
+//   COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
   switch( *(Type::Value *)(data + _PACKETID) )
   {
     case Type::Acknowledgement:
-      COUT(5) << "ack" << std::endl;
-      p = new Acknowledgement( data, clientID );
+//       COUT(5) << "ack" << std::endl;
+    p = new Acknowledgement( data, peerID );
       break;
     case Type::Chat:
-      COUT(5) << "chat" << std::endl;
-      p = new Chat( data, clientID );
+//       COUT(5) << "chat" << std::endl;
+      p = new Chat( data, peerID );
       break;
     case Type::ClassID:
-      COUT(5) << "classid" << std::endl;
-      p = new ClassID( data, clientID );
+//       COUT(5) << "classid" << std::endl;
+      p = new ClassID( data, peerID );
       break;
     case Type::Gamestate:
-      COUT(5) << "gamestate" << std::endl;
-      // TODO: remove brackets
-      p = new Gamestate( data, clientID );
+//       COUT(5) << "gamestate" << std::endl;
+      p = new Gamestate( data, peerID );
       break;
     case Type::Welcome:
-      COUT(5) << "welcome" << std::endl;
-      p = new Welcome( data, clientID );
+//       COUT(5) << "welcome" << std::endl;
+      p = new Welcome( data, peerID );
       break;
     case Type::DeleteObjects:
-      COUT(5) << "deleteobjects" << std::endl;
-      p = new DeleteObjects( data, clientID );
+//       COUT(5) << "deleteobjects" << std::endl;
+      p = new DeleteObjects( data, peerID );
       break;
     case Type::FunctionCalls:
-      COUT(5) << "functionCalls" << std::endl;
-      p = new FunctionCalls( data, clientID );
+//       COUT(5) << "functionCalls" << std::endl;
+      p = new FunctionCalls( data, peerID );
       break;
     case Type::FunctionIDs:
-      COUT(5) << "functionIDs" << std::endl;
-      p = new FunctionIDs( data, clientID );
+//       COUT(5) << "functionIDs" << std::endl;
+      p = new FunctionIDs( data, peerID );
       break;
     default:
-      assert(0); //TODO: repair this
+      assert(0);
       break;
   }
 
@@ -228,13 +236,15 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
 */
 void Packet::deletePacket(ENetPacket *enetPacket){
   // Get our Packet from a global map with all Packets created in the send() method of Packet.
+  Packet::packetMapMutex_.lock();
   std::map<size_t, Packet*>::iterator it = packetMap_.find(reinterpret_cast<size_t>(enetPacket));
   assert(it != packetMap_.end());
   // Make sure we don't delete it again in the destructor
   it->second->enetPacket_ = 0;
   delete it->second;
   packetMap_.erase(it);
-  COUT(6) << "PacketMap size: " << packetMap_.size() << std::endl;
+  Packet::packetMapMutex_.unlock();
+//   COUT(6) << "PacketMap size: " << packetMap_.size() << std::endl;
 }
 
 } // namespace packet

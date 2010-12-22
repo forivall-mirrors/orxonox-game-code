@@ -3,6 +3,7 @@
 local P = createMenuSheet("GraphicsMenu")
 
 P.buttonList = {}
+P.schemeList = {"TaharezGreen", "Orxonox"}
 
 function P.onShow()
     --indices to iterate through buttonlist (trivial in this menu sheet)
@@ -96,6 +97,29 @@ function P.onLoad()
             ["function"]  = P.GraphicsBackButton_clicked
     }
     P.buttonList[1] = item
+
+    local dropbox = winMgr:getWindow("orxonox/ThemeDropBox")
+    local scheme = orxonox.CommandExecutor:query("getConfig GUIManager guiScheme_")
+    for k,v in pairs(P.schemeList) do
+        local item = CEGUI.createListboxTextItem(P.schemeList[k])
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
+        CEGUI.toListbox(dropbox):addItem(item)
+        if v == scheme then
+            dropbox:setItemSelectState(item, true)
+        end
+    end
+
+end
+
+function P.ThemeDropBox_changed(e)
+    local dropbox = winMgr:getWindow("orxonox/ThemeDropBox")
+    local listbox = CEGUI.toListbox(dropbox)
+    local choice = listbox:getFirstSelectedItem()
+    local index = 0
+    if choice ~= nil then
+        index = listbox:getItemIndex(choice)
+    end
+    orxonox.CommandExecutor:execute("config GUIManager guiScheme_ " .. P.schemeList[index+1])
 end
 
 function P.GraphicsResolutionListbox_changed(e)

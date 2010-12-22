@@ -51,7 +51,7 @@ public:
   inline unsigned int getSize() const;
 
   /* process chat message packet and remove it afterwards */
-  bool process();
+  virtual bool process(orxonox::Host* host);
 
   /* Get the length of the message (not the full size of the packet) */
   unsigned int getMessageLength(){ return messageLength_; };

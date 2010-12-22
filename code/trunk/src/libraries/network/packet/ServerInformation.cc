@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -57,7 +57,11 @@ namespace orxonox
       uint8_t* temp = event->packet->data;
       char* ack = new char[strlen(LAN_DISCOVERY_ACK)+1];
       loadAndIncrease((char*&)ack, temp);
-      assert(strcmp(ack, (const char*)LAN_DISCOVERY_ACK)==0);
+
+      /* Fabian, what is this used for? it crashes the masterserver, hence commenting it */
+      // written by Oli: this is just to make sure that loadAndIncrease really writes the whole ACK string into char* ack
+//       assert(strcmp(ack, (const char*)LAN_DISCOVERY_ACK)==0);
+
       // Save Server Name
       loadAndIncrease(this->serverName_, temp);
     }

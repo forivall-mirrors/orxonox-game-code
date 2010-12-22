@@ -55,7 +55,6 @@ namespace orxonox
     gamestateID_=GAMESTATEID_INITIAL;
     preve=0;
     nexte=0;
-    partialGamestateID_=GAMESTATEID_INITIAL-1;
     synched_=false;
   }
 
@@ -132,13 +131,6 @@ namespace orxonox
     return true;
   }
 
-  bool ClientInformation::setPartialGamestateID(int id){
-    if(!this)
-      return false;
-    partialGamestateID_=id;
-    return true;
-  }
-
   unsigned int ClientInformation::getID() {
     if(!this)
       return CLIENTID_UNKNOWN;
@@ -153,16 +145,6 @@ namespace orxonox
       return NULL;
   }
 
-  int ClientInformation::getFailures(){
-    return failures_;
-  }
-  void ClientInformation::addFailure(){
-    failures_++;
-  }
-  void ClientInformation::resetFailures(){
-    failures_=0;
-  }
-
   uint32_t ClientInformation::getRTT(){
     return this->peer_->roundTripTime;
   }
@@ -174,13 +156,6 @@ namespace orxonox
   unsigned int ClientInformation::getGamestateID() {
     if(this)
       return gamestateID_;
-    else
-      return static_cast<unsigned int>(-1);
-  }
-
-  unsigned int ClientInformation::getPartialGamestateID() {
-    if(this)
-      return partialGamestateID_;
     else
       return static_cast<unsigned int>(-1);
   }

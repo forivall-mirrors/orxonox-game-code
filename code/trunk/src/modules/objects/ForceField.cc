@@ -59,6 +59,8 @@ namespace orxonox
         this->setDiameter(500);
         this->setLength(2000);
         this->mode_ = forceFieldMode::tube;
+        
+        this->registerVariables();
     }
 
     /**
@@ -82,6 +84,15 @@ namespace orxonox
         XMLPortParam(ForceField, "length", setLength  , getLength  , xmlelement, mode).defaultValues(2000);
         XMLPortParam(ForceField, "mode", setMode, getMode, xmlelement, mode);
     }
+    
+    void ForceField::registerVariables()
+    {
+        registerVariable(this->velocity_, VariableDirection::ToClient);
+        registerVariable(this->radius_, VariableDirection::ToClient);
+        registerVariable(this->halfLength_, VariableDirection::ToClient);
+        registerVariable(this->mode_, VariableDirection::ToClient);
+    }
+
 
     /**
     @brief

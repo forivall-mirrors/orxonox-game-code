@@ -63,7 +63,6 @@ namespace orxonox
   * initializes the address and the port to default localhost:NETWORK_PORT
   */
   Client::Client():
-      gamestate(0),
       isSynched_(false),
       gameStateFailure_(false),
       timeSinceLastUpdate_(0)
@@ -84,10 +83,10 @@ namespace orxonox
   bool Client::establishConnection()
   {
     Synchronisable::setClient(true);
-    this->gamestate = new GamestateClient();
     if( ClientConnection::establishConnection() )
     {
       Host::setActive(true);
+      GamestateManager::addPeer(NETWORK_PEER_ID_SERVER);
       return true;
     }
     else
@@ -100,10 +99,8 @@ namespace orxonox
   */
   bool Client::closeConnection()
   {
-    assert(this->gamestate);
-    delete this->gamestate;
-    this->gamestate = 0;
     Host::setActive(false);
+    GamestateManager::removePeer(NETWORK_PEER_ID_SERVER);
     return ClientConnection::closeConnection();
   }
 
@@ -113,11 +110,9 @@ namespace orxonox
     ClientConnection::setPort(port);
   }
 
-  bool Client::queuePacket(ENetPacket *packet, int clientID)
+  void Client::queuePacket(ENetPacket *packet, int clientID, uint8_t channelID)
   {
-    bool b = ClientConnection::addPacket(packet);
-    assert(b);
-    return b;
+    ClientConnection::addPacket(packet, channelID);
   }
 
   bool Client::processChat(const std::string& message, unsigned int playerID)
@@ -139,7 +134,7 @@ namespace orxonox
   bool Client::chat(const std::string& message)
   {
     packet::Chat *m = new packet::Chat(message, Host::getPlayerID());
-    return m->send();
+    return m->send(static_cast<Host*>(this));
   }
 
 
@@ -158,28 +153,35 @@ namespace orxonox
       if ( isConnected() && isSynched_ )
       {
         COUT(4) << "popping partial gamestate: " << std::endl;
-        packet::Gamestate *gs = gamestate->getGamestate();
-        //assert(gs); <--- there might be the case that no data has to be sent, so its commented out now
-        if(gs){
-          COUT(4) << "client tick: sending gs " << gs << std::endl;
-          if( !gs->send() )
-            COUT(3) << "Problem adding partial gamestate to queue" << std::endl;
-        // gs gets automatically deleted by enet callback
+//         packet::Gamestate *gs = GamestateClient::getGamestate();
+        GamestateManager::update();
+        std::vector<packet::Gamestate*> gamestates = GamestateManager::getGamestates();
+        std::vector<packet::Gamestate*>::iterator it;
+        for( it = gamestates.begin(); it != gamestates.end(); ++it )
+        {
+          (*it)->send( static_cast<Host*>(this) );
         }
-        FunctionCallManager::sendCalls();
+        //assert(gs); <--- there might be the case that no data has to be sent, so its commented out now
+//         if(gs){
+//           COUT(4) << "client tick: sending gs " << gs << std::endl;
+//           if( !gs->send() )
+//             COUT(2) << "Problem adding partial gamestate to queue" << std::endl;
+//         // gs gets automatically deleted by enet callback
+//         }
+        FunctionCallManager::sendCalls(static_cast<Host*>(this));
       }
     }
-    sendPackets(); // flush the enet queue
+//     sendPackets(); // flush the enet queue
 
     Connection::processQueue();
-    if(gamestate->processGamestates())
+    if(GamestateManager::processGamestates())
     {
       FunctionCallManager::processBufferedFunctionCalls();
       if(!isSynched_)
         isSynched_=true;
     }
-    gamestate->cleanup();
-    Connection::sendPackets();
+//     GamestateManager::cleanup();;
+//     Connection::sendPackets();
 
     return;
   }
@@ -199,6 +201,20 @@ namespace orxonox
     Game::getInstance().popState();
     Game::getInstance().popState();
   }
+  
+  void Client::processPacket(packet::Packet* packet)
+  {
+    if( packet->isReliable() )
+    {
+      if( this->getLastProcessedGamestateID(packet->getPeerID()) >= packet->getRequiredGamestateID() )
+        packet->process(static_cast<Host*>(this));
+      else
+        this->packetQueue_.push_back(packet);
+    }
+    else
+      packet->process(static_cast<Host*>(this));
+  }
+
 
 
 

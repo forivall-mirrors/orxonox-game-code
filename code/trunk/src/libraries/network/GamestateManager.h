@@ -45,6 +45,8 @@
 #include <map>
 #include "GamestateHandler.h"
 #include "core/CorePrereqs.h"
+#include "packet/Gamestate.h"
+#include <boost/concept_check.hpp>
 
 namespace orxonox
 {
@@ -65,29 +67,51 @@ namespace orxonox
   * diff(a,diff(a,x))=x (hope this is correct)
   * @author Oliver Scheuss
   */
-  class _NetworkExport GamestateManager: public GamestateHandler{
+  class _NetworkExport GamestateManager: public GamestateHandler
+  {
+    struct peerInfo
+    {
+      uint32_t  peerID;
+      uint32_t  lastProcessedGamestateID;
+      uint32_t  lastAckedGamestateID;
+      bool      isSynched;
+      std::map< uint32_t, packet::Gamestate* > gamestates;
+    };
+    
   public:
+    
     GamestateManager();
     ~GamestateManager();
 
-    bool add(packet::Gamestate *gs, unsigned int clientID);
+    virtual bool      addGamestate(packet::Gamestate *gs, unsigned int peerID);
+    virtual bool      ackGamestate(unsigned int gamestateID, unsigned int peerID);
+    virtual uint32_t  getLastProcessedGamestateID( unsigned int peerID );
+    virtual uint32_t  getCurrentGamestateID(){ return currentGamestate_->getID(); }
+    
     bool processGamestates();
+    bool sendAck(unsigned int gamestateID, uint32_t peerID);
     bool update();
-    void sendGamestates();
-//     packet::Gamestate *popGameState(unsigned int clientID);
-    void finishGamestate( unsigned int clientID, packet::Gamestate*& destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate );
+    std::vector<packet::Gamestate*> getGamestates();
+    void finishGamestate( unsigned int peerID, packet::Gamestate*& destgamestate, packet::Gamestate* base, packet::Gamestate* gamestate );
 
     bool getSnapshot();
 
-    bool ack(unsigned int gamestateID, unsigned int clientID);
-    void removeClient(ClientInformation *client);
+    void addPeer( uint32_t peerID );
+    void setSynched( uint32_t peerID )
+      { assert(peerMap_.find(peerID)!=peerMap_.end()); peerMap_[peerID].isSynched = true; }
+    void removePeer( uint32_t peerID );
+//     void removeClient(ClientInformation *client);
+  protected:
+    virtual bool sendPacket( packet::Packet* packet ) = 0;
   private:
     bool processGamestate(packet::Gamestate *gs);
 
-    std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> > gamestateMap_;
+//     std::map<unsigned int, std::map<unsigned int, packet::Gamestate*> > gamestateMap_;
     std::map<unsigned int, packet::Gamestate*> gamestateQueue;
-    packet::Gamestate *reference;
-    TrafficControl *trafficControl_;
+//     std::map<unsigned int, uint32_t> lastProcessedGamestateID_;
+    std::map<uint32_t, peerInfo> peerMap_;
+    packet::Gamestate* currentGamestate_;
+//     TrafficControl *trafficControl_;
     unsigned int id_;
 //     boost::mutex* threadMutex_;
     ThreadPool*   /*thread*/Pool_;

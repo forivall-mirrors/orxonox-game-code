@@ -31,12 +31,18 @@
 
 #include "NetworkPrereqs.h"
 
+#include <deque>
+
 #include "util/UtilPrereqs.h"
 #include "core/CorePrereqs.h"
 #include "Host.h"
-#include "GamestateManager.h"
+// #include "GamestateManager.h"
 #include "ServerConnection.h"
 #include "LANDiscoverable.h"
+#include "WANDiscoverable.h"
+// #include "MasterServerComm.h"
+// #include "MasterServerProtocol.h"
+
 
 namespace orxonox
 {
@@ -45,17 +51,24 @@ namespace orxonox
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public Host, public ServerConnection, public GamestateManager, public LANDiscoverable{
+  class _NetworkExport Server : public Host, public ServerConnection, public LANDiscoverable, public WANDiscoverable
+  {
   public:
     Server();
     Server(int port);
     Server(int port, const std::string& bindAddress);
     ~Server();
 
+    /* helpers */
+    void helper_ConnectToMasterserver();
+    void helper_HandleMasterServerRequests();
+    int replyhandler( char *addr, ENetEvent *ev );
+
     void open();
     void close();
     bool processChat(const std::string& message, unsigned int playerID);
-    bool queuePacket(ENetPacket *packet, int clientID);
+    void queuePacket(ENetPacket *packet, int clientID, uint8_t channelID);
+    virtual bool sendPacket( packet::Packet* packet ){ return packet->send( static_cast<Host*>(this) ); }
     void update(const Clock& time);
     unsigned int getRTT(unsigned int clientID);
     virtual void printRTT();
@@ -64,16 +77,15 @@ namespace orxonox
     void updateGamestate();
   private:
     virtual bool isServer_(){return true;}
-    unsigned int shipID(){return 0;}
     unsigned int playerID(){return 0;}
 
     void addPeer(ENetEvent *event);
     void removePeer(ENetEvent *event);
+    void processPacket(packet::Packet* packet);
 
     bool createClient(int clientID);
     void disconnectClient( ClientInformation *client);
-    bool processPacket( ENetPacket *packet, ENetPeer *peer );
-    bool sendGameState();
+    bool sendGameStates();
     bool sendObjectDeletes();
     virtual bool chat(const std::string& message);
     virtual bool broadcast(const std::string& message);
@@ -81,6 +93,7 @@ namespace orxonox
     void syncClassid(unsigned int clientID);
 
     float timeSinceLastUpdate_;
+    std::deque<packet::Packet*> packetQueue_;
   };
 
 

@@ -85,7 +85,7 @@ namespace orxonox
             "Franz Sanchez",
             "Alec Trevelyan",
             "Elliot Carver",
-            "Elektra King"
+            "Elektra King",
             "Viktor Zokas",
             "Gustav Graves",
             "Le Chiffre",

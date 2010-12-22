@@ -151,6 +151,7 @@ namespace orxonox
     {
         Ogre::StringVectorPtr levels = Resource::findResourceNames("*.oxw");
         // Iterate over all *.oxw level files.
+        COUT(3) << "Loading LevelInfos..." << std::endl;
         for (Ogre::StringVector::const_iterator it = levels->begin(); it != levels->end(); ++it)
         {
             //TODO: Replace with tag,

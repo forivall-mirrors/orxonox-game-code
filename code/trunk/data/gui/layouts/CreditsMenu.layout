@@ -31,28 +31,21 @@
                     <Property Name="HorzScrollPosition" Value="0" />
                     <Property Name="VertScrollPosition" Value="0" />
                     <Window Type="MenuWidgets/StaticText" Name="orxonox/CreditsText" >
-                        <Property Name="TextColours" Value="FF4444FF" />
+                        <Property Name="TextColours" Value="FFFFFFFF" />
                         <Property Name="InheritsAlpha" Value="False" />
                         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                         <Property Name="HorzFormatting" Value="HorzCentred" />
                         <Property Name="VertFormatting" Value="TopAligned" />
                         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
-                        <Property Name="Text">Orxonox version 0.0.3
+                        <Property Name="Text">wird sowieso nicht gelesen
+Orxonox version 0.0.3
 
 Programming Language:  C++ - lua - tcl
 Environment:  OpenAL - Ogre - OIS - CEGUI - enet - ODE
 Licence:  GNU General Public Licence - Creative Commons
 
 http://www.orxonox.net
-n
-n
-n
-n
-n
-n
-n
-n
-n                       </Property>
+                      </Property>
                     </Window>
                 </Window>
             </Window>
