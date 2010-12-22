@@ -410,4 +410,5 @@ void HUDNavigation::changedOwner()
             this->addObject ( *it );
     }
 }
+
 }

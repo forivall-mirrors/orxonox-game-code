@@ -119,7 +119,7 @@ namespace orxonox
     */
     PickupSpawner::~PickupSpawner()
     {
-        if(this->selfDestruct_ && this->pickup_ != NULL)
+        if(this->isInitialized() && this->selfDestruct_ && this->pickup_ != NULL)
             this->pickup_->destroy();
     }
 
