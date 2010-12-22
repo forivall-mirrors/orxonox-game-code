@@ -47,7 +47,7 @@ public:
   ~ClassID();
 
   uint32_t getSize() const;
-  bool process();
+  virtual bool process(orxonox::Host* host);
 
 private:
 };

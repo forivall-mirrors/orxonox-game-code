@@ -72,11 +72,11 @@ unsigned int Welcome::getSize() const{
   return sizeof(packet::Type::Value) + 2*sizeof(uint32_t);
 }
 
-bool Welcome::process(){
+bool Welcome::process(orxonox::Host* host){
   uint32_t clientID;
   clientID = *(uint32_t *)(data_ + _CLIENTID );
   assert(*(uint32_t *)(data_ + _ENDIANTEST ) == 0xFEDC4321);
-  Host::setClientID(clientID);
+  host->setClientID(clientID);
   COUT(3) << "Welcome set clientId: " << clientID << endl;
   Synchronisable::setClient(true);
   delete this;

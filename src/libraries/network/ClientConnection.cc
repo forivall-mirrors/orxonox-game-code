@@ -38,7 +38,6 @@ namespace orxonox
   const unsigned int NETWORK_CLIENT_WAIT_TIME = 1;
   const unsigned int NETWORK_CLIENT_CONNECTION_TIMEOUT = 3000; //millisecs
   const unsigned int NETWORK_CLIENT_MAX_CONNECTIONS = 1;
-  const unsigned int NETWORK_CLIENT_CHANNELS = 1;
 
 
   ClientConnection::ClientConnection():
@@ -70,13 +69,19 @@ namespace orxonox
   {
     ENetEvent event;
 
-    this->host_ = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, 0, 0, 0);
+    // create host
+    this->host_ = enet_host_create(NULL, NETWORK_CLIENT_MAX_CONNECTIONS, NETWORK_CHANNEL_COUNT, 0, 0);
+    
     if ( this->host_ == NULL )
     {
       COUT(1) << "ClientConnection: host_ == NULL" << std::endl;
       // error handling
       return false;
     }
+    
+    // enable compression
+    this->enableCompression();
+    
     assert( this->host_->socket4 != ENET_SOCKET_NULL || this->host_->socket6 != ENET_SOCKET_NULL );
     if (this->host_->socket4 == ENET_SOCKET_NULL)
         COUT(2) << "Warning: IPv4 Socket failed." << std::endl;
@@ -85,7 +90,7 @@ namespace orxonox
     else
         COUT(3) << "Info: Using IPv4 and IPv6 Sockets." << std::endl;
 
-    this->server_ = enet_host_connect(this->host_, serverAddress_, NETWORK_CLIENT_CHANNELS, 0);
+    this->server_ = enet_host_connect(this->host_, serverAddress_, NETWORK_CHANNEL_COUNT, 0);
     if ( this->server_==NULL )
     {
       COUT(1) << "ClientConnection: server_ == NULL" << std::endl;
@@ -98,6 +103,7 @@ namespace orxonox
       if( enet_host_service(this->host_, &event, NETWORK_CLIENT_WAIT_TIME)>=0 && event.type == ENET_EVENT_TYPE_CONNECT )
       {
         this->established_=true;
+        Connection::startCommunicationThread();
         return true;
       }
     }
@@ -111,6 +117,7 @@ namespace orxonox
     if ( !this->established_ )
       return true;
     this->established_ = false;
+    Connection::stopCommunicationThread();
     enet_peer_disconnect(this->server_, 0);
     for( unsigned int i=0; i<NETWORK_CLIENT_CONNECTION_TIMEOUT/NETWORK_CLIENT_WAIT_TIME; i++)
     {
@@ -137,10 +144,10 @@ namespace orxonox
   }
 
 
-  bool ClientConnection::addPacket(ENetPacket *packet) {
+  void ClientConnection::addPacket(ENetPacket *packet, uint8_t channelID) {
     assert( this->server_ );
     assert( packet );
-    return Connection::addPacket( packet, this->server_ );
+    return Connection::addPacket( packet, this->server_, channelID );
   }
 
   void ClientConnection::addPeer(ENetEvent* event)
@@ -152,6 +159,7 @@ namespace orxonox
     this->established_=false;
     COUT(1) << "Received disconnect Packet from Server!" << endl;
         // server closed the connection
+    this->stopCommunicationThread();
     this->connectionClosed();
   }
 

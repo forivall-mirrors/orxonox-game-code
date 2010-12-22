@@ -56,6 +56,12 @@ namespace orxonox
         this->steering_ = Vector3::ZERO;
         this->engine_ = 0;
 
+        this->boostPower_ = 10.0f;
+        this->initialBoostPower_ = 10.0f;
+        this->boostRate_ = 5.0;
+        this->boostPowerRate_ = 1.0;
+        this->boostCooldownDuration_ = 5.0;
+        this->bBoostCooldown_ = false;
 
         this->bInvertYAxis_ = false;
 
@@ -85,6 +91,10 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "primaryThrust",  primaryThrust_,  xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "auxilaryThrust", auxilaryThrust_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "rotationThrust", rotationThrust_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "boostPower", initialBoostPower_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "boostPowerRate", boostPowerRate_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "boostRate", boostRate_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
     }
 
     void SpaceShip::registerVariables()
@@ -133,7 +143,27 @@ namespace orxonox
                 this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
                 this->localAngularAcceleration_.setValue(0, 0, 0);
             }
+            
+            if(!this->bBoostCooldown_ && this->boostPower_ < this->initialBoostPower_)
+            {
+                this->boostPower_ += this->boostPowerRate_*dt;
+            }
+            if(this->bBoost_)
+            {
+                this->boostPower_ -=this->boostRate_*dt;
+                if(this->boostPower_ <= 0.0f)
+                {
+                    this->bBoost_ = false;
+                    this->bBoostCooldown_ = true;
+                    this->timer_.setTimer(this->boostCooldownDuration_, false, createExecutor(createFunctor(&SpaceShip::boostCooledDown, this)));
+                }
+            }
         }
+    }
+    
+    void SpaceShip::boostCooledDown(void)
+    {
+        this->bBoostCooldown_ = false;
     }
 
     void SpaceShip::moveFrontBack(const Vector2& value)
@@ -174,6 +204,20 @@ namespace orxonox
 
         Pawn::rotateRoll(value);
     }
+    
+    // TODO: something seems to call this function every tick, could probably handled a little more efficiently!
+    void SpaceShip::setBoost(bool bBoost)
+    {
+        if(bBoost == this->bBoost_)
+            return;
+    
+        if(bBoost)
+            this->boost();
+        else
+        {
+            this->bBoost_ = false;
+        }
+    }
 
     void SpaceShip::fire()
     {
@@ -181,7 +225,8 @@ namespace orxonox
 
     void SpaceShip::boost()
     {
-        this->bBoost_ = true;
+        if(!this->bBoostCooldown_)
+            this->bBoost_ = true;
     }
 
     void SpaceShip::loadEngineTemplate()

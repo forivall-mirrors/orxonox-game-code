@@ -30,6 +30,7 @@
 #define _NETWORK_Host_H__
 
 #include "NetworkPrereqs.h"
+#include "GamestateManager.h"
 #include "core/CorePrereqs.h"
 
 #include <vector>
@@ -48,12 +49,13 @@ namespace orxonox {
 *       - is the interface to be used when communicating with the network
 *       @author Oliver Scheuss
 */
-class _NetworkExport Host{
+class _NetworkExport Host: public GamestateManager
+{
   private:
     //TODO add these functions or adequate
     //virtual bool processChat(packet::Chat *message, unsigned int clientID)=0;
     //virtual bool sendChat(packet::Chat *chat)=0;
-    virtual bool queuePacket(ENetPacket *packet, int clientID)=0;
+    virtual void queuePacket(ENetPacket *packet, int clientID, uint8_t channelID)=0;
     virtual bool chat(const std::string& message)=0;
     virtual bool broadcast(const std::string& message)=0;
     virtual bool processChat(const std::string& message, unsigned int playerID)=0;
@@ -70,13 +72,11 @@ class _NetworkExport Host{
   public:
 //     static Host* getInstance(){ return instance_; }
     static bool running(){ return instances_s.size(); }
-    static bool addPacket(ENetPacket *packet, int clientID=0);
+    static void addPacket(ENetPacket* packet, int clientID = NETWORK_PEER_ID_SERVER, uint8_t channelID = 0);
     //static bool chat(std::string& message);
 //     static bool receiveChat(packet::Chat *message, unsigned int clientID);
     static unsigned int getPlayerID(){ return clientID_s; }
-    static unsigned int getShipID(){return shipID_s;}
     static void setClientID(unsigned int id){ clientID_s = id; }
-    static void setShipID(unsigned int id){ shipID_s = id; }
     static bool isServer();
     static void Chat(const std::string& message);
     static bool Broadcast(const std::string& message);
@@ -85,7 +85,6 @@ class _NetworkExport Host{
     bool isActive(){ return bIsActive_; }
   private:
     static uint32_t clientID_s;
-    static uint32_t shipID_s;
     static std::vector<Host*> instances_s;
     bool bIsActive_;
 };

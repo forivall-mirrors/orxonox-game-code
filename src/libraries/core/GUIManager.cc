@@ -58,7 +58,9 @@ extern "C" {
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "util/OrxAssert.h"
+#include "ConfigValueIncludes.h"
 #include "Core.h"
+#include "CoreIncludes.h"
 #include "GraphicsManager.h"
 #include "LuaState.h"
 #include "PathConfig.h"
@@ -99,6 +101,7 @@ namespace orxonox
     static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
     GUIManager* GUIManager::singletonPtr_s = 0;
+    /*static*/ const std::string GUIManager::defaultScheme_ = "TaharezGreen";
 
     SetConsoleCommand("showGUI", &GUIManager::showGUI).defaultValue(1, false).defaultValue(2, false);
     SetConsoleCommand("hideGUI", &GUIManager::hideGUI);
@@ -117,6 +120,9 @@ namespace orxonox
         : resourceProvider_(NULL)
         , camera_(NULL)
     {
+        RegisterRootObject(GUIManager);
+        this->setConfigValues();
+
         using namespace CEGUI;
 
         COUT(3) << "Initialising CEGUI." << std::endl;
@@ -174,6 +180,16 @@ namespace orxonox
     */
     GUIManager::~GUIManager()
     {
+    }
+
+    void GUIManager::setConfigValues(void)
+    {
+        SetConfigValue(guiScheme_, GUIManager::defaultScheme_) .description("Changes the current GUI scheme.") .callback(this, &GUIManager::changedGUIScheme);
+    }
+
+    void GUIManager::changedGUIScheme(void)
+    {
+        
     }
 
     /**

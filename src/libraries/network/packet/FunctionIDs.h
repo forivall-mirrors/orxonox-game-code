@@ -46,8 +46,8 @@ public:
   FunctionIDs( uint8_t* data, unsigned int clientID );
   ~FunctionIDs();
 
-  uint32_t getSize() const;
-  bool process();
+  virtual uint32_t getSize() const;
+  virtual bool process(orxonox::Host* host);
 
 private:
 };

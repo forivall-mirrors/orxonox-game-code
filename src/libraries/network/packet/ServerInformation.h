@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Oliver Scheuss
  *   Co-authors:
  *      ...
  *
@@ -49,6 +49,7 @@ namespace orxonox
         std::string   getServerIP() { return this->serverIP_; }
         std::string   getServerName() { return this->serverName_; }
         void          setServerName(std::string name) { this->serverName_ = name; }
+        void          setServerIP( std::string IP ) { this->serverIP_ = IP; }
         uint32_t      getServerRTT() { return this->serverRTT_; }
         
       private:

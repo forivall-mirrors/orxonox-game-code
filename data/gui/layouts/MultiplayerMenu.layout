@@ -31,8 +31,6 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.6,0},{0.87,0},{0.8,0},{0.97,0}}" />
                 <Event Name="SelectStateChanged" Function="MultiplayerMenu.InternetButton_clicked"/>
             </Window>
-
-
         </Window>
          <Window Type="MenuWidgets/Button" Name="orxonox/MultiplayerBackButton" >
             <Property Name="Text" Value="Back" />

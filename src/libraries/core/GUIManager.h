@@ -48,6 +48,7 @@
 #include "util/TriBool.h"
 #include "util/Singleton.h"
 #include "input/InputHandler.h"
+#include "OrxonoxClass.h"
 
 // Tolua includes (have to be relative to the current directory)
 /*
@@ -69,12 +70,15 @@ namespace orxonox // tolua_export
         Those input events are then injected into CEGUI in Lua.
     */
     class _CoreExport GUIManager // tolua_export
-        : public Singleton<GUIManager>, public InputHandler
+        : public Singleton<GUIManager>, public InputHandler, public OrxonoxClass
     { // tolua_export
         friend class Singleton<GUIManager>;
     public:
         GUIManager(const std::pair<int, int>& mousePosition);
         ~GUIManager();
+
+        void setConfigValues(void);
+        void changedGUIScheme(void);
 
         void preUpdate(const Clock& time);
 
@@ -141,6 +145,10 @@ namespace orxonox // tolua_export
         Ogre::Camera*                        camera_;           //!< Camera used to render the scene with the GUI
 
         static GUIManager*                   singletonPtr_s;    //!< Singleton reference to GUIManager
+
+        // The used CEGUI scheme.
+        static const std::string defaultScheme_;
+        std::string guiScheme_;
 
     }; // tolua_export
 } // tolua_export

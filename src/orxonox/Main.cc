@@ -53,6 +53,9 @@ namespace orxonox
     SetCommandLineSwitch(standalone).information("Start in standalone mode");
     SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
 
+    /* ADD masterserver command */
+    SetCommandLineSwitch(masterserver).information("Start in masterserver mode");
+
     SetCommandLineArgument(generateDoc, "")
         .information("Generates a Doxygen file from things like SetConsoleCommand");
 
@@ -66,13 +69,14 @@ namespace orxonox
 
         if (CommandLineParser::getValue("generateDoc").getString().empty())
         {
+            /* TODO make this clear */
             game->setStateHierarchy(
             "root"
             " graphics"
             "  mainMenu"
             "  standalone,server,client"
             "   level"
-            " server,client"
+            " server,client,masterserver"
             "  level"
             );
 
@@ -89,6 +93,9 @@ namespace orxonox
                 Game::getInstance().requestStates("server, level");
             else if (CommandLineParser::getValue("dedicatedClient").getBool())
                 Game::getInstance().requestStates("client, level");
+            /* ADD masterserver command */
+            else if (CommandLineParser::getValue("masterserver").getBool())
+                Game::getInstance().requestStates("masterserver");
             else
             {
                 if (!CommandLineParser::getValue("console").getBool())

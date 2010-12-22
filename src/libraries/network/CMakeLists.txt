@@ -27,13 +27,19 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   FunctionCall.cc
   FunctionCallManager.cc
   GamestateManager.cc
-  GamestateClient.cc
+  #GamestateClient.cc
   GamestateHandler.cc
   LANDiscoverable.cc
   LANDiscovery.cc
+  WANDiscoverable.cc
+  WANDiscovery.cc
+  MasterServerComm.cc
   NetworkFunction.cc
   Host.cc
   Server.cc
+  MasterServer.cc
+  PeerList.cc
+  ServerList.cc
   ServerConnection.cc
   TrafficControl.cc
 )
@@ -47,16 +53,22 @@ SET_SOURCE_FILES(NETWORK_HDR_FILES
   Connection.h
   FunctionCall.h
   FunctionCallManager.h
-  GamestateClient.h
+  #GamestateClient.h
   GamestateHandler.h
   GamestateManager.h
   Host.h
   LANDiscoverable.h
   LANDiscovery.h
+  WANDiscoverable.h
+  WANDiscovery.h
+  MasterServerComm.h
   NetworkFunction.h
   NetworkPrecompiledHeaders.h
   NetworkPrereqs.h
   Server.h
+  MasterServer.h
+  PeerList.h
+  ServerList.h
   ServerConnection.h
   TrafficControl.h
 )
@@ -68,6 +80,7 @@ ORXONOX_ADD_LIBRARY(network
   TOLUA_FILES
     Client.h
     LANDiscovery.h
+    WANDiscovery.h
   PCH_FILE
     NetworkPrecompiledHeaders.h
   LINK_LIBRARIES

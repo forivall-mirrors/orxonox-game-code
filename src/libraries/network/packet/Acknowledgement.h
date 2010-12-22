@@ -41,12 +41,12 @@ namespace packet {
 class _NetworkExport Acknowledgement : public Packet
 {
 public:
-  Acknowledgement( unsigned int id, unsigned int clientID );
-  Acknowledgement( uint8_t* data, unsigned int clientID );
+  Acknowledgement( unsigned int id, unsigned int peerID );
+  Acknowledgement( uint8_t* data, unsigned int peerID );
   ~Acknowledgement();
 
   inline unsigned int getSize() const;
-  bool process();
+  virtual bool process(orxonox::Host* host);
 
   unsigned int getAckID();
 private:

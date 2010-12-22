@@ -46,7 +46,7 @@ public:
 
   uint8_t *getData();
   inline unsigned int getSize() const;
-  bool process();
+  virtual bool process(orxonox::Host* host);
 
 private:
 };

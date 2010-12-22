@@ -23,6 +23,7 @@
  *      Felix Schulthess
  *   Co-authors:
  *      Reto Grieder
+ *      Oliver Scheuss
  *
  */
 
@@ -409,4 +410,5 @@ void HUDNavigation::changedOwner()
             this->addObject ( *it );
     }
 }
+
 }

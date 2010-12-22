@@ -53,14 +53,15 @@ public:
 
   inline unsigned int getSize() const
     { assert(!this->isDataENetAllocated()); return currentSize_; }
-  bool process();
+  virtual bool process(orxonox::Host* host);
 
   void addCallStatic( uint32_t networkID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
   void addCallMember( uint32_t networkID, uint32_t objectID, const MultiType* mt1=0, const MultiType* mt2=0, const MultiType* mt3=0, const MultiType* mt4=0, const MultiType* mt5=0);
-  virtual bool send();
+  virtual bool send(orxonox::Host* host);
 private:
   std::queue<orxonox::FunctionCall> functionCalls_;
   unsigned int                      clientID_;
+  uint32_t                          minGamestateID_;
   uint32_t                          currentSize_;
 };
 

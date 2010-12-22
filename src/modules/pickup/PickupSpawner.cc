@@ -119,7 +119,7 @@ namespace orxonox
     */
     PickupSpawner::~PickupSpawner()
     {
-        if(this->selfDestruct_ && this->pickup_ != NULL)
+        if(this->isInitialized() && this->selfDestruct_ && this->pickup_ != NULL)
             this->pickup_->destroy();
     }
 
@@ -316,7 +316,9 @@ namespace orxonox
 
             assert(pickup);
             assert(target);
-            assert(pickup->pickup(target));
+            bool pickedUp = pickup->pickup(target);
+            assert(pickedUp);
+            pickedUp = false; // To avoid compiler warning.
 
             this->decrementSpawnsRemaining();
         }
