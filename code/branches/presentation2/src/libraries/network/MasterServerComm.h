@@ -29,6 +29,8 @@
 #ifndef _MasterServerComm_H__
 #define _MasterServerComm_H__
 
+#include "NetworkPrereqs.h"
+
 #include <cstdlib>
 #include <cstdio>
 #include <string>
@@ -38,7 +40,7 @@
 
 namespace orxonox
 {
-  class MasterServerComm 
+  class _NetworkExport MasterServerComm 
   { 
     public: 
       /** constructor */

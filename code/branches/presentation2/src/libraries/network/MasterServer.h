@@ -29,6 +29,8 @@
 #ifndef _MasterServer_H__
 #define _MasterServer_H__
 
+#include "NetworkPrereqs.h"
+
 /* orxonox includes */
 #include <enet/enet.h>
 #include <network/packet/Chat.h>
@@ -49,7 +51,7 @@
 namespace orxonox 
 {
   /* singleton */
-  class MasterServer
+  class _NetworkExport MasterServer
   {
     public:
       MasterServer();
