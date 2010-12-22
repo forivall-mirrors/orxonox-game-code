@@ -39,8 +39,9 @@
 // #include "GamestateManager.h"
 #include "ServerConnection.h"
 #include "LANDiscoverable.h"
-#include "MasterServerComm.h"
-#include "MasterServerProtocol.h"
+#include "WANDiscoverable.h"
+// #include "MasterServerComm.h"
+// #include "MasterServerProtocol.h"
 
 
 namespace orxonox
@@ -50,7 +51,8 @@ namespace orxonox
   * This class is the root class of the network module for a server.
   * It implements all functions necessary for a Server
   */
-  class _NetworkExport Server : public Host, public ServerConnection, public LANDiscoverable{
+  class _NetworkExport Server : public Host, public ServerConnection, public LANDiscoverable, public WANDiscoverable
+  {
   public:
     Server();
     Server(int port);

@@ -52,6 +52,8 @@ namespace orxonox
        * Initialize everything for the master server communication 
        */
       int initialize();
+      
+      void update();
 
 
       /** \param address Address to connect to (Host name or IP in text form)
@@ -91,16 +93,16 @@ namespace orxonox
 
     private:
       /** client handle */
-      ENetHost *client;
+      ENetHost* client;
 
       /** event data holder */
-      ENetEvent *event;
+      ENetEvent event;
 
       /** address holder */
       ENetAddress address;
 
       /** peer data holder */
-      ENetPeer *peer;
+      ENetPeer* peer;
   }; 
 
 } 

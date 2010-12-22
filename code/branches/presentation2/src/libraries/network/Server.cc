@@ -103,8 +103,8 @@ namespace orxonox
   /** helper that connects to the master server */
   void Server::helper_ConnectToMasterserver()
   {
-    WANDiscovery::getInstance().msc.sendRequest( MSPROTO_GAME_SERVER " " 
-      MSPROTO_REGISTER_SERVER );
+//     WANDiscovery::getInstance().msc.sendRequest( MSPROTO_GAME_SERVER " " 
+//       MSPROTO_REGISTER_SERVER );
   }
 
   /**
@@ -120,10 +120,11 @@ namespace orxonox
     LANDiscoverable::setActivity(true);
 
     /* make discoverable on WAN */
+    WANDiscoverable::setActivity(true);
     /* TODO this needs to be optional, we need a switch from the UI to
      * enable/disable this 
      */
-    helper_ConnectToMasterserver();
+//     helper_ConnectToMasterserver();
 
     /* done */
     return;
@@ -141,8 +142,7 @@ namespace orxonox
 
     /* tell master server we're closing */
     COUT(2) << "disconnecting." << endl;
-    WANDiscovery::getInstance().msc.sendRequest( MSPROTO_GAME_SERVER " " 
-      MSPROTO_SERVERDC );
+    WANDiscoverable::setActivity(false);    
     COUT(2) << "disconnecting done" << endl;
 
     LANDiscoverable::setActivity(false);
@@ -201,7 +201,7 @@ namespace orxonox
 
     // receive and process incoming discovery packets
     LANDiscoverable::update();
-
+    
     // receive and process requests from master server
     /* todo */
     //helper_HandleMasterServerRequests();

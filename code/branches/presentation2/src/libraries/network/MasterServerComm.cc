@@ -47,7 +47,7 @@ namespace orxonox
     }
 
     /* initialize the event holder */
-    this->event = (ENetEvent *)calloc( sizeof(ENetEvent), 1 );
+//     this->event = (ENetEvent *)calloc( sizeof(ENetEvent), 1 );
     
 
     /* initiate the client */
@@ -89,8 +89,8 @@ namespace orxonox
     }
 
     /* Wait up to 2 seconds for the connection attempt to succeed. */
-    if (enet_host_service (this->client, this->event, 500) > 0 &&
-        this->event->type == ENET_EVENT_TYPE_CONNECT )
+    if (enet_host_service (this->client, &this->event, 500) > 0 &&
+        this->event.type == ENET_EVENT_TYPE_CONNECT )
       COUT(3) << "Connection to master server succeeded.\n";
     else
     {
@@ -102,20 +102,27 @@ namespace orxonox
     /* all fine */
     return 0;
   }
+  
+void MasterServerComm::update()
+{
+  while( enet_host_service( this->client, &this->event, 1 ) );
+}
+
 
   int MasterServerComm::disconnect( void )
   {
+    while( enet_host_service( this->client, &this->event, 1 ) );
     enet_peer_disconnect( this->peer, 0 );
 
     /* Allow up to 1 second for the disconnect to succeed
      * and drop any packets received packets.
      */
-    while (enet_host_service (this->client, this->event, 1000) > 0)
+    while (enet_host_service (this->client, &this->event, 1000) > 0)
     {
-      switch (this->event->type)
+      switch (this->event.type)
       {
         case ENET_EVENT_TYPE_RECEIVE:
-          enet_packet_destroy (event->packet);
+          enet_packet_destroy (event.packet);
           break;
 
         case ENET_EVENT_TYPE_DISCONNECT:
@@ -153,10 +160,10 @@ namespace orxonox
 
     /* enet_host_service returns 0 if no event occured */
     /* just newly set below test to >0 from >= 0, to be tested */
-    if( enet_host_service( this->client, this->event, delayms ) > 0 )
+    if( enet_host_service( this->client, &this->event, delayms ) > 0 )
     { 
       /* check what type of event it is and react accordingly */
-      switch (this->event->type)
+      switch (this->event.type)
       { /* new connection, not supposed to happen. */
         case ENET_EVENT_TYPE_CONNECT: break;
 
@@ -172,23 +179,23 @@ namespace orxonox
           }
 
           /* resolve IP */
-          enet_address_get_host_ip( &(this->event->peer->address), 
+          enet_address_get_host_ip( &(this->event.peer->address), 
             addrconv, 49 );
 
           /* DEBUG */
           COUT(3) << "MasterServer Debug: A packet of length " 
-            << this->event->packet->dataLength 
-            << " containing " << this->event->packet->data
+            << this->event.packet->dataLength 
+            << " containing " << this->event.packet->data
             << " was received from " << addrconv 
-            << " on channel " << this->event->channelID;
+            << " on channel " << this->event.channelID;
           /* END DEBUG */
 
           /* call the supplied callback, if any. */
           if( (*callback) != NULL )
-            retval = (*callback)( addrconv, (this->event) );
+            retval = (*callback)( addrconv, &(this->event) );
 
           /* clean up */
-          enet_packet_destroy( event->packet );
+          enet_packet_destroy( event.packet );
           if( addrconv ) 
             free( addrconv );
 
@@ -219,7 +226,8 @@ namespace orxonox
     enet_host_flush( this->client );
    
     /* free the packet */
-    enet_packet_destroy( packet );
+    // PLEASE: never do this, because enet will free the packet once it's delivered. this will cause double frees
+//     enet_packet_destroy( packet );
 
     /* all done. */
     return 0;
@@ -238,7 +246,8 @@ namespace orxonox
 
     /* One could just use enet_host_service() instead. */
     enet_host_flush( this->client );
-    enet_packet_destroy( packet );
+    // PLEASE: never do this, because enet will free the packet once it's delivered. this will cause double frees
+//     enet_packet_destroy( packet );
 
     /* all done. */
     return 0;

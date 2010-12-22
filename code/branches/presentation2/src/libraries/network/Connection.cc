@@ -111,7 +111,6 @@ namespace orxonox
   
   void Connection::communicationThread()
   {
-    COUT(0) << "starting communication thread" << endl;
     ENetEvent event;
     
     while( bCommunicationThreadRunning_ )
