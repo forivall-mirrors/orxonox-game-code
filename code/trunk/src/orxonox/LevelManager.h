@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Damian 'Mozork' Frick
  *
  */
 
@@ -36,12 +36,25 @@
 #include <map>
 #include <string>
 
+#include "LevelInfo.h"
+
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 
 // tolua_begin
 namespace orxonox
 {
+
+    /**
+    @brief
+        The LevelManager keeps track of @ref orxonox::Level "Levels" whose activity has been requested and serves as an access point to get a list of all available @ref orxonox::Level "Levels" (or rather their respective @ref orxonox::LevelInfoItem "LevelInfoItems").
+
+    @author
+        Fabian 'x3n' Landau
+
+    @author
+        Damian 'Mozork' Frick
+    */
     class _OrxonoxExport LevelManager
     // tolua_end
         : public Singleton<LevelManager>, public OrxonoxClass
@@ -51,30 +64,45 @@ namespace orxonox
             LevelManager();
             virtual ~LevelManager();
 
-            void setConfigValues();
+            void setConfigValues(); //!< Set the config values for this object.
 
-            void requestActivity(Level* level);
-            void releaseActivity(Level* level);
-            Level* getActiveLevel();
+            void requestActivity(Level* level); //!< Request activity for the input Level.
+            void releaseActivity(Level* level); //!< Release activity for the input Level.
+            Level* getActiveLevel(); //!< Get the currently active Level.
 
-            void setDefaultLevel(const std::string& levelName); //tolua_export
-            const std::string& getDefaultLevel() const; //tolua_export
-            unsigned int getNumberOfLevels(void); //tolua_export
-            LevelInfoItem* getAvailableLevelListItem(unsigned int index) const; //tolua_export
+            // tolua_begin
+            void setDefaultLevel(const std::string& levelName); //!< Set the default Level.
+            /**
+            @brief Get the default level.
+            @return Returns the filename of the default level.
+            */
+            const std::string& getDefaultLevel() const
+                { return defaultLevelName_; }
+            unsigned int getNumberOfLevels(void);
+            LevelInfoItem* getAvailableLevelListItem(unsigned int index); //!< Get the LevelInfoItem at the given index in the list of available Levels.
 
-            static LevelManager& getInstance()    { return Singleton<LevelManager>::getInstance(); } // tolua_export
+            /**
+            @brief Get the instance of the LevelManager.
+            @return Returns the instance of the LevelManager.
+            */
+            static LevelManager& getInstance()
+                { return Singleton<LevelManager>::getInstance(); }
+            // tolua_end
 
         private:
             LevelManager(const LevelManager&);
 
-            void activateNextLevel();
+            void activateNextLevel(); //!< Activate the next level.
 
-            void compileAvailableLevelList(void);
-            void updateAvailableLevelList(void);
+            void compileAvailableLevelList(void); //!< Compile the list of available Levels.
+            void updateAvailableLevelList(void); //!< Update the list of available Levels.
 
-            std::list<Level*> levels_s;
-            std::vector<std::string> availableLevels_;
-            std::map<std::string, LevelInfoItem*> infos_;
+            std::list<Level*> levels_; //!< A list of all the Levels whose activity has been requested, in the order in which they will become active.
+            std::set<LevelInfoItem*, LevelInfoCompare> availableLevels_; //!< The set of available Levels sorted alphabetically according to the name of the Level.
+
+            // Helpers to allow fast access to the availableLevels list.
+            unsigned int nextIndex_; //! The next expected index to be accessed.
+            std::set<LevelInfoItem*, LevelInfoCompare>::iterator nextLevel_; //! The nex expected Level to be accessed.
 
             // config values
             std::string defaultLevelName_;
