@@ -55,7 +55,6 @@ ENDIF()
 # Set the search paths for include files
 INCLUDE_DIRECTORIES(
   # External
-  ${VLD_INCLUDE_DIR}
 
   # All includes in "externals" should be prefixed with the path
   # relative to "external" to avoid conflicts

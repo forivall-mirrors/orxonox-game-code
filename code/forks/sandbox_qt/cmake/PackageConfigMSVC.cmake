@@ -55,10 +55,4 @@ IF(MSVC)
   # to specify the libraries ourselves.
   #SET(TCL_LIBRARY  ${DEP_LIBRARY_DIR}/tcl85.lib CACHE FILEPATH "")
 
-  # Visual Leak Detector
-  SET(VLD_INCLUDE_DIR  ${DEP_INCLUDE_DIR}/vld   CACHE PATH "")
-  SET(VLD_LIBRARY_DIR  ${DEP_LIBRARY_DIR}       CACHE PATH "")
-  LINK_DIRECTORIES(${VLD_LIBRARY_DIR}) # Used for auto-linking
-  MARK_AS_ADVANCED(VLD_INCLUDE_DIR VLD_LIBRARY_DIR)
-
 ENDIF(MSVC)

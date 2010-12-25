@@ -35,17 +35,6 @@ ENDIF()
 
 ######################## Options ########################
 
-# Currently VLD has a problem with MSVC9 although it actually is supported
-IF(MSVC80)
-  OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" off)
-ENDIF()
-# Make sure the value is "on" or "off" for vld.ini
-IF(VISUAL_LEAK_DETECTOR_ENABLE)
-  SET(VISUAL_LEAK_DETECTOR_ENABLE on)
-ELSE()
-  SET(VISUAL_LEAK_DETECTOR_ENABLE off)
-ENDIF()
-
 # Orxonox only supports MSVC 8 and above, which gets asserted above
 SET(PCH_COMPILER_SUPPORT TRUE)
 
