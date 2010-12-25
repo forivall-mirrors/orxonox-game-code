@@ -47,8 +47,6 @@
  #      PCH_FILE:          Precompiled header file
  #      PCH_EXCLUDE:       Source files to be excluded from PCH support
  #      OUTPUT_NAME:       If you want a different name than the target name
- #      QT_MOC_FILES:      List of files to be processed by Qt MOC
- #      QT_UIC_FILES:      List of files to be processed by Qt UIC
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
@@ -84,19 +82,72 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
                   NO_INSTALL         NO_VERSION        ${_additional_switches})
   SET(_list_names LINK_LIBRARIES     VERSION           SOURCE_FILES
                   DEFINE_SYMBOL      PCH_FILE          PCH_EXCLUDE
-                  OUTPUT_NAME        QT_MOC_FILES      QT_UIC_FILES)
+                  OUTPUT_NAME)
 
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
 
-  # Workaround: Source file properties get lost when leaving a subdirectory
-  # Therefore an "H" after a file means we have to set it as HEADER_FILE_ONLY
+  # Process source files with support for compilations and QT special files
+  # Note: All file paths are relative to the root source directory, even the
+  #       name of the compilation file.
+  SET(_${_target_name}_source_files)
+  SET(_get_compilation_file FALSE)
+  SET(_add_to_compilation FALSE)
+  SET(_compile_qt_next FALSE)
   FOREACH(_file ${_arg_SOURCE_FILES})
-    IF(_file STREQUAL "H")
-      SET_SOURCE_FILES_PROPERTIES(${_last_file} PROPERTIES HEADER_FILE_ONLY TRUE)
+    IF(_file STREQUAL "COMPILATION_BEGIN")
+      # Next file is the name of the compilation
+      SET(_get_compilation_file TRUE)
+    ELSEIF(_file STREQUAL "COMPILATION_END")
+      IF(NOT _compilation_file)
+        MESSAGE(FATAL_ERROR "No name provided for source file compilation")
+      ENDIF()
+      IF(NOT _compilation_include_string)
+        MESSAGE(STATUS "Warning: Empty source file compilation!")
+      ENDIF()
+      IF(NOT DISABLE_COMPILATIONS)
+        IF(EXISTS ${_compilation_file})
+          FILE(READ ${_compilation_file} _include_string_file)
+        ENDIF()
+        IF(NOT _compilation_include_string STREQUAL "${_include_string_file}")
+          FILE(WRITE ${_compilation_file} "${_compilation_include_string}")
+        ENDIF()
+        LIST(APPEND _${_target_name}_source_files ${_compilation_file})
+      ENDIF()
+      SET(_add_to_compilation FALSE)
+    ELSEIF(_get_compilation_file)
+      SET(_compilation_file ${CMAKE_BINARY_DIR}/${_file})
+      SET(_get_compilation_file FALSE)
+      SET(_add_to_compilation TRUE)
+      SET(_compilation_include_string)
+    ELSEIF(_file STREQUAL "QT")
+      SET(_compile_qt_next TRUE)
     ELSE()
-      SET(_last_file ${_file})
+      # Default, add source file
+      SET(_file ${CMAKE_SOURCE_DIR}/${_file})
       LIST(APPEND _${_target_name}_source_files ${_file})
+
+      # Handle compilations
+      IF(_add_to_compilation AND NOT DISABLE_COMPILATIONS)
+        IF(_file MATCHES "\\.(c|cc|cpp|cxx)$")
+          SET(_compilation_include_string "${_compilation_include_string}#include \"${_file}\"\n")
+        ENDIF()
+        # Don't compile these files, even if they are source files
+        SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
+      ENDIF()
+
+      # Handle Qt MOC and UI files
+      IF(_compile_qt_next)
+        GET_FILENAME_COMPONENT(_ext ${_file} EXT)
+        IF(_ext STREQUAL ".ui")
+          QT4_WRAP_UI(_${_target_name}_source_files ${_file})
+        ELSEIF(_ext STREQUAL ".qrc")
+          QT4_ADD_RESOURCES(_${_target_name}_source_files ${_file})
+        ELSEIF(_ext MATCHES "^\\.(h|hpp|hxx)$")
+          QT4_WRAP_CPP(_${_target_name}_source_files ${_file})
+        ENDIF()
+        SET(_compile_qt_next FALSE)
+      ENDIF()
     ENDIF()
   ENDFOREACH(_file)
 
@@ -105,22 +156,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     GET_ALL_HEADER_FILES(_${_target_name}_header_files)
   ENDIF()
 
-  # Combine source, header and QT designer files
+  # Combine source and header files
   SET(_${_target_name}_files
     ${_${_target_name}_header_files}
     ${_${_target_name}_source_files}
-    ${_arg_QT_UIC_FILES}
   )
   # Remove potential duplicates
   LIST(REMOVE_DUPLICATES _${_target_name}_files)
-
-  # QT MOC and UIC preprocessing
-  IF(_arg_QT_MOC_FILES)
-      QT4_WRAP_CPP(_${_target_name}_files ${_arg_QT_MOC_FILES})
-  ENDIF()
-  IF(_arg_QT_UIC_FILES)
-      QT4_WRAP_UI(_${_target_name}_files ${_arg_QT_UIC_FILES})
-  ENDIF()
 
   # First part (pre target) of precompiled header files
   IF(PCH_COMPILER_SUPPORT AND _arg_PCH_FILE)
@@ -173,7 +215,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # Don't compile header files
   FOREACH(_file ${_${_target_name}_files})
-    IF(NOT _file MATCHES "\\.(c|cc|cpp)")
+    IF(NOT _file MATCHES "\\.(c|cc|cpp|cxx)$")
       SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
     ENDIF()
   ENDFOREACH(_file)

@@ -19,22 +19,20 @@
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/libraries
-  ${CMAKE_CURRENT_SOURCE_DIR}
+  # Make Qt UIC generated header files visible
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
   Main.cc
-  MainWindow.cc
+
+  QT MainWindow.h       MainWindow.cc
+  QT MainWindow.ui
 )
 
 #ADD_SUBDIRECTORY(subdir)
 
 ORXONOX_ADD_LIBRARY(orxonox
-  FIND_HEADER_FILES
-  QT_MOC_FILES
-    MainWindow.h
-  QT_UIC_FILES
-    MainWindow.ui
   LINK_LIBRARIES
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}

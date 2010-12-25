@@ -79,6 +79,8 @@ ADD_SUBDIRECTORY(orxonox)
 
 ################## Executable ###################
 
+SET_SOURCE_FILES(ORXONOX_MAIN_SRC_FILES Orxonox.cc)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/libraries
   ${CMAKE_CURRENT_SOURCE_DIR}/orxonox
@@ -96,7 +98,7 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
     ${QT_QTMAIN_LIBRARY}
     orxonox
   SOURCE_FILES
-    Orxonox.cc
+    ${ORXONOX_MAIN_SRC_FILES}
   OUTPUT_NAME orxonox
 )
 
