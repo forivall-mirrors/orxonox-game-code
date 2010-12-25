@@ -47,7 +47,8 @@ namespace orxonox
 
     /**
     @brief
-        The LevelManager keeps track of @ref orxonox::Level "Levels" whose activity has been requested and serves as an access point to get a list of all available @ref orxonox::Level "Levels" (or rather their respective @ref orxonox::LevelInfoItem "LevelInfoItems").
+        The LevelManager keeps track of @ref orxonox::Level "Levels" whose activity has been requested and activates the @ref orxonox::Level "Levels" in the list in a FIFO manner with exactly one Level (the first in the list) being active at all times (unless the list is empty).
+        It also serves as an access point to get a list of all available @ref orxonox::Level "Levels" (or rather their respective @ref orxonox::LevelInfoItem "LevelInfoItems").
 
     @author
         Fabian 'x3n' Landau
