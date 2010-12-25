@@ -49,11 +49,13 @@ namespace orxonox // tolua_export
 
     /**
     @brief
-        The LevelInfoItem class stores information regarding a @ref orxonox::Level "Level" and makes that information it accessible trough the @ref orxonox::LevelManager "LevelManager".
+        The LevelInfoItem class stores information regarding a @ref orxonox::Level "Level" and makes that information accessible through the @ref orxonox::LevelManager "LevelManager".
         A LevelInfoItem object is commonly created from a @ref orxonox::LevelInfo "LevelInfo" object, using its <code>copy()</code> method.
 
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Orxonox
     */
     class _OrxonoxExport LevelInfoItem // tolua_export
         : virtual public OrxonoxClass
@@ -159,6 +161,8 @@ namespace orxonox // tolua_export
 
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Orxonox
     */
     class _OrxonoxExport LevelInfo : public BaseObject, public LevelInfoItem
     {
@@ -201,6 +205,8 @@ namespace orxonox // tolua_export
     /**
     @brief
         Struct that overloads the compare operation between two @ref orxonox::LevelInfoItem "LevelInfoItem" pointers.
+
+    @ingroup Orxonox
     */
     struct LevelInfoCompare
     {

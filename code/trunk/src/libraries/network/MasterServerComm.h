@@ -87,7 +87,7 @@ namespace orxonox
        */
       int sendRequest( std::string data );
 
-      /** \param callback The callback function to call with data receivced.
+      /** \param callback The callback function to call with data received.
        * \return 0 for success, other for error
        * 
        * Poll the master server for new data and act accordingly */

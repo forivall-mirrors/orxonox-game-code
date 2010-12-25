@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file LevelManager.cc
+    @brief Implementation of the LevelManager singleton.
+*/
+
 #include "LevelManager.h"
 
 #include <map>
@@ -186,12 +191,14 @@ namespace orxonox
         Get the LevelInfoItem at the given index in the list of available Levels.
         The LevelInfoItems are sorted in alphabetical order accoridng to the name of the Level.
         This method is most efficiently called with consecutive indices (or at least ascending indices).
+    @param index
+        The index of the item that should be returned.
     @return
         Returns a pointer to the LevelInfoItem at the given index.
     */
     LevelInfoItem* LevelManager::getAvailableLevelListItem(unsigned int index)
     {
-        if (index >= this->availableLevels_.size())
+        if(index >= this->availableLevels_.size())
             return NULL;
 
         // If this index directly follows the last we can optimize a lot.
