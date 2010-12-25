@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Damian 'Mozork' Frick
  *
  */
 
@@ -38,9 +38,8 @@
 #include "core/Loader.h"
 #include "core/Resource.h"
 #include "core/XMLFile.h"
-#include "PlayerManager.h"
 #include "Level.h"
-#include "LevelInfo.h"
+#include "PlayerManager.h"
 
 namespace orxonox
 {
@@ -48,6 +47,10 @@ namespace orxonox
 
     ManageScopedSingleton(LevelManager, ScopeID::Root, false);
 
+    /**
+    @brief
+        Constructor. Registers the object, sets config values and initializes variables.
+    */
     LevelManager::LevelManager()
     {
         RegisterRootObject(LevelManager);
@@ -60,75 +63,117 @@ namespace orxonox
         }
 
         this->compileAvailableLevelList();
+        this->nextIndex_ = 0;
+        this->nextLevel_ = this->availableLevels_.begin();
     }
 
     LevelManager::~LevelManager()
     {
     }
 
+    /**
+    @brief
+        Set the config values for this object.
+    */
     void LevelManager::setConfigValues()
     {
         SetConfigValue(defaultLevelName_, "presentationDM.oxw")
             .description("Sets the pre selection of the level in the main menu.");
     }
 
+    /**
+    @brief
+        Request activity for the input Level.
+        The Level will be added to the list of Levels whose activity is requested. The list is accessed in a FIFO manner.
+        If the Level is the only Level in the list it will be immediately activated. If not it will be activated as soon as it reaches the front of the list.
+    @param level
+        A pointer to the Level whose activity is requested.
+    */
     void LevelManager::requestActivity(Level* level)
     {
-        assert( std::find(this->levels_s.begin(), this->levels_s.end(), level)==this->levels_s.end() );
-        if( std::find(this->levels_s.begin(), this->levels_s.end(), level)!=this->levels_s.end() )
-            return; // level is already in list
-        this->levels_s.push_back(level);
-        if (this->levels_s.size() == 1)
+        assert( std::find(this->levels_.begin(), this->levels_.end(), level)==this->levels_.end() );
+        // If the level is already in list.
+        if( std::find(this->levels_.begin(), this->levels_.end(), level)!=this->levels_.end() )
+            return;
+        // If it isn't insert it at the back.
+        this->levels_.push_back(level);
+        // If it is the only level in the list activate it.
+        if (this->levels_.size() == 1)
             this->activateNextLevel();
     }
 
+    /**
+    @brief
+        Release activity for the input Level.
+        Removes the Level from the list. If the Level was the one currently active, it is deactivated and the next Level in line is activated.
+    @param level
+        A pointer to the Level whose activity is to be released.
+    */
     void LevelManager::releaseActivity(Level* level)
     {
-        if (this->levels_s.size() > 0)
+        if (this->levels_.size() > 0)
         {
-            if (this->levels_s.front() == level)
+            // If the level is the active level in the front of the list.
+            if (this->levels_.front() == level)
             {
+                // Deactivate it, remove it from the list and activate the next level in line.
                 level->setActive(false);
-                this->levels_s.pop_front();
+                this->levels_.pop_front();
                 this->activateNextLevel();
             }
-            else
-            {
-                for (std::list<Level*>::iterator it = this->levels_s.begin(); it != this->levels_s.end(); ++it)
-                    if ((*it) == level)
-                        this->levels_s.erase(it);
-            }
+            else // Else just remove it from the list.
+                this->levels_.erase(std::find(this->levels_.begin(), this->levels_.end(), level));
         }
     }
 
+    /**
+    @brief
+        Get the currently active Level.
+    @return
+        Returns a pointer to the currently active level or NULL if there currently are no active Levels.
+    */
     Level* LevelManager::getActiveLevel()
     {
-        if (this->levels_s.size() > 0)
-            return this->levels_s.front();
+        if (this->levels_.size() > 0)
+            return this->levels_.front();
         else
             return 0;
     }
 
+    /**
+    @brief
+        Activate the next Level.
+    */
     void LevelManager::activateNextLevel()
     {
-        if (this->levels_s.size() > 0)
+        if (this->levels_.size() > 0)
         {
-            this->levels_s.front()->setActive(true);
+            // Activate the level that is the first in the list of levels whose activity has been requested. 
+            this->levels_.front()->setActive(true);
+            // Make every player enter the newly activated level.
             for (std::map<unsigned int, PlayerInfo*>::const_iterator it = PlayerManager::getInstance().getClients().begin(); it != PlayerManager::getInstance().getClients().end(); ++it)
-                this->levels_s.front()->playerEntered(it->second);
+                this->levels_.front()->playerEntered(it->second);
         }
     }
 
+    /**
+    @brief
+        Set the default Level.
+    @param levelName
+        The filename of the default Level.
+    */
     void LevelManager::setDefaultLevel(const std::string& levelName)
     {
         ModifyConfigValue(defaultLevelName_, set, levelName);
     }
 
-    const std::string& LevelManager::getDefaultLevel() const
-    {
-        return defaultLevelName_;
-    }
-
+    /**
+    @brief
+        Get the number of available Levels.
+        Also updates the list of available Levels.
+    @return
+        Returns the number of available Levels.
+    */
     unsigned int LevelManager::getNumberOfLevels()
     {
         this->updateAvailableLevelList();
@@ -136,17 +181,52 @@ namespace orxonox
         return this->availableLevels_.size();
     }
 
-    LevelInfoItem* LevelManager::getAvailableLevelListItem(unsigned int index) const
+    /**
+    @brief
+        Get the LevelInfoItem at the given index in the list of available Levels.
+        The LevelInfoItems are sorted in alphabetical order accoridng to the name of the Level.
+        This method is most efficiently called with consecutive indices (or at least ascending indices).
+    @return
+        Returns a pointer to the LevelInfoItem at the given index.
+    */
+    LevelInfoItem* LevelManager::getAvailableLevelListItem(unsigned int index)
     {
         if (index >= this->availableLevels_.size())
             return NULL;
+
+        // If this index directly follows the last we can optimize a lot.
+        if(index == this->nextIndex_)
+        {
+            this->nextIndex_++;
+            std::set<LevelInfoItem*, LevelInfoCompare>::iterator it = this->nextLevel_;
+            this->nextLevel_++;
+            return *it;
+        }
         else
         {
-            std::map<std::string, LevelInfoItem*>::const_iterator it = this->infos_.find(this->availableLevels_[index]);
-            return it->second;
+            // If this index is bigger than the last, we can optimize a little.
+            if(index > this->nextIndex_)
+            {
+                this->nextIndex_ = 0;
+                this->nextLevel_ = this->availableLevels_.begin();
+            }
+            while(this->nextIndex_ != index)
+            {
+                this->nextIndex_++;
+                this->nextLevel_++;
+            }
+            this->nextIndex_++;
+            std::set<LevelInfoItem*, LevelInfoCompare>::iterator it = this->nextLevel_;
+            this->nextLevel_++;
+            return *it;
         }
     }
 
+    /**
+    @brief
+        Compile the list of available Levels.
+        Iterates over all *.oxw files, loads the LevelInfo objects in them and from that it creates the LevelInfoItems which are inserted in a list.
+    */
     void LevelManager::compileAvailableLevelList()
     {
         Ogre::StringVectorPtr levels = Resource::findResourceNames("*.oxw");
@@ -154,38 +234,39 @@ namespace orxonox
         COUT(3) << "Loading LevelInfos..." << std::endl;
         for (Ogre::StringVector::const_iterator it = levels->begin(); it != levels->end(); ++it)
         {
-            //TODO: Replace with tag,
+            //TODO: Replace with tag?
             if (it->find("old/") != 0)
             {
                 size_t pos = it->find(".oxw");
 
-                bool infoExists = false;
                 // Load the LevelInfo object from the level file.
+                bool infoExists = false;
                 XMLFile file = XMLFile(*it);
                 ClassTreeMask mask = ClassTreeMask();
                 mask.exclude(ClassIdentifier<BaseObject>::getIdentifier());
                 mask.include(ClassIdentifier<LevelInfo>::getIdentifier());
                 Loader::load(&file, mask, false);
+                // Iterate over all LevelInfos.
                 for(ObjectList<LevelInfo>::iterator item = ObjectList<LevelInfo>::begin(); item != ObjectList<LevelInfo>::end(); ++item)
                 {
                     LevelInfoItem* info = item->copy();
-                    if(info->getXMLFilename() == *it)
+                    if(info->getXMLFilename() == *it) // If the LevelInfo for this level exists we insert it into the list of available levels.
                     {
-                        this->infos_.insert(std::pair<std::string, LevelInfoItem*>(it->substr(0, pos),info));
+                        this->availableLevels_.insert(info);
                         infoExists = true;
                     }
                 }
                 Loader::unload(&file, mask);
-                if(!infoExists)
-                {
-                    this->infos_.insert(std::pair<std::string, LevelInfoItem*>(it->substr(0, pos), new LevelInfoItem(it->substr(0, pos), *it)));
-                }
-
-                this->availableLevels_.push_back(it->substr(0, pos));
+                if(!infoExists) // If the LevelInfo for this level doesn't exist, we create a new one and insert it into the list of available levels.
+                    this->availableLevels_.insert(new LevelInfoItem(it->substr(0, pos), *it));
             }
         }
     }
 
+    /**
+    @brief
+        Update the list of available Levels.
+    */
     void LevelManager::updateAvailableLevelList(void)
     {
         //TODO: Implement some kind of update?

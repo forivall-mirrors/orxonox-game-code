@@ -39,6 +39,7 @@
 
 #include <set>
 #include <string>
+#include "util/StringUtils.h"
 
 #include "core/BaseObject.h"
 #include "core/OrxonoxClass.h"
@@ -72,7 +73,7 @@ namespace orxonox // tolua_export
             @brief Get the name of the Level.
             @return Returns the name of the Level.
             */
-            inline const std::string& getName(void) { return this->name_; } // tolua_export
+            inline const std::string& getName(void) const { return this->name_; } // tolua_export
 
             /**
             @brief Set the description of the Level.
@@ -149,7 +150,7 @@ namespace orxonox // tolua_export
         An example would be:
         @code
         <LevelInfo
-            name = "Levelname"
+            name = "Levelname"lhs->compare(rhs) < 0
             description = "This is just some awesome level."
             tags = "test, awesome"
         />
@@ -196,6 +197,17 @@ namespace orxonox // tolua_export
             LevelInfoItem* copy(void); //!< Copies the contents of this LevelInfo object to a new LevelInfoItem object.
 
     };
+
+    /**
+    @brief
+        Struct that overloads the compare operation between two @ref orxonox::LevelInfoItem "LevelInfoItem" pointers.
+    */
+    struct LevelInfoCompare
+    {
+        bool operator() (const LevelInfoItem* lhs, const LevelInfoItem* rhs) const
+            { return getLowercase(lhs->getName()).compare(getLowercase(rhs->getName())) < 0; }
+    };
+    
 } // tolua_export
 
 #endif /* _LevelInfo_H__ */
