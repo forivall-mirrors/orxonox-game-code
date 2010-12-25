@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file LevelManager.h
+    @brief Definition of the LevelManager singleton.
+    @ingroup Orxonox
+*/
+
 #ifndef _LevelManager_H__
 #define _LevelManager_H__
 
@@ -55,6 +61,8 @@ namespace orxonox
 
     @author
         Damian 'Mozork' Frick
+
+    @ingroup Orxonox
     */
     class _OrxonoxExport LevelManager
     // tolua_end
