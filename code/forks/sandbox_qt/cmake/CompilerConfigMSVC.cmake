@@ -146,6 +146,8 @@ ADD_LINKER_FLAGS("-OPT:NOWIN98" MSVC80 CACHE)
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
 IF(ORXONOX_RELEASE)
   ADD_LINKER_FLAGS("-INCREMENTAL:NO -OPT:ICF -OPT:REF -LTCG" ReleaseAll   CACHE)
+  # Static linker flags have to be added manually to a target
+  SET(ORXONOX_STATIC_LINKER_FLAGS "/LTCG")
 ELSE()
   ADD_LINKER_FLAGS("-INCREMENTAL:YES"                  RelWithDebInfo     CACHE)
   ADD_LINKER_FLAGS("-INCREMENTAL:NO -OPT:ICF -OPT:REF" Release MinSizeRel CACHE)

@@ -251,6 +251,11 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES COMPILE_FLAGS "${_compile_flags} -Zm1000")
   ENDIF()
 
+  # Static library flags are not globally available
+  IF(ORXONOX_STATIC_LINKER_FLAGS)
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES STATIC_LIBRARY_FLAGS ${ORXONOX_STATIC_LINKER_FLAGS})
+  ENDIF()
+
   # LINK_LIBRARIES
   IF(_arg_LINK_LIBRARIES)
     TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBRARIES})
