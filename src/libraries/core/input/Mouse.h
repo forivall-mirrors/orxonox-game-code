@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    //! Template parameter collection for the base class
+    //! %Template parameter collection for the base class
     struct MouseTraits
     {
         typedef Mouse DeviceClass;

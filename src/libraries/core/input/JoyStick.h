@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-    //! Template parameter collection for the base class
+    //! %Template parameter collection for the base class
     struct JoyStickTraits
     {
         typedef JoyStick DeviceClass;
