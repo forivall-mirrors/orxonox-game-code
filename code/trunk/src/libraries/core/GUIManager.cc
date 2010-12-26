@@ -287,6 +287,8 @@ namespace orxonox
     const std::string& GUIManager::createInputState(const std::string& name, TriBool::Value showCursor, TriBool::Value useKeyboard, bool bBlockJoyStick)
     {
         InputState* state = InputManager::getInstance().createInputState(name);
+        if (!state)
+            return BLANKSTRING;
 
         /* Table that maps isFullScreen() and showCursor to mouseExclusive
         isFullscreen / showCursor | True  | False | Dontcare
