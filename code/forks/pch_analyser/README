@@ -1,0 +1,3 @@
+This is a fork of the Orxonox trunk used to quickly set up some arbitrary test program.
+
+To make life easier you work with the Qt framework and even do some UI stuff.

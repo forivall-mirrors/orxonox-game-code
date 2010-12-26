@@ -1,0 +1,8 @@
+************* Build System **************
+To make platform support as easy as possible we have decided to use CMake as our build system.
+Therefore the first thing you need to do is to get
+CMake v.2.6 or later.
+
+************** Libraries ****************
+
+In order to compile this Orxonox sandbox you will need to install Qt 4.4 or higher
