@@ -178,9 +178,17 @@ typedef unsigned __int64  uint64_t;
 #endif
 */
 
-// Always include the memory leak detector for MSVC except for actual releases
-// Note: Although officially supported, VLD does not work with MSVC 9
-#if defined(ORXONOX_COMPILER_MSVC) && _MSC_VER < 1500 && !defined(ORXONOX_RELEASE)
+// Include memory leak detector if available and not building actual release
+#cmakedefine HAVE_VLD
+#if defined(HAVE_VLD) && !defined(ORXONOX_RELEASE)
+typedef uint32_t UINT32;
+typedef wchar_t WCHAR;
+struct HINSTANCE__;
+typedef struct HINSTANCE__* HINSTANCE;
+typedef HINSTANCE HMODULE;
+#  ifndef NULL
+#    define NULL 0
+#  endif
 #  include <vld.h>
 #endif
 

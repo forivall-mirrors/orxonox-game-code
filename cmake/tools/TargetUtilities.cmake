@@ -89,15 +89,65 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
-
-  # Workaround: Source file properties get lost when leaving a subdirectory
-  # Therefore an "H" after a file means we have to set it as HEADER_FILE_ONLY
+  # Process source files with support for compilations
+  # Note: All file paths are relative to the root source directory, even the
+  #       name of the compilation file.
+  SET(_${_target_name}_source_files)
+  SET(_get_compilation_file FALSE)
+  SET(_add_to_compilation FALSE)
   FOREACH(_file ${_arg_SOURCE_FILES})
-    IF(_file STREQUAL "H")
-      SET_SOURCE_FILES_PROPERTIES(${_last_file} PROPERTIES HEADER_FILE_ONLY TRUE)
+    IF(_file STREQUAL "COMPILATION_BEGIN")
+      # Next file is the name of the compilation
+      SET(_get_compilation_file TRUE)
+    ELSEIF(_file STREQUAL "COMPILATION_END")
+      IF(NOT _compilation_file)
+        MESSAGE(FATAL_ERROR "No name provided for source file compilation")
+      ENDIF()
+      IF(NOT _compilation_include_string)
+        MESSAGE(STATUS "Warning: Empty source file compilation!")
+      ENDIF()
+      IF(NOT DISABLE_COMPILATIONS)
+        IF(EXISTS ${_compilation_file})
+          FILE(READ ${_compilation_file} _include_string_file)
+        ENDIF()
+        IF(NOT _compilation_include_string STREQUAL "${_include_string_file}")
+          FILE(WRITE ${_compilation_file} "${_compilation_include_string}")
+        ENDIF()
+        LIST(APPEND _${_target_name}_source_files ${_compilation_file})
+      ENDIF()
+      SET(_add_to_compilation FALSE)
+    ELSEIF(_get_compilation_file)
+      SET(_compilation_file ${CMAKE_BINARY_DIR}/${_file})
+      SET(_get_compilation_file FALSE)
+      SET(_add_to_compilation TRUE)
+      SET(_compilation_include_string)
     ELSE()
-      SET(_last_file ${_file})
+      # Default, add source file
+
+      # Prepare relative paths
+      IF(NOT _file MATCHES "^(.\\:|\\/)")
+        # Path can be relative to the current source directory if the file was
+        # not added with the source file macros. Otherwise there is a "./" at
+        # the beginning of each file and the filename is relative
+        # to the CMAKE_SOURCE_DIR
+        STRING(REGEX REPLACE "^\\.\\/(.+)$" "\\1" _temp ${_file})
+        IF(NOT ${_temp} STREQUAL ${_file})
+          SET(_file ${CMAKE_SOURCE_DIR}/${_temp})
+        ELSE()
+          SET(_file ${CMAKE_CURRENT_SOURCE_DIR}/${_file})
+        ENDIF()
+      ENDIF()
+
       LIST(APPEND _${_target_name}_source_files ${_file})
+
+      # Handle compilations
+      IF(_add_to_compilation AND NOT DISABLE_COMPILATIONS)
+        IF(_file MATCHES "\\.(c|cc|cpp|cxx)$")
+          SET(_compilation_include_string "${_compilation_include_string}#include \"${_file}\"\n")
+        ENDIF()
+        # Don't compile these files, even if they are source files
+        SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
+      ENDIF()
     ENDIF()
   ENDFOREACH(_file)
 
@@ -171,7 +221,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # Don't compile header files
   FOREACH(_file ${_${_target_name}_files})
-    IF(NOT _file MATCHES "\\.(c|cc|cpp)")
+    IF(NOT _file MATCHES "\\.(c|cc|cpp|cxx)$")
       SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
     ENDIF()
   ENDFOREACH(_file)
@@ -216,6 +266,11 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ADD_MODULE(${_target_name})
     # Ensure that the main program depends on the module
     SET(ORXONOX_MODULES ${ORXONOX_MODULES} ${_target_name} CACHE STRING "" FORCE)
+  ENDIF()
+
+  # Static library flags are not globally available
+  IF(ORXONOX_STATIC_LINKER_FLAGS)
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES STATIC_LIBRARY_FLAGS ${ORXONOX_STATIC_LINKER_FLAGS})
   ENDIF()
 
   # LINK_LIBRARIES

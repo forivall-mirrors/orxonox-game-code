@@ -35,17 +35,6 @@ ENDIF()
 
 ######################## Options ########################
 
-# Currently VLD has a problem with MSVC9 although it actually is supported
-IF(MSVC80)
-  OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" off)
-ENDIF()
-# Make sure the value is "on" or "off" for vld.ini
-IF(VISUAL_LEAK_DETECTOR_ENABLE)
-  SET(VISUAL_LEAK_DETECTOR_ENABLE on)
-ELSE()
-  SET(VISUAL_LEAK_DETECTOR_ENABLE off)
-ENDIF()
-
 # Orxonox only supports MSVC 8 and above, which gets asserted above
 SET(PCH_COMPILER_SUPPORT TRUE)
 
@@ -158,6 +147,8 @@ ADD_LINKER_FLAGS("-OPT:NOWIN98" MSVC80 CACHE)
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
 IF(ORXONOX_RELEASE)
   ADD_LINKER_FLAGS("-INCREMENTAL:NO -OPT:ICF -OPT:REF -LTCG" ReleaseAll   CACHE)
+  # Static linker flags have to be added manually to a target
+  SET(ORXONOX_STATIC_LINKER_FLAGS "/LTCG")
 ELSE()
   ADD_LINKER_FLAGS("-INCREMENTAL:YES"                  RelWithDebInfo     CACHE)
   ADD_LINKER_FLAGS("-INCREMENTAL:NO -OPT:ICF -OPT:REF" Release MinSizeRel CACHE)

@@ -78,6 +78,22 @@ ENDIF(MSVC)
 INCLUDE(CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(iso646.h HAVE_ISO646_H)
 
+IF(MSVC)
+  # Check whether we can use Visual Leak Detector
+  FIND_FILE(VLD_DLL vld_x86.dll)
+  IF(VLD_DLL)
+    SET(HAVE_VLD TRUE)
+    OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" off)
+    # Make sure the value is "on" or "off" for vld.ini
+    IF(VISUAL_LEAK_DETECTOR_ENABLE)
+      SET(VISUAL_LEAK_DETECTOR_ENABLE on)
+    ELSE()
+      SET(VISUAL_LEAK_DETECTOR_ENABLE off)
+    ENDIF()
+  ENDIF()
+  MARK_AS_ADVANCED(VLD_DLL)
+ENDIF()
+
 ############## Configured Headers ###############
 
 SET(GENERATED_FILE_COMMENT

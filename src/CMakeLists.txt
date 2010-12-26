@@ -83,7 +83,6 @@ INCLUDE_DIRECTORIES(
   ${TCL_INCLUDE_PATH}
   ${DIRECTX_INCLUDE_DIR}
   ${ZLIB_INCLUDE_DIR}
-  ${VLD_INCLUDE_DIR}
 
   # All includes in "externals" should be prefixed with the path
   # relative to "external" to avoid conflicts
@@ -122,6 +121,8 @@ ADD_SUBDIRECTORY(modules)
 
 ################## Executable ###################
 
+SET_SOURCE_FILES(ORXONOX_MAIN_SRC_FILES Orxonox.cc)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/libraries
   ${CMAKE_CURRENT_SOURCE_DIR}/orxonox
@@ -138,7 +139,7 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
   LINK_LIBRARIES
     orxonox
   SOURCE_FILES
-    Orxonox.cc
+    ${ORXONOX_MAIN_SRC_FILES}
   OUTPUT_NAME orxonox
 )
 # Main executable should depend on all modules
