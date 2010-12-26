@@ -51,7 +51,7 @@
 
 #cmakedefine DBGHELP_FOUND                  ///< If DbgHelp was found on windows
 
-#cmakedefine ORXONOX_USE_WINMAIN            ///< Using MSVC or XCode IDE
+#cmakedefine ORXONOX_USE_WINMAIN            ///< Whether or not the console window is started as well
 
 // Handle default ConfigValues
 namespace orxonox { namespace specialConfig
