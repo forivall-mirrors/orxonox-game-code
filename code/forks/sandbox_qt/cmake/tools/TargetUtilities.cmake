@@ -124,7 +124,21 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
       SET(_compile_qt_next TRUE)
     ELSE()
       # Default, add source file
-      SET(_file ${CMAKE_SOURCE_DIR}/${_file})
+
+      # Prepare relative paths
+      IF(NOT _file MATCHES "^(.\\:|\\/)")
+        # Path can be relative to the current source directory if the file was
+        # not added with the source file macros. Otherwise there is a "./" at
+        # the beginning of each file and the filename is relative
+        # to the CMAKE_SOURCE_DIR
+        STRING(REGEX REPLACE "^\\.\\/(.+)$" "\\1" _temp ${_file})
+        IF(NOT ${_temp} STREQUAL ${_file})
+          SET(_file ${CMAKE_SOURCE_DIR}/${_temp})
+        ELSE()
+          SET(_file ${CMAKE_CURRENT_SOURCE_DIR}/${_file})
+        ENDIF()
+      ENDIF()
+
       LIST(APPEND _${_target_name}_source_files ${_file})
 
       # Handle compilations

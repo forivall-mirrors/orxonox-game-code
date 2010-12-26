@@ -41,7 +41,7 @@ FUNCTION(PREPARE_SOURCE_FILES)
     ELSE()
       # Store file with path relative to the root source directory
       FILE(RELATIVE_PATH _file_rel ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${_file})
-      LIST(APPEND _source_files ${_file_rel})
+      LIST(APPEND _source_files ./${_file_rel})
     ENDIF()
   ENDFOREACH(_file)
   SET(_source_files ${_source_files} PARENT_SCOPE)
