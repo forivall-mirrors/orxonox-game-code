@@ -26,8 +26,7 @@ INCLUDE_DIRECTORIES(
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
   Main.cc
 
-  QT MainWindow.h       MainWindow.cc
-  QT MainWindow.ui
+  Analyser.h Analyser.cc
 )
 
 #ADD_SUBDIRECTORY(subdir)

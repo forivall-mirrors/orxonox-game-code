@@ -41,7 +41,7 @@
 #include "util/Debug.h"
 #include "core/CommandLineParser.h"
 #include "core/Core.h"
-#include "MainWindow.h"
+#include "Analyser.h"
 
 namespace orxonox
 {
@@ -70,13 +70,8 @@ namespace orxonox
         versionString += QString::number(ORXONOX_VERSION_PATCH);
         QCoreApplication::setApplicationVersion(versionString);
 
-        if (CommandLineParser::getValue("generateDoc").toString().isEmpty())
-        {
-            MainWindow window;
-            window.show();
-            return app.exec();
-        }
-        else
-            return 0;
+        parse();
+
+        return 0;
     }
 }
