@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    //! Template parameter collection for the base class
+    //! %Template parameter collection for the base class
     struct KeyboardTraits
     {
         typedef Keyboard DeviceClass;
