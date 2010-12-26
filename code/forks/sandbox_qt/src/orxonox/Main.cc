@@ -35,10 +35,16 @@
 
 #include "Main.h"
 
+#include <memory>
 #include <QApplication>
 #include <QCoreApplication>
 
+#ifdef ORXONOX_PLATFORM_WINDOWS
+#  include <windows.h>
+#endif
+
 #include "util/Debug.h"
+#include "util/Exception.h"
 #include "core/CommandLineParser.h"
 #include "core/Core.h"
 #include "MainWindow.h"
@@ -56,10 +62,22 @@ namespace orxonox
     {
         QApplication app(argc, argv);
 
-        QStringList arguments = QCoreApplication::arguments();
-        if (!arguments.value(0).isEmpty() && arguments.value(0)[0] != '-')
-            arguments.pop_front(); // Remove application path
-        Core core(arguments.join(" ").toStdString());
+        std::auto_ptr<Core> core;
+        try
+        {
+            QStringList arguments = QCoreApplication::arguments();
+            if (!arguments.value(0).isEmpty() && arguments.value(0)[0] != '-')
+                arguments.pop_front(); // Remove application path
+            core.reset(new Core(arguments.join(" ").toStdString()));
+        }
+        catch (const Exception& ex)
+        {
+            COUT(0) << "Exception: " << ex.getDescription() << endl;
+#ifdef ORXONOX_PLATFORM_WINDOWS
+            MessageBox(NULL, ex.getDescription().c_str(), "Exception", MB_ICONERROR);
+#endif
+            return 1;
+        }
 
         QCoreApplication::setOrganizationName("Orxonox");
         QCoreApplication::setOrganizationDomain("www.orxonox.net");
@@ -70,13 +88,31 @@ namespace orxonox
         versionString += QString::number(ORXONOX_VERSION_PATCH);
         QCoreApplication::setApplicationVersion(versionString);
 
-        if (CommandLineParser::getValue("generateDoc").toString().isEmpty())
+        // Define library path
+        // Note: May not work (untested) because QApplication was already created.
+        // However doing the beforehand is difficult because the Core is required.
+        QStringList libraryPaths = QCoreApplication::libraryPaths();
+        libraryPaths.prepend(PathConfig::getExecutablePath().path() + "/plugins");
+        QCoreApplication::setLibraryPaths(libraryPaths);
+
+        try
         {
-            MainWindow window;
-            window.show();
-            return app.exec();
+            if (CommandLineParser::getValue("generateDoc").toString().isEmpty())
+            {
+                MainWindow window;
+                window.show();
+                return app.exec();
+            }
+            else
+                return 0;
         }
-        else
-            return 0;
+        catch (const Exception& ex)
+        {
+            COUT(0) << "Exception: " << ex.getDescription() << endl;
+#ifdef ORXONOX_PLATFORM_WINDOWS
+            MessageBox(NULL, ex.getDescription().c_str(), "Exception", MB_ICONERROR);
+#endif
+            return 1;
+        }
     }
 }
