@@ -181,11 +181,14 @@ typedef unsigned __int64  uint64_t;
 // Include memory leak detector if available and not building actual release
 #cmakedefine HAVE_VLD
 #if defined(HAVE_VLD) && !defined(ORXONOX_RELEASE)
-    typedef UINT32 uint32_t;
-    typedef wchar_t WCHAR;
-    struct HINSTANCE__ { int unused; };
-    typedef struct HINSTANCE__ * HINSTANCE;
-    typedef HINSTANCE HMODULE;
+typedef uint32_t UINT32;
+typedef wchar_t WCHAR;
+struct HINSTANCE__;
+typedef struct HINSTANCE__* HINSTANCE;
+typedef HINSTANCE HMODULE;
+#  ifndef NULL
+#    define NULL 0
+#  endif
 #  include <vld.h>
 #endif
 
