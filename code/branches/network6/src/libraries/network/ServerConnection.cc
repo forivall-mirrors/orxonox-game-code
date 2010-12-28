@@ -34,7 +34,7 @@
 #include <enet/enet.h>
 
 #include "util/Debug.h"
-#include "ClientInformation.h"
+// #include "ClientInformation.h"
 
 namespace orxonox
 {
@@ -103,58 +103,59 @@ namespace orxonox
 
   void ServerConnection::addPacket(ENetPacket *packet, unsigned int clientID, uint8_t channelID)
   {
-    if ( clientID == CLIENTID_UNKNOWN )
+    if ( clientID == NETWORK_PEER_ID_BROADCAST )
     {
       broadcastPacket(packet, channelID);
     }
     else
     {
-      ClientInformation *temp = ClientInformation::findClient(clientID);
-      if(!temp){
-        COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
-      }
-      Connection::addPacket(packet, temp->getPeer(), channelID);
+//       ClientInformation *temp = ClientInformation::findClient(clientID);
+//       if(!temp){
+//         COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
+//       }
+      Connection::addPacket(packet, clientID, channelID);
     }
   }
 
-  void ServerConnection::disconnectClient(ClientInformation *client)
-  {
-    Connection::disconnectPeer( client->getPeer() );
-  }
+//   void ServerConnection::disconnectClient(ClientInformation *client)
+//   {
+//     Connection::disconnectPeer( client->getPeer() );
+//   }
 
   void ServerConnection::disconnectClient(int clientID)
   {
-    ClientInformation *client = ClientInformation::findClient(clientID);
-    if(client)
-      ServerConnection::disconnectClient(client);
+//     ClientInformation *client = ClientInformation::findClient(clientID);
+//     if(client)
+    ServerConnection::disconnectClient(clientID);
   }
 
   void ServerConnection::disconnectClients()
   {
-    ClientInformation *temp = ClientInformation::getBegin();
-    while(temp!=0)
-    {
-      ServerConnection::disconnectClient( temp );
-      temp = temp->next();
-    }
+    Connection::disconnectPeers();
+//     ClientInformation *temp = ClientInformation::getBegin();
+//     while(temp!=0)
+//     {
+//       ServerConnection::disconnectClient( temp );
+//       temp = temp->next();
+//     }
     return;
   }
 
 
-  int ServerConnection::getClientID(ENetPeer* peer)
-  {
-    return getClientID(&(peer->address));
-  }
+//   int ServerConnection::getClientID(ENetPeer* peer)
+//   {
+//     return getClientID(&(peer->address));
+//   }
 
-  int ServerConnection::getClientID(ENetAddress* address)
-  {
-    return ClientInformation::findClient(address)->getID();
-  }
-
-  ENetPeer *ServerConnection::getClientPeer(int clientID)
-  {
-    return ClientInformation::findClient(clientID)->getPeer();
-  }
+//   int ServerConnection::getClientID(ENetAddress* address)
+//   {
+//     return ClientInformation::findClient(address)->getID();
+//   }
+// 
+//   ENetPeer *ServerConnection::getClientPeer(int clientID)
+//   {
+//     return ClientInformation::findClient(clientID)->getPeer();
+//   }
 
 
 }

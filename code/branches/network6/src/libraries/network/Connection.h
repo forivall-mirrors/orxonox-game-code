@@ -43,7 +43,9 @@
 #include "NetworkPrereqs.h"
 
 #include <deque>
+#include <map>
 #include <enet/enet.h>
+#include <boost/concept_check.hpp>
 
 namespace boost
 {
@@ -58,20 +60,39 @@ namespace orxonox
   const unsigned int NETWORK_WAIT_TIMEOUT           = 1;
   const unsigned int NETWORK_MAX_QUEUE_PROCESS_TIME = 5;
   
-  namespace outgoingEventType
+  namespace incomingEventType
   {
     enum Value
     {
-      sendPacket      = 1,
-      disconnectPeer  = 2,
-      broadcastPacket = 3
+      receivePacket   = 1,  // incoming packet
+      peerConnect     = 2,  // incoming connect request
+      peerDisconnect  = 3   // incoming disconnect request
     };
     
   }
   
+  namespace outgoingEventType
+  {
+    enum Value
+    {
+      sendPacket      = 1,  // outgoing packet
+      broadcastPacket = 2,  // outgoing broadcast packet
+      disconnectPeer  = 3,  // outgoing disconnect request
+      disconnectPeers = 4   // outgoing disconnect request
+    };
+    
+  }
+  
+  struct _NetworkExport incomingEvent
+  {
+    uint32_t                  peerID;
+    incomingEventType::Value  type;
+    packet::Packet*           packet;
+  };
+  
   struct _NetworkExport outgoingEvent
   {
-    ENetPeer*                 peer;
+    uint32_t                  peerID;
     outgoingEventType::Value  type;
     ENetPacket*               packet;
     ENetChannelID             channelID;
@@ -82,37 +103,45 @@ namespace orxonox
   public:
     virtual ~Connection();
 
-    void addPacket(ENetPacket *packet, ENetPeer *peer, uint8_t channelID);
-    void broadcastPacket(ENetPacket* packet, uint8_t channelID);
-//     ENetHost* getHost(){ return this->host_; }
-
   protected:
     Connection();
-//     static Connection* getInstance(){ return Connection::instance_; }
-
-//     int service(ENetEvent* event);
+    
     void startCommunicationThread();
     void stopCommunicationThread();
-    void communicationThread();
-    virtual void disconnectPeer(ENetPeer *peer);
+    
+    void addPacket(ENetPacket *packet, uint32_t peerID, uint8_t channelID);
+    void broadcastPacket(ENetPacket* packet, uint8_t channelID);
+    void disconnectPeer(uint32_t peerID);
+    void disconnectPeers();
     
     void enableCompression();
 
     void processQueue();
-    virtual void addPeer(ENetEvent* event)=0;
-    virtual void removePeer(ENetEvent* event)=0;
+    virtual void addPeer(uint32_t peerID)=0;
+    virtual void removePeer(uint32_t peerID)=0;
     virtual void processPacket( packet::Packet* packet)=0;
-    virtual packet::Packet* createPacket(ENetEvent* event);
+    
+    incomingEvent preprocessConnectEvent(ENetEvent& event);
+    incomingEvent preprocessDisconnectEvent(ENetEvent& event);
+    incomingEvent preprocessReceiveEvent(ENetEvent& event);
+    
+    void processIncomingEvent(ENetEvent& event);
+    void processOutgoingEvent(outgoingEvent& event);
 
-    ENetHost*                   host_;
+    ENetHost*                     host_;
   private:
-    boost::thread*              communicationThread_;
-    bool                        bCommunicationThreadRunning_;
-    ENetAddress*                bindAddress_;
-    std::deque<ENetEvent>       incomingEvents_;
-    std::deque<outgoingEvent>   outgoingEvents_;
-    boost::mutex*               incomingEventsMutex_;
-    boost::mutex*               outgoingEventsMutex_;
+    void communicationThread();
+    
+    boost::thread*                communicationThread_;
+    bool                          bCommunicationThreadRunning_;
+    ENetAddress*                  bindAddress_;
+    std::deque<incomingEvent>     incomingEvents_;
+    std::deque<outgoingEvent>     outgoingEvents_;
+    boost::mutex*                 incomingEventsMutex_;
+    boost::mutex*                 outgoingEventsMutex_;
+    std::map<uint32_t, ENetPeer*> peerMap_;
+    std::map<ENetPeer*, uint32_t> peerIDMap_;
+    uint32_t                      nextPeerID_;
 
 //     static Connection *instance_;
 

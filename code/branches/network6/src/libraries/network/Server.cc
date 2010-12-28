@@ -56,7 +56,7 @@
 #include "packet/Gamestate.h"
 #include "packet/Welcome.h"
 #include "ChatListener.h"
-#include "ClientInformation.h"
+// #include "ClientInformation.h"
 #include "FunctionCallManager.h"
 #include "GamestateManager.h"
 #include "WANDiscovery.h"
@@ -151,15 +151,15 @@ namespace orxonox
 
   bool Server::processChat(const std::string& message, unsigned int playerID)
   {
-    ClientInformation *temp = ClientInformation::getBegin();
+//     ClientInformation *temp = ClientInformation::getBegin();
     packet::Chat *chat;
-    while(temp){
-      chat = new packet::Chat(message, playerID);
-      chat->setPeerID(temp->getID());
-      if(!chat->send( static_cast<Host*>(this) ))
-        COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
-      temp = temp->next();
-    }
+//     while(temp){
+    chat = new packet::Chat(message, playerID);
+    chat->setPeerID(NETWORK_PEER_ID_BROADCAST);
+    chat->send( static_cast<Host*>(this) );
+//         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
+//       temp = temp->next();
+//     }
 //    COUT(1) << "Player " << playerID << ": " << message << std::endl;
     return true;
   }
@@ -206,7 +206,7 @@ namespace orxonox
     /* todo */
     //helper_HandleMasterServerRequests();
 
-    if ( ClientInformation::hasClients() )
+    if ( GamestateManager::hasPeers() )
     {
       // process incoming gamestates
       GamestateManager::processGamestates();
@@ -236,14 +236,16 @@ namespace orxonox
    */
   unsigned int Server::getRTT(unsigned int clientID)
   {
-    assert(ClientInformation::findClient(clientID));
-    return ClientInformation::findClient(clientID)->getRTT();
+//     assert(ClientInformation::findClient(clientID));
+//     return ClientInformation::findClient(clientID)->getRTT();
+    // TODO: reimplement
+    return 0;
   }
 
   void Server::printRTT()
   {
-    for( ClientInformation* temp=ClientInformation::getBegin(); temp!=0; temp=temp->next() )
-      COUT(0) << "Round trip time to client with ID: " << temp->getID() << " is " << temp->getRTT() << " ms" << endl;
+//     for( ClientInformation* temp=ClientInformation::getBegin(); temp!=0; temp=temp->next() )
+//       COUT(0) << "Round trip time to client with ID: " << temp->getID() << " is " << temp->getRTT() << " ms" << endl;
   }
 
   /**
@@ -251,8 +253,9 @@ namespace orxonox
    */
   double Server::getPacketLoss(unsigned int clientID)
   {
-    assert(ClientInformation::findClient(clientID));
-    return ClientInformation::findClient(clientID)->getPacketLoss();
+//     assert(ClientInformation::findClient(clientID));
+//     return ClientInformation::findClient(clientID)->getPacketLoss();
+    return 0.;
   }
 
   /**
@@ -260,7 +263,7 @@ namespace orxonox
   */
   void Server::updateGamestate()
   {
-    if( ClientInformation::getBegin()==NULL )
+    if( this->clientIDs_.size()==0 )
       //no client connected
       return;
     GamestateManager::update();
@@ -290,9 +293,10 @@ namespace orxonox
 
   bool Server::sendObjectDeletes()
   {
-    ClientInformation *temp = ClientInformation::getBegin();
-    if( temp == NULL )
+//     ClientInformation *temp = ClientInformation::getBegin();
+//     if( temp == NULL )
       //no client connected
+    if( this->clientIDs_.size()==0 )
       return true;
     packet::DeleteObjects *del = new packet::DeleteObjects();
     if(!del->fetchIDs())
@@ -301,63 +305,74 @@ namespace orxonox
       return true;  //everything ok (no deletes this tick)
     }
 //     COUT(3) << "sending DeleteObjects" << std::endl;
-    while(temp != NULL){
-      if( !(temp->getSynched()) )
-      {
-        COUT(5) << "Server: not sending gamestate" << std::endl;
-        temp=temp->next();
-        continue;
-      }
-      int cid = temp->getID(); //get client id
-      packet::DeleteObjects *cd = new packet::DeleteObjects(*del);
-      assert(cd);
-      cd->setPeerID(cid);
-      if ( !cd->send( static_cast<Host*>(this) ) )
-        COUT(3) << "Server: packet with client id (cid): " << cid << " not sended" << std::endl;
-      temp=temp->next();
+//     while(temp != NULL){
+//       if( !(temp->getSynched()) )
+//       {
+//         COUT(5) << "Server: not sending gamestate" << std::endl;
+//         temp=temp->next();
+//         continue;
+//       }
+//       int cid = temp->getID(); //get client id
+//       packet::DeleteObjects *cd = new packet::DeleteObjects(*del);
+//       assert(cd);
+    del->setPeerID(NETWORK_PEER_ID_BROADCAST);
+    if ( !del->send( static_cast<Host*>(this) ) )
+      COUT(3) << "Server: could not broadcast deleteObjects packet" << std::endl;
+//       temp=temp->next();
       // gs gets automatically deleted by enet callback
-    }
-    delete del;
+//     }
+//     delete del;
     return true;
   }
 
 
-  void Server::addPeer(ENetEvent *event)
+  void Server::addPeer(uint32_t peerID)
   {
-    static unsigned int newid=1;
-
-    COUT(2) << "Server: adding client" << std::endl;
-    ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
-    if(!temp)
-    {
-      COUT(2) << "Server: could not add client" << std::endl;
-    }
-    temp->setID(newid);
-    temp->setPeer(event->peer);
+//     static unsigned int newid=1;
+// 
+//     COUT(2) << "Server: adding client" << std::endl;
+//     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
+//     if(!temp)
+//     {
+//       COUT(2) << "Server: could not add client" << std::endl;
+//     }
+//     temp->setID(newid);
+//     temp->setPeer(event->peer);
 
     // inform all the listeners
-    ClientConnectionListener::broadcastClientConnected(newid);
-    GamestateManager::addPeer(newid);
+    this->clientIDs_.push_back(peerID);
+    ClientConnectionListener::broadcastClientConnected(peerID);
+    GamestateManager::addPeer(peerID);
 
-    ++newid;
+//     ++newid;
 
-    COUT(3) << "Server: added client id: " << temp->getID() << std::endl;
-    createClient(temp->getID());
+    COUT(3) << "Server: added client id: " << peerID << std::endl;
+    createClient(peerID);
 }
 
-  void Server::removePeer(ENetEvent *event)
+  void Server::removePeer(uint32_t peerID)
   {
     COUT(4) << "removing client from list" << std::endl;
-    ClientInformation *client = ClientInformation::findClient(&event->peer->address);
-    if(!client)
-      return;
-    else
+//     ClientInformation *client = ClientInformation::findClient(&event->peer->address);
+//     if(!client)
+//       return;
+//     else
+//     {
+  std::vector<uint32_t>::iterator it;
+  for( it=this->clientIDs_.begin(); it!=this->clientIDs_.end(); ++it )
+  {
+    if( *it == peerID )
     {
-      GamestateManager::removePeer(client->getID());
+      this->clientIDs_.erase(it);
+      break;
+    }
+  }
+  ClientConnectionListener::broadcastClientDisconnected(peerID);
+  GamestateManager::removePeer(peerID);
       //ServerConnection::disconnectClient( client );
       //ClientConnectionListener::broadcastClientDisconnected( client->getID() ); //this is done in ClientInformation now
-      delete client;
-    }
+//       delete client;
+//     }
   }
   
   void Server::processPacket(packet::Packet* packet)
@@ -376,16 +391,16 @@ namespace orxonox
 
   bool Server::createClient(int clientID)
   {
-    ClientInformation *temp = ClientInformation::findClient(clientID);
-    if(!temp)
-    {
-      COUT(2) << "Conn.Man. could not create client with id: " << clientID << std::endl;
-      return false;
-    }
-    COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+//     ClientInformation *temp = ClientInformation::findClient(clientID);
+//     if(!temp)
+//     {
+//       COUT(2) << "Server. could not create client with id: " << clientID << std::endl;
+//       return false;
+//     }
+//     COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
 
     // synchronise class ids
-    syncClassid(temp->getID());
+    syncClassid(clientID);
 
     // now synchronise functionIDs
     packet::FunctionIDs *fIDs = new packet::FunctionIDs();
@@ -393,16 +408,16 @@ namespace orxonox
     bool b = fIDs->send( static_cast<Host*>(this) );
     assert(b);
 
-    temp->setSynched(true);
+//     temp->setSynched(true);
     GamestateManager::setSynched(clientID);
     
     COUT(4) << "sending welcome" << std::endl;
-    packet::Welcome *w = new packet::Welcome(temp->getID(), temp->getShipID());
-    w->setPeerID(temp->getID());
+    packet::Welcome *w = new packet::Welcome(clientID, OBJECTID_UNKNOWN);
+    w->setPeerID(clientID);
     b = w->send( static_cast<Host*>(this) );
     assert(b);
     packet::Gamestate *g = new packet::Gamestate();
-    g->setPeerID(temp->getID());
+    g->setPeerID(clientID);
     b = g->collectData(0,packet::GAMESTATE_MODE_SERVER);
     assert(b);
     if(!b)
@@ -414,10 +429,10 @@ namespace orxonox
     return true;
   }
 
-  void Server::disconnectClient( ClientInformation *client )
+  void Server::disconnectClient( uint32_t clientID )
   {
-    ServerConnection::disconnectClient( client );
-    GamestateManager::removePeer(client->getID());
+    ServerConnection::disconnectClient( clientID );
+    GamestateManager::removePeer( clientID );
     // inform all the listeners
     // ClientConnectionListener::broadcastClientDisconnected(client->getID()); // this is done in ClientInformation now
   }
@@ -429,20 +444,20 @@ namespace orxonox
 
   bool Server::broadcast(const std::string& message)
   {
-      return this->sendChat(message, CLIENTID_UNKNOWN);
+      return this->sendChat(message, NETWORK_PEER_ID_BROADCAST);
   }
 
   bool Server::sendChat(const std::string& message, unsigned int clientID)
   {
-    ClientInformation *temp = ClientInformation::getBegin();
+//     ClientInformation *temp = ClientInformation::getBegin();
     packet::Chat *chat;
-    while(temp)
+//     while(temp)
     {
       chat = new packet::Chat(message, clientID);
-      chat->setPeerID(temp->getID());
-      if(!chat->send( static_cast<Host*>(this) ))
-        COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
-      temp = temp->next();
+      chat->setPeerID(NETWORK_PEER_ID_BROADCAST);
+      chat->send( static_cast<Host*>(this) );
+//         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
+//       temp = temp->next();
     }
 //    COUT(1) << "Player " << Host::getPlayerID() << ": " << message << std::endl;
     for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)

@@ -451,7 +451,7 @@ namespace orxonox
                 {
                     if (!it->first)//in order to catch nullpointer
                         continue;
-                    if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                    if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                         continue;
                     this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
                 }
@@ -466,7 +466,7 @@ namespace orxonox
                   {
                        if (!it->first)//in order to catch nullpointer
                            continue;
-                       if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                       if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                            continue;
                        else if (it->second==chaser)
                        {
@@ -500,7 +500,7 @@ namespace orxonox
                 {
                     if (!it->first)//in order to catch nullpointer
                         continue;
-                    if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                    if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                         continue;
                     this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
                 }
@@ -515,7 +515,7 @@ namespace orxonox
                   {
                        if (!it->first)
                            continue;
-                       if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                       if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                            continue;
                        else if (it->second==chaser)
                        {
@@ -550,7 +550,7 @@ namespace orxonox
                 {
                     if (!it->first)//in order to catch nullpointer
                         continue;
-                    if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                    if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                         continue;
                     this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
                 }
@@ -565,7 +565,7 @@ namespace orxonox
                   {
                        if (!it->first)
                            continue;
-                       if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                       if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                            continue;
                        else if (it->second==chaser)
                        {
@@ -631,7 +631,7 @@ namespace orxonox
         {
             for (std::map<PlayerInfo*, int>::iterator it = this->playerParty_.begin(); it != this->playerParty_.end(); ++it)
             {
-                if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                     continue;
                 this->gtinfo_->sendStaticMessage("Selection phase: Shoot at everything that moves.",it->first->getClientID(),ColourValue(1.0f, 1.0f, 0.5f));
             }

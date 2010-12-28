@@ -31,19 +31,25 @@
 #include "network/NetworkPrereqs.h"
 #include <map>
 
-namespace orxonox {
+namespace orxonox
+{
 
-namespace packet{
+namespace packet
+{
 
-namespace Direction{
-  enum Value{
+namespace Direction
+{
+  enum Value
+  {
     Incoming,
     Outgoing,
     Bidirectional
   };
 }
-namespace Type{
-  enum Value{
+namespace Type
+{
+  enum Value
+  {
     Acknowledgement,
     Chat,
     ClassID,
@@ -58,14 +64,15 @@ namespace Type{
 /**
     @author Oliver Scheuss <scheusso [at] ee.ethz.ch>
 */
-class _NetworkExport Packet{
+class _NetworkExport Packet
+{
   public:
     Packet(const Packet &p);
     virtual ~Packet();
-    static Packet *createPacket(ENetPacket *packet, ENetPeer *peer);
-    static void deletePacket(ENetPacket *packet);
+    static Packet* createPacket(ENetPacket* packet, uint32_t peerID);
+    static void deletePacket(ENetPacket* packet);
 
-    virtual unsigned char *getData(){ return data_; };
+    virtual unsigned char* getData(){ return data_; };
     virtual unsigned int getSize() const =0;
     virtual bool process(orxonox::Host* host)=0;
     inline uint32_t getFlags()

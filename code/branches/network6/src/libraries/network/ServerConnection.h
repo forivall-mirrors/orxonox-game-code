@@ -56,16 +56,16 @@ namespace orxonox
     bool openListener();
     bool closeListener();
     void addPacket(ENetPacket *packet, unsigned int ID, uint8_t channelID);
-    virtual void disconnectClient(ClientInformation *client);
+//     virtual void disconnectClient(ClientInformation *client);
     void disconnectClient(int clientID);
   protected:
     ServerConnection();
     void disconnectClients();
 
   private:
-    int getClientID(ENetPeer* peer);
-    int getClientID(ENetAddress* address);
-    ENetPeer* getClientPeer(int clientID);
+//     int getClientID(ENetPeer* peer);
+//     int getClientID(ENetAddress* address);
+//     ENetPeer* getClientPeer(int clientID);
 
     ENetAddress* bindAddress_;
 

@@ -159,6 +159,6 @@ namespace orxonox
     void GSRoot::changedTimeFactor(float factor_new, float factor_old)
     {
         if (!GameMode::isStandalone())
-            callStaticNetworkFunction(&TimeFactorListener::setTimeFactor, CLIENTID_UNKNOWN, factor_new);
+            callStaticNetworkFunction(&TimeFactorListener::setTimeFactor, NETWORK_PEER_ID_BROADCAST, factor_new);
     }
 }

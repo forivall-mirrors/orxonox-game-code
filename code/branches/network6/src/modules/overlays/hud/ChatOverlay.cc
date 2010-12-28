@@ -70,7 +70,7 @@ namespace orxonox
     {
         std::string text;
 
-        if (senderID != CLIENTID_UNKNOWN)
+        if (senderID != NETWORK_PEER_ID_UNKNOWN)
         {
             std::string name = "unknown";
 

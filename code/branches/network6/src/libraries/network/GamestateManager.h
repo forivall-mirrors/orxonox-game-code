@@ -100,6 +100,7 @@ namespace orxonox
     void setSynched( uint32_t peerID )
       { assert(peerMap_.find(peerID)!=peerMap_.end()); peerMap_[peerID].isSynched = true; }
     void removePeer( uint32_t peerID );
+    bool hasPeers(){ return this->peerMap_.size()!=0; }
 //     void removeClient(ClientInformation *client);
   protected:
     virtual bool sendPacket( packet::Packet* packet ) = 0;
