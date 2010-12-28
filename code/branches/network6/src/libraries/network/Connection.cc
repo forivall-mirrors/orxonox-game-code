@@ -182,14 +182,30 @@ namespace orxonox
     switch( event.type )
     {
       case outgoingEventType::sendPacket:
-        assert(this->peerMap_.find(event.peerID) != this->peerMap_.end());
-        peer = this->peerMap_[event.peerID];
-        enet_peer_send( peer, event.channelID, event.packet );
+        // check whether the peer is still/already in the peer list
+        if( this->peerMap_.find(event.peerID) != this->peerMap_.end() )
+        {
+          peer = this->peerMap_[event.peerID];
+          enet_peer_send( peer, event.channelID, event.packet );
+        }
+        else
+        {
+          // peer probably already disconnected so just discard packet
+          assert(event.peerID<this->nextPeerID_);
+          delete event.packet;
+        }
         break;
       case outgoingEventType::disconnectPeer:
-        assert(this->peerMap_.find(event.peerID) != this->peerMap_.end());
-        peer = this->peerMap_[event.peerID];
-        enet_peer_disconnect(peer, 0);
+        if( this->peerMap_.find(event.peerID) != this->peerMap_.end() )
+        {
+          peer = this->peerMap_[event.peerID];
+          enet_peer_disconnect(peer, 0);
+        }
+        else
+        {
+          // peer probably already disconnected so just discard disconnect event
+          assert(event.peerID<this->nextPeerID_);
+        }
         break;
       case outgoingEventType::disconnectPeers:
         while( this->peerMap_.size()!=0 )
