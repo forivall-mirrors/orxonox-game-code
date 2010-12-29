@@ -148,7 +148,10 @@ namespace orxonox
     if( GameMode::isMaster() )
       newID = ++id_;
     else
+    {
+      assert(peerMap_.size()!=0);
       newID = peerMap_[NETWORK_PEER_ID_SERVER].lastProcessedGamestateID;
+    }
     
     if(!currentGamestate_->collectData(newID, gsMode)){ //we have no data to send
       delete currentGamestate_;
@@ -171,7 +174,7 @@ namespace orxonox
         COUT(5) << "Server: not sending gamestate" << std::endl;
         continue;
       }
-      COUT(4) << "client id: " << peerIt->first << std::endl;
+      COUT(5) << "client id: " << peerIt->first << std::endl;
       COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
       int peerID = peerIt->first; //get client id
 
@@ -243,7 +246,7 @@ namespace orxonox
 //     bool b = gs->compressData();
 //     assert(b);
     clock.capture();
-    COUT(4) << "diff and compress time: " << clock.getDeltaTime() << endl;
+    COUT(5) << "diff and compress time: " << clock.getDeltaTime() << endl;
 //     COUT(5) << "sending gamestate with id " << gs->getID();
 //     if(gamestate->isDiffed())
 //       COUT(5) << " and baseid " << gs->getBaseID() << endl;

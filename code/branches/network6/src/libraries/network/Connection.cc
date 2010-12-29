@@ -42,8 +42,8 @@ namespace orxonox
 {
   const boost::posix_time::millisec NETWORK_COMMUNICATION_THREAD_WAIT_TIME(20);
 
-  Connection::Connection():
-    host_(0), bCommunicationThreadRunning_(false), nextPeerID_(NETWORK_PEER_ID_SERVER+1)
+  Connection::Connection(uint32_t firstPeerID):
+    host_(0), bCommunicationThreadRunning_(false), nextPeerID_(firstPeerID)
   {
     enet_initialize();
     atexit(enet_deinitialize);

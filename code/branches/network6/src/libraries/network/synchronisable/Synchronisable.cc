@@ -294,7 +294,7 @@ namespace orxonox
    * This function takes a bytestream and loads the data into the registered variables
    * @param mem pointer to the bytestream
    * @param mode same as in getData
-   * @param forceCallback FIXME - add doc!
+   * @param forceCallback this makes updateData call each callback
    * @return true/false
    */
   bool Synchronisable::updateData(uint8_t*& mem, uint8_t mode, bool forceCallback)
@@ -371,13 +371,14 @@ namespace orxonox
   /**
    * This function determines, wheter the object should be saved to the bytestream (according to its syncmode/direction)
    * @param id gamestate id
-   * @param mode FIXME - add doc!
+   * @param mode Synchronisation mode (toclient, toserver or bidirectional)
    * @return true/false
    */
   bool Synchronisable::doSync(int32_t id, uint8_t mode)
   {
-    if(mode==0x0)
-      mode=state_;
+//     if(mode==0x0)
+//       mode=state_;
+    assert(mode!=0x0);
     return ( (this->objectMode_ & mode)!=0 && (!syncList_.empty() ) );
   }
 

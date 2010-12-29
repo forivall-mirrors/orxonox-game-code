@@ -104,7 +104,7 @@ namespace orxonox
     virtual ~Connection();
 
   protected:
-    Connection();
+    Connection(uint32_t firstPeerID = NETWORK_PEER_ID_SERVER+1);
     
     void startCommunicationThread();
     void stopCommunicationThread();

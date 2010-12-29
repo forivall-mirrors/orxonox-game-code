@@ -106,7 +106,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
   assert(data_==0);
   uint32_t size = calcGamestateSize(id, mode);
 
-  COUT(4) << "G.ST.Man: producing gamestate with id: " << id << std::endl;
+  COUT(5) << "G.ST.Man: producing gamestate with id: " << id << std::endl;
   if(size==0)
     return false;
   data_ = new uint8_t[size + GamestateHeader::getSize()];

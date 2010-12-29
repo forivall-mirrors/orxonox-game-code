@@ -41,6 +41,7 @@ namespace orxonox
 
 
   ClientConnection::ClientConnection():
+    Connection(NETWORK_PEER_ID_SERVER),
     established_(false),
     server_(NULL)
   {
