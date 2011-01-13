@@ -197,14 +197,13 @@ namespace orxonox
                         // If the activity is different from what it is now, change it and fire an Event.
                         if(bActive ^ this->isActive(state->originator))
                         {
-
                             bool bFire = true;
 
                             // Add the originator to the objects activating this MultiTrigger.
                             if(bActive == true)
                             {
                                 // If the MultiTrigger has not exceeded its remaining activations.
-                                if(this->remainingActivations_ > 0)
+                                if(this->hasRemainingActivations())
                                 {
                                     this->active_.insert(state->originator);
                                     if(this->remainingActivations_ != INF_s)
@@ -217,7 +216,7 @@ namespace orxonox
                             else
                             {
                                 // If the MultiTrigger doesn't stay active or hasn't' exceeded its remaining activations.
-                                if(!this->getStayActive() || this->remainingActivations_ > 0)
+                                if(!this->getStayActive() || this->hasRemainingActivations())
                                     this->active_.erase(state->originator);
                                 else
                                     bFire = false;
