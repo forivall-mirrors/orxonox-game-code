@@ -273,6 +273,9 @@ namespace orxonox
     */
     int QuestManager::getNumSubQuests(Quest* quest, PlayerInfo* player)
     {
+        if(quest == NULL)
+            return this->getNumRootQuests(player);
+
         std::list<Quest*> quests = quest->getSubQuestList();
         int numQuests = 0;
         for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
@@ -295,6 +298,9 @@ namespace orxonox
     */
     Quest* QuestManager::getSubQuest(Quest* quest, PlayerInfo* player, int index)
     {
+        if(quest == NULL)
+            return this->getRootQuest(player, index);
+
         std::list<Quest*> quests = quest->getSubQuestList();
         for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
         {
@@ -348,6 +354,19 @@ namespace orxonox
 
     /**
     @brief
+        Get the parent-quest of the input Quest for the input player.
+    @param quest
+        The Quest to get the parent-quest of.
+    @param player
+        The player.
+    */
+    Quest* QuestManager::getParentQuest(Quest* quest)
+    {
+        return quest->getParentQuest();
+    }
+
+    /**
+    @brief
         Get the QuestDescription of the input Quest.
     @param item
         The Quest to get the QuestDescription of.
@@ -370,6 +389,32 @@ namespace orxonox
     QuestDescription* QuestManager::getDescription(QuestHint* item)
     {
         return item->getDescription();
+    }
+
+    /**
+    @brief
+        Get the id of the input Quest.
+    @param item
+        The Quest to get the id of.
+    @return
+        Returns the id of the input Quest.
+    */
+    const std::string QuestManager::getId(Quest* item) const
+    {
+        return item->getId();
+    }
+
+    /**
+    @brief
+        Get the id of the input QuestHint.
+    @param item
+        The QuestHint to get the id of.
+    @return
+        Returns the id of the input QuestHint.
+    */
+    const std::string QuestManager::getId(QuestHint* item) const
+    {
+        return item->getId();
     }
 
     /**
