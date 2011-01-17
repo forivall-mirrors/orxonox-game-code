@@ -15,25 +15,12 @@ P.frameHeigth = 18
 P.borderSize = 5
 P.titleHeight = 26
 
--- old:
-P.rootWindow = nil
-P.detailsWindows = {}
-P.quests = {}
-P.hints = {}
-P.player = nil
-
--- design parameters
-P.indentWidth = 20
-P.buttonHeight = 30
-P.borderWidth = 5
-
 --TODO:
 -- Highlight whether we are currently looking at active or finished quests
--- Distinguish completet from failed quests
--- Add hints
+-- Distinguish completed from failed quests
 
 function P.onLoad()
-    P.questManager = orxonox.QuestManager:getInstance()
+    P.questManager = orxonox.QuestManager:getInstance() -- Store the pointer to the QuestManager as an internal variable to allow for faster access,
 end
 
 function P.onShow()
@@ -44,10 +31,8 @@ function P.onShow()
     P.loadQuestsList(P.currentQuest)
 end
 
-function P.onHide()
-    --P.cleanup()
-end
-
+-- Loads the list of quests, depending on P.showActive, either the active (P.showActive == true) or the finished, i.e. inactive quests are loaded.
+-- selectQuest is a pointer to a quest that should be selected, if it is nil the first quest is selected.
 function P.loadQuestsList(selectQuest)
     local list = CEGUI.toListbox(winMgr:getWindow("orxonox/QuestGUI/QuestsList"))
     P.clearQuestList()
@@ -63,23 +48,32 @@ function P.loadQuestsList(selectQuest)
         local i = 0
         while i <= numRootQuests-1 do
             local quest = P.questManager:getRootQuest(P.player, i)
+            -- Insert the current quest into the list.
             local item = P.insertQuest(list, quest)
+            -- If the quest was inserted in the list and is has the same id as the selectQuest (thus it is the same quest) it is selected.
             if selectQuestId ~= nil and item ~= nil and selectQuestId == P.questManager:getId(quest) then
                 list:setItemSelectState(item, true)
             end
+            -- Insert all subquests of this rootquest.
             P.insertSubQuests(list, quest, selectQuestId)
             i = i+1
         end
+        -- If there were quests added to the list but there was no selectQuest specified (i.e. selectQuest was nil), the first item is selected.
         if list:getItemCount() > 0 then
             if selectQuestId == nil then
                 list:setItemSelectState(list:getListboxItemFromIndex(0), true)  -- Select first quest.
             end
+        -- If there werent any quests added the standard "no quests" message is loaded.
         else
             P.loadQuest()
         end
     end
 end
 
+-- Helper function, recursively inserts all the (active or inactive, depending on P.showActive) subquests of the input quest.
+-- list is the list into which the subquests should be insterted.
+-- quest is the quest, whose subquests should be inserted.
+-- selectQuestId is the id of the quest that should be selected.
 function P.insertSubQuests(list, quest, selectQuestId)
     -- Iterate through all sub-quests.
     local numQuests = P.questManager:getNumSubQuests(quest, P.player)
@@ -87,7 +81,9 @@ function P.insertSubQuests(list, quest, selectQuestId)
         local i = 0
         while i <= numQuests-1 do
             local subquest = P.questManager:getSubQuest(quest, P.player, i)
+            -- Insert the current quest into the list.
             local item = P.insertQuest(list, subquest)
+            -- If the quest was inserted in the list and is has the same id as the selectQuest (thus it is the same quest) it is selected.
             if selectQuestId ~= nil and item ~= nil and selectQuestId == P.questManager:getId(subquest) then
                 list:setItemSelectState(item, true)
             end
@@ -96,6 +92,9 @@ function P.insertSubQuests(list, quest, selectQuestId)
     end
 end
 
+-- Helper function, inserts a quest into the list (depending whether active or inactive quests are being shown). Returns nil if the quest was not inserted.
+-- list is the list into which the quets should be inserted.
+-- quest is the quest to be inserted.
 function P.insertQuest(list, quest)
     if P.showActive == quest:isActive(P.player) then
         local item = CEGUI.createListboxTextItem(P.questManager:getDescription(quest):getTitle())
@@ -107,10 +106,12 @@ function P.insertQuest(list, quest)
     return nil
 end
 
+-- Loads the input quest.
+-- quest the quest to be loaded.
 function P.loadQuest(quest)
 
-    P.clearQuest()
-    if quest == nil then
+    P.clearQuest() -- Clear the old quest.
+    if quest == nil then -- If quets is nil there is nothing to display.
         return
     else
         local offset = 0
@@ -121,7 +122,7 @@ function P.loadQuest(quest)
         titleWindow:setText(description:getTitle())
         local descriptionWindow = winMgr:getWindow("orxonox/QuestGUI/Quest/Description")
         descriptionWindow:setText(description:getDescription())
-        descriptionWindow:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.scrollbarWidth-P.borderSize), CEGUI.UDim(1, 0)))
+        descriptionWindow:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.borderSize), CEGUI.UDim(1, 0)))
         descriptionWindow:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.borderSize), CEGUI.UDim(0, P.borderSize)))
         local height = getStaticTextWindowHeight(descriptionWindow)
         descriptionWindow:setHeight(CEGUI.UDim(0, height))
@@ -133,26 +134,24 @@ function P.loadQuest(quest)
         local i = 0
         while i <= numQuests-1 do
             local quest = P.questManager:getSubQuest(quest, P.player, i)
-            --if P.showActive == quest:isActive(P.player) then
-                local item = CEGUI.createListboxTextItem(P.questManager:getDescription(quest):getTitle())
-                item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
-                list:addItem(item)
-                table.insert(P.subquests, quest)
-            --end
+            local item = CEGUI.createListboxTextItem(P.questManager:getDescription(quest):getTitle())
+            item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
+            list:addItem(item)
+            table.insert(P.subquests, quest)
             i = i+1
         end
         height = list:getTotalItemsHeight()
         if height > 0 then
             height = height+P.frameHeigth
         end
-        list:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.scrollbarWidth-P.borderSize), CEGUI.UDim(0, height)))
+        list:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.borderSize), CEGUI.UDim(0, height)))
         list:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.borderSize), CEGUI.UDim(0, offset)))
-        offset = offset + height
+        offset = offset + height + P.borderSize
 
         -- Load hints
         local hintsWindow = winMgr:getWindow("orxonox/QuestGUI/Quest/Hints")
         hintsWindow:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.borderSize), CEGUI.UDim(0, offset)))
-        hintsWindow:setWidth(CEGUI.UDim(1, -P.scrollbarWidth-P.borderSize))
+        hintsWindow:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.borderSize), CEGUI.UDim(0, 0)))
         height = P.titleHeight
         local numHints = P.questManager:getNumHints(quest, P.player)
         local i = 0
@@ -161,12 +160,21 @@ function P.loadQuest(quest)
             height = height + P.insertHint(hintsWindow, hint, i, height)
             i = i+1
         end
+        if numHints == 0 then
+            height = 0
+        end
         hintsWindow:setHeight(CEGUI.UDim(0, height))
+        offset = offset + height
+
+        -- Set the size of the wrapper
+        local window = winMgr:getWindow("orxonox/QuestGUI/Quest/Wrapper")
+        window:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.borderSize-P.scrollbarWidth), CEGUI.UDim(0,offset+P.borderSize)))
     end
 
     P.currentQuest = quest
 end
 
+-- Clear the currently displayed quest.
 function P.clearQuest()
     -- clear title
     local titleWindow = winMgr:getWindow("orxonox/QuestGUI/Quest/Title")
@@ -199,14 +207,18 @@ function P.clearQuest()
     P.currentQuest = nil
 end
 
+-- Clear the quests list
 function P.clearQuestList()
     local list = CEGUI.toListbox(winMgr:getWindow("orxonox/QuestGUI/QuestsList"))
     list:resetList()
     P.quests = {}
 end
 
+-- Select an input quest in the input list.
+-- list is the list in which the input quest is to be selected.
+-- quest is the quest to be selected.
 function P.selectQuest(list, quest)
-    if quest == nil then
+    if quest == nil then -- If the input quest is nil, there is nothing to be selected, an error is output and the first quest is selected instead.
         cout(1, "Error in QuestGUI: selectQuest(), input quest is nil. Selecting first.")
         list:setItemSelectState(list:getListboxItemFromIndex(0), true) -- Select first
         return
@@ -215,22 +227,30 @@ function P.selectQuest(list, quest)
     local questId = P.questManager:getId(quest)
     local found = false
     local index = 0
+    -- Iterate over all quests currently in the list.
     for k,v in pairs(P.quests) do
+        -- If the id's are the same we have found the quest.
         if P.questManager:getId(v) == questId then
             found = true
             index = k-1
         end
     end
-    cout(0, questId .. " " .. index)
-    if found then
+
+    if found then -- If the quest was found it is selected.
         list:setItemSelectState(list:getListboxItemFromIndex(index), true)
-    else
+    else -- If the quest isn't found an error is output and the first quest is selected instead.
         cout(1, "Error in QuestGUI: selectQuest(), input quest is not in list. Selecting first.")
         list:setItemSelectState(list:getListboxItemFromIndex(0), true) -- Select first
     end
 end
 
+-- Helper function, insert the input hint into the input hintsWindow. Returns the height of the newly inserted hint.
+-- hintsWindow is the window in which the hint is to be inserted.
+-- hint is the hint to be inserted.
+-- index is the index of the hint.
+-- offset is the current offset in the hintsWindow.
 function P.insertHint(hintsWindow, hint, index, offset)
+    -- Create the window for the hint.
     local window = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/QuestGUI/Quest/Hints/" .. index)
     window:setProperty("HorzFormatting", "WordWrapLeftAligned")
     window:setProperty("VertFormatting", "TopAligned")
@@ -239,13 +259,14 @@ function P.insertHint(hintsWindow, hint, index, offset)
     hintsWindow:addChildWindow(window)
     local description = P.questManager:getDescription(hint)
     window:setText(description:getDescription())
-    window:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.scrollbarWidth-P.borderSize), CEGUI.UDim(1, 0)))
+    window:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.borderSize), CEGUI.UDim(1, 0)))
     local height = getStaticTextWindowHeight(window)
     window:setHeight(CEGUI.UDim(0, height))
     window:setPosition(CEGUI.UVector2(CEGUI.UDim(0, P.borderSize), CEGUI.UDim(0, offset)))
-    return height+P.borderSize
+    return height
 end
 
+-- Show the currently active quests in the quests list.
 function P.showActiveQuestsButton_clicked(e)
     if P.showActive == false then
         P.showActive = true
@@ -253,6 +274,7 @@ function P.showActiveQuestsButton_clicked(e)
     end
 end
 
+-- Show the finished (i.e. inactive) quests in the quests list.
 function P.showFinishedQuestsButton_clicked(e)
     if P.showActive == true then
         P.showActive = false
@@ -260,6 +282,7 @@ function P.showFinishedQuestsButton_clicked(e)
     end
 end
 
+-- Change to a new quest.
 function P.changeQuest_clicked(e)
     local list = CEGUI.toListbox(winMgr:getWindow("orxonox/QuestGUI/QuestsList"))
     local choice = list:getFirstSelectedItem()
@@ -272,6 +295,7 @@ function P.changeQuest_clicked(e)
     end
 end
 
+-- Change to a new subquest.
 function P.changeToSubquest_clicked(e)
     local list = CEGUI.toListbox(winMgr:getWindow("orxonox/QuestGUI/Quest/SubquestsList"))
     local questsList = CEGUI.toListbox(winMgr:getWindow("orxonox/QuestGUI/QuestsList"))
@@ -280,6 +304,7 @@ function P.changeToSubquest_clicked(e)
         local index = list:getItemIndex(choice)
         local quest = P.subquests[index+1]
         if quest ~= nil then
+            -- If the P.showActive must be changed to display the quest the quests list also has to be regenerated.
             if quest:isActive(P.player) == P.showActive then
                 P.selectQuest(questsList, quest)
             else
