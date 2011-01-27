@@ -36,6 +36,7 @@
 #include "util/Math.h"
 #include "Controller.h"
 #include "controllers/NewHumanController.h"
+#include "weaponsystem/WeaponSystem.h"
 
 namespace orxonox
 {
@@ -76,6 +77,8 @@ namespace orxonox
             static void followme();
             static void passivebehaviour(const bool passive);
             static void formationsize(const int size);
+	    
+            virtual void doFire();
 
         protected:
 
@@ -137,8 +140,13 @@ namespace orxonox
             Vector3 targetPosition_;
             WeakPtr<Pawn> target_;
             bool bShooting_;
+	    
+            int numberOfWeapons;
+            int weapons[WeaponSystem::MAX_WEAPON_MODES];
 
         private:
+            void setupWeapons();
+            bool bSetupWorked;
     };
 }
 

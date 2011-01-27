@@ -83,6 +83,8 @@ namespace orxonox
         this->targetPosition_ = Vector3::ZERO;
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
+	this->bSetupWorked = false;
+	this->numberOfWeapons = 0;
     }
 
     ArtificialController::~ArtificialController()
@@ -1014,5 +1016,44 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         }
 
         return (team1 == team2 && team1 != -1);
+    }
+    
+    void ArtificialController::doFire()
+    {
+        if(!bSetupWorked)//setup: find out which weapons are active ! hard coded: laser is "0", lens flare is "1", ...
+        {
+            this->setupWeapons();
+            if(numberOfWeapons>0)
+                bSetupWorked=true;
+        }
+        else if(this->getControllableEntity()&&(numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
+        {
+            if (this->isCloseAtTarget(140) && this->isLookingAtTarget(math::pi / 20.0f)&&(weapons[1]==1) )
+                this->getControllableEntity()->fire(1); //ai uses lens flare if they're close enough to the target
+
+          //default fire (laser)
+          else if ((weapons[0]==0))
+               this->getControllableEntity()->fire(0);
+        }
+    }
+    void ArtificialController::setupWeapons()
+    {
+        if(this->getControllableEntity())
+        {
+            Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
+            if(pawn)
+            {
+                 for(unsigned int i=0; i<WeaponSystem::MAX_WEAPON_MODES; i++)
+                 {
+                      if(pawn->getWeaponSet(i)) //main part: find which weapons a pawn can use; hard coded at the moment!
+                      {
+                          weapons[i]=i;
+                          numberOfWeapons++;
+                      }
+                      else
+                          weapons[i]=-1;
+                 }
+            }
+        }
     }
 }
