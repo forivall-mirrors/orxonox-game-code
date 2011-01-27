@@ -85,7 +85,7 @@ namespace orxonox
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
 	this->bSetupWorked = false;
 	this->numberOfWeapons = 0;
-	this->botlevel_ = 10.0f;
+	this->botlevel_ = 1.0f;
     }
 
     ArtificialController::~ArtificialController()

@@ -73,7 +73,7 @@ do
     j = 1
     ?>
 
-    <SpawnPoint team=0 position="<?lua print(y*1.4+z*0.2) ?>,0,<?lua print(z*1.4-y*0.2) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <SpawnPoint team=0 position="<?lua print(y*1.4+z*0.2) ?>,0,<?lua print(z*1.4-y*0.2) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff level="9.9f"/>
 
     <StaticEntity position="<?lua print(y) ?>,0,<?lua print(z) ?>" scale=<?lua print(j * 2) ?> collisionType=static >
       <attached>
