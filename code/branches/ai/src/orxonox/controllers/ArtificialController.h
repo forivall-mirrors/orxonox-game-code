@@ -79,6 +79,9 @@ namespace orxonox
             static void formationsize(const int size);
 	    
             virtual void doFire();
+	    void setBotLevel(float level=1.0f);
+	    inline float getBotLevel() const
+                { return this->botlevel_; }
 
         protected:
 
@@ -143,6 +146,7 @@ namespace orxonox
 	    
             int numberOfWeapons;
             int weapons[WeaponSystem::MAX_WEAPON_MODES];
+	    float botlevel_; //< Makes the level of a bot configurable. 
 
         private:
             void setupWeapons();

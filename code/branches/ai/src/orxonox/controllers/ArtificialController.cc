@@ -85,6 +85,7 @@ namespace orxonox
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
 	this->bSetupWorked = false;
 	this->numberOfWeapons = 0;
+	this->botlevel_ = 10.0f;
     }
 
     ArtificialController::~ArtificialController()
@@ -127,6 +128,7 @@ namespace orxonox
         XMLPortParam(ArtificialController, "formationFlight", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(false);
         XMLPortParam(ArtificialController, "formationSize", setFormationSize, getFormationSize, xmlelement, mode).defaultValues(STANDARD_MAX_FORMATION_SIZE);
         XMLPortParam(ArtificialController, "passive", setPassive, getPassive, xmlelement, mode).defaultValues(false);
+	XMLPortParam(ArtificialController, "level", setBotLevel, getBotLevel, xmlelement, mode).defaultValues(1.0f);
     }
 
 // Documentation only here to get a faster overview for creating a useful documentation...
@@ -1017,7 +1019,9 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
 
         return (team1 == team2 && team1 != -1);
     }
-    
+    /**
+        @brief DoFire is called when a bot should shoot and decides which weapon is used and whether the bot shoots at all.
+    */
     void ArtificialController::doFire()
     {
         if(!bSetupWorked)//setup: find out which weapons are active ! hard coded: laser is "0", lens flare is "1", ...
@@ -1026,9 +1030,9 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             if(numberOfWeapons>0)
                 bSetupWorked=true;
         }
-        else if(this->getControllableEntity()&&(numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
+        else if(this->getControllableEntity()&&(numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget(1000 + botlevel_*200) && this->isLookingAtTarget(math::pi / 20.0f))
         {
-            if (this->isCloseAtTarget(140) && this->isLookingAtTarget(math::pi / 20.0f)&&(weapons[1]==1) )
+            if (this->isCloseAtTarget(130) && this->isLookingAtTarget(math::pi / 20.0f)&&(weapons[1]==1) )
                 this->getControllableEntity()->fire(1); //ai uses lens flare if they're close enough to the target
 
           //default fire (laser)
@@ -1036,6 +1040,9 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                this->getControllableEntity()->fire(0);
         }
     }
+    /**
+        @brief Information gathering: Which weapons are ready to use?
+    */
     void ArtificialController::setupWeapons()
     {
         if(this->getControllableEntity())
@@ -1055,5 +1062,15 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                  }
             }
         }
+    }
+    
+    void ArtificialController::setBotLevel(float level)
+    {
+        if (level < 1)
+	    this->botlevel_ = 1 ; 
+	else if (level > 10)
+	    this->botlevel_ = 10;
+	else
+            this->botlevel_ = level;
     }
 }
