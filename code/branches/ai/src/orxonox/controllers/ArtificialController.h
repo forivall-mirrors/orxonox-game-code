@@ -82,6 +82,7 @@ namespace orxonox
 	    void setBotLevel(float level=1.0f);
 	    inline float getBotLevel() const
                 { return this->botlevel_; }
+            static void setAllBotLevel(float level);
 
         protected:
 

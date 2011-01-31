@@ -51,7 +51,7 @@ namespace orxonox
     SetConsoleCommand("ArtificialController", "followme",         &ArtificialController::followme);
     SetConsoleCommand("ArtificialController", "passivebehaviour", &ArtificialController::passivebehaviour);
     SetConsoleCommand("ArtificialController", "formationsize",    &ArtificialController::formationsize);
-    SetConsoleCommand("ArtificialController", "botlevel",         &ArtificialController::setBotLevel);
+    SetConsoleCommand("ArtificialController", "setbotlevel",      &ArtificialController::setAllBotLevel);
     
 
     static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
@@ -87,7 +87,7 @@ namespace orxonox
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
 	this->bSetupWorked = false;
 	this->numberOfWeapons = 0;
-	this->botlevel_ = 10.0f;
+	this->botlevel_ = 1.0f;
     }
 
     ArtificialController::~ArtificialController()
@@ -1068,11 +1068,18 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     
     void ArtificialController::setBotLevel(float level)
     {
-        if (level < 1)
-	    this->botlevel_ = 1 ; 
-	else if (level > 10)
-	    this->botlevel_ = 10;
+        if (level < 0.0f)
+	    this->botlevel_ = 0.0f; 
+	else if (level > 1.0f)
+	    this->botlevel_ = 1.0f;
 	else
             this->botlevel_ = level;
     }
+    
+    void ArtificialController::setAllBotLevel(float level)
+    {
+        for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it != ObjectList<ArtificialController>::end(); ++it)
+            it->setBotLevel(level);
+    }
+    
 }

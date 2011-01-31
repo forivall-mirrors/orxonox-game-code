@@ -75,17 +75,17 @@ namespace orxonox
 
             // search enemy
             random = rnd(maxrand);
-            if (random < (15 + botlevel_* 2) && (!this->target_))
+            if (random < (15 + botlevel_* 20) && (!this->target_))
                 this->searchNewTarget();
 
             // forget enemy
             random = rnd(maxrand);
-            if (random < (5/botlevel_) && (this->target_))
+            if (random < ((1-botlevel_)*5) && (this->target_))
                 this->forgetTarget();
 
             // next enemy
             random = rnd(maxrand);
-            if (random < (10 + botlevel_) && (this->target_))
+            if (random < ((1+ botlevel_)*10) && (this->target_))
                 this->searchNewTarget();
 
             // fly somewhere
@@ -105,12 +105,12 @@ namespace orxonox
 
             // shoot
             random = rnd(maxrand);
-            if (!(this->passive_) && random < (75 + botlevel_*3) && (this->target_ && !this->bShooting_))
+            if (!(this->passive_) && random < (75 + botlevel_*25) && (this->target_ && !this->bShooting_))
                 this->bShooting_ = true;
 
             // stop shooting
             random = rnd(maxrand);
-            if (random < (25 - botlevel_*2 ) && (this->bShooting_))
+            if (random < ((1 - botlevel_)*25) && (this->bShooting_))
                 this->bShooting_ = false;
 
         }
@@ -191,7 +191,7 @@ namespace orxonox
 
                 // stop shooting
                 random = rnd(maxrand);
-                if (random < (25 - botlevel_*2 ) && (this->bShooting_))
+                if (random < ( (1- botlevel_)*25 ) && (this->bShooting_))
                     this->bShooting_ = false;
 
             }
