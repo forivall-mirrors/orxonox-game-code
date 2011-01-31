@@ -50,6 +50,7 @@ namespace orxonox
     SetConsoleCommand("ArtificialController", "masteraction",     &ArtificialController::masteraction);
     SetConsoleCommand("ArtificialController", "followme",         &ArtificialController::followme);
     SetConsoleCommand("ArtificialController", "passivebehaviour", &ArtificialController::passivebehaviour);
+    SetConsoleCommand("ArtificialController", "formationsize",    &ArtificialController::formationsize);
     SetConsoleCommand("ArtificialController", "botlevel",         &ArtificialController::setBotLevel);
     
 
