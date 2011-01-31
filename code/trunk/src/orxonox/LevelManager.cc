@@ -212,7 +212,7 @@ namespace orxonox
         else
         {
             // If this index is bigger than the last, we can optimize a little.
-            if(index > this->nextIndex_)
+            if(index < this->nextIndex_)
             {
                 this->nextIndex_ = 0;
                 this->nextLevel_ = this->availableLevels_.begin();
