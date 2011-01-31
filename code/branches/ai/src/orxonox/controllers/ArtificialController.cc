@@ -50,7 +50,8 @@ namespace orxonox
     SetConsoleCommand("ArtificialController", "masteraction",     &ArtificialController::masteraction);
     SetConsoleCommand("ArtificialController", "followme",         &ArtificialController::followme);
     SetConsoleCommand("ArtificialController", "passivebehaviour", &ArtificialController::passivebehaviour);
-    SetConsoleCommand("ArtificialController", "formationsize",    &ArtificialController::formationsize);
+    SetConsoleCommand("ArtificialController", "botlevel",         &ArtificialController::setBotLevel);
+    
 
     static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
     static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;
@@ -85,7 +86,7 @@ namespace orxonox
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
 	this->bSetupWorked = false;
 	this->numberOfWeapons = 0;
-	this->botlevel_ = 1.0f;
+	this->botlevel_ = 10.0f;
     }
 
     ArtificialController::~ArtificialController()

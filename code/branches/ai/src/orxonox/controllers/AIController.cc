@@ -25,7 +25,7 @@
  *      Dominik Solenicki
  *
  */
-
+//TODO: intended behaviour: when a bot has a target_ it shouldn't move away.
 #include "AIController.h"
 
 #include "util/Math.h"
