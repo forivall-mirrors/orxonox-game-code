@@ -52,7 +52,6 @@ namespace orxonox
     SetConsoleCommand("ArtificialController", "passivebehaviour", &ArtificialController::passivebehaviour);
     SetConsoleCommand("ArtificialController", "formationsize",    &ArtificialController::formationsize);
     SetConsoleCommand("ArtificialController", "setbotlevel",      &ArtificialController::setAllBotLevel);
-    
 
     static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
     static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;
@@ -130,7 +129,7 @@ namespace orxonox
         XMLPortParam(ArtificialController, "formationFlight", setFormationFlight, getFormationFlight, xmlelement, mode).defaultValues(false);
         XMLPortParam(ArtificialController, "formationSize", setFormationSize, getFormationSize, xmlelement, mode).defaultValues(STANDARD_MAX_FORMATION_SIZE);
         XMLPortParam(ArtificialController, "passive", setPassive, getPassive, xmlelement, mode).defaultValues(false);
-	XMLPortParam(ArtificialController, "level", setBotLevel, getBotLevel, xmlelement, mode).defaultValues(1.0f);
+	//XMLPortParam(ArtificialController, "level", setBotLevel, getBotLevel, xmlelement, mode).defaultValues(0.0f);
     }
 
 // Documentation only here to get a faster overview for creating a useful documentation...
@@ -1032,7 +1031,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             if(numberOfWeapons>0)
                 bSetupWorked=true;
         }
-        else if(this->getControllableEntity()&&(numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget(1000 + botlevel_*200) && this->isLookingAtTarget(math::pi / 20.0f))
+        else if(this->getControllableEntity()&&(numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
         {
             if (this->isCloseAtTarget(130) && this->isLookingAtTarget(math::pi / 20.0f)&&(weapons[1]==1) )
                 this->getControllableEntity()->fire(1); //ai uses lens flare if they're close enough to the target

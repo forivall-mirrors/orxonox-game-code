@@ -25,7 +25,7 @@
  *      Dominik Solenicki
  *
  */
-//TODO: intended behaviour: when a bot has a target_ it shouldn't move away.
+
 #include "AIController.h"
 
 #include "util/Math.h"
@@ -34,6 +34,7 @@
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 
+//Todo: Bot soll pickupspawner besuchen können, falls Pickup vorhanden
 namespace orxonox
 {
     static const float ACTION_INTERVAL = 1.0f;
@@ -85,7 +86,7 @@ namespace orxonox
 
             // next enemy
             random = rnd(maxrand);
-            if (random < ((1+ botlevel_)*10) && (this->target_))
+            if (random < ((1-botlevel_)*10) && (this->target_))
                 this->searchNewTarget();
 
             // fly somewhere
@@ -158,12 +159,12 @@ namespace orxonox
 
                 // search enemy
                 random = rnd(maxrand);
-                if (random < 15 && (!this->target_))
+                if (random < (botlevel_)*25 && (!this->target_))
                     this->searchNewTarget();
 
                 // forget enemy
                 random = rnd(maxrand);
-                if (random < 5 && (this->target_))
+                if (random < (1-botlevel_)*6 && (this->target_))
                     this->forgetTarget();
 
                 // next enemy
@@ -183,10 +184,10 @@ namespace orxonox
 
                 // shoot
                 random = rnd(maxrand);
-                if (!(this->passive_) && random < 9 && (this->target_ && !this->bShooting_))
+                if (!(this->passive_) && random < 25*(botlevel_)+1 && (this->target_ && !this->bShooting_))
                 {
-                this->bShooting_ = true;
-                this->forceFreeSlaves();
+                    this->bShooting_ = true;
+                    this->forceFreeSlaves();
                 }
 
                 // stop shooting
@@ -201,6 +202,9 @@ namespace orxonox
 
     void AIController::tick(float dt)
     {
+        float random;
+        float maxrand = 100.0f / ACTION_INTERVAL;
+	
         if (!this->isActive())
             return;
 
@@ -212,7 +216,13 @@ namespace orxonox
                 {
                     if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
                         this->forgetTarget();
-                    else this->aimAtTarget();
+                    else
+                    {
+                        this->aimAtTarget();
+		        random = rnd(maxrand);
+		        if(this->botlevel_*100 > random)
+                            this->follow();//If a bot is shooting a player, it shouldn't let him go away easily.
+                    }
                 }
 
                 if (this->bHasTargetPosition_)
@@ -232,10 +242,8 @@ namespace orxonox
 
         if (this->state_ == SLAVE)
         {
-
             if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();
-
         }
 
         if (this->state_ == FREE)
@@ -244,7 +252,13 @@ namespace orxonox
             {
                 if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
                     this->forgetTarget();
-                else this->aimAtTarget();
+                else
+		{
+		    this->aimAtTarget();
+		    random = rnd(maxrand);
+		    if(this->botlevel_*100 > random)
+                        this->follow();//If a bot is shooting a player, it shouldn't let him go away easily.
+		}
             }
 
             if (this->bHasTargetPosition_)
