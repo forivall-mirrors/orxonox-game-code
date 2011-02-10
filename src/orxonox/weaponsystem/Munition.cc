@@ -184,7 +184,7 @@ namespace orxonox
                     // We don't stack, so we can only take munition if this is allowed
                     if (magazine->munition_ > 0 && this->bAllowMultiMunitionRemovementUnderflow_)
                     {
-                        magazine->munition_ -= 0;
+                        magazine->munition_ = 0;
                         return true;
                     }
                 }
