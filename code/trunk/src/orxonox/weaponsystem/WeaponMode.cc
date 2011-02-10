@@ -126,8 +126,10 @@ namespace orxonox
             {
                 if (this->munition_->reload(this))
                 {
-                    if (!this->bParallelReload_)
-                        reloadtime += this->munition_->getReloadTime();
+                    if (this->bParallelReload_)
+                        reloadtime = std::max(this->reloadTime_, this->munition_->getReloadTime());
+                    else
+                        reloadtime = this->reloadTime_ + this->munition_->getReloadTime();
                 }
             }
 
