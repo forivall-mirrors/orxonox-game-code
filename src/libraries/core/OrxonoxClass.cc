@@ -36,7 +36,6 @@
 #include <cassert>
 #include "MetaObjectList.h"
 #include "Identifier.h"
-#include "WeakPtr.h"
 
 namespace orxonox
 {
@@ -55,7 +54,7 @@ namespace orxonox
     }
 
     /**
-        @brief Destructor: Removes the object from the object-lists, notifies all @ref WeakPtr "weak pointers" that this object is being deleted.
+        @brief Destructor: Removes the object from the object-lists, notifies all DestructionListener (for example @ref WeakPtr "weak pointers") that this object is being deleted.
     */
     OrxonoxClass::~OrxonoxClass()
     {
@@ -70,8 +69,8 @@ namespace orxonox
         if (this->parents_)
             delete this->parents_;
 
-        // reset all weak pointers pointing to this object
-        for (std::set<WeakPtr<OrxonoxClass>*>::iterator it = this->weakPointers_.begin(); it != this->weakPointers_.end(); )
+        // notify all destruction listeners
+        for (std::set<DestructionListener*>::iterator it = this->destructionListeners_.begin(); it != this->destructionListeners_.end(); )
             (*(it++))->objectDeleted();
     }
 

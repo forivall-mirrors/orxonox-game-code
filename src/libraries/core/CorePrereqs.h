@@ -137,6 +137,7 @@ namespace orxonox
     class ConfigFileSection;
     class ConfigValueContainer;
     class Core;
+    class DestructionListener;
     class DynLib;
     class DynLibManager;
     struct Event;

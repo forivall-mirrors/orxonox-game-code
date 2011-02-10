@@ -73,8 +73,7 @@ namespace orxonox
         template <class T>
         friend class SmartPtr;
 
-        template <class T>
-        friend class WeakPtr;
+        friend class DestructionListener;
 
         public:
             OrxonoxClass();
@@ -168,28 +167,41 @@ namespace orxonox
                     this->destroy();
             }
 
-            /// Register a weak pointer which points to this object.
-            template <class T>
-            inline void registerWeakPtr(WeakPtr<T>* pointer)
-                { this->weakPointers_.insert(reinterpret_cast<WeakPtr<OrxonoxClass>*>(pointer)); }
-            /// Unegister a weak pointer which pointed to this object before.
-            template <class T>
-            inline void unregisterWeakPtr(WeakPtr<T>* pointer)
-                { this->weakPointers_.erase(reinterpret_cast<WeakPtr<OrxonoxClass>*>(pointer)); }
+            /// Register a destruction listener (for example a weak pointer which points to this object).
+            inline void registerDestructionListener(DestructionListener* pointer)
+                { this->destructionListeners_.insert(pointer); }
+            /// Unegister a destruction listener (for example a weak pointer which pointed to this object before).
+            inline void unregisterDestructionListener(DestructionListener* pointer)
+                { this->destructionListeners_.erase(pointer); }
 
-            Identifier* identifier_;                            //!< The Identifier of the object
-            std::set<const Identifier*>* parents_;              //!< List of all parents of the object
-            MetaObjectList* metaList_;                          //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
-            int referenceCount_;                                //!< Counts the references from smart pointers to this object
-            bool requestedDestruction_;                         //!< Becomes true after someone called delete on this object
-            std::set<WeakPtr<OrxonoxClass>*> weakPointers_;     //!< All weak pointers which point to this object (and like to get notified if it dies)
+            Identifier* identifier_;                                //!< The Identifier of the object
+            std::set<const Identifier*>* parents_;                  //!< List of all parents of the object
+            MetaObjectList* metaList_;                              //!< MetaObjectList, containing all ObjectLists and ObjectListElements the object is registered in
+            int referenceCount_;                                    //!< Counts the references from smart pointers to this object
+            bool requestedDestruction_;                             //!< Becomes true after someone called delete on this object
+            std::set<DestructionListener*> destructionListeners_;   //!< All destruction listeners (for example weak pointers which point to this object and like to get notified if it dies)
 
             /// 'Fast map' that holds this-pointers of all derived types
             std::vector<std::pair<unsigned int, void*> > objectPointers_;
     };
 
-    SUPER_FUNCTION(11, OrxonoxClass, clone, false);
+    /**
+        @brief This listener is used to inform weak pointers if an object of type OrxonoxClass gets destroyed.
+    */
+    class _CoreExport DestructionListener
+    {
+        friend class OrxonoxClass;
 
+        protected:
+            inline void registerAsDestructionListener(OrxonoxClass* object)
+                { object->registerDestructionListener(this); }
+            inline void unregisterAsDestructionListener(OrxonoxClass* object)
+                { object->unregisterDestructionListener(this); }
+
+            virtual void objectDeleted() = 0;
+    };
+
+    SUPER_FUNCTION(11, OrxonoxClass, clone, false);
 }
 
 #endif /* _OrxonoxClass_H__ */

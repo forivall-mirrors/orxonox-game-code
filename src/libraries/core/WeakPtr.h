@@ -95,10 +95,8 @@ namespace orxonox
         @see See @ref WeakPtrExample "this description" for more information and an example.
     */
     template <class T>
-    class WeakPtr
+    class WeakPtr : public DestructionListener
     {
-        friend class OrxonoxClass;
-
         public:
             /// Constructor: Initializes the weak pointer with a null pointer.
             inline WeakPtr() : pointer_(0), base_(0), callback_(0)
@@ -114,14 +112,14 @@ namespace orxonox
             inline WeakPtr(T* pointer) : pointer_(pointer), base_(pointer), callback_(0)
             {
                 if (this->base_)
-                    this->base_->registerWeakPtr(this);
+                    this->registerAsDestructionListener(this->base_);
             }
 
             /// Copy-constructor
             inline WeakPtr(const WeakPtr& other) : pointer_(other.pointer_), base_(other.base_), callback_(0)
             {
                 if (this->base_)
-                    this->base_->registerWeakPtr(this);
+                    this->registerAsDestructionListener(this->base_);
             }
 
             /// Copy-constructor for weak pointers to objects of another class.
@@ -129,14 +127,14 @@ namespace orxonox
             inline WeakPtr(const WeakPtr<O>& other) : pointer_(other.get()), base_(other.base_), callback_(0)
             {
                 if (this->base_)
-                    this->base_->registerWeakPtr(this);
+                    this->registerAsDestructionListener(this->base_);
             }
 
             /// Destructor
             inline ~WeakPtr()
             {
                 if (this->base_)
-                    this->base_->unregisterWeakPtr(this);
+                    this->unregisterAsDestructionListener(this->base_);
 
             }
 
@@ -211,9 +209,9 @@ namespace orxonox
             inline void swap(WeakPtr& other)
             {
                 if (this->base_)
-                    this->base_->unregisterWeakPtr(this);
+                    this->unregisterAsDestructionListener(this->base_);
                 if (other.base_)
-                    other.base_->unregisterWeakPtr(&other);
+                    other.unregisterAsDestructionListener(other.base_);
 
                 {
                     T* temp = this->pointer_;
@@ -227,9 +225,9 @@ namespace orxonox
                 }
 
                 if (this->base_)
-                    this->base_->registerWeakPtr(this);
+                    this->registerAsDestructionListener(this->base_);
                 if (other.base_)
-                    other.base_->registerWeakPtr(&other);
+                    other.registerAsDestructionListener(other.base_);
             }
 
             /// Resets the weak pointer (equivalent to assigning a NULL pointer).
