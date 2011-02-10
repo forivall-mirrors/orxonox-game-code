@@ -70,6 +70,7 @@ namespace orxonox
     class FusionMunition;
     class LaserMunition;
     class ReplenishingMunition;
+    class RocketMunition;
 
     // projectiles
     class BillboardProjectile;
