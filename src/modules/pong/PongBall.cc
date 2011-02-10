@@ -164,7 +164,7 @@ namespace orxonox
         }
     }
 
-    void PongBall::setBats(PongBat** bats)
+    void PongBall::setBats(WeakPtr<PongBat>* bats)
     {
         this->bat_ = bats;
         this->batID_[0] = this->bat_[0]->getObjectID();
@@ -174,7 +174,7 @@ namespace orxonox
     void PongBall::applyBats()
     {
         if (!this->bat_)
-            this->bat_ = new PongBat*[2];
+            this->bat_ = new WeakPtr<PongBat>[2]; // TODO: delete this somewhere
         if (this->batID_[0] != OBJECTID_UNKNOWN)
             this->bat_[0] = orxonox_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[0]));
         if (this->batID_[1] != OBJECTID_UNKNOWN)

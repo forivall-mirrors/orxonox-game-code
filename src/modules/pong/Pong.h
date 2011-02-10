@@ -58,9 +58,9 @@ namespace orxonox
         protected:
             void startBall();
 
-            PongCenterpoint* center_;
-            PongBall* ball_;
-            PongBat* bat_[2];
+            WeakPtr<PongCenterpoint> center_;
+            WeakPtr<PongBall> ball_;
+            WeakPtr<PongBat> bat_[2];
             Timer starttimer_;
     };
 }
