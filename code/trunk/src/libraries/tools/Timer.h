@@ -116,6 +116,8 @@ namespace orxonox
 
                 this->time_ = this->interval_;
                 this->bKillAfterCall_ = bKillAfterCall;
+
+                executor->getFunctor()->setSafeMode(true);
             }
 
             void run();

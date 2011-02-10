@@ -119,6 +119,7 @@
 
 #include "util/Debug.h"
 #include "util/MultiType.h"
+#include "core/OrxonoxClass.h"
 #include "FunctorPtr.h"
 
 namespace orxonox
@@ -185,6 +186,8 @@ namespace orxonox
             };
 
         public:
+            virtual ~Functor() {}
+
             /// Calls the function-pointer with up to five arguments. In case of a member-function, the assigned object-pointer is used to call the function. @return Returns the return-value of the function (if any; MT_Type::Null otherwise)
             virtual MultiType operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
 
@@ -211,6 +214,9 @@ namespace orxonox
             /// Returns the object-pointer.
             virtual void* getRawObjectPointer() const = 0;
 
+            /// Enables or disables the safe mode which causes the functor to change the object pointer to NULL if the object is deleted (only member functors).
+            virtual void setSafeMode(bool bSafeMode) = 0;
+
             /// Returns the full identifier of the function-pointer which is defined as typeid(@a F), where @a F is the type of the stored function-pointer. Used to compare functors.
             virtual const std::type_info& getFullIdentifier() const = 0;
             /// Returns an identifier of the header of the function (doesn't include the function's class). Used to compare functors.
@@ -218,17 +224,6 @@ namespace orxonox
             /// Returns an identifier of the header of the function (doesn't include the function's class), but regards only the first @a params parameters. Used to compare functions if an Executor provides default-values for the other parameters.
             virtual const std::type_info& getHeaderIdentifier(unsigned int params) const = 0;
     };
-
-    namespace detail
-    {
-        // helper class to determine if a functor is static or not
-        template <class O>
-        struct FunctorTypeStatic
-        { enum { result = false }; };
-        template <>
-        struct FunctorTypeStatic<void>
-        { enum { result = true }; };
-    }
 
     /**
         @brief FunctorMember is a child class of Functor and expands it with an object-pointer, that
@@ -242,11 +237,12 @@ namespace orxonox
         @see See @ref FunctorExample "Functor.h" for some examples.
     */
     template <class O>
-    class FunctorMember : public Functor
+    class FunctorMember : public Functor, public DestructionListener
     {
         public:
             /// Constructor: Stores the object-pointer.
-            FunctorMember(O* object = 0) : object_(object) {}
+            FunctorMember(O* object = 0) : object_(object), bSafeMode_(false) {}
+            virtual ~FunctorMember() { if (this->bSafeMode_) { this->unregisterObject(this->object_); } }
 
             /// Calls the function-pointer with up to five arguments and an object. In case of a static-function, the object can be NULL. @return Returns the return-value of the function (if any; MT_Type::Null otherwise)
             virtual MultiType operator()(O* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
@@ -254,8 +250,8 @@ namespace orxonox
             // see Functor::operator()()
             MultiType operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null)
             {
-                // call the function if it is static or if an object was assigned
-                if (detail::FunctorTypeStatic<O>::result || this->object_)
+                // call the function if an object was assigned
+                if (this->object_)
                     return (*this)(this->object_, param1, param2, param3, param4, param5);
                 else
                 {
@@ -265,25 +261,90 @@ namespace orxonox
             }
 
             // see Functor::getType()
-            Functor::Type::Enum getType() const
-                { return detail::FunctorTypeStatic<O>::result ? Functor::Type::Static : Functor::Type::Member; }
+            inline Functor::Type::Enum getType() const
+                { return Functor::Type::Member; }
 
             /// Assigns an object-pointer to the functor which is used to execute a member-function.
             inline void setObject(O* object)
-                { this->object_ = object;}
+            {
+                if (this->bSafeMode_ && object != this->object_)
+                {
+                    this->unregisterObject(this->object_);
+                    this->registerObject(object);
+                }
+                this->object_ = object;
+            }
             /// Returns the object-pointer.
             inline O* getObject() const
                 { return this->object_; }
 
             // see Functor::setRawObjectPointer()
             inline void setRawObjectPointer(void* object)
-                { this->object_ = (O*)object; }
+                { this->setObject((O*)object); }
             // see Functor::getRawObjectPointer()
             inline void* getRawObjectPointer() const
                 { return this->object_; }
 
+            // see Functor::setSafeMode()
+            inline void setSafeMode(bool bSafeMode)
+            {
+                if (bSafeMode == this->bSafeMode_)
+                    return;
+
+                this->bSafeMode_ = bSafeMode;
+
+                if (bSafeMode)
+                    this->registerObject(this->object_);
+                else
+                    this->unregisterObject(this->object_);
+            }
+
         protected:
+            /// Casts the object and registers as destruction listener.
+            inline void registerObject(O* object)
+                { OrxonoxClass* base = orxonox_cast<OrxonoxClass*>(object); if (base) { this->registerAsDestructionListener(base); } }
+            /// Casts the object and unregisters as destruction listener.
+            inline void unregisterObject(O* object)
+                { OrxonoxClass* base = orxonox_cast<OrxonoxClass*>(object); if (base) { this->unregisterAsDestructionListener(base); } }
+
+            /// Will be called by OrxonoxClass::~OrxonoxClass() if the stored object is deleted and the Functor is in safe mode.
+            inline void objectDeleted()
+                { this->object_ = 0; }
+
             O* object_;     ///< The stored object-pointer, used to execute a member-function (or NULL for static functions)
+            bool bSafeMode_; ///< If true, the functor is in safe mode and registers itself as listener at the object and changes the pointer to NULL if the object is deleted
+    };
+
+    /// Specialization of FunctorMember with @a T = void.
+    template <>
+    class FunctorMember<void> : public Functor
+    {
+        public:
+            /// Constructor: Stores the object-pointer.
+            FunctorMember(void* object = 0) {}
+
+            /// Calls the function-pointer with up to five arguments and an object. In case of a static-function, the object can be NULL. @return Returns the return-value of the function (if any; MT_Type::Null otherwise)
+            virtual MultiType operator()(void* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
+
+            // see Functor::operator()()
+            MultiType operator()(const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null)
+            {
+                return (*this)((void*)0, param1, param2, param3, param4, param5);
+            }
+
+            // see Functor::getType()
+            inline Functor::Type::Enum getType() const
+                { return Functor::Type::Static; }
+
+            // see Functor::setRawObjectPointer()
+            inline void setRawObjectPointer(void*)
+                { COUT(2) << "Warning: Can't assign an object pointer to a static functor" << std::endl; }
+            // see Functor::getRawObjectPointer()
+            inline void* getRawObjectPointer() const
+                { return 0; }
+
+            // see Functor::setSafeMode()
+            inline void setSafeMode(bool) {}
     };
 
     /// FunctorStatic is just a typedef of FunctorMember with @a T = void.
