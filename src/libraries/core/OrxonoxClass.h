@@ -194,9 +194,9 @@ namespace orxonox
 
         protected:
             inline void registerAsDestructionListener(OrxonoxClass* object)
-                { object->registerDestructionListener(this); }
+                { if (object) { object->registerDestructionListener(this); } }
             inline void unregisterAsDestructionListener(OrxonoxClass* object)
-                { object->unregisterDestructionListener(this); }
+                { if (object) { object->unregisterDestructionListener(this); } }
 
             virtual void objectDeleted() = 0;
     };
