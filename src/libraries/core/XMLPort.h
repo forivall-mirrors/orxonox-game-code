@@ -588,6 +588,7 @@ namespace orxonox
             XMLPortVariableHelperClass(void* var)
                 : variable_(var)
                 { }
+            virtual ~XMLPortVariableHelperClass() {}
 
             template <class T>
             void load(const T& value)

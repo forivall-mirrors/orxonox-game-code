@@ -44,6 +44,7 @@ namespace orxonox
         {
             public:
                 Magazine(Munition* munition, bool bUseReloadTime = true);
+                virtual ~Magazine() {}
 
                 unsigned int munition_;
                 Timer loadTimer_;
