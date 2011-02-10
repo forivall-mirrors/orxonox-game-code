@@ -87,13 +87,13 @@ namespace orxonox
             this->defSndWpnEngine_ = new WorldSound(this);
             this->defSndWpnEngine_->setLooping(true);
             this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
-            this->defSndWpnEngine_->setVolume(100);
+            this->defSndWpnEngine_->setVolume(1.0f);
             this->attach(defSndWpnEngine_);
 
             this->defSndWpnLaunch_ = new WorldSound(this);
             this->defSndWpnLaunch_->setLooping(false);
             this->defSndWpnLaunch_->setSource("sounds/Rocket_launch.ogg");
-            this->defSndWpnLaunch_->setVolume(100);
+            this->defSndWpnLaunch_->setVolume(1.0f);
             this->attach(defSndWpnLaunch_);
         }
         else
@@ -237,7 +237,7 @@ namespace orxonox
             this->destroy();
 //         }
     }
-    
+
     void Rocket::destructionEffect()
     {
         ParticleSpawner *effect1, *effect2;
@@ -251,13 +251,13 @@ namespace orxonox
             effect1 = new ParticleSpawner(static_cast<BaseObject*>(this->getScene().get()));
             effect2 = new ParticleSpawner(static_cast<BaseObject*>(this->getScene().get()));
         }
-        
+
         effect1->setPosition(this->getPosition());
         effect1->setOrientation(this->getOrientation());
         effect1->setDestroyAfterLife(true);
         effect1->setSource("Orxonox/explosion4");
         effect1->setLifetime(2.0f);
-        
+
         effect2->setPosition(this->getPosition());
         effect2->setOrientation(this->getOrientation());
         effect2->setDestroyAfterLife(true);
