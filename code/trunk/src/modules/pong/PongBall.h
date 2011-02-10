@@ -65,7 +65,7 @@ namespace orxonox
             float getBatLength() const
                 { return this->batlength_; }
 
-            void setBats(PongBat** bats);
+            void setBats(WeakPtr<PongBat>* bats);
             void applyBats();
 
             static const float MAX_REL_Z_VELOCITY;
@@ -78,7 +78,7 @@ namespace orxonox
             float speed_;
             float accelerationFactor_;
             float batlength_;
-            PongBat** bat_;
+            WeakPtr<PongBat>* bat_;
             unsigned int* batID_;
             float relMercyOffset_;
     };
