@@ -203,7 +203,7 @@ bool Gamestate::spreadData(uint8_t mode)
       assert(b);
     }
   }
-  assert(mem-data_ == GamestateHeader::getSize()+header_.getDataSize());
+  assert((uintptr_t)(mem-data_) == GamestateHeader::getSize()+header_.getDataSize());
   
    // In debug mode, check first, whether there are no duplicate objectIDs
 #ifndef NDEBUG
