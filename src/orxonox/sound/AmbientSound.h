@@ -50,7 +50,7 @@ namespace orxonox
         AmbientSound();
 
         void play();
-        void stop();
+        bool stop();
         void pause();
 
         void setAmbientSource(const std::string& source);

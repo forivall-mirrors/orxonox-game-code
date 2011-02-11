@@ -240,8 +240,8 @@ namespace orxonox
             alGetSourcei(this->usedSoundSources_[i].first, AL_SOURCE_STATE, &state);
             if (state == AL_STOPPED)
             {
-                this->usedSoundSources_[i].second->stop();
-                --i;
+                if (this->usedSoundSources_[i].second->stop()) // if stop() returns true, the sound source was removed, thus decrement the array index
+                    --i;
             }
         }
     }
