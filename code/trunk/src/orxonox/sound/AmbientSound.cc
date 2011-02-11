@@ -56,10 +56,11 @@ namespace orxonox
             SoundManager::getInstance().registerAmbientSound(this);
     }
 
-    void AmbientSound::stop()
+    bool AmbientSound::stop()
     {
         if (GameMode::playsSound())
             SoundManager::getInstance().unregisterAmbientSound(this);
+        return false; // sound source not (yet) destroyed - return false
     }
 
     void AmbientSound::pause()

@@ -50,7 +50,7 @@ namespace orxonox
         void XMLPortExtern(Element& xmlelement, XMLPort::Mode mode);
 
         virtual void play()  { this->doPlay(); }
-        virtual void stop()  { this->doStop(); }
+        virtual bool stop()  { return this->doStop(); } // returns true if the sound source was destroyed
         virtual void pause() { this->doPause(); }
 
         bool isPlaying() const { return this->state_ == Playing; }
@@ -85,7 +85,7 @@ namespace orxonox
         virtual ~BaseSound();
 
         void doPlay();
-        void doStop();
+        bool doStop(); // returns true if the sound source was destroyed
         void doPause();
 
         // network callbacks
