@@ -55,6 +55,7 @@ namespace orxonox
 
             virtual void fired(unsigned int firemode);
             virtual void greet();
+            virtual void mouseLook() {}
 
         protected:
             virtual void setPlayer(PlayerInfo* player);

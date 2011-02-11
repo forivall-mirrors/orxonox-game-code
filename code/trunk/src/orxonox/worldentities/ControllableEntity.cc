@@ -203,21 +203,29 @@ namespace orxonox
                 this->camera_->attachToNode(this->cameraPositionRootNode_);
                 this->currentCameraPosition_ = 0;
             }
+            
+            // disable mouse look if the new camera position doesn't allow it
+            if (this->currentCameraPosition_ && !this->currentCameraPosition_->getAllowMouseLook() && this->bMouseLook_)
+                this->mouseLook();
         }
     }
 
     void ControllableEntity::mouseLook()
     {
-        this->bMouseLook_ = !this->bMouseLook_;
-
-        if (!this->bMouseLook_)
-            this->cameraPositionRootNode_->setOrientation(Quaternion::IDENTITY);
-        if (this->getCamera())
+        // enable mouse look only if allowed - disabling it works always
+        if (this->currentCameraPosition_ && (this->currentCameraPosition_->getAllowMouseLook() || this->bMouseLook_))
         {
-            if (!this->bMouseLook_&& this->currentCameraPosition_->getDrag())
-                this->getCamera()->setDrag(true);
-            else
-                this->getCamera()->setDrag(false);
+            this->bMouseLook_ = !this->bMouseLook_;
+
+            if (!this->bMouseLook_)
+                this->cameraPositionRootNode_->setOrientation(Quaternion::IDENTITY);
+            if (this->getCamera())
+            {
+                if (!this->bMouseLook_ && this->currentCameraPosition_->getDrag())
+                    this->getCamera()->setDrag(true);
+                else
+                    this->getCamera()->setDrag(false);
+            }
         }
     }
 
