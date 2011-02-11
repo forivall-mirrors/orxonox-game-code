@@ -69,6 +69,8 @@ namespace orxonox
         : effectsPoolSize_(0)
     {
         RegisterRootObject(SoundManager);
+        
+        this->bDestructorCalled_ = false;
 
         // See whether we even want to load
         bool bDisableSound_ = false;
@@ -162,6 +164,7 @@ namespace orxonox
     SoundManager::~SoundManager()
     {
         // Erase fade lists because of the smart pointers
+        this->bDestructorCalled_ = true;
         this->fadeInList_.clear();
         this->fadeOutList_.clear();
 
@@ -342,7 +345,7 @@ namespace orxonox
 
     void SoundManager::registerAmbientSound(AmbientSound* newAmbient)
     {
-        if (newAmbient != NULL)
+        if (newAmbient != NULL && !this->bDestructorCalled_)
         {
             for (AmbientList::const_iterator it = this->ambientSounds_.begin(); it != this->ambientSounds_.end(); ++it)
             {
@@ -365,7 +368,7 @@ namespace orxonox
 
     void SoundManager::unregisterAmbientSound(AmbientSound* oldAmbient)
     {
-        if (oldAmbient == NULL || ambientSounds_.empty())
+        if (oldAmbient == NULL || ambientSounds_.empty() || this->bDestructorCalled_)
             return;
 
         if (this->ambientSounds_.front().first == oldAmbient)

@@ -145,6 +145,8 @@ namespace orxonox
         unsigned int maxSources_;
         std::vector<ALuint> availableSoundSources_;
         std::vector<std::pair<ALuint, BaseSound*> > usedSoundSources_;
+        
+        bool bDestructorCalled_; ///< Becomes true if the destructor is called - used to prevent ambient sounds from registering after the lists were cleared
 
         static SoundManager* singletonPtr_s;
     }; // tolua_export
