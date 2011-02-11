@@ -153,7 +153,7 @@ namespace orxonox
             std::set<BaseObject*>::const_iterator find = this->staticObjects_.find(*it);
             if (find == this->staticObjects_.end())
             {
-                COUT(3) << ++i << ": " << it->getIdentifier()->getName() << " (" << *it << ')' << std::endl;
+                COUT(3) << ++i << ": " << it->getIdentifier()->getName() << " (" << *it << "), references: " << it->getReferenceCount() << std::endl;
             }
         }
         COUT(3) << i << " objects remaining.";

@@ -40,8 +40,7 @@ namespace orxonox
 {
     /**
      * The BaseSound class is the base class for all sound file loader classes.
-     * It server as main interface to the OpenAL library.
-     *
+     * It serves as main interface to the OpenAL library.
      */
     class _OrxonoxExport BaseSound : virtual public OrxonoxClass
     {

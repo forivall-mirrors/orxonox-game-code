@@ -76,8 +76,7 @@ namespace orxonox
         if (GameMode::playsSound())
         {
             // Load sound
-            this->ambient_ = new AmbientSound(0);
-            this->ambient_->setSyncMode(0x0);
+            this->ambient_ = new AmbientSound();
         }
     }
 

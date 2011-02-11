@@ -20,46 +20,44 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _WorldSound_H__
-#define _WorldSound_H__
+#ifndef _WorldAmbientSound_H__
+#define _WorldAmbientSound_H__
 
 #include "OrxonoxPrereqs.h"
 
-#include "tools/interfaces/Tickable.h"
-#include "sound/BaseSound.h"
-#include "worldentities/StaticEntity.h"
+#include "core/BaseObject.h"
+#include "network/synchronisable/Synchronisable.h"
 
 namespace orxonox
 {
     /**
-    @brief
-        The WorldSound class is to be used for sounds with position and orientation.
+        @brief This class is used to play and control ambient sound in a level file. See AmbientSound for the
+        actual implementation of the background music player.
     */
-    class _OrxonoxExport WorldSound : public StaticEntity, public BaseSound, public Tickable
+    class _OrxonoxExport WorldAmbientSound : public BaseObject, public Synchronisable
     {
-    public:
-        WorldSound(BaseObject* creator);
+        public:
+            WorldAmbientSound(BaseObject* creator);
+            virtual ~WorldAmbientSound();
 
-        void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-        void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
-        void changedActivity();
+            void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
-        void tick(float dt);
+            virtual void changedActivity();
 
-    protected:
-        ~WorldSound() {}
+            void play();
 
-    private:
-        void registerVariables();
-        void initialiseSource();
-        float getRealVolume();
+        private:
+            void registerVariables();
+
+            AmbientSound* ambientSound_;
     };
 }
 
-#endif /* _WorldSound_H__ */
+#endif /* _WorldAmbientSound_H__ */
