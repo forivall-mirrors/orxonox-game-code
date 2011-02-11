@@ -150,6 +150,7 @@ namespace orxonox
     class SoundManager;
     class SoundStreamer;
     class WorldSound;
+    class WorldAmbientSound;
 
     // weaponsystem
     class DefaultWeaponmodeLink;

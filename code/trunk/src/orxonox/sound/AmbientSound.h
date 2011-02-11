@@ -32,28 +32,22 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
-#include "network/synchronisable/Synchronisable.h"
 #include "BaseSound.h"
 #include "MoodManager.h"
 
 namespace orxonox
 {
     /**
-     * The AmbientSound class is the base class for all sound file loader classes.
-     * It server as main interface to the OpenAL library.
-     *
+     * The AmbientSound class is used to play background music. It can not be placed
+     * directly in a level file, use WorldAmbientSound instead.
      */
-    class _OrxonoxExport AmbientSound : public BaseSound, public BaseObject, public Synchronisable, public MoodListener
+    class _OrxonoxExport AmbientSound : public BaseSound, public MoodListener
     {
         friend class SoundManager;
+        friend class WorldAmbientSound;
 
     public:
-        AmbientSound(BaseObject* creator);
-
-        void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-        void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
-        void changedActivity();
+        AmbientSound();
 
         void play();
         void stop();
@@ -72,7 +66,6 @@ namespace orxonox
 
     private:
         void preDestroy();
-        void registerVariables();
         float getRealVolume();
         void moodChanged(const std::string& mood);
         inline void ambientSourceChanged()
