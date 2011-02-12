@@ -256,7 +256,7 @@ namespace orxonox
         {
             graphicsManager_->upgradeToGraphics();
         }
-        catch (const InitialisationFailedException& e)
+        catch (const InitialisationFailedException&)
         {
             // Exit the application if the Ogre config dialog was canceled
             COUT(1) << Exception::handleMessage() << std::endl;
