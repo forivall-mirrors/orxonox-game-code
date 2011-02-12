@@ -69,7 +69,7 @@ namespace orxonox
         : effectsPoolSize_(0)
     {
         RegisterRootObject(SoundManager);
-        
+
         this->bDestructorCalled_ = false;
 
         // See whether we even want to load
