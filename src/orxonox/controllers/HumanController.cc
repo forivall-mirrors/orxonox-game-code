@@ -40,6 +40,7 @@
 namespace orxonox
 {
     extern const std::string __CC_fire_name = "fire";
+    extern const std::string __CC_suicide_name = "suicide";
 
     SetConsoleCommand("HumanController", "moveFrontBack",          &HumanController::moveFrontBack ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "moveRightLeft",          &HumanController::moveRightLeft ).addShortcut().setAsInputCommand();
@@ -53,7 +54,7 @@ namespace orxonox
     SetConsoleCommand("HumanController", "greet",                  &HumanController::greet         ).addShortcut();
     SetConsoleCommand("HumanController", "switchCamera",           &HumanController::switchCamera  ).addShortcut();
     SetConsoleCommand("HumanController", "mouseLook",              &HumanController::mouseLook     ).addShortcut();
-    SetConsoleCommand("HumanController", "suicide",                &HumanController::suicide       ).addShortcut();
+    SetConsoleCommand("HumanController", __CC_suicide_name,        &HumanController::suicide       ).addShortcut();
     SetConsoleCommand("HumanController", "toggleGodMode",          &HumanController::toggleGodMode ).addShortcut();
     SetConsoleCommand("HumanController", "addBots",                &HumanController::addBots       ).addShortcut().defaultValues(1);
     SetConsoleCommand("HumanController", "killBots",               &HumanController::killBots      ).addShortcut().defaultValues(0);

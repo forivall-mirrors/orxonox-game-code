@@ -42,6 +42,7 @@
 namespace orxonox
 {
     extern const std::string __CC_fire_name;
+    extern const std::string __CC_suicide_name;
 
     CreateFactory(Spectator);
 
@@ -153,7 +154,7 @@ namespace orxonox
     }
 
     /**
-        @brief Changes the keybind mode of the fire command to OnPress.
+        @brief Changes the behavior of some console commands.
     */
     void Spectator::startLocalHumanControl()
     {
@@ -161,10 +162,13 @@ namespace orxonox
 
         // change keybind mode of fire command to OnPress to avoid firing after respawn
         ModifyConsoleCommand(__CC_fire_name).keybindMode(KeybindMode::OnPress);
+
+        // disable suicide
+        ModifyConsoleCommand(__CC_suicide_name).pushFunction(&prototype::void__void);
     }
 
     /**
-        @brief Changes the keybind mode of the fire command back to OnHold.
+        @brief Changes the behavior of some console commands back to the original state.
     */
     void Spectator::stopLocalHumanControl()
     {
@@ -173,6 +177,9 @@ namespace orxonox
         // change fire command to a helper function and change keybind mode to OnPress
         // as soon as the player releases and presses the button again, the helper function will be called which changes the keybind mode back to OnHold
         ModifyConsoleCommand(__CC_fire_name).pushFunction(&Spectator::resetFireCommand).keybindMode(KeybindMode::OnPress);
+
+        // enable suicide
+        ModifyConsoleCommand(__CC_suicide_name).popFunction();
     }
 
     /**
