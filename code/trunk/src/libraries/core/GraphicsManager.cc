@@ -304,7 +304,7 @@ namespace orxonox
 
         if (!ogreRoot_->restoreConfig())
             if (!ogreRoot_->showConfigDialog())
-                ThrowException(InitialisationFailed, "OGRE graphics configuration dialogue failed.");
+                ThrowException(InitialisationFailed, "OGRE graphics configuration dialogue canceled.");
 
         CCOUT(4) << "Creating render window" << std::endl;
 

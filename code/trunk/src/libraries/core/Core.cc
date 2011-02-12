@@ -250,6 +250,12 @@ namespace orxonox
         {
             graphicsManager_->upgradeToGraphics();
         }
+        catch (const InitialisationFailedException& e)
+        {
+            // Exit the application if the Ogre config dialog was canceled
+            COUT(1) << Exception::handleMessage() << std::endl;
+            exit(EXIT_FAILURE);
+        }
         catch (...)
         {
             // Recovery from this is very difficult. It requires to completely
@@ -258,7 +264,7 @@ namespace orxonox
             // throws an exception and the graphics engine then gets destroyed
             // and reloaded between throw and catch (access violation in MSVC).
             // That's why we abort completely and only display the exception.
-            COUT(0) << "An exception occurred during upgrade to graphics. "
+            COUT(1) << "An exception occurred during upgrade to graphics. "
                     << "That is unrecoverable. The message was:" << endl
                     << Exception::handleMessage() << endl;
             abort();
