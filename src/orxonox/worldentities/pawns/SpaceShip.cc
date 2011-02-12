@@ -141,9 +141,10 @@ namespace orxonox
             {
                 this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
                 this->physicalBody_->applyTorque(physicalBody_->getWorldTransform().getBasis() * this->localAngularAcceleration_);
-                this->localAngularAcceleration_.setValue(0, 0, 0);
             }
-            
+
+            this->localAngularAcceleration_.setValue(0, 0, 0);
+
             if(!this->bBoostCooldown_ && this->boostPower_ < this->initialBoostPower_)
             {
                 this->boostPower_ += this->boostPowerRate_*dt;
@@ -160,7 +161,7 @@ namespace orxonox
             }
         }
     }
-    
+
     void SpaceShip::boostCooledDown(void)
     {
         this->bBoostCooldown_ = false;
@@ -204,13 +205,13 @@ namespace orxonox
 
         Pawn::rotateRoll(value);
     }
-    
+
     // TODO: something seems to call this function every tick, could probably handled a little more efficiently!
     void SpaceShip::setBoost(bool bBoost)
     {
         if(bBoost == this->bBoost_)
             return;
-    
+
         if(bBoost)
             this->boost();
         else
