@@ -108,7 +108,7 @@ namespace orxonox
             // Get a no source ID
             this->audioSource_ += 123455;
             while (alIsSource(++this->audioSource_));
-            
+
             return true; // sound source destroyed - return true
         }
         return false; // nothing done - return false
