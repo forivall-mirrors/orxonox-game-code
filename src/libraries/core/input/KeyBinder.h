@@ -75,6 +75,8 @@ namespace orxonox
         void resetJoyStickAxes();
         void resetMouseAxes();
 
+        void changeMode(ConsoleCommand* command, KeybindMode::Value mode);
+
     protected: // functions
         void loadBindings();
         void buttonThresholdChanged();

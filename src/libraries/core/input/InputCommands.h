@@ -57,12 +57,14 @@ namespace orxonox
     public:
         virtual ~BaseCommand() { }
         virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
+        virtual CommandEvaluation* getEvaluation() = 0;
     };
 
     class _CoreExport SimpleCommand : public BaseCommand
     {
     public:
         bool execute(float abs = 1.0f, float rel = 1.0f);
+        CommandEvaluation* getEvaluation();
 
         CommandEvaluation evaluation_;
     };
@@ -78,15 +80,31 @@ namespace orxonox
         return evaluation_.execute();
     }
 
+    /// Returns a pointer to the encapsuled evaluation.
+    inline CommandEvaluation* SimpleCommand::getEvaluation()
+    {
+        return &this->evaluation_;
+    }
+
     class _CoreExport ParamCommand : public BaseCommand
     {
     public:
         ParamCommand() : scale_(1.0f), paramCommand_(0) { }
         bool execute(float abs = 1.0f, float rel = 1.0f);
+        CommandEvaluation* getEvaluation();
 
         float scale_;
         BufferedParamCommand* paramCommand_;
     };
+
+    /// Returns a pointer to the encapsuled evaluation.
+    inline CommandEvaluation* ParamCommand::getEvaluation()
+    {
+        if (this->paramCommand_)
+            return &this->paramCommand_->evaluation_;
+        else
+            return 0;
+    }
 }
 
 #endif /* _InputCommands_H__ */

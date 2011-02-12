@@ -509,7 +509,7 @@ namespace orxonox
                         { if (this->command_) { this->command_->setAsInputCommand(); } return *this; }
                     /// Changes the keybind mode of the command.
                     inline ConsoleCommandManipulator& keybindMode(KeybindMode::Value mode)
-                        { if (this->command_) { this->command_->keybindMode(mode); } return *this; }
+                        { if (this->command_) { this->command_->changeKeybindMode(mode); } return *this; }
                     /// Sets the input configured param to the given index.
                     inline ConsoleCommandManipulator& inputConfiguredParam(int index)
                         { if (this->command_) { this->command_->inputConfiguredParam(index); } return *this; }
@@ -597,12 +597,14 @@ namespace orxonox
                 return *this;
             }
 
-            /// Changes the keybind mode.
+            /// Sets the keybind mode. Note: use changeKeybindMode if you intend to change the mode.
             inline ConsoleCommand& keybindMode(KeybindMode::Value mode)
                 { this->keybindMode_ = mode; return *this; }
             /// Returns the keybind mode
             inline KeybindMode::Value getKeybindMode() const
                 { return this->keybindMode_; }
+
+            ConsoleCommand& changeKeybindMode(KeybindMode::Value mode);
 
             /// Changes the input configured param to the given index.
             inline ConsoleCommand& inputConfiguredParam(int index)

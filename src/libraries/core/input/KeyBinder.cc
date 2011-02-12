@@ -384,6 +384,59 @@ namespace orxonox
         paramCommandBuffer_.clear();
     }
 
+    /**
+        @brief Changes the keybind mode of a given console command.
+    */
+    void KeyBinder::changeMode(ConsoleCommand* command, KeybindMode::Value new_mode)
+    {
+        // iterate over all buttons
+        for (std::map<std::string, Button*>::iterator it = this->allButtons_.begin(); it != this->allButtons_.end(); ++it)
+        {
+            Button* button = it->second;
+
+            // iterate over all modes
+            for (size_t mode_index = 0; mode_index < 3; ++mode_index)
+            {
+                if (mode_index == new_mode) // skip commands that are already in the desired mode
+                    continue;
+
+                // iterate over all commands of the given mode at the given button
+                for (size_t command_index = 0; command_index < button->nCommands_[mode_index]; ++command_index)
+                {
+                    CommandEvaluation* evaluation = button->commands_[mode_index][command_index]->getEvaluation();
+
+                    // compare the command
+                    if (evaluation && evaluation->getConsoleCommand() == command)
+                    {
+                        // increase array of new mode
+                        BaseCommand** array_new_mode = new BaseCommand*[button->nCommands_[new_mode] + 1];
+                        // copy array content
+                        for (size_t c = 0; c < button->nCommands_[new_mode]; ++c)
+                            array_new_mode[c] = button->commands_[new_mode][c];
+                        // insert changed command at the end
+                        array_new_mode[button->nCommands_[new_mode]] = button->commands_[mode_index][command_index];
+                        // delete old array
+                        delete[] button->commands_[new_mode];
+                        // assign new array
+                        button->commands_[new_mode] = array_new_mode;
+                        // increase counter
+                        button->nCommands_[new_mode]++;
+
+                        // erase command from old array
+                        for (size_t c = command_index; c < button->nCommands_[mode_index] - 1; ++c)
+                            button->commands_[mode_index][c] = button->commands_[mode_index][c + 1];
+                        // decrease counter
+                        button->nCommands_[mode_index]--;
+                        // note: we don't replace the old array - it's not one element too large, but no one cares since nCommands_ defines the size
+
+                        // decrement the index since we shifted the array and continue searching for more occurrences of the command
+                        command_index--;
+                    }
+                }
+            }
+        }
+    }
+
     void KeyBinder::resetJoyStickAxes()
     {
         for (unsigned int iDev = 0; iDev < joySticks_.size(); ++iDev)
