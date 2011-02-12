@@ -39,13 +39,15 @@
 
 namespace orxonox
 {
+    extern const std::string __CC_fire_name = "fire";
+
     SetConsoleCommand("HumanController", "moveFrontBack",          &HumanController::moveFrontBack ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "moveRightLeft",          &HumanController::moveRightLeft ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "moveUpDown",             &HumanController::moveUpDown    ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "rotateYaw",              &HumanController::rotateYaw     ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "rotatePitch",            &HumanController::rotatePitch   ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "rotateRoll",             &HumanController::rotateRoll    ).addShortcut().setAsInputCommand();
-    SetConsoleCommand("HumanController", "fire",                   &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand("HumanController", __CC_fire_name,           &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
     SetConsoleCommand("HumanController", "reload",                 &HumanController::reload        ).addShortcut();
     SetConsoleCommand("HumanController", "boost",                  &HumanController::boost         ).addShortcut().keybindMode(KeybindMode::OnHold);
     SetConsoleCommand("HumanController", "greet",                  &HumanController::greet         ).addShortcut();
