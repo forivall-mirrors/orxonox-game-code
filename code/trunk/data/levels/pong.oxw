@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Pong"
+ description = "Pong in space!"
+ tags = ""
+/>
+
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
@@ -51,6 +57,8 @@
   </templates>
 
   <WorldAmbientSound source="mainmenu.ogg" playOnLoad=true />
+
+  <PongBot />
 
   <Scene
    ambientlight = "0.5, 0.5, 0.5"

@@ -131,6 +131,18 @@ namespace orxonox
         Deathmatch::end();
     }
 
+    void Pong::spawnPlayersIfRequested()
+    {
+        // first spawn human players to assign always the left bat to the player in singleplayer
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (it->first->isHumanPlayer() && (it->first->isReadyToSpawn() || this->bForceSpawn_))
+                this->spawnPlayer(it->first);
+        // now spawn bots
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (!it->first->isHumanPlayer() && (it->first->isReadyToSpawn() || this->bForceSpawn_))
+                this->spawnPlayer(it->first);
+    }
+
     void Pong::spawnPlayer(PlayerInfo* player)
     {
         if (!this->bat_[0]->getPlayer())
