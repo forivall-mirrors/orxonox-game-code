@@ -73,6 +73,7 @@ namespace orxonox
             { return this->filename_; }
         void setConfigValues();
         void resetJoyStickAxes();
+        void resetMouseAxes();
 
     protected: // functions
         void loadBindings();
