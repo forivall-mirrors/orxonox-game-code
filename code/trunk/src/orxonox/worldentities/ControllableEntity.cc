@@ -39,7 +39,7 @@
 
 #include "Scene.h"
 #include "infos/PlayerInfo.h"
-#include "controllers/Controller.h"
+#include "controllers/NewHumanController.h"
 #include "graphics/Camera.h"
 #include "worldentities/CameraPosition.h"
 #include "overlays/OverlayGroup.h"
@@ -203,10 +203,14 @@ namespace orxonox
                 this->camera_->attachToNode(this->cameraPositionRootNode_);
                 this->currentCameraPosition_ = 0;
             }
-            
+
             // disable mouse look if the new camera position doesn't allow it
             if (this->currentCameraPosition_ && !this->currentCameraPosition_->getAllowMouseLook() && this->bMouseLook_)
                 this->mouseLook();
+
+            // disable drag if in mouse look
+            if (this->bMouseLook_)
+                this->getCamera()->setDrag(false);
         }
     }
 
@@ -218,7 +222,15 @@ namespace orxonox
             this->bMouseLook_ = !this->bMouseLook_;
 
             if (!this->bMouseLook_)
+            {
                 this->cameraPositionRootNode_->setOrientation(Quaternion::IDENTITY);
+                this->cameraPositionRootNode_->_update(true, false); // update the camera node because otherwise the camera will drag back in position which looks strange
+
+                NewHumanController* controller = dynamic_cast<NewHumanController*>(this->getController());
+                if (controller)
+                    controller->centerCursor();
+            }
+
             if (this->getCamera())
             {
                 if (!this->bMouseLook_ && this->currentCameraPosition_->getDrag())
