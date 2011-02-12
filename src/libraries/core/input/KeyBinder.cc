@@ -387,13 +387,20 @@ namespace orxonox
     void KeyBinder::resetJoyStickAxes()
     {
         for (unsigned int iDev = 0; iDev < joySticks_.size(); ++iDev)
-        {
             for (unsigned int i = 0; i < JoyStickAxisCode::numberOfAxes * 2; i++)
-            {
-                (*joyStickAxes_[iDev])[i].absVal_ = 0.0f;
-                (*joyStickAxes_[iDev])[i].relVal_ = 0.0f;
-            }
-        }
+                (*joyStickAxes_[iDev])[i].reset();
+    }
+
+    /**
+        @brief Sets the position of the mouse back to 0/0.
+    */
+    void KeyBinder::resetMouseAxes()
+    {
+        this->mousePosition_[0] = 0.0f;
+        this->mousePosition_[1] = 0.0f;
+
+        for (unsigned int i = 0; i < MouseAxisCode::numberOfAxes * 2; i++)
+            mouseAxes_[i].reset();
     }
 
     void KeyBinder::mouseUpdated(float dt)

@@ -60,6 +60,8 @@ namespace orxonox
             static void unfire();
             virtual void doUnfire();
 
+            void centerCursor();
+
             static void changeMode();
 
             virtual void changedControllableEntity();

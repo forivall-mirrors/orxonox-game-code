@@ -37,6 +37,8 @@
 
 #include "core/CoreIncludes.h"
 #include "core/command/ConsoleCommand.h"
+#include "core/input/KeyBinder.h"
+#include "core/input/KeyBinderManager.h"
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 #include "infos/PlayerInfo.h"
@@ -348,6 +350,14 @@ namespace orxonox
         hideArrows();
     }
 
+    void NewHumanController::centerCursor()
+    {
+        this->currentYaw_ = 0;
+        this->currentPitch_ = 0;
+
+        KeyBinderManager::getInstance().getCurrent()->resetMouseAxes();
+    }
+
     void NewHumanController::updateTarget()
     {
         Ogre::RaySceneQuery * rsq = HumanController::localController_s->getControllableEntity()->getScene()->getSceneManager()->createRayQuery(Ogre::Ray());
@@ -480,8 +490,7 @@ namespace orxonox
     void NewHumanController::changedControllableEntity()
     {
         this->controlMode_ = 0;
-        this->currentYaw_ = 0;
-        this->currentPitch_ = 0;
+        this->centerCursor();
         if (this->getControllableEntity() && (this->getControllableEntity()->isExactlyA(ClassByString("SpaceShip")) || this->getControllableEntity()->isExactlyA(ClassByString("Rocket"))))
         {
             this->showOverlays_ = true;

@@ -57,6 +57,7 @@ namespace orxonox
         bool execute();
         bool addParamCommand(ParamCommand* command);
         void clear();
+        void reset();
 
         // axis related
         float relVal_;
@@ -75,6 +76,13 @@ namespace orxonox
         for (unsigned int i = 0; i < nParamCommands_; i++)
             success = paramCommands_[i]->execute(absVal_, relVal_) && success;
         return success;
+    }
+
+    inline void HalfAxis::reset()
+    {
+        this->relVal_ = 0.0f;
+        this->absVal_ = 0.0f;
+        this->hasChanged_ = true;
     }
 }
 
