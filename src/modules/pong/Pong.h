@@ -56,6 +56,8 @@ namespace orxonox
             PlayerInfo* getRightPlayer() const;
 
         protected:
+            virtual void spawnPlayersIfRequested();
+
             void startBall();
 
             WeakPtr<PongCenterpoint> center_;
