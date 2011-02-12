@@ -37,6 +37,8 @@
 #include "util/StringUtils.h"
 #include "core/Language.h"
 #include "core/GameMode.h"
+#include "core/input/KeyBinder.h"
+#include "core/input/KeyBinderManager.h"
 
 namespace orxonox
 {
@@ -571,6 +573,17 @@ namespace orxonox
     const std::string& ConsoleCommand::getDescriptionReturnvalue(int index) const
     {
         return GetLocalisation_noerror(this->descriptionReturnvalue_);
+    }
+
+    /**
+        @brief Changes the keybind mode.
+    */
+    ConsoleCommand& ConsoleCommand::changeKeybindMode(KeybindMode::Value mode)
+    {
+        KeyBinderManager::getInstance().getCurrent()->changeMode(this, mode);
+
+        this->keybindMode(mode);
+        return *this;
     }
 
     /**
