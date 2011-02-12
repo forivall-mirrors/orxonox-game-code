@@ -53,6 +53,7 @@
 #include "util/SubString.h"
 #include "ConfigValueIncludes.h"
 #include "CoreIncludes.h"
+#include "Core.h"
 #include "Game.h"
 #include "GameMode.h"
 #include "Loader.h"
@@ -302,9 +303,13 @@ namespace orxonox
     {
         CCOUT(4) << "Configuring Renderer" << std::endl;
 
-        if (!ogreRoot_->restoreConfig())
+        if (!ogreRoot_->restoreConfig() || Core::getInstance().getOgreConfigTimestamp() > Core::getInstance().getLastLevelTimestamp())
+        {
             if (!ogreRoot_->showConfigDialog())
                 ThrowException(InitialisationFailed, "OGRE graphics configuration dialogue canceled.");
+            else
+                Core::getInstance().updateOgreConfigTimestamp();
+        }
 
         CCOUT(4) << "Creating render window" << std::endl;
 
