@@ -35,6 +35,7 @@
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/input/KeyBinderManager.h"
+#include "core/Core.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 #include "core/GUIManager.h"
@@ -139,6 +140,8 @@ namespace orxonox
         COUT(0) << "Loading level..." << std::endl;
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
         Loader::open(startFile_);
+
+        Core::getInstance().updateLastLevelTimestamp();
     }
 
     void GSLevel::unloadLevel()

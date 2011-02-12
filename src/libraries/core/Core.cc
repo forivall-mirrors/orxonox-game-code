@@ -93,6 +93,8 @@ namespace orxonox
         , consoleCommandDestroyer_(ConsoleCommand::destroyAll)
         , bGraphicsLoaded_(false)
         , bStartIOConsole_(true)
+        , lastLevelTimestamp_(0)
+        , ogreConfigTimestamp_(0)
     {
         // Set the hard coded fixed paths
         this->pathConfig_.reset(new PathConfig());
@@ -220,6 +222,10 @@ namespace orxonox
             .callback(this, &Core::initRandomNumberGenerator);
         SetConfigValue(bStartIOConsole_, true)
             .description("Set to false if you don't want to use the IOConsole (for Lua debugging for instance)");
+        SetConfigValue(lastLevelTimestamp_, 0)
+            .description("Timestamp when the last level was started.");
+        SetConfigValue(ogreConfigTimestamp_, 0)
+            .description("Timestamp when the ogre config file was changed.");
     }
 
     //! Callback function if the language has changed.
@@ -393,5 +399,15 @@ namespace orxonox
             // Render (doesn't throw)
             this->graphicsManager_->postUpdate(time);
         }
+    }
+
+    void Core::updateLastLevelTimestamp()
+    {
+        ModifyConfigValue(lastLevelTimestamp_, set, static_cast<long long>(time(NULL)));
+    }
+
+    void Core::updateOgreConfigTimestamp()
+    {
+        ModifyConfigValue(ogreConfigTimestamp_, set, static_cast<long long>(time(NULL)));
     }
 }

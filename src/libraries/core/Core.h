@@ -82,6 +82,14 @@ namespace orxonox
                 { return this->language_; }
             void resetLanguage();
 
+            void updateLastLevelTimestamp();
+            inline long long getLastLevelTimestamp() const
+                { return this->lastLevelTimestamp_; }
+
+            void updateOgreConfigTimestamp();
+            inline long long getOgreConfigTimestamp() const
+                { return this->ogreConfigTimestamp_; }
+
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
 
@@ -119,6 +127,8 @@ namespace orxonox
             std::string                   language_;                   //!< The language
             bool                          bInitRandomNumberGenerator_; //!< If true, srand(time(0)) is called
             bool                          bStartIOConsole_;            //!< Set to false if you don't want to use the IOConsole
+            long long                     lastLevelTimestamp_;         ///< Timestamp when the last level was started
+            long long                     ogreConfigTimestamp_;        ///< Timestamp wehen the ogre config level was modified
 
             static Core*                  singletonPtr_s;
     };
