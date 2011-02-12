@@ -49,6 +49,7 @@
 #include "util/Singleton.h"
 #include "input/InputHandler.h"
 #include "OrxonoxClass.h"
+#include "WindowEventListener.h"
 
 // Tolua includes (have to be relative to the current directory)
 /*
@@ -70,7 +71,7 @@ namespace orxonox // tolua_export
         Those input events are then injected into CEGUI in Lua.
     */
     class _CoreExport GUIManager // tolua_export
-        : public Singleton<GUIManager>, public InputHandler, public OrxonoxClass
+        : public Singleton<GUIManager>, public InputHandler, public WindowEventListener
     { // tolua_export
         friend class Singleton<GUIManager>;
     public:
@@ -130,6 +131,9 @@ namespace orxonox // tolua_export
         void buttonReleased(MouseButtonCode::ByEnum id);
         void mouseMoved    (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled (int abs, int rel);
+
+        // window event handler
+        virtual void windowResized(unsigned int newWidth, unsigned int newHeight);
 
         scoped_ptr<CEGUI::OgreCEGUIRenderer> guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         scoped_ptr<LuaState>                 luaState_;         //!< LuaState, access point to the Lua engine

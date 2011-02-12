@@ -189,7 +189,7 @@ namespace orxonox
 
     void GUIManager::changedGUIScheme(void)
     {
-        
+
     }
 
     /**
@@ -497,4 +497,11 @@ namespace orxonox
         listbox->setItemTooltipsEnabled(enabled);
     }
 
+    /**
+        @brief Callback of window event listener, called if the window is resized. Sets the display size of CEGUI.
+    */
+    void GUIManager::windowResized(unsigned int newWidth, unsigned int newHeight)
+    {
+        this->guiRenderer_->setDisplaySize(CEGUI::Size(newWidth, newHeight));
+    }
 }
