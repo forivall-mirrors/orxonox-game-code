@@ -302,10 +302,10 @@ namespace orxonox
         protected:
             /// Casts the object and registers as destruction listener.
             inline void registerObject(O* object)
-                { OrxonoxClass* base = orxonox_cast<OrxonoxClass*>(object); if (base) { this->registerAsDestructionListener(base); } }
+                { OrxonoxClass* base = dynamic_cast<OrxonoxClass*>(object); if (base) { this->registerAsDestructionListener(base); } }
             /// Casts the object and unregisters as destruction listener.
             inline void unregisterObject(O* object)
-                { OrxonoxClass* base = orxonox_cast<OrxonoxClass*>(object); if (base) { this->unregisterAsDestructionListener(base); } }
+                { OrxonoxClass* base = dynamic_cast<OrxonoxClass*>(object); if (base) { this->unregisterAsDestructionListener(base); } }
 
             /// Will be called by OrxonoxClass::~OrxonoxClass() if the stored object is deleted and the Functor is in safe mode.
             inline void objectDeleted()
