@@ -28,9 +28,12 @@
 
 #include "Spectator.h"
 
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
+#include "core/command/CommandExecutor.h"
+#include "core/command/ConsoleCommand.h"
 
 #include "tools/BillboardSet.h"
 #include "Scene.h"
@@ -38,6 +41,8 @@
 
 namespace orxonox
 {
+    extern const std::string __CC_fire_name;
+
     CreateFactory(Spectator);
 
     Spectator::Spectator(BaseObject* creator) : ControllableEntity(creator)
@@ -147,9 +152,37 @@ namespace orxonox
 //        this->setSyncMode(ObjectDirection::ToClient);
     }
 
+    /**
+        @brief Changes the keybind mode of the fire command to OnPress.
+    */
     void Spectator::startLocalHumanControl()
     {
         ControllableEntity::startLocalHumanControl();
+
+        // change keybind mode of fire command to OnPress to avoid firing after respawn
+        ModifyConsoleCommand(__CC_fire_name).keybindMode(KeybindMode::OnPress);
+    }
+
+    /**
+        @brief Changes the keybind mode of the fire command back to OnHold.
+    */
+    void Spectator::stopLocalHumanControl()
+    {
+        ControllableEntity::stopLocalHumanControl();
+
+        // change fire command to a helper function and change keybind mode to OnPress
+        // as soon as the player releases and presses the button again, the helper function will be called which changes the keybind mode back to OnHold
+        ModifyConsoleCommand(__CC_fire_name).pushFunction(&Spectator::resetFireCommand).keybindMode(KeybindMode::OnPress);
+    }
+
+    /**
+        @brief Helper function which changes the fire command back to the original function and keybind mode to OnHold.
+    */
+    void Spectator::resetFireCommand(unsigned int firemode)
+    {
+        ModifyConsoleCommand(__CC_fire_name).popFunction().keybindMode(KeybindMode::OnHold); // pop this helper function and change keybind mode
+
+        CommandExecutor::execute(__CC_fire_name + " " + multi_cast<std::string>(firemode)); // call the fire command again, this time with the real function
     }
 
     void Spectator::moveFrontBack(const Vector2& value)

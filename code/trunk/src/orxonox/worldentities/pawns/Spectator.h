@@ -60,11 +60,14 @@ namespace orxonox
         protected:
             virtual void setPlayer(PlayerInfo* player);
             virtual void startLocalHumanControl();
+            virtual void stopLocalHumanControl();
 
         private:
             void registerVariables();
             void changedGreeting();
             void changedFlareVisibility();
+
+            static void resetFireCommand(unsigned int firemode);
 
             BillboardSet* greetingFlare_;
             bool bGreetingFlareVisible_;
