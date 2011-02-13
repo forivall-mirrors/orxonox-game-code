@@ -109,7 +109,7 @@ namespace orxonox
     for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
       bool b = processGamestate(it->second);
       assert(b);
-      sendAck( it->second->getID(), it->second->getPeerID() );
+//       sendAck( it->second->getID(), it->second->getPeerID() );
       delete it->second;
     }
     // now clear the queue
@@ -121,6 +121,7 @@ namespace orxonox
   
   bool GamestateManager::sendAck(unsigned int gamestateID, uint32_t peerID)
   {
+    assert( gamestateID != ACKID_NACK );
     packet::Acknowledgement *ack = new packet::Acknowledgement(gamestateID, peerID);
     if( !this->sendPacket(ack))
     {
@@ -150,7 +151,7 @@ namespace orxonox
     else
     {
       assert(peerMap_.size()!=0);
-      newID = peerMap_[NETWORK_PEER_ID_SERVER].lastProcessedGamestateID;
+      newID = peerMap_[NETWORK_PEER_ID_SERVER].lastReceivedGamestateID;
     }
     
     if(!currentGamestate_->collectData(newID, gsMode)){ //we have no data to send
@@ -189,7 +190,7 @@ namespace orxonox
         baseGamestate = it->second;
       }
 
-      peerGamestates.push_back(0);  // insert an empty gamestate* to change
+      peerGamestates.push_back(0);  // insert an empty gamestate* to be changed
       finishGamestate( peerID, peerGamestates.back(), baseGamestate, currentGamestate_ );
       if( peerGamestates.back()==0 )
         // nothing to send to remove pointer from vector
@@ -265,17 +266,18 @@ namespace orxonox
     assert(it!=this->peerMap_.end());
     unsigned int curid = it->second.lastAckedGamestateID;
 
-    if(gamestateID == ACKID_NACK){
-      it->second.lastAckedGamestateID = GAMESTATEID_INITIAL;
-//       temp->setGamestateID(GAMESTATEID_INITIAL);
-      // now delete all saved gamestates for this client
-      std::map<uint32_t, packet::Gamestate*>::iterator it2;
-      for(it2 = it->second.gamestates.begin(); it2!=it->second.gamestates.end(); ++it2 ){
-        delete it2->second;
-      }
-      it->second.gamestates.clear();
-      return true;
-    }
+    assert(gamestateID != ACKID_NACK);
+//     if(gamestateID == ACKID_NACK){
+//       it->second.lastAckedGamestateID = GAMESTATEID_INITIAL;
+// //       temp->setGamestateID(GAMESTATEID_INITIAL);
+//       // now delete all saved gamestates for this client
+//       std::map<uint32_t, packet::Gamestate*>::iterator it2;
+//       for(it2 = it->second.gamestates.begin(); it2!=it->second.gamestates.end(); ++it2 ){
+//         delete it2->second;
+//       }
+//       it->second.gamestates.clear();
+//       return true;
+//     }
 
     assert(curid==GAMESTATEID_INITIAL || curid<=gamestateID);
     COUT(5) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " curid: " << curid << std::endl;
@@ -302,11 +304,11 @@ namespace orxonox
     return true;
   }
   
-  uint32_t GamestateManager::getLastProcessedGamestateID(unsigned int peerID)
+  uint32_t GamestateManager::getLastReceivedGamestateID(unsigned int peerID)
   {
     assert( this->peerMap_.find(peerID)!=this->peerMap_.end() );
     if( this->peerMap_.find(peerID) != this->peerMap_.end() )
-      return this->peerMap_[peerID].lastProcessedGamestateID;
+      return this->peerMap_[peerID].lastReceivedGamestateID;
     else
       return GAMESTATEID_INITIAL;
   }
@@ -316,7 +318,7 @@ namespace orxonox
   {
     assert(peerMap_.find(peerID)==peerMap_.end());
     peerMap_[peerID].peerID = peerID;
-    peerMap_[peerID].lastProcessedGamestateID = GAMESTATEID_INITIAL;
+    peerMap_[peerID].lastReceivedGamestateID = GAMESTATEID_INITIAL;
     peerMap_[peerID].lastAckedGamestateID = GAMESTATEID_INITIAL;
     if( GameMode::isMaster() )
       peerMap_[peerID].isSynched = false;
@@ -362,7 +364,7 @@ namespace orxonox
       gsMode = packet::GAMESTATE_MODE_CLIENT;
     if( gs->spreadData(gsMode) )
     {
-      this->peerMap_[gs->getPeerID()].lastProcessedGamestateID = gs->getID();
+      this->peerMap_[gs->getPeerID()].lastReceivedGamestateID = gs->getID();
       return true;
     }
     else

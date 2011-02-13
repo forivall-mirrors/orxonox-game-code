@@ -206,7 +206,7 @@ namespace orxonox
   {
     if( packet->isReliable() )
     {
-      if( this->getLastProcessedGamestateID(packet->getPeerID()) >= packet->getRequiredGamestateID() )
+      if( this->getLastReceivedGamestateID(packet->getPeerID()) >= packet->getRequiredGamestateID() )
         packet->process(static_cast<Host*>(this));
       else
         this->packetQueue_.push_back(packet);

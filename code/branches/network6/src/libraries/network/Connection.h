@@ -117,6 +117,7 @@ namespace orxonox
     void enableCompression();
 
     void processQueue();
+    void waitOutgoingQueue();     // wait for the outgoing queue to become empty (everything processed by communication thread)
     virtual void addPeer(uint32_t peerID)=0;
     virtual void removePeer(uint32_t peerID)=0;
     virtual void processPacket( packet::Packet* packet)=0;
@@ -127,6 +128,8 @@ namespace orxonox
     
     void processIncomingEvent(ENetEvent& event);
     void processOutgoingEvent(outgoingEvent& event);
+    
+    void disconnectPeersInternal();
 
     ENetHost*                     host_;
   private:
@@ -139,11 +142,10 @@ namespace orxonox
     std::deque<outgoingEvent>     outgoingEvents_;
     boost::mutex*                 incomingEventsMutex_;
     boost::mutex*                 outgoingEventsMutex_;
+    boost::mutex*                 overallMutex_;
     std::map<uint32_t, ENetPeer*> peerMap_;
     std::map<ENetPeer*, uint32_t> peerIDMap_;
     uint32_t                      nextPeerID_;
-
-//     static Connection *instance_;
 
   };
 

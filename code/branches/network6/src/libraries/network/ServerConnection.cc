@@ -34,6 +34,7 @@
 #include <enet/enet.h>
 
 #include "util/Debug.h"
+#include <util/Sleep.h>
 // #include "ClientInformation.h"
 
 namespace orxonox
@@ -132,12 +133,7 @@ namespace orxonox
   void ServerConnection::disconnectClients()
   {
     Connection::disconnectPeers();
-//     ClientInformation *temp = ClientInformation::getBegin();
-//     while(temp!=0)
-//     {
-//       ServerConnection::disconnectClient( temp );
-//       temp = temp->next();
-//     }
+    Connection::waitOutgoingQueue();
     return;
   }
 

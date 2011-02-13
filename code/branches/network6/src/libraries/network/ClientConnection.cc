@@ -122,6 +122,8 @@ namespace orxonox
     if ( !this->established_ )
       return true;
     this->established_ = false;
+    
+    // stop communication thread and disconnect server
     Connection::stopCommunicationThread();
     enet_peer_disconnect(this->server_, 0);
     for( unsigned int i=0; i<NETWORK_CLIENT_CONNECTION_TIMEOUT/NETWORK_CLIENT_WAIT_TIME; i++)

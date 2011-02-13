@@ -72,8 +72,8 @@ namespace orxonox
     struct peerInfo
     {
       uint32_t  peerID;
-      uint32_t  lastProcessedGamestateID;
-      uint32_t  lastAckedGamestateID;
+      uint32_t  lastReceivedGamestateID;  //!< id of the last gamestate which was received (and processed) from the peer
+      uint32_t  lastAckedGamestateID;     //!< id of the last gamestate on which we received an ack from the peer
       bool      isSynched;
       std::map< uint32_t, packet::Gamestate* > gamestates;
     };
@@ -85,7 +85,7 @@ namespace orxonox
 
     virtual bool      addGamestate(packet::Gamestate *gs, unsigned int peerID);
     virtual bool      ackGamestate(unsigned int gamestateID, unsigned int peerID);
-    virtual uint32_t  getLastProcessedGamestateID( unsigned int peerID );
+    virtual uint32_t  getLastReceivedGamestateID( unsigned int peerID );
     virtual uint32_t  getCurrentGamestateID(){ return currentGamestate_->getID(); }
     
     bool processGamestates();
