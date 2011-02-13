@@ -110,12 +110,7 @@ namespace orxonox
     void GSLevel::deactivate()
     {
         if (GameMode::showsGraphics())
-        {
-            // unload all compositors (this is only necessary because we don't yet destroy all resources!)
-            Ogre::CompositorManager::getSingleton().removeAll();
-
             InputManager::getInstance().leaveState("game");
-        }
 
         // disconnect all HumanPlayers
         PlayerManager::getInstance().disconnectAllClients();
@@ -125,6 +120,11 @@ namespace orxonox
 
         if (GameMode::showsGraphics())
         {
+#if OGRE_VERSION < 0x010700
+            // unload all compositors (this is only necessary because we don't yet destroy all resources!)
+            Ogre::CompositorManager::getSingleton().removeAll();
+#endif
+
             gameInputState_->setHandler(0);
             guiMouseOnlyInputState_->setHandler(0);
             guiKeysOnlyInputState_->setHandler(0);
