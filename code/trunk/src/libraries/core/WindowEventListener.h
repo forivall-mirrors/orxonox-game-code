@@ -61,11 +61,11 @@ namespace orxonox
             virtual void windowResized(unsigned int newWidth, unsigned int newHeight) { }
 
             //! Window has lost/gained focus
-            virtual void windowFocusChanged() { }
+            virtual void windowFocusChanged(bool bFocus) { }
 
             static void moveWindow();
             static void resizeWindow(unsigned int newWidth, unsigned int newHeight);
-            static void changeWindowFocus();
+            static void changeWindowFocus(bool bFocus);
 
             //! Static variable that holds the latest distributed information
             static unsigned int windowWidth_s;

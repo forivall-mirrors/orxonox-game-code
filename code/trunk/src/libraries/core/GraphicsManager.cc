@@ -74,7 +74,7 @@ namespace orxonox
         void windowResized     (Ogre::RenderWindow* rw)
             { orxonox::WindowEventListener::resizeWindow(rw->getWidth(), rw->getHeight()); }
         void windowFocusChange (Ogre::RenderWindow* rw)
-            { orxonox::WindowEventListener::changeWindowFocus(); }
+            { orxonox::WindowEventListener::changeWindowFocus(rw->isActive()); }
         void windowClosed      (Ogre::RenderWindow* rw)
             { orxonox::Game::getInstance().stop(); }
         void windowMoved       (Ogre::RenderWindow* rw)

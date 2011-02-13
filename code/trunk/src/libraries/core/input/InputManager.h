@@ -201,7 +201,7 @@ namespace orxonox
         void updateActiveStates();
 
         // From WindowEventListener
-        void windowFocusChanged();
+        void windowFocusChanged(bool bFocus);
 
     private: // variables
         State                               internalState_;        //!< Current internal state
