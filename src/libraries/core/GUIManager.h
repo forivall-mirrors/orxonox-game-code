@@ -131,9 +131,11 @@ namespace orxonox // tolua_export
         void buttonReleased(MouseButtonCode::ByEnum id);
         void mouseMoved    (IntVector2 abs, IntVector2 rel, IntVector2 clippingSize);
         void mouseScrolled (int abs, int rel);
+        void mouseLeft     ();
 
         // window event handler
         virtual void windowResized(unsigned int newWidth, unsigned int newHeight);
+        virtual void windowFocusChanged(bool bFocus);
 
         scoped_ptr<CEGUI::OgreCEGUIRenderer> guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         scoped_ptr<LuaState>                 luaState_;         //!< LuaState, access point to the Lua engine

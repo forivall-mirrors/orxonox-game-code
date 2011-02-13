@@ -495,7 +495,7 @@ namespace orxonox
     }
 
     //! Gets called by WindowEventListener upon focus change --> clear buffers
-    void InputManager::windowFocusChanged()
+    void InputManager::windowFocusChanged(bool bFocus)
     {
         this->clearBuffers();
     }

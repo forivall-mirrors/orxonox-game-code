@@ -56,9 +56,9 @@ namespace orxonox
     }
 
     //! Calls all registered objects
-    /*static*/ void WindowEventListener::changeWindowFocus()
+    /*static*/ void WindowEventListener::changeWindowFocus(bool bFocus)
     {
         for (ObjectList<WindowEventListener>::iterator it = ObjectList<WindowEventListener>::begin(); it; ++it)
-            it->windowFocusChanged();
+            it->windowFocusChanged(bFocus);
     }
 }

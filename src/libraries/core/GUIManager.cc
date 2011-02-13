@@ -392,6 +392,14 @@ namespace orxonox
     }
 
     /**
+        @brief Indicates that the mouse left the application's window.
+    */
+    void GUIManager::mouseLeft()
+    {
+        this->protectedCall(boost::bind(&CEGUI::System::injectMouseLeaves, _1));
+    }
+
+    /**
     @brief
         converts mouse event code to CEGUI event code
     @param button
@@ -503,5 +511,14 @@ namespace orxonox
     void GUIManager::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
         this->guiRenderer_->setDisplaySize(CEGUI::Size(newWidth, newHeight));
+    }
+
+    /**
+        @brief Notify CEGUI if the windows loses the focus (stops higlight of menu items, etc).
+    */
+    void GUIManager::windowFocusChanged(bool bFocus)
+    {
+        if (!bFocus)
+            this->mouseLeft();
     }
 }
