@@ -37,8 +37,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "tools/TextureGenerator.h"
-#include "worldentities/WorldEntity.h"
-#include "worldentities/pawns/Pawn.h"
+#include "worldentities/ControllableEntity.h"
 #include "Scene.h"
 #include "Radar.h"
 
@@ -143,10 +142,7 @@ namespace orxonox
     {
         // Make sure the owner of the radar was defined
         if( !this->owner_ )
-        {
-            CCOUT(0) << "No owner defined" << std::endl;
-            assert(0);
-        }
+            return;
 
         this->marker_->hide();      // in case that no object is in focus
         // get the focus object
@@ -189,10 +185,10 @@ namespace orxonox
 
     void HUDRadar::changedOwner()
     {
-    SUPER(HUDRadar, changedOwner);
+        SUPER(HUDRadar, changedOwner);
 
-    this->owner_ = orxonox_cast<Pawn*>(this->getOwner());
-    assert(this->radarObjects_.size()==0);
-    this->gatherObjects();
-}
+        this->owner_ = orxonox_cast<ControllableEntity*>(this->getOwner());
+        assert(this->radarObjects_.size() == 0);
+        this->gatherObjects();
+    }
 }
