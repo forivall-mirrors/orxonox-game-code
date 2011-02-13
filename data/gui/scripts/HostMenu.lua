@@ -103,8 +103,7 @@ function P.HostMenuStartButton_clicked(e)
         local index = listbox:getItemIndex(choice)
         local level = P.levelList[index+1]
         if level ~= nil then
-            orxonox.LevelManager:getInstance():setDefaultLevel(level:getXMLFilename())
-            orxonox.execute(P.multiplayerMode)
+            orxonox.execute(P.multiplayerMode .. " " .. level:getXMLFilename())
             hideAllMenuSheets()
         end
     end

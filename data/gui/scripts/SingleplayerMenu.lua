@@ -73,8 +73,7 @@ function P.SingleplayerStartButton_clicked(e)
         local index = listbox:getItemIndex(choice)
         local level = P.levelList[index+1]
         if level ~= nil then
-            orxonox.LevelManager:getInstance():setDefaultLevel(level:getXMLFilename())
-            orxonox.execute("startGame")
+            orxonox.execute("startGame " .. level:getXMLFilename())
             hideAllMenuSheets()
         end
     end

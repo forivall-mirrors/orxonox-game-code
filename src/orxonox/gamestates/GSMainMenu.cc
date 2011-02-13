@@ -30,13 +30,16 @@
 
 #include <OgreSceneManager.h>
 
-#include "core/input/KeyBinderManager.h"
-#include "core/Game.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
+#include "core/Game.h"
 #include "core/GraphicsManager.h"
 #include "core/GUIManager.h"
 #include "core/command/ConsoleCommand.h"
+#include "core/input/KeyBinderManager.h"
+#include "network/Client.h"
+#include "util/StringUtils.h"
+#include "LevelManager.h"
 #include "Scene.h"
 #include "sound/AmbientSound.h"
 // HACK
@@ -51,14 +54,12 @@ namespace orxonox
     static const std::string __CC_startServer_name          = "startServer";
     static const std::string __CC_startClient_name          = "startClient";
     static const std::string __CC_startDedicated_name       = "startDedicated";
-    static const std::string __CC_startMainMenu_name        = "startMainMenu";
     static const std::string __CC_setMainMenuSoundPath_name = "setMMSoundPath";
 
-    SetConsoleCommand(__CC_startStandalone_name,      &GSMainMenu::startStandalone).deactivate();
-    SetConsoleCommand(__CC_startServer_name,          &GSMainMenu::startServer    ).deactivate();
-    SetConsoleCommand(__CC_startClient_name,          &GSMainMenu::startClient    ).deactivate();
-    SetConsoleCommand(__CC_startDedicated_name,       &GSMainMenu::startDedicated ).deactivate();
-    SetConsoleCommand(__CC_startMainMenu_name,        &GSMainMenu::startMainMenu  ).deactivate();
+    SetConsoleCommand(__CC_startStandalone_name,      &GSMainMenu::startStandalone).defaultValues(BLANKSTRING).deactivate();
+    SetConsoleCommand(__CC_startServer_name,          &GSMainMenu::startServer    ).defaultValues(BLANKSTRING).deactivate();
+    SetConsoleCommand(__CC_startClient_name,          &GSMainMenu::startClient    ).defaultValues(BLANKSTRING).deactivate();
+    SetConsoleCommand(__CC_startDedicated_name,       &GSMainMenu::startDedicated ).defaultValues(BLANKSTRING).deactivate();
     SetConsoleCommand(__CC_setMainMenuSoundPath_name, &GSMainMenu::setMainMenuSoundPath).hide();
 
     GSMainMenu::GSMainMenu(const GameStateInfo& info)
@@ -105,7 +106,6 @@ namespace orxonox
         ModifyConsoleCommand(__CC_startServer_name    ).activate();
         ModifyConsoleCommand(__CC_startClient_name    ).activate();
         ModifyConsoleCommand(__CC_startDedicated_name ).activate();
-        ModifyConsoleCommand(__CC_startMainMenu_name  ).activate();
         ModifyConsoleCommand(__CC_setMainMenuSoundPath_name).setObject(this);
 
         KeyBinderManager::getInstance().setToDefault();
@@ -137,7 +137,6 @@ namespace orxonox
         ModifyConsoleCommand(__CC_startServer_name    ).deactivate();
         ModifyConsoleCommand(__CC_startClient_name    ).deactivate();
         ModifyConsoleCommand(__CC_startDedicated_name ).deactivate();
-        ModifyConsoleCommand(__CC_startMainMenu_name  ).deactivate();
         ModifyConsoleCommand(__CC_setMainMenuSoundPath_name).setObject(0);
     }
 
@@ -170,39 +169,69 @@ namespace orxonox
         ModifyConfigValue(soundPathMain_, set, path);
     }
 
-    void GSMainMenu::startStandalone()
+    /**
+    @brief
+        Start a level in standalone mode.
+    @param level
+        The filename of the level to be started. If empty, the default level is started.
+    */
+    void GSMainMenu::startStandalone(const std::string& level)
     {
-        // HACK - HACK
+        if(level != BLANKSTRING)
+            LevelManager::getInstance().setDefaultLevel(level);
+
+        // HACK
         Game::getInstance().popState();
         Game::getInstance().requestStates("standalone, level");
     }
 
-    void GSMainMenu::startServer()
+    /**
+    @brief
+        Start a level in server mode.
+    @param level
+        The filename of the level to be started. If empty, the default level is started.
+    */
+    void GSMainMenu::startServer(const std::string& level)
     {
-        // HACK - HACK
+        if(level != BLANKSTRING)
+            LevelManager::getInstance().setDefaultLevel(level);
+
+        // HACK
         Game::getInstance().popState();
         Game::getInstance().requestStates("server, level");
     }
 
-    void GSMainMenu::startClient()
+    /**
+    @brief
+        Connect to a game as client.
+    @param destination
+        The destination to connect to. If empty, the client connects to the default destination.
+    */
+    void GSMainMenu::startClient(const std::string& destination)
     {
-        // HACK - HACK
+        if(destination != BLANKSTRING)
+            Client::getInstance()->setDestination(destination, NETWORK_PORT);
+
+        // HACK
         Game::getInstance().popState();
         Game::getInstance().requestStates("client, level");
     }
 
-    void GSMainMenu::startDedicated()
+    /**
+    @brief
+        Start a level in dedicated mode.
+    @param level
+        The filename of the level to be started. If empty, the default level is started.
+    */
+    void GSMainMenu::startDedicated(const std::string& level)
     {
-        // HACK - HACK
+        if(level != BLANKSTRING)
+            LevelManager::getInstance().setDefaultLevel(level);
+
+        // HACK
         Game::getInstance().popState();
         Game::getInstance().popState();
         Game::getInstance().requestStates("server, level");
     }
-    void GSMainMenu::startMainMenu()
-    {
-        // HACK - HACK
-        Game::getInstance().popState();
-        Game::getInstance().popState();
-        Game::getInstance().requestStates("mainmenu");
-    }
+
 }
