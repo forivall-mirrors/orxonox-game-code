@@ -47,8 +47,7 @@ function P.button_quit_clicked(e)
 end
 
 function P.button_mainmenu_clicked(e)
-    orxonox.Game:getInstance():popState()
-    orxonox.Game:getInstance():popState()
+    orxonox.execute("startMainMenu")
     hideMenuSheet("InGameMenu")
 end
 
