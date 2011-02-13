@@ -52,11 +52,10 @@ namespace orxonox
         const std::string& getMainMenuSoundPath();
         void setMainMenuSoundPath(const std::string& path);
 
-        static void startStandalone();
-        static void startServer();
-        static void startClient();
-        static void startDedicated();
-        static void startMainMenu();
+        static void startStandalone(const std::string& level = BLANKSTRING); //!< Start a level in standalone mode.
+        static void startServer(const std::string& level = BLANKSTRING); //!< Start a level in server mode.
+        static void startClient(const std::string& destination = BLANKSTRING); //!< Connect to a game as client.
+        static void startDedicated(const std::string& level = BLANKSTRING); //!< Start a level in dedicated mode.
         static void startIOConsole();
 
     private:

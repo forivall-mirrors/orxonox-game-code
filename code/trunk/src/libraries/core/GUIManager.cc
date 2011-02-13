@@ -61,6 +61,7 @@ extern "C" {
 #include "ConfigValueIncludes.h"
 #include "Core.h"
 #include "CoreIncludes.h"
+#include "Game.h"
 #include "GraphicsManager.h"
 #include "LuaState.h"
 #include "PathConfig.h"
@@ -521,4 +522,5 @@ namespace orxonox
         if (!bFocus)
             this->mouseLeft();
     }
+
 }

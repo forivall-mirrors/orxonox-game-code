@@ -48,6 +48,9 @@ namespace orxonox
         void deactivate();
         void update(const Clock& time);
 
+        static void startMainMenu(void); //!< Starts the MainMenu
+        static void changeGame(const std::string& level); //!< Terminates the current game and starts a new game.
+
     protected:
         void loadLevel();
         void unloadLevel();

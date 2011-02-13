@@ -74,15 +74,15 @@ end
 
 
 function P.MultiplayerJoinButton_clicked(e)
-    local choice = winMgr:getWindow("orxonox/MultiplayerListbox"):getFirstSelectedItem()   
+    local choice = winMgr:getWindow("orxonox/MultiplayerListbox"):getFirstSelectedItem()
+    local destination = nil
     if choice then
-        local client = orxonox.Client:getInstance()
         local index = tolua.cast(choice, "CEGUI::ListboxItem"):getID()
-        client:setDestination( P.serverList[index][2], 55556 )
+        destination = P.serverList[index][2]
     else
         return
     end
-    orxonox.execute("startClient")
+    orxonox.execute("startClient " .. destination)
     hideAllMenuSheets()
 end
 

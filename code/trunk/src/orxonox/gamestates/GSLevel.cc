@@ -50,6 +50,12 @@ namespace orxonox
 {
     DeclareGameState(GSLevel, "level", false, false);
 
+    static const std::string __CC_startMainMenu_name = "startMainMenu";
+    static const std::string __CC_changeGame_name = "changeGame";
+
+    SetConsoleCommand(__CC_startMainMenu_name, &GSLevel::startMainMenu).deactivate();
+    SetConsoleCommand(__CC_changeGame_name, &GSLevel::changeGame).defaultValues(BLANKSTRING).deactivate();
+
     GSLevel::GSLevel(const GameStateInfo& info)
         : GameState(info)
         , gameInputState_(0)
@@ -93,7 +99,12 @@ namespace orxonox
 
             // connect the HumanPlayer to the game
             PlayerManager::getInstance().clientConnected(0);
+
+            ModifyConsoleCommand(__CC_startMainMenu_name).activate();
         }
+
+        if (GameMode::isStandalone())
+            ModifyConsoleCommand(__CC_changeGame_name).activate();
     }
 
     void GSLevel::deactivate()
@@ -120,7 +131,12 @@ namespace orxonox
             InputManager::getInstance().destroyState("game");
             InputManager::getInstance().destroyState("guiKeysOnly");
             InputManager::getInstance().destroyState("guiMouseOnly");
+
+            ModifyConsoleCommand(__CC_startMainMenu_name  ).deactivate();
         }
+
+        if (GameMode::isStandalone())
+            ModifyConsoleCommand(__CC_changeGame_name).deactivate();
     }
 
     void GSLevel::update(const Clock& time)
@@ -164,5 +180,33 @@ namespace orxonox
             COUT(3) << " Well done!" << std::endl;
         else
             COUT(3) << " Try harder!" << std::endl;
+    }
+
+    /**
+    @brief
+        Starts the MainMenu.
+    */
+    /*static*/ void GSLevel::startMainMenu(void)
+    {
+        // HACK
+        Game::getInstance().popState();
+        Game::getInstance().popState();
+    }
+
+    /**
+    @brief
+        Terminates the current game and starts a new game.
+    @param level
+        The filename of the level to be started.
+    */
+    /*static*/ void GSLevel::changeGame(const std::string& level)
+    {
+        if(level != BLANKSTRING)
+            LevelManager::getInstance().setDefaultLevel(level);
+
+        // HACK
+        Game::getInstance().popState();
+        Game::getInstance().popState();
+        Game::getInstance().requestStates("standalone, level");
     }
 }
