@@ -106,6 +106,7 @@ namespace orxonox
         //
         // Last known Ogre version needing this workaround:
         // 1.4.8
+        // 1.7.2
 
         // deactivate all compositors
         {
