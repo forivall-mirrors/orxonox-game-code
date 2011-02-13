@@ -83,7 +83,7 @@ namespace orxonox
 
         float sensitivity_;
 
-        Pawn* owner_;
+        ControllableEntity* owner_;
     };
 }
 
