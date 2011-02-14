@@ -207,7 +207,7 @@ namespace orxonox
         {
           // peer probably already disconnected so just discard packet
           assert(event.peerID<this->nextPeerID_);
-          delete event.packet;
+          enet_packet_destroy(event.packet);
         }
         break;
       case outgoingEventType::disconnectPeer:
