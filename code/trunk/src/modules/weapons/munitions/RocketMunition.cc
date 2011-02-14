@@ -43,7 +43,6 @@ namespace orxonox
 
         this->bUseSeparateMagazines_ = false;
         this->bStackMunition_ = true;
-        this->reloadTime_ = 0.0f;
 
         this->bAllowMunitionRefilling_ = false;
         this->bAllowMultiMunitionRemovementUnderflow_ = false;
