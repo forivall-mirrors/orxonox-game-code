@@ -6,7 +6,7 @@
         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Window Type="MenuWidgets/StaticText" Name="orxonox/MicsConfigMenu/ConfigWindow" >
-            <Property Name="Text" Value="Keybindings" />
+            <Property Name="Text" Value="Miscellaneous" />
             <Property Name="Alpha" Value="0.8" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="HorzFormatting" Value="HorzCentred" />
