@@ -403,6 +403,9 @@ namespace orxonox
                 // iterate over all commands of the given mode at the given button
                 for (size_t command_index = 0; command_index < button->nCommands_[mode_index]; ++command_index)
                 {
+                    if (button->commands_[mode_index][command_index]->hasFixedKeybindMode())
+                        continue;
+
                     CommandEvaluation* evaluation = button->commands_[mode_index][command_index]->getEvaluation();
 
                     // compare the command
