@@ -47,6 +47,7 @@ namespace orxonox
         this->speed_ = 0;
         this->accelerationFactor_ = 1.0f;
         this->bat_ = 0;
+        this->bDeleteBats_ = false;
         this->batID_ = new unsigned int[2];
         this->batID_[0] = OBJECTID_UNKNOWN;
         this->batID_[1] = OBJECTID_UNKNOWN;
@@ -57,6 +58,13 @@ namespace orxonox
 
     PongBall::~PongBall()
     {
+        if (this->isInitialized())
+        {
+            if (this->bDeleteBats_)
+                delete[] this->bat_;
+
+            delete[] this->batID_;
+        }
     }
 
     void PongBall::registerVariables()
@@ -166,6 +174,12 @@ namespace orxonox
 
     void PongBall::setBats(WeakPtr<PongBat>* bats)
     {
+        if (this->bDeleteBats_)
+        {
+            delete[] this->bat_;
+            this->bDeleteBats_ = false;
+        }
+
         this->bat_ = bats;
         this->batID_[0] = this->bat_[0]->getObjectID();
         this->batID_[1] = this->bat_[1]->getObjectID();
@@ -174,7 +188,15 @@ namespace orxonox
     void PongBall::applyBats()
     {
         if (!this->bat_)
-            this->bat_ = new WeakPtr<PongBat>[2]; // TODO: delete this somewhere
+        {
+            if (this->bDeleteBats_)
+                delete[] this->bat_;
+            else
+                this->bDeleteBats_ = true;
+
+            this->bat_ = new WeakPtr<PongBat>[2];
+        }
+
         if (this->batID_[0] != OBJECTID_UNKNOWN)
             this->bat_[0] = orxonox_cast<PongBat*>(Synchronisable::getSynchronisable(this->batID_[0]));
         if (this->batID_[1] != OBJECTID_UNKNOWN)
