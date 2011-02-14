@@ -189,12 +189,8 @@ namespace orxonox
     {
         if (!this->bat_)
         {
-            if (this->bDeleteBats_)
-                delete[] this->bat_;
-            else
-                this->bDeleteBats_ = true;
-
             this->bat_ = new WeakPtr<PongBat>[2];
+            this->bDeleteBats_ = true;
         }
 
         if (this->batID_[0] != OBJECTID_UNKNOWN)
