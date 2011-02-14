@@ -79,6 +79,7 @@ namespace orxonox
             float accelerationFactor_;
             float batlength_;
             WeakPtr<PongBat>* bat_;
+            bool bDeleteBats_;
             unsigned int* batID_;
             float relMercyOffset_;
     };
