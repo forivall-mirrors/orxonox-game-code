@@ -95,9 +95,6 @@ namespace orxonox
         {
             this->bDestroyWhenPlayerLeft_ = false;
 
-            if (this->bHasLocalController_ && this->bHasHumanController_)
-                this->stopLocalHumanControl();
-
             if (this->getPlayer() && this->getPlayer()->getControllableEntity() == this)
                 this->getPlayer()->stopControl();
 
@@ -132,6 +129,13 @@ namespace orxonox
     void ControllableEntity::setConfigValues()
     {
         SetConfigValue(mouseLookSpeed_, 3.0f);
+    }
+
+    void ControllableEntity::preDestroy()
+    {
+        // HACK - solve this clean and without preDestroy hook for multiplayer where removePlayer() isn't called
+        if (this->bHasLocalController_ && this->bHasHumanController_)
+            this->stopLocalHumanControl();
     }
 
     void ControllableEntity::addCameraPosition(CameraPosition* position)
