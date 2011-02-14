@@ -134,7 +134,7 @@ namespace orxonox
     void ControllableEntity::preDestroy()
     {
         // HACK - solve this clean and without preDestroy hook for multiplayer where removePlayer() isn't called
-        if (this->bHasLocalController_ && this->bHasHumanController_)
+        if (this->isInitialized() && this->bHasLocalController_ && this->bHasHumanController_)
             this->stopLocalHumanControl();
     }
 
