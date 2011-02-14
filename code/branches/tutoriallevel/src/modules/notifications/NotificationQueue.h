@@ -120,12 +120,12 @@ namespace orxonox // tolua_export
             inline unsigned int getMaxSize() const
                 { return this->maxSize_; }
 
-            void setDisplayTime(unsigned int time); //!< Sets the maximum number of seconds a Notification is displayed.
+            void setDisplayTime(int time); //!< Sets the maximum number of seconds a Notification is displayed.
             /**
             @brief Returns the time interval the Notification is displayed.
             @return Returns the display time.
             */
-            inline unsigned int getDisplayTime() const
+            inline int getDisplayTime() const
                 { return this->displayTime_; }
             // tolua_end
 
@@ -151,12 +151,13 @@ namespace orxonox // tolua_export
         private:
             static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
             static const unsigned int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
+            static const int INF = -1; //!< Constant denoting infinity.
 
             std::string name_; //!< The name of the NotificationQueue.
 
             unsigned int maxSize_; //!< The maximal number of Notifications displayed.
             unsigned int size_; //!< The number of Notifications displayed.
-            unsigned int displayTime_; //!< The time a Notification is displayed.
+            int displayTime_; //!< The time a Notification is displayed.
 
             bool registered_; //!< Helper variable to remember whether the NotificationQueue is registered already.
 

@@ -20,16 +20,18 @@ function P.createQueue(name, size)
     queue:setProperty("BackgroundColor", "00FFFFFF") -- Set background to be fully transparent.
     root:addChildWindow(queue)
 
-    queue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
-    queue:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, 0), CEGUI.UDim(0, P.queueHeightHelper(queue, size))))
-
     local queueTuple =
     {
-        ["window"]  = queue,
-        ["name"]    = name,
-        ["edit"]    = nil,
-        ["visible"] = false
+        ["window"]    = queue,
+        ["name"]      = name,
+        ["edit"]      = nil,
+        ["visible"]   = false,
+        ["fontSize"]  = 12,
+        ["fontColor"] = CEGUI.colour(1.0, 1.0, 1.0, 1.0)
     }
+    
+    queue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
+    queue:setSize(CEGUI.UVector2(CEGUI.UDim(1.0, 0), CEGUI.UDim(0, P.queueHeightHelper(queueTuple, size))))
 
     P.queueList[name] = queueTuple -- name access
     P.setVisible(queueTuple, false) -- Set the queue to invisible as long as there are no notifications in it.
@@ -52,6 +54,7 @@ function P.pushNotification(queueName, notification)
         return
     end
     item = CEGUI.createListboxTextItem(notification)
+    P.setItemFontHelper(item, queue, true)
     local listbox = CEGUI.toListbox(queue.window)
     -- Add the item to the top of the listbox.
     if listbox:getItemCount() == 0 then
@@ -118,6 +121,69 @@ function P.setVisible(queue, visible)
     end
     queue.window:setVisible(visible)
     queue.visible = visible
+end
+
+-- Change the position of the queue.
+-- The parameters are (in order) 'name of the queue', 'relative x-position', 'absolute x-position in pixel', 'relative y-position', 'absolute y-position in pixel'.
+function P.moveQueue(queueName, relativeXPos, absoluteXPos, relativeYpos, absoluteYPos)
+    local queueWindow = P.queueList[queueName].window
+    queueWindow:setPosition(CEGUI.UVector2(CEGUI.UDim(relativeXPos, absoluteXPos), CEGUI.UDim(relativeYpos, absoluteYPos)))
+end
+
+-- Change the size of the queue.
+-- The parameters are (in order) 'name of the queue', 'relative width', 'absolute width in pixel', 'relative height', 'absolute heigth in pixel'.
+-- Additionally the last parameter can be ommitted and relativeHeight can be set to the size (i.e. the maximal number of notifications displayed) of the queue, which leads to the height being set such that all notifications can be displayed.
+function P.resizeQueue(queueName, relativeWidth, absoluteWidth, relativeHeight, absoluteHeigth)
+    local queueWindow = P.queueList[queueName].window
+    if queueWindow == nil then
+        return
+    end
+    if absoluteHeigth == nil then
+        absoluteHeigth = P.queueHeightHelper(P.queueList[queueName], relativeHeight)
+        relativeHeight = 0
+    end
+    queueWindow:setSize(CEGUI.UVector2(CEGUI.UDim(relativeWidth, absoluteWidth), CEGUI.UDim(relativeHeight, absoluteHeigth)))
+end
+
+-- Change the font size and font color of all notifications in a queueHeightHelper
+-- The parameters are (in order) 'name of the queue', 'font size', 'RGBA of the font color, with values from 0 to 1 each'.
+function P.changeQueueFont(queueName, size, colorRed, colorGreen, colorBlue, colorAlpha)
+    local queue = P.queueList[queueName]
+    local queueWindow = queue.window
+    if queueWindow == nil then
+        return
+    end
+    if colorAlpha == nil then
+        colorAlpha = 1.0
+    end
+
+    local list = CEGUI.toListbox(queueWindow)
+    local num = list:getItemCount()
+    queue.fontSize = size
+    local changeColor = false
+    if colorRed ~= nil and colorGreen ~= nil and colorBlue ~= nil then
+        queue.fontColor:set(colorRed, colorGreen, colorBlue, colorAlpha)
+        changeColor = true
+    end
+    for i=0,num-1 do
+        P.setItemFontHelper(item, queue, changeColor)
+    end
+end
+
+-- Helper function to set the font size and color of a item of a queue.
+-- The parameters are (in order) 'the ListboxItem', 'the queue table', 'whether color should be changed as well'
+function P.setItemFontHelper(item, queue, changeColor)
+    local item = tolua.cast(item, "CEGUI::ListboxTextItem")
+    local fontMgr = CEGUI.FontManager:getSingleton()
+    if fontMgr:isFontPresent("BlueHighway-" .. queue.fontSize) then
+        item:setFont("BlueHighway-" .. queue.fontSize)
+    else
+        orxonox.GUIManager:addFontHelper("BlueHighway-" .. queue.fontSize, queue.fontSize, "bluehigh.ttf")
+        item:setFont("BlueHighway-" .. queue.fontSize)
+    end
+    if changeColor then
+        item:setTextColours(queue.fontColor)
+    end
 end
 
 -- Enter the edit mode of the notification layer.
@@ -341,7 +407,7 @@ function P.afterHide()
 end
 
 -- If the button to save the targets of a queue has been clicked.
-function P. saveTargets_clicked(e)
+function P.saveTargets_clicked(e)
     local we = CEGUI.toWindowEventArgs(e)
     local name = we.window:getName()
 
@@ -368,7 +434,7 @@ function P. saveTargets_clicked(e)
 end
 
 -- If the button to save the size if a queue has been clicked.
-function P. saveSize_clicked(e)
+function P.saveSize_clicked(e)
     local we = CEGUI.toWindowEventArgs(e)
     local name = we.window:getName()
 
@@ -395,7 +461,7 @@ function P. saveSize_clicked(e)
 end
 
 -- If the button to save the display time if a queue has been clicked.
-function P. saveDisplayTime_clicked(e)
+function P.saveDisplayTime_clicked(e)
     local we = CEGUI.toWindowEventArgs(e)
     local name = we.window:getName()
 
@@ -477,13 +543,14 @@ end
 
 -- Helper function. Returns height a queue needs to have to display 'size' items.
 function P.queueHeightHelper(queue, size)
-    local listbox = CEGUI.toListbox(queue)
+    local listbox = CEGUI.toListbox(queue.window)
     local item = CEGUI.createListboxTextItem("Text")
+    P.setItemFontHelper(item, queue, false)
     listbox:addItem(item)
     local singleItemHeight = listbox:getTotalItemsHeight()
-    local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(queue:getLookNFeel())
-    local formattedArea = lookAndFeel:getNamedArea("ItemRenderingArea"):getArea():getPixelRect(queue)
-    local frameHeight = queue:getUnclippedPixelRect():getHeight() - formattedArea:getHeight()
+    local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(queue.window:getLookNFeel())
+    local formattedArea = lookAndFeel:getNamedArea("ItemRenderingArea"):getArea():getPixelRect(queue.window)
+    local frameHeight = queue.window:getUnclippedPixelRect():getHeight() - formattedArea:getHeight()
     listbox:removeItem(item)
     return frameHeight + singleItemHeight*size
 end

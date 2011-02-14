@@ -158,7 +158,7 @@ namespace orxonox
     void NotificationQueue::tick(float dt)
     {
         this->tickTime_ += dt; // Add the time interval that has passed to the time counter.
-        if(this->tickTime_ >= 1.0) // If the time counter is greater than 1s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
+        if(this->displayTime_ != INF && this->tickTime_ >= 1.0) // If the time counter is greater than 1s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
         {
             this->timeLimit_.time = std::time(0)-this->displayTime_; // Container containig the current time.
 
@@ -186,7 +186,10 @@ namespace orxonox
 
         std::multimap<std::time_t, Notification*>* notifications = new std::multimap<std::time_t, Notification*>;
         // Get the Notifications sent in the interval from now to now minus the display time.
-        NotificationManager::getInstance().getNotifications(this, notifications, this->displayTime_);
+        if(this->displayTime_ == INF)
+            NotificationManager::getInstance().getNewestNotifications(this, notifications, this->getMaxSize());
+        else
+            NotificationManager::getInstance().getNotifications(this, notifications, this->displayTime_);
 
         if(!notifications->empty())
         {
@@ -354,11 +357,9 @@ namespace orxonox
     @brief
         Sets the maximum number of seconds a Notification is displayed.
     @param time
-        The number of seconds the Notifications is displayed.
-    @return
-        Returns true if successful.
+        The number of seconds a Notification is displayed.
     */
-    void NotificationQueue::setDisplayTime(unsigned int time)
+    void NotificationQueue::setDisplayTime(int time)
     {
         if(this->displayTime_ == time)
             return;
