@@ -56,7 +56,7 @@
 // #include "TrafficControl.h"
 
 namespace orxonox
-{
+{ 
   GamestateManager::GamestateManager() :
   currentGamestate_(0), id_(0)
   {
@@ -109,7 +109,7 @@ namespace orxonox
     for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
       bool b = processGamestate(it->second);
       assert(b);
-//       sendAck( it->second->getID(), it->second->getPeerID() );
+      sendAck( it->second->getID(), it->second->getPeerID() );
       delete it->second;
     }
     // now clear the queue
@@ -139,7 +139,6 @@ namespace orxonox
   bool GamestateManager::getSnapshot(){
     if ( currentGamestate_ != 0 )
       delete currentGamestate_;
-    currentGamestate_ = new packet::Gamestate();
     uint8_t gsMode;
     if( GameMode::isMaster() )
       gsMode = packet::GAMESTATE_MODE_SERVER;
@@ -152,11 +151,19 @@ namespace orxonox
     {
       assert(peerMap_.size()!=0);
       newID = peerMap_[NETWORK_PEER_ID_SERVER].lastReceivedGamestateID;
+      if( newID == GAMESTATEID_INITIAL )
+      {
+        return false;
+      }
     }
     
-    if(!currentGamestate_->collectData(newID, gsMode)){ //we have no data to send
+    currentGamestate_ = new packet::Gamestate();
+    
+    if(!currentGamestate_->collectData(newID, gsMode))
+    { //we have no data to send
       delete currentGamestate_;
       currentGamestate_=0;
+      return false;
     }
     return true;
   }

@@ -416,16 +416,16 @@ namespace orxonox
     w->setPeerID(clientID);
     b = w->send( static_cast<Host*>(this) );
     assert(b);
-    packet::Gamestate *g = new packet::Gamestate();
-    g->setPeerID(clientID);
-    b = g->collectData(0,packet::GAMESTATE_MODE_SERVER);
-    assert(b);
-    if(!b)
-      return false; //no data for the client
-//     b = g->compressData();
+//     packet::Gamestate *g = new packet::Gamestate();
+//     g->setPeerID(clientID);
+//     b = g->collectData(0,packet::GAMESTATE_MODE_SERVER);
 //     assert(b);
-    b = g->send( static_cast<Host*>(this) );
-    assert(b);
+//     if(!b)
+//       return false; //no data for the client
+// //     b = g->compressData();
+// //     assert(b);
+//     b = g->send( static_cast<Host*>(this) );
+//     assert(b);
     return true;
   }
 

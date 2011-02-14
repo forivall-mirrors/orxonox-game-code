@@ -154,12 +154,14 @@ namespace orxonox
       {
         COUT(4) << "popping partial gamestate: " << std::endl;
 //         packet::Gamestate *gs = GamestateClient::getGamestate();
-        GamestateManager::update();
-        std::vector<packet::Gamestate*> gamestates = GamestateManager::getGamestates();
-        std::vector<packet::Gamestate*>::iterator it;
-        for( it = gamestates.begin(); it != gamestates.end(); ++it )
+        if( GamestateManager::update() )
         {
-          (*it)->send( static_cast<Host*>(this) );
+          std::vector<packet::Gamestate*> gamestates = GamestateManager::getGamestates();
+          std::vector<packet::Gamestate*>::iterator it;
+          for( it = gamestates.begin(); it != gamestates.end(); ++it )
+          {
+            (*it)->send( static_cast<Host*>(this) );
+          }
         }
         //assert(gs); <--- there might be the case that no data has to be sent, so its commented out now
 //         if(gs){
