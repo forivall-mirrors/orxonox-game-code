@@ -45,7 +45,7 @@ namespace orxonox
         RegisterObject(LastTeamStanding);
         this->bForceSpawn_ = true;
         this->lives = 1;//4
-        //this->eachTeamsPlayers.reserve(teams_);
+        this->eachTeamsPlayers.resize(teams_,0);
         this->teamsAlive = 0;
         this->bMinTeamsReached = false;
         this->bNoPunishment = false;
@@ -58,10 +58,10 @@ namespace orxonox
     LastTeamStanding::~LastTeamStanding()
     {
         this->playerLives_.clear();
-        //this->eachTeamsPlayers.clear();
+        this->eachTeamsPlayers.clear();
         this->timeToAct_.clear();
-        this->playerDelayTime_.clear();
         this->inGame_.clear();
+        this->playerDelayTime_.clear();
     }   
 
     void LastTeamStanding::playerEntered(PlayerInfo* player)
@@ -74,9 +74,9 @@ namespace orxonox
         else
             playerLives_[player]=getMinLives();//new players only get minimum of lives */
         
-        //if(this->eachTeamsPlayers[getTeam(player)]==0) //if a player is the first in his group, a new team is alive
-          //  this->teamsAlive++;
-        //this->eachTeamsPlayers[getTeam(player)]++; //the number of player in this team is increased
+        if(this->eachTeamsPlayers[getTeam(player)]==0) //if a player is the first in his group, a new team is alive
+            this->teamsAlive++;
+        this->eachTeamsPlayers[getTeam(player)]++; //the number of player in this team is increased
 
         if (teamsAlive>1) // Now the game is allowed to end, since there are at least two teams.
             bMinTeamsReached = true; // since there are at least two teams, the game is allowed to end
@@ -90,11 +90,10 @@ namespace orxonox
         bool valid_player = TeamDeathmatch::playerLeft(player);
         if (valid_player)
         {
-            //this->eachTeamsPlayers[getTeam(player)]--;       // a player left the team
-            //if(this->eachTeamsPlayers[getTeam(player)] == 0) // if it was the last player a team died
-             //    this->teamsAlive--;
+            this->eachTeamsPlayers[getTeam(player)]--;       // a player left the team
+            if(this->eachTeamsPlayers[getTeam(player)] == 0) // if it was the last player a team died
+                 this->teamsAlive--;
             this->playerLives_.erase(player);
-            //this->eachTeamsPlayers.clear();
             this->timeToAct_.erase(player);
             this->playerDelayTime_.erase(player);
             this->inGame_.erase(player);
@@ -114,8 +113,8 @@ namespace orxonox
         this->inGame_[victim->getPlayer()] = false; //if player dies, he isn't allowed to respawn immediately
         if (playerLives_[victim->getPlayer()]<=0) //if player lost all lives
         {
-            //this->eachTeamsPlayers[getTeam(victim->getPlayer())]--;
-            //if(eachTeamsPlayers[getTeam(victim->getPlayer())] == 0) //last team member died
+            this->eachTeamsPlayers[getTeam(victim->getPlayer())]--;
+            if(eachTeamsPlayers[getTeam(victim->getPlayer())] == 0) //last team member died
                 this->teamsAlive--;
             const std::string& message = victim->getPlayer()->getName() + " has lost all lives";
             COUT(0) << message << std::endl;
@@ -165,7 +164,7 @@ namespace orxonox
         TeamDeathmatch::playerStartsControllingPawn(player,pawn);
         
         this->timeToAct_[player] = timeRemaining + 3.0f + respawnDelay;//reset timer
-        //this->playerDelayTime_[player] = respawnDelay;
+        this->playerDelayTime_[player] = respawnDelay;
         
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())

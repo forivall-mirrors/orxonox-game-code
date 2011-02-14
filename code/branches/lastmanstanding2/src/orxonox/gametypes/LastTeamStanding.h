@@ -53,7 +53,7 @@ namespace orxonox
         protected:
             int lives; //!< Standard amount of lives. Each player starts a game with so many lives.
             std::map< PlayerInfo*, int > playerLives_; //!< Each player's lives are stored here.
-            //std::vector<int> eachTeamsPlayers; //!<Number of players in each team. !!!!!!!!!!!!!!
+            std::vector<int> eachTeamsPlayers; //!<Number of players in each team.
             int teamsAlive; //!< Counter counting teams with more than one player remaining.
 //Data for CamperPunishment
             float timeRemaining; //!< Each player has a certain time where he or she has to hit an opponent or will be punished.
