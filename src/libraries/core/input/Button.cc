@@ -218,6 +218,8 @@ namespace orxonox
                             commands[mode].push_back(cmd);
                         }
                     }
+                    else
+                        cmd->setFixedKeybindMode(true);
                 }
                 else
                 {
@@ -226,6 +228,8 @@ namespace orxonox
 
                     if (mode == KeybindMode::None)
                         mode = eval.getConsoleCommand()->getKeybindMode();
+                    else
+                        cmd->setFixedKeybindMode(true);
 
                     commands[mode].push_back(cmd);
                 }

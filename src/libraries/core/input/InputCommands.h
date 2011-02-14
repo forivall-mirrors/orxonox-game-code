@@ -55,9 +55,19 @@ namespace orxonox
     class _CoreExport BaseCommand
     {
     public:
+        BaseCommand() : bFixedKeybindMode_(false) {}
         virtual ~BaseCommand() { }
+
         virtual bool execute(float abs = 1.0f, float rel = 1.0f) = 0;
         virtual CommandEvaluation* getEvaluation() = 0;
+
+        inline void setFixedKeybindMode(bool fixed)
+            { this->bFixedKeybindMode_ = fixed; }
+        inline bool hasFixedKeybindMode() const
+            { return this->bFixedKeybindMode_; }
+
+    private:
+        bool bFixedKeybindMode_;
     };
 
     class _CoreExport SimpleCommand : public BaseCommand
