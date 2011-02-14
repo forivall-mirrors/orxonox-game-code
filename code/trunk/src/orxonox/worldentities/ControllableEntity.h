@@ -156,6 +156,8 @@ namespace orxonox
             void setTargetInternal( uint32_t targetID );
 
         protected:
+            virtual void preDestroy();
+
             virtual void setPlayer(PlayerInfo* player); // don't call this directly, use friend class PlayerInfo instead
             virtual void removePlayer();                // don't call this directly, use friend class PlayerInfo instead
 

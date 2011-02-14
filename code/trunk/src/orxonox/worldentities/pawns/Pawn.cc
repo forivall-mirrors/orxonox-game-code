@@ -144,6 +144,13 @@ namespace orxonox
             }
     }
 
+    void Pawn::preDestroy()
+    {
+        // yay, multiple inheritance!
+        this->ControllableEntity::preDestroy();
+        this->PickupCarrier::preDestroy();
+    }
+
     void Pawn::setPlayer(PlayerInfo* player)
     {
         ControllableEntity::setPlayer(player);

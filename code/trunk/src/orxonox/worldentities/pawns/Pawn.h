@@ -131,6 +131,8 @@ namespace orxonox // tolua_export
                 { return this->getWorldPosition(); };
 
         protected:
+            virtual void preDestroy();
+
             virtual void setPlayer(PlayerInfo* player);
             virtual void removePlayer();
 
