@@ -42,46 +42,86 @@ namespace orxonox
 
     LastTeamStanding::LastTeamStanding(BaseObject* creator) : TeamDeathmatch(creator)
     {
-        RegisterObject(LastTeamStanding);
-        this->bForceSpawn_=true;
-        this->lives=4;
-        this->teamsAlive=0;
-        this->timeRemaining=15.0f;
-        this->respawnDelay=4.0f;
-        this->bNoPunishment=false;
-        this->bHardPunishment=false;
-        this->punishDamageRate=0.4f;
-        this->setHUDTemplate("LastTeamStandingHUD");//tolowercase:-)
-        this->eachTeamsPlayers = new int[teams_];
-        this->bMinPlayersReached = false;
+        this->bForceSpawn_ = true;
+        this->lives = 1;//4
+        this->eachTeamsPlayers.reserve(teams_);
+        this->teamsAlive = 0;
+        this->bMinTeamsReached = false;
+        this->bNoPunishment = false;
+        this->bHardPunishment = false;
+        this->punishDamageRate = 0.4f;
+        this->timeRemaining = 15.0f;
+        this->respawnDelay = 4.0f;
     }
     
     LastTeamStanding::~LastTeamStanding()
     {
-        delete[] this->eachTeamsPlayers;
+        this->playerLives_.clear();
+        this->eachTeamsPlayers.clear();
+        this->timeToAct_.clear();
+        this->playerDelayTime_.clear();
+        this->inGame_.clear();
     }   
 
-    void LastTeamStanding::spawnDeadPlayersIfRequested()
+    void LastTeamStanding::playerEntered(PlayerInfo* player)
     {
-        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
-            if (it->second.state_ == PlayerState::Dead)
-            {
-                bool alive = (0<playerLives_[it->first]&&(inGame_[it->first]));
-                if (alive&&(it->first->isReadyToSpawn() || this->bForceSpawn_))
-                {
-                    this->spawnPlayer(it->first);
-                }
-            }
+        if (!player)// only for safety
+            return;
+        TeamDeathmatch::playerEntered(player);
+        if (teamsAlive<=1)
+            playerLives_[player]=lives;
+        else
+            playerLives_[player]=getMinLives();//new players only get minimum of lives
+        
+        if(this->eachTeamsPlayers[getTeam(player)]==0) //if a player is the first in his group, a new team is alive
+            this->teamsAlive++;
+        this->eachTeamsPlayers[getTeam(player)]++; //the number of player in this team is increased
+
+        if (teamsAlive>1) // Now the game is allowed to end, since there are at least two teams.
+            bMinTeamsReached = true; // since there are at least two teams, the game is allowed to end
+        this->timeToAct_[player] = timeRemaining;
+        this->playerDelayTime_[player] = respawnDelay;
+        this->inGame_[player] = true;
     }
 
-
-    void LastTeamStanding::setConfigValues()
+    bool LastTeamStanding::playerLeft(PlayerInfo* player)
     {
-        SetConfigValue(lives, 4);
-        SetConfigValue(timeRemaining, 15.0f);
-        SetConfigValue(respawnDelay, 4.0f);
-        SetConfigValue(bNoPunishment, false);
-        SetConfigValue(bHardPunishment, false);
+        bool valid_player = TeamDeathmatch::playerLeft(player);
+        if (valid_player)
+        {
+            this->eachTeamsPlayers[getTeam(player)]--;       // a player left the team
+            if(this->eachTeamsPlayers[getTeam(player)] == 0) // if it was the last player a team died
+                 this->teamsAlive--;
+            this->playerLives_.erase(player);
+            this->eachTeamsPlayers.clear();
+            this->timeToAct_.erase(player);
+            this->playerDelayTime_.erase(player);
+            this->inGame_.erase(player);
+        }
+
+        return valid_player;
+    }
+
+    bool LastTeamStanding::allowPawnDeath(Pawn* victim, Pawn* originator)
+    {
+        if (!victim||!victim->getPlayer())// only for safety
+            return true;
+        bool allow = TeamDeathmatch::allowPawnDeath(victim, originator);
+        if(!allow) {return allow;}
+        
+        playerLives_[victim->getPlayer()] = playerLives_[victim->getPlayer()] - 1; //player lost a live
+        this->inGame_[victim->getPlayer()] = false; //if player dies, he isn't allowed to respawn immediately
+        if (playerLives_[victim->getPlayer()]<=0) //if player lost all lives
+        {
+            this->eachTeamsPlayers[getTeam(victim->getPlayer())]--;
+            if(eachTeamsPlayers[getTeam(victim->getPlayer())] == 0) //last team member died
+                this->teamsAlive--;
+            const std::string& message = victim->getPlayer()->getName() + " has lost all lives";
+            COUT(0) << message << std::endl;
+            Host::Broadcast(message);
+        }
+
+        return allow;
     }
 
     bool LastTeamStanding::allowPawnDamage(Pawn* victim, Pawn* originator)
@@ -90,7 +130,7 @@ namespace orxonox
         if(!allow) {return allow;}
         if (originator && originator->getPlayer())// only for safety
         {
-            this->timeToAct_[originator->getPlayer()]=timeRemaining;
+            this->timeToAct_[originator->getPlayer()] = timeRemaining;
 
             std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
             if (it != this->players_.end())
@@ -104,41 +144,88 @@ namespace orxonox
         return allow;
     }
 
-    bool LastTeamStanding::allowPawnDeath(Pawn* victim, Pawn* originator)
+    void LastTeamStanding::spawnDeadPlayersIfRequested()
     {
-        if (!victim||!victim->getPlayer())// only for safety
-            return true;
-        bool allow =TeamDeathmatch::allowPawnDeath(victim, originator);
-        if(!allow) {return allow;}
-        playerLives_[victim->getPlayer()]=playerLives_[victim->getPlayer()]-1;
-        this->inGame_[victim->getPlayer()]=false;//if player dies he, isn't allowed to respawn immediately
-        if (playerLives_[victim->getPlayer()]<=0)//if player lost all lives
-        {
-            this->eachTeamsPlayers[getTeam(victim->getPlayer())]--;
-            if(eachTeamsPlayers[getTeam(victim->getPlayer())]==0)//last team member died
-                this->teamsAlive--;
-            const std::string& message = victim->getPlayer()->getName() + " has lost all lives";
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
-        }
-
-        return allow;
+        for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            if (it->second.state_ == PlayerState::Dead)
+            {
+                bool alive = (0 < playerLives_[it->first]&&(inGame_[it->first]));
+                if (alive&&(it->first->isReadyToSpawn() || this->bForceSpawn_))
+                {
+                    this->spawnPlayer(it->first);
+                }
+            }
     }
 
-    int LastTeamStanding::getMinLives()
+    void LastTeamStanding::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)
     {
-        int min=lives;
-        for (std::map<PlayerInfo*, int>::iterator it = this->playerLives_.begin(); it != this->playerLives_.end(); ++it)
+        if (!player)
+            return;
+        TeamDeathmatch::playerStartsControllingPawn(player,pawn);
+        
+        this->timeToAct_[player] = timeRemaining + 3.0f + respawnDelay;//reset timer
+        this->playerDelayTime_[player] = respawnDelay;
+        
+        std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
+        if (it != this->players_.end())
         {
-            if (it->second<=0)
-                continue;
-            if (it->second<lives)
-                min=it->second;
-        }
-        return min;
+            if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                return;
+            const std::string& message = ""; // resets Camper-Warning-message
+            this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
+        }  
     }
 
-    void LastTeamStanding::end()//TODO!
+    void LastTeamStanding::tick(float dt)
+    {
+        SUPER(LastTeamStanding, tick, dt);
+        if(this->hasStarted()&&(!this->hasEnded()))
+        {
+            if (bMinTeamsReached &&(this->hasStarted()&&(teamsAlive<=1)))//last team remaining -> game will end
+            {
+                this->end();
+            }
+            for (std::map<PlayerInfo*, float>::iterator it = this->timeToAct_.begin(); it != this->timeToAct_.end(); ++it)
+            {   
+                if (playerGetLives(it->first) <= 0)//Players without lives shouldn't be affected by time.
+                    continue;     
+                it->second -= dt;//Decreases punishment time.
+                if (!inGame_[it->first])//Manages respawn delay - player is forced to respawn after the delaytime is used up. 
+                {
+                    playerDelayTime_[it->first] -= dt;
+                    if (playerDelayTime_[it->first] <= 0)
+                    this->inGame_[it->first] = true;
+
+                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                        continue;
+                    int output = 1 + playerDelayTime_[it->first];
+                    const std::string& message = "Respawn in " +multi_cast<std::string>(output)+ " seconds." ;//Countdown
+                    this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
+                }
+                else if (it->second < 0.0f)
+                {
+                    it->second = timeRemaining + 3.0f;//reset punishment-timer
+                    if (playerGetLives(it->first) > 0)
+                    {
+                        this->punishPlayer(it->first);
+                        if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                            return;
+                        const std::string& message = ""; // resets Camper-Warning-message
+                        this->gtinfo_->sendFadingMessage(message, it->first->getClientID());
+                    }
+                }
+                else if (it->second < timeRemaining/5)//Warning message
+                {
+                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                        continue;
+                    const std::string& message = "Camper Warning! Don't forget to shoot.";
+                    this->gtinfo_->sendFadingMessage(message, it->first->getClientID());
+                }
+            }
+        }
+    }
+
+    void LastTeamStanding::end()//TODO: Send the message to the whole team
     {
         Gametype::end();
         
@@ -151,76 +238,27 @@ namespace orxonox
                 this->gtinfo_->sendAnnounceMessage("You have won the match!", it->first->getClientID());
             else
                 this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
-        }
-    }
-
-    int LastTeamStanding::playerGetLives(PlayerInfo* player)
-    {
-        if (player)
-            return  playerLives_[player];
-        else
-            return 0;
-    }
-    
-    int LastTeamStanding::getNumTeamsAlive() const
-    {
-        return this->teamsAlive;
-    }
-
-    void LastTeamStanding::playerEntered(PlayerInfo* player)
-    {
-        if (!player)// only for safety
-            return;
-        TeamDeathmatch::playerEntered(player);
-        if (teamsAlive<=1)
-            playerLives_[player]=lives;
-        else
-            playerLives_[player]=getMinLives();//new players only get minimum of lives
-            
-        if(this->eachTeamsPlayers[getTeam(player)]==0)
-            this->teamsAlive++;
-        this->eachTeamsPlayers[getTeam(player)]++;
-        if (teamsAlive>1) // Now the game is allowed to end, since there are at least two teams.
-            bMinPlayersReached=true;
-        this->timeToAct_[player]=timeRemaining;
-        this->playerDelayTime_[player]=respawnDelay;
-        this->inGame_[player]=true;
-    }
-
-    bool LastTeamStanding::playerLeft(PlayerInfo* player)
-    {
-        bool valid_player = TeamDeathmatch::playerLeft(player);
-        if (valid_player)
-        {
-            this->eachTeamsPlayers[getTeam(player)]--;
-            if(this->eachTeamsPlayers[getTeam(player)]==0)
-                 this->teamsAlive--;
-            this->playerLives_.erase (player);
-            this->playerDelayTime_.erase (player);
-            this->inGame_.erase (player);
-            this->timeToAct_.erase(player);
+        /*//erase maps:
+            this->playerLives_.erase(it->first);
+            this->playerDelayTime_.erase (it->first);
+            this->inGame_.erase (it->first);
+            this->timeToAct_.erase(it->first);*/
         }
 
-        return valid_player;
     }
 
-    void LastTeamStanding::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn)
+
+    int LastTeamStanding::getMinLives()
     {
-        if (!player)
-            return;
-        TeamDeathmatch::playerStartsControllingPawn(player,pawn);
-        
-        this->timeToAct_[player]=timeRemaining+3.0f+respawnDelay;//reset timer
-        this->playerDelayTime_[player]=respawnDelay;
-        
-        std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
-        if (it != this->players_.end())
+        int min = lives;
+        for (std::map<PlayerInfo*, int>::iterator it = this->playerLives_.begin(); it != this->playerLives_.end(); ++it)
         {
-            if (it->first->getClientID()== CLIENTID_UNKNOWN)
-                return;
-            const std::string& message = ""; // resets Camper-Warning-message
-            this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
-        }  
+            if (it->second <= 0)
+                continue;
+            if (it->second < lives)
+                min = it->second;
+        }
+        return min;
     }
 
     void LastTeamStanding::punishPlayer(PlayerInfo* player)
@@ -240,64 +278,31 @@ namespace orxonox
             if(bHardPunishment)
             {
                 pawn->kill();
-                this->timeToAct_[player]=timeRemaining+3.0f+respawnDelay;//reset timer
+                this->timeToAct_[player] = timeRemaining + 3.0f + respawnDelay;//reset timer
             }
             else
             {
-                float damage=pawn->getMaxHealth()*punishDamageRate*0.5;//TODO: Factor 0.5 is hard coded. Where is the ratio between MaxHealth actually defined?
+                float damage = pawn->getMaxHealth()*punishDamageRate*0.5;//TODO: Factor 0.5 is hard coded. Where is the ratio between MaxHealth actually defined?
                 pawn->removeHealth(damage);
-                this->timeToAct_[player]=timeRemaining;//reset timer
+                this->timeToAct_[player] = timeRemaining;//reset timer
             }
         }
     }
 
-    void LastTeamStanding::tick(float dt)
+    int LastTeamStanding::playerGetLives(PlayerInfo* player)
     {
-        SUPER(LastTeamStanding, tick, dt);
-        if(this->hasStarted()&&(!this->hasEnded()))
-        {
-            if (bMinPlayersReached &&(this->hasStarted()&&(teamsAlive<=1)))//last team remaining
-            {
-                this->end();
-            }
-            for (std::map<PlayerInfo*, float>::iterator it = this->timeToAct_.begin(); it != this->timeToAct_.end(); ++it)
-            {   
-                if (playerGetLives(it->first)<=0)//Players without lives shouldn't be affected by time.
-                    continue;     
-                it->second-=dt;//Decreases punishment time.
-                if (!inGame_[it->first])//Manages respawn delay - player is forced to respawn after the delaytime is used up. 
-                {
-                    playerDelayTime_[it->first]-=dt;
-                    if (playerDelayTime_[it->first]<=0)
-                    this->inGame_[it->first]=true;
-
-                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
-                        continue;
-                    int output=1+playerDelayTime_[it->first];
-                    const std::string& message = "Respawn in " +multi_cast<std::string>(output)+ " seconds." ;//Countdown
-                    this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
-                }
-                else if (it->second<0.0f)
-                {
-                    it->second=timeRemaining+3.0f;//reset punishment-timer
-                    if (playerGetLives(it->first)>0)
-                    {
-                        this->punishPlayer(it->first);
-                        if (it->first->getClientID()== CLIENTID_UNKNOWN)
-                            return;
-                        const std::string& message = ""; // resets Camper-Warning-message
-                        this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
-                    }
-                }
-                else if (it->second<timeRemaining/5)//Warning message
-                {
-                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
-                        continue;
-                    const std::string& message = "Camper Warning! Don't forget to shoot.";
-                    this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
-                }
-            }
-        }
+        if (player)
+            return  playerLives_[player];
+        else
+            return 0;
     }
-
+    
+    void LastTeamStanding::setConfigValues()
+    {
+        SetConfigValue(lives, 4);
+        SetConfigValue(timeRemaining, 15.0f);
+        SetConfigValue(respawnDelay, 4.0f);
+        SetConfigValue(bNoPunishment, false);
+        SetConfigValue(bHardPunishment, false);
+    }
 }

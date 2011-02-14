@@ -53,37 +53,42 @@ namespace orxonox
         protected:
             int lives; //!< Standard amount of lives. Each player starts a game with so many lives.
             std::map< PlayerInfo*, int > playerLives_; //!< Each player's lives are stored here.
+            std::vector<int> eachTeamsPlayers; //!<Number of players in each team.
             int teamsAlive; //!< Counter counting teams with more than one player remaining.
+//Data for CamperPunishment
             float timeRemaining; //!< Each player has a certain time where he or she has to hit an opponent or will be punished.
             std::map<PlayerInfo*, float> timeToAct_; //!< Each player's time till she/he will be punished is stored here.
-            float respawnDelay; //!<Time in seconds when a player will respawn after death.
-            std::map<PlayerInfo*, float> playerDelayTime_; //!< Stores each Player's delay time.
-            std::map<PlayerInfo*, bool> inGame_; //!< Indicates each Player's state.
             bool bNoPunishment; //!< Config value to switch off Punishment function if it is set to true.
             bool bHardPunishment; //!< Switches between damage and death as punishment.
             float punishDamageRate; //!< Makes Damage adjustable.
+//Data for RespawnDelay
+            float respawnDelay; //!<Time in seconds when a player will respawn after death.
+            std::map<PlayerInfo*, float> playerDelayTime_; //!< Stores each Player's delay time.
+            std::map<PlayerInfo*, bool> inGame_; //!< Indicates each Player's state.
+
+            bool bMinTeamsReached; //!< Lock. Game shouldn't end right at the beginning.
+
             virtual void spawnDeadPlayersIfRequested(); //!< Prevents dead players to respawn.
             virtual int getMinLives(); //!< Returns minimum of each player's lives; players with 0 lives are skipped;
-            int * eachTeamsPlayers; //!<Each teams player's alive.
-            bool bMinPlayersReached;
 
         public:
             LastTeamStanding(BaseObject* creator); //!< Default Constructor.
             virtual ~LastTeamStanding(); //!< Default Destructor.
-            void setConfigValues(); //!< Makes values configurable.
 
-            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //!< If a player shoot's an opponent, his punishment countdown will be resetted.
-            virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //!< Manages each players lives.
-
-            virtual void end(); //!< Sends an end message.
-            int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_".
-            int getNumTeamsAlive() const; //!< Returns the number of players that are still alive.
             virtual void playerEntered(PlayerInfo* player); //!< Initializes values.
             virtual bool playerLeft(PlayerInfo* player); //!< Manages all local variables.
-            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn); //!< Resets punishment time and respawn delay.
 
-            void punishPlayer(PlayerInfo* player); //!< Function in order to kill a player. Punishment for hiding longer than "timeRemaining".
+            virtual bool allowPawnDeath(Pawn* victim, Pawn* originator = 0); //!< Manages each player's lost lives.
+            virtual bool allowPawnDamage(Pawn* victim, Pawn* originator = 0); //!< If a player shoot's an opponent, his punishment countdown will be resetted.
+            virtual void playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn); //!< Resets punishment time and respawn delay.
             void tick (float dt); //!< used to end the game
+            virtual void end(); //!< Sends an end message.
+            void punishPlayer(PlayerInfo* player); //!< Function in order to kill a player. Punishment for hiding longer than "timeRemaining".
+            int playerGetLives(PlayerInfo* player); //!< getFunction for the map "playerLives_".
+            inline int getNumTeamsAlive() const//!< Returns the number of players that are still alive.
+            {return this->teamsAlive;}
+            void setConfigValues(); //!< Makes values configurable.
+
     };
 }
 
