@@ -34,7 +34,6 @@
 #include "worldentities/pawns/Pawn.h"
 #include "core/ConfigValueIncludes.h"
 #include "util/Convert.h"
-//TODO: teamsAlive instead of playersAlive
 
 namespace orxonox
 {
@@ -53,6 +52,7 @@ namespace orxonox
         this->punishDamageRate = 0.4f;
         this->timeRemaining = 15.0f;
         this->respawnDelay = 4.0f;
+        this->setHUDTemplate("lastTeamStandingHUD");
     }
     
     LastTeamStanding::~LastTeamStanding()

@@ -1,7 +1,7 @@
-<Template name="LastteamstandingHUD">
-  <OverlayGroup name="LastteamstandingHUD" scale = "1, 1">
+<Template name="lastTeamStandingHUD">
+  <OverlayGroup name="lastTeamStandingHUD" scale = "1, 1">
 
-<GametypeFadingMessage
+<GametypeFadingMessag
      name     = "fadingmessage"
      position = "0.5, 0.01"
      font     = "VeraMono"
@@ -52,36 +52,6 @@
 
      showlives     = false
      showteams     = true
-    />
-
-    <OverlayText
-     position  = "0.02, 0.07"
-     pickpoint = "0.0, 0.0"
-     font      = "ShareTechMono"
-     textsize  = 0.04
-     colour    = "1.0, 1.0, 1.0, 1.0"
-     align     = "left"
-     caption   = "__________|"
-    />
-
-    <OverlayText
-     position  = "0.022, 0.07"
-     pickpoint = "0.0, 0.0"
-     font      = "ShareTechMono"
-     textsize  = 0.04
-     colour    = "1.0, 1.0, 1.0, 1.0"
-     align     = "left"
-     caption   = "__________"
-    />
-
-    <OverlayText
-     position  = "0.1733, 0.038"
-     pickpoint = "0.0, 0.0"
-     font      = "ShareTechMono"
-     textsize  = 0.04
-     colour    = "1.0, 1.0, 1.0, 1.0"
-     align     = "left"
-     caption   = "|"
     />
 
   </OverlayGroup>

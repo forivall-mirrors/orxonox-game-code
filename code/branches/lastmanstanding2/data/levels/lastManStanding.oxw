@@ -37,31 +37,25 @@
 <Bot />
 
 <!-- ------------ middle asteroid -------------- -->
-    <StaticEntity position="0,20,0" collisionType=static>
-       <attached>
-           <Model position="0,0,0" scale=140 mesh="asteroid_UV.mesh" shadow=true />
-           <!-- ParticleEmitter position="0,0,0" source="Orxonox/Steam" / -->
-       </attached>
-      <collisionShapes>
-        <SphereCollisionShape radius="145" />
-      </collisionShapes>
+    <StaticEntity position="0,0,0" collisionType=static>    
+        <attached>
+            <MovableEntity position="0,20,0" rotationrate="-4.5" rotationaxis="0,1,0" >
+                <attached>
+                    <Model position="0,0,0" scale=140 mesh="asteroid_UV.mesh" shadow=true />
+                    <Model position="-160,40,28.4" scale=1 mesh="sphere.mesh" /><!--EasterEgg indicator-->
+                    <PickupSpawner position="-160,40,17" triggerDistance="20" respawnTime="5" maxSpawnedItems="15"><!--EasterEgg-->
+                        <pickup>
+                            <InvisiblePickup template=hugeinvisiblepickup />
+                        </pickup>
+                    </PickupSpawner>
+                </attached>
+            </MovableEntity>
+        </attached>
+        <collisionShapes>
+            <SphereCollisionShape radius="145" />
+        </collisionShapes>
     </StaticEntity>
 
-    <PickupSpawner position="-160,65,10" triggerDistance="10" respawnTime="5" maxSpawnedItems="10"><!--EasterEgg-->
-      <pickup>
-        <InvisiblePickup template=mediuminvisiblepickup />
-      </pickup>
-    </PickupSpawner>
-    <PickupSpawner position="-160,60,17" triggerDistance="10" respawnTime="5" maxSpawnedItems="10"><!--EasterEgg-->
-      <pickup>
-        <InvisiblePickup template=hugeinvisiblepickup />
-      </pickup>
-    </PickupSpawner>
-    <StaticEntity position="-160,60,28.4"><!--EasterEgg-Indicator-->
-      <attached>
-        <Model position="0,0,0" scale=1 mesh="sphere.mesh" />
-      </attached>
-    </StaticEntity>
 
 <!-- ---------------asteroid dome----------------- -->
 <?lua
@@ -137,7 +131,7 @@ do
     </StaticEntity>
 
 
-<?lua end ?>
+<?lua end ?><!-- ---------------asteroid dome END------------------->
 
   </Scene>
 </Level>
