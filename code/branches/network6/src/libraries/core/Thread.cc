@@ -26,6 +26,11 @@
  *
  */
 
+#if defined(ORXONOX_PLATFORM_WINDOWS)
+  #include "ThreadWin.cc"
+#elif defined(ORXONOX_PLATFORM_UNIX)
+
+
 #include "Thread.h"
 
 #include <cassert>
@@ -90,9 +95,9 @@ namespace orxonox
         bool stopThread = false;
         while( !stopThread )
         {
-            //this->executorMutex_->lock();
+            this->executorMutex_->lock();
             ExecutorPtr executor = this->executor_;
-            //this->executorMutex_->unlock();
+            this->executorMutex_->unlock();
             if( executor )
             {
                 (*executor)();
@@ -107,9 +112,9 @@ namespace orxonox
             {
                 this->workerThread_->yield();
             }
-            //this->stopThreadMutex_->lock();
+            this->stopThreadMutex_->lock();
             stopThread = this->stopThread_;
-            //this->stopThreadMutex_->unlock();
+            this->stopThreadMutex_->unlock();
         }
     }
 
@@ -126,3 +131,5 @@ namespace orxonox
         }
     }
 }
+
+#endif

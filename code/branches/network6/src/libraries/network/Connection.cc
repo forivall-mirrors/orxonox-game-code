@@ -134,7 +134,7 @@ namespace orxonox
       }
       
 //       this->overallMutex_->unlock();
-      msleep(10);
+      msleep(1);
 //       this->overallMutex_->lock();
       
       // Send all waiting outgoing packets
