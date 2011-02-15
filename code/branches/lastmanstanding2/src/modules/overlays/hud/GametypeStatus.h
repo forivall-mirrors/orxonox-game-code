@@ -48,8 +48,10 @@ namespace orxonox
             void setDisplayCaption(bool bValue); //!< Toggles whether the gametype status is displayed.
 
         private:
+            //Gametype* game_;
             PlayerInfo* owner_;
             bool bNoCaption_;
+            //bool bForcedSpawn_;
 
     };
 }

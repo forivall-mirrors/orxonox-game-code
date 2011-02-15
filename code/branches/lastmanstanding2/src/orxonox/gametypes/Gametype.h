@@ -149,6 +149,9 @@ namespace orxonox
             inline void setTimeLimit(float t)
               { this->timeLimit_ = t; }
 
+            //inline bool getForceSpawn()
+            //  { return this->bForceSpawn_; }       
+
             virtual void resetTimer();
             virtual void resetTimer(float t);
 

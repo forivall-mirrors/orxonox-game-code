@@ -1,7 +1,7 @@
 <Template name="lastTeamStandingHUD">
   <OverlayGroup name="lastTeamStandingHUD" scale = "1, 1">
 
-<GametypeFadingMessag
+<GametypeFadingMessage
      name     = "fadingmessage"
      position = "0.5, 0.01"
      font     = "VeraMono"

@@ -1,3 +1,9 @@
+<LevelInfo
+ name = "Last Man Standing"
+ description = "Be the sole survivor."
+ tags = ""
+/>
+
 <?lua
   include("stats.oxo")
   include("HUDTemplates3.oxo")

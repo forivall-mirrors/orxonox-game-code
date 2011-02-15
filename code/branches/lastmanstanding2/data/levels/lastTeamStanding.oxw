@@ -1,3 +1,8 @@
+<LevelInfo
+ name = "Last Team Standing"
+ description = "Survive as a team."
+ tags = "singleplayer"
+/>
 <?lua
   include("stats.oxo")
   include("HUDTemplates3.oxo")
