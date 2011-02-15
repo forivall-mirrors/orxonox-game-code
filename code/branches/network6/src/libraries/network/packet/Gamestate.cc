@@ -157,6 +157,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
 
   //start write gamestate header
   header_.setDataSize( currentsize );
+  header_.setCompSize( 0 );
   header_.setID( id );
   header_.setBaseID( GAMESTATEID_INITIAL );
   header_.setDiffed( false );

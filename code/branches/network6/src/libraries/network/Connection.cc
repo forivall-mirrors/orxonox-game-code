@@ -41,7 +41,7 @@
 
 namespace orxonox
 {
-  const boost::posix_time::millisec NETWORK_COMMUNICATION_THREAD_WAIT_TIME(20);
+  const boost::posix_time::millisec NETWORK_COMMUNICATION_THREAD_WAIT_TIME(200);
   const unsigned int                NETWORK_DISCONNECT_TIMEOUT = 500;
 
   Connection::Connection(uint32_t firstPeerID):
@@ -51,7 +51,7 @@ namespace orxonox
     atexit(enet_deinitialize);
     this->incomingEventsMutex_ = new boost::mutex;
     this->outgoingEventsMutex_ = new boost::mutex;
-    this->overallMutex_ = new boost::mutex;
+//     this->overallMutex_ = new boost::mutex;
   }
 
   Connection::~Connection()
@@ -79,13 +79,13 @@ namespace orxonox
 
   void Connection::disconnectPeer(uint32_t peerID)
   {
-    this->overallMutex_->lock();
+//     this->overallMutex_->lock();
     outgoingEvent outEvent = { peerID, outgoingEventType::disconnectPeer, 0, 0 };
     
     this->outgoingEventsMutex_->lock();
     this->outgoingEvents_.push_back(outEvent);
     this->outgoingEventsMutex_->unlock();
-    this->overallMutex_->unlock();
+//     this->overallMutex_->unlock();
   }
   
   void Connection::disconnectPeers()
@@ -99,24 +99,24 @@ namespace orxonox
 
   void Connection::addPacket(ENetPacket* packet, uint32_t peerID, uint8_t channelID)
   {
-    this->overallMutex_->lock();
+//     this->overallMutex_->lock();
     outgoingEvent outEvent = { peerID, outgoingEventType::sendPacket, packet, channelID };
     
     this->outgoingEventsMutex_->lock();
     this->outgoingEvents_.push_back(outEvent);
     this->outgoingEventsMutex_->unlock();
-    this->overallMutex_->unlock();
+//     this->overallMutex_->unlock();
   }
   
   void Connection::broadcastPacket(ENetPacket* packet, uint8_t channelID)
   {
-    this->overallMutex_->lock();
+//     this->overallMutex_->lock();
     outgoingEvent outEvent = { 0, outgoingEventType::broadcastPacket, packet, channelID };
     
     this->outgoingEventsMutex_->lock();
     this->outgoingEvents_.push_back(outEvent);
     this->outgoingEventsMutex_->unlock();
-    this->overallMutex_->unlock();
+//     this->overallMutex_->unlock();
   }
 
   
@@ -124,7 +124,7 @@ namespace orxonox
   {
     ENetEvent event;
     
-    this->overallMutex_->lock();
+//     this->overallMutex_->lock();
     while( bCommunicationThreadRunning_ )
     {
       // Receive all pending incoming Events (such as packets, connects and disconnects)
@@ -133,9 +133,9 @@ namespace orxonox
         processIncomingEvent(event);
       }
       
-      this->overallMutex_->unlock();
+//       this->overallMutex_->unlock();
       msleep(10);
-      this->overallMutex_->lock();
+//       this->overallMutex_->lock();
       
       // Send all waiting outgoing packets
       this->outgoingEventsMutex_->lock();
@@ -162,7 +162,7 @@ namespace orxonox
         processIncomingEvent(event);
       }
     }
-    this->overallMutex_->unlock();
+//     this->overallMutex_->unlock();
   }
   
   void Connection::processIncomingEvent(ENetEvent& event)
