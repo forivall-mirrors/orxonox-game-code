@@ -40,7 +40,7 @@ namespace orxonox
     {
         public:
             ParticleEmitter(BaseObject* creator);
-            ~ParticleEmitter();
+            virtual ~ParticleEmitter();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 

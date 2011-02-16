@@ -161,7 +161,7 @@ namespace orxonox
         }
 
         //! Destructor resets the singleton instance pointer
-        ~Singleton()
+        virtual ~Singleton()
         {
             assert(T::singletonPtr_s != NULL);
             T::singletonPtr_s = NULL;

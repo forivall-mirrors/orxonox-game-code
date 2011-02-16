@@ -33,15 +33,15 @@
 
 namespace orxonox
 {
-  
+
   class LANDiscoverable
   {
     public:
       LANDiscoverable();
-      ~LANDiscoverable();
+      virtual ~LANDiscoverable();
       void setActivity( bool bActive );
       void update();
-      
+
     private:
       bool            bActive_;
       ENetHost*       host_;
