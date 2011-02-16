@@ -41,7 +41,7 @@ namespace orxonox
     {
         public:
             UnderAttackHealthBar(BaseObject* creator);
-            ~UnderAttackHealthBar();
+            virtual ~UnderAttackHealthBar();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void changedOwner();
