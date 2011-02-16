@@ -125,7 +125,7 @@ namespace orxonox
                     (*(it++))->destroy();
                 else
                 {
-                    (*it)->setPosition(this->getWorldPosition());
+                    (*it)->setPosition((*it)->getWorldPosition());
                     this->detach(*(it++));
                 }
             }
