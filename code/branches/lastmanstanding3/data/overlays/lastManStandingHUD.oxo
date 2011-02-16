@@ -64,7 +64,7 @@
      showplayers     = true
     />
 
-    <OverlayText
+    <!--OverlayText
      position  = "0.02, 0.07"
      pickpoint = "0.0, 0.0"
      font      = "ShareTechMono"
@@ -92,7 +92,7 @@
      colour    = "1.0, 1.0, 1.0, 1.0"
      align     = "left"
      caption   = "|"
-    />
+    /-->
 
   </OverlayGroup>
 </Template>

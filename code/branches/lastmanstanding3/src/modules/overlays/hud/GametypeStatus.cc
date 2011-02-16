@@ -35,6 +35,7 @@
 #include "infos/PlayerInfo.h"
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Spectator.h"
+//#include "gametypes/Gametype.h"
 
 namespace orxonox
 {
@@ -49,8 +50,10 @@ namespace orxonox
     {
         RegisterObject(GametypeStatus);
 
+        //this->game_ = 0;
         this->owner_ = 0;
         this->bNoCaption_ = false;
+        //this->bForcedSpawn_ = false;
 
         ModifyConsoleCommand(__CC_GametypeStatus_name, __CC_displayCaption_name).setObject(this);
     }
@@ -66,6 +69,11 @@ namespace orxonox
 
         if (this->owner_ && this->owner_->getGametypeInfo() && this->owner_->getControllableEntity())
         {
+            //if (this->game_)
+            //    this->bForcedSpawn_ = this->game_->getForceSpawn();
+            //else
+            //    this->bForcedSpawn_ = false;
+
             const GametypeInfo* gtinfo = this->owner_->getGametypeInfo();
             ControllableEntity* ce = this->owner_->getControllableEntity();
 
@@ -86,7 +94,7 @@ namespace orxonox
             {
                 if (gtinfo->isStartCountdownRunning())
                     this->setCaption(multi_cast<std::string>(static_cast<int>(ceil(gtinfo->getStartCountdown()))));
-                else if (ce->isA(Class(Spectator)))
+                else if (ce->isA(Class(Spectator))/*&&(!bForcedSpawn_)*/)
                     this->setCaption("Press [Fire] to respawn");
                 else
                     this->setCaption("");
@@ -100,7 +108,7 @@ namespace orxonox
     void GametypeStatus::changedOwner()
     {
         SUPER(GametypeStatus, changedOwner);
-
+        //this->game_ = orxonox_cast<Gametype*>(this->getOwner());
         this->owner_ = orxonox_cast<PlayerInfo*>(this->getOwner());
     }
 
