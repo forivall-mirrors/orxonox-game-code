@@ -64,7 +64,6 @@
 
 namespace orxonox
 {
-    static const uint32_t OBJECTID_UNKNOWN = static_cast<uint32_t>(-1);
 }
 
 //-----------------------------------------------------------------------
@@ -73,38 +72,6 @@ namespace orxonox
 
 namespace orxonox
 {
-    namespace XMLPort
-    {
-        enum Mode
-        {
-            NOP,
-            LoadObject,
-            SaveObject,
-            ExpandObject
-        };
-    }
-
-    namespace ConfigFileType
-    {
-        enum Value
-        {
-            Settings,
-            JoyStickCalibration,
-            CommandHistory
-            // Don't forget to adjust the array size in the ConfigFileManager when adding a new entry here!
-        };
-    }
-
-    namespace KeybindMode
-    {
-        enum Value
-        {
-            OnPress,
-            OnHold,
-            OnRelease,
-            None
-        };
-    };
 }
 
 //-----------------------------------------------------------------------
@@ -113,144 +80,10 @@ namespace orxonox
 
 namespace orxonox
 {
-    typedef std::string LanguageEntryLabel;
-
-    template <class T, class U>
-    T orxonox_cast(U*);
-
-    class BaseObject;
-    template <class T>
-    class ClassFactory;
-    template <class T>
-    class ClassIdentifier;
-    class ClassTreeMask;
-    class ClassTreeMaskIterator;
-    class ClassTreeMaskNode;
-    class ClassTreeMaskObjectIterator;
     class CommandLineParser;
     class CommandLineArgument;
-    class ConfigFile;
-    class ConfigFileEntry;
-    class ConfigFileEntryComment;
-    class ConfigFileEntryValue;
-    class ConfigFileManager;
-    class ConfigFileSection;
-    class ConfigValueContainer;
     class Core;
-    class DestructionListener;
-    class DynLib;
-    class DynLibManager;
-    struct Event;
-    class EventState;
-    class Factory;
-    class Game;
-    class GameState;
-    struct GameStateInfo;
-    struct GameStateTreeNode;
-    class GraphicsManager;
-    class GUIManager;
-    class Identifier;
-    template <class T>
-    class Iterator;
-    class Language;
-    class LuaFunctor;
-    class LuaState;
-    class MemoryArchive;
-    class MemoryArchiveFactory;
-    class MetaObjectList;
-    class MetaObjectListElement;
-    class Namespace;
-    class NamespaceNode;
-    template <class T>
-    class ObjectList;
-    class ObjectListBase;
-    class ObjectListBaseElement;
-    template <class T>
-    class ObjectListElement;
-    template <class T>
-    class ObjectListIterator;
-    class OgreWindowEventListener;
-    class OrxonoxClass;
     class PathConfig;
-    struct ResourceInfo;
-    class SettingsConfigFile;
-    template <class T>
-    class SmartPtr;
-    template <class T>
-    class SubclassIdentifier;
-    class Template;
-    class Thread;
-    class ThreadPool;
-    template <class T>
-    class WeakPtr;
-    class WindowEventListener;
-    class XMLFile;
-    class XMLNameListener;
-    template <class T, class O>
-    class XMLPortClassObjectContainer;
-    template <class T>
-    class XMLPortClassParamContainer;
-    class XMLPortObjectContainer;
-    class XMLPortParamContainer;
-
-    // Command
-    class ArgumentCompleter;
-    class ArgumentCompletionListElement;
-    class CommandEvaluation;
-    class ConsoleCommand;
-    class Executor;
-    template <class T>
-    class ExecutorMember;
-    class ExecutorStatic;
-    class Functor;
-    template <class O>
-    class FunctorMember;
-    typedef FunctorMember<void> FunctorStatic;
-    template <class F, class O>
-    class FunctorPointer;
-    class IOConsole;
-    class IRC;
-    class Shell;
-    class ShellListener;
-    class TclBind;
-    struct TclInterpreterBundle;
-    template <class T>
-    class TclThreadList;
-    class TclThreadManager;
-
-    // Input
-    class BaseCommand;
-    class BufferedParamCommand;
-    class Button;
-    class HalfAxis;
-    class InputBuffer;
-    class InputDevice;
-    template <class Traits>
-    class InputDeviceTemplated;
-    class InputHandler;
-    class InputManager;
-    class InputState;
-    struct InputStatePriority;
-    class JoyStickQuantityListener;
-    class JoyStick;
-    class KeyBinder;
-    class KeyBinderManager;
-    class Keyboard;
-    class KeyDetector;
-    class KeyEvent;
-    class Mouse;
-    class ParamCommand;
-    class SimpleCommand;
-}
-
-#include "command/FunctorPtr.h"
-#include "command/ExecutorPtr.h"
-
-// CppTcl
-namespace Tcl
-{
-    class interpreter;
-    class object;
 }
 
 // Boost
@@ -277,67 +110,6 @@ namespace boost
         using filesystem2::path;
     }
 #endif
-    class thread;
-    class mutex;
-    class shared_mutex;
-    class condition_variable;
-}
-
-// Ogre
-namespace Ogre
-{
-    class DataStream;
-    template <class T> class SharedPtr;
-    typedef SharedPtr<DataStream> DataStreamPtr;
-}
-namespace orxonox
-{
-    // Import the Ogre::DataStream
-    using Ogre::DataStream;
-    using Ogre::DataStreamPtr;
-}
-
-// CEGUI
-namespace CEGUI
-{
-    class DefaultLogger;
-    class Logger;
-    class LuaScriptModule;
-
-    class OgreCEGUIRenderer;
-    class OgreCEGUIResourceProvider;
-    class OgreCEGUITexture;
-}
-
-// Lua
-struct lua_State;
-
-// TinyXML and TinyXML++
-class TiXmlString;
-class TiXmlOutStream;
-class TiXmlNode;
-class TiXmlHandle;
-class TiXmlDocument;
-class TiXmlElement;
-class TiXmlComment;
-class TiXmlUnknown;
-class TiXmlAttribute;
-class TiXmlText;
-class TiXmlDeclaration;
-class TiXmlParsingData;
-namespace ticpp
-{
-    class Document;
-    class Element;
-    class Declaration;
-    class StylesheetReference;
-    class Text;
-    class Comment;
-    class Attribute;
-}
-namespace orxonox
-{
-    using ticpp::Element;
 }
 
 #endif /* _CorePrereqs_H__ */

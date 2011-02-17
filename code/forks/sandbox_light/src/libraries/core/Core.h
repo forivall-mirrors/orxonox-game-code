@@ -45,10 +45,8 @@
 
 #include <string>
 #include <boost/scoped_ptr.hpp>
-#include <loki/ScopeGuard.h>
 
 #include "util/Singleton.h"
-#include "OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -58,11 +56,9 @@ namespace orxonox
     @remark
         You should only create this singleton once because it destroys the identifiers!
     */
-    class _CoreExport Core : public Singleton<Core>, public OrxonoxClass
+    class _CoreExport Core : public Singleton<Core>
     {
-        typedef Loki::ScopeGuardImpl0<void (*)()> SimpleScopeGuard;
         friend class Singleton<Core>;
-        friend class Game;
 
         public:
             /**
@@ -75,60 +71,20 @@ namespace orxonox
             Core(const std::string& cmdLine);
             ~Core();
 
-            void setConfigValues();
-
-            //! Returns the configured language.
-            const std::string& getLanguage()
-                { return this->language_; }
-            void resetLanguage();
-
-            void updateLastLevelTimestamp();
-            inline long long getLastLevelTimestamp() const
-                { return this->lastLevelTimestamp_; }
-
-            void updateOgreConfigTimestamp();
-            inline long long getOgreConfigTimestamp() const
-                { return this->ogreConfigTimestamp_; }
-
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
 
-            void languageChanged();
             void initRandomNumberGenerator();
 
-            void preUpdate(const Clock& time);
-            void postUpdate(const Clock& time);
-
-            void loadGraphics();
-            void unloadGraphics();
-
             void setThreadAffinity(int limitToCPU);
+
             // MANAGED SINGLETONS/OBJECTS
             // Mind the order for the destruction!
             scoped_ptr<PathConfig>        pathConfig_;
-            scoped_ptr<DynLibManager>     dynLibManager_;
             scoped_ptr<SignalHandler>     signalHandler_;
-            SimpleScopeGuard              identifierDestroyer_;
-            SimpleScopeGuard              consoleCommandDestroyer_;
-            scoped_ptr<ConfigFileManager> configFileManager_;
-            scoped_ptr<Language>          languageInstance_;
-            scoped_ptr<IOConsole>         ioConsole_;
-            scoped_ptr<TclBind>           tclBind_;
-            scoped_ptr<TclThreadManager>  tclThreadManager_;
-            scoped_ptr<Scope<ScopeID::Root> > rootScope_;
-            // graphical
-            scoped_ptr<GraphicsManager>   graphicsManager_;     //!< Interface to OGRE
-            scoped_ptr<InputManager>      inputManager_;        //!< Interface to OIS
-            scoped_ptr<GUIManager>        guiManager_;          //!< Interface to GUI
-            scoped_ptr<Scope<ScopeID::Graphics> > graphicsScope_;
 
-            bool                          bGraphicsLoaded_;
             int                           softDebugLevelLogFile_;      //!< The debug level for the log file (belongs to OutputHandler)
-            std::string                   language_;                   //!< The language
             bool                          bInitRandomNumberGenerator_; //!< If true, srand(time(0)) is called
-            bool                          bStartIOConsole_;            //!< Set to false if you don't want to use the IOConsole
-            long long                     lastLevelTimestamp_;         ///< Timestamp when the last level was started
-            long long                     ogreConfigTimestamp_;        ///< Timestamp wehen the ogre config level was modified
 
             static Core*                  singletonPtr_s;
     };

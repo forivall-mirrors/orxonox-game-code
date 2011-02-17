@@ -27,7 +27,7 @@
  */
 
 #include "Clock.h"
-#include <OgreTimer.h>
+#include <ogremath/OgreTimer.h>
 
 namespace orxonox
 {

@@ -46,12 +46,12 @@
 #include <cmath>
 #include <cstdlib>
 
-#include <OgreMath.h>
-#include <OgreVector2.h>
-#include <OgreVector3.h>
-#include <OgreVector4.h>
-#include <OgreQuaternion.h>
-#include <OgreColourValue.h>
+#include <ogremath/OgreMath.h>
+#include <ogremath/OgreVector2.h>
+#include <ogremath/OgreVector3.h>
+#include <ogremath/OgreVector4.h>
+#include <ogremath/OgreQuaternion.h>
+#include <ogremath/OgreColourValue.h>
 
 // Certain headers might define unwanted macros...
 #undef max

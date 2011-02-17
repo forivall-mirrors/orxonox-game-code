@@ -50,71 +50,24 @@
 #  undef max
 #endif
 
-#include "util/Clock.h"
 #include "util/Debug.h"
-#include "util/Exception.h"
-#include "util/Scope.h"
-#include "util/ScopedSingletonManager.h"
 #include "util/SignalHandler.h"
 #include "PathConfig.h"
 #include "CommandLineParser.h"
-#include "ConfigFileManager.h"
-#include "ConfigValueIncludes.h"
-#include "CoreIncludes.h"
-#include "DynLibManager.h"
-#include "GameMode.h"
-#include "GraphicsManager.h"
-#include "GUIManager.h"
-#include "Identifier.h"
-#include "Language.h"
-#include "LuaState.h"
-#include "command/ConsoleCommand.h"
-#include "command/IOConsole.h"
-#include "command/TclBind.h"
-#include "command/TclThreadManager.h"
-#include "input/InputManager.h"
 
 namespace orxonox
 {
     //! Static pointer to the singleton
     Core* Core::singletonPtr_s  = 0;
 
-    SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
-    SetCommandLineSwitch(noIOConsole).information("Use this if you don't want to use the IOConsole (for instance for Lua debugging)");
-
 #ifdef ORXONOX_PLATFORM_WINDOWS
     SetCommandLineArgument(limitToCPU, 1).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is the first core (faster than off)");
 #endif
 
     Core::Core(const std::string& cmdLine)
-        // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
-        : identifierDestroyer_(Identifier::destroyAllIdentifiers)
-        // Cleanup guard for external console commands that don't belong to an Identifier
-        , consoleCommandDestroyer_(ConsoleCommand::destroyAll)
-        , bGraphicsLoaded_(false)
-        , bStartIOConsole_(true)
-        , lastLevelTimestamp_(0)
-        , ogreConfigTimestamp_(0)
     {
         // Set the hard coded fixed paths
         this->pathConfig_.reset(new PathConfig());
-
-        // Create a new dynamic library manager
-        this->dynLibManager_.reset(new DynLibManager());
-
-        // Load modules
-        const std::vector<std::string>& modulePaths = this->pathConfig_->getModulePaths();
-        for (std::vector<std::string>::const_iterator it = modulePaths.begin(); it != modulePaths.end(); ++it)
-        {
-            try
-            {
-                this->dynLibManager_->load(*it);
-            }
-            catch (...)
-            {
-                COUT(1) << "Couldn't load module \"" << *it << "\": " << Exception::handleMessage() << std::endl;
-            }
-        }
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
         CommandLineParser::parseCommandLine(cmdLine);
@@ -142,40 +95,6 @@ namespace orxonox
             setThreadAffinity(static_cast<unsigned int>(limitToCPU));
 #endif
 
-        // Manage ini files and set the default settings file (usually orxonox.ini)
-        this->configFileManager_.reset(new ConfigFileManager());
-        this->configFileManager_->setFilename(ConfigFileType::Settings,
-            CommandLineParser::getValue("settingsFile").getString());
-
-        // Required as well for the config values
-        this->languageInstance_.reset(new Language());
-
-        // Do this soon after the ConfigFileManager has been created to open up the
-        // possibility to configure everything below here
-        ClassIdentifier<Core>::getIdentifier("Core")->initialiseObject(this, "Core", true);
-        this->setConfigValues();
-
-        // create persistent io console
-        if (CommandLineParser::getValue("noIOConsole").getBool())
-        {
-            ModifyConfigValue(bStartIOConsole_, tset, false);
-        }
-        if (this->bStartIOConsole_)
-            this->ioConsole_.reset(new IOConsole());
-
-        // creates the class hierarchy for all classes with factories
-        Identifier::createClassHierarchy();
-
-        // Load OGRE excluding the renderer and the render window
-        this->graphicsManager_.reset(new GraphicsManager(false));
-
-        // initialise Tcl
-        this->tclBind_.reset(new TclBind(PathConfig::getDataPathString()));
-        this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
-
-        // Create singletons that always exist (in other libraries)
-        this->rootScope_.reset(new Scope<ScopeID::Root>());
-
         // Generate documentation instead of normal run?
         std::string docFilename;
         CommandLineParser::getValue("generateDoc", &docFilename);
@@ -198,41 +117,6 @@ namespace orxonox
     */
     Core::~Core()
     {
-        // Remove us from the object lists again to avoid problems when destroying them
-        this->unregisterObject();
-    }
-
-    //! Function to collect the SetConfigValue-macro calls.
-    void Core::setConfigValues()
-    {
-#ifdef ORXONOX_RELEASE
-        const unsigned int defaultLevelLogFile = 3;
-#else
-        const unsigned int defaultLevelLogFile = 4;
-#endif
-        SetConfigValueExternal(softDebugLevelLogFile_, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
-            .description("The maximum level of debug output shown in the log file");
-        OutputHandler::getInstance().setSoftDebugLevel(OutputHandler::logFileOutputListenerName_s, this->softDebugLevelLogFile_);
-
-        SetConfigValue(language_, Language::getInstance().defaultLanguage_)
-            .description("The language of the in game text")
-            .callback(this, &Core::languageChanged);
-        SetConfigValue(bInitRandomNumberGenerator_, true)
-            .description("If true, all random actions are different each time you start the game")
-            .callback(this, &Core::initRandomNumberGenerator);
-        SetConfigValue(bStartIOConsole_, true)
-            .description("Set to false if you don't want to use the IOConsole (for Lua debugging for instance)");
-        SetConfigValue(lastLevelTimestamp_, 0)
-            .description("Timestamp when the last level was started.");
-        SetConfigValue(ogreConfigTimestamp_, 0)
-            .description("Timestamp when the ogre config file was changed.");
-    }
-
-    //! Callback function if the language has changed.
-    void Core::languageChanged()
-    {
-        // Read the translation file after the language was configured
-        Language::getInstance().readTranslatedLanguageFile();
     }
 
     void Core::initRandomNumberGenerator()
@@ -244,82 +128,6 @@ namespace orxonox
             rand();
             bInitialized = true;
         }
-    }
-
-    void Core::loadGraphics()
-    {
-        // Any exception should trigger this, even in upgradeToGraphics (see its remarks)
-        Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
-
-        // Upgrade OGRE to receive a render window
-        try
-        {
-            graphicsManager_->upgradeToGraphics();
-        }
-        catch (const InitialisationFailedException&)
-        {
-            // Exit the application if the Ogre config dialog was canceled
-            COUT(1) << Exception::handleMessage() << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        catch (...)
-        {
-            // Recovery from this is very difficult. It requires to completely
-            // destroy Ogre related objects and load again (without graphics).
-            // However since Ogre 1.7 there seems to be a problem when Ogre
-            // throws an exception and the graphics engine then gets destroyed
-            // and reloaded between throw and catch (access violation in MSVC).
-            // That's why we abort completely and only display the exception.
-            COUT(1) << "An exception occurred during upgrade to graphics. "
-                    << "That is unrecoverable. The message was:" << endl
-                    << Exception::handleMessage() << endl;
-            abort();
-        }
-
-        // Calls the InputManager which sets up the input devices.
-        inputManager_.reset(new InputManager());
-
-        // Load the CEGUI interface
-        guiManager_.reset(new GUIManager(inputManager_->getMousePosition()));
-
-        bGraphicsLoaded_ = true;
-        GameMode::bShowsGraphics_s = true;
-
-        // Load some sort of a debug overlay (only denoted by its name, "debug.oxo")
-        graphicsManager_->loadDebugOverlay();
-
-        // Create singletons associated with graphics (in other libraries)
-        graphicsScope_.reset(new Scope<ScopeID::Graphics>());
-
-        unloader.Dismiss();
-    }
-
-    void Core::unloadGraphics()
-    {
-        this->graphicsScope_.reset();
-        this->guiManager_.reset();
-        this->inputManager_.reset();
-        this->graphicsManager_.reset();
-
-        // Load Ogre::Root again, but without the render system
-        try
-            { this->graphicsManager_.reset(new GraphicsManager(false)); }
-        catch (...)
-        {
-            COUT(0) << "An exception occurred during 'unloadGraphics':" << Exception::handleMessage() << std::endl
-                    << "Another exception might be being handled which may lead to undefined behaviour!" << std::endl
-                    << "Terminating the program." << std::endl;
-            abort();
-        }
-
-        bGraphicsLoaded_ = false;
-        GameMode::bShowsGraphics_s = false;
-    }
-
-    //! Sets the language in the config-file back to the default.
-    void Core::resetLanguage()
-    {
-        ResetConfigValue(language_);
     }
 
     /**
@@ -366,48 +174,5 @@ namespace orxonox
         // Set affinity to the first core
         SetThreadAffinityMask(GetCurrentThread(), threadMask);
 #endif
-    }
-
-    void Core::preUpdate(const Clock& time)
-    {
-        // Update singletons before general ticking
-        ScopedSingletonManager::preUpdate<ScopeID::Root>(time);
-        if (this->bGraphicsLoaded_)
-        {
-            // Process input events
-            this->inputManager_->preUpdate(time);
-            // Update GUI
-            this->guiManager_->preUpdate(time);
-            // Update singletons before general ticking
-            ScopedSingletonManager::preUpdate<ScopeID::Graphics>(time);
-        }
-        // Process console events and status line
-        if (this->ioConsole_ != NULL)
-            this->ioConsole_->preUpdate(time);
-        // Process thread commands
-        this->tclThreadManager_->preUpdate(time);
-    }
-
-    void Core::postUpdate(const Clock& time)
-    {
-        // Update singletons just before rendering
-        ScopedSingletonManager::postUpdate<ScopeID::Root>(time);
-        if (this->bGraphicsLoaded_)
-        {
-            // Update singletons just before rendering
-            ScopedSingletonManager::postUpdate<ScopeID::Graphics>(time);
-            // Render (doesn't throw)
-            this->graphicsManager_->postUpdate(time);
-        }
-    }
-
-    void Core::updateLastLevelTimestamp()
-    {
-        ModifyConfigValue(lastLevelTimestamp_, set, static_cast<long long>(time(NULL)));
-    }
-
-    void Core::updateOgreConfigTimestamp()
-    {
-        ModifyConfigValue(ogreConfigTimestamp_, set, static_cast<long long>(time(NULL)));
     }
 }

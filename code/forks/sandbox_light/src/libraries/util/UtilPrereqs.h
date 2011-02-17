@@ -63,15 +63,6 @@
 
 namespace orxonox
 {
-    namespace ScopeID
-    {
-        //!A list of available scopes for the Scope template.
-        enum Value
-        {
-            Root,
-            Graphics
-        };
-    }
 }
 
 //-----------------------------------------------------------------------
@@ -82,17 +73,11 @@ namespace orxonox
 {
     class Clock;
     class Exception;
-    class ExprParser;
     class IntVector2;
     class IntVector3;
     class MultiType;
     class OutputHandler;
     class OutputListener;
-    template <ScopeID::Value>
-    class Scope;
-    template <class, ScopeID::Value>
-    class ScopedSingleton;
-    class ScopeListener;
     class SignalHandler;
     template <class T>
     class Singleton;

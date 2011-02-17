@@ -53,7 +53,6 @@ IF(MSVC)
 
   # Certain find scripts don't behave as ecpected to we have
   # to specify the libraries ourselves.
-  SET(TCL_LIBRARY  ${DEP_LIBRARY_DIR}/tcl85.lib CACHE FILEPATH "")
-  SET(ZLIB_LIBRARY ${DEP_LIBRARY_DIR}/zdll.lib  CACHE FILEPATH "")
+  #SET(ZLIB_LIBRARY ${DEP_LIBRARY_DIR}/zdll.lib  CACHE FILEPATH "")
 
 ENDIF(MSVC)

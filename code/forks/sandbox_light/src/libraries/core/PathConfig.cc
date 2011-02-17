@@ -75,9 +75,7 @@ namespace orxonox
     PathConfig::PathConfig()
         : rootPath_(*(new bf::path()))
         , executablePath_(*(new bf::path()))
-        , modulePath_(*(new bf::path()))
         , dataPath_(*(new bf::path()))
-        , externalDataPath_(*(new bf::path()))
         , configPath_(*(new bf::path()))
         , logPath_(*(new bf::path()))
         , bDevRun_(false)
@@ -137,7 +135,6 @@ namespace orxonox
         {
             COUT(1) << "Running from the build tree." << std::endl;
             PathConfig::bDevRun_ = true;
-            modulePath_ = specialConfig::moduleDevDirectory;
         }
         else
         {
@@ -152,14 +149,9 @@ namespace orxonox
             if (rootPath_.empty())
                 ThrowException(General, "Could not derive a root directory. Might the binary installation directory contain '..' when taken relative to the installation prefix path?");
 
-            // Module path is fixed as well
-            modulePath_ = rootPath_ / specialConfig::defaultModulePath;
-
 #else
 
             // There is no root path, so don't set it at all
-            // Module path is fixed as well
-            modulePath_ = specialConfig::moduleInstallDirectory;
 
 #endif
         }
@@ -169,9 +161,7 @@ namespace orxonox
     {
         delete &rootPath_;
         delete &executablePath_;
-        delete &modulePath_;
         delete &dataPath_;
-        delete &externalDataPath_;
         delete &configPath_;
         delete &logPath_;
     }
@@ -183,12 +173,6 @@ namespace orxonox
             dataPath_         = specialConfig::dataDevDirectory;
             configPath_       = specialConfig::configDevDirectory;
             logPath_          = specialConfig::logDevDirectory;
-
-            // Check for data path override by the command line
-            if (!CommandLineParser::getArgument("externalDataPath")->hasDefaultValue())
-                externalDataPath_ = CommandLineParser::getValue("externalDataPath").getString();
-            else
-                externalDataPath_ = specialConfig::externalDataDevDirectory;
         }
         else
         {
@@ -250,46 +234,6 @@ namespace orxonox
         }
     }
 
-    std::vector<std::string> PathConfig::getModulePaths()
-    {
-        std::vector<std::string> modulePaths;
-
-        // We search for helper files with the following extension
-        const std::string& moduleextension = specialConfig::moduleExtension;
-        size_t moduleextensionlength = moduleextension.size();
-
-        // Add that path to the PATH variable in case a module depends on another one
-        std::string pathVariable(getenv("PATH"));
-        putenv(const_cast<char*>(("PATH=" + pathVariable + ';' + modulePath_.string()).c_str()));
-
-        // Make sure the path exists, otherwise don't load modules
-        if (!boost::filesystem::exists(modulePath_))
-            return modulePaths;
-
-        boost::filesystem::directory_iterator file(modulePath_);
-        boost::filesystem::directory_iterator end;
-
-        // Iterate through all files
-        while (file != end)
-        {
-            const std::string& filename = file->BOOST_LEAF_FUNCTION();
-
-            // Check if the file ends with the exension in question
-            if (filename.size() > moduleextensionlength)
-            {
-                if (filename.substr(filename.size() - moduleextensionlength) == moduleextension)
-                {
-                    // We've found a helper file
-                    const std::string& library = filename.substr(0, filename.size() - moduleextensionlength);
-                    modulePaths.push_back((modulePath_ / library).file_string());
-                }
-            }
-            ++file;
-        }
-
-        return modulePaths;
-    }
-
     /*static*/ std::string PathConfig::getRootPathString()
     {
         return getInstance().rootPath_.string() + '/';
@@ -305,11 +249,6 @@ namespace orxonox
         return getInstance().dataPath_.string() + '/';
     }
 
-    /*static*/ std::string PathConfig::getExternalDataPathString()
-    {
-        return getInstance().externalDataPath_.string() + '/';
-    }
-
     /*static*/ std::string PathConfig::getConfigPathString()
     {
         return getInstance().configPath_.string() + '/';
@@ -318,10 +257,5 @@ namespace orxonox
     /*static*/ std::string PathConfig::getLogPathString()
     {
         return getInstance().logPath_.string() + '/';
-    }
-
-    /*static*/ std::string PathConfig::getModulePathString()
-    {
-        return getInstance().modulePath_.string() + '/';
     }
 }

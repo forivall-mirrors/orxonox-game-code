@@ -20,17 +20,13 @@
 SET_SOURCE_FILES(UTIL_SRC_FILES
   Clock.cc
   Exception.cc
-  ExprParser.cc
   Math.cc
   MultiType.cc
-  Scope.cc
   StringUtils.cc
 COMPILATION_BEGIN StableCompilation.cc
-  Clipboard.cc
   Convert.cc
   CRC32.cc
   OutputHandler.cc
-  ScopedSingletonManager.cc
   SharedPtr.cc
   SignalHandler.cc
   Sleep.cc
@@ -53,8 +49,7 @@ ENDIF()
 ORXONOX_ADD_LIBRARY(util
   FIND_HEADER_FILES
   LINK_LIBRARIES
-    ${CEGUI_LIBRARY}
-    ${OGRE_LIBRARY}
+    ogremath_orxonox
   SOURCE_FILES
     ${UTIL_SRC_FILES}
 )

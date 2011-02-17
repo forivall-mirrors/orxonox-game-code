@@ -36,26 +36,10 @@
 #include "Main.h"
 
 #include "core/CommandLineParser.h"
-#include "core/Game.h"
-#include "core/LuaState.h"
-#include "ToluaBindOrxonox.h"
-#include "ToluaBindNetwork.h"
-
-DeclareToluaInterface(Orxonox);
-DeclareToluaInterface(Network);
+#include "core/Core.h"
 
 namespace orxonox
 {
-    SetCommandLineSwitch(console).information("Start in console mode (text IO only)");
-    SetCommandLineSwitch(server).information("Start in server mode");
-    SetCommandLineSwitch(client).information("Start in client mode");
-    SetCommandLineSwitch(dedicated).information("Start in dedicated server mode");
-    SetCommandLineSwitch(standalone).information("Start in standalone mode");
-    SetCommandLineSwitch(dedicatedClient).information("Start in dedicated client mode");
-
-    /* ADD masterserver command */
-    SetCommandLineSwitch(masterserver).information("Start in masterserver mode");
-
     SetCommandLineArgument(generateDoc, "")
         .information("Generates a Doxygen file from things like SetConsoleCommand");
 
@@ -65,47 +49,14 @@ namespace orxonox
     */
     int main(const std::string& strCmdLine)
     {
-        Game* game = new Game(strCmdLine);
+        Core* core = new Core(strCmdLine);
 
         if (CommandLineParser::getValue("generateDoc").getString().empty())
         {
-            /* TODO make this clear */
-            game->setStateHierarchy(
-            "root"
-            " graphics"
-            "  mainMenu"
-            "  standalone,server,client"
-            "   level"
-            " server,client,masterserver"
-            "  level"
-            );
-
-            game->requestState("root");
-
-            // Some development hacks (not really, but in the future, these calls won't make sense anymore)
-            if (CommandLineParser::getValue("standalone").getBool())
-                Game::getInstance().requestStates("graphics, standalone, level");
-            else if (CommandLineParser::getValue("server").getBool())
-                Game::getInstance().requestStates("graphics, server, level");
-            else if (CommandLineParser::getValue("client").getBool())
-                Game::getInstance().requestStates("graphics, client, level");
-            else if (CommandLineParser::getValue("dedicated").getBool())
-                Game::getInstance().requestStates("server, level");
-            else if (CommandLineParser::getValue("dedicatedClient").getBool())
-                Game::getInstance().requestStates("client, level");
-            /* ADD masterserver command */
-            else if (CommandLineParser::getValue("masterserver").getBool())
-                Game::getInstance().requestStates("masterserver");
-            else
-            {
-                if (!CommandLineParser::getValue("console").getBool())
-                    Game::getInstance().requestStates("graphics, mainMenu");
-            }
-
-            game->run();
+            // Start your program here
         }
 
-        delete game;
+        delete core;
 
         return 0;
     }

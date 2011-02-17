@@ -84,18 +84,12 @@ namespace orxonox
             //! Returns the path to the data files as boost::filesystem::path
             static const boost::filesystem::path& getDataPath()
                 { return getInstance().dataPath_; }
-            //! Returns the path to the external data files as boost::filesystem::path
-            static const boost::filesystem::path& getExternalDataPath()
-                { return getInstance().externalDataPath_; }
             //! Returns the path to the config files as boost::filesystem::path
             static const boost::filesystem::path& getConfigPath()
                 { return getInstance().configPath_; }
             //! Returns the path to the log files as boost::filesystem::path
             static const boost::filesystem::path& getLogPath()
                 { return getInstance().logPath_; }
-            //! Returns the path to the modules as boost::filesystem::path
-            static const boost::filesystem::path& getModulePath()
-                { return getInstance().modulePath_; }
 
             //! Returns the path to the root folder as std::string
             static std::string getRootPathString();
@@ -103,14 +97,10 @@ namespace orxonox
             static std::string getExecutablePathString();
             //! Returns the path to the data files as std::string
             static std::string getDataPathString();
-            //! Returns the path to the external data files as std::string
-            static std::string getExternalDataPathString();
             //! Returns the path to the config files as std::string
             static std::string getConfigPathString(); //tolua_export
             //! Returns the path to the log files as std::string
             static std::string getLogPathString();
-            //! Returns the path to the modules as std::string
-            static std::string getModulePathString();
 
             //! Return trrue for runs in the build directory (not installed)
             static bool isDevelopmentRun() { return getInstance().bDevRun_; }
@@ -125,15 +115,11 @@ namespace orxonox
                 GeneralException
             */
             void setConfigurablePaths();
-            //! Returns a list with all modules declared by a *.module file in the module folder.
-            std::vector<std::string> getModulePaths();
 
             //! Path to the parent directory of the ones above if program was installed with relativ paths
             boost::filesystem::path& rootPath_;
             boost::filesystem::path& executablePath_;        //!< Path to the executable
-            boost::filesystem::path& modulePath_;            //!< Path to the modules
             boost::filesystem::path& dataPath_;              //!< Path to the data files folder
-            boost::filesystem::path& externalDataPath_;      //!< Path to the external data files folder
             boost::filesystem::path& configPath_;            //!< Path to the config files folder
             boost::filesystem::path& logPath_;               //!< Path to the log files folder
 

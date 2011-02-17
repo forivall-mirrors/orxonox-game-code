@@ -33,7 +33,6 @@
  #      ORXONOX_EXTERNAL:  Specify this for third party libraries
  #      NO_DLL_INTERFACE:  Link statically with MSVC
  #      NO_SOURCE_GROUPS:  Don't create msvc source groups
- #      MODULE:            For dynamic module libraries (libraries only)
  #      WIN32:             Inherited from ADD_EXECUTABLE (executables only)
  #      PCH_NO_DEFAULT:    Do not make precompiled header files default if
  #                         specified with PCH_FILE
@@ -45,7 +44,6 @@
  #      VERSION:           Set version to the binary
  #      SOURCE_FILES:      Source files for the target
  #      DEFINE_SYMBOL:     Sets the DEFINE_SYMBOL target property
- #      TOLUA_FILES:       Files with tolua interface
  #      PCH_FILE:          Precompiled header file
  #      PCH_EXCLUDE:       Source files to be excluded from PCH support
  #      OUTPUT_NAME:       If you want a different name than the target name
@@ -59,7 +57,6 @@
 
 INCLUDE(CMakeDependentOption)
 INCLUDE(CapitaliseName)
-INCLUDE(GenerateToluaBindings)
 INCLUDE(ParseMacroArguments)
 INCLUDE(SourceFileUtilities)
 IF(PCH_COMPILER_SUPPORT)
@@ -84,7 +81,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  PCH_NO_DEFAULT 
                   NO_INSTALL         NO_VERSION        ${_additional_switches})
   SET(_list_names LINK_LIBRARIES     VERSION           SOURCE_FILES
-                  DEFINE_SYMBOL      TOLUA_FILES       PCH_FILE
+                  DEFINE_SYMBOL      PCH_FILE
                   PCH_EXCLUDE        OUTPUT_NAME)
 
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
@@ -163,12 +160,6 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   )
   # Remove potential duplicates
   LIST(REMOVE_DUPLICATES _${_target_name}_files)
-
-  # TOLUA_FILES
-  IF(_arg_TOLUA_FILES)
-    GENERATE_TOLUA_BINDINGS(${_target_name_capitalised} _${_target_name}_files
-                            INPUTFILES ${_arg_TOLUA_FILES})
-  ENDIF()
 
   # First part (pre target) of precompiled header files
   IF(PCH_COMPILER_SUPPORT AND _arg_PCH_FILE)
@@ -257,17 +248,6 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES COMPILE_FLAGS "${_compile_flags} -Zm1000")
   ENDIF()
 
-  # Configure modules
-  IF (_arg_MODULE)
-    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES
-      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_MODULE_OUTPUT_DIRECTORY} # Windows
-      LIBRARY_OUTPUT_DIRECTORY ${CMAKE_MODULE_OUTPUT_DIRECTORY} # Unix
-    )
-    ADD_MODULE(${_target_name})
-    # Ensure that the main program depends on the module
-    SET(ORXONOX_MODULES ${ORXONOX_MODULES} ${_target_name} CACHE STRING "" FORCE)
-  ENDIF()
-
   # Static library flags are not globally available
   IF(ORXONOX_STATIC_LINKER_FLAGS)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES STATIC_LIBRARY_FLAGS ${ORXONOX_STATIC_LINKER_FLAGS})
@@ -305,52 +285,10 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # Install all targets except for static ones (executables also have SHARED in _link_mode)
   IF(${_link_mode} STREQUAL "SHARED" AND NOT _arg_NO_INSTALL)
-    IF(_arg_MODULE)
-      INSTALL(TARGETS ${_target_name}
-        RUNTIME DESTINATION ${MODULE_INSTALL_DIRECTORY}
-        LIBRARY DESTINATION ${MODULE_INSTALL_DIRECTORY}
-      )
-    ELSE()
-      INSTALL(TARGETS ${_target_name}
-        RUNTIME DESTINATION ${RUNTIME_INSTALL_DIRECTORY}
-        LIBRARY DESTINATION ${LIBRARY_INSTALL_DIRECTORY}
-      )
-    ENDIF()
+    INSTALL(TARGETS ${_target_name}
+      RUNTIME DESTINATION ${RUNTIME_INSTALL_DIRECTORY}
+      LIBRARY DESTINATION ${LIBRARY_INSTALL_DIRECTORY}
+    )
   ENDIF()
 
 ENDMACRO(TU_ADD_TARGET)
-
-
-# Creates a helper file with name <name_of_the_library>${ORXONOX_MODULE_EXTENSION}
-# This helps finding dynamically loadable modules at runtime
-
-FUNCTION(ADD_MODULE _target)
-  # We use the properties to get the name because the librarys name may differ from
-  # the target name (for example orxonox <-> liborxonox)
-
-  GET_TARGET_PROPERTY(_target_loc ${_target} LOCATION)
-  GET_FILENAME_COMPONENT(_target_name ${_target_loc} NAME_WE)
-
-  IF(CMAKE_CONFIGURATION_TYPES)
-    FOREACH(_config ${CMAKE_CONFIGURATION_TYPES})
-      SET(_module_filename ${CMAKE_MODULE_OUTPUT_DIRECTORY}/${_config}/${_target_name}${ORXONOX_MODULE_EXTENSION})
-
-      FILE(WRITE ${_module_filename})
-
-      INSTALL(
-        FILES ${_module_filename}
-        DESTINATION ${MODULE_INSTALL_DIRECTORY}
-        CONFIGURATIONS ${_config}
-      )
-    ENDFOREACH()
-  ELSE()
-    SET(_module_filename ${CMAKE_MODULE_OUTPUT_DIRECTORY}/${_target_name}${ORXONOX_MODULE_EXTENSION})
-
-    FILE(WRITE ${_module_filename})
-
-    INSTALL(
-      FILES ${_module_filename}
-      DESTINATION ${MODULE_INSTALL_DIRECTORY}
-    )
-  ENDIF()
-ENDFUNCTION(ADD_MODULE)

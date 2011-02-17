@@ -23,66 +23,17 @@ INCLUDE_DIRECTORIES(
 )
 
 SET_SOURCE_FILES(ORXONOX_SRC_FILES
-  Level.cc
-  LevelInfo.cc
-  LevelManager.cc
   Main.cc
-  MoodManager.cc
-  PawnManager.cc
-  PlayerManager.cc
-  Radar.cc
-  ChatHistory.cc
-  ChatInputHandler.cc
-#  Test.cc
-COMPILATION_BEGIN SceneCompilation.cc
-  CameraManager.cc
-  Scene.cc
-COMPILATION_END
 )
-
-ADD_SUBDIRECTORY(collisionshapes)
-ADD_SUBDIRECTORY(controllers)
-ADD_SUBDIRECTORY(gamestates)
-ADD_SUBDIRECTORY(gametypes)
-ADD_SUBDIRECTORY(graphics)
-ADD_SUBDIRECTORY(infos)
-ADD_SUBDIRECTORY(interfaces)
-ADD_SUBDIRECTORY(items)
-ADD_SUBDIRECTORY(overlays)
-ADD_SUBDIRECTORY(pickup)
-ADD_SUBDIRECTORY(sound)
-ADD_SUBDIRECTORY(weaponsystem)
-ADD_SUBDIRECTORY(worldentities)
 
 ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
-  TOLUA_FILES
-    ChatInputHandler.h
-    LevelInfo.h
-    LevelManager.h
-    MoodManager.h
-    controllers/HumanController.h
-    infos/PlayerInfo.h
-    sound/SoundManager.h
   PCH_FILE
     OrxonoxPrecompiledHeaders.h
   LINK_LIBRARIES
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY} # Filesystem dependency
-    ${Boost_THREAD_LIBRARY}
-    ${Boost_DATE_TIME_LIBRARY} # Thread dependency
-    ${OGRE_LIBRARY}
-    ${OPENAL_LIBRARY}
-    ${ALUT_LIBRARY}
-    ${VORBISFILE_LIBRARY}
-    ${VORBIS_LIBRARY}
-    ${OGG_LIBRARY}
-    tinyxml_orxonox
-    tolua_orxonox
-    bullet_orxonox
     util
     core
-    network
-    tools
   SOURCE_FILES ${ORXONOX_SRC_FILES}
 )

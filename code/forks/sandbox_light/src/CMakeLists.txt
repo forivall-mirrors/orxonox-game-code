@@ -37,18 +37,10 @@ ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")
 
 # If no defines are specified, these libs get linked statically
 ADD_COMPILER_FLAGS("-DBOOST_ALL_DYN_LINK" WIN32 LINK_BOOST_DYNAMIC)
-#ADD_COMPILER_FLAGS("-DENET_DLL"           WIN32 LINK_ENET_DYNAMIC)
-ADD_COMPILER_FLAGS("-DLUA_BUILD_AS_DLL"   WIN32 LINK_LUA_DYNAMIC)
-ADD_COMPILER_FLAGS("-DZLIB_DLL"           WIN32 LINK_ZLIB_DYNAMIC)
 # If no defines are specified, these libs get linked dynamically
-ADD_COMPILER_FLAGS("-DCEGUI_STATIC"       WIN32 NOT LINK_CEGUI_DYNAMIC)
-ADD_COMPILER_FLAGS("-DOGRE_STATIC_LIB"    WIN32 NOT LINK_OGRE_DYNAMIC)
-ADD_COMPILER_FLAGS("-DSTATIC_BUILD"       WIN32 NOT LINK_TCL_DYNAMIC)
+#ADD_COMPILER_FLAGS("-DSTATIC_BUILD"       WIN32 NOT LINK_TCL_DYNAMIC)
 
 ######### Library Behaviour (external) ##########
-
-# Use TinyXML++
-ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
 
 # Default linking for externals is SHARED
 SET(ORXONOX_EXTERNAL_LINK_MODE SHARED CACHE STRING "Link mode for external libraries that we build ourselves. Note: on Windows, some libraries cannot be linked shared.")
@@ -58,66 +50,34 @@ IF(ORXONOX_EXTERNAL_LINK_MODE STREQUAL "SHARED")
 ELSE()
   SET(_external_shared_link FALSE)
 ENDIF()
-# If no defines are specified, these libs get linked dynamically
-ADD_COMPILER_FLAGS("-DCEGUILUA_STATIC"             WIN32 NOT _external_shared_link)
-ADD_COMPILER_FLAGS("-DENET_DLL"                    WIN32     _external_shared_link)
-ADD_COMPILER_FLAGS("-DOGRE_GUIRENDERER_STATIC_LIB" WIN32 NOT _external_shared_link)
-ADD_COMPILER_FLAGS("-DOIS_STATIC_LIB"              WIN32 NOT _external_shared_link)
-ADD_COMPILER_FLAGS("-DTOLUA_STATIC_BUILD"          WIN32 NOT _external_shared_link)
 
 ############## Include Directories ##############
 
 # Set the search paths for include files
 INCLUDE_DIRECTORIES(
   # External
-  ${OGRE_INCLUDE_DIR}
-  ${CEGUI_INCLUDE_DIR}
-  #${ENET_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
   ${POCO_INCLUDE_DIR}
-  ${OPENAL_INCLUDE_DIRS}
-  ${ALUT_INCLUDE_DIR}
-  ${VORBIS_INCLUDE_DIR}
-  ${OGG_INCLUDE_DIR}
-  ${LUA_INCLUDE_DIR}
-  ${TCL_INCLUDE_PATH}
-  ${DIRECTX_INCLUDE_DIR}
-  ${ZLIB_INCLUDE_DIR}
 
   # All includes in "externals" should be prefixed with the path
   # relative to "external" to avoid conflicts
   ${CMAKE_CURRENT_SOURCE_DIR}/external
   # Include directories needed even if only included by Orxonox
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
+  #${CMAKE_CURRENT_SOURCE_DIR}/external/ois
 
   # OrxonoxConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-IF(CEGUILUA_USE_INTERNAL_LIBRARY)
-  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/external/ceguilua/ceguilua-${CEGUI_VERSION})
-ENDIF()
-
 IF (DBGHELP_FOUND)
   INCLUDE_DIRECTORIES(${DBGHELP_INCLUDE_DIR})
 ENDIF()
-
-################### Tolua Bind ##################
-
-# Create directory because the tolua application doesn't work otherwise
-IF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
-ENDIF()
-
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
 
 ################ Sub Directories ################
 
 ADD_SUBDIRECTORY(external)
 ADD_SUBDIRECTORY(libraries)
 ADD_SUBDIRECTORY(orxonox)
-ADD_SUBDIRECTORY(modules)
 
 ################## Executable ###################
 
@@ -140,8 +100,6 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
     Orxonox.cc
   OUTPUT_NAME orxonox
 )
-# Main executable should depend on all modules
-ADD_DEPENDENCIES(orxonox-main ${ORXONOX_MODULES})
 
 # Get name to configure the run scripts
 GET_TARGET_PROPERTY(_exec_loc orxonox-main LOCATION)

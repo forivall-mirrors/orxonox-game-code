@@ -33,7 +33,7 @@
 
 #include "Math.h"
 
-#include <OgrePlane.h>
+#include <ogremath/OgrePlane.h>
 
 #include "MathConvert.h"
 #include "SubString.h"

@@ -99,11 +99,11 @@
 
 #include <cassert>
 #include <string>
-#include <OgreVector2.h>
-#include <OgreVector3.h>
-#include <OgreVector4.h>
-#include <OgreQuaternion.h>
-#include <OgreColourValue.h>
+#include <ogremath/OgreVector2.h>
+#include <ogremath/OgreVector3.h>
+#include <ogremath/OgreVector4.h>
+#include <ogremath/OgreQuaternion.h>
+#include <ogremath/OgreColourValue.h>
 #include <loki/TypeTraits.h>
 #include "mbool.h"
 
@@ -260,10 +260,6 @@ namespace orxonox
 
             virtual void toString(std::ostream& outstream) const = 0;
 
-            virtual void importData( uint8_t*& mem )=0;
-            virtual void exportData( uint8_t*& mem ) const=0;
-            virtual uint8_t getSize() const=0;
-
             MT_Type::Value type_;   ///< The type of the current value
             bool bHasDefaultValue_; ///< True if the last conversion wasn't successful
         };
@@ -372,16 +368,6 @@ namespace orxonox
             /// Returns true if the current type is T.
             template <typename T> inline bool isType()                    const { return false; } // Only works for specialized values - see below
             std::string                       getTypename()               const;
-
-            /// Saves the value of the MT to a bytestream (pointed at by mem) and increases mem pointer by size of MT
-            inline void                       exportData(uint8_t*& mem) const { assert(sizeof(MT_Type::Value)<=8); *static_cast<uint8_t*>(mem) = this->getType(); mem+=sizeof(uint8_t); this->value_->exportData(mem); }
-            /// Loads the value of the MT from a bytestream (pointed at by mem) and increases mem pointer by size of MT
-            inline void                       importData(uint8_t*& mem) { assert(sizeof(MT_Type::Value)<=8); this->setType(static_cast<MT_Type::Value>(*static_cast<uint8_t*>(mem))); mem+=sizeof(uint8_t); this->value_->importData(mem); }
-            /// Saves the value of the MT to a bytestream and increases pointer to bytestream by size of MT
-            inline uint8_t*&                  operator << (uint8_t*& mem) { importData(mem); return mem; }
-            /// Loads the value of the MT to a bytestream and increases pointer to bytestream by size of MT
-            inline void                       operator >> (uint8_t*& mem) const { exportData(mem); }
-            inline uint32_t                   getNetworkSize() const { assert(this->value_); return this->value_->getSize() + sizeof(uint8_t); }
 
             /// Checks whether the value is a default one (assigned after a failed conversion)
             bool                              hasDefaultValue() const { return this->value_->hasDefaultValue(); }

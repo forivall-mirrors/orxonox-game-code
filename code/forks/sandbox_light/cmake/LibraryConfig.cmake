@@ -92,70 +92,10 @@ ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
 ############### Library finding #################
 # Performs the search and sets the variables    #
 
-FIND_PACKAGE(OGRE  1.4       REQUIRED)
-#FIND_PACKAGE(ENet  1.1       REQUIRED)
-FIND_PACKAGE(Ogg             REQUIRED)
-FIND_PACKAGE(Vorbis          REQUIRED)
-FIND_PACKAGE(ALUT            REQUIRED)
-FIND_PACKAGE(ZLIB            REQUIRED)
-IF(POCO_REQUIRED)
-  FIND_PACKAGE(POCO          REQUIRED)
-ENDIF()
+#FIND_PACKAGE(POCO          REQUIRED)
 IF(WIN32)
   FIND_PACKAGE(DbgHelp)
-  FIND_PACKAGE(DirectX       REQUIRED)
 ENDIF()
-
-##### CEGUI #####
-# We make use of the CEGUI script module called CEGUILua.
-# However there is a small issue with that: We use Tolua, a C++ binding
-# generator ourselves. And we also have to use our bindings in the same
-# lua state is CEGUILua's. Unfortunately this implies that both lua runtime
-# version are equal or else you get segmentation faults.
-# In order to match the Lua versions we decided to ship CEGUILua in our
-# repository, mainly because there is no way to determine which version of
-# Lua CEGUILua was linked against (you'd have to specify yourself) and secondly
-# because we can then choose the Lua version. Future plans might involve only
-# accepting Lua 5.1.
-
-# Insert all internally supported CEGUILua versions here
-SET(CEGUILUA_INTERNAL_SUPPORT 0.5.0 0.6.0 0.6.1 0.6.2)
-OPTION(CEGUILUA_USE_EXTERNAL_LIBRARY "Force the use of external CEGUILua library" OFF)
-FIND_PACKAGE(CEGUI 0.5 REQUIRED)
-
-##### Lua #####
-IF(CEGUILUA_USE_EXTERNAL_LIBRARY)
-  COMPARE_VERSION_STRINGS(${CEGUI_VERSION} "0.6" _version_comparison)
-  IF(version_comparison LESS 0)
-    SET(LUA_VERSION_REQUEST 5.0)
-  ELSE()
-    SET(LUA_VERSION_REQUEST 5.1)
-  ENDIF()
-ELSE()
-  SET(LUA_VERSION_REQUEST 5)
-ENDIF()
-FIND_PACKAGE(Lua ${LUA_VERSION_REQUEST} EXACT REQUIRED)
-
-##### OpenAL #####
-FIND_PACKAGE(OpenAL REQUIRED)
-# Also use parent include dir (without AL/) for ALUT
-IF(OPENAL_INCLUDE_DIR MATCHES "/AL$")
-  GET_FILENAME_COMPONENT(ALT_OPENAL_INCLUDE_DIR ${OPENAL_INCLUDE_DIR} PATH)
-ENDIF()
-SET(OPENAL_INCLUDE_DIRS ${OPENAL_INCLUDE_DIR} ${ALT_OPENAL_INCLUDE_DIR})
-# Notfiy user
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(OpenAL DEFAULT_MSG OPENAL_LIBRARY OPENAL_INCLUDE_DIR)
-# Hide variables created by the script
-MARK_AS_ADVANCED(OPENAL_INCLUDE_DIR OPENAL_LIBRARY)
-
-##### Tcl #####
-# We only require Tcl, so avoid confusing user about other Tcl stuff by
-# applying a little workaround
-SET(Tclsh_FIND_QUIETLY TRUE)
-FIND_PACKAGE(TCL QUIET)
-# Display messages separately
-SET(TCL_FIND_QUIETLY FALSE)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(TCL DEFAULT_MSG TCL_LIBRARY TCL_INCLUDE_PATH)
 
 ##### Boost #####
 # Expand the next statement if newer boost versions than 1.36.1 are released
@@ -175,41 +115,8 @@ MARK_AS_ADVANCED(Boost_LIB_DIAGNOSTIC_DEFINITIONS)
 # Note: Default option in the libraries vary, but our default option is dynamic
 IF(WIN32)
   OPTION(LINK_BOOST_DYNAMIC "Link Boost dynamically on Windows" TRUE)
-  OPTION(LINK_CEGUI_DYNAMIC "Link CEGUI dynamicylly on Windows" TRUE)
-  #OPTION(LINK_ENET_DYNAMIC  "Link ENet dynamically on Windows" TRUE)
-  OPTION(LINK_OGRE_DYNAMIC  "Link OGRE dynamically on Windows" TRUE)
-  OPTION(LINK_TCL_DYNAMIC   "Link TCL dynamically on Windows" TRUE)
-  OPTION(LINK_ZLIB_DYNAMIC  "Link ZLib dynamically on Windows" TRUE)
-  COMPARE_VERSION_STRINGS("${LUA_VERSION}" "5.1" _version_comparison)
-  IF(_version_comparison LESS 0)
-    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" FALSE)
-  ELSE(_version_comparison LESS 0)
-    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" TRUE)
-  ENDIF(_version_comparison LESS 0)
 
   IF(DEPENDENCY_PACKAGE_ENABLE)
-    MARK_AS_ADVANCED(
-      LINK_BOOST_DYNAMIC LINK_CEGUI_DYNAMIC #LINK_ENET_DYNAMIC
-      LINK_OGRE_DYNAMIC  LINK_TCL_DYNAMIC   LINK_ZLIB_DYNAMIC
-      LINK_LUA_DYNAMIC
-    )
+    MARK_AS_ADVANCED(LINK_BOOST_DYNAMIC)
   ENDIF()
 ENDIF(WIN32)
-
-
-################# OGRE Plugins ##################
-
-# More plugins: Plugin_BSPSceneManager, Plugin_OctreeSceneManager
-SET(OGRE_PLUGINS_INT Plugin_ParticleFX)
-IF(WIN32)
-  # CG program manager is probably DirectX related (not available under unix)
-  LIST(APPEND OGRE_PLUGINS_INT Plugin_CgProgramManager)
-ENDIF(WIN32)
-SET(OGRE_PLUGINS ${OGRE_PLUGINS_INT} CACHE STRING
-   "Specify which OGRE plugins to load. Existance check is performed.")
-
-# Check the plugins and determine the plugin folder
-# You can give a hint by setting the environment variable ENV{OGRE_PLUGIN_DIR}
-INCLUDE(CheckOGREPlugins)
-CHECK_OGRE_PLUGINS(${OGRE_PLUGINS})
-
