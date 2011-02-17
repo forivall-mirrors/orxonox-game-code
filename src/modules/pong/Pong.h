@@ -40,7 +40,7 @@ namespace orxonox
     {
         public:
             Pong(BaseObject* creator);
-            virtual ~Pong() {}
+            virtual ~Pong();
 
             virtual void start();
             virtual void end();
@@ -59,6 +59,7 @@ namespace orxonox
             virtual void spawnPlayersIfRequested();
 
             void startBall();
+            void cleanup();
 
             WeakPtr<PongCenterpoint> center_;
             WeakPtr<PongBall> ball_;

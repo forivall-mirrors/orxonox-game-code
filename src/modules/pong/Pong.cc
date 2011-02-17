@@ -61,6 +61,30 @@ namespace orxonox
         this->botclass_ = Class(PongBot);
     }
 
+    Pong::~Pong()
+    {
+        if (this->isInitialized())
+            this->cleanup();
+    }
+
+    void Pong::cleanup()
+    {
+        if (this->ball_)
+        {
+            this->ball_->destroy();
+            this->ball_ = 0;
+        }
+
+        for (size_t i = 0; i < 2; ++i)
+        {
+            if (this->bat_[0])
+            {
+                this->bat_[0]->destroy();
+                this->bat_[0] = 0;
+            }
+        }
+    }
+
     void Pong::start()
     {
         if (this->center_)
@@ -122,11 +146,7 @@ namespace orxonox
 
     void Pong::end()
     {
-        if (this->ball_)
-        {
-            this->ball_->destroy();
-            this->ball_ = 0;
-        }
+        this->cleanup();
 
         Deathmatch::end();
     }
