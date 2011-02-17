@@ -119,15 +119,15 @@ namespace orxonox
             if (this->parent_)
                 this->detachFromParent();
 
-            for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); )
+            std::set<WorldEntity*>::iterator it;
+            while ((it = this->children_.begin()) != this->children_.end())
             {
+                // do this for all children, because even if getDeleteWithParent() returns true a child might still stay active due to smart pointers pointing to it
+                (*it)->setPosition((*it)->getWorldPosition());
+                this->detach(*it); // detach also erases the element from the children set
+
                 if ((*it)->getDeleteWithParent())
-                    (*(it++))->destroy();
-                else
-                {
-                    (*it)->setPosition((*it)->getWorldPosition());
-                    this->detach(*(it++));
-                }
+                    (*it)->destroy();
             }
 
             if (this->physicalBody_)
@@ -449,7 +449,8 @@ namespace orxonox
     */
     void WorldEntity::detach(WorldEntity* object)
     {
-        if (this->children_.find(object) == this->children_.end())
+        std::set<WorldEntity*>::iterator it = this->children_.find(object);
+        if (it == this->children_.end())
         {
             CCOUT(2) << "Warning: Cannot detach an object that is not a child." << std::endl;
             return;
@@ -466,7 +467,7 @@ namespace orxonox
         }
 
         this->detachNode(object->node_);
-        this->children_.erase(object);
+        this->children_.erase(it);
 
         object->notifyDetached();
     }
