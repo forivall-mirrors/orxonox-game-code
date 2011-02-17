@@ -213,7 +213,7 @@ namespace orxonox
 
         private:
             void registerVariables();
-            
+
             inline void lookAt_xmlport(const Vector3& target)
                 { this->lookAt(target); }
             inline void setDirection_xmlport(const Vector3& direction)
