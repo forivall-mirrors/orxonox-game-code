@@ -125,7 +125,7 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
             activeMenuSheets[i].sheet:hide()
         end
     end
-    
+
     menuSheet:show()
     menuSheetsRoot:activate()
 
@@ -178,7 +178,7 @@ function hideMenuSheet(name)
     if not sheetTuple.bNoInput then
         inputMgr:leaveState(sheetTuple.sheet.inputState)
     end
-    
+
     -- CURSOR SHOWING
     local i = activeMenuSheets.size
     -- Find top most sheet that doesn't have tShowCusor == TriBool.Dontcare
@@ -244,7 +244,7 @@ function keyPressed(e)
             orxonox.CommandExecutor:execute("openConsole")
         end
     end
-    sheet.sheet:onKeyPressed()
+    sheet.sheet:keyPressed()
 end
 
 function setBackgroundImage(imageSet, imageName)

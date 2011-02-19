@@ -4,29 +4,28 @@ local P = createMenuSheet("HostMenu")
 
 P.multiplayerMode = "startServer"
 
-P.buttonList = {}
 P.levelList = {}
 P.itemList = {}
 P.showAll = false
 
 function P.onLoad()
-    P.multiplayerMode = "startServer" 
+    P.multiplayerMode = "startServer"
     local window = winMgr:getWindow("orxonox/MultiplayerShowAllCheckbox")
     local button = tolua.cast(window,"CEGUI::Checkbox")
     button:setSelected(false)
     P.createLevelList()
 
-    local item = {
-            ["button"] = winMgr:getWindow("orxonox/HostMenuStartButton"),
-            ["function"]  = P.HostMenuStartButton_clicked
-    }
-    P.buttonList[1] = item
+    P:initButtons(1, 2)
 
-    local item = {
+    P:setButton(1, 1, {
+            ["button"] = winMgr:getWindow("orxonox/HostMenuStartButton"),
+            ["callback"]  = P.HostMenuStartButton_clicked
+    })
+
+    P:setButton(1, 2, {
             ["button"] = winMgr:getWindow("orxonox/HostMenuBackButton"),
-            ["function"]  = P.HostMenuBackButton_clicked
-    }
-    P.buttonList[2] = item
+            ["callback"]  = P.HostMenuBackButton_clicked
+    })
 end
 
 function P.onShow()
@@ -43,10 +42,6 @@ function P.onShow()
         button:setSelected(true)
         P.createLevelList()
     end
-
-    P.oldindex = -2
-    P.index = -1
-
 end
 
 function P.createLevelList()
@@ -96,7 +91,7 @@ function P.HostMenuBackButton_clicked(e)
     hideMenuSheet(P.name)
 end
 
-function P.HostMenuStartButton_clicked(e)    
+function P.HostMenuStartButton_clicked(e)
     local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/HostMenuListbox"))
     local choice = listbox:getFirstSelectedItem()
     if choice ~= nil then
@@ -116,10 +111,6 @@ function P.MultiplayerShowAll_clicked(e)
         P.showAll = show
         P.createLevelList()
    end
-end
-
-function P.onKeyPressed() 
-    buttonIteratorHelper(P.buttonList, code, P, 1, 2)
 end
 
 return P

@@ -2,29 +2,24 @@
 
 local P = createMenuSheet("DecisionPopup")
 
-P.buttonList = {}
-
-function P.onShow()
-    --indices to iterate through buttonlist
-    P.oldindex = -2
-    P.index = -1
-end
-
 function P.onLoad()
 
     --button are arranged in a 1x2 matrix
-    local item = {
+    P:initButtons(1, 2)
+
+    P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/DecisionPopup_button_yes"),
-            ["function"]  = P.button_yes
-    }
-    P.buttonList[1] = item
+            ["callback"]  = P.button_yes
+    })
 
-    local item = {
+    P:setButton(1, 2, {
             ["button"] = winMgr:getWindow("orxonox/DecisionPopup_button_no"),
-            ["function"]  = P.button_no
-    }
-    P.buttonList[2] = item
+            ["callback"]  = P.button_no
+    })
+end
 
+function P.onShow()
+    P:setSelection(1, 1)
 end
 
 function P.setCallback(functionPtr)
@@ -48,10 +43,6 @@ function P.button_no(e)
         P.functionPtr(false)
     end
     hideMenuSheet("DecisionPopup")
-end
-
-function P.onKeyPressed() 
-    buttonIteratorHelper(P.buttonList, code, P, 1, 2)
 end
 
 return P

@@ -2,14 +2,7 @@
 
 local P = createMenuSheet("GraphicsMenu")
 
-P.buttonList = {}
 P.schemeList = {"TaharezGreen", "Orxonox"}
-
-function P.onShow()
-    --indices to iterate through buttonlist (trivial in this menu sheet)
-    P.oldindex = -2
-    P.index = -1
-end
 
 function P.onLoad()
     block = true
@@ -92,11 +85,11 @@ function P.onLoad()
     scrollbar_active = false
     block = false
 
-    local item = {
+    P:initButtons(1, 1)
+    P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/GraphicsBackButton"),
-            ["function"]  = P.GraphicsBackButton_clicked
-    }
-    P.buttonList[1] = item
+            ["callback"]  = P.GraphicsBackButton_clicked
+    })
 
     local dropbox = winMgr:getWindow("orxonox/ThemeDropBox")
     local scheme = orxonox.CommandExecutor:query("getConfig GUIManager guiScheme_")
@@ -230,10 +223,6 @@ end
 
 function P.GraphicsBackButton_clicked(e)
     hideMenuSheet(P.name)
-end
-
-function P.onKeyPressed() 
-    buttonIteratorHelper(P.buttonList, code, P, 1, 1)
 end
 
 return P

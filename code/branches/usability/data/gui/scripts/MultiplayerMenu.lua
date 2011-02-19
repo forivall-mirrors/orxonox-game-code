@@ -2,8 +2,6 @@
 
 local P = createMenuSheet("MultiplayerMenu")
 
-P.buttonList = {}
-
 --joinMode is 1 for choice "LAN" and 2 for "Internet"
 --initial status 1
 P.joinMode = 1
@@ -12,31 +10,26 @@ function P.onLoad()
     P.multiplayerMode = "startClient"
 
     --button are arranged in a 2x2 matrix, the left lower item is nil
-    local item = {
+    P:initButtons(2, 2)
+
+    P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerJoinButton"),
-            ["function"]  = P.MultiplayerJoinButton_clicked
-    }
-    P.buttonList[1] = item
+            ["callback"]  = P.MultiplayerJoinButton_clicked
+    })
 
-    local item = {
+    P:setButton(1, 2, {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerHostButton"),
-            ["function"]  = P.MultiplayerHostButton_clicked
-    }
-    P.buttonList[2] = item
+            ["callback"]  = P.MultiplayerHostButton_clicked
+    })
 
-    local item = {
+    P:setButton(2, 2, {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerBackButton"),
-            ["function"]  = P.MultiplayerBackButton_clicked
-    }
-    P.buttonList[4] = item
+            ["callback"]  = P.MultiplayerBackButton_clicked
+    })
 end
 
 function P.onShow()
     --P.showServerList()
-
-    --indices to iterate through buttonlist
-    P.oldindex = -2
-    P.index = -1
 
     if P.joinMode == 1 then
         local window = winMgr:getWindow("orxonox/MultiplayerLanButton")
@@ -155,10 +148,6 @@ function P.showServerList()
         end
     end
 
-end
-
-function P.onKeyPressed()
-    buttonIteratorHelper(P.buttonList, code, P, 2, 2)
 end
 
 return P

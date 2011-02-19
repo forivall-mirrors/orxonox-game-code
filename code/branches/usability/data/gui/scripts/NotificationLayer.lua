@@ -45,7 +45,7 @@ function P.removeQueue(queueName)
     P.queueList[queueName] = nil
 end
 
--- Pushes an input notification to the input queue. 
+-- Pushes an input notification to the input queue.
 function P.pushNotification(queueName, notification)
     local queue = P.queueList[queueName]
     if queue == nil then
@@ -332,7 +332,7 @@ function P.leaveEditMode()
 end
 
 -- Is called after the sheet has been hidden.
-function P.afterHide()
+function P.onAfterHide()
     -- If we leave the edit mode we show the sheet again.
     if P.editMode then
         P.leaveEditMode()
