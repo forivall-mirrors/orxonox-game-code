@@ -2,22 +2,17 @@
 
 local P = createMenuSheet("CreditsMenu")
 
-P.buttonList = {}
 P.scrollbarWidth = 13
 
 function P.onLoad()
-    local item = {
+    P:initButtons(1, 1)
+    P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/CreditsBackButton"),
-            ["function"]  = P.CreditsBackButton_clicked
-    }
-    P.buttonList[1] = item
+            ["callback"]  = P.CreditsBackButton_clicked
+    })
 end
 
 function P.onShow()
-    --indices to iterate through buttonlist
-    P.oldindex = -2
-    P.index = -1
-
     local description = winMgr:getWindow("orxonox/CreditsText")
     description:setProperty("HorzFormatting", "WordWrapLeftAligned")
     description:setProperty("VertFormatting", "TopAligned")
@@ -30,10 +25,6 @@ end
 
 function P.CreditsBackButton_clicked(e)
     hideMenuSheet(P.name)
-end
-
-function P.onKeyPressed() 
-    buttonIteratorHelper(P.buttonList, code, P, 1, 1)
 end
 
 return P

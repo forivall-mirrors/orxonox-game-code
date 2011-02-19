@@ -1,37 +1,28 @@
 -- ControlsMenu.lua
 
 local P = createMenuSheet("ControlsMenu")
-P.buttonList = {}
 P.loadAlong = { "MouseControlsMenu", "KeyBindMenu" }
 
 function P.onLoad()
-    P.multiplayerMode = "startClient" 
+    P.multiplayerMode = "startClient"
 
     --buttons are arranged in a 3x1 matrix:
-    local item = {
+    P:initButtons(3, 1)
+
+    P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/MouseControlsButton"),
-            ["function"]  = P.ControlsMouseControlsButton_clicked
-    }
-    P.buttonList[1] = item
+            ["callback"]  = P.ControlsMouseControlsButton_clicked
+    })
 
-    local item = {
+    P:setButton(2, 1, {
             ["button"] = winMgr:getWindow("orxonox/KeybindingsButton"),
-            ["function"]  = P.ControlsKeyboardControlsButton_clicked
-    }
-    P.buttonList[2] = item
+            ["callback"]  = P.ControlsKeyboardControlsButton_clicked
+    })
 
-    local item = {
+    P:setButton(3, 1, {
             ["button"] = winMgr:getWindow("orxonox/ControlsBackButton"),
-            ["function"]  = P.ControlsBackButton_clicked
-    }
-    P.buttonList[3] = item
-
-end
-
-function P.onShow()
-    --indices to iterate through buttonlist
-    P.oldindex = -2
-    P.index = -1
+            ["callback"]  = P.ControlsBackButton_clicked
+    })
 end
 
 function P.ControlsMouseControlsButton_clicked(e)
@@ -44,10 +35,6 @@ end
 
 function P.ControlsBackButton_clicked(e)
     hideMenuSheet(P.name)
-end
-
-function P.onKeyPressed() 
-    buttonIteratorHelper(P.buttonList, code, P, 3, 1)
 end
 
 return P

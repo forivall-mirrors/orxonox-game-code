@@ -3,51 +3,39 @@
 local P = createMenuSheet("MainMenu")
 P.loadAlong = { "SingleplayerMenu", "MultiplayerMenu", "SettingsMenu", "CreditsMenu" }
 
-P.buttonList = {}
-
 function P.onLoad()
     --buttons are arranged in a 6x1 Matrix (list)
-    local item = {
+    P:initButtons(6, 1)
+
+    P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/QuickGameTestButton"),
-            ["function"]  = P.QuickGameTestButton_clicked
-    }
-    table.insert(P.buttonList,item)
+            ["callback"]  = P.QuickGameTestButton_clicked
+    })
 
-    item = {
+    P:setButton(2, 1, {
             ["button"] = winMgr:getWindow("orxonox/SingleplayerButton"),
-            ["function"]  = P.SingleplayerButton_clicked
-    }
-    table.insert(P.buttonList,item)
+            ["callback"]  = P.SingleplayerButton_clicked
+    })
 
-    item = {
+    P:setButton(3, 1, {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerButton"),
-            ["function"]  = P.MultiplayerButton_clicked
-    }
-    table.insert(P.buttonList,item)
+            ["callback"]  = P.MultiplayerButton_clicked
+    })
 
-    item = {
+    P:setButton(4, 1, {
             ["button"] = winMgr:getWindow("orxonox/SettingsButton"),
-            ["function"]  = P.SettingsButton_clicked
-    }
-    table.insert(P.buttonList,item)
+            ["callback"]  = P.SettingsButton_clicked
+    })
 
-    item = {
+    P:setButton(5, 1, {
             ["button"] = winMgr:getWindow("orxonox/CreditsButton"),
-            ["function"]  = P.CreditsButton_clicked
-    }
-    table.insert(P.buttonList,item)
+            ["callback"]  = P.CreditsButton_clicked
+    })
 
-    item = {
+    P:setButton(6, 1, {
             ["button"] = winMgr:getWindow("orxonox/ExitButton"),
-            ["function"]  = P.ExitButton_clicked
-    }
-    table.insert(P.buttonList,item) 
-end
-
-function P.onShow()
-    --indices to iterate through buttonlist
-    P.oldindex = -2
-    P.index = -1
+            ["callback"]  = P.ExitButton_clicked
+    })
 end
 
 -- events for MainMenu
@@ -74,10 +62,6 @@ end
 
 function P.ExitButton_clicked(e)
     orxonox.execute("exit")
-end
-
-function P.onKeyPressed() 
-    buttonIteratorHelper(P.buttonList, code, P, 6, 1)
 end
 
 return P
