@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <GUIScheme Name="TaharezGreenLook">
-	<Imageset Name="TaharezGreenLook" Filename="TaharezGreenLook.imageset" />
-	<LookNFeel Filename="TaharezGreenLook.looknfeel" />
-	<WindowRendererSet Filename="CEGUIFalagardWRBase" />
+    <Imageset Name="TaharezGreenLook" Filename="TaharezGreenLook.imageset" />
+    <LookNFeel Filename="TaharezGreenLook.looknfeel" />
+    <WindowRendererSet Filename="CEGUIFalagardWRBase" />
 
     <!-- Standard widgets -->
     <FalagardMapping WindowType="TaharezGreenLook/StaticImage"              TargetType="DefaultWindow"           Renderer="Falagard/StaticImage"       LookNFeel="TaharezGreenLook/StaticImage" />
@@ -44,7 +44,7 @@
     <FalagardMapping WindowType="TaharezGreenLook/Titlebar"                 TargetType="CEGUI/Titlebar"          Renderer="Falagard/Titlebar"          LookNFeel="TaharezGreenLook/Titlebar" />
     <FalagardMapping WindowType="TaharezGreenLook/Tooltip"                  TargetType="CEGUI/Tooltip"           Renderer="Falagard/Tooltip"           LookNFeel="TaharezGreenLook/Tooltip" />
     <FalagardMapping WindowType="TaharezGreenLook/Tree"                     TargetType="CEGUI/Tree"              Renderer="Falagard/Tree"              LookNFeel="TaharezGreenLook/Tree" />
-    
+
     <!-- Additional widgets -->
     <FalagardMapping WindowType="TaharezGreenLook/AlternateProgressBar"        TargetType="CEGUI/ProgressBar"       Renderer="Falagard/ProgressBar"       LookNFeel="TaharezGreenLook/AltProgressBar" />
     <FalagardMapping WindowType="TaharezGreenLook/VUMeter"                     TargetType="CEGUI/ProgressBar"       Renderer="Falagard/ProgressBar"       LookNFeel="TaharezGreenLook/VUMeter" />

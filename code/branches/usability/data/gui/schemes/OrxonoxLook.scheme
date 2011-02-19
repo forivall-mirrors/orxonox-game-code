@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <GUIScheme Name="OrxonoxLook">
-	<Imageset Name="OrxonoxLook" Filename="OrxonoxLook.imageset" />
-	<LookNFeel Filename="OrxonoxLook.looknfeel" />
-	<WindowRendererSet Filename="CEGUIFalagardWRBase" />
+    <Imageset Name="OrxonoxLook" Filename="OrxonoxLook.imageset" />
+    <LookNFeel Filename="OrxonoxLook.looknfeel" />
+    <WindowRendererSet Filename="CEGUIFalagardWRBase" />
 
     <!-- Standard widgets -->
     <FalagardMapping WindowType="OrxonoxLook/StaticImage"              TargetType="DefaultWindow"           Renderer="Falagard/StaticImage"       LookNFeel="OrxonoxLook/StaticImage" />
@@ -44,7 +44,7 @@
     <FalagardMapping WindowType="OrxonoxLook/Titlebar"                 TargetType="CEGUI/Titlebar"          Renderer="Falagard/Titlebar"          LookNFeel="OrxonoxLook/Titlebar" />
     <FalagardMapping WindowType="OrxonoxLook/Tooltip"                  TargetType="CEGUI/Tooltip"           Renderer="Falagard/Tooltip"           LookNFeel="OrxonoxLook/Tooltip" />
     <FalagardMapping WindowType="OrxonoxLook/Tree"                     TargetType="CEGUI/Tree"              Renderer="Falagard/Tree"              LookNFeel="OrxonoxLook/Tree" />
-    
+
     <!-- Additional widgets -->
     <FalagardMapping WindowType="OrxonoxLook/AlternateProgressBar"        TargetType="CEGUI/ProgressBar"       Renderer="Falagard/ProgressBar"       LookNFeel="OrxonoxLook/AltProgressBar" />
     <FalagardMapping WindowType="OrxonoxLook/VUMeter"                     TargetType="CEGUI/ProgressBar"       Renderer="Falagard/ProgressBar"       LookNFeel="OrxonoxLook/VUMeter" />
