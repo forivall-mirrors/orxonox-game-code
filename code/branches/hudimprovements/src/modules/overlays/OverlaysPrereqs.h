@@ -85,6 +85,7 @@ namespace orxonox
     class HUDNavigation;
     class HUDRadar;
     class HUDSpeedBar;
+    class HUDBoostBar;
     class HUDTimer;
     class KillMessage;
     class LastManStandingInfos;

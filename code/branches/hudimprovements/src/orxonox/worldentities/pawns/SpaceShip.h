@@ -73,6 +73,11 @@ namespace orxonox
             inline bool getBoost() const
                 { return this->bBoost_; }
 
+            inline float getBoostPower()
+                { return this->boostPower_; }
+            inline float getInitialBoostPower()
+                { return this->initialBoostPower_; }
+
             inline void setEngineTemplate(const std::string& temp)
                 { this->enginetemplate_ = temp; this->loadEngineTemplate(); }
             inline const std::string& getEngineTemplate() const
@@ -107,7 +112,7 @@ namespace orxonox
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
 
             void loadEngineTemplate();
-            
+
             void boostCooledDown(void);
 
             std::string enginetemplate_;

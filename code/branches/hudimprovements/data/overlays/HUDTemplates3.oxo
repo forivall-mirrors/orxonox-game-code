@@ -34,7 +34,7 @@
      name              = "HealthBar1"
      background        = "Orxonox/HealthBarBackground"
      size              = "0.35, 0.0875"
-     position          = "0.0 , 0.95 "
+     position          = "0.0 , 0.9 "
      pickpoint         = "0, 1"
      bartexture        = "healthbar_bar.png"
      textfont          = "VeraMono"
@@ -55,7 +55,7 @@
      name          = "SpeedBar1"
      background    = "Orxonox/BarBackground"
      size          = "0.35, 0.05"
-     position      = "0.0 , 1.0 "
+     position      = "0.0 , 0.95 "
      pickpoint     = "0, 1"
      correctaspect = false
     >
@@ -63,6 +63,19 @@
       <BarColour position = 0.5 colour = "0.2,0.7,0.2" />
       <BarColour position = 1.0 colour = "0.7,0.2,0.2" />
     </HUDSpeedBar>
+
+    <HUDBoostBar
+     name          = "BoostBar1"
+     background    = "Orxonox/BarBackground"
+     size          = "0.35, 0.05"
+     position      = "0.0 , 1.0 "
+     pickpoint     = "0, 1"
+     correctaspect = false
+    >
+      <BarColour position = 0.0 colour = "0.7,0.2,0.2" />
+      <BarColour position = 0.5 colour = "0.7,0.7,0.2" />
+      <BarColour position = 1.0 colour = "0.2,0.7,0.2" />
+    </HUDBoostBar>
 
     <HUDNavigation
      name          = "Navigation"
