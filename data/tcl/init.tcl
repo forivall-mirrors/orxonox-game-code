@@ -98,6 +98,11 @@ proc ::orxonox::for {start condition step body} {
 set filepath [info script]
 #set ::orxonox::mediapath [string range $filepath 0 [string last "/" $filepath]]
 set ::orxonox::mediapath [file dirname $filepath]
+
+if {![info exists auto_path]} {
+   set auto_path [list]
+}
+
 if {[lsearch $auto_path $::orxonox::mediapath] == -1} {
     lappend auto_path $::orxonox::mediapath
 }
