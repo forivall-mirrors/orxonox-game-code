@@ -60,6 +60,7 @@ namespace orxonox
     SetConsoleCommand("HumanController", "killBots",               &HumanController::killBots      ).addShortcut().defaultValues(0);
     SetConsoleCommand("HumanController", "cycleNavigationFocus",   &HumanController::cycleNavigationFocus).addShortcut();
     SetConsoleCommand("HumanController", "releaseNavigationFocus", &HumanController::releaseNavigationFocus).addShortcut();
+    SetConsoleCommand("HumanController", "myposition",             &HumanController::myposition    ).addShortcut();
 
     CreateUnloadableFactory(HumanController);
 
@@ -199,7 +200,20 @@ namespace orxonox
 
     void HumanController::toggleGodMode()
     {
-        HumanController::getLocalControllerSingleton()->setGodMode( !HumanController::getLocalControllerSingleton()->getGodMode() );
+        if (HumanController::localController_s)
+            HumanController::localController_s->setGodMode(!HumanController::localController_s->getGodMode());
+    }
+
+    void HumanController::myposition()
+    {
+        if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
+        {
+            const Vector3& position = HumanController::localController_s->controllableEntity_->getPosition();
+            const Quaternion& orientation = HumanController::localController_s->controllableEntity_->getOrientation();
+
+            COUT(0) << "position=\"" << position.x << ", " << position.y << ", " << position.z << "\" ";
+            COUT(0) << "orientation=\"" << orientation.w << ", " << orientation.x << ", " << orientation.y << ", " << orientation.z << "\"" << std::endl;
+        }
     }
 
     void HumanController::addBots(unsigned int amount)
