@@ -332,7 +332,7 @@ function P.leaveEditMode()
 end
 
 -- Is called after the sheet has been hidden.
-function P.onAfterHide()
+function P.onQuit()
     -- If we leave the edit mode we show the sheet again.
     if P.editMode then
         P.leaveEditMode()

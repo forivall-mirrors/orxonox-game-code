@@ -206,7 +206,7 @@ function hideMenuSheet(name)
         hideCursor()
     end
 
-    sheetTuple.sheet:afterHide()
+    sheetTuple.sheet:quit()
 end
 
 -- Hides all menu GUI sheets
