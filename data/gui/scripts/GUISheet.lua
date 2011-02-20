@@ -139,7 +139,9 @@ end
 -- Presses the selected button if any
 function P:pressSelectedButton()
     if self:hasSelection() then
+        self.pressedEnter = true
         self:getSelectedButton().callback()
+        self.pressedEnter = false
     end
 end
 

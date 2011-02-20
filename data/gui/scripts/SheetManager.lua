@@ -120,14 +120,21 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     end
 
     -- Hide all previous sheets if necessary
+    local previous
     if bHidePrevious then
         for i = 1, activeMenuSheets.size - 1 do
-            activeMenuSheets[i].sheet:hide()
+            previous = activeMenuSheets[i].sheet
+            previous:hide()
         end
     end
 
     menuSheet:show()
     menuSheetsRoot:activate()
+
+    -- select first button if the menu was opened with the keyboard
+    if previous and previous.pressedEnter and menuSheet.buttons and menuSheet:hasSelection() == false then
+        menuSheet:moveSelection(1, 0)
+    end
 
     return menuSheet
 end
