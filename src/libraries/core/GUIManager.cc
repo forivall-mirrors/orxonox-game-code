@@ -31,9 +31,7 @@
 
 #include <boost/bind.hpp>
 #include <memory>
-extern "C" {
-#include <lua.h>
-}
+
 #include <CEGUIDefaultLogger.h>
 #include <CEGUIExceptions.h>
 #include <CEGUIInputEvent.h>
