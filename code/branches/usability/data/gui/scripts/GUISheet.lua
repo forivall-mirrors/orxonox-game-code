@@ -23,8 +23,8 @@ end
 function P:onHide()
 end
 
--- Override this function if you need to do work just after the sheet has been hidden
-function P:onAfterHide()
+-- Override this function if you need to do work on quit
+function P:onQuit()
 end
 
 -- show function for the GUI
@@ -48,13 +48,13 @@ function P:hide()
     self:onHide()
 end
 
-function P:afterHide()
+function P:quit()
     -- reset the selected button
     if self.buttons then
         self:resetSelection()
     end
 
-    self:onAfterHide()
+    self:onQuit()
 end
 
 function P:load()
