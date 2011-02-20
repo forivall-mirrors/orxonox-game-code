@@ -122,12 +122,14 @@ namespace orxonox
             std::set<WorldEntity*>::iterator it;
             while ((it = this->children_.begin()) != this->children_.end())
             {
-                // do this for all children, because even if getDeleteWithParent() returns true a child might still stay active due to smart pointers pointing to it
-                (*it)->setPosition((*it)->getWorldPosition());
-                this->detach(*it); // detach also erases the element from the children set
+                WorldEntity* entity = *it;
 
-                if ((*it)->getDeleteWithParent())
-                    (*it)->destroy();
+                // do this for all children, because even if getDeleteWithParent() returns true a child might still stay active due to smart pointers pointing to it
+                entity->setPosition(entity->getWorldPosition());
+                this->detach(entity); // detach also erases the element from the children set
+
+                if (entity->getDeleteWithParent())
+                    entity->destroy();
             }
 
             if (this->physicalBody_)
