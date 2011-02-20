@@ -32,6 +32,12 @@ function P.onShow()
     if P:hasSelection() == false then
         P:setSelection(1, 1)
     end
+
+    orxonox.execute("setPause 1")
+end
+
+function P.onQuit()
+    orxonox.execute("setPause 0")
 end
 
 -- events for ingamemenu

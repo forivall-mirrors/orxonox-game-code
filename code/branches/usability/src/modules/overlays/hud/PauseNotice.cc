@@ -20,46 +20,40 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _GSRoot_H__
-#define _GSRoot_H__
+#include "PauseNotice.h"
 
-#include "OrxonoxPrereqs.h"
-#include "core/GameState.h"
-#include "tools/interfaces/TimeFactorListener.h"
+#include "core/CoreIncludes.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public GameState, public TimeFactorListener
+    CreateFactory(PauseNotice);
+
+    PauseNotice::PauseNotice(BaseObject* creator) : OverlayText(creator)
     {
-    public:
-        GSRoot(const GameStateInfo& info);
-        ~GSRoot();
+        RegisterObject(PauseNotice);
 
-        static void printObjects();
+        this->owner_ = 0;
+    }
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
+    void PauseNotice::changedOwner()
+    {
+        SUPER(PauseNotice, changedOwner);
 
-        // this has to be public because proteced triggers a bug in msvc
-        // when taking the function address.
-        void setTimeFactor(float factor);
-        void setPause(bool pause);
-        void pause();
+        this->owner_ = orxonox_cast<PlayerInfo*>(this->getOwner());
+    }
 
-    protected:
-        virtual void changedTimeFactor(float factor_new, float factor_old);
-
-    private:
-        bool                  bPaused_;
-        float                 timeFactorPauseBackup_;
-    };
+    void PauseNotice::changedTimeFactor(float factor_new, float factor_old)
+    {
+        if (factor_new == 0)
+            this->setCaption("Paused");
+        else
+            this->setCaption("");
+    }
 }
-
-#endif /* _GSRoot_H__ */
