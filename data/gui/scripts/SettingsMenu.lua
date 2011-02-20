@@ -32,6 +32,8 @@ function P.onLoad()
             ["button"] = winMgr:getWindow("orxonox/SettingsMenu/SettingsBackButton"),
             ["callback"]  = P.SettingsBackButton_clicked
     })
+
+    P:setButton(4, 2, P:getButton(4, 1))
 end
 
 function P.SettingsGameplayButton_clicked(e)
