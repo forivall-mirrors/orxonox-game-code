@@ -20,46 +20,34 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Reto Grieder
+ *      Fabian 'x3n' Landau
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _GSRoot_H__
-#define _GSRoot_H__
+#ifndef _PauseNotice_H__
+#define _PauseNotice_H__
 
-#include "OrxonoxPrereqs.h"
-#include "core/GameState.h"
+#include "overlays/OverlaysPrereqs.h"
+
 #include "tools/interfaces/TimeFactorListener.h"
+#include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GSRoot : public GameState, public TimeFactorListener
+    class _OverlaysExport PauseNotice : public OverlayText, public TimeFactorListener
     {
-    public:
-        GSRoot(const GameStateInfo& info);
-        ~GSRoot();
+        public:
+            PauseNotice(BaseObject* creator);
 
-        static void printObjects();
+            virtual void changedOwner();
 
-        void activate();
-        void deactivate();
-        void update(const Clock& time);
+        protected:
+            virtual void changedTimeFactor(float factor_new, float factor_old);
 
-        // this has to be public because proteced triggers a bug in msvc
-        // when taking the function address.
-        void setTimeFactor(float factor);
-        void setPause(bool pause);
-        void pause();
-
-    protected:
-        virtual void changedTimeFactor(float factor_new, float factor_old);
-
-    private:
-        bool                  bPaused_;
-        float                 timeFactorPauseBackup_;
+        private:
+            PlayerInfo* owner_;
     };
 }
-
-#endif /* _GSRoot_H__ */
+#endif /* _PauseNotice_H__ */
