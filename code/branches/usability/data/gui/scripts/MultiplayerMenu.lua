@@ -9,7 +9,7 @@ P.joinMode = 1
 function P.onLoad()
     P.multiplayerMode = "startClient"
 
-    --button are arranged in a 2x2 matrix, the left lower item is nil
+    --button are arranged in a 2x2 matrix, the lower items are both the back button
     P:initButtons(2, 2)
 
     P:setButton(1, 1, {
@@ -22,10 +22,12 @@ function P.onLoad()
             ["callback"]  = P.MultiplayerHostButton_clicked
     })
 
-    P:setButton(2, 2, {
+    P:setButton(2, 1, {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerBackButton"),
             ["callback"]  = P.MultiplayerBackButton_clicked
     })
+
+    P:setButton(2, 2, P:getButton(2, 1))
 end
 
 function P.onShow()
