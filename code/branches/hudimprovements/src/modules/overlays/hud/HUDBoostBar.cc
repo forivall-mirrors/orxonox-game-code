@@ -42,6 +42,8 @@ namespace orxonox
         RegisterObject(HUDBoostBar);
 
         this->owner_ = 0;
+        this->flashInterval_ = 0.25f;
+        this->flashDt_ = 0.0f;
     }
 
     HUDBoostBar::~HUDBoostBar()
@@ -54,7 +56,24 @@ namespace orxonox
 
         if (this->owner_)
         {
-            this->show();
+            if (this->owner_->isBoostCoolingDown())
+            {
+                this->setBackgroundColour(ColourValue(0.7f, 0.2f, 0.2f));
+                if (this->flashDt_ <= 0.0f)
+                {
+                    this->flashDt_ = this->flashInterval_;
+                    this->setVisible(!this->isVisible());
+                }
+                else
+                    this->flashDt_ -= dt;
+            }
+            else
+            {
+                this->flashDt_ = 0.0f;
+                this->show();
+                this->setBackgroundColour(ColourValue(0.2f, 0.7f, 0.2f));
+            }
+
             float value = this->owner_->getBoostPower() / this->owner_->getInitialBoostPower();
             this->setValue(value);
         }

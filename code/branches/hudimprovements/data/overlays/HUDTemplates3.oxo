@@ -66,7 +66,7 @@
 
     <HUDBoostBar
      name          = "BoostBar1"
-     background    = "Orxonox/BarBackground"
+     backgroundtex = "bar1.png"
      size          = "0.35, 0.05"
      position      = "0.0 , 1.0 "
      pickpoint     = "0, 1"

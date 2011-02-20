@@ -46,7 +46,9 @@ namespace orxonox
         virtual void changedOwner();
 
     private:
-        SpaceShip* owner_;
+        SpaceShip*  owner_;
+        float       flashInterval_;
+        float       flashDt_;
     };
 }
 #endif /* _HUDBoostBar_H__ */
