@@ -5,7 +5,6 @@ local P = createMenuSheet("CreditsMenu")
 P.scrollbarWidth = 13
 
 function P.onLoad()
-    P:initButtons(1, 1)
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/CreditsBackButton"),
             ["callback"]  = P.CreditsBackButton_clicked

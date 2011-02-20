@@ -32,7 +32,6 @@ function P.onLoad()
         invert_active = false
     end
 
-    P:initButtons(1, 1)
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/MouseControlsBackButton"),
             ["callback"]  = P.MouseControlsBackButton_clicked

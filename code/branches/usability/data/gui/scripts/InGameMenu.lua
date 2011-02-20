@@ -7,8 +7,6 @@ function P.onLoad()
     P.multiplayerMode = "startClient"
 
     --button are arranged in a 4x1 matrix, the left lower item is nil
-    P:initButtons(4, 1)
-
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/InGameMenu_ReturnButton"),
             ["callback"]  = P.button_return_clicked

@@ -100,7 +100,6 @@ function P.onLoad()
     local funct = luaState:createLuaFunctor("KeyBindMenu.callback()")
     orxonox.KeyBinderManager:getInstance():registerKeybindCallback(funct)
 
-    P:initButtons(1, 1)
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/KeyBindBackButton"),
             ["callback"]  = P.KeyBindBackButton_clicked

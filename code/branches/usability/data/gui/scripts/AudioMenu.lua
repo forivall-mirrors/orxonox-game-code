@@ -42,7 +42,6 @@ function P.onLoad()
         listboxwindow:setItemSelectState(0,true)
     end
 
-    P:initButtons(1, 1)
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/AudioBackButton"),
             ["callback"]  = P.AudioBackButton_clicked
