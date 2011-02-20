@@ -29,8 +29,8 @@
 
 #include "GUIManager.h"
 
-#include <boost/bind.hpp>
 #include <memory>
+#include <boost/bind.hpp>
 
 #include <CEGUIDefaultLogger.h>
 #include <CEGUIExceptions.h>
@@ -42,14 +42,9 @@
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
-#include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
-#include "SpecialConfig.h" // Configures the macro below
-#ifdef CEGUILUA_USE_INTERNAL_LIBRARY
-#   include <ceguilua/CEGUILua.h>
-#else
-#   include <CEGUILua.h>
-#endif
+#include <CEGUILua.h>
+#include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
 #include "util/Clock.h"
 #include "util/Convert.h"

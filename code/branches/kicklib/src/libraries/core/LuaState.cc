@@ -29,7 +29,7 @@
 
 #include "LuaState.h"
 
-#include <tolua/tolua++.h>
+#include <tolua++.h>
 extern "C" {
 #include <lua.h>
 #include <lualib.h>

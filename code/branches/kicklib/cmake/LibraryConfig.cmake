@@ -108,33 +108,20 @@ ENDIF()
 
 ##### CEGUI #####
 # We make use of the CEGUI script module called CEGUILua.
-# However there is a small issue with that: We use Tolua, a C++ binding
-# generator ourselves. And we also have to use our bindings in the same
-# lua state is CEGUILua's. Unfortunately this implies that both lua runtime
-# version are equal or else you get segmentation faults.
-# In order to match the Lua versions we decided to ship CEGUILua in our
-# repository, mainly because there is no way to determine which version of
-# Lua CEGUILua was linked against (you'd have to specify yourself) and secondly
-# because we can then choose the Lua version. Future plans might involve only
-# accepting Lua 5.1.
+# However there is a small issue with that: Both CEGUILua and Orxonox use
+# Lua library functions on the same objects. And it turns out that in this case
+# the linked library must be EXACTLY the same.
+# That means for us we have to find the Lua library that CEGUI was
+# linked against if we don't use a dependency package.
 
-# Insert all internally supported CEGUILua versions here
-SET(CEGUILUA_INTERNAL_SUPPORT 0.5.0 0.6.0 0.6.1 0.6.2)
-OPTION(CEGUILUA_USE_EXTERNAL_LIBRARY "Force the use of external CEGUILua library" OFF)
 FIND_PACKAGE(CEGUI 0.5 REQUIRED)
 
 ##### Lua #####
-IF(CEGUILUA_USE_EXTERNAL_LIBRARY)
-  COMPARE_VERSION_STRINGS(${CEGUI_VERSION} "0.6" _version_comparison)
-  IF(version_comparison LESS 0)
-    SET(LUA_VERSION_REQUEST 5.0)
-  ELSE()
-    SET(LUA_VERSION_REQUEST 5.1)
-  ENDIF()
+IF(NOT LUA_VERSION_REQUIREMENT)
+  FIND_PACKAGE(Lua 5 REQUIRED)
 ELSE()
-  SET(LUA_VERSION_REQUEST 5)
+  FIND_PACKAGE(Lua ${LUA_VERSION_REQUIREMENT} EXACT REQUIRED)
 ENDIF()
-FIND_PACKAGE(Lua ${LUA_VERSION_REQUEST} EXACT REQUIRED)
 
 ##### OpenAL #####
 FIND_PACKAGE(OpenAL REQUIRED)

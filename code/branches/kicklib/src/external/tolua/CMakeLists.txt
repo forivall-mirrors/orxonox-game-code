@@ -17,33 +17,6 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-################### Tolua++ library ###################
-
-SET_SOURCE_FILES(TOLUA_FILES
-  tolua_event.h
-  tolua++.h
-COMPILATION_BEGIN ToluaCompilation.c
-  tolua_event.c
-  tolua_is.c
-  tolua_map.c
-  tolua_push.c
-  tolua_to.c
-COMPILATION_END
-)
-
-ORXONOX_ADD_LIBRARY(tolua_orxonox
-  ORXONOX_EXTERNAL
-  DEFINE_SYMBOL
-    "TOLUA_SHARED_BUILD"
-  VERSION
-    1.0.92
-  LINK_LIBRARIES
-    ${LUA_LIBRARIES}
-  SOURCE_FILES
-    ${TOLUA_FILES}
-)
-
-
 ################## Tolua++ generator ##################
 
 ORXONOX_ADD_EXECUTABLE(toluaapp_orxonox

@@ -92,12 +92,12 @@ ORXONOX_ADD_LIBRARY(core
     ${Boost_DATE_TIME_LIBRARY} # Thread dependency
     ${CEGUI_LIBRARY}
     ${CEGUILUA_LIBRARY}
+    ${CEGUI_TOLUA_LIBRARY}
     ${LUA_LIBRARIES}
     cpptcl_orxonox
     ogreceguirenderer_orxonox
     ois_orxonox
     tinyxml_orxonox
-    tolua_orxonox
     util
   SOURCE_FILES
     ${CORE_SRC_FILES}
