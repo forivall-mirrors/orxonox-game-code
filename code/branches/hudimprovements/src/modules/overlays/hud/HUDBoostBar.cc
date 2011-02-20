@@ -52,14 +52,12 @@ namespace orxonox
     {
         SUPER(HUDBoostBar, tick, dt);
 
-        if (this->owner_ /*&& !this->owner_->getPermanentBoost()*/)
+        if (this->owner_)
         {
             this->show();
             float value = this->owner_->getBoostPower() / this->owner_->getInitialBoostPower();
             this->setValue(value);
         }
-        /*else
-            this->hide();*/
     }
 
     void HUDBoostBar::changedOwner()
