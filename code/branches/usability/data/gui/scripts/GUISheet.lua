@@ -81,13 +81,13 @@ end
 function P:keyPressed()
     if self.buttons then
         if code == "208" then     -- key down
-            self:moveSelection(1, 0)
+            self:moveSelectionRow(1)
         elseif code == "200" then -- key up
-            self:moveSelection(-1, 0)
+            self:moveSelectionRow(-1)
         elseif code == "205" then -- key right
-            self:moveSelection(0, 1)
+            self:moveSelectionColumn(1)
         elseif code == "203" then -- key left
-            self:moveSelection(0, -1)
+            self:moveSelectionColumn(-1)
         elseif code == "28"  then -- key enter
             self:pressSelectedButton()
         end
@@ -106,12 +106,19 @@ end
 -------------------------------------------------------------------------------
 
 -- Initializes the buttons table, used to control the menu with the keyboard
-function P:initButtons(rows, columns)
+-- ratio: the button's with divided by the button's height (used to calculate distance between buttons - adjust this until you get the desired behavior)
+function P:initButtons(rows, columns, ratio)
     self.rows = rows
     self.columns = columns
     self.buttons = {}
     self.selectedRow = 0
     self.selectedColumn = 0
+
+    if ratio then
+        self.ratio = ratio
+    else
+        self.ratio = 1
+    end
 end
 
 -- Defines the button for a given position in the table. The upper-left button is at position (1, 1)
@@ -124,15 +131,11 @@ end
 
 -- Returns the button at a given position in the table. The upper-left button is at position (1, 1)
 function P:getButton(row, column)
-    assert(row > 0 and column > 0 and row <= self.rows and column <= self.columns, "(" .. row .. "/" .. column .. ") is not in the valid bounds of the table (1/1)-(" .. self.rows .. "/" .. self.columns .. ")")
-
     return self.buttons[(row - 1) * self.columns + (column - 1)]
 end
 
 -- Returns the selected button
 function P:getSelectedButton()
-    assert(self.selectedRow > 0 and self.selectedColumn > 0, "no button selected")
-
     return self:getButton(self.selectedRow, self.selectedColumn)
 end
 
@@ -159,54 +162,91 @@ function P:setSelection(row, column)
     self:setButtonStateSelected()
 end
 
--- Moves the selection by a given number of rows and columns (positive values mean increasing row/column, negative values mean decreasing row/column)
-function P:moveSelection(relRow, relColumn)
-    -- if there's no selection yet, prepare it such that the selection enters the table from the desired side
-    if self:hasSelection() == false then
-        -- note: we assume either relRow or relColumn is 0, thus no diagonal movement. therefore the following checks can be separated
-        if relRow > 0 then
-            self.selectedRow = 0
-            self.selectedColumn = 1
-        elseif relRow < 0 then
-            self.selectedRow = self.rows + 1
-            self.selectedColumn = 1
-        end
+-- Moves the selection by a given number of rows (a positive value means down, a negative value means up)
+function P:moveSelectionRow(relRow)
+    self:moveSelection(relRow, "selectedRow", "selectedColumn", "rows", "columns", true)
+end
 
-        if relColumn > 0 then
-            self.selectedRow = 1
-            self.selectedColumn = 0
-        elseif relColumn < 0 then
-            self.selectedRow = 1
-            self.selectedColumn = self.columns + 1
-        end
-    else
+-- Moves the selection by a given number of columns (a positive value means right, a negative value means left)
+function P:moveSelectionColumn(relColumn)
+    self:moveSelection(relColumn, "selectedColumn", "selectedRow", "columns", "rows", false)
+end
+
+-- Generic move function, the values are determined at runtime depending on the arguments
+function P:moveSelection(relMove, selectedThis, selectedOther, limitThis, limitOther, isRow)
+    -- if there's no selection yet, prepare it such that the selection enters the table from the desired side
+    if self.selectedRow > 0 or self.selectedColumn > 0 then
         self:setButtonStateNormal()
+    else
+        if relMove > 0 then
+            self[selectedThis] = 0
+            self[selectedOther] = 1
+        elseif relMove < 0 then
+            self[selectedThis] = self[limitThis] + 1
+            self[selectedOther] = 1
+        else
+            return
+        end
     end
 
     -- move the selection according to the parameters
-    self.selectedRow = self.selectedRow + relRow
-    self.selectedColumn = self.selectedColumn + relColumn
+    self[selectedThis] = self[selectedThis] + relMove
 
-    -- wrap around on overflow
-    while self.selectedRow > self.rows do
-        self.selectedRow = self.selectedRow - self.rows
-    end
-    while self.selectedColumn > self.columns do
-        self.selectedColumn = self.selectedColumn - self.columns
-    end
+    -- wrap around on overflow or underflow
+    while self[selectedThis] > self[limitThis] do self[selectedThis] = self[selectedThis] - self[limitThis] end
+    while self[selectedThis] <= 0              do self[selectedThis] = self[selectedThis] + self[limitThis] end
 
-    -- wrap around on underflow
-    while self.selectedRow <= 0 do
-        self.selectedRow = self.selectedRow + self.rows
-    end
-    while self.selectedColumn <= 0 do
-        self.selectedColumn = self.selectedColumn + self.columns
-    end
-
-    -- if the button is deactivated, call this function again
+    -- if the button is deactivated, search the button closest to the desired location
     if self:getSelectedButton() == nil then
-        self:moveSelection(relRow, relColumn)
-    else
+        local min = self.rows + self.columns * self.ratio
+        local minV1, minV2
+        local limit, step
+
+        if relMove > 0 then
+            limit = self[limitThis]
+            step = 1
+        else
+            limit = 1
+            step = -1
+        end
+
+        for v1 = self[selectedThis], limit, step do
+            for v2 = 1, self[limitOther] do
+                local button
+                if isRow == true then
+                    button = self:getButton(v1, v2)
+                else
+                    button = self:getButton(v2, v1)
+                end
+                if button then
+                    local distance
+                    if isRow == true then
+                        distance = math.sqrt((self[selectedThis] - v1)^2 + ((self[selectedOther] - v2) * self.ratio)^2)
+                    else
+                        distance = math.sqrt(((self[selectedThis] - v1) * self.ratio)^2 + (self[selectedOther] - v2)^2)
+                    end
+                    if distance < min then
+                        min = distance; minV1 = v1; minV2 = v2
+                    end
+                end
+            end
+        end
+
+        if minV1 and minV2 then
+            self[selectedThis] = minV1
+            self[selectedOther] = minV2
+        elseif self:hasButtons() then
+            -- no suitable button found - wrap around and search again
+            if relMove > 0 then
+                self[selectedThis] = 0
+            else
+                self[selectedThis] = self[limitThis] + 1
+            end
+            self:moveSelection(relMove, selectedThis, selectedOther, limitThis, limitOther, isRow)
+        end
+    end
+
+    if self:hasSelection() == true then
         self:setButtonStateSelected()
     end
 end
@@ -221,12 +261,26 @@ function P:resetSelection()
     self.selectedColumn = 0
 end
 
+-- Checks if there's at least one button in the table
+function P:hasButtons()
+    local count = 0
+    for r = 1, self.rows do
+        for c = 1, self.columns do
+            if self:getButton(r, c) then
+                count = count + 1
+            end
+        end
+    end
+
+    return (count > 0)
+end
+
 -- Determines if a button is selected
 function P:hasSelection()
-    if self.selectedRow == 0 or self.selectedColumn == 0 then
-        return false
-    else
+    if self.selectedRow and self.selectedRow > 0 and self.selectedColumn and self.selectedColumn > 0 then
         return true
+    else
+        return false
     end
 end
 
