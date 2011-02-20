@@ -9,9 +9,7 @@ P.joinMode = 1
 function P.onLoad()
     P.multiplayerMode = "startClient"
 
-    --button are arranged in a 2x2 matrix, the lower items are both the back button
-    P:initButtons(2, 3)
-
+    --button are arranged in a 3x2 matrix, Join and Host buttons are in the upper left and middle, the back button in the lower right of the table
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/MultiplayerJoinButton"),
             ["callback"]  = P.MultiplayerJoinButton_clicked

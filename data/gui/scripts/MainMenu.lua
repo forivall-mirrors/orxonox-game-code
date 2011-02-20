@@ -5,8 +5,6 @@ P.loadAlong = { "SingleplayerMenu", "MultiplayerMenu", "SettingsMenu", "CreditsM
 
 function P.onLoad()
     --buttons are arranged in a 6x1 Matrix (list)
-    P:initButtons(6, 1)
-
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/QuickGameTestButton"),
             ["callback"]  = P.QuickGameTestButton_clicked

@@ -132,8 +132,8 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     menuSheetsRoot:activate()
 
     -- select first button if the menu was opened with the keyboard
-    if previous and previous.pressedEnter and menuSheet.buttons and menuSheet:hasSelection() == false then
-        menuSheet:moveSelectionRow(1)
+    if previous and previous.pressedEnter and menuSheet:hasSelection() == false then
+        menuSheet:setSelectionNear(1, 1)
     end
 
     return menuSheet

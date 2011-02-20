@@ -84,7 +84,6 @@ function P.onLoad()
 
     P.createLines()
 
-    P:initButtons(1, 1)
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/MiscConfigMenu/MiscConfigBackButton"),
             ["callback"]  = P.MiscConfigBackButton_clicked

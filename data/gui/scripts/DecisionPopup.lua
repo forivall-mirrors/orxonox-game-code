@@ -5,8 +5,6 @@ local P = createMenuSheet("DecisionPopup")
 function P.onLoad()
 
     --button are arranged in a 1x2 matrix
-    P:initButtons(1, 2)
-
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/DecisionPopup_button_yes"),
             ["callback"]  = P.button_yes

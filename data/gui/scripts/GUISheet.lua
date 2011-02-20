@@ -33,9 +33,7 @@ function P:show()
     self.bVisible = true
 
     -- set the selected button's state
-    if self.buttons and self:hasSelection() then
-        self:setButtonStateSelected()
-    end
+    self:setSelectedButtonsStateToSelected()
 
     self:onShow()
 end
@@ -106,42 +104,68 @@ end
 -------------------------------------------------------------------------------
 
 -- Initializes the buttons table, used to control the menu with the keyboard
--- ratio: the button's with divided by the button's height (used to calculate distance between buttons - adjust this until you get the desired behavior)
-function P:initButtons(rows, columns, ratio)
+function P:initButtons(rows, columns)
     self.rows = rows
     self.columns = columns
     self.buttons = {}
     self.selectedRow = 0
     self.selectedColumn = 0
+    self.ratio = 1
+end
 
-    if ratio then
-        self.ratio = ratio
-    else
-        self.ratio = 1
-    end
+-- ratio: the button's with divided by the button's height (used to calculate distance between buttons - adjust this until you get the desired behavior)
+function P:setRatio(ratio)
+    self.ratio = ratio
 end
 
 -- Defines the button for a given position in the table. The upper-left button is at position (1, 1)
 function P:setButton(row, column, button)
-    assert(self.rows ~= nil and self.columns ~= nil and self.buttons ~= nil, "You have to call initButtons() before using setButton()")
-    assert(row > 0 and column > 0 and row <= self.rows and column <= self.columns, "(" .. row .. "/" .. column .. ") is not in the valid bounds of the table (1/1)-(" .. self.rows .. "/" .. self.columns .. ")")
+    if not self.buttons then
+        -- init the table
+        self:initButtons(row, column)
+    elseif row > self.rows or column > self.columns then
+        -- rearrange the table
+        local maxRows = math.max(self.rows, row)
+        local maxColumns = math.max(self.columns, column)
+
+        for r = self.rows, 1, -1 do
+            for c = self.columns, 1, -1 do
+                local b = self:getButton(r, c)
+                if b then
+                    self.buttons[(r - 1) * self.columns + (c - 1)] = nil
+                    self.buttons[(r - 1) * maxColumns + (c - 1)] = b
+                end
+            end
+        end
+
+        self.rows = maxRows
+        self.columns = maxColumns
+    end
 
     self.buttons[(row - 1) * self.columns + (column - 1)] = button
 end
 
 -- Returns the button at a given position in the table. The upper-left button is at position (1, 1)
 function P:getButton(row, column)
-    return self.buttons[(row - 1) * self.columns + (column - 1)]
+    if self.buttons then
+        return self.buttons[(row - 1) * self.columns + (column - 1)]
+    else
+        return nil
+    end
 end
 
 -- Returns the selected button
 function P:getSelectedButton()
-    return self:getButton(self.selectedRow, self.selectedColumn)
+    if self:hasSelection() then
+        return self:getButton(self.selectedRow, self.selectedColumn)
+    else
+        return nil
+    end
 end
 
 -- Presses the selected button if any
 function P:pressSelectedButton()
-    if self:hasSelection() then
+    if self:getSelectedButton() then
         self.pressedEnter = true
         self:getSelectedButton().callback()
         self.pressedEnter = false
@@ -150,16 +174,51 @@ end
 
 -- Sets the selection to a given row and column. The upper-left button is at position (1, 1)
 function P:setSelection(row, column)
+    if not self.buttons then
+        return
+    end
+
     assert(row > 0 and column > 0 and row <= self.rows and column <= self.columns, "(" .. row .. "/" .. column .. ") is not in the valid bounds of the table (1/1)-(" .. self.rows .. "/" .. self.columns .. ")")
 
-    if self:hasSelection() then
-        self:setButtonStateNormal()
-    end
+    self:setSelectedButtonsStateToNormal()
 
     self.selectedRow = row
     self.selectedColumn = column
 
-    self:setButtonStateSelected()
+    self:setSelectedButtonsStateToSelected()
+end
+
+-- Sets the selection to the button closest to the given row and column. The upper-left button is at position (1, 1)
+function P:setSelectionNear(row, column)
+    if not self.buttons then
+        return
+    end
+
+    assert(row > 0 and column > 0 and row <= self.rows and column <= self.columns, "(" .. row .. "/" .. column .. ") is not in the valid bounds of the table (1/1)-(" .. self.rows .. "/" .. self.columns .. ")")
+
+    if self:getButton(row, column) then
+        self:setSelection(row, column)
+    else
+        local min = 1000000
+        local minRow, minColumn
+
+        for r = 1, self.rows do
+            for c = 1, self.columns do
+                if self:getButton(r, c) then
+                    local distance = math.sqrt((row - r)^2 + ((column - c) * self.ratio)^2)
+                    if distance < min then
+                        min = distance; minRow = r; minColumn = c
+                    end
+                end
+            end
+        end
+
+        if minRow and minColumn then
+            self:setSelection(minRow, minColumn)
+        else
+            self:resetSelection()
+        end
+    end
 end
 
 -- Moves the selection by a given number of rows (a positive value means down, a negative value means up)
@@ -174,9 +233,13 @@ end
 
 -- Generic move function, the values are determined at runtime depending on the arguments
 function P:moveSelection(relMove, selectedThis, selectedOther, limitThis, limitOther, isRow)
+    if not self.buttons then
+        return
+    end
+
     -- if there's no selection yet, prepare it such that the selection enters the table from the desired side
     if self.selectedRow > 0 or self.selectedColumn > 0 then
-        self:setButtonStateNormal()
+        self:setSelectedButtonsStateToNormal()
     else
         if relMove > 0 then
             self[selectedThis] = 0
@@ -198,7 +261,7 @@ function P:moveSelection(relMove, selectedThis, selectedOther, limitThis, limitO
 
     -- if the button is deactivated, search the button closest to the desired location
     if self:getSelectedButton() == nil then
-        local min = self.rows + self.columns * self.ratio
+        local min = 1000000
         local minV1, minV2
         local limit, step
 
@@ -246,16 +309,12 @@ function P:moveSelection(relMove, selectedThis, selectedOther, limitThis, limitO
         end
     end
 
-    if self:hasSelection() == true then
-        self:setButtonStateSelected()
-    end
+    self:setSelectedButtonsStateToSelected()
 end
 
 -- Resets the selection
 function P:resetSelection()
-    if self:hasSelection() then
-        self:setButtonStateNormal()
-    end
+    self:setSelectedButtonsStateToNormal()
 
     self.selectedRow = 0
     self.selectedColumn = 0
@@ -285,22 +344,22 @@ function P:hasSelection()
 end
 
 -- Sets the selected button's state to normal
-function P:setButtonStateNormal()
-    self:setButtonState("Normal")
+function P:setSelectedButtonsStateToNormal()
+    self:setSelectedButtonsState("Normal")
 end
 
 -- Sets the selected button's state to selected
-function P:setButtonStateSelected()
-    self:setButtonState("Selected")
+function P:setSelectedButtonsStateToSelected()
+    self:setSelectedButtonsState("Selected")
 end
 
 -- Sets the selected button's state to pushed
-function P:setButtonStatePushed()
-    self:setButtonState("Pushed")
+function P:setSelectedButtonsStateToPushed()
+    self:setSelectedButtonsState("Pushed")
 end
 
 -- Sets the selected button's state
-function P:setButtonState(state)
+function P:setSelectedButtonsState(state)
     if self:getSelectedButton() then
         local element = self:getSelectedButton().button
         local offset = getElementStateOffset(element)

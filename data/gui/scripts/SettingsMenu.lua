@@ -5,9 +5,7 @@ P.loadAlong = { "ControlsMenu", "AudioMenu", "GraphicsMenu" }
 
 function P.onLoad()
     --"Gameplay" and "Multiplayer Options" are not integrated in the list
-    --buttons are arranged in a 4x2 matrix. The lower-right element is not in the matrix!
-    P:initButtons(4, 2)
-
+    --buttons are arranged in a 4x2 matrix.
     P:setButton(1, 2, {
             ["button"] = winMgr:getWindow("orxonox/SettingsMenu/GraphicsButton"),
             ["callback"]  = P.SettingsGraphicsButton_clicked

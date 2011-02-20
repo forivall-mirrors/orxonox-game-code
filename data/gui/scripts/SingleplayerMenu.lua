@@ -13,8 +13,6 @@ function P.onLoad()
     P.createLevelList()
 
     --buttons are arranged in a 1x2 matrix
-    P:initButtons(1, 2)
-
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/SingleplayerStartButton"),
             ["callback"]  = P.SingleplayerStartButton_clicked

@@ -15,8 +15,6 @@ function P.onLoad()
     button:setSelected(false)
     P.createLevelList()
 
-    P:initButtons(1, 2)
-
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/HostMenuStartButton"),
             ["callback"]  = P.HostMenuStartButton_clicked

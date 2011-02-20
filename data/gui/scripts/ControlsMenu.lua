@@ -7,8 +7,6 @@ function P.onLoad()
     P.multiplayerMode = "startClient"
 
     --buttons are arranged in a 3x1 matrix:
-    P:initButtons(3, 1)
-
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/MouseControlsButton"),
             ["callback"]  = P.ControlsMouseControlsButton_clicked

@@ -85,7 +85,6 @@ function P.onLoad()
     scrollbar_active = false
     block = false
 
-    P:initButtons(1, 1)
     P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/GraphicsBackButton"),
             ["callback"]  = P.GraphicsBackButton_clicked
