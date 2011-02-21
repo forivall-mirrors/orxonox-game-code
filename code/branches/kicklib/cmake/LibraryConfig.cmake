@@ -92,8 +92,9 @@ ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
 ############### Library finding #################
 # Performs the search and sets the variables    #
 
-FIND_PACKAGE(OGRE  1.4       REQUIRED)
-#FIND_PACKAGE(ENet  1.1       REQUIRED)
+FIND_PACKAGE(OGRE     1.4    REQUIRED)
+#FIND_PACKAGE(ENet     1.1    REQUIRED)
+FIND_PACKAGE(Lua      5.1    REQUIRED)
 FIND_PACKAGE(Ogg             REQUIRED)
 FIND_PACKAGE(Vorbis          REQUIRED)
 FIND_PACKAGE(ALUT            REQUIRED)
@@ -111,17 +112,9 @@ ENDIF()
 # However there is a small issue with that: Both CEGUILua and Orxonox use
 # Lua library functions on the same objects. And it turns out that in this case
 # the linked library must be EXACTLY the same.
-# That means for us we have to find the Lua library that CEGUI was
-# linked against if we don't use a dependency package.
-
+# Since Lua v5.1 has been out for a long while, this does not seem to be a
+# problem anymore, at least as long as Lua 5.2 is not released.
 FIND_PACKAGE(CEGUI 0.5 REQUIRED)
-
-##### Lua #####
-IF(NOT LUA_VERSION_REQUIREMENT)
-  FIND_PACKAGE(Lua 5 REQUIRED)
-ELSE()
-  FIND_PACKAGE(Lua ${LUA_VERSION_REQUIREMENT} EXACT REQUIRED)
-ENDIF()
 
 ##### OpenAL #####
 FIND_PACKAGE(OpenAL REQUIRED)
