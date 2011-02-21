@@ -114,7 +114,7 @@ ENDIF()
 # the linked library must be EXACTLY the same.
 # Since Lua v5.1 has been out for a long while, this does not seem to be a
 # problem anymore, at least as long as Lua 5.2 is not released.
-FIND_PACKAGE(CEGUI 0.5 REQUIRED)
+FIND_PACKAGE(CEGUI 0.6 REQUIRED)
 
 ##### OpenAL #####
 FIND_PACKAGE(OpenAL REQUIRED)

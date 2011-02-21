@@ -100,12 +100,8 @@ namespace orxonox
         }
         catch (const CEGUI::Exception& ex)
         {
-#if CEGUI_VERSION_MAJOR == 0 && CEGUI_VERSION_MINOR < 6
-            return GeneralException(ex.getMessage().c_str()).getDescription();
-#else
             return GeneralException(ex.getMessage().c_str(), ex.getLine(),
                 ex.getFileName().c_str(), ex.getName().c_str()).getDescription();
-#endif
         }
         catch (...)
         {
