@@ -97,9 +97,6 @@ namespace orxonox
         void printScreen();
 
         scoped_ptr<OgreWindowEventListener> ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
-#if OGRE_VERSION < 0x010600
-        scoped_ptr<MemoryArchiveFactory>    memoryArchiveFactory_;    //!< Stores the modified particle scripts
-#endif
         scoped_ptr<Ogre::LogManager>        ogreLogger_;
         scoped_ptr<Ogre::Root>              ogreRoot_;                //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window

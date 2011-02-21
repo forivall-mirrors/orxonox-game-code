@@ -53,7 +53,6 @@ SET_SOURCE_FILES(CORE_SRC_FILES
 COMPILATION_BEGIN FilesystemCompilation.cc
   command/ArgumentCompletionFunctions.cc
   ConfigFileManager.cc
-  MemoryArchive.cc
   PathConfig.cc
 COMPILATION_END
 

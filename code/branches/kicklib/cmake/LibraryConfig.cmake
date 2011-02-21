@@ -92,7 +92,7 @@ ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
 ############### Library finding #################
 # Performs the search and sets the variables    #
 
-FIND_PACKAGE(OGRE     1.4    REQUIRED)
+FIND_PACKAGE(OGRE     1.6    REQUIRED)
 #FIND_PACKAGE(ENet     1.1    REQUIRED)
 FIND_PACKAGE(Lua5.1          REQUIRED)
 FIND_PACKAGE(Ogg             REQUIRED)
