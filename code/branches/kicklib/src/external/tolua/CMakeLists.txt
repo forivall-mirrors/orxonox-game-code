@@ -25,16 +25,16 @@ ORXONOX_ADD_EXECUTABLE(toluaapp_orxonox
     1.0.92
   NO_INSTALL
   LINK_LIBRARIES
-    ${LUA_LIBRARIES}
+    ${LUA5.1_LIBRARY}
   SOURCE_FILES
     tolua.c
 )
 
 # Set some variables to the cache in order to use them in the TOLUA macro
-SET(TOLUA_PARSER_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/all-${LUA_VERSION}.lua" CACHE INTERNAL "")
+SET(TOLUA_PARSER_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/all-5.1.lua" CACHE INTERNAL "")
 SET(TOLUA_PARSER_DEPENDENCIES
   toluaapp_orxonox
-  ${CMAKE_CURRENT_SOURCE_DIR}/all-${LUA_VERSION}.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/all-5.1.lua
   ${CMAKE_CURRENT_SOURCE_DIR}/lua/compat-5.1.lua
   ${CMAKE_CURRENT_SOURCE_DIR}/lua/compat.lua
   ${CMAKE_CURRENT_SOURCE_DIR}/lua/basic.lua

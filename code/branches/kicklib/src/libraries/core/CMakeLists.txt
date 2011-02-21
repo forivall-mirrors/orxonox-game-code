@@ -93,7 +93,7 @@ ORXONOX_ADD_LIBRARY(core
     ${CEGUI_LIBRARY}
     ${CEGUILUA_LIBRARY}
     ${CEGUI_TOLUA_LIBRARY}
-    ${LUA_LIBRARIES}
+    ${LUA5.1_LIBRARY}
     cpptcl_orxonox
     ogreceguirenderer_orxonox
     ois_orxonox

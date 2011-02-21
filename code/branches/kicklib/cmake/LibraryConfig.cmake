@@ -94,7 +94,7 @@ ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
 
 FIND_PACKAGE(OGRE     1.4    REQUIRED)
 #FIND_PACKAGE(ENet     1.1    REQUIRED)
-FIND_PACKAGE(Lua      5.1    REQUIRED)
+FIND_PACKAGE(Lua5.1          REQUIRED)
 FIND_PACKAGE(Ogg             REQUIRED)
 FIND_PACKAGE(Vorbis          REQUIRED)
 FIND_PACKAGE(ALUT            REQUIRED)
@@ -154,24 +154,19 @@ MARK_AS_ADVANCED(Boost_LIB_DIAGNOSTIC_DEFINITIONS)
 # You may want to edit these settings if you provide your own libraries
 # Note: Default option in the libraries vary, but our default option is dynamic
 IF(WIN32)
-  OPTION(LINK_BOOST_DYNAMIC "Link Boost dynamically on Windows" TRUE)
-  OPTION(LINK_CEGUI_DYNAMIC "Link CEGUI dynamicylly on Windows" TRUE)
-  #OPTION(LINK_ENET_DYNAMIC  "Link ENet dynamically on Windows" TRUE)
-  OPTION(LINK_OGRE_DYNAMIC  "Link OGRE dynamically on Windows" TRUE)
-  OPTION(LINK_TCL_DYNAMIC   "Link TCL dynamically on Windows" TRUE)
-  OPTION(LINK_ZLIB_DYNAMIC  "Link ZLib dynamically on Windows" TRUE)
-  COMPARE_VERSION_STRINGS("${LUA_VERSION}" "5.1" _version_comparison)
-  IF(_version_comparison LESS 0)
-    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" FALSE)
-  ELSE(_version_comparison LESS 0)
-    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" TRUE)
-  ENDIF(_version_comparison LESS 0)
+  OPTION(LINK_BOOST_DYNAMIC  "Link Boost dynamically on Windows" TRUE)
+  OPTION(LINK_CEGUI_DYNAMIC  "Link CEGUI dynamicylly on Windows" TRUE)
+  #OPTION(LINK_ENET_DYNAMIC   "Link ENet dynamically on Windows" TRUE)
+  OPTION(LINK_OGRE_DYNAMIC   "Link OGRE dynamically on Windows" TRUE)
+  OPTION(LINK_TCL_DYNAMIC    "Link TCL dynamically on Windows" TRUE)
+  OPTION(LINK_ZLIB_DYNAMIC   "Link ZLib dynamically on Windows" TRUE)
+  OPTION(LINK_LUA5.1_DYNAMIC "Link Lua dynamically on Windows" TRUE)
 
   IF(DEPENDENCY_PACKAGE_ENABLE)
     MARK_AS_ADVANCED(
       LINK_BOOST_DYNAMIC LINK_CEGUI_DYNAMIC #LINK_ENET_DYNAMIC
       LINK_OGRE_DYNAMIC  LINK_TCL_DYNAMIC   LINK_ZLIB_DYNAMIC
-      LINK_LUA_DYNAMIC
+      LINK_LUA5.1_DYNAMIC
     )
   ENDIF()
 ENDIF(WIN32)
