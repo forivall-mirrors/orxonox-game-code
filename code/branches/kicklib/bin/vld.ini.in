@@ -55,7 +55,7 @@ AggregateDuplicates = yes
 ;   Valid Values: Any list containing module names (i.e. names of EXEs or DLLs).
 ;   Default: None.
 ;
-ForceIncludeModules = boost_date_time-vc80-mt-gd-1_39.dll, boost_filesystem-vc80-mt-gd-1_39.dll, boost_system-vc80-mt-gd-1_39.dll, boost_thread-vc80-mt-gd-1_39.dll, enet_d.dll, lua_d.dll, ogg_d.dll, vorbis_d.dll, vorbifile_d.dll
+ForceIncludeModules = boost_date_time-vc90-mt-gd-1_44.dll, boost_filesystem-vc90-mt-gd-1_44.dll, boost_system-vc90-mt-gd-1_44.dll, boost_thread-vc90-mt-gd-1_44.dll, lua_d.dll, ogg_d.dll, vorbis_d.dll, vorbifile_d.dll
 
 ; Maximum number of data bytes to display for each leaked block. If zero, then
 ; the data dump is completely suppressed and only call stacks are shown.
