@@ -7,6 +7,7 @@
 #define _WIN32_WINNT 0x0501
 
 #include <time.h>
+#include <ws2tcpip.h>
 #define ENET_BUILDING_LIB 1
 #include "enet/enet.h"
 
