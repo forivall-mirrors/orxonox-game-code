@@ -397,7 +397,7 @@ namespace orxonox
             // iterate over all modes
             for (size_t mode_index = 0; mode_index < 3; ++mode_index)
             {
-                if (mode_index == new_mode) // skip commands that are already in the desired mode
+                if (mode_index == (unsigned int)new_mode) // skip commands that are already in the desired mode
                     continue;
 
                 // iterate over all commands of the given mode at the given button
