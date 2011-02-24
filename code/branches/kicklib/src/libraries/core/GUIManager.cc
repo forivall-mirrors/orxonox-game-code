@@ -111,7 +111,12 @@ namespace orxonox
     @return true if success, otherwise false
     */
     GUIManager::GUIManager(const std::pair<int, int>& mousePosition)
-        : resourceProvider_(NULL)
+        : destroyer_(*this, &GUIManager::cleanup)
+        , guiRenderer_(NULL)
+        , luaState_(NULL)
+        , scriptModule_(NULL)
+        , guiSystem_(NULL)
+        , resourceProvider_(NULL)
         , camera_(NULL)
     {
         RegisterRootObject(GUIManager);
@@ -122,28 +127,28 @@ namespace orxonox
         COUT(3) << "Initialising CEGUI." << std::endl;
 
         // Note: No SceneManager specified yet
-        guiRenderer_.reset(new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
+        guiRenderer_ = new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
         resourceProvider_ = guiRenderer_->createResourceProvider();
         resourceProvider_->setDefaultResourceGroup("General");
 
         // Setup scripting
-        luaState_.reset(new LuaState());
+        luaState_ = new LuaState();
         rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua");
         // This is necessary to ensure that input events also use the right resource info when triggering lua functions
         luaState_->setDefaultResourceInfo(this->rootFileInfo_);
-        scriptModule_.reset(new LuaScriptModule(luaState_->getInternalLuaState()));
+        scriptModule_ = new LuaScriptModule(luaState_->getInternalLuaState());
         scriptModule_->setDefaultPCallErrorHandler(LuaState::ERROR_HANDLER_NAME);
 
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
         ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
-        // set the log level according to ours (translate by subtracting 1)
+        // Set the log level according to ours (translate by subtracting 1)
         ceguiLogger->setLoggingLevel(
             static_cast<LoggingLevel>(OutputHandler::getInstance().getSoftDebugLevel("logFile") - 1));
         this->ceguiLogger_ = ceguiLogger.release();
 
         // Create the CEGUI system singleton
-        guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
+        guiSystem_ = new System(guiRenderer_, resourceProvider_, 0, scriptModule_);
 
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
@@ -168,12 +173,14 @@ namespace orxonox
         this->luaState_->doFile("SheetManager.lua");
     }
 
-    /**
-    @brief
-        Basically shuts down CEGUI (member smart pointers) but first unloads our Tolua modules.
-    */
-    GUIManager::~GUIManager()
+    void GUIManager::cleanup()
     {
+        using namespace CEGUI;
+
+        delete guiSystem_;
+        delete guiRenderer_;
+        delete scriptModule_;
+        delete luaState_;
     }
 
     void GUIManager::setConfigValues(void)
