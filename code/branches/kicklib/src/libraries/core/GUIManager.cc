@@ -172,6 +172,9 @@ namespace orxonox
         // Create the CEGUI system singleton
 #if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
         guiSystem_ = new System(guiRenderer_, resourceProvider_, 0, scriptModule_);
+        // Add functions that have been renamed in newer versions
+        luaState_->doString("CEGUI.SchemeManager.create = CEGUI.SchemeManager.loadScheme");
+        luaState_->doString("CEGUI.Window.getUnclippedOuterRect = CEGUI.Window.getUnclippedPixelRect");
 #else
         guiSystem_ = &System::create(*guiRenderer_, resourceProvider_, 0, imageCodec_, scriptModule_);
 #endif

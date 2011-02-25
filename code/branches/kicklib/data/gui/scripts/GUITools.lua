@@ -30,8 +30,8 @@ function getMinTextSize(window)
     local size = {}
 
     local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(window:getLookNFeel())
-    local height = window:getFont():getLineSpacing() + window:getUnclippedPixelRect():getHeight() - lookAndFeel:getNamedArea("WithFrameTextRenderArea"):getArea():getPixelRect(window):getHeight()
-    local width =  window:getFont():getTextExtent(window:getText()) + window:getUnclippedPixelRect():getWidth() - lookAndFeel:getNamedArea("WithFrameTextRenderArea"):getArea():getPixelRect(window):getWidth()
+    local height = window:getFont():getLineSpacing() + window:getUnclippedOuterRect():getHeight() - lookAndFeel:getNamedArea("WithFrameTextRenderArea"):getArea():getPixelRect(window):getHeight()
+    local width =  window:getFont():getTextExtent(window:getText()) + window:getUnclippedOuterRect():getWidth() - lookAndFeel:getNamedArea("WithFrameTextRenderArea"):getArea():getPixelRect(window):getWidth()
 
     table.insert(size, height)
     table.insert(size, width)
@@ -39,8 +39,8 @@ function getMinTextSize(window)
 end
 
 function getScrollingStepSize(window)
-    local height = window:getUnclippedPixelRect():getHeight()
-    local maxHeight = CEGUI.System:getSingleton():getGUISheet():getUnclippedPixelRect():getHeight()
+    local height = window:getUnclippedOuterRect():getHeight()
+    local maxHeight = CEGUI.System:getSingleton():getGUISheet():getUnclippedOuterRect():getHeight()
     local ratio = height/maxHeight
     return 0.008*ratio/0.3204
 end
@@ -48,7 +48,7 @@ end
 function getStaticTextWindowHeight(window)
     local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(window:getLookNFeel())
     local formattedArea = lookAndFeel:getNamedArea("WithFrameTextRenderArea"):getArea():getPixelRect(window)
-    local frameHeight = window:getUnclippedPixelRect():getHeight() - formattedArea:getHeight()
+    local frameHeight = window:getUnclippedOuterRect():getHeight() - formattedArea:getHeight()
     local lines = window:getFont():getFormattedLineCount(window:getText(), formattedArea, CEGUI.WordWrapLeftAligned)
     local height = lines * window:getFont():getLineSpacing() + frameHeight
     return height
