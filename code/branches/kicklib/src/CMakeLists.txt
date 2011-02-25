@@ -98,6 +98,12 @@ IF (DBGHELP_FOUND)
   INCLUDE_DIRECTORIES(${DBGHELP_INCLUDE_DIR})
 ENDIF()
 
+############## CEGUI OGRE Renderer ##############
+
+IF(CEGUI_OGRE_RENDERER_BUILD_REQUIRED)
+  SET(CEGUI_OGRE_RENDERER_LIBRARY ogreceguirenderer_orxonox)
+ENDIF()
+
 ################### Tolua Bind ##################
 
 # Create directory because the tolua application doesn't work otherwise

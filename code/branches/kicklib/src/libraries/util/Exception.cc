@@ -94,14 +94,14 @@ namespace orxonox
             // rethrow
             throw;
         }
-        catch (const std::exception& ex)
-        {
-            return ex.what();
-        }
         catch (const CEGUI::Exception& ex)
         {
             return GeneralException(ex.getMessage().c_str(), ex.getLine(),
                 ex.getFileName().c_str(), ex.getName().c_str()).getDescription();
+        }
+        catch (const std::exception& ex)
+        {
+            return ex.what();
         }
         catch (...)
         {

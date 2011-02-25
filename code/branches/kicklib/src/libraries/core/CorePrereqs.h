@@ -37,6 +37,7 @@
 
 #include "OrxonoxConfig.h"
 #include <boost/version.hpp>
+#include <CEGUIVersion.h>
 
 //-----------------------------------------------------------------------
 // Shared library settings
@@ -304,9 +305,15 @@ namespace CEGUI
     class Logger;
     class LuaScriptModule;
 
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
     class OgreCEGUIRenderer;
     class OgreCEGUIResourceProvider;
     class OgreCEGUITexture;
+#else
+    class OgreRenderer;
+    class OgreResourceProvider;
+    class OgreImageCodec;
+#endif
 }
 
 // Lua

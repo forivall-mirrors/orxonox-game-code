@@ -41,7 +41,7 @@
 #include <set>
 #include <string>
 #include <CEGUIForwardRefs.h>
-#include <boost/scoped_ptr.hpp>
+#include <CEGUIVersion.h>
 #include <boost/shared_ptr.hpp>
 #include <loki/ScopeGuard.h>
 
@@ -146,8 +146,14 @@ namespace orxonox // tolua_export
         /// Surrogate for the destructor
         Loki::ObjScopeGuardImpl0<GUIManager, void (GUIManager::*)()> destroyer_;
 
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
         CEGUI::OgreCEGUIRenderer*            guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
+#else
+        CEGUI::OgreRenderer*                 guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
+        CEGUI::OgreResourceProvider*         resourceProvider_; //!< CEGUI's resource provider
+        CEGUI::OgreImageCodec*               imageCodec_;
+#endif
         LuaState*                            luaState_;         //!< LuaState, access point to the Lua engine
         CEGUI::LuaScriptModule*              scriptModule_;     //!< CEGUI's script module to use Lua
         CEGUI::System*                       guiSystem_;        //!< CEGUI's main system

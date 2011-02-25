@@ -31,6 +31,8 @@
 
 #include <memory>
 #include <boost/bind.hpp>
+#include <OgreRenderQueue.h>
+#include <OgreRenderWindow.h>
 
 #include <CEGUIDefaultLogger.h>
 #include <CEGUIExceptions.h>
@@ -43,8 +45,15 @@
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
 
-#include <CEGUILua.h>
-#include <ogreceguirenderer/OgreCEGUIRenderer.h>
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#  include <CEGUILua.h>
+#  include <ogreceguirenderer/OgreCEGUIRenderer.h>
+#else
+#  include <ScriptingModules/LuaScriptModule/CEGUILua.h>
+#  include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
+#  include <RendererModules/Ogre/CEGUIOgreRenderer.h>
+#  include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
+#endif
 
 #include "util/Clock.h"
 #include "util/Convert.h"
@@ -117,6 +126,9 @@ namespace orxonox
         , scriptModule_(NULL)
         , guiSystem_(NULL)
         , resourceProvider_(NULL)
+#if CEGUI_VERSION_MAJOR >= 1 || CEGUI_VERSION_MINOR >= 7
+        , imageCodec_(NULL)
+#endif
         , camera_(NULL)
     {
         RegisterRootObject(GUIManager);
@@ -127,8 +139,14 @@ namespace orxonox
         COUT(3) << "Initialising CEGUI." << std::endl;
 
         // Note: No SceneManager specified yet
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
         guiRenderer_ = new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
         resourceProvider_ = guiRenderer_->createResourceProvider();
+#else
+        guiRenderer_ = &OgreRenderer::create(*GraphicsManager::getInstance().getRenderWindow());
+        resourceProvider_ = &OgreRenderer::createOgreResourceProvider();
+        imageCodec_ = &OgreRenderer::createOgreImageCodec();
+#endif
         resourceProvider_->setDefaultResourceGroup("General");
 
         // Setup scripting
@@ -136,7 +154,11 @@ namespace orxonox
         rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua");
         // This is necessary to ensure that input events also use the right resource info when triggering lua functions
         luaState_->setDefaultResourceInfo(this->rootFileInfo_);
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
         scriptModule_ = new LuaScriptModule(luaState_->getInternalLuaState());
+#else
+        scriptModule_ = &LuaScriptModule::create(luaState_->getInternalLuaState());
+#endif
         scriptModule_->setDefaultPCallErrorHandler(LuaState::ERROR_HANDLER_NAME);
 
         // Create our own logger to specify the filepath
@@ -148,7 +170,11 @@ namespace orxonox
         this->ceguiLogger_ = ceguiLogger.release();
 
         // Create the CEGUI system singleton
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
         guiSystem_ = new System(guiRenderer_, resourceProvider_, 0, scriptModule_);
+#else
+        guiSystem_ = &System::create(*guiRenderer_, resourceProvider_, 0, imageCodec_, scriptModule_);
+#endif
 
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
@@ -177,9 +203,17 @@ namespace orxonox
     {
         using namespace CEGUI;
 
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
         delete guiSystem_;
         delete guiRenderer_;
         delete scriptModule_;
+#else
+        System::destroy();
+        OgreRenderer::destroyOgreResourceProvider(*resourceProvider_);
+        OgreRenderer::destroyOgreImageCodec(*imageCodec_);
+        OgreRenderer::destroy(*guiRenderer_);
+        LuaScriptModule::destroy(*scriptModule_);
+#endif
         delete luaState_;
     }
 
@@ -222,10 +256,12 @@ namespace orxonox
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
         this->camera_ = camera;
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
         if (camera == NULL)
             this->guiRenderer_->setTargetSceneManager(0);
         else
             this->guiRenderer_->setTargetSceneManager(camera->getSceneManager());
+#endif
     }
 
     /**
@@ -511,7 +547,11 @@ namespace orxonox
     */
     void GUIManager::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
         this->guiRenderer_->setDisplaySize(CEGUI::Size(newWidth, newHeight));
+#else
+        this->guiRenderer_->setDisplaySize(CEGUI::Size((float)newWidth, (float)newHeight));
+#endif
     }
 
     /**
