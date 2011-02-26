@@ -45,9 +45,9 @@ do
 j = math.random()
 ?>
 
-    <MovableEntity position="<?lua print(x + math.random() * 10000-2500) ?>,<?lua print(y + math.random() * 5000-2500) ?>,<?lua print(z + math.random() * 1000-500) ?>" <?lua if i == 5 then ?> collisionType=dynamic linearDamping=0.8 angularDamping=0 mass=<?lua print(j * 50) ?> <?lua end ?> scale=<?lua print(j * 5) ?> rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
+    <MovableEntity position="<?lua print(x + math.random() * 10000-2500) ?>,<?lua print(y + math.random() * 5000-2500) ?>,<?lua print(z + math.random() * 1000-500) ?>" <?lua if i == 5 then ?> collisionType=dynamic linearDamping=0.8 angularDamping=0 mass="<?lua print(j * 50) ?>" <?lua end ?> scale="<?lua print(j * 5) ?>" rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
       <attached>
-        <Model position="0,0,0" scale=<?lua print(j * 10) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+        <Model position="0,0,0" scale="<?lua print(j * 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
       </attached>
       <?lua if i == 5 then ?><collisionShapes>
         <SphereCollisionShape radius="<?lua print(j * 70) ?>" />

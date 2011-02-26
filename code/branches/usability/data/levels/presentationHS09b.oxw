@@ -45,9 +45,9 @@
         z = math.random() * 2000 - 1000
         s = math.random() * 100
     ?>
-      <MovableEntity collisiontype=dynamic mass=<?lua print(s*10)?> position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>">
+      <MovableEntity collisiontype=dynamic mass="<?lua print(s*10)?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>">
         <attached>
-          <Model position="0,0,0" scale=<?lua print(s) ?> mesh="asteroid_UV.mesh" />
+          <Model position="0,0,0" scale="<?lua print(s) ?>" mesh="asteroid_UV.mesh" />
         </attached>
         <collisionShapes>
           <SphereCollisionShape radius="<?lua print(s*0.9) ?>" />
@@ -144,7 +144,7 @@
             position="<?lua print(200-270/8*i)?> ,15,2"
             material="Examples/Flare"
             colour="1.0, 0.5, 0.3"
-            phase=<?lua print(-360/8*i)?>
+            phase="<?lua print(-360/8*i)?>"
             amplitude=0.1
             frequency=0.5
             quadratic=1
@@ -154,7 +154,7 @@
             position="<?lua print(200-270/8*i)?>,-15,2"
             material="Examples/Flare"
             colour="1.0, 0.5, 0.3"
-            phase=<?lua print(-360/8*i)?>
+            phase="<?lua print(-360/8*i)?>"
             amplitude=0.1
             frequency=0.5
             quadratic=1
@@ -202,9 +202,9 @@
         z = math.random() * 2000 - 1000
         s = math.random() * 100
     ?>
-      <MovableEntity collisiontype=dynamic mass=<?lua print(s*10)?> position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>">
+      <MovableEntity collisiontype=dynamic mass="<?lua print(s*10)?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.01 angularDamping=0 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>">
         <attached>
-          <Model position="0,0,0" scale=<?lua print(s) ?> mesh="asteroid_ice.mesh" />
+          <Model position="0,0,0" scale="<?lua print(s) ?>" mesh="asteroid_ice.mesh" />
         </attached>
         <collisionShapes>
           <SphereCollisionShape radius="<?lua print(s*0.9)?>" />

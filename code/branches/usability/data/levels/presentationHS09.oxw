@@ -192,7 +192,7 @@
           <Template link=spaceshipassff />
         </templates>
         <controller>
-          <WaypointPatrolController name=attacker alertnessradius=<?lua print(math.random() * 2000) ?> team=0 active=false>
+          <WaypointPatrolController name=attacker alertnessradius="<?lua print(math.random() * 2000) ?>" team=0 active=false>
             <waypoints>
               <StaticEntity position="<?lua print(2800 + math.random() * 500 - 250) ?>,<?lua print(2500 + math.random() * 500 - 250) ?>,<?lua print(1500 + math.random() * 500 - 250) ?>" />
               <StaticEntity position="<?lua print(5000 + math.random() * 500 - 250) ?>,<?lua print(0 + math.random() * 500 - 250) ?>,<?lua print(0 + math.random() * 500 - 250) ?>" />
@@ -283,7 +283,7 @@
             position="<?lua print(200-270/8*i)?> ,15,2"
             material="Examples/Flare"
             colour="1.0, 0.5, 0.3"
-            phase=<?lua print(-360/8*i)?>
+            phase="<?lua print(-360/8*i)?>"
             amplitude=0.1
             frequency=0.5
             quadratic=1
@@ -293,7 +293,7 @@
             position="<?lua print(200-270/8*i)?>,-15,2"
             material="Examples/Flare"
             colour="1.0, 0.5, 0.3"
-            phase=<?lua print(-360/8*i)?>
+            phase="<?lua print(-360/8*i)?>"
             amplitude=0.1
             frequency=0.5
             quadratic=1
@@ -367,7 +367,7 @@
     ?>
       <MovableEntity mass=90000 position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" linearDamping=0.8 angularDamping=0.8 rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 100 - 15) ?>">
         <attached>
-          <Model position="0,0,0" scale=<?lua print(s) ?> mesh="<?lua print(elements[e])?>" />
+          <Model position="0,0,0" scale="<?lua print(s) ?>" mesh="<?lua print(elements[e])?>" />
         </attached>
       </MovableEntity>
     <?lua end ?>

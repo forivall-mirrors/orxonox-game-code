@@ -55,7 +55,7 @@
         <?lua
           for i = 1, 10, 1 do
         ?>
-          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay=<?lua print(math.random()) ?> source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
             <events>
               <spawn>
                 <EventListener event="base 1" />
@@ -96,7 +96,7 @@
         <?lua
           for i = 1, 10, 1 do
         ?>
-          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay=<?lua print(math.random()) ?> source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
             <events>
               <spawn>
                 <EventListener event="base 2" />
@@ -137,7 +137,7 @@
         <?lua
           for i = 1, 10, 1 do
         ?>
-          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay=<?lua print(math.random()) ?> source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
             <events>
               <spawn>
                 <EventListener event="base 3" />
@@ -177,7 +177,7 @@
         <?lua
           for i = 1, 10, 1 do
         ?>
-          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay=<?lua print(math.random()) ?> source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
             <events>
               <spawn>
                 <EventListener event="base 4" />
@@ -218,7 +218,7 @@
         <?lua
           for i = 1, 10, 1 do
         ?>
-          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay=<?lua print(math.random()) ?> source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
             <events>
               <spawn>
                 <EventListener event="base 5" />
