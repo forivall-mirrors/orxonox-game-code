@@ -64,19 +64,21 @@ namespace orxonox
                 { return this->bVisible_; }
             void updateVisibility();
 
-            inline void setCompositor(const std::string& compositor)
+            inline void setCompositorName(const std::string& name)
             {
-                if (this->compositor_ != compositor)
+                if (this->compositorName_ != name)
                 {
-                    this->compositor_ = compositor;
-                    this->changedCompositor();
+                    this->compositorName_ = name;
+                    this->changedCompositorName();
                 }
             }
-            inline const std::string& getCompositor() const
-                { return this->compositor_; }
-            void changedCompositor();
+            inline const std::string& getCompositorName() const
+                { return this->compositorName_; }
+            void changedCompositorName();
+            void changedCompositorName(Ogre::Viewport* viewport);
 
-            void setSceneManager(Ogre::SceneManager* scenemanager);
+            inline void setSceneManager(Ogre::SceneManager* scenemanager)
+                { this->scenemanager_ = scenemanager; }
             inline Ogre::SceneManager* getSceneManager() const
                 { return this->scenemanager_; }
 
@@ -93,13 +95,14 @@ namespace orxonox
             static ParameterPointer* getParameterPointer(const std::string& material, size_t technique, size_t pass, const std::string& parameter);
 
         private:
+            static bool hasCgProgramManager();
+
             Ogre::SceneManager* scenemanager_;
             Ogre::CompositorInstance* compositorInstance_;
             bool bVisible_;
             bool bLoadCompositor_;
-            bool bViewportInitialized_;
-            std::string compositor_;
-            std::string oldcompositor_;
+            std::string compositorName_;
+            std::string oldcompositorName_;
 
             static MaterialMap parameters_s;
             static bool bLoadedCgPlugin_s;
