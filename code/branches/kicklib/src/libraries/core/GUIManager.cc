@@ -45,7 +45,7 @@
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
 
-#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#ifdef CEGUI_OLD_VERSION
 #  include <CEGUILua.h>
 #  include <ogreceguirenderer/OgreCEGUIRenderer.h>
 #else
@@ -92,7 +92,7 @@ namespace orxonox
                 case CEGUI::Standard:    orxonoxLevel = 4; break;
                 case CEGUI::Informative: orxonoxLevel = 5; break;
                 case CEGUI::Insane:      orxonoxLevel = 6; break;
-                default: OrxAssert(false, "CEGUI log level out of range, inpect immediately!");
+                default: OrxAssert(false, "CEGUI log level out of range, inspect immediately!");
             }
             OutputHandler::getOutStream(orxonoxLevel)
                 << "CEGUI: " << message << std::endl;
@@ -126,7 +126,7 @@ namespace orxonox
         , scriptModule_(NULL)
         , guiSystem_(NULL)
         , resourceProvider_(NULL)
-#if CEGUI_VERSION_MAJOR >= 1 || CEGUI_VERSION_MINOR >= 7
+#ifdef CEGUI_OLD_VERSION
         , imageCodec_(NULL)
 #endif
         , camera_(NULL)
@@ -139,7 +139,7 @@ namespace orxonox
         COUT(3) << "Initialising CEGUI." << std::endl;
 
         // Note: No SceneManager specified yet
-#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#ifdef CEGUI_OLD_VERSION
         guiRenderer_ = new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
         resourceProvider_ = guiRenderer_->createResourceProvider();
 #else
@@ -154,7 +154,7 @@ namespace orxonox
         rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua");
         // This is necessary to ensure that input events also use the right resource info when triggering lua functions
         luaState_->setDefaultResourceInfo(this->rootFileInfo_);
-#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#ifdef CEGUI_OLD_VERSION
         scriptModule_ = new LuaScriptModule(luaState_->getInternalLuaState());
 #else
         scriptModule_ = &LuaScriptModule::create(luaState_->getInternalLuaState());
@@ -170,7 +170,7 @@ namespace orxonox
         this->ceguiLogger_ = ceguiLogger.release();
 
         // Create the CEGUI system singleton
-#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#ifdef CEGUI_OLD_VERSION
         guiSystem_ = new System(guiRenderer_, resourceProvider_, 0, scriptModule_);
         // Add functions that have been renamed in newer versions
         luaState_->doString("CEGUI.SchemeManager.create = CEGUI.SchemeManager.loadScheme");
@@ -206,7 +206,7 @@ namespace orxonox
     {
         using namespace CEGUI;
 
-#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#ifdef CEGUI_OLD_VERSION
         delete guiSystem_;
         delete guiRenderer_;
         delete scriptModule_;
@@ -259,7 +259,7 @@ namespace orxonox
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
         this->camera_ = camera;
-#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#ifdef CEGUI_OLD_VERSION
         if (camera == NULL)
             this->guiRenderer_->setTargetSceneManager(0);
         else
@@ -538,7 +538,7 @@ namespace orxonox
     @param listbox
         The Listbox for which to enable (or disable) tooltips.
     @param enabled
-        Whether to enable or disabel the tooltips.
+        Whether to enable or disable the tooltips.
     */
     void GUIManager::setItemTooltipsEnabledHelper(CEGUI::Listbox* listbox, bool enabled)
     {
@@ -550,7 +550,7 @@ namespace orxonox
     */
     void GUIManager::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
-#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#ifdef CEGUI_OLD_VERSION
         this->guiRenderer_->setDisplaySize(CEGUI::Size(newWidth, newHeight));
 #else
         this->guiRenderer_->setDisplaySize(CEGUI::Size((float)newWidth, (float)newHeight));
@@ -558,7 +558,7 @@ namespace orxonox
     }
 
     /**
-        @brief Notify CEGUI if the windows loses the focus (stops higlight of menu items, etc).
+        @brief Notify CEGUI if the windows loses the focus (stops highlight of menu items, etc).
     */
     void GUIManager::windowFocusChanged(bool bFocus)
     {

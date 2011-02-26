@@ -57,6 +57,10 @@
 $cfile "../util/TriBool.h" // tolua_export
 */
 
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#  define CEGUI_OLD_VERSION
+#endif
+
 namespace orxonox // tolua_export
 { // tolua_export
     class PlayerInfo; // Forward declaration
@@ -148,7 +152,7 @@ namespace orxonox // tolua_export
         /// Surrogate for the destructor
         Loki::ObjScopeGuardImpl0<GUIManager, void (GUIManager::*)()> destroyer_;
 
-#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#ifdef CEGUI_OLD_VERSION
         CEGUI::OgreCEGUIRenderer*            guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
         static const bool                    CEGUIVERSION7 = false;
