@@ -45,7 +45,7 @@
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
 
-#ifdef CEGUI_OLD_VERSION
+#ifdef ORXONOX_OLD_CEGUI
 #  include <CEGUILua.h>
 #  include <ogreceguirenderer/OgreCEGUIRenderer.h>
 #else
@@ -126,7 +126,7 @@ namespace orxonox
         , scriptModule_(NULL)
         , guiSystem_(NULL)
         , resourceProvider_(NULL)
-#ifdef CEGUI_OLD_VERSION
+#ifndef ORXONOX_OLD_CEGUI
         , imageCodec_(NULL)
 #endif
         , camera_(NULL)
@@ -139,7 +139,7 @@ namespace orxonox
         COUT(3) << "Initialising CEGUI." << std::endl;
 
         // Note: No SceneManager specified yet
-#ifdef CEGUI_OLD_VERSION
+#ifdef ORXONOX_OLD_CEGUI
         guiRenderer_ = new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
         resourceProvider_ = guiRenderer_->createResourceProvider();
 #else
@@ -154,7 +154,7 @@ namespace orxonox
         rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua");
         // This is necessary to ensure that input events also use the right resource info when triggering lua functions
         luaState_->setDefaultResourceInfo(this->rootFileInfo_);
-#ifdef CEGUI_OLD_VERSION
+#ifdef ORXONOX_OLD_CEGUI
         scriptModule_ = new LuaScriptModule(luaState_->getInternalLuaState());
 #else
         scriptModule_ = &LuaScriptModule::create(luaState_->getInternalLuaState());
@@ -170,7 +170,7 @@ namespace orxonox
         this->ceguiLogger_ = ceguiLogger.release();
 
         // Create the CEGUI system singleton
-#ifdef CEGUI_OLD_VERSION
+#ifdef ORXONOX_OLD_CEGUI
         guiSystem_ = new System(guiRenderer_, resourceProvider_, 0, scriptModule_);
         // Add functions that have been renamed in newer versions
         luaState_->doString("CEGUI.SchemeManager.create = CEGUI.SchemeManager.loadScheme");
@@ -206,7 +206,7 @@ namespace orxonox
     {
         using namespace CEGUI;
 
-#ifdef CEGUI_OLD_VERSION
+#ifdef ORXONOX_OLD_CEGUI
         delete guiSystem_;
         delete guiRenderer_;
         delete scriptModule_;
@@ -259,7 +259,7 @@ namespace orxonox
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
         this->camera_ = camera;
-#ifdef CEGUI_OLD_VERSION
+#ifdef ORXONOX_OLD_CEGUI
         if (camera == NULL)
             this->guiRenderer_->setTargetSceneManager(0);
         else
@@ -550,7 +550,7 @@ namespace orxonox
     */
     void GUIManager::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
-#ifdef CEGUI_OLD_VERSION
+#ifdef ORXONOX_OLD_CEGUI
         this->guiRenderer_->setDisplaySize(CEGUI::Size(newWidth, newHeight));
 #else
         this->guiRenderer_->setDisplaySize(CEGUI::Size((float)newWidth, (float)newHeight));

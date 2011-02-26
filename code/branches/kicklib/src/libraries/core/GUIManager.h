@@ -58,7 +58,7 @@ $cfile "../util/TriBool.h" // tolua_export
 */
 
 #if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
-#  define CEGUI_OLD_VERSION
+#  define ORXONOX_OLD_CEGUI
 #endif
 
 namespace orxonox // tolua_export
@@ -152,7 +152,7 @@ namespace orxonox // tolua_export
         /// Surrogate for the destructor
         Loki::ObjScopeGuardImpl0<GUIManager, void (GUIManager::*)()> destroyer_;
 
-#ifdef CEGUI_OLD_VERSION
+#ifdef ORXONOX_OLD_CEGUI
         CEGUI::OgreCEGUIRenderer*            guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
         static const bool                    CEGUIVERSION7 = false;
@@ -160,7 +160,7 @@ namespace orxonox // tolua_export
         CEGUI::OgreRenderer*                 guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         CEGUI::OgreResourceProvider*         resourceProvider_; //!< CEGUI's resource provider
         CEGUI::OgreImageCodec*               imageCodec_;
-        static const bool                    CEGUIVERSION7 = false;
+        static const bool                    CEGUIVERSION7 = true;
 #endif
         LuaState*                            luaState_;         //!< LuaState, access point to the Lua engine
         CEGUI::LuaScriptModule*              scriptModule_;     //!< CEGUI's script module to use Lua
