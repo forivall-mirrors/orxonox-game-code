@@ -56,9 +56,11 @@
 #include "Core.h"
 #include "Game.h"
 #include "GameMode.h"
+#include "GUIManager.h"
 #include "Loader.h"
 #include "MemoryArchive.h"
 #include "PathConfig.h"
+#include "ViewportEventListener.h"
 #include "WindowEventListener.h"
 #include "XMLFile.h"
 #include "command/ConsoleCommand.h"
@@ -380,7 +382,13 @@ namespace orxonox
 
     void GraphicsManager::setCamera(Ogre::Camera* camera)
     {
+        Ogre::Camera* oldCamera = this->viewport_->getCamera();
+
         this->viewport_->setCamera(camera);
+        GUIManager::getInstance().setCamera(camera);
+
+        for (ObjectList<ViewportEventListener>::iterator it = ObjectList<ViewportEventListener>::begin(); it != ObjectList<ViewportEventListener>::end(); ++it)
+            it->cameraChanged(this->viewport_, oldCamera);
     }
 
     /**
