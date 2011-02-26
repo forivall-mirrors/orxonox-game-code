@@ -156,6 +156,7 @@ namespace orxonox
         luaState_->setDefaultResourceInfo(this->rootFileInfo_);
 #ifdef ORXONOX_OLD_CEGUI
         scriptModule_ = new LuaScriptModule(luaState_->getInternalLuaState());
+        luaState_->doString("ORXONOX_OLD_CEGUI = true");
 #else
         scriptModule_ = &LuaScriptModule::create(luaState_->getInternalLuaState());
 #endif

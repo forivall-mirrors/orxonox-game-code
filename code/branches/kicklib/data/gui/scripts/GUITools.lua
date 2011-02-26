@@ -53,11 +53,11 @@ function getStaticTextWindowHeight(window)
     local frameHeight = window:getUnclippedOuterRect():getHeight() - formattedArea:getHeight()
 
     local height = 0
-    if orxonox.GUIManager:isCEGUIVersion7() then
-        height = math.floor(CEGUI.PropertyHelper.stringToFloat(window:getProperty("VertExtent")) + frameHeight) + 1
-    else
+    if ORXONOX_OLD_CEGUI then
         local lines = window:getFont():getFormattedLineCount(window:getText(), formattedArea, CEGUI.WordWrapLeftAligned)
         height = lines * window:getFont():getLineSpacing() + frameHeight
+    else
+        height = math.floor(CEGUI.PropertyHelper:stringToFloat(window:getProperty("VertExtent")) + frameHeight) + 1
     end
     return height
 end
