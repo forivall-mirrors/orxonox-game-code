@@ -252,7 +252,7 @@ namespace orxonox
                 ClassTreeMask mask = ClassTreeMask();
                 mask.exclude(ClassIdentifier<BaseObject>::getIdentifier());
                 mask.include(ClassIdentifier<LevelInfo>::getIdentifier());
-                Loader::load(&file, mask, false);
+                Loader::load(&file, mask, false, true);
                 // Iterate over all LevelInfos.
                 for(ObjectList<LevelInfo>::iterator item = ObjectList<LevelInfo>::begin(); item != ObjectList<LevelInfo>::end(); ++item)
                 {
