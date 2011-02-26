@@ -48,6 +48,9 @@
 #ifdef ORXONOX_OLD_CEGUI
 #  include <CEGUILua.h>
 #  include <ogreceguirenderer/OgreCEGUIRenderer.h>
+extern "C" {
+#  include <lauxlib.h>
+}
 #else
 #  include <ScriptingModules/LuaScriptModule/CEGUILua.h>
 #  include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
@@ -100,6 +103,28 @@ namespace orxonox
             CEGUI::DefaultLogger::logEvent(message, level);
         }
     };
+
+#ifdef ORXONOX_OLD_CEGUI
+    /** Class with the same memory layout as CEGUI::LuaScriptModule. <br>
+        We need this to fix a problem with an uninitialised member variable
+        in CEGUI < 0.7 <br>
+        Notice that "public" modifier for the otherwise private variables.
+    */
+    class CEGUILUA_API LuaScriptModuleWorkaround : public CEGUI::ScriptModule
+    {
+    public:
+        LuaScriptModuleWorkaround();
+        ~LuaScriptModuleWorkaround();
+
+    public:
+        bool d_ownsState;
+        lua_State* d_state;
+        CEGUI::String d_errFuncName;
+        int d_errFuncIndex;
+        CEGUI::String d_activeErrFuncName;
+        int d_activeErrFuncIndex;
+    };
+#endif
 
     static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
@@ -156,6 +181,11 @@ namespace orxonox
         luaState_->setDefaultResourceInfo(this->rootFileInfo_);
 #ifdef ORXONOX_OLD_CEGUI
         scriptModule_ = new LuaScriptModule(luaState_->getInternalLuaState());
+        // Ugly workaround: older CEGUILua versions don't initialise the member
+        // d_activeErrFuncIndex at all. That leads to "error in error handling"
+        // problems when a Lua error occurs.
+        // We fix this by setting the member manually.
+        reinterpret_cast<LuaScriptModuleWorkaround*>(scriptModule_)->d_activeErrFuncIndex = LUA_NOREF;
         luaState_->doString("ORXONOX_OLD_CEGUI = true");
 #else
         scriptModule_ = &LuaScriptModule::create(luaState_->getInternalLuaState());
