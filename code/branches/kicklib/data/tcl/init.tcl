@@ -133,7 +133,7 @@ proc cd {{path "~"}} {
 
 # change the working directory to the media path
 
-#cd $::orxonox::mediapath
+cd $::orxonox::mediapath
 
 
 # Redefines puts to write directly into the Orxonox console if the channel is stdout or stderr.
