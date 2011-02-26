@@ -81,8 +81,6 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (GUIManager::getInstance().getCamera() == this->camera_)
-                GUIManager::getInstance().setCamera(NULL);
             this->releaseFocus();
 
             this->cameraNode_->detachAllObjects();

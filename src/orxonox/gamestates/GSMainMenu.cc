@@ -95,10 +95,9 @@ namespace orxonox
     void GSMainMenu::activate()
     {
         // show main menu
-        GUIManager::getInstance().showGUI("MainMenu", true);
-        GUIManager::getInstance().setCamera(this->camera_);
-        GUIManager::getInstance().setBackgroundImage("MainMenuBackground", "Background");
         GraphicsManager::getInstance().setCamera(this->camera_);
+        GUIManager::getInstance().showGUI("MainMenu", true);
+        GUIManager::getInstance().setBackgroundImage("MainMenuBackground", "Background");
 
         InputManager::getInstance().enterState("MainMenuHackery");
 
@@ -128,10 +127,9 @@ namespace orxonox
 
         InputManager::getInstance().leaveState("MainMenuHackery");
 
-        GUIManager::getInstance().setCamera(0);
+        GraphicsManager::getInstance().setCamera(0);
         GUIManager::getInstance().setBackgroundImage("");
         GUIManager::hideGUI("MainMenu");
-        GraphicsManager::getInstance().setCamera(0);
 
         ModifyConsoleCommand(__CC_startStandalone_name).deactivate();
         ModifyConsoleCommand(__CC_startServer_name    ).deactivate();

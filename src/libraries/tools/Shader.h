@@ -36,11 +36,11 @@
 #include <vector>
 
 #include "util/OgreForwardRefs.h"
-#include "tools/interfaces/Tickable.h"
+#include "core/ViewportEventListener.h"
 
 namespace orxonox
 {
-    class _ToolsExport Shader : public Tickable
+    class _ToolsExport Shader : public ViewportEventListener
     {
         typedef std::pair<bool, void*>                  ParameterPointer;
         typedef std::map<std::string, ParameterPointer> ParameterMap;
@@ -51,8 +51,6 @@ namespace orxonox
         public:
             Shader(Ogre::SceneManager* scenemanager = 0);
             virtual ~Shader();
-
-            virtual void tick(float dt);
 
             inline void setVisible(bool bVisible)
             {
@@ -81,6 +79,8 @@ namespace orxonox
             void setSceneManager(Ogre::SceneManager* scenemanager);
             inline Ogre::SceneManager* getSceneManager() const
                 { return this->scenemanager_; }
+
+            virtual void cameraChanged(Ogre::Viewport* viewport, Ogre::Camera* oldCamera);
 
             void setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, float value);
             void setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, int value);

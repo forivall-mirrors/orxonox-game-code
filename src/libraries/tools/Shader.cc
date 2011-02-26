@@ -55,7 +55,7 @@ namespace orxonox
         this->compositorInstance_ = 0;
         this->bVisible_ = true;
         this->bLoadCompositor_ = GameMode::showsGraphics();
-        this->bViewportInitialized_ = false;
+        this->bViewportInitialized_ = true;
 
         if (this->bLoadCompositor_ && Ogre::Root::getSingletonPtr())
         {
@@ -88,9 +88,33 @@ namespace orxonox
     void Shader::setSceneManager(Ogre::SceneManager* scenemanager)
     {
         this->scenemanager_ = scenemanager;
-        this->bViewportInitialized_ = false;
+//        this->bViewportInitialized_ = false;
     }
 
+    void Shader::cameraChanged(Ogre::Viewport* viewport, Ogre::Camera* oldCamera)
+    {
+        if (!this->scenemanager_ || (viewport != this->scenemanager_->getCurrentViewport() && this->scenemanager_->getCurrentViewport() != NULL))
+            return;
+
+        // update compositor in viewport (shader should only be active if the current camera is in the same scene as the shader)
+
+        // Note:
+        // The shader needs also to be switched off and on after changing the camera in the
+        // same scene to avoid weird behaviour with active compositors while switching the
+        // camera (like freezing the image)
+        //
+        // Last known Ogre version needing this workaround:
+        // 1.4.8
+        // 1.7.2
+
+
+        if (oldCamera && this->scenemanager_ == oldCamera->getSceneManager())
+            Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositor_, false);
+
+        if (viewport->getCamera() && this->scenemanager_ == viewport->getCamera()->getSceneManager())
+            Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositor_, this->isVisible());
+    }
+/*
     void Shader::tick(float dt)
     {
         SUPER(Shader, tick, dt);
@@ -101,7 +125,7 @@ namespace orxonox
             this->updateVisibility();
         }
     }
-
+*/
     void Shader::changedCompositor()
     {
         if (this->bLoadCompositor_)
@@ -118,7 +142,7 @@ namespace orxonox
                 this->compositorInstance_ = Ogre::CompositorManager::getSingleton().addCompositor(viewport, this->compositor_);
                 if (!this->compositorInstance_)
                     COUT(2) << "Warning: Couldn't load compositor with name \"" << this->compositor_ << "\"." << std::endl;
-                Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositor_, this->bViewportInitialized_ && this->isVisible());
+                //Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositor_, this->bViewportInitialized_ && this->isVisible());
             }
             this->oldcompositor_ = this->compositor_;
         }

@@ -20,51 +20,31 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Benjamin Knecht
- *   Co-authors:
  *      Fabian 'x3n' Landau
+ *   Co-authors:
+ *      ...
  *
  */
 
- /**
- @file
- @brief Handles the instances of Camera class
- @author Benjamin Knecht <beni_at_orxonox.net>
-  */
+#ifndef _ViewportEventListener_H__
+#define _ViewportEventListener_H__
 
-#ifndef _CameraManager_H__
-#define _CameraManager_H__
-
-#include "OrxonoxPrereqs.h"
-
-#include <list>
 #include "util/OgreForwardRefs.h"
-#include "util/Singleton.h"
-#include "core/OrxonoxClass.h"
+
+#include "CorePrereqs.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport CameraManager : public Singleton<CameraManager>, public OrxonoxClass
+    class _CoreExport ViewportEventListener : virtual public OrxonoxClass
     {
-            friend class Singleton<CameraManager>;
         public:
-            CameraManager();
-            ~CameraManager();
+            virtual void cameraChanged(Ogre::Viewport* viewport, Ogre::Camera* oldCamera) {}
 
-            Camera* getActiveCamera() const;
-
-            void requestFocus(Camera* camera);
-            void releaseFocus(Camera* camera);
-
-            void useCamera(Ogre::Camera* camera);
-
-        private:
-            CameraManager(const CameraManager&); // don't use
-
-            std::list<Camera*>    cameraList_;
-
-            static CameraManager* singletonPtr_s;
+        protected:
+            ViewportEventListener();
+            virtual ~ViewportEventListener() {}
     };
 }
 
-#endif /* _CameraManager_H__ */
+#endif /* _ViewportEventListener_H__ */
