@@ -52,49 +52,29 @@ namespace orxonox
         RegisterObject(Shader);
 
         this->scenemanager_ = scenemanager;
-        this->compositorInstance_ = 0;
         this->bVisible_ = true;
         this->bLoadCompositor_ = GameMode::showsGraphics();
-        this->bViewportInitialized_ = true;
 
-        if (this->bLoadCompositor_ && Ogre::Root::getSingletonPtr())
-        {
-            Shader::bLoadedCgPlugin_s = false;
-            const Ogre::Root::PluginInstanceList& plugins = Ogre::Root::getSingleton().getInstalledPlugins();
-            for (size_t i = 0; i < plugins.size(); ++i)
-            {
-                if (plugins[i]->getName() == "Cg Program Manager")
-                {
-                    Shader::bLoadedCgPlugin_s = true;
-                    break;
-                }
-            }
-        }
+        static bool hasCgProgramManager = Shader::hasCgProgramManager();
+        Shader::bLoadedCgPlugin_s = hasCgProgramManager;
 
         this->bLoadCompositor_ &= Shader::bLoadedCgPlugin_s;
     }
 
     Shader::~Shader()
     {
-        if (this->compositorInstance_ && this->bLoadCompositor_)
-        {
-            Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
-            assert(viewport);
-            Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->compositor_);
-        }
-
-    }
-
-    void Shader::setSceneManager(Ogre::SceneManager* scenemanager)
-    {
-        this->scenemanager_ = scenemanager;
-//        this->bViewportInitialized_ = false;
+        if (this->compositorInstance_ && GraphicsManager::getInstance().getViewport())
+            Ogre::CompositorManager::getSingleton().removeCompositor(GraphicsManager::getInstance().getViewport(), this->compositorName_);
     }
 
     void Shader::cameraChanged(Ogre::Viewport* viewport, Ogre::Camera* oldCamera)
     {
-        if (!this->scenemanager_ || (viewport != this->scenemanager_->getCurrentViewport() && this->scenemanager_->getCurrentViewport() != NULL))
+        if (!this->bLoadCompositor_ || !this->scenemanager_)
             return;
+
+        // load the compositor if not already done
+        if (!this->compositorName_.empty() && !this->compositorInstance_)
+            this->changedCompositorName(viewport);
 
         // update compositor in viewport (shader should only be active if the current camera is in the same scene as the shader)
 
@@ -107,61 +87,57 @@ namespace orxonox
         // 1.4.8
         // 1.7.2
 
-
         if (oldCamera && this->scenemanager_ == oldCamera->getSceneManager())
-            Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositor_, false);
+            Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositorName_, false);
 
         if (viewport->getCamera() && this->scenemanager_ == viewport->getCamera()->getSceneManager())
-            Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositor_, this->isVisible());
+            Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositorName_, this->isVisible());
     }
-/*
-    void Shader::tick(float dt)
-    {
-        SUPER(Shader, tick, dt);
 
-        if (this->bLoadCompositor_ && !this->bViewportInitialized_ && this->scenemanager_ && this->scenemanager_->getCurrentViewport())
-        {
-            this->bViewportInitialized_ = true;
-            this->updateVisibility();
-        }
+    void Shader::changedCompositorName()
+    {
+        // For the moment, we get the viewport always from the graphics manager
+        // TODO: Try to support multiple viewports - note however that scenemanager_->getCurrentViewport() returns NULL
+        //       after switching to a camera in a different scene (only for the first time this scene is displayed though)
+        this->changedCompositorName(GraphicsManager::getInstance().getViewport());
     }
-*/
-    void Shader::changedCompositor()
+
+    void Shader::changedCompositorName(Ogre::Viewport* viewport)
     {
         if (this->bLoadCompositor_)
         {
-            Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
             assert(viewport);
-            if (!this->oldcompositor_.empty())
+            if (!this->oldcompositorName_.empty())
             {
-                Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->oldcompositor_);
+                Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->oldcompositorName_);
                 this->compositorInstance_ = 0;
             }
-            if (!this->compositor_.empty())
+            if (!this->compositorName_.empty())
             {
-                this->compositorInstance_ = Ogre::CompositorManager::getSingleton().addCompositor(viewport, this->compositor_);
+                this->compositorInstance_ = Ogre::CompositorManager::getSingleton().addCompositor(viewport, this->compositorName_);
                 if (!this->compositorInstance_)
-                    COUT(2) << "Warning: Couldn't load compositor with name \"" << this->compositor_ << "\"." << std::endl;
-                //Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositor_, this->bViewportInitialized_ && this->isVisible());
+                    COUT(2) << "Warning: Couldn't load compositor with name \"" << this->compositorName_ << "\"." << std::endl;
+                else if (viewport->getCamera())
+                    Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositorName_, this->isVisible() && viewport->getCamera() && this->scenemanager_ == viewport->getCamera()->getSceneManager());
             }
-            this->oldcompositor_ = this->compositor_;
+            this->oldcompositorName_ = this->compositorName_;
         }
     }
 
     void Shader::updateVisibility()
     {
-        if (this->compositorInstance_ && this->scenemanager_)
-            this->compositorInstance_->setEnabled(this->scenemanager_->getCurrentViewport() && this->isVisible());
+        if (this->compositorInstance_)
+            Ogre::CompositorManager::getSingleton().setCompositorEnabled(GraphicsManager::getInstance().getViewport(), this->compositorName_, this->isVisible());
     }
 
     void Shader::setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, float value)
     {
         if (Shader::_setParameter(material, technique, pass, parameter, value))
         {
-            if (this->bViewportInitialized_ && this->compositorInstance_ && this->isVisible())
+            if (this->compositorInstance_ && this->isVisible())
             {
-                this->compositorInstance_->setEnabled(false);
-                this->compositorInstance_->setEnabled(true);
+                Ogre::CompositorManager::getSingleton().setCompositorEnabled(GraphicsManager::getInstance().getViewport(), this->compositorName_, false);
+                Ogre::CompositorManager::getSingleton().setCompositorEnabled(GraphicsManager::getInstance().getViewport(), this->compositorName_, true);
             }
         }
     }
@@ -170,15 +146,15 @@ namespace orxonox
     {
         if (Shader::_setParameter(material, technique, pass, parameter, value))
         {
-            if (this->bViewportInitialized_ && this->compositorInstance_ && this->isVisible())
+            if (this->compositorInstance_ && this->isVisible())
             {
-                this->compositorInstance_->setEnabled(false);
-                this->compositorInstance_->setEnabled(true);
+                Ogre::CompositorManager::getSingleton().setCompositorEnabled(GraphicsManager::getInstance().getViewport(), this->compositorName_, false);
+                Ogre::CompositorManager::getSingleton().setCompositorEnabled(GraphicsManager::getInstance().getViewport(), this->compositorName_, true);
             }
         }
     }
 
-    bool Shader::_setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, float value)
+    /* static */ bool Shader::_setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, float value)
     {
         ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
         if (pointer)
@@ -203,7 +179,7 @@ namespace orxonox
         return false;
     }
 
-    bool Shader::_setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, int value)
+    /* static */ bool Shader::_setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, int value)
     {
         ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
         if (pointer)
@@ -228,7 +204,7 @@ namespace orxonox
         return false;
     }
 
-    float Shader::getParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
+    /* static */ float Shader::getParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
     {
         ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
         if (pointer)
@@ -242,7 +218,7 @@ namespace orxonox
             return 0;
     }
 
-    bool Shader::getParameterIsFloat(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
+    /* static */ bool Shader::getParameterIsFloat(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
     {
         ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
         if (pointer)
@@ -251,7 +227,7 @@ namespace orxonox
             return false;
     }
 
-    bool Shader::getParameterIsInt(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
+    /* static */ bool Shader::getParameterIsInt(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
     {
         ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
         if (pointer)
@@ -260,7 +236,7 @@ namespace orxonox
             return false;
     }
 
-    Shader::ParameterPointer* Shader::getParameterPointer(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
+    /* static */ Shader::ParameterPointer* Shader::getParameterPointer(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
     {
         if (!GameMode::showsGraphics() || !Shader::bLoadedCgPlugin_s)
             return 0;
@@ -349,5 +325,17 @@ namespace orxonox
                 return Shader::getParameterPointer(material, technique, pass, parameter);
         }
         return 0;
+    }
+
+    /* static */ bool Shader::hasCgProgramManager()
+    {
+        if (Ogre::Root::getSingletonPtr())
+        {
+            const Ogre::Root::PluginInstanceList& plugins = Ogre::Root::getSingleton().getInstalledPlugins();
+            for (size_t i = 0; i < plugins.size(); ++i)
+                if (plugins[i]->getName() == "Cg Program Manager")
+                    return true;
+        }
+        return false;
     }
 }

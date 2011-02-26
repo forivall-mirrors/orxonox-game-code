@@ -52,7 +52,6 @@ namespace orxonox
 
         private:
             void registerVariables();
-            void changedCompositor();
 
             Shader shader_;
     };
