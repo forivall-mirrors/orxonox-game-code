@@ -45,18 +45,19 @@ function getScrollingStepSize(window)
     return 0.008*ratio/0.3204
 end
 
-function getStaticTextArea(static_text)
-    local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(static_text:getLookNFeel())
-
-    return lookAndFeel:getNamedArea("WithFrameTextRenderArea"):getArea():getPixelRect(static_text)
-end
-
 function getStaticTextWindowHeight(window)
     -- Get the area the text is formatted and drawn into.
-    local formattedArea = getStaticTextArea(window)
+    local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(window:getLookNFeel())
+    local formattedArea = lookAndFeel:getNamedArea("WithFrameTextRenderArea"):getArea():getPixelRect(window)
     -- Calculate the pixel height of the frame by subtracting the height of the area above from the total height of the window.
     local frameHeight = window:getUnclippedOuterRect():getHeight() - formattedArea:getHeight()
 
-    local height = math.floor(CEGUI.PropertyHelper.stringToFloat(window:getProperty("VertExtent")) + frameHeight) + 1
+    local height = 0
+    if orxonox.GUIManager:isCEGUIVersion7() then
+        height = math.floor(CEGUI.PropertyHelper.stringToFloat(window:getProperty("VertExtent")) + frameHeight) + 1
+    else
+        local lines = window:getFont():getFormattedLineCount(window:getText(), formattedArea, CEGUI.WordWrapLeftAligned)
+        height = lines * window:getFont():getLineSpacing() + frameHeight
+    end
     return height
 end

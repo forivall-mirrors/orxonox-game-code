@@ -115,6 +115,8 @@ namespace orxonox // tolua_export
         static void setTooltipTextHelper(CEGUI::ListboxItem* item, const std::string& toooltip); //tolua_export
         static void setItemTooltipsEnabledHelper(CEGUI::Listbox* listbox, bool enabled); //tolua_export
 
+        static bool isCEGUIVersion7(void) { return CEGUIVERSION7; } // tolua_export
+
         static GUIManager& getInstance() { return Singleton<GUIManager>::getInstance(); } // tolua_export
 
     private:
@@ -149,10 +151,12 @@ namespace orxonox // tolua_export
 #if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
         CEGUI::OgreCEGUIRenderer*            guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
+        static const bool                    CEGUIVERSION7 = false;
 #else
         CEGUI::OgreRenderer*                 guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         CEGUI::OgreResourceProvider*         resourceProvider_; //!< CEGUI's resource provider
         CEGUI::OgreImageCodec*               imageCodec_;
+        static const bool                    CEGUIVERSION7 = false;
 #endif
         LuaState*                            luaState_;         //!< LuaState, access point to the Lua engine
         CEGUI::LuaScriptModule*              scriptModule_;     //!< CEGUI's script module to use Lua
