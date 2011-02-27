@@ -2,34 +2,39 @@ ADD_SOURCE_FILES(BULLET_FILES
 
 COMPILATION_BEGIN BulletDynamicsCompilation.cpp
 
-	ConstraintSolver/btContactConstraint.cpp
+	Character/btKinematicCharacterController.cpp
+
 	ConstraintSolver/btConeTwistConstraint.cpp
+	ConstraintSolver/btContactConstraint.cpp
 	ConstraintSolver/btGeneric6DofConstraint.cpp
+	ConstraintSolver/btGeneric6DofSpringConstraint.cpp
+	ConstraintSolver/btHinge2Constraint.cpp
 	ConstraintSolver/btHingeConstraint.cpp
 	ConstraintSolver/btPoint2PointConstraint.cpp
 	ConstraintSolver/btSequentialImpulseConstraintSolver.cpp
 	ConstraintSolver/btSliderConstraint.cpp
 	ConstraintSolver/btSolve2LinearConstraint.cpp
 	ConstraintSolver/btTypedConstraint.cpp
+	ConstraintSolver/btUniversalConstraint.cpp
 
-	Dynamics/Bullet-C-API.cpp
+	Dynamics/btContinuousDynamicsWorld.cpp
 	Dynamics/btDiscreteDynamicsWorld.cpp
-	Dynamics/btSimpleDynamicsWorld.cpp
 	Dynamics/btRigidBody.cpp
-
+	Dynamics/btSimpleDynamicsWorld.cpp
+	Dynamics/Bullet-C-API.cpp
 	Vehicle/btRaycastVehicle.cpp
 	Vehicle/btWheelInfo.cpp
-
-	Character/btKinematicCharacterController.cpp
 
 COMPILATION_END
 
 	# Headers
+	ConstraintSolver/btConeTwistConstraint.h
 	ConstraintSolver/btConstraintSolver.h
 	ConstraintSolver/btContactConstraint.h
 	ConstraintSolver/btContactSolverInfo.h
-	ConstraintSolver/btConeTwistConstraint.h
 	ConstraintSolver/btGeneric6DofConstraint.h
+	ConstraintSolver/btGeneric6DofSpringConstraint.h
+	ConstraintSolver/btHinge2Constraint.h
 	ConstraintSolver/btHingeConstraint.h
 	ConstraintSolver/btJacobianEntry.h
 	ConstraintSolver/btPoint2PointConstraint.h
@@ -39,7 +44,7 @@ COMPILATION_END
 	ConstraintSolver/btSolverBody.h
 	ConstraintSolver/btSolverConstraint.h
 	ConstraintSolver/btTypedConstraint.h
-
+	ConstraintSolver/btUniversalConstraint.h
 	Dynamics/btActionInterface.h
 	Dynamics/btContinuousDynamicsWorld.h
 	Dynamics/btDiscreteDynamicsWorld.h
