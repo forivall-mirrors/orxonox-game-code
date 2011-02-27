@@ -136,6 +136,8 @@ namespace orxonox
         if(GameMode::showsGraphics() && !noGraphics)
             GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
 
+        COUT(3) << "NotificationQueue '" << this->getName() << "' destroyed." << std::endl;
+
         this->OrxonoxClass::destroy();
     }
 
@@ -166,9 +168,8 @@ namespace orxonox
             // Iterate through all elements whose creation time is smaller than the current time minus the display time.
             while(it != this->ordering_.upper_bound(&this->timeLimit_))
             {
-                std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator temp = it;
-                it++;
-                this->remove(temp); // Remove the Notifications that have expired.
+                this->remove(it); // Remove the Notifications that have expired.
+                it = this->ordering_.begin();
             }
 
             this->tickTime_ = this->tickTime_ - (int)this->tickTime_; // Reset time counter.
@@ -247,6 +248,8 @@ namespace orxonox
         // Push the Notification to the GUI.
         if(GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString("NotificationLayer.pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
+
+        COUT(5) << "Notification \"" << notification->getMessage() << "\" pushed to NotificationQueue '" << this->getName() << "'" << endl;
     }
 
     /**
@@ -258,11 +261,13 @@ namespace orxonox
         NotificationContainer* container = this->notifications_.back();
         // Get all the NotificationContainers that were sent the same time the NotificationContainer we want to pop was sent.
         std::pair<std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator, std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator> iterators = this->ordering_.equal_range(container);
+
         // Iterate through all suspects and remove the container as soon as we find it.
         for(std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator it = iterators.first; it != iterators.second; it++)
         {
             if(container == *it)
             {
+                COUT(5) << "Notification \"" << (*it)->notification->getMessage() << "\" popped from NotificationQueue '" << this->getName() << "'" << endl;
                 this->ordering_.erase(it);
                 break;
             }
@@ -289,6 +294,9 @@ namespace orxonox
         std::vector<NotificationContainer*>::iterator it = std::find(this->notifications_.begin(), this->notifications_.end(), *containerIterator);
         // Get the index at which the Notification is.
         std::vector<NotificationContainer*>::difference_type index = it - this->notifications_.begin ();
+
+        COUT(5) << "Notification \"" << (*it)->notification->getMessage() << "\" removed from NotificationQueue '" << this->getName() << "'" << endl;
+
         this->ordering_.erase(containerIterator);
         this->notifications_.erase(it);
 
@@ -309,6 +317,7 @@ namespace orxonox
     */
     void NotificationQueue::clear(bool noGraphics)
     {
+        COUT(4) << "Clearing NotificationQueue " << this->getName() << "." << endl;
         this->ordering_.clear();
         // Delete all NotificationContainers in the list.
         for(std::vector<NotificationContainer*>::iterator it = this->notifications_.begin(); it != this->notifications_.end(); it++)
@@ -371,7 +380,7 @@ namespace orxonox
 
     /**
     @brief
-        Produces all targets of the NotificationQueue concatinated as string, with kommas (',') as seperators.
+        Produces all targets of the NotificationQueue concatinated as string, with commas (',') as seperators.
     @return
         Returns the targets as a string.
     */
