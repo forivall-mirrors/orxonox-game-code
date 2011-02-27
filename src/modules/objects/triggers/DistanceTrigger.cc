@@ -49,7 +49,7 @@ namespace orxonox
 
     this->distance_ = 100;
     this->targetMask_.exclude(Class(BaseObject));
-    this->targetName_ = BLANKSTRING;
+    this->targetName_ = "";
     this->singleTargetMode_ = false;
   }
 

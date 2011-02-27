@@ -56,10 +56,10 @@ namespace orxonox
     static const std::string __CC_startDedicated_name       = "startDedicated";
     static const std::string __CC_setMainMenuSoundPath_name = "setMMSoundPath";
 
-    SetConsoleCommand(__CC_startStandalone_name,      &GSMainMenu::startStandalone).defaultValues(BLANKSTRING).deactivate();
-    SetConsoleCommand(__CC_startServer_name,          &GSMainMenu::startServer    ).defaultValues(BLANKSTRING).deactivate();
-    SetConsoleCommand(__CC_startClient_name,          &GSMainMenu::startClient    ).defaultValues(BLANKSTRING).deactivate();
-    SetConsoleCommand(__CC_startDedicated_name,       &GSMainMenu::startDedicated ).defaultValues(BLANKSTRING).deactivate();
+    SetConsoleCommand(__CC_startStandalone_name,      &GSMainMenu::startStandalone).defaultValues("").deactivate();
+    SetConsoleCommand(__CC_startServer_name,          &GSMainMenu::startServer    ).defaultValues("").deactivate();
+    SetConsoleCommand(__CC_startClient_name,          &GSMainMenu::startClient    ).defaultValues("").deactivate();
+    SetConsoleCommand(__CC_startDedicated_name,       &GSMainMenu::startDedicated ).defaultValues("").deactivate();
     SetConsoleCommand(__CC_setMainMenuSoundPath_name, &GSMainMenu::setMainMenuSoundPath).hide();
 
     GSMainMenu::GSMainMenu(const GameStateInfo& info)
@@ -175,7 +175,7 @@ namespace orxonox
     */
     void GSMainMenu::startStandalone(const std::string& level)
     {
-        if(level != BLANKSTRING)
+        if(level != "")
             LevelManager::getInstance().setDefaultLevel(level);
 
         // HACK
@@ -191,7 +191,7 @@ namespace orxonox
     */
     void GSMainMenu::startServer(const std::string& level)
     {
-        if(level != BLANKSTRING)
+        if(level != "")
             LevelManager::getInstance().setDefaultLevel(level);
 
         // HACK
@@ -207,7 +207,7 @@ namespace orxonox
     */
     void GSMainMenu::startClient(const std::string& destination)
     {
-        if(destination != BLANKSTRING)
+        if(destination != "")
             Client::getInstance()->setDestination(destination, NETWORK_PORT);
 
         // HACK
@@ -223,7 +223,7 @@ namespace orxonox
     */
     void GSMainMenu::startDedicated(const std::string& level)
     {
-        if(level != BLANKSTRING)
+        if(level != "")
             LevelManager::getInstance().setDefaultLevel(level);
 
         // HACK

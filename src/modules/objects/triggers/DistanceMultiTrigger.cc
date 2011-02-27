@@ -53,7 +53,7 @@ namespace orxonox
         RegisterObject(DistanceMultiTrigger);
 
         this->distance_ = 100.0f;
-        this->targetName_ = BLANKSTRING;
+        this->targetName_ = "";
         this->singleTargetMode_ = false;
     }
 
@@ -180,7 +180,7 @@ namespace orxonox
     void DistanceMultiTrigger::setTargetName(const std::string& targetname)
     {
         // If the targetname is no blank string single-target mode is enabled.
-        if(targetname.compare(BLANKSTRING) != 0)
+        if(targetname != "")
             this->singleTargetMode_ = true;
         else
             this->singleTargetMode_ = false;
