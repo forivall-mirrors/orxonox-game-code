@@ -509,11 +509,11 @@ namespace orxonox
     */
     void GUIManager::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
-        this->guiRenderer_->setDisplaySize(CEGUI::Size(newWidth, newHeight));
+        this->guiRenderer_->setDisplaySize(CEGUI::Size((float)newWidth, (float)newHeight));
     }
 
     /**
-        @brief Notify CEGUI if the windows loses the focus (stops higlight of menu items, etc).
+        @brief Notify CEGUI if the windows loses the focus (stops highlighting of menu items, etc).
     */
     void GUIManager::windowFocusChanged(bool bFocus)
     {
