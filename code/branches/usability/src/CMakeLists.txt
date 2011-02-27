@@ -32,8 +32,9 @@ INCLUDE(OrxonoxConfig.cmake)
 
 ####### Library Behaviour (dependencies) ########
 
-# Disable Boost auto linking completely
+# Disable auto linking completely for Boost and POCO
 ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")
+ADD_COMPILER_FLAGS("-DPOCO_NO_AUTOMATIC_LIBS")
 
 # If no defines are specified, these libs get linked statically
 ADD_COMPILER_FLAGS("-DBOOST_ALL_DYN_LINK" WIN32 LINK_BOOST_DYNAMIC)
