@@ -462,19 +462,7 @@ namespace orxonox
 
     bool GraphicsManager::isFullScreen() const
     {
-        Ogre::ConfigOptionMap& options = ogreRoot_->getRenderSystem()->getConfigOptions();
-        if (options.find("Full Screen") != options.end())
-        {
-            if (options["Full Screen"].currentValue == "Yes")
-                return true;
-            else
-                return false;
-        }
-        else
-        {
-            COUT(0) << "Could not find 'Full Screen' render system option. Fix This!!!" << std::endl;
-            return false;
-        }
+        return this->renderWindow_->isFullScreen();
     }
 
     std::string GraphicsManager::setScreenResolution(unsigned int width, unsigned int height, bool fullscreen)
