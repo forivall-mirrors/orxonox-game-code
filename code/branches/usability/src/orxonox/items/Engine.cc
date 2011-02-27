@@ -101,7 +101,11 @@ namespace orxonox
 
     void Engine::setConfigValues()
     {
-        SetConfigValue(blurStrength_, 3.0f);
+        SetConfigValueExternal(bEnableMotionBlur_, "GraphicsSettings", "enableMotionBlur", true)
+            .description("Enable or disable the motion blur effect when moving very fast")
+            .callback(this, &Engine::changedEnableMotionBlur);
+        SetConfigValueExternal(blurStrength_, "GraphicsSettings", "blurStrength", 3.0f)
+            .description("Defines the strength of the motion blur effect");
     }
 
     void Engine::registerVariables()
@@ -203,14 +207,19 @@ namespace orxonox
             this->ship_->setBoost(false);
         this->ship_->setSteeringDirection(Vector3::ZERO);
 
-        if (!this->boostBlur_ && this->ship_->hasLocalController() && this->ship_->hasHumanController())
+        if (this->bEnableMotionBlur_ && !this->boostBlur_ && this->ship_->hasLocalController() && this->ship_->hasHumanController())
         {
             this->boostBlur_ = new Shader(this->ship_->getScene()->getSceneManager());
             this->boostBlur_->setCompositorName("Radial Blur");
         }
 
         if (this->boostBlur_ && this->maxSpeedFront_ != 0 && this->boostFactor_ != 1)
-            this->boostBlur_->setParameter(0, 0, "sampleStrength", this->blurStrength_ * clamp((-velocity.z - this->maxSpeedFront_) / ((this->boostFactor_ - 1) * this->maxSpeedFront_), 0.0f, 1.0f));
+        {
+            float blur = this->blurStrength_ * clamp((-velocity.z - this->maxSpeedFront_) / ((this->boostFactor_ - 1) * this->maxSpeedFront_), 0.0f, 1.0f);
+
+            this->boostBlur_->setVisible(blur > 0);
+            this->boostBlur_->setParameter(0, 0, "sampleStrength", blur);
+        }
     }
 
     void Engine::changedActivity()
@@ -255,5 +264,14 @@ namespace orxonox
     const Vector3& Engine::getCarrierPosition(void) const
     {
         return this->ship_->getWorldPosition();
+    }
+
+    void Engine::changedEnableMotionBlur()
+    {
+        if (!this->bEnableMotionBlur_)
+        {
+            this->boostBlur_->destroy();
+            this->boostBlur_ = 0;
+        }
     }
 }
