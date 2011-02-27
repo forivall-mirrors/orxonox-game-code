@@ -317,7 +317,11 @@ namespace orxonox
     {
         CCOUT(4) << "Configuring Renderer" << std::endl;
 
-        if (!ogreRoot_->restoreConfig() || Core::getInstance().getOgreConfigTimestamp() > Core::getInstance().getLastLevelTimestamp())
+        bool updatedConfig = Core::getInstance().getOgreConfigTimestamp() > Core::getInstance().getLastLevelTimestamp();
+        if (updatedConfig)
+            COUT(2) << "Ogre config file has changed, but no level was started since then. Displaying config dialogue again to verify the changes." << std::endl;
+
+        if (!ogreRoot_->restoreConfig() || updatedConfig)
         {
             if (!ogreRoot_->showConfigDialog())
                 ThrowException(InitialisationFailed, "OGRE graphics configuration dialogue canceled.");
@@ -463,6 +467,15 @@ namespace orxonox
     bool GraphicsManager::isFullScreen() const
     {
         return this->renderWindow_->isFullScreen();
+    }
+
+    bool GraphicsManager::hasVSyncEnabled() const
+    {
+        Ogre::ConfigOptionMap& options = ogreRoot_->getRenderSystem()->getConfigOptions();
+        if (options.find("VSync") != options.end())
+            return (options["VSync"].currentValue == "Yes");
+        else
+            return false;
     }
 
     std::string GraphicsManager::setScreenResolution(unsigned int width, unsigned int height, bool fullscreen)

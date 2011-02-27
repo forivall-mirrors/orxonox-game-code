@@ -74,6 +74,7 @@ namespace orxonox
         Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
         size_t getRenderWindowHandle();
         bool isFullScreen() const;
+        bool hasVSyncEnabled() const;
 
         void upgradeToGraphics();
         void loadDebugOverlay();
