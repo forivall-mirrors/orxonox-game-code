@@ -95,6 +95,9 @@ namespace orxonox
 
         // console commands
         void printScreen();
+        std::string setScreenResolution(unsigned int width, unsigned int height, bool fullscreen);
+        std::string setFSAA(const std::string& mode);
+        std::string setVSync(bool vsync);
 
         scoped_ptr<OgreWindowEventListener> ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
 #if OGRE_VERSION < 0x010600
