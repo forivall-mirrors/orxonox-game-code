@@ -221,7 +221,7 @@ namespace orxonox
             }
             else
             {
-                float damage=pawn->getMaxHealth()*punishDamageRate*0.5;//TODO: Factor 0.5 is hard coded. Where is the ratio between MaxHealth actually defined?
+                float damage=pawn->getMaxHealth()*punishDamageRate*0.5f;//TODO: Factor 0.5 is hard coded. Where is the ratio between MaxHealth actually defined?
                 pawn->removeHealth(damage);
                 this->timeToAct_[player]=timeRemaining;//reset timer
             }
@@ -250,7 +250,7 @@ namespace orxonox
 
                     if (it->first->getClientID()== CLIENTID_UNKNOWN)
                         continue;
-                    int output=1+playerDelayTime_[it->first];
+                    int output=1+(int)playerDelayTime_[it->first];
                     const std::string& message = "Respawn in " +multi_cast<std::string>(output)+ " seconds." ;//Countdown
                     this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
                 }
