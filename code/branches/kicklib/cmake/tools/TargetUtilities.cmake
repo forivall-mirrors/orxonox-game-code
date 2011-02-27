@@ -52,7 +52,7 @@
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
- #    ORXONOX_DEFAULT_LINK, ORXONOX_CONFIG_FILES
+ #    ORXONOX_DEFAULT_LINK, ORXONOX_CONFIG_FILES, ORXONOX_CONFIG_FILES_GENERATED
  #  Parameters:
  #    _target_name, ARGN for the macro arguments
  #
@@ -191,13 +191,19 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     GENERATE_SOURCE_GROUPS(${_${_target_name}_files})
 
     IF(NOT _arg_ORXONOX_EXTERNAL)
-      # Move the prereqs.h file to the config section
+      # Move the ...Prereqs.h and the PCH files to the 'Config' section
       IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_target_name_capitalised}Prereqs.h)
         SOURCE_GROUP("Config" FILES ${_target_name_capitalised}Prereqs.h)
       ENDIF()
-      # Add config files to the config section
-      LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES})
+      IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_arg_PCH_FILE})
+        SOURCE_GROUP("Config" FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_arg_PCH_FILE})
+      ENDIF()
+      # Also include all config files
+      LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES} ${ORXONOX_CONFIG_FILES_GENERATED})
+      # Add unprocessed config files to the 'Config' section
       SOURCE_GROUP("Config" FILES ${ORXONOX_CONFIG_FILES})
+      # Add generated config files to the 'Generated' section
+      SOURCE_GROUP("Generated" FILES ${ORXONOX_CONFIG_FILES_GENERATED})
     ENDIF()
   ENDIF()
 
