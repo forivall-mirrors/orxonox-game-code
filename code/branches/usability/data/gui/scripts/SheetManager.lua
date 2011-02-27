@@ -4,7 +4,7 @@ local cursor = CEGUI.MouseCursor:getSingleton()
 local loadedSheets = {}
 local activeMenuSheets = {size = 0, topSheetTuple = nil}
 local menuSheetsRoot = guiMgr:getMenuRootWindow()
-local bInGameConsoleClosed = false
+local bInGameConsoleOpen = false
 local mainMenuLoaded = false
 orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
 
@@ -220,8 +220,7 @@ function keyESC()
     -- HUGE, very HUGE hacks!
 
     -- If the InGameConsole is active, ignore the ESC command.
-    if bInGameConsoleClosed == true then
-        bInGameConsoleClosed = false
+    if bInGameConsoleOpen then
         return
     end
 
@@ -278,8 +277,12 @@ function noInputSheetCounter()
     return counter
 end
 
+function inGameConsoleOpened()
+    bInGameConsoleOpen = true
+end
+
 function inGameConsoleClosed()
-    bInGameConsoleClosed = not bInGameConsoleClosed;
+    bInGameConsoleOpen = false
 end
 
 ----------------------
