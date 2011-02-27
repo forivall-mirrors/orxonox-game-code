@@ -68,14 +68,6 @@ COMPILATION_BEGIN BulletCollisionCompilation.cpp
 	CollisionShapes/btTriangleMeshShape.cpp
 	CollisionShapes/btUniformScalingShape.cpp
 
-	Gimpact/btContactProcessing.cpp
-	Gimpact/btGImpactShape.cpp
-	Gimpact/btGImpactBvh.cpp
-	Gimpact/btGenericPoolAllocator.cpp
-	Gimpact/btGImpactCollisionAlgorithm.cpp
-	Gimpact/btTriangleShapeEx.cpp
-	Gimpact/btGImpactQuantizedBvh.cpp
-
 	NarrowPhaseCollision/btContinuousConvexCollision.cpp
 	NarrowPhaseCollision/btGjkEpa2.cpp
 	NarrowPhaseCollision/btGjkEpaPenetrationDepthSolver.cpp
@@ -88,13 +80,6 @@ COMPILATION_BEGIN BulletCollisionCompilation.cpp
 	NarrowPhaseCollision/btSubSimplexConvexCast.cpp
 	NarrowPhaseCollision/btVoronoiSimplexSolver.cpp
 
-COMPILATION_END
-
-COMPILATION_BEGIN BulletGImpactCompilation.cpp
-	Gimpact/gim_contact.cpp
-	Gimpact/gim_memory.cpp
-	Gimpact/gim_tri_collision.cpp
-	Gimpact/gim_box_set.cpp
 COMPILATION_END
 
 	# Headers
@@ -169,17 +154,6 @@ COMPILATION_END
 	CollisionShapes/btTriangleMesh.h
 	CollisionShapes/btTriangleMeshShape.h
 	CollisionShapes/btUniformScalingShape.h
-
-	Gimpact/btGImpactShape.h
-	Gimpact/gim_contact.h
-	Gimpact/btGImpactBvh.h
-	Gimpact/btGenericPoolAllocator.h
-	Gimpact/gim_memory.h
-	Gimpact/btGImpactCollisionAlgorithm.h
-	Gimpact/btTriangleShapeEx.h
-	Gimpact/gim_tri_collision.h
-	Gimpact/btGImpactQuantizedBvh.h
-	Gimpact/gim_box_set.h
 
 	NarrowPhaseCollision/btContinuousConvexCollision.h
 	NarrowPhaseCollision/btConvexCast.h
