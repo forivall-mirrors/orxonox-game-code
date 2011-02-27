@@ -48,6 +48,7 @@
 
 #include "SpecialConfig.h"
 #include "util/Clock.h"
+#include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
@@ -67,6 +68,14 @@
 
 namespace orxonox
 {
+    static const std::string __CC_GraphicsManager_group = "GraphicsManager";
+    static const std::string __CC_setScreenResolution_name = "setScreenResolution";
+    static const std::string __CC_setFSAA_name = "setFSAA";
+    static const std::string __CC_setVSync_name = "setVSync";
+    DeclareConsoleCommand(__CC_GraphicsManager_group, __CC_setScreenResolution_name, &prototype::string__uint_uint_bool);
+    DeclareConsoleCommand(__CC_GraphicsManager_group, __CC_setFSAA_name, &prototype::string__string);
+    DeclareConsoleCommand(__CC_GraphicsManager_group, __CC_setVSync_name, &prototype::string__bool);
+
     static const std::string __CC_printScreen_name = "printScreen";
     DeclareConsoleCommand(__CC_printScreen_name, &prototype::void__void);
 
@@ -137,6 +146,9 @@ namespace orxonox
 
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_.get());
         ModifyConsoleCommand(__CC_printScreen_name).resetFunction();
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setScreenResolution_name).resetFunction();
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setFSAA_name).resetFunction();
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setVSync_name).resetFunction();
 
         // Undeclare the resources
         Loader::unload(resources_.get());
@@ -331,6 +343,9 @@ namespace orxonox
 
         // add console commands
         ModifyConsoleCommand(__CC_printScreen_name).setFunction(&GraphicsManager::printScreen, this);
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setScreenResolution_name).setFunction(&GraphicsManager::setScreenResolution, this);
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setFSAA_name).setFunction(&GraphicsManager::setFSAA, this);
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setVSync_name).setFunction(&GraphicsManager::setVSync, this);
     }
 
     void GraphicsManager::loadDebugOverlay()
@@ -460,6 +475,55 @@ namespace orxonox
             COUT(0) << "Could not find 'Full Screen' render system option. Fix This!!!" << std::endl;
             return false;
         }
+    }
+
+    std::string GraphicsManager::setScreenResolution(unsigned int width, unsigned int height, bool fullscreen)
+    {
+        this->ogreRoot_->getRenderSystem()->setConfigOption("Video Mode", multi_cast<std::string>(width) + " x " + multi_cast<std::string>(height) + " @ " + multi_cast<std::string>(this->getRenderWindow()->getColourDepth()) + "-bit colour");
+        this->ogreRoot_->getRenderSystem()->setConfigOption("Full Screen", fullscreen ? "Yes" : "No");
+
+        std::string validate = this->ogreRoot_->getRenderSystem()->validateConfigOptions();
+
+        if (validate == "")
+        {
+            GraphicsManager::getInstance().getRenderWindow()->setFullscreen(fullscreen, width, height);
+            this->ogreRoot_->saveConfig();
+            Core::getInstance().updateOgreConfigTimestamp();
+        }
+
+        return validate;
+    }
+
+    std::string GraphicsManager::setFSAA(const std::string& mode)
+    {
+        this->ogreRoot_->getRenderSystem()->setConfigOption("FSAA", mode);
+
+        std::string validate = this->ogreRoot_->getRenderSystem()->validateConfigOptions();
+
+        if (validate == "")
+        {
+            //this->ogreRoot_->getRenderSystem()->reinitialise(); // can't use this that easily, because it recreates the render window, invalidating renderWindow_
+            this->ogreRoot_->saveConfig();
+            Core::getInstance().updateOgreConfigTimestamp();
+        }
+
+        return validate;
+    }
+
+    std::string GraphicsManager::setVSync(bool vsync)
+    {
+        this->ogreRoot_->getRenderSystem()->setConfigOption("VSync", vsync ? "Yes" : "No");
+
+        std::string validate = this->ogreRoot_->getRenderSystem()->validateConfigOptions();
+
+        if (validate == "")
+        {
+            //this->ogreRoot_->getRenderSystem()->reinitialise(); // can't use this that easily, because it recreates the render window, invalidating renderWindow_
+            this->ogreRoot_->saveConfig();
+            Core::getInstance().updateOgreConfigTimestamp();
+        }
+
+        return validate;
     }
 
     void GraphicsManager::printScreen()

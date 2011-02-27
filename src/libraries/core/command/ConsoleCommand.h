@@ -316,6 +316,10 @@ namespace orxonox
     {
         inline void void__void(void) {}
         inline void void__string(const std::string&) {}
+
+        inline std::string string__bool(bool) { return ""; }
+        inline std::string string__string(const std::string&) { return ""; }
+        inline std::string string__uint_uint_bool(unsigned int, unsigned int, bool) { return ""; }
     }
 
     namespace AccessLevel
