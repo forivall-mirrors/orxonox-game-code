@@ -206,11 +206,11 @@ namespace orxonox
         if (!this->boostBlur_ && this->ship_->hasLocalController() && this->ship_->hasHumanController())
         {
             this->boostBlur_ = new Shader(this->ship_->getScene()->getSceneManager());
-            this->boostBlur_->setCompositor("Radial Blur");
+            this->boostBlur_->setCompositorName("Radial Blur");
         }
 
         if (this->boostBlur_ && this->maxSpeedFront_ != 0 && this->boostFactor_ != 1)
-            this->boostBlur_->setParameter("Ogre/Compositor/Radial_Blur", 0, 0, "sampleStrength", this->blurStrength_ * clamp((-velocity.z - this->maxSpeedFront_) / ((this->boostFactor_ - 1) * this->maxSpeedFront_), 0.0f, 1.0f));
+            this->boostBlur_->setParameter(0, 0, "sampleStrength", this->blurStrength_ * clamp((-velocity.z - this->maxSpeedFront_) / ((this->boostFactor_ - 1) * this->maxSpeedFront_), 0.0f, 1.0f));
     }
 
     void Engine::changedActivity()
