@@ -105,6 +105,8 @@ namespace orxonox
 #endif
         , renderWindow_(0)
         , viewport_(0)
+        , lastFrameStartTime_(0.0f)
+        , lastFrameEndTime_(0.0f)
     {
         RegisterObject(GraphicsManager);
 
@@ -363,30 +365,31 @@ namespace orxonox
     /**
     @note
         A note about the Ogre::FrameListener: Even though we don't use them,
-        they still get called. However, the delta times are not correct (except
-        for timeSinceLastFrame, which is the most important). A little research
-        as shown that there is probably only one FrameListener that doesn't even
-        need the time. So we shouldn't run into problems.
+        they still get called.
     */
     void GraphicsManager::postUpdate(const Clock& time)
     {
-        Ogre::FrameEvent evt;
-        evt.timeSinceLastFrame = time.getDeltaTime();
-        evt.timeSinceLastEvent = time.getDeltaTime(); // note: same time, but shouldn't matter anyway
+        // Time before rendering
+        uint64_t timeBeforeTick = time.getRealMicroseconds();
 
-        // don't forget to call _fireFrameStarted to OGRE to make sure
-        // everything goes smoothly
+        // Ogre's time keeping object
+        Ogre::FrameEvent evt;
+
+        // Translate to Ogre float times before the update
+        float temp = lastFrameStartTime_;
+        lastFrameStartTime_ = (float)(timeBeforeTick / 1000000);
+        evt.timeSinceLastFrame = lastFrameStartTime_ - temp;
+        evt.timeSinceLastEvent = lastFrameStartTime_ - lastFrameEndTime_;
+
+        // Ogre requires the time too
         ogreRoot_->_fireFrameStarted(evt);
 
         // Pump messages in all registered RenderWindows
         // This calls the WindowEventListener objects.
         Ogre::WindowEventUtilities::messagePump();
-        // make sure the window stays active even when not focused
+        // Make sure the window stays active even when not focused
         // (probably only necessary on windows)
         this->renderWindow_->setActive(true);
-
-        // Time before rendering
-        uint64_t timeBeforeTick = time.getRealMicroseconds();
 
         // Render frame
         ogreRoot_->_updateAllRenderTargets();
@@ -395,8 +398,14 @@ namespace orxonox
         // Subtract the time used for rendering from the tick time counter
         Game::getInstance().subtractTickTime((int32_t)(timeAfterTick - timeBeforeTick));
 
-        // again, just to be sure OGRE works fine
-        ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
+        // Translate to Ogre float times after the update
+        temp = lastFrameEndTime_;
+        lastFrameEndTime_ = (float)(timeAfterTick / 1000000);
+        evt.timeSinceLastFrame = lastFrameEndTime_ - temp;
+        evt.timeSinceLastEvent = lastFrameEndTime_ - lastFrameStartTime_;
+
+        // Ogre also needs the time after the frame finished
+        ogreRoot_->_fireFrameEnded(evt);
     }
 
     void GraphicsManager::setCamera(Ogre::Camera* camera)
