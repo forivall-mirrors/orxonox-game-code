@@ -267,7 +267,7 @@ namespace orxonox
                         info = item->copy();
 
                 // We don't need the loaded stuff anymore
-                Loader::unload(&file, mask);
+                Loader::unload(&file);
 
                 if(info == NULL) 
                 {
@@ -278,9 +278,13 @@ namespace orxonox
 
                 // Warn about multiple items so that it gets fixed quickly
                 if(availableLevels_.find(info) != availableLevels_.end())
+                {
                     COUT(2) << "Warning: Multiple levels with name '" << info->getName() << "' found!" << std::endl;
-
-                this->availableLevels_.insert(info);
+                    // Delete LevelInfoItem to avoid a dangling pointer
+                    delete info;
+                }
+                else
+                    this->availableLevels_.insert(info);
             }
         }
     }
