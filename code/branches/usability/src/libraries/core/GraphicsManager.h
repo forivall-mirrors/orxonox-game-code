@@ -108,6 +108,8 @@ namespace orxonox
         scoped_ptr<Ogre::Root>              ogreRoot_;                //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
+        float               lastFrameStartTime_;       //!< Time stamp of the beginning of the last frame
+        float               lastFrameEndTime_;         //!< Time stamp of the end of the last frame
 
         // XML files for the resources and the debug overlay
         shared_ptr<XMLFile> resources_;                //!< XML with resource locations
