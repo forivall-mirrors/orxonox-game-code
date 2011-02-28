@@ -74,6 +74,10 @@ namespace orxonox
 
     LevelManager::~LevelManager()
     {
+        // Delete all the LevelInfoItem objects because the LevelManager created them
+        std::set<LevelInfoItem*, LevelInfoCompare>::iterator it = availableLevels_.begin();
+        for (; it != availableLevels_.end(); ++it)
+            delete *it;
     }
 
     /**
