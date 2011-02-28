@@ -435,7 +435,7 @@ namespace orxonox
                         if (button->nCommands_[mode_index] == 0)
                         {
                             delete[] button->commands_[mode_index];
-                            button->nCommands_[mode_index] = 0;
+                            button->commands_[mode_index] = 0;
                         }
 
                         // decrement the index since we shifted the array and continue searching for more occurrences of the command
