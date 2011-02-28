@@ -377,7 +377,7 @@ namespace orxonox
 
         // Translate to Ogre float times before the update
         float temp = lastFrameStartTime_;
-        lastFrameStartTime_ = (float)(timeBeforeTick / 1000000);
+        lastFrameStartTime_ = (float)timeBeforeTick * 0.000001f;
         evt.timeSinceLastFrame = lastFrameStartTime_ - temp;
         evt.timeSinceLastEvent = lastFrameStartTime_ - lastFrameEndTime_;
 
@@ -400,7 +400,7 @@ namespace orxonox
 
         // Translate to Ogre float times after the update
         temp = lastFrameEndTime_;
-        lastFrameEndTime_ = (float)(timeAfterTick / 1000000);
+        lastFrameEndTime_ = (float)timeBeforeTick * 0.000001f;
         evt.timeSinceLastFrame = lastFrameEndTime_ - temp;
         evt.timeSinceLastEvent = lastFrameEndTime_ - lastFrameStartTime_;
 
