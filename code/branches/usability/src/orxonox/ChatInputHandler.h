@@ -36,6 +36,7 @@
 #include <iostream>
 #include <cassert>
 #include <CEGUIForwardRefs.h>
+#include <CEGUIcolour.h>
 
 /* project includes */
 #include <OrxonoxPrereqs.h>
@@ -69,7 +70,7 @@ namespace orxonox // tolua_export
 
       /* colors for nickname coloring */
       static const int NumberOfColors = 10;
-      CEGUI::colour *text_colors[ NumberOfColors ];
+      CEGUI::colour text_colors[ NumberOfColors ];
 
       /** input state */
       InputState *inputState;
@@ -109,6 +110,7 @@ namespace orxonox // tolua_export
     public:
       /** constructor */
       ChatInputHandler();
+      ~ChatInputHandler();
       friend class Singleton<ChatInputHandler>;
 
       static ChatInputHandler& getInstance(void) { return Singleton<ChatInputHandler>::getInstance(); }  // tolua_export
