@@ -58,10 +58,13 @@ namespace orxonox
             static std::string mood_s;
     };
 
-    /*
-    @brief
-        The MoodManager class serves to allow for different musical themes in the game.
-    */
+    /**
+     * The MoodManager class enables the game to set different themes, i.e. audio themes, each
+     * with a set of different audio files. A theme (called mood) is set by the server and applies to
+     * all clients. Existing moods are currently hard-coded in function checkMoodValidity(). Each mood
+     * needs to have a folder with its name in "data_extern/audo/ambient/" containing sound files named like
+     * the ones in mood "default".
+     */
     class _OrxonoxExport MoodManager : public Singleton<MoodManager>, public OrxonoxClass
     {
             friend class Singleton<MoodManager>;
