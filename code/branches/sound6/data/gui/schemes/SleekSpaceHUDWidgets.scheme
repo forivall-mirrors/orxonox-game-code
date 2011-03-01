@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<GUIScheme Name="SleekSpaceHUDWidgets">
+    <WindowAlias Alias="HUDWidgets/StaticImage"              Target="SleekSpace/StaticImage" />
+    <WindowAlias Alias="HUDWidgets/StaticText"               Target="SleekSpace/StaticText" />
+    <WindowAlias Alias="HUDWidgets/TabButtonPane"            Target="SleekSpace/TabButtonPane" />
+    <WindowAlias Alias="HUDWidgets/TabContentPane"           Target="SleekSpace/TabContentPane" />
+    <WindowAlias Alias="HUDWidgets/Checkbox"                 Target="SleekSpace/Checkbox" />
+    <WindowAlias Alias="HUDWidgets/Combobox"                 Target="SleekSpace/Combobox" />
+    <WindowAlias Alias="HUDWidgets/ComboDropList"            Target="SleekSpace/ComboDropList" />
+    <WindowAlias Alias="HUDWidgets/ComboEditbox"             Target="SleekSpace/ComboEditbox" />
+    <WindowAlias Alias="HUDWidgets/Editbox"                  Target="SleekSpace/Editbox" />
+    <WindowAlias Alias="HUDWidgets/FrameWindow"              Target="SleekSpace/FrameWindow" />
+    <WindowAlias Alias="HUDWidgets/GroupBox"                 Target="SleekSpace/GroupBox" />
+    <WindowAlias Alias="HUDWidgets/ItemListbox"              Target="SleekSpace/ItemListbox" />
+    <WindowAlias Alias="HUDWidgets/ListboxItem"              Target="SleekSpace/ListboxItem" />
+    <WindowAlias Alias="HUDWidgets/Listbox"                  Target="SleekSpace/Listbox" />
+    <WindowAlias Alias="HUDWidgets/ListHeader"               Target="SleekSpace/ListHeader" />
+    <WindowAlias Alias="HUDWidgets/ListHeaderSegment"        Target="SleekSpace/ListHeaderSegment" />
+    <WindowAlias Alias="HUDWidgets/MultiLineEditbox"         Target="SleekSpace/MultiLineEditbox" />
+    <WindowAlias Alias="HUDWidgets/Menubar"                  Target="SleekSpace/Menubar" />
+    <WindowAlias Alias="HUDWidgets/MenuItem"                 Target="SleekSpace/MenuItem" />
+    <WindowAlias Alias="HUDWidgets/MultiColumnList"          Target="SleekSpace/MultiColumnList" />
+    <WindowAlias Alias="HUDWidgets/PopupMenu"                Target="SleekSpace/PopupMenu" />
+    <WindowAlias Alias="HUDWidgets/ProgressBar"              Target="SleekSpace/ProgressBar" />
+    <WindowAlias Alias="HUDWidgets/Button"                   Target="SleekSpace/Button" />
+    <WindowAlias Alias="HUDWidgets/ImageButton"              Target="SleekSpace/ImageButton" />
+    <WindowAlias Alias="HUDWidgets/RadioButton"              Target="SleekSpace/RadioButton" />
+    <WindowAlias Alias="HUDWidgets/SystemButton"             Target="SleekSpace/SystemButton" />
+    <WindowAlias Alias="HUDWidgets/ScrollablePane"           Target="SleekSpace/ScrollablePane" />
+    <WindowAlias Alias="HUDWidgets/HorizontalScrollbar"      Target="SleekSpace/HorizontalScrollbar" />
+    <WindowAlias Alias="HUDWidgets/VerticalScrollbar"        Target="SleekSpace/VerticalScrollbar" />
+    <WindowAlias Alias="HUDWidgets/Slider"                   Target="SleekSpace/Slider" />
+    <WindowAlias Alias="HUDWidgets/Spinner"                  Target="SleekSpace/Spinner" />
+    <WindowAlias Alias="HUDWidgets/TabButton"                Target="SleekSpace/TabButton" />
+    <WindowAlias Alias="HUDWidgets/TabControl"               Target="SleekSpace/TabControl" />
+    <WindowAlias Alias="HUDWidgets/HorizontalScrollbarThumb" Target="SleekSpace/HorizontalScrollbarThumb" />
+    <WindowAlias Alias="HUDWidgets/SliderThumb"              Target="SleekSpace/SliderThumb" />
+    <WindowAlias Alias="HUDWidgets/VerticalScrollbarThumb"   Target="SleekSpace/VerticalScrollbarThumb" />
+    <WindowAlias Alias="HUDWidgets/Titlebar"                 Target="SleekSpace/Titlebar" />
+    <WindowAlias Alias="HUDWidgets/Tooltip"                  Target="SleekSpace/Tooltip" />
+    <WindowAlias Alias="HUDWidgets/Tree"                     Target="SleekSpace/Tree" />
+</GUIScheme>
