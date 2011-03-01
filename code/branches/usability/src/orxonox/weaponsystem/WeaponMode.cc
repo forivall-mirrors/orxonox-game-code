@@ -23,7 +23,7 @@
  *      Martin Polak
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      Kevin Young
+ *      ...
  *
  */
 

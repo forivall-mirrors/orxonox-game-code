@@ -29,7 +29,7 @@
 #ifndef _WorldSound_H__
 #define _WorldSound_H__
 
-#include "sound/SoundPrereqs.h"
+#include "OrxonoxPrereqs.h"
 
 #include "tools/interfaces/Tickable.h"
 #include "sound/BaseSound.h"

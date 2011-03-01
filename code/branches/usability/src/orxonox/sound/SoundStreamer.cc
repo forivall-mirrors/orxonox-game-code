@@ -26,12 +26,9 @@
  */
 #include "SoundStreamer.h"
 
-#include <boost/thread.hpp>
-#include <AL/al.h>
-#include <AL/alc.h>
+#include <al.h>
 #include <vorbis/vorbisfile.h>
 #include "SoundManager.h"
-#include "util/Sleep.h"
 
 namespace orxonox
 {
@@ -40,101 +37,91 @@ namespace orxonox
     int seekVorbis(void* datasource, ogg_int64_t offset, int whence);
     long tellVorbis(void* datasource);
 
-    void orxonox::SoundStreamer::operator()(ALuint audioSource, DataStreamPtr dataStream, OggVorbis_File* vf, int current_section)
+    void orxonox::SoundStreamer::operator()(ALuint audioSource, DataStreamPtr dataStream)
     {
-        char inbuffer[4096];
+        // Open file with custom streaming
+        ov_callbacks vorbisCallbacks;
+        vorbisCallbacks.read_func  = &readVorbis;
+        vorbisCallbacks.seek_func  = &seekVorbis;
+        vorbisCallbacks.tell_func  = &tellVorbis;
+        vorbisCallbacks.close_func = NULL;
+
+        OggVorbis_File vf;
+        int ret = ov_open_callbacks(dataStream.get(), &vf, NULL, 0, vorbisCallbacks);
+        if (ret < 0)
+        {
+            COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
+            ov_clear(&vf);
+            return;
+        }
         vorbis_info* vorbisInfo;
-        vorbisInfo = ov_info(vf, -1);
+        vorbisInfo = ov_info(&vf, -1);
         ALenum format;
         if (vorbisInfo->channels == 1)
             format = AL_FORMAT_MONO16;
         else
             format = AL_FORMAT_STEREO16;
 
-        while(true) // Stream forever, control through thread control
+        char inbuffer[256*1024];
+        ALuint initbuffers[4];
+        alGenBuffers(4, initbuffers);
+        int current_section;
+
+        for(int i = 0; i < 4; i++)
         {
-
-            int info;
-            alGetSourcei(audioSource, AL_SOURCE_STATE, &info);
-            if(info == AL_PLAYING)
-                COUT(4) << "Sound: " << dataStream->getName() << " is playing." << std::endl;
-            else
+            long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
+            if (ret == 0)
             {
-                COUT(4) << "Sound: " << dataStream->getName() << " is not playing." << std::endl;
+                return;
             }
-
-            if(alcGetCurrentContext() == NULL)
+            else if (ret < 0)
             {
-                COUT(2) << "Sound: There is no context, terminating thread for " << dataStream->getName() << std::endl;
+                COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
+                ov_clear(&vf);
                 return;
             }
 
+            alBufferData(initbuffers[i], format, &inbuffer, ret, vorbisInfo->rate);
+        }
+        alSourceQueueBuffers(audioSource, 4, initbuffers);
+
+        while(true) // Stream forever, control through thread control
+        {
             int processed;
             alGetSourcei(audioSource, AL_BUFFERS_PROCESSED, &processed);
             if (ALint error = alGetError())
-                COUT(2) << "Sound: Warning: Couldn't get number of processed buffers: " << getALErrorString(error) << std::endl;
-
-            COUT(4) << "Sound: processed buffers: " << processed << std::endl;
+            COUT(2) << "Sound Warning: Couldn't get number of processed buffers: "
+                    << SoundManager::getALErrorString(error) << std::endl;
 
             if(processed > 0)
             {
                 ALuint* buffers = new ALuint[processed];
                 alSourceUnqueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
-                    COUT(2) << "Sound: Warning: Couldn't unqueue buffers: " << getALErrorString(error) << std::endl;
-            
-                int queued;
-                alGetSourcei(audioSource, AL_BUFFERS_QUEUED, &queued);
-                if (ALint error = alGetError())
-                    COUT(2) << "Sound: Warning: Couldn't get number of queued buffers: " << getALErrorString(error) << std::endl;
-                COUT(4) << "Sound: queued buffers: " << queued << std::endl;
+                    COUT(2) << "Sound Warning: Couldn't unqueue buffers: "
+                    << SoundManager::getALErrorString(error) << std::endl;
 
                 for(int i = 0; i < processed; i++)
                 {
-                    long ret = ov_read(vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
+                    long ret = ov_read(&vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
                     if (ret == 0)
                     {
-                        COUT(4) << "Sound: End of file " << dataStream->getName() << ", terminating thread" << std::endl;
                         return;
                     }
                     else if (ret < 0)
                     {
-                        COUT(2) << "Sound: libvorbisfile: error reading the file " << dataStream->getName() << std::endl;
-                        ov_clear(vf);
+                        COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
+                        ov_clear(&vf);
                         return;
                     }
 
                     alBufferData(buffers[i], format, &inbuffer, ret, vorbisInfo->rate);
-                    if(ALint error = alGetError()) {
-                        COUT(2) << "Sound: Could not fill buffer: " << getALErrorString(error) << std::endl;
-                        break;
-                    }
-                    alSourceQueueBuffers(audioSource, 1, &buffers[i]);
-                    if (ALint error = alGetError()) {
-                        COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
-                    }
                 }
-            }
-            else
-            {
-                msleep(10); // perhaps another value here is better
-            }
 
-            try {
-                boost::this_thread::interruption_point();
-            }
-            catch(boost::thread_interrupted) {
-                COUT(4) << "Sound: Catched interruption. Terminating thread for " << dataStream->getName() << std::endl;
-                ALuint* buffers = new ALuint[5];
-                alSourceUnqueueBuffers(audioSource, 5, buffers);
+                alSourceQueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
-                    COUT(2) << "Sound: Warning: Couldn't unqueue buffers: " << getALErrorString(error) << std::endl;
-
-                alDeleteBuffers(5, buffers);
-                if (ALint error = alGetError())
-                    COUT(2) << "Sound: Warning: Couldn't delete buffers: " << getALErrorString(error) << std::endl;
-
-                return;
+                    COUT(2) << "Sound Warning: Couldn't queue buffers: "
+                    << SoundManager::getALErrorString(error) << std::endl;
             }
         }
     }

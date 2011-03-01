@@ -28,10 +28,9 @@
 #ifndef _SoundStreamer_H__
 #define _SoundStreamer_H__
 
-#include "sound/SoundPrereqs.h"
+#include "OrxonoxPrereqs.h"
 
 #include <string>
-#include <vorbis/vorbisfile.h>
 #include <OgreDataStream.h>
 #include "core/CorePrereqs.h"
 
@@ -40,7 +39,7 @@ namespace orxonox
     class _OrxonoxExport SoundStreamer // class for stream threads
     {
     public:
-        void operator()(ALuint audioSource, DataStreamPtr dataStream, OggVorbis_File* vf, int current_section);
+        void operator()(ALuint audioSource, DataStreamPtr dataStream);
     };
 }
 

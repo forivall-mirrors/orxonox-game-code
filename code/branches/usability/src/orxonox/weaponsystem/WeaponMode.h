@@ -23,7 +23,7 @@
  *      Martin Polak
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      Kevin Young
+ *      ...
  *
  */
 
@@ -40,11 +40,6 @@
 
 namespace orxonox
 {
-    /**
-     * The WeaponMode class enables the developer, amongst other things, to attach a sound file
-     * to the firing event of a weapon. The default firing sound is chosen by each weapon (ex.
-     * HsW01), hard-coded for now.
-     */
     class _OrxonoxExport WeaponMode : public BaseObject
     {
         public:
