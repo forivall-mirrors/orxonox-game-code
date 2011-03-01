@@ -21,16 +21,16 @@
  *
  *   Author:
  *       Erwin 'vaiursch' Herrsche
- *       
- *   Co-authors:
  *       Kevin Young
  *       Reto Grieder
+ *   Co-authors:
+ *      ...
  */
 
 #ifndef _SoundManager_H__
 #define _SoundManager_H__
 
-#include "sound/SoundPrereqs.h"
+#include "OrxonoxPrereqs.h"
 
 #include <list>
 #include <map>
@@ -97,6 +97,8 @@ namespace orxonox
 
         ALuint getSoundSource(BaseSound* object);
         void releaseSoundSource(ALuint source);
+
+        static std::string getALErrorString(ALenum error);
 
     private:
         void processCrossFading(float dt);
