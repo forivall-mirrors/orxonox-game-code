@@ -22,7 +22,7 @@
  *   Author:
  *      Reto Grieder
  *   Co-authors:
- *      ...
+ *      Kevin Young
  *
  */
 
@@ -32,16 +32,25 @@
 #include "core/GameMode.h"
 #include "core/Resource.h"
 #include "SoundManager.h"
+#include "SoundStreamer.h"
+#include "util/Sleep.h"
+
+#include <AL/alut.h>
 
 namespace orxonox
 {
+    // vorbis callbacks
+    size_t readVorbis(void* ptr, size_t size, size_t nmemb, void* datasource);
+    int seekVorbis(void* datasource, ogg_int64_t offset, int whence);
+    long tellVorbis(void* datasource);
+    
     AmbientSound::AmbientSound()
         : bPlayOnLoad_(false)
     {
         RegisterObject(AmbientSound);
 
         // Ambient sounds always fade in
-        this->setVolume(0);
+        //this->setVolume(0);
     }
 
     void AmbientSound::preDestroy()
@@ -50,6 +59,7 @@ namespace orxonox
         {
             // Smoothly fade out by keeping a SmartPtr
             SoundManager::getInstance().unregisterAmbientSound(this);
+            this->soundstreamthread_.interrupt();
         }
     }
 
@@ -61,7 +71,7 @@ namespace orxonox
 
     bool AmbientSound::stop()
     {
-        if (GameMode::playsSound())
+        if (GameMode::playsSound()) 
             SoundManager::getInstance().unregisterAmbientSound(this);
         return false; // sound source not (yet) destroyed - return false
     }
@@ -91,7 +101,7 @@ namespace orxonox
             const std::string& path = "ambient/" + MoodManager::getInstance().getMood() + '/' + this->ambientSource_;
             shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(path);
             if (fileInfo != NULL)
-                this->setSource(path);
+                this->setStreamSource(path);
             else
                 COUT(3) << "Sound: " << this->ambientSource_ << ": Not a valid name! Ambient sound will not change." << std::endl;
         }
@@ -102,5 +112,143 @@ namespace orxonox
         this->bPlayOnLoad_ = val;
         if (val)
             this->play();
+    }
+
+    // hacky solution for file streaming
+    void AmbientSound::setStreamSource(const std::string& source)
+    {
+        if (!GameMode::playsSound())
+        {
+            this->source_ = source;
+            return;
+        }
+
+        if(!alIsSource(this->audioSource_))
+            this->audioSource_ = SoundManager::getInstance().getSoundSource(this);
+
+        if (this->source_ == source)
+        {
+            return;
+        }
+
+        this->source_ = source;
+        // Don't load ""
+        if (source_.empty())
+            return;
+
+        if (this->soundstreamthread_.get_id() != boost::thread::id())
+        {
+            this->soundstreamthread_.interrupt(); // terminate an old thread if necessary
+        }
+
+        // queue some init buffers
+        COUT(4) << "Sound: Creating thread for " << source << std::endl;
+        // Get resource info
+        shared_ptr<ResourceInfo> fileInfo = Resource::getInfo(source);
+        if (fileInfo == NULL)
+        {
+            COUT(2) << "Sound: Warning: Sound file '" << source << "' not found" << std::endl;
+            return;
+        }
+        // Open data stream
+        DataStreamPtr dataStream = Resource::open(fileInfo);
+        
+        alSourcei(this->audioSource_, AL_BUFFER, 0);
+
+        // Open file with custom streaming
+        ov_callbacks vorbisCallbacks;
+        vorbisCallbacks.read_func  = &readVorbis;
+        vorbisCallbacks.seek_func  = &seekVorbis;
+        vorbisCallbacks.tell_func  = &tellVorbis;
+        vorbisCallbacks.close_func = NULL;
+
+        OggVorbis_File* vf = new OggVorbis_File();
+        int ret = ov_open_callbacks(dataStream.get(), vf, NULL, 0, vorbisCallbacks);
+        if (ret < 0)
+        {
+            COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
+            ov_clear(vf);
+            return;
+        }
+        vorbis_info* vorbisInfo;
+        vorbisInfo = ov_info(vf, -1);
+        ALenum format;
+        if (vorbisInfo->channels == 1)
+            format = AL_FORMAT_MONO16;
+        else
+            format = AL_FORMAT_STEREO16;
+
+        char inbuffer[4096];
+        ALuint initbuffers[10];
+        alGenBuffers(10, initbuffers);
+        if (ALint error = alGetError()) {
+            COUT(2) << "Sound: Streamer: Could not generate buffer:" << getALErrorString(error) << std::endl;
+            return;
+        }
+        int current_section;
+
+        for(int i = 0; i < 10; i++)
+        {
+            long ret = ov_read(vf, inbuffer, sizeof(inbuffer), 0, 2, 1, &current_section);
+            if (ret == 0)
+            {
+                break;
+            }
+            else if (ret < 0)
+            {
+                COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
+                ov_clear(vf);
+                return;
+            }
+
+            alBufferData(initbuffers[i], format, &inbuffer, ret, vorbisInfo->rate);
+            if(ALint error = alGetError()) {
+                COUT(2) << "Sound: Could not fill buffer: " << getALErrorString(error) << std::endl;
+                break;
+             }
+             alSourceQueueBuffers(this->audioSource_, 1, &initbuffers[i]);
+             if (ALint error = alGetError()) {
+                 COUT(2) << "Sound: Warning: Couldn't queue buffers: " << getALErrorString(error) << std::endl;
+             }
+        }
+        
+        this->soundstreamthread_ = boost::thread(SoundStreamer(), this->audioSource_, dataStream, vf, current_section);
+        if(this->soundstreamthread_ == boost::thread())
+            COUT(2) << "Sound: Failed to create thread." << std::endl;
+        //SoundStreamer streamer;
+        //streamer(this->audioSource_, dataStream);
+
+        alSource3f(this->audioSource_, AL_POSITION,  0, 0, 0);
+        alSource3f(this->audioSource_, AL_VELOCITY,  0, 0, 0);
+        alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);
+        if (ALint error = alGetError())
+            COUT(2) << "Sound: Warning: Setting source parameters to 0 failed: " << getALErrorString(error) << std::endl;
+    }
+
+    bool AmbientSound::doStop()
+    {
+        bool result = BaseSound::doStop();
+        this->soundstreamthread_.interrupt();
+        return result;
+    }
+
+    void AmbientSound::doPlay()
+    {
+        BaseSound::doPlay();
+
+        if(GameMode::playsSound() && this->getSourceState() != AL_PLAYING)
+        {
+            if(!alIsSource(this->audioSource_))
+            {
+                this->audioSource_ = SoundManager::getInstance().getSoundSource(this);
+                if(!alIsSource(this->audioSource_))
+                    return;
+                this->initialiseSource();
+            }
+
+            alSourcePlay(this->audioSource_);
+            if(int error = alGetError())
+                COUT(2) << "Sound: Error playing sound: " << getALErrorString(error) << std::endl;
+        }
     }
 }

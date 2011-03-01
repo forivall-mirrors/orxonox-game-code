@@ -29,7 +29,7 @@
 #ifndef _BaseSound_H__
 #define _BaseSound_H__
 
-#include "OrxonoxPrereqs.h"
+#include "sound/SoundPrereqs.h"
 
 #include <string>
 #include <boost/shared_ptr.hpp>
@@ -84,9 +84,9 @@ namespace orxonox
 
         virtual ~BaseSound();
 
-        void doPlay();
-        bool doStop(); // returns true if the sound source was destroyed
-        void doPause();
+        virtual void doPlay();
+        virtual bool doStop(); // returns true if the sound source was destroyed
+        virtual void doPause();
 
         // network callbacks
         inline void pitchChanged()

@@ -21,16 +21,18 @@
  *
  *   Author:
  *      Reto Grieder
- *      Kevin Young
+ *      
  *   Co-authors:
- *      ...
+ *      Kevin Young
  *
  */
 
 #ifndef _AmbientSound_H__
 #define _AmbientSound_H__
 
-#include "OrxonoxPrereqs.h"
+#include <boost/thread.hpp>
+
+#include "sound/SoundPrereqs.h"
 
 #include "BaseSound.h"
 #include "MoodManager.h"
@@ -38,8 +40,11 @@
 namespace orxonox
 {
     /**
-     * The AmbientSound class is used to play background music. It can not be placed
-     * directly in a level file, use WorldAmbientSound instead.
+     * The AmbientSound class implements the non-3D sound, i.e. sound files that are used for atmospheric
+     * highlighting.
+     * It interfaces with BaseSound and is controllable by MoodManager.
+     * Ambient sounds are always cross-faded. New sounds are registered and activated/deactivated as needed.
+     *
      */
     class _OrxonoxExport AmbientSound : public BaseSound, public MoodListener
     {
@@ -64,6 +69,9 @@ namespace orxonox
     protected:
         ~AmbientSound() { }
 
+        bool doStop();
+        void doPlay();
+
     private:
         void preDestroy();
         float getRealVolume();
@@ -75,6 +83,9 @@ namespace orxonox
 
         std::string ambientSource_; //!< Analogous to source_, but mood independent
         bool        bPlayOnLoad_;   //!< Play the sound immediately when loaded
+
+        boost::thread soundstreamthread_; // hacky solution for streaming
+        void setStreamSource(const std::string& source);
     };
 }
 
