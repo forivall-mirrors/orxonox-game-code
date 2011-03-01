@@ -265,7 +265,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     )
     ADD_MODULE(${_target_name})
     # Ensure that the main program depends on the module
-    SET(ORXONOX_MODULES ${ORXONOX_MODULES} ${_target_name} CACHE STRING "" FORCE)
+    SET(ORXONOX_MODULES ${ORXONOX_MODULES} ${_target_name} CACHE INTERNAL "")
   ENDIF()
 
   # Static library flags are not globally available
