@@ -29,7 +29,7 @@
 #ifndef _SoundBuffer_H__
 #define _SoundBuffer_H__
 
-#include "OrxonoxPrereqs.h"
+#include "sound/SoundPrereqs.h"
 
 #include <list>
 #include <boost/shared_ptr.hpp>
