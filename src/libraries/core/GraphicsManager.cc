@@ -65,6 +65,7 @@
 #include "WindowEventListener.h"
 #include "XMLFile.h"
 #include "command/ConsoleCommand.h"
+#include "input/InputManager.h"
 
 namespace orxonox
 {
@@ -499,6 +500,8 @@ namespace orxonox
             GraphicsManager::getInstance().getRenderWindow()->setFullscreen(fullscreen, width, height);
             this->ogreRoot_->saveConfig();
             Core::getInstance().updateOgreConfigTimestamp();
+            // Also reload the input devices
+            InputManager::getInstance().reload();
         }
 
         return validate;
