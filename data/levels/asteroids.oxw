@@ -34,12 +34,12 @@
       collisionType = dynamic
       linearDamping = 0.8
       angularDamping = 0
-      scale = <?lua print(j * 150)?>
+      scale = "<?lua print(j * 150)?>"
       collisiondamage = 1
       enablecollisiondamage = true
     >
       <attached>
-        <Model mass=<?lua print(j * 1000) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+        <Model mass="<?lua print(j * 1000) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
       </attached>
       <collisionShapes>
         <SphereCollisionShape radius="<?lua print(j * 350) ?>" />
@@ -142,10 +142,10 @@
     </ForceField>
 
 
-    <CheckPoint name=trigger1 position="-300,300,0" scale=1 isdestination=false isfirst=true stayactive=true distance=10 addtime=30 />
+    <CheckPoint name=trigger1 position="-300,300,0" scale=1 isdestination=false isfirst=true stayactive=true distance=10 addtime=14 />
 
 
-    <CheckPoint name=trigger2 position="2200,600,0" scale=3 isdestination=false stayactive=true distance=100 addtime=17>
+    <CheckPoint name=trigger2 position="2200,600,0" scale=3 isdestination=false stayactive=true distance=100 addtime=11>
       <events>
         <activity>
           <EventListener event=trigger1 />
@@ -196,7 +196,7 @@
     </CheckPoint>
 
 
-    <CheckPoint name=trigger3 position="4100,0,400" scale=3 isdestination=false stayactive=true distance=100 addtime=16>
+    <CheckPoint name=trigger3 position="4100,0,400" scale=3 isdestination=false stayactive=true distance=100 addtime=9>
       <events>
         <activity>
           <EventListener event=trigger2 />
@@ -247,7 +247,7 @@
     </CheckPoint>
 
 
-    <CheckPoint name=trigger4 position="5600,400,0" scale=3 isdestination=false stayactive=true distance=100 addtime=17>
+    <CheckPoint name=trigger4 position="5600,400,0" scale=3 isdestination=false stayactive=true distance=100 addtime=9>
       <events>
         <activity>
           <EventListener event=trigger3 />
@@ -298,7 +298,7 @@
     </CheckPoint>
 
 
-    <CheckPoint name=trigger5 position="7200,600,-200" scale=3 isdestination=false stayactive=true distance=100 addtime=16>
+    <CheckPoint name=trigger5 position="7200,600,-200" scale=3 isdestination=false stayactive=true distance=100 addtime=8>
       <events>
         <activity>
           <EventListener event=trigger4 />
@@ -349,7 +349,7 @@
     </CheckPoint>
 
 
-    <CheckPoint name=trigger6 position="9200, 800,-800" scale=3 isdestination=false stayactive=true distance=100 addtime=22>
+    <CheckPoint name=trigger6 position="9200, 800,-800" scale=3 isdestination=false stayactive=true distance=100 addtime=10>
       <events>
         <activity>
           <EventListener event=trigger5 />

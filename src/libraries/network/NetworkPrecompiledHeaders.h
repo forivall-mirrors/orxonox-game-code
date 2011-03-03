@@ -61,9 +61,6 @@
 #include <list>     // 16
 #include <cmath>    // 15
 
-#define WIN32_LEAN_AND_MEAN
-#include <enet/enet.h> // 6, 3.1MB
-
 #include <OgreMath.h>        // 15
 #include <OgreVector2.h>     // 15
 #include <OgreVector3.h>     // 15
@@ -72,6 +69,9 @@
 #include <OgreColourValue.h> // 15
 
 #include "util/mbool.h" // 11
+
+#define WIN32_LEAN_AND_MEAN
+#include <enet/enet.h> // 6, 3.1MB
 
 #endif /*ORXONOX_COMPILER_MSVC */
 

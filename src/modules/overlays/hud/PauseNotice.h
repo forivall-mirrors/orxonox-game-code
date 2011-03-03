@@ -26,35 +26,28 @@
  *
  */
 
-#ifndef _GlobalShader_H__
-#define _GlobalShader_H__
+#ifndef _PauseNotice_H__
+#define _PauseNotice_H__
 
-#include "OrxonoxPrereqs.h"
+#include "overlays/OverlaysPrereqs.h"
 
-#include "core/BaseObject.h"
-#include "network/synchronisable/Synchronisable.h"
-#include "tools/Shader.h"
+#include "tools/interfaces/TimeFactorListener.h"
+#include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GlobalShader : public BaseObject, public Synchronisable
+    class _OverlaysExport PauseNotice : public OverlayText, public TimeFactorListener
     {
         public:
-            GlobalShader(BaseObject* creator);
-            virtual ~GlobalShader();
+            PauseNotice(BaseObject* creator);
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void changedOwner();
 
-            virtual void changedVisibility();
-
-            inline const Shader& getShader() const
-                { return this->shader_; }
+        protected:
+            virtual void changedTimeFactor(float factor_new, float factor_old);
 
         private:
-            void registerVariables();
-
-            Shader shader_;
+            PlayerInfo* owner_;
     };
 }
-
-#endif /* _GlobalShader_H__ */
+#endif /* _PauseNotice_H__ */

@@ -128,7 +128,7 @@ namespace orxonox
             }
 
             /// Destructor
-            inline ~WeakPtr()
+            inline virtual ~WeakPtr()
             {
                 this->unregisterAsDestructionListener(this->base_);
             }

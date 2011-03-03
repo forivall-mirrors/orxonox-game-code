@@ -42,10 +42,12 @@ namespace orxonox
     DeclareGameState(GSRoot, "root", false, false);
 
     static const std::string __CC_setTimeFactor_name = "setTimeFactor";
+    static const std::string __CC_setPause_name = "setPause";
     static const std::string __CC_pause_name = "pause";
 
     SetConsoleCommand("printObjects", &GSRoot::printObjects).hide();
     SetConsoleCommand(__CC_setTimeFactor_name, &GSRoot::setTimeFactor).accessLevel(AccessLevel::Master).defaultValues(1.0);
+    SetConsoleCommand(__CC_setPause_name,      &GSRoot::setPause     ).accessLevel(AccessLevel::Master).hide();
     SetConsoleCommand(__CC_pause_name,         &GSRoot::pause        ).accessLevel(AccessLevel::Master);
 
     registerStaticNetworkFunction(&TimeFactorListener::setTimeFactor);
@@ -82,12 +84,14 @@ namespace orxonox
         TimeFactorListener::setTimeFactor(1.0f);
 
         ModifyConsoleCommand(__CC_setTimeFactor_name).setObject(this);
+        ModifyConsoleCommand(__CC_setPause_name).setObject(this);
         ModifyConsoleCommand(__CC_pause_name).setObject(this);
     }
 
     void GSRoot::deactivate()
     {
         ModifyConsoleCommand(__CC_setTimeFactor_name).setObject(0);
+        ModifyConsoleCommand(__CC_setPause_name).setObject(0);
         ModifyConsoleCommand(__CC_pause_name).setObject(0);
     }
 
@@ -153,6 +157,15 @@ namespace orxonox
                 this->bPaused_ = false;
                 this->setTimeFactor(this->timeFactorPauseBackup_);
             }
+        }
+    }
+
+    void GSRoot::setPause(bool pause)
+    {
+        if (GameMode::isMaster())
+        {
+            if (pause != this->bPaused_)
+                this->pause();
         }
     }
 

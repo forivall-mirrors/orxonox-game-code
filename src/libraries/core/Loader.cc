@@ -146,7 +146,7 @@ namespace orxonox
     @return
         Returns true if successful.
     */
-    bool Loader::load(const XMLFile* file, const ClassTreeMask& mask, bool verbose)
+    bool Loader::load(const XMLFile* file, const ClassTreeMask& mask, bool verbose, bool bRemoveLuaTags)
     {
         if (!file)
             return false;
@@ -154,7 +154,7 @@ namespace orxonox
         Loader::currentMask_s = file->getMask() * mask;
 
         std::string xmlInput;
-        if (file->getLuaSupport())
+        if (file->getLuaSupport() && !bRemoveLuaTags)
         {
             // Use the LuaState to replace the XML tags (calls our function)
             scoped_ptr<LuaState> luaState(new LuaState());
@@ -171,6 +171,15 @@ namespace orxonox
                 return false;
             }
             xmlInput = Resource::open(file->getFilename())->getAsString();
+
+            if (bRemoveLuaTags)
+            {
+                // Remove all Lua code.
+                // Note: we only need this to speed up parsing of level files at the
+                // start of the program.
+                // Assumption: the LevelInfo tag does not use Lua scripting
+                xmlInput = removeLuaTags(xmlInput);
+            }
         }
 
         try
@@ -270,10 +279,9 @@ namespace orxonox
         return Loader::load(file, mask, verbose);
     }
 
-    std::string Loader::replaceLuaTags(const std::string& text)
+    bool Loader::getLuaTags(const std::string& text, std::map<size_t, bool>& luaTags)
     {
-        // create map with all Lua tags
-        std::map<size_t, bool> luaTags;
+        // fill map with all Lua tags
         {
             size_t pos = 0;
             while ((pos = text.find("<?lua", pos)) != std::string::npos)
@@ -327,10 +335,20 @@ namespace orxonox
             if (!expectedValue)
             {
                 COUT(2) << "Warning: Error in level file" << std::endl;
-                // todo: errorhandling
-                return "";
+                // TODO: error handling
+                return false; 
             }
         }
+
+        return true;
+    }
+
+    std::string Loader::replaceLuaTags(const std::string& text)
+    {
+        // create a map with all lua tags
+        std::map<size_t, bool> luaTags;
+        if (!getLuaTags(text, luaTags))
+            return "";
 
         // Use a stringstream object to speed up the parsing
         std::ostringstream output;
@@ -417,6 +435,44 @@ namespace orxonox
             }
             while (end != std::string::npos);
         }
+
+        return output.str();
+    }
+
+    std::string Loader::removeLuaTags(const std::string& text)
+    {
+        // create a map with all lua tags
+        std::map<size_t, bool> luaTags;
+        if (!getLuaTags(text, luaTags))
+            return "";
+
+        // Use a stringstream object to speed up the concatenation
+        std::ostringstream output;
+
+        // cut the original string into pieces and only write the non Lua parts
+        std::map<size_t, bool>::iterator it = luaTags.begin();
+        bool bLuaCode = false;
+        size_t start = 0;
+        size_t end = 0;
+
+        do
+        {
+            if (it != luaTags.end())
+                end = (it++)->first;
+            else
+                end = std::string::npos;
+
+            if (!bLuaCode)
+            {
+                output << text.substr(start, end - start);
+                start = end + 5;
+            }
+            else
+                start = end + 2;
+
+            bLuaCode = !bLuaCode;
+        }
+        while (end != std::string::npos);
 
         return output.str();
     }

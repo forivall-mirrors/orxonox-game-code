@@ -3,42 +3,41 @@
 local P = createMenuSheet("InGameMenu")
 P.loadAlong = { "DecisionPopup" }
 
-P.buttonList = {}
-
 function P.onLoad()
-    P.multiplayerMode = "startClient" 
+    P.multiplayerMode = "startClient"
 
     --button are arranged in a 4x1 matrix, the left lower item is nil
-    local item = {
+    P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/InGameMenu_ReturnButton"),
-            ["function"]  = P.button_settings_clicked
-    }
-    P.buttonList[1] = item
+            ["callback"]  = P.button_return_clicked
+    })
 
-    local item = {
+    P:setButton(2, 1, {
             ["button"] = winMgr:getWindow("orxonox/InGameMenu_MainMenuButton"),
-            ["function"]  = P.button_mainmenu_clicked
-    }
-    P.buttonList[2] = item
+            ["callback"]  = P.button_mainmenu_clicked
+    })
 
-    local item = {
+    P:setButton(3, 1, {
             ["button"] = winMgr:getWindow("orxonox/InGameMenu_SettingsButton"),
-            ["function"]  = P.button_settings_clicked
-    }
-    P.buttonList[3] = item
+            ["callback"]  = P.button_settings_clicked
+    })
 
-    local item = {
+    P:setButton(4, 1, {
             ["button"] = winMgr:getWindow("orxonox/InGameMenu_QuitButton"),
-            ["function"]  = P.button_quit_clicked
-    }
-    P.buttonList[4] = item
-
+            ["callback"]  = P.button_quit_clicked
+    })
 end
 
 function P.onShow()
-    --indices to iterate through buttonlist
-    P.oldindex = -2
-    P.index = -1
+    if P:hasSelection() == false then
+        P:setSelection(1, 1)
+    end
+
+    orxonox.execute("setPause 1")
+end
+
+function P.onQuit()
+    orxonox.execute("setPause 0")
 end
 
 -- events for ingamemenu
@@ -63,13 +62,9 @@ function P.callback(doExit)
     if doExit then
         hideMenuSheet("InGameMenu")
         orxonox.execute("exit")
-    else 
+    else
         P.onShow()
     end
-end
-
-function P.onKeyPressed() 
-    buttonIteratorHelper(P.buttonList, code, P, 4, 1)
 end
 
 return P

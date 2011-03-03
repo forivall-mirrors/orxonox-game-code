@@ -90,7 +90,7 @@ namespace orxonox
 
     /**
     @brief
-        Registers a Quest with the QuestManager to make it globally accessable.
+        Registers a Quest with the QuestManager to make it globally accessible.
         Uses it's id to make sure to be able to be identify and retrieve it later.
     @param quest
         The Quest that is to be registered.
@@ -128,7 +128,7 @@ namespace orxonox
 
     /**
     @brief
-        Registers a QuestHint with the QuestManager to make it globally accessable.
+        Registers a QuestHint with the QuestManager to make it globally accessible.
         Uses it's id to make sure to be able to be identify and retrieve it later.
     @param hint
         The QuestHint to be registered.
@@ -177,7 +177,7 @@ namespace orxonox
     */
     Quest* QuestManager::findQuest(const std::string & questId)
     {
-        if(questId.compare(BLANKSTRING) == 1) // Check vor validity of the given id.
+        if(questId == "") // Check for validity of the given id.
             ThrowException(Argument, "Invalid questId.");
 
         Quest* quest;
@@ -206,7 +206,7 @@ namespace orxonox
     */
     QuestHint* QuestManager::findHint(const std::string & hintId)
     {
-        if(hintId.compare(BLANKSTRING) == 1) // Check vor validity of the given id.
+        if(hintId == "") // Check for validity of the given id.
             ThrowException(Argument, "Invalid hintId.");
 
         QuestHint* hint;

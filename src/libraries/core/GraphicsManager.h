@@ -74,6 +74,7 @@ namespace orxonox
         Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
         size_t getRenderWindowHandle();
         bool isFullScreen() const;
+        bool hasVSyncEnabled() const;
 
         void upgradeToGraphics();
         void loadDebugOverlay();
@@ -95,6 +96,9 @@ namespace orxonox
 
         // console commands
         void printScreen();
+        std::string setScreenResolution(unsigned int width, unsigned int height, bool fullscreen);
+        std::string setFSAA(const std::string& mode);
+        std::string setVSync(bool vsync);
 
         scoped_ptr<OgreWindowEventListener> ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
 #if OGRE_VERSION < 0x010600
@@ -104,6 +108,8 @@ namespace orxonox
         scoped_ptr<Ogre::Root>              ogreRoot_;                //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
+        float               lastFrameStartTime_;       //!< Time stamp of the beginning of the last frame
+        float               lastFrameEndTime_;         //!< Time stamp of the end of the last frame
 
         // XML files for the resources and the debug overlay
         shared_ptr<XMLFile> resources_;                //!< XML with resource locations

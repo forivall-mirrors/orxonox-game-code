@@ -86,7 +86,7 @@ namespace orxonox
     */
     void QuestItem::setId(const std::string & id)
     {
-        if(id.compare(BLANKSTRING) == 0) // Checks whether the id is a valid id.
+        if(id == "") // Checks whether the id is a valid id.
         {
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return;

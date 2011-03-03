@@ -74,6 +74,10 @@ namespace orxonox
 
     LevelManager::~LevelManager()
     {
+        // Delete all the LevelInfoItem objects because the LevelManager created them
+        std::set<LevelInfoItem*, LevelInfoCompare>::iterator it = availableLevels_.begin();
+        for (; it != availableLevels_.end(); ++it)
+            delete *it;
     }
 
     /**
@@ -236,36 +240,51 @@ namespace orxonox
     */
     void LevelManager::compileAvailableLevelList()
     {
+        // Get all files matching the level criteria
         Ogre::StringVectorPtr levels = Resource::findResourceNames("*.oxw");
-        // Iterate over all *.oxw level files.
+
+        // We only want to load as little as possible
+        ClassTreeMask mask;
+        mask.exclude(Class(BaseObject));
+        mask.include(Class(LevelInfo));
+
+        // Iterate over all the found *.oxw files
         COUT(3) << "Loading LevelInfos..." << std::endl;
         for (Ogre::StringVector::const_iterator it = levels->begin(); it != levels->end(); ++it)
         {
-            //TODO: Replace with tag?
+            // TODO: Replace with tag?
             if (it->find("old/") != 0)
             {
-                size_t pos = it->find(".oxw");
+                LevelInfoItem* info = NULL;
 
                 // Load the LevelInfo object from the level file.
-                bool infoExists = false;
                 XMLFile file = XMLFile(*it);
-                ClassTreeMask mask = ClassTreeMask();
-                mask.exclude(ClassIdentifier<BaseObject>::getIdentifier());
-                mask.include(ClassIdentifier<LevelInfo>::getIdentifier());
-                Loader::load(&file, mask, false);
-                // Iterate over all LevelInfos.
+                Loader::load(&file, mask, false, true);
+
+                // Find the LevelInfo object we've just loaded (if there was one)
                 for(ObjectList<LevelInfo>::iterator item = ObjectList<LevelInfo>::begin(); item != ObjectList<LevelInfo>::end(); ++item)
+                    if(item->getXMLFilename() == *it)
+                        info = item->copy();
+
+                // We don't need the loaded stuff anymore
+                Loader::unload(&file);
+
+                if(info == NULL) 
                 {
-                    LevelInfoItem* info = item->copy();
-                    if(info->getXMLFilename() == *it) // If the LevelInfo for this level exists we insert it into the list of available levels.
-                    {
-                        this->availableLevels_.insert(info);
-                        infoExists = true;
-                    }
+                    // Create a default LevelInfoItem object that merely contains the name
+                    std::string filenameWOExtension = it->substr(0, it->find(".oxw"));
+                    info = new LevelInfoItem(filenameWOExtension, *it);
                 }
-                Loader::unload(&file, mask);
-                if(!infoExists) // If the LevelInfo for this level doesn't exist, we create a new one and insert it into the list of available levels.
-                    this->availableLevels_.insert(new LevelInfoItem(it->substr(0, pos), *it));
+
+                // Warn about multiple items so that it gets fixed quickly
+                if(availableLevels_.find(info) != availableLevels_.end())
+                {
+                    COUT(2) << "Warning: Multiple levels with name '" << info->getName() << "' found!" << std::endl;
+                    // Delete LevelInfoItem to avoid a dangling pointer
+                    delete info;
+                }
+                else
+                    this->availableLevels_.insert(info);
             }
         }
     }

@@ -155,7 +155,7 @@ namespace orxonox
         if(this->spawnerRepresentation_ == NULL)
         {
             COUT(4) << "PickupRepresentation: No spawner representation found." << std::endl;
-            if(this->spawnerTemplate_ == BLANKSTRING)
+            if(this->spawnerTemplate_ == "")
             {
                 COUT(4) << "PickupRepresentation: Spawner template is empty." << std::endl;
                 // If neither spawnerRepresentation nor spawnerTemplate was specified

@@ -126,6 +126,7 @@ namespace orxonox
         private:
             void registerVariables();
             void networkcallback_shipID();
+            void changedEnableMotionBlur();
 
             SpaceShip* ship_;
             unsigned int shipID_;
@@ -149,6 +150,7 @@ namespace orxonox
 
             Shader* boostBlur_;
             float blurStrength_;
+            bool bEnableMotionBlur_;
     };
 }
 

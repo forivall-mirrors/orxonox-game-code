@@ -171,7 +171,7 @@ health=2750
     <EventTrigger name="activateTeam1No1" acitvations=1 stayactive="true">
     <events>
     <trigger>
-        <SpaceShip position="<?lua print(3800-i*x) ?>,0,3000" lookat="<?lua print(4800-i*x) ?>,0,4000" health=<?lua print(health) ?> maxhealth=<?lua print(health) ?> initialhealth=<?lua print(health) ?> >
+        <SpaceShip position="<?lua print(3800-i*x) ?>,0,3000" lookat="<?lua print(4800-i*x) ?>,0,4000" health="<?lua print(health) ?>" maxhealth="<?lua print(health) ?>" initialhealth="<?lua print(health) ?>" >
             <templates>
                    <Template link=spaceshipTransporter />
              </templates>
@@ -198,7 +198,7 @@ z=j*300
     <EventTrigger name="activateTeam1No1" acitvations=1 stayactive="true">
     <events>
     <trigger>
-        <SpaceShip position="<?lua print(2600+x) ?>,0,<?lua print(3150-z) ?>" lookat="<?lua print(3500+x) ?>,0,<?lua print(4150-z) ?>" health=<?lua print(health) ?> maxhealth=<?lua print(health) ?> initialhealth=<?lua print(health) ?> >
+        <SpaceShip position="<?lua print(2600+x) ?>,0,<?lua print(3150-z) ?>" lookat="<?lua print(3500+x) ?>,0,<?lua print(4150-z) ?>" health="<?lua print(health) ?>" maxhealth="<?lua print(health) ?>" initialhealth="<?lua print(health) ?>" >
             <templates>
                    <Template link=spaceshipTransporter />
              </templates>
@@ -283,7 +283,7 @@ scale=math.random(20,70)
 ?>
 <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>">
     <attached>
-        <Model scale=<?lua print(scale) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
+        <Model scale="<?lua print(scale) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
     </attached>
     <collisionShapes>
         <SphereCollisionShape radius="<?lua print(scale * 3) ?>" />
@@ -302,7 +302,7 @@ z=math.random(-8000,8000)
 ?>
 <MovableEntity collisionType=kinematic linearDamping=0.8 angularDamping=0 mass="<?lua print(scale * 5) ?>" position="<?lua print(x) ?>,<?lua print(y) ?>,<?lua print(z) ?>" rotationaxis="<?lua print(math.random()) ?>,<?lua print(math.random()) ?>,<?lua print(math.random()) ?>" rotationrate="<?lua print(math.random()*15) ?>" >
     <attached>
-        <Model scale=<?lua print(math.random(20,70)) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
+        <Model scale="<?lua print(math.random(20,70)) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" shadow=false/>
     </attached>
     <collisionShapes>
             <SphereCollisionShape radius="<?lua print(scale * 3) ?>" />

@@ -35,7 +35,7 @@
           />
         </attached>
           <collisionShapes>
-            <SphereCollisionShape radius=<?lua print(x) ?> position="0,0,0" />
+            <SphereCollisionShape radius="<?lua print(x) ?>" position="0,0,0" />
           </collisionShapes>
       </MovableEntity>
     <?lua end ?>
@@ -98,7 +98,7 @@
             position="<?lua print(200-270/8*i)?> ,15,2"
             material="Examples/Flare"
             colour="1.0, 0.5, 0.3"
-            phase=<?lua print(-360/8*i)?>
+            phase="<?lua print(-360/8*i)?>"
             amplitude=0.1
             frequency=0.5
             quadratic=1
@@ -108,7 +108,7 @@
             position="<?lua print(200-270/8*i)?>,-15,2"
             material="Examples/Flare"
             colour="1.0, 0.5, 0.3"
-            phase=<?lua print(-360/8*i)?>
+            phase="<?lua print(-360/8*i)?>"
             amplitude=0.1
             frequency=0.5
             quadratic=1

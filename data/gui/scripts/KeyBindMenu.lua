@@ -99,6 +99,11 @@ function P.onLoad()
 
     local funct = luaState:createLuaFunctor("KeyBindMenu.callback()")
     orxonox.KeyBinderManager:getInstance():registerKeybindCallback(funct)
+
+    P:setButton(1, 1, {
+            ["button"] = winMgr:getWindow("orxonox/KeyBindBackButton"),
+            ["callback"]  = P.KeyBindBackButton_clicked
+    })
 end
 
 function P.KeyNameNiceifier(key)

@@ -28,6 +28,7 @@
 
 #include "AmbientSound.h"
 
+#include "core/CoreIncludes.h"
 #include "core/GameMode.h"
 #include "core/Resource.h"
 #include "SoundManager.h"
@@ -37,6 +38,8 @@ namespace orxonox
     AmbientSound::AmbientSound()
         : bPlayOnLoad_(false)
     {
+        RegisterObject(AmbientSound);
+
         // Ambient sounds always fade in
         this->setVolume(0);
     }

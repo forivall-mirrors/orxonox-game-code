@@ -50,6 +50,7 @@ namespace orxonox
         // this has to be public because proteced triggers a bug in msvc
         // when taking the function address.
         void setTimeFactor(float factor);
+        void setPause(bool pause);
         void pause();
 
     protected:

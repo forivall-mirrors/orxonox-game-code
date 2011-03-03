@@ -4,7 +4,7 @@ local cursor = CEGUI.MouseCursor:getSingleton()
 local loadedSheets = {}
 local activeMenuSheets = {size = 0, topSheetTuple = nil}
 local menuSheetsRoot = guiMgr:getMenuRootWindow()
-local bInGameConsoleClosed = false
+local bInGameConsoleOpen = false
 local mainMenuLoaded = false
 orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
 
@@ -120,14 +120,21 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     end
 
     -- Hide all previous sheets if necessary
+    local previous
     if bHidePrevious then
         for i = 1, activeMenuSheets.size - 1 do
-            activeMenuSheets[i].sheet:hide()
+            previous = activeMenuSheets[i].sheet
+            previous:hide()
         end
     end
-    
+
     menuSheet:show()
     menuSheetsRoot:activate()
+
+    -- select first button if the menu was opened with the keyboard
+    if previous and previous.pressedEnter and menuSheet:hasSelection() == false then
+        menuSheet:setSelectionNear(1, 1)
+    end
 
     return menuSheet
 end
@@ -178,7 +185,7 @@ function hideMenuSheet(name)
     if not sheetTuple.bNoInput then
         inputMgr:leaveState(sheetTuple.sheet.inputState)
     end
-    
+
     -- CURSOR SHOWING
     local i = activeMenuSheets.size
     -- Find top most sheet that doesn't have tShowCusor == TriBool.Dontcare
@@ -199,7 +206,7 @@ function hideMenuSheet(name)
         hideCursor()
     end
 
-    sheetTuple.sheet:afterHide()
+    sheetTuple.sheet:quit()
 end
 
 -- Hides all menu GUI sheets
@@ -213,8 +220,7 @@ function keyESC()
     -- HUGE, very HUGE hacks!
 
     -- If the InGameConsole is active, ignore the ESC command.
-    if bInGameConsoleClosed == true then
-        bInGameConsoleClosed = false
+    if bInGameConsoleOpen then
         return
     end
 
@@ -244,7 +250,7 @@ function keyPressed(e)
             orxonox.CommandExecutor:execute("openConsole")
         end
     end
-    sheet.sheet:onKeyPressed()
+    sheet.sheet:keyPressed()
 end
 
 function setBackgroundImage(imageSet, imageName)
@@ -271,8 +277,12 @@ function noInputSheetCounter()
     return counter
 end
 
+function inGameConsoleOpened()
+    bInGameConsoleOpen = true
+end
+
 function inGameConsoleClosed()
-    bInGameConsoleClosed = not bInGameConsoleClosed;
+    bInGameConsoleOpen = false
 end
 
 ----------------------
