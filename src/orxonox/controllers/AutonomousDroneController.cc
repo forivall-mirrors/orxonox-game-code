@@ -34,6 +34,8 @@
 namespace orxonox
 {
 
+    CreateFactory(AutonomousDroneController);
+
     /**
     @brief
         Constructor.
@@ -45,6 +47,7 @@ namespace orxonox
         //TODO: Place your code here:
         // Make sure to register the object in the factory.
         // Do some kind of initialisation.
+        RegisterObject(AutonomousDroneController);
 
         // This checks that our creator really is a drone
         // and saves the pointer to the drone for the controlling commands
@@ -77,6 +80,7 @@ namespace orxonox
         // - moveFrontBack, moveRightLeft, moveUpDown
         // - rotatePitch, rotateYaw, rotateRoll
         // Apply the to myDrone (e.g. myDrone->rotateYaw(..) )
+        myDrone->rotateYaw(dt);
 
     }
 }

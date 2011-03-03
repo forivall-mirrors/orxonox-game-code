@@ -1,4 +1,5 @@
 ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+  AutonomousDroneController.cc
   Controller.cc
   HumanController.cc
   NewHumanController.cc
