@@ -35,7 +35,6 @@ namespace orxonox
 {
     //TODO: Put your code in here:
     // Create the factory for the drone.
-    CreateFactory(AutonomousDrone);
 
     /**
     @brief
@@ -47,7 +46,6 @@ namespace orxonox
     {
         //TODO: Put your code in here:
         // Register the drone class to the core.
-        RegisterObject(AutonomousDrone);
 
         this->myController_ = NULL;
 
@@ -88,8 +86,6 @@ namespace orxonox
         // Make sure that you also create the get- and set-functions. As you can see, the get- and set-functions for the variable primaryThrust_ has already been specified, so you can get your inspiration from there.
         // Variables can be added by the following command
         // XMLPortParam(Classname, "xml-attribute-name (i.e. variablename)", setFunction, getFunction, xmlelement, mode);
-        XMLPortParam(AutonomousDrone, "auxiliaryThrust", setAuxiliaryThrust, getAuxiliaryThrust, xmlelement, mode);
-        XMLPortParam(AutonomousDrone, "rotationThrust", setRotationThrust, getRotationThrust, xmlelement, mode);
 
     }
 

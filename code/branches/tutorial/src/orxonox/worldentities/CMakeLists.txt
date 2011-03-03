@@ -1,5 +1,4 @@
 ADD_SOURCE_FILES(ORXONOX_SRC_FILES
-  AutonomousDrone.cc
   WorldEntity.cc
   StaticEntity.cc
   MovableEntity.cc
