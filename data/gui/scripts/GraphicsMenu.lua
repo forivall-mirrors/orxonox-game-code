@@ -327,7 +327,7 @@ function P.callback_Apply_Clicked(e)
     P.oldHeight = orxonox.GraphicsManager:getInstance():getWindowHeight()
     P.oldFullscreen = orxonox.GraphicsManager:getInstance():isFullScreen()
 
-    P.revertTimerHandle = orxonox.CommandExecutor:query("delay 10 \"hideGUI DecisionPopup; GraphicsManager setScreenResolution " .. P.oldWidth .. " " .. P.oldHeight .. " " .. tostring(P.oldFullscreen) .. "\"")
+    P.revertTimerHandle = orxonox.CommandExecutor:query("delayreal 10 \"hideGUI DecisionPopup; GraphicsManager setScreenResolution " .. P.oldWidth .. " " .. P.oldHeight .. " " .. tostring(P.oldFullscreen) .. "\"")
 
     -- change settings
     orxonox.CommandExecutor:execute("GraphicsManager setScreenResolution " .. widthEditbox:getText() .. " " .. heightEditbox:getText() .. " " .. checkedFullscreen)
