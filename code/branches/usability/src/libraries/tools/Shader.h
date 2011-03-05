@@ -37,6 +37,7 @@
 
 #include <OgreCompositorInstance.h>
 
+#include "util/MultiType.h"
 #include "util/OgreForwardRefs.h"
 #include "core/ViewportEventListener.h"
 
