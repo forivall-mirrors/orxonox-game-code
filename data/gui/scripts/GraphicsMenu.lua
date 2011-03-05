@@ -176,6 +176,13 @@ function P:onWindowResized()
 
     local currentWidth = orxonox.GraphicsManager:getInstance():getWindowWidth()
     local currentHeight = orxonox.GraphicsManager:getInstance():getWindowHeight()
+
+    if P.forceResolutionEditboxes then
+        currentWidth = P.newWidth
+        currentHeight = P.newHeight
+        P.forceResolutionEditboxes = false
+    end
+
     local currentResolution = currentWidth .. " x " .. currentHeight
 
     for i = 0, resolutionCombobox:getDropList():getItemCount() - 1 do
@@ -322,6 +329,10 @@ function P.callback_Apply_Clicked(e)
     local widthEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxWidth")
     local heightEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxHeight")
 
+    P.newWidth = widthEditbox:getText()
+    P.newHeight = heightEditbox:getText()
+    P.forceResolutionEditboxes = true
+
     -- start revert timer
     P.oldWidth = orxonox.GraphicsManager:getInstance():getWindowWidth()
     P.oldHeight = orxonox.GraphicsManager:getInstance():getWindowHeight()
@@ -330,7 +341,7 @@ function P.callback_Apply_Clicked(e)
     P.revertTimerHandle = orxonox.CommandExecutor:query("delayreal 10 \"hideGUI DecisionPopup; GraphicsManager setScreenResolution " .. P.oldWidth .. " " .. P.oldHeight .. " " .. tostring(P.oldFullscreen) .. "\"")
 
     -- change settings
-    orxonox.CommandExecutor:execute("GraphicsManager setScreenResolution " .. widthEditbox:getText() .. " " .. heightEditbox:getText() .. " " .. checkedFullscreen)
+    orxonox.CommandExecutor:execute("GraphicsManager setScreenResolution " .. P.newWidth .. " " .. P.newHeight .. " " .. checkedFullscreen)
 
     P.updateApplyButton()
 
