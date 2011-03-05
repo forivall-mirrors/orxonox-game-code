@@ -2,225 +2,361 @@
 
 local P = createMenuSheet("GraphicsMenu")
 
+P.resolutionList = {"custom", "640 x 480", "720 x 480", "720 x 576", "800 x 600", "1024 x 600", "1024 x 768", "1152 x 864", "1280 x 720", "1280 x 800", "1280 x 960", "1280 x 1024", "1360 x 768", "1440 x 900", "1600 x 900", "1600 x 1200", "1680 x 1050"}
 P.schemeList = {"TaharezGreen", "Orxonox"}
+P.fsaaList = {"0", "2", "4", "8", "8 [Quality]"}
+P.particleLodList = {"None", "Low", "Normal", "High"}
 
-function P.onLoad()
-    block = true
-    file = orxonox.PathConfig:getConfigPathString() .. orxonox.getConfig("GraphicsManager", "ogreConfigFile_")
-    search_mode = 0
-    f = io.open(file, "r")
-    firstline = f:read("*line")
-    rendersystem = string.sub(firstline, 15)
-    for line in f:lines() do
-        if search_mode == 0 then
-            if string.find(line, rendersystem) ~= nil then
-                search_mode = 1
-            end
-        end
-        if search_mode == 1 then
-            if string.sub(line, 1, 11) == "Full Screen" then
-                if string.sub(line, 13) == "Yes" then
-                    fullscreen = true
-                else
-                    fullscreen = false
-                end
-            end
-            if string.sub(line, 1, 10) == "Video Mode" then
-                if string.match(line, "@") == "@" then
-                    resolution = string.sub(line, 12, string.find(line, "@")-2)
-                else
-                    resolution = string.sub(line, 12)
-                end
-                break
-            end
-        end
-    end
-    f:close()
-    local fullscreenwindow = tolua.cast(winMgr:getWindow("orxonox/FullscreenCheckbox"),"CEGUI::Checkbox")
-    fullscreenwindow:setSelected(fullscreen)
-    listboxwindow = winMgr:getWindow("orxonox/ResolutionListbox")
-    local resolutionList = {}
-    table.insert(resolutionList, "640 x 480")
-    table.insert(resolutionList, "720 x 480")
-    table.insert(resolutionList, "720 x 576")
-    table.insert(resolutionList, "800 x 480")
-    table.insert(resolutionList, "800 x 600")
-    table.insert(resolutionList, "1024 x 480")
-    table.insert(resolutionList, "1024 x 600")
-    table.insert(resolutionList, "1024 x 768")
-    table.insert(resolutionList, "1152 x 864")
-    table.insert(resolutionList, "1280 x 720")
-    table.insert(resolutionList, "1280 x 768")
-    table.insert(resolutionList, "1440 x 900")
-    for k,v in pairs(resolutionList) do
-        item = CEGUI.createListboxTextItem(v)
-        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
-        CEGUI.toListbox(listboxwindow):addItem(item)
-    end
-    if resolution == "640 x 480" then
-        listboxwindow:setItemSelectState(0,true)
-    elseif resolution == "720 x 480" then
-        listboxwindow:setItemSelectState(1,true)
-    elseif resolution == "720 x 576" then
-        listboxwindow:setItemSelectState(2,true)
-    elseif resolution == "800 x 480" then
-        listboxwindow:setItemSelectState(3,true)
-    elseif resolution == "800 x 600" then
-        listboxwindow:setItemSelectState(4,true)
-    elseif resolution == "1024 x 480" then
-        listboxwindow:setItemSelectState(5,true)
-    elseif resolution == "1024 x 600" then
-        listboxwindow:setItemSelectState(6,true)
-    elseif resolution == "1024 x 768" then
-        listboxwindow:setItemSelectState(7,true)
-    elseif resolution == "1152 x 864" then
-        listboxwindow:setItemSelectState(8,true)
-    elseif resolution == "1280 x 720" then
-        listboxwindow:setItemSelectState(9,true)
-    elseif resolution == "1280 x 768" then
-        listboxwindow:setItemSelectState(10,true)
-    elseif resolution == "1440 x 900" then
-        listboxwindow:setItemSelectState(11,true)
-    end
-    scrollbar_active = false
-    block = false
+function P:onLoad()
+    -------------------
+    -- Button matrix --
+    -------------------
 
     P:setButton(1, 1, {
-            ["button"] = winMgr:getWindow("orxonox/GraphicsBackButton"),
-            ["callback"]  = P.GraphicsBackButton_clicked
+            ["button"] = winMgr:getWindow("orxonox/GraphicsOkButton"),
+            ["callback"]  = P.callback_Ok_Clicked
     })
 
-    local dropbox = winMgr:getWindow("orxonox/ThemeDropBox")
-    local scheme = orxonox.CommandExecutor:query("getConfig GUIManager guiScheme_")
-    for k,v in pairs(P.schemeList) do
-        local item = CEGUI.createListboxTextItem(P.schemeList[k])
+    P:setButton(1, 2, {
+            ["button"] = winMgr:getWindow("orxonox/GraphicsCancelButton"),
+            ["callback"]  = P.callback_Cancel_Clicked
+    })
+
+    -- place apply button at the bottom in the matrix, even though it's in fact at the top, to make the OK button highlighted by default
+    P:setButton(2, 1, {
+            ["button"] = winMgr:getWindow("orxonox/Display/Resolution/Apply"),
+            ["callback"]  = P.callback_Apply_Clicked
+    })
+
+    -----------------
+    -- Combo boxes --
+    -----------------
+
+    -- resolution combobox
+    local resolutionCombobox = winMgr:getWindow("orxonox/Display/Resolution/Combobox")
+    CEGUI.toCombobox(resolutionCombobox):setReadOnly(true)
+
+    for k,v in pairs(P.resolutionList) do
+        local item = CEGUI.createListboxTextItem(v)
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
-        CEGUI.toListbox(dropbox):addItem(item)
-        if v == scheme then
-            dropbox:setItemSelectState(item, true)
+        resolutionCombobox:addItem(item)
+    end
+
+    -- themes combobox
+    local themeCombobox = winMgr:getWindow("orxonox/Display/Theme/Combobox")
+    CEGUI.toCombobox(themeCombobox):setReadOnly(true)
+
+    for k,v in pairs(P.schemeList) do
+        local item = CEGUI.createListboxTextItem(v)
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
+        themeCombobox:addItem(item)
+    end
+
+    -- fsaa combobox
+    local fsaaCombobox = winMgr:getWindow("orxonox/Display/More/FSAA")
+    CEGUI.toCombobox(fsaaCombobox):setReadOnly(true)
+
+    for k,v in pairs(P.fsaaList) do
+        local item = CEGUI.createListboxTextItem(v)
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
+        fsaaCombobox:addItem(item)
+    end
+
+    -- particle lod combobox
+    local particleLodCombobox = winMgr:getWindow("orxonox/Settings/ParticleLodCombobox")
+    CEGUI.toCombobox(particleLodCombobox):setReadOnly(true)
+
+    for k,v in pairs(P.particleLodList) do
+        local item = CEGUI.createListboxTextItem(v)
+        item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
+        particleLodCombobox:addItem(item)
+    end
+end
+
+function P:onShow()
+    -----------------
+    -- Display tab --
+    -----------------
+
+    -- fullscreen checkbox / resolution combobox / resolution editboxes
+    self:onWindowResized()
+
+    -- apply button
+    self.updateApplyButton()
+
+    -- aspect ratio editbox
+    local aspectRatioEditbox = winMgr:getWindow("orxonox/Display/Resolution/AspectRatio")
+    local currentAspectRatio = orxonox.CommandExecutor:query("getConfig Camera aspectRatio_")
+    aspectRatioEditbox:setText(currentAspectRatio)
+
+    -- themes combobox
+    local themeCombobox = winMgr:getWindow("orxonox/Display/Theme/Combobox")
+    local currentScheme = orxonox.CommandExecutor:query("getConfig GUIManager guiScheme_")
+
+    for i = 0, themeCombobox:getDropList():getItemCount() - 1 do
+        local item = themeCombobox:getListboxItemFromIndex(i)
+        themeCombobox:setItemSelectState(item, (item:getText() == currentScheme))
+    end
+
+    -- vsync checkbox
+    local vsyncCheckbox = winMgr:getWindow("orxonox/Display/More/VSync")
+    local hasVSync = orxonox.GraphicsManager:getInstance():hasVSyncEnabled()
+    CEGUI.toCheckbox(vsyncCheckbox):setSelected(hasVSync)
+
+    -- fsaa combobox
+    local fsaaCombobox = winMgr:getWindow("orxonox/Display/More/FSAA")
+    local currentFSAAMode = orxonox.GraphicsManager:getInstance():getFSAAMode()
+
+    for i = 0, fsaaCombobox:getDropList():getItemCount() - 1 do
+        local item = fsaaCombobox:getListboxItemFromIndex(i)
+        fsaaCombobox:setItemSelectState(item, (item:getText() == currentFSAAMode))
+    end
+
+    -- notice
+    local notice = winMgr:getWindow("orxonox/Display/Notice")
+    notice:setVisible(true)
+    local noticeRed = winMgr:getWindow("orxonox/Display/NoticeRed")
+    noticeRed:setVisible(false)
+
+    ------------------
+    -- Settings tab --
+    ------------------
+
+    -- fov editbox
+    local fovEditbox = winMgr:getWindow("orxonox/Settings/Fov")
+    local currentFov = orxonox.CommandExecutor:query("getConfig Camera fov_")
+    fovEditbox:setText(currentFov)
+
+    -- fps limit editbox
+    local fpsEditbox = winMgr:getWindow("orxonox/Settings/FpsLimit")
+    local currentFpsLimit = orxonox.CommandExecutor:query("getConfig GraphicsSettings fpsLimit")
+    fpsEditbox:setText(currentFpsLimit)
+
+    -- particle lod combobox
+    local particleLodCombobox = winMgr:getWindow("orxonox/Settings/ParticleLodCombobox")
+    local currentParticleLod = orxonox.CommandExecutor:query("getConfig GraphicsSettings particlesDetailLevel")
+
+    if currentParticleLod == "" then
+        particleLodCombobox:disable()
+    else
+        particleLodCombobox:enable()
+
+        for i = 0, particleLodCombobox:getDropList():getItemCount() - 1 do
+            local item = particleLodCombobox:getListboxItemFromIndex(i)
+            particleLodCombobox:setItemSelectState(item, (tostring(i) == currentParticleLod))
         end
     end
 
+    -- model lod checkbox
+    local modelLodCheckbox = winMgr:getWindow("orxonox/Settings/ModelLodCheckbox")
+    local hasModelLod = orxonox.CommandExecutor:query("getConfig GraphicsSettings enableModelLoD")
+    if hasModelLod == "true" then
+        hasModelLod = true
+    elseif hasModelLod == "false" then
+        hasModelLod = false
+    end
+    CEGUI.toCheckbox(modelLodCheckbox):setSelected(hasModelLod)
+
+    -- motion blur checkbox
+    local motionBlurCheckbox = winMgr:getWindow("orxonox/Settings/MotionBlurCheckbox")
+    local hasMotionBlur = orxonox.CommandExecutor:query("getConfig GraphicsSettings enableMotionBlur")
+    if hasMotionBlur == "true" then
+        hasMotionBlur = true
+    elseif hasMotionBlur == "false" then
+        hasMotionBlur = false
+    end
+    CEGUI.toCheckbox(motionBlurCheckbox):setSelected(hasMotionBlur)
 end
 
-function P.ThemeDropBox_changed(e)
-    local dropbox = winMgr:getWindow("orxonox/ThemeDropBox")
-    local listbox = CEGUI.toListbox(dropbox)
-    local choice = listbox:getFirstSelectedItem()
-    local index = 0
-    if choice ~= nil then
-        index = listbox:getItemIndex(choice)
+function P:onWindowResized()
+    -- fullscreen checkbox
+    local fullscreenCheckbox = winMgr:getWindow("orxonox/Display/Resolution/Fullscreen")
+    local isFullscreen = orxonox.GraphicsManager:getInstance():isFullScreen()
+    CEGUI.toCheckbox(fullscreenCheckbox):setSelected(isFullscreen)
+
+    -- resolution combobox
+    local resolutionCombobox = winMgr:getWindow("orxonox/Display/Resolution/Combobox")
+
+    local currentWidth = orxonox.GraphicsManager:getInstance():getWindowWidth()
+    local currentHeight = orxonox.GraphicsManager:getInstance():getWindowHeight()
+    local currentResolution = currentWidth .. " x " .. currentHeight
+
+    for i = 0, resolutionCombobox:getDropList():getItemCount() - 1 do
+        local item = resolutionCombobox:getListboxItemFromIndex(i)
+        resolutionCombobox:setItemSelectState(item, item:getText() == currentResolution)
     end
-    orxonox.CommandExecutor:execute("config GUIManager guiScheme_ " .. P.schemeList[index+1])
+
+    -- resolution editboxes
+    self.updateResolutionEditboxes()
 end
 
-function P.GraphicsResolutionListbox_changed(e)
-    if listboxwindow:isItemSelected(0) then
-        resolution = "640 x 480"
-    elseif listboxwindow:isItemSelected(1) then
-        resolution = "720 x 480"
-    elseif listboxwindow:isItemSelected(2) then
-        resolution = "720 x 576"
-    elseif listboxwindow:isItemSelected(3) then
-        resolution = "800 x 480"
-    elseif listboxwindow:isItemSelected(4) then
-        resolution = "800 x 600"
-    elseif listboxwindow:isItemSelected(5) then
-        resolution = "1024 x 480"
-    elseif listboxwindow:isItemSelected(6) then
-        resolution = "1024 x 600"
-    elseif listboxwindow:isItemSelected(7) then
-        resolution = "1024 x 768"
-    elseif listboxwindow:isItemSelected(8) then
-        resolution = "1152 x 864"
-    elseif listboxwindow:isItemSelected(9) then
-        resolution = "1280 x 720"
-    elseif listboxwindow:isItemSelected(10) then
-        resolution = "1280 x 768"
-    elseif listboxwindow:isItemSelected(11) then
-        resolution = "1440 x 900"
-    end
-    search_mode = 0
-    f = io.open(file, "r")
-    firstline = f:read("*line")
-    text = firstline .. "\n"
-    rendersystem = string.sub(firstline, 15)
-    for line in f:lines() do
-        if search_mode == 0 then
-            if string.find(line, rendersystem) ~= nil then
-                search_mode = 1
-            end
+----------------------
+-- Helper functions --
+----------------------
+
+-- updates the text of the resolution checkboxes and checks if they should be enabled (only if the "custom" resolution was selected)
+function P.updateResolutionEditboxes()
+    -- resolution combobox
+    local resolutionCombobox = winMgr:getWindow("orxonox/Display/Resolution/Combobox")
+
+    local currentWidth = orxonox.GraphicsManager:getInstance():getWindowWidth()
+    local currentHeight = orxonox.GraphicsManager:getInstance():getWindowHeight()
+
+    -- resolution editboxes
+    local widthEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxWidth")
+    local heightEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxHeight")
+    widthEditbox:disable()
+    heightEditbox:disable()
+
+    -- selected combobox item
+    local item = resolutionCombobox:getSelectedItem()
+    if item then
+        local itemText = item:getText()
+        if itemText ~= "custom" then
+            currentWidth = string.sub(itemText, 1, string.find(itemText, "x") - 2)
+            currentHeight = string.sub(itemText, string.find(itemText, "x") + 2)
+        else
+            widthEditbox:enable()
+            heightEditbox:enable()
         end
-        if search_mode == 1 then
-            if string.sub(line, 1, 10) == "Video Mode" then
-                if string.match(line, "@") == "@" then
-                    line = "Video Mode=" .. resolution .. string.sub(line, string.find(line, "@")-1)
-                else
-                    line = "Video Mode=" .. resolution
-                end
-                search_mode = 2
-            end
-        end
-        text = text .. line .. "\n"
     end
-    f:close()
-    f = io.open(file, "w")
-    f:write(text)
-    f:close()
+
+    widthEditbox:setText(currentWidth)
+    heightEditbox:setText(currentHeight)
 end
 
-function P.GraphicsBrightnessScrollbar_changed(e)
-    if scrollbar_active == false then
-        -- brightness
-        logMessage(0, "event: brightness")
-    end
-end
+-- checks if the apply button should be enabled or disabled (only enabled if the current settings are different from the selected values)
+function P.updateApplyButton()
+    -- fullscreen checkbox
+    local fullscreenCheckbox = winMgr:getWindow("orxonox/Display/Resolution/Fullscreen")
+    local isFullscreen = orxonox.GraphicsManager:getInstance():isFullScreen()
+    local fullscreenChanged = (isFullscreen ~= CEGUI.toCheckbox(fullscreenCheckbox):isSelected())
 
-function P.GraphicsBrightnessScrollbar_started(e)
-    scrollbar_active = true
-end
+    -- resolution editboxes
+    local widthEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxWidth")
+    local heightEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxHeight")
+    local currentWidth = tostring(orxonox.GraphicsManager:getInstance():getWindowWidth())
+    local currentHeight = tostring(orxonox.GraphicsManager:getInstance():getWindowHeight())
+    local widthChanged = (currentWidth ~= widthEditbox:getText())
+    local heightChanged = (currentHeight ~= heightEditbox:getText())
+    local resolutionEditboxesEnabled = not widthEditbox:isDisabled()
 
-function P.GraphicsBrightnessScrollbar_ended(e)
-    -- brightness
-    logMessage(0, "event: brightness")
-    scrollbar_active = false
-end
+    -- apply button
+    local applyButton = winMgr:getWindow("orxonox/Display/Resolution/Apply")
 
-function P.GraphicsFullscreenCheckbox_clicked(e)
-    if block == false then
-        search_mode = 0
-        f = io.open(file, "r")
-        firstline = f:read("*line")
-        text = firstline .. "\n"
-        rendersystem = string.sub(firstline, 15)
-        for line in f:lines() do
-            if search_mode == 0 then
-                if string.find(line, rendersystem) ~= nil then
-                    search_mode = 1
-                end
-            end
-            if search_mode == 1 then
-                if string.sub(line, 1, 11) == "Full Screen" then
-                    if fullscreen == true then
-                        line = "Full Screen=No"
-                        fullscreen = false
-                    else
-                        line = "Full Screen=Yes"
-                        fullscreen = true
-                    end
-                    search_mode = 2
-                end
-            end
-            text = text .. line .. "\n"
-        end
-        f:close()
-        f = io.open(file, "w")
-        f:write(text)
-        f:close()
+    if fullscreenChanged or widthChanged or heightChanged or resolutionEditboxesEnabled then
+        applyButton:enable()
+    else
+        applyButton:disable()
     end
 end
 
-function P.GraphicsBackButton_clicked(e)
+function P.makeLabelRed()
+    local notice = winMgr:getWindow("orxonox/Display/Notice")
+    notice:setVisible(false)
+    local noticeRed = winMgr:getWindow("orxonox/Display/NoticeRed")
+    noticeRed:setVisible(true)
+end
+
+---------------------
+-- Event callbacks --
+---------------------
+
+-- resolution
+
+function P.callback_FullscreenCheckbox_CheckStateChanged(e)
+    P.updateApplyButton()
+end
+
+function P.callback_ResolutionCombobox_ListSelectionAccepted(e)
+    P.updateResolutionEditboxes()
+end
+
+function P.callback_ResolutionEditboxWidth_TextChanged(e)
+    P.updateApplyButton()
+end
+
+function P.callback_ResolutionEditboxHeight_TextChanged(e)
+    P.updateApplyButton()
+end
+
+-- theme
+
+function P.callback_ThemeCombobox_ListSelectionAccepted(e)
+    P.makeLabelRed()
+end
+
+-- vsync
+
+function P.callback_VSyncCheckbox_CheckStateChanged(e)
+    P.makeLabelRed()
+end
+
+-- fsaa
+
+function P.callback_FSAACombobox_ListSelectionAccepted(e)
+    P.makeLabelRed()
+end
+
+-- buttons
+
+function P.callback_Apply_Clicked(e)
+    -- resolution
+    local fullscreenCheckbox = winMgr:getWindow("orxonox/Display/Resolution/Fullscreen")
+    local checkedFullscreen = tostring(CEGUI.toCheckbox(fullscreenCheckbox):isSelected())
+
+    local widthEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxWidth")
+    local heightEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxHeight")
+
+    orxonox.CommandExecutor:execute("GraphicsManager setScreenResolution " .. widthEditbox:getText() .. " " .. heightEditbox:getText() .. " " .. checkedFullscreen)
+
+    P.updateApplyButton()
+end
+
+function P.callback_Ok_Clicked(e)
+    -- aspect ratio
+    local aspectRatioEditbox = winMgr:getWindow("orxonox/Display/Resolution/AspectRatio")
+    orxonox.CommandExecutor:execute("config Camera aspectRatio_ " .. aspectRatioEditbox:getText())
+
+    -- theme
+    local themeCombobox = winMgr:getWindow("orxonox/Display/Theme/Combobox")
+    orxonox.CommandExecutor:execute("config GUIManager guiScheme_ " .. themeCombobox:getText())
+
+    -- vsync
+    local vsyncCheckbox = winMgr:getWindow("orxonox/Display/More/VSync")
+    orxonox.CommandExecutor:execute("GraphicsManager setVSync " .. tostring(CEGUI.toCheckbox(vsyncCheckbox):isSelected()))
+
+    -- fsaa
+    local fsaaCombobox = winMgr:getWindow("orxonox/Display/More/FSAA")
+    orxonox.CommandExecutor:execute("GraphicsManager setFSAA {" .. fsaaCombobox:getText() .. "}") -- enclose argument in { ... } because it can contain [brackets] (conflicts with tcl)
+
+    -- fov
+    local fovEditbox = winMgr:getWindow("orxonox/Settings/Fov")
+    orxonox.CommandExecutor:execute("config Camera fov_ " .. fovEditbox:getText())
+
+    -- fps limit
+    local fpsEditbox = winMgr:getWindow("orxonox/Settings/FpsLimit")
+    orxonox.CommandExecutor:execute("config GraphicsSettings fpsLimit " .. fpsEditbox:getText())
+
+    -- particle lod
+    local particleLodCombobox = winMgr:getWindow("orxonox/Settings/ParticleLodCombobox")
+    local item = particleLodCombobox:getSelectedItem()
+    if item then
+        orxonox.CommandExecutor:execute("config GraphicsSettings particlesDetailLevel " .. particleLodCombobox:getItemIndex(item))
+    end
+
+    -- model lod
+    local modelLodCheckbox = winMgr:getWindow("orxonox/Settings/ModelLodCheckbox")
+    orxonox.CommandExecutor:execute("config GraphicsSettings enableModelLoD " .. tostring(CEGUI.toCheckbox(modelLodCheckbox):isSelected()))
+
+    -- motion blur
+    local motionBlurCheckbox = winMgr:getWindow("orxonox/Settings/MotionBlurCheckbox")
+    orxonox.CommandExecutor:execute("config GraphicsSettings enableMotionBlur " .. tostring(CEGUI.toCheckbox(motionBlurCheckbox):isSelected()))
+
+    hideMenuSheet(P.name)
+end
+
+function P.callback_Cancel_Clicked(e)
     hideMenuSheet(P.name)
 end
 

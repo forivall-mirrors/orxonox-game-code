@@ -27,6 +27,14 @@ end
 function P:onQuit()
 end
 
+-- Override this function if you want to react on keystrokes
+function P:onKeyPressed()
+end
+
+-- Override this function if you want to update the gui after the window was resized
+function P:onWindowResized()
+end
+
 -- show function for the GUI
 function P:show()
     self.window:show()
@@ -91,11 +99,11 @@ function P:keyPressed()
         end
     end
 
-    self.onKeyPressed()
+    self:onKeyPressed()
 end
 
--- Override this function if you want to ract on keystrokes
-function P:onKeyPressed()
+function P:windowResized()
+    self:onWindowResized()
 end
 
 

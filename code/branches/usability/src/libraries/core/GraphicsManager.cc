@@ -479,13 +479,34 @@ namespace orxonox
         return this->renderWindow_->isFullScreen();
     }
 
+    unsigned int GraphicsManager::getWindowWidth() const
+    {
+        return this->renderWindow_->getWidth();
+    }
+
+    unsigned int GraphicsManager::getWindowHeight() const
+    {
+        return this->renderWindow_->getHeight();
+    }
+
     bool GraphicsManager::hasVSyncEnabled() const
     {
         Ogre::ConfigOptionMap& options = ogreRoot_->getRenderSystem()->getConfigOptions();
-        if (options.find("VSync") != options.end())
-            return (options["VSync"].currentValue == "Yes");
+        Ogre::ConfigOptionMap::iterator it = options.find("VSync");
+        if (it != options.end())
+            return (it->second.currentValue == "Yes");
         else
             return false;
+    }
+
+    std::string GraphicsManager::getFSAAMode() const
+    {
+        Ogre::ConfigOptionMap& options = ogreRoot_->getRenderSystem()->getConfigOptions();
+        Ogre::ConfigOptionMap::iterator it = options.find("FSAA");
+        if (it != options.end())
+            return it->second.currentValue;
+        else
+            return "";
     }
 
     std::string GraphicsManager::setScreenResolution(unsigned int width, unsigned int height, bool fullscreen)

@@ -67,7 +67,7 @@
 
     <PauseNotice
      name     = "pausenotice"
-     position = "0.5, 0.3"
+     position = "0.5, 0.1"
      font     = "VeraMono"
      textsize = 0.03
      colour   = "1.0, 1.0, 1.0, 1.0"
