@@ -42,10 +42,12 @@
 #include "core/command/ConsoleCommand.h"
 #include "core/command/CommandExecutor.h"
 #include "core/command/Functor.h"
+#include "tools/interfaces/TimeFactorListener.h"
 
 namespace orxonox
 {
     SetConsoleCommand("delay", &delay).argumentCompleter(1, autocompletion::command());
+    SetConsoleCommand("delayreal", &delayreal).argumentCompleter(1, autocompletion::command());
     SetConsoleCommand("killdelay", &killdelay);
     SetConsoleCommand("killdelays", &killdelays);
 
@@ -53,19 +55,41 @@ namespace orxonox
     static unsigned int delayHandleCounter = 0;
 
     /**
-        @brief Console-command: Calls another console command after @a delay seconds.
+        @brief Console-command: Calls another console command after @a delay seconds (game time).
         @param delay The delay in seconds
         @param command The console command
         @return The handle of the delayed command, can be used as argument for killdelay()
     */
     unsigned int delay(float delay, const std::string& command)
     {
-        Timer* delaytimer = new Timer();
-        delaytimers.insert(boost::bimap<unsigned int, Timer*>::value_type(++delayHandleCounter, delaytimer));
+        return addDelayedCommand(new Timer(), delay, command);
+    }
+
+    /**
+        @brief Console-command: Calls another console command after @a delay seconds (real time)
+        @param delay The delay in seconds
+        @param command The console command
+        @return The handle of the delayed command, can be used as argument for killdelay()
+    */
+    unsigned int delayreal(float delay, const std::string& command)
+    {
+        return addDelayedCommand(new RealTimer(), delay, command);
+    }
+
+    /**
+        @brief Helper function, used by delay() and delayreal() to add a delayed command.
+        @param timer The timer which will execute the command
+        @param delay The delay in seconds
+        @param command The console command
+        @return The handle of the delayed command, can be used as argument for killdelay()
+    */
+    unsigned int addDelayedCommand(Timer* timer, float delay, const std::string& command)
+    {
+        delaytimers.insert(boost::bimap<unsigned int, Timer*>::value_type(++delayHandleCounter, timer));
 
         const ExecutorStaticPtr& delayexecutor = createExecutor(createFunctor(&executeDelayedCommand));
-        delayexecutor->setDefaultValues(delaytimer, command);
-        delaytimer->setTimer(delay, false, delayexecutor);
+        delayexecutor->setDefaultValues(timer, command);
+        timer->setTimer(delay, false, delayexecutor);
 
         return delayHandleCounter;
     }
@@ -112,7 +136,7 @@ namespace orxonox
     Timer::Timer()
     {
         this->init();
-        RegisterObject(Timer);
+        RegisterRootObject(Timer);
     }
 
     /**
@@ -125,7 +149,7 @@ namespace orxonox
     Timer::Timer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall)
     {
         this->init();
-        RegisterObject(Timer);
+        RegisterRootObject(Timer);
 
         this->setTimer(interval, bLoop, executor, bKillAfterCall);
     }
@@ -142,6 +166,14 @@ namespace orxonox
         this->bKillAfterCall_ = false;
 
         this->time_ = 0;
+    }
+
+    /**
+        @brief Returns the current time factor of the game.
+    */
+    float Timer::getTimeFactor()
+    {
+        return TimeFactorListener::getTimeFactor();
     }
 
     /**
@@ -186,5 +218,26 @@ namespace orxonox
                 this->run();
             }
         }
+    }
+
+    ///////////////
+    // RealTimer //
+    ///////////////
+    /// @copydoc Timer::Timer
+    RealTimer::RealTimer()
+    {
+        RegisterObject(RealTimer);
+    }
+
+    /// @copydoc Timer::Timer(float, bool, const ExecutorPtr&, bool)
+    RealTimer::RealTimer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall) : Timer(interval, bLoop, executor, bKillAfterCall)
+    {
+        RegisterObject(RealTimer);
+    }
+
+    /// Returns always 1 because RealTimer doesn't depend on the game time.
+    float RealTimer::getTimeFactor()
+    {
+        return 1;
     }
 }
