@@ -131,8 +131,7 @@ or VSync requires a restart</Property>
                     </Window>
                     <Window Type="MenuWidgets/StaticText" Name="orxonox/Display/NoticeRed" >
                         <Property Name="Font" Value="BlueHighway-12" />
-                        <Property Name="Text" >Changing the theme, FSAA,
-or VSync requires a restart</Property>
+                        <Property Name="Text" >Restart required</Property>
                         <Property Name="TextColours" Value="tl:FFFF0000 tr:FFFF8888 bl:FFFF8888 br:FFFFFFFF" />
                         <Property Name="HorzFormatting" Value="HorzCentred" />
                         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
