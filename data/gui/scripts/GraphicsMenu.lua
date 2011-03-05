@@ -322,9 +322,29 @@ function P.callback_Apply_Clicked(e)
     local widthEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxWidth")
     local heightEditbox = winMgr:getWindow("orxonox/Display/Resolution/EditboxHeight")
 
+    -- start revert timer
+    P.oldWidth = orxonox.GraphicsManager:getInstance():getWindowWidth()
+    P.oldHeight = orxonox.GraphicsManager:getInstance():getWindowHeight()
+    P.oldFullscreen = orxonox.GraphicsManager:getInstance():isFullScreen()
+
+    P.revertTimerHandle = orxonox.CommandExecutor:query("delay 10 \"hideGUI DecisionPopup; GraphicsManager setScreenResolution " .. P.oldWidth .. " " .. P.oldHeight .. " " .. tostring(P.oldFullscreen) .. "\"")
+
+    -- change settings
     orxonox.CommandExecutor:execute("GraphicsManager setScreenResolution " .. widthEditbox:getText() .. " " .. heightEditbox:getText() .. " " .. checkedFullscreen)
 
     P.updateApplyButton()
+
+    -- prompt for confirmation
+    openDecisionPopup("Do you want to keep these settings? (Settings will be reverted in 10 seconds if not accepted)", GraphicsMenu.callback_ApplyDecisionPopup)
+end
+
+function P.callback_ApplyDecisionPopup(pressedOK)
+    orxonox.CommandExecutor:execute("killdelay " .. P.revertTimerHandle)
+
+    if not pressedOK then
+        orxonox.CommandExecutor:execute("GraphicsManager setScreenResolution " .. P.oldWidth .. " " .. P.oldHeight .. " " .. tostring(P.oldFullscreen))
+        P:onShow()
+    end
 end
 
 function P.callback_Ok_Clicked(e)
