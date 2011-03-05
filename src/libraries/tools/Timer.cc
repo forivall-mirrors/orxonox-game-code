@@ -35,6 +35,8 @@
 
 #include <set>
 
+#include <boost/bimap.hpp>
+
 #include "util/Clock.h"
 #include "core/CoreIncludes.h"
 #include "core/command/ConsoleCommand.h"
@@ -44,23 +46,28 @@
 namespace orxonox
 {
     SetConsoleCommand("delay", &delay).argumentCompleter(1, autocompletion::command());
+    SetConsoleCommand("killdelay", &killdelay);
     SetConsoleCommand("killdelays", &killdelays);
 
-    static std::set<Timer*> delaytimerset;
+    static boost::bimap<unsigned int, Timer*> delaytimers;
+    static unsigned int delayHandleCounter = 0;
 
     /**
         @brief Console-command: Calls another console command after @a delay seconds.
         @param delay The delay in seconds
         @param command The console command
+        @return The handle of the delayed command, can be used as argument for killdelay()
     */
-    void delay(float delay, const std::string& command)
+    unsigned int delay(float delay, const std::string& command)
     {
         Timer* delaytimer = new Timer();
-        delaytimerset.insert(delaytimer);
+        delaytimers.insert(boost::bimap<unsigned int, Timer*>::value_type(++delayHandleCounter, delaytimer));
 
         const ExecutorStaticPtr& delayexecutor = createExecutor(createFunctor(&executeDelayedCommand));
         delayexecutor->setDefaultValues(delaytimer, command);
         delaytimer->setTimer(delay, false, delayexecutor);
+
+        return delayHandleCounter;
     }
 
     /**
@@ -72,7 +79,7 @@ namespace orxonox
     {
         CommandExecutor::execute(command);
         timer->destroy();
-        delaytimerset.erase(timer);
+        delaytimers.right.erase(timer);
     }
 
     /**
@@ -80,10 +87,23 @@ namespace orxonox
     */
     void killdelays()
     {
-        for (std::set<Timer*>::iterator it = delaytimerset.begin(); it != delaytimerset.end(); ++it)
-            (*it)->destroy();
+        for (boost::bimap<unsigned int, Timer*>::left_map::iterator it = delaytimers.left.begin(); it != delaytimers.left.end(); ++it)
+            it->second->destroy();
 
-        delaytimerset.clear();
+        delaytimers.clear();
+    }
+
+    /**
+        @brief Console-command: Kills a delayed command with given handle.
+    */
+    void killdelay(unsigned int handle)
+    {
+        boost::bimap<unsigned int, Timer*>::left_map::iterator it = delaytimers.left.find(handle);
+        if (it != delaytimers.left.end())
+        {
+            it->second->destroy();
+            delaytimers.left.erase(it);
+        }
     }
 
     /**
