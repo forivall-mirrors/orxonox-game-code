@@ -27,17 +27,26 @@
  */
 
 #include "ChatInputHandler.h"
-#include "util/ScopedSingletonManager.h"
-#include "core/CoreIncludes.h"
-#include "core/GUIManager.h"
-#include "core/CorePrereqs.h"
-#include "core/command/ConsoleCommand.h"
+
+#include <cassert>
+#include <string>
 #include <CEGUIWindow.h>
+#include <CEGUIWindowManager.h>
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
 #include <elements/CEGUIListboxTextItem.h>
-#include <CEGUIWindowManager.h>
-#include <string>
+
+#include "util/ScopedSingletonManager.h"
+#include "core/CoreIncludes.h"
+#include "core/GUIManager.h"
+#include "core/command/ConsoleCommand.h"
+#include "core/input/InputBuffer.h"
+#include "core/input/InputManager.h"
+#include "core/input/InputState.h"
+#include "network/Host.h"
+
+#include "PlayerManager.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {
