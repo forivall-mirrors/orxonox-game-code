@@ -336,6 +336,9 @@ function P.callback_Apply_Clicked(e)
 
     -- prompt for confirmation
     openDecisionPopup("Do you want to keep these settings? (Settings will be reverted in 10 seconds if not accepted)", GraphicsMenu.callback_ApplyDecisionPopup)
+    if checkedFullscreen then
+        showCursor()
+    end
 end
 
 function P.callback_ApplyDecisionPopup(pressedOK)
