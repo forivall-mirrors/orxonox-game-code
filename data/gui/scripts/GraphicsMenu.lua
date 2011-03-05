@@ -91,11 +91,11 @@ function P:onShow()
 
     -- themes combobox
     local themeCombobox = winMgr:getWindow("orxonox/Display/Theme/Combobox")
-    local currentScheme = orxonox.CommandExecutor:query("getConfig GUIManager guiScheme_")
+    local currentTheme = orxonox.CommandExecutor:query("getConfig GUIManager guiScheme_")
 
     for i = 0, themeCombobox:getDropList():getItemCount() - 1 do
         local item = themeCombobox:getListboxItemFromIndex(i)
-        themeCombobox:setItemSelectState(item, (item:getText() == currentScheme))
+        themeCombobox:setItemSelectState(item, (item:getText() == currentTheme))
     end
 
     -- vsync checkbox
@@ -113,10 +113,7 @@ function P:onShow()
     end
 
     -- notice
-    local notice = winMgr:getWindow("orxonox/Display/Notice")
-    notice:setVisible(true)
-    local noticeRed = winMgr:getWindow("orxonox/Display/NoticeRed")
-    noticeRed:setVisible(false)
+    self:updateRedLabel()
 
     ------------------
     -- Settings tab --
@@ -251,11 +248,28 @@ function P.updateApplyButton()
     end
 end
 
-function P.makeLabelRed()
+function P.updateRedLabel()
+    -- theme
+    local themeCombobox = winMgr:getWindow("orxonox/Display/Theme/Combobox")
+    local currentTheme = orxonox.CommandExecutor:query("getConfig GUIManager guiScheme_")
+    local themeChanged = (currentTheme ~= themeCombobox:getText())
+
+    -- vsync
+    local vsyncCheckbox = winMgr:getWindow("orxonox/Display/More/VSync")
+    local hasVSync = orxonox.GraphicsManager:getInstance():hasVSyncEnabled()
+    local vsyncChanged = (hasVSync ~= CEGUI.toCheckbox(vsyncCheckbox):isSelected())
+
+    -- fsaa
+    local fsaaCombobox = winMgr:getWindow("orxonox/Display/More/FSAA")
+    local currentFSAAMode = orxonox.GraphicsManager:getInstance():getFSAAMode()
+    local fsaaChanged = (currentFSAAMode ~= fsaaCombobox:getText())
+
+    local needRestart = themeChanged or vsyncChanged or fsaaChanged
+
     local notice = winMgr:getWindow("orxonox/Display/Notice")
-    notice:setVisible(false)
+    notice:setVisible(not needRestart)
     local noticeRed = winMgr:getWindow("orxonox/Display/NoticeRed")
-    noticeRed:setVisible(true)
+    noticeRed:setVisible(needRestart)
 end
 
 ---------------------
@@ -283,19 +297,19 @@ end
 -- theme
 
 function P.callback_ThemeCombobox_ListSelectionAccepted(e)
-    P.makeLabelRed()
+    P.updateRedLabel()
 end
 
 -- vsync
 
 function P.callback_VSyncCheckbox_CheckStateChanged(e)
-    P.makeLabelRed()
+    P.updateRedLabel()
 end
 
 -- fsaa
 
 function P.callback_FSAACombobox_ListSelectionAccepted(e)
-    P.makeLabelRed()
+    P.updateRedLabel()
 end
 
 -- buttons
@@ -324,11 +338,17 @@ function P.callback_Ok_Clicked(e)
 
     -- vsync
     local vsyncCheckbox = winMgr:getWindow("orxonox/Display/More/VSync")
-    orxonox.CommandExecutor:execute("GraphicsManager setVSync " .. tostring(CEGUI.toCheckbox(vsyncCheckbox):isSelected()))
+    local hasVSync = orxonox.GraphicsManager:getInstance():hasVSyncEnabled()
+    if hasVSync ~= CEGUI.toCheckbox(vsyncCheckbox):isSelected() then
+        orxonox.CommandExecutor:execute("GraphicsManager setVSync " .. tostring(CEGUI.toCheckbox(vsyncCheckbox):isSelected()))
+    end
 
     -- fsaa
     local fsaaCombobox = winMgr:getWindow("orxonox/Display/More/FSAA")
-    orxonox.CommandExecutor:execute("GraphicsManager setFSAA {" .. fsaaCombobox:getText() .. "}") -- enclose argument in { ... } because it can contain [brackets] (conflicts with tcl)
+    local currentFSAAMode = orxonox.GraphicsManager:getInstance():getFSAAMode()
+    if currentFSAAMode ~= fsaaCombobox:getText() then
+        orxonox.CommandExecutor:execute("GraphicsManager setFSAA {" .. fsaaCombobox:getText() .. "}") -- enclose argument in { ... } because it can contain [brackets] (conflicts with tcl)
+    end
 
     -- fov
     local fovEditbox = winMgr:getWindow("orxonox/Settings/Fov")
