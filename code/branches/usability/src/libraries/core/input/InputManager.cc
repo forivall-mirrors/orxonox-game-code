@@ -640,4 +640,20 @@ namespace orxonox
         statesByName_.erase(state->getName());
         state->destroy();
     }
+
+    bool InputManager::setMouseExclusive(const std::string& name, TriBool::Value value)
+    {
+        if (name == "empty")
+        {
+            COUT(2) << "InputManager: Changing the empty state is not allowed!" << std::endl;
+            return false;
+        }
+        std::map<std::string, InputState*>::iterator it = statesByName_.find(name);
+        if (it != statesByName_.end())
+        {
+            it->second->setMouseExclusive(value);
+            return true;
+        }
+        return false;
+    }
 }

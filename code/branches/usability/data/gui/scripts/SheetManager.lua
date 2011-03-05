@@ -9,26 +9,21 @@ local mainMenuLoaded = false
 orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
 orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "Sized", "windowResized")
 
------------------------
---- Local functions ---
------------------------
+------------------------
+--- Global functions ---
+------------------------
 
-local function hideCursor()
+function hideCursor()
     if cursor:isVisible() then
         cursor:hide()
     end
 end
 
-local function showCursor()
+function showCursor()
     if not cursor:isVisible() and inputMgr:isMouseExclusive() then
         cursor:show()
     end
 end
-
-
-------------------------
---- Global functions ---
-------------------------
 
 -- Loads the GUI with the specified name
 -- The name corresponds to the filename of the *.lua and *.layout files
@@ -256,9 +251,21 @@ function keyPressed(e)
 end
 
 function windowResized(e)
-    local sheet = activeMenuSheets[activeMenuSheets.size]
-    if sheet then
-        sheet.sheet:windowResized()
+    for name, sheet in pairs(loadedSheets) do
+        if orxonox.GraphicsManager:getInstance():isFullScreen() or sheet.tShowCursor == TriBool.False then
+            inputMgr:setMouseExclusive(sheet.inputState, TriBool.True)
+        else
+            inputMgr:setMouseExclusive(sheet.inputState, TriBool.False)
+        end
+    end
+    local sheetTuple = activeMenuSheets[activeMenuSheets.size]
+    if sheetTuple then
+        if orxonox.GraphicsManager:getInstance():isFullScreen() and sheetTuple.sheet.tShowCursor ~= TriBool.False then
+            showCursor()
+        else
+            hideCursor()
+        end
+        sheetTuple.sheet:windowResized()
     end
 end
 
