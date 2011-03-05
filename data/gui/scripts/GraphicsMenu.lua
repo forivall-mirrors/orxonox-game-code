@@ -338,7 +338,7 @@ function P.callback_Apply_Clicked(e)
     P.oldHeight = orxonox.GraphicsManager:getInstance():getWindowHeight()
     P.oldFullscreen = orxonox.GraphicsManager:getInstance():isFullScreen()
 
-    P.revertTimerHandle = orxonox.CommandExecutor:query("delayreal 10 \"hideGUI DecisionPopup; GraphicsManager setScreenResolution " .. P.oldWidth .. " " .. P.oldHeight .. " " .. tostring(P.oldFullscreen) .. "\"")
+    P.revertTimerHandle = orxonox.CommandExecutor:query("delayreal 10 {hideGUI DecisionPopup; GraphicsManager setScreenResolution " .. P.oldWidth .. " " .. P.oldHeight .. " " .. tostring(P.oldFullscreen) .. "; config Core lastLevelTimestamp_ [expr [getConfig Core ogreConfigTimestamp_] + 1]}")
 
     -- change settings
     orxonox.CommandExecutor:execute("GraphicsManager setScreenResolution " .. P.newWidth .. " " .. P.newHeight .. " " .. checkedFullscreen)
@@ -359,6 +359,9 @@ function P.callback_ApplyDecisionPopup(pressedOK)
         orxonox.CommandExecutor:execute("GraphicsManager setScreenResolution " .. P.oldWidth .. " " .. P.oldHeight .. " " .. tostring(P.oldFullscreen))
         P:onShow()
     end
+
+    -- update timestamp to avoid showing the ogre config dialog again after the user accepted or reverted the resolution
+    orxonox.CommandExecutor:execute("config Core lastLevelTimestamp_ [expr [getConfig Core ogreConfigTimestamp_] + 1]")
 end
 
 function P.callback_Ok_Clicked(e)
