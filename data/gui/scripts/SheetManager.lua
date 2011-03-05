@@ -7,6 +7,7 @@ local menuSheetsRoot = guiMgr:getMenuRootWindow()
 local bInGameConsoleClosed = false
 local mainMenuLoaded = false
 orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
+orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "Sized", "windowResized")
 
 -----------------------
 --- Local functions ---
@@ -252,6 +253,13 @@ function keyPressed(e)
         end
     end
     sheet.sheet:keyPressed()
+end
+
+function windowResized(e)
+    local sheet = activeMenuSheets[activeMenuSheets.size]
+    if sheet then
+        sheet.sheet:windowResized()
+    end
 end
 
 function setBackgroundImage(imageSet, imageName)
