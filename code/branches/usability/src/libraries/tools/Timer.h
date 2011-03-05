@@ -84,7 +84,8 @@
 
 namespace orxonox
 {
-    void delay(float delay, const std::string& command);
+    unsigned int delay(float delay, const std::string& command);
+    void killdelay(unsigned int handle);
     void killdelays();
     void executeDelayedCommand(Timer* timer, const std::string& command);
 
