@@ -94,7 +94,7 @@ function P:keyPressed()
             self:moveSelectionColumn(1)
         elseif code == "203" then -- key left
             self:moveSelectionColumn(-1)
-        elseif code == "28"  then -- key enter
+        elseif code == "28" or code == "156"  then -- key enter or key numpad enter
             self:pressSelectedButton()
         end
     end
