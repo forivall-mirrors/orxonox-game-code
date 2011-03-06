@@ -144,15 +144,15 @@ function P:onShow()
         end
     end
 
-    -- model lod checkbox
-    local modelLodCheckbox = winMgr:getWindow("orxonox/Settings/ModelLodCheckbox")
-    local hasModelLod = orxonox.CommandExecutor:query("getConfig GraphicsSettings enableModelLoD")
-    if hasModelLod == "true" then
-        hasModelLod = true
-    elseif hasModelLod == "false" then
-        hasModelLod = false
+    -- mesh lod checkbox
+    local meshLodCheckbox = winMgr:getWindow("orxonox/Settings/MeshLodCheckbox")
+    local hasMeshLod = orxonox.CommandExecutor:query("getConfig GraphicsSettings enableMeshLoD")
+    if hasMeshLod == "true" then
+        hasMeshLod = true
+    elseif hasMeshLod == "false" then
+        hasMeshLod = false
     end
-    CEGUI.toCheckbox(modelLodCheckbox):setSelected(hasModelLod)
+    CEGUI.toCheckbox(meshLodCheckbox):setSelected(hasMeshLod)
 
     -- motion blur checkbox
     local motionBlurCheckbox = winMgr:getWindow("orxonox/Settings/MotionBlurCheckbox")
@@ -402,9 +402,9 @@ function P.callback_Ok_Clicked(e)
         orxonox.CommandExecutor:execute("config GraphicsSettings particlesDetailLevel " .. particleLodCombobox:getItemIndex(item))
     end
 
-    -- model lod
-    local modelLodCheckbox = winMgr:getWindow("orxonox/Settings/ModelLodCheckbox")
-    orxonox.CommandExecutor:execute("config GraphicsSettings enableModelLoD " .. tostring(CEGUI.toCheckbox(modelLodCheckbox):isSelected()))
+    -- mesh lod
+    local meshLodCheckbox = winMgr:getWindow("orxonox/Settings/MeshLodCheckbox")
+    orxonox.CommandExecutor:execute("config GraphicsSettings enableMeshLoD " .. tostring(CEGUI.toCheckbox(meshLodCheckbox):isSelected()))
 
     -- motion blur
     local motionBlurCheckbox = winMgr:getWindow("orxonox/Settings/MotionBlurCheckbox")
