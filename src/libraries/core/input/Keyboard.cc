@@ -35,18 +35,28 @@ namespace orxonox
     bool Keyboard::keyPressed(const OIS::KeyEvent& arg)
     {
         // update modifiers
-        if (arg.key == OIS::KC_RMENU    || arg.key == OIS::KC_LMENU)
-            modifiers_ |= KeyboardModifier::Alt;   // alt key
-        if (arg.key == OIS::KC_RCONTROL || arg.key == OIS::KC_LCONTROL)
-            modifiers_ |= KeyboardModifier::Ctrl;  // ctrl key
-        if (arg.key == OIS::KC_RSHIFT   || arg.key == OIS::KC_LSHIFT)
-            modifiers_ |= KeyboardModifier::Shift; // shift key
+        switch (arg.key)
+        {
+            case OIS::KC_RMENU:
+            case OIS::KC_LMENU:
+                modifiers_ |= KeyboardModifier::Alt;   // alt key
+                break;
+            case OIS::KC_RCONTROL:
+            case OIS::KC_LCONTROL:
+                modifiers_ |= KeyboardModifier::Ctrl;  // ctrl key
+                break;
+            case OIS::KC_RSHIFT:
+            case OIS::KC_LSHIFT:
+                modifiers_ |= KeyboardModifier::Shift; // shift key
+                break;
+            case OIS::KC_TAB:
+                // Do not distribute the alt+tab event (messes with the operating system)
+                if ((modifiers_ & KeyboardModifier::Alt) != 0)
+                    return true;
+            default:;
+        }
 
-        // Do not distribute the alt+tab event (messes with the operating system)
-        if ((modifiers_ & KeyboardModifier::Alt) != 0 && arg.key == OIS::KC_TAB)
-            return true;
-
-        KeyEvent evt(arg);
+        KeyEvent evt(static_cast<KeyCode::ByEnum>(arg.key), Keyboard::getKeyText(arg), 0);
         super::buttonPressed(evt);
         return true;
     }
@@ -55,15 +65,47 @@ namespace orxonox
     bool Keyboard::keyReleased(const OIS::KeyEvent& arg)
     {
         // update modifiers
-        if (arg.key == OIS::KC_RMENU    || arg.key == OIS::KC_LMENU)
-            modifiers_ &= ~KeyboardModifier::Alt;   // alt key
-        if (arg.key == OIS::KC_RCONTROL || arg.key == OIS::KC_LCONTROL)
-            modifiers_ &= ~KeyboardModifier::Ctrl;  // ctrl key
-        if (arg.key == OIS::KC_RSHIFT   || arg.key == OIS::KC_LSHIFT)
-            modifiers_ &= ~KeyboardModifier::Shift; // shift key
+        switch (arg.key)
+        {
+            case OIS::KC_RMENU:
+            case OIS::KC_LMENU:
+                modifiers_ &= ~KeyboardModifier::Alt;   // alt key
+                break;
+            case OIS::KC_RCONTROL:
+            case OIS::KC_LCONTROL:
+                modifiers_ &= ~KeyboardModifier::Ctrl;  // ctrl key
+                break;
+            case OIS::KC_RSHIFT:
+            case OIS::KC_LSHIFT:
+                modifiers_ &= ~KeyboardModifier::Shift; // shift key
+                break;
+            default:;
+        }
 
-        KeyEvent evt(arg);
+        KeyEvent evt(static_cast<KeyCode::ByEnum>(arg.key), Keyboard::getKeyText(arg), 0);
         super::buttonReleased(evt);
         return true;
+    }
+
+    /// A map which returns the corresponding chars for some key codes
+    unsigned int Keyboard::getKeyText(const OIS::KeyEvent& arg)
+    {
+        switch (arg.key)
+        {
+            case OIS::KC_NUMPAD0:     return static_cast<unsigned int>('0');
+            case OIS::KC_NUMPAD1:     return static_cast<unsigned int>('1');
+            case OIS::KC_NUMPAD2:     return static_cast<unsigned int>('2');
+            case OIS::KC_NUMPAD3:     return static_cast<unsigned int>('3');
+            case OIS::KC_NUMPAD4:     return static_cast<unsigned int>('4');
+            case OIS::KC_NUMPAD5:     return static_cast<unsigned int>('5');
+            case OIS::KC_NUMPAD6:     return static_cast<unsigned int>('6');
+            case OIS::KC_NUMPAD7:     return static_cast<unsigned int>('7');
+            case OIS::KC_NUMPAD8:     return static_cast<unsigned int>('8');
+            case OIS::KC_NUMPAD9:     return static_cast<unsigned int>('9');
+            case OIS::KC_DECIMAL:     return static_cast<unsigned int>('.');
+            case OIS::KC_DIVIDE:      return static_cast<unsigned int>('/');
+            case OIS::KC_NUMPADENTER: return static_cast<unsigned int>('\n');
+            default:                  return arg.text;
+        }
     }
 }
