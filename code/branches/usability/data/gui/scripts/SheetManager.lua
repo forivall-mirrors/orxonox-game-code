@@ -244,7 +244,7 @@ function keyPressed(e)
         if code == "1" then
             keyESC()
         elseif code == "0"then
-            orxonox.CommandExecutor:execute("openConsole")
+            orxonox.CommandExecutor:execute("InGameConsole openConsole")
         end
     end
     sheet.sheet:keyPressed()
