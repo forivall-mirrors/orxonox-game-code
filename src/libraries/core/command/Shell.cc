@@ -45,10 +45,10 @@
 namespace orxonox
 {
     SetConsoleCommand("log",     OutputHandler::log    );
-    SetConsoleCommand("error",   OutputHandler::error  );
-    SetConsoleCommand("warning", OutputHandler::warning);
-    SetConsoleCommand("info",    OutputHandler::info   );
-    SetConsoleCommand("debug",   OutputHandler::debug  );
+    SetConsoleCommand("error",   OutputHandler::error  ).hide();
+    SetConsoleCommand("warning", OutputHandler::warning).hide();
+    SetConsoleCommand("info",    OutputHandler::info   ).hide();
+    SetConsoleCommand("debug",   OutputHandler::debug  ).hide();
 
     unsigned int Shell::cacheSize_s;
 

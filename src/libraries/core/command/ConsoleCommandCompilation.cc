@@ -45,13 +45,13 @@
 
 namespace orxonox
 {
-    SetConsoleCommand("source", source).argumentCompleter(0, autocompletion::files());
+//    SetConsoleCommand("source", source).argumentCompleter(0, autocompletion::files());  // disabled because we use the implementation in Tcl
     SetConsoleCommand("echo", echo);
-    SetConsoleCommand("puts", puts);
+//    SetConsoleCommand("puts", puts);                                                    // disabled because we use the implementation in Tcl
 
-    SetConsoleCommand("read", read).argumentCompleter(0, autocompletion::files());
-    SetConsoleCommand("append", append).argumentCompleter(0, autocompletion::files());
-    SetConsoleCommand("write", write).argumentCompleter(0, autocompletion::files());
+//    SetConsoleCommand("read", read).argumentCompleter(0, autocompletion::files());      // disabled because we use the implementation in Tcl
+//    SetConsoleCommand("append", append).argumentCompleter(0, autocompletion::files());  // disabled because we use the implementation in Tcl
+//    SetConsoleCommand("write", write).argumentCompleter(0, autocompletion::files());    // disabled because we use the implementation in Tcl
 
     SetConsoleCommand("calculate", calculate);
 
