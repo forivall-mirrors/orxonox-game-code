@@ -53,12 +53,15 @@ namespace orxonox
         void setPause(bool pause);
         void pause();
 
+        static void delayedStartMainMenu(void);
+
     protected:
         virtual void changedTimeFactor(float factor_new, float factor_old);
 
     private:
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
+        static bool           startMainMenu_s;
     };
 }
 
