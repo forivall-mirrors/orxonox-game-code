@@ -46,6 +46,20 @@ namespace orxonox
                                0123456789 \
                                \\\"(){}[]<>.:,;_-+*/=!?|$&%^~#";
 
+        this->keyTranslator_[KeyCode::Numpad0]      = '0';
+        this->keyTranslator_[KeyCode::Numpad1]      = '1';
+        this->keyTranslator_[KeyCode::Numpad2]      = '2';
+        this->keyTranslator_[KeyCode::Numpad3]      = '3';
+        this->keyTranslator_[KeyCode::Numpad4]      = '4';
+        this->keyTranslator_[KeyCode::Numpad5]      = '5';
+        this->keyTranslator_[KeyCode::Numpad6]      = '6';
+        this->keyTranslator_[KeyCode::Numpad7]      = '7';
+        this->keyTranslator_[KeyCode::Numpad8]      = '8';
+        this->keyTranslator_[KeyCode::Numpad9]      = '9';
+        this->keyTranslator_[KeyCode::NumpadPeriod] = '.';
+        this->keyTranslator_[KeyCode::Divide]       = '/';
+        this->keyTranslator_[KeyCode::NumpadEnter]  = '\n';
+
         this->lastKey_ = KeyCode::Unassigned;
         this->timeSinceKeyPressed_ = 0.0f;
         this->timeSinceKeyRepeated_ = 0.0f;
@@ -227,7 +241,11 @@ namespace orxonox
             }
         }
 
-        this->insert(static_cast<char>(evt.getText()));
+        std::map<KeyCode::ByEnum, char>::iterator it = this->keyTranslator_.find(evt.getKeyCode());
+        if (it != this->keyTranslator_.end())
+            this->insert(it->second);
+        else
+            this->insert(static_cast<char>(evt.getText()));
     }
 
     /**
