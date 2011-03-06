@@ -511,7 +511,25 @@ namespace orxonox
 
     std::string GraphicsManager::setScreenResolution(unsigned int width, unsigned int height, bool fullscreen)
     {
-        this->ogreRoot_->getRenderSystem()->setConfigOption("Video Mode", multi_cast<std::string>(width) + " x " + multi_cast<std::string>(height) + " @ " + multi_cast<std::string>(this->getRenderWindow()->getColourDepth()) + "-bit colour");
+        // workaround to detect if the colour depth should be written to the config file
+        bool bWriteColourDepth = false;
+        Ogre::ConfigOptionMap& options = ogreRoot_->getRenderSystem()->getConfigOptions();
+        Ogre::ConfigOptionMap::iterator it = options.find("Video Mode");
+        if (it != options.end())
+            bWriteColourDepth = (it->second.currentValue.find('@') != std::string::npos);
+
+        if (bWriteColourDepth)
+        {
+            this->ogreRoot_->getRenderSystem()->setConfigOption("Video Mode", multi_cast<std::string>(width)
+                                                                    + " x " + multi_cast<std::string>(height)
+                                                                    + " @ " + multi_cast<std::string>(this->getRenderWindow()->getColourDepth()) + "-bit colour");
+        }
+        else
+        {
+            this->ogreRoot_->getRenderSystem()->setConfigOption("Video Mode", multi_cast<std::string>(width)
+                                                                    + " x " + multi_cast<std::string>(height));
+        }
+
         this->ogreRoot_->getRenderSystem()->setConfigOption("Full Screen", fullscreen ? "Yes" : "No");
 
         std::string validate = this->ogreRoot_->getRenderSystem()->validateConfigOptions();
