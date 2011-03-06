@@ -177,7 +177,6 @@ namespace orxonox
             std::string buffer_;
             std::list<BaseInputBufferListenerTuple*> listeners_;
             std::string allowedChars_;
-            std::map<KeyCode::ByEnum, char> keyTranslator_;
             unsigned int maxLength_;
             unsigned int cursor_;
 
