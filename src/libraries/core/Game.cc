@@ -60,10 +60,10 @@ namespace orxonox
     SetConsoleCommand("exit", &stop_game);
     static void printFPS()
         { COUT(0) << Game::getInstance().getAvgFPS() << std::endl; }
-    SetConsoleCommand("printFPS", &printFPS);
+    SetConsoleCommand("Stats", "printFPS", &printFPS);
     static void printTickTime()
         { COUT(0) << Game::getInstance().getAvgTickTime() << std::endl; }
-    SetConsoleCommand("printTickTime", &printTickTime);
+    SetConsoleCommand("Stats", "printTickTime", &printTickTime);
 
     std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
     Game* Game::singletonPtr_s = 0;
