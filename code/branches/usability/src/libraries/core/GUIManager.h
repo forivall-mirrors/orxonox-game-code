@@ -93,6 +93,9 @@ namespace orxonox // tolua_export
         void setBackgroundImage(const std::string& imageSet, const std::string imageName); // tolua_export
         void setBackgroundImage(const std::string& image);
 
+        static void navigateGUI(const std::string& mode);
+        void guisActiveChanged(bool active); // tolua_export
+
         //! Creates a new InputState to be used with a GUI Sheet
         const std::string& createInputState(const std::string& name, TriBool::Value showCursor = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export
         LuaState* getLuaState(void)
@@ -123,6 +126,14 @@ namespace orxonox // tolua_export
 
         template <typename FunctionType>
         bool protectedCall(FunctionType function);
+
+        static const std::string NAVIGATE_UP;
+        static const std::string NAVIGATE_DOWN;
+        static const std::string NAVIGATE_LEFT;
+        static const std::string NAVIGATE_RIGHT;
+        static const std::string NAVIGATE_ENTER;
+
+        bool GUIsActive_; //!< Whether there are any GUIs active at a given moment.
 
         // keyHandler functions
         void buttonPressed (const KeyEvent& evt);
