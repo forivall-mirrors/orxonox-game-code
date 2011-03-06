@@ -180,8 +180,8 @@ or VSync requires a restart</Property>
                         <Property Name="UnifiedAreaRect" Value="{{0.5,0},{0.29,0},{0.7,0},{0.725,0}}" />
                         <Property Name="MaxEditTextLength" Value="1073741823" />
                     </Window>
-                    <Window Type="MenuWidgets/Checkbox" Name="orxonox/Settings/ModelLodCheckbox" >
-                        <Property Name="Text" Value="Enable model LOD" />
+                    <Window Type="MenuWidgets/Checkbox" Name="orxonox/Settings/MeshLodCheckbox" >
+                        <Property Name="Text" Value="Enable mesh LOD" />
                         <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
                         <Property Name="UnifiedAreaRect" Value="{{0.035,0},{0.44,0},{0.5,0},{0.51,0}}" />
                     </Window>

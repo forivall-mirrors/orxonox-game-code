@@ -59,7 +59,7 @@ namespace orxonox
 
     void Model::setConfigValues()
     {
-        SetConfigValueExternal(bGlobalEnableLod_, "GraphicsSettings", "enableModelLoD", true)
+        SetConfigValueExternal(bGlobalEnableLod_, "GraphicsSettings", "enableMeshLoD", true)
             .description("Enable level of detail for models");
     }
 
