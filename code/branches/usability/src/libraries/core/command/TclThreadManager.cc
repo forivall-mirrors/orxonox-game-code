@@ -54,8 +54,6 @@ namespace orxonox
 {
     const float TCLTHREADMANAGER_MAX_CPU_USAGE = 0.50f;
 
-    SetConsoleCommand("tclexecute", &TclThreadManager::execute).argumentCompleter(0, autocompletion::tclthreads());
-    SetConsoleCommand("tclquery",   &TclThreadManager::query  ).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand("TclThreadManager", "create",  &TclThreadManager::create);
     SetConsoleCommand("TclThreadManager", "destroy", &TclThreadManager::destroy).argumentCompleter(0, autocompletion::tclthreads());
     SetConsoleCommand("TclThreadManager", "execute", &TclThreadManager::execute).argumentCompleter(0, autocompletion::tclthreads());
