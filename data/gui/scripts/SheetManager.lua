@@ -4,9 +4,8 @@ local cursor = CEGUI.MouseCursor:getSingleton()
 local loadedSheets = {}
 local activeMenuSheets = {size = 0, topSheetTuple = nil}
 local menuSheetsRoot = guiMgr:getMenuRootWindow()
-local bInGameConsoleClosed = false
 local mainMenuLoaded = false
-orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
+--orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
 orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "Sized", "windowResized")
 
 ------------------------
@@ -133,6 +132,10 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
         menuSheet:setSelectionNear(1, 1)
     end
 
+    if activeMenuSheets.size > 0 then
+        guiMgr:guisActiveChanged(true)
+    end
+
     return menuSheet
 end
 
@@ -203,6 +206,10 @@ function hideMenuSheet(name)
         hideCursor()
     end
 
+    if activeMenuSheets.size == 0 then
+        guiMgr:guisActiveChanged(false)
+    end
+
     sheetTuple.sheet:quit()
 end
 
@@ -216,13 +223,7 @@ end
 function keyESC()
     -- HUGE, very HUGE hacks!
 
-    -- If the InGameConsole is active, ignore the ESC command.
-    if bInGameConsoleClosed == true then
-        bInGameConsoleClosed = false
-        return
-    end
-
-    -- Count the number of sheets that don't need input till the first that does.
+    -- Count the number of sheets that don't need input until the first that does.
     local counter = noInputSheetIndex()
 
     -- If the first sheet that needs input is the MainMenu.
@@ -236,19 +237,11 @@ function keyESC()
     end
 end
 
-function keyPressed(e)
-    local we = tolua.cast(e, "CEGUI::KeyEventArgs")
+-- Function to navigate the GUI, is called by the GUIManager, whenever a relevant key is pressed.
+-- The mode specifies the action to be taken.
+function navigateGUI(mode)
     local sheet = activeMenuSheets[activeMenuSheets.size]
-    code = tostring(we.scancode)
-    -- Some preprocessing
-    if not mainMenuLoaded and not sheet.bNoInput then
-        if code == "1" then
-            keyESC()
-        elseif code == "0"then
-            orxonox.CommandExecutor:execute("InGameConsole openConsole")
-        end
-    end
-    sheet.sheet:keyPressed()
+    sheet.sheet:keyPressed(mode)
 end
 
 function windowResized(e)
@@ -292,10 +285,6 @@ function noInputSheetCounter()
         end
     end
     return counter
-end
-
-function inGameConsoleClosed()
-    bInGameConsoleClosed = not bInGameConsoleClosed;
 end
 
 function getGUIFirstActive(name, bHidePrevious, bNoInput)
