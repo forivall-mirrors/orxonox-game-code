@@ -104,6 +104,7 @@ namespace orxonox
 
     SetConsoleCommand("showGUI", &GUIManager::showGUI).defaultValue(1, false).defaultValue(2, false);
     SetConsoleCommand("hideGUI", &GUIManager::hideGUI);
+    SetConsoleCommand("toggleGUI", &GUIManager::toggleGUI).defaultValue(1, false).defaultValue(2, false);
 
     /**
     @brief
@@ -281,6 +282,29 @@ namespace orxonox
     /*static*/ void GUIManager::hideGUI(const std::string& name)
     {
         GUIManager::getInstance().executeCode("hideMenuSheet(\"" + name + "\")");
+    }
+
+    /**
+    @brief
+        Toggles specified GUI.
+        If the GUI with the input name is already shown and on the top, it is hidden, else it is shown.
+    */
+    /*static*/ void GUIManager::toggleGUI(const std::string& name, bool bHidePrevious, bool bNoInput)
+    {
+        GUIManager::getInstance().executeCode("getGUIFirstActive(\"" + name + "\", " + multi_cast<std::string>(bHidePrevious) + ", " + multi_cast<std::string>(bNoInput) + ")");
+    }
+
+    /**
+    @brief
+        Helper method to toggle a specified GUI.
+        Is called by lua.
+    */
+    void GUIManager::toggleGUIHelper(const std::string& name, bool bHidePrevious, bool bNoInput, bool show)
+    {
+        if(show)
+            GUIManager::showGUI(name, bHidePrevious, bNoInput);
+        else
+            GUIManager::hideGUI(name);
     }
 
     const std::string& GUIManager::createInputState(const std::string& name, TriBool::Value showCursor, TriBool::Value useKeyboard, bool bBlockJoyStick)

@@ -88,7 +88,8 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     {
         ["sheet"]          = menuSheet,
         ["bHidePrevious"]  = bHidePrevious,
-        ["bNoInput"]       = bNoInput
+        ["bNoInput"]       = bNoInput,
+        ["name"]           = name
     }
     table.insert(activeMenuSheets, sheetTuple) -- indexed array access
     activeMenuSheets[name] = sheetTuple -- name access
@@ -295,6 +296,16 @@ end
 
 function inGameConsoleClosed()
     bInGameConsoleClosed = not bInGameConsoleClosed;
+end
+
+function getGUIFirstActive(name, bHidePrevious, bNoInput)
+    local sheet = activeMenuSheets.topSheetTuple
+    -- If the topmost gui sheet has the input name
+    if sheet ~= nil and sheet.name == name then
+        guiMgr:toggleGUIHelper(name, bHidePrevious, bNoInput, false);
+    else
+        guiMgr:toggleGUIHelper(name, bHidePrevious, bNoInput, true);
+    end
 end
 
 ----------------------
