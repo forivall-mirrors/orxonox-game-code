@@ -34,6 +34,7 @@ function P.onLoad()
     table.insert(P.commandList, "TeamDeathmatch teams_")
     table.insert(P.commandList, "HumanPlayer nick_")
     table.insert(P.commandList, "ChatOverlay displayTime_")
+    table.insert(P.commandList, "Core bDevMode_")
 
     P.nameList = {}
     table.insert(P.nameList, "Mouse sensitivity")
@@ -53,6 +54,7 @@ function P.onLoad()
     table.insert(P.nameList, "TeamDeathmatch: Number of teams")
     table.insert(P.nameList, "Playername")
     table.insert(P.nameList, "Chat: display time")
+    table.insert(P.nameList, "Developer's Mode")
 
     P.linesList = {}
 

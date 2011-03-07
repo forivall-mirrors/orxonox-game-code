@@ -207,8 +207,12 @@ namespace orxonox
     {
 #ifdef ORXONOX_RELEASE
         const unsigned int defaultLevelLogFile = 3;
+        SetConfigValue(bDevMode_, false)
+            .description("Developer mode. If not set, hides some things from the user to not confuse him.");
 #else
         const unsigned int defaultLevelLogFile = 4;
+        SetConfigValue(bDevMode_, true)
+            .description("Developer mode. If not set, hides some things from the user to not confuse him.");
 #endif
         SetConfigValueExternal(softDebugLevelLogFile_, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
             .description("The maximum level of debug output shown in the log file");

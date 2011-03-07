@@ -29,6 +29,7 @@
 #include "Gametype.h"
 
 #include "util/Math.h"
+#include "core/Core.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
@@ -385,7 +386,11 @@ namespace orxonox
                     }
                     if (allplayersready && hashumanplayers)
                     {
-                        this->gtinfo_->startCountdown_ = this->initialStartCountdown_;
+                        // If in developer's mode, there is no start countdown.
+                        if(Core::getInstance().inDevMode())
+                            this->gtinfo_->startCountdown_ = 0;
+                        else
+                            this->gtinfo_->startCountdown_ = this->initialStartCountdown_;
                         this->gtinfo_->bStartCountdownRunning_ = true;
                     }
                 }

@@ -24,6 +24,16 @@ function P.onLoad()
     })
 end
 
+function P.onShow()
+    if P.showAll ~= orxonox.GUIManager:inDevMode() then
+        local window = winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox")
+        local button = tolua.cast(window,"CEGUI::Checkbox")
+        P.showAll = not P.showAll
+        button:setSelected(P.showAll)
+        P.createLevelList()
+    end
+end
+
 function P.createLevelList()
     P.levelList = {}
     P.itemList = {}
@@ -43,8 +53,6 @@ function P.createLevelList()
         end
         index = index + 1
     end
-    --TODO: Reintroduce sorting, if needed. At the moment it's sorted by filename.
-    --table.sort(levelList)
     for k,v in pairs(P.levelList) do
         local item = CEGUI.createListboxTextItem(v:getName())
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
