@@ -277,12 +277,18 @@ namespace orxonox
         ----------------------------------------------------
         false                     | False | True  | Dontcare
         */
+
+#ifdef ORXONOX_PLATFORM_APPLE
+        // There is no non exclusive mode on OS X yet
+        state->setMouseExclusive(TriBool::True);
+#else
         if (showCursor == TriBool::Dontcare)
             state->setMouseExclusive(TriBool::Dontcare);
         else if (GraphicsManager::getInstance().isFullScreen() || showCursor == TriBool::False)
             state->setMouseExclusive(TriBool::True);
         else
             state->setMouseExclusive(TriBool::False);
+#endif
 
         if (showCursor == TriBool::True)
             state->setMouseHandler(this);
