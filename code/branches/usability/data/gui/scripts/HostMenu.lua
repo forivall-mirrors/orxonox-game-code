@@ -27,6 +27,23 @@ function P.onLoad()
 end
 
 function P.onShow()
+    if P.showAll ~= orxonox.GUIManager:inDevMode() then
+        local window = winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox")
+        local button = tolua.cast(window,"CEGUI::Checkbox")
+        P.showAll = not P.showAll
+        button:setSelected(P.showAll)
+        P.createLevelList()
+    end
+end
+
+function P.onShow()
+    if P.showAll ~= orxonox.GUIManager:inDevMode() then
+        local window = winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox")
+        local button = tolua.cast(window,"CEGUI::Checkbox")
+        P.showAll = not P.showAll
+        button:setSelected(P.showAll)
+    end
+
     if P.multiplayerMode == "startServer" then
         local window = winMgr:getWindow("orxonox/HostMenuHostButton")
         local button = tolua.cast(window,"CEGUI::RadioButton")

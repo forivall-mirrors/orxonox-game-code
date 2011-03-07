@@ -48,6 +48,7 @@
 #include "util/TriBool.h"
 #include "util/Singleton.h"
 #include "input/InputHandler.h"
+#include "Core.h"
 #include "OrxonoxClass.h"
 #include "WindowEventListener.h"
 
@@ -95,6 +96,12 @@ namespace orxonox // tolua_export
 
         static void navigateGUI(const std::string& mode);
         void guisActiveChanged(bool active); // tolua_export
+
+        /**
+        @brief Helper method to get the developer's mode without having to export Core.h.
+        @see Core::inDevMode
+        */
+        static bool inDevMode(void) { return Core::getInstance().inDevMode(); } // tolua_export
 
         //! Creates a new InputState to be used with a GUI Sheet
         const std::string& createInputState(const std::string& name, TriBool::Value showCursor = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export
