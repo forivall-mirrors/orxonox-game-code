@@ -37,12 +37,6 @@ subject to the following restrictions:
 int gNumDeepPenetrationChecks = 0;
 int gNumGjkChecks = 0;
 
-#ifdef check
-struct CompilerError
-{
-    void CompilerError() {}
-};
-#endif
 
 
 btGjkPairDetector::btGjkPairDetector(const btConvexShape* objectA,const btConvexShape* objectB,btSimplexSolverInterface* simplexSolver,btConvexPenetrationDepthSolver*	penetrationDepthSolver)
