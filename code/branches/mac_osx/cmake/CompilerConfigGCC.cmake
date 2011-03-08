@@ -64,8 +64,7 @@ ADD_COMPILER_FLAGS("-O2 -g -ggdb"          RelWithDebInfo CACHE)
 ADD_COMPILER_FLAGS("-Os"                   MinSizeRel     CACHE)
 
 # CMake doesn't seem to set the PIC flags right on certain 64 bit systems
-# Todo: MinGW too?
-IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+IF(NOT MINGW AND ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
   ADD_COMPILER_FLAGS("-fPIC" CACHE)
 ENDIF()
 
