@@ -47,7 +47,6 @@ ENDIF()
 
 # Scripts for specific library and CMake config
 INCLUDE(LibraryConfigTardis)
-#INCLUDE(LibraryConfigOSX)
 
 IF(DEPENDENCY_PACKAGE_ENABLE)
   GET_FILENAME_COMPONENT(_dep_dir_1 ${CMAKE_SOURCE_DIR}/../dependencies ABSOLUTE)
