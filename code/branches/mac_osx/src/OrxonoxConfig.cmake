@@ -73,7 +73,7 @@ INCLUDE(CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(iso646.h HAVE_ISO646_H)
 
 # Part of a woraround for OS X warnings. See OrxonoxConfig.h.in
-SET(ORX_HAVE_STD_INT HAVE_STDINT_H)
+SET(ORX_HAVE_STD_INT ${HAVE_STDINT_H})
 
 ############## Configured Headers ###############
 
