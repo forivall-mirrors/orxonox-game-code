@@ -73,10 +73,10 @@ namespace orxonox
         AutonomousDrone *myDrone = static_cast<AutonomousDrone*>(this->getControllableEntity());
         //TODO: Place your code here:
         // Steering commands
-        // You can use the following commands for steering
+        // You can use the commands provided by the AutonomousDrone to steer it:
         // - moveFrontBack, moveRightLeft, moveUpDown
         // - rotatePitch, rotateYaw, rotateRoll
-        // Apply the to myDrone (e.g. myDrone->rotateYaw(..) )
+        // Apply them to myDrone (e.g. myDrone->rotateYaw(..) )
 
     }
 }
