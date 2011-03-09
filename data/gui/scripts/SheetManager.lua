@@ -4,30 +4,25 @@ local cursor = CEGUI.MouseCursor:getSingleton()
 local loadedSheets = {}
 local activeMenuSheets = {size = 0, topSheetTuple = nil}
 local menuSheetsRoot = guiMgr:getMenuRootWindow()
-local bInGameConsoleClosed = false
 local mainMenuLoaded = false
-orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
+--orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
+orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "Sized", "windowResized")
 
------------------------
---- Local functions ---
------------------------
+------------------------
+--- Global functions ---
+------------------------
 
-local function hideCursor()
+function hideCursor()
     if cursor:isVisible() then
         cursor:hide()
     end
 end
 
-local function showCursor()
+function showCursor()
     if not cursor:isVisible() and inputMgr:isMouseExclusive() then
         cursor:show()
     end
 end
-
-
-------------------------
---- Global functions ---
-------------------------
 
 -- Loads the GUI with the specified name
 -- The name corresponds to the filename of the *.lua and *.layout files
@@ -92,7 +87,8 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     {
         ["sheet"]          = menuSheet,
         ["bHidePrevious"]  = bHidePrevious,
-        ["bNoInput"]       = bNoInput
+        ["bNoInput"]       = bNoInput,
+        ["name"]           = name
     }
     table.insert(activeMenuSheets, sheetTuple) -- indexed array access
     activeMenuSheets[name] = sheetTuple -- name access
@@ -134,6 +130,10 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     -- select first button if the menu was opened with the keyboard
     if previous and previous.pressedEnter and menuSheet:hasSelection() == false then
         menuSheet:setSelectionNear(1, 1)
+    end
+
+    if activeMenuSheets.size > 0 then
+        guiMgr:guisActiveChanged(true)
     end
 
     return menuSheet
@@ -206,6 +206,10 @@ function hideMenuSheet(name)
         hideCursor()
     end
 
+    if activeMenuSheets.size == 0 then
+        guiMgr:guisActiveChanged(false)
+    end
+
     sheetTuple.sheet:quit()
 end
 
@@ -219,13 +223,7 @@ end
 function keyESC()
     -- HUGE, very HUGE hacks!
 
-    -- If the InGameConsole is active, ignore the ESC command.
-    if bInGameConsoleClosed == true then
-        bInGameConsoleClosed = false
-        return
-    end
-
-    -- Count the number of sheets that don't need input till the first that does.
+    -- Count the number of sheets that don't need input until the first that does.
     local counter = noInputSheetIndex()
 
     -- If the first sheet that needs input is the MainMenu.
@@ -239,19 +237,30 @@ function keyESC()
     end
 end
 
-function keyPressed(e)
-    local we = tolua.cast(e, "CEGUI::KeyEventArgs")
+-- Function to navigate the GUI, is called by the GUIManager, whenever a relevant key is pressed.
+-- The mode specifies the action to be taken.
+function navigateGUI(mode)
     local sheet = activeMenuSheets[activeMenuSheets.size]
-    code = tostring(we.scancode)
-    -- Some preprocessing
-    if not mainMenuLoaded and not sheet.bNoInput then
-        if code == "1" then
-            keyESC()
-        elseif code == "0"then
-            orxonox.CommandExecutor:execute("openConsole")
+    sheet.sheet:keyPressed(mode)
+end
+
+function windowResized(e)
+    for name, sheet in pairs(loadedSheets) do
+        if orxonox.GraphicsManager:getInstance():isFullScreen() or sheet.tShowCursor == TriBool.False then
+            inputMgr:setMouseExclusive(sheet.inputState, TriBool.True)
+        else
+            inputMgr:setMouseExclusive(sheet.inputState, TriBool.False)
         end
     end
-    sheet.sheet:keyPressed()
+    local sheetTuple = activeMenuSheets[activeMenuSheets.size]
+    if sheetTuple then
+        if orxonox.GraphicsManager:getInstance():isFullScreen() and sheetTuple.sheet.tShowCursor ~= TriBool.False then
+            showCursor()
+        else
+            hideCursor()
+        end
+        sheetTuple.sheet:windowResized()
+    end
 end
 
 function setBackgroundImage(imageSet, imageName)
@@ -278,8 +287,14 @@ function noInputSheetCounter()
     return counter
 end
 
-function inGameConsoleClosed()
-    bInGameConsoleClosed = not bInGameConsoleClosed;
+function getGUIFirstActive(name, bHidePrevious, bNoInput)
+    local sheet = activeMenuSheets.topSheetTuple
+    -- If the topmost gui sheet has the input name
+    if sheet ~= nil and sheet.name == name then
+        guiMgr:toggleGUIHelper(name, bHidePrevious, bNoInput, false);
+    else
+        guiMgr:toggleGUIHelper(name, bHidePrevious, bNoInput, true);
+    end
 end
 
 ----------------------

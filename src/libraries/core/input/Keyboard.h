@@ -82,6 +82,8 @@ namespace orxonox
         //! Returns the class name as string
         static std::string getClassNameImpl() { return "Keyboard"; }
 
+        static unsigned int getKeyText(const OIS::KeyEvent& arg);
+
         //! Bit mask representing keyboard modifiers
         int modifiers_;
     };

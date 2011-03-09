@@ -111,7 +111,7 @@ namespace orxonox
 
             // Helpers to allow fast access to the availableLevels list.
             unsigned int nextIndex_; //! The next expected index to be accessed.
-            std::set<LevelInfoItem*, LevelInfoCompare>::iterator nextLevel_; //! The nex expected Level to be accessed.
+            std::set<LevelInfoItem*, LevelInfoCompare>::iterator nextLevel_; //! The next expected Level to be accessed.
 
             // config values
             std::string defaultLevelName_;

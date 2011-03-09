@@ -125,6 +125,8 @@ namespace orxonox
         private:
             TclBind(const TclBind& other);      ///< Copy-constructor, not implemented
 
+            static std::string tcl_helper(Tcl::object const &args, bool bQuery);
+
             Tcl::interpreter* interpreter_;     ///< The wrapped Tcl interpreter
             std::string tclDataPath_;           ///< The path to the directory that contains the Orxonox-specific Tcl-files
             bool bSetTclDataPath_;              ///< True if tclDataPath_ was defined (after a call to setDataPath())

@@ -162,6 +162,13 @@ namespace orxonox
             - The removal process is being postponed if InputManager::preUpdate() is currently running.
         */
         bool destroyState(const std::string& name); // tolua_export
+        /**
+        @brief
+            Changes the mouse mode of an input state.
+        @return
+            True if the call was successful, fals if the name was not found
+        */
+        bool setMouseExclusive(const std::string& name, TriBool::Value value); // tolua_export
 
         //-------------------------------
         // Various getters and setters
