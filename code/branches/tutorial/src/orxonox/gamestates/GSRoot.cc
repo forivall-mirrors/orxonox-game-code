@@ -37,6 +37,8 @@
 #include "tools/Timer.h"
 #include "tools/interfaces/Tickable.h"
 
+#include "GSLevel.h"
+
 namespace orxonox
 {
     DeclareGameState(GSRoot, "root", false, false);
@@ -44,6 +46,8 @@ namespace orxonox
     static const std::string __CC_setTimeFactor_name = "setTimeFactor";
     static const std::string __CC_setPause_name = "setPause";
     static const std::string __CC_pause_name = "pause";
+
+    /*static*/ bool GSRoot::startMainMenu_s = false;
 
     SetConsoleCommand("printObjects", &GSRoot::printObjects).hide();
     SetConsoleCommand(__CC_setTimeFactor_name, &GSRoot::setTimeFactor).accessLevel(AccessLevel::Master).defaultValues(1.0);
@@ -97,6 +101,12 @@ namespace orxonox
 
     void GSRoot::update(const Clock& time)
     {
+        if(startMainMenu_s)
+        {
+            delayedStartMainMenu();
+            startMainMenu_s = false;
+        }
+
         for (ObjectList<Timer>::iterator it = ObjectList<Timer>::begin(); it; )
         {
             Timer* object = *it;
@@ -174,4 +184,13 @@ namespace orxonox
         if (!GameMode::isStandalone())
             callStaticNetworkFunction(&TimeFactorListener::setTimeFactor, CLIENTID_UNKNOWN, factor_new);
     }
+
+    /*static*/ void GSRoot::delayedStartMainMenu(void)
+    {
+        if(!startMainMenu_s)
+            startMainMenu_s = true;
+        else
+            GSLevel::startMainMenu();
+    }
+
 }

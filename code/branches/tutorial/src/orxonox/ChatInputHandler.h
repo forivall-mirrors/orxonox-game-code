@@ -29,30 +29,14 @@
 #ifndef _ChatInputHandler_H__
 #define _ChatInputHandler_H__
 
-/* std includes */
-#include <deque>
+#include <OrxonoxPrereqs.h>
+
 #include <string>
-#include <fstream>
-#include <iostream>
-#include <cassert>
 #include <CEGUIForwardRefs.h>
 #include <CEGUIcolour.h>
 
-/* project includes */
-#include <OrxonoxPrereqs.h>
-#include <core/BaseObject.h>
-#include <core/PathConfig.h>
-
-#include "core/input/InputBuffer.h"
-#include "core/input/InputManager.h"
-#include "core/input/InputState.h"
-
-#include <network/ChatListener.h>
-#include <PlayerManager.h>
-#include <infos/PlayerInfo.h>
-
-#include "../libraries/network/Host.h"
-#include <util/Singleton.h>
+#include "util/Singleton.h"
+#include "network/ChatListener.h"
 
 namespace orxonox // tolua_export
 { // tolua_export

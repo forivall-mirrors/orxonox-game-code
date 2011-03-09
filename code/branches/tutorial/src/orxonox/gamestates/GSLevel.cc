@@ -45,6 +45,7 @@
 
 #include "LevelManager.h"
 #include "PlayerManager.h"
+#include "GSRoot.h"
 
 namespace orxonox
 {
@@ -155,9 +156,11 @@ namespace orxonox
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
-        Loader::open(startFile_);
+        bool loaded = Loader::open(startFile_);
 
         Core::getInstance().updateLastLevelTimestamp();
+        if(!loaded)
+            GSRoot::delayedStartMainMenu();
     }
 
     void GSLevel::unloadLevel()

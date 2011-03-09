@@ -250,6 +250,7 @@ namespace orxonox
 
         // Iterate over all the found *.oxw files
         COUT(3) << "Loading LevelInfos..." << std::endl;
+        std::set<std::string> names;
         for (Ogre::StringVector::const_iterator it = levels->begin(); it != levels->end(); ++it)
         {
             // TODO: Replace with tag?
@@ -276,10 +277,14 @@ namespace orxonox
                     info = new LevelInfoItem(filenameWOExtension, *it);
                 }
 
+                // Warn about levels with the same name.
+                if(!names.insert(info->getName()).second)
+                    COUT(2) << "Warning: Multiple levels (" << info->getXMLFilename() << ") with name '" << info->getName() << "' found!" << std::endl;
+
                 // Warn about multiple items so that it gets fixed quickly
                 if(availableLevels_.find(info) != availableLevels_.end())
                 {
-                    COUT(2) << "Warning: Multiple levels with name '" << info->getName() << "' found!" << std::endl;
+                    COUT(2) << "Warning: Multiple levels (" << info->getXMLFilename() << ") with same name '" << info->getName() << "' and filename found! Exluding..." << std::endl;
                     // Delete LevelInfoItem to avoid a dangling pointer
                     delete info;
                 }

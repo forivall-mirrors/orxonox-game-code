@@ -48,7 +48,6 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommand.h"
-#include "core/GUIManager.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
 #include "core/input/InputBuffer.h"
@@ -59,8 +58,8 @@ namespace orxonox
     const int LINES = 30;
     const float CHAR_WIDTH = 7.45f; // fix this please - determine the char-width dynamically
 
-    SetConsoleCommand("InGameConsole", "openConsole", &InGameConsole::openConsole).addShortcut();
-    SetConsoleCommand("InGameConsole", "closeConsole", &InGameConsole::closeConsole).addShortcut();
+    SetConsoleCommand("InGameConsole", "openConsole", &InGameConsole::openConsole);
+    SetConsoleCommand("InGameConsole", "closeConsole", &InGameConsole::closeConsole);
 
     ManageScopedSingleton(InGameConsole, ScopeID::Graphics, false);
 
@@ -533,7 +532,6 @@ namespace orxonox
         if (this->bActive_)
         {
             this->bActive_ = false;
-            GUIManager::getInstance().getLuaState()->doString("inGameConsoleClosed()"); // Notify the SheetManager in lua, that the console has been closed.
             InputManager::getInstance().leaveState("console");
             this->shell_->unregisterListener(this);
 
@@ -610,7 +608,6 @@ namespace orxonox
     */
     /*static*/ void InGameConsole::closeConsole()
     {
-        GUIManager::getInstance().getLuaState()->doString("inGameConsoleClosed()");  // Notify the SheetManager in lua, that the console has been closed, but not by ESC.
         InGameConsole::getInstance().deactivate();
     }
 

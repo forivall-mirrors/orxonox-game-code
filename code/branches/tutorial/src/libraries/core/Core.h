@@ -90,6 +90,9 @@ namespace orxonox
             inline long long getOgreConfigTimestamp() const
                 { return this->ogreConfigTimestamp_; }
 
+            inline bool inDevMode(void) const
+                { return this->bDevMode_; }
+
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
 
@@ -129,6 +132,7 @@ namespace orxonox
             bool                          bStartIOConsole_;            //!< Set to false if you don't want to use the IOConsole
             long long                     lastLevelTimestamp_;         ///< Timestamp when the last level was started
             long long                     ogreConfigTimestamp_;        ///< Timestamp wehen the ogre config level was modified
+            bool                          bDevMode_;                   //!< Developers bit. If set to false, some options are not available as to not confuse the normal user.
 
             static Core*                  singletonPtr_s;
     };
