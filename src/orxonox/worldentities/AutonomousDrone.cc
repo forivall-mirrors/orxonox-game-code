@@ -85,7 +85,7 @@ namespace orxonox
         // Make sure you add the variables auxiliaryThrust_ and rotationThrust_ to XMLPort.
         // Make sure that you also create the get- and set-functions. As you can see, the get- and set-functions for the variable primaryThrust_ has already been specified, so you can get your inspiration from there.
         // Variables can be added by the following command
-        // XMLPortParam(Classname, "xml-attribute-name (i.e. variablename)", setFunction, getFunction, xmlelement, mode);
+        // XMLPortParam(Classname, "xml-attribute-name (i.e. variablename)", setFunctionName, getFunctionName, xmlelement, mode);
 
     }
 
