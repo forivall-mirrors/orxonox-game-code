@@ -53,6 +53,7 @@ namespace orxonox
     
   }
 
+  /* read the master server address from config file */
   void WANDiscoverable::setConfigValues()
   {
     /* update msaddress string from orxonox.ini config file, if it 
@@ -62,12 +63,16 @@ namespace orxonox
 //     SetConfigValue( msaddress, "orxonox.net");
   } 
 
+  /* destructor */
   WANDiscoverable::~WANDiscoverable()
   {
     if( this->bActive_ )
       this->disconnect();
   }
   
+  /* set the activity of the discoverable object:
+   * active or not active 
+   */
   void WANDiscoverable::setActivity(bool bActive)
   {
     if( bActive==this->bActive_ )
