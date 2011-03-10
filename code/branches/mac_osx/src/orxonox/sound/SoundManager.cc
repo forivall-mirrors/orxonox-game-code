@@ -30,12 +30,8 @@
 
 #include "SoundManager.h"
 
-#if defined(__APPLE__)
-#include <ALUT/alut.h>
-#else
-#include <AL/alut.h>
-#endif
 #include <utility>
+#include <alut.h>
 #include <loki/ScopeGuard.h>
 
 #include "util/Exception.h"

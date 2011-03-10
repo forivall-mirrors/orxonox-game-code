@@ -29,11 +29,7 @@
 
 #include "SoundBuffer.h"
 
-#if defined(ORXONOX_PLATFORM_APPLE)
-#include <ALUT/alut.h>
-#else
-#include <AL/alut.h>
-#endif
+#include <alut.h>
 #include <vorbis/vorbisfile.h>
 
 #include "util/Exception.h"
