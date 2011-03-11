@@ -163,9 +163,13 @@ IF(MSVC)
   ELSE()
     SET(MSVC_PLATFORM "Win32")
   ENDIF()
-  STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?) .*$" "\\1"
-         VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcproj.user")
+  IF(MSVC10)
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcxproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcxproj.user")
+  ELSE()
+    STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?).*$" "\\1"
+           VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcproj.user")
+  ENDIF()
 ENDIF(MSVC)
 
 #################### Doxygen ####################

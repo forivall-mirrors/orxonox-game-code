@@ -35,7 +35,7 @@ IF(MSVC)
   ENDIF()
 
   # Choose right MSVC version
-  STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?) .*$" "\\1"
+  STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?).*$" "\\1"
          _msvc_version "${CMAKE_GENERATOR}")
 
   SET(DEP_INCLUDE_DIR ${DEPENDENCY_PACKAGE_DIR}/include)

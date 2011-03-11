@@ -63,7 +63,14 @@ SET_COMPILER_FLAGS("-MDd -Od -Zi -D_DEBUG -RTC1" Debug          CACHE)
 SET_COMPILER_FLAGS("-MD  -O2     -DNDEBUG"       Release        CACHE)
 SET_COMPILER_FLAGS("-MD  -O2 -Zi -DNDEBUG"       RelWithDebInfo CACHE)
 SET_COMPILER_FLAGS("-MD  -O1     -DNDEBUG"       MinSizeRel     CACHE)
-ADD_COMPILER_FLAGS("-D_SECURE_SCL=0"       MSVC9 ReleaseAll     CACHE)
+
+# No iterator checking for release builds (MSVC 8 dosn't understand this though)
+ADD_COMPILER_FLAGS("-D_SECURE_SCL=0" ReleaseAll CACHE)
+
+# Newer MSVC versions come with std::shared_ptr which conflicts with
+# boost::shared_ptr in cpptcl. And since we don't yet use the new C++ standard
+# anyway, disable it completely.
+ADD_COMPILER_FLAGS("-D_HAS_CPP0X=0" CACHE)
 
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
 IF(ORXONOX_RELEASE)

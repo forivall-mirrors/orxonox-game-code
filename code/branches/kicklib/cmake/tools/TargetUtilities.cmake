@@ -222,7 +222,8 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # No warnings needed from third party libraries
   IF(_arg_ORXONOX_EXTERNAL)
     REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
-    ADD_COMPILER_FLAGS("-w")
+    ADD_COMPILER_FLAGS("-w" NOT MSVC)
+    ADD_COMPILER_FLAGS("-W0" MSVC)
   ENDIF()
 
   # Don't compile header files
