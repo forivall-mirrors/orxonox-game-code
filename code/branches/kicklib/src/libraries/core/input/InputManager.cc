@@ -150,41 +150,43 @@ namespace orxonox
         assert(devices_[InputDeviceEnumerator::Keyboard] == 0);
         assert(devices_.size() == InputDeviceEnumerator::FirstJoyStick);
 
+        typedef std::pair<std::string, std::string> StringPair;
+
         // Fill parameter list
         OIS::ParamList paramList;
         size_t windowHnd = GraphicsManager::getInstance().getRenderWindowHandle();
-        paramList.insert(std::make_pair("WINDOW", multi_cast<std::string>(windowHnd)));
+        paramList.insert(StringPair("WINDOW", multi_cast<std::string>(windowHnd)));
 #if defined(ORXONOX_PLATFORM_WINDOWS)
-        paramList.insert(std::make_pair("w32_keyboard", "DISCL_NONEXCLUSIVE"));
-        paramList.insert(std::make_pair("w32_keyboard", "DISCL_FOREGROUND"));
-        paramList.insert(std::make_pair("w32_mouse", "DISCL_FOREGROUND"));
+        paramList.insert(StringPair("w32_keyboard", "DISCL_NONEXCLUSIVE"));
+        paramList.insert(StringPair("w32_keyboard", "DISCL_FOREGROUND"));
+        paramList.insert(StringPair("w32_mouse", "DISCL_FOREGROUND"));
         if (exclusiveMouse_ == TriBool::True || GraphicsManager::getInstance().isFullScreen())
         {
             // Disable Windows key plus special keys (like play, stop, next, etc.)
-            paramList.insert(std::make_pair("w32_keyboard", "DISCL_NOWINKEY"));
-            paramList.insert(std::make_pair("w32_mouse", "DISCL_EXCLUSIVE"));
+            paramList.insert(StringPair("w32_keyboard", "DISCL_NOWINKEY"));
+            paramList.insert(StringPair("w32_mouse", "DISCL_EXCLUSIVE"));
         }
         else
-            paramList.insert(std::make_pair("w32_mouse", "DISCL_NONEXCLUSIVE"));
+            paramList.insert(StringPair("w32_mouse", "DISCL_NONEXCLUSIVE"));
 #elif defined(ORXONOX_PLATFORM_LINUX)
         // Enabling this is probably a bad idea, but whenever orxonox crashes, the setting stays on
         // Trouble might be that the Pressed event occurs a bit too often...
-        paramList.insert(std::make_pair("XAutoRepeatOn", "true"));
+        paramList.insert(StringPair("XAutoRepeatOn", "true"));
 
         if (exclusiveMouse_ == TriBool::True || GraphicsManager::getInstance().isFullScreen())
         {
             if (CommandLineParser::getValue("keyboard_no_grab").getBool())
-                paramList.insert(std::make_pair("x11_keyboard_grab", "false"));
+                paramList.insert(StringPair("x11_keyboard_grab", "false"));
             else
-                paramList.insert(std::make_pair("x11_keyboard_grab", "true"));
-            paramList.insert(std::make_pair("x11_mouse_grab",  "true"));
-            paramList.insert(std::make_pair("x11_mouse_hide", "true"));
+                paramList.insert(StringPair("x11_keyboard_grab", "true"));
+            paramList.insert(StringPair("x11_mouse_grab",  "true"));
+            paramList.insert(StringPair("x11_mouse_hide", "true"));
         }
         else
         {
-            paramList.insert(std::make_pair("x11_keyboard_grab", "false"));
-            paramList.insert(std::make_pair("x11_mouse_grab",  "false"));
-            paramList.insert(std::make_pair("x11_mouse_hide", "false"));
+            paramList.insert(StringPair("x11_keyboard_grab", "false"));
+            paramList.insert(StringPair("x11_mouse_grab",  "false"));
+            paramList.insert(StringPair("x11_mouse_hide", "false"));
         }
 #endif
 

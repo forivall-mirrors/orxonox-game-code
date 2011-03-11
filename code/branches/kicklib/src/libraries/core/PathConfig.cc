@@ -232,8 +232,8 @@ namespace orxonox
 
         // Create directories to avoid problems when opening files in non existent folders.
         std::vector<std::pair<bf::path, std::string> > directories;
-        directories.push_back(std::make_pair(bf::path(configPath_), "config"));
-        directories.push_back(std::make_pair(bf::path(logPath_), "log"));
+        directories.push_back(std::make_pair(bf::path(configPath_), std::string("config")));
+        directories.push_back(std::make_pair(bf::path(logPath_), std::string("log")));
 
         for (std::vector<std::pair<bf::path, std::string> >::iterator it = directories.begin();
             it != directories.end(); ++it)
