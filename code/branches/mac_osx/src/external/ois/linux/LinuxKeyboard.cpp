@@ -283,7 +283,9 @@ void LinuxKeyboard::capture()
 
 	while( XPending(display) > 0 )
 	{
-		XNextEvent(display, &event); 		if(KeyPress == event.type)
+		XNextEvent(display, &event);
+
+		if(KeyPress == event.type)
 		{
 			unsigned int character = 0;
 

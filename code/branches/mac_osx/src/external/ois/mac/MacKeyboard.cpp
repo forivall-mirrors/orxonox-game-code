@@ -198,11 +198,19 @@ void MacKeyboard::_keyDownCallback( EventRef theEvent )
 	UniChar text[10];
 	char macChar;
 	
+	// TODO clean this up
 	if (mTextMode == Unicode)
 	{
 		//get string size
 		UInt32 stringsize;
+		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, 0, &stringsize, NULL);
+		//status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar)*10, NULL, &text );
 		status = GetEventParameter( theEvent, 'kuni', typeUnicodeText, NULL, sizeof(UniChar) * 10, &stringsize, &text );
+		std::cout << "String length: " << stringsize << std::endl;
+		
+		//wstring unitext;
+		//for (int i=0;i<10;i++) unitext += (wchar_t)text[i];
+		//wcout << "Unicode out: " << unitext << endl;
 		
 		if(stringsize > 0)
 		{
