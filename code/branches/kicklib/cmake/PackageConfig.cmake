@@ -31,9 +31,9 @@
 #        But you can specify that the code only runs on 3.1 and higher
 #        or 4.0 and higher (so both 3.1 and 4.0 will work).
 IF(MSVC)
-  SET(ALLOWED_MINIMUM_VERSIONS 4.3 5.1 6.0)
+  SET(ALLOWED_MINIMUM_VERSIONS 4.3 6.0)
 ELSE()
-  SET(ALLOWED_MINIMUM_VERSIONS 4.1 5.2 6.0)
+  SET(ALLOWED_MINIMUM_VERSIONS 6.0)
 ENDIF()
 
 IF(NOT EXISTS ${DEPENDENCY_PACKAGE_DIR}/version.txt)
