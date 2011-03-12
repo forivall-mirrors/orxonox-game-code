@@ -147,13 +147,13 @@ namespace orxonox
     GUIManager::GUIManager(const std::pair<int, int>& mousePosition)
         : destroyer_(*this, &GUIManager::cleanup)
         , guiRenderer_(NULL)
-        , luaState_(NULL)
-        , scriptModule_(NULL)
-        , guiSystem_(NULL)
         , resourceProvider_(NULL)
 #ifndef ORXONOX_OLD_CEGUI
         , imageCodec_(NULL)
 #endif
+        , luaState_(NULL)
+        , scriptModule_(NULL)
+        , guiSystem_(NULL)
         , camera_(NULL)
     {
         RegisterRootObject(GUIManager);
