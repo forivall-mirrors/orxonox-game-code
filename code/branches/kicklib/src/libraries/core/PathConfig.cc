@@ -58,8 +58,10 @@
 // Boost 1.36 has some issues with deprecated functions that have been omitted
 #if (BOOST_VERSION == 103600)
 #  define BOOST_LEAF_FUNCTION filename
-#else
+#elif (BOOST_FILESYSTEM_VERSION < 3)
 #  define BOOST_LEAF_FUNCTION leaf
+#else
+#  define BOOST_LEAF_FUNCTION path().filename().string
 #endif
 
 namespace orxonox
@@ -281,7 +283,11 @@ namespace orxonox
                 {
                     // We've found a helper file
                     const std::string& library = filename.substr(0, filename.size() - moduleextensionlength);
+#if BOOST_FILESYSTEM_VERSION < 3
                     modulePaths.push_back((modulePath_ / library).file_string());
+#else
+                    modulePaths.push_back((modulePath_ / library).string());
+#endif
                 }
             }
             ++file;

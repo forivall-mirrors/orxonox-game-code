@@ -242,7 +242,11 @@ namespace orxonox
         SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '{', '}', false, '\0');
         // Use backslash paths on Windows! file_string() already does that though.
         for (unsigned int i = 0; i < plugins.size(); ++i)
+#if BOOST_FILESYSTEM_VERSION < 3
             ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
+#else
+            ogreRoot_->loadPlugin((folder / plugins[i]).string());
+#endif
     }
 
     void GraphicsManager::loadRenderer()
