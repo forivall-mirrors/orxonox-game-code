@@ -47,6 +47,6 @@ IF(MINGW)
   # Certain find scripts don't behave as ecpected to we have
   # to specify the libraries ourselves.
   SET(TCL_LIBRARY  ${DEP_BINARY_DIR}/tcl85.dll CACHE FILEPATH "")
-  SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/zlib1.dll CACHE FILEPATH "")
+  SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/libzlib.dll CACHE FILEPATH "")
 
 ENDIF(MINGW)
