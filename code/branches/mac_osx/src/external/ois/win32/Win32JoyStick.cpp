@@ -26,6 +26,14 @@ restrictions:
 #include "OISEvents.h"
 #include "OISException.h"
 
+// (Orxonox): Required for MinGW to compile properly
+#ifdef __MINGW32__
+#  include <oaidl.h>
+#  ifndef __MINGW_EXTENSION
+#    define __MINGW_EXTENSION __extension__
+#  endif
+#endif
+
 #include <cassert>
 #include <wbemidl.h>
 #include <oleauto.h>

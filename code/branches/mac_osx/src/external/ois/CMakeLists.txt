@@ -55,6 +55,11 @@ ENDIF()
 # Some unexplained hackery for Visual Studio 2005
 ADD_COMPILER_FLAGS("-D_WIN32_DCOM" MSVC8)
 
+# MinGW doesn't come with some required Windows headers
+IF(MINGW)
+  INCLUDE_DIRECTORIES(${WMI_INCLUDE_DIR})
+ENDIF()
+
 ORXONOX_ADD_LIBRARY(ois_orxonox
   ORXONOX_EXTERNAL
   DEFINE_SYMBOL
@@ -66,7 +71,7 @@ ORXONOX_ADD_LIBRARY(ois_orxonox
 )
 
 IF(WIN32)
-  TARGET_LINK_LIBRARIES(ois_orxonox ${DIRECTX_LIBRARIES})
+  TARGET_LINK_LIBRARIES(ois_orxonox ${DIRECTX_LIBRARIES} ${WMI_LIBRARY})
 ELSEIF(APPLE)
   TARGET_LINK_LIBRARIES(ois_orxonox "/System/Library/Frameworks/IOKit.framework" "/System/Library/Frameworks/Carbon.framework")
 ENDIF()

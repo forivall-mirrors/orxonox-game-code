@@ -48,6 +48,49 @@
    #include <iostream>
 
 
+--- win32/Win32JoyStick.cpp
++++ win32/Win32JoyStick.cpp
+@@ -26,6 +26,14 @@
+ #include "OISEvents.h"
+ #include "OISException.h"
+ 
++// (Orxonox): Required for MinGW to compile properly
++#ifdef __MINGW32__
++#  include <oaidl.h>
++#  ifndef __MINGW_EXTENSION
++#    define __MINGW_EXTENSION __extension__
++#  endif
++#endif
++
+ #include <cassert>
+ #include <wbemidl.h>
+ #include <oleauto.h>
+@@ -39,6 +47,11 @@
+    }
+ #endif
+ 
++// (Orxonox): MinGW doesn't have swscanf_s
++#ifdef __MINGW32__
++#	define swscanf_s swscanf
++#endif
++
+ #ifdef OIS_WIN32_XINPUT_SUPPORT
+ #	pragma comment(lib, "xinput.lib")
+ #endif
+@@ -583,7 +596,12 @@
+     bool bCleanupCOM = SUCCEEDED(hr);
+ 
+     // Create WMI
++    // (Orxonox): Fix for MinGW
++#ifdef __MINGW32__
++    hr = CoCreateInstance(CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*)&pIWbemLocator);
++#else
+     hr = CoCreateInstance(__uuidof(WbemLocator), NULL, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID*)&pIWbemLocator);
++#endif
+     if( FAILED(hr) || pIWbemLocator == NULL )
+         goto LCleanup;
+ 
+
 --- mac/MacHIDManager.cpp
 +++ mac/MacHIDManager.cpp
 @@ -406,6 +406,7 @@

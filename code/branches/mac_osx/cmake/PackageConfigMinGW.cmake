@@ -49,4 +49,8 @@ IF(MINGW)
   SET(TCL_LIBRARY  ${DEP_BINARY_DIR}/tcl85.dll CACHE FILEPATH "")
   SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/zlib1.dll CACHE FILEPATH "")
 
+  # Not included in MinGW, so we need to supply it for OIS
+  SET(WMI_INCLUDE_DIR ${DEP_INCLUDE_DIR}/wmi/include)
+  SET(WMI_LIBRARY     ${DEP_LIBRARY_DIR}/wbemuuid.lib)
+
 ENDIF(MINGW)
