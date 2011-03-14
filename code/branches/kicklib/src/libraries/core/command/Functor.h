@@ -243,7 +243,6 @@ namespace orxonox
             /// Constructor: Stores the object-pointer.
             FunctorMember(O* object = 0) : object_(object), bSafeMode_(false) {}
             virtual ~FunctorMember() { if (this->bSafeMode_) { this->unregisterObject(this->object_); } }
-            virtual ~FunctorMember() {}
 
             /// Calls the function-pointer with up to five arguments and an object. In case of a static-function, the object can be NULL. @return Returns the return-value of the function (if any; MT_Type::Null otherwise)
             virtual MultiType operator()(O* object, const MultiType& param1 = MT_Type::Null, const MultiType& param2 = MT_Type::Null, const MultiType& param3 = MT_Type::Null, const MultiType& param4 = MT_Type::Null, const MultiType& param5 = MT_Type::Null) = 0;
