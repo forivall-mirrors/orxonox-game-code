@@ -100,13 +100,30 @@ ENDIF()
 # Enable expensive optimisations: use this for a binary release build
 OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
 
-########### Subfolders and Subscripts ###########
+IF(APPLE)
+  # Set 10.5 as the base SDK by default
+  SET(XCODE_ATTRIBUTE_SDKROOT macosx10.5)
 
-# Library finding
-INCLUDE(LibraryConfig)
+  # 10.6 sets x86_64 as the default architecture.
+  # Because Carbon isn't supported on 64-bit and we still need it, force the architectures to ppc and i386
+  IF(CMAKE_OSX_ARCHITECTURES MATCHES "x86_64")
+    SET(CMAKE_OSX_ARCHITECTURES "i386")
+  ENDIF()
+  IF(CMAKE_OSX_ARCHITECTURES MATCHES "ppc64")
+    SET(CMAKE_OSX_ARCHITECTURES "ppc")
+  ENDIF()
+  IF(NOT CMAKE_OSX_ARCHITECTURES)
+    SET(CMAKE_OSX_ARCHITECTURES "i386")
+  ENDIF()
+ENDIF()
+
+########### Subfolders and Subscripts ###########
 
 # General build and compiler options and configurations
 INCLUDE(CompilerConfig)
+
+# Library finding
+INCLUDE(LibraryConfig)
 
 # Configure installation paths and options
 INCLUDE(InstallConfig)

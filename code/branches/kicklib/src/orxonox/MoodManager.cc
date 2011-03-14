@@ -49,12 +49,15 @@ namespace orxonox
         oldMood_ = MoodManager::defaultMood_;
 
         // Checking for the existence of the folder for the default mood
-        const std::string& path = "ambient/" + MoodManager::defaultMood_ + "/.";
-        if (!Resource::exists(path))
+        const std::string& patha = "ambient/" + MoodManager::defaultMood_ + "/.";
+        if (!Resource::exists(patha))
         {
             // TODO: Non-fatal error handling (non-critical resource missing)
             COUT(2) << "Mood Warning: Folder for default mood (" << MoodManager::defaultMood_ << ") does not exist!" << std::endl;
         }
+        
+        // @TODO
+        // Creating a vector of the available moods to enable easy mood selection by Lua/CEGUI        
     }
 
     void MoodManager::setConfigValues()

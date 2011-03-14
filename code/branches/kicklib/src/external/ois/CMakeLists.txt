@@ -30,10 +30,11 @@ SET_SOURCE_FILES(OIS_FILES
   OISJoyStick.h
   OISKeyboard.h
   OISMouse.h
+  OISMultiTouch.h
   OISObject.h
   OISPrereqs.h
 
-COMPILATION_BEGIN OISCompilation.cpp
+  #COMPILATION_BEGIN OISCompilation.cpp
   OISEffect.cpp
   OISException.cpp
   OISForceFeedback.cpp
@@ -41,7 +42,7 @@ COMPILATION_BEGIN OISCompilation.cpp
   OISJoyStick.cpp
   OISKeyboard.cpp
   OISObject.cpp
-COMPILATION_END
+  #COMPILATION_END
 )
 IF(WIN32)
   ADD_SUBDIRECTORY(win32)
@@ -50,8 +51,6 @@ ELSEIF(APPLE)
 ELSEIF(UNIX)
   ADD_SUBDIRECTORY(linux)
 ENDIF()
-
-INCLUDE_DIRECTORIES(.)
 
 ORXONOX_ADD_LIBRARY(ois_orxonox
   ORXONOX_EXTERNAL
@@ -65,4 +64,6 @@ ORXONOX_ADD_LIBRARY(ois_orxonox
 
 IF(WIN32)
   TARGET_LINK_LIBRARIES(ois_orxonox ${DIRECTX_LIBRARIES})
+ELSEIF(APPLE)
+  TARGET_LINK_LIBRARIES(ois_orxonox "/System/Library/Frameworks/IOKit.framework" "/System/Library/Frameworks/Carbon.framework")
 ENDIF()

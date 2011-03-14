@@ -39,15 +39,15 @@ ENDIF()
 
 # On Windows using a package causes way less problems
 SET(_option_msg "Set this to true to use precompiled dependecy archives")
-IF(WIN32)
+IF(WIN32 OR APPLE)
   OPTION(DEPENDENCY_PACKAGE_ENABLE "${_option_msg}" ON)
-ELSE(WIN32)
+ELSE()
   OPTION(DEPENDENCY_PACKAGE_ENABLE "${_option_msg}" FALSE)
-ENDIF(WIN32)
+ENDIF()
 
 # Scripts for specific library and CMake config
 INCLUDE(LibraryConfigTardis)
-INCLUDE(LibraryConfigApple)
+#INCLUDE(LibraryConfigOSX)
 
 IF(DEPENDENCY_PACKAGE_ENABLE)
   GET_FILENAME_COMPONENT(_dep_dir_1 ${CMAKE_SOURCE_DIR}/../dependencies ABSOLUTE)
@@ -74,9 +74,13 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
     MESSAGE(STATUS "Warning: Could not find dependency directory."
                    "Disable LIBRARY_USE_PACKAGE if you have none intalled.")
   ELSE()
-    INCLUDE(PackageConfigMinGW)
-    INCLUDE(PackageConfigMSVC)
-    INCLUDE(PackageConfig) # For both msvc and mingw
+    IF(WIN32)
+      INCLUDE(PackageConfigMinGW)
+      INCLUDE(PackageConfigMSVC)
+      INCLUDE(PackageConfig) # For both msvc and mingw
+    ELSEIF(APPLE)
+      INCLUDE(PackageConfigOSX)
+    ENDIF(WIN32)
   ENDIF()
 ENDIF(DEPENDENCY_PACKAGE_ENABLE)
 
@@ -151,6 +155,15 @@ IF( NOT TARDIS )
 ENDIF()
 # No auto linking, so this option is useless anyway
 MARK_AS_ADVANCED(Boost_LIB_DIAGNOSTIC_DEFINITIONS)
+# Complain about incompatibilities
+IF(GCC_VERSION)
+  COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.4.0" _compare_result)
+  IF(NOT _compare_result LESS 0)
+    IF(${Boost_VERSION} LESS 103700)
+      MESSAGE(STATUS "Warning: Boost versions earlier than 1.37 may not compile with GCC 4.4 or later!")
+    ENDIF()
+  ENDIF()
+ENDIF()
 
 
 ####### Static/Dynamic linking options ##########

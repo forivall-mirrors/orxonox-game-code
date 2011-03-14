@@ -96,7 +96,7 @@ namespace orxonox
 
 #elif defined(ORXONOX_PLATFORM_APPLE)
         char buffer[1024];
-        unsigned long path_len = 1023;
+        uint32_t path_len = 1023;
         if (_NSGetExecutablePath(buffer, &path_len))
             ThrowException(General, "Could not retrieve executable path.");
 
@@ -126,10 +126,8 @@ namespace orxonox
         buffer[ret] = 0;
 #endif
 
-        executablePath_ = bf::path(buffer);
-#ifndef ORXONOX_PLATFORM_APPLE
-        executablePath_ = executablePath_.branch_path(); // remove executable name
-#endif
+        // Remove executable filename
+        executablePath_ = bf::path(buffer).branch_path();
 
         /////////////////////
         // SET MODULE PATH //
@@ -207,11 +205,13 @@ namespace orxonox
             dataPath_  = specialConfig::dataInstallDirectory;
 
             // Get user directory
-#  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */
+#ifdef ORXONOX_PLATFORM_UNIX
             char* userDataPathPtr(getenv("HOME"));
-#  else
+#elif ORXONOX_PLATFORM_APPLE
+            char* userDataPathPtr(getenv("HOME"));
+#else
             char* userDataPathPtr(getenv("APPDATA"));
-#  endif
+#endif
             if (userDataPathPtr == NULL)
                 ThrowException(General, "Could not retrieve user data path.");
             bf::path userDataPath(userDataPathPtr);

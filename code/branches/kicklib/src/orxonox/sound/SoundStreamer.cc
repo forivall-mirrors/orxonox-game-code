@@ -26,7 +26,12 @@
  */
 #include "SoundStreamer.h"
 
+#ifdef ORXONOX_PLATFORM_APPLE
+#include "openal/al.h"
+#else
 #include <al.h>
+#endif
+
 #include <vorbis/vorbisfile.h>
 #include "SoundManager.h"
 

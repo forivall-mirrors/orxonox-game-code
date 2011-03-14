@@ -52,10 +52,13 @@
 #      define _QuestsystemExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _QuestsystemPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _QuestsystemExport  __attribute__ ((visibility("default")))
+#  define _QuestsystemPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _QuestsystemExport
+#  define _QuestsystemPrivate
 #endif
 
 //-----------------------------------------------------------------------

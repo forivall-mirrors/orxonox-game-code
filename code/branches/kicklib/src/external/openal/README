@@ -1,0 +1,8 @@
+These OpenAL headers are for Mac OS X only!
+Due to a bug in the Mac OS X distribution of
+OpenAL, compilation fails for gcc versions >=4.2.
+Corrections have been applied to these header 
+files here.
+
+Kevin Young
+2010.11.24

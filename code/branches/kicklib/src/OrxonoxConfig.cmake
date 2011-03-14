@@ -31,7 +31,8 @@
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 
 # Global switch to disable Precompiled Header Files
-IF(PCH_COMPILER_SUPPORT)
+# Note: PCH temporarily disabled on Mac because of severe problems
+IF(PCH_COMPILER_SUPPORT AND NOT APPLE)
   OPTION(PCH_ENABLE "Global PCH switch" TRUE)
 ENDIF()
 
@@ -52,13 +53,6 @@ IF(NOT ORXONOX_BIG_ENDIAN)
   SET(ORXONOX_LITTLE_ENDIAN TRUE)
 ENDIF()
 
-# 32/64 bit system check
-IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
-  SET(ORXONOX_ARCH_64 TRUE)
-ELSE()
-  SET(ORXONOX_ARCH_32 TRUE)
-ENDIF()
-
 # Platforms
 SET(ORXONOX_PLATFORM_WINDOWS ${WIN32})
 SET(ORXONOX_PLATFORM_APPLE ${APPLE})
@@ -73,6 +67,13 @@ IF(MSVC)
   SET(_source "int main() { return 0; } __forceinline void test() { return; }")
   CHECK_CXX_SOURCE_COMPILES("${_source}" HAVE_FORCEINLINE)
 ENDIF(MSVC)
+
+# Part of a woraround for OS X warnings. See OrxonoxConfig.h.in
+IF(HAVE_STDINT_H)
+  SET(HAVE_STDINT_H 1)
+ELSE()
+  SET(HAVE_STDINT_H 0)
+ENDIF()
 
 # Check iso646.h include (literal operators)
 INCLUDE(CheckIncludeFileCXX)

@@ -93,10 +93,10 @@
         template <class T, int templatehack2> \
         struct SuperFunctionCondition<functionnumber, T, 0, templatehack2> \
         { \
-            static void check() \
+            static void superCheck() \
             { \
                 SuperFunctionCondition<functionnumber, T, 0, templatehack2>::apply(static_cast<T*>(0)); \
-                SuperFunctionCondition<functionnumber + 1, T, 0, templatehack2>::check(); \
+                SuperFunctionCondition<functionnumber + 1, T, 0, templatehack2>::superCheck(); \
             } \
             \
             static void apply(void* temp) {} \
@@ -131,9 +131,9 @@
         template <int templatehack2> \
         struct SuperFunctionCondition<functionnumber, baseclass, 0, templatehack2> \
         { \
-            static void check() \
+            static void superCheck() \
             { \
-                SuperFunctionCondition<functionnumber + 1, baseclass, 0, templatehack2>::check(); \
+                SuperFunctionCondition<functionnumber + 1, baseclass, 0, templatehack2>::superCheck(); \
             } \
         };
 
@@ -149,14 +149,14 @@
         template <class T, templatehack2>
         struct SuperFunctionCondition<functionnumber, T, 0, templatehack2>
         {
-            static void check()
+            static void superCheck()
             {
                 // This call to the apply-function is the whole check. By calling the function with
                 // a T* pointer, the right function get's called.
                 SuperFunctionCondition<functionnumber, T, 0, templatehack2>::apply(static_cast<T*>(0));
 
-                // Go go the check for of next super-function (functionnumber + 1)
-                SuperFunctionCondition<functionnumber + 1, T, 0, templatehack2>::check();
+                // Go go the superCheck for of next super-function (functionnumber + 1)
+                SuperFunctionCondition<functionnumber + 1, T, 0, templatehack2>::superCheck();
             }
 
             // This function gets called if T is not a child of the baseclass.
@@ -201,10 +201,10 @@
         template <int templatehack2> \
         struct SuperFunctionCondition<functionnumber, baseclass, 0, templatehack2> \
         { \
-            // The check function acts like the fallback - it advances to the check for the next super-function (functionnumber + 1)
-            static void check() \
+            // The superCheck function acts like the fallback - it advances to the check for the next super-function (functionnumber + 1)
+            static void superCheck() \
             { \
-                SuperFunctionCondition<functionnumber + 1, baseclass, 0, templatehack2>::check(); \
+                SuperFunctionCondition<functionnumber + 1, baseclass, 0, templatehack2>::superCheck(); \
             } \
         };
     */
@@ -302,7 +302,7 @@ namespace orxonox
         template <int functionnumber, class T, int templatehack1, int templatehack2>
         struct SuperFunctionCondition
         {
-            static void check() {}
+            static void superCheck() {}
         };
 
         /**
@@ -337,9 +337,9 @@ namespace orxonox
             template <class T, int templatehack1, int templatehack2> \
             struct SuperFunctionCondition<functionnumber, T, templatehack1, templatehack2> \
             { \
-                static void check() \
+                static void superCheck() \
                 { \
-                    SuperFunctionCondition<functionnumber + 1, T, templatehack1, templatehack2>::check(); \
+                    SuperFunctionCondition<functionnumber + 1, T, templatehack1, templatehack2>::superCheck(); \
                 } \
             }; \
             \
@@ -420,10 +420,10 @@ namespace orxonox
         {
             // If this function gets called, the header-file of the super function is not
             // included, so this fallback template (templatehack not specialized) is used
-            static void check()
+            static void superCheck()
             {
                 // Calls the condition-check of the next super-function (functionnumber + 1)
-                SuperFunctionCondition<functionnumber + 1, T, templatehack1, templatehack2>::check();
+                SuperFunctionCondition<functionnumber + 1, T, templatehack1, templatehack2>::superCheck();
             }
         };
 
@@ -573,7 +573,7 @@ namespace orxonox
         // This get's called within the initialization of an Identifier
         virtual void createSuperFunctionCaller() const
         {
-            SuperFunctionCondition<0, T, 0, 0>::check();
+            SuperFunctionCondition<0, T, 0, 0>::superCheck();
         }
 
 

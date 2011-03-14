@@ -20,48 +20,55 @@
  #  Author:
  #    Reto Grieder
  #  Description:
- #    General package configuration. Merely sets the include paths.
- #    Library files are treated separately.
+ #    OS X package configuration
  #
+
+INCLUDE(CheckPackageVersion)
+
+CHECK_PACKAGE_VERSION(1.0)
 
 IF(NOT _INTERNAL_PACKAGE_MESSAGE)
   MESSAGE(STATUS "Using library package for the dependencies.")
   SET(_INTERNAL_PACKAGE_MESSAGE 1 CACHE INTERNAL "Do not edit!" FORCE)
 ENDIF()
 
-# Ogre versions >= 1.7 require the POCO library on Windows with MSVC for threading
-COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} 5 _result TRUE)
-IF(NOT _result EQUAL -1 AND NOT APPLE)
-  SET(POCO_REQUIRED TRUE)
-ENDIF()
+SET(DEP_INCLUDE_DIR ${DEPENDENCY_PACKAGE_DIR}/include)
+SET(DEP_LIBRARY_DIR ${DEPENDENCY_PACKAGE_DIR}/lib)
+SET(DEP_BINARY_DIR  ${DEPENDENCY_PACKAGE_DIR}/bin)
+SET(DEP_FRAMEWORK_DIR ${DEPENDENCY_PACKAGE_DIR}/Library/Frameworks)
+
+# Sets the library path for the FIND_LIBRARY
+SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
 
 # Include paths and other special treatments
-SET(ENV{ALUTDIR}               ${DEP_INCLUDE_DIR}/freealut)
-SET(ENV{BOOST_ROOT}            ${DEP_INCLUDE_DIR}/boost)
-SET(ENV{CEGUIDIR}              ${DEP_INCLUDE_DIR}/cegui)
-SET(ENV{DBGHELP_DIR}           ${DEP_INCLUDE_DIR}/dbghelp)
-SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx)
-#SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet)
-SET(ENV{LUA5.1_DIR}            ${DEP_INCLUDE_DIR}/lua)
-SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR}/libogg)
-SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR}/libvorbis)
-SET(ENV{OGRE_HOME}             ${DEP_INCLUDE_DIR}/ogre)
+SET(ENV{ALUTDIR}               ${DEP_FRAMEWORK_DIR})
+SET(ENV{BOOST_ROOT}            ${DEPENDENCY_PACKAGE_DIR})
+SET(ENV{CEGUIDIR}              ${DEP_FRAMEWORK_DIR})
+SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua)
+SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR})
+SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR})
+SET(ENV{OGRE_HOME}             ${DEP_FRAMEWORK_DIR})
 SET(ENV{OGRE_PLUGIN_DIR}       ${DEP_BINARY_DIR})
-SET(ENV{OPENALDIR}             ${DEP_INCLUDE_DIR}/openal)
-SET(ENV{POCODIR}               ${DEP_INCLUDE_DIR}/poco)
-LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/tcl/include)
-LIST(APPEND CMAKE_INCLUDE_PATH ${DEP_INCLUDE_DIR}/zlib/include)
+
+# Xcode won't be able to run the toluabind code generation if we're using the dependency package
+#IF(DEPENDENCY_PACKAGE_ENABLE)
+#  IF(${CMAKE_GENERATOR} STREQUAL "Xcode")
+#    SET(ENV{DYLD_LIBRARY_PATH}               ${DEPENDENCY_PACKAGE_DIR}/lib)
+#    SET(ENV{DYLD_FRAMEWORK_PATH}             ${DEPENDENCY_PACKAGE_DIR}/Library/Frameworks)
+#  ENDIF(${CMAKE_GENERATOR} STREQUAL "Xcode")
+#ENDIF(DEPENDENCY_PACKAGE_ENABLE)
 
 ### INSTALL ###
 
 # Tcl script library
-INSTALL(
-  DIRECTORY ${DEP_LIBRARY_DIR}/tcl/
-  DESTINATION lib/tcl
-)
+# TODO: How does this work on OS X?
+#INSTALL(
+#  DIRECTORY ${DEP_LIBRARY_DIR}/tcl/
+#  DESTINATION lib/tcl
+#)
 
-# On Windows, DLLs have to be in the executable folder, install them
-IF(WIN32 AND DEP_BINARY_DIR)
+# TODO: Install on OSX
+IF(FALSE)
   ## DEBUG
   # When installing a debug version, we really can't know which libraries
   # are used in released mode because there might be deps of deps.

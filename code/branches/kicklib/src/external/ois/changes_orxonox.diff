@@ -9,6 +9,8 @@
  #			undef _OISExport
  			//Ignorable Dll interface warning...
  #           if !defined(OIS_MINGW_COMPILER)
+
+
 --- linux/EventHelpers.cpp	(revision 5668)
 +++ linux/EventHelpers.cpp	(working copy)
 @@ -35,6 +35,20 @@
@@ -36,7 +38,7 @@
 --- win32/Win32ForceFeedback.cpp
 +++ win32/Win32ForceFeedback.cpp
 @@ -25,7 +25,7 @@
- #include <Math.h>
+ #include <math.h>
  
  // 0 = No trace; 1 = Important traces; 2 = Debug traces
 -#define OIS_WIN32_JOYFF_DEBUG 1
@@ -44,3 +46,23 @@
  
  #if (defined (_DEBUG) || defined(OIS_WIN32_JOYFF_DEBUG))
    #include <iostream>
+
+
+--- mac/MacHIDManager.cpp
++++ mac/MacHIDManager.cpp
+@@ -406,6 +406,7 @@
+ 			switch(iType)
+ 			{
+ 				case OISJoyStick:
++                {
+ 					int totalDevs = totalDevices(iType);
+ 					int freeDevs = freeDevices(iType);
+ 					int devID = totalDevs - freeDevs;
+@@ -413,6 +414,7 @@
+ 					obj = new MacJoyStick((*it)->combinedKey, bufferMode, *it, creator, devID);
+ 					(*it)->inUse = true;
+ 					return obj;
++                }
+ 				case OISTablet:
+ 					//Create MacTablet
+ 					break;

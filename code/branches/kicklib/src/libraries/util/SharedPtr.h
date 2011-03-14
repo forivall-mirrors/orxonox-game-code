@@ -162,6 +162,7 @@ namespace orxonox
         {
             public:
                 SharedCounter() : count_(1) {}
+                virtual ~SharedCounter() {}
                 virtual void destroy() = 0;
 
                 int count_;
@@ -185,7 +186,7 @@ namespace orxonox
 
         _UtilExport SmallObjectAllocator& createSharedCounterPool();
 
-        FORCEINLINE SmallObjectAllocator& getSharedCounterPool()
+        ORX_FORCEINLINE SmallObjectAllocator& getSharedCounterPool()
         {
             static SmallObjectAllocator& instance = createSharedCounterPool();
             return instance;

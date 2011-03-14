@@ -27,6 +27,9 @@
 
 IF(MINGW)
 
+  INCLUDE(CheckPackageVersion)
+  CHECK_PACKAGE_VERSION(6.0)
+
   # 64 bit system?
   IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
     SET(BINARY_POSTFIX x64)

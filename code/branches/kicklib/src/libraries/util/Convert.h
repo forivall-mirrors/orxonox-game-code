@@ -142,7 +142,7 @@ namespace orxonox
     template <class FromType, class ToType>
     struct ConverterFallback
     {
-        FORCEINLINE static bool convert(ToType* output, const FromType& input)
+        ORX_FORCEINLINE static bool convert(ToType* output, const FromType& input)
         {
             COUT(2) << "Could not convert value of type " << typeid(FromType).name()
                     << " to type " << typeid(ToType).name() << std::endl;
@@ -154,7 +154,7 @@ namespace orxonox
     template <class FromType, class ToType>
     struct ConverterFallback<FromType*, ToType*>
     {
-        FORCEINLINE static bool convert(ToType** output, FromType* const input)
+        ORX_FORCEINLINE static bool convert(ToType** output, FromType* const input)
         {
             ToType* temp = dynamic_cast<ToType*>(input);
             if (temp)
@@ -181,7 +181,7 @@ namespace orxonox
 template <class FromType, class ToType>
 struct ConverterStringStream
 {
-    FORCEINLINE static bool convert(ToType* output, const FromType& input)
+    ORX_FORCEINLINE static bool convert(ToType* output, const FromType& input)
     {
         return orxonox::ConverterFallback<FromType, ToType>::convert(output, input);
     }
@@ -197,7 +197,7 @@ namespace fallbackTemplates
 {
     /// Fallback operator <<() (delegates to orxonox::ConverterFallback)
     template <class FromType>
-    FORCEINLINE bool operator <<(std::ostream& outstream,  const FromType& input)
+    ORX_FORCEINLINE bool operator <<(std::ostream& outstream,  const FromType& input)
     {
         std::string temp;
         if (orxonox::ConverterFallback<FromType, std::string>::convert(&temp, input))
@@ -214,7 +214,7 @@ namespace fallbackTemplates
 template <class FromType>
 struct ConverterStringStream<FromType, std::string>
 {
-    FORCEINLINE static bool convert(std::string* output, const FromType& input)
+    ORX_FORCEINLINE static bool convert(std::string* output, const FromType& input)
     {
         using namespace fallbackTemplates;
         // this operator call only chooses fallbackTemplates::operator<<()
@@ -240,7 +240,7 @@ namespace fallbackTemplates
 {
     /// Fallback operator >>() (delegates to orxonox::ConverterFallback)
     template <class ToType>
-    FORCEINLINE bool operator >>(std::istream& instream, ToType& output)
+    ORX_FORCEINLINE bool operator >>(std::istream& instream, ToType& output)
     {
         std::string input(static_cast<std::istringstream&>(instream).str());
         return orxonox::ConverterFallback<std::string, ToType>::convert(&output, input);
@@ -251,7 +251,7 @@ namespace fallbackTemplates
 template <class ToType>
 struct ConverterStringStream<std::string, ToType>
 {
-    FORCEINLINE static bool convert(ToType* output, const std::string& input)
+    ORX_FORCEINLINE static bool convert(ToType* output, const std::string& input)
     {
         using namespace fallbackTemplates;
         // this operator call chooses fallbackTemplates::operator>>()
@@ -275,14 +275,14 @@ namespace orxonox
 
     /// %Template delegates to ::ConverterStringStream
     template <class FromType, class ToType>
-    FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, Loki::Int2Type<false>)
+    ORX_FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, Loki::Int2Type<false>)
     {
         return ConverterStringStream<FromType, ToType>::convert(output, input);
     }
 
     /// Makes an implicit cast from \a FromType to \a ToType
     template <class FromType, class ToType>
-    FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, Loki::Int2Type<true>)
+    ORX_FORCEINLINE bool convertImplicitely(ToType* output, const FromType& input, Loki::Int2Type<true>)
     {
         (*output) = static_cast<ToType>(input);
         return true;
@@ -302,7 +302,7 @@ namespace orxonox
     struct ConverterExplicit
     {
         enum { probe = ImplicitConversion<FromType, ToType>::exists };
-        FORCEINLINE static bool convert(ToType* output, const FromType& input)
+        ORX_FORCEINLINE static bool convert(ToType* output, const FromType& input)
         {
             // Use the probe's value to delegate to the right function
             return convertImplicitely(output, input, Loki::Int2Type<probe>());
@@ -326,7 +326,7 @@ namespace orxonox
         The original value
     */
     template <class FromType, class ToType>
-    FORCEINLINE bool convertValue(ToType* output, const FromType& input)
+    ORX_FORCEINLINE bool convertValue(ToType* output, const FromType& input)
     {
         return ConverterExplicit<FromType, ToType>::convert(output, input);
     }
@@ -347,7 +347,7 @@ namespace orxonox
         A default value that gets written to '*output' if there is no conversion.
     */
     template<class FromType, class ToType>
-    FORCEINLINE bool convertValue(ToType* output, const FromType& input, const ToType& fallback)
+    ORX_FORCEINLINE bool convertValue(ToType* output, const FromType& input, const ToType& fallback)
     {
         if (convertValue(output, input))
             return true;
@@ -360,7 +360,7 @@ namespace orxonox
 
     /// Directly returns the converted value, but uses the fallback on failure. @see convertValue
     template<class FromType, class ToType>
-    FORCEINLINE ToType getConvertedValue(const FromType& input, const ToType& fallback)
+    ORX_FORCEINLINE ToType getConvertedValue(const FromType& input, const ToType& fallback)
     {
         ToType output;
         convertValue(&output, input, fallback);
@@ -379,7 +379,7 @@ namespace orxonox
         The original value
     */
     template<class ToType, class FromType>
-    FORCEINLINE ToType multi_cast(const FromType& input)
+    ORX_FORCEINLINE ToType multi_cast(const FromType& input)
     {
         ToType output;
         convertValue(&output, input);
@@ -394,7 +394,7 @@ namespace orxonox
     template <class ToType>
     struct ConverterExplicit<const char*, ToType>
     {
-        FORCEINLINE static bool convert(ToType* output, const char* input)
+        ORX_FORCEINLINE static bool convert(ToType* output, const char* input)
         {
             return convertValue<std::string, ToType>(output, input);
         }
@@ -404,7 +404,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<char, std::string>
     {
-        FORCEINLINE static bool convert(std::string* output, const char input)
+        ORX_FORCEINLINE static bool convert(std::string* output, const char input)
         {
             *output = input;
             return true;
@@ -414,7 +414,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<unsigned char, std::string>
     {
-        FORCEINLINE static bool convert(std::string* output, const unsigned char input)
+        ORX_FORCEINLINE static bool convert(std::string* output, const unsigned char input)
         {
             *output = input;
             return true;
@@ -424,7 +424,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<std::string, char>
     {
-        FORCEINLINE static bool convert(char* output, const std::string& input)
+        ORX_FORCEINLINE static bool convert(char* output, const std::string& input)
         {
             if (!input.empty())
                 *output = input[0];
@@ -437,7 +437,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<std::string, unsigned char>
     {
-        FORCEINLINE static bool convert(unsigned char* output, const std::string& input)
+        ORX_FORCEINLINE static bool convert(unsigned char* output, const std::string& input)
         {
             if (!input.empty())
                 *output = input[0];
@@ -452,7 +452,7 @@ namespace orxonox
     template <>
     struct ConverterExplicit<bool, std::string>
     {
-        FORCEINLINE static bool convert(std::string* output, const bool& input)
+        ORX_FORCEINLINE static bool convert(std::string* output, const bool& input)
         {
             if (input)
               *output = "true";

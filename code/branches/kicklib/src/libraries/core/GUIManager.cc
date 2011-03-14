@@ -435,6 +435,7 @@ namespace orxonox
     */
     void GUIManager::buttonPressed(MouseButtonCode::ByEnum id)
     {
+        //guiSystem_->injectMouseButtonDown(convertButton(id));
         this->protectedCall(boost::bind(&CEGUI::System::injectMouseButtonDown, _1, convertButton(id)));
     }
 
