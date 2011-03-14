@@ -34,6 +34,10 @@ function P.onLoad()
     table.insert(commandList, "startchat_small")
     table.insert(commandList, "mouseLook")
     table.insert(commandList, "pause")
+    table.insert(commandList, "printScreen")
+    if orxonox.GUIManager:inDevMode() then
+        table.insert(commandList, "printScreenHD 3")
+    end
 
     nameList = {}
     table.insert(nameList, "Primary Fire")
@@ -64,6 +68,10 @@ function P.onLoad()
     table.insert(nameList, "Show small Chat")
     table.insert(nameList, "Look Around")
     table.insert(nameList, "Pause")
+    table.insert(nameList, "Screenshot")
+    if orxonox.GUIManager:inDevMode() then
+        table.insert(nameList, "HD screenshot")
+    end
 
     linesList = {}
 
