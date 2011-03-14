@@ -109,6 +109,7 @@ namespace orxonox
         void* getSymbol( const std::string& strName ) const throw();
 
     protected:
+
         /// Handle to the loaded library.
         DYNLIB_HANDLE m_hInst;
     };

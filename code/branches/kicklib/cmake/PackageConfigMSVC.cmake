@@ -58,5 +58,7 @@ IF(MSVC)
   # to specify the libraries ourselves.
   SET(TCL_LIBRARY  ${DEP_LIBRARY_DIR}/tcl85.lib CACHE FILEPATH "")
   SET(ZLIB_LIBRARY ${DEP_LIBRARY_DIR}/zdll.lib  CACHE FILEPATH "")
+  # Part of Platform SDK and usually gets linked automatically
+  SET(WMI_LIBRARY  wbemuuid.lib)
 
 ENDIF(MSVC)

@@ -207,8 +207,6 @@ namespace orxonox
             // Get user directory
 #ifdef ORXONOX_PLATFORM_UNIX
             char* userDataPathPtr(getenv("HOME"));
-#elif ORXONOX_PLATFORM_APPLE
-            char* userDataPathPtr(getenv("HOME"));
 #else
             char* userDataPathPtr(getenv("APPDATA"));
 #endif

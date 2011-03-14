@@ -68,16 +68,13 @@ IF(MSVC)
   CHECK_CXX_SOURCE_COMPILES("${_source}" HAVE_FORCEINLINE)
 ENDIF(MSVC)
 
-# Part of a woraround for OS X warnings. See OrxonoxConfig.h.in
-IF(HAVE_STDINT_H)
-  SET(HAVE_STDINT_H 1)
-ELSE()
-  SET(HAVE_STDINT_H 0)
-ENDIF()
-
-# Check iso646.h include (literal operators)
+# Check some non standard system includes
 INCLUDE(CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(iso646.h HAVE_ISO646_H)
+CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)
+
+# Part of a woraround for OS X warnings. See OrxonoxConfig.h.in
+SET(ORX_HAVE_STDINT_H ${HAVE_STDINT_H})
 
 IF(MSVC)
   # Check whether we can use Visual Leak Detector

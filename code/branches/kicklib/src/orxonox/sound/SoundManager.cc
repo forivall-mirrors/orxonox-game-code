@@ -30,12 +30,8 @@
 
 #include "SoundManager.h"
 
-#if defined(__APPLE__)
-#include <ALUT/alut.h>
-#else
-#include <AL/alut.h>
-#endif
 #include <utility>
+#include <alut.h>
 #include <loki/ScopeGuard.h>
 
 #include "util/Exception.h"
@@ -84,7 +80,7 @@ namespace orxonox
         bool bDisableSound_ = false;
         SetConfigValue(bDisableSound_, false);
         if (bDisableSound_)
-            ThrowException(InitialisationAborted, "Sound: Not loading at all");        
+            ThrowException(InitialisationAborted, "Sound: Not loading at all");
         if (!alutInitWithoutContext(NULL, NULL))
             ThrowException(InitialisationFailed, "Sound Error: ALUT initialisation failed: " << alutGetErrorString(alutGetError()));
         Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);
@@ -132,10 +128,10 @@ namespace orxonox
 
         GameMode::setPlaysSound(true);
         Loki::ScopeGuard resetPlaysSoundGuard = Loki::MakeGuard(&GameMode::setPlaysSound, false);
-        
+
         // Get some information about the sound
         if (const char* version = alGetString(AL_VERSION))
-            COUT(4) << "Sound: --- OpenAL Version: " << version << std::endl;            
+            COUT(4) << "Sound: --- OpenAL Version: " << version << std::endl;
         if (const char* vendor = alGetString(AL_VENDOR))
             COUT(4) << "Sound: --- OpenAL Vendor : " << vendor << std::endl;
         if (const char* types = alutGetMIMETypes(ALUT_LOADER_BUFFER))

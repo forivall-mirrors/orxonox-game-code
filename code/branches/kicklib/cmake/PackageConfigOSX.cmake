@@ -50,6 +50,13 @@ SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR})
 SET(ENV{OGRE_HOME}             ${DEP_FRAMEWORK_DIR})
 SET(ENV{OGRE_PLUGIN_DIR}       ${DEP_BINARY_DIR})
 
+# For OS X 10.5 we have to ship modified headers to make it compile
+# on gcc >= 4.2 (binaries stay the same)
+# Sets the library path for the FIND_LIBRARY
+IF(CMAKE_SYSTEM_VERSION STREQUAL "10.5")
+  SET(ENV{OPENALDIR} ${DEP_INCLUDE_DIR}/openal)
+ENDIF()
+
 # Xcode won't be able to run the toluabind code generation if we're using the dependency package
 #IF(DEPENDENCY_PACKAGE_ENABLE)
 #  IF(${CMAKE_GENERATOR} STREQUAL "Xcode")

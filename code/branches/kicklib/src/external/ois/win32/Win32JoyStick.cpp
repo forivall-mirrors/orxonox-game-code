@@ -26,6 +26,14 @@ restrictions:
 #include "OISEvents.h"
 #include "OISException.h"
 
+// (Orxonox): Required for MinGW to compile properly
+#ifdef __MINGW32__
+#  include <oaidl.h>
+#  ifndef __MINGW_EXTENSION
+#    define __MINGW_EXTENSION __extension__
+#  endif
+#endif
+
 #include <cassert>
 #include <wbemidl.h>
 #include <oleauto.h>
@@ -37,6 +45,11 @@ restrictions:
       x->Release();     \
       x = NULL;         \
    }
+#endif
+
+// (Orxonox): MinGW doesn't have swscanf_s
+#ifdef __MINGW32__
+#	define swscanf_s swscanf
 #endif
 
 #ifdef OIS_WIN32_XINPUT_SUPPORT
@@ -583,7 +596,12 @@ void Win32JoyStick::CheckXInputDevices(JoyStickInfoList &joys)
     bool bCleanupCOM = SUCCEEDED(hr);
 
     // Create WMI
+    // (Orxonox): Fix for MinGW
+#ifdef __MINGW32__
+    hr = CoCreateInstance(CLSID_WbemLocator, NULL, CLSCTX_INPROC_SERVER, IID_IWbemLocator, (LPVOID*)&pIWbemLocator);
+#else
     hr = CoCreateInstance(__uuidof(WbemLocator), NULL, CLSCTX_INPROC_SERVER, __uuidof(IWbemLocator), (LPVOID*)&pIWbemLocator);
+#endif
     if( FAILED(hr) || pIWbemLocator == NULL )
         goto LCleanup;
 

@@ -30,12 +30,7 @@
 
 #include <cassert>
 #include <vector>
-
-#ifdef ORXONOX_PLATFORM_APPLE
-#include "openal/al.h"
-#else
 #include <al.h>
-#endif
 
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
