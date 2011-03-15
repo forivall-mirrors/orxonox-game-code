@@ -102,19 +102,9 @@ namespace orxonox
     GUIManager* GUIManager::singletonPtr_s = 0;
     /*static*/ const std::string GUIManager::defaultScheme_ = "TaharezGreen";
 
-    static const std::string __CC_navigateGUI_name = "navigateGUI";
-
     SetConsoleCommand("showGUI", &GUIManager::showGUI).defaultValue(1, false).defaultValue(2, false);
     SetConsoleCommand("hideGUI", &GUIManager::hideGUI);
     SetConsoleCommand("toggleGUI", &GUIManager::toggleGUI).defaultValue(1, false).defaultValue(2, false);
-    SetConsoleCommand(__CC_navigateGUI_name, &GUIManager::navigateGUI).deactivate();
-
-    //! Strings that specify modes for the GUI navigation.
-    /*static*/ const std::string GUIManager::NAVIGATE_UP = "up";
-    /*static*/ const std::string GUIManager::NAVIGATE_DOWN = "down";
-    /*static*/ const std::string GUIManager::NAVIGATE_LEFT = "left";
-    /*static*/ const std::string GUIManager::NAVIGATE_RIGHT = "right";
-    /*static*/ const std::string GUIManager::NAVIGATE_ENTER = "enter";
 
     /**
     @brief
@@ -373,43 +363,6 @@ namespace orxonox
         else
             this->rootWindow_->setProperty("Alpha", "1.0");
         this->rootWindow_->setProperty("Image", image);
-    }
-
-    /**
-    @brief
-        Method to navigate the GUI, by specifying the mode of navigation.
-    @param mode
-        The mode of navigation, at this point can be either 'up', 'down', 'left', 'right' or 'enter'.
-    */
-    /*static*/ void GUIManager::navigateGUI(const std::string& mode)
-    {
-        if(mode == NAVIGATE_UP)
-            GUIManager::getInstance().executeCode("navigateGUI(\"" + NAVIGATE_UP + "\")");
-        else if(mode == NAVIGATE_DOWN)
-            GUIManager::getInstance().executeCode("navigateGUI(\"" + NAVIGATE_DOWN + "\")");
-        else if(mode == NAVIGATE_LEFT)
-            GUIManager::getInstance().executeCode("navigateGUI(\"" + NAVIGATE_LEFT + "\")");
-        else if(mode == NAVIGATE_RIGHT)
-            GUIManager::getInstance().executeCode("navigateGUI(\"" + NAVIGATE_RIGHT + "\")");
-        else if(mode == NAVIGATE_ENTER)
-            GUIManager::getInstance().executeCode("navigateGUI(\"" + NAVIGATE_ENTER + "\")");
-    }
-
-    /**
-    @brief
-        Is called by lua to change whether there are any GUIs active at the moment.
-    @param active
-        Whether GUIs are active.
-    */
-    void GUIManager::guisActiveChanged(bool active)
-    {
-        if(this->GUIsActive_ == active)
-            return;
-        this->GUIsActive_ = active;
-        if(this->GUIsActive_)
-            ModifyConsoleCommand(__CC_navigateGUI_name).activate();
-        else
-            ModifyConsoleCommand(__CC_navigateGUI_name).deactivate();
     }
 
     void GUIManager::buttonPressed(const KeyEvent& evt)

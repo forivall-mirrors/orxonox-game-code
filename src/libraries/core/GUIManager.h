@@ -94,9 +94,6 @@ namespace orxonox // tolua_export
         void setBackgroundImage(const std::string& imageSet, const std::string imageName); // tolua_export
         void setBackgroundImage(const std::string& image);
 
-        static void navigateGUI(const std::string& mode);
-        void guisActiveChanged(bool active); // tolua_export
-
         /**
         @brief Helper method to get the developer's mode without having to export Core.h.
         @see Core::inDevMode
@@ -133,14 +130,6 @@ namespace orxonox // tolua_export
 
         template <typename FunctionType>
         bool protectedCall(FunctionType function);
-
-        static const std::string NAVIGATE_UP;
-        static const std::string NAVIGATE_DOWN;
-        static const std::string NAVIGATE_LEFT;
-        static const std::string NAVIGATE_RIGHT;
-        static const std::string NAVIGATE_ENTER;
-
-        bool GUIsActive_; //!< Whether there are any GUIs active at a given moment.
 
         // keyHandler functions
         void buttonPressed (const KeyEvent& evt);

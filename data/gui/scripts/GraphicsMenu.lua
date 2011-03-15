@@ -1,6 +1,6 @@
 -- GraphicsMenu.lua
 
-local P = createMenuSheet("GraphicsMenu", true, TriBool.True, TriBool.True)
+local P = createMenuSheet("GraphicsMenu")
 
 P.resolutionList = {"custom", "640 x 480", "720 x 480", "720 x 576", "800 x 600", "1024 x 600", "1024 x 768", "1152 x 864", "1280 x 720", "1280 x 800", "1280 x 960", "1280 x 1024", "1360 x 768", "1440 x 900", "1600 x 900", "1600 x 1200", "1680 x 1050"}
 P.schemeList = {"TaharezGreen", "Orxonox"}
