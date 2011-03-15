@@ -85,7 +85,7 @@ namespace orxonox
     */
     bool AddQuestHint::setHintId(const std::string & id)
     {
-        if(id.compare(BLANKSTRING) == 0)
+        if(id == "")
         {
             COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
             return false;

@@ -29,6 +29,7 @@
 #include "ResourceLocation.h"
 
 #include <OgreResourceGroupManager.h>
+#include <OgreException.h>
 #include <boost/filesystem.hpp>
 
 #include "util/Exception.h"

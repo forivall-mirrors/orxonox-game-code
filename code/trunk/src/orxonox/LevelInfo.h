@@ -108,7 +108,7 @@ namespace orxonox // tolua_export
             @brief Get the XML-filename of the Level.
             @return Returns the XML-filename (including *.oxw extension) of the Level.
             */
-            inline const std::string& getXMLFilename(void) { return this->xmlfilename_; } // tolua_export
+            inline const std::string& getXMLFilename(void) const { return this->xmlfilename_; } // tolua_export
 
         protected:
             /**
@@ -211,7 +211,11 @@ namespace orxonox // tolua_export
     struct LevelInfoCompare
     {
         bool operator() (const LevelInfoItem* lhs, const LevelInfoItem* rhs) const
-            { return getLowercase(lhs->getName()).compare(getLowercase(rhs->getName())) < 0; }
+            {
+                if(getLowercase(lhs->getName()).compare(getLowercase(rhs->getName())) == 0)
+                    return getLowercase(lhs->getXMLFilename()).compare(getLowercase(rhs->getXMLFilename())) < 0;
+                return getLowercase(lhs->getName()).compare(getLowercase(rhs->getName())) < 0;
+            }
     };
     
 } // tolua_export

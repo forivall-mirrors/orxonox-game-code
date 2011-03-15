@@ -31,6 +31,11 @@ function P.onLoad()
     else
         invert_active = false
     end
+
+    P:setButton(1, 1, {
+            ["button"] = winMgr:getWindow("orxonox/MouseControlsBackButton"),
+            ["callback"]  = P.MouseControlsBackButton_clicked
+    })
 end
 
 function P.MouseControlsMouseNormalScrollbar_changed(e)

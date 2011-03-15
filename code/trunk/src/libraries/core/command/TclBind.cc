@@ -44,7 +44,7 @@
 namespace orxonox
 {
     SetConsoleCommand("tcl", &TclBind::tcl);
-    SetConsoleCommand("bgerror", &TclBind::bgerror);
+    SetConsoleCommand("bgerror", &TclBind::bgerror).hide();
 
     TclBind* TclBind::singletonPtr_s = 0;
 
@@ -90,15 +90,16 @@ namespace orxonox
             this->interpreter_ = this->createTclInterpreter();
 
             this->interpreter_->def("::orxonox::query", TclBind::tcl_query, Tcl::variadic());
+            this->interpreter_->def("::orxonox::execute", TclBind::tcl_execute, Tcl::variadic());
             this->interpreter_->def("::orxonox::crossquery", TclThreadManager::tcl_crossquery, Tcl::variadic());
-            this->interpreter_->def("execute", TclBind::tcl_execute, Tcl::variadic());
             this->interpreter_->def("::orxonox::crossexecute", TclThreadManager::tcl_crossexecute, Tcl::variadic());
 
             try
             {
-                this->interpreter_->eval("proc query        {args}    { ::orxonox::query $args }");
+                this->interpreter_->def("query", TclBind::tcl_query, Tcl::variadic());
+                this->interpreter_->def("execute", TclBind::tcl_execute, Tcl::variadic());
                 this->interpreter_->eval("proc crossquery   {id args} { ::orxonox::crossquery 0 $id $args }");
-                this->interpreter_->eval("proc crossexecute {id args} { ::orxonox::crossquery 0 $id $args }");
+                this->interpreter_->eval("proc crossexecute {id args} { ::orxonox::crossexecute 0 $id $args }");
                 this->interpreter_->eval("proc running      {}        { return 1 }");
                 this->interpreter_->eval("set id 0");
                 this->interpreter_->eval("rename exit ::tcl::exit; proc exit {} { execute exit }");
@@ -153,12 +154,35 @@ namespace orxonox
     std::string TclBind::tcl_query(Tcl::object const &args)
     {
         COUT(4) << "Tcl_query: " << args.get() << std::endl;
+        return TclBind::tcl_helper(args, true);
+    }
 
+    /**
+        @brief Callback: Used to send an Orxonox-command from Tcl to the CommandExecutor.
+    */
+    void TclBind::tcl_execute(Tcl::object const &args)
+    {
+        COUT(4) << "Tcl_execute: " << args.get() << std::endl;
+        TclBind::tcl_helper(args, false);
+    }
+
+    /**
+        @brief Helper function, used by tcl_query() and tcl_execute().
+    */
+    std::string TclBind::tcl_helper(Tcl::object const &args, bool bQuery)
+    {
         const std::string& command = stripEnclosingBraces(args.get());
 
         int error;
+        std::string result;
+
         CommandEvaluation evaluation = CommandExecutor::evaluate(command);
-        const std::string& result = evaluation.query(&error);
+
+        if (bQuery)
+            result = evaluation.query(&error).getString();
+        else
+            error = evaluation.execute();
+
         switch (error)
         {
             case CommandExecutor::Error:       COUT(1) << "Error: Can't execute command \"" << command << "\", command doesn't exist. (B)" << std::endl; break;
@@ -174,20 +198,6 @@ namespace orxonox
     }
 
     /**
-        @brief Callback: Used to send an Orxonox-command from Tcl to the CommandExecutor.
-    */
-    void TclBind::tcl_execute(Tcl::object const &args)
-    {
-        COUT(4) << "Tcl_execute: " << args.get() << std::endl;
-        const std::string& command = stripEnclosingBraces(args.get());
-
-        if (CommandExecutor::execute(command, false))
-        {
-            COUT(1) << "Error: Can't execute command \"" << command << "\"!" << std::endl;
-        }
-    }
-
-    /**
         @brief Console command, executes Tcl code. Can be used to bind Tcl-commands to a key, because native
         Tcl-commands can not be evaluated and are thus not supported by the key-binder.
     */
@@ -197,15 +207,10 @@ namespace orxonox
         {
             try
             {
-                const std::string& output = TclBind::getInstance().interpreter_->eval("uplevel #0 " + tclcode);
-                if (!output.empty())
-                {
-                    COUT(0) << "tcl> " << output << std::endl;
-                }
-                return output;
+                return TclBind::getInstance().interpreter_->eval("uplevel #0 " + tclcode);
             }
             catch (Tcl::tcl_error const &e)
-            {   COUT(1) << "tcl> Error: " << e.what() << std::endl;   }
+            {   COUT(1) << "Tcl error: " << e.what() << std::endl;   }
         }
 
         return "";

@@ -69,7 +69,7 @@ namespace orxonox
       void removeTargets(const std::string& targets);
 
       inline void setTargetName(const std::string& targetname)
-        { if(targetname.compare(BLANKSTRING) != 0) this->singleTargetMode_ = true; else this->singleTargetMode_ = false; this->targetName_ = targetname; }
+        { if(targetname != "") this->singleTargetMode_ = true; else this->singleTargetMode_ = false; this->targetName_ = targetname; }
       inline const std::string& getTargetName(void)
         { return this->targetName_; }
 

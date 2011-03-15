@@ -28,33 +28,30 @@
 
 #include "CameraManager.h"
 
+#include <cassert>
+
 #include <OgreSceneManager.h>
 #include <OgreViewport.h>
 #include <OgreCompositorManager.h>
 
-#include "util/StringUtils.h"
 #include "util/ScopedSingletonManager.h"
 #include "core/GameMode.h"
 #include "core/GraphicsManager.h"
-#include "core/GUIManager.h"
 #include "core/ObjectList.h"
 #include "tools/Shader.h"
 #include "graphics/Camera.h"
-#include "Scene.h"
 
 namespace orxonox
 {
     ManageScopedSingleton(CameraManager, ScopeID::Graphics, false);
 
     CameraManager::CameraManager()
-        : viewport_(GraphicsManager::getInstance().getViewport())
     {
         assert(GameMode::showsGraphics());
     }
 
     CameraManager::~CameraManager()
     {
-        GUIManager::getInstance().setCamera(0);
     }
 
     Camera* CameraManager::getActiveCamera() const
@@ -94,6 +91,8 @@ namespace orxonox
             // set new focus if possible
             if (!this->cameraList_.empty())
                 this->cameraList_.front()->setFocus();
+            else
+                this->useCamera(NULL);
         }
         else
             this->cameraList_.remove(camera);
@@ -101,27 +100,6 @@ namespace orxonox
 
     void CameraManager::useCamera(Ogre::Camera* camera)
     {
-        // This workaround is needed to avoid weird behaviour with active compositors while
-        // switching the camera (like freezing the image)
-        //
-        // Last known Ogre version needing this workaround:
-        // 1.4.8
-        // 1.7.2
-
-        // deactivate all compositors
-        {
-            Ogre::ResourceManager::ResourceMapIterator iterator = Ogre::CompositorManager::getSingleton().getResourceIterator();
-            while (iterator.hasMoreElements())
-                Ogre::CompositorManager::getSingleton().setCompositorEnabled(this->viewport_, iterator.getNext()->getName(), false);
-        }
-
-        this->viewport_->setCamera(camera);
-        GUIManager::getInstance().setCamera(camera);
-
-        // reactivate all visible compositors
-        {
-            for (ObjectList<Shader>::iterator it = ObjectList<Shader>::begin(); it != ObjectList<Shader>::end(); ++it)
-                it->updateVisibility();
-        }
+        GraphicsManager::getInstance().setCamera(camera);
     }
 }

@@ -27,17 +27,26 @@
  */
 
 #include "ChatInputHandler.h"
-#include "util/ScopedSingletonManager.h"
-#include "core/CoreIncludes.h"
-#include "core/GUIManager.h"
-#include "core/CorePrereqs.h"
-#include "core/command/ConsoleCommand.h"
+
+#include <cassert>
+#include <string>
 #include <CEGUIWindow.h>
+#include <CEGUIWindowManager.h>
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
 #include <elements/CEGUIListboxTextItem.h>
-#include <CEGUIWindowManager.h>
-#include <string>
+
+#include "util/ScopedSingletonManager.h"
+#include "core/CoreIncludes.h"
+#include "core/GUIManager.h"
+#include "core/command/ConsoleCommand.h"
+#include "core/input/InputBuffer.h"
+#include "core/input/InputManager.h"
+#include "core/input/InputState.h"
+#include "network/Host.h"
+
+#include "PlayerManager.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {
@@ -71,6 +80,13 @@ namespace orxonox
 
     this->inputState = InputManager::getInstance().createInputState( "chatinput", false, false, InputStatePriority::Dynamic );
     this->inputState->setKeyHandler(this->inpbuf);
+  }
+
+  ChatInputHandler::~ChatInputHandler()
+  {
+    /* Clean up */
+    InputManager::getInstance().destroyState("chatinput");
+    delete this->inpbuf;
   }
 
   /* configure input buffer, sub for the constructor */
@@ -124,24 +140,21 @@ namespace orxonox
     // three loops: red tones, blue tones and green tones
     // reds
     for( i = 0; i < NumberOfColors/3; ++i )
-    { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
-      assert( this->text_colors[ i ] );
+    { this->text_colors[ i ] = CEGUI::colour( red, green, blue );
       green += 0.2f, blue += 0.2f;
     }
 
     // greens
     red = 0.5, green = 1, blue = 0.5;
     for( ; i < NumberOfColors*2/3; ++i )
-    { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
-      assert( this->text_colors[ i ] );
+    { this->text_colors[ i ] = CEGUI::colour( red, green, blue );
       red += 0.2f, blue += 0.2f;
     }
 
     // blues
     red = 0.5, green = 0.5, blue = 1;
     for( ; i < NumberOfColors; ++i )
-    { this->text_colors[ i ] = new CEGUI::colour( red, green, blue );
-      assert( this->text_colors[ i ] );
+    { this->text_colors[ i ] = CEGUI::colour( red, green, blue );
       red += 0.2f, green += 0.2f;
     }
   }
@@ -195,7 +208,7 @@ namespace orxonox
     hash = hash % this->NumberOfColors;
 
     /* set the color according to the hash */
-    tocolor->setTextColours( *(this->text_colors[ hash ]) );
+    tocolor->setTextColours( this->text_colors[ hash ] );
   }
 
   /* handle incoming chat */

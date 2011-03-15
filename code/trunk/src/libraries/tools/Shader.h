@@ -35,25 +35,25 @@
 #include <string>
 #include <vector>
 
+#include <OgreCompositorInstance.h>
+
+#include "util/MultiType.h"
 #include "util/OgreForwardRefs.h"
-#include "tools/interfaces/Tickable.h"
+#include "core/ViewportEventListener.h"
 
 namespace orxonox
 {
-    class _ToolsExport Shader : public Tickable
+    /**
+        @brief Shader is a wrapper class around Ogre::CompositorInstance. It provides some
+        functions to easily change the visibility and parameters for shader programs.
+    */
+    class _ToolsExport Shader : public ViewportEventListener, public Ogre::CompositorInstance::Listener
     {
-        typedef std::pair<bool, void*>                  ParameterPointer;
-        typedef std::map<std::string, ParameterPointer> ParameterMap;
-        typedef std::vector<ParameterMap>               PassVector;
-        typedef std::vector<PassVector>                 TechniqueVector;
-        typedef std::map<std::string, TechniqueVector>  MaterialMap;
-
         public:
             Shader(Ogre::SceneManager* scenemanager = 0);
             virtual ~Shader();
 
-            virtual void tick(float dt);
-
+            /// Defines if the shader is visible or not.
             inline void setVisible(bool bVisible)
             {
                 if (this->bVisible_ != bVisible)
@@ -62,47 +62,68 @@ namespace orxonox
                     this->updateVisibility();
                 }
             }
+            /// Returns whether or not the shader is visible.
             inline bool isVisible() const
                 { return this->bVisible_; }
             void updateVisibility();
 
-            inline void setCompositor(const std::string& compositor)
+            /// Defines the compositor's name (located in a .compositor file).
+            inline void setCompositorName(const std::string& name)
             {
-                if (this->compositor_ != compositor)
+                if (this->compositorName_ != name)
                 {
-                    this->compositor_ = compositor;
-                    this->changedCompositor();
+                    this->compositorName_ = name;
+                    this->changedCompositorName();
                 }
             }
-            inline const std::string& getCompositor() const
-                { return this->compositor_; }
-            void changedCompositor();
+            /// Returns the compositor's name.
+            inline const std::string& getCompositorName() const
+                { return this->compositorName_; }
+            void changedCompositorName();
+            void changedCompositorName(Ogre::Viewport* viewport);
 
-            void setSceneManager(Ogre::SceneManager* scenemanager);
+            /// Sets the scenemanager (usually provided in the constructor, but can be set later). Shouldn't be changed once it's set.
+            inline void setSceneManager(Ogre::SceneManager* scenemanager)
+                { this->scenemanager_ = scenemanager; }
+            /// Returns the scene manager.
             inline Ogre::SceneManager* getSceneManager() const
                 { return this->scenemanager_; }
 
-            void setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, float value);
-            void setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, int value);
+            virtual void cameraChanged(Ogre::Viewport* viewport, Ogre::Camera* oldCamera);
 
-            static bool _setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, float value);
-            static bool _setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, int value);
-            static float getParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter);
-            static bool  getParameterIsFloat(const std::string& material, size_t technique, size_t pass, const std::string& parameter);
-            static bool  getParameterIsInt  (const std::string& material, size_t technique, size_t pass, const std::string& parameter);
-            static ParameterPointer* getParameterPointer(const std::string& material, size_t technique, size_t pass, const std::string& parameter);
+            void setParameter(size_t technique, size_t pass, const std::string& parameter, float value);
+            void setParameter(size_t technique, size_t pass, const std::string& parameter, int value);
+
+            virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& materialPtr);
 
         private:
-            Ogre::SceneManager* scenemanager_;
-            Ogre::CompositorInstance* compositorInstance_;
-            bool bVisible_;
-            bool bLoadCompositor_;
-            bool bViewportInitialized_;
-            std::string compositor_;
-            std::string oldcompositor_;
+            static bool hasCgProgramManager();
 
-            static MaterialMap parameters_s;
-            static bool bLoadedCgPlugin_s;
+            Ogre::SceneManager* scenemanager_;              ///< The scenemanager for which the shader is active
+            Ogre::CompositorInstance* compositorInstance_;  ///< The compositor instance representing the wrapped compositor
+            bool bVisible_;                                 ///< True if the shader should be visible
+            bool bLoadCompositor_;                          ///< True if the compositor should be loaded (usually false if no graphics)
+            std::string compositorName_;                    ///< The name of the current compositor
+            std::string oldcompositorName_;                 ///< The name of the previous compositor (used to unregister)
+
+        private:
+            void addAsListener();
+
+            /// Helper struct to store parameters for shader programs.
+            struct ParameterContainer
+            {
+                size_t technique_;          ///< The ID of the technique
+                size_t pass_;               ///< The ID of the pass
+                std::string parameter_;     ///< The name of the parameter
+
+                int valueInt_;              ///< The desired int value of the parameter
+                float valueFloat_;          ///< The desired float value of the parameter
+
+                MT_Type::Value valueType_;  ///< The type of the parameter (currently only int or float)
+            };
+
+            std::list<ParameterContainer> parameters_;  ///< The list of parameters that should be set on the next update
+            bool registeredAsListener_;                 ///< True if the shader should register itself as listener at the compositor
     };
 }
 

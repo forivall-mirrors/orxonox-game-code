@@ -2,7 +2,6 @@
 
 local P = createMenuSheet("SingleplayerMenu")
 
-P.buttonList = {}
 P.levelList = {}
 P.itemList = {}
 P.showAll = false
@@ -14,17 +13,25 @@ function P.onLoad()
     P.createLevelList()
 
     --buttons are arranged in a 1x2 matrix
-    local item = {
+    P:setButton(1, 1, {
             ["button"] = winMgr:getWindow("orxonox/SingleplayerStartButton"),
-            ["function"]  = P.SingleplayerStartButton_clicked
-    }
-    P.buttonList[1] = item
+            ["callback"]  = P.SingleplayerStartButton_clicked
+    })
 
-    local item = {
+    P:setButton(1, 2, {
             ["button"] = winMgr:getWindow("orxonox/SingleplayerBackButton"),
-            ["function"]  = P.SingleplayerBackButton_clicked
-    }
-    P.buttonList[2] = item
+            ["callback"]  = P.SingleplayerBackButton_clicked
+    })
+end
+
+function P.onShow()
+    if P.showAll ~= orxonox.GUIManager:inDevMode() then
+        local window = winMgr:getWindow("orxonox/SingleplayerShowAllCheckbox")
+        local button = tolua.cast(window,"CEGUI::Checkbox")
+        P.showAll = not P.showAll
+        button:setSelected(P.showAll)
+        P.createLevelList()
+    end
 end
 
 function P.createLevelList()
@@ -46,8 +53,6 @@ function P.createLevelList()
         end
         index = index + 1
     end
-    --TODO: Reintroduce sorting, if needed. At the moment it's sorted by filename.
-    --table.sort(levelList)
     for k,v in pairs(P.levelList) do
         local item = CEGUI.createListboxTextItem(v:getName())
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
@@ -58,12 +63,6 @@ function P.createLevelList()
         P.itemList[k] = listbox:getListboxItemFromIndex(k-1)
         orxonox.GUIManager:setTooltipTextHelper(P.itemList[k], v:getDescription())
     end
-end
-
-function P.onShow()
-    --indices to iterate through buttonlist
-    P.oldindex = -2
-    P.index = -1
 end
 
 function P.SingleplayerStartButton_clicked(e)
@@ -90,10 +89,6 @@ end
 
 function P.SingleplayerBackButton_clicked(e)
     hideMenuSheet(P.name)
-end
-
-function P.onKeyPressed() 
-    buttonIteratorHelper(P.buttonList, code, P, 1, 2)
 end
 
 return P

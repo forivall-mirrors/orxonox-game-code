@@ -53,14 +53,17 @@
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"
 
+// tolua_begin
 namespace orxonox
 {
     /**
     @brief
         Graphics engine manager class
     */
-    class _CoreExport GraphicsManager : public Singleton<GraphicsManager>, public OrxonoxClass, public Ogre::LogListener
-    {
+    class _CoreExport GraphicsManager
+// tolua_end
+        : public Singleton<GraphicsManager>, public OrxonoxClass, public Ogre::LogListener
+    { // tolua_export
         friend class Singleton<GraphicsManager>;
     public:
         GraphicsManager(bool bLoadRenderer = true);
@@ -73,7 +76,17 @@ namespace orxonox
         Ogre::Viewport* getViewport()         { return this->viewport_; }
         Ogre::RenderWindow* getRenderWindow() { return this->renderWindow_; }
         size_t getRenderWindowHandle();
+
+// tolua_begin
+        static GraphicsManager& getInstance() { return Singleton<GraphicsManager>::getInstance(); } // tolua_export
+
         bool isFullScreen() const;
+        unsigned int getWindowWidth() const;
+        unsigned int getWindowHeight() const;
+
+        bool hasVSyncEnabled() const;
+        std::string getFSAAMode() const;
+// tolua_end
 
         void upgradeToGraphics();
         void loadDebugOverlay();
@@ -95,6 +108,9 @@ namespace orxonox
 
         // console commands
         void printScreen();
+        std::string setScreenResolution(unsigned int width, unsigned int height, bool fullscreen);
+        std::string setFSAA(const std::string& mode);
+        std::string setVSync(bool vsync);
 
         scoped_ptr<OgreWindowEventListener> ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
 #if OGRE_VERSION < 0x010600
@@ -104,6 +120,8 @@ namespace orxonox
         scoped_ptr<Ogre::Root>              ogreRoot_;                //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
+        float               lastFrameStartTime_;       //!< Time stamp of the beginning of the last frame
+        float               lastFrameEndTime_;         //!< Time stamp of the end of the last frame
 
         // XML files for the resources and the debug overlay
         shared_ptr<XMLFile> resources_;                //!< XML with resource locations
@@ -120,7 +138,9 @@ namespace orxonox
         int                 ogreLogLevelCritical_;     //!< Corresponding Orxonox debug level for LL_CRITICAL
 
         static GraphicsManager* singletonPtr_s;        //!< Pointer to the Singleton
+// tolua_begin
     };
 }
+// tolua_end
 
 #endif /* _GraphicsManager_H__ */

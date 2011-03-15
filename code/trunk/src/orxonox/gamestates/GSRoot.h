@@ -50,7 +50,10 @@ namespace orxonox
         // this has to be public because proteced triggers a bug in msvc
         // when taking the function address.
         void setTimeFactor(float factor);
+        void setPause(bool pause);
         void pause();
+
+        static void delayedStartMainMenu(void);
 
     protected:
         virtual void changedTimeFactor(float factor_new, float factor_old);
@@ -58,6 +61,7 @@ namespace orxonox
     private:
         bool                  bPaused_;
         float                 timeFactorPauseBackup_;
+        static bool           startMainMenu_s;
     };
 }
 

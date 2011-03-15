@@ -45,6 +45,7 @@
 
 #include "LevelManager.h"
 #include "PlayerManager.h"
+#include "GSRoot.h"
 
 namespace orxonox
 {
@@ -54,7 +55,7 @@ namespace orxonox
     static const std::string __CC_changeGame_name = "changeGame";
 
     SetConsoleCommand(__CC_startMainMenu_name, &GSLevel::startMainMenu).deactivate();
-    SetConsoleCommand(__CC_changeGame_name, &GSLevel::changeGame).defaultValues(BLANKSTRING).deactivate();
+    SetConsoleCommand(__CC_changeGame_name, &GSLevel::changeGame).defaultValues("").deactivate();
 
     GSLevel::GSLevel(const GameStateInfo& info)
         : GameState(info)
@@ -155,9 +156,11 @@ namespace orxonox
         // call the loader
         COUT(0) << "Loading level..." << std::endl;
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
-        Loader::open(startFile_);
+        bool loaded = Loader::open(startFile_);
 
         Core::getInstance().updateLastLevelTimestamp();
+        if(!loaded)
+            GSRoot::delayedStartMainMenu();
     }
 
     void GSLevel::unloadLevel()
@@ -201,7 +204,7 @@ namespace orxonox
     */
     /*static*/ void GSLevel::changeGame(const std::string& level)
     {
-        if(level != BLANKSTRING)
+        if(level != "")
             LevelManager::getInstance().setDefaultLevel(level);
 
         // HACK
