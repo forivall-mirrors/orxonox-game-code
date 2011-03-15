@@ -58,10 +58,13 @@ namespace orxonox
 
 
     /**
-     * @brief Creates a screenshot with the given camera.
-     * @param camera Pointer to the camera "looking at" the scene of interest
-     * @param fileName the filename of the screenshot file.
-     */
+    @brief
+        Creates a screenshot with the given camera.
+    @param camera
+        Pointer to the camera "looking at" the scene of interest
+    @param fileName
+        the filename of the screenshot file.
+    */
     void ScreenshotManager::makeScreenshot() const
     {
         Ogre::Camera* camera = CameraManager::getInstance().getActiveCamera()->getOgreCamera();
@@ -152,6 +155,29 @@ namespace orxonox
         Ogre::Root::getSingletonPtr()->clearEventTimes();
     }
 
+    /**
+    @brief
+        Set the size of the grid.
+    @param size
+        The size of the grid.
+    */
+    void ScreenshotManager::setGridSize(unsigned int size)
+    {
+        if(size == this->mGridSize_)
+            return;
+
+        this->mGridSize_ = size;
+        // New PixelBox for the changed size.
+        uint8_t* data_ = new uint8_t[(this->mWindowWidth_ * this->mGridSize_) * (this->mWindowHeight_ * this->mGridSize_) * 3];
+        this->mFinalPicturePB_ = Ogre::PixelBox(this->mWindowWidth_ * this->mGridSize_, this->mWindowHeight_ * this->mGridSize_, 1, Ogre::PF_B8G8R8, data_);
+    }
+
+    /**
+    @brief
+        Get a timestamp for the curent time instant.
+    @return
+        Returns a string with the timestamp.
+    */
     std::string ScreenshotManager::getTimestamp()
     {
         struct tm *pTime;
