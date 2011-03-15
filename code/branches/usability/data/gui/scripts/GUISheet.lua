@@ -28,7 +28,7 @@ function P:onQuit()
 end
 
 -- Override this function if you want to react on keystrokes
-function P:onKeyPressed(mode)
+function P:onKeyPressed()
 end
 
 -- Override this function if you want to update the gui after the window was resized
@@ -84,22 +84,22 @@ function P:load()
 end
 
 -- Handles key pressed while the gui sheed is displayed
-function P:keyPressed(mode)
+function P:keyPressed()
     if self.buttons then
-        if mode == "down" then     -- key down
+        if code == "208" then     -- key down
             self:moveSelectionRow(1)
-        elseif mode == "up" then -- key up
+        elseif code == "200" then -- key up
             self:moveSelectionRow(-1)
-        elseif mode == "right" then -- key right
+        elseif code == "205" then -- key right
             self:moveSelectionColumn(1)
-        elseif mode == "left" then -- key left
+        elseif code == "203" then -- key left
             self:moveSelectionColumn(-1)
-        elseif mode == "enter" then -- key enter or key numpad enter
+        elseif code == "28" or code == "156"  then -- key enter or key numpad enter
             self:pressSelectedButton()
         end
     end
 
-    self:onKeyPressed(mode)
+    self:onKeyPressed()
 end
 
 function P:windowResized()
