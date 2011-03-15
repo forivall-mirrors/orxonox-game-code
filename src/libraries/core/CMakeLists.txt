@@ -34,7 +34,6 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   ObjectListBase.cc
   OrxonoxClass.cc
   Resource.cc
-  WindowEventListener.cc
 
   # hierarchy
   Identifier.cc
@@ -48,7 +47,12 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   NamespaceNode.cc
   Template.cc
   XMLPort.cc
+
+COMPILATION_BEGIN ListenerCompilation.cc
+  ViewportEventListener.cc
+  WindowEventListener.cc
   XMLNameListener.cc
+COMPILATION_END
 
 COMPILATION_BEGIN FilesystemCompilation.cc
   command/ArgumentCompletionFunctions.cc
@@ -75,6 +79,7 @@ ORXONOX_ADD_LIBRARY(core
     ConfigFileManager.h
     Game.h
     GameMode.h
+    GraphicsManager.h
     GUIManager.h
     Loader.h
     LuaState.h

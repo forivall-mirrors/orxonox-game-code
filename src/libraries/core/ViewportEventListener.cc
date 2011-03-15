@@ -26,35 +26,13 @@
  *
  */
 
-#ifndef _GlobalShader_H__
-#define _GlobalShader_H__
-
-#include "OrxonoxPrereqs.h"
-
-#include "core/BaseObject.h"
-#include "network/synchronisable/Synchronisable.h"
-#include "tools/Shader.h"
+#include "ViewportEventListener.h"
+#include "CoreIncludes.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GlobalShader : public BaseObject, public Synchronisable
+    ViewportEventListener::ViewportEventListener()
     {
-        public:
-            GlobalShader(BaseObject* creator);
-            virtual ~GlobalShader();
-
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-
-            virtual void changedVisibility();
-
-            inline const Shader& getShader() const
-                { return this->shader_; }
-
-        private:
-            void registerVariables();
-
-            Shader shader_;
-    };
+        RegisterRootObject(ViewportEventListener);
+    }
 }
-
-#endif /* _GlobalShader_H__ */

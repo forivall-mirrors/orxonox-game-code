@@ -26,35 +26,34 @@
  *
  */
 
-#ifndef _GlobalShader_H__
-#define _GlobalShader_H__
+#include "PauseNotice.h"
 
-#include "OrxonoxPrereqs.h"
-
-#include "core/BaseObject.h"
-#include "network/synchronisable/Synchronisable.h"
-#include "tools/Shader.h"
+#include "core/CoreIncludes.h"
+#include "infos/PlayerInfo.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GlobalShader : public BaseObject, public Synchronisable
+    CreateFactory(PauseNotice);
+
+    PauseNotice::PauseNotice(BaseObject* creator) : OverlayText(creator)
     {
-        public:
-            GlobalShader(BaseObject* creator);
-            virtual ~GlobalShader();
+        RegisterObject(PauseNotice);
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+        this->owner_ = 0;
+    }
 
-            virtual void changedVisibility();
+    void PauseNotice::changedOwner()
+    {
+        SUPER(PauseNotice, changedOwner);
 
-            inline const Shader& getShader() const
-                { return this->shader_; }
+        this->owner_ = orxonox_cast<PlayerInfo*>(this->getOwner());
+    }
 
-        private:
-            void registerVariables();
-
-            Shader shader_;
-    };
+    void PauseNotice::changedTimeFactor(float factor_new, float factor_old)
+    {
+        if (factor_new == 0)
+            this->setCaption("Paused");
+        else
+            this->setCaption("");
+    }
 }
-
-#endif /* _GlobalShader_H__ */

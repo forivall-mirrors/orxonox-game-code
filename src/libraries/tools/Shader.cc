@@ -29,14 +29,8 @@
 #include "Shader.h"
 
 #include <OgreCompositorManager.h>
-#include <OgreCompositorInstance.h>
-#include <OgreSceneManager.h>
 #include <OgreRoot.h>
 #include <OgrePlugin.h>
-#include <OgreMaterial.h>
-#include <OgreTechnique.h>
-#include <OgrePass.h>
-#include <OgreMaterialManager.h>
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
@@ -44,286 +38,204 @@
 
 namespace orxonox
 {
-    bool Shader::bLoadedCgPlugin_s = false;
-    Shader::MaterialMap Shader::parameters_s;
-
+    /**
+        @brief Initializes the values and sets the scene manager.
+    */
     Shader::Shader(Ogre::SceneManager* scenemanager) : compositorInstance_(0)
     {
         RegisterObject(Shader);
 
         this->scenemanager_ = scenemanager;
-        this->compositorInstance_ = 0;
         this->bVisible_ = true;
         this->bLoadCompositor_ = GameMode::showsGraphics();
-        this->bViewportInitialized_ = false;
+        this->registeredAsListener_ = false;
 
-        if (this->bLoadCompositor_ && Ogre::Root::getSingletonPtr())
-        {
-            Shader::bLoadedCgPlugin_s = false;
-            const Ogre::Root::PluginInstanceList& plugins = Ogre::Root::getSingleton().getInstalledPlugins();
-            for (size_t i = 0; i < plugins.size(); ++i)
-            {
-                if (plugins[i]->getName() == "Cg Program Manager")
-                {
-                    Shader::bLoadedCgPlugin_s = true;
-                    break;
-                }
-            }
-        }
+        static bool hasCgProgramManager = Shader::hasCgProgramManager();
 
-        this->bLoadCompositor_ &= Shader::bLoadedCgPlugin_s;
+        this->bLoadCompositor_ &= hasCgProgramManager;
     }
 
+    /**
+        @brief Removes the compositor and frees the resources.
+    */
     Shader::~Shader()
     {
-        if (this->compositorInstance_ && this->bLoadCompositor_)
-        {
-            Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
-            assert(viewport);
-            Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->compositor_);
-        }
-
+        if (this->compositorInstance_ && GraphicsManager::getInstance().getViewport())
+            Ogre::CompositorManager::getSingleton().removeCompositor(GraphicsManager::getInstance().getViewport(), this->compositorName_);
     }
 
-    void Shader::setSceneManager(Ogre::SceneManager* scenemanager)
+    /**
+        @brief Inherited from ViewportEventListener - called if the camera changes.
+
+        Since the new camera could be in a different scene, the shader has to make sure
+        it deactivates or activates itself accordingly.
+
+        Additionally the shader has to be turned off and on even if the camera stays in
+        the same scene to fix a weird behavior of Ogre.
+    */
+    void Shader::cameraChanged(Ogre::Viewport* viewport, Ogre::Camera* oldCamera)
     {
-        this->scenemanager_ = scenemanager;
-        this->bViewportInitialized_ = false;
+        if (!this->bLoadCompositor_ || !this->scenemanager_)
+            return;
+
+        // load the compositor if not already done
+        if (!this->compositorName_.empty() && !this->compositorInstance_)
+            this->changedCompositorName(viewport);
+
+        // update compositor in viewport (shader should only be active if the current camera is in the same scene as the shader)
+
+        // Note:
+        // The shader needs also to be switched off and on after changing the camera in the
+        // same scene to avoid weird behaviour with active compositors while switching the
+        // camera (like freezing the image)
+        //
+        // Last known Ogre version needing this workaround:
+        // 1.4.8
+        // 1.7.2
+
+        if (oldCamera && this->scenemanager_ == oldCamera->getSceneManager())
+            Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositorName_, false);
+
+        if (viewport->getCamera() && this->scenemanager_ == viewport->getCamera()->getSceneManager())
+            Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositorName_, this->isVisible());
     }
 
-    void Shader::tick(float dt)
+    /**
+        @brief Changes the compositor - default viewport.
+    */
+    void Shader::changedCompositorName()
     {
-        SUPER(Shader, tick, dt);
-
-        if (this->bLoadCompositor_ && !this->bViewportInitialized_ && this->scenemanager_ && this->scenemanager_->getCurrentViewport())
-        {
-            this->bViewportInitialized_ = true;
-            this->updateVisibility();
-        }
+        // For the moment, we get the viewport always from the graphics manager
+        // TODO: Try to support multiple viewports - note however that scenemanager_->getCurrentViewport() returns NULL
+        //       after switching to a camera in a different scene (only for the first time this scene is displayed though)
+        this->changedCompositorName(GraphicsManager::getInstance().getViewport());
     }
 
-    void Shader::changedCompositor()
+    /**
+        @brief Changes the compositor.
+    */
+    void Shader::changedCompositorName(Ogre::Viewport* viewport)
     {
         if (this->bLoadCompositor_)
         {
-            Ogre::Viewport* viewport = GraphicsManager::getInstance().getViewport();
             assert(viewport);
-            if (!this->oldcompositor_.empty())
+            if (this->compositorInstance_)
             {
-                Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->oldcompositor_);
+                // remove the old compositor, remove the listener
+                Ogre::CompositorManager::getSingleton().removeCompositor(viewport, this->oldcompositorName_);
+                this->compositorInstance_->removeListener(this);
                 this->compositorInstance_ = 0;
             }
-            if (!this->compositor_.empty())
+            if (!this->compositorName_.empty())
             {
-                this->compositorInstance_ = Ogre::CompositorManager::getSingleton().addCompositor(viewport, this->compositor_);
-                if (!this->compositorInstance_)
-                    COUT(2) << "Warning: Couldn't load compositor with name \"" << this->compositor_ << "\"." << std::endl;
-                Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositor_, this->bViewportInitialized_ && this->isVisible());
-            }
-            this->oldcompositor_ = this->compositor_;
-        }
-    }
-
-    void Shader::updateVisibility()
-    {
-        if (this->compositorInstance_ && this->scenemanager_)
-            this->compositorInstance_->setEnabled(this->scenemanager_->getCurrentViewport() && this->isVisible());
-    }
-
-    void Shader::setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, float value)
-    {
-        if (Shader::_setParameter(material, technique, pass, parameter, value))
-        {
-            if (this->bViewportInitialized_ && this->compositorInstance_ && this->isVisible())
-            {
-                this->compositorInstance_->setEnabled(false);
-                this->compositorInstance_->setEnabled(true);
-            }
-        }
-    }
-
-    void Shader::setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, int value)
-    {
-        if (Shader::_setParameter(material, technique, pass, parameter, value))
-        {
-            if (this->bViewportInitialized_ && this->compositorInstance_ && this->isVisible())
-            {
-                this->compositorInstance_->setEnabled(false);
-                this->compositorInstance_->setEnabled(true);
-            }
-        }
-    }
-
-    bool Shader::_setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, float value)
-    {
-        ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
-        if (pointer)
-        {
-            if (pointer->first)
-            {
-                if ((*static_cast<float*>(pointer->second)) != value)
+                // add the new compositor
+                this->compositorInstance_ = Ogre::CompositorManager::getSingleton().addCompositor(viewport, this->compositorName_);
+                if (this->compositorInstance_)
                 {
-                    (*static_cast<float*>(pointer->second)) = value;
-                    return true;
-                }
-            }
-            else
-            {
-                if ((*static_cast<int*>(pointer->second)) != static_cast<int>(value))
-                {
-                    (*static_cast<int*>(pointer->second)) = static_cast<int>(value);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    bool Shader::_setParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter, int value)
-    {
-        ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
-        if (pointer)
-        {
-            if (pointer->first)
-            {
-                if ((*static_cast<float*>(pointer->second)) != static_cast<float>(value))
-                {
-                    (*static_cast<float*>(pointer->second)) = static_cast<float>(value);
-                    return true;
-                }
-            }
-            else
-            {
-                if ((*static_cast<int*>(pointer->second)) != value)
-                {
-                    (*static_cast<int*>(pointer->second)) = value;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    float Shader::getParameter(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
-    {
-        ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
-        if (pointer)
-        {
-            if (pointer->first)
-                return (*static_cast<float*>(pointer->second));
-            else
-                return static_cast<float>(*static_cast<int*>(pointer->second));
-        }
-        else
-            return 0;
-    }
-
-    bool Shader::getParameterIsFloat(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
-    {
-        ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
-        if (pointer)
-            return pointer->first;
-        else
-            return false;
-    }
-
-    bool Shader::getParameterIsInt(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
-    {
-        ParameterPointer* pointer = Shader::getParameterPointer(material, technique, pass, parameter);
-        if (pointer)
-            return (!pointer->first);
-        else
-            return false;
-    }
-
-    Shader::ParameterPointer* Shader::getParameterPointer(const std::string& material, size_t technique, size_t pass, const std::string& parameter)
-    {
-        if (!GameMode::showsGraphics() || !Shader::bLoadedCgPlugin_s)
-            return 0;
-
-        MaterialMap::iterator material_iterator = Shader::parameters_s.find(material);
-        if (material_iterator != Shader::parameters_s.end())
-        {
-            TechniqueVector& technique_vector = material_iterator->second;
-            if (technique < technique_vector.size())
-            {
-                PassVector& pass_vector = technique_vector[technique];
-                if (pass < pass_vector.size())
-                {
-                    ParameterMap& parameter_map = pass_vector[pass];
-                    ParameterMap::iterator parameter_iterator = parameter_map.find(parameter);
-
-                    if (parameter_iterator != parameter_map.end())
-                        return (&parameter_iterator->second);
-                    else
-                        COUT(2) << "Warning: No shader parameter \"" << parameter << "\" in pass " << pass << " in technique " << technique << " in material \"" << material << "\"." << std::endl;
+                    // register as listener if required
+                    if (this->registeredAsListener_)
+                        this->compositorInstance_->addListener(this);
+                    // set visibility according to the isVisible() and the camera/viewport
+                    if (viewport->getCamera())
+                        Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositorName_, this->isVisible() && viewport->getCamera() && this->scenemanager_ == viewport->getCamera()->getSceneManager());
                 }
                 else
-                    COUT(2) << "Warning: No pass " << pass << " in technique " << technique << " in material \"" << material << "\" or pass has no shader." << std::endl;
+                    COUT(2) << "Warning: Couldn't load compositor with name \"" << this->compositorName_ << "\"." << std::endl;
             }
-            else
-                COUT(2) << "Warning: No technique " << technique << " in material \"" << material << "\" or technique has no pass with shader." << std::endl;
+            this->oldcompositorName_ = this->compositorName_;
         }
-        else
+    }
+
+    /**
+        @brief Changes the visibility of the shader. Doesn't free any resources if set to invisible.
+    */
+    void Shader::updateVisibility()
+    {
+        if (this->compositorInstance_)
+            Ogre::CompositorManager::getSingleton().setCompositorEnabled(GraphicsManager::getInstance().getViewport(), this->compositorName_, this->isVisible());
+    }
+
+    /**
+        @brief Defines a new integer value for a given parameter. The parameter will be updated if the compositor is rendered the next time.
+    */
+    void Shader::setParameter(size_t technique, size_t pass, const std::string& parameter, int value)
+    {
+        ParameterContainer container = {technique, pass, parameter, value, 0.0f, MT_Type::Int};
+        this->parameters_.push_back(container);
+        this->addAsListener();
+    }
+
+    /**
+        @brief Defines a new float value for a given parameter. The parameter will be updated if the compositor is rendered the next time.
+    */
+    void Shader::setParameter(size_t technique, size_t pass, const std::string& parameter, float value)
+    {
+        ParameterContainer container = {technique, pass, parameter, 0, value, MT_Type::Float};
+        this->parameters_.push_back(container);
+        this->addAsListener();
+    }
+
+    /**
+        @brief Registers the shader as CompositorInstance::Listener at the compositor. Used to change parameters.
+    */
+    void Shader::addAsListener()
+    {
+        if (!this->registeredAsListener_)
         {
-            bool foundAtLeastOneShaderParameter = false;
-            Ogre::MaterialManager::ResourceMapIterator iterator = Ogre::MaterialManager::getSingleton().getResourceIterator();
-            Ogre::Material* material_pointer = 0;
+            this->registeredAsListener_ = true;
+            if (this->compositorInstance_)
+                this->compositorInstance_->addListener(this);
+        }
+    }
 
-            while (iterator.hasMoreElements())
+    /**
+        @brief Inherited by Ogre::CompositorInstance::Listener, called whenever the material is rendered. Used to change parameters.
+    */
+    void Shader::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& materialPtr)
+    {
+        // iterate through the list of parameters
+        for (std::list<ParameterContainer>::iterator it = this->parameters_.begin(); it != this->parameters_.end(); ++it)
+        {
+            Ogre::Technique* techniquePtr = materialPtr->getTechnique(it->technique_);
+            if (techniquePtr)
             {
-                Ogre::Resource* resource = iterator.getNext().get();
-                if (resource->getName() == material)
-                    material_pointer = (Ogre::Material*)resource;
-            }
-
-            if (!material_pointer)
-            {
-                COUT(2) << "Warning: No material with name \"" << material << "\" found." << std::endl;
-                return 0;
-            }
-
-            for (unsigned int t = 0; t < material_pointer->getNumTechniques(); ++t)
-            {
-                Ogre::Technique* technique_pointer = material_pointer->getTechnique(t);
-                if (!technique_pointer)
-                    continue;
-
-                for (unsigned int p = 0; p < technique_pointer->getNumPasses(); ++p)
+                Ogre::Pass* passPtr = techniquePtr->getPass(it->pass_);
+                if (passPtr)
                 {
-                    Ogre::Pass* pass_pointer = technique_pointer->getPass(p);
-                    if (!pass_pointer)
-                        continue;
-
-                    if (!pass_pointer->getFragmentProgramName().empty())
+                    // change the value of the parameter depending on its type
+                    switch (it->valueType_)
                     {
-                        Ogre::GpuProgramParameters* parameter_pointer = pass_pointer->getFragmentProgramParameters().get();
-                        if (!parameter_pointer)
-                            continue;
-
-                        const Ogre::GpuConstantDefinitionMap& constant_definitions = parameter_pointer->getConstantDefinitions().map;
-                        for (Ogre::GpuConstantDefinitionMap::const_iterator definition_iterator = constant_definitions.begin(); definition_iterator != constant_definitions.end(); ++definition_iterator)
-                        {
-                            void* temp = (definition_iterator->second.isFloat())
-                                            ? static_cast<void*>(parameter_pointer->getFloatPointer(definition_iterator->second.physicalIndex))
-                                            : static_cast<void*>(parameter_pointer->getIntPointer(definition_iterator->second.physicalIndex));
-                            ParameterPointer parameter_pointer = ParameterPointer(definition_iterator->second.isFloat(), temp);
-
-                            TechniqueVector& technique_vector = Shader::parameters_s[material];
-                            technique_vector.resize(technique + 1);
-                            PassVector& pass_vector = technique_vector[technique];
-                            pass_vector.resize(pass + 1);
-                            pass_vector[pass][definition_iterator->first] = parameter_pointer;
-                            foundAtLeastOneShaderParameter = true;
-                        }
+                        case MT_Type::Int:
+                            passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->valueInt_);
+                            break;
+                        case MT_Type::Float:
+                            passPtr->getFragmentProgramParameters()->setNamedConstant(it->parameter_, it->valueFloat_);
+                            break;
+                        default:
+                            break;
                     }
                 }
+                else
+                    COUT(2) << "Warning: No pass " << it->pass_ << " in technique " << it->technique_ << " in compositor \"" << this->compositorName_ << "\" or pass has no shader." << std::endl;
             }
-
-            // recursive call if the material was added to the map
-            if (foundAtLeastOneShaderParameter)
-                return Shader::getParameterPointer(material, technique, pass, parameter);
+            else
+                COUT(2) << "Warning: No technique " << it->technique_ << " in compositor \"" << this->compositorName_ << "\" or technique has no pass with shader." << std::endl;
         }
-        return 0;
+        this->parameters_.clear();
+    }
+
+    /**
+        @brief Detects if the Cg program manager plugin is active.
+    */
+    /* static */ bool Shader::hasCgProgramManager()
+    {
+        if (Ogre::Root::getSingletonPtr())
+        {
+            const Ogre::Root::PluginInstanceList& plugins = Ogre::Root::getSingleton().getInstalledPlugins();
+            for (size_t i = 0; i < plugins.size(); ++i)
+                if (plugins[i]->getName() == "Cg Program Manager")
+                    return true;
+        }
+        return false;
     }
 }

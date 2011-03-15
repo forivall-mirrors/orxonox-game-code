@@ -430,7 +430,13 @@ namespace orxonox
                             button->commands_[mode_index][c] = button->commands_[mode_index][c + 1];
                         // decrease counter
                         button->nCommands_[mode_index]--;
-                        // note: we don't replace the old array - it's not one element too large, but no one cares since nCommands_ defines the size
+                        // old array would not get deleted if nCommands_ is now 0
+                        // otherwise: nobody cares about an array that is one element too large - nCommands_ defines the size
+                        if (button->nCommands_[mode_index] == 0)
+                        {
+                            delete[] button->commands_[mode_index];
+                            button->commands_[mode_index] = 0;
+                        }
 
                         // decrement the index since we shifted the array and continue searching for more occurrences of the command
                         command_index--;

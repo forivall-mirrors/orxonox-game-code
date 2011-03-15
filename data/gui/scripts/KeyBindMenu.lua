@@ -25,7 +25,7 @@ function P.onLoad()
     table.insert(commandList, "scale -1 rotatePitch")
     table.insert(commandList, "NewHumanController changeMode")
     table.insert(commandList, "switchCamera")
-    table.insert(commandList, "openConsole")
+    table.insert(commandList, "InGameConsole openConsole")
     table.insert(commandList, "OverlayGroup toggleVisibility Debug")
     table.insert(commandList, "OverlayGroup toggleVisibility Stats")
     table.insert(commandList, "OrxonoxOverlay toggleVisibility QuestGUI")
@@ -34,6 +34,10 @@ function P.onLoad()
     table.insert(commandList, "startchat_small")
     table.insert(commandList, "mouseLook")
     table.insert(commandList, "pause")
+    table.insert(commandList, "printScreen")
+    if orxonox.GUIManager:inDevMode() then
+        table.insert(commandList, "printScreenHD 3")
+    end
 
     nameList = {}
     table.insert(nameList, "Primary Fire")
@@ -64,6 +68,10 @@ function P.onLoad()
     table.insert(nameList, "Show small Chat")
     table.insert(nameList, "Look Around")
     table.insert(nameList, "Pause")
+    table.insert(nameList, "Screenshot")
+    if orxonox.GUIManager:inDevMode() then
+        table.insert(nameList, "HD screenshot")
+    end
 
     linesList = {}
 
@@ -99,6 +107,11 @@ function P.onLoad()
 
     local funct = luaState:createLuaFunctor("KeyBindMenu.callback()")
     orxonox.KeyBinderManager:getInstance():registerKeybindCallback(funct)
+
+    P:setButton(1, 1, {
+            ["button"] = winMgr:getWindow("orxonox/KeyBindBackButton"),
+            ["callback"]  = P.KeyBindBackButton_clicked
+    })
 end
 
 function P.KeyNameNiceifier(key)

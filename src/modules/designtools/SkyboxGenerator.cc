@@ -58,7 +58,7 @@ namespace orxonox
         RegisterRootObject(SkyboxGenerator);
 
         this->setConfigValues();
-        takeScreenshot_ = false;
+        this->takeScreenshot_ = false;
         this->captionsRemoved_ = false;
     }
 

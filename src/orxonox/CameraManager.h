@@ -37,12 +37,10 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <cassert>
 #include <list>
 #include "util/OgreForwardRefs.h"
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
-#include "core/SmartPtr.h"
 
 namespace orxonox
 {
@@ -64,7 +62,6 @@ namespace orxonox
             CameraManager(const CameraManager&); // don't use
 
             std::list<Camera*>    cameraList_;
-            Ogre::Viewport*       viewport_;
 
             static CameraManager* singletonPtr_s;
     };

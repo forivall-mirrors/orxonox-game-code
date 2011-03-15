@@ -193,6 +193,8 @@ namespace orxonox
         friend class OrxonoxClass;
 
         protected:
+            virtual ~DestructionListener() {}
+
             inline void registerAsDestructionListener(OrxonoxClass* object)
                 { if (object) { object->registerDestructionListener(this); } }
             inline void unregisterAsDestructionListener(OrxonoxClass* object)

@@ -49,6 +49,7 @@
 #include "ConfigValueIncludes.h"
 #include "GameMode.h"
 #include "GameState.h"
+#include "GraphicsManager.h"
 #include "GUIManager.h"
 #include "command/ConsoleCommand.h"
 
@@ -59,10 +60,10 @@ namespace orxonox
     SetConsoleCommand("exit", &stop_game);
     static void printFPS()
         { COUT(0) << Game::getInstance().getAvgFPS() << std::endl; }
-    SetConsoleCommand("printFPS", &printFPS);
+    SetConsoleCommand("Stats", "printFPS", &printFPS);
     static void printTickTime()
         { COUT(0) << Game::getInstance().getAvgTickTime() << std::endl; }
-    SetConsoleCommand("printTickTime", &printTickTime);
+    SetConsoleCommand("Stats", "printTickTime", &printTickTime);
 
     std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
     Game* Game::singletonPtr_s = 0;
@@ -141,7 +142,8 @@ namespace orxonox
             .description("Sets the time in microseconds interval at which average fps, etc. get updated.");
         SetConfigValue(statisticsAvgLength_, 1000000)
             .description("Sets the time in microseconds interval at which average fps, etc. gets calculated.");
-        SetConfigValue(fpsLimit_, 50)
+
+        SetConfigValueExternal(fpsLimit_, "GraphicsSettings", "fpsLimit", 50)
             .description("Sets the desired frame rate (0 for no limit).");
     }
 
@@ -206,7 +208,9 @@ namespace orxonox
             this->updateStatistics();
 
             // Limit frame rate
-            this->updateFPSLimiter();
+            static bool hasVSync = GraphicsManager::getInstance().hasVSyncEnabled(); // can be static since changes of VSync currently require a restart
+            if (this->fpsLimit_ > 0 && !hasVSync)
+                this->updateFPSLimiter();
         }
 
         // UNLOAD all remaining states

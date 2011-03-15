@@ -79,9 +79,9 @@ do
 j = math.random()
 ?>
 
-    <StaticEntity position="<?lua print(x + math.random() * 1000-500) ?>,<?lua print(y + math.random() * 1000-500) ?>,<?lua print(z + math.random() * 5000-2500) ?>" scale=<?lua print(j * 5) ?> >
+    <StaticEntity position="<?lua print(x + math.random() * 1000-500) ?>,<?lua print(y + math.random() * 1000-500) ?>,<?lua print(z + math.random() * 5000-2500) ?>" scale="<?lua print(j * 5) ?>" >
       <attached>
-        <Model position="0,0,0" scale=<?lua print(j * 10) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh">
+        <Model position="0,0,0" scale="<?lua print(j * 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh">
 	  <attached><!-- ---------asteroid fog----- -->
             <ParticleEmitter position="0,0,0" source="Orxonox/Steam" />
           </attached>

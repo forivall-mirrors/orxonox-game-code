@@ -32,13 +32,14 @@
 #include "OrxonoxPrereqs.h"
 
 #include "util/OgreForwardRefs.h"
+#include "core/WindowEventListener.h"
 #include "tools/interfaces/Tickable.h"
 #include "tools/interfaces/TimeFactorListener.h"
 #include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Camera : public StaticEntity, public Tickable, public TimeFactorListener
+    class _OrxonoxExport Camera : public StaticEntity, public Tickable, public TimeFactorListener, public WindowEventListener
     {
         friend class CameraManager;
 
@@ -65,7 +66,11 @@ namespace orxonox
         private:
             void removeFocus();
             void setFocus();
+
+            void configvaluecallback_changedFovAndAspectRatio();
             void configvaluecallback_changedNearClipDistance();
+
+            void windowResized(unsigned int newWidth, unsigned int newHeight);
 
             Ogre::Camera*    camera_;
             Ogre::SceneNode* cameraNode_;
@@ -73,6 +78,8 @@ namespace orxonox
             bool             bHasFocus_;
             bool             bDrag_;
             bool             lastDtLagged_;
+            float            fov_;
+            float            aspectRatio_;
     };
 }
 

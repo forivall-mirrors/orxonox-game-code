@@ -102,8 +102,12 @@ namespace orxonox
     void NotificationManager::preDestroy(void)
     {
         // Destroys all NotificationQueues that have been registered with the NotificationManager.
-        for(std::map<const std::string, NotificationQueue*>::iterator it = this->queues_.begin(); it != this->queues_.end(); it++)
+        std::map<const std::string, NotificationQueue*>::iterator it = this->queues_.begin();
+        while(it != this->queues_.end())
+        {
             it->second->destroy(true);
+            it = this->queues_.begin();
+        }
 
         this->queues_.clear();
     }
@@ -297,12 +301,12 @@ namespace orxonox
             delete map;
         }
 
+        COUT(4) << "NotificationListener '" << identifier << "' unregistered with the NotificationManager." << std::endl;
+
         // Remove the NotificationListener from the list of NotificationListeners.
         this->listenerList_.erase(listener);
         // Remove the Notifications list that was associated with the input NotificationListener.
         this->notificationLists_.erase(identifier);
-
-        COUT(4) << "NotificationListener unregistered with the NotificationManager." << std::endl;
     }
 
     /**
@@ -360,6 +364,7 @@ namespace orxonox
     */
     bool NotificationManager::registerQueue(NotificationQueue* queue)
     {
+        COUT(4) << "NotificationQueue '" << queue->getName() << "' registered with the NotificationManager." << std::endl;
         return this->queues_.insert(std::pair<const std::string, NotificationQueue*>(queue->getName(), queue)).second;
     }
 
@@ -371,6 +376,7 @@ namespace orxonox
     */
     void NotificationManager::unregisterQueue(NotificationQueue* queue)
     {
+        COUT(4) << "NotificationQueue '" << queue->getName() << "' unregistered with the NotificationManager." << std::endl;
         this->queues_.erase(queue->getName());
     }
 

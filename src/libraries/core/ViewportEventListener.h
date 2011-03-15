@@ -26,35 +26,25 @@
  *
  */
 
-#ifndef _GlobalShader_H__
-#define _GlobalShader_H__
+#ifndef _ViewportEventListener_H__
+#define _ViewportEventListener_H__
 
-#include "OrxonoxPrereqs.h"
+#include "util/OgreForwardRefs.h"
 
-#include "core/BaseObject.h"
-#include "network/synchronisable/Synchronisable.h"
-#include "tools/Shader.h"
+#include "CorePrereqs.h"
+#include "OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport GlobalShader : public BaseObject, public Synchronisable
+    class _CoreExport ViewportEventListener : virtual public OrxonoxClass
     {
         public:
-            GlobalShader(BaseObject* creator);
-            virtual ~GlobalShader();
+            virtual void cameraChanged(Ogre::Viewport* viewport, Ogre::Camera* oldCamera) {}
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-
-            virtual void changedVisibility();
-
-            inline const Shader& getShader() const
-                { return this->shader_; }
-
-        private:
-            void registerVariables();
-
-            Shader shader_;
+        protected:
+            ViewportEventListener();
+            virtual ~ViewportEventListener() {}
     };
 }
 
-#endif /* _GlobalShader_H__ */
+#endif /* _ViewportEventListener_H__ */

@@ -29,29 +29,14 @@
 #ifndef _ChatInputHandler_H__
 #define _ChatInputHandler_H__
 
-/* std includes */
-#include <deque>
-#include <string>
-#include <fstream>
-#include <iostream>
-#include <cassert>
-#include <CEGUIForwardRefs.h>
-
-/* project includes */
 #include <OrxonoxPrereqs.h>
-#include <core/BaseObject.h>
-#include <core/PathConfig.h>
 
-#include "core/input/InputBuffer.h"
-#include "core/input/InputManager.h"
-#include "core/input/InputState.h"
+#include <string>
+#include <CEGUIForwardRefs.h>
+#include <CEGUIcolour.h>
 
-#include <network/ChatListener.h>
-#include <PlayerManager.h>
-#include <infos/PlayerInfo.h>
-
-#include "../libraries/network/Host.h"
-#include <util/Singleton.h>
+#include "util/Singleton.h"
+#include "network/ChatListener.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -69,7 +54,7 @@ namespace orxonox // tolua_export
 
       /* colors for nickname coloring */
       static const int NumberOfColors = 10;
-      CEGUI::colour *text_colors[ NumberOfColors ];
+      CEGUI::colour text_colors[ NumberOfColors ];
 
       /** input state */
       InputState *inputState;
@@ -109,6 +94,7 @@ namespace orxonox // tolua_export
     public:
       /** constructor */
       ChatInputHandler();
+      ~ChatInputHandler();
       friend class Singleton<ChatInputHandler>;
 
       static ChatInputHandler& getInstance(void) { return Singleton<ChatInputHandler>::getInstance(); }  // tolua_export

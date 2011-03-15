@@ -59,8 +59,8 @@ namespace orxonox
     const int LINES = 30;
     const float CHAR_WIDTH = 7.45f; // fix this please - determine the char-width dynamically
 
-    SetConsoleCommand("InGameConsole", "openConsole", &InGameConsole::openConsole).addShortcut();
-    SetConsoleCommand("InGameConsole", "closeConsole", &InGameConsole::closeConsole).addShortcut();
+    SetConsoleCommand("InGameConsole", "openConsole", &InGameConsole::openConsole);
+    SetConsoleCommand("InGameConsole", "closeConsole", &InGameConsole::closeConsole);
 
     ManageScopedSingleton(InGameConsole, ScopeID::Graphics, false);
 

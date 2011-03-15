@@ -84,6 +84,7 @@ namespace orxonox
     class BillboardSet;
     class Mesh;
     class ParticleInterface;
+    class RealTimer;
     class ResourceCollection;
     class ResourceLocation;
     class Shader;

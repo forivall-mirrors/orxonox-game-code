@@ -68,12 +68,13 @@ namespace orxonox
 
         this->bHasFocus_ = false;
         this->bDrag_ = false;
-        this->nearClipDistance_ = 1;
         this->lastDtLagged_ = false;
 
         this->setSyncMode(0x0);
 
         this->setConfigValues();
+
+        this->configvaluecallback_changedFovAndAspectRatio();
         this->configvaluecallback_changedNearClipDistance();
     }
 
@@ -81,8 +82,6 @@ namespace orxonox
     {
         if (this->isInitialized())
         {
-            if (GUIManager::getInstance().getCamera() == this->camera_)
-                GUIManager::getInstance().setCamera(NULL);
             this->releaseFocus();
 
             this->cameraNode_->detachAllObjects();
@@ -98,12 +97,42 @@ namespace orxonox
 
     void Camera::setConfigValues()
     {
-        SetConfigValue(nearClipDistance_, 1.0f).callback(this, &Camera::configvaluecallback_changedNearClipDistance);
+        SetConfigValue(fov_, 80.0f)
+            .description("Horizontal field of view in degrees")
+            .callback(this, &Camera::configvaluecallback_changedFovAndAspectRatio);
+        SetConfigValue(aspectRatio_, 1.0f)
+            .description("Aspect ratio of pixels (width / height)")
+            .callback(this, &Camera::configvaluecallback_changedFovAndAspectRatio);
+        SetConfigValue(nearClipDistance_, 1.0f)
+            .description("Distance from the camera where close objects will be clipped")
+            .callback(this, &Camera::configvaluecallback_changedNearClipDistance);
+    }
+
+    /**
+        @brief Update FOV and the aspect ratio of the camera after the config values or the window's size have changed.
+    */
+    void Camera::configvaluecallback_changedFovAndAspectRatio()
+    {
+        // the aspect ratio of the window (width / height) has to be multiplied with the pixels aspect ratio (this->aspectRatio_)
+        float aspectRatio = this->aspectRatio_ * this->getWindowWidth() / this->getWindowHeight();
+        this->camera_->setAspectRatio(aspectRatio);
+
+        // Since we use horizontal FOV, we have to calculate FOVy by dividing by the aspect ratio and using some tangents
+        Radian fovy(2 * atan(tan(Degree(this->fov_).valueRadians() / 2) / aspectRatio));
+        this->camera_->setFOVy(fovy);
     }
 
     void Camera::configvaluecallback_changedNearClipDistance()
     {
         this->camera_->setNearClipDistance(this->nearClipDistance_);
+    }
+
+    /**
+        @brief Inherited from WindowEventListener.
+    */
+    void Camera::windowResized(unsigned int newWidth, unsigned int newHeight)
+    {
+        this->configvaluecallback_changedFovAndAspectRatio();
     }
 
     void Camera::tick(float dt)

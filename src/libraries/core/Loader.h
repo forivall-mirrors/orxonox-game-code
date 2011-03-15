@@ -41,6 +41,7 @@
 
 #include "CorePrereqs.h"
 
+#include <map>
 #include <vector>
 #include "ClassTreeMask.h"
 
@@ -60,15 +61,19 @@ namespace orxonox
             static void unload(const ClassTreeMask& mask = ClassTreeMask());
             static bool reload(const ClassTreeMask& mask = ClassTreeMask(), bool verbose = true);
 
-            static bool load(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool verbose = true);
+            static bool load(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(),
+                             bool verbose = true, bool bRemoveLuaTags = false);
             static void unload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
             static bool reload(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool verbose = true);
 
             static std::string replaceLuaTags(const std::string& text);
+            static std::string removeLuaTags(const std::string& text);
 
             static ClassTreeMask currentMask_s;
 
         private:
+            static bool getLuaTags(const std::string& text, std::map<size_t, bool>& luaTags);
+
             static std::vector<std::pair<const XMLFile*, ClassTreeMask> > files_s;
     };
 }

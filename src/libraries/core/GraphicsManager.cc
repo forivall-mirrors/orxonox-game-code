@@ -48,6 +48,7 @@
 
 #include "SpecialConfig.h"
 #include "util/Clock.h"
+#include "util/Convert.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
@@ -56,15 +57,26 @@
 #include "Core.h"
 #include "Game.h"
 #include "GameMode.h"
+#include "GUIManager.h"
 #include "Loader.h"
 #include "MemoryArchive.h"
 #include "PathConfig.h"
+#include "ViewportEventListener.h"
 #include "WindowEventListener.h"
 #include "XMLFile.h"
 #include "command/ConsoleCommand.h"
+#include "input/InputManager.h"
 
 namespace orxonox
 {
+    static const std::string __CC_GraphicsManager_group = "GraphicsManager";
+    static const std::string __CC_setScreenResolution_name = "setScreenResolution";
+    static const std::string __CC_setFSAA_name = "setFSAA";
+    static const std::string __CC_setVSync_name = "setVSync";
+    DeclareConsoleCommand(__CC_GraphicsManager_group, __CC_setScreenResolution_name, &prototype::string__uint_uint_bool);
+    DeclareConsoleCommand(__CC_GraphicsManager_group, __CC_setFSAA_name, &prototype::string__string);
+    DeclareConsoleCommand(__CC_GraphicsManager_group, __CC_setVSync_name, &prototype::string__bool);
+
     static const std::string __CC_printScreen_name = "printScreen";
     DeclareConsoleCommand(__CC_printScreen_name, &prototype::void__void);
 
@@ -94,6 +106,8 @@ namespace orxonox
 #endif
         , renderWindow_(0)
         , viewport_(0)
+        , lastFrameStartTime_(0.0f)
+        , lastFrameEndTime_(0.0f)
     {
         RegisterObject(GraphicsManager);
 
@@ -135,6 +149,9 @@ namespace orxonox
 
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_.get());
         ModifyConsoleCommand(__CC_printScreen_name).resetFunction();
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setScreenResolution_name).resetFunction();
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setFSAA_name).resetFunction();
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setVSync_name).resetFunction();
 
         // Undeclare the resources
         Loader::unload(resources_.get());
@@ -303,7 +320,11 @@ namespace orxonox
     {
         CCOUT(4) << "Configuring Renderer" << std::endl;
 
-        if (!ogreRoot_->restoreConfig() || Core::getInstance().getOgreConfigTimestamp() > Core::getInstance().getLastLevelTimestamp())
+        bool updatedConfig = Core::getInstance().getOgreConfigTimestamp() > Core::getInstance().getLastLevelTimestamp();
+        if (updatedConfig)
+            COUT(2) << "Ogre config file has changed, but no level was started since then. Displaying config dialogue again to verify the changes." << std::endl;
+
+        if (!ogreRoot_->restoreConfig() || updatedConfig)
         {
             if (!ogreRoot_->showConfigDialog())
                 ThrowException(InitialisationFailed, "OGRE graphics configuration dialogue canceled.");
@@ -329,6 +350,9 @@ namespace orxonox
 
         // add console commands
         ModifyConsoleCommand(__CC_printScreen_name).setFunction(&GraphicsManager::printScreen, this);
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setScreenResolution_name).setFunction(&GraphicsManager::setScreenResolution, this);
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setFSAA_name).setFunction(&GraphicsManager::setFSAA, this);
+        ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setVSync_name).setFunction(&GraphicsManager::setVSync, this);
     }
 
     void GraphicsManager::loadDebugOverlay()
@@ -342,30 +366,31 @@ namespace orxonox
     /**
     @note
         A note about the Ogre::FrameListener: Even though we don't use them,
-        they still get called. However, the delta times are not correct (except
-        for timeSinceLastFrame, which is the most important). A little research
-        as shown that there is probably only one FrameListener that doesn't even
-        need the time. So we shouldn't run into problems.
+        they still get called.
     */
     void GraphicsManager::postUpdate(const Clock& time)
     {
-        Ogre::FrameEvent evt;
-        evt.timeSinceLastFrame = time.getDeltaTime();
-        evt.timeSinceLastEvent = time.getDeltaTime(); // note: same time, but shouldn't matter anyway
+        // Time before rendering
+        uint64_t timeBeforeTick = time.getRealMicroseconds();
 
-        // don't forget to call _fireFrameStarted to OGRE to make sure
-        // everything goes smoothly
+        // Ogre's time keeping object
+        Ogre::FrameEvent evt;
+
+        // Translate to Ogre float times before the update
+        float temp = lastFrameStartTime_;
+        lastFrameStartTime_ = (float)timeBeforeTick * 0.000001f;
+        evt.timeSinceLastFrame = lastFrameStartTime_ - temp;
+        evt.timeSinceLastEvent = lastFrameStartTime_ - lastFrameEndTime_;
+
+        // Ogre requires the time too
         ogreRoot_->_fireFrameStarted(evt);
 
         // Pump messages in all registered RenderWindows
         // This calls the WindowEventListener objects.
         Ogre::WindowEventUtilities::messagePump();
-        // make sure the window stays active even when not focused
+        // Make sure the window stays active even when not focused
         // (probably only necessary on windows)
         this->renderWindow_->setActive(true);
-
-        // Time before rendering
-        uint64_t timeBeforeTick = time.getRealMicroseconds();
 
         // Render frame
         ogreRoot_->_updateAllRenderTargets();
@@ -374,13 +399,25 @@ namespace orxonox
         // Subtract the time used for rendering from the tick time counter
         Game::getInstance().subtractTickTime((int32_t)(timeAfterTick - timeBeforeTick));
 
-        // again, just to be sure OGRE works fine
-        ogreRoot_->_fireFrameEnded(evt); // note: uses the same time as _fireFrameStarted
+        // Translate to Ogre float times after the update
+        temp = lastFrameEndTime_;
+        lastFrameEndTime_ = (float)timeBeforeTick * 0.000001f;
+        evt.timeSinceLastFrame = lastFrameEndTime_ - temp;
+        evt.timeSinceLastEvent = lastFrameEndTime_ - lastFrameStartTime_;
+
+        // Ogre also needs the time after the frame finished
+        ogreRoot_->_fireFrameEnded(evt);
     }
 
     void GraphicsManager::setCamera(Ogre::Camera* camera)
     {
+        Ogre::Camera* oldCamera = this->viewport_->getCamera();
+
         this->viewport_->setCamera(camera);
+        GUIManager::getInstance().setCamera(camera);
+
+        for (ObjectList<ViewportEventListener>::iterator it = ObjectList<ViewportEventListener>::begin(); it != ObjectList<ViewportEventListener>::end(); ++it)
+            it->cameraChanged(this->viewport_, oldCamera);
     }
 
     /**
@@ -439,19 +476,106 @@ namespace orxonox
 
     bool GraphicsManager::isFullScreen() const
     {
+        return this->renderWindow_->isFullScreen();
+    }
+
+    unsigned int GraphicsManager::getWindowWidth() const
+    {
+        return this->renderWindow_->getWidth();
+    }
+
+    unsigned int GraphicsManager::getWindowHeight() const
+    {
+        return this->renderWindow_->getHeight();
+    }
+
+    bool GraphicsManager::hasVSyncEnabled() const
+    {
         Ogre::ConfigOptionMap& options = ogreRoot_->getRenderSystem()->getConfigOptions();
-        if (options.find("Full Screen") != options.end())
+        Ogre::ConfigOptionMap::iterator it = options.find("VSync");
+        if (it != options.end())
+            return (it->second.currentValue == "Yes");
+        else
+            return false;
+    }
+
+    std::string GraphicsManager::getFSAAMode() const
+    {
+        Ogre::ConfigOptionMap& options = ogreRoot_->getRenderSystem()->getConfigOptions();
+        Ogre::ConfigOptionMap::iterator it = options.find("FSAA");
+        if (it != options.end())
+            return it->second.currentValue;
+        else
+            return "";
+    }
+
+    std::string GraphicsManager::setScreenResolution(unsigned int width, unsigned int height, bool fullscreen)
+    {
+        // workaround to detect if the colour depth should be written to the config file
+        bool bWriteColourDepth = false;
+        Ogre::ConfigOptionMap& options = ogreRoot_->getRenderSystem()->getConfigOptions();
+        Ogre::ConfigOptionMap::iterator it = options.find("Video Mode");
+        if (it != options.end())
+            bWriteColourDepth = (it->second.currentValue.find('@') != std::string::npos);
+
+        if (bWriteColourDepth)
         {
-            if (options["Full Screen"].currentValue == "Yes")
-                return true;
-            else
-                return false;
+            this->ogreRoot_->getRenderSystem()->setConfigOption("Video Mode", multi_cast<std::string>(width)
+                                                                    + " x " + multi_cast<std::string>(height)
+                                                                    + " @ " + multi_cast<std::string>(this->getRenderWindow()->getColourDepth()) + "-bit colour");
         }
         else
         {
-            COUT(0) << "Could not find 'Full Screen' render system option. Fix This!!!" << std::endl;
-            return false;
+            this->ogreRoot_->getRenderSystem()->setConfigOption("Video Mode", multi_cast<std::string>(width)
+                                                                    + " x " + multi_cast<std::string>(height));
         }
+
+        this->ogreRoot_->getRenderSystem()->setConfigOption("Full Screen", fullscreen ? "Yes" : "No");
+
+        std::string validate = this->ogreRoot_->getRenderSystem()->validateConfigOptions();
+
+        if (validate == "")
+        {
+            GraphicsManager::getInstance().getRenderWindow()->setFullscreen(fullscreen, width, height);
+            this->ogreRoot_->saveConfig();
+            Core::getInstance().updateOgreConfigTimestamp();
+            // Also reload the input devices
+            InputManager::getInstance().reload();
+        }
+
+        return validate;
+    }
+
+    std::string GraphicsManager::setFSAA(const std::string& mode)
+    {
+        this->ogreRoot_->getRenderSystem()->setConfigOption("FSAA", mode);
+
+        std::string validate = this->ogreRoot_->getRenderSystem()->validateConfigOptions();
+
+        if (validate == "")
+        {
+            //this->ogreRoot_->getRenderSystem()->reinitialise(); // can't use this that easily, because it recreates the render window, invalidating renderWindow_
+            this->ogreRoot_->saveConfig();
+            Core::getInstance().updateOgreConfigTimestamp();
+        }
+
+        return validate;
+    }
+
+    std::string GraphicsManager::setVSync(bool vsync)
+    {
+        this->ogreRoot_->getRenderSystem()->setConfigOption("VSync", vsync ? "Yes" : "No");
+
+        std::string validate = this->ogreRoot_->getRenderSystem()->validateConfigOptions();
+
+        if (validate == "")
+        {
+            //this->ogreRoot_->getRenderSystem()->reinitialise(); // can't use this that easily, because it recreates the render window, invalidating renderWindow_
+            this->ogreRoot_->saveConfig();
+            Core::getInstance().updateOgreConfigTimestamp();
+        }
+
+        return validate;
     }
 
     void GraphicsManager::printScreen()

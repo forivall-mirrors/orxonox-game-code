@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <GUIScheme Name="TaharezLook">
-	<Imageset Name="TaharezLook" Filename="TaharezLook.imageset" />
-	<LookNFeel Filename="TaharezLook.looknfeel" />
-	<WindowRendererSet Filename="CEGUIFalagardWRBase" />
+    <Imageset Name="TaharezLook" Filename="TaharezLook.imageset" />
+    <LookNFeel Filename="TaharezLook.looknfeel" />
+    <WindowRendererSet Filename="CEGUIFalagardWRBase" />
 
     <!-- Standard widgets -->
     <FalagardMapping WindowType="TaharezLook/StaticImage"              TargetType="DefaultWindow"           Renderer="Falagard/StaticImage"       LookNFeel="TaharezLook/StaticImage" />
@@ -44,7 +44,7 @@
     <FalagardMapping WindowType="TaharezLook/Titlebar"                 TargetType="CEGUI/Titlebar"          Renderer="Falagard/Titlebar"          LookNFeel="TaharezLook/Titlebar" />
     <FalagardMapping WindowType="TaharezLook/Tooltip"                  TargetType="CEGUI/Tooltip"           Renderer="Falagard/Tooltip"           LookNFeel="TaharezLook/Tooltip" />
     <FalagardMapping WindowType="TaharezLook/Tree"                     TargetType="CEGUI/Tree"              Renderer="Falagard/Tree"              LookNFeel="TaharezLook/Tree" />
-    
+
     <!-- Additional widgets -->
     <FalagardMapping WindowType="TaharezLook/AlternateProgressBar"        TargetType="CEGUI/ProgressBar"       Renderer="Falagard/ProgressBar"       LookNFeel="TaharezLook/AltProgressBar" />
     <FalagardMapping WindowType="TaharezLook/VUMeter"                     TargetType="CEGUI/ProgressBar"       Renderer="Falagard/ProgressBar"       LookNFeel="TaharezLook/VUMeter" />

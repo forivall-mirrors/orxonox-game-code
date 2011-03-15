@@ -69,11 +69,11 @@ namespace orxonox
         time, for example to return an error message if it doesn't work.
 
         @remarks execCommand_ and hintCommand_ can be different in this case: There are multiple
-        commands avaliable, let's say "tcl", "tclexecute", and "tclquery". The user enters
-        "tcl", which is already a valid command. Now execCommand_ points to the "tcl"-command,
-        but hintCommand_ still points to the autocompletion command of CommandExecutor, because
-        the auto-completion list must still return the three possible commands, "tcl tclexecute tclquery"
-        because the user may want to execute "tclquery" and needs auto-completion.
+        commands avaliable, let's say "tcl" and "TclThreadManager". The user enters "tcl", which
+        is already a valid command. Now execCommand_ points to the "tcl"-command, but hintCommand_
+        still points to the autocompletion command of CommandExecutor, because the auto-completion
+        list must still return the two possible commands, "tcl TclThreadManager" because the user
+        may want to write "TclThreadManager ..." and needs auto-completion.
 
         @see See @ref CommandExecutorExample "this description" for an example.
     */

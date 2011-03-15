@@ -7,27 +7,23 @@ local menuSheetsRoot = guiMgr:getMenuRootWindow()
 local bInGameConsoleClosed = false
 local mainMenuLoaded = false
 orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
+orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "Sized", "windowResized")
 
------------------------
---- Local functions ---
------------------------
+------------------------
+--- Global functions ---
+------------------------
 
-local function hideCursor()
+function hideCursor()
     if cursor:isVisible() then
         cursor:hide()
     end
 end
 
-local function showCursor()
+function showCursor()
     if not cursor:isVisible() and inputMgr:isMouseExclusive() then
         cursor:show()
     end
 end
-
-
-------------------------
---- Global functions ---
-------------------------
 
 -- Loads the GUI with the specified name
 -- The name corresponds to the filename of the *.lua and *.layout files
@@ -92,7 +88,8 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     {
         ["sheet"]          = menuSheet,
         ["bHidePrevious"]  = bHidePrevious,
-        ["bNoInput"]       = bNoInput
+        ["bNoInput"]       = bNoInput,
+        ["name"]           = name
     }
     table.insert(activeMenuSheets, sheetTuple) -- indexed array access
     activeMenuSheets[name] = sheetTuple -- name access
@@ -120,14 +117,21 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     end
 
     -- Hide all previous sheets if necessary
+    local previous
     if bHidePrevious then
         for i = 1, activeMenuSheets.size - 1 do
-            activeMenuSheets[i].sheet:hide()
+            previous = activeMenuSheets[i].sheet
+            previous:hide()
         end
     end
-    
+
     menuSheet:show()
     menuSheetsRoot:activate()
+
+    -- select first button if the menu was opened with the keyboard
+    if previous and previous.pressedEnter and menuSheet:hasSelection() == false then
+        menuSheet:setSelectionNear(1, 1)
+    end
 
     return menuSheet
 end
@@ -178,7 +182,7 @@ function hideMenuSheet(name)
     if not sheetTuple.bNoInput then
         inputMgr:leaveState(sheetTuple.sheet.inputState)
     end
-    
+
     -- CURSOR SHOWING
     local i = activeMenuSheets.size
     -- Find top most sheet that doesn't have tShowCusor == TriBool.Dontcare
@@ -199,7 +203,7 @@ function hideMenuSheet(name)
         hideCursor()
     end
 
-    sheetTuple.sheet:afterHide()
+    sheetTuple.sheet:quit()
 end
 
 -- Hides all menu GUI sheets
@@ -241,10 +245,29 @@ function keyPressed(e)
         if code == "1" then
             keyESC()
         elseif code == "0"then
-            orxonox.CommandExecutor:execute("openConsole")
+            orxonox.CommandExecutor:execute("InGameConsole openConsole")
         end
     end
-    sheet.sheet:onKeyPressed()
+    sheet.sheet:keyPressed()
+end
+
+function windowResized(e)
+    for name, sheet in pairs(loadedSheets) do
+        if orxonox.GraphicsManager:getInstance():isFullScreen() or sheet.tShowCursor == TriBool.False then
+            inputMgr:setMouseExclusive(sheet.inputState, TriBool.True)
+        else
+            inputMgr:setMouseExclusive(sheet.inputState, TriBool.False)
+        end
+    end
+    local sheetTuple = activeMenuSheets[activeMenuSheets.size]
+    if sheetTuple then
+        if orxonox.GraphicsManager:getInstance():isFullScreen() and sheetTuple.sheet.tShowCursor ~= TriBool.False then
+            showCursor()
+        else
+            hideCursor()
+        end
+        sheetTuple.sheet:windowResized()
+    end
 end
 
 function setBackgroundImage(imageSet, imageName)
@@ -273,6 +296,16 @@ end
 
 function inGameConsoleClosed()
     bInGameConsoleClosed = not bInGameConsoleClosed;
+end
+
+function getGUIFirstActive(name, bHidePrevious, bNoInput)
+    local sheet = activeMenuSheets.topSheetTuple
+    -- If the topmost gui sheet has the input name
+    if sheet ~= nil and sheet.name == name then
+        guiMgr:toggleGUIHelper(name, bHidePrevious, bNoInput, false);
+    else
+        guiMgr:toggleGUIHelper(name, bHidePrevious, bNoInput, true);
+    end
 end
 
 ----------------------

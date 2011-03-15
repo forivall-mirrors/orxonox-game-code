@@ -72,6 +72,7 @@ namespace orxonox
 
             static void suicide();
             static void toggleGodMode();
+            static void myposition();
 
             static void addBots(unsigned int amount);
             static void killBots(unsigned int amount = 0);

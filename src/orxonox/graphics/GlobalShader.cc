@@ -60,13 +60,13 @@ namespace orxonox
     {
         SUPER(GlobalShader, XMLPort, xmlelement, mode);
 
-        XMLPortParamExtern(GlobalShader, Shader, &this->shader_, "compositor", setCompositor, getCompositor, xmlelement, mode);
+        XMLPortParamExtern(GlobalShader, Shader, &this->shader_, "compositor", setCompositorName, getCompositorName, xmlelement, mode);
     }
 
     void GlobalShader::registerVariables()
     {
         registerVariable(this->bVisible_,                                         VariableDirection::ToClient, new NetworkCallback<GlobalShader>(this, &GlobalShader::changedVisibility));
-        registerVariable(const_cast<std::string&>(this->shader_.getCompositor()), VariableDirection::ToClient, new NetworkCallback<Shader>(&this->shader_, &Shader::changedCompositor));
+        registerVariable(const_cast<std::string&>(this->shader_.getCompositorName()), VariableDirection::ToClient, new NetworkCallback<Shader>(&this->shader_, &Shader::changedCompositorName));
     }
 
     void GlobalShader::changedVisibility()
