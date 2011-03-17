@@ -139,3 +139,10 @@ ADD_SUBDIRECTORY(bin)
 
 # Last but not least: Try to make a doc target with Doxygen
 ADD_SUBDIRECTORY(doc)
+
+########### CPack Packaging ###########
+
+# Currently only testing on Apple
+#IF(APPLE)
+#  INCLUDE(BundleConfig)
+#ENDIF(APPLE)

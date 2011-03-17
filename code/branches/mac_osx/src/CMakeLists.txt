@@ -139,8 +139,27 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
     orxonox
   SOURCE_FILES
     Orxonox.cc
+    OrxonoxMac.mm
   OUTPUT_NAME orxonox
 )
+
+# Apple Mac OS X specific build settings
+IF(APPLE)
+  # On Apple we need to link to AppKit and Foundation frameworks
+  TARGET_LINK_LIBRARIES(orxonox-main 
+    "/System/Library/Frameworks/AppKit.framework"
+    "/System/Library/Frameworks/Foundation.framework"
+  )
+  
+  # Tell Apple where to find the Info.plist file, used for Cocoa
+  # TODO: Of course, this only makes sense for development builds. CPack will take care of this otherwise
+  # Property XCODE_ATTRIBUTE_INFOPLIST_FILE is fo Xcode, while the other is for makefile generator
+  SET_TARGET_PROPERTIES(orxonox-main PROPERTIES 
+    XCODE_ATTRIBUTE_INFOPLIST_FILE "${DEFAULT_DATA_PATH}/mac/Orxonox-Info.plist"
+    MACOSX_BUNDLE_INFO_PLIST "${DEFAULT_DATA_PATH}/mac/Orxonox-Info.plist"
+  )
+ENDIF(APPLE)
+
 # Main executable should depend on all modules
 ADD_DEPENDENCIES(orxonox-main ${ORXONOX_MODULES})
 

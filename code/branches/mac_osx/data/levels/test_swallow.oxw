@@ -1,15 +1,22 @@
 <?lua
   include("hudtemplates3.oxo")
   include("stats.oxo")
+  include("templates/lodinformation.oxt")
   include("templates/spaceship_swallow.oxt")
   include("templates/spaceship_pirate.oxt")
 ?>
+
+
 
 <Level
  name         = "Presentation_swallow"
  description  = "presentation level for Orxonox Convention X"
 
 >
+  <templates>
+   <Template link=lodtemplate_default />
+  </templates>
+
   <Scene
    ambientlight = "0.5, 0.5, 0.5"
    skybox       = "Orxonox/skypanoramagen1"

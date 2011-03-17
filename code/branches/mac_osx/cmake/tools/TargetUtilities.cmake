@@ -175,15 +175,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
     ADD_COMPILER_FLAGS("-w")
   ENDIF()
-
+  
   # Don't compile header files
   FOREACH(_file ${_${_target_name}_files})
-    IF(NOT _file MATCHES "\\.(c|cc|cpp)")
+    IF(NOT _file MATCHES "\\.(c|cc|cpp|cxx|mm)$")
       SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
     ENDIF()
   ENDFOREACH(_file)
-
-
 
   # Add the library/executable
   IF("${_target_type}" STREQUAL "LIBRARY")

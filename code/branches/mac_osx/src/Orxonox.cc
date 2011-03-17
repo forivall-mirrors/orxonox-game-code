@@ -52,10 +52,13 @@
 */
 #ifdef ORXONOX_USE_WINMAIN
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+#elif defined(ORXONOX_PLATFORM_APPLE)
+int main_mac(int argc, char** argv)
 #else
 int main(int argc, char** argv)
 #endif
 {
+    COUT(0) << "main mac" << std::endl;
     try
     {
 #ifndef ORXONOX_USE_WINMAIN
