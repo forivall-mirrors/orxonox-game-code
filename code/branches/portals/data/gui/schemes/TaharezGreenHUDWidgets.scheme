@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<GUIScheme Name="TaharezGreenHUDWidgets">
+    <WindowAlias Alias="HUDWidgets/StaticImage"              Target="TaharezGreenLook/StaticImage" />
+    <WindowAlias Alias="HUDWidgets/StaticText"               Target="TaharezGreenLook/StaticText" />
+    <WindowAlias Alias="HUDWidgets/TabButtonPane"            Target="TaharezGreenLook/TabButtonPane" />
+    <WindowAlias Alias="HUDWidgets/TabContentPane"           Target="TaharezGreenLook/TabContentPane" />
+    <WindowAlias Alias="HUDWidgets/Checkbox"                 Target="TaharezGreenLook/Checkbox" />
+    <WindowAlias Alias="HUDWidgets/Combobox"                 Target="TaharezGreenLook/Combobox" />
+    <WindowAlias Alias="HUDWidgets/ComboDropList"            Target="TaharezGreenLook/ComboDropList" />
+    <WindowAlias Alias="HUDWidgets/ComboEditbox"             Target="TaharezGreenLook/ComboEditbox" />
+    <WindowAlias Alias="HUDWidgets/Editbox"                  Target="TaharezGreenLook/Editbox" />
+    <WindowAlias Alias="HUDWidgets/FrameWindow"              Target="TaharezGreenLook/FrameWindow" />
+    <WindowAlias Alias="HUDWidgets/GroupBox"                 Target="TaharezGreenLook/GroupBox" />
+    <WindowAlias Alias="HUDWidgets/ItemListbox"              Target="TaharezGreenLook/ItemListbox" />
+    <WindowAlias Alias="HUDWidgets/ListboxItem"              Target="TaharezGreenLook/ListboxItem" />
+    <WindowAlias Alias="HUDWidgets/Listbox"                  Target="TaharezGreenLook/Listbox" />
+    <WindowAlias Alias="HUDWidgets/ListHeader"               Target="TaharezGreenLook/ListHeader" />
+    <WindowAlias Alias="HUDWidgets/ListHeaderSegment"        Target="TaharezGreenLook/ListHeaderSegment" />
+    <WindowAlias Alias="HUDWidgets/MultiLineEditbox"         Target="TaharezGreenLook/MultiLineEditbox" />
+    <WindowAlias Alias="HUDWidgets/Menubar"                  Target="TaharezGreenLook/Menubar" />
+    <WindowAlias Alias="HUDWidgets/MenuItem"                 Target="TaharezGreenLook/MenuItem" />
+    <WindowAlias Alias="HUDWidgets/MultiColumnList"          Target="TaharezGreenLook/MultiColumnList" />
+    <WindowAlias Alias="HUDWidgets/PopupMenu"                Target="TaharezGreenLook/PopupMenu" />
+    <WindowAlias Alias="HUDWidgets/ProgressBar"              Target="TaharezGreenLook/ProgressBar" />
+    <WindowAlias Alias="HUDWidgets/Button"                   Target="TaharezGreenLook/Button" />
+    <WindowAlias Alias="HUDWidgets/ImageButton"              Target="TaharezGreenLook/ImageButton" />
+    <WindowAlias Alias="HUDWidgets/RadioButton"              Target="TaharezGreenLook/RadioButton" />
+    <WindowAlias Alias="HUDWidgets/SystemButton"             Target="TaharezGreenLook/SystemButton" />
+    <WindowAlias Alias="HUDWidgets/ScrollablePane"           Target="TaharezGreenLook/ScrollablePane" />
+    <WindowAlias Alias="HUDWidgets/HorizontalScrollbar"      Target="TaharezGreenLook/HorizontalScrollbar" />
+    <WindowAlias Alias="HUDWidgets/VerticalScrollbar"        Target="TaharezGreenLook/VerticalScrollbar" />
+    <WindowAlias Alias="HUDWidgets/Slider"                   Target="TaharezGreenLook/Slider" />
+    <WindowAlias Alias="HUDWidgets/Spinner"                  Target="TaharezGreenLook/Spinner" />
+    <WindowAlias Alias="HUDWidgets/TabButton"                Target="TaharezGreenLook/TabButton" />
+    <WindowAlias Alias="HUDWidgets/TabControl"               Target="TaharezGreenLook/TabControl" />
+    <WindowAlias Alias="HUDWidgets/HorizontalScrollbarThumb" Target="TaharezGreenLook/HorizontalScrollbarThumb" />
+    <WindowAlias Alias="HUDWidgets/SliderThumb"              Target="TaharezGreenLook/SliderThumb" />
+    <WindowAlias Alias="HUDWidgets/VerticalScrollbarThumb"   Target="TaharezGreenLook/VerticalScrollbarThumb" />
+    <WindowAlias Alias="HUDWidgets/Titlebar"                 Target="TaharezGreenLook/Titlebar" />
+    <WindowAlias Alias="HUDWidgets/Tooltip"                  Target="TaharezGreenLook/Tooltip" />
+    <WindowAlias Alias="HUDWidgets/Tree"                     Target="TaharezGreenLook/Tree" />
+</GUIScheme>
