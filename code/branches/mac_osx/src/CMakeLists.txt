@@ -139,7 +139,7 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
     orxonox
   SOURCE_FILES
     Orxonox.cc
-    OrxonoxMac.mm
+#    OrxonoxMac.mm
   OUTPUT_NAME orxonox
 )
 
