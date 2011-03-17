@@ -1,17 +1,49 @@
-From 68e3ac1c2876aedb62a77fdc7ba71e4983a6b99d Mon Sep 17 00:00:00 2001
+From 7a7274dad3f90d206e91c0712ea0d2599850b24e Mon Sep 17 00:00:00 2001
 From: Adrian Friedli <adi@koalatux.ch>
 Date: Thu, 2 Sep 2010 14:26:42 +0200
-Subject: [PATCH] IPv6 support
+Subject: [PATCH] Add IPv6 support to Enet
 
 ---
  host.c               |   57 +++++++---
  include/enet/enet.h  |   64 ++++++++---
- include/enet/win32.h |    5 +
+ include/enet/win32.h |    4 +
  protocol.c           |   73 ++++++++++--
  unix.c               |  312 ++++++++++++++++++++++++++++++--------------------
- win32.c              |  245 ++++++++++++++++++++++++++--------------
- 6 files changed, 506 insertions(+), 250 deletions(-)
+ win32.c              |  247 ++++++++++++++++++++++++++--------------
+ 6 files changed, 507 insertions(+), 250 deletions(-)
+ mode change 100755 => 100644 Doxyfile
+ mode change 100755 => 100644 docs/FAQ.dox
+ mode change 100755 => 100644 docs/design.dox
+ mode change 100755 => 100644 docs/install.dox
+ mode change 100755 => 100644 docs/license.dox
+ mode change 100755 => 100644 docs/mainpage.dox
+ mode change 100755 => 100644 docs/tutorial.dox
+ mode change 100755 => 100644 enet.dsp
 
+diff --git a/Doxyfile b/Doxyfile
+old mode 100755
+new mode 100644
+diff --git a/docs/FAQ.dox b/docs/FAQ.dox
+old mode 100755
+new mode 100644
+diff --git a/docs/design.dox b/docs/design.dox
+old mode 100755
+new mode 100644
+diff --git a/docs/install.dox b/docs/install.dox
+old mode 100755
+new mode 100644
+diff --git a/docs/license.dox b/docs/license.dox
+old mode 100755
+new mode 100644
+diff --git a/docs/mainpage.dox b/docs/mainpage.dox
+old mode 100755
+new mode 100644
+diff --git a/docs/tutorial.dox b/docs/tutorial.dox
+old mode 100755
+new mode 100644
+diff --git a/enet.dsp b/enet.dsp
+old mode 100755
+new mode 100644
 diff --git a/host.c b/host.c
 index 8bb2433..a9d157b 100644
 --- a/host.c
@@ -106,7 +138,7 @@ index 8bb2433..a9d157b 100644
      for (currentPeer = host -> peers;
           currentPeer < & host -> peers [host -> peerCount];
 diff --git a/include/enet/enet.h b/include/enet/enet.h
-index 2f656d6..7b468a0 100644
+index b572590..8351166 100644
 --- a/include/enet/enet.h
 +++ b/include/enet/enet.h
 @@ -53,12 +53,20 @@ typedef enum _ENetSocketOption
@@ -215,18 +247,10 @@ index 2f656d6..7b468a0 100644
  
  ENET_API ENetPacket * enet_packet_create (const void *, size_t, enet_uint32);
 diff --git a/include/enet/win32.h b/include/enet/win32.h
-index 0e1cf0c..53a7ff7 100644
+index 0e1cf0c..6145851 100644
 --- a/include/enet/win32.h
 +++ b/include/enet/win32.h
-@@ -14,6 +14,7 @@
- 
- #include <stdlib.h>
- #include <winsock2.h>
-+#include <ws2tcpip.h>
- 
- typedef SOCKET ENetSocket;
- 
-@@ -53,6 +54,10 @@ typedef fd_set ENetSocketSet;
+@@ -53,6 +53,10 @@ typedef fd_set ENetSocketSet;
  #define ENET_SOCKETSET_REMOVE(sockset, socket) FD_CLEAR (socket, & (sockset))
  #define ENET_SOCKETSET_CHECK(sockset, socket)  FD_ISSET (socket, & (sockset))
  
@@ -238,7 +262,7 @@ index 0e1cf0c..53a7ff7 100644
  
  
 diff --git a/protocol.c b/protocol.c
-index 8e26dfb..cfef646 100644
+index 2237ba8..7205d1b 100644
 --- a/protocol.c
 +++ b/protocol.c
 @@ -25,6 +25,22 @@ static size_t commandSizes [ENET_PROTOCOL_COMMAND_COUNT] =
@@ -264,7 +288,7 @@ index 8e26dfb..cfef646 100644
  size_t
  enet_protocol_command_size (enet_uint8 commandNumber)
  {
-@@ -262,9 +278,9 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
+@@ -266,9 +282,9 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
           ++ currentPeer)
      {
          if (currentPeer -> state != ENET_PEER_STATE_DISCONNECTED &&
@@ -276,7 +300,7 @@ index 8e26dfb..cfef646 100644
            return NULL;
      }
  
-@@ -848,10 +864,11 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event)
+@@ -852,10 +868,11 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event)
  
         if (peer -> state == ENET_PEER_STATE_DISCONNECTED ||
             peer -> state == ENET_PEER_STATE_ZOMBIE ||
@@ -291,7 +315,7 @@ index 8e26dfb..cfef646 100644
           return 0;
      }
   
-@@ -891,8 +908,7 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event)
+@@ -895,8 +912,7 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event)
         
      if (peer != NULL)
      {
@@ -301,7 +325,7 @@ index 8e26dfb..cfef646 100644
         peer -> incomingDataTotal += host -> receivedDataLength;
      }
      
-@@ -1021,7 +1037,7 @@ commandError:
+@@ -1025,7 +1041,7 @@ commandError:
  }
   
  static int
@@ -310,7 +334,7 @@ index 8e26dfb..cfef646 100644
  {
      for (;;)
      {
-@@ -1031,10 +1047,11 @@ enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
+@@ -1035,10 +1051,11 @@ enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
         buffer.data = host -> packetData [0];
         buffer.dataLength = sizeof (host -> packetData [0]);
  
@@ -324,7 +348,7 @@ index 8e26dfb..cfef646 100644
  
         if (receivedLength < 0)
           return -1;
-@@ -1042,6 +1059,9 @@ enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
+@@ -1046,6 +1063,9 @@ enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
         if (receivedLength == 0)
           return 0;
  
@@ -334,7 +358,7 @@ index 8e26dfb..cfef646 100644
         host -> receivedData = host -> packetData [0];
         host -> receivedDataLength = receivedLength;
        
-@@ -1373,6 +1393,9 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
+@@ -1397,6 +1417,9 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
           currentPeer < & host -> peers [host -> peerCount];
           ++ currentPeer)
      {
@@ -344,7 +368,7 @@ index 8e26dfb..cfef646 100644
          if (currentPeer -> state == ENET_PEER_STATE_DISCONNECTED ||
              currentPeer -> state == ENET_PEER_STATE_ZOMBIE)
            continue;
-@@ -1497,7 +1520,15 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
+@@ -1520,7 +1543,15 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
  
          currentPeer -> lastSendTime = host -> serviceTime;
  
@@ -361,7 +385,7 @@ index 8e26dfb..cfef646 100644
  
          enet_protocol_remove_sent_unreliable_commands (currentPeer);
  
-@@ -1608,7 +1639,23 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
+@@ -1631,7 +1662,23 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
            break;
         }
  
@@ -386,7 +410,7 @@ index 8e26dfb..cfef646 100644
         {
         case 1:
            return 1;
-@@ -1660,7 +1707,7 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
+@@ -1683,7 +1730,7 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
  
         waitCondition = ENET_SOCKET_WAIT_RECEIVE;
  
@@ -873,19 +897,23 @@ index 6971541..992ecd3 100644
      return 0;
  #endif
 diff --git a/win32.c b/win32.c
-index e1fae23..2607160 100644
+index e1fae23..15b9888 100644
 --- a/win32.c
 +++ b/win32.c
-@@ -4,6 +4,8 @@
+@@ -4,23 +4,27 @@
  */
  #ifdef WIN32
  
 +#define _WIN32_WINNT 0x0501
 +
  #include <time.h>
++#include <ws2tcpip.h>
  #define ENET_BUILDING_LIB 1
  #include "enet/enet.h"
-@@ -13,14 +15,14 @@ static enet_uint32 timeBase = 0;
++#include <ws2tcpip.h>
+ 
+ static enet_uint32 timeBase = 0;
+ 
  int
  enet_initialize (void)
  {
@@ -903,7 +931,7 @@ index e1fae23..2607160 100644
      {
         WSACleanup ();
         
-@@ -52,77 +54,139 @@ enet_time_set (enet_uint32 newTimeBase)
+@@ -52,77 +56,139 @@ enet_time_set (enet_uint32 newTimeBase)
      timeBase = (enet_uint32) timeGetTime () - newTimeBase;
  }
  
@@ -1083,7 +1111,7 @@ index e1fae23..2607160 100644
  }
  
  int
-@@ -132,9 +196,10 @@ enet_socket_listen (ENetSocket socket, int backlog)
+@@ -132,9 +198,10 @@ enet_socket_listen (ENetSocket socket, int backlog)
  }
  
  ENetSocket
@@ -1096,7 +1124,7 @@ index e1fae23..2607160 100644
  }
  
  int
-@@ -173,28 +238,23 @@ enet_socket_set_option (ENetSocket socket, ENetSocketOption option, int value)
+@@ -173,28 +240,23 @@ enet_socket_set_option (ENetSocket socket, ENetSocketOption option, int value)
  }
  
  int
@@ -1133,7 +1161,7 @@ index e1fae23..2607160 100644
                       address != NULL ? & sinLength : NULL);
  
      if (result == INVALID_SOCKET)
-@@ -202,8 +262,7 @@ enet_socket_accept (ENetSocket socket, ENetAddress * address)
+@@ -202,8 +264,7 @@ enet_socket_accept (ENetSocket socket, ENetAddress * address)
  
      if (address != NULL)
      {
@@ -1143,7 +1171,7 @@ index e1fae23..2607160 100644
      }
  
      return result;
-@@ -219,18 +278,15 @@ int
+@@ -219,18 +280,15 @@ int
  enet_socket_send (ENetSocket socket,
                    const ENetAddress * address,
                    const ENetBuffer * buffers,
@@ -1166,7 +1194,7 @@ index e1fae23..2607160 100644
      }
  
      if (WSASendTo (socket, 
-@@ -239,7 +295,7 @@ enet_socket_send (ENetSocket socket,
+@@ -239,7 +297,7 @@ enet_socket_send (ENetSocket socket,
                     & sentLength,
                     0,
                     address != NULL ? (struct sockaddr *) & sin : 0,
@@ -1175,7 +1203,7 @@ index e1fae23..2607160 100644
                     NULL,
                     NULL) == SOCKET_ERROR)
      {
-@@ -256,12 +312,13 @@ int
+@@ -256,12 +314,13 @@ int
  enet_socket_receive (ENetSocket socket,
                       ENetAddress * address,
                       ENetBuffer * buffers,
@@ -1192,7 +1220,7 @@ index e1fae23..2607160 100644
  
      if (WSARecvFrom (socket,
                       (LPWSABUF) buffers,
-@@ -288,8 +345,7 @@ enet_socket_receive (ENetSocket socket,
+@@ -288,8 +347,7 @@ enet_socket_receive (ENetSocket socket,
  
      if (address != NULL)
      {
@@ -1202,7 +1230,7 @@ index e1fae23..2607160 100644
      }
  
      return (int) recvLength;
-@@ -307,25 +363,42 @@ enet_socketset_select (ENetSocket maxSocket, ENetSocketSet * readSet, ENetSocket
+@@ -307,25 +365,42 @@ enet_socketset_select (ENetSocket maxSocket, ENetSocketSet * readSet, ENetSocket
  }
  
  int
@@ -1251,7 +1279,7 @@ index e1fae23..2607160 100644
  
      if (selectCount < 0)
        return -1;
-@@ -335,14 +408,16 @@ enet_socket_wait (ENetSocket socket, enet_uint32 * condition, enet_uint32 timeou
+@@ -335,14 +410,16 @@ enet_socket_wait (ENetSocket socket, enet_uint32 * condition, enet_uint32 timeou
      if (selectCount == 0)
        return 0;
  
@@ -1275,5 +1303,5 @@ index e1fae23..2607160 100644
  #endif
  
 -- 
-1.7.1
+1.7.4.1
 
