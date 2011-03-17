@@ -35,12 +35,15 @@
 
 namespace orxonox
 {
-    std::string Resource::DEFAULT_GROUP(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    const std::string& Resource::getDefaultResourceGroup()
+    {
+        return Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
+    }
 
     DataStreamPtr Resource::open(const std::string& name)
     {
         return Ogre::ResourceGroupManager::getSingleton().openResource(name,
-            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+            getDefaultResourceGroup(), true);
     }
 
     DataStreamListPtr Resource::openMulti(const std::string& pattern)

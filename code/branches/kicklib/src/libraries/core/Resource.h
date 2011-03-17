@@ -136,7 +136,7 @@ namespace orxonox
         static StringVectorPtr findResourceNames(const std::string& pattern);
 
         //! Name of the default resource group (usually "General")
-        static std::string DEFAULT_GROUP;
+        static const std::string& getDefaultResourceGroup();
 
     private:
         Resource();

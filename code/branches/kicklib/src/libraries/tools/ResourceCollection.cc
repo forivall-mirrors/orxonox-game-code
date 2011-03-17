@@ -44,7 +44,7 @@ namespace orxonox
         RegisterObject(ResourceCollection);
 
         // Default group is "General"
-        this->setResourceGroup(Resource::DEFAULT_GROUP);
+        this->setResourceGroup(Resource::getDefaultResourceGroup());
     }
 
     ResourceCollection::~ResourceCollection()
