@@ -139,7 +139,7 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
     orxonox
   SOURCE_FILES
     Orxonox.cc
-#    OrxonoxMac.mm
+    OrxonoxMac.mm
   OUTPUT_NAME orxonox
 )
 
@@ -150,14 +150,21 @@ IF(APPLE)
     "/System/Library/Frameworks/AppKit.framework"
     "/System/Library/Frameworks/Foundation.framework"
   )
-  
-  # Tell Apple where to find the Info.plist file, used for Cocoa
-  # TODO: Of course, this only makes sense for development builds. CPack will take care of this otherwise
-  # Property XCODE_ATTRIBUTE_INFOPLIST_FILE is fo Xcode, while the other is for makefile generator
-  SET_TARGET_PROPERTIES(orxonox-main PROPERTIES 
-    XCODE_ATTRIBUTE_INFOPLIST_FILE "${DEFAULT_DATA_PATH}/mac/Orxonox-Info.plist"
-    MACOSX_BUNDLE_INFO_PLIST "${DEFAULT_DATA_PATH}/mac/Orxonox-Info.plist"
-  )
+
+  # Post-build step for the creation of the Dev-App bundle
+  INCLUDE(PrepareDevBundle)
+  ADD_CUSTOM_COMMAND(
+    TARGET orxonox-main
+    POST_BUILD 
+    # Copy the Orxonox.app from the dummy location to the correct one
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/Dummy/${PROJECT_NAME}.app" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app"
+    # Copy the executable into the Orxonox.app
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${ORXONOX_EXECUTABLE_NAME}" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app/Contents/MacOS"
+    # Copy the dev-build marker file to Orxonox.app
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/orxonox_dev_build.keep_me" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app/Contents/MacOS"
+    # Create a shortcut of the application to the Desktop
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app" "$ENV{HOME}/Desktop/${PROJECT_NAME}_${CMAKE_CFG_INTDIR}.app"
+  ) 
 ENDIF(APPLE)
 
 # Main executable should depend on all modules

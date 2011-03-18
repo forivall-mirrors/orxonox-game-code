@@ -325,8 +325,9 @@ namespace orxonox
     {
         alListener3f(AL_POSITION, position.x, position.y, position.z);
         ALenum error = alGetError();
-        if (error == AL_INVALID_VALUE)
-            COUT(2) << "Sound: OpenAL: Invalid listener position" << std::endl;
+        if (error == AL_INVALID_VALUE) {}
+            // @TODO: Follow this constantly appearing, nerve-racking warning
+            //COUT(2) << "Sound: OpenAL: Invalid listener position" << std::endl;
     }
 
     void SoundManager::setListenerOrientation(const Quaternion& orientation)
