@@ -147,8 +147,8 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
 IF(APPLE)
   # On Apple we need to link to AppKit and Foundation frameworks
   TARGET_LINK_LIBRARIES(orxonox-main 
-    "/System/Library/Frameworks/AppKit.framework"
-    "/System/Library/Frameworks/Foundation.framework"
+    "-framework AppKit"
+    "-framework Foundation"
   )
 
   # Post-build step for the creation of the Dev-App bundle
@@ -163,7 +163,7 @@ IF(APPLE)
     # Copy the dev-build marker file to Orxonox.app
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/orxonox_dev_build.keep_me" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app/Contents/MacOS"
     # Create a shortcut of the application to the Desktop
-    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app" "$ENV{HOME}/Desktop/${PROJECT_NAME}_${CMAKE_CFG_INTDIR}.app"
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app" "$ENV{HOME}/Desktop/${PROJECT_NAME}.app"
   ) 
 ENDIF(APPLE)
 
