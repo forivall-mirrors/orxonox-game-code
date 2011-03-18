@@ -272,9 +272,9 @@ namespace orxonox
         // Iterate through all files
         while (file != end)
         {
-            const std::string& filename = file->BOOST_LEAF_FUNCTION();
+            std::string filename = file->BOOST_LEAF_FUNCTION();
 
-            // Check if the file ends with the exension in question
+            // Check if the file ends with the extension in question
             if (filename.size() > moduleextensionlength)
             {
                 if (filename.substr(filename.size() - moduleextensionlength) == moduleextension)
