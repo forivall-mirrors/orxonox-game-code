@@ -43,7 +43,7 @@ DETERMINE_VERSION(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h)
 FIND_LIBRARY(CEGUI_LIBRARY_OPTIMIZED
   NAMES CEGUIBase CEGUI
   PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES lib bin
+  PATH_SUFFIXES lib bin CEGUIBase.framework CEGUI.framework
 )
 FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
   NAMES
@@ -56,13 +56,13 @@ FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
 # Find CEGUILua headers
 FIND_PATH(CEGUILUA_INCLUDE_DIR CEGUILua.h
   PATHS $ENV{CEGUIDIR} ${CEGUI_INCLUDE_DIR}/ScriptingModules/LuaScriptModule
-  PATH_SUFFIXES include include/CEGUI CEGUI.framework/Headers
+  PATH_SUFFIXES include include/CEGUI CEGUILuaScriptModule.framework/Headers
 )
 # Find CEGUILua libraries
 FIND_LIBRARY(CEGUILUA_LIBRARY_OPTIMIZED
   NAMES CEGUILua CEGUILuaScriptModule
   PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES lib bin
+  PATH_SUFFIXES lib bin CEGUILuaScriptModule.framework
 )
 FIND_LIBRARY(CEGUILUA_LIBRARY_DEBUG
   NAMES CEGUILuad CEGUILua_d CEGUILuaScriptModuled CEGUILuaScriptModule_d
@@ -78,13 +78,16 @@ FIND_PATH(CEGUI_TOLUA_INCLUDE_DIR tolua++.h
     ${CEGUILUA_INCLUDE_DIR}
     # For newer CEGUI versions >= 0.7
     ${CEGUILUA_INCLUDE_DIR}/support/tolua++
+    # For Apples
+    $ENV{CEGUIDIR}
+  PATH_SUFFIXES ceguitolua++.framework/Headers
   NO_DEFAULT_PATH # MUST be in CEGUILUA_INCLUDE_DIR somewhere
 )
 # Find CEGUI Tolua++ libraries
 FIND_LIBRARY(CEGUI_TOLUA_LIBRARY_OPTIMIZED
-  NAMES CEGUItoluapp tolua++
+  NAMES CEGUItoluapp tolua++ ceguitolua++
   PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES lib bin
+  PATH_SUFFIXES lib bin ceguitolua++.framework
 )
 FIND_LIBRARY(CEGUI_TOLUA_LIBRARY_DEBUG
   NAMES CEGUItoluappd CEGUItoluapp_d tolua++d tolua++_d
