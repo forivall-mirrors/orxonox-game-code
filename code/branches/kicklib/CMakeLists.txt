@@ -137,5 +137,8 @@ ADD_SUBDIRECTORY(src)
 # Configure the binary output directory. Do this after src!
 ADD_SUBDIRECTORY(bin)
 
+# System specific files (mostly for installation)
+ADD_SUBDIRECTORY(contrib)
+
 # Last but not least: Try to make a doc target with Doxygen
 ADD_SUBDIRECTORY(doc)
