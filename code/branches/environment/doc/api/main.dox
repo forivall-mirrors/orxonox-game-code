@@ -1,0 +1,15 @@
+/**
+    @mainpage
+
+    @image html orxonox.jpg
+
+    This is the documentation of Orxonox. It contains descriptions of our classes and functions and
+    explains their usage with several examples and background information. Because Orxonox is so big,
+    we can't document all of our code - sorry for that! But we do your best to document the most
+    important parts of it, namely the @ref Core "core" and @ref Util "util" libraries, as well as the
+    central classes in the @ref Orxonox "orxonox" main library and some @ref Modules "modules".
+
+    To understand the connection between different classes in Orxonox, have a look at the
+    <a href="modules.html"><b>Modules section</b></a>. It contains a list of the most important topics
+    and groups files that contribute to the same feature.
+*/
