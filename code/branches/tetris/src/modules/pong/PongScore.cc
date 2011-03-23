@@ -26,18 +26,29 @@
  *
  */
 
+/**
+    @file PongScore.cc
+    @brief Implementation of the PongScore class.
+*/
+
 #include "PongScore.h"
 
-#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "Pong.h"
+#include "util/Convert.h"
+
 #include "infos/PlayerInfo.h"
+
+#include "Pong.h"
 
 namespace orxonox
 {
     CreateFactory(PongScore);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     PongScore::PongScore(BaseObject* creator) : OverlayText(creator)
     {
         RegisterObject(PongScore);
@@ -50,10 +61,18 @@ namespace orxonox
         this->bShowRightPlayer_ = false;
     }
 
+    /**
+    @brief
+        Destructor.
+    */
     PongScore::~PongScore()
     {
     }
 
+    /**
+    @brief
+        Method to create a PongScore through XML.
+    */
     void PongScore::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(PongScore, XMLPort, xmlelement, mode);
@@ -64,12 +83,21 @@ namespace orxonox
         XMLPortParam(PongScore, "showrightplayer", setShowRightPlayer, getShowRightPlayer, xmlelement, mode).defaultValues(false);
     }
 
+    /**
+    @brief
+        Is called each tick.
+        Creates and sets the caption to be displayed by the PongScore.
+    @param dt
+        The time that has elapsed since the last tick.
+    */
     void PongScore::tick(float dt)
     {
         SUPER(PongScore, tick, dt);
 
-        if (this->owner_)
+        // If the owner is set. The owner being a Pong game.
+        if (this->owner_ != NULL)
         {
+            // Get the two players.
             PlayerInfo* player1 = this->owner_->getLeftPlayer();
             PlayerInfo* player2 = this->owner_->getRightPlayer();
 
@@ -79,22 +107,23 @@ namespace orxonox
             std::string score1("0");
             std::string score2("0");
 
-            if (player1)
+            // Save the name and score of each player as a string.
+            if (player1 != NULL)
             {
                 name1 = player1->getName();
                 score1 = multi_cast<std::string>(this->owner_->getScore(player1));
             }
-
-            if (player2)
+            if (player2 != NULL)
             {
                 name2 = player2->getName();
                 score2 = multi_cast<std::string>(this->owner_->getScore(player2));
             }
 
+            // Assemble the strings, depending on what should all be displayed.
             std::string output1;
             if (this->bShowLeftPlayer_)
             {
-                if (this->bShowName_ && this->bShowScore_ && player1)
+                if (this->bShowName_ && this->bShowScore_ && player1 != NULL)
                     output1 = name1 + " - " + score1;
                 else if (this->bShowScore_)
                     output1 = score1;
@@ -105,7 +134,7 @@ namespace orxonox
             std::string output2;
             if (this->bShowRightPlayer_)
             {
-                if (this->bShowName_ && this->bShowScore_ && player2)
+                if (this->bShowName_ && this->bShowScore_ && player2 != NULL)
                     output2 = score2 + " - " + name2;
                 else if (this->bShowScore_)
                     output2 = score2;
@@ -126,12 +155,16 @@ namespace orxonox
         }
     }
 
-
+    /**
+    @brief
+        Is called when the owner changes.
+        Sets the owner to NULL, if it is not a pointer to a Pong game.
+    */
     void PongScore::changedOwner()
     {
         SUPER(PongScore, changedOwner);
 
-        if (this->getOwner() && this->getOwner()->getGametype())
+        if (this->getOwner() != NULL && this->getOwner()->getGametype())
             this->owner_ = orxonox_cast<Pong*>(this->getOwner()->getGametype().get());
         else
             this->owner_ = 0;

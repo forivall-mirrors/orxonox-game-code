@@ -86,7 +86,7 @@ namespace orxonox
                 // The absolute value of the movement is restricted to be lesser or equal than the speed of the bat.
                 this->movement_ = clamp(this->movement_, -1.0f, 1.0f) * this->speed_;
 
-                //TODO: Why needed?
+                // If moveRightLeft() is used the movement is dependento on wehther it is the right or the left bat, so, it is i.e. dependent on the orientation of the bat.
                 if (this->bMoveLocal_)
                     this->setVelocity(this->getOrientation() * Vector3(this->movement_, 0, 0));
                 else

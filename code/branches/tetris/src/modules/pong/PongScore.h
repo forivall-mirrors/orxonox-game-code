@@ -38,13 +38,20 @@
 #include "pong/PongPrereqs.h"
 
 #include "tools/interfaces/Tickable.h"
+
 #include "overlays/OverlayText.h"
 
 namespace orxonox
 {
 
     /**
-    
+    @brief
+        The PongScore class displays the score for a game of @ref orxonox::Pong "Pong".
+
+    @author
+        Fabian 'x3n' Landau
+
+    @ingroup Pong
     */
     class _PongExport PongScore : public OverlayText, public Tickable
     {
@@ -52,36 +59,68 @@ namespace orxonox
             PongScore(BaseObject* creator);
             virtual ~PongScore();
 
-            virtual void tick(float dt);
+            virtual void tick(float dt); //!< Creates and sets the caption to be displayed by the PongScore.
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void changedOwner();
+            virtual void changedOwner(); //!< Is called when the owner changes.
 
+            /**
+            @brief Set whether the PongScore displays the players' names.
+            @param value If true the players' names are displayed.
+            */
             inline void setShowName(bool value)
                 { this->bShowName_ = value; }
+            /**
+            @brief Get whether the PongScore displays the players' names.
+            @return Returns true if the players' names are displayed, false otherwise.
+            */
             inline bool getShowName() const
                 { return this->bShowName_; }
 
+            /**
+            @brief Set whether the PongScore displays the players' scores.
+            @param value If true the players' scores are displayed.
+            */
             inline void setShowScore(bool value)
                 { this->bShowScore_ = value; }
+            /**
+            @brief Get whether the PongScore displays the players' scores.
+            @return Returns true if the players' scores are displayed, false otherwise.
+            */
             inline bool getShowScore() const
                 { return this->bShowScore_; }
 
+            /**
+            @brief Set whether the PongScore displays the left player.
+            @param value If true the left player is displayed.
+            */
             inline void setShowLeftPlayer(bool value)
                 { this->bShowLeftPlayer_ = value; }
+            /**
+            @brief Get whether the PongScore displays the left player.
+            @return Returns true if the left player is displayed, false otherwise.
+            */
             inline bool getShowLeftPlayer() const
                 { return this->bShowLeftPlayer_; }
 
+            /**
+            @brief Set whether the PongScore displays the right player.
+            @param value If true the right player is displayed.
+            */
             inline void setShowRightPlayer(bool value)
                 { this->bShowRightPlayer_ = value; }
+            /**
+            @brief Get whether the PongScore displays the right player.
+            @return Returns true if the right player is displayed, false otherwise.
+            */
             inline bool getShowRightPlayer() const
                 { return this->bShowRightPlayer_; }
 
         private:
-            Pong* owner_;
-            bool bShowName_;
-            bool bShowScore_;
-            bool bShowLeftPlayer_;
-            bool bShowRightPlayer_;
+            Pong* owner_; //!< The Pong game that owns this PongScore.
+            bool bShowName_; //!< Whether the names of the players are shown.
+            bool bShowScore_; //!< Whether the score of the players is shown.
+            bool bShowLeftPlayer_; //!< Whether the left player is shown.
+            bool bShowRightPlayer_; //!< Whether the right player is shown.
     };
 }
 #endif /* _PongScore_H__ */
