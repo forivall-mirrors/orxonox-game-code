@@ -26,16 +26,36 @@
  *
  */
 
+/**
+    @file PongBall.h
+    @brief Declaration of the PongBall class.
+    @ingroup Pong
+*/
+
 #ifndef _PongBall_H__
 #define _PongBall_H__
 
 #include "pong/PongPrereqs.h"
 
 #include "util/Math.h"
+
 #include "worldentities/MovableEntity.h"
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        This class manages the ball for Pong.
+
+        //TODO: Describe what it's responnsibilities are.
+        Only moves in x-z area.
+
+    @author
+        Fabian 'x3n' Landau
+
+    @ingroup Pong
+    */
     class _PongExport PongBall : public MovableEntity
     {
         public:

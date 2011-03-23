@@ -26,45 +26,69 @@
  *
  */
 
+/**
+    @file Pong.h
+    @brief Declaration of the Pong class.
+    @ingroup Pong
+*/
+
 #ifndef _Pong_H__
 #define _Pong_H__
 
 #include "pong/PongPrereqs.h"
 
 #include "tools/Timer.h"
+
 #include "gametypes/Deathmatch.h"
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Implements a Pong minigame.
+
+        //TODO: Add details to different classes used and how.
+        PongBall, is the ball, PongBats are the things that can be moved by the players (ControllableEntities), PongCenterpoint is the playing field. (x-z area)
+
+    @author
+        Fabian 'x3n' Landau
+
+    @ingroup Pong
+    */
     class _PongExport Pong : public Deathmatch
     {
         public:
-            Pong(BaseObject* creator);
-            virtual ~Pong();
+            Pong(BaseObject* creator); //!< Constructor. Registers and initializes the object.
+            virtual ~Pong(); //!< Destructor. Cleans up, if initialized.
 
-            virtual void start();
-            virtual void end();
+            virtual void start(); //!< Starts the Pong minigame.
+            virtual void end(); ///!< Ends the Pong minigame.
 
-            virtual void spawnPlayer(PlayerInfo* player);
+            virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
 
-            virtual void playerScored(PlayerInfo* player);
+            virtual void playerScored(PlayerInfo* player); //!< Is called when the player scored.
 
+            /**
+            @brief Set the PongCenterpoint (the playing field).
+            @param center A pointer to the PongCenterpoint to be set.
+            */
             void setCenterpoint(PongCenterpoint* center)
                 { this->center_ = center; }
 
-            PlayerInfo* getLeftPlayer() const;
-            PlayerInfo* getRightPlayer() const;
+            PlayerInfo* getLeftPlayer() const; //!< Get the left player.
+            PlayerInfo* getRightPlayer() const; //!< Get the right player.
 
         protected:
-            virtual void spawnPlayersIfRequested();
+            virtual void spawnPlayersIfRequested(); //!< Spawns players, and fills the rest up with bots.
 
-            void startBall();
-            void cleanup();
+            void startBall(); //!< Starts the ball with some default speed.
+            void cleanup(); //!< Cleans up the Gametype by destroying the ball and the bats.
 
-            WeakPtr<PongCenterpoint> center_;
-            WeakPtr<PongBall> ball_;
-            WeakPtr<PongBat> bat_[2];
-            Timer starttimer_;
+            WeakPtr<PongCenterpoint> center_; //!< The playing field.
+            WeakPtr<PongBall> ball_; //!< The Pong ball.
+            WeakPtr<PongBat> bat_[2]; //!< The two bats.
+            Timer starttimer_; //!< A timer to delay the start of the game.
     };
 }
 
