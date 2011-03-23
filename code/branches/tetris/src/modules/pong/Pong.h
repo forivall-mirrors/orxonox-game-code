@@ -47,8 +47,9 @@ namespace orxonox
     /**
     @brief
         Implements a Pong minigame.
-
-        //TODO: Add details to different classes used and how.
+        It connects the different entities present in a game of Pong.
+        
+        //TODO: List and add details to different classes used and how.
         PongBall, is the ball, PongBats are the things that can be moved by the players (ControllableEntities), PongCenterpoint is the playing field. (x-z area)
 
     @author

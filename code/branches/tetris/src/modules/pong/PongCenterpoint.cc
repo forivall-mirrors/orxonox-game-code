@@ -26,16 +26,26 @@
  *
  */
 
+/**
+    @file PongCenterpoint.cc
+    @brief Implementation of the PongCenterpoint class.
+*/
+
 #include "PongCenterpoint.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "Pong.h"
 
 namespace orxonox
 {
     CreateFactory(PongCenterpoint);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object and checks whether the gametype is actually Pong.
+    */
     PongCenterpoint::PongCenterpoint(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(PongCenterpoint);
@@ -50,6 +60,10 @@ namespace orxonox
         this->checkGametype();
     }
 
+    /**
+    @brief
+        Method to create a PongCenterpoint through XML.
+    */
     void PongCenterpoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(PongCenterpoint, XMLPort, xmlelement, mode);
@@ -63,19 +77,28 @@ namespace orxonox
         XMLPortParam(PongCenterpoint, "batlength", setBatLength, getBatLength, xmlelement, mode);
     }
 
+    /**
+    @brief
+        Is called when the gametype has changed.
+    */
     void PongCenterpoint::changedGametype()
     {
         SUPER(PongCenterpoint, changedGametype);
 
+        // Check, whether it's still Pong.
         this->checkGametype();
     }
 
+    /**
+    @brief
+        Checks whether the gametype is Pong and if it is, sets its centerpoint.
+    */
     void PongCenterpoint::checkGametype()
     {
-        if (this->getGametype() && this->getGametype()->isA(Class(Pong)))
+        if (this->getGametype() != NULL && this->getGametype()->isA(Class(Pong)))
         {
-            Pong* pong_gametype = orxonox_cast<Pong*>(this->getGametype().get());
-            pong_gametype->setCenterpoint(this);
+            Pong* pongGametype = orxonox_cast<Pong*>(this->getGametype().get());
+            pongGametype->setCenterpoint(this);
         }
     }
 }

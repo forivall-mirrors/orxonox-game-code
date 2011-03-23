@@ -26,51 +26,94 @@
  *
  */
 
+/**
+    @file PongBat.h
+    @brief Declaration of the PongBat class.
+    @ingroup Pong
+*/
+
 #ifndef _PongBat_H__
 #define _PongBat_H__
 
 #include "pong/PongPrereqs.h"
+
 #include "worldentities/ControllableEntity.h"
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        The PongBat class manages the bats for @ref orxonox::Pong "Pong", which are the elements controlled by the player.
+        
+        It is responsible for the movement (controlled by the players) of the bat.
+        
+    @author
+        Fabian 'x3n' Landau
+        
+    @ingroup Pong
+    */
     class _PongExport PongBat : public ControllableEntity
     {
         public:
-            PongBat(BaseObject* creator);
+            PongBat(BaseObject* creator); //!< Constructor. Registers and initializes the object.
             virtual ~PongBat() {}
 
             virtual void tick(float dt);
 
-            virtual void moveFrontBack(const Vector2& value);
-            virtual void moveRightLeft(const Vector2& value);
+            virtual void moveFrontBack(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
+            virtual void moveRightLeft(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
 
-            virtual void changedPlayer();
+            virtual void changedPlayer(); //!< Is called when the player changed.
 
+            /**
+            @brief Set the speed of the bat.
+            @param speed The speed to be set.
+            */
             void setSpeed(float speed)
                 { this->speed_ = speed; }
+            /**
+            @brief Get the speed of the bat.
+            @return Returns the speed of the bat.
+            */
             float getSpeed() const
                 { return this->speed_; }
 
+            /**
+            @brief Set the height of the playing field.
+            @param height The height of the playing field.
+            */
             void setFieldHeight(float height)
                 { this->fieldHeight_ = height; }
+            /**
+            @brief Get the height of the playing field.
+            @return Returns the height of the playing field.
+            */
             float getFieldHeight() const
                 { return this->fieldHeight_; }
 
+            /**
+            @brief Set the length of the bat.
+            @param length The length of the bat (in z-direction) as percentage of the height of the playing field.
+            */
             void setLength(float length)
                 { this->length_ = length; }
+            /**
+            @brief get the length of the bat.
+            @return Returns the length of the bat (in z-direction) as percentage of the height of the playing field.
+            */
             float getLength() const
                 { return this->length_; }
 
         private:
-            void registerVariables();
+            void registerVariables(); //!< Registers variables to be synchronized over the network.
 
-            float movement_;
-            bool bMoveLocal_;
-            float speed_;
-            float length_;
-            float fieldHeight_;
-            bool bSteadiedPosition_;
+            float movement_; //!< The amount (and direction), in z-direction, of movement of the bat.
+            bool bMoveLocal_; //TODO ???
+            float speed_; //!< The movementspeed of the bat.
+            float length_; //!< The length of the bat (in z-direction) as percentage of the height of the playing field.
+            float fieldHeight_; //!< The height of the playing field.
+            bool bSteadiedPosition_; //TODO: ???
     };
 }
 

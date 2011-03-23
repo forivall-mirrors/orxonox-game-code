@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file PongBat.cc
+    @brief Implementation of the PongBat class.
+*/
+
 #include "PongBat.h"
 
 #include "core/CoreIncludes.h"
@@ -35,6 +40,10 @@ namespace orxonox
 {
     CreateFactory(PongBat);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     PongBat::PongBat(BaseObject* creator) : ControllableEntity(creator)
     {
         RegisterObject(PongBat);
@@ -49,6 +58,10 @@ namespace orxonox
         this->registerVariables();
     }
 
+    /**
+    @brief
+        Registers variables to be synchronized over the network.
+    */
     void PongBat::registerVariables()
     {
         registerVariable(this->speed_);
@@ -56,14 +69,24 @@ namespace orxonox
         registerVariable(this->length_);
     }
 
+    /**
+    @brief
+        Is called each tick.
+        //TODO detailed
+    @param dt
+        The time since last tick.
+    */
     void PongBat::tick(float dt)
     {
+        // If the bat is controlled (but not over the network).
         if (this->hasLocalController())
         {
             if (this->movement_ != 0)
             {
+                // The absolute value of the movement is restricted to be lesser or equal than the speed of the bat.
                 this->movement_ = clamp(this->movement_, -1.0f, 1.0f) * this->speed_;
 
+                //TODO What does this?
                 if (this->bMoveLocal_)
                     this->setVelocity(this->getOrientation() * Vector3(this->movement_, 0, 0));
                 else
@@ -83,6 +106,7 @@ namespace orxonox
 
         SUPER(PongBat, tick, dt);
 
+        // Restrict the position of the bats, for them to always be between the upper and lower delimiters. i.e. the bats stall if they reach the upper or lower boundary.
         Vector3 position = this->getPosition();
         if (position.z > this->fieldHeight_ / 2 - this->fieldHeight_ * this->length_ / 2)
             position.z = this->fieldHeight_ / 2 - this->fieldHeight_ * this->length_ / 2;
@@ -95,18 +119,34 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Overloaded the function to steer the bat up and down.
+    @param value
+        A vector whose first component is the inverse direction in which we want to steer the bat.
+    */
     void PongBat::moveFrontBack(const Vector2& value)
     {
         this->bMoveLocal_ = false;
         this->movement_ = -value.x;
     }
 
+    /**
+    @brief
+        Overloaded the function to steer the bat up and down.
+    @param value
+        A vector whose first component is the direction in which we wnat to steer the bat.
+    */
     void PongBat::moveRightLeft(const Vector2& value)
     {
         this->bMoveLocal_ = true;
         this->movement_ = value.x;
     }
 
+    /**
+    @brief
+        Is called when the player changed.
+    */
     void PongBat::changedPlayer()
     {
         this->setVelocity(0, 0, 0);

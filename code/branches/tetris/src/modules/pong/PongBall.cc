@@ -100,7 +100,7 @@ namespace orxonox
     /**
     @brief
         Is called every tick.
-        //TODO: Explain in detail what happens here.
+        Handles the movement of the ball and its interaction with the boundaries and bats.
     @param dt
         The time since the last tick.
     */
@@ -225,24 +225,32 @@ namespace orxonox
 
     /**
     @brief
-        Set the 
+        Set the bats for the ball.
+    @param bats
+        An array (of size 2) of weak pointers, to be set as the new bats.
     */
     void PongBall::setBats(WeakPtr<PongBat>* bats)
     {
-        if (this->bDeleteBats_)
+        if (this->bDeleteBats_) // If there are already some bats, delete them.
         {
             delete[] this->bat_;
             this->bDeleteBats_ = false;
         }
 
         this->bat_ = bats;
+        // Also store their object IDs, for synchronization.
         this->batID_[0] = this->bat_[0]->getObjectID();
         this->batID_[1] = this->bat_[1]->getObjectID();
     }
 
+    /**
+    @brief
+        Get the bats over the network.
+    */
     void PongBall::applyBats()
     {
-        if (!this->bat_)
+        // Make space for the bats, if they don't exist, yet.
+        if (this->bat_ == NULL)
         {
             this->bat_ = new WeakPtr<PongBat>[2];
             this->bDeleteBats_ = true;

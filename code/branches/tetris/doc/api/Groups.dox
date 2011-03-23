@@ -485,7 +485,9 @@
     @section PickupTechnicalDetails Technical details
 
     @image html pickupmodule.png
+*/
 
+/**
     @defgroup PickupItems Items
     @ingroup Pickup
 
@@ -495,6 +497,8 @@
 /**
     @defgroup Pong Pong
     @ingroup Modules
+    
+    Pong is a minigame.
 */
 
 /**

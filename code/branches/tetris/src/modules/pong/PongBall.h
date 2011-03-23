@@ -46,10 +46,9 @@ namespace orxonox
 
     /**
     @brief
-        This class manages the ball for Pong.
+        This class manages the ball for @ref orxonox::Pong "Pong".
 
-        //TODO: Describe what it's responnsibilities are.
-        Only moves in x-z area.
+        It is responsible for both the movement of the ball in the x,z-plane as well as its interaction with the boundaries of the playing field (defined by the @ref orxonox::PongCenterpoint "PongCenterpoint") and the @ref orxonox::PongBat "PongBats". Or more precisely, it makes the ball bounce off then upper and lower delimiters of the playing field, it makes the ball bounce off the bats and also detects when a player scores and takes appropriate measures.
 
     @author
         Fabian 'x3n' Landau
@@ -64,44 +63,78 @@ namespace orxonox
 
             virtual void tick(float dt);
 
+            /**
+            @brief Set the dimensions of the playing field.
+            @param width The width of the playing field.
+            @param height The height of the playing field.
+            */
             void setFieldDimension(float width, float height)
                 { this->fieldWidth_ = width; this->fieldHeight_ = height; }
+            /**
+            @brief Get the dimensions of the playing field.
+            @param dimension A vector with the width as the first and height as the second component.
+            */
             void setFieldDimension(const Vector2& dimension)
                 { this->setFieldDimension(dimension.x, dimension.y); }
+            /**
+            @brief Get the dimensions of the playing field.
+            @return Returns a vector with the width as the first and height as the second component.
+            */
             Vector2 getFieldDimension() const
                 { return Vector2(this->fieldWidth_, this->fieldHeight_); }
 
-            void setSpeed(float speed);
+            void setSpeed(float speed); //!< Set the speed of the ball (in x-direction).
+            /**
+            @brief Get the speed of the ball (in x-direction).
+            @return Returns the speed of the ball (in x-direction).
+            */
             float getSpeed() const
                 { return this->speed_; }
 
+            /**
+            @brief Set the acceleration factor of the ball.
+            @param factor The factor the acceleration of the ball is set to.
+            */
             void setAccelerationFactor(float factor)
                 { this->accelerationFactor_ = factor; }
+            /**
+            @brief Get the acceleration factor of the ball.
+            @return Returns the acceleration factor of the ball.
+            */
             float getAccelerationFactor() const
                 { return this->accelerationFactor_; }
 
+            /**
+            @brief Set the length of the bats.
+            @param batlength The length of the bats (in z-direction) as percentage of the height of the playing field.
+            */
             void setBatLength(float batlength)
                 { this->batlength_ = batlength; }
+            /**
+            @brief Get the length of the bats.
+            @return Returns the length of the bats (in z-direction) as percentage of the height of the playing field.
+            */
             float getBatLength() const
                 { return this->batlength_; }
 
-            void setBats(WeakPtr<PongBat>* bats);
-            void applyBats();
+            void setBats(WeakPtr<PongBat>* bats); //!< Set the bats for the ball.
+            void applyBats(); //!< Get the bats over the network.
 
+            // TODO: What is this exactly?
             static const float MAX_REL_Z_VELOCITY;
 
         private:
             void registerVariables();
 
-            float fieldWidth_;
-            float fieldHeight_;
-            float speed_;
-            float accelerationFactor_;
-            float batlength_;
-            WeakPtr<PongBat>* bat_;
-            bool bDeleteBats_;
-            unsigned int* batID_;
-            float relMercyOffset_;
+            float fieldWidth_; //!< The width of the playing field.
+            float fieldHeight_; //!< The height of the playing field.
+            float speed_; //!< The speed (in x-direction) of the ball.
+            float accelerationFactor_; //!< The acceleration factor of the ball.
+            float batlength_; //!< The length of the bats (in z-direction) as percentage of the height of the playing field.
+            WeakPtr<PongBat>* bat_; //!< An array with the two bats.
+            bool bDeleteBats_; //!< Bool, to keep track, of whether bat_ exists or not.
+            unsigned int* batID_; //!< The object IDs of the bats, to be able to synchronize them over the network.
+            float relMercyOffset_; //!< Offset, that makes the player not loose, when, in all fairness, he would have.
     };
 }
 
