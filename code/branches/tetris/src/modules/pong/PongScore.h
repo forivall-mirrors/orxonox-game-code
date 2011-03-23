@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file PongScore.h
+    @brief Declaration of the PongScore class.
+    @ingroup Pong
+*/
+
 #ifndef _PongScore_H__
 #define _PongScore_H__
 
@@ -36,6 +42,10 @@
 
 namespace orxonox
 {
+
+    /**
+    
+    */
     class _PongExport PongScore : public OverlayText, public Tickable
     {
         public:

@@ -72,7 +72,7 @@ namespace orxonox
     /**
     @brief
         Is called each tick.
-        //TODO detailed
+        Moves the bat.
     @param dt
         The time since last tick.
     */
@@ -86,7 +86,7 @@ namespace orxonox
                 // The absolute value of the movement is restricted to be lesser or equal than the speed of the bat.
                 this->movement_ = clamp(this->movement_, -1.0f, 1.0f) * this->speed_;
 
-                //TODO What does this?
+                //TODO: Why needed?
                 if (this->bMoveLocal_)
                     this->setVelocity(this->getOrientation() * Vector3(this->movement_, 0, 0));
                 else
@@ -95,6 +95,7 @@ namespace orxonox
                 this->movement_ = 0;
                 this->bSteadiedPosition_ = false;
             }
+            // If there is no movement but the position has not been steadied, the velocity is set to zero and the position is reaffirmed.
             else if (!this->bSteadiedPosition_)
             {
                 // To ensure network synchronicity

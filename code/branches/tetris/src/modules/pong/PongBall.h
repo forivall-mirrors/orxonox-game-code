@@ -120,7 +120,6 @@ namespace orxonox
             void setBats(WeakPtr<PongBat>* bats); //!< Set the bats for the ball.
             void applyBats(); //!< Get the bats over the network.
 
-            // TODO: What is this exactly?
             static const float MAX_REL_Z_VELOCITY;
 
         private:
@@ -132,7 +131,7 @@ namespace orxonox
             float accelerationFactor_; //!< The acceleration factor of the ball.
             float batlength_; //!< The length of the bats (in z-direction) as percentage of the height of the playing field.
             WeakPtr<PongBat>* bat_; //!< An array with the two bats.
-            bool bDeleteBats_; //!< Bool, to keep track, of whether bat_ exists or not.
+            bool bDeleteBats_; //!< Bool, to keep track, of whether this->bat_ exists or not.
             unsigned int* batID_; //!< The object IDs of the bats, to be able to synchronize them over the network.
             float relMercyOffset_; //!< Offset, that makes the player not loose, when, in all fairness, he would have.
     };

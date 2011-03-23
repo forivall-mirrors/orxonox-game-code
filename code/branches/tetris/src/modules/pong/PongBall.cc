@@ -143,7 +143,7 @@ namespace orxonox
                     {
                         // Set the ball to be exactly at the boundary.
                         position.x = this->fieldWidth_ / 2;
-                        // Invert its veloxity in x-direction (i.e. it bounces off).
+                        // Invert its velocity in x-direction (i.e. it bounces off).
                         velocity.x = -velocity.x;
                         // Adjust the velocity in the z-direction, depending on where the ball hit the bat.
                         velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;
@@ -170,7 +170,7 @@ namespace orxonox
                     {
                         // Set the ball to be exactly at the boundary.
                         position.x = -this->fieldWidth_ / 2;
-                        // Invert its veloxity in x-direction (i.e. it bounces off).
+                        // Invert its velocity in x-direction (i.e. it bounces off).
                         velocity.x = -velocity.x;
                         // Adjust the velocity in the z-direction, depending on where the ball hit the bat.
                         velocity.z = distance * distance * sgn(distance) * PongBall::MAX_REL_Z_VELOCITY * this->speed_;

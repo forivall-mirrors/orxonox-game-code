@@ -37,6 +37,8 @@
 #include "core/EventIncludes.h"
 #include "core/command/Executor.h"
 
+#include "gamestates/GSLevel.h"
+
 #include "PongCenterpoint.h"
 #include "PongBall.h"
 #include "PongBat.h"
@@ -157,10 +159,11 @@ namespace orxonox
             // Set the bats for the ball.
             this->ball_->setBats(this->bat_);
         }
-        else // If no centerpoint was specified, an error is thrown.
+        else // If no centerpoint was specified, an error is thrown and the level is exited.
         {
             COUT(1) << "Error: No Centerpoint specified." << std::endl;
-            // TODO: End the game?
+            GSLevel::startMainMenu();
+            return;
         }
 
         // Start the timer. After it has expired the ball is started.
@@ -209,7 +212,7 @@ namespace orxonox
     @brief
         Spawns the input player.
     @param player
-        The player tp be spawned.
+        The player to be spawned.
     */
     void Pong::spawnPlayer(PlayerInfo* player)
     {

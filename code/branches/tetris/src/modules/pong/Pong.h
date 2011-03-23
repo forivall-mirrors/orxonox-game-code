@@ -46,11 +46,14 @@ namespace orxonox
 
     /**
     @brief
-        Implements a Pong minigame.
+        Implements a Pong minigame (<a href="http://en.wikipedia.org/wiki/Pong">Wikipedia::Pong</a>).
         It connects the different entities present in a game of Pong.
-        
-        //TODO: List and add details to different classes used and how.
-        PongBall, is the ball, PongBats are the things that can be moved by the players (ControllableEntities), PongCenterpoint is the playing field. (x-z area)
+
+        - The @ref orxonox::PongCenterpoint "PongCenterpoint" is the playing field for the Pong minigame, it allows for configuration of the minigame, e.g. by setting the size of the playing field, or the length of the @ref orxonox::PongBat "PongBats". The playing field is always in the x,y-plane, the x-axis being the horizontal and the z-axis being the vertical axis.<br />
+        The Pong class redistributes the important parameters defined in @ref orxonox::PongCenterpoint "PongCenterpoint" to the other entities, that need to know them, e.g. the @ref orxonox::PongBall "PongBall" and the @ref orxonox::PongBat "PongBats".<br />
+        The @ref orxonox::PongCenterpoint "PongCenterpoint" needs to exist in a level with the @ref orxonox::Gametype "Gametype" <em>Pong</em>.
+        - The @ref orxonox::PongBall "PongBall" is the ball both players play with. The @ref orxonox::PongBall "PongBall" both implements the movement of the ball, as well as the influence of the boundaries and consequently, also the bouncing (off the upper and lower delimiters, and as off the @ref orxonox::PongBat "PongBats") of the ball and the effects of the failure of a player to catch the ball (i.e. the scoring of the other player).
+        - The two @ref orxonox::PongBat "PongBats" are the entities through which the players can actively participate in the game, by controlling them. The @ref orxonox::PongBat "PongBat" class manages the movement (and restrictions thereof) and the influence of the players on the bats.
 
     @author
         Fabian 'x3n' Landau

@@ -44,13 +44,13 @@ namespace orxonox
 
     /**
     @brief
-        The PongBat class manages the bats for @ref orxonox::Pong "Pong", which are the elements controlled by the player.
-        
+        The PongBat class manages the bats for @ref orxonox::Pong "Pong", which are the elements controlled by the players.
+
         It is responsible for the movement (controlled by the players) of the bat.
-        
+
     @author
         Fabian 'x3n' Landau
-        
+
     @ingroup Pong
     */
     class _PongExport PongBat : public ControllableEntity
@@ -109,11 +109,11 @@ namespace orxonox
             void registerVariables(); //!< Registers variables to be synchronized over the network.
 
             float movement_; //!< The amount (and direction), in z-direction, of movement of the bat.
-            bool bMoveLocal_; //TODO ???
-            float speed_; //!< The movementspeed of the bat.
+            bool bMoveLocal_; //!< Helper to know whether the movement is caused by moveFrontBack() or moveRightLeft().
+            float speed_; //!< The movement speed of the bat.
             float length_; //!< The length of the bat (in z-direction) as percentage of the height of the playing field.
             float fieldHeight_; //!< The height of the playing field.
-            bool bSteadiedPosition_; //TODO: ???
+            bool bSteadiedPosition_; //!< Helper boolean, to keep track of when to steady the position, to ensure network synchronicity.
     };
 }
 

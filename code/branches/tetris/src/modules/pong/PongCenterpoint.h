@@ -55,7 +55,7 @@ namespace orxonox
         - The <b>dimension</b> is a vector, that defines the width and height of the playing field. The default is <em>(200, 120)</em>.
         - The <b>balltemplate</b> is a template that is applied to the @ref orxonox::PongBall "PongBall", it can be used to attach different things to it, e.g. its @ref orxonox::Model "Model". See below for a usage example.
         - The <b>battemplate</b> is a template that is applied to the @ref orxonox::PongBall "PongBat", it can be used to attach different things to it, e.g. its @ref orxonox::Model "Model". See below for a usage example.
-        - The <b>ballspeed</b> is the speed with wich the @ref orxonox::PongBall "PongBall" moves. The default is <em>100</em>.
+        - The <b>ballspeed</b> is the speed with which the @ref orxonox::PongBall "PongBall" moves. The default is <em>100</em>.
         - The <b>ballaccfactor</b> is the acceleration factor for the @ref orxonox::PongBall "PongBall". The default is <em>1.0</em>.
         - The <b>batspeed</b> is the speed with which the @ref orxonox::PongBat "PongBats" move. The default is <em>60</em>.
         - The <b>batlength</b> is the length of the @ref orxonox::PongBat "PongBats" as the percentage of the height of the playing field. The default is <em>0.25</em>.
@@ -222,7 +222,7 @@ namespace orxonox
             void checkGametype(); //!< Checks whether the gametype is Pong and if it is, sets its centerpoint.
 
             std::string balltemplate_; //!< The template for the ball.
-            std::string battemplate_; //!< The template for the batts.
+            std::string battemplate_; //!< The template for the bats.
 
             float ballspeed_; //!< The speed of then ball.
             float ballaccfactor_; //!< The acceleration factor of the ball.
