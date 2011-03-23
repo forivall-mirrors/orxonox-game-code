@@ -74,6 +74,7 @@ namespace orxonox {
   * This function is used to add an enetpacket to be sent to another peer
   * @param packet Packet to be added
   * @param clientID ID of the client the packet should be sent to
+  * @param channelID ID of the channel.
   * @return success?
   */
   void Host::addPacket(ENetPacket *packet, int clientID, uint8_t channelID)

@@ -26,12 +26,19 @@
  *
  */
 
+/**
+    @file PongAI.cc
+    @brief Implementation of the PongAI class.
+*/
+
 #include "PongAI.h"
 
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "tools/Timer.h"
+
 #include "worldentities/ControllableEntity.h"
+
 #include "PongBall.h"
 
 namespace orxonox
@@ -40,6 +47,10 @@ namespace orxonox
 
     const static float MAX_REACTION_TIME = 0.4f;
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     PongAI::PongAI(BaseObject* creator) : Controller(creator)
     {
         RegisterObject(PongAI);
@@ -58,20 +69,37 @@ namespace orxonox
         this->setConfigValues();
     }
 
+    /**
+    @brief
+        Destructor. Cleans up the list fo reaction timers.
+    */
     PongAI::~PongAI()
     {
         for (std::list<std::pair<Timer*, char> >::iterator it = this->reactionTimers_.begin(); it != this->reactionTimers_.end(); ++it)
             it->first->destroy();
     }
 
+    /**
+    @brief
+        Sets config values.
+    */
     void PongAI::setConfigValues()
     {
+        // Sets the strength of the PongAi as a config value.
         SetConfigValue(strength_, 0.5).description("A value from 0 to 1 where 0 is weak and 1 is strong.");
     }
 
+    /**
+    @brief
+        Is called each tick.
+        Implements the behavior of the PongAI (i.e. its intelligence).
+    @param dt
+        The time that has elapsed since the last tick.
+    */
     void PongAI::tick(float dt)
     {
-        if (!this->ball_ || !this->getControllableEntity())
+        // If either the ball, or the controllable entity (i.e. the bat) don't exist (or aren't set).
+        if (this->ball_  == NULL || this->getControllableEntity() == NULL)
             return;
 
         Vector3 mypos = this->getControllableEntity()->getPosition();
@@ -108,7 +136,7 @@ namespace orxonox
             // The ball is approaching
             if (this->ballDirection_.x != 1)
             {
-                // The ball just startet to approach, initialize all values
+                // The ball just started to approach, initialize all values
                 this->ballDirection_.x = 1;
                 this->ballDirection_.y = sgn(ballvel.z);
                 this->ballEndPosition_ = 0;
@@ -157,7 +185,7 @@ namespace orxonox
             if (move != 0 && this->oldMove_ != 0 && move != this->oldMove_ && !delay)
             {
                 // We had to correct our position because we moved too far
-                // (and delay ist false, so we're not in the wrong place because of a new end-position prediction)
+                // (and delay is false, so we're not in the wrong place because of a new end-position prediction)
                 if (fabs(mypos.z - this->ballEndPosition_) < 0.5 * this->ball_->getBatLength() * this->ball_->getFieldDimension().y)
                 {
                     // We're not at the right position, but we still hit the ball, so just stay there to avoid oscillation
@@ -172,6 +200,12 @@ namespace orxonox
         this->getControllableEntity()->moveFrontBack(this->movement_);
     }
 
+    /**
+    @brief
+        Calculates the random offset, that accounts for random errors the AI makes in order to be beatable.
+        The higher the strength of the AI, the smaller the (expected value of the) error.
+        The result of this method is stored in this->randomOffset_.
+    */
     void PongAI::calculateRandomOffset()
     {
         // Calculate the exponent for the position-formula
@@ -183,7 +217,7 @@ namespace orxonox
         float position = pow(rnd(), exp); // exp > 1 -> position is more likely a small number
                                           // exp < 1 -> position is more likely a large number
 
-        // The position shouln't be larger than 0.5 (50% of the bat-length from the middle is the end)
+        // The position shouldn't be larger than 0.5 (50% of the bat-length from the middle is the end)
         position *= 0.48f;
 
         // Both sides are equally probable
@@ -193,6 +227,11 @@ namespace orxonox
         this->randomOffset_ = position * this->ball_->getBatLength() * this->ball_->getFieldDimension().y;
     }
 
+    /**
+    @brief
+        Calculate the end position the ball will be in.
+        The result of this calculation is stored in this->ballEndPosition_.
+    */
     void PongAI::calculateBallEndPosition()
     {
         Vector3 position = this->ball_->getPosition();
@@ -294,6 +333,15 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Determine the movement the AI will undertake. (Either -1, 0 or 1)
+        The result of this calculation is stored in this->movement_;
+    @param direction
+        The current direction of movement.
+    @param bUseDelay
+        The time by which this move is delayed. (Again, to make the AI less efficient)
+    */
     void PongAI::move(char direction, bool bUseDelay)
     {
         // The current direction is either what we're doing right now (movement_) or what is last in the queue
@@ -320,6 +368,10 @@ namespace orxonox
         }
     }
 
+    /**
+    @brief
+        Is called, when a delayed move takes effect.
+    */
     void PongAI::delayedMove()
     {
         // Get the new movement direction from the timer list
