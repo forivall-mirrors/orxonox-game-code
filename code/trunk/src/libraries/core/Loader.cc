@@ -143,6 +143,8 @@ namespace orxonox
         A ClassTreeMask, which defines which types of classes are loaded and which aren't.
     @param verbose
         Whether the loader is verbose (prints its progress in a low output level) or not.
+    @param bRemoveLuaTags
+        If true lua tags are just ignored and removed. The default is false.
     @return
         Returns true if successful.
     */

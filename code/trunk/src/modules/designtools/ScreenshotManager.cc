@@ -60,10 +60,6 @@ namespace orxonox
     /**
     @brief
         Creates a screenshot with the given camera.
-    @param camera
-        Pointer to the camera "looking at" the scene of interest
-    @param fileName
-        the filename of the screenshot file.
     */
     void ScreenshotManager::makeScreenshot() const
     {

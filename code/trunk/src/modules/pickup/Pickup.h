@@ -80,7 +80,7 @@ namespace orxonox
     @brief
         The Pickup class offers (useful) base functionality for a wide range of pickups.
 
-        Pickups ingeriting from this class can choose an activation type and a duration type.
+        Pickups inheriting from this class can choose an activation type and a duration type.
         - The <b>activationType</b> deals with what happens to the Pickup as soon as it is picked up. It can either be set to <em>immediate</em>, which means that the Pickup is activated/used immediately upon being picked up. Or to <em>onUse</em>, which means, that the Pickup will be activated/used if some outside entity (most commonly the player through the PickupInventory) decides to use it. Default is <em>immediate</em>.
         - The <b>durationType</b> deals with whether the Pickup has a continuous effect or whether its effect is focused on a singular instant. It can either be set to <em>once</em>, which means, that the Pickup just has an effect (at a singular instant in time) and is done once that effect has been applied. Or to <em>continuous</em>, which means that the effect of the Pickup unfolds over some timespan. Default is <em>once</em>.
 
