@@ -33,10 +33,12 @@
 #include "OrxonoxPrereqs.h"
 #include <string>
 #include "core/SubclassIdentifier.h"
-#include "worldentities/StaticEntity.h"
 
 /* Einige, spezifische include-Statements */
-
+#include "core/CoreIncludes.h"
+#include "tools/interfaces/Tickable.h"
+#include "worldentities/StaticEntity.h"
+#include "worldentities/WorldEntity.h"
 
 
 namespace orxonox
@@ -45,12 +47,27 @@ namespace orxonox
     {
         public:
             SpaceBoundaries(BaseObject* creator);
-            virtual ~SpaceBoundaries() {}
+            ~SpaceBoundaries();
+            
+            void setCenter(Vector3 r);
+            Vector3 getCenter();
+            
+            void setMaxDistance(float r);
+            float getMaxDistance();
+            
+            void setWarnDistance(float r);
+            float getWarnDistance();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            
+            void tick(float dt);
 
         private:
+            Vector3 center;
+            float maxDistance;
+            float warnDistance;
         
+            float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'center' bezogen.
     };
 }
 
