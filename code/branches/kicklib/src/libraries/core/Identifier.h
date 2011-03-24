@@ -394,7 +394,7 @@ namespace orxonox
     void ClassIdentifier<T>::initialiseIdentifier()
     {
         // Get the name of the class
-        const std::string& name = typeid(T).name();
+        std::string name = typeid(T).name();
 
         // create a new identifier anyway. Will be deleted in Identifier::getIdentifier if not used.
         ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
