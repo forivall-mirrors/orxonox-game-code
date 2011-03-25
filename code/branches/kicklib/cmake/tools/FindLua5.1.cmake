@@ -55,8 +55,8 @@ ENDFUNCTION(DETERMINE_LUA_VERSION)
 
 # Find include path
 FIND_PATH(LUA5.1_INCLUDE_DIR lua.h
-  PATHS $ENV{LUA5.1_DIR}
-  PATH_SUFFIXES include/lua51 include/lua5.1 include/lua include
+  PATHS $ENV{LUA5.1_DIR} $ENV{LUA_DIR}
+  PATH_SUFFIXES include/lua51 include/lua5.1 include/lua include Headers
 )
 
 # Check whether we really found Lua version 5.1
