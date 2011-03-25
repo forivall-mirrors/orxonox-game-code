@@ -143,30 +143,6 @@ ORXONOX_ADD_EXECUTABLE(orxonox-main
   OUTPUT_NAME orxonox
 )
 
-# Apple Mac OS X specific build settings
-IF(APPLE)
-  # On Apple we need to link to AppKit and Foundation frameworks
-  TARGET_LINK_LIBRARIES(orxonox-main 
-    "-framework AppKit"
-    "-framework Foundation"
-  )
-
-  # Post-build step for the creation of the Dev-App bundle
-  INCLUDE(PrepareDevBundle)
-  ADD_CUSTOM_COMMAND(
-    TARGET orxonox-main
-    POST_BUILD 
-    # Copy the Orxonox.app from the dummy location to the correct one
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/Dummy/${PROJECT_NAME}.app" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app"
-    # Copy the executable into the Orxonox.app
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${ORXONOX_EXECUTABLE_NAME}" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app/Contents/MacOS"
-    # Copy the dev-build marker file to Orxonox.app
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/orxonox_dev_build.keep_me" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app/Contents/MacOS"
-    # Create a shortcut of the application to the Desktop
-    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app" "$ENV{HOME}/Desktop/${PROJECT_NAME}.app"
-  ) 
-ENDIF(APPLE)
-
 # Main executable should depend on all modules
 ADD_DEPENDENCIES(orxonox-main ${ORXONOX_MODULES})
 
@@ -193,6 +169,30 @@ IF(MSVC)
          VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcproj.user")
 ENDIF(MSVC)
+
+# Apple Mac OS X specific build settings
+IF(APPLE)
+  # On Apple we need to link to AppKit and Foundation frameworks
+  TARGET_LINK_LIBRARIES(orxonox-main 
+    "-framework AppKit"
+    "-framework Foundation"
+  )
+
+  # Post-build step for the creation of the Dev-App bundle
+  INCLUDE(PrepareDevBundle)
+  ADD_CUSTOM_COMMAND(
+    TARGET orxonox-main
+    POST_BUILD 
+    # Copy the Orxonox.app from the dummy location to the correct one
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/Dummy/${PROJECT_NAME}.app" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app"
+    # Copy the executable into the Orxonox.app
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${ORXONOX_EXECUTABLE_NAME}" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app/Contents/MacOS"
+    # Copy the dev-build marker file to Orxonox.app
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/orxonox_dev_build.keep_me" "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app/Contents/MacOS"
+    # Create a shortcut of the application to the Desktop
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${DEFAULT_BUNDLE_PATH}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app" "$ENV{HOME}/Desktop/${PROJECT_NAME}.app"
+  ) 
+ENDIF(APPLE)
 
 #################### Doxygen ####################
 
