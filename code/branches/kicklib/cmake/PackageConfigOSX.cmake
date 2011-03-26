@@ -43,7 +43,7 @@ SET(CMAKE_FRAMEWORK_PATH ${DEP_FRAMEWORK_DIR})
 
 # Include paths and other special treatments
 SET(ENV{BOOST_ROOT}      ${DEPENDENCY_PACKAGE_DIR})
-SET(ENV{LUA5.1_DIR}      ${DEP_FRAMEWORK_DIR}/CEGUI.framework/Versions/A/Resources)
+SET(ENV{LUA5.1_DIR}      ${DEP_FRAMEWORK_DIR}/CEGUILuaScriptModule.framework/Versions/A/Resources)
 SET(ENV{OGGDIR}          ${DEP_INCLUDE_DIR})
 SET(ENV{VORBISDIR}       ${DEP_INCLUDE_DIR})
 SET(ENV{OGRE_PLUGIN_DIR} ${DEP_BINARY_DIR})
