@@ -43,7 +43,7 @@ SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
 # Include paths and other special treatments
 SET(ENV{ALUTDIR}               ${DEP_FRAMEWORK_DIR})
 SET(ENV{BOOST_ROOT}            ${DEPENDENCY_PACKAGE_DIR})
-SET(ENV{CEGUIDIR}              ${DEP_FRAMEWORK_DIR}/CEGUI.framework)
+SET(ENV{CEGUIDIR}              ${DEP_FRAMEWORK_DIR})
 SET(ENV{CEGUILUADIR}           ${DEP_FRAMEWORK_DIR}/CEGUILuaScriptModule.framework)
 SET(ENV{CEGUITOLUADIR}         ${DEP_FRAMEWORK_DIR}/ceguitolua++.framework)
 SET(ENV{LUA5.1_DIR}            $ENV{CEGUILUADIR}/Versions/A/Resources/lua.framework)
