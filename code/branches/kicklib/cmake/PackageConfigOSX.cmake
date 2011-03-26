@@ -29,6 +29,14 @@ CHECK_PACKAGE_VERSION(1.0)
 
 IF(NOT _INTERNAL_PACKAGE_MESSAGE)
   MESSAGE(STATUS "Using library package for the dependencies.")
+  
+  # The following shell script sets the appropriate install_names for our libraries
+  # and therefore it must be run before anything else is set, dep-package-wise.
+  EXECUTE_PROCESS(
+    COMMAND ${DEPENDENCY_PACKAGE_DIR}/install_dependencies.sh
+    WORKING_DIRECTORY ${DEPENDENCY_PACKAGE_DIR}
+    OUTPUT_FILE ${CMAKE_BINARY_DIR}/dep_pack_install_log.keep_me 
+  )
   SET(_INTERNAL_PACKAGE_MESSAGE 1 CACHE INTERNAL "Do not edit!" FORCE)
 ENDIF()
 
@@ -57,18 +65,11 @@ IF(CMAKE_SYSTEM_VERSION STREQUAL "10.5")
   SET(ENV{OPENALDIR} ${DEP_INCLUDE_DIR}/openal)
 ENDIF()
 
-# Xcode won't be able to run the toluabind code generation if we're using the dependency package
-#IF(DEPENDENCY_PACKAGE_ENABLE)
-#  IF(${CMAKE_GENERATOR} STREQUAL "Xcode")
-#    SET(ENV{DYLD_LIBRARY_PATH}               ${DEPENDENCY_PACKAGE_DIR}/lib)
-#    SET(ENV{DYLD_FRAMEWORK_PATH}             ${DEPENDENCY_PACKAGE_DIR}/Library/Frameworks)
-#  ENDIF(${CMAKE_GENERATOR} STREQUAL "Xcode")
-#ENDIF(DEPENDENCY_PACKAGE_ENABLE)
-
 ### INSTALL ###
 
 # Tcl script library
 # TODO: How does this work on OS X?
+# Concerning all OS X install procedures: use CPACK
 #INSTALL(
 #  DIRECTORY ${DEP_LIBRARY_DIR}/tcl/
 #  DESTINATION lib/tcl
