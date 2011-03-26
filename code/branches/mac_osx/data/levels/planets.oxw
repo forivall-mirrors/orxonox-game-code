@@ -38,8 +38,8 @@ max = 50
 for i = 1, max, 1
 do
     x = math.sin(i/max*6)*(1.5)*planetsize
-    y = math.cos(i/max*6)*(1.5)*planetsize
-    z = i*100
+    y = i*100
+    z = math.cos(i/max*6)*(1.5)*planetsize
     ?>
 <?lua
 for k = 1, 25, 1
@@ -59,7 +59,7 @@ j = math.random()
 end
 ?>
 <?lua end ?>
-    <Planet position="0,0,0" scale="<?lua print(planetsize) ?>" pitch=-90 mesh="jupiter.mesh" atmosphere="atmosphere1" rotationaxis="0,0,1" rotationrate="0.2" atmospheresize=300.0f imagesize=1024.0f />
-    <Planet position="<?lua print(5*planetsize) ?>,0,0" scale=7000 pitch=30 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="1,0,1" rotationrate="1.5" atmospheresize=224.0f imagesize=1024.0f />
+    <Planet position="0,0,0" scale="<?lua print(planetsize) ?>" pitch=-90 mesh="jupiter.mesh" atmosphere="atmosphere1" rotationaxis="0,1,0" rotationrate="0.2" atmospheresize=300.0f imagesize=1024.0f />
+    <Planet position="<?lua print(5*planetsize) ?>,0,0" scale=10000 pitch=30 mesh="ganymede.mesh" atmosphere="atmosphere1" rotationaxis="1,0,1" rotationrate="1.5" atmospheresize=224.0f imagesize=1024.0f />
   </Scene>
 </Level>
