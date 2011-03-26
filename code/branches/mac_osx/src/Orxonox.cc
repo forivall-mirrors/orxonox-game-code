@@ -62,15 +62,16 @@ int main(int argc, char** argv)
     {
 #ifndef ORXONOX_USE_WINMAIN
 
-// On Apples, the kernel supplies a second argument, which we have to circumvent
 #ifdef ORXONOX_PLATFORM_APPLE
-# define MAC_ARGC_HACK 2
+        // On Apples, the kernel supplies a second argument, which we have to circumvent
+        const int firstArgument = 2;
 #else
-# define MAC_ARGC_HACK 1
+        // 0 is the execution path
+        const int firstArgument = 1;
 #endif
-    
+        
         std::string strCmdLine;
-        for (int i = MAC_ARGC_HACK; i < argc; ++i)
+        for (int i = firstArgument; i < argc; ++i)
             strCmdLine = strCmdLine + argv[i] + ' ';
 #endif
 
