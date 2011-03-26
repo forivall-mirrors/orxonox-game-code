@@ -46,7 +46,7 @@ SET(ENV{BOOST_ROOT}            ${DEPENDENCY_PACKAGE_DIR})
 SET(ENV{CEGUIDIR}              ${DEP_FRAMEWORK_DIR}/CEGUI.framework)
 SET(ENV{CEGUILUADIR}           ${DEP_FRAMEWORK_DIR}/CEGUILuaScriptModule.framework)
 SET(ENV{CEGUITOLUADIR}         ${DEP_FRAMEWORK_DIR}/ceguitolua++.framework)
-SET(ENV{LUA5.1_DIR}            $ENV{CEGUILUADIR}/Versions/A/Resources/lua.framework
+SET(ENV{LUA5.1_DIR}            $ENV{CEGUILUADIR}/Versions/A/Resources/lua.framework)
 SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR})
 SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR})
 SET(ENV{OGRE_HOME}             ${DEP_FRAMEWORK_DIR})
