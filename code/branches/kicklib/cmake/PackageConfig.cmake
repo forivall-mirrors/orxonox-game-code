@@ -32,7 +32,7 @@ ENDIF()
 # Ogre versions >= 1.7 require the POCO library on Windows with MSVC for threading
 COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} 5 _result TRUE)
 IF(NOT _result EQUAL -1 AND NOT APPLE)
-  SET(POCO_REQUIRED TRUE)
+  SET(OGRE_NEEDS_POCO TRUE)
 ENDIF()
 
 # Include paths and other special treatments

@@ -48,6 +48,9 @@ SET(ENV{OGGDIR}          ${DEP_INCLUDE_DIR})
 SET(ENV{VORBISDIR}       ${DEP_INCLUDE_DIR})
 SET(ENV{OGRE_PLUGIN_DIR} ${DEP_BINARY_DIR})
 
+# Linking to OGRE requires linking to the boost threading library
+SET(OGRE_NEEDS_BOOST TRUE)
+
 # For OS X 10.5 we have to ship modified headers to make it compile
 # on gcc >= 4.2 (binaries stay the same)
 # Sets the library path for the FIND_LIBRARY
