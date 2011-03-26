@@ -137,14 +137,20 @@ IF(ORXONOX_USE_WINMAIN)
   SET(ORXONOX_WIN32 WIN32)
 ENDIF()
 
+SET(ORXONOX_MAIN_FILES Orxonox.cc)
+
+# Add special source file for OS X
+IF(APPLE)
+  LIST(APPEND ORXONOX_MAIN_FILES OrxonoxMac.mm)
+ENDIF()
+
 ORXONOX_ADD_EXECUTABLE(orxonox-main
   # When defined as WIN32 this removes the console window on Windows
   ${ORXONOX_WIN32}
   LINK_LIBRARIES
     orxonox
   SOURCE_FILES
-    Orxonox.cc
-    OrxonoxMac.mm
+    ${ORXONOX_MAIN_FILES}
   OUTPUT_NAME orxonox
 )
 # Main executable should depend on all modules
