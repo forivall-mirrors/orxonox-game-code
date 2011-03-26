@@ -33,7 +33,7 @@ INCLUDE(HandleLibraryTypes)
 # Find CEGUI headers
 FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
   PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES include include/CEGUI Headers
+  PATH_SUFFIXES include include/CEGUI
 )
 
 # Inspect CEGUIVersion.h for the version number
@@ -59,7 +59,7 @@ FIND_PATH(CEGUILUA_INCLUDE_DIR CEGUILua.h
     $ENV{CEGUIDIR}
     $ENV{CEGUILUADIR}
     ${CEGUI_INCLUDE_DIR}/ScriptingModules/LuaScriptModule
-  PATH_SUFFIXES include include/CEGUI Headers
+  PATH_SUFFIXES include include/CEGUI
 )
 # Find CEGUILua libraries
 FIND_LIBRARY(CEGUILUA_LIBRARY_OPTIMIZED
@@ -82,8 +82,7 @@ FIND_PATH(CEGUI_TOLUA_INCLUDE_DIR tolua++.h
     # For newer CEGUI versions >= 0.7
     ${CEGUILUA_INCLUDE_DIR}/support/tolua++
     # For Mac OS X, tolua++ is a separate framework in the dependency package
-    $ENV{CEGUITOLUADIR}
-  PATH_SUFFIXES Headers
+    ${DEP_FRAMEWORK_DIR}
   NO_DEFAULT_PATH # Don't attempt to find tolua++ installed on the system
 )
 # Find CEGUI Tolua++ libraries
@@ -107,7 +106,7 @@ IF(_version_compare GREATER -1)
       $ENV{CEGUIDIR}
       $ENV{CEGUIOGRERENDERERDIR}
       ${CEGUI_INCLUDE_DIR}/RendererModules/Ogre
-    PATH_SUFFIXES include include/CEGUI Headers
+    PATH_SUFFIXES include include/CEGUI
   )
   # Find CEGUI OGRE Renderer libraries
   FIND_LIBRARY(CEGUI_OGRE_RENDERER_LIBRARY_OPTIMIZED
