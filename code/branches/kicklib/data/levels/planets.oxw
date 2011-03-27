@@ -1,9 +1,9 @@
 <?lua
-  include("hudtemplates3.oxo")
+  include("HUDTemplates3.oxo")
   include("stats.oxo")
-  include("templates/lodinformation.oxt")
-  include("templates/spaceship_swallow.oxt")
-  include("templates/spaceship_pirate.oxt")
+  include("templates/lodInformation.oxt")
+  include("templates/spaceshipSwallow.oxt")
+  include("templates/spaceshipPirate.oxt")
 ?>
 
 
@@ -22,7 +22,7 @@
    skybox       = "Orxonox/skypanoramagen1"
   >
     
-<AmbientSound ambientSource="AlphaCentauri.ogg" looping="true" playOnLoad="true" />
+<WorldAmbientSound ambientSource="AlphaCentauri.ogg" looping="true" playOnLoad="true" />
 <Light type=directional position="-10000,-10000,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 
 <?lua
@@ -49,7 +49,7 @@ j = math.random()
 
     <MovableEntity position="<?lua print(x + math.random() * 10000-2500) ?>,<?lua print(y + math.random() * 5000-2500) ?>,<?lua print(z + math.random() * 1000-500) ?>" <?lua if i == 5 then ?> collisionType=dynamic linearDamping=0.8 angularDamping=0 mass=<?lua print(j * 50) ?> <?lua end ?> scale=<?lua print(j * 5) ?> rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
       <attached>
-        <Model position="0,0,0" scale=<?lua print(j * 10) ?> mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+        <Model position="0,0,0" scale="<?lua print(j * 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
       </attached>
       <?lua if i == 5 then ?><collisionShapes>
         <SphereCollisionShape radius="<?lua print(j * 70) ?>" />
