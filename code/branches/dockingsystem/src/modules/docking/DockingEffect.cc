@@ -53,7 +53,7 @@ namespace orxonox
         COUT(4) << "Invoking DockingEffects on player: " << player << " ."  << std::endl;
 
         for (std::list<DockingEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
-            check = check	;// && (*effect)->invoke(player);
+            check = check	;// && (*effect)->invoke(player);  TODO
 
         return check;
     }
