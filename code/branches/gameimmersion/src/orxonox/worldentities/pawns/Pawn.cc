@@ -117,6 +117,12 @@ namespace orxonox
         XMLPortObject(Pawn, WeaponSlot, "weaponslots", addWeaponSlot, getWeaponSlot, xmlelement, mode);
         XMLPortObject(Pawn, WeaponSet, "weaponsets", addWeaponSet, getWeaponSet, xmlelement, mode);
         XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPackXML, getWeaponPack, xmlelement, mode);
+
+/////// me
+        XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
+
+/////// end me
+
     }
 
     void Pawn::registerVariables()
@@ -136,10 +142,13 @@ namespace orxonox
 
         this->bReload_ = false;
 
+////////me
+        this->addShieldHealth(this->getReloadRate() * dt);
+////////end me
         if (GameMode::isMaster())
             if (this->health_ <= 0 && bAlive_)
             {
-                this->fireEvent(); // Event to notify anyone who want's to know about the death.
+                this->fireEvent(); // Event to notify anyone who wants to know about the death.
                 this->death();
             }
     }
@@ -167,6 +176,16 @@ namespace orxonox
         ControllableEntity::removePlayer();
     }
 
+//////////////////me
+    void Pawn::setReloadRate(float reloadrate)
+    {
+        this->reloadRate_ = reloadrate;
+        COUT(2) << "RELOAD RATE SET TO " << this->reloadRate_ << endl;
+    }
+
+
+///////////////end me
+
     void Pawn::setHealth(float health)
     {
         this->health_ = std::min(health, this->maxHealth_);
@@ -185,7 +204,10 @@ namespace orxonox
             {
                 healthdamage += shielddamage-this->getShieldHealth();
                 this->setShieldHealth(0);
+                COUT(3) << "### SHIELD KAPUTT ###" << endl;
             }
+
+            else { COUT(3) << "## SHIELD : " << this->getShieldHealth() << endl; }
 
             this->setHealth(this->health_ - healthdamage);
 
