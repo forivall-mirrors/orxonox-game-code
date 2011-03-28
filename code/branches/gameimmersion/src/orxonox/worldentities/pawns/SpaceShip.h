@@ -113,6 +113,8 @@ namespace orxonox
             std::string enginetemplate_;
             Engine* engine_;
             Timer timer_;
+	    Vector3 cameraOriginalPosition;
+	    Quaternion cameraOriginalOrientation;
     };
 }
 

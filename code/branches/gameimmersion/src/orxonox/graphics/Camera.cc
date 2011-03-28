@@ -47,7 +47,8 @@ namespace orxonox
 {
     CreateFactory(Camera);
 
-    Camera::Camera(BaseObject* creator) : StaticEntity(creator)
+    //Camera::Camera(BaseObject* creator) : StaticEntity(creator)
+    Camera::Camera(BaseObject* creator) : MovableEntity(creator)
     {
         RegisterObject(Camera);
 

@@ -35,6 +35,8 @@
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "items/Engine.h"
+#include "graphics/Camera.h"
+#include "CameraManager.h"
 
 namespace orxonox
 {
@@ -75,6 +77,10 @@ namespace orxonox
 
         this->setConfigValues();
         this->registerVariables();
+	
+	Camera* c = CameraManager::getInstance().getActiveCamera();
+	this->cameraOriginalPosition = c->getPosition();
+	this->cameraOriginalOrientation = c->getOrientation();
     }
 
     SpaceShip::~SpaceShip()
@@ -151,13 +157,27 @@ namespace orxonox
             }
             if(this->bBoost_)
             {
+		Camera* c = CameraManager::getInstance().getActiveCamera();
                 this->boostPower_ -=this->boostRate_*dt;
                 if(this->boostPower_ <= 0.0f)
                 {
                     this->bBoost_ = false;
                     this->bBoostCooldown_ = true;
                     this->timer_.setTimer(this->boostCooldownDuration_, false, createExecutor(createFunctor(&SpaceShip::boostCooledDown, this)));
+		    
+		    c->setVelocity(0,0,0);
+		    c->setPosition(this->cameraOriginalPosition);
+		    c->setOrientation(this->cameraOriginalOrientation);
                 }
+		else
+		{
+			//Kamera schuettelt
+			COUT(1) << "Afterburner effect\n";
+			if (c != 0)
+			{
+				c->setVelocity(0.1, 2.0, 0.3);
+			}
+		}
             }
         }
     }
