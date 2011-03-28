@@ -144,6 +144,7 @@ namespace orxonox
 
 ////////me
         this->addShieldHealth(this->getReloadRate() * dt);
+	// TODO max. shield hinzufuegen
 ////////end me
         if (GameMode::isMaster())
             if (this->health_ <= 0 && bAlive_)

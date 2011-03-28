@@ -102,8 +102,11 @@ namespace orxonox
 
             this->bDestroy_ = true;
 
+            Pawn* victim = orxonox_cast<Pawn*>(otherObject);
+
             if (this->owner_)
             {
+                if (victim && !victim->hasShield())
                 {
                     ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
                     effect->setPosition(this->getPosition());
@@ -112,6 +115,7 @@ namespace orxonox
                     effect->setSource("Orxonox/explosion3");
                     effect->setLifetime(2.0f);
                 }
+                if (victim && !victim->hasShield())
                 {
                     ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
                     effect->setPosition(this->getPosition());
@@ -120,9 +124,17 @@ namespace orxonox
                     effect->setSource("Orxonox/smoke4");
                     effect->setLifetime(3.0f);
                 }
+                if (victim && victim->hasShield())
+                {
+                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
+                    effect->setPosition(this->getPosition());
+                    effect->setOrientation(this->getOrientation());
+                    effect->setDestroyAfterLife(true);
+                    effect->setSource("Orxonox/engineglow");
+                    effect->setLifetime(0.5f);
+                }
             }
 
-            Pawn* victim = orxonox_cast<Pawn*>(otherObject);
             if (victim)
                 victim->hit(this->owner_, contactPoint, this->damage_);
         }

@@ -61,6 +61,9 @@ namespace orxonox // tolua_export
             inline void addShieldHealth(float amount)
             { this->setShieldHealth(this->shieldHealth_ + amount); }
 
+            inline bool hasShield()
+            { return (this->getShieldHealth() > 0); }
+
 ///////////////////////////////// end me
 
             virtual void setHealth(float health);
