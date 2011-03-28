@@ -37,7 +37,6 @@
 namespace orxonox
 {
 
-
 	CreateFactory(Dock);
 
     Dock::Dock(BaseObject* creator) : StaticEntity(creator)
@@ -55,7 +54,7 @@ namespace orxonox
     {
         SUPER(Dock, XMLPort, xmlelement, mode);
 
-        // TODO: Something similar to XMLPortObject(Dock, QuestEffect, "effects", addEffect, getEffect, xmlelement, mode);
+        XMLPortObject(Dock, DockingEffect, "effects", addEffect, getEffect, xmlelement, mode);
         XMLPortEventSink(Dock, BaseObject, "execute", execute, xmlelement, mode);
 
         COUT(0) << "Dock created.." << std::endl;
@@ -75,5 +74,23 @@ namespace orxonox
 		return true;
 	}
 
+
+	bool Dock::addEffect(DockingEffect* effect) {
+		assert(effect);
+		effects_.push_back(effect);
+		return true;
+	}
+    
+	const DockingEffect* Dock::getEffect(unsigned int index) const {
+		int i = index;
+        for (std::list<DockingEffect*>::const_iterator effect = this->effects_.begin(); effect != this->effects_.end(); ++effect)
+        {
+            if(i == 0)
+               return *effect;
+
+            i--;
+        }
+        return NULL;
+	}
 
 }

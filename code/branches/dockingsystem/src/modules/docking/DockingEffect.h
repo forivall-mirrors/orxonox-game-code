@@ -20,50 +20,51 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Sven Stucki
+ *      Sven Stucki 
  *   Co-authors:
  *      ...
  *
  */
 
 /**
-    @file Dock.h
-    @brief Definition of Dock class
+    @file DockingEffect.h
+    @brief Definition of the DockingEffect class.
     @ingroup Docking
 */
 
-#ifndef _Dock_H__
-#define _Dock_H__
+#ifndef _DockingEffect_H__
+#define _DockingEffect_H__
 
-#include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-#include "core/EventIncludes.h"
-
-#include "worldentities/StaticEntity.h"
-#include "DockingEffect.h"
 #include "DockingPrereqs.h"
 
-namespace orxonox { 
+#include <list>
+#include "core/BaseObject.h"
 
+namespace orxonox
+{
 
-	class _DockingExport Dock : public StaticEntity {
-	public:
-		Dock(BaseObject* creator);
-        virtual ~Dock();
+    /**
+    @brief
+        Handles DockingEffects for @ref orxonox::Docking "Docks".
 
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-        virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+    @author
+        Sven Stucki
 
-        bool execute(bool bTriggered, BaseObject* trigger);
+    @ingroup Docking
+    */
+    class _DockingExport DockingEffect : public BaseObject
+    {
+        public:
+            DockingEffect(BaseObject* creator);
+            virtual ~DockingEffect();
 
-	private:
-		std::list<DockingEffect*> effects_; //!< The list of DockingEffects to be executed when a player docks.
+            virtual bool docking(PlayerInfo* player) = 0; //!< Called when docking starts
+			virtual bool attach(PlayerInfo* player) = 0; //!< Called after docking animation
+			virtual bool release(PlayerInfo* player) = 0; //!< Called when player wants undock
 
-        bool addEffect(DockingEffect* effect); //!< Add a DockingEffect to the Dock.
-        const DockingEffect* getEffect(unsigned int index) const; //!< Get the DockingEffect at a given index.
-	};
-
+            static bool invokeEffects(PlayerInfo* player, std::list<DockingEffect*> & effects); //!< Invokes all DockingEffects in the list.
+    };
 
 }
 
-#endif /* _Dock_H__ */
+#endif /* _DockingEffect_H__ */

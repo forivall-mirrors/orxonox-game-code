@@ -1,6 +1,6 @@
 <LevelInfo
  name = "Transporter"
- description = "Level with moving Transporter."
+ description = "Level with a Transporter. Demostrates the docking system."
  tags = ""
 />
 
@@ -13,7 +13,7 @@
 
 <Level
  name         = "Transporter"
- description  = "Level with Transporter :)"
+ description  = "Docking example level"
 >
   <templates>
     <Template link=lodtemplate_default />
@@ -47,13 +47,16 @@
       <attached>
 
 		<Dock>
+			<effects>
+				<DockToShip />
+			</effects>
             <events>
                 <execute>
                     <EventListener event="dockMe" />
                 </execute>
             </events>
             <attached>
-                <PlayerTrigger name="dockMe" /> //A PlayerTrigger triggering the execution of the QuestEffectBeacon.
+                <DistanceTrigger position="0,0,0" distance=2 target="ControllableEntity" name="dockMe" />
             </attached>
         </Dock>
 

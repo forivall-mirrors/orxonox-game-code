@@ -1,4 +1,6 @@
 SET_SOURCE_FILES(DOCKING_SRC_FILES
+  DockingEffect.cc
+  DockToShip.cc
   Dock.cc
 )
 

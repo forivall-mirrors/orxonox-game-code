@@ -65,6 +65,7 @@
 namespace orxonox
 {
     class Dock;
+	class DockingEffect;
 }
 
 #endif /* _DockingPrereqs_H__ */
