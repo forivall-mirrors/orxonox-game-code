@@ -35,6 +35,11 @@
 #ifndef _Dock_H__
 #define _Dock_H__
 
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
+#include "core/EventIncludes.h"
+
+#include "worldentities/StaticEntity.h"
 #include "DockingPrereqs.h"
 
 namespace orxonox { 
@@ -49,7 +54,7 @@ namespace orxonox {
         virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
 
         bool execute(bool bTriggered, BaseObject* trigger);
-	}
+	};
 
 
 }

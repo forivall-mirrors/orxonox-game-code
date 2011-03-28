@@ -64,14 +64,7 @@
 
 namespace orxonox
 {
-    class Notification;
-    class NotificationDispatcher;
-    class NotificationManager;
-    class NotificationQueue;
-    
-    //dispatchers
-    class CommandNotification;
-    class SimpleNotification;
+    class Dock;
 }
 
 #endif /* _DockingPrereqs_H__ */

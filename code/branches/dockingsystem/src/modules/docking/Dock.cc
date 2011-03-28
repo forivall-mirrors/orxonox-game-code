@@ -33,9 +33,6 @@
 
 #include "Dock.h"
 
-#include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
-
 
 namespace orxonox
 {
@@ -46,7 +43,7 @@ namespace orxonox
     Dock::Dock(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Dock);
-		COUT(0) << "Registering dock..." << endl;
+		COUT(0) << "Registering dock..." << std::endl;
     }
 
     Dock::~Dock()
@@ -74,7 +71,8 @@ namespace orxonox
 
     bool Dock::execute(bool bTriggered, BaseObject* trigger)
 	{
-		COUT(0) << "Dock executed (bTriggered = " << (bTriggered? "true":"false") << ").." << endl;
+		COUT(0) << "Dock executed (bTriggered = " << (bTriggered? "true":"false") << ").." << std::endl;
+		return true;
 	}
 
 
