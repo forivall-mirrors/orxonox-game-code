@@ -31,7 +31,6 @@
 
 /* Folgender Block ist Copy-Paste und somit teilweise wohl unnoetig */
 #include "OrxonoxPrereqs.h"
-#include <string>
 #include "core/SubclassIdentifier.h"
 
 /* Einige, spezifische include-Statements */
@@ -39,6 +38,10 @@
 #include "tools/interfaces/Tickable.h"
 #include "worldentities/StaticEntity.h"
 #include "worldentities/WorldEntity.h"
+
+#include <ColoredTextAreaOverlayElementFactory.h>
+
+#include <string>
 
 
 namespace orxonox
@@ -68,6 +71,9 @@ namespace orxonox
             float warnDistance;
         
             float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'center' bezogen.
+            void displayWarning(const std::string warnText);
+            bool isHumanPlayer(Pawn *item);
+            ColoredTextAreaOverlayElementFactory* pColoredTextAreaOverlayElementFactory;
     };
 }
 

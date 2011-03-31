@@ -36,7 +36,14 @@
 
 /* Eigene, spezifische include-Statements*/
 #include "worldentities/MobileEntity.h"
+#include "worldentities/ControllableEntity.h"
 #include "core/ObjectListIterator.h"
+#include <worldentities/pawns/Pawn.h>
+#include <infos/PlayerInfo.h>
+
+#include <OgreTextAreaOverlayElement.h>
+#include <OgreOverlayManager.h>
+#include <overlays/OverlayText.h>
 
 namespace orxonox
 {
@@ -45,12 +52,13 @@ namespace orxonox
     SpaceBoundaries::SpaceBoundaries(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(SpaceBoundaries);
-        
+        COUT(0) << "Test ob Konstruktor aufgerufen wird." << std::endl; //!< message for debugging
         // Show Boundaries on the radar.
+         m_pColoredTextAreaOverlayElementFactory = new ColoredTextAreaOverlayElementFactory();
     }
     SpaceBoundaries::~SpaceBoundaries()
     {
-    
+        delete pColoredTextAreaOverlayElementFactory;
     }
     
     void SpaceBoundaries::setCenter(Vector3 r)
@@ -93,14 +101,35 @@ namespace orxonox
     {
         for(ObjectListIterator<MobileEntity> item = ObjectList<MobileEntity>::begin(); item != ObjectList<MobileEntity>::end(); ++item)
         {
-            float distance = computeDistance((WorldEntity *)&item); // fuer casts gibt's scheinbar andere, neuere Variante --> vgl. Coding-Guide und andere Files
-            if(distance > this->warnDistance && distance < this->maxDistance)
+            MobileEntity* myMobileEntity = *item;
+            Pawn* myItem = dynamic_cast<Pawn*>(myMobileEntity);
+            //COUT(0) << "Die for-Schleife wird erreicht!!!" << std::endl; //!< message for debugging
+            if(myItem != NULL)
             {
-                COUT(0) << "You are leaving the area" << std::endl; //!< message for debugging
-                // Display Warning on Screen if the humanPlayer (infos/PlayerInfo.h) is leaving the area
-            } else if(distance > maxDistance)
-            {
-                // Decrease Health
+                float distance = computeDistance((WorldEntity*) myItem);
+                bool humanItem = this->isHumanPlayer(myItem);
+                COUT(0) << "Pawn wird erkannt!!!" << std::endl; //!< message for debugging
+                COUT(0) << "Distanz:" << distance << std::endl; //!< message for debugging
+                if(distance > this->warnDistance /*&& distance < this->maxDistance*/)
+                {
+                    COUT(0) << "You are leaving the area" << std::endl; //!< message for debugging
+                    if(humanItem)
+                    {
+                        COUT(0) << "humanItem ist true" << std::endl;
+                        this->displayWarning("Attention! You are leaving the area!");
+                    } else {
+                    
+                    }
+                } else if(distance > maxDistance)
+                {
+                    // Decrease Health
+                    if(humanItem)
+                    {
+                        
+                    } else {
+                    
+                    }
+                }
             }
         }
     }
@@ -108,10 +137,45 @@ namespace orxonox
     float SpaceBoundaries::computeDistance(WorldEntity *item)
     {
         Vector3 itemPosition = item->getPosition();
-        return (itemPosition.distance(center));
+        return (itemPosition.distance(this->center));
     }
     
+    void SpaceBoundaries::displayWarning(const std::string warnText)
+    {   /*
+        Ogre::TextAreaOverlayElement *pTextArea;
+        Ogre::OverlayManager manager = Ogre::OverlayManager();
+        Ogre::OverlayElement temp = manager.createOverlayElement("TextArea", "MyTextArea");
+        //pTextArea = (Ogre::TextAreaOverlayElement *) 
+       // pTextArea->setCaption("Some plain text");
     
+        Ogre::TextAreaOverlayElement warning(warnText);
+        warning.initialise();
+        //warning.setPosition(0.2, 0.2);
+        
+
+        COUT(0) << "Breite des Warntextes: " << warning.getWidth() << std::endl;
+        COUT(0) << "Hoehe des Warntextes: " << warning.getHeight() << std::endl;
+        
+        warning.show();*/
+        // Register the overlay element
+         OverlayManager::getSingleton().addOverlayElementFactory(pColoredTextAreaOverlayElementFactory);
+         
+        Ogre::TextAreaOverlayElement *pTextArea =
+                (Ogre::TextAreaOverlayElement*)Ogre::OverlayManager.createOverlayElement("TextArea", "MyTextArea");
+        pTextArea->setCaption("Some plain text");
+
+        
+    }
+    
+    bool SpaceBoundaries::isHumanPlayer(Pawn *item)
+    {
+        if(item != NULL)
+        {
+            return item->getPlayer()->isHumanPlayer();
+        } else {
+            return false;
+        }
+    }
     
     
     
