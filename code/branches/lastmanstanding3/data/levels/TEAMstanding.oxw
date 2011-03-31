@@ -109,35 +109,44 @@
        </collisionShapes>
    </StaticEntity>
 
-   <!-- TEST FAILED - You can't put a dynamic collisionshape into a static collisionshape -->
-   <!--MovableEntity position="0,0,-80" collisionType=dynamic linearDamping=0.8 angularDamping=0 >
+   <ForceField position="0,270,-80" direction="-3,-4,-3" diameter=150 velocity=2000 length=900 />
+   <MovableEntity position="0,270,-80" direction="-3,-4,-3">
        <attached>
-           <Model position="0,0,0" scale=140 mesh="sphere.mesh" />
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=2/>
+           <?lua for i=0,4,1 do ?>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+           <?lua end ?>
        </attached>
-       <collisionShapes>
-           <SphereCollisionShape position="0,0,0" radius="140" />
-       </collisionShapes>
-    </MovableEntity>
+   </MovableEntity>
 
-   <MovableEntity position="0,0,0" collisionType=dynamic linearDamping=0.8 angularDamping=0 >
-       <attached>
-           <Model position="0,-1200,0" mesh="hs-w01.mesh" scale3D="299,399,899" pitch="90" roll="0" yaw="0"/>
-       </attached>
-       <collisionShapes>
-           <BoxCollisionShape position="121,0,-80" halfExtents="15,370,15" />
-           <BoxCollisionShape position="-121,0,-80" halfExtents="15,370,15" />
-       </collisionShapes>
-    </MovableEntity-->
 
 <!-------------- Bulk Gate -------------->
    <StaticEntity position="300,0,500" direction="0,0,0" collisionType=static mass=100000 >
        <attached>
            <Model position="0,-100,0" mesh="hs-w01.mesh" scale3D="500,400,600" pitch="270" roll="0" yaw="0"/>
+           <!--Model position="205,-105,20" mesh="cube.mesh" scale3D="135,280,60" />
+           <Model position="-205,-105,20" mesh="cube.mesh" scale3D="135,280,60" />
+           <Model position="0,235,0" mesh="cube.mesh" scale3D="180,35,35" />
+           <Model position="0,-344,-18" mesh="cube.mesh" scale3D="210,38,36" /-->
        </attached>
-       <!--collisionShapes>
-           <BoxCollisionShape position="0,0,-1000" halfExtents="1000,400,10" />
-       </collisionShapes-->
+       <collisionShapes>
+           <BoxCollisionShape position="205,-105,20" halfExtents="135,280,60" />
+           <BoxCollisionShape position="-205,-105,20" halfExtents="135,280,60" />
+           <BoxCollisionShape position="0,235,0" halfExtents="180,35,35" />
+           <BoxCollisionShape position="0,-344,-18" halfExtents="210,38,36" />
+       </collisionShapes>
    </StaticEntity>
+
+   <ForceField position="300,300,500" direction="-1,0,-2" diameter=100 velocity=1500 length=900 />
+   <MovableEntity position="300,300,500" direction="-1,0,-2">
+       <attached>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=2/>
+           <?lua for i=0,4,1 do ?>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+           <?lua end ?>
+       </attached>
+   </MovableEntity>
+
 
 <!-------------- Bar -------------->
    <StaticEntity position="-495,0,-495" direction="0,0,0" collisionType=static mass=100000 >
@@ -151,6 +160,15 @@
        </collisionShapes>
    </StaticEntity>
 
+   <ForceField position="-700,-300,-700" direction="0,1,0" diameter=100 velocity=2000 length=900 />
+   <MovableEntity position="-700,-300,-700" direction="0,1,0">
+       <attached>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=2/>
+           <?lua for i=0,4,1 do ?>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+           <?lua end ?>
+       </attached>
+   </MovableEntity>
 
 <!-------------- 2 Side-Bars -------------->
    <StaticEntity position="0,0,-1000" direction="0,0,0" collisionType=static mass=100000 >
@@ -182,9 +200,9 @@ do
        <attached>
            <Model position="0,0,0" mesh="SolarPanel.mesh" scale3D="60,80,30" pitch="0" roll="0" yaw="120"/>
        </attached>
-       <!--collisionShapes>
-           <BoxCollisionShape position="0,0,0" halfExtents="20,400,20" pitch="0" roll="0" yaw="0"/>
-       </collisionShapes-->
+       <collisionShapes>
+           <BoxCollisionShape position="0,300,0" halfExtents="155,460,3" pitch="0" roll="0" yaw="120"/>
+       </collisionShapes>
    </StaticEntity>
 <?lua end ?>
 
@@ -193,9 +211,9 @@ do
        <attached>
            <Model position="0,0,0" mesh="plane.mesh" scale=20  pitch="7" roll="0" yaw="0"/>
        </attached>
-       <collisionShapes>
+       <!--collisionShapes>
            <BoxCollisionShape position="0,0,0" halfExtents="20,400,20" pitch="0" roll="0" yaw="0"/>
-       </collisionShapes>
+       </collisionShapes-->
    </StaticEntity>
 
 
