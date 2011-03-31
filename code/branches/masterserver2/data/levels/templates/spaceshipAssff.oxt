@@ -7,12 +7,12 @@
    spawnparticleduration  = 3
    explosionchunks        = 6
 
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
+   health            = 100000
+   maxhealth         = 200000
+   initialhealth     = 100000
 
-   primaryThrust     = 100;
-   auxilaryThrust    = 30;
+   primaryThrust     = 10000;
+   auxilaryThrust    = 3000;
    rotationThrust    = 25;
 
    collisionType     = "dynamic"
@@ -56,7 +56,7 @@
 
 <Template name=spaceshipassffengine baseclass=MultiStateEngine>
   <MultiStateEngine
-   boostfactor    = 2
+   boostfactor    = 20
 
    speedfront     = 150
    speedback      =  50
@@ -66,8 +66,8 @@
    defEngineSndNormal = "sounds/Engine_low.ogg"
    defEngineSndBoost = "sounds/Engine_high.ogg"
 
-   accelerationfront     = 500
-   accelerationbrake     = 500
+   accelerationfront     = 200
+   accelerationbrake     = 200
    accelerationback      =  125
    accelerationleftright =  125
    accelerationupdown    =  125

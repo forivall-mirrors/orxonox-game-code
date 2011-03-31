@@ -98,6 +98,32 @@ namespace orxonox
     enet_host_flush( this->server );
   }
 
+  /* maybe the two methods below can be merged into one and 
+   * made to use ENet's RTT functionality to check for disconnected 
+   * servers.
+   */
+  void 
+  MasterServer::helper_pingServers( void )
+  {
+    /* get an iterator */
+    std::list<packet::ServerInformation>::iterator i;
+    /* loop through list elements */
+    for( i = mainlist.serverlist.begin(); i 
+        != mainlist.serverlist.end(); ++i ) 
+    {
+      /* to be implemented, waiting for Oli to reply to my email - sandro */
+    
+    }
+ 
+  }
+
+  void 
+  MasterServer::helper_cleanupServers()
+  {
+    /* same as above. */
+
+  }
+
 
 
 
@@ -234,7 +260,15 @@ namespace orxonox
     }
 
     /* TODO schedule pings for servers somewhere here */
+    /* Iterate through servers and send pings */
+    helper_pingServers();
     
+    /* check for timed out pings and remove those guys from
+     * the server list
+     */
+    helper_cleanupServers();
+
+
     /* create an iterator for the loop */
     enet_host_service( this->server, event, 100 );
 
