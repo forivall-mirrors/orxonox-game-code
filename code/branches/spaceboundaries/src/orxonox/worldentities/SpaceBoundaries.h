@@ -39,7 +39,7 @@
 #include "worldentities/StaticEntity.h"
 #include "worldentities/WorldEntity.h"
 
-#include <ColoredTextAreaOverlayElementFactory.h>
+//#include <ColoredTextAreaOverlayElementFactory.h>
 
 #include <string>
 
@@ -66,14 +66,14 @@ namespace orxonox
             void tick(float dt);
 
         private:
-            Vector3 center;
-            float maxDistance;
-            float warnDistance;
+            Vector3 center_;
+            float maxDistance_;
+            float warnDistance_;
         
             float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'center' bezogen.
             void displayWarning(const std::string warnText);
             bool isHumanPlayer(Pawn *item);
-            ColoredTextAreaOverlayElementFactory* pColoredTextAreaOverlayElementFactory;
+ //           ColoredTextAreaOverlayElementFactory* pColoredTextAreaOverlayElementFactory;
     };
 }
 

@@ -41,9 +41,9 @@
 #include <worldentities/pawns/Pawn.h>
 #include <infos/PlayerInfo.h>
 
-#include <OgreTextAreaOverlayElement.h>
+//#include <OgreTextAreaOverlayElement.h>
 #include <OgreOverlayManager.h>
-#include <overlays/OverlayText.h>
+//#include <overlays/OverlayText.h>
 
 namespace orxonox
 {
@@ -54,38 +54,38 @@ namespace orxonox
         RegisterObject(SpaceBoundaries);
         COUT(0) << "Test ob Konstruktor aufgerufen wird." << std::endl; //!< message for debugging
         // Show Boundaries on the radar.
-         m_pColoredTextAreaOverlayElementFactory = new ColoredTextAreaOverlayElementFactory();
+//         m_pColoredTextAreaOverlayElementFactory = new ColoredTextAreaOverlayElementFactory();
     }
     SpaceBoundaries::~SpaceBoundaries()
     {
-        delete pColoredTextAreaOverlayElementFactory;
+//        delete pColoredTextAreaOverlayElementFactory;
     }
     
     void SpaceBoundaries::setCenter(Vector3 r)
     {
-        this->center = r;
+        this->center_ = r;
     }
     Vector3 SpaceBoundaries::getCenter()
     {
-        return this->center;
+        return this->center_;
     }
     
     void SpaceBoundaries::setMaxDistance(float r)
     {
-        this->maxDistance = r;
+        this->maxDistance_ = r;
     }
     float SpaceBoundaries::getMaxDistance()
     {
-        return this->maxDistance;
+        return this->maxDistance_;
     }
     
     void SpaceBoundaries::setWarnDistance(float r)
     {
-        this->warnDistance = r;
+        this->warnDistance_ = r;
     }
     float SpaceBoundaries::getWarnDistance()
     {
-        return this->warnDistance;
+        return this->warnDistance_;
     }
 
     void SpaceBoundaries::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -110,7 +110,7 @@ namespace orxonox
                 bool humanItem = this->isHumanPlayer(myItem);
                 COUT(0) << "Pawn wird erkannt!!!" << std::endl; //!< message for debugging
                 COUT(0) << "Distanz:" << distance << std::endl; //!< message for debugging
-                if(distance > this->warnDistance /*&& distance < this->maxDistance*/)
+                if(distance > this->warnDistance_ /*&& distance < this->maxDistance*/)
                 {
                     COUT(0) << "You are leaving the area" << std::endl; //!< message for debugging
                     if(humanItem)
@@ -120,7 +120,7 @@ namespace orxonox
                     } else {
                     
                     }
-                } else if(distance > maxDistance)
+                } else if(distance > maxDistance_)
                 {
                     // Decrease Health
                     if(humanItem)
@@ -137,7 +137,7 @@ namespace orxonox
     float SpaceBoundaries::computeDistance(WorldEntity *item)
     {
         Vector3 itemPosition = item->getPosition();
-        return (itemPosition.distance(this->center));
+        return (itemPosition.distance(this->center_));
     }
     
     void SpaceBoundaries::displayWarning(const std::string warnText)
@@ -158,12 +158,12 @@ namespace orxonox
         
         warning.show();*/
         // Register the overlay element
-         OverlayManager::getSingleton().addOverlayElementFactory(pColoredTextAreaOverlayElementFactory);
+/*         OverlayManager::getSingleton().addOverlayElementFactory(pColoredTextAreaOverlayElementFactory);
          
         Ogre::TextAreaOverlayElement *pTextArea =
                 (Ogre::TextAreaOverlayElement*)Ogre::OverlayManager.createOverlayElement("TextArea", "MyTextArea");
         pTextArea->setCaption("Some plain text");
-
+*/
         
     }
     
