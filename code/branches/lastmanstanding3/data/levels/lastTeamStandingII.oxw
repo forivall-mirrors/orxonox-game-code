@@ -170,9 +170,9 @@
    <ForceField position="830,-300,830" direction="-1,0,0" diameter=150 velocity=2000 length=900 />
    <MovableEntity position="830,-300,830" direction="-1,0,0">
        <attached>
-           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.5,0,0" scale=1/>
            <?lua for i=0,4,1 do ?>
-               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
            <?lua end ?>
        </attached>
    </MovableEntity>
@@ -180,9 +180,9 @@
    <ForceField position="830,350,830" direction="0,0,-1" diameter=150 velocity=2000 length=900 />
    <MovableEntity position="830,350,830" direction="0,0,-1">
        <attached>
-           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0,0,0.5" scale=1/>
            <?lua for i=0,4,1 do ?>
-               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0,0,0.5" scale=1/>
            <?lua end ?>
        </attached>
    </MovableEntity>
@@ -223,9 +223,9 @@
    <ForceField position="-830,-350,-830" direction="2,0,0" diameter=100 velocity=2000 length=900 />
    <MovableEntity position="-830,-350,-830" direction="2,0,0">
        <attached>
-           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.5,0,0" scale=1/>
            <?lua for i=0,4,1 do ?>
-               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
            <?lua end ?>
        </attached>
    </MovableEntity>
@@ -233,9 +233,9 @@
    <ForceField position="-870,350,-830" direction="0,0,1" diameter=150 velocity=2000 length=900 />
    <MovableEntity position="-870,350,-830" direction="0,0,1">
        <attached>
-           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0,0,0.5" scale=1/>
            <?lua for i=0,4,1 do ?>
-               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0,0,0.5" scale=1/>
            <?lua end ?>
        </attached>
    </MovableEntity>
@@ -309,9 +309,9 @@ do
    <ForceField position="-830,-100,830" direction="0,0,-1" diameter=100 velocity=2000 length=900 />
    <MovableEntity position="-830,-100,830" direction="0,0,-1">
        <attached>
-           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.5,0,0" scale=1/>
            <?lua for i=0,4,1 do ?>
-               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
            <?lua end ?>
        </attached>
    </MovableEntity>
@@ -319,9 +319,9 @@ do
    <ForceField position="-830,350,830" direction="1,0,0" diameter=100 velocity=2000 length=900 />
    <MovableEntity position="-830,350,830" direction="1,0,0">
        <attached>
-           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0,0,0.5" scale=1/>
            <?lua for i=0,4,1 do ?>
-               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0,0,0.5" scale=1/>
            <?lua end ?>
        </attached>
    </MovableEntity>
@@ -359,9 +359,9 @@ do
            <?lua end ?>
        </attached>
    </MovableEntity>
-<!-- alternative stream -->
-   <ForceField position="830,-350,-830" direction="0,0,1" diameter=100 velocity=2000 length=900 />
-   <MovableEntity position="830,-350,-830" direction="0,0,1">
+<!-- across the field -->
+   <ForceField position="550,-350,-550" direction="-3,0,1" diameter=100 velocity=2000 length=900 />
+   <MovableEntity position="550,-350,-550" direction="-3,0,1">
        <attached>
            <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
            <?lua for i=0,4,1 do ?>
@@ -369,13 +369,23 @@ do
            <?lua end ?>
        </attached>
    </MovableEntity>
+<!-- alternative stream -->
+   <ForceField position="830,-350,-830" direction="0,0,1" diameter=100 velocity=2000 length=900 />
+   <MovableEntity position="830,-350,-830" direction="0,0,1">
+       <attached>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.5,0,0" scale=1/>
+           <?lua for i=0,4,1 do ?>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.5,0,0" scale=1/>
+           <?lua end ?>
+       </attached>
+   </MovableEntity>
 <!-- alternative stream II -->
    <ForceField position="830,350,-830" direction="-1,0,0" diameter=100 velocity=2000 length=900 />
    <MovableEntity position="830,350,-830" direction="-1,0,0">
        <attached>
-           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0.7,0.4,0.1" scale=1/>
+           <Billboard position="0,0,0" material="Flares/ringflare2" colour="0,0,0.5" scale=1/>
            <?lua for i=0,4,1 do ?>
-               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0.7,0.4,0.1" scale=1/>
+               <Billboard position="0,0,<?lua print(i*(-100)) ?>" material="Examples/Flare" colour="0,0,0.5" scale=1/>
            <?lua end ?>
        </attached>
    </MovableEntity>
