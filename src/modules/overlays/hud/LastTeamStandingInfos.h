@@ -20,14 +20,14 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Johannes Ritz
  *   Co-authors:
- *      ...
+ *      
  *
  */
 
-#ifndef _GametypeStatus_H__
-#define _GametypeStatus_H__
+#ifndef _LastTeamStandingInfos_H__
+#define _LastTeamStandingInfos_H__
 
 #include "overlays/OverlaysPrereqs.h"
 
@@ -36,23 +36,31 @@
 
 namespace orxonox
 {
-    class _OverlaysExport GametypeStatus : public OverlayText, public Tickable
+    class _OverlaysExport LastTeamStandingInfos : public OverlayText, public Tickable
     {
         public:
-            GametypeStatus(BaseObject* creator);
-            virtual ~GametypeStatus();
+            LastTeamStandingInfos(BaseObject* creator);
+            virtual ~LastTeamStandingInfos();
 
             virtual void tick(float dt);
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void changedOwner();
 
-            void setDisplayCaption(bool bValue); //!< Toggles whether the gametype status is displayed.
+            inline void setShowLives(bool value)
+                { this->bShowLives_ = value; }
+            inline bool getShowLives() const
+                { return this->bShowLives_; }
+
+            inline void setShowTeams(bool value)
+                { this->bShowTeams_ = value; }
+            inline bool getShowTeams() const
+                { return this->bShowTeams_; }
 
         private:
-            //Gametype* game_;
-            PlayerInfo* owner_;
-            bool bNoCaption_;
-            //bool bForcedSpawn_;
-
+            LastTeamStanding* lts_;
+            PlayerInfo* player_;
+            bool bShowLives_;
+            bool bShowTeams_;
     };
 }
-#endif /* _GametypeStatus_H__ */
+#endif /* _LastTeamStandingInfos_H__ */
