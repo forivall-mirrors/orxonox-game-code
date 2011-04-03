@@ -46,7 +46,6 @@ namespace orxonox
         this->lives = 1;//4
         this->eachTeamsPlayers.resize(teams_,0);
         this->teamsAlive = 0;
-        this->bMinTeamsReached = false;
         this->bNoPunishment = false;
         this->bHardPunishment = false;
         this->punishDamageRate = 0.4f;
@@ -74,12 +73,10 @@ namespace orxonox
         else
             playerLives_[player]=getMinLives();//new players only get minimum of lives */
         
-        if (teamsAlive>1) // Now the game is allowed to end, since there are at least two teams.
-            bMinTeamsReached = true; // since there are at least two teams, the game is allowed to end
         this->timeToAct_[player] = timeRemaining;
         this->playerDelayTime_[player] = respawnDelay;
         this->inGame_[player] = true;
-        int team = getTeam(player);
+        unsigned int team = getTeam(player);
         if( team < 0|| team > teams_) // make sure getTeam returns a regular value
             return;
         if(this->eachTeamsPlayers[team]==0) //if a player is the first in his group, a new team is alive
@@ -96,7 +93,7 @@ namespace orxonox
             this->timeToAct_.erase(player);
             this->playerDelayTime_.erase(player);
             this->inGame_.erase(player);
-            int team = getTeam(player);
+            unsigned int team = getTeam(player);
             if( team < 0|| team > teams_) // make sure getTeam returns a regular value
                 return valid_player;
             this->eachTeamsPlayers[team]--;       // a player left the team
@@ -118,7 +115,7 @@ namespace orxonox
         this->inGame_[victim->getPlayer()] = false; //if player dies, he isn't allowed to respawn immediately
         if (playerLives_[victim->getPlayer()]<=0) //if player lost all lives
         {
-            int team = getTeam(victim->getPlayer());
+            unsigned int team = getTeam(victim->getPlayer());
             if(team < 0|| team > teams_) // make sure getTeam returns a regular value
                 return allow;
             this->eachTeamsPlayers[team]--;
@@ -188,7 +185,7 @@ namespace orxonox
         SUPER(LastTeamStanding, tick, dt);
         if(this->hasStarted()&&(!this->hasEnded()))
         {
-            if (bMinTeamsReached &&(this->hasStarted()&&(teamsAlive<=1)))//last team remaining -> game will end
+            if ( this->hasStarted()&&(teamsAlive<=1) )//last team remaining -> game will end
             {
                 this->end();
             }
@@ -235,18 +232,35 @@ namespace orxonox
     void LastTeamStanding::end()//TODO: Send the message to the whole team
     {
         Gametype::end();
-        
+        int party = -1;
+        //find a player who survived
         for (std::map<PlayerInfo*, int>::iterator it = this->playerLives_.begin(); it != this->playerLives_.end(); ++it)
         {
             if (it->first->getClientID() == CLIENTID_UNKNOWN)
                 continue;
 
             if (it->second > 0)
-                this->gtinfo_->sendAnnounceMessage("You have won the match!", it->first->getClientID());
-            else
-                this->gtinfo_->sendAnnounceMessage("You have lost the match!", it->first->getClientID());
+            {
+             //which party has survived?
+                std::map<PlayerInfo*, int>::iterator it2 = this->teamnumbers_.find(it->first);
+                if (it2 != this->teamnumbers_.end())
+                {
+                    party = it2->second;
+                }
+                //if (party < 0) return; //if search failed
+             //victory message to all team members
+                for (std::map<PlayerInfo*, int>::iterator it3 = this->teamnumbers_.begin(); it3 != this->teamnumbers_.end(); ++it3)
+                {
+                    if (it3->first->getClientID() == CLIENTID_UNKNOWN)
+                        continue;
+                    if (it3->second == party)
+                        this->gtinfo_->sendAnnounceMessage("You have won the match!", it3->first->getClientID());
+                    else
+                        this->gtinfo_->sendAnnounceMessage("You have lost the match!", it3->first->getClientID());
+                }
+                return;
+            }
         }
-
     }
 
 

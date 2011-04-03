@@ -66,8 +66,6 @@ namespace orxonox
             std::map<PlayerInfo*, float> playerDelayTime_; //!< Stores each Player's delay time.
             std::map<PlayerInfo*, bool> inGame_; //!< Indicates each Player's state.
 
-            bool bMinTeamsReached; //!< Lock. Game shouldn't end right at the beginning.
-
             virtual void spawnDeadPlayersIfRequested(); //!< Prevents dead players to respawn.
             virtual int getMinLives(); //!< Returns minimum of each player's lives; players with 0 lives are skipped;
 
