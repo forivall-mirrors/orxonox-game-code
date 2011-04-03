@@ -53,7 +53,7 @@ ELSEIF(UNIX)
 ENDIF()
 
 # Some unexplained hackery for Visual Studio 2005
-ADD_COMPILER_FLAGS("-D_WIN32_DCOM" MSVC8)
+ADD_COMPILER_FLAGS("-D_WIN32_DCOM" MSVC80)
 
 # MinGW doesn't come with some required Windows headers
 IF(MINGW)
