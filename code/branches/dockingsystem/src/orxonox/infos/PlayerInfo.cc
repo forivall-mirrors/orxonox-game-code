@@ -223,7 +223,7 @@ namespace orxonox
             return;
 
         this->controllableEntity_->setController(0);
-        
+
         this->controllableEntity_ = this->oldControllableEntity_;
         this->controllableEntityID_ = this->controllableEntity_->getObjectID();
         this->oldControllableEntity_ = 0;

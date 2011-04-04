@@ -46,9 +46,9 @@
 namespace orxonox { 
 
 
-	class _DockingExport Dock : public StaticEntity {
-	public:
-		Dock(BaseObject* creator);
+    class _DockingExport Dock : public StaticEntity {
+    public:
+        Dock(BaseObject* creator);
         virtual ~Dock();
 
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
@@ -56,12 +56,12 @@ namespace orxonox {
 
         bool execute(bool bTriggered, BaseObject* trigger);
 
-	private:
-		std::list<DockingEffect*> effects_; //!< The list of DockingEffects to be executed when a player docks.
-
         bool addEffect(DockingEffect* effect); //!< Add a DockingEffect to the Dock.
         const DockingEffect* getEffect(unsigned int index) const; //!< Get the DockingEffect at a given index.
-	};
+
+    private:
+        std::list<DockingEffect*> effects_; //!< The list of DockingEffects to be executed when a player docks.
+    };
 
 
 }

@@ -36,13 +36,12 @@
 
 namespace orxonox
 {
-
-	CreateFactory(Dock);
+    CreateFactory(Dock);
 
     Dock::Dock(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Dock);
-		COUT(0) << "Registering dock..." << std::endl;
+        COUT(0) << "Registering dock..." << std::endl;
     }
 
     Dock::~Dock()
@@ -69,20 +68,32 @@ namespace orxonox
 
 
     bool Dock::execute(bool bTriggered, BaseObject* trigger)
-	{
-		COUT(0) << "Dock executed (bTriggered = " << (bTriggered? "true":"false") << ").." << std::endl;
-		return true;
-	}
+    {
+        COUT(0) << "Dock executed (bTriggered = " << (bTriggered? "true":"false") << ").." << std::endl;
+
+        //TODO: Handle MultiDistanceTrigger
+
+        //TODO: This way too oversimplified
+        if(bTriggered) {
+            DockingEffect::invokeEffect(docking::DOCKING, NULL, effects_);
+            DockingEffect::invokeEffect(docking::ATTACH, NULL, effects_);
+        } else {
+            DockingEffect::invokeEffect(docking::RELEASE, NULL, effects_);
+        }
 
 
-	bool Dock::addEffect(DockingEffect* effect) {
-		assert(effect);
-		effects_.push_back(effect);
-		return true;
-	}
-    
-	const DockingEffect* Dock::getEffect(unsigned int index) const {
-		int i = index;
+        return true;
+    }
+
+
+    bool Dock::addEffect(DockingEffect* effect) {
+        assert(effect);
+        effects_.push_back(effect);
+        return true;
+    }
+
+    const DockingEffect* Dock::getEffect(unsigned int index) const {
+        int i = index;
         for (std::list<DockingEffect*>::const_iterator effect = this->effects_.begin(); effect != this->effects_.end(); ++effect)
         {
             if(i == 0)
@@ -91,6 +102,5 @@ namespace orxonox
             i--;
         }
         return NULL;
-	}
-
+    }
 }

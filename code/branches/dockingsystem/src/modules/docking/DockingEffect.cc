@@ -46,14 +46,27 @@ namespace orxonox
 
     }
 
-    bool DockingEffect::invokeEffects(PlayerInfo* player, std::list<DockingEffect*> & effects)
+    bool DockingEffect::invokeEffect(docking::event event, PlayerInfo* player, std::list<DockingEffect*> & effects)
     {
         bool check = true;
 
         COUT(4) << "Invoking DockingEffects on player: " << player << " ."  << std::endl;
 
-        for (std::list<DockingEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
-            check = check	;// && (*effect)->invoke(player);  TODO
+        for (std::list<DockingEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++) {
+            switch(event) {
+                case docking::DOCKING:
+                    check &= (*effect)->docking(player);
+                    break;
+                case docking::ATTACH:
+                    check &= (*effect)->attach(player);
+                    break;
+                case docking::RELEASE:
+                    check &= (*effect)->release(player);
+                    break;
+                default:
+                    assert(0);
+            }
+        }
 
         return check;
     }
