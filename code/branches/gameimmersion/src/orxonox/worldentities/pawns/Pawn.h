@@ -80,6 +80,17 @@ namespace orxonox // tolua_export
             inline float getMaxShieldHealth() const
                 { return this->maxShieldHealth_; }
 
+            inline void setInitialShieldHealth(float initialshieldhealth)
+                { this->initialShieldHealth_ = initialshieldhealth; this->setShieldHealth(initialshieldhealth); }
+            inline float getInitialShieldHealth() const
+                { return this->initialShieldHealth_; }
+
+            inline void restoreInitialShieldHealth()
+                { this->setShieldHealth(this->initialShieldHealth_); }
+            inline void restoreMaxShieldHealth()
+                { this->setShieldHealth(this->maxShieldHealth_); }
+
+
 ///////////////////////////////// end me
 
             virtual void setHealth(float health);
@@ -185,6 +196,7 @@ namespace orxonox // tolua_export
             float reloadWaitCountdown_;
 
             float maxShieldHealth_;
+            float initialShieldHealth_;
 
 ////////////////////////// end me
 

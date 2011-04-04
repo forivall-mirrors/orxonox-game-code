@@ -128,7 +128,9 @@ namespace orxonox
 /////// me
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
+
         XMLPortParam(Pawn, "maxshieldhealth", setMaxShieldHealth, getMaxShieldHealth, xmlelement, mode).defaultValues(100);
+        XMLPortParam(Pawn, "initialshieldhealth", setInitialShieldHealth, getInitialShieldHealth, xmlelement, mode).defaultValues(0);
 
 /////// end me
 	//TODO: DEFINES fuer defaultwerte (hier und weiter oben dieselben)
@@ -226,7 +228,7 @@ namespace orxonox
 
     void Pawn::setHealth(float health)
     {
-        this->health_ = std::min(health, this->maxHealth_);
+        this->health_ = std::min(health, this->maxHealth_); //Health can't be set to a value bigger than maxHealth, otherwise it will be reduced at first hit
     }
 
 //////////////////me edit

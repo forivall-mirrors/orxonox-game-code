@@ -35,13 +35,15 @@
 	linearDamping=		"0.9"
 	angularDamping=		"0.7"
 
-	health=			200
+	health=			100
 	maxhealth=		150
-	inithealth=		100
+	inithealth=		200
 
-	shieldhealth=		200
-	shieldabsorption=	1
+	shieldhealth=		100
+	initialshieldhealth=	200
 	maxshieldhealth=	250
+
+	shieldabsorption=	1
 
 	reloadrate=		"10"
 	reloadwaittime=		1
