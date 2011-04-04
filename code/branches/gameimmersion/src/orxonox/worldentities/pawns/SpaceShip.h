@@ -102,6 +102,11 @@ namespace orxonox
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
 
+
+	    float shakeFrequency_;
+	    float shakeAmplitude_;
+	    float shakeDeltaTime_;
+
         private:
             void registerVariables();
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;

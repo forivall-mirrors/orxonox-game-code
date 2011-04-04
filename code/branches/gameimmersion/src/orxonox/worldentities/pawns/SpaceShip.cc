@@ -81,6 +81,10 @@ namespace orxonox
 	Camera* c = CameraManager::getInstance().getActiveCamera();
 	this->cameraOriginalPosition = c->getPosition();
 	this->cameraOriginalOrientation = c->getOrientation();
+
+	this->shakeFrequency_ = 100;
+	this->shakeAmplitude_ = 40;
+	this->shakeDeltaTime_ = 0;
     }
 
     SpaceShip::~SpaceShip()
@@ -155,9 +159,10 @@ namespace orxonox
             {
                 this->boostPower_ += this->boostPowerRate_*dt;
             }
+
+	Camera* c = CameraManager::getInstance().getActiveCamera();
             if(this->bBoost_)
             {
-		Camera* c = CameraManager::getInstance().getActiveCamera();
                 this->boostPower_ -=this->boostRate_*dt;
                 if(this->boostPower_ <= 0.0f)
                 {
@@ -165,20 +170,47 @@ namespace orxonox
                     this->bBoostCooldown_ = true;
                     this->timer_.setTimer(this->boostCooldownDuration_, false, createExecutor(createFunctor(&SpaceShip::boostCooledDown, this)));
 		    
-		    c->setVelocity(0,0,0);
-		    c->setPosition(this->cameraOriginalPosition);
-		    c->setOrientation(this->cameraOriginalOrientation);
                 }
 		else
 		{
-			//Kamera schuettelt
-			COUT(1) << "Afterburner effect\n";
+			this->shakeDeltaTime_ += dt;
+
+			//Shaking Camera effect
 			if (c != 0)
 			{
-				c->setVelocity(0.1, 2.0, 0.3);
+
+				if (c->getAngularVelocity() == Vector3(0,0,0))
+				{
+					c->setAngularVelocity(Vector3(2,0,0));
+					this->shakeDeltaTime_ = 0;
+				}
+
+
+				//toggle the rotation
+				if (1/(this->shakeFrequency_) <= shakeDeltaTime_)
+				{
+					c->setAngularVelocity(-c->getAngularVelocity());
+					shakeDeltaTime_ = 0;
+				}
+
+				
+				/*
+				COUT(1) << "Time since change: " << shakeDeltaTime_ << std::endl;
+				COUT(1) << "Rotation Rate: " << c->getRotationRate() << std::endl;
+				COUT(1) << "Angular Velocity: " << c->getAngularVelocity().length();
+				COUT(1) << std::endl;
+				*/
 			}
 		}
             }
+	    else
+	    {
+		    //reset the camera, if the boost is not active
+		    //TODO: don't call this every tick
+		    c->setAngularVelocity(Vector3(0,0,0));
+		    c->setPosition(this->cameraOriginalPosition);
+		    c->setOrientation(this->cameraOriginalOrientation);
+	    }
         }
     }
 
