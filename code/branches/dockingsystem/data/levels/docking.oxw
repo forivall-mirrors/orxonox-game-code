@@ -41,7 +41,7 @@
             </execute>
         </events>
         <attached>
-            <DistanceTrigger position="0,0,0" distance="20" target="ControllableEntity" name="dockMe" />
+            <DistanceTrigger position="0,0,0" distance="20" target="Pawn" name="dockMe" />
             <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
         </attached>
     </Dock>

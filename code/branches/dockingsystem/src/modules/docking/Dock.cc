@@ -78,33 +78,44 @@ namespace orxonox
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
         Pawn* pawn = NULL;
 
-        // If the trigger is a PlayerTrigger.
+        // Check whether it is a player trigger and extract pawn from it
         if(pTrigger != NULL)
         {
-            if(!pTrigger->isForPlayer())  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+            if(!pTrigger->isForPlayer()) {  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+                COUT(0) << "Docking:execute PlayerTrigger is not triggered for player.." << std::endl;
                 return false;
-            else
-                pawn = pTrigger->getTriggeringPlayer();
-        }
-        else
+            }
+            pawn = pTrigger->getTriggeringPlayer();
+        } else {
+            COUT(0) << "Docking::execute Not a player trigger, can't extract pawn from it.." << std::endl;
             return false;
-
+        }
         if(pawn == NULL)
         {
-            COUT(4) << "Docking: Can't retrieve Pawn from Trigger. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
+            COUT(0) << "Docking: Can't retrieve Pawn from Trigger. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
             return false;
         }
 
         // Extract the PlayerInfo from the Pawn.
         PlayerInfo* player = pawn->getPlayer();
-
         if(player == NULL)
         {
-            COUT(3) << "The PlayerInfo* is NULL." << std::endl;
+            COUT(0) << "The PlayerInfo* is NULL." << std::endl;
             return false;
         }
 
-        //TODO: This is way too oversimplified
+        // Try to get HumanPlayer
+        HumanPlayer* human;
+        if(!player->isHuman()) {
+            COUT(0) << "Docking::execute Not triggered by a human." << std::endl;
+            return false;
+        }
+        human = orxonox_cast<HumanPlayer*>(player);
+        assert(human);
+
+
+
+        //TODO: This is waaay too oversimplified
         if(bTriggered) {
             DockingEffect::invokeEffect(docking::DOCKING, player, effects_);
             DockingEffect::invokeEffect(docking::ATTACH, player, effects_);
