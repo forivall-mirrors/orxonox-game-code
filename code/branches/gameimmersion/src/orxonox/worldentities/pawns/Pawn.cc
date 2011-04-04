@@ -71,6 +71,8 @@ namespace orxonox
         this->reloadRate_ = 0;
         this->reloadWaitTime_ = 1.0f;
         this->reloadWaitCountdown_ = 0;
+
+        this->maxShieldHealth_ = 0;
 ////////////////////////end me
 
         this->lastHitOriginator_ = 0;
@@ -126,9 +128,10 @@ namespace orxonox
 /////// me
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
+        XMLPortParam(Pawn, "maxshieldhealth", setMaxShieldHealth, getMaxShieldHealth, xmlelement, mode).defaultValues(100);
 
 /////// end me
-
+	//TODO: DEFINES fuer defaultwerte (hier und weiter oben dieselben)
     }
 
     void Pawn::registerVariables()
@@ -159,7 +162,6 @@ namespace orxonox
             this->resetReloadCountdown();
         }
 
-	// TODO max. shield hinzufuegen
 ////////end me
         if (GameMode::isMaster())
             if (this->health_ <= 0 && bAlive_)
@@ -210,6 +212,15 @@ namespace orxonox
         this->reloadWaitCountdown_ -= dt;
     }
 
+    void Pawn::setMaxShieldHealth(float maxshieldhealth)
+    {
+        this->maxShieldHealth_ = maxshieldhealth;
+    }
+
+    void Pawn::setShieldHealth(float shieldHealth)
+    {
+        this->shieldHealth_ = std::min(shieldHealth, this->maxShieldHealth_);
+    }
 
 ///////////////end me
 
@@ -218,6 +229,7 @@ namespace orxonox
         this->health_ = std::min(health, this->maxHealth_);
     }
 
+//////////////////me edit
     void Pawn::damage(float damage, Pawn* originator)
     {
         if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
@@ -248,6 +260,7 @@ namespace orxonox
             // play damage effect
         }
     }
+////////////////////end edit
 
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage)
     {
