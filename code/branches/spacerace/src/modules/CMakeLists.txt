@@ -26,6 +26,7 @@ INCLUDE_DIRECTORIES(
 ################ Sub Directories ################
 
 ADD_SUBDIRECTORY(designtools)
+ADD_SUBDIRECTORY(gametypes)
 ADD_SUBDIRECTORY(notifications)
 ADD_SUBDIRECTORY(objects)
 ADD_SUBDIRECTORY(overlays)
