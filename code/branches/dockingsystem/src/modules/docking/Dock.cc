@@ -32,6 +32,7 @@
 */
 
 #include "Dock.h"
+#include "infos/HumanPlayer.h"
 #include "worldentities/pawns/Pawn.h"
 #include "interfaces/PlayerTrigger.h"
 
@@ -71,9 +72,7 @@ namespace orxonox
 
     bool Dock::execute(bool bTriggered, BaseObject* trigger)
     {
-        COUT(0) << "Dock executed (bTriggered = " << (bTriggered? "true":"false") << ").." << std::endl;
-
-        //TODO: Handle MultiDistanceTrigger
+        //TODO: Handle DistanceMultiTrigger
 
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
         Pawn* pawn = NULL;
@@ -82,7 +81,7 @@ namespace orxonox
         if(pTrigger != NULL)
         {
             if(!pTrigger->isForPlayer()) {  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
-                COUT(0) << "Docking:execute PlayerTrigger is not triggered for player.." << std::endl;
+                COUT(0) << "Docking:execute PlayerTrigger was not triggered by a player.." << std::endl;
                 return false;
             }
             pawn = pTrigger->getTriggeringPlayer();
@@ -92,7 +91,7 @@ namespace orxonox
         }
         if(pawn == NULL)
         {
-            COUT(0) << "Docking: Can't retrieve Pawn from Trigger. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
+            COUT(0) << "Docking::execute Can't retrieve Pawn from Trigger. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
             return false;
         }
 
@@ -105,20 +104,20 @@ namespace orxonox
         }
 
         // Try to get HumanPlayer
-        HumanPlayer* human;
-        if(!player->isHuman()) {
+        if(!player->isHumanPlayer()) {
             COUT(0) << "Docking::execute Not triggered by a human." << std::endl;
             return false;
         }
-        human = orxonox_cast<HumanPlayer*>(player);
-        assert(human);
-
-
+        HumanPlayer* human = orxonox_cast<HumanPlayer*>(player);
+        if(human == NULL) {
+            COUT(0) << "Docking::execute Player was not as human as expected.." << std::endl;
+        }
+        COUT(0) << "Dock triggered by player: " << human->getNick() << ".." << std::endl;
 
         //TODO: This is waaay too oversimplified
         if(bTriggered) {
             DockingEffect::invokeEffect(docking::DOCKING, player, effects_);
-            DockingEffect::invokeEffect(docking::ATTACH, player, effects_);
+            //DockingEffect::invokeEffect(docking::ATTACH, player, effects_);
         } else {
             DockingEffect::invokeEffect(docking::RELEASE, player, effects_);
         }

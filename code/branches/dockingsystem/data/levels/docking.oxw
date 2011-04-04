@@ -47,7 +47,7 @@
     </Dock>
 
 
-    <!-- 
+    
     <Destroyer
       position          = "100,150,0"
       collisionType     = dynamic
@@ -146,7 +146,7 @@
         <BoxCollisionShape position="167,0,70"      halfExtents="17, 20, 20" />
       </collisionShapes>
     </Destroyer>
-    //-->
+    
 
   </Scene>
 </Level>
