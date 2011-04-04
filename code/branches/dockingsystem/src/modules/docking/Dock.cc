@@ -32,6 +32,8 @@
 */
 
 #include "Dock.h"
+#include "worldentities/pawns/Pawn.h"
+#include "interfaces/PlayerTrigger.h"
 
 
 namespace orxonox
@@ -73,14 +75,42 @@ namespace orxonox
 
         //TODO: Handle MultiDistanceTrigger
 
-        //TODO: This way too oversimplified
-        if(bTriggered) {
-            DockingEffect::invokeEffect(docking::DOCKING, NULL, effects_);
-            DockingEffect::invokeEffect(docking::ATTACH, NULL, effects_);
-        } else {
-            DockingEffect::invokeEffect(docking::RELEASE, NULL, effects_);
+        PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
+        Pawn* pawn = NULL;
+
+        // If the trigger is a PlayerTrigger.
+        if(pTrigger != NULL)
+        {
+            if(!pTrigger->isForPlayer())  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
+                return false;
+            else
+                pawn = pTrigger->getTriggeringPlayer();
+        }
+        else
+            return false;
+
+        if(pawn == NULL)
+        {
+            COUT(4) << "Docking: Can't retrieve Pawn from Trigger. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
+            return false;
         }
 
+        // Extract the PlayerInfo from the Pawn.
+        PlayerInfo* player = pawn->getPlayer();
+
+        if(player == NULL)
+        {
+            COUT(3) << "The PlayerInfo* is NULL." << std::endl;
+            return false;
+        }
+
+        //TODO: This is way too oversimplified
+        if(bTriggered) {
+            DockingEffect::invokeEffect(docking::DOCKING, player, effects_);
+            DockingEffect::invokeEffect(docking::ATTACH, player, effects_);
+        } else {
+            DockingEffect::invokeEffect(docking::RELEASE, player, effects_);
+        }
 
         return true;
     }
