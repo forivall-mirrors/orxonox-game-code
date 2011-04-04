@@ -93,6 +93,7 @@ namespace orxonox
             this->destroy();
     }
 
+//////////////////////////me edit
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
         if (!this->bDestroy_ && GameMode::isMaster())
@@ -102,11 +103,11 @@ namespace orxonox
 
             this->bDestroy_ = true;
 
-            Pawn* victim = orxonox_cast<Pawn*>(otherObject);
+            Pawn* victim = orxonox_cast<Pawn*>(otherObject); //if otherObject isn't a Pawn, then victim is NULL
 
             if (this->owner_)
             {
-                if (victim && !victim->hasShield())
+                if (!victim || (victim && !victim->hasShield())) //same like below
                 {
                     ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
                     effect->setPosition(this->getPosition());
@@ -115,7 +116,7 @@ namespace orxonox
                     effect->setSource("Orxonox/explosion3");
                     effect->setLifetime(2.0f);
                 }
-                if (victim && !victim->hasShield())
+                if (!victim || (victim && !victim->hasShield())) //same like above
                 {
                     ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
                     effect->setPosition(this->getPosition());
@@ -136,10 +137,14 @@ namespace orxonox
             }
 
             if (victim)
+            {
                 victim->hit(this->owner_, contactPoint, this->damage_);
+                victim->startReloadCountdown();
+            }
         }
         return false;
     }
+//////////////////////////////////////////////////////////////////////end edit
 
     void Projectile::setOwner(Pawn* owner)
     {

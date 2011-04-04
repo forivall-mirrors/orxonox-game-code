@@ -67,6 +67,11 @@ namespace orxonox
         this->initialHealth_ = 0;
         this->shieldHealth_ = 0;
         this->shieldAbsorption_ = 0.5;
+////////////////////////me
+        this->reloadRate_ = 0;
+        this->reloadWaitTime_ = 1.0f;
+        this->reloadWaitCountdown_ = 0;
+////////////////////////end me
 
         this->lastHitOriginator_ = 0;
 
@@ -120,6 +125,7 @@ namespace orxonox
 
 /////// me
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
+        XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
 
 /////// end me
 
@@ -143,7 +149,16 @@ namespace orxonox
         this->bReload_ = false;
 
 ////////me
-        this->addShieldHealth(this->getReloadRate() * dt);
+        if(this->reloadWaitCountdown_ > 0)
+        {
+            this->decreaseReloadCountdownTime(dt);
+        }
+        else
+        {
+            this->addShieldHealth(this->getReloadRate() * dt);
+            this->resetReloadCountdown();
+        }
+
 	// TODO max. shield hinzufuegen
 ////////end me
         if (GameMode::isMaster())
@@ -182,6 +197,17 @@ namespace orxonox
     {
         this->reloadRate_ = reloadrate;
         COUT(2) << "RELOAD RATE SET TO " << this->reloadRate_ << endl;
+    }
+
+    void Pawn::setReloadWaitTime(float reloadwaittime)
+    {
+        this->reloadWaitTime_ = reloadwaittime;
+        COUT(2) << "RELOAD WAIT TIME SET TO " << this->reloadWaitTime_ << endl;
+    }
+
+    void Pawn::decreaseReloadCountdownTime(float dt)
+    {
+        this->reloadWaitCountdown_ -= dt;
     }
 
 

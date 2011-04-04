@@ -43,6 +43,7 @@
 	shieldabsorption=	1
 
 	reloadrate=		"10"
+	reloadwaittime=		5
 
 >
   <attached>

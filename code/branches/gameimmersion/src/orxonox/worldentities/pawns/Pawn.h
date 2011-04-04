@@ -64,6 +64,18 @@ namespace orxonox // tolua_export
             inline bool hasShield()
             { return (this->getShieldHealth() > 0); }
 
+            virtual void setReloadWaitTime(float reloadwaittime);
+            inline float getReloadWaitTime() const
+                { return this->reloadWaitTime_; }
+
+            inline void resetReloadCountdown()
+            { this->reloadWaitCountdown_ = 0; }
+
+            inline void startReloadCountdown()
+            { this->reloadWaitCountdown_ = this->getReloadWaitTime(); } //in projectile.cc einbauen!!!!!!1111!!111!
+
+            virtual void decreaseReloadCountdownTime(float dt);
+
 ///////////////////////////////// end me
 
             virtual void setHealth(float health);
@@ -165,6 +177,8 @@ namespace orxonox // tolua_export
 
 /////////////////////////// me
             float reloadRate_;
+            float reloadWaitTime_;
+            float reloadWaitCountdown_;
 
 ////////////////////////// end me
 
