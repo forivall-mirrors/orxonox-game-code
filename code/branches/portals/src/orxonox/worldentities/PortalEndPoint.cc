@@ -10,8 +10,6 @@ namespace orxonox
     PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), id_(0), material_(""), billboard_(0)
     {
         RegisterObject(PortalEndPoint);
-        trigger_.setDistance(10);
-        trigger_.setStayActive(true);
     }
     
     PortalEndPoint::~PortalEndPoint()
@@ -28,7 +26,29 @@ namespace orxonox
         
         if(mode == XMLPort::LoadObject)
         {
-            idMap_s[this->id_] = this;
+            PortalEndPoint::idMap_s[this->id_] = this;
         }
     }
+
+    void PortalEndPoint::tick(float dt)
+    {
+        SUPER(PortalEndPoint, tick);
+    }
+
+    void PortalEndPoint::jumpOut(WorldEntity* entity)
+    {
+        this->recentlyJumpedOut_.insert(entity);
+        entity->setPosition(this->getPosition());
+    }
+
+    bool PortalEndPoint::hasRecentlyJumpedOut(WorldEntity* entity)
+    {
+        if(this->recentlyJumpedOut_.find(entity) == this->recentlyJumpedOut_.end())
+        {
+            return false;
+        }
+        else
+            return true;
+    }
+
 }

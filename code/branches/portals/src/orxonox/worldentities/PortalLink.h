@@ -5,12 +5,13 @@
 #include "tools/interfaces/Tickable.h"
 #include "core/BaseObject.h"
 #include "PortalEndPoint.h"
+#include "objects/eventsystem/EventListener.h"
 
 #include <set>
 
 namespace orxonox
 {
-    class _OrxonoxExport PortalLink : public BaseObject
+    class _OrxonoxExport PortalLink : public EventListener
     {
         public:
             PortalLink(BaseObject* creator);
@@ -35,6 +36,7 @@ namespace orxonox
                 return this->toID_;
             }
             void use(WorldEntity * entity);
+            virtual void processEvent(Event& event);
         protected:
         private:
             unsigned int fromID_;
@@ -43,6 +45,7 @@ namespace orxonox
             PortalEndPoint* to_;
             float activationRadius_;
             std::set<WorldEntity *> recentlyPorted;
+            ObjectList<WorldEntity>::iterator it_;
             bool isNowPortable(WorldEntity * ent);
     };
 

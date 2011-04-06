@@ -1,5 +1,6 @@
 #include "PortalLink.h"
 #include "core/XMLPort.h"
+#include "objects/triggers/MultiTriggerContainer.h"
 
 namespace orxonox
 {
@@ -28,12 +29,30 @@ namespace orxonox
         }
     }
     
-    void PortalLink::use(WorldEntity * entity)
-    {
-        
-    }
     void PortalLink::tick(float dt)
     {
-        
+        SUPER(PortalLink, tick)
     }
+    
+    void PortalLink::processEvent(Event& event)
+    {
+        SUPER(PortalLink, processEvent);
+        if(!event.activate_)
+        {
+            return;
+        }
+        MultiTriggerContainer * origin = dynamic_cast<MultiTriggerContainer *>(event.originator_);
+        if(!origin)
+        {
+            return;
+        }
+        PortalEndPoint * eventFrom = dynamic_cast<PortalEndPoint *>(origin->getOriginator());
+        WorldEntity * eventEntity = dynamic_cast<WorldEntity *>(origin->getData());
+        if(eventFrom != this->from_ || !eventEntity || eventFrom->hasRecentlyJumpedOut(eventEntity) == true)
+        {
+            return;
+        }
+        to_->jumpOut(entity);
+    }
+
 }
