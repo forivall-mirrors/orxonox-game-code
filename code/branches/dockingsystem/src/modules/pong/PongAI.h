@@ -26,49 +26,71 @@
  *
  */
 
+/**
+    @file PongAI.h
+    @brief Declaration of the PongAI class.
+    @ingroup Pong
+*/
+
 #ifndef _PongAI_H__
 #define _PongAI_H__
 
 #include "pong/PongPrereqs.h"
 
 #include <list>
+
 #include "util/Math.h"
 #include "tools/interfaces/Tickable.h"
+
 #include "controllers/Controller.h"
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        The PongAI is an artificial intelligence for the @ref orxonox::Pong "Pong" gametype.
+
+    @author
+        Fabian 'x3n' Landau
+
+    @ingroup Pong
+    */
     class _PongExport PongAI : public Controller, public Tickable
     {
         public:
-            PongAI(BaseObject* creator);
+            PongAI(BaseObject* creator); //!< Constructor. Registers and initializes the object.
             virtual ~PongAI();
 
             void setConfigValues();
 
-            virtual void tick(float dt);
+            virtual void tick(float dt); //!< Implements the behavior of the PongAI (i.e. its intelligence).
 
+            /**
+            @brief Set the ball for the AI.
+            @param ball A pointer to the ball.
+            */
             void setPongBall(PongBall* ball)
                 { this->ball_ = ball; }
 
         protected:
-            void calculateRandomOffset();
-            void calculateBallEndPosition();
-            void move(char direction, bool bUseDelay);
-            void delayedMove();
+            void calculateRandomOffset(); //!< Calculates the random offset, that accounts for random errors the AI makes in order to be beatable.
+            void calculateBallEndPosition(); //!< Calculate the end position the ball will be in.
+            void move(char direction, bool bUseDelay); //!< Determine the movement the AI will undertake.
+            void delayedMove(); //!< Is called, when a delayed move takes effect.
 
-            PongBall* ball_;
-            Vector2 ballDirection_;
-            float ballEndPosition_;
-            float randomOffset_;
-            bool bChangedRandomOffset_;
-            float relHysteresisOffset_;
-            float strength_;
+            PongBall* ball_; //!< A pointer to the ball.
+            Vector2 ballDirection_; //!< Vector to store the (x,z) direction in which the ball is flying.
+            float ballEndPosition_; //!< The calculated end position of the ball.
+            float randomOffset_; //!< A random offset to introduce random errors (weighted by the strength of the AI) into the AI's behavior.
+            bool bChangedRandomOffset_; //!< Helper boolean, to change the random offset more often.
+            float relHysteresisOffset_; //!< A hysteresis offset.
+            float strength_; //!< The strength of the AI. Ranging from 0 to 1.
 
-            std::list<std::pair<Timer*, char> > reactionTimers_;
-            char movement_;
-            char oldMove_;
-            bool bOscillationAvoidanceActive_;
+            std::list<std::pair<Timer*, char> > reactionTimers_; //!< A list of reaction timers and the directions that take effect when their timer expires.
+            char movement_; //!< The planned movement.
+            char oldMove_; //!< The previous movement.
+            bool bOscillationAvoidanceActive_; //!< Boolean, to avoid oscillations.
     };
 }
 

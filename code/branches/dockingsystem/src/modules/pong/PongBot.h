@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file PongBot.h
+    @brief Declaration of the PongBot class.
+    @ingroup Pong
+*/
+
 #ifndef _PongBot_H__
 #define _PongBot_H__
 
@@ -34,6 +40,18 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        A bot especially for @ref orxonox::Pong "Pong".
+
+        Uses the @ref orxonox::PongAI "PongAI".
+
+    @author
+        Fabian 'x3n' Landau
+
+    @ingroup Pong
+    */
     class _PongExport PongBot : public Bot
     {
         public:

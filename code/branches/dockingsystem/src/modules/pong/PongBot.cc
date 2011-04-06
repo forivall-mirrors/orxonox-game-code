@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file PongBot.cc
+    @brief Implementation of the PongBot class.
+*/
+
 #include "PongBot.h"
 
 #include "core/CoreIncludes.h"
@@ -35,6 +40,10 @@ namespace orxonox
 {
     CreateFactory(PongBot);
 
+    /**
+    @brief
+        Constructor. Registers the object and creates a PongAI controller.
+    */
     PongBot::PongBot(BaseObject* creator) : Bot(creator)
     {
         RegisterObject(PongBot);
