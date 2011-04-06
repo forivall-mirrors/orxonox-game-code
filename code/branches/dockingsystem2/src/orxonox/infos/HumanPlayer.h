@@ -48,9 +48,6 @@ namespace orxonox
             float getPing() const;
             float getPacketLossRatio() const;
 
-            inline const std::string& getNick() const
-                { return this->nick_; }
-
             void setClientID(unsigned int clientID);
 
             virtual void changedGametype();

@@ -29,24 +29,6 @@
     <?lua for i = 1, 10, 1 do ?>
       <SpawnPoint position="<?lua print(math.random() * 500 - 250) ?>,<?lua print(math.random() * 500 - 250) ?>,<?lua print(math.random() * 500 - 250) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <?lua end ?>
-
-
-    <Dock>
-        <effects>
-            <DockToShip />
-        </effects>
-        <events>
-            <execute>
-                <EventListener event="dockMe" />
-            </execute>
-        </events>
-        <attached>
-            <DistanceTrigger position="0,0,0" distance="20" target="Pawn" name="dockMe" />
-            <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
-        </attached>
-    </Dock>
-
-
     
     <Destroyer
       position          = "100,150,0"
@@ -60,6 +42,21 @@
     >
 
       <attached>
+        <Dock>
+            <effects>
+                <DockToShip />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="dockMe" />
+                </execute>
+            </events>
+            <attached>
+                <DistanceMultiTrigger position="0,0,0" distance="20" target="Pawn" name="dockMe" />
+                <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
+            </attached>
+        </Dock>
+      
         <TeamSpawnPoint team=1 position="150,0,7" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <TeamSpawnPoint team=1 position="0,0,7" lookat="-1,0,0" roll="90"  yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <TeamSpawnPoint team=1 position="-50,0,7" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />

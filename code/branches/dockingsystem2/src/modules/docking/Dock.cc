@@ -112,7 +112,7 @@ namespace orxonox
         if(human == NULL) {
             COUT(0) << "Docking::execute Player was not as human as expected.." << std::endl;
         }
-        COUT(0) << "Dock triggered by player: " << human->getNick() << ".." << std::endl;
+        COUT(0) << "Dock triggered by player: " << human->getName() << ".." << std::endl;
 
         //TODO: This is waaay too oversimplified
         if(bTriggered) {
