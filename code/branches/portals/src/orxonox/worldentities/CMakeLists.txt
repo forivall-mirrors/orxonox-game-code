@@ -11,8 +11,6 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   CameraPosition.cc
   SpawnPoint.cc
   TeamSpawnPoint.cc
-  PortalEndPoint.cc
-  PortalLink.cc
 )
 
 ADD_SUBDIRECTORY(pawns)

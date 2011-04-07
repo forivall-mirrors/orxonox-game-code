@@ -7,7 +7,7 @@
 
 #include "StaticEntity.h"
 #include "graphics/Billboard.h"
-#include "../../modules/objects/triggers/DistanceMultiTrigger.h"
+#include "modules/objects/triggers/DistanceMultiTrigger.h"
 
 namespace orxonox
 {
