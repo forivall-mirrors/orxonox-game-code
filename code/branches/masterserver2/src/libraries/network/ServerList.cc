@@ -39,8 +39,14 @@ namespace orxonox
   }
 
   int 
-  ServerList::addServer( packet::ServerInformation toadd )
-  { this->serverlist.push_back( toadd ); 
+  ServerList::addServer( packet::ServerInformation toadd,
+    ENetPeer *peer )
+  { 
+    ServerListElem toAdd;
+    toAdd.ServerInfo = toadd;
+    toAdd.peer = peer;
+
+    this->serverlist.push_back( toAdd ); 
     return 0;
   }
 
@@ -48,11 +54,11 @@ namespace orxonox
   ServerList::delServerByName( std::string name )
   { 
     /* get an iterator */
-    std::list<packet::ServerInformation>::iterator i;
+    std::list<ServerListElem>::iterator i;
 
     /* loop through list elements */
     for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
-      if( (*i).getServerName() == name )
+      if( (*i).ServerInfo.getServerName() == name )
       { /* found this name, remove and quit */
         this->serverlist.erase( i );
         return true;
@@ -63,11 +69,11 @@ namespace orxonox
   bool ServerList::delServerByAddress( std::string address )
   { 
     /* get an iterator */
-    std::list<packet::ServerInformation>::iterator i;
+    std::list<ServerListElem>::iterator i;
 
     /* loop through list elements */
-    for( i=serverlist.begin(); i != serverlist.end(); ++i ) 
-      if( (*i).getServerIP() == address )
+    for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
+      if( (*i).ServerInfo.getServerIP() == address )
       { /* found this name, remove and quit */
         this->serverlist.erase( i );
         return true;
@@ -77,9 +83,9 @@ namespace orxonox
 
 
   /* sort by name */
-  bool sub_compare_names( packet::ServerInformation no1, 
-    packet::ServerInformation no2 )
-  { return no1.getServerName() > no2.getServerName(); }
+  bool sub_compare_names( ServerListElem no1, 
+    ServerListElem no2 )
+  { return no1.ServerInfo.getServerName() > no2.ServerInfo.getServerName(); }
 
   void ServerList::sortByName()
   { 
@@ -87,11 +93,10 @@ namespace orxonox
   }
   
   /* sort by ping */
-  bool sub_compare_pings( packet::ServerInformation no1, 
-    packet::ServerInformation no2 )
+  bool sub_compare_pings( ServerListElem no1, 
+    ServerListElem no2 )
   { 
-    /* TODO */
-    return no1.getServerName() > no2.getServerName();
+    return no1.ServerInfo.getServerName() > no2.ServerInfo.getServerName();
   }
 
   void ServerList::sortByPing()

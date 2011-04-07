@@ -51,7 +51,7 @@ namespace orxonox
   MasterServer::helper_sendlist( ENetEvent *event )
   {
     /* get an iterator */
-    std::list<packet::ServerInformation>::iterator i;
+    std::list<ServerListElem>::iterator i;
 
     /* packet holder */
     ENetPacket *reply;
@@ -62,14 +62,14 @@ namespace orxonox
     {
       /* send this particular server */
       /* build reply string */
-      char *tosend = (char *)calloc( (*i).getServerIP().length() 
+      char *tosend = (char *)calloc( (*i).ServerInfo.getServerIP().length() 
           + MSPROTO_SERVERLIST_ITEM_LEN + 2,1 );
       if( !tosend ) 
       { COUT(2) << "Masterserver.cc: Memory allocation failed.\n";
         continue;
       } 
       sprintf( tosend, "%s %s", MSPROTO_SERVERLIST_ITEM, 
-          (*i).getServerIP().c_str() );
+          (*i).ServerInfo.getServerIP().c_str() );
 
       /* create packet from it */
       reply = enet_packet_create( tosend,
@@ -103,25 +103,23 @@ namespace orxonox
    * servers.
    */
   void 
-  MasterServer::helper_pingServers( void )
+  MasterServer::helper_cleanupServers()
   {
     /* get an iterator */
-    std::list<packet::ServerInformation>::iterator i;
+    std::list<ServerListElem>::iterator i;
+
     /* loop through list elements */
     for( i = mainlist.serverlist.begin(); i 
         != mainlist.serverlist.end(); ++i ) 
     {
-      /* to be implemented, waiting for Oli to reply to my email - sandro */
-    
+      if( mainlist.serverlist.size() != 0 && (*i).peer && 
+         ((*i).peer->state == ENET_PEER_STATE_DISCONNECTED ||
+          (*i).peer->state == ENET_PEER_STATE_ZOMBIE ))
+      { mainlist.delServerByName( (*i).ServerInfo.getServerName() );
+        COUT(2) << "someone timed out.\n";
+      }
     }
  
-  }
-
-  void 
-  MasterServer::helper_cleanupServers()
-  {
-    /* same as above. */
-
   }
 
 
@@ -164,7 +162,7 @@ namespace orxonox
     }
 
     /* output that the disconnect happened */
-    COUT(4) << (char*)event->peer->data << " disconnected.\n";
+    COUT(2) << (char*)event->peer->data << " disconnected.\n";
 
     /* create string from peer data */
     std::string name = std::string( (char*)event->peer->data );
@@ -204,7 +202,8 @@ namespace orxonox
         + MSPROTO_GAME_SERVER_LEN+1, 
         MSPROTO_REGISTER_SERVER, MSPROTO_REGISTER_SERVER_LEN ) )
       { /* register new server */
-        mainlist.addServer( packet::ServerInformation( event ) );
+        mainlist.addServer( packet::ServerInformation( event ),
+          event->peer );
         
         /* tell people we did so */
         COUT(2) << "Added new server to list: " << 
@@ -259,10 +258,6 @@ namespace orxonox
       exit( EXIT_FAILURE );
     }
 
-    /* TODO schedule pings for servers somewhere here */
-    /* Iterate through servers and send pings */
-    helper_pingServers();
-    
     /* check for timed out pings and remove those guys from
      * the server list
      */
