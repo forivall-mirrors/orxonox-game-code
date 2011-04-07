@@ -6,7 +6,7 @@ namespace orxonox
 {
     CreateFactory(PortalLink);
     
-    PortalLink::PortalLink(BaseObject* creator) : BaseObject(creator), fromID_(0), toID_(0), from_(0), to_(0), activationRadius_(20)
+    PortalLink::PortalLink(BaseObject* creator) : EventListener(creator), fromID_(0), toID_(0), from_(0), to_(0), activationRadius_(20)
     {
         RegisterObject(PortalLink);
     }
@@ -31,12 +31,12 @@ namespace orxonox
     
     void PortalLink::tick(float dt)
     {
-        SUPER(PortalLink, tick)
+        SUPER(PortalLink, tick, dt);
     }
     
     void PortalLink::processEvent(Event& event)
     {
-        SUPER(PortalLink, processEvent);
+        EventListener::processEvent(event);
         if(!event.activate_)
         {
             return;
@@ -52,7 +52,7 @@ namespace orxonox
         {
             return;
         }
-        to_->jumpOut(entity);
+        to_->jumpOut(eventEntity);
     }
 
 }

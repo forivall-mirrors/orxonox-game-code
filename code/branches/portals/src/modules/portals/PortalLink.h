@@ -1,7 +1,7 @@
 #ifndef _PortalLink_H__
 #define _PortalLink_H__
 
-#include "OrxonoxPrereqs.h"
+#include "portals/PortalsPrereqs.h"
 #include "tools/interfaces/Tickable.h"
 #include "core/BaseObject.h"
 #include "PortalEndPoint.h"
@@ -11,7 +11,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport PortalLink : public EventListener
+    class _PortalsExport PortalLink : public EventListener
     {
         public:
             PortalLink(BaseObject* creator);

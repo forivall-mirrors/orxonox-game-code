@@ -8,7 +8,7 @@ ORXONOX_ADD_LIBRARY(portals
   FIND_HEADER_FILES
   TOLUA_FILES
   PCH_FILE
-    PickupPrecompiledHeaders.h
+    PortalsPrecompiledHeaders.h
   LINK_LIBRARIES
     orxonox
     objects

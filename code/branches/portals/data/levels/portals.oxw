@@ -26,9 +26,17 @@
   >
 
 
-   <PortalEndPoint position="0,0,0" material="Examples/Flare" id="1"/>
-   <PortalEndPoint position="-100,0,0" material="Examples/Flare" id="2"/>
-   <PortalLink fromID="1" toID="2" />
+	<PortalEndPoint position="0,0,0" id="1">
+		<attached>
+			<Billboard material="Examples/Flare" />
+		</attached>
+	</PortalEndPoint>
+	<PortalEndPoint position="-100,0,0" id="2">
+		<attached>
+			<Billboard material="Examples/Flare2" />
+		</attached>
+	</PortalEndPoint>
+	<PortalLink fromID="1" toID="2" />
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 

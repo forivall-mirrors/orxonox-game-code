@@ -185,6 +185,9 @@ namespace orxonox {
             inline void setActivations(int activations)
                 { if(activations >= 0 || activations == INF_s) this->remainingActivations_ = activations; }
 
+			inline bool hasRemainingActivations(void)
+				{ return this->remainingActivations_ == INF_s || this->remainingActivations_  > 0; } 
+
             /**
             @brief Adds the parent of a MultiTrigger.
             @param parent A pointer to the parent MultiTrigger.

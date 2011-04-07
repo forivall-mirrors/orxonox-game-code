@@ -1,17 +1,19 @@
 #ifndef _PortalEndPoint_H__
 #define _PortalEndPoint_H__
 
+#include "portals/PortalsPrereqs.h"
+
 #include <set>
 #include <string>
 #include <map>
 
-#include "StaticEntity.h"
+#include "worldentities/StaticEntity.h"
 #include "graphics/Billboard.h"
-#include "modules/objects/triggers/DistanceMultiTrigger.h"
+#include "objects/triggers/DistanceMultiTrigger.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport PortalEndPoint : public DistanceMultiTrigger
+    class _PortalsExport PortalEndPoint : public DistanceMultiTrigger
     {
         public:
             PortalEndPoint(BaseObject* creator);
@@ -35,7 +37,6 @@ namespace orxonox
         private:
             unsigned int id_;
             std::set<WorldEntity *> recentlyJumpedOut_; //!< Entities which recently jumped out of this EndPoint, hence they shouldn't be pulled in again if the endpoint is the beginning of a link
-            Billboard billboard_;
     };
 
 }
