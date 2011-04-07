@@ -68,8 +68,7 @@ namespace orxonox
 
       /* helpers */
       void helper_sendlist( ENetEvent *event );
-      void helper_pingServers( void );
-      void helper_cleanupServers();
+      void helper_cleanupServers( void );
 
       /* members */
       ENetAddress address;

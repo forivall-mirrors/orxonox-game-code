@@ -103,7 +103,7 @@ namespace orxonox
    * servers.
    */
   void 
-  MasterServer::helper_cleanupServers()
+  MasterServer::helper_cleanupServers( void )
   {
     /* get an iterator */
     std::list<ServerListElem>::iterator i;
@@ -114,12 +114,20 @@ namespace orxonox
     /* loop through list elements */
     for( i = mainlist.serverlist.begin(); i 
         != mainlist.serverlist.end(); ++i ) 
-    {
+    { /* see if we have a disconnected peer */
       if( (*i).peer && 
          ((*i).peer->state == ENET_PEER_STATE_DISCONNECTED ||
           (*i).peer->state == ENET_PEER_STATE_ZOMBIE ))
-      { mainlist.delServerByName( (*i).ServerInfo.getServerName() );
-        COUT(2) << "someone timed out.\n";
+      { 
+        /* Remove it from the list */
+        COUT(2) << (char*)(*i).peer->data << " timed out.\n";
+        mainlist.delServerByName( (*i).ServerInfo.getServerName() );
+
+        /* stop iterating, we manipulated the list */
+        /* TODO note: this only removes one dead server per loop
+         * iteration. not beautiful, but one iteration is ~100ms, 
+         * so not really relevant for the moment.
+         */
         break;
       }
     }
@@ -262,9 +270,7 @@ namespace orxonox
       exit( EXIT_FAILURE );
     }
 
-    /* check for timed out pings and remove those guys from
-     * the server list
-     */
+    /* check for timed out peers and remove those from * the server list */
     helper_cleanupServers();
 
 
