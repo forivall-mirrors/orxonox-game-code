@@ -60,7 +60,7 @@ namespace orxonox
     for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
       if( (*i).ServerInfo.getServerName() == name )
       { /* found this name, remove and quit */
-        this->serverlist.erase( i );
+        this->serverlist.clear();
         return true;
       }
     return false;

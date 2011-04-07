@@ -107,16 +107,20 @@ namespace orxonox
   {
     /* get an iterator */
     std::list<ServerListElem>::iterator i;
+     
+    if( mainlist.serverlist.size() == 0 )
+      return;
 
     /* loop through list elements */
     for( i = mainlist.serverlist.begin(); i 
         != mainlist.serverlist.end(); ++i ) 
     {
-      if( mainlist.serverlist.size() != 0 && (*i).peer && 
+      if( (*i).peer && 
          ((*i).peer->state == ENET_PEER_STATE_DISCONNECTED ||
           (*i).peer->state == ENET_PEER_STATE_ZOMBIE ))
       { mainlist.delServerByName( (*i).ServerInfo.getServerName() );
         COUT(2) << "someone timed out.\n";
+        break;
       }
     }
  
