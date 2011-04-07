@@ -52,10 +52,11 @@
                 </execute>
             </events>
             <attached>
-                <DistanceMultiTrigger position="0,0,0" distance="20" target="Pawn" name="dockMe" />
+                <DistanceTrigger position="0,0,0" distance="20" target="Pawn" beaconMode="exclude" targetname="beacon1" name="dockMe" />
                 <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
             </attached>
         </Dock>
+        <DistanceTriggerBeacon name="beacon1" />
       
         <TeamSpawnPoint team=1 position="150,0,7" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <TeamSpawnPoint team=1 position="0,0,7" lookat="-1,0,0" roll="90"  yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />

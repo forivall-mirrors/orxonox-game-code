@@ -44,6 +44,21 @@
 
 namespace orxonox
 {
+    
+  /**
+  @brief
+      Enum for the beacon mode of the DistanceTrigger.
+      
+  @ingroup NormalTrigger
+  */
+  namespace distanceTriggerBeaconMode
+  {
+      enum Value {
+          off,
+          identify,
+          exclude
+      };
+  }
 
   /**
   @brief
@@ -68,15 +83,25 @@ namespace orxonox
       void removeTarget(Ogre::Node* targetNode);
       void removeTargets(const std::string& targets);
 
-      inline void setTargetName(const std::string& targetname)
-        { if(targetname != "") this->singleTargetMode_ = true; else this->singleTargetMode_ = false; this->targetName_ = targetname; }
-      inline const std::string& getTargetName(void)
-        { return this->targetName_; }
-
       inline void setDistance(float distance)
         { this->distance_ = distance; }
       inline float getDistance() const
         { return this->distance_; }
+        
+      void setBeaconModeDirect(distanceTriggerBeaconMode::Value mode); //!< Set the beacon mode.
+      /**
+      @brief Get the beacon mode.
+      @return Returns the mode as an enum.
+      */
+      inline distanceTriggerBeaconMode::Value getBeaconModeDirect(void) const
+        { return this->beaconMode_; }
+      void setBeaconMode(const std::string& mode); //!< Set the beacon mode.
+      const std::string& getBeaconMode(void) const; //!< Get the beacon mode.
+            
+      inline void setTargetName(const std::string& targetname)
+        { this->targetName_ = targetname; }
+      inline const std::string& getTargetName(void)
+        { return this->targetName_; }
 
       bool checkDistance();
 
@@ -87,10 +112,18 @@ namespace orxonox
       ClassTreeMask targetMask_;
 
     private:
+      //! Strings for the beacon modes.
+      static const std::string beaconModeOff_s;
+      static const std::string beaconModeIdentify_s;
+      static const std::string beaconModeExlcude_s;
+            
       std::set<Ogre::Node*> targetSet_;
+      
+      distanceTriggerBeaconMode::Value beaconMode_;
       std::string targetName_;
+      ClassTreeMask* beaconMask_; //!< A mask, that only accepts DistanceTriggerBeacons.
+      
       float distance_;
-      bool singleTargetMode_;
 
   };
 }

@@ -134,7 +134,7 @@
                 </execute>
             </events>
             <attached>
-                <DistanceTrigger name="FightInOurBack_MainStart_FollowStart" position="0,0,0" distance="50" target="DistanceTriggerBeacon" targetname="PlayerDistanceTrigger" />
+                <DistanceTrigger name="FightInOurBack_MainStart_FollowStart" position="0,0,0" distance="50" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" />
                 <!--<Billboard position="0,0,0" colour="1.0,1.0,1.0" material="Examples/Flare" />-->
             </attached>
         </QuestEffectBeacon>
@@ -152,7 +152,7 @@
             </events>
             <attached>
                 <!--<Billboard position="0,0,0" colour="1,1,1" material="Examples/Flare" />-->
-                <DistanceTrigger name="FightInOurBack_FollowEnd_DTranspStart_AssisStart" position="0,0,0" distance="1000" target="DistanceTriggerBeacon" targetname="PlayerDistanceTrigger" stayactive=1 activations=1 />
+                <DistanceTrigger name="FightInOurBack_FollowEnd_DTranspStart_AssisStart" position="0,0,0" distance="1000" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" stayactive=1 activations=1 />
             </attached>
         </QuestEffectBeacon>
     
@@ -315,7 +315,7 @@ z=math.random(-8000,8000)
 <!--Creating spaceships (player's team) OK-->
 <!---->
 <!--Trigger to activate this Team (TEAM NO 1)-->
-    <DistanceTrigger name="activateTeam0No1" position="8000,0,3100" distance="1000" target="DistanceTriggerBeacon" targetname="PlayerDistanceTrigger" activations="1" stayactive="true" />
+    <DistanceTrigger name="activateTeam0No1" position="8000,0,3100" distance="1000" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" activations="1" stayactive="true" />
 
 <!--TEAM NO 1 (activationType : distance || killing a spaceship what belongs to TEAM 0 NO 0)-->
 <?lua for i=0,9,1 do
@@ -475,7 +475,7 @@ z=math.random(-300,300)
 <!--Creating spaceships (enemy) END -->
 
 <Trigger invert=true name="activateFirstSpawnpoint">
-    <DistanceTrigger name="activateSecondSpawnpoint" position="10000,0,3000" distance="1000" target="DistanceTriggerBeacon" targetname="PlayerDistanceTrigger" activations="1" stayactive="true" />
+    <DistanceTrigger name="activateSecondSpawnpoint" position="10000,0,3000" distance="1000" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" activations="1" stayactive="true" />
 </Trigger>
 
     </Scene>

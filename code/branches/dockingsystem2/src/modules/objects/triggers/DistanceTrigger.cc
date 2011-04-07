@@ -41,20 +41,26 @@
 
 namespace orxonox
 {
+    
+  /*static*/ const std::string DistanceTrigger::beaconModeOff_s = "off";
+  /*static*/ const std::string DistanceTrigger::beaconModeIdentify_s = "identify";
+  /*static*/ const std::string DistanceTrigger::beaconModeExlcude_s = "exclude";
+    
   CreateFactory(DistanceTrigger);
 
-  DistanceTrigger::DistanceTrigger(BaseObject* creator) : Trigger(creator)
+  DistanceTrigger::DistanceTrigger(BaseObject* creator) : Trigger(creator), beaconMask_(NULL)
   {
     RegisterObject(DistanceTrigger);
 
     this->distance_ = 100;
     this->targetMask_.exclude(Class(BaseObject));
     this->targetName_ = "";
-    this->singleTargetMode_ = false;
   }
 
   DistanceTrigger::~DistanceTrigger()
   {
+    if(this->beaconMask_ != NULL)
+      delete this->beaconMask_;
   }
 
   void DistanceTrigger::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -63,6 +69,7 @@ namespace orxonox
 
     XMLPortParam(DistanceTrigger, "distance", setDistance, getDistance, xmlelement, mode).defaultValues(100.0f);
     XMLPortParamLoadOnly(DistanceTrigger, "target", addTargets, xmlelement, mode).defaultValues("Pawn");
+    XMLPortParam(DistanceTrigger, "beaconMode", setBeaconMode, getBeaconMode, xmlelement, mode);
     XMLPortParam(DistanceTrigger, "targetname", setTargetName, getTargetName, xmlelement, mode);
   }
 
@@ -126,24 +133,43 @@ namespace orxonox
 
   bool DistanceTrigger::checkDistance()
   {
+    // Check for new objects that are in range
+    ClassTreeMask targetMask = this->targetMask_;
+    if(this->beaconMode_ == distanceTriggerBeaconMode::identify)
+     targetMask = *this->beaconMask_;
+    
     // Iterate through all objects
-    for (ClassTreeMaskObjectIterator it = this->targetMask_.begin(); it != this->targetMask_.end(); ++it)
+    for (ClassTreeMaskObjectIterator it = targetMask.begin(); it != targetMask.end(); ++it)
     {
       WorldEntity* entity = orxonox_cast<WorldEntity*>(*it);
       if (!entity)
         continue;
-
-      // If the DistanceTrigger is in single-target mode.
-      if(this->singleTargetMode_)
+      
+       // If the DistanceTrigger is in identify mode and the DistanceTriggerBeacon attached to the object has the wrong name we ignore it.
+      if(this->beaconMode_ == distanceTriggerBeaconMode::identify)
       {
-        // If the object that is a target is no DistanceTriggerBeacon, then the DistanceTrigger can't be in single-target-mode.
-        if(!(*it)->isA(ClassIdentifier<DistanceTriggerBeacon>::getIdentifier()))
+        if(entity->getName() != this->targetName_)
+            continue;
+        // If the object, the DistanceTriggerBeacon is attached to, is not a target of this DistanceMultiTrigger.
+        else if(this->targetMask_.isExcluded(entity->getParent()->getIdentifier()))
+            continue;
+      }
+    
+      // If the DistanceTrigger is in exclude mode and the DistanceTriggerBeacon attached to the object has the right name, we ignore it.
+      if(this->beaconMode_ == distanceTriggerBeaconMode::exclude)
+      {
+        
+        const std::set<WorldEntity*> attached = entity->getAttachedObjects();
+        bool found = false;
+        for(std::set<WorldEntity*>::const_iterator it = attached.begin(); it != attached.end(); it++)
         {
-          this->singleTargetMode_ = false;
-          COUT(2) << "DistanceTrigger " << this->getName() << " (&" << this <<  ")" << "is in single-target mode but the target is '" << entity->getIdentifier()->getName() << "' instead of DistanceTriggerBeacon. Setting single-target mode to false." << std::endl;
+          if((*it)->isA(ClassIdentifier<DistanceTriggerBeacon>::getIdentifier()) && static_cast<DistanceTriggerBeacon*>(*it)->getName() == this->targetName_)
+          {
+            found = true;
+            break;
+          }
         }
-        // If the target name and the name of the DistancTriggerBeacon don't match.
-        else if(entity->getName().compare(this->targetName_) != 0)
+        if(found)
           continue;
       }
 
@@ -151,12 +177,12 @@ namespace orxonox
       if (distanceVec.length() < this->distance_)
       {
 
-        // If the target is a player (resp. is a, or is derived from a, ControllableEntity) the triggeringPlayer is set to the target entity.
+        // If the target is a player (resp. is a, or is derived from a, Pawn) the triggeringPlayer is set to the target entity.
         if(this->isForPlayer())
         {
 
-          // Change the entity to the parent of the DistanceTriggerBeacon (if in single-target-mode), which is the entity to which the beacon is attached.
-          if(this->singleTargetMode_)
+          // Change the entity to the parent of the DistanceTriggerBeacon (if in identify-mode), which is the entity to which the beacon is attached.
+          if(this->beaconMode_ == distanceTriggerBeaconMode::identify)
             entity = entity->getParent();
 
           Pawn* player = orxonox_cast<Pawn*>(entity);
@@ -168,6 +194,63 @@ namespace orxonox
     }
 
     return false;
+  }
+  
+  /**
+  @brief
+    Set the beacon mode.
+  @param mode
+    The mode as an enum.
+  */
+  void DistanceTrigger::setBeaconModeDirect(distanceTriggerBeaconMode::Value mode)
+  {
+    this->beaconMode_ = mode;
+    if(this->beaconMode_ == distanceTriggerBeaconMode::identify && this->beaconMask_ == NULL)
+    {
+      this->beaconMask_ = new ClassTreeMask();
+      this->beaconMask_->exclude(Class(BaseObject));
+      this->beaconMask_->include(Class(DistanceTriggerBeacon));
+    }
+  }
+    
+  /**
+  @brief
+    Get the beacon mode.
+  @return
+    Returns the mode as a string.
+  */
+  const std::string& DistanceTrigger::getBeaconMode(void) const
+  {
+    switch(this->getBeaconModeDirect())
+    {
+      case distanceTriggerBeaconMode::off :
+        return DistanceTrigger::beaconModeOff_s;
+      case distanceTriggerBeaconMode::identify:
+        return DistanceTrigger::beaconModeIdentify_s;
+      case distanceTriggerBeaconMode::exclude:
+        return DistanceTrigger::beaconModeExlcude_s;
+      default :
+        assert(0); // This is impossible.
+        return BLANKSTRING;
+    }
+  }
+    
+  /**
+  @brief
+    Set the beacon mode.
+  @param mode
+    The mode as a string.
+  */
+  void DistanceTrigger::setBeaconMode(const std::string& mode)
+  {
+    if(mode == DistanceTrigger::beaconModeOff_s)
+      this->setBeaconModeDirect(distanceTriggerBeaconMode::off);
+    else if(mode == DistanceTrigger::beaconModeIdentify_s)
+      this->setBeaconModeDirect(distanceTriggerBeaconMode::identify);
+    else if(mode == DistanceTrigger::beaconModeExlcude_s)
+      this->setBeaconModeDirect(distanceTriggerBeaconMode::exclude);
+    else
+      COUT(1) << "Invalid beacon mode in DistanceTrigger." << endl;
   }
 
   bool DistanceTrigger::isTriggered(TriggerMode::Value mode)

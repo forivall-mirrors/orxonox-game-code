@@ -93,7 +93,7 @@
 <!--Triggers (used for the Time Machine effect)___________________________________________________________________________________________________________________________________________-->
     
         <!--TRIGGERS IF THE PLAYERS REACHES THE "TIME MACHINE"-->
-        <DistanceTrigger name="EnterTimeMachine" position="0,0,0" distance="100" target="DistanceTriggerBeacon" targetname="PlayerDistanceTrigger" >
+        <DistanceTrigger name="EnterTimeMachine" position="0,0,0" distance="100" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" >
             <attached>
                 <Billboard position="0,0,0" material="Examples/Flare" colour="0, 0, 1" scale=1/>
                 <Billboard position="100,0,0" material="Examples/Flare" colour="0, 0, 1" scale=1/>

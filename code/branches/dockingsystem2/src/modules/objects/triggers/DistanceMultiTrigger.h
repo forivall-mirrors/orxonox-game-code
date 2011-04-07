@@ -50,10 +50,26 @@ namespace orxonox
 
     /**
     @brief
-        The DistanceMultiTrigger is a MultiTrigger that triggers whenever an object (that is of the specified target type) is in a specified range of the DistanceMultiTrigger. The object can be specified further by adding a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" (by just attaching it) to the objects that can trigger this DistanceMultiTrigger and specify the name of the @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" with the parameter <em>targetname</em> and only objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" with that name will trigger the DistanceMultiTrigger.
+        Enum for the beacon mode of the DistanceMultiTrigger.
+        
+    @ingroup MultiTrigger
+    */
+    namespace distanceMultiTriggerBeaconMode
+    {
+        enum Value {
+            off,
+            identify,
+            exclude
+        };
+    }
+
+    /**
+    @brief
+        The DistanceMultiTrigger is a MultiTrigger that triggers whenever an object (that is of the specified target type) is in a specified range of the DistanceMultiTrigger. The object can be specified further by setting the <em>beaconMode</em> and attaching a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" to the object.
         Parameters are (additional to the ones of MultiTrigger):
         - @b distance Which specifies the maximum distance at which the DistanceMultiTrigger still triggers. Default is 100.
-        - @b targetname Which, if not left blank, causes the DistancMultiTrigger to be in <em>single-target</em> mode, meaning, that it only reacts to objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" (therefore the target has to be set to @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" for it to work), with the name specified by <em>targetname</em>, attached.
+        - @b beaconMode Which specifies, whether the DistanceMultiTrigger operates on @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacons" or not. If <em>off</em> the DistanceMultiTrigger works as usual. If set to <em>identify</em> the DistanceMultiTrigger is only triggered by objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. If set to <em>exclude</em> the DistanceMultiTrigger is only triggered by objects that don't have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. Default is <em>off</em>.
+        - @b targetname Which, if not left blank, causes the DistanceMultiTrigger to be in <em>identify</em> beaconMode (unless otherwise specified), meaning, that it only reacts to objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" with the name specified by <em>targetname</em>, attached.
 
         A simple DistanceMultiTrigger would look like this:
         @code
@@ -62,7 +78,7 @@ namespace orxonox
 
         An implementation that only reacts to objects with a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" attached would look like this:
         @code
-        <DistanceMultiTrigger position="0,0,0" target="DistanceMultiTrigger" targetname="beacon1" distance="30" />
+        <DistanceMultiTrigger position="0,0,0" target="Pawn" beaconMode="identify" targetname="beacon1" distance="30" />
         @endcode
         This particular DistanceMultiTrigger would only react if an object was in range, that had a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon" with the name <em>beacon1</em> attached.
 
@@ -82,15 +98,7 @@ namespace orxonox
             virtual ~DistanceMultiTrigger(); //!< Destructor.
 
             void XMLPort(Element& xmlelement, XMLPort::Mode mode); //!< Method for creating a DistanceMultiTrigger object through XML.
-
-            void setTargetName(const std::string& targetname); //!< Set the target name of DistanceTriggerBeacons that triggers this DistanceMultiTrigger.
-            /**
-            @brief Get the target name of the DistanceTriggerbeacon, that triggers this DistanceMultiTrigger.
-            @return Returns the target name as a string.
-            */
-            inline const std::string& getTargetName(void)
-                { return this->targetName_; }
-
+            
             /**
             @brief Set the distance at which the DistanceMultiTrigger triggers.
             @param distance The distance.
@@ -103,6 +111,29 @@ namespace orxonox
             */
             inline float getDistance() const
                 { return this->distance_; }
+            
+            void setBeaconModeDirect(distanceMultiTriggerBeaconMode::Value mode); //!< Set the beacon mode.
+            /**
+            @brief Get the beacon mode.
+            @return Returns the mode as an enum.
+            */
+            inline distanceMultiTriggerBeaconMode::Value getBeaconModeDirect(void) const
+                { return this->beaconMode_; }
+            void setBeaconMode(const std::string& mode); //!< Set the beacon mode.
+            const std::string& getBeaconMode(void) const; //!< Get the beacon mode.
+
+            /**
+            @brief Set the target name of DistanceTriggerBeacons that triggers this DistanceMultiTrigger.
+            @param targetname The name of the DistanceTriggerBeacon as a string.
+            */
+            inline void setTargetName(const std::string& targetname)
+                { this->targetName_ = targetname; }
+            /**
+            @brief Get the target name of the DistanceTriggerbeacon, that triggers this DistanceMultiTrigger.
+            @return Returns the target name as a string.
+            */
+            inline const std::string& getTargetName(void) const
+                { return this->targetName_; }
 
         protected:
             virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
@@ -111,9 +142,16 @@ namespace orxonox
             bool removeFromRange(WorldEntity* entity); //!< Remove a given entity from the set of entities, that currently are in range of the DistanceMultiTrigger.
 
         private:
+            //! Strings for the beacon modes.
+            static const std::string beaconModeOff_s;
+            static const std::string beaconModeIdentify_s;
+            static const std::string beaconModeExlcude_s;
+            
             float distance_; //!< The distance at which the DistanceMultiTrigger triggers.
+
+            distanceMultiTriggerBeaconMode::Value beaconMode_; //!< The beacon mode, the DistanceMultiTrigger is in.
             std::string targetName_; //!< The target name, used in <em>single-target</em> mode.
-            bool singleTargetMode_; //!< To indicate whe the MultiDistanceTrigger is in <em>single-target</em> mode.
+            ClassTreeMask* beaconMask_; //!< A mask, that only accepts DistanceTriggerBeacons.
 
             std::map<WorldEntity*, WeakPtr<WorldEntity>* > range_; //!< The set of entities that currently are in range of the DistanceMultiTrigger.
 
