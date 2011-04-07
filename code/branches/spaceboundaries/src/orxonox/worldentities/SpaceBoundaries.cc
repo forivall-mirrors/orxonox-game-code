@@ -28,18 +28,14 @@
 
 #include "SpaceBoundaries.h"
 
-/* Folgender Block ist Copy-Paste und somit teilweise wohl unnoetig */
-#include "core/Template.h"
-#include "core/XMLPort.h"
-#include "gametypes/Gametype.h"
-#include "worldentities/pawns/Pawn.h"
-
-/* Eigene, spezifische include-Statements*/
 #include "worldentities/MobileEntity.h"
 #include "worldentities/ControllableEntity.h"
 #include "core/ObjectListIterator.h"
-#include <worldentities/pawns/Pawn.h>
-#include <infos/PlayerInfo.h>
+#include "core/XMLPort.h"
+#include "worldentities/pawns/Pawn.h"
+#include "infos/PlayerInfo.h"
+#include "interfaces/RadarViewable.h"
+
 
 //#include <OgreTextAreaOverlayElement.h>
 #include <OgreOverlayManager.h>
@@ -51,23 +47,25 @@ namespace orxonox
 
     SpaceBoundaries::SpaceBoundaries(BaseObject* creator) : StaticEntity(creator)
     {
+        /* Standardwerte, die zum Tragen kommen,
+         * falls im XML-File keine Werte spezifiziert wurden. */
+        this->setMaxDistance(3000);
+        this->setWarnDistance(2000);
+        this->setHealthDecrease(1);
+        
         RegisterObject(SpaceBoundaries);
-        COUT(0) << "Test ob Konstruktor aufgerufen wird." << std::endl; //!< message for debugging
+        
         // Show Boundaries on the radar.
+        this->centerRadar_ = new RadarViewable(this, this);
+        this->centerRadar_->setRadarObjectShape(RadarViewable::Dot);
+        this->centerRadar_->setRadarVisibility(false);
+        
 //         m_pColoredTextAreaOverlayElementFactory = new ColoredTextAreaOverlayElementFactory();
     }
     SpaceBoundaries::~SpaceBoundaries()
     {
+        delete this->centerRadar_;
 //        delete pColoredTextAreaOverlayElementFactory;
-    }
-    
-    void SpaceBoundaries::setCenter(Vector3 r)
-    {
-        this->center_ = r;
-    }
-    Vector3 SpaceBoundaries::getCenter()
-    {
-        return this->center_;
     }
     
     void SpaceBoundaries::setMaxDistance(float r)
@@ -87,14 +85,23 @@ namespace orxonox
     {
         return this->warnDistance_;
     }
+    
+    void SpaceBoundaries::setHealthDecrease(float amount)
+    {
+        this->healthDecrease_ = amount/1000;
+    }
+    float SpaceBoundaries::getHealthDecrease()
+    {
+        return this->healthDecrease_;
+    }
 
     void SpaceBoundaries::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(SpaceBoundaries, XMLPort, xmlelement, mode);
 
-        XMLPortParam(SpaceBoundaries, "center", setCenter, getCenter, xmlelement, mode);
         XMLPortParam(SpaceBoundaries, "maxDistance", setMaxDistance, getMaxDistance, xmlelement, mode);
         XMLPortParam(SpaceBoundaries, "warnDistance", setWarnDistance, getWarnDistance, xmlelement, mode);
+        XMLPortParam(SpaceBoundaries, "healthDecrease", setHealthDecrease, getHealthDecrease, xmlelement, mode);
     }
     
     void SpaceBoundaries::tick(float dt)
@@ -103,14 +110,12 @@ namespace orxonox
         {
             MobileEntity* myMobileEntity = *item;
             Pawn* myItem = dynamic_cast<Pawn*>(myMobileEntity);
-            //COUT(0) << "Die for-Schleife wird erreicht!!!" << std::endl; //!< message for debugging
             if(myItem != NULL)
             {
                 float distance = computeDistance((WorldEntity*) myItem);
                 bool humanItem = this->isHumanPlayer(myItem);
-                COUT(0) << "Pawn wird erkannt!!!" << std::endl; //!< message for debugging
                 COUT(0) << "Distanz:" << distance << std::endl; //!< message for debugging
-                if(distance > this->warnDistance_ /*&& distance < this->maxDistance*/)
+                if(distance > this->warnDistance_ && distance < this->maxDistance_)
                 {
                     COUT(0) << "You are leaving the area" << std::endl; //!< message for debugging
                     if(humanItem)
@@ -118,16 +123,18 @@ namespace orxonox
                         COUT(0) << "humanItem ist true" << std::endl;
                         this->displayWarning("Attention! You are leaving the area!");
                     } else {
-                    
+                        
                     }
-                } else if(distance > maxDistance_)
+                }
+                if(distance > maxDistance_)
                 {
-                    // Decrease Health
                     if(humanItem)
                     {
-                        
+                        COUT(0) << "Health should be decreasing!" << std::endl;
+                        this->displayWarning("You are out of the area now!");
+                        myItem->removeHealth( (distance - maxDistance_) * this->healthDecrease_);
                     } else {
-                    
+                        
                     }
                 }
             }
@@ -137,7 +144,7 @@ namespace orxonox
     float SpaceBoundaries::computeDistance(WorldEntity *item)
     {
         Vector3 itemPosition = item->getPosition();
-        return (itemPosition.distance(this->center_));
+        return (itemPosition.distance(this->getPosition()));
     }
     
     void SpaceBoundaries::displayWarning(const std::string warnText)
@@ -171,32 +178,12 @@ namespace orxonox
     {
         if(item != NULL)
         {
-            return item->getPlayer()->isHumanPlayer();
-        } else {
-            return false;
+            if(item->getPlayer())
+            {
+                return item->getPlayer()->isHumanPlayer();
+            }
         }
+        return false;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 }

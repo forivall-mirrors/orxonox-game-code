@@ -25,17 +25,19 @@
  *      ...
  *
  */
+ 
+ /* TODO: - Markiere SpaceBoundaries-Position mit einem schoenen Objekt 
+          - Kugel-Model mal hinzufuegen, das nur sichtbar ist, wenn man genuegend nah an maxDistance dran ist
+          - Reflexion an obiger Kugel beim Versuch durchzudringen
+ */
 
 #ifndef _SpaceBoundaries_H__
 #define _SpaceBoundaries_H__
 
-/* Folgender Block ist Copy-Paste und somit teilweise wohl unnoetig */
-#include "OrxonoxPrereqs.h"
-#include "core/SubclassIdentifier.h"
-
 /* Einige, spezifische include-Statements */
 #include "core/CoreIncludes.h"
 #include "tools/interfaces/Tickable.h"
+#include "interfaces/RadarViewable.h"
 #include "worldentities/StaticEntity.h"
 #include "worldentities/WorldEntity.h"
 
@@ -43,6 +45,12 @@
 
 #include <string>
 
+/**
+@brief SpaceBoundaries gives level creators the possibility to bar Pawns from leaving a defined area.
+
+       Four attributes can/should be defined in the XML-File:
+       'position', 'warnDistance', 'maxDistance', 'healthDecrease'.
+*/
 
 namespace orxonox
 {
@@ -52,27 +60,32 @@ namespace orxonox
             SpaceBoundaries(BaseObject* creator);
             ~SpaceBoundaries();
             
-            void setCenter(Vector3 r);
-            Vector3 getCenter();
-            
             void setMaxDistance(float r);
             float getMaxDistance();
             
             void setWarnDistance(float r);
             float getWarnDistance();
+            
+            void setHealthDecrease(float amount);
+            float getHealthDecrease();
 
             void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             
             void tick(float dt);
 
         private:
-            Vector3 center_;
-            float maxDistance_;
-            float warnDistance_;
+            float maxDistance_; //!< maximal zulaessige Entfernung von 'this->getPosition()'.
+            float warnDistance_; //!< Entfernung von 'this->getPosition()', ab der eine Warnung angezeigt wird, dass man bald das zulaessige Areal verlaesst.
+            
+            float healthDecrease_; //!< Mass fuer die Anzahl Health-Points, die nach ueberschreiten der Entfernung 'maxDistance_' von 'this->getPosition()' abgezogen werden.
+                                   //!< Empfohlene Werte: 0.1 (langsame Health-Verminderung) bis 5 (sehr schnelle Health-Verminderung)
+            
+            RadarViewable* centerRadar_; //!< Repraesentation von 'this->getPosition()' auf dem Radar.
         
-            float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'center' bezogen.
+            float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'this->getPosition()' bezogen.
             void displayWarning(const std::string warnText);
             bool isHumanPlayer(Pawn *item);
+            
  //           ColoredTextAreaOverlayElementFactory* pColoredTextAreaOverlayElementFactory;
     };
 }
