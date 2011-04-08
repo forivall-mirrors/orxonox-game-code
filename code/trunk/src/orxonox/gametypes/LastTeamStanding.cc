@@ -43,7 +43,7 @@ namespace orxonox
     {
         RegisterObject(LastTeamStanding);
         this->bForceSpawn_ = true;
-        this->lives = 1;//4
+        this->lives = 4;
         this->eachTeamsPlayers.resize(teams_,0);
         this->teamsAlive = 0;
         this->bNoPunishment = false;
@@ -56,11 +56,6 @@ namespace orxonox
     
     LastTeamStanding::~LastTeamStanding()
     {
-        //this->playerLives_.clear();
-        //this->eachTeamsPlayers.clear();
-        //this->timeToAct_.clear();
-        //this->inGame_.clear();
-        //this->playerDelayTime_.clear();
     }   
 
     void LastTeamStanding::playerEntered(PlayerInfo* player)
