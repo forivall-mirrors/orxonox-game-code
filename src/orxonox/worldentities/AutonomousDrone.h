@@ -107,7 +107,7 @@ namespace orxonox {
             inline void setPrimaryThrust( float thrust )
                 { this->primaryThrust_ = thrust; }
             //TODO: Place your set-functions here.
-            // - hint: auxiliary thrust, rotation thrust.
+            // Hint: auxiliary thrust, rotation thrust.
             
             /**
             @brief Gets the primary thrust to the input amount.
