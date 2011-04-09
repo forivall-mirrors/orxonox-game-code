@@ -36,6 +36,7 @@
 #define _EventTrigger_H__
 
 #include "objects/ObjectsPrereqs.h"
+
 #include "Trigger.h"
 
 namespace orxonox
@@ -43,6 +44,22 @@ namespace orxonox
 
     /**
     @brief
+        The EventTrigger class provides a way to have a Trigger triggered by any kinds of @ref orxonox::Event "Events".
+
+        Example:
+        @code
+        <EventTrigger invert="true">
+            <events>
+                <trigger>
+                    <TriggerBase ... />
+                    <EventListener ... />
+                </trigger>
+            </events>
+        </EventTrigger>
+        @endcode
+
+    @see Trigger
+        For more information on @ref oroxnox::Trigger "Triggers".
 
     @author
         Fabian 'x3n' Landau
@@ -52,19 +69,24 @@ namespace orxonox
     class _ObjectsExport EventTrigger : public Trigger
     {
         public:
-            EventTrigger(BaseObject* creator);
+            EventTrigger(BaseObject* creator); // Constructor. Registers and initializes the object.
             virtual ~EventTrigger();
 
-            virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void XMLEventPort(Element& xmlelement, XMLPort::Mode mode); // Creates an event port.
 
+            /**
+            @brief Method that is called when a new event comes in.
+                   The tick call makes sure the state change takes effect immediately.
+            @param bTriggered The state of the incoming event.
+            */
             inline void trigger(bool bTriggered)
                 { this->bEventTriggered_ = bTriggered; this->tick(0); }
 
         protected:
-            virtual bool isTriggered(TriggerMode::Value mode);
+            virtual bool isTriggered(TriggerMode::Value mode); // Check whether the EventTrigger should be triggered.
 
         private:
-            bool bEventTriggered_;
+            bool bEventTriggered_; //!< Boolean to keep track of what the state of the last event was.
     };
 }
 

@@ -61,7 +61,7 @@ namespace orxonox
         @endcode
 
     @see MultiTrigger
-        For more information on MultiTriggers.
+        For more information on @ref orxonox::MultiTrigger "MultiTriggers".
 
     @author
         Damian 'Mozork' Frick

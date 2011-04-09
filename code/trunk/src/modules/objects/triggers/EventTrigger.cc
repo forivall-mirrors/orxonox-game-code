@@ -41,6 +41,12 @@ namespace orxonox
 {
     CreateFactory(EventTrigger);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    @param creator
+        The creator of the EventTrigger.
+    */
     EventTrigger::EventTrigger(BaseObject* creator) : Trigger(creator)
     {
         RegisterObject(EventTrigger);
@@ -48,10 +54,18 @@ namespace orxonox
         this->bEventTriggered_ = false;
     }
 
+    /**
+    @brief
+        Destructor.
+    */
     EventTrigger::~EventTrigger()
     {
     }
 
+    /**
+    @brief
+        Creates an event port.
+    */
     void EventTrigger::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(EventTrigger, XMLEventPort, xmlelement, mode);
@@ -59,6 +73,11 @@ namespace orxonox
         XMLPortEventState(EventTrigger, BaseObject, "trigger", trigger, xmlelement, mode);
     }
 
+    /**
+    @brief
+        Check whether the EventTrigger should be triggered.
+        It should be triggered if it is triggered according just to its sub-triggers and if the last event that came in was an event that changed from not triggered to triggered.
+    */
     bool EventTrigger::isTriggered(TriggerMode::Value mode)
     {
         if (Trigger::isTriggered(mode))

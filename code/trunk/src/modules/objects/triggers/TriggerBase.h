@@ -63,7 +63,7 @@ namespace orxonox {
 
     /**
     @brief
-        The TriggerBase class is a base class for the two types of triggers, the (normal) @ref orxonox::Trigger "Triggers" and the @ref orxonox::MultiTrigger "MultiTriggers", it encompasses the shared data and functionality between these two types of triggers, but is in itself not a trigger that has any meaningful behaviour and thus should not be instantiated.
+        The TriggerBase class is a base class for the two types of triggers, the (normal) @ref orxonox::Trigger "Triggers" and the @ref orxonox::MultiTrigger "MultiTriggers", it encompasses the shared data and functionality between these two types of triggers, but is in itself not a trigger that has any meaningful behavior and thus should not be instantiated.
 
     @author
         Damian 'Mozork' Frick
@@ -80,7 +80,7 @@ namespace orxonox {
             virtual void tick(float dt); //!< A method that is executed each tick.
 
             /**
-            @brief Check whether the trigger is active.
+            @brief Check whether the trigger is active. (i.e. triggered to the outside)
             @return Returns if the trigger is active.
             */
             virtual bool isActive(void) const
