@@ -23,8 +23,7 @@
  #    Creates the file structure for the development application bundle
  #
 
-IF(APPLE)
-  IF(NOT CMAKE_CONFIGURATION_TYPES)
+IF(NOT CMAKE_CONFIGURATION_TYPES)
   SET(_subdirs .)
   SET(_default_subdir .)
 ELSE()
@@ -58,4 +57,3 @@ FOREACH(_subdir ${_subdirs})
   CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/${DEFAULT_DATA_PATH}/mac/${DEVBUNDLE_DEFAULT_LANGFILE}/InfoPlist.strings" "${DEVBUNDLE_CURRENT_RESOURCES}/${DEVBUNDLE_DEFAULT_LANGFILE}/InfoPlist.strings")
 
 ENDFOREACH(_subdir)
-ENDIF(APPLE)
