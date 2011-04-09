@@ -208,9 +208,17 @@ namespace orxonox
             this->updateStatistics();
 
             // Limit frame rate
-            static bool hasVSync = GraphicsManager::getInstance().hasVSyncEnabled(); // can be static since changes of VSync currently require a restart
-            if (this->fpsLimit_ > 0 && !hasVSync)
-                this->updateFPSLimiter();
+            if(GameMode::showsGraphics())
+            {
+                static bool hasVSync = GraphicsManager::getInstance().hasVSyncEnabled(); // can be static since changes of VSync currently require a restart
+                if (this->fpsLimit_ > 0 && !hasVSync)
+                    this->updateFPSLimiter();
+            }
+            else
+            {
+                if (this->fpsLimit_ > 0)
+                    this->updateFPSLimiter();
+            }
         }
 
         // UNLOAD all remaining states
