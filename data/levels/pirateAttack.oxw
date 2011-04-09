@@ -141,7 +141,7 @@ gametype=TeamDeathmatch
                 </execute>
             </events>
             <attached>
-                <DistanceTrigger name=questbeacon1 position="0,0,0" distance=100 target=DistanceTriggerBeacon targetname=Me/>
+                <DistanceTrigger name=questbeacon1 position="0,0,0" distance=100 target="Pawn" beaconMode="identify" targetname=Me/>
             </attached>
             </QuestEffectBeacon>
           </attached>
@@ -155,7 +155,7 @@ gametype=TeamDeathmatch
         <QuestEffectBeacon position="250,-300,-1500" times=1>
                     <attached>
                         <Billboard position="0,0,0" scale=3 colour="1.0,1.0,0" material="Examples/Flare" />
-                        <DistanceTrigger name=questbeacon2 targetname=Me position="0,0,0" target=DistanceTriggerBeacon distance=400 />
+                        <DistanceTrigger name=questbeacon2 targetname=Me position="0,0,0" target="Pawn" beaconMode="identify" distance=400 />
                     </attached>
                     <effects>
                         <AddQuest questId="3159b4d4-bc86-4190-ba1d-4530668dfe31" />
@@ -170,7 +170,7 @@ gametype=TeamDeathmatch
         <!-- Hint to first Quest-->
         <QuestEffectBeacon position="0,0,0" times=1>
                     <attached>
-                        <DistanceTrigger name=questbeacon3  position="0,0,0" distance=300 target=DistanceTriggerBeacon targetname=Me delay="5" />
+                        <DistanceTrigger name=questbeacon3  position="0,0,0" distance=300 target="Pawn" beaconMode="identify" targetname=Me delay="5" />
                     </attached>
                     <effects>
                         <AddQuestHint hintId="2b85f32c-2433-4f1a-bdd4-f24d20c9403c" />
@@ -187,7 +187,7 @@ gametype=TeamDeathmatch
         <QuestEffectBeacon position="600,300,-6000" times=1>
                     <attached>
                         <Billboard position="0,0,0" scale=3 colour="0,1.0,0" material="Examples/Flare" />
-                        <DistanceTrigger name=questbeacon4  position="0,0,0" distance=200 target=DistanceTriggerBeacon targetname=Me />
+                        <DistanceTrigger name=questbeacon4  position="0,0,0" distance=200 target="Pawn" beaconMode="identify" targetname=Me />
                     </attached>
     
                     <effects>
@@ -206,7 +206,7 @@ gametype=TeamDeathmatch
         <!-- Wrong way 1-->
         <QuestEffectBeacon position="7600,300,-8000" times=1>
                     <attached>
-                        <DistanceTrigger name=questbeacon5  position="0,0,0" distance=300 target=DistanceTriggerBeacon targetname=Me />
+                        <DistanceTrigger name=questbeacon5  position="0,0,0" distance=300 target="Pawn" beaconMode="identify" targetname=Me />
                     </attached>
                     <effects>
                         <AddQuest questId="9930a598-98bc-4ff8-8cc0-31311a6ccaaa" />
@@ -221,7 +221,7 @@ gametype=TeamDeathmatch
         <!-- Wrong way 2-->
         <QuestEffectBeacon position="1600,2300,-10000" times=1>
                     <attached>
-                        <DistanceTrigger name=questbeacon8  position="0,0,0" distance=300 target=DistanceTriggerBeacon targetname=Me />
+                        <DistanceTrigger name=questbeacon8  position="0,0,0" distance=300 target="Pawn" beaconMode="identify" targetname=Me />
                     </attached>
                     <effects>
                         <AddQuest questId="9930a598-98bc-4ff8-8cc0-31311a6ccaab" />
@@ -236,7 +236,7 @@ gametype=TeamDeathmatch
         <!-- Base found!-->
         <QuestEffectBeacon position="4600,5300,-11000" times=1>
                     <attached>
-                        <DistanceTrigger name=questbeacon6  position="0,0,0" distance=600 target=DistanceTriggerBeacon targetname=Me />
+                        <DistanceTrigger name=questbeacon6  position="0,0,0" distance=600 target="Pawn" beaconMode="identify" targetname=Me />
                     </attached>
                     <effects>
                         <CompleteQuest questId="8d8ed3a6-74a6-4491-9172-26155cff151d" />
@@ -254,7 +254,7 @@ gametype=TeamDeathmatch
         <!--Stick found-->
         <QuestEffectBeacon position="4800,5785,-10725" times=1>
                     <attached>
-                        <DistanceTrigger name=questbeacon7  position="0,0,0" distance=30 target=DistanceTriggerBeacon targetname=Me />
+                        <DistanceTrigger name=questbeacon7  position="0,0,0" distance=30 target="Pawn" beaconMode="identify" targetname=Me />
                     </attached>
                     <effects>
                         <CompleteQuest questId="8a62408b-c47b-4e02-bd3d-06bb9ec0b363" />
@@ -273,7 +273,7 @@ gametype=TeamDeathmatch
         <QuestEffectBeacon position="4000,4000,-20000" times=1>
                     <attached>
                         <Billboard position="0,0,0" scale=3 colour="0,0,1.0" material="Examples/Flare" />
-                        <DistanceTrigger name=questbeacon9 position="0,0,0" distance=500 target=DistanceTriggerBeacon targetname=Me />
+                        <DistanceTrigger name=questbeacon9 position="0,0,0" distance=500 target="Pawn" beaconMode="identify" targetname=Me />
                     </attached>
                     <effects>
                         <CompleteQuest questId="85380d05-b791-45d1-82e9-01f0bc930367" />

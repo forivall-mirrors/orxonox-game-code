@@ -91,7 +91,7 @@ namespace orxonox
 
         XMLPortParam(MultiTrigger, "simultaneousTriggerers", setSimultaneousTriggerers, getSimultaneousTriggerers, xmlelement, mode);
         XMLPortParam(MultiTrigger, "broadcast", setBroadcast, getBroadcast, xmlelement, mode);
-        XMLPortParamLoadOnly(MultiTrigger, "target", addTargets, xmlelement, mode).defaultValues("Pawn"); //TODO: Remove load only
+        XMLPortParamLoadOnly(MultiTrigger, "target", addTarget, xmlelement, mode).defaultValues("Pawn"); //TODO: Remove load only
 
         COUT(4) << "MultiTrigger '" << this->getName() << "' (&" << this << ") created." << std::endl;
     }
@@ -274,7 +274,7 @@ namespace orxonox
 
     /**
     @brief
-        Get whether the MultiTrigger is active for a given object.
+        Check whether the MultiTrigger is active for a given object.
     @param triggerer
         A pointer to the object.
     @return
@@ -292,9 +292,9 @@ namespace orxonox
     @brief
         Add some target to the MultiTrigger.
     @param targetStr
-        The target as a string.
+        The target class name as a string.
     */
-    void MultiTrigger::addTargets(const std::string& targetStr)
+    void MultiTrigger::addTarget(const std::string& targetStr)
     {
         Identifier* target = ClassByString(targetStr);
 
@@ -307,8 +307,8 @@ namespace orxonox
 
         this->targetMask_.include(target);
 
-        // A MultiTrigger shouldn't react to itself or other MultiTriggers.
-        this->targetMask_.exclude(Class(MultiTrigger), true);
+        // A MultiTrigger shouldn't react to itself or other triggers.
+        this->targetMask_.exclude(Class(TriggerBase), true);
 
         // We only want WorldEntities
         //TODO: Really?
@@ -323,7 +323,7 @@ namespace orxonox
     @param targetStr
         The target to be removed as a string.
     */
-    void MultiTrigger::removeTargets(const std::string& targetStr)
+    void MultiTrigger::removeTarget(const std::string& targetStr)
     {
         Identifier* target = ClassByString(targetStr);
 
