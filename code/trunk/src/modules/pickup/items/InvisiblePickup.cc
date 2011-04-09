@@ -176,6 +176,7 @@ namespace orxonox
             return false;
 
         pawn->setVisible(!invisibility);
+        //TODO: Invisibility should imply radar invisibility as well, thus this should be solved in Pawn.
         pawn->setRadarVisibility(!invisibility);
 
 // Test to change Material at runtime!
