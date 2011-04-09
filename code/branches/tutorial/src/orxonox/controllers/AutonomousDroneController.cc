@@ -43,8 +43,7 @@ namespace orxonox
     AutonomousDroneController::AutonomousDroneController(BaseObject* creator) : Controller(creator)
     {
         //TODO: Place your code here:
-        // Make sure to register the object in the factory.
-        // Do some kind of initialisation.
+        // Make sure to register the object and create the factory.
 
         // This checks that our creator really is a drone
         // and saves the pointer to the drone for the controlling commands
@@ -76,6 +75,7 @@ namespace orxonox
         // You can use the commands provided by the AutonomousDrone to steer it:
         // - moveFrontBack, moveRightLeft, moveUpDown
         // - rotatePitch, rotateYaw, rotateRoll
+        // You will see, that the AutonomousDrone has two variants for each of these commands, one with a vector as input and one with just a float. Use the one with just the float as input.
         // Apply them to myDrone (e.g. myDrone->rotateYaw(..) )
 
     }
