@@ -60,6 +60,13 @@
 #include "XMLFile.h"
 #include "command/ConsoleCommand.h"
 
+// Differentiate Boost Filesystem v2 and v3
+#if (BOOST_FILESYSTEM_VERSION < 3)
+#  define BF_NATIVE_STRING file_string
+#else
+#  define BF_NATIVE_STRING string
+#endif
+
 namespace orxonox
 {
     static const std::string __CC_printScreen_name = "printScreen";
@@ -242,11 +249,7 @@ namespace orxonox
         SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '{', '}', false, '\0');
         // Use backslash paths on Windows! file_string() already does that though.
         for (unsigned int i = 0; i < plugins.size(); ++i)
-#if BOOST_FILESYSTEM_VERSION < 3
-            ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
-#else
-            ogreRoot_->loadPlugin((folder / plugins[i]).string());
-#endif
+            ogreRoot_->loadPlugin((folder / plugins[i]).BF_NATIVE_STRING());
     }
 
     void GraphicsManager::loadRenderer()

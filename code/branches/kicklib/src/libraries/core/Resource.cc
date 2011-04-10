@@ -33,6 +33,13 @@
 #include <OgreFileSystem.h>
 #include <OgreResourceGroupManager.h>
 
+// Differentiate Boost Filesystem v2 and v3
+#if (BOOST_FILESYSTEM_VERSION < 3)
+#  define BF_GENERIC_STRING string
+#else
+#  define BF_GENERIC_STRING generic_string
+#endif
+
 namespace orxonox
 {
     const std::string& Resource::getDefaultResourceGroup()
@@ -97,7 +104,7 @@ namespace orxonox
                 {
                     boost::filesystem::path base(it->archive->getName());
                     base /= it->filename;
-                    ptr->fileSystemPath = base.string();
+                    ptr->fileSystemPath = base.BF_GENERIC_STRING();
                 }
                 return ptr;
             }

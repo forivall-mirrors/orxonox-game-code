@@ -227,4 +227,14 @@ namespace orxonox
     using boost::scoped_array;
 }
 
+// Define Boost Filesystem version
+#include <boost/version.hpp>
+#ifndef BOOST_FILESYSTEM_VERSION
+#  if (BOOST_VERSION < 104600)
+#    define BOOST_FILESYSTEM_VERSION 2
+#  else
+#    define BOOST_FILESYSTEM_VERSION 3
+#  endif
+#endif
+
 #endif /* _OrxonoxConfig_H__ */

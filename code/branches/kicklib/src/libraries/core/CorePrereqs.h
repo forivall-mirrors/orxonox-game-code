@@ -260,14 +260,18 @@ namespace Tcl
 // Boost
 namespace boost
 {
-#if BOOST_VERSION < 104400
+#if (BOOST_VERSION < 104400)
+
     namespace filesystem
     {
         struct path_traits;
         template <class String, class Traits> class basic_path;
         typedef basic_path<std::string, path_traits> path;
     }
-#elif BOOST_VERSION < 104600
+
+#elif (BOOST_VERSION < 104800)
+
+# if BOOST_FILESYSTEM_VERSION == 2
     namespace filesystem2
     {
         struct path_traits;
@@ -280,7 +284,7 @@ namespace boost
         using filesystem2::path_traits;
         using filesystem2::path;
     }
-#else
+# elif BOOST_FILESYSTEM_VERSION == 3
     namespace filesystem3
     {
         class path;
@@ -289,7 +293,18 @@ namespace boost
     {
         using filesystem3::path;
     }
+# endif
+
+#elif
+
+    // TODO: Check this once boost 1.48 is released
+    namespace filesystem
+    {
+        class path;
+    }
+
 #endif
+
     class thread;
     class mutex;
     class shared_mutex;
