@@ -52,7 +52,6 @@ namespace orxonox
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
         this->bBoost_ = false;
-        this->bPermanentBoost_ = false;
         this->steering_ = Vector3::ZERO;
         this->engine_ = 0;
 
@@ -102,6 +101,10 @@ namespace orxonox
         registerVariable(this->primaryThrust_,  VariableDirection::ToClient);
         registerVariable(this->auxilaryThrust_, VariableDirection::ToClient);
         registerVariable(this->rotationThrust_, VariableDirection::ToClient);
+        registerVariable(this->boostPower_, VariableDirection::ToClient);
+        registerVariable(this->boostPowerRate_, VariableDirection::ToClient);
+        registerVariable(this->boostRate_, VariableDirection::ToClient);
+        registerVariable(this->boostCooldownDuration_, VariableDirection::ToClient);
     }
 
     void SpaceShip::setConfigValues()
@@ -206,28 +209,22 @@ namespace orxonox
         Pawn::rotateRoll(value);
     }
 
-    // TODO: something seems to call this function every tick, could probably handled a little more efficiently!
-    void SpaceShip::setBoost(bool bBoost)
-    {
-        if(bBoost == this->bBoost_)
-            return;
-
-        if(bBoost)
-            this->boost();
-        else
-        {
-            this->bBoost_ = false;
-        }
-    }
-
     void SpaceShip::fire()
     {
     }
 
-    void SpaceShip::boost()
+    /**
+    @brief
+        Starts or stops boosting.
+    @param bBoost
+        Whether to start or stop boosting.
+    */
+    void SpaceShip::boost(bool bBoost)
     {
-        if(!this->bBoostCooldown_)
+        if(bBoost && !this->bBoostCooldown_)
             this->bBoost_ = true;
+        if(!bBoost)
+            this->bBoost_ = false;
     }
 
     void SpaceShip::loadEngineTemplate()
