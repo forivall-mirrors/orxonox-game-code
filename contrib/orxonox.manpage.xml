@@ -141,6 +141,10 @@ man(1), man(7), http://www.tldp.org/HOWTO/Man-Page/
         <arg choice="plain"><replaceable>file</replaceable></arg>
       </arg>
     </cmdsynopsis>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <arg choice="plain"><option>--masterserver</option></arg>
+    </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1 id="description">
     <title>DESCRIPTION</title>
@@ -198,6 +202,12 @@ man(1), man(7), http://www.tldp.org/HOWTO/Man-Page/
         <term><option>--level <replaceable>file</replaceable></option></term>
         <listitem>
           <para>Default level file (overrides LevelManager::defaultLevelName_ configValue).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--masterserver</option></term>
+        <listitem>
+          <para>Start in master server mode.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
