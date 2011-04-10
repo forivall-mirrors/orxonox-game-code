@@ -57,7 +57,7 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
     SET(_compiler_prefix msvc8)
   ELSEIF(MSVC90)
     SET(_compiler_prefix msvc9)
-  ELSEIF(MSVC100)
+  ELSEIF(MSVC10)
     SET(_compiler_prefix msvc10)
   ENDIF()
   FIND_PATH(DEPENDENCY_PACKAGE_DIR
