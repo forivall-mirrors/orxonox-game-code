@@ -2,6 +2,6 @@
 Name=Orxonox
 Comment=A spacecraft shooter
 Exec=orxonox
-Icon=/usr/share/pixmaps/orxonox.svg
+Icon=/usr/share/pixmaps/orxonox.png
 Type=Application
 Categories=Game;ActionGame;
