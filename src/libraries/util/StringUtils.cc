@@ -34,6 +34,7 @@
 #include "StringUtils.h"
 
 #include <cctype>
+#include <ctime>
 #include <boost/scoped_array.hpp>
 #include "Convert.h"
 #include "Math.h"
@@ -514,5 +515,26 @@ namespace orxonox
                                               matrix[(r-1)*cols + c-1] + (str1[c-1] != str2[r-1]));
 
         return matrix[(rows-1)*cols + cols-1];
+    }
+    
+    /**
+    @brief
+        Get a timestamp for the curent time instant.
+    @return
+        Returns a string with the timestamp.
+    */
+    std::string getTimestamp(void)
+    {
+        struct tm *pTime;
+        time_t ctTime; std::time(&ctTime);
+        pTime = std::localtime( &ctTime );
+        std::ostringstream oss;
+        oss << std::setw(2) << std::setfill('0') << (pTime->tm_mon + 1)
+            << std::setw(2) << std::setfill('0') << pTime->tm_mday
+            << std::setw(2) << std::setfill('0') << (pTime->tm_year + 1900)
+            << "_" << std::setw(2) << std::setfill('0') << pTime->tm_hour
+            << std::setw(2) << std::setfill('0') << pTime->tm_min
+            << std::setw(2) << std::setfill('0') << pTime->tm_sec;
+        return oss.str();
     }
 }

@@ -36,7 +36,8 @@ function P.onLoad()
     table.insert(commandList, "pause")
     table.insert(commandList, "printScreen")
     if orxonox.GUIManager:inDevMode() then
-        table.insert(commandList, "printScreenHD 3")
+        table.insert(commandList, "printScreenHD")
+        table.insert(commandList, "createSkybox")
     end
 
     nameList = {}
@@ -71,6 +72,7 @@ function P.onLoad()
     table.insert(nameList, "Screenshot")
     if orxonox.GUIManager:inDevMode() then
         table.insert(nameList, "HD screenshot")
+        table.insert(nameList, "Create Skybox")
     end
 
     linesList = {}

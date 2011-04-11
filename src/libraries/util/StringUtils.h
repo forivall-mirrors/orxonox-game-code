@@ -47,7 +47,7 @@ namespace orxonox
 {
     extern _UtilExport std::string BLANKSTRING;
 
-    _UtilExport std::string getUniqueNumberString();
+    _UtilExport std::string  getUniqueNumberString();
 
     _UtilExport void         strip(std::string* str);
     _UtilExport std::string  getStripped(const std::string& str);
@@ -87,6 +87,8 @@ namespace orxonox
     _UtilExport size_t       replaceCharacters(std::string& str, char target, char replacement);
 
     _UtilExport unsigned int getLevenshteinDistance(const std::string& str1, const std::string& str2);
+    
+    _UtilExport std::string  getTimestamp(void);
 }
 
 #endif /* _StringUtils_H__ */
