@@ -63,8 +63,8 @@ IF(MSVC)
       CACHE FILEPATH ""
     )
     SET(ZLIB_LIBRARY
-      optimized ${DEP_LIBRARY_DIR}/zlibwapi.lib
-      debug     ${DEP_LIBRARY_DIR}/zlibwapi_d.lib
+      optimized ${DEP_LIBRARY_DIR}/zlib-vc100.lib
+      debug     ${DEP_LIBRARY_DIR}/zlib-vc100_d.lib
       CACHE FILEPATH ""
     )
   ELSE()
