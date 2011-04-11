@@ -29,6 +29,7 @@
 
 #include "GraphicsManager.h"
 
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 #include <boost/filesystem.hpp>
@@ -59,13 +60,6 @@
 #include "WindowEventListener.h"
 #include "XMLFile.h"
 #include "command/ConsoleCommand.h"
-
-// Differentiate Boost Filesystem v2 and v3
-#if (BOOST_FILESYSTEM_VERSION < 3)
-#  define BF_NATIVE_STRING file_string
-#else
-#  define BF_NATIVE_STRING string
-#endif
 
 namespace orxonox
 {
@@ -147,8 +141,6 @@ namespace orxonox
     {
         SetConfigValue(ogreConfigFile_,  "ogre.cfg")
             .description("Location of the Ogre config file");
-        SetConfigValue(ogrePluginsDirectory_, specialConfig::ogrePluginsDirectory)
-            .description("Folder where the Ogre plugins are located.");
         SetConfigValue(ogrePlugins_, specialConfig::ogrePlugins)
             .description("Comma separated list of all plugins to load.");
         SetConfigValue(ogreLogFile_,     "ogre.log")
@@ -240,16 +232,29 @@ namespace orxonox
 
     void GraphicsManager::loadOgrePlugins()
     {
-        // just to make sure the next statement doesn't segfault
-        if (ogrePluginsDirectory_.empty())
-            ogrePluginsDirectory_ = '.';
+        // Plugin path can have many different locations...
+        std::string pluginPath = specialConfig::ogrePluginsDirectory;
+#ifdef DEPENDENCY_PACKAGE_ENABLE
+        if (!PathConfig::isDevelopmentRun())
+        {
+#  if defined(ORXONOX_PLATFORM_WINDOWS)
+            pluginPath = PathConfig::getExecutablePathString();
+#  elif defined(ORXONOX_PLATFORM_APPLE)
+            // TODO: Where are the plugins being installed to?
+            pluginPath = PathConfig::getExecutablePathString();
+#  endif
+        }
+#endif
 
-        boost::filesystem::path folder(ogrePluginsDirectory_);
+        // Add OGRE plugin path to the environment. That way one plugin could
+        // also depend on another without problems on Windows
+        std::string pathVariable(getenv("PATH"));
+        putenv(const_cast<char*>(("PATH=" + pathVariable + ';' + pluginPath).c_str()));
+
         // Do some SubString magic to get the comma separated list of plugins
         SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '{', '}', false, '\0');
-        // Use backslash paths on Windows! file_string() already does that though.
         for (unsigned int i = 0; i < plugins.size(); ++i)
-            ogreRoot_->loadPlugin((folder / plugins[i]).BF_NATIVE_STRING());
+            ogreRoot_->loadPlugin(plugins[i]);
     }
 
     void GraphicsManager::loadRenderer()
