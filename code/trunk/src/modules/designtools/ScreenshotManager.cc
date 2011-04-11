@@ -1,154 +1,264 @@
-/* COPYRIGHT: this code comes from http://www.ogre3d.org/wiki/index.php/High_resolution_screenshots */
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      This code comes from http://www.ogre3d.org/tikiwiki/High+resolution+screenshots which is Public Domain.
+ *   Co-authors:
+ *      Oli Scheuss
+ *      Damian 'Mozork' Frick
+ *
+ */
+
+/**
+   @file ScreenshotManager.cc
+   @brief Implementation of the ScreenshotManager class.
+   @ingroup Designtools
+*/
 
 #include "ScreenshotManager.h"
 
-#include <OgreRenderWindow.h>
-#include <OgreViewport.h>
-#include <OgreRenderTexture.h>
 #include <OgreCamera.h>
+#include <OgreRenderTexture.h>
+#include <OgreRenderWindow.h>
 #include <OgreRoot.h>
+#include <OgreViewport.h>
+// #include <X11/Xlib.h> TODO: Needed?
 
-#include "util/ScopedSingletonManager.h"
+#include "core/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
 #include "core/PathConfig.h"
 #include "core/command/ConsoleCommand.h"
+#include "util/ScopedSingletonManager.h"
+#include "util/StringUtils.h"
 
 #include "CameraManager.h"
 #include "graphics/Camera.h"
 
 namespace orxonox
 {
-    ManageScopedSingleton(ScreenshotManager, ScopeID::Graphics, false);
-    SetConsoleCommand("printScreenHD", &ScreenshotManager::makeScreenshot_s);
 
+    SetConsoleCommand("printScreenHD", &ScreenshotManager::makeScreenshot_s);
+    
+    ManageScopedSingleton(ScreenshotManager, ScopeID::Graphics, false);
+
+    /**
+    @brief
+        Constructor. 
+    */
     ScreenshotManager::ScreenshotManager()
     {
-        Ogre::RenderWindow* pRenderWindow = GraphicsManager::getInstance().getRenderWindow();
+        RegisterRootObject(ScreenshotManager);
+        
+        this->setConfigValues();
 
-        //set file extension for the Screenshot files
-        this->mFileExtension_  = ".png";
-        // the gridsize
-        this->mGridSize_ = 3;
-        // flag for overlay rendering
-        this->mDisableOverlays_ = true;
-        //get current window size
-        this->mWindowWidth_   = pRenderWindow->getWidth();
-        this->mWindowHeight_  = pRenderWindow->getHeight();
-        //create temporary texture
-        this->mTempTex_ = Ogre::TextureManager::getSingleton().createManual("ScreenShotTex", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, this->mWindowWidth_, this->mWindowHeight_, 0, Ogre::PF_B8G8R8, Ogre::TU_RENDERTARGET);
+        // Flag for overlay rendering
+        this->disableOverlays_ = true;
 
-        //get The current Render Target of the temp Texture
-        this->mRT_ = this->mTempTex_->getBuffer()->getRenderTarget();
-
-        //HardwarePixelBufferSharedPtr to the Buffer of the temp Texture
-        this->mBuffer_ = this->mTempTex_->getBuffer();
-
-        //create PixelBox
-        uint8_t* data_ = new uint8_t[(this->mWindowWidth_ * this->mGridSize_) * (this->mWindowHeight_ * this->mGridSize_) * 3];
-        this->mFinalPicturePB_ = Ogre::PixelBox(this->mWindowWidth_ * this->mGridSize_, this->mWindowHeight_ * this->mGridSize_, 1, Ogre::PF_B8G8R8, data_);
-
+        // Update the values
+        this->update();
     }
-
 
     ScreenshotManager::~ScreenshotManager()
     {
-        // Don't delete data_. Somehow this pointer points anywhere but to memory location.
-        //delete[] data_;
+        
+    }
+    
+    /**
+    @brief
+        Sets some config values.
+    */
+    void ScreenshotManager::setConfigValues(void)
+    {
+        // Set file extension for the Screenshot files.
+        SetConfigValue(fileExtension_, ".png");
+        // The grid size.
+        SetConfigValue(gridSize_, 3);
+    }
+
+    /**
+    @brief
+        Update internal parameters.
+    */
+    void ScreenshotManager::update(void)
+    {
+        Ogre::RenderWindow* pRenderWindow = GraphicsManager::getInstance().getRenderWindow();
+
+        // If the window size has changed
+        if(this->windowWidth_ != pRenderWindow->getWidth() || this->windowHeight_ != pRenderWindow->getHeight())
+        {
+            // Update current window size
+            this->windowWidth_   = pRenderWindow->getWidth();
+            this->windowHeight_  = pRenderWindow->getHeight();
+
+            // Create temporary texture
+            this->tempTexture_ = Ogre::TextureManager::getSingleton().createManual("ScreenShotTex", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, this->windowWidth_, this->windowHeight_, 0, Ogre::PF_B8G8R8, Ogre::TU_RENDERTARGET);
+
+            // Get the current render target of the temporary texture
+            this->renderTarget_ = this->tempTexture_->getBuffer()->getRenderTarget();
+
+            // HardwarePixelBufferSharedPtr to the buffer of the temporary texture
+            this->buffer_ = this->tempTexture_->getBuffer();
+
+            // Create PixelBox
+            this->data_ = new uint8_t[(this->windowWidth_ * this->gridSize_) * (this->windowHeight_ * this->gridSize_) * 3];
+            this->finalPicturePB_ = Ogre::PixelBox(this->windowWidth_ * this->gridSize_, this->windowHeight_ * this->gridSize_, 1, Ogre::PF_B8G8R8, this->data_);
+        }
     }
 
 
     /**
     @brief
-        Creates a screenshot with the given camera.
+        Make a screenshot.
+        The screenshot is saved in the log folder.
     */
-    void ScreenshotManager::makeScreenshot() const
+    void ScreenshotManager::makeScreenshot()
     {
-        Ogre::Camera* camera = CameraManager::getInstance().getActiveCamera()->getOgreCamera();
-        std::string fileName = PathConfig::getInstance().getLogPathString() + "screenshot_" + this->getTimestamp();
-
-        //Remove all viewports, so the added Viewport(camera) ist the only
-        mRT_->removeAllViewports();
-        mRT_->addViewport(camera);
-
-        //set the viewport settings
-        Ogre::Viewport *vp = mRT_->getViewport(0);
-        vp->setClearEveryFrame(true);
-        vp->setOverlaysEnabled(false);
-
-        // remind current overlay flag
-        bool enableOverlayFlag = GraphicsManager::getInstance().getViewport()->getOverlaysEnabled();
-
-        // we disable overlay rendering if it is set in config file and the viewport setting is enabled
-        if(mDisableOverlays_ && enableOverlayFlag)
-            GraphicsManager::getInstance().getViewport()->setOverlaysEnabled(false);
-
-        if(mGridSize_ <= 1)
+        // Get the screenshot.
+        Ogre::Image* finalImage = getScreenshot();
+        if(finalImage != NULL)
         {
-            // Simple case where the contents of the screen are taken directly
-            // Also used when an invalid value is passed within gridSize (zero or negative grid size)
-            mRT_->update();    //render
-
-            //write the file on the Harddisk
-            mRT_->writeContentsToFile(fileName + "." + mFileExtension_);
+            // Save it.
+            finalImage->save(PathConfig::getInstance().getLogPathString() + "screenshot_" + getTimestamp() + "." + this->fileExtension_);
+            delete finalImage;
+            COUT(3) << "Finished taking " << this->gridSize_*this->windowWidth_ << "x" << this->gridSize_*this->windowHeight_ << " pixel HD screenshot. Storing in log/." << endl;
         }
         else
         {
-            //define the original frustum extents variables
+            COUT(1) << "There needs to be an active camera to make screenshots." << endl;
+            return;
+        }
+    }
+
+    /**
+    @brief
+        Creates a screenshot and returns it.
+    @return
+        Returns a pointer to an Ogre::Image with the screenshot.
+    */
+    Ogre::Image* ScreenshotManager::getScreenshot()
+    {
+        if(CameraManager::getInstance().getActiveCamera() == NULL )
+            return NULL;
+        return this->getScreenshot(CameraManager::getInstance().getActiveCamera()->getOgreCamera());
+    }
+
+    /**
+    @brief
+        Creates a screenshot with the given camera and returns it.
+    @param camera
+        A pointer to the camera the screenshot should be taken with.
+    @return
+        Returns a pointer to an Ogre::Image with the screenshot.
+    */
+    Ogre::Image* ScreenshotManager::getScreenshot(Ogre::Camera* camera)
+    {
+        if(camera == NULL)
+            return NULL;
+        
+        // Update the internal parameters.
+        this->update();
+
+        // Add the camera as viewport.
+        this->renderTarget_->removeAllViewports();
+        this->renderTarget_->addViewport(camera);
+
+        // Set the viewport settings
+        Ogre::Viewport *vp = renderTarget_->getViewport(0);
+        vp->setClearEveryFrame(true);
+        vp->setOverlaysEnabled(false);
+
+        // Remind current overlay flag
+        bool enableOverlayFlag = GraphicsManager::getInstance().getViewport()->getOverlaysEnabled();
+        
+        // We disable overlay rendering if it is set in config file and the viewport setting is enabled
+        if(this->disableOverlays_ && enableOverlayFlag)
+            GraphicsManager::getInstance().getViewport()->setOverlaysEnabled(false);
+        
+        Ogre::Image* finalImage = new Ogre::Image();
+        
+        if(this->gridSize_ <= 1)
+        {
+            // Simple case where the contents of the screen are taken directly
+            // Also used when an invalid value is passed within gridSize (zero or negative grid size)
+            this->renderTarget_->update(); // Render
+            
+            finalImage = &finalImage->loadDynamicImage(static_cast<unsigned char*>(finalPicturePB_.data), finalPicturePB_.getWidth(), finalPicturePB_.getHeight(),Ogre::PF_B8G8R8);
+        }
+        else
+        {
+            // Define the original frustum extents variables
             Ogre::Real originalFrustumLeft, originalFrustumRight, originalFrustumTop, originalFrustumBottom;
-            // set the original Frustum extents
+            // Set the original Frustum extents
             camera->getFrustumExtents(originalFrustumLeft, originalFrustumRight, originalFrustumTop, originalFrustumBottom);
-
-            // compute the Stepsize for the drid
-            Ogre::Real frustumGridStepHorizontal  = (originalFrustumRight * 2) / mGridSize_;
-            Ogre::Real frustumGridStepVertical  = (originalFrustumTop * 2) / mGridSize_;
-
-            // process each grid
+            
+            // Compute the Stepsize for the grid
+            Ogre::Real frustumGridStepHorizontal  = (originalFrustumRight * 2) / this->gridSize_;
+            Ogre::Real frustumGridStepVertical  = (originalFrustumTop * 2) / this->gridSize_;
+            
+            // Process each grid
             Ogre::Real frustumLeft, frustumRight, frustumTop, frustumBottom;
-            for (unsigned int nbScreenshots = 0; nbScreenshots < mGridSize_ * mGridSize_; nbScreenshots++)
+            for (unsigned int nbScreenshots = 0; nbScreenshots < this->gridSize_ * this->gridSize_; nbScreenshots++)
             {
-                int y = nbScreenshots / mGridSize_;
-                int x = nbScreenshots - y * mGridSize_;
-
+                int y = nbScreenshots / this->gridSize_;
+                int x = nbScreenshots - y * this->gridSize_;
+                
                 // Shoggoth frustum extents setting
-                // compute the new frustum extents
+                // Compute the new frustum extents
                 frustumLeft    = originalFrustumLeft + frustumGridStepHorizontal * x;
                 frustumRight  = frustumLeft + frustumGridStepHorizontal;
                 frustumTop    = originalFrustumTop - frustumGridStepVertical * y;
                 frustumBottom  = frustumTop - frustumGridStepVertical;
-
-                // set the frustum extents value to the camera
+                
+                // Set the frustum extents value to the camera
                 camera->setFrustumExtents(frustumLeft, frustumRight, frustumTop, frustumBottom);
-
-                // ignore time duration between frames
+                
+                // Ignore time duration between frames
                 Ogre::Root::getSingletonPtr()->clearEventTimes();
-                mRT_->update();    //render
-
-                //define the current
-                Ogre::Box subBox = Ogre::Box(x* mWindowWidth_,y * mWindowHeight_,x * mWindowWidth_ + mWindowWidth_, y * mWindowHeight_ + mWindowHeight_);
-                //copy the content from the temp buffer into the final picture PixelBox
-                //Place the tempBuffer content at the right position
-                mBuffer_->blitToMemory(mFinalPicturePB_.getSubVolume(subBox));
-
+                this->renderTarget_->update(); // Render
+                
+                // Define the current box
+                Ogre::Box subBox = Ogre::Box(x* this->windowWidth_,y * this->windowHeight_,x * this->windowWidth_ + this->windowWidth_, y * this->windowHeight_ + this->windowHeight_);
+                // Copy the content from the temp buffer into the final picture PixelBox
+                // Place the tempBuffer content at the right position
+                this->buffer_->blitToMemory(this->finalPicturePB_.getSubVolume(subBox));
+                
+                COUT(4) << "Created screenshot number " << nbScreenshots << " for multi grid HD screenshot." << endl;
+                
             }
-
-            // set frustum extents to previous settings
+            
+            // Set frustum extents to previous settings
             camera->resetFrustumExtents();
-
-            Ogre::Image finalImage; //declare the final Image Object
-            //insert the PixelBox data into the Image Object
-            finalImage = finalImage.loadDynamicImage(static_cast<unsigned char*>(mFinalPicturePB_.data), mFinalPicturePB_.getWidth(), mFinalPicturePB_.getHeight(),Ogre::PF_B8G8R8);
-            // Save the Final image to a file
-            finalImage.save(fileName + "." + mFileExtension_);
-
+            
+            // Insert the PixelBox data into the Image Object
+            finalImage->loadDynamicImage(static_cast<unsigned char*>(this->finalPicturePB_.data), this->finalPicturePB_.getWidth(), this->finalPicturePB_.getHeight(), 1, Ogre::PF_B8G8R8, false);
         }
-
-        // do we have to re-enable our overlays?
+        
+        // Do we have to re-enable our overlays?
         if(enableOverlayFlag)
             GraphicsManager::getInstance().getViewport()->setOverlaysEnabled(true);
-
-
-        // reset time since last frame to pause the scene
+        
+        // Reset time since last frame to pause the scene
         Ogre::Root::getSingletonPtr()->clearEventTimes();
+        
+        return finalImage;
     }
 
     /**
@@ -159,34 +269,13 @@ namespace orxonox
     */
     void ScreenshotManager::setGridSize(unsigned int size)
     {
-        if(size == this->mGridSize_)
+        if(size == this->gridSize_)
             return;
 
-        this->mGridSize_ = size;
+        this->gridSize_ = size;
         // New PixelBox for the changed size.
-        uint8_t* data_ = new uint8_t[(this->mWindowWidth_ * this->mGridSize_) * (this->mWindowHeight_ * this->mGridSize_) * 3];
-        this->mFinalPicturePB_ = Ogre::PixelBox(this->mWindowWidth_ * this->mGridSize_, this->mWindowHeight_ * this->mGridSize_, 1, Ogre::PF_B8G8R8, data_);
-    }
-
-    /**
-    @brief
-        Get a timestamp for the curent time instant.
-    @return
-        Returns a string with the timestamp.
-    */
-    std::string ScreenshotManager::getTimestamp()
-    {
-        struct tm *pTime;
-        time_t ctTime; time(&ctTime);
-        pTime = localtime( &ctTime );
-        std::ostringstream oss;
-        oss << std::setw(2) << std::setfill('0') << (pTime->tm_mon + 1)
-            << std::setw(2) << std::setfill('0') << pTime->tm_mday
-            << std::setw(2) << std::setfill('0') << (pTime->tm_year + 1900)
-            << "_" << std::setw(2) << std::setfill('0') << pTime->tm_hour
-            << std::setw(2) << std::setfill('0') << pTime->tm_min
-            << std::setw(2) << std::setfill('0') << pTime->tm_sec;
-        return oss.str();
+        this->data_ = new uint8_t[(this->windowWidth_ * this->gridSize_) * (this->windowHeight_ * this->gridSize_) * 3];
+        this->finalPicturePB_ = Ogre::PixelBox(this->windowWidth_ * this->gridSize_, this->windowHeight_ * this->gridSize_, 1, Ogre::PF_B8G8R8, this->data_);
     }
 
 }
