@@ -188,9 +188,9 @@ namespace orxonox
                 // Rotate the camera to be ready for taking the next picture.
                 std::pair<int, int> rotate = this->rotations_[this->faceCounter_];
                 if(rotate.first != 0)
-                    entity->yaw(Degree(rotate.first));
+                    entity->yaw(Degree((float)rotate.first));
                 if(rotate.second != 0)
-                    entity->pitch(Degree(rotate.second));
+                    entity->pitch(Degree((float)rotate.second));
                 
                 COUT(4) << "Created face number " << this->faceCounter_ << "." << endl;
                 // Check whether we've generated all 6 faces.
