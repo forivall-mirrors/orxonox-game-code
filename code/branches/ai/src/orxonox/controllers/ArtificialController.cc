@@ -1025,7 +1025,6 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     */
     void ArtificialController::doFire()
     {
-        if(ArtificialController::friendlyFire()) return;//catch if the bot would do friendlyFire
         if(!bSetupWorked)//setup: find out which weapons are active ! hard coded: laser is "0", lens flare is "1", ...
         {
             this->setupWeapons();
