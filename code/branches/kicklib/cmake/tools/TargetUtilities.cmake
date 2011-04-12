@@ -52,7 +52,7 @@
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
- #    ORXONOX_DEFAULT_LINK, ORXONOX_CONFIG_FILES, ORXONOX_CONFIG_FILES_GENERATED
+ #    ORXONOX_DEFAULT_LINK
  #  Parameters:
  #    _target_name, ARGN for the macro arguments
  #
@@ -205,12 +205,6 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
       IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_arg_PCH_FILE})
         SOURCE_GROUP("Config" FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_arg_PCH_FILE})
       ENDIF()
-      # Also include all config files
-      LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES} ${ORXONOX_CONFIG_FILES_GENERATED})
-      # Add unprocessed config files to the 'Config' section
-      SOURCE_GROUP("Config" FILES ${ORXONOX_CONFIG_FILES})
-      # Add generated config files to the 'Generated' section
-      SOURCE_GROUP("Generated" FILES ${ORXONOX_CONFIG_FILES_GENERATED})
     ENDIF()
   ENDIF()
 
