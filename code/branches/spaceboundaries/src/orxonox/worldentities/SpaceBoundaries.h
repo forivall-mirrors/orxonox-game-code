@@ -49,7 +49,12 @@
 @brief SpaceBoundaries gives level creators the possibility to bar Pawns from leaving a defined area.
 
        Four attributes can/should be defined in the XML-File:
-       'position', 'warnDistance', 'maxDistance', 'healthDecrease'.
+       - 'position' : absolute position of the SpaceBoundaries class. '*Distance' refers to this 'position'.
+       - 'warnDistance' : If the distance between the pawn of the human player and 'position' is bigger than 'warnDistance', a message is displayed to
+                          inform the player that he'll soon be leaving the allowed area. 
+       - 'maxDistance' : defines the area, where a pawn is allowed to be (radius of a ball).
+       - 'healthDecrease' : a measure to define how fast the health of a pawn should decrease after leaving the allowed area.
+                            Empfohlene Werte: 0.1 (langsame Health-Verminderung) bis 5 (sehr schnelle Health-Verminderung)
 */
 
 namespace orxonox
@@ -60,7 +65,7 @@ namespace orxonox
             SpaceBoundaries(BaseObject* creator);
             ~SpaceBoundaries();
             
-            void setMaxDistance(float r);
+            void se	tMaxDistance(float r);
             float getMaxDistance();
             
             void setWarnDistance(float r);
@@ -80,7 +85,7 @@ namespace orxonox
             float healthDecrease_; //!< Mass fuer die Anzahl Health-Points, die nach ueberschreiten der Entfernung 'maxDistance_' von 'this->getPosition()' abgezogen werden.
                                    //!< Empfohlene Werte: 0.1 (langsame Health-Verminderung) bis 5 (sehr schnelle Health-Verminderung)
             
-            RadarViewable* centerRadar_; //!< Repraesentation von 'this->getPosition()' auf dem Radar.
+            RadarViewable* centerRadar_; //!< Repraesentation von SpaceBoundaries auf dem Radar.
         
             float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'this->getPosition()' bezogen.
             void displayWarning(const std::string warnText);
