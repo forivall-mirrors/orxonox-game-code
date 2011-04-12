@@ -65,8 +65,8 @@ namespace orxonox
                 // return to Master after being forced free
                 if (this->freedomCount_ == 1)
                 {
-                this->state_ = SLAVE;
-                this->freedomCount_ = 0;
+                    this->state_ = SLAVE;
+                    this->freedomCount_ = 0;
                 }
 
                 random = rnd(maxrand);
@@ -81,12 +81,12 @@ namespace orxonox
 
             // forget enemy
             random = rnd(maxrand);
-            if (random < ((1-botlevel_)*5) && (this->target_))
+            if (random < ((1-botlevel_)*6) && (this->target_))
                 this->forgetTarget();
 
             // next enemy
             random = rnd(maxrand);
-            if (random < ((1-botlevel_)*10) && (this->target_))
+            if (random < (botlevel_*20) && (this->target_))
                 this->searchNewTarget();
 
             // fly somewhere
@@ -219,8 +219,8 @@ namespace orxonox
                     else
                     {
                         this->aimAtTarget();
-		        random = rnd(maxrand);
-		        if(this->botlevel_*100 > random)
+                        random = rnd(maxrand);
+                        if(this->botlevel_*100 > random)
                             this->follow();//If a bot is shooting a player, it shouldn't let him go away easily.
                     }
                 }
@@ -253,12 +253,12 @@ namespace orxonox
                 if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
                     this->forgetTarget();
                 else
-		{
-		    this->aimAtTarget();
-		    random = rnd(maxrand);
-		    if(this->botlevel_*100 > random)
+                {
+                    this->aimAtTarget();
+                    random = rnd(maxrand);
+                    if(this->botlevel_*100 > random)
                         this->follow();//If a bot is shooting a player, it shouldn't let him go away easily.
-		}
+                 }
             }
 
             if (this->bHasTargetPosition_)
