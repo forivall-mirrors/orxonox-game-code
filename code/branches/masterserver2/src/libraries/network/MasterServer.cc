@@ -34,10 +34,17 @@
 
 namespace orxonox 
 {
+  /*** MACROS ***/
   /* commands for the terminal interface */
   SetConsoleCommand( "ms-listservers", &MasterServer::listServers );
+  //SetConsoleCommand( "ms-delserver", &MasterServer::delServer );
+  //SetConsoleCommand( "ms-serverinfo", &MasterServer::serverInfo );
 
+  /* forward declaration so the linker doesn't complain */
   MasterServer *MasterServer::instance = NULL;
+
+
+
 
   /* command: list servers */
   void 
