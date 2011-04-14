@@ -26,9 +26,8 @@
  *
  */
  
- /* TODO: - Markiere SpaceBoundaries-Position mit einem schoenen Objekt 
-          - Kugel-Model mal hinzufuegen, das nur sichtbar ist, wenn man genuegend nah an maxDistance dran ist
-          - Reflexion an obiger Kugel beim Versuch durchzudringen
+ /* TODO: - Markiere SpaceBoundaries-Position mit einem schoenen Objekt
+          - Reflexion an Grenze mit Quaternionen machen (--> vgl. Funktion bounceBack() )
  */
 
 #ifndef _SpaceBoundaries_H__
@@ -48,11 +47,12 @@
 /**
 @brief SpaceBoundaries gives level creators the possibility to bar Pawns from leaving a defined area.
 
-       Four attributes can/should be defined in the XML-File:
-       - 'position' : absolute position of the SpaceBoundaries class. '*Distance' refers to this 'position'.
+       Five attributes can/should be defined in the XML-File:
+       - 'position' : absolute position of the SpaceBoundaries class. 'warnDistance' and 'maxDistance' refer to this 'position'.
        - 'warnDistance' : If the distance between the pawn of the human player and 'position' is bigger than 'warnDistance', a message is displayed to
                           inform the player that he'll soon be leaving the allowed area. 
        - 'maxDistance' : defines the area, where a pawn is allowed to be (radius of a ball).
+       - 'showDistance' : If the distance between the pawn and the boundary of the allowed area is smaller than 'showDistance', the boundary is shown. 
        - 'healthDecrease' : a measure to define how fast the health of a pawn should decrease after leaving the allowed area.
                             Empfohlene Werte: 0.1 (langsame Health-Verminderung) bis 5 (sehr schnelle Health-Verminderung)
 */
@@ -65,11 +65,14 @@ namespace orxonox
             SpaceBoundaries(BaseObject* creator);
             ~SpaceBoundaries();
             
-            void se	tMaxDistance(float r);
+            void setMaxDistance(float r);
             float getMaxDistance();
             
             void setWarnDistance(float r);
             float getWarnDistance();
+            
+            void setShowDistance(float r);
+            float getShowDistance();
             
             void setHealthDecrease(float amount);
             float getHealthDecrease();
@@ -81,14 +84,19 @@ namespace orxonox
         private:
             float maxDistance_; //!< maximal zulaessige Entfernung von 'this->getPosition()'.
             float warnDistance_; //!< Entfernung von 'this->getPosition()', ab der eine Warnung angezeigt wird, dass man bald das zulaessige Areal verlaesst.
+            float showDistance_; //!< Definiert, wann die Grenzen visualisiert werden sollen.
             
             float healthDecrease_; //!< Mass fuer die Anzahl Health-Points, die nach ueberschreiten der Entfernung 'maxDistance_' von 'this->getPosition()' abgezogen werden.
                                    //!< Empfohlene Werte: 0.1 (langsame Health-Verminderung) bis 5 (sehr schnelle Health-Verminderung)
+            
+            Billboard *boundary_;
             
             RadarViewable* centerRadar_; //!< Repraesentation von SpaceBoundaries auf dem Radar.
         
             float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'this->getPosition()' bezogen.
             void displayWarning(const std::string warnText);
+            void displayBoundaries(Pawn *item);
+            void bounceBack(Pawn *item);
             bool isHumanPlayer(Pawn *item);
             
  //           ColoredTextAreaOverlayElementFactory* pColoredTextAreaOverlayElementFactory;

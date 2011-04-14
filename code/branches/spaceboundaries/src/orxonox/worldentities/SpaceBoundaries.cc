@@ -35,6 +35,7 @@
 #include "worldentities/pawns/Pawn.h"
 #include "infos/PlayerInfo.h"
 #include "interfaces/RadarViewable.h"
+#include "graphics/Billboard.h"
 
 
 //#include <OgreTextAreaOverlayElement.h>
@@ -51,6 +52,7 @@ namespace orxonox
          * falls im XML-File keine Werte spezifiziert wurden. */
         this->setMaxDistance(3000);
         this->setWarnDistance(2000);
+        this->setShowDistance(2500);
         this->setHealthDecrease(1);
         
         RegisterObject(SpaceBoundaries);
@@ -65,6 +67,12 @@ namespace orxonox
     SpaceBoundaries::~SpaceBoundaries()
     {
         delete this->centerRadar_;
+        
+        if(this->boundary_ != NULL)
+        {
+            delete this->boundary_;
+        }
+        
 //        delete pColoredTextAreaOverlayElementFactory;
     }
     
@@ -84,6 +92,15 @@ namespace orxonox
     float SpaceBoundaries::getWarnDistance()
     {
         return this->warnDistance_;
+    }
+    
+    void SpaceBoundaries::setShowDistance(float r)
+    {
+        this->showDistance_ = r;
+    }
+    float SpaceBoundaries::getShowDistance()
+    {
+        return this->showDistance_;
     }
     
     void SpaceBoundaries::setHealthDecrease(float amount)
@@ -109,13 +126,13 @@ namespace orxonox
         for(ObjectListIterator<MobileEntity> item = ObjectList<MobileEntity>::begin(); item != ObjectList<MobileEntity>::end(); ++item)
         {
             MobileEntity* myMobileEntity = *item;
-            Pawn* myItem = dynamic_cast<Pawn*>(myMobileEntity);
-            if(myItem != NULL)
+            Pawn* currentPawn = dynamic_cast<Pawn*>(myMobileEntity);
+            if(currentPawn != NULL)
             {
-                float distance = computeDistance((WorldEntity*) myItem);
-                bool humanItem = this->isHumanPlayer(myItem);
+                float distance = this->computeDistance(currentPawn);
+                bool humanItem = this->isHumanPlayer(currentPawn);
                 COUT(0) << "Distanz:" << distance << std::endl; //!< message for debugging
-                if(distance > this->warnDistance_ && distance < this->maxDistance_)
+                if(distance > this->warnDistance_ && distance < this->maxDistance_) // Zeige Warnung an!
                 {
                     COUT(0) << "You are leaving the area" << std::endl; //!< message for debugging
                     if(humanItem)
@@ -126,16 +143,23 @@ namespace orxonox
                         
                     }
                 }
-                if(distance > maxDistance_)
+                if( (this->maxDistance_ - distance) < this->showDistance_)
+                {
+                    // Zeige Grenze an!
+                    this->displayBoundaries(currentPawn);
+                }
+                if(distance > this->maxDistance_)
                 {
                     if(humanItem)
                     {
                         COUT(0) << "Health should be decreasing!" << std::endl;
                         this->displayWarning("You are out of the area now!");
-                        myItem->removeHealth( (distance - maxDistance_) * this->healthDecrease_);
+                        currentPawn->removeHealth( (distance - maxDistance_) * this->healthDecrease_);
                     } else {
                         
                     }
+                    
+                    this->bounceBack(currentPawn);
                 }
             }
         }
@@ -172,6 +196,44 @@ namespace orxonox
         pTextArea->setCaption("Some plain text");
 */
         
+    }
+    
+    void SpaceBoundaries::displayBoundaries(Pawn *item)
+    {
+        
+        Vector3 direction = item->getPosition() - this->getPosition();
+        direction.normalise();
+        
+        Vector3 boundaryPosition = this->getPosition() + direction * this->maxDistance_;
+        
+        if(this->boundary_ == NULL)
+        {
+            this->boundary_ = new Billboard(this);
+            this->boundary_->setMaterial("Examples/Flare");
+            this->boundary_->setVisible(true);
+        }
+        
+        this->boundary_->setPosition(boundaryPosition);
+    }
+    
+    void SpaceBoundaries::bounceBack(Pawn *item)
+    {
+        Vector3 normal = item->getPosition() - this->getPosition();
+        if( item->getVelocity().dotProduct(normal) > 0 ) // greife nur ein, falls 
+        {
+            normal.normalise();
+            Vector3 velocity = item->getVelocity();
+            velocity = velocity.reflect(normal);
+            Vector3 acceleration = item->getAcceleration();
+            acceleration = acceleration.reflect(normal);
+            /*
+            Vector3 rotationAxis = velocity.crossProduct(normal);
+            Ogre::Radian angle = velocity.angleBetween(normal);
+            item->setOrientation(Ogre::Quaternion::Quaternion(angle, rotationAxis));
+            */
+            item->setAcceleration(acceleration);
+            item->setVelocity(velocity);
+        }
     }
     
     bool SpaceBoundaries::isHumanPlayer(Pawn *item)
