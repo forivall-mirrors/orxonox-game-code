@@ -1,12 +1,15 @@
 #include "PortalLink.h"
 #include "core/XMLPort.h"
 #include "objects/triggers/MultiTriggerContainer.h"
+#include "worldentities/MobileEntity.h"
 
 namespace orxonox
 {
     CreateFactory(PortalLink);
+
+    std::map<PortalEndPoint *, PortalEndPoint *> PortalLink::links_s;
     
-    PortalLink::PortalLink(BaseObject* creator) : EventListener(creator), fromID_(0), toID_(0), from_(0), to_(0), activationRadius_(20)
+    PortalLink::PortalLink(BaseObject* creator) : BaseObject(creator), fromID_(0), toID_(0), from_(0), to_(0)
     {
         RegisterObject(PortalLink);
     }
@@ -23,9 +26,9 @@ namespace orxonox
 
         if(mode == XMLPort::LoadObject)
         {
-            this->from_ = PortalEndPoint::idMap_s[this->fromID_];
-            this->to_   = PortalEndPoint::idMap_s[this->toID_];
-            recentlyPorted.clear();
+            PortalEndPoint * from = PortalEndPoint::idMap_s[this->fromID_];
+            PortalEndPoint * to   = PortalEndPoint::idMap_s[this->toID_];
+            PortalLink::links_s[from] = to;
         }
     }
     
@@ -33,26 +36,22 @@ namespace orxonox
     {
         SUPER(PortalLink, tick, dt);
     }
-    
-    void PortalLink::processEvent(Event& event)
+
+    void PortalLink::use(MobileEntity* entity, PortalEndPoint * entrance)
     {
-        EventListener::processEvent(event);
-        if(!event.activate_)
+        if(entrance == 0)
         {
+            // TODO COUT
             return;
         }
-        MultiTriggerContainer * origin = dynamic_cast<MultiTriggerContainer *>(event.originator_);
-        if(!origin)
-        {
+        
+        std::map<PortalEndPoint *, PortalEndPoint *>::iterator endpoint = PortalLink::links_s.find(entrance);
+        
+        if(endpoint == PortalLink::links_s.end())  // entrance has no corresponding exit
             return;
-        }
-        PortalEndPoint * eventFrom = dynamic_cast<PortalEndPoint *>(origin->getOriginator());
-        WorldEntity * eventEntity = dynamic_cast<WorldEntity *>(origin->getData());
-        if(eventFrom != this->from_ || !eventEntity || eventFrom->hasRecentlyJumpedOut(eventEntity) == true)
-        {
-            return;
-        }
-        to_->jumpOut(eventEntity);
+        
+        endpoint->second->jumpOut(entity);
     }
+
 
 }

@@ -25,18 +25,28 @@
    skybox       = "Orxonox/skypanoramagen1"
   >
 
+    <Template name=portalEventTemplate>
+        <PortalEndPoint>
+            <events>
+                <execute>
+                    <EventListener event="portal" />
+                </execute>
+            </events>
+        </PortalEndPoint>
+    </Template>
 
-	<PortalEndPoint position="0,0,0" id="1">
-		<attached>
-			<Billboard material="Examples/Flare" />
-		</attached>
-	</PortalEndPoint>
-	<PortalEndPoint position="-100,0,0" id="2">
-		<attached>
-			<Billboard material="Examples/Flare2" />
-		</attached>
-	</PortalEndPoint>
-	<PortalLink fromID="1" toID="2" />
+    <Template name=portalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Billboard material="Portals/Default" />
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="0,0,0" id="1" distance="40" target="MobileEntity" design="portalDefault" eventTemplate="portalEventTemplate" />
+    <PortalEndPoint position="-400,0,0" id="2" distance="40" lookat="0,100,0" target="MobileEntity" design="portalDefault" eventTemplate="portalEventTemplate" />
+    <PortalLink fromID="1" toID="2" />
+    <PortalLink fromID="2" toID="1" />
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 

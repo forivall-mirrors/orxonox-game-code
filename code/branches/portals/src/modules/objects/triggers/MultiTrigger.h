@@ -145,6 +145,8 @@ namespace orxonox
             */
             inline bool isTarget(BaseObject* target)
                 { if(target == NULL) return true; else return targetMask_.isIncluded(target->getIdentifier()); }
+                
+            void addTargets(const std::string& targets); //!< Add some target to the MultiTrigger.
 
         protected:
             virtual std::queue<MultiTriggerState*>* letTrigger(void); //!< This method is called by the MultiTrigger to get information about new trigger events that need to be looked at.
@@ -157,7 +159,6 @@ namespace orxonox
             void fire(bool status, BaseObject* originator = NULL);  //!< Helper method. Creates an Event for the given status and originator and fires it.
             void broadcast(bool status); //!< Helper method. Broadcasts an Event for every object that is a target.
 
-            void addTargets(const std::string& targets); //!< Add some target to the MultiTrigger.
             void removeTargets(const std::string& targets); //!< Remove some target from the MultiTrigger.
 
             /**

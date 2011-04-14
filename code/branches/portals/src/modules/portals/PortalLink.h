@@ -7,11 +7,11 @@
 #include "PortalEndPoint.h"
 #include "objects/eventsystem/EventListener.h"
 
-#include <set>
+#include <map>
 
 namespace orxonox
 {
-    class _PortalsExport PortalLink : public EventListener
+    class _PortalsExport PortalLink : public BaseObject
     {
         public:
             PortalLink(BaseObject* creator);
@@ -35,17 +35,15 @@ namespace orxonox
             {
                 return this->toID_;
             }
-            void use(WorldEntity * entity);
-            virtual void processEvent(Event& event);
+            static void use(MobileEntity * entity, PortalEndPoint * entrance);
         protected:
         private:
+            static std::map<PortalEndPoint *, PortalEndPoint *> links_s;
             unsigned int fromID_;
             unsigned int toID_;
             PortalEndPoint* from_;
             PortalEndPoint* to_;
             float activationRadius_;
-            std::set<WorldEntity *> recentlyPorted;
-            ObjectList<WorldEntity>::iterator it_;
             bool isNowPortable(WorldEntity * ent);
     };
 
