@@ -60,6 +60,16 @@ namespace orxonox
       /* main routine */
       int run();
 
+      /* static pointer for commands */
+      static MasterServer *instance;
+      static MasterServer *getInstance() 
+        { return instance; }
+      static void setInstance( MasterServer *setto ) 
+        { instance = setto;  }
+      
+      /* functions for commands */
+      static void listServers( void );
+
     private:
       /* methods */
       int eventConnect( ENetEvent *event );

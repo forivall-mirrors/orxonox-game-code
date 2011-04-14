@@ -28,11 +28,40 @@
 
 #include "MasterServer.h"
 #include "util/ScopedSingletonManager.h"
+#include "core/command/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
 #include "core/CorePrereqs.h"
 
 namespace orxonox 
 {
+  /* commands for the terminal interface */
+  SetConsoleCommand( "ms-listservers", &MasterServer::listServers );
+
+  MasterServer *MasterServer::instance = NULL;
+
+  /* command: list servers */
+  void 
+  MasterServer::listServers( void )
+  {
+    /* get an iterator */
+    std::list<ServerListElem>::iterator i;
+
+    /* print list header */
+    COUT(0) << "List of connected servers" << std::endl;
+
+    /* loop through list elements */
+    for( i = MasterServer::getInstance()->mainlist.serverlist.begin(); 
+      i != MasterServer::getInstance()->mainlist.serverlist.end(); ++i ) 
+    {
+      COUT(0) << "  " << (*i).ServerInfo.getServerIP() << std::endl;
+    }
+
+    /* display end of list */
+    COUT(0) << MasterServer::getInstance()->mainlist.serverlist.size() <<
+      " servers connected." << std::endl;
+  }
+
+
   /* helpers */
   static void 
   helper_output_debug( ENetEvent *event, char *addrconv )
@@ -331,6 +360,9 @@ namespace orxonox
     /***** INITIALIZE GAME SERVER AND PEER LISTS *****/
     this->peers = new PeerList();
 
+    /* set pointer to this instance */
+    MasterServer::setInstance( this );
+
     /* tell people we're now initialized */
     COUT(0) << "MasterServer initialized, waiting for connections.\n";
   }
@@ -342,7 +374,7 @@ namespace orxonox
     /* terminate all networking connections */
     enet_host_destroy( this->server );
 
-    /* free all used memory */
+    /* TODO free all used memory */
     /* clear the list of connected game servers */
     /* clear the list of connected game clients */
   }
