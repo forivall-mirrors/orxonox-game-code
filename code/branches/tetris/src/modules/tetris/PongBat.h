@@ -99,7 +99,7 @@ namespace orxonox
             void setLength(float length)
                 { this->length_ = length; }
             /**
-            @brief Get the length of the bat.
+            @brief get the length of the bat.
             @return Returns the length of the bat (in z-direction) as percentage of the height of the playing field.
             */
             float getLength() const
