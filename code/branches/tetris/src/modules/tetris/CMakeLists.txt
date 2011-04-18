@@ -1,13 +1,20 @@
-SET_SOURCE_FILES(TETRIS_SRC_FILES
-  Tetris.cc
-  TetrisCenterpoint.cc
-  TetrisStone.cc
+SET_SOURCE_FILES(PONG_SRC_FILES
+COMPILATION_BEGIN PongCompilation.cc
+  Pong.cc
+  PongAI.cc
+  PongBall.cc
+  PongBat.cc
+  PongBot.cc
+  PongCenterpoint.cc
+  PongScore.cc
+COMPILATION_END
 )
 
-ORXONOX_ADD_LIBRARY(tetris
+ORXONOX_ADD_LIBRARY(pong
   MODULE
   FIND_HEADER_FILES
   LINK_LIBRARIES
     orxonox
-  SOURCE_FILES ${TETRIS_SRC_FILES}
+    overlays
+  SOURCE_FILES ${PONG_SRC_FILES}
 )
