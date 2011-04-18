@@ -174,6 +174,7 @@ ENDIF(MSVC)
 IF(APPLE)
   # On Apple we need to link to AppKit, Foundation frameworks
   TARGET_LINK_LIBRARIES(orxonox-main 
+    cmcrashreporter_orxonox
     "-framework AppKit"
     "-framework Foundation"
     "-framework CoreFoundation"

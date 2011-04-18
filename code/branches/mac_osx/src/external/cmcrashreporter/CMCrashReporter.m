@@ -39,7 +39,7 @@
 		
 		return array;
 	} else {
-		// Tiger Formet is AppName.crash.log
+		// Tiger Format is AppName.crash.log
 		NSString *path = [[NSString stringWithFormat:@"~/Library/Logs/CrashReporter/%@.crash.log",[CMCrashReporterGlobal appName]] stringByExpandingTildeInPath];
 		if ([fileManager fileExistsAtPath:path]) return [NSArray arrayWithObject:path];
 		else return nil;
