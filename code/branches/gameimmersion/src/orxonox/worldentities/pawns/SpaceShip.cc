@@ -82,9 +82,9 @@ namespace orxonox
 	this->cameraOriginalPosition = c->getPosition();
 	this->cameraOriginalOrientation = c->getOrientation();
 
-	this->shakeFrequency_ = 100;
+	this->shakeFrequency_ = 20;
 	this->shakeAmplitude_ = 40;
-	this->shakeDeltaTime_ = 0;
+	this->shakeDt_ = 0;
     }
 
     SpaceShip::~SpaceShip()
@@ -105,6 +105,7 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "boostPowerRate", boostPowerRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostRate", boostRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
+	XMLPortParamVariable(SpaceShip, "shakeFrequency", shakeFrequency_, xmlelement, mode);
     }
 
     void SpaceShip::registerVariables()
@@ -160,7 +161,8 @@ namespace orxonox
                 this->boostPower_ += this->boostPowerRate_*dt;
             }
 
-	Camera* c = CameraManager::getInstance().getActiveCamera();
+
+	Camera* c = this->getCamera();
             if(this->bBoost_)
             {
                 this->boostPower_ -=this->boostRate_*dt;
@@ -173,7 +175,7 @@ namespace orxonox
                 }
 		else
 		{
-			this->shakeDeltaTime_ += dt;
+			this->shakeDt_ += dt;
 
 			//Shaking Camera effect
 			if (c != 0)
@@ -182,24 +184,19 @@ namespace orxonox
 				if (c->getAngularVelocity() == Vector3(0,0,0))
 				{
 					c->setAngularVelocity(Vector3(2,0,0));
-					this->shakeDeltaTime_ = 0;
+
+					//set the delta to half the period time,
+					//so the camera shakes up and down.
+					this->shakeDt_ = 1/(2 * this->shakeFrequency_);
 				}
 
 
 				//toggle the rotation
-				if (1/(this->shakeFrequency_) <= shakeDeltaTime_)
+				if (1/(this->shakeFrequency_) <= shakeDt_)
 				{
 					c->setAngularVelocity(-c->getAngularVelocity());
-					shakeDeltaTime_ = 0;
+					shakeDt_ = 0;
 				}
-
-				
-				/*
-				COUT(1) << "Time since change: " << shakeDeltaTime_ << std::endl;
-				COUT(1) << "Rotation Rate: " << c->getRotationRate() << std::endl;
-				COUT(1) << "Angular Velocity: " << c->getAngularVelocity().length();
-				COUT(1) << std::endl;
-				*/
 			}
 		}
             }
@@ -207,9 +204,7 @@ namespace orxonox
 	    {
 		    //reset the camera, if the boost is not active
 		    //TODO: don't call this every tick
-		    c->setAngularVelocity(Vector3(0,0,0));
-		    c->setPosition(this->cameraOriginalPosition);
-		    c->setOrientation(this->cameraOriginalOrientation);
+		    this->resetCamera();
 	    }
         }
     }
@@ -323,5 +318,16 @@ namespace orxonox
         std::vector<PickupCarrier*>* list = new std::vector<PickupCarrier*>();
         list->push_back(this->engine_);
         return list;
+    }
+    
+    void SpaceShip::resetCamera()
+    {
+	    Camera *c = this->getCamera();
+	    
+	    assert(c != 0);
+	    
+	    c->setAngularVelocity(Vector3(0,0,0));
+	    c->setPosition(this->cameraOriginalPosition);
+	    c->setOrientation(this->cameraOriginalOrientation);
     }
 }

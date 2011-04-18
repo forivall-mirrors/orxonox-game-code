@@ -105,7 +105,6 @@ namespace orxonox
 
 	    float shakeFrequency_;
 	    float shakeAmplitude_;
-	    float shakeDeltaTime_;
 
         private:
             void registerVariables();
@@ -114,12 +113,16 @@ namespace orxonox
             void loadEngineTemplate();
             
             void boostCooledDown(void);
+	    
+	    void resetCamera();
 
             std::string enginetemplate_;
             Engine* engine_;
             Timer timer_;
 	    Vector3 cameraOriginalPosition;
 	    Quaternion cameraOriginalOrientation;
+	    
+	    float shakeDt_;
     };
 }
 
