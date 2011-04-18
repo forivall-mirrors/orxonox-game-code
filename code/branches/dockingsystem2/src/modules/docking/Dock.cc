@@ -72,8 +72,6 @@ namespace orxonox
 
     bool Dock::execute(bool bTriggered, BaseObject* trigger)
     {
-        //TODO: Handle DistanceMultiTrigger
-
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
         Pawn* pawn = NULL;
 
@@ -103,21 +101,11 @@ namespace orxonox
             return false;
         }
 
-        // Try to get HumanPlayer
-        if(!player->isHumanPlayer()) {
-            COUT(0) << "Docking::execute Not triggered by a human." << std::endl;
-            return false;
-        }
-        HumanPlayer* human = orxonox_cast<HumanPlayer*>(player);
-        if(human == NULL) {
-            COUT(0) << "Docking::execute Player was not as human as expected.." << std::endl;
-        }
-        COUT(0) << "Dock triggered by player: " << human->getName() << ".." << std::endl;
+        COUT(0) << "Dock triggered by player: " << player->getName() << ".." << std::endl;
 
-        //TODO: This is waaay too oversimplified
         if(bTriggered) {
             DockingEffect::invokeEffect(docking::DOCKING, player, effects_);
-            //DockingEffect::invokeEffect(docking::ATTACH, player, effects_);
+            DockingEffect::invokeEffect(docking::ATTACH, player, effects_);
         } else {
             DockingEffect::invokeEffect(docking::RELEASE, player, effects_);
         }

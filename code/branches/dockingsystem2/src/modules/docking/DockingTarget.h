@@ -20,57 +20,52 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Sven Stucki
+ *      Sven Stucki 
  *   Co-authors:
  *      ...
  *
  */
 
 /**
-    @file DockToShip.h
-    @brief DockingEffect which transfers control from spaceship to docked ship ASDF
+    @file DockingTarget.h
+    @brief Definition of the DockingTarget class.
     @ingroup Docking
 */
 
-#ifndef _DockToShip_H__
-#define _DockToShip_H__
+#ifndef _DockingTarget_H__
+#define _DockingTarget_H__
 
 #include "DockingPrereqs.h"
-#include "DockToShip.h"
 
-#include "worldentities/ControllableEntity.h"
-
+#include "core/BaseObject.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {
-
     /**
     @brief
-        Allows players to dock onto a ship
+        DockingTargets for @ref orxonox::Docking "Docks".
 
     @author
         Sven Stucki
 
     @ingroup Docking
     */
-    class _DockingExport DockToShip : public DockingEffect
+    class _DockingExport DockingTarget : public StaticEntity
     {
+        private:
+            std::string name;
+
         public:
-            DockToShip(BaseObject* creator);
-            virtual ~DockToShip();
+            DockingTarget(BaseObject* creator);
+            virtual ~DockingTarget();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void setTargetId(std::string str);
-            virtual std::string getTargetId();
 
-            virtual bool docking(PlayerInfo* player); //!< Called when docking starts
-            virtual bool attach(PlayerInfo* player); //!< Called after docking animation
-            virtual bool release(PlayerInfo* player); //!< Called when player wants undock
-
-        private:
-            std::string target;
+            virtual void setName(std::string str);
+            virtual std::string getName();
     };
 
 }
 
-#endif /* _DockToShip_H__ */
+#endif /* _DockingTarget_H__ */

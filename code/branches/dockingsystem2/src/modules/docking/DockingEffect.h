@@ -35,7 +35,13 @@
 #ifndef _DockingEffect_H__
 #define _DockingEffect_H__
 
+#include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
+
+#include "infos/PlayerInfo.h"
+
 #include "DockingPrereqs.h"
+#include "DockingTarget.h"
 
 #include <list>
 #include "core/BaseObject.h"
@@ -67,9 +73,10 @@ namespace orxonox
 
             virtual bool docking(PlayerInfo* player) = 0; //!< Called when docking starts
             virtual bool attach(PlayerInfo* player) = 0; //!< Called after docking animation
-            virtual bool release(PlayerInfo* player) = 0; //!< Called when player wants undock
+            virtual bool release(PlayerInfo* player) = 0; //!< Called when player wants to undock
 
             static bool invokeEffect(docking::event event, PlayerInfo* player, std::list<DockingEffect*> & effects); //!< Invokes the event specific method of all DockingEffects in the list
+            static DockingTarget *findTarget(std::string name); //!< Iterates through all DockingTarget objects to find the one with name=target
     };
 
 }

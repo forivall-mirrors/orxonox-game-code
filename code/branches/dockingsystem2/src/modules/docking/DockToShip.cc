@@ -50,6 +50,22 @@ namespace orxonox
 
     }
 
+
+    void DockToShip::XMLPort(Element& xmlelement, XMLPort::Mode mode) {
+        SUPER(DockToShip, XMLPort, xmlelement, mode);
+
+        XMLPortParam(DockToShip, "target", setTargetId, getTargetId, xmlelement, mode);
+    }
+
+    void DockToShip::setTargetId(std::string str) {
+        this->target = str;
+    }
+
+    std::string DockToShip::getTargetId() {
+        return this->target;
+    }
+
+
     bool DockToShip::docking(PlayerInfo* player)
     {
         COUT(0) << "DockToShip::docking" << endl;
@@ -59,6 +75,21 @@ namespace orxonox
     bool DockToShip::attach(PlayerInfo* player)
     {
         COUT(0) << "DockToShip::attach" << endl;
+
+        DockingTarget *target = DockingEffect::findTarget(this->target);
+        if (target == NULL) {
+            COUT(0) << "Can't retrieve target for '" << this->target << "'.." << std::endl;
+            return false;
+        }
+
+        ControllableEntity *dockTo = (ControllableEntity*) target->getParent();
+        if (dockTo == NULL) {
+            COUT(0) << "Parent is not a ControllableEntity.." << std::endl;
+            return false;
+        }
+
+        player->startTemporaryControl(dockTo);
+
         return true;
     }
 

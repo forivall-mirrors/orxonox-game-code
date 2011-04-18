@@ -32,7 +32,6 @@
 */
 
 #include "DockingEffect.h"
-#include "core/CoreIncludes.h"
 
 namespace orxonox
 {
@@ -69,5 +68,15 @@ namespace orxonox
         }
 
         return check;
+    }
+
+    DockingTarget *DockingEffect::findTarget(std::string name) {
+        for (ObjectList<DockingTarget>::iterator it = ObjectList<DockingTarget>::begin();
+                                 it != ObjectList<DockingTarget>::end(); ++it)
+        {
+            if ((*it)->getName().compare(name) == 0)
+                return (*it);
+        }
+        return NULL;
     }
 }

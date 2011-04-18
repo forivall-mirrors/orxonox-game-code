@@ -29,22 +29,10 @@
     <?lua for i = 1, 10, 1 do ?>
       <SpawnPoint position="<?lua print(math.random() * 500 - 250) ?>,<?lua print(math.random() * 500 - 250) ?>,<?lua print(math.random() * 500 - 250) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <?lua end ?>
-    
-    <Destroyer
-      position          = "100,150,0"
-      collisionType     = dynamic
-      mass              = 100000
-      velocity          = "0,0,0"
-      angularDamping    = 0.9999999
-      health            = 10000
-      maxhealth         = 10000
-      initialhealth     = 10000
-    >
 
-      <attached>
-        <Dock>
+    <Dock position="-50,-100,50">
             <effects>
-                <DockToShip />
+                <DockToShip target="asdf" />
             </effects>
             <events>
                 <execute>
@@ -56,8 +44,69 @@
                 <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
             </attached>
         </Dock>
+
+
+      <SpaceShip
+   hudtemplate            = spaceshiphud
+   camerapositiontemplate = spaceshipassffcameras
+   engine                 = spaceshipassffengine
+   spawnparticlesource    = "Orxonox/fairytwirl"
+   spawnparticleduration  = 3
+   explosionchunks        = 6
+
+   health            = 100
+   maxhealth         = 200
+   initialhealth     = 100
+
+   primaryThrust     = 100;
+   auxilaryThrust    = 30;
+   rotationThrust    = 25;
+
+   collisionType     = "dynamic"
+   mass              = 100
+   linearDamping     = 0.7
+   angularDamping    = 0.9999999
+  >
+    <attached>
         <DistanceTriggerBeacon name="beacon1" />
-      
+        <DockingTarget name="asdf" />
+
+      <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=4 mesh="assff.mesh" />
+      <BlinkingBillboard position="17,-1.5,0" material="Examples/Flare" colour="1.0, 0.5, 0.3" amplitude=0.1 frequency=0.5 quadratic=1 />
+      <BlinkingBillboard position="-17,-1.5,0" material="Examples/Flare" colour="0.5, 1.0, 0.3" amplitude=0.1 frequency=0.5 phase=180 quadratic=1 />
+      <DistanceTriggerBeacon name="PlayerDistanceTrigger" /> <!--added DistanceTrigger-->
+    </attached>
+    <collisionShapes>
+      <BoxCollisionShape position="0,0,0"      halfExtents="10, 3, 5" />
+      <BoxCollisionShape position="13,-1.3,0"  halfExtents="3, 1, 2" />
+      <BoxCollisionShape position="-13,-1.3,0" halfExtents="3, 1, 2" />
+      <BoxCollisionShape position="0,0,7"      halfExtents="3, 2, 2" />
+      <BoxCollisionShape position="0,0.1,-11"  halfExtents="2.2, 1.8, 6" />
+      <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
+    </collisionShapes>
+<?lua
+  include("includes/weaponSettingsAssff.oxi")
+?>
+  </SpaceShip>
+
+
+    <!--  <Destroyer
+      position          = "100,150,0"
+      collisionType     = dynamic
+      mass              = 100000
+      velocity          = "0,0,0"
+      angularDamping    = 0.9999999
+      health            = 10000
+      maxhealth         = 10000
+      initialhealth     = 10000
+    >
+
+      <attached>
+        
+        <DistanceTriggerBeacon name="beacon1" />
+        <DockingTarget name="asdf" />
+
+
         <TeamSpawnPoint team=1 position="150,0,7" direction="-1,0,0" roll=90 yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <TeamSpawnPoint team=1 position="0,0,7" lookat="-1,0,0" roll="90"  yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
         <TeamSpawnPoint team=1 position="-50,0,7" lookat="-1,0,0" roll="90" yaw=0 spawnclass=SpaceShip pawndesign=spaceshipassff />
@@ -144,7 +193,7 @@
         <BoxCollisionShape position="167,0,70"      halfExtents="17, 20, 20" />
       </collisionShapes>
     </Destroyer>
-    
+    //-->
 
   </Scene>
 </Level>
