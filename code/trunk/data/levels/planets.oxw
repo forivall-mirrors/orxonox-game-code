@@ -1,0 +1,40 @@
+<LevelInfo
+ name = "Planets"
+ description = "Planets Level"
+ tags = "test"
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/lodInformation.oxt")
+?>
+
+<Level
+ name         = "Sample"
+ description  = "Just a few tests"
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+
+  <Scene
+   ambientlight = "0.3, 0.3, 0.3"
+   skybox       = "Orxonox/Starbox"
+  >
+  
+  <AmbientSound ambientSource="AlphaCentauri.ogg" looping="true" playOnLoad="true" />
+  <Light type=directional position="-10000,-10000,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+  <?lua
+    planetsize=40000
+  ?>
+
+  <SpawnPoint position="<?lua print(math.sin(1.5) *(3)*planetsize) ?>,<?lua print(math.cos(1.5) *3*planetsize) ?>,<?lua print(500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+
+  <Planet position="0,0,0" scale="<?lua print(planetsize) ?>" pitch=-90 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="0,1,0" rotationrate="0.2" atmospheresize=300.0f imagesize=1024.0f />
+  <Planet position="<?lua print(5*planetsize) ?>,0,0" scale=10000 pitch=30 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="1,0,1" rotationrate="1.5" atmospheresize=224.0f imagesize=1024.0f />
+
+  </Scene>
+</Level>
