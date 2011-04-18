@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Aurelian Jaggi
+ *      Mauro Salomon
  *   Co-authors:
  *      ...
  *
@@ -31,7 +31,7 @@
 
 #include "gametypes/Gametype.h"
 #include "gametypes/GametypesPrereqs.h"
-#include "objects/triggers/DistanceTriggerBeacon.h"
+#include "RaceCheckPoint.h"
 #include <boost/concept_check.hpp>
 
 namespace orxonox
@@ -44,18 +44,17 @@ namespace orxonox
 	    
 	    virtual void tick(float dt);
 	    
-	    virtual void start();
-	    virtual void end();
+	    inline void newCheckpointReached()
+		{ this->checkpointsReached_++; }
+	    inline void setCheckpointsReached(int n)
+		{ this->checkpointsReached_ = n;}
+	    inline int getCheckpointsReached()
+		{ return this->checkpointsReached_; }
 	    
 	protected:
-	    inline void newCheckpointReached()
-	      { this->checkpointsReached++; }
-	    inline bool lastCheckpointReached()
-	      { return (this->checkpointsReached == this->numberOfCheckpoints); }
+	    
 	private:
-	    int numberOfCheckpoints_;
 	    int checkpointsReached_;
-    
     };
 }
 

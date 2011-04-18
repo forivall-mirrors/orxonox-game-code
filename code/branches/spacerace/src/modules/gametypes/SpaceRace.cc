@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Aurelian Jaggi
+ *     Mauro Salomon
  *   Co-authors:
  *      ...
  *
@@ -31,13 +31,13 @@
 #include "core/CoreIncludes.h"
 #include "network/Host.h"
 
-namespace orxonox{
+namespace orxonox
+{
     CreateUnloadableFactory(SpaceRace);
     
     SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
     {
 	RegisterObject(SpaceRace);
-	this->numberOfCheckpoints_ = 0;
 	this->checkpointsReached_ = 0;
 	this->numberOfBots_ = 0;	
     }
