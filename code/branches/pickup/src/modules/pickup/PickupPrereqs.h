@@ -81,6 +81,7 @@ namespace orxonox
     class MetaPickup;
     class SpeedPickup;
     class ShieldPickup;
+	class ShrinkPickup;
 
 }
 
