@@ -1,5 +1,6 @@
 SET_SOURCE_FILES(GAMETYPES_SRC_FILES
   SpaceRace.cc
+  RaceCheckPoint.cc
 )
 
 ORXONOX_ADD_LIBRARY(gametypes
