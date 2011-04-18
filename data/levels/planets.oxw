@@ -24,17 +24,20 @@
    skybox       = "Orxonox/Starbox"
   >
   
-  <AmbientSound ambientSource="AlphaCentauri.ogg" looping="true" playOnLoad="true" />
-  <Light type=directional position="-10000,-10000,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
-
   <?lua
-    planetsize=40000
-  ?>
+      planetsize=4000
+    ?>
 
-  <SpawnPoint position="<?lua print(math.sin(1.5) *(3)*planetsize) ?>,<?lua print(math.cos(1.5) *3*planetsize) ?>,<?lua print(500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <SpawnPoint position="<?lua print(math.sin(1.5) *(2)*planetsize) ?>,<?lua print(math.cos(1.5) *3*planetsize) ?>,<?lua print(500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow />
 
-  <Planet position="0,0,0" scale="<?lua print(planetsize) ?>" pitch=-90 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="0,1,0" rotationrate="0.2" atmospheresize=300.0f imagesize=1024.0f />
-  <Planet position="<?lua print(5*planetsize) ?>,0,0" scale=10000 pitch=30 mesh="iceplanet.mesh" atmosphere="atmosphere1" rotationaxis="1,0,1" rotationrate="1.5" atmospheresize=224.0f imagesize=1024.0f />
+
+    <Planet position="0,0,0" scale="<?lua print(planetsize) ?>" pitch=-90 mesh="Muunilinst.mesh" atmosphere="atmosphere1" rotationaxis="0,1,0" rotationrate="0.2" atmospheresize=300.0f imagesize=1024.0f />
+
+    <Planet position="<?lua print(3*planetsize) ?>,0,0" scale=1000 pitch=30 mesh="ganymede.mesh" atmosphere="atmosphere1" rotationaxis="1,0,1" rotationrate="1.5" atmospheresize=224.0f imagesize=1024.0f />
+
+    <Planet position="0,<?lua print(3*planetsize) ?>,0" scale=1000 pitch=30 mesh="jupiter.mesh" atmosphere="atmosphere1" rotationaxis="1,0,1" rotationrate="1.5" atmospheresize=224.0f imagesize=1024.0f />
+
+    <Planet position="0,0,<?lua print(3*planetsize) ?>" scale=1000 pitch=30 mesh="Planet3.mesh" atmosphere="atmosphere1" rotationaxis="1,0,1" rotationrate="1.5" atmospheresize=224.0f imagesize=1024.0f />
 
   </Scene>
 </Level>
