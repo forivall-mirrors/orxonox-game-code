@@ -16,12 +16,23 @@
  #      with this program; if not, write to the Free Software Foundation,
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
- #
- #  Author:
- #    Kevin Young
- #  Description:
- #    Creates the file structure for the development application bundle
- #
+IF(APPLE)
+
+SET_SOURCE_FILES(CCR_FILES
+  CMCrashReporter.m
+  CMCrashReporterGlobal.m
+  CMCrashReporterWindow.m
+)
+
+ORXONOX_ADD_LIBRARY(cmcrashreporter_orxonox
+  ORXONOX_EXTERNAL
+  LINK_LIBRARIES
+    "-framework CoreFoundation"
+    "-framework Cocoa"
+    "-framework AddressBook"
+  SOURCE_FILES
+    ${CCR_FILES}
+)
 
 IF(NOT CMAKE_CONFIGURATION_TYPES)
   SET(_subdirs .)
@@ -49,11 +60,9 @@ FOREACH(_subdir ${_subdirs})
   FILE(MAKE_DIRECTORY "${DEVBUNDLE_CURRENT_RESOURCES}")
   FILE(MAKE_DIRECTORY "${DEVBUNDLE_CURRENT_RESOURCES}/${DEVBUNDLE_DEFAULT_LANGFILE}/${DEVBUNDLE_NIB_FILE}")
   
-  # Populate with Info.plist, NIB-file and the Icon.icns
-  CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/${DEFAULT_DATA_PATH}/mac/Orxonox-Info.plist" "${DEVBUNDLE_CURRENT_DIR}/Info.plist")
-  CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/${DEFAULT_DATA_PATH}/mac/Icon.icns" "${DEVBUNDLE_CURRENT_RESOURCES}/Icon.icns" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/${DEFAULT_DATA_PATH}/mac/${DEVBUNDLE_DEFAULT_LANGFILE}/${DEVBUNDLE_NIB_FILE}/designable.nib" "${DEVBUNDLE_CURRENT_RESOURCES}/${DEVBUNDLE_DEFAULT_LANGFILE}/${DEVBUNDLE_NIB_FILE}/designable.nib" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/${DEFAULT_DATA_PATH}/mac/${DEVBUNDLE_DEFAULT_LANGFILE}/${DEVBUNDLE_NIB_FILE}/keyedobjects.nib" "${DEVBUNDLE_CURRENT_RESOURCES}/${DEVBUNDLE_DEFAULT_LANGFILE}/${DEVBUNDLE_NIB_FILE}/keyedobjects.nib" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/${DEFAULT_DATA_PATH}/mac/${DEVBUNDLE_DEFAULT_LANGFILE}/InfoPlist.strings" "${DEVBUNDLE_CURRENT_RESOURCES}/${DEVBUNDLE_DEFAULT_LANGFILE}/InfoPlist.strings")
+  # Populate app with additional NIB file.
+  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/CMCrashReporterWindow.xib" "${DEVBUNDLE_CURRENT_RESOURCES}/${DEVBUNDLE_DEFAULT_LANGFILE}/CMCrashReporterWindow.xib" COPYONLY)
 
 ENDFOREACH(_subdir)
+
+ENDIF(APPLE)

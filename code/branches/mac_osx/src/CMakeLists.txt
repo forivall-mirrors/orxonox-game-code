@@ -172,10 +172,11 @@ ENDIF(MSVC)
 
 # Apple Mac OS X specific build settings
 IF(APPLE)
-  # On Apple we need to link to AppKit and Foundation frameworks
+  # On Apple we need to link to AppKit, Foundation frameworks
   TARGET_LINK_LIBRARIES(orxonox-main 
     "-framework AppKit"
     "-framework Foundation"
+    "-framework CoreFoundation"
   )
 
   # Post-build step for the creation of the Dev-App bundle
