@@ -201,17 +201,11 @@ ENDIF(WIN32)
 
 ################# OGRE Plugins ##################
 
-# More plugins: Plugin_BSPSceneManager, Plugin_OctreeSceneManager
-SET(OGRE_PLUGINS_INT Plugin_ParticleFX)
-IF(WIN32)
-  # CG program manager is probably DirectX related (not available under unix)
-  LIST(APPEND OGRE_PLUGINS_INT Plugin_CgProgramManager)
-ENDIF(WIN32)
-SET(OGRE_PLUGINS ${OGRE_PLUGINS_INT} CACHE STRING
-   "Specify which OGRE plugins to load. Existance check is performed.")
-
 # Check the plugins and determine the plugin folder
 # You can give a hint by setting the environment variable ENV{OGRE_PLUGIN_DIR}
 INCLUDE(CheckOGREPlugins)
-CHECK_OGRE_PLUGINS(${OGRE_PLUGINS})
+# Note 1: First argument (as string!) are for mandatory plugins, second one is
+#         for optional ones.
+# Note 2: Render systems are found automatically (at least one required)
+CHECK_OGRE_PLUGINS("Plugin_ParticleFX" "Plugin_CgProgramManager")
 
