@@ -24,7 +24,7 @@
  #
 
 IF(UNIX AND NOT APPLE)
-  INSTALL(FILES orxonox.desktop     DESTINATION /usr/share/applications)
+  INSTALL(FILES orxonox.desktop     DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications)
   #INSTALL(FILES orxonox.manpage.xml DESTINATION /usr/man)
-  INSTALL(FILES orxonox.png         DESTINATION /usr/share/pixmaps)
+  INSTALL(FILES orxonox.png         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pixmaps)
 ENDIF()
