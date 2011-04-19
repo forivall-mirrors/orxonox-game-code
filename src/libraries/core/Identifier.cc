@@ -97,7 +97,7 @@ namespace orxonox
     /**
         @brief Returns an identifier by name and adds it if not available
         @param name The name of the identifier as typeid().name() suggests
-        @param proposal A pointer to a newly created identifier for the case of non existance in the map
+        @param proposal A pointer to a newly created identifier for the case of non existence in the map
         @return The identifier (unique instance)
     */
     Identifier* Identifier::getIdentifierSingleton(const std::string& name, Identifier* proposal)
