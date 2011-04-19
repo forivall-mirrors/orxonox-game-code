@@ -295,7 +295,7 @@ namespace boost
     }
 # endif
 
-#elif
+#else
 
     // TODO: Check this once boost 1.48 is released
     namespace filesystem
