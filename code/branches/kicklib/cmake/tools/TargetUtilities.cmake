@@ -286,6 +286,15 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBRARIES})
   ENDIF()
 
+  # RPATH settings for the installation
+  IF(UNIX)
+    SET(_rpath ${LIBRARY_INSTALL_DIRECTORY})
+    IF(_arg_MODULE)
+      LIST(APPEND _rpath ${MODULE_INSTALL_DIRECTORY})
+    ENDIF()
+    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES INSTALL_RPATH "${_rpath}")
+  ENDIF()
+
   # DEFINE_SYMBOL
   IF(_arg_DEFINE_SYMBOL)
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES DEFINE_SYMBOL ${_arg_DEFINE_SYMBOL})
