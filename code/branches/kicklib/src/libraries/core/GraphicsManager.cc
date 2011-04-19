@@ -259,7 +259,7 @@ namespace orxonox
         // Do some SubString magic to get the comma separated list of plugins
         SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '{', '}', false, '\0');
         for (unsigned int i = 0; i < plugins.size(); ++i)
-            ogreRoot_->loadPlugin(plugins[i]);
+            ogreRoot_->loadPlugin(pluginPath + '/' + plugins[i]);
     }
 
     void GraphicsManager::loadRenderer()
