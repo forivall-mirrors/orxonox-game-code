@@ -20,24 +20,23 @@
  #  Author:
  #    Reto Grieder
  #  Description:
- #    Function that checks each OGRE plugin for existance. Also looks for debug
- #    versions and sets them accordingly.
- #    All the plugins specified as function arguments have to be found or the
- #    script will issue a fatal error. Additionally, all release plugins have
- #    to be found in the same folder. Analogously for debug plugins.
+ #    Finds OGRE plugins and their folder, which has to be unique each set
+ #    of plugins (Debug, Release).
+ #    Specify arguments as strings: mandatory and optional plugins.
+ #    Input:
+ #      _mandatory_plugins Have to be found, error issued otherwise
+ #      _optional_plugins  Added as well if found
  #    Output:
- #    OGRE_PLUGINS_FOLDER_DEBUG   Folder with the debug plugins
- #    OGRE_PLUGINS_FOLDER_RELEASE Folder with the release plugins
- #    OGRE_PLUGINS_DEBUG          Names of the debug plugins without extension
- #    OGRE_PLUGINS_RELEASE        Names of the release plugins without ext.
+ #      OGRE_PLUGINS_FOLDER_DEBUG   Folder with the debug plugins
+ #      OGRE_PLUGINS_FOLDER_RELEASE Folder with the release plugins
+ #      OGRE_PLUGINS_DEBUG          Names of the debug plugins without extension
+ #      OGRE_PLUGINS_RELEASE        Names of the release plugins without ext.
  #  Note:
  #    You must not specify render systems as input. That will be taken care of
  #    automatically.
  #
 
-FUNCTION(CHECK_OGRE_PLUGINS)
-
-  SET(OGRE_PLUGINS ${ARGN})
+FUNCTION(CHECK_OGRE_PLUGINS _mandatory_plugins _optional_plugins)
 
   IF(WIN32)
     # On Windows we need only *.dll, not *.lib. Especially the MSVC generator doesn't look for *.dll
@@ -48,7 +47,7 @@ FUNCTION(CHECK_OGRE_PLUGINS)
 
   SET(OGRE_RENDER_SYSTEMS RenderSystem_GL RenderSystem_Direct3D9)
   SET(OGRE_RENDER_SYSTEM_FOUND FALSE)
-  FOREACH(_plugin ${OGRE_PLUGINS} ${OGRE_RENDER_SYSTEMS})
+  FOREACH(_plugin ${_mandatory_plugins} ${_optional_plugins} ${OGRE_RENDER_SYSTEMS})
     FIND_LIBRARY(OGRE_PLUGIN_${_plugin}_OPTIMIZED
       NAMES ${_plugin}
       PATHS $ENV{OGRE_HOME} $ENV{OGRE_PLUGIN_DIR}
@@ -61,7 +60,7 @@ FUNCTION(CHECK_OGRE_PLUGINS)
     )
     # We only need at least one render system. Check at the end.
     IF(NOT ${_plugin} MATCHES "RenderSystem")
-      IF(NOT OGRE_PLUGIN_${_plugin}_OPTIMIZED)
+      IF(${_plugin} MATCHES "${_mandatory_plugins}" AND NOT OGRE_PLUGIN_${_plugin}_OPTIMIZED)
         MESSAGE(FATAL_ERROR "Could not find OGRE plugin named ${_plugin}")
       ENDIF()
     ELSEIF(OGRE_PLUGIN_${_plugin}_OPTIMIZED)
