@@ -246,10 +246,15 @@ namespace orxonox
         }
 #endif
 
+#ifdef ORXONOX_PLATFORM_WINDOWS
         // Add OGRE plugin path to the environment. That way one plugin could
         // also depend on another without problems on Windows
-        std::string pathVariable(getenv("PATH"));
-        putenv(const_cast<char*>(("PATH=" + pathVariable + ';' + pluginPath).c_str()));
+        const char* currentPATH = getenv("PATH");
+        std::string newPATH = pluginPath;
+        if (currentPATH != NULL)
+            newPATH = std::string(currentPATH) + ';' + newPATH;
+        putenv(const_cast<char*>(("PATH=" + newPATH).c_str()));
+#endif
 
         // Do some SubString magic to get the comma separated list of plugins
         SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '{', '}', false, '\0');

@@ -259,9 +259,14 @@ namespace orxonox
         const std::string& moduleextension = specialConfig::moduleExtension;
         size_t moduleextensionlength = moduleextension.size();
 
+#ifdef ORXONOX_PLATFORM_WINDOWS
         // Add that path to the PATH variable in case a module depends on another one
-        std::string pathVariable(getenv("PATH"));
-        putenv(const_cast<char*>(("PATH=" + pathVariable + ';' + modulePath_.BF_NATIVE_STRING()).c_str()));
+        const char* currentPATH = getenv("PATH");
+        std::string newPATH = modulePath_.BF_NATIVE_STRING();
+        if (currentPATH != NULL)
+            newPATH = std::string(currentPATH) + ';' + newPATH;
+        putenv(const_cast<char*>(("PATH=" + newPATH).c_str()));
+#endif
 
         // Make sure the path exists, otherwise don't load modules
         if (!boost::filesystem::exists(modulePath_))

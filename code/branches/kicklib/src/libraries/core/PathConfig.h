@@ -112,7 +112,7 @@ namespace orxonox
             //! Returns the path to the modules as std::string
             static std::string getModulePathString();
 
-            //! Return trrue for runs in the build directory (not installed)
+            //! Return true for runs in the build directory (not installed)
             static bool isDevelopmentRun() { return getInstance().bDevRun_; }
 
         private:
