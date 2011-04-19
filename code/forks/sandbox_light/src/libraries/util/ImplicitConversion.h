@@ -60,7 +60,7 @@ namespace orxonox
         Usage: ImplicitConversion<FromType, ToType>::exists
         This gives you a compile time constant boolean in the form of an enum value.
     @note
-        The idea to use the sizeof() operator on return values to determine function existance
+        The idea to use the sizeof() operator on return values to determine function existence
         is described in 'Modern C++ design' by Alexandrescu (2001).
     */
     template <class FromType, class ToType>
