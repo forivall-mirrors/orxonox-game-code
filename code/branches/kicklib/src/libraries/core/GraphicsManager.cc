@@ -106,12 +106,11 @@ namespace orxonox
 
         // Only for development runs
         if (PathConfig::isDevelopmentRun())
-        {
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem");
-            extResources_.reset(new XMLFile("resources.oxr"));
-            extResources_->setLuaSupport(false);
-            Loader::open(extResources_.get());
-        }
+
+        extResources_.reset(new XMLFile("resources.oxr"));
+        extResources_->setLuaSupport(false);
+        Loader::open(extResources_.get());
 
         if (bLoadRenderer)
         {
@@ -133,8 +132,7 @@ namespace orxonox
 
         // Undeclare the resources
         Loader::unload(resources_.get());
-        if (PathConfig::isDevelopmentRun())
-            Loader::unload(extResources_.get());
+        Loader::unload(extResources_.get());
     }
 
     void GraphicsManager::setConfigValues()
