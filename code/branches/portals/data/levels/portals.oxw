@@ -25,16 +25,6 @@
    skybox       = "Orxonox/skypanoramagen1"
   >
 
-    <Template name=portalEventTemplate>
-        <PortalEndPoint>
-            <events>
-                <execute>
-                    <EventListener event="portal" />
-                </execute>
-            </events>
-        </PortalEndPoint>
-    </Template>
-
     <Template name=portalDefault>
         <PortalEndPoint>
             <attached>
@@ -44,7 +34,7 @@
     </Template>
 
     <PortalEndPoint position="0,0,0" id="1" distance="40" target="MobileEntity" design="portalDefault" eventTemplate="portalEventTemplate" />
-    <PortalEndPoint position="-400,0,0" id="2" distance="40" lookat="0,100,0" target="MobileEntity" design="portalDefault" eventTemplate="portalEventTemplate" />
+    <PortalEndPoint position="-400,0,0" id="2" distance="40" lookat="0,100,0" target="MobileEntity" design="portalDefault" />
     <PortalLink fromID="1" toID="2" />
     <PortalLink fromID="2" toID="1" />
 

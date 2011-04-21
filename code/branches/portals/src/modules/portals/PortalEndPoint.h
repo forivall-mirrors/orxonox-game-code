@@ -48,14 +48,14 @@ namespace orxonox
             bool execute(bool bTriggered, BaseObject* trigger);
             void jumpOut(MobileEntity * entity);
         protected:
+            
         private:
+            static const std::string EVENTFUNCTIONNAME;
+            
             unsigned int id_;
             DistanceMultiTrigger * trigger_;
             std::string templateName_;
-            void setEventTemplate(const std::string & temp)
-            {
-                this->addTemplate(temp);
-            }
+
             std::set<MobileEntity *> recentlyJumpedOut_; //!< Entities which recently jumped out of this EndPoint, hence they shouldn't be pulled in again if the endpoint is the beginning of a link
     };
 

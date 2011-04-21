@@ -8,6 +8,8 @@
 namespace orxonox
 {
     CreateFactory(PortalEndPoint);
+    
+    /*static*/ const std::string PortalEndPoint::EVENTFUNCTIONNAME = "execute";
 
     std::map<unsigned int, PortalEndPoint *> PortalEndPoint::idMap_s;
 
@@ -30,8 +32,10 @@ namespace orxonox
         XMLPortParam(PortalEndPoint, "id", setID, getID, xmlelement, mode);
         XMLPortParam(PortalEndPoint, "design", setTemplate, getTemplate, xmlelement, mode);
         XMLPortParamExtern(PortalEndPoint, DistanceMultiTrigger, this->trigger_, "distance", setDistance, getDistance, xmlelement, mode);
-        XMLPortParamLoadOnly(PortalEndPoint, "eventTemplate", setEventTemplate, xmlelement, mode);
         XMLPortParamLoadOnly(PortalEndPoint, "target", setTargets, xmlelement, mode).defaultValues("Pawn");
+        
+        // Add the DistanceMultiTrigger as event source.
+        this->addEventSource(this->trigger_, EVENTFUNCTIONNAME);
         
         if(mode == XMLPort::LoadObject)
         {
@@ -43,7 +47,7 @@ namespace orxonox
     {
         SUPER(PortalEndPoint, XMLEventPort, xmlelement, mode);
         
-        XMLPortEventSink(PortalEndPoint, BaseObject, "execute", execute, xmlelement, mode);
+        XMLPortEventSink(PortalEndPoint, BaseObject, EVENTFUNCTIONNAME, execute, xmlelement, mode);
     }
 
     bool PortalEndPoint::execute(bool bTriggered, BaseObject* trigger)
