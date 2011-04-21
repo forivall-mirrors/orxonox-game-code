@@ -221,6 +221,8 @@ namespace orxonox
         Vector3 normal = item->getPosition() - this->getPosition();
         if( item->getVelocity().dotProduct(normal) > 0 ) // greife nur ein, falls 
         {
+            float dampingFactor = 0.5;
+        
             normal.normalise();
             Vector3 velocity = item->getVelocity();
             velocity = velocity.reflect(normal);
@@ -228,11 +230,20 @@ namespace orxonox
             acceleration = acceleration.reflect(normal);
             /*
             Vector3 rotationAxis = velocity.crossProduct(normal);
-            Ogre::Radian angle = velocity.angleBetween(normal);
+            Ogre::Radian angle = 2 * velocity.angleBetween(normal);
             item->setOrientation(Ogre::Quaternion::Quaternion(angle, rotationAxis));
             */
-            item->setAcceleration(acceleration);
-            item->setVelocity(velocity);
+            /*
+            Ogre::Quaternion orientation = item->getOrientation();
+            orientation = -1.0 * orientation;
+            item->setOrientation(orientation);
+            */
+            //item->setOrientation(item->getOrientation().UnitInverse() );
+            
+            item->lookAt( velocity + this->getPosition() );
+
+            item->setAcceleration(acceleration * dampingFactor);
+            item->setVelocity(velocity * dampingFactor);
         }
     }
     
