@@ -58,8 +58,10 @@
 // Boost 1.36 has some issues with deprecated functions that have been omitted
 #if (BOOST_VERSION == 103600)
 #  define BOOST_LEAF_FUNCTION filename
-#else
+#elif (BOOST_FILESYSTEM_VERSION < 3)
 #  define BOOST_LEAF_FUNCTION leaf
+#else
+#  define BOOST_LEAF_FUNCTION path().filename().string
 #endif
 
 namespace orxonox
@@ -94,7 +96,7 @@ namespace orxonox
 
 #elif defined(ORXONOX_PLATFORM_APPLE)
         char buffer[1024];
-        unsigned long path_len = 1023;
+        uint32_t path_len = 1023;
         if (_NSGetExecutablePath(buffer, &path_len))
             ThrowException(General, "Could not retrieve executable path.");
 
@@ -124,10 +126,8 @@ namespace orxonox
         buffer[ret] = 0;
 #endif
 
-        executablePath_ = bf::path(buffer);
-#ifndef ORXONOX_PLATFORM_APPLE
-        executablePath_ = executablePath_.branch_path(); // remove executable name
-#endif
+        // Remove executable filename
+        executablePath_ = bf::path(buffer).branch_path();
 
         /////////////////////
         // SET MODULE PATH //
@@ -205,11 +205,11 @@ namespace orxonox
             dataPath_  = specialConfig::dataInstallDirectory;
 
             // Get user directory
-#  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */
+#ifdef ORXONOX_PLATFORM_UNIX
             char* userDataPathPtr(getenv("HOME"));
-#  else
+#else
             char* userDataPathPtr(getenv("APPDATA"));
-#  endif
+#endif
             if (userDataPathPtr == NULL)
                 ThrowException(General, "Could not retrieve user data path.");
             bf::path userDataPath(userDataPathPtr);
@@ -232,8 +232,8 @@ namespace orxonox
 
         // Create directories to avoid problems when opening files in non existent folders.
         std::vector<std::pair<bf::path, std::string> > directories;
-        directories.push_back(std::make_pair(bf::path(configPath_), "config"));
-        directories.push_back(std::make_pair(bf::path(logPath_), "log"));
+        directories.push_back(std::make_pair(bf::path(configPath_), std::string("config")));
+        directories.push_back(std::make_pair(bf::path(logPath_), std::string("log")));
 
         for (std::vector<std::pair<bf::path, std::string> >::iterator it = directories.begin();
             it != directories.end(); ++it)
@@ -272,16 +272,20 @@ namespace orxonox
         // Iterate through all files
         while (file != end)
         {
-            const std::string& filename = file->BOOST_LEAF_FUNCTION();
+            std::string filename = file->BOOST_LEAF_FUNCTION();
 
-            // Check if the file ends with the exension in question
+            // Check if the file ends with the extension in question
             if (filename.size() > moduleextensionlength)
             {
                 if (filename.substr(filename.size() - moduleextensionlength) == moduleextension)
                 {
                     // We've found a helper file
                     const std::string& library = filename.substr(0, filename.size() - moduleextensionlength);
+#if BOOST_FILESYSTEM_VERSION < 3
                     modulePaths.push_back((modulePath_ / library).file_string());
+#else
+                    modulePaths.push_back((modulePath_ / library).string());
+#endif
                 }
             }
             ++file;

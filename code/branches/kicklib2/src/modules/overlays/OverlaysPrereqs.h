@@ -52,10 +52,13 @@
 #      define _OverlaysExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _OverlaysPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _OverlaysExport  __attribute__ ((visibility("default")))
+#  define _OverlaysPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _OverlaysExport
+#  define _OverlaysPrivate
 #endif
 
 //-----------------------------------------------------------------------

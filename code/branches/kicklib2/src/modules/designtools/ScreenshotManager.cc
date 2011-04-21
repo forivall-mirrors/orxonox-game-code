@@ -45,6 +45,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
 #include "core/PathConfig.h"
+#include "core/Resource.h"
 #include "core/command/ConsoleCommand.h"
 #include "util/ScopedSingletonManager.h"
 #include "util/StringUtils.h"

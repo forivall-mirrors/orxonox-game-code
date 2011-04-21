@@ -51,10 +51,13 @@
 #      define _NetworkExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _NetworkPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _NetworkExport  __attribute__ ((visibility("default")))
+#  define _NetworkPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _NetworkExport
+#  define _NetworkPrivate
 #endif
 
 //-----------------------------------------------------------------------

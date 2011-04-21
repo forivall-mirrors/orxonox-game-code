@@ -24,51 +24,6 @@
  #    Library files are treated separately.
  #
 
-# Check package version info
-# MAJOR: Breaking change
-# MINOR: No breaking changes by the dependency package
-#        For example any code running on 3.0 should still run on 3.1
-#        But you can specify that the code only runs on 3.1 and higher
-#        or 4.0 and higher (so both 3.1 and 4.0 will work).
-IF(MSVC)
-  SET(ALLOWED_MINIMUM_VERSIONS 4.3 5.1 6.0)
-ELSE()
-  SET(ALLOWED_MINIMUM_VERSIONS 4.1 5.2)
-ENDIF()
-
-IF(NOT EXISTS ${DEPENDENCY_PACKAGE_DIR}/version.txt)
-  SET(DEPENDENCY_VERSION 1.0)
-ELSE()
-  # Get version from file
-  FILE(READ ${DEPENDENCY_PACKAGE_DIR}/version.txt _file_content)
-  SET(_match)
-  STRING(REGEX MATCH "([0-9]+.[0-9]+)" _match ${_file_content})
-  IF(_match)
-    SET(DEPENDENCY_VERSION ${_match})
-  ELSE()
-    MESSAGE(FATAL_ERROR "The version.txt file in the dependency file has corrupt version information.")
-  ENDIF()
-ENDIF()
-
-INCLUDE(CompareVersionStrings)
-SET(_version_match FALSE)
-FOREACH(_version ${ALLOWED_MINIMUM_VERSIONS})
-  # Get major version
-  STRING(REGEX REPLACE "^([0-9]+)\\..*$" "\\1" _major_version "${_version}")
-  COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} ${_major_version} _result TRUE)
-  IF(_result EQUAL 0)
-    COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} ${_version} _result FALSE)
-    IF(NOT _result LESS 0)
-      SET(_version_match TRUE)
-    ENDIF()
-  ENDIF()
-ENDFOREACH(_version)
-IF(NOT _version_match)
-  MESSAGE(FATAL_ERROR "Your dependency package version is ${DEPENDENCY_VERSION}\n"
-          "Possible required versions: ${ALLOWED_MINIMUM_VERSIONS}\n"
-          "You can get a new version from www.orxonox.net")
-ENDIF()
-
 IF(NOT _INTERNAL_PACKAGE_MESSAGE)
   MESSAGE(STATUS "Using library package for the dependencies.")
   SET(_INTERNAL_PACKAGE_MESSAGE 1 CACHE INTERNAL "Do not edit!" FORCE)
@@ -76,8 +31,8 @@ ENDIF()
 
 # Ogre versions >= 1.7 require the POCO library on Windows with MSVC for threading
 COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} 5 _result TRUE)
-IF(NOT _result EQUAL -1 AND NOT MINGW)
-    SET(POCO_REQUIRED TRUE)
+IF(NOT _result EQUAL -1 AND NOT APPLE)
+  SET(POCO_REQUIRED TRUE)
 ENDIF()
 
 # Include paths and other special treatments

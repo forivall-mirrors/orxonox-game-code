@@ -52,7 +52,7 @@
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
- #    ORXONOX_DEFAULT_LINK, ORXONOX_CONFIG_FILES
+ #    ORXONOX_DEFAULT_LINK, ORXONOX_CONFIG_FILES, ORXONOX_CONFIG_FILES_GENERATED
  #  Parameters:
  #    _target_name, ARGN for the macro arguments
  #
@@ -168,6 +168,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   IF(_arg_TOLUA_FILES)
     GENERATE_TOLUA_BINDINGS(${_target_name_capitalised} _${_target_name}_files
                             INPUTFILES ${_arg_TOLUA_FILES})
+    # Workaround for XCode: The folder where the bind files are written to has
+    # to be present beforehand.
+    IF(CMAKE_CONFIGURATION_TYPES)
+      FOREACH(_dir ${CMAKE_CONFIGURATION_TYPES})
+        FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_dir})
+      ENDFOREACH(_dir)
+    ENDIF()
   ENDIF()
 
   # First part (pre target) of precompiled header files
@@ -191,13 +198,19 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     GENERATE_SOURCE_GROUPS(${_${_target_name}_files})
 
     IF(NOT _arg_ORXONOX_EXTERNAL)
-      # Move the prereqs.h file to the config section
+      # Move the ...Prereqs.h and the PCH files to the 'Config' section
       IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_target_name_capitalised}Prereqs.h)
         SOURCE_GROUP("Config" FILES ${_target_name_capitalised}Prereqs.h)
       ENDIF()
-      # Add config files to the config section
-      LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES})
+      IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_arg_PCH_FILE})
+        SOURCE_GROUP("Config" FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_arg_PCH_FILE})
+      ENDIF()
+      # Also include all config files
+      LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES} ${ORXONOX_CONFIG_FILES_GENERATED})
+      # Add unprocessed config files to the 'Config' section
       SOURCE_GROUP("Config" FILES ${ORXONOX_CONFIG_FILES})
+      # Add generated config files to the 'Generated' section
+      SOURCE_GROUP("Generated" FILES ${ORXONOX_CONFIG_FILES_GENERATED})
     ENDIF()
   ENDIF()
 
@@ -216,12 +229,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # No warnings needed from third party libraries
   IF(_arg_ORXONOX_EXTERNAL)
     REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
-    ADD_COMPILER_FLAGS("-w")
+    ADD_COMPILER_FLAGS("-w" NOT MSVC)
+    ADD_COMPILER_FLAGS("-W0" MSVC)
   ENDIF()
 
   # Don't compile header files
   FOREACH(_file ${_${_target_name}_files})
-    IF(NOT _file MATCHES "\\.(c|cc|cpp|cxx)$")
+    IF(NOT _file MATCHES "\\.(c|cc|cpp|cxx|mm)$")
       SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
     ENDIF()
   ENDFOREACH(_file)

@@ -55,6 +55,9 @@ namespace orxonox
             // TODO: Non-fatal error handling (non-critical resource missing)
             COUT(2) << "Mood Warning: Folder for default mood (" << MoodManager::defaultMood_ << ") does not exist!" << std::endl;
         }
+        
+        // @TODO
+        // Creating a vector of the available moods to enable easy mood selection by Lua/CEGUI        
     }
 
     void MoodManager::setConfigValues()

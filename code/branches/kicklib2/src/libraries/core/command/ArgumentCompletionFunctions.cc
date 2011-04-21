@@ -49,8 +49,13 @@
 // Boost 1.36 has some issues with deprecated functions that have been omitted
 #if (BOOST_VERSION == 103600)
 #  define BOOST_LEAF_FUNCTION filename
-#else
+#  define BOOST_DICTIONARY_ENTRY_NAME string
+#elif (BOOST_FILESYSTEM_VERSION < 3)
 #  define BOOST_LEAF_FUNCTION leaf
+#  define BOOST_DICTIONARY_ENTRY_NAME string
+#else
+#  define BOOST_LEAF_FUNCTION path().filename().string
+#  define BOOST_DICTIONARY_ENTRY_NAME path().string
 #endif
 
 namespace orxonox
@@ -256,9 +261,9 @@ namespace orxonox
                 while (file != end)
                 {
                     if (boost::filesystem::is_directory(*file))
-                        dirlist.push_back(ArgumentCompletionListElement(file->string() + '/', getLowercase(file->string()) + '/', file->BOOST_LEAF_FUNCTION() + '/'));
+                        dirlist.push_back(ArgumentCompletionListElement(file->BOOST_DICTIONARY_ENTRY_NAME() + '/', getLowercase(file->BOOST_DICTIONARY_ENTRY_NAME()) + '/', file->BOOST_LEAF_FUNCTION() + '/'));
                     else
-                        filelist.push_back(ArgumentCompletionListElement(file->string(), getLowercase(file->string()), file->BOOST_LEAF_FUNCTION()));
+                        filelist.push_back(ArgumentCompletionListElement(file->BOOST_DICTIONARY_ENTRY_NAME(), getLowercase(file->BOOST_DICTIONARY_ENTRY_NAME()), file->BOOST_LEAF_FUNCTION()));
                     ++file;
                 }
             }

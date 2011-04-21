@@ -51,10 +51,13 @@
 #      define _UtilExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _UtilPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _UtilExport  __attribute__ ((visibility("default")))
+#  define _UtilPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _UtilExport
+#  define _UtilPrivate
 #endif
 
 //-----------------------------------------------------------------------

@@ -68,9 +68,20 @@ ADD_COMPILER_FLAGS("-DOIS_STATIC_LIB"              WIN32 NOT _external_shared_li
 
 # Set the search paths for include files
 INCLUDE_DIRECTORIES(
+  # OrxonoxConfig.h
+  ${CMAKE_CURRENT_BINARY_DIR}
+
+  # All includes in "externals" should be prefixed with the path
+  # relative to "external" to avoid conflicts
+  ${CMAKE_CURRENT_SOURCE_DIR}/external
+  # Include directories needed even if only included by Orxonox
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
+
   # External
   ${OGRE_INCLUDE_DIR}
   ${CEGUI_INCLUDE_DIR}
+  ${CEGUI_TOLUA_INCLUDE_DIR}
   #${ENET_INCLUDE_DIR}
   ${Boost_INCLUDE_DIRS}
   ${POCO_INCLUDE_DIR}
@@ -82,17 +93,11 @@ INCLUDE_DIRECTORIES(
   ${TCL_INCLUDE_PATH}
   ${DIRECTX_INCLUDE_DIR}
   ${ZLIB_INCLUDE_DIR}
-
-  # All includes in "externals" should be prefixed with the path
-  # relative to "external" to avoid conflicts
-  ${CMAKE_CURRENT_SOURCE_DIR}/external
-  # Include directories needed even if only included by Orxonox
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
-
-  # OrxonoxConfig.h
-  ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+IF(CEGUI_OLD_VERSION)
+  INCLUDE_DIRECTORIES(${CEGUILUA_INCLUDE_DIR})
+ENDIF()
 
 IF (DBGHELP_FOUND)
   INCLUDE_DIRECTORIES(${DBGHELP_INCLUDE_DIR})
@@ -164,9 +169,13 @@ IF(MSVC)
   ELSE()
     SET(MSVC_PLATFORM "Win32")
   ENDIF()
-  STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?) .*$" "\\1"
-         VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcproj.user")
+  IF(MSVC10)
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcxproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcxproj.user")
+  ELSE()
+    STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?).*$" "\\1"
+           VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcproj.user")
+  ENDIF()
 ENDIF(MSVC)
 
 #################### Doxygen ####################

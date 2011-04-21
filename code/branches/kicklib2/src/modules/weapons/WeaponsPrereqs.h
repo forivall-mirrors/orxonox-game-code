@@ -52,10 +52,13 @@
 #      define _WeaponsExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _WeaponsPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _WeaponsExport  __attribute__ ((visibility("default")))
+#  define _WeaponsPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _WeaponsExport
+#  define _WeaponsPrivate
 #endif
 
 //-----------------------------------------------------------------------

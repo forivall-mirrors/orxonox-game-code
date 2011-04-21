@@ -122,7 +122,7 @@ namespace orxonox
             void setNetworkID(uint32_t id);
 
             /// Returns the unique ID of the class.
-            FORCEINLINE unsigned int getClassID() const { return this->classID_; }
+            ORX_FORCEINLINE unsigned int getClassID() const { return this->classID_; }
 
             /// Returns the list of all existing objects of this class.
             inline ObjectListBase* getObjects() const { return this->objects_; }
@@ -485,7 +485,7 @@ namespace orxonox
         Also note that the function is implemented differently for GCC/MSVC.
     */
     template <class T, class U>
-    FORCEINLINE T orxonox_cast(U* source)
+    ORX_FORCEINLINE T orxonox_cast(U* source)
     {
 #ifdef ORXONOX_COMPILER_MSVC
         typedef Loki::TypeTraits<typename Loki::TypeTraits<T>::PointeeType>::NonConstType ClassType;

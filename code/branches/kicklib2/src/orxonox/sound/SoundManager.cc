@@ -30,8 +30,8 @@
 
 #include "SoundManager.h"
 
-#include <AL/alut.h>
 #include <utility>
+#include <alut.h>
 #include <loki/ScopeGuard.h>
 
 #include "util/Exception.h"
@@ -72,12 +72,15 @@ namespace orxonox
 
         this->bDestructorCalled_ = false;
 
+        // Clear error messages (might be problematic on some systems)
+        alGetError();
+        alutGetError();
+
         // See whether we even want to load
         bool bDisableSound_ = false;
         SetConfigValue(bDisableSound_, false);
         if (bDisableSound_)
             ThrowException(InitialisationAborted, "Sound: Not loading at all");
-
         if (!alutInitWithoutContext(NULL, NULL))
             ThrowException(InitialisationFailed, "Sound Error: ALUT initialisation failed: " << alutGetErrorString(alutGetError()));
         Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);

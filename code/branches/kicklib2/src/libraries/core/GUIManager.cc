@@ -148,13 +148,13 @@ namespace orxonox
     GUIManager::GUIManager(const std::pair<int, int>& mousePosition)
         : destroyer_(*this, &GUIManager::cleanup)
         , guiRenderer_(NULL)
-        , luaState_(NULL)
-        , scriptModule_(NULL)
-        , guiSystem_(NULL)
         , resourceProvider_(NULL)
 #ifndef ORXONOX_OLD_CEGUI
         , imageCodec_(NULL)
 #endif
+        , luaState_(NULL)
+        , scriptModule_(NULL)
+        , guiSystem_(NULL)
         , camera_(NULL)
     {
         RegisterRootObject(GUIManager);
@@ -392,12 +392,18 @@ namespace orxonox
         ----------------------------------------------------
         false                     | False | True  | Dontcare
         */
+
+#ifdef ORXONOX_PLATFORM_APPLE
+        // There is no non exclusive mode on OS X yet
+        state->setMouseExclusive(TriBool::True);
+#else
         if (showCursor == TriBool::Dontcare)
             state->setMouseExclusive(TriBool::Dontcare);
         else if (GraphicsManager::getInstance().isFullScreen() || showCursor == TriBool::False)
             state->setMouseExclusive(TriBool::True);
         else
             state->setMouseExclusive(TriBool::False);
+#endif
 
         if (showCursor == TriBool::True)
             state->setMouseHandler(this);

@@ -259,7 +259,11 @@ namespace orxonox
         SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '{', '}', false, '\0');
         // Use backslash paths on Windows! file_string() already does that though.
         for (unsigned int i = 0; i < plugins.size(); ++i)
+#if BOOST_FILESYSTEM_VERSION < 3
             ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
+#else
+            ogreRoot_->loadPlugin((folder / plugins[i]).string());
+#endif
     }
 
     void GraphicsManager::loadRenderer()
@@ -285,6 +289,15 @@ namespace orxonox
         this->ogreWindowEventListener_->windowResized(renderWindow_);
 
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_.get());
+
+// HACK
+#ifdef ORXONOX_PLATFORM_APPLE
+        //INFO: This will give our window focus, and not lock it to the terminal
+        ProcessSerialNumber psn = {0, kCurrentProcess};
+        TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+        SetFrontProcess(&psn);
+#endif
+// End of HACK
 
         // create a full screen default viewport
         // Note: This may throw when adding a viewport with an existing z-order!

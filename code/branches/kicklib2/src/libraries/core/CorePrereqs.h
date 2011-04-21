@@ -53,10 +53,13 @@
 #      define _CoreExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _CorePrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _CoreExport  __attribute__ ((visibility("default")))
+#  define _CorePrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _CoreExport
+#  define _CorePrivate
 #endif
 
 //-----------------------------------------------------------------------
@@ -258,14 +261,14 @@ namespace Tcl
 // Boost
 namespace boost
 {
-#if (BOOST_VERSION < 104400)
+#if BOOST_VERSION < 104400
     namespace filesystem
     {
         struct path_traits;
         template <class String, class Traits> class basic_path;
         typedef basic_path<std::string, path_traits> path;
     }
-#else
+#elif BOOST_VERSION < 104600
     namespace filesystem2
     {
         struct path_traits;
@@ -277,6 +280,15 @@ namespace boost
         using filesystem2::basic_path;
         using filesystem2::path_traits;
         using filesystem2::path;
+    }
+#else
+    namespace filesystem3
+    {
+        class path;
+    }
+    namespace filesystem
+    {
+        using filesystem3::path;
     }
 #endif
     class thread;

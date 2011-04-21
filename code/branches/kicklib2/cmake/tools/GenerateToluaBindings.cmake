@@ -32,6 +32,16 @@
  #    RUNTIME_LIBRARY_DIRECTORY - Working directory
  #
 
+# Workaround for XCode: The folder where the bind files are written to has
+# to be present beforehand.
+# We have to do this here because the header files are all stored in a single
+# location per configuration.
+IF(CMAKE_CONFIGURATION_TYPES)
+  FOREACH(_dir ${CMAKE_CONFIGURATION_TYPES})
+    FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/toluabind/${_dir}")
+  ENDFOREACH(_dir)
+ENDIF()
+
 FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
   SET(_tolua_inputfiles ${ARGN})
   LIST(REMOVE_ITEM _tolua_inputfiles "INPUTFILES")
