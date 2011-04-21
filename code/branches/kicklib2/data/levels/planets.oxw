@@ -1,0 +1,122 @@
+﻿<LevelInfo
+
+    name = "Planets"
+
+    description = "Planets Level"
+
+    tags = "test"
+
+/>
+
+
+
+<?lua
+
+    include("HUDTemplates3.oxo")
+
+    include("stats.oxo")
+
+    include("templates/spaceshipAssff.oxt")
+
+    include("templates/lodInformation.oxt")
+
+?>
+
+
+
+<Level
+
+    name = "Planets"
+    description  = "Planets Level"
+
+>
+
+    <templates>
+    
+    <Template link=lodtemplate_default />
+
+    </templates>
+
+
+
+    <Scene
+
+        ambientlight = "0.3, 0.3, 0.3"
+     
+   skybox       = "Orxonox/skypanoramagen1"
+
+    >
+
+  
+      <?lua
+
+            planetsize=4000
+
+        ?>
+        <Light
+            type=directional
+            position="-10000,-10000,0"
+            direction="1, 1, 0"
+            diffuse="1.0, 0.9, 0.9, 1.0"
+            specular="1.0, 0.9, 0.9, 1.0"
+        />
+    
+
+    <SpawnPoint
+            position="<?lua print(math.sin(1.5) *(2)*planetsize) ?>,<?lua print(math.cos(1.5) *3*planetsize) ?>,<?lua print(500) ?>"
+            lookat="0,0,0"
+            spawnclass=SpaceShip
+            pawndesign=spaceshipassff
+        />
+
+
+
+        <Planet
+            position="0,0,0"
+            scale="<?lua print(planetsize) ?>"
+            pitch=-90
+            mesh="Muunilinst.mesh"
+            atmosphere="atmosphere1"
+            rotationaxis="0,1,0"
+            rotationrate="1"
+            atmospheresize=300.0f
+            imagesize=1024.0f
+        />
+
+
+        <Planet
+            position="<?lua print(3*planetsize) ?>,0,0"
+            scale="1000"
+            pitch=0
+            mesh="ganymede.mesh"
+            atmosphere="atmosphere1"
+            rotationaxis="0,1,0"
+            rotationrate="1"
+            atmospheresize=300.0f
+            imagesize=1024.0f
+        />
+        <Planet
+            position="0,<?lua print(3*planetsize) ?>,0"
+            scale="1000"
+            pitch=0
+            mesh="jupiter.mesh"
+            atmosphere="atmosphere1"
+            rotationaxis="0,1,0"
+            rotationrate="1"
+            atmospheresize=300.0f
+            imagesize=1024.0f
+        />
+        <Planet
+            position="0,0,<?lua print(3*planetsize) ?>"
+            scale="1000"
+            pitch=0
+            mesh="Planet3.mesh"
+            atmosphere="atmosphere1"
+            rotationaxis="0,1,0"
+            rotationrate="1"
+            atmospheresize=300.0f
+            imagesize=1024.0f
+        />
+    </Scene>
+
+</Level>

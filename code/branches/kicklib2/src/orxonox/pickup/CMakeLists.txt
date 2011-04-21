@@ -1,0 +1,4 @@
+ADD_SOURCE_FILES(ORXONOX_SRC_FILES
+  PickupIdentifier.cc
+)
+
