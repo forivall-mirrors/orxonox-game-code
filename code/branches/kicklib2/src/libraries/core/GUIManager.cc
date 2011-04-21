@@ -612,9 +612,6 @@ namespace orxonox
     void GUIManager::windowResized(unsigned int newWidth, unsigned int newHeight)
     {
         this->guiRenderer_->setDisplaySize(CEGUI::Size((float)newWidth, (float)newHeight));
-#else
-        this->guiRenderer_->setDisplaySize(CEGUI::Size((float)newWidth, (float)newHeight));
-#endif
     }
 
     /**
