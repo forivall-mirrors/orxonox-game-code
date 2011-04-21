@@ -26,8 +26,19 @@
  *
  */
  
- /* TODO: - Markiere SpaceBoundaries-Position mit einem schoenen Objekt
-          - Reflexion an Grenze mit Quaternionen machen (--> vgl. Funktion bounceBack() )
+ /* TODO:   - Mehrere SpaceBoundaries-Instanzen pro Level ermoeglichen
+            - Pro Pawn ein Billboard verwenden
+ */
+ 
+ 
+ /* REALISIERUNGSIDEEN:
+   
+    Mehrere Instanzen:
+        Im Konstruktor schauen, wer innerhalb der eigenen Grenzen ist und diese in eine Liste geben, die in jeder tick-Funktion
+        durchgearbeitet wird.
+        Moeglichkeit bereitstellen, ein Pawn durch ein Portal einer anderen Instanz von SpaceBoundaries zuzuweisen.
+        Schauen, wie es zu handhaben ist, wenn ein neuer Spieler oder Bot nachtraeglich ins Spiel kommt.
+ 
  */
 
 #ifndef _SpaceBoundaries_H__
@@ -43,6 +54,7 @@
 //#include <ColoredTextAreaOverlayElementFactory.h>
 
 #include <string>
+#include <list>
 
 /**
 @brief SpaceBoundaries gives level creators the possibility to bar Pawns from leaving a defined area.
@@ -65,6 +77,8 @@ namespace orxonox
             SpaceBoundaries(BaseObject* creator);
             ~SpaceBoundaries();
             
+            void checkWhoIsIn();
+            
             void setMaxDistance(float r);
             float getMaxDistance();
             
@@ -82,6 +96,8 @@ namespace orxonox
             void tick(float dt);
 
         private:
+            std::list<Pawn*> pawnsIn_;
+        
             float maxDistance_; //!< maximal zulaessige Entfernung von 'this->getPosition()'.
             float warnDistance_; //!< Entfernung von 'this->getPosition()', ab der eine Warnung angezeigt wird, dass man bald das zulaessige Areal verlaesst.
             float showDistance_; //!< Definiert, wann die Grenzen visualisiert werden sollen.

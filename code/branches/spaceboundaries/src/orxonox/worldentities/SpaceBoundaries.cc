@@ -73,7 +73,23 @@ namespace orxonox
             delete this->boundary_;
         }
         
+        this->pawnsIn_.clear();
+        
 //        delete pColoredTextAreaOverlayElementFactory;
+    }
+    
+    void SpaceBoundaries::checkWhoIsIn()
+    {
+        pawnsIn_.clear();
+        for(ObjectListIterator<Pawn> current = ObjectList<Pawn>::begin(); current != ObjectList<Pawn>::end(); ++current)
+        {
+            Pawn* currentPawn = *current;
+            float distance = this->computeDistance(currentPawn);
+            if(distance <= this->maxDistance_)
+            {
+                pawnsIn_.push_back(currentPawn);
+            }
+        }
     }
     
     void SpaceBoundaries::setMaxDistance(float r)
@@ -123,46 +139,47 @@ namespace orxonox
     
     void SpaceBoundaries::tick(float dt)
     {
-        for(ObjectListIterator<MobileEntity> item = ObjectList<MobileEntity>::begin(); item != ObjectList<MobileEntity>::end(); ++item)
+        
+        COUT(0) << "Groesse der Liste: " << (int) pawnsIn_.size() << std::endl;
+        
+        //for(ObjectListIterator<Pawn> current = ObjectList<Pawn>::begin(); current != ObjectList<Pawn>::end(); ++current)
+        for( std::list<Pawn*>::iterator current = pawnsIn_.begin(); current != pawnsIn_.end(); current++ )
         {
-            MobileEntity* myMobileEntity = *item;
-            Pawn* currentPawn = dynamic_cast<Pawn*>(myMobileEntity);
-            if(currentPawn != NULL)
+            Pawn* currentPawn = *current;
+            float distance = this->computeDistance(currentPawn);
+            bool humanItem = this->isHumanPlayer(currentPawn);
+            COUT(0) << "Distanz:" << distance << std::endl; //!< message for debugging
+            if(distance > this->warnDistance_ && distance < this->maxDistance_) // Zeige Warnung an!
             {
-                float distance = this->computeDistance(currentPawn);
-                bool humanItem = this->isHumanPlayer(currentPawn);
-                COUT(0) << "Distanz:" << distance << std::endl; //!< message for debugging
-                if(distance > this->warnDistance_ && distance < this->maxDistance_) // Zeige Warnung an!
+                COUT(0) << "You are leaving the area" << std::endl; //!< message for debugging
+                if(humanItem)
                 {
-                    COUT(0) << "You are leaving the area" << std::endl; //!< message for debugging
-                    if(humanItem)
-                    {
-                        COUT(0) << "humanItem ist true" << std::endl;
-                        this->displayWarning("Attention! You are leaving the area!");
-                    } else {
-                        
-                    }
-                }
-                if( (this->maxDistance_ - distance) < this->showDistance_)
-                {
-                    // Zeige Grenze an!
-                    this->displayBoundaries(currentPawn);
-                }
-                if(distance > this->maxDistance_)
-                {
-                    if(humanItem)
-                    {
-                        COUT(0) << "Health should be decreasing!" << std::endl;
-                        this->displayWarning("You are out of the area now!");
-                        currentPawn->removeHealth( (distance - maxDistance_) * this->healthDecrease_);
-                    } else {
-                        
-                    }
+                    COUT(0) << "humanItem ist true" << std::endl;
+                    this->displayWarning("Attention! You are leaving the area!");
+                } else {
                     
-                    this->bounceBack(currentPawn);
                 }
             }
+            if( (this->maxDistance_ - distance) < this->showDistance_)
+            {
+                // Zeige Grenze an!
+                this->displayBoundaries(currentPawn);
+            }
+            if(distance > this->maxDistance_)
+            {
+                if(humanItem)
+                {
+                    COUT(0) << "Health should be decreasing!" << std::endl;
+                    this->displayWarning("You are out of the area now!");
+                    currentPawn->removeHealth( (distance - maxDistance_) * this->healthDecrease_);
+                } else {
+                    
+                }
+                
+                this->bounceBack(currentPawn);
+            }
         }
+        this->checkWhoIsIn();
     }
     
     float SpaceBoundaries::computeDistance(WorldEntity *item)
@@ -241,7 +258,7 @@ namespace orxonox
             //item->setOrientation(item->getOrientation().UnitInverse() );
             
             item->lookAt( velocity + this->getPosition() );
-
+            
             item->setAcceleration(acceleration * dampingFactor);
             item->setVelocity(velocity * dampingFactor);
         }
