@@ -38,7 +38,7 @@
     <Template name=portalDefault>
         <PortalEndPoint>
             <attached>
-                <Billboard material="Portals/Default" />
+                <Billboard material="Examples/Flare" />
             </attached>
         </PortalEndPoint>
     </Template>

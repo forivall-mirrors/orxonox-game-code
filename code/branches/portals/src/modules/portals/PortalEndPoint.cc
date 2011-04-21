@@ -89,5 +89,4 @@ namespace orxonox
         entity->setVelocity(this->getWorldOrientation() * entity->getVelocity());
     }
 
-
 }
