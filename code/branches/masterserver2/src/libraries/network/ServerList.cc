@@ -81,7 +81,47 @@ namespace orxonox
     return false;
   }
 
+  /* SEARCHING */
+  ServerListSearchResult
+  ServerList::findServerByAddress( std::string address )
+  {
+    /* get an iterator */
+    std::list<ServerListElem>::iterator i;
 
+    /* loop through list elements */
+    for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
+      if( (*i).ServerInfo.getServerIP() == address )
+      { /* found the target, return it */
+        ServerListSearchResult res = { (*i), true };
+        return res;
+      }
+
+    /* no success */
+    ServerListSearchResult res = { (*i), false };
+    return res;
+  }
+
+  ServerListSearchResult
+  ServerList::findServerByName( std::string name )
+  {
+    /* get an iterator */
+    std::list<ServerListElem>::iterator i;
+
+    /* iterate, return when name found */
+    /* loop through list elements */
+    for( i = serverlist.begin(); i != serverlist.end(); ++i ) 
+      if( (*i).ServerInfo.getServerName() == name )
+      { 
+        ServerListSearchResult res = { (*i), true };
+        return res;
+      }
+
+    /* no luck, return a struct that tells the caller so */
+    ServerListSearchResult res = { (*i), false };
+    return res;
+  }
+
+  /* SORTING */
   /* sort by name */
   bool sub_compare_names( ServerListElem no1, 
     ServerListElem no2 )

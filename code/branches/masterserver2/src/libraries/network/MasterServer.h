@@ -69,6 +69,7 @@ namespace orxonox
       
       /* functions for commands */
       static void listServers( void );
+      static void delServer( std::string todeladdr );
 
     private:
       /* methods */
@@ -84,7 +85,6 @@ namespace orxonox
       ENetAddress address;
       ENetHost *server;
       ServerList mainlist;
-      PeerList *peers;
 
       unsigned int port;
       bool quit;

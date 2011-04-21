@@ -167,8 +167,10 @@ void MasterServerComm::update()
       { /* new connection, not supposed to happen. */
         case ENET_EVENT_TYPE_CONNECT: break;
 
-        /* disconnect */
-        case ENET_EVENT_TYPE_DISCONNECT: /* ?? */ break;
+        /* disconnection event - probably kick from masterserver or crash. */
+        case ENET_EVENT_TYPE_DISCONNECT: 
+          COUT(0) << "ERROR: Master server connection was dropped." << std::endl;
+          break;
 
         /* incoming data */
         case ENET_EVENT_TYPE_RECEIVE: 

@@ -37,7 +37,7 @@ namespace orxonox
   /*** MACROS ***/
   /* commands for the terminal interface */
   SetConsoleCommand( "ms-listservers", &MasterServer::listServers );
-  //SetConsoleCommand( "ms-delserver", &MasterServer::delServer );
+  SetConsoleCommand( "ms-delserver", &MasterServer::delServer );
   //SetConsoleCommand( "ms-serverinfo", &MasterServer::serverInfo );
 
   /* forward declaration so the linker doesn't complain */
@@ -66,6 +66,32 @@ namespace orxonox
     /* display end of list */
     COUT(0) << MasterServer::getInstance()->mainlist.serverlist.size() <<
       " servers connected." << std::endl;
+  }
+
+  void 
+  MasterServer::delServer( std::string todeladdr )
+  {
+    /* tell the user we're now removing the entry from the server list */
+    COUT(0) << "MS: Deleting server \"" << todeladdr << "\"..." 
+      << std::endl;
+
+    /* see if we actually have that server on our list */
+    ServerListSearchResult shandle = 
+      MasterServer::getInstance()->mainlist.findServerByAddress(todeladdr);
+
+    if( !shandle.success )
+    { COUT(0) << "MS: Server not found, not removing." << std::endl;
+      return;
+    }
+
+    /* force-disconnect the server */  
+    enet_peer_disconnect( shandle.result.peer, NULL );
+
+    /* actually remove the entry from the server list by address */
+    MasterServer::getInstance()->mainlist.delServerByAddress( todeladdr);
+
+    /* tell the user about our success */
+    COUT(0) << "MS: Server deletion successful." << std::endl;
   }
 
 
@@ -363,9 +389,6 @@ namespace orxonox
         "An error occurred while trying to create an ENet server host.\n";
       exit( EXIT_FAILURE );
     }
-
-    /***** INITIALIZE GAME SERVER AND PEER LISTS *****/
-    this->peers = new PeerList();
 
     /* set pointer to this instance */
     MasterServer::setInstance( this );

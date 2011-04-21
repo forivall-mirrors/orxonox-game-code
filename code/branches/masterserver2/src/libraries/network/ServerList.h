@@ -36,6 +36,7 @@
 /* methods necessary */
 namespace orxonox 
 { 
+  /* HELPER STRUCTURES */
   struct ServerListElem 
   {
     /* server information (name, IP, etc) */
@@ -44,6 +45,19 @@ namespace orxonox
     /* peer pointer */
     ENetPeer* peer;
   };
+
+  struct ServerListSearchResult
+  {
+    /* list element found */
+    ServerListElem result;
+
+    /* successful search */
+    bool success;
+  };
+
+
+
+
 
   /** This class is keeps a list of game servers
    * and some info about them.
@@ -78,8 +92,31 @@ namespace orxonox
       bool delServerByAddress( std::string address );
 
 
-      /* SORTING (to be implemented) */
 
+
+      /* SEARCHING */
+      /* \param address The address of the server that is to be 
+       *  found
+       * \return A struct containing a result of the search and a boolean
+       *  that is only true if the search was successful
+       * 
+       * Find and return the list handle of a given address.
+       */
+      ServerListSearchResult
+      findServerByAddress( std::string address );
+
+
+      /* \param name The name of the server that is to be 
+       *  found
+       * \return The struct containing the list entry of the server
+       * 
+       * Find and return the list handle of a given name.
+       */
+      ServerListSearchResult
+      findServerByName( std::string name );
+
+
+      /* SORTING */
       /** sort by name  */
       void sortByName();
       
