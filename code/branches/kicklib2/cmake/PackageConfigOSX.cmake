@@ -29,27 +29,34 @@ CHECK_PACKAGE_VERSION(1.0)
 
 IF(NOT _INTERNAL_PACKAGE_MESSAGE)
   MESSAGE(STATUS "Using library package for the dependencies.")
+  
+  # The following shell script sets the appropriate install_names for our libraries
+  # and therefore it must be run before anything else is set, dep-package-wise.
+  EXECUTE_PROCESS(
+    COMMAND ${DEPENDENCY_PACKAGE_DIR}/install_dependencies.sh
+    WORKING_DIRECTORY ${DEPENDENCY_PACKAGE_DIR}
+    OUTPUT_FILE ${CMAKE_BINARY_DIR}/dep_pack_install_log.keep_me 
+  )
   SET(_INTERNAL_PACKAGE_MESSAGE 1 CACHE INTERNAL "Do not edit!" FORCE)
 ENDIF()
 
-SET(DEP_INCLUDE_DIR ${DEPENDENCY_PACKAGE_DIR}/include)
-SET(DEP_LIBRARY_DIR ${DEPENDENCY_PACKAGE_DIR}/lib)
-SET(DEP_BINARY_DIR  ${DEPENDENCY_PACKAGE_DIR}/bin)
+SET(DEP_INCLUDE_DIR   ${DEPENDENCY_PACKAGE_DIR}/include)
+SET(DEP_LIBRARY_DIR   ${DEPENDENCY_PACKAGE_DIR}/lib)
+SET(DEP_BINARY_DIR    ${DEPENDENCY_PACKAGE_DIR}/bin)
 SET(DEP_FRAMEWORK_DIR ${DEPENDENCY_PACKAGE_DIR}/Library/Frameworks)
 
-# Sets the library path for the FIND_LIBRARY
-SET(CMAKE_LIBRARY_PATH ${DEP_LIBRARY_DIR})
+# Sets the library and framwork paths for the FIND_LIBRARY commands
+SET(CMAKE_LIBRARY_PATH   ${DEP_LIBRARY_DIR})
+SET(CMAKE_FRAMEWORK_PATH ${DEP_FRAMEWORK_DIR})
 
 # Include paths and other special treatments
-SET(ENV{ALUTDIR}               ${DEP_FRAMEWORK_DIR})
-SET(ENV{BOOST_ROOT}            ${DEPENDENCY_PACKAGE_DIR})
-SET(ENV{CEGUIDIR}              ${DEP_FRAMEWORK_DIR})
-SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua)
-SET(ENV{LUA5.1_DIR}            ${DEP_INCLUDE_DIR}/lua)
-SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR})
-SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR})
-SET(ENV{OGRE_HOME}             ${DEP_FRAMEWORK_DIR})
-SET(ENV{OGRE_PLUGIN_DIR}       ${DEP_BINARY_DIR})
+SET(ENV{BOOST_ROOT}      ${DEPENDENCY_PACKAGE_DIR})
+SET(ENV{OGGDIR}          ${DEP_INCLUDE_DIR})
+SET(ENV{VORBISDIR}       ${DEP_INCLUDE_DIR})
+SET(ENV{OGRE_PLUGIN_DIR} ${DEP_BINARY_DIR})
+
+# Linking to OGRE requires linking to the boost threading library
+SET(OGRE_NEEDS_BOOST TRUE)
 
 # For OS X 10.5 we have to ship modified headers to make it compile
 # on gcc >= 4.2 (binaries stay the same)
@@ -58,18 +65,11 @@ IF(CMAKE_SYSTEM_VERSION STREQUAL "10.5")
   SET(ENV{OPENALDIR} ${DEP_INCLUDE_DIR}/openal)
 ENDIF()
 
-# Xcode won't be able to run the toluabind code generation if we're using the dependency package
-#IF(DEPENDENCY_PACKAGE_ENABLE)
-#  IF(${CMAKE_GENERATOR} STREQUAL "Xcode")
-#    SET(ENV{DYLD_LIBRARY_PATH}               ${DEPENDENCY_PACKAGE_DIR}/lib)
-#    SET(ENV{DYLD_FRAMEWORK_PATH}             ${DEPENDENCY_PACKAGE_DIR}/Library/Frameworks)
-#  ENDIF(${CMAKE_GENERATOR} STREQUAL "Xcode")
-#ENDIF(DEPENDENCY_PACKAGE_ENABLE)
-
 ### INSTALL ###
 
 # Tcl script library
 # TODO: How does this work on OS X?
+# Concerning all OS X install procedures: use CPACK
 #INSTALL(
 #  DIRECTORY ${DEP_LIBRARY_DIR}/tcl/
 #  DESTINATION lib/tcl

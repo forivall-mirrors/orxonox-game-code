@@ -57,7 +57,7 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
     SET(_compiler_prefix msvc8)
   ELSEIF(MSVC90)
     SET(_compiler_prefix msvc9)
-  ELSEIF(MSVC100)
+  ELSEIF(MSVC10)
     SET(_compiler_prefix msvc10)
   ENDIF()
   FIND_PATH(DEPENDENCY_PACKAGE_DIR
@@ -97,31 +97,19 @@ ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
 ############### Library finding #################
 # Performs the search and sets the variables    #
 
-FIND_PACKAGE(OGRE     1.6    REQUIRED)
-#FIND_PACKAGE(ENet     1.1    REQUIRED)
+#FIND_PACKAGE(ENet     1.2    REQUIRED)
+FIND_PACKAGE(CEGUI    0.6    REQUIRED)
 FIND_PACKAGE(Lua5.1          REQUIRED)
 FIND_PACKAGE(Ogg             REQUIRED)
 FIND_PACKAGE(Vorbis          REQUIRED)
 FIND_PACKAGE(ALUT            REQUIRED)
 FIND_PACKAGE(ZLIB            REQUIRED)
-IF(POCO_REQUIRED)
-  FIND_PACKAGE(POCO          REQUIRED)
-  # Always link against POCO too because of threading
-  SET(OGRE_LIBRARY ${OGRE_LIBRARY} ${POCO_LIBRARY})
-ENDIF()
+
 IF(WIN32)
   FIND_PACKAGE(DbgHelp)
   FIND_PACKAGE(DirectX       REQUIRED)
 ENDIF()
 
-##### CEGUI #####
-# We make use of the CEGUI script module called CEGUILua.
-# However there is a small issue with that: Both CEGUILua and Orxonox use
-# Lua library functions on the same objects. And it turns out that in this case
-# the linked library must be EXACTLY the same.
-# Since Lua v5.1 has been out for a long while, this does not seem to be a
-# problem anymore, at least as long as Lua 5.2 is not released.
-FIND_PACKAGE(CEGUI 0.6 REQUIRED)
 
 ##### OpenAL #####
 FIND_PACKAGE(OpenAL REQUIRED)
@@ -146,22 +134,25 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(TCL DEFAULT_MSG TCL_LIBRARY TCL_INCLUDE_PATH)
 
 ##### Boost #####
 # Expand the next statement if newer boost versions are released
-SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0 1.38 1.38.0 1.39 1.39.0 1.40 1.40.0
-                              1.41 1.41.0 1.42 1.42.0 1.43 1.43.0 1.44 1.44.0
-                              1.45 1.45.0 1.46 1.46.0 1.46.1)
-IF( NOT TARDIS )
-  FIND_PACKAGE(Boost 1.35 REQUIRED thread filesystem system date_time)
+SET(Boost_ADDITIONAL_VERSIONS 1.40 1.40.0 1.41 1.41.0 1.42 1.42.0 1.43 1.43.0
+                              1.44 1.44.0 1.45 1.45.0 1.46 1.46.0 1.46.1)
+IF(NOT TARDIS)
+  FIND_PACKAGE(Boost 1.40 REQUIRED thread filesystem system date_time)
 ENDIF()
 # No auto linking, so this option is useless anyway
 MARK_AS_ADVANCED(Boost_LIB_DIAGNOSTIC_DEFINITIONS)
-# Complain about incompatibilities
-IF(GCC_VERSION)
-  COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.4.0" _compare_result)
-  IF(NOT _compare_result LESS 0)
-    IF(${Boost_VERSION} LESS 103700)
-      MESSAGE(STATUS "Warning: Boost versions earlier than 1.37 may not compile with GCC 4.4 or later!")
-    ENDIF()
-  ENDIF()
+
+##### OGRE #####
+FIND_PACKAGE(OGRE 1.6 REQUIRED)
+# For Ogre >= 1.7, we might need a threading library
+# Variables are either defined by dependency package config or by FindOGRE
+IF(OGRE_NEEDS_POCO)
+  FIND_PACKAGE(POCO REQUIRED)
+  # Always link against POCO too because of threading
+  SET(OGRE_LIBRARY ${OGRE_LIBRARY} ${POCO_LIBRARY})
+ELSEIF(OGRE_NEEDS_BOOST)
+  # Always link against boost too because of threading
+  SET(OGRE_LIBRARY ${OGRE_LIBRARY} ${Boost_THREAD_LIBRARY})
 ENDIF()
 
 

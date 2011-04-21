@@ -33,7 +33,7 @@ INCLUDE(HandleLibraryTypes)
 # Find CEGUI headers
 FIND_PATH(CEGUI_INCLUDE_DIR CEGUI.h
   PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES include include/CEGUI CEGUI.framework/Headers
+  PATH_SUFFIXES include include/CEGUI
 )
 
 # Inspect CEGUIVersion.h for the version number
@@ -43,7 +43,7 @@ DETERMINE_VERSION(CEGUI ${CEGUI_INCLUDE_DIR}/CEGUIVersion.h)
 FIND_LIBRARY(CEGUI_LIBRARY_OPTIMIZED
   NAMES CEGUIBase CEGUI
   PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES lib bin CEGUIBase.framework CEGUI.framework
+  PATH_SUFFIXES lib bin
 )
 FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
   NAMES
@@ -55,18 +55,21 @@ FIND_LIBRARY(CEGUI_LIBRARY_DEBUG
 
 # Find CEGUILua headers
 FIND_PATH(CEGUILUA_INCLUDE_DIR CEGUILua.h
-  PATHS $ENV{CEGUIDIR} ${CEGUI_INCLUDE_DIR}/ScriptingModules/LuaScriptModule
-  PATH_SUFFIXES include include/CEGUI CEGUILuaScriptModule.framework/Headers
+  PATHS
+    $ENV{CEGUIDIR}
+    $ENV{CEGUILUADIR}
+    ${CEGUI_INCLUDE_DIR}/ScriptingModules/LuaScriptModule
+  PATH_SUFFIXES include include/CEGUI
 )
 # Find CEGUILua libraries
 FIND_LIBRARY(CEGUILUA_LIBRARY_OPTIMIZED
   NAMES CEGUILua CEGUILuaScriptModule
-  PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES lib bin CEGUILuaScriptModule.framework
+  PATHS $ENV{CEGUIDIR} $ENV{CEGUILUADIR}
+  PATH_SUFFIXES lib bin
 )
 FIND_LIBRARY(CEGUILUA_LIBRARY_DEBUG
   NAMES CEGUILuad CEGUILua_d CEGUILuaScriptModuled CEGUILuaScriptModule_d
-  PATHS $ENV{CEGUIDIR}
+  PATHS $ENV{CEGUIDIR} $ENV{CEGUILUADIR}
   PATH_SUFFIXES lib bin
 )
 
@@ -78,20 +81,19 @@ FIND_PATH(CEGUI_TOLUA_INCLUDE_DIR tolua++.h
     ${CEGUILUA_INCLUDE_DIR}
     # For newer CEGUI versions >= 0.7
     ${CEGUILUA_INCLUDE_DIR}/support/tolua++
-    # For Apples
-    $ENV{CEGUIDIR}
-  PATH_SUFFIXES ceguitolua++.framework/Headers
-  NO_DEFAULT_PATH # MUST be in CEGUILUA_INCLUDE_DIR somewhere
+    # For Mac OS X, tolua++ is a separate framework in the dependency package
+    ${DEP_FRAMEWORK_DIR}
+  NO_DEFAULT_PATH # Don't attempt to find tolua++ installed on the system
 )
 # Find CEGUI Tolua++ libraries
 FIND_LIBRARY(CEGUI_TOLUA_LIBRARY_OPTIMIZED
   NAMES CEGUItoluapp tolua++ ceguitolua++
-  PATHS $ENV{CEGUIDIR}
-  PATH_SUFFIXES lib bin ceguitolua++.framework
+  PATHS $ENV{CEGUIDIR} ${CEGUITOLUADIR}
+  PATH_SUFFIXES lib bin
 )
 FIND_LIBRARY(CEGUI_TOLUA_LIBRARY_DEBUG
   NAMES CEGUItoluappd CEGUItoluapp_d tolua++d tolua++_d
-  PATHS $ENV{CEGUIDIR}
+  PATHS $ENV{CEGUIDIR} ${CEGUITOLUADIR}
   PATH_SUFFIXES lib bin
 )
 
@@ -100,18 +102,21 @@ COMPARE_VERSION_STRINGS("${CEGUI_VERSION}" "0.7" _version_compare TRUE)
 IF(_version_compare GREATER -1)
   # Find CEGUI OGRE Renderer headers
   FIND_PATH(CEGUI_OGRE_RENDERER_INCLUDE_DIR CEGUIOgreRenderer.h
-    PATHS $ENV{CEGUIDIR} ${CEGUI_INCLUDE_DIR}/RendererModules/Ogre
-    PATH_SUFFIXES include include/CEGUI CEGUI.framework/Headers
+    PATHS
+      $ENV{CEGUIDIR}
+      $ENV{CEGUIOGRERENDERERDIR}
+      ${CEGUI_INCLUDE_DIR}/RendererModules/Ogre
+    PATH_SUFFIXES include include/CEGUI
   )
   # Find CEGUI OGRE Renderer libraries
   FIND_LIBRARY(CEGUI_OGRE_RENDERER_LIBRARY_OPTIMIZED
     NAMES CEGUIOgreRenderer
-    PATHS $ENV{CEGUIDIR}
+    PATHS $ENV{CEGUIDIR} $ENV{CEGUIOGRERENDERERDIR}
     PATH_SUFFIXES lib bin
   )
   FIND_LIBRARY(CEGUI_OGRE_RENDERER_LIBRARY_DEBUG
     NAMES CEGUIOgreRendererd CEGUIOgreRenderer_d
-    PATHS $ENV{CEGUIDIR}
+    PATHS $ENV{CEGUIDIR} $ENV{CEGUIOGRERENDERERDIR}
     PATH_SUFFIXES lib bin
   )
   SET(CEGUI_OGRE_RENDERER_REQUIRED_VARIABLES

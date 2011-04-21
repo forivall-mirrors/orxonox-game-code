@@ -31,7 +31,7 @@ INCLUDE(HandleLibraryTypes)
 
 FIND_PATH(ALUT_INCLUDE_DIR alut.h
   PATHS $ENV{ALUTDIR}
-  PATH_SUFFIXES include include/AL Headers Headers/AL
+  PATH_SUFFIXES include include/AL
 )
 FIND_LIBRARY(ALUT_LIBRARY_OPTIMIZED
   NAMES alut ALUT

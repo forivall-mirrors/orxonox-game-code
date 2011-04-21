@@ -56,6 +56,7 @@ SET(DEFAULT_DOC_PATH     doc)
 SET(DEFAULT_DATA_PATH    data)
 SET(DEFAULT_CONFIG_PATH  config)
 SET(DEFAULT_LOG_PATH     log)
+SET(DEFAULT_BUNDLE_PATH  bundle)
 
 # Set output directories
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DEFAULT_RUNTIME_PATH})
@@ -137,5 +138,15 @@ ADD_SUBDIRECTORY(src)
 # Configure the binary output directory. Do this after src!
 ADD_SUBDIRECTORY(bin)
 
+# System specific files (mostly for installation)
+ADD_SUBDIRECTORY(contrib)
+
 # Last but not least: Try to make a doc target with Doxygen
 ADD_SUBDIRECTORY(doc)
+
+########### CPack Packaging ###########
+
+# Currently only testing on Apple
+#IF(APPLE)
+#  INCLUDE(BundleConfig)
+#ENDIF(APPLE)

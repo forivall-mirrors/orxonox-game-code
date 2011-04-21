@@ -68,9 +68,6 @@ SET_COMPILER_FLAGS("-MD  -O1         -DNDEBUG"       MinSizeRel     CACHE)
 # Note: It hasn't been checked yet whether we have code that might break
 #ADD_COMPILER_FLAGS("-fp:fast" CACHE)
 
-# No iterator checking for release builds (MSVC 8 dosn't understand this though)
-ADD_COMPILER_FLAGS("-D_SECURE_SCL=0" ReleaseAll CACHE)
-
 # Newer MSVC versions come with std::shared_ptr which conflicts with
 # boost::shared_ptr in cpptcl. And since we don't yet use the new C++ standard
 # anyway, disable it completely.

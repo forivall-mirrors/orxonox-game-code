@@ -110,3 +110,12 @@ SET(ORXONOX_CONFIG_FILES_GENERATED
   ${CMAKE_CURRENT_BINARY_DIR}/OrxonoxConfig.h
   ${CMAKE_CURRENT_BINARY_DIR}/SpecialConfig.h
 )
+
+# Make special target including the configured header files for Visual Studio
+IF(MSVC)
+  ADD_CUSTOM_TARGET(config
+    SOURCES
+      ${ORXONOX_CONFIG_FILES}
+      ${ORXONOX_CONFIG_FILES_GENERATED}
+  )
+ENDIF()

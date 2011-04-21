@@ -32,7 +32,7 @@ ENDIF()
 # Ogre versions >= 1.7 require the POCO library on Windows with MSVC for threading
 COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} 5 _result TRUE)
 IF(NOT _result EQUAL -1 AND NOT APPLE)
-  SET(POCO_REQUIRED TRUE)
+  SET(OGRE_NEEDS_POCO TRUE)
 ENDIF()
 
 # Include paths and other special treatments
@@ -74,12 +74,23 @@ IF(WIN32 AND DEP_BINARY_DIR)
   )
 
   ## RELEASE
-  # Try to filter out all the debug libraries. If the regex doesn't do the
-  # job anymore, simply adjust it.
-  INSTALL(
-    DIRECTORY ${DEP_BINARY_DIR}/
-    DESTINATION bin
-    CONFIGURATIONS Release RelWithDebInfo MinSizeRel
-    REGEX "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$" EXCLUDE
-  )
+  IF(EXISTS ${DEP_BINARY_DIR}/install_manifest.txt)
+    FILE(STRINGS ${DEP_BINARY_DIR}/install_manifest.txt _files)
+    FOREACH(_file ${_files})
+      INSTALL(
+        FILES ${DEP_BINARY_DIR}/${_file}
+        DESTINATION bin
+        CONFIGURATIONS Release RelWithDebInfo MinSizeRel
+      )
+    ENDFOREACH(_file)
+  ELSE()
+    # Try to filter out all the debug libraries. If the regex doesn't do the
+    # job anymore, simply adjust it.
+    INSTALL(
+      DIRECTORY ${DEP_BINARY_DIR}/
+      DESTINATION bin
+      CONFIGURATIONS Release RelWithDebInfo MinSizeRel
+      REGEX "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$" EXCLUDE
+    )
+  ENDIF()
 ENDIF()

@@ -29,6 +29,7 @@
 
 #include "GraphicsManager.h"
 
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 #include <boost/filesystem.hpp>
@@ -119,12 +120,11 @@ namespace orxonox
 
         // Only for development runs
         if (PathConfig::isDevelopmentRun())
-        {
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem");
-            extResources_.reset(new XMLFile("resources.oxr"));
-            extResources_->setLuaSupport(false);
-            Loader::open(extResources_.get());
-        }
+
+        extResources_.reset(new XMLFile("resources.oxr"));
+        extResources_->setLuaSupport(false);
+        Loader::open(extResources_.get());
 
         if (bLoadRenderer)
         {
@@ -149,16 +149,13 @@ namespace orxonox
 
         // Undeclare the resources
         Loader::unload(resources_.get());
-        if (PathConfig::isDevelopmentRun())
-            Loader::unload(extResources_.get());
+        Loader::unload(extResources_.get());
     }
 
     void GraphicsManager::setConfigValues()
     {
         SetConfigValue(ogreConfigFile_,  "ogre.cfg")
             .description("Location of the Ogre config file");
-        SetConfigValue(ogrePluginsDirectory_, specialConfig::ogrePluginsDirectory)
-            .description("Folder where the Ogre plugins are located.");
         SetConfigValue(ogrePlugins_, specialConfig::ogrePlugins)
             .description("Comma separated list of all plugins to load.");
         SetConfigValue(ogreLogFile_,     "ogre.log")
@@ -250,20 +247,34 @@ namespace orxonox
 
     void GraphicsManager::loadOgrePlugins()
     {
-        // just to make sure the next statement doesn't segfault
-        if (ogrePluginsDirectory_.empty())
-            ogrePluginsDirectory_ = '.';
+        // Plugin path can have many different locations...
+        std::string pluginPath = specialConfig::ogrePluginsDirectory;
+#ifdef DEPENDENCY_PACKAGE_ENABLE
+        if (!PathConfig::isDevelopmentRun())
+        {
+#  if defined(ORXONOX_PLATFORM_WINDOWS)
+            pluginPath = PathConfig::getExecutablePathString();
+#  elif defined(ORXONOX_PLATFORM_APPLE)
+            // TODO: Where are the plugins being installed to?
+            pluginPath = PathConfig::getExecutablePathString();
+#  endif
+        }
+#endif
 
-        boost::filesystem::path folder(ogrePluginsDirectory_);
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        // Add OGRE plugin path to the environment. That way one plugin could
+        // also depend on another without problems on Windows
+        const char* currentPATH = getenv("PATH");
+        std::string newPATH = pluginPath;
+        if (currentPATH != NULL)
+            newPATH = std::string(currentPATH) + ';' + newPATH;
+        putenv(const_cast<char*>(("PATH=" + newPATH).c_str()));
+#endif
+
         // Do some SubString magic to get the comma separated list of plugins
         SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '{', '}', false, '\0');
-        // Use backslash paths on Windows! file_string() already does that though.
         for (unsigned int i = 0; i < plugins.size(); ++i)
-#if BOOST_FILESYSTEM_VERSION < 3
-            ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
-#else
-            ogreRoot_->loadPlugin((folder / plugins[i]).string());
-#endif
+            ogreRoot_->loadPlugin(pluginPath + '/' + plugins[i]);
     }
 
     void GraphicsManager::loadRenderer()
@@ -289,15 +300,6 @@ namespace orxonox
         this->ogreWindowEventListener_->windowResized(renderWindow_);
 
         Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_.get());
-
-// HACK
-#ifdef ORXONOX_PLATFORM_APPLE
-        //INFO: This will give our window focus, and not lock it to the terminal
-        ProcessSerialNumber psn = {0, kCurrentProcess};
-        TransformProcessType(&psn, kProcessTransformToForegroundApplication);
-        SetFrontProcess(&psn);
-#endif
-// End of HACK
 
         // create a full screen default viewport
         // Note: This may throw when adding a viewport with an existing z-order!
