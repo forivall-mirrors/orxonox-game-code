@@ -92,8 +92,9 @@ ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
 ############### Library finding #################
 # Performs the search and sets the variables    #
 
-FIND_PACKAGE(OGRE  1.4       REQUIRED)
-#FIND_PACKAGE(ENet  1.1       REQUIRED)
+FIND_PACKAGE(OGRE     1.6    REQUIRED)
+#FIND_PACKAGE(ENet     1.1    REQUIRED)
+FIND_PACKAGE(Lua5.1          REQUIRED)
 FIND_PACKAGE(Ogg             REQUIRED)
 FIND_PACKAGE(Vorbis          REQUIRED)
 FIND_PACKAGE(ALUT            REQUIRED)
@@ -110,33 +111,12 @@ ENDIF()
 
 ##### CEGUI #####
 # We make use of the CEGUI script module called CEGUILua.
-# However there is a small issue with that: We use Tolua, a C++ binding
-# generator ourselves. And we also have to use our bindings in the same
-# lua state is CEGUILua's. Unfortunately this implies that both lua runtime
-# version are equal or else you get segmentation faults.
-# In order to match the Lua versions we decided to ship CEGUILua in our
-# repository, mainly because there is no way to determine which version of
-# Lua CEGUILua was linked against (you'd have to specify yourself) and secondly
-# because we can then choose the Lua version. Future plans might involve only
-# accepting Lua 5.1.
-
-# Insert all internally supported CEGUILua versions here
-SET(CEGUILUA_INTERNAL_SUPPORT 0.5.0 0.6.0 0.6.1 0.6.2)
-OPTION(CEGUILUA_USE_EXTERNAL_LIBRARY "Force the use of external CEGUILua library" OFF)
-FIND_PACKAGE(CEGUI 0.5 REQUIRED)
-
-##### Lua #####
-IF(CEGUILUA_USE_EXTERNAL_LIBRARY)
-  COMPARE_VERSION_STRINGS(${CEGUI_VERSION} "0.6" _version_comparison)
-  IF(version_comparison LESS 0)
-    SET(LUA_VERSION_REQUEST 5.0)
-  ELSE()
-    SET(LUA_VERSION_REQUEST 5.1)
-  ENDIF()
-ELSE()
-  SET(LUA_VERSION_REQUEST 5)
-ENDIF()
-FIND_PACKAGE(Lua ${LUA_VERSION_REQUEST} EXACT REQUIRED)
+# However there is a small issue with that: Both CEGUILua and Orxonox use
+# Lua library functions on the same objects. And it turns out that in this case
+# the linked library must be EXACTLY the same.
+# Since Lua v5.1 has been out for a long while, this does not seem to be a
+# problem anymore, at least as long as Lua 5.2 is not released.
+FIND_PACKAGE(CEGUI 0.6 REQUIRED)
 
 ##### OpenAL #####
 FIND_PACKAGE(OpenAL REQUIRED)
@@ -176,24 +156,19 @@ MARK_AS_ADVANCED(Boost_LIB_DIAGNOSTIC_DEFINITIONS)
 # You may want to edit these settings if you provide your own libraries
 # Note: Default option in the libraries vary, but our default option is dynamic
 IF(WIN32)
-  OPTION(LINK_BOOST_DYNAMIC "Link Boost dynamically on Windows" TRUE)
-  OPTION(LINK_CEGUI_DYNAMIC "Link CEGUI dynamicylly on Windows" TRUE)
-  #OPTION(LINK_ENET_DYNAMIC  "Link ENet dynamically on Windows" TRUE)
-  OPTION(LINK_OGRE_DYNAMIC  "Link OGRE dynamically on Windows" TRUE)
-  OPTION(LINK_TCL_DYNAMIC   "Link TCL dynamically on Windows" TRUE)
-  OPTION(LINK_ZLIB_DYNAMIC  "Link ZLib dynamically on Windows" TRUE)
-  COMPARE_VERSION_STRINGS("${LUA_VERSION}" "5.1" _version_comparison)
-  IF(_version_comparison LESS 0)
-    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" FALSE)
-  ELSE(_version_comparison LESS 0)
-    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" TRUE)
-  ENDIF(_version_comparison LESS 0)
+  OPTION(LINK_BOOST_DYNAMIC  "Link Boost dynamically on Windows" TRUE)
+  OPTION(LINK_CEGUI_DYNAMIC  "Link CEGUI dynamicylly on Windows" TRUE)
+  #OPTION(LINK_ENET_DYNAMIC   "Link ENet dynamically on Windows" TRUE)
+  OPTION(LINK_OGRE_DYNAMIC   "Link OGRE dynamically on Windows" TRUE)
+  OPTION(LINK_TCL_DYNAMIC    "Link TCL dynamically on Windows" TRUE)
+  OPTION(LINK_ZLIB_DYNAMIC   "Link ZLib dynamically on Windows" TRUE)
+  OPTION(LINK_LUA5.1_DYNAMIC "Link Lua dynamically on Windows" TRUE)
 
   IF(DEPENDENCY_PACKAGE_ENABLE)
     MARK_AS_ADVANCED(
       LINK_BOOST_DYNAMIC LINK_CEGUI_DYNAMIC #LINK_ENET_DYNAMIC
       LINK_OGRE_DYNAMIC  LINK_TCL_DYNAMIC   LINK_ZLIB_DYNAMIC
-      LINK_LUA_DYNAMIC
+      LINK_LUA5.1_DYNAMIC
     )
   ENDIF()
 ENDIF(WIN32)

@@ -30,7 +30,11 @@
 #        For example any code running on 3.0 should still run on 3.1
 #        But you can specify that the code only runs on 3.1 and higher
 #        or 4.0 and higher (so both 3.1 and 4.0 will work).
-SET(ALLOWED_MINIMUM_VERSIONS 3.1 4.0 5.0)
+IF(MSVC)
+  SET(ALLOWED_MINIMUM_VERSIONS 4.3 5.1 6.0)
+ELSE()
+  SET(ALLOWED_MINIMUM_VERSIONS 4.1 5.2)
+ENDIF()
 
 IF(NOT EXISTS ${DEPENDENCY_PACKAGE_DIR}/version.txt)
   SET(DEPENDENCY_VERSION 1.0)
@@ -83,7 +87,7 @@ SET(ENV{CEGUIDIR}              ${DEP_INCLUDE_DIR}/cegui)
 SET(ENV{DBGHELP_DIR}           ${DEP_INCLUDE_DIR}/dbghelp)
 SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx)
 #SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet)
-SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua)
+SET(ENV{LUA5.1_DIR}            ${DEP_INCLUDE_DIR}/lua)
 SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR}/libogg)
 SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR}/libvorbis)
 SET(ENV{OGRE_HOME}             ${DEP_INCLUDE_DIR}/ogre)

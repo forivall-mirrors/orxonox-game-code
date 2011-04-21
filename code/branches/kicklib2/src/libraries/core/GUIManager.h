@@ -41,8 +41,9 @@
 #include <set>
 #include <string>
 #include <CEGUIForwardRefs.h>
-#include <boost/scoped_ptr.hpp>
+#include <CEGUIVersion.h>
 #include <boost/shared_ptr.hpp>
+#include <loki/ScopeGuard.h>
 
 #include "util/OgreForwardRefs.h"
 #include "util/TriBool.h"
@@ -56,6 +57,10 @@
 /*
 $cfile "../util/TriBool.h" // tolua_export
 */
+
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
+#  define ORXONOX_OLD_CEGUI
+#endif
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -77,7 +82,8 @@ namespace orxonox // tolua_export
         friend class Singleton<GUIManager>;
     public:
         GUIManager(const std::pair<int, int>& mousePosition);
-        ~GUIManager();
+        //! Leave empty and use cleanup() instead
+        ~GUIManager() {}
 
         void setConfigValues(void);
         void changedGUIScheme(void);
@@ -103,7 +109,7 @@ namespace orxonox // tolua_export
         //! Creates a new InputState to be used with a GUI Sheet
         const std::string& createInputState(const std::string& name, TriBool::Value showCursor = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export
         LuaState* getLuaState(void)
-            { return this->luaState_.get(); }
+            { return this->luaState_; }
 
         //! Returns the root window for all menu sheets
         CEGUI::Window* getMenuRootWindow() { return this->menuRootWindow_; } // tolua_export
@@ -126,6 +132,10 @@ namespace orxonox // tolua_export
 
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
+
+        /// Destructor that also executes when object fails to construct
+        void cleanup();
+
         void executeCode(const std::string& str);
 
         template <typename FunctionType>
@@ -146,12 +156,21 @@ namespace orxonox // tolua_export
         virtual void windowResized(unsigned int newWidth, unsigned int newHeight);
         virtual void windowFocusChanged(bool bFocus);
 
-        scoped_ptr<CEGUI::OgreCEGUIRenderer> guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
-        scoped_ptr<LuaState>                 luaState_;         //!< LuaState, access point to the Lua engine
-        scoped_ptr<CEGUI::LuaScriptModule>   scriptModule_;     //!< CEGUI's script module to use Lua
-        scoped_ptr<CEGUI::System>            guiSystem_;        //!< CEGUI's main system
-        shared_ptr<ResourceInfo>             rootFileInfo_;     //!< Resource information about the root script
+        /// Surrogate for the destructor
+        Loki::ObjScopeGuardImpl0<GUIManager, void (GUIManager::*)()> destroyer_;
+
+#ifdef ORXONOX_OLD_CEGUI
+        CEGUI::OgreCEGUIRenderer*            guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
+#else
+        CEGUI::OgreRenderer*                 guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
+        CEGUI::OgreResourceProvider*         resourceProvider_; //!< CEGUI's resource provider
+        CEGUI::OgreImageCodec*               imageCodec_;
+#endif
+        LuaState*                            luaState_;         //!< LuaState, access point to the Lua engine
+        CEGUI::LuaScriptModule*              scriptModule_;     //!< CEGUI's script module to use Lua
+        CEGUI::System*                       guiSystem_;        //!< CEGUI's main system
+        shared_ptr<ResourceInfo>             rootFileInfo_;     //!< Resource information about the root script
         CEGUI::Logger*                       ceguiLogger_;      //!< CEGUI's logger to be able to log CEGUI errors in our log
         CEGUI::Window*                       rootWindow_;       //!< Root node for all windows
         CEGUI::Window*                       hudRootWindow_;    //!< Root node for the HUD sheets

@@ -57,7 +57,6 @@ COMPILATION_END
 COMPILATION_BEGIN FilesystemCompilation.cc
   command/ArgumentCompletionFunctions.cc
   ConfigFileManager.cc
-  MemoryArchive.cc
   PathConfig.cc
 COMPILATION_END
 
@@ -97,12 +96,12 @@ ORXONOX_ADD_LIBRARY(core
     ${Boost_DATE_TIME_LIBRARY} # Thread dependency
     ${CEGUI_LIBRARY}
     ${CEGUILUA_LIBRARY}
-    ${LUA_LIBRARIES}
+    ${CEGUI_TOLUA_LIBRARY}
+    ${CEGUI_OGRE_RENDERER_LIBRARY}
+    ${LUA5.1_LIBRARY}
     cpptcl_orxonox
-    ogreceguirenderer_orxonox
     ois_orxonox
     tinyxml_orxonox
-    tolua_orxonox
     util
   SOURCE_FILES
     ${CORE_SRC_FILES}

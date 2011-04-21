@@ -483,7 +483,7 @@ function P.queueHeightHelper(queue, size)
     local singleItemHeight = listbox:getTotalItemsHeight()
     local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(queue:getLookNFeel())
     local formattedArea = lookAndFeel:getNamedArea("ItemRenderingArea"):getArea():getPixelRect(queue)
-    local frameHeight = queue:getUnclippedPixelRect():getHeight() - formattedArea:getHeight()
+    local frameHeight = queue:getUnclippedOuterRect():getHeight() - formattedArea:getHeight()
     listbox:removeItem(item)
     return frameHeight + singleItemHeight*size
 end
