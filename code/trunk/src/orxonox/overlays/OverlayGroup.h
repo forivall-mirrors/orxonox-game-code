@@ -60,6 +60,7 @@ namespace orxonox
         virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
         static void toggleVisibility(const std::string& name);
+        static void show(const std::string& name);
         static void scaleGroup(const std::string& name, float scale);
         static void scrollGroup(const std::string& name, const Vector2& scroll);
 
