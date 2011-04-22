@@ -80,7 +80,7 @@ namespace orxonox
     Core* Core::singletonPtr_s  = 0;
 
     SetCommandLineArgument(settingsFile, "orxonox.ini").information("THE configuration file");
-#ifndef ORXONOX_PLATFORM_APPLE
+#if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
     SetCommandLineSwitch(noIOConsole).information("Use this if you don't want to use the IOConsole (for instance for Lua debugging)");
 #endif
 
@@ -157,7 +157,7 @@ namespace orxonox
         ClassIdentifier<Core>::getIdentifier("Core")->initialiseObject(this, "Core", true);
         this->setConfigValues();
 
-#ifndef ORXONOX_PLATFORM_APPLE
+#if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
         // Create persistent IO console
         if (CommandLineParser::getValue("noIOConsole").getBool())
         {
