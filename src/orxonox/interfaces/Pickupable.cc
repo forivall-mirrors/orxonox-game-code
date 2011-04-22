@@ -125,7 +125,7 @@ namespace orxonox
         if((!this->isUsable() && used) || (!this->isUnusable() && !used)) // If either the Pickupable is requested to be used but it is not usable or the Pickupable is requested to be unused, while it is not unusable.
             return false;
 
-        COUT(4) << "Pickupable (&" << this << ") set to used " << used << "." << std::endl;
+        COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") set to used " << used << "." << std::endl;
 
         this->used_ = used;
 
@@ -200,7 +200,7 @@ namespace orxonox
         if(this->isTarget(target)) // If the input target is already present in the list of targets.
             return false;
 
-        COUT(4) << "Target " << target->getName() << " added to Pickupable (&" << this << ")." << std::endl;
+        COUT(4) << "Target " << target->getName() << " added to Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ")." << std::endl;
         this->targets_.push_back(target);
         return true;
     }
@@ -220,12 +220,12 @@ namespace orxonox
 
         if(!this->setCarrier(carrier))
         {
-            COUT(3) << "A Pickupable (&" << this << ") was trying to be added to a PickupCarrier, but was already present." << std::endl;
+            COUT(3) << "A Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") was trying to be added to a PickupCarrier, but was already present." << std::endl;
             return false;
         }
 
         this->setPickedUp(true);
-        COUT(4) << "Pickupable (&" << this << ") got picked up by a PickupCarrier (&" << carrier << ")." << std::endl;
+        COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") got picked up by a PickupCarrier (&" << carrier << ")." << std::endl;
         return true;
     }
 
@@ -246,7 +246,7 @@ namespace orxonox
         if(!this->getCarrier()->removePickup(this)) //TODO Shouldn't this be a little later?
             COUT(2) << "Pickupable (&" << this << ", " << this->getIdentifier()->getName() << ") is being dropped, but it was not present in the PickupCarriers list of pickups." << std::endl;
 
-        COUT(4) << "Pickupable (&" << this << ") got dropped up by a PickupCarrier (&" << this->getCarrier() << ")." << std::endl;
+        COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") got dropped up by a PickupCarrier (&" << this->getCarrier() << ")." << std::endl;
         this->setUsed(false);
         this->setPickedUp(false);
 
@@ -275,7 +275,7 @@ namespace orxonox
         if(this->pickedUp_ == pickedUp) // If the picked up status has not changed.
             return false;
 
-        COUT(4) << "Pickupable (&" << this << ") set to pickedUp " << pickedUp << "." << std::endl;
+        COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") set to pickedUp " << pickedUp << "." << std::endl;
 
         this->pickedUp_ = pickedUp;
 
@@ -304,7 +304,7 @@ namespace orxonox
         if(this->carrier_ == carrier) // If the PickupCarrier doesn't change.
             return false;
 
-        COUT(4) << "Pickupable (&" << this << ") changed Carrier (& " << carrier << ")." << std::endl;
+        COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") changed Carrier (& " << carrier << ")." << std::endl;
 
         if(carrier != NULL && tell)
         {
@@ -339,7 +339,7 @@ namespace orxonox
 
         Pickupable* pickup = dynamic_cast<Pickupable*>(item);
 
-        COUT(4) << "Pickupable (&" << this << ") cloned. Clone is new Pickupable (&" << pickup << ")." << std::endl;
+        COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") cloned. Clone is new Pickupable (&" << pickup << ")." << std::endl;
         return pickup;
     }
 

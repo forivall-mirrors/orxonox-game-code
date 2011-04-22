@@ -110,7 +110,7 @@ namespace orxonox {
         children->clear();
         delete children;
 
-        return false;
+        return isTarget;
     }
 
     /**
