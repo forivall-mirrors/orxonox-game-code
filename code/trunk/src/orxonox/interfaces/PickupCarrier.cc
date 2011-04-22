@@ -95,12 +95,16 @@ namespace orxonox {
         if(pickup->isTarget(this)) // If the PickupCarrier itself is a target.
             return true;
 
+        bool isTarget = false;
         // Go recursively through all children to check whether they are a target.
         std::vector<PickupCarrier*>* children = this->getCarrierChildren();
         for(std::vector<PickupCarrier*>::const_iterator it = children->begin(); it != children->end(); it++)
         {
             if((*it)->isTarget(pickup))
-                return true;
+            {
+                isTarget = true;
+                break;
+            }
         }
 
         children->clear();
