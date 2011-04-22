@@ -53,7 +53,7 @@ namespace orxonox
     @param creator
         The creator of the object.
     */
-    PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator)
+    PickupCollection::PickupCollection(BaseObject* creator) : BaseObject(creator), pickupCollectionIdentifier_(NULL)
     {
         RegisterObject(PickupCollection);
 
@@ -69,7 +69,7 @@ namespace orxonox
     @brief
         Destructor. Iterates through all Pickupables this PickupCollection consists of and destroys them if they haven't been already.
     */
-    PickupCollection::~PickupCollection()
+    PickupCollection::~ PickupCollection()
     {
         // Destroy all Pickupables constructing this PickupCollection.
         for(std::vector<CollectiblePickup*>::iterator it = this->pickups_.begin(); it != this->pickups_.end(); it++)
@@ -78,6 +78,9 @@ namespace orxonox
             (*it)->destroy();
         }
         this->pickups_.clear();
+        
+        if(this->pickupCollectionIdentifier_ != NULL)
+            delete this->pickupCollectionIdentifier_;
     }
 
     /**
