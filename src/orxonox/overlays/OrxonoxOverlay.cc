@@ -59,6 +59,7 @@ namespace orxonox
     SetConsoleCommand("OrxonoxOverlay", "scaleOverlay",     &OrxonoxOverlay::scaleOverlay);
     SetConsoleCommand("OrxonoxOverlay", "scrollOverlay",    &OrxonoxOverlay::scrollOverlay);
     SetConsoleCommand("OrxonoxOverlay", "toggleVisibility", &OrxonoxOverlay::toggleVisibility);
+    SetConsoleCommand("OrxonoxOverlay", "show",     &OrxonoxOverlay::showOverlay);
     SetConsoleCommand("OrxonoxOverlay", "rotateOverlay",    &OrxonoxOverlay::rotateOverlay);
 
     OrxonoxOverlay::OrxonoxOverlay(BaseObject* creator)
@@ -338,6 +339,26 @@ namespace orxonox
                 overlay->show();
                 COUT(4) << "SHOW " << name << std::endl;
             }
+        }
+    }
+    
+    /**
+    @brief
+        Shows Overlay by it's name.
+    @param name
+        The name of the overlay defined BaseObject::setName() (usually done with the "name"
+        attribute in the xml file).
+    */
+    /*static*/ void OrxonoxOverlay::showOverlay(const std::string& name)
+    {
+        std::map<std::string, OrxonoxOverlay*>::const_iterator it = overlays_s.find(name);
+        if (it != overlays_s.end())
+        {
+            OrxonoxOverlay* overlay= it->second;
+            if(overlay->isVisible())
+                overlay->changedVisibility();
+            else
+                overlay->show();
         }
     }
 

@@ -43,6 +43,7 @@ namespace orxonox
     CreateFactory(OverlayGroup);
 
     SetConsoleCommand("OverlayGroup", "toggleVisibility", &OverlayGroup::toggleVisibility);
+    SetConsoleCommand("OverlayGroup", "show", &OverlayGroup::show);
     SetConsoleCommand("OverlayGroup", "scaleGroup",       &OverlayGroup::scaleGroup);
     SetConsoleCommand("OverlayGroup", "scrollGroup",      &OverlayGroup::scrollGroup);
 
@@ -171,6 +172,26 @@ namespace orxonox
         {
             if ((*it)->getName() == name)
                 (*it)->setVisible(!((*it)->isVisible()));
+        }
+    }
+    
+    /**
+    @brief
+        Shows an overlay group by its name.
+    @param name
+        The name of the group defined BaseObject::setName() (usually done with the "name" attribute in the xml file).
+    */
+    /*static*/ void OverlayGroup::show(const std::string& name)
+    {
+        for (ObjectList<OverlayGroup>::iterator it = ObjectList<OverlayGroup>::begin(); it; ++it)
+        {
+            if ((*it)->getName() == name)
+            {
+                if((*it)->isVisible())
+                    (*it)->changedVisibility();
+                else
+                    (*it)->setVisible(!((*it)->isVisible()));
+            }
         }
     }
 

@@ -76,7 +76,7 @@ namespace orxonox
         @brief
             Describes the rotational state of a an overlay.
             Horizontal means 0/180 degrees, Vertical is 90/270 degrees
-            and Inbetween is everything else.
+            and in between is everything else.
         */
         enum RotationState
         {
@@ -152,6 +152,7 @@ namespace orxonox
         //! ConsoleCommand: Accesses the overlay by its name and scrolls it.
         static void scrollOverlay(const std::string& name, const Vector2& scroll);
         static void toggleVisibility(const std::string& name);
+        static void showOverlay(const std::string& name);
         //! ConsoleCommand: Accesses the overlay by its name and rotates it.
         static void rotateOverlay(const std::string& name, const Degree& angle);
 
