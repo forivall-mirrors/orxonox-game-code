@@ -72,7 +72,7 @@ namespace orxonox {
             temp = *it;
             (*it)->carrierDestroyed();
             it = this->pickups_.begin();
-            if(temp == *it) // Infinite loop avoidance, in case the pickup wasn't removed from the carrier somewhere in the carrierDestroy() procedure.
+            if(it != this->pickups_.end() && temp == *it) // Infinite loop avoidance, in case the pickup wasn't removed from the carrier somewhere in the carrierDestroy() procedure.
             {
                 COUT(2) << "Oops. In a PickupCarrier, while cleaning up, a Pickupable (&" << temp << ") didn't unregister itself as it should have." << std::endl;;
                 it++;
