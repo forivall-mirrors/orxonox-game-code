@@ -40,6 +40,7 @@
 #include "tools/Timer.h"
 
 #include "gametypes/Deathmatch.h"
+#include "PongCenterPoint.h"
 
 namespace orxonox
 {
