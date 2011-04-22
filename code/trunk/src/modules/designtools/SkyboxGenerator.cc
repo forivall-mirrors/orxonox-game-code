@@ -36,7 +36,6 @@
 #include <string>
 #include <OgreRenderWindow.h>
 #include <OgreCamera.h>
-// #include <X11/Xlib.h> TODO: Needed?
 
 #include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
@@ -52,6 +51,8 @@
 #include "worldentities/ControllableEntity.h"
 
 #include "ScreenshotManager.h"
+
+// #include <X11/Xlib.h> TODO: Needed?
 
 namespace orxonox
 {
