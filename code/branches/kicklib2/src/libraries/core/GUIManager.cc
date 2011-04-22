@@ -244,6 +244,7 @@ namespace orxonox
         delete scriptModule_;
 #else
         System::destroy();
+        delete ceguiLogger_;
         OgreRenderer::destroyOgreResourceProvider(*resourceProvider_);
         OgreRenderer::destroyOgreImageCodec(*imageCodec_);
         OgreRenderer::destroy(*guiRenderer_);
