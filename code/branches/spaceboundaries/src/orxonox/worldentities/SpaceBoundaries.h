@@ -26,8 +26,7 @@
  *
  */
  
- /* TODO:   - Mehrere SpaceBoundaries-Instanzen pro Level ermoeglichen
-            - Pro Pawn ein Billboard verwenden
+ /* TODO:   - Sobald Bots im Spiel sind, stürzt das Programm relativ bald ab!!!
  */
  
  
@@ -51,10 +50,10 @@
 #include "worldentities/StaticEntity.h"
 #include "worldentities/WorldEntity.h"
 
-//#include <ColoredTextAreaOverlayElementFactory.h>
-
 #include <string>
 #include <list>
+#include <map>
+#include <vector>
 
 /**
 @brief SpaceBoundaries gives level creators the possibility to bar Pawns from leaving a defined area.
@@ -77,7 +76,11 @@ namespace orxonox
             SpaceBoundaries(BaseObject* creator);
             ~SpaceBoundaries();
             
-            void checkWhoIsIn();
+            void checkWhoIsIn(); //!< Update the list 'pawnsIn_'.
+            
+            void positionBillboard(const Vector3 position);
+            void setBillboardOptions(Billboard *billy);
+            void removeAllBillboards();
             
             void setMaxDistance(float r);
             float getMaxDistance();
@@ -96,7 +99,11 @@ namespace orxonox
             void tick(float dt);
 
         private:
-            std::list<Pawn*> pawnsIn_;
+            struct billboardAdministration{ bool usedYet; Billboard* billy; };
+            
+            std::list<Pawn*> pawnsIn_; //!< List of the pawns that this instance of SpaceBoundaries has to handle.
+            
+            std::vector<billboardAdministration> billboards_;
         
             float maxDistance_; //!< maximal zulaessige Entfernung von 'this->getPosition()'.
             float warnDistance_; //!< Entfernung von 'this->getPosition()', ab der eine Warnung angezeigt wird, dass man bald das zulaessige Areal verlaesst.
@@ -115,7 +122,6 @@ namespace orxonox
             void bounceBack(Pawn *item);
             bool isHumanPlayer(Pawn *item);
             
- //           ColoredTextAreaOverlayElementFactory* pColoredTextAreaOverlayElementFactory;
     };
 }
 

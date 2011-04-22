@@ -37,11 +37,6 @@
 #include "interfaces/RadarViewable.h"
 #include "graphics/Billboard.h"
 
-
-//#include <OgreTextAreaOverlayElement.h>
-#include <OgreOverlayManager.h>
-//#include <overlays/OverlayText.h>
-
 namespace orxonox
 {
     CreateFactory(SpaceBoundaries);
@@ -61,8 +56,6 @@ namespace orxonox
         this->centerRadar_ = new RadarViewable(this, this);
         this->centerRadar_->setRadarObjectShape(RadarViewable::Dot);
         this->centerRadar_->setRadarVisibility(false);
-        
-//         m_pColoredTextAreaOverlayElementFactory = new ColoredTextAreaOverlayElementFactory();
     }
     SpaceBoundaries::~SpaceBoundaries()
     {
@@ -75,7 +68,14 @@ namespace orxonox
         
         this->pawnsIn_.clear();
         
-//        delete pColoredTextAreaOverlayElementFactory;
+        for( std::vector<billboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++)
+        {
+            if( current->billy != NULL)
+            {
+                delete current->billy;
+            }
+        }
+        this->billboards_.clear();
     }
     
     void SpaceBoundaries::checkWhoIsIn()
@@ -89,6 +89,49 @@ namespace orxonox
             {
                 pawnsIn_.push_back(currentPawn);
             }
+        }
+    }
+    
+    void SpaceBoundaries::positionBillboard(const Vector3 position)
+    {
+        std::vector<billboardAdministration>::iterator current;
+        for( current = this->billboards_.begin(); current != this->billboards_.end(); current++)
+        {
+            if(!current->usedYet)
+            {
+                break;
+            }
+        }
+        if( current == this->billboards_.end() )
+        {
+            Billboard *tmp = new Billboard(this);
+            setBillboardOptions( tmp );
+            tmp->setPosition(position);
+            billboardAdministration tmp2 = { true, tmp };
+            this->billboards_.push_back( tmp2 );
+            
+        } else {
+            current->billy->setPosition(position);
+            current->billy->setVisible(true);
+            current->usedYet = true;
+        }
+    }
+    
+    void SpaceBoundaries::setBillboardOptions(Billboard *billy)
+    {
+        if(billy != NULL)
+        {
+            billy->setMaterial("Shield");
+            billy->setVisible(true);
+        }
+    }
+    
+    void SpaceBoundaries::removeAllBillboards()
+    {
+        for( std::vector<billboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++ )
+        {
+            current->usedYet = false;
+            current->billy->setVisible(false);
         }
     }
     
@@ -139,19 +182,20 @@ namespace orxonox
     
     void SpaceBoundaries::tick(float dt)
     {
-        
+        this->removeAllBillboards();
         COUT(0) << "Groesse der Liste: " << (int) pawnsIn_.size() << std::endl;
         
-        //for(ObjectListIterator<Pawn> current = ObjectList<Pawn>::begin(); current != ObjectList<Pawn>::end(); ++current)
+        float distance;
+        bool humanItem;
         for( std::list<Pawn*>::iterator current = pawnsIn_.begin(); current != pawnsIn_.end(); current++ )
         {
             Pawn* currentPawn = *current;
-            float distance = this->computeDistance(currentPawn);
-            bool humanItem = this->isHumanPlayer(currentPawn);
-            COUT(0) << "Distanz:" << distance << std::endl; //!< message for debugging
+            distance = this->computeDistance(currentPawn);
+            humanItem = this->isHumanPlayer(currentPawn);
+            COUT(0) << "Distanz:" << distance << std::endl; // message for debugging
             if(distance > this->warnDistance_ && distance < this->maxDistance_) // Zeige Warnung an!
             {
-                COUT(0) << "You are leaving the area" << std::endl; //!< message for debugging
+                COUT(0) << "You are leaving the area" << std::endl; // message for debugging
                 if(humanItem)
                 {
                     COUT(0) << "humanItem ist true" << std::endl;
@@ -184,34 +228,17 @@ namespace orxonox
     
     float SpaceBoundaries::computeDistance(WorldEntity *item)
     {
-        Vector3 itemPosition = item->getPosition();
-        return (itemPosition.distance(this->getPosition()));
+        if(item != NULL)
+        {
+            Vector3 itemPosition = item->getPosition();
+            return (itemPosition.distance(this->getPosition()));
+        } else {
+            return -1;
+        }
     }
     
     void SpaceBoundaries::displayWarning(const std::string warnText)
-    {   /*
-        Ogre::TextAreaOverlayElement *pTextArea;
-        Ogre::OverlayManager manager = Ogre::OverlayManager();
-        Ogre::OverlayElement temp = manager.createOverlayElement("TextArea", "MyTextArea");
-        //pTextArea = (Ogre::TextAreaOverlayElement *) 
-       // pTextArea->setCaption("Some plain text");
-    
-        Ogre::TextAreaOverlayElement warning(warnText);
-        warning.initialise();
-        //warning.setPosition(0.2, 0.2);
-        
-
-        COUT(0) << "Breite des Warntextes: " << warning.getWidth() << std::endl;
-        COUT(0) << "Hoehe des Warntextes: " << warning.getHeight() << std::endl;
-        
-        warning.show();*/
-        // Register the overlay element
-/*         OverlayManager::getSingleton().addOverlayElementFactory(pColoredTextAreaOverlayElementFactory);
-         
-        Ogre::TextAreaOverlayElement *pTextArea =
-                (Ogre::TextAreaOverlayElement*)Ogre::OverlayManager.createOverlayElement("TextArea", "MyTextArea");
-        pTextArea->setCaption("Some plain text");
-*/
+    {   
         
     }
     
@@ -223,20 +250,13 @@ namespace orxonox
         
         Vector3 boundaryPosition = this->getPosition() + direction * this->maxDistance_;
         
-        if(this->boundary_ == NULL)
-        {
-            this->boundary_ = new Billboard(this);
-            this->boundary_->setMaterial("Examples/Flare");
-            this->boundary_->setVisible(true);
-        }
-        
-        this->boundary_->setPosition(boundaryPosition);
+        this->positionBillboard(boundaryPosition);
     }
     
     void SpaceBoundaries::bounceBack(Pawn *item)
     {
         Vector3 normal = item->getPosition() - this->getPosition();
-        if( item->getVelocity().dotProduct(normal) > 0 ) // greife nur ein, falls 
+        if( item->getVelocity().dotProduct(normal) > 0 ) // Greife nur ein, falls sich das Pawn nach Aussen bewegt.
         {
             float dampingFactor = 0.5;
         
@@ -245,17 +265,6 @@ namespace orxonox
             velocity = velocity.reflect(normal);
             Vector3 acceleration = item->getAcceleration();
             acceleration = acceleration.reflect(normal);
-            /*
-            Vector3 rotationAxis = velocity.crossProduct(normal);
-            Ogre::Radian angle = 2 * velocity.angleBetween(normal);
-            item->setOrientation(Ogre::Quaternion::Quaternion(angle, rotationAxis));
-            */
-            /*
-            Ogre::Quaternion orientation = item->getOrientation();
-            orientation = -1.0 * orientation;
-            item->setOrientation(orientation);
-            */
-            //item->setOrientation(item->getOrientation().UnitInverse() );
             
             item->lookAt( velocity + this->getPosition() );
             
