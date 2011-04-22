@@ -68,11 +68,6 @@ SET_COMPILER_FLAGS("-MD  -O1         -DNDEBUG"       MinSizeRel     CACHE)
 # Note: It hasn't been checked yet whether we have code that might break
 #ADD_COMPILER_FLAGS("-fp:fast" CACHE)
 
-# Newer MSVC versions come with std::shared_ptr which conflicts with
-# boost::shared_ptr in cpptcl. And since we don't yet use the new C++ standard
-# anyway, disable it completely.
-ADD_COMPILER_FLAGS("-D_HAS_CPP0X=0" CACHE)
-
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
 IF(ORXONOX_RELEASE)
   ADD_COMPILER_FLAGS("-GL" ReleaseAll CACHE)
