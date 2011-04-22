@@ -65,15 +65,16 @@ namespace orxonox {
     void PickupCarrier::preDestroy(void)
     {
         std::set<Pickupable*>::iterator it = this->pickups_.begin();
-        std::set<Pickupable*>::iterator temp;
+        Pickupable* temp;
+        // Iterate over all pickups that are attached to this PickupCarrier and destroy them.
         while(it != this->pickups_.end())
         {
+            temp = *it;
             (*it)->carrierDestroyed();
-            temp = it;
             it = this->pickups_.begin();
-            if(it == temp) // Infinite loop avoidance, in case the pickup wasn't removed from the carrier somewhere in the carrierDestroy() procedure.
+            if(temp == *it) // Infinite loop avoidance, in case the pickup wasn't removed from the carrier somewhere in the carrierDestroy() procedure.
             {
-                COUT(2) << "Oops. In a PickupCarrier, while cleaning up, a Pickupable (&" << (*temp) << ") didn't unregister itself as it should have." << std::endl;;
+                COUT(2) << "Oops. In a PickupCarrier, while cleaning up, a Pickupable (&" << temp << ") didn't unregister itself as it should have." << std::endl;;
                 it++;
             }
         }

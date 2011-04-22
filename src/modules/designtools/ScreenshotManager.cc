@@ -40,7 +40,6 @@
 #include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 #include <OgreViewport.h>
-// #include <X11/Xlib.h> TODO: Needed?
 
 #include "core/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
@@ -51,6 +50,8 @@
 
 #include "CameraManager.h"
 #include "graphics/Camera.h"
+
+// #include <X11/Xlib.h> TODO: Needed?
 
 namespace orxonox
 {
