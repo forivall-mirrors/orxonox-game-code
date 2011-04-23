@@ -157,7 +157,6 @@ namespace orxonox
         if (this->bIsVector_)
         {
             return this->callFunctionWithIndex(&ConfigValueContainer::tset, input);
-            return false;
         }
         else
         {
