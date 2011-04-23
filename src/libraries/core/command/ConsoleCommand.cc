@@ -580,7 +580,8 @@ namespace orxonox
     */
     ConsoleCommand& ConsoleCommand::changeKeybindMode(KeybindMode::Value mode)
     {
-        KeyBinderManager::getInstance().getCurrent()->changeMode(this, mode);
+        if( KeyBinderManager::exists() )
+            KeyBinderManager::getInstance().getCurrent()->changeMode(this, mode);
 
         this->keybindMode(mode);
         return *this;

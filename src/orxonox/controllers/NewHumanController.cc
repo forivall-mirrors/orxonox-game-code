@@ -355,7 +355,8 @@ namespace orxonox
         this->currentYaw_ = 0;
         this->currentPitch_ = 0;
 
-        KeyBinderManager::getInstance().getCurrent()->resetMouseAxes();
+        if( KeyBinderManager::exists() )
+            KeyBinderManager::getInstance().getCurrent()->resetMouseAxes();
     }
 
     void NewHumanController::updateTarget()
