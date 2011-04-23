@@ -214,10 +214,13 @@ namespace orxonox
     }
   }
   
-  template <class T> void Synchronisable::unregisterVariable(T& variable){
+  template <class T> void Synchronisable::unregisterVariable(T& variable)
+  {
     std::vector<SynchronisableVariableBase*>::iterator it = syncList_.begin();
-    while(it!=syncList_.end()){
-      if( ((*it)->getReference()) == &variable ){
+    while(it!=syncList_.end())
+    {
+      if( ((*it)->getReference()) == &variable )
+      {
         this->dataSize_ -= (*it)->getSize(Synchronisable::state_);
         delete (*it);
         syncList_.erase(it);
@@ -226,8 +229,8 @@ namespace orxonox
       else
         it++;
     }
-    bool unregistered_nonexistent_variable = false;
-    assert(unregistered_nonexistent_variable); //if we reach this point something went wrong:
+    COUT(1) << "Tried to unregister not registered variable" << endl;
+    assert(false); //if we reach this point something went wrong:
     // the variable has not been registered before
   }
 
