@@ -286,8 +286,10 @@ namespace orxonox
 //       return true;
 //     }
 
-    assert(curid==GAMESTATEID_INITIAL || curid<=gamestateID);
-    COUT(5) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " curid: " << curid << std::endl;
+//    assert(curid==GAMESTATEID_INITIAL || curid<=gamestateID); // this line is commented out because acknowledgements are unreliable and may arrive in distorted order
+    if( gamestateID <= curid )
+        return true;
+COUT(4) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " curid: " << curid << std::endl;
     std::map<uint32_t, packet::Gamestate*>::iterator it2;
     for( it2=it->second.gamestates.begin(); it2!=it->second.gamestates.end(); )
     {
