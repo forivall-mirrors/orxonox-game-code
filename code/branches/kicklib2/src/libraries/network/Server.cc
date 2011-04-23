@@ -249,7 +249,7 @@ namespace orxonox
   /**
    * @brief: return packet loss ratio to client (scales from 0 to 1)
    */
-  double Server::getPacketLoss(unsigned int clientID)
+  float Server::getPacketLoss(unsigned int clientID)
   {
     assert(ClientInformation::findClient(clientID));
     return ClientInformation::findClient(clientID)->getPacketLoss();

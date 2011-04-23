@@ -72,7 +72,7 @@ namespace orxonox
     void update(const Clock& time);
     unsigned int getRTT(unsigned int clientID);
     virtual void printRTT();
-    double getPacketLoss(unsigned int clientID);
+    float getPacketLoss(unsigned int clientID);
   protected:
     void updateGamestate();
   private:

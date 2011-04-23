@@ -74,7 +74,7 @@ namespace orxonox
     ENetPeer *getPeer();
 
     uint32_t getRTT();
-    double getPacketLoss();
+    float getPacketLoss();
 
     static bool removeClient(unsigned int clientID);
     static bool removeClient(ENetPeer *peer);

@@ -149,8 +149,8 @@ namespace orxonox
     return this->peer_->roundTripTime;
   }
 
-  double ClientInformation::getPacketLoss(){
-    return static_cast<double>(this->peer_->packetLoss)/ENET_PEER_PACKET_LOSS_SCALE;
+  float ClientInformation::getPacketLoss(){
+    return static_cast<float>(this->peer_->packetLoss)/ENET_PEER_PACKET_LOSS_SCALE;
   }
 
   unsigned int ClientInformation::getGamestateID() {
