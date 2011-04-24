@@ -98,6 +98,9 @@ ELSE()
   MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
 ENDIF()
 
+# Debug builds can not be installed
+INSTALL(SCRIPT cmake/InstallCheck.cmake)
+
 # Enable expensive optimisations: use this for a binary release build
 OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
 
