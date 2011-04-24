@@ -109,13 +109,7 @@ namespace orxonox
 */
         this->device_ = alcOpenDevice(NULL);
         if (this->device_ == NULL)
-        {
-            COUT(1) << "Sound: Could not open sound device. Have you installed OpenAL?" << std::endl;
-#ifdef ORXONOX_PLATFORM_WINDOWS
-            COUT(1) << "Sound: Just getting the DLL with the dependencies is not enough for Windows (esp. Windows 7)!" << std::endl;
-#endif
             ThrowException(InitialisationFailed, "Sound Error: Could not open sound device.");
-        }
         Loki::ScopeGuard closeDeviceGuard = Loki::MakeGuard(&alcCloseDevice, this->device_);
 
         // Create sound context and make it the currently used one
