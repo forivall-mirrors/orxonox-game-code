@@ -18,21 +18,21 @@
  #
 
 SET_SOURCE_FILES(UTIL_SRC_FILES
-  Clock.cc
   Exception.cc
-  ExprParser.cc
   Math.cc
   MultiType.cc
-  Scope.cc
+  SignalHandler.cc
   StringUtils.cc
 COMPILATION_BEGIN StableCompilation.cc
   Clipboard.cc
+  Clock.cc
   Convert.cc
   CRC32.cc
+  ExprParser.cc
   OutputHandler.cc
+  Scope.cc
   ScopedSingletonManager.cc
   SharedPtr.cc
-  SignalHandler.cc
   Sleep.cc
   SmallObjectAllocator.cc
   SubString.cc
