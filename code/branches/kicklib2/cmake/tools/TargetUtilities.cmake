@@ -287,7 +287,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # RPATH settings for the installation
-  IF(_target_type STREQUAL "LIBRARY")
+  IF("${_target_type}" STREQUAL "LIBRARY")
     IF(_arg_MODULE)
       SET(_rpath "${MODULE_RPATH}")
     ELSE()
