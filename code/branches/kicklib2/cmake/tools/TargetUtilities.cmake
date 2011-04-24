@@ -288,9 +288,9 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   # RPATH settings for the installation
   IF(UNIX)
-    SET(_rpath ${LIBRARY_INSTALL_DIRECTORY})
+    SET(_rpath ${CMAKE_INSTALL_PREFIX}/${LIBRARY_INSTALL_DIRECTORY})
     IF(_arg_MODULE)
-      LIST(APPEND _rpath ${MODULE_INSTALL_DIRECTORY})
+      LIST(APPEND _rpath ${CMAKE_INSTALL_PREFIX}/${MODULE_INSTALL_DIRECTORY})
     ENDIF()
     SET_TARGET_PROPERTIES(${_target_name} PROPERTIES INSTALL_RPATH "${_rpath}")
   ENDIF()

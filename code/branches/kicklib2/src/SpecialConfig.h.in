@@ -66,8 +66,8 @@ namespace orxonox { namespace specialConfig
 
 #ifndef INSTALL_COPYABLE
     // INSTALLATION PATHS
-    const char dataInstallDirectory[]       = "@DATA_INSTALL_DIRECTORY@";
-    const char moduleInstallDirectory[]     = "@MODULE_INSTALL_DIRECTORY@";
+    const char dataInstallDirectory[]       = "@CMAKE_INSTALL_PREFIX@/@DATA_INSTALL_DIRECTORY@";
+    const char moduleInstallDirectory[]     = "@CMAKE_INSTALL_PREFIX@/@MODULE_INSTALL_DIRECTORY@";
 #endif
 
     // DEVELOPMENT RUN PATHS
