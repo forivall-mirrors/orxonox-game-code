@@ -27,9 +27,6 @@
 
 #################### Options ####################
 
-# Use, i.e. don't skip the full RPATH for the build tree
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-
 # Global switch to disable Precompiled Header Files
 # Note: PCH temporarily disabled on Mac because of severe problems
 IF(PCH_COMPILER_SUPPORT AND NOT APPLE)

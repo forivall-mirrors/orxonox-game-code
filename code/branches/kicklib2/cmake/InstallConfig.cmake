@@ -70,15 +70,27 @@ ENDIF()
 
 ################## Unix rpath ###################
 
+# Use, i.e. don't skip the full RPATH for the build tree
+SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+
 # When building, don't use the install RPATH already
 # (but later on when installing)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
 # The RPATH to be used when installing
 IF(INSTALL_COPYABLE)
-  SET(CMAKE_INSTALL_RPATH ${DEFAULT_LIBRARY_PATH})
+  # Get relative paths from run to lib and from module to lib directory.
+  FILE(RELATIVE_PATH _runtime_rpath "/${RUNTIME_INSTALL_DIRECTORY}" "/${LIBRARY_INSTALL_DIRECTORY}")
+  FILE(RELATIVE_PATH _module_rpath  "/${MODULE_INSTALL_DIRECTORY}" "/${LIBRARY_INSTALL_DIRECTORY}")
+  # $ORIGIN (with $ escaped) refers to the actual location of the library
+  # The UNIX loader recognises this special variable
+  SET(RUNTIME_RPATH "\$ORIGIN/${_runtime_rpath}")
+  SET(LIBRARY_RPATH "\$ORIGIN")
+  SET(MODULE_RPATH  "\$ORIGIN:\$ORIGIN/${_module_rpath}")
 ELSE()
-  SET(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${LIBRARY_INSTALL_DIRECTORY})
+  SET(RUNTIME_RPATH "${CMAKE_INSTALL_PREFIX}/${LIBRARY_INSTALL_DIRECTORY}")
+  SET(LIBRARY_RPATH "${CMAKE_INSTALL_PREFIX}/${LIBRARY_INSTALL_DIRECTORY}")
+  SET(MODULE_RPATH  "${LIBRARY_RPATH}:${CMAKE_INSTALL_PREFIX}/${MODULE_INSTALL_DIRECTORY}")
 ENDIF()
 
 # Add the automatically determined parts of the RPATH

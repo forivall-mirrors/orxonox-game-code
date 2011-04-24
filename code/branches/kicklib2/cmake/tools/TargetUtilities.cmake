@@ -287,13 +287,16 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # RPATH settings for the installation
-  IF(UNIX)
-    SET(_rpath ${CMAKE_INSTALL_PREFIX}/${LIBRARY_INSTALL_DIRECTORY})
+  IF(_target_type STREQUAL "LIBRARY")
     IF(_arg_MODULE)
-      LIST(APPEND _rpath ${CMAKE_INSTALL_PREFIX}/${MODULE_INSTALL_DIRECTORY})
+      SET(_rpath "${MODULE_RPATH}")
+    ELSE()
+      SET(_rpath "${LIBRARY_RPATH}")
     ENDIF()
-    SET_TARGET_PROPERTIES(${_target_name} PROPERTIES INSTALL_RPATH "${_rpath}")
+  ELSE()
+    SET(_rpath "${RUNTIME_RPATH}")
   ENDIF()
+  SET_TARGET_PROPERTIES(${_target_name} PROPERTIES INSTALL_RPATH "${_rpath}")
 
   # DEFINE_SYMBOL
   IF(_arg_DEFINE_SYMBOL)
