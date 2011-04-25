@@ -75,7 +75,7 @@ namespace orxonox
 
         for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
         {
-            if (it->first->getClientID() == CLIENTID_UNKNOWN)
+            if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                 continue;
 
             if (it->second == 0)
@@ -157,7 +157,7 @@ namespace orxonox
 
                 for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
                 {
-                    if (it->first->getClientID() == CLIENTID_UNKNOWN)
+                    if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                         continue;
 
                     if (it->second == 1)

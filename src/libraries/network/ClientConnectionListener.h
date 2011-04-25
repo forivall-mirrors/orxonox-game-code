@@ -47,7 +47,7 @@ namespace orxonox
             virtual void clientDisconnected(unsigned int clientID) = 0;
 
         protected:
-            void getConnectedClients();
+//             void getConnectedClients();
     };
 }
 

@@ -50,7 +50,7 @@ class _NetworkExport GamestateHandler
   public:
     virtual bool      addGamestate(packet::Gamestate* gs, unsigned int clientID) = 0;
     virtual bool      ackGamestate(unsigned int gamestateID, unsigned int clientID) = 0;
-    virtual uint32_t  getLastProcessedGamestateID( unsigned int clientID )=0;
+    virtual uint32_t  getLastReceivedGamestateID( unsigned int clientID )=0;
     virtual uint32_t  getCurrentGamestateID()=0;
 };
 

@@ -56,8 +56,8 @@ namespace orxonox
     virtual void connectionClosed()=0;
     uint32_t getRTT();
   private:
-    virtual void addPeer(ENetEvent* event);
-    virtual void removePeer(ENetEvent* event);
+    virtual void addPeer(uint32_t peerID);
+    virtual void removePeer(uint32_t peerID);
 
     bool disconnectConnection();
     // enet stuff

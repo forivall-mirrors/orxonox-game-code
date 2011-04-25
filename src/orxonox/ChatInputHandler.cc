@@ -219,7 +219,7 @@ namespace orxonox
     std::string text, name = "unknown";
 
     /* setup player name info */
-    if (senderID != CLIENTID_UNKNOWN)
+    if (senderID != NETWORK_PEER_ID_UNKNOWN)
     {
        PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
        if (player)

@@ -30,7 +30,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
-#include "ClientInformation.h"
+// #include "ClientInformation.h"
 
 namespace orxonox
 {
@@ -51,15 +51,15 @@ namespace orxonox
             it->clientDisconnected(clientID);
     }
 
-    void ClientConnectionListener::getConnectedClients()
-    {
-        ClientInformation* client = ClientInformation::getBegin();
-        while (client)
-        {
-            this->clientConnected(client->getID());
-            client = client->next();
-        }
-    }
+//     void ClientConnectionListener::getConnectedClients()
+//     {
+//         ClientInformation* client = ClientInformation::getBegin();
+//         while (client)
+//         {
+//             this->clientConnected(client->getID());
+//             client = client->next();
+//         }
+//     }
 }
 
 

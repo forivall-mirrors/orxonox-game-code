@@ -116,7 +116,7 @@ namespace orxonox {
     if(instances_s.size()==0)
     {
       for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
-        it->incomingChat(message, CLIENTID_UNKNOWN);
+        it->incomingChat(message, NETWORK_PEER_ID_BROADCAST);
       return true;
     }
     else

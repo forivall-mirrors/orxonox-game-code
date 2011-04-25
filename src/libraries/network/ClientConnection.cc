@@ -41,6 +41,7 @@ namespace orxonox
 
 
   ClientConnection::ClientConnection():
+    Connection(NETWORK_PEER_ID_SERVER),
     established_(false),
     server_(NULL)
   {
@@ -102,6 +103,10 @@ namespace orxonox
     {
       if( enet_host_service(this->host_, &event, NETWORK_CLIENT_WAIT_TIME)>=0 && event.type == ENET_EVENT_TYPE_CONNECT )
       {
+        // manually add server to list of peers
+        /*incomingEvent inEvent = */Connection::preprocessConnectEvent(event);
+//         addPeer(inEvent.peerID);
+        // start communication thread
         this->established_=true;
         Connection::startCommunicationThread();
         return true;
@@ -117,6 +122,8 @@ namespace orxonox
     if ( !this->established_ )
       return true;
     this->established_ = false;
+    
+    // stop communication thread and disconnect server
     Connection::stopCommunicationThread();
     enet_peer_disconnect(this->server_, 0);
     for( unsigned int i=0; i<NETWORK_CLIENT_CONNECTION_TIMEOUT/NETWORK_CLIENT_WAIT_TIME; i++)
@@ -147,14 +154,16 @@ namespace orxonox
   void ClientConnection::addPacket(ENetPacket *packet, uint8_t channelID) {
     assert( this->server_ );
     assert( packet );
-    return Connection::addPacket( packet, this->server_, channelID );
+//     return Connection::addPacket( packet, NETWORK_PEER_ID_SERVER, channelID );
+    // HACK: actually there should be a way to do this using addPacket and the correct peerID
+    return Connection::broadcastPacket(packet, channelID);
   }
 
-  void ClientConnection::addPeer(ENetEvent* event)
+  void ClientConnection::addPeer(uint32_t peerID)
   {
     assert(0);
   }
-  void ClientConnection::removePeer(ENetEvent* event)
+  void ClientConnection::removePeer(uint32_t peerID)
   {
     this->established_=false;
     COUT(1) << "Received disconnect Packet from Server!" << endl;

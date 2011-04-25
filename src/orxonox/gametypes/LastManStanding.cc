@@ -85,7 +85,7 @@ namespace orxonox
             std::map<PlayerInfo*, Player>::iterator it = this->players_.find(originator->getPlayer());
             if (it != this->players_.end())
             {
-                if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                if (it->first->getClientID()== NETWORK_PEER_ID_UNKNOWN)
                     return true;
                 const std::string& message = ""; // resets Camper-Warning-message
                 this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
@@ -130,7 +130,7 @@ namespace orxonox
         
         for (std::map<PlayerInfo*, int>::iterator it = this->playerLives_.begin(); it != this->playerLives_.end(); ++it)
         {
-            if (it->first->getClientID() == CLIENTID_UNKNOWN)
+            if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
                 continue;
 
             if (it->second > 0)
@@ -193,7 +193,7 @@ namespace orxonox
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
         {
-            if (it->first->getClientID()== CLIENTID_UNKNOWN)
+            if (it->first->getClientID()== NETWORK_PEER_ID_UNKNOWN)
                 return;
             const std::string& message = ""; // resets Camper-Warning-message
             this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
@@ -248,7 +248,7 @@ namespace orxonox
                     if (playerDelayTime_[it->first]<=0)
                     this->inGame_[it->first]=true;
 
-                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                    if (it->first->getClientID()== NETWORK_PEER_ID_UNKNOWN)
                         continue;
                     int output=1+(int)playerDelayTime_[it->first];
                     const std::string& message = "Respawn in " +multi_cast<std::string>(output)+ " seconds." ;//Countdown
@@ -260,7 +260,7 @@ namespace orxonox
                     if (playerGetLives(it->first)>0)
                     {
                         this->punishPlayer(it->first);
-                        if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                        if (it->first->getClientID()== NETWORK_PEER_ID_UNKNOWN)
                             return;
                         const std::string& message = ""; // resets Camper-Warning-message
                         this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
@@ -268,7 +268,7 @@ namespace orxonox
                 }
                 else if (it->second<timeRemaining/5)//Warning message
                 {
-                    if (it->first->getClientID()== CLIENTID_UNKNOWN)
+                    if (it->first->getClientID()== NETWORK_PEER_ID_UNKNOWN)
                         continue;
                     const std::string& message = "Camper Warning! Don't forget to shoot.";
                     this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
