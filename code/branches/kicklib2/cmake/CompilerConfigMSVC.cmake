@@ -65,8 +65,7 @@ SET_COMPILER_FLAGS("-MD  -O2     -Zi -DNDEBUG"       RelWithDebInfo CACHE)
 SET_COMPILER_FLAGS("-MD  -O1         -DNDEBUG"       MinSizeRel     CACHE)
 
 # Enable non standard floating point optimisations
-# Note: It hasn't been checked yet whether we have code that might break
-#ADD_COMPILER_FLAGS("-fp:fast" CACHE)
+ADD_COMPILER_FLAGS("-fp:fast" CACHE)
 
 # Use Link time code generation for Release config if ORXONOX_RELEASE is defined
 IF(ORXONOX_RELEASE)

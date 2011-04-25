@@ -68,6 +68,9 @@ IF(NOT MINGW AND ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
   ADD_COMPILER_FLAGS("-fPIC" CACHE)
 ENDIF()
 
+# Enable non standard floating point optimisations
+ADD_COMPILER_FLAGS("-ffast-math" CACHE)
+
 # Use SSE if possible
 # Commented because this might not work for cross compiling
 #CHECK_CXX_COMPILER_FLAG(-msse _gcc_have_sse)
