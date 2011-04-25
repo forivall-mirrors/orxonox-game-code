@@ -235,7 +235,7 @@ namespace orxonox
     if(mode==0x0)
       mode=state_;
     //if this tick is we dont synchronise, then abort now
-    if(!doSync(id, mode))
+    if(!doSync(/*id,*/ mode))
       return 0;
     uint32_t tempsize = 0;
 #ifndef NDEBUG
@@ -301,6 +301,7 @@ namespace orxonox
   {
     if(mode==0x0)
       mode=state_;
+    
     if(syncList_.empty())
     {
       assert(0);
@@ -312,6 +313,17 @@ namespace orxonox
     // start extract header
     SynchronisableHeaderLight syncHeaderLight(mem);
     assert(syncHeaderLight.getObjectID()==this->getObjectID());
+    
+    if( !this->doReceive(mode) )
+    {
+      uint32_t headerSize;
+      if( syncHeaderLight.isDiffed() )
+        headerSize = SynchronisableHeaderLight::getSize();
+      else
+        headerSize = SynchronisableHeader::getSize();
+      mem += syncHeaderLight.getDataSize() + headerSize;
+      return true;
+    }
 
     //COUT(5) << "Synchronisable: objectID_ " << syncHeader.getObjectID() << ", classID_ " << syncHeader.getClassID() << " size: " << syncHeader.getDataSize() << " synchronising data" << std::endl;
     if( !syncHeaderLight.isDiffed() )
@@ -356,7 +368,7 @@ namespace orxonox
     uint32_t tsize=SynchronisableHeader::getSize();
     if (mode==0x0)
       mode=state_;
-    if (!doSync(id, mode))
+    if (!doSync(/*id, */mode))
       return 0;
     assert( mode==state_ );
     tsize += this->dataSize_;
@@ -374,12 +386,24 @@ namespace orxonox
    * @param mode Synchronisation mode (toclient, toserver or bidirectional)
    * @return true/false
    */
-  bool Synchronisable::doSync(int32_t id, uint8_t mode)
+  bool Synchronisable::doSync(/*int32_t id,*/ uint8_t mode)
   {
 //     if(mode==0x0)
 //       mode=state_;
     assert(mode!=0x0);
     return ( (this->objectMode_ & mode)!=0 && (!syncList_.empty() ) );
+  }
+  
+  /**
+   * This function determines, wheter the object should accept data from the bytestream (according to its syncmode/direction)
+   * @param id gamestate id
+   * @param mode Synchronisation mode (toclient, toserver or bidirectional)
+   * @return true/false
+   */
+  bool Synchronisable::doReceive( uint8_t mode)
+  {
+    //return mode != this->objectMode_ || this->objectMode_ == ObjectDirection::Bidirectional;
+    return true;
   }
 
   /**

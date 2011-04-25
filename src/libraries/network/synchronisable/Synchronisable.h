@@ -179,7 +179,8 @@ namespace orxonox
     uint32_t getData(uint8_t*& mem, std::vector<uint32_t>& sizes, int32_t id, uint8_t mode);
     uint32_t getSize(int32_t id, uint8_t mode=0x0);
     bool updateData(uint8_t*& mem, uint8_t mode=0x0, bool forceCallback=false);
-    bool doSync(int32_t id, uint8_t mode=0x0);
+    bool doSync(/*int32_t id,*/ uint8_t mode=0x0);
+    bool doReceive( uint8_t mode );
 
     inline void setObjectID(uint32_t id){ this->objectID_ = id; objectMap_[this->objectID_] = this; }
     inline void setClassID(uint32_t id){ this->classID_ = id; }
