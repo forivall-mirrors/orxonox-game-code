@@ -88,6 +88,8 @@ namespace orxonox
         this->registerVariables();
 
         this->isHumanShip_ = this->hasLocalController();
+        
+        this->setSyncMode(ObjectDirection::Bidirectional); // needed to synchronise e.g. aimposition
     }
 
     Pawn::~Pawn()
