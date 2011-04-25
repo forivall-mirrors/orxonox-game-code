@@ -73,7 +73,7 @@ namespace orxonox
     {
         if (GameMode::isMaster())
         {
-            callMemberNetworkFunction(GametypeInfo, dispatchAnnounceMessage, this->getObjectID(), CLIENTID_UNKNOWN, message);
+            callMemberNetworkFunction(GametypeInfo, dispatchAnnounceMessage, this->getObjectID(), NETWORK_PEER_ID_BROADCAST, message);
             this->dispatchAnnounceMessage(message);
         }
     }

@@ -31,7 +31,7 @@
 #include "PlayerInfo.h"
 
 #include "core/CoreIncludes.h"
-#include "network/ClientInformation.h"
+// #include "network/ClientInformation.h"
 #include "gametypes/Gametype.h"
 #include "worldentities/ControllableEntity.h"
 #include "controllers/Controller.h"
@@ -42,7 +42,7 @@ namespace orxonox
     {
         RegisterObject(PlayerInfo);
 
-        this->clientID_ = CLIENTID_UNKNOWN;
+        this->clientID_ = NETWORK_PEER_ID_UNKNOWN;
         this->bHumanPlayer_ = false;
         this->bLocalPlayer_ = false;
         this->bReadyToSpawn_ = false;

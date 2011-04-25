@@ -81,7 +81,7 @@ namespace orxonox
 
 #ifndef CHATTEST
     /* get sender ID and prepend it to the message */
-    if (senderID != CLIENTID_UNKNOWN)
+    if (senderID != NETWORK_PEER_ID_UNKNOWN)
     {
       /* if we can't find anything, use "unknown" as default */
       std::string name = "unknown";

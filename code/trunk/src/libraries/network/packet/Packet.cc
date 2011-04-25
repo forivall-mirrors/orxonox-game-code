@@ -46,7 +46,7 @@
 #include "Gamestate.h"
 #include "Welcome.h"
 #include "network/Host.h"
-#include "network/ClientInformation.h"
+// #include "network/ClientInformation.h"
 
 namespace orxonox{
 
@@ -84,7 +84,8 @@ Packet::Packet(uint8_t *data, unsigned int peerID)
 }
 
 
-Packet::Packet(const Packet &p){
+Packet::Packet(const Packet &p)
+{
   enetPacket_=p.enetPacket_;
   flags_=p.flags_;
   packetDirection_ = p.packetDirection_;
@@ -103,12 +104,15 @@ Packet::Packet(const Packet &p){
 
     That also means destroying the ENetPacket if one exists. There
 */
-Packet::~Packet(){
+Packet::~Packet()
+{
   // Deallocate data_ memory if necessary.
-  if (this->bDataENetAllocated_){
+  if (this->bDataENetAllocated_)
+  {
     // In this case ENet allocated data_ and will destroy it.
   }
-  else if (this->data_) {
+  else if (this->data_)
+  {
     // This destructor was probably called as a consequence of ENet executing our callback.
     // It simply serves us to be able to deallocate the packet content (data_) ourselves since
     // we have created it in the first place.
@@ -118,18 +122,22 @@ Packet::~Packet(){
   // Destroy the ENetPacket if necessary.
   // Note: For the case ENet used the callback to destroy the packet, we have already set
   // enetPacket_ to NULL to avoid destroying it again.
-  if (this->enetPacket_){
+  if (this->enetPacket_)
+  {
     // enetPacket_->data gets destroyed too by ENet if it was allocated by it.
     enet_packet_destroy(enetPacket_);
   }
 }
 
-bool Packet::send(orxonox::Host* host){
-  if(packetDirection_ != Direction::Outgoing && packetDirection_ != Direction::Bidirectional ){
+bool Packet::send(orxonox::Host* host)
+{
+  if(packetDirection_ != Direction::Outgoing && packetDirection_ != Direction::Bidirectional )
+  {
     assert(0);
     return false;
   }
-  if(!enetPacket_){
+  if(!enetPacket_)
+  {
     if(!data_){
       assert(0);
       return false;
@@ -174,13 +182,14 @@ bool Packet::send(orxonox::Host* host){
   return true;
 }
 
-Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
+Packet *Packet::createPacket(ENetPacket* packet, uint32_t peerID)
+{
   uint8_t *data = packet->data;
-  assert(ClientInformation::findClient(&peer->address)->getID() != static_cast<unsigned int>(-2) || !Host::isServer());
-  unsigned int peerID = ClientInformation::findClient(&peer->address)->getID();
+//   assert(ClientInformation::findClient(&peer->address)->getID() != static_cast<unsigned int>(-2) || !Host::isServer());
+//   unsigned int peerID = ClientInformation::findClient(&peer->address)->getID();
   // HACK
-  if( peerID==static_cast<unsigned int>(-2))
-    peerID = NETWORK_PEER_ID_SERVER;
+//   if( peerID==static_cast<unsigned int>(-2))
+//     peerID = NETWORK_PEER_ID_SERVER;
   Packet *p = 0;
 //   COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
   switch( *(Type::Value *)(data + _PACKETID) )
@@ -234,7 +243,8 @@ Packet *Packet::createPacket(ENetPacket *packet, ENetPeer *peer){
     ENet calls this method whenever it wants to destroy a packet that contains
     data we allocated ourselves.
 */
-void Packet::deletePacket(ENetPacket *enetPacket){
+void Packet::deletePacket(ENetPacket *enetPacket)
+{
   // Get our Packet from a global map with all Packets created in the send() method of Packet.
   Packet::packetMapMutex_.lock();
   std::map<size_t, Packet*>::iterator it = packetMap_.find(reinterpret_cast<size_t>(enetPacket));

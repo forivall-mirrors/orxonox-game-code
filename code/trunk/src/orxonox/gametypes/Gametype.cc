@@ -262,9 +262,9 @@ namespace orxonox
                     {
                         it->second.frags_++;
 
-                        if (killer->getPlayer()->getClientID() != CLIENTID_UNKNOWN)
+                        if (killer->getPlayer()->getClientID() != NETWORK_PEER_ID_UNKNOWN)
                             this->gtinfo_->sendKillMessage("You killed " + victim->getPlayer()->getName(), killer->getPlayer()->getClientID());
-                        if (victim->getPlayer()->getClientID() != CLIENTID_UNKNOWN)
+                        if (victim->getPlayer()->getClientID() != NETWORK_PEER_ID_UNKNOWN)
                             this->gtinfo_->sendDeathMessage("You were killed by " + killer->getPlayer()->getName(), victim->getPlayer()->getClientID());
                     }
                 }

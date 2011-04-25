@@ -34,7 +34,8 @@
 #include <enet/enet.h>
 
 #include "util/Debug.h"
-#include "ClientInformation.h"
+#include <util/Sleep.h>
+// #include "ClientInformation.h"
 
 namespace orxonox
 {
@@ -43,9 +44,10 @@ namespace orxonox
     bListening_(false)
   {
     this->bindAddress_ = new ENetAddress();
-    memset(this->bindAddress_, 0, sizeof(ENetAddress));
+//     memset(this->bindAddress_, 0, sizeof(ENetAddress));
     this->bindAddress_->host = ENET_HOST_ANY;
     this->bindAddress_->port = NETWORK_PORT;
+    this->bindAddress_->scopeID = 0;
   }
 
   ServerConnection::~ServerConnection()
@@ -103,58 +105,54 @@ namespace orxonox
 
   void ServerConnection::addPacket(ENetPacket *packet, unsigned int clientID, uint8_t channelID)
   {
-    if ( clientID == CLIENTID_UNKNOWN )
+    if ( clientID == NETWORK_PEER_ID_BROADCAST )
     {
       broadcastPacket(packet, channelID);
     }
     else
     {
-      ClientInformation *temp = ClientInformation::findClient(clientID);
-      if(!temp){
-        COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
-      }
-      Connection::addPacket(packet, temp->getPeer(), channelID);
+//       ClientInformation *temp = ClientInformation::findClient(clientID);
+//       if(!temp){
+//         COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
+//       }
+      Connection::addPacket(packet, clientID, channelID);
     }
   }
 
-  void ServerConnection::disconnectClient(ClientInformation *client)
-  {
-    Connection::disconnectPeer( client->getPeer() );
-  }
+//   void ServerConnection::disconnectClient(ClientInformation *client)
+//   {
+//     Connection::disconnectPeer( client->getPeer() );
+//   }
 
   void ServerConnection::disconnectClient(int clientID)
   {
-    ClientInformation *client = ClientInformation::findClient(clientID);
-    if(client)
-      ServerConnection::disconnectClient(client);
+//     ClientInformation *client = ClientInformation::findClient(clientID);
+//     if(client)
+    ServerConnection::disconnectClient(clientID);
   }
 
   void ServerConnection::disconnectClients()
   {
-    ClientInformation *temp = ClientInformation::getBegin();
-    while(temp!=0)
-    {
-      ServerConnection::disconnectClient( temp );
-      temp = temp->next();
-    }
+    Connection::disconnectPeers();
+    Connection::waitOutgoingQueue();
     return;
   }
 
 
-  int ServerConnection::getClientID(ENetPeer* peer)
-  {
-    return getClientID(&(peer->address));
-  }
+//   int ServerConnection::getClientID(ENetPeer* peer)
+//   {
+//     return getClientID(&(peer->address));
+//   }
 
-  int ServerConnection::getClientID(ENetAddress* address)
-  {
-    return ClientInformation::findClient(address)->getID();
-  }
-
-  ENetPeer *ServerConnection::getClientPeer(int clientID)
-  {
-    return ClientInformation::findClient(clientID)->getPeer();
-  }
+//   int ServerConnection::getClientID(ENetAddress* address)
+//   {
+//     return ClientInformation::findClient(address)->getID();
+//   }
+// 
+//   ENetPeer *ServerConnection::getClientPeer(int clientID)
+//   {
+//     return ClientInformation::findClient(clientID)->getPeer();
+//   }
 
 
 }

@@ -31,7 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
-#include "network/ClientInformation.h"
+// #include "network/ClientInformation.h"
 #include "network/Host.h"
 #include "controllers/HumanController.h"
 #include "controllers/NewHumanController.h"
@@ -143,12 +143,14 @@ namespace orxonox
 
     float HumanPlayer::getPing() const
     {
-        return static_cast<float>(ClientInformation::findClient(this->getClientID())->getRTT());
+//         return static_cast<float>(ClientInformation::findClient(this->getClientID())->getRTT());
+        return 0.; //TODO: reimplement this
     }
 
     float HumanPlayer::getPacketLossRatio() const
     {
-        return static_cast<float>(ClientInformation::findClient(this->getClientID())->getPacketLoss());
+      //         return static_cast<float>(ClientInformation::findClient(this->getClientID())->getPacketLoss());
+        return 0.; //TODO: reimplement this
     }
 
     void HumanPlayer::setClientID(unsigned int clientID)

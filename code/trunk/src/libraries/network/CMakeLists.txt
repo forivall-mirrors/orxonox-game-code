@@ -21,7 +21,6 @@ SET_SOURCE_FILES(NETWORK_SRC_FILES
   ChatListener.cc
   Client.cc
   ClientConnection.cc
-  ClientInformation.cc
   ClientConnectionListener.cc
   Connection.cc
   FunctionCall.cc
@@ -49,7 +48,6 @@ SET_SOURCE_FILES(NETWORK_HDR_FILES
   Client.h
   ClientConnection.h
   ClientConnectionListener.h
-  ClientInformation.h
   Connection.h
   FunctionCall.h
   FunctionCallManager.h

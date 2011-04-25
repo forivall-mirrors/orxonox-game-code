@@ -32,6 +32,7 @@
 #include "NetworkPrereqs.h"
 
 #include <deque>
+#include <vector>
 
 #include "util/UtilPrereqs.h"
 #include "core/CorePrereqs.h"
@@ -79,12 +80,12 @@ namespace orxonox
     virtual bool isServer_(){return true;}
     unsigned int playerID(){return 0;}
 
-    void addPeer(ENetEvent *event);
-    void removePeer(ENetEvent *event);
+    void addPeer(uint32_t peerID);
+    void removePeer(uint32_t peerID);
     void processPacket(packet::Packet* packet);
 
     bool createClient(int clientID);
-    void disconnectClient( ClientInformation *client);
+    void disconnectClient( uint32_t clientID );
     bool sendGameStates();
     bool sendObjectDeletes();
     virtual bool chat(const std::string& message);
@@ -94,6 +95,7 @@ namespace orxonox
 
     float timeSinceLastUpdate_;
     std::deque<packet::Packet*> packetQueue_;
+    std::vector<uint32_t>       clientIDs_;
   };
 
 
