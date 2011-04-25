@@ -34,6 +34,15 @@ function P.onLoad()
     P:setButton(4, 2, P:getButton(4, 1))
 end
 
+function P.onShow()
+    local window = winMgr:getWindow("orxonox/SettingsMenu/AudioButton")
+    if not orxonox.SoundManager:exists() then
+        window:setProperty("Disabled", "true")
+    else
+        window:setProperty("Disabled", "false")
+    end
+end
+
 function P.SettingsGameplayButton_clicked(e)
     showMenuSheet("GameplayMenu", true)
 end
