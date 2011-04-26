@@ -23,6 +23,11 @@
  #    Configures some basics and controls the configuration scripts
  #
 
+# Defined LINUX
+IF(UNIX AND NOT APPLE)
+  SET(LINUX TRUE)
+ENDIF()
+
 IF(WIN32)
   IF(MSVC10)
     CMAKE_MINIMUM_REQUIRED(VERSION 2.8.3 FATAL_ERROR)

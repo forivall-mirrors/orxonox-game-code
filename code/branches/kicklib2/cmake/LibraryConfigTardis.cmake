@@ -24,12 +24,10 @@
  #    Also sets the TARDIS variable.
  #
 
-IF(UNIX AND NOT APPLE)
-  IF(EXISTS /etc/hostname)
-    FILE(STRINGS /etc/hostname HOSTNAME LIMIT_COUNT 1)
-    IF(${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
-      SET (TARDIS ON)
-    ENDIF()
+IF(LINUX AND EXISTS /etc/hostname)
+  FILE(STRINGS /etc/hostname HOSTNAME LIMIT_COUNT 1)
+  IF(${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
+    SET (TARDIS ON)
   ENDIF()
 ENDIF()
 

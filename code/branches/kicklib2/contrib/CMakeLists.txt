@@ -23,7 +23,7 @@
  #    Installs system specific files
  #
 
-IF(UNIX AND NOT APPLE)
+IF(LINUX)
   INSTALL(FILES orxonox.desktop     DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications)
   #INSTALL(FILES orxonox.manpage.xml DESTINATION /usr/man)
   INSTALL(FILES orxonox.png         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/pixmaps)
