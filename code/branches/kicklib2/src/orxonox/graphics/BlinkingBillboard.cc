@@ -80,7 +80,7 @@ namespace orxonox
         {
             // Wrap around to avoid loosing floating point precision
             this->time_ = std::fmod(this->time_ + dt, 1.0f / this->frequency_);
-            float value = sin((2.0f * math::pi * this->time_ + this->phase_.valueRadians()) * this->frequency_);
+            float value = sin((math::twoPi * this->time_ + this->phase_.valueRadians()) * this->frequency_);
             if (this->bQuadratic_)
                 this->setScale(this->amplitude_ * square(value));
             else

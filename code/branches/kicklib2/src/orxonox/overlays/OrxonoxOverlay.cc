@@ -282,7 +282,7 @@ namespace orxonox
         if (angle < 0.0)
             angle = -angle;
         angle -= math::pi * static_cast<int>(angle / (math::pi));
-        if (angle > math::pi * 0.5)
+        if (angle > math::pi_2)
             angle = math::pi - angle;
 
         // do some mathematical fiddling for a bounding box
