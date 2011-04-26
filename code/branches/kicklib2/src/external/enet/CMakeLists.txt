@@ -28,8 +28,6 @@ SET_SOURCE_FILES(ENET_FILES
     utility.h
     win32.h
 
-    win32.c
-
 COMPILATION_BEGIN ENetCompilation.c
     callbacks.c
     compress.c
@@ -39,6 +37,7 @@ COMPILATION_BEGIN ENetCompilation.c
     peer.c
     protocol.c
     unix.c
+    win32.c
 COMPILATION_END
 )
 
