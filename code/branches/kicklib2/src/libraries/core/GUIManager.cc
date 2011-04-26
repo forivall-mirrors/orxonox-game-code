@@ -56,6 +56,9 @@ extern "C" {
 #  include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
 #  include <RendererModules/Ogre/CEGUIOgreRenderer.h>
 #  include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
+#  include <OgreCamera.h>
+#  include <OgreRenderQueueListener.h>
+#  include <OgreSceneManager.h>
 #endif
 
 #include "util/Clock.h"
@@ -108,9 +111,9 @@ namespace orxonox
     /** Class with the same memory layout as CEGUI::LuaScriptModule. <br>
         We need this to fix a problem with an uninitialised member variable
         in CEGUI < 0.7 <br>
-        Notice that "public" modifier for the otherwise private variables.
+        Notice the "public" modifier for the otherwise private variables.
     */
-    class CEGUILUA_API LuaScriptModuleWorkaround : public CEGUI::ScriptModule
+    class LuaScriptModuleWorkaround : public CEGUI::ScriptModule
     {
     public:
         LuaScriptModuleWorkaround();
@@ -123,6 +126,18 @@ namespace orxonox
         int d_errFuncIndex;
         CEGUI::String d_activeErrFuncName;
         int d_activeErrFuncIndex;
+    };
+#else
+    /// RenderQueueListener based class used to hook into the ogre rendering system
+    class RQListener : public Ogre::RenderQueueListener
+    {
+    public:
+        /// Callback from Ogre invoked before other stuff in our target queue is rendered
+        void renderQueueEnded(Ogre::uint8 id, const Ogre::String& invocation, bool& skipThisQueue)
+        {
+            if (id == Ogre::RENDER_QUEUE_SKIES_LATE)//Ogre::RENDER_QUEUE_OVERLAY)
+                CEGUI::System::getSingleton().renderGUI();
+        }
     };
 #endif
 
@@ -170,6 +185,9 @@ namespace orxonox
         resourceProvider_ = guiRenderer_->createResourceProvider();
 #else
         guiRenderer_ = &OgreRenderer::create(*GraphicsManager::getInstance().getRenderWindow());
+        // We use our own RenderQueueListener so we can draw UNDER overlays
+        guiRenderer_->setFrameControlExecutionEnabled(false);
+        rqListener_ = new RQListener();
         resourceProvider_ = &OgreRenderer::createOgreResourceProvider();
         imageCodec_ = &OgreRenderer::createOgreImageCodec();
 #endif
@@ -244,11 +262,12 @@ namespace orxonox
         delete scriptModule_;
 #else
         System::destroy();
-        delete ceguiLogger_;
         OgreRenderer::destroyOgreResourceProvider(*resourceProvider_);
         OgreRenderer::destroyOgreImageCodec(*imageCodec_);
         OgreRenderer::destroy(*guiRenderer_);
         LuaScriptModule::destroy(*scriptModule_);
+        delete ceguiLogger_;
+        delete rqListener_;
 #endif
         delete luaState_;
     }
@@ -291,13 +310,18 @@ namespace orxonox
     */
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
-        this->camera_ = camera;
 #ifdef ORXONOX_OLD_CEGUI
         if (camera == NULL)
             this->guiRenderer_->setTargetSceneManager(0);
         else
             this->guiRenderer_->setTargetSceneManager(camera->getSceneManager());
+#else
+        if (camera_ != NULL && camera_->getSceneManager() != NULL)
+            camera_->getSceneManager()->removeRenderQueueListener(rqListener_);
+        if (camera != NULL && camera->getSceneManager() != NULL)
+            camera->getSceneManager()->addRenderQueueListener(rqListener_);
 #endif
+        this->camera_ = camera;
     }
 
     /**
