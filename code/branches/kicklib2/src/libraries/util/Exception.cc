@@ -34,6 +34,7 @@
 
 #include "Exception.h"
 
+#include <cstddef>
 #include <CEGUIExceptions.h>
 #include "Debug.h"
 
