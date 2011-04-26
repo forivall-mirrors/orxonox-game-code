@@ -52,9 +52,6 @@ ELSEIF(UNIX)
   ADD_SUBDIRECTORY(linux)
 ENDIF()
 
-# Some unexplained hackery for Visual Studio 2005
-ADD_COMPILER_FLAGS("-D_WIN32_DCOM" MSVC80)
-
 # MinGW doesn't come with some required Windows headers
 IF(MINGW)
   INCLUDE_DIRECTORIES(${WMI_INCLUDE_DIR})
