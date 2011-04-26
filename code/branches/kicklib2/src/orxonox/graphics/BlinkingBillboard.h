@@ -74,7 +74,7 @@ namespace orxonox
             float frequency_;
             Degree phase_;
             bool bQuadratic_;
-            long double time_;
+            float time_;
     };
 }
 
