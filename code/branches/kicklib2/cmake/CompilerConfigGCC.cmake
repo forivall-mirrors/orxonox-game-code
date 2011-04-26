@@ -37,14 +37,6 @@ EXEC_PROGRAM(
   OUTPUT_VARIABLE GCC_VERSION
 )
 
-# GCC may not support #pragma GCC system_header correctly when using
-# templates. According to Bugzilla, it was fixed March 07 but tests
-# have confirmed that GCC 4.0.0 does not pose a problem for our cases.
-COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.0.0" _compare_result)
-IF(_compare_result LESS 0)
-  SET(GCC_NO_SYSTEM_HEADER_SUPPORT TRUE)
-ENDIF()
-
 # GCC only supports PCH in versions 3.4 and above
 INCLUDE(CompareVersionStrings)
 COMPARE_VERSION_STRINGS("${GCC_VERSION}" "3.4.0" _compare_result)
@@ -92,10 +84,6 @@ ENDIF()
 
 # We have some unconformant code, disable an optimisation feature
 ADD_COMPILER_FLAGS("-fno-strict-aliasing" CACHE)
-
-# For GCC older than version 4, do not display sign compare warnings
-# because of boost::filesystem (which creates about a hundred per include)
-ADD_COMPILER_FLAGS("-Wno-sign-compare" GCC_NO_SYSTEM_HEADER_SUPPORT CACHE)
 
 # For newer GCC (4.3 and above), don't display hundreds of annoying deprecated
 # messages. Other versions don't seem to show any such warnings at all.

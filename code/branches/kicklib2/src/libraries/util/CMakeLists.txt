@@ -39,10 +39,6 @@ COMPILATION_BEGIN StableCompilation.cc
 COMPILATION_END
 )
 
-IF(GCC_NO_SYSTEM_HEADER_SUPPORT)
-  # Get around displaying a few hundred lines of warning code
-  SET_SOURCE_FILES_PROPERTIES(MultiType.cc PROPERTIES COMPILE_FLAGS "-w")
-ENDIF()
 IF(MSVC)
   # Simply using #pragma warning(disable:4244) doesn't really disable it
   # if the warning occurs in a template in another file
