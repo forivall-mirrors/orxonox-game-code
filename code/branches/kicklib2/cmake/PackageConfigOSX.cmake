@@ -25,7 +25,7 @@
 
 INCLUDE(CheckPackageVersion)
 
-CHECK_PACKAGE_VERSION(1.0)
+CHECK_PACKAGE_VERSION(2.0)
 
 IF(NOT _INTERNAL_PACKAGE_MESSAGE)
   MESSAGE(STATUS "Using library package for the dependencies.")
