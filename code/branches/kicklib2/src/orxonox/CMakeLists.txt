@@ -67,22 +67,21 @@ ORXONOX_ADD_LIBRARY(orxonox
   PCH_FILE
     OrxonoxPrecompiledHeaders.h
   LINK_LIBRARIES
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY} # Filesystem dependency
-    ${Boost_THREAD_LIBRARY}
-    ${Boost_DATE_TIME_LIBRARY} # Thread dependency
     ${OGRE_LIBRARY}
+    ${CEGUI}
+    ${LUA5.1_LIBRARY}
+    ${CEGUI_TOLUA_LIBRARY}
     ${OPENAL_LIBRARY}
     ${ALUT_LIBRARY}
-    ${VORBISFILE_LIBRARY}
-    ${VORBIS_LIBRARY}
     ${OGG_LIBRARY}
-    ${CEGUI_TOLUA_LIBRARY}
+    ${VORBIS_LIBRARY}
+    ${VORBISFILE_LIBRARY}
     tinyxml_orxonox
     bullet_orxonox
     util
     core
     network
     tools
-  SOURCE_FILES ${ORXONOX_SRC_FILES}
+  SOURCE_FILES
+    ${ORXONOX_SRC_FILES}
 )

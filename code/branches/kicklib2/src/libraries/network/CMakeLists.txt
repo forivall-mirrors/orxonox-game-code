@@ -88,6 +88,7 @@ ORXONOX_ADD_LIBRARY(network
     #${ENET_LIBRARY}
     enet_orxonox
     ${Boost_THREAD_LIBRARY}
+    ${CEGUI_TOLUA_LIBRARY}
     util
     core
   SOURCE_FILES
