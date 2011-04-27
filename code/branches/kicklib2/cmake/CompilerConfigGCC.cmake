@@ -100,8 +100,11 @@ ELSE()
   ADD_COMPILER_FLAGS("-Wall" CACHE)
 ENDIF()
 
-# General linker flags
-SET_LINKER_FLAGS("-Wl,--no-undefined" CACHE)
+# Linker flags
+IF(LINUX)
+  # Don't allow undefined symbols in a shared library
+  SET_LINKER_FLAGS("-Wl,--no-undefined" CACHE)
+ENDIF()
 
 # Add compiler and linker flags for MinGW
 IF (MINGW)
