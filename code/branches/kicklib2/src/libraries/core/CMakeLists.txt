@@ -103,6 +103,9 @@ ORXONOX_ADD_LIBRARY(core
     ois_orxonox
     tinyxml_orxonox
     util
+  LINK_LIBS_UNIX
+    dl
+    pthread
   SOURCE_FILES
     ${CORE_SRC_FILES}
 )

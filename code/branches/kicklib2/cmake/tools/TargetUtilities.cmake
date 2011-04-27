@@ -42,6 +42,10 @@
  #
  #    Lists:
  #      LINK_LIBRARIES:    Redirects to TARGET_LINK_LIBRARIES
+ #      LINK_LIBS_LINUX:   Redirects to TARGET_LINK_LIBRARIES only on Linux
+ #      LINK_LIBS_WIN32:   Redirects to TARGET_LINK_LIBRARIES only on Windows
+ #      LINK_LIBS_APPLE:   Redirects to TARGET_LINK_LIBRARIES only on Apple
+ #      LINK_LIBS_UNIX:    Redirects to TARGET_LINK_LIBRARIES only on UNIX
  #      VERSION:           Set version to the binary
  #      SOURCE_FILES:      Source files for the target
  #      DEFINE_SYMBOL:     Sets the DEFINE_SYMBOL target property
@@ -85,7 +89,8 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
                   NO_INSTALL         NO_VERSION        ${_additional_switches})
   SET(_list_names LINK_LIBRARIES     VERSION           SOURCE_FILES
                   DEFINE_SYMBOL      TOLUA_FILES       PCH_FILE
-                  PCH_EXCLUDE        OUTPUT_NAME)
+                  PCH_EXCLUDE        OUTPUT_NAME       LINK_LIBS_LINUX
+                  LINK_LIBS_WIN32    LINK_LIBS_APPLE   LINK_LIBS_UNIX)
 
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
@@ -284,6 +289,18 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # LINK_LIBRARIES
   IF(_arg_LINK_LIBRARIES)
     TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBRARIES})
+  ENDIF()
+  IF(_arg_LINK_LIBS_LINUX AND LINUX)
+    TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_LINUX})
+  ENDIF()
+  IF(_arg_LINK_LIBS_WIN32 AND WIN32)
+    TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_WIN32})
+  ENDIF()
+  IF(_arg_LINK_LIBS_APPLE AND APPLE)
+    TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_APPLE})
+  ENDIF()
+  IF(_arg_LINK_LIBS_UNIX AND UNIX)
+    TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_UNIX})
   ENDIF()
 
   # RPATH settings for the installation

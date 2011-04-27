@@ -63,12 +63,14 @@ ORXONOX_ADD_LIBRARY(ois_orxonox
     "OIS_NONCLIENT_BUILD"
   VERSION
     1.3
+  LINK_LIBS_WIN32
+    ${DIRECTX_LIBRARIES}
+    ${WMI_LIBRARY}
+  LINK_LIBS_APPLE
+    /System/Library/Frameworks/IOKit.framework
+    /System/Library/Frameworks/Carbon.framework
+  LINK_LIBS_LINUX
+    X11
   SOURCE_FILES
     ${OIS_FILES}
 )
-
-IF(WIN32)
-  TARGET_LINK_LIBRARIES(ois_orxonox ${DIRECTX_LIBRARIES} ${WMI_LIBRARY})
-ELSEIF(APPLE)
-  TARGET_LINK_LIBRARIES(ois_orxonox "/System/Library/Frameworks/IOKit.framework" "/System/Library/Frameworks/Carbon.framework")
-ENDIF()
