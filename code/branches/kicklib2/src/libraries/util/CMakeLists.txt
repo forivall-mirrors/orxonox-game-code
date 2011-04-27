@@ -18,11 +18,6 @@
  #
 
 SET_SOURCE_FILES(UTIL_SRC_FILES
-  Exception.cc
-  Math.cc
-  MultiType.cc
-  SignalHandler.cc
-  StringUtils.cc
 COMPILATION_BEGIN StableCompilation.cc
   Clipboard.cc
   Clock.cc
@@ -37,6 +32,12 @@ COMPILATION_BEGIN StableCompilation.cc
   SmallObjectAllocator.cc
   SubString.cc
 COMPILATION_END
+
+  MultiType.cc
+  Exception.cc
+  Math.cc
+  SignalHandler.cc
+  StringUtils.cc
 )
 
 IF(MSVC)
