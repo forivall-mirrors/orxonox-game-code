@@ -101,8 +101,7 @@ ELSE()
 ENDIF()
 
 # General linker flags
-#SET_LINKER_FLAGS("-Wl,--no-undefined" CACHE)
-SET_LINKER_FLAGS("" CACHE)
+SET_LINKER_FLAGS("-Wl,--no-undefined" CACHE)
 
 # Add compiler and linker flags for MinGW
 IF (MINGW)
