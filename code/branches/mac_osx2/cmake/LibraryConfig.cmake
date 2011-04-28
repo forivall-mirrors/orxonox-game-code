@@ -61,7 +61,7 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
     )
     MESSAGE(STATUS "Extracting Mac OS X dependency package.")
     EXECUTE_PROCESS(
-      COMMAND ${CMAKE_COMMAND} -E tar -jxf ${_dep_package_current}
+      COMMAND ${CMAKE_COMMAND} -E tar -jxvf ${_dep_package_current}
       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       OUTPUT_FILE ${CMAKE_BINARY_DIR}/dep_pack_extract_log.keep_me
     )
