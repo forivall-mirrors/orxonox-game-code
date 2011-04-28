@@ -128,7 +128,7 @@ namespace orxonox
   {
 //     ClientInformation *client = ClientInformation::findClient(clientID);
 //     if(client)
-    ServerConnection::disconnectClient(clientID);
+    Connection::disconnectPeer(clientID);
   }
 
   void ServerConnection::disconnectClients()
