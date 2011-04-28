@@ -32,11 +32,14 @@ IF(NOT _INTERNAL_PACKAGE_MESSAGE)
   
   # The following shell script sets the appropriate install_names for our libraries
   # and therefore it must be run before anything else is set, dep-package-wise.
-  EXECUTE_PROCESS(
-    COMMAND ${DEPENDENCY_PACKAGE_DIR}/install_dependencies.sh
-    WORKING_DIRECTORY ${DEPENDENCY_PACKAGE_DIR}
-    OUTPUT_FILE ${CMAKE_BINARY_DIR}/dep_pack_install_log.keep_me 
-  )
+  IF(NOT EXISTS ${CMAKE_BINARY_DIR}/dep_pack_install_log.keep_me)
+    MESSAGE(STATUS "Installing Mac OS X dependency package to current dir.")
+    EXECUTE_PROCESS(
+      COMMAND ${DEPENDENCY_PACKAGE_DIR}/install_dependencies.sh
+      WORKING_DIRECTORY ${DEPENDENCY_PACKAGE_DIR}
+      OUTPUT_FILE ${CMAKE_BINARY_DIR}/dep_pack_install_log.keep_me 
+    )
+  ENDIF()
   SET(_INTERNAL_PACKAGE_MESSAGE 1 CACHE INTERNAL "Do not edit!" FORCE)
 ENDIF()
 
