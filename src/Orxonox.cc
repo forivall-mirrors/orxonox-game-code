@@ -74,7 +74,11 @@ int main(int argc, char** argv)
         for (int i = firstArgument; i < argc; ++i)
             strCmdLine = strCmdLine + argv[i] + ' ';
 #endif
-
+        
+        // Use these statements to make Orxonox go crashycrash
+        //int* crashInt = NULL;
+        //COUT(0) << *crashInt << std::endl;
+             
         return orxonox::main(strCmdLine);
     }
     catch (...)

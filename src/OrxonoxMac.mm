@@ -27,6 +27,7 @@
  */
 
 #import "OrxonoxMac.h"
+#import <cmcrashreporter/CMCrashReporter.h>
 
 static int argc_s = 0;
 static char** argv_s = 0;
@@ -45,6 +46,9 @@ int main(int argc, char** argv)
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+    // This call initializes the crash reporter, which sends crash reports to the developers
+    [CMCrashReporter check];
+    
     exit(main_mac(argc_s, argv_s));
 }
 
