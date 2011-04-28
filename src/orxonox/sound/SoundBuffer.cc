@@ -29,7 +29,7 @@
 
 #include "SoundBuffer.h"
 
-#include <AL/alut.h>
+#include <alut.h>
 #include <vorbis/vorbisfile.h>
 
 #include "util/Exception.h"

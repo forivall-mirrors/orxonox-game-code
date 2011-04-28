@@ -27,11 +27,9 @@
 
 #################### Options ####################
 
-# Use, i.e. don't skip the full RPATH for the build tree
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-
 # Global switch to disable Precompiled Header Files
-IF(PCH_COMPILER_SUPPORT)
+# Note: PCH temporarily disabled on Mac because of severe problems
+IF(PCH_COMPILER_SUPPORT AND NOT APPLE)
   OPTION(PCH_ENABLE "Global PCH switch" TRUE)
 ENDIF()
 
@@ -52,20 +50,11 @@ IF(NOT ORXONOX_BIG_ENDIAN)
   SET(ORXONOX_LITTLE_ENDIAN TRUE)
 ENDIF()
 
-# 32/64 bit system check
-IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
-  SET(ORXONOX_ARCH_64 TRUE)
-ELSE()
-  SET(ORXONOX_ARCH_32 TRUE)
-ENDIF()
-
 # Platforms
 SET(ORXONOX_PLATFORM_WINDOWS ${WIN32})
-SET(ORXONOX_PLATFORM_APPLE ${APPLE})
-SET(ORXONOX_PLATFORM_UNIX ${UNIX})
-IF(UNIX AND NOT APPLE)
-  SET(ORXONOX_PLATFORM_LINUX TRUE)
-ENDIF()
+SET(ORXONOX_PLATFORM_APPLE   ${APPLE})
+SET(ORXONOX_PLATFORM_UNIX    ${UNIX})
+SET(ORXONOX_PLATFORM_LINUX   ${LINUX})
 
 # Check __forceinline
 IF(MSVC)
@@ -74,9 +63,13 @@ IF(MSVC)
   CHECK_CXX_SOURCE_COMPILES("${_source}" HAVE_FORCEINLINE)
 ENDIF(MSVC)
 
-# Check iso646.h include (literal operators)
+# Check some non standard system includes
 INCLUDE(CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(iso646.h HAVE_ISO646_H)
+CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)
+
+# Part of a woraround for OS X warnings. See OrxonoxConfig.h.in
+SET(ORX_HAVE_STDINT_H ${HAVE_STDINT_H})
 
 IF(MSVC)
   # Check whether we can use Visual Leak Detector
@@ -105,8 +98,19 @@ CONFIGURE_FILE(OrxonoxConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/OrxonoxConfig.h)
 CONFIGURE_FILE(SpecialConfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/SpecialConfig.h)
 
 SET(ORXONOX_CONFIG_FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/OrxonoxConfig.h
   ${CMAKE_CURRENT_SOURCE_DIR}/OrxonoxConfig.h.in
-  ${CMAKE_CURRENT_BINARY_DIR}/SpecialConfig.h
   ${CMAKE_CURRENT_SOURCE_DIR}/SpecialConfig.h.in
 )
+SET(ORXONOX_CONFIG_FILES_GENERATED
+  ${CMAKE_CURRENT_BINARY_DIR}/OrxonoxConfig.h
+  ${CMAKE_CURRENT_BINARY_DIR}/SpecialConfig.h
+)
+
+# Make special target including the configured header files for Visual Studio
+IF(MSVC)
+  ADD_CUSTOM_TARGET(config
+    SOURCES
+      ${ORXONOX_CONFIG_FILES}
+      ${ORXONOX_CONFIG_FILES_GENERATED}
+  )
+ENDIF()

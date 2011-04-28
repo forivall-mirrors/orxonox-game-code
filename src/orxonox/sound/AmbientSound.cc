@@ -41,7 +41,7 @@ namespace orxonox
         RegisterObject(AmbientSound);
 
         // Ambient sounds always fade in
-        this->setVolume(0);
+        this->setVolume(0.0f);
     }
 
     void AmbientSound::preDestroy()

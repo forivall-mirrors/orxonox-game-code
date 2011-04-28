@@ -543,22 +543,22 @@ namespace orxonox
 
             if (distance > 0.04f && distance <= 0.59f * arrowsSize_ / 2.0f )
             {
-                this->arrowsOverlay1_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * math::pi) * 360.0f));
+                this->arrowsOverlay1_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / math::twoPi * 360.0f));
                 this->arrowsOverlay1_->show();
             }
             else if (distance > 0.59f * arrowsSize_ / 2.0f && distance <= 0.77f * arrowsSize_ / 2.0f )
             {
-                this->arrowsOverlay2_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * math::pi) * 360.0f));
+                this->arrowsOverlay2_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / math::twoPi * 360.0f));
                 this->arrowsOverlay2_->show();
             }
             else if (distance > 0.77f * arrowsSize_ / 2.0f && distance <= arrowsSize_ / 2.0f)
             {
-                this->arrowsOverlay3_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * math::pi) * 360.0f));
+                this->arrowsOverlay3_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / math::twoPi * 360.0f));
                 this->arrowsOverlay3_->show();
             }
             else if (distance > arrowsSize_ / 2.0f)
             {
-                this->arrowsOverlay4_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / (2.0f * math::pi) * 360.0f));
+                this->arrowsOverlay4_->setRotation(Degree(-90 + -1.0f * atan2(static_cast<float>(this->currentPitch_)/2*-1, static_cast<float>(this->currentYaw_)/2*-1) / math::twoPi * 360.0f));
                 this->arrowsOverlay4_->show();
             }
         }

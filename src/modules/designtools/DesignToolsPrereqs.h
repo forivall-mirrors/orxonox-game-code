@@ -52,10 +52,13 @@
 #      define _DesignToolsExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _DesignToolsPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _DesignToolsExport  __attribute__ ((visibility("default")))
+#  define _DesignToolsPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _DesignToolsExport
+#  define _DesignToolsPrivate
 #endif
 
 //-----------------------------------------------------------------------

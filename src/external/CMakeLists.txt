@@ -20,21 +20,12 @@
 ################ Sub Directories ################
 
 ADD_SUBDIRECTORY(tolua)
-
-# Include CEGUILua if not requested otherwise
-IF(CEGUILUA_USE_INTERNAL_LIBRARY)
-  IF(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ceguilua/ceguilua-${CEGUI_VERSION})
-    MESSAGE(FATAL_ERROR "CEGUILua version not found in src folder. Update list of supported versions in LibraryConfig.cmake!")
-  ENDIF()
-
-  ADD_SUBDIRECTORY(ceguilua)
-  SET(CEGUILUA_LIBRARY ${CEGUILUA_LIBRARY} PARENT_SCOPE)
-ENDIF()
-
 ADD_SUBDIRECTORY(bullet)
 ADD_SUBDIRECTORY(cpptcl)
 ADD_SUBDIRECTORY(enet)
 ADD_SUBDIRECTORY(loki)
-ADD_SUBDIRECTORY(ogreceguirenderer)
+IF(CEGUI_OGRE_RENDERER_BUILD_REQUIRED)
+  ADD_SUBDIRECTORY(ogreceguirenderer)
+ENDIF()
 ADD_SUBDIRECTORY(ois)
 ADD_SUBDIRECTORY(tinyxml)

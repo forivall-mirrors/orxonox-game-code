@@ -78,11 +78,13 @@ namespace orxonox
 
         if (this->isActive())
         {
-            this->time_ += dt;
+            // Wrap around to avoid loosing floating point precision
+            this->time_ = std::fmod(this->time_ + dt, 1.0f / this->frequency_);
+            float value = sin((math::twoPi * this->time_ + this->phase_.valueRadians()) * this->frequency_);
             if (this->bQuadratic_)
-                this->setScale(this->amplitude_ * static_cast<float>(square(sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_))));
+                this->setScale(this->amplitude_ * square(value));
             else
-                this->setScale(this->amplitude_ * static_cast<float>(fabs(sin((6.2831853 * this->time_ + this->phase_.valueRadians()) * this->frequency_))));
+                this->setScale(this->amplitude_ * std::abs(value));
         }
     }
 }

@@ -36,6 +36,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <cstdio>
 
 #include "Debug.h"
 

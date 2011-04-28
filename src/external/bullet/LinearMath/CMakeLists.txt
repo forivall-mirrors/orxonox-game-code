@@ -1,33 +1,35 @@
 ADD_SOURCE_FILES(BULLET_FILES
 
 COMPILATION_BEGIN BulletLinearMathCompilation.cpp
-		btConvexHull.cpp
-		btQuickprof.cpp
-		btGeometryUtil.cpp
-		btAlignedAllocator.cpp
+	btAlignedAllocator.cpp
+	btConvexHull.cpp
+	btGeometryUtil.cpp
+	btQuickprof.cpp
+	btSerializer.cpp
 COMPILATION_END
 
-		# Headers
-		btAlignedObjectArray.h
-		btList.h
-		btPoolAllocator.h
-		btRandom.h
-		btVector3.h
-		btDefaultMotionState.h
-		btMatrix3x3.h
-		btQuadWord.h
-		btHashMap.h
-		btScalar.h
-		btAabbUtil2.h
-		btConvexHull.h
-		btMinMax.h
-		btQuaternion.h
-		btStackAlloc.h
-		btGeometryUtil.h
-		btMotionState.h
-		btTransform.h
-		btAlignedAllocator.h
-		btIDebugDraw.h
-		btQuickprof.h
-		btTransformUtil.h
+	# Headers
+	btAabbUtil2.h
+	btAlignedAllocator.h
+	btAlignedObjectArray.h
+	btConvexHull.h
+	btDefaultMotionState.h
+	btGeometryUtil.h
+	btHashMap.h
+	btIDebugDraw.h
+	btList.h
+	btMatrix3x3.h
+	btMinMax.h
+	btMotionState.h
+	btPoolAllocator.h
+	btQuadWord.h
+	btQuaternion.h
+	btQuickprof.h
+	btRandom.h
+	btScalar.h
+	btSerializer.h
+	btStackAlloc.h
+	btTransform.h
+	btTransformUtil.h
+	btVector3.h
 )

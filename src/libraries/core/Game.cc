@@ -458,7 +458,7 @@ namespace orxonox
         if (stateStrings.empty())
             ThrowException(GameState, "Emtpy GameState hierarchy provided, terminating.");
         // Add element with large identation to detect the last with just an iterator
-        stateStrings.push_back(std::make_pair("", -1));
+        stateStrings.push_back(std::make_pair(std::string(), -1));
 
         // Parse elements recursively
         std::vector<std::pair<std::string, int> >::const_iterator begin = stateStrings.begin();

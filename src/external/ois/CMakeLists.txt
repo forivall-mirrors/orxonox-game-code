@@ -30,10 +30,11 @@ SET_SOURCE_FILES(OIS_FILES
   OISJoyStick.h
   OISKeyboard.h
   OISMouse.h
+  OISMultiTouch.h
   OISObject.h
   OISPrereqs.h
 
-COMPILATION_BEGIN OISCompilation.cpp
+#COMPILATION_BEGIN OISCompilation.cpp
   OISEffect.cpp
   OISException.cpp
   OISForceFeedback.cpp
@@ -41,7 +42,7 @@ COMPILATION_BEGIN OISCompilation.cpp
   OISJoyStick.cpp
   OISKeyboard.cpp
   OISObject.cpp
-COMPILATION_END
+#COMPILATION_END
 )
 IF(WIN32)
   ADD_SUBDIRECTORY(win32)
@@ -51,18 +52,25 @@ ELSEIF(UNIX)
   ADD_SUBDIRECTORY(linux)
 ENDIF()
 
-INCLUDE_DIRECTORIES(.)
+# MinGW doesn't come with some required Windows headers
+IF(MINGW)
+  INCLUDE_DIRECTORIES(${WMI_INCLUDE_DIR})
+ENDIF()
 
 ORXONOX_ADD_LIBRARY(ois_orxonox
   ORXONOX_EXTERNAL
   DEFINE_SYMBOL
     "OIS_NONCLIENT_BUILD"
   VERSION
-    1.2
+    1.3
+  LINK_LIBS_WIN32
+    ${DIRECTX_LIBRARIES}
+    ${WMI_LIBRARY}
+  LINK_LIBS_APPLE
+    /System/Library/Frameworks/IOKit.framework
+    /System/Library/Frameworks/Carbon.framework
+  LINK_LIBS_LINUX
+    X11
   SOURCE_FILES
     ${OIS_FILES}
 )
-
-IF(WIN32)
-  TARGET_LINK_LIBRARIES(ois_orxonox ${DIRECTX_LIBRARIES})
-ENDIF()

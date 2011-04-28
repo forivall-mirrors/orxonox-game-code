@@ -112,16 +112,6 @@ namespace orxonox // tolua_export
     private:
         shared_ptr<ResourceInfo> getFileInfo(const std::string& filename);
 
-#if LUA_VERSION_NUM != 501
-        struct LoadS
-        {
-            const char* s;
-            size_t size;
-        };
-
-        static const char * lua_Chunkreader(lua_State *L, void *data, size_t *size);
-#endif
-
         std::stringstream output_;
         lua_State* luaState_;
         bool bIsRunning_;

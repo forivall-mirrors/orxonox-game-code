@@ -28,12 +28,13 @@
 
 #include "PawnManager.h"
 
+#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {
-    PawnManager* PawnManager::singletonPtr_s = 0;
+    ManageScopedSingleton(PawnManager, ScopeID::Root, false);
 
     PawnManager::PawnManager()
     {
@@ -42,26 +43,19 @@ namespace orxonox
 
     PawnManager::~PawnManager()
     {
+        // Be sure to delete all the pawns
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); )
+            (it++)->destroy();
     }
 
-    void PawnManager::touch()
+    void PawnManager::preUpdate(const Clock& time)
     {
-        if (!PawnManager::singletonPtr_s)
-            new PawnManager();
-    }
-
-    void PawnManager::tick(float dt)
-    {
-        unsigned int count = 0;
-        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); ++count)
+        for (ObjectList<Pawn>::iterator it = ObjectList<Pawn>::begin(); it != ObjectList<Pawn>::end(); )
         {
             if (!it->isAlive())
                 (it++)->destroy();
             else
                 ++it;
         }
-
-        if (count == 0)
-            this->destroy();
     }
 }

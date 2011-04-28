@@ -34,7 +34,6 @@
 #include "ArgumentCompletionFunctions.h"
 
 #include <map>
-#include <boost/version.hpp>
 #include <boost/filesystem.hpp>
 
 #include "util/Convert.h"
@@ -46,11 +45,15 @@
 #include "ConsoleCommand.h"
 #include "TclThreadManager.h"
 
-// Boost 1.36 has some issues with deprecated functions that have been omitted
-#if (BOOST_VERSION == 103600)
-#  define BOOST_LEAF_FUNCTION filename
+// Differentiate Boost Filesystem v2 and v3
+#if (BOOST_FILESYSTEM_VERSION < 3)
+#  define BF_LEAF leaf
+#  define BF_GENERIC_STRING string
+#  define BF_DICTIONARY_ENTRY_NAME string
 #else
-#  define BOOST_LEAF_FUNCTION leaf
+#  define BF_LEAF path().filename().string
+#  define BF_GENERIC_STRING generic_string
+#  define BF_DICTIONARY_ENTRY_NAME path().string
 #endif
 
 namespace orxonox
@@ -244,7 +247,7 @@ namespace orxonox
 #ifdef ORXONOX_PLATFORM_WINDOWS
                 else
                 {
-                    const std::string& dir = startdirectory.string();
+                    const std::string& dir = startdirectory.BF_GENERIC_STRING();
                     if (dir.size() > 0 && dir[dir.size() - 1] == ':')
                         startdirectory = dir + '/';
                 }
@@ -256,9 +259,9 @@ namespace orxonox
                 while (file != end)
                 {
                     if (boost::filesystem::is_directory(*file))
-                        dirlist.push_back(ArgumentCompletionListElement(file->string() + '/', getLowercase(file->string()) + '/', file->BOOST_LEAF_FUNCTION() + '/'));
+                        dirlist.push_back(ArgumentCompletionListElement(file->BF_DICTIONARY_ENTRY_NAME() + '/', getLowercase(file->BF_DICTIONARY_ENTRY_NAME()) + '/', file->BF_LEAF() + '/'));
                     else
-                        filelist.push_back(ArgumentCompletionListElement(file->string(), getLowercase(file->string()), file->BOOST_LEAF_FUNCTION()));
+                        filelist.push_back(ArgumentCompletionListElement(file->BF_DICTIONARY_ENTRY_NAME(), getLowercase(file->BF_DICTIONARY_ENTRY_NAME()), file->BF_LEAF()));
                     ++file;
                 }
             }

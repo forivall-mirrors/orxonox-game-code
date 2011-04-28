@@ -32,7 +32,6 @@
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
-#include <boost/version.hpp>
 #include <boost/filesystem.hpp>
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
@@ -55,11 +54,15 @@
 #include "util/Exception.h"
 #include "CommandLineParser.h"
 
-// Boost 1.36 has some issues with deprecated functions that have been omitted
-#if (BOOST_VERSION == 103600)
-#  define BOOST_LEAF_FUNCTION filename
+// Differentiate Boost Filesystem v2 and v3
+#if (BOOST_FILESYSTEM_VERSION < 3)
+#  define BF_LEAF leaf
+#  define BF_GENERIC_STRING string
+#  define BF_NATIVE_STRING file_string
 #else
-#  define BOOST_LEAF_FUNCTION leaf
+#  define BF_LEAF path().filename().string
+#  define BF_GENERIC_STRING generic_string
+#  define BF_NATIVE_STRING string
 #endif
 
 namespace orxonox
@@ -94,7 +97,7 @@ namespace orxonox
 
 #elif defined(ORXONOX_PLATFORM_APPLE)
         char buffer[1024];
-        unsigned long path_len = 1023;
+        uint32_t path_len = 1023;
         if (_NSGetExecutablePath(buffer, &path_len))
             ThrowException(General, "Could not retrieve executable path.");
 
@@ -124,10 +127,8 @@ namespace orxonox
         buffer[ret] = 0;
 #endif
 
-        executablePath_ = bf::path(buffer);
-#ifndef ORXONOX_PLATFORM_APPLE
-        executablePath_ = executablePath_.branch_path(); // remove executable name
-#endif
+        // Remove executable filename
+        executablePath_ = bf::path(buffer).branch_path();
 
         /////////////////////
         // SET MODULE PATH //
@@ -205,11 +206,11 @@ namespace orxonox
             dataPath_  = specialConfig::dataInstallDirectory;
 
             // Get user directory
-#  ifdef ORXONOX_PLATFORM_UNIX /* Apple? */
+#ifdef ORXONOX_PLATFORM_UNIX
             char* userDataPathPtr(getenv("HOME"));
-#  else
+#else
             char* userDataPathPtr(getenv("APPDATA"));
-#  endif
+#endif
             if (userDataPathPtr == NULL)
                 ThrowException(General, "Could not retrieve user data path.");
             bf::path userDataPath(userDataPathPtr);
@@ -232,8 +233,8 @@ namespace orxonox
 
         // Create directories to avoid problems when opening files in non existent folders.
         std::vector<std::pair<bf::path, std::string> > directories;
-        directories.push_back(std::make_pair(bf::path(configPath_), "config"));
-        directories.push_back(std::make_pair(bf::path(logPath_), "log"));
+        directories.push_back(std::make_pair(bf::path(configPath_), std::string("config")));
+        directories.push_back(std::make_pair(bf::path(logPath_), std::string("log")));
 
         for (std::vector<std::pair<bf::path, std::string> >::iterator it = directories.begin();
             it != directories.end(); ++it)
@@ -241,7 +242,7 @@ namespace orxonox
             if (bf::exists(it->first) && !bf::is_directory(it->first))
             {
                 ThrowException(General, std::string("The ") + it->second + " directory has been preoccupied by a file! \
-                                         Please remove " + it->first.string());
+                                         Please remove " + it->first.BF_GENERIC_STRING());
             }
             if (bf::create_directories(it->first)) // function may not return true at all (bug?)
             {
@@ -258,9 +259,14 @@ namespace orxonox
         const std::string& moduleextension = specialConfig::moduleExtension;
         size_t moduleextensionlength = moduleextension.size();
 
+#ifdef ORXONOX_PLATFORM_WINDOWS
         // Add that path to the PATH variable in case a module depends on another one
-        std::string pathVariable(getenv("PATH"));
-        putenv(const_cast<char*>(("PATH=" + pathVariable + ';' + modulePath_.string()).c_str()));
+        const char* currentPATH = getenv("PATH");
+        std::string newPATH = modulePath_.BF_NATIVE_STRING();
+        if (currentPATH != NULL)
+            newPATH = std::string(currentPATH) + ';' + newPATH;
+        putenv(const_cast<char*>(("PATH=" + newPATH).c_str()));
+#endif
 
         // Make sure the path exists, otherwise don't load modules
         if (!boost::filesystem::exists(modulePath_))
@@ -272,16 +278,16 @@ namespace orxonox
         // Iterate through all files
         while (file != end)
         {
-            const std::string& filename = file->BOOST_LEAF_FUNCTION();
+            std::string filename = file->BF_LEAF();
 
-            // Check if the file ends with the exension in question
+            // Check if the file ends with the extension in question
             if (filename.size() > moduleextensionlength)
             {
                 if (filename.substr(filename.size() - moduleextensionlength) == moduleextension)
                 {
                     // We've found a helper file
                     const std::string& library = filename.substr(0, filename.size() - moduleextensionlength);
-                    modulePaths.push_back((modulePath_ / library).file_string());
+                    modulePaths.push_back(getModulePathString() + library);
                 }
             }
             ++file;
@@ -292,36 +298,36 @@ namespace orxonox
 
     /*static*/ std::string PathConfig::getRootPathString()
     {
-        return getInstance().rootPath_.string() + '/';
+        return getInstance().rootPath_.BF_GENERIC_STRING() + '/';
     }
 
     /*static*/ std::string PathConfig::getExecutablePathString()
     {
-        return getInstance().executablePath_.string() + '/';
+        return getInstance().executablePath_.BF_GENERIC_STRING() + '/';
     }
 
     /*static*/ std::string PathConfig::getDataPathString()
     {
-        return getInstance().dataPath_.string() + '/';
+        return getInstance().dataPath_.BF_GENERIC_STRING() + '/';
     }
 
     /*static*/ std::string PathConfig::getExternalDataPathString()
     {
-        return getInstance().externalDataPath_.string() + '/';
+        return getInstance().externalDataPath_.BF_GENERIC_STRING() + '/';
     }
 
     /*static*/ std::string PathConfig::getConfigPathString()
     {
-        return getInstance().configPath_.string() + '/';
+        return getInstance().configPath_.BF_GENERIC_STRING() + '/';
     }
 
     /*static*/ std::string PathConfig::getLogPathString()
     {
-        return getInstance().logPath_.string() + '/';
+        return getInstance().logPath_.BF_GENERIC_STRING() + '/';
     }
 
     /*static*/ std::string PathConfig::getModulePathString()
     {
-        return getInstance().modulePath_.string() + '/';
+        return getInstance().modulePath_.BF_GENERIC_STRING() + '/';
     }
 }

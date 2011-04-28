@@ -18,31 +18,28 @@
  #
 
 SET_SOURCE_FILES(UTIL_SRC_FILES
-  Clock.cc
-  Exception.cc
-  ExprParser.cc
-  Math.cc
-  MultiType.cc
-  Scope.cc
-  StringUtils.cc
 COMPILATION_BEGIN StableCompilation.cc
   Clipboard.cc
+  Clock.cc
   Convert.cc
   CRC32.cc
+  ExprParser.cc
   OutputHandler.cc
+  Scope.cc
   ScopedSingletonManager.cc
   SharedPtr.cc
-  SignalHandler.cc
   Sleep.cc
   SmallObjectAllocator.cc
   SubString.cc
 COMPILATION_END
+
+  MultiType.cc
+  Exception.cc
+  Math.cc
+  SignalHandler.cc
+  StringUtils.cc
 )
 
-IF(GCC_NO_SYSTEM_HEADER_SUPPORT)
-  # Get around displaying a few hundred lines of warning code
-  SET_SOURCE_FILES_PROPERTIES(MultiType.cc PROPERTIES COMPILE_FLAGS "-w")
-ENDIF()
 IF(MSVC)
   # Simply using #pragma warning(disable:4244) doesn't really disable it
   # if the warning occurs in a template in another file

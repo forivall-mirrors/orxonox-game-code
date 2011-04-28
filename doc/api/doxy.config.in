@@ -625,9 +625,6 @@ RECURSIVE              = YES
 
 EXCLUDE                = @CMAKE_SOURCE_DIR@/src/external/bullet/ \
                          @CMAKE_SOURCE_DIR@/src/external/cpptcl/ \
-                         @CMAKE_SOURCE_DIR@/src/external/ceguilua/ceguilua-0.5.0 \
-                         @CMAKE_SOURCE_DIR@/src/external/ceguilua/ceguilua-0.6.0 \
-                         @CMAKE_SOURCE_DIR@/src/external/ceguilua/ceguilua-0.6.1 \
                          @CMAKE_SOURCE_DIR@/src/libraries/core/command/IOConsoleWindows.h \
                          @CMAKE_SOURCE_DIR@/src/libraries/core/command/IOConsoleWindows.cc \
                          @CMAKE_SOURCE_DIR@/src/libraries/tools/bsp \

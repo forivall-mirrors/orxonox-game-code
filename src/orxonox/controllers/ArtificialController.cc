@@ -846,8 +846,8 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                 float speed = this->getControllableEntity()->getVelocity().length();
                 Vector3 distanceCurrent = this->targetPosition_ - this->getControllableEntity()->getPosition();
                 Vector3 distanceNew = it->getPosition() - this->getControllableEntity()->getPosition();
-                if (!this->target_ || it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) * (1.5f + acos((this->getControllableEntity()->getOrientation() * WorldEntity::FRONT).dotProduct(distanceNew) / speed / distanceNew.length()) / (2 * math::pi))
-                        < this->targetPosition_.squaredDistance(this->getControllableEntity()->getPosition()) * (1.5f + acos((this->getControllableEntity()->getOrientation() * WorldEntity::FRONT).dotProduct(distanceCurrent) / speed / distanceCurrent.length()) / (2 * math::pi)) + rnd(-250, 250))
+                if (!this->target_ || it->getPosition().squaredDistance(this->getControllableEntity()->getPosition()) * (1.5f + acos((this->getControllableEntity()->getOrientation() * WorldEntity::FRONT).dotProduct(distanceNew) / speed / distanceNew.length()) / math::twoPi)
+                        < this->targetPosition_.squaredDistance(this->getControllableEntity()->getPosition()) * (1.5f + acos((this->getControllableEntity()->getOrientation() * WorldEntity::FRONT).dotProduct(distanceCurrent) / speed / distanceCurrent.length()) / math::twoPi) + rnd(-250, 250))
                 {
                     this->target_ = (*it);
                     this->targetPosition_ = it->getPosition();

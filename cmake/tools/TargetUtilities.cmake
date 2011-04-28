@@ -42,6 +42,10 @@
  #
  #    Lists:
  #      LINK_LIBRARIES:    Redirects to TARGET_LINK_LIBRARIES
+ #      LINK_LIBS_LINUX:   Redirects to TARGET_LINK_LIBRARIES only on Linux
+ #      LINK_LIBS_WIN32:   Redirects to TARGET_LINK_LIBRARIES only on Windows
+ #      LINK_LIBS_APPLE:   Redirects to TARGET_LINK_LIBRARIES only on Apple
+ #      LINK_LIBS_UNIX:    Redirects to TARGET_LINK_LIBRARIES only on UNIX
  #      VERSION:           Set version to the binary
  #      SOURCE_FILES:      Source files for the target
  #      DEFINE_SYMBOL:     Sets the DEFINE_SYMBOL target property
@@ -52,7 +56,7 @@
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
- #    ORXONOX_DEFAULT_LINK, ORXONOX_CONFIG_FILES
+ #    ORXONOX_DEFAULT_LINK
  #  Parameters:
  #    _target_name, ARGN for the macro arguments
  #
@@ -85,7 +89,8 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
                   NO_INSTALL         NO_VERSION        ${_additional_switches})
   SET(_list_names LINK_LIBRARIES     VERSION           SOURCE_FILES
                   DEFINE_SYMBOL      TOLUA_FILES       PCH_FILE
-                  PCH_EXCLUDE        OUTPUT_NAME)
+                  PCH_EXCLUDE        OUTPUT_NAME       LINK_LIBS_LINUX
+                  LINK_LIBS_WIN32    LINK_LIBS_APPLE   LINK_LIBS_UNIX)
 
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
@@ -103,10 +108,10 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
       IF(NOT _compilation_file)
         MESSAGE(FATAL_ERROR "No name provided for source file compilation")
       ENDIF()
-      IF(NOT _compilation_include_string)
-        MESSAGE(STATUS "Warning: Empty source file compilation!")
-      ENDIF()
       IF(NOT DISABLE_COMPILATIONS)
+        IF(NOT _compilation_include_string)
+          MESSAGE(STATUS "Warning: Empty source file compilation!")
+        ENDIF()
         IF(EXISTS ${_compilation_file})
           FILE(READ ${_compilation_file} _include_string_file)
         ENDIF()
@@ -168,6 +173,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   IF(_arg_TOLUA_FILES)
     GENERATE_TOLUA_BINDINGS(${_target_name_capitalised} _${_target_name}_files
                             INPUTFILES ${_arg_TOLUA_FILES})
+    # Workaround for XCode: The folder where the bind files are written to has
+    # to be present beforehand.
+    IF(CMAKE_CONFIGURATION_TYPES)
+      FOREACH(_dir ${CMAKE_CONFIGURATION_TYPES})
+        FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_dir})
+      ENDFOREACH(_dir)
+    ENDIF()
   ENDIF()
 
   # First part (pre target) of precompiled header files
@@ -191,13 +203,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     GENERATE_SOURCE_GROUPS(${_${_target_name}_files})
 
     IF(NOT _arg_ORXONOX_EXTERNAL)
-      # Move the prereqs.h file to the config section
+      # Move the ...Prereqs.h and the PCH files to the 'Config' section
       IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_target_name_capitalised}Prereqs.h)
         SOURCE_GROUP("Config" FILES ${_target_name_capitalised}Prereqs.h)
       ENDIF()
-      # Add config files to the config section
-      LIST(APPEND _${_target_name}_files ${ORXONOX_CONFIG_FILES})
-      SOURCE_GROUP("Config" FILES ${ORXONOX_CONFIG_FILES})
+      IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_arg_PCH_FILE})
+        SOURCE_GROUP("Config" FILES ${CMAKE_CURRENT_SOURCE_DIR}/${_arg_PCH_FILE})
+      ENDIF()
     ENDIF()
   ENDIF()
 
@@ -216,12 +228,13 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # No warnings needed from third party libraries
   IF(_arg_ORXONOX_EXTERNAL)
     REMOVE_COMPILER_FLAGS("-W3 -W4" MSVC)
-    ADD_COMPILER_FLAGS("-w")
+    ADD_COMPILER_FLAGS("-w" NOT MSVC)
+    ADD_COMPILER_FLAGS("-W0" MSVC)
   ENDIF()
 
   # Don't compile header files
   FOREACH(_file ${_${_target_name}_files})
-    IF(NOT _file MATCHES "\\.(c|cc|cpp|cxx)$")
+    IF(NOT _file MATCHES "\\.(c|cc|cpp|cxx|mm)$")
       SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
     ENDIF()
   ENDFOREACH(_file)
@@ -277,6 +290,30 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   IF(_arg_LINK_LIBRARIES)
     TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBRARIES})
   ENDIF()
+  IF(_arg_LINK_LIBS_LINUX AND LINUX)
+    TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_LINUX})
+  ENDIF()
+  IF(_arg_LINK_LIBS_WIN32 AND WIN32)
+    TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_WIN32})
+  ENDIF()
+  IF(_arg_LINK_LIBS_APPLE AND APPLE)
+    TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_APPLE})
+  ENDIF()
+  IF(_arg_LINK_LIBS_UNIX AND UNIX)
+    TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_UNIX})
+  ENDIF()
+
+  # RPATH settings for the installation
+  IF("${_target_type}" STREQUAL "LIBRARY")
+    IF(_arg_MODULE)
+      SET(_rpath "${MODULE_RPATH}")
+    ELSE()
+      SET(_rpath "${LIBRARY_RPATH}")
+    ENDIF()
+  ELSE()
+    SET(_rpath "${RUNTIME_RPATH}")
+  ENDIF()
+  SET_TARGET_PROPERTIES(${_target_name} PROPERTIES INSTALL_RPATH "${_rpath}")
 
   # DEFINE_SYMBOL
   IF(_arg_DEFINE_SYMBOL)

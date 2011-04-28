@@ -29,13 +29,12 @@
 
 #include "GraphicsManager.h"
 
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 #include <boost/filesystem.hpp>
 #include <boost/shared_array.hpp>
 
-#include <OgreArchiveFactory.h>
-#include <OgreArchiveManager.h>
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
 #include <OgreLogManager.h>
@@ -59,7 +58,6 @@
 #include "GameMode.h"
 #include "GUIManager.h"
 #include "Loader.h"
-#include "MemoryArchive.h"
 #include "PathConfig.h"
 #include "ViewportEventListener.h"
 #include "WindowEventListener.h"
@@ -101,9 +99,6 @@ namespace orxonox
     */
     GraphicsManager::GraphicsManager(bool bLoadRenderer)
         : ogreWindowEventListener_(new OgreWindowEventListener())
-#if OGRE_VERSION < 0x010600
-        , memoryArchiveFactory_(new MemoryArchiveFactory())
-#endif
         , renderWindow_(0)
         , viewport_(0)
         , lastFrameStartTime_(0.0f)
@@ -125,12 +120,11 @@ namespace orxonox
 
         // Only for development runs
         if (PathConfig::isDevelopmentRun())
-        {
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem");
-            extResources_.reset(new XMLFile("resources.oxr"));
-            extResources_->setLuaSupport(false);
-            Loader::open(extResources_.get());
-        }
+
+        extResources_.reset(new XMLFile("resources.oxr"));
+        extResources_->setLuaSupport(false);
+        Loader::open(extResources_.get());
 
         if (bLoadRenderer)
         {
@@ -155,16 +149,13 @@ namespace orxonox
 
         // Undeclare the resources
         Loader::unload(resources_.get());
-        if (PathConfig::isDevelopmentRun())
-            Loader::unload(extResources_.get());
+        Loader::unload(extResources_.get());
     }
 
     void GraphicsManager::setConfigValues()
     {
         SetConfigValue(ogreConfigFile_,  "ogre.cfg")
             .description("Location of the Ogre config file");
-        SetConfigValue(ogrePluginsDirectory_, specialConfig::ogrePluginsDirectory)
-            .description("Folder where the Ogre plugins are located.");
         SetConfigValue(ogrePlugins_, specialConfig::ogrePlugins)
             .description("Comma separated list of all plugins to load.");
         SetConfigValue(ogreLogFile_,     "ogre.log")
@@ -194,54 +185,6 @@ namespace orxonox
         this->loadOgrePlugins();
 
         this->loadRenderer();
-
-#if OGRE_VERSION < 0x010600
-        // WORKAROUND: There is an incompatibility for particle scripts when trying
-        // to support both Ogre 1.4 and 1.6. The hacky solution is to create
-        // scripts for the 1.6 version and then remove the inserted "particle_system"
-        // keyword. But we need to supply these new scripts as well, which is why
-        // there is an extra Ogre::Archive dealing with it in the memory.
-        using namespace Ogre;
-        ArchiveManager::getSingleton().addArchiveFactory(memoryArchiveFactory_.get());
-        const StringVector& groups = ResourceGroupManager::getSingleton().getResourceGroups();
-        // Travers all groups
-        for (StringVector::const_iterator itGroup = groups.begin(); itGroup != groups.end(); ++itGroup)
-        {
-            FileInfoListPtr files = ResourceGroupManager::getSingleton().findResourceFileInfo(*itGroup, "*.particle");
-            for (FileInfoList::const_iterator itFile = files->begin(); itFile != files->end(); ++itFile)
-            {
-                // open file
-                Ogre::DataStreamPtr input = ResourceGroupManager::getSingleton().openResource(itFile->filename, *itGroup, false);
-                std::stringstream output;
-                // Parse file and replace "particle_system" with nothing
-                while (!input->eof())
-                {
-                    std::string line = input->getLine();
-                    size_t pos = line.find("particle_system");
-                    if (pos != std::string::npos)
-                    {
-                        // 15 is the length of "particle_system"
-                        line.replace(pos, 15, "");
-                    }
-                    output << line << std::endl;
-                }
-                // Add file to the memory archive
-                shared_array<char> data(new char[output.str().size()]);
-                // Debug optimisations
-                const std::string& outputStr = output.str();
-                char* rawData = data.get();
-                for (unsigned i = 0; i < outputStr.size(); ++i)
-                    rawData[i] = outputStr[i];
-                MemoryArchive::addFile("particle_scripts_ogre_1.4_" + *itGroup, itFile->filename, data, output.str().size());
-            }
-            if (!files->empty())
-            {
-                // Declare the files, but using a new group
-                ResourceGroupManager::getSingleton().addResourceLocation("particle_scripts_ogre_1.4_" + *itGroup,
-                    "Memory", "particle_scripts_ogre_1.4_" + *itGroup);
-            }
-        }
-#endif
 
         // Initialise all resources (do this AFTER the renderer has been loaded!)
         // Note: You can only do this once! Ogre will check whether a resource group has
@@ -304,16 +247,34 @@ namespace orxonox
 
     void GraphicsManager::loadOgrePlugins()
     {
-        // just to make sure the next statement doesn't segfault
-        if (ogrePluginsDirectory_.empty())
-            ogrePluginsDirectory_ = '.';
+        // Plugin path can have many different locations...
+        std::string pluginPath = specialConfig::ogrePluginsDirectory;
+#ifdef DEPENDENCY_PACKAGE_ENABLE
+        if (!PathConfig::isDevelopmentRun())
+        {
+#  if defined(ORXONOX_PLATFORM_WINDOWS)
+            pluginPath = PathConfig::getExecutablePathString();
+#  elif defined(ORXONOX_PLATFORM_APPLE)
+            // TODO: Where are the plugins being installed to?
+            pluginPath = PathConfig::getExecutablePathString();
+#  endif
+        }
+#endif
 
-        boost::filesystem::path folder(ogrePluginsDirectory_);
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        // Add OGRE plugin path to the environment. That way one plugin could
+        // also depend on another without problems on Windows
+        const char* currentPATH = getenv("PATH");
+        std::string newPATH = pluginPath;
+        if (currentPATH != NULL)
+            newPATH = std::string(currentPATH) + ';' + newPATH;
+        putenv(const_cast<char*>(("PATH=" + newPATH).c_str()));
+#endif
+
         // Do some SubString magic to get the comma separated list of plugins
         SubString plugins(ogrePlugins_, ",", " ", false, '\\', false, '"', false, '{', '}', false, '\0');
-        // Use backslash paths on Windows! file_string() already does that though.
         for (unsigned int i = 0; i < plugins.size(); ++i)
-            ogreRoot_->loadPlugin((folder / plugins[i]).file_string());
+            ogreRoot_->loadPlugin(pluginPath + '/' + plugins[i]);
     }
 
     void GraphicsManager::loadRenderer()

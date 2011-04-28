@@ -25,6 +25,7 @@
 
 INCLUDE(FlagUtilities)
 INCLUDE(CompareVersionStrings)
+INCLUDE(CheckCXXCompilerFlag)
 
 # Shortcut for CMAKE_COMPILER_IS_GNUCXX and ..._GNUC
 SET(CMAKE_COMPILER_IS_GNU TRUE)
@@ -35,22 +36,6 @@ EXEC_PROGRAM(
   ARGS ${CMAKE_CXX_COMPILER_ARG1} -dumpversion
   OUTPUT_VARIABLE GCC_VERSION
 )
-
-# Complain about incompatibilities
-COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.4.0" _compare_result)
-IF(NOT _compare_result LESS 0)
-  IF(${Boost_VERSION} LESS 103700)
-    MESSAGE(STATUS "Warning: Boost versions earlier than 1.37 may not compile with GCC 4.4 or later!")
-  ENDIF()
-ENDIF()
-
-# GCC may not support #pragma GCC system_header correctly when using
-# templates. According to Bugzilla, it was fixed March 07 but tests
-# have confirmed that GCC 4.0.0 does not pose a problem for our cases.
-COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.0.0" _compare_result)
-IF(_compare_result LESS 0)
-  SET(GCC_NO_SYSTEM_HEADER_SUPPORT TRUE)
-ENDIF()
 
 # GCC only supports PCH in versions 3.4 and above
 INCLUDE(CompareVersionStrings)
@@ -71,16 +56,34 @@ ADD_COMPILER_FLAGS("-O2 -g -ggdb"          RelWithDebInfo CACHE)
 ADD_COMPILER_FLAGS("-Os"                   MinSizeRel     CACHE)
 
 # CMake doesn't seem to set the PIC flags right on certain 64 bit systems
-IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+IF(NOT MINGW AND ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
   ADD_COMPILER_FLAGS("-fPIC" CACHE)
+ENDIF()
+
+# Enable non standard floating point optimisations
+ADD_COMPILER_FLAGS("-ffast-math" CACHE)
+
+# Use SSE if possible
+# Commented because this might not work for cross compiling
+#CHECK_CXX_COMPILER_FLAG(-msse _gcc_have_sse)
+#IF(_gcc_have_sse)
+#  ADD_COMPILER_FLAGS("-msse" CACHE)
+#ENDIF()
+
+IF(NOT MINGW)
+  # Have GCC visibility?
+  CHECK_CXX_COMPILER_FLAG("-fvisibility=hidden" _gcc_have_visibility)
+  IF(_gcc_have_visibility)
+    # Note: There is a possible bug with the flag in gcc < 4.2 and Debug versions
+    COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.2.0" _compare_result)
+    IF(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" OR _compare_result GREATER -1)
+      ADD_COMPILER_FLAGS("-DORXONOX_GCC_VISIBILITY -fvisibility=default -fvisibility-inlines-hidden" CACHE)
+    ENDIF()
+  ENDIF(_gcc_have_visibility)
 ENDIF()
 
 # We have some unconformant code, disable an optimisation feature
 ADD_COMPILER_FLAGS("-fno-strict-aliasing" CACHE)
-
-# For GCC older than version 4, do not display sign compare warnings
-# because of boost::filesystem (which creates about a hundred per include)
-ADD_COMPILER_FLAGS("-Wno-sign-compare" GCC_NO_SYSTEM_HEADER_SUPPORT CACHE)
 
 # For newer GCC (4.3 and above), don't display hundreds of annoying deprecated
 # messages. Other versions don't seem to show any such warnings at all.
@@ -97,8 +100,11 @@ ELSE()
   ADD_COMPILER_FLAGS("-Wall" CACHE)
 ENDIF()
 
-# General linker flags
-SET_LINKER_FLAGS("--no-undefined" CACHE)
+# Linker flags
+IF(LINUX)
+  # Don't allow undefined symbols in a shared library
+  SET_LINKER_FLAGS("-Wl,--no-undefined" CACHE)
+ENDIF()
 
 # Add compiler and linker flags for MinGW
 IF (MINGW)

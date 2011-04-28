@@ -28,7 +28,7 @@ INCLUDE(HandleLibraryTypes)
 
 FIND_PATH(POCO_INCLUDE_DIR Poco/Poco.h
   PATHS $ENV{POCODIR}
-  PATH_SUFFIXES include
+  PATH_SUFFIXES include Foundation/include
 )
 FIND_LIBRARY(POCO_LIBRARY_OPTIMIZED
   NAMES PocoFoundation

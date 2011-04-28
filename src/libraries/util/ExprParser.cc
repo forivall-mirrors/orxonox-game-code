@@ -51,11 +51,11 @@ namespace orxonox
     ExprParser::ExprParser()
     {
         this->failed_ = false;
-        this->variables_["pi"] = math::pi_d;
-        this->variables_["e"] = math::e_d;
+        this->variables_["pi"] = math::pi;
+        this->variables_["e"] = math::e;
     }
 
-    void ExprParser::setVariable(const std::string& varname, double value)
+    void ExprParser::setVariable(const std::string& varname, float value)
     {
         this->variables_[varname] = value;
     }
@@ -77,9 +77,9 @@ namespace orxonox
 
     //Private functions:
     /******************/
-    double ExprParser::parse_argument()
+    float ExprParser::parse_argument()
     {
-        double value = parse_expr_8();
+        float value = parse_expr_8();
         if (*reading_stream == ',')
         {
             ++reading_stream;
@@ -92,9 +92,9 @@ namespace orxonox
         }
     }
 
-    double ExprParser::parse_last_argument()
+    float ExprParser::parse_last_argument()
     {
-        double value = parse_expr_8();
+        float value = parse_expr_8();
         if (*reading_stream == ')')
         {
             ++reading_stream;
@@ -107,9 +107,9 @@ namespace orxonox
         }
     }
 
-    double ExprParser::parse_expr_8()
+    float ExprParser::parse_expr_8()
     {
-        double value = parse_expr_7();
+        float value = parse_expr_7();
         for(;;)
         {
             switch (op)
@@ -123,9 +123,9 @@ namespace orxonox
     }
 
 
-    double ExprParser::parse_expr_7()
+    float ExprParser::parse_expr_7()
     {
-        double value = parse_expr_6();
+        float value = parse_expr_6();
         for(;;)
         {
             switch (op)
@@ -138,9 +138,9 @@ namespace orxonox
         };
     }
 
-    double ExprParser::parse_expr_6()
+    float ExprParser::parse_expr_6()
     {
-        double value = parse_expr_5();
+        float value = parse_expr_5();
         for(;;)
         {
             switch (op)
@@ -157,9 +157,9 @@ namespace orxonox
         };
     }
 
-    double ExprParser::parse_expr_5()
+    float ExprParser::parse_expr_5()
     {
-        double value = parse_expr_4();
+        float value = parse_expr_4();
         for(;;)
         {
             switch (op)
@@ -182,9 +182,9 @@ namespace orxonox
         };
     }
 
-    double ExprParser::parse_expr_4()
+    float ExprParser::parse_expr_4()
     {
-        double value = parse_expr_3();
+        float value = parse_expr_3();
         for(;;)
         {
             switch (op)
@@ -201,9 +201,9 @@ namespace orxonox
         };
     }
 
-    double ExprParser::parse_expr_3()
+    float ExprParser::parse_expr_3()
     {
-        double value = parse_expr_2();
+        float value = parse_expr_2();
         for(;;)
         {
             switch (op)
@@ -216,7 +216,7 @@ namespace orxonox
                 break;
             case modulo:
                 {
-                    double temp = parse_expr_2();
+                    float temp = parse_expr_2();
                     value = value - floor(value/temp)*temp;
                     break;
                 }
@@ -226,9 +226,9 @@ namespace orxonox
         };
     }
 
-    double ExprParser::parse_expr_2()
+    float ExprParser::parse_expr_2()
     {
-        double value = parse_expr_1();
+        float value = parse_expr_1();
         while (*reading_stream != '\0')
         {
             op = parse_binary_operator();
@@ -245,10 +245,10 @@ namespace orxonox
         return value;
     }
 
-    double ExprParser::parse_expr_1()
+    float ExprParser::parse_expr_1()
     {
         PARSE_BLANKS;
-        double value;
+        float value;
 
         unary_operator op = parse_unary_operator();
         PARSE_BLANKS;
@@ -261,7 +261,7 @@ namespace orxonox
         }
         else if ((*reading_stream > 47 && *reading_stream < 59) || *reading_stream == 46)
         {  // number
-            value = strtod(reading_stream, const_cast<char**>(&reading_stream));
+            value = (float)strtod(reading_stream, const_cast<char**>(&reading_stream));
         }
         else if ((*reading_stream > 64 && *reading_stream < 91) || (*reading_stream > 96 && *reading_stream < 123) || *reading_stream == 46)
         {  // variable or function
@@ -305,7 +305,7 @@ namespace orxonox
                 CASE("atanh")
                 {
                     value = parse_last_argument();
-                    value = 0.5*log((value + 1)/(value - 1));
+                    value = 0.5f*log((value + 1.0f)/(value - 1.0f));
                 }
                 CASE("int")
                     value = floor(parse_last_argument());
@@ -324,18 +324,18 @@ namespace orxonox
                 CASE("sign")
                 {
                     value = parse_last_argument();
-                    value = (value>0 ? 1 : (value<0 ? -1 : 0));
+                    value = (value>0.0f ? 1.0f : (value<0.0f ? -1.0f : 0.0f));
                 }
                 CASE("sqrt")
                     value = sqrt(parse_last_argument());
                 CASE("degrees")
-                    value = parse_last_argument()*180/math::pi_d;
+                    value = parse_last_argument()*180.0f/math::pi;
                 CASE("radians")
-                    value = parse_last_argument()*math::pi_d/180;
+                    value = parse_last_argument()*math::pi/180.0f;
                 CASE("mod")
                 {
                     value = parse_argument();
-                    double value2 = parse_last_argument();
+                    float value2 = parse_last_argument();
                     value = value - floor(value/value2)*value2;
                 }
                 CASE("pow")
@@ -355,7 +355,7 @@ namespace orxonox
             }
             else
             {
-                std::map<std::string, double>::const_iterator it = this->variables_.find(word);
+                std::map<std::string, float>::const_iterator it = this->variables_.find(word);
                 if (it != this->variables_.end())
                     value = it->second;
                 else

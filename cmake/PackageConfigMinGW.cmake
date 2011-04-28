@@ -27,6 +27,9 @@
 
 IF(MINGW)
 
+  INCLUDE(CheckPackageVersion)
+  CHECK_PACKAGE_VERSION(6.0)
+
   # 64 bit system?
   IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
     SET(BINARY_POSTFIX x64)
@@ -47,6 +50,10 @@ IF(MINGW)
   # Certain find scripts don't behave as ecpected to we have
   # to specify the libraries ourselves.
   SET(TCL_LIBRARY  ${DEP_BINARY_DIR}/tcl85.dll CACHE FILEPATH "")
-  SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/zlib1.dll CACHE FILEPATH "")
+  SET(ZLIB_LIBRARY ${DEP_BINARY_DIR}/libzlib.dll CACHE FILEPATH "")
+
+  # Not included in MinGW, so we need to supply it for OIS
+  SET(WMI_INCLUDE_DIR ${DEP_INCLUDE_DIR}/wmi/include)
+  SET(WMI_LIBRARY     ${DEP_LIBRARY_DIR}/wbemuuid.lib)
 
 ENDIF(MINGW)

@@ -37,6 +37,7 @@
 
 #include "OrxonoxConfig.h"
 #include <boost/version.hpp>
+#include <CEGUIVersion.h>
 
 //-----------------------------------------------------------------------
 // Shared library settings
@@ -52,10 +53,13 @@
 #      define _CoreExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _CorePrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _CoreExport  __attribute__ ((visibility("default")))
+#  define _CorePrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _CoreExport
+#  define _CorePrivate
 #endif
 
 //-----------------------------------------------------------------------
@@ -258,13 +262,17 @@ namespace Tcl
 namespace boost
 {
 #if (BOOST_VERSION < 104400)
+
     namespace filesystem
     {
         struct path_traits;
         template <class String, class Traits> class basic_path;
         typedef basic_path<std::string, path_traits> path;
     }
-#else
+
+#elif (BOOST_VERSION < 104800)
+
+# if BOOST_FILESYSTEM_VERSION == 2
     namespace filesystem2
     {
         struct path_traits;
@@ -277,7 +285,27 @@ namespace boost
         using filesystem2::path_traits;
         using filesystem2::path;
     }
+# elif BOOST_FILESYSTEM_VERSION == 3
+    namespace filesystem3
+    {
+        class path;
+    }
+    namespace filesystem
+    {
+        using filesystem3::path;
+    }
+# endif
+
+#else
+
+    // TODO: Check this once boost 1.48 is released
+    namespace filesystem
+    {
+        class path;
+    }
+
 #endif
+
     class thread;
     class mutex;
     class shared_mutex;
@@ -305,9 +333,15 @@ namespace CEGUI
     class Logger;
     class LuaScriptModule;
 
+#if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
     class OgreCEGUIRenderer;
     class OgreCEGUIResourceProvider;
     class OgreCEGUITexture;
+#else
+    class OgreRenderer;
+    class OgreResourceProvider;
+    class OgreImageCodec;
+#endif
 }
 
 // Lua

@@ -17,33 +17,6 @@
  #     Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  #
 
-################### Tolua++ library ###################
-
-SET_SOURCE_FILES(TOLUA_FILES
-  tolua_event.h
-  tolua++.h
-COMPILATION_BEGIN ToluaCompilation.c
-  tolua_event.c
-  tolua_is.c
-  tolua_map.c
-  tolua_push.c
-  tolua_to.c
-COMPILATION_END
-)
-
-ORXONOX_ADD_LIBRARY(tolua_orxonox
-  ORXONOX_EXTERNAL
-  DEFINE_SYMBOL
-    "TOLUA_SHARED_BUILD"
-  VERSION
-    1.0.92
-  LINK_LIBRARIES
-    ${LUA_LIBRARIES}
-  SOURCE_FILES
-    ${TOLUA_FILES}
-)
-
-
 ################## Tolua++ generator ##################
 
 ORXONOX_ADD_EXECUTABLE(toluaapp_orxonox
@@ -52,16 +25,16 @@ ORXONOX_ADD_EXECUTABLE(toluaapp_orxonox
     1.0.92
   NO_INSTALL
   LINK_LIBRARIES
-    ${LUA_LIBRARIES}
+    ${LUA5.1_LIBRARY}
   SOURCE_FILES
     tolua.c
 )
 
 # Set some variables to the cache in order to use them in the TOLUA macro
-SET(TOLUA_PARSER_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/all-${LUA_VERSION}.lua" CACHE INTERNAL "")
+SET(TOLUA_PARSER_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/all-5.1.lua" CACHE INTERNAL "")
 SET(TOLUA_PARSER_DEPENDENCIES
   toluaapp_orxonox
-  ${CMAKE_CURRENT_SOURCE_DIR}/all-${LUA_VERSION}.lua
+  ${CMAKE_CURRENT_SOURCE_DIR}/all-5.1.lua
   ${CMAKE_CURRENT_SOURCE_DIR}/lua/compat-5.1.lua
   ${CMAKE_CURRENT_SOURCE_DIR}/lua/compat.lua
   ${CMAKE_CURRENT_SOURCE_DIR}/lua/basic.lua

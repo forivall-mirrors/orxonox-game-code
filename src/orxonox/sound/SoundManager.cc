@@ -30,8 +30,8 @@
 
 #include "SoundManager.h"
 
-#include <AL/alut.h>
 #include <utility>
+#include <alut.h>
 #include <loki/ScopeGuard.h>
 
 #include "util/Exception.h"
@@ -72,12 +72,15 @@ namespace orxonox
 
         this->bDestructorCalled_ = false;
 
+        // Clear error messages (might be problematic on some systems)
+        alGetError();
+        alutGetError();
+
         // See whether we even want to load
         bool bDisableSound_ = false;
         SetConfigValue(bDisableSound_, false);
         if (bDisableSound_)
             ThrowException(InitialisationAborted, "Sound: Not loading at all");
-
         if (!alutInitWithoutContext(NULL, NULL))
             ThrowException(InitialisationFailed, "Sound Error: ALUT initialisation failed: " << alutGetErrorString(alutGetError()));
         Loki::ScopeGuard alutExitGuard = Loki::MakeGuard(&alutExit);
@@ -106,13 +109,7 @@ namespace orxonox
 */
         this->device_ = alcOpenDevice(NULL);
         if (this->device_ == NULL)
-        {
-            COUT(1) << "Sound: Could not open sound device. Have you installed OpenAL?" << std::endl;
-#ifdef ORXONOX_PLATFORM_WINDOWS
-            COUT(1) << "Sound: Just getting the DLL with the dependencies is not enough for Windows (esp. Windows 7)!" << std::endl;
-#endif
             ThrowException(InitialisationFailed, "Sound Error: Could not open sound device.");
-        }
         Loki::ScopeGuard closeDeviceGuard = Loki::MakeGuard(&alcCloseDevice, this->device_);
 
         // Create sound context and make it the currently used one
@@ -326,6 +323,7 @@ namespace orxonox
         alListener3f(AL_POSITION, position.x, position.y, position.z);
         ALenum error = alGetError();
         if (error == AL_INVALID_VALUE)
+            // @TODO: Follow this constantly appearing, nerve-racking warning
             COUT(2) << "Sound: OpenAL: Invalid listener position" << std::endl;
     }
 
