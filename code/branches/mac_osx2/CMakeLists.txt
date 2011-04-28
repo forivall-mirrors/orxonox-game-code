@@ -159,6 +159,6 @@ ADD_SUBDIRECTORY(doc)
 ########### CPack Packaging ###########
 
 # Currently only testing on Apple
-#IF(APPLE)
-#  INCLUDE(BundleConfig)
-#ENDIF(APPLE)
+IF(APPLE)
+  INCLUDE(BundleConfig)
+ENDIF(APPLE)
