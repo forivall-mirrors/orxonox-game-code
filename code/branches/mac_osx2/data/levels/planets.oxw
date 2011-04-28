@@ -1,0 +1,65 @@
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/lodInformation.oxt")
+  include("templates/spaceshipSwallow.oxt")
+  include("templates/spaceshipPirate.oxt")
+?>
+
+
+
+<Level
+ name         = "Planet_Demo"
+ description  = "Demonstration of planets with high resolution."
+
+>
+  <templates>
+   <Template link=lodtemplate_default />
+  </templates>
+
+  <Scene
+   ambientlight = "0.5, 0.5, 0.5"
+   skybox       = "Orxonox/skypanoramagen1"
+  >
+    
+<WorldAmbientSound ambientSource="AlphaCentauri.ogg" looping="true" playOnLoad="true" />
+<Light type=directional position="-10000,-10000,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+<?lua
+planetsize=40000
+?>
+
+<SpawnPoint position="<?lua print(math.sin(1.5) *(3)*planetsize) ?>,<?lua print(math.cos(1.5) *3*planetsize) ?>,<?lua print(500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipswallow />
+
+
+<?lua
+max = 50
+
+for i = 1, max, 1
+do
+    x = math.sin(i/max*6)*(1.5)*planetsize
+    y = i*100
+    z = math.cos(i/max*6)*(1.5)*planetsize
+    ?>
+<?lua
+for k = 1, 25, 1
+do
+j = math.random()
+?>
+
+    <MovableEntity position="<?lua print(x + math.random() * 10000-2500) ?>,<?lua print(y + math.random() * 5000-2500) ?>,<?lua print(z + math.random() * 1000-500) ?>" <?lua if i == 5 then ?> collisionType=dynamic linearDamping=0.8 angularDamping=0 mass=<?lua print(j * 50) ?> <?lua end ?> scale=<?lua print(j * 5) ?> rotationaxis="<?lua print(math.random()) ?>, <?lua print(math.random()) ?>, <?lua print(math.random()) ?>" rotationrate="<?lua print(math.random() * 30 + 5) ?>">
+      <attached>
+        <Model position="0,0,0" scale="<?lua print(j * 10) ?>" mesh="ast<?lua print( math.mod(i,6) + 1) ?>.mesh" />
+      </attached>
+      <?lua if i == 5 then ?><collisionShapes>
+        <SphereCollisionShape radius="<?lua print(j * 70) ?>" />
+      </collisionShapes> <?lua end ?>
+    </MovableEntity>
+<?lua
+end
+?>
+<?lua end ?>
+    <Planet position="0,0,0" scale="<?lua print(planetsize) ?>" pitch=-90 mesh="jupiter.mesh" atmosphere="atmosphere1" rotationaxis="0,1,0" rotationrate="0.2" atmospheresize=300.0f imagesize=1024.0f />
+    <Planet position="<?lua print(5*planetsize) ?>,0,0" scale=10000 pitch=30 mesh="ganymede.mesh" atmosphere="atmosphere1" rotationaxis="1,0,1" rotationrate="1.5" atmospheresize=224.0f imagesize=1024.0f />
+  </Scene>
+</Level>
