@@ -49,11 +49,11 @@ ENDIF()
 INCLUDE(LibraryConfigTardis)
 
 IF(DEPENDENCY_PACKAGE_ENABLE)
-  # Let CMake automatically download and extract the dependency package on Mac OS X
-  # TODO: Handle download errors and always select newest package
-  SET(_dep_package_current "OrxonoxDeps_110428_2.0_OSX.tar.bz2")
-  SET(_dep_package_url "http://svn.orxonox.net/ogre/apple/precompiled_dependencies")
   IF(APPLE AND NOT EXISTS ${CMAKE_SOURCE_DIR}/dependencies)
+    # Let CMake automatically download and extract the dependency package on Mac OS X
+    # TODO: Handle download errors and always select newest package
+    SET(_dep_package_current "OrxonoxDeps_110428_2.0_OSX.tar.bz2")
+    SET(_dep_package_url "http://svn.orxonox.net/ogre/apple/precompiled_dependencies")
     MESSAGE(STATUS "Downloading Mac OS X dependency package.")
     FILE(DOWNLOAD
       ${_dep_package_url}/${_dep_package_current}
