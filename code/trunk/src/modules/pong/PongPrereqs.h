@@ -52,10 +52,13 @@
 #      define _PongExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _PongPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _PongExport  __attribute__ ((visibility("default")))
+#  define _PongPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _PongExport
+#  define _PongPrivate
 #endif
 
 //-----------------------------------------------------------------------

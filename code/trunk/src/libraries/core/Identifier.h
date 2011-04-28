@@ -122,7 +122,7 @@ namespace orxonox
             void setNetworkID(uint32_t id);
 
             /// Returns the unique ID of the class.
-            FORCEINLINE unsigned int getClassID() const { return this->classID_; }
+            ORX_FORCEINLINE unsigned int getClassID() const { return this->classID_; }
 
             /// Returns the list of all existing objects of this class.
             inline ObjectListBase* getObjects() const { return this->objects_; }
@@ -394,7 +394,7 @@ namespace orxonox
     void ClassIdentifier<T>::initialiseIdentifier()
     {
         // Get the name of the class
-        const std::string& name = typeid(T).name();
+        std::string name = typeid(T).name();
 
         // create a new identifier anyway. Will be deleted in Identifier::getIdentifier if not used.
         ClassIdentifier<T>* proposal = new ClassIdentifier<T>();
@@ -485,7 +485,7 @@ namespace orxonox
         Also note that the function is implemented differently for GCC/MSVC.
     */
     template <class T, class U>
-    FORCEINLINE T orxonox_cast(U* source)
+    ORX_FORCEINLINE T orxonox_cast(U* source)
     {
 #ifdef ORXONOX_COMPILER_MSVC
         typedef Loki::TypeTraits<typename Loki::TypeTraits<T>::PointeeType>::NonConstType ClassType;

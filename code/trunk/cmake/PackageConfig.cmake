@@ -24,47 +24,6 @@
  #    Library files are treated separately.
  #
 
-# Check package version info
-# MAJOR: Breaking change
-# MINOR: No breaking changes by the dependency package
-#        For example any code running on 3.0 should still run on 3.1
-#        But you can specify that the code only runs on 3.1 and higher
-#        or 4.0 and higher (so both 3.1 and 4.0 will work).
-SET(ALLOWED_MINIMUM_VERSIONS 3.1 4.0 5.0)
-
-IF(NOT EXISTS ${DEPENDENCY_PACKAGE_DIR}/version.txt)
-  SET(DEPENDENCY_VERSION 1.0)
-ELSE()
-  # Get version from file
-  FILE(READ ${DEPENDENCY_PACKAGE_DIR}/version.txt _file_content)
-  SET(_match)
-  STRING(REGEX MATCH "([0-9]+.[0-9]+)" _match ${_file_content})
-  IF(_match)
-    SET(DEPENDENCY_VERSION ${_match})
-  ELSE()
-    MESSAGE(FATAL_ERROR "The version.txt file in the dependency file has corrupt version information.")
-  ENDIF()
-ENDIF()
-
-INCLUDE(CompareVersionStrings)
-SET(_version_match FALSE)
-FOREACH(_version ${ALLOWED_MINIMUM_VERSIONS})
-  # Get major version
-  STRING(REGEX REPLACE "^([0-9]+)\\..*$" "\\1" _major_version "${_version}")
-  COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} ${_major_version} _result TRUE)
-  IF(_result EQUAL 0)
-    COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} ${_version} _result FALSE)
-    IF(NOT _result LESS 0)
-      SET(_version_match TRUE)
-    ENDIF()
-  ENDIF()
-ENDFOREACH(_version)
-IF(NOT _version_match)
-  MESSAGE(FATAL_ERROR "Your dependency package version is ${DEPENDENCY_VERSION}\n"
-          "Possible required versions: ${ALLOWED_MINIMUM_VERSIONS}\n"
-          "You can get a new version from www.orxonox.net")
-ENDIF()
-
 IF(NOT _INTERNAL_PACKAGE_MESSAGE)
   MESSAGE(STATUS "Using library package for the dependencies.")
   SET(_INTERNAL_PACKAGE_MESSAGE 1 CACHE INTERNAL "Do not edit!" FORCE)
@@ -72,8 +31,8 @@ ENDIF()
 
 # Ogre versions >= 1.7 require the POCO library on Windows with MSVC for threading
 COMPARE_VERSION_STRINGS(${DEPENDENCY_VERSION} 5 _result TRUE)
-IF(NOT _result EQUAL -1 AND NOT MINGW)
-    SET(POCO_REQUIRED TRUE)
+IF(NOT _result EQUAL -1 AND NOT APPLE)
+  SET(OGRE_NEEDS_POCO TRUE)
 ENDIF()
 
 # Include paths and other special treatments
@@ -83,7 +42,7 @@ SET(ENV{CEGUIDIR}              ${DEP_INCLUDE_DIR}/cegui)
 SET(ENV{DBGHELP_DIR}           ${DEP_INCLUDE_DIR}/dbghelp)
 SET(ENV{DXSDK_DIR}             ${DEP_INCLUDE_DIR}/directx)
 #SET(ENV{ENETDIR}               ${DEP_INCLUDE_DIR}/enet)
-SET(ENV{LUA_DIR}               ${DEP_INCLUDE_DIR}/lua)
+SET(ENV{LUA5.1_DIR}            ${DEP_INCLUDE_DIR}/lua)
 SET(ENV{OGGDIR}                ${DEP_INCLUDE_DIR}/libogg)
 SET(ENV{VORBISDIR}             ${DEP_INCLUDE_DIR}/libvorbis)
 SET(ENV{OGRE_HOME}             ${DEP_INCLUDE_DIR}/ogre)
@@ -115,12 +74,23 @@ IF(WIN32 AND DEP_BINARY_DIR)
   )
 
   ## RELEASE
-  # Try to filter out all the debug libraries. If the regex doesn't do the
-  # job anymore, simply adjust it.
-  INSTALL(
-    DIRECTORY ${DEP_BINARY_DIR}/
-    DESTINATION bin
-    CONFIGURATIONS Release RelWithDebInfo MinSizeRel
-    REGEX "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$" EXCLUDE
-  )
+  IF(EXISTS ${DEP_BINARY_DIR}/install_manifest.txt)
+    FILE(STRINGS ${DEP_BINARY_DIR}/install_manifest.txt _files)
+    FOREACH(_file ${_files})
+      INSTALL(
+        FILES ${DEP_BINARY_DIR}/${_file}
+        DESTINATION bin
+        CONFIGURATIONS Release RelWithDebInfo MinSizeRel
+      )
+    ENDFOREACH(_file)
+  ELSE()
+    # Try to filter out all the debug libraries. If the regex doesn't do the
+    # job anymore, simply adjust it.
+    INSTALL(
+      DIRECTORY ${DEP_BINARY_DIR}/
+      DESTINATION bin
+      CONFIGURATIONS Release RelWithDebInfo MinSizeRel
+      REGEX "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$" EXCLUDE
+    )
+  ENDIF()
 ENDIF()

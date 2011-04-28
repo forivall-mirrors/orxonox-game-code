@@ -36,15 +36,23 @@ INCLUDE(OrxonoxConfig.cmake)
 ADD_COMPILER_FLAGS("-DBOOST_ALL_NO_LIB")
 ADD_COMPILER_FLAGS("-DPOCO_NO_AUTOMATIC_LIBS")
 
-# If no defines are specified, these libs get linked statically
-ADD_COMPILER_FLAGS("-DBOOST_ALL_DYN_LINK" WIN32 LINK_BOOST_DYNAMIC)
-#ADD_COMPILER_FLAGS("-DENET_DLL"           WIN32 LINK_ENET_DYNAMIC)
-ADD_COMPILER_FLAGS("-DLUA_BUILD_AS_DLL"   WIN32 LINK_LUA_DYNAMIC)
-ADD_COMPILER_FLAGS("-DZLIB_DLL"           WIN32 LINK_ZLIB_DYNAMIC)
-# If no defines are specified, these libs get linked dynamically
-ADD_COMPILER_FLAGS("-DCEGUI_STATIC"       WIN32 NOT LINK_CEGUI_DYNAMIC)
-ADD_COMPILER_FLAGS("-DOGRE_STATIC_LIB"    WIN32 NOT LINK_OGRE_DYNAMIC)
-ADD_COMPILER_FLAGS("-DSTATIC_BUILD"       WIN32 NOT LINK_TCL_DYNAMIC)
+IF(WIN32)
+  # If no defines are specified, these libs get linked statically
+  ADD_COMPILER_FLAGS("-DBOOST_ALL_DYN_LINK" LINK_BOOST_DYNAMIC)
+  #ADD_COMPILER_FLAGS("-DENET_DLL"           LINK_ENET_DYNAMIC)
+  ADD_COMPILER_FLAGS("-DLUA_BUILD_AS_DLL"   LINK_LUA5.1_DYNAMIC)
+  # If no defines are specified, these libs get linked dynamically
+  ADD_COMPILER_FLAGS("-DCEGUI_STATIC -DTOLUA_STATIC" NOT LINK_CEGUI_DYNAMIC)
+  ADD_COMPILER_FLAGS("-DOGRE_STATIC_LIB"    NOT LINK_OGRE_DYNAMIC)
+  ADD_COMPILER_FLAGS("-DSTATIC_BUILD"       NOT LINK_TCL_DYNAMIC)
+
+  # Target Windows XP as minimum Windows version
+  # And try to catch all the different macro defines for that...
+  ADD_COMPILER_FLAGS("-D_WIN32_WINNT=0x0501")
+  ADD_COMPILER_FLAGS("-D_WIN32_WINDOWS=0x0501")
+  ADD_COMPILER_FLAGS("-DWINVER=0x0501")
+  ADD_COMPILER_FLAGS("-DNTDDI_VERSION=0x05010000")
+ENDIF(WIN32)
 
 ######### Library Behaviour (external) ##########
 
@@ -60,30 +68,16 @@ ELSE()
   SET(_external_shared_link FALSE)
 ENDIF()
 # If no defines are specified, these libs get linked dynamically
-ADD_COMPILER_FLAGS("-DCEGUILUA_STATIC"             WIN32 NOT _external_shared_link)
 ADD_COMPILER_FLAGS("-DENET_DLL"                    WIN32     _external_shared_link)
 ADD_COMPILER_FLAGS("-DOGRE_GUIRENDERER_STATIC_LIB" WIN32 NOT _external_shared_link)
 ADD_COMPILER_FLAGS("-DOIS_STATIC_LIB"              WIN32 NOT _external_shared_link)
-ADD_COMPILER_FLAGS("-DTOLUA_STATIC_BUILD"          WIN32 NOT _external_shared_link)
 
 ############## Include Directories ##############
 
 # Set the search paths for include files
 INCLUDE_DIRECTORIES(
-  # External
-  ${OGRE_INCLUDE_DIR}
-  ${CEGUI_INCLUDE_DIR}
-  #${ENET_INCLUDE_DIR}
-  ${Boost_INCLUDE_DIRS}
-  ${POCO_INCLUDE_DIR}
-  ${OPENAL_INCLUDE_DIRS}
-  ${ALUT_INCLUDE_DIR}
-  ${VORBIS_INCLUDE_DIR}
-  ${OGG_INCLUDE_DIR}
-  ${LUA_INCLUDE_DIR}
-  ${TCL_INCLUDE_PATH}
-  ${DIRECTX_INCLUDE_DIR}
-  ${ZLIB_INCLUDE_DIR}
+  # OrxonoxConfig.h
+  ${CMAKE_CURRENT_BINARY_DIR}
 
   # All includes in "externals" should be prefixed with the path
   # relative to "external" to avoid conflicts
@@ -92,16 +86,35 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/external/bullet
   ${CMAKE_CURRENT_SOURCE_DIR}/external/ois
 
-  # OrxonoxConfig.h
-  ${CMAKE_CURRENT_BINARY_DIR}
+  # External
+  ${OGRE_INCLUDE_DIR}
+  ${CEGUI_INCLUDE_DIR}
+  ${CEGUI_TOLUA_INCLUDE_DIR}
+  #${ENET_INCLUDE_DIR}
+  ${Boost_INCLUDE_DIRS}
+  ${POCO_INCLUDE_DIR}
+  ${OPENAL_INCLUDE_DIRS}
+  ${ALUT_INCLUDE_DIR}
+  ${VORBIS_INCLUDE_DIR}
+  ${OGG_INCLUDE_DIR}
+  ${LUA5.1_INCLUDE_DIR}
+  ${TCL_INCLUDE_PATH}
+  ${DIRECTX_INCLUDE_DIR}
+  ${ZLIB_INCLUDE_DIR}
 )
 
-IF(CEGUILUA_USE_INTERNAL_LIBRARY)
-  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/external/ceguilua/ceguilua-${CEGUI_VERSION})
+IF(CEGUI_OLD_VERSION)
+  INCLUDE_DIRECTORIES(${CEGUILUA_INCLUDE_DIR})
 ENDIF()
 
 IF (DBGHELP_FOUND)
   INCLUDE_DIRECTORIES(${DBGHELP_INCLUDE_DIR})
+ENDIF()
+
+############## CEGUI OGRE Renderer ##############
+
+IF(CEGUI_OGRE_RENDERER_BUILD_REQUIRED)
+  SET(CEGUI_OGRE_RENDERER_LIBRARY ogreceguirenderer_orxonox)
 ENDIF()
 
 ################### Tolua Bind ##################
@@ -133,13 +146,20 @@ IF(ORXONOX_USE_WINMAIN)
   SET(ORXONOX_WIN32 WIN32)
 ENDIF()
 
+SET(ORXONOX_MAIN_FILES Orxonox.cc)
+
+# Add special source file for OS X
+IF(APPLE)
+  LIST(APPEND ORXONOX_MAIN_FILES OrxonoxMac.mm)
+ENDIF()
+
 ORXONOX_ADD_EXECUTABLE(orxonox-main
   # When defined as WIN32 this removes the console window on Windows
   ${ORXONOX_WIN32}
   LINK_LIBRARIES
     orxonox
   SOURCE_FILES
-    Orxonox.cc
+    ${ORXONOX_MAIN_FILES}
   OUTPUT_NAME orxonox
 )
 # Main executable should depend on all modules
@@ -164,10 +184,36 @@ IF(MSVC)
   ELSE()
     SET(MSVC_PLATFORM "Win32")
   ENDIF()
-  STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?) .*$" "\\1"
-         VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcproj.user")
+  IF(MSVC10)
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcxproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcxproj.user")
+  ELSE()
+    STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?).*$" "\\1"
+           VISUAL_STUDIO_VERSION_SIMPLE "${CMAKE_GENERATOR}")
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/orxonox-main.vcproj.user.in" "${CMAKE_CURRENT_BINARY_DIR}/orxonox-main.vcproj.user")
+  ENDIF()
 ENDIF(MSVC)
+
+# Apple Mac OS X specific build settings
+IF(APPLE)
+  # On Apple we need to link to AppKit and Foundation frameworks
+  TARGET_LINK_LIBRARIES(orxonox-main 
+    "-framework AppKit"
+    "-framework Foundation"
+  )
+
+  # Post-build step for the creation of the Dev-App bundle
+  INCLUDE(PrepareDevBundle)
+  ADD_CUSTOM_COMMAND(
+    TARGET orxonox-main
+    POST_BUILD 
+    # Copy the executable into the Orxonox.app
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${ORXONOX_EXECUTABLE_NAME}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app/Contents/MacOS"
+    # Copy the dev-build marker file to Orxonox.app
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/orxonox_dev_build.keep_me" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app/Contents/MacOS"
+    # Create a shortcut of the application to the root of the build tree
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${PROJECT_NAME}.app" "${CMAKE_BINARY_DIR}/${PROJECT_NAME}.app" 
+  ) 
+ENDIF(APPLE)
 
 #################### Doxygen ####################
 

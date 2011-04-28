@@ -29,7 +29,8 @@
 
 #include "WorldSound.h"
 
-#include <AL/alut.h>
+#include <alut.h>
+
 #include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/EventIncludes.h"

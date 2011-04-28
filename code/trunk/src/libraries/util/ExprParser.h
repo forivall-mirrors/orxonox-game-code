@@ -56,7 +56,7 @@ namespace orxonox
             {
                 COUT(2) << "Warning: Expression could not be parsed to the end! Remains: '" << expr.getRemains() << '\'' << std::endl;
             }
-            double result = expr.getResult();
+            float result = expr.getResult();
         }
         else
             COUT(1) << "Error: Cannot calculate expression: Parse error." << std::endl;
@@ -124,41 +124,41 @@ namespace orxonox
         ExprParser();
         void parse(const std::string& str);
         const std::string& getRemains() { return  this->remains_; }
-        double             getResult()  { return  this->result_; }
+        float              getResult()  { return  this->result_; }
         bool               getSuccess() { return !this->failed_; }
 
-        void setVariable(const std::string& varname, double value);
+        void setVariable(const std::string& varname, float value);
 
     private:
-        double parse_expr_1();
-        double parse_expr_2();
-        double parse_expr_3();
-        double parse_expr_4();
-        double parse_expr_5();
-        double parse_expr_6();
-        double parse_expr_7();
-        double parse_expr_8();
+        float parse_expr_1();
+        float parse_expr_2();
+        float parse_expr_3();
+        float parse_expr_4();
+        float parse_expr_5();
+        float parse_expr_6();
+        float parse_expr_7();
+        float parse_expr_8();
         char* parse_word(char* str);
         binary_operator parse_binary_operator();
         unary_operator parse_unary_operator();
 
-        double parse_argument();
-        double parse_last_argument();
+        float parse_argument();
+        float parse_last_argument();
 
         binary_operator op;
         const char* reading_stream;
         bool failed_;
-        double result_;
+        float result_;
         std::string remains_;
-        std::map<std::string, double> variables_;
+        std::map<std::string, float> variables_;
     };
 
     //Endzeichen für float expression: ')', '}', ']', ',', ';'
-    _UtilExport bool parse_float(char* const, char**, double*);
+    _UtilExport bool parse_float(char* const, char**, float*);
     //Endzeichen angegeben
-    _UtilExport bool parse_float(char* const, char**, char, double*);
+    _UtilExport bool parse_float(char* const, char**, char, float*);
     //Letzter Teil-float eines Vektors parsen (keine Vergleichs- und Logikoperationen)
-    _UtilExport bool parse_vector_float(char* const, char**, bool, double*);
+    _UtilExport bool parse_vector_float(char* const, char**, bool, float*);
 }
 
 #endif /* _FloatParser_H__ */

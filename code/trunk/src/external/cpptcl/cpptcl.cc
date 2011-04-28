@@ -16,7 +16,8 @@
 using namespace Tcl;
 using namespace Tcl::details;
 using namespace std;
-using namespace boost;
+// boost::shared_ptr conflicts with the new std::shared_ptr
+//using namespace boost;
 
 
 result::result(Tcl_Interp *interp) : interp_(interp) {}
@@ -166,7 +167,7 @@ namespace // anonymous
 {
 
 // map of polymorphic callbacks
-typedef map<string, shared_ptr<callback_base> > callback_interp_map;
+typedef map<string, boost::shared_ptr<callback_base> > callback_interp_map;
 typedef map<Tcl_Interp *, callback_interp_map> callback_map;
 
 callback_map callbacks;
@@ -179,7 +180,7 @@ typedef map<Tcl_Interp *, policies_interp_map> policies_map;
 policies_map call_policies;
 
 // map of object handlers
-typedef map<string, shared_ptr<class_handler_base> > class_interp_map;
+typedef map<string, boost::shared_ptr<class_handler_base> > class_interp_map;
 typedef map<Tcl_Interp *, class_interp_map> class_handlers_map;
 
 class_handlers_map class_handlers;
@@ -490,7 +491,7 @@ class_handler_base::class_handler_base()
 }
 
 void class_handler_base::register_method(string const &name,
-     shared_ptr<object_cmd_base> ocb, policies const &p)
+     boost::shared_ptr<object_cmd_base> ocb, policies const &p)
 {
      methods_[name] = ocb;
      policies_[name] = p;
@@ -989,7 +990,7 @@ void interpreter::clear_definitions(Tcl_Interp *interp)
 }
 
 void interpreter::add_function(string const &name,
-     shared_ptr<callback_base> cb, policies const &p)
+     boost::shared_ptr<callback_base> cb, policies const &p)
 {
      Tcl_CreateObjCommand(interp_, name.c_str(),
           callback_handler, 0, 0);
@@ -999,13 +1000,13 @@ void interpreter::add_function(string const &name,
 }
 
 void interpreter::add_class(string const &name,
-     shared_ptr<class_handler_base> chb)
+     boost::shared_ptr<class_handler_base> chb)
 {
      class_handlers[interp_][name] = chb;
 }
 
 void interpreter::add_constructor(string const &name,
-     shared_ptr<class_handler_base> chb, shared_ptr<callback_base> cb,
+     boost::shared_ptr<class_handler_base> chb, boost::shared_ptr<callback_base> cb,
      policies const &p)
 {
      Tcl_CreateObjCommand(interp_, name.c_str(),

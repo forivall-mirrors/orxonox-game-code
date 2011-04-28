@@ -29,8 +29,10 @@
 
 #include "GUIManager.h"
 
-#include <boost/bind.hpp>
 #include <memory>
+#include <boost/bind.hpp>
+#include <OgreRenderQueue.h>
+#include <OgreRenderWindow.h>
 
 #include <CEGUIDefaultLogger.h>
 #include <CEGUIExceptions.h>
@@ -42,13 +44,21 @@
 #include <CEGUIWindowManager.h>
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
-#include <ogreceguirenderer/OgreCEGUIRenderer.h>
 
-#include "SpecialConfig.h" // Configures the macro below
-#ifdef CEGUILUA_USE_INTERNAL_LIBRARY
-#   include <ceguilua/CEGUILua.h>
+#ifdef ORXONOX_OLD_CEGUI
+#  include <CEGUILua.h>
+#  include <ogreceguirenderer/OgreCEGUIRenderer.h>
+extern "C" {
+#  include <lauxlib.h>
+}
 #else
-#   include <CEGUILua.h>
+#  include <ScriptingModules/LuaScriptModule/CEGUILua.h>
+#  include <RendererModules/Ogre/CEGUIOgreImageCodec.h>
+#  include <RendererModules/Ogre/CEGUIOgreRenderer.h>
+#  include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
+#  include <OgreCamera.h>
+#  include <OgreRenderQueueListener.h>
+#  include <OgreSceneManager.h>
 #endif
 
 #include "util/Clock.h"
@@ -88,7 +98,7 @@ namespace orxonox
                 case CEGUI::Standard:    orxonoxLevel = 4; break;
                 case CEGUI::Informative: orxonoxLevel = 5; break;
                 case CEGUI::Insane:      orxonoxLevel = 6; break;
-                default: OrxAssert(false, "CEGUI log level out of range, inpect immediately!");
+                default: OrxAssert(false, "CEGUI log level out of range, inspect immediately!");
             }
             OutputHandler::getOutStream(orxonoxLevel)
                 << "CEGUI: " << message << std::endl;
@@ -96,6 +106,40 @@ namespace orxonox
             CEGUI::DefaultLogger::logEvent(message, level);
         }
     };
+
+#ifdef ORXONOX_OLD_CEGUI
+    /** Class with the same memory layout as CEGUI::LuaScriptModule. <br>
+        We need this to fix a problem with an uninitialised member variable
+        in CEGUI < 0.7 <br>
+        Notice the "public" modifier for the otherwise private variables.
+    */
+    class LuaScriptModuleWorkaround : public CEGUI::ScriptModule
+    {
+    public:
+        LuaScriptModuleWorkaround();
+        ~LuaScriptModuleWorkaround();
+
+    public:
+        bool d_ownsState;
+        lua_State* d_state;
+        CEGUI::String d_errFuncName;
+        int d_errFuncIndex;
+        CEGUI::String d_activeErrFuncName;
+        int d_activeErrFuncIndex;
+    };
+#else
+    /// RenderQueueListener based class used to hook into the ogre rendering system
+    class RQListener : public Ogre::RenderQueueListener
+    {
+    public:
+        /// Callback from Ogre invoked before other stuff in our target queue is rendered
+        void renderQueueEnded(Ogre::uint8 id, const Ogre::String& invocation, bool& skipThisQueue)
+        {
+            if (id == Ogre::RENDER_QUEUE_SKIES_LATE)//Ogre::RENDER_QUEUE_OVERLAY)
+                CEGUI::System::getSingleton().renderGUI();
+        }
+    };
+#endif
 
     static CEGUI::MouseButton convertButton(MouseButtonCode::ByEnum button);
 
@@ -117,7 +161,15 @@ namespace orxonox
     @return true if success, otherwise false
     */
     GUIManager::GUIManager(const std::pair<int, int>& mousePosition)
-        : resourceProvider_(NULL)
+        : destroyer_(*this, &GUIManager::cleanup)
+        , guiRenderer_(NULL)
+        , resourceProvider_(NULL)
+#ifndef ORXONOX_OLD_CEGUI
+        , imageCodec_(NULL)
+#endif
+        , luaState_(NULL)
+        , scriptModule_(NULL)
+        , guiSystem_(NULL)
         , camera_(NULL)
     {
         RegisterRootObject(GUIManager);
@@ -128,28 +180,54 @@ namespace orxonox
         COUT(3) << "Initialising CEGUI." << std::endl;
 
         // Note: No SceneManager specified yet
-        guiRenderer_.reset(new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000));
+#ifdef ORXONOX_OLD_CEGUI
+        guiRenderer_ = new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
         resourceProvider_ = guiRenderer_->createResourceProvider();
+#else
+        guiRenderer_ = &OgreRenderer::create(*GraphicsManager::getInstance().getRenderWindow());
+        // We use our own RenderQueueListener so we can draw UNDER overlays
+        guiRenderer_->setFrameControlExecutionEnabled(false);
+        rqListener_ = new RQListener();
+        resourceProvider_ = &OgreRenderer::createOgreResourceProvider();
+        imageCodec_ = &OgreRenderer::createOgreImageCodec();
+#endif
         resourceProvider_->setDefaultResourceGroup("General");
 
         // Setup scripting
-        luaState_.reset(new LuaState());
+        luaState_ = new LuaState();
         rootFileInfo_ = Resource::getInfo("InitialiseGUI.lua");
         // This is necessary to ensure that input events also use the right resource info when triggering lua functions
         luaState_->setDefaultResourceInfo(this->rootFileInfo_);
-        scriptModule_.reset(new LuaScriptModule(luaState_->getInternalLuaState()));
+#ifdef ORXONOX_OLD_CEGUI
+        scriptModule_ = new LuaScriptModule(luaState_->getInternalLuaState());
+        // Ugly workaround: older CEGUILua versions don't initialise the member
+        // d_activeErrFuncIndex at all. That leads to "error in error handling"
+        // problems when a Lua error occurs.
+        // We fix this by setting the member manually.
+        reinterpret_cast<LuaScriptModuleWorkaround*>(scriptModule_)->d_activeErrFuncIndex = LUA_NOREF;
+        luaState_->doString("ORXONOX_OLD_CEGUI = true");
+#else
+        scriptModule_ = &LuaScriptModule::create(luaState_->getInternalLuaState());
+#endif
         scriptModule_->setDefaultPCallErrorHandler(LuaState::ERROR_HANDLER_NAME);
 
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
         ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
-        // set the log level according to ours (translate by subtracting 1)
+        // Set the log level according to ours (translate by subtracting 1)
         ceguiLogger->setLoggingLevel(
             static_cast<LoggingLevel>(OutputHandler::getInstance().getSoftDebugLevel("logFile") - 1));
         this->ceguiLogger_ = ceguiLogger.release();
 
         // Create the CEGUI system singleton
-        guiSystem_.reset(new System(guiRenderer_.get(), resourceProvider_, 0, scriptModule_.get()));
+#ifdef ORXONOX_OLD_CEGUI
+        guiSystem_ = new System(guiRenderer_, resourceProvider_, 0, scriptModule_);
+        // Add functions that have been renamed in newer versions
+        luaState_->doString("CEGUI.SchemeManager.create = CEGUI.SchemeManager.loadScheme");
+        luaState_->doString("CEGUI.Window.getUnclippedOuterRect = CEGUI.Window.getUnclippedPixelRect");
+#else
+        guiSystem_ = &System::create(*guiRenderer_, resourceProvider_, 0, imageCodec_, scriptModule_);
+#endif
 
         // Align CEGUI mouse with OIS mouse
         guiSystem_->injectMousePosition((float)mousePosition.first, (float)mousePosition.second);
@@ -174,12 +252,24 @@ namespace orxonox
         this->luaState_->doFile("SheetManager.lua");
     }
 
-    /**
-    @brief
-        Basically shuts down CEGUI (member smart pointers) but first unloads our Tolua modules.
-    */
-    GUIManager::~GUIManager()
+    void GUIManager::cleanup()
     {
+        using namespace CEGUI;
+
+#ifdef ORXONOX_OLD_CEGUI
+        delete guiSystem_;
+        delete guiRenderer_;
+        delete scriptModule_;
+#else
+        System::destroy();
+        OgreRenderer::destroyOgreResourceProvider(*resourceProvider_);
+        OgreRenderer::destroyOgreImageCodec(*imageCodec_);
+        OgreRenderer::destroy(*guiRenderer_);
+        LuaScriptModule::destroy(*scriptModule_);
+        delete ceguiLogger_;
+        delete rqListener_;
+#endif
+        delete luaState_;
     }
 
     void GUIManager::setConfigValues(void)
@@ -220,11 +310,18 @@ namespace orxonox
     */
     void GUIManager::setCamera(Ogre::Camera* camera)
     {
-        this->camera_ = camera;
+#ifdef ORXONOX_OLD_CEGUI
         if (camera == NULL)
             this->guiRenderer_->setTargetSceneManager(0);
         else
             this->guiRenderer_->setTargetSceneManager(camera->getSceneManager());
+#else
+        if (camera_ != NULL && camera_->getSceneManager() != NULL)
+            camera_->getSceneManager()->removeRenderQueueListener(rqListener_);
+        if (camera != NULL && camera->getSceneManager() != NULL)
+            camera->getSceneManager()->addRenderQueueListener(rqListener_);
+#endif
+        this->camera_ = camera;
     }
 
     /**
@@ -320,12 +417,18 @@ namespace orxonox
         ----------------------------------------------------
         false                     | False | True  | Dontcare
         */
+
+#ifdef ORXONOX_PLATFORM_APPLE
+        // There is no non exclusive mode on OS X yet
+        state->setMouseExclusive(TriBool::True);
+#else
         if (showCursor == TriBool::Dontcare)
             state->setMouseExclusive(TriBool::Dontcare);
         else if (GraphicsManager::getInstance().isFullScreen() || showCursor == TriBool::False)
             state->setMouseExclusive(TriBool::True);
         else
             state->setMouseExclusive(TriBool::False);
+#endif
 
         if (showCursor == TriBool::True)
             state->setMouseHandler(this);
@@ -521,7 +624,7 @@ namespace orxonox
     @param listbox
         The Listbox for which to enable (or disable) tooltips.
     @param enabled
-        Whether to enable or disabel the tooltips.
+        Whether to enable or disable the tooltips.
     */
     void GUIManager::setItemTooltipsEnabledHelper(CEGUI::Listbox* listbox, bool enabled)
     {

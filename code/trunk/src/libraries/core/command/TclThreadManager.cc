@@ -115,8 +115,9 @@ namespace orxonox
     */
     TclThreadManager::~TclThreadManager()
     {
+        delete this->interpreterBundles_[0];
         delete this->interpreterBundlesMutex_;
-//        delete this->mainInterpreterMutex_; // <-- temporary disabled to avoid crash if a thread is still actively queriyng
+//        delete this->mainInterpreterMutex_; // <-- temporarily disabled to avoid crash if a thread is still actively querying
         delete this->messageQueue_;
     }
 

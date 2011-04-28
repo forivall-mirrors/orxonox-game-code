@@ -29,7 +29,7 @@
 
 #include "LuaState.h"
 
-#include <tolua/tolua++.h>
+#include <tolua++.h>
 extern "C" {
 #include <lua.h>
 #include <lualib.h>
@@ -59,16 +59,7 @@ namespace orxonox
         // Create new lua state and configure it
         luaState_ = lua_open();
         Loki::ScopeGuard luaStateGuard = Loki::MakeGuard(&lua_close, luaState_);
-#if LUA_VERSION_NUM == 501
         luaL_openlibs(luaState_);
-#else
-        luaopen_base(luaState_);
-        luaopen_string(luaState_);
-        luaopen_table(luaState_);
-        luaopen_math(luaState_);
-        luaopen_io(luaState_);
-        luaopen_debug(luaState_);
-#endif
 
         // Open all available tolua interfaces
         this->openToluaInterfaces(luaState_);
@@ -186,14 +177,7 @@ namespace orxonox
             errorHandler = 0;
         }
 
-#if LUA_VERSION_NUM != 501
-        LoadS ls;
-        ls.s = code.c_str();
-        ls.size = code.size();
-        int error = lua_load(luaState_, &orxonox::LuaState::lua_Chunkreader, &ls, chunkname.c_str());
-#else
         int error = luaL_loadbuffer(luaState_, code.c_str(), code.size(), chunkname.c_str());
-#endif
 
         switch (error)
         {
@@ -291,18 +275,6 @@ namespace orxonox
     {
         return IOConsole::exists();
     }
-
-#if LUA_VERSION_NUM != 501
-    const char * LuaState::lua_Chunkreader(lua_State *L, void *data, size_t *size)
-    {
-        LoadS* ls = static_cast<LoadS*>(data);
-        if (ls->size == 0)
-            return NULL;
-        *size = ls->size;
-        ls->size = 0;
-        return ls->s;
-    }
-#endif
 
     /*static*/ bool LuaState::addToluaInterface(int (*function)(lua_State*), const std::string& name)
     {

@@ -172,7 +172,7 @@ namespace orxonox
                 // Setup the render window.
                 this->setupRenderWindow(renderWindow);
                 // Add the log path to the standard resource group.
-                Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getInstance().getLogPathString(), "FileSystem", Resource::DEFAULT_GROUP);
+                Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getInstance().getLogPathString(), "FileSystem", Resource::getDefaultResourceGroup());
                 
                 COUT(4) << "Setting up SkyboxGenerator..." << endl;
                 
@@ -207,7 +207,7 @@ namespace orxonox
                 // Restore the render window.
                 this->restoreRenderWindow(renderWindow);
                 // Remove the log path from the standard resource group.
-                Ogre::ResourceGroupManager::getSingleton().removeResourceLocation(PathConfig::getInstance().getLogPathString(), Resource::DEFAULT_GROUP);
+                Ogre::ResourceGroupManager::getSingleton().removeResourceLocation(PathConfig::getInstance().getLogPathString(), Resource::getDefaultResourceGroup());
                 
                 // Reset the flow parameters for the next skybox generation.
                 this->bGenerateSkybox_ = false;
@@ -310,7 +310,7 @@ namespace orxonox
         // Loading the resizing, then saving again. This seems stupid, but resizing doesn't seem to work otherwise.
         // If someone figures this out, feel free to adjust.
         image = new Ogre::Image();
-        image->load(name, Resource::DEFAULT_GROUP);
+        image->load(name, Resource::getDefaultResourceGroup());
         image->resize(this->size_, this->size_);
         image->save(PathConfig::getInstance().getLogPathString()+name);
         delete image;

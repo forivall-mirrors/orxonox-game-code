@@ -52,10 +52,13 @@
 #      define _PickupExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _PickupPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _PickupExport  __attribute__ ((visibility("default")))
+#  define _PickupPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _PickupExport
+#  define _PickupPrivate
 #endif
 
 //-----------------------------------------------------------------------

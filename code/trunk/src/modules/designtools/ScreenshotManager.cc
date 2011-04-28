@@ -44,6 +44,7 @@
 #include "core/ConfigValueIncludes.h"
 #include "core/GraphicsManager.h"
 #include "core/PathConfig.h"
+#include "core/Resource.h"
 #include "core/command/ConsoleCommand.h"
 #include "util/ScopedSingletonManager.h"
 #include "util/StringUtils.h"
@@ -110,7 +111,9 @@ namespace orxonox
             this->windowHeight_  = pRenderWindow->getHeight();
 
             // Create temporary texture
-            this->tempTexture_ = Ogre::TextureManager::getSingleton().createManual("ScreenShotTex", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, this->windowWidth_, this->windowHeight_, 0, Ogre::PF_B8G8R8, Ogre::TU_RENDERTARGET);
+            this->tempTexture_ = Ogre::TextureManager::getSingleton().createManual("ScreenShotTex",
+                Resource::getDefaultResourceGroup(), Ogre::TEX_TYPE_2D, this->windowWidth_,
+                this->windowHeight_, 0, Ogre::PF_B8G8R8, Ogre::TU_RENDERTARGET);
 
             // Get the current render target of the temporary texture
             this->renderTarget_ = this->tempTexture_->getBuffer()->getRenderTarget();

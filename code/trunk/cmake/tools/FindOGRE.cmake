@@ -22,7 +22,7 @@ INCLUDE(HandleLibraryTypes)
 
 FIND_PATH(OGRE_INCLUDE_DIR Ogre.h
   PATHS $ENV{OGRE_HOME}
-  PATH_SUFFIXES include include/OGRE Ogre.framework/Headers
+  PATH_SUFFIXES include include/OGRE
 )
 FIND_LIBRARY(OGRE_LIBRARY_OPTIMIZED
   NAMES OgreMain Ogre
@@ -32,7 +32,7 @@ FIND_LIBRARY(OGRE_LIBRARY_OPTIMIZED
 FIND_LIBRARY(OGRE_LIBRARY_DEBUG
   NAMES OgreMaind OgreMain_d OgreMainD OgreMain_D Ogred Ogre_d OgreD Ogre_d
   PATHS $ENV{OGRE_HOME}
-  PATH_SUFFIXES lib bin/Debug bin/debug Debug debug Versions/A
+  PATH_SUFFIXES lib bin/Debug bin/debug Debug debug
 )
 
 # Inspect OgrePrerquisites.h for the version number

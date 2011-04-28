@@ -39,17 +39,36 @@ ENDIF()
 
 # On Windows using a package causes way less problems
 SET(_option_msg "Set this to true to use precompiled dependecy archives")
-IF(WIN32)
+IF(WIN32 OR APPLE)
   OPTION(DEPENDENCY_PACKAGE_ENABLE "${_option_msg}" ON)
-ELSE(WIN32)
+ELSE()
   OPTION(DEPENDENCY_PACKAGE_ENABLE "${_option_msg}" FALSE)
-ENDIF(WIN32)
+ENDIF()
 
 # Scripts for specific library and CMake config
 INCLUDE(LibraryConfigTardis)
-INCLUDE(LibraryConfigApple)
 
 IF(DEPENDENCY_PACKAGE_ENABLE)
+  IF(APPLE AND NOT EXISTS ${CMAKE_SOURCE_DIR}/dependencies)
+    # Let CMake automatically download and extract the dependency package on Mac OS X
+    # TODO: Handle download errors and always select newest package
+    SET(_dep_package_current "OrxonoxDeps_110428_2.0_OSX.tar.bz2")
+    SET(_dep_package_url "http://svn.orxonox.net/ogre/apple/precompiled_dependencies")
+    MESSAGE(STATUS "Downloading Mac OS X dependency package.")
+    FILE(DOWNLOAD
+      ${_dep_package_url}/${_dep_package_current}
+      ${CMAKE_SOURCE_DIR}/${_dep_package_current}
+    )
+    MESSAGE(STATUS "Extracting Mac OS X dependency package.")
+    EXECUTE_PROCESS(
+      COMMAND ${CMAKE_COMMAND} -E tar -jxf ${_dep_package_current}
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      OUTPUT_FILE ${CMAKE_BINARY_DIR}/dep_pack_extract_log.keep_me
+    )
+    # Delete the dependency archive once we no longer need it
+    FILE(REMOVE ${CMAKE_SOURCE_DIR}/${_dep_package_current})
+  ENDIF()
+
   GET_FILENAME_COMPONENT(_dep_dir_1 ${CMAKE_SOURCE_DIR}/../dependencies ABSOLUTE)
   GET_FILENAME_COMPONENT(_dep_dir_2 ${CMAKE_SOURCE_DIR}/../lib_dist ABSOLUTE)
   IF(MINGW)
@@ -58,6 +77,8 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
     SET(_compiler_prefix msvc8)
   ELSEIF(MSVC90)
     SET(_compiler_prefix msvc9)
+  ELSEIF(MSVC10)
+    SET(_compiler_prefix msvc10)
   ENDIF()
   FIND_PATH(DEPENDENCY_PACKAGE_DIR
     NAMES version.txt
@@ -72,9 +93,13 @@ IF(DEPENDENCY_PACKAGE_ENABLE)
     MESSAGE(STATUS "Warning: Could not find dependency directory."
                    "Disable LIBRARY_USE_PACKAGE if you have none intalled.")
   ELSE()
-    INCLUDE(PackageConfigMinGW)
-    INCLUDE(PackageConfigMSVC)
-    INCLUDE(PackageConfig) # For both msvc and mingw
+    IF(WIN32)
+      INCLUDE(PackageConfigMinGW)
+      INCLUDE(PackageConfigMSVC)
+      INCLUDE(PackageConfig) # For both msvc and mingw
+    ELSEIF(APPLE)
+      INCLUDE(PackageConfigOSX)
+    ENDIF(WIN32)
   ENDIF()
 ENDIF(DEPENDENCY_PACKAGE_ENABLE)
 
@@ -92,51 +117,19 @@ ENDIF(LIBRARY_CONFIG_USER_SCRIPT)
 ############### Library finding #################
 # Performs the search and sets the variables    #
 
-FIND_PACKAGE(OGRE  1.4       REQUIRED)
-#FIND_PACKAGE(ENet  1.1       REQUIRED)
+#FIND_PACKAGE(ENet     1.2    REQUIRED)
+FIND_PACKAGE(CEGUI    0.6    REQUIRED)
+FIND_PACKAGE(Lua5.1          REQUIRED)
 FIND_PACKAGE(Ogg             REQUIRED)
 FIND_PACKAGE(Vorbis          REQUIRED)
 FIND_PACKAGE(ALUT            REQUIRED)
 FIND_PACKAGE(ZLIB            REQUIRED)
-IF(POCO_REQUIRED)
-  FIND_PACKAGE(POCO          REQUIRED)
-  # Always link against POCO too because of threading
-  SET(OGRE_LIBRARY ${OGRE_LIBRARY} ${POCO_LIBRARY})
-ENDIF()
+
 IF(WIN32)
   FIND_PACKAGE(DbgHelp)
   FIND_PACKAGE(DirectX       REQUIRED)
 ENDIF()
 
-##### CEGUI #####
-# We make use of the CEGUI script module called CEGUILua.
-# However there is a small issue with that: We use Tolua, a C++ binding
-# generator ourselves. And we also have to use our bindings in the same
-# lua state is CEGUILua's. Unfortunately this implies that both lua runtime
-# version are equal or else you get segmentation faults.
-# In order to match the Lua versions we decided to ship CEGUILua in our
-# repository, mainly because there is no way to determine which version of
-# Lua CEGUILua was linked against (you'd have to specify yourself) and secondly
-# because we can then choose the Lua version. Future plans might involve only
-# accepting Lua 5.1.
-
-# Insert all internally supported CEGUILua versions here
-SET(CEGUILUA_INTERNAL_SUPPORT 0.5.0 0.6.0 0.6.1 0.6.2)
-OPTION(CEGUILUA_USE_EXTERNAL_LIBRARY "Force the use of external CEGUILua library" OFF)
-FIND_PACKAGE(CEGUI 0.5 REQUIRED)
-
-##### Lua #####
-IF(CEGUILUA_USE_EXTERNAL_LIBRARY)
-  COMPARE_VERSION_STRINGS(${CEGUI_VERSION} "0.6" _version_comparison)
-  IF(version_comparison LESS 0)
-    SET(LUA_VERSION_REQUEST 5.0)
-  ELSE()
-    SET(LUA_VERSION_REQUEST 5.1)
-  ENDIF()
-ELSE()
-  SET(LUA_VERSION_REQUEST 5)
-ENDIF()
-FIND_PACKAGE(Lua ${LUA_VERSION_REQUEST} EXACT REQUIRED)
 
 ##### OpenAL #####
 FIND_PACKAGE(OpenAL REQUIRED)
@@ -160,14 +153,27 @@ SET(TCL_FIND_QUIETLY FALSE)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(TCL DEFAULT_MSG TCL_LIBRARY TCL_INCLUDE_PATH)
 
 ##### Boost #####
-# Expand the next statement if newer boost versions than 1.36.1 are released
-SET(Boost_ADDITIONAL_VERSIONS 1.37 1.37.0 1.38 1.38.0 1.39 1.39.0 1.40 1.40.0
-                              1.41 1.41.0 1.42 1.42.0 1.43 1.43.0 1.44 1.44.0)
-IF( NOT TARDIS )
-  FIND_PACKAGE(Boost 1.35 REQUIRED thread filesystem system date_time)
+# Expand the next statement if newer boost versions are released
+SET(Boost_ADDITIONAL_VERSIONS 1.40 1.40.0 1.41 1.41.0 1.42 1.42.0 1.43 1.43.0
+                              1.44 1.44.0 1.45 1.45.0 1.46 1.46.0 1.46.1)
+IF(NOT TARDIS)
+  FIND_PACKAGE(Boost 1.40 REQUIRED thread filesystem system date_time)
 ENDIF()
 # No auto linking, so this option is useless anyway
 MARK_AS_ADVANCED(Boost_LIB_DIAGNOSTIC_DEFINITIONS)
+
+##### OGRE #####
+FIND_PACKAGE(OGRE 1.6 REQUIRED)
+# For Ogre >= 1.7, we might need a threading library
+# Variables are either defined by dependency package config or by FindOGRE
+IF(OGRE_NEEDS_POCO)
+  FIND_PACKAGE(POCO REQUIRED)
+  # Always link against POCO too because of threading
+  SET(OGRE_LIBRARY ${OGRE_LIBRARY} ${POCO_LIBRARY})
+ELSEIF(OGRE_NEEDS_BOOST)
+  # Always link against boost too because of threading
+  SET(OGRE_LIBRARY ${OGRE_LIBRARY} ${Boost_THREAD_LIBRARY})
+ENDIF()
 
 
 ####### Static/Dynamic linking options ##########
@@ -176,24 +182,19 @@ MARK_AS_ADVANCED(Boost_LIB_DIAGNOSTIC_DEFINITIONS)
 # You may want to edit these settings if you provide your own libraries
 # Note: Default option in the libraries vary, but our default option is dynamic
 IF(WIN32)
-  OPTION(LINK_BOOST_DYNAMIC "Link Boost dynamically on Windows" TRUE)
-  OPTION(LINK_CEGUI_DYNAMIC "Link CEGUI dynamicylly on Windows" TRUE)
-  #OPTION(LINK_ENET_DYNAMIC  "Link ENet dynamically on Windows" TRUE)
-  OPTION(LINK_OGRE_DYNAMIC  "Link OGRE dynamically on Windows" TRUE)
-  OPTION(LINK_TCL_DYNAMIC   "Link TCL dynamically on Windows" TRUE)
-  OPTION(LINK_ZLIB_DYNAMIC  "Link ZLib dynamically on Windows" TRUE)
-  COMPARE_VERSION_STRINGS("${LUA_VERSION}" "5.1" _version_comparison)
-  IF(_version_comparison LESS 0)
-    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" FALSE)
-  ELSE(_version_comparison LESS 0)
-    OPTION(LINK_LUA_DYNAMIC "Link Lua dynamically on Windows" TRUE)
-  ENDIF(_version_comparison LESS 0)
+  OPTION(LINK_BOOST_DYNAMIC  "Link Boost dynamically on Windows" TRUE)
+  OPTION(LINK_CEGUI_DYNAMIC  "Link CEGUI dynamicylly on Windows" TRUE)
+  #OPTION(LINK_ENET_DYNAMIC   "Link ENet dynamically on Windows" TRUE)
+  OPTION(LINK_OGRE_DYNAMIC   "Link OGRE dynamically on Windows" TRUE)
+  OPTION(LINK_TCL_DYNAMIC    "Link TCL dynamically on Windows" TRUE)
+  OPTION(LINK_ZLIB_DYNAMIC   "Link ZLib dynamically on Windows" TRUE)
+  OPTION(LINK_LUA5.1_DYNAMIC "Link Lua dynamically on Windows" TRUE)
 
   IF(DEPENDENCY_PACKAGE_ENABLE)
     MARK_AS_ADVANCED(
       LINK_BOOST_DYNAMIC LINK_CEGUI_DYNAMIC #LINK_ENET_DYNAMIC
       LINK_OGRE_DYNAMIC  LINK_TCL_DYNAMIC   LINK_ZLIB_DYNAMIC
-      LINK_LUA_DYNAMIC
+      LINK_LUA5.1_DYNAMIC
     )
   ENDIF()
 ENDIF(WIN32)

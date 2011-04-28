@@ -23,10 +23,19 @@
  #    Configures some basics and controls the configuration scripts
  #
 
+# Defined LINUX
+IF(UNIX AND NOT APPLE)
+  SET(LINUX TRUE)
+ENDIF()
+
 IF(WIN32)
-  CMAKE_MINIMUM_REQUIRED(VERSION 2.6.3 FATAL_ERROR)
+  IF(MSVC10)
+    CMAKE_MINIMUM_REQUIRED(VERSION 2.8.3 FATAL_ERROR)
+  ELSE()
+    CMAKE_MINIMUM_REQUIRED(VERSION 2.6.3 FATAL_ERROR)
+  ENDIF()
 ELSE()
-  CMAKE_MINIMUM_REQUIRED(VERSION 2.6   FATAL_ERROR)
+  CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 ENDIF()
 
 # Keep devs from using the root directory as binary directory (messes up the source tree)
@@ -56,6 +65,7 @@ SET(DEFAULT_DOC_PATH     doc)
 SET(DEFAULT_DATA_PATH    data)
 SET(DEFAULT_CONFIG_PATH  config)
 SET(DEFAULT_LOG_PATH     log)
+SET(DEFAULT_BUNDLE_PATH  bundle)
 
 # Set output directories
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${DEFAULT_RUNTIME_PATH})
@@ -97,16 +107,36 @@ ELSE()
   MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
 ENDIF()
 
+# Debug builds can not be installed
+INSTALL(SCRIPT cmake/InstallCheck.cmake)
+
 # Enable expensive optimisations: use this for a binary release build
 OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
 
-########### Subfolders and Subscripts ###########
+IF(APPLE)
+  # Set 10.5 as the base SDK by default
+  SET(XCODE_ATTRIBUTE_SDKROOT macosx10.5)
 
-# Library finding
-INCLUDE(LibraryConfig)
+  # 10.6 sets x86_64 as the default architecture.
+  # Because Carbon isn't supported on 64-bit and we still need it, force the architectures to ppc and i386
+  IF(CMAKE_OSX_ARCHITECTURES MATCHES "x86_64")
+    SET(CMAKE_OSX_ARCHITECTURES "i386")
+  ENDIF()
+  IF(CMAKE_OSX_ARCHITECTURES MATCHES "ppc64")
+    SET(CMAKE_OSX_ARCHITECTURES "ppc")
+  ENDIF()
+  IF(NOT CMAKE_OSX_ARCHITECTURES)
+    SET(CMAKE_OSX_ARCHITECTURES "i386")
+  ENDIF()
+ENDIF()
+
+########### Subfolders and Subscripts ###########
 
 # General build and compiler options and configurations
 INCLUDE(CompilerConfig)
+
+# Library finding
+INCLUDE(LibraryConfig)
 
 # Configure installation paths and options
 INCLUDE(InstallConfig)
@@ -120,5 +150,15 @@ ADD_SUBDIRECTORY(src)
 # Configure the binary output directory. Do this after src!
 ADD_SUBDIRECTORY(bin)
 
+# System specific files (mostly for installation)
+ADD_SUBDIRECTORY(contrib)
+
 # Last but not least: Try to make a doc target with Doxygen
 ADD_SUBDIRECTORY(doc)
+
+########### CPack Packaging ###########
+
+# Currently only testing on Apple
+#IF(APPLE)
+#  INCLUDE(BundleConfig)
+#ENDIF(APPLE)

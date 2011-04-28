@@ -52,6 +52,8 @@
 */
 #ifdef ORXONOX_USE_WINMAIN
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+#elif defined(ORXONOX_PLATFORM_APPLE)
+int main_mac(int argc, char** argv)
 #else
 int main(int argc, char** argv)
 #endif
@@ -59,8 +61,17 @@ int main(int argc, char** argv)
     try
     {
 #ifndef ORXONOX_USE_WINMAIN
+
+#ifdef ORXONOX_PLATFORM_APPLE
+        // On Apples, the kernel supplies a second argument, which we have to circumvent
+        const int firstArgument = 2;
+#else
+        // 0 is the execution path
+        const int firstArgument = 1;
+#endif
+    
         std::string strCmdLine;
-        for (int i = 1; i < argc; ++i)
+        for (int i = firstArgument; i < argc; ++i)
             strCmdLine = strCmdLine + argv[i] + ' ';
 #endif
 

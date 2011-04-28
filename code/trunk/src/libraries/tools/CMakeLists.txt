@@ -20,6 +20,12 @@ ADD_SUBDIRECTORY(interfaces)
 ORXONOX_ADD_LIBRARY(tools
   FIND_HEADER_FILES
   LINK_LIBRARIES
+    ${OGRE_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY} # Filesystem dependency
+    tinyxml_orxonox
+    util
     core
-  SOURCE_FILES ${TOOLS_SRC_FILES}
+  SOURCE_FILES
+    ${TOOLS_SRC_FILES}
 )

@@ -87,7 +87,7 @@ namespace orxonox
 
             while(1)
             {
-                phi = rnd(2*math::pi);
+                phi = rnd(math::twoPi);
                 teta = rnd(math::pi);
                 float random = rnd(1);
                 if(sin(teta)>random) break;

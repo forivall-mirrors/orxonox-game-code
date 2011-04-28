@@ -52,10 +52,13 @@
 #      define _NotificationsExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _NotificationsPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _NotificationsExport  __attribute__ ((visibility("default")))
+#  define _NotificationsPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _NotificationsExport
+#  define _NotificationsPrivate
 #endif
 
 //-----------------------------------------------------------------------

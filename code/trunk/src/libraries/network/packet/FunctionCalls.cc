@@ -32,6 +32,7 @@
 #include "network/FunctionCall.h"
 #include "network/FunctionCallManager.h"
 #include "network/GamestateHandler.h"
+#include "network/Host.h"
 
 namespace orxonox {
 namespace packet {

@@ -58,9 +58,5 @@ INSTALL(
 INSTALL(
   DIRECTORY ${EXTERNAL_DATA_DIRECTORY}/
   DESTINATION ${DATA_INSTALL_DIRECTORY}
-  REGEX "\\.svn$|_svn$|resources\\.oxr|AUTHORS|LICENSE" EXCLUDE
+  REGEX "\\.svn$|_svn$|AUTHORS|LICENSE" EXCLUDE
 )
-# Configure the install scripts (variables not available during installation)
-CONFIGURE_FILE(DataInstallScript.cmake ${CMAKE_CURRENT_BINARY_DIR}/DataInstallScript.cmake @ONLY)
-# Join both resources.oxr files
-INSTALL(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/DataInstallScript.cmake)

@@ -123,7 +123,7 @@ function classPackage:preamble ()
     output('#include <stdlib.h>\n')
     output('#endif\n')
     output('#include <string.h>\n\n')
-    output('#include <tolua/tolua++.h>\n\n')
+    output('#include <tolua++.h>\n\n')
 
     if flags.H then
         output('#include "'..flags.H..'"\n')

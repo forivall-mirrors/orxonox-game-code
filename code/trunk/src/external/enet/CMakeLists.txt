@@ -28,8 +28,6 @@ SET_SOURCE_FILES(ENET_FILES
     utility.h
     win32.h
 
-    win32.c
-
 COMPILATION_BEGIN ENetCompilation.c
     callbacks.c
     compress.c
@@ -39,19 +37,16 @@ COMPILATION_BEGIN ENetCompilation.c
     peer.c
     protocol.c
     unix.c
+    win32.c
 COMPILATION_END
 )
 
 ADD_COMPILER_FLAGS("-DHAS_POLL -DHAS_FCNTL -DHAS_MSGHDR_FLAGS -DHAS_SOCKLEN_T")
 
-IF(WIN32)
-    SET(ENET_WIN_LIBS odbc32 odbccp32 winmm ws2_32)
-ENDIF()
-
 ORXONOX_ADD_LIBRARY(enet_orxonox
     ORXONOX_EXTERNAL
-    VERSION        1.3.0
-    DEFINE_SYMBOL  "ENET_BUILDING_LIB"
-    LINK_LIBRARIES ${ENET_WIN_LIBS}
-    SOURCE_FILES   ${ENET_FILES}
+    VERSION         1.3.1
+    DEFINE_SYMBOL   "ENET_BUILDING_LIB"
+    LINK_LIBS_WIN32 odbc32 odbccp32 winmm ws2_32
+    SOURCE_FILES    ${ENET_FILES}
 )

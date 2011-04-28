@@ -104,13 +104,13 @@ namespace orxonox
     {
         COUT(5) << "AddReward on player: " << player << " ." << std::endl;
 
-        bool check = true;
+        bool temp = true;
         for ( std::list<Rewardable*>::iterator reward = this->rewards_.begin(); reward != this->rewards_.end(); ++reward )
-            check = check && (*reward)->reward(player);
+            temp = temp && (*reward)->reward(player);
 
         COUT(4) << "Rewardable successfully added to player." << player << " ." << std::endl;
 
-        return check;
+        return temp;
     }
 
 }

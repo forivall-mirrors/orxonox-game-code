@@ -67,14 +67,14 @@ namespace orxonox
     */
     /*static*/ bool QuestEffect::invokeEffects(PlayerInfo* player, std::list<QuestEffect*> & effects)
     {
-        bool check = true;
+        bool temp = true;
 
         COUT(4) << "Invoking QuestEffects on player: " << player << " ."  << std::endl;
 
         for (std::list<QuestEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
-            check = check && (*effect)->invoke(player);
+            temp = temp && (*effect)->invoke(player);
 
-        return check;
+        return temp;
     }
 
 }

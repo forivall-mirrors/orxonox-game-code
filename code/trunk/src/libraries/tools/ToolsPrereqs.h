@@ -51,10 +51,13 @@
 #      define _ToolsExport __declspec(dllimport)
 #    endif
 #  endif
-#elif defined ( ORXONOX_GCC_VISIBILITY )
+#  define _ToolsPrivate
+#elif defined (ORXONOX_GCC_VISIBILITY)
 #  define _ToolsExport  __attribute__ ((visibility("default")))
+#  define _ToolsPrivate __attribute__ ((visibility("hidden")))
 #else
 #  define _ToolsExport
+#  define _ToolsPrivate
 #endif
 
 //-----------------------------------------------------------------------

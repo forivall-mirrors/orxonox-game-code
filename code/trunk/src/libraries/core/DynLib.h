@@ -51,17 +51,11 @@ Torus Knot Software Ltd.
 struct HINSTANCE__;
 typedef struct HINSTANCE__* hInstance;
 
-#elif defined(ORXONOX_PLATFORM_LINUX)
+#elif defined(ORXONOX_PLATFORM_UNIX)
 #    define DYNLIB_HANDLE void*
 #    define DYNLIB_LOAD( a ) dlopen( a, RTLD_LAZY | RTLD_GLOBAL)
 #    define DYNLIB_GETSYM( a, b ) dlsym( a, b )
 #    define DYNLIB_UNLOAD( a ) dlclose( a )
-
-#elif defined(ORXONOX_PLATFORM_APPLE)
-#    define DYNLIB_HANDLE CFBundleRef
-#    define DYNLIB_LOAD( a ) mac_loadExeBundle( a )
-#    define DYNLIB_GETSYM( a, b ) mac_getBundleSym( a, b )
-#    define DYNLIB_UNLOAD( a ) mac_unloadExeBundle( a )
 #endif
 
 namespace orxonox

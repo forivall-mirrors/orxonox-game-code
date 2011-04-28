@@ -24,12 +24,10 @@
  #    Also sets the TARDIS variable.
  #
 
-IF(UNIX AND NOT APPLE)
-  IF(EXISTS /etc/hostname)
-    FILE(STRINGS /etc/hostname HOSTNAME LIMIT_COUNT 1)
-    IF(${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
-      SET (TARDIS ON)
-    ENDIF()
+IF(LINUX AND EXISTS /etc/hostname)
+  FILE(STRINGS /etc/hostname HOSTNAME LIMIT_COUNT 1)
+  IF(${HOSTNAME} MATCHES "^tardis-[a-z][0-9][0-9]$")
+    SET (TARDIS ON)
   ENDIF()
 ENDIF()
 
@@ -76,7 +74,7 @@ IF(TARDIS)
   #SET(ENV{ALUTDIR}     "/usr/pack/openal-0.0.8-cl;/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1")
   #SET(ENV{OGGDIR}      "/usr/pack/oggvorbis-1.0-ds;/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.0")
   #SET(ENV{VORBISDIR}   "/usr/pack/oggvorbis-1.0-ds;/usr/pack/oggvorbis-1.0-ds/i686-debian-linux3.0")
-  #SET(ENV{LUA_DIR}     "/usr/pack/lua-5.1.4-sd;/usr/pack/lua-5.1.4-sd/i686-debian-linux4.0")
+  #SET(ENV{LUA5.1_DIR}  "/usr/pack/lua-5.1.4-sd;/usr/pack/lua-5.1.4-sd/i686-debian-linux4.0")
   #SET(ENV{OGRE_HOME}   "/usr/pack/ogre-1.4.9-sd;/usr/pack/ogre-1.4.9-sd/i686-debian-linux4.0")
   #SET(ENV{OPENALDIR}   "/usr/pack/openal-0.0.8-cl;/usr/pack/openal-0.0.8-cl/i686-debian-linux3.1")
   #SET(TCL_INCLUDE_PATH "/usr/pack/tcltk-8.4.9.linux-mo/include")

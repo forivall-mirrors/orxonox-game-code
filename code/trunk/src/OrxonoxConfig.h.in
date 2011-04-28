@@ -79,16 +79,19 @@
 #cmakedefine ORXONOX_LITTLE_ENDIAN
 
 // Architecture
-#cmakedefine ORXONOX_ARCH_32
-#cmakedefine ORXONOX_ARCH_64
+#if defined(__x86_64__) || defined(_M_X64) || defined(__powerpc64__) || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__)
+#   define ORXONOX_ARCH_64
+#else
+#   define ORXONOX_ARCH_32
+#endif
 
 // See if we can use __forceinline or if we need to use __inline instead
 #cmakedefine HAVE_FORCEINLINE
-#ifndef FORCEINLINE
+#ifndef ORX_FORCEINLINE
 #  ifdef HAVE_FORCEINLINE
-#    define FORCEINLINE __forceinline
+#    define ORX_FORCEINLINE __forceinline
 #  else
-#    define FORCEINLINE __inline
+#    define ORX_FORCEINLINE __inline
 #  endif
 #endif
 
@@ -157,8 +160,11 @@
 #  include <iso646.h>
 #endif
 
-#cmakedefine HAVE_STDINT_H
-#ifdef HAVE_STDINT_H
+// On OS X some headers already define HAVE_STDINT_H and that spits out
+// some warnings. Therefore we use this macro.
+// Note: This requires some extra code in OrxonoxConfig.cmake
+#cmakedefine ORX_HAVE_STDINT_H
+#ifdef ORX_HAVE_STDINT_H
 #  include <stdint.h>
 #elif defined(ORXONOX_COMPILER_MSVC)
 typedef __int8            int8_t;
@@ -220,5 +226,15 @@ namespace orxonox
     using boost::shared_array;
     using boost::scoped_array;
 }
+
+// Define Boost Filesystem version
+#include <boost/version.hpp>
+#ifndef BOOST_FILESYSTEM_VERSION
+#  if (BOOST_VERSION < 104600)
+#    define BOOST_FILESYSTEM_VERSION 2
+#  else
+#    define BOOST_FILESYSTEM_VERSION 3
+#  endif
+#endif
 
 #endif /* _OrxonoxConfig_H__ */

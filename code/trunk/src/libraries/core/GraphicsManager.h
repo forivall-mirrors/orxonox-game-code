@@ -113,9 +113,6 @@ namespace orxonox
         std::string setVSync(bool vsync);
 
         scoped_ptr<OgreWindowEventListener> ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
-#if OGRE_VERSION < 0x010600
-        scoped_ptr<MemoryArchiveFactory>    memoryArchiveFactory_;    //!< Stores the modified particle scripts
-#endif
         scoped_ptr<Ogre::LogManager>        ogreLogger_;
         scoped_ptr<Ogre::Root>              ogreRoot_;                //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
@@ -130,7 +127,6 @@ namespace orxonox
 
         // config values
         std::string         ogreConfigFile_;           //!< ogre config filename
-        std::string         ogrePluginsDirectory_;     //!< Directory where the Ogre plugins are located
         std::string         ogrePlugins_;              //!< Comma separated list of all plugins to load
         std::string         ogreLogFile_;              //!< log filename for Ogre log messages
         int                 ogreLogLevelTrivial_;      //!< Corresponding Orxonox debug level for LL_TRIVIAL

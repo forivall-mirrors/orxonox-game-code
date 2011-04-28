@@ -27,6 +27,7 @@
  */
 
 #include "MasterServerComm.h"
+#include "util/Debug.h"
 
 namespace orxonox
 {

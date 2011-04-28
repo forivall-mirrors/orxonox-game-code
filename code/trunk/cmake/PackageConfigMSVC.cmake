@@ -27,6 +27,9 @@
 
 IF(MSVC)
 
+  INCLUDE(CheckPackageVersion)
+  CHECK_PACKAGE_VERSION(4.3 6.0)
+
   # 64 bit system?
   IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
     SET(BINARY_POSTFIX x64)
@@ -35,7 +38,7 @@ IF(MSVC)
   ENDIF()
 
   # Choose right MSVC version
-  STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?) .*$" "\\1"
+  STRING(REGEX REPLACE "^Visual Studio ([0-9][0-9]?).*$" "\\1"
          _msvc_version "${CMAKE_GENERATOR}")
 
   SET(DEP_INCLUDE_DIR ${DEPENDENCY_PACKAGE_DIR}/include)
@@ -53,7 +56,22 @@ IF(MSVC)
 
   # Certain find scripts don't behave as ecpected to we have
   # to specify the libraries ourselves.
-  SET(TCL_LIBRARY  ${DEP_LIBRARY_DIR}/tcl85.lib CACHE FILEPATH "")
-  SET(ZLIB_LIBRARY ${DEP_LIBRARY_DIR}/zdll.lib  CACHE FILEPATH "")
+  IF(MSVC10)
+    SET(TCL_LIBRARY
+      optimized ${DEP_LIBRARY_DIR}/tcl85t.lib
+      debug     ${DEP_LIBRARY_DIR}/tcl85tg.lib
+      CACHE FILEPATH ""
+    )
+    SET(ZLIB_LIBRARY
+      optimized ${DEP_LIBRARY_DIR}/zlib-vc100.lib
+      debug     ${DEP_LIBRARY_DIR}/zlib-vc100_d.lib
+      CACHE FILEPATH ""
+    )
+  ELSE()
+    SET(TCL_LIBRARY  ${DEP_LIBRARY_DIR}/tcl85.lib CACHE FILEPATH "")
+    SET(ZLIB_LIBRARY ${DEP_LIBRARY_DIR}/zdll.lib  CACHE FILEPATH "")
+  ENDIF()
+  # Part of Platform SDK and usually gets linked automatically
+  SET(WMI_LIBRARY  wbemuuid.lib)
 
 ENDIF(MSVC)

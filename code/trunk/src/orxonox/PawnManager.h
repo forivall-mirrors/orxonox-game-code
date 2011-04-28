@@ -36,17 +36,16 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport PawnManager : protected Singleton<PawnManager>, public Tickable
+    class _OrxonoxExport PawnManager : public Singleton<PawnManager>, public Tickable
     {
             friend class Singleton<PawnManager>;
         public:
-            static void touch();
-
-            virtual void tick(float dt);
-
-        private:
             PawnManager();
             virtual ~PawnManager();
+
+            virtual void preUpdate(const Clock& time);
+
+        private:
 
             static PawnManager* singletonPtr_s;
     };

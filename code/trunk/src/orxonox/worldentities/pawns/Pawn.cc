@@ -35,7 +35,6 @@
 #include "core/XMLPort.h"
 #include "network/NetworkFunction.h"
 
-#include "PawnManager.h"
 #include "infos/PlayerInfo.h"
 #include "controllers/Controller.h"
 #include "gametypes/Gametype.h"
@@ -58,7 +57,6 @@ namespace orxonox
     {
         RegisterObject(Pawn);
 
-        PawnManager::touch();
         this->bAlive_ = true;
         this->bReload_ = false;
 

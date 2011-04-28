@@ -33,14 +33,24 @@
 #include <OgreFileSystem.h>
 #include <OgreResourceGroupManager.h>
 
+// Differentiate Boost Filesystem v2 and v3
+#if (BOOST_FILESYSTEM_VERSION < 3)
+#  define BF_GENERIC_STRING string
+#else
+#  define BF_GENERIC_STRING generic_string
+#endif
+
 namespace orxonox
 {
-    std::string Resource::DEFAULT_GROUP(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    const std::string& Resource::getDefaultResourceGroup()
+    {
+        return Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
+    }
 
     DataStreamPtr Resource::open(const std::string& name)
     {
         return Ogre::ResourceGroupManager::getSingleton().openResource(name,
-            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+            getDefaultResourceGroup(), true);
     }
 
     DataStreamListPtr Resource::openMulti(const std::string& pattern)
@@ -94,7 +104,7 @@ namespace orxonox
                 {
                     boost::filesystem::path base(it->archive->getName());
                     base /= it->filename;
-                    ptr->fileSystemPath = base.string();
+                    ptr->fileSystemPath = base.BF_GENERIC_STRING();
                 }
                 return ptr;
             }

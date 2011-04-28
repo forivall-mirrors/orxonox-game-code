@@ -6,27 +6,27 @@ winMgr    = CEGUI.WindowManager:getSingleton()
 
 local scheme = orxonox.CommandExecutor:query("getConfig GUIManager guiScheme_")
 -- Load all required skins
---schemeMgr:loadScheme("TaharezGreenLook.scheme")
-schemeMgr:loadScheme(scheme .. "Look.scheme")
---schemeMgr:loadScheme("TaharezLook.scheme")
---schemeMgr:loadScheme("WindowsLook.scheme")
---schemeMgr:loadScheme("VanillaLook.scheme")
---schemeMgr:loadScheme("SleekSpaceLook.scheme")
+--schemeMgr:create("TaharezGreenLook.scheme")
+schemeMgr:create(scheme .. "Look.scheme")
+--schemeMgr:create("TaharezLook.scheme")
+--schemeMgr:create("WindowsLook.scheme")
+--schemeMgr:create("VanillaLook.scheme")
+--schemeMgr:create("SleekSpaceLook.scheme")
 
 -- Connect skin specific window types with our own window types
 -- By loading a different file (if there is) you can change the skin
 -- of the menus or the HUD independently
---schemeMgr:loadScheme("TaharezGreenMenuWidgets.scheme")
+--schemeMgr:create("TaharezGreenMenuWidgets.scheme")
 --menuImageSet = "TaharezGreenLook"
---schemeMgr:loadScheme("TaharezGreenHUDWidgets.scheme")
+--schemeMgr:create("TaharezGreenHUDWidgets.scheme")
 --hudImageSet = "TaharezGreenLook"
-schemeMgr:loadScheme(scheme .. "MenuWidgets.scheme")
+schemeMgr:create(scheme .. "MenuWidgets.scheme")
 menuImageSet = scheme .. "Look"
-schemeMgr:loadScheme(scheme .. "HUDWidgets.scheme")
+schemeMgr:create(scheme .. "HUDWidgets.scheme")
 hudImageSet = scheme .. "Look"
 
 -- Just a remaining test hack
-schemeMgr:loadScheme("OrxonoxGUIScheme.scheme")
+schemeMgr:create("OrxonoxGUIScheme.scheme")
 
 local system = CEGUI.System:getSingleton()
 system:setDefaultMouseCursor(menuImageSet, "MouseArrow")
