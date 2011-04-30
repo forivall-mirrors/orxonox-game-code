@@ -60,6 +60,9 @@ IF(NOT MINGW AND ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
   ADD_COMPILER_FLAGS("-fPIC" CACHE)
 ENDIF()
 
+# Never omit frame pointers that could interfere with proper stack traces
+ADD_COMPILER_FLAGS("-fno-omit-frame-pointer" CACHE)
+
 # Enable non standard floating point optimisations
 ADD_COMPILER_FLAGS("-ffast-math" CACHE)
 
