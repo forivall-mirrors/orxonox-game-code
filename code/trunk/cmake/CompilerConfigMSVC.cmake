@@ -25,15 +25,10 @@
 
 INCLUDE(FlagUtilities)
 
-################### Compiler Version ####################
-
 # We make use of variadic macros, which is only supported by MSVC 8 and above
 IF(MSVC_VERSION LESS 1400)
-  MESSAGE(FATAL_ERROR "Microsoft Visual Studio versions below 8 (2005) are not supported because of missing compiler extensions.")
+  MESSAGE(FATAL_ERROR "Microsoft Visual Studio versions below 8 (2005) are not supported.")
 ENDIF()
-
-
-######################## Options ########################
 
 # Orxonox only supports MSVC 8 and above, which gets asserted above
 SET(PCH_COMPILER_SUPPORT TRUE)
@@ -41,39 +36,46 @@ SET(PCH_COMPILER_SUPPORT TRUE)
 
 #################### Compiler Flags #####################
 
-# -MD    Minimal Rebuild
-# -RTC1  Both basic runtime checks
-# -MD[d] Multithreaded [debug] DLL
-# -Zi    Program Database
-# -ZI    Program Database for Edit & Continue
-# -WX    General warning Level X
-# -wdX   Disable specific warning X
-# -wnX   Set warning level of specific warning X to level n
-
-# Only add (not set) some general compiler flags.
 # CMake default flags : -DWIN32 -D_WINDOWS -W3 -Zm1000
 # additionally for CXX: -EHsc -GR
-# -MP is for multiprocessed compiling
-ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32 -MP"  CACHE)
+# We keep these flags but reset the build specific flags
+SET_COMPILER_FLAGS("" Debug RelWithDebInfo Release MinSizeRel CACHE)
+
+# Make sure we define all the possible macros for identifying Windows
+ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32"  CACHE)
+# Suppress some annoying warnings
 ADD_COMPILER_FLAGS("-D_CRT_SECURE_NO_WARNINGS" CACHE)
 ADD_COMPILER_FLAGS("-D_SCL_SECURE_NO_WARNINGS" CACHE)
 
-# Overwrite CMake default flags here for the individual configurations
-SET_COMPILER_FLAGS("-MDd -Od -Oi -Zi -D_DEBUG -RTC1" Debug          CACHE)
-SET_COMPILER_FLAGS("-MD  -O2         -DNDEBUG"       Release        CACHE)
-SET_COMPILER_FLAGS("-MD  -O2     -Zi -DNDEBUG"       RelWithDebInfo CACHE)
-SET_COMPILER_FLAGS("-MD  -O1         -DNDEBUG"       MinSizeRel     CACHE)
+# Use multiprocessed compiling (like "make -j3" on Unix)
+ADD_COMPILER_FLAGS("-MP" CACHE)
 
+# Always generate debug symbols (there is really no reason not to)
+ADD_COMPILER_FLAGS("-Zi" CACHE)
+
+# Never omit frame pointers to avoid useless stack traces (the performance
+# loss is almost not measurable)
+ADD_COMPILER_FLAGS("-Oy-" CACHE)
 # Enable non standard floating point optimisations
 ADD_COMPILER_FLAGS("-fp:fast" CACHE)
 
-# Use Link time code generation for Release config if ORXONOX_RELEASE is defined
-IF(ORXONOX_RELEASE)
-  ADD_COMPILER_FLAGS("-GL" ReleaseAll CACHE)
-ENDIF()
+# Set build specific flags.
+# -MD[d]    Multithreaded [debug] shared MSVC runtime library
+# -O[d|2|1] No optimisations, optimise for speed, optimise for size
+# -Oi[-]    Use or disable use of intrinisic functions
+# -GL       Link time code generation (see -LTCG in linker flags)
+# -RTC1     Both basic runtime checks
+ADD_COMPILER_FLAGS("-MDd -Od -Oi  -D_DEBUG -RTC1" Debug          CACHE)
+ADD_COMPILER_FLAGS("-MD  -O2 -Oi  -DNDEBUG"       RelWithDebInfo CACHE)
+ADD_COMPILER_FLAGS("-MD  -O2 -Oi  -DNDEBUG -GL"   Release        CACHE)
+ADD_COMPILER_FLAGS("-MD  -O1 -Oi- -DNDEBUG -GL"   MinSizeRel     CACHE)
 
 
 ####################### Warnings ########################
+
+# -WX    General warning Level X
+# -wdX   Disable specific warning X
+# -wnX   Set warning level of specific warning X to level n
 
 # Increase warning level if requested
 IF(EXTRA_COMPILER_WARNINGS)
@@ -99,9 +101,6 @@ ADD_COMPILER_FLAGS("-w44800" CACHE)
 # ('class1' : inherits 'class2::member' via dominance)
 ADD_COMPILER_FLAGS("-w44250" CACHE)
 
-# This warns about truncation to 255 characters in debug/browse info
-# ADD_COMPILER_FLAGS("-w44786 -w44503" CACHE)
-
 # conversion from 'double' to 'float', possible loss of data
 # conversion from 'ogg_int64_t' to 'long', possible loss of data
 # ADD_COMPILER_FLAGS("-w44244" CACHE)
@@ -115,43 +114,30 @@ ADD_COMPILER_FLAGS("-w44250" CACHE)
 # "non dll-interface class used as base for dll-interface class"
 # ADD_COMPILER_FLAGS("-w44275" CACHE)
 
-# "C++ Exception Specification ignored"
-# This is because MSVC 6 did not implement all the C++ exception
-# specifications in the ANSI C++ draft.
-# ADD_COMPILER_FLAGS("-w44290" CACHE)
-
-# "no suitable definition provided for explicit template
-# instantiation request" Occurs in VC7 for no justifiable reason.
-# ADD_COMPILER_FLAGS("-w44661" CACHE)
-
-# Deprecation warnings when using CRT calls in VC8
-# These show up on all C runtime lib code in VC8, disable since they clutter
-# the warnings with things we may not be able to do anything about (e.g.
-# generated code from nvparse etc). I doubt very much that these calls
-# will ever be actually removed from VC anyway, it would break too much code.
-# Note: Probably handled by "-DCRT_SECURE_NO_WARNINGS"
-# ADD_COMPILER_FLAGS("-w44996" CACHE)
-
-# "conditional expression constant"
-# ADD_COMPILER_FLAGS("-w4201" CACHE)
-
 
 ##################### Linker Flags ######################
 
 # CMake default flags: -MANIFEST -STACK:10000000 -machine:I386
-# and INCREMENTAL and DEBUG for debug versions
-SET_LINKER_FLAGS("-debug -INCREMENTAL:YES" Debug              CACHE)
-SET_LINKER_FLAGS("-debug"                  RelWithDebInfo     CACHE)
-SET_LINKER_FLAGS(""                        Release MinSizeRel CACHE)
+# We keep these flags but reset the build specific flags
+SET_LINKER_FLAGS("" Debug RelWithDebInfo Release MinSizeRel CACHE)
 
+# Always generate debug symbols (there is really no reason not to)
+ADD_LINKER_FLAGS("-DEBUG" CACHE)
+
+# Never fold multiple functions into a single one because we might compare
+# function pointers (for instance with network functions)
+ADD_LINKER_FLAGS("-OPT:NOICF" CACHE)
+
+# Very old flag that would do some extra Windows 98 alignment optimisations
 ADD_LINKER_FLAGS("-OPT:NOWIN98" MSVC80 CACHE)
 
-# Use Link time code generation for Release config if ORXONOX_RELEASE is defined
-IF(ORXONOX_RELEASE)
-  ADD_LINKER_FLAGS("-INCREMENTAL:NO -OPT:ICF -OPT:REF -LTCG" ReleaseAll   CACHE)
-  # Static linker flags have to be added manually to a target
-  SET(ORXONOX_STATIC_LINKER_FLAGS "/LTCG")
-ELSE()
-  ADD_LINKER_FLAGS("-INCREMENTAL:YES"                  RelWithDebInfo     CACHE)
-  ADD_LINKER_FLAGS("-INCREMENTAL:NO -OPT:ICF -OPT:REF" Release MinSizeRel CACHE)
-ENDIF()
+# Incremental linking speeds up development builds
+ADD_LINKER_FLAGS("-INCREMENTAL:YES" Debug   RelWithDebInfo CACHE)
+ADD_LINKER_FLAGS("-INCREMENTAL:NO"  Release MinSizeRel     CACHE)
+
+# Eliminate unreferenced data
+ADD_LINKER_FLAGS("-OPT:REF" Release MinSizeRel CACHE)
+
+# Link time code generation can improve run time performance at the cost of
+# hugely increased link time (the total build time is about the same though)
+ADD_LINKER_FLAGS("-LTCG" Release MinSizeRel CACHE)
