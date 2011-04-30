@@ -135,6 +135,11 @@ function classPackage:preamble ()
         i = i+1
     end
 
+    output('\n')
+    output('#ifdef ORXONOX_RELEASE\n')
+    output('#  define TOLUA_RELEASE\n')
+    output('#endif\n')
+
     if self:requirecollection(_collect) then
         output('\n')
         output('/* function to release collected object via destructor */')

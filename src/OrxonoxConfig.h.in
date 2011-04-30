@@ -145,12 +145,6 @@
 
 
 /*---------------------------------
- * Options
- *-------------------------------*/
-#cmakedefine ORXONOX_RELEASE  ///< Enables expensive (build time) optimisations and disables certain features
-
-
-/*---------------------------------
  * Includes and Declarations
  *-------------------------------*/
 // Define the english written operators like and, or, xor
@@ -184,9 +178,16 @@ typedef unsigned __int64  uint64_t;
 #endif
 */
 
+// Configurations Release and MinSizeRel are designed for redistribution while
+// RelWithDebInfo is more for development
+// ORXONOX_RELEASE simplifies this a little bit
+#if defined(CMAKE_Release_BUILD) || defined(CMAKE_MinSizeRel_BUILD)
+#  define ORXONOX_RELEASE
+#endif
+
 // Include memory leak detector if available and not building actual release
 #cmakedefine HAVE_VLD
-#if defined(HAVE_VLD) && !defined(ORXONOX_RELEASE)
+#if defined(HAVE_VLD) && !defined(NDEBUG)
 typedef uint32_t UINT32;
 typedef wchar_t WCHAR;
 struct HINSTANCE__;

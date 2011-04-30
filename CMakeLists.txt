@@ -110,9 +110,6 @@ ENDIF()
 # Debug builds can not be installed
 INSTALL(SCRIPT cmake/InstallCheck.cmake)
 
-# Enable expensive optimisations: use this for a binary release build
-OPTION(ORXONOX_RELEASE "Enable when building restributable releases" FALSE)
-
 IF(APPLE)
   # Set 10.5 as the base SDK by default
   SET(XCODE_ATTRIBUTE_SDKROOT macosx10.5)

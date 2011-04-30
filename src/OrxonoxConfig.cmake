@@ -71,6 +71,13 @@ CHECK_INCLUDE_FILE_CXX(stdint.h HAVE_STDINT_H)
 # Part of a woraround for OS X warnings. See OrxonoxConfig.h.in
 SET(ORX_HAVE_STDINT_H ${HAVE_STDINT_H})
 
+# XCode and Visual Studio support multiple configurations. In order to tell
+# about the active one we have to define the macro for each configuration
+ADD_COMPILER_FLAGS("-DCMAKE_Debug_BUILD"          Debug)
+ADD_COMPILER_FLAGS("-DCMAKE_Release_BUILD"        Release)
+ADD_COMPILER_FLAGS("-DCMAKE_RelWithDebInfo_BUILD" RelWithDebInfo)
+ADD_COMPILER_FLAGS("-DCMAKE_MinSizeRel_BUILD"     MinSizeRel)
+
 IF(MSVC)
   # Check whether we can use Visual Leak Detector
   FIND_FILE(VLD_DLL vld_x86.dll)
