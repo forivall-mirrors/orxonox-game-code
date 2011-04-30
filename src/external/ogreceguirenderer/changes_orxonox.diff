@@ -1,6 +1,6 @@
---- OgreCEGUIRenderer.cpp	Wed Jan 28 21:14:09 2009
-+++ OgreCEGUIRenderer.cpp	Wed Jan 28 21:07:10 2009
-@@ -24,11 +24,11 @@
+--- OgreCEGUIRenderer.cpp	Sun Dec 27 10:40:24 2009
++++ OgreCEGUIRenderer.cpp	Sat Apr 30 17:21:29 2011
+@@ -24,12 +24,15 @@
      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *************************************************************************/
  
@@ -9,14 +9,18 @@
 -#include <CEGUI/CEGUIImage.h>
 -#include <CEGUI/CEGUIExceptions.h>
 -#include <CEGUI/CEGUISystem.h>
++// Workaround for GCC 4.6
++#include <cstddef>
+ 
 +#include <CEGUIImagesetManager.h>
 +#include <CEGUIImageset.h>
 +#include <CEGUIImage.h>
 +#include <CEGUIExceptions.h>
 +#include <CEGUISystem.h>
- 
++
  #include "OgreCEGUIRenderer.h"
  #include "OgreCEGUITexture.h"
+ #include "OgreCEGUIResourceProvider.h"
 --- OgreCEGUIRenderer.h	Wed Jan 28 21:14:09 2009
 +++ OgreCEGUIRenderer.h	Wed Jan 28 21:06:46 2009
 @@ -29,15 +29,15 @@
@@ -39,10 +43,16 @@
  #   ifdef OGRE_GUIRENDERER_EXPORTS
  #       define OGRE_GUIRENDERER_API __declspec(dllexport)
  #   else
---- OgreCEGUIResourceProvider.cpp	Wed Jan 28 21:14:09 2009
-+++ OgreCEGUIResourceProvider.cpp	Wed Jan 28 21:07:15 2009
-@@ -25,7 +25,7 @@
+--- OgreCEGUIResourceProvider.cpp	Sun Dec 27 10:40:24 2009
++++ OgreCEGUIResourceProvider.cpp	Sat Apr 30 17:21:40 2011
+@@ -23,9 +23,13 @@
+     License along with this library; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *************************************************************************/
++
++// Workaround for GCC 4.6
++#include <cstddef>
++
  #include "OgreCEGUIResourceProvider.h"
  
 -#include <CEGUI/CEGUIExceptions.h>
@@ -61,14 +71,17 @@
  #include "OgreCEGUIRenderer.h"
  
  // Start of CEGUI namespace section
---- OgreCEGUITexture.cpp	Wed Jan 28 21:14:09 2009
-+++ OgreCEGUITexture.cpp	Wed Jan 28 21:07:21 2009
-@@ -24,8 +24,8 @@
+--- OgreCEGUITexture.cpp	Sun Dec 27 10:40:24 2009
++++ OgreCEGUITexture.cpp	Sat Apr 30 17:21:52 2011
+@@ -24,8 +24,11 @@
      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *************************************************************************/
  
 -#include <CEGUI/CEGUISystem.h>
 -#include <CEGUI/CEGUIExceptions.h>
++// Workaround for GCC 4.6
++#include <cstddef>
++
 +#include <CEGUISystem.h>
 +#include <CEGUIExceptions.h>
  #include "OgreCEGUITexture.h"

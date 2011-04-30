@@ -24,6 +24,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *************************************************************************/
 
+// Workaround for GCC 4.6
+#include <cstddef>
+
 #include <CEGUIImagesetManager.h>
 #include <CEGUIImageset.h>
 #include <CEGUIImage.h>
