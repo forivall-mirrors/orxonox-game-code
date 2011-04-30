@@ -113,7 +113,7 @@ namespace orxonox
             static std::string getModulePathString();
 
             //! Return true for runs in the build directory (not installed)
-            static bool isDevelopmentRun() { return getInstance().bDevRun_; }
+            static bool buildDirectoryRun() { return getInstance().bBuildDirectoryRun_; }
 
         private:
             PathConfig(const PathConfig&); //!< Don't use (undefined symbol)
@@ -128,7 +128,7 @@ namespace orxonox
             //! Returns a list with all modules declared by a *.module file in the module folder.
             std::vector<std::string> getModulePaths();
 
-            //! Path to the parent directory of the ones above if program was installed with relativ paths
+            //! Path to the parent directory of the ones above if program was installed with relative paths
             boost::filesystem::path& rootPath_;
             boost::filesystem::path& executablePath_;        //!< Path to the executable
             boost::filesystem::path& modulePath_;            //!< Path to the modules
@@ -137,7 +137,7 @@ namespace orxonox
             boost::filesystem::path& configPath_;            //!< Path to the config files folder
             boost::filesystem::path& logPath_;               //!< Path to the log files folder
 
-            bool                     bDevRun_;               //!< True for runs in the build directory (not installed)
+            bool                     bBuildDirectoryRun_;    //!< True for runs in the build directory (not installed)
             static PathConfig* singletonPtr_s;
     }; //tolua_export
 } //tolua_export

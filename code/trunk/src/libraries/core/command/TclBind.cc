@@ -139,10 +139,10 @@ namespace orxonox
     std::string TclBind::getTclLibraryPath()
     {
 #ifdef DEPENDENCY_PACKAGE_ENABLE
-        if (PathConfig::isDevelopmentRun())
+        if (PathConfig::buildDirectoryRun())
             return (std::string(specialConfig::dependencyLibraryDirectory) + "/tcl");
         else
-            return (PathConfig::getRootPathString() + "lib/tcl");
+            return (PathConfig::getRootPathString() + specialConfig::defaultLibraryPath + "/tcl");
 #else
         return "";
 #endif
