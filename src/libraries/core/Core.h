@@ -90,6 +90,7 @@ namespace orxonox
             inline long long getOgreConfigTimestamp() const
                 { return this->ogreConfigTimestamp_; }
 
+            //! Developers bit. If returns false, some options are not available as to not confuse the normal user.
             inline bool inDevMode(void) const
                 { return this->bDevMode_; }
 

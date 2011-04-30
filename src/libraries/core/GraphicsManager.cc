@@ -118,8 +118,8 @@ namespace orxonox
         resources_->setLuaSupport(false);
         Loader::open(resources_.get());
 
-        // Only for development runs
-        if (PathConfig::isDevelopmentRun())
+        // Only for runs in the build directory (not installed)
+        if (PathConfig::buildDirectoryRun())
             Ogre::ResourceGroupManager::getSingleton().addResourceLocation(PathConfig::getExternalDataPathString(), "FileSystem");
 
         extResources_.reset(new XMLFile("resources.oxr"));
@@ -250,7 +250,7 @@ namespace orxonox
         // Plugin path can have many different locations...
         std::string pluginPath = specialConfig::ogrePluginsDirectory;
 #ifdef DEPENDENCY_PACKAGE_ENABLE
-        if (!PathConfig::isDevelopmentRun())
+        if (!PathConfig::buildDirectoryRun())
         {
 #  if defined(ORXONOX_PLATFORM_WINDOWS)
             pluginPath = PathConfig::getExecutablePathString();

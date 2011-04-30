@@ -97,6 +97,7 @@ namespace orxonox
         , bStartIOConsole_(true)
         , lastLevelTimestamp_(0)
         , ogreConfigTimestamp_(0)
+        , bDevMode_(false)
     {
         // Set the hard coded fixed paths
         this->pathConfig_.reset(new PathConfig());
@@ -211,17 +212,15 @@ namespace orxonox
     {
 #ifdef ORXONOX_RELEASE
         const unsigned int defaultLevelLogFile = 3;
-        SetConfigValue(bDevMode_, false)
-            .description("Developer mode. If not set, hides some things from the user to not confuse him.");
 #else
         const unsigned int defaultLevelLogFile = 4;
-        SetConfigValue(bDevMode_, true)
-            .description("Developer mode. If not set, hides some things from the user to not confuse him.");
 #endif
         SetConfigValueExternal(softDebugLevelLogFile_, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
             .description("The maximum level of debug output shown in the log file");
         OutputHandler::getInstance().setSoftDebugLevel(OutputHandler::logFileOutputListenerName_s, this->softDebugLevelLogFile_);
 
+        SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
+            .description("Developer mode. If not set, hides some things from the user to not confuse him.");
         SetConfigValue(language_, Language::getInstance().defaultLanguage_)
             .description("The language of the in game text")
             .callback(this, &Core::languageChanged);

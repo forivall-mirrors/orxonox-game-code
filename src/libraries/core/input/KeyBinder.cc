@@ -252,10 +252,10 @@ namespace orxonox
     {
         COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
 
-        this->configFile_ = new ConfigFile(this->filename_, !PathConfig::isDevelopmentRun());
+        this->configFile_ = new ConfigFile(this->filename_, !PathConfig::buildDirectoryRun());
         this->configFile_->load();
 
-        if (PathConfig::isDevelopmentRun())
+        if (PathConfig::buildDirectoryRun())
         {
             // Dev users should have combined key bindings files
             std::string defaultFilepath(PathConfig::getDataPathString() + ConfigFile::DEFAULT_CONFIG_FOLDER + '/' + this->filename_);
@@ -286,7 +286,7 @@ namespace orxonox
         {
             addButtonToCommand(binding, it->second);
             std::string str = binding;
-            if (PathConfig::isDevelopmentRun() && binding.empty())
+            if (PathConfig::buildDirectoryRun() && binding.empty())
                 str = "NoBinding";
             it->second->setBinding(this->configFile_, this->fallbackConfigFile_, binding, bTemporary);
             return true;

@@ -83,7 +83,7 @@ namespace orxonox
         , externalDataPath_(*(new bf::path()))
         , configPath_(*(new bf::path()))
         , logPath_(*(new bf::path()))
-        , bDevRun_(false)
+        , bBuildDirectoryRun_(false)
     {
         //////////////////////////
         // FIND EXECUTABLE PATH //
@@ -137,7 +137,7 @@ namespace orxonox
         if (bf::exists(executablePath_ / "orxonox_dev_build.keep_me"))
         {
             COUT(1) << "Running from the build tree." << std::endl;
-            PathConfig::bDevRun_ = true;
+            PathConfig::bBuildDirectoryRun_ = true;
             modulePath_ = specialConfig::moduleDevDirectory;
         }
         else
@@ -179,7 +179,7 @@ namespace orxonox
 
     void PathConfig::setConfigurablePaths()
     {
-        if (bDevRun_)
+        if (bBuildDirectoryRun_)
         {
             dataPath_         = specialConfig::dataDevDirectory;
             configPath_       = specialConfig::configDevDirectory;

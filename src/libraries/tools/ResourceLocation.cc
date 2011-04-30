@@ -75,7 +75,7 @@ namespace orxonox
         bf::path path;
         if (bf::exists(PathConfig::getDataPath() / this->getPath()))
             path = PathConfig::getDataPath() / this->getPath();
-        else if (PathConfig::isDevelopmentRun() && bf::exists(PathConfig::getExternalDataPath() / this->getPath()))
+        else if (PathConfig::buildDirectoryRun() && bf::exists(PathConfig::getExternalDataPath() / this->getPath()))
             path = PathConfig::getExternalDataPath() / this->getPath();
         else
         {
