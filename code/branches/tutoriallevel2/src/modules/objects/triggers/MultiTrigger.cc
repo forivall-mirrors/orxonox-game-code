@@ -197,7 +197,6 @@ namespace orxonox
                         // If the activity is different from what it is now, change it and fire an Event.
                         if(bActive ^ this->isActive(state->originator))
                         {
-
                             bool bFire = true;
 
                             // Add the originator to the objects activating this MultiTrigger.

@@ -39,6 +39,7 @@
 #include "core/LuaState.h"
 #include "network/Host.h"
 #include "network/NetworkFunction.h"
+#include "util/Convert.h"
 #include "util/ScopedSingletonManager.h"
 
 #include "interfaces/NotificationListener.h"
@@ -341,6 +342,38 @@ namespace orxonox
 
     /**
     @brief
+        Fetches the newest Notifications for a specific NotificationListener and stores them in the input map.
+    @param listener
+        The NotificationListener the Notifications are fetched for.
+    @param map
+        A pointer to a multimap, in which the notifications are stored. The map needs to have been allocated.
+    @param numberOfNotifications
+        The number of newest Notifications to be got.
+    @return
+        Returns true if successful.
+    */
+    void NotificationManager::getNewestNotifications(NotificationListener* listener, std::multimap<std::time_t, Notification*>* map, int numberOfNotifications)
+    {
+        assert(listener);
+        assert(map);
+
+        std::multimap<std::time_t, Notification*>* notifications = this->notificationLists_[this->listenerList_[listener]]; // All the Notifications for the input NotificationListener.
+
+        if(!notifications->empty()) // If the list of Notifications is not empty.
+        {
+            std::multimap<std::time_t,Notification*>::iterator it = notifications->end();
+            for(int i = 0; i < numberOfNotifications; i++) // Iterate through the Notifications from the newest until we have the specified number of notifications.
+            {
+                it--;
+                map->insert(std::pair<std::time_t, Notification*>(it->first, it->second)); // Add the found Notifications to the map.
+                if(it == notifications->begin())
+                    break;
+            }
+        }
+    }
+
+    /**
+    @brief
         Enters the edit mode of the NotificationLayer.
     */
     void NotificationManager::enterEditMode(void)
@@ -386,7 +419,14 @@ namespace orxonox
     */
     void NotificationManager::loadQueues(void)
     {
-        new NotificationQueue("all");
+        NotificationQueue* allQueue = new NotificationQueue("all");
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.resizeQueue(\"all\", 0.5, 0, " + multi_cast<std::string>(allQueue->getMaxSize()) + ")");
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.moveQueue(\"all\", 0, 10, 0.3, 0)");
+
+        NotificationQueue* infoQueue = new NotificationQueue("info", NotificationManager::ALL, 1, -1);
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeQueueFont(\"info\", 24, \"FFFFFF00\")");
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.resizeQueue(\"info\", 0.6, 0, " + multi_cast<std::string>(infoQueue->getMaxSize()) + ")");
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.moveQueue(\"info\", 0.2, 0, 0.8, 0)");
     }
 
     /**

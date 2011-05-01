@@ -132,6 +132,12 @@ namespace orxonox {
             */
             inline int getActivations(void) const
                 { return this->remainingActivations_; }
+            /**
+            @brief Check whether the trigger has still at least one remaining activation.
+            @return Returns true if the trigger has remaining activations (i.e. the number of remaining activations is not zero).
+            */
+            inline bool hasRemainingActivations(void) const
+                { return this->remainingActivations_ > 0 || this->remainingActivations_ == INF_s; }
 
             /**
             @brief Set the invert-mode of triggerhe trigger.

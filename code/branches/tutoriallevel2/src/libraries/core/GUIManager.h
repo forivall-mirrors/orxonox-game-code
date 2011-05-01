@@ -124,9 +124,10 @@ namespace orxonox // tolua_export
         inline orxonox::PlayerInfo* getPlayer(const std::string& guiname) const { std::map<std::string, PlayerInfo*>::const_iterator it = this->players_.find(guiname); return (it != this->players_.end()) ? it->second : 0; } // tolua_export
 
         // TODO: Temporary hack because the tolua exported CEGUI method does not seem to work
-        static void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); //tolua_export
-        static void setTooltipTextHelper(CEGUI::ListboxItem* item, const std::string& toooltip); //tolua_export
-        static void setItemTooltipsEnabledHelper(CEGUI::Listbox* listbox, bool enabled); //tolua_export
+        static void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); // tolua_export
+        static void setTooltipTextHelper(CEGUI::ListboxItem* item, const std::string& toooltip); // tolua_export
+        static void setItemTooltipsEnabledHelper(CEGUI::Listbox* listbox, bool enabled); // tolua_export
+        static void addFontHelper(const std::string& name, int size, const std::string& fontName); // tolua_export
 
         static GUIManager& getInstance() { return Singleton<GUIManager>::getInstance(); } // tolua_export
 

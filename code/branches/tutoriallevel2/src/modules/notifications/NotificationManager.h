@@ -97,6 +97,8 @@ namespace orxonox // tolua_export
             void getNotifications(NotificationListener* listener, std::multimap<std::time_t, Notification*>* map, int timeDelay)
                 { this->getNotifications(listener, map, std::time(0)-timeDelay, std::time(0)); }
 
+            void getNewestNotifications(NotificationListener* listener, std::multimap<std::time_t, Notification*>* map, int numberOfNotifications); //!< Fetches the newest Notifications for a specific NotificationListener and stores them in the input map.
+
             void enterEditMode(void); //!< Enters the edit mode of the NotificationLayer.
 
             bool registerQueue(NotificationQueue* queue); //!< Registers a NotificationQueue.
