@@ -80,7 +80,7 @@ IF(WIN32 AND DEP_BINARY_DIR)
       INSTALL(
         FILES ${DEP_BINARY_DIR}/${_file}
         DESTINATION bin
-        CONFIGURATIONS Release RelWithDebInfo MinSizeRel
+        CONFIGURATIONS RelForDevs Release RelWithDebInfo MinSizeRel
       )
     ENDFOREACH(_file)
   ELSE()
@@ -89,7 +89,7 @@ IF(WIN32 AND DEP_BINARY_DIR)
     INSTALL(
       DIRECTORY ${DEP_BINARY_DIR}/
       DESTINATION bin
-      CONFIGURATIONS Release RelWithDebInfo MinSizeRel
+      CONFIGURATIONS RelForDevs Release RelWithDebInfo MinSizeRel
       REGEX "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$" EXCLUDE
     )
   ENDIF()

@@ -91,20 +91,33 @@ MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 # This sets where to look for CMake modules (e.g. "Find*.cmake" files)
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_SOURCE_DIR}/cmake/tools)
 
-# Set Debug build to default when not having multi-config generator like msvc
+# Flag variables for extra configuration "RelForDevs" should be hidden
+MARK_AS_ADVANCED(
+  CMAKE_CXX_FLAGS_RELFORDEVS
+  CMAKE_C_FLAGS_RELFORDEVS
+  CMAKE_EXE_LINKER_FLAGS_RELFORDEVS
+  CMAKE_MODULE_LINKER_FLAGS_RELFORDEVS
+  CMAKE_SHARED_LINKER_FLAGS_RELFORDEVS
+)
+
 IF(NOT CMAKE_CONFIGURATION_TYPES)
+  # Set Debug build to default when not having multi-config generator like MSVC or XCODE
   IF(NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE Debug CACHE STRING
-        "Build types are: Debug, Release, MinSizeRel, RelWithDebInfo" FORCE)
+        "Build types are: Debug, RelForDevs, RelWithDebInfo, Release, MinSizeRel" FORCE)
   ENDIF()
   MARK_AS_ADVANCED(CLEAR CMAKE_BUILD_TYPE)
 
   MESSAGE(STATUS "*** Build type is ${CMAKE_BUILD_TYPE} ***")
 ELSE()
+  # Make sure no build type is ever set
   IF(CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE CACHE STRING FORCE)
   ENDIF()
-  MARK_AS_ADVANCED(CMAKE_BUILD_TYPE)
+  MARK_AS_ADVANCED(FORCE CMAKE_BUILD_TYPE)
+  # Add our extra configuration "RelForDevs"
+  SET(CMAKE_CONFIGURATION_TYPES "Debug;RelForDevs;RelWithDebInfo;Release;MinSizeRel"
+      CACHE STRING "Semicolon separated list of supported configuration types." FORCE)
 ENDIF()
 
 # Debug builds can not be installed

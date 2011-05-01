@@ -5,6 +5,11 @@
     <LocalDebuggerEnvironment>PATH=${RUNTIME_LIBRARY_DIRECTORY};%PATH%</LocalDebuggerEnvironment>
     <LocalDebuggerWorkingDirectory>$(Outdir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelForDevs|${MSVC_PLATFORM}'">
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerEnvironment>PATH=${RUNTIME_LIBRARY_DIRECTORY};%PATH%</LocalDebuggerEnvironment>
+    <LocalDebuggerWorkingDirectory>$(Outdir)</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|${MSVC_PLATFORM}'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerEnvironment>PATH=${RUNTIME_LIBRARY_DIRECTORY};%PATH%</LocalDebuggerEnvironment>

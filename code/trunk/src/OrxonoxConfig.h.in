@@ -178,10 +178,11 @@ typedef unsigned __int64  uint64_t;
 #endif
 */
 
-// Configurations Release and MinSizeRel are designed for redistribution while
-// RelWithDebInfo is more for development
+// Configurations Release, RelWithDebInfo and MinSizeRel are designed for
+// redistribution while RelForDevs is for development purposes
 // ORXONOX_RELEASE simplifies this a little bit
-#if defined(CMAKE_Release_BUILD) || defined(CMAKE_MinSizeRel_BUILD)
+#if defined(CMAKE_Release_BUILD) || defined(CMAKE_MinSizeRel_BUILD) \
+    || defined(CMAKE_RelWithDebInfo_BUILD)
 #  define ORXONOX_RELEASE
 #endif
 

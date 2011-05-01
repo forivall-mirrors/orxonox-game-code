@@ -97,7 +97,7 @@ IF(FALSE)
   INSTALL(
     DIRECTORY ${DEP_BINARY_DIR}/
     DESTINATION bin
-    CONFIGURATIONS Release RelWithDebInfo MinSizeRel
+    CONFIGURATIONS RelForDevs Release RelWithDebInfo MinSizeRel
     REGEX "_[Dd]\\.[a-zA-Z0-9+-]+$|-mt-gd-|^.*\\.pdb$" EXCLUDE
   )
 ENDIF()
