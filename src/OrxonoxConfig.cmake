@@ -74,6 +74,7 @@ SET(ORX_HAVE_STDINT_H ${HAVE_STDINT_H})
 # XCode and Visual Studio support multiple configurations. In order to tell
 # about the active one we have to define the macro for each configuration
 ADD_COMPILER_FLAGS("-DCMAKE_Debug_BUILD"          Debug)
+ADD_COMPILER_FLAGS("-DCMAKE_RelForDevs_BUILD"     RelForDevs)
 ADD_COMPILER_FLAGS("-DCMAKE_Release_BUILD"        Release)
 ADD_COMPILER_FLAGS("-DCMAKE_RelWithDebInfo_BUILD" RelWithDebInfo)
 ADD_COMPILER_FLAGS("-DCMAKE_MinSizeRel_BUILD"     MinSizeRel)

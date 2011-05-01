@@ -39,7 +39,7 @@ SET(PCH_COMPILER_SUPPORT TRUE)
 # CMake default flags : -DWIN32 -D_WINDOWS -W3 -Zm1000
 # additionally for CXX: -EHsc -GR
 # We keep these flags but reset the build specific flags
-SET_COMPILER_FLAGS("" Debug RelWithDebInfo Release MinSizeRel CACHE)
+SET_COMPILER_FLAGS("" Debug RelForDevs RelWithDebInfo Release MinSizeRel CACHE)
 
 # Make sure we define all the possible macros for identifying Windows
 ADD_COMPILER_FLAGS("-D__WIN32__ -D_WIN32"  CACHE)
@@ -50,9 +50,6 @@ ADD_COMPILER_FLAGS("-D_SCL_SECURE_NO_WARNINGS" CACHE)
 # Use multiprocessed compiling (like "make -j3" on Unix)
 ADD_COMPILER_FLAGS("-MP" CACHE)
 
-# Always generate debug symbols (there is really no reason not to)
-ADD_COMPILER_FLAGS("-Zi" CACHE)
-
 # Never omit frame pointers to avoid useless stack traces (the performance
 # loss is almost not measurable)
 ADD_COMPILER_FLAGS("-Oy-" CACHE)
@@ -61,14 +58,16 @@ ADD_COMPILER_FLAGS("-fp:fast" CACHE)
 
 # Set build specific flags.
 # -MD[d]    Multithreaded [debug] shared MSVC runtime library
+# -Zi       Generate debug symbols
 # -O[d|2|1] No optimisations, optimise for speed, optimise for size
 # -Oi[-]    Use or disable use of intrinisic functions
 # -GL       Link time code generation (see -LTCG in linker flags)
 # -RTC1     Both basic runtime checks
-ADD_COMPILER_FLAGS("-MDd -Od -Oi  -D_DEBUG -RTC1" Debug          CACHE)
-ADD_COMPILER_FLAGS("-MD  -O2 -Oi  -DNDEBUG"       RelWithDebInfo CACHE)
-ADD_COMPILER_FLAGS("-MD  -O2 -Oi  -DNDEBUG -GL"   Release        CACHE)
-ADD_COMPILER_FLAGS("-MD  -O1 -Oi- -DNDEBUG -GL"   MinSizeRel     CACHE)
+ADD_COMPILER_FLAGS("-MDd -Zi -Od -Oi  -D_DEBUG -RTC1" Debug          CACHE)
+ADD_COMPILER_FLAGS("-MD  -Zi -O2 -Oi  -DNDEBUG"       RelForDevs     CACHE)
+ADD_COMPILER_FLAGS("-MD  -Zi -O2 -Oi  -DNDEBUG -GL"   RelWithDebInfo CACHE)
+ADD_COMPILER_FLAGS("-MD      -O2 -Oi  -DNDEBUG -GL"   Release        CACHE)
+ADD_COMPILER_FLAGS("-MD      -O1 -Oi- -DNDEBUG -GL"   MinSizeRel     CACHE)
 
 
 ####################### Warnings ########################
@@ -119,10 +118,7 @@ ADD_COMPILER_FLAGS("-w44250" CACHE)
 
 # CMake default flags: -MANIFEST -STACK:10000000 -machine:I386
 # We keep these flags but reset the build specific flags
-SET_LINKER_FLAGS("" Debug RelWithDebInfo Release MinSizeRel CACHE)
-
-# Always generate debug symbols (there is really no reason not to)
-ADD_LINKER_FLAGS("-DEBUG" CACHE)
+SET_LINKER_FLAGS("" Debug RelForDevs RelWithDebInfo Release MinSizeRel CACHE)
 
 # Never fold multiple functions into a single one because we might compare
 # function pointers (for instance with network functions)
@@ -131,13 +127,16 @@ ADD_LINKER_FLAGS("-OPT:NOICF" CACHE)
 # Very old flag that would do some extra Windows 98 alignment optimisations
 ADD_LINKER_FLAGS("-OPT:NOWIN98" MSVC80 CACHE)
 
+# Generate debug symbols
+ADD_LINKER_FLAGS("-DEBUG" Debug RelForDevs RelWithDebInfo CACHE)
+
 # Incremental linking speeds up development builds
-ADD_LINKER_FLAGS("-INCREMENTAL:YES" Debug   RelWithDebInfo CACHE)
-ADD_LINKER_FLAGS("-INCREMENTAL:NO"  Release MinSizeRel     CACHE)
+ADD_LINKER_FLAGS("-INCREMENTAL:YES" Debug   RelForDevs                CACHE)
+ADD_LINKER_FLAGS("-INCREMENTAL:NO"  Release RelWithDebInfo MinSizeRel CACHE)
 
 # Eliminate unreferenced data
-ADD_LINKER_FLAGS("-OPT:REF" Release MinSizeRel CACHE)
+ADD_LINKER_FLAGS("-OPT:REF" Release RelWithDebInfo MinSizeRel CACHE)
 
 # Link time code generation can improve run time performance at the cost of
 # hugely increased link time (the total build time is about the same though)
-ADD_LINKER_FLAGS("-LTCG" Release MinSizeRel CACHE)
+ADD_LINKER_FLAGS("-LTCG" Release RelWithDebInfo MinSizeRel CACHE)

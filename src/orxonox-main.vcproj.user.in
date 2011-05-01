@@ -15,6 +15,15 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="RelForDevs|${MSVC_PLATFORM}"
+			>
+			<DebugSettings
+				WorkingDirectory="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(OutDir)"
+				Environment="PATH=${RUNTIME_LIBRARY_DIRECTORY};%PATH%"
+				EnvironmentMerge="true"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|${MSVC_PLATFORM}"
 			>
 			<DebugSettings

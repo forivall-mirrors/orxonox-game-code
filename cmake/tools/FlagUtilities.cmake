@@ -21,7 +21,7 @@
  #    Reto Grieder
  #  Description:
  #    Sets the compiler/linker flags. After the flags you can specify more args:
- #    Release, Debug, RelWithDebInfo, MinSizeRel: Build configs (inclusive)
+ #    Release, Debug, RelWithDebInfo, MinSizeRel, RelForDevs: Build configs
  #    ReleaseAll: Sets the flags of all three release builds
  #    CACHE: Values are witten with SET_CACHE_ADVANCED
  #    FORCE: When writing to the cache, the values are set anyway
@@ -35,8 +35,8 @@
  #  Example:
  #    REMOVE_COMPILER_FLAGS("/Gm "asdf" -q"test -foo" CXX ReleaseAll NOT UNIX)
  #    This will only remove the CXX (C++) flags on a non Unix system for the
- #    Release, RelWithDebInfo and MinSizeRel configurations. The macros should
- #    be able to cope with "test -foo" as string argument for a flag.
+ #    Release, RelWithDebInfo, MinSizeRel, RelForDevs configurations. The macros
+ #    should be able to cope with "test -foo" as string argument for a flag.
  #
 
 INCLUDE(SeparateFlags)
@@ -88,12 +88,12 @@ MACRO(_INTERNAL_PARSE_FLAGS_ARGS _mode _keys _key_postfix _flags)
   FOREACH(_arg ${ARGN})
     IF(_arg MATCHES "${_key_regex}")
       LIST(APPEND _langs "${_arg}")
-    ELSEIF(   _arg MATCHES "^(Debug|Release|MinSizeRel|RelWithDebInfo)$"
-           OR _arg MATCHES "^(DEBUG|RELEASE|MINSIZEREL|RELWITHDEBINFO)$")
+    ELSEIF(   _arg MATCHES "^(Debug|Release|MinSizeRel|RelWithDebInfo|RelForDevs)$"
+           OR _arg MATCHES "^(DEBUG|RELEASE|MINSIZEREL|RELWITHDEBINFO|RelForDevs)$")
       STRING(TOUPPER "${_arg}" _upper_arg)
       LIST(APPEND _build_types ${_upper_arg})
     ELSEIF(_arg STREQUAL "ReleaseAll")
-      LIST(APPEND _build_types RELEASE MINSIZEREL RELWITHDEBINFO)
+      LIST(APPEND _build_types RELEASE MINSIZEREL RELWITHDEBINFO RELFORDEVS)
     ELSEIF(_arg STREQUAL "CACHE")
       SET(_write_to_cache TRUE)
     ELSEIF(_arg STREQUAL "FORCE")

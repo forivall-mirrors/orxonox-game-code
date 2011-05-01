@@ -51,8 +51,9 @@ SET_COMPILER_FLAGS("$ENV{CFLAGS}"   C   CACHE)
 # These flags get added to the flags above
 SET_COMPILER_FLAGS("    -g -ggdb -D_DEBUG" Debug          CACHE)
 SET_COMPILER_FLAGS("             -DNDEBUG" ReleaseAll     CACHE)
+ADD_COMPILER_FLAGS("-O2 -g -ggdb"          RelForDevs     CACHE)
+ADD_COMPILER_FLAGS("-O3 -g -ggdb"          RelWithDebInfo CACHE)
 ADD_COMPILER_FLAGS("-O3"                   Release        CACHE)
-ADD_COMPILER_FLAGS("-O2 -g -ggdb"          RelWithDebInfo CACHE)
 ADD_COMPILER_FLAGS("-Os"                   MinSizeRel     CACHE)
 
 # CMake doesn't seem to set the PIC flags right on certain 64 bit systems
@@ -111,8 +112,7 @@ ENDIF()
 
 # Add compiler and linker flags for MinGW
 IF (MINGW)
-  ADD_COMPILER_FLAGS("-gstabs+" Debug          CACHE)
-  ADD_COMPILER_FLAGS("-gstabs+" RelWithDebInfo CACHE)
+  ADD_COMPILER_FLAGS("-gstabs+" Debug RelForDevs RelWithDebInfo CACHE)
 
   ADD_LINKER_FLAGS("-enable-auto-import" CACHE)
 ENDIF()
