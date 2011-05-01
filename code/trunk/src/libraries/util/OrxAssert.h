@@ -39,9 +39,10 @@
 #include "UtilPrereqs.h"
 
 #include <cassert>
-#include "OutputHandler.h"
+#include "Debug.h"
 
 #ifndef NDEBUG
+
 /** Run time assertion like assert(), but with an embedded message.
 @details
     The message will be printed as error with COUT(1). <br>
@@ -50,11 +51,62 @@
         OrxAssert(condition, "Text: " << number << " more text");
     @endcode
 */
-#define OrxAssert(Assertion, ErrorMessage) \
-    Assertion ? ((void)0) : (void)(orxonox::OutputHandler::getOutStream(1) << ErrorMessage << std::endl); \
-    assert(Assertion)
+#define OrxAssert(condition, errorMessage) \
+    do \
+    { \
+        if (!(condition)) \
+        { \
+            COUT(1) << __FILE__ << "(" << __LINE__ << "): "; \
+            COUT(1) << "Assertion failed in " << __FUNCTIONNAME__ << std::endl; \
+            COUT(1) << "Expression: " << #condition << std::endl; \
+            COUT(1) << "Message   : " << errorMessage << std::endl; \
+            /* Don't use the condition again to avoid double evaluation */ \
+            /* Instead, stringify the expression and negate it */ \
+            assert(!#condition); \
+        } \
+    } while (false)
+
+/** Works like OrxAssert in debug mode, but also checks the condition in release
+    mode (no abort() triggered then).
+@details
+    The message will be printed as error with COUT(1). <br>
+    You can use the same magic here as you can with \ref ThrowException
+    @code
+        OrxVerify(condition, "Text: " << number << " more text");
+    @endcode
+*/
+#define OrxVerify(condition, errorMessage) \
+    do \
+    { \
+        if (!(condition)) \
+        { \
+            COUT(1) << __FILE__ << "(" << __LINE__ << "): "; \
+            COUT(1) << "Verification failed in " << __FUNCTIONNAME__ << std::endl; \
+            COUT(1) << "Expression: " << #condition << std::endl; \
+            COUT(1) << "Message   : " << errorMessage << std::endl; \
+            /* Don't use the condition again to avoid double evaluation */ \
+            /* Instead, stringify the expression and negate it */ \
+            assert(!#condition); \
+        } \
+    } while (false)
+
 #else
+
 #define OrxAssert(condition, errorMessage)  ((void)0)
+
+#define OrxVerify(condition, errorMessage) \
+    do \
+    { \
+        if (!(condition)) \
+        { \
+            COUT(1) << __FILE__ << "(" << __LINE__ << "): "; \
+            COUT(1) << "Verification failed in " << __FUNCTIONNAME__ << std::endl; \
+            COUT(1) << "Expression: " << #condition << std::endl; \
+            COUT(1) << "Message   : " << errorMessage << std::endl; \
+            /* No assert() in release configuration */ \
+        } \
+    } while (false)
+
 #endif
 
 #endif /* _OrxAssert_H__ */
