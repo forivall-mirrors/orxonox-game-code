@@ -16,8 +16,11 @@ end
 -- Creates a queue in the GUI.
 function P.createQueue(name, size)
     local root = winMgr:getWindow("orxonox/NotificationLayer/Root")
-    local queue = winMgr:createWindow("MenuWidgets/Listbox", "orxonox/NotificationLayer/Root/Queue/" .. name)
-    queue:setProperty("BackgroundColor", "00FFFFFF") -- Set background to be fully transparent.
+    --local queue = winMgr:createWindow("MenuWidgets/Listbox", "orxonox/NotificationLayer/Root/Queue/" .. name)
+    --queue:setProperty("BackgroundColor", "00FFFFFF") -- Set background to be fully transparent.
+    local queue = winMgr:createWindow("MenuWidgets/ScrollablePane", "orxonox/NotificationLayer/Root/Queue/" .. name)
+    queue:setProperty("Alpha", 0.0)
+    --queue:setProperty("FrameEnabled", "false")
     root:addChildWindow(queue)
 
     local queueTuple =
@@ -27,7 +30,10 @@ function P.createQueue(name, size)
         ["edit"]      = nil,
         ["visible"]   = false,
         ["fontSize"]  = 12,
-        ["fontColor"] = CEGUI.colour(1.0, 1.0, 1.0, 1.0)
+        ["fontColor"] = "#FFFFFFFF",
+        ["items"]     = {},
+        ["first"]     = 1,
+        ["last"]      = 1
     }
     
     queue:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
@@ -53,15 +59,27 @@ function P.pushNotification(queueName, notification)
     if queue == nil then
         return
     end
-    item = CEGUI.createListboxTextItem(notification)
+
+    local item = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/NotificationLayer/Root/Queue/" .. queueName .. "/" .. queue.last)
+    item:setText(notification)
     P.setItemFontHelper(item, queue, true)
-    local listbox = CEGUI.toListbox(queue.window)
-    -- Add the item to the top of the listbox.
-    if listbox:getItemCount() == 0 then
-        listbox:addItem(item)
-    else
-        listbox:insertItem(item, listbox:getListboxItemFromIndex(0))
+    -- Add the item to the top of the queue.
+    local itemHeight = P.itemHeightHelper(queue)
+    if queue.last-queue.first > 0 then -- If the queue is not empty move all items down
+        for i=queue.first,queue.last-1 do
+            local item = queue.items[i]
+            item:setYPosition(CEGUI.UDim(0, itemHeight*(queue.last-i)))
+        end
     end
+    queue.window:addChildWindow(item)
+    item:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(0, itemHeight)))
+    item:setPosition(CEGUI.UVector2(CEGUI.UDim(0, 0), CEGUI.UDim(0, 0)))
+    item:setProperty("Alpha", 1.0)
+    item:setProperty("InheritsAlpha", "false")
+    item:setProperty("BackgroundEnabled", "false")
+    item:setProperty("FrameEnabled", "false")
+    queue.items[queue.last] = item
+    queue.last = queue.last+1
 
     -- If the queue has been invisible, set it to visible.
     if queue.visible == false then
@@ -75,28 +93,53 @@ function P.popNotification(queueName)
     if queue == nil then
         return
     end
-    local listbox = CEGUI.toListbox(queue.window)
-    -- Removes the item from the bottom of the listbox.
-    listbox:removeItem(listbox:getListboxItemFromIndex(listbox:getItemCount()-1))
+    local item = queue.items[queue.first]
+    -- Removes the item from the bottom of the queue.
+    queue.window:removeChildWindow(item)
+    winMgr:destroyWindow(item)
+    queue.first = queue.first+1
 
     -- Sets the queue to invisible if there are no more notifications in it.
-    if listbox:getItemCount() == 0 then
+    if queue.last-queue.first == 0 then
         P.setVisible(queue, false)
     end
 end
 
--- Removes a notification at a given index from the queue.
+-- Removes a notification at a given index from the queue. Where the 0th item is the newest and the nth the (n+1)th newest.
 function P.removeNotification(queueName, index)
     local queue = P.queueList[queueName]
     if queue == nil then
         return
     end
-    local listbox = CEGUI.toListbox(queue.window)
+
+    index = queue.last-tonumber(index)-1
+    --if index == queue.first then -- If we want to remove the oldest notification, we can just use pop.
+    --    P.popNotification(queueName)
+    --    return
+    --end
+
     -- Removes the item.
-    listbox:removeItem(listbox:getListboxItemFromIndex(tonumber(index)))
+    local item = queue.items[index]
+    queue.window:removeChildWindow(item)
+    winMgr:destroyWindow(item)
+    queue.items[index] = nil
+
+    -- Move the items below, up.
+    local itemHeight = P.itemHeightHelper(queue)
+    local moved = false
+    if index > queue.first then -- Move all older notifications up in the list.
+        for i=index-1,-1,queue.first do
+            cout(0, i)
+            item = queue.items[i]
+            item:setYposition(CEGUI.UDim(0, itemHeight*(queue.last-i-1)))
+            queue.items[i+1] = item
+        end
+    end
+    queue.items[queue.first] = nil
+    queue.first = queue.first+1
 
     -- Sets the queue to invisible if there are no more notifications in it.
-    if listbox:getItemCount() == 0 then
+    if queue.last-queue.first == 0 then
         P.setVisible(queue, false)
     end
 end
@@ -107,8 +150,14 @@ function P.clearQueue(queueName)
     if queue == nil then
         return
     end
-    local listbox = CEGUI.toListbox(queue.window)
-    CEGUI.toListbox(queue.window):resetList()
+    for i=queue.first,queue.last-1 do
+        local item = queue.items[i]
+        queue.window:removeChildWindow(item)
+        winMgr:destroyWindow(item)
+    end
+    queue.items = {}
+    queue.first = 1
+    queue.last = 1
 
     -- Sets the queue to invisible.
     P.setVisible(queue, false)
@@ -146,34 +195,29 @@ function P.resizeQueue(queueName, relativeWidth, absoluteWidth, relativeHeight, 
 end
 
 -- Change the font size and font color of all notifications in a queueHeightHelper
--- The parameters are (in order) 'name of the queue', 'font size', 'RGBA of the font color, with values from 0 to 1 each'.
-function P.changeQueueFont(queueName, size, colorRed, colorGreen, colorBlue, colorAlpha)
+-- The parameters are (in order) 'name of the queue', 'font size', 'RGBA of the font color in hex notation'.
+function P.changeQueueFont(queueName, size, color)
     local queue = P.queueList[queueName]
     local queueWindow = queue.window
     if queueWindow == nil then
         return
     end
-    if colorAlpha == nil then
-        colorAlpha = 1.0
-    end
 
-    local list = CEGUI.toListbox(queueWindow)
-    local num = list:getItemCount()
     queue.fontSize = size
     local changeColor = false
-    if colorRed ~= nil and colorGreen ~= nil and colorBlue ~= nil then
-        queue.fontColor:set(colorRed, colorGreen, colorBlue, colorAlpha)
+    if color ~= nil then
+        queue.fontColor = color
         changeColor = true
     end
-    for i=0,num-1 do
-        P.setItemFontHelper(item, queue, changeColor)
+    for i=queue.first,queue.last-1 do
+        P.setItemFontHelper(queue.items[i], queue, changeColor)
     end
 end
 
 -- Helper function to set the font size and color of a item of a queue.
 -- The parameters are (in order) 'the ListboxItem', 'the queue table', 'whether color should be changed as well'
 function P.setItemFontHelper(item, queue, changeColor)
-    local item = tolua.cast(item, "CEGUI::ListboxTextItem")
+    --local item = tolua.cast(item, "CEGUI::ListboxTextItem")
     local fontMgr = CEGUI.FontManager:getSingleton()
     if fontMgr:isFontPresent("BlueHighway-" .. queue.fontSize) then
         item:setFont("BlueHighway-" .. queue.fontSize)
@@ -182,7 +226,7 @@ function P.setItemFontHelper(item, queue, changeColor)
         item:setFont("BlueHighway-" .. queue.fontSize)
     end
     if changeColor then
-        item:setTextColours(queue.fontColor)
+        --item:setProperty("TextColours", "tl:[" .. queue.fontColor .. "] tr:[" .. queue.fontColor .. "] bl:[" .. queue.fontColor .. "] br:[" .. queue.fontColor .. "]")
     end
 end
 
@@ -543,16 +587,31 @@ end
 
 -- Helper function. Returns height a queue needs to have to display 'size' items.
 function P.queueHeightHelper(queue, size)
-    local listbox = CEGUI.toListbox(queue.window)
-    local item = CEGUI.createListboxTextItem("Text")
-    P.setItemFontHelper(item, queue, false)
-    listbox:addItem(item)
-    local singleItemHeight = listbox:getTotalItemsHeight()
-    local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(queue.window:getLookNFeel())
-    local formattedArea = lookAndFeel:getNamedArea("ItemRenderingArea"):getArea():getPixelRect(queue.window)
-    local frameHeight = queue.window:getUnclippedPixelRect():getHeight() - formattedArea:getHeight()
-    listbox:removeItem(item)
-    return frameHeight + singleItemHeight*size
+    --local listbox = CEGUI.toListbox(queue.window)
+    --local item = CEGUI.createListboxTextItem("Text")
+    --P.setItemFontHelper(item, queue, false)
+    --listbox:addItem(item)
+    --local singleItemHeight = listbox:getTotalItemsHeight()
+    local singleItemHeight = P.itemHeightHelper(queue)
+    --local lookAndFeel = CEGUI.WidgetLookManager:getSingleton():getWidgetLook(queue.window:getLookNFeel())
+    --local formattedArea = lookAndFeel:getNamedArea("ItemRenderingArea"):getArea():getPixelRect(queue.window)
+    --local frameHeight = queue.window:getUnclippedPixelRect():getHeight() - formattedArea:getHeight()
+    --listbox:removeItem(item)
+    --return frameHeight + singleItemHeight*size
+    return singleItemHeight*size + 1
+end
+
+function P.itemHeightHelper(queue)
+    local item = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/NotificationLayer/Root/Test/")
+    item:setText("text")
+    P.setItemFontHelper(item, queue, true)
+    queue.window:addChildWindow(item)
+    item:setSize(CEGUI.UVector2(CEGUI.UDim(1, 0), CEGUI.UDim(1, 0)))
+    item:setProperty("FrameEnabled", "false")
+    local height = getStaticTextWindowHeight(item)
+    queue.window:removeChildWindow(item)
+    winMgr:destroyWindow(item)
+    return height
 end
 
 return P
