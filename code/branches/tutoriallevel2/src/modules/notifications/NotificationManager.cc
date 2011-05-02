@@ -366,6 +366,7 @@ namespace orxonox
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeQueueFont(\"info\", 24, \"FFFFFF00\")");
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.resizeQueue(\"info\", 0.6, 0, " + multi_cast<std::string>(infoQueue->getMaxSize()) + ")");
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.moveQueue(\"info\", 0.2, 0, 0.8, 0)");
+        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeQueueAlignment(\"info\", \"HorzCentred\")");
     }
 
     /**

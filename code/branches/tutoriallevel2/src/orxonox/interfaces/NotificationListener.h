@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Damian 'Mozork' Frick
  *   Co-authors:
  *      ...
  *
@@ -65,6 +65,7 @@ namespace orxonox
         };
     }
 
+    // TODO: Update doc.
     /**
     @brief
         NotificationListener interface.
@@ -73,8 +74,8 @@ namespace orxonox
         When inheriting from a NotificationListener it is important to register (in the constructor) and unregister (in the destructor) it to and from the @ref orxonox::NotificationManager "NotificationManager".
 
     @author
-        Fabian 'x3n' Landau
-
+        Damian 'Mozork' Frick
+        
     @ingroup Notifications
     */
     class _OrxonoxExport NotificationListener : virtual public OrxonoxClass
@@ -89,8 +90,7 @@ namespace orxonox
             static void sendNotification(const std::string& message, const std::string& sender = NotificationListener::NONE, notificationMessageMode::Value messageMode = notificationMessageMode::message, notificationSendMode::Value sendMode = notificationSendMode::local, unsigned int clientId = 0);
             static void sendNotificationHelper(const std::string& message, const std::string& sender, unsigned int messageMode);
             
-            virtual bool registerNotification(const std::string& message, const std::string& sender)
-                { return false; }
+            virtual bool registerNotification(const std::string& message, const std::string& sender) { return false; }
             virtual void executeCommand(const std::string& command, const std::string& sender) {}
     };
 }

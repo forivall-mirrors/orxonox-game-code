@@ -31,6 +31,7 @@ function P.createQueue(name, size)
         ["visible"]   = false,
         ["fontSize"]  = 12,
         ["fontColor"] = "FFFFFFFF",
+        ["alignment"] = "LeftAligned",
         ["items"]     = {},
         ["first"]     = 1,
         ["last"]      = 1
@@ -78,6 +79,7 @@ function P.pushNotification(queueName, notification)
     item:setProperty("InheritsAlpha", "false")
     item:setProperty("BackgroundEnabled", "false")
     item:setProperty("FrameEnabled", "false")
+    item:setProperty("HorzFormatting", queue.alignment)
     queue.items[queue.last] = item
     queue.last = queue.last+1
 
@@ -214,6 +216,21 @@ function P.changeQueueFont(queueName, size, color)
     end
 end
 
+function P.changeQueueAlignment(queueName, alignment)
+    local queue = P.queueList[queueName]
+    local queueWindow = queue.window
+    if queueWindow == nil then
+        return
+    end
+    
+    queue.alignment = alignment
+    local item = nil
+    for i=queue.first,queue.last-1 do
+        item = queue.items[i]
+        item:setProperty("HorzFormatting", queue.alignment)
+    end
+end
+
 -- Helper function to set the font size and color of a item of a queue.
 -- The parameters are (in order) 'the ListboxItem', 'the queue table', 'whether color should be changed as well'
 function P.setItemFontHelper(item, queue, changeColor)
@@ -227,7 +244,6 @@ function P.setItemFontHelper(item, queue, changeColor)
     end
     if changeColor then
         item:setProperty("TextColours", "tl:" .. queue.fontColor .. " tr:" .. queue.fontColor .. " bl:" .. queue.fontColor .. " br:" .. queue.fontColor .. "")
-        cout(0, "tl:[" .. queue.fontColor .. "] tr:[" .. queue.fontColor .. "] bl:[" .. queue.fontColor .. "] br:[" .. queue.fontColor .. "]")
     end
 end
 
