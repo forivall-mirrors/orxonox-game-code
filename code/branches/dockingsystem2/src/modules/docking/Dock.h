@@ -35,7 +35,7 @@
 #ifndef _Dock_H__
 #define _Dock_H__
 
-#include <map>
+#include <set>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
