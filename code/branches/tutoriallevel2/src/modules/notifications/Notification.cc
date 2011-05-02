@@ -34,7 +34,7 @@
 #include "Notification.h"
 
 #include "core/CoreIncludes.h"
-#include "NotificationManager.h"
+#include "interfaces/NotificationListener.h"
 
 namespace orxonox
 {
@@ -71,7 +71,7 @@ namespace orxonox
     void Notification::initialize(void)
     {
         this->message_.clear();
-        this->sender_ = NotificationManager::NONE;
+        this->sender_ = NotificationListener::NONE;
     }
 
 }

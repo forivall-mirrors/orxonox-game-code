@@ -89,19 +89,6 @@ namespace orxonox
 
         this->create(); // Creates the NotificationQueue in lua.
 
-        // Register the NotificationQueue as NotificationListener with the NotificationManager.
-        bool listenerRegistered = NotificationManager::getInstance().registerListener(this);
-        if(!listenerRegistered) // If the registration has failed.
-        {
-            this->registered_ = false;
-            // Remove the NotificationQueue in lua.
-            if(GameMode::showsGraphics())
-                GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
-            NotificationManager::getInstance().unregisterQueue(this);
-            COUT(1) << "Error: NotificationQueue '" << this->getName() << "' could not be registered." << std::endl;
-            return;
-        }
-
         COUT(3) << "NotificationQueue '" << this->getName() << "' created." << std::endl;
     }
 
@@ -118,7 +105,6 @@ namespace orxonox
             this->clear(true);
 
             // Unregister with the NotificationManager.
-            NotificationManager::getInstance().unregisterListener(this);
             NotificationManager::getInstance().unregisterQueue(this);
         }
     }
@@ -180,6 +166,7 @@ namespace orxonox
     @brief
         Updates the NotificationQueue.
         Updates by clearing the queue and requesting all relevant Notifications from the NotificationManager and inserting them into the queue.
+        This is called by the NotificationManager when the Notifications have changed so much, that the NotificationQueue may have to re-initialize his operations.
     */
     void NotificationQueue::update(void)
     {
@@ -417,10 +404,11 @@ namespace orxonox
         for(unsigned int i = 0; i < string.size(); i++)
             this->targets_.insert(string[i]);
 
+        // TODO: Why?
         if(this->registered_)
         {
-            NotificationManager::getInstance().unregisterListener(this);
-            NotificationManager::getInstance().registerListener(this);
+            NotificationManager::getInstance().unregisterQueue(this);
+            NotificationManager::getInstance().registerQueue(this);
         }
     }
 

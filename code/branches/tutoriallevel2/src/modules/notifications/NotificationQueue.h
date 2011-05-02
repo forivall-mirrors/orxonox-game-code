@@ -45,7 +45,6 @@
 #include "NotificationManager.h"
 
 #include "tools/interfaces/Tickable.h"
-#include "interfaces/NotificationListener.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -89,7 +88,7 @@ namespace orxonox // tolua_export
     @ingroup Notifications
     */
     class _NotificationsExport NotificationQueue // tolua_export
-        : public Tickable, public NotificationListener
+        : public Tickable
     { // tolua_export
 
         public:

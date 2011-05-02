@@ -66,24 +66,14 @@ namespace orxonox
         public:
             NotificationListener();
             virtual ~NotificationListener() {}
-
-            /**
-            @brief Get the senders that are targets of this NotificationListener.
-            @return Returns the set of senders that are targets of this NotificationListener.
-            */
-            virtual const std::set<std::string> & getTargetsSet(void) = 0;
-
-            /**
-            @brief Updates the whole NotificationListener.
-                   This is called by the @ref orxonox::NotificationManager "NotificationManager" when the @ref orxonox::Notification "Notifications" have changed so much, that the NotificationListener may have to re-initialize his operations.
-            */
-            virtual void update(void) = 0;
-            /**
-            @brief Updates the NotificationListener, when a new Notification has come in at the specified time.
-            @param notification A pointer to the @ref orxonox::Notification "Notification".
-            @param time The time the @ref orxonox::Notification "Notification" has come in.
-            */
-            virtual void update(Notification* notification, const std::time_t & time) = 0;
+            
+            static const std::string ALL; //!< Static string to indicate a sender that sends to all NotificationListeners.
+            static const std::string NONE; //!< Static string to indicare a sender that sends to no specific NotificationListener.
+            
+            static void sendNotification(const std::string& message, unsigned int clientId, const std::string& sender = NotificationListener::NONE, bool isLocal = false);
+            
+            virtual bool registerNotification(const std::string& message, const std::string& sender)
+                { return false; }
     };
 }
 

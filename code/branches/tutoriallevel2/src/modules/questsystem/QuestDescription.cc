@@ -39,7 +39,7 @@
 
 #include "infos/PlayerInfo.h"
 
-#include "notifications/NotificationManager.h"
+#include "interfaces/NotificationListener.h"
 
 namespace orxonox
 {
@@ -118,7 +118,7 @@ namespace orxonox
             return false;
         }
 
-        NotificationManager::sendNotification(message, player->getClientID(), QuestDescription::SENDER);
+        NotificationListener::sendNotification(message, player->getClientID(), QuestDescription::SENDER);
         return true;
     }
 
