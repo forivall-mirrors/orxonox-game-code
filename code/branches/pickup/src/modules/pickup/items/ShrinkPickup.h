@@ -4,6 +4,7 @@
 #include "pickup/PickupPrereqs.h"
 
 #include <string>
+#include <vector>
 
 #include "pickup/Pickup.h"
 #include "tools/interfaces/Tickable.h"
@@ -26,7 +27,18 @@ namespace orxonox {
 
         private:
             void initialize(void);
-    		Pawn* carrierToPawnHelper(void);
+			const float duration;			//determines how long the pickup will be active
+    		const float shrinkFactor;		//shrink factor of the space ship
+			const float shrinkDelay;		//how long it takes to shrink to the final size
+			double factorPerCall;
+			bool isTerminating;
+			vector<float> defaultScales;
+			vector<float> smallScales;
+			vector<float> actualScales;
+			vector<float> defaultPositions;
+			vector<float> smallPositions;
+			vector<float> actualPositions;
+			Pawn* carrierToPawnHelper(void);
 			Pawn* pawn;
 			Timer durationTimer;
 			void terminate(void);

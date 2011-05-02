@@ -7,6 +7,9 @@
 #include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
+#include "weaponsystem/WeaponSlot.h"
+#include "weaponsystem/Weapon.h"
+
 namespace orxonox
 {
     CreateFactory(ShrinkPickup);
@@ -39,11 +42,14 @@ namespace orxonox
                 this->Pickupable::destroy();
 	
 			COUT(0) << "shrinking..." << endl;
+			//this->pawn->setScale3D(this->pawn->getScale3D() / 2.0);
 			std::set<WorldEntity*> set = this->pawn->getAttachedObjects();
 			for(std::set<WorldEntity*>::iterator it = set.begin(); it != set.end(); it++)
 			{
 				(*it)->setScale((*it)->getScale() / 5.0);
+				(*it)->setPosition((*it)->getPosition() / 5.0);
 			}
+			
 			durationTimer.setTimer(10, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));
         }
 		else
@@ -54,6 +60,8 @@ namespace orxonox
 
 	void ShrinkPickup::terminate(void)
 	{
+		//this->pawn->setScale3D(this->pawn->getScale3D() * 5.0);
+
 		std::set<WorldEntity*> set = this->pawn->getAttachedObjects();
 		for(std::set<WorldEntity*>::iterator it = set.begin(); it != set.end(); it++)
 		{
