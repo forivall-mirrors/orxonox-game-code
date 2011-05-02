@@ -47,7 +47,23 @@
 
 namespace orxonox
 {
-    class Notification;
+    
+    namespace notificationMessageMode
+    {
+        enum Value {
+            message,
+            command
+        };
+    }
+    
+    namespace notificationSendMode
+    {
+        enum Value {
+            local,
+            network,
+            broadcast
+        };
+    }
 
     /**
     @brief
@@ -70,10 +86,12 @@ namespace orxonox
             static const std::string ALL; //!< Static string to indicate a sender that sends to all NotificationListeners.
             static const std::string NONE; //!< Static string to indicare a sender that sends to no specific NotificationListener.
             
-            static void sendNotification(const std::string& message, unsigned int clientId, const std::string& sender = NotificationListener::NONE, bool isLocal = false);
+            static void sendNotification(const std::string& message, const std::string& sender = NotificationListener::NONE, notificationMessageMode::Value messageMode = notificationMessageMode::message, notificationSendMode::Value sendMode = notificationSendMode::local, unsigned int clientId = 0);
+            static void sendNotificationHelper(const std::string& message, const std::string& sender, unsigned int messageMode);
             
             virtual bool registerNotification(const std::string& message, const std::string& sender)
                 { return false; }
+            virtual void executeCommand(const std::string& command, const std::string& sender) {}
     };
 }
 

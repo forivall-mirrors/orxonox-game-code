@@ -30,7 +30,7 @@ function P.createQueue(name, size)
         ["edit"]      = nil,
         ["visible"]   = false,
         ["fontSize"]  = 12,
-        ["fontColor"] = "#FFFFFFFF",
+        ["fontColor"] = "FFFFFFFF",
         ["items"]     = {},
         ["first"]     = 1,
         ["last"]      = 1
@@ -195,7 +195,7 @@ function P.resizeQueue(queueName, relativeWidth, absoluteWidth, relativeHeight, 
 end
 
 -- Change the font size and font color of all notifications in a queueHeightHelper
--- The parameters are (in order) 'name of the queue', 'font size', 'RGBA of the font color in hex notation'.
+-- The parameters are (in order) 'name of the queue', 'font size', 'ARGB of the font color in hex notation'.
 function P.changeQueueFont(queueName, size, color)
     local queue = P.queueList[queueName]
     local queueWindow = queue.window
@@ -226,7 +226,8 @@ function P.setItemFontHelper(item, queue, changeColor)
         item:setFont("BlueHighway-" .. queue.fontSize)
     end
     if changeColor then
-        --item:setProperty("TextColours", "tl:[" .. queue.fontColor .. "] tr:[" .. queue.fontColor .. "] bl:[" .. queue.fontColor .. "] br:[" .. queue.fontColor .. "]")
+        item:setProperty("TextColours", "tl:" .. queue.fontColor .. " tr:" .. queue.fontColor .. " bl:" .. queue.fontColor .. " br:" .. queue.fontColor .. "")
+        cout(0, "tl:[" .. queue.fontColor .. "] tr:[" .. queue.fontColor .. "] bl:[" .. queue.fontColor .. "] br:[" .. queue.fontColor .. "]")
     end
 end
 

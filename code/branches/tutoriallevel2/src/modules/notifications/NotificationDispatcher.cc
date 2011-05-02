@@ -112,7 +112,7 @@ namespace orxonox
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId || this->getSyncMode() == 0x0)
         {
             const std::string message = this->createNotificationMessage();
-            NotificationListener::sendNotification(message, clientId, this->getSender());
+            NotificationListener::sendNotification(message, this->getSender(), notificationMessageMode::message, notificationSendMode::network, clientId);
         }
         else if(GameMode::isServer())
         {
