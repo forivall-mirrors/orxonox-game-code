@@ -53,6 +53,7 @@
 #include "core/GameMode.h"
 #include "util/Debug.h"
 #include "util/Clock.h"
+#include "util/OrxAssert.h"
 // #include "TrafficControl.h"
 
 namespace orxonox
@@ -107,8 +108,7 @@ namespace orxonox
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     // now push only the most recent gamestates we received (ignore obsolete ones)
     for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
-      bool b = processGamestate(it->second);
-      assert(b);
+      OrxVerify(processGamestate(it->second), "");
       sendAck( it->second->getID(), it->second->getPeerID() );
       delete it->second;
     }
@@ -251,8 +251,7 @@ namespace orxonox
     }
 
 
-//     bool b = gs->compressData();
-//     assert(b);
+//     OrxVerify(gs->compressData(), "");
     clock.capture();
     COUT(5) << "diff and compress time: " << clock.getDeltaTime() << endl;
 //     COUT(5) << "sending gamestate with id " << gs->getID();
@@ -362,8 +361,7 @@ COUT(4) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " 
   {
     if(gs->isCompressed())
     {
-       bool b = gs->decompressData();
-       assert(b);
+       OrxVerify(gs->decompressData(), "");
     }
     assert(!gs->isDiffed());
     uint8_t gsMode;

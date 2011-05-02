@@ -31,6 +31,7 @@
 #include <zlib.h>
 
 #include "util/Debug.h"
+#include "util/OrxAssert.h"
 #include "core/GameMode.h"
 #include "core/ObjectList.h"
 #include "network/synchronisable/Synchronisable.h"
@@ -200,8 +201,7 @@ bool Gamestate::spreadData(uint8_t mode)
     else
     {
 //       COUT(4) << "updating object of classid " << objectheader.getClassID() << endl;
-      bool b = s->updateData(mem, mode);
-      assert(b);
+      OrxVerify(s->updateData(mem, mode), "");
     }
   }
   assert((uintptr_t)(mem-data_) == GamestateHeader::getSize()+header_.getDataSize());
