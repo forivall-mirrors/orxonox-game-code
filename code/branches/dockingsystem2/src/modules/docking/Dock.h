@@ -35,16 +35,19 @@
 #ifndef _Dock_H__
 #define _Dock_H__
 
+#include <map>
+
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/EventIncludes.h"
 
 #include "worldentities/StaticEntity.h"
+#include "notifications/NotificationManager.h"
+
 #include "DockingEffect.h"
 #include "DockingPrereqs.h"
 
-namespace orxonox { 
-
+namespace orxonox {
 
     class _DockingExport Dock : public StaticEntity {
     public:
@@ -59,8 +62,16 @@ namespace orxonox {
         bool addEffect(DockingEffect* effect); //!< Add a DockingEffect to the Dock.
         const DockingEffect* getEffect(unsigned int index) const; //!< Get the DockingEffect at a given index.
 
+        bool dock(PlayerInfo* player); //!< Returns true if given player docked successfully (player must be a candidate)
+        bool undock(PlayerInfo* player); //!< Undocks a player (player must be docked)
+
+        static void cmdDock();
+        static void cmdUndock();
+
     private:
-        std::list<DockingEffect*> effects_; //!< The list of DockingEffects to be executed when a player docks.
+        std::set<PlayerInfo*> candidates; //!< A set of all players which are allowed to dock using the console command.
+        std::set<PlayerInfo*> docked; //!< A set of all docked players
+        std::list<DockingEffect*> effects; //!< The list of DockingEffects to be executed when a player docks.
     };
 
 

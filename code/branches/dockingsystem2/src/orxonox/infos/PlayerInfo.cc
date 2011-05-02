@@ -222,7 +222,7 @@ namespace orxonox
 
         this->controllableEntity_->setController(0);
         
-        this->controllableEntity_ = this->previousControllableEntity_.back();
+//        this->controllableEntity_ = this->previousControllableEntity_.back();
         do {
             this->controllableEntity_ = this->previousControllableEntity_.back();
         } while(this->controllableEntity_ == NULL && this->previousControllableEntity_.size() > 0);

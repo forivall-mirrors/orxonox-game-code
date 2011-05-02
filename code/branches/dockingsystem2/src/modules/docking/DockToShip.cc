@@ -88,6 +88,8 @@ namespace orxonox
             return false;
         }
 
+        // Make sure target isn't removed when undocking
+        dockTo->setDestroyWhenPlayerLeft(false);
         player->startTemporaryControl(dockTo);
 
         return true;
@@ -96,6 +98,9 @@ namespace orxonox
     bool DockToShip::release(PlayerInfo* player)
     {
         COUT(0) << "DockToShip::release" << endl;
+
+        player->stopTemporaryControl();
+
         return true;
     }
 }
