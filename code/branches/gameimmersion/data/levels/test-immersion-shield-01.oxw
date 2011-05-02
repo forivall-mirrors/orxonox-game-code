@@ -1,28 +1,28 @@
 <LevelInfo
- name = "shield-test-01"
- description = "LEVELINFO-DESCRIPTION"
+ name = "shield-test-level"
+ description = "A simple Level with one shielded drone to shoot at"
 />
 
 <?lua
   include("HUDTemplates3.oxo")
   include("stats.oxo")
-  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipImmTest.oxt")
   include("templates/lodInformation.oxt")
 ?>
 
 <Level
- name         = "LEVEL-NAME"
+ name         = "shieldTL"
  description  = "LEVEL-DESCRIPTION"
 >
 
-  <templates>
-    <Template link=lodtemplate_default />
-  </templates>
+<templates>
+  <Template link=lodtemplate_default />
+</templates>
 
-  <Scene
+<Scene
    ambientlight = "0.8, 0.5, 0.5"
    skybox       = "Orxonox/Starbox"
-  >
+>
 
 
 
@@ -63,7 +63,7 @@
     <?lua
       for i = 1, 10, 1 do
     ?>
-      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipimmtest />
     <?lua end ?>
 
     <GlobalShader compositor="Bloom" visible=false>

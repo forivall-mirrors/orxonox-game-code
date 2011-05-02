@@ -103,10 +103,22 @@ namespace orxonox
 
             // Fire
             inline void setDamage(float damage)
-                { this->damage_ = damage; }
+                { this->damage_ = damage; COUT(3) << "DAMAGE-SET-FUNKTION (WeaponMode) WIRD AUFGERUFEN" << endl;}
             inline float getDamage() const
                 { return this->damage_; }
+////////////////////me, copied to projectile.cc
 
+            inline void setHealthDamage(float healthdamage)
+                { this->healthdamage_ = healthdamage; }
+            inline float getHealthDamage() const
+                { return this->healthdamage_; }
+
+            inline void setShieldDamage(float shielddamage)
+                { this->shielddamage_ = shielddamage;} //ShieldDamage wird korrekt gesettet vom XML-File
+            inline float getShieldDamage() const
+                { return this->shielddamage_; }
+
+///////////////////end me
             inline void setMuzzleOffset(const Vector3& offset)
                 { this->muzzleOffset_ = offset; }
             inline const Vector3& getMuzzleOffset() const
@@ -145,6 +157,8 @@ namespace orxonox
             bool bParallelReload_;
 
             float damage_;
+            float healthdamage_;
+            float shielddamage_;
             Vector3 muzzleOffset_;
 
         private:

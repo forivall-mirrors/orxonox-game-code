@@ -126,6 +126,10 @@ namespace orxonox // tolua_export
 
             virtual void hit(Pawn* originator, const Vector3& force, float damage);
             virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
+/////////me
+            virtual void hit(Pawn* originator, const Vector3& force, float damage, float healthdamage, float shielddamage);
+            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage);
+////////end me
             virtual void kill();
 
             virtual void fired(unsigned int firemode);
@@ -182,6 +186,9 @@ namespace orxonox // tolua_export
             virtual void spawneffect();
 
             virtual void damage(float damage, Pawn* originator = 0);
+//////////me
+            virtual void damage(float damage, float healthdamage, float shielddamage, Pawn* originator);
+/////////end me
 
             bool bAlive_;
 

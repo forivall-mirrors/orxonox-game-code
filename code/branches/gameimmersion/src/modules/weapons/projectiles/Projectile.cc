@@ -47,7 +47,11 @@ namespace orxonox
         this->setConfigValues();
         this->bDestroy_ = false;
         this->owner_ = 0;
-        this->damage_ = 15;
+        this->damage_ = 115;
+///////////////////me
+        this->healthdamage_ = 0;
+        this->shielddamage_ = 0;
+///////////////////end me
 
         // Get notification about collisions
 
@@ -138,7 +142,7 @@ namespace orxonox
 
             if (victim)
             {
-                victim->hit(this->owner_, contactPoint, this->damage_);
+                victim->hit(this->owner_, contactPoint, this->damage_, this->healthdamage_, this->shielddamage_);
                 victim->startReloadCountdown();
             }
         }

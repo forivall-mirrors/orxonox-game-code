@@ -264,6 +264,46 @@ namespace orxonox
     }
 ////////////////////end edit
 
+
+/////////////////////me override
+    void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
+    {
+        if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
+        {
+            if (shielddamage >= this->getShieldHealth())
+            {
+                this->setShieldHealth(0);
+                this->setHealth(this->health_ - (healthdamage + damage));
+            }
+            else
+            {
+                this->setShieldHealth(this->shieldHealth_ - shielddamage);
+
+                // remove remaining shieldAbsorpton-Part of damage from shield
+                shielddamage = damage * this->shieldAbsorption_;
+                shielddamage = std::min(this->getShieldHealth(),shielddamage);
+                this->setShieldHealth(this->shieldHealth_ - shielddamage);
+
+                // set remaining damage to health
+                this->setHealth(this->health_ - (damage - shielddamage) - healthdamage);
+            }
+
+            this->lastHitOriginator_ = originator;
+
+            // play damage effect
+        }
+        COUT(3) << "neue damage-Funktion wurde aufgerufen // " << "Shield:" << this->getShieldHealth() << endl;
+    }
+
+/////////////end me
+
+
+/* HIT-Funktionen
+	Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden!
+
+*/
+
+
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
@@ -274,6 +314,20 @@ namespace orxonox
             // play hit effect
         }
     }
+
+/////////////me override
+    void Pawn::hit(Pawn* originator, const Vector3& force, float damage, float healthdamage, float shielddamage)
+    {
+        COUT(3) << "neue hit-Funktion wurde aufgerufen // " << std::flush;
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
+        {
+            this->damage(damage, healthdamage, shielddamage, originator);
+            this->setVelocity(this->getVelocity() + force);
+
+            // play hit effect
+        }
+    }
+/////////////end me
 
     void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
     {
@@ -287,6 +341,22 @@ namespace orxonox
             // play hit effect
         }
     }
+
+/////////////me override
+    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage)
+    {
+        COUT(3) << "neue hit2-Funktion wurde aufgerufen // shielddamage: " << shielddamage << std::flush;
+        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
+        {
+            this->damage(damage, healthdamage, shielddamage, originator);
+
+            if ( this->getController() )
+                this->getController()->hit(originator, contactpoint, shielddamage);
+
+            // play hit effect
+        }
+    }
+/////////////end me
 
     void Pawn::kill()
     {
