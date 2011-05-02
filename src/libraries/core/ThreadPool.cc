@@ -27,8 +27,9 @@
  */
 
 #include "ThreadPool.h"
+
+#include "util/OrxAssert.h"
 #include "Thread.h"
-#include <cassert>
 
 namespace orxonox
 {
@@ -39,8 +40,7 @@ namespace orxonox
 
     ThreadPool::~ThreadPool()
     {
-        unsigned int a = this->setNrOfThreads(0);
-        assert(a == 0);
+        OrxVerify(this->setNrOfThreads(0) == 0, "" );
     }
 
     void ThreadPool::addThreads( unsigned int nr )
@@ -87,16 +87,15 @@ namespace orxonox
         {
             if ( ! (*it)->isWorking() )
             {
-                bool b = (*it)->evaluateExecutor( executor );
-                assert(b); // if b is false then there is some code error
+                // If that fails, then there is some code error
+                OrxVerify( (*it)->evaluateExecutor( executor ), "" );
                 return true;
             }
         }
         if ( addThread )
         {
             addThreads( 1 );
-            bool b = this->threadPool_.back()->evaluateExecutor( executor ); // access the last element
-            assert(b);
+            OrxVerify( this->threadPool_.back()->evaluateExecutor( executor ), "" ); // access the last element
             return true;
         }
         else
