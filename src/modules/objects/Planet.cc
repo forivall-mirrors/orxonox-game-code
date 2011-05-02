@@ -36,7 +36,6 @@
 #include "core/GameMode.h"
 #include "core/XMLPort.h"
 #include "Scene.h"
-#include "objects/collisionshapes/SphereCollisionShape.h"
 #include "graphics/Camera.h"
 #include "CameraManager.h"
 
@@ -51,19 +50,6 @@ namespace orxonox
     {
         RegisterObject(Planet);
         this->registerVariables();
-        
-        // Get notification about collisions
-        if (GameMode::isMaster())
-        {
-            //this->setMass(1.0);
-            this->enableCollisionCallback();
-            this->setCollisionResponse(false);
-            this->setCollisionType(Static);
-            
-            SphereCollisionShape* shape = new SphereCollisionShape(this);
-            //shape->setRadius(20);
-            this->attachCollisionShape(shape);
-        }
     }
 
     /**
