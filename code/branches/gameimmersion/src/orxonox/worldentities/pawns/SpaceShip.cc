@@ -54,7 +54,6 @@ namespace orxonox
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
         this->bBoost_ = false;
-        this->bPermanentBoost_ = false;
         this->steering_ = Vector3::ZERO;
         this->engine_ = 0;
 
@@ -82,7 +81,7 @@ namespace orxonox
 	this->cameraOriginalPosition = c->getPosition();
 	this->cameraOriginalOrientation = c->getOrientation();
 
-	this->shakeFrequency_ = 20;
+	this->shakeFrequency_ = 50;
 	this->shakeAmplitude_ = 40;
 	this->shakeDt_ = 0;
     }
@@ -113,6 +112,10 @@ namespace orxonox
         registerVariable(this->primaryThrust_,  VariableDirection::ToClient);
         registerVariable(this->auxilaryThrust_, VariableDirection::ToClient);
         registerVariable(this->rotationThrust_, VariableDirection::ToClient);
+        registerVariable(this->boostPower_, VariableDirection::ToClient);
+        registerVariable(this->boostPowerRate_, VariableDirection::ToClient);
+        registerVariable(this->boostRate_, VariableDirection::ToClient);
+        registerVariable(this->boostCooldownDuration_, VariableDirection::ToClient);
     }
 
     void SpaceShip::setConfigValues()
@@ -162,7 +165,7 @@ namespace orxonox
             }
 
 
-	Camera* c = this->getCamera();
+
             if(this->bBoost_)
             {
                 this->boostPower_ -=this->boostRate_*dt;
@@ -176,6 +179,8 @@ namespace orxonox
 		else
 		{
 			this->shakeDt_ += dt;
+			
+			Camera* c = this->getCamera();
 
 			//Shaking Camera effect
 			if (c != 0)
@@ -200,12 +205,6 @@ namespace orxonox
 			}
 		}
             }
-	    else
-	    {
-		    //reset the camera, if the boost is not active
-		    //TODO: don't call this every tick
-		    this->resetCamera();
-	    }
         }
     }
 
@@ -253,28 +252,27 @@ namespace orxonox
         Pawn::rotateRoll(value);
     }
 
-    // TODO: something seems to call this function every tick, could probably handled a little more efficiently!
-    void SpaceShip::setBoost(bool bBoost)
-    {
-        if(bBoost == this->bBoost_)
-            return;
-
-        if(bBoost)
-            this->boost();
-        else
-        {
-            this->bBoost_ = false;
-        }
-    }
-
     void SpaceShip::fire()
     {
     }
 
-    void SpaceShip::boost()
+    /**
+    @brief
+        Starts or stops boosting.
+    @param bBoost
+        Whether to start or stop boosting.
+    */
+    void SpaceShip::boost(bool bBoost)
     {
-        if(!this->bBoostCooldown_)
+	Camera* c = this->getCamera();
+	
+        if(bBoost && !this->bBoostCooldown_)
             this->bBoost_ = true;
+        if(!bBoost)
+	{
+            this->bBoost_ = false;
+	    this->resetCamera();
+	}
     }
 
     void SpaceShip::loadEngineTemplate()
@@ -325,6 +323,14 @@ namespace orxonox
 	    Camera *c = this->getCamera();
 	    
 	    assert(c != 0);
+	  
+	    if (c == 0)
+	    {
+		    COUT(2) << "Failed to reset camera!";
+	    	    return;
+	    }
+	    
+	    shakeDt_ = 0;
 	    
 	    c->setAngularVelocity(Vector3(0,0,0));
 	    c->setPosition(this->cameraOriginalPosition);
