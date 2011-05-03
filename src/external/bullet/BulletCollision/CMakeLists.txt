@@ -49,6 +49,7 @@ COMPILATION_BEGIN BulletCollisionCompilation.cpp
 	CollisionShapes/btConvexHullShape.cpp
 	CollisionShapes/btConvexInternalShape.cpp
 	CollisionShapes/btConvexPointCloudShape.cpp
+	CollisionShapes/btConvexPolyhedron.cpp
 	CollisionShapes/btConvexShape.cpp
 	CollisionShapes/btConvex2dShape.cpp
 	CollisionShapes/btConvexTriangleMeshShape.cpp
@@ -87,6 +88,9 @@ COMPILATION_BEGIN BulletCollisionCompilation.cpp
 	NarrowPhaseCollision/btVoronoiSimplexSolver.cpp
 
 COMPILATION_END
+
+    # Raises compiler errors when compiled inside the compilation
+	NarrowPhaseCollision/btPolyhedralContactClipping.cpp
 
 	# Headers
 	BroadphaseCollision/btAxisSweep3.h
@@ -139,6 +143,7 @@ COMPILATION_END
 	CollisionShapes/btConvexHullShape.h
 	CollisionShapes/btConvexInternalShape.h
 	CollisionShapes/btConvexPointCloudShape.h
+	CollisionShapes/btConvexPolyhedron.h
 	CollisionShapes/btConvexShape.h
 	CollisionShapes/btConvex2dShape.h
 	CollisionShapes/btConvexTriangleMeshShape.h
@@ -183,4 +188,5 @@ COMPILATION_END
 	NarrowPhaseCollision/btSimplexSolverInterface.h
 	NarrowPhaseCollision/btSubSimplexConvexCast.h
 	NarrowPhaseCollision/btVoronoiSimplexSolver.h
+	NarrowPhaseCollision/btPolyhedralContactClipping.h
 )
