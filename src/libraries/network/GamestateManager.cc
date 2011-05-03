@@ -93,7 +93,8 @@ namespace orxonox
   {
     assert(gs);
     std::map<unsigned int, packet::Gamestate*>::iterator it = gamestateQueue.find(clientID);
-    if(it!=gamestateQueue.end()){
+    if(it!=gamestateQueue.end())
+    {
       // delete obsolete gamestate
       delete it->second;
     }
@@ -107,8 +108,9 @@ namespace orxonox
         return true;
     std::map<unsigned int, packet::Gamestate*>::iterator it;
     // now push only the most recent gamestates we received (ignore obsolete ones)
-    for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++){
-      OrxVerify(processGamestate(it->second), "");
+    for(it = gamestateQueue.begin(); it!=gamestateQueue.end(); it++)
+    {
+      OrxVerify(processGamestate(it->second), "ERROR: could not process Gamestate");
       sendAck( it->second->getID(), it->second->getPeerID() );
       delete it->second;
     }
@@ -361,7 +363,7 @@ COUT(4) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " 
   {
     if(gs->isCompressed())
     {
-       OrxVerify(gs->decompressData(), "");
+       OrxVerify(gs->decompressData(), "ERROR: could not decompress Gamestate");
     }
     assert(!gs->isDiffed());
     uint8_t gsMode;
