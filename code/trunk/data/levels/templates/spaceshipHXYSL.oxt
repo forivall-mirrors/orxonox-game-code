@@ -16,7 +16,7 @@
    rotationThrust    = 25;
 
    collisionType     = "dynamic"
-   mass              = 100
+   mass              = 1000
    linearDamping     = 0.7
    angularDamping    = 0.9999999
   >
