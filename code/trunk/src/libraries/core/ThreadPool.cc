@@ -40,7 +40,7 @@ namespace orxonox
 
     ThreadPool::~ThreadPool()
     {
-        OrxVerify(this->setNrOfThreads(0) == 0, "" );
+        OrxVerify(this->setNrOfThreads(0) == 0, "ERROR: could not join remaining threads in ThreadPool" );
     }
 
     void ThreadPool::addThreads( unsigned int nr )
@@ -88,14 +88,14 @@ namespace orxonox
             if ( ! (*it)->isWorking() )
             {
                 // If that fails, then there is some code error
-                OrxVerify( (*it)->evaluateExecutor( executor ), "" );
+                OrxVerify( (*it)->evaluateExecutor( executor ), "ERROR: could not evaluate Executor" );
                 return true;
             }
         }
         if ( addThread )
         {
             addThreads( 1 );
-            OrxVerify( this->threadPool_.back()->evaluateExecutor( executor ), "" ); // access the last element
+            OrxVerify( this->threadPool_.back()->evaluateExecutor( executor ), "ERROR: could not evaluate Executor" ); // access the last element
             return true;
         }
         else

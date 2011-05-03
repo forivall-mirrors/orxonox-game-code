@@ -201,7 +201,7 @@ bool Gamestate::spreadData(uint8_t mode)
     else
     {
 //       COUT(4) << "updating object of classid " << objectheader.getClassID() << endl;
-      OrxVerify(s->updateData(mem, mode), "");
+      OrxVerify(s->updateData(mem, mode), "ERROR: could not update Synchronisable with Gamestate data");
     }
   }
   assert((uintptr_t)(mem-data_) == GamestateHeader::getSize()+header_.getDataSize());
@@ -262,12 +262,12 @@ bool Gamestate::operator==(packet::Gamestate gs)
 {
   uint8_t *d1 = data_+GamestateHeader::getSize();
   uint8_t *d2 = gs.data_+GamestateHeader::getSize();
-  GamestateHeader* h1 = new GamestateHeader(data_);
-  GamestateHeader* h2 = new GamestateHeader(gs.data_);
-  assert(h1->getDataSize() == h2->getDataSize());
+  GamestateHeader h1(data_);
+  GamestateHeader h2(gs.data_);
+  assert(h1.getDataSize() == h2.getDataSize());
   assert(!isCompressed());
   assert(!gs.isCompressed());
-  return memcmp(d1, d2, h1->getDataSize())==0;
+  return memcmp(d1, d2, h1.getDataSize())==0;
 }
 
 
