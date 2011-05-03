@@ -22,7 +22,7 @@
  *   Author:
  *      Aurelian Jaggi
  *   Co-authors:
- *      ...
+ *      Kevin Young
  *
  */
 
@@ -44,6 +44,9 @@ namespace orxonox
     /*static*/ const std::string ForceField::modeTube_s = "tube";
     /*static*/ const std::string ForceField::modeSphere_s = "sphere";
     /*static*/ const std::string ForceField::modeInvertedSphere_s = "invertedSphere";
+    /*static*/ const std::string ForceField::modeNewtonianGravity_s = "newtonianGravity";
+    /*static*/ const float ForceField::gravConstant_ = 6.673e-11;
+    /*static*/ const float ForceField::attenFactor_ = 1;
 
     /**
     @brief
@@ -57,6 +60,7 @@ namespace orxonox
         this->setDirection(Vector3::ZERO);
         this->setVelocity(100);
         this->setDiameter(500);
+        this->setMassDiameter(0);   //! We allow point-masses
         this->setLength(2000);
         this->mode_ = forceFieldMode::tube;
         
@@ -81,6 +85,7 @@ namespace orxonox
 
         XMLPortParam(ForceField, "velocity", setVelocity, getVelocity, xmlelement, mode).defaultValues(100);
         XMLPortParam(ForceField, "diameter", setDiameter, getDiameter, xmlelement, mode).defaultValues(500);
+        XMLPortParam(ForceField, "massDiameter", setMassDiameter, getMassDiameter, xmlelement, mode).defaultValues(0);
         XMLPortParam(ForceField, "length", setLength  , getLength  , xmlelement, mode).defaultValues(2000);
         XMLPortParam(ForceField, "mode", setMode, getMode, xmlelement, mode);
     }
@@ -89,6 +94,7 @@ namespace orxonox
     {
         registerVariable(this->velocity_, VariableDirection::ToClient);
         registerVariable(this->radius_, VariableDirection::ToClient);
+        registerVariable(this->massRadius_, VariableDirection::ToClient);
         registerVariable(this->halfLength_, VariableDirection::ToClient);
         registerVariable(this->mode_, VariableDirection::ToClient);
     }
@@ -97,7 +103,7 @@ namespace orxonox
     /**
     @brief
         A method that is called every tick.
-        Implements the behavior of teh ForceField.
+        Implements the behavior of the ForceField.
     @param dt
         The amount of time that elapsed since the last tick.
     */
@@ -164,6 +170,31 @@ namespace orxonox
                 }
             }
         }
+        else if(this->mode_ == forceFieldMode::newtonianGravity)
+        {
+            // Iterate over all objects that could possibly be affected by the ForceField.
+            for (ObjectList<MobileEntity>::iterator it = ObjectList<MobileEntity>::begin(); it != ObjectList<MobileEntity>::end(); ++it)
+            {
+                Vector3 distanceVector = it->getWorldPosition() - this->getWorldPosition();
+                float distance = distanceVector.length();
+                // If the object is within 'radius' distance and especially further away than massRadius_
+                if (distance < this->radius_ && distance > this->massRadius_)
+                {
+                    distanceVector.normalise();
+                    /* Apply a central force that follows the newtownian law of gravity, ie.:
+                     * F = G * (M*m) / D^2,
+                     * while M is the mass of the stellar body and m is the mass of the affected object. 
+                     * D is the distance from the center of mass of both bodies
+                     * and it should be noted that massRadius_ denotes the radius of the stellar body,
+                     * at which point the force vanishes (you can use this to dictate the size of the body).
+                     * attenFactor_ weakens the field by a constant factor. The -1 is needed for an attractive force.
+                     */
+                    
+                    // Note: this so called force is actually an acceleration!
+                    it->applyCentralForce((-1) * (ForceField::attenFactor_ * ForceField::gravConstant_ * this->getMass()) / (distance * distance) * distanceVector);
+                }
+            }
+        }
     }
 
     /**
@@ -180,6 +211,8 @@ namespace orxonox
             this->mode_ = forceFieldMode::sphere;
         else if(mode == ForceField::modeInvertedSphere_s)
             this->mode_ = forceFieldMode::invertedSphere;
+        else if(mode == ForceField::modeNewtonianGravity_s)
+            this->mode_ = forceFieldMode::newtonianGravity;
         else
         {
             COUT(2) << "Wrong mode '" << mode << "' in ForceField. Setting to 'tube'." << std::endl;
@@ -203,6 +236,8 @@ namespace orxonox
                 return ForceField::modeSphere_s;
             case forceFieldMode::invertedSphere:
                 return ForceField::modeInvertedSphere_s;
+            case forceFieldMode::newtonianGravity:
+                return ForceField::modeNewtonianGravity_s;
             default:
                 return ForceField::modeTube_s;
         }
