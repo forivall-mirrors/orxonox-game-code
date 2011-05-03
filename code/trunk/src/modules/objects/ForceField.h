@@ -23,6 +23,7 @@
  *      Aurelian Jaggi
  *   Co-authors:
  *      Damian 'Mozork' Frick
+ *      Kevin Young
  *
  */
 
@@ -54,7 +55,8 @@ namespace orxonox
         enum Value {
             tube, //!< The ForceField has a tube shape.
             sphere, //!< The ForceField has a spherical shape.
-            invertedSphere //!< The ForceField has a spherical shape but "inverted" behavior.
+            invertedSphere, //!< The ForceField has a spherical shape but "inverted" behavior.
+            newtonianGravity //!< The ForceField imitates Newtonian gravitation for use in stellar bodies.
         };
     }
 
@@ -105,17 +107,31 @@ namespace orxonox
                 { return this->velocity_; }
 
             /**
-            @brief Set the diameter of the ForceField.
+            @brief Set the diameter of the ForceField. In mode StellarBody this stands for the outer radius.
             @param diam The diameter to be set.
             */
             inline void setDiameter(float diam)
                 { this->radius_ = diam/2; }
             /**
-            @brief Get the diameter of the ForceField.
+            @brief Get the diameter of the ForceField. In mode StellarBody this stands for the outer radius.
             @return Returns the diameter of the ForceField.
             */
             inline float getDiameter()
                 { return this->radius_*2; }
+        
+            /**
+            @brief Set the diameter of the stellar body for the Newtonian ForceField.
+            @param massDiam The diameter of the stellar body.
+            */
+            inline void setMassDiameter(float massDiam)
+                { this->massRadius_ = massDiam/2; }
+        
+            /**
+            @brief Get the diameter of the stellar body for the Newtonian ForceField.
+            @return float Returns the diameter of the stellar body.
+            */
+            inline float getMassDiameter()
+                { return this->massRadius_*2; }
 
             /**
             @brief Set the length of the ForceField.
@@ -138,11 +154,18 @@ namespace orxonox
             static const std::string modeTube_s;
             static const std::string modeSphere_s;
             static const std::string modeInvertedSphere_s;
+            static const std::string modeNewtonianGravity_s;
 
             float velocity_; //!< The velocity of the ForceField.
             float radius_; //!< The radius of the ForceField.
+            float massRadius_; //!< The radius of the stellar body for the Newtonian ForceField.
             float halfLength_; //!< Half of the length of the ForceField.
             int mode_; //!< The mode of the ForceField.
+            
+            //! Gravitational constant for Newtonian ForceFields.
+            static const float gravConstant_;
+            //! Attenuation factor for Newtonian ForceFields
+            static const float attenFactor_;
   };
 }
 
