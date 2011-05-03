@@ -3,6 +3,7 @@ ADD_SOURCE_FILES(BULLET_FILES
 COMPILATION_BEGIN BulletLinearMathCompilation.cpp
 	btAlignedAllocator.cpp
 	btConvexHull.cpp
+    btConvexHullComputer.cpp
 	btGeometryUtil.cpp
 	btQuickprof.cpp
 	btSerializer.cpp
@@ -13,6 +14,7 @@ COMPILATION_END
 	btAlignedAllocator.h
 	btAlignedObjectArray.h
 	btConvexHull.h
+    btConvexHullComputer.h
 	btDefaultMotionState.h
 	btGeometryUtil.h
 	btHashMap.h

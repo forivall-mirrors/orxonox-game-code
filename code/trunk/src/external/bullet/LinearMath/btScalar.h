@@ -14,8 +14,8 @@ subject to the following restrictions:
 
 
 
-#ifndef SIMD___SCALAR_H
-#define SIMD___SCALAR_H
+#ifndef BT_SCALAR_H
+#define BT_SCALAR_H
 
 #ifdef BT_MANAGED_CODE
 //Aligned data types not supported in managed code
@@ -25,12 +25,10 @@ subject to the following restrictions:
 
 #include <math.h>
 #include <stdlib.h>//size_t for MSVC 6.0
-#include <cstdlib>
-#include <cfloat>
 #include <float.h>
 
 /* SVN $Revision$ on $Date$ from http://bullet.googlecode.com*/
-#define BT_BULLET_VERSION 277
+#define BT_BULLET_VERSION 278
 
 inline int	btGetVersion()
 {
@@ -286,11 +284,7 @@ SIMD_FORCE_INLINE btScalar btAtan(btScalar x) { return atanf(x); }
 SIMD_FORCE_INLINE btScalar btAtan2(btScalar x, btScalar y) { return atan2f(x, y); }
 SIMD_FORCE_INLINE btScalar btExp(btScalar x) { return expf(x); }
 SIMD_FORCE_INLINE btScalar btLog(btScalar x) { return logf(x); }
-  #if defined( __MINGW32__ )
-  SIMD_FORCE_INLINE btScalar btPow(btScalar x,btScalar y) { return pow(x,y); }
-  #else
-  SIMD_FORCE_INLINE btScalar btPow(btScalar x,btScalar y) { return powf(x,y); }
-  #endif
+SIMD_FORCE_INLINE btScalar btPow(btScalar x,btScalar y) { return powf(x,y); }
 SIMD_FORCE_INLINE btScalar btFmod(btScalar x,btScalar y) { return fmodf(x,y); }
 	
 #endif
@@ -525,4 +519,4 @@ struct btTypedObject
 		return m_objectType;
 	}
 };
-#endif //SIMD___SCALAR_H
+#endif //BT_SCALAR_H

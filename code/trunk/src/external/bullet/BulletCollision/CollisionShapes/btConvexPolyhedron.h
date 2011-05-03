@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://continuousphysics.com/Bullet/
+Copyright (c) 2011 Advanced Micro Devices, Inc.  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -13,33 +13,42 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef BT_COLLISION_CREATE_FUNC
-#define BT_COLLISION_CREATE_FUNC
 
+///This file was written by Erwin Coumans
+
+
+#ifndef _BT_POLYHEDRAL_FEATURES_H
+#define _BT_POLYHEDRAL_FEATURES_H
+
+#include "LinearMath/btTransform.h"
 #include "LinearMath/btAlignedObjectArray.h"
-class btCollisionAlgorithm;
-class btCollisionObject;
 
-struct btCollisionAlgorithmConstructionInfo;
 
-///Used by the btCollisionDispatcher to register and create instances for btCollisionAlgorithm
-struct btCollisionAlgorithmCreateFunc
+struct btFace
 {
-	bool m_swapped;
-	
-	btCollisionAlgorithmCreateFunc()
-		:m_swapped(false)
-	{
-	}
-	virtual ~btCollisionAlgorithmCreateFunc(){};
-
-	virtual	btCollisionAlgorithm* CreateCollisionAlgorithm(btCollisionAlgorithmConstructionInfo& , btCollisionObject* body0,btCollisionObject* body1)
-	{
-		
-		(void)body0;
-		(void)body1;
-		return 0;
-	}
+	btAlignedObjectArray<int>	m_indices;
+	btAlignedObjectArray<int>	m_connectedFaces;
+	float	m_plane[4];
 };
-#endif //BT_COLLISION_CREATE_FUNC
+
+
+class btConvexPolyhedron
+{
+	public:
+	btConvexPolyhedron();
+	virtual	~btConvexPolyhedron();
+
+	btAlignedObjectArray<btVector3>	m_vertices;
+	btAlignedObjectArray<btFace>	m_faces;
+	btAlignedObjectArray<btVector3> m_uniqueEdges;
+	btVector3		m_localCenter;
+
+	void	initialize();
+
+	void project(const btTransform& trans, const btVector3& dir, float& min, float& max) const;
+};
+
+	
+#endif //_BT_POLYHEDRAL_FEATURES_H
+
 
