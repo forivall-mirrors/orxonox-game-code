@@ -55,7 +55,7 @@ namespace orxonox
         changes. On the other hand, if you want to change the state, you can simply increase
         the counter.
     */
-    struct _UtilExport mbool
+    struct mbool
     {
         public:
             /// Constructor: Creates the mbool and initializes the boolean value (default to false).
@@ -64,6 +64,9 @@ namespace orxonox
             /// Copy-constructor, copies state and memory.
             inline mbool(const mbool& value)
                 { this->value_.memory_ = value.value_.memory_; }
+            /// Destructor does nothing but not defining it might create a symbol (class is header only)
+            inline ~mbool()
+                { }
 
             /// Assigns a boolean value (and increases the memory value if the value is different to the old value).
             inline mbool& operator=(bool value)
