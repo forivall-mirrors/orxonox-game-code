@@ -26,12 +26,11 @@
  *
  */
 
+#include "Thread.h"
+
 #if defined(ORXONOX_PLATFORM_WINDOWS)
   #include "ThreadWin.cc"
 #elif defined(ORXONOX_PLATFORM_UNIX)
-
-
-#include "Thread.h"
 
 #include <cassert>
 #include <boost/thread/thread.hpp>
