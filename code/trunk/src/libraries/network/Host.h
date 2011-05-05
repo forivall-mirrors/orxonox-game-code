@@ -70,7 +70,7 @@ class _NetworkExport Host: public GamestateManager
 //     static Host *instance_;
 
   public:
-//     static Host* getInstance(){ return instance_; }
+    static Host* getActiveInstance();
     static bool running(){ return instances_s.size(); }
     static void addPacket(ENetPacket* packet, int clientID = NETWORK_PEER_ID_SERVER, uint8_t channelID = 0);
     //static bool chat(std::string& message);

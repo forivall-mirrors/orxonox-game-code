@@ -160,5 +160,17 @@ namespace orxonox {
     }
     return false;
   }
+  
+  Host* Host::getActiveInstance()
+  {
+    std::vector<Host*>::iterator it = Host::instances_s.begin();
+    while( it != Host::instances_s.end() )
+    {
+      if( (*it)->isActive() )
+        return *it;
+    }
+    return 0;
+  }
+
 
 }//namespace orxonox
