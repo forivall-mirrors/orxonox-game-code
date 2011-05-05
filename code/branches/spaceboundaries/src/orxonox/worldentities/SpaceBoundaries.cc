@@ -49,6 +49,7 @@ namespace orxonox
         this->setWarnDistance(2000);
         this->setShowDistance(2500);
         this->setHealthDecrease(1);
+        this->setReaction(0);
         
         RegisterObject(SpaceBoundaries);
         
@@ -60,11 +61,6 @@ namespace orxonox
     SpaceBoundaries::~SpaceBoundaries()
     {
         delete this->centerRadar_;
-        
-        if(this->boundary_ != NULL)
-        {
-            delete this->boundary_;
-        }
         
         this->pawnsIn_.clear();
         
@@ -105,7 +101,7 @@ namespace orxonox
         if( current == this->billboards_.end() )
         {
             Billboard *tmp = new Billboard(this);
-            setBillboardOptions( tmp );
+            this->setBillboardOptions( tmp );
             tmp->setPosition(position);
             billboardAdministration tmp2 = { true, tmp };
             this->billboards_.push_back( tmp2 );
@@ -170,6 +166,15 @@ namespace orxonox
     {
         return this->healthDecrease_;
     }
+    
+    void SpaceBoundaries::setReaction(int mode)
+    {
+        this->reaction_ = mode;
+    }
+    int SpaceBoundaries::getReaction()
+    {
+        return this->reaction_;
+    }
 
     void SpaceBoundaries::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
@@ -178,52 +183,53 @@ namespace orxonox
         XMLPortParam(SpaceBoundaries, "maxDistance", setMaxDistance, getMaxDistance, xmlelement, mode);
         XMLPortParam(SpaceBoundaries, "warnDistance", setWarnDistance, getWarnDistance, xmlelement, mode);
         XMLPortParam(SpaceBoundaries, "healthDecrease", setHealthDecrease, getHealthDecrease, xmlelement, mode);
+        XMLPortParam(SpaceBoundaries, "reactionMode", setReaction, getReaction, xmlelement, mode);
     }
     
     void SpaceBoundaries::tick(float dt)
     {
+        this->checkWhoIsIn();
         this->removeAllBillboards();
         COUT(0) << "Groesse der Liste: " << (int) pawnsIn_.size() << std::endl;
         
         float distance;
         bool humanItem;
-        for( std::list<Pawn*>::iterator current = pawnsIn_.begin(); current != pawnsIn_.end(); current++ )
+        for( std::list<WeakPtr<Pawn> >::iterator current = pawnsIn_.begin(); current != pawnsIn_.end(); current++ )
         {
-            Pawn* currentPawn = *current;
-            distance = this->computeDistance(currentPawn);
-            humanItem = this->isHumanPlayer(currentPawn);
-            COUT(0) << "Distanz:" << distance << std::endl; // message for debugging
-            if(distance > this->warnDistance_ && distance < this->maxDistance_) // Zeige Warnung an!
+            Pawn* currentPawn = current->get();
+            if( currentPawn && currentPawn->getNode() ) 
             {
-                COUT(0) << "You are leaving the area" << std::endl; // message for debugging
-                if(humanItem)
+                distance = this->computeDistance(currentPawn);
+                humanItem = this->isHumanPlayer(currentPawn);
+                COUT(0) << "Distanz:" << distance << std::endl; // message for debugging
+                if(distance > this->warnDistance_ && distance < this->maxDistance_) // Zeige Warnung an!
                 {
-                    COUT(0) << "humanItem ist true" << std::endl;
-                    this->displayWarning("Attention! You are leaving the area!");
-                } else {
-                    
+                    COUT(0) << "You are near by the boundaries!" << std::endl; // message for debugging
+                    if(humanItem)
+                    {
+                        COUT(0) << "humanItem ist true" << std::endl;
+                        this->displayWarning("Attention! You are near by the boundaries!");
+                    }
                 }
-            }
-            if( (this->maxDistance_ - distance) < this->showDistance_)
-            {
-                // Zeige Grenze an!
-                this->displayBoundaries(currentPawn);
-            }
-            if(distance > this->maxDistance_)
-            {
-                if(humanItem)
+                if( (this->maxDistance_ - distance) < this->showDistance_ )
                 {
-                    COUT(0) << "Health should be decreasing!" << std::endl;
-                    this->displayWarning("You are out of the area now!");
-                    currentPawn->removeHealth( (distance - maxDistance_) * this->healthDecrease_);
-                } else {
-                    
+                    this->displayBoundaries(currentPawn); // Zeige Grenze an!
                 }
-                
-                this->bounceBack(currentPawn);
+                if(distance > this->maxDistance_ && (this->reaction_ == 1) )
+                {
+                    if( humanItem )
+                    {
+                        COUT(0) << "Health should be decreasing!" << std::endl;
+                        this->displayWarning("You are out of the area now!");
+                    }
+                    currentPawn->removeHealth( (distance - this->maxDistance_) * this->healthDecrease_);
+                }
+                if( (this->reaction_ == 0) && (distance + 100 > this->maxDistance_)) // Annahme: Ein Pawn kann von einem Tick bis zum nächsten nicht mehr als 100 Distanzeinheiten zurücklegen.
+                {
+                    this->conditionalBounceBack(currentPawn, distance, dt);
+                }
             }
         }
-        this->checkWhoIsIn();
     }
     
     float SpaceBoundaries::computeDistance(WorldEntity *item)
@@ -253,15 +259,18 @@ namespace orxonox
         this->positionBillboard(boundaryPosition);
     }
     
-    void SpaceBoundaries::bounceBack(Pawn *item)
+    void SpaceBoundaries::conditionalBounceBack(Pawn *item, float currentDistance, float dt)
     {
         Vector3 normal = item->getPosition() - this->getPosition();
-        if( item->getVelocity().dotProduct(normal) > 0 ) // Greife nur ein, falls sich das Pawn nach Aussen bewegt.
+        normal.normalise();
+        Vector3 velocity = item->getVelocity();
+        float normalSpeed = item->getVelocity().dotProduct(normal);
+        
+        /* Checke, ob das Pawn innerhalb des nächsten Ticks, das erlaubte Gebiet verlassen würde.
+           Falls ja: Spicke es zurück. */
+        if( currentDistance + normalSpeed * dt > this->maxDistance_ )
         {
             float dampingFactor = 0.5;
-        
-            normal.normalise();
-            Vector3 velocity = item->getVelocity();
             velocity = velocity.reflect(normal);
             Vector3 acceleration = item->getAcceleration();
             acceleration = acceleration.reflect(normal);
