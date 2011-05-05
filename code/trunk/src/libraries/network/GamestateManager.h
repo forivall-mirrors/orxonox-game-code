@@ -86,7 +86,7 @@ namespace orxonox
     virtual bool      addGamestate(packet::Gamestate *gs, unsigned int peerID);
     virtual bool      ackGamestate(unsigned int gamestateID, unsigned int peerID);
     virtual uint32_t  getLastReceivedGamestateID( unsigned int peerID );
-    virtual uint32_t  getCurrentGamestateID(){ return currentGamestate_->getID(); }
+    virtual uint32_t  getCurrentGamestateID(){ if( currentGamestate_) return currentGamestate_->getID(); else return GAMESTATEID_INITIAL; }
     
     bool processGamestates();
     bool sendAck(unsigned int gamestateID, uint32_t peerID);
