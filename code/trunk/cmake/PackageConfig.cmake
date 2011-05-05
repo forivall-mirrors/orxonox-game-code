@@ -82,6 +82,16 @@ IF(WIN32 AND DEP_BINARY_DIR)
         DESTINATION bin
         CONFIGURATIONS RelForDevs Release RelWithDebInfo MinSizeRel
       )
+      IF(INSTALL_PDB_FILES) # MSVC specific: install debug symbols files
+        GET_FILENAME_COMPONENT(_base_name ${_file} NAME_WE)
+        IF(EXISTS ${DEP_BINARY_DIR}/${_base_name}.pdb)
+          INSTALL(
+            FILES ${DEP_BINARY_DIR}/${_base_name}.pdb
+            DESTINATION bin
+            CONFIGURATIONS RelForDevs RelWithDebInfo
+          )
+        ENDIF()
+      ENDIF()
     ENDFOREACH(_file)
   ELSE()
     # Try to filter out all the debug libraries. If the regex doesn't do the
