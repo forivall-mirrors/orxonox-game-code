@@ -227,7 +227,7 @@ namespace orxonox
 //     packet::Gamestate *gs = gamestate->doSelection(clientID, 20000);
 //       packet::Gamestate* gs = new packet::Gamestate(*gamestate);
 //     packet::Gamestate* gs = gamestate;
-    packet::Gamestate *gs = new packet::Gamestate(*gamestate); //TODO: is this neccessary ?
+    packet::Gamestate *gs = new packet::Gamestate(*gamestate); //this is neccessary because the gamestate are being kept (to diff them later on) for each client seperately
 //     packet::Gamestate *gs = new packet::Gamestate();
 //     gs->collectData( id_, 0x1 );
 //     this->threadMutex_->lock();
@@ -288,7 +288,7 @@ namespace orxonox
 //     }
 
 //    assert(curid==GAMESTATEID_INITIAL || curid<=gamestateID); // this line is commented out because acknowledgements are unreliable and may arrive in distorted order
-    if( gamestateID <= curid )
+    if( gamestateID <= curid && curid != GAMESTATEID_INITIAL )
         return true;
 COUT(4) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " curid: " << curid << std::endl;
     std::map<uint32_t, packet::Gamestate*>::iterator it2;
