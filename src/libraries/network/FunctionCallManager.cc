@@ -30,6 +30,8 @@
 #include "packet/FunctionCalls.h"
 #include "core/GameMode.h"
 #include "GamestateHandler.h"
+#include "Host.h"
+#include "util/OrxAssert.h"
 
 namespace orxonox {
 
@@ -174,7 +176,8 @@ void FunctionCallManager::processBufferedFunctionCalls()
   std::vector<std::pair<FunctionCall, std::pair<uint32_t, uint32_t> > >::iterator it = FunctionCallManager::sIncomingFunctionCallBuffer_.begin();
   while( it!=FunctionCallManager::sIncomingFunctionCallBuffer_.end() )
   {
-    if( it->first.execute() )
+    OrxAssert( Host::getActiveInstance(), "No Host class existing" );
+    if( it->second.first <= Host::getActiveInstance()->getLastReceivedGamestateID(it->second.second) && it->first.execute() )
       FunctionCallManager::sIncomingFunctionCallBuffer_.erase(it);
     else
     {
