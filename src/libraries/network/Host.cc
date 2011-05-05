@@ -168,6 +168,8 @@ namespace orxonox {
     {
       if( (*it)->isActive() )
         return *it;
+      else
+        ++it;
     }
     return 0;
   }
