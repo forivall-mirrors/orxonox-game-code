@@ -23,6 +23,7 @@
  *      Fabian 'x3n' Landau (original)
  *   Co-authors:
  *      Sandro 'smerkli' Merkli (adaptions to WAN)
+ *      Oliver Scheuss (various fixes and extensions)
  *      ...
  *
  */
