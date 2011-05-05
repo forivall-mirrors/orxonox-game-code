@@ -73,9 +73,6 @@ namespace orxonox
 
         // Flag for overlay rendering
         this->disableOverlays_ = true;
-
-        // Update the values
-        this->update();
     }
 
     ScreenshotManager::~ScreenshotManager()
@@ -140,7 +137,7 @@ namespace orxonox
         if(finalImage != NULL)
         {
             // Save it.
-            finalImage->save(PathConfig::getInstance().getLogPathString() + "screenshot_" + getTimestamp() + "." + this->fileExtension_);
+            finalImage->save(PathConfig::getInstance().getLogPathString() + "screenshot_" + getTimestamp() + this->fileExtension_);
             delete finalImage;
             COUT(3) << "Finished taking " << this->gridSize_*this->windowWidth_ << "x" << this->gridSize_*this->windowHeight_ << " pixel HD screenshot. Storing in log/." << endl;
         }
