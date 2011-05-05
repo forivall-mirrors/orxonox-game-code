@@ -38,6 +38,11 @@ ELSE()
   OPTION(INSTALL_COPYABLE "${_info_text}" TRUE)
 ENDIF()
 
+IF(MSVC)
+  # Allow developers to install the debug symbols as well (safes the copying)
+  OPTION(INSTALL_PDB_FILES "Also installs the debug symbol files" FALSE)
+ENDIF()
+
 # Default relative installation paths
 SET(RUNTIME_INSTALL_DIRECTORY ${DEFAULT_RUNTIME_PATH})
 SET(LIBRARY_INSTALL_DIRECTORY ${DEFAULT_LIBRARY_PATH})

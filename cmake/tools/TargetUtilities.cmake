@@ -353,6 +353,24 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
         LIBRARY DESTINATION ${LIBRARY_INSTALL_DIRECTORY}
       )
     ENDIF()
+    IF(INSTALL_PDB_FILES) # MSVC specific: install debug symbols files
+      FOREACH(_config RelForDevs RelWithDebInfo)
+        GET_TARGET_PROPERTY(_location ${_target_name} LOCATION_${_config})
+        # Get absolute location without dll/exe extension
+        STRING(REGEX REPLACE "^(.+)\\.(dll|exe)$" "\\1" _location_we ${_location})
+        IF(_arg_MODULE)
+          INSTALL(FILES ${_location_we}.pdb
+            DESTINATION ${MODULE_INSTALL_DIRECTORY}
+            CONFIGURATIONS ${_config}
+          )
+        ELSE()
+          INSTALL(FILES ${_location_we}.pdb
+            DESTINATION ${RUNTIME_INSTALL_DIRECTORY}
+            CONFIGURATIONS ${_config}
+          )
+        ENDIF()
+      ENDFOREACH(_config)
+    ENDIF()
   ENDIF()
 
 ENDMACRO(TU_ADD_TARGET)
