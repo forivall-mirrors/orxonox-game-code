@@ -104,6 +104,10 @@ namespace orxonox
         {
             return ex.what();
         }
+        catch (const char* ex)
+        {
+            return ex;
+        }
         catch (...)
         {
             COUT(0) << "BIG WARNING: Unknown exception type encountered."
