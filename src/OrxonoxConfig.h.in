@@ -186,20 +186,6 @@ typedef unsigned __int64  uint64_t;
 #  define ORXONOX_RELEASE
 #endif
 
-// Include memory leak detector if available and not building actual release
-#cmakedefine HAVE_VLD
-#if defined(HAVE_VLD) && !defined(NDEBUG)
-typedef uint32_t UINT32;
-typedef wchar_t WCHAR;
-struct HINSTANCE__;
-typedef struct HINSTANCE__* HINSTANCE;
-typedef HINSTANCE HMODULE;
-#  ifndef NULL
-#    define NULL 0
-#  endif
-#  include <vld.h>
-#endif
-
 // Forward declare the everywhere used std::string
 namespace std
 {
