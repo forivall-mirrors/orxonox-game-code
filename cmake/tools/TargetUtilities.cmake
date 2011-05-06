@@ -304,8 +304,8 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # Visual Leak Detector specific stuff (avoids the include)
-  IF(HAVE_VLD)
-    TARGET_LINK_LIBRARIES(${_target_name} ${VLD_LIBRARY})
+  IF(VISUAL_LEAK_DETECTOR_ENABLE)
+    TARGET_LINK_LIBRARIES(${_target_name} debug ${VLD_LIBRARY})
   ENDIF()
 
   # RPATH settings for the installation

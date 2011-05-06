@@ -128,6 +128,10 @@ FIND_PACKAGE(ZLIB            REQUIRED)
 IF(WIN32)
   FIND_PACKAGE(DbgHelp)
   FIND_PACKAGE(DirectX       REQUIRED)
+  IF(MSVC)
+    # Check whether we can use Visual Leak Detector
+    FIND_PACKAGE(VLD QUIET)
+  ENDIF()
 ENDIF()
 
 

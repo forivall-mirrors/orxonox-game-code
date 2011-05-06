@@ -79,26 +79,6 @@ ADD_COMPILER_FLAGS("-DCMAKE_Release_BUILD"        Release)
 ADD_COMPILER_FLAGS("-DCMAKE_RelWithDebInfo_BUILD" RelWithDebInfo)
 ADD_COMPILER_FLAGS("-DCMAKE_MinSizeRel_BUILD"     MinSizeRel)
 
-IF(MSVC)
-  # Check whether we can use Visual Leak Detector
-  FIND_FILE(VLD_DLL vld_x86.dll)
-  IF(VLD_DLL)
-    SET(HAVE_VLD TRUE)
-    OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" off)
-    # Make sure the value is "on" or "off" for vld.ini
-    IF(VISUAL_LEAK_DETECTOR_ENABLE)
-      SET(VISUAL_LEAK_DETECTOR_ENABLE on)
-    ELSE()
-      SET(VISUAL_LEAK_DETECTOR_ENABLE off)
-    ENDIF()
-    SET(VLD_LIBRARY vld.lib)
-    # Force symbol reference
-    # The alternative would be to include vld.h everywhere (includes windows.h)
-    ADD_LINKER_FLAGS("-INCLUDE:__imp_?vld@@3VVisualLeakDetector@@A" Debug)
-  ENDIF()
-  MARK_AS_ADVANCED(VLD_DLL)
-ENDIF()
-
 ############## Configured Headers ###############
 
 SET(GENERATED_FILE_COMMENT

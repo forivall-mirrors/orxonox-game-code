@@ -54,6 +54,20 @@ IF(WIN32)
   ADD_COMPILER_FLAGS("-DNTDDI_VERSION=0x05010000")
 ENDIF(WIN32)
 
+# Visual Leak Dectector configuration
+IF(MSVC AND VLD_FOUND)
+  OPTION(VISUAL_LEAK_DETECTOR_ENABLE "Memory leak detector" OFF)
+  IF(VISUAL_LEAK_DETECTOR_ENABLE)
+    # Force library linking by forcing the inclusion of a symbol
+    ADD_LINKER_FLAGS("-INCLUDE:__imp_?vld@@3VVisualLeakDetector@@A" Debug)
+    IF(MSVC90)
+      # VS 2008 incremental linker crashes with /INCLUDE most of the time
+      REMOVE_LINKER_FLAGS("-INCREMENTAL:YES" Debug)
+      ADD_LINKER_FLAGS   ("-INCREMENTAL:NO"  Debug)
+    ENDIF()
+  ENDIF()
+ENDIF()
+
 ######### Library Behaviour (external) ##########
 
 # Use TinyXML++
@@ -109,6 +123,10 @@ ENDIF()
 
 IF (DBGHELP_FOUND)
   INCLUDE_DIRECTORIES(${DBGHELP_INCLUDE_DIR})
+ENDIF()
+
+IF(VISUAL_LEAK_DETECTOR_ENABLE)
+  INCLUDE_DIRECTORIES(${VLD_INCLUDE_DIR})
 ENDIF()
 
 ############## CEGUI OGRE Renderer ##############
