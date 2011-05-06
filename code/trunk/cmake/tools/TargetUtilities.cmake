@@ -303,6 +303,11 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     TARGET_LINK_LIBRARIES(${_target_name} ${_arg_LINK_LIBS_UNIX})
   ENDIF()
 
+  # Visual Leak Detector specific stuff (avoids the include)
+  IF(HAVE_VLD)
+    TARGET_LINK_LIBRARIES(${_target_name} ${VLD_LIBRARY})
+  ENDIF()
+
   # RPATH settings for the installation
   IF("${_target_type}" STREQUAL "LIBRARY")
     IF(_arg_MODULE)
