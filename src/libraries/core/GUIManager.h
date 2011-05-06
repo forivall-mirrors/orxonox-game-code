@@ -164,8 +164,8 @@ namespace orxonox // tolua_export
         CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
 #else
         CEGUI::OgreRenderer*                 guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
-        Ogre::RenderQueueListener*           rqListener_;       //!< RQ listener so we can draw UNDER Ogre overlays
         CEGUI::OgreResourceProvider*         resourceProvider_; //!< CEGUI's resource provider
+        Ogre::RenderQueueListener*           rqListener_;       //!< RQ listener so we can draw UNDER Ogre overlays
         CEGUI::OgreImageCodec*               imageCodec_;
 #endif
         LuaState*                            luaState_;         //!< LuaState, access point to the Lua engine

@@ -165,11 +165,16 @@ namespace orxonox
         , guiRenderer_(NULL)
         , resourceProvider_(NULL)
 #ifndef ORXONOX_OLD_CEGUI
+        , rqListener_(NULL)
         , imageCodec_(NULL)
 #endif
         , luaState_(NULL)
         , scriptModule_(NULL)
         , guiSystem_(NULL)
+        , ceguiLogger_(NULL)
+        , rootWindow_(NULL)
+        , hudRootWindow_(NULL)
+        , menuRootWindow_(NULL)
         , camera_(NULL)
     {
         RegisterRootObject(GUIManager);
