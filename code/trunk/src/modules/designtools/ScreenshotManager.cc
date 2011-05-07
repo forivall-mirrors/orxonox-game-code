@@ -211,7 +211,6 @@ namespace orxonox
         
         if(this->gridSize_ <= 1)
         {
-            //TODO: Not working.
             // Simple case where the contents of the screen are taken directly
             // Also used when an invalid value is passed within gridSize (zero or negative grid size)
             this->renderTarget_->update(); // Render
