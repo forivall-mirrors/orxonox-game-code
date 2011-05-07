@@ -52,7 +52,6 @@ namespace orxonox
     @brief
         Class encapsulates screenshot functionality and provides a method for making multi grid (i.e. HD) screenshots.
         
-        
     @author
         This code comes from http://www.ogre3d.org/tikiwiki/High+resolution+screenshots which is Public Domain.
     @author
@@ -87,6 +86,8 @@ namespace orxonox
             */
             inline unsigned int getGridSize(void)
                 { return this->gridSize_; }
+
+            void cleanup(void); // Frees used memory.
             
         protected:
             void update(void); // Update internal parameters.
@@ -102,7 +103,7 @@ namespace orxonox
             Ogre::RenderTexture* renderTarget_; //!< Render target for the temporary texture.
             Ogre::HardwarePixelBufferSharedPtr buffer_; //!< Buffer for the temporary texture.
             
-            Ogre::PixelBox finalPicturePB_; //!< PixelBox for large screenshots, contains the screenshot for gridSize_ > 1.
+            Ogre::PixelBox* finalPicturePB_; //!< PixelBox for large screenshots, contains the screenshot for gridSize_ > 1.
             uint8_t* data_; //!< Data pointer for the PixelBox.
 
     };

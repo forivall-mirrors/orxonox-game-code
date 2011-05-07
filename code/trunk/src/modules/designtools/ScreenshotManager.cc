@@ -65,7 +65,7 @@ namespace orxonox
     @brief
         Constructor. 
     */
-    ScreenshotManager::ScreenshotManager()
+    ScreenshotManager::ScreenshotManager() : finalPicturePB_(NULL), data_(NULL)
     {
         RegisterRootObject(ScreenshotManager);
         
@@ -77,7 +77,27 @@ namespace orxonox
 
     ScreenshotManager::~ScreenshotManager()
     {
-        
+        this->cleanup();
+    }
+
+    /**
+    @brief
+        Frees used memory.
+    */
+    void ScreenshotManager::cleanup(void)
+    {
+        if(this->finalPicturePB_ != NULL)
+        {
+            delete this->finalPicturePB_;
+            this->finalPicturePB_ = NULL;
+        }
+        if(this->data_ != NULL)
+        {
+            delete this->data_;
+            this->data_ = NULL;
+        }
+        if(!this->tempTexture_.isNull())
+            this->tempTexture_.freeMethod();
     }
     
     /**
@@ -100,30 +120,23 @@ namespace orxonox
     {
         Ogre::RenderWindow* pRenderWindow = GraphicsManager::getInstance().getRenderWindow();
 
-        // If the window size has changed
-        if(this->windowWidth_ != pRenderWindow->getWidth() || this->windowHeight_ != pRenderWindow->getHeight())
-        {
-            // Update current window size
-            this->windowWidth_   = pRenderWindow->getWidth();
-            this->windowHeight_  = pRenderWindow->getHeight();
+        // Update current window size
+        this->windowWidth_   = pRenderWindow->getWidth();
+        this->windowHeight_  = pRenderWindow->getHeight();
 
-            // Create temporary texture
-            this->tempTexture_ = Ogre::TextureManager::getSingleton().createManual("ScreenShotTex",
-                Resource::getDefaultResourceGroup(), Ogre::TEX_TYPE_2D, this->windowWidth_,
-                this->windowHeight_, 0, Ogre::PF_B8G8R8, Ogre::TU_RENDERTARGET);
+        // Create temporary texture
+        this->tempTexture_ = Ogre::TextureManager::getSingleton().createManual("ScreenShotTex", Resource::getDefaultResourceGroup(), Ogre::TEX_TYPE_2D, this->windowWidth_, this->windowHeight_, 0, Ogre::PF_B8G8R8, Ogre::TU_RENDERTARGET);
 
-            // Get the current render target of the temporary texture
-            this->renderTarget_ = this->tempTexture_->getBuffer()->getRenderTarget();
+        // Get the current render target of the temporary texture
+        this->renderTarget_ = this->tempTexture_->getBuffer()->getRenderTarget();
 
-            // HardwarePixelBufferSharedPtr to the buffer of the temporary texture
-            this->buffer_ = this->tempTexture_->getBuffer();
+        // HardwarePixelBufferSharedPtr to the buffer of the temporary texture
+        this->buffer_ = this->tempTexture_->getBuffer();
 
-            // Create PixelBox
-            this->data_ = new uint8_t[(this->windowWidth_ * this->gridSize_) * (this->windowHeight_ * this->gridSize_) * 3];
-            this->finalPicturePB_ = Ogre::PixelBox(this->windowWidth_ * this->gridSize_, this->windowHeight_ * this->gridSize_, 1, Ogre::PF_B8G8R8, this->data_);
-        }
+        // Create PixelBox
+        this->data_ = new uint8_t[(this->windowWidth_ * this->gridSize_) * (this->windowHeight_ * this->gridSize_) * 3];
+        this->finalPicturePB_ = new Ogre::PixelBox(this->windowWidth_ * this->gridSize_, this->windowHeight_ * this->gridSize_, 1, Ogre::PF_B8G8R8, this->data_);
     }
-
 
     /**
     @brief
@@ -142,17 +155,17 @@ namespace orxonox
             COUT(3) << "Finished taking " << this->gridSize_*this->windowWidth_ << "x" << this->gridSize_*this->windowHeight_ << " pixel HD screenshot. Storing in log/." << endl;
         }
         else
-        {
             COUT(1) << "There needs to be an active camera to make screenshots." << endl;
-            return;
-        }
+
+        this->cleanup();
     }
 
     /**
     @brief
         Creates a screenshot and returns it.
+        After calling this method the ScreenshotManager should be cleaned using cleanup().
     @return
-        Returns a pointer to an Ogre::Image with the screenshot.
+        Returns a pointer to an Ogre::Image with the screenshot. The memory must be freed, when the image is no longer needed.
     */
     Ogre::Image* ScreenshotManager::getScreenshot()
     {
@@ -164,10 +177,11 @@ namespace orxonox
     /**
     @brief
         Creates a screenshot with the given camera and returns it.
+        After calling this method the ScreenshotManager should be cleaned using cleanup().
     @param camera
         A pointer to the camera the screenshot should be taken with.
     @return
-        Returns a pointer to an Ogre::Image with the screenshot.
+        Returns a pointer to an Ogre::Image with the screenshot. The memory must be freed, when the image is no longer needed.
     */
     Ogre::Image* ScreenshotManager::getScreenshot(Ogre::Camera* camera)
     {
@@ -197,11 +211,12 @@ namespace orxonox
         
         if(this->gridSize_ <= 1)
         {
+            //TODO: Not working.
             // Simple case where the contents of the screen are taken directly
             // Also used when an invalid value is passed within gridSize (zero or negative grid size)
             this->renderTarget_->update(); // Render
             
-            finalImage = &finalImage->loadDynamicImage(static_cast<unsigned char*>(finalPicturePB_.data), finalPicturePB_.getWidth(), finalPicturePB_.getHeight(),Ogre::PF_B8G8R8);
+            finalImage->loadDynamicImage(static_cast<unsigned char*>(finalPicturePB_->data), finalPicturePB_->getWidth(), finalPicturePB_->getHeight(),Ogre::PF_B8G8R8);
         }
         else
         {
@@ -239,7 +254,7 @@ namespace orxonox
                 Ogre::Box subBox = Ogre::Box(x* this->windowWidth_,y * this->windowHeight_,x * this->windowWidth_ + this->windowWidth_, y * this->windowHeight_ + this->windowHeight_);
                 // Copy the content from the temp buffer into the final picture PixelBox
                 // Place the tempBuffer content at the right position
-                this->buffer_->blitToMemory(this->finalPicturePB_.getSubVolume(subBox));
+                this->buffer_->blitToMemory(this->finalPicturePB_->getSubVolume(subBox));
                 
                 COUT(4) << "Created screenshot number " << nbScreenshots << " for multi grid HD screenshot." << endl;
                 
@@ -249,7 +264,7 @@ namespace orxonox
             camera->resetFrustumExtents();
             
             // Insert the PixelBox data into the Image Object
-            finalImage->loadDynamicImage(static_cast<unsigned char*>(this->finalPicturePB_.data), this->finalPicturePB_.getWidth(), this->finalPicturePB_.getHeight(), 1, Ogre::PF_B8G8R8, false);
+            finalImage->loadDynamicImage(static_cast<unsigned char*>(this->finalPicturePB_->data), this->finalPicturePB_->getWidth(), this->finalPicturePB_->getHeight(), 1, Ogre::PF_B8G8R8, false);
         }
         
         // Do we have to re-enable our overlays?
@@ -274,9 +289,6 @@ namespace orxonox
             return;
 
         this->gridSize_ = size;
-        // New PixelBox for the changed size.
-        this->data_ = new uint8_t[(this->windowWidth_ * this->gridSize_) * (this->windowHeight_ * this->gridSize_) * 3];
-        this->finalPicturePB_ = Ogre::PixelBox(this->windowWidth_ * this->gridSize_, this->windowHeight_ * this->gridSize_, 1, Ogre::PF_B8G8R8, this->data_);
     }
 
 }
