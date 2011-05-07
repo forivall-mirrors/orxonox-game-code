@@ -314,5 +314,6 @@ namespace orxonox
         image->resize(this->size_, this->size_);
         image->save(PathConfig::getInstance().getLogPathString()+name);
         delete image;
+        ScreenshotManager::getInstance().cleanup(); // Free memory in ScreenshotManager.
     }
 }
