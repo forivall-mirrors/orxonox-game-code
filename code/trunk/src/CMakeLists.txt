@@ -73,8 +73,14 @@ ENDIF()
 # Use TinyXML++
 ADD_COMPILER_FLAGS("-DTIXML_USE_TICPP")
 
-# Default linking for externals is SHARED
-SET(ORXONOX_EXTERNAL_LINK_MODE "STATIC" CACHE STRING "Link mode for external libraries that we build ourselves. Note: on Windows, some libraries cannot be linked shared.")
+# Default linking for externals
+IF(CMAKE_BUILD_TYPE MATCHES "(Debug|RelForDevs)")
+  SET(_default_link_mode "SHARED")
+ELSE()
+  SET(_default_link_mode "STATIC")
+ENDIF()
+SET(_message "Link mode for external libraries that we build ourselves. Note: on Windows, some libraries cannot be linked shared.")
+SET(ORXONOX_EXTERNAL_LINK_MODE "${_default_link_mode}" CACHE STRING "${_message}")
 
 IF(ORXONOX_EXTERNAL_LINK_MODE STREQUAL "SHARED")
   SET(_external_shared_link TRUE)
