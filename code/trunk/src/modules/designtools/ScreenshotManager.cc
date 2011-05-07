@@ -215,7 +215,8 @@ namespace orxonox
             // Simple case where the contents of the screen are taken directly
             // Also used when an invalid value is passed within gridSize (zero or negative grid size)
             this->renderTarget_->update(); // Render
-            
+
+            this->buffer_->blitToMemory(*this->finalPicturePB_);
             finalImage->loadDynamicImage(static_cast<unsigned char*>(finalPicturePB_->data), finalPicturePB_->getWidth(), finalPicturePB_->getHeight(),Ogre::PF_B8G8R8);
         }
         else
