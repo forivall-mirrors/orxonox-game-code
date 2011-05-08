@@ -108,6 +108,15 @@
 #  endif
 #endif
 
+#ifndef __UNIQUE_NUMBER__
+#  if defined(ORXONOX_COMPILER_GCC) && ORXONOX_COMP_VER >= 430
+#    define __UNIQUE_NUMBER__ __COUNTER__
+#  elif defined(ORXONOX_COMPILER_MSVC)
+#    define __UNIQUE_NUMBER__ __COUNTER__
+#  else
+#    define __UNIQUE_NUMBER__ __LINE__
+#  endif
+#endif
 
 /*---------------------------------
  * Version information

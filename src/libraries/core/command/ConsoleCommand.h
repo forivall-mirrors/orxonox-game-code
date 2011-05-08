@@ -268,7 +268,7 @@
 
 /// Internal macro
 #define SetConsoleCommandGeneric(group, name, functor) \
-    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::createConsoleCommand(group, name, orxonox::createExecutor(functor)))
+    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) = (*orxonox::createConsoleCommand(group, name, orxonox::createExecutor(functor)))
 
 
 /**
@@ -303,7 +303,7 @@
 
 /// Internal macro
 #define DeclareConsoleCommandGeneric(group, name, functor) \
-    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __LINE__) = (*orxonox::createConsoleCommand(group, name, orxonox::createExecutor(functor), false))
+    static orxonox::ConsoleCommand& BOOST_PP_CAT(__consolecommand_, __UNIQUE_NUMBER__) = (*orxonox::createConsoleCommand(group, name, orxonox::createExecutor(functor), false))
 
 
 namespace orxonox

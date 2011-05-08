@@ -58,7 +58,7 @@
     and every following paramter is a constructor argument (which is usually non existent)
 */
 #define DeclareGameState(className, stateName, bIgnoreTickTime, bGraphicsMode) \
-    static bool BOOST_PP_CAT(bGameStateDummy_##className, __LINE__) = orxonox::Game::declareGameState<className>(#className, stateName, bIgnoreTickTime, bGraphicsMode)
+    static bool BOOST_PP_CAT(bGameStateDummy_##className, __UNIQUE_NUMBER__) = orxonox::Game::declareGameState<className>(#className, stateName, bIgnoreTickTime, bGraphicsMode)
 // tolua_begin
 namespace orxonox
 {
