@@ -192,6 +192,8 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
     CMAKE_DEPENDENT_OPTION(PCH_ENABLE_${_target_name_upper}
       "Enable using precompiled header files for library ${_target_name}." ${PCH_DEFAULT} PCH_ENABLE OFF)
+    # Almost never used individually, but produces a lot of options --> hide
+    MARK_AS_ADVANCED(PCH_ENABLE_${_target_name_upper})
 
     IF(PCH_ENABLE_${_target_name_upper})
       PRECOMPILED_HEADER_FILES_PRE_TARGET(${_target_name} ${_arg_PCH_FILE} _${_target_name}_files EXCLUDE ${_arg_PCH_EXCLUDE})
