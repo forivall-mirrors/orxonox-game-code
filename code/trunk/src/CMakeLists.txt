@@ -79,7 +79,8 @@ IF(CMAKE_BUILD_TYPE MATCHES "(Debug|RelForDevs)")
 ELSE()
   SET(_default_link_mode "STATIC")
 ENDIF()
-SET(_message "Link mode for external libraries that we build ourselves. Note: on Windows, some libraries cannot be linked shared.")
+SET(_message "Link mode for external libraries that we build ourselves.
+MSVC Note: certain libraries will not be linked shared.")
 SET(ORXONOX_EXTERNAL_LINK_MODE "${_default_link_mode}" CACHE STRING "${_message}")
 
 IF(ORXONOX_EXTERNAL_LINK_MODE STREQUAL "SHARED")
