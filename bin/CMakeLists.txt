@@ -32,10 +32,6 @@ IF(WIN32)
     LIST(APPEND RUN_SCRIPTS ${_script}.bat)
   ENDFOREACH(_script)
 ENDIF()
-# Also copy vld.ini (visual leak detector config) for MSVC
-IF(MSVC)
-  LIST(APPEND RUN_SCRIPTS vld.ini)
-ENDIF()
 
 IF(NOT CMAKE_CONFIGURATION_TYPES)
   SET(_subdirs .)
