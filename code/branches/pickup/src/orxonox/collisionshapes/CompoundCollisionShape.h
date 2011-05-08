@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file CompoundCollisionShape.h
+    @brief Definition of the CompoundCollisionShape class.
+    @ingroup Collisionshapes
+*/
+
 #ifndef _CompoundCollisionShape_H__
 #define _CompoundCollisionShape_H__
 
@@ -37,6 +43,16 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Wrapper for the bullet compound collision shape class btCompoundShape.
+
+    @author
+        Reto Grieder
+
+    @ingroup Collisionshapes
+    */
     class _OrxonoxExport CompoundCollisionShape : public CollisionShape
     {
         public:
@@ -51,6 +67,8 @@ namespace orxonox
             CollisionShape* getAttachedShape(unsigned int index) const;
 
             void updateAttachedShape(CollisionShape* shape);
+
+            virtual void changedScale();
 
         private:
             void updatePublicShape();

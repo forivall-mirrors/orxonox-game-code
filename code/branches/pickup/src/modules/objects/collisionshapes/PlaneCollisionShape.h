@@ -42,6 +42,16 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Wrapper for the bullet plane collision shape class btStaticPlaneShape.
+
+    @author
+        Martin Stypinski
+
+    @ingroup Collisionshapes
+    */
     class _ObjectsExport PlaneCollisionShape : public CollisionShape
     {
         public:
@@ -50,23 +60,45 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            inline void setNormal(const Vector3& normal)
-                { this->normal_ = normal; updateShape(); }
-            inline const Vector3& getNormal()
+            /**
+            @brief Set the normal of the PlaneCollisionShape.
+                   If the normal changes, this causes the internal collision shape to be recreated.
+            @param normal The normal vector to be set.
+            @return Returns true if the normal has changed, false if not.
+            */
+            inline bool setNormal(const Vector3& normal)
+                { if(this->normal_ == normal) return false; this->normal_ = normal; updateShape(); return true; }
+            /**
+            @brief Get the normal of the PlaneCollisionShape.
+            @return Returns the normal vector of the PlaneCollisionShape.
+            */
+            inline const Vector3& getNormal() const
                 { return normal_;}
 
-            inline void setOffset(float offset)
-                { this->offset_ = offset; updateShape(); }
-            inline float getOffset()
+            /**
+            @brief Set the offset of the PlaneCollisionShape.
+                   If the offset changes, this causes the internal collision shape to be recreated.
+            @param offset The offset to be set.
+            @return Returns true if the offset has changed, false if not.
+            */
+            inline bool setOffset(float offset)
+                { if(this->offset_ == offset) return false; this->offset_ = offset; updateShape(); return true; }
+            /**
+            @brief Get the offset of the PlaneCollisionShape.
+            @return Returns the offset of the PlaneCollisionShape.
+            */
+            inline float getOffset() const
                 { return this->offset_;}
+
+            virtual void changedScale(); // Is called when the scale of the PlaneCollisionShape has changed.
 
         private:
             void registerVariables();
 
-            btCollisionShape* createNewShape()const;
+            btCollisionShape* createNewShape() const; // Creates a new internal collision shape for the PlaneCollisionShape.
 
-            Vector3 normal_;
-            float   offset_;
+            Vector3 normal_; //!< The normal vector of the PlaneCollisionShape.
+            float   offset_; //!< The offset of the PlaneCollisionShape.
      };
 }
 
