@@ -133,9 +133,9 @@ namespace orxonox
     {
     public:
         /// Callback from Ogre invoked before other stuff in our target queue is rendered
-        void renderQueueEnded(Ogre::uint8 id, const Ogre::String& invocation, bool& skipThisQueue)
+        void renderQueueStarted(Ogre::uint8 id, const Ogre::String& invocation, bool& skipThisQueue)
         {
-            if (id == Ogre::RENDER_QUEUE_SKIES_LATE)//Ogre::RENDER_QUEUE_OVERLAY)
+            if (id == Ogre::RENDER_QUEUE_OVERLAY && invocation.empty())
                 CEGUI::System::getSingleton().renderGUI();
         }
     };
