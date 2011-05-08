@@ -254,9 +254,9 @@ template<class T, class PT> inline void* registerMemberNetworkFunctionFct( PT pt
 }
 
 #define registerStaticNetworkFunction( functionPointer ) \
-  static void* BOOST_PP_CAT( NETWORK_FUNCTION_, __LINE__ ) = registerStaticNetworkFunctionFct( functionPointer, #functionPointer );
+  static void* BOOST_PP_CAT( NETWORK_FUNCTION_, __UNIQUE_NUMBER__ ) = registerStaticNetworkFunctionFct( functionPointer, #functionPointer );
 #define registerMemberNetworkFunction( class, function ) \
-  static void* BOOST_PP_CAT( NETWORK_FUNCTION_##class, __LINE__ ) = registerMemberNetworkFunctionFct<class>( &class::function, #class "_" #function);
+  static void* BOOST_PP_CAT( NETWORK_FUNCTION_##class, __UNIQUE_NUMBER__ ) = registerMemberNetworkFunctionFct<class>( &class::function, #class "_" #function);
   // call it with functionPointer, clientID, args
 #define callStaticNetworkFunction( functionPointer, ...) \
   { \

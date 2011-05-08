@@ -41,7 +41,7 @@
 
 // Macro for declaring a tolua interface of a library/module
 #define DeclareToluaInterface(libraryName) \
-    static bool BOOST_PP_CAT(bDummy##libraryName, __LINE__) = orxonox::LuaState::addToluaInterface(&tolua_##libraryName##_open, #libraryName); \
-    static Loki::ScopeGuardImpl1<bool (*)(const std::string&), std::string> BOOST_PP_CAT(dummy##libraryName, __LINE__)(&orxonox::LuaState::removeToluaInterface, #libraryName)
+    static bool BOOST_PP_CAT(bDummy##libraryName, __UNIQUE_NUMBER__) = orxonox::LuaState::addToluaInterface(&tolua_##libraryName##_open, #libraryName); \
+    static Loki::ScopeGuardImpl1<bool (*)(const std::string&), std::string> BOOST_PP_CAT(dummy##libraryName, __UNIQUE_NUMBER__)(&orxonox::LuaState::removeToluaInterface, #libraryName)
 
 #endif /* _ToluaInterface_H__ */
