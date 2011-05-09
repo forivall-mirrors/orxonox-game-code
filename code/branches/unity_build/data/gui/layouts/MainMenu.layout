@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="MenuWidgets/StaticImage" Name="orxonox/MainMenuBackground" >
+        <Property Name="FrameEnabled" Value="False" />
+        <Property Name="InheritsAlpha" Value="False" />
+        <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1.0,0},{1.0,0}}" />
+        <Property Name="BackgroundEnabled" Value="False" />
+        <Window Type="MenuWidgets/Button" Name="orxonox/QuickGameTestButton" >
+            <Property Name="Text" Value="Quickstart" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.2875,0},{0.6,0},{0.3375,0}}" />
+            <Event Name="Clicked" Function="MainMenu.QuickGameTestButton_clicked"/>
+        </Window>
+        <Window Type="MenuWidgets/Button" Name="orxonox/SingleplayerButton" >
+            <Property Name="Text" Value="Singleplayer" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.3625,0},{0.6,0},{0.4125,0}}" />
+            <Event Name="Clicked" Function="MainMenu.SingleplayerButton_clicked"/>
+        </Window>
+        <Window Type="MenuWidgets/Button" Name="orxonox/MultiplayerButton" >
+            <Property Name="Text" Value="Multiplayer" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.4375,0},{0.6,0},{0.4875,0}}" />
+            <Event Name="Clicked" Function="MainMenu.MultiplayerButton_clicked"/>
+        </Window>
+        <Window Type="MenuWidgets/Button" Name="orxonox/SettingsButton" >
+            <Property Name="Text" Value="Settings" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.5125,0},{0.6,0},{0.5625,0}}" />
+            <Event Name="Clicked" Function="MainMenu.SettingsButton_clicked"/>
+        </Window>
+        <Window Type="MenuWidgets/Button" Name="orxonox/CreditsButton" >
+            <Property Name="Text" Value="Credits" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.5875,0},{0.6,0},{0.6375,0}}" />
+            <Event Name="Clicked" Function="MainMenu.CreditsButton_clicked"/>
+        </Window>
+        <Window Type="MenuWidgets/Button" Name="orxonox/ExitButton" >
+            <Property Name="Text" Value="Exit" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0.6625,0},{0.6,0},{0.7125,0}}" />
+            <Event Name="Clicked" Function="MainMenu.ExitButton_clicked"/>
+        </Window>
+    </Window>
+</GUILayout>
