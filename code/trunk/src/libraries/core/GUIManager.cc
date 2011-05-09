@@ -161,8 +161,7 @@ namespace orxonox
     @return true if success, otherwise false
     */
     GUIManager::GUIManager(const std::pair<int, int>& mousePosition)
-        : destroyer_(*this, &GUIManager::cleanup)
-        , guiRenderer_(NULL)
+        : guiRenderer_(NULL)
         , resourceProvider_(NULL)
 #ifndef ORXONOX_OLD_CEGUI
         , rqListener_(NULL)
@@ -176,6 +175,7 @@ namespace orxonox
         , hudRootWindow_(NULL)
         , menuRootWindow_(NULL)
         , camera_(NULL)
+        , destructionHelper_(this)
     {
         RegisterRootObject(GUIManager);
         this->setConfigValues();
@@ -257,24 +257,24 @@ namespace orxonox
         this->luaState_->doFile("SheetManager.lua");
     }
 
-    void GUIManager::cleanup()
+    void GUIManager::destroy()
     {
         using namespace CEGUI;
 
 #ifdef ORXONOX_OLD_CEGUI
-        delete guiSystem_;
-        delete guiRenderer_;
-        delete scriptModule_;
+        safeObjectDelete(&guiSystem_);
+        safeObjectDelete(&guiRenderer_);
+        safeObjectDelete(&scriptModule_);
 #else
         System::destroy();
         OgreRenderer::destroyOgreResourceProvider(*resourceProvider_);
         OgreRenderer::destroyOgreImageCodec(*imageCodec_);
         OgreRenderer::destroy(*guiRenderer_);
         LuaScriptModule::destroy(*scriptModule_);
-        delete ceguiLogger_;
-        delete rqListener_;
+        safeObjectDelete(&ceguiLogger_);
+        safeObjectDelete(&rqListener_);
 #endif
-        delete luaState_;
+        safeObjectDelete(&luaState_);
     }
 
     void GUIManager::setConfigValues(void)
@@ -284,7 +284,6 @@ namespace orxonox
 
     void GUIManager::changedGUIScheme(void)
     {
-
     }
 
     /**

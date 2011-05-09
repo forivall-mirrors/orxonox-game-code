@@ -89,21 +89,31 @@ namespace orxonox
 #endif
 
     Core::Core(const std::string& cmdLine)
-        // Cleanup guard for identifier destruction (incl. XMLPort, configValues, consoleCommands)
-        : identifierDestroyer_(Identifier::destroyAllIdentifiers)
-        // Cleanup guard for external console commands that don't belong to an Identifier
-        , consoleCommandDestroyer_(ConsoleCommand::destroyAll)
+        : pathConfig_(NULL)
+        , dynLibManager_(NULL)
+        , signalHandler_(NULL)
+        , configFileManager_(NULL)
+        , languageInstance_(NULL)
+        , ioConsole_(NULL)
+        , tclBind_(NULL)
+        , tclThreadManager_(NULL)
+        , rootScope_(NULL)
+        , graphicsManager_(NULL)
+        , inputManager_(NULL)
+        , guiManager_(NULL)
+        , graphicsScope_(NULL)
         , bGraphicsLoaded_(false)
         , bStartIOConsole_(true)
         , lastLevelTimestamp_(0)
         , ogreConfigTimestamp_(0)
         , bDevMode_(false)
+        , destructionHelper_(this)
     {
         // Set the hard coded fixed paths
-        this->pathConfig_.reset(new PathConfig());
+        this->pathConfig_ = new PathConfig();
 
         // Create a new dynamic library manager
-        this->dynLibManager_.reset(new DynLibManager());
+        this->dynLibManager_ = new DynLibManager();
 
         // Load modules
         const std::vector<std::string>& modulePaths = this->pathConfig_->getModulePaths();
@@ -127,7 +137,7 @@ namespace orxonox
 
         // create a signal handler (only active for Linux)
         // This call is placed as soon as possible, but after the directories are set
-        this->signalHandler_.reset(new SignalHandler());
+        this->signalHandler_ = new SignalHandler();
         this->signalHandler_->doCatch(PathConfig::getExecutablePathString(), PathConfig::getLogPathString() + "orxonox_crash.log");
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% (Windows) was used
@@ -146,16 +156,16 @@ namespace orxonox
 #endif
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
-        this->configFileManager_.reset(new ConfigFileManager());
+        this->configFileManager_ = new ConfigFileManager();
         this->configFileManager_->setFilename(ConfigFileType::Settings,
             CommandLineParser::getValue("settingsFile").getString());
 
         // Required as well for the config values
-        this->languageInstance_.reset(new Language());
+        this->languageInstance_ = new Language();
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
-        ClassIdentifier<Core>::getIdentifier("Core")->initialiseObject(this, "Core", true);
+        RegisterRootObject(Core);
         this->setConfigValues();
 
 #if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
@@ -165,21 +175,21 @@ namespace orxonox
             ModifyConfigValue(bStartIOConsole_, tset, false);
         }
         if (this->bStartIOConsole_)
-            this->ioConsole_.reset(new IOConsole());
+            this->ioConsole_ = new IOConsole();
 #endif
 
         // creates the class hierarchy for all classes with factories
         Identifier::createClassHierarchy();
 
         // Load OGRE excluding the renderer and the render window
-        this->graphicsManager_.reset(new GraphicsManager(false));
+        this->graphicsManager_ = new GraphicsManager(false);
 
         // initialise Tcl
-        this->tclBind_.reset(new TclBind(PathConfig::getDataPathString()));
-        this->tclThreadManager_.reset(new TclThreadManager(tclBind_->getTclInterpreter()));
+        this->tclBind_ = new TclBind(PathConfig::getDataPathString());
+        this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
 
         // Create singletons that always exist (in other libraries)
-        this->rootScope_.reset(new Scope<ScopeID::Root>());
+        this->rootScope_ = new Scope<ScopeID::Root>();
 
         // Generate documentation instead of normal run?
         std::string docFilename;
@@ -197,14 +207,26 @@ namespace orxonox
         }
     }
 
-    /**
-    @brief
-        All destruction code is handled by scoped_ptrs and ScopeGuards.
-    */
-    Core::~Core()
+    void Core::destroy()
     {
         // Remove us from the object lists again to avoid problems when destroying them
         this->unregisterObject();
+
+        safeObjectDelete(&graphicsScope_);
+        safeObjectDelete(&guiManager_);
+        safeObjectDelete(&inputManager_);
+        safeObjectDelete(&graphicsManager_);
+        safeObjectDelete(&rootScope_);
+        safeObjectDelete(&tclThreadManager_);
+        safeObjectDelete(&tclBind_);
+        safeObjectDelete(&ioConsole_);
+        safeObjectDelete(&languageInstance_);
+        safeObjectDelete(&configFileManager_);
+        ConsoleCommand::destroyAll();
+        Identifier::destroyAllIdentifiers();
+        safeObjectDelete(&signalHandler_);
+        safeObjectDelete(&dynLibManager_);
+        safeObjectDelete(&pathConfig_);
     }
 
     //! Function to collect the SetConfigValue-macro calls.
@@ -284,10 +306,10 @@ namespace orxonox
         }
 
         // Calls the InputManager which sets up the input devices.
-        inputManager_.reset(new InputManager());
+        inputManager_ = new InputManager();
 
         // Load the CEGUI interface
-        guiManager_.reset(new GUIManager(inputManager_->getMousePosition()));
+        guiManager_ = new GUIManager(inputManager_->getMousePosition());
 
         bGraphicsLoaded_ = true;
         GameMode::bShowsGraphics_s = true;
@@ -296,21 +318,21 @@ namespace orxonox
         graphicsManager_->loadDebugOverlay();
 
         // Create singletons associated with graphics (in other libraries)
-        graphicsScope_.reset(new Scope<ScopeID::Graphics>());
+        graphicsScope_ = new Scope<ScopeID::Graphics>();
 
         unloader.Dismiss();
     }
 
     void Core::unloadGraphics()
     {
-        this->graphicsScope_.reset();
-        this->guiManager_.reset();
-        this->inputManager_.reset();
-        this->graphicsManager_.reset();
+        safeObjectDelete(&graphicsScope_);
+        safeObjectDelete(&guiManager_);
+        safeObjectDelete(&inputManager_);
+        safeObjectDelete(&graphicsManager_);
 
         // Load Ogre::Root again, but without the render system
         try
-            { this->graphicsManager_.reset(new GraphicsManager(false)); }
+            { this->graphicsManager_ = new GraphicsManager(false); }
         catch (...)
         {
             COUT(0) << "An exception occurred during 'unloadGraphics':" << Exception::handleMessage() << std::endl

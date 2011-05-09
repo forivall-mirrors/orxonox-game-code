@@ -44,18 +44,17 @@
 #include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/preprocessor/cat.hpp>
-#include <loki/ScopeGuard.h>
 
 #include "util/Debug.h"
+#include "util/DestructionHelper.h"
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"
 
 /**
 @brief
     Adds a new GameState to the Game. The second parameter is the name as string
-    and every following paramter is a constructor argument (which is usually non existent)
+    and every following parameter is a constructor argument (which is usually non existent)
 */
 #define DeclareGameState(className, stateName, bIgnoreTickTime, bGraphicsMode) \
     static bool BOOST_PP_CAT(bGameStateDummy_##className, __UNIQUE_NUMBER__) = orxonox::Game::declareGameState<className>(#className, stateName, bIgnoreTickTime, bGraphicsMode)
@@ -91,7 +90,11 @@ namespace orxonox
 
     public:
         Game(const std::string& cmdLine);
-        ~Game();
+
+        //! Leave empty and use cleanup() instead
+        ~Game() {}
+        /// Destructor that also executes when object fails to construct
+        void destroy();
 
         void setConfigValues();
 
@@ -137,8 +140,6 @@ namespace orxonox
             shared_ptr<GameState> fabricateInternal(const GameStateInfo& info)
                 { return shared_ptr<GameState>(new T(info)); }
         };
-        // For the factory destruction
-        typedef Loki::ObjScopeGuardImpl0<std::map<std::string, shared_ptr<GameStateFactory> >, void (std::map<std::string, shared_ptr<GameStateFactory> >::*)()> ObjScopeGuard;
 
         struct StatisticsTickInfo
         {
@@ -165,9 +166,8 @@ namespace orxonox
         // ScopeGuard helper function
         void resetChangingState() { this->bChangingState_ = false; }
 
-        scoped_ptr<Clock>                  gameClock_;
-        scoped_ptr<Core>                   core_;
-        ObjScopeGuard                      gsFactoryDestroyer_;
+        Clock*                             gameClock_;
+        Core*                              core_;
 
         GameStateMap                       constructedStates_;
         GameStateVector                    loadedStates_;
@@ -192,6 +192,9 @@ namespace orxonox
         unsigned int                       statisticsRefreshCycle_;
         unsigned int                       statisticsAvgLength_;
         unsigned int                       fpsLimit_;
+
+        /// Helper object that executes the surrogate destructor destroy()
+        DestructionHelper<Game>            destructionHelper_;
 
         static std::map<std::string, GameStateInfo> gameStateDeclarations_s;
         static Game* singletonPtr_s;        //!< Pointer to the Singleton

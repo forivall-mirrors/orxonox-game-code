@@ -47,9 +47,9 @@
 #include <cassert>
 #include <string>
 #include <OgreLog.h>
-#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 
+#include "util/DestructionHelper.h"
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"
 
@@ -67,7 +67,11 @@ namespace orxonox
         friend class Singleton<GraphicsManager>;
     public:
         GraphicsManager(bool bLoadRenderer = true);
-        ~GraphicsManager();
+
+        //! Leave empty and use cleanup() instead
+        ~GraphicsManager() {}
+        /// Destructor that also executes when object fails to construct
+        void destroy();
 
         void setConfigValues();
 
@@ -112,9 +116,9 @@ namespace orxonox
         std::string setFSAA(const std::string& mode);
         std::string setVSync(bool vsync);
 
-        scoped_ptr<OgreWindowEventListener> ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
-        scoped_ptr<Ogre::LogManager>        ogreLogger_;
-        scoped_ptr<Ogre::Root>              ogreRoot_;                //!< Ogre's root
+        OgreWindowEventListener* ogreWindowEventListener_; //!< Pimpl to hide OgreWindowUtilities.h
+        Ogre::LogManager*        ogreLogger_;
+        Ogre::Root*              ogreRoot_;                //!< Ogre's root
         Ogre::RenderWindow* renderWindow_;             //!< the one and only render window
         Ogre::Viewport*     viewport_;                 //!< default full size viewport
         float               lastFrameStartTime_;       //!< Time stamp of the beginning of the last frame
@@ -132,6 +136,9 @@ namespace orxonox
         int                 ogreLogLevelTrivial_;      //!< Corresponding Orxonox debug level for LL_TRIVIAL
         int                 ogreLogLevelNormal_;       //!< Corresponding Orxonox debug level for LL_NORMAL
         int                 ogreLogLevelCritical_;     //!< Corresponding Orxonox debug level for LL_CRITICAL
+
+        /// Helper object that executes the surrogate destructor destroy()
+        DestructionHelper<GraphicsManager> destructionHelper_;
 
         static GraphicsManager* singletonPtr_s;        //!< Pointer to the Singleton
 // tolua_begin
