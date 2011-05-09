@@ -83,6 +83,8 @@ namespace orxonox
                 this->linearVelocity_.z += this->linearAcceleration_.z * dt;
                 this->node_->translate(this->linearVelocity_ * dt);
 
+    
+
                 // Angular part
                 // Note: angularVelocity_ is a Quaternion with w = 0 while angularAcceleration_ is a Vector3
                 this->angularVelocity_.x += angularAcceleration_.x * dt;

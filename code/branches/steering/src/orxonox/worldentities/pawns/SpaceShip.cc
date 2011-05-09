@@ -35,6 +35,8 @@
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "items/Engine.h"
+#include "util/Debug.h"
+
 
 namespace orxonox
 {
@@ -51,7 +53,7 @@ namespace orxonox
 
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
-        this->bBoost_ = false;
+	this->bBoost_ = false;
         this->steering_ = Vector3::ZERO;
         this->engine_ = 0;
 
@@ -61,6 +63,9 @@ namespace orxonox
         this->boostPowerRate_ = 1.0;
         this->boostCooldownDuration_ = 5.0;
         this->bBoostCooldown_ = false;
+
+	this->lift_ = 0.2f;
+	this->stallSpeed = 220.0f;
 
         this->bInvertYAxis_ = false;
 
@@ -74,7 +79,11 @@ namespace orxonox
 
         this->setConfigValues();
         this->registerVariables();
-    }
+
+
+
+	
+}
 
     SpaceShip::~SpaceShip()
     {
@@ -94,6 +103,8 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "boostPowerRate", boostPowerRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostRate", boostRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
+	XMLPortParamVariable(SpaceShip, "float", float_, xmlelement, mode);
+	XMLPortParamVariable(SpaceShip, "stallSpeed", stallSpeed_, xmlelement, mode);
     }
 
     void SpaceShip::registerVariables()
@@ -162,6 +173,9 @@ namespace orxonox
                     this->timer_.setTimer(this->boostCooldownDuration_, false, createExecutor(createFunctor(&SpaceShip::boostCooledDown, this)));
                 }
             }
+	
+COUT(1) << "Vel:" << this-> getLocalVelocity().z * -1 << endl;
+		
         }
     }
 
@@ -174,18 +188,25 @@ namespace orxonox
     {
         this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() - value.x);
         this->steering_.z = -value.x;
+
     }
 
     void SpaceShip::moveRightLeft(const Vector2& value)
     {
         this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() + value.x);
         this->steering_.x = value.x;
+ 
     }
 
     void SpaceShip::moveUpDown(const Vector2& value)
     {
         this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() + value.x);
         this->steering_.y = value.x;
+
+
+
+
+
     }
 
     void SpaceShip::rotateYaw(const Vector2& value)
@@ -193,13 +214,22 @@ namespace orxonox
         this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x);
 
         Pawn::rotateYaw(value);
+
     }
 
     void SpaceShip::rotatePitch(const Vector2& value)
     {
-        this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x);
+        this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x * 0.8);
 
         Pawn::rotatePitch(value);
+
+	
+	
+	if (abs(this-> getLocalVelocity().z) < stallSpeed)  {this->moveUpDown(float_*value*sqrt(abs(this-> getLocalVelocity().z)));}
+
+	
+
+
     }
 
     void SpaceShip::rotateRoll(const Vector2& value)
@@ -207,6 +237,7 @@ namespace orxonox
         this->localAngularAcceleration_.setZ(this->localAngularAcceleration_.z() + value.x);
 
         Pawn::rotateRoll(value);
+ 
     }
 
     void SpaceShip::fire()
