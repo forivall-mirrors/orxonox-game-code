@@ -3,6 +3,7 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   BlinkingBillboard.cc
   FadingBillboard.cc
   GlobalShader.cc
+  GlobalGodrayShader.cc
   MeshLodInformation.cc
   Model.cc
   AnimatedModel.cc
