@@ -33,19 +33,45 @@
 #include "gametypes/GametypesPrereqs.h"
 #include "RaceCheckPoint.h"
 #include <boost/concept_check.hpp>
+#include <util/Clock.h>
+#include <string.h>
+#include <set>
 
 namespace orxonox
 {
+/*    class PlayerScore {
+	public:
+	    PlayerScore() {
+		this->name = "";
+		this->time =0;
+	    }
+	    PlayerScore(std::string name, float time) {
+		this->name_ = name;
+		this->time_ = time;
+	    }
+	    PlayerScore(float time) {
+		this->name_ = "Player";
+		this->time_ = time;
+	    }
+	
+	private:
+	    std::string name_;
+	    float time_;
+    };*/
+	
     class _OrxonoxExport SpaceRace : public Gametype
     {
 	public:
 	    SpaceRace(BaseObject* creator);
-	    virtual ~SpaceRace(){};
+	    virtual ~SpaceRace() {}
 	    
 	    virtual void tick(float dt);
 	    
-	    inline void newCheckpointReached()
-		{ this->checkpointsReached_++; }
+	    virtual void start();
+            virtual void end();
+	    
+	    virtual void newCheckpointReached();
+	    
 	    inline void setCheckpointsReached(int n)
 		{ this->checkpointsReached_ = n;}
 	    inline int getCheckpointsReached()
@@ -55,6 +81,9 @@ namespace orxonox
 	    
 	private:
 	    int checkpointsReached_;
+	    Clock *clock_;
+	    std::set<float> scores_;
+	    
     };
 }
 
