@@ -65,7 +65,7 @@ namespace orxonox
         this->bBoostCooldown_ = false;
 
 	this->lift_ = 0.2f;
-	this->stallSpeed = 220.0f;
+	this->stallSpeed_ = 220.0f;
 
         this->bInvertYAxis_ = false;
 
@@ -103,7 +103,7 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "boostPowerRate", boostPowerRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostRate", boostRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
-	XMLPortParamVariable(SpaceShip, "float", float_, xmlelement, mode);
+	XMLPortParamVariable(SpaceShip, "lift", lift_, xmlelement, mode);
 	XMLPortParamVariable(SpaceShip, "stallSpeed", stallSpeed_, xmlelement, mode);
     }
 
@@ -174,7 +174,7 @@ namespace orxonox
                 }
             }
 	
-COUT(1) << "Vel:" << this-> getLocalVelocity().z * -1 << endl;
+//COUT(1) << "Vel:" << this-> getLocalVelocity().z * -1 << endl;
 		
         }
     }
@@ -225,7 +225,7 @@ COUT(1) << "Vel:" << this-> getLocalVelocity().z * -1 << endl;
 
 	
 	
-	if (abs(this-> getLocalVelocity().z) < stallSpeed)  {this->moveUpDown(float_*value*sqrt(abs(this-> getLocalVelocity().z)));}
+	if (abs(this-> getLocalVelocity().z) < stallSpeed_)  {this->moveUpDown(lift_*value*sqrt(abs(this-> getLocalVelocity().z)));}
 
 	
 
