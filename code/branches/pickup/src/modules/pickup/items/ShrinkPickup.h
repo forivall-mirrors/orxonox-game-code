@@ -24,26 +24,28 @@ namespace orxonox {
             virtual ~ShrinkPickup(); //!< Destructor.
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
 			virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
+			void tick(float dt);
 
         private:
             void initialize(void);
-			const float duration;			//determines how long the pickup will be active
-    		const float shrinkFactor;		//shrink factor of the space ship
-			const float shrinkDelay;		//how long it takes to shrink to the final size
-			double factorPerCall;
-			bool isTerminating;
-			vector<float> defaultScales;
-			vector<float> smallScales;
-			vector<float> actualScales;
-			vector<float> defaultPositions;
-			vector<float> smallPositions;
-			vector<float> actualPositions;
+			
+			float duration_;			//!< determines how long the pickup will be active
+    		float shrinkFactor_;		//shrink factor of the space ship
+			float shrinkDelay_;		//how long it takes to shrink to the final size
+			bool isActive_;
+			bool isTerminating_;
+			int size_;
+			std::vector<float> defaultScales_;
+			std::vector<float> smallScales_;
+			std::vector<float> actualScales_;
+			std::vector<Vector3> defaultPositions_;
+			std::vector<Vector3> smallPositions_;
+			std::vector<Vector3> actualPositions_;
 			Pawn* carrierToPawnHelper(void);
 			Pawn* pawn;
 			Timer durationTimer;
 			void terminate(void);
 
-			
     };
 }
 

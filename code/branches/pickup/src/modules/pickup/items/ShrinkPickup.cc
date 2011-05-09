@@ -14,11 +14,15 @@ namespace orxonox
 {
     CreateFactory(ShrinkPickup);
 
-    ShrinkPickup::ShrinkPickup(BaseObject* creator) : Pickup(creator)
+	ShrinkPickup::ShrinkPickup(BaseObject* creator) : Pickup(creator)
     {
         RegisterObject(ShrinkPickup);
 
         this->initialize();
+		shrinkFactor_ = 5.0;
+		duration_ = 5.0;
+		shrinkDelay_ = 1.0;
+		isActive_ = false;
     }
 
     ShrinkPickup::~ShrinkPickup()
@@ -33,6 +37,8 @@ namespace orxonox
 
     void ShrinkPickup::changedUsed(void)
 	{
+		int i;	
+
 		SUPER(ShrinkPickup, changedUsed);
 
         if(this->isUsed())
@@ -44,18 +50,68 @@ namespace orxonox
 			COUT(0) << "shrinking..." << endl;
 			//this->pawn->setScale3D(this->pawn->getScale3D() / 2.0);
 			std::set<WorldEntity*> set = this->pawn->getAttachedObjects();
+			
+			i = 0;
 			for(std::set<WorldEntity*>::iterator it = set.begin(); it != set.end(); it++)
 			{
-				(*it)->setScale((*it)->getScale() / 5.0);
-				(*it)->setPosition((*it)->getPosition() / 5.0);
+				defaultScales_.push_back((*it)->getScale());
+				actualScales_.push_back((*it)->getScale());
+				defaultPositions_.push_back((*it)->getPosition());
+				actualPositions_.push_back((*it)->getPosition());
+				//(*it)->setScale((*it)->getScale() / 5.0);
+				//(*it)->setPosition((*it)->getPosition() / 5.0);
 			}
-			
+			size_ = defaultScales_.size();
+			for(i = 0; i < size_; i++)
+			{
+				smallScales_.push_back(defaultScales_.at(i) / shrinkFactor_);
+			}
+			isActive_ = true;
 			durationTimer.setTimer(10, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));
         }
 		else
         {
 			this->Pickupable::destroy();
         }
+	}
+
+	void ShrinkPickup::tick(float dt)
+	{
+		double temp;
+		int i;
+		double k = dt / shrinkDelay_;
+		if(isActive_)
+		{
+			for(i = 0; i < size_; i++)
+			{
+				temp = actualScales_.at(i);
+				if(temp > smallScales_.at(i))
+				{
+					actualScales_.erase(i)
+					actualScales_.insert(i, temp - (temp - smallScales_.at(i)) * k);
+				}
+				/*temp = actual;
+				if(temp > smallScales[i])
+				{
+					actualScales[i] -= (actualScales[i] - smallScales[i]) * k;
+				}*/
+
+			}
+
+			i = 0;
+			
+			std::set<WorldEntity*> set = this->pawn->getAttachedObjects();
+			for(std::set<WorldEntity*>::iterator it = set.begin(); it != set.end(); it++)
+			{
+				//defaultScales.push_back((*it)->getScale());
+				//actualScales.push_back((*it)->getScale());
+				//defaultPositions.push_back((*it)->getPosition());
+				//actualPositions.push_back((*it)->getPosition());
+				//(*it)->setScale((*it)->getScale() *0.99);
+				(*it)->setScale(actualScales_.at(i));
+				//(*it)->setPosition((*it)->getPosition() / 5.0);
+			}
+		}
 	}
 
 	void ShrinkPickup::terminate(void)
