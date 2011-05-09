@@ -77,12 +77,12 @@ namespace orxonox
     };
 
     Game::Game(const std::string& cmdLine)
-        // Destroy factories before the Core!
-        : gsFactoryDestroyer_(Game::GameStateFactory::getFactories(), &std::map<std::string, shared_ptr<GameStateFactory> >::clear)
+        : gameClock_(NULL)
+        , core_(NULL)
+        , bChangingState_(false)
+        , bAbort_(false)
+        , destructionHelper_(this)
     {
-        this->bAbort_ = false;
-        bChangingState_ = false;
-
 #ifdef ORXONOX_PLATFORM_WINDOWS
         minimumSleepTime_ = 1000/*us*/;
 #else
@@ -102,10 +102,10 @@ namespace orxonox
         this->declareGameState<GameState>("GameState", "emptyRootGameState", true, false);
 
         // Set up a basic clock to keep time
-        this->gameClock_.reset(new Clock());
+        this->gameClock_ = new Clock();
 
         // Create the Core
-        this->core_.reset(new Core(cmdLine));
+        this->core_ = new Core(cmdLine);
 
         // Do this after the Core creation!
         ClassIdentifier<Game>::getIdentifier("Game")->initialiseObject(this, "Game", true);
@@ -126,14 +126,18 @@ namespace orxonox
         this->loadedStates_.push_back(this->getState(rootStateNode_->name_));
     }
 
-    /**
-    @brief
-        All destruction code is handled by scoped_ptrs and SimpleScopeGuards.
-    */
-    Game::~Game()
+    void Game::destroy()
     {
         // Remove us from the object lists again to avoid problems when destroying them
         this->unregisterObject();
+
+        assert(loadedStates_.size() <= 1); // Just empty root GameState
+        // Destroy all GameStates (shared_ptrs take care of actual destruction)
+        constructedStates_.clear();
+
+        GameStateFactory::getFactories().clear();
+        safeObjectDelete(&core_);
+        safeObjectDelete(&gameClock_);
     }
 
     void Game::setConfigValues()

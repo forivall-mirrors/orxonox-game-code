@@ -43,8 +43,8 @@
 #include <CEGUIForwardRefs.h>
 #include <CEGUIVersion.h>
 #include <boost/shared_ptr.hpp>
-#include <loki/ScopeGuard.h>
 
+#include "util/DestructionHelper.h"
 #include "util/OgreForwardRefs.h"
 #include "util/TriBool.h"
 #include "util/Singleton.h"
@@ -82,8 +82,11 @@ namespace orxonox // tolua_export
         friend class Singleton<GUIManager>;
     public:
         GUIManager(const std::pair<int, int>& mousePosition);
+
         //! Leave empty and use cleanup() instead
         ~GUIManager() {}
+        /// Destructor that also executes when object fails to construct
+        void destroy();
 
         void setConfigValues(void);
         void changedGUIScheme(void);
@@ -133,9 +136,6 @@ namespace orxonox // tolua_export
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
 
-        /// Destructor that also executes when object fails to construct
-        void cleanup();
-
         void executeCode(const std::string& str);
 
         template <typename FunctionType>
@@ -156,9 +156,6 @@ namespace orxonox // tolua_export
         virtual void windowResized(unsigned int newWidth, unsigned int newHeight);
         virtual void windowFocusChanged(bool bFocus);
 
-        /// Surrogate for the destructor
-        Loki::ObjScopeGuardImpl0<GUIManager, void (GUIManager::*)()> destroyer_;
-
 #ifdef ORXONOX_OLD_CEGUI
         CEGUI::OgreCEGUIRenderer*            guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
         CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
@@ -178,6 +175,9 @@ namespace orxonox // tolua_export
         CEGUI::Window*                       menuRootWindow_;   //!< Root node for the menu sheets (used by Lua)
         std::map<std::string, PlayerInfo*>   players_;          //!< Stores the player (owner) for each GUI
         Ogre::Camera*                        camera_;           //!< Camera used to render the scene with the GUI
+
+        /// Helper object that executes the surrogate destructor destroy()
+        DestructionHelper<GUIManager>        destructionHelper_;
 
         static GUIManager*                   singletonPtr_s;    //!< Singleton reference to GUIManager
 

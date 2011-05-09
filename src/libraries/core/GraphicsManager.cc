@@ -93,16 +93,13 @@ namespace orxonox
 
     GraphicsManager* GraphicsManager::singletonPtr_s = 0;
 
-    /**
-    @brief
-        Non-initialising constructor.
-    */
     GraphicsManager::GraphicsManager(bool bLoadRenderer)
         : ogreWindowEventListener_(new OgreWindowEventListener())
         , renderWindow_(0)
         , viewport_(0)
         , lastFrameStartTime_(0.0f)
         , lastFrameEndTime_(0.0f)
+        , destructionHelper_(this)
     {
         RegisterObject(GraphicsManager);
 
@@ -133,15 +130,11 @@ namespace orxonox
         }
     }
 
-    /**
-    @brief
-        Destruction is done by the member scoped_ptrs.
-    */
-    GraphicsManager::~GraphicsManager()
+    void GraphicsManager::destroy()
     {
         Loader::unload(debugOverlay_.get());
 
-        Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_.get());
+        Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_);
         ModifyConsoleCommand(__CC_printScreen_name).resetFunction();
         ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setScreenResolution_name).resetFunction();
         ModifyConsoleCommand(__CC_GraphicsManager_group, __CC_setFSAA_name).resetFunction();
@@ -150,6 +143,10 @@ namespace orxonox
         // Undeclare the resources
         Loader::unload(resources_.get());
         Loader::unload(extResources_.get());
+
+        safeObjectDelete(&ogreRoot_);
+        safeObjectDelete(&ogreLogger_);
+        safeObjectDelete(&ogreWindowEventListener_);
     }
 
     void GraphicsManager::setConfigValues()
@@ -217,7 +214,7 @@ namespace orxonox
 
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
-        ogreLogger_.reset(new Ogre::LogManager());
+        ogreLogger_ = new Ogre::LogManager();
         COUT(4) << "Ogre LogManager created" << std::endl;
 
         // create our own log that we can listen to
@@ -240,7 +237,7 @@ namespace orxonox
         }
 
         // Leave plugins file empty. We're going to do that part manually later
-        ogreRoot_.reset(new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string()));
+        ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string());
 
         COUT(3) << "Ogre set up done." << std::endl;
     }
@@ -299,7 +296,7 @@ namespace orxonox
         // Propagate the size of the new winodw
         this->ogreWindowEventListener_->windowResized(renderWindow_);
 
-        Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_.get());
+        Ogre::WindowEventUtilities::addWindowEventListener(this->renderWindow_, ogreWindowEventListener_);
 
         // create a full screen default viewport
         // Note: This may throw when adding a viewport with an existing z-order!
