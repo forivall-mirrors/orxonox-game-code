@@ -2,7 +2,6 @@
   <SpaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipHXYcameras
-   engine                 = spaceshipHXYengine
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 6
@@ -20,6 +19,9 @@
    linearDamping     = 0.7
    angularDamping    = 0.9999999
   >
+    <engines>
+      <MultiStateEngine position=" 0, 0, 0" template=spaceshipHXYengine />
+    </engines>
     <attached>
       <Model position="0,0,0" yaw=180 pitch=-90 roll=0 scale=4 mesh="HXY.mesh" />
     </attached>

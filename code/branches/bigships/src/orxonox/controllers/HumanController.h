@@ -63,7 +63,15 @@ namespace orxonox
             virtual void doFire(unsigned int firemode);
             static void reload();
 
-            static void boost();
+            static void toggleBoost(); // Static method,toggles boosting.
+            /**
+            @brief Check whether the HumanController is in boosting mode.
+            @return Returns true if it is, false if not.
+            */
+            inline bool isBoosting(void)
+                { return this->boosting_; }
+            void toggleBoosting(void); // Toggles the boosting mode.
+            
             static void greet();
             static void switchCamera();
             static void mouseLook();
@@ -91,6 +99,10 @@ namespace orxonox
         protected:
             static HumanController* localController_s;
             bool controlPaused_;
+        
+        private:
+            bool boosting_; // Whether the HumanController is in boosting mode or not.
+
     }; // tolua_export
 } // tolua_export
 

@@ -72,7 +72,8 @@ namespace orxonox
             /*virtual void instructions();
             virtual void furtherInstructions();*/
             virtual void rewardPig();
-            void resetSpeedFactor(WeakPtr<Engine>* ptr);
+			void grantPigBoost(SpaceShip* spaceship); // Added this, since it's used twice on different occasions.
+            void resetSpeedFactor(WeakPtr<SpaceShip>* ptr);
             void tick (float dt);// used to end the game
             SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;
 

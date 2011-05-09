@@ -150,14 +150,7 @@ namespace orxonox
 
                 //Give new pig boost
                 SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
-                if (spaceship && spaceship->getEngine())
-                {
-                    spaceship->getEngine()->setSpeedFactor(5);
-                    WeakPtr<Engine>* ptr = new WeakPtr<Engine>(spaceship->getEngine());
-                    ExecutorPtr executor = createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this));
-                    executor->setDefaultValue(0, ptr);
-                    new Timer(10, false, executor, true);
-                }
+				grantPigBoost(spaceship);
             }
 
             //Case: notEnoughKillers: party change
@@ -251,15 +244,7 @@ namespace orxonox
                 }
                 //Give new pig boost
                 SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
-                if (spaceship && spaceship->getEngine())
-                {
-                    spaceship->getEngine()->setSpeedFactor(5);
-                    WeakPtr<Engine>* ptr = new WeakPtr<Engine>(spaceship->getEngine());
-                    ExecutorPtr executor = createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this));
-                    executor->setDefaultValue(0, ptr);
-                    new Timer(10, false, executor, true);
-                }
-
+                grantPigBoost(spaceship);
             }
             // killer vs piggy
             else if (source==killer &&target==piggy) //party and colour switch
@@ -319,6 +304,19 @@ namespace orxonox
         }
         else return false;
     }
+
+	void Dynamicmatch::grantPigBoost(orxonox::SpaceShip* spaceship)
+	{
+		// Give pig boost
+        if (spaceship)
+        {
+            spaceship->setSpeedFactor(5);
+            WeakPtr<SpaceShip>* ptr = new WeakPtr<SpaceShip>(spaceship);
+            ExecutorPtr executor = createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this));
+            executor->setDefaultValue(0, ptr);
+            new Timer(10, false, executor, true);
+        }
+	}
 
     void Dynamicmatch::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn) //set party + colouring
     {
@@ -596,7 +594,7 @@ namespace orxonox
         return this->playerParty_[player];
     }
 
-    void Dynamicmatch::resetSpeedFactor(WeakPtr<Engine>* ptr)// helper function
+    void Dynamicmatch::resetSpeedFactor(WeakPtr<SpaceShip>* ptr)// helper function
     {
         if (*ptr)
         {

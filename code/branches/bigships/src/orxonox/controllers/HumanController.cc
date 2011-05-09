@@ -41,6 +41,7 @@ namespace orxonox
 {
     extern const std::string __CC_fire_name = "fire";
     extern const std::string __CC_suicide_name = "suicide";
+    const std::string __CC_boost_name = "boost";
 
     SetConsoleCommand("HumanController", "moveFrontBack",          &HumanController::moveFrontBack ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "moveRightLeft",          &HumanController::moveRightLeft ).addShortcut().setAsInputCommand();
@@ -50,7 +51,7 @@ namespace orxonox
     SetConsoleCommand("HumanController", "rotateRoll",             &HumanController::rotateRoll    ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", __CC_fire_name,           &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
     SetConsoleCommand("HumanController", "reload",                 &HumanController::reload        ).addShortcut();
-    SetConsoleCommand("HumanController", "boost",                  &HumanController::boost         ).addShortcut().keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand("HumanController", __CC_boost_name,          &HumanController::toggleBoost   ).addShortcut().keybindMode(KeybindMode::OnPress);
     SetConsoleCommand("HumanController", "greet",                  &HumanController::greet         ).addShortcut();
     SetConsoleCommand("HumanController", "switchCamera",           &HumanController::switchCamera  ).addShortcut();
     SetConsoleCommand("HumanController", "mouseLook",              &HumanController::mouseLook     ).addShortcut();
@@ -71,6 +72,7 @@ namespace orxonox
         RegisterObject(HumanController);
 
         controlPaused_ = false;
+        this->boosting_ = false;
 
         HumanController::localController_s = this;
     }
@@ -162,10 +164,32 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->reload();
     }
 
-    void HumanController::boost()
+    /**
+    @brief
+        Static method,toggles boosting.
+    */
+    /*static*/ void HumanController::toggleBoost()
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->controllableEntity_->boost();
+            HumanController::localController_s->toggleBoosting();
+    }
+    
+    /**
+    @brief
+        Toggles the boosting mode.
+        Changes the keybind mode of the boost console command and tells the ControllableEntity to boost (or not boost anymore).
+    */
+    void HumanController::toggleBoosting(void)
+    {
+        this->boosting_ = !this->boosting_;
+        
+        // The keybind mode of the boosting console command is onRelease if in boosting mode and onPress of not in boosting mode.
+        if(this->boosting_)
+            ModifyConsoleCommand(__CC_boost_name).keybindMode(KeybindMode::OnRelease);
+        else
+            ModifyConsoleCommand(__CC_boost_name).keybindMode(KeybindMode::OnPress);
+
+        this->controllableEntity_->boost(this->boosting_);
     }
 
     void HumanController::greet()
