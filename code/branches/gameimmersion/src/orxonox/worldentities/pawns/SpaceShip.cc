@@ -141,6 +141,7 @@ namespace orxonox
 
         if (this->hasLocalController())
         {
+		
 /*
             this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
             this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
@@ -164,6 +165,7 @@ namespace orxonox
                 this->boostPower_ += this->boostPowerRate_*dt;
             }
 
+	   // COUT(0) << "Velocity: " << this->getVelocity().length() << " - " << this->getVelocity().squaredLength() << std::endl;
 
 
             if(this->bBoost_)
@@ -171,29 +173,34 @@ namespace orxonox
                 this->boostPower_ -=this->boostRate_*dt;
                 if(this->boostPower_ <= 0.0f)
                 {
-                    this->bBoost_ = false;
+                    this->boost(false);
                     this->bBoostCooldown_ = true;
                     this->timer_.setTimer(this->boostCooldownDuration_, false, createExecutor(createFunctor(&SpaceShip::boostCooledDown, this)));
 		    
                 }
-		else
+		if (this->getVelocity().squaredLength() > 20)
 		{
 			this->shakeDt_ += dt;
 			
 			Camera* c = this->getCamera();
+			
+			this->shakeFrequency_ = this->getVelocity().squaredLength() / 10000;
+			
+			COUT(0) << "ShakeFrequency: " << this->shakeFrequency_ << std::endl;
 
 			//Shaking Camera effect
 			if (c != 0)
 			{
+				c->setAngularVelocity(Vector3(shakeFrequency_,0 , 0));
 
-				if (c->getAngularVelocity() == Vector3(0,0,0))
-				{
-					c->setAngularVelocity(Vector3(2,0,0));
+				//if (c->getAngularVelocity() == Vector3(0,0,0))
+				//{
+				//	c->setAngularVelocity(Vector3(2,0,0));
 
 					//set the delta to half the period time,
 					//so the camera shakes up and down.
-					this->shakeDt_ = 1/(2 * this->shakeFrequency_);
-				}
+				//	this->shakeDt_ = 1/(2 * this->shakeFrequency_);
+				//}
 
 
 				//toggle the rotation
@@ -207,6 +214,7 @@ namespace orxonox
             }
         }
     }
+
 
     void SpaceShip::boostCooledDown(void)
     {
@@ -263,15 +271,13 @@ namespace orxonox
         Whether to start or stop boosting.
     */
     void SpaceShip::boost(bool bBoost)
-    {
-	Camera* c = this->getCamera();
-	
+    {	
         if(bBoost && !this->bBoostCooldown_)
             this->bBoost_ = true;
         if(!bBoost)
 	{
-            this->bBoost_ = false;
 	    this->resetCamera();
+            this->bBoost_ = false;
 	}
     }
 
@@ -320,9 +326,8 @@ namespace orxonox
     
     void SpaceShip::resetCamera()
     {
+	    //COUT(0) << "Resetting camera\n";
 	    Camera *c = this->getCamera();
-	    
-	    assert(c != 0);
 	  
 	    if (c == 0)
 	    {
