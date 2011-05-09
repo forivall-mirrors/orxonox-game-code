@@ -58,6 +58,8 @@ extern "C" {
 #  include <RendererModules/Ogre/CEGUIOgreResourceProvider.h>
 #  include <OgreCamera.h>
 #  include <OgreRenderQueueListener.h>
+#  include <OgreRenderSystem.h>
+#  include <OgreRoot.h>
 #  include <OgreSceneManager.h>
 #endif
 
@@ -136,7 +138,15 @@ namespace orxonox
         void renderQueueStarted(Ogre::uint8 id, const Ogre::String& invocation, bool& skipThisQueue)
         {
             if (id == Ogre::RENDER_QUEUE_OVERLAY && invocation.empty())
+            {
                 CEGUI::System::getSingleton().renderGUI();
+
+                // Important workaround! (at least required by CEGUI 0.7.5)
+                // If we don't reset the scissor test, OGRE will only render overlays
+                // in the area where CEGUI last drew, which is usually nothing
+                // or a little box where the focused element is.
+                Ogre::Root::getSingleton().getRenderSystem()->setScissorTest(false);
+            }
         }
     };
 #endif
