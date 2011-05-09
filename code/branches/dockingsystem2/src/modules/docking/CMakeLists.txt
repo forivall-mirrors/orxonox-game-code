@@ -9,6 +9,7 @@ ORXONOX_ADD_LIBRARY(docking
   MODULE
   FIND_HEADER_FILES
   TOLUA_FILES
+    Dock.h
   PCH_FILE
     DockingPrecompiledHeaders.h
   LINK_LIBRARIES

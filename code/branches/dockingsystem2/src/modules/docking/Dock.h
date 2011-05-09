@@ -42,14 +42,17 @@
 #include "core/EventIncludes.h"
 
 #include "worldentities/StaticEntity.h"
-#include "notifications/NotificationManager.h"
+#include "controllers/HumanController.h"
 
 #include "DockingEffect.h"
 #include "DockingPrereqs.h"
 
-namespace orxonox {
+namespace orxonox // tolua_export
+{  // tolua_export
 
-    class _DockingExport Dock : public StaticEntity {
+    class _DockingExport Dock  // tolua_export
+        : public StaticEntity
+    { // tolua_export
     public:
         Dock(BaseObject* creator);
         virtual ~Dock();
@@ -65,6 +68,10 @@ namespace orxonox {
         bool dock(PlayerInfo* player); //!< Returns true if given player docked successfully (player must be a candidate)
         bool undock(PlayerInfo* player); //!< Undocks a player (player must be docked)
 
+        void dock() { this->dock(HumanController::getLocalControllerSingleton()->getPlayer()); } // tolua_export
+        static unsigned int getNumberOfActiveDocks(); // tolua_export
+        static Dock* getActiveDockAtIndex(unsigned int index); // tolua_export
+
         static void cmdDock();
         static void cmdUndock();
 
@@ -72,9 +79,7 @@ namespace orxonox {
         std::set<PlayerInfo*> candidates; //!< A set of all players which are allowed to dock using the console command.
         std::set<PlayerInfo*> docked; //!< A set of all docked players
         std::list<DockingEffect*> effects; //!< The list of DockingEffects to be executed when a player docks.
-    };
-
-
-}
+    }; // tolua_export
+} // tolua_export
 
 #endif /* _Dock_H__ */

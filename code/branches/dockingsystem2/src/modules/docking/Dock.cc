@@ -33,16 +33,21 @@
 
 #include "Dock.h"
 
+#include "core/CoreIncludes.h"
+#include "core/LuaState.h"
+#include "core/GUIManager.h"
 #include "infos/HumanPlayer.h"
 #include "worldentities/pawns/Pawn.h"
 #include "interfaces/PlayerTrigger.h"
-#include "controllers/HumanController.h"
 #include "core/command/ConsoleCommand.h"
 
-
+#include "ToluaBindDocking.h"
 
 namespace orxonox
 {
+    // Register tolua_open function when loading the library
+    DeclareToluaInterface(Docking);
+
     CreateFactory(Dock);
 
     SetConsoleCommand("Dock", "dock",    &Dock::cmdDock).addShortcut().setAsInputCommand();
@@ -110,12 +115,17 @@ namespace orxonox
 
         COUT(0) << "Dock triggered by player: " << player->getName() << ".." << std::endl;
 
-        if(bTriggered) {
+        if(bTriggered)
+        {
             // Add player to this Docks candidates
             candidates.insert(player);
 
+            // Show docking dialog
+            GUIManager::showGUI("DockingDialog");
             //DockingEffect::invokeEffect(docking::DOCKING, player, effects_);
-        } else {
+        }
+        else
+        {
             // Remove player from candidates list
             candidates.erase(player);
 
@@ -126,27 +136,33 @@ namespace orxonox
     }
 
 
-    void Dock::cmdDock() {
+    void Dock::cmdDock()
+    {
         PlayerInfo* player = HumanController::getLocalControllerSingleton()->getPlayer();
-        for(ObjectList<Dock>::iterator it = ObjectList<Dock>::begin(); it != ObjectList<Dock>::end(); ++it) {
+        for(ObjectList<Dock>::iterator it = ObjectList<Dock>::begin(); it != ObjectList<Dock>::end(); ++it)
+        {
             if(it->dock(player))
                 break;
         }
     }
 
-    void Dock::cmdUndock() {
+    void Dock::cmdUndock()
+    {
         PlayerInfo* player = HumanController::getLocalControllerSingleton()->getPlayer();
-        for(ObjectList<Dock>::iterator it = ObjectList<Dock>::begin(); it != ObjectList<Dock>::end(); ++it) {
+        for(ObjectList<Dock>::iterator it = ObjectList<Dock>::begin(); it != ObjectList<Dock>::end(); ++it)
+        {
             if(it->undock(player))
                 break;
         }
     }
 
 
-    bool Dock::dock(PlayerInfo* player) {
+    bool Dock::dock(PlayerInfo* player)
+    {
         // Check if player is a candidate
-        if(candidates.find(player) == candidates.end()) {
-            COUT(0) << "Player is not a candidate!";
+        if(candidates.find(player) == candidates.end())
+        {
+            COUT(0) << "Player is not a candidate!" << std::endl;
             return false;
         }
 
@@ -157,9 +173,11 @@ namespace orxonox
         return true;
     }
 
-    bool Dock::undock(PlayerInfo* player) {
+    bool Dock::undock(PlayerInfo* player)
+    {
         // Check if player is docked to this Dock
-        if(docked.find(player) == docked.end()) {
+        if(docked.find(player) == docked.end())
+        {
             COUT(0) << "Player is not docked to this Dock." << std::endl;
             return false;
         }
@@ -172,15 +190,46 @@ namespace orxonox
     }
 
 
-    bool Dock::addEffect(DockingEffect* effect) {
+    unsigned int Dock::getNumberOfActiveDocks()
+    {
+        int i = 0;
+        PlayerInfo* player = HumanController::getLocalControllerSingleton()->getPlayer();
+        for(ObjectList<Dock>::iterator it = ObjectList<Dock>::begin(); it != ObjectList<Dock>::end(); ++it)
+        {
+            if(it->candidates.find(player) != it->candidates.end())
+                i++;
+        }
+        return i;
+    }
+
+    Dock* Dock::getActiveDockAtIndex(unsigned int index)
+    {
+        PlayerInfo* player = HumanController::getLocalControllerSingleton()->getPlayer();
+        for(ObjectList<Dock>::iterator it = ObjectList<Dock>::begin(); it != ObjectList<Dock>::end(); ++it)
+        {
+            if(it->candidates.find(player) != it->candidates.end())
+            {
+                if(index == 0)
+                    return *it;
+                index--;
+            }
+        }
+        return NULL;
+    }
+
+
+    bool Dock::addEffect(DockingEffect* effect)
+    {
         assert(effect);
         effects.push_back(effect);
         return true;
     }
 
-    const DockingEffect* Dock::getEffect(unsigned int index) const {
+    const DockingEffect* Dock::getEffect(unsigned int index) const
+    {
         int i = index;
-        for (std::list<DockingEffect*>::const_iterator effect = this->effects.begin(); effect != this->effects.end(); ++effect) {
+        for (std::list<DockingEffect*>::const_iterator effect = this->effects.begin(); effect != this->effects.end(); ++effect)
+        {
             if(i == 0)
                return *effect;
             i--;

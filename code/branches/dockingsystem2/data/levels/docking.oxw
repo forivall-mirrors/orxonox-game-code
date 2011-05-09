@@ -26,29 +26,34 @@
 
     <Light type="directional" position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 
+
+
     <?lua for i = 1, 10, 1 do ?>
-      <SpawnPoint position="<?lua print(math.random() * 500 - 250) ?>,<?lua print(math.random() * 500 - 250) ?>,<?lua print(math.random() * 500 - 250) ?>" lookat="0,0,0" spawnclass="SpaceShip" pawndesign="spaceshipassff" />
+      <SpawnPoint position="<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" lookat="0,0,0" spawnclass="SpaceShip" pawndesign="spaceshipassff" />
     <?lua end ?>
 
-    <Dock position="-50,-100,50">
-            <effects>
-                <DockToShip target="theDestroyer" />
-            </effects>
-            <events>
-                <execute>
-                    <EventListener event="dockMe" />
-                </execute>
-            </events>
-            <attached>
-                <DistanceTrigger position="0,0,0" distance="20" target="Pawn" beaconMode="exclude" targetname="destroyerBeacon" name="dockMe" />
-                <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
-            </attached>
-        </Dock>
 
 
-    
+
+    <Dock>
+        <effects>
+            <DockToShip target="destroyer" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+        </events>
+        <attached>
+            <DistanceTrigger position="0,0,0" distance="50" target="Pawn" beaconMode="exclude" targetname="destroyerBeacon" name="dockMe" />
+            <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
+        </attached>
+    </Dock>
+
+
 
       <SpaceShip
+   position               = "-150,-50,-100"
    hudtemplate            = "spaceshiphud"
    camerapositiontemplate = "spaceshipassffcameras"
    engine                 = "spaceshipassffengine"
@@ -70,8 +75,8 @@
    angularDamping    = "0.9999999"
   >
     <attached>
-        <DistanceTriggerBeacon name="beacon1" />
-        <DockingTarget name="asdf" />
+        <DistanceTriggerBeacon name="bcnSpaceShip1" />
+        <DockingTarget name="spaceShip1" />
 
       <Model position="0,0,0" yaw="90" pitch="-90" roll="0" scale="4" mesh="assff.mesh" />
       <BlinkingBillboard position="17,-1.5,0" material="Examples/Flare" colour="1.0, 0.5, 0.3" amplitude="0.1" frequency="0.5" quadratic="1" />
@@ -95,7 +100,7 @@
 
 
     <Destroyer
-      position          = "100,150,0"
+      position          = "100,150,100"
       collisionType     = "dynamic"
       mass              = "100000"
       velocity          = "0,0,0"
@@ -107,8 +112,8 @@
 
       <attached>
 
-        <DistanceTriggerBeacon name="destroyerBeacon" />
-        <DockingTarget name="theDestroyer" />
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
 
 
         <TeamSpawnPoint team="1" position="150,0,7" direction="-1,0,0" roll="90" yaw="0" spawnclass="SpaceShip" pawndesign="spaceshipassff" />
