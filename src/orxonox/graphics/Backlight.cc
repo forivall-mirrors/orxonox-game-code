@@ -32,6 +32,9 @@
 #include <OgreRibbonTrail.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
+// windows.h is getting included above on Windows...
+#undef max
+#undef min
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
