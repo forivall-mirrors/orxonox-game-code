@@ -47,12 +47,12 @@
 
 namespace orxonox
 {
-    
-    namespace notificationMessageMode
+    // TODO: Document.
+    namespace notificationMessageType
     {
         enum Value {
-            message,
-            command
+            info,
+            important
         };
     }
     
@@ -64,34 +64,90 @@ namespace orxonox
             broadcast
         };
     }
+    
+    namespace notificationCommand
+    {
+        enum Value {
+            none,
+            clear
+        };
+    }
 
     // TODO: Update doc.
     /**
     @brief
         NotificationListener interface.
 
-        The NotificationListener interface presents a means to being informed when @ref orxonox::Notification "Notifications" in the target set of this NotificationListener change. (e.g. @ref orxonox::Notification "Notifications" were added or removed)
-        When inheriting from a NotificationListener it is important to register (in the constructor) and unregister (in the destructor) it to and from the @ref orxonox::NotificationManager "NotificationManager".
+        The NotificationListener interface (or more precisely abstract class) presents a means of being informed when a new @ref orxonox::Notification "Notification" is sent.
+        The NotificationListener can be used to send a new notification message (with NotificationListener::sendNotification() ) or a new notification command (with NotificationListener::sendCommand() ). Each NotificationListener is then informed about the new @ref orxonox::Notification "Notification" and can take appropriate action. Currently the only NotificationListener ist the @ref orxonox::NotificationManager "NotificationManager" singleton.
+
+        When inheriting from a NotificationListener it is important to provide an appropriate implementation of registerNotification() and executeCommand().
 
     @author
         Damian 'Mozork' Frick
         
     @ingroup Notifications
+    @todo Consistent terminology between message, notification and command.
     */
     class _OrxonoxExport NotificationListener : virtual public OrxonoxClass
     {
         public:
             NotificationListener();
             virtual ~NotificationListener() {}
+
+            /**
+            @brief Sends a Notification with the specified message to the specified client from the specified sender.
+            @param message The message that should be sent.
+            @param sender The sender that sent the notification. Default is 'none'.
+            @param messageType The type of the message, can be either 'info' or 'important'. Default is 'info'.
+            @param sendMode The mode in which the notification is sent, can be 'local' to send the notification to the client where this function is executed, 'network' if the notification is to be sent to the client with the specified clientID, or 'broadcast' if the notification should be sent to all hosts. Default is notificationSendMode::local.
+            @param clientId The id of the client the notification should be sent to. Default is 0.
+            */
+            static void sendNotification(const std::string& message, const std::string& sender = NotificationListener::NONE, notificationMessageType::Value messageType = notificationMessageType::info, notificationSendMode::Value sendMode = notificationSendMode::local, unsigned int clientId = 0)
+                { NotificationListener::sendNetworkHelper(message, sender, sendMode, clientId, false, messageType); }
+            /**
+            @brief Sends a specified command to the specified client from the specified sender.
+            @param message The command that should be sent (and later executed).
+            @param sender The sender that sent the notification. Default is 'none'.
+            @param sendMode The mode in which the command is sent, can be 'local' to send the command to the client where this function is executed, 'network' if the command is to be sent to the client with the specified clientID, or 'broadcast' if the command should be sent to all hosts. Default is notificationSendMode::local.
+            @param clientId The id of the client the command should be sent to. Default is 0.
+            */
+            static void sendCommand(const std::string& command, const std::string& sender = NotificationListener::NONE, notificationSendMode::Value sendMode = notificationSendMode::local, unsigned int clientId = 0)
+                { NotificationListener::sendNetworkHelper(command, sender, sendMode, clientId, true); }
+
+            static void sendHelper(const std::string& message, const std::string& sender, bool isCommand = false, unsigned int messageMode = 0); // Helper method to register a notification/execute a command with all NotificationListeners after it has been sent over the network.
+
+            //TODO: Make protected?
             
-            static const std::string ALL; //!< Static string to indicate a sender that sends to all NotificationListeners.
-            static const std::string NONE; //!< Static string to indicare a sender that sends to no specific NotificationListener.
+            /**
+            @brief Registers a notification with the NotificationListener.
+                   This needs to be overloaded by each class inheriting from NotificationListener.
+            @param message The notification's message.
+            @param sender The sender of the notification.
+            @param type The type of the notification.
+            @return Returns true if the notification was successfully registered, false if not.
+            */
+            virtual bool registerNotification(const std::string& message, const std::string& sender, notificationMessageType::Value type)
+                { return false; }
+            /**
+            @brief Executes a command with the NotificationListener
+                   This needs to be overloaded by each class inheriting from NotificationListener.
+            @param command The command to be executed.
+            @param sender The sender of the command.
+            @return Returns true if the command was successfully executed, false if not.
+            */
+            virtual bool executeCommand(notificationCommand::Value command, const std::string& sender) { return false; }
             
-            static void sendNotification(const std::string& message, const std::string& sender = NotificationListener::NONE, notificationMessageMode::Value messageMode = notificationMessageMode::message, notificationSendMode::Value sendMode = notificationSendMode::local, unsigned int clientId = 0);
-            static void sendNotificationHelper(const std::string& message, const std::string& sender, unsigned int messageMode);
+            static const std::string ALL; //!< Static string to indicate a sender that sends to all NotificationQueues.
+            static const std::string NONE; //!< Static string to indicate a sender that sends to no specific NotificationQueues.
             
-            virtual bool registerNotification(const std::string& message, const std::string& sender) { return false; }
-            virtual void executeCommand(const std::string& command, const std::string& sender) {}
+            //! Commands
+            static const std::string COMMAND_CLEAR;
+            
+        protected:
+            static void sendNetworkHelper(const std::string& message, const std::string& sender, notificationSendMode::Value sendMode, unsigned int clientId, bool isCommand = false, notificationMessageType::Value messageType = notificationMessageType::info); // Helper method to send both notifications and commands over the network.
+            
+            static notificationCommand::Value str2Command(const std::string& string); // Helper method. Converts a string into the enum for a command.
     };
 }
 

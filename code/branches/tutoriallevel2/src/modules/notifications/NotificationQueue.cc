@@ -55,7 +55,7 @@ namespace orxonox
         The name of the new NotificationQueue. It needs to be unique
     @param senders
         The senders that are targets of this NotificationQueue, i.e. the names of senders whose Notifications this NotificationQueue displays.
-        The senders need to be seperated by commas.
+        The senders need to be separated by commas.
     @param size
         The size (the maximum number of displayed Notifications) of this NotificationQueue.
     @param displayTime
@@ -303,7 +303,7 @@ namespace orxonox
     @brief
         Clears the NotificationQueue by removing all NotificationContainers.
     @param noGraphics
-        If this is eset to true the GUI is not informed of the clearing of the NotificationQueue. This is needed only internally.
+        If this is set to true the GUI is not informed of the clearing of the NotificationQueue. This is needed only internally.
     */
     void NotificationQueue::clear(bool noGraphics)
     {
@@ -368,7 +368,7 @@ namespace orxonox
 
     /**
     @brief
-        Produces all targets of the NotificationQueue concatinated as string, with commas (',') as seperators.
+        Produces all targets of the NotificationQueue concatenated as string, with commas (',') as separators.
     @return
         Returns the targets as a string.
     */
@@ -394,7 +394,7 @@ namespace orxonox
         Sets the targets of the NotificationQueue.
         The targets are the senders whose Notifications are displayed in this queue.
     @param targets
-        Accepts a string of targets, each seperated by commas (','), spaces are ignored.
+        Accepts a string of targets, each separated by commas (','), spaces are ignored.
     */
     void NotificationQueue::setTargets(const std::string & targets)
     {
@@ -410,6 +410,12 @@ namespace orxonox
             NotificationManager::getInstance().unregisterQueue(this);
             NotificationManager::getInstance().registerQueue(this);
         }
+    }
+    
+    void NotificationQueue::tidy(void)
+    {
+        while(this->size_ > 0)
+            this->pop();
     }
 
 }

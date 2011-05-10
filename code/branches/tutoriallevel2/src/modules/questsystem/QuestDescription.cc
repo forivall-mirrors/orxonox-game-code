@@ -118,7 +118,7 @@ namespace orxonox
             return false;
         }
 
-        NotificationListener::sendNotification(message, QuestDescription::SENDER, notificationMessageMode::message, notificationSendMode::network, player->getClientID());
+        NotificationListener::sendNotification(message, QuestDescription::SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
         return true;
     }
 

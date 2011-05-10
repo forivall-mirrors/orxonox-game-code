@@ -76,7 +76,7 @@ namespace orxonox // tolua_export
     @brief
         Displays @ref orxonox::Notification "Notifications" from specific senders.
 
-        There are quite some parameters that influence the behaviour of the NotificationQueue:
+        There are quite some parameters that influence the behavior of the NotificationQueue:
         - @b name The name of the NotificationQueue. It needs to be unique.
         - @b senders The senders that are targets of this NotificationQueue, i.e. the names of senders whose Notifications this NotificationQueue displays.
         - @b size The size of the NotificationQueue, it specifies how many @ref orxonox::Notification "Notifications" are displayed at once at the most.
@@ -144,8 +144,10 @@ namespace orxonox // tolua_export
 
             // tolua_begin
             void setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
-            const std::string& getTargets(void) const; //!< Returns a string consisting of the concatination of the targets.
+            const std::string& getTargets(void) const; //!< Returns a string consisting of the concatenation of the targets.
             // tolua_end
+
+            void tidy(void);
 
         private:
             static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.

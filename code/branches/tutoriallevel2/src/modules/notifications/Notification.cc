@@ -47,12 +47,13 @@ namespace orxonox
     @param sender
         The sender of the Notification.
     */
-    Notification::Notification(const std::string& message, const std::string& sender)
+    Notification::Notification(const std::string& message, const std::string& sender, notificationMessageType::Value type)
     {
         RegisterRootObject(Notification);
         this->initialize();
         this->message_ = message;
         this->sender_ = sender;
+        this->type_ = type;
     }
 
     /**

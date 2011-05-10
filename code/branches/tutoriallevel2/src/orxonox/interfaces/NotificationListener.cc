@@ -34,17 +34,20 @@
 #include "core/CoreIncludes.h"
 #include "network/Host.h"
 #include "network/NetworkFunction.h"
+#include "util/SubString.h"
 
 #include "interfaces/NotificationListener.h"
 
 namespace orxonox
 {
     
-    const std::string NotificationListener::ALL("all");
-    const std::string NotificationListener::NONE("none");
+    /*static*/ const std::string NotificationListener::ALL("all");
+    /*static*/ const std::string NotificationListener::NONE("none");
     
-    registerStaticNetworkFunction(NotificationListener::sendNotificationHelper);
+    // Commands
+    /*static*/ const std::string NotificationListener::COMMAND_CLEAR("clear");
     
+    registerStaticNetworkFunction(NotificationListener::sendHelper);
     
     NotificationListener::NotificationListener()
     {
@@ -53,48 +56,86 @@ namespace orxonox
 
     /**
     @brief
-        Sends a Notification with the specified message to the specified client from the specified sender.
+        Helper method to send both notifications and commands over the network.
     @param message
-        The message that should be sent.
+        The message/command that should be sent.
     @param sender
-        The sender that sent the notification.
-    @param messageMode
-        The mode of the message, can be either 'message' or 'command'.
+        The sender that sent the notification/command.
     @param sendMode
-        The mode in which the notification is sent, can be 'local' to send the notification to the client where this function is executed, 'network' if the notification is to be sent to the client with the specified clientID, or 'broadcast' if the notification should be sent to all hosts.
+        The mode in which the notification/command is sent, can be 'local' to send the notification to the client where this function is executed, 'network' if the notification is to be sent to the client with the specified clientID, or 'broadcast' if the notification should be sent to all hosts.
     @param clientId
-        The id of the client the notification should be sent to.
+        The id of the client the notification/command should be sent to.
+    @param isCommand
+        Whether the message is a notification or a command.
+    @param messageType
+        The type of the notification, can be either 'info' or 'important'.
     */
-    /*static*/ void NotificationListener::sendNotification(const std::string& message, const std::string& sender, notificationMessageMode::Value messageMode, notificationSendMode::Value sendMode, unsigned int clientId)
+    /*static*/ void NotificationListener::sendNetworkHelper(const std::string& message, const std::string& sender, notificationSendMode::Value sendMode, unsigned int clientId, bool isCommand, notificationMessageType::Value messageType)
     {
-        // If we're in standalone mode or we're already no the right client we create and send the Notification.
+        // If we're in standalone mode or we're already no the right client we create and send the notification/command.
         if(GameMode::isStandalone() || sendMode == notificationSendMode::local || (sendMode ==  notificationSendMode::network && Host::getPlayerID() == clientId))
         {
-            sendNotificationHelper(message, sender, messageMode);
+            sendHelper(message, sender, isCommand, messageType);
         }
-        // If we're on the server (and the server is not the intended recipient of the Notification) we send it over the network.
+        // If we're on the server (and the server is not the intended recipient of the notification/command) we send it over the network.
         else if(GameMode::isServer() && sendMode == notificationSendMode::network && Host::getPlayerID() != clientId)
         {
-            callStaticNetworkFunction(NotificationListener::sendNotificationHelper, clientId, message, sender, (unsigned int)messageMode);
+            callStaticNetworkFunction(NotificationListener::sendHelper, clientId, message, sender, (unsigned int)messageType);
         }
         else if(GameMode::isServer() && sendMode == notificationSendMode::broadcast)
         {
             // TODO: Works as intended?
-            callStaticNetworkFunction(NotificationListener::sendNotificationHelper, NETWORK_PEER_ID_BROADCAST, message, sender, (unsigned int)messageMode);
+            callStaticNetworkFunction(NotificationListener::sendHelper, NETWORK_PEER_ID_BROADCAST, message, sender, (unsigned int)messageType);
         }
     }
-    
-    /*static*/ void NotificationListener::sendNotificationHelper(const std::string& message, const std::string& sender, unsigned int messageMode)
+
+    /**
+    @brief
+        Helper method to register a notification/execute a command with all NotificationListeners after it has been sent over the network.
+    @param message
+        The notification/command to be sent/executed.
+    @param sender
+        The sender that sent the notification/command.
+    @param isCommand
+        Whether the message is a command or a notification.
+    @param messageType
+        The type of the notification.
+    */
+    /*static*/ void NotificationListener::sendHelper(const std::string& message, const std::string& sender, bool isCommand, unsigned int messageType)
     {
         // Iterate through all NotificationListeners and notify them by calling the method they overloaded.
         for(ObjectList<NotificationListener>::iterator it = ObjectList<NotificationListener>::begin(); it != ObjectList<NotificationListener>::end(); ++it)
         {
-            if(messageMode == 0 && it->registerNotification(message, sender))
+            // If the notification is a message.
+            if(!isCommand && it->registerNotification(message, sender, notificationMessageType::Value(messageType)))
                 COUT(3) << "Notification \"" << message << "\" sent." << std::endl;
-            
-            if(messageMode == 1)
-                it->executeCommand(message, sender);
+
+            // If the notification is a command.
+            if(isCommand)
+            {
+                notificationCommand::Value command = str2Command(message);
+                if(command != notificationCommand::none && it->executeCommand(command, sender))
+                    COUT(3) << "Command \"" << message << "\" executed." << std::endl;
+            }
         }
+    }
+
+    /**
+    @brief
+        Helper method. Converts a string into the enum for a command.
+    @param string
+        The string to be converted.
+    @return
+        Returns the corresponding enum, notificationCommand::none if the command doesn't exist.
+    */
+    /*static*/ notificationCommand::Value NotificationListener::str2Command(const std::string& string)
+    {
+        notificationCommand::Value command = notificationCommand::none;
+
+        if(string == NotificationListener::COMMAND_CLEAR)
+            command = notificationCommand::clear;
+
+        return command;
     }
     
 }

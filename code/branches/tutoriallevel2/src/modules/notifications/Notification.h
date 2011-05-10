@@ -39,6 +39,7 @@
 
 #include <string>
 #include "core/OrxonoxClass.h"
+#include "interfaces/NotificationListener.h"
 
 namespace orxonox
 {
@@ -47,7 +48,7 @@ namespace orxonox
     @brief
         A Notification represents a short message used to inform the player about something that just happened. With the @ref orxonox::NotificationManager "NotificationManager" a Notification can be sent from any part of orxonox and is then displayed by the proper @ref orxonox::NotificationQueue "NotificationQueue(s)" (depending on which senders the specific @ref orxonox::NotificationQueue "NotificationQueues" accepts).
 
-        A Notification is just a datastructure that is used internally by the Notifications module.
+        A Notification is just a data structure that is used internally by the Notifications module.
 
     @author
         Damian 'Mozork' Frick
@@ -57,7 +58,7 @@ namespace orxonox
     class _NotificationsExport Notification : public OrxonoxClass
     {
         public:
-            Notification(const std::string& message, const std::string& sender);
+            Notification(const std::string& message, const std::string& sender, notificationMessageType::Value type);
             virtual ~Notification();
 
             /**
@@ -74,9 +75,17 @@ namespace orxonox
             inline const std::string & getSender(void) const
                 { return this->sender_; }
 
+            /**
+            @brief Get the type of the Notification.
+            @return Returns an enum with the type of the Notification.
+            */
+            inline notificationMessageType::Value getType(void) const
+                { return this->type_; }
+
         private:
             std::string message_; //!< The Notification message.
             std::string sender_; //!< The sender of the notification.
+            notificationMessageType::Value type_; //!< The type of the notification.
 
             void initialize(void); //!< Registers the object and sets some default values.
 

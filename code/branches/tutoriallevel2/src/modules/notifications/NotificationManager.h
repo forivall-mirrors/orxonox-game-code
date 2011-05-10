@@ -66,7 +66,7 @@ namespace orxonox // tolua_export
             NotificationManager();
             virtual ~NotificationManager();
 
-            virtual void preDestroy(void); //!< Is called before the object is destroyed.
+            virtual void preDestroy(void); // Is called before the object is destroyed.
 
             /**
             @brief Get the instance of the NotificationManager Singleton.
@@ -74,16 +74,17 @@ namespace orxonox // tolua_export
             */
             static NotificationManager& getInstance() { return Singleton<NotificationManager>::getInstance(); } // tolua_export
 
-            virtual bool registerNotification(const std::string& message, const std::string& sender);
+            virtual bool registerNotification(const std::string& message, const std::string& sender, notificationMessageType::Value type);
+            virtual bool executeCommand(notificationCommand::Value command, const std::string& sender);
 
-            bool registerNotification(Notification* notification); //!< Registers a Notification within the NotificationManager.
-            void unregisterNotification(Notification* notification, NotificationQueue* queue); //!< Unregisters a Notification within the NotificationManager for a given NotificationQueue.
+            bool registerNotification(Notification* notification); // Registers a Notification within the NotificationManager.
+            void unregisterNotification(Notification* notification, NotificationQueue* queue); // Unregisters a Notification within the NotificationManager for a given NotificationQueue.
 
-            void getNotifications(NotificationQueue* queue, std::multimap<std::time_t, Notification*>* map, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); //!< Fetches the Notifications for a specific NotificationQueue in a specified timeframe and stores them in the input map.
+            void getNotifications(NotificationQueue* queue, std::multimap<std::time_t, Notification*>* map, const std::time_t & timeFrameStart, const std::time_t & timeFrameEnd); // Fetches the Notifications for a specific NotificationQueue in a specified timeframe and stores them in the input map.
 
             /**
-            @brief Fetches the Notifications for a specific NotificationQueue in a timeframe from now-timeDelay to now and stores them in the input map.
-            @param listener The NotificationQueue the Notifications are fetched for.
+            @brief Fetches the Notifications for a specific NotificationQueue in a timeframe from (now-timeDelay) to now and stores them in the input map.
+            @param queue The NotificationQueue the Notifications are fetched for.
             @param map A pointer to a multimap, in which the notifications are stored. The map needs to have been allocated.
             @param timeDelay The timespan.
             @return Returns true if successful.
@@ -91,17 +92,17 @@ namespace orxonox // tolua_export
             void getNotifications(NotificationQueue* queue, std::multimap<std::time_t, Notification*>* map, int timeDelay)
                 { this->getNotifications(queue, map, std::time(0)-timeDelay, std::time(0)); }
 
-            void getNewestNotifications(NotificationQueue* queue, std::multimap<std::time_t, Notification*>* map, int numberOfNotifications); //!< Fetches the newest Notifications for a specific NotificationQueue and stores them in the input map.
+            void getNewestNotifications(NotificationQueue* queue, std::multimap<std::time_t, Notification*>* map, int numberOfNotifications); // Fetches the newest Notifications for a specific NotificationQueue and stores them in the input map.
 
-            void enterEditMode(void); //!< Enters the edit mode of the NotificationLayer.
+            void enterEditMode(void); // Enters the edit mode of the NotificationLayer.
 
-            bool registerQueue(NotificationQueue* queue); //!< Registers a NotificationQueue.
-            void unregisterQueue(NotificationQueue* queue); //!< Unregisters a NotificationQueue.
+            bool registerQueue(NotificationQueue* queue); // Registers a NotificationQueue.
+            void unregisterQueue(NotificationQueue* queue); // Unregisters a NotificationQueue.
 
             // tolua_begin
-            void loadQueues(void); //!< Loads all the NotificationQueues that should exist.
-            void createQueue(const std::string& name); //!< Creates a new NotificationQueue.
-            orxonox::NotificationQueue* getQueue(const std::string & name); //!< Get the NotificationQueue with the input name.
+            void loadQueues(void); // Loads all the NotificationQueues that should exist.
+            void createQueue(const std::string& name); // Creates a new NotificationQueue.
+            orxonox::NotificationQueue* getQueue(const std::string & name); // Get the NotificationQueue with the input name.
             // tolua_end
 
         private:
@@ -112,7 +113,10 @@ namespace orxonox // tolua_export
 
             std::map<const std::string, NotificationQueue*> queues_; //!< The list of NotificationQueues created by the NotificationManager.
 
-            bool removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map); //!< Helper method that removes an input Notification form an input map.
+            bool removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map); // Helper method that removes an input Notification form an input map.
+            
+            // Commands
+            void commandClear(const std::string& sender); // The clear command. Clears all NotificationQueues that have its sender as a target.
 
     }; // tolua_export
 
