@@ -414,7 +414,7 @@ namespace orxonox
         allQueue->setDisplaySize(Vector2(0.5, 0));
         allQueue->setPosition(Vector4(0.0, 10, 0.3, 0));
 
-        NotificationQueueCEGUI* infoQueue = new NotificationQueueCEGUI("info", NotificationListener::ALL, 1, -1);
+        NotificationQueueCEGUI* infoQueue = new NotificationQueueCEGUI("info", "gameinfo", 1, -1);
         infoQueue->setPosition(Vector4(0.2, 0, 0.8, 0));
         infoQueue->setFontSize(24);
         infoQueue->setFontColor(Vector4(1.0, 1.0, 0.0, 0.8));
