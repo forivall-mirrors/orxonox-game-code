@@ -279,7 +279,9 @@ namespace orxonox
     @brief
         Check whether the DistanceTrigger is triggered.
         It is triggered if it is triggered according only to its mode (i.e. its sub-triggers) and if a target is in range.
-    @param
+    @param mode
+        The mode for which it is tested, whether the DistanceTrigger is triggered.
+    @return
         Returns true if it is triggered ,false if not.
     */
     bool DistanceTrigger::isTriggered(TriggerMode::Value mode)
