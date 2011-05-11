@@ -39,8 +39,6 @@
 #include "core/CoreIncludes.h"
 #include "util/SubString.h"
 
-#include "Notification.h"
-
 namespace orxonox
 {
 

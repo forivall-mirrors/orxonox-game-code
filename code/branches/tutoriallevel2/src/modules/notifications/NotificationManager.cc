@@ -40,7 +40,6 @@
 
 #include "interfaces/NotificationListener.h"
 
-#include "Notification.h"
 #include "NotificationQueue.h"
 #include "NotificationQueueCEGUI.h"
 
@@ -421,6 +420,45 @@ namespace orxonox
         infoQueue->setFontColor(Vector4(1.0, 1.0, 0.0, 0.8));
         infoQueue->setAlignment("HorzCentred");
         infoQueue->setDisplaySize(Vector2(0.6, 0.0));
+    }
+
+    // Notification class
+
+    /**
+    @brief
+        Constructor. Creates a Notification with the input message and sender.
+    @param message
+        The message of the Notification.
+    @param sender
+        The sender of the Notification.
+    @param type
+
+    */
+    Notification::Notification(const std::string& message, const std::string& sender, notificationMessageType::Value type)
+    {
+        this->initialize();
+        this->message_ = message;
+        this->sender_ = sender;
+        this->type_ = type;
+    }
+
+    /**
+    @brief
+        Destructor.
+    */
+    Notification::~Notification()
+    {
+
+    }
+
+    /**
+    @brief
+        Registers the object and sets some default values.
+    */
+    void Notification::initialize(void)
+    {
+        this->message_.clear();
+        this->sender_ = NotificationListener::NONE;
     }
 
 }

@@ -1,5 +1,4 @@
 SET_SOURCE_FILES(NOTIFICATIONS_SRC_FILES
-  Notification.cc
   NotificationDispatcher.cc
   NotificationManager.cc
   NotificationQueue.cc

@@ -41,11 +41,65 @@
 #include <map>
 #include <string>
 
+#include "core/OrxonoxClass.h"
 #include "util/Singleton.h"
 #include "interfaces/NotificationListener.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
+
+    /**
+    @brief
+        A Notification represents a short message used to inform the player about something that just happened. With the @ref orxonox::NotificationManager "NotificationManager" a Notification can be sent from any part of orxonox and is then displayed by the proper @ref orxonox::NotificationQueue "NotificationQueue(s)" (depending on which senders the specific @ref orxonox::NotificationQueue "NotificationQueues" accepts).
+
+        A Notification is just a data structure that is used internally by the Notifications module.
+
+    @author
+        Damian 'Mozork' Frick
+
+    @ingroup Notifications
+    */
+    class _NotificationsExport Notification
+    {
+        public:
+            Notification(const std::string& message, const std::string& sender, notificationMessageType::Value type);
+            virtual ~Notification();
+
+            /**
+            @brief Destroys the Notification.
+            */
+            void destroy(void)
+                { delete this; }
+
+            /**
+            @brief Get the message of the Notification.
+            @return Returns the message of the Notification.
+            */
+            inline const std::string & getMessage(void) const
+                { return this->message_; }
+
+            /**
+            @brief Get the sender of the Notification.
+            @return Returns the sender of the Notification.
+            */
+            inline const std::string & getSender(void) const
+                { return this->sender_; }
+
+            /**
+            @brief Get the type of the Notification.
+            @return Returns an enum with the type of the Notification.
+            */
+            inline notificationMessageType::Value getType(void) const
+                { return this->type_; }
+
+        private:
+            std::string message_; //!< The Notification message.
+            std::string sender_; //!< The sender of the notification.
+            notificationMessageType::Value type_; //!< The type of the notification.
+
+            void initialize(void); //!< Registers the object and sets some default values.
+
+    };
 
     /**
     @brief

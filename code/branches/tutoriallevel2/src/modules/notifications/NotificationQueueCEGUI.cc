@@ -41,8 +41,6 @@
 #include "core/LuaState.h"
 #include "util/Convert.h"
 
-#include "Notification.h"
-
 #include "ToluaBindNotifications.h"
 
 namespace orxonox
