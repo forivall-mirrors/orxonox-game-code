@@ -46,6 +46,7 @@ namespace orxonox
     
     // Commands
     /*static*/ const std::string NotificationListener::COMMAND_CLEAR("clear");
+    /*static*/ const std::string NotificationListener::COMMAND_NONE("none");
     
     registerStaticNetworkFunction(NotificationListener::sendHelper);
     
@@ -107,15 +108,15 @@ namespace orxonox
         for(ObjectList<NotificationListener>::iterator it = ObjectList<NotificationListener>::begin(); it != ObjectList<NotificationListener>::end(); ++it)
         {
             // If the notification is a message.
-            if(!isCommand && it->registerNotification(message, sender, notificationMessageType::Value(messageType)))
-                COUT(3) << "Notification \"" << message << "\" sent." << std::endl;
+            if(!isCommand)
+                it->registerNotification(message, sender, notificationMessageType::Value(messageType));
 
             // If the notification is a command.
             if(isCommand)
             {
                 notificationCommand::Value command = str2Command(message);
-                if(command != notificationCommand::none && it->executeCommand(command, sender))
-                    COUT(3) << "Command \"" << message << "\" executed." << std::endl;
+                if(command != notificationCommand::none)
+                    it->executeCommand(command, sender);
             }
         }
     }
@@ -136,6 +137,25 @@ namespace orxonox
             command = notificationCommand::clear;
 
         return command;
+    }
+
+    /**
+    @brief
+        Helper method. Converts a command enum into its corresponding string.
+    @param command
+        The command to be converted.
+    @return
+        Returns the corresponding string.
+    */
+    /*static*/ const std::string& NotificationListener::command2Str(notificationCommand::Value command)
+    {
+        switch(command)
+        {
+            case notificationCommand::clear:
+                return NotificationListener::COMMAND_CLEAR;
+            default:
+                return NotificationListener::COMMAND_NONE;
+        }
     }
     
 }

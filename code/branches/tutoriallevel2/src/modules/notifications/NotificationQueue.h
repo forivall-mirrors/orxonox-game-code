@@ -141,13 +141,9 @@ namespace orxonox
             void setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
             const std::string& getTargets(void) const; //!< Returns a string consisting of the concatenation of the targets.
 
-            void tidy(void);
+            bool tidy(void); // Pops all Notifications from the NotificationQueue.
             
         protected:
-            static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
-            static const unsigned int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
-            static const int INF = -1; //!< Constant denoting infinity.
-        
             /**
             @brief Is called when a notification was pushed.
             @param notification The Notification that was pushed.
@@ -165,6 +161,10 @@ namespace orxonox
             
             virtual void clear(bool noGraphics = false); //!< Clears the NotificationQueue by removing all NotificationContainers.
 
+        protected:
+            static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
+            static const unsigned int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
+            static const int INF = -1; //!< Constant denoting infinity.
 
         private:
             std::string name_; //!< The name of the NotificationQueue.

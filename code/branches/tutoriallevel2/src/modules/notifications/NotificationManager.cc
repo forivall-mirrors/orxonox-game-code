@@ -35,10 +35,7 @@
 
 #include "core/command/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
-#include "core/GameMode.h"
-#include "core/GUIManager.h"
 #include "core/LuaState.h"
-#include "util/Convert.h"
 #include "util/ScopedSingletonManager.h"
 
 #include "interfaces/NotificationListener.h"
@@ -47,13 +44,8 @@
 #include "NotificationQueue.h"
 #include "NotificationQueueCEGUI.h"
 
-#include "ToluaBindNotifications.h"
-
 namespace orxonox
 {
-
-    // Register tolua_open function when loading the library.
-    DeclareToluaInterface(Notifications);
 
     ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
 
@@ -107,6 +99,8 @@ namespace orxonox
         The message of the new Notification.
     @param sender
         The name of the entity (of the collective) that sent the new Notification.
+    @param type
+        The type of the new Notification.
     @return
         Returns true if successful.
     */
@@ -125,16 +119,22 @@ namespace orxonox
         The command to be executed,
     @param sender
         The The name of the entity (of the collective) that sent the command.
+    @return
+        Returns true if the command was successfully executed.
     */
     bool NotificationManager::executeCommand(notificationCommand::Value command, const std::string& sender)
     {
+        bool commandExecuted = false;
         if(command == notificationCommand::clear)
         {
-            this->commandClear(sender);
-            return true;
+            if(this->commandClear(sender))
+                commandExecuted = true;
         }
 
-        return false;
+        if(commandExecuted)
+            COUT(3) << "Notification command \"" << NotificationListener::command2Str(command) << "\" executed." << endl;
+
+        return commandExecuted;
     }
 
     /**
@@ -142,18 +142,23 @@ namespace orxonox
         The clear command. Clears all NotificationQueues that have its sender as a target.
     @param sender
         The sender of the clear command.
+    @return
+        Returns true if the command was successfully executed by at least one NotificationQueue, false if it was not executed.
     */
-    void NotificationManager::commandClear(const std::string& sender)
+    bool NotificationManager::commandClear(const std::string& sender)
     {
         bool all = (sender == NotificationListener::ALL);
+        bool executed = false;
         // Clear all NotificationQueues that have the input sender as target.
         for(std::map<const std::string, NotificationQueue*>::iterator it = this->queues_.begin(); it != this->queues_.end(); it++) // Iterate through all NotificationQueues.
         {
             const std::set<std::string>& set = it->second->getTargetsSet();
             // If either the sender is 'all', the NotificationQueue has as target all or the NotificationQueue has the input sender as a target.
             if(all || set.find(NotificationListener::ALL) != set.end() || set.find(sender) != set.end())
-                it->second->tidy();
+                executed = it->second->tidy() || executed;
         }
+
+        return executed;
     }
     
     /**
@@ -384,35 +389,6 @@ namespace orxonox
 
     /**
     @brief
-        Loads all the NotificationQueues that should exist.
-    */
-    void NotificationManager::loadQueues(void)
-    {
-        NotificationQueue* allQueue = new NotificationQueueCEGUI("all");
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.resizeQueue(\"all\", 0.5, 0, " + multi_cast<std::string>(allQueue->getMaxSize()) + ")");
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.moveQueue(\"all\", 0, 10, 0.3, 0)");
-
-        NotificationQueue* infoQueue = new NotificationQueueCEGUI("info", NotificationListener::ALL, 1, -1);
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeQueueFont(\"info\", 24, \"CCFFFF00\")");
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.resizeQueue(\"info\", 0.6, 0, " + multi_cast<std::string>(infoQueue->getMaxSize()) + ")");
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.moveQueue(\"info\", 0.2, 0, 0.8, 0)");
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeQueueAlignment(\"info\", \"HorzCentred\")");
-    }
-
-    /**
-    @brief
-        Creates a new NotificationQueue.
-        This is used in lua.
-    @param name
-        The name of the new NotificationQueue.
-    */
-    void NotificationManager::createQueue(const std::string& name)
-    {
-        new NotificationQueue(name);
-    }
-
-    /**
-    @brief
         Get the NotificationQueue with the input name.
     @param name
         The name of the NotificationQueue.
@@ -427,6 +403,24 @@ namespace orxonox
             return NULL;
 
         return (*it).second;
+    }
+
+    /**
+    @brief
+        Loads all the NotificationQueues that should exist.
+    */
+    void NotificationManager::loadQueues(void)
+    {
+        NotificationQueueCEGUI* allQueue = new NotificationQueueCEGUI("all");
+        allQueue->setDisplaySize(Vector2(0.5, 0));
+        allQueue->setPosition(Vector4(0.0, 10, 0.3, 0));
+
+        NotificationQueueCEGUI* infoQueue = new NotificationQueueCEGUI("info", NotificationListener::ALL, 1, -1);
+        infoQueue->setPosition(Vector4(0.2, 0, 0.8, 0));
+        infoQueue->setFontSize(24);
+        infoQueue->setFontColor(Vector4(1.0, 1.0, 0.0, 0.8));
+        infoQueue->setAlignment("HorzCentred");
+        infoQueue->setDisplaySize(Vector2(0.6, 0.0));
     }
 
 }

@@ -26,7 +26,7 @@ function P.createQueue(name, size)
     {
         ["window"]    = queue,
         ["name"]      = name,
-        ["edit"]      = nil,
+        ["maxSize"]      = size,
         ["visible"]   = false,
         ["fontSize"]  = 12,
         ["fontColor"] = "FFFFFFFF",
@@ -182,22 +182,40 @@ end
 
 -- Change the size of the queue.
 -- The parameters are (in order) 'name of the queue', 'relative width', 'absolute width in pixel', 'relative height', 'absolute heigth in pixel'.
--- Additionally the last parameter can be ommitted and relativeHeight can be set to the size (i.e. the maximal number of notifications displayed) of the queue, which leads to the height being set such that all notifications can be displayed.
+-- Additionally the last two parameters can be ommitted, which leads to the height being set such that all notifications can be displayed. using the size of the queue.
 function P.resizeQueue(queueName, relativeWidth, absoluteWidth, relativeHeight, absoluteHeigth)
-    local queueWindow = P.queueList[queueName].window
+    local queue = P.queueList[queueName]
+    local queueWindow = queue.window
     if queueWindow == nil then
         return
     end
     if absoluteHeigth == nil then
-        absoluteHeigth = P.queueHeightHelper(P.queueList[queueName], relativeHeight)
+        absoluteHeigth = P.queueHeightHelper(queue, queue.maxSize)
         relativeHeight = 0
     end
     queueWindow:setSize(CEGUI.UVector2(CEGUI.UDim(relativeWidth, absoluteWidth), CEGUI.UDim(relativeHeight, absoluteHeigth)))
 end
 
--- Change the font size and font color of all notifications in a queueHeightHelper
--- The parameters are (in order) 'name of the queue', 'font size', 'ARGB of the font color in hex notation'.
-function P.changeQueueFont(queueName, size, color)
+-- Change the horizontal alignment of the displayed notifications.
+-- The parameters are the name of the queue and the alignment parameter,
+function P.changeQueueAlignment(queueName, alignment)
+    local queue = P.queueList[queueName]
+    local queueWindow = queue.window
+    if queueWindow == nil then
+        return
+    end
+
+    queue.alignment = alignment
+    local item = nil
+    for i=queue.first,queue.last-1 do
+        item = queue.items[i]
+        item:setProperty("HorzFormatting", queue.alignment)
+    end
+end
+
+-- Change the font size  of all notifications in a queue.
+-- The parameters are (in order) 'name of the queue', 'font size'.
+function P.changeQueueFontSize(queueName, size)
     local queue = P.queueList[queueName]
     local queueWindow = queue.window
     if queueWindow == nil then
@@ -205,28 +223,23 @@ function P.changeQueueFont(queueName, size, color)
     end
 
     queue.fontSize = size
-    local changeColor = false
-    if color ~= nil then
-        queue.fontColor = color
-        changeColor = true
-    end
     for i=queue.first,queue.last-1 do
-        P.setItemFontHelper(queue.items[i], queue, changeColor)
+        P.setItemFontHelper(queue.items[i], queue, false)
     end
 end
 
-function P.changeQueueAlignment(queueName, alignment)
+-- Change the font color of all notifications in a queue.
+-- The parameters are (in order) 'name of the queue', 'ARGB of the font color in hex notation'.
+function P.changeQueueFontColor(queueName, color)
     local queue = P.queueList[queueName]
     local queueWindow = queue.window
     if queueWindow == nil then
         return
     end
-    
-    queue.alignment = alignment
-    local item = nil
+
+    queue.fontColor = color
     for i=queue.first,queue.last-1 do
-        item = queue.items[i]
-        item:setProperty("HorzFormatting", queue.alignment)
+        P.setItemFontHelper(queue.items[i], queue, true)
     end
 end
 

@@ -46,6 +46,8 @@ namespace orxonox
         The message of the Notification.
     @param sender
         The sender of the Notification.
+    @param type
+        The type of the Notification.
     */
     Notification::Notification(const std::string& message, const std::string& sender, notificationMessageType::Value type)
     {

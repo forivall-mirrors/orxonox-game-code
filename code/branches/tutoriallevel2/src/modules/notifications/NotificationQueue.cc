@@ -207,6 +207,7 @@ namespace orxonox
         this->notificationPushed(notification);
 
         COUT(5) << "Notification \"" << notification->getMessage() << "\" pushed to NotificationQueue '" << this->getName() << "'" << endl;
+        COUT(3) << "NotificationQueue \"" << this->getName() << "\": " << notification->getMessage() << endl;
     }
 
     /**
@@ -373,11 +374,18 @@ namespace orxonox
             NotificationManager::getInstance().registerQueue(this);
         }
     }
-    
-    void NotificationQueue::tidy(void)
+
+    /**
+    @brief
+        Pops all Notifications from the NotificationQueue.
+    @return
+        Returns true if successful, false if not.
+    */
+    bool NotificationQueue::tidy(void)
     {
         while(this->size_ > 0)
             this->pop();
+        return true;
     }
 
 }

@@ -107,7 +107,7 @@ namespace orxonox
                 { NotificationListener::sendNetworkHelper(message, sender, sendMode, clientId, false, messageType); }
             /**
             @brief Sends a specified command to the specified client from the specified sender.
-            @param message The command that should be sent (and later executed).
+            @param command The command that should be sent (and later executed).
             @param sender The sender that sent the notification. Default is 'none'.
             @param sendMode The mode in which the command is sent, can be 'local' to send the command to the client where this function is executed, 'network' if the command is to be sent to the client with the specified clientID, or 'broadcast' if the command should be sent to all hosts. Default is notificationSendMode::local.
             @param clientId The id of the client the command should be sent to. Default is 0.
@@ -137,17 +137,21 @@ namespace orxonox
             @return Returns true if the command was successfully executed, false if not.
             */
             virtual bool executeCommand(notificationCommand::Value command, const std::string& sender) { return false; }
+
+        public:
             
             static const std::string ALL; //!< Static string to indicate a sender that sends to all NotificationQueues.
             static const std::string NONE; //!< Static string to indicate a sender that sends to no specific NotificationQueues.
             
             //! Commands
             static const std::string COMMAND_CLEAR;
+            static const std::string COMMAND_NONE;
             
         protected:
             static void sendNetworkHelper(const std::string& message, const std::string& sender, notificationSendMode::Value sendMode, unsigned int clientId, bool isCommand = false, notificationMessageType::Value messageType = notificationMessageType::info); // Helper method to send both notifications and commands over the network.
-            
+
             static notificationCommand::Value str2Command(const std::string& string); // Helper method. Converts a string into the enum for a command.
+            static const std::string& command2Str(notificationCommand::Value command); // Helper method. Converts a command enum into its corresponding string.
     };
 }
 

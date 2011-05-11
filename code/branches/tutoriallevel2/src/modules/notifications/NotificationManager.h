@@ -49,8 +49,8 @@ namespace orxonox // tolua_export
 
     /**
     @brief
-        The Singleton NotificationManager is a NotificationListener and functions as a gateway between @ref orxonox::Notification "Notifications" and @ref orxonox::NotificationQueues "NotificationQueues".
-        It receives, organizes @ref orxonox::Notification "Notifications" and the redistributes them to the specific @ref orxonox::NotificationLQueue "NotificationQueues".
+        The Singleton NotificationManager is a NotificationListener and functions as a gateway between @ref orxonox::Notification "Notifications" and @ref orxonox::NotificationQueue "NotificationQueues".
+        It receives, organizes @ref orxonox::Notification "Notifications" and the redistributes them to the specific @ref orxonox::NotificationQueue "NotificationQueues".
         It also works as a liaison between the @ref orxonox::NotificationQueue "NotificationQueues" and the GUI that displays notification, called NotificationLayer.
 
     @author
@@ -97,11 +97,9 @@ namespace orxonox // tolua_export
             bool registerQueue(NotificationQueue* queue); // Registers a NotificationQueue.
             void unregisterQueue(NotificationQueue* queue); // Unregisters a NotificationQueue.
 
-            // tolua_begin
-            void loadQueues(void); // Loads all the NotificationQueues that should exist.
-            void createQueue(const std::string& name); // Creates a new NotificationQueue.
-            orxonox::NotificationQueue* getQueue(const std::string & name); // Get the NotificationQueue with the input name.
-            // tolua_end
+            void loadQueues(void); // tolua_export // Loads all the NotificationQueues that should exist.
+
+            NotificationQueue* getQueue(const std::string & name); // Get the NotificationQueue with the input name.
 
         private:
             static NotificationManager* singletonPtr_s;
@@ -114,7 +112,7 @@ namespace orxonox // tolua_export
             bool removeNotification(Notification* notification, std::multimap<std::time_t, Notification*>& map); // Helper method that removes an input Notification form an input map.
             
             // Commands
-            void commandClear(const std::string& sender); // The clear command. Clears all NotificationQueues that have its sender as a target.
+            bool commandClear(const std::string& sender); // The clear command. Clears all NotificationQueues that have its sender as a target.
 
     }; // tolua_export
 
