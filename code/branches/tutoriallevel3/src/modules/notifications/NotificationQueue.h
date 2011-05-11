@@ -45,10 +45,9 @@
 #include "NotificationManager.h"
 
 #include "tools/interfaces/Tickable.h"
-#include "interfaces/NotificationListener.h"
 
-namespace orxonox // tolua_export
-{ // tolua_export
+namespace orxonox
+{
 
     /**
     @brief
@@ -77,7 +76,7 @@ namespace orxonox // tolua_export
     @brief
         Displays @ref orxonox::Notification "Notifications" from specific senders.
 
-        There are quite some parameters that influence the behaviour of the NotificationQueue:
+        There are quite some parameters that influence the behavior of the NotificationQueue:
         - @b name The name of the NotificationQueue. It needs to be unique.
         - @b senders The senders that are targets of this NotificationQueue, i.e. the names of senders whose Notifications this NotificationQueue displays.
         - @b size The size of the NotificationQueue, it specifies how many @ref orxonox::Notification "Notifications" are displayed at once at the most.
@@ -88,16 +87,12 @@ namespace orxonox // tolua_export
 
     @ingroup Notifications
     */
-    class _NotificationsExport NotificationQueue // tolua_export
-        : public Tickable, public NotificationListener
-    { // tolua_export
+    class _NotificationsExport NotificationQueue : public Tickable
+    {
 
         public:
-            NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
+            NotificationQueue(const std::string& name, const std::string& senders = NotificationListener::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
             virtual ~NotificationQueue();
-
-            //! Destroys the NotificationQueue.
-            void destroy(bool noGraphics = false); // tolua_export
 
             virtual void tick(float dt); //!< To update from time to time.
 
@@ -120,12 +115,12 @@ namespace orxonox // tolua_export
             inline unsigned int getMaxSize() const
                 { return this->maxSize_; }
 
-            void setDisplayTime(unsigned int time); //!< Sets the maximum number of seconds a Notification is displayed.
+            void setDisplayTime(int time); //!< Sets the maximum number of seconds a Notification is displayed.
             /**
             @brief Returns the time interval the Notification is displayed.
             @return Returns the display time.
             */
-            inline unsigned int getDisplayTime() const
+            inline int getDisplayTime() const
                 { return this->displayTime_; }
             // tolua_end
 
@@ -143,20 +138,40 @@ namespace orxonox // tolua_export
             inline const std::set<std::string> & getTargetsSet()
                 { return this->targets_; }
 
-            // tolua_begin
             void setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
-            const std::string& getTargets(void) const; //!< Returns a string consisting of the concatination of the targets.
-            // tolua_end
+            const std::string& getTargets(void) const; //!< Returns a string consisting of the concatenation of the targets.
 
-        private:
+            bool tidy(void); // Pops all Notifications from the NotificationQueue.
+            
+        protected:
+            /**
+            @brief Is called when a notification was pushed.
+            @param notification The Notification that was pushed.
+            */
+            virtual void notificationPushed(Notification* notification) {}
+            /**
+            @brief Is called when a notification was popped.
+            */
+            virtual void notificationPopped(void) {}
+            /**
+            @brief Is called when a notification was removed.
+            @param index The index the removed notification was at.
+            */
+            virtual void notificationRemoved(unsigned int index) {}
+            
+            virtual void clear(bool noGraphics = false); //!< Clears the NotificationQueue by removing all NotificationContainers.
+
+        protected:
             static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
             static const unsigned int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
+            static const int INF = -1; //!< Constant denoting infinity.
 
+        private:
             std::string name_; //!< The name of the NotificationQueue.
 
             unsigned int maxSize_; //!< The maximal number of Notifications displayed.
             unsigned int size_; //!< The number of Notifications displayed.
-            unsigned int displayTime_; //!< The time a Notification is displayed.
+            int displayTime_; //!< The time a Notification is displayed.
 
             bool registered_; //!< Helper variable to remember whether the NotificationQueue is registered already.
 
@@ -168,18 +183,14 @@ namespace orxonox // tolua_export
             float tickTime_; //!< Helper variable, to not have to check for Notifications that have been displayed too long, every tick.
             NotificationContainer timeLimit_; //!< Helper object to check against to determine whether Notifications have expired.
 
-            void create(void); //!< Creates the NotificationQueue in lua.
-
             void setName(const std::string& name); //!< Sets the name of the NotificationQueue.
 
             void push(Notification* notification, const std::time_t & time); //!< Adds (pushes) a Notification to the NotificationQueue.
             void pop(void); //!< Removes (pops) the least recently added Notification form the NotificationQueue.
             void remove(const std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator& containerIterator); //!< Removes the Notification that is stored in the input NotificationContainer.
 
-            void clear(bool noGraphics = false); //!< Clears the NotificationQueue by removing all NotificationContainers.
+    };
 
-    }; // tolua_export
+}
 
-} // tolua_export
-
-#endif /* _NotificationOverlay_H__ */
+#endif /* _NotificationQueue_H__ */

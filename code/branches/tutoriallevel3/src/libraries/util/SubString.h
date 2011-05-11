@@ -168,7 +168,7 @@ namespace orxonox
         inline bool empty() const { return this->tokens_.empty(); }
         /// Returns the number of tokens stored in this SubString
         inline unsigned int size() const { return this->tokens_.size(); }
-        /// Returns the i'th token from the subset of strings @param index The index of the requested doken
+        /// Returns the i'th token from the subset of strings @param index The index of the requested token
         inline const std::string& operator[](unsigned int index) const { return this->tokens_[index]; }
         /// Returns the i'th token from the subset of strings @param index The index of the requested token
         inline const std::string& getString(unsigned int index) const { return (*this)[index]; }

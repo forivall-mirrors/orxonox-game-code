@@ -85,12 +85,4 @@ namespace orxonox
     {
         RegisterRootObject(Rewardable);
     }
-
-    //----------------------------
-    // NotificationListener
-    //----------------------------
-    NotificationListener::NotificationListener()
-    {
-        RegisterRootObject(NotificationListener);
-    }
 }

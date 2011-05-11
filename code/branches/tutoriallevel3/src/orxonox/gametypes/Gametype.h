@@ -77,9 +77,9 @@ namespace orxonox
                 { return this->gtinfo_; }
 
             inline bool hasStarted() const
-                { return this->gtinfo_->bStarted_; }
+                { return this->gtinfo_->hasStarted(); }
             inline bool hasEnded() const
-                { return this->gtinfo_->bEnded_; }
+                { return this->gtinfo_->hasEnded(); }
 
             virtual void start();
             virtual void end();
@@ -113,14 +113,14 @@ namespace orxonox
                 { this->spawnpoints_.insert(spawnpoint); }
 
             inline bool isStartCountdownRunning() const
-                { return this->gtinfo_->bStartCountdownRunning_; }
+                { return this->gtinfo_->isStartCountdownRunning(); }
             inline float getStartCountdown() const
-                { return this->gtinfo_->startCountdown_; }
+                { return this->gtinfo_->getStartCountdown(); }
 
             inline void setHUDTemplate(const std::string& name)
-                { this->gtinfo_->hudtemplate_ = name; }
+                { this->gtinfo_->setHUDTemplate(name); }
             inline const std::string& getHUDTemplate() const
-                { return this->gtinfo_->hudtemplate_; }
+                { return this->gtinfo_->getHUDTemplate(); }
 
             void addBots(unsigned int amount);
             void killBots(unsigned int amount = 0);
@@ -167,6 +167,8 @@ namespace orxonox
 
             SmartPtr<GametypeInfo> gtinfo_;
 
+            bool bFirstTick_; //!< Whether this is the first tick or not.
+            
             bool bAutoStart_;
             bool bForceSpawn_;
 

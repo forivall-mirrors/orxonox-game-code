@@ -40,10 +40,9 @@
 #include "network/Host.h"
 
 #include "infos/PlayerInfo.h"
+#include "interfaces/NotificationListener.h"
 #include "interfaces/PlayerTrigger.h"
 #include "worldentities/pawns/Pawn.h"
-
-#include "NotificationManager.h"
 
 namespace orxonox
 {
@@ -60,7 +59,7 @@ namespace orxonox
     {
         RegisterObject(NotificationDispatcher);
 
-        this->sender_ = NotificationManager::NONE;
+        this->sender_ = NotificationListener::NONE;
         this->registerVariables();
     }
 
@@ -113,7 +112,8 @@ namespace orxonox
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId || this->getSyncMode() == 0x0)
         {
             const std::string message = this->createNotificationMessage();
-            NotificationManager::sendNotification(message, clientId, this->getSender());
+            // TODO: Make the type configurable.
+            NotificationListener::sendNotification(message, this->getSender(), notificationMessageType::info, notificationSendMode::network, clientId);
         }
         else if(GameMode::isServer())
         {

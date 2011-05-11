@@ -37,13 +37,7 @@
 #include <sstream>
 
 #include "core/CoreIncludes.h"
-#include "core/GameMode.h"
-#include "core/GUIManager.h"
-#include "core/LuaState.h"
-#include "util/Convert.h"
 #include "util/SubString.h"
-
-#include "Notification.h"
 
 namespace orxonox
 {
@@ -55,7 +49,7 @@ namespace orxonox
         The name of the new NotificationQueue. It needs to be unique
     @param senders
         The senders that are targets of this NotificationQueue, i.e. the names of senders whose Notifications this NotificationQueue displays.
-        The senders need to be seperated by commas.
+        The senders need to be separated by commas.
     @param size
         The size (the maximum number of displayed Notifications) of this NotificationQueue.
     @param displayTime
@@ -87,21 +81,6 @@ namespace orxonox
             return;
         }
 
-        this->create(); // Creates the NotificationQueue in lua.
-
-        // Register the NotificationQueue as NotificationListener with the NotificationManager.
-        bool listenerRegistered = NotificationManager::getInstance().registerListener(this);
-        if(!listenerRegistered) // If the registration has failed.
-        {
-            this->registered_ = false;
-            // Remove the NotificationQueue in lua.
-            if(GameMode::showsGraphics())
-                GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
-            NotificationManager::getInstance().unregisterQueue(this);
-            COUT(1) << "Error: NotificationQueue '" << this->getName() << "' could not be registered." << std::endl;
-            return;
-        }
-
         COUT(3) << "NotificationQueue '" << this->getName() << "' created." << std::endl;
     }
 
@@ -118,37 +97,10 @@ namespace orxonox
             this->clear(true);
 
             // Unregister with the NotificationManager.
-            NotificationManager::getInstance().unregisterListener(this);
             NotificationManager::getInstance().unregisterQueue(this);
         }
-    }
-
-    /**
-    @brief
-        Destroys the NotificationQueue.
-        Used in lua and NotificationManager.
-    @param noGraphics
-        If this is set to true (false is default), then the queue is not removed in lua. This is used to destroy the queue, after the GUIManager has been destroyed.
-    */
-    void NotificationQueue::destroy(bool noGraphics)
-    {
-        // Remove the NotificationQueue in lua.
-        if(GameMode::showsGraphics() && !noGraphics)
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
-
+        
         COUT(3) << "NotificationQueue '" << this->getName() << "' destroyed." << std::endl;
-
-        this->OrxonoxClass::destroy();
-    }
-
-    /**
-    @brief
-        Creates the NotificationQueue in lua.
-    */
-    void NotificationQueue::create(void)
-    {
-        if(GameMode::showsGraphics())
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.createQueue(\"" + this->getName() +  "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
     }
 
     /**
@@ -160,7 +112,7 @@ namespace orxonox
     void NotificationQueue::tick(float dt)
     {
         this->tickTime_ += dt; // Add the time interval that has passed to the time counter.
-        if(this->tickTime_ >= 1.0) // If the time counter is greater than 1s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
+        if(this->displayTime_ != INF && this->tickTime_ >= 1.0) // If the time counter is greater than 1s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
         {
             this->timeLimit_.time = std::time(0)-this->displayTime_; // Container containig the current time.
 
@@ -180,6 +132,7 @@ namespace orxonox
     @brief
         Updates the NotificationQueue.
         Updates by clearing the queue and requesting all relevant Notifications from the NotificationManager and inserting them into the queue.
+        This is called by the NotificationManager when the Notifications have changed so much, that the NotificationQueue may have to re-initialize his operations.
     */
     void NotificationQueue::update(void)
     {
@@ -187,7 +140,10 @@ namespace orxonox
 
         std::multimap<std::time_t, Notification*>* notifications = new std::multimap<std::time_t, Notification*>;
         // Get the Notifications sent in the interval from now to now minus the display time.
-        NotificationManager::getInstance().getNotifications(this, notifications, this->displayTime_);
+        if(this->displayTime_ == INF)
+            NotificationManager::getInstance().getNewestNotifications(this, notifications, this->getMaxSize());
+        else
+            NotificationManager::getInstance().getNotifications(this, notifications, this->displayTime_);
 
         if(!notifications->empty())
         {
@@ -245,11 +201,11 @@ namespace orxonox
         // Insert the Notification at the begin of the list (vector, actually).
         this->notifications_.insert(this->notifications_.begin(), container);
 
-        // Push the Notification to the GUI.
-        if(GameMode::showsGraphics())
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
+        // Inform that a Notification was pushed.
+        this->notificationPushed(notification);
 
         COUT(5) << "Notification \"" << notification->getMessage() << "\" pushed to NotificationQueue '" << this->getName() << "'" << endl;
+        COUT(3) << "NotificationQueue \"" << this->getName() << "\": " << notification->getMessage() << endl;
     }
 
     /**
@@ -278,9 +234,8 @@ namespace orxonox
 
         delete container;
 
-        // Pops the Notification from the GUI.
-        if(GameMode::showsGraphics())
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.popNotification(\"" + this->getName() + "\")");
+        // Inform that a Notification was popped.
+        this->notificationPopped();
     }
 
     /**
@@ -304,16 +259,16 @@ namespace orxonox
 
         delete *containerIterator;
 
-        // Removes the Notification from the GUI.
-        if(GameMode::showsGraphics())
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
+        // TODO: index automatically cast?
+        // Inform that a Notification was removed.
+        this->notificationRemoved(index);
     }
 
     /**
     @brief
         Clears the NotificationQueue by removing all NotificationContainers.
     @param noGraphics
-        If this is eset to true the GUI is not informed of the clearing of the NotificationQueue. This is needed only internally.
+        If this is set to true the GUI is not informed of the clearing of the NotificationQueue. This is needed only internally.
     */
     void NotificationQueue::clear(bool noGraphics)
     {
@@ -325,10 +280,6 @@ namespace orxonox
 
         this->notifications_.clear();
         this->size_ = 0;
-
-        // Clear the NotificationQueue in the GUI.
-        if(GameMode::showsGraphics() && !noGraphics)
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.clearQueue(\"" + this->getName() + "\")");
     }
 
     /**
@@ -363,11 +314,9 @@ namespace orxonox
     @brief
         Sets the maximum number of seconds a Notification is displayed.
     @param time
-        The number of seconds the Notifications is displayed.
-    @return
-        Returns true if successful.
+        The number of seconds a Notification is displayed.
     */
-    void NotificationQueue::setDisplayTime(unsigned int time)
+    void NotificationQueue::setDisplayTime(int time)
     {
         if(this->displayTime_ == time)
             return;
@@ -380,7 +329,7 @@ namespace orxonox
 
     /**
     @brief
-        Produces all targets of the NotificationQueue concatinated as string, with commas (',') as seperators.
+        Produces all targets of the NotificationQueue concatenated as string, with commas (',') as separators.
     @return
         Returns the targets as a string.
     */
@@ -406,7 +355,7 @@ namespace orxonox
         Sets the targets of the NotificationQueue.
         The targets are the senders whose Notifications are displayed in this queue.
     @param targets
-        Accepts a string of targets, each seperated by commas (','), spaces are ignored.
+        Accepts a string of targets, each separated by commas (','), spaces are ignored.
     */
     void NotificationQueue::setTargets(const std::string & targets)
     {
@@ -416,11 +365,25 @@ namespace orxonox
         for(unsigned int i = 0; i < string.size(); i++)
             this->targets_.insert(string[i]);
 
+        // TODO: Why?
         if(this->registered_)
         {
-            NotificationManager::getInstance().unregisterListener(this);
-            NotificationManager::getInstance().registerListener(this);
+            NotificationManager::getInstance().unregisterQueue(this);
+            NotificationManager::getInstance().registerQueue(this);
         }
+    }
+
+    /**
+    @brief
+        Pops all Notifications from the NotificationQueue.
+    @return
+        Returns true if successful, false if not.
+    */
+    bool NotificationQueue::tidy(void)
+    {
+        while(this->size_ > 0)
+            this->pop();
+        return true;
     }
 
 }

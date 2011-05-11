@@ -59,7 +59,7 @@ namespace orxonox
         @endcode
 
     @see Trigger
-        For more information on @ref oroxnox::Trigger "Triggers".
+        For more information on @ref orxonox::Trigger "Triggers".
 
     @author
         Fabian 'x3n' Landau

@@ -382,7 +382,6 @@ namespace orxonox
 
   /**
    * This function determines, wheter the object should be saved to the bytestream (according to its syncmode/direction)
-   * @param id gamestate id
    * @param mode Synchronisation mode (toclient, toserver or bidirectional)
    * @return true/false
    */
@@ -396,7 +395,6 @@ namespace orxonox
   
   /**
    * This function determines, wheter the object should accept data from the bytestream (according to its syncmode/direction)
-   * @param id gamestate id
    * @param mode Synchronisation mode (toclient, toserver or bidirectional)
    * @return true/false
    */
