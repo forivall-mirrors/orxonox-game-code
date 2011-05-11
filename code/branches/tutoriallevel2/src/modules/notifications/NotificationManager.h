@@ -49,9 +49,9 @@ namespace orxonox // tolua_export
 
     /**
     @brief
-        The Singleton NotificationManager functions as a gateway between @ref orxonox::Notification "Notifications" and @ref orxonox::NotificationListener "NotificationListeners".
-        It receives, organizes @ref orxonox::Notification "Notifications" and the redistributes them to the specific @ref orxonox::NotificationListener "NotificationListeners".
-        It also provides a static function to send @ref orxonox::Notification "Notifications" and works as a liaison between the @ref orxonox::NotificationQueue "NotificationQueues" and the GUI that displays notification, called NotificationLayer.
+        The Singleton NotificationManager is a NotificationListener and functions as a gateway between @ref orxonox::Notification "Notifications" and @ref orxonox::NotificationQueues "NotificationQueues".
+        It receives, organizes @ref orxonox::Notification "Notifications" and the redistributes them to the specific @ref orxonox::NotificationLQueue "NotificationQueues".
+        It also works as a liaison between the @ref orxonox::NotificationQueue "NotificationQueues" and the GUI that displays notification, called NotificationLayer.
 
     @author
         Damian 'Mozork' Frick
@@ -93,8 +93,6 @@ namespace orxonox // tolua_export
                 { this->getNotifications(queue, map, std::time(0)-timeDelay, std::time(0)); }
 
             void getNewestNotifications(NotificationQueue* queue, std::multimap<std::time_t, Notification*>* map, int numberOfNotifications); // Fetches the newest Notifications for a specific NotificationQueue and stores them in the input map.
-
-            void enterEditMode(void); // Enters the edit mode of the NotificationLayer.
 
             bool registerQueue(NotificationQueue* queue); // Registers a NotificationQueue.
             void unregisterQueue(NotificationQueue* queue); // Unregisters a NotificationQueue.

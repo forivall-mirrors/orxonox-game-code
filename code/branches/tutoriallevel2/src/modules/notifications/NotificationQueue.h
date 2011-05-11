@@ -46,8 +46,8 @@
 
 #include "tools/interfaces/Tickable.h"
 
-namespace orxonox // tolua_export
-{ // tolua_export
+namespace orxonox
+{
 
     /**
     @brief
@@ -87,16 +87,12 @@ namespace orxonox // tolua_export
 
     @ingroup Notifications
     */
-    class _NotificationsExport NotificationQueue // tolua_export
-        : public Tickable
-    { // tolua_export
+    class _NotificationsExport NotificationQueue : public Tickable
+    {
 
         public:
-            NotificationQueue(const std::string& name, const std::string& senders = NotificationManager::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
+            NotificationQueue(const std::string& name, const std::string& senders = NotificationListener::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
             virtual ~NotificationQueue();
-
-            //! Destroys the NotificationQueue.
-            void destroy(bool noGraphics = false); // tolua_export
 
             virtual void tick(float dt); //!< To update from time to time.
 
@@ -142,18 +138,35 @@ namespace orxonox // tolua_export
             inline const std::set<std::string> & getTargetsSet()
                 { return this->targets_; }
 
-            // tolua_begin
             void setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
             const std::string& getTargets(void) const; //!< Returns a string consisting of the concatenation of the targets.
-            // tolua_end
 
             void tidy(void);
-
-        private:
+            
+        protected:
             static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
             static const unsigned int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
             static const int INF = -1; //!< Constant denoting infinity.
+        
+            /**
+            @brief Is called when a notification was pushed.
+            @param notification The Notification that was pushed.
+            */
+            virtual void notificationPushed(Notification* notification) {}
+            /**
+            @brief Is called when a notification was popped.
+            */
+            virtual void notificationPopped(void) {}
+            /**
+            @brief Is called when a notification was removed.
+            @param index The index the removed notification was at.
+            */
+            virtual void notificationRemoved(unsigned int index) {}
+            
+            virtual void clear(bool noGraphics = false); //!< Clears the NotificationQueue by removing all NotificationContainers.
 
+
+        private:
             std::string name_; //!< The name of the NotificationQueue.
 
             unsigned int maxSize_; //!< The maximal number of Notifications displayed.
@@ -170,18 +183,14 @@ namespace orxonox // tolua_export
             float tickTime_; //!< Helper variable, to not have to check for Notifications that have been displayed too long, every tick.
             NotificationContainer timeLimit_; //!< Helper object to check against to determine whether Notifications have expired.
 
-            void create(void); //!< Creates the NotificationQueue in lua.
-
             void setName(const std::string& name); //!< Sets the name of the NotificationQueue.
 
             void push(Notification* notification, const std::time_t & time); //!< Adds (pushes) a Notification to the NotificationQueue.
             void pop(void); //!< Removes (pops) the least recently added Notification form the NotificationQueue.
             void remove(const std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator& containerIterator); //!< Removes the Notification that is stored in the input NotificationContainer.
 
-            void clear(bool noGraphics = false); //!< Clears the NotificationQueue by removing all NotificationContainers.
+    };
 
-    }; // tolua_export
+}
 
-} // tolua_export
-
-#endif /* _NotificationOverlay_H__ */
+#endif /* _NotificationQueue_H__ */

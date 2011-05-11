@@ -45,6 +45,7 @@
 
 #include "Notification.h"
 #include "NotificationQueue.h"
+#include "NotificationQueueCEGUI.h"
 
 #include "ToluaBindNotifications.h"
 
@@ -56,9 +57,6 @@ namespace orxonox
 
     ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
 
-    // Setting console command to enter the edit mode.
-    SetConsoleCommand("enterEditMode", &NotificationManager::enterEditMode);
-
     /**
     @brief
         Constructor. Registers the Object.
@@ -66,8 +64,6 @@ namespace orxonox
     NotificationManager::NotificationManager()
     {
         RegisterRootObject(NotificationManager);
-
-        ModifyConsoleCommand("enterEditMode").setObject(this);
 
         COUT(3) << "NotificatioManager created." << std::endl;
     }
@@ -78,8 +74,6 @@ namespace orxonox
     */
     NotificationManager::~NotificationManager()
     {
-        ModifyConsoleCommand("enterEditMode").setObject(NULL);
-
         // Destroys all Notifications.
         for(std::multimap<std::time_t, Notification*>::iterator it = this->allNotificationsList_.begin(); it!= this->allNotificationsList_.end(); it++)
             it->second->destroy();
@@ -98,7 +92,7 @@ namespace orxonox
         std::map<const std::string, NotificationQueue*>::iterator it = this->queues_.begin();
         while(it != this->queues_.end())
         {
-            it->second->destroy(true);
+            it->second->destroy();
             it = this->queues_.begin();
         }
 
@@ -312,20 +306,6 @@ namespace orxonox
 
     /**
     @brief
-        Enters the edit mode of the NotificationLayer.
-    */
-    void NotificationManager::enterEditMode(void)
-    {
-        if(GameMode::showsGraphics())
-        {
-            GUIManager::getInstance().hideGUI("NotificationLayer");
-            GUIManager::getInstance().showGUI("NotificationLayer", false, false);
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.enterEditMode()");
-        }
-    }
-
-    /**
-    @brief
         Registers a NotificationQueue.
         This makes sure that the NotificationQueue can be accessed through lua by name. It also makes sure that the NotificationQueue is destroyed upon destruction of the NotificationManager.
     @param queue
@@ -408,11 +388,11 @@ namespace orxonox
     */
     void NotificationManager::loadQueues(void)
     {
-        NotificationQueue* allQueue = new NotificationQueue("all");
+        NotificationQueue* allQueue = new NotificationQueueCEGUI("all");
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.resizeQueue(\"all\", 0.5, 0, " + multi_cast<std::string>(allQueue->getMaxSize()) + ")");
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.moveQueue(\"all\", 0, 10, 0.3, 0)");
 
-        NotificationQueue* infoQueue = new NotificationQueue("info", NotificationListener::ALL, 1, -1);
+        NotificationQueue* infoQueue = new NotificationQueueCEGUI("info", NotificationListener::ALL, 1, -1);
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeQueueFont(\"info\", 24, \"CCFFFF00\")");
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.resizeQueue(\"info\", 0.6, 0, " + multi_cast<std::string>(infoQueue->getMaxSize()) + ")");
         GUIManager::getInstance().getLuaState()->doString("NotificationLayer.moveQueue(\"info\", 0.2, 0, 0.8, 0)");
