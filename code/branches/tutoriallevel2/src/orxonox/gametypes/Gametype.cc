@@ -58,6 +58,8 @@ namespace orxonox
 
         this->defaultControllableEntity_ = Class(Spectator);
 
+        this->bFirstTick_ = true;
+        
         this->bAutoStart_ = false;
         this->bForceSpawn_ = false;
         this->numberOfBots_ = 0;
@@ -111,6 +113,13 @@ namespace orxonox
     {
         SUPER(Gametype, tick, dt);
 
+        // Activate the GametypeInfo.
+        if(this->bFirstTick_)
+        {
+            this->gtinfo_->setActive(true);
+            this->bFirstTick_ = false;
+        }
+
         //count timer
         if (timerIsActive_)
         {
@@ -120,12 +129,12 @@ namespace orxonox
                 this->time_ -= dt;
         }
 
-        if (this->gtinfo_->bStartCountdownRunning_ && !this->gtinfo_->bStarted_)
-            this->gtinfo_->startCountdown_ -= dt;
+        if (this->gtinfo_->isStartCountdownRunning() && !this->gtinfo_->hasStarted())
+            this->gtinfo_->countdownStartCountdown(dt);
 
-        if (!this->gtinfo_->bStarted_)
+        if (!this->gtinfo_->hasStarted())
             this->checkStart();
-        else if (!this->gtinfo_->bEnded_)
+        else if (!this->gtinfo_->hasEnded())
             this->spawnDeadPlayersIfRequested();
 
         this->assignDefaultPawnsIfNeeded();
@@ -135,14 +144,14 @@ namespace orxonox
     {
         this->addBots(this->numberOfBots_);
 
-        this->gtinfo_->bStarted_ = true;
+        this->gtinfo_->start();
 
         this->spawnPlayersIfRequested();
     }
 
     void Gametype::end()
     {
-        this->gtinfo_->bEnded_ = true;
+        this->gtinfo_->end();
 
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
         {
@@ -269,6 +278,9 @@ namespace orxonox
                     }
                 }
 
+                if(victim->getPlayer()->isHumanPlayer())
+                    this->gtinfo_->pawnKilled(victim->getPlayer());
+
                 ControllableEntity* entity = this->defaultControllableEntity_.fabricate(victim->getCreator());
                 if (victim->getCamera())
                 {
@@ -345,7 +357,7 @@ namespace orxonox
             {
                 it->second.state_ = PlayerState::Dead;
 
-                if (!it->first->isReadyToSpawn() || !this->gtinfo_->bStarted_)
+                if (!it->first->isReadyToSpawn() || !this->gtinfo_->hasStarted())
                 {
                     this->spawnPlayerAsDefaultPawn(it->first);
                     it->second.state_ = PlayerState::Dead;
@@ -356,14 +368,14 @@ namespace orxonox
 
     void Gametype::checkStart()
     {
-        if (!this->gtinfo_->bStarted_)
+        if (!this->gtinfo_->hasStarted())
         {
-            if (this->gtinfo_->bStartCountdownRunning_)
+            if (this->gtinfo_->isStartCountdownRunning())
             {
-                if (this->gtinfo_->startCountdown_ <= 0)
+                if (this->gtinfo_->getStartCountdown() <= 0.0f)
                 {
-                    this->gtinfo_->bStartCountdownRunning_ = false;
-                    this->gtinfo_->startCountdown_ = 0;
+                    this->gtinfo_->stopStartCountdown();
+                    this->gtinfo_->setStartCountdown(0.0f);;
                     this->start();
                 }
             }
@@ -383,15 +395,20 @@ namespace orxonox
                             allplayersready = false;
                         if (it->first->isHumanPlayer())
                             hashumanplayers = true;
+
+                        // Inform the GametypeInfo that the player is ready to spawn.
+                        // TODO: Can it happen, that that changes?
+                        if(it->first->isHumanPlayer() && it->first->isReadyToSpawn())
+                            this->gtinfo_->playerReadyToSpawn(it->first);
                     }
                     if (allplayersready && hashumanplayers)
                     {
                         // If in developer's mode, there is no start countdown.
                         if(Core::getInstance().inDevMode())
-                            this->gtinfo_->startCountdown_ = 0;
+                            this->start();
                         else
-                            this->gtinfo_->startCountdown_ = this->initialStartCountdown_;
-                        this->gtinfo_->bStartCountdownRunning_ = true;
+                            this->gtinfo_->setStartCountdown(this->initialStartCountdown_);
+                        this->gtinfo_->startStartCountdown();
                     }
                 }
             }
@@ -401,8 +418,10 @@ namespace orxonox
     void Gametype::spawnPlayersIfRequested()
     {
         for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+        {
             if (it->first->isReadyToSpawn() || this->bForceSpawn_)
                 this->spawnPlayer(it->first);
+        }
     }
 
     void Gametype::spawnDeadPlayersIfRequested()
@@ -421,6 +440,10 @@ namespace orxonox
             this->playerPreSpawn(player);
             player->startControl(spawnpoint->spawn());
             this->players_[player].state_ = PlayerState::Alive;
+
+            if(player->isHumanPlayer())
+                this->gtinfo_->playerSpawned(player);
+            
             this->playerPostSpawn(player);
         }
         else

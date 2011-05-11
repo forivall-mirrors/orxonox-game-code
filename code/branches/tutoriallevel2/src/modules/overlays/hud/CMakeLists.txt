@@ -6,7 +6,6 @@ ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
   HUDHealthBar.cc
   HUDTimer.cc
   ChatOverlay.cc
-  GametypeStatus.cc
   AnnounceMessage.cc
   KillMessage.cc
   DeathMessage.cc

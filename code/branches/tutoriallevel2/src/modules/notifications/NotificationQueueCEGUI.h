@@ -126,7 +126,7 @@ namespace orxonox // tolua_export
             inline const std::string& getFontColorStr(void) const
                 { return this->fontColorStr_; }
 
-            static NotificationQueueCEGUI* getQueue(const std::string& name); // tolua_export
+            static NotificationQueueCEGUI* getQueue(const std::string& name); // tolua_export // Get the NotificationQueueCEGUI with the input name.
             
         protected:
             virtual void notificationPushed(Notification* notification); // Is called by the NotificationQueue when a notification was pushed
@@ -134,6 +134,9 @@ namespace orxonox // tolua_export
             virtual void notificationRemoved(unsigned int index); // Is called when a notification was removed.
             
             virtual void clear(bool noGraphics = false); // Clears the NotificationQueue by removing all NotificationContainers.
+
+        protected:
+            static const std::string NOTIFICATION_LAYER; //!< The name of the NotificationLayer menu sheet.
             
         private:
             Vector4 displaySize_; //!< The size of the window that displays the NotificationQueue.

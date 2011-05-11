@@ -49,6 +49,8 @@ namespace orxonox
     // Register tolua_open function when loading the library.
     DeclareToluaInterface(Notifications);
 
+    /*static*/ const std::string NotificationQueueCEGUI::NOTIFICATION_LAYER("NotificationLayer");
+
     NotificationQueueCEGUI::NotificationQueueCEGUI(const std::string& name, const std::string& senders, unsigned int size, unsigned int displayTime) : NotificationQueue(name, senders, size, displayTime)
     {
         RegisterObject(NotificationQueueCEGUI);
@@ -80,7 +82,7 @@ namespace orxonox
     {
         // Remove the NotificationQueue in lua.
         if(GameMode::showsGraphics() && !noGraphics)
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeQueue(\"" + this->getName() +  "\")");
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".removeQueue(\"" + this->getName() +  "\")");
 
         NotificationQueue::destroy();
     }
@@ -109,9 +111,9 @@ namespace orxonox
 
         this->displaySize_ = size;
         if(size.z == 0.0 && size.w == 0.0)
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ")");
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ")");
         else
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ", " + multi_cast<std::string>(this->displaySize_.z) + ", " + multi_cast<std::string>(this->displaySize_.w) + ")");
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ", " + multi_cast<std::string>(this->displaySize_.z) + ", " + multi_cast<std::string>(this->displaySize_.w) + ")");
     }
 
     /**
@@ -136,7 +138,7 @@ namespace orxonox
         }
 
         this->position_ = position;
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.moveQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->position_.x) + ", " + multi_cast<std::string>(this->position_.y) + ", " + multi_cast<std::string>(this->position_.z) + ", " + multi_cast<std::string>(this->position_.w) + ")");
+        GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".moveQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->position_.x) + ", " + multi_cast<std::string>(this->position_.y) + ", " + multi_cast<std::string>(this->position_.z) + ", " + multi_cast<std::string>(this->position_.w) + ")");
     }
 
     /**
@@ -153,7 +155,7 @@ namespace orxonox
 
         // TODO: Check whether the alignment string is correct?
         this->alignment_ = alignment;
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeQueueAlignment(\"" + this->getName() + "\", \"" + this->alignment_ + "\")");
+        GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueAlignment(\"" + this->getName() + "\", \"" + this->alignment_ + "\")");
     }
 
     /**
@@ -168,7 +170,7 @@ namespace orxonox
             return;
 
         this->fontSize_ = size;
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeQueueFontSize(\"" + this->getName() + "\", " + multi_cast<std::string>(this->fontSize_) + ")");
+        GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontSize(\"" + this->getName() + "\", " + multi_cast<std::string>(this->fontSize_) + ")");
     }
 
     /**
@@ -188,7 +190,7 @@ namespace orxonox
         for(unsigned int i = 0; i < 4; i++)
             stream << std::hex << std::setw(2) << std::setfill('0') << int(this->fontColor_[(i+3)%4]*255);
         this->fontColorStr_ = stream.str();
-        GUIManager::getInstance().getLuaState()->doString("NotificationLayer.changeQueueFontColor(\"" + this->getName() + "\", \"" + this->fontColorStr_ + "\")");
+        GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontColor(\"" + this->getName() + "\", \"" + this->fontColorStr_ + "\")");
     }
 
     /**
@@ -217,7 +219,7 @@ namespace orxonox
     {
          // Push the Notification to the GUI.
         if(GameMode::showsGraphics())
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
     }
 
     /**
@@ -228,7 +230,7 @@ namespace orxonox
     {
         // Pops the Notification from the GUI.
         if(GameMode::showsGraphics())
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.popNotification(\"" + this->getName() + "\")");
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".popNotification(\"" + this->getName() + "\")");
     }
 
     /**
@@ -239,7 +241,7 @@ namespace orxonox
     {
         // Removes the Notification from the GUI.
         if(GameMode::showsGraphics())
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
     }
 
     /**
@@ -254,7 +256,7 @@ namespace orxonox
 
         // Clear the NotificationQueue in the GUI.
         if(GameMode::showsGraphics() && !noGraphics)
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.clearQueue(\"" + this->getName() + "\")");
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".clearQueue(\"" + this->getName() + "\")");
     }
 
     /**
@@ -264,7 +266,7 @@ namespace orxonox
     void NotificationQueueCEGUI::create(void)
     {
         if(GameMode::showsGraphics())
-            GUIManager::getInstance().getLuaState()->doString("NotificationLayer.createQueue(\"" + this->getName() +  "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".createQueue(\"" + this->getName() +  "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
     }
 
 }
