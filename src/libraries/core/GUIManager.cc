@@ -29,6 +29,7 @@
 
 #include "GUIManager.h"
 
+#include <fstream>
 #include <memory>
 #include <boost/bind.hpp>
 #include <OgreRenderQueue.h>
@@ -61,6 +62,10 @@ extern "C" {
 #  include <OgreRenderSystem.h>
 #  include <OgreRoot.h>
 #  include <OgreSceneManager.h>
+#endif
+
+#ifdef ORXONOX_PLATFORM_WINDOWS
+#  include <windows.h>
 #endif
 
 #include "util/Clock.h"
@@ -107,6 +112,65 @@ namespace orxonox
 
             CEGUI::DefaultLogger::logEvent(message, level);
         }
+
+        /// Carbon copy from CEGUIDefaultLogger.cpp with a bugfix for Windows
+        void setLogFilename(const CEGUI::String& filename, bool append = false)
+        {
+            // Close current log file (if any)
+            if (d_ostream.is_open())
+                d_ostream.close();
+
+#ifdef ORXONOX_PLATFORM_WINDOWS
+            // filename.c_str() is UTF-8 encoded, but Windows expects characters
+            // according to the current codepage or UTF-16 (wchar)
+            d_ostream.open(utf8ToUtf16(filename.c_str()).c_str(), std::ios_base::out | (append ? std::ios_base::app : std::ios_base::trunc));
+#else
+            d_ostream.open(filename.c_str(), std::ios_base::out | (append ? std::ios_base::app : std::ios_base::trunc));
+#endif
+            if (!d_ostream)
+                ThrowException(General, "Setting the CEGUI log filename failed");
+
+            // Initialise width for date & time alignment.
+            d_ostream.width(2);
+
+            // Write out cached log strings.
+            if (d_caching)
+            {
+                d_caching = false;
+
+                std::vector<std::pair<CEGUI::String, CEGUI::LoggingLevel> >::iterator it = d_cache.begin();
+
+                while (it != d_cache.end())
+                {
+                    if (d_level >= it->second)
+                    {
+                        d_ostream << it->first;
+                        // Ensure new event is written to the file, rather than just being buffered.
+                        d_ostream.flush();
+                    }
+                    ++it;
+                }
+
+                d_cache.clear();
+            }
+        }
+
+#ifdef ORXONOX_PLATFORM_WINDOWS
+        /// Converts a UTF-8 character sequence to Windows UTF-16
+        static std::wstring utf8ToUtf16(const std::string& utf8text)
+        {
+            const int textLen = MultiByteToWideChar(CP_UTF8, 0, utf8text.c_str(),
+                utf8text.size() + 1, 0, 0);
+
+            if (textLen == 0)
+                ThrowException(General, "Utf8ToUtf16 - MultiByteToWideChar failed");
+
+            std::wstring wideStr(textLen, 0);
+            MultiByteToWideChar(CP_UTF8, 0, utf8text.c_str(), utf8text.size() + 1,
+                &wideStr[0], wideStr.size());
+            return wideStr;
+        }
+#endif
     };
 
 #ifdef ORXONOX_OLD_CEGUI
