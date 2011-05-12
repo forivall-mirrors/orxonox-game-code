@@ -52,6 +52,9 @@ namespace orxonox
 
     bool PortalEndPoint::execute(bool bTriggered, BaseObject* trigger)
     {
+        if(!this->isActive())
+            return true;
+        
         MultiTriggerContainer * cont = orxonox_cast<MultiTriggerContainer *>(trigger);
         if(cont == 0)
             return true;
@@ -63,16 +66,13 @@ namespace orxonox
             return true;
         }
         
-        if(this->getAttachedObjects().find(orxonox_cast<WorldEntity *>(originatingTrigger)) == this->getAttachedObjects().end())  // only necessary if events have the same name
-            return true;
-        
         MobileEntity * entity = orxonox_cast<MobileEntity *>(cont->getData());
         if(entity == 0)
             return true;
         
         if(bTriggered)
         {
-            if(this->recentlyJumpedOut_.find(entity) == this->recentlyJumpedOut_.end())  // only enter the portal if not recently jumped out of it
+            if(this->recentlyJumpedOut_.find(entity) == this->recentlyJumpedOut_.end())  // only enter the portal if not just jumped out of it
             {
                 PortalLink::use(entity, this);
             }
@@ -88,9 +88,11 @@ namespace orxonox
     void PortalEndPoint::jumpOut(MobileEntity* entity)
     {
         this->recentlyJumpedOut_.insert(entity);
+        
         entity->setPosition(this->getWorldPosition());
         entity->rotate(this->getWorldOrientation());
         entity->setVelocity(this->getWorldOrientation() * entity->getVelocity());
+        entity->setVelocity(entity->getVelocity() * 1.5);
     }
 
 }

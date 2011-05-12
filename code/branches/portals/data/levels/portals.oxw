@@ -9,6 +9,7 @@
   include("HUDTemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceshipAssff.oxt")
+  include("templates/pickupRepresentationTemplates.oxt")
   include("templates/lodInformation.oxt")
 ?>
 
@@ -25,18 +26,24 @@
    skybox       = "Orxonox/skypanoramagen1"
   >
 
-    <Template name=portalDefault>
+    <Template name=PortalDefault>
         <PortalEndPoint>
             <attached>
-                <Billboard material="Examples/Flare" />
+                <Billboard material="Portals/Default" />
             </attached>
         </PortalEndPoint>
     </Template>
 
-    <PortalEndPoint position="0,0,0" id="1" distance="40" target="MobileEntity" design="portalDefault" eventTemplate="portalEventTemplate" />
-    <PortalEndPoint position="-400,0,0" id="2" distance="40" lookat="0,100,0" target="MobileEntity" design="portalDefault" />
+    <PortalEndPoint position="0,0,0" id="1" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <PortalEndPoint position="-90,0,0" id="2" distance="40" target="MobileEntity" design="PortalDefault"/>
     <PortalLink fromID="1" toID="2" />
     <PortalLink fromID="2" toID="1" />
+
+    <PickupSpawner position="-100,0,0" triggerDistance="10" respawnTime="10" maxSpawnedItems="10">
+      <pickup>
+        <DronePickup template=dronepickup />
+      </pickup>
+    </PickupSpawner>
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 
