@@ -31,7 +31,7 @@ namespace orxonox
         
         XMLPortParam(PortalEndPoint, "id", setID, getID, xmlelement, mode);
         XMLPortParam(PortalEndPoint, "design", setTemplate, getTemplate, xmlelement, mode);
-        XMLPortParamExtern(PortalEndPoint, DistanceMultiTrigger, this->trigger_, "distance", setDistance, getDistance, xmlelement, mode);
+        XMLPortParamExtern(PortalEndPoint, DistanceMultiTrigger, this->trigger_, "distance", setDistance, getDistance, xmlelement, mode).defaultValues("50");
         XMLPortParamLoadOnly(PortalEndPoint, "target", setTarget, xmlelement, mode).defaultValues("Pawn");
         
         // Add the DistanceMultiTrigger as event source.

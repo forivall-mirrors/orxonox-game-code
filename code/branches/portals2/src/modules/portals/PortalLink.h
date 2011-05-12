@@ -1,3 +1,9 @@
+/**
+    @file PortalLink.h
+    @brief Declaration of the PortalLink class
+    @ingroup Portals
+ */
+
 #ifndef _PortalLink_H__
 #define _PortalLink_H__
 
@@ -11,6 +17,11 @@
 
 namespace orxonox
 {
+    /**
+        @brief
+            A PortalLink represents the connection between two @ref orxonox::PortalEndPoint "PortalEndPoints"
+        @ingroup Portals
+     */
     class _PortalsExport PortalLink : public BaseObject
     {
         public:

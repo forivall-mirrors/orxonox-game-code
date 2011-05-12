@@ -1,3 +1,9 @@
+/**
+ *  @file PortalEndPoint.h
+ *  @brief Declaration of the PortalEndPoint class.
+ *  @ingroup Portals
+ */
+
 #ifndef _PortalEndPoint_H__
 #define _PortalEndPoint_H__
 
@@ -14,6 +20,13 @@
 
 namespace orxonox
 {
+    /**
+     @brief
+     A PortalEndPoint serves as portal entrance and/or exit.
+     
+     @ingroup Portals
+     */
+    
     class _PortalsExport PortalEndPoint : public StaticEntity
     {
         public:
