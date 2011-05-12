@@ -70,7 +70,7 @@ namespace orxonox
     {
         if(this->pickupIdentifier_ != NULL)
         {
-            COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") destroyed." << std::endl;
+            COUT(4) << "Pickupable (&" << this << ") destroyed." << std::endl;
             this->pickupIdentifier_->destroy();
         }
     }
@@ -339,7 +339,7 @@ namespace orxonox
 
         Pickupable* pickup = dynamic_cast<Pickupable*>(item);
 
-        COUT(4) << "Pickupable (" << this->getIdentifier()->getName() << ") (&" << this << ") cloned. Clone is new Pickupable (&" << pickup << ")." << std::endl;
+        COUT(4) << "Pickupable (&" << this << ") cloned. Clone is new Pickupable (&" << pickup << ")." << std::endl;
         return pickup;
     }
 
