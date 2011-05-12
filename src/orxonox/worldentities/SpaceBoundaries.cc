@@ -190,7 +190,7 @@ namespace orxonox
     {
         this->checkWhoIsIn();
         this->removeAllBillboards();
-        COUT(0) << "Groesse der Liste: " << (int) pawnsIn_.size() << std::endl;
+        //COUT(0) << "Groesse der Liste: " << (int) pawnsIn_.size() << std::endl;
         
         float distance;
         bool humanItem;
@@ -201,13 +201,13 @@ namespace orxonox
             {
                 distance = this->computeDistance(currentPawn);
                 humanItem = this->isHumanPlayer(currentPawn);
-                COUT(0) << "Distanz:" << distance << std::endl; // message for debugging
+                //COUT(0) << "Distanz:" << distance << std::endl; // message for debugging
                 if(distance > this->warnDistance_ && distance < this->maxDistance_) // Zeige Warnung an!
                 {
-                    COUT(0) << "You are near by the boundaries!" << std::endl; // message for debugging
+                    //COUT(0) << "You are near by the boundaries!" << std::endl; // message for debugging
                     if(humanItem)
                     {
-                        COUT(0) << "humanItem ist true" << std::endl;
+                        //COUT(0) << "humanItem ist true" << std::endl;
                         this->displayWarning("Attention! You are near by the boundaries!");
                     }
                 }
@@ -219,7 +219,7 @@ namespace orxonox
                 {
                     if( humanItem )
                     {
-                        COUT(0) << "Health should be decreasing!" << std::endl;
+                        //COUT(0) << "Health should be decreasing!" << std::endl;
                         this->displayWarning("You are out of the area now!");
                     }
                     currentPawn->removeHealth( (distance - this->maxDistance_) * this->healthDecrease_);
