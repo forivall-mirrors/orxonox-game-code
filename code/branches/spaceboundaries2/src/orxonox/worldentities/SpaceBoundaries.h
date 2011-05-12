@@ -30,9 +30,10 @@
                 beachte hierzu folgende statische Funktion: 'static unsigned int  Host::getPlayerID()'
                 (file:///home/kmaurus/orxonox/spaceBoundaries/build/doc/api/html/classorxonox_1_1_host.html#9c1e3b39e3b42e467dfbf42902911ce2)
                 
-            - Kommentieren (Betrachte als Beispiel/Vorbild 'libraries/core/WeakPtr.h')
-            
-            - Wiki-SpaceBoundaries-Eintrag aktualisieren
+                Mich finde ich unter humanPlayer ...
+                
+            - Kommentieren (Betrachte als Beispiel/Vorbild 'libraries/core/WeakPtr.h') 
+                oder brauche groups-file.
  */
 
 #ifndef _SpaceBoundaries_H__
@@ -57,16 +58,29 @@ namespace orxonox
 /**
 @brief SpaceBoundaries gives level creators the possibility to bar Pawns from leaving a defined area (until now this area is a ball).
 
-       Five attributes can/should be defined in the XML-File:
+       Some attributes can/should be defined in the XML-File:
+       - 'position' : absolute position of the object of SpaceBoundaries in the level (usually 0,0,0) 
+       - 'maxDistance' : defines the area, where a pawn is allowed to be (radius of a ball).
        - 'warnDistance' : If the distance between the pawn of the human player and 'position' is bigger than 'warnDistance', a message is displayed to
                           inform the player that he'll soon be leaving the allowed area. 
-       - 'maxDistance' : defines the area, where a pawn is allowed to be (radius of a ball).
        - 'showDistance' : If the distance between the pawn and the boundary of the allowed area is smaller than 'showDistance', the boundary is shown. 
-       - 'healthDecrease' : a measure to define how fast the health of a pawn should decrease after leaving the allowed area (unnecessary if 'reactionMode' == 0).
-                            Recommended values: 0.1 (slow health decrease) to 5 (very fast health decrease)
        - 'reactionMode' : Integer-Value. Defines what effect appears if a space ship has crossed the boundaries.
                             0: Reflect the space ship (default).
                             1: Decrease Health of the space ship after having left the allowed area.
+       - 'healthDecrease' : a measure to define how fast the health of a pawn should decrease after leaving the allowed area (unnecessary if 'reactionMode' == 0).
+                            Recommended values: 0.1 (slow health decrease) to 5 (very fast health decrease)
+
+Follow http://www.orxonox.net/wiki/SpaceBoundaries to get some further information.
+
+Examples:
+Two examples how one could include SpaceBoundaries in the XML-File. The first one uses reflection, the second one health decrease.
+@code
+<SpaceBoundaries position="0,0,0" maxDistance="1000" warnDistance="800" showDistance="100" reactionMode="0" />
+@endcode
+
+@code
+<SpaceBoundaries position="0,0,0" maxDistance="1000" warnDistance="800" showDistance="100" reactionMode="1" healthDecrease="0.2" />
+@endcode
 */
 
     class _OrxonoxExport SpaceBoundaries : public StaticEntity, public Tickable

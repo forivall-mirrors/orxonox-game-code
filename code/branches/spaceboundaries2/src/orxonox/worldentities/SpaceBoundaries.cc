@@ -46,9 +46,8 @@ namespace orxonox
         /* Standardwerte, die zum Tragen kommen,
          * falls im XML-File keine Werte spezifiziert wurden. */
         this->setMaxDistance(3000);
-        this->setWarnDistance(2000);
-        this->setShowDistance(2500);
-        this->setHealthDecrease(1);
+        this->setWarnDistance(this->getMaxDistance());
+        this->setShowDistance(this->getMaxDistance());
         this->setReaction(0);
         
         RegisterObject(SpaceBoundaries);
@@ -80,9 +79,14 @@ namespace orxonox
         for(ObjectListIterator<Pawn> current = ObjectList<Pawn>::begin(); current != ObjectList<Pawn>::end(); ++current)
         {
             Pawn* currentPawn = *current;
-            float distance = this->computeDistance(currentPawn);
-            if(distance <= this->maxDistance_)
+            if( this->reaction_ == 0 )
             {
+                float distance = this->computeDistance(currentPawn);
+                if(distance <= this->maxDistance_)
+                {
+                    pawnsIn_.push_back(currentPawn);
+                }
+            } else {
                 pawnsIn_.push_back(currentPawn);
             }
         }
@@ -182,6 +186,7 @@ namespace orxonox
 
         XMLPortParam(SpaceBoundaries, "maxDistance", setMaxDistance, getMaxDistance, xmlelement, mode);
         XMLPortParam(SpaceBoundaries, "warnDistance", setWarnDistance, getWarnDistance, xmlelement, mode);
+        XMLPortParam(SpaceBoundaries, "showDistance", setShowDistance, getShowDistance, xmlelement, mode);
         XMLPortParam(SpaceBoundaries, "healthDecrease", setHealthDecrease, getHealthDecrease, xmlelement, mode);
         XMLPortParam(SpaceBoundaries, "reactionMode", setReaction, getReaction, xmlelement, mode);
     }
@@ -190,7 +195,7 @@ namespace orxonox
     {
         this->checkWhoIsIn();
         this->removeAllBillboards();
-        COUT(0) << "Groesse der Liste: " << (int) pawnsIn_.size() << std::endl;
+        COUT(4) << "Groesse der Pawn-Liste 'SpaceBoundaries::pawnsIn_': " << (int) pawnsIn_.size() << std::endl;
         
         float distance;
         bool humanItem;
@@ -201,17 +206,16 @@ namespace orxonox
             {
                 distance = this->computeDistance(currentPawn);
                 humanItem = this->isHumanPlayer(currentPawn);
-                COUT(0) << "Distanz:" << distance << std::endl; // message for debugging
+                COUT(5) << "Distanz:" << distance << std::endl; // message for debugging
                 if(distance > this->warnDistance_ && distance < this->maxDistance_) // Zeige Warnung an!
                 {
-                    COUT(0) << "You are near by the boundaries!" << std::endl; // message for debugging
                     if(humanItem)
                     {
-                        COUT(0) << "humanItem ist true" << std::endl;
-                        this->displayWarning("Attention! You are near by the boundaries!");
+                        COUT(5) << "humanItem ist true" << std::endl;
+                        this->displayWarning("Attention! You are close to the boundary!");
                     }
                 }
-                if( (this->maxDistance_ - distance) < this->showDistance_ )
+                if( humanItem && (this->maxDistance_ - distance) < this->showDistance_ )
                 {
                     this->displayBoundaries(currentPawn); // Zeige Grenze an!
                 }
@@ -219,7 +223,7 @@ namespace orxonox
                 {
                     if( humanItem )
                     {
-                        COUT(0) << "Health should be decreasing!" << std::endl;
+                        COUT(5) << "Health should be decreasing!" << std::endl;
                         this->displayWarning("You are out of the area now!");
                     }
                     currentPawn->removeHealth( (distance - this->maxDistance_) * this->healthDecrease_);
@@ -268,7 +272,7 @@ namespace orxonox
         
         /* Checke, ob das Pawn innerhalb des nächsten Ticks, das erlaubte Gebiet verlassen würde.
            Falls ja: Spicke es zurück. */
-        if( currentDistance + normalSpeed * dt > this->maxDistance_ )
+        if( currentDistance + normalSpeed * dt > this->maxDistance_ - 10 ) // -10: "security measure"
         {
             float dampingFactor = 0.5;
             velocity = velocity.reflect(normal);

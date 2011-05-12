@@ -160,3 +160,8 @@
     @defgroup Weapons Weapons
     @ingroup Modules
 */
+
+/**
+    @defgroup SpaceBoundaries Space Boundaries
+    @ingroup Modules
+*/
