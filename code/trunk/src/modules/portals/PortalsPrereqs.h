@@ -42,8 +42,8 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(Portals_STATIC_BUILD)
-#  ifdef Portals_SHARED_BUILD
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(PORTALS_STATIC_BUILD)
+#  ifdef PORTALS_SHARED_BUILD
 #    define _PortalsExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
