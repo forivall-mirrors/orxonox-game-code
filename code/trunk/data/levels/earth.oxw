@@ -19,6 +19,14 @@
     <Template link="lodtemplate_default" />
   </templates>
 
+  <Template name=PortalDefault>
+      <PortalEndPoint>
+          <attached>
+              <Billboard material="Portals/Default" />
+          </attached>
+      </PortalEndPoint>
+  </Template>
+
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/skyboxempty"
@@ -37,12 +45,15 @@
       specular="1.0, 0.9, 0.9, 1.0"
     />
 
+
+
     <SpawnPoint
       position="70000,0,0"
       lookat="0,0,0"
       spawnclass="SpaceShip"
       pawndesign="spaceshipHXY"
     />
+    <PortalEndPoint position="70500,100,0" id="1" distance="40" target="MobileEntity" design="PortalDefault"/>
 
     <!-- This is a model of Earth: mass=EarthMass/1000 and radius=EarthRadius[km]*10 -->
     <Planet
@@ -91,5 +102,10 @@
         <SphereCollisionShape radius="17370" position="0,0,0" />
       </collisionShapes>
     </Planet>
+    <PortalEndPoint position="3603330,100,0" id="2" distance="40" target="MobileEntity" design="PortalDefault"/>
+
+    <!-- Create portals from Earth to the Moon -->
+    <PortalLink fromID="1" toID="2" />
+    <!--<PortalLink fromID="2" toID="1" />-->
   </Scene>
 </Level>
