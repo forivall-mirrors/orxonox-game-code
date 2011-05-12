@@ -13,16 +13,17 @@ namespace orxonox
 
     std::map<unsigned int, PortalEndPoint *> PortalEndPoint::idMap_s;
 
-    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), id_(0), trigger_(new DistanceMultiTrigger(this))
+    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), id_(0), trigger_(NULL)
     {
         RegisterObject(PortalEndPoint);
+        this->trigger_ = new DistanceMultiTrigger(this);
         this->trigger_->setName("portal");
         this->attach(trigger_);
     }
     
     PortalEndPoint::~PortalEndPoint()
     {
-    
+        delete this->trigger_;
     }
 
     void PortalEndPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
