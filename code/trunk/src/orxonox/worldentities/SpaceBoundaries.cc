@@ -60,18 +60,21 @@ namespace orxonox
     }
     SpaceBoundaries::~SpaceBoundaries()
     {
-        delete this->centerRadar_;
-        
-        this->pawnsIn_.clear();
-        
-        for( std::vector<billboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++)
+        if (this->isInitialized())
         {
-            if( current->billy != NULL)
+            delete this->centerRadar_;
+        
+            this->pawnsIn_.clear();
+        
+            for( std::vector<billboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++)
             {
-                delete current->billy;
+                if( current->billy != NULL)
+                {
+                    delete current->billy;
+                }
             }
+            this->billboards_.clear();
         }
-        this->billboards_.clear();
     }
     
     void SpaceBoundaries::checkWhoIsIn()
