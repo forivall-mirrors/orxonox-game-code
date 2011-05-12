@@ -31,11 +31,6 @@ namespace orxonox
             PortalLink::links_s[from] = to;
         }
     }
-    
-    void PortalLink::tick(float dt)
-    {
-        SUPER(PortalLink, tick, dt);
-    }
 
     void PortalLink::use(MobileEntity* entity, PortalEndPoint * entrance)
     {

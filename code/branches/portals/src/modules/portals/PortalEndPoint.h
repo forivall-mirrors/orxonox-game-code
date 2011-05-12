@@ -20,7 +20,7 @@ namespace orxonox
             PortalEndPoint(BaseObject* creator);
             virtual ~PortalEndPoint();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            inline void setTargets(const std::string & targets)                 //!< set types which are allowed to activate the PortalEndPoint 
+            inline void setTargets(const std::string & targets)                 //!< add types which are allowed to activate the PortalEndPoint
             {
                 this->trigger_->addTargets(targets);
             }

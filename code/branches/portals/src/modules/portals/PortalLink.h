@@ -16,10 +16,8 @@ namespace orxonox
         public:
             PortalLink(BaseObject* creator);
             virtual ~PortalLink();
-    
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            virtual void tick(float dt);
-            inline void setFromID(unsigned int from)
+            inline void setFromID(unsigned int from)    //!< set the ID of the PortalEndPoint which should act as the entrance of this link
             {
                 this->fromID_ = from;
             }
@@ -27,7 +25,7 @@ namespace orxonox
             {
                 return this->fromID_;
             }
-            inline void setToID(unsigned int to)
+            inline void setToID(unsigned int to)     //!< set the ID of the PortalEndPoint which should act as the exit of this link
             {
                 this->toID_ = to;
             }
@@ -35,7 +33,7 @@ namespace orxonox
             {
                 return this->toID_;
             }
-            static void use(MobileEntity * entity, PortalEndPoint * entrance);
+            static void use(MobileEntity * entity, PortalEndPoint * entrance);   //
         protected:
         private:
             static std::map<PortalEndPoint *, PortalEndPoint *> links_s;
