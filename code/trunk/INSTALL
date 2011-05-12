@@ -9,9 +9,9 @@ In order to compile Orxonox you will need the following libraries:
 (for windows there are already precompiled packages on the website)
 
 OGRE 3D Graphics Engine          1.6 - 1.7
-CEGUI (Crazy Eddie's GUI System) 0.6
-Boost libraries                  1.35 -
-Lua (scripting language)         5.0 - 5.1
+CEGUI (Crazy Eddie's GUI System) 0.6 - 0.7
+Boost libraries                  1.40 -
+Lua (scripting language)         5.1
 Tcl (shell script language)      8.4 - 8.5
 OpenAL (audio)                   (no version requirements specified yet)
 ALUT (audio)                     (no version requirements specified yet)
