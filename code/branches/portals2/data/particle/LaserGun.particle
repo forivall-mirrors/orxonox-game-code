@@ -1,0 +1,51 @@
+
+particle_system Orxonox/LaserGun
+{
+	quota	1000
+	material	PE/Streak
+	particle_width	1.892
+	particle_height	1.892
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	texcoord
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter Point
+	{
+		angle	3.243
+		colour	1 0 0 1
+		colour_range_start	1 0 0 1
+		colour_range_end	1 0.0432099 0 1
+		direction	0 -1 0
+		emission_rate	1027
+		position	0 0 0
+		velocity	113.5
+		velocity_min	113.5
+		velocity_max	113.5
+		time_to_live	0.3604
+		time_to_live_min	0.3604
+		time_to_live_max	0.3604
+		duration	0
+		duration_min	0
+		duration_max	0
+		repeat_delay	0
+		repeat_delay_min	0
+		repeat_delay_max	0
+	}
+
+	affector ColourFader
+	{
+		red	-1
+		green	0.2613
+		blue	-0.1712
+		alpha	-1
+	}
+}
