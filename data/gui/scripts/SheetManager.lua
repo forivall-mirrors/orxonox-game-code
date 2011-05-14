@@ -4,7 +4,6 @@ local cursor = CEGUI.MouseCursor:getSingleton()
 local loadedSheets = {}
 local activeMenuSheets = {size = 0, topSheetTuple = nil}
 local menuSheetsRoot = guiMgr:getMenuRootWindow()
-local bInGameConsoleClosed = false
 local mainMenuLoaded = false
 orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "KeyDown", "keyPressed")
 orxonox.GUIManager:subscribeEventHelper(menuSheetsRoot, "Sized", "windowResized")
@@ -216,12 +215,6 @@ end
 function keyESC()
     -- HUGE, very HUGE hacks!
 
-    -- If the InGameConsole is active, ignore the ESC command.
-    if bInGameConsoleClosed == true then
-        bInGameConsoleClosed = false
-        return
-    end
-
     -- Count the number of sheets that don't need input till the first that does.
     local counter = noInputSheetIndex()
 
@@ -292,10 +285,6 @@ function noInputSheetCounter()
         end
     end
     return counter
-end
-
-function inGameConsoleClosed()
-    bInGameConsoleClosed = not bInGameConsoleClosed;
 end
 
 function getGUIFirstActive(name, bHidePrevious, bNoInput)
