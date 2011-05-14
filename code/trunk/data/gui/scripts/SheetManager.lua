@@ -215,17 +215,17 @@ end
 
 function keyESC()
     -- HUGE, very HUGE hacks!
-
-    -- Count the number of sheets that don't need input till the first that does.
-    local counter = noInputSheetIndex()
     
     -- If the InGameConsole is active, ignore the ESC command.
     if bInGameConsoleClosed == true then
         bInGameConsoleClosed = false
-        if counter > 0 then
+        if activeMenuSheets[1].sheet.name == "MainMenu" then
             return
         end
     end
+
+    -- Count the number of sheets that don't need input till the first that does.
+    local counter = noInputSheetIndex()
 
     -- If the first sheet that needs input is the MainMenu.
     if noInputSheetCounter() == 1 and activeMenuSheets[counter].sheet.name == "MainMenu" then
