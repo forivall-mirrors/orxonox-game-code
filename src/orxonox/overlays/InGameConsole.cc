@@ -533,6 +533,7 @@ namespace orxonox
         if (this->bActive_)
         {
             this->bActive_ = false;
+            GUIManager::getInstance().getLuaState()->doString("inGameConsoleClosed()"); // Notify the SheetManager in lua, that the console has been closed.
             InputManager::getInstance().leaveState("console");
             this->shell_->unregisterListener(this);
 
