@@ -108,6 +108,7 @@ namespace orxonox
             void boostCooledDown(void);
 	    
 	    void resetCamera();
+	    void shakeCamera(float dt);
 
             std::string enginetemplate_;
             Engine* engine_;
