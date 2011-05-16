@@ -79,6 +79,7 @@ namespace orxonox
             void startStone(void); //!< Starts with the first stone.
             void createStone(void);
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
+            bool correctStonePos(TetrisStone* stone); //!< Check whether the supplied stone is in an allowed position
             
             PlayerInfo* player_;
 
