@@ -1,3 +1,38 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Damian 'Mozork' Frick
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+
+/**
+    @file ShrinkPickup.cc
+    @brief Implementation of the HealthPickup class.
+*/
+
+
 #include "ShrinkPickup.h"
 
 #include <sstream>
@@ -9,20 +44,22 @@
 
 #include "weaponsystem/WeaponSlot.h"
 #include "weaponsystem/Weapon.h"
+#include "worldentities/CameraPosition.h"
 
 namespace orxonox
 {
     CreateFactory(ShrinkPickup);
 
-	ShrinkPickup::ShrinkPickup(BaseObject* creator) : Pickup(creator)
+    ShrinkPickup::ShrinkPickup(BaseObject* creator) : Pickup(creator)
     {
         RegisterObject(ShrinkPickup);
 
         this->initialize();
-		shrinkFactor_ = 5.0;
-		duration_ = 5.0;
-		shrinkDelay_ = 1.0;
-		isActive_ = false;
+        shrinkFactor_ = 5.0;
+        duration_ = 5.0;
+        shrinkSpeed_ = 5.0;
+        isActive_ = false;
+        isTerminating_ = false;
     }
 
     ShrinkPickup::~ShrinkPickup()
@@ -30,124 +67,95 @@ namespace orxonox
 
     }
 
-	void ShrinkPickup::initialize(void)
-	{
-		this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
-	}
+    void ShrinkPickup::initialize(void)
+    {
+        this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
+    }
 
     void ShrinkPickup::changedUsed(void)
-	{
-		int i;	
-
-		SUPER(ShrinkPickup, changedUsed);
+    {
+        SUPER(ShrinkPickup, changedUsed);
 
         if(this->isUsed())
         {
             this->pawn = this->carrierToPawnHelper();
             if(pawn == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
                 this->Pickupable::destroy();
-	
-			COUT(0) << "shrinking..." << endl;
-			//this->pawn->setScale3D(this->pawn->getScale3D() / 2.0);
-			std::set<WorldEntity*> set = this->pawn->getAttachedObjects();
-			
-			/*this->pawn->setScale3D(this->pawn->getScale3D() / 5.0);
-            this->pawn->setMass(this->pawn->getMass() / 5.0);
 
-            const std::list<SmartPtr<CameraPosition> > cameraPositions = this->pawn->getCameraPositions();
-            unsigned int size = cameraPositions.size();
-            for(unsigned int index = 0; index < size; index++)
-            {
-                CameraPosition* cameraPos = this->pawn->getCameraPosition(index);
-                if(cameraPos == NULL)
-                    continue;
-                cameraPos->setPosition(cameraPos->getPosition()*5.0);
-            }*/
-			
-			i = 0;
-			for(std::set<WorldEntity*>::iterator it = set.begin(); it != set.end(); it++)
-			{
-				defaultScales_.push_back((*it)->getScale());
-				actualScales_.push_back((*it)->getScale());
-				defaultPositions_.push_back((*it)->getPosition());
-				actualPositions_.push_back((*it)->getPosition());
-				//(*it)->setScale((*it)->getScale() / 5.0);
-				//(*it)->setPosition((*it)->getPosition() / 5.0);
-			}
-			size_ = defaultScales_.size();
-			for(i = 0; i < size_; i++)
-			{
-				smallScales_.push_back(defaultScales_.at(i) / shrinkFactor_);
-			}
-			isActive_ = true;
-			durationTimer.setTimer(10, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));
+            defaultScale_ = this->pawn->getScale3D();
+            defaultMass_ = this->pawn->getMass();
+
+            smallScale_ = defaultScale_ / shrinkFactor_;
+            smallMass_ = defaultMass_ / shrinkFactor_;
+
+            actualScale_ = defaultScale_;
+            actualMass_ = defaultMass_;
+
+            cameraPositions_ = this->pawn->getCameraPositions();
+            size_ = cameraPositions_.size();
+            isActive_ = true;
+            durationTimer.setTimer(duration_, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));
         }
-		else
+        else
         {
-			this->Pickupable::destroy();
+            this->Pickupable::destroy();
         }
-	}
+    }
 
-	void ShrinkPickup::tick(float dt)
-	{
-		double temp;
-		int i;
-		double k = dt / shrinkDelay_;
-		if(isActive_)
-		{
-			for(i = 0; i < size_; i++)
-			{
-				temp = actualScales_.at(i);
-				if(temp > smallScales_.at(i))
-				{
-					actualScales_.erase(i)
-					actualScales_.insert(i, temp - (temp - smallScales_.at(i)) * k);
-				}
-				/*temp = actual;
-				if(temp > smallScales[i])
-				{
-					actualScales[i] -= (actualScales[i] - smallScales[i]) * k;
-				}*/
+    void ShrinkPickup::tick(float dt)
+    {
+        if(isActive_ == true && actualScale_ > smallScale_)
+        {
+            float factor_ = 1 + dt*shrinkSpeed_;
 
-			}
+            actualScale_ /= factor_;
+            actualMass_ /= factor_;
 
-			i = 0;
-			
-			std::set<WorldEntity*> set = this->pawn->getAttachedObjects();
-			for(std::set<WorldEntity*>::iterator it = set.begin(); it != set.end(); it++)
-			{
-				//defaultScales.push_back((*it)->getScale());
-				//actualScales.push_back((*it)->getScale());
-				//defaultPositions.push_back((*it)->getPosition());
-				//actualPositions.push_back((*it)->getPosition());
-				//(*it)->setScale((*it)->getScale() *0.99);
-				(*it)->setScale(actualScales_.at(i));
-				//(*it)->setPosition((*it)->getPosition() / 5.0);
-			}
-		}
-	}
+            this->pawn->setScale3D(actualScale_);
+            this->pawn->setMass(actualMass_);
 
-	void ShrinkPickup::terminate(void)
-	{
-		//this->pawn->setScale3D(this->pawn->getScale3D() * 5.0);
+            for(int index = 0; index < size_; index++)
+            {
+                CameraPosition* cameraPos_ = this->pawn->getCameraPosition(index);
+                if(cameraPos_ == NULL)
+                continue;
+                cameraPos_->setPosition(cameraPos_->getPosition()*factor_);
+            }
+        }
+        else isActive_ = false;
 
-		std::set<WorldEntity*> set = this->pawn->getAttachedObjects();
-		for(std::set<WorldEntity*>::iterator it = set.begin(); it != set.end(); it++)
-		{
-			(*it)->setScale((*it)->getScale() * 5.0);
-		}		
-		setUsed(false);
-	}
+        if(isTerminating_ == true && actualScale_ < defaultScale_)
+        {
+            float factor_ = 1 + dt*shrinkSpeed_;
+
+            actualScale_ *= factor_;
+            actualMass_ *= factor_;
+
+            this->pawn->setScale3D(actualScale_);
+            this->pawn->setMass(actualMass_);
+
+            for(int index = 0; index < size_; index++)
+            {
+                CameraPosition* cameraPos_ = this->pawn->getCameraPosition(index);
+                if(cameraPos_ == NULL)
+                continue;
+                cameraPos_->setPosition(cameraPos_->getPosition()/factor_);
+            }
+        }
+        else if(isTerminating_ == true)
+        setUsed(false);
+    }
+
+    void ShrinkPickup::terminate(void)
+    {
+        isActive_ = false;
+        isTerminating_ = true;
+    }
 
     Pawn* ShrinkPickup::carrierToPawnHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
         Pawn* pawn = dynamic_cast<Pawn*>(carrier);
-
-        if(pawn == NULL)
-        {
-            COUT(1) << "Invalid PickupCarrier in ShrinkPickup." << std::endl;
-        }
 
         return pawn;
     }

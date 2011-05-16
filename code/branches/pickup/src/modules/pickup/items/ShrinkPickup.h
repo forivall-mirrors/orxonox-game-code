@@ -1,3 +1,38 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Damian 'Mozork' Frick
+ *   Co-authors:
+ *      ...
+ *
+ */
+
+/**
+    @file ShrinkPickup.h
+    @brief Declaration of the ShrinkPickup class.
+    @ingroup PickupItems
+*/
+
+
 #ifndef _ShrinkPickup_H__
 #define _ShrinkPickup_H__
 
@@ -31,16 +66,18 @@ namespace orxonox {
 			
 			float duration_;			//!< determines how long the pickup will be active
     		float shrinkFactor_;		//shrink factor of the space ship
-			float shrinkDelay_;		//how long it takes to shrink to the final size
+			float shrinkSpeed_;
 			bool isActive_;
 			bool isTerminating_;
 			int size_;
-			std::vector<float> defaultScales_;
-			std::vector<float> smallScales_;
-			std::vector<float> actualScales_;
-			std::vector<Vector3> defaultPositions_;
-			std::vector<Vector3> smallPositions_;
-			std::vector<Vector3> actualPositions_;
+			std::list<SmartPtr<CameraPosition> > cameraPositions_;
+			float defaultCameraPos_;
+			Ogre::Vector3 defaultScale_;
+			Ogre::Vector3 actualScale_;
+			Ogre::Vector3 smallScale_;
+			float defaultMass_;
+			float actualMass_;
+			float smallMass_;			
 			Pawn* carrierToPawnHelper(void);
 			Pawn* pawn;
 			Timer durationTimer;
