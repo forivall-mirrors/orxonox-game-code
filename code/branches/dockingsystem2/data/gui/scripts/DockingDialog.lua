@@ -9,8 +9,8 @@ function P.onLoad()
 end
 
 function P.onShow()
-    P.update()
     orxonox.CommandExecutor:execute("pause")
+    P.update()
 end
 
 function P.onHide()

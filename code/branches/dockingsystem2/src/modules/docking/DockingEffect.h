@@ -51,7 +51,6 @@ namespace orxonox
     namespace docking {
         enum event {
             DOCKING,
-            ATTACH,
             RELEASE
         };
     }
@@ -71,8 +70,7 @@ namespace orxonox
             DockingEffect(BaseObject* creator);
             virtual ~DockingEffect();
 
-            virtual bool docking(PlayerInfo* player) = 0; //!< Called when docking starts
-            virtual bool attach(PlayerInfo* player) = 0; //!< Called after docking animation
+            virtual bool docking(PlayerInfo* player) = 0; //!< Called when player docked
             virtual bool release(PlayerInfo* player) = 0; //!< Called when player wants to undock
 
             static bool invokeEffect(docking::event event, PlayerInfo* player, std::list<DockingEffect*> & effects); //!< Invokes the event specific method of all DockingEffects in the list

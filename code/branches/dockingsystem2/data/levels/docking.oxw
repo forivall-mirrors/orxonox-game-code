@@ -36,6 +36,9 @@
 
 
     <Dock>
+        <animation>
+            <MoveToDockingTarget target="destroyer" position="10,150,40" />
+        </animation>
         <effects>
             <DockToShip target="destroyer" />
         </effects>
@@ -45,7 +48,7 @@
             </execute>
         </events>
         <attached>
-            <DistanceTrigger position="0,0,0" distance="50" target="Pawn" beaconMode="exclude" targetname="destroyerBeacon" name="dockMe" />
+            <DistanceTrigger position="0,0,0" distance="30" target="Pawn" beaconMode="exclude" targetname="destroyerBeacon" name="dockMe" />
             <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
         </attached>
     </Dock>

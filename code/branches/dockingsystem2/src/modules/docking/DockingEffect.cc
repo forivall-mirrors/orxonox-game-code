@@ -51,13 +51,12 @@ namespace orxonox
 
         COUT(4) << "Invoking DockingEffects on player: " << player << " ."  << std::endl;
 
-        for (std::list<DockingEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++) {
-            switch(event) {
+        for (std::list<DockingEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
+        {
+            switch(event)
+            {
                 case docking::DOCKING:
                     check &= (*effect)->docking(player);
-                    break;
-                case docking::ATTACH:
-                    check &= (*effect)->attach(player);
                     break;
                 case docking::RELEASE:
                     check &= (*effect)->release(player);
