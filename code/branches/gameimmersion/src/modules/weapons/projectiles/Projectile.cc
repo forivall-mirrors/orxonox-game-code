@@ -35,22 +35,23 @@
 #include "objects/collisionshapes/SphereCollisionShape.h"
 #include "worldentities/pawns/Pawn.h"
 #include "graphics/ParticleSpawner.h"
+#include "BasicProjectile.h"
 
 namespace orxonox
 {
     CreateFactory(Projectile);
 
-    Projectile::Projectile(BaseObject* creator) : MovableEntity(creator)
+    Projectile::Projectile(BaseObject* creator) : MovableEntity(creator), BasicProjectile()
     {
         RegisterObject(Projectile);
 
         this->setConfigValues();
-        this->bDestroy_ = false;
+//        this->bDestroy_ = false;
         this->owner_ = 0;
-        this->damage_ = 115;
+//        this->damage_ = 115;
 ///////////////////me
-        this->healthdamage_ = 0;
-        this->shielddamage_ = 0;
+//        this->healthdamage_ = 0;
+//        this->shielddamage_ = 0;
 ///////////////////end me
 
         // Get notification about collisions
@@ -87,7 +88,7 @@ namespace orxonox
         if (!this->isActive())
             return;
 
-        if (this->bDestroy_)
+        if (this->getBDestroy())
             this->destroy(); // TODO: use a scheduler instead of deleting the object right here in tick()
     }
 
@@ -97,8 +98,13 @@ namespace orxonox
             this->destroy();
     }
 
-//////////////////////////me edit
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
+    {
+        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->owner_,this);
+    }
+
+//////////////////////////me edit
+/*    bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
         if (!this->bDestroy_ && GameMode::isMaster())
         {
@@ -149,9 +155,10 @@ namespace orxonox
         return false;
     }
 //////////////////////////////////////////////////////////////////////end edit
-
+*/
     void Projectile::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
     }
+
 }

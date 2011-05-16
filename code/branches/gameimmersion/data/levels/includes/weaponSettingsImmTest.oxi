@@ -25,7 +25,7 @@
           </attached>
           <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 0.1, 1.6,-2" />
           <HsW01 mode=0 munitionpershot=0 delay=0     damage=3.14159 material="Flares/point_lensflare" muzzleoffset="-1.6, 1.3,-2" />
-          <LightningGun mode=1 muzzleoffset="0,0,0" damage=0 shielddamage=75 />
+          <LightningGun mode=1 muzzleoffset="0,0,0" damage=0 shielddamage=5 healthdamage=200 />
         </Weapon>
         <Weapon>
           <attached>
@@ -35,7 +35,7 @@
           </attached>
           <HsW01 mode=0 munitionpershot=0 delay=0     damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 1.6, 1.3, -2.0" />
           <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset="-0.1, 1.6, -2.0" />
-          <LightningGun mode=1 muzzleoffset="0,0,0" damage=0 shielddamage=75 />
+          <LightningGun mode=1 muzzleoffset="0,0,0" damage=0 shielddamage=5 healthdamage=200 />
         </Weapon>
         <Weapon>
           <SimpleRocketFire mode=2 muzzleoffset="0,0,0" damage=50 />

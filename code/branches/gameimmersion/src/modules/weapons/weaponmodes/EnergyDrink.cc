@@ -111,6 +111,8 @@ namespace orxonox
 
         projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
+        projectile->setShieldDamage(this->getShieldDamage());
+        projectile->setHealthDamage(this->getHealthDamage());
 
         EnergyDrink::muendungsfeuer();
     }

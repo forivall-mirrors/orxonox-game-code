@@ -20,46 +20,42 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      simonmie
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _Projectile_H__
-#define _Projectile_H__
+#ifndef _BasicProjectile_H__
+#define _BasicProjectile_H__
 
 #include "weapons/WeaponsPrereqs.h"
 
 #include "tools/Timer.h"
-#include "worldentities/MovableEntity.h"
-
-#include "BasicProjectile.h"
+#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
-    class _WeaponsExport Projectile : public MovableEntity, public BasicProjectile
+    class _WeaponsExport BasicProjectile : public virtual OrxonoxClass
     {
         public:
-            Projectile(BaseObject* creator);
-            virtual ~Projectile();
+            BasicProjectile();
 
-            void setConfigValues();
-            void destroyObject();
+            virtual ~BasicProjectile();
 
-            virtual void tick(float dt);
-            virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
+            static bool basicCollidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint, Pawn* owner, BasicProjectile* this_);
 
-/*            inline void setDamage(float damage)
-                { this->damage_ = damage;  COUT(3) << "DAMAGE-SET-FUNKTION WIRD AUFGERUFEN" << endl; }
+            void basicDestroyObject();
+
+/*            void basicSetOwner(Pawn* owner);
+            inline Pawn* basicGetOwner() const
+                { return this->owner_; }
+*/
+
+            inline void setDamage(float damage)
+                { this->damage_ = damage;  }
             inline float getDamage() const
                 { return this->damage_; }
-*/
-            void setOwner(Pawn* owner);
-            inline Pawn* getOwner() const
-                { return this->owner_; }
-
-/*///////////////////me
 
             inline void setHealthDamage(float healthdamage)
                 { this->healthdamage_ = healthdamage; }
@@ -67,24 +63,28 @@ namespace orxonox
                 { return this->healthdamage_; }
 
             inline void setShieldDamage(float shielddamage)
-                { this->shielddamage_ = shielddamage; COUT(3) << "SHIELDDAMAGE SET TO " << shielddamage << endl; } //ShieldDamage wird korrekt gesettet vom XML-File
+                { this->shielddamage_ = shielddamage;  } //ShieldDamage wird korrekt gesettet vom XML-File
             inline float getShieldDamage() const
                 { return this->shielddamage_; }
 
-///////////////////end me
-*/
+
+            inline void setBDestroy(bool bDestroy)
+                { this->bDestroy_ = bDestroy;  }
+            inline float getBDestroy() const
+                { return this->bDestroy_; }
+
+
 
         private:
-            WeakPtr<Pawn> owner_;
-            float lifetime_;
-/*            float damage_;
-///////me
+//            WeakPtr<Pawn> owner_;
+
+            float damage_;
             float healthdamage_;
             float shielddamage_;
-///////end me
+
             bool bDestroy_;
-*/            Timer destroyTimer_;
+//            Timer destroyTimer_;
     };
 }
 
-#endif /* _Projectile_H__ */
+#endif /* _BasicProjectile_H__ */

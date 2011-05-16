@@ -70,7 +70,11 @@ namespace orxonox
         rocket->setPosition(this->getMuzzlePosition());
         rocket->setVelocity(this->getMuzzleDirection()*this->speed_);
         rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+
         rocket->setDamage(this->damage_);
+//        rocket->setShieldDamage(this->getShieldDamage());
+//        rocket->setHealthDamage(this->getHealthDamage());
+
         WorldEntity* pawnn=static_cast<ControllableEntity*>(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn())->getTarget();
         if (pawnn) con->setTarget(pawnn);
     }

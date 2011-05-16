@@ -200,13 +200,13 @@ namespace orxonox
     void Pawn::setReloadRate(float reloadrate)
     {
         this->reloadRate_ = reloadrate;
-        COUT(2) << "RELOAD RATE SET TO " << this->reloadRate_ << endl;
+        //COUT(2) << "RELOAD RATE SET TO " << this->reloadRate_ << endl;
     }
 
     void Pawn::setReloadWaitTime(float reloadwaittime)
     {
         this->reloadWaitTime_ = reloadwaittime;
-        COUT(2) << "RELOAD WAIT TIME SET TO " << this->reloadWaitTime_ << endl;
+        //COUT(2) << "RELOAD WAIT TIME SET TO " << this->reloadWaitTime_ << endl;
     }
 
     void Pawn::decreaseReloadCountdownTime(float dt)
@@ -292,7 +292,7 @@ namespace orxonox
 
             // play damage effect
         }
-        COUT(3) << "neue damage-Funktion wurde aufgerufen // " << "Shield:" << this->getShieldHealth() << endl;
+        //COUT(3) << "neue damage-Funktion wurde aufgerufen // " << "Shield:" << this->getShieldHealth() << endl;
     }
 
 /////////////end me
@@ -345,7 +345,7 @@ namespace orxonox
 /////////////me override
     void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage)
     {
-        COUT(3) << "neue hit2-Funktion wurde aufgerufen // shielddamage: " << shielddamage << std::flush;
+//        COUT(3) << "neue hit2-Funktion wurde aufgerufen // shielddamage: " << shielddamage << std::flush;
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
             this->damage(damage, healthdamage, shielddamage, originator);
