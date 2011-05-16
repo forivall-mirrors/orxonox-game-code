@@ -68,8 +68,10 @@
       atmosphere="atmosphere1"
       rotationaxis="0,1,0"
       rotationrate="0.2"
-      atmospheresize="300.0f"
+      atmospheresize="80.0f"
       imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
     >
       <attached>
         <ForceField position="0,0,0" mode="newtonianGravity" diameter="140000" massDiameter="126000" mass="5.9e21" />
@@ -92,8 +94,10 @@
       atmosphere="atmosphere1"
       rotationaxis="0,1,0"
       rotationrate="0.2"
-      atmospheresize="300.0f"
+      atmospheresize="80.0f"
       imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
     >
       <attached>
         <ForceField position="0,0,0" mode="newtonianGravity" diameter="40000" massDiameter="34740" mass="7.36e19" />
@@ -106,6 +110,6 @@
 
     <!-- Create portals from Earth to the Moon -->
     <PortalLink fromID="1" toID="2" />
-    <!--<PortalLink fromID="2" toID="1" />-->
+    <PortalLink fromID="2" toID="1" />
   </Scene>
 </Level>
