@@ -26,49 +26,39 @@
  *
  */
 
-/**
-    @file DockToShip.h
-    @brief DockingEffect which transfers control from spaceship to docked ship ASDF
-    @ingroup Docking
-*/
-
-#ifndef _DockToShip_H__
-#define _DockToShip_H__
+#ifndef _DockingController_H__
+#define _DockingController_H__
 
 #include "DockingPrereqs.h"
-#include "DockToShip.h"
 
-#include "worldentities/ControllableEntity.h"
-
+#include "infos/PlayerInfo.h"
+#include "controllers/ArtificialController.h"
+#include "tools/interfaces/Tickable.h"
+#include "DockingController.h"
 
 namespace orxonox
 {
-
-    /**
-    @brief
-        Allows players to dock onto a ship
-
-    @author
-        Sven Stucki
-
-    @ingroup Docking
-    */
-    class _DockingExport DockToShip : public DockingEffect
+    class _OrxonoxExport DockingController : public ArtificialController, public Tickable
     {
         public:
-            DockToShip(BaseObject* creator);
-            virtual ~DockToShip();
+            DockingController(BaseObject* creator);
+            virtual ~DockingController();
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setTargetId(std::string str);
-            std::string getTargetId();
+            virtual void tick(float dt);
 
-            virtual bool docking(PlayerInfo* player); //!< Called when docking starts
-            virtual bool release(PlayerInfo* player); //!< Called when player wants undock
+            void takeControl(bool docking);
+
+            void setDock(Dock* dock) { this->dock = dock; }
+            void setEntity(ControllableEntity* entity) { this->entity = entity; }
+
+        protected:
+            virtual void positionReached();
+
         private:
-            std::string target;
+            Dock* dock;
+            bool docking;
+            ControllableEntity* entity;
     };
-
 }
 
-#endif /* _DockToShip_H__ */
+#endif /* _DockingController_H__ */

@@ -56,7 +56,6 @@ namespace orxonox
     Dock::Dock(BaseObject* creator) : StaticEntity(creator)
     {
         RegisterObject(Dock);
-        COUT(0) << "Registering dock..." << std::endl;
     }
 
     Dock::~Dock()
@@ -69,9 +68,8 @@ namespace orxonox
         SUPER(Dock, XMLPort, xmlelement, mode);
 
         XMLPortObject(Dock, DockingEffect, "effects", addEffect, getEffect, xmlelement, mode);
+        XMLPortObject(Dock, DockingAnimation, "animations", addAnimation, getAnimation, xmlelement, mode);
         XMLPortEventSink(Dock, BaseObject, "execute", execute, xmlelement, mode);
-
-        COUT(0) << "Dock created.." << std::endl;
     }
 
     void Dock::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
@@ -95,7 +93,9 @@ namespace orxonox
                 return false;
             }
             pawn = pTrigger->getTriggeringPlayer();
-        } else {
+        }
+        else
+        {
             COUT(2) << "Docking::execute Not a player trigger, can't extract pawn from it.." << std::endl;
             return false;
         }
@@ -109,11 +109,9 @@ namespace orxonox
         PlayerInfo* player = pawn->getPlayer();
         if(player == NULL)
         {
-            COUT(2) << "The PlayerInfo* is NULL." << std::endl;
+            COUT(2) << "Docking::execute The PlayerInfo* is NULL." << std::endl;
             return false;
         }
-
-        COUT(0) << "Dock triggered by player: " << player->getName() << ".." << std::endl;
 
         if(bTriggered)
         {
@@ -122,14 +120,11 @@ namespace orxonox
 
             // Show docking dialog
             GUIManager::showGUI("DockingDialog");
-            //DockingEffect::invokeEffect(docking::DOCKING, player, effects_);
         }
         else
         {
             // Remove player from candidates list
             candidates.erase(player);
-
-            //DockingEffect::invokeEffect(docking::RELEASE, player, effects_);
         }
 
         return true;
@@ -162,14 +157,30 @@ namespace orxonox
         // Check if player is a candidate
         if(candidates.find(player) == candidates.end())
         {
-            COUT(0) << "Player is not a candidate!" << std::endl;
+            COUT(0) << "Dock::dock Player is not a candidate!" << std::endl;
             return false;
         }
 
-        // Remove player from candidates, add to docked players and invoke docking effect
         candidates.erase(player);
         docked.insert(player);
-        DockingEffect::invokeEffect(docking::ATTACH, player, effects);
+
+        if (animations.empty())
+            return dockingAnimationFinished(player);
+        else
+            DockingAnimation::invokeAnimation(true, player, animations);
+
+        return true;
+    }
+
+    bool Dock::dockingAnimationFinished(PlayerInfo* player)
+    {
+        if(docked.find(player) == docked.end())
+        {
+            COUT(0) << "Dock::dockingAnimationFinished Player is not currently docked." << std::endl;
+            return false;
+        }
+
+        DockingEffect::invokeEffect(true, player, effects);
         return true;
     }
 
@@ -178,14 +189,25 @@ namespace orxonox
         // Check if player is docked to this Dock
         if(docked.find(player) == docked.end())
         {
-            COUT(0) << "Player is not docked to this Dock." << std::endl;
+            COUT(0) << "Dock::undock Player is not docked to this Dock." << std::endl;
             return false;
         }
 
-        // Remove player from docked, add to candidates and reverse DockingEffect 
         docked.erase(player);
         candidates.insert(player);
-        DockingEffect::invokeEffect(docking::RELEASE, player, effects);
+
+        DockingEffect::invokeEffect(false, player, effects);
+
+        if (animations.empty())
+            return undockingAnimationFinished(player);
+        else
+            DockingAnimation::invokeAnimation(false, player, animations);
+
+        return true;
+    }
+
+    bool Dock::undockingAnimationFinished(PlayerInfo* player) {
+        COUT(0) << "Dock::undockingAnimationFinished executed" << std::endl;
         return true;
     }
 
@@ -225,13 +247,31 @@ namespace orxonox
         return true;
     }
 
-    const DockingEffect* Dock::getEffect(unsigned int index) const
+    const DockingEffect* Dock::getEffect(unsigned int i) const
     {
-        int i = index;
         for (std::list<DockingEffect*>::const_iterator effect = this->effects.begin(); effect != this->effects.end(); ++effect)
         {
             if(i == 0)
                return *effect;
+            i--;
+        }
+        return NULL;
+    }
+
+    bool Dock::addAnimation(DockingAnimation* animation)
+    {
+        assert(animation);
+        animation->setParent(this);
+        animations.push_back(animation);
+        return true;
+    }
+
+    const DockingAnimation* Dock::getAnimation(unsigned int i) const
+    {
+        for (std::list<DockingAnimation*>::const_iterator animation = this->animations.begin(); animation != this->animations.end(); ++animation)
+        {
+            if(i == 0)
+               return *animation;
             i--;
         }
         return NULL;

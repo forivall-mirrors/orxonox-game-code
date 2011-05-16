@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Sven Stucki
  *   Co-authors:
  *      ...
  *
@@ -45,25 +45,16 @@ namespace orxonox
 
     }
 
-    bool DockingEffect::invokeEffect(docking::event event, PlayerInfo* player, std::list<DockingEffect*> & effects)
+    bool DockingEffect::invokeEffect(bool dock, PlayerInfo* player, std::list<DockingEffect*> & effects)
     {
         bool check = true;
 
-        COUT(4) << "Invoking DockingEffects on player: " << player << " ."  << std::endl;
-
         for (std::list<DockingEffect*>::iterator effect = effects.begin(); effect != effects.end(); effect++)
         {
-            switch(event)
-            {
-                case docking::DOCKING:
-                    check &= (*effect)->docking(player);
-                    break;
-                case docking::RELEASE:
-                    check &= (*effect)->release(player);
-                    break;
-                default:
-                    assert(0);
-            }
+            if (dock)
+                check &= (*effect)->docking(player);
+            else
+                check &= (*effect)->release(player);
         }
 
         return check;

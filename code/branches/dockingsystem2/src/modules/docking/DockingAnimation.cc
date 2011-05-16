@@ -27,48 +27,42 @@
  */
 
 /**
-    @file DockToShip.h
-    @brief DockingEffect which transfers control from spaceship to docked ship ASDF
-    @ingroup Docking
+    @file DockingAnimation.cc
+    @brief Implementation of the DockingAnimation class.
 */
 
-#ifndef _DockToShip_H__
-#define _DockToShip_H__
+#include "DockingAnimation.h"
 
-#include "DockingPrereqs.h"
-#include "DockToShip.h"
-
-#include "worldentities/ControllableEntity.h"
-
+#include "DockingEffect.h"  // For DockingEffect::findTarget
 
 namespace orxonox
 {
-
-    /**
-    @brief
-        Allows players to dock onto a ship
-
-    @author
-        Sven Stucki
-
-    @ingroup Docking
-    */
-    class _DockingExport DockToShip : public DockingEffect
+    DockingAnimation::DockingAnimation(BaseObject* creator) : BaseObject(creator)
     {
-        public:
-            DockToShip(BaseObject* creator);
-            virtual ~DockToShip();
+        RegisterObject(DockingAnimation);
+    }
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setTargetId(std::string str);
-            std::string getTargetId();
+    DockingAnimation::~DockingAnimation()
+    {
 
-            virtual bool docking(PlayerInfo* player); //!< Called when docking starts
-            virtual bool release(PlayerInfo* player); //!< Called when player wants undock
-        private:
-            std::string target;
-    };
+    }
 
+    bool DockingAnimation::invokeAnimation(bool dock, PlayerInfo* player, std::list<DockingAnimation*> &animations)
+    {
+        bool check = true;
+
+        for (std::list<DockingAnimation*>::iterator animation = animations.begin(); animation != animations.end(); animation++)
+        {
+            if(dock)
+                check &= (*animation)->docking(player);
+            else
+                check &= (*animation)->release(player);
+        }
+
+        return check;
+    }
+
+    DockingTarget *DockingAnimation::findTarget(std::string name) {
+        return DockingEffect::findTarget(name);
+    }
 }
-
-#endif /* _DockToShip_H__ */

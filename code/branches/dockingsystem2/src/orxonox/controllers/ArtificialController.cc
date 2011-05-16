@@ -380,11 +380,21 @@ namespace orxonox
                 this->getControllableEntity()->moveFrontBack(1.2f*SPEED_MASTER + distance/300.0f);
             }
         }
+
+        if (distance < 10)
+        {
+            this->positionReached();
+        }
     }
 
     void ArtificialController::moveToTargetPosition()
     {
         this->moveToPosition(this->targetPosition_);
+    }
+
+    void ArtificialController::positionReached()
+    {
+        // Override me !
     }
 
 

@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Sven Stucki
  *   Co-authors:
  *      ...
  *
@@ -67,12 +67,6 @@ namespace orxonox
 
 
     bool DockToShip::docking(PlayerInfo* player)
-    {
-        COUT(0) << "DockToShip::docking" << endl;
-        return true;
-    }
-
-    bool DockToShip::attach(PlayerInfo* player)
     {
         COUT(0) << "DockToShip::attach" << endl;
 

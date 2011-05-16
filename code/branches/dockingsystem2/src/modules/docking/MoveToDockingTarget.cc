@@ -27,48 +27,40 @@
  */
 
 /**
-    @file DockToShip.h
-    @brief DockingEffect which transfers control from spaceship to docked ship ASDF
+    @file MoveToDockingTarget.h
+    @brief Definition of the MoveToDockingTarget class.
     @ingroup Docking
 */
 
-#ifndef _DockToShip_H__
-#define _DockToShip_H__
+#include "MoveToDockingTarget.h"
 
-#include "DockingPrereqs.h"
-#include "DockToShip.h"
-
-#include "worldentities/ControllableEntity.h"
-
+#include "core/XMLPort.h"
 
 namespace orxonox
 {
+    CreateFactory(MoveToDockingTarget);
 
-    /**
-    @brief
-        Allows players to dock onto a ship
-
-    @author
-        Sven Stucki
-
-    @ingroup Docking
-    */
-    class _DockingExport DockToShip : public DockingEffect
+    MoveToDockingTarget::MoveToDockingTarget(BaseObject *creator) : DockingAnimation(creator)
     {
-        public:
-            DockToShip(BaseObject* creator);
-            virtual ~DockToShip();
+        RegisterObject(MoveToDockingTarget);
+    }
 
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setTargetId(std::string str);
-            std::string getTargetId();
+    MoveToDockingTarget::~MoveToDockingTarget() {
 
-            virtual bool docking(PlayerInfo* player); //!< Called when docking starts
-            virtual bool release(PlayerInfo* player); //!< Called when player wants undock
-        private:
-            std::string target;
-    };
+    }
+
+    bool MoveToDockingTarget::docking(PlayerInfo *player)
+    {
+        assert(parent);
+        parent->dockingAnimationFinished(player);
+        return true;
+    }
+
+    bool MoveToDockingTarget::release(PlayerInfo *player)
+    {
+        assert(parent);
+        parent->undockingAnimationFinished(player);
+        return true;
+    }
 
 }
-
-#endif /* _DockToShip_H__ */

@@ -1,7 +1,10 @@
 SET_SOURCE_FILES(DOCKING_SRC_FILES
   DockingTarget.cc
   DockingEffect.cc
+  DockingAnimation.cc
   DockToShip.cc
+  MoveToDockingTarget.cc
+  DockingController.cc
   Dock.cc
 )
 

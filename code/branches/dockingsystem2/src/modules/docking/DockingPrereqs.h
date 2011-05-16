@@ -65,9 +65,11 @@
 namespace orxonox
 {
     class Dock;
+    class DockingAnimation;
     class DockingTarget;
     class DockingEffect;
     class DockToShip;
+    class MoveToDockingTarget;
 }
 
 #endif /* _DockingPrereqs_H__ */

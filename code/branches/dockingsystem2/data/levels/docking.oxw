@@ -34,13 +34,12 @@
 
 
 
-
     <Dock>
-        <animation>
+        <animations>
             <MoveToDockingTarget target="destroyer" position="10,150,40" />
-        </animation>
+        </animations>
         <effects>
-            <DockToShip target="destroyer" />
+            <DockToShip target="spaceShip" />
         </effects>
         <events>
             <execute>
@@ -48,7 +47,7 @@
             </execute>
         </events>
         <attached>
-            <DistanceTrigger position="0,0,0" distance="30" target="Pawn" beaconMode="exclude" targetname="destroyerBeacon" name="dockMe" />
+            <DistanceTrigger position="0,0,0" distance="30" target="Pawn" beaconMode="exclude" targetname="bcnSpaceShip" name="dockMe" />
             <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
         </attached>
     </Dock>
@@ -78,8 +77,8 @@
    angularDamping    = "0.9999999"
   >
     <attached>
-        <DistanceTriggerBeacon name="bcnSpaceShip1" />
-        <DockingTarget name="spaceShip1" />
+        <DistanceTriggerBeacon name="bcnSpaceShip" />
+        <DockingTarget name="spaceShip" />
 
       <Model position="0,0,0" yaw="90" pitch="-90" roll="0" scale="4" mesh="assff.mesh" />
       <BlinkingBillboard position="17,-1.5,0" material="Examples/Flare" colour="1.0, 0.5, 0.3" amplitude="0.1" frequency="0.5" quadratic="1" />

@@ -20,20 +20,20 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Sven Stucki 
+ *      Sven Stucki
  *   Co-authors:
  *      ...
  *
  */
 
 /**
-    @file DockingEffect.h
-    @brief Definition of the DockingEffect class.
+    @file DockingAnimation.h
+    @brief Definition of the DockingAnimation class.
     @ingroup Docking
 */
 
-#ifndef _DockingEffect_H__
-#define _DockingEffect_H__
+#ifndef _DockingAnimation_H__
+#define _DockingAnimation_H__
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
@@ -42,6 +42,8 @@
 
 #include "DockingPrereqs.h"
 #include "DockingTarget.h"
+#include "Dock.h"
+
 
 #include <list>
 #include "core/BaseObject.h"
@@ -51,26 +53,32 @@ namespace orxonox
 
     /**
     @brief
-        Handles DockingEffects for @ref orxonox::Docking "Docks".
+        Base class for docking animations used by @ref orxonox::Docking "Docks".
 
     @author
         Sven Stucki
 
     @ingroup Docking
     */
-    class _DockingExport DockingEffect : public BaseObject
+    class _DockingExport DockingAnimation : public BaseObject
     {
         public:
-            DockingEffect(BaseObject* creator);
-            virtual ~DockingEffect();
+            DockingAnimation(BaseObject* creator);
+            virtual ~DockingAnimation();
 
-            virtual bool docking(PlayerInfo* player) = 0; //!< Called when player docked
+            virtual bool docking(PlayerInfo* player) = 0; //!< Called when a player starts docking
             virtual bool release(PlayerInfo* player) = 0; //!< Called when player wants to undock
 
-            static bool invokeEffect(bool dock, PlayerInfo* player, std::list<DockingEffect*> & effects); //!< Invokes the event specific method of all DockingEffects in the list
+            static bool invokeAnimation(bool dock, PlayerInfo* player, std::list<DockingAnimation*> &animations); //!< Invokes calls the docking or release method of all list entries
             static DockingTarget *findTarget(std::string name); //!< Iterates through all DockingTarget objects to find the one with name=target
+
+            void setParent(Dock *parent) { this->parent = parent; }
+
+        protected:
+            Dock *parent;
+            std::set<PlayerInfo*> animations; //!< Contains a list of currently running animations
     };
 
 }
 
-#endif /* _DockingEffect_H__ */
+#endif /* _DockingAnimation_H__ */

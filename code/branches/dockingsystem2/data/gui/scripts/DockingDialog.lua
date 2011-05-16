@@ -9,12 +9,12 @@ function P.onLoad()
 end
 
 function P.onShow()
-    orxonox.CommandExecutor:execute("pause")
+    orxonox.execute("setPause 1")
     P.update()
 end
 
 function P.onHide()
-    orxonox.CommandExecutor:execute("pause")
+    orxonox.execute("setPause 0")
 end
 
 function P.update()
@@ -41,9 +41,7 @@ function P.dockButton_clicked(e)
     if choice ~= nil then
         local index = listbox:getItemIndex(choice)
         local dock = P.docks[index+1]
-        cout(0, index )--.. ": " .. P.docks[index])
         if dock ~= nil then
-            cout(0, "LUA>Docking")
             dock:dock()
         end
     end
@@ -51,7 +49,6 @@ function P.dockButton_clicked(e)
 end
 
 function P.cancelButton_clicked(e)
-    --P.hideMe()
     hideMenuSheet(P.name)
 end
 
