@@ -52,22 +52,33 @@ namespace orxonox
     */
     class _OrxonoxExport GlobalGodrayShader : public BaseObject, public Tickable
     {
-    public:
-        GlobalGodrayShader(BaseObject* creator);
-        virtual ~GlobalGodrayShader();
+        public:
+            GlobalGodrayShader(BaseObject* creator);
+            virtual ~GlobalGodrayShader();
+            
+            virtual void tick(float dt);
+            
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         
-        virtual void tick(float dt);
+            virtual void changedVisibility();
+            
+            inline const GlobalShader& getGlobalShader() const
+            { return this->globalShader_; }
         
-        virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            void setSunPosition(const Vector3& position);
+            void setSkyColor(const Vector4& color);
+            const Vector3& getSunPosition() const;
+            const Vector4& getSkyColor() const;
         
-        inline const GlobalShader& getGlobalShader() const
-        { return this->globalShader_; }
-        
-    private:
-        
-        GlobalShader globalShader_;
-        Vector3 
-        
+        private:
+            
+            GlobalShader globalShader_;
+            
+            Vector3 sunPosition_;
+            float skyColor_[4];
+            float exposure_;
+            float decay_;
+            float density_;
     };
 }
 

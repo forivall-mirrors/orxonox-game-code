@@ -37,7 +37,7 @@ namespace orxonox
 {
     CreateFactory(GlobalShader);
 
-    GlobalShader::GlobalShader(BaseObject* creator) : BaseObject(creator), Synchronisable(creator)
+    GlobalShader::GlobalShader(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), 
     {
         RegisterObject(GlobalShader);
 
@@ -50,6 +50,7 @@ namespace orxonox
             this->shader_.setSceneManager(this->getScene()->getSceneManager());
 
         this->registerVariables();
+        
     }
 
     GlobalShader::~GlobalShader()

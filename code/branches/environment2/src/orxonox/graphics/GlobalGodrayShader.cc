@@ -29,10 +29,10 @@
 /**
  @file
  
- @brief Implementation of the GlobalGodrayShader.
+ @brief Implementation of the GlobalGodrayShader class.
  */
 
-#include "GlobalShader.h"
+#include "GlobalGodrayShader.h"
 
 #include "util/Exception.h"
 #include "core/CoreIncludes.h"
@@ -42,7 +42,7 @@ namespace orxonox
 {
     CreateFactory(GlobalGodrayShader);
     
-    GlobalGodrayShader::GlobalGodrayShader(BaseObject* creator, WorldEntity blurObject) : BaseObject(creator)
+    GlobalGodrayShader::GlobalGodrayShader(BaseObject* creator) : BaseObject(creator), globalShader_(creator)
     {
         RegisterObject(GlobalGodrayShader);
         
@@ -51,18 +51,60 @@ namespace orxonox
         //        if (!this->getScene()->getSceneManager())
         //            ThrowException(AbortLoading, "Can't create GlobalGodrayShader, no scene manager given.");
         
-        if (this->getScene()->getSceneManager())
-            this- setSceneManager(this->getScene()->getSceneManager());
+        this->skyColor_ = {0.0f, 0.0f, 0.0f, 1.0f};
+        this->exposure_ = 1.0f;
+        this->decay_ = 0.1f;
+        this->density_ = 0.7f;
     }
     
-    GlobalGodrayShader::~GlobalShader()
+    GlobalGodrayShader::~GlobalGodrayShader()
     {
+        this->setVisible(false);
+    }
+    
+    void GlobalGodrayShader::tick(float dt)
+    {
+        // To-Do
     }
     
     void GlobalGodrayShader::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(GlobalGodrayShader, XMLPort, xmlelement, mode);
         
-        XMLPortParamExtern(GlobalShader, Shader, &this->shader_, "compositor", setCompositorName, getCompositorName, xmlelement, mode);
+        XMLPortParamTemplate(GlobalGodrayShader, "sunPosition", setSunPosition, getSunPosition, xmlelement, mode, const Vector3&);
+        XMLPortParamTemplate(GlobalGodrayShader, "skyColor", setSkyColor, getSkyColor, xmlelement, mode, const Vector4&);
+        XMLPortParamVariable(GlobalGodrayShader, exposure_, "exposure", xmlelement, mode);
+        XMLPortParamVariable(GlobalGodrayShader, decay_, "decay", xmlelement, mode);
+        XMLPortParamVariable(GlobalGodrayShader, density_, "density", xmlelement, mode);
+    }
+    
+    void GlobalGodrayShader::setSunPosition(const Vector3& position)
+    {
+        this->sunPosition.x = position.x;
+        this->sunPosition.y = position.y;
+        this->sunPosition.z = position.z;
+    }
+    void GlobalGodrayShader::setSkyColor(const Vector4& color)
+    {
+        this->skyColor[0] = color.x;
+        this->skyColor[1] = color.y;
+        this->skyColor[2] = color.z;
+        this->skyColor[3] = color.w;
+    }
+    const Vector3& GlobalGodrayShader::getSunPosition() const
+    {
+        return sunPosition;
+    }
+    const Vector4& GlobalGodrayShader::getSkyColor() const
+    {
+        Vector4 &color = new Vector4(skyColor[0], skyColor[1], skyColor[2], skyColor[3]);
+        return color;
+    }
+    
+    void GlobalShader::changedVisibility()
+    {
+        SUPER(GlobalShader, changedVisibility);
+        
+        this->globalShader_.setVisible(this->isVisible());
     }
 }
