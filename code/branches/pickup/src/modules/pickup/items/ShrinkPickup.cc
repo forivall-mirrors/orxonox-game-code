@@ -51,6 +51,19 @@ namespace orxonox
 			//this->pawn->setScale3D(this->pawn->getScale3D() / 2.0);
 			std::set<WorldEntity*> set = this->pawn->getAttachedObjects();
 			
+			/*this->pawn->setScale3D(this->pawn->getScale3D() / 5.0);
+            this->pawn->setMass(this->pawn->getMass() / 5.0);
+
+            const std::list<SmartPtr<CameraPosition> > cameraPositions = this->pawn->getCameraPositions();
+            unsigned int size = cameraPositions.size();
+            for(unsigned int index = 0; index < size; index++)
+            {
+                CameraPosition* cameraPos = this->pawn->getCameraPosition(index);
+                if(cameraPos == NULL)
+                    continue;
+                cameraPos->setPosition(cameraPos->getPosition()*5.0);
+            }*/
+			
 			i = 0;
 			for(std::set<WorldEntity*>::iterator it = set.begin(); it != set.end(); it++)
 			{
