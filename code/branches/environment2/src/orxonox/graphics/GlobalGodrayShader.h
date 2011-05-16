@@ -30,7 +30,7 @@
 /**
  @file
  
- @brief Header of the GlobalGodrayShader.
+ @brief Header of the GlobalGodrayShader class.
 */
 
 
@@ -41,6 +41,7 @@
 
 #include "tools/interfaces/Tickable.h"
 #include "core/BaseObject.h"
+#include "util/Math.h"
 #include "GlobalShader.h"
 
 
@@ -66,16 +67,16 @@ namespace orxonox
             { return this->globalShader_; }
         
             void setSunPosition(const Vector3& position);
-            void setSkyColor(const Vector4& color);
+            void setSkyColor(const ColourValue& color);
             const Vector3& getSunPosition() const;
-            const Vector4& getSkyColor() const;
+            const ColourValue& getSkyColor() const;
         
         private:
             
             GlobalShader globalShader_;
             
             Vector3 sunPosition_;
-            float skyColor_[4];
+            ColourValue skyColor_;
             float exposure_;
             float decay_;
             float density_;

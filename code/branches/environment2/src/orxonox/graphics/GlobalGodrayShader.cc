@@ -51,10 +51,12 @@ namespace orxonox
         //        if (!this->getScene()->getSceneManager())
         //            ThrowException(AbortLoading, "Can't create GlobalGodrayShader, no scene manager given.");
         
-        this->skyColor_ = {0.0f, 0.0f, 0.0f, 1.0f};
+        this->skyColor_ = ColourValue::Black;
         this->exposure_ = 1.0f;
         this->decay_ = 0.1f;
         this->density_ = 0.7f;
+        
+        //// Init ////
     }
     
     GlobalGodrayShader::~GlobalGodrayShader()
@@ -72,38 +74,32 @@ namespace orxonox
         SUPER(GlobalGodrayShader, XMLPort, xmlelement, mode);
         
         XMLPortParamTemplate(GlobalGodrayShader, "sunPosition", setSunPosition, getSunPosition, xmlelement, mode, const Vector3&);
-        XMLPortParamTemplate(GlobalGodrayShader, "skyColor", setSkyColor, getSkyColor, xmlelement, mode, const Vector4&);
-        XMLPortParamVariable(GlobalGodrayShader, exposure_, "exposure", xmlelement, mode);
-        XMLPortParamVariable(GlobalGodrayShader, decay_, "decay", xmlelement, mode);
-        XMLPortParamVariable(GlobalGodrayShader, density_, "density", xmlelement, mode);
+        XMLPortParamTemplate(GlobalGodrayShader, "skyColor", setSkyColor, getSkyColor, xmlelement, mode, const ColourValue&);
+        XMLPortParamVariable(GlobalGodrayShader, "exposure", exposure_, xmlelement, mode);
+        XMLPortParamVariable(GlobalGodrayShader, "decay", decay_, xmlelement, mode);
+        XMLPortParamVariable(GlobalGodrayShader, "density", density_, xmlelement, mode);
     }
     
     void GlobalGodrayShader::setSunPosition(const Vector3& position)
     {
-        this->sunPosition.x = position.x;
-        this->sunPosition.y = position.y;
-        this->sunPosition.z = position.z;
+        this->sunPosition_ = position;
     }
-    void GlobalGodrayShader::setSkyColor(const Vector4& color)
+    void GlobalGodrayShader::setSkyColor(const ColourValue& color)
     {
-        this->skyColor[0] = color.x;
-        this->skyColor[1] = color.y;
-        this->skyColor[2] = color.z;
-        this->skyColor[3] = color.w;
+        this->skyColor_ = color;
     }
     const Vector3& GlobalGodrayShader::getSunPosition() const
     {
-        return sunPosition;
+        return this->sunPosition_;
     }
-    const Vector4& GlobalGodrayShader::getSkyColor() const
+    const ColourValue& GlobalGodrayShader::getSkyColor() const
     {
-        Vector4 &color = new Vector4(skyColor[0], skyColor[1], skyColor[2], skyColor[3]);
-        return color;
+        return this->skyColor_;
     }
     
-    void GlobalShader::changedVisibility()
+    void GlobalGodrayShader::changedVisibility()
     {
-        SUPER(GlobalShader, changedVisibility);
+        SUPER(GlobalGodrayShader, changedVisibility);
         
         this->globalShader_.setVisible(this->isVisible());
     }
