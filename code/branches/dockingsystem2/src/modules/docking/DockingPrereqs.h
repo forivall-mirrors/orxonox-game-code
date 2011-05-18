@@ -66,6 +66,7 @@ namespace orxonox
 {
     class Dock;
     class DockingAnimation;
+    class DockingController;
     class DockingTarget;
     class DockingEffect;
     class DockToShip;

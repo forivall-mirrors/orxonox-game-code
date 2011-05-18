@@ -60,8 +60,8 @@ namespace orxonox
             virtual ~DockToShip();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void setTargetId(std::string str);
-            std::string getTargetId();
+            void setTargetId(const std::string& str);
+            const std::string& getTargetId() const;
 
             virtual bool docking(PlayerInfo* player); //!< Called when docking starts
             virtual bool release(PlayerInfo* player); //!< Called when player wants undock

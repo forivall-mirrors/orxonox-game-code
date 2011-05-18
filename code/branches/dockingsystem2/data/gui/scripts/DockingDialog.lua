@@ -13,7 +13,7 @@ function P.onLoad()
     })
 
     P:setButton(1, 2, {
-            ["button"] = winMgr:getWindow("orxonox/DockingCancelButto"),
+            ["button"] = winMgr:getWindow("orxonox/DockingCancelButton"),
             ["callback"]  = P.cancelButton_clicked
     })
     

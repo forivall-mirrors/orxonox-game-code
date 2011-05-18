@@ -28,8 +28,9 @@
 
 #include "DockingController.h"
 
+#include "infos/PlayerInfo.h"
+#include "worldentities/ControllableEntity.h"
 #include "Dock.h"
-
 
 namespace orxonox
 {
@@ -55,6 +56,8 @@ namespace orxonox
     void DockingController::positionReached()
     {
         // TODO; Give control back to player
+        PlayerInfo* player = this->entity->getPlayer();
+        assert(player);
 
         if (docking)
             dock->dockingAnimationFinished(player);
@@ -62,3 +65,4 @@ namespace orxonox
             dock->undockingAnimationFinished(player);
     }
 }
+

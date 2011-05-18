@@ -62,8 +62,8 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            virtual void setName(std::string str);
-            virtual std::string getName();
+            virtual void setName(const std::string& str);
+            virtual const std::string& getName() const;
     };
 
 }

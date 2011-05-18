@@ -57,11 +57,11 @@ namespace orxonox
         XMLPortParam(DockToShip, "target", setTargetId, getTargetId, xmlelement, mode);
     }
 
-    void DockToShip::setTargetId(std::string str) {
+    void DockToShip::setTargetId(const std::string& str) {
         this->target = str;
     }
 
-    std::string DockToShip::getTargetId() {
+    const std::string& DockToShip::getTargetId() const {
         return this->target;
     }
 
@@ -98,3 +98,4 @@ namespace orxonox
         return true;
     }
 }
+

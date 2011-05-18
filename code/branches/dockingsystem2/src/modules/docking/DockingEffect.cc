@@ -70,3 +70,4 @@ namespace orxonox
         return NULL;
     }
 }
+

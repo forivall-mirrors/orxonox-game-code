@@ -277,3 +277,4 @@ namespace orxonox
         return NULL;
     }
 }
+

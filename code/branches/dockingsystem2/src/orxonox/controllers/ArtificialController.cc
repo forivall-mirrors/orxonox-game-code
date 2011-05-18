@@ -392,12 +392,6 @@ namespace orxonox
         this->moveToPosition(this->targetPosition_);
     }
 
-    void ArtificialController::positionReached()
-    {
-        // Override me !
-    }
-
-
     /**
         @brief Unregisters a slave from its master. Initiated by a slave.
     */

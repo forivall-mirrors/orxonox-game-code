@@ -66,3 +66,4 @@ namespace orxonox
         return DockingEffect::findTarget(name);
     }
 }
+
