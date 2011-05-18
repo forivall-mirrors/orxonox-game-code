@@ -5,6 +5,17 @@ local P = createMenuSheet("DockingDialog")
 P.docks = {}
 
 function P.onLoad()
+
+     --button are arranged in a 1x2 matrix
+    P:setButton(1, 1, {
+            ["button"] = winMgr:getWindow("orxonox/DockingDockButton"),
+            ["callback"]  = P.dockButton_clicked
+    })
+
+    P:setButton(1, 2, {
+            ["button"] = winMgr:getWindow("orxonox/DockingCancelButto"),
+            ["callback"]  = P.cancelButton_clicked
+    })
     
 end
 
