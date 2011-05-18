@@ -45,7 +45,7 @@ namespace orxonox
     const float orientationGain = 100;
     CreateFactory(SpaceShip);
 
-    SpaceShip::SpaceShip(BaseObject* creator) : Pawn(creator)
+    SpaceShip::SpaceShip(BaseObject* creator) : Pawn(creator), boostBlur_(NULL)
     {
         RegisterObject(SpaceShip);
 
@@ -58,8 +58,6 @@ namespace orxonox
         this->bBoost_ = false;
         this->steering_ = Vector3::ZERO;
         //this->engine_ = 0;
-		
-        this->boostBlur_ = 0;
 
         this->boostPower_ = 10.0f;
         this->initialBoostPower_ = 10.0f;
