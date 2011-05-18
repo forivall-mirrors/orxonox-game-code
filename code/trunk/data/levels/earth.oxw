@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Earth Demonstration"
  description = "1:100 Scale Model of Earth with Gravity"
- tags = "earth, gravity"
+ tags = "showcase"
 />
 
 <?lua
