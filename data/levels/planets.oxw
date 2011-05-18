@@ -1,7 +1,7 @@
 <LevelInfo
  name = "Planet Demonstration"
  description = "Demonstration of Planets"
- tags = "planets"
+ tags = "showcase"
 />
 
 <?lua
