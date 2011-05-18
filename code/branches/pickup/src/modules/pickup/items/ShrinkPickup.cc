@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Sandro Sgier
  *   Co-authors:
  *      ...
  *
@@ -96,10 +96,6 @@ namespace orxonox
             isActive_ = true;
             durationTimer.setTimer(duration_, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));
         }
-        else
-        {
-            this->Pickupable::destroy();
-        }
     }
 
     void ShrinkPickup::tick(float dt)
@@ -143,13 +139,15 @@ namespace orxonox
             }
         }
         else if(isTerminating_ == true)
-        setUsed(false);
+            this->Pickupable::destroy();
+
     }
 
     void ShrinkPickup::terminate(void)
     {
         isActive_ = false;
         isTerminating_ = true;
+        setUsed(false);
     }
 
     Pawn* ShrinkPickup::carrierToPawnHelper(void)

@@ -183,11 +183,11 @@
       </pickup>
     </PickupRepresentation>
 
-    <!--PickupSpawner position="-50,0,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
+    <PickupSpawner position="-50,0,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
       <pickup>
         <HealthPickup health=500 activationType=immediate healthRate=10 durationType=continuous />
       </pickup>
-    </PickupSpawner-->
+    </PickupSpawner>
 
     <PickupSpawner position="-30,-30,-30" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
       <pickup>
