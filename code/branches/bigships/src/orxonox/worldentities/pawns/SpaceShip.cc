@@ -84,10 +84,12 @@ namespace orxonox
     SpaceShip::~SpaceShip()
     {
         if (this->isInitialized())
+        {
             this->removeAllEngines();
 		
-        if (this->boostBlur_)
-            this->boostBlur_->destroy();
+            if (this->boostBlur_)
+                this->boostBlur_->destroy();
+        }
     }
 
     void SpaceShip::XMLPort(Element& xmlelement, XMLPort::Mode mode)
