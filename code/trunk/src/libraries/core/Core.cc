@@ -85,7 +85,7 @@ namespace orxonox
 #endif
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
-    SetCommandLineArgument(limitToCPU, 1).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is the first core (faster than off)");
+    SetCommandLineArgument(limitToCPU, 0).information("Limits the program to one CPU/core (1, 2, 3, etc.). Default is off = 0.");
 #endif
 
     Core::Core(const std::string& cmdLine)
