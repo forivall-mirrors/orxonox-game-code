@@ -50,11 +50,18 @@ namespace orxonox
         , pitch_ (1.0)
     {
         RegisterRootObject(BaseSound);
+        
+        if (int error = alGetError())
+            COUT(4) << "Sound: Received ALError before alIsSource(): " << SoundManager::getALErrorString(error) << std::endl;
 
         // Initialise audioSource_ to a value that is not a source
         // 0 is unfortunately not guaranteed to be no source ID.
-        this->audioSource_ = 123456789;
+        // HACK!
+        this->audioSource_ = 0;
         while (alIsSource(++this->audioSource_));
+        
+        if (int error = alGetError())
+            COUT(4) << "Sound: Received ALError after alIsSource(): " << SoundManager::getALErrorString(error) << std::endl;
     }
 
     BaseSound::~BaseSound()
@@ -164,7 +171,7 @@ namespace orxonox
     {
         if (alIsSource(this->audioSource_))
         {
-            float volume = this->volume_ * this->getRealVolume();
+            float volume = this->volume_ * this->getRealVolume();                
             alSourcef(this->audioSource_, AL_GAIN, volume);
             if (int error = alGetError())
                 COUT(2) << "Sound: Error setting volume to " << volume
