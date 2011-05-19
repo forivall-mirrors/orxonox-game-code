@@ -26,7 +26,9 @@
  *
  */
  
- /* TODO:   - Textmessages und Billboards sollen teils nur bei einem humanPlayer angezeigt werden, nicht bei allen (vgl. Netzwerk-Spiel mit mehreren humanPlayers)
+ /* TODO:   - Bei Reaction_ == 2 ist die Reflexion noch nicht ganz so top!! Vielleicht auch so belassen, ist ja nicht unbedingt schlecht.
+ 
+            - Textmessages und Billboards sollen teils nur bei einem humanPlayer angezeigt werden, nicht bei allen (vgl. Netzwerk-Spiel mit mehreren humanPlayers)
                 beachte hierzu folgende statische Funktion: 'static unsigned int  Host::getPlayerID()'
                 (file:///home/kmaurus/orxonox/spaceBoundaries/build/doc/api/html/classorxonox_1_1_host.html#9c1e3b39e3b42e467dfbf42902911ce2)
                 
@@ -66,6 +68,7 @@ namespace orxonox
        - 'reactionMode' : Integer-Value. Defines what effect appears if a space ship has crossed the boundaries.
                             0: Reflect the space ship (default).
                             1: Decrease Health of the space ship after having left the allowed area.
+                            2: Inverted Version of 0. Prohibit to fly INTO a defined area.
        - 'healthDecrease' : a measure to define how fast the health of a pawn should decrease after leaving the allowed area (unnecessary if 'reactionMode' == 0).
                             Recommended values: 0.1 (slow health decrease) to 5 (very fast health decrease)
 
@@ -87,12 +90,6 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
         public:
             SpaceBoundaries(BaseObject* creator);
             ~SpaceBoundaries();
-            
-            void checkWhoIsIn(); //!< Update the list 'pawnsIn_'.
-            
-            void positionBillboard(const Vector3 position); //!< Display a Billboard at the position 'position'.
-            void setBillboardOptions(Billboard *billy);
-            void removeAllBillboards(); //!< Hide all elements of '*billboard_' and set their attribute 'usedYet' to 0.
             
             void setMaxDistance(float r);
             float getMaxDistance();
@@ -116,11 +113,15 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
         private:
             struct billboardAdministration{ bool usedYet; Billboard* billy; };
             
+            // Variabeln::
             std::list<WeakPtr<Pawn> > pawnsIn_; //!< List of the pawns that this instance of SpaceBoundaries has to handle.
             
             std::vector<billboardAdministration> billboards_;
         
-            int reaction_; //!< Werte: 0, 1. 0: Reflektion an Boundaries (Standard). 1: Health-Abzug-Modus.
+            int reaction_; //!< Werte: 0, 1, 2. 
+                           //!< 0: Reflektion an Boundaries (Standard).
+                           //!< 1: Health-Abzug-Modus.
+                           //!< 2: Invertierte Version von 0. Verbiete es, in ein Gebiet hinein zu fliegen.
             float maxDistance_; //!< maximal zulaessige Entfernung von 'this->getPosition()'.
             float warnDistance_; //!< Entfernung von 'this->getPosition()', ab der eine Warnung angezeigt wird, dass man bald das zulaessige Areal verlaesst.
             float showDistance_; //!< Definiert, wann die Grenzen visualisiert werden sollen.
@@ -128,13 +129,23 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
             float healthDecrease_; //!< Mass fuer die Anzahl Health-Points, die nach ueberschreiten der Entfernung 'maxDistance_' von 'this->getPosition()' abgezogen werden.
                                    //!< Empfohlene Werte: 0.1 (langsame Health-Verminderung) bis 5 (sehr schnelle Health-Verminderung)
             
+            
             RadarViewable* centerRadar_; //!< Repraesentation von SpaceBoundaries auf dem Radar.
         
+        
+            // Funktionen::
             float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'this->getPosition()' bezogen.
             void displayWarning(const std::string warnText);
             void displayBoundaries(Pawn *item);
             void conditionalBounceBack(Pawn *item, float currentDistance, float dt);
+            void bounceBack(Pawn *item, Vector3 *normal, Vector3 *velocity);
             bool isHumanPlayer(Pawn *item);
+            
+            void checkWhoIsIn(); //!< Update the list 'pawnsIn_'.
+            
+            void positionBillboard(const Vector3 position); //!< Display a Billboard at the position 'position'.
+            void setBillboardOptions(Billboard *billy);
+            void removeAllBillboards(); //!< Hide all elements of '*billboard_' and set their attribute 'usedYet' to 0.
             
     };
 }

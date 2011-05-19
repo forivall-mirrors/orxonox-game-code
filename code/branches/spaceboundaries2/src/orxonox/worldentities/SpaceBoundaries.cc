@@ -86,6 +86,12 @@ namespace orxonox
                 {
                     pawnsIn_.push_back(currentPawn);
                 }
+            } else if (this->reaction_ == 2) {
+                float distance = this->computeDistance(currentPawn);
+                if(distance >= this->maxDistance_)
+                {
+                    pawnsIn_.push_back(currentPawn);
+                }
             } else {
                 pawnsIn_.push_back(currentPawn);
             }
@@ -121,7 +127,7 @@ namespace orxonox
     {
         if(billy != NULL)
         {
-            billy->setMaterial("Shield");
+            billy->setMaterial("Grid");
             billy->setVisible(true);
         }
     }
@@ -215,7 +221,7 @@ namespace orxonox
                         this->displayWarning("Attention! You are close to the boundary!");
                     }
                 }
-                if( humanItem && (this->maxDistance_ - distance) < this->showDistance_ )
+                if(/* humanItem &&*/ abs(this->maxDistance_ - distance) < this->showDistance_ )
                 {
                     this->displayBoundaries(currentPawn); // Zeige Grenze an!
                 }
@@ -229,6 +235,10 @@ namespace orxonox
                     currentPawn->removeHealth( (distance - this->maxDistance_) * this->healthDecrease_);
                 }
                 if( (this->reaction_ == 0) && (distance + 100 > this->maxDistance_)) // Annahme: Ein Pawn kann von einem Tick bis zum nächsten nicht mehr als 100 Distanzeinheiten zurücklegen.
+                {
+                    this->conditionalBounceBack(currentPawn, distance, dt);
+                }
+                if( this->reaction_ == 2 && (distance - 100 < this->maxDistance_) )
                 {
                     this->conditionalBounceBack(currentPawn, distance, dt);
                 }
@@ -272,20 +282,29 @@ namespace orxonox
         
         /* Checke, ob das Pawn innerhalb des nächsten Ticks, das erlaubte Gebiet verlassen würde.
            Falls ja: Spicke es zurück. */
-        if( currentDistance + normalSpeed * dt > this->maxDistance_ - 20 ) // -20: "security measure"
+        if( this->reaction_ == 0 && currentDistance + normalSpeed * dt > this->maxDistance_ - 10 ) // -10: "security measure"
         {
-            float dampingFactor = 0.5;
-            velocity = velocity.reflect(normal);
-            Vector3 acceleration = item->getAcceleration();
-            acceleration = acceleration.reflect(normal);
-            
-            item->lookAt( velocity + this->getPosition() );
-            
-            item->setAcceleration(acceleration * dampingFactor);
-            item->setVelocity(velocity * dampingFactor);
-            
-            item->setPosition( item->getPosition() - normal * 10 );
+            bounceBack(item, &normal, &velocity);
+        } else if (this->reaction_ == 2 && currentDistance - normalSpeed * dt < this->maxDistance_ + 10 ) // 10: "security measure"
+        {
+            normal = normal * (-1);
+            bounceBack(item, &normal, &velocity);
         }
+    }
+    
+    void SpaceBoundaries::bounceBack(Pawn *item, Vector3 *normal, Vector3 *velocity)
+    {
+        float dampingFactor = 0.5;
+        *velocity = velocity->reflect(*normal);
+        Vector3 acceleration = item->getAcceleration();
+        acceleration = acceleration.reflect(*normal);
+        
+        item->lookAt( *velocity + this->getPosition() );
+        
+        item->setAcceleration(acceleration * dampingFactor);
+        item->setVelocity(*velocity * dampingFactor);
+        
+        item->setPosition( item->getPosition() - *normal * 10 ); // Setze das SpaceShip noch etwas von der Grenze weg.
     }
     
     bool SpaceBoundaries::isHumanPlayer(Pawn *item)
