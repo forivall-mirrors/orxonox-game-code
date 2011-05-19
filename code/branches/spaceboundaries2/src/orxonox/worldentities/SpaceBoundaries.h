@@ -49,7 +49,6 @@
 
 #include <string>
 #include <list>
-#include <map>
 #include <vector>
 
 namespace orxonox
@@ -93,7 +92,7 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
             
             void positionBillboard(const Vector3 position); //!< Display a Billboard at the position 'position'.
             void setBillboardOptions(Billboard *billy);
-            void removeAllBillboards(); //!< Hide all all elements of '*billboard_' and set their attribute 'usedYet' to 0.
+            void removeAllBillboards(); //!< Hide all elements of '*billboard_' and set their attribute 'usedYet' to 0.
             
             void setMaxDistance(float r);
             float getMaxDistance();

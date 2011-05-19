@@ -272,7 +272,7 @@ namespace orxonox
         
         /* Checke, ob das Pawn innerhalb des nächsten Ticks, das erlaubte Gebiet verlassen würde.
            Falls ja: Spicke es zurück. */
-        if( currentDistance + normalSpeed * dt > this->maxDistance_ - 10 ) // -10: "security measure"
+        if( currentDistance + normalSpeed * dt > this->maxDistance_ - 20 ) // -20: "security measure"
         {
             float dampingFactor = 0.5;
             velocity = velocity.reflect(normal);
@@ -283,6 +283,8 @@ namespace orxonox
             
             item->setAcceleration(acceleration * dampingFactor);
             item->setVelocity(velocity * dampingFactor);
+            
+            item->setPosition( item->getPosition() - normal * 10 );
         }
     }
     
