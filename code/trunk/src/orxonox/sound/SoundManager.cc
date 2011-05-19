@@ -73,9 +73,12 @@ namespace orxonox
         this->bDestructorCalled_ = false;
 
         // Clear error messages (might be problematic on some systems)
-        alGetError();
-        alutGetError();
-
+        //alGetError();
+        //alutGetError();
+        
+        if (int error = alGetError())
+            COUT(0) << "SOUND_DEBUG: Received ALError in constructor of SoundManager: " << SoundManager::getALErrorString(error) << std::endl;
+         
         // See whether we even want to load
         bool bDisableSound_ = false;
         SetConfigValue(bDisableSound_, false);
