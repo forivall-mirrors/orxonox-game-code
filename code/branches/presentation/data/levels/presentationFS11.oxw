@@ -29,7 +29,7 @@ include("templates/pickupRepresentationTemplates.oxt")
 
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
-    skybox       = "Orxonox/Starbox"
+    skybox       = "Orxonox/skyboxempty"
   >
 
     <?lua
@@ -51,7 +51,6 @@ include("templates/pickupRepresentationTemplates.oxt")
     <!-- BOUNDARIES AND PORTALS -->
     
     <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="0,0,0"/>
-    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-10000,0,0"/>
 
     <Template name=PortalDefault>
         <PortalEndPoint>
@@ -62,10 +61,16 @@ include("templates/pickupRepresentationTemplates.oxt")
     </Template>
 
     <PortalEndPoint position="350,0,0" id="1" distance="40" target="MobileEntity" design="PortalDefault"/>
-    <PortalEndPoint position="-10300,0,0" id="2" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <PortalEndPoint position="-90300,0,0" id="2" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-90000,0,0"/>
+    <PortalEndPoint position="-350,0,0" id="3" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <PortalEndPoint position="0,10300,0" id="4" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="0,10000,0"/>
+
     <PortalLink fromID="1" toID="2" />
     <PortalLink fromID="2" toID="1" />
-
+    <PortalLink fromID="3" toID="4" />
+    <PortalLink fromID="4" toID="3" />
 
 
     <!-- MODELS, DEBRIS, ETC -->
@@ -90,11 +95,147 @@ include("templates/pickupRepresentationTemplates.oxt")
       </collisionShapes>
     </Planet>
 
+    <!-- This is a model of Earth: mass=EarthMass/1000 and radius=EarthRadius[km]*10 -->
+    <Planet
+      position="70500,0,0"
+      scale="63000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="5.9e21"
+      pitch="0"
+      mesh="planets/earth.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="0,1,0"
+      rotationrate="0.2"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="newtonianGravity" diameter="140000" massDiameter="126000" mass="5.9e21" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="63000" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+
+    <!-- This is a model of our Moon: mass=MoonMass/1000 and radius=MoonRadius[km]*10 and position=DistanceFromEarth[km]*10 -->
+    <Planet
+      position="-30000,0,0"
+      scale="17370"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="7.36e19"
+      pitch="0"
+      mesh="planets/moon.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="0,1,0"
+      rotationrate="0.2"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="newtonianGravity" diameter="40000" massDiameter="34740" mass="7.36e19" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="17370" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+
     <MovableEntity position="0,0,0">
       <attached>
         <Billboard position="-5000,0,0" material="Examples/Flare" colour="0, 0, 1" scale=10/>
       </attached>
     </MovableEntity>
+
+    <Destroyer
+      position          = "100,150,0"
+      collisionType     = dynamic
+      mass              = 100000
+      velocity          = "0,0,0"
+      angularDamping    = 0.9999999
+      health            = 10000
+      maxhealth         = 10000
+      initialhealth     = 10000
+    >
+
+      <attached>
+        <Model mesh="Carrier.mesh" scale="5" />
+        <Backlight
+          mainstate=activity
+          active=false
+          scale=0.4
+          name=bltest
+          position=" 7.6, 0, 6"
+          colour="0.2, 0.65, 1.0, 1.0"
+          width=15
+          length=1500
+          lifetime=2
+          elements=50
+          trailmaterial="Trail/backlighttrail"
+          turnontime=1
+          turnofftime=1
+          material="Flares/ThrusterFlare1"
+        />
+        <?lua for i=0,8,1 do ?>
+          <BlinkingBillboard
+            position="<?lua print(200-270/8*i)?> ,15,2"
+            material="Examples/Flare"
+            colour="1.0, 0.5, 0.3"
+            phase="<?lua print(-360/8*i)?>"
+            amplitude=0.1
+            frequency=0.5
+            quadratic=1
+          />
+
+          <BlinkingBillboard
+            position="<?lua print(200-270/8*i)?>,-15,2"
+            material="Examples/Flare"
+            colour="1.0, 0.5, 0.3"
+            phase="<?lua print(-360/8*i)?>"
+            amplitude=0.1
+            frequency=0.5
+            quadratic=1
+          />
+        <?lua end ?>
+
+        <Backlight
+          scale=1
+          position=" 169, 75, -15"
+          colour="1, 0.85, 0.5, 0.5"
+          width=40
+          length=1000
+          lifetime=5
+          elements=15
+          trailmaterial="Trail/backlighttrail"
+          material="Examples/Flare"
+        />
+        <Backlight
+          scale=1
+          position=" 169, -75, -15"
+          colour="1, 0.85, 0.5, 0.5"
+          width=40
+          length=1000
+          lifetime=5
+          elements=15
+          trailmaterial="Trail/backlighttrail"
+          material="Examples/Flare" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="70,0,-25"      halfExtents="150, 50, 25" />
+        <BoxCollisionShape position="95,75,-16"     halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="95,-75,-16"    halfExtents="70, 10, 12" />
+        <BoxCollisionShape position="77,47,30"      halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,-47,30"     halfExtents="110, 2, 30" />
+        <BoxCollisionShape position="77,0,50"       halfExtents="110, 45, 6" />
+        <BoxCollisionShape position="167,0,70"      halfExtents="17, 20, 20" />
+      </collisionShapes>
+    </Destroyer>
 
     
   </Scene>
