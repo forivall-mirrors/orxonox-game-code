@@ -13,7 +13,7 @@ namespace orxonox
 
     std::map<unsigned int, PortalEndPoint *> PortalEndPoint::idMap_s;
 
-    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), id_(0), trigger_(new DistanceMultiTrigger(this))
+    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), id_(0), trigger_(new DistanceMultiTrigger(this)), reenterDelay_(0)
     {
         RegisterObject(PortalEndPoint);
         this->trigger_->setName("portal");
@@ -31,7 +31,8 @@ namespace orxonox
         
         XMLPortParam(PortalEndPoint, "id", setID, getID, xmlelement, mode);
         XMLPortParam(PortalEndPoint, "design", setTemplate, getTemplate, xmlelement, mode);
-        XMLPortParamExtern(PortalEndPoint, DistanceMultiTrigger, this->trigger_, "distance", setDistance, getDistance, xmlelement, mode).defaultValues("50");
+        XMLPortParam(PortalEndPoint, "reenterDelay", setReenterDelay, getReenterDelay, xmlelement, mode);
+        XMLPortParamExtern(PortalEndPoint, DistanceMultiTrigger, this->trigger_, "distance", setDistance, getDistance, xmlelement, mode);
         XMLPortParamLoadOnly(PortalEndPoint, "target", setTarget, xmlelement, mode).defaultValues("Pawn");
         
         // Add the DistanceMultiTrigger as event source.
@@ -62,7 +63,7 @@ namespace orxonox
         DistanceMultiTrigger * originatingTrigger = orxonox_cast<DistanceMultiTrigger *>(cont->getOriginator());
         if(originatingTrigger == 0)
         {
-            COUT(1) << "originator no DistanceMultiTrigger\n" << std::endl;
+            // COUT(1) << "originator no DistanceMultiTrigger\n" << std::endl;
             return true;
         }
         
@@ -72,7 +73,7 @@ namespace orxonox
         
         if(bTriggered)
         {
-            if(this->recentlyJumpedOut_.find(entity) == this->recentlyJumpedOut_.end())  // only enter the portal if not just jumped out of it
+            if(this->letsEnter(entity))  // only enter the portal if not just (this very moment) jumped out of it, or if the reenterDelay expired
             {
                 PortalLink::use(entity, this);
             }
@@ -85,8 +86,24 @@ namespace orxonox
         return true;
     }
 
+    bool PortalEndPoint::letsEnter(MobileEntity* entity)
+    {
+        // not allowed to enter if reenterDelay hasn't expired yet
+        std::map<MobileEntity *, time_t>::const_iterator time = this->jumpOutTimes_.find(entity);
+        if(time != this->jumpOutTimes_.end() && std::difftime(std::time(0),time->second) < this->reenterDelay_)
+            return false;
+
+        // not allowed to enter if jumped out of this portal and not left its activation radius yet
+        std::set<MobileEntity *>::const_iterator recent = this->recentlyJumpedOut_.find(entity);
+        if(recent != this->recentlyJumpedOut_.end())
+            return false;
+        
+        return true;
+    }
+
     void PortalEndPoint::jumpOut(MobileEntity* entity)
     {
+        this->jumpOutTimes_[entity] = std::time(0);
         this->recentlyJumpedOut_.insert(entity);
         
         entity->setPosition(this->getWorldPosition());

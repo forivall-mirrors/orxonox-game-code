@@ -40,12 +40,12 @@ namespace orxonox
             return;
         }
         
-        std::map<PortalEndPoint *, PortalEndPoint *>::iterator endpoint = PortalLink::links_s.find(entrance);
+        std::map<PortalEndPoint *, PortalEndPoint *>::iterator endpoints = PortalLink::links_s.find(entrance);
         
-        if(endpoint == PortalLink::links_s.end())  // entrance has no corresponding exit
+        if(endpoints == PortalLink::links_s.end())  // entrance has no corresponding exit
             return;
         
-        endpoint->second->jumpOut(entity);
+        endpoints->second->jumpOut(entity);
     }
 
 
