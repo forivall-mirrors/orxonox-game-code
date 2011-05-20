@@ -68,7 +68,7 @@ namespace orxonox
             Gets temporary log path and starts the log file
         */
         LogFileWriter()
-            : OutputListener(OutputHandler::logFileOutputListenerName_s)
+            : OutputListener("LogFile")
         {
             // Get path for a temporary file
 #ifdef ORXONOX_PLATFORM_WINDOWS
@@ -84,35 +84,59 @@ namespace orxonox
             time(&rawtime);
             timeinfo = localtime(&rawtime);
 
-            this->logFile_.open(this->logFilename_.c_str(), std::fstream::out);
-            this->logFile_ << "Started log on " << asctime(timeinfo) << std::endl;
-            this->logFile_.flush();
-
-            this->outputStream_ = &this->logFile_;
+            this->openFile();
+            if (this->logFile_.is_open())
+            {
+                this->logFile_ << "Started log on " << asctime(timeinfo) << std::endl;
+                this->logFile_.flush();
+            }
         }
 
         //! Closes the log file
         ~LogFileWriter()
         {
-            this->logFile_ << "Closed log" << std::endl;
-            this->logFile_.close();
+            if (this->logFile_.is_open())
+            {
+                this->logFile_ << "Closed log" << std::endl;
+                this->logFile_.close();
+            }
         }
 
         //! Changes the log path
         void setLogPath(const std::string& path)
         {
-            this->logFile_.close();
-            // Read old file into a buffer
-            std::ifstream old(this->logFilename_.c_str());
+            if (this->logFile_.is_open())
+                this->logFile_.close();
+
+            // Open the new file
             this->logFilename_ = path + logFileBaseName_g;
-            // Open the new file and feed it the content of the old one
-            this->logFile_.open(this->logFilename_.c_str(), std::fstream::out);
-            this->logFile_ << old.rdbuf();
-            this->logFile_.flush();
-            old.close();
+            this->openFile();
+        }
+
+        //! Erases the log file
+        void clearFile()
+        {
+            if (this->logFile_.is_open())
+            {
+                this->logFile_.close();
+                this->openFile();
+            }
         }
 
     private:
+        void openFile()
+        {
+            this->logFile_.open(this->logFilename_.c_str(), std::fstream::out);
+
+            if (this->logFile_.is_open())
+                this->outputStream_ = &this->logFile_;
+            else
+            {
+                COUT(2) << "Warning: Failed to open log file. File logging disabled." << std::endl;
+                this->outputStream_ = NULL;
+            }
+        }
+
         std::ofstream logFile_;     //!< File handle for the log file
         std::string   logFilename_; //!< Filename of the log file
     };
@@ -184,8 +208,7 @@ namespace orxonox
     /////////////////////////
     ///// OutputHandler /////
     /////////////////////////
-    const std::string OutputHandler::logFileOutputListenerName_s = "logFile";
-          int         OutputHandler::softDebugLevel_s = hardDebugLevel;
+    int OutputHandler::softDebugLevel_s = hardDebugLevel;
 
     //! Creates the LogFileWriter and the MemoryLogWriter
     OutputHandler::OutputHandler()
@@ -258,6 +281,22 @@ namespace orxonox
     void OutputHandler::setLogPath(const std::string& path)
     {
         this->logFile_->setLogPath(path);
+        this->rewriteLogFile();
+    }
+
+    void OutputHandler::rewriteLogFile()
+    {
+        logFile_->clearFile();
+
+        if (logFile_->outputStream_ == NULL)
+            return;
+
+        for (OutputVector::const_iterator it = this->getOutput().begin(); it != this->getOutput().end(); ++it)
+        {
+            if (it->first <= logFile_->softDebugLevel_)
+                (*logFile_->outputStream_) << it->second;
+        }
+        logFile_->outputStream_->flush();
     }
 
     void OutputHandler::disableCout()

@@ -132,6 +132,11 @@ namespace orxonox
 
             //! Set the log path once the program has been properly initialised
             void setLogPath(const std::string& path);
+            /** Rewrites the log file (completely respects the current debug level).
+                Once disableMemoryLog() has been called, this function will do nothing.
+            */
+            void rewriteLogFile();
+
             //! Disables the std::cout stream for output
             void disableCout();
             //! Enables the std::cout stream for output (startup behaviour)
@@ -210,9 +215,6 @@ namespace orxonox
 
             //! Dummy operator required by Debug.h for the ternary operator
             inline operator int() const { return 0; }
-
-            //! Name of the OutputListener that writes to the log file
-            static const std::string logFileOutputListenerName_s;
 
         private:
             OutputHandler();

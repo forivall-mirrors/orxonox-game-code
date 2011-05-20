@@ -167,6 +167,8 @@ namespace orxonox
         // possibility to configure everything below here
         RegisterRootObject(Core);
         this->setConfigValues();
+        // Rewrite the log file with the correct log levels
+        OutputHandler::getInstance().rewriteLogFile();
 
 #if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
         // Create persistent IO console
@@ -239,7 +241,7 @@ namespace orxonox
 #endif
         SetConfigValueExternal(softDebugLevelLogFile_, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
             .description("The maximum level of debug output shown in the log file");
-        OutputHandler::getInstance().setSoftDebugLevel(OutputHandler::logFileOutputListenerName_s, this->softDebugLevelLogFile_);
+        OutputHandler::getInstance().setSoftDebugLevel("LogFile", this->softDebugLevelLogFile_);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
             .description("Developer mode. If not set, hides some things from the user to not confuse him.");
