@@ -122,4 +122,10 @@ namespace orxonox
         /*else*/ :                                                     \
             orxonox::OutputHandler::getOutStream(level)
 
+/** Logs debug output: You can use DOUT exactly like @c std::cout.
+    Use this macro to produce temporary debug output that will be removed later on.
+    The console output shall have a special colour if available.
+*/
+#define DOUT orxonox::OutputHandler::getOutStream(-1) << "+++ "
+
 #endif /* _Util_Debug_H__ */

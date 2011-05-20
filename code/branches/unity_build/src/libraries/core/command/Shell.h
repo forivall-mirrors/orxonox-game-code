@@ -90,6 +90,7 @@ namespace orxonox
             /// Defines the type of a line of text in the Shell - some types depend on the output level, others are of internal use.
             enum LineType
             {
+                TDebug  = OutputLevel::TDebug,
                 None    = OutputLevel::None,
                 Warning = OutputLevel::Warning,
                 Error   = OutputLevel::Error,

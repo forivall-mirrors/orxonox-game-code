@@ -61,6 +61,7 @@ namespace orxonox
     {
         enum Value
         {
+            TDebug  = -1,
             None    = 0,
             Error   = 1,
             Warning = 2,
