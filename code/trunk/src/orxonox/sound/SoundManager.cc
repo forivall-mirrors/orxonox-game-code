@@ -71,13 +71,6 @@ namespace orxonox
         RegisterRootObject(SoundManager);
 
         this->bDestructorCalled_ = false;
-
-        // Clear error messages (might be problematic on some systems)
-        //alGetError();
-        //alutGetError();
-        
-        if (int error = alGetError())
-            COUT(0) << "SOUND_DEBUG: Received ALError in constructor of SoundManager: " << SoundManager::getALErrorString(error) << std::endl;
          
         // See whether we even want to load
         bool bDisableSound_ = false;
@@ -142,7 +135,7 @@ namespace orxonox
 
         this->setConfigValues();
 
-        // Try to get at least one source
+        // Try to get exactly one source
         ALuint source;
         alGenSources(1, &source);
         if (!alGetError() && alIsSource(source))
