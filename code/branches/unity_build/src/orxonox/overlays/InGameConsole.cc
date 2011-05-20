@@ -90,6 +90,10 @@ namespace orxonox
 
         this->setConfigValues();
         this->initialise();
+
+        // Output buffering is not anymore needed. Not the best solution to do
+        // this here, but there isn't much of another way.
+        OutputHandler::getInstance().disableMemoryLog();
     }
 
     /**

@@ -83,8 +83,8 @@ namespace orxonox
         this->setConfigValues();
 
         // Get the previous output and add it to the Shell
-        for (OutputHandler::OutputVectorIterator it = OutputHandler::getInstance().getOutputVectorBegin();
-            it != OutputHandler::getInstance().getOutputVectorEnd(); ++it)
+        OutputHandler::OutputVector::const_iterator it = OutputHandler::getInstance().getOutput().begin();
+        for (;it != OutputHandler::getInstance().getOutput().end(); ++it)
         {
             if (it->first <= this->getSoftDebugLevel())
             {

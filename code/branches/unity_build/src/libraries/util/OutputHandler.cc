@@ -146,26 +146,23 @@ namespace orxonox
     @brief
         OutputListener that writes all the output piece by piece to an array
         associated with the corresponding output level.
+        Used as buffer until all output devices have been initialised.
     @note
-        Only output below or equal to the current soft debug level is written
-        to minimise huge arrays for the normal run.
+        At some point, OutputHandler::disableMemoryLog() has to be called in
+        order to avoid large memory footprints of this class.
     */
     class MemoryLogWriter : public OutputListener
     {
     public:
         friend class OutputHandler;
 
-        /**
-        @brief
-            Sets the right soft debug level and registers itself
-        */
         MemoryLogWriter()
             : OutputListener("memoryLog")
         {
             this->outputStream_ = &this->buffer_;
         }
 
-        //! Pushed the just written output to the internal array
+        //! Push the just written output to the internal array
         void outputChanged(int level)
         {
             if (!this->buffer_.str().empty())
@@ -179,8 +176,8 @@ namespace orxonox
         }
 
     private:
-        std::ostringstream                        buffer_; //!< Stream object used to process the output
-        std::vector<std::pair<int, std::string> > output_; //!< Vector containing ALL output
+        std::ostringstream          buffer_; //!< Stream object used to process the output
+        OutputHandler::OutputVector output_; //!< Vector containing ALL output
     };
 
 
@@ -211,10 +208,10 @@ namespace orxonox
         this->consoleWriter_->softDebugLevel_ = defaultLevelConsole;
         this->registerOutputListener(this->consoleWriter_);
 
-        this->output_ = new MemoryLogWriter();
-        // We capture as much input as the listener with the highest level
-        this->output_->softDebugLevel_ = getSoftDebugLevel();
-        this->registerOutputListener(this->output_);
+        this->memoryBuffer_ = new MemoryLogWriter();
+        // Write everything, e.g. use hardDebugLevel
+        this->memoryBuffer_->softDebugLevel_ = hardDebugLevel;
+        this->registerOutputListener(this->memoryBuffer_);
     }
 
     //! Destroys the LogFileWriter and the MemoryLogWriter
@@ -222,7 +219,7 @@ namespace orxonox
     {
         delete this->logFile_;
         delete this->consoleWriter_;
-        delete this->output_;
+        delete this->memoryBuffer_; // Might already be NULL
     }
 
     OutputHandler& OutputHandler::getInstance()
@@ -266,14 +263,16 @@ namespace orxonox
         this->registerOutputListener(this->consoleWriter_);
     }
 
-    OutputHandler::OutputVectorIterator OutputHandler::getOutputVectorBegin() const
+    void OutputHandler::disableMemoryLog()
     {
-        return this->output_->output_.begin();
+        this->unregisterOutputListener(this->memoryBuffer_);
+        // Only clear the buffer so we can still reference the vector
+        this->memoryBuffer_->output_.clear();
     }
 
-    OutputHandler::OutputVectorIterator OutputHandler::getOutputVectorEnd() const
+    const OutputHandler::OutputVector& OutputHandler::getOutput() const
     {
-        return this->output_->output_.end();
+        return this->memoryBuffer_->output_;
     }
 
     int OutputHandler::getSoftDebugLevel(const std::string& name) const

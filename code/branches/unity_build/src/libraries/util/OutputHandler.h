@@ -102,11 +102,9 @@ namespace orxonox
             static inline OutputHandler& getOutStream(int level)
                 { return OutputHandler::getInstance().setOutputLevel(level); }
 
-            typedef std::vector<std::pair<int, std::string> >::const_iterator OutputVectorIterator;
-            //! Returns an iterator to the beginning of the all-output vector
-            OutputVectorIterator getOutputVectorBegin() const;
-            //! Returns an iterator to the end of the all-output vector
-            OutputVectorIterator getOutputVectorEnd() const;
+            typedef std::vector<std::pair<int, std::string> > OutputVector;
+            //! Returns all output written so far (empty if disableMemoryLog() was called)
+            const OutputVector& getOutput() const;
 
             //! Writes to all output devices
             static inline void log(const std::string& text)
@@ -139,6 +137,8 @@ namespace orxonox
             void disableCout();
             //! Enables the std::cout stream for output (startup behaviour)
             void enableCout();
+            //! Stop writing to the memory buffer (call this as soon as possible to minimise memory usage)
+            void disableMemoryLog();
 
             //! Sets the level of the incoming output and returns the OutputHandler
             inline OutputHandler& setOutputLevel(int level)
@@ -224,7 +224,7 @@ namespace orxonox
             int                        outputLevel_;      //!< The level of the incoming output
             LogFileWriter*             logFile_;          //!< Listener that writes to the log file
             ConsoleWriter*             consoleWriter_;    //!< Listener for std::cout (just program beginning)
-            MemoryLogWriter*           output_;           //!< Listener that Stores ALL output below the current soft debug level
+            MemoryLogWriter*           memoryBuffer_;     //!< Writes to memory as a buffer (can/must be stopped at some time)
             static int                 softDebugLevel_s;  //!< Maximum of all soft debug levels. @note This is only static for faster access
     };
 
