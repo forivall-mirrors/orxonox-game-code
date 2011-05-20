@@ -230,7 +230,7 @@ namespace orxonox
 
     void OutputHandler::registerOutputListener(OutputListener* listener)
     {
-        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::vector<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if ((*it)->name_ == listener->name_)
             {
@@ -239,13 +239,20 @@ namespace orxonox
             }
         }
         this->listeners_.push_back(listener);
-        // Update global soft debug level
-        this->setSoftDebugLevel(listener->getOutputListenerName(), listener->getSoftDebugLevel());
+        this->updateGlobalDebugLevel();
     }
 
     void OutputHandler::unregisterOutputListener(OutputListener* listener)
     {
-        this->listeners_.remove(listener);
+        for (std::vector<OutputListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        {
+            if ((*it)->name_ == listener->name_)
+            {
+                this->listeners_.erase(it);
+                break;
+            }
+        }
+        this->updateGlobalDebugLevel();
     }
 
     void OutputHandler::setLogPath(const std::string& path)
@@ -277,7 +284,7 @@ namespace orxonox
 
     int OutputHandler::getSoftDebugLevel(const std::string& name) const
     {
-        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::vector<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if ((*it)->name_ == name)
                 return (*it)->softDebugLevel_;
@@ -287,15 +294,21 @@ namespace orxonox
 
     void OutputHandler::setSoftDebugLevel(const std::string& name, int level)
     {
-        int globalSoftDebugLevel = -1;
-        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::vector<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if ((*it)->name_ == name)
                 (*it)->softDebugLevel_ = level;
-            if ((*it)->softDebugLevel_ > globalSoftDebugLevel)
-                globalSoftDebugLevel = (*it)->softDebugLevel_;
         }
-        // Update global soft debug level
+        this->updateGlobalDebugLevel();
+    }
+
+    void OutputHandler::updateGlobalDebugLevel()
+    {
+        int globalSoftDebugLevel = -1;
+        std::vector<OutputListener*>::const_iterator it = this->listeners_.begin();
+        for (; it != this->listeners_.end(); ++it)
+            globalSoftDebugLevel = std::max(globalSoftDebugLevel, (*it)->softDebugLevel_);
+
         OutputHandler::softDebugLevel_s = globalSoftDebugLevel;
     }
 }

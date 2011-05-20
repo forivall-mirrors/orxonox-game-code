@@ -38,7 +38,6 @@
 
 #include "UtilPrereqs.h"
 
-#include <list>
 #include <ostream>
 #include <string>
 #include <vector>
@@ -220,12 +219,15 @@ namespace orxonox
             ~OutputHandler();
             OutputHandler(const OutputHandler& rhs);      //!< Copy-constructor: Unused and undefined
 
-            std::list<OutputListener*> listeners_;        //!< Array with all registered output listeners
-            int                        outputLevel_;      //!< The level of the incoming output
-            LogFileWriter*             logFile_;          //!< Listener that writes to the log file
-            ConsoleWriter*             consoleWriter_;    //!< Listener for std::cout (just program beginning)
-            MemoryLogWriter*           memoryBuffer_;     //!< Writes to memory as a buffer (can/must be stopped at some time)
-            static int                 softDebugLevel_s;  //!< Maximum of all soft debug levels. @note This is only static for faster access
+            /// Evaluates the maximum global log level
+            void updateGlobalDebugLevel();
+
+            std::vector<OutputListener*> listeners_;        //!< Array with all registered output listeners
+            int                          outputLevel_;      //!< The level of the incoming output
+            LogFileWriter*               logFile_;          //!< Writes output to the log file
+            ConsoleWriter*               consoleWriter_;    //!< Writes to std::cout (can be disabled)
+            MemoryLogWriter*             memoryBuffer_;     //!< Writes to memory as a buffer (can/must be stopped at some time)
+            static int                   softDebugLevel_s;  //!< Maximum of all soft debug levels. @note This is only static for faster access
     };
 
     /**
@@ -270,7 +272,7 @@ namespace orxonox
     template<class T>
     inline OutputHandler& OutputHandler::output(const T& output)
     {
-        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::vector<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if (this->outputLevel_ <= (*it)->softDebugLevel_ && (*it)->outputStream_ != NULL)
             {
