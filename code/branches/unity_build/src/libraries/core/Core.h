@@ -100,6 +100,7 @@ namespace orxonox
         private:
             Core(const Core&); //!< Don't use (undefined symbol)
 
+            void devModeChanged();
             void languageChanged();
             void initRandomNumberGenerator();
 

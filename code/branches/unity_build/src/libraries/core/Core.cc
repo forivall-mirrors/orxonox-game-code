@@ -266,7 +266,8 @@ namespace orxonox
         OutputHandler::getInstance().setSoftDebugLevel("InGameConsole", debugLevelInGameConsole_);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
-            .description("Developer mode. If not set, hides some things from the user to not confuse him.");
+            .description("Developer mode. If not set, hides some things from the user to not confuse him.")
+            .callback(this, &Core::devModeChanged);
         SetConfigValue(language_, Language::getInstance().defaultLanguage_)
             .description("The language of the in game text")
             .callback(this, &Core::languageChanged);
@@ -279,6 +280,35 @@ namespace orxonox
             .description("Timestamp when the last level was started.");
         SetConfigValue(ogreConfigTimestamp_, 0)
             .description("Timestamp when the ogre config file was changed.");
+    }
+
+    /** Callback function for changes in the dev mode that affect debug levels.
+        The function behaves according to these rules:
+        - 'normal' mode is defined based on where the program was launched: if
+          the launch path was the build directory, development mode \c on is
+          normal, otherwise normal means development mode \c off.
+        - Debug levels should not be hard configured (\c config instead of
+          \c tconfig) in non 'normal' mode to avoid strange behaviour.
+        - Changing the development mode from 'normal' to the other state will
+          immediately change the debug levels to predefined values which can be
+          reconfigured with \c tconfig.
+    */
+    void Core::devModeChanged()
+    {
+        bool isNormal = (bDevMode_ == PathConfig::buildDirectoryRun());
+        if (isNormal)
+        {
+            ModifyConfigValue(debugLevelLogFile_,       update);
+            ModifyConfigValue(debugLevelIOConsole_,     update);
+            ModifyConfigValue(debugLevelInGameConsole_, update);
+        }
+        else
+        {
+            DefaultLogLevels::List levels = (bDevMode_ ? DefaultLogLevels::Dev : DefaultLogLevels::User);
+            ModifyConfigValue(debugLevelLogFile_,       tset, levels.logFile);
+            ModifyConfigValue(debugLevelIOConsole_,     tset, levels.ioConsole);
+            ModifyConfigValue(debugLevelInGameConsole_, tset, levels.inGameConsole);
+        }
     }
 
     //! Callback function if the language has changed.
