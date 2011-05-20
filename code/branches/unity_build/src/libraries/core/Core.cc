@@ -130,7 +130,7 @@ namespace orxonox
         }
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
-        CommandLineParser::parseCommandLine(cmdLine);
+        CommandLineParser::parse(cmdLine);
 
         // Set configurable paths like log, config and media
         this->pathConfig_->setConfigurablePaths();
@@ -142,9 +142,6 @@ namespace orxonox
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% (Windows) was used
         OutputHandler::getInstance().setLogPath(PathConfig::getLogPathString());
-
-        // Parse additional options file now that we know its path
-        CommandLineParser::parseFile();
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
