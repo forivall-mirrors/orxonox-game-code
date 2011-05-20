@@ -156,7 +156,7 @@ namespace orxonox
     public:
         //! Only assigns the output stream with std::cout
         ConsoleWriter()
-            : OutputListener("consoleLog")
+            : OutputListener("Console")
         {
             this->outputStream_ = &std::cout;
         }
@@ -214,21 +214,24 @@ namespace orxonox
     OutputHandler::OutputHandler()
         : outputLevel_(OutputLevel::Verbose)
     {
+        // Note: These levels only concern startup before orxonox.ini is read.
 #ifdef ORXONOX_RELEASE
-        const OutputLevel::Value defaultLevelConsole = OutputLevel::Error;
-        const OutputLevel::Value defaultLevelLogFile = OutputLevel::Info;
+        const OutputLevel::Value initialLevelConsole = OutputLevel::Error;
 #else
-        const OutputLevel::Value defaultLevelConsole = OutputLevel::Info;
-        const OutputLevel::Value defaultLevelLogFile = OutputLevel::Debug;
+        const OutputLevel::Value initialLevelConsole = OutputLevel::Info;
 #endif
+        // Use high log level because we rewrite the log file anyway with the
+        // correct level. But if Orxonox were to crash before that, we might be
+        // grateful to have a high debug level, esp. for releases.
+        const OutputLevel::Value intialLevelLogFile = OutputLevel::Debug;
 
         this->logFile_ = new LogFileWriter();
         // Use default level until we get the configValue from the Core
-        this->logFile_->softDebugLevel_ = defaultLevelLogFile;
+        this->logFile_->softDebugLevel_ = intialLevelLogFile;
         this->registerOutputListener(this->logFile_);
 
         this->consoleWriter_ = new ConsoleWriter();
-        this->consoleWriter_->softDebugLevel_ = defaultLevelConsole;
+        this->consoleWriter_->softDebugLevel_ = initialLevelConsole;
         this->registerOutputListener(this->consoleWriter_);
 
         this->memoryBuffer_ = new MemoryLogWriter();

@@ -231,17 +231,39 @@ namespace orxonox
         safeObjectDelete(&pathConfig_);
     }
 
+    namespace DefaultLogLevels
+    {
+        struct List
+        {
+            OutputLevel::Value logFile;
+            OutputLevel::Value ioConsole;
+            OutputLevel::Value inGameConsole;
+        };
+
+        using namespace OutputLevel;
+        static const List Dev  = { Debug, Info,  Info  };
+        static const List User = { Info,  Error, Error };
+    }
+
     //! Function to collect the SetConfigValue-macro calls.
     void Core::setConfigValues()
     {
-#ifdef ORXONOX_RELEASE
-        const unsigned int defaultLevelLogFile = 3;
-#else
-        const unsigned int defaultLevelLogFile = 4;
-#endif
-        SetConfigValueExternal(softDebugLevelLogFile_, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
-            .description("The maximum level of debug output shown in the log file");
-        OutputHandler::getInstance().setSoftDebugLevel("LogFile", this->softDebugLevelLogFile_);
+        // Choose the default levels according to the path Orxonox was started (build directory or not)
+        DefaultLogLevels::List defaultLogLevels = (PathConfig::buildDirectoryRun() ? DefaultLogLevels::Dev : DefaultLogLevels::User);
+
+        SetConfigValueExternal(debugLevelLogFile_, "OutputHandler", "debugLevelLogFile_", defaultLogLevels.logFile)
+            .description("The maximum level of debug output written to the log file");
+        OutputHandler::getInstance().setSoftDebugLevel("LogFile", debugLevelLogFile_);
+
+        SetConfigValueExternal(debugLevelIOConsole_, "OutputHandler", "debugLevelIOConsole_", defaultLogLevels.ioConsole)
+            .description("The maximum level of debug output shown in the IO console");
+        OutputHandler::getInstance().setSoftDebugLevel("IOConsole", debugLevelIOConsole_);
+        // In case we don't start the IOConsole, also configure that simple listener
+        OutputHandler::getInstance().setSoftDebugLevel("Console", debugLevelIOConsole_);
+
+        SetConfigValueExternal(debugLevelIOConsole_, "OutputHandler", "debugLevelInGameConsole_", defaultLogLevels.inGameConsole)
+            .description("The maximum level of debug output shown in the in-game console");
+        OutputHandler::getInstance().setSoftDebugLevel("InGameConsole", debugLevelInGameConsole_);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
             .description("Developer mode. If not set, hides some things from the user to not confuse him.");

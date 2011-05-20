@@ -256,12 +256,6 @@ namespace orxonox
         const std::string& getOutputListenerName() const { return this->name_; }
         //! Returns the soft debug level of the listener
         int getSoftDebugLevel() const { return this->softDebugLevel_; }
-        //! Sets the soft debug level of the listener
-        void setSoftDebugLevel(int level)
-        {
-            this->softDebugLevel_ = level;
-            OutputHandler::getInstance().setSoftDebugLevel(this->name_, level);
-        }
 
     protected:
         std::ostream*     outputStream_;   //!< Pointer to the associated output stream, can be NULL
