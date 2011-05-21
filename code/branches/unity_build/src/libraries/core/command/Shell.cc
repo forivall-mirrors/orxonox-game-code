@@ -39,6 +39,7 @@
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/PathConfig.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 
@@ -86,7 +87,7 @@ namespace orxonox
         OutputHandler::OutputVector::const_iterator it = OutputHandler::getInstance().getOutput().begin();
         for (;it != OutputHandler::getInstance().getOutput().end(); ++it)
         {
-            if (it->first <= this->getSoftDebugLevel())
+            if (it->first <= debugLevel_)
             {
                 this->outputBuffer_ << it->second;
                 this->outputChanged(it->first);
@@ -95,6 +96,7 @@ namespace orxonox
 
         // Register the shell as output listener
         OutputHandler::getInstance().registerOutputListener(this);
+        OutputHandler::getInstance().setSoftDebugLevel(consoleName_, debugLevel_);
     }
 
     /**
@@ -104,6 +106,12 @@ namespace orxonox
     {
         OutputHandler::getInstance().unregisterOutputListener(this);
         this->inputBuffer_->destroy();
+    }
+
+    namespace DefaultLogLevel
+    {
+        const OutputLevel::Value Dev  = OutputLevel::Info;
+        const OutputLevel::Value User = OutputLevel::Error;
     }
 
     /**
@@ -117,6 +125,12 @@ namespace orxonox
             .callback(this, &Shell::commandHistoryOffsetChanged);
         setConfigValueGeneric(this, &commandHistory_, ConfigFileType::CommandHistory, "Shell", "commandHistory_", std::vector<std::string>());
         SetConfigValue(cacheSize_s, 32);
+
+        // Choose the default level according to the path Orxonox was started (build directory or not)
+        OutputLevel::Value defaultDebugLevel = (PathConfig::buildDirectoryRun() ? DefaultLogLevel::Dev : DefaultLogLevel::User);
+        SetConfigValueExternal(debugLevel_, "OutputHandler", "debugLevel" + consoleName_, defaultDebugLevel)
+            .description("The maximum level of debug output shown in the " + consoleName_);
+        OutputHandler::getInstance().setSoftDebugLevel(consoleName_, debugLevel_);
     }
 
     /**
@@ -140,6 +154,23 @@ namespace orxonox
             unsigned int index = this->commandHistory_.size() - 1;
             this->commandHistory_.erase(this->commandHistory_.begin() + index);
             ModifyConfigValue(commandHistory_, remove, index);
+        }
+    }
+
+    /** Called upon changes in the development mode (by Core)
+        Behaviour details see Core::devModeChanged.
+    */
+    void Shell::devModeChanged(bool value)
+    {
+        bool isNormal = (value == PathConfig::buildDirectoryRun());
+        if (isNormal)
+        {
+            ModifyConfigValueExternal(debugLevel_, "debugLevel" + consoleName_, update);
+        }
+        else
+        {
+            OutputLevel::Value level = (value ? DefaultLogLevel::Dev : DefaultLogLevel::User);
+            ModifyConfigValueExternal(debugLevel_, "debugLevel" + consoleName_, tset, level);
         }
     }
 

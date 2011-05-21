@@ -48,6 +48,7 @@
 #include <vector>
 
 #include "util/OutputHandler.h"
+#include "core/Core.h"
 #include "core/OrxonoxClass.h"
 #include "core/input/InputBuffer.h"
 
@@ -84,7 +85,7 @@ namespace orxonox
 
         Different graphical consoles build upon a Shell, for example InGameConsole and IOConsole.
     */
-    class _CoreExport Shell : virtual public OrxonoxClass, public OutputListener
+    class _CoreExport Shell : virtual public OrxonoxClass, public OutputListener, public DevModeListener
     {
         public:
             /// Defines the type of a line of text in the Shell - some types depend on the output level, others are of internal use.
@@ -147,6 +148,9 @@ namespace orxonox
         private:
             Shell(const Shell& other);
 
+            // DevModeListener
+            void devModeChanged(bool value);
+
             void addToHistory(const std::string& command);
             const std::string& getFromHistory() const;
             void clearInput();
@@ -197,6 +201,7 @@ namespace orxonox
             unsigned int              maxHistoryLength_;    ///< The maximum number of saved commands
             unsigned int              historyOffset_;       ///< The command history is a circular buffer, this variable defines the current write-offset
             std::vector<std::string>  commandHistory_;      ///< The history of commands that were entered by the user
+            int                       debugLevel_;          //!< The maximum level of output that is displayed in the shell (will be passed to OutputListener to filter output)
             static unsigned int       cacheSize_s;          ///< The maximum cache size of the CommandExecutor - this is stored here for better readability of the config file and because CommandExecutor is no OrxonoxClass
     };
 }

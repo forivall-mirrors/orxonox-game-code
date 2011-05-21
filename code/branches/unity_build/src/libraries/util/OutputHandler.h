@@ -255,8 +255,6 @@ namespace orxonox
         virtual void outputChanged(int level) {}
         //! Returns the name of this output listener
         const std::string& getOutputListenerName() const { return this->name_; }
-        //! Returns the soft debug level of the listener
-        int getSoftDebugLevel() const { return this->softDebugLevel_; }
 
     protected:
         std::ostream*     outputStream_;   //!< Pointer to the associated output stream, can be NULL

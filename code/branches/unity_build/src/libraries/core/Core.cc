@@ -68,6 +68,7 @@
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
+#include "ObjectList.h"
 #include "command/ConsoleCommand.h"
 #include "command/IOConsole.h"
 #include "command/TclBind.h"
@@ -228,39 +229,21 @@ namespace orxonox
         safeObjectDelete(&pathConfig_);
     }
 
-    namespace DefaultLogLevels
+    namespace DefaultLevelLogFile
     {
-        struct List
-        {
-            OutputLevel::Value logFile;
-            OutputLevel::Value ioConsole;
-            OutputLevel::Value inGameConsole;
-        };
-
-        using namespace OutputLevel;
-        static const List Dev  = { Debug, Info,  Info  };
-        static const List User = { Info,  Error, Error };
+        const OutputLevel::Value Dev  = OutputLevel::Debug;
+        const OutputLevel::Value User = OutputLevel::Info;
     }
 
     //! Function to collect the SetConfigValue-macro calls.
     void Core::setConfigValues()
     {
-        // Choose the default levels according to the path Orxonox was started (build directory or not)
-        DefaultLogLevels::List defaultLogLevels = (PathConfig::buildDirectoryRun() ? DefaultLogLevels::Dev : DefaultLogLevels::User);
+        // Choose the default level according to the path Orxonox was started (build directory or not)
+        OutputLevel::Value defaultLogLevel = (PathConfig::buildDirectoryRun() ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
 
-        SetConfigValueExternal(debugLevelLogFile_, "OutputHandler", "debugLevelLogFile_", defaultLogLevels.logFile)
+        SetConfigValueExternal(debugLevelLogFile_, "OutputHandler", "debugLevelLogFile", defaultLogLevel)
             .description("The maximum level of debug output written to the log file");
         OutputHandler::getInstance().setSoftDebugLevel("LogFile", debugLevelLogFile_);
-
-        SetConfigValueExternal(debugLevelIOConsole_, "OutputHandler", "debugLevelIOConsole_", defaultLogLevels.ioConsole)
-            .description("The maximum level of debug output shown in the IO console");
-        OutputHandler::getInstance().setSoftDebugLevel("IOConsole", debugLevelIOConsole_);
-        // In case we don't start the IOConsole, also configure that simple listener
-        OutputHandler::getInstance().setSoftDebugLevel("Console", debugLevelIOConsole_);
-
-        SetConfigValueExternal(debugLevelIOConsole_, "OutputHandler", "debugLevelInGameConsole_", defaultLogLevels.inGameConsole)
-            .description("The maximum level of debug output shown in the in-game console");
-        OutputHandler::getInstance().setSoftDebugLevel("InGameConsole", debugLevelInGameConsole_);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
             .description("Developer mode. If not set, hides some things from the user to not confuse him.")
@@ -289,23 +272,27 @@ namespace orxonox
         - Changing the development mode from 'normal' to the other state will
           immediately change the debug levels to predefined values which can be
           reconfigured with \c tconfig.
+    @note
+        The debug levels for the IOConsole and the InGameConsole can be found
+        in the Shell class. The same rules apply.
     */
     void Core::devModeChanged()
     {
         bool isNormal = (bDevMode_ == PathConfig::buildDirectoryRun());
         if (isNormal)
         {
-            ModifyConfigValue(debugLevelLogFile_,       update);
-            ModifyConfigValue(debugLevelIOConsole_,     update);
-            ModifyConfigValue(debugLevelInGameConsole_, update);
+            ModifyConfigValueExternal(debugLevelLogFile_, "debugLevelLogFile", update);
         }
         else
         {
-            DefaultLogLevels::List levels = (bDevMode_ ? DefaultLogLevels::Dev : DefaultLogLevels::User);
-            ModifyConfigValue(debugLevelLogFile_,       tset, levels.logFile);
-            ModifyConfigValue(debugLevelIOConsole_,     tset, levels.ioConsole);
-            ModifyConfigValue(debugLevelInGameConsole_, tset, levels.inGameConsole);
+            OutputLevel::Value level = (bDevMode_ ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
+            ModifyConfigValueExternal(debugLevelLogFile_, "debugLevelLogFile", tset, level);
         }
+
+        // Inform listeners
+        ObjectList<DevModeListener>::iterator it = ObjectList<DevModeListener>::begin();
+        for (; it != ObjectList<DevModeListener>::end(); ++it)
+            it->devModeChanged(bDevMode_);
     }
 
     //! Callback function if the language has changed.
@@ -489,5 +476,11 @@ namespace orxonox
     void Core::updateOgreConfigTimestamp()
     {
         ModifyConfigValue(ogreConfigTimestamp_, set, static_cast<long long>(time(NULL)));
+    }
+
+
+    DevModeListener::DevModeListener()
+    {
+        RegisterRootObject(DevModeListener);
     }
 }

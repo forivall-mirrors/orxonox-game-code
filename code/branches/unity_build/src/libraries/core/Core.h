@@ -52,6 +52,15 @@
 
 namespace orxonox
 {
+    //! Informs about changes in the Development Mode.
+    class DevModeListener : virtual public OrxonoxClass
+    {
+    public:
+        DevModeListener();
+        virtual ~DevModeListener() {}
+        virtual void devModeChanged(bool value) = 0;
+    };
+
     /**
     @brief
         The Core class is a singleton used to configure the program basics.
@@ -129,8 +138,6 @@ namespace orxonox
 
             bool                      bGraphicsLoaded_;
             int                       debugLevelLogFile_;          //!< The debug level for the log file (belongs to OutputHandler)
-            int                       debugLevelIOConsole_;        //!< The debug level for the IO console (belongs to OutputHandler)
-            int                       debugLevelInGameConsole_;    //!< The debug level for the in game console (belongs to OutputHandler)
             std::string               language_;                   //!< The language
             bool                      bInitRandomNumberGenerator_; //!< If true, srand(time(0)) is called
             bool                      bStartIOConsole_;            //!< Set to false if you don't want to use the IOConsole
