@@ -64,7 +64,7 @@ extern "C" {
 #  include <OgreSceneManager.h>
 #endif
 
-#ifdef ORXONOX_PLATFORM_WINDOWS
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_COMPILER_MINGW)
 #  include <windows.h>
 #endif
 
@@ -120,7 +120,7 @@ namespace orxonox
             if (d_ostream.is_open())
                 d_ostream.close();
 
-#ifdef ORXONOX_PLATFORM_WINDOWS
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_COMPILER_MINGW)
             // filename.c_str() is UTF-8 encoded, but Windows expects characters
             // according to the current codepage or UTF-16 (wchar)
             d_ostream.open(utf8ToUtf16(filename.c_str()).c_str(), std::ios_base::out | (append ? std::ios_base::app : std::ios_base::trunc));
@@ -155,7 +155,7 @@ namespace orxonox
             }
         }
 
-#ifdef ORXONOX_PLATFORM_WINDOWS
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(ORXONOX_COMPILER_MINGW)
         /// Converts a UTF-8 character sequence to Windows UTF-16
         static std::wstring utf8ToUtf16(const std::string& utf8text)
         {
