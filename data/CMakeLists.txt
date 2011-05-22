@@ -55,8 +55,11 @@ INSTALL(
   REGEX "\\.svn$|_svn$|CMakeLists.txt|InstallScript.cmake" EXCLUDE
 )
 # External directory
-INSTALL(
-  DIRECTORY ${EXTERNAL_DATA_DIRECTORY}/
-  DESTINATION ${DATA_INSTALL_DIRECTORY}
-  REGEX "\\.svn$|_svn$|" EXCLUDE
-)
+# User may want to install separately, ignore if not found.
+IF(EXISTS ${EXTERNAL_DATA_DIRECTORY})
+  INSTALL(
+    DIRECTORY ${EXTERNAL_DATA_DIRECTORY}/
+    DESTINATION ${DATA_INSTALL_DIRECTORY}
+    REGEX "\\.svn$|_svn$" EXCLUDE
+  )
+ENDIF()
