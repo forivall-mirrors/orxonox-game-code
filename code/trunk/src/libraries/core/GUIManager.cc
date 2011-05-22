@@ -72,6 +72,7 @@ extern "C" {
 #include "util/Convert.h"
 #include "util/Debug.h"
 #include "util/Exception.h"
+#include "util/Math.h"
 #include "util/OrxAssert.h"
 #include "ConfigValueIncludes.h"
 #include "Core.h"
@@ -354,6 +355,7 @@ namespace orxonox
     void GUIManager::setConfigValues(void)
     {
         SetConfigValue(guiScheme_, GUIManager::defaultScheme_) .description("Changes the current GUI scheme.") .callback(this, &GUIManager::changedGUIScheme);
+        SetConfigValue(numScrollLines_, 1).description("How many lines to scroll in a list if the scroll wheel is used");
     }
 
     void GUIManager::changedGUIScheme(void)
@@ -592,7 +594,7 @@ namespace orxonox
 
     void GUIManager::mouseScrolled(int abs, int rel)
     {
-        this->protectedCall(boost::bind(&CEGUI::System::injectMouseWheelChange, _1, (float)rel));
+        this->protectedCall(boost::bind(&CEGUI::System::injectMouseWheelChange, _1, (float)sgn(rel) * this->numScrollLines_));
     }
 
     /**
