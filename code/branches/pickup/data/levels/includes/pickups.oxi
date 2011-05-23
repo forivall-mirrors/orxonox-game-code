@@ -201,7 +201,7 @@
 
 <PickupRepresentation
     pickupName = "Drone Pickup"
-    pickupDescription = "Adds a Drone to the Players Spaceship"
+    pickupDescription = "Adds a Drone to the Player's Spaceship"
     spawnerTemplate = "dronepickupRepresentation"
 >
     <pickup>
@@ -212,12 +212,32 @@
 <!-- Shrink Pickup -->
 
 <PickupRepresentation
-    pickupName = "Shrink Pickup"
-    pickupDescription = "Adds a Drone to the Players Spaceship"
+    pickupName = "Small Shrink"
+    pickupDescription = "Shrinks the Ship by a bit"
     spawnerTemplate = "smallshrinkpickupRepresentation"
 >
     <pickup>
         <ShrinkPickup template=smallshrinkpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Medium Shrink"
+    pickupDescription = "Shrinks the Ship"
+    spawnerTemplate = "mediumshrinkpickupRepresentation"
+>
+    <pickup>
+        <ShrinkPickup template=mediumshrinkpickup />
+    </pickup>
+</PickupRepresentation>
+
+<PickupRepresentation
+    pickupName = "Huge Shrink"
+    pickupDescription = "Shrinks the Ship considerably"
+    spawnerTemplate = "hugeshrinkpickupRepresentation"
+>
+    <pickup>
+        <ShrinkPickup template=hugeshrinkpickup />
     </pickup>
 </PickupRepresentation>
 

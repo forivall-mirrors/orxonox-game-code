@@ -48,7 +48,8 @@ namespace orxonox
     @author
         Reto Grieder
 
-    @ingroup Collisionshapes.
+    @see btConeShape
+    @ingroup Collisionshapes
     */
     class _ObjectsExport ConeCollisionShape : public CollisionShape
     {

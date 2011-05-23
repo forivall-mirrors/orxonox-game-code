@@ -50,7 +50,7 @@ namespace orxonox
 {
     CreateFactory(ShrinkPickup);
 
-		/**
+        /**
     @brief
         Constructor: Initializes the Pickup.
     */
@@ -59,6 +59,9 @@ namespace orxonox
         RegisterObject(ShrinkPickup);
 
         this->initialize();
+        this->shrinkFactor_ = 5.0;
+        this->shrinkSpeed_ = 5.0;
+        this->duration_ = 5.0;
         isActive_ = false;
         isTerminating_ = false;
     }
@@ -91,7 +94,7 @@ namespace orxonox
 
    /**
     @brief
-        Method for creating a HealthPickup object through XML.
+        Method for creating a ShrinkhPickup object through XML.
     */
     void ShrinkPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
@@ -142,7 +145,7 @@ namespace orxonox
         this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
     }
 
-		/**
+    /**
     @brief
         Prepares for shrinking (collecting several informations).
     */
@@ -152,13 +155,13 @@ namespace orxonox
 
         if(this->isUsed())
         {
-            this->pawn = this->carrierToPawnHelper();
-            if(pawn == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+            this->pawn_ = this->carrierToPawnHelper();
+            if(pawn_ == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
                 this->Pickupable::destroy();
 
             //Collect scaling information.
-            defaultScale_ = this->pawn->getScale3D();
-            defaultMass_ = this->pawn->getMass();
+            defaultScale_ = this->pawn_->getScale3D();
+            defaultMass_ = this->pawn_->getMass();
 
             smallScale_ = defaultScale_ / shrinkFactor_;
             smallMass_ = defaultMass_ / shrinkFactor_;
@@ -166,14 +169,14 @@ namespace orxonox
             actualScale_ = defaultScale_;
             actualMass_ = defaultMass_;
 
-            cameraPositions_ = this->pawn->getCameraPositions();
+            cameraPositions_ = this->pawn_->getCameraPositions();
             size_ = cameraPositions_.size();
             isActive_ = true;    //start shrinking now.
-            durationTimer.setTimer(duration_, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));    //Set timer for termination.
+            durationTimer_.setTimer(duration_, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));    //Set timer for termination.
         }
     }
 
-	/**
+    /**
     @brief
         Updates the scales of the ship.
     @param dt
@@ -188,12 +191,12 @@ namespace orxonox
             actualScale_ /= factor_;
             actualMass_ /= factor_;
 
-            this->pawn->setScale3D(actualScale_);
-            this->pawn->setMass(actualMass_);
+            this->pawn_->setScale3D(actualScale_);
+            this->pawn_->setMass(actualMass_);
 
             for(int index = 0; index < size_; index++)
             {
-                CameraPosition* cameraPos_ = this->pawn->getCameraPosition(index);
+                CameraPosition* cameraPos_ = this->pawn_->getCameraPosition(index);
                 if(cameraPos_ == NULL)
                 continue;
                 cameraPos_->setPosition(cameraPos_->getPosition()*factor_);
@@ -208,12 +211,12 @@ namespace orxonox
             actualScale_ *= factor_;
             actualMass_ *= factor_;
 
-            this->pawn->setScale3D(actualScale_);
-            this->pawn->setMass(actualMass_);
+            this->pawn_->setScale3D(actualScale_);
+            this->pawn_->setMass(actualMass_);
 
             for(int index = 0; index < size_; index++)
             {
-                CameraPosition* cameraPos_ = this->pawn->getCameraPosition(index);
+                CameraPosition* cameraPos_ = this->pawn_->getCameraPosition(index);
                 if(cameraPos_ == NULL)
                 continue;
                 cameraPos_->setPosition(cameraPos_->getPosition()/factor_);
@@ -224,7 +227,7 @@ namespace orxonox
 
     }
 
-	/**
+    /**
     @brief
         Initializes the termination.
     */
@@ -243,7 +246,7 @@ namespace orxonox
         return pawn;
     }
 
-	/**
+    /**
     @brief
         Creates a duplicate of the input OrxonoxClass.
     @param item

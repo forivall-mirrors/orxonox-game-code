@@ -50,6 +50,7 @@ namespace orxonox
     @author
         Reto Grieder
 
+    @see btBoxShape
     @ingroup Collisionshapes
     */
     class _ObjectsExport BoxCollisionShape : public CollisionShape

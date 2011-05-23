@@ -48,6 +48,7 @@ namespace orxonox
     @author
         Reto Grieder
 
+    @see btSphereShape
     @ingroup Collisionshapes
     */
     class _ObjectsExport SphereCollisionShape : public CollisionShape

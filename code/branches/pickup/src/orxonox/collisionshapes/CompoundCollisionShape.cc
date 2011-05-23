@@ -260,7 +260,33 @@ namespace orxonox
     {
         CollisionShape::changedScale();
 
-        // Iterate through all attached CollisionShapes.
+        std::vector<CollisionShape*> shapes;
+        // Iterate through all attached CollisionShapes and add them to the list of shapes.
+        for(std::map<CollisionShape*, btCollisionShape*>::iterator it = this->attachedShapes_.begin(); it != this->attachedShapes_.end(); it++)
+            shapes.push_back(it->first);
+
+        // Delete the compound shape and create a new one.
+        delete this->compoundShape_;
+        this->compoundShape_ = new btCompoundShape();
+
+        // Re-attach all CollisionShapes.
+        for(std::vector<CollisionShape*>::iterator it = shapes.begin(); it != shapes.end(); it++)
+        {
+            CollisionShape* shape = *it;
+            shape->setScale3D(this->getScale3D());
+            // Only actually attach if we didn't pick a CompoundCollisionShape with no content.
+            if (shape->getCollisionShape())
+            {
+                btTransform transf(multi_cast<btQuaternion>(shape->getOrientation()), multi_cast<btVector3>(shape->getPosition()));
+                // Add the btCollisionShape of the CollisionShape as a child shape to the btCompoundShape of the CompoundCollisionShape.
+                this->compoundShape_->addChildShape(transf, shape->getCollisionShape());
+            }
+        }
+
+        this->updatePublicShape();
+
+        /*
+        // Iterate through all attached CollisionShapes
         for(std::map<CollisionShape*, btCollisionShape*>::const_iterator it = this->attachedShapes_.begin(); it != this->attachedShapes_.end(); it++)
         {
             // Rescale the CollisionShape.
@@ -268,6 +294,6 @@ namespace orxonox
             this->updateAttachedShape(it->first);
         }
 
-        this->updatePublicShape();
+        this->updatePublicShape();*/
     }
 }

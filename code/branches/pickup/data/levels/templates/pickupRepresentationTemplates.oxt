@@ -402,7 +402,7 @@
                 <attached>
                     <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Sphere2" scale=0.1>
                         <attached>
-                            <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Shrink" scale=0.9 />
+                            <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Shrink" scale=0.4 />
                         </attached>
                     </Billboard>
                 </attached>
@@ -413,7 +413,8 @@
 
 <Template name=smallshrinkpickup>
   <InvisiblePickup 
-    duration = 20.0
+    duration = 10.0
+    shrinkFactor = 2.5
     activaionType = "immediate"
     durationType = "continuous"
   />
@@ -424,9 +425,9 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Sphere2" scale=0.2>
+                    <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Sphere2" scale=0.1>
                         <attached>
-                            <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Shrink" scale=2.0 />
+                            <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Shrink" scale=0.7 />
                         </attached>
                     </Billboard>
                 </attached>
@@ -437,7 +438,8 @@
 
 <Template name=mediumshrinkpickup>
   <InvisiblePickup 
-    duration = 20.0
+    duration = 30.0
+    shrinkFactor = 5.0
     activaionType = "immediate"
     durationType = "continuous"
   />
@@ -448,9 +450,9 @@
         <spawner-representation>
             <StaticEntity>
                 <attached>
-                    <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Sphere2" scale=0.3>
+                    <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Sphere2" scale=0.1>
                         <attached>
-                            <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Shrink" scale=3.0 />
+                            <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Shrink" scale=1.0 />
                         </attached>
                     </Billboard>
                 </attached>
@@ -461,7 +463,8 @@
 
 <Template name=hugeshrinkpickup>
   <InvisiblePickup 
-    duration = 20.0
+    duration = 60.0
+    shrinkFactor = 10.0
     activaionType = "immediate"
     durationType = "continuous"
   />

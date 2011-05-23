@@ -47,7 +47,7 @@
 namespace orxonox {
 
     /**
-	@author
+    @author
         Sandro Sgier
 
     @ingroup PickupItems
@@ -100,7 +100,7 @@ namespace orxonox {
 
         private:
             void initialize(void);
-            float duration_;			//!< determines how long the pickup will be active
+            float duration_;            //!< determines how long the pickup will be active
             float shrinkFactor_;        //shrink factor of the space ship
             float shrinkSpeed_;         //speed of shrinking
             bool isActive_;             //true if ship is shrinking or small
@@ -113,10 +113,10 @@ namespace orxonox {
             Ogre::Vector3 smallScale_;
             float defaultMass_;
             float actualMass_;
-            float smallMass_;			
+            float smallMass_;            
             Pawn* carrierToPawnHelper(void);
-            Pawn* pawn;
-            Timer durationTimer;
+            Pawn* pawn_;
+            Timer durationTimer_;
             void terminate(void);
     };
 }

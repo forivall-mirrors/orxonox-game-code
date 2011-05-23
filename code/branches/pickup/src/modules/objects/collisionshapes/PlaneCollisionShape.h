@@ -50,6 +50,7 @@ namespace orxonox
     @author
         Martin Stypinski
 
+    @see btStaticPlaneShape
     @ingroup Collisionshapes
     */
     class _ObjectsExport PlaneCollisionShape : public CollisionShape

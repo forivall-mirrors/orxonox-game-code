@@ -642,10 +642,10 @@ namespace orxonox
     void WorldEntity::setScale3D(const Vector3& scale)
     {
         // If physics is enabled scale the attached CollisionShape.
-        if (false && this->hasPhysics() && this->collisionShape_ != NULL)
+        /*if (this->hasPhysics() && this->collisionShape_ != NULL)
         {
             this->collisionShape_->setScale3D(scale);
-        }
+        }*/
 
         this->node_->setScale(scale);
 

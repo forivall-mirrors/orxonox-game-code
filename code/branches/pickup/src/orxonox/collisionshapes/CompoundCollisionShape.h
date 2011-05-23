@@ -51,6 +51,7 @@ namespace orxonox
     @author
         Reto Grieder
 
+    @see btCompoundShape
     @ingroup Collisionshapes
     */
     class _OrxonoxExport CompoundCollisionShape : public CollisionShape
