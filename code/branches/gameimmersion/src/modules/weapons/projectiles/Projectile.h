@@ -55,6 +55,8 @@ namespace orxonox
             inline float getDamage() const
                 { return this->damage_; }
 */
+
+
             void setOwner(Pawn* owner);
             inline Pawn* getOwner() const
                 { return this->owner_; }

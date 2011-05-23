@@ -46,7 +46,7 @@ namespace orxonox
 
         this->setConfigValues();
 //        this->bDestroy_ = false;
-        this->owner_ = 0;
+//        this->owner_ = 0;
 //        this->damage_ = 115;
 ///////////////////me
 //        this->healthdamage_ = 0;
@@ -99,7 +99,7 @@ namespace orxonox
 
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->owner_,this);
+        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
     }
 
 //////////////////////////me edit
@@ -159,5 +159,4 @@ namespace orxonox
     {
         this->owner_ = owner;
     }
-
 }

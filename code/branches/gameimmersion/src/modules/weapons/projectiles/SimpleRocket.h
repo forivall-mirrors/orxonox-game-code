@@ -112,14 +112,10 @@ namespace orxonox
             void setOwner(Pawn* owner);
             inline Pawn* getOwner() const
                 { return this->owner_; }
+
             inline bool hasFuel() const
             { return this->fuel_; }
 
-/*            inline void setDamage(float damage)
-                { this->damage_ = damage; }
-            inline float getDamage() const
-                { return this->damage_; }
-*/
 
         private:
             WeakPtr<Pawn> owner_;

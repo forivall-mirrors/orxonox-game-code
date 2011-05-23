@@ -158,7 +158,7 @@ namespace orxonox
     void SimpleRocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
-        this->player_ = this->owner_->getPlayer();
+        this->player_ = this->getOwner()->getPlayer();
     }
 
 
@@ -166,7 +166,7 @@ namespace orxonox
 
     bool SimpleRocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->owner_,this);
+        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
 /*        if (!this->bDestroy_ && GameMode::isMaster())
         {
             if (otherObject == this->owner_)

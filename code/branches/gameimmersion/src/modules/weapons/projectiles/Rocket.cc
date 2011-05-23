@@ -147,8 +147,8 @@ namespace orxonox
     void Rocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
-        this->player_ = this->owner_->getPlayer();
-        this->owner_->getPlayer()->startTemporaryControl(this);
+        this->player_ = this->getOwner()->getPlayer();
+        this->getOwner()->getPlayer()->startTemporaryControl(this);
 
         if( GameMode::isMaster() )
         {
@@ -184,7 +184,7 @@ namespace orxonox
 
     bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->owner_,this);
+        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
 
 /* * /        if (!this->bDestroy_ && GameMode::isMaster())
         {
@@ -245,10 +245,10 @@ namespace orxonox
     void Rocket::destructionEffect()
     {
         ParticleSpawner *effect1, *effect2;
-        if( this->owner_ )
+        if( this->getOwner() )
         {
-            effect1 = new ParticleSpawner(this->owner_->getCreator());
-            effect2 = new ParticleSpawner(this->owner_->getCreator());
+            effect1 = new ParticleSpawner(this->getOwner()->getCreator());
+            effect2 = new ParticleSpawner(this->getOwner()->getCreator());
         }
         else
         {

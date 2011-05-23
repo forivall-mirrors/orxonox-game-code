@@ -48,7 +48,6 @@ namespace orxonox
         RegisterRootObject(BasicProjectile);// - register the BasicProjectile class to the core
 
         this->bDestroy_ = false;
-//        this->owner_ = 0;
 
         this->damage_ = 0;
         this->healthdamage_ = 0;
@@ -126,12 +125,7 @@ namespace orxonox
         return false;
     }
 
-/*    void BasicProjectile::setOwner(Pawn* owner)
-    {
-        this->owner_ = owner;
-    }
-
-    void BasicProjectile::destroyObject()
+/*    void BasicProjectile::destroyObject()
     {
         if (GameMode::isMaster())
             this->destroy();

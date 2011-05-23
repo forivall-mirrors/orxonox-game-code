@@ -110,12 +110,6 @@ namespace orxonox
             inline Pawn* getOwner() const
                 { return this->owner_; }
 
-/*            inline void setDamage(float damage)
-                { this->damage_ = damage; }
-            inline float getDamage() const
-                { return this->damage_; }
-*/
-
             virtual void fired(unsigned int firemode);
 
         private:

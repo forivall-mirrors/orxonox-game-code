@@ -47,11 +47,6 @@ namespace orxonox
 
             void basicDestroyObject();
 
-/*            void basicSetOwner(Pawn* owner);
-            inline Pawn* basicGetOwner() const
-                { return this->owner_; }
-*/
-
             inline void setDamage(float damage)
                 { this->damage_ = damage;  }
             inline float getDamage() const
@@ -74,9 +69,8 @@ namespace orxonox
                 { return this->bDestroy_; }
 
 
-
         private:
-//            WeakPtr<Pawn> owner_;
+//            WeakPtr<Pawn> owner_; //owner cannot be set in BasicProjectile, because it's already defined in MobileEntity and Movable Entity
 
             float damage_;
             float healthdamage_;
