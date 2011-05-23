@@ -58,31 +58,42 @@ namespace orxonox {
             ShrinkPickup(BaseObject* creator); //!< Constructor.
             virtual ~ShrinkPickup(); //!< Destructor.
             virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
-			virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
-			void tick(float dt);
+            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
+            virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode);
+            inline float getShrinkFactor(void) const
+                { return this->shrinkFactor_; }
+            inline float getDuration(void) const
+                { return this->duration_; }
+            inline float getShrinkSpeed(void) const
+                { return this->shrinkSpeed_; }
+            void setShrinkFactor(float factor);
+            void setDuration(float duration);
+            void setShrinkSpeed(float speed);
+            void tick(float dt);
+
+        protected:
+            void initializeIdentifier(void);
 
         private:
             void initialize(void);
-			
-			float duration_;			//!< determines how long the pickup will be active
-    		float shrinkFactor_;		//shrink factor of the space ship
-			float shrinkSpeed_;
-			bool isActive_;
-			bool isTerminating_;
-			int size_;
-			std::list<SmartPtr<CameraPosition> > cameraPositions_;
-			float defaultCameraPos_;
-			Ogre::Vector3 defaultScale_;
-			Ogre::Vector3 actualScale_;
-			Ogre::Vector3 smallScale_;
-			float defaultMass_;
-			float actualMass_;
-			float smallMass_;			
-			Pawn* carrierToPawnHelper(void);
-			Pawn* pawn;
-			Timer durationTimer;
-			void terminate(void);
-
+            float duration_;			//!< determines how long the pickup will be active
+            float shrinkFactor_;        //shrink factor of the space ship
+            float shrinkSpeed_;         //speed of shrinking
+            bool isActive_;             //true if ship is shrinking or small
+            bool isTerminating_;        //true if ship is growing
+            int size_;                  //number of camera positions
+            std::list<SmartPtr<CameraPosition> > cameraPositions_;
+            float defaultCameraPos_;    //all default, actual and small values...
+            Ogre::Vector3 defaultScale_;
+            Ogre::Vector3 actualScale_;
+            Ogre::Vector3 smallScale_;
+            float defaultMass_;
+            float actualMass_;
+            float smallMass_;			
+            Pawn* carrierToPawnHelper(void);
+            Pawn* pawn;
+            Timer durationTimer;
+            void terminate(void);
     };
 }
 

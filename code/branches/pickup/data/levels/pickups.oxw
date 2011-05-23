@@ -191,7 +191,7 @@
 
     <PickupSpawner position="-30,-30,-30" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
       <pickup>
-        <ShrinkPickup />
+        <ShrinkPickup shrinkFactor = "5.0" duration = "5.0" shrinkSpeed = "5.0"/>
       </pickup>
     </PickupSpawner>
 
