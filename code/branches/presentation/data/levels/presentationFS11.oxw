@@ -103,7 +103,7 @@ include("templates/pickupRepresentationTemplates.oxt")
       linearDamping="0.8"
       angularDamping="0"
       mass="5.9e21"
-      pitch="0"
+      pitch="-90"
       mesh="planets/earth.mesh"
       atmosphere="atmosphere1"
       rotationaxis="0,1,0"
@@ -124,7 +124,7 @@ include("templates/pickupRepresentationTemplates.oxt")
     <!-- This is a model of our Moon: mass=MoonMass/1000 and radius=MoonRadius[km]*10 and position=DistanceFromEarth[km]*10 -->
     <Planet
       position="-30000,0,0"
-      scale="17370"
+      scale="8000"
       collisionType="dynamic"
       linearDamping="0.8"
       angularDamping="0"
@@ -134,7 +134,7 @@ include("templates/pickupRepresentationTemplates.oxt")
       atmosphere="atmosphere1"
       rotationaxis="0,1,0"
       rotationrate="0.2"
-      atmospheresize="80.0f"
+      atmospheresize="0.0f"
       imagesize="1024.0f"
       collisiondamage = 2
       enablecollisiondamage = true
