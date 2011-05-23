@@ -167,9 +167,6 @@ namespace orxonox
                 this->boostPower_ += this->boostPowerRate_*dt;
             }
 
-	   // COUT(0) << "Velocity: " << this->getVelocity().length() << " - " << this->getVelocity().squaredLength() << std::endl;
-
-
             if(this->bBoost_)
             {
                 this->boostPower_ -=this->boostRate_*dt;
@@ -184,38 +181,6 @@ namespace orxonox
 		shakeCamera(dt);		
             }
         }
-    }
-    
-    void SpaceShip::shakeCamera(float dt)
-    {
-	    if (this->getVelocity().squaredLength() > 80)
-	    {
-		    this->shakeDt_ += dt;
-		    
-		    int frequency = this->shakeFrequency_ * (this->getVelocity().squaredLength());
-		    
-		    if (this->shakeDt_ >= 1 /(frequency))
-		    {
-			    this->shakeDt_ -= 1/(frequency);
-		    }
-		    
-		    Degree angle = Degree(sin(this->shakeDt_ * 2* math::pi * frequency) * this->shakeAmplitude_);
-			
-//		    COUT(0) << "Angle: " << angle << std::endl;
-		    Camera* c = this->getCamera();
-
-			//Shaking Camera effect
-		    if (c != 0)
-		    {
-			c->setOrientation(Vector3::UNIT_X, angle);
-		    }
-	    }
-    }
-
-
-    void SpaceShip::boostCooledDown(void)
-    {
-        this->bBoostCooldown_ = false;
     }
 
     void SpaceShip::moveFrontBack(const Vector2& value)
@@ -271,15 +236,65 @@ namespace orxonox
     {	
         if(bBoost && !this->bBoostCooldown_)
 	{
-//	    COUT(0) << "Boost startet!\n";
+	    //COUT(0) << "Boost startet!\n";
             this->bBoost_ = true;
 	}
         if(!bBoost)
 	{
-//	    COUT(0) << "Boost stoppt\n";
+	    //COUT(0) << "Boost stoppt\n";
 	    this->resetCamera();
             this->bBoost_ = false;
 	}
+    }
+    
+    void SpaceShip::boostCooledDown(void)
+    {
+	    this->bBoostCooldown_ = false;
+    }
+    
+    void SpaceShip::shakeCamera(float dt)
+    {
+	    //make sure the ship is only shaking if it's moving
+	    if (this->getVelocity().squaredLength() > 80)
+	    {
+		    this->shakeDt_ += dt;
+		    
+		    int frequency = this->shakeFrequency_ * (this->getVelocity().squaredLength());
+		    
+		    if (this->shakeDt_ >= 1 /(frequency))
+		    {
+			    this->shakeDt_ -= 1/(frequency);
+		    }
+		    
+		    Degree angle = Degree(sin(this->shakeDt_ * 2* math::pi * frequency) * this->shakeAmplitude_);
+			
+//		    COUT(0) << "Angle: " << angle << std::endl;
+		    Camera* c = this->getCamera();
+
+			//Shaking Camera effect
+		    if (c != 0)
+		    {
+			    c->setOrientation(Vector3::UNIT_X, angle);
+		    }
+	    }
+    }
+    
+    void SpaceShip::resetCamera()
+    {
+	    
+//	    COUT(0) << "Resetting camera\n";
+	    Camera *c = this->getCamera();
+	  
+	    if (c == 0)
+	    {
+		    COUT(2) << "Failed to reset camera!";
+		    return;
+	    }
+	    
+	    shakeDt_ = 0;
+	    // 	    
+	    c->setPosition(this->cameraOriginalPosition);
+	    c->setOrientation(this->cameraOriginalOrientation);
     }
 
     void SpaceShip::loadEngineTemplate()
@@ -325,21 +340,5 @@ namespace orxonox
         return list;
     }
     
-    void SpaceShip::resetCamera()
-    {
-	    
-//	    COUT(0) << "Resetting camera\n";
-	    Camera *c = this->getCamera();
-	  
-	    if (c == 0)
-	    {
-		    COUT(2) << "Failed to reset camera!";
-	    	    return;
-	    }
-	    
-	    shakeDt_ = 0;
-// 	    
-	    c->setPosition(this->cameraOriginalPosition);
-	    c->setOrientation(this->cameraOriginalOrientation);
-    }
+
 }
