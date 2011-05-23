@@ -36,6 +36,8 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
+#include "Tetris.h"
+
 namespace orxonox
 {
     CreateFactory(TetrisStone);
@@ -51,6 +53,12 @@ namespace orxonox
         this->size_ = 10.0f;
         this->delay_ = false;
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisStone::enableMovement, this)));
+        this->previousPosition_ = Vector3::ZERO;
+    }
+
+    void TetrisStone::tick(float dt)
+    {
+        SUPER(TetrisStone, tick, dt);
     }
 
     /**
@@ -75,7 +83,12 @@ namespace orxonox
         if(!this->delay_)
         {
             const Vector3& position = this->getPosition();
-            this->setPosition(position.x+value.x/abs(value.x)*this->size_, position.y, position.z);
+            Vector3 newPos = Vector3(position.x+value.x/abs(value.x)*this->size_, position.y, position.z);
+            if(!this->tetris_->isValidMove(this, newPos))
+                return;
+
+            //this->previousPosition_ = position;
+            this->setPosition(newPos);
             this->delay_ = true;
             this->delayTimer_.startTimer();
         }

@@ -67,9 +67,9 @@ namespace orxonox
     {
         SUPER(TetrisCenterpoint, XMLPort, xmlelement, mode);
 
-        XMLPortParam(TetrisCenterpoint, "width", setWidth, getWidth, xmlelement, mode);
-        XMLPortParam(TetrisCenterpoint, "height", setHeight, setWidth, xmlelement, mode);
-        XMLPortParam(TetrisCenterpoint, "stoneSize", setStoneSize, getStoneSize, xmlelement, mode);
+        XMLPortParam(TetrisCenterpoint, "width", setWidth, getWidth, xmlelement, mode); // die Breite
+        XMLPortParam(TetrisCenterpoint, "height", setHeight, setWidth, xmlelement, mode); // die Grösse
+        XMLPortParam(TetrisCenterpoint, "stoneSize", setStoneSize, getStoneSize, xmlelement, mode); 
         XMLPortParam(TetrisCenterpoint, "stoneTemplate", setStoneTemplate, getStoneTemplate, xmlelement, mode);
         XMLPortParam(TetrisCenterpoint, "stoneSpeed", setStoneSpeed, getStoneSpeed, xmlelement, mode);
     }

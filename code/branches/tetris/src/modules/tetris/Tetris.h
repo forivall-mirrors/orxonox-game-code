@@ -55,36 +55,35 @@ namespace orxonox
     {
         public:
             Tetris(BaseObject* creator); //!< Constructor. Registers and initializes the object.
-            virtual ~Tetris(); //!< Destructor. Cleans up, if initialized.
-            
-            virtual void tick(float dt);
+            virtual ~Tetris(); //!< Destructor. Cleans up, if initialized.           
 
             virtual void start(void); //!< Starts the Tetris minigame.
             virtual void end(void); ///!< Ends the Tetris minigame.
 
+            virtual void tick(float dt);
+
             virtual void spawnPlayer(PlayerInfo* player); //!< Spawns the input player.
 
-            /**
-            @brief Set the TetrisCenterpoint (the playing field).
-            @param center A pointer to the TetrisCenterpoint to be set.
-            */
-            void setCenterpoint(TetrisCenterpoint* center)
-                { this->center_ = center; }
+            void setCenterpoint(TetrisCenterpoint* center);
 
             PlayerInfo* getPlayer(void) const; //!< Get the player.
+
+            bool isValidMove(TetrisStone* stone, const Vector3& position);
 
         protected:
             virtual void spawnPlayersIfRequested(); //!< Spawns player.
 
+        private:
             void startStone(void); //!< Starts with the first stone.
             void createStone(void);
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
-            bool correctStonePos(TetrisStone* stone); //!< Check whether the supplied stone is in an allowed position
+            bool correctStonePos(TetrisStone* stone, const Vector3& position); //!< Check whether the supplied stone is in an allowed position
             
             PlayerInfo* player_;
 
             WeakPtr<TetrisCenterpoint> center_; //!< The playing field.
             std::vector<TetrisStone*> stones_; //!< A list of all stones in play.
+            std::vector< std::vector<bool> > grid_;
             TetrisStone* activeStone_;
             
             Timer starttimer_; //!< A timer to delay the start of the game.

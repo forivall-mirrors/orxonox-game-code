@@ -81,39 +81,39 @@ namespace orxonox
     {
         
     }
-    
+
     void Tetris::tick(float dt)
     {
         SUPER(Tetris, tick, dt);
-        
-        TetrisStone* stone = this->activeStone_;
-        if(stone != NULL)
+
+        if(this->activeStone_ != NULL && !this->isValidMove(this->activeStone_, this->activeStone_->getPosition()))
         {
-            // Get the current position of the active stone
-            Vector3 position = stone->getPosition();
-            
-            if(position.x < this->center_->getStoneSize()/2.0)  //!< If the stone touches the left edge of the level
-                position.x = this->center_->getStoneSize()/2.0;
-            else if(position.x > (this->center_->getWidth()-0.5)*this->center_->getStoneSize()) //!< If the stone touches the right edge of the level
-                position.x = (this->center_->getWidth()-0.5)*this->center_->getStoneSize();
-
-            if(!this->correctStonePos(stone)) //!< If the stone touches another stone
-            {
-                stone->setVelocity(Vector3::ZERO);
-                this->createStone();
-                this->startStone();
-            }
-
-            if(position.y < this->center_->getStoneSize()/2.0) //!< If the stone has reached the bottom of the level
-            {
-                position.y = this->center_->getStoneSize()/2.0;
-                stone->setVelocity(Vector3::ZERO);
-                this->createStone();
-                this->startStone();
-            }
-            
-            stone->setPosition(position);
+            this->activeStone_->setVelocity(Vector3::ZERO);
+            //this->grid_[(int)(position.x/this->center_->getStoneSize())][(int)(position.y/this->center_->getStoneSize())] = true;
+            this->createStone();
+            this->startStone();
         }
+    }
+
+    bool Tetris::isValidMove(TetrisStone* stone, const Vector3& position)
+    {
+        assert(stone);
+        
+        if(position.x < this->center_->getStoneSize()/2.0)  //!< If the stone touches the left edge of the level
+            return false;
+        else if(position.x > (this->center_->getWidth()-0.5)*this->center_->getStoneSize()) //!< If the stone touches the right edge of the level
+            return false;
+        
+        if(position.y < this->center_->getStoneSize()/2.0) //!< If the stone has reached the bottom of the level
+        {
+            stone->setVelocity(Vector3::ZERO);
+            //this->grid_[(int)(position.x/this->center_->getStoneSize())][(int)(position.y/this->center_->getStoneSize())] = true;
+            this->createStone();
+            this->startStone();
+            return false;
+        }
+
+        return this->correctStonePos(stone, position);
     }
 
     /**
@@ -134,7 +134,7 @@ namespace orxonox
             return;
         }
 
-        // Start the timer. After it has expired the ball is started.
+        // Start the timer. After it has expired the stone is started.
         this->starttimer_.startTimer();
 
         // Set variable to temporarily force the player to spawn.
@@ -226,6 +226,7 @@ namespace orxonox
         float xPos = (this->center_->getWidth()/2 + ((this->center_->getWidth() % 2)*2-1)/2.0)*this->center_->getStoneSize();
         float yPos = (this->center_->getHeight()-0.5)*this->center_->getStoneSize();
         stone->setPosition(xPos, yPos, 0.0f);
+        stone->setGame(this);
     }
 
     /**
@@ -234,24 +235,31 @@ namespace orxonox
     @return
         Returns whether the supplied stone is in the correct position.
     */
-    bool Tetris::correctStonePos(TetrisStone* stone)
+    bool Tetris::correctStonePos(TetrisStone* stone, const Vector3& position)
     {
+        assert(stone);
+
         for(std::vector<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
-            TetrisStone* currentStone = it->_Ptr(); //!< Gives access to the current stone in the list
-            Vector3 currentStonePosition = it->_Ptr()->getPosition(); //!< Saves the position of the currentStone
-            Vector3 stonePosition = stone->getPosition(); //!< Saves the position of the supplied stone
-            
-            // @TODO:   Use the TetrisStone member functions to check both stones for an overlap.
-            //          Also make sure to correct the stone position accordingly.
-            //
-            // This case applies if the stones overlap completely
-            //if((stonePosition.x == currentStonePosition.x) && (stonePosition.y == currentStonePosition.y))
-            // This case applies if the stones overlap partially vertically
-            //if(stonePosition.y - stone->getHeight()/2 < currentStonePosition.y + currentStone->getHeight()/2)
+            if(stone == *it)
+                continue;
 
+            Vector3 currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
             
+            if((position.x == currentStonePosition.x) && (position.y == currentStonePosition.y))
+            {
+                stone->setVelocity(Vector3::ZERO);
+                this->createStone();
+                this->startStone();
+                return false;
+            }// This case applies if the stones overlap completely
+            if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
+            {
+                return false;
+            }// This case applies if the stones overlap partially vertically
         }
+
+        return true;
     }
 
     /**
@@ -263,6 +271,23 @@ namespace orxonox
     PlayerInfo* Tetris::getPlayer(void) const
     {
         return this->player_;
+    }
+
+    /**
+    @brief Set the TetrisCenterpoint (the playing field).
+    @param center A pointer to the TetrisCenterpoint to be set.
+    */
+    void Tetris::setCenterpoint(TetrisCenterpoint* center)
+    {
+        this->center_ = center;
+
+        /*this->grid_.resize(this->center_->getWidth());
+        for(std::vector< std::vector<bool> >::iterator it = this->grid_.begin(); it != this->grid_.end(); it++)
+        {
+            (*it).resize(this->center_->getHeight());
+            for(std::vector<bool>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
+                (*it).insert(it2, false);
+        }*/
     }
 
 }
