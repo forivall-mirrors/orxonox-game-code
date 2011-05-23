@@ -15,7 +15,7 @@
    auxilaryThrust    = 30;
    rotationThrust    = 60;
 
-   lift = 0.2;
+   lift = 1;
    stallSpeed = 220;
 
    collisionType     = "dynamic"
