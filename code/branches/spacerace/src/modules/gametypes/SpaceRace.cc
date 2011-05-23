@@ -42,6 +42,7 @@ namespace orxonox
     {
 	RegisterObject(SpaceRace);
 	this->checkpointsReached_ = 0;
+	this->bTimeIsUp_ = false;
 	this->numberOfBots_ = 0;
     }
     
@@ -52,26 +53,34 @@ namespace orxonox
     
     void SpaceRace::end()
     {
-	Gametype::end();
-	this->clock_->capture();
-	int s = this->clock_->getSeconds();
-	int ms = this->clock_->getMilliseconds()-1000*s;
-	const std::string& message = "You have reached the last check point after "+ multi_cast<std::string>(s) +
-				      "." + multi_cast<std::string>(ms) + " seconds.";
-        COUT(0) << message << std::endl;
-	const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-        Host::Broadcast(message);
-	float time = this->clock_->getSecondsPrecise();
-	this->scores_.insert(time);
-	std::set<float>::iterator it;
-	for (it=this->scores_.begin(); it!=this->scores_.end(); it++)
+      	Gametype::end();
+	this->stopTimer();
+	if (this->bTimeIsUp_) {
+	    COUT(0) << "Time is up" << std::endl;
+	    const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage("Time is up");
+	}
+	else {
+	    this->clock_->capture();
+	    int s = this->clock_->getSeconds();
+	    int ms = this->clock_->getMilliseconds()-1000*s;
+	    const std::string& message = "You have reached the last check point after "+ multi_cast<std::string>(s) +
+					  "." + multi_cast<std::string>(ms) + " seconds.";
+	    COUT(0) << message << std::endl;
+	    const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+	    Host::Broadcast(message);
+	    float time = this->clock_->getSecondsPrecise();
+	    this->scores_.insert(time);
+	    std::set<float>::iterator it;
+	    for (it=this->scores_.begin(); it!=this->scores_.end(); it++)
 	    COUT(0) <<  multi_cast<std::string>(*it) << std::endl;
+	}
     }
 
     void SpaceRace::start()
     {
 	Gametype::start();
 	
+	this->startTimer();
 	clock_= new Clock();
 	std::string message("The match has started! Reach the check points as quick as possible!");
         COUT(0) << message << std::endl;

@@ -50,7 +50,7 @@
     </SpawnPoint>
     
     <!-- ------------------CheckPoints----------------- -->
-    <RaceCheckPoint name=checkpoint1 position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale=1 distance=40 checkpointindex=0 islast=false>
+    <RaceCheckPoint name="checkpoint1" position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
     </attached>
@@ -62,7 +62,7 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name=checkpoint2 position="0,-900,2300" collisionType="static" scale=1 distance=40 checkpointindex=1 islast=false>
+    <RaceCheckPoint name="checkpoint2" position="0,-900,2300" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger1" position="0,0,0" distance=40 stayActive="true" />
@@ -83,7 +83,7 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name=checkpoint3 position="0,700,2700" direction="0,0,1" collisionType="static" scale=1 distance=40 checkpointindex=2 islast=false>
+    <RaceCheckPoint name="checkpoint3" position="0,700,2700" direction="0,0,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger2" position="0,0,0" distance=40 stayActive="true" />
@@ -104,7 +104,7 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name=checkpoint4 position="0,2100,2300" direction="0,1,1" collisionType="static" scale=1 distance=40 checkpointindex=3 islast=false>
+    <RaceCheckPoint name="checkpoint4" position="0,2100,2300" direction="0,1,1" collisionType="static" scale="1" distance="40" checkpointindex="3" islast="false">
    <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger3" position="0,0,0" distance=40 stayActive="true" />
@@ -125,7 +125,7 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name=checkpoint5 position="0,2200,500" direction="0,1,0" collisionType="static" scale=1 distance=40 checkpointindex=4 islast=false>
+    <RaceCheckPoint name="checkpoint5" position="0,2200,500" direction="0,1,0" collisionType="static" scale="1" distance="40" checkpointindex="4" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger4" position="0,0,0" distance=40 stayActive="true" />
@@ -146,7 +146,7 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name=checkpoint6 position="0,1500,-800" direction="0,1,-1" collisionType="static" scale=1 distance=40 checkpointindex=5 islast=false>
+    <RaceCheckPoint name="checkpoint6" position="0,1500,-800" direction="0,1,-1" collisionType="static" scale="1" distance="40" checkpointindex="5" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger5" position="0,0,0" distance=40 stayActive="true" />
@@ -167,7 +167,7 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name=checkpoint7 position="0,200,-1900" collisionType="static" scale=1 distance=40 checkpointindex=6 islast=false>
+    <RaceCheckPoint name="checkpoint7" position="0,200,-1900" collisionType="static" scale="1" distance="40" checkpointindex="6" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger6" position="0,0,0" distance=40 stayActive="true" />
@@ -188,7 +188,7 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name=checkpoint8 position="0,-700,-1400" direction="0,-1,-1" collisionType="static" scale=1 distance=40 checkpointindex=7 islast=false>
+    <RaceCheckPoint name="checkpoint8" position="0,-700,-1400" direction="0,-1,-1" collisionType="static" scale="1" distance="40" checkpointindex="7" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger7" position="0,0,0" distance=40 stayActive="true" />
@@ -209,7 +209,7 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name=checkpoint9 position="0,-1300,-800" collisionType="static" scale=1 distance=40 checkpointindex=8 islast=false>
+    <RaceCheckPoint name="checkpoint9" position="0,-1300,-800" collisionType="static" scale="1" distance="40" checkpointindex="8" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger8" position="0,0,0" distance=40 stayActive="true" />
@@ -229,7 +229,7 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name=checkpoint10 position="0,-2100,0" collisionType="static" scale=1 distance=40 checkpointindex=9 islast=true>
+    <RaceCheckPoint name="checkpoint10" position="0,-2100,0" collisionType="static" scale="1" distance="40" checkpointindex="9" islast="true" timelimit="150">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
     </attached>

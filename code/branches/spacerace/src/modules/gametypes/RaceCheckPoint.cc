@@ -44,7 +44,7 @@ namespace orxonox
 	
 	this->bCheckpointIndex_ = 0;
 	this->bIsLast_ = false;
-	this->bTimeLimit_=0;
+	this->bTimeLimit_ = 0;
 	
 	this->setRadarObjectColour(ColourValue::Red);
         this->setRadarObjectShape(RadarViewable::Dot);
@@ -62,6 +62,14 @@ namespace orxonox
 	SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
 	if (this->getCheckpointIndex() == gametype->getCheckpointsReached()) this->setRadarVisibility(true);
 	else  this->setRadarVisibility(false);
+	
+	if (this->bTimeLimit_ != 0 && gametype->getTimerIsActive()) {
+	  float time = gametype->getTime() - this->bTimeLimit_;
+	  if (time > 0) {
+	    gametype->timeIsUp();
+	    gametype->end();
+	  }
+	}
     }
 
     

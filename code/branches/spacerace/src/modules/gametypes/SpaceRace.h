@@ -76,14 +76,16 @@ namespace orxonox
 		{ this->checkpointsReached_ = n;}
 	    inline int getCheckpointsReached()
 		{ return this->checkpointsReached_; }
+	    inline void timeIsUp()
+		{ this->bTimeIsUp_ = true;}
 	    
 	protected:
 	    
 	private:
 	    int checkpointsReached_;
-	    Clock *clock_;
 	    std::set<float> scores_;
-	    
+	    Clock *clock_;
+	    bool bTimeIsUp_;
     };
 }
 
