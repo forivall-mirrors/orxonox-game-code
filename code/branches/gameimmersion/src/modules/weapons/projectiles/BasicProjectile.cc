@@ -49,6 +49,8 @@ namespace orxonox
 
         this->bDestroy_ = false;
 
+        // Default damage must be zero, otherwise it would be above zero if no settings are made in the weaponsettings xml file.
+        // same thing for all weaponmodes files
         this->damage_ = 0;
         this->healthdamage_ = 0;
         this->shielddamage_ = 0;
@@ -88,7 +90,9 @@ namespace orxonox
             // visual effects for being hit, depending on whether the shield is hit or not
             if (owner) //if the owner does not exist (anymore?), no effects are displayed.
             {
-                if (!victim || (victim && !victim->hasShield()))
+                // damping and explosion effect is only played if the victim is no pawn (see cast above)
+                // or if the victim is a pawn, has no shield left, is still alive and any damage goes to the health
+                if (!victim || (victim && !victim->hasShield() && victim->getHealth() > 0 && (this_->getDamage() > 0 || this_->getHealthDamage() > 0)))
                 {
                     {
                         ParticleSpawner* effect = new ParticleSpawner(owner->getCreator());
