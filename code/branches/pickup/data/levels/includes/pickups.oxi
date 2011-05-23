@@ -209,3 +209,15 @@
     </pickup>
 </PickupRepresentation>
 
+<!-- Shrink Pickup -->
+
+<PickupRepresentation
+    pickupName = "Shrink Pickup"
+    pickupDescription = "Adds a Drone to the Players Spaceship"
+    spawnerTemplate = "smallshrinkpickupRepresentation"
+>
+    <pickup>
+        <ShrinkPickup template=smallshrinkpickup />
+    </pickup>
+</PickupRepresentation>
+

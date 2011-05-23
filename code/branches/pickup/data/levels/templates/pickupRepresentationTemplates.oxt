@@ -395,6 +395,78 @@
   />
 </Template>
 
+<Template name=smallshrinkpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Sphere2" scale=0.1>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Shrink" scale=0.9 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=smallshrinkpickup>
+  <InvisiblePickup 
+    duration = 20.0
+    activaionType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
+<Template name=mediumshrinkpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Sphere2" scale=0.2>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Shrink" scale=2.0 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=mediumshrinkpickup>
+  <InvisiblePickup 
+    duration = 20.0
+    activaionType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
+<Template name=hugeshrinkpickupRepresentation>
+    <PickupRepresentation>
+        <spawner-representation>
+            <StaticEntity>
+                <attached>
+                    <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Sphere2" scale=0.3>
+                        <attached>
+                            <Billboard position="0,0,0" colour="1.0,0.55,1.0" material="Shrink" scale=3.0 />
+                        </attached>
+                    </Billboard>
+                </attached>
+            </StaticEntity>
+        </spawner-representation>
+    </PickupRepresentation>
+</Template>
+
+<Template name=hugeshrinkpickup>
+  <InvisiblePickup 
+    duration = 20.0
+    activaionType = "immediate"
+    durationType = "continuous"
+  />
+</Template>
+
 <!-- Pickup Collection pickups -->
 
 <Template name=triplehealthspeedinvisibilitypickupRepresentation>
