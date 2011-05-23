@@ -72,7 +72,7 @@ namespace orxonox
 
         rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         rocket->setDamage(this->getDamage());
-//        rocket->setShieldDamage(this->getShieldDamage()); //correct this!
-//        rocket->setHealthDamage(this->getHealthDamage());
+        rocket->setShieldDamage(this->getShieldDamage());
+        rocket->setHealthDamage(this->getHealthDamage());
     }
 }
