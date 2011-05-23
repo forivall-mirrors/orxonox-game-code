@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file PlaneCollisionShape.cc
+    @brief Implementation of the PlaneCollisionShape class.
+*/
+
 #include "PlaneCollisionShape.h"
 
 #include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
@@ -38,6 +43,10 @@ namespace orxonox
 {
     CreateFactory(PlaneCollisionShape);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     PlaneCollisionShape::PlaneCollisionShape(BaseObject* creator) : CollisionShape(creator)
     {
         RegisterObject(PlaneCollisionShape);
@@ -69,6 +78,32 @@ namespace orxonox
         XMLPortParam(PlaneCollisionShape, "offset", setOffset, getOffset, xmlelement, mode);
     }
 
+    /**
+    @brief
+        Is called when the scale of the PlaneCollisionShape has changed.
+    */
+    void PlaneCollisionShape::changedScale()
+    {
+        CollisionShape::changedScale();
+
+        // Resize the internal collision shape
+        // TODO: Assuming setLocalScaling works.
+        //this->collisionShape_->setLocalScaling(multi_cast<btVector3>(this->getScale3D()));
+        if(!this->hasUniformScaling())
+        {
+            CCOUT(1) << "Error: Non-uniform scaling is not yet supported." << endl;
+            return;
+        }
+
+        this->setOffset(this->offset_*this->getScale());
+    }
+
+    /**
+    @brief
+        Creates a new internal collision shape for the PlaneCollisionShape.
+    @return
+        Returns a pointer to the newly created btStaticPlaneShape.
+    */
     btCollisionShape* PlaneCollisionShape::createNewShape() const
     {
         return new btStaticPlaneShape(multi_cast<btVector3>(this->normal_), this->offset_);

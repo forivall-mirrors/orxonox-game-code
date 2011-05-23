@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file BoxCollisionShape.cc
+    @brief Implementation of the BoxCollisionShape class.
+*/
+
 #include "BoxCollisionShape.h"
 
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
@@ -38,18 +43,23 @@ namespace orxonox
 {
     CreateFactory(BoxCollisionShape);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     BoxCollisionShape::BoxCollisionShape(BaseObject* creator) : CollisionShape(creator)
     {
         RegisterObject(BoxCollisionShape);
 
         this->halfExtents_ = Vector3(1, 1, 1);
-        updateShape();
+        this->updateShape();
 
         this->registerVariables();
     }
 
     BoxCollisionShape::~BoxCollisionShape()
     {
+        // TODO: Move to CollisionShape?
         if (this->isInitialized())
             delete this->collisionShape_;
     }
@@ -69,6 +79,32 @@ namespace orxonox
         XMLPortParamLoadOnly(BoxCollisionShape, "length", setLength, xmlelement, mode);
     }
 
+    /**
+    @brief
+        Is called when the scale of the BoxCollisionShape has changed.
+    */
+    void BoxCollisionShape::changedScale()
+    {
+        CollisionShape::changedScale();
+
+        // Resize the internal collision shape
+        // TODO: Assuming setLocalScaling works.
+        // this->collisionShape_->setLocalScaling(multi_cast<btVector3>(this->getScale3D()));
+        if(!this->hasUniformScaling())
+        {
+            CCOUT(1) << "Error: Non-uniform scaling is not yet supported." << endl;
+            return;
+        }
+
+        this->setHalfExtents(this->halfExtents_ * this->getScale());
+    }
+
+    /**
+    @brief
+        Creates a new internal collision shape for the BoxCollisionShape.
+    @return
+        Returns a pointer to the newly created btBoxShape.
+    */
     btCollisionShape* BoxCollisionShape::createNewShape() const
     {
         return new btBoxShape(multi_cast<btVector3>(this->halfExtents_));

@@ -40,6 +40,17 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Wrapper for the bullet cone collision shape class btConeShape.
+
+    @author
+        Reto Grieder
+
+    @see btConeShape
+    @ingroup Collisionshapes
+    */
     class _ObjectsExport ConeCollisionShape : public CollisionShape
     {
         public:
@@ -48,23 +59,45 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            inline void setRadius(float value)
-                { this->radius_ = value; updateShape(); }
+            /**
+            @brief Set the radius of the ConeCollisionShape.
+                   If the radius changes, this causes the internal collision shape to be recreated.
+            @param value The radius to be set.
+            @return Returns true if the radius has changed, false if not.
+            */
+            inline bool setRadius(float value)
+                { if(this->radius_ == value) return false; this->radius_ = value; updateShape(); return true; }
+            /**
+            @brief Get the radius of the ConeCollisionShape.
+            @return Returns the radius of the ConeCollisionShape.
+            */
             inline float getRadius() const
                 { return radius_; }
 
-            inline void setHeight(float value)
-                { this->height_ = value; updateShape(); }
+            /**
+            @brief Set the height of the ConeCollisionShape.
+                   If the height changes, this causes the internal collision shape to be recreated.
+            @param value The height to be set.
+            @return Returns true if the height has changed, false if not.
+            */
+            inline bool setHeight(float value)
+                { if(this->height_ == value) return false; this->height_ = value; updateShape(); return true; }
+            /**
+            @brief Get the height of the ConeCollisionShape.
+            @return Returns the height of the ConeCollisionShape.
+            */
             inline float getHeight() const
                 { return this->height_; }
+
+            virtual void changedScale(); // Is called when the scale of the ConeCollisionShape has changed.
 
         private:
             void registerVariables();
 
-            btCollisionShape* createNewShape() const;
+            btCollisionShape* createNewShape() const; // Creates a new internal collision shape for the ConeCollisionShape.
 
-            float radius_;
-            float height_;
+            float radius_; //!< The radius of the ConeCollisionShape.
+            float height_; //!< The height of the ConeCollisionShape.
      };
 }
 
