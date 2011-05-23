@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -65,15 +65,15 @@ namespace orxonox
         this->health_ = 0;
         this->maxHealth_ = 0;
         this->initialHealth_ = 0;
+
         this->shieldHealth_ = 0;
+        this->initialShieldHealth_ = 0;
+        this->maxShieldHealth_ = 100; //otherwise shield might increase to float_max
         this->shieldAbsorption_ = 0.5;
-////////////////////////me
+
         this->reloadRate_ = 0;
         this->reloadWaitTime_ = 1.0f;
         this->reloadWaitCountdown_ = 0;
-
-        this->maxShieldHealth_ = 0;
-////////////////////////end me
 
         this->lastHitOriginator_ = 0;
 
@@ -115,6 +115,8 @@ namespace orxonox
         XMLPortParam(Pawn, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
 
         XMLPortParam(Pawn, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode).defaultValues(0);
+        XMLPortParam(Pawn, "initialshieldhealth", setInitialShieldHealth, getInitialShieldHealth, xmlelement, mode).defaultValues(0);
+        XMLPortParam(Pawn, "maxshieldhealth", setMaxShieldHealth, getMaxShieldHealth, xmlelement, mode).defaultValues(100);
         XMLPortParam(Pawn, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode).defaultValues(0);
 
         XMLPortParam(Pawn, "spawnparticlesource", setSpawnParticleSource, getSpawnParticleSource, xmlelement, mode);
@@ -125,23 +127,19 @@ namespace orxonox
         XMLPortObject(Pawn, WeaponSet, "weaponsets", addWeaponSet, getWeaponSet, xmlelement, mode);
         XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPackXML, getWeaponPack, xmlelement, mode);
 
-/////// me
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
 
-        XMLPortParam(Pawn, "maxshieldhealth", setMaxShieldHealth, getMaxShieldHealth, xmlelement, mode).defaultValues(100);
-        XMLPortParam(Pawn, "initialshieldhealth", setInitialShieldHealth, getInitialShieldHealth, xmlelement, mode).defaultValues(0);
-
-/////// end me
-	//TODO: DEFINES fuer defaultwerte (hier und weiter oben dieselben)
+        //TODO: DEFINES fuer defaultwerte (hier und weiter oben dieselben)
     }
 
     void Pawn::registerVariables()
     {
         registerVariable(this->bAlive_,           VariableDirection::ToClient);
         registerVariable(this->health_,           VariableDirection::ToClient);
-        registerVariable(this->initialHealth_,    VariableDirection::ToClient);
+        registerVariable(this->maxHealth_,        VariableDirection::ToClient);
         registerVariable(this->shieldHealth_,     VariableDirection::ToClient);
+        registerVariable(this->maxShieldHealth_,  VariableDirection::ToClient);
         registerVariable(this->shieldAbsorption_, VariableDirection::ToClient);
         registerVariable(this->bReload_,          VariableDirection::ToServer);
         registerVariable(this->aimPosition_,      VariableDirection::ToServer);  // For the moment this variable gets only transfered to the server
