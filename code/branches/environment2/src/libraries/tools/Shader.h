@@ -88,11 +88,15 @@ namespace orxonox
             /// Returns the scene manager.
             inline Ogre::SceneManager* getSceneManager() const
                 { return this->scenemanager_; }
-
+            
+            /// Returns the compositor instance. Normally used for manually modifiying compositor parameters, when mt-type conversatio.
+            inline Ogre::CompositorInstance* getMutableCompositorInstance()
+                { return this->compositorInstance_; }
+        
             virtual void cameraChanged(Ogre::Viewport* viewport, Ogre::Camera* oldCamera);
 
-            void setParameter(size_t technique, size_t pass, const std::string& parameter, float value);
             void setParameter(size_t technique, size_t pass, const std::string& parameter, int value);
+            void setParameter(size_t technique, size_t pass, const std::string& parameter, float value);
 
             virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& materialPtr);
 

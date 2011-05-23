@@ -110,7 +110,7 @@ namespace orxonox
     class Camera;
     class FadingBillboard;
     class GlobalShader;
-    class GlobalGodrayShader;
+    class GodrayShader;
     class Light;
     class Model;
     class ParticleEmitter;

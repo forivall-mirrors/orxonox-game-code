@@ -20,44 +20,18 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Markus 'atok' Wegmann
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _GlobalShader_H__
-#define _GlobalShader_H__
+/**
+ @file
+ Contains the implementation of the WorldEntityShader class.
+ 
+ @see WorldEntityShader.h
+**/
 
-#include "OrxonoxPrereqs.h"
 
-#include "core/BaseObject.h"
-#include "network/synchronisable/Synchronisable.h"
-#include "tools/Shader.h"
-
-namespace orxonox
-{
-    class _OrxonoxExport GlobalShader : public BaseObject, public Synchronisable
-    {
-        public:
-            GlobalShader(BaseObject* creator);
-            virtual ~GlobalShader();
-
-            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-
-            virtual void changedVisibility();
-
-            inline const Shader& getShader() const
-                { return this->shader_; }
-        
-            inline Shader& getMutableShader()
-                { return this->shader_; }
-
-        private:
-            void registerVariables();
-
-            Shader shader_;
-    };
-}
-
-#endif /* _GlobalShader_H__ */
+#include "WorldEntityShader.h"

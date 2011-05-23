@@ -176,6 +176,8 @@ namespace orxonox
         XMLPortObject(WorldEntity, WorldEntity, "attached", attach, getAttachedObject, xmlelement, mode);
         // Attached collision shapes
         XMLPortObject(WorldEntity, CollisionShape, "collisionShapes", attachCollisionShape, getAttachedCollisionShape, xmlelement, mode);
+        // Attach WorldEntityShaders that depend on WorldEntity data (e.g. position). -- TODO -- Extend to WorldEntityShader.
+        XMLPortObject(WorldEntity, GodrayShader, "shaders", attachShader, getAttachedObject, xmlelement, mode);
     }
 
     void WorldEntity::registerVariables()
@@ -499,6 +501,30 @@ namespace orxonox
 
     //! Returns an attached object (merely for XMLPort).
     WorldEntity* WorldEntity::getAttachedObject(unsigned int index)
+    {
+        unsigned int i = 0;
+        for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)
+        {
+            if (i == index)
+                return (*it);
+            ++i;
+        }
+        return 0;
+    }
+    
+    void WorldEntity::attachShader(GodrayShader* object)
+    {
+        object->setWorldEntity(object);
+        
+        this->shaders_.insert(object);
+    }
+    void WorldEntity::detachShader(GodrayShader* object)
+    {
+        std::set<WorldEntity*>::iterator it = this->children_.find(object);
+        this->shaders_.erase(it);
+        
+    }
+    GodrayShader* WorldEntity::getAttachedShader(unsigned int index)
     {
         unsigned int i = 0;
         for (std::set<WorldEntity*>::const_iterator it = this->children_.begin(); it != this->children_.end(); ++it)

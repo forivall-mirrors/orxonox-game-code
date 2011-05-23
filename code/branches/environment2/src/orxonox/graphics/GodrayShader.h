@@ -30,18 +30,21 @@
 /**
  @file
  
- @brief Header of the GlobalGodrayShader class.
+ @brief Header of the GodrayShader class.
 */
 
 
-#ifndef _GlobalGodrayShader_H__
-#define _GlobalGodrayShader_H__
+#ifndef _GodrayShader_H__
+#define _GodrayShader_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include <OgreCompositorInstance.h>
 
 #include "tools/interfaces/Tickable.h"
 #include "core/BaseObject.h"
 #include "util/Math.h"
+#include "WorldEntity.h"
 #include "GlobalShader.h"
 
 
@@ -51,31 +54,39 @@ namespace orxonox
      @brief 
      
     */
-    class _OrxonoxExport GlobalGodrayShader : public BaseObject, public Tickable
+    class _OrxonoxExport GodrayShader : public BaseObject, public Tickable
     {
         public:
-            GlobalGodrayShader(BaseObject* creator);
-            virtual ~GlobalGodrayShader();
+            GodrayShader(BaseObject* creator);
+            virtual ~GodrayShader();
             
             virtual void tick(float dt);
+        
+            virtual void updateParameters();
             
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
         
             virtual void changedVisibility();
+        
+            void setWorldEntity(WorldEntity* worldEntity);
             
             inline const GlobalShader& getGlobalShader() const
             { return this->globalShader_; }
         
             void setSunPosition(const Vector3& position);
+            void setSunColor(const ColourValue& color);
             void setSkyColor(const ColourValue& color);
             const Vector3& getSunPosition() const;
+            const ColourValue& getSunColor() const;
             const ColourValue& getSkyColor() const;
         
         private:
-            
+        
+            WorldEntity* worldEntity_;
             GlobalShader globalShader_;
-            
+            Ogre::CompositorInstance* compositor_;
             Vector3 sunPosition_;
+            ColourValue sunColor_;
             ColourValue skyColor_;
             float exposure_;
             float decay_;
@@ -83,4 +94,4 @@ namespace orxonox
     };
 }
 
-#endif /* _GlobalGodrayShader_H__ */
+#endif /* _GodrayShader_H__ */

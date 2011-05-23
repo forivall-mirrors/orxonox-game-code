@@ -198,6 +198,12 @@ namespace orxonox
             void detachNode(Ogre::SceneNode* node);
             void attachToNode(Ogre::SceneNode* node);
             void detachFromNode(Ogre::SceneNode* node);
+            
+            void attachShader(GodrayShader* object);
+            void detachShader(GodrayShader* object);
+            GodrayShader* getAttachedShader(unsigned int index);
+            inline const std::set<WorldEntity*>& getAttachedShaders() const
+            { return this->shaders_; }
 
             inline void setDeleteWithParent(bool value)
                 { this->bDeleteWithParent_ = value; }
@@ -233,6 +239,7 @@ namespace orxonox
             WorldEntity* parent_;
             unsigned int parentID_;
             std::set<WorldEntity*> children_;
+            std::set<WorldEntity*> shaders_;
             bool bDeleteWithParent_;
 
             bool bActiveMem_;
