@@ -44,6 +44,7 @@ namespace orxonox
 	
 	this->bCheckpointIndex_ = 0;
 	this->bIsLast_ = false;
+	this->bTimeLimit_=0;
 	
 	this->setRadarObjectColour(ColourValue::Red);
         this->setRadarObjectShape(RadarViewable::Dot);
@@ -70,6 +71,7 @@ namespace orxonox
 	
 	XMLPortParam(RaceCheckPoint, "checkpointindex", setCheckpointIndex, getCheckpointIndex, xmlelement, mode).defaultValues(0);
 	XMLPortParam(RaceCheckPoint, "islast", setLast, getLast, xmlelement, mode).defaultValues(false);
+	XMLPortParam(RaceCheckPoint, "timelimit", setTimelimit, getTimeLimit, xmlelement, mode).defaultValues(0);
     }
     
     void RaceCheckPoint::triggered(bool bIsTriggered)

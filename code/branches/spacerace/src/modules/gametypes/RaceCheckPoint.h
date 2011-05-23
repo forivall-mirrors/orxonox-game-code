@@ -56,13 +56,17 @@ namespace orxonox
 	    { this->bCheckpointIndex_ = checkpointIndex; }
 	inline int getCheckpointIndex()
 	    { return this->bCheckpointIndex_; }
+	inline void setTimelimit(int timeLimit)
+	    { this->bTimeLimit_ = timeLimit;}
+	inline int getTimeLimit()
+	    { return this->bTimeLimit_;}
 	inline const WorldEntity* getWorldEntity() const
             { return this; }
 	
     private:
 	int bCheckpointIndex_;
 	bool bIsLast_;
-	
+	int bTimeLimit_;
       
     };
 }
