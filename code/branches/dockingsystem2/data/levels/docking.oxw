@@ -34,28 +34,9 @@
 
 
 
-    <Dock>
-        <animations>
-            <MoveToDockingTarget target="destroyer" position="10,150,40" />
-        </animations>
-        <effects>
-            <DockToShip target="spaceShip" />
-        </effects>
-        <events>
-            <execute>
-                <EventListener event="dockMe" />
-            </execute>
-        </events>
-        <attached>
-            <DistanceTrigger position="0,0,0" distance="30" target="Pawn" beaconMode="exclude" targetname="bcnSpaceShip" name="dockMe" />
-            <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
-        </attached>
-    </Dock>
-
-
-
       <SpaceShip
-   position               = "-150,-50,-100"
+   position               = "280, 150, 115"
+   orientation            = "0.5, 0.5, 0.5, 0.5"
    hudtemplate            = "spaceshiphud"
    camerapositiontemplate = "spaceshipassffcameras"
    engine                 = "spaceshipassffengine"
@@ -116,6 +97,25 @@
 
         <DistanceTriggerBeacon name="bcnDestroyer" />
         <DockingTarget name="destroyer" />
+
+
+        <Dock orientation="0.5, 0.5, 0.5, 0.5">
+            <animations>
+                <MoveToDockingTarget target="destroyer" position="10,150,40" />
+            </animations>
+            <effects>
+                <DockToShip target="spaceShip" />
+            </effects>
+            <events>
+                <execute>
+                    <EventListener event="dockMe" />
+                </execute>
+            </events>
+            <attached>
+                <DistanceTrigger position="0,0,0" distance="30" target="Pawn" beaconMode="exclude" targetname="bcnDestroyer" name="dockMe" />
+                <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
+            </attached>
+        </Dock>
 
 
         <TeamSpawnPoint team="1" position="150,0,7" direction="-1,0,0" roll="90" yaw="0" spawnclass="SpaceShip" pawndesign="spaceshipassff" />

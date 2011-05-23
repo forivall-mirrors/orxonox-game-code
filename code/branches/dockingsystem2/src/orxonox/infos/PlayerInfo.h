@@ -67,6 +67,7 @@ namespace orxonox // tolua_export
 
             void startControl(ControllableEntity* entity);
             void stopControl();
+            void pauseControl();
             void startTemporaryControl(ControllableEntity* entity);
             void stopTemporaryControl();
 

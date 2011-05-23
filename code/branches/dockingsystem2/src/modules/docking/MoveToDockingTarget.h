@@ -37,6 +37,7 @@
 
 #include "DockingPrereqs.h"
 #include "DockingAnimation.h"
+#include "DockingController.h"
 #include "Dock.h"
 
 namespace orxonox

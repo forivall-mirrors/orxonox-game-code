@@ -212,6 +212,18 @@ namespace orxonox
         this->changedControllableEntity();
     }
 
+    void PlayerInfo::pauseControl()
+    {
+        ControllableEntity* entity = this->controllableEntity_;
+
+        if (!entity)
+            return;
+
+        this->controllableEntity_->getController()->setActive(false);
+        //this->controllableEntity_->getController()->setControllableEntity(NULL);
+        this->controllableEntity_->setController(0);
+    }
+
     void PlayerInfo::stopTemporaryControl()
     {
         ControllableEntity* entity = this->controllableEntity_;
