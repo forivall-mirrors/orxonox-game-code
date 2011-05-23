@@ -44,7 +44,7 @@ namespace orxonox
         RegisterObject(LightningGun);
 
         this->reloadTime_ = 1;
-        this->damage_ = 100;
+        this->damage_ = 0; //default 100
         this->speed_ = 150;
 
         this->setMunitionName("LaserMunition");

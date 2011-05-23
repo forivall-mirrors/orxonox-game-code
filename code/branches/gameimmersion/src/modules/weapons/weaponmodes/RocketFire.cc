@@ -47,7 +47,7 @@ namespace orxonox
 
         this->reloadTime_ = 0.20f;
         this->bParallelReload_ = false;
-        this->damage_ = 100;
+        this->damage_ = 0;
         this->speed_ = 500;
 
         this->setMunitionName("RocketMunition");

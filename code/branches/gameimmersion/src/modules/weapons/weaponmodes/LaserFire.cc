@@ -44,7 +44,7 @@ namespace orxonox
         RegisterObject(LaserFire);
 
         this->reloadTime_ = 0.25;
-        this->damage_ = 15;
+        this->damage_ = 0; //default 15
         this->speed_ = 1250;
 
         this->setMunitionName("LaserMunition");

@@ -47,7 +47,7 @@ namespace orxonox
 
         this->reloadTime_ = 1.0;
         this->bParallelReload_ = false;
-        this->damage_ = 40;
+        this->damage_ = 0; //default 40
         this->speed_ = 1250;
 
         this->setMunitionName("FusionMunition");

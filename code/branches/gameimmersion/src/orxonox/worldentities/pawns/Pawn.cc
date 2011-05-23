@@ -234,6 +234,7 @@ namespace orxonox
 //////////////////me edit
     void Pawn::damage(float damage, Pawn* originator)
     {
+                COUT(3) << "### alte damage-funktion ###" << endl;
         if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
         {
             //share the dealt damage to the shield and the Pawn.
@@ -245,7 +246,6 @@ namespace orxonox
             {
                 healthdamage += shielddamage-this->getShieldHealth();
                 this->setShieldHealth(0);
-                COUT(3) << "### SHIELD KAPUTT ###" << endl;
             }
 
  //           else { COUT(3) << "## SHIELD : " << this->getShieldHealth() << endl; }
