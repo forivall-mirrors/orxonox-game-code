@@ -35,6 +35,8 @@
 #include "worldentities/ControllableEntity.h"
 #include "graphics/ParticleSpawner.h"
 
+#include "BasicProjectile.h"
+
 namespace orxonox
 {
     class ConeCollisionShape;
@@ -45,7 +47,7 @@ namespace orxonox
     @author
        Gabriel Nadler (Original file: Oli Scheuss)
     */
-    class _WeaponsExport SimpleRocket : public ControllableEntity
+    class _WeaponsExport SimpleRocket : public ControllableEntity, public BasicProjectile
     {
         public:
             SimpleRocket(BaseObject* creator);
@@ -113,17 +115,17 @@ namespace orxonox
             inline bool hasFuel() const
             { return this->fuel_; }
 
-            inline void setDamage(float damage)
+/*            inline void setDamage(float damage)
                 { this->damage_ = damage; }
             inline float getDamage() const
                 { return this->damage_; }
-
+*/
 
         private:
             WeakPtr<Pawn> owner_;
             Vector3 localAngularVelocity_;
-            float damage_;
-            bool bDestroy_;
+//            float damage_;
+//            bool bDestroy_;
             bool fuel_; //!< Bool is true while the rocket "has fuel"
 
 

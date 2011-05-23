@@ -248,7 +248,7 @@ namespace orxonox
                 COUT(3) << "### SHIELD KAPUTT ###" << endl;
             }
 
-            else { COUT(3) << "## SHIELD : " << this->getShieldHealth() << endl; }
+ //           else { COUT(3) << "## SHIELD : " << this->getShieldHealth() << endl; }
 
             this->setHealth(this->health_ - healthdamage);
 
@@ -318,7 +318,7 @@ namespace orxonox
 /////////////me override
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage, float healthdamage, float shielddamage)
     {
-        COUT(3) << "neue hit-Funktion wurde aufgerufen // " << std::flush;
+//        COUT(3) << "neue hit-Funktion wurde aufgerufen // " << std::flush;
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
             this->damage(damage, healthdamage, shielddamage, originator);

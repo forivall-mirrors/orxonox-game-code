@@ -47,12 +47,12 @@ namespace orxonox
 
     CreateFactory(SimpleRocket);
 
-    SimpleRocket::SimpleRocket(BaseObject* creator) : ControllableEntity(creator)
+    SimpleRocket::SimpleRocket(BaseObject* creator) : ControllableEntity(creator), BasicProjectile()
     {
         RegisterObject(SimpleRocket);// - register the SimpleRocket class to the core
 
         this->localAngularVelocity_ = 0;
-        this->bDestroy_ = false;
+//        this->bDestroy_ = false;
         this->lifetime_ = 120;
 
         this->setMass(15);
@@ -114,7 +114,7 @@ namespace orxonox
             } else
                 this->disableFire();
 
-            if( this->bDestroy_ )
+            if( this->getBDestroy() )
                 this->destroy();
         }
 
@@ -166,7 +166,8 @@ namespace orxonox
 
     bool SimpleRocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        if (!this->bDestroy_ && GameMode::isMaster())
+        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->owner_,this);
+/*        if (!this->bDestroy_ && GameMode::isMaster())
         {
             if (otherObject == this->owner_)
                 return false;
@@ -203,6 +204,7 @@ namespace orxonox
                 victim->hit(this->owner_, contactPoint, dmg);
         }
         return false;
+*/
     }
 
     void SimpleRocket::destroyObject()

@@ -42,6 +42,8 @@
 #include "sound/WorldSound.h"
 #include "Scene.h"
 
+#include "BasicProjectile.h"
+
 namespace orxonox
 {
     CreateFactory(Rocket);
@@ -51,12 +53,12 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes some default values.
     */
-    Rocket::Rocket(BaseObject* creator) : ControllableEntity(creator)
+    Rocket::Rocket(BaseObject* creator) : ControllableEntity(creator), BasicProjectile()
     {
         RegisterObject(Rocket);// - register the Rocket class to the core
 
         this->localAngularVelocity_ = 0;
-        this->bDestroy_ = false;
+//        this->bDestroy_ = false;
         this->lifetime_ = 100;
 
         if (GameMode::isMaster())
@@ -174,7 +176,7 @@ namespace orxonox
 
         if( GameMode::isMaster() )
         {
-            if( this->bDestroy_ )
+            if( this->getBDestroy() )
                 this->destroy();
 
         }
@@ -182,7 +184,9 @@ namespace orxonox
 
     bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        if (!this->bDestroy_ && GameMode::isMaster())
+        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->owner_,this);
+
+/* * /        if (!this->bDestroy_ && GameMode::isMaster())
         {
             if (otherObject == this->owner_)
                 return false;
@@ -215,7 +219,7 @@ namespace orxonox
                 victim->hit(this->owner_, contactPoint, this->damage_);
 //             this->destroy();
         }
-        return false;
+/ * */        return false;
     }
 
     void Rocket::destroyObject()

@@ -103,7 +103,7 @@ namespace orxonox
 
             // Fire
             inline void setDamage(float damage)
-                { this->damage_ = damage; COUT(3) << "DAMAGE-SET-FUNKTION (WeaponMode) WIRD AUFGERUFEN" << endl;}
+                { this->damage_ = damage;}
             inline float getDamage() const
                 { return this->damage_; }
 ////////////////////me, copied to projectile.cc
@@ -114,7 +114,7 @@ namespace orxonox
                 { return this->healthdamage_; }
 
             inline void setShieldDamage(float shielddamage)
-                { this->shielddamage_ = shielddamage;} //ShieldDamage wird korrekt gesettet vom XML-File
+                { this->shielddamage_ = shielddamage;}
             inline float getShieldDamage() const
                 { return this->shielddamage_; }
 
