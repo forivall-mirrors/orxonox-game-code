@@ -59,11 +59,21 @@ namespace orxonox
         RegisterObject(ShrinkPickup);
 
         this->initialize();
-        this->shrinkFactor_ = 5.0;
-        this->shrinkSpeed_ = 5.0;
-        this->duration_ = 5.0;
-        isActive_ = false;
-        isTerminating_ = false;
+        this->shrinkFactor_ = 5.0f;
+        this->shrinkSpeed_ = 5.0f;
+        this->duration_ = 5.0f;
+        this->isActive_ = false;
+        this->isTerminating_ = false;
+
+        this->size_ = 0;
+        this->defaultCameraPos_ = 0.0f;
+        this->defaultScale_ = Vector3::UNIT_SCALE;
+        this->actualScale_ = Vector3::UNIT_SCALE;
+        this->smallScale_ = Vector3::UNIT_SCALE;
+        this->defaultMass_ = 1.0f;
+        this->actualMass_ = 1.0f;
+        this->smallMass_ = 1.0f;
+        this->pawn_ = NULL;
     }
 
     ShrinkPickup::~ShrinkPickup()
@@ -156,23 +166,23 @@ namespace orxonox
         if(this->isUsed())
         {
             this->pawn_ = this->carrierToPawnHelper();
-            if(pawn_ == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+            if(this->pawn_ == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
                 this->Pickupable::destroy();
 
             //Collect scaling information.
-            defaultScale_ = this->pawn_->getScale3D();
-            defaultMass_ = this->pawn_->getMass();
+            this->defaultScale_ = this->pawn_->getScale3D();
+            this->defaultMass_ = this->pawn_->getMass();
 
-            smallScale_ = defaultScale_ / shrinkFactor_;
-            smallMass_ = defaultMass_ / shrinkFactor_;
+            this->smallScale_ = this->defaultScale_ / this->shrinkFactor_;
+            this->smallMass_ = this->defaultMass_ / this->shrinkFactor_;
 
-            actualScale_ = defaultScale_;
-            actualMass_ = defaultMass_;
+            this->actualScale_ = this->defaultScale_;
+            this->actualMass_ = this->defaultMass_;
 
-            cameraPositions_ = this->pawn_->getCameraPositions();
-            size_ = cameraPositions_.size();
-            isActive_ = true;    //start shrinking now.
-            durationTimer_.setTimer(duration_, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));    //Set timer for termination.
+            this->cameraPositions_ = this->pawn_->getCameraPositions();
+            this->size_ = this->cameraPositions_.size();
+            this->isActive_ = true;    //start shrinking now.
+            this->durationTimer_.setTimer(this->duration_, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));    //Set timer for termination.
         }
     }
 
@@ -184,45 +194,45 @@ namespace orxonox
     */
     void ShrinkPickup::tick(float dt)
     {
-        if(isActive_ == true && actualScale_ > smallScale_)    //if the ship has not reached the target scale, continue shrinking
+        if(this->isActive_ == true && this->actualScale_ > this->smallScale_)    //if the ship has not reached the target scale, continue shrinking
         {
-            float factor_ = 1 + dt*shrinkSpeed_;
+            float factor = 1 + dt*this->shrinkSpeed_;
 
-            actualScale_ /= factor_;
-            actualMass_ /= factor_;
+            this->actualScale_ /= factor;
+            this->actualMass_ /= factor;
 
-            this->pawn_->setScale3D(actualScale_);
-            this->pawn_->setMass(actualMass_);
+            this->pawn_->setScale3D(this->actualScale_);
+            this->pawn_->setMass(this->actualMass_);
 
-            for(int index = 0; index < size_; index++)
+            for(int index = 0; index < this->size_; index++)
             {
-                CameraPosition* cameraPos_ = this->pawn_->getCameraPosition(index);
-                if(cameraPos_ == NULL)
+                CameraPosition* cameraPos = this->pawn_->getCameraPosition(index);
+                if(cameraPos == NULL)
                 continue;
-                cameraPos_->setPosition(cameraPos_->getPosition()*factor_);
+                cameraPos->setPosition(cameraPos->getPosition()*factor);
             }
         }
-        else isActive_ = false;
+        else this->isActive_ = false;
 
-        if(isTerminating_ == true && actualScale_ < defaultScale_)    //grow until the ship reaches its default scale.
+        if(this->isTerminating_ == true && this->actualScale_ < this->defaultScale_)    //grow until the ship reaches its default scale.
         {
-            float factor_ = 1 + dt*shrinkSpeed_;
+            float factor = 1 + dt*this->shrinkSpeed_;
 
-            actualScale_ *= factor_;
-            actualMass_ *= factor_;
+            this->actualScale_ *= factor;
+            this->actualMass_ *= factor;
 
-            this->pawn_->setScale3D(actualScale_);
-            this->pawn_->setMass(actualMass_);
+            this->pawn_->setScale3D(this->actualScale_);
+            this->pawn_->setMass(this->actualMass_);
 
-            for(int index = 0; index < size_; index++)
+            for(int index = 0; index < this->size_; index++)
             {
-                CameraPosition* cameraPos_ = this->pawn_->getCameraPosition(index);
-                if(cameraPos_ == NULL)
+                CameraPosition* cameraPos = this->pawn_->getCameraPosition(index);
+                if(cameraPos == NULL)
                 continue;
-                cameraPos_->setPosition(cameraPos_->getPosition()/factor_);
+                cameraPos->setPosition(cameraPos->getPosition()/factor);
             }
         }
-        else if(isTerminating_ == true)
+        else if(this->isTerminating_ == true)
             this->Pickupable::destroy();
 
     }
@@ -233,8 +243,8 @@ namespace orxonox
     */
     void ShrinkPickup::terminate(void)
     {
-        isActive_ = false;
-        isTerminating_ = true;
+        this->isActive_ = false;
+        this->isTerminating_ = true;
         setUsed(false);
     }
 
