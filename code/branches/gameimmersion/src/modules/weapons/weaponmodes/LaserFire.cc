@@ -22,7 +22,7 @@
  *   Author:
  *      Martin Polak
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -50,6 +50,8 @@ namespace orxonox
         this->setMunitionName("LaserMunition");
     }
 
+    /* Creates the projectile object, sets its properties to the LaserFire properties
+     */
     void LaserFire::fire()
     {
         ParticleProjectile* projectile = new ParticleProjectile(this);

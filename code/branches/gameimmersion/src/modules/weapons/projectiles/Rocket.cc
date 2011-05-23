@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -42,8 +42,6 @@
 #include "sound/WorldSound.h"
 #include "Scene.h"
 
-#include "BasicProjectile.h"
-
 namespace orxonox
 {
     CreateFactory(Rocket);
@@ -58,7 +56,6 @@ namespace orxonox
         RegisterObject(Rocket);// - register the Rocket class to the core
 
         this->localAngularVelocity_ = 0;
-//        this->bDestroy_ = false;
         this->lifetime_ = 100;
 
         if (GameMode::isMaster())
@@ -182,44 +179,11 @@ namespace orxonox
         }
     }
 
+    /* Calls the collidesAgainst function of BasicProjectile
+     */
     bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
         return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
-
-/* * /        if (!this->bDestroy_ && GameMode::isMaster())
-        {
-            if (otherObject == this->owner_)
-                return false;
-
-            this->bDestroy_ = true;
-
-            if (this->owner_)
-            {
-                {
-                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                    effect->setPosition(this->getPosition());
-                    effect->setOrientation(this->getOrientation());
-                    effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/explosion4");
-                    effect->setLifetime(2.0f);
-                }
-
-                {
-                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                    effect->setPosition(this->getPosition());
-                    effect->setOrientation(this->getOrientation());
-                    effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/smoke4");
-                    effect->setLifetime(3.0f);
-                }
-            }
-
-            Pawn* victim = orxonox_cast<Pawn*>(otherObject);
-            if (victim)
-                victim->hit(this->owner_, contactPoint, this->damage_);
-//             this->destroy();
-        }
-/ * */        return false;
     }
 
     void Rocket::destroyObject()
@@ -236,10 +200,7 @@ namespace orxonox
 
     void Rocket::fired(unsigned int firemode)
     {
-//         if (this->owner_)
-//         {
-            this->destroy();
-//         }
+        this->destroy();
     }
 
     void Rocket::destructionEffect()

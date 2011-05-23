@@ -22,7 +22,7 @@
  *   Author:
  *      Martin Polak
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -53,6 +53,8 @@ namespace orxonox
         this->setMunitionName("FusionMunition");
     }
 
+    /* Creates the projectile (BillboardProjectile) object, sets its properties to the FusionFire properties
+     */
     void FusionFire::fire()
     {
         BillboardProjectile* projectile = new BillboardProjectile(this);

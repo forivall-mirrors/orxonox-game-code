@@ -22,7 +22,7 @@
  *   Author:
  *      Joel Smely
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -55,6 +55,8 @@ namespace orxonox
     {
     }
 
+    /* Creates the projectile (LightningGunProjectile) object, sets its properties to the LightningGun properties
+     */
     void LightningGun::fire()
     {
         LightningGunProjectile* projectile = new LightningGunProjectile(this);

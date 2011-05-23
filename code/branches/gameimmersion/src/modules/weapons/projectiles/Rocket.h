@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -115,8 +115,6 @@ namespace orxonox
         private:
             WeakPtr<Pawn> owner_;
             Vector3 localAngularVelocity_;
-//            float damage_;
-//            bool bDestroy_;
 
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;

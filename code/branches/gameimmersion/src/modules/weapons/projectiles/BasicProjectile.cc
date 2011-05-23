@@ -58,15 +58,19 @@ namespace orxonox
     {
     }
 
+    /* The function called when a projectile hits another thing.
+     * calls the hit-function, starts the reload countdown, displays visual effects
+     * hit is defined in src/orxonox/worldentities/pawns/pawn.cc
+     */
     bool BasicProjectile::basicCollidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint, Pawn* owner, BasicProjectile* this_)
     {
         if (!this_->getBDestroy() && GameMode::isMaster())
         {
-            if (otherObject == /*this->*/owner/*_*/) //prevents you from shooting yourself
+            if (otherObject == owner) //prevents you from shooting yourself
                 return false;
 
-            this_->setBDestroy(true); //if something is hit, the object is destroyed and can't hit something else
-// instead of returning false, bDestroy is returned
+            this_->setBDestroy(true); // If something is hit, the object is destroyed and can't hit something else.
+                                      // The projectile is destroyed by its tick()-function (in the following tick).
 
             Pawn* victim = orxonox_cast<Pawn*>(otherObject); //if otherObject isn't a Pawn, then victim is NULL
 
@@ -77,17 +81,17 @@ namespace orxonox
             // if visual effects after destruction cause problems, put this block below the effects code block
             if (victim)
             {
-                victim->hit(/*this->*/owner/*_*/, contactPoint, this_->getDamage(), this_->getHealthDamage(), this_->getShieldDamage());
+                victim->hit(owner, contactPoint, this_->getDamage(), this_->getHealthDamage(), this_->getShieldDamage());
                 victim->startReloadCountdown();
             }
 
             // visual effects for being hit, depending on whether the shield is hit or not
-            if (/*this->*/owner/*_*/) //if the owner does not exist (anymore??), no effects are displayed.
+            if (owner) //if the owner does not exist (anymore?), no effects are displayed.
             {
-                if (!victim || (victim && !victim->hasShield())) //same like below
+                if (!victim || (victim && !victim->hasShield()))
                 {
                     {
-                        ParticleSpawner* effect = new ParticleSpawner(/*this->*/owner/*_*/->getCreator());
+                        ParticleSpawner* effect = new ParticleSpawner(owner->getCreator());
                         effect->setPosition(entity->getPosition());
                         effect->setOrientation(entity->getOrientation());
                         effect->setDestroyAfterLife(true);
@@ -96,7 +100,7 @@ namespace orxonox
                     }
                         // second effect with same condition
                     {
-                        ParticleSpawner* effect = new ParticleSpawner(/*this->*/owner/*_*/->getCreator());
+                        ParticleSpawner* effect = new ParticleSpawner(owner->getCreator());
                         effect->setPosition(entity->getPosition());
                         effect->setOrientation(entity->getOrientation());
                         effect->setDestroyAfterLife(true);
@@ -104,10 +108,11 @@ namespace orxonox
                         effect->setLifetime(3.0f);
                     }
                 }
-                        // victim->isAlive() is not false until the next tick, so getHealth() is used instead
+
+                // victim->isAlive() is not false until the next tick, so getHealth() > 0 is used instead
                 if (victim && victim->hasShield() && (this_->getDamage() > 0 || this_->getShieldDamage() > 0) && victim->getHealth() > 0)
                 {
-                    ParticleSpawner* effect = new ParticleSpawner(/*this->*/owner/*_*/->getCreator());
+                    ParticleSpawner* effect = new ParticleSpawner(owner->getCreator());
                     effect->setPosition(entity->getPosition());
                     effect->setOrientation(entity->getOrientation());
                     effect->setDestroyAfterLife(true);
@@ -116,19 +121,7 @@ namespace orxonox
                 }
             }
 
-//            if (victim)
-//            {
-//                victim->hit(/*this->*/owner/*_*/, contactPoint, this_->getDamage(), this_->getHealthDamage(), this_->getShieldDamage());
-//                victim->startReloadCountdown();
-//            }
         }
         return false;
     }
-
-/*    void BasicProjectile::destroyObject()
-    {
-        if (GameMode::isMaster())
-            this->destroy();
-    }
-*/
 }

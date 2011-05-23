@@ -77,7 +77,6 @@ namespace orxonox
             float shielddamage_;
 
             bool bDestroy_;
-//            Timer destroyTimer_;
     };
 }
 

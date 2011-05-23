@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -50,42 +50,15 @@ namespace orxonox
             virtual void tick(float dt);
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
 
-/*            inline void setDamage(float damage)
-                { this->damage_ = damage;  COUT(3) << "DAMAGE-SET-FUNKTION WIRD AUFGERUFEN" << endl; }
-            inline float getDamage() const
-                { return this->damage_; }
-*/
-
-
             void setOwner(Pawn* owner);
             inline Pawn* getOwner() const
                 { return this->owner_; }
 
-/*///////////////////me
-
-            inline void setHealthDamage(float healthdamage)
-                { this->healthdamage_ = healthdamage; }
-            inline float getHealthDamage() const
-                { return this->healthdamage_; }
-
-            inline void setShieldDamage(float shielddamage)
-                { this->shielddamage_ = shielddamage; COUT(3) << "SHIELDDAMAGE SET TO " << shielddamage << endl; } //ShieldDamage wird korrekt gesettet vom XML-File
-            inline float getShieldDamage() const
-                { return this->shielddamage_; }
-
-///////////////////end me
-*/
 
         private:
             WeakPtr<Pawn> owner_;
             float lifetime_;
-/*            float damage_;
-///////me
-            float healthdamage_;
-            float shielddamage_;
-///////end me
-            bool bDestroy_;
-*/            Timer destroyTimer_;
+            Timer destroyTimer_;
     };
 }
 

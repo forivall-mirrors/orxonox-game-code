@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -52,11 +52,10 @@ namespace orxonox
         RegisterObject(SimpleRocket);// - register the SimpleRocket class to the core
 
         this->localAngularVelocity_ = 0;
-//        this->bDestroy_ = false;
         this->lifetime_ = 120;
 
         this->setMass(15);
-        COUT(4) << "simplerocket constructed\n";
+//        COUT(4) << "simplerocket constructed\n";
 
         if (GameMode::isMaster())
         {
@@ -162,49 +161,11 @@ namespace orxonox
     }
 
 
-
-
+    /* Calls the collidesAgainst function of BasicProjectile
+     */
     bool SimpleRocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
         return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
-/*        if (!this->bDestroy_ && GameMode::isMaster())
-        {
-            if (otherObject == this->owner_)
-                return false;
-
-            this->bDestroy_ = true;
-
-            if (this->owner_)
-            {
-                {
-                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                    effect->setPosition(this->getPosition());
-                    effect->setOrientation(this->getOrientation());
-                    effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/explosion4");
-                    effect->setLifetime(2.0f);
-                }
-
-                {
-                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                    effect->setPosition(this->getPosition());
-                    effect->setOrientation(this->getOrientation());
-                    effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/smoke4");
-                    effect->setLifetime(3.0f);
-                }
-            }
-
-            float dmg = this->damage_;
-//             if (this->owner_)
-//                 dmg = this->owner_->getPickups().processModifiers(ModifierType::Damage, dmg, false);
-
-            Pawn* victim = orxonox_cast<Pawn*>(otherObject);
-            if (victim)
-                victim->hit(this->owner_, contactPoint, dmg);
-        }
-        return false;
-*/
     }
 
     void SimpleRocket::destroyObject()

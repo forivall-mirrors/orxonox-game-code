@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -45,16 +45,9 @@ namespace orxonox
         RegisterObject(Projectile);
 
         this->setConfigValues();
-//        this->bDestroy_ = false;
-//        this->owner_ = 0;
-//        this->damage_ = 115;
-///////////////////me
-//        this->healthdamage_ = 0;
-//        this->shielddamage_ = 0;
-///////////////////end me
+        this->owner_ = 0;
 
         // Get notification about collisions
-
         if (GameMode::isMaster())
         {
             this->setMass(1.0);
@@ -97,64 +90,13 @@ namespace orxonox
             this->destroy();
     }
 
+    /* Calls the collidesAgainst function of BasicProjectile
+     */
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
         return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
     }
 
-//////////////////////////me edit
-/*    bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
-    {
-        if (!this->bDestroy_ && GameMode::isMaster())
-        {
-            if (otherObject == this->owner_)
-                return false;
-
-            this->bDestroy_ = true;
-
-            Pawn* victim = orxonox_cast<Pawn*>(otherObject); //if otherObject isn't a Pawn, then victim is NULL
-
-            if (this->owner_)
-            {
-                if (!victim || (victim && !victim->hasShield())) //same like below
-                {
-                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                    effect->setPosition(this->getPosition());
-                    effect->setOrientation(this->getOrientation());
-                    effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/explosion3");
-                    effect->setLifetime(2.0f);
-                }
-                if (!victim || (victim && !victim->hasShield())) //same like above
-                {
-                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                    effect->setPosition(this->getPosition());
-                    effect->setOrientation(this->getOrientation());
-                    effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/smoke4");
-                    effect->setLifetime(3.0f);
-                }
-                if (victim && victim->hasShield())
-                {
-                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                    effect->setPosition(this->getPosition());
-                    effect->setOrientation(this->getOrientation());
-                    effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/engineglow");
-                    effect->setLifetime(0.5f);
-                }
-            }
-
-            if (victim)
-            {
-                victim->hit(this->owner_, contactPoint, this->damage_, this->healthdamage_, this->shielddamage_);
-                victim->startReloadCountdown();
-            }
-        }
-        return false;
-    }
-//////////////////////////////////////////////////////////////////////end edit
-*/
     void Projectile::setOwner(Pawn* owner)
     {
         this->owner_ = owner;

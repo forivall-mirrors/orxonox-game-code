@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -58,6 +58,8 @@ namespace orxonox
     {
     }
 
+    /* Creates the Rocket object, sets its properties to the RocketFire properties
+     */
     void RocketFire::fire()
     {
         Rocket* rocket = new Rocket(this);
@@ -70,7 +72,7 @@ namespace orxonox
 
         rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         rocket->setDamage(this->getDamage());
-//        rocket->setShieldDamage(this->getShieldDamage());
+//        rocket->setShieldDamage(this->getShieldDamage()); //correct this!
 //        rocket->setHealthDamage(this->getHealthDamage());
     }
 }

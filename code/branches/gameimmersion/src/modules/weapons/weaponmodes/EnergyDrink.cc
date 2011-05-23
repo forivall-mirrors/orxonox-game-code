@@ -22,7 +22,7 @@
  *   Author:
  *      Hagen Seifert
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -96,6 +96,8 @@ namespace orxonox
         muzzleFlash->setMaterial(this->material_);
     }
 
+    /* Creates the projectile object, sets its properties to the EnergyDrink properties, calls muendungsfeuer()
+     */
     void EnergyDrink::shot()
     {
         Projectile* projectile = new Projectile(this);

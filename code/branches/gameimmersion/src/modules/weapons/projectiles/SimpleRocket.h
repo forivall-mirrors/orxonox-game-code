@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -120,8 +120,6 @@ namespace orxonox
         private:
             WeakPtr<Pawn> owner_;
             Vector3 localAngularVelocity_;
-//            float damage_;
-//            bool bDestroy_;
             bool fuel_; //!< Bool is true while the rocket "has fuel"
 
 
