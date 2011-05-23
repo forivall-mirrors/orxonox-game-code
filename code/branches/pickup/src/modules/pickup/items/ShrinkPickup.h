@@ -52,6 +52,30 @@ namespace orxonox {
 
     @ingroup PickupItems
     */
+
+    /**
+    @brief
+        The ShrinkPickup is a Pickupable that causes the pawn to shrink to a certain size for a certain time with a certain speed, all of them specified in the following variables:
+        - The @b shrinkFactor It determines how much the ship is going to shrink (e.g. the factor 2 would make the ship shrinking to half its size).
+        - The @b duration Specifies how long the ship will keep small.
+        - The @b shrinkSpeed Defines how fast the ship shrinks and grows.
+
+
+        An example of a XML implementation of a HealthPickup would be:
+        @code
+        <HealthPickup
+            shrinkFactor = "5.0"
+            duration = "5.0"
+            shrinkSpeed = "5.0"
+        />
+        @endcode
+
+    @author
+        Sandro Sgier
+
+    @ingroup PickupItems
+    */
+
     class _PickupExport ShrinkPickup : public Pickup, public Tickable
     {
         public:
