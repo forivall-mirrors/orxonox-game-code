@@ -151,7 +151,7 @@ namespace orxonox
 
         this->bReload_ = false;
 
-////////me
+        // TODO: use the existing timer functions instead
         if(this->reloadWaitCountdown_ > 0)
         {
             this->decreaseReloadCountdownTime(dt);
@@ -162,13 +162,14 @@ namespace orxonox
             this->resetReloadCountdown();
         }
 
-////////end me
         if (GameMode::isMaster())
+        {
             if (this->health_ <= 0 && bAlive_)
             {
                 this->fireEvent(); // Event to notify anyone who wants to know about the death.
                 this->death();
             }
+        }
     }
 
     void Pawn::preDestroy()
@@ -194,27 +195,10 @@ namespace orxonox
         ControllableEntity::removePlayer();
     }
 
-//////////////////me
-    void Pawn::setReloadRate(float reloadrate)
-    {
-        this->reloadRate_ = reloadrate;
-        //COUT(2) << "RELOAD RATE SET TO " << this->reloadRate_ << endl;
-    }
 
-    void Pawn::setReloadWaitTime(float reloadwaittime)
+    void Pawn::setHealth(float health)
     {
-        this->reloadWaitTime_ = reloadwaittime;
-        //COUT(2) << "RELOAD WAIT TIME SET TO " << this->reloadWaitTime_ << endl;
-    }
-
-    void Pawn::decreaseReloadCountdownTime(float dt)
-    {
-        this->reloadWaitCountdown_ -= dt;
-    }
-
-    void Pawn::setMaxShieldHealth(float maxshieldhealth)
-    {
-        this->maxShieldHealth_ = maxshieldhealth;
+        this->health_ = std::min(health, this->maxHealth_); //Health can't be set to a value bigger than maxHealth, otherwise it will be reduced at first hit
     }
 
     void Pawn::setShieldHealth(float shieldHealth)
@@ -222,17 +206,31 @@ namespace orxonox
         this->shieldHealth_ = std::min(shieldHealth, this->maxShieldHealth_);
     }
 
-///////////////end me
-
-    void Pawn::setHealth(float health)
+    void Pawn::setMaxShieldHealth(float maxshieldhealth)
     {
-        this->health_ = std::min(health, this->maxHealth_); //Health can't be set to a value bigger than maxHealth, otherwise it will be reduced at first hit
+        this->maxShieldHealth_ = maxshieldhealth;
     }
 
-//////////////////me edit
+    void Pawn::setReloadRate(float reloadrate)
+    {
+        this->reloadRate_ = reloadrate;
+    }
+
+    void Pawn::setReloadWaitTime(float reloadwaittime)
+    {
+        this->reloadWaitTime_ = reloadwaittime;
+    }
+
+    void Pawn::decreaseReloadCountdownTime(float dt)
+    {
+        this->reloadWaitCountdown_ -= dt;
+    }
+
+    /* Old damage function.
+     * For effects causing only damage not specifically to shield or health
+     */
     void Pawn::damage(float damage, Pawn* originator)
     {
-                COUT(3) << "### alte damage-funktion ###" << endl;
         if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
         {
             //share the dealt damage to the shield and the Pawn.
@@ -246,8 +244,6 @@ namespace orxonox
                 this->setShieldHealth(0);
             }
 
- //           else { COUT(3) << "## SHIELD : " << this->getShieldHealth() << endl; }
-
             this->setHealth(this->health_ - healthdamage);
 
             if (this->getShieldHealth() > 0)
@@ -260,10 +256,10 @@ namespace orxonox
             // play damage effect
         }
     }
-////////////////////end edit
 
-
-/////////////////////me override
+    /* Does damage to the pawn, splits it up to shield and health.
+     * Sets lastHitOriginator.
+     */
     void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
         if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
@@ -290,18 +286,16 @@ namespace orxonox
 
             // play damage effect
         }
-        //COUT(3) << "neue damage-Funktion wurde aufgerufen // " << "Shield:" << this->getShieldHealth() << endl;
     }
-
-/////////////end me
 
 
 /* HIT-Funktionen
-	Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden!
+	Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden! (Visuelle Effekte)
 
 */
 
-
+    /* Old hit function, calls the old damage function and changes velocity vector
+     */
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
@@ -313,10 +307,10 @@ namespace orxonox
         }
     }
 
-/////////////me override
+    /* calls the damage function and adds the force that hit the pawn to the velocity vector
+     */
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage, float healthdamage, float shielddamage)
     {
-//        COUT(3) << "neue hit-Funktion wurde aufgerufen // " << std::flush;
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
             this->damage(damage, healthdamage, shielddamage, originator);
@@ -325,8 +319,9 @@ namespace orxonox
             // play hit effect
         }
     }
-/////////////end me
 
+    /* Old hit (2) function, calls the old damage function and hits controller
+     */
     void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
@@ -340,21 +335,21 @@ namespace orxonox
         }
     }
 
-/////////////me override
+    /* Hit (2) function, calls the damage function and hits controller
+     */
     void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage)
     {
-//        COUT(3) << "neue hit2-Funktion wurde aufgerufen // shielddamage: " << shielddamage << std::flush;
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
             this->damage(damage, healthdamage, shielddamage, originator);
 
             if ( this->getController() )
-                this->getController()->hit(originator, contactpoint, shielddamage);
+                this->getController()->hit(originator, contactpoint, damage); // changed to damage, why shielddamage?
 
             // play hit effect
         }
     }
-/////////////end me
+
 
     void Pawn::kill()
     {
