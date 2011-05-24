@@ -66,7 +66,7 @@ namespace orxonox
             virtual bool docking(PlayerInfo* player); //!< Called when docking starts
             virtual bool release(PlayerInfo* player); //!< Called when player wants undock
         private:
-            std::string target;
+            std::string target_;
     };
 
 }

@@ -54,7 +54,7 @@ namespace orxonox
     class _DockingExport DockingTarget : public StaticEntity
     {
         private:
-            std::string name;
+            std::string name_;
 
         public:
             DockingTarget(BaseObject* creator);

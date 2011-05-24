@@ -72,11 +72,11 @@ namespace orxonox
             static bool invokeAnimation(bool dock, PlayerInfo* player, std::list<DockingAnimation*> &animations); //!< Invokes calls the docking or release method of all list entries
             static DockingTarget *findTarget(std::string name); //!< Iterates through all DockingTarget objects to find the one with name=target
 
-            void setParent(Dock *parent) { this->parent = parent; }
+            void setParent(Dock *parent) { this->parent_ = parent; }
 
         protected:
-            Dock *parent;
-            std::set<PlayerInfo*> animations; //!< Contains a list of currently running animations
+            Dock *parent_;
+            std::set<PlayerInfo*> animations_; //!< Contains a list of currently running animations
     };
 
 }

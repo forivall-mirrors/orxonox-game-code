@@ -58,11 +58,11 @@ namespace orxonox
     }
 
     void DockToShip::setTargetId(const std::string& str) {
-        this->target = str;
+        this->target_ = str;
     }
 
     const std::string& DockToShip::getTargetId() const {
-        return this->target;
+        return this->target_;
     }
 
 
@@ -70,9 +70,9 @@ namespace orxonox
     {
         COUT(4) << "DockToShip::attach" << endl;
 
-        DockingTarget *target = DockingEffect::findTarget(this->target);
+        DockingTarget *target = DockingEffect::findTarget(this->target_);
         if (target == NULL) {
-            COUT(0) << "Can't retrieve target for '" << this->target << "'.." << std::endl;
+            COUT(0) << "Can't retrieve target for '" << this->target_ << "'.." << std::endl;
             return false;
         }
 

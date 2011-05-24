@@ -41,6 +41,10 @@ namespace orxonox
     DockingController::DockingController(BaseObject* creator) : ArtificialController(creator)
     {
         RegisterObject(DockingController);
+
+        this->dock_ = NULL;
+        this->player_ = NULL;
+        this->entity_ = NULL;
     }
 
     DockingController::~DockingController()
@@ -54,12 +58,12 @@ namespace orxonox
         if (!entity)
             return;
 
-        float distance = (dock->getWorldPosition() - entity->getPosition()).length();
+        float distance = (this->dock_->getWorldPosition() - entity->getPosition()).length();
         Vector2 coord = get2DViewdirection(     // I don't understand this too
             entity->getPosition(),
             entity->getOrientation() * WorldEntity::FRONT,
             entity->getOrientation() * WorldEntity::UP,
-            dock->getWorldPosition()
+            dock_->getWorldPosition()
         );
 
         // adjust direction of spaceship
@@ -85,19 +89,19 @@ namespace orxonox
 
     void DockingController::takeControl(bool docking)
     {
-        this->docking = docking;
+        this->docking_ = docking;
 
-        entity = player->getControllableEntity();
-        assert(entity);
+        this->entity_ = this->player_->getControllableEntity();
+        assert(this->entity_);
 
         if (docking)
         {
             COUT(4) << "DockingController::takeControl Taking over control." << std::endl;
 
-            entity->setDestroyWhenPlayerLeft(false);
-            player->pauseControl();
-            entity->setController(this);
-            this->setControllableEntity(entity);
+            this->entity_->setDestroyWhenPlayerLeft(false);
+            this->player_->pauseControl();
+            this->entity_->setController(this);
+            this->setControllableEntity(this->entity_);
         }
     }
 
@@ -105,21 +109,21 @@ namespace orxonox
     {
         COUT(4) << "DockingController::positionReached() called." << std::endl;
 
-        assert(this->player);
-        assert(this->dock);
+        assert(this->player_);
+        assert(this->dock_);
 
         // stop spaceship
-        entity->setPosition(dock->getWorldPosition());
-        entity->setVelocity(0, 0, 0);
-        entity->setOrientation(dock->getWorldOrientation());
+        this->entity_->setPosition(this->dock_->getWorldPosition());
+        this->entity_->setVelocity(0, 0, 0);
+        this->entity_->setOrientation(this->dock_->getWorldOrientation());
 
         // give control back to player
-        player->startControl(entity);
+        this->player_->startControl(this->entity_);
         this->setActive(false);
         this->controllableEntity_ = NULL;
 
-        if (docking)
-            dock->dockingAnimationFinished(player);
+        if (this->docking_)
+            this->dock_->dockingAnimationFinished(this->player_);
         /*else
             dock->undockingAnimationFinished(player);*/
 

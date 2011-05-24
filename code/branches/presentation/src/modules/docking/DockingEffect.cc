@@ -61,8 +61,7 @@ namespace orxonox
     }
 
     DockingTarget *DockingEffect::findTarget(std::string name) {
-        for (ObjectList<DockingTarget>::iterator it = ObjectList<DockingTarget>::begin();
-                                 it != ObjectList<DockingTarget>::end(); ++it)
+        for (ObjectList<DockingTarget>::iterator it = ObjectList<DockingTarget>::begin(); it != ObjectList<DockingTarget>::end(); ++it)
         {
             if ((*it)->getName().compare(name) == 0)
                 return (*it);

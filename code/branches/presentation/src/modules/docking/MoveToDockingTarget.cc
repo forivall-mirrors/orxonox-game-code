@@ -51,10 +51,10 @@ namespace orxonox
 
     bool MoveToDockingTarget::docking(PlayerInfo *player)
     {
-        assert(parent);
+        assert(this->parent_);
 
         DockingController *dockingController = new DockingController(this);
-        dockingController->setDock(parent);
+        dockingController->setDock(this->parent_);
         dockingController->setPlayer(player);
         dockingController->takeControl(true);
 
@@ -64,9 +64,9 @@ namespace orxonox
     bool MoveToDockingTarget::release(PlayerInfo *player)
     {
         //TODO: Investigate strange things...
-        parent->detach((WorldEntity*)player->getControllableEntity());
+        this->parent_->detach((WorldEntity*)player->getControllableEntity());
 
-        parent->undockingAnimationFinished(player);
+        this->parent_->undockingAnimationFinished(player);
         return true;
     }
 

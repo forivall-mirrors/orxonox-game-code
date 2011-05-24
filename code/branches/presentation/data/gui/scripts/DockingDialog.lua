@@ -43,6 +43,9 @@ function P.update()
         local item = CEGUI.createListboxTextItem("Dock " .. k)
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")
         listbox:addItem(item)
+        if k == 1 then
+            listbox:setItemSelectState(item, true)
+        end
     end
 end
 

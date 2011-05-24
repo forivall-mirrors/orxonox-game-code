@@ -48,19 +48,19 @@ namespace orxonox
 
             void takeControl(bool docking);
 
-            void setDock(Dock* dock) { this->dock = dock; }
-            void setPlayer(PlayerInfo* player) { this->player = player; }
+            void setDock(Dock* dock) { this->dock_ = dock; }
+            void setPlayer(PlayerInfo* player) { this->player_ = player; }
 
         protected:
             virtual void positionReached();
 
         private:
-            bool docking;
+            bool docking_;
 
-            Dock* dock;
-            PlayerInfo* player;
+            Dock* dock_;
+            PlayerInfo* player_;
 
-            ControllableEntity* entity;
+            ControllableEntity* entity_;
     };
 }
 

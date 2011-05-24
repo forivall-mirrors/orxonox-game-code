@@ -59,11 +59,11 @@ namespace orxonox
 
 
     void DockingTarget::setName(const std::string& str) {
-        this->name = str;
+        this->name_ = str;
     }
 
     const std::string& DockingTarget::getName() const {
-        return this->name;
+        return this->name_;
     }
 }
 

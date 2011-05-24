@@ -40,6 +40,8 @@ namespace orxonox
     DockingAnimation::DockingAnimation(BaseObject* creator) : BaseObject(creator)
     {
         RegisterObject(DockingAnimation);
+
+        this->parent_ = NULL;
     }
 
     DockingAnimation::~DockingAnimation()
