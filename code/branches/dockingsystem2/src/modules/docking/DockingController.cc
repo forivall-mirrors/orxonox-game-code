@@ -92,7 +92,7 @@ namespace orxonox
 
         if (docking)
         {
-            COUT(0) << "DockingController::takeControl Taking over control." << std::endl;
+            COUT(4) << "DockingController::takeControl Taking over control." << std::endl;
 
             entity->setDestroyWhenPlayerLeft(false);
             player->pauseControl();
@@ -103,15 +103,15 @@ namespace orxonox
 
     void DockingController::positionReached()
     {
-        COUT(0) << "DockingController::positionReached() called." << std::endl;
+        COUT(4) << "DockingController::positionReached() called." << std::endl;
 
         assert(this->player);
         assert(this->dock);
 
         // stop spaceship
-        dock->attach(entity);
+        entity->setPosition(dock->getWorldPosition());
         entity->setVelocity(0, 0, 0);
-        entity->setOrientation(dock->getOrientation());
+        entity->setOrientation(dock->getWorldOrientation());
 
         // give control back to player
         player->startControl(entity);

@@ -28,7 +28,7 @@
 
 /**
     @file Dock.cc
-	@brief Docking system main class
+    @brief Docking system main class
 */
 
 #include "Dock.h"
@@ -89,19 +89,19 @@ namespace orxonox
         if(pTrigger != NULL)
         {
             if(!pTrigger->isForPlayer()) {  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
-                COUT(2) << "Docking:execute PlayerTrigger was not triggered by a player.." << std::endl;
+                COUT(4) << "Docking:execute PlayerTrigger was not triggered by a player.." << std::endl;
                 return false;
             }
             pawn = pTrigger->getTriggeringPlayer();
         }
         else
         {
-            COUT(2) << "Docking::execute Not a player trigger, can't extract pawn from it.." << std::endl;
+            COUT(4) << "Docking::execute Not a player trigger, can't extract pawn from it.." << std::endl;
             return false;
         }
         if(pawn == NULL)
         {
-            COUT(2) << "Docking::execute Can't retrieve Pawn from Trigger. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
+            COUT(4) << "Docking::execute Can't retrieve Pawn from Trigger. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
             return false;
         }
 
@@ -157,7 +157,7 @@ namespace orxonox
         // Check if player is a candidate
         if(candidates.find(player) == candidates.end())
         {
-            COUT(0) << "Dock::dock Player is not a candidate!" << std::endl;
+            COUT(2) << "Dock::dock Player is not a candidate!" << std::endl;
             return false;
         }
 
@@ -176,7 +176,7 @@ namespace orxonox
     {
         if(docked.find(player) == docked.end())
         {
-            COUT(0) << "Dock::dockingAnimationFinished Player is not currently docked." << std::endl;
+            COUT(2) << "Dock::dockingAnimationFinished Player is not currently docked." << std::endl;
             return false;
         }
 
@@ -189,7 +189,7 @@ namespace orxonox
         // Check if player is docked to this Dock
         if(docked.find(player) == docked.end())
         {
-            COUT(0) << "Dock::undock Player is not docked to this Dock." << std::endl;
+            COUT(2) << "Dock::undock Player is not docked to this Dock." << std::endl;
             return false;
         }
 
@@ -207,7 +207,7 @@ namespace orxonox
     }
 
     bool Dock::undockingAnimationFinished(PlayerInfo* player) {
-        COUT(0) << "Dock::undockingAnimationFinished executed" << std::endl;
+        COUT(4) << "Dock::undockingAnimationFinished executed" << std::endl;
         return true;
     }
 

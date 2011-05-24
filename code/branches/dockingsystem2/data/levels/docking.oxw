@@ -1,6 +1,6 @@
 <LevelInfo
  name = "Transporter"
- description = "Level with a Transporter. Demostrates the docking system."
+ description = "Level with a Transporter. Demonstrates the docking system."
  tags = ""
 />
 
@@ -25,8 +25,6 @@
   >
 
     <Light type="directional" position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
-
-
 
     <?lua for i = 1, 10, 1 do ?>
       <SpawnPoint position="<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" lookat="0,0,0" spawnclass="SpaceShip" pawndesign="spaceshipassff" />
@@ -112,8 +110,8 @@
                 </execute>
             </events>
             <attached>
-                <DistanceTrigger position="0,0,0" distance="30" target="Pawn" beaconMode="exclude" targetname="bcnDestroyer" name="dockMe" />
-                <Billboard material="Examples/Flare" colour="1.0, 0, 0" />
+                <DistanceTrigger position="0,0,-200" distance="30" target="Pawn" beaconMode="exclude" targetname="bcnDestroyer" name="dockMe" />
+                <Billboard position="0,0,-200" material="Examples/Flare" colour="1.0, 0, 0" />
             </attached>
         </Dock>
 

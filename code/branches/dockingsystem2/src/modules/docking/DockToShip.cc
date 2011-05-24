@@ -42,7 +42,7 @@ namespace orxonox
     DockToShip::DockToShip(BaseObject* creator) : DockingEffect(creator)
     {
         RegisterObject(DockToShip);
-        COUT(0) << "DockToShip instance created.." << endl;
+        COUT(4) << "DockToShip instance created.." << endl;
     }
 
     DockToShip::~DockToShip()
@@ -68,7 +68,7 @@ namespace orxonox
 
     bool DockToShip::docking(PlayerInfo* player)
     {
-        COUT(0) << "DockToShip::attach" << endl;
+        COUT(4) << "DockToShip::attach" << endl;
 
         DockingTarget *target = DockingEffect::findTarget(this->target);
         if (target == NULL) {
@@ -78,7 +78,7 @@ namespace orxonox
 
         ControllableEntity *dockTo = (ControllableEntity*) target->getParent();
         if (dockTo == NULL) {
-            COUT(0) << "Parent is not a ControllableEntity.." << std::endl;
+            COUT(2) << "Parent is not a ControllableEntity.." << std::endl;
             return false;
         }
 
@@ -91,7 +91,7 @@ namespace orxonox
 
     bool DockToShip::release(PlayerInfo* player)
     {
-        COUT(0) << "DockToShip::release" << endl;
+        COUT(4) << "DockToShip::release" << endl;
 
         player->stopTemporaryControl();
 

@@ -28,7 +28,7 @@
 
 /**
     @file DockingTarget.cc
-	@brief Docking system main class
+    @brief Docking system main class
 */
 
 #include "DockingTarget.h"
@@ -54,7 +54,7 @@ namespace orxonox
         SUPER(DockingTarget, XMLPort, xmlelement, mode);
         XMLPortParam(DockingTarget, "name", setName, getName, xmlelement, mode);
 
-        COUT(0) << "DockingTarget with name '" << this->getName() << "' created.." << std::endl;
+        COUT(4) << "DockingTarget with name '" << this->getName() << "' created.." << std::endl;
     }
 
 
