@@ -68,7 +68,7 @@ namespace orxonox
 
             PlayerInfo* getPlayer(void) const; //!< Get the player.
 
-            bool isValidMove(TetrisStone* stone, const Vector3& position);
+            std::pair<bool, TetrisStone*> isValidMove(TetrisStone* stone, const Vector3& position);
 
         protected:
             virtual void spawnPlayersIfRequested(); //!< Spawns player.
@@ -77,7 +77,6 @@ namespace orxonox
             void startStone(void); //!< Starts with the first stone.
             void createStone(void);
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
-            bool correctStonePos(TetrisStone* stone, const Vector3& position); //!< Check whether the supplied stone is in an allowed position
             
             PlayerInfo* player_;
 

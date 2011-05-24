@@ -53,12 +53,6 @@ namespace orxonox
         this->size_ = 10.0f;
         this->delay_ = false;
         this->delayTimer_.setTimer(0.2f, false, createExecutor(createFunctor(&TetrisStone::enableMovement, this)));
-        this->previousPosition_ = Vector3::ZERO;
-    }
-
-    void TetrisStone::tick(float dt)
-    {
-        SUPER(TetrisStone, tick, dt);
     }
 
     /**
@@ -69,7 +63,10 @@ namespace orxonox
     */
     void TetrisStone::moveFrontBack(const Vector2& value)
     {
-        
+        if(value.x < 0)
+        {
+            this->setVelocity(this->getVelocity()*1.1);
+        }
     }
 
     /**
@@ -84,7 +81,7 @@ namespace orxonox
         {
             const Vector3& position = this->getPosition();
             Vector3 newPos = Vector3(position.x+value.x/abs(value.x)*this->size_, position.y, position.z);
-            if(!this->tetris_->isValidMove(this, newPos))
+            if(!this->tetris_->isValidMove(this, newPos).first)
                 return;
 
             //this->previousPosition_ = position;

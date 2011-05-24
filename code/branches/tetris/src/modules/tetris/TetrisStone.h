@@ -56,8 +56,6 @@ namespace orxonox
             TetrisStone(BaseObject* creator); //!< Constructor. Registers and initializes the object.
             virtual ~TetrisStone() {}
 
-            virtual void tick(float dt);
-
             virtual void moveFrontBack(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
             virtual void moveRightLeft(const Vector2& value); //!< Overloaded the function to steer the bat up and down.
 
@@ -76,9 +74,6 @@ namespace orxonox
             float getSize(void) const
                 { return this->size_; }
 
-            const Vector3& getPreviousPosition() const
-                { return this->previousPosition_; }
-
             void setGame(Tetris* tetris)
                 { assert(tetris); tetris_ = tetris; }
 
@@ -90,7 +85,6 @@ namespace orxonox
             bool delay_;
             Timer delayTimer_;
 
-            Vector3 previousPosition_;
             Tetris* tetris_;
     };
 }

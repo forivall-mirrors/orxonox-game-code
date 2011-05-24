@@ -86,34 +86,63 @@ namespace orxonox
     {
         SUPER(Tetris, tick, dt);
 
-        if(this->activeStone_ != NULL && !this->isValidMove(this->activeStone_, this->activeStone_->getPosition()))
+        if(this->activeStone_ != NULL)
         {
-            this->activeStone_->setVelocity(Vector3::ZERO);
-            //this->grid_[(int)(position.x/this->center_->getStoneSize())][(int)(position.y/this->center_->getStoneSize())] = true;
-            this->createStone();
-            this->startStone();
+            std::pair<bool, TetrisStone*> valid = this->isValidMove(this->activeStone_, this->activeStone_->getPosition());
+            if(!valid.first)
+            {
+                this->activeStone_->setVelocity(Vector3::ZERO);
+                if(valid.second != NULL)
+                {
+                    Vector3 position = Vector3(this->activeStone_->getPosition().x, valid.second->getPosition().y+this->center_->getStoneSize(), this->activeStone_->getPosition().z);
+                    this->activeStone_->setPosition(position);
+                }
+                this->createStone();
+                this->startStone();
+            }
         }
     }
 
-    bool Tetris::isValidMove(TetrisStone* stone, const Vector3& position)
+    std::pair<bool, TetrisStone*> Tetris::isValidMove(TetrisStone* stone, const Vector3& position)
     {
         assert(stone);
+
+        std::pair<bool, TetrisStone*> valid = std::pair<bool, TetrisStone*>(true, NULL);
         
         if(position.x < this->center_->getStoneSize()/2.0)  //!< If the stone touches the left edge of the level
-            return false;
+            valid.first = false;
         else if(position.x > (this->center_->getWidth()-0.5)*this->center_->getStoneSize()) //!< If the stone touches the right edge of the level
-            return false;
-        
-        if(position.y < this->center_->getStoneSize()/2.0) //!< If the stone has reached the bottom of the level
+            valid.first = false;
+        else if(position.y < this->center_->getStoneSize()/2.0) //!< If the stone has reached the bottom of the level
         {
-            stone->setVelocity(Vector3::ZERO);
-            //this->grid_[(int)(position.x/this->center_->getStoneSize())][(int)(position.y/this->center_->getStoneSize())] = true;
-            this->createStone();
-            this->startStone();
-            return false;
+            valid.first = false;
+            stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0, stone->getPosition().z));
         }
 
-        return this->correctStonePos(stone, position);
+        for(std::vector<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+        {
+            if(stone == *it)
+                continue;
+
+            const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
+
+            if((position.x == currentStonePosition.x) && (position.y == currentStonePosition.y))
+            {
+                stone->setVelocity(Vector3::ZERO);
+                this->createStone();
+                this->startStone();
+                valid.first = false;
+                return valid;
+            }// This case applies if the stones overlap completely
+            else if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
+            {
+                valid.first = false;
+                valid.second = *it;
+                return valid;
+            }// This case applies if the stones overlap partially vertically
+        }
+
+        return valid;
     }
 
     /**
@@ -231,39 +260,6 @@ namespace orxonox
 
     /**
     @brief
-        Validate the stone position.
-    @return
-        Returns whether the supplied stone is in the correct position.
-    */
-    bool Tetris::correctStonePos(TetrisStone* stone, const Vector3& position)
-    {
-        assert(stone);
-
-        for(std::vector<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
-        {
-            if(stone == *it)
-                continue;
-
-            Vector3 currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
-            
-            if((position.x == currentStonePosition.x) && (position.y == currentStonePosition.y))
-            {
-                stone->setVelocity(Vector3::ZERO);
-                this->createStone();
-                this->startStone();
-                return false;
-            }// This case applies if the stones overlap completely
-            if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
-            {
-                return false;
-            }// This case applies if the stones overlap partially vertically
-        }
-
-        return true;
-    }
-
-    /**
-    @brief
         Get the player.
     @return
         Returns a pointer to the player. If there is no player, NULL is returned.
@@ -280,14 +276,6 @@ namespace orxonox
     void Tetris::setCenterpoint(TetrisCenterpoint* center)
     {
         this->center_ = center;
-
-        /*this->grid_.resize(this->center_->getWidth());
-        for(std::vector< std::vector<bool> >::iterator it = this->grid_.begin(); it != this->grid_.end(); it++)
-        {
-            (*it).resize(this->center_->getHeight());
-            for(std::vector<bool>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
-                (*it).insert(it2, false);
-        }*/
     }
 
 }
