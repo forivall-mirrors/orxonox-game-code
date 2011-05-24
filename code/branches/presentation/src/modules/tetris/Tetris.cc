@@ -90,15 +90,9 @@ namespace orxonox
 
         if(this->activeStone_ != NULL)
         {
-            std::pair<bool, TetrisStone*> valid = this->isValidStonePosition(this->activeStone_, this->activeStone_->getPosition());
-            if(!valid.first)
+            if(!this->isValidStonePosition(this->activeStone_, this->activeStone_->getPosition()))
             {
                 this->activeStone_->setVelocity(Vector3::ZERO);
-                if(valid.second != NULL)
-                {
-                    Vector3 position = Vector3(this->activeStone_->getPosition().x, valid.second->getPosition().y+this->center_->getStoneSize(), this->activeStone_->getPosition().z);
-                    this->activeStone_->setPosition(position);
-                }
                 this->createStone();
                 this->startStone();
             }
@@ -128,16 +122,14 @@ namespace orxonox
         return true;
     }
 
-    std::pair<bool, TetrisStone*> Tetris::isValidStonePosition(TetrisStone* stone, const Vector3& position)
+    bool Tetris::isValidStonePosition(TetrisStone* stone, const Vector3& position)
     {
         assert(stone);
 
-        std::pair<bool, TetrisStone*> valid = std::pair<bool, TetrisStone*>(true, NULL);
-
         if(position.y < this->center_->getStoneSize()/2.0) //!< If the stone has reached the bottom of the level
         {
-            valid.first = false;
             stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0, stone->getPosition().z));
+            return false;
         }
 
         for(std::vector<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
@@ -149,13 +141,12 @@ namespace orxonox
 
             if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
             {
-                valid.first = false;
-                valid.second = *it;
-                return valid;
+                this->activeStone_->setPosition(Vector3(this->activeStone_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeStone_->getPosition().z));
+                return false;
             }// This case applies if the stones overlap partially vertically
         }
 
-        return valid;
+        return true;
     }
 
     /**

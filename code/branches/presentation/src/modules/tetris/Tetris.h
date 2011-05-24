@@ -77,7 +77,7 @@ namespace orxonox
             void startStone(void); //!< Starts with the first stone.
             void createStone(void);
             void cleanup(void); //!< Cleans up the Gametype by destroying the ball and the bats.
-            std::pair<bool, TetrisStone*> isValidStonePosition(TetrisStone* stone, const Vector3& position);
+            bool isValidStonePosition(TetrisStone* stone, const Vector3& position);
             
             PlayerInfo* player_;
 
