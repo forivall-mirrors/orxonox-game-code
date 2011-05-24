@@ -96,6 +96,8 @@ namespace orxonox
             void moveToPosition(const Vector3& target);
             void moveToTargetPosition();
 
+            virtual void positionReached() {}
+
             void removeFromFormation();
             void unregisterSlave();
             void searchNewMaster();

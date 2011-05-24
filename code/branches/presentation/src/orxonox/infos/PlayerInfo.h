@@ -67,6 +67,7 @@ namespace orxonox // tolua_export
 
             void startControl(ControllableEntity* entity);
             void stopControl();
+            void pauseControl();
             void startTemporaryControl(ControllableEntity* entity);
             void stopTemporaryControl();
 
@@ -97,7 +98,7 @@ namespace orxonox // tolua_export
             bool bReadyToSpawn_;
             Controller* controller_;
             ControllableEntity* controllableEntity_;
-            ControllableEntity* oldControllableEntity_;
+            std::vector< WeakPtr<ControllableEntity> > previousControllableEntity_; //!< List of the previous ControllableEntities if repeatedly startTemporary control was called. The ControllableEntity at the back is the most recent.
             unsigned int controllableEntityID_;
 
             const GametypeInfo* gtinfo_;

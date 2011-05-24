@@ -311,7 +311,6 @@ namespace orxonox
         this->targetMask_.exclude(Class(TriggerBase), true);
 
         // We only want WorldEntities
-        //TODO: Really?
         ClassTreeMask WEMask;
         WEMask.include(Class(WorldEntity));
         this->targetMask_ *= WEMask;
