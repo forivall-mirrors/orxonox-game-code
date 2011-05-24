@@ -90,7 +90,7 @@ namespace orxonox
 
         if(this->activeStone_ != NULL)
         {
-            std::pair<bool, TetrisStone*> valid = this->isValidMove(this->activeStone_, this->activeStone_->getPosition());
+            std::pair<bool, TetrisStone*> valid = this->isValidStonePosition(this->activeStone_, this->activeStone_->getPosition());
             if(!valid.first)
             {
                 this->activeStone_->setVelocity(Vector3::ZERO);
@@ -115,11 +115,6 @@ namespace orxonox
             valid.first = false;
         else if(position.x > (this->center_->getWidth()-0.5)*this->center_->getStoneSize()) //!< If the stone touches the right edge of the level
             valid.first = false;
-        else if(position.y < this->center_->getStoneSize()/2.0) //!< If the stone has reached the bottom of the level
-        {
-            valid.first = false;
-            stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0, stone->getPosition().z));
-        }
 
         for(std::vector<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
@@ -136,7 +131,31 @@ namespace orxonox
                 valid.first = false;
                 return valid;
             }// This case applies if the stones overlap completely
-            else if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
+        }
+
+        return valid;
+    }
+
+    std::pair<bool, TetrisStone*> Tetris::isValidStonePosition(TetrisStone* stone, const Vector3& position)
+    {
+        assert(stone);
+
+        std::pair<bool, TetrisStone*> valid = std::pair<bool, TetrisStone*>(true, NULL);
+
+        if(position.y < this->center_->getStoneSize()/2.0) //!< If the stone has reached the bottom of the level
+        {
+            valid.first = false;
+            stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0, stone->getPosition().z));
+        }
+
+        for(std::vector<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+        {
+            if(stone == *it)
+                continue;
+
+            const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
+
+            if((position.x == currentStonePosition.x) && (position.y < currentStonePosition.y + this->center_->getStoneSize()))
             {
                 valid.first = false;
                 valid.second = *it;
