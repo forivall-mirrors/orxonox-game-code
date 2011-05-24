@@ -1,20 +1,20 @@
 ADD_SOURCE_FILES(BULLET_FILES
 
-COMPILATION_BEGIN BulletLinearMathCompilation.cpp
+BUILD_UNIT BulletLinearMathBuildUnit.cpp
 	btAlignedAllocator.cpp
 	btConvexHull.cpp
-    btConvexHullComputer.cpp
+	btConvexHullComputer.cpp
 	btGeometryUtil.cpp
 	btQuickprof.cpp
 	btSerializer.cpp
-COMPILATION_END
+END_BUILD_UNIT
 
 	# Headers
 	btAabbUtil2.h
 	btAlignedAllocator.h
 	btAlignedObjectArray.h
 	btConvexHull.h
-    btConvexHullComputer.h
+	btConvexHullComputer.h
 	btDefaultMotionState.h
 	btGeometryUtil.h
 	btHashMap.h

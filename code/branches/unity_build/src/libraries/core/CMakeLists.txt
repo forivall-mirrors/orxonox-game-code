@@ -48,24 +48,24 @@ SET_SOURCE_FILES(CORE_SRC_FILES
   Template.cc
   XMLPort.cc
 
-COMPILATION_BEGIN ListenerCompilation.cc
+BUILD_UNIT ListenerBuildUnit.cc
   ViewportEventListener.cc
   WindowEventListener.cc
   XMLNameListener.cc
-COMPILATION_END
+END_BUILD_UNIT
 
-COMPILATION_BEGIN FilesystemCompilation.cc
+BUILD_UNIT FilesystemBuildUnit.cc
   command/ArgumentCompletionFunctions.cc
   ConfigFileManager.cc
   PathConfig.cc
-COMPILATION_END
+END_BUILD_UNIT
 
   # multithreading
   ThreadPool.cc
-COMPILATION_BEGIN ThreadCompilation.cc
+BUILD_UNIT ThreadBuildUnit.cc
   command/TclThreadManager.cc
   Thread.cc
-COMPILATION_END
+END_BUILD_UNIT
 )
 
 ADD_SUBDIRECTORY(command)

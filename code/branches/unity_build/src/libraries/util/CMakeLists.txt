@@ -18,7 +18,8 @@
  #
 
 SET_SOURCE_FILES(UTIL_SRC_FILES
-COMPILATION_BEGIN StableCompilation.cc
+
+BUILD_UNIT StableBuildUnit.cc
   Clipboard.cc
   Clock.cc
   Convert.cc
@@ -31,7 +32,7 @@ COMPILATION_BEGIN StableCompilation.cc
   Sleep.cc
   SmallObjectAllocator.cc
   SubString.cc
-COMPILATION_END
+END_BUILD_UNIT
 
   MultiType.cc
   Exception.cc

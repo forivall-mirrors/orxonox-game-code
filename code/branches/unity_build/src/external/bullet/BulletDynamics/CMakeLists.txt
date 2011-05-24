@@ -1,6 +1,6 @@
 ADD_SOURCE_FILES(BULLET_FILES
 
-COMPILATION_BEGIN BulletDynamicsCompilation.cpp
+BUILD_UNIT BulletDynamicsBuildUnit.cpp
 
 	Character/btKinematicCharacterController.cpp
 
@@ -25,7 +25,7 @@ COMPILATION_BEGIN BulletDynamicsCompilation.cpp
 	Vehicle/btRaycastVehicle.cpp
 	Vehicle/btWheelInfo.cpp
 
-COMPILATION_END
+END_BUILD_UNIT
 
 	# Headers
 	ConstraintSolver/btConeTwistConstraint.h

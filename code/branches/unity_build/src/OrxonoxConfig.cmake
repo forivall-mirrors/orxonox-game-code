@@ -34,7 +34,7 @@ IF(PCH_COMPILER_SUPPORT AND NOT APPLE)
 ENDIF()
 
 # Global switch to disable multiple file compilations
-OPTION(DISABLE_COMPILATIONS "Global multi-file compilation switch" FALSE)
+OPTION(DISABLE_BUILD_UNITS "Disables building multiple source files as one." FALSE)
 
 # Use WinMain() or main()?
 IF(WIN32)

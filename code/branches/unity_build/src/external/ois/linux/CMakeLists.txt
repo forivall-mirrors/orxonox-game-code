@@ -7,12 +7,12 @@ ADD_SOURCE_FILES(OIS_FILES
   LinuxMouse.h
   LinuxPrereqs.h
 
-COMPILATION_BEGIN OISLinuxCompilation.cpp
+BUILD_UNIT OISLinuxBuildUnit.cpp
   EventHelpers.cpp
   LinuxForceFeedback.cpp
   LinuxInputManager.cpp
   LinuxJoyStickEvents.cpp
   LinuxKeyboard.cpp
   LinuxMouse.cpp
-COMPILATION_END
+END_BUILD_UNIT
 )

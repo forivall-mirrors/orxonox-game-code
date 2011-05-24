@@ -28,7 +28,7 @@ SET_SOURCE_FILES(ENET_FILES
     utility.h
     win32.h
 
-COMPILATION_BEGIN ENetCompilation.c
+BUILD_UNIT ENetBuildUnit.c
     callbacks.c
     compress.c
     host.c
@@ -38,7 +38,7 @@ COMPILATION_BEGIN ENetCompilation.c
     protocol.c
     unix.c
     win32.c
-COMPILATION_END
+END_BUILD_UNIT
 )
 
 ADD_COMPILER_FLAGS("-DHAS_POLL -DHAS_FCNTL -DHAS_MSGHDR_FLAGS -DHAS_SOCKLEN_T")

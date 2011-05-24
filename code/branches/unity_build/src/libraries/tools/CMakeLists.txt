@@ -1,19 +1,23 @@
 SET_SOURCE_FILES(TOOLS_SRC_FILES
-COMPILATION_BEGIN ResourceCompilation.cc
+
+BUILD_UNIT ResourceBuildUnit.cc
   ResourceCollection.cc
   ResourceLocation.cc
-COMPILATION_END
+END_BUILD_UNIT
+
   TextureGenerator.cc
   Timer.cc
-COMPILATION_BEGIN OgreCompilation.cc
+
+BUILD_UNIT OgreBuildUnit.cc
   BillboardSet.cc
   DynamicLines.cc
   DynamicRenderable.cc
   Mesh.cc
   ParticleInterface.cc
   Shader.cc
-COMPILATION_END
+END_BUILD_UNIT
 )
+
 #ADD_SUBDIRECTORY(bsp)
 ADD_SUBDIRECTORY(interfaces)
 

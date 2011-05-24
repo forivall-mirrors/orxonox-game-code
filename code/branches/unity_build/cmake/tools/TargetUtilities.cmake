@@ -94,38 +94,38 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
-  # Process source files with support for compilations
+  # Process source files with support for build units
   # Note: All file paths are relative to the root source directory, even the
-  #       name of the compilation file.
+  #       name of the build unit.
   SET(_${_target_name}_source_files)
-  SET(_get_compilation_file FALSE)
-  SET(_add_to_compilation FALSE)
+  SET(_get_build_unit_file FALSE)
+  SET(_add_to_build_unit FALSE)
   FOREACH(_file ${_arg_SOURCE_FILES})
-    IF(_file STREQUAL "COMPILATION_BEGIN")
-      # Next file is the name of the compilation
-      SET(_get_compilation_file TRUE)
-    ELSEIF(_file STREQUAL "COMPILATION_END")
-      IF(NOT _compilation_file)
-        MESSAGE(FATAL_ERROR "No name provided for source file compilation")
+    IF(_file STREQUAL "BUILD_UNIT")
+      # Next file is the name of the build unit
+      SET(_get_build_unit_file TRUE)
+    ELSEIF(_file STREQUAL "END_BUILD_UNIT")
+      IF(NOT _build_unit_file)
+        MESSAGE(FATAL_ERROR "No name provided for build unit")
       ENDIF()
-      IF(NOT DISABLE_COMPILATIONS)
-        IF(NOT _compilation_include_string)
-          MESSAGE(STATUS "Warning: Empty source file compilation!")
+      IF(NOT DISABLE_BUILD_UNITS)
+        IF(NOT _build_unit_include_string)
+          MESSAGE(STATUS "Warning: Empty build unit!")
         ENDIF()
-        IF(EXISTS ${_compilation_file})
-          FILE(READ ${_compilation_file} _include_string_file)
+        IF(EXISTS ${_build_unit_file})
+          FILE(READ ${_build_unit_file} _include_string_file)
         ENDIF()
-        IF(NOT _compilation_include_string STREQUAL "${_include_string_file}")
-          FILE(WRITE ${_compilation_file} "${_compilation_include_string}")
+        IF(NOT _build_unit_include_string STREQUAL "${_include_string_file}")
+          FILE(WRITE ${_build_unit_file} "${_build_unit_include_string}")
         ENDIF()
-        LIST(APPEND _${_target_name}_source_files ${_compilation_file})
+        LIST(APPEND _${_target_name}_source_files ${_build_unit_file})
       ENDIF()
-      SET(_add_to_compilation FALSE)
-    ELSEIF(_get_compilation_file)
-      SET(_compilation_file ${CMAKE_BINARY_DIR}/${_file})
-      SET(_get_compilation_file FALSE)
-      SET(_add_to_compilation TRUE)
-      SET(_compilation_include_string)
+      SET(_add_to_build_unit FALSE)
+    ELSEIF(_get_build_unit_file)
+      SET(_build_unit_file ${CMAKE_BINARY_DIR}/${_file})
+      SET(_get_build_unit_file FALSE)
+      SET(_add_to_build_unit TRUE)
+      SET(_build_unit_include_string)
     ELSE()
       # Default, add source file
 
@@ -145,10 +145,10 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
       LIST(APPEND _${_target_name}_source_files ${_file})
 
-      # Handle compilations
-      IF(_add_to_compilation AND NOT DISABLE_COMPILATIONS)
+      # Handle build units
+      IF(_add_to_build_unit AND NOT DISABLE_BUILD_UNITS)
         IF(_file MATCHES "\\.(c|cc|cpp|cxx)$")
-          SET(_compilation_include_string "${_compilation_include_string}#include \"${_file}\"\n")
+          SET(_build_unit_include_string "${_build_unit_include_string}#include \"${_file}\"\n")
         ENDIF()
         # Don't compile these files, even if they are source files
         SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)

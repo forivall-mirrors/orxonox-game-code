@@ -22,11 +22,11 @@ SET_SOURCE_FILES(OCR_FILES
   OgreCEGUIResourceProvider.h
   OgreCEGUITexture.h
 
-COMPILATION_BEGIN OgreCEGUIRendererCompilation.cpp
+BUILD_UNIT OgreCEGUIRendererBuildUnit.cpp
   OgreCEGUIRenderer.cpp
   OgreCEGUIResourceProvider.cpp
   OgreCEGUITexture.cpp
-COMPILATION_END
+END_BUILD_UNIT
 )
 
 ORXONOX_ADD_LIBRARY(ogreceguirenderer_orxonox

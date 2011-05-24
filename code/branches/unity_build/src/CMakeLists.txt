@@ -65,9 +65,9 @@ IF(MSVC AND VLD_FOUND)
       REMOVE_LINKER_FLAGS("-INCREMENTAL:YES" Debug)
       ADD_LINKER_FLAGS   ("-INCREMENTAL:NO"  Debug)
     ENDIF()
-    IF(NOT DISABLE_COMPILATIONS)
-      # Compilations seem to generate 'memory leaks' with static variables
-      MESSAGE("Warning: You should disable Compilations when using VLD!")
+    IF(NOT DISABLE_BUILD_UNITS)
+      # Build units seem to generate 'memory leaks' with static variables
+      MESSAGE("Warning: You should disable build units when using VLD!")
     ENDIF()
   ENDIF()
 ENDIF()

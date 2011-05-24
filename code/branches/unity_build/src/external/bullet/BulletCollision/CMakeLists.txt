@@ -1,6 +1,6 @@
 ADD_SOURCE_FILES(BULLET_FILES
 
-COMPILATION_BEGIN BulletCollisionCompilation.cpp
+BUILD_UNIT BulletCollisionBuildUnit.cpp
 
 	BroadphaseCollision/btAxisSweep3.cpp
 	BroadphaseCollision/btBroadphaseProxy.cpp
@@ -87,9 +87,9 @@ COMPILATION_BEGIN BulletCollisionCompilation.cpp
 	NarrowPhaseCollision/btSubSimplexConvexCast.cpp
 	NarrowPhaseCollision/btVoronoiSimplexSolver.cpp
 
-COMPILATION_END
+END_BUILD_UNIT
 
-    # Raises compiler errors when compiled inside the compilation
+    # Raises compiler errors when compiled inside the build unit
 	NarrowPhaseCollision/btPolyhedralContactClipping.cpp
 
 	# Headers
