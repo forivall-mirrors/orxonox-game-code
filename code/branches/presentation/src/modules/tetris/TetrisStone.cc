@@ -81,10 +81,9 @@ namespace orxonox
         {
             const Vector3& position = this->getPosition();
             Vector3 newPos = Vector3(position.x+value.x/abs(value.x)*this->size_, position.y, position.z);
-            if(!this->tetris_->isValidMove(this, newPos).first)
+            if(!this->tetris_->isValidMove(this, newPos))
                 return;
 
-            //this->previousPosition_ = position;
             this->setPosition(newPos);
             this->delay_ = true;
             this->delayTimer_.startTimer();

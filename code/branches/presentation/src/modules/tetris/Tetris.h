@@ -68,7 +68,7 @@ namespace orxonox
 
             PlayerInfo* getPlayer(void) const; //!< Get the player.
 
-            std::pair<bool, TetrisStone*> isValidMove(TetrisStone* stone, const Vector3& position);
+            bool isValidMove(TetrisStone* stone, const Vector3& position);
 
         protected:
             virtual void spawnPlayersIfRequested(); //!< Spawns player.

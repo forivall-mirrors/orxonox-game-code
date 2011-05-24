@@ -105,16 +105,14 @@ namespace orxonox
         }
     }
 
-    std::pair<bool, TetrisStone*> Tetris::isValidMove(TetrisStone* stone, const Vector3& position)
+    bool Tetris::isValidMove(TetrisStone* stone, const Vector3& position)
     {
         assert(stone);
 
-        std::pair<bool, TetrisStone*> valid = std::pair<bool, TetrisStone*>(true, NULL);
-        
         if(position.x < this->center_->getStoneSize()/2.0)  //!< If the stone touches the left edge of the level
-            valid.first = false;
+            return false;
         else if(position.x > (this->center_->getWidth()-0.5)*this->center_->getStoneSize()) //!< If the stone touches the right edge of the level
-            valid.first = false;
+            return false;
 
         for(std::vector<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
         {
@@ -123,17 +121,11 @@ namespace orxonox
 
             const Vector3& currentStonePosition = (*it)->getPosition(); //!< Saves the position of the currentStone
 
-            if((position.x == currentStonePosition.x) && (position.y == currentStonePosition.y))
-            {
-                stone->setVelocity(Vector3::ZERO);
-                this->createStone();
-                this->startStone();
-                valid.first = false;
-                return valid;
-            }// This case applies if the stones overlap completely
+            if((position.x == currentStonePosition.x) && abs(position.y-currentStonePosition.y) < this->center_->getStoneSize())
+                return false;
         }
 
-        return valid;
+        return true;
     }
 
     std::pair<bool, TetrisStone*> Tetris::isValidStonePosition(TetrisStone* stone, const Vector3& position)
