@@ -109,7 +109,7 @@ namespace orxonox
             SL_SAFEESCAPE,        //!< In safe mode with the internal escape character, that escapes even the savemode character.
             SL_COMMENT,           //!< In Comment mode.
             SL_PARENTHESES,       //!< Between parentheses (usually '{' and '}')
-            SL_PARENTHESESESCAPE, //!< Between parentheses with the internal escape character, that escapes even the closing paranthesis character.
+            SL_PARENTHESESESCAPE, //!< Between parentheses with the internal escape character, that escapes even the closing parenthesis character.
         };
 
     public:
@@ -208,7 +208,7 @@ namespace orxonox
                                           char commentChar = '\0',
                                           SPLIT_LINE_STATE start_state = SL_NORMAL);
 
-        std::vector<std::string>  tokens_;              ///< The tokens after spliting the input line
+        std::vector<std::string>  tokens_;              ///< The tokens after splitting the input line
         std::vector<bool>         bTokenInSafemode_;    ///< Saves for each token if it was in safe mode (between quotation marks or parenthesis)
     };
 }
