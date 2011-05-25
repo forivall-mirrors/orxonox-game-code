@@ -117,7 +117,7 @@ namespace orxonox
     if (this->remainingTime_ > 0.0)
     {
       this->remainingTime_ -= dt;
-      // only increase when acctually waiting for a state in the queue
+      // only increase when actually waiting for a state in the queue
       if (this->timeSinceLastEvent_ >= 0.0)
         this->timeSinceLastEvent_ += dt;
     }
@@ -128,6 +128,7 @@ namespace orxonox
       char newState = this->stateChanges_.front().second;
       this->bTriggered_ = (newState & 0x1);
       this->bActive_ = newState & 2;
+      COUT(4) << this->getIdentifier()->getName() << " '" << this->getName() << "' (&" << this << ") changed state. active: " << this->bActive_ << ", triggered: " << this->bTriggered_ << "." << std::endl;
       this->triggered(this->bActive_);
       this->stateChanges_.pop();
       if (this->stateChanges_.size() != 0)
