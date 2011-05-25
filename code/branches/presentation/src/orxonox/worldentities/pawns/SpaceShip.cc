@@ -80,7 +80,6 @@ namespace orxonox
         
         this->cameraOriginalPosition_ = Vector3::UNIT_SCALE;
         this->cameraOriginalOrientation_ = Quaternion::IDENTITY;
-        
 
         this->shakeFrequency_ = 15;
         this->shakeAmplitude_ = 5;
