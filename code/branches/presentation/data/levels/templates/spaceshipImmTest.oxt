@@ -1,4 +1,4 @@
-<Template name=spaceshipassff>
+<Template name=spaceshipimmtest>
   <SpaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipassffcameras
@@ -11,29 +11,16 @@
    maxhealth         = 200
    initialhealth     = 100
 
-   shieldhealth        = 30
-   initialshieldhealth = 30
-   maxshieldhealth     = 50
-   shieldabsorption    = 0.8
-   reloadrate          = 1
-   reloadwaittime      = 1
-
-   primaryThrust     = 100
-   auxilaryThrust    = 30
-   rotationThrust    = 25
-
-   boostPower            = 15
-   boostPowerRate        = 1
-   boostRate             = 5
-   boostCooldownDuration = 10
-
-   shakeFrequency = 15
-   shakeAmplitude = 7
+   primaryThrust     = 100;
+   auxilaryThrust    = 30;
+   rotationThrust    = 25;
 
    collisionType     = "dynamic"
    mass              = 100
    linearDamping     = 0.7
    angularDamping    = 0.9999999
+   
+   shakeFrequency    = 15
   >
     <attached>
       <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=4 mesh="assff.mesh" />
@@ -49,7 +36,7 @@
       <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
     </collisionShapes>
 <?lua
-  include("includes/weaponSettingsAssff.oxi")
+  include("includes/weaponSettingsImmTest.oxi")
 ?>
   </SpaceShip>
 </Template>
@@ -117,40 +104,3 @@
   </MultiStateEngine>
 </Template>
 
-<!--Template name=spaceshippirate>
-  <SpaceShip
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
-
-   maxspeed          = 250
-   maxsecondaryspeed = 50
-   maxrotation       = 100
-   transacc          = 200
-   rotacc            = 140
-   transdamp         = 75
-  >
-    <attached>
-      <Model position="0,-10,-45" yaw=90 pitch=-90 roll=0 scale=4 mesh="pirate.mesh" />
-    </attached>
-  </SpaceShip>
-</Template>
-
-<Template name=spaceshipspacecruiser>
-  <SpaceShip
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
-
-   maxspeed          = 250
-   maxsecondaryspeed = 50
-   maxrotation       = 100
-   transacc          = 200
-   rotacc            = 140
-   transdamp         = 75
-  >
-    <attached>
-      <Model position="8,-30,-120" yaw=90 pitch=-90 roll=0 scale=4 mesh="spacecruiser.mesh" />
-    </attached>
-  </SpaceShip>
-</Template-->

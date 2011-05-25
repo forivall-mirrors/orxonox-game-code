@@ -35,11 +35,12 @@
 #include "core/WindowEventListener.h"
 #include "tools/interfaces/Tickable.h"
 #include "tools/interfaces/TimeFactorListener.h"
-#include "worldentities/StaticEntity.h"
+#include "worldentities/MovableEntity.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Camera : public StaticEntity, public Tickable, public TimeFactorListener, public WindowEventListener
+
+    class _OrxonoxExport Camera : public MovableEntity, public TimeFactorListener, public WindowEventListener
     {
         friend class CameraManager;
 
