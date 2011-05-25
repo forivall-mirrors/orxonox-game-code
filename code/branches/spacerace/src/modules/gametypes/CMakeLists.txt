@@ -11,5 +11,6 @@ ORXONOX_ADD_LIBRARY(gametypes
     GametypesPrecompiledHeaders.h
   LINK_LIBRARIES
     orxonox
+    objects
   SOURCE_FILES ${GAMETYPES_SRC_FILES}
 )

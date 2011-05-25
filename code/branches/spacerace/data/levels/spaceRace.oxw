@@ -41,38 +41,57 @@
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
     <!-- ------------------SpawnPoint----------------- -->
-    <SpawnPoint team=0 position="0,-2100,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="true" >
+    <SpawnPoint position="0,-2100,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="true" >
       <events>
         <activity>
-          <EventListener event="trigger1" />
+          <EventTrigger invert="true">
+            <events>
+                <trigger>
+                    <EventListener event="checkpoint2" />
+                </trigger>
+            </events>
+          </EventTrigger>
         </activity>
       </events>
     </SpawnPoint>
     
     <!-- ------------------CheckPoints----------------- -->
     <RaceCheckPoint name="checkpoint1" position="0,-2000,1000" direction="0,-1,1" collisionType="static" scale="1" distance="40" checkpointindex="0" islast="false">
-    <attached>
-      <Model mass="50" scale="50" mesh="checkPoint.mesh" />
-    </attached>
-    <collisionShapes>
-      <BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
-      <BoxCollisionShape position="0,0,-55"     halfExtents="55, 10, 10" />
-      <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
-      <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
-    </collisionShapes>
+        <attached>
+        <Model mass="50" scale="50" mesh="checkPoint.mesh" />
+        </attached>
+        <collisionShapes>
+        <BoxCollisionShape position="0,0,55"      halfExtents="55, 10, 10" />
+        <BoxCollisionShape position="0,0,-55"     halfExtents="55, 10, 10" />
+        <BoxCollisionShape position="55,0,0"      halfExtents="10, 10, 55" />
+        <BoxCollisionShape position="-55,0,0"     halfExtents="10, 10, 55" />
+        </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint2" position="0,-900,2300" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false">
+    <RaceCheckPoint name="checkpoint2" position="0,-900,2300" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
-      <DistanceTrigger name="trigger1" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint team=0 position="0,0,0" lookat="0,700,2700" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
-	<events>
-	  <activity>
-	    <EventListener event="trigger1" />
-	    <EventListener event="trigger2" />
-	  </activity>
-	</events>
+      <SpawnPoint position="0,0,0" lookat="0,700,2700" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+          <activity>
+            <Trigger mode="xor" invert="true" >
+                <EventTrigger>
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint2" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+                <EventTrigger invert="true">
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint3" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+            </Trigger>
+          </activity>
+        </events>
       </SpawnPoint>
     </attached>
     <collisionShapes>
@@ -83,17 +102,30 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint3" position="0,700,2700" direction="0,0,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false">
+    <RaceCheckPoint name="checkpoint3" position="0,700,2700" stayActive="true" direction="0,0,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
-      <DistanceTrigger name="trigger2" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint team=0 position="0,0,0" lookat="0,2100,2300" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
-	<events>
-	  <activity>
-	    <EventListener event="trigger2" />
-	    <EventListener event="trigger3" />
-	  </activity>
-	</events>
+      <SpawnPoint position="0,0,0" lookat="0,2100,2300" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+          <activity>
+            <Trigger mode="xor" invert="true" >
+                <EventTrigger>
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint3" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+                <EventTrigger invert="true">
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint4" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+            </Trigger>
+          </activity>
+        </events>
       </SpawnPoint>
     </attached>
      <collisionShapes>
@@ -104,17 +136,31 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint4" position="0,2100,2300" direction="0,1,1" collisionType="static" scale="1" distance="40" checkpointindex="3" islast="false">
+    <RaceCheckPoint name="checkpoint4" position="0,2100,2300" stayActive="true" direction="0,1,1" collisionType="static" scale="1" distance="40" checkpointindex="3" islast="false">
    <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger3" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint team=0 position="0,0,0" lookat="0,2200,500" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
-	<events>
-	  <activity>
-	    <EventListener event="trigger3" />
-	    <EventListener event="trigger4" />
-	  </activity>
-	</events>
+      <SpawnPoint position="0,0,0" lookat="0,2200,500" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+          <activity>
+            <Trigger mode="xor" invert="true" >
+                <EventTrigger>
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint4" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+                <EventTrigger invert="true">
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint5" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+            </Trigger>
+          </activity>
+        </events>
       </SpawnPoint>
     </attached>
      <collisionShapes>
@@ -125,17 +171,31 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint5" position="0,2200,500" direction="0,1,0" collisionType="static" scale="1" distance="40" checkpointindex="4" islast="false">
+    <RaceCheckPoint name="checkpoint5" position="0,2200,500" stayActive="true" direction="0,1,0" collisionType="static" scale="1" distance="40" checkpointindex="4" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger4" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint team=0 position="0,0,0" lookat="0,1500,-800" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
-	<events>
-	  <activity>
-	    <EventListener event="trigger4" />
-	    <EventListener event="trigger5" />
-	  </activity>
-	</events>
+      <SpawnPoint position="0,0,0" lookat="0,1500,-800" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+         <events>
+          <activity>
+            <Trigger mode="xor" invert="true" >
+                <EventTrigger>
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint5" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+                <EventTrigger invert="true">
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint6" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+            </Trigger>
+          </activity>
+        </events>
       </SpawnPoint>
     </attached>
      <collisionShapes>
@@ -146,17 +206,31 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint6" position="0,1500,-800" direction="0,1,-1" collisionType="static" scale="1" distance="40" checkpointindex="5" islast="false">
+    <RaceCheckPoint name="checkpoint6" position="0,1500,-800" stayActive="true" direction="0,1,-1" collisionType="static" scale="1" distance="40" checkpointindex="5" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger5" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint team=0 position="0,0,0" lookat="0,200,-1900" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
-	<events>
-	  <activity>
-	    <EventListener event="trigger5" />
-	    <EventListener event="trigger6" />
-	  </activity>
-	</events>
+      <SpawnPoint position="0,0,0" lookat="0,200,-1900" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+          <activity>
+            <Trigger mode="xor" invert="true" >
+                <EventTrigger>
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint6" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+                <EventTrigger invert="true">
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint7" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+            </Trigger>
+          </activity>
+        </events>
       </SpawnPoint>
     </attached>
      <collisionShapes>
@@ -167,17 +241,31 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint7" position="0,200,-1900" collisionType="static" scale="1" distance="40" checkpointindex="6" islast="false">
+    <RaceCheckPoint name="checkpoint7" position="0,200,-1900" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="6" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger6" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint team=0 position="0,0,0" lookat="0,-700,-1400" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
-	<events>
-	  <activity>
-	    <EventListener event="trigger6" />
-	    <EventListener event="trigger7" />
-	  </activity>
-	</events>
+      <SpawnPoint position="0,0,0" lookat="0,-700,-1400" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+          <activity>
+            <Trigger mode="xor" invert="true" >
+                <EventTrigger>
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint7" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+                <EventTrigger invert="true">
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint8" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+            </Trigger>
+          </activity>
+        </events>
       </SpawnPoint>
     </attached>
      <collisionShapes>
@@ -188,17 +276,31 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint8" position="0,-700,-1400" direction="0,-1,-1" collisionType="static" scale="1" distance="40" checkpointindex="7" islast="false">
+    <RaceCheckPoint name="checkpoint8" position="0,-700,-1400" stayActive="true" direction="0,-1,-1" collisionType="static" scale="1" distance="40" checkpointindex="7" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger7" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint team=0 position="0,0,0" lookat="0,-1300,-800" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
-	<events>
-	  <activity>
-	    <EventListener event="trigger7" />
-	    <EventListener event="trigger8" />
-	  </activity>
-	</events>
+      <SpawnPoint position="0,0,0" lookat="0,-1300,-800" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+          <activity>
+            <Trigger mode="xor" invert="true" >
+                <EventTrigger>
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint8" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+                <EventTrigger invert="true">
+                    <events>
+                        <trigger>
+                            <EventListener event="checkpoint9" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+            </Trigger>
+          </activity>
+        </events>
       </SpawnPoint>
     </attached>
      <collisionShapes>
@@ -209,16 +311,22 @@
     </collisionShapes>
     </RaceCheckPoint>
 
-    <RaceCheckPoint name="checkpoint9" position="0,-1300,-800" collisionType="static" scale="1" distance="40" checkpointindex="8" islast="false">
+    <RaceCheckPoint name="checkpoint9" position="0,-1300,-800" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="8" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger8" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint team=0 position="0,0,0" lookat="0,-2400,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
-	<events>
-	  <activity>
-	    <EventListener event="trigger8" />
-	  </activity>
-	</events>
+      <SpawnPoint position="0,0,0" lookat="0,-2400,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+          <activity>
+            <EventTrigger>
+                <events>
+                    <trigger>
+                        <EventListener event="checkpoint9" />
+                    </trigger>
+                </events>
+            </EventTrigger>
+          </activity>
+        </events>
       </SpawnPoint>
     </attached>
      <collisionShapes>

@@ -82,7 +82,7 @@ namespace orxonox
 	
 	this->startTimer();
 	clock_= new Clock();
-	std::string message("The match has started! Reach the check points as quick as possible!");
+	std::string message("The match has started! Reach the check points as quickly as possible!");
         COUT(0) << message << std::endl;
         Host::Broadcast(message);
     }
