@@ -219,7 +219,7 @@ function keyESC()
     -- If the InGameConsole is active, ignore the ESC command.
     if bInGameConsoleClosed == true then
         bInGameConsoleClosed = false
-        if activeMenuSheets[1].sheet.name == "MainMenu" then
+        if activeMenuSheets.size > 0 and activeMenuSheets[1].sheet.name == "MainMenu" then
             return
         end
     end
