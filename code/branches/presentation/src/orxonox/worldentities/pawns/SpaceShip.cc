@@ -261,18 +261,18 @@ namespace orxonox
     void SpaceShip::shakeCamera(float dt)
     {
         //make sure the ship is only shaking if it's moving
-        if (this->getVelocity().squaredLength() > 80)
+        if (this->getVelocity().squaredLength() > 80.0f)
         {
             this->shakeDt_ += dt;
     
-            int frequency = this->shakeFrequency_ * (this->getVelocity().squaredLength());
+            float frequency = this->shakeFrequency_ * (this->getVelocity().squaredLength());
     
-            if (this->shakeDt_ >= 1 /(frequency))
+            if (this->shakeDt_ >= 1.0f/frequency)
             {
-                this->shakeDt_ -= 1/(frequency);
+                this->shakeDt_ -= 1.0f/frequency;
             }
     
-            Degree angle = Degree(sin(this->shakeDt_ * 2* math::pi * frequency) * this->shakeAmplitude_);
+            Degree angle = Degree(sin(this->shakeDt_ *2.0f* math::pi * frequency) * this->shakeAmplitude_);
     
             //COUT(0) << "Angle: " << angle << std::endl;
             Camera* camera = this->getCamera();
