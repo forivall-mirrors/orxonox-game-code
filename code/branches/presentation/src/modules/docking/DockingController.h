@@ -38,7 +38,7 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport DockingController : public ArtificialController, public Tickable
+    class _DockingExport DockingController : public ArtificialController, public Tickable
     {
         public:
             DockingController(BaseObject* creator);

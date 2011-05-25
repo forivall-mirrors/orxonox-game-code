@@ -126,9 +126,9 @@ namespace orxonox
     {
         assert(stone);
 
-        if(position.y < this->center_->getStoneSize()/2.0) //!< If the stone has reached the bottom of the level
+        if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
         {
-            stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0, stone->getPosition().z));
+            stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0f, stone->getPosition().z));
             return false;
         }
 
@@ -256,8 +256,8 @@ namespace orxonox
         
         // Attach the stone to the Centerpoint and set the position of the stone to be at the top middle.
         this->center_->attach(stone);
-        float xPos = (this->center_->getWidth()/2 + ((this->center_->getWidth() % 2)*2-1)/2.0)*this->center_->getStoneSize();
-        float yPos = (this->center_->getHeight()-0.5)*this->center_->getStoneSize();
+        float xPos = (this->center_->getWidth()/2 + ((this->center_->getWidth() % 2)*2-1)/2.0f)*this->center_->getStoneSize();
+        float yPos = (this->center_->getHeight()-0.5f)*this->center_->getStoneSize();
         stone->setPosition(xPos, yPos, 0.0f);
         stone->setGame(this);
     }

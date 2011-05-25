@@ -42,8 +42,8 @@
 // Shared library settings
 //-----------------------------------------------------------------------
 
-#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(Docking_STATIC_BUILD)
-#  ifdef Docking_SHARED_BUILD
+#if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(DOCKING_STATIC_BUILD)
+#  ifdef DOCKING_SHARED_BUILD
 #    define _DockingExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )
