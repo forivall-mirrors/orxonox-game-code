@@ -54,10 +54,10 @@ namespace orxonox
             inline SpaceShip* getShip() const
                 { return this->ship_; }
 
-			inline void setRelativePosition(const Vector3 &position)
-				{ this->relativePosition_ = position; }
-			inline Vector3& getRelativePosition()
-				{ return this->relativePosition_; }
+            inline void setRelativePosition(const Vector3 &position)
+                { this->relativePosition_ = position; }
+            inline Vector3& getRelativePosition()
+                { return this->relativePosition_; }
 
             inline void setBoostFactor(float factor)
                 { this->boostFactor_ = factor; }
@@ -123,7 +123,7 @@ namespace orxonox
             inline void setSpeedMultiply(float speedMultiply)
                 { this->speedMultiply_=speedMultiply; }
 
-			
+            
             inline void setEngineTemplate(const std::string& temp)
                 { this->engineTemplate_ = temp; this->loadEngineTemplate(); }
             inline const std::string& getEngineTemplate() const
@@ -133,18 +133,18 @@ namespace orxonox
             virtual std::vector<PickupCarrier*>* getCarrierChildren(void) const
                 { return new std::vector<PickupCarrier*>(); }
             virtual PickupCarrier* getCarrierParent(void) const;
-			
+            
             void loadEngineTemplate();
 
         private:
             void registerVariables();
             void networkcallback_shipID();
 
-			std::string engineTemplate_;
+            std::string engineTemplate_;
 
             SpaceShip* ship_;
             unsigned int shipID_;
-			Vector3 relativePosition_;
+            Vector3 relativePosition_;
 
             float boostFactor_;
             float speedFactor_;

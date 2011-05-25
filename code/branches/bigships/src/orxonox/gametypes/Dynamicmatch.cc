@@ -150,7 +150,7 @@ namespace orxonox
 
                 //Give new pig boost
                 SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
-				grantPigBoost(spaceship);
+                grantPigBoost(spaceship);
             }
 
             //Case: notEnoughKillers: party change
@@ -305,9 +305,9 @@ namespace orxonox
         else return false;
     }
 
-	void Dynamicmatch::grantPigBoost(orxonox::SpaceShip* spaceship)
-	{
-		// Give pig boost
+    void Dynamicmatch::grantPigBoost(orxonox::SpaceShip* spaceship)
+    {
+        // Give pig boost
         if (spaceship)
         {
             spaceship->setSpeedFactor(5);
@@ -316,7 +316,7 @@ namespace orxonox
             executor->setDefaultValue(0, ptr);
             new Timer(10, false, executor, true);
         }
-	}
+    }
 
     void Dynamicmatch::playerStartsControllingPawn(PlayerInfo* player, Pawn* pawn) //set party + colouring
     {

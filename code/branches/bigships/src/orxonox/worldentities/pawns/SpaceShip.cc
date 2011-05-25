@@ -76,7 +76,7 @@ namespace orxonox
         // Get notification about collisions
         this->enableCollisionCallback();
 
-		this->engineTicksNotDone = 0;
+        this->engineTicksNotDone = 0;
         this->setConfigValues();
         this->registerVariables();
     }
@@ -86,7 +86,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->removeAllEngines();
-		
+        
             if (this->boostBlur_)
                 this->boostBlur_->destroy();
         }
@@ -105,7 +105,7 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "boostRate", boostRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
 
-		XMLPortObject(SpaceShip, Engine, "engines", addEngine, getEngine, xmlelement, mode);
+        XMLPortObject(SpaceShip, Engine, "engines", addEngine, getEngine, xmlelement, mode);
     }
 
     void SpaceShip::registerVariables()
@@ -122,7 +122,7 @@ namespace orxonox
     void SpaceShip::setConfigValues()
     {
         SetConfigValue(bInvertYAxis_, false).description("Set this to true for joystick-like mouse behaviour (mouse up = ship down).");
-		
+        
         SetConfigValueExternal(bEnableMotionBlur_, "GraphicsSettings", "enableMotionBlur", true)
             .description("Enable or disable the motion blur effect when moving very fast")
             .callback(this, &SpaceShip::changedEnableMotionBlur);
@@ -148,7 +148,7 @@ namespace orxonox
 
         if (this->hasLocalController())
         {
-			// Handle mouse look
+            // Handle mouse look
             if (!this->isInMouseLook())
             {
                 this->localAngularAcceleration_ *= this->getLocalInertia() * this->rotationThrust_;
@@ -156,12 +156,12 @@ namespace orxonox
             }
             this->localAngularAcceleration_.setValue(0, 0, 0);
 
-			// Charge boostPower
+            // Charge boostPower
             if(!this->bBoostCooldown_ && this->boostPower_ < this->initialBoostPower_)
             {
                 this->boostPower_ += this->boostPowerRate_*dt;
             }
-			// Use boostPower
+            // Use boostPower
             if(this->bBoost_)
             {
                 this->boostPower_ -=this->boostRate_*dt;
@@ -173,26 +173,26 @@ namespace orxonox
                 }
             }
 
-			// Enable Blur depending on settings
-			if (this->bEnableMotionBlur_ && !this->boostBlur_ && this->hasLocalController() && this->hasHumanController())
-			{
-				this->boostBlur_ = new Shader(this->getScene()->getSceneManager());
-				this->boostBlur_->setCompositorName("Radial Blur");
-			}
+            // Enable Blur depending on settings
+            if (this->bEnableMotionBlur_ && !this->boostBlur_ && this->hasLocalController() && this->hasHumanController())
+            {
+                this->boostBlur_ = new Shader(this->getScene()->getSceneManager());
+                this->boostBlur_->setCompositorName("Radial Blur");
+            }
 
-			if (this->boostBlur_) // && this->maxSpeedFront_ != 0 && this->boostFactor_ != 1)
-			{
-				// TODO: this->maxSpeedFront_ gets fastest engine
-				float blur = this->blurStrength_ * clamp((-this->getLocalVelocity().z - 0.0f /*this->maxSpeedFront_*/) / ((150.0f /*boostFactor_*/ - 1) * 1.5f /*this->maxSpeedFront_*/), 0.0f, 1.0f);
+            if (this->boostBlur_) // && this->maxSpeedFront_ != 0 && this->boostFactor_ != 1)
+            {
+                // TODO: this->maxSpeedFront_ gets fastest engine
+                float blur = this->blurStrength_ * clamp((-this->getLocalVelocity().z - 0.0f /*this->maxSpeedFront_*/) / ((150.0f /*boostFactor_*/ - 1) * 1.5f /*this->maxSpeedFront_*/), 0.0f, 1.0f);
 
-				// Show and hide blur effect depending on state of booster
-				if(this->bBoost_)
-					this->boostBlur_->setVisible(blur > 0);
-				else
-					this->boostBlur_->setVisible(false);
+                // Show and hide blur effect depending on state of booster
+                if(this->bBoost_)
+                    this->boostBlur_->setVisible(blur > 0);
+                else
+                    this->boostBlur_->setVisible(false);
 
-				this->boostBlur_->setParameter(0, 0, "sampleStrength", blur);
-			}
+                this->boostBlur_->setParameter(0, 0, "sampleStrength", blur);
+            }
         }
     }
 
@@ -258,76 +258,76 @@ namespace orxonox
             this->bBoost_ = false;
     }
 
-	void SpaceShip::addEngine(orxonox::Engine* engine)
-	{
-		//COUT(0)<<"Adding an Engine: " << engine << endl;
-		this->engineList_.push_back(engine);
-		engine->addToSpaceShip(this);
-		this->resetEngineTicks();
-	}
-	bool SpaceShip::hasEngine(Engine* engine)
-	{
-		for(unsigned int i=0; i<this->engineList_.size(); i++)
-		{
-			if(this->engineList_[i]==engine)
-				return true;
-		}
-		return false;
-	}
-	Engine* SpaceShip::getEngine(unsigned int i)
-	{
-		if(this->engineList_.size()>=i)
-			return 0;
-		else
-			return this->engineList_[i];
-	}
-	void SpaceShip::removeAllEngines()
-	{
-		for(unsigned int i=0; i<this->engineList_.size(); i++)
-			this->engineList_[i]->~Engine();
-	}
+    void SpaceShip::addEngine(orxonox::Engine* engine)
+    {
+        //COUT(0)<<"Adding an Engine: " << engine << endl;
+        this->engineList_.push_back(engine);
+        engine->addToSpaceShip(this);
+        this->resetEngineTicks();
+    }
+    bool SpaceShip::hasEngine(Engine* engine)
+    {
+        for(unsigned int i=0; i<this->engineList_.size(); i++)
+        {
+            if(this->engineList_[i]==engine)
+                return true;
+        }
+        return false;
+    }
+    Engine* SpaceShip::getEngine(unsigned int i)
+    {
+        if(this->engineList_.size()>=i)
+            return 0;
+        else
+            return this->engineList_[i];
+    }
+    void SpaceShip::removeAllEngines()
+    {
+        for(unsigned int i=0; i<this->engineList_.size(); i++)
+            this->engineList_[i]->~Engine();
+    }
 
-	void SpaceShip::setSpeedFactor(float factor)
-	{
-		for(unsigned int i=0; i<this->engineList_.size(); i++)
-			this->engineList_[i]->setSpeedFactor(factor);
-	}
-	float SpaceShip::getSpeedFactor() // Calculate mean SpeedFactor.
-	{
-		float ret = 0; unsigned int i = 0;
-		for(; i<this->engineList_.size(); i++)
-			ret += this->engineList_[i]->getSpeedFactor();
-		ret /= (float)i;
-		return ret;
-	}
-	float SpaceShip::getMaxSpeedFront()
-	{
-		float ret=0;
-		for(unsigned int i=0; i<this->engineList_.size(); i++)
-		{
-			if(this->engineList_[i]->getMaxSpeedFront() > ret)
-				ret = this->engineList_[i]->getMaxSpeedFront();
-		}
-		return ret;
-	}
-	float SpaceShip::getBoostFactor()
-	{
-		float ret = 0; unsigned int i=0;
-		for(; i<this->engineList_.size(); i++)
-			ret += this->engineList_[i]->getBoostFactor();
-		ret /= (float)i;
-		return ret;
-	}
+    void SpaceShip::setSpeedFactor(float factor)
+    {
+        for(unsigned int i=0; i<this->engineList_.size(); i++)
+            this->engineList_[i]->setSpeedFactor(factor);
+    }
+    float SpaceShip::getSpeedFactor() // Calculate mean SpeedFactor.
+    {
+        float ret = 0; unsigned int i = 0;
+        for(; i<this->engineList_.size(); i++)
+            ret += this->engineList_[i]->getSpeedFactor();
+        ret /= (float)i;
+        return ret;
+    }
+    float SpaceShip::getMaxSpeedFront()
+    {
+        float ret=0;
+        for(unsigned int i=0; i<this->engineList_.size(); i++)
+        {
+            if(this->engineList_[i]->getMaxSpeedFront() > ret)
+                ret = this->engineList_[i]->getMaxSpeedFront();
+        }
+        return ret;
+    }
+    float SpaceShip::getBoostFactor()
+    {
+        float ret = 0; unsigned int i=0;
+        for(; i<this->engineList_.size(); i++)
+            ret += this->engineList_[i]->getBoostFactor();
+        ret /= (float)i;
+        return ret;
+    }
 
     std::vector<PickupCarrier*>* SpaceShip::getCarrierChildren(void) const
     {
         std::vector<PickupCarrier*>* list = new std::vector<PickupCarrier*>();
-		for(unsigned int i=0; i<this->engineList_.size(); i++)
-			list->push_back(this->engineList_[i]);
+        for(unsigned int i=0; i<this->engineList_.size(); i++)
+            list->push_back(this->engineList_[i]);
         return list;
     }
-	
-	void SpaceShip::changedEnableMotionBlur()
+    
+    void SpaceShip::changedEnableMotionBlur()
     {
         if (!this->bEnableMotionBlur_)
         {

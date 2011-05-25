@@ -46,7 +46,7 @@ namespace orxonox
 
         this->ship_ = 0;
         this->shipID_ = OBJECTID_UNKNOWN;
-		this->relativePosition_ = Vector3(0,0,0);
+        this->relativePosition_ = Vector3(0,0,0);
 
         this->boostFactor_ = 1.5;
         this->speedFactor_ = 1.0;
@@ -71,13 +71,7 @@ namespace orxonox
 
     Engine::~Engine()
     {
-        if (this->isInitialized() && this->ship_)
-        {
-            //this->ship_->setEngine(0);
 
-            //if (this->boostBlur_)
-            //    this->boostBlur_->destroy();
-        }
     }
 
     void Engine::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -97,8 +91,8 @@ namespace orxonox
         XMLPortParam(Engine, "accelerationleftright", setAccelerationLeftRight, setAccelerationLeftRight, xmlelement, mode);
         XMLPortParam(Engine, "accelerationupdown",    setAccelerationUpDown,    setAccelerationUpDown,    xmlelement, mode);
 
-		XMLPortParam(Engine, "position", setRelativePosition, getRelativePosition, xmlelement, mode);
-		XMLPortParam(Engine, "template", setEngineTemplate, getEngineTemplate, xmlelement, mode);
+        XMLPortParam(Engine, "position", setRelativePosition, getRelativePosition, xmlelement, mode);
+        XMLPortParam(Engine, "template", setEngineTemplate, getEngineTemplate, xmlelement, mode);
     }
 
     void Engine::setConfigValues()
@@ -198,17 +192,16 @@ namespace orxonox
                 acceleration.y = direction.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
         }
 
-		// NOTE: Bullet always uses global coordinates.
+        // NOTE: Bullet always uses global coordinates.
         this->ship_->addAcceleration(this->ship_->getOrientation() * (acceleration*this->getSpeedMultiply()+Vector3(0,0,-this->getSpeedAdd())), this->ship_->getOrientation() * this->relativePosition_);
 
-
-		// Hack to reset a temporary variable "direction"
-		this->ship_->oneEngineTickDone();
-		if(!this->ship_->hasEngineTicksRemaining())
-		{
-			this->ship_->setSteeringDirection(Vector3::ZERO);
-			this->ship_->resetEngineTicks();
-		}
+        // Hack to reset a temporary variable "direction"
+        this->ship_->oneEngineTickDone();
+        if(!this->ship_->hasEngineTicksRemaining())
+        {
+            this->ship_->setSteeringDirection(Vector3::ZERO);
+            this->ship_->resetEngineTicks();
+        }
     }
 
     void Engine::changedActivity()
@@ -246,16 +239,16 @@ namespace orxonox
         return this->ship_->getWorldPosition();
     }
 
-	void Engine::loadEngineTemplate()
-	{
-		if(!this->engineTemplate_.empty())
-		{
-			COUT(4)<<"Loading an engine template: "<<this->engineTemplate_<<"\n";
-			Template *temp = Template::getTemplate(this->engineTemplate_);
-			if(temp)
-			{
-				this->addTemplate(temp);
-			}
-		}
-	}
+    void Engine::loadEngineTemplate()
+    {
+        if(!this->engineTemplate_.empty())
+        {
+            COUT(4)<<"Loading an engine template: "<<this->engineTemplate_<<"\n";
+            Template *temp = Template::getTemplate(this->engineTemplate_);
+            if(temp)
+            {
+                this->addTemplate(temp);
+            }
+        }
+    }
 }

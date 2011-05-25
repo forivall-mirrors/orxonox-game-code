@@ -60,28 +60,28 @@ namespace orxonox
             virtual void fire();
             virtual void boost(bool bBoost); // Starts or stops boosting.
 
-			void addEngine(Engine* engine);
-			bool hasEngine(Engine* engine);
-			Engine* getEngine(unsigned int i); // This one's for XMLPort
-			inline const std::vector<Engine*>& getEngineList()
-				{ return this->engineList_; }
-			void removeAllEngines();
+            void addEngine(Engine* engine);
+            bool hasEngine(Engine* engine);
+            Engine* getEngine(unsigned int i); // This one's for XMLPort
+            inline const std::vector<Engine*>& getEngineList()
+                { return this->engineList_; }
+            void removeAllEngines();
 
-			void setSpeedFactor(float factor);
-			float getSpeedFactor(); // Gets mean speed factor
-			float getMaxSpeedFront(); // gets largest speed forward
-			float getBoostFactor(); // gets mean boost factor
+            void setSpeedFactor(float factor);
+            float getSpeedFactor(); // Gets mean speed factor
+            float getMaxSpeedFront(); // gets largest speed forward
+            float getBoostFactor(); // gets mean boost factor
 
             inline void setSteeringDirection(const Vector3& direction)
                 { this->steering_ = direction; }
             inline const Vector3& getSteeringDirection() const
                 { return this->steering_; }
-			inline void resetEngineTicks()
-				{ this->engineTicksNotDone = this->engineList_.size(); }
-			inline void oneEngineTickDone()
-				{ this->engineTicksNotDone--; }
-			inline const bool hasEngineTicksRemaining()
-				{ return (this->engineTicksNotDone>0); }
+            inline void resetEngineTicks()
+                { this->engineTicksNotDone = this->engineList_.size(); }
+            inline void oneEngineTickDone()
+                { this->engineTicksNotDone--; }
+            inline const bool hasEngineTicksRemaining()
+                { return (this->engineTicksNotDone>0); }
 
             inline bool getBoost() const
                 { return this->bBoost_; }
@@ -108,16 +108,16 @@ namespace orxonox
             void registerVariables();
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
             
-			//All things booster
-			void changedEnableMotionBlur();
+            //All things booster
+            void changedEnableMotionBlur();
             void boostCooledDown(void);
 
-			Shader* boostBlur_;
+            Shader* boostBlur_;
             float blurStrength_;
             bool bEnableMotionBlur_;
 
-			std::vector<Engine*> engineList_;
-			int engineTicksNotDone; // Used for knowing when to reset temporary variables.
+            std::vector<Engine*> engineList_;
+            int engineTicksNotDone; // Used for knowing when to reset temporary variables.
             Timer timer_;
     };
 }
