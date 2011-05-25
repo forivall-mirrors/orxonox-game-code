@@ -63,10 +63,7 @@ namespace orxonox
             virtual void doFire(unsigned int firemode);
             static void reload();
 
-	    static void startBoost();
-	    static void stopBoost();
-            static void toggleBoost(); // Static method,toggles boosting.
-	    void setBoost(bool);
+            static void toggleBoost(); // Static method, toggles boosting.
             /**
             @brief Check whether the HumanController is in boosting mode.
             @return Returns true if it is, false if not.

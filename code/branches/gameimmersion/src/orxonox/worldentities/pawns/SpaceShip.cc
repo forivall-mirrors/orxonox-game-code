@@ -77,14 +77,14 @@ namespace orxonox
 
         this->setConfigValues();
         this->registerVariables();
-	
-	Camera* c = CameraManager::getInstance().getActiveCamera();
-	this->cameraOriginalPosition = c->getPosition();
-	this->cameraOriginalOrientation = c->getOrientation();
+        
+        Camera* c = CameraManager::getInstance().getActiveCamera();
+        this->cameraOriginalPosition = c->getPosition();
+        this->cameraOriginalOrientation = c->getOrientation();
 
-	this->shakeFrequency_ = 15;
-	this->shakeAmplitude_ = 5;
-	this->shakeDt_ = 0;
+        this->shakeFrequency_ = 15;
+        this->shakeAmplitude_ = 5;
+        this->shakeDt_ = 0;
     }
 
     SpaceShip::~SpaceShip()
@@ -105,7 +105,7 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "boostPowerRate", boostPowerRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostRate", boostRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
-	XMLPortParamVariable(SpaceShip, "shakeFrequency", shakeFrequency_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "shakeFrequency", shakeFrequency_, xmlelement, mode);
     }
 
     void SpaceShip::registerVariables()
@@ -117,7 +117,7 @@ namespace orxonox
         registerVariable(this->boostPowerRate_, VariableDirection::ToClient);
         registerVariable(this->boostRate_, VariableDirection::ToClient);
         registerVariable(this->boostCooldownDuration_, VariableDirection::ToClient);
-	registerVariable(this->shakeFrequency_, VariableDirection::ToClient);
+        registerVariable(this->shakeFrequency_, VariableDirection::ToClient);
     }
 
     void SpaceShip::setConfigValues()
@@ -143,7 +143,7 @@ namespace orxonox
 
         if (this->hasLocalController())
         {
-		
+
 /*
             this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() * getMass() * this->auxilaryThrust_);
             this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() * getMass() * this->auxilaryThrust_);
@@ -175,10 +175,10 @@ namespace orxonox
                     this->boost(false);
                     this->bBoostCooldown_ = true;
                     this->timer_.setTimer(this->boostCooldownDuration_, false, createExecutor(createFunctor(&SpaceShip::boostCooledDown, this)));
-		    
+
                 }
-		
-		shakeCamera(dt);		
+
+                shakeCamera(dt);    
             }
         }
     }
@@ -233,68 +233,68 @@ namespace orxonox
         Whether to start or stop boosting.
     */
     void SpaceShip::boost(bool bBoost)
-    {	
+    {
         if(bBoost && !this->bBoostCooldown_)
-	{
-	    //COUT(0) << "Boost startet!\n";
+        {
+            //COUT(0) << "Boost startet!\n";
             this->bBoost_ = true;
-	}
+        }
         if(!bBoost)
-	{
-	    //COUT(0) << "Boost stoppt\n";
-	    this->resetCamera();
+        {
+            //COUT(0) << "Boost stoppt\n";
+            this->resetCamera();
             this->bBoost_ = false;
-	}
+        }
     }
     
     void SpaceShip::boostCooledDown(void)
     {
-	    this->bBoostCooldown_ = false;
+        this->bBoostCooldown_ = false;
     }
     
     void SpaceShip::shakeCamera(float dt)
     {
-	    //make sure the ship is only shaking if it's moving
-	    if (this->getVelocity().squaredLength() > 80)
-	    {
-		    this->shakeDt_ += dt;
-		    
-		    int frequency = this->shakeFrequency_ * (this->getVelocity().squaredLength());
-		    
-		    if (this->shakeDt_ >= 1 /(frequency))
-		    {
-			    this->shakeDt_ -= 1/(frequency);
-		    }
-		    
-		    Degree angle = Degree(sin(this->shakeDt_ * 2* math::pi * frequency) * this->shakeAmplitude_);
-			
-//		    COUT(0) << "Angle: " << angle << std::endl;
-		    Camera* c = this->getCamera();
+        //make sure the ship is only shaking if it's moving
+        if (this->getVelocity().squaredLength() > 80)
+        {
+            this->shakeDt_ += dt;
+    
+            int frequency = this->shakeFrequency_ * (this->getVelocity().squaredLength());
+    
+            if (this->shakeDt_ >= 1 /(frequency))
+            {
+                this->shakeDt_ -= 1/(frequency);
+            }
+    
+            Degree angle = Degree(sin(this->shakeDt_ * 2* math::pi * frequency) * this->shakeAmplitude_);
+    
+            //COUT(0) << "Angle: " << angle << std::endl;
+            Camera* c = this->getCamera();
 
-			//Shaking Camera effect
-		    if (c != 0)
-		    {
-			    c->setOrientation(Vector3::UNIT_X, angle);
-		    }
-	    }
+            //Shaking Camera effect
+            if (c != 0)
+            {
+                c->setOrientation(Vector3::UNIT_X, angle);
+            }
+        }
     }
     
     void SpaceShip::resetCamera()
     {
-	    
-//	    COUT(0) << "Resetting camera\n";
-	    Camera *c = this->getCamera();
-	  
-	    if (c == 0)
-	    {
-		    COUT(2) << "Failed to reset camera!";
-		    return;
-	    }
-	    
-	    shakeDt_ = 0;
-	    // 	    
-	    c->setPosition(this->cameraOriginalPosition);
-	    c->setOrientation(this->cameraOriginalOrientation);
+    
+        //COUT(0) << "Resetting camera\n";
+        Camera *c = this->getCamera();
+    
+        if (c == 0)
+        {
+            COUT(2) << "Failed to reset camera!";
+            return;
+        }
+    
+        shakeDt_ = 0;
+        //
+        c->setPosition(this->cameraOriginalPosition);
+        c->setOrientation(this->cameraOriginalOrientation);
     }
 
     void SpaceShip::loadEngineTemplate()
