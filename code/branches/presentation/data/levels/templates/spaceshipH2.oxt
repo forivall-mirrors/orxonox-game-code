@@ -2,7 +2,6 @@
   <SpaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipHtwocameras
-   engine                 = spaceshipHtwoengine
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 6
@@ -24,7 +23,10 @@
 <?lua
   include("includes/weaponSettingsH2.oxi")
 ?>
+    <engines>
+      <MultiStateEngine position="0,0,0" template=spaceshipHtwoengine />
 
+    </engines>
     <attached>
       <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale3D="3,0.833,0.833" mesh="h2_green.mesh" />
       <BlinkingBillboard position=" 11.7,4.0,8.5" material="Examples/Flare" colour="1.0, 0.5, 0.3" amplitude=0.1 frequency=0.5 quadratic=1 />

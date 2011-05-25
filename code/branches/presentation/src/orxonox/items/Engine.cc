@@ -34,7 +34,7 @@
 #include "core/XMLPort.h"
 #include "Scene.h"
 #include "worldentities/pawns/SpaceShip.h"
-#include "tools/Shader.h"
+#include "core/Template.h"
 
 namespace orxonox
 {
@@ -46,6 +46,7 @@ namespace orxonox
 
         this->ship_ = 0;
         this->shipID_ = OBJECTID_UNKNOWN;
+        this->relativePosition_ = Vector3(0,0,0);
 
         this->boostFactor_ = 1.5;
         this->speedFactor_ = 1.0;
@@ -61,8 +62,6 @@ namespace orxonox
         this->accelerationLeftRight_ = 0.0;
         this->accelerationUpDown_ = 0.0;
 
-        this->boostBlur_ = 0;
-
         this->speedAdd_ = 0.0;
         this->speedMultiply_ = 1.0;
 
@@ -72,13 +71,7 @@ namespace orxonox
 
     Engine::~Engine()
     {
-        if (this->isInitialized() && this->ship_)
-        {
-            this->ship_->setEngine(0);
 
-            if (this->boostBlur_)
-                this->boostBlur_->destroy();
-        }
     }
 
     void Engine::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -97,15 +90,13 @@ namespace orxonox
         XMLPortParam(Engine, "accelerationback",      setAccelerationBack,      setAccelerationBack,      xmlelement, mode);
         XMLPortParam(Engine, "accelerationleftright", setAccelerationLeftRight, setAccelerationLeftRight, xmlelement, mode);
         XMLPortParam(Engine, "accelerationupdown",    setAccelerationUpDown,    setAccelerationUpDown,    xmlelement, mode);
+
+        XMLPortParam(Engine, "position", setRelativePosition, getRelativePosition, xmlelement, mode);
+        XMLPortParam(Engine, "template", setEngineTemplate, getEngineTemplate, xmlelement, mode);
     }
 
     void Engine::setConfigValues()
     {
-        SetConfigValueExternal(bEnableMotionBlur_, "GraphicsSettings", "enableMotionBlur", true)
-            .description("Enable or disable the motion blur effect when moving very fast")
-            .callback(this, &Engine::changedEnableMotionBlur);
-        SetConfigValueExternal(blurStrength_, "GraphicsSettings", "blurStrength", 3.0f)
-            .description("Defines the strength of the motion blur effect");
     }
 
     void Engine::registerVariables()
@@ -201,31 +192,21 @@ namespace orxonox
                 acceleration.y = direction.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
         }
 
-        this->ship_->setAcceleration(this->ship_->getOrientation() * (acceleration*this->getSpeedMultiply()+Vector3(0,0,-this->getSpeedAdd())));
+        // NOTE: Bullet always uses global coordinates.
+        this->ship_->addAcceleration(this->ship_->getOrientation() * (acceleration*this->getSpeedMultiply()+Vector3(0,0,-this->getSpeedAdd())), this->ship_->getOrientation() * this->relativePosition_);
 
-        this->ship_->setSteeringDirection(Vector3::ZERO);
-
-        if (this->bEnableMotionBlur_ && !this->boostBlur_ && this->ship_->hasLocalController() && this->ship_->hasHumanController())
+        // Hack to reset a temporary variable "direction"
+        this->ship_->oneEngineTickDone();
+        if(!this->ship_->hasEngineTicksRemaining())
         {
-            this->boostBlur_ = new Shader(this->ship_->getScene()->getSceneManager());
-            this->boostBlur_->setCompositorName("Radial Blur");
-        }
-
-        if (this->boostBlur_ && this->maxSpeedFront_ != 0 && this->boostFactor_ != 1)
-        {
-            float blur = this->blurStrength_ * clamp((-velocity.z - this->maxSpeedFront_) / ((this->boostFactor_ - 1) * this->maxSpeedFront_), 0.0f, 1.0f);
-
-            this->boostBlur_->setVisible(blur > 0);
-            this->boostBlur_->setParameter(0, 0, "sampleStrength", blur);
+            this->ship_->setSteeringDirection(Vector3::ZERO);
+            this->ship_->resetEngineTicks();
         }
     }
 
     void Engine::changedActivity()
     {
         SUPER(Engine, changedActivity);
-
-        if (this->boostBlur_)
-            this->boostBlur_->setVisible(this->isVisible());
     }
 
     void Engine::addToSpaceShip(SpaceShip* ship)
@@ -235,14 +216,8 @@ namespace orxonox
         if (ship)
         {
             this->shipID_ = ship->getObjectID();
-            if (ship->getEngine() != this)
-                ship->setEngine(this);
-
-            if (this->boostBlur_)
-            {
-                this->boostBlur_->destroy();
-                this->boostBlur_ = 0;
-            }
+            if (!ship->hasEngine(this))
+                ship->addEngine(this);
         }
     }
 
@@ -264,12 +239,16 @@ namespace orxonox
         return this->ship_->getWorldPosition();
     }
 
-    void Engine::changedEnableMotionBlur()
+    void Engine::loadEngineTemplate()
     {
-        if (!this->bEnableMotionBlur_)
+        if(!this->engineTemplate_.empty())
         {
-            this->boostBlur_->destroy();
-            this->boostBlur_ = 0;
+            COUT(4)<<"Loading an engine template: "<<this->engineTemplate_<<"\n";
+            Template *temp = Template::getTemplate(this->engineTemplate_);
+            if(temp)
+            {
+                this->addTemplate(temp);
+            }
         }
     }
 }

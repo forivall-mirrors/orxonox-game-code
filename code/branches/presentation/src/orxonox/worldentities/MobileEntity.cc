@@ -142,9 +142,20 @@ namespace orxonox
     void MobileEntity::setAcceleration(const Vector3& acceleration)
     {
         if (this->isDynamic())
+        {
             this->physicalBody_->applyCentralForce(btVector3(acceleration.x * this->getMass(), acceleration.y * this->getMass(), acceleration.z * this->getMass()));
+        }
 
+        // If not bullet-managed (deprecated? SpaceShip doesn't use this anymore for movement)
         this->linearAcceleration_ = acceleration;
+    }
+
+    void MobileEntity::addAcceleration(const Vector3 &acceleration, const Vector3 &relativePosition)
+    {
+        if(this->isDynamic())
+        {
+            this->physicalBody_->applyForce(this->getMass() * btVector3(acceleration.x, acceleration.y, acceleration.z), btVector3(relativePosition.x, relativePosition.y, relativePosition.z));
+        }
     }
 
     void MobileEntity::setAngularAcceleration(const Vector3& acceleration)

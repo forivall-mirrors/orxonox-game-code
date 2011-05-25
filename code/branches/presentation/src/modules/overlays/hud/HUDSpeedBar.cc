@@ -53,9 +53,9 @@ namespace orxonox
     {
         SUPER(HUDSpeedBar, tick, dt);
 
-        if (this->owner_ && this->owner_->getEngine())
+        if (this->owner_)
         {
-            float value = this->owner_->getVelocity().length() / (this->owner_->getEngine()->getMaxSpeedFront() * this->owner_->getEngine()->getSpeedFactor() * this->owner_->getEngine()->getBoostFactor());
+            float value = this->owner_->getVelocity().length() / (this->owner_->getMaxSpeedFront() * this->owner_->getSpeedFactor() * this->owner_->getBoostFactor());
             this->setValue(value);
         }
     }

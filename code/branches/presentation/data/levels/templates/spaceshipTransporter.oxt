@@ -2,7 +2,6 @@
   <SpaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipTransportercameras
-   engine                 = spaceshipTransporterengine
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 6
@@ -20,6 +19,9 @@
    linearDamping     = 0.7
    angularDamping    = 0.9999999
   >
+    <engines>
+      <MultiStateEngine position=" 0, 0, 0" template=spaceshipTransporterengine />
+    </engines>
     <attached>
       <Model position="0,0,0" yaw=0 pitch=0 roll=0 scale=10 mesh="Transporter.mesh" />
     </attached>
