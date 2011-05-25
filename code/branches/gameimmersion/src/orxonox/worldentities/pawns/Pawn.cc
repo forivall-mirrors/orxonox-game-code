@@ -290,7 +290,7 @@ namespace orxonox
 
 
 /* HIT-Funktionen
-	Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden! (Visuelle Effekte)
+    Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden! (Visuelle Effekte)
 
 */
 

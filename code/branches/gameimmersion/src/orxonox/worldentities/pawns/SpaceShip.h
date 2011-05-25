@@ -95,9 +95,8 @@ namespace orxonox
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
 
-
-	    float shakeFrequency_;
-	    float shakeAmplitude_;
+            float shakeFrequency_;
+            float shakeAmplitude_;
 
         private:
             void registerVariables();
@@ -106,17 +105,17 @@ namespace orxonox
             void loadEngineTemplate();
             
             void boostCooledDown(void);
-	    
-	    void resetCamera();
-	    void shakeCamera(float dt);
+        
+            void resetCamera();
+            void shakeCamera(float dt);
 
             std::string enginetemplate_;
             Engine* engine_;
             Timer timer_;
-	    Vector3 cameraOriginalPosition;
-	    Quaternion cameraOriginalOrientation;
-	    
-	    float shakeDt_;
+            Vector3 cameraOriginalPosition_;
+            Quaternion cameraOriginalOrientation_;
+        
+            float shakeDt_;
     };
 }
 

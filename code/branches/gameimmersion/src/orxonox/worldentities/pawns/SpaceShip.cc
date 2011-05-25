@@ -78,9 +78,9 @@ namespace orxonox
         this->setConfigValues();
         this->registerVariables();
         
-        Camera* c = CameraManager::getInstance().getActiveCamera();
-        this->cameraOriginalPosition = c->getPosition();
-        this->cameraOriginalOrientation = c->getOrientation();
+        Camera* camera = CameraManager::getInstance().getActiveCamera();
+        this->cameraOriginalPosition_ = camera->getPosition();
+        this->cameraOriginalOrientation_ = camera->getOrientation();
 
         this->shakeFrequency_ = 15;
         this->shakeAmplitude_ = 5;
@@ -178,7 +178,7 @@ namespace orxonox
 
                 }
 
-                shakeCamera(dt);    
+                shakeCamera(dt);
             }
         }
     }
@@ -293,8 +293,8 @@ namespace orxonox
     
         shakeDt_ = 0;
         //
-        c->setPosition(this->cameraOriginalPosition);
-        c->setOrientation(this->cameraOriginalOrientation);
+        c->setPosition(this->cameraOriginalPosition_);
+        c->setOrientation(this->cameraOriginalOrientation_);
     }
 
     void SpaceShip::loadEngineTemplate()
