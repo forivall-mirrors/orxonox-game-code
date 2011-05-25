@@ -83,7 +83,6 @@ namespace orxonox
         this->server_angular_velocity_ = Vector3::ZERO;
         this->client_angular_velocity_ = Vector3::ZERO;
 
-
         this->setConfigValues();
         this->setPriority( Priority::VeryHigh );
         this->registerVariables();

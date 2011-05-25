@@ -22,7 +22,7 @@
  *   Author:
  *      Joel Smely
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -44,7 +44,7 @@ namespace orxonox
         RegisterObject(LightningGun);
 
         this->reloadTime_ = 1;
-        this->damage_ = 100;
+        this->damage_ = 0; //default 100
         this->speed_ = 150;
 
         this->setMunitionName("LaserMunition");
@@ -55,6 +55,8 @@ namespace orxonox
     {
     }
 
+    /* Creates the projectile (LightningGunProjectile) object, sets its properties to the LightningGun properties
+     */
     void LightningGun::fire()
     {
         LightningGunProjectile* projectile = new LightningGunProjectile(this);
@@ -68,5 +70,7 @@ namespace orxonox
 
         projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
+        projectile->setShieldDamage(this->getShieldDamage());
+        projectile->setHealthDamage(this->getHealthDamage());
     }
 }

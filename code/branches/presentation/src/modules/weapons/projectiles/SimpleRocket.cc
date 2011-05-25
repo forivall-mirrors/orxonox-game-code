@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -47,16 +47,15 @@ namespace orxonox
 
     CreateFactory(SimpleRocket);
 
-    SimpleRocket::SimpleRocket(BaseObject* creator) : ControllableEntity(creator)
+    SimpleRocket::SimpleRocket(BaseObject* creator) : ControllableEntity(creator), BasicProjectile()
     {
         RegisterObject(SimpleRocket);// - register the SimpleRocket class to the core
 
         this->localAngularVelocity_ = 0;
-        this->bDestroy_ = false;
         this->lifetime_ = 120;
 
         this->setMass(15);
-        COUT(4) << "simplerocket constructed\n";
+//        COUT(4) << "simplerocket constructed\n";
 
         if (GameMode::isMaster())
         {
@@ -114,7 +113,7 @@ namespace orxonox
             } else
                 this->disableFire();
 
-            if( this->bDestroy_ )
+            if( this->getBDestroy() )
                 this->destroy();
         }
 
@@ -158,51 +157,15 @@ namespace orxonox
     void SimpleRocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
-        this->player_ = this->owner_->getPlayer();
+        this->player_ = this->getOwner()->getPlayer();
     }
 
 
-
-
+    /* Calls the collidesAgainst function of BasicProjectile
+     */
     bool SimpleRocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        if (!this->bDestroy_ && GameMode::isMaster())
-        {
-            if (otherObject == this->owner_)
-                return false;
-
-            this->bDestroy_ = true;
-
-            if (this->owner_)
-            {
-                {
-                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                    effect->setPosition(this->getPosition());
-                    effect->setOrientation(this->getOrientation());
-                    effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/explosion4");
-                    effect->setLifetime(2.0f);
-                }
-
-                {
-                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
-                    effect->setPosition(this->getPosition());
-                    effect->setOrientation(this->getOrientation());
-                    effect->setDestroyAfterLife(true);
-                    effect->setSource("Orxonox/smoke4");
-                    effect->setLifetime(3.0f);
-                }
-            }
-
-            float dmg = this->damage_;
-//             if (this->owner_)
-//                 dmg = this->owner_->getPickups().processModifiers(ModifierType::Damage, dmg, false);
-
-            Pawn* victim = orxonox_cast<Pawn*>(otherObject);
-            if (victim)
-                victim->hit(this->owner_, contactPoint, dmg);
-        }
-        return false;
+        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
     }
 
     void SimpleRocket::destroyObject()

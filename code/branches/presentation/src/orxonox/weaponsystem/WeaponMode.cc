@@ -65,6 +65,8 @@ namespace orxonox
         this->reloadTimer_.stopTimer();
 
         this->damage_ = 0;
+        this->healthdamage_ = 0;
+        this->shielddamage_ = 0;
 
         this->muzzleOffset_ = Vector3::ZERO;
         this->muzzlePosition_ = Vector3::ZERO;
@@ -105,6 +107,8 @@ namespace orxonox
         XMLPortParam(WeaponMode, "parallelreload",   setParallelReload,   getParallelReload,   xmlelement, mode).description("If true, the weapon reloads in parallel to the magazine reloading");
 
         XMLPortParam(WeaponMode, "damage",           setDamage,           getDamage,           xmlelement, mode);
+        XMLPortParam(WeaponMode, "healthdamage",     setHealthDamage,     getHealthDamage,     xmlelement, mode);
+        XMLPortParam(WeaponMode, "shielddamage",     setShieldDamage,     getShieldDamage,     xmlelement, mode);
         XMLPortParam(WeaponMode, "muzzleoffset",     setMuzzleOffset,     getMuzzleOffset,     xmlelement, mode);
     }
 
