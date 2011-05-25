@@ -22,7 +22,7 @@
  *   Author:
  *      Martin Polak
  *   Co-authors:
- *      simonmie
+ *      ...
  *
  */
 
@@ -47,14 +47,12 @@ namespace orxonox
 
         this->reloadTime_ = 1.0;
         this->bParallelReload_ = false;
-        this->damage_ = 0; //default 40
+        this->damage_ = 40;
         this->speed_ = 1250;
 
         this->setMunitionName("FusionMunition");
     }
 
-    /* Creates the projectile (BillboardProjectile) object, sets its properties to the FusionFire properties
-     */
     void FusionFire::fire()
     {
         BillboardProjectile* projectile = new BillboardProjectile(this);
@@ -66,9 +64,6 @@ namespace orxonox
 
         projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
-        projectile->setShieldDamage(this->getShieldDamage());
-        projectile->setHealthDamage(this->getHealthDamage());
-
         projectile->setColour(ColourValue(1.0f, 0.7f, 0.3f, 1.0f));
     }
 }

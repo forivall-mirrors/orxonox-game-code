@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      simonmie
+ *      ...
  *
  */
 
@@ -33,8 +33,6 @@
 
 #include "tools/Timer.h"
 #include "worldentities/ControllableEntity.h"
-
-#include "BasicProjectile.h"
 
 namespace orxonox
 {
@@ -47,7 +45,7 @@ namespace orxonox
     @author
         Oli Scheuss
     */
-    class _WeaponsExport Rocket : public ControllableEntity, public BasicProjectile
+    class _WeaponsExport Rocket : public ControllableEntity
     {
         public:
             Rocket(BaseObject* creator);
@@ -110,11 +108,17 @@ namespace orxonox
             inline Pawn* getOwner() const
                 { return this->owner_; }
 
+            inline void setDamage(float damage)
+                { this->damage_ = damage; }
+            inline float getDamage() const
+                { return this->damage_; }
             virtual void fired(unsigned int firemode);
 
         private:
             WeakPtr<Pawn> owner_;
             Vector3 localAngularVelocity_;
+            float damage_;
+            bool bDestroy_;
 
             WeakPtr<PlayerInfo> player_;
             Timer destroyTimer_;

@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      simonmie
+ *      ...
  *
  */
 
@@ -51,11 +51,12 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes some default values.
     */
-    Rocket::Rocket(BaseObject* creator) : ControllableEntity(creator), BasicProjectile()
+    Rocket::Rocket(BaseObject* creator) : ControllableEntity(creator)
     {
         RegisterObject(Rocket);// - register the Rocket class to the core
 
         this->localAngularVelocity_ = 0;
+        this->bDestroy_ = false;
         this->lifetime_ = 100;
 
         if (GameMode::isMaster())
@@ -144,8 +145,8 @@ namespace orxonox
     void Rocket::setOwner(Pawn* owner)
     {
         this->owner_ = owner;
-        this->player_ = this->getOwner()->getPlayer();
-        this->getOwner()->getPlayer()->startTemporaryControl(this);
+        this->player_ = this->owner_->getPlayer();
+        this->owner_->getPlayer()->startTemporaryControl(this);
 
         if( GameMode::isMaster() )
         {
@@ -173,17 +174,48 @@ namespace orxonox
 
         if( GameMode::isMaster() )
         {
-            if( this->getBDestroy() )
+            if( this->bDestroy_ )
                 this->destroy();
 
         }
     }
 
-    /* Calls the collidesAgainst function of BasicProjectile
-     */
     bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
+        if (!this->bDestroy_ && GameMode::isMaster())
+        {
+            if (otherObject == this->owner_)
+                return false;
+
+            this->bDestroy_ = true;
+
+            if (this->owner_)
+            {
+                {
+                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
+                    effect->setPosition(this->getPosition());
+                    effect->setOrientation(this->getOrientation());
+                    effect->setDestroyAfterLife(true);
+                    effect->setSource("Orxonox/explosion4");
+                    effect->setLifetime(2.0f);
+                }
+
+                {
+                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
+                    effect->setPosition(this->getPosition());
+                    effect->setOrientation(this->getOrientation());
+                    effect->setDestroyAfterLife(true);
+                    effect->setSource("Orxonox/smoke4");
+                    effect->setLifetime(3.0f);
+                }
+            }
+
+            Pawn* victim = orxonox_cast<Pawn*>(otherObject);
+            if (victim)
+                victim->hit(this->owner_, contactPoint, this->damage_);
+//             this->destroy();
+        }
+        return false;
     }
 
     void Rocket::destroyObject()
@@ -200,16 +232,19 @@ namespace orxonox
 
     void Rocket::fired(unsigned int firemode)
     {
-        this->destroy();
+//         if (this->owner_)
+//         {
+            this->destroy();
+//         }
     }
 
     void Rocket::destructionEffect()
     {
         ParticleSpawner *effect1, *effect2;
-        if( this->getOwner() )
+        if( this->owner_ )
         {
-            effect1 = new ParticleSpawner(this->getOwner()->getCreator());
-            effect2 = new ParticleSpawner(this->getOwner()->getCreator());
+            effect1 = new ParticleSpawner(this->owner_->getCreator());
+            effect2 = new ParticleSpawner(this->owner_->getCreator());
         }
         else
         {

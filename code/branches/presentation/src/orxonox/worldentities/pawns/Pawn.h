@@ -71,61 +71,21 @@ namespace orxonox // tolua_export
             inline float getInitialHealth() const
                 { return this->initialHealth_; }
 
-            virtual void setShieldHealth(float shieldHealth);
-
+            inline void setShieldHealth(float shieldHealth)
+            { this->shieldHealth_ = shieldHealth; }
             inline float getShieldHealth()
             { return this->shieldHealth_; }
-
-            inline void addShieldHealth(float amount)
-            { this->setShieldHealth(this->shieldHealth_ + amount); }
-
-            inline bool hasShield()
-            { return (this->getShieldHealth() > 0); }
-
-            virtual void setMaxShieldHealth(float maxshieldhealth);
-            inline float getMaxShieldHealth() const
-                { return this->maxShieldHealth_; }
-
-            inline void setInitialShieldHealth(float initialshieldhealth)
-                { this->initialShieldHealth_ = initialshieldhealth; this->setShieldHealth(initialshieldhealth); }
-            inline float getInitialShieldHealth() const
-                { return this->initialShieldHealth_; }
-
-            inline void restoreInitialShieldHealth()
-                { this->setShieldHealth(this->initialShieldHealth_); }
-            inline void restoreMaxShieldHealth()
-                { this->setShieldHealth(this->maxShieldHealth_); }
 
             inline void setShieldAbsorption(float shieldAbsorption)
             { this->shieldAbsorption_ = shieldAbsorption; }
             inline float getShieldAbsorption()
             { return this->shieldAbsorption_; }
 
-            // TODO: Rename to shieldRechargeRate
-            virtual void setReloadRate(float reloadrate);
-            inline float getReloadRate() const
-                { return this->reloadRate_; }
-
-            virtual void setReloadWaitTime(float reloadwaittime);
-            inline float getReloadWaitTime() const
-                { return this->reloadWaitTime_; }
-
-            inline void resetReloadCountdown()
-            { this->reloadWaitCountdown_ = 0; }
-
-            inline void startReloadCountdown()
-            { this->reloadWaitCountdown_ = this->getReloadWaitTime(); } // TODO: Implement in Projectile.cc
-
-            virtual void decreaseReloadCountdownTime(float dt);
-
             inline ControllableEntity* getLastHitOriginator() const
                 { return this->lastHitOriginator_; }
 
-            //virtual void hit(Pawn* originator, const Vector3& force, float damage);
-            //virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
-            virtual void hit(Pawn* originator, const Vector3& force, float damage, float healthdamage = 0.0f, float shielddamage = 0.0f);
-            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage = 0.0f, float shielddamage = 0.0f);
-
+            virtual void hit(Pawn* originator, const Vector3& force, float damage);
+            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage);
             virtual void kill();
 
             virtual void fired(unsigned int firemode);
@@ -181,8 +141,7 @@ namespace orxonox // tolua_export
             virtual void deatheffect();
             virtual void spawneffect();
 
-            //virtual void damage(float damage, Pawn* originator = 0);
-            virtual void damage(float damage, float healthdamage = 0.0f, float shielddamage = 0.0f, Pawn* originator = NULL);
+            virtual void damage(float damage, Pawn* originator = 0);
 
             bool bAlive_;
 
@@ -194,14 +153,8 @@ namespace orxonox // tolua_export
             float health_;
             float maxHealth_;
             float initialHealth_;
-            
             float shieldHealth_;
-            float maxShieldHealth_;
-            float initialShieldHealth_;
             float shieldAbsorption_; // Has to be between 0 and 1
-            float reloadRate_;
-            float reloadWaitTime_;
-            float reloadWaitCountdown_;
 
             WeakPtr<Pawn> lastHitOriginator_;
 

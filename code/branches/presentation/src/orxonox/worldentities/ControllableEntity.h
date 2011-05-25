@@ -92,13 +92,7 @@ namespace orxonox
             virtual void fired(unsigned int firemode) {}
             virtual void reload() {}
 
-            /**
-            @brief Tells the ControllableEntity to either start or stop boosting.
-                   This doesn't mean, that the ControllableEntity will do so, there might be additional restrictions on boosting, but if it can, then it will.
-            @param bBoost If true the ControllableEntity is told to start boosting, if false it is told to stop.
-            */
-            virtual void boost(bool bBoost) {}
-            
+            virtual void boost() {}
             virtual void greet() {}
             virtual void switchCamera();
             virtual void mouseLook();

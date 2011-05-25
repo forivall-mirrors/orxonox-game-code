@@ -58,7 +58,7 @@ namespace orxonox
             virtual void rotateRoll(const Vector2& value);
 
             virtual void fire();
-            virtual void boost(bool bBoost); // Starts or stops boosting.
+            virtual void boost();
 
             void setEngine(Engine* engine);
             inline Engine* getEngine() const
@@ -69,6 +69,7 @@ namespace orxonox
             inline const Vector3& getSteeringDirection() const
                 { return this->steering_; }
 
+            void setBoost(bool bBoost);
             inline bool getBoost() const
                 { return this->bBoost_; }
 
@@ -77,12 +78,18 @@ namespace orxonox
             inline const std::string& getEngineTemplate() const
                 { return this->enginetemplate_; }
 
+            inline void setPermanentBoost(bool bPermanent)
+                { this->bPermanentBoost_ = bPermanent; }
+            inline bool getPermanentBoost() const
+                { return this->bPermanentBoost_; }
+
         protected:
             virtual std::vector<PickupCarrier*>* getCarrierChildren(void) const;
             bool bInvertYAxis_;
 
             bool bBoost_;
             bool bBoostCooldown_;
+            bool bPermanentBoost_;
             float boostPower_;
             float initialBoostPower_;
             float boostRate_;
@@ -95,9 +102,6 @@ namespace orxonox
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
 
-            float shakeFrequency_;
-            float shakeAmplitude_;
-
         private:
             void registerVariables();
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
@@ -105,17 +109,10 @@ namespace orxonox
             void loadEngineTemplate();
             
             void boostCooledDown(void);
-        
-            void resetCamera();
-            void shakeCamera(float dt);
 
             std::string enginetemplate_;
             Engine* engine_;
             Timer timer_;
-            Vector3 cameraOriginalPosition_;
-            Quaternion cameraOriginalOrientation_;
-        
-            float shakeDt_;
     };
 }
 

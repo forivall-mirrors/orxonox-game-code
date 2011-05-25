@@ -103,18 +103,9 @@ namespace orxonox
 
             // Fire
             inline void setDamage(float damage)
-                { this->damage_ = damage;}
+                { this->damage_ = damage; }
             inline float getDamage() const
                 { return this->damage_; }
-            inline void setHealthDamage(float healthdamage)
-                { this->healthdamage_ = healthdamage; }
-            inline float getHealthDamage() const
-                { return this->healthdamage_; }
-
-            inline void setShieldDamage(float shielddamage)
-                { this->shielddamage_ = shielddamage;}
-            inline float getShieldDamage() const
-                { return this->shielddamage_; }
 
             inline void setMuzzleOffset(const Vector3& offset)
                 { this->muzzleOffset_ = offset; }
@@ -154,8 +145,6 @@ namespace orxonox
             bool bParallelReload_;
 
             float damage_;
-            float healthdamage_;
-            float shielddamage_;
             Vector3 muzzleOffset_;
 
         private:

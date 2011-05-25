@@ -31,7 +31,6 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "tools/Timer.h"
 #include "tools/interfaces/Tickable.h"
 #include "Controller.h"
 
@@ -64,16 +63,7 @@ namespace orxonox
             virtual void doFire(unsigned int firemode);
             static void reload();
 
-            static void keepBoost(); // Static method, keeps boosting.
-            /**
-            @brief Check whether the HumanController is in boosting mode.
-            @return Returns true if it is, false if not.
-            */
-            inline bool isBoosting(void)
-                { return this->boosting_; }
-            void keepBoosting(void);
-            void terminateBoosting(void);
-            
+            static void boost();
             static void greet();
             static void switchCamera();
             static void mouseLook();
@@ -101,12 +91,6 @@ namespace orxonox
         protected:
             static HumanController* localController_s;
             bool controlPaused_;
-        
-        private:
-            bool boosting_; // Whether the HumanController is in boosting mode or not.
-            Timer boostingTimeout_; // A timer to check whether the player is no longer boosting.
-            static const float BOOSTING_TIME; // The time after it is checked, whether the player is no longer boosting.
-
     }; // tolua_export
 } // tolua_export
 

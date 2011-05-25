@@ -22,7 +22,7 @@
  *   Author:
  *      Hagen Seifert
  *   Co-authors:
- *      simonmie
+ *      ...
  *
  */
 
@@ -49,7 +49,7 @@ namespace orxonox
         RegisterObject(EnergyDrink);
 
         this->reloadTime_ = 0.25;
-        this->damage_ = 0; //default 15
+        this->damage_ = 15;
         this->speed_ = 2500;
         this->delay_ = 0;
         this->setMunitionName("FusionMunition");
@@ -96,8 +96,6 @@ namespace orxonox
         muzzleFlash->setMaterial(this->material_);
     }
 
-    /* Creates the projectile object, sets its properties to the EnergyDrink properties, calls muendungsfeuer()
-     */
     void EnergyDrink::shot()
     {
         Projectile* projectile = new Projectile(this);
@@ -113,8 +111,6 @@ namespace orxonox
 
         projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
-        projectile->setShieldDamage(this->getShieldDamage());
-        projectile->setHealthDamage(this->getHealthDamage());
 
         EnergyDrink::muendungsfeuer();
     }

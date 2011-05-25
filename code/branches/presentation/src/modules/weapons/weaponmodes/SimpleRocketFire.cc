@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      simonmie
+ *      ...
  *
  */
 
@@ -49,7 +49,7 @@ namespace orxonox
 
         this->reloadTime_ = 1;
         this->bParallelReload_ = false;
-        this->damage_ = 0;
+        this->damage_ = 100;
         this->speed_ = 500;
 
         this->setMunitionName("RocketMunition");
@@ -61,8 +61,6 @@ namespace orxonox
     {
     }
 
-    /* Creates the Rocket (RocketController) object, sets its properties to the SimpleRocketFire properties, sets target
-     */
     void SimpleRocketFire::fire()
     {
         RocketController* con = new RocketController(this);
@@ -72,11 +70,7 @@ namespace orxonox
         rocket->setPosition(this->getMuzzlePosition());
         rocket->setVelocity(this->getMuzzleDirection()*this->speed_);
         rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
-
         rocket->setDamage(this->damage_);
-        rocket->setShieldDamage(this->getShieldDamage());
-        rocket->setHealthDamage(this->getHealthDamage());
-
         WorldEntity* pawnn=static_cast<ControllableEntity*>(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn())->getTarget();
         if (pawnn) con->setTarget(pawnn);
     }

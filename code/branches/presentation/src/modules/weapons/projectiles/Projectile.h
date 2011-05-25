@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      simonmie
+ *      ...
  *
  */
 
@@ -34,11 +34,9 @@
 #include "tools/Timer.h"
 #include "worldentities/MovableEntity.h"
 
-#include "BasicProjectile.h"
-
 namespace orxonox
 {
-    class _WeaponsExport Projectile : public MovableEntity, public BasicProjectile
+    class _WeaponsExport Projectile : public MovableEntity
     {
         public:
             Projectile(BaseObject* creator);
@@ -50,14 +48,20 @@ namespace orxonox
             virtual void tick(float dt);
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
 
+            inline void setDamage(float damage)
+                { this->damage_ = damage; }
+            inline float getDamage() const
+                { return this->damage_; }
+
             void setOwner(Pawn* owner);
             inline Pawn* getOwner() const
                 { return this->owner_; }
 
-
         private:
             WeakPtr<Pawn> owner_;
             float lifetime_;
+            float damage_;
+            bool bDestroy_;
             Timer destroyTimer_;
     };
 }

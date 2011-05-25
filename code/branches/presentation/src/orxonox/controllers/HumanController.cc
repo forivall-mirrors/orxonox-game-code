@@ -41,7 +41,6 @@ namespace orxonox
 {
     extern const std::string __CC_fire_name = "fire";
     extern const std::string __CC_suicide_name = "suicide";
-    const std::string __CC_boost_name = "boost";
 
     SetConsoleCommand("HumanController", "moveFrontBack",          &HumanController::moveFrontBack ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", "moveRightLeft",          &HumanController::moveRightLeft ).addShortcut().setAsInputCommand();
@@ -51,7 +50,7 @@ namespace orxonox
     SetConsoleCommand("HumanController", "rotateRoll",             &HumanController::rotateRoll    ).addShortcut().setAsInputCommand();
     SetConsoleCommand("HumanController", __CC_fire_name,           &HumanController::fire          ).addShortcut().keybindMode(KeybindMode::OnHold);
     SetConsoleCommand("HumanController", "reload",                 &HumanController::reload        ).addShortcut();
-    SetConsoleCommand("HumanController", __CC_boost_name,          &HumanController::keepBoost     ).addShortcut().keybindMode(KeybindMode::OnHold);
+    SetConsoleCommand("HumanController", "boost",                  &HumanController::boost         ).addShortcut().keybindMode(KeybindMode::OnHold);
     SetConsoleCommand("HumanController", "greet",                  &HumanController::greet         ).addShortcut();
     SetConsoleCommand("HumanController", "switchCamera",           &HumanController::switchCamera  ).addShortcut();
     SetConsoleCommand("HumanController", "mouseLook",              &HumanController::mouseLook     ).addShortcut();
@@ -66,18 +65,14 @@ namespace orxonox
     CreateUnloadableFactory(HumanController);
 
     HumanController* HumanController::localController_s = 0;
-    /*static*/ const float HumanController::BOOSTING_TIME = 0.1f;
 
     HumanController::HumanController(BaseObject* creator) : Controller(creator)
     {
         RegisterObject(HumanController);
 
-        this->controlPaused_ = false;
-        this->boosting_ = false;
+        controlPaused_ = false;
 
         HumanController::localController_s = this;
-        this->boostingTimeout_.setTimer(HumanController::BOOSTING_TIME, false, createExecutor(createFunctor(&HumanController::terminateBoosting, this)));
-        this->boostingTimeout_.stopTimer();
     }
 
     HumanController::~HumanController()
@@ -167,49 +162,10 @@ namespace orxonox
             HumanController::localController_s->controllableEntity_->reload();
     }
 
-    /**
-    @brief
-        Static method,keeps boosting.
-    */
-    /*static*/ void HumanController::keepBoost()
+    void HumanController::boost()
     {
         if (HumanController::localController_s && HumanController::localController_s->controllableEntity_)
-            HumanController::localController_s->keepBoosting();
-    }
-    
-    /**
-    @brief
-        Starts, or keeps the boosting mode.
-        Resets the boosting timeout and ells the ControllableEntity to boost (or not boost anymore).
-    */
-    void HumanController::keepBoosting(void)
-    {
-        if(this->boostingTimeout_.isActive())
-        {
-            this->boostingTimeout_.stopTimer();
-            this->boostingTimeout_.startTimer();
-        }
-        else
-        {
-            this->boosting_ = true;
-            this->boostingTimeout_.startTimer();
-            
-            this->controllableEntity_->boost(this->boosting_);
-            COUT(4) << "Start boosting" << endl;
-        }
-    }
-
-    /**
-    @brief
-        Terminates the boosting mode.
-    */
-    void HumanController::terminateBoosting(void)
-    {
-        this->boosting_ = false;
-        this->boostingTimeout_.stopTimer();
-
-        this->controllableEntity_->boost(this->boosting_);
-        COUT(4) << "Stop boosting" << endl;
+            HumanController::localController_s->controllableEntity_->boost();
     }
 
     void HumanController::greet()

@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      simonmie
+ *      ...
  *
  */
 
@@ -40,14 +40,17 @@ namespace orxonox
 {
     CreateFactory(Projectile);
 
-    Projectile::Projectile(BaseObject* creator) : MovableEntity(creator), BasicProjectile()
+    Projectile::Projectile(BaseObject* creator) : MovableEntity(creator)
     {
         RegisterObject(Projectile);
 
         this->setConfigValues();
+        this->bDestroy_ = false;
         this->owner_ = 0;
+        this->damage_ = 15;
 
         // Get notification about collisions
+
         if (GameMode::isMaster())
         {
             this->setMass(1.0);
@@ -80,7 +83,7 @@ namespace orxonox
         if (!this->isActive())
             return;
 
-        if (this->getBDestroy())
+        if (this->bDestroy_)
             this->destroy(); // TODO: use a scheduler instead of deleting the object right here in tick()
     }
 
@@ -90,11 +93,40 @@ namespace orxonox
             this->destroy();
     }
 
-    /* Calls the collidesAgainst function of BasicProjectile
-     */
     bool Projectile::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
+        if (!this->bDestroy_ && GameMode::isMaster())
+        {
+            if (otherObject == this->owner_)
+                return false;
+
+            this->bDestroy_ = true;
+
+            if (this->owner_)
+            {
+                {
+                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
+                    effect->setPosition(this->getPosition());
+                    effect->setOrientation(this->getOrientation());
+                    effect->setDestroyAfterLife(true);
+                    effect->setSource("Orxonox/explosion3");
+                    effect->setLifetime(2.0f);
+                }
+                {
+                    ParticleSpawner* effect = new ParticleSpawner(this->owner_->getCreator());
+                    effect->setPosition(this->getPosition());
+                    effect->setOrientation(this->getOrientation());
+                    effect->setDestroyAfterLife(true);
+                    effect->setSource("Orxonox/smoke4");
+                    effect->setLifetime(3.0f);
+                }
+            }
+
+            Pawn* victim = orxonox_cast<Pawn*>(otherObject);
+            if (victim)
+                victim->hit(this->owner_, contactPoint, this->damage_);
+        }
+        return false;
     }
 
     void Projectile::setOwner(Pawn* owner)
