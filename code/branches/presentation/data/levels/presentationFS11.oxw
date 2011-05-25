@@ -47,6 +47,10 @@ include("templates/pickupRepresentationTemplates.oxt")
       </pickup>
     </PickupSpawner>
 
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp" lifetime=500 loop=1 startdelay=2.5 />
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp2" lifetime=500 loop=1 startdelay=2 />
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp3" lifetime=500 loop=1 startdelay=2 />
+
     
     <!-- BOUNDARIES AND PORTALS -->
     
