@@ -129,8 +129,6 @@ namespace orxonox
 
         XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
         XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
-
-        //TODO: DEFINES fuer defaultwerte (hier und weiter oben dieselben)
     }
 
     void Pawn::registerVariables()
@@ -226,40 +224,6 @@ namespace orxonox
         this->reloadWaitCountdown_ -= dt;
     }
 
-    /* Old damage function.
-     * For effects causing only damage not specifically to shield or health
-     */
-    void Pawn::damage(float damage, Pawn* originator)
-    {
-        if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
-        {
-            //share the dealt damage to the shield and the Pawn.
-            float shielddamage = damage*this->shieldAbsorption_;
-            float healthdamage = damage*(1-this->shieldAbsorption_);
-
-            // In case the shield can not take all the shield damage.
-            if (shielddamage > this->getShieldHealth())
-            {
-                healthdamage += shielddamage-this->getShieldHealth();
-                this->setShieldHealth(0);
-            }
-
-            this->setHealth(this->health_ - healthdamage);
-
-            if (this->getShieldHealth() > 0)
-            {
-                this->setShieldHealth(this->shieldHealth_ - shielddamage);
-            }
-
-            this->lastHitOriginator_ = originator;
-
-            // play damage effect
-        }
-    }
-
-    /* Does damage to the pawn, splits it up to shield and health.
-     * Sets lastHitOriginator.
-     */
     void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
         if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
@@ -283,60 +247,25 @@ namespace orxonox
             }
 
             this->lastHitOriginator_ = originator;
-
-            // play damage effect
         }
     }
 
-
+// TODO: Still valid?
 /* HIT-Funktionen
     Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden! (Visuelle Effekte)
 
 */
 
-    /* Old hit function, calls the old damage function and changes velocity vector
-     */
-    void Pawn::hit(Pawn* originator, const Vector3& force, float damage)
-    {
-        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
-        {
-            this->damage(damage, originator);
-            this->setVelocity(this->getVelocity() + force);
-
-            // play hit effect
-        }
-    }
-
-    /* calls the damage function and adds the force that hit the pawn to the velocity vector
-     */
     void Pawn::hit(Pawn* originator, const Vector3& force, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
             this->damage(damage, healthdamage, shielddamage, originator);
             this->setVelocity(this->getVelocity() + force);
-
-            // play hit effect
         }
     }
 
-    /* Old hit (2) function, calls the old damage function and hits controller
-     */
-    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
-    {
-        if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
-        {
-            this->damage(damage, originator);
 
-            if ( this->getController() )
-                this->getController()->hit(originator, contactpoint, damage);
-
-            // play hit effect
-        }
-    }
-
-    /* Hit (2) function, calls the damage function and hits controller
-     */
     void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
@@ -345,8 +274,6 @@ namespace orxonox
 
             if ( this->getController() )
                 this->getController()->hit(originator, contactpoint, damage); // changed to damage, why shielddamage?
-
-            // play hit effect
         }
     }
 

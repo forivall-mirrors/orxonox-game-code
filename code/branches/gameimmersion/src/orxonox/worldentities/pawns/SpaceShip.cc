@@ -106,6 +106,7 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "boostRate", boostRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "shakeFrequency", shakeFrequency_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "shakeAmplitude", shakeAmplitude_, xmlelement, mode);
     }
 
     void SpaceShip::registerVariables()
@@ -113,11 +114,13 @@ namespace orxonox
         registerVariable(this->primaryThrust_,  VariableDirection::ToClient);
         registerVariable(this->auxilaryThrust_, VariableDirection::ToClient);
         registerVariable(this->rotationThrust_, VariableDirection::ToClient);
+        // TODO: Synchronization of boost needed?
         registerVariable(this->boostPower_, VariableDirection::ToClient);
         registerVariable(this->boostPowerRate_, VariableDirection::ToClient);
         registerVariable(this->boostRate_, VariableDirection::ToClient);
         registerVariable(this->boostCooldownDuration_, VariableDirection::ToClient);
         registerVariable(this->shakeFrequency_, VariableDirection::ToClient);
+        registerVariable(this->shakeAmplitude_, VariableDirection::ToClient);
     }
 
     void SpaceShip::setConfigValues()

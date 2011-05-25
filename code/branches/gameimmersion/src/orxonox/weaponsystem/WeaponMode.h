@@ -106,8 +106,6 @@ namespace orxonox
                 { this->damage_ = damage;}
             inline float getDamage() const
                 { return this->damage_; }
-////////////////////me, copied to projectile.cc
-
             inline void setHealthDamage(float healthdamage)
                 { this->healthdamage_ = healthdamage; }
             inline float getHealthDamage() const
@@ -118,7 +116,6 @@ namespace orxonox
             inline float getShieldDamage() const
                 { return this->shielddamage_; }
 
-///////////////////end me
             inline void setMuzzleOffset(const Vector3& offset)
                 { this->muzzleOffset_ = offset; }
             inline const Vector3& getMuzzleOffset() const
