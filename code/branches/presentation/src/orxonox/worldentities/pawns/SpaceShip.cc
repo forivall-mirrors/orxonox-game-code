@@ -78,9 +78,9 @@ namespace orxonox
         this->setConfigValues();
         this->registerVariables();
         
-        Camera* camera = CameraManager::getInstance().getActiveCamera();
-        this->cameraOriginalPosition_ = camera->getPosition();
-        this->cameraOriginalOrientation_ = camera->getOrientation();
+        this->cameraOriginalPosition_ = Vector3::UNIT_SCALE;
+        this->cameraOriginalOrientation_ = Quaternion::IDENTITY;
+        
 
         this->shakeFrequency_ = 15;
         this->shakeAmplitude_ = 5;
@@ -181,7 +181,7 @@ namespace orxonox
 
                 }
 
-                shakeCamera(dt);
+                this->shakeCamera(dt);
             }
         }
     }
@@ -241,6 +241,9 @@ namespace orxonox
         {
             //COUT(0) << "Boost startet!\n";
             this->bBoost_ = true;
+            Camera* camera = CameraManager::getInstance().getActiveCamera();
+            this->cameraOriginalPosition_ = camera->getPosition();
+            this->cameraOriginalOrientation_ = camera->getOrientation();
         }
         if(!bBoost)
         {
@@ -272,32 +275,39 @@ namespace orxonox
             Degree angle = Degree(sin(this->shakeDt_ * 2* math::pi * frequency) * this->shakeAmplitude_);
     
             //COUT(0) << "Angle: " << angle << std::endl;
-            Camera* c = this->getCamera();
+            Camera* camera = this->getCamera();
 
             //Shaking Camera effect
-            if (c != 0)
+            if (camera != 0)
             {
-                c->setOrientation(Vector3::UNIT_X, angle);
+                camera->setOrientation(Vector3::UNIT_X, angle);
             }
         }
     }
-    
+
     void SpaceShip::resetCamera()
     {
-    
-        //COUT(0) << "Resetting camera\n";
-        Camera *c = this->getCamera();
-    
-        if (c == 0)
+        Camera *camera = this->getCamera();
+
+        if (camera == 0)
         {
             COUT(2) << "Failed to reset camera!";
             return;
         }
     
-        shakeDt_ = 0;
-        //
-        c->setPosition(this->cameraOriginalPosition_);
-        c->setOrientation(this->cameraOriginalOrientation_);
+        this->shakeDt_ = 0;
+        camera->setPosition(this->cameraOriginalPosition_);
+        camera->setOrientation(this->cameraOriginalOrientation_);
+    }
+
+    void SpaceShip::backupCamera()
+    {
+        Camera* camera = CameraManager::getInstance().getActiveCamera();
+        if(camera != NULL)
+        {
+            this->cameraOriginalPosition_ = camera->getPosition();
+            this->cameraOriginalOrientation_ = camera->getOrientation();
+        }
     }
 
     void SpaceShip::loadEngineTemplate()
