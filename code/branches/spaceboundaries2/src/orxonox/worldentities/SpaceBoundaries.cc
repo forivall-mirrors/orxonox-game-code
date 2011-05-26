@@ -57,13 +57,7 @@ namespace orxonox
         // Show Boundaries on the radar.
         this->centerRadar_ = new RadarViewable(this, this);
         this->centerRadar_->setRadarObjectShape(RadarViewable::Dot);
-        this->centerRadar_->setRadarVisibility(false);\
-        
-        // FOLGENDER BLOCK: TO REMOVE (DEBUGGING)
-        constBilly = new Billboard(this);
-        Vector3 pos = Vector3(-10, -10, -10);
-        constBilly->setPosition(pos);
-        setBillboardOptions(constBilly, pos);
+        this->centerRadar_->setRadarVisibility(false);
     }
     SpaceBoundaries::~SpaceBoundaries()
     {
@@ -79,8 +73,6 @@ namespace orxonox
             }
         }
         this->billboards_.clear();
-        
-        delete constBilly; // TO REMOVE (DEBUGGING)
     }
     
     void SpaceBoundaries::checkWhoIsIn()
@@ -122,26 +114,28 @@ namespace orxonox
         {
             Billboard *tmp = new Billboard(this);
             tmp->setPosition(position);
-            this->setBillboardOptions( tmp, position);
+            this->setBillboardOptions( tmp );
+            Vector3 normalisedVec = (position - this->getPosition()).normalisedCopy(); /* Vektor von Kugelmitte nach aussen */
+            tmp->setCommonDirection ( -1.0 * normalisedVec );
+            tmp->setCommonUpVector( Vector3::UNIT_Z );
             billboardAdministration tmp2 = { true, tmp };
             this->billboards_.push_back( tmp2 );
-            
         } else {
             current->billy->setPosition(position);
             current->billy->setVisible(true);
             current->usedYet = true;
+            Vector3 normalisedVec = (position - this->getPosition()).normalisedCopy(); /* Vektor von Kugelmitte nach aussen */
+            current->billy->setCommonDirection ( -1.0 * normalisedVec );
+            current->billy->setCommonUpVector( Vector3::UNIT_Z );
         }
     }
     
-    void SpaceBoundaries::setBillboardOptions(Billboard *billy, Vector3 position)
+    void SpaceBoundaries::setBillboardOptions(Billboard *billy)
     {
         if(billy != NULL)
         {
             billy->setMaterial("Grid");
             billy->setBillboardType(Ogre::BBT_PERPENDICULAR_COMMON);
-            Vector3 normalisedVec = (position - this->getPosition()).normalisedCopy(); /* Vektor von Kugelmitte nach aussen */
-            billy->setCommonDirection ( -1.0 * normalisedVec );
-            billy->setCommonUpVector( Vector3::UNIT_Z ); // (normalisedVec.crossProduct(Vector3::UNIT_X)).normalisedCopy() );
             billy->setDefaultDimensions(150, 150);
             billy->setVisible(true);
         }
@@ -274,7 +268,7 @@ namespace orxonox
     
     void SpaceBoundaries::displayWarning(const std::string warnText)
     {   
-        
+        // TODO
     }
     
     void SpaceBoundaries::displayBoundaries(Pawn *item)

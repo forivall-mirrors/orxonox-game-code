@@ -120,13 +120,11 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
             
             
             RadarViewable* centerRadar_; //!< Repraesentation von SpaceBoundaries auf dem Radar.
-            
-            Billboard* constBilly; // TO REMOVE (DEBUGGING)
         
         
             // Funktionen::
             float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'this->getPosition()' bezogen.
-            void displayWarning(const std::string warnText); //!< Einen Warntext auf dem Bildschirm ausgeben. (noch nicht implementiert)
+            void displayWarning(const std::string warnText); //!< Einen Warntext auf dem Bildschirm ausgeben. (noch nicht implementiert, TODO)
             void displayBoundaries(Pawn *item);
             void conditionalBounceBack(Pawn *item, float currentDistance, float dt);
             void bounceBack(Pawn *item, Vector3 *normal, Vector3 *velocity);
@@ -135,7 +133,7 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
             void checkWhoIsIn(); //!< Update the list 'pawnsIn_'.
             
             void positionBillboard(const Vector3 position); //!< Display a Billboard at the position 'position'.
-            void setBillboardOptions(Billboard *billy, Vector3 position);
+            void setBillboardOptions(Billboard *billy);
             void removeAllBillboards(); //!< Hide all elements of '*billboard_' and set their attribute 'usedYet' to 0.
             
     };
