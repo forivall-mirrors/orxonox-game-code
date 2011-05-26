@@ -13,6 +13,7 @@
       <MeshLodInformation mesh=SemiCircleCockpit.mesh enabled=false/>
       <MeshLodInformation mesh=SolarPanel.mesh enabled=false/>
       <MeshLodInformation mesh=CuboidLandingZone.mesh enabled=false/>
+      <MeshLodInformation mesh=HydroHarvester.mesh enabled=false />
     </lodinformation>
   </Level>
 </Template>
