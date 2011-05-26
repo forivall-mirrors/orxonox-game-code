@@ -252,6 +252,8 @@ namespace orxonox
 
     bool Munition::canAddMunition(unsigned int amount) const
     {
+        // TODO: 'amount' is not used
+
         if (!this->bAllowMunitionRefilling_)
             return false;
 
@@ -333,6 +335,8 @@ namespace orxonox
 
     bool Munition::canAddMagazines(unsigned int amount) const
     {
+        // TODO: 'amount' is not used
+
         if (this->bStackMunition_)
             // If we stack munition, we can always add new magazines because they contribute directly to the munition
             return (this->getNumMunition(0) < this->getMaxMunition());
