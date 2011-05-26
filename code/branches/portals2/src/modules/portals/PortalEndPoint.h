@@ -1,3 +1,31 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Andreas Büchel
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 /**
  *  @file PortalEndPoint.h
  *  @brief Declaration of the PortalEndPoint class.
@@ -97,7 +125,7 @@ namespace orxonox
 
             int reenterDelay_;
             std::map<MobileEntity *, time_t> jumpOutTimes_;   //!< Stores the time at which a certain MobileEntity @ref jumpOut "jumped out" of this PortalEndPoint
-            std::set<MobileEntity *> recentlyJumpedOut_;
+            std::set<MobileEntity *> recentlyJumpedOut_;   //!< Stores the entities witch recently jumped out of this PortalEndPoint and haven't left the activation radius yet. This is needed in order to prevent them from beeing pulled into the PortalEndPoint they have just come out of.
     };
 
 }

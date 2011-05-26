@@ -2,7 +2,7 @@
     @addtogroup Portals Portals
     @ingroup Modules
 
-    This module allows you to place @ref modules::PortalEndPoint "PortalEndPoints" in space and connect pairs of them with a @ref modules::PortalLink "PortalLink" in order allow fast travelling from A to B.
+    This module allows you to place @ref orxonox::PortalEndPoint "PortalEndPoints" in space and connect pairs of them with a @ref orxonox::PortalLink "PortalLink" in order to allow fast travelling from A to B.
 
     @section FastHowTo Fast HowTo: Including portals in a level
     The simplest way to use portals is show by the following piece of xml-code
@@ -52,12 +52,12 @@
     step by step
     @subsection Templates "Templates"
     In order to make @ref orxonox::PortalEndPoint "PortalEndPoints" visible in the game there must be something visible.
-    The idea above is to define or include arbitrary Templates which make a PortalEndPoint visible and later use them by setting the design attribute of a @ref orxonox::PortalEndPoint "PortalEndPoint" to the template name
+    The idea (as shown above) is to define or include arbitrary Templates which make a PortalEndPoint visible and use them later by setting the design attribute of a @ref orxonox::PortalEndPoint "PortalEndPoint" to the template name
     @subsection Parameters "Parameters"
      - position: 3d-coordinate in space
-     - distance (default: 50): distance at which a valid entity gets pulled in by the @ref orxonox::PortalEndPoint (if the end point is an entrance)
+     - distance (default: 50): distance at which a valid entity gets pulled in (if the end point is an entrance).
      - target (default: "Pawn"): the class which is able to enter this end point (if it is an entrance)
-     - design: the name of the @ref orxonox::Template "Template" above
+     - design: the name of the @ref orxonox::Template "design template"
 */
 
 /**
