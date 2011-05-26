@@ -44,6 +44,7 @@ namespace orxonox
     
     PortalLink::~PortalLink()
     {
+        
     }
     
     void PortalLink::XMLPort(Element& xmlelement, XMLPort::Mode mode)

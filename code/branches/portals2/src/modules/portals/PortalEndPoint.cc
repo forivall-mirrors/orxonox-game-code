@@ -31,7 +31,7 @@
 #include "objects/triggers/MultiTriggerContainer.h"
 #include "portals/PortalLink.h"
 #include "worldentities/MobileEntity.h"
-
+#include <ctime>
 
 namespace orxonox
 {
@@ -41,16 +41,19 @@ namespace orxonox
 
     std::map<unsigned int, PortalEndPoint *> PortalEndPoint::idMap_s;
 
-    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), id_(0), trigger_(new DistanceMultiTrigger(this)), reenterDelay_(0)
+    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), id_(0), trigger_(NULL), reenterDelay_(0)
     {
         RegisterObject(PortalEndPoint);
+        
+        this->trigger_ = new DistanceMultiTrigger(this);
         this->trigger_->setName("portal");
         this->attach(trigger_);
     }
     
     PortalEndPoint::~PortalEndPoint()
     {
-    
+        if(this->isInitialized() && this->trigger_ != NULL)
+            delete this->trigger_;
     }
 
     void PortalEndPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -133,7 +136,7 @@ namespace orxonox
         this->jumpOutTimes_[entity] = std::time(0);
         this->recentlyJumpedOut_.insert(entity);
 
-		// adjust
+        // adjust
         entity->setPosition(this->getWorldPosition());
         entity->rotate(this->getWorldOrientation());
         entity->setVelocity(this->getWorldOrientation() * entity->getVelocity());
