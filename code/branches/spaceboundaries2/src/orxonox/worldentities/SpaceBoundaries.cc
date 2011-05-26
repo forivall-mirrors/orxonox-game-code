@@ -210,7 +210,6 @@ namespace orxonox
     {
         this->checkWhoIsIn();
         this->removeAllBillboards();
-        COUT(4) << "Groesse der Pawn-Liste 'SpaceBoundaries::pawnsIn_': " << (int) pawnsIn_.size() << std::endl;
         
         float distance;
         bool humanItem;
@@ -221,18 +220,17 @@ namespace orxonox
             {
                 distance = this->computeDistance(currentPawn);
                 humanItem = this->isHumanPlayer(currentPawn);
-                COUT(5) << "Distanz:" << distance << std::endl; // message for debugging
-                if(distance > this->warnDistance_ && distance < this->maxDistance_) // Zeige Warnung an!
+                COUT(5) << "Distance:" << distance << std::endl; // message for debugging
+                if(distance > this->warnDistance_ && distance < this->maxDistance_) // Display warning
                 {
                     if(humanItem)
                     {
-                        COUT(5) << "humanItem ist true" << std::endl;
                         this->displayWarning("Attention! You are close to the boundary!");
                     }
                 }
                 if(/* humanItem &&*/ abs(this->maxDistance_ - distance) < this->showDistance_ )
                 {
-                    this->displayBoundaries(currentPawn); // Zeige Grenze an!
+                    this->displayBoundaries(currentPawn); // Show the boundary
                 }
                 if(distance > this->maxDistance_ && (this->reaction_ == 1) )
                 {
@@ -243,7 +241,7 @@ namespace orxonox
                     }
                     currentPawn->removeHealth( (distance - this->maxDistance_) * this->healthDecrease_);
                 }
-                if( (this->reaction_ == 0) && (distance + 100 > this->maxDistance_)) // Annahme: Ein Pawn kann von einem Tick bis zum nächsten nicht mehr als 100 Distanzeinheiten zurücklegen.
+                if( (this->reaction_ == 0) && (distance + 100 > this->maxDistance_)) // Exception: A Pawn can't move more than 100 units per tick.
                 {
                     this->conditionalBounceBack(currentPawn, distance, dt);
                 }
@@ -289,8 +287,7 @@ namespace orxonox
         Vector3 velocity = item->getVelocity();
         float normalSpeed = item->getVelocity().dotProduct(normal);
         
-        /* Checke, ob das Pawn innerhalb des nächsten Ticks, das erlaubte Gebiet verlassen würde.
-           Falls ja: Spicke es zurück. */
+        /* Check, whether the Pawn would leave the boundary in the next tick, if so send it back. */
         if( this->reaction_ == 0 && currentDistance + normalSpeed * dt > this->maxDistance_ - 10 ) // -10: "security measure"
         {
             bounceBack(item, &normal, &velocity);
@@ -313,7 +310,7 @@ namespace orxonox
         item->setAcceleration(acceleration * dampingFactor);
         item->setVelocity(*velocity * dampingFactor);
         
-        item->setPosition( item->getPosition() - *normal * 10 ); // Setze das SpaceShip noch etwas von der Grenze weg.
+        item->setPosition( item->getPosition() - *normal * 10 ); // Set the position of the Pawn to be well inside the boundary.
     }
     
     bool SpaceBoundaries::isHumanPlayer(Pawn *item)

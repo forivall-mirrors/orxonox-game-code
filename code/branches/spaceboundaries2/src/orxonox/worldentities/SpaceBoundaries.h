@@ -106,25 +106,21 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
             
             std::vector<billboardAdministration> billboards_;
         
-            int reaction_; //!< Werte: 0, 1, 2. 
-                           //!< 0: Reflektion an Boundaries (Standard).
-                           //!< 1: Health-Abzug-Modus.
-                           //!< 2: Invertierte Version von 0. Verbiete es, in ein Gebiet hinein zu fliegen.
-            float maxDistance_; //!< maximal zulaessige Entfernung von 'this->getPosition()'.
-            float warnDistance_; //!< Entfernung von 'this->getPosition()', ab der eine Warnung angezeigt wird, dass man bald das zulaessige Areal verlaesst.
-            float showDistance_; //!< Definiert, wann die Grenzen visualisiert werden sollen. ("Entfernung von 'this->maxDistance_'")
+            int reaction_; //!< Values: 0, 1, 2.
+                           //!< 0: Reflection on boundary (Standard).
+                           //!< 1: Decrease-Health-Mode.
+                           //!< 2: Inverted Version of 0. Prohibit to fly INTO a defined area.
+            float maxDistance_; //!<  Maximum allowed distance.
+            float warnDistance_; //!< Distance in which a warning is displayed.
+            float showDistance_; //!< Distance at which the boundaries are displayed.
             
-            float healthDecrease_; //!< Mass fuer die Anzahl Health-Points, die nach ueberschreiten der Entfernung 'maxDistance_' von 'this->getPosition()' abgezogen werden.
-                                   //!< Empfohlene Werte: 0.1 (langsame Health-Verminderung) bis 5 (sehr schnelle Health-Verminderung).
-                                   //!< Hat nur eine Bedeutung, falls 'this->reaction_' 1 (eins) ist. 
+            float healthDecrease_; //!< Rate of health loss.
             
-            
-            RadarViewable* centerRadar_; //!< Repraesentation von SpaceBoundaries auf dem Radar.
-        
+            //RadarViewable* centerRadar_; //!< Representation of the space boundary in the radar.
         
             // Funktionen::
-            float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'this->getPosition()' bezogen.
-            void displayWarning(const std::string warnText); //!< Einen Warntext auf dem Bildschirm ausgeben. (noch nicht implementiert, TODO)
+            float computeDistance(WorldEntity *item); //!< Compute distance to center point.
+            void displayWarning(const std::string warnText); //!< TODO: Implement.
             void displayBoundaries(Pawn *item);
             void conditionalBounceBack(Pawn *item, float currentDistance, float dt);
             void bounceBack(Pawn *item, Vector3 *normal, Vector3 *velocity);
