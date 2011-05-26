@@ -88,8 +88,8 @@ namespace orxonox
             float boostRate_;
             float boostPowerRate_;
             float boostCooldownDuration_;
-	    float lift_;
-	    float stallSpeed_;
+            float lift_;
+            float stallSpeed_;
             Vector3 steering_;
             float primaryThrust_;
             float auxilaryThrust_;
@@ -97,7 +97,7 @@ namespace orxonox
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
 
-	  
+      
 
         private:
             void registerVariables();

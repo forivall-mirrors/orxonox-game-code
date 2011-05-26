@@ -53,7 +53,7 @@ namespace orxonox
 
         this->localLinearAcceleration_.setValue(0, 0, 0);
         this->localAngularAcceleration_.setValue(0, 0, 0);
-	this->bBoost_ = false;
+    this->bBoost_ = false;
         this->steering_ = Vector3::ZERO;
         this->engine_ = 0;
 
@@ -64,8 +64,8 @@ namespace orxonox
         this->boostCooldownDuration_ = 5.0;
         this->bBoostCooldown_ = false;
 
-	this->lift_ = 1.0f;                         // factor of the lift, standard is 1
-	this->stallSpeed_ = 220.0f;                 // max speed where lift is added
+        this->lift_ = 1.0f;                         // factor of the lift, standard is 1
+        this->stallSpeed_ = 220.0f;                 // max speed where lift is added
 
         this->bInvertYAxis_ = false;
 
@@ -82,7 +82,7 @@ namespace orxonox
 
 
 
-	
+    
 }
 
     SpaceShip::~SpaceShip()
@@ -103,8 +103,8 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "boostPowerRate", boostPowerRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostRate", boostRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
-	XMLPortParamVariable(SpaceShip, "lift", lift_, xmlelement, mode);
-	XMLPortParamVariable(SpaceShip, "stallSpeed", stallSpeed_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "lift", lift_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "stallSpeed", stallSpeed_, xmlelement, mode);
     }
 
     void SpaceShip::registerVariables()
@@ -173,7 +173,7 @@ namespace orxonox
                     this->timer_.setTimer(this->boostCooldownDuration_, false, createExecutor(createFunctor(&SpaceShip::boostCooledDown, this)));
                 }
             }
-	
+    
         }
     }
 
@@ -201,10 +201,6 @@ namespace orxonox
         this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() + value.x);
         this->steering_.y = value.x;
 
-
-
-
-
     }
 
     void SpaceShip::rotateYaw(const Vector2& value)
@@ -221,12 +217,8 @@ namespace orxonox
 
         Pawn::rotatePitch(value);
 
-
         //This function call adds a lift to the ship when it is pitching to make it's movement more "realistic" and enhance the feeling.
         if (abs(this-> getLocalVelocity().z) < stallSpeed_)  {this->moveUpDown(lift_ / 5 * value * sqrt(abs(this-> getLocalVelocity().z)));}
-
-
-
 
     }
 
