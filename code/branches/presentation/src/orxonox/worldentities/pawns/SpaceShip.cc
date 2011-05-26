@@ -247,7 +247,7 @@ namespace orxonox
 
     void SpaceShip::rotatePitch(const Vector2& value)
     {
-        this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8);
+        this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8f);
 
         Pawn::rotatePitch(value);
 
@@ -374,7 +374,7 @@ namespace orxonox
     void SpaceShip::removeAllEngines()
     {
         for(unsigned int i=0; i<this->engineList_.size(); i++)
-            this->engineList_[i]->~Engine();
+            this->engineList_[i]->destroy();
     }
 
     void SpaceShip::setSpeedFactor(float factor)
