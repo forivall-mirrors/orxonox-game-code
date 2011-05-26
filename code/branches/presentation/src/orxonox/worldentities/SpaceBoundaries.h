@@ -25,15 +25,6 @@
  *      ...
  *
  */
- 
- /* TODO:   - Textmessages und Billboards sollen teils nur bei einem humanPlayer angezeigt werden, nicht bei allen (vgl. Netzwerk-Spiel mit mehreren humanPlayers)
-                beachte hierzu folgende statische Funktion: 'static unsigned int  Host::getPlayerID()'
-                (file:///home/kmaurus/orxonox/spaceBoundaries/build/doc/api/html/classorxonox_1_1_host.html#9c1e3b39e3b42e467dfbf42902911ce2)
-                
-            - Kommentieren (Betrachte als Beispiel/Vorbild 'libraries/core/WeakPtr.h')
-            
-            - Wiki-SpaceBoundaries-Eintrag aktualisieren
- */
 
 #ifndef _SpaceBoundaries_H__
 #define _SpaceBoundaries_H__
@@ -48,7 +39,6 @@
 
 #include <string>
 #include <list>
-#include <map>
 #include <vector>
 
 namespace orxonox
@@ -57,16 +47,30 @@ namespace orxonox
 /**
 @brief SpaceBoundaries gives level creators the possibility to bar Pawns from leaving a defined area (until now this area is a ball).
 
-       Five attributes can/should be defined in the XML-File:
-       - 'warnDistance' : If the distance between the pawn of the human player and 'position' is bigger than 'warnDistance', a message is displayed to
-                          inform the player that he'll soon be leaving the allowed area. 
+       Some attributes can/should be defined in the XML-File:
+       - 'position' : absolute position of the object of SpaceBoundaries in the level (usually 0,0,0) 
        - 'maxDistance' : defines the area, where a pawn is allowed to be (radius of a ball).
+       - 'warnDistance' : If the distance between the pawn of the human player and 'position' is bigger than 'warnDistance', a message is displayed to
+                          inform the player that he'll soon be leaving the allowed area. (not implemented yet!)
        - 'showDistance' : If the distance between the pawn and the boundary of the allowed area is smaller than 'showDistance', the boundary is shown. 
-       - 'healthDecrease' : a measure to define how fast the health of a pawn should decrease after leaving the allowed area (unnecessary if 'reactionMode' == 0).
-                            Recommended values: 0.1 (slow health decrease) to 5 (very fast health decrease)
        - 'reactionMode' : Integer-Value. Defines what effect appears if a space ship has crossed the boundaries.
                             0: Reflect the space ship (default).
                             1: Decrease Health of the space ship after having left the allowed area.
+                            2: Inverted Version of 0. Prohibit to fly INTO a defined area.
+       - 'healthDecrease' : a measure to define how fast the health of a pawn should decrease after leaving the allowed area (unnecessary if 'reactionMode' == 0).
+                            Recommended values: 0.1 (slow health decrease) to 5 (very fast health decrease)
+
+Follow http://www.orxonox.net/wiki/SpaceBoundaries to get some further information.
+
+Examples:
+Two examples how one could include SpaceBoundaries in the XML-File. The first one uses reflection, the second one health decrease.
+@code
+<SpaceBoundaries position="0,0,0" maxDistance="1000" warnDistance="800" showDistance="100" reactionMode="0" />
+@endcode
+
+@code
+<SpaceBoundaries position="0,0,0" maxDistance="1000" warnDistance="800" showDistance="100" reactionMode="1" healthDecrease="0.2" />
+@endcode
 */
 
     class _OrxonoxExport SpaceBoundaries : public StaticEntity, public Tickable
@@ -74,12 +78,6 @@ namespace orxonox
         public:
             SpaceBoundaries(BaseObject* creator);
             ~SpaceBoundaries();
-            
-            void checkWhoIsIn(); //!< Update the list 'pawnsIn_'.
-            
-            void positionBillboard(const Vector3 position); //!< Display a Billboard at the position 'position'.
-            void setBillboardOptions(Billboard *billy);
-            void removeAllBillboards(); //!< Hide all all elements of '*billboard_' and set their attribute 'usedYet' to 0.
             
             void setMaxDistance(float r);
             float getMaxDistance();
@@ -103,25 +101,36 @@ namespace orxonox
         private:
             struct billboardAdministration{ bool usedYet; Billboard* billy; };
             
+            // Variabeln::
             std::list<WeakPtr<Pawn> > pawnsIn_; //!< List of the pawns that this instance of SpaceBoundaries has to handle.
             
             std::vector<billboardAdministration> billboards_;
         
-            int reaction_; //!< Werte: 0, 1. 0: Reflektion an Boundaries (Standard). 1: Health-Abzug-Modus.
-            float maxDistance_; //!< maximal zulaessige Entfernung von 'this->getPosition()'.
-            float warnDistance_; //!< Entfernung von 'this->getPosition()', ab der eine Warnung angezeigt wird, dass man bald das zulaessige Areal verlaesst.
-            float showDistance_; //!< Definiert, wann die Grenzen visualisiert werden sollen.
+            int reaction_; //!< Values: 0, 1, 2.
+                           //!< 0: Reflection on boundary (Standard).
+                           //!< 1: Decrease-Health-Mode.
+                           //!< 2: Inverted Version of 0. Prohibit to fly INTO a defined area.
+            float maxDistance_; //!<  Maximum allowed distance.
+            float warnDistance_; //!< Distance in which a warning is displayed.
+            float showDistance_; //!< Distance at which the boundaries are displayed.
             
-            float healthDecrease_; //!< Mass fuer die Anzahl Health-Points, die nach ueberschreiten der Entfernung 'maxDistance_' von 'this->getPosition()' abgezogen werden.
-                                   //!< Empfohlene Werte: 0.1 (langsame Health-Verminderung) bis 5 (sehr schnelle Health-Verminderung)
+            float healthDecrease_; //!< Rate of health loss.
             
-            RadarViewable* centerRadar_; //!< Repraesentation von SpaceBoundaries auf dem Radar.
+            //RadarViewable* centerRadar_; //!< Representation of the space boundary in the radar.
         
-            float computeDistance(WorldEntity *item); //!< Auf den Mittelpunkt 'this->getPosition()' bezogen.
-            void displayWarning(const std::string warnText);
+            // Funktionen::
+            float computeDistance(WorldEntity *item); //!< Compute distance to center point.
+            void displayWarning(const std::string warnText); //!< TODO: Implement.
             void displayBoundaries(Pawn *item);
             void conditionalBounceBack(Pawn *item, float currentDistance, float dt);
+            void bounceBack(Pawn *item, Vector3 *normal, Vector3 *velocity);
             bool isHumanPlayer(Pawn *item);
+            
+            void checkWhoIsIn(); //!< Update the list 'pawnsIn_'.
+            
+            void positionBillboard(const Vector3 position); //!< Display a Billboard at the position 'position'.
+            void setBillboardOptions(Billboard *billy);
+            void removeAllBillboards(); //!< Hide all elements of '*billboard_' and set their attribute 'usedYet' to 0.
             
     };
 }
