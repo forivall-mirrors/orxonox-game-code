@@ -264,7 +264,7 @@ namespace orxonox
         if (command == "")
             return;
 
-        size_t previous_offset = mod(this->historyOffset_ - 1, this->maxHistoryLength_);
+        size_t previous_offset = mod(static_cast<int>(this->historyOffset_) - 1, this->maxHistoryLength_);
         if (previous_offset < this->commandHistory_.size() && command == this->commandHistory_[previous_offset])
             return;
 

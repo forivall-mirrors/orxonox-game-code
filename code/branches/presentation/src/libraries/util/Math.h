@@ -173,7 +173,10 @@ namespace orxonox
         if (x >= 0)
             return (x % max);
         else
-            return ((x % max) + max);
+        {
+            T temp = x % max;
+            return (temp < 0) ? (temp + max) : temp;
+        }
     }
 
     /**
