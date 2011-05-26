@@ -34,8 +34,8 @@
         </PortalEndPoint>
     </Template>
 
-    <PortalEndPoint position="0,0,0" id="1" distance="40" target="MobileEntity" design="PortalDefault"/>
-    <PortalEndPoint position="-100,0,0" id="2" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <PortalEndPoint position="0,0,0" id="1" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
+    <PortalEndPoint position="-300,0,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" reenterDelay="0"/>
     <PortalLink fromID="1" toID="2" />
     <PortalLink fromID="2" toID="1" />
 
