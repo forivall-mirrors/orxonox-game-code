@@ -254,11 +254,11 @@ namespace orxonox
     {
         return 4*returnSize(this->value_.x);
     }
-    template <> inline void MT_Value<void*>::importData( uint8_t*& mem )
+    template <> inline void MT_Value<void*>::importData( uint8_t*& /*mem*/ )
     {
         assert(0);
     }
-    template <> inline void MT_Value<void*>::exportData( uint8_t*& mem ) const
+    template <> inline void MT_Value<void*>::exportData( uint8_t*& /*mem*/ ) const
     {
         assert(0);
     }
