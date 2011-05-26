@@ -39,26 +39,10 @@
 
 namespace orxonox
 {
-/*    class PlayerScore {
-	public:
-	    PlayerScore() {
-		this->name = "";
-		this->time =0;
-	    }
-	    PlayerScore(std::string name, float time) {
-		this->name_ = name;
-		this->time_ = time;
-	    }
-	    PlayerScore(float time) {
-		this->name_ = "Player";
-		this->time_ = time;
-	    }
-	
-	private:
-	    std::string name_;
-	    float time_;
-    };*/
-	
+  /**
+  @brief
+  The SpaceRace class enables the creation of a space race level, where the player has to reach check points in a given order.
+  */
     class _OrxonoxExport SpaceRace : public Gametype
     {
 	public:
@@ -73,19 +57,18 @@ namespace orxonox
 	    virtual void newCheckpointReached();
 	    
 	    inline void setCheckpointsReached(int n)
-		{ this->checkpointsReached_ = n;}
+		{ this->bCheckpointsReached_ = n;}
 	    inline int getCheckpointsReached()
-		{ return this->checkpointsReached_; }
+		{ return this->bCheckpointsReached_; }
 	    inline void timeIsUp()
 		{ this->bTimeIsUp_ = true;}
-	    
+	    Clock *clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
 	protected:
 	    
 	private:
-	    int checkpointsReached_;
-	    std::set<float> scores_;
-	    Clock *clock_;
-	    bool bTimeIsUp_;
+	    int bCheckpointsReached_; //The current number of check points reached by the player.
+	    std::set<float> scores_; //The times of the players are saved in a set.
+	    bool bTimeIsUp_; //True if one of the check points is reached too late.
     };
 }
 

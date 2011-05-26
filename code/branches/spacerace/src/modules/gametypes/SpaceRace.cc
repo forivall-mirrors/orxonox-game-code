@@ -41,7 +41,7 @@ namespace orxonox
     SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
     {
 	RegisterObject(SpaceRace);
-	this->checkpointsReached_ = 0;
+	this->bCheckpointsReached_ = 0;
 	this->bTimeIsUp_ = false;
 	this->numberOfBots_ = 0;
     }
@@ -54,17 +54,23 @@ namespace orxonox
     void SpaceRace::end()
     {
       	Gametype::end();
-	this->stopTimer();
 	if (this->bTimeIsUp_) {
-	    COUT(0) << "Time is up" << std::endl;
-	    const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage("Time is up");
+	    this->clock_->capture();
+	    int s = this->clock_->getSeconds();
+	    int ms = this->clock_->getMilliseconds()-1000*s;
+	    const std::string& message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
+					 + "You didn't reach the check point" + multi_cast<std::string>(this->bCheckpointsReached_+1)
+					 + " before the time limit. You loose!\n";
+	    COUT(0) << message;
+	    const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
+	    Host::Broadcast(message);
 	}
 	else {
 	    this->clock_->capture();
 	    int s = this->clock_->getSeconds();
 	    int ms = this->clock_->getMilliseconds()-1000*s;
-	    const std::string& message = "You have reached the last check point after "+ multi_cast<std::string>(s) +
-					  "." + multi_cast<std::string>(ms) + " seconds.";
+	    const std::string& message = "You win!! You have reached the last check point after "+ multi_cast<std::string>(s)
+					  + "." + multi_cast<std::string>(ms) + " seconds.\n";
 	    COUT(0) << message << std::endl;
 	    const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
 	    Host::Broadcast(message);
@@ -80,7 +86,6 @@ namespace orxonox
     {
 	Gametype::start();
 	
-	this->startTimer();
 	clock_= new Clock();
 	std::string message("The match has started! Reach the check points as quickly as possible!");
         COUT(0) << message << std::endl;
@@ -89,13 +94,13 @@ namespace orxonox
     
     void SpaceRace::newCheckpointReached()
     {
-      	this->checkpointsReached_++;
+      	this->bCheckpointsReached_++;
 	this->clock_->capture();
 	int s = this->clock_->getSeconds();
 	int ms = this->clock_->getMilliseconds()-1000*s;
 	const std::string& message = "Checkpoint " + multi_cast<std::string>(this->getCheckpointsReached()) 
 				      + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
-				      + " seconds.";
+				      + " seconds.\n";
 	COUT(0) << message << std::endl;
 	const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
 	Host::Broadcast(message);

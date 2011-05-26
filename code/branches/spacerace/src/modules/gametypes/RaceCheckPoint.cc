@@ -31,6 +31,7 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "SpaceRace.h"
+#include "util/Convert.h"
 
 namespace orxonox
 {
@@ -46,8 +47,8 @@ namespace orxonox
 	this->bIsLast_ = false;
 	this->bTimeLimit_ = 0;
 	
-	this->setRadarObjectColour(ColourValue::Red);
-        this->setRadarObjectShape(RadarViewable::Dot);
+	this->setRadarObjectColour(ColourValue::Blue);
+        this->setRadarObjectShape(RadarViewable::Triangle);
         this->setRadarVisibility(false);
     }
     
@@ -62,14 +63,6 @@ namespace orxonox
 	SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
 	if (this->getCheckpointIndex() == gametype->getCheckpointsReached()) this->setRadarVisibility(true);
 	else  this->setRadarVisibility(false);
-	
-	if (this->bTimeLimit_ != 0 && gametype->getTimerIsActive()) {
-	  float time = gametype->getTime() - this->bTimeLimit_;
-	  if (time > 0) {
-	    gametype->timeIsUp();
-	    gametype->end();
-	  }
-	}
     }
 
     
@@ -91,7 +84,13 @@ namespace orxonox
 	{
 	    if (this->getCheckpointIndex() == gametype->getCheckpointsReached() && bIsTriggered)
 	    {
-		if (this->getLast())
+		gametype->clock_->capture();
+		float time = gametype->clock_->getSecondsPrecise();
+		if (this->bTimeLimit_!=0 && time > this->bTimeLimit_) {
+		  gametype->timeIsUp();
+		  gametype->end();
+		}
+		else if (this->getLast())
 		{
 		  gametype->end();
 		}
@@ -103,5 +102,21 @@ namespace orxonox
 	    }
 	}
     }
+    
+    void RaceCheckPoint::setTimelimit(float timeLimit)
+	    { 
+	      this->bTimeLimit_ = timeLimit;
+	      if (this->bTimeLimit_ != 0)
+	      {
+		  SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
+		  if (gametype)
+		  {
+		     const std::string& message =  "You have " + multi_cast<std::string>(this->bTimeLimit_)
+						   + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1) + "\n";
+		     COUT(0) << message;
+		     const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage(message);
+		  }
+	      }
+	    }
     
 }

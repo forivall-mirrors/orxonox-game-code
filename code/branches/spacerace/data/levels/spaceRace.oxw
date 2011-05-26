@@ -40,6 +40,8 @@
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
+    <SimpleNotification message="Reach the last check point within 150 seconds!!" />
+
     <!-- ------------------SpawnPoint----------------- -->
     <SpawnPoint position="0,-2100,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="true" >
       <events>
@@ -71,7 +73,7 @@
     <RaceCheckPoint name="checkpoint2" position="0,-900,2300" stayActive="true" collisionType="static" scale="1" distance="40" checkpointindex="1" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
-      <SpawnPoint position="0,0,0" lookat="0,700,2700" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+      <SpawnPoint position="0,0,0" lookat="0,1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
         <events>
           <activity>
             <Trigger mode="xor" invert="true" >
@@ -105,7 +107,7 @@
     <RaceCheckPoint name="checkpoint3" position="0,700,2700" stayActive="true" direction="0,0,1" collisionType="static" scale="1" distance="40" checkpointindex="2" islast="false">
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
-      <SpawnPoint position="0,0,0" lookat="0,2100,2300" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+      <SpawnPoint position="0,0,0" lookat="0,1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
         <events>
           <activity>
             <Trigger mode="xor" invert="true" >
@@ -140,7 +142,7 @@
    <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger3" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint position="0,0,0" lookat="0,2200,500" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+      <SpawnPoint position="0,0,0" lookat="0,-1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
         <events>
           <activity>
             <Trigger mode="xor" invert="true" >
@@ -175,7 +177,7 @@
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger4" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint position="0,0,0" lookat="0,1500,-800" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+      <SpawnPoint position="0,0,0" lookat="0,-1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
          <events>
           <activity>
             <Trigger mode="xor" invert="true" >
@@ -210,7 +212,7 @@
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger5" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint position="0,0,0" lookat="0,200,-1900" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+      <SpawnPoint position="0,0,0" lookat="0,-1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
         <events>
           <activity>
             <Trigger mode="xor" invert="true" >
@@ -245,7 +247,7 @@
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger6" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint position="0,0,0" lookat="0,-700,-1400" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+      <SpawnPoint position="0,0,0" lookat="0,-1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
         <events>
           <activity>
             <Trigger mode="xor" invert="true" >
@@ -280,7 +282,7 @@
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger7" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint position="0,0,0" lookat="0,-1300,-800" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+      <SpawnPoint position="0,0,0" lookat="0,-1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
         <events>
           <activity>
             <Trigger mode="xor" invert="true" >
@@ -315,7 +317,7 @@
     <attached>
       <Model mass="50" scale="50" mesh="checkPoint.mesh" />
       <DistanceTrigger name="trigger8" position="0,0,0" distance=40 stayActive="true" />
-      <SpawnPoint position="0,0,0" lookat="0,-2400,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+      <SpawnPoint position="0,0,0" lookat="0,-1000,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
         <events>
           <activity>
             <EventTrigger>
@@ -442,12 +444,29 @@
         </MovableEntity>
 
     <!-- ---------------SpaceShips----------------- -->
-    <SpaceShip position="0,2000,2000" lookat="0,0,0" >
+    <SpaceShip position="0,2000,2000" lookat="0,0,0" team=1 >
       <templates>
         <Template link=spaceshipassff />
       </templates>
       <controller>
-        <AIController />
+         <WaypointPatrolController alertnessradius=1500 team=0 >
+              <waypoints>
+		  <Model scale=0 position="0,2000,2000" />
+	      </waypoints>
+         </WaypointPatrolController>
+      </controller>
+    </SpaceShip>
+
+    <SpaceShip position="0,2000,-2000" lookat="0,0,0" team=1 >
+      <templates>
+        <Template link=spaceshipassff />
+      </templates>
+      <controller>
+	  <WaypointPatrolController alertnessradius=1500 team=0 >
+                <waypoints>
+                    <Model scale=0 position="0,2000,-2000" />
+                </waypoints>
+          </WaypointPatrolController>
       </controller>
     </SpaceShip>
 

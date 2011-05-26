@@ -37,6 +37,11 @@
 
 namespace orxonox
 {
+  /**
+  @brief
+  The RaceCheckPoint class enables the creation of a check point to use in a SpaceRace level.
+  !!! Don't forget to controll the indexes of your check points and to set one last check point!!!
+  */
     class _ObjectsExport RaceCheckPoint : public DistanceTrigger, public RadarViewable
     {
     public:
@@ -56,17 +61,16 @@ namespace orxonox
 	    { this->bCheckpointIndex_ = checkpointIndex; }
 	inline int getCheckpointIndex()
 	    { return this->bCheckpointIndex_; }
-	inline void setTimelimit(int timeLimit)
-	    { this->bTimeLimit_ = timeLimit;}
-	inline int getTimeLimit()
+	virtual void setTimelimit(float timeLimit);
+	inline float getTimeLimit()
 	    { return this->bTimeLimit_;}
 	inline const WorldEntity* getWorldEntity() const
             { return this; }
 	
     private:
-	int bCheckpointIndex_;
-	bool bIsLast_;
-	int bTimeLimit_;
+	int bCheckpointIndex_; //The index of this check point. This value will be compared with the number of check points reached in the level. The check points must be indexed in ascending order beginning from zero and without any jumps between the indexes.
+	bool bIsLast_; //True if this check point is the last of the level. There can be only one last check point for each level and there must be a last check point in the level.
+	float bTimeLimit_; //The time limit (from the start of the level) to reach this check point. If the check point is reached after this time, the game ends and the player looses.
       
     };
 }
