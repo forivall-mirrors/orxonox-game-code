@@ -111,8 +111,8 @@ namespace orxonox
 		  SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
 		  if (gametype)
 		  {
-		     const std::string& message =  "You have " + multi_cast<std::string>(this->bTimeLimit_)
-						   + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1) + "\n";
+		     const std::string& message =  "\nYou have " + multi_cast<std::string>(this->bTimeLimit_)
+						   + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1) + "\n\n";
 		     COUT(0) << message;
 		     const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage(message);
 		  }
