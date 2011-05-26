@@ -19,22 +19,25 @@
         </links>
         <Weapon>
           <attached>
-            <Model mesh="LightningGun.mesh" pitch="100" roll="90" yaw="90" position="0,-1.3,0" />
-            <Model mesh="LightningGun-s.mesh" pitch="78" roll="90" yaw="90" position="0.2,-1.3,0" />
-            <Model mesh="hs-w01_reduced.mesh" roll="90" pitch="-76" yaw="-90" position="-1.5,1,0.3" scale=0.6 />
+            <Model mesh="stunweapon.mesh" pitch="180" roll="0" yaw="0" position="-1.9,-.5,1" scale=".5" />
+            <BlinkingBillboard position="-1.9, -.5, -5.5" material="PE/lensflare" colour="0.128, 0.28, 1" amplitude=0.25 frequency=16 quadratic=0 />
           </attached>
-          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 0.1, 1.6,-2" />
-          <HsW01 mode=0 munitionpershot=0 delay=0     damage=3.14159 material="Flares/point_lensflare" muzzleoffset="-1.6, 1.3,-2" />
-          <LightningGun mode=1 muzzleoffset="0,0,0" damage=3.14159 shielddamage=20 />
+          <HsW01 mode=0 munitionpershot=0 delay=0 healthamage=3.14159 material="Flares/point_lensflare" muzzleoffset="-1.6, 1.3,-2" >
+            <attached>
+                <ParticleEmitter position="0,0,6.2" source="Orxonox/weaponshoot" />
+            </attached>
+          </HsW01>
+          <HsW01 mode=0 munitionpershot=0 delay=0 healthdamage=3.14159 material="Flares/point_lensflare" muzzleoffset="-1.6, 1.3,-2" />
+          <LightningGun mode=1 muzzleoffset="0,0,0" shielddamage=23 />
         </Weapon>
         <Weapon>
           <attached>
             <Model mesh="stunweapon.mesh" pitch="180" roll="0" yaw="0" position="1.9,-.5,1" scale=".5"/>
-	    <BlinkingBillboard position="1.9, -.5, -5.5" material="PE/lensflare" colour="0.128, 0.28, 1" amplitude=0.25 frequency=16 quadratic=0 />
+            <BlinkingBillboard position="1.9, -.5, -5.5" material="PE/lensflare" colour="0.128, 0.28, 1" amplitude=0.25 frequency=16 quadratic=0 />
           </attached>
-          <HsW01 mode=0 munitionpershot=0 delay=0     damage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 1.6, 1.3, -2.0" />
-          <HsW01 mode=0 munitionpershot=0 delay=0.125 damage=3.14159 material="Flares/point_lensflare" muzzleoffset="-0.1, 1.6, -2.0" />
-          <LightningGun mode=1 muzzleoffset="0,0,0" damage=23 />
+          <HsW01 mode=0 munitionpershot=0 delay=0     healthdamage=3.14159 material="Flares/point_lensflare" muzzleoffset=" 1.6, 1.3, -2.0" />
+          <HsW01 mode=0 munitionpershot=0 delay=0.125 healthdamage=3.14159 material="Flares/point_lensflare" muzzleoffset="-0.1, 1.6, -2.0" />
+          <LightningGun mode=1 muzzleoffset="0,0,0" shielddamage=23 />
         </Weapon>
         <Weapon>
           <SimpleRocketFire mode=2 muzzleoffset="0,0,0" damage=50 />
