@@ -109,7 +109,7 @@ namespace orxonox
         //! Returns the short developer written exception
         virtual const std::string& getDescription()     const { return this->description_; }
         //! Returns the line number on which the exception occurred.
-        virtual const unsigned int getLineNumber()      const { return this->lineNumber_; }
+        virtual unsigned int getLineNumber()            const { return this->lineNumber_; }
         //! Returns the function in which the exception occurred.
         virtual const std::string& getFunctionName()    const { return this->functionName_; }
         //! Returns the filename in which the exception occurred.

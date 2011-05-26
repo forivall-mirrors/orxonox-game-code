@@ -80,7 +80,7 @@ namespace orxonox
                 { this->engineTicksNotDone = this->engineList_.size(); }
             inline void oneEngineTickDone()
                 { this->engineTicksNotDone--; }
-            inline const bool hasEngineTicksRemaining()
+            inline bool hasEngineTicksRemaining()
                 { return (this->engineTicksNotDone>0); }
 
             inline bool getBoost() const
