@@ -35,6 +35,7 @@
 #include "core/Template.h"
 #include "core/XMLPort.h"
 #include "tools/Shader.h"
+#include "util/Debug.h" // TODO: Needed?
 #include "util/Math.h"
 
 #include "graphics/Camera.h"
@@ -67,6 +68,9 @@ namespace orxonox
         this->boostPowerRate_ = 1.0;
         this->boostCooldownDuration_ = 5.0;
         this->bBoostCooldown_ = false;
+
+        this->lift_ = 1.0f;                         // factor of the lift, standard is 1
+        this->stallSpeed_ = 220.0f;                 // max speed where lift is added
 
         this->bInvertYAxis_ = false;
 
@@ -115,6 +119,8 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
 		XMLPortParamVariable(SpaceShip, "shakeFrequency", shakeFrequency_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "shakeAmplitude", shakeAmplitude_, xmlelement, mode);
+		XMLPortParamVariable(SpaceShip, "lift", lift_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "stallSpeed", stallSpeed_, xmlelement, mode);
 
         XMLPortObject(SpaceShip, Engine, "engines", addEngine, getEngine, xmlelement, mode);
     }
@@ -131,6 +137,8 @@ namespace orxonox
         registerVariable(this->boostCooldownDuration_, VariableDirection::ToClient);
         registerVariable(this->shakeFrequency_, VariableDirection::ToClient);
         registerVariable(this->shakeAmplitude_, VariableDirection::ToClient);
+        registerVariable(this->lift_, VariableDirection::ToClient);
+        registerVariable(this->stallSpeed_, VariableDirection::ToClient);
     }
 
     void SpaceShip::setConfigValues()
@@ -239,9 +247,12 @@ namespace orxonox
 
     void SpaceShip::rotatePitch(const Vector2& value)
     {
-        this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x);
+        this->localAngularAcceleration_.setX(this->localAngularAcceleration_.x() + value.x*0.8);
 
         Pawn::rotatePitch(value);
+
+		//This function call adds a lift to the ship when it is pitching to make it's movement more "realistic" and enhance the feeling.
+        if (abs(this-> getLocalVelocity().z) < stallSpeed_)  {this->moveUpDown(lift_ / 5 * value * sqrt(abs(this-> getLocalVelocity().z)));}
     }
 
     void SpaceShip::rotateRoll(const Vector2& value)

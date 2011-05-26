@@ -97,6 +97,8 @@ namespace orxonox
             float boostRate_;
             float boostPowerRate_;
             float boostCooldownDuration_;
+            float lift_;
+            float stallSpeed_;
             Vector3 steering_;
             float primaryThrust_;
             float auxilaryThrust_;

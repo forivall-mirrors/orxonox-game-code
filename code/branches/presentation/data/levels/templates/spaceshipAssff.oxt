@@ -19,7 +19,10 @@
 
    primaryThrust     = 100
    auxilaryThrust    = 30
-   rotationThrust    = 25
+   rotationThrust    = 50
+
+   lift = 1;
+   stallSpeed = 220;
 
    boostPower            = 15
    boostPowerRate        = 1

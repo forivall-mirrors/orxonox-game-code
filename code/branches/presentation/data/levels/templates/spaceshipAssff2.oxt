@@ -17,9 +17,12 @@
    reloadrate          = 5
    reloadwaittime      = 0.5
 
-   primaryThrust     = 100;
-   auxilaryThrust    = 30;
-   rotationThrust    = 25;
+   primaryThrust     = 100
+   auxilaryThrust    = 30
+   rotationThrust    = 50
+
+   lift = 1;
+   stallSpeed = 220;
 
    boostPower            = 10
    boostPowerRate        = 1
