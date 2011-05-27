@@ -33,8 +33,14 @@ SET_SOURCE_FILES(OIS_FILES
   OISMultiTouch.h
   OISObject.h
   OISPrereqs.h
+)
 
-#BUILD_UNIT OISBuildUnit.cpp
+# Put everything into one single build unit (doens't work on OS X though)
+IF(NOT APPLE)
+  ADD_SOURCE_FILES(OIS_FILES BUILD_UNIT OISBuildUnit.cpp)
+ENDIF()
+
+ADD_SOURCE_FILES(OIS_FILES
   OISEffect.cpp
   OISException.cpp
   OISForceFeedback.cpp
@@ -42,7 +48,6 @@ SET_SOURCE_FILES(OIS_FILES
   OISJoyStick.cpp
   OISKeyboard.cpp
   OISObject.cpp
-#END_BUILD_UNIT
 )
 IF(WIN32)
   ADD_SUBDIRECTORY(win32)
@@ -50,6 +55,11 @@ ELSEIF(APPLE)
   ADD_SUBDIRECTORY(mac)
 ELSEIF(UNIX)
   ADD_SUBDIRECTORY(linux)
+ENDIF()
+
+# Close build unit from above
+IF(NOT APPLE)
+  ADD_SOURCE_FILES(OIS_FILES END_BUILD_UNIT)
 ENDIF()
 
 # MinGW doesn't come with some required Windows headers
