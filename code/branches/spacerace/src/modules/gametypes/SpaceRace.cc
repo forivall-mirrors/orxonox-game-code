@@ -59,8 +59,8 @@ namespace orxonox
 	    int s = this->clock_->getSeconds();
 	    int ms = this->clock_->getMilliseconds()-1000*s;
 	    const std::string& message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
-					 + "You didn't reach the check point" + multi_cast<std::string>(this->bCheckpointsReached_+1)
-					 + " before the time limit. You loose!\n";
+					 + "You didn't reach the check point " + multi_cast<std::string>(this->bCheckpointsReached_+1)
+					 + " before the time limit. You lose!\n";
 	    COUT(0) << message;
 	    const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
 	    Host::Broadcast(message);
