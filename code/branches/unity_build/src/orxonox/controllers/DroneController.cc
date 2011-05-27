@@ -42,7 +42,7 @@ namespace orxonox
     */
     CreateFactory(DroneController);
 
-    static const float ACTION_INTERVAL = 1.0f;
+    const float DroneController::ACTION_INTERVAL = 1.0f;
 
     DroneController::DroneController(BaseObject* creator) : ArtificialController(creator)
     {
