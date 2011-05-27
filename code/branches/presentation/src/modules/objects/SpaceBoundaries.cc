@@ -28,16 +28,16 @@
 
 #include "SpaceBoundaries.h"
 
-#include "worldentities/MobileEntity.h"
-#include "worldentities/ControllableEntity.h"
-#include "core/ObjectListIterator.h"
-#include "core/XMLPort.h"
-#include "worldentities/pawns/Pawn.h"
-#include "infos/PlayerInfo.h"
-#include "interfaces/RadarViewable.h"
-#include "graphics/Billboard.h"
 #include <OgreBillboardSet.h>
 
+#include "core/CoreIncludes.h"
+#include "core/ObjectListIterator.h"
+#include "core/XMLPort.h"
+
+#include "graphics/Billboard.h"
+#include "infos/PlayerInfo.h"
+#include "worldentities/WorldEntity.h"
+#include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
 {

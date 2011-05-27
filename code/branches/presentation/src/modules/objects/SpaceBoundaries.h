@@ -29,17 +29,17 @@
 #ifndef _SpaceBoundaries_H__
 #define _SpaceBoundaries_H__
 
-
-#include "core/CoreIncludes.h"
-#include "core/WeakPtr.h"
-#include "tools/interfaces/Tickable.h"
-#include "interfaces/RadarViewable.h"
-#include "worldentities/StaticEntity.h"
-#include "worldentities/WorldEntity.h"
+#include "objects/ObjectsPrereqs.h"
 
 #include <string>
 #include <list>
 #include <vector>
+
+#include "core/CoreIncludes.h"
+#include "core/WeakPtr.h"
+
+#include "tools/interfaces/Tickable.h"
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox
 {
@@ -73,7 +73,7 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
 @endcode
 */
 
-    class _OrxonoxExport SpaceBoundaries : public StaticEntity, public Tickable
+    class _ObjectsExport SpaceBoundaries : public StaticEntity, public Tickable
     {
         public:
             SpaceBoundaries(BaseObject* creator);
