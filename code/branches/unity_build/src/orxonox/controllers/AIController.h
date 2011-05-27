@@ -49,6 +49,8 @@ namespace orxonox
             virtual void action();
 
         private:
+            static const float ACTION_INTERVAL;
+
             Timer actionTimer_;
     };
 }

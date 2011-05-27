@@ -68,6 +68,8 @@ namespace orxonox
             bool isShooting_;
 
         private:
+            static const float ACTION_INTERVAL;
+
             Timer actionTimer_;
             WeakPtr<Pawn> owner_;
             Drone* drone_;
