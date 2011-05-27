@@ -43,6 +43,14 @@ ENDIF()
 #            This is configured manually in BuildUnitsConfig.cmake
 SET(ENABLE_BUILD_UNITS "partial" CACHE STRING "Enables building multiple source files as one.")
 IF(ENABLE_BUILD_UNITS)
+  IF(NOT "${ENABLE_BUILD_UNITS}" STREQUAL "partial")
+    STRING(REGEX REPLACE "^full([1-9][0-9]?)$" "\\1" _nr_of_units "${ENABLE_BUILD_UNITS}")
+    IF("${_nr_of_units}" STREQUAL "${ENABLE_BUILD_UNITS}") # Regex match failed
+      MESSAGE(FATAL_ERROR "Unrecognised option for ENABLE_BUILD_UNITS: ${ENABLE_BUILD_UNITS}")
+    ELSE()
+      SET(NR_OF_BUILD_UNITS ${_nr_of_units})
+    ENDIF()
+  ENDIF()
   INCLUDE(BuildUnitsConfig.cmake)
 ENDIF()
 

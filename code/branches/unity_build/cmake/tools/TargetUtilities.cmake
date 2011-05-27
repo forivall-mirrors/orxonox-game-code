@@ -61,6 +61,7 @@
  #    _target_name, ARGN for the macro arguments
  #
 
+INCLUDE(BuildUnits)
 INCLUDE(CMakeDependentOption)
 INCLUDE(CapitaliseName)
 INCLUDE(GenerateToluaBindings)
@@ -119,13 +120,19 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
           FILE(WRITE ${_build_unit_file} "${_build_unit_include_string}")
         ENDIF()
         LIST(APPEND _${_target_name}_source_files ${_build_unit_file})
+        LIST(APPEND _${_target_name}_build_units ${_build_unit_file})
+        # Store the number of files included. May be used for full build units.
+        SET_SOURCE_FILES_PROPERTIES(${_build_unit_file}
+          PROPERTIES BUILD_UNIT_SIZE "${_build_unit_count}")
       ENDIF()
       SET(_add_to_build_unit FALSE)
     ELSEIF(_get_build_unit_file)
+      # Note: ${_file} is relative to the binary directory
       SET(_build_unit_file ${CMAKE_BINARY_DIR}/${_file})
       SET(_get_build_unit_file FALSE)
       SET(_add_to_build_unit TRUE)
       SET(_build_unit_include_string)
+      SET(_build_unit_count "0")
     ELSE()
       # Default, add source file
 
@@ -149,6 +156,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
       IF(_add_to_build_unit AND ENABLE_BUILD_UNITS)
         IF(_file MATCHES "\\.(c|cc|cpp|cxx)$")
           SET(_build_unit_include_string "${_build_unit_include_string}#include \"${_file}\"\n")
+          MATH(EXPR _build_unit_count "1 + ${_build_unit_count}")
         ENDIF()
         # Don't compile these files, even if they are source files
         SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -168,6 +176,11 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   )
   # Remove potential duplicates
   LIST(REMOVE_DUPLICATES _${_target_name}_files)
+
+  # Full build units
+  IF(NOT _arg_ORXONOX_EXTERNAL AND ENABLE_BUILD_UNITS MATCHES "full")
+    GENERATE_BUILD_UNITS(${_target_name} _${_target_name}_files)
+  ENDIF()
 
   # TOLUA_FILES
   IF(_arg_TOLUA_FILES)
