@@ -42,6 +42,7 @@
 #include <map>
 
 #include "worldentities/StaticEntity.h"
+#include "interfaces/RadarViewable.h"
 #include "graphics/Billboard.h"
 #include "objects/triggers/DistanceMultiTrigger.h"
 #include "core/EventIncludes.h"
@@ -56,49 +57,37 @@ namespace orxonox
      @ingroup Portals
      */
     
-    class _PortalsExport PortalEndPoint : public StaticEntity
+    class _PortalsExport PortalEndPoint : public StaticEntity, public RadarViewable
     {
         public:
             PortalEndPoint(BaseObject* creator);
             virtual ~PortalEndPoint();
+            
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            virtual void changedActivity(void);
+            
             inline void setTarget(const std::string & target)                 //!< add types which are allowed to activate the PortalEndPoint
-            {
-                this->trigger_->addTarget(target);
-            }
+                { this->trigger_->addTarget(target); }
             
             void XMLEventPort(Element& xmlelement, XMLPort::Mode mode);
             static std::map<unsigned int, PortalEndPoint *> idMap_s; //!< Maps the id of each PortalEndPoint to a pointer to that PortalEndPoint
             inline void setReenterDelay(unsigned int seconds)
-            {
-                this->reenterDelay_ = seconds;
-            }
+                { this->reenterDelay_ = seconds; }
             inline unsigned int getReenterDelay()
-            {
-                return this->reenterDelay_;
-            }
+                { return this->reenterDelay_; }
             inline void setID(unsigned int id)
-            {
-                this->id_ = id;
-            }
+                { this->id_ = id; }
             
             inline unsigned int getID() const
-            {
-                return this->id_;
-            }
+                { return this->id_; }
             
             /// \brief Set templateName_ (the name of the design Template) and add that Template to this Object
             inline void setTemplate(const std::string & name)
-            {
-                this->templateName_ = name;
-                this->addTemplate(name);
-            }
+                { this->templateName_ = name; this->addTemplate(name); }
 
             /// \brief Get the name of the attached design template
             inline const std::string & getTemplate()
-            {
-                return this->templateName_;
-            }
+                { return this->templateName_; }
 
             /*! \brief This function is called each time the DistanceMultiTrigger of this PortalEndPoint changed
                 \param bTriggered true if the trigger was triggered on, false if the trigger has switched to off

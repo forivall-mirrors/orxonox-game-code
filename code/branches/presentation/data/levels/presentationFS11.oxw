@@ -53,7 +53,6 @@ include("templates/pickupRepresentationTemplates.oxt")
 
     
     <!-- BOUNDARIES AND PORTALS -->
-    
 
     <Template name=PortalDefault>
         <PortalEndPoint>
@@ -63,68 +62,22 @@ include("templates/pickupRepresentationTemplates.oxt")
         </PortalEndPoint>
     </Template>
 
-    <PortalEndPoint position="350,0,0" id="1" distance="40" target="MobileEntity" design="PortalDefault"/>
-    <PortalEndPoint position="-30300,0,0" id="2" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-90000,0,0"/>
+    <PortalEndPoint position="-350,0,0" id="3" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <PortalEndPoint position="-72000,0,0" id="4" distance="40" target="MobileEntity" design="PortalDefault"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="0,10000,0"/>
 
     <SpaceBoundaries warnDistance="1" maxDistance="450" showDistance="300" healthDecrease="0.1" position="0,0,0"/> 
     <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-30000,0,0"/>
 
-    <PortalLink fromID="1" toID="2" />
-    <PortalLink fromID="2" toID="1" />
+    <PortalLink fromID="3" toID="4" />
+    <PortalLink fromID="4" toID="3" />
 
     <!-- MODELS, DEBRIS, ETC -->
 
-    <!-- hydrogen farmer -->
-    <SpaceShip position="0,1750,0" roll=90 mass=10000 >
-      <attached>
-        <!-- Docking -->
-        <DistanceTriggerBeacon name="bcnDestroyer" />
-        <DockingTarget name="destroyer" />
-
-        <Dock orientation="0.5, 0.5, 0.5, 0.5" position="-1500,0,0" >
-            <animations>
-                <MoveToDockingTarget target="destroyer" position="-1300,0,0" />
-            </animations>
-            <effects>
-                <DockToShip target="spaceShip" />
-            </effects>
-            <events>
-                <execute>
-                    <EventListener event="dockMe" />
-                </execute>
-            </events>
-            <attached>
-                <DistanceTrigger position="0,0,-200" distance="30" target="Pawn" 
-                    beaconMode="exclude" targetname="bcnDestroyer" name="dockMe" 
-                />
-                <Billboard position="0,0,-200" material="Examples/Flare" colour="1.0, 0, 0" />
-            </attached>
-        </Dock>
-
-        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=100 />
-        <!-- <Model mesh="cube.mesh" mass=10 position="-1120,0,0" scale3D="230,200,490"  /> -->
-        <!-- <Model mesh="cube.mesh" mass=10 position="580,0,-960" scale3D="230,200,490" yaw=-120 /> -->
-        <!-- <Model mesh="cube.mesh" mass=10 position="580,0,960" scale3D="230,200,490" yaw=-240 /> -->
-        <!-- <Model mesh="cube.mesh" mass=10 position="0,0,0" scale3D="600,200,100" /> -->
-      </attached>
-      <collisionShapes>
-        <BoxCollisionShape  position="-1120,0,0" halfExtents="230,200,490" />
-        <BoxCollisionShape  position="580,0,-960" halfExtents="230,200,490" yaw=-120 />
-        <BoxCollisionShape  position="580,0,960" halfExtents="230,200,490" yaw=-240 />
-      </collisionShapes>
-    </SpaceShip>
-
-    <SpaceShip template="spaceshipassff2" position="0,3500,0" >
-      <attached>
-        <DockingTarget name="spaceShip" />
-      </attached>
-
-    </SpaceShip>
-
-
     <!-- This is a model of Earth: mass=EarthMass/1000 and radius=EarthRadius[km]*10 -->
     <Planet
-      position="70500,0,0"
+      position="80500,0,0"
       scale="63000"
       collisionType="dynamic"
       linearDamping="0.8"
@@ -149,9 +102,11 @@ include("templates/pickupRepresentationTemplates.oxt")
       </collisionShapes>
     </Planet>
 
+    <!-- MOON AREA -->
+
     <!-- This is a model of our Moon: mass=MoonMass/1000 and radius=MoonRadius[km]*10 and position=DistanceFromEarth[km]*10 -->
     <Planet
-      position="-15000,0,0"
+      position="-80000,0,0"
       scale="4000"
       collisionType="dynamic"
       linearDamping="0.8"
@@ -174,6 +129,52 @@ include("templates/pickupRepresentationTemplates.oxt")
         <SphereCollisionShape radius="4000" position="0,0,0" />
       </collisionShapes>
     </Planet>
+
+    <!-- Hydrogen farmer -->
+    <SpaceShip position="-74000,2500,0" roll=90 yaw=180 pitch=20 mass=10000 >
+      <attached>
+        <!-- Docking -->
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
+
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=100 />
+        <!-- <Model mesh="cube.mesh" mass=10 position="-1120,0,0" scale3D="230,200,490"  /> -->
+        <!-- <Model mesh="cube.mesh" mass=10 position="580,0,-960" scale3D="230,200,490" yaw=-120 /> -->
+        <!-- <Model mesh="cube.mesh" mass=10 position="580,0,960" scale3D="230,200,490" yaw=-240 /> -->
+        <!-- <Model mesh="cube.mesh" mass=10 position="0,0,0" scale3D="600,200,100" /> -->
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape  position="-1120,0,0" halfExtents="230,200,490" />
+        <BoxCollisionShape  position="580,0,-960" halfExtents="230,200,490" yaw=-120 />
+        <BoxCollisionShape  position="580,0,960" halfExtents="230,200,490" yaw=-240 />
+      </collisionShapes>
+    </SpaceShip>
+
+    <Dock position="-73942, 1288, -255" roll=90 yaw=180 >
+        <animations>
+            <MoveToDockingTarget target="destroyer" />
+        </animations>
+        <effects>
+            <DockToShip target="spaceShip" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+        </events>
+        <attached>
+            <DistanceTrigger position="10,-202, -42" distance="400" target="Pawn"
+                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
+            />
+            <Billboard position="10,-202,-42" material="Examples/Flare" colour="1.0, 0, 0" />
+        </attached>
+    </Dock>
+
+    <SpaceShip template="spaceshipassff2" position="-73915,3786,67" orientation="-0.14045, 0.68254, 0.68144, 0.223774" >
+      <attached>
+        <DockingTarget name="spaceShip" />
+      </attached>
+    </SpaceShip>
 
 
     <PickupSpawner position="-25,-50,-125" respawnTime="10" triggerDistance="20" maxSpawnedItems="5">

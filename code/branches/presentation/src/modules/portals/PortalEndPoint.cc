@@ -41,13 +41,17 @@ namespace orxonox
 
     std::map<unsigned int, PortalEndPoint *> PortalEndPoint::idMap_s;
 
-    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), id_(0), trigger_(NULL), reenterDelay_(0)
+    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), RadarViewable(creator, static_cast<WorldEntity*>(this)), id_(0), trigger_(NULL), reenterDelay_(0)
     {
         RegisterObject(PortalEndPoint);
         
         this->trigger_ = new DistanceMultiTrigger(this);
         this->trigger_->setName("portal");
         this->attach(trigger_);
+
+        this->setRadarObjectColour(ColourValue::White);
+        this->setRadarObjectShape(RadarViewable::Dot);
+        this->setRadarVisibility(true);
     }
     
     PortalEndPoint::~PortalEndPoint()
@@ -114,6 +118,13 @@ namespace orxonox
         }
         
         return true;
+    }
+
+    void PortalEndPoint::changedActivity(void)
+    {
+        SUPER(PortalEndPoint, changedActivity);
+        
+        this->setRadarVisibility(this->isActive());
     }
 
     bool PortalEndPoint::letsEnter(MobileEntity* entity)
