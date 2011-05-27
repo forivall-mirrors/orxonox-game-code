@@ -41,35 +41,36 @@ namespace orxonox
 {
   /**
   @brief
-  The SpaceRace class enables the creation of a space race level, where the player has to reach check points in a given order.
+    The SpaceRace class enables the creation of a space race level, where the player has to reach check points in a given order.
   */
     class _OrxonoxExport SpaceRace : public Gametype
     {
-	public:
-	    SpaceRace(BaseObject* creator);
-	    virtual ~SpaceRace() {}
-	    
-	    virtual void tick(float dt);
-	    
-	    virtual void start();
-            virtual void end();
-	    
-	    virtual void newCheckpointReached();
-	    
-	    inline void setCheckpointsReached(int n)
-		{ this->bCheckpointsReached_ = n;}
-	    inline int getCheckpointsReached()
-		{ return this->bCheckpointsReached_; }
-	    inline void timeIsUp()
-		{ this->bTimeIsUp_ = true;}
-	    Clock *clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
-	protected:
-	    
-	private:
-	    int bCheckpointsReached_; //The current number of check points reached by the player.
-	    std::set<float> scores_; //The times of the players are saved in a set.
-	    bool bTimeIsUp_; //True if one of the check points is reached too late.
+        friend class RaceCheckPoint;
+        
+        public:
+            SpaceRace(BaseObject* creator);
+            virtual ~SpaceRace() {}
+
+            virtual void start();
+                virtual void end();
+
+            virtual void newCheckpointReached();
+
+            inline void setCheckpointsReached(int n)
+            { this->bCheckpointsReached_ = n;}
+            inline int getCheckpointsReached()
+            { return this->bCheckpointsReached_; }
+            inline void timeIsUp()
+            { this->bTimeIsUp_ = true;}
+
+        protected:
+
+        private:
+            int bCheckpointsReached_; //The current number of check points reached by the player.
+            std::set<float> scores_; //The times of the players are saved in a set.
+            bool bTimeIsUp_; //True if one of the check points is reached too late.
+            Clock clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.
     };
 }
 
-#endif
+#endif /* _SpaceRace_H__ */
