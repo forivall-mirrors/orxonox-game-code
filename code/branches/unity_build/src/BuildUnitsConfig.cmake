@@ -42,17 +42,17 @@ SET(BUILD_UNITS_CONFIG_2_THREADS
 SET(BUILD_UNITS_CONFIG_4_THREADS
   util              1
   core              4
-  network           3
-  tools             1
+  network           2
+  tools             2
   orxonox           4
   designtools       1
   notifications     1
   objects           2
   overlays          2
   pickup            1
-  pong              15
-  questsystem       2
-  weapons           2
+  pong              1
+  questsystem       1
+  weapons           1
 )
 
 SET(BUILD_UNITS_CONFIG_8_THREADS

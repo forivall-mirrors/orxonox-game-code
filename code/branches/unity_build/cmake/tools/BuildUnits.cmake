@@ -61,8 +61,8 @@ FUNCTION(GENERATE_BUILD_UNITS _target_name _all_files_var)
     SET(_nr_of_units NR_OF_BUILD_UNITS)
   ENDIF()
 
-  # Disable precompiled header files for single unit targets
-  IF(_nr_of_units EQUAL 1)
+  # Disable precompiled header files for targets with two or less build units
+  IF(_nr_of_units LESS 3)
     SET(PCH_DISABLE_${_target_name} TRUE PARENT_SCOPE)
   ENDIF()
 
