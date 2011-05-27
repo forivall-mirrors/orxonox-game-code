@@ -208,7 +208,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     # Almost never used individually, but produces a lot of options --> hide
     MARK_AS_ADVANCED(PCH_ENABLE_${_target_name_upper})
 
-    IF(PCH_ENABLE_${_target_name_upper})
+    IF(PCH_ENABLE_${_target_name_upper} AND NOT PCH_DISABLE_${_target_name})
       PRECOMPILED_HEADER_FILES_PRE_TARGET(${_target_name} ${_arg_PCH_FILE} _${_target_name}_files EXCLUDE ${_arg_PCH_EXCLUDE})
     ENDIF()
   ENDIF()
@@ -356,7 +356,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # Second part of precompiled header files
-  IF(PCH_COMPILER_SUPPORT AND PCH_ENABLE_${_target_name_upper} AND _arg_PCH_FILE)
+  IF(PCH_COMPILER_SUPPORT AND PCH_ENABLE_${_target_name_upper} AND _arg_PCH_FILE AND NOT PCH_DISABLE_${_target_name})
     PRECOMPILED_HEADER_FILES_POST_TARGET(${_target_name} ${_arg_PCH_FILE})
   ENDIF()
 

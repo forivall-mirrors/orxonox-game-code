@@ -61,6 +61,11 @@ FUNCTION(GENERATE_BUILD_UNITS _target_name _all_files_var)
     SET(_nr_of_units NR_OF_BUILD_UNITS)
   ENDIF()
 
+  # Disable precompiled header files for single unit targets
+  IF(_nr_of_units EQUAL 1)
+    SET(PCH_DISABLE_${_target_name} TRUE PARENT_SCOPE)
+  ENDIF()
+
   SET(_remaining_files ${_total_file_count})
   SET(_remaining_units ${_nr_of_units})
   SET(_unit_nr 1)
