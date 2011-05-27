@@ -28,12 +28,12 @@ SET(BUILD_UNITS_CONFIG_2_THREADS
   core              2
   network           1
   tools             1
-  orxonox           2
+  orxonox           8
   designtools       1
   notifications     1
-  objects           1
-  overlays          1
-  pickup            1
+  objects           2
+  overlays          2
+  pickup            2
   pong              1
   questsystem       1
   weapons           1
@@ -44,7 +44,7 @@ SET(BUILD_UNITS_CONFIG_4_THREADS
   core              4
   network           2
   tools             2
-  orxonox           4
+  orxonox           8
   designtools       1
   notifications     1
   objects           2
@@ -58,15 +58,15 @@ SET(BUILD_UNITS_CONFIG_4_THREADS
 SET(BUILD_UNITS_CONFIG_8_THREADS
   util              2
   core              8
-  network           6
-  tools             2
+  network           5
+  tools             3
   orxonox           8
   designtools       1
-  notifications     2
-  objects           4
-  overlays          4
-  pickup            1
+  notifications     1
+  objects           3
+  overlays          3
+  pickup            2
   pong              1
-  questsystem       5
-  weapons           5
+  questsystem       3
+  weapons           3
 )
