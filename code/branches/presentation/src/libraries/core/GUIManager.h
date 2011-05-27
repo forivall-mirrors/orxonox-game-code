@@ -185,6 +185,8 @@ namespace orxonox // tolua_export
         static const std::string defaultScheme_;
         std::string guiScheme_;
 
+        int numScrollLines_; ///< How many lines to scroll in a list if the scroll wheel is used
+
     }; // tolua_export
 } // tolua_export
 
