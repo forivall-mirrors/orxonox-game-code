@@ -53,6 +53,9 @@
  #      PCH_FILE:          Precompiled header file
  #      PCH_EXCLUDE:       Source files to be excluded from PCH support
  #      OUTPUT_NAME:       If you want a different name than the target name
+ #      EXCLUDE_FROM_BUILD_UNITS: Specifies files that are not put into
+ #                         automatic (full) build units. They can still
+ #                         explicitely be included in a BUILD_UNIT (partial)
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
@@ -91,7 +94,8 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   SET(_list_names LINK_LIBRARIES     VERSION           SOURCE_FILES
                   DEFINE_SYMBOL      TOLUA_FILES       PCH_FILE
                   PCH_EXCLUDE        OUTPUT_NAME       LINK_LIBS_LINUX
-                  LINK_LIBS_WIN32    LINK_LIBS_APPLE   LINK_LIBS_UNIX)
+                  LINK_LIBS_WIN32    LINK_LIBS_APPLE   LINK_LIBS_UNIX
+                  EXCLUDE_FROM_BUILD_UNITS)
 
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
@@ -176,6 +180,12 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   )
   # Remove potential duplicates
   LIST(REMOVE_DUPLICATES _${_target_name}_files)
+
+  # Mark files to be excluded from build units
+  IF(_arg_EXCLUDE_FROM_BUILD_UNITS)
+    SET_SOURCE_FILES_PROPERTIES(${_arg_EXCLUDE_FROM_BUILD_UNITS}
+      PROPERTIES EXCLUDE_FROM_BUILD_UNITS TRUE)
+  ENDIF()
 
   # Full build units
   IF(NOT _arg_ORXONOX_EXTERNAL AND ENABLE_BUILD_UNITS MATCHES "full")

@@ -30,8 +30,9 @@ FUNCTION(GENERATE_BUILD_UNITS _target_name _all_files_var)
     # Only look at C++ source files
     IF(_file MATCHES "\\.(cpp|cc|cxx)$")
       # Some files might be marked as not to compile at all
-      GET_SOURCE_FILE_PROPERTY(_skip ${_file} HEADER_FILE_ONLY)
-      IF(NOT _skip)
+      GET_SOURCE_FILE_PROPERTY(_skip1 ${_file} HEADER_FILE_ONLY)
+      GET_SOURCE_FILE_PROPERTY(_skip2 ${_file} EXCLUDE_FROM_BUILD_UNITS)
+      IF(NOT _skip1 AND NOT _skip2)
         GET_SOURCE_FILE_PROPERTY(_size ${_file} BUILD_UNIT_SIZE)
         IF(NOT _size)
           SET(_size 1)
