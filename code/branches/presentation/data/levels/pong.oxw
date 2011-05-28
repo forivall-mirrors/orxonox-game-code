@@ -14,7 +14,7 @@
 <Template name=pongbatcameras defaults=0>
   <PongBat>
     <camerapositions>
-      <CameraPosition position="0,200,0" pitch=-90 absolute=true />
+      <CameraPosition position="0,150,0" pitch=-90 absolute=true />
       <CameraPosition position="0,50,160" drag=true mouselook=true />
       <CameraPosition position="0,40,125" drag=true mouselook=true />
       <CameraPosition position="0,30, 90" drag=true mouselook=true />
@@ -57,7 +57,7 @@
   </templates>
   <?lua include("includes/notifications.oxi") ?>
 
-  <WorldAmbientSound source="mainmenu.ogg" playOnLoad=true />
+  <WorldAmbientSound source="Ganymede.ogg" playOnLoad=true looping=true />
 
   <PongBot />
 
@@ -67,11 +67,7 @@
   >
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
 
-    <?lua
-      for i = 1, 10, 1 do
-    ?>
-      <SpawnPoint position="<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>,<?lua print(math.random() * 1000 - 500) ?>" lookat="0,0,0" />
-    <?lua end ?>
+    <SpawnPoint position="991.729, -110.11, 435.404" orientation="0.534038, 0.563456, 0.212168, 0.593553" />
 
     <MovableEntity rotationrate=5 rotationaxis="0,0,1">
       <attached>
