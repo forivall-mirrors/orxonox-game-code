@@ -34,6 +34,7 @@ gametype=TeamDeathmatch
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+  <?lua include("includes/notifications.oxi") ?>
 
     <Scene
         ambientlight = "0.3, 0.3, 0.3"

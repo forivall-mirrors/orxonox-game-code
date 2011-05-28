@@ -26,7 +26,7 @@ function P.createQueue(name, size)
     {
         ["window"]    = queue,
         ["name"]      = name,
-        ["maxSize"]      = size,
+        ["maxSize"]   = size,
         ["visible"]   = false,
         ["fontSize"]  = 12,
         ["fontColor"] = "FFFFFFFF",
@@ -48,6 +48,7 @@ function P.removeQueue(queueName)
     local queue = P.queueList[queueName]
 
     if queue ~= nil then
+        queue.window:getParent():removeChildWindow(queue.window)
         winMgr:destroyWindow(queue.window)
     end
     P.queueList[queueName] = nil

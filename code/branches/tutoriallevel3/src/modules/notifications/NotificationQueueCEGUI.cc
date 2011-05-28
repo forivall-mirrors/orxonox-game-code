@@ -46,29 +46,49 @@
 namespace orxonox
 {
 
+    CreateFactory(NotificationQueueCEGUI);
+
     // Register tolua_open function when loading the library.
     DeclareToluaInterface(Notifications);
 
     /*static*/ const std::string NotificationQueueCEGUI::NOTIFICATION_LAYER("NotificationLayer");
 
-    NotificationQueueCEGUI::NotificationQueueCEGUI(const std::string& name, const std::string& senders, unsigned int size, unsigned int displayTime) : NotificationQueue(name, senders, size, displayTime)
+    NotificationQueueCEGUI::NotificationQueueCEGUI(BaseObject* creator) : NotificationQueue(creator)
     {
         RegisterObject(NotificationQueueCEGUI);
 
+        this->initialize();
+    }
+    
+    NotificationQueueCEGUI::~NotificationQueueCEGUI()
+    {
+        if(GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".removeQueue(\"" + this->getName() +  "\")");
+    }
+
+    /**
+    @brief
+        Initializes The NotificationQueueCEGUI.
+    */
+    void NotificationQueueCEGUI::initialize(void)
+    {
         this->displaySize_ = Vector4(1.0, 0.0, 0.0, 0.0);
         this->position_ = Vector4(0.0, 0.0, 0.0, 0.0);
         this->alignment_ = "LeftAligned";
         this->fontSize_ = 12;
         this->fontColor_ = Vector4(1.0, 1.0, 1.0, 1.0);
         this->fontColorStr_ = "FFFFFFFF";
-        
-        // Create the NotificationQueueCEGUI in lua.
-        this->create();
     }
-    
-    NotificationQueueCEGUI::~NotificationQueueCEGUI()
+
+    void NotificationQueueCEGUI::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
-        
+        SUPER(NotificationQueueCEGUI, XMLPort, xmlelement, mode);
+
+        XMLPortParam(NotificationQueueCEGUI, "position", setPosition, getPosition, xmlelement, mode);
+        XMLPortParam(NotificationQueueCEGUI, "fontSize", setFontSize, getFontSize, xmlelement, mode);
+        XMLPortParam(NotificationQueueCEGUI, "fontColor", setFontColor, getFontColor, xmlelement, mode);
+        XMLPortParam(NotificationQueueCEGUI, "alignment", setAlignment, getAlignment, xmlelement, mode);
+        XMLPortParam(NotificationQueueCEGUI, "displaySize", setDisplaySize, getDisplaySize, xmlelement, mode);
     }
 
     /**
@@ -265,7 +285,9 @@ namespace orxonox
     */
     void NotificationQueueCEGUI::create(void)
     {
-        if(GameMode::showsGraphics())
+        this->NotificationQueue::create();
+        
+        if(this->isRegistered() && GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".createQueue(\"" + this->getName() +  "\", " + multi_cast<std::string>(this->getMaxSize()) + ")");
     }
 

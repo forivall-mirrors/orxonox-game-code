@@ -37,40 +37,81 @@
 #include <sstream>
 
 #include "core/CoreIncludes.h"
+#include "core/XMLPort.h"
 #include "util/SubString.h"
 
 namespace orxonox
 {
 
+    CreateFactory(NotificationQueue);
+    
     /**
     @brief
-        Constructor. Creates and initializes the object.
+        Default constructor. Registers and initializes the object.
+    @param creator
+        The creator of the NotificationQueue.
+    */
+    NotificationQueue::NotificationQueue(BaseObject* creator) : BaseObject(creator), registered_(false)
+    {
+        RegisterObject(NotificationQueue);
+
+        this->initialize();
+    }
+
+    // TODO move to docu.
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    @param creator
+        The creator of the NotificationQueue
     @param name
         The name of the new NotificationQueue. It needs to be unique
     @param senders
         The senders that are targets of this NotificationQueue, i.e. the names of senders whose Notifications this NotificationQueue displays.
-        The senders need to be separated by commas.
+        The senders need to be seperated by commas.
     @param size
         The size (the maximum number of displayed Notifications) of this NotificationQueue.
     @param displayTime
         The time during which a Notification is (at most) displayed.
     */
-    NotificationQueue::NotificationQueue(const std::string& name, const std::string& senders, unsigned int size, unsigned int displayTime)
+
+    /**
+    @brief
+        Destructor.
+    */
+    NotificationQueue::~NotificationQueue()
     {
-        this->registered_ = false;
+        this->targets_.clear();
 
-        RegisterRootObject(NotificationQueue);
+        if(this->isRegistered()) // If the NotificationQueue is registered.
+        {
+            this->clear(true);
 
-        // Initialize.
+            // Unregister with the NotificationManager.
+            NotificationManager::getInstance().unregisterQueue(this);
+        }
+    }
+
+    /**
+    @brief
+        Initializes the NotificationQueue.
+    */
+    void NotificationQueue::initialize(void)
+    {
         this->size_ = 0;
         this->tickTime_ = 0.0f;
+        this->maxSize_ = NotificationQueue::DEFAULT_SIZE;
+        this->displayTime_ = NotificationQueue::DEFAULT_DISPLAY_TIME;
 
-        // Sets the input values.
-        this->setTargets(senders);
-        this->name_ = name;
-        this->maxSize_ = size;
-        this->setDisplayTime(displayTime);
+        this->creationTime_ = std::time(0);
+    }
 
+    /**
+    @brief
+        Creates the NotificationQueue.
+    */
+    void NotificationQueue::create(void)
+    {
         // Register the NotificationQueue with the NotificationManager.
         bool queueRegistered = NotificationManager::getInstance().registerQueue(this);
         this->registered_ = true;
@@ -86,25 +127,6 @@ namespace orxonox
 
     /**
     @brief
-        Destructor.
-    */
-    NotificationQueue::~NotificationQueue()
-    {
-        this->targets_.clear();
-
-        if(this->registered_) // If the NotificationQueue is registered.
-        {
-            this->clear(true);
-
-            // Unregister with the NotificationManager.
-            NotificationManager::getInstance().unregisterQueue(this);
-        }
-        
-        COUT(3) << "NotificationQueue '" << this->getName() << "' destroyed." << std::endl;
-    }
-
-    /**
-    @brief
         Updates the queue from time to time.
     @param dt
         The time interval that has passed since the last tick.
@@ -114,7 +136,7 @@ namespace orxonox
         this->tickTime_ += dt; // Add the time interval that has passed to the time counter.
         if(this->displayTime_ != INF && this->tickTime_ >= 1.0) // If the time counter is greater than 1s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
         {
-            this->timeLimit_.time = std::time(0)-this->displayTime_; // Container containig the current time.
+            this->timeLimit_.time = std::time(0)-this->displayTime_; // Container containing the current time.
 
             std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator it = this->ordering_.begin();
             // Iterate through all elements whose creation time is smaller than the current time minus the display time.
@@ -126,6 +148,17 @@ namespace orxonox
 
             this->tickTime_ = this->tickTime_ - (int)this->tickTime_; // Reset time counter.
         }
+    }
+
+    void NotificationQueue::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(NotificationQueue, XMLPort, xmlelement, mode);
+
+        XMLPortParam(NotificationQueue, "targets", setTargets, getTargets, xmlelement, mode).defaultValues(NotificationListener::ALL);
+        XMLPortParam(NotificationQueue, "size", setMaxSize, getMaxSize, xmlelement, mode);
+        XMLPortParam(NotificationQueue, "displayTime", setDisplayTime, getDisplayTime, xmlelement, mode);
+
+        this->create();
     }
 
     /**
@@ -147,9 +180,12 @@ namespace orxonox
 
         if(!notifications->empty())
         {
-            // Add all Notifications.
+            // Add all Notifications that have been created after this NotificationQueue was created.
             for(std::multimap<std::time_t, Notification*>::iterator it = notifications->begin(); it != notifications->end(); it++)
-                this->push(it->second, it->first);
+            {
+                if(it->first >= this->creationTime_)
+                    this->push(it->second, it->first);
+            }
         }
 
         delete notifications;
@@ -304,9 +340,15 @@ namespace orxonox
         if(this->maxSize_ == size)
             return;
 
+        if(size == 0)
+        {
+            COUT(2) << "Trying to set maximal size of NotificationQueue '" << this->getName() << "' to 0. Ignoring..." << endl;
+            return;
+        }
+        
         this->maxSize_ = size;
 
-        if(this->registered_)
+        if(this->isRegistered())
             this->update();
     }
 
@@ -321,9 +363,14 @@ namespace orxonox
         if(this->displayTime_ == time)
             return;
 
+        if(time != NotificationQueue::INF && time <= 0)
+        {
+            COUT(2) << "Trying to set display time of NotificationQueue '" << this->getName() << "' to non-positive value. Ignoring..." << endl;
+        }
+            
         this->displayTime_ = time;
 
-        if(this->registered_)
+        if(this->isRegistered())
             this->update();
     }
 
@@ -366,7 +413,7 @@ namespace orxonox
             this->targets_.insert(string[i]);
 
         // TODO: Why?
-        if(this->registered_)
+        if(this->isRegistered())
         {
             NotificationManager::getInstance().unregisterQueue(this);
             NotificationManager::getInstance().registerQueue(this);

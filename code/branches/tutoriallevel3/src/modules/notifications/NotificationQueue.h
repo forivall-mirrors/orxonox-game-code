@@ -44,6 +44,7 @@
 
 #include "NotificationManager.h"
 
+#include "core/BaseObject.h"
 #include "tools/interfaces/Tickable.h"
 
 namespace orxonox
@@ -87,40 +88,42 @@ namespace orxonox
 
     @ingroup Notifications
     */
-    class _NotificationsExport NotificationQueue : public Tickable
+    class _NotificationsExport NotificationQueue : public BaseObject, public Tickable
     {
 
         public:
-            NotificationQueue(const std::string& name, const std::string& senders = NotificationListener::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
+            NotificationQueue(BaseObject* creator);
+            NotificationQueue(BaseObject* creator, const std::string& name, const std::string& senders = NotificationListener::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
             virtual ~NotificationQueue();
 
-            virtual void tick(float dt); //!< To update from time to time.
+            virtual void tick(float dt); // To update from time to time.
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            void update(void); //!< Updates the NotificationQueue.
-            void update(Notification* notification, const std::time_t & time); //!< Updates the NotificationQueue by adding an new Notification.
+            void update(void); // Updates the NotificationQueue.
+            void update(Notification* notification, const std::time_t & time); // Updates the NotificationQueue by adding an new Notification.
 
             // tolua_begin
             /**
             @brief Get the name of the NotificationQueue.
             @return Returns the name.
             */
-            inline const std::string& getName() const
-                { return this->name_; }
+            inline const std::string& getName(void) const
+                { return this->BaseObject::getName(); }
 
-            void setMaxSize(unsigned int size); //!< Sets the maximum number of displayed Notifications.
+            void setMaxSize(unsigned int size); // Sets the maximum number of displayed Notifications.
             /**
             @brief Returns the maximum number of Notifications displayed.
             @return Returns maximum size.
             */
-            inline unsigned int getMaxSize() const
+            inline unsigned int getMaxSize(void) const
                 { return this->maxSize_; }
 
-            void setDisplayTime(int time); //!< Sets the maximum number of seconds a Notification is displayed.
+            void setDisplayTime(int time); // Sets the maximum number of seconds a Notification is displayed.
             /**
             @brief Returns the time interval the Notification is displayed.
             @return Returns the display time.
             */
-            inline int getDisplayTime() const
+            inline int getDisplayTime(void) const
                 { return this->displayTime_; }
             // tolua_end
 
@@ -128,18 +131,25 @@ namespace orxonox
             @brief Returns the current number of Notifications displayed.
             @return Returns the size of the NotificationQueue.
             */
-            inline unsigned int getSize() const
+            inline unsigned int getSize(void) const
                 { return this->size_; }
 
             /**
             @brief Returns the targets of this NotificationQueue, reps. the senders which Notifications are displayed in this NotificationQueue.
             @return Returns a set of strings holding the different targets.
             */
-            inline const std::set<std::string> & getTargetsSet()
+            inline const std::set<std::string> & getTargetsSet(void)
                 { return this->targets_; }
 
-            void setTargets(const std::string & targets); //!< Set the targets of this NotificationQueue.
-            const std::string& getTargets(void) const; //!< Returns a string consisting of the concatenation of the targets.
+            void setTargets(const std::string & targets); // Set the targets of this NotificationQueue.
+            const std::string& getTargets(void) const; // Returns a string consisting of the concatenation of the targets.
+
+            /**
+            @brief Check whether the NotificationQueue is registered with the NotificationManager.
+            @return Returns true if it is registered, false if not.
+            */
+            inline bool isRegistered(void)
+                { return this->registered_; }
 
             bool tidy(void); // Pops all Notifications from the NotificationQueue.
             
@@ -159,16 +169,20 @@ namespace orxonox
             */
             virtual void notificationRemoved(unsigned int index) {}
             
-            virtual void clear(bool noGraphics = false); //!< Clears the NotificationQueue by removing all NotificationContainers.
+            virtual void clear(bool noGraphics = false); // Clears the NotificationQueue by removing all NotificationContainers.
 
         protected:
             static const unsigned int DEFAULT_SIZE = 5; //!< The default maximum number of Notifications displayed.
             static const unsigned int DEFAULT_DISPLAY_TIME = 30; //!< The default display time.
             static const int INF = -1; //!< Constant denoting infinity.
 
-        private:
-            std::string name_; //!< The name of the NotificationQueue.
+            virtual void create(void); // Creates the NotificationQueue.
 
+        private:
+            void initialize(void); // Initializes the NotificationQueue.
+
+            time_t creationTime_; // The time this NotificationQueue was created.
+            
             unsigned int maxSize_; //!< The maximal number of Notifications displayed.
             unsigned int size_; //!< The number of Notifications displayed.
             int displayTime_; //!< The time a Notification is displayed.
@@ -185,9 +199,9 @@ namespace orxonox
 
             void setName(const std::string& name); //!< Sets the name of the NotificationQueue.
 
-            void push(Notification* notification, const std::time_t & time); //!< Adds (pushes) a Notification to the NotificationQueue.
-            void pop(void); //!< Removes (pops) the least recently added Notification form the NotificationQueue.
-            void remove(const std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator& containerIterator); //!< Removes the Notification that is stored in the input NotificationContainer.
+            void push(Notification* notification, const std::time_t & time); // Adds (pushes) a Notification to the NotificationQueue.
+            void pop(void); // Removes (pops) the least recently added Notification form the NotificationQueue.
+            void remove(const std::multiset<NotificationContainer*, NotificationContainerCompare>::iterator& containerIterator); // Removes the Notification that is stored in the input NotificationContainer.
 
     };
 

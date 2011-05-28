@@ -69,18 +69,15 @@ namespace orxonox // tolua_export
     { // tolua_export
 
         public:
-            NotificationQueueCEGUI(const std::string& name, const std::string& senders = NotificationListener::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
+            NotificationQueueCEGUI(BaseObject* creator);
             virtual ~NotificationQueueCEGUI();
+
+            virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
             void destroy(bool noGraphics = false); // Destroys the NotificationQueue.
 
-            /**
-            @brief Set the size of the window that displays the NotificationQueue.
-            @param size A vector whose first component is the relative width of the window (a value between 0 and 1) and whose second component is the absolute width in pixels (additional to the relative width, can be negative). The height is set such that exactly as many Notifications fit as is the maximum size of the NotificationQueue (in terms of the number of Notifications).
-            */
-            inline void setDisplaySize(const Vector2& size)
-                { this->setDisplaySize(Vector4(size.x, size.y, 0.0, 0.0)); }
             void setDisplaySize(const Vector4& size); // Set the size of the window that displays the NotificationQueue.
+            
             /**
             @brief Get the size of the window that displays the NotificationQueue.
             @return Returns a vector with the display size.
@@ -129,6 +126,8 @@ namespace orxonox // tolua_export
             static NotificationQueueCEGUI* getQueue(const std::string& name); // tolua_export // Get the NotificationQueueCEGUI with the input name.
             
         protected:
+            virtual void create(void); // Creates the NotificationQueue in lua.
+            
             virtual void notificationPushed(Notification* notification); // Is called by the NotificationQueue when a notification was pushed
             virtual void notificationPopped(void); // Is called by the NotificationQueue when a notification was popped.
             virtual void notificationRemoved(unsigned int index); // Is called when a notification was removed.
@@ -145,8 +144,8 @@ namespace orxonox // tolua_export
             unsigned int fontSize_; //!< The font size of the Notifications text.
             Vector4 fontColor_; //!< The font color of the Notifications text as a vector, in RGBA form, with values from 0 to 1.
             std::string fontColorStr_; //!< The font color of the Notifications text as a string with the ARGB hexadecimal values.
-            
-            void create(void); // Creates the NotificationQueue in lua.
+
+            void initialize(void); // Initializes The NotificationQueueCEGUI.
 
     }; // tolua_export
 

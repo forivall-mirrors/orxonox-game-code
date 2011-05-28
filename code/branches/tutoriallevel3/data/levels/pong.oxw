@@ -55,6 +55,7 @@
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+  <?lua include("includes/notifications.oxi") ?>
 
   <WorldAmbientSound source="mainmenu.ogg" playOnLoad=true />
 

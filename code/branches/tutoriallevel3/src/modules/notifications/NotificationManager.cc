@@ -410,7 +410,7 @@ namespace orxonox
     */
     void NotificationManager::loadQueues(void)
     {
-        NotificationQueueCEGUI* allQueue = new NotificationQueueCEGUI("all");
+        /*NotificationQueueCEGUI* allQueue = new NotificationQueueCEGUI("all");
         allQueue->setDisplaySize(Vector2(0.5, 0));
         allQueue->setPosition(Vector4(0.0, 10, 0.3, 0));
 
@@ -419,7 +419,7 @@ namespace orxonox
         infoQueue->setFontSize(24);
         infoQueue->setFontColor(Vector4(1.0, 1.0, 0.0, 0.8));
         infoQueue->setAlignment("HorzCentred");
-        infoQueue->setDisplaySize(Vector2(0.6, 0.0));
+        infoQueue->setDisplaySize(Vector2(0.6, 0.0));*/
     }
 
     // Notification class
