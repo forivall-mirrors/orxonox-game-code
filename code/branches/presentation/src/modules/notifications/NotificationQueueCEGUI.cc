@@ -130,10 +130,13 @@ namespace orxonox
         }
 
         this->displaySize_ = size;
-        if(size.z == 0.0 && size.w == 0.0)
-            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ")");
-        else
-            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ", " + multi_cast<std::string>(this->displaySize_.z) + ", " + multi_cast<std::string>(this->displaySize_.w) + ")");
+        if(GameMode::showsGraphics())
+        {
+            if(size.z == 0.0 && size.w == 0.0)
+                GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ")");
+            else
+                GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ", " + multi_cast<std::string>(this->displaySize_.z) + ", " + multi_cast<std::string>(this->displaySize_.w) + ")");
+        }
     }
 
     /**
@@ -158,7 +161,8 @@ namespace orxonox
         }
 
         this->position_ = position;
-        GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".moveQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->position_.x) + ", " + multi_cast<std::string>(this->position_.y) + ", " + multi_cast<std::string>(this->position_.z) + ", " + multi_cast<std::string>(this->position_.w) + ")");
+        if(GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".moveQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->position_.x) + ", " + multi_cast<std::string>(this->position_.y) + ", " + multi_cast<std::string>(this->position_.z) + ", " + multi_cast<std::string>(this->position_.w) + ")");
     }
 
     /**
@@ -175,7 +179,8 @@ namespace orxonox
 
         // TODO: Check whether the alignment string is correct?
         this->alignment_ = alignment;
-        GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueAlignment(\"" + this->getName() + "\", \"" + this->alignment_ + "\")");
+        if(GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueAlignment(\"" + this->getName() + "\", \"" + this->alignment_ + "\")");
     }
 
     /**
@@ -190,7 +195,8 @@ namespace orxonox
             return;
 
         this->fontSize_ = size;
-        GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontSize(\"" + this->getName() + "\", " + multi_cast<std::string>(this->fontSize_) + ")");
+        if(GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontSize(\"" + this->getName() + "\", " + multi_cast<std::string>(this->fontSize_) + ")");
     }
 
     /**
@@ -210,7 +216,8 @@ namespace orxonox
         for(unsigned int i = 0; i < 4; i++)
             stream << std::hex << std::setw(2) << std::setfill('0') << int(this->fontColor_[(i+3)%4]*255);
         this->fontColorStr_ = stream.str();
-        GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontColor(\"" + this->getName() + "\", \"" + this->fontColorStr_ + "\")");
+        if(GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontColor(\"" + this->getName() + "\", \"" + this->fontColorStr_ + "\")");
     }
 
     /**
