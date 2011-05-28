@@ -117,9 +117,9 @@ namespace orxonox
         XMLPortParamVariable(SpaceShip, "boostPowerRate", boostPowerRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostRate", boostRate_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "boostCooldownDuration", boostCooldownDuration_, xmlelement, mode);
-		XMLPortParamVariable(SpaceShip, "shakeFrequency", shakeFrequency_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "shakeFrequency", shakeFrequency_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "shakeAmplitude", shakeAmplitude_, xmlelement, mode);
-		XMLPortParamVariable(SpaceShip, "lift", lift_, xmlelement, mode);
+        XMLPortParamVariable(SpaceShip, "lift", lift_, xmlelement, mode);
         XMLPortParamVariable(SpaceShip, "stallSpeed", stallSpeed_, xmlelement, mode);
 
         XMLPortObject(SpaceShip, Engine, "engines", addEngine, getEngine, xmlelement, mode);

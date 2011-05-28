@@ -46,6 +46,7 @@
 
 #include "core/BaseObject.h"
 #include "tools/interfaces/Tickable.h"
+#include "network/synchronisable/Synchronisable.h"
 
 namespace orxonox
 {
@@ -88,7 +89,7 @@ namespace orxonox
 
     @ingroup Notifications
     */
-    class _NotificationsExport NotificationQueue : public BaseObject, public Tickable
+    class _NotificationsExport NotificationQueue : public BaseObject, public Tickable, public Synchronisable
     {
 
         public:
@@ -98,7 +99,8 @@ namespace orxonox
 
             virtual void tick(float dt); // To update from time to time.
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-
+            void registerVariables();
+            
             void update(void); // Updates the NotificationQueue.
             void update(Notification* notification, const std::time_t & time); // Updates the NotificationQueue by adding an new Notification.
 

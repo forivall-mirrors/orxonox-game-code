@@ -73,6 +73,7 @@ namespace orxonox // tolua_export
             virtual ~NotificationQueueCEGUI();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+            void registerVariables();
 
             void destroy(bool noGraphics = false); // Destroys the NotificationQueue.
 

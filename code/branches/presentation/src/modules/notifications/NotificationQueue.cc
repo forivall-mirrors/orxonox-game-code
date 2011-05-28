@@ -51,11 +51,12 @@ namespace orxonox
     @param creator
         The creator of the NotificationQueue.
     */
-    NotificationQueue::NotificationQueue(BaseObject* creator) : BaseObject(creator), registered_(false)
+    NotificationQueue::NotificationQueue(BaseObject* creator) : BaseObject(creator), Synchronisable(creator), registered_(false)
     {
         RegisterObject(NotificationQueue);
 
         this->initialize();
+        this->registerVariables();
     }
 
     // TODO move to docu.
@@ -160,6 +161,20 @@ namespace orxonox
 
         this->create();
     }
+    
+    
+    /**
+    @brief
+        Registers Variables to be Synchronised.
+        Registers Variables which have to be synchronised to the network system.
+      */
+    void NotificationQueue::registerVariables()
+    {
+        registerVariable( this->maxSize_, VariableDirection::ToClient );
+        registerVariable( this->targets_, VariableDirection::ToClient );
+        registerVariable( this->displayTime_, VariableDirection::ToClient );
+    }
+
 
     /**
     @brief

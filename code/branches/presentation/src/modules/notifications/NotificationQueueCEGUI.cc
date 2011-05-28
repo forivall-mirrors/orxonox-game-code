@@ -58,6 +58,7 @@ namespace orxonox
         RegisterObject(NotificationQueueCEGUI);
 
         this->initialize();
+        this->registerVariables();
     }
     
     NotificationQueueCEGUI::~NotificationQueueCEGUI()
@@ -89,6 +90,15 @@ namespace orxonox
         XMLPortParam(NotificationQueueCEGUI, "fontColor", setFontColor, getFontColor, xmlelement, mode);
         XMLPortParam(NotificationQueueCEGUI, "alignment", setAlignment, getAlignment, xmlelement, mode);
         XMLPortParam(NotificationQueueCEGUI, "displaySize", setDisplaySize, getDisplaySize, xmlelement, mode);
+    }
+    
+    void NotificationQueueCEGUI::registerVariables()
+    {
+        registerVariable( this->position_, VariableDirection::ToClient );
+        registerVariable( this->fontSize_, VariableDirection::ToClient );
+        registerVariable( this->fontColor_, VariableDirection::ToClient );
+        registerVariable( this->alignment_, VariableDirection::ToClient );
+        registerVariable( this->displaySize_, VariableDirection::ToClient );
     }
 
     /**
