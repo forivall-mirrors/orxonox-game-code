@@ -8,7 +8,7 @@ particle_system Orxonox/Shield
 	cull_each	false
 	renderer	billboard
 	sorted	false
-	local_space	false
+	local_space	true
 	iteration_interval	0
 	nonvisible_update_timeout	0
 	billboard_type	point

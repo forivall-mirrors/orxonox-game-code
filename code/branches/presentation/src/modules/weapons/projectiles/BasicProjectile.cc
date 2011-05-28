@@ -117,11 +117,10 @@ namespace orxonox
                 if (victim && victim->hasShield() && (this_->getDamage() > 0 || this_->getShieldDamage() > 0) && victim->getHealth() > 0)
                 {
                     ParticleSpawner* effect = new ParticleSpawner(owner->getCreator());
-                    effect->setPosition(entity->getPosition());
-                    effect->setOrientation(entity->getOrientation());
                     effect->setDestroyAfterLife(true);
                     effect->setSource("Orxonox/Shield");
                     effect->setLifetime(0.5f);
+                    victim->attach(effect);
                 }
             }
 
