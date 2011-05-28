@@ -23,7 +23,7 @@
  #    Configures the number of build units per library
  #
 
-SET(BUILD_UNITS_CONFIG_2_THREADS
+SET(BUILD_UNITS_CONFIG_1_THREADS
   util              1
   core              2
   network           1
@@ -38,6 +38,8 @@ SET(BUILD_UNITS_CONFIG_2_THREADS
   questsystem       1
   weapons           1
 )
+
+SET(BUILD_UNITS_CONFIG_2_THREADS ${BUILD_UNITS_CONFIG_1_THREADS})
 
 SET(BUILD_UNITS_CONFIG_4_THREADS
   util              1

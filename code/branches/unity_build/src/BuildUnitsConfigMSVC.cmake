@@ -23,6 +23,22 @@
  #    Configures the number of build units per library
  #
 
+SET(BUILD_UNITS_CONFIG_1_THREADS
+  util              1
+  core              1
+  network           1
+  tools             1
+  orxonox           2 # Avoids running out of symbol adresses (fix with /bigobj)
+  designtools       1
+  notifications     1
+  objects           1
+  overlays          1
+  pickup            1
+  pong              1
+  questsystem       1
+  weapons           1
+)
+
 SET(BUILD_UNITS_CONFIG_2_THREADS
   util              1
   core              2
