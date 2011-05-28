@@ -81,12 +81,12 @@ namespace orxonox
         // If we're on the server (and the server is not the intended recipient of the notification/command) we send it over the network.
         else if(GameMode::isServer() && sendMode == notificationSendMode::network && Host::getPlayerID() != clientId)
         {
-            callStaticNetworkFunction(NotificationListener::sendHelper, clientId, message, sender, (unsigned int)messageType);
+            callStaticNetworkFunction(NotificationListener::sendHelper, clientId, message, sender, isCommand, (unsigned int)messageType);
         }
         else if(GameMode::isServer() && sendMode == notificationSendMode::broadcast)
         {
             // TODO: Works as intended?
-            callStaticNetworkFunction(NotificationListener::sendHelper, NETWORK_PEER_ID_BROADCAST, message, sender, (unsigned int)messageType);
+            callStaticNetworkFunction(NotificationListener::sendHelper, NETWORK_PEER_ID_BROADCAST, message, sender, isCommand, (unsigned int)messageType);
         }
     }
 

@@ -57,8 +57,6 @@ namespace orxonox
         this->setGametype(SmartPtr<Gametype>(this, false));
 
         this->defaultControllableEntity_ = Class(Spectator);
-
-        this->bFirstTick_ = true;
         
         this->bAutoStart_ = false;
         this->bForceSpawn_ = false;
@@ -113,13 +111,6 @@ namespace orxonox
     {
         SUPER(Gametype, tick, dt);
 
-        // Activate the GametypeInfo.
-        if(this->bFirstTick_)
-        {
-            this->gtinfo_->setActive(true);
-            this->bFirstTick_ = false;
-        }
-
         //count timer
         if (timerIsActive_)
         {
@@ -133,7 +124,16 @@ namespace orxonox
             this->gtinfo_->countdownStartCountdown(dt);
 
         if (!this->gtinfo_->hasStarted())
+        {
+            for (std::map<PlayerInfo*, Player>::iterator it = this->players_.begin(); it != this->players_.end(); ++it)
+            {
+                // Inform the GametypeInfo that the player is ready to spawn.
+                if(it->first->isHumanPlayer() && it->first->isReadyToSpawn())
+                    this->gtinfo_->playerReadyToSpawn(it->first);
+            }
+                    
             this->checkStart();
+        }
         else if (!this->gtinfo_->hasEnded())
             this->spawnDeadPlayersIfRequested();
 
@@ -181,6 +181,7 @@ namespace orxonox
     void Gametype::playerEntered(PlayerInfo* player)
     {
         this->players_[player].state_ = PlayerState::Joined;
+        this->gtinfo_->playerEntered(player);
     }
 
     bool Gametype::playerLeft(PlayerInfo* player)
@@ -395,11 +396,6 @@ namespace orxonox
                             allplayersready = false;
                         if (it->first->isHumanPlayer())
                             hashumanplayers = true;
-
-                        // Inform the GametypeInfo that the player is ready to spawn.
-                        // TODO: Can it happen, that that changes?
-                        if(it->first->isHumanPlayer() && it->first->isReadyToSpawn())
-                            this->gtinfo_->playerReadyToSpawn(it->first);
                     }
                     if (allplayersready && hashumanplayers)
                     {

@@ -166,8 +166,6 @@ namespace orxonox
             virtual void spawnDeadPlayersIfRequested();
 
             SmartPtr<GametypeInfo> gtinfo_;
-
-            bool bFirstTick_; //!< Whether this is the first tick or not.
             
             bool bAutoStart_;
             bool bForceSpawn_;

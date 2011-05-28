@@ -39,6 +39,7 @@
 #include "network/NetworkFunction.h"
 #include "util/Convert.h"
 
+#include "controllers/HumanController.h"
 #include "interfaces/GametypeMessageListener.h"
 #include "interfaces/NotificationListener.h"
 
@@ -54,6 +55,9 @@ namespace orxonox
     registerMemberNetworkFunction(GametypeInfo, dispatchStaticMessage);
     registerMemberNetworkFunction(GametypeInfo, dispatchFadingMessage);
 
+    registerMemberNetworkFunction(GametypeInfo, changedReadyToSpawn);
+    registerMemberNetworkFunction(GametypeInfo, changedSpawned);
+
     /*static*/ const std::string GametypeInfo::NOTIFICATION_SENDER("gameinfo");
 
     /**
@@ -63,14 +67,14 @@ namespace orxonox
     GametypeInfo::GametypeInfo(BaseObject* creator) : Info(creator)
     {
         RegisterObject(GametypeInfo);
-
-        this->bActive_ = false; // At first the GametypeInfo is inactive.
         
         this->bStarted_ = false;
         this->bEnded_ = false;
         this->startCountdown_ = 0.0f;
         this->bStartCountdownRunning_ = false;
         this->counter_ = 0;
+        this->spawned_ = false;
+        this->readyToSpawn_ = false;
 
         this->registerVariables();
     }
@@ -87,19 +91,6 @@ namespace orxonox
         registerVariable(this->startCountdown_,         VariableDirection::ToClient);
         registerVariable(this->counter_,                VariableDirection::ToClient, new NetworkCallback<GametypeInfo>(this, &GametypeInfo::changedCountdownCounter));
         registerVariable(this->hudtemplate_,            VariableDirection::ToClient);
-    }
-
-    /**
-    @brief
-        Is called when the activity has changed.
-    */
-    void GametypeInfo::changedActivity(void)
-    {
-        SUPER(GametypeInfo, changedActivity);
-
-        // If the GametypeInfo has become active the "Press [Fire] to start the match" notification is sent.
-        if(this->isActive())
-            NotificationListener::sendNotification("Press [Fire] to start the match", GametypeInfo::NOTIFICATION_SENDER);
     }
 
     /**
@@ -128,11 +119,8 @@ namespace orxonox
     */
     void GametypeInfo::changedStartCountdownRunning(void)
     {
-        // Clear the notifications if the countdown has stopped running.
-        if(!this->hasStarted() && !this->isStartCountdownRunning() && !this->hasEnded())
-            NotificationListener::sendCommand("clear", GametypeInfo::NOTIFICATION_SENDER);
         // Send first countdown notification if the countdown has started.
-        if(!this->hasStarted() && this->isStartCountdownRunning() && !this->hasEnded())
+        if(this->isReadyToSpawn() && !this->hasStarted() && this->isStartCountdownRunning() && !this->hasEnded())
             NotificationListener::sendNotification(multi_cast<std::string>(this->counter_), GametypeInfo::NOTIFICATION_SENDER);
     }
 
@@ -143,24 +131,29 @@ namespace orxonox
     void GametypeInfo::changedCountdownCounter(void)
     {
         // Send countdown notification if the counter has gone down.
-        if(!this->hasStarted() && this->isStartCountdownRunning() && !this->hasEnded())
+        if(this->isReadyToSpawn() &&  !this->hasStarted() && this->isStartCountdownRunning() && !this->hasEnded())
             NotificationListener::sendNotification(multi_cast<std::string>(this->counter_), GametypeInfo::NOTIFICATION_SENDER);
     }
 
     /**
     @brief
-        Is called when a player has become ready to spawn.
-    @param player
-        The player that has become ready to spawn.
+        Inform the GametypeInfo that the local player has changed its ready to spawn status.
+    @param ready
+        Whether the player has become ready to spawn or not.
     */
-    void GametypeInfo::changedReadyToSpawn(PlayerInfo* player)
+    void GametypeInfo::changedReadyToSpawn(bool ready)
     {
-        // Send "Waiting for other players" over the network to the right player if a player has become ready to spawn.
-        if(!this->hasStarted() && !this->isStartCountdownRunning() && !this->hasEnded())
-            NotificationListener::sendNotification("Waiting for other players", GametypeInfo::NOTIFICATION_SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
-        // Clear the notifications if the player has respawned.
-        if(this->hasStarted() && !this->hasEnded())
-            NotificationListener::sendCommand("clear", GametypeInfo::NOTIFICATION_SENDER, notificationSendMode::network, player->getClientID());
+        if(this->readyToSpawn_ == ready)
+            return;
+
+        this->readyToSpawn_ = ready;
+
+        // Send "Waiting for other players" if the player is ready to spawn but the game has not yet started nor is the countdown running.
+        if(this->readyToSpawn_ && !this->hasStarted() && !this->isStartCountdownRunning() && !this->hasEnded())
+            NotificationListener::sendNotification("Waiting for other players", GametypeInfo::NOTIFICATION_SENDER);
+        // Send current countdown if the player is ready to spawn and the countdown has already started.
+        else if(this->readyToSpawn_ && !this->hasStarted() && this->isStartCountdownRunning() && !this->hasEnded())
+            NotificationListener::sendNotification(multi_cast<std::string>(this->counter_), GametypeInfo::NOTIFICATION_SENDER);
     }
 
     /**
@@ -240,11 +233,14 @@ namespace orxonox
     */
     void GametypeInfo::startStartCountdown(void)
     {
-        if(this->bStartCountdownRunning_)
-            return;
-        
-        this->bStartCountdownRunning_ = true;
-        this->changedStartCountdownRunning();
+        if(GameMode::isMaster())
+        {
+            if(this->bStartCountdownRunning_)
+                return;
+
+            this->bStartCountdownRunning_ = true;
+            this->changedStartCountdownRunning();
+        }
     }
 
     /**
@@ -253,11 +249,14 @@ namespace orxonox
     */
     void GametypeInfo::stopStartCountdown(void)
     {
-        if(!this->bStartCountdownRunning_)
-            return;
-        
-        this->bStartCountdownRunning_ = false;
-        this->changedStartCountdownRunning();
+        if(GameMode::isMaster())
+        {
+            if(!this->bStartCountdownRunning_)
+                return;
+
+            this->bStartCountdownRunning_ = false;
+            this->changedStartCountdownRunning();
+        }
     }
 
     /**
@@ -268,12 +267,15 @@ namespace orxonox
     */
     void GametypeInfo::playerReadyToSpawn(PlayerInfo* player)
     {
-        // If the player has spawned already.
-        if(this->spawned_.find(player) != this->spawned_.end())
-            return;
+        if(GameMode::isMaster())
+        {
+            // If the player has spawned already.
+            if(this->spawnedPlayers_.find(player) != this->spawnedPlayers_.end())
+                return;
 
-        this->spawned_.insert(player);
-        this->changedReadyToSpawn(player);
+            this->spawnedPlayers_.insert(player);
+            this->setReadyToSpawnHelper(player, true);
+        }
     }
 
     /**
@@ -284,9 +286,14 @@ namespace orxonox
     */
     void GametypeInfo::pawnKilled(PlayerInfo* player)
     {
-        NotificationListener::sendNotification("Press [Fire] to respawn", GametypeInfo::NOTIFICATION_SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
-        // Remove the player from the list of players that have spawned, since it currently is not.
-        this->spawned_.erase(player);
+        if(GameMode::isMaster())
+        {
+            NotificationListener::sendNotification("Press [Fire] to respawn", GametypeInfo::NOTIFICATION_SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
+            // Remove the player from the list of players that have spawned, since it currently is not.
+            this->spawnedPlayers_.erase(player);
+            this->setReadyToSpawnHelper(player, false);
+            this->setSpawnedHelper(player, false);
+        }
     }
 
     /**
@@ -297,9 +304,92 @@ namespace orxonox
     */
     void GametypeInfo::playerSpawned(PlayerInfo* player)
     {
-        if(this->hasStarted() && !this->hasEnded())
-            NotificationListener::sendCommand("clear", GametypeInfo::NOTIFICATION_SENDER, notificationSendMode::network, player->getClientID());
+        if(GameMode::isMaster())
+        {
+            if(this->hasStarted() && !this->hasEnded())
+            {
+                //NotificationListener::sendCommand("clear", GametypeInfo::NOTIFICATION_SENDER, notificationSendMode::network, player->getClientID());
+                this->setSpawnedHelper(player, true);
+            }
+        }
     }
+
+    /**
+    @brief
+        Inform the GametypeInfo that the local player has changed its spawned status.
+    @param spawned
+        Whether the local player has changed to spawned or to not spawned.
+    */
+    void GametypeInfo::changedSpawned(bool spawned)
+    {
+        if(this->spawned_ == spawned)
+            return;
+        
+        this->spawned_ = spawned;
+        // Clear the notifications if the Player has spawned.
+        if(this->spawned_ && !this->hasEnded())
+            NotificationListener::sendCommand("clear", GametypeInfo::NOTIFICATION_SENDER);
+    }
+
+    /**
+    @brief
+        Inform the GametypeInfo about a player that has entered,
+    @param player
+        The player that has entered.
+    */
+    void GametypeInfo::playerEntered(PlayerInfo* player)
+    {
+        if(GameMode::isMaster())
+        {
+            // Display "Press [Fire] to start the match" if the game has not yet ended.
+            if(!this->hasEnded())
+                NotificationListener::sendNotification("Press [Fire] to start the match", GametypeInfo::NOTIFICATION_SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
+            // Else display "Game has ended".
+            else
+                NotificationListener::sendNotification("Game has ended", GametypeInfo::NOTIFICATION_SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
+        }
+    }
+
+    /**
+    @brief
+        Helper method. Sends changedReadyToSpawn notifiers over the network.
+    @param player
+        The player that has changed its ready to spawn status.
+    @param ready
+        The new ready to spawn status.
+    */
+    void GametypeInfo::setReadyToSpawnHelper(PlayerInfo* player, bool ready)
+    {
+        if(GameMode::isMaster())
+        {
+            if(player->getClientID() == CLIENTID_SERVER)
+                this->changedReadyToSpawn(ready);
+            else
+                callMemberNetworkFunction(GametypeInfo, changedReadyToSpawn, this->getObjectID(), player->getClientID(), ready);
+        }
+    }
+
+    /**
+    @brief
+        Helper method. Sends changedSpawned notifiers over the network.
+    @param player
+        The player that has changed its spawned status.
+    @param ready
+        The new spawned status.
+    */
+    void GametypeInfo::setSpawnedHelper(PlayerInfo* player, bool spawned)
+    {
+        if(GameMode::isMaster())
+        {
+            if(player->getClientID() == CLIENTID_SERVER)
+                    this->changedSpawned(spawned);
+            else
+                callMemberNetworkFunction(GametypeInfo, changedSpawned, this->getObjectID(), player->getClientID(), spawned);
+        }
+    }
+
+    // Announce messages.
+    // TODO: Replace with notifications.
 
     void GametypeInfo::sendAnnounceMessage(const std::string& message)
     {

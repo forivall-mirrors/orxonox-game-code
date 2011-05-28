@@ -60,8 +60,6 @@ namespace orxonox
             GametypeInfo(BaseObject* creator);
             virtual ~GametypeInfo();
 
-            virtual void changedActivity(void); // Is called when the activity has changed.
-
             /**
             @brief Get whether the game has started yet.
             @return Returns true if the game has started, false if not.
@@ -102,6 +100,22 @@ namespace orxonox
                 { return this->counter_; }
             void changedCountdownCounter(void); // Is called when the start countdown counter has changed.
 
+            /**
+            @brief Get whether the local player is ready to spawn.
+            @return Returns true if the player is ready to spawn, false if not.
+            */
+            inline bool isReadyToSpawn() const
+                { return this->readyToSpawn_; }
+            void changedReadyToSpawn(bool ready); // Inform the GametypeInfo that the local player has changed its spawned status.
+            
+            /**
+            @brief Get whether the local player is spawned.
+            @return Returns true if the local player is currently spawned, false if not.
+            */
+            inline bool isSpawned() const
+                { return this->spawned_; }
+            void changedSpawned(bool spawned); // Inform the GametypeInfo that the local player has changed its spawned status.
+
             inline const std::string& getHUDTemplate() const
                 { return this->hudtemplate_; }
 
@@ -119,8 +133,6 @@ namespace orxonox
             void dispatchFadingMessage(const std::string& message);
             
         protected:
-            void changedReadyToSpawn(PlayerInfo* player); // Is called when a player has become ready to spawn.
-            
             void start(void); // Inform the GametypeInfo that the game has started.
             void end(void); // Inform the GametypeInfo that the game has ended.
             void setStartCountdown(float countdown); // Set the start countdown to the input value.
@@ -131,12 +143,15 @@ namespace orxonox
             void playerReadyToSpawn(PlayerInfo* player); // Inform the GametypeInfo about a player that is ready to spawn.
             void pawnKilled(PlayerInfo* player); // Inform the GametypeInfo about a player whose Pawn has been killed.
             void playerSpawned(PlayerInfo* player); // Inform the GametypeInfo about a player that has spawned.
+            void playerEntered(PlayerInfo* player); // Inform the GametypeInfo about a player that has entered,
 
             inline void setHUDTemplate(const std::string& templateName)
                 { this->hudtemplate_ = templateName; };
 
         private:
             void registerVariables();
+            void setSpawnedHelper(PlayerInfo* player, bool spawned); // Helper method. Sends changedReadyToSpawn notifiers over the network.
+            void setReadyToSpawnHelper(PlayerInfo* player, bool ready); // Helper method. Sends changedSpawned notifiers over the network.
 
             static const std::string NOTIFICATION_SENDER; //!< The name of the sender for the sending of notifications.
 
@@ -147,7 +162,9 @@ namespace orxonox
             unsigned int counter_; //!< The current integer value of the start countdown, the start countdown counter.
             std::string hudtemplate_;
             
-            std::set<PlayerInfo*> spawned_; //!< A set of players that are currently spawned.
+            std::set<PlayerInfo*> spawnedPlayers_; //!< A set of players that are currently spawned.
+            bool spawned_; //!< Whether the local Player is currently spawned.
+            bool readyToSpawn_; //!< Whether the local Player is ready to spawn.
     };
 }
 
