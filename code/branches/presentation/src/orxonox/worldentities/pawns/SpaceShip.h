@@ -65,6 +65,7 @@ namespace orxonox
             Engine* getEngine(unsigned int i); // This one's for XMLPort
             inline const std::vector<Engine*>& getEngineList()
                 { return this->engineList_; }
+            void removeEngine(Engine* engine);
             void removeAllEngines();
 
             void setSpeedFactor(float factor);

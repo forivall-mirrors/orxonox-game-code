@@ -341,12 +341,15 @@ namespace orxonox
     {
         if(GameMode::isMaster())
         {
-            // Display "Press [Fire] to start the match" if the game has not yet ended.
-            if(!this->hasEnded())
-                NotificationListener::sendNotification("Press [Fire] to start the match", GametypeInfo::NOTIFICATION_SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
-            // Else display "Game has ended".
-            else
-                NotificationListener::sendNotification("Game has ended", GametypeInfo::NOTIFICATION_SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
+            if( player->isHumanPlayer() )
+            {
+                // Display "Press [Fire] to start the match" if the game has not yet ended.
+                if(!this->hasEnded())
+                    NotificationListener::sendNotification("Press [Fire] to start the match", GametypeInfo::NOTIFICATION_SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
+                // Else display "Game has ended".
+                else
+                    NotificationListener::sendNotification("Game has ended", GametypeInfo::NOTIFICATION_SENDER, notificationMessageType::info, notificationSendMode::network, player->getClientID());
+            }
         }
     }
 

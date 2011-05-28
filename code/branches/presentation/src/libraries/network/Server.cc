@@ -412,7 +412,7 @@ namespace orxonox
     GamestateManager::setSynched(clientID);
     
     COUT(4) << "sending welcome" << std::endl;
-    packet::Welcome *w = new packet::Welcome(clientID, OBJECTID_UNKNOWN);
+    packet::Welcome *w = new packet::Welcome(clientID);
     w->setPeerID(clientID);
     b = w->send( static_cast<Host*>(this) );
     assert(b);

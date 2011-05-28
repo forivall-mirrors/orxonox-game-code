@@ -373,8 +373,20 @@ namespace orxonox
 
     void SpaceShip::removeAllEngines()
     {
-        for(unsigned int i=0; i<this->engineList_.size(); i++)
-            this->engineList_[i]->destroy();
+        while(this->engineList_.size())
+            this->engineList_.back()->destroy();
+    }
+    
+    void SpaceShip::removeEngine(Engine* engine)
+    {
+        for(std::vector<Engine*>::iterator it=this->engineList_.begin(); it!=this->engineList_.end(); ++it)
+        {
+            if(*it==engine)
+            {
+                this->engineList_.erase(it);
+                return;
+            }
+        }
     }
 
     void SpaceShip::setSpeedFactor(float factor)

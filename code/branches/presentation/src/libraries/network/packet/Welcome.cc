@@ -43,7 +43,7 @@ namespace packet {
 #define _CLIENTID             _PACKETID + sizeof(Type::Value)
 #define _ENDIANTEST           _CLIENTID + sizeof(uint32_t)
 
-  Welcome::Welcome( uint32_t clientID, uint32_t shipID )
+  Welcome::Welcome( uint32_t clientID )
  : Packet()
 {
   flags_ = flags_ | PACKET_FLAGS_CLASSID;
