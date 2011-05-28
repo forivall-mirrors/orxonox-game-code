@@ -181,17 +181,6 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # Remove potential duplicates
   LIST(REMOVE_DUPLICATES _${_target_name}_files)
 
-  # Mark files to be excluded from build units
-  IF(_arg_EXCLUDE_FROM_BUILD_UNITS)
-    SET_SOURCE_FILES_PROPERTIES(${_arg_EXCLUDE_FROM_BUILD_UNITS}
-      PROPERTIES EXCLUDE_FROM_BUILD_UNITS TRUE)
-  ENDIF()
-
-  # Full build units
-  IF(NOT _arg_ORXONOX_EXTERNAL AND ENABLE_BUILD_UNITS MATCHES "full")
-    GENERATE_BUILD_UNITS(${_target_name} _${_target_name}_files)
-  ENDIF()
-
   # TOLUA_FILES
   IF(_arg_TOLUA_FILES)
     GENERATE_TOLUA_BINDINGS(${_target_name_capitalised} _${_target_name}_files
@@ -203,6 +192,17 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
         FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_dir})
       ENDFOREACH(_dir)
     ENDIF()
+  ENDIF()
+
+  # Mark files to be excluded from build units
+  IF(_arg_EXCLUDE_FROM_BUILD_UNITS)
+    SET_SOURCE_FILES_PROPERTIES(${_arg_EXCLUDE_FROM_BUILD_UNITS}
+      PROPERTIES EXCLUDE_FROM_BUILD_UNITS TRUE)
+  ENDIF()
+
+  # Full build units
+  IF(NOT _arg_ORXONOX_EXTERNAL AND ENABLE_BUILD_UNITS MATCHES "full")
+    GENERATE_BUILD_UNITS(${_target_name} _${_target_name}_files)
   ENDIF()
 
   # First part (pre target) of precompiled header files

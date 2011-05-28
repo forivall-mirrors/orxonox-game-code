@@ -57,9 +57,15 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
     PARENT_SCOPE
   )
 
-  # Disable annoying GCC warnings
   IF(CMAKE_COMPILER_IS_GNU)
+    # Disable annoying GCC warnings
     SET_SOURCE_FILES_PROPERTIES(${_tolua_cxxfile} PROPERTIES COMPILE_FLAGS "-w")
+  ENDIF()
+
+  IF(MSVC)
+    # Including the file in a build unit is impossible because CMAKE_CFG_INTDIR
+    # exands to an expression that the compiler doesn't understand
+    SET_SOURCE_FILES_PROPERTIES(${_tolua_cxxfile} PROPERTIES EXCLUDE_FROM_BUILD_UNITS TRUE)
   ENDIF()
 
   # Create temporary package file and implicit dependencies
