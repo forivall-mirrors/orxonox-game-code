@@ -51,7 +51,11 @@ IF(ENABLE_BUILD_UNITS)
       SET(NR_OF_BUILD_UNITS ${_nr_of_units})
     ENDIF()
   ENDIF()
-  INCLUDE(BuildUnitsConfig.cmake)
+  IF(CMAKE_COMPILER_IS_GNU)
+    INCLUDE(BuildUnitsConfigGCC.cmake)
+  ELSEIF(MSVC)
+    INCLUDE(BuildUnitsConfigMSVC.cmake)
+  ENDIF()
 ENDIF()
 
 # Use WinMain() or main()?
