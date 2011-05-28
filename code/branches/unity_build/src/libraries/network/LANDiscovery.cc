@@ -48,7 +48,8 @@ namespace orxonox
 
   LANDiscovery::~LANDiscovery()
   {
-    enet_host_destroy(this->host_);
+    if (this->host_)
+      enet_host_destroy(this->host_);
   }
 
   void LANDiscovery::discover()
