@@ -53,6 +53,7 @@ function P.createLevelList()
         end
         index = index + 1
     end
+
     for k,v in pairs(P.levelList) do
         local item = CEGUI.createListboxTextItem(v:getName())
         item:setSelectionBrushImage(menuImageSet, "MultiListSelectionBrush")

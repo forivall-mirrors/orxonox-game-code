@@ -273,6 +273,9 @@ namespace orxonox
     */
     int QuestManager::getNumSubQuests(Quest* quest, PlayerInfo* player)
     {
+        if(quest == NULL)
+            return this->getNumRootQuests(player);
+
         std::list<Quest*> quests = quest->getSubQuestList();
         int numQuests = 0;
         for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
@@ -295,6 +298,9 @@ namespace orxonox
     */
     Quest* QuestManager::getSubQuest(Quest* quest, PlayerInfo* player, int index)
     {
+        if(quest == NULL)
+            return this->getRootQuest(player, index);
+
         std::list<Quest*> quests = quest->getSubQuestList();
         for(std::list<Quest*>::iterator it = quests.begin(); it != quests.end(); it++)
         {
@@ -311,7 +317,8 @@ namespace orxonox
         The quest to get the hints of.
     @param player
         The player.
-    @return Returns the number of QuestHints of the input Quest for the input player.
+    @return
+        Returns the number of QuestHints of the input Quest for the input player.
     */
     int QuestManager::getNumHints(Quest* quest, PlayerInfo* player)
     {
@@ -334,6 +341,8 @@ namespace orxonox
         The player.
     @param index
         The index of the QuestHint.
+    @return
+        Returns a pointer to the index-th QuestHint of the input Quest for the input player.
     */
     QuestHint* QuestManager::getHints(Quest* quest, PlayerInfo* player, int index)
     {
@@ -344,6 +353,19 @@ namespace orxonox
                 return *it;
         }
         return NULL;
+    }
+
+    /**
+    @brief
+        Get the parent-quest of the input Quest.
+    @param quest
+        The Quest to get the parent-quest of.
+    @return
+        Returns a pointer to the parent-quest of the input Quest.
+    */
+    Quest* QuestManager::getParentQuest(Quest* quest)
+    {
+        return quest->getParentQuest();
     }
 
     /**
@@ -370,6 +392,32 @@ namespace orxonox
     QuestDescription* QuestManager::getDescription(QuestHint* item)
     {
         return item->getDescription();
+    }
+
+    /**
+    @brief
+        Get the id of the input Quest.
+    @param item
+        The Quest to get the id of.
+    @return
+        Returns the id of the input Quest.
+    */
+    const std::string QuestManager::getId(Quest* item) const
+    {
+        return item->getId();
+    }
+
+    /**
+    @brief
+        Get the id of the input QuestHint.
+    @param item
+        The QuestHint to get the id of.
+    @return
+        Returns the id of the input QuestHint.
+    */
+    const std::string QuestManager::getId(QuestHint* item) const
+    {
+        return item->getId();
     }
 
     /**

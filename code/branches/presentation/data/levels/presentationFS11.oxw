@@ -27,6 +27,19 @@ include("templates/pickupRepresentationTemplates.oxt")
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="narrative"
+    size=1
+    displayTime=30
+    position="0.2, 0, 0.8, 0"
+    fontSize="24"
+    fontColor="1, 1, 0, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
 
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
@@ -38,7 +51,21 @@ include("templates/pickupRepresentationTemplates.oxt")
     ?>
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="0,0,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+
+    <SimpleNotification message="Welcome to Earth Orbit" >
+        <events>
+            <trigger>
+                <EventListener event=spawntrigger />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    <EventMultiTrigger name=spawntrigger>
+        <events>
+            <trigger>
+                <SpawnPoint position="0,0,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+            </trigger>
+        </events>
+    </EventMultiTrigger>
 
 <!-- PICKUPS -->
     <PickupSpawner position="-50,50,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
