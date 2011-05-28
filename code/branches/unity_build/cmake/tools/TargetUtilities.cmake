@@ -39,6 +39,7 @@
  #                         specified with PCH_FILE
  #      NO_INSTALL:        Do not install the target at all
  #      NO_VERSION:        Prevents adding any version to a target
+ #      NO_BUILD_UNITS:    Disables automatic (full) build units
  #
  #    Lists:
  #      LINK_LIBRARIES:    Redirects to TARGET_LINK_LIBRARIES
@@ -90,7 +91,8 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  PCH_NO_DEFAULT 
-                  NO_INSTALL         NO_VERSION        ${_additional_switches})
+                  NO_INSTALL         NO_VERSION        NO_BUILD_UNITS
+                  ${_additional_switches})
   SET(_list_names LINK_LIBRARIES     VERSION           SOURCE_FILES
                   DEFINE_SYMBOL      TOLUA_FILES       PCH_FILE
                   PCH_EXCLUDE        OUTPUT_NAME       LINK_LIBS_LINUX
@@ -201,8 +203,11 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # Full build units
-  IF(NOT _arg_ORXONOX_EXTERNAL AND ENABLE_BUILD_UNITS MATCHES "full")
-    GENERATE_BUILD_UNITS(${_target_name} _${_target_name}_files)
+  IF(ENABLE_BUILD_UNITS AND NOT _arg_NO_BUILD_UNITS)
+    # Use full build units even in partial mode for externals
+    IF(ENABLE_BUILD_UNITS MATCHES "full" OR _arg_ORXONOX_EXTERNAL)
+      GENERATE_BUILD_UNITS(${_target_name} _${_target_name}_files)
+    ENDIF()
   ENDIF()
 
   # First part (pre target) of precompiled header files

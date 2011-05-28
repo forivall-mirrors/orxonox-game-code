@@ -33,14 +33,7 @@ SET_SOURCE_FILES(OIS_FILES
   OISMultiTouch.h
   OISObject.h
   OISPrereqs.h
-)
 
-# Put everything into one single build unit (doens't work on OS X though)
-IF(NOT APPLE)
-  ADD_SOURCE_FILES(OIS_FILES BUILD_UNIT OISBuildUnit.cpp)
-ENDIF()
-
-ADD_SOURCE_FILES(OIS_FILES
   OISEffect.cpp
   OISException.cpp
   OISForceFeedback.cpp
@@ -49,6 +42,7 @@ ADD_SOURCE_FILES(OIS_FILES
   OISKeyboard.cpp
   OISObject.cpp
 )
+
 IF(WIN32)
   ADD_SUBDIRECTORY(win32)
 ELSEIF(APPLE)
@@ -57,14 +51,14 @@ ELSEIF(UNIX)
   ADD_SUBDIRECTORY(linux)
 ENDIF()
 
-# Close build unit from above
-IF(NOT APPLE)
-  ADD_SOURCE_FILES(OIS_FILES END_BUILD_UNIT)
-ENDIF()
-
 # MinGW doesn't come with some required Windows headers
 IF(MINGW)
   INCLUDE_DIRECTORIES(${WMI_INCLUDE_DIR})
+ENDIF()
+
+# Apple has problems with OIS and build units
+IF(APPLE)
+  SET(USE_BUILD_UNITS NO_BUILD_UNITS)
 ENDIF()
 
 ORXONOX_ADD_LIBRARY(ois_orxonox
@@ -81,6 +75,7 @@ ORXONOX_ADD_LIBRARY(ois_orxonox
     /System/Library/Frameworks/Carbon.framework
   LINK_LIBS_LINUX
     X11
+  ${USE_BUILD_UNITS}
   SOURCE_FILES
     ${OIS_FILES}
 )

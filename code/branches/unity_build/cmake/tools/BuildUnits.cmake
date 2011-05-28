@@ -49,6 +49,7 @@ FUNCTION(GENERATE_BUILD_UNITS _target_name _all_files_var)
   # Get number of build units we have to make. The default is NR_OF_BUILD_UNITS
   # However we can specify different values in a config file
   SET(_config ${BUILD_UNITS_CONFIG_${NR_OF_BUILD_UNITS}_THREADS})
+  SET(_nr_of_units)
   IF(_config)
     LIST(FIND _config ${_target_name} _index)
     IF(NOT _index EQUAL -1)
@@ -58,8 +59,12 @@ FUNCTION(GENERATE_BUILD_UNITS _target_name _all_files_var)
     ENDIF()
   ENDIF()
   IF(NOT _nr_of_units)
-    # Use default
-    SET(_nr_of_units NR_OF_BUILD_UNITS)
+    # Use default as specified (e.g. "full4" --> 4) or 1 for externals
+    IF(_arg_ORXONOX_EXTERNAL)
+      SET(_nr_of_units 1)
+    ELSE()
+      SET(_nr_of_units ${NR_OF_BUILD_UNITS})
+    ENDIF()
   ENDIF()
 
   # Disable precompiled header files for targets with two or less build units
@@ -112,7 +117,10 @@ FUNCTION(GENERATE_BUILD_UNITS _target_name _all_files_var)
       ENDFOREACH(_file)
 
       # Generate the filename
-      SET(_unit_file ${CMAKE_CURRENT_BINARY_DIR}/${_target_name}BuildUnit${_unit_nr}.cc)
+      IF(NOT _nr_of_units EQUAL 1)
+        SET(_suffix ${_unit_nr})
+      ENDIF()
+      SET(_unit_file ${CMAKE_CURRENT_BINARY_DIR}/${_target_name}BuildUnit${_suffix}.cc)
       # Only write if content has changed (avoids recompile)
       IF(EXISTS ${_unit_file})
         FILE(READ ${_unit_file} _file_include_string)

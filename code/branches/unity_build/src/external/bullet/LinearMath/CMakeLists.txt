@@ -1,13 +1,11 @@
 ADD_SOURCE_FILES(BULLET_FILES
 
-BUILD_UNIT BulletLinearMathBuildUnit.cpp
 	btAlignedAllocator.cpp
 	btConvexHull.cpp
 	btConvexHullComputer.cpp
 	btGeometryUtil.cpp
 	btQuickprof.cpp
 	btSerializer.cpp
-END_BUILD_UNIT
 
 	# Headers
 	btAabbUtil2.h
