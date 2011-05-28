@@ -29,7 +29,7 @@
 #ifndef _RaceCheckPoint_H__
 #define _RaceCheckPoint_H__
 
-#include "objects/ObjectsPrereqs.h"
+#include "gametypes/GametypesPrereqs.h"
 
 #include "objects/triggers/DistanceTrigger.h"
 #include "interfaces/RadarViewable.h"
@@ -42,7 +42,7 @@ namespace orxonox
     The RaceCheckPoint class enables the creation of a check point to use in a SpaceRace level.
     !!! Don't forget to control the indexes of your check points and to set one last check point!!!
   */
-    class _ObjectsExport RaceCheckPoint : public DistanceTrigger, public RadarViewable
+    class _GametypesExport RaceCheckPoint : public DistanceTrigger, public RadarViewable
     {
         public:
             RaceCheckPoint(BaseObject* creator);

@@ -43,7 +43,7 @@
 //-----------------------------------------------------------------------
 
 #if defined(ORXONOX_PLATFORM_WINDOWS) && !defined(Gametypes_STATIC_BUILD)
-#  ifdef Gametypes_SHARED_BUILD
+#  ifdef GAMETYPES_SHARED_BUILD
 #    define _GametypesExport __declspec(dllexport)
 #  else
 #    if defined( __MINGW32__ )

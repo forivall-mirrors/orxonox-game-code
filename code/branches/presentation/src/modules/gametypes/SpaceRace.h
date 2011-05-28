@@ -43,7 +43,7 @@ namespace orxonox
   @brief
     The SpaceRace class enables the creation of a space race level, where the player has to reach check points in a given order.
   */
-    class _OrxonoxExport SpaceRace : public Gametype
+    class _GametypesExport SpaceRace : public Gametype
     {
         friend class RaceCheckPoint;
         
