@@ -742,6 +742,7 @@ namespace orxonox
     */
     /*static*/ void GUIManager::addFontHelper(const std::string& name, int size, const std::string& fontName)
     {
+#ifdef ORXONOX_OLD_CEGUI
         if(CEGUI::FontManager::getSingleton().isFontPresent(name)) // If a font with that name already exists.
             return;
 
@@ -763,6 +764,12 @@ namespace orxonox
         font = CEGUI::FontManager::getSingleton().createFont("FreeType", xmlAttributes);
         if(font != NULL)
             font->load();
+#else
+        if(CEGUI::FontManager::getSingleton().isDefined(name)) // If a font with that name already exists.
+            return;
+
+        CEGUI::FontManager::getSingleton().createFreeTypeFont(name, (float)size, true, fontName, "", true, 800.0f, 600.0f);
+#endif
     }
 
 }
