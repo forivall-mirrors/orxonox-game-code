@@ -179,11 +179,11 @@ namespace orxonox
       */
     void NotificationQueue::registerVariables()
     {
+        registerVariable( this->name_, VariableDirection::ToClient, new NetworkCallback<NotificationQueue>(this, &NotificationQueue::changedName));
         registerVariable( this->maxSize_, VariableDirection::ToClient, new NetworkCallback<NotificationQueue>(this, &NotificationQueue::maxSizeChanged));
         registerVariable( this->targets_, VariableDirection::ToClient, new NetworkCallback<NotificationQueue>(this, &NotificationQueue::targetsChanged));
         registerVariable( this->displayTime_, VariableDirection::ToClient, new NetworkCallback<NotificationQueue>(this, &NotificationQueue::displayTimeChanged));
     }
-
 
     /**
     @brief
