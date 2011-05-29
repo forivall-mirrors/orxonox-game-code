@@ -55,7 +55,13 @@ namespace orxonox
     {
         RegisterObject(NotificationQueue);
 
-        this->initialize();
+        this->size_ = 0;
+        this->tickTime_ = 0.0f;
+        this->maxSize_ = NotificationQueue::DEFAULT_SIZE;
+        this->displayTime_ = NotificationQueue::DEFAULT_DISPLAY_TIME;
+
+        this->creationTime_ = std::time(0);
+        
         this->registerVariables();
     }
 
@@ -95,16 +101,21 @@ namespace orxonox
 
     /**
     @brief
-        Initializes the NotificationQueue.
+        Is called when the name of the NotificationQueue has changed.
+        Clears and re-creates the NotificationQueue.
     */
-    void NotificationQueue::initialize(void)
+    void NotificationQueue::changedName(void)
     {
-        this->size_ = 0;
-        this->tickTime_ = 0.0f;
-        this->maxSize_ = NotificationQueue::DEFAULT_SIZE;
-        this->displayTime_ = NotificationQueue::DEFAULT_DISPLAY_TIME;
+        SUPER(NotificationQueue, changedName);
 
-        this->creationTime_ = std::time(0);
+        if(this->isRegistered())
+            this->clear();
+            
+        this->create();
+
+        this->targetsChanged();
+        this->maxSizeChanged();
+        this->displayTimeChanged();
     }
 
     /**
@@ -158,8 +169,6 @@ namespace orxonox
         XMLPortParam(NotificationQueue, "targets", setTargets, getTargets, xmlelement, mode).defaultValues(NotificationListener::ALL);
         XMLPortParam(NotificationQueue, "size", setMaxSize, getMaxSize, xmlelement, mode);
         XMLPortParam(NotificationQueue, "displayTime", setDisplayTime, getDisplayTime, xmlelement, mode);
-
-        this->create();
     }
     
     

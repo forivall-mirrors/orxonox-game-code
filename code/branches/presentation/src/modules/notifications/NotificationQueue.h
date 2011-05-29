@@ -98,7 +98,8 @@ namespace orxonox
 
             virtual void tick(float dt); // To update from time to time.
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
+
+            virtual void changedName(void);
             
             void update(void); // Updates the NotificationQueue.
             void update(Notification* notification, const std::time_t & time); // Updates the NotificationQueue by adding an new Notification.
@@ -158,6 +159,8 @@ namespace orxonox
             bool tidy(void); // Pops all Notifications from the NotificationQueue.
             
         protected:
+            void registerVariables();
+            
             /**
             @brief Is called when a notification was pushed.
             @param notification The Notification that was pushed.
@@ -183,9 +186,7 @@ namespace orxonox
             virtual void create(void); // Creates the NotificationQueue.
 
         private:
-            void initialize(void); // Initializes the NotificationQueue.
-
-            time_t creationTime_; // The time this NotificationQueue was created.
+            time_t creationTime_; //!< The time this NotificationQueue was created.
             
             unsigned int maxSize_; //!< The maximal number of Notifications displayed.
             unsigned int size_; //!< The number of Notifications displayed.

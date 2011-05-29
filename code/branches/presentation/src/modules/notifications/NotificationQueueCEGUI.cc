@@ -64,7 +64,7 @@ namespace orxonox
     
     NotificationQueueCEGUI::~NotificationQueueCEGUI()
     {
-        if(GameMode::showsGraphics())
+        if(this->isRegistered() && GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".removeQueue(\"" + this->getName() +  "\")");
     }
 
@@ -102,6 +102,17 @@ namespace orxonox
         registerVariable( this->displaySize_, VariableDirection::ToClient, new NetworkCallback<NotificationQueueCEGUI>(this, &NotificationQueueCEGUI::displaySizeChanged));
     }
 
+    void NotificationQueueCEGUI::changedName(void)
+    {
+        SUPER(NotificationQueueCEGUI, changedName);
+
+        this->positionChanged();
+        this->fontSizeChanged();
+        this->fontColorChanged();
+        this->alignmentChanged();
+        this->displaySizeChanged();
+    }
+
     /**
     @brief
         Destroys the NotificationQueueCEGUI.
@@ -112,7 +123,7 @@ namespace orxonox
     void NotificationQueueCEGUI::destroy(bool noGraphics)
     {
         // Remove the NotificationQueue in lua.
-        if(GameMode::showsGraphics() && !noGraphics)
+        if(this->isRegistered() && GameMode::showsGraphics() && !noGraphics)
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".removeQueue(\"" + this->getName() +  "\")");
 
         NotificationQueue::destroy();
@@ -150,7 +161,7 @@ namespace orxonox
     */
     void NotificationQueueCEGUI::displaySizeChanged(void)
     {
-        if(GameMode::showsGraphics())
+        if(this->isRegistered() && GameMode::showsGraphics())
         {
             if(this->displaySize_.z == 0.0 && this->displaySize_.w == 0.0)
                 GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ")");
@@ -190,7 +201,7 @@ namespace orxonox
     */
     void NotificationQueueCEGUI::positionChanged(void)
     {
-        if(GameMode::showsGraphics())
+        if(this->isRegistered() && GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".moveQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->position_.x) + ", " + multi_cast<std::string>(this->position_.y) + ", " + multi_cast<std::string>(this->position_.z) + ", " + multi_cast<std::string>(this->position_.w) + ")");
     }
 
@@ -217,7 +228,7 @@ namespace orxonox
     */
     void NotificationQueueCEGUI::alignmentChanged(void)
     {
-        if(GameMode::showsGraphics())
+        if(this->isRegistered() && GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueAlignment(\"" + this->getName() + "\", \"" + this->alignment_ + "\")");
     }
 
@@ -242,7 +253,7 @@ namespace orxonox
     */
     void NotificationQueueCEGUI::fontSizeChanged(void)
     {
-        if(GameMode::showsGraphics())
+        if(this->isRegistered() && GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontSize(\"" + this->getName() + "\", " + multi_cast<std::string>(this->fontSize_) + ")");
     }
 
@@ -273,7 +284,7 @@ namespace orxonox
             stream << std::hex << std::setw(2) << std::setfill('0') << int(this->fontColor_[(i+3)%4]*255);
         this->fontColorStr_ = stream.str();
 
-        if(GameMode::showsGraphics())
+        if(this->isRegistered() && GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontColor(\"" + this->getName() + "\", \"" + this->fontColorStr_ + "\")");
     }
 
@@ -302,7 +313,7 @@ namespace orxonox
     void NotificationQueueCEGUI::notificationPushed(Notification* notification)
     {
          // Push the Notification to the GUI.
-        if(GameMode::showsGraphics())
+        if(this->isRegistered() && GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".pushNotification(\"" + this->getName() + "\", \"" + notification->getMessage() + "\")");
     }
 
@@ -313,7 +324,7 @@ namespace orxonox
     void NotificationQueueCEGUI::notificationPopped(void)
     {
         // Pops the Notification from the GUI.
-        if(GameMode::showsGraphics())
+        if(this->isRegistered() && GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".popNotification(\"" + this->getName() + "\")");
     }
 
@@ -324,7 +335,7 @@ namespace orxonox
     void NotificationQueueCEGUI::notificationRemoved(unsigned int index)
     {
         // Removes the Notification from the GUI.
-        if(GameMode::showsGraphics())
+        if(this->isRegistered() && GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".removeNotification(\"" + this->getName() + "\", " + multi_cast<std::string>(index) + ")");
     }
 
@@ -339,7 +350,7 @@ namespace orxonox
         NotificationQueue::clear(noGraphics);
 
         // Clear the NotificationQueue in the GUI.
-        if(GameMode::showsGraphics() && !noGraphics)
+        if(this->isRegistered() && GameMode::showsGraphics() && !noGraphics)
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".clearQueue(\"" + this->getName() + "\")");
     }
 
@@ -349,6 +360,9 @@ namespace orxonox
     */
     void NotificationQueueCEGUI::create(void)
     {
+        if(this->isRegistered() && GameMode::showsGraphics())
+            GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".removeQueue(\"" + this->getName() +  "\")");
+        
         this->NotificationQueue::create();
         
         if(this->isRegistered() && GameMode::showsGraphics())

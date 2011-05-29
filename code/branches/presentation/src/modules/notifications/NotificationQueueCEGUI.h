@@ -73,7 +73,8 @@ namespace orxonox // tolua_export
             virtual ~NotificationQueueCEGUI();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
-            void registerVariables();
+
+            virtual void changedName(void);
 
             void destroy(bool noGraphics = false); // Destroys the NotificationQueue.
 
@@ -132,6 +133,8 @@ namespace orxonox // tolua_export
             static NotificationQueueCEGUI* getQueue(const std::string& name); // tolua_export // Get the NotificationQueueCEGUI with the input name.
             
         protected:
+            void registerVariables();
+            
             virtual void create(void); // Creates the NotificationQueue in lua.
             
             virtual void notificationPushed(Notification* notification); // Is called by the NotificationQueue when a Notification was pushed
