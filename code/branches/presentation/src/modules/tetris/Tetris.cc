@@ -126,13 +126,8 @@ namespace orxonox
     {
         assert(stone);
 
-        if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
-        {
-            stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0f, stone->getPosition().z));
-            return false;
-        }
-
-        for(std::vector<TetrisStone*>::const_iterator it = this->stones_.begin(); it != this->stones_.end(); ++it)
+        // we use a reverse iterator because we have to check for collisions with the topmost stones first
+        for(std::vector<TetrisStone*>::const_reverse_iterator it = this->stones_.rbegin(); it != this->stones_.rend(); ++it)
         {
             if(stone == *it)
                 continue;
@@ -144,6 +139,13 @@ namespace orxonox
                 this->activeStone_->setPosition(Vector3(this->activeStone_->getPosition().x, currentStonePosition.y+this->center_->getStoneSize(), this->activeStone_->getPosition().z));
                 return false;
             }// This case applies if the stones overlap partially vertically
+        }
+
+        // after we checked for collision with all stones, we also check for collision with the bottom
+        if(position.y < this->center_->getStoneSize()/2.0f) //!< If the stone has reached the bottom of the level
+        {
+            stone->setPosition(Vector3(stone->getPosition().x, this->center_->getStoneSize()/2.0f, stone->getPosition().z));
+            return false;
         }
 
         return true;
