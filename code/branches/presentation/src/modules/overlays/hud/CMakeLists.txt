@@ -3,6 +3,7 @@ ADD_SOURCE_FILES(OVERLAYS_SRC_FILES
   HUDNavigation.cc
   HUDRadar.cc
   HUDSpeedBar.cc
+  HUDBoostBar.cc
   HUDHealthBar.cc
   HUDTimer.cc
   ChatOverlay.cc

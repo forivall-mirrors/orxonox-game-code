@@ -87,6 +87,14 @@ namespace orxonox
             inline bool getBoost() const
                 { return this->bBoost_; }
 
+            inline float getBoostPower() const
+                { return this->boostPower_; }
+            inline float getInitialBoostPower() const
+                { return this->initialBoostPower_; }
+
+            inline bool isBoostCoolingDown() const
+                { return bBoostCooldown_; }
+
         protected:
             virtual std::vector<PickupCarrier*>* getCarrierChildren(void) const;
             bool bInvertYAxis_;

@@ -136,6 +136,7 @@ namespace orxonox
         XMLPortParam(OrxonoxOverlay, "rotation",  setRotation,  getRotation,  xmlelement, mode);
         XMLPortParam(OrxonoxOverlay, "correctaspect", setAspectCorrection,   getAspectCorrection,   xmlelement, mode);
         XMLPortParam(OrxonoxOverlay, "background",    setBackgroundMaterial, getBackgroundMaterial, xmlelement, mode);
+        XMLPortParam(OrxonoxOverlay, "backgroundtex", setBackgroundTexture,  getBackgroundTexture,  xmlelement, mode);
     }
 
     void OrxonoxOverlay::changedName()
@@ -162,6 +163,34 @@ namespace orxonox
     {
         if (this->background_)
             return this->background_->getMaterialName();
+        else
+            return BLANKSTRING;
+    }
+
+    //! Sets the background texture name and creates a new material if necessary
+    void OrxonoxOverlay::setBackgroundTexture(const std::string& texture)
+    {
+        if (this->background_ && this->background_->getMaterial().isNull() && !texture.empty())
+        {
+            // create new material
+            const std::string& materialname = "generated_material" + getUniqueNumberString();
+            Ogre::MaterialPtr material = static_cast<Ogre::MaterialPtr>(Ogre::MaterialManager::getSingleton().create(materialname, "General"));
+            material->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+            Ogre::TextureUnitState* textureUnitState_ = material->getTechnique(0)->getPass(0)->createTextureUnitState();
+            textureUnitState_->setTextureName(texture);
+            textureUnitState_->setNumMipmaps(0);
+            this->background_->setMaterialName(materialname);
+        }
+    }
+
+    //! Returns the the texture name of the background
+    const std::string& OrxonoxOverlay::getBackgroundTexture() const
+    {
+        if (this->background_)
+        {
+            Ogre::TextureUnitState* tempTx = this->background_->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+            return tempTx->getTextureName();
+        }
         else
             return BLANKSTRING;
     }
@@ -405,9 +434,17 @@ namespace orxonox
         }
     }
 
-    void OrxonoxOverlay::setBackgroundAlpha(float alpha) {
+    void OrxonoxOverlay::setBackgroundAlpha(float alpha)
+    {
         Ogre::MaterialPtr ptr = this->background_->getMaterial();
         Ogre::TextureUnitState* tempTx = ptr->getTechnique(0)->getPass(0)->getTextureUnitState(0);
         tempTx->setAlphaOperation(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, alpha);
+    }
+
+    void OrxonoxOverlay::setBackgroundColour(ColourValue colour)
+    {
+        Ogre::MaterialPtr ptr = this->background_->getMaterial();
+        Ogre::TextureUnitState* tempTx = ptr->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+        tempTx->setColourOperationEx(Ogre::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, colour);
     }
 }
