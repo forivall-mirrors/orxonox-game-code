@@ -84,7 +84,7 @@ namespace orxonox
 
         Different graphical consoles build upon a Shell, for example InGameConsole and IOConsole.
     */
-    class _CoreExport Shell : virtual public OrxonoxClass, public OutputListener, public DevModeListener
+    class _CoreExport Shell : public OutputListener, public DevModeListener
     {
         public:
             /// Defines the type of a line of text in the Shell - some types depend on the output level, others are of internal use.

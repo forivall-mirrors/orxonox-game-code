@@ -98,9 +98,9 @@ namespace orxonox
         { this->usageInformation_ = usage; return *this; }
 
         //! Returns the actual value of the argument. Can be equal to default value.
-        MultiType getValue() const { return value_; }
+        const MultiType& getValue() const { return value_; }
         //! Returns the given default value as type T.
-        MultiType getDefaultValue() const { return defaultValue_; }
+        const MultiType& getDefaultValue() const { return defaultValue_; }
 
     private:
         //! Constructor initialises both value_ and defaultValue_ with defaultValue.
@@ -155,7 +155,7 @@ namespace orxonox
         template <class T>
         static void getValue(const std::string& name, T* value)
         { *value = (T)(getArgument(name)->getValue()); }
-        static MultiType getValue(const std::string& name)
+        static const MultiType& getValue(const std::string& name)
         { return getArgument(name)->getValue(); }
         template <class T>
         static CommandLineArgument& addArgument(const std::string& name, T defaultValue);
