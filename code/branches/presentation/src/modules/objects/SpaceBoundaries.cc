@@ -111,7 +111,9 @@ namespace orxonox
             this->setBillboardOptions( tmp );
             Vector3 normalisedVec = (position - this->getPosition()).normalisedCopy(); /* Vektor von Kugelmitte nach aussen */
             tmp->setCommonDirection ( -1.0 * normalisedVec );
-            tmp->setCommonUpVector( Vector3::UNIT_Z );
+            Vector3 upVector = Vector3(normalisedVec.z, normalisedVec.z, -(normalisedVec.x+normalisedVec.y));
+            upVector.normalise();
+            tmp->setCommonUpVector( upVector );
             billboardAdministration tmp2 = { true, tmp };
             this->billboards_.push_back( tmp2 );
         } else {
@@ -120,7 +122,9 @@ namespace orxonox
             current->usedYet = true;
             Vector3 normalisedVec = (position - this->getPosition()).normalisedCopy(); /* Vektor von Kugelmitte nach aussen */
             current->billy->setCommonDirection ( -1.0 * normalisedVec );
-            current->billy->setCommonUpVector( Vector3::UNIT_Z );
+            Vector3 upVector = Vector3(normalisedVec.z, normalisedVec.z, -(normalisedVec.x+normalisedVec.y));
+            upVector.normalise();
+            current->billy->setCommonUpVector( upVector );
         }
     }
     
