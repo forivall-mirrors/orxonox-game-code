@@ -33,6 +33,10 @@ ENDIF()
 # Orxonox only supports MSVC 8 and above, which gets asserted above
 SET(PCH_COMPILER_SUPPORT TRUE)
 
+# __COUNTER__ macro has been around since VS 2005
+# It might be required to make full build units work
+SET(HAVE_COUNTER_MACRO TRUE)
+
 
 #################### Compiler Flags #####################
 

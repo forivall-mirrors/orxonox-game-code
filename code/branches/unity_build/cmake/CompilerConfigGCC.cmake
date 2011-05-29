@@ -44,6 +44,13 @@ IF(_compare_result GREATER -1)
   SET(PCH_COMPILER_SUPPORT TRUE)
 ENDIF()
 
+# __COUNTER__ macro was only added in GCC 4.3
+# It might be required to make full build units work
+COMPARE_VERSION_STRINGS("${GCC_VERSION}" "4.3.0" _compare_result)
+IF(_compare_result GREATER -1)
+  SET(HAVE_COUNTER_MACRO TRUE)
+ENDIF()
+
 # Also include environment flags. Could cause conflicts though
 SET_COMPILER_FLAGS("$ENV{CXXFLAGS}" CXX CACHE)
 SET_COMPILER_FLAGS("$ENV{CFLAGS}"   C   CACHE)
