@@ -194,14 +194,19 @@ namespace orxonox
     */
     void BaseObject::addTemplate(Template* temp)
     {
-        this->templates_.insert(temp);
-        if( temp->isLink() )
+        // network
+        if (temp->isLink())
         {
-          this->networkTemplateNames_.insert(temp->getLink());
-          assert( !Template::getTemplate(temp->getLink())->isLink() );
+            this->networkTemplateNames_.insert(temp->getLink());
+            
+            Template* link;
+            assert(!(link = Template::getTemplate(temp->getLink())) || !link->isLink());
         }
         else
-          this->networkTemplateNames_.insert(temp->getName());
+            this->networkTemplateNames_.insert(temp->getName());
+
+        // add template
+        this->templates_.insert(temp);
         temp->applyOn(this);
     }
 
