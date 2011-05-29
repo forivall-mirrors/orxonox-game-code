@@ -71,8 +71,11 @@ namespace orxonox
 
     Engine::~Engine()
     {
-        if( this->ship_ && this->ship_->hasEngine(this) )
-            this->ship_->removeEngine(this);
+        if (this->isInitialized())
+        {
+            if (this->ship_ && this->ship_->hasEngine(this))
+                this->ship_->removeEngine(this);
+        }
     }
 
     void Engine::XMLPort(Element& xmlelement, XMLPort::Mode mode)
