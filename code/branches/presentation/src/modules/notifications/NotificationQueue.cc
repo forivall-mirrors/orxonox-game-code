@@ -135,7 +135,7 @@ namespace orxonox
     void NotificationQueue::tick(float dt)
     {
         this->tickTime_ += dt; // Add the time interval that has passed to the time counter.
-        if(this->displayTime_ != INF && this->tickTime_ >= 1.0) // If the time counter is greater than 1s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
+        if(this->displayTime_ != INF && this->tickTime_ >= 1.0) // If the time counter is greater than 1 s all Notifications that have expired are removed, if it is smaller we wait to the next tick.
         {
             this->timeLimit_.time = std::time(0)-this->displayTime_; // Container containing the current time.
 
@@ -170,9 +170,9 @@ namespace orxonox
       */
     void NotificationQueue::registerVariables()
     {
-        registerVariable( this->maxSize_, VariableDirection::ToClient );
-        registerVariable( this->targets_, VariableDirection::ToClient );
-        registerVariable( this->displayTime_, VariableDirection::ToClient );
+        registerVariable( this->maxSize_, VariableDirection::ToClient, new NetworkCallback<NotificationQueue>(this, &NotificationQueue::maxSizeChanged));
+        registerVariable( this->targets_, VariableDirection::ToClient, new NetworkCallback<NotificationQueue>(this, &NotificationQueue::targetsChanged));
+        registerVariable( this->displayTime_, VariableDirection::ToClient, new NetworkCallback<NotificationQueue>(this, &NotificationQueue::displayTimeChanged));
     }
 
 
@@ -228,7 +228,7 @@ namespace orxonox
     /**
     @brief
         Adds (pushes) a Notification to the NotificationQueue.
-        It inserts it into the storage containers, creates a corresponding container and pushes the Notification message to the GUI.
+        It inserts it into the storage containers, creates a corresponding container and pushes the notification message to the GUI.
     @param notification
         The Notification to be pushed.
     @param time
@@ -362,7 +362,15 @@ namespace orxonox
         }
         
         this->maxSize_ = size;
+        this->maxSizeChanged();
+    }
 
+    /**
+    @brief
+        Is called when the maximum number of displayed Notifications has changed.
+    */
+    void NotificationQueue::maxSizeChanged(void)
+    {
         if(this->isRegistered())
             this->update();
     }
@@ -384,7 +392,15 @@ namespace orxonox
         }
             
         this->displayTime_ = time;
+        this->displayTimeChanged();
+    }
 
+    /**
+    @brief
+        Is called when the maximum number of seconds a Notification is displayed has changed.
+    */
+    void NotificationQueue::displayTimeChanged(void)
+    {
         if(this->isRegistered())
             this->update();
     }
@@ -427,6 +443,15 @@ namespace orxonox
         for(unsigned int i = 0; i < string.size(); i++)
             this->targets_.insert(string[i]);
 
+        this->targetsChanged();
+    }
+
+    /**
+    @brief
+        Is called when the NotificationQueue's targets have changed.
+    */
+    void NotificationQueue::targetsChanged(void)
+    {
         // TODO: Why?
         if(this->isRegistered())
         {

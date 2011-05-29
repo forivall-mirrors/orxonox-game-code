@@ -94,11 +94,11 @@ namespace orxonox
     
     void NotificationQueueCEGUI::registerVariables()
     {
-        registerVariable( this->position_, VariableDirection::ToClient );
-        registerVariable( this->fontSize_, VariableDirection::ToClient );
-        registerVariable( this->fontColor_, VariableDirection::ToClient );
-        registerVariable( this->alignment_, VariableDirection::ToClient );
-        registerVariable( this->displaySize_, VariableDirection::ToClient );
+        registerVariable( this->position_, VariableDirection::ToClient, new NetworkCallback<NotificationQueueCEGUI>(this, &NotificationQueueCEGUI::positionChanged));
+        registerVariable( this->fontSize_, VariableDirection::ToClient, new NetworkCallback<NotificationQueueCEGUI>(this, &NotificationQueueCEGUI::fontSizeChanged));
+        registerVariable( this->fontColor_, VariableDirection::ToClient, new NetworkCallback<NotificationQueueCEGUI>(this, &NotificationQueueCEGUI::fontColorChanged));
+        registerVariable( this->alignment_, VariableDirection::ToClient, new NetworkCallback<NotificationQueueCEGUI>(this, &NotificationQueueCEGUI::alignmentChanged));
+        registerVariable( this->displaySize_, VariableDirection::ToClient, new NetworkCallback<NotificationQueueCEGUI>(this, &NotificationQueueCEGUI::displaySizeChanged));
     }
 
     /**
@@ -140,9 +140,18 @@ namespace orxonox
         }
 
         this->displaySize_ = size;
+        this->displaySizeChanged();
+    }
+
+    /**
+    @brief
+        Is called when the display size has changed.
+    */
+    void NotificationQueueCEGUI::displaySizeChanged(void)
+    {
         if(GameMode::showsGraphics())
         {
-            if(size.z == 0.0 && size.w == 0.0)
+            if(this->displaySize_.z == 0.0 && this->displaySize_.w == 0.0)
                 GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ")");
             else
                 GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".resizeQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->displaySize_.x) + ", " + multi_cast<std::string>(this->displaySize_.y) + ", " + multi_cast<std::string>(this->displaySize_.z) + ", " + multi_cast<std::string>(this->displaySize_.w) + ")");
@@ -171,6 +180,15 @@ namespace orxonox
         }
 
         this->position_ = position;
+        this->positionChanged();
+    }
+
+    /**
+    @brief
+        Is called when the NotificationQueue's position has changed.
+    */
+    void NotificationQueueCEGUI::positionChanged(void)
+    {
         if(GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".moveQueue(\"" + this->getName() + "\", " + multi_cast<std::string>(this->position_.x) + ", " + multi_cast<std::string>(this->position_.y) + ", " + multi_cast<std::string>(this->position_.z) + ", " + multi_cast<std::string>(this->position_.w) + ")");
     }
@@ -189,6 +207,15 @@ namespace orxonox
 
         // TODO: Check whether the alignment string is correct?
         this->alignment_ = alignment;
+        this->alignmentChanged();
+    }
+
+    /**
+    @brief
+        Is called when the horizontal alignment of the Notifications text has changed.
+    */
+    void NotificationQueueCEGUI::alignmentChanged(void)
+    {
         if(GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueAlignment(\"" + this->getName() + "\", \"" + this->alignment_ + "\")");
     }
@@ -205,6 +232,15 @@ namespace orxonox
             return;
 
         this->fontSize_ = size;
+        this->fontSizeChanged();
+    }
+
+    /**
+    @brief
+        Is called when the font size of the text displayed by this NotificationQueue has changed.
+    */
+    void NotificationQueueCEGUI::fontSizeChanged(void)
+    {
         if(GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontSize(\"" + this->getName() + "\", " + multi_cast<std::string>(this->fontSize_) + ")");
     }
@@ -221,11 +257,21 @@ namespace orxonox
             return;
 
         this->fontColor_ = color;
+        this->fontColorChanged();
+    }
+
+    /**
+    @brief
+        Is called when the font color if the text displayed by this NotificationQueue.
+    */
+    void NotificationQueueCEGUI::fontColorChanged(void)
+    {
         // Convert to ARGB format.
         std::stringstream stream;
         for(unsigned int i = 0; i < 4; i++)
             stream << std::hex << std::setw(2) << std::setfill('0') << int(this->fontColor_[(i+3)%4]*255);
         this->fontColorStr_ = stream.str();
+
         if(GameMode::showsGraphics())
             GUIManager::getInstance().getLuaState()->doString(NotificationQueueCEGUI::NOTIFICATION_LAYER + ".changeQueueFontColor(\"" + this->getName() + "\", \"" + this->fontColorStr_ + "\")");
     }
@@ -248,7 +294,7 @@ namespace orxonox
 
     /**
     @brief
-        Is called by the NotificationQueue when a notification was pushed.
+        Is called by the NotificationQueue when a Notification was pushed.
     @param notification
         The Notification that was pushed.
     */
@@ -261,7 +307,7 @@ namespace orxonox
 
     /**
     @brief
-        Is called by the NotificationQueue when a notification was popped.
+        Is called by the NotificationQueue when a Notification was popped.
     */
     void NotificationQueueCEGUI::notificationPopped(void)
     {
@@ -272,7 +318,7 @@ namespace orxonox
 
     /**
     @brief Is called when a notification was removed.
-    @param index The index the removed notification was at.
+    @param index The index the removed Notification was at.
     */
     void NotificationQueueCEGUI::notificationRemoved(unsigned int index)
     {

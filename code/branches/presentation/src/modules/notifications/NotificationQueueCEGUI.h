@@ -85,6 +85,7 @@ namespace orxonox // tolua_export
             */
             inline const Vector4& getDisplaySize(void) const
                 { return this->displaySize_; }
+            void displaySizeChanged(void); // Is called when the display size has changed.
 
             void setPosition(const Vector4& position); // Set the position of the window that displays the NotificationQueue.
             /**
@@ -93,6 +94,7 @@ namespace orxonox // tolua_export
             */
             inline const Vector4& getPosition(void) const
                 { return this->position_; }
+            void positionChanged(void); // Is called when the NotificationQueue's position has changed.
 
             void setAlignment(const std::string& alignment); // Set the horizontal alignment of the Notifications text.
             /**
@@ -101,6 +103,7 @@ namespace orxonox // tolua_export
             */
             inline const std::string& getAlignment(void)
                 { return this->alignment_; }
+            void alignmentChanged(void); // Is called when the horizontal alignment of the Notifications text has changed.
 
             void setFontSize(unsigned int size); // Set the font size of the text displayed by this NotificationQueue.
             /**
@@ -109,6 +112,7 @@ namespace orxonox // tolua_export
             */
             inline unsigned int getFontSize(void)
                 { return this->fontSize_; }
+            void fontSizeChanged(void); // Is called when the font size of the text displayed by this NotificationQueue has changed.
 
             void setFontColor(const Vector4& color); // Set the font color if the text displayed by this NotificationQueue.
             /**
@@ -123,15 +127,16 @@ namespace orxonox // tolua_export
             */
             inline const std::string& getFontColorStr(void) const
                 { return this->fontColorStr_; }
+            void fontColorChanged(void); // Is called when the font color if the text displayed by this NotificationQueue has changed.
 
             static NotificationQueueCEGUI* getQueue(const std::string& name); // tolua_export // Get the NotificationQueueCEGUI with the input name.
             
         protected:
             virtual void create(void); // Creates the NotificationQueue in lua.
             
-            virtual void notificationPushed(Notification* notification); // Is called by the NotificationQueue when a notification was pushed
-            virtual void notificationPopped(void); // Is called by the NotificationQueue when a notification was popped.
-            virtual void notificationRemoved(unsigned int index); // Is called when a notification was removed.
+            virtual void notificationPushed(Notification* notification); // Is called by the NotificationQueue when a Notification was pushed
+            virtual void notificationPopped(void); // Is called by the NotificationQueue when a Notification was popped.
+            virtual void notificationRemoved(unsigned int index); // Is called when a Notification was removed.
             
             virtual void clear(bool noGraphics = false); // Clears the NotificationQueue by removing all NotificationContainers.
 

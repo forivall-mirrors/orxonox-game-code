@@ -36,7 +36,7 @@ include("templates/pickupRepresentationTemplates.oxt")
     displayTime=30
     position="0.2, 0, 0.8, 0"
     fontSize="24"
-    fontColor="1, 1, 0, 0.8"
+    fontColor="0.3, 1, 0.2, 0.8"
     alignment="HorzCentred"
     displaySize="0.6, 0, 0, 0"
     />
@@ -52,20 +52,16 @@ include("templates/pickupRepresentationTemplates.oxt")
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
-    <SimpleNotification message="Welcome to Earth Orbit" >
+    <SimpleNotification message="Welcome to Earth Orbit" sender="narrative" >
         <events>
             <trigger>
                 <EventListener event=spawntrigger />
             </trigger>
         </events>
     </SimpleNotification>
-    <EventMultiTrigger name=spawntrigger>
-        <events>
-            <trigger>
-                <SpawnPoint position="0,0,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
-            </trigger>
-        </events>
-    </EventMultiTrigger>
+
+    <DistanceTrigger name="spawntrigger" position="0,0,0" target="Pawn" distance=10 stayActive="true" />
+    <SpawnPoint position="0,0,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
 
 <!-- PICKUPS -->
     <PickupSpawner position="-50,50,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">

@@ -94,7 +94,6 @@ namespace orxonox
 
         public:
             NotificationQueue(BaseObject* creator);
-            NotificationQueue(BaseObject* creator, const std::string& name, const std::string& senders = NotificationListener::ALL, unsigned int size = NotificationQueue::DEFAULT_SIZE, unsigned int displayTime = NotificationQueue::DEFAULT_DISPLAY_TIME);
             virtual ~NotificationQueue();
 
             virtual void tick(float dt); // To update from time to time.
@@ -128,6 +127,8 @@ namespace orxonox
             inline int getDisplayTime(void) const
                 { return this->displayTime_; }
             // tolua_end
+            void maxSizeChanged(void); // Is called when the maximum number of displayed Notifications has changed.
+            void displayTimeChanged(void);
 
             /**
             @brief Returns the current number of Notifications displayed.
@@ -145,6 +146,7 @@ namespace orxonox
 
             void setTargets(const std::string & targets); // Set the targets of this NotificationQueue.
             const std::string& getTargets(void) const; // Returns a string consisting of the concatenation of the targets.
+            void targetsChanged(void); // Is called when the NotificationQueue's targets have changed.
 
             /**
             @brief Check whether the NotificationQueue is registered with the NotificationManager.
