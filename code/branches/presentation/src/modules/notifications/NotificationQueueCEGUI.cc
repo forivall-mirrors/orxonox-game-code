@@ -39,6 +39,7 @@
 #include "core/GameMode.h"
 #include "core/GUIManager.h"
 #include "core/LuaState.h"
+#include "core/XMLPort.h"
 #include "util/Convert.h"
 
 #include "ToluaBindNotifications.h"
