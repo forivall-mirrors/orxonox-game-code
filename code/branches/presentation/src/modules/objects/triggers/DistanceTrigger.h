@@ -161,7 +161,7 @@ namespace orxonox
             
             distanceTriggerBeaconMode::Value beaconMode_; //!< The beacon mode.
             std::string targetName_; //!< The name a DistanceTriggerBeacon needs to have to make the DistanceTrigger react to it if in beacon-mode.
-            ClassTreeMask* beaconMask_; //!< A mask, that only accepts DistanceTriggerBeacons.
+            ClassTreeMask beaconMask_; //!< A mask, that only accepts DistanceTriggerBeacons.
             
             WeakPtr<WorldEntity> cache_; //!< Caches the entity that triggered the DistanceTrigger last.
     };
