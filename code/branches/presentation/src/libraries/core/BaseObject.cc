@@ -201,6 +201,7 @@ namespace orxonox
             
             Template* link;
             assert(!(link = Template::getTemplate(temp->getLink())) || !link->isLink());
+            link = NULL;
         }
         else
             this->networkTemplateNames_.insert(temp->getName());
