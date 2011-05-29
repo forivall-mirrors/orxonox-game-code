@@ -79,7 +79,7 @@
 #include "tools/ToolsPrereqs.h"
 
 #include "core/OrxonoxClass.h"
-#include "core/command/Executor.h"
+#include "core/command/ExecutorPtr.h"
 
 namespace orxonox
 {
@@ -108,25 +108,7 @@ namespace orxonox
 
             Timer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall = false);
 
-            /**
-                @brief Initializes and starts the timer, which will call an executor after some time.
-                @param interval         The timer-interval in seconds
-                @param bLoop            If true, the executor gets called every @a interval seconds
-                @param executor         The executor that will be called
-                @param bKillAfterCall   If true, the timer will be deleted after the executor was called
-            */
-            void setTimer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall = false)
-            {
-                this->setInterval(interval);
-                this->bLoop_ = bLoop;
-                this->executor_ = executor;
-                this->bActive_ = true;
-
-                this->time_ = this->interval_;
-                this->bKillAfterCall_ = bKillAfterCall;
-
-                executor->getFunctor()->setSafeMode(true);
-            }
+            void setTimer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall = false);
 
             void run();
 
