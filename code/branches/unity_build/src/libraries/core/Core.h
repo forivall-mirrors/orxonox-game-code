@@ -44,8 +44,6 @@
 #include "CorePrereqs.h"
 
 #include <string>
-#include <loki/ScopeGuard.h>
-
 #include "util/DestructionHelper.h"
 #include "util/Singleton.h"
 #include "OrxonoxClass.h"

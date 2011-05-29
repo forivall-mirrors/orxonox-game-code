@@ -72,9 +72,7 @@
 #define _Super_H__
 
 #include "CorePrereqs.h"
-
 #include "util/Debug.h"
-#include "Event.h"
 
 ///////////////////////
 // Macro definitions //

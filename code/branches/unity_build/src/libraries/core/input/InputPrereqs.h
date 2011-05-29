@@ -40,7 +40,6 @@
 
 #include <ois/OISKeyboard.h>
 #include <ois/OISMouse.h>
-#include <ois/OISJoyStick.h>
 #include "util/OrxEnum.h"
 
 namespace orxonox

@@ -113,9 +113,9 @@
 #ifndef _Functor_H__
 #define _Functor_H__
 
-#include <typeinfo>
-
 #include "core/CorePrereqs.h"
+
+#include <typeinfo>
 
 #include "util/Debug.h"
 #include "util/MultiType.h"

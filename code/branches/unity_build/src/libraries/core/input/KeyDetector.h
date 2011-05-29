@@ -31,7 +31,6 @@
 
 #include "InputPrereqs.h"
 
-#include <boost/shared_ptr.hpp>
 #include "util/Singleton.h"
 #include "KeyBinder.h"
 

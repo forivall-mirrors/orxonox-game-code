@@ -38,7 +38,6 @@
 
 #include <sstream>
 #include <string>
-#include <vector>
 #include "util/Singleton.h"
 #include "Shell.h"
 

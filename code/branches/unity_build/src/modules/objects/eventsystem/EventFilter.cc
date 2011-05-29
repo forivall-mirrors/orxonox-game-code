@@ -29,6 +29,7 @@
 #include "EventFilter.h"
 
 #include "core/CoreIncludes.h"
+#include "core/Event.h"
 #include "core/XMLPort.h"
 #include "EventName.h"
 

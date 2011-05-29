@@ -38,6 +38,7 @@
 
 #include "CorePrereqs.h"
 #include <boost/preprocessor/cat.hpp>
+#include <loki/ScopeGuard.h>
 
 // Macro for declaring a tolua interface of a library/module
 #define DeclareToluaInterface(libraryName) \
