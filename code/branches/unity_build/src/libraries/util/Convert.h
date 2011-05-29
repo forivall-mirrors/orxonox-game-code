@@ -132,6 +132,12 @@
 #include "Debug.h"
 #include "ImplicitConversion.h"
 
+// disable warnings about possible loss of data
+#ifdef ORXONOX_COMPILER_MSVC
+#  pragma warning(push)
+#  pragma warning(disable:4244)
+#endif
+
 namespace orxonox
 {
     ///////////////////
@@ -469,5 +475,10 @@ namespace orxonox
         static bool convert(bool* output, const std::string& input);
     };
 }
+
+// Reinstate warnings
+#ifdef ORXONOX_COMPILER_MSVC
+#  pragma warning(pop)
+#endif
 
 #endif /* _Convert_H__ */
