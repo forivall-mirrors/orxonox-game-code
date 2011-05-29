@@ -139,7 +139,7 @@ namespace orxonox
         COUT(4) << "NotificationDispatcher (&" << this << ") triggered." << std::endl;
 
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
-        Pawn* pawn = NULL;
+        PlayerInfo* player = NULL;
 
         // If the trigger is a PlayerTrigger.
         if(pTrigger != NULL)
@@ -147,31 +147,18 @@ namespace orxonox
             if(!pTrigger->isForPlayer())  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
                 return false;
             else
-                pawn = pTrigger->getTriggeringPlayer();
+                player = pTrigger->getTriggeringPlayer();
         }
         else
             return false;
 
-        if(pawn == NULL)
+        if(player == NULL)
         {
             COUT(4) << "The NotificationDispatcher was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
             return false;
         }
 
-        // Extract the PlayerInfo from the Pawn.
-        PlayerInfo* player = pawn->getPlayer();
-
-        if(player == NULL)
-        {
-            CCOUT(3) << "The PlayerInfo* is NULL." << std::endl;
-            return false;
-        }
-
-        // HACK fix. Resolve this issue another way...
-        if(GameMode::isStandalone())
-            this->dispatch(0);
-        else
-            this->dispatch(player->getClientID());
+        this->dispatch(player->getClientID());
 
         return true;
     }

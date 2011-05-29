@@ -58,7 +58,6 @@ namespace orxonox
     {
         RegisterRootObject(PlayerTrigger);
 
-        this->player_ = NULL;
         this->isForPlayer_ = false;
     }
 

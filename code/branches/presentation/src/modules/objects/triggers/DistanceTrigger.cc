@@ -204,8 +204,11 @@ namespace orxonox
                     if(this->beaconMode_ == distanceTriggerBeaconMode::identify)
                         entity = entity->getParent();
 
-                    Pawn* player = orxonox_cast<Pawn*>(entity);
-                    this->setTriggeringPlayer(player);
+                    Pawn* pawn = orxonox_cast<Pawn*>(entity);
+                    if(pawn != NULL)
+                        this->setTriggeringPawn(pawn);
+                    else
+                        CCOUT(2) << "Pawn was NULL." << endl;
                 }
                 
                 // Add the entity to the cache.

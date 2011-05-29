@@ -39,11 +39,14 @@
 
 #include "core/OrxonoxClass.h"
 
+#include "infos/PlayerInfo.h"
+#include "worldentities/pawns/Pawn.h"
+
 namespace orxonox
 {
     /**
     @brief
-        PlayerTrigger is an interface if implemented by a specific trigger can be used to recover the Player (or more precisely the @ref orxonox::Pawn "Pawn") that triggered it.
+        PlayerTrigger is an interface if implemented by a specific trigger can be used to recover the Player (or the @ref orxonox::Pawn "Pawn") that triggered it.
 
     @author
         Damian 'Mozork' Frick
@@ -57,15 +60,22 @@ namespace orxonox
         virtual ~PlayerTrigger() {}
 
         /**
-        @brief Returns the player that triggered the PlayerTrigger.
+        @brief Returns the Pawn that triggered the PlayerTrigger.
         @return Returns a pointer to the Pawn that triggered the PlayerTrigger.
         */
-        inline Pawn* getTriggeringPlayer(void) const
+        inline Pawn* getTriggeringPawn(void) const
+            { return this->pawn_.get(); }
+
+        /**
+        @brief Returns the player that triggered the PlayerTrigger.
+        @return Returns a pointer to the PlayerInfo that triggered the PlayerTrigger.
+        */
+        inline PlayerInfo* getTriggeringPlayer(void) const
             { return this->player_; }
 
         /**
-        @brief Checks whether the PlayerTrigger normally returns a Pawn.
-        @return Returns true if the PlayerTrigger normally returns a Pawn.
+        @brief Checks whether the PlayerTrigger normally returns a Pawn/PlayerInfo.
+        @return Returns true if the PlayerTrigger normally returns a Pawn/PlayerInfo.
         */
         inline bool isForPlayer(void) const
            { return this->isForPlayer_; }
@@ -75,8 +85,8 @@ namespace orxonox
         @brief Set the player that triggered the PlayerTrigger. This is normally done by classes inheriting vom PlayerTrigger.
         @param player A pointer to the Pawn that triggered the PlayerTrigger.
         */
-        inline void setTriggeringPlayer(Pawn* player)
-           { this->player_ = player; }
+        inline void setTriggeringPawn(Pawn* pawn)
+           { assert(pawn); this->player_ = WeakPtr<PlayerInfo>(pawn->getPlayer()); this->pawn_ = WeakPtr<Pawn>(pawn); }
 
         /**
         @brief Set whether the PlayerTrigger normally is triggered by Pawns.
@@ -86,7 +96,8 @@ namespace orxonox
            { this->isForPlayer_ = isForPlayer; }
 
     private:
-        Pawn* player_; //!< The player that triggered the PlayerTrigger.
+        WeakPtr<PlayerInfo> player_; //!< The player that triggered the PlayerTrigger.
+        WeakPtr<Pawn> pawn_; //!< The Pawn that triggered the PlayerTrigger.
         bool isForPlayer_; //!< Is true when the PlayerTrigger should be set to normally be triggered by Pawns.
 
     };

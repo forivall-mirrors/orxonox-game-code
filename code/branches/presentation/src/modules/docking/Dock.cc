@@ -83,7 +83,7 @@ namespace orxonox
     bool Dock::execute(bool bTriggered, BaseObject* trigger)
     {
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
-        Pawn* pawn = NULL;
+        PlayerInfo* player = NULL;
 
         // Check whether it is a player trigger and extract pawn from it
         if(pTrigger != NULL)
@@ -92,24 +92,16 @@ namespace orxonox
                 COUT(4) << "Docking:execute PlayerTrigger was not triggered by a player.." << std::endl;
                 return false;
             }
-            pawn = pTrigger->getTriggeringPlayer();
+            player = pTrigger->getTriggeringPlayer();
         }
         else
         {
             COUT(4) << "Docking::execute Not a player trigger, can't extract pawn from it.." << std::endl;
             return false;
         }
-        if(pawn == NULL)
-        {
-            COUT(4) << "Docking::execute Can't retrieve Pawn from Trigger. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
-            return false;
-        }
-
-        // Extract the PlayerInfo from the Pawn.
-        PlayerInfo* player = pawn->getPlayer();
         if(player == NULL)
         {
-            COUT(2) << "Docking::execute The PlayerInfo* is NULL." << std::endl;
+            COUT(4) << "Docking::execute Can't retrieve PlayerInfo from Trigger. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
             return false;
         }
 
