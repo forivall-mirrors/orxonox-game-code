@@ -167,7 +167,11 @@ namespace orxonox
             return false;
         }
 
-        this->dispatch(player->getClientID());
+        // HACK fix. Resolve this issue another way...
+        if(GameMode::isStandalone())
+            this->dispatch(0);
+        else
+            this->dispatch(player->getClientID());
 
         return true;
     }
