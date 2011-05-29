@@ -223,19 +223,19 @@ namespace orxonox
     void SpaceShip::moveFrontBack(const Vector2& value)
     {
         this->localLinearAcceleration_.setZ(this->localLinearAcceleration_.z() - value.x);
-        this->steering_.z = -value.x;
+        this->steering_.z -= value.x;
     }
 
     void SpaceShip::moveRightLeft(const Vector2& value)
     {
         this->localLinearAcceleration_.setX(this->localLinearAcceleration_.x() + value.x);
-        this->steering_.x = value.x;
+        this->steering_.x += value.x;
     }
 
     void SpaceShip::moveUpDown(const Vector2& value)
     {
         this->localLinearAcceleration_.setY(this->localLinearAcceleration_.y() + value.x);
-        this->steering_.y = value.x;
+        this->steering_.y += value.x;
     }
 
     void SpaceShip::rotateYaw(const Vector2& value)
@@ -243,6 +243,9 @@ namespace orxonox
         this->localAngularAcceleration_.setY(this->localAngularAcceleration_.y() + value.x);
 
         Pawn::rotateYaw(value);
+
+		//This function call adds a lift to the ship when it is rotating to make it's movement more "realistic" and enhance the feeling.
+        if (abs(this-> getLocalVelocity().z) < stallSpeed_)  {this->moveRightLeft(-lift_ / 5 * value * sqrt(abs(this-> getLocalVelocity().z)));}
     }
 
     void SpaceShip::rotatePitch(const Vector2& value)
