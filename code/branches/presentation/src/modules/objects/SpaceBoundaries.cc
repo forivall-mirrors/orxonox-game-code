@@ -58,7 +58,7 @@ namespace orxonox
         {
             this->pawnsIn_.clear();
         
-            for( std::vector<billboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++)
+            for( std::vector<BillboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++)
             {
                 if( current->billy != NULL)
                 {
@@ -94,38 +94,33 @@ namespace orxonox
         }
     }
     
-    void SpaceBoundaries::positionBillboard(const Vector3 position)
+    void SpaceBoundaries::positionBillboard(const Vector3& position, float alpha)
     {
-        std::vector<billboardAdministration>::iterator current;
-        for( current = this->billboards_.begin(); current != this->billboards_.end(); current++)
-        {
-            if(!current->usedYet)
-            {
+        size_t current;
+        for (current = 0; current < this->billboards_.size(); ++current)
+            if (!this->billboards_[current].usedYet)
                 break;
-            }
-        }
-        if( current == this->billboards_.end() )
+
+        if (current == this->billboards_.size())
         {
-            Billboard *tmp = new Billboard(this);
-            tmp->setPosition(position);
-            this->setBillboardOptions( tmp );
-            Vector3 normalisedVec = (position - this->getPosition()).normalisedCopy(); /* Vektor von Kugelmitte nach aussen */
-            tmp->setCommonDirection ( -1.0 * normalisedVec );
-            Vector3 upVector = Vector3(normalisedVec.z, normalisedVec.z, -(normalisedVec.x+normalisedVec.y));
-            upVector.normalise();
-            tmp->setCommonUpVector( upVector );
-            billboardAdministration tmp2 = { true, tmp };
-            this->billboards_.push_back( tmp2 );
-        } else {
-            current->billy->setPosition(position);
-            current->billy->setVisible(true);
-            current->usedYet = true;
-            Vector3 normalisedVec = (position - this->getPosition()).normalisedCopy(); /* Vektor von Kugelmitte nach aussen */
-            current->billy->setCommonDirection ( -1.0 * normalisedVec );
-            Vector3 upVector = Vector3(normalisedVec.z, normalisedVec.z, -(normalisedVec.x+normalisedVec.y));
-            upVector.normalise();
-            current->billy->setCommonUpVector( upVector );
+            Billboard* billboard = new Billboard(this);
+            billboard->setPosition(position);
+            this->setBillboardOptions(billboard);
+            BillboardAdministration ba = {true, billboard};
+            this->billboards_.push_back(ba);
         }
+
+        this->billboards_[current].billy->setPosition(position);
+        this->billboards_[current].billy->setVisible(true);
+        this->billboards_[current].billy->setColour(ColourValue(1, 1, 1, alpha));
+        this->billboards_[current].usedYet = true;
+
+        Vector3 directionVector = (this->getPosition() - position).normalisedCopy(); // vector from the position of the billboard to the center of the sphere
+        this->billboards_[current].billy->setCommonDirection(directionVector);
+
+        Vector3 upVector = Vector3(directionVector.z, directionVector.z, -(directionVector.x + directionVector.y)); // vector perpendicular to the direction vector
+        upVector.normalise();
+        this->billboards_[current].billy->setCommonUpVector(upVector);
     }
     
     void SpaceBoundaries::setBillboardOptions(Billboard *billy)
@@ -141,7 +136,7 @@ namespace orxonox
     
     void SpaceBoundaries::removeAllBillboards()
     {
-        for( std::vector<billboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++ )
+        for( std::vector<BillboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++ )
         {
             current->usedYet = false;
             current->billy->setVisible(false);
@@ -228,7 +223,7 @@ namespace orxonox
                 }
                 if(/* humanItem &&*/ abs(this->maxDistance_ - distance) < this->showDistance_ )
                 {
-                    this->displayBoundaries(currentPawn); // Show the boundary
+                    this->displayBoundaries(currentPawn, 1.0f - fabs(this->maxDistance_ - distance) / this->showDistance_); // Show the boundary
                 }
                 if(distance > this->maxDistance_ && (this->reaction_ == 1) )
                 {
@@ -267,7 +262,7 @@ namespace orxonox
         // TODO
     }
     
-    void SpaceBoundaries::displayBoundaries(Pawn *item)
+    void SpaceBoundaries::displayBoundaries(Pawn *item, float alpha)
     {
         
         Vector3 direction = item->getPosition() - this->getPosition();
@@ -275,7 +270,7 @@ namespace orxonox
         
         Vector3 boundaryPosition = this->getPosition() + direction * this->maxDistance_;
         
-        this->positionBillboard(boundaryPosition);
+        this->positionBillboard(boundaryPosition, alpha);
     }
     
     void SpaceBoundaries::conditionalBounceBack(Pawn *item, float currentDistance, float dt)

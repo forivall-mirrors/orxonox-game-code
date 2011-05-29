@@ -99,12 +99,12 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
             void tick(float dt);
 
         private:
-            struct billboardAdministration{ bool usedYet; Billboard* billy; };
+            struct BillboardAdministration{ bool usedYet; Billboard* billy; };
             
             // Variabeln::
             std::list<WeakPtr<Pawn> > pawnsIn_; //!< List of the pawns that this instance of SpaceBoundaries has to handle.
             
-            std::vector<billboardAdministration> billboards_;
+            std::vector<BillboardAdministration> billboards_;
         
             int reaction_; //!< Values: 0, 1, 2.
                            //!< 0: Reflection on boundary (Standard).
@@ -121,14 +121,14 @@ Two examples how one could include SpaceBoundaries in the XML-File. The first on
             // Funktionen::
             float computeDistance(WorldEntity *item); //!< Compute distance to center point.
             void displayWarning(const std::string warnText); //!< TODO: Implement.
-            void displayBoundaries(Pawn *item);
+            void displayBoundaries(Pawn *item, float alpha);
             void conditionalBounceBack(Pawn *item, float currentDistance, float dt);
             void bounceBack(Pawn *item, Vector3 *normal, Vector3 *velocity);
             bool isHumanPlayer(Pawn *item);
             
             void checkWhoIsIn(); //!< Update the list 'pawnsIn_'.
             
-            void positionBillboard(const Vector3 position); //!< Display a Billboard at the position 'position'.
+            void positionBillboard(const Vector3& position, float alpha); //!< Display a Billboard at the position 'position'.
             void setBillboardOptions(Billboard *billy);
             void removeAllBillboards(); //!< Hide all elements of '*billboard_' and set their attribute 'usedYet' to 0.
             
