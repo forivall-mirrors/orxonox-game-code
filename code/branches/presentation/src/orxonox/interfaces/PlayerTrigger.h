@@ -39,9 +39,6 @@
 
 #include "core/OrxonoxClass.h"
 
-#include "infos/PlayerInfo.h"
-#include "worldentities/pawns/Pawn.h"
-
 namespace orxonox
 {
     /**
@@ -85,8 +82,7 @@ namespace orxonox
         @brief Set the player that triggered the PlayerTrigger. This is normally done by classes inheriting vom PlayerTrigger.
         @param player A pointer to the Pawn that triggered the PlayerTrigger.
         */
-        inline void setTriggeringPawn(Pawn* pawn)
-           { assert(pawn); this->player_ = WeakPtr<PlayerInfo>(pawn->getPlayer()); this->pawn_ = WeakPtr<Pawn>(pawn); }
+        void setTriggeringPawn(Pawn* pawn);
 
         /**
         @brief Set whether the PlayerTrigger normally is triggered by Pawns.

@@ -41,6 +41,9 @@
 
 #include "core/CoreIncludes.h"
 
+#include "infos/PlayerInfo.h"
+#include "worldentities/pawns/Pawn.h"
+
 namespace orxonox
 {
     //----------------------------
@@ -59,6 +62,14 @@ namespace orxonox
         RegisterRootObject(PlayerTrigger);
 
         this->isForPlayer_ = false;
+    }
+
+    void PlayerTrigger::setTriggeringPawn(Pawn* pawn)
+    {
+        assert(pawn);
+        this->pawn_ = WeakPtr<Pawn>(pawn);
+        if (pawn)
+            this->player_ = WeakPtr<PlayerInfo>(pawn->getPlayer());
     }
 
     //----------------------------

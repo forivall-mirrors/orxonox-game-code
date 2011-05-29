@@ -244,7 +244,7 @@ namespace orxonox
 
         Pawn::rotateYaw(value);
 
-		//This function call adds a lift to the ship when it is rotating to make it's movement more "realistic" and enhance the feeling.
+        //This function call adds a lift to the ship when it is rotating to make it's movement more "realistic" and enhance the feeling.
         if (abs(this-> getLocalVelocity().z) < stallSpeed_)  {this->moveRightLeft(-lift_ / 5 * value * sqrt(abs(this-> getLocalVelocity().z)));}
     }
 
@@ -254,7 +254,7 @@ namespace orxonox
 
         Pawn::rotatePitch(value);
 
-		//This function call adds a lift to the ship when it is pitching to make it's movement more "realistic" and enhance the feeling.
+        //This function call adds a lift to the ship when it is pitching to make it's movement more "realistic" and enhance the feeling.
         if (abs(this-> getLocalVelocity().z) < stallSpeed_)  {this->moveUpDown(lift_ / 5 * value * sqrt(abs(this-> getLocalVelocity().z)));}
     }
 
