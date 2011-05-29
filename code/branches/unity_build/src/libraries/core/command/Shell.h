@@ -50,7 +50,6 @@
 #include "util/OutputHandler.h"
 #include "core/Core.h"
 #include "core/OrxonoxClass.h"
-#include "core/input/InputBuffer.h"
 
 namespace orxonox
 {
@@ -119,13 +118,9 @@ namespace orxonox
                 { return this->inputBuffer_; }
 
             void setCursorPosition(unsigned int cursor);
-            /// Returns the current position of the cursor in the input buffer.
-            inline unsigned int getCursorPosition() const
-                { return this->inputBuffer_->getCursorPosition(); }
+            unsigned int getCursorPosition() const;
 
-            /// Returns the current content of the input buffer (the text which was entered by the user)
-            inline const std::string& getInput() const
-                { return this->inputBuffer_->get(); }
+            const std::string& getInput() const;
 
             typedef std::list<std::pair<std::string, LineType> > LineList;
             LineList::const_iterator getNewestLineIterator() const;

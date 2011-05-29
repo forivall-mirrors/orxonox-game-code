@@ -38,7 +38,6 @@
 #include "CorePrereqs.h"
 
 #include <map>
-#include <set>
 #include <string>
 #include <CEGUIForwardRefs.h>
 #include <CEGUIVersion.h>
@@ -49,7 +48,6 @@
 #include "util/TriBool.h"
 #include "util/Singleton.h"
 #include "input/InputHandler.h"
-#include "Core.h"
 #include "OrxonoxClass.h"
 #include "WindowEventListener.h"
 
@@ -103,11 +101,7 @@ namespace orxonox // tolua_export
         void setBackgroundImage(const std::string& imageSet, const std::string imageName); // tolua_export
         void setBackgroundImage(const std::string& image);
 
-        /**
-        @brief Helper method to get the developer's mode without having to export Core.h.
-        @see Core::inDevMode
-        */
-        static bool inDevMode(void) { return Core::getInstance().inDevMode(); } // tolua_export
+        static bool inDevMode(void); // tolua_export
 
         //! Creates a new InputState to be used with a GUI Sheet
         const std::string& createInputState(const std::string& name, TriBool::Value showCursor = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export

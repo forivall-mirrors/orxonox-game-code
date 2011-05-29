@@ -33,6 +33,7 @@
 
 #include "Shell.h"
 
+#include "util/Math.h"
 #include "util/OutputHandler.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
@@ -40,6 +41,7 @@
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/PathConfig.h"
+#include "core/input/InputBuffer.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 
@@ -234,6 +236,18 @@ namespace orxonox
     {
         this->inputBuffer_->setCursorPosition(cursor);
         this->updateListeners<&ShellListener::cursorChanged>();
+    }
+
+    /// Returns the current position of the cursor in the input buffer.
+    unsigned int Shell::getCursorPosition() const
+    {
+        return this->inputBuffer_->getCursorPosition();
+    }
+
+    /// Returns the current content of the input buffer (the text which was entered by the user)
+    const std::string& Shell::getInput() const
+    {
+        return this->inputBuffer_->get();
     }
 
     /**

@@ -645,6 +645,14 @@ namespace orxonox
         listbox->setItemTooltipsEnabled(enabled);
     }
 
+    /** Helper method to get the developer's mode without having to export Core.h.
+    @see Core::inDevMode
+    */
+    /*static*/ bool GUIManager::inDevMode()
+    {
+         return Core::getInstance().inDevMode();
+    }
+
     /**
         @brief Callback of window event listener, called if the window is resized. Sets the display size of CEGUI.
     */
