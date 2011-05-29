@@ -31,10 +31,10 @@ include("templates/pickupRepresentationTemplates.oxt")
 
   <NotificationQueueCEGUI
     name="narrative"
-    targets="narrative"
+    targets="simpleNotification"
     size=1
     displayTime=30
-    position="0.2, 0, 0.8, 0"
+    position="0.2, 0, 0.1, 0"
     fontSize="24"
     fontColor="0.3, 1, 0.2, 0.8"
     alignment="HorzCentred"
@@ -52,51 +52,45 @@ include("templates/pickupRepresentationTemplates.oxt")
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
 
-    <SimpleNotification message="Welcome to Earth Orbit" sender="narrative" >
+    <!-- EARTH ORBIT -->
+
+    <DistanceTrigger name="spawntrigger" position="0,0,0" target="Pawn" distance=10 stayActive="true" />
+    <DistanceTrigger name="spawndelaytrigger1" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=1 />
+    <DistanceTrigger name="spawndelaytrigger2" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=7 />
+    <DistanceTrigger name="spawndelaytrigger3" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=12 />
+    <DistanceTrigger name="spawndelaytrigger4" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=15 />
+    <DistanceTrigger name="spawndelaytrigger5" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=25 />
+    <DistanceTrigger name="spawndelaytrigger6" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=35 />
+    <DistanceTrigger name="spawndelaytrigger7" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=40 />
+
+    <SpawnPoint position="0,0,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff>
+        <events>
+            <activity>
+                <EventTrigger invert="true">
+                    <events>
+                        <trigger>
+                            <EventListener event="spawndelaytrigger1" />
+                        </trigger>
+                    </events>
+                </EventTrigger>
+            </activity>
+        </events>
+    </SpawnPoint>
+
+    <SimpleNotification message="Welcome to Earth Orbit" >
         <events>
             <trigger>
                 <EventListener event=spawntrigger />
             </trigger>
         </events>
     </SimpleNotification>
-
-    <DistanceTrigger name="spawntrigger" position="0,0,0" target="Pawn" distance=10 stayActive="true" />
-    <SpawnPoint position="0,0,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
-
-<!-- PICKUPS -->
-    <PickupSpawner position="-50,50,-125" triggerDistance="10" respawnTime="30" maxSpawnedItems="10">
-      <pickup>
-        <DronePickup template=dronepickup />
-      </pickup>
-    </PickupSpawner>
-
-    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp" lifetime=500 loop=1 startdelay=2.5 />
-    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp2" lifetime=500 loop=1 startdelay=2 />
-    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp3" lifetime=500 loop=1 startdelay=2 />
-
-    
-    <!-- BOUNDARIES AND PORTALS -->
-
-    <Template name=PortalDefault>
-        <PortalEndPoint>
-            <attached>
-                <Billboard material="Portals/Default" />
-            </attached>
-        </PortalEndPoint>
-    </Template>
-
-    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-90000,0,0"/>
-    <PortalEndPoint position="-350,0,0" id="3" distance="40" target="MobileEntity" design="PortalDefault"/>
-    <PortalEndPoint position="-72000,0,0" id="4" distance="40" target="MobileEntity" design="PortalDefault"/>
-    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="0,10000,0"/>
-
-    <SpaceBoundaries warnDistance="1" maxDistance="450" showDistance="300" healthDecrease="0.1" position="0,0,0"/> 
-    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-30000,0,0"/>
-
-    <PortalLink fromID="3" toID="4" />
-    <PortalLink fromID="4" toID="3" />
-
-    <!-- MODELS, DEBRIS, ETC -->
+    <SimpleNotification message="Turn right to witness an explosion" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
     <!-- This is a model of Earth: mass=EarthMass/1000 and radius=EarthRadius[km]*10 -->
     <Planet
@@ -125,8 +119,173 @@ include("templates/pickupRepresentationTemplates.oxt")
       </collisionShapes>
     </Planet>
 
-    <!-- MOON AREA -->
+    <!-- PARTICLE EFFECT -->
 
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp" autostart="false" lifetime=500 loop=1 startdelay=7.5>
+        <events>
+            <spawn>
+                <EventListener event=spawntrigger />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp2" autostart="false" lifetime=500 loop=1 startdelay=7>
+        <events>
+            <spawn>
+                <EventListener event=spawntrigger />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp3" autostart="false" lifetime=500 loop=1 startdelay=7>
+        <events>
+            <spawn>
+                <EventListener event=spawntrigger />
+            </spawn>
+        </events>
+    </ParticleSpawner>
+       
+    <SimpleNotification message="A particle effect by Tibor" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- ENEMIES 1st ROUND -->
+
+    <SimpleNotification message="Enemies attacking" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger3 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <Script code="addBots 3" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger3 />
+            </trigger>
+        </events>
+    </Script>
+
+    <SpawnPoint position="50,0,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+            <activity>
+                <EventListener event=spawndelaytrigger1 />
+            </activity>
+        </events>
+    </SpawnPoint>
+
+    <SpawnPoint position="0,-50,0" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+            <activity>
+                <EventListener event=spawndelaytrigger1 />
+            </activity>
+        </events>
+    </SpawnPoint>
+
+    <SpawnPoint position="0,0,50" lookat="-2,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff active="false" >
+        <events>
+            <activity>
+                <EventListener event=spawndelaytrigger1 />
+            </activity>
+        </events>
+    </SpawnPoint>
+
+    <!-- SPACE BOUNDARY -->
+
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-90000,0,0"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="0,10000,0"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="450" showDistance="300" healthDecrease="0.1" position="0,0,0"/>
+    <SpaceBoundaries warnDistance="1" maxDistance="400" showDistance="300" healthDecrease="0.1" position="-30000,0,0"/>
+
+    <SimpleNotification message="Notice the shields by Simon" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger4 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="and space boundaries by Maurus" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger5 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Let's get out of here" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger6 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <Script code="killBots" onLoad="false">
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger6 />
+            </trigger>
+        </events>
+    </Script>
+
+    <SimpleNotification message="Boost enhancement by Dominik" >
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger7 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+    
+    <!-- PORTALS -->
+
+    <Template name=PortalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Billboard material="Portals/Default" />
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="-350,0,0" id="3" distance="40" target="MobileEntity" design="PortalDefault" active="false">
+        <events>
+            <activity>
+                <EventListener event=spawndelaytrigger6 />
+            </activity>
+        </events>
+    </PortalEndPoint>
+    <PortalEndPoint position="-72000,0,0" id="4" distance="40" target="MobileEntity" design="PortalDefault">
+        <attached>
+            <DistanceTrigger name="portaltrigger" position="0,0,0" target="Pawn" distance=10 stayActive="true" />
+            <DistanceTrigger name="portaldelaytrigger1" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=5 />
+            <DistanceTrigger name="portaldelaytrigger2" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=10 />
+            <DistanceTrigger name="portaldelaytrigger3" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=15 />
+            <DistanceTrigger name="portaldelaytrigger4" position="0,0,0" target="Pawn" distance=10 stayActive="true" delay=17 />
+        </attached>
+    </PortalEndPoint>
+    <PortalLink fromID="3" toID="4" />
+    <PortalLink fromID="4" toID="3" />
+
+    <SimpleNotification message="Moon orbit" >
+        <events>
+            <trigger>
+                <EventListener event=portaltrigger />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Portals by Andreas" >
+        <events>
+            <trigger>
+                <EventListener event=portaltrigger1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- MOON AREA -->
     <!-- This is a model of our Moon: mass=MoonMass/1000 and radius=MoonRadius[km]*10 and position=DistanceFromEarth[km]*10 -->
     <Planet
       position="-80000,0,0"
@@ -153,7 +312,15 @@ include("templates/pickupRepresentationTemplates.oxt")
       </collisionShapes>
     </Planet>
 
-    <!-- Hydrogen farmer -->
+    <SimpleNotification message="Hydrogen farmer/space station by Hans" >
+        <events>
+            <trigger>
+                <EventListener event=portaltrigger2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <!-- HYDROGEN FARMER & DOCKING -->
     <SpaceShip position="-74000,2500,0" roll=90 yaw=180 pitch=20 mass=10000 >
       <attached>
         <!-- Docking -->
@@ -199,17 +366,32 @@ include("templates/pickupRepresentationTemplates.oxt")
       </attached>
     </SpaceShip>
 
+    <!-- PICKUPS -->
+    <SimpleNotification message="Oh, what have we here?" >
+        <events>
+            <trigger>
+                <EventListener event=portaltrigger3 />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
-    <PickupSpawner position="-25,-50,-125" respawnTime="10" triggerDistance="20" maxSpawnedItems="5">
-      <pickup>
-        <ShrinkPickup template ="smallshrinkpickup"/>
-      </pickup>
-    </PickupSpawner>
+    <SimpleNotification message="Shrink pickup by Sandro" >
+        <events>
+            <trigger>
+                <EventListener event=portaltrigger4 />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
-    <PickupSpawner position="25,50,-125" respawnTime="10" triggerDistance="20" maxSpawnedItems="5">
+    <PickupSpawner position="25,50,-125" respawnTime="10" triggerDistance="20" maxSpawnedItems="5" visible="false">
       <pickup>
-        <ShrinkPickup template ="smallshrinkpickup"/>
+        <ShrinkPickup template ="mediumshrinkpickup"/>
       </pickup>
+      <events>
+        <visibility>
+            <EventListener event=portaltrigger3 />
+        </visibility>
+      </events>
     </PickupSpawner>
   </Scene>
 </Level>

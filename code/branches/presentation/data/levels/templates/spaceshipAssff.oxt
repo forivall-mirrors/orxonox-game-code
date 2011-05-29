@@ -30,7 +30,7 @@
    boostCooldownDuration = 10
 
    shakeFrequency = 15
-   shakeAmplitude = 7
+   shakeAmplitude = 9
 
    collisionType     = "dynamic"
    mass              = 100

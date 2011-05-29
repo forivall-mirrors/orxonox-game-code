@@ -2,7 +2,7 @@
 
 <NotificationQueueCEGUI
     name="all"
-    targets="questsystem, commandNotification, simpleNotification"
+    targets="questsystem"
     displaySize="0.5, 0, 0, 0"
     position="0, 10, 0.3, 0"
 />
