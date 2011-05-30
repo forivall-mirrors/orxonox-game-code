@@ -38,6 +38,7 @@
 #include "OrxonoxPrereqs.h"
 
 #include "core/OrxonoxClass.h"
+#include "core/WeakPtr.h"
 
 namespace orxonox
 {
