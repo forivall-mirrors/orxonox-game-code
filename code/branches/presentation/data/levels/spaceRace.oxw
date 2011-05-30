@@ -353,7 +353,7 @@
         </collisionShapes>
     </StaticEntity>
 
-    <!-- ---------------asteroid ellypse----------------- -->
+    <!-- ---------------asteroid ellipse----------------- -->
     <?lua
     max = 20
     for i = 0, max, 1
