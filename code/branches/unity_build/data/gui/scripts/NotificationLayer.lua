@@ -1,6 +1,6 @@
 -- NotificationLayer.lua
 
-local P = createMenuSheet("NotificationLayer", true, TriBool.True, TriBool.True)
+local P = createMenuSheet("NotificationLayer", true, tribool(true), tribool(true))
 
 P.queueList = {}
 P.editMode = false

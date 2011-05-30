@@ -60,7 +60,19 @@ namespace orxonox // tolua_export
     class PlayerInfo; // Forward declaration
 
     // Acquaint Tolua with tribool
-    class tribool; // tolua_export
+    /* tolua_begin
+    struct dontcare_keyword_t
+    {
+        dontcare_keyword_t();
+    };
+    class tribool
+    {
+        tribool(bool value);
+        tribool(dontcare_keyword_t);
+        bool operator==(tribool);
+        bool operator!=(tribool);
+    };
+    tolua_end */
 
     /**
     @class GUIManager

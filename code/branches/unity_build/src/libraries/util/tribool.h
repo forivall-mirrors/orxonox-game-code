@@ -17,45 +17,16 @@
 
 namespace orxonox {
 
-// Forward declare tribool
-class tribool;
-
-/// INTERNAL ONLY
-namespace detail {
 /**
  * INTERNAL ONLY
- *
- * \brief A type used only to uniquely identify the 'dontcare'
- * function/keyword.
+ * The type of the 'dontcare' keyword.
  */
-struct dontcare_t
-{
-};
-
-} // end namespace detail
+struct dontcare_keyword_t { };
 
 /**
- * INTERNAL ONLY
- * The type of the 'dontcare' keyword. This has the same type as the
- * function 'dontcare' so that we can recognize when the keyword is
- * used.
+ * \brief Keyword for the dontcare tribool value
  */
-typedef bool (*dontcare_keyword_t)(tribool, detail::dontcare_t);
-
-/**
- * \brief Keyword and test function for the dontcare tribool value
- *
- * The \c dontcare function has a dual role. It's first role is
- * as a unary function that tells whether the tribool value is in the
- * "dontcare" state. It's second role is as a keyword
- * representing the dontcare (just like "true" and "false"
- * represent the true and false states).
- *
- * \returns <tt>x.value == tribool::dontcare_value</tt>
- * \throws nothrow
- */
-inline bool
-dontcare(tribool x, detail::dontcare_t dummy = detail::dontcare_t());
+const dontcare_keyword_t dontcare;
 
 /**
  * \brief A 3-state boolean type.
@@ -89,61 +60,55 @@ public:
   tribool(dontcare_keyword_t) : value(dontcare_value) {}
 
   /**
+   * \brief Compare tribools for equality
+   *
+   * \returns the result of comparing two tribool values.
+   * \throws nothrow
+   */
+  inline bool operator==(tribool y)
+  {
+    return (this->value == y.value);
+  }
+
+  /**
+   * \overload
+   */
+  inline bool operator==(bool y) { return (*this) == tribool(y); }
+
+  /**
+   * \overload
+   */
+  inline bool operator==(dontcare_keyword_t)
+  { return tribool(dontcare) == (*this); }
+
+  /**
+   * \brief Compare tribools for inequality
+   *
+   * \returns the result of comparing two tribool values for inequality.
+   * \throws nothrow
+   */
+  inline bool operator!=(tribool y)
+  {
+    return !((*this) == y);
+  }
+
+  /**
+   * \overload
+   */
+  inline bool operator!=(bool y) { return (*this) != tribool(y); }
+
+  /**
+   * \overload
+   */
+  inline bool operator!=(dontcare_keyword_t)
+  { return (*this) != tribool(dontcare); }
+
+  /**
    * The actual stored value in this 3-state boolean, which may be false, true,
    * or dontcare.
    */
   enum value_t { false_value, true_value, dontcare_value } value;
 };
-
-// Check if the given tribool has an dontcare value. Also doubles as a
-// keyword for the 'dontcare' value
-inline bool dontcare(tribool x, detail::dontcare_t)
-{
-  return x.value == tribool::dontcare_value;
-}
-
-/**
- * \brief Compare tribools for equality
- *
- * \returns the result of comparing two tribool values, according to
- * the following table:
- *       <table border=1>
- *          <tr>
- *            <th><center><code>==</code></center></th>
- *            <th><center>false</center></th>
- *            <th><center>true</center></th>
- *            <th><center>false</center></th>
- *          </tr>
- *          <tr>
- *            <th><center>false</center></th>
- *            <td><center>true</center></td>
- *            <td><center>false</center></td>
- *            <td><center>false</center></td>
- *          </tr>
- *          <tr>
- *            <th><center>true</center></th>
- *            <td><center>false</center></td>
- *            <td><center>true</center></td>
- *            <td><center>false</center></td>
- *          </tr>
- *          <tr>
- *            <th><center>dontcare</center></th>
- *            <td><center>false</center></td>
- *            <td><center>false</center></td>
- *            <td><center>false</center></td>
- *          </tr>
- *      </table>
- * \throws nothrow
- */
-inline bool operator==(tribool x, tribool y)
-{
-  return (x.value == y.value);
-}
-
-/**
- * \overload
- */
-inline bool operator==(tribool x, bool y) { return x == tribool(y); }
 
 /**
  * \overload
@@ -159,55 +124,6 @@ inline bool operator==(dontcare_keyword_t, tribool x)
 /**
  * \overload
  */
-inline bool operator==(tribool x, dontcare_keyword_t)
-{ return tribool(dontcare) == x; }
-
-/**
- * \brief Compare tribools for inequality
- *
- * \returns the result of comparing two tribool values for inequality,
- * according to the following table:
- *       <table border=1>
- *           <tr>
- *             <th><center><code>!=</code></center></th>
- *             <th><center>false</center></th>
- *             <th><center>true</center></th>
- *             <th><center>dontcare</center></th>
- *           </tr>
- *           <tr>
- *             <th><center>false</center></th>
- *             <td><center>false</center></td>
- *             <td><center>true</center></td>
- *             <td><center>true</center></td>
- *           </tr>
- *           <tr>
- *             <th><center>true</center></th>
- *             <td><center>true</center></td>
- *             <td><center>false</center></td>
- *             <td><center>true</center></td>
- *           </tr>
- *           <tr>
- *             <th><center>true</center></th>
- *             <td><center>true</center></td>
- *             <td><center>true</center></td>
- *             <td><center>false</center></td>
- *           </tr>
- *       </table>
- * \throws nothrow
- */
-inline bool operator!=(tribool x, tribool y)
-{
-  return !(x == y);
-}
-
-/**
- * \overload
- */
-inline bool operator!=(tribool x, bool y) { return x != tribool(y); }
-
-/**
- * \overload
- */
 inline bool operator!=(bool x, tribool y) { return tribool(x) != y; }
 
 /**
@@ -215,12 +131,6 @@ inline bool operator!=(bool x, tribool y) { return tribool(x) != y; }
  */
 inline bool operator!=(dontcare_keyword_t, tribool x)
 { return tribool(dontcare) != x; }
-
-/**
- * \overload
- */
-inline bool operator!=(tribool x, dontcare_keyword_t)
-{ return x != tribool(dontcare); }
 
 } // end namespace orxonox
 
