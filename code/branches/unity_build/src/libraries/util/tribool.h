@@ -26,7 +26,7 @@ struct dontcare_keyword_t { };
 /**
  * \brief Keyword for the dontcare tribool value
  */
-const dontcare_keyword_t dontcare;
+const dontcare_keyword_t dontcare = dontcare_keyword_t();
 
 /**
  * \brief A 3-state boolean type.

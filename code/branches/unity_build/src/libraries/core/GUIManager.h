@@ -114,7 +114,7 @@ namespace orxonox // tolua_export
         static bool inDevMode(void); // tolua_export
 
         //! Creates a new InputState to be used with a GUI Sheet
-        const std::string& createInputState(const std::string& name, tribool showCursor = true, tribool useKeyboard = true, bool bBlockJoyStick = false); // tolua_export
+        const std::string& createInputState(const std::string& name, tribool showCursor = tribool(true), tribool useKeyboard = tribool(true), bool bBlockJoyStick = false); // tolua_export
         LuaState* getLuaState(void)
             { return this->luaState_; }
 
