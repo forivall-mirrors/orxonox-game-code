@@ -99,7 +99,7 @@ namespace orxonox
     */
     void GametypeInfo::changedStarted(void)
     {
-        
+        NotificationListener::sendCommand("clear", GametypeInfo::NOTIFICATION_SENDER);
     }
 
     /**
@@ -307,10 +307,8 @@ namespace orxonox
         if(GameMode::isMaster())
         {
             if(this->hasStarted() && !this->hasEnded())
-            {
-                //NotificationListener::sendCommand("clear", GametypeInfo::NOTIFICATION_SENDER, notificationSendMode::network, player->getClientID());
+
                 this->setSpawnedHelper(player, true);
-            }
         }
     }
 
