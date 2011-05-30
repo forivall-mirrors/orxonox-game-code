@@ -45,16 +45,11 @@
 
 #include "util/DestructionHelper.h"
 #include "util/OgreForwardRefs.h"
-#include "util/TriBool.h"
+#include "util/tribool.h"
 #include "util/Singleton.h"
 #include "input/InputHandler.h"
 #include "OrxonoxClass.h"
 #include "WindowEventListener.h"
-
-// Tolua includes (have to be relative to the current directory)
-/*
-$cfile "../util/TriBool.h" // tolua_export
-*/
 
 #if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
 #  define ORXONOX_OLD_CEGUI
@@ -63,6 +58,9 @@ $cfile "../util/TriBool.h" // tolua_export
 namespace orxonox // tolua_export
 { // tolua_export
     class PlayerInfo; // Forward declaration
+
+    // Acquaint Tolua with tribool
+    class tribool; // tolua_export
 
     /**
     @class GUIManager
@@ -104,7 +102,7 @@ namespace orxonox // tolua_export
         static bool inDevMode(void); // tolua_export
 
         //! Creates a new InputState to be used with a GUI Sheet
-        const std::string& createInputState(const std::string& name, TriBool::Value showCursor = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export
+        const std::string& createInputState(const std::string& name, tribool showCursor = true, tribool useKeyboard = true, bool bBlockJoyStick = false); // tolua_export
         LuaState* getLuaState(void)
             { return this->luaState_; }
 

@@ -37,7 +37,7 @@
 #include <boost/function.hpp>
 
 #include "util/Singleton.h"
-#include "util/TriBool.h"
+#include "util/tribool.h"
 #include "core/WindowEventListener.h"
 
 // tolua_begin
@@ -167,7 +167,7 @@ namespace orxonox
         @return
             True if the call was successful, fals if the name was not found
         */
-        bool setMouseExclusive(const std::string& name, TriBool::Value value); // tolua_export
+        bool setMouseExclusive(const std::string& name, tribool value); // tolua_export
 
         //-------------------------------
         // Various getters and setters
@@ -213,7 +213,7 @@ namespace orxonox
         State                               internalState_;        //!< Current internal state
         OIS::InputManager*                  oisInputManager_;      //!< OIS input manager
         std::vector<InputDevice*>           devices_;              //!< List of all input devices (keyboard, mouse, joy sticks)
-        TriBool::Value                      exclusiveMouse_;       //!< Currently applied mouse mode
+        bool                                exclusiveMouse_;       //!< Currently applied mouse mode
 
         // some internally handled states and handlers
         InputState*                         emptyState_;           //!< Lowest priority states (makes handling easier)

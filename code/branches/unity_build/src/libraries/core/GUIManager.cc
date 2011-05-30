@@ -418,7 +418,7 @@ namespace orxonox
             GUIManager::hideGUI(name);
     }
 
-    const std::string& GUIManager::createInputState(const std::string& name, TriBool::Value showCursor, TriBool::Value useKeyboard, bool bBlockJoyStick)
+    const std::string& GUIManager::createInputState(const std::string& name, tribool showCursor, tribool useKeyboard, bool bBlockJoyStick)
     {
         InputState* state = InputManager::getInstance().createInputState(name);
         if (!state)
@@ -434,24 +434,24 @@ namespace orxonox
 
 #ifdef ORXONOX_PLATFORM_APPLE
         // There is no non exclusive mode on OS X yet
-        state->setMouseExclusive(TriBool::True);
+        state->setMouseExclusive(true);
 #else
-        if (showCursor == TriBool::Dontcare)
-            state->setMouseExclusive(TriBool::Dontcare);
-        else if (GraphicsManager::getInstance().isFullScreen() || showCursor == TriBool::False)
-            state->setMouseExclusive(TriBool::True);
+        if (showCursor == dontcare)
+            state->setMouseExclusive(dontcare);
+        else if (GraphicsManager::getInstance().isFullScreen() || showCursor == false)
+            state->setMouseExclusive(true);
         else
-            state->setMouseExclusive(TriBool::False);
+            state->setMouseExclusive(false);
 #endif
 
-        if (showCursor == TriBool::True)
+        if (showCursor == true)
             state->setMouseHandler(this);
-        else if (showCursor == TriBool::False)
+        else if (showCursor == false)
             state->setMouseHandler(&InputHandler::EMPTY);
 
-        if (useKeyboard == TriBool::True)
+        if (useKeyboard == true)
             state->setKeyHandler(this);
-        else if (useKeyboard == TriBool::False)
+        else if (useKeyboard == false)
             state->setKeyHandler(&InputHandler::EMPTY);
 
         if (bBlockJoyStick)
