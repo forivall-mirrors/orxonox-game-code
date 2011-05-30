@@ -119,7 +119,7 @@ namespace orxonox
         SUPER(ControllableEntity, XMLPort, xmlelement, mode);
 
         XMLPortParam(ControllableEntity, "hudtemplate", setHudTemplate, getHudTemplate, xmlelement, mode);
-        XMLPortParam(ControllableEntity, "camerapositiontemplate", setCameraPositionTemplate, getCameraPositionTemkplate, xmlelement, mode);
+        XMLPortParam(ControllableEntity, "camerapositiontemplate", setCameraPositionTemplate, getCameraPositionTemplate, xmlelement, mode);
 
         XMLPortObject(ControllableEntity, CameraPosition, "camerapositions", addCameraPosition, getCameraPosition, xmlelement, mode);
         XMLPortObject(ControllableEntity, Controller,     "controller",      setXMLController,  getXMLController,  xmlelement, mode);
@@ -169,6 +169,40 @@ namespace orxonox
             ++i;
         }
         return 0;
+    }
+
+    unsigned int ControllableEntity::getCurrentCameraIndex() const
+    {
+        if (this->cameraPositions_.size() <= 0)
+            return 0;
+
+        unsigned int counter = 0;
+        for (std::list<SmartPtr<CameraPosition> >::const_iterator it = this->cameraPositions_.begin(); it != this->cameraPositions_.end(); ++it)
+        {
+            if ((*it) == this->currentCameraPosition_)
+                break;
+            counter++;
+        }
+        if (counter >= this->cameraPositions_.size())
+            return 0;
+
+        return counter;
+    }
+    
+    bool ControllableEntity::setCameraPosition(unsigned int index)
+    {
+        if(this->camera_ != NULL && this->cameraPositions_.size() > 0)
+        {
+            if(index >= this->cameraPositions_.size())
+                index = 0;
+
+            CameraPosition* position = this->getCameraPosition(index);
+            position->attachCamera(this->camera_);
+            this->currentCameraPosition_ = position;
+            return true;
+        }
+
+        return false;
     }
 
     void ControllableEntity::switchCamera()

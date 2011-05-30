@@ -115,10 +115,12 @@ namespace orxonox
             CameraPosition* getCameraPosition(unsigned int index) const;
             inline const std::list<SmartPtr<CameraPosition> >& getCameraPositions() const
                 { return this->cameraPositions_; }
+            unsigned int getCurrentCameraIndex() const;
+            bool setCameraPosition(unsigned int index);
 
             inline void setCameraPositionTemplate(const std::string& name)
                 { this->cameraPositionTemplate_ = name; }
-            inline const std::string& getCameraPositionTemkplate() const
+            inline const std::string& getCameraPositionTemplate() const
                 { return this->cameraPositionTemplate_; }
 
             inline void setReverseCamera(CameraPosition* camera)

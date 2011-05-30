@@ -232,15 +232,21 @@ namespace orxonox
     {
         if(this->player_ == NULL)
             return;
-        
+
+        unsigned int cameraIndex = 0;
         if(this->activeStone_ != NULL)
+        {
+            // Get camera settings
+            cameraIndex = this->activeStone_->getCurrentCameraIndex();
             this->player_->stopControl();
+        }
         
         // Make the last stone to be created the active stone.
         this->activeStone_ = this->stones_.back();
         
         this->player_->startControl(this->activeStone_);
         this->activeStone_->setVelocity(0.0f, -this->center_->getStoneSpeed(), 0.0f);
+        this->activeStone_->setCameraPosition(cameraIndex);
     }
 
     /**
