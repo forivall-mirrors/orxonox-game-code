@@ -135,6 +135,8 @@ function classPackage:preamble ()
         i = i+1
     end
 
+    post_include_hook(self.name)
+
     output('\n')
     output('#ifdef ORXONOX_RELEASE\n')
     output('#  define TOLUA_RELEASE\n')

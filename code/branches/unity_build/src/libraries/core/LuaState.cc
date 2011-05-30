@@ -39,18 +39,11 @@ extern "C" {
 #include "util/Debug.h"
 #include "util/Exception.h"
 #include "Resource.h"
-#include "ToluaBindCore.h"
 #include "command/IOConsole.h"
 
 namespace orxonox
 {
-    LuaState::ToluaInterfaceMap LuaState::toluaInterfaces_s;
-    std::vector<LuaState*> LuaState::instances_s;
-
     const std::string LuaState::ERROR_HANDLER_NAME = "errorHandler";
-
-    // Do this after declaring toluaInterfaces_s and instances_s to avoid larger problems
-    DeclareToluaInterface(Core);
 
     LuaState::LuaState()
         : bIsRunning_(false)
@@ -276,9 +269,21 @@ namespace orxonox
         return IOConsole::exists();
     }
 
+    /*static*/ LuaState::ToluaInterfaceMap& LuaState::getToluaInterfaces()
+    {
+        static ToluaInterfaceMap p;
+        return p;
+    }
+
+    /*static*/ std::vector<LuaState*>& LuaState::getInstances()
+    {
+        static std::vector<LuaState*> p;
+        return p;
+    }
+
     /*static*/ bool LuaState::addToluaInterface(int (*function)(lua_State*), const std::string& name)
     {
-        for (ToluaInterfaceMap::const_iterator it = toluaInterfaces_s.begin(); it != toluaInterfaces_s.end(); ++it)
+        for (ToluaInterfaceMap::const_iterator it = getToluaInterfaces().begin(); it != getToluaInterfaces().end(); ++it)
         {
             if (it->first == name || it->second == function)
             {
@@ -286,10 +291,10 @@ namespace orxonox
                 return true;
             }
         }
-        toluaInterfaces_s[name] = function;
+        getToluaInterfaces()[name] = function;
 
         // Open interface in all LuaStates
-        for (std::vector<LuaState*>::const_iterator it = instances_s.begin(); it != instances_s.end(); ++it)
+        for (std::vector<LuaState*>::const_iterator it = getInstances().begin(); it != getInstances().end(); ++it)
             (*function)((*it)->luaState_);
 
         // Return dummy bool
@@ -298,22 +303,22 @@ namespace orxonox
 
     /*static*/ bool LuaState::removeToluaInterface(const std::string& name)
     {
-        ToluaInterfaceMap::iterator it = toluaInterfaces_s.find(name);
-        if (it == toluaInterfaces_s.end())
+        ToluaInterfaceMap::iterator it = getToluaInterfaces().find(name);
+        if (it == getToluaInterfaces().end())
         {
             COUT(2) << "Warning: Cannot remove Tolua interface '" << name << "': Not found" << std::endl;
             return true;
         }
 
         // Close interface in all LuaStates
-        for (std::vector<LuaState*>::const_iterator itState = instances_s.begin(); itState != instances_s.end(); ++itState)
+        for (std::vector<LuaState*>::const_iterator itState = getInstances().begin(); itState != getInstances().end(); ++itState)
         {
             lua_pushnil((*itState)->luaState_);
             lua_setglobal((*itState)->luaState_, it->first.c_str());
         }
 
         // Remove entry
-        toluaInterfaces_s.erase(it);
+        getToluaInterfaces().erase(it);
 
         // Return dummy bool
         return true;
@@ -321,13 +326,13 @@ namespace orxonox
 
     /*static*/ void LuaState::openToluaInterfaces(lua_State* state)
     {
-        for (ToluaInterfaceMap::const_iterator it = toluaInterfaces_s.begin(); it != toluaInterfaces_s.end(); ++it)
+        for (ToluaInterfaceMap::const_iterator it = getToluaInterfaces().begin(); it != getToluaInterfaces().end(); ++it)
             (*it->second)(state);
     }
 
     /*static*/ void LuaState::closeToluaInterfaces(lua_State* state)
     {
-        for (ToluaInterfaceMap::const_iterator it = toluaInterfaces_s.begin(); it != toluaInterfaces_s.end(); ++it)
+        for (ToluaInterfaceMap::const_iterator it = getToluaInterfaces().begin(); it != getToluaInterfaces().end(); ++it)
         {
             lua_pushnil(state);
             lua_setglobal(state, it->first.c_str());

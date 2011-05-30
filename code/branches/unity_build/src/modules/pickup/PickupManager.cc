@@ -48,13 +48,8 @@
 #include "CollectiblePickup.h"
 #include "PickupRepresentation.h"
 
-#include "ToluaBindPickup.h"
-
 namespace orxonox
 {
-    // Register tolua_open function when loading the library
-    DeclareToluaInterface(Pickup);
-
     ManageScopedSingleton(PickupManager, ScopeID::Root, false);
 
     // Initialization of the name of the PickupInventory GUI.

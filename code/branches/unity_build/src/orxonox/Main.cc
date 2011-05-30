@@ -38,11 +38,6 @@
 #include "core/CommandLineParser.h"
 #include "core/Game.h"
 #include "core/LuaState.h"
-#include "ToluaBindOrxonox.h"
-#include "ToluaBindNetwork.h"
-
-DeclareToluaInterface(Orxonox);
-DeclareToluaInterface(Network);
 
 namespace orxonox
 {

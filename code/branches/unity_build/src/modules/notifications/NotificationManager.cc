@@ -46,16 +46,11 @@
 #include "Notification.h"
 #include "NotificationQueue.h"
 
-#include "ToluaBindNotifications.h"
-
 namespace orxonox
 {
 
     const std::string NotificationManager::ALL("all");
     const std::string NotificationManager::NONE("none");
-
-    // Register tolua_open function when loading the library.
-    DeclareToluaInterface(Notifications);
 
     ManageScopedSingleton(NotificationManager, ScopeID::Root, false);
 
