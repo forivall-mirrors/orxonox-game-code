@@ -70,7 +70,6 @@ namespace orxonox // tolua_export
         tribool(bool value);
         tribool(dontcare_keyword_t);
         bool operator==(tribool);
-        bool operator!=(tribool);
     };
     tolua_end */
 
