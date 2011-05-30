@@ -175,7 +175,8 @@ namespace orxonox
     {
         if (!entity)
             return;
-        
+
+        this->controllableEntity_->destroyHud(); // HACK-ish
         this->previousControllableEntity_.push_back(WeakPtr<ControllableEntity>(this->controllableEntity_));
         this->controllableEntity_ = entity;
         this->controllableEntityID_ = entity->getObjectID();
@@ -233,6 +234,7 @@ namespace orxonox
             return;
 
         this->controllableEntity_->setController(0);
+        this->controllableEntity_->destroyHud(); // HACK-ish
         
 //        this->controllableEntity_ = this->previousControllableEntity_.back();
         do {
@@ -243,6 +245,10 @@ namespace orxonox
 
         if ( this->controllableEntity_ != NULL && this->controller_ != NULL)
             this->controller_->setControllableEntity(this->controllableEntity_);
+
+         // HACK-ish
+        if(this->controllableEntity_ != NULL)
+            this->controllableEntity_->createHud();
 
         if ( GameMode::isMaster() )
             entity->removePlayer();

@@ -405,6 +405,12 @@ namespace orxonox
             }
         }
 
+        this->createHud();
+    }
+
+    // HACK-ish
+    void ControllableEntity::createHud(void)
+    {
         if (!this->hud_ && GameMode::showsGraphics())
         {
             if (!this->hudtemplate_.empty())
@@ -413,6 +419,15 @@ namespace orxonox
                 this->hud_->addTemplate(this->hudtemplate_);
                 this->hud_->setOwner(this);
             }
+        }
+    }
+
+    void ControllableEntity::destroyHud(void)
+    {
+        if (this->hud_ != NULL)
+        {
+            this->hud_->destroy();
+            this->hud_ = NULL;
         }
     }
 

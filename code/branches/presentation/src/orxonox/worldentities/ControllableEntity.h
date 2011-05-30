@@ -175,6 +175,9 @@ namespace orxonox
 
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
+            // HACK-ish
+            void createHud(void);
+            void destroyHud(void);
 
             Ogre::SceneNode* cameraPositionRootNode_;
 
