@@ -53,6 +53,8 @@ namespace orxonox
         void setPause(bool pause);
         void pause();
 
+        float getTimeFactor();
+
         static void delayedStartMainMenu(void);
 
     protected:
