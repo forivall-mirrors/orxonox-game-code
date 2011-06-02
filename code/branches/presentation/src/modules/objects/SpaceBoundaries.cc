@@ -105,6 +105,7 @@ namespace orxonox
         {
             Billboard* billboard = new Billboard(this);
             billboard->setPosition(position);
+            billboard->setSyncMode(ObjectDirection::None);
             this->setBillboardOptions(billboard);
             BillboardAdministration ba = {true, billboard};
             this->billboards_.push_back(ba);
