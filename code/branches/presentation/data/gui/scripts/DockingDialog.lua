@@ -8,12 +8,12 @@ function P.onLoad()
 
      --button are arranged in a 1x2 matrix
     P:setButton(1, 1, {
-            ["button"] = winMgr:getWindow("orxonox/DockingDockButton"),
+            ["button"] = winMgr:getWindow("orxonox/Docking/DockButton"),
             ["callback"]  = P.dockButton_clicked
     })
 
     P:setButton(1, 2, {
-            ["button"] = winMgr:getWindow("orxonox/DockingCancelButton"),
+            ["button"] = winMgr:getWindow("orxonox/Docking/CancelButton"),
             ["callback"]  = P.cancelButton_clicked
     })
     
@@ -36,7 +36,7 @@ function P.update()
         table.insert(P.docks, orxonox.Dock:getActiveDockAtIndex(i))
     end
 
-    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/DockingDocks"))
+    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/Docking/Docks"))
     listbox:resetList()
 
     for k in pairs(P.docks) do
@@ -50,7 +50,7 @@ function P.update()
 end
 
 function P.dockButton_clicked(e)
-    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/DockingDocks"))
+    local listbox = CEGUI.toListbox(winMgr:getWindow("orxonox/Docking/Docks"))
     local choice = listbox:getFirstSelectedItem()
     if choice ~= nil then
         local index = listbox:getItemIndex(choice)

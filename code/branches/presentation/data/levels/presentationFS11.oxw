@@ -138,24 +138,24 @@ include("templates/pickupRepresentationTemplates.oxt")
 
     <!-- PARTICLE EFFECT -->
 
-    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp" autostart="false" lifetime=500 loop=1 startdelay=7.5>
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp" autostart="false" lifetime=500 loop=1 startdelay=2.5>
         <events>
             <spawn>
-                <EventListener event=spawntrigger />
+                <EventListener event=spawndelaytrigger1 />
             </spawn>
         </events>
     </ParticleSpawner>
-    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp2" autostart="false" lifetime=500 loop=1 startdelay=7>
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp2" autostart="false" lifetime=500 loop=1 startdelay=2>
         <events>
             <spawn>
-                <EventListener event=spawntrigger />
+                <EventListener event=spawndelaytrigger1 />
             </spawn>
         </events>
     </ParticleSpawner>
-    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp3" autostart="false" lifetime=500 loop=1 startdelay=7>
+    <ParticleSpawner position="-50,50,-125" source="Orxonox/RingExp3" autostart="false" lifetime=500 loop=1 startdelay=2>
         <events>
             <spawn>
-                <EventListener event=spawntrigger />
+                <EventListener event=spawndelaytrigger1 />
             </spawn>
         </events>
     </ParticleSpawner>

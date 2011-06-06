@@ -48,22 +48,12 @@ namespace orxonox
     {
     }
 
-
     void DockingTarget::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(DockingTarget, XMLPort, xmlelement, mode);
-        XMLPortParam(DockingTarget, "name", setName, getName, xmlelement, mode);
 
         COUT(4) << "DockingTarget with name '" << this->getName() << "' created.." << std::endl;
     }
 
-
-    void DockingTarget::setName(const std::string& str) {
-        this->name_ = str;
-    }
-
-    const std::string& DockingTarget::getName() const {
-        return this->name_;
-    }
 }
 

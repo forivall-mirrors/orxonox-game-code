@@ -53,17 +53,12 @@ namespace orxonox
     */
     class _DockingExport DockingTarget : public StaticEntity
     {
-        private:
-            std::string name_;
-
         public:
             DockingTarget(BaseObject* creator);
             virtual ~DockingTarget();
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            virtual void setName(const std::string& str);
-            virtual const std::string& getName() const;
     };
 
 }
