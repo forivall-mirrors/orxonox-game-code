@@ -154,6 +154,8 @@ namespace orxonox
             virtual WorldEntity* getTarget()
                 { return this->target_.get(); }
             void setTargetInternal( uint32_t targetID );
+            inline bool getRocket() const
+                {return this-> bIsRocket;}
 
         protected:
             virtual void setPlayer(PlayerInfo* player); // don't call this directly, use friend class PlayerInfo instead
@@ -167,6 +169,7 @@ namespace orxonox
                 { this->hudtemplate_ = name; }
 
             Ogre::SceneNode* cameraPositionRootNode_;
+            bool bIsRocket; //Workaround to see, if the controllable entity is a Rocket.
 
         private:
             void registerVariables();

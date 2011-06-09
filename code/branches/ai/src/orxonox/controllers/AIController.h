@@ -54,3 +54,4 @@ namespace orxonox
 }
 
 #endif /* _AIController_H__ */
+

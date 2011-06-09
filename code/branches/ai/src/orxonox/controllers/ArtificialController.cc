@@ -87,6 +87,7 @@ namespace orxonox
 	this->bSetupWorked = false;
 	this->numberOfWeapons = 0;
 	this->botlevel_ = 1.0f;
+	this->mode_ = DEFAULT;
     }
 
     ArtificialController::~ArtificialController()
@@ -1033,18 +1034,27 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         }
         else if(this->getControllableEntity()&&(numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
         {
-            if (this->isCloseAtTarget(130) && this->isLookingAtTarget(math::pi / 20.0f)&&(weapons[1]==1) )
+            /*if (this->isCloseAtTarget(130) && this->isLookingAtTarget(math::pi / 20.0f)&&(weapons[1]==1) )
+            {//LENSFLARE: short range weapon     
                 this->getControllableEntity()->fire(1); //ai uses lens flare if they're close enough to the target
-
-          //default fire (laser)
-          else if ((weapons[0]==0))
-               this->getControllableEntity()->fire(0);
+            }
+            else if(this->isLookingAtTarget(math::pi / 20.0f)&&(weapons[3]==3)&& this->isCloseAtTarget(260) &&projectiles[3] )*/
+            {//ROCKET: mid range weapon
+                //TODO: Which weapon is the rocket? How many rockets are available?
+                this->mode_ = ROCKET;
+                //TODO: this->rockettimer->start()
+                this->getControllableEntity()->fire(3);//launch rocket
+                this->projectiles[3]-=1;//decrease ammo !!
+            }
+           
+            /*else if ((weapons[0]==0))//LASER: default weapon
+                this->getControllableEntity()->fire(0);*/
         }
     }
     /**
         @brief Information gathering: Which weapons are ready to use?
     */
-    void ArtificialController::setupWeapons()
+    void ArtificialController::setupWeapons() //TODO: Make this function generic!! (at the moment is is based on conventions)
     {
         if(this->getControllableEntity())
         {
@@ -1056,11 +1066,13 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                       if(pawn->getWeaponSet(i)) //main part: find which weapons a pawn can use; hard coded at the moment!
                       {
                           weapons[i]=i;
+			  projectiles[i]=1;//TODO: how to express infinite ammo? how to get data??
                           numberOfWeapons++;
                       }
                       else
                           weapons[i]=-1;
                  }
+                 //pawn->weaponSystem_->getMunition(SubclassIdentifier< Munition > *identifier)->getNumMunition (WeaponMode *user);
             }
         }
     }
@@ -1069,10 +1081,10 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     void ArtificialController::setBotLevel(float level)
     {
         if (level < 0.0f)
-	    this->botlevel_ = 0.0f; 
-	else if (level > 1.0f)
-	    this->botlevel_ = 1.0f;
-	else
+            this->botlevel_ = 0.0f; 
+        else if (level > 1.0f)
+            this->botlevel_ = 1.0f;
+        else
             this->botlevel_ = level;
     }
     
@@ -1083,3 +1095,4 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     }
     
 }
+

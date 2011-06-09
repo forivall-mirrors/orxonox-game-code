@@ -87,6 +87,7 @@ namespace orxonox
         this->setConfigValues();
         this->setPriority( Priority::VeryHigh );
         this->registerVariables();
+        this->bIsRocket=false;
     }
 
     ControllableEntity::~ControllableEntity()

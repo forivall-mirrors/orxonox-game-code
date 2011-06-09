@@ -34,7 +34,7 @@
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 
-//Todo: Bot soll pickupspawner besuchen können, falls Pickup vorhanden
+//Todo: Bot soll pickupspawner besuchen können, falls Pickup vorhanden --modules/weapons/
 namespace orxonox
 {
     static const float ACTION_INTERVAL = 1.0f;
@@ -204,13 +204,51 @@ namespace orxonox
     {
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
-	
+        
         if (!this->isActive())
             return;
 
-        if (this->state_ == MASTER)
-        {
-            if (this->specificMasterAction_ ==  NONE)
+        if(this->mode_ == DEFAULT)
+	{
+            if (this->state_ == MASTER)
+            {
+                if (this->specificMasterAction_ ==  NONE)
+                {
+                    if (this->target_)
+                    {
+                        if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
+                            this->forgetTarget();
+                        else
+                        {
+                            this->aimAtTarget();
+                            random = rnd(maxrand);
+                            if(this->botlevel_*100 > random)
+                                this->follow();//If a bot is shooting a player, it shouldn't let him go away easily.
+                        }
+                    }
+
+                    if (this->bHasTargetPosition_)
+                        this->moveToTargetPosition();
+
+                    this->doFire();
+                }
+
+                if (this->specificMasterAction_  == TURN180)
+                    this->turn180();
+
+                if (this->specificMasterAction_ == SPIN)
+                    this->spin();
+                if (this->specificMasterAction_ == FOLLOW)
+                    this->follow();
+            }
+
+            if (this->state_ == SLAVE)
+            {
+                if (this->bHasTargetPosition_)
+                    this->moveToTargetPosition();
+            }
+
+            if (this->state_ == FREE)
             {
                 if (this->target_)
                 {
@@ -222,7 +260,7 @@ namespace orxonox
                         random = rnd(maxrand);
                         if(this->botlevel_*100 > random)
                             this->follow();//If a bot is shooting a player, it shouldn't let him go away easily.
-                    }
+                     }
                 }
 
                 if (this->bHasTargetPosition_)
@@ -230,44 +268,24 @@ namespace orxonox
 
                 this->doFire();
             }
-
-            if (this->specificMasterAction_  == TURN180)
-                    this->turn180();
-
-            if (this->specificMasterAction_ == SPIN)
-                    this->spin();
-            if (this->specificMasterAction_ == FOLLOW)
-                    this->follow();
-        }
-
-        if (this->state_ == SLAVE)
-        {
-            if (this->bHasTargetPosition_)
-                this->moveToTargetPosition();
-        }
-
-        if (this->state_ == FREE)
-        {
-            if (this->target_)
+        }//END_OF DEFAULT MODE
+        else if (this->mode_ == ROCKET)
+        {   
+            ControllableEntity *controllable = this->getControllableEntity(); 
+            if(controllable)
             {
-                if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
-                    this->forgetTarget();
-                else
-                {
-                    this->aimAtTarget();
-                    random = rnd(maxrand);
-                    if(this->botlevel_*100 > random)
-                        this->follow();//If a bot is shooting a player, it shouldn't let him go away easily.
+                 if(controllable->getRocket())//Check wether the bot is controlling the rocket.
+                 {
+                     this->follow(); //TODO: CHECK: does follow make the bot crash into the target_ ?
                  }
+                 else
+                     this->mode_ = DEFAULT;//no rocket -> get out of rocket mode
             }
-
-            if (this->bHasTargetPosition_)
-                this->moveToTargetPosition();
-
-            this->doFire();
-        }
-
+            else
+                this->mode_ = DEFAULT;//If bot dies -> getControllableEntity == NULL -> get out of ROCKET mode
+        }//END_OF ROCKET MODE
         SUPER(AIController, tick, dt);
     }
 
 }
+

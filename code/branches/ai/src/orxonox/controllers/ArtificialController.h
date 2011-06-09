@@ -145,9 +145,13 @@ namespace orxonox
             WeakPtr<Pawn> target_;
             bool bShooting_;
 	    
-            int numberOfWeapons;
+            int numberOfWeapons;//< Used for weapon init function. Displayes number of weapons available for a bot.
             int weapons[WeaponSystem::MAX_WEAPON_MODES];
+	    int projectiles[WeaponSystem::MAX_WEAPON_MODES];
 	    float botlevel_; //< Makes the level of a bot configurable. 
+
+            enum Mode {DEFAULT, ROCKET, DEFENCE, MOVING};//TODO; implement DEFENCE, MOVING modes
+            Mode mode_;
 
         private:
             void setupWeapons();
@@ -156,3 +160,4 @@ namespace orxonox
 }
 
 #endif /* _ArtificialController_H__ */
+
