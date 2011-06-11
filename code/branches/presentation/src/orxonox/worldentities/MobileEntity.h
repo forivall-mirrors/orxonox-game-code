@@ -88,7 +88,7 @@ namespace orxonox
             inline void setRotationRate(Degree rate)
                 { this->setAngularVelocity(this->getAngularVelocity().normalisedCopy() * rate.valueRadians()); }
             inline Degree getRotationRate() const
-                { return Degree(this->getAngularVelocity().length()); }
+                { return Radian(this->getAngularVelocity().length()); }
 
             inline void setRotationAxis(const Vector3& axis)
                 { this->setAngularVelocity(axis * this->getAngularVelocity().length()); }
