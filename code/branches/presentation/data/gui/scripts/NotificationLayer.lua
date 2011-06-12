@@ -61,6 +61,8 @@ function P.pushNotification(queueName, notification)
         return
     end
 
+    notification = string.gsub(notification, "%[", "\\%[") -- escape '[' which is used to format text since cegui 0.7
+
     local item = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/NotificationLayer/Root/Queue/" .. queueName .. "/" .. queue.last)
     item:setText(notification)
     P.setItemFontHelper(item, queue, true)
@@ -249,7 +251,8 @@ end
 function P.setItemFontHelper(item, queue, changeColor)
     --local item = tolua.cast(item, "CEGUI::ListboxTextItem")
     local fontMgr = CEGUI.FontManager:getSingleton()
-    if fontMgr:isFontPresent("BlueHighway-" .. queue.fontSize) then
+    if (fontMgr["isFontPresent"] and fontMgr:isFontPresent("BlueHighway-" .. queue.fontSize)) or -- cegui 0.6
+        (fontMgr["isDefined"] and fontMgr:isDefined("BlueHighway-" .. queue.fontSize)) then -- cegui 0.7
         item:setFont("BlueHighway-" .. queue.fontSize)
     else
         orxonox.GUIManager:addFontHelper("BlueHighway-" .. queue.fontSize, queue.fontSize, "bluehigh.ttf")
