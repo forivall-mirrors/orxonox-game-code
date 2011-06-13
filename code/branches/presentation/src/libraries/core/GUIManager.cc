@@ -261,10 +261,13 @@ namespace orxonox
 
         COUT(3) << "Initialising CEGUI." << std::endl;
 
+        this->oldCEGUI_ = false;
+        
         // Note: No SceneManager specified yet
 #ifdef ORXONOX_OLD_CEGUI
         guiRenderer_ = new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
         resourceProvider_ = guiRenderer_->createResourceProvider();
+        this->oldCEGUI_ = true;
 #else
         guiRenderer_ = &OgreRenderer::create(*GraphicsManager::getInstance().getRenderWindow());
         // We use our own RenderQueueListener so we can draw UNDER overlays

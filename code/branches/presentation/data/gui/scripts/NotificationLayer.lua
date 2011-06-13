@@ -61,7 +61,9 @@ function P.pushNotification(queueName, notification)
         return
     end
 
-    notification = string.gsub(notification, "%[", "\\%[") -- escape '[' which is used to format text since cegui 0.7
+    if not guiMgr:usingOldCEGUI() then
+        notification = string.gsub(notification, "%[", "\\%[") -- escape '[' which is used to format text since cegui 0.7
+    end
 
     local item = winMgr:createWindow("MenuWidgets/StaticText", "orxonox/NotificationLayer/Root/Queue/" .. queueName .. "/" .. queue.last)
     item:setText(notification)
