@@ -35,18 +35,20 @@
 #ifndef _Dock_H__
 #define _Dock_H__
 
+#include "DockingPrereqs.h"
+
 #include <set>
 
 #include "core/CoreIncludes.h"
-#include "core/XMLPort.h"
 #include "core/EventIncludes.h"
+#include "core/XMLPort.h"
 
-#include "worldentities/StaticEntity.h"
 #include "controllers/HumanController.h"
 
-#include "DockingEffect.h"
 #include "DockingAnimation.h"
-#include "DockingPrereqs.h"
+#include "DockingEffect.h"
+
+#include "worldentities/StaticEntity.h"
 
 namespace orxonox // tolua_export
 {  // tolua_export
@@ -90,6 +92,10 @@ namespace orxonox // tolua_export
             // Console commands
             static void cmdDock();
             static void cmdUndock();
+
+            // Network functions
+            void showDockingDialogHelper(PlayerInfo* player);
+            static void showDockingDialog();
 
         private:
             std::set<PlayerInfo*> candidates_; //!< A set of all players which are allowed to dock using the console command.

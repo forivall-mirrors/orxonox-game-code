@@ -36,10 +36,12 @@
 #include "core/CoreIncludes.h"
 #include "core/LuaState.h"
 #include "core/GUIManager.h"
-#include "infos/HumanPlayer.h"
-#include "worldentities/pawns/Pawn.h"
-#include "interfaces/PlayerTrigger.h"
 #include "core/command/ConsoleCommand.h"
+#include "network/NetworkFunction.h"
+
+#include "infos/HumanPlayer.h"
+#include "interfaces/PlayerTrigger.h"
+#include "worldentities/pawns/Pawn.h"
 
 #include "ToluaBindDocking.h"
 
@@ -52,6 +54,8 @@ namespace orxonox
 
     SetConsoleCommand("Dock", "dock",    &Dock::cmdDock).addShortcut().setAsInputCommand();
     SetConsoleCommand("Dock", "undock",  &Dock::cmdUndock).addShortcut().setAsInputCommand();
+
+    registerStaticNetworkFunction(Dock::showDockingDialog);
 
     Dock::Dock(BaseObject* creator) : StaticEntity(creator)
     {
@@ -109,7 +113,7 @@ namespace orxonox
             candidates_.insert(player);
 
             // Show docking dialog
-            GUIManager::showGUI("DockingDialog");
+            this->showDockingDialogHelper(player);
         }
         else
         {
@@ -118,6 +122,29 @@ namespace orxonox
         }
 
         return true;
+    }
+
+    void Dock::showDockingDialogHelper(PlayerInfo* player)
+    {
+        assert(player);
+        
+        if(!player->isHumanPlayer())
+            return;
+        
+        if(GameMode::isMaster())
+        {
+            if(GameMode::showsGraphics())
+                GUIManager::showGUI("DockingDialog");
+        }
+        else
+            callStaticNetworkFunction(Dock::showDockingDialog, player->getClientID());
+
+    }
+
+    /*static*/ void Dock::showDockingDialog()
+    {
+        if(GameMode::showsGraphics())
+            GUIManager::showGUI("DockingDialog");
     }
 
     void Dock::cmdDock()
