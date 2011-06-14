@@ -40,6 +40,17 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Wrapper for the bullet sphere collision shape class btSphereShape.
+
+    @author
+        Reto Grieder
+
+    @see btSphereShape
+    @ingroup Collisionshapes
+    */
     class _ObjectsExport SphereCollisionShape : public CollisionShape
     {
         public:
@@ -48,17 +59,29 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            inline void setRadius(float radius)
-                { this->radius_ = radius; updateShape(); }
+            /**
+            @brief Set the radius of the SphereCollisionShape.
+                   If the radius changes, this causes the internal collision shape to be recreated.
+            @param radius The radius to be set.
+            @return Returns true if the radius has changed, false if not.
+            */
+            inline bool setRadius(float radius)
+                { if(this->radius_ == radius) return false; this->radius_ = radius; updateShape(); return true; }
+            /**
+            @brief Get the radius of the SphereCollisionShape.
+            @return Returns the radius of the SphereCollisionShape.
+            */
             inline float getRadius() const
                 { return this->radius_; }
+
+            virtual void changedScale(); // Is called when the scale of the SphereCollisionShape has changed.
 
         private:
             void registerVariables();
 
             btCollisionShape* createNewShape() const;
 
-            float radius_;
+            float radius_; //!< The radius of the SphereCollisionShape.
     };
 }
 

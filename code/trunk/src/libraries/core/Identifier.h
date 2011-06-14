@@ -118,7 +118,7 @@ namespace orxonox
             void setName(const std::string& name);
 
             /// Returns the network ID to identify a class through the network.
-            inline const uint32_t getNetworkID() const { return this->networkID_; }
+            inline uint32_t getNetworkID() const { return this->networkID_; }
             void setNetworkID(uint32_t id);
 
             /// Returns the unique ID of the class.

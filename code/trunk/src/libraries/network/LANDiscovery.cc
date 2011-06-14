@@ -37,7 +37,7 @@
 
 namespace orxonox
 {
-  ManageScopedSingleton(LANDiscovery, ScopeID::Root, true);
+  ManageScopedSingleton(LANDiscovery, ScopeID::Graphics, true);
 
   LANDiscovery::LANDiscovery()
   {
@@ -48,7 +48,8 @@ namespace orxonox
 
   LANDiscovery::~LANDiscovery()
   {
-    enet_host_destroy(this->host_);
+    if (this->host_ != NULL)
+      enet_host_destroy(this->host_);
   }
 
   void LANDiscovery::discover()

@@ -86,7 +86,7 @@ namespace orxonox{
 
 // =========== bool
 
-    template <> inline uint32_t returnSize( const bool& variable )
+    template <> inline uint32_t returnSize( const bool& )
     {
         return sizeof(uint8_t);
     }
@@ -110,7 +110,7 @@ namespace orxonox{
 
 // =========== char
 
-    template <> inline uint32_t returnSize( const char& variable )
+    template <> inline uint32_t returnSize( const char& )
     {
         return sizeof(uint8_t);
     }
@@ -134,7 +134,7 @@ namespace orxonox{
 
 // =========== unsigned char
 
-    template <> inline uint32_t returnSize( const unsigned char& variable )
+    template <> inline uint32_t returnSize( const unsigned char& )
     {
         return sizeof(uint8_t);
     }
@@ -158,7 +158,7 @@ namespace orxonox{
 
 // =========== short
 
-    template <> inline uint32_t returnSize( const short& variable )
+    template <> inline uint32_t returnSize( const short& )
     {
         return sizeof(int16_t);
     }
@@ -182,7 +182,7 @@ namespace orxonox{
 
 // =========== unsigned short
 
-    template <> inline uint32_t returnSize( const unsigned short& variable )
+    template <> inline uint32_t returnSize( const unsigned short& )
     {
         return sizeof(uint16_t);
     }
@@ -206,7 +206,7 @@ namespace orxonox{
 
 // =========== int
 
-    template <> inline uint32_t returnSize( const int& variable )
+    template <> inline uint32_t returnSize( const int& )
     {
         return sizeof(int32_t);
     }
@@ -230,7 +230,7 @@ namespace orxonox{
 
 // =========== unsigned int
 
-    template <> inline uint32_t returnSize( const unsigned int& variable )
+    template <> inline uint32_t returnSize( const unsigned int& )
     {
         return sizeof(uint32_t);
     }
@@ -254,7 +254,7 @@ namespace orxonox{
 
 // =========== long
 
-    template <> inline uint32_t returnSize( const long& variable )
+    template <> inline uint32_t returnSize( const long& )
     {
         return sizeof(int32_t);
     }
@@ -278,7 +278,7 @@ namespace orxonox{
 
 // =========== unsigned long
 
-    template <> inline uint32_t returnSize( const unsigned long& variable )
+    template <> inline uint32_t returnSize( const unsigned long& )
     {
         return sizeof(uint32_t);
     }
@@ -302,7 +302,7 @@ namespace orxonox{
 
 // =========== long long
 
-    template <> inline uint32_t returnSize( const long long& variable )
+    template <> inline uint32_t returnSize( const long long& )
     {
         return sizeof(int64_t);
     }
@@ -326,7 +326,7 @@ namespace orxonox{
 
 // =========== unsigned long long
 
-    template <> inline uint32_t returnSize( const unsigned long long& variable )
+    template <> inline uint32_t returnSize( const unsigned long long& )
     {
         return sizeof(uint64_t);
     }
@@ -350,7 +350,7 @@ namespace orxonox{
 
 // =========== float
 
-    template <> inline uint32_t returnSize( const float& variable )
+    template <> inline uint32_t returnSize( const float& )
     {
         return sizeof(uint32_t);
     }
@@ -374,7 +374,7 @@ namespace orxonox{
 
 // =========== double
 
-    template <> inline uint32_t returnSize( const double& variable )
+    template <> inline uint32_t returnSize( const double& )
     {
         return sizeof(uint64_t);
     }
@@ -398,7 +398,7 @@ namespace orxonox{
 
 // =========== long double
 
-    template <> inline uint32_t returnSize( const long double& variable )
+    template <> inline uint32_t returnSize( const long double& )
     {
         return sizeof(uint64_t);
     }
@@ -451,7 +451,7 @@ namespace orxonox{
 
 // =========== Degree
 
-    template <> inline uint32_t returnSize( const Degree& variable )
+    template <> inline uint32_t returnSize( const Degree& )
     {
         return sizeof(Ogre::Real);
     }
@@ -478,7 +478,7 @@ namespace orxonox{
 
 // =========== Radian
 
-    template <> inline uint32_t returnSize( const Radian& variable )
+    template <> inline uint32_t returnSize( const Radian& )
     {
         return sizeof(Ogre::Real);
     }

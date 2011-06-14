@@ -26,17 +26,27 @@
  *
  */
 
+/**
+    @file SphereCollisionShape.cc
+    @brief Implementation of the SphereCollisionShape class.
+*/
+
 #include "SphereCollisionShape.h"
 
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "tools/BulletConversions.h"
 
 namespace orxonox
 {
     CreateFactory(SphereCollisionShape);
 
+    /**
+    @brief
+        Constructor. registers and initializes the object.
+    */
     SphereCollisionShape::SphereCollisionShape(BaseObject* creator) : CollisionShape(creator)
     {
         RegisterObject(SphereCollisionShape);
@@ -65,6 +75,32 @@ namespace orxonox
         XMLPortParam(SphereCollisionShape, "radius", setRadius, getRadius, xmlelement, mode);
     }
 
+    /**
+    @brief
+        Is called when the scale of the SphereCollisionShape has changed.
+    */
+    void SphereCollisionShape::changedScale()
+    {
+        CollisionShape::changedScale();
+
+        // Resize the internal collision shape
+        // TODO: Assuming setLocalScaling works.
+        //this->collisionShape_->setLocalScaling(multi_cast<btVector3>(this->getScale3D()));
+        if(!this->hasUniformScaling())
+        {
+            CCOUT(1) << "Error: Non-uniform scaling is not yet supported." << endl;
+            return;
+        }
+
+        this->setRadius(this->radius_*this->getScale());
+    }
+
+    /**
+    @brief
+        Creates a new internal collision shape for the SphereCollisionShape.
+    @return
+        Returns a pointer to the newly created btSphereShape.
+    */
     btCollisionShape* SphereCollisionShape::createNewShape() const
     {
         return new btSphereShape(this->radius_);

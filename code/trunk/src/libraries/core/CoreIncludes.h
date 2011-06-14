@@ -170,7 +170,7 @@ namespace orxonox
         @param object Pointer to an OrxonoxClass
     */
     template <class T>
-    inline Identifier* ClassByObjectType(const T* object)
+    inline Identifier* ClassByObjectType(const T*)
     {
         return ClassIdentifier<T>::getIdentifier();
     }

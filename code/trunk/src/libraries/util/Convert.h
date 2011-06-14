@@ -142,7 +142,7 @@ namespace orxonox
     template <class FromType, class ToType>
     struct ConverterFallback
     {
-        ORX_FORCEINLINE static bool convert(ToType* output, const FromType& input)
+        ORX_FORCEINLINE static bool convert(ToType* /*output*/, const FromType& /*input*/)
         {
             COUT(2) << "Could not convert value of type " << typeid(FromType).name()
                     << " to type " << typeid(ToType).name() << std::endl;

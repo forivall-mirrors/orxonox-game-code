@@ -40,7 +40,7 @@ namespace packet {
 class _NetworkExport Welcome : public Packet
 {
 public:
-  Welcome( uint32_t clientID, uint32_t shipID );
+  Welcome( uint32_t clientID );
   Welcome( uint8_t* data, uint32_t clientID );
   virtual ~Welcome();
 

@@ -54,10 +54,10 @@ namespace orxonox
         this->respawnDelay = 4.0f;
         this->setHUDTemplate("lastTeamStandingHUD");
     }
-    
+
     LastTeamStanding::~LastTeamStanding()
     {
-    }   
+    }
 
     void LastTeamStanding::playerEntered(PlayerInfo* player)
     {
@@ -68,12 +68,12 @@ namespace orxonox
             playerLives_[player]=lives;
         else
             playerLives_[player]=getMinLives();//new players only get minimum of lives */
-        
+
         this->timeToAct_[player] = timeRemaining;
         this->playerDelayTime_[player] = respawnDelay;
         this->inGame_[player] = true;
         unsigned int team = getTeam(player);
-        if( team < 0|| team > teams_) // make sure getTeam returns a regular value
+        if(team >= eachTeamsPlayers.size()) // make sure getTeam returns a regular value
             return;
         if(this->eachTeamsPlayers[team]==0) //if a player is the first in his group, a new team is alive
             this->teamsAlive++;
@@ -90,7 +90,7 @@ namespace orxonox
             this->playerDelayTime_.erase(player);
             this->inGame_.erase(player);
             unsigned int team = getTeam(player);
-            if( team < 0|| team > teams_) // make sure getTeam returns a regular value
+            if(team >= eachTeamsPlayers.size()) // make sure getTeam returns a regular value
                 return valid_player;
             this->eachTeamsPlayers[team]--;       // a player left the team
             if(this->eachTeamsPlayers[team] == 0) // if it was the last player a team died
@@ -106,13 +106,13 @@ namespace orxonox
             return true;
         bool allow = TeamDeathmatch::allowPawnDeath(victim, originator);
         if(!allow) {return allow;}
-        
+
         playerLives_[victim->getPlayer()] = playerLives_[victim->getPlayer()] - 1; //player lost a live
         this->inGame_[victim->getPlayer()] = false; //if player dies, he isn't allowed to respawn immediately
         if (playerLives_[victim->getPlayer()]<=0) //if player lost all lives
         {
             unsigned int team = getTeam(victim->getPlayer());
-            if(team < 0|| team > teams_) // make sure getTeam returns a regular value
+            if(team >= eachTeamsPlayers.size()) // make sure getTeam returns a regular value
                 return allow;
             this->eachTeamsPlayers[team]--;
             if(eachTeamsPlayers[team] == 0) //last team member died
@@ -139,7 +139,7 @@ namespace orxonox
                     return true;
                 const std::string& message = ""; // resets Camper-Warning-message
                 this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
-            }    
+            }
         }
         return allow;
     }
@@ -162,10 +162,10 @@ namespace orxonox
         if (!player)
             return;
         TeamDeathmatch::playerStartsControllingPawn(player,pawn);
-        
+
         this->timeToAct_[player] = timeRemaining + 3.0f + respawnDelay;//reset timer
         this->playerDelayTime_[player] = respawnDelay;
-        
+
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
         {
@@ -173,7 +173,7 @@ namespace orxonox
                 return;
             const std::string& message = ""; // resets Camper-Warning-message
             this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
-        }  
+        }
     }
 
     void LastTeamStanding::tick(float dt)
@@ -186,11 +186,11 @@ namespace orxonox
                 this->end();
             }
             for (std::map<PlayerInfo*, float>::iterator it = this->timeToAct_.begin(); it != this->timeToAct_.end(); ++it)
-            {   
+            {
                 if (playerGetLives(it->first) <= 0)//Players without lives shouldn't be affected by time.
-                    continue;     
+                    continue;
                 it->second -= dt;//Decreases punishment time.
-                if (!inGame_[it->first])//Manages respawn delay - player is forced to respawn after the delaytime is used up. 
+                if (!inGame_[it->first])//Manages respawn delay - player is forced to respawn after the delaytime is used up.
                 {
                     playerDelayTime_[it->first] -= dt;
                     if (playerDelayTime_[it->first] <= 0)
@@ -308,7 +308,7 @@ namespace orxonox
         else
             return 0;
     }
-    
+
     void LastTeamStanding::setConfigValues()
     {
         SetConfigValue(lives, 4);

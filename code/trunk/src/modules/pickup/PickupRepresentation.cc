@@ -56,7 +56,7 @@ namespace orxonox
         RegisterObject(PickupRepresentation);
 
         this->initialize();
-        this->setSyncMode(0x0); // The default PickupRperesentation created by each PickupManager is not synchronised, since it only exists locally.
+        this->setSyncMode(ObjectDirection::None); // The default PickupRperesentation created by each PickupManager is not synchronised, since it only exists locally.
     }
 
     /**

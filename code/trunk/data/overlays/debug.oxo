@@ -83,13 +83,5 @@
      align    = "center"
     />
 
-    <GametypeStatus
-     name     = "state"
-     position = "0.5, 0.85"
-     font     = "VeraMono"
-     textsize = 0.05
-     colour   = "1.0, 1.0, 0.0, 0.8"
-     align    = "center"
-    />
   </OverlayGroup>
 </Template>

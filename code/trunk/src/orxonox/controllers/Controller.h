@@ -49,7 +49,13 @@ namespace orxonox
             inline PlayerInfo* getPlayer() const
                 { return this->player_; }
 
-            virtual inline void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {};
+            virtual void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage) {};
+
+/* Override needed for different visual effects (e.g. in "NewHumanController.cc") depending on
+   the DIFFERENT AMOUNT OF DAMAGE done to the shield and to the health of "victim" (see Projectile.cc, Pawn.cc)
+
+//            virtual inline void hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage) {};
+*/
 
             void setGodMode( bool mode ){ this->bGodMode_ = mode; }
             bool getGodMode(){ return this->bGodMode_; }

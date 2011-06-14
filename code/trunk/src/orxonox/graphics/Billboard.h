@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Maurus Kaufmann
  *
  */
 
@@ -30,6 +30,8 @@
 #define _Billboard_H__
 
 #include "OrxonoxPrereqs.h"
+
+#include "OgreBillboardSet.h"
 
 #include "util/Math.h"
 #include "tools/BillboardSet.h"
@@ -61,15 +63,24 @@ namespace orxonox
             inline const ColourValue& getColour() const
                 { return this->colour_; }
 
-/*
+
             inline void setRotation(const Radian& rotation)
                 { this->rotation_ = rotation; this->changedRotation(); }
             inline const Radian& getRotation() const
                 { return this->rotation_; }
-*/
+
 
             virtual void setTeamColour(const ColourValue& colour)
                 { this->setColour(colour); }
+                
+            void setBillboardType(Ogre::BillboardType bbt);
+            
+            void setCommonDirection(Vector3 vec); //!< normalised Vector vec as argument
+            
+            void setCommonUpVector(Vector3 vec); //!< normalised Vector vec as argument
+            
+            void setDefaultDimensions(float width, float height);
+
 
         protected:
             inline BillboardSet& getBillboardSet()
@@ -80,12 +91,12 @@ namespace orxonox
         private:
             void registerVariables();
             void changedMaterial();
-            //void changedRotation();
+            void changedRotation();
 
             BillboardSet billboard_;
             std::string material_;
             ColourValue colour_;
-            //Radian rotation_;
+            Radian rotation_;
     };
 }
 

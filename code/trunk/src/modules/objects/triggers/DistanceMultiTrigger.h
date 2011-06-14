@@ -151,7 +151,7 @@ namespace orxonox
 
             distanceMultiTriggerBeaconMode::Value beaconMode_; //!< The beacon mode, the DistanceMultiTrigger is in.
             std::string targetName_; //!< The target name, used in <em>single-target</em> mode.
-            ClassTreeMask* beaconMask_; //!< A mask, that only accepts DistanceTriggerBeacons.
+            ClassTreeMask beaconMask_; //!< A mask, that only accepts DistanceTriggerBeacons.
 
             std::map<WorldEntity*, WeakPtr<WorldEntity>* > range_; //!< The set of entities that currently are in range of the DistanceMultiTrigger.
 

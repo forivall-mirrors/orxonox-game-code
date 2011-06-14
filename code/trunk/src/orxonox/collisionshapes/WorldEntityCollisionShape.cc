@@ -42,7 +42,7 @@ namespace orxonox
 
         this->worldEntityOwner_ = creator;
         // suppress synchronisation
-        this->setSyncMode(0x0);
+        this->setSyncMode(ObjectDirection::None);
     }
 
     WorldEntityCollisionShape::~WorldEntityCollisionShape()

@@ -1,9 +1,37 @@
+/*
+ *   ORXONOX - the hottest 3D action shooter ever to exist
+ *                    > www.orxonox.net <
+ *
+ *
+ *   License notice:
+ *
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ *   Author:
+ *      Andreas Büchel
+ *   Co-authors:
+ *      ...
+ *
+ */
+
 #include "PortalEndPoint.h"
 #include "core/XMLPort.h"
 #include "objects/triggers/MultiTriggerContainer.h"
 #include "portals/PortalLink.h"
 #include "worldentities/MobileEntity.h"
-
+#include <ctime>
 
 namespace orxonox
 {
@@ -13,17 +41,23 @@ namespace orxonox
 
     std::map<unsigned int, PortalEndPoint *> PortalEndPoint::idMap_s;
 
-    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), id_(0), trigger_(NULL)
+    PortalEndPoint::PortalEndPoint(BaseObject* creator) : StaticEntity(creator), RadarViewable(creator, static_cast<WorldEntity*>(this)), id_(0), trigger_(NULL), reenterDelay_(0)
     {
         RegisterObject(PortalEndPoint);
+        
         this->trigger_ = new DistanceMultiTrigger(this);
         this->trigger_->setName("portal");
         this->attach(trigger_);
+
+        this->setRadarObjectColour(ColourValue::White);
+        this->setRadarObjectShape(RadarViewable::Dot);
+        this->setRadarVisibility(true);
     }
     
     PortalEndPoint::~PortalEndPoint()
     {
-        delete this->trigger_;
+        if(this->isInitialized() && this->trigger_ != NULL)
+            delete this->trigger_;
     }
 
     void PortalEndPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
@@ -32,6 +66,7 @@ namespace orxonox
         
         XMLPortParam(PortalEndPoint, "id", setID, getID, xmlelement, mode);
         XMLPortParam(PortalEndPoint, "design", setTemplate, getTemplate, xmlelement, mode);
+        XMLPortParam(PortalEndPoint, "reenterDelay", setReenterDelay, getReenterDelay, xmlelement, mode);
         XMLPortParamExtern(PortalEndPoint, DistanceMultiTrigger, this->trigger_, "distance", setDistance, getDistance, xmlelement, mode);
         XMLPortParamLoadOnly(PortalEndPoint, "target", setTarget, xmlelement, mode).defaultValues("Pawn");
         
@@ -63,7 +98,6 @@ namespace orxonox
         DistanceMultiTrigger * originatingTrigger = orxonox_cast<DistanceMultiTrigger *>(cont->getOriginator());
         if(originatingTrigger == 0)
         {
-            COUT(1) << "originator no DistanceMultiTrigger\n" << std::endl;
             return true;
         }
         
@@ -73,7 +107,7 @@ namespace orxonox
         
         if(bTriggered)
         {
-            if(this->recentlyJumpedOut_.find(entity) == this->recentlyJumpedOut_.end())  // only enter the portal if not just jumped out of it
+            if(this->letsEnter(entity))  // only enter the portal if not just (this very moment) jumped out of it, or if the reenterDelay expired
             {
                 PortalLink::use(entity, this);
             }
@@ -86,14 +120,37 @@ namespace orxonox
         return true;
     }
 
+    void PortalEndPoint::changedActivity(void)
+    {
+        SUPER(PortalEndPoint, changedActivity);
+        
+        this->setRadarVisibility(this->isActive());
+    }
+
+    bool PortalEndPoint::letsEnter(MobileEntity* entity)
+    {
+        // not allowed to enter if reenterDelay hasn't expired yet
+        std::map<MobileEntity *, time_t>::const_iterator time = this->jumpOutTimes_.find(entity);
+        if(time != this->jumpOutTimes_.end() && std::difftime(std::time(0),time->second) < this->reenterDelay_)
+            return false;
+
+        // not allowed to enter if jumped out of this portal and not left its activation radius yet
+        std::set<MobileEntity *>::const_iterator recent = this->recentlyJumpedOut_.find(entity);
+        if(recent != this->recentlyJumpedOut_.end())
+            return false;
+        
+        return true;
+    }
+
     void PortalEndPoint::jumpOut(MobileEntity* entity)
     {
+        this->jumpOutTimes_[entity] = std::time(0);
         this->recentlyJumpedOut_.insert(entity);
-        
+
+        // adjust
         entity->setPosition(this->getWorldPosition());
         entity->rotate(this->getWorldOrientation());
         entity->setVelocity(this->getWorldOrientation() * entity->getVelocity());
-        entity->setVelocity(entity->getVelocity() * 1.5);
     }
 
 }

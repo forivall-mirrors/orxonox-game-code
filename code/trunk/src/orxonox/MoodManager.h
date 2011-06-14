@@ -49,13 +49,10 @@ namespace orxonox
             MoodListener();
             virtual ~MoodListener() {}
 
-            const std::string& getMood() const { return mood_s; }
-
         private:
             virtual void moodChanged(const std::string& mood) = 0;
 
             static void changedMood(const std::string& mood);
-            static std::string mood_s;
     };
 
     /*

@@ -26,6 +26,7 @@ INCLUDE_DIRECTORIES(
 ################ Sub Directories ################
 
 ADD_SUBDIRECTORY(designtools)
+ADD_SUBDIRECTORY(gametypes)
 ADD_SUBDIRECTORY(notifications)
 ADD_SUBDIRECTORY(objects)
 ADD_SUBDIRECTORY(overlays)
@@ -33,4 +34,6 @@ ADD_SUBDIRECTORY(pickup)
 ADD_SUBDIRECTORY(pong)
 ADD_SUBDIRECTORY(portals)
 ADD_SUBDIRECTORY(questsystem)
+ADD_SUBDIRECTORY(tetris)
 ADD_SUBDIRECTORY(weapons)
+ADD_SUBDIRECTORY(docking)

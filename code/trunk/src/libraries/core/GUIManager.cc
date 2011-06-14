@@ -37,12 +37,14 @@
 
 #include <CEGUIDefaultLogger.h>
 #include <CEGUIExceptions.h>
+#include <CEGUIFontManager.h>
 #include <CEGUIInputEvent.h>
 #include <CEGUIMouseCursor.h>
 #include <CEGUIResourceProvider.h>
 #include <CEGUISystem.h>
 #include <CEGUIWindow.h>
 #include <CEGUIWindowManager.h>
+#include <CEGUIXMLAttributes.h>
 #include <elements/CEGUIListbox.h>
 #include <elements/CEGUIListboxItem.h>
 
@@ -259,10 +261,13 @@ namespace orxonox
 
         COUT(3) << "Initialising CEGUI." << std::endl;
 
+        this->oldCEGUI_ = false;
+        
         // Note: No SceneManager specified yet
 #ifdef ORXONOX_OLD_CEGUI
         guiRenderer_ = new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
         resourceProvider_ = guiRenderer_->createResourceProvider();
+        this->oldCEGUI_ = true;
 #else
         guiRenderer_ = &OgreRenderer::create(*GraphicsManager::getInstance().getRenderWindow());
         // We use our own RenderQueueListener so we can draw UNDER overlays
@@ -726,6 +731,48 @@ namespace orxonox
     {
         if (!bFocus)
             this->mouseLeft();
+    }
+
+    /**
+    @brief
+        Adds a new freetype font to the CEGUI system.
+    @param name
+        The name of the new font.
+    @param size
+        The font size of the new font in pixels.
+        @param fontName
+        The filename of the font.
+    */
+    /*static*/ void GUIManager::addFontHelper(const std::string& name, int size, const std::string& fontName)
+    {
+#ifdef ORXONOX_OLD_CEGUI
+        if(CEGUI::FontManager::getSingleton().isFontPresent(name)) // If a font with that name already exists.
+            return;
+
+        CEGUI::Font* font = NULL;
+        CEGUI::XMLAttributes xmlAttributes;
+
+        // Attributes specified within CEGUIFont
+        xmlAttributes.add("Name", name);
+        xmlAttributes.add("Filename", fontName);
+        xmlAttributes.add("ResourceGroup", "");
+        xmlAttributes.add("AutoScaled", "true");
+        xmlAttributes.add("NativeHorzRes", "800");
+        xmlAttributes.add("NativeVertRes", "600");
+
+        // Attributes specified within CEGUIXMLAttributes
+        xmlAttributes.add("Size", multi_cast<std::string>(size));
+        xmlAttributes.add("AntiAlias", "true");
+
+        font = CEGUI::FontManager::getSingleton().createFont("FreeType", xmlAttributes);
+        if(font != NULL)
+            font->load();
+#else
+        if(CEGUI::FontManager::getSingleton().isDefined(name)) // If a font with that name already exists.
+            return;
+
+        CEGUI::FontManager::getSingleton().createFreeTypeFont(name, (float)size, true, fontName, "", true, 800.0f, 600.0f);
+#endif
     }
 
 }

@@ -56,13 +56,15 @@ namespace orxonox
     @param creator
         The creator of this trigger.
     */
-    DistanceTrigger::DistanceTrigger(BaseObject* creator) : Trigger(creator), beaconMask_(NULL)
+    DistanceTrigger::DistanceTrigger(BaseObject* creator) : Trigger(creator)
     {
         RegisterObject(DistanceTrigger);
 
         this->distance_ = 100;
         this->targetMask_.exclude(Class(BaseObject));
         this->targetName_ = "";
+        this->beaconMask_.exclude(Class(BaseObject));
+        this->beaconMask_.include(Class(DistanceTriggerBeacon));
     }
 
     /**
@@ -71,9 +73,7 @@ namespace orxonox
     */
     DistanceTrigger::~DistanceTrigger()
     {
-        // Delete the beacon mask if it exists.
-        if(this->beaconMask_ != NULL)
-            delete this->beaconMask_;
+
     }
 
     /**
@@ -158,7 +158,7 @@ namespace orxonox
         ClassTreeMask targetMask = this->targetMask_;
         // If we are in identify-mode another target mask has to be applies to find the DistanceTriggerBeacons.
         if(this->beaconMode_ == distanceTriggerBeaconMode::identify)
-            targetMask = *this->beaconMask_;
+            targetMask = this->beaconMask_;
 
         // Iterate through all objects that are targets of the DistanceTrigger.
         for (ClassTreeMaskObjectIterator it = targetMask.begin(); it != targetMask.end(); ++it)
@@ -204,8 +204,11 @@ namespace orxonox
                     if(this->beaconMode_ == distanceTriggerBeaconMode::identify)
                         entity = entity->getParent();
 
-                    Pawn* player = orxonox_cast<Pawn*>(entity);
-                    this->setTriggeringPlayer(player);
+                    Pawn* pawn = orxonox_cast<Pawn*>(entity);
+                    if(pawn != NULL)
+                        this->setTriggeringPawn(pawn);
+                    else
+                        CCOUT(2) << "Pawn was NULL." << endl;
                 }
                 
                 // Add the entity to the cache.
@@ -227,12 +230,6 @@ namespace orxonox
     void DistanceTrigger::setBeaconModeDirect(distanceTriggerBeaconMode::Value mode)
     {
         this->beaconMode_ = mode;
-        if(this->beaconMode_ == distanceTriggerBeaconMode::identify && this->beaconMask_ == NULL)
-        {
-            this->beaconMask_ = new ClassTreeMask();
-            this->beaconMask_->exclude(Class(BaseObject));
-            this->beaconMask_->include(Class(DistanceTriggerBeacon));
-        }
     }
 
     /**
@@ -279,7 +276,9 @@ namespace orxonox
     @brief
         Check whether the DistanceTrigger is triggered.
         It is triggered if it is triggered according only to its mode (i.e. its sub-triggers) and if a target is in range.
-    @param
+    @param mode
+        The mode for which it is tested, whether the DistanceTrigger is triggered.
+    @return
         Returns true if it is triggered ,false if not.
     */
     bool DistanceTrigger::isTriggered(TriggerMode::Value mode)

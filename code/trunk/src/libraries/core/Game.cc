@@ -555,7 +555,7 @@ namespace orxonox
     void Game::loadState(const std::string& name)
     {
         this->bChangingState_ = true;
-        LOKI_ON_BLOCK_EXIT_OBJ(*this, &Game::resetChangingState);
+        LOKI_ON_BLOCK_EXIT_OBJ(*this, &Game::resetChangingState); (void)LOKI_ANONYMOUS_VARIABLE(scopeGuard);
 
         // If state requires graphics, load it
         Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);

@@ -5,4 +5,5 @@ ADD_SOURCE_FILES(PICKUP_SRC_FILES
   DronePickup.cc
   SpeedPickup.cc
   ShieldPickup.cc
+  ShrinkPickup.cc
 )

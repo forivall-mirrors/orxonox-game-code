@@ -641,15 +641,12 @@ namespace orxonox
     */
     void WorldEntity::setScale3D(const Vector3& scale)
     {
-/*
-HACK HACK HACK
-        if (bScalePhysics && this->hasPhysics() && scale != Vector3::UNIT_SCALE)
+        // If physics is enabled scale the attached CollisionShape.
+        /*if (this->hasPhysics() && this->collisionShape_ != NULL)
         {
-            CCOUT(2) << "Warning: Cannot set the scale of a physical object: Not yet implemented. Ignoring scaling." << std::endl;
-            return;
-        }
-HACK HACK HACK
-*/
+            this->collisionShape_->setScale3D(scale);
+        }*/
+
         this->node_->setScale(scale);
 
         this->changedScale();

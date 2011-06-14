@@ -49,6 +49,7 @@ namespace orxonox
 
   namespace ObjectDirection{
     enum Value{
+      None=0x0,
       ToClient=0x1,
       ToServer=0x2,
       Bidirectional=0x3

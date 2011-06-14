@@ -22,7 +22,7 @@
  *   Author:
  *      Oliver Scheuss
  *   Co-authors:
- *      ...
+ *      simonmie
  *
  */
 
@@ -47,7 +47,7 @@ namespace orxonox
 
         this->reloadTime_ = 0.20f;
         this->bParallelReload_ = false;
-        this->damage_ = 100;
+        this->damage_ = 0;
         this->speed_ = 500;
 
         this->setMunitionName("RocketMunition");
@@ -58,6 +58,8 @@ namespace orxonox
     {
     }
 
+    /* Creates the Rocket object, sets its properties to the RocketFire properties
+     */
     void RocketFire::fire()
     {
         Rocket* rocket = new Rocket(this);
@@ -70,5 +72,7 @@ namespace orxonox
 
         rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         rocket->setDamage(this->getDamage());
+        rocket->setShieldDamage(this->getShieldDamage());
+        rocket->setHealthDamage(this->getHealthDamage());
     }
 }

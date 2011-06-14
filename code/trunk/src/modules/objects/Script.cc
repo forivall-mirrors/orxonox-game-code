@@ -139,7 +139,7 @@ namespace orxonox
         COUT(4) << "Script (&" << this << ") triggered." << std::endl;
 
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
-        Pawn* pawn = NULL;
+        PlayerInfo* player = NULL;
 
         // If the trigger is a PlayerTrigger.
         if(pTrigger != NULL)
@@ -147,23 +147,14 @@ namespace orxonox
             if(!pTrigger->isForPlayer())  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
                 return false;
             else
-                pawn = pTrigger->getTriggeringPlayer();
+                player = pTrigger->getTriggeringPlayer();
         }
         else
             return false;
 
-        if(pawn == NULL)  //TODO: Will this ever happen? If not, change in NotificationDispatcher as well.
+        if(player == NULL)  //TODO: Will this ever happen? If not, change in NotificationDispatcher as well.
         {
             COUT(4) << "The Script was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
-            return false;
-        }
-
-        // Extract the PlayerInfo from the Pawn.
-        PlayerInfo* player = pawn->getPlayer();
-
-        if(player == NULL)
-        {
-            COUT(3) << "The PlayerInfo* is NULL." << std::endl;
             return false;
         }
 

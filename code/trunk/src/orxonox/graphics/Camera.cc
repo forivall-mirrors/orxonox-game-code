@@ -70,7 +70,7 @@ namespace orxonox
         this->bDrag_ = false;
         this->lastDtLagged_ = false;
 
-        this->setSyncMode(0x0);
+        this->setSyncMode(ObjectDirection::None);
 
         this->setConfigValues();
 

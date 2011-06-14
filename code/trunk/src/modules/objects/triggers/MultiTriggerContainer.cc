@@ -72,7 +72,7 @@ namespace orxonox
         if(pawn != NULL)
         {
             this->setForPlayer(true);
-            this->setTriggeringPlayer(pawn);
+            this->setTriggeringPawn(pawn);
         }
     }
 

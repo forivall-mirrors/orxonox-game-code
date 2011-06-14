@@ -62,7 +62,7 @@ namespace orxonox
 
         this->bMultiTrigger_ = true;
 
-        this->setSyncMode(0x0);
+        this->setSyncMode(ObjectDirection::None);
     }
 
     /**
@@ -197,7 +197,6 @@ namespace orxonox
                         // If the activity is different from what it is now, change it and fire an Event.
                         if(bActive ^ this->isActive(state->originator))
                         {
-
                             bool bFire = true;
 
                             // Add the originator to the objects activating this MultiTrigger.
@@ -311,7 +310,6 @@ namespace orxonox
         this->targetMask_.exclude(Class(TriggerBase), true);
 
         // We only want WorldEntities
-        //TODO: Really?
         ClassTreeMask WEMask;
         WEMask.include(Class(WorldEntity));
         this->targetMask_ *= WEMask;

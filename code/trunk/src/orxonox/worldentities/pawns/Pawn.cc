@@ -22,7 +22,7 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Simon Miescher
  *
  */
 
@@ -63,8 +63,15 @@ namespace orxonox
         this->health_ = 0;
         this->maxHealth_ = 0;
         this->initialHealth_ = 0;
+
         this->shieldHealth_ = 0;
+        this->initialShieldHealth_ = 0;
+        this->maxShieldHealth_ = 100; //otherwise shield might increase to float_max
         this->shieldAbsorption_ = 0.5;
+
+        this->reloadRate_ = 0;
+        this->reloadWaitTime_ = 1.0f;
+        this->reloadWaitCountdown_ = 0;
 
         this->lastHitOriginator_ = 0;
 
@@ -108,6 +115,8 @@ namespace orxonox
         XMLPortParam(Pawn, "initialhealth", setInitialHealth, getInitialHealth, xmlelement, mode).defaultValues(100);
 
         XMLPortParam(Pawn, "shieldhealth", setShieldHealth, getShieldHealth, xmlelement, mode).defaultValues(0);
+        XMLPortParam(Pawn, "initialshieldhealth", setInitialShieldHealth, getInitialShieldHealth, xmlelement, mode).defaultValues(0);
+        XMLPortParam(Pawn, "maxshieldhealth", setMaxShieldHealth, getMaxShieldHealth, xmlelement, mode).defaultValues(100);
         XMLPortParam(Pawn, "shieldabsorption", setShieldAbsorption, getShieldAbsorption, xmlelement, mode).defaultValues(0);
 
         XMLPortParam(Pawn, "spawnparticlesource", setSpawnParticleSource, getSpawnParticleSource, xmlelement, mode);
@@ -117,14 +126,18 @@ namespace orxonox
         XMLPortObject(Pawn, WeaponSlot, "weaponslots", addWeaponSlot, getWeaponSlot, xmlelement, mode);
         XMLPortObject(Pawn, WeaponSet, "weaponsets", addWeaponSet, getWeaponSet, xmlelement, mode);
         XMLPortObject(Pawn, WeaponPack, "weapons", addWeaponPackXML, getWeaponPack, xmlelement, mode);
+
+        XMLPortParam(Pawn, "reloadrate", setReloadRate, getReloadRate, xmlelement, mode).defaultValues(0);
+        XMLPortParam(Pawn, "reloadwaittime", setReloadWaitTime, getReloadWaitTime, xmlelement, mode).defaultValues(1.0f);
     }
 
     void Pawn::registerVariables()
     {
         registerVariable(this->bAlive_,           VariableDirection::ToClient);
         registerVariable(this->health_,           VariableDirection::ToClient);
-        registerVariable(this->initialHealth_,    VariableDirection::ToClient);
+        registerVariable(this->maxHealth_,        VariableDirection::ToClient);
         registerVariable(this->shieldHealth_,     VariableDirection::ToClient);
+        registerVariable(this->maxShieldHealth_,  VariableDirection::ToClient);
         registerVariable(this->shieldAbsorption_, VariableDirection::ToClient);
         registerVariable(this->bReload_,          VariableDirection::ToServer);
         registerVariable(this->aimPosition_,      VariableDirection::ToServer);  // For the moment this variable gets only transfered to the server
@@ -136,12 +149,25 @@ namespace orxonox
 
         this->bReload_ = false;
 
+        // TODO: use the existing timer functions instead
+        if(this->reloadWaitCountdown_ > 0)
+        {
+            this->decreaseReloadCountdownTime(dt);
+        }
+        else
+        {
+            this->addShieldHealth(this->getReloadRate() * dt);
+            this->resetReloadCountdown();
+        }
+
         if (GameMode::isMaster())
+        {
             if (this->health_ <= 0 && bAlive_)
             {
-                this->fireEvent(); // Event to notify anyone who want's to know about the death.
+                this->fireEvent(); // Event to notify anyone who wants to know about the death.
                 this->death();
             }
+        }
     }
 
     void Pawn::preDestroy()
@@ -167,62 +193,90 @@ namespace orxonox
         ControllableEntity::removePlayer();
     }
 
+
     void Pawn::setHealth(float health)
     {
-        this->health_ = std::min(health, this->maxHealth_);
+        this->health_ = std::min(health, this->maxHealth_); //Health can't be set to a value bigger than maxHealth, otherwise it will be reduced at first hit
     }
 
-    void Pawn::damage(float damage, Pawn* originator)
+    void Pawn::setShieldHealth(float shieldHealth)
+    {
+        this->shieldHealth_ = std::min(shieldHealth, this->maxShieldHealth_);
+    }
+
+    void Pawn::setMaxShieldHealth(float maxshieldhealth)
+    {
+        this->maxShieldHealth_ = maxshieldhealth;
+    }
+
+    void Pawn::setReloadRate(float reloadrate)
+    {
+        this->reloadRate_ = reloadrate;
+    }
+
+    void Pawn::setReloadWaitTime(float reloadwaittime)
+    {
+        this->reloadWaitTime_ = reloadwaittime;
+    }
+
+    void Pawn::decreaseReloadCountdownTime(float dt)
+    {
+        this->reloadWaitCountdown_ -= dt;
+    }
+
+    void Pawn::damage(float damage, float healthdamage, float shielddamage, Pawn* originator)
     {
         if (this->getGametype() && this->getGametype()->allowPawnDamage(this, originator))
         {
-            //share the dealt damage to the shield and the Pawn.
-            float shielddamage = damage*this->shieldAbsorption_;
-            float healthdamage = damage*(1-this->shieldAbsorption_);
-
-            // In case the shield can not take all the shield damage.
-            if (shielddamage > this->getShieldHealth())
+            if (shielddamage >= this->getShieldHealth())
             {
-                healthdamage += shielddamage-this->getShieldHealth();
                 this->setShieldHealth(0);
+                this->setHealth(this->health_ - (healthdamage + damage));
             }
-
-            this->setHealth(this->health_ - healthdamage);
-
-            if (this->getShieldHealth() > 0)
+            else
             {
                 this->setShieldHealth(this->shieldHealth_ - shielddamage);
+
+                // remove remaining shieldAbsorpton-Part of damage from shield
+                shielddamage = damage * this->shieldAbsorption_;
+                shielddamage = std::min(this->getShieldHealth(),shielddamage);
+                this->setShieldHealth(this->shieldHealth_ - shielddamage);
+
+                // set remaining damage to health
+                this->setHealth(this->health_ - (damage - shielddamage) - healthdamage);
             }
 
             this->lastHitOriginator_ = originator;
-
-            // play damage effect
         }
     }
 
-    void Pawn::hit(Pawn* originator, const Vector3& force, float damage)
+// TODO: Still valid?
+/* HIT-Funktionen
+    Die hit-Funktionen muessen auch in src/orxonox/controllers/Controller.h angepasst werden! (Visuelle Effekte)
+
+*/
+
+    void Pawn::hit(Pawn* originator, const Vector3& force, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
-            this->damage(damage, originator);
+            this->damage(damage, healthdamage, shielddamage, originator);
             this->setVelocity(this->getVelocity() + force);
-
-            // play hit effect
         }
     }
 
-    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage)
+
+    void Pawn::hit(Pawn* originator, btManifoldPoint& contactpoint, float damage, float healthdamage, float shielddamage)
     {
         if (this->getGametype() && this->getGametype()->allowPawnHit(this, originator) && (!this->getController() || !this->getController()->getGodMode()) )
         {
-            this->damage(damage, originator);
+            this->damage(damage, healthdamage, shielddamage, originator);
 
             if ( this->getController() )
-                this->getController()->hit(originator, contactpoint, damage);
-
-            // play hit effect
+                this->getController()->hit(originator, contactpoint, damage); // changed to damage, why shielddamage?
         }
     }
+
 
     void Pawn::kill()
     {

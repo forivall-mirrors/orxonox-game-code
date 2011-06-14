@@ -152,6 +152,11 @@
 */
 
 /**
+    @defgroup Portals Portals
+    @ingroup Modules
+*/
+
+/**
     @defgroup Questsystem Questsystem
     @ingroup Modules
 */

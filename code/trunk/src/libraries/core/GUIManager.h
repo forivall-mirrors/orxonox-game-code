@@ -127,11 +127,18 @@ namespace orxonox // tolua_export
         inline orxonox::PlayerInfo* getPlayer(const std::string& guiname) const { std::map<std::string, PlayerInfo*>::const_iterator it = this->players_.find(guiname); return (it != this->players_.end()) ? it->second : 0; } // tolua_export
 
         // TODO: Temporary hack because the tolua exported CEGUI method does not seem to work
-        static void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); //tolua_export
-        static void setTooltipTextHelper(CEGUI::ListboxItem* item, const std::string& toooltip); //tolua_export
-        static void setItemTooltipsEnabledHelper(CEGUI::Listbox* listbox, bool enabled); //tolua_export
+        static void subscribeEventHelper(CEGUI::Window* window, const std::string& event, const std::string& function); // tolua_export
+        static void setTooltipTextHelper(CEGUI::ListboxItem* item, const std::string& toooltip); // tolua_export
+        static void setItemTooltipsEnabledHelper(CEGUI::Listbox* listbox, bool enabled); // tolua_export
+        static void addFontHelper(const std::string& name, int size, const std::string& fontName); // tolua_export
 
         static GUIManager& getInstance() { return Singleton<GUIManager>::getInstance(); } // tolua_export
+
+        /**
+        @brief Check whether CEGUI is version < 0.7.
+        @return Returns true if the CEGUI version is < 0.7. False otherwise.
+        */
+        inline bool usingOldCEGUI(void) { return this->oldCEGUI_; } // tolua_export
 
     private:
         GUIManager(const GUIManager& instance); //!< private and undefined copy c'tor (this is a singleton class)
@@ -184,7 +191,8 @@ namespace orxonox // tolua_export
         // The used CEGUI scheme.
         static const std::string defaultScheme_;
         std::string guiScheme_;
-
+        bool oldCEGUI_;
+        
         int numScrollLines_; ///< How many lines to scroll in a list if the scroll wheel is used
 
     }; // tolua_export

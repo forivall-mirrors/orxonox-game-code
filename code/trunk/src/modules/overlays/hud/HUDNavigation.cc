@@ -341,7 +341,7 @@ void HUDNavigation::addObject ( RadarViewable* object )
     panel->hide();
     text->hide();
 
-    ObjectInfo tempStruct = {panel, text, false};
+    ObjectInfo tempStruct = {panel, text, false /*, TODO: initialize wasOutOfView_ */};
     activeObjectList_[object] = tempStruct;
 
     this->background_->addChild ( panel );

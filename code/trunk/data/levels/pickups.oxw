@@ -22,6 +22,7 @@
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+  <?lua include("includes/notifications.oxi") ?>
 
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
@@ -188,6 +189,33 @@
         <HealthPickup health=500 activationType=immediate healthRate=10 durationType=continuous />
       </pickup>
     </PickupSpawner>
+
+    <PickupSpawner position="-25,-50,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
+      <pickup>
+        <ShrinkPickup template ="smallshrinkpickup"/>
+      </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="0,-50,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
+      <pickup>
+        <ShrinkPickup template ="mediumshrinkpickup"/>
+      </pickup>
+    </PickupSpawner>
+
+    <PickupSpawner position="25,-50,-125" respawnTime="60" triggerDistance="20" maxSpawnedItems="5">
+      <pickup>
+        <ShrinkPickup template ="hugeshrinkpickup"/>
+      </pickup>
+    </PickupSpawner>
+
+    <!--StaticEntity position="0,-200,0" direction="0,-1,0" collisionType=static mass=500 friction=0.01 >
+      <attached>
+        <Model position="0,0,0" mesh="cube.mesh" scale3D="10,10,10" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="10,10,10" />
+      </collisionShapes>
+  </StaticEntity-->
 
   </Scene>
 </Level>
