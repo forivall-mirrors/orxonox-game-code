@@ -50,7 +50,6 @@ namespace orxonox
         this->controller_ = 0;
         this->controllableEntity_ = 0;
         this->controllableEntityID_ = OBJECTID_UNKNOWN;
-        this->oldControllableEntity_ = 0;
 
         this->gtinfo_ = 0;
         this->gtinfoID_ = OBJECTID_UNKNOWN;
@@ -150,8 +149,9 @@ namespace orxonox
         if (!entity || entity == this->controllableEntity_)
             return;
 
-        if (this->oldControllableEntity_)
+        while (this->previousControllableEntity_.size() > 0)
             this->stopTemporaryControl();
+        
         if (this->controllableEntity_)
             this->stopControl();
 
@@ -176,9 +176,8 @@ namespace orxonox
         if (!entity)
             return;
 
-        assert( this->oldControllableEntity_==0 );
-
-        this->oldControllableEntity_ = this->controllableEntity_;
+        this->controllableEntity_->destroyHud(); // HACK-ish
+        this->previousControllableEntity_.push_back(WeakPtr<ControllableEntity>(this->controllableEntity_));
         this->controllableEntity_ = entity;
         this->controllableEntityID_ = entity->getObjectID();
 
@@ -193,7 +192,7 @@ namespace orxonox
 
     void PlayerInfo::stopControl()
     {
-        if ( this->oldControllableEntity_ )
+        while ( this->previousControllableEntity_.size() > 0)
             this->stopTemporaryControl();
 
         ControllableEntity* entity = this->controllableEntity_;
@@ -214,22 +213,42 @@ namespace orxonox
         this->changedControllableEntity();
     }
 
+    void PlayerInfo::pauseControl()
+    {
+        ControllableEntity* entity = this->controllableEntity_;
+
+        if (!entity)
+            return;
+
+        this->controllableEntity_->getController()->setActive(false);
+        //this->controllableEntity_->getController()->setControllableEntity(NULL);
+        this->controllableEntity_->setController(0);
+    }
+
     void PlayerInfo::stopTemporaryControl()
     {
         ControllableEntity* entity = this->controllableEntity_;
 
-        assert( this->controllableEntity_ && this->oldControllableEntity_ );
-        if( !entity || !this->oldControllableEntity_ )
+        assert(this->controllableEntity_ != NULL);
+        if( !entity || this->previousControllableEntity_.size() == 0 )
             return;
 
         this->controllableEntity_->setController(0);
+        this->controllableEntity_->destroyHud(); // HACK-ish
         
-        this->controllableEntity_ = this->oldControllableEntity_;
+//        this->controllableEntity_ = this->previousControllableEntity_.back();
+        do {
+            this->controllableEntity_ = this->previousControllableEntity_.back();
+        } while(this->controllableEntity_ == NULL && this->previousControllableEntity_.size() > 0);
         this->controllableEntityID_ = this->controllableEntity_->getObjectID();
-        this->oldControllableEntity_ = 0;
+        this->previousControllableEntity_.pop_back();
 
-        if ( this->controllableEntity_ && this->controller_)
+        if ( this->controllableEntity_ != NULL && this->controller_ != NULL)
             this->controller_->setControllableEntity(this->controllableEntity_);
+
+         // HACK-ish
+        if(this->controllableEntity_ != NULL)
+            this->controllableEntity_->createHud();
 
         if ( GameMode::isMaster() )
             entity->removePlayer();

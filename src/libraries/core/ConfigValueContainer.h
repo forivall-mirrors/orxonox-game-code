@@ -108,7 +108,7 @@ namespace orxonox
                 @param value Only needed do determine the right type.
             */
             template <class D, class V>
-            ConfigValueContainer(ConfigFileType::Value type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const D& defvalue, const V& value)
+            ConfigValueContainer(ConfigFileType::Value type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const D& defvalue, const V&)
             {
                 this->init(type, identifier, sectionname, varname);
                 this->initValue(static_cast<V>(defvalue));
@@ -124,7 +124,7 @@ namespace orxonox
                 @param value Only needed do determine the right type.
             */
             template <class D, class V>
-            ConfigValueContainer(ConfigFileType::Value type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<D>& defvalue, const std::vector<V>& value)
+            ConfigValueContainer(ConfigFileType::Value type, Identifier* identifier, const std::string& sectionname, const std::string& varname, const std::vector<D>& defvalue, const std::vector<V>&)
             {
                 this->init(type, identifier, sectionname, varname);
 

@@ -70,7 +70,7 @@ namespace orxonox
         - @b distance Which specifies the maximum distance at which the DistanceTrigger still triggers, i.e. its range. Default is <code>100</code>.
         - @b target Which specifies the class of objects that can trigger the DistanceTrigger. Default is <code>"Pawn"</code>.
         - @b beaconMode Which specifies, whether the DistanceTrigger operates on @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacons" or not. If <em>off</em> the DistanceMultiTrigger works as usual. If set to <em>identify</em> the DistanceTrigger is only triggered by objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. If set to <em>exclude</em> the DistanceTrigger is only triggered by objects that don't have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. Default is <em>off</em>.
-        - @b targetname Which specifies the name @ref oroxnox::DistanceTriggerBeacon "DistanceTriggerBeacons" need to have to make the DistanceTrigger react to them if it is in <em>beacon-mode</em> (the beaconMode is not <em>off</em>).
+        - @b targetname Which specifies the name @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacons" need to have to make the DistanceTrigger react to them if it is in <em>beacon-mode</em> (the beaconMode is not <em>off</em>).
 
         A simple DistanceTrigger could look like this:
         @code
@@ -161,7 +161,7 @@ namespace orxonox
             
             distanceTriggerBeaconMode::Value beaconMode_; //!< The beacon mode.
             std::string targetName_; //!< The name a DistanceTriggerBeacon needs to have to make the DistanceTrigger react to it if in beacon-mode.
-            ClassTreeMask* beaconMask_; //!< A mask, that only accepts DistanceTriggerBeacons.
+            ClassTreeMask beaconMask_; //!< A mask, that only accepts DistanceTriggerBeacons.
             
             WeakPtr<WorldEntity> cache_; //!< Caches the entity that triggered the DistanceTrigger last.
     };

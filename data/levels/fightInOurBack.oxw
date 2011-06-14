@@ -67,6 +67,7 @@
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+  <?lua include("includes/notifications.oxi") ?>
 
     <!-- Ausgang: Szene ===> ambientlight/skybox -->
     <Scene

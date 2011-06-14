@@ -159,7 +159,12 @@ namespace orxonox
         void setBackgroundMaterial(const std::string& material);
         const std::string& getBackgroundMaterial() const;
 
+        void setBackgroundTexture(const std::string& texture);
+        const std::string& getBackgroundTexture() const;
+
         void setBackgroundAlpha(float alpha);
+
+        void setBackgroundColour(ColourValue colour);
 
         virtual void changedVisibility();
 

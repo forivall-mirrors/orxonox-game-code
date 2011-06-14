@@ -92,7 +92,13 @@ namespace orxonox
             virtual void fired(unsigned int firemode) {}
             virtual void reload() {}
 
-            virtual void boost() {}
+            /**
+            @brief Tells the ControllableEntity to either start or stop boosting.
+                   This doesn't mean, that the ControllableEntity will do so, there might be additional restrictions on boosting, but if it can, then it will.
+            @param bBoost If true the ControllableEntity is told to start boosting, if false it is told to stop.
+            */
+            virtual void boost(bool bBoost) {}
+            
             virtual void greet() {}
             virtual void switchCamera();
             virtual void mouseLook();
@@ -109,10 +115,12 @@ namespace orxonox
             CameraPosition* getCameraPosition(unsigned int index) const;
             inline const std::list<SmartPtr<CameraPosition> >& getCameraPositions() const
                 { return this->cameraPositions_; }
+            unsigned int getCurrentCameraIndex() const;
+            bool setCameraPosition(unsigned int index);
 
             inline void setCameraPositionTemplate(const std::string& name)
                 { this->cameraPositionTemplate_ = name; }
-            inline const std::string& getCameraPositionTemkplate() const
+            inline const std::string& getCameraPositionTemplate() const
                 { return this->cameraPositionTemplate_; }
 
             inline void setReverseCamera(CameraPosition* camera)
@@ -167,6 +175,9 @@ namespace orxonox
 
             inline void setHudTemplate(const std::string& name)
                 { this->hudtemplate_ = name; }
+            // HACK-ish
+            void createHud(void);
+            void destroyHud(void);
 
             Ogre::SceneNode* cameraPositionRootNode_;
 

@@ -49,7 +49,7 @@ namespace orxonox
         else
             COUT(1) << "Error: SpawnPoint has no Gametype" << std::endl;
 
-        this->setSyncMode(0x0);
+        this->setSyncMode(ObjectDirection::None);
     }
 
     void SpawnPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)

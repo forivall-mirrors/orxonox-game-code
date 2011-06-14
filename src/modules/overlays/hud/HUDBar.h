@@ -25,6 +25,7 @@
  *      Felix Schulthess
  *      Fabian 'x3n' Landau
  *      Reto Grieder
+ *      Benjamin Knecht
  *
  */
 

@@ -40,10 +40,9 @@
 #include "network/Host.h"
 
 #include "infos/PlayerInfo.h"
+#include "interfaces/NotificationListener.h"
 #include "interfaces/PlayerTrigger.h"
 #include "worldentities/pawns/Pawn.h"
-
-#include "NotificationManager.h"
 
 namespace orxonox
 {
@@ -60,7 +59,7 @@ namespace orxonox
     {
         RegisterObject(NotificationDispatcher);
 
-        this->sender_ = NotificationManager::NONE;
+        this->sender_ = NotificationListener::NONE;
         this->registerVariables();
     }
 
@@ -113,7 +112,8 @@ namespace orxonox
         if(GameMode::isStandalone() || Host::getPlayerID() == clientId || this->getSyncMode() == 0x0)
         {
             const std::string message = this->createNotificationMessage();
-            NotificationManager::sendNotification(message, clientId, this->getSender());
+            // TODO: Make the type configurable.
+            NotificationListener::sendNotification(message, this->getSender(), notificationMessageType::info, notificationSendMode::network, clientId);
         }
         else if(GameMode::isServer())
         {
@@ -139,7 +139,7 @@ namespace orxonox
         COUT(4) << "NotificationDispatcher (&" << this << ") triggered." << std::endl;
 
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
-        Pawn* pawn = NULL;
+        PlayerInfo* player = NULL;
 
         // If the trigger is a PlayerTrigger.
         if(pTrigger != NULL)
@@ -147,23 +147,14 @@ namespace orxonox
             if(!pTrigger->isForPlayer())  // The PlayerTrigger is not exclusively for Pawns which means we cannot extract one.
                 return false;
             else
-                pawn = pTrigger->getTriggeringPlayer();
+                player = pTrigger->getTriggeringPlayer();
         }
         else
             return false;
 
-        if(pawn == NULL)
-        {
-            COUT(4) << "The NotificationDispatcher was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
-            return false;
-        }
-
-        // Extract the PlayerInfo from the Pawn.
-        PlayerInfo* player = pawn->getPlayer();
-
         if(player == NULL)
         {
-            COUT(3) << "The PlayerInfo* is NULL." << std::endl;
+            COUT(4) << "The NotificationDispatcher was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
             return false;
         }
 

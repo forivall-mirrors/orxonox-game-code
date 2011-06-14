@@ -50,7 +50,7 @@ namespace orxonox {
 
         this->setSender("simpleNotification");
 
-        this->setSyncMode(0x0);
+        this->setSyncMode(ObjectDirection::None);
     }
 
     /**

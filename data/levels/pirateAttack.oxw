@@ -8,7 +8,6 @@
   include("HUDTemplates3.oxo")
   include("stats.oxo")
   include("templates/spaceshipAssff.oxt")
-  include("templates/spaceshipHXYSL.oxt")
   include("templates/spaceshipPirate.oxt")
   include("templates/lodInformation.oxt")
 ?>
@@ -34,6 +33,7 @@ gametype=TeamDeathmatch
   <templates>
     <Template link=lodtemplate_default />
   </templates>
+  <?lua include("includes/notifications.oxi") ?>
 
     <Scene
         ambientlight = "0.3, 0.3, 0.3"

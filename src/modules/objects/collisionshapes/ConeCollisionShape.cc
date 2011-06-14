@@ -26,17 +26,27 @@
  *
  */
 
+/**
+    @file ConeCollisionShape.cc
+    @brief Implementation of the ConeCollisionShape class.
+*/
+
 #include "ConeCollisionShape.h"
 
 #include <BulletCollision/CollisionShapes/btConeShape.h>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+#include "tools/BulletConversions.h"
 
 namespace orxonox
 {
     CreateFactory(ConeCollisionShape);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     ConeCollisionShape::ConeCollisionShape(BaseObject* creator) : CollisionShape(creator)
     {
         RegisterObject(ConeCollisionShape);
@@ -68,6 +78,34 @@ namespace orxonox
         XMLPortParam(ConeCollisionShape, "height", setHeight, getHeight, xmlelement, mode);
     }
 
+    /**
+    @brief
+        Is called when the scale of the ConeCollisionShape has changed.
+    */
+    void ConeCollisionShape::changedScale()
+    {
+        CollisionShape::changedScale();
+
+        // Resize the internal collision shape
+        // TODO: Assuming setLocalScaling works.
+        //this->collisionShape_->setLocalScaling(multi_cast<btVector3>(this->getScale3D()));
+        if(!this->hasUniformScaling())
+        {
+            CCOUT(1) << "Error: Non-uniform scaling is not yet supported." << endl;
+            return;
+        }
+
+        this->radius_ *= this->getScale();
+        this->height_ *= this->getScale();
+        this->updateShape();
+    }
+
+    /**
+    @brief
+        Creates a new internal collision shape for the ConeCollisionShape.
+    @return
+        Returns a pointer to the newly created btConeShape.
+    */
     btCollisionShape* ConeCollisionShape::createNewShape() const
     {
         return new btConeShape(this->radius_, this->height_);

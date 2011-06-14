@@ -22,14 +22,13 @@
  *   Author:
  *      Fabian 'x3n' Landau
  *   Co-authors:
- *      ...
+ *      Maurus Kaufmann
  *
  */
 
 #include "Billboard.h"
 
 #include "OgreBillboard.h"
-#include "OgreBillboardSet.h"
 
 #include "core/CoreIncludes.h"
 #include "core/GameMode.h"
@@ -45,7 +44,7 @@ namespace orxonox
         RegisterObject(Billboard);
 
         this->colour_ = ColourValue::White;
-        //this->rotation_ = 0;
+        this->rotation_ = 0;
 
         this->registerVariables();
     }
@@ -65,14 +64,14 @@ namespace orxonox
 
         XMLPortParam(Billboard, "material", setMaterial, getMaterial, xmlelement, mode);
         XMLPortParam(Billboard, "colour",   setColour,   getColour,   xmlelement, mode).defaultValues(ColourValue::White);
-        //XMLPortParam(Billboard, "rotation", setRotation, getRotation, xmlelement, mode).defaultValues(0);
+        XMLPortParam(Billboard, "rotation", setRotation, getRotation, xmlelement, mode).defaultValues(0);
     }
 
     void Billboard::registerVariables()
     {
         registerVariable(this->material_, VariableDirection::ToClient, new NetworkCallback<Billboard>(this, &Billboard::changedMaterial));
         registerVariable(this->colour_,   VariableDirection::ToClient, new NetworkCallback<Billboard>(this, &Billboard::changedColour));
-        //registerVariable(this->rotation_, VariableDirection::ToClient, new NetworkCallback<Billboard>(this, &Billboard::changedRotation));
+        registerVariable(this->rotation_, VariableDirection::ToClient, new NetworkCallback<Billboard>(this, &Billboard::changedRotation));
     }
 
     void Billboard::changedMaterial()
@@ -88,7 +87,7 @@ namespace orxonox
                 if (this->billboard_.getBillboardSet())
                      this->attachOgreObject(this->billboard_.getBillboardSet());
                 this->billboard_.setVisible(this->isVisible());
-                //this->changedRotation();
+                this->changedRotation();
             }
         }
         else
@@ -113,7 +112,7 @@ namespace orxonox
             this->billboard_.setColour(this->colour_);
     }
 
-/*
+
     void Billboard::changedRotation()
     {
         if (this->billboard_.getBillboardSet())
@@ -127,12 +126,48 @@ namespace orxonox
             }
         }
     }
-*/
+
 
     void Billboard::changedVisibility()
     {
         SUPER(Billboard, changedVisibility);
 
         this->billboard_.setVisible(this->isVisible());
+    }
+    
+    void Billboard::setBillboardType(Ogre::BillboardType bbt)
+    {
+        Ogre::BillboardSet* bSet = this->billboard_.getBillboardSet();
+        if( bSet != NULL )
+        {
+            bSet->setBillboardType(bbt);
+        }
+    }
+    
+    void Billboard::setCommonDirection(Vector3 vec)
+    {
+        Ogre::BillboardSet* bSet = this->billboard_.getBillboardSet();
+        if( bSet != NULL )
+        {
+            bSet->setCommonDirection( vec );
+        }
+    }
+            
+    void Billboard::setCommonUpVector(Vector3 vec)
+    {
+        Ogre::BillboardSet* bSet = this->billboard_.getBillboardSet();
+        if( bSet != NULL )
+        {
+            bSet->setCommonUpVector( vec );
+        }
+    }
+    
+    void Billboard::setDefaultDimensions(float width, float height)
+    {
+        Ogre::BillboardSet* bSet = this->billboard_.getBillboardSet();
+        if( bSet != NULL )
+        {
+            bSet->setDefaultDimensions(width, height);
+        }
     }
 }

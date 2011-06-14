@@ -3,6 +3,7 @@ SET_SOURCE_FILES(OBJECTS_SRC_FILES
   ForceField.cc
   Planet.cc
   Script.cc
+  SpaceBoundaries.cc
 )
 
 ADD_SUBDIRECTORY(collisionshapes)

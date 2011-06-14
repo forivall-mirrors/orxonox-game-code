@@ -58,30 +58,42 @@ namespace orxonox
             virtual void rotateRoll(const Vector2& value);
 
             virtual void fire();
-            virtual void boost();
+            virtual void boost(bool bBoost); // Starts or stops boosting.
 
-            void setEngine(Engine* engine);
-            inline Engine* getEngine() const
-                { return this->engine_; }
+            void addEngine(Engine* engine);
+            bool hasEngine(Engine* engine);
+            Engine* getEngine(unsigned int i); // This one's for XMLPort
+            inline const std::vector<Engine*>& getEngineList()
+                { return this->engineList_; }
+            void removeEngine(Engine* engine);
+            void removeAllEngines();
+
+            void setSpeedFactor(float factor);
+            float getSpeedFactor(); // Gets mean speed factor
+            float getMaxSpeedFront(); // gets largest speed forward
+            float getBoostFactor(); // gets mean boost factor
 
             inline void setSteeringDirection(const Vector3& direction)
                 { this->steering_ = direction; }
             inline const Vector3& getSteeringDirection() const
                 { return this->steering_; }
+            inline void resetEngineTicks()
+                { this->engineTicksNotDone = this->engineList_.size(); }
+            inline void oneEngineTickDone()
+                { this->engineTicksNotDone--; }
+            inline bool hasEngineTicksRemaining()
+                { return (this->engineTicksNotDone>0); }
 
-            void setBoost(bool bBoost);
             inline bool getBoost() const
                 { return this->bBoost_; }
 
-            inline void setEngineTemplate(const std::string& temp)
-                { this->enginetemplate_ = temp; this->loadEngineTemplate(); }
-            inline const std::string& getEngineTemplate() const
-                { return this->enginetemplate_; }
+            inline float getBoostPower() const
+                { return this->boostPower_; }
+            inline float getInitialBoostPower() const
+                { return this->initialBoostPower_; }
 
-            inline void setPermanentBoost(bool bPermanent)
-                { this->bPermanentBoost_ = bPermanent; }
-            inline bool getPermanentBoost() const
-                { return this->bPermanentBoost_; }
+            inline bool isBoostCoolingDown() const
+                { return bBoostCooldown_; }
 
         protected:
             virtual std::vector<PickupCarrier*>* getCarrierChildren(void) const;
@@ -89,12 +101,13 @@ namespace orxonox
 
             bool bBoost_;
             bool bBoostCooldown_;
-            bool bPermanentBoost_;
             float boostPower_;
             float initialBoostPower_;
             float boostRate_;
             float boostPowerRate_;
             float boostCooldownDuration_;
+            float lift_;
+            float stallSpeed_;
             Vector3 steering_;
             float primaryThrust_;
             float auxilaryThrust_;
@@ -102,17 +115,32 @@ namespace orxonox
             btVector3 localLinearAcceleration_;
             btVector3 localAngularAcceleration_;
 
+            float shakeFrequency_;
+            float shakeAmplitude_;
+
         private:
             void registerVariables();
             virtual bool isCollisionTypeLegal(WorldEntity::CollisionType type) const;
-
-            void loadEngineTemplate();
             
+            //All things booster
+            void changedEnableMotionBlur();
             void boostCooledDown(void);
+        
+            void resetCamera();
+            void backupCamera();
+            void shakeCamera(float dt);
 
-            std::string enginetemplate_;
-            Engine* engine_;
+            Shader* boostBlur_;
+            float blurStrength_;
+            bool bEnableMotionBlur_;
+
+            std::vector<Engine*> engineList_;
+            int engineTicksNotDone; // Used for knowing when to reset temporary variables.
             Timer timer_;
+            Vector3 cameraOriginalPosition_;
+            Quaternion cameraOriginalOrientation_;
+        
+            float shakeDt_;
     };
 }
 

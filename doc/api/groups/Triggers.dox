@@ -54,7 +54,7 @@
     - @b distance Which specifies the maximum distance at which the @ref orxonox::DistanceTrigger "DistanceTrigger" still triggers, i.e. its range. Default is <code>100</code>.
     - @b target Which specifies the class of objects that can trigger the @ref orxonox::DistanceTrigger "DistanceTrigger". Default is <code>"Pawn"</code>.
     - @b beaconMode Which specifies, whether the @ref orxonox::DistanceTrigger "DistanceTrigger" operates on @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacons" or not. If <em>off</em> the DistanceMultiTrigger works as usual. If set to <em>identify</em> the @ref orxonox::DistanceTrigger "DistanceTrigger" is only triggered by objects that have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. If set to <em>exclude</em> the @ref orxonox::DistanceTrigger "DistanceTrigger" is only triggered by objects that don't have a @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacon", with the same name as specified in <em>targetname</em>, attached to them. Default is <em>off</em>.
-    - @b targetname Which specifies the name @ref oroxnox::DistanceTriggerBeacon "DistanceTriggerBeacons" need to have to make the @ref orxonox::DistanceTrigger "DistanceTrigger" react to them if it is in <em>beacon-mode</em> (the beaconMode is not <em>off</em>).
+    - @b targetname Which specifies the name @ref orxonox::DistanceTriggerBeacon "DistanceTriggerBeacons" need to have to make the @ref orxonox::DistanceTrigger "DistanceTrigger" react to them if it is in <em>beacon-mode</em> (the beaconMode is not <em>off</em>).
 
     A simple @ref orxonox::DistanceTrigger "DistanceTrigger" could look like this:
     @code

@@ -1,0 +1,46 @@
+
+particle_system Orxonox/weaponflare
+{
+	quota	10000
+	material	PE/lensflare
+	particle_width	4
+	particle_height	4
+	cull_each	false
+	renderer	billboard
+	billboard_type	point
+
+	emitter HollowEllipsoid
+	{
+		angle	0
+		colour	0.128 0.28 1 1
+		colour_range_start	0.128 0.28 1 1
+		colour_range_end	0.05 0.05 1 1
+		direction	0 0 0
+		emission_rate	130
+		position	0 0 0
+		velocity	-0.8
+		velocity_min	-0.8
+		velocity_max	-0.8
+		time_to_live	.000001
+		time_to_live_min	.000001
+		time_to_live_max	.000004
+		duration	0
+		duration_min	0
+		duration_max	0
+		repeat_delay	0
+		repeat_delay_min	0
+		repeat_delay_max	0
+		width	0.1
+		height	0.1
+		depth	0.1
+		inner_width	0.001
+		inner_height	0.001
+		inner_depth	0.001
+	}
+
+	affector LinearForce
+	{
+		force_vector	0 0 0
+		force_application	add
+	}
+}

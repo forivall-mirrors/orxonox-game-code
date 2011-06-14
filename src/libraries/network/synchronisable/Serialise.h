@@ -83,7 +83,7 @@ namespace orxonox{
     // These functions implement loading / saving / etc. for SmartPtr<T>
 
     /** @brief returns the size of the objectID needed to synchronise the pointer */
-    template <class T> inline uint32_t returnSize( const SmartPtr<T>& variable )
+    template <class T> inline uint32_t returnSize( const SmartPtr<T>& )
     {
         return sizeof(uint32_t);
     }

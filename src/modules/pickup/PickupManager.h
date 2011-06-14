@@ -147,7 +147,7 @@ namespace orxonox // tolua_export
             @param pickup The Pickupable.
             @return Returns true if the input Pickupable is still valid, false if not.
             */
-            const bool isValidPickup(uint32_t pickup) const
+            bool isValidPickup(uint32_t pickup) const
                 { return this->pickups_.find(pickup) != this->pickups_.end(); }
             // tolua_end
 

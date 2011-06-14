@@ -108,7 +108,7 @@ namespace orxonox
 
         // event from Ogre::LogListener
         void messageLogged(const std::string& message, Ogre::LogMessageLevel lml,
-            bool maskDebug, const std::string& logName);
+        bool maskDebug, const std::string& logName);
 
         // console commands
         void printScreen();

@@ -20,39 +20,40 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Fabian 'x3n' Landau
+ *      Sven Stucki
  *   Co-authors:
  *      ...
  *
  */
 
-#ifndef _GametypeStatus_H__
-#define _GametypeStatus_H__
+/**
+    @file DockingTarget.cc
+    @brief Docking system main class
+*/
 
-#include "overlays/OverlaysPrereqs.h"
+#include "DockingTarget.h"
+#include "core/XMLPort.h"
 
-#include "tools/interfaces/Tickable.h"
-#include "overlays/OverlayText.h"
 
 namespace orxonox
 {
-    class _OverlaysExport GametypeStatus : public OverlayText, public Tickable
+    CreateFactory(DockingTarget);
+
+    DockingTarget::DockingTarget(BaseObject* creator) : StaticEntity(creator)
     {
-        public:
-            GametypeStatus(BaseObject* creator);
-            virtual ~GametypeStatus();
+        RegisterObject(DockingTarget);
+    }
 
-            virtual void tick(float dt);
-            virtual void changedOwner();
+    DockingTarget::~DockingTarget()
+    {
+    }
 
-            void setDisplayCaption(bool bValue); //!< Toggles whether the gametype status is displayed.
+    void DockingTarget::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    {
+        SUPER(DockingTarget, XMLPort, xmlelement, mode);
 
-        private:
-            //Gametype* game_;
-            PlayerInfo* owner_;
-            bool bNoCaption_;
-            //bool bForcedSpawn_;
+        COUT(4) << "DockingTarget with name '" << this->getName() << "' created.." << std::endl;
+    }
 
-    };
 }
-#endif /* _GametypeStatus_H__ */
+

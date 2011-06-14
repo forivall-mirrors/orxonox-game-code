@@ -70,7 +70,7 @@ namespace orxonox {
 
         this->bMultiTrigger_ = false;
 
-        this->setSyncMode(0x0);
+        this->setSyncMode(ObjectDirection::None);
     }
 
     /**

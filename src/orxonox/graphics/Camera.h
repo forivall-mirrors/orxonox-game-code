@@ -39,7 +39,8 @@
 
 namespace orxonox
 {
-    class _OrxonoxExport Camera : public StaticEntity, public Tickable, public TimeFactorListener, public WindowEventListener
+
+    class _OrxonoxExport Camera : public StaticEntity, public Tickable,  public TimeFactorListener, public WindowEventListener
     {
         friend class CameraManager;
 

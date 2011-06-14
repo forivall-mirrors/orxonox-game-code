@@ -246,12 +246,12 @@ namespace orxonox
         }
 
         //! Destroys the singleton instance - overloaded for OrxonoxClass, calls OrxonoxClass::destroy()
-        void destroy(OrxonoxClass* ptr)
+        void destroy(OrxonoxClass*)
         {
             singletonPtr_->destroy();
         }
         //! Destroys the singleton instance - overloaded for void*, calls delete
-        void destroy(void* ptr)
+        void destroy(void*)
         {
             delete singletonPtr_;
         }

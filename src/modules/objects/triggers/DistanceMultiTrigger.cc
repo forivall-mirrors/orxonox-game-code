@@ -52,13 +52,15 @@ namespace orxonox
     @brief
         Default Constructor. Registers the object and initializes default values.
     */
-    DistanceMultiTrigger::DistanceMultiTrigger(BaseObject* creator) : MultiTrigger(creator), beaconMask_(NULL)
+    DistanceMultiTrigger::DistanceMultiTrigger(BaseObject* creator) : MultiTrigger(creator)
     {
         RegisterObject(DistanceMultiTrigger);
 
         this->distance_ = 100.0f;
         this->setBeaconModeDirect(distanceMultiTriggerBeaconMode::off);
         this->targetName_ = "";
+        this->beaconMask_.exclude(Class(BaseObject));
+        this->beaconMask_.include(Class(DistanceTriggerBeacon));
     }
 
     /**
@@ -67,8 +69,7 @@ namespace orxonox
     */
     DistanceMultiTrigger::~DistanceMultiTrigger()
     {
-        if(this->beaconMask_ != NULL)
-            delete this->beaconMask_;
+
     }
 
     /**
@@ -134,7 +135,7 @@ namespace orxonox
         ClassTreeMask targetMask = this->getTargetMask();
         // If we are in identify-mode another target mask has to be applies to find the DistanceTriggerBeacons.
         if(this->beaconMode_ == distanceMultiTriggerBeaconMode::identify)
-            targetMask = *this->beaconMask_;
+            targetMask = this->beaconMask_;
 
         // Iterate through all objects that are targets of the DistanceMultiTrigger.
         for(ClassTreeMaskObjectIterator it = targetMask.begin(); it != targetMask.end(); ++it)
@@ -206,12 +207,6 @@ namespace orxonox
     void DistanceMultiTrigger::setBeaconModeDirect(distanceMultiTriggerBeaconMode::Value mode)
     {
         this->beaconMode_ = mode;
-        if(this->beaconMode_ == distanceMultiTriggerBeaconMode::identify && this->beaconMask_ == NULL)
-        {
-            this->beaconMask_ = new ClassTreeMask();
-            this->beaconMask_->exclude(Class(BaseObject));
-            this->beaconMask_->include(Class(DistanceTriggerBeacon));
-        }
     }
     
     /**

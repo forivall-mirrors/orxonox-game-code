@@ -92,8 +92,6 @@ namespace orxonox
     }
 
 
-    std::string MoodListener::mood_s;
-
     MoodListener::MoodListener()
     {
         RegisterRootObject(MoodListener);
@@ -101,8 +99,7 @@ namespace orxonox
 
     /*static*/ void MoodListener::changedMood(const std::string& mood)
     {
-        mood_s = mood;
         for (ObjectList<MoodListener>::iterator it = ObjectList<MoodListener>::begin(); it; ++it)
-            it->moodChanged(mood_s);
+            it->moodChanged(mood);
     }
 }

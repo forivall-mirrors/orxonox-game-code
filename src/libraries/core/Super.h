@@ -99,9 +99,9 @@
                 SuperFunctionCondition<functionnumber + 1, T, 0, templatehack2>::superCheck(); \
             } \
             \
-            static void apply(void* temp) {} \
+            static void apply(void*) {} \
             \
-            static void apply(baseclass* temp) \
+            static void apply(baseclass*) \
             { \
                 ClassIdentifier<T>* identifier = ClassIdentifier<T>::getIdentifier(); \
                 for (std::set<const Identifier*>::iterator it = identifier->getDirectChildrenIntern().begin(); it != identifier->getDirectChildrenIntern().end(); ++it) \
@@ -311,7 +311,7 @@ namespace orxonox
         template <int functionnumber, class T>
         struct SuperFunctionInitialization
         {
-            static void initialize(ClassIdentifier<T>* identifier) {}
+            static void initialize(ClassIdentifier<T>*) {}
         };
 
         /**
@@ -320,7 +320,7 @@ namespace orxonox
         template <int functionnumber, class T>
         struct SuperFunctionDestruction
         {
-            static void destroy(ClassIdentifier<T>* identifier) {}
+            static void destroy(ClassIdentifier<T>*) {}
         };
 
 

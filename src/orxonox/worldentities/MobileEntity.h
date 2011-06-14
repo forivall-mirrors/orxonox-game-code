@@ -69,6 +69,12 @@ namespace orxonox
             inline const Vector3& getAcceleration() const
                 { return this->linearAcceleration_; }
 
+            // Added for making N engines work with spaceships
+            void addAcceleration(const Vector3& acceleration, const Vector3 &relativePosition);
+            inline void addAcceleration(float x, float y, float z)
+                { this->addAcceleration(Vector3(x, y, z), Vector3(0,0,0)); }
+            // Getter function above
+
             void setAngularAcceleration(const Vector3& acceleration);
             inline void setAngularAcceleration(float x, float y, float z)
                 { this->setAngularAcceleration(Vector3(x, y, z)); }
@@ -82,7 +88,7 @@ namespace orxonox
             inline void setRotationRate(Degree rate)
                 { this->setAngularVelocity(this->getAngularVelocity().normalisedCopy() * rate.valueRadians()); }
             inline Degree getRotationRate() const
-                { return Degree(this->getAngularVelocity().length()); }
+                { return Radian(this->getAngularVelocity().length()); }
 
             inline void setRotationAxis(const Vector3& axis)
                 { this->setAngularVelocity(axis * this->getAngularVelocity().length()); }

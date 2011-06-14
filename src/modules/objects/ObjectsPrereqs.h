@@ -71,6 +71,7 @@ namespace orxonox
     class ForceField;
     class Planet;
     class Script;
+    class SpaceBoundaries;
 
     // collisionshapes
     class BoxCollisionShape;
