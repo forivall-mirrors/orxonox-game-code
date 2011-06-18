@@ -34,10 +34,19 @@
 #include "core/ObjectListIterator.h"
 #include "core/XMLPort.h"
 
+#include "util/Math.h"
+
 #include "graphics/Billboard.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/WorldEntity.h"
 #include "worldentities/pawns/Pawn.h"
+
+#ifndef PI2
+    #define PI2    1.570796327
+#endif
+#ifndef PI
+    #define PI      3.141592654
+#endif
 
 namespace orxonox
 {
@@ -116,21 +125,51 @@ namespace orxonox
         this->billboards_[current].billy->setColour(ColourValue(1, 1, 1, alpha));
         this->billboards_[current].usedYet = true;
 
-        Vector3 directionVector = (this->getPosition() - position).normalisedCopy(); // vector from the position of the billboard to the center of the sphere
-        this->billboards_[current].billy->setCommonDirection(directionVector);
+        // in order to animate the billboard, we use a        
+        // transform to spherical coordinates according to
+        // http://de.wikipedia.org/wiki/Kugelkoordinaten convention
 
-        Vector3 upVector = Vector3(directionVector.z, directionVector.z, -(directionVector.x + directionVector.y)); // vector perpendicular to the direction vector
-        upVector.normalise();
-        this->billboards_[current].billy->setCommonUpVector(upVector);
+        Vector3 dirVect = position - this->getPosition();
+
+        float phi; // this is the longitude on the sphere (-pi, pi)
+        if      (dirVect.x >  0) phi = atan(dirVect.y/dirVect.x);
+        else if (dirVect.x == 0) phi = sgn(dirVect.y) * PI2;
+        else if (dirVect.y >= 0) phi = atan(dirVect.y/dirVect.x) + PI;
+        else if (dirVect.y <  0) phi = atan(dirVect.y/dirVect.x) - PI;
+        
+        float theta; // this is the latitude measured from z axis (0, pi)
+        theta = acos(dirVect.z / dirVect.length());
+
+        Vector3 e_r = dirVect.normalisedCopy();
+        //Vector3 e_phi = Vector3(-sin(phi), cos(phi), 0);
+        Vector3 e_theta = Vector3(cos(theta)*cos(phi), cos(theta)*sin(phi), -sin(theta));
+
+        // set billboard orientation
+        this->billboards_[current].billy->setCommonDirection(e_r);
+        this->billboards_[current].billy->setCommonUpVector(e_theta);
+
+        // set billboard texture coordinates
+        float u = (phi - floor(phi)) * this->maxDistance_ / 200;
+        float v = (theta -floor(theta)) * this->maxDistance_ / 200;
+        Ogre::FloatRect textureCoords = Ogre::FloatRect(0.5-u, 0.5-v, 1.0-u, 1.0-v);
+        this->billboards_[current].billy->setTextureCoords(&textureCoords, 1);
+        
+        // debug output
+        //COUT(0) << "dirVect: " << dirVect << " len: " << dirVect.length() << std::endl;
+        //COUT(0) << "phi: " << phi << std::endl;
+        //COUT(0) << "theta: " << theta << std::endl;
+        //COUT(0) << "e_r: " << e_r  << " len: " << e_r.length() << std::endl;
+        //COUT(0) << "e_phi: " << e_phi  << " len: " << e_phi.length() << std::endl;
+        //COUT(0) << "e_theta: " << e_theta  << " len: " << e_theta.length() << std::endl;
     }
     
     void SpaceBoundaries::setBillboardOptions(Billboard *billy)
     {
-        if(billy != NULL)
+        if(billy)
         {
-            billy->setMaterial("Grid");
+            billy->setMaterial("Grid02");
             billy->setBillboardType(Ogre::BBT_PERPENDICULAR_COMMON);
-            billy->setDefaultDimensions(150, 150);
+            billy->setDefaultDimensions(100, 100);
             billy->setVisible(true);
         }
     }

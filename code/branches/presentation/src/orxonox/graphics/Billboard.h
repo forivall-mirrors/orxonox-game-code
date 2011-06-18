@@ -64,24 +64,39 @@ namespace orxonox
             inline const ColourValue& getColour() const
                 { return this->colour_; }
 
-
             inline void setRotation(const Radian& rotation)
                 { this->rotation_ = rotation; this->changedRotation(); }
             inline const Radian& getRotation() const
                 { return this->rotation_; }
 
+            /// use normalised vector as argument
+            inline void setCommonDirection(const Vector3 vec)
+                { if(this->billboard_.getBillboardSet())
+                    this->billboard_.getBillboardSet()->setCommonDirection(vec); }
+            inline const Vector3 getCommonDirection()
+                { if(this->billboard_.getBillboardSet())
+                    return this->billboard_.getBillboardSet()->getCommonDirection(); }
+
+            /// use normalised vector as argument
+            inline void setCommonUpVector(const Vector3 vec)
+                { if(this->billboard_.getBillboardSet())
+                    this->billboard_.getBillboardSet()->setCommonUpVector( vec ); }
+            inline const Vector3 getCommonUpVector()
+                { if(this->billboard_.getBillboardSet())
+                    return this->billboard_.getBillboardSet()->getCommonUpVector(); }
 
             virtual void setTeamColour(const ColourValue& colour)
                 { this->setColour(colour); }
                 
             void setBillboardType(Ogre::BillboardType bbt);
             
-            void setCommonDirection(Vector3 vec); //!< normalised Vector vec as argument
-            
-            void setCommonUpVector(Vector3 vec); //!< normalised Vector vec as argument
-            
-            void setDefaultDimensions(float width, float height);
+            inline void setDefaultDimensions(float width, float height)
+                { if(this->billboard_.getBillboardSet())
+                    this->billboard_.getBillboardSet()->setDefaultDimensions(width, height); }
 
+            inline void setTextureCoords(const Ogre::FloatRect* coords, unsigned int numCoords)
+                { if(this->billboard_.getBillboardSet())
+                    this->billboard_.getBillboardSet()->setTextureCoords(coords, numCoords); }
 
         protected:
             inline BillboardSet& getBillboardSet()

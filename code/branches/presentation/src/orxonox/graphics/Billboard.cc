@@ -144,31 +144,4 @@ namespace orxonox
             bSet->setBillboardType(bbt);
         }
     }
-    
-    void Billboard::setCommonDirection(Vector3 vec)
-    {
-        Ogre::BillboardSet* bSet = this->billboard_.getBillboardSet();
-        if( bSet != NULL )
-        {
-            bSet->setCommonDirection( vec );
-        }
-    }
-            
-    void Billboard::setCommonUpVector(Vector3 vec)
-    {
-        Ogre::BillboardSet* bSet = this->billboard_.getBillboardSet();
-        if( bSet != NULL )
-        {
-            bSet->setCommonUpVector( vec );
-        }
-    }
-    
-    void Billboard::setDefaultDimensions(float width, float height)
-    {
-        Ogre::BillboardSet* bSet = this->billboard_.getBillboardSet();
-        if( bSet != NULL )
-        {
-            bSet->setDefaultDimensions(width, height);
-        }
-    }
 }

@@ -45,7 +45,7 @@ namespace orxonox
 {
 
 /**
-@brief SpaceBoundaries gives level creators the possibility to bar Pawns from leaving a defined area (until now this area is a ball).
+@brief SpaceBoundaries gives level creators the possibility to keep Pawns from leaving a defined area (until now this area is spherical).
 
        Some attributes can/should be defined in the XML-File:
        - 'position' : absolute position of the object of SpaceBoundaries in the level (usually 0,0,0) 
