@@ -148,10 +148,12 @@ namespace orxonox
             int numberOfWeapons;//< Used for weapon init function. Displayes number of weapons available for a bot.
             int weapons[WeaponSystem::MAX_WEAPON_MODES];
 	    int projectiles[WeaponSystem::MAX_WEAPON_MODES];
-	    float botlevel_; //< Makes the level of a bot configurable. 
+	    float botlevel_; //< Makes the level of a bot configurable.
+            float timeout_; //< Timeout for rocket usage. (If a rocket misses, a bot should stop using it.)
 
             enum Mode {DEFAULT, ROCKET, DEFENCE, MOVING};//TODO; implement DEFENCE, MOVING modes
             Mode mode_;
+            void setPreviousMode();
 
         private:
             void setupWeapons();

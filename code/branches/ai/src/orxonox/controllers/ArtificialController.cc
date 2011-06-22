@@ -88,6 +88,7 @@ namespace orxonox
 	this->numberOfWeapons = 0;
 	this->botlevel_ = 1.0f;
 	this->mode_ = DEFAULT;
+        this->timeout_=0;
     }
 
     ArtificialController::~ArtificialController()
@@ -1034,21 +1035,29 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         }
         else if(this->getControllableEntity()&&(numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
         {
-            /*if (this->isCloseAtTarget(130) && this->isLookingAtTarget(math::pi / 20.0f)&&(weapons[1]==1) )
+            if (this->isCloseAtTarget(130) &&(weapons[1]==1) )
             {//LENSFLARE: short range weapon     
                 this->getControllableEntity()->fire(1); //ai uses lens flare if they're close enough to the target
             }
-            else if(this->isLookingAtTarget(math::pi / 20.0f)&&(weapons[3]==3)&& this->isCloseAtTarget(260) &&projectiles[3] )*/
+            else if((weapons[3]==3)&& this->isCloseAtTarget(400) /*&&projectiles[3]*/ )
             {//ROCKET: mid range weapon
                 //TODO: Which weapon is the rocket? How many rockets are available?
                 this->mode_ = ROCKET;
-                //TODO: this->rockettimer->start()
                 this->getControllableEntity()->fire(3);//launch rocket
+                if(this->getControllableEntity()&&this->target_)//after fire(3) getControllableEntity() refers to the rocket!
+                {
+                    float speed = this->getControllableEntity()->getVelocity().length() - target_->getVelocity().length();
+                    if(!speed) speed = 0.1f;
+                    float distance = target_->getPosition().length() - this->getControllableEntity()->getPosition().length();
+                    this->timeout_= distance/speed*sgn(speed*distance) + 1.8f;//predicted time of target hit (+ tolerance)
+                }
+                else
+                    this->timeout_ = 4.0f;//TODO: find better default value
+                
                 this->projectiles[3]-=1;//decrease ammo !!
             }
-           
-            /*else if ((weapons[0]==0))//LASER: default weapon
-                this->getControllableEntity()->fire(0);*/
+            else if ((weapons[0]==0))//LASER: default weapon
+                this->getControllableEntity()->fire(0);
         }
     }
     /**
@@ -1092,6 +1101,11 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     {
         for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it != ObjectList<ArtificialController>::end(); ++it)
             it->setBotLevel(level);
+    }
+
+    void ArtificialController::setPreviousMode()
+    {
+        this->mode_ = DEFAULT;
     }
     
 }

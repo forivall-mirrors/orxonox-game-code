@@ -269,20 +269,26 @@ namespace orxonox
                 this->doFire();
             }
         }//END_OF DEFAULT MODE
-        else if (this->mode_ == ROCKET)
+        else if (this->mode_ == ROCKET)//Rockets do not belong to a group of bots -> bot states are not relevant.
         {   
             ControllableEntity *controllable = this->getControllableEntity(); 
             if(controllable)
             {
-                 if(controllable->getRocket())//Check wether the bot is controlling the rocket.
-                 {
-                     this->follow(); //TODO: CHECK: does follow make the bot crash into the target_ ?
-                 }
-                 else
-                     this->mode_ = DEFAULT;//no rocket -> get out of rocket mode
+                if(controllable->getRocket())//Check wether the bot is controlling the rocket and if the timeout is over.
+                {
+                    this->follow(); //TODO: CHECK: does follow make the bot crash into the target_ ?
+                    this->timeout_ -= dt;
+                    if((timeout_< 0)||(!target_))//Check if the timeout is over or target died.
+                    {
+                       controllable->fire(0);//kill the rocket
+                       this->setPreviousMode();//get out of rocket mode
+                    }
+                }
+                else
+                    this->setPreviousMode();//no rocket entity -> get out of rocket mode
             }
             else
-                this->mode_ = DEFAULT;//If bot dies -> getControllableEntity == NULL -> get out of ROCKET mode
+                this->setPreviousMode();//If bot dies -> getControllableEntity == NULL -> get out of ROCKET mode
         }//END_OF ROCKET MODE
         SUPER(AIController, tick, dt);
     }
