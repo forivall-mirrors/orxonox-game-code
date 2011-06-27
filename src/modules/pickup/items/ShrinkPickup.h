@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Sandro Sgier
  *   Co-authors:
  *      ...
  *
@@ -47,23 +47,15 @@
 namespace orxonox {
 
     /**
-    @author
-        Sandro Sgier
-
-    @ingroup PickupItems
-    */
-
-    /**
     @brief
         The ShrinkPickup is a Pickupable that causes the pawn to shrink to a certain size for a certain time with a certain speed, all of them specified in the following variables:
         - The @b shrinkFactor It determines how much the ship is going to shrink (e.g. the factor 2 would make the ship shrinking to half its size).
-        - The @b duration Specifies how long the ship will keep small.
-        - The @b shrinkSpeed Defines how fast the ship shrinks and grows.
+        - The @b duration Specifies how long the ship will stay small.
+        - The @b shrinkDuration Defines how fast the ship shrinks and grows in seconds.
 
-
-        An example of a XML implementation of a HealthPickup would be:
+        An example of a XML implementation of a ShrinkPickup would be:
         @code
-        <HealthPickup
+        <ShrinkPickup
             shrinkFactor = "5.0"
             duration = "5.0"
             shrinkSpeed = "5.0"
@@ -79,43 +71,71 @@ namespace orxonox {
     class _PickupExport ShrinkPickup : public Pickup, public Tickable
     {
         public:
-            ShrinkPickup(BaseObject* creator); //!< Constructor.
-            virtual ~ShrinkPickup(); //!< Destructor.
-            virtual void changedUsed(void); //!< Is called when the pickup has transited from used to unused or the other way around.
-            virtual void clone(OrxonoxClass*& item); //!< Creates a duplicate of the input OrxonoxClass.
+            ShrinkPickup(BaseObject* creator); // Constructor.
+            virtual ~ShrinkPickup(); // Destructor.
+
             virtual void XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode);
+            virtual void tick(float dt);
+
+            virtual void changedUsed(void); // Is called when the pickup has transited from used to unused or the other way around.
+            virtual void changedPickedUp(void);
+            virtual void clone(OrxonoxClass*& item); // Creates a duplicate of the input OrxonoxClass.
+
+            /**
+            @brief Get the shrinking factor.
+            @return Returns the shrinking factor,
+            */
             inline float getShrinkFactor(void) const
                 { return this->shrinkFactor_; }
+            /**
+            @brief Sets the shrinking factor.
+            @param factor The factor, needs to greater than 1.
+            */
+            inline void setShrinkFactor(float factor)
+                { if(factor <= 1.0f) { COUT(2) << "Invalid shrinking factor in ShrinkPickup. Ignoring.." << endl; return; } this->shrinkFactor_ = factor; }
+            /**
+            @brief Get the duration for which the ship remains shrunken.
+            @return Returns the duration.
+            */
             inline float getDuration(void) const
                 { return this->duration_; }
-            inline float getShrinkSpeed(void) const
-                { return this->shrinkSpeed_; }
-            void setShrinkFactor(float factor);
-            void setDuration(float duration);
-            void setShrinkSpeed(float speed);
-            void tick(float dt);
+            /**
+            @brief Set the duration for which the ship remains shrunken.
+            @param duration The duration, needs to be non-negative.
+            */
+            inline void setDuration(float duration)
+                { if(duration < 0.0f) { COUT(2) << "Invalid duration in ShrinkPickup. Ignoring.." << endl; return; } this->duration_ = duration; }
+            /**
+            @brief Get the shrink speed.
+            @return Returns the shrink speed.
+            */
+            inline float getShrinkDuration(void) const
+                { return this->shrinkDuration_; }
+            /**
+            @brief Set the shrink duration.
+            @param speed The shrink duration, needs to be positive.
+            */
+            inline void setShrinkDuration(float speed)
+                { if(speed <= 0.0f) { COUT(2) << "Invalid shrink duration in ShrinkPickup. Ignoring.." << endl; return; } this->shrinkDuration_ = speed; }
 
         protected:
             void initializeIdentifier(void);
 
         private:
             void initialize(void);
-            float duration_;            //!< determines how long the pickup will be active
-            float shrinkFactor_;        //shrink factor of the space ship
-            float shrinkSpeed_;         //speed of shrinking
-            bool isActive_;             //true if ship is shrinking or small
-            bool isTerminating_;        //true if ship is growing
-            int size_;                  //number of camera positions
-            std::list<SmartPtr<CameraPosition> > cameraPositions_;
-            float defaultCameraPos_;    //all default, actual and small values...
-            Ogre::Vector3 defaultScale_;
-            Ogre::Vector3 actualScale_;
-            Ogre::Vector3 smallScale_;
-            float defaultMass_;
-            float actualMass_;
-            float smallMass_;            
+
+            float duration_;            //!< Determines how long the pickup will be active
+            float shrinkFactor_;        //!< Shrink factor of the space ship
+            float shrinkDuration_;      //!< Duration of shrinking
+
+            bool isActive_;             //!< True if ship is shrinking, small, or growing back.
+            bool isShrinking_;          //!< True if ship is shrinking
+            bool isTerminating_;        //!< True if ship is growing back to the original size
+
+            float currentFactor_;       //!< The shrink factor that is currently applied.
+            float timeRemainig_;        //!< The remaining shrink time.
+            
             Pawn* carrierToPawnHelper(void);
-            Pawn* pawn_;
             Timer durationTimer_;
             void terminate(void);
     };

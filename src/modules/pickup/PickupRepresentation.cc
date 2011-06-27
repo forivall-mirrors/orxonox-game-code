@@ -192,7 +192,7 @@ namespace orxonox
         sphere->setScale(0.1f);
         Billboard* icon = new Billboard(spawner);
         icon->setColour(ColourValue(0.89f, 0.79f, 0.08f));
-        icon->setMaterial("Asterix");
+        icon->setMaterial("asterisk");
         icon->setScale(0.5);
         sphere->attach(icon);
         representation->attach(sphere);

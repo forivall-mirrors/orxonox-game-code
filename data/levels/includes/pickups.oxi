@@ -215,6 +215,7 @@
     pickupName = "Small Shrink"
     pickupDescription = "Shrinks the Ship by a bit"
     spawnerTemplate = "smallshrinkpickupRepresentation"
+    inventoryRepresentation = "SmallShrink"
 >
     <pickup>
         <ShrinkPickup template=smallshrinkpickup />
@@ -225,6 +226,7 @@
     pickupName = "Medium Shrink"
     pickupDescription = "Shrinks the Ship"
     spawnerTemplate = "mediumshrinkpickupRepresentation"
+    inventoryRepresentation = "MediumShrink"
 >
     <pickup>
         <ShrinkPickup template=mediumshrinkpickup />
@@ -235,6 +237,7 @@
     pickupName = "Huge Shrink"
     pickupDescription = "Shrinks the Ship considerably"
     spawnerTemplate = "hugeshrinkpickupRepresentation"
+    inventoryRepresentation = "HugeShrink"
 >
     <pickup>
         <ShrinkPickup template=hugeshrinkpickup />
