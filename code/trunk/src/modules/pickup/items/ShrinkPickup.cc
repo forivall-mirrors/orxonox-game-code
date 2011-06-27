@@ -20,7 +20,7 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Damian 'Mozork' Frick
+ *      Sandro Sgier
  *   Co-authors:
  *      ...
  *
@@ -42,15 +42,13 @@
 #include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/Pawn.h"
 
-#include "weaponsystem/WeaponSlot.h"
-#include "weaponsystem/Weapon.h"
 #include "worldentities/CameraPosition.h"
 
 namespace orxonox
 {
     CreateFactory(ShrinkPickup);
 
-        /**
+    /**
     @brief
         Constructor: Initializes the Pickup.
     */
@@ -59,26 +57,27 @@ namespace orxonox
         RegisterObject(ShrinkPickup);
 
         this->initialize();
-        this->shrinkFactor_ = 5.0f;
-        this->shrinkSpeed_ = 5.0f;
-        this->duration_ = 5.0f;
-        this->isActive_ = false;
-        this->isTerminating_ = false;
-
-        this->size_ = 0;
-        this->defaultCameraPos_ = 0.0f;
-        this->defaultScale_ = Vector3::UNIT_SCALE;
-        this->actualScale_ = Vector3::UNIT_SCALE;
-        this->smallScale_ = Vector3::UNIT_SCALE;
-        this->defaultMass_ = 1.0f;
-        this->actualMass_ = 1.0f;
-        this->smallMass_ = 1.0f;
-        this->pawn_ = NULL;
     }
 
     ShrinkPickup::~ShrinkPickup()
     {
 
+    }
+
+    void ShrinkPickup::initialize(void)
+    {
+        this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
+
+        this->shrinkFactor_ = 5.0f;
+        this->shrinkDuration_ = 5.0f;
+        this->duration_ = 5.0f;
+
+        this->isActive_ = false;
+        this->isShrinking_ = false;
+        this->isTerminating_ = false;
+
+        this->timeRemainig_ = 0.0f;
+        this->currentFactor_ = 1.0f;
     }
 
     void ShrinkPickup::initializeIdentifier(void)
@@ -96,15 +95,15 @@ namespace orxonox
         this->pickupIdentifier_->addParameter(type2, val2);
 
         stream.clear();
-        stream << this->getShrinkSpeed();
+        stream << this->getShrinkDuration();
         std::string val3 = stream.str();
-        std::string type3 = "shrinkSpeed";
+        std::string type3 = "shrinkDuration";
         this->pickupIdentifier_->addParameter(type3, val3);
     }
 
    /**
     @brief
-        Method for creating a ShrinkhPickup object through XML.
+        Method for creating a ShrinkPickup object through XML.
     */
     void ShrinkPickup::XMLPort(Element& xmlelement, orxonox::XMLPort::Mode mode)
     {
@@ -112,52 +111,14 @@ namespace orxonox
 
         XMLPortParam(ShrinkPickup, "shrinkFactor", setShrinkFactor, getShrinkFactor, xmlelement, mode);
         XMLPortParam(ShrinkPickup, "duration", setDuration, getDuration, xmlelement, mode);
-        XMLPortParam(ShrinkPickup, "shrinkSpeed", setShrinkSpeed, getShrinkSpeed, xmlelement, mode);
+        XMLPortParam(ShrinkPickup, "shrinkDuration", setShrinkDuration, getShrinkDuration, xmlelement, mode);
 
         this->initializeIdentifier();
     }
 
     /**
     @brief
-        Sets the shrinking factor.
-    @param factor
-        The factor.
-    */
-    void ShrinkPickup::setShrinkFactor(float factor)
-    {
-        this->shrinkFactor_ = factor;
-    }
-
-    /**
-    @brief
-        Sets the duration.
-    @param duration
-        The duration.
-    */
-    void ShrinkPickup::setDuration(float duration)
-    {
-        this->duration_ = duration;
-    }
-
-    /**
-    @brief
-        Sets the shrinking speed.
-    @param speed
-        The speed.
-    */
-    void ShrinkPickup::setShrinkSpeed(float speed)
-    {
-        this->shrinkSpeed_ = speed;
-    }
-
-    void ShrinkPickup::initialize(void)
-    {
-        this->addTarget(ClassIdentifier<Pawn>::getIdentifier());
-    }
-
-    /**
-    @brief
-        Prepares for shrinking (collecting several informations).
+        Prepares for shrinking.
     */
     void ShrinkPickup::changedUsed(void)
     {
@@ -165,24 +126,82 @@ namespace orxonox
 
         if(this->isUsed())
         {
-            this->pawn_ = this->carrierToPawnHelper();
-            if(this->pawn_ == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+            Pawn* pawn = this->carrierToPawnHelper();
+            if(pawn == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+            {
                 this->Pickupable::destroy();
+                return;
+            }
 
-            //Collect scaling information.
-            this->defaultScale_ = this->pawn_->getScale3D();
-            this->defaultMass_ = this->pawn_->getMass();
+            this->currentFactor_ = 1.0f;
+            this->timeRemainig_ = this->shrinkDuration_;
 
-            this->smallScale_ = this->defaultScale_ / this->shrinkFactor_;
-            this->smallMass_ = this->defaultMass_ / this->shrinkFactor_;
+            this->isActive_ = true; // Start shrinking now.
+            this->isShrinking_ = true;
+            this->durationTimer_.setTimer(this->duration_, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this))); //Set timer for termination.
+        }
+        if(!this->isUsed() && this->isActive_)
+             this->isTerminating_ = true;
+    }
 
-            this->actualScale_ = this->defaultScale_;
-            this->actualMass_ = this->defaultMass_;
+    void ShrinkPickup::changedPickedUp(void)
+    {
+        SUPER(ShrinkPickup, changedPickedUp);
+        
+        if(!this->isPickedUp() && this->isActive_)
+        {
+            if(this->isShrinking_ || this->isTerminating_)
+            {
+                //TODO: Deploy particle effect.
+                Pawn* pawn = this->carrierToPawnHelper();
+                if(pawn == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+                    return;
 
-            this->cameraPositions_ = this->pawn_->getCameraPositions();
-            this->size_ = this->cameraPositions_.size();
-            this->isActive_ = true;    //start shrinking now.
-            this->durationTimer_.setTimer(this->duration_, false, createExecutor(createFunctor(&ShrinkPickup::terminate, this)));    //Set timer for termination.
+                float factor = 1.0f/this->currentFactor_;
+
+                pawn->setScale3D(pawn->getScale3D()*factor);
+                pawn->setMass(pawn->getMass()*factor);
+
+                // Iterate over all camera positions and inversely move the camera to create a shrinking sensation.
+                const std::list< SmartPtr<CameraPosition> >& cameraPositions = pawn->getCameraPositions();
+                int size = cameraPositions.size();
+                for(int index = 0; index < size; index++)
+                {
+                    CameraPosition* cameraPos = pawn->getCameraPosition(index);
+                    if(cameraPos == NULL)
+                        continue;
+                    cameraPos->setPosition(cameraPos->getPosition()/factor);
+                }
+                this->currentFactor_ = 1.0f;
+                this->timeRemainig_ = this->shrinkDuration_;
+                this->isActive_ = false;
+                this->isShrinking_ = false;
+                this->isTerminating_ = false;
+            }
+            else
+            {
+                //TODO: Deploy particle effect.
+                Pawn* pawn = this->carrierToPawnHelper();
+                if(pawn == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+                    return;
+
+                pawn->setScale3D(pawn->getScale3D()*this->shrinkFactor_);
+                pawn->setMass(pawn->getMass()*this->shrinkFactor_);
+
+                // Iterate over all camera positions and inversely move the camera to create a shrinking sensation.
+                const std::list< SmartPtr<CameraPosition> >& cameraPositions = pawn->getCameraPositions();
+                int size = cameraPositions.size();
+                for(int index = 0; index < size; index++)
+                {
+                    CameraPosition* cameraPos = pawn->getCameraPosition(index);
+                    if(cameraPos == NULL)
+                        continue;
+                    cameraPos->setPosition(cameraPos->getPosition()/this->shrinkFactor_);
+                }
+                this->currentFactor_ = 1.0f;
+                this->timeRemainig_ = this->shrinkDuration_;
+                this->isActive_ = false;
+            }
         }
     }
 
@@ -194,47 +213,92 @@ namespace orxonox
     */
     void ShrinkPickup::tick(float dt)
     {
-        if(this->isActive_ == true && this->actualScale_ > this->smallScale_)    //if the ship has not reached the target scale, continue shrinking
+        if(this->isActive_)
         {
-            float factor = 1 + dt*this->shrinkSpeed_;
-
-            this->actualScale_ /= factor;
-            this->actualMass_ /= factor;
-
-            this->pawn_->setScale3D(this->actualScale_);
-            this->pawn_->setMass(this->actualMass_);
-
-            for(int index = 0; index < this->size_; index++)
+            if(this->isShrinking_)    // If the ship has not reached the target scale, continue shrinking
             {
-                CameraPosition* cameraPos = this->pawn_->getCameraPosition(index);
-                if(cameraPos == NULL)
-                continue;
-                cameraPos->setPosition(cameraPos->getPosition()*factor);
+                Pawn* pawn = this->carrierToPawnHelper();
+                if(pawn == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+                {
+                    this->Pickupable::destroy();
+                    return;
+                }
+
+                this->timeRemainig_ -= dt;
+
+                // Calculate the scaling factor by which the initial size would have to be scaled to have the current scale.
+                float currentFactor = std::max(1 - (1-std::max(this->timeRemainig_, 0.0f)/this->shrinkDuration_)*(1-1/this->shrinkFactor_), 1/this->shrinkFactor_);
+                // Calculate the factor by which the previous size has to be scaled to be the current scale.
+                float factor = currentFactor/this->currentFactor_;
+                this->currentFactor_ = currentFactor;
+
+                // Stop shrinking if the desired size is reached.
+                if(this->timeRemainig_ <= 0.0f)
+                {
+                    this->timeRemainig_ = this->shrinkDuration_; // Reset the time remaining for when we start to grow the ship again.
+                    this->currentFactor_ = 1/this->shrinkFactor_;
+                    this->isShrinking_ = false;
+                }
+
+                pawn->setScale3D(pawn->getScale3D()*factor);
+                pawn->setMass(pawn->getMass()*factor);
+
+                // Iterate over all camera positions and inversely move the camera to create a shrinking sensation.
+                const std::list< SmartPtr<CameraPosition> >& cameraPositions = pawn->getCameraPositions();
+                int size = cameraPositions.size();
+                for(int index = 0; index < size; index++)
+                {
+                    CameraPosition* cameraPos = pawn->getCameraPosition(index);
+                    if(cameraPos == NULL)
+                        continue;
+                    cameraPos->setPosition(cameraPos->getPosition()/factor);
+                }
+
+            }
+            else if(this->isTerminating_)    // Grow until the ship reaches its default scale.
+            {
+                Pawn* pawn = this->carrierToPawnHelper();
+                if(pawn == NULL) // If the PickupCarrier is no Pawn, then this pickup is useless and therefore is destroyed.
+                    this->Pickupable::destroy();
+
+                this->timeRemainig_ -= dt;
+
+                // Calculate the scaling factor by which the initial size would have to be scaled to have the current scale.
+                float currentFactor = std::min(1/this->shrinkFactor_ + (1-std::max(this->timeRemainig_, 0.0f)/this->shrinkDuration_)*(1-1/this->shrinkFactor_), 1.0f);
+                // Calculate the factor by which the previous size has to be scaled to be the current scale.
+                float factor = currentFactor/this->currentFactor_;
+                this->currentFactor_ = currentFactor;
+
+                bool destroy = false;
+                
+                // Stop shrinking if the desired size is reached.
+                if(this->timeRemainig_ <= 0.0f)
+                {
+                    this->timeRemainig_ = shrinkDuration_; // Reset the time remaining for when we start to grow the ship again.
+                    this->currentFactor_ = 1.0f;
+                    this->isTerminating_ = false;
+                    this->isActive_ = false;
+                    destroy = true;
+                }
+
+                pawn->setScale3D(pawn->getScale3D()*factor);
+                pawn->setMass(pawn->getMass()*factor);
+
+                // Iterate over all camera positions and inversely move the camera to create a shrinking sensation.
+                const std::list< SmartPtr<CameraPosition> >& cameraPositions = pawn->getCameraPositions();
+                int size = cameraPositions.size();
+                for(int index = 0; index < size; index++)
+                {
+                    CameraPosition* cameraPos = pawn->getCameraPosition(index);
+                    if(cameraPos == NULL)
+                        continue;
+                    cameraPos->setPosition(cameraPos->getPosition()/factor);
+                }
+
+                if(destroy)
+                    this->Pickupable::destroy();
             }
         }
-        else this->isActive_ = false;
-
-        if(this->isTerminating_ == true && this->actualScale_ < this->defaultScale_)    //grow until the ship reaches its default scale.
-        {
-            float factor = 1 + dt*this->shrinkSpeed_;
-
-            this->actualScale_ *= factor;
-            this->actualMass_ *= factor;
-
-            this->pawn_->setScale3D(this->actualScale_);
-            this->pawn_->setMass(this->actualMass_);
-
-            for(int index = 0; index < this->size_; index++)
-            {
-                CameraPosition* cameraPos = this->pawn_->getCameraPosition(index);
-                if(cameraPos == NULL)
-                continue;
-                cameraPos->setPosition(cameraPos->getPosition()/factor);
-            }
-        }
-        else if(this->isTerminating_ == true)
-            this->Pickupable::destroy();
-
     }
 
     /**
@@ -243,9 +307,7 @@ namespace orxonox
     */
     void ShrinkPickup::terminate(void)
     {
-        this->isActive_ = false;
-        this->isTerminating_ = true;
-        setUsed(false);
+        this->setUsed(false);
     }
 
     Pawn* ShrinkPickup::carrierToPawnHelper(void)
@@ -271,7 +333,7 @@ namespace orxonox
         ShrinkPickup* pickup = dynamic_cast<ShrinkPickup*>(item);
         pickup->setShrinkFactor(this->getShrinkFactor());
         pickup->setDuration(this->getDuration());
-        pickup->setShrinkSpeed(this->getShrinkSpeed());
+        pickup->setShrinkDuration(this->getShrinkDuration());
 
         pickup->initializeIdentifier();
     }
