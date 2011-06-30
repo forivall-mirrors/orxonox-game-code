@@ -43,6 +43,9 @@
 #include "controllers/WaypointPatrolController.h"
 #include "controllers/NewHumanController.h"
 #include "controllers/DroneController.h"
+#include "weaponsystem/WeaponMode.h"
+#include "weaponsystem/WeaponPack.h"
+#include "weaponsystem/Weapon.h"
 
 namespace orxonox
 {
@@ -84,10 +87,10 @@ namespace orxonox
         this->targetPosition_ = Vector3::ZERO;
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
-	this->bSetupWorked = false;
-	this->numberOfWeapons = 0;
-	this->botlevel_ = 1.0f;
-	this->mode_ = DEFAULT;
+        this->bSetupWorked = false;
+        this->numberOfWeapons = 0;
+        this->botlevel_ = 1.0f;
+        this->mode_ = DEFAULT;
         this->timeout_=0;
     }
 
@@ -1070,21 +1073,45 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
             if(pawn)
             {
-                 for(unsigned int i=0; i<WeaponSystem::MAX_WEAPON_MODES; i++)
-                 {
-                      if(pawn->getWeaponSet(i)) //main part: find which weapons a pawn can use; hard coded at the moment!
-                      {
-                          weapons[i]=i;
-			  projectiles[i]=1;//TODO: how to express infinite ammo? how to get data??
+                for(unsigned int i=0; i<WeaponSystem::MAX_WEAPON_MODES; i++)
+                {
+                    const std::string wpn = getWeaponname(i, pawn); COUT(0)<<wpn<< std::endl;//Temporary debug info.
+                    /*if(wpn=="")
+                        weapons[i]=-1;
+                    else if(wpn=="LaserMunition")//other munitiontypes are not defined yet :-(
+                        weapons[0]=0;
+                    else if(wpn=="LENSFLARE")//TODO: insert right munition name
+                        weapons[1]=1;
+                    else if(wpn=="SIMPLEROCKET")//TODO: insert right munition name
+                        weapons[2]=2;
+                    else if(wpn=="ROCKET")//TODO: insert right munition name
+                        weapons[3]=3;
+                    */
+                    if(pawn->getWeaponSet(i)) //main part: find which weapons a pawn can use; hard coded at the moment!
+                    {
+                        weapons[i]=i;
+                        projectiles[i]=1;//TODO: how to express infinite ammo? how to get data?? getWeaponmode(i)->getMunition()->getNumMunition(WeaponMode* user)
                           numberOfWeapons++;
-                      }
-                      else
-                          weapons[i]=-1;
-                 }
+                    }
+                    else
+                        weapons[i]=-1;
+                }
                  //pawn->weaponSystem_->getMunition(SubclassIdentifier< Munition > *identifier)->getNumMunition (WeaponMode *user);
             }
         }
     }
+
+    const std::string& ArtificialController::getWeaponname(int i, Pawn* pawn)
+    {//is there a way to minimize this long if-return structure, without triggering nullpointer exceptions?
+        if(!pawn) return "";
+        WeaponPack* wPack = pawn->getWeaponPack(i);
+        if(!wPack) return "";
+        Weapon* wpn = wPack->getWeapon(i);
+        if(!wpn) return "";
+        WeaponMode* wMode = wpn->getWeaponmode(i);
+        if(!wMode) return "";
+        return wMode->getMunitionName();
+    }//pawn->getWeaponpack(i)->getWeapon(i)->getWeaponmode(i)->getMunitionName()
 
     
     void ArtificialController::setBotLevel(float level)

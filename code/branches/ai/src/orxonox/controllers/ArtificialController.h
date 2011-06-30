@@ -157,6 +157,7 @@ namespace orxonox
 
         private:
             void setupWeapons();
+            const std::string& getWeaponname(int i, Pawn* pawn);
             bool bSetupWorked;
     };
 }
