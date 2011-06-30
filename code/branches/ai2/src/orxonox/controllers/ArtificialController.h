@@ -36,6 +36,7 @@
 #include "util/Math.h"
 #include "Controller.h"
 #include "controllers/NewHumanController.h"
+#include "weaponsystem/WeaponSystem.h"
 
 namespace orxonox
 {
@@ -76,6 +77,12 @@ namespace orxonox
             static void followme();
             static void passivebehaviour(const bool passive);
             static void formationsize(const int size);
+
+            virtual void doFire();
+	    void setBotLevel(float level=1.0f);
+	    inline float getBotLevel() const
+                { return this->botlevel_; }
+            static void setAllBotLevel(float level);
 
         protected:
 
@@ -140,7 +147,20 @@ namespace orxonox
             WeakPtr<Pawn> target_;
             bool bShooting_;
 
+            int numberOfWeapons; //< Used for weapon init function. Displayes number of weapons available for a bot.
+            int weapons[WeaponSystem::MAX_WEAPON_MODES];
+            int projectiles[WeaponSystem::MAX_WEAPON_MODES];
+            float botlevel_; //< Makes the level of a bot configurable.
+            float timeout_; //< Timeout for rocket usage. (If a rocket misses, a bot should stop using it.)
+
+            enum Mode {DEFAULT, ROCKET, DEFENCE, MOVING};//TODO; implement DEFENCE, MOVING modes
+            Mode mode_; //TODO: replace single value with stack-like implementation: std::vector<Mode> mode_;
+            void setPreviousMode();
+
         private:
+            void setupWeapons();
+            const std::string& getWeaponname(int i, Pawn* pawn);
+            bool bSetupWorked;
     };
 }
 

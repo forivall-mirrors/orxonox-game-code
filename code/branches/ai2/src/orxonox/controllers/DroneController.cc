@@ -102,7 +102,8 @@ namespace orxonox
                 {
                     this->isShooting_ = true;
                     this->aimAtTarget();
-                    this->getDrone()->fire(0);
+		    if(!this->friendlyFire())
+                        this->getDrone()->fire(0);
                 }
             }
 
@@ -145,5 +146,24 @@ namespace orxonox
             this->drone_->destroy();
         else
             this->destroy();
+    }
+
+    bool DroneController::friendlyFire()
+    {   ControllableEntity* droneEntity_ = this->getControllableEntity();
+        if (!droneEntity_) return false;
+        if(!owner_) return false;
+        if(this->bHasTargetPosition_)
+        {
+            Vector3 ownerPosition_ = owner_->getPosition();
+            Vector3 toOwner_ = owner_->getPosition() - droneEntity_->getPosition();
+            Vector3 toTarget_ = targetPosition_ - droneEntity_->getPosition();
+            if(toTarget_.length() < toOwner_.length()) return false; //owner is far away = in safty
+            float angleToOwner = getAngle(droneEntity_->getPosition(), droneEntity_->getOrientation() * WorldEntity::FRONT, ownerPosition_);
+            float angleToTarget = getAngle(droneEntity_->getPosition(), droneEntity_->getOrientation() * WorldEntity::FRONT, targetPosition_);
+            float angle = angleToOwner - angleToTarget;//angle between target and owner, observed by the drone
+            if(std::sin(angle)*toOwner_.length() < 5.0f)//calculate owner's distance to shooting line
+            return true;
+        }
+        return false;//Default return value: Usually there is no friendlyFire
     }
 }

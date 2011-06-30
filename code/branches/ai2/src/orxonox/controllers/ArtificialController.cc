@@ -43,6 +43,9 @@
 #include "controllers/WaypointPatrolController.h"
 #include "controllers/NewHumanController.h"
 #include "controllers/DroneController.h"
+#include "weaponsystem/WeaponMode.h"
+#include "weaponsystem/WeaponPack.h"
+#include "weaponsystem/Weapon.h"
 
 namespace orxonox
 {
@@ -51,6 +54,7 @@ namespace orxonox
     SetConsoleCommand("ArtificialController", "followme",         &ArtificialController::followme);
     SetConsoleCommand("ArtificialController", "passivebehaviour", &ArtificialController::passivebehaviour);
     SetConsoleCommand("ArtificialController", "formationsize",    &ArtificialController::formationsize);
+    SetConsoleCommand("ArtificialController", "setbotlevel",      &ArtificialController::setAllBotLevel);
 
     static const unsigned int STANDARD_MAX_FORMATION_SIZE = 7;
     static const int RADIUS_TO_SEARCH_FOR_MASTERS = 5000;
@@ -83,12 +87,17 @@ namespace orxonox
         this->targetPosition_ = Vector3::ZERO;
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
+        this->bSetupWorked = false;
+        this->numberOfWeapons = 0;
+        this->botlevel_ = 1.0f;
+        this->mode_ = DEFAULT;////Vector-implementation: mode_.push_back(DEFAULT);
+        this->timeout_=0;
     }
 
     ArtificialController::~ArtificialController()
     {
         if (this->isInitialized())
-        {
+        {//Vector-implementation: mode_.erase(mode_.begin(),mode_.end());
             this->removeFromFormation();
 
             for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it; ++it)
@@ -1019,4 +1028,116 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
 
         return (team1 == team2 && team1 != -1);
     }
+
+    /**
+        @brief DoFire is called when a bot should shoot and decides which weapon is used and whether the bot shoots at all.
+    */
+    void ArtificialController::doFire()
+    {
+        if(!bSetupWorked)//setup: find out which weapons are active ! hard coded: laser is "0", lens flare is "1", ...
+        {
+            this->setupWeapons();
+            if(numberOfWeapons>0)
+                bSetupWorked=true;
+        }
+        else if(this->getControllableEntity()&&(numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
+        {
+            if (this->isCloseAtTarget(130) &&(weapons[1]==1) )
+            {//LENSFLARE: short range weapon     
+                this->getControllableEntity()->fire(1); //ai uses lens flare if they're close enough to the target
+            }
+            else if((weapons[3]==3)&& this->isCloseAtTarget(400) /*&&projectiles[3]*/ )
+            {//ROCKET: mid range weapon
+                //TODO: Which weapon is the rocket? How many rockets are available?
+                this->mode_ = ROCKET;//Vector-implementation: mode_.push_back(ROCKET);
+                this->getControllableEntity()->fire(3);//launch rocket
+                if(this->getControllableEntity()&&this->target_)//after fire(3) getControllableEntity() refers to the rocket!
+                {
+                    float speed = this->getControllableEntity()->getVelocity().length() - target_->getVelocity().length();
+                    if(!speed) speed = 0.1f;
+                    float distance = target_->getPosition().length() - this->getControllableEntity()->getPosition().length();
+                    this->timeout_= distance/speed*sgn(speed*distance) + 1.8f;//predicted time of target hit (+ tolerance)
+                }
+                else
+                    this->timeout_ = 4.0f;//TODO: find better default value
+                
+                this->projectiles[3]-=1;//decrease ammo !!
+            }
+            else if ((weapons[0]==0))//LASER: default weapon
+                this->getControllableEntity()->fire(0);
+        }
+    }
+
+    /**
+        @brief Information gathering: Which weapons are ready to use?
+    */
+    void ArtificialController::setupWeapons() //TODO: Make this function generic!! (at the moment is is based on conventions)
+    {
+        if(this->getControllableEntity())
+        {
+            Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
+            if(pawn)
+            {
+                for(unsigned int i=0; i<WeaponSystem::MAX_WEAPON_MODES; i++)
+                {
+                    const std::string wpn = getWeaponname(i, pawn); COUT(0)<<wpn<< std::endl;//Temporary debug info.
+                    /*if(wpn=="")
+                        weapons[i]=-1;
+                    else if(wpn=="LaserMunition")//other munitiontypes are not defined yet :-(
+                        weapons[0]=0;
+                    else if(wpn=="FusionMunition")
+                        weapons[1]=1;
+                    else if(wpn=="TargetSeeking Rockets")
+                        weapons[2]=2;
+                    else if(wpn=="ROCKET")//TODO: insert right munition name
+                        weapons[3]=3;
+                    */
+                    if(pawn->getWeaponSet(i)) //main part: find which weapons a pawn can use; hard coded at the moment!
+                    {
+                        weapons[i]=i;
+                        projectiles[i]=1;//TODO: how to express infinite ammo? how to get data?? getWeaponmode(i)->getMunition()->getNumMunition(WeaponMode* user)
+                          numberOfWeapons++;
+                    }
+                    else
+                        weapons[i]=-1;
+                }
+                 //pawn->weaponSystem_->getMunition(SubclassIdentifier< Munition > *identifier)->getNumMunition (WeaponMode *user);
+            }
+        }
+    }
+
+    const std::string& ArtificialController::getWeaponname(int i, Pawn* pawn)
+    {//is there a way to minimize this long if-return structure, without triggering nullpointer exceptions?
+        if(!pawn) return "";
+        WeaponPack* wPack = pawn->getWeaponPack(i);
+        if(!wPack) return "";
+        Weapon* wpn = wPack->getWeapon(i);
+        if(!wpn) return "";
+        WeaponMode* wMode = wpn->getWeaponmode(i);
+        if(!wMode) return "";
+        return wMode->getMunitionName();
+    }//pawn->getWeaponpack(i)->getWeapon(i)->getWeaponmode(i)->getMunitionName()
+
+    
+    void ArtificialController::setBotLevel(float level)
+    {
+        if (level < 0.0f)
+            this->botlevel_ = 0.0f; 
+        else if (level > 1.0f)
+            this->botlevel_ = 1.0f;
+        else
+            this->botlevel_ = level;
+    }
+    
+    void ArtificialController::setAllBotLevel(float level)
+    {
+        for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it != ObjectList<ArtificialController>::end(); ++it)
+            it->setBotLevel(level);
+    }
+
+    void ArtificialController::setPreviousMode()
+    {
+        this->mode_ = DEFAULT; //Vector-implementation: mode_.pop_back();
+    }
+    
 }
