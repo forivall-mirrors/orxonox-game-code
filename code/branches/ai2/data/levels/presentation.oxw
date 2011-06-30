@@ -1,0 +1,200 @@
+<LevelInfo
+ name = "Presentation"
+ description = "Presentation Level"
+ tags = "presentation"
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/lodInformation.oxt")
+?>
+
+<Level
+ name         = "Sample"
+ description  = "Just a few tests"
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+   ambientlight = "0.3, 0.3, 0.3"
+   skybox       = "Orxonox/Starbox"
+  >
+    <Light type=directional position="0,0,0" direction="1, -0.3, 0.3" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+    <!--SpawnPoint position="0,   0,  100"           spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <SpawnPoint position="0,   0, -700" yaw  =180 spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <SpawnPoint position="0, 300, -300" pitch=-90 spawnclass=SpaceShip pawndesign=spaceshipassff /-->
+
+
+    <!-- axes in ogre's origin of coordinate system for phsics engine testing purposes-->
+    <!--StaticEntity position="0,0,0">
+      <attached>
+        <Model position="0,0,0" scale=1 mesh="axes.mesh" />
+      </attached>
+    </StaticEntity -->
+
+    <!-- red sphere for phsics engine testing purposes-->
+    <!--StaticEntity position="40,0,0">
+      <attached>
+        <Model position="0,0,0" scale=1 mesh="sphere.mesh" />
+      </attached>
+    </StaticEntity-->
+
+    <!-- yellow cube for phsics engine testing purposes-->
+    <!--StaticEntity position="80,0,0">
+      <attached>
+        <Model position="0,0,0" scale=1 mesh="cube.mesh" />
+      </attached>
+    </StaticEntity-->
+
+    <!-- Carrier with guns not implemented yet -->
+    <MovableEntity position="-2000,-1000,-2000" pitch="-90" roll="90">
+      <attached>
+        <Model position="0,0,0" scale=10 mesh="Carrier.mesh" />
+        <Model position="0,30,20" scale=10 mesh="pirate.mesh" roll="180" />
+        <Model position="-80,-30,20" scale=10 mesh="pirate.mesh" roll="180" />
+      </attached>
+    </MovableEntity>
+
+    <MovableEntity position="-300,200,-800" velocity="5,0,0" rotationaxis="1,0,0" rotationrate=0>
+      <attached>
+        <Model position="0,0,0" scale=10 mesh="satellite.mesh" />
+        <MovableEntity position="-4,0,0" velocity="0,0,0" rotationaxis="0,0,1" rotationrate=50>
+          <attached>
+            <Model position="4,0,0" scale=10 mesh="satellitedish.mesh"/>
+          </attached>
+        </MovableEntity>
+        <ParticleEmitter pitch=-135 roll=30 position="-14, 3.5,-2.5" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
+        <ParticleEmitter pitch=135 roll=30 position="-14, 3.5,-9" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
+        <ParticleEmitter pitch=-45 roll=30 position="-14,-3.5,-2.5" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
+        <ParticleEmitter pitch=45 roll=30 position="-14,-3.5,-9" source="Orxonox/thruster3" lifetime=2.0 loop=1 startdelay=3.0 />
+      </attached>
+    </MovableEntity>
+
+    <MovableEntity scale=1.5 position="0,0,-300" velocity="0,0,0" rotationaxis="0,1,0" rotationrate=90>
+      <events>
+        <activity>
+          <DistanceTrigger position="0,0,-300" distance=50 target="ControllableEntity" invert=1 />
+        </activity>
+      </events>
+      <attached>
+        <Model position="0,0,0" scale=10 mesh="ast1.mesh" />
+        <StaticEntity position="0,0,100">
+          <attached>
+            <Model position="0,0,0" scale=6 mesh="ast1.mesh" />
+            <MovableEntity position="0,0,0" velocity="0,0,0" rotationaxis="0,0,1" rotationrate=500>
+              <attached>
+                <Model position="0,35,0" scale=2 mesh="ast1.mesh" />
+                <Model position="0,-35,0" scale=2 mesh="ast1.mesh" />
+                <Model position="35,0,0" scale=2 mesh="ast1.mesh">
+                  <attached>
+                    <ParticleEmitter position="0,0,0" source="Orxonox/ExplosionComp4" />
+                  </attached>
+                </Model>
+                <Model position="-35,0,0" scale=2 mesh="ast1.mesh">
+                  <attached>
+                    <ParticleEmitter position="0,0,0" source="Orxonox/fire3" />
+                  </attached>
+                </Model>
+              </attached>
+            </MovableEntity>
+          </attached>
+        </StaticEntity>
+        <MovableEntity position="0,0,-100" velocity="0,0,0" rotationaxis="0,1,0" rotationrate=200>
+          <attached>
+            <ParticleEmitter position="0,0,0" source="Orxonox/fire3" />
+            <Model position="0,0,0" scale=6 mesh="ast1.mesh" />
+            <Model position="0,0,-50" scale=3 mesh="ast1.mesh" />
+            <Model position="0,0,50" scale=3 mesh="ast1.mesh" />
+          </attached>
+        </MovableEntity>
+      </attached>
+    </MovableEntity>
+
+    <ExplosionChunk position="-500,0,-200" lifetime=3.0 loop=1/>
+
+    <ParticleSpawner position="-500,0,-200" source="Orxonox/ExplosionComp1" lifetime=3.0 loop=1 />
+    <ParticleSpawner position="-500,0,-200" source="Orxonox/ExplosionComp2" lifetime=3.0 loop=1 />
+
+    <ParticleSpawner position="0,0,100" source="Orxonox/ExplosionComp1" lifetime=2.0 loop=0 autostart=0>
+      <events>
+        <spawn>
+          <EventTrigger delay=1>
+            <events>
+              <trigger>
+                <SpawnPoint position="0,0,100" spawnclass=SpaceShip pawndesign=spaceshipassff />
+              </trigger>
+            </events>
+          </EventTrigger>
+        </spawn>
+      </events>
+    </ParticleSpawner>
+
+
+    <ParticleEmitter name=fireright position="200,0,0" source="Orxonox/fire3" active=false>
+      <events>
+        <activity>
+          <DistanceTrigger name=firetrigger1 position="200,0,0" distance=100 target="ControllableEntity" />
+        </activity>
+      </events>
+    </ParticleEmitter>
+    <ParticleEmitter name=fireleft position="-200,0,0" source="Orxonox/fire3" active=true>
+      <events>
+        <activity>
+          <DistanceTrigger name=firetrigger2 position="-200,0,0" distance=100 target="ControllableEntity" />
+        </activity>
+      </events>
+    </ParticleEmitter>
+    <ParticleEmitter name=firecenter position="0,0,0" source="Orxonox/fire3" active=false>
+      <events>
+        <activity>
+          <EventListener event=firetrigger1 />
+          <EventListener event=firetrigger2 />
+        </activity>
+      </events>
+    </ParticleEmitter>
+
+
+    <EventDispatcher>
+      <targets>
+        <EventTarget target=fireright />
+        <EventTarget target=firecenter />
+        <EventTarget target=fireleft />
+      </targets>
+      <events>
+        <activity>
+          <DistanceTrigger position="0,0,200" distance=100 target="ControllableEntity" />
+        </activity>
+      </events>
+    </EventDispatcher>
+
+
+    <Model position="0,50,0" scale=3 mesh="assff.mesh">
+      <events>
+        <visibility>
+          <DistanceTrigger position="0,50,0" distance=50 target="ControllableEntity" invert=1 />
+        </visibility>
+      </events>
+    </Model>
+
+
+    <Model position="0,0,200" scale=10 mesh="ast2.mesh" shadow=true />
+    <!--Model position="0,0,-200" scale=10 mesh="ast1.mesh" shadow=true /-->
+    <Model position="0,200,0" scale=10 mesh="ast3.mesh" shadow=true />
+    <Model position="0,-200,0" scale=10 mesh="ast4.mesh" shadow=true />
+    <Model position="200,0,0" scale=10 mesh="ast5.mesh" shadow=false />
+    <Model position="-200,0,0" scale=10 mesh="ast6.mesh" shadow=false />
+
+    <Model position="1000,-200,0" scale3D="1,100,100" mesh="ast1.mesh" />
+
+    <Model position="0, 0,-100" pitch=-90 roll=-90 scale=4 mesh="assff.mesh" />
+    <!--Model position="0,100,-100" pitch=-90 roll=-90 scale=4 mesh="pirate.mesh" />
+    <Model position="0,300,-100" pitch=-90 roll=-90 scale=4 mesh="spacecruiser.mesh" /-->
+
+  </Scene>
+</Level>

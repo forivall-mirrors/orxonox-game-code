@@ -1,0 +1,247 @@
+<LevelInfo
+ name = "Teambase Match"
+ description = "Fight for the bases."
+ tags = ""
+/>
+
+<?lua
+  include("HUDTemplates3.oxo")
+  include("stats.oxo")
+  include("teamBaseMatchHUD.oxo")
+  include("templates/spaceshipAssff.oxt")
+  include("templates/spaceshipPirate.oxt")
+  include("templates/lodInformation.oxt")
+?>
+
+<Level
+ name         = "Presentation"
+ description  = "A simple testlevel"
+ gametype     = TeamBaseMatch
+>
+
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+   ambientlight = "0.5, 0.5, 0.5"
+   skybox       = "Orxonox/skypanoramagen1"
+  >
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0" />
+
+    <TeamSpawnPoint team=0 position=" 900,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <TeamSpawnPoint team=1 position="-900,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshippirate />
+
+    <TeamBaseMatchBase
+     name              = "base 1"
+     position          = "1200, 0, 0"
+     pitch = -90
+
+     health            = 1000
+     maxhealth         = 1000
+     initialhealth     = 1000
+
+     collisionType     = "dynamic"
+     mass              = 10000
+     linearDamping     = 0.9
+     angularDamping    = 0.99999
+    >
+      <attached>
+        <Model scale=10 mesh="DuBall1.mesh" position = "-100,0,0"/>
+        <Model scale=10 mesh="DuBall2.mesh" position = "100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "-100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "100,0,0"/>
+
+        <?lua
+          for i = 1, 10, 1 do
+        ?>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+            <events>
+              <spawn>
+                <EventListener event="base 1" />
+              </spawn>
+            </events>
+          </ParticleSpawner>
+        <?lua end ?>
+        
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="80"            position = "-100,0,0" />
+        <SphereCollisionShape radius="120"           position = "100,0,0" />
+        <BoxCollisionShape    halfExtents="90,25,45" position = "-155,0,40" />
+      </collisionShapes>
+    </TeamBaseMatchBase>
+
+
+    <TeamBaseMatchBase
+     name              = "base 2"
+     position          = "-1200, 0, 0"
+     pitch = -90
+
+     health            = 1000
+     maxhealth         = 1000
+     initialhealth     = 1000
+
+     collisionType     = "dynamic"
+     mass              = 10000
+     linearDamping     = 0.9
+     angularDamping    = 0.99999
+    >
+      <attached>
+        <Model scale=10 mesh="DuBall1.mesh" position = "-100,0,0"/>
+        <Model scale=10 mesh="DuBall2.mesh" position = "100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "-100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "100,0,0"/>
+
+        <?lua
+          for i = 1, 10, 1 do
+        ?>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+            <events>
+              <spawn>
+                <EventListener event="base 2" />
+              </spawn>
+            </events>
+          </ParticleSpawner>
+        <?lua end ?>
+        
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="80"            position = "-100,0,0" />
+        <SphereCollisionShape radius="120"           position = "100,0,0" />
+        <BoxCollisionShape    halfExtents="90,25,45" position = "-155,0,40" />
+      </collisionShapes>
+    </TeamBaseMatchBase>
+
+
+    <TeamBaseMatchBase
+     name              = "base 3"
+     position          = "0, 0, 1200"
+     pitch = -90
+
+     health            = 1000
+     maxhealth         = 1000
+     initialhealth     = 1000
+
+     collisionType     = "dynamic"
+     mass              = 10000
+     linearDamping     = 0.9
+     angularDamping    = 0.99999
+    >
+      <attached>
+        <Model scale=10 mesh="DuBall1.mesh" position = "-100,0,0"/>
+        <Model scale=10 mesh="DuBall2.mesh" position = "100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "-100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "100,0,0"/>
+
+        <?lua
+          for i = 1, 10, 1 do
+        ?>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+            <events>
+              <spawn>
+                <EventListener event="base 3" />
+              </spawn>
+            </events>
+          </ParticleSpawner>
+        <?lua end ?>
+
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="80"            position = "-100,0,0" />
+        <SphereCollisionShape radius="120"           position = "100,0,0" />
+        <BoxCollisionShape    halfExtents="90,25,45" position = "-155,0,40" />
+      </collisionShapes>
+    </TeamBaseMatchBase>
+
+    <TeamBaseMatchBase
+     name              = "base 4"
+     position          = "0, 0, -1200"
+
+     health            = 1000
+     maxhealth         = 1000
+     initialhealth     = 1000
+     pitch = -90
+
+     collisionType     = "dynamic"
+     mass              = 10000
+     linearDamping     = 0.9
+     angularDamping    = 0.99999
+    >
+      <attached>
+        <Model scale=10 mesh="DuBall1.mesh" position = "-100,0,0"/>
+        <Model scale=10 mesh="DuBall2.mesh" position = "100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "-100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "100,0,0"/>
+
+        <?lua
+          for i = 1, 10, 1 do
+        ?>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+            <events>
+              <spawn>
+                <EventListener event="base 4" />
+              </spawn>
+            </events>
+          </ParticleSpawner>
+        <?lua end ?>
+
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="80"            position = "-100,0,0" />
+        <SphereCollisionShape radius="120"           position = "100,0,0" />
+        <BoxCollisionShape    halfExtents="90,25,45" position = "-155,0,40" />
+      </collisionShapes>
+    </TeamBaseMatchBase>
+
+
+    <TeamBaseMatchBase
+     name              = "base 5"
+     position          = "0, 0, 0"
+     pitch = -90
+
+     health            = 1000
+     maxhealth         = 1000
+     initialhealth     = 1000
+
+     collisionType     = "dynamic"
+     mass              = 10000
+     linearDamping     = 0.9
+     angularDamping    = 0.99999
+    >
+      <attached>
+        <Model scale=10 mesh="DuBall1.mesh" position = "-100,0,0"/>
+        <Model scale=10 mesh="DuBall2.mesh" position = "100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "-100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "100,0,0"/>
+
+        <?lua
+          for i = 1, 10, 1 do
+        ?>
+          <ParticleSpawner position="<?lua print(math.random() * 400 - 200) ?>,<?lua print(math.random() * 200 - 100) ?>,<?lua print(math.random() * 200 - 100) ?>" startdelay="<?lua print(math.random()) ?>" source="Orxonox/BigExplosion1part1" lifetime=2.0 loop=0 autostart=0>
+            <events>
+              <spawn>
+                <EventListener event="base 5" />
+              </spawn>
+            </events>
+          </ParticleSpawner>
+        <?lua end ?>
+
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="80"            position = "-100,0,0" />
+        <SphereCollisionShape radius="120"           position = "100,0,0" />
+        <BoxCollisionShape    halfExtents="90,25,45" position = "-155,0,40" />
+      </collisionShapes>
+    </TeamBaseMatchBase>
+
+    <!--Model position="0,0,0" scale=8 mesh="ast1.mesh" />
+    <StaticEntity position="0,0,0" collisionType=static>
+      <collisionShapes>
+        <SphereCollisionShape radius="20" />
+      </collisionShapes>
+    </StaticEntity-->
+
+  </Scene>
+</Level>
