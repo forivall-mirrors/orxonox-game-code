@@ -75,17 +75,17 @@ namespace orxonox
 
             // search enemy
             random = rnd(maxrand);
-            if (random < 15 && (!this->target_))
+            if (random < (15 + botlevel_* 20) && (!this->target_))
                 this->searchNewTarget();
 
             // forget enemy
             random = rnd(maxrand);
-            if (random < 5 && (this->target_))
+            if (random < ((1-botlevel_)*6) && (this->target_))
                 this->forgetTarget();
 
             // next enemy
             random = rnd(maxrand);
-            if (random < 10 && (this->target_))
+            if (random < (botlevel_*20) && (this->target_))
                 this->searchNewTarget();
 
             // fly somewhere
@@ -105,12 +105,12 @@ namespace orxonox
 
             // shoot
             random = rnd(maxrand);
-            if (!(this->passive_) && random < 75 && (this->target_ && !this->bShooting_))
+            if (!(this->passive_) && random < (75 + botlevel_*25) && (this->target_ && !this->bShooting_))
                 this->bShooting_ = true;
 
             // stop shooting
             random = rnd(maxrand);
-            if (random < 25 && (this->bShooting_))
+            if (random < ((1 - botlevel_)*25) && (this->bShooting_))
                 this->bShooting_ = false;
 
         }
@@ -158,12 +158,12 @@ namespace orxonox
 
                 // search enemy
                 random = rnd(maxrand);
-                if (random < 15 && (!this->target_))
+                if (random < (botlevel_)*25 && (!this->target_))
                     this->searchNewTarget();
 
                 // forget enemy
                 random = rnd(maxrand);
-                if (random < 5 && (this->target_))
+                if (random < (1-botlevel_)*6 && (this->target_))
                     this->forgetTarget();
 
                 // next enemy
@@ -184,15 +184,15 @@ namespace orxonox
 
                 // shoot
                 random = rnd(maxrand);
-                if (!(this->passive_) && random < 9 && (this->target_ && !this->bShooting_))
+                if (!(this->passive_) && random < 25*(botlevel_)+1 && (this->target_ && !this->bShooting_))
                 {
-                this->bShooting_ = true;
-                this->forceFreeSlaves();
+                    this->bShooting_ = true;
+                    this->forceFreeSlaves();
                 }
 
                 // stop shooting
                 random = rnd(maxrand);
-                if (random < 25 && (this->bShooting_))
+                if (random < ( (1- botlevel_)*25 ) && (this->bShooting_))
                     this->bShooting_ = false;
 
             }
@@ -202,8 +202,14 @@ namespace orxonox
 
     void AIController::tick(float dt)
     {
+        float random;
+        float maxrand = 100.0f / ACTION_INTERVAL;
+
         if (!this->isActive())
             return;
+        //Vector-implementation: if(target_.size() == 0) target[0] = DEFAULT;
+        if(this->mode_ == DEFAULT)
+	{//Vector-implementation: mode_.back() == DEFAULT;
 
         if (this->state_ == MASTER)
         {
@@ -219,8 +225,7 @@ namespace orxonox
                 if (this->bHasTargetPosition_)
                     this->moveToTargetPosition();
 
-                if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
-                    this->getControllableEntity()->fire(0);
+                this->doFire();
             }
 
             if (this->specificMasterAction_  == TURN180)
@@ -252,9 +257,31 @@ namespace orxonox
             if (this->bHasTargetPosition_)
                 this->moveToTargetPosition();
 
-            if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
-                this->getControllableEntity()->fire(0);
+            this->doFire();
         }
+
+        }//END_OF DEFAULT MODE
+        else if (this->mode_ == ROCKET)//Rockets do not belong to a group of bots -> bot states are not relevant.
+        {   //Vector-implementation: mode_.back() == ROCKET;
+            ControllableEntity *controllable = this->getControllableEntity(); 
+            if(controllable)
+            {
+                if(controllable->getRocket())//Check wether the bot is controlling the rocket and if the timeout is over.
+                {
+                    this->follow(); //TODO: CHECK: does follow make the bot crash into the target_ ?
+                    this->timeout_ -= dt;
+                    if((timeout_< 0)||(!target_))//Check if the timeout is over or target died.
+                    {
+                       controllable->fire(0);//kill the rocket
+                       this->setPreviousMode();//get out of rocket mode
+                    }
+                }
+                else
+                    this->setPreviousMode();//no rocket entity -> get out of rocket mode
+            }
+            else
+                this->setPreviousMode();//If bot dies -> getControllableEntity == NULL -> get out of ROCKET mode
+        }//END_OF ROCKET MODE
 
         SUPER(AIController, tick, dt);
     }
