@@ -207,9 +207,9 @@ namespace orxonox
         
         if (!this->isActive())
             return;
-
+        //Vector-implementation: if(target_.size() == 0) target[0] = DEFAULT;
         if(this->mode_ == DEFAULT)
-	{
+	{//Vector-implementation: mode_.back() == DEFAULT;
             if (this->state_ == MASTER)
             {
                 if (this->specificMasterAction_ ==  NONE)
@@ -270,7 +270,7 @@ namespace orxonox
             }
         }//END_OF DEFAULT MODE
         else if (this->mode_ == ROCKET)//Rockets do not belong to a group of bots -> bot states are not relevant.
-        {   
+        {   //Vector-implementation: mode_.back() == ROCKET;
             ControllableEntity *controllable = this->getControllableEntity(); 
             if(controllable)
             {

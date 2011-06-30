@@ -90,14 +90,14 @@ namespace orxonox
         this->bSetupWorked = false;
         this->numberOfWeapons = 0;
         this->botlevel_ = 1.0f;
-        this->mode_ = DEFAULT;
+        this->mode_ = DEFAULT;////Vector-implementation: mode_.push_back(DEFAULT);
         this->timeout_=0;
     }
 
     ArtificialController::~ArtificialController()
     {
         if (this->isInitialized())
-        {
+        {//Vector-implementation: mode_.erase(mode_.begin(),mode_.end());
             this->removeFromFormation();
 
             for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it; ++it)
@@ -1045,7 +1045,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             else if((weapons[3]==3)&& this->isCloseAtTarget(400) /*&&projectiles[3]*/ )
             {//ROCKET: mid range weapon
                 //TODO: Which weapon is the rocket? How many rockets are available?
-                this->mode_ = ROCKET;
+                this->mode_ = ROCKET;//Vector-implementation: mode_.push_back(ROCKET);
                 this->getControllableEntity()->fire(3);//launch rocket
                 if(this->getControllableEntity()&&this->target_)//after fire(3) getControllableEntity() refers to the rocket!
                 {
@@ -1080,9 +1080,9 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                         weapons[i]=-1;
                     else if(wpn=="LaserMunition")//other munitiontypes are not defined yet :-(
                         weapons[0]=0;
-                    else if(wpn=="LENSFLARE")//TODO: insert right munition name
+                    else if(wpn=="FusionMunition")
                         weapons[1]=1;
-                    else if(wpn=="SIMPLEROCKET")//TODO: insert right munition name
+                    else if(wpn=="TargetSeeking Rockets")
                         weapons[2]=2;
                     else if(wpn=="ROCKET")//TODO: insert right munition name
                         weapons[3]=3;
@@ -1132,7 +1132,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
 
     void ArtificialController::setPreviousMode()
     {
-        this->mode_ = DEFAULT;
+        this->mode_ = DEFAULT; //Vector-implementation: mode_.pop_back();
     }
     
 }
