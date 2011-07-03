@@ -31,14 +31,28 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include "tools/interfaces/Tickable.h"
-#include "Item.h"
+#include "util/OrxAssert.h"
 
-#include "interfaces/PickupCarrier.h"
+#include "Item.h"
 
 namespace orxonox
 {
-    class _OrxonoxExport Engine : public Item, public Tickable, public PickupCarrier
+
+    /**
+    @brief
+        The Engine class provides propulsion to the SpaceShip.
+        
+        There are many parameters that can be specified:
+        - The <b>relativePosition</b>, specifies the position relative to the center of the SpaceShip the Engine is mounted on.
+        - The <b>maximal speed</b>, there are four maximal speeds that can be specified: The <b>speedfront</b>, the maximal forward speed. The <b>speedback>, the maximal backward speed. The <b>speedleftright</b>, the maximal speed in y-direction of the SpaceShip coordinate frame. The <b>speedupdown</b>, the maximal speed in z-direction of the SpaceShip coordinate frame. All maximal speeds (naturally) have to be non-negative.
+        - The <b>acceleration</b>, there are five types of acceleration that can be specified: The <b>accelerationfront</b>, the forward acceleration. The <b>accelerationbrake</b>, the braking acceleration. The <b>accelerationback</b>, the backward acceleration. The <b>accelerationleftright</b>, the acceleration in y-direction. The <b>accelerationupdown</b>, the acceleration in z-direction. All accelerations have to be non-negative.
+        - The <b>boostfactor</b>, specifies the factor by which boosting increases the speed. This has to be non-negative, as well. Beware that maximal speeds can be overcome through boosting.
+        - The <b>template</b>, the name of the engine template. Allows for parameters of the Engine be set trough a template.
+        
+    @author
+        Fabian 'x3n' Landau
+    */
+    class _OrxonoxExport Engine : public Item
     {
         public:
             Engine(BaseObject* creator);
@@ -47,121 +61,225 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             void setConfigValues();
 
-            virtual void tick(float dt);
-            virtual void changedActivity();
+            virtual void run(float dt); // Run the engine for a given time interval.
 
-            virtual void addToSpaceShip(SpaceShip* ship);
+            virtual void addToSpaceShip(SpaceShip* ship); // Adds the Engine to the input SpaceShip.
+            /**
+            @brief Get the SpaceShip this Engine is mounted on.
+            @return Returns a pointer to the SpaceShip. NULL if it isn't mounted on any ship.
+            */
             inline SpaceShip* getShip() const
                 { return this->ship_; }
 
+            /**
+            @brief Set the relative position of the Engine.
+            @param position The relative position with respect to the SpaceShip it is mounted on.
+            */
             inline void setRelativePosition(const Vector3 &position)
                 { this->relativePosition_ = position; }
-            inline Vector3& getRelativePosition()
+            /**
+            @brief Get the relative position of the Engine.
+            @return Returns the relative position with respect to the SpaceShip it is mounted on.
+            */
+            inline const Vector3& getRelativePosition() const
                 { return this->relativePosition_; }
 
-            inline void setBoostFactor(float factor)
-                { this->boostFactor_ = factor; }
-            inline float getBoostFactor() const
-                { return this->boostFactor_; }
-
-            inline void setSpeedFactor(float factor)
-                { this->speedFactor_ = factor; }
-            inline float getSpeedFactor() const
-                { return this->speedFactor_; }
-
+            /**
+            @brief Set the maximal forward speed of the Engine.
+            @param speed The speed to be set. Must be non-negative.
+            */
+            //TODO: Better OrxVerify()?
             inline void setMaxSpeedFront(float speed)
-                { this->maxSpeedFront_ = speed; }
+                { OrxAssert(speed >= 0.0f, "The input speed must be non-negative."); this->maxSpeedFront_ = speed; }
+            /**
+            @brief Set the maximal backward speed of the Engine.
+            @param speed The speed to be set. Must be non-negative.
+            */
             inline void setMaxSpeedBack(float speed)
-                { this->maxSpeedBack_ = speed; }
+                { OrxAssert(speed >= 0.0f, "The input speed must be non-negative."); this->maxSpeedBack_ = speed; }
+            /**
+            @brief Set the maximal left-right speed of the Engine.
+            @param speed The speed to be set. Must be non-negative.
+            */
             inline void setMaxSpeedLeftRight(float speed)
-                { this->maxSpeedLeftRight_ = speed; }
+                { OrxAssert(speed >= 0.0f, "The input speed must be non-negative."); this->maxSpeedLeftRight_ = speed; }
+            /**
+            @brief Set the maximal up-down speed of the Engine.
+            @param speed The speed to be set. Must be non-negative.
+            */
             inline void setMaxSpeedUpDown(float speed)
-                { this->maxSpeedUpDown_ = speed; }
+                { OrxAssert(speed >= 0.0f, "The input speed must be non-negative."); this->maxSpeedUpDown_ = speed; }
 
+            /**
+            @brief Get the maximal forward speed of the Engine.
+            @return Returns the maximal forward speed of the Engine. Is non-negative.
+            */
             inline float getMaxSpeedFront() const
                 { return this->maxSpeedFront_; }
+            /**
+            @brief Get the maximal backward speed of the Engine.
+            @return Returns the maximal backward speed of the Engine. Is non-negative.
+            */
             inline float getMaxSpeedBack() const
                 { return this->maxSpeedBack_; }
+            /**
+            @brief Get the maximal left-right speed of the Engine.
+            @return Returns the maximal left-right speed of the Engine. Is non-negative.
+            */
             inline float getMaxSpeedLeftRight() const
                 { return this->maxSpeedLeftRight_; }
+            /**
+            @brief Get the maximal up-down speed of the Engine.
+            @return Returns the maximal up-down speed of the Engine. Is non-negative.
+            */
             inline float getMaxSpeedUpDown() const
                 { return this->maxSpeedUpDown_; }
 
+            /**
+            @brief Set the forward acceleration produced by the Engine.
+            @param acceleration The forward acceleration produced by the Engine. Must be non-negative.
+            */
             inline void setAccelerationFront(float acceleration)
-                { this->accelerationFront_ = acceleration; }
+                { OrxAssert(acceleration >= 0.0f, "The input acceleration must be non-negative."); this->accelerationFront_ = acceleration; }
+            /**
+            @brief Set the breaking acceleration produced by the Engine.
+            @param acceleration The breaking acceleration produced by the engine. Must be non-negative.
+            */
             inline void setAccelerationBrake(float acceleration)
-                { this->accelerationBrake_ = acceleration; }
+                { OrxAssert(acceleration >= 0.0f, "The input acceleration must be non-negative."); this->accelerationBrake_ = acceleration; }
+            /**
+            @brief Set the backward acceleration produced by the Engine.
+            @param acceleration The backward acceleration produced by the Engine.
+            */
             inline void setAccelerationBack(float acceleration)
-                { this->accelerationBack_ = acceleration; }
+                { OrxAssert(acceleration >= 0.0f, "The input acceleration must be non-negative."); this->accelerationBack_ = acceleration; }
+            /**
+            @brief Set the left-right acceleration produced by the Engine.
+            @param acceleration The left-right acceleration produced by the Engine.
+            */
             inline void setAccelerationLeftRight(float acceleration)
-                { this->accelerationLeftRight_ = acceleration; }
+                { OrxAssert(acceleration >= 0.0f, "The input acceleration must be non-negative."); this->accelerationLeftRight_ = acceleration; }
+            /**
+            @brief Set the up-down acceleration produced by the Engine.
+            @param acceleration The
+            */
             inline void setAccelerationUpDown(float acceleration)
-                { this->accelerationUpDown_ = acceleration; }
+                { OrxAssert(acceleration >= 0.0f, "The input acceleration must be non-negative."); this->accelerationUpDown_ = acceleration; }
 
+            /**
+            @brief Get the forward acceleration produced by the Engine.
+            @return Returns the forward acceleration produced by the Engine. Is non-negative.
+            */
             inline float getAccelerationFront() const
                 { return this->accelerationFront_; }
+            /**
+            @brief Get the breaking acceleration produced by the Engine.
+            @return Returns the breaking acceleration produced by the Engine. Is non-negative.
+            */
             inline float getAccelerationBrake() const
                 { return this->accelerationBrake_; }
+            /**
+            @brief Get the backward acceleration produced by the Engine.
+            @return Returns the backward acceleration produced by the Engine. Is non-negative.
+            */
             inline float getAccelerationBack() const
                 { return this->accelerationBack_; }
+            /**
+            @brief Get the left-right acceleration produced by the Engine.
+            @return Returns the left-right acceleration produced by the Engine. Is non-negative.
+            */
             inline float getAccelerationLeftRight() const
                 { return this->accelerationLeftRight_; }
+            /**
+            @brief Get the up-down acceleration produced by the Engine.
+            @return Returns the up-down acceleration produced by the Engine. Is non-negative.
+            */
             inline float getAccelerationUpDown() const
                 { return this->accelerationUpDown_; }
 
+            /**
+            @brief Set the factor by which boosting increases the forward acceleration of the Engine.
+            @param factor The boost factor. Needs to be positive.
+            */
+            inline void setBoostFactor(float factor)
+                { OrxAssert(factor > 0.0f, "The input factor must be positive."); this->boostFactor_ = factor; }
+            /**
+            @brief Get the boost factor of the Engine.
+            @return Returns the factor by which boosting increases the forward acceleration of the Engine. Is positive.
+            */
+            inline float getBoostFactor() const
+                { return this->boostFactor_; }
+
+            /**
+            @brief Add to the additional forward speed factor.
+            @param factor The speed that is added to the additional forward speed. Must be non-negative.
+            */
+            inline void addSpeedAdd(float speed)
+                { this->speedAdd_ += speed; }
+            /**
+            @brief Add to the forward speed multiplication factor.
+            @param factor The factor by which the forward speed multiplication factor is multiplied. Must be non-negative.
+            */
+            inline void addSpeedMultiply(float factor)
+                { OrxAssert(factor >= 0.0f, "The factor must be non-negative."); this->speedMultiply_ *= factor; }
+
+            /**
+            @brief Get the additional forward speed.
+            @return Returns the additional forward speed.
+            */
             inline float getSpeedAdd(void)
                 { return this->speedAdd_; }
+            /**
+            @brief Get the forward speed multiplication factor.
+            @return Returns the forward speed multiplication factor.
+            */
             inline float getSpeedMultiply(void)
                 { return this->speedMultiply_; }
 
-            virtual const Vector3& getDirection() const;
-
-            virtual const Vector3& getCarrierPosition(void) const;
-
-            inline void setSpeedAdd(float speedAdd)
-                { this->speedAdd_=speedAdd; }
-            inline void setSpeedMultiply(float speedMultiply)
-                { this->speedMultiply_=speedMultiply; }
-
-            
+            /**
+            @brief Set the engine template, that specifies the parameters for the Engine.
+            @param temp The name of the engine template.
+            */
             inline void setEngineTemplate(const std::string& temp)
                 { this->engineTemplate_ = temp; this->loadEngineTemplate(); }
+            /**
+            @brief Get the engine template, that specifies the parameters for the Engine.
+            @return Returns the name of the engine template.
+            */
             inline const std::string& getEngineTemplate() const
                 { return this->engineTemplate_; }
 
         protected:
-            virtual std::vector<PickupCarrier*>* getCarrierChildren(void) const
-                { return new std::vector<PickupCarrier*>(); }
-            virtual PickupCarrier* getCarrierParent(void) const;
-            
-            void loadEngineTemplate();
+            void loadEngineTemplate(); // Load the engine template.
+
+            virtual const Vector3& getSteering() const; // Get the steering direction imposed upon the Engine.
 
         private:
             void registerVariables();
             void networkcallback_shipID();
 
-            std::string engineTemplate_;
+            std::string engineTemplate_; //!< The template that specifies the Engine's parameters.
 
-            SpaceShip* ship_;
-            unsigned int shipID_;
-            Vector3 relativePosition_;
+            SpaceShip* ship_; //!< A pointer to the SpaceShip the Engine is mounted on.
+            unsigned int shipID_; //!< Object ID of the SpaceShip the Engine is mounted on.
+            Vector3 relativePosition_; //!< The relative position of the Engine with respect to the SpaceShip it is mounted on.
 
-            float boostFactor_;
-            float speedFactor_;
+            float boostFactor_; //!< The factor by which boosting increases the forward acceleration.
 
-            float speedAdd_;
-            float speedMultiply_;
+            float speedAdd_; //!< Additional forward speed. Is not bounded by the maximal forward speed.
+            float speedMultiply_; //!< Forward speed multiplication factor. Is not bounded by the maximal forward speed.
 
-            float maxSpeedFront_;
-            float maxSpeedBack_;
-            float maxSpeedLeftRight_;
-            float maxSpeedUpDown_;
+            float maxSpeedFront_; //!< The maximal forward speed.
+            float maxSpeedBack_; //!< The maximal backward speed.
+            float maxSpeedLeftRight_; //!< The maximal left-right speed.
+            float maxSpeedUpDown_; //!< The maximal up-down speed.
 
-            float accelerationFront_;
-            float accelerationBrake_;
-            float accelerationBack_;
-            float accelerationLeftRight_;
-            float accelerationUpDown_;
+            float accelerationFront_; //!< Forward acceleration produced by the Engine.
+            float accelerationBrake_; //!< Breaking acceleration produced by the Engine.
+            float accelerationBack_; //!< Backward acceleration produced by the Engine.
+            float accelerationLeftRight_; //!< Left-right acceleration produced by the Engine.
+            float accelerationUpDown_; //!< Up-down acceleration produced by the Engine.
+
     };
 }
 

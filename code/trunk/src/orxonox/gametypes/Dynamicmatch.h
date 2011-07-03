@@ -29,11 +29,14 @@
 #ifndef _Dynamicmatch_H__
 #define _Dynamicmatch_H__
 
+#include "OrxonoxPrereqs.h"
+
 #include <map>
 #include <vector>
-#include "OrxonoxPrereqs.h"
-#include "Gametype.h"
+
 #include "tools/Timer.h"
+
+#include "Gametype.h"
 
 namespace orxonox
 {
@@ -72,7 +75,7 @@ namespace orxonox
             /*virtual void instructions();
             virtual void furtherInstructions();*/
             virtual void rewardPig();
-            void grantPigBoost(SpaceShip* spaceship); // Added this, since it's used twice on different occasions.
+            void grantPigBoost(SpaceShip* spaceship); // Grant the piggy a boost.
             void resetSpeedFactor(WeakPtr<SpaceShip>* ptr);
             void tick (float dt);// used to end the game
             SpawnPoint* getBestSpawnPoint(PlayerInfo* player) const;

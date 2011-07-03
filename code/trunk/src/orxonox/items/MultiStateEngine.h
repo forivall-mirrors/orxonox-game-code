@@ -53,7 +53,7 @@ namespace orxonox
 
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
 
-            virtual void tick(float dt);
+            virtual void run(float dt);
 
             virtual void addToSpaceShip(SpaceShip* ship);
 
