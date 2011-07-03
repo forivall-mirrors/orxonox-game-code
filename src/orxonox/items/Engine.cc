@@ -28,51 +28,60 @@
 
 #include "Engine.h"
 
-#include "util/Math.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/Template.h"
 #include "core/XMLPort.h"
+#include "util/Math.h"
+
 #include "Scene.h"
 #include "worldentities/pawns/SpaceShip.h"
-#include "core/Template.h"
 
 namespace orxonox
 {
     CreateFactory(Engine);
 
+    /**
+    @brief
+        Constructor. Registers and initializes the object.
+    */
     Engine::Engine(BaseObject* creator) : Item(creator)
     {
         RegisterObject(Engine);
 
         this->ship_ = 0;
         this->shipID_ = OBJECTID_UNKNOWN;
-        this->relativePosition_ = Vector3(0,0,0);
+        this->relativePosition_ = Vector3::ZERO;
 
-        this->boostFactor_ = 1.5;
-        this->speedFactor_ = 1.0;
+        this->boostFactor_ = 1.5f;
 
-        this->maxSpeedFront_ = 0.0;
-        this->maxSpeedBack_ = 0.0;
-        this->maxSpeedLeftRight_ = 0.0;
-        this->maxSpeedUpDown_ = 0.0;
+        this->maxSpeedFront_ = 0.0f;
+        this->maxSpeedBack_ = 0.0f;
+        this->maxSpeedLeftRight_ = 0.0f;
+        this->maxSpeedUpDown_ = 0.0f;
 
-        this->accelerationFront_ = 0.0;
-        this->accelerationBrake_ = 0.0;
-        this->accelerationBack_ = 0.0;
-        this->accelerationLeftRight_ = 0.0;
-        this->accelerationUpDown_ = 0.0;
+        this->accelerationFront_ = 0.0f;
+        this->accelerationBrake_ = 0.0f;
+        this->accelerationBack_ = 0.0f;
+        this->accelerationLeftRight_ = 0.0f;
+        this->accelerationUpDown_ = 0.0f;
 
-        this->speedAdd_ = 0.0;
-        this->speedMultiply_ = 1.0;
+        this->speedAdd_ = 0.0f;
+        this->speedMultiply_ = 1.0f;
 
         this->setConfigValues();
         this->registerVariables();
     }
 
+    /**
+    @brief
+        Destructor. Destroys the object and removes it from the SpaceShip.
+    */
     Engine::~Engine()
     {
         if (this->isInitialized())
         {
+            // Remove the engine from the ShapeShip.
             if (this->ship_ && this->ship_->hasEngine(this))
                 this->ship_->removeEngine(this);
         }
@@ -107,7 +116,6 @@ namespace orxonox
     {
         registerVariable(this->shipID_, VariableDirection::ToClient, new NetworkCallback<Engine>(this, &Engine::networkcallback_shipID));
 
-        registerVariable(this->speedFactor_, VariableDirection::ToClient);
         registerVariable(this->boostFactor_, VariableDirection::ToClient);
 
         registerVariable(this->maxSpeedFront_,     VariableDirection::ToClient);
@@ -137,15 +145,22 @@ namespace orxonox
         }
     }
 
-    void Engine::tick(float dt)
+    /**
+    @brief
+        Run the engine for a given time interval.
+        Is called each tick by SpaceShip.
+    @param dt
+        The time since last tick.
+    */
+    void Engine::run(float dt)
     {
-        if (!this->ship_)
+        if (this->ship_ == NULL)
         {
-            if (this->shipID_)
+            if (this->shipID_ != 0)
             {
                 this->networkcallback_shipID();
 
-                if (!this->ship_)
+                if (this->ship_ == NULL)
                     return;
             }
             else
@@ -155,68 +170,60 @@ namespace orxonox
         if (!this->isActive())
             return;
 
-        SUPER(Engine, tick, dt);
+        // Get the desired steering direction and amount, clipped to length 1 at maximum.
+        Vector3 steering = (this->getSteering().length() > 1.0f ? this->getSteering().normalisedCopy() : this->getSteering());
 
-        Vector3 direction = this->getDirection();
-        float directionLength = direction.length();
-        if (directionLength > 1.0f)
-            direction /= directionLength; // normalize
-        
+        // Get the ships velocity.
         Vector3 velocity = this->ship_->getLocalVelocity();
         Vector3 acceleration = Vector3::ZERO;
 
-        float factor = 1.0f / this->speedFactor_;
-        velocity *= factor;
-
-        if (direction.z < 0)
+        // If there is forward steering action.
+        if (steering.z < 0)
         {
             if (this->maxSpeedFront_ != 0)
             {
-                float boostfactor = (this->ship_->getBoost() ? this->boostFactor_ : 1.0f);
-                acceleration.z = direction.z * this->accelerationFront_ * boostfactor * clamp((this->maxSpeedFront_ - -velocity.z/boostfactor) / this->maxSpeedFront_, 0.0f, 1.0f);
+                float boostfactor = (this->ship_->isBoosting() ? this->boostFactor_ : 1.0f); // Boost factor is 1.0 if not boosting.
+                // Boosting can lead to velocities larger the maximal forward velocity.
+                acceleration.z = steering.z * this->accelerationFront_ * boostfactor * clamp((this->maxSpeedFront_ - -velocity.z/boostfactor) / this->maxSpeedFront_, 0.0f, 1.0f);
             }
         }
-        else if (direction.z > 0)
+        // If there is backward steering action.
+        else if (steering.z > 0)
         {
+            // Either breaking
             if (velocity.z < 0)
-                acceleration.z = direction.z * this->accelerationBrake_;
+                acceleration.z = steering.z * this->accelerationBrake_;
+            // or backward flight.
             else if (this->maxSpeedBack_ != 0)
-                acceleration.z = direction.z * this->accelerationBack_ * clamp((this->maxSpeedBack_ - velocity.z) / this->maxSpeedBack_, 0.0f, 1.0f);
+                acceleration.z = steering.z * this->accelerationBack_ * clamp((this->maxSpeedBack_ - velocity.z) / this->maxSpeedBack_, 0.0f, 1.0f);
         }
-
+        // If there is left-right steering action.
         if (this->maxSpeedLeftRight_ != 0)
         {
-            if (direction.x < 0)
-                acceleration.x = direction.x * this->accelerationLeftRight_ * clamp((this->maxSpeedLeftRight_ - -velocity.x) / this->maxSpeedLeftRight_, 0.0f, 1.0f);
-            else if (direction.x > 0)
-                acceleration.x = direction.x * this->accelerationLeftRight_ * clamp((this->maxSpeedLeftRight_ - velocity.x) / this->maxSpeedLeftRight_, 0.0f, 1.0f);
+            if (steering.x < 0)
+                acceleration.x = steering.x * this->accelerationLeftRight_ * clamp((this->maxSpeedLeftRight_ - -velocity.x) / this->maxSpeedLeftRight_, 0.0f, 1.0f);
+            else if (steering.x > 0)
+                acceleration.x = steering.x * this->accelerationLeftRight_ * clamp((this->maxSpeedLeftRight_ - velocity.x) / this->maxSpeedLeftRight_, 0.0f, 1.0f);
         }
-
+        // If there is up-down steering action.
         if (this->maxSpeedUpDown_ != 0)
         {
-            if (direction.y < 0)
-                acceleration.y = direction.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - -velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
-            else if (direction.y > 0)
-                acceleration.y = direction.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
+            if (steering.y < 0)
+                acceleration.y = steering.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - -velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
+            else if (steering.y > 0)
+                acceleration.y = steering.y * this->accelerationUpDown_ * clamp((this->maxSpeedUpDown_ - velocity.y) / this->maxSpeedUpDown_, 0.0f, 1.0f);
         }
 
         // NOTE: Bullet always uses global coordinates.
         this->ship_->addAcceleration(this->ship_->getOrientation() * (acceleration*this->getSpeedMultiply()+Vector3(0,0,-this->getSpeedAdd())), this->ship_->getOrientation() * this->relativePosition_);
-
-        // Hack to reset a temporary variable "direction"
-        this->ship_->oneEngineTickDone();
-        if(!this->ship_->hasEngineTicksRemaining())
-        {
-            this->ship_->setSteeringDirection(Vector3::ZERO);
-            this->ship_->resetEngineTicks();
-        }
     }
 
-    void Engine::changedActivity()
-    {
-        SUPER(Engine, changedActivity);
-    }
-
+    /**
+    @brief
+        Adds the Engine to the input SpaceShip.
+    @param ship
+        A pointer to the SpaceShip to which the engine is added.
+    */
     void Engine::addToSpaceShip(SpaceShip* ship)
     {
         this->ship_ = ship;
@@ -229,7 +236,14 @@ namespace orxonox
         }
     }
 
-    const Vector3& Engine::getDirection() const
+    /**
+    @brief
+        Get the direction and magnitude of the steering imposed upon the Engine.
+    @return
+        Returns the direction and magnitude of the steering imposed upon the Engine.
+        Is the zero vector if the Engine doesn't belong to a ship.
+    */
+    const Vector3& Engine::getSteering() const
     {
         if (this->ship_)
             return this->ship_->getSteeringDirection();
@@ -237,16 +251,11 @@ namespace orxonox
             return Vector3::ZERO;
     }
 
-    PickupCarrier* Engine::getCarrierParent(void) const
-    {
-        return this->ship_;
-    }
-
-    const Vector3& Engine::getCarrierPosition(void) const
-    {
-        return this->ship_->getWorldPosition();
-    }
-
+    /**
+    @brief
+        Load the engine template.
+        Causes all parameters specified by the template to be applied to the Engine.
+    */
     void Engine::loadEngineTemplate()
     {
         if(!this->engineTemplate_.empty())
@@ -259,4 +268,5 @@ namespace orxonox
             }
         }
     }
+
 }

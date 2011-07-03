@@ -150,7 +150,7 @@ namespace orxonox
 
                 //Give new pig boost
                 SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
-                grantPigBoost(spaceship);
+                this->grantPigBoost(spaceship);
             }
 
             //Case: notEnoughKillers: party change
@@ -244,7 +244,7 @@ namespace orxonox
                 }
                 //Give new pig boost
                 SpaceShip* spaceship = dynamic_cast<SpaceShip*>(victim);
-                grantPigBoost(spaceship);
+                this->grantPigBoost(spaceship);
             }
             // killer vs piggy
             else if (source==killer &&target==piggy) //party and colour switch
@@ -305,12 +305,18 @@ namespace orxonox
         else return false;
     }
 
-    void Dynamicmatch::grantPigBoost(orxonox::SpaceShip* spaceship)
+    /**
+    @brief
+        Grant the piggy a boost.
+    @param spaceship
+        The SpaceShip to give the boost.
+    */
+    void Dynamicmatch::grantPigBoost(SpaceShip* spaceship)
     {
         // Give pig boost
         if (spaceship)
         {
-            spaceship->setSpeedFactor(5);
+            spaceship->addSpeedFactor(5);
             WeakPtr<SpaceShip>* ptr = new WeakPtr<SpaceShip>(spaceship);
             ExecutorPtr executor = createExecutor(createFunctor(&Dynamicmatch::resetSpeedFactor, this));
             executor->setDefaultValue(0, ptr);
@@ -598,7 +604,7 @@ namespace orxonox
     {
         if (*ptr)
         {
-            (*ptr)->setSpeedFactor(1.0f);
+            (*ptr)->addSpeedFactor(1.0f/5.0f);
         }
         delete ptr;
     }

@@ -33,6 +33,7 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
 #include "Scene.h"
 
 namespace orxonox
@@ -146,10 +147,18 @@ namespace orxonox
             this->physicalBody_->applyCentralForce(btVector3(acceleration.x * this->getMass(), acceleration.y * this->getMass(), acceleration.z * this->getMass()));
         }
 
-        // If not bullet-managed (deprecated? SpaceShip doesn't use this anymore for movement)
+        // If not bullet-managed (deprecated? SpaceShip doesn't use this anymore for movement) TODO: Find out!
         this->linearAcceleration_ = acceleration;
     }
 
+    /**
+    @brief
+        Adds the input acceleration at the input position to the MobileEntity.
+    @param acceleration
+        The acceleration to be additionally applied to the MobileEntity.
+    @param relativePosition
+        The position relative to the MobileEntity at which the acceleration is applied.
+    */
     void MobileEntity::addAcceleration(const Vector3 &acceleration, const Vector3 &relativePosition)
     {
         if(this->isDynamic())

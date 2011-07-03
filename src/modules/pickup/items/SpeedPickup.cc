@@ -37,7 +37,6 @@
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 
-#include "items/Engine.h"
 #include "pickup/PickupIdentifier.h"
 #include "worldentities/pawns/SpaceShip.h"
 
@@ -75,7 +74,7 @@ namespace orxonox
         this->speedAdd_ = 0.0f;
         this->speedMultiply_ = 1.0f;
 
-        this->addTarget(ClassIdentifier<Engine>::getIdentifier());
+        this->addTarget(ClassIdentifier<SpaceShip>::getIdentifier());
     }
 
     /**
@@ -126,8 +125,8 @@ namespace orxonox
     {
         SUPER(SpeedPickup, changedUsed);
 
-        Engine* engine = this->carrierToEngineHelper();
-        if(engine == NULL) // If the PickupCarrier is no Engine, then this pickup is useless and therefore is destroyed.
+        SpaceShip* ship = this->carrierToSpaceShipHelper();
+        if(ship == NULL) // If the PickupCarrier is no SpaceShip, then this pickup is useless and therefore is destroyed.
             this->Pickupable::destroy();
 
         // If the pickup has transited to used.
@@ -146,13 +145,13 @@ namespace orxonox
                 }
             }
 
-            engine->setSpeedAdd(this->getSpeedAdd());
-            engine->setSpeedMultiply(this->getSpeedMultiply());
+            ship->addSpeed(this->getSpeedAdd());
+            ship->addSpeedFactor(this->getSpeedMultiply());
         }
         else
         {
-            engine->setSpeedAdd(0.0f);
-            engine->setSpeedMultiply(1.0f);
+            ship->addSpeed(-this->getSpeedAdd());
+            ship->addSpeedFactor(1.0f/this->getSpeedMultiply());
 
             // We destroy the pickup if either, the pickup has activationType immediate and durationType once or it has durationType continuous and the duration was exceeded.
             if((!this->isContinuous() && this->isImmediate()) || (this->isContinuous() && !this->durationTimer_.isActive() && this->durationTimer_.getRemainingTime() == this->getDuration()))
@@ -169,21 +168,21 @@ namespace orxonox
 
     /**
     @brief
-        Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
+        Helper to transform the PickupCarrier to a SpaceShip, and throw an error message if the conversion fails.
     @return
-        A pointer to the Pawn, or NULL if the conversion failed.
+        A pointer to the SpaceShip, or NULL if the conversion failed.
     */
-    Engine* SpeedPickup::carrierToEngineHelper(void)
+    SpaceShip* SpeedPickup::carrierToSpaceShipHelper(void)
     {
         PickupCarrier* carrier = this->getCarrier();
-        Engine* engine = dynamic_cast<Engine*>(carrier);
+        SpaceShip* ship = dynamic_cast<SpaceShip*>(carrier);
 
-        if(engine == NULL)
+        if(ship == NULL)
         {
             COUT(1) << "Invalid PickupCarrier in SpeedPickup." << std::endl;
         }
 
-        return engine;
+        return ship;
     }
 
     /**

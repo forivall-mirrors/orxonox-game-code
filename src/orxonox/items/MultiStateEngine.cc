@@ -108,7 +108,7 @@ namespace orxonox
         registerVariable(this->state_, VariableDirection::ToServer);
     }
 
-    void MultiStateEngine::tick(float dt)
+    void MultiStateEngine::run(float dt)
     {
         if (this->getShip())
         {
@@ -116,11 +116,11 @@ namespace orxonox
 
             if (this->getShip()->hasLocalController())
             {
-                const Vector3& direction = this->getDirection();
+                const Vector3& direction = this->getSteering();
                 bool forward = (direction.z < 0.0 && velocity.z < -FORWARD_EFFECT_VELOCITY_THRESHOLD);
 
                 this->state_ = 0;
-                if (this->getShip()->getBoost() && forward)
+                if (this->getShip()->isBoosting() && forward)
                     this->state_ = Boost;
                 else if (forward && !this->state_) // this->state_ == Boost
                     this->state_ = Normal;
@@ -180,7 +180,7 @@ namespace orxonox
             }
         }
 
-        SUPER(MultiStateEngine, tick, dt);
+        Engine::run(dt);
     }
 
     void MultiStateEngine::addToSpaceShip(SpaceShip* ship)

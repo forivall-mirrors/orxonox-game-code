@@ -54,6 +54,10 @@ namespace orxonox
                 { this->setVelocity(Vector3(x, y, z)); }
             inline const Vector3& getVelocity() const
                 { return this->linearVelocity_; }
+            /**
+            @brief Get the velocity in the coordinate-system of the MoblieEntity.
+            @return Returns the velocity of the MobileEntity in its coordinate-system.
+            */
             inline Vector3 getLocalVelocity() const
                 { return (this->getOrientation().Inverse() * this->getVelocity()); }
 
@@ -68,12 +72,7 @@ namespace orxonox
                 { this->setAcceleration(Vector3(x, y, z)); }
             inline const Vector3& getAcceleration() const
                 { return this->linearAcceleration_; }
-
-            // Added for making N engines work with spaceships
-            void addAcceleration(const Vector3& acceleration, const Vector3 &relativePosition);
-            inline void addAcceleration(float x, float y, float z)
-                { this->addAcceleration(Vector3(x, y, z), Vector3(0,0,0)); }
-            // Getter function above
+            void addAcceleration(const Vector3& acceleration, const Vector3 &relativePosition = Vector3::ZERO); // Adds the input acceleration at the input position to the MobileEntity.
 
             void setAngularAcceleration(const Vector3& acceleration);
             inline void setAngularAcceleration(float x, float y, float z)

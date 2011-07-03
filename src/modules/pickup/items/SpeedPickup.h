@@ -111,7 +111,7 @@ namespace orxonox {
 
         private:
             void initialize(void); //!< Initializes the member variables.
-            Engine* carrierToEngineHelper(void); //!< Helper to transform the PickupCarrier to a Pawn, and throw an error message if the conversion fails.
+            SpaceShip* carrierToSpaceShipHelper(void); //!< Helper to transform the PickupCarrier to a SpaceSHip, and throw an error message if the conversion fails.
 
             Timer durationTimer_; //!< Timer.
 
