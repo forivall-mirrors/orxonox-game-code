@@ -38,7 +38,6 @@
 
 #include "UtilPrereqs.h"
 
-#include <list>
 #include <ostream>
 #include <string>
 #include <vector>
@@ -62,6 +61,7 @@ namespace orxonox
     {
         enum Value
         {
+            TDebug  = -1,
             None    = 0,
             Error   = 1,
             Warning = 2,
@@ -102,11 +102,9 @@ namespace orxonox
             static inline OutputHandler& getOutStream(int level)
                 { return OutputHandler::getInstance().setOutputLevel(level); }
 
-            typedef std::vector<std::pair<int, std::string> >::const_iterator OutputVectorIterator;
-            //! Returns an iterator to the beginning of the all-output vector
-            OutputVectorIterator getOutputVectorBegin() const;
-            //! Returns an iterator to the end of the all-output vector
-            OutputVectorIterator getOutputVectorEnd() const;
+            typedef std::vector<std::pair<int, std::string> > OutputVector;
+            //! Returns all output written so far (empty if disableMemoryLog() was called)
+            const OutputVector& getOutput() const;
 
             //! Writes to all output devices
             static inline void log(const std::string& text)
@@ -135,10 +133,17 @@ namespace orxonox
 
             //! Set the log path once the program has been properly initialised
             void setLogPath(const std::string& path);
+            /** Rewrites the log file (completely respects the current debug level).
+                Once disableMemoryLog() has been called, this function will do nothing.
+            */
+            void rewriteLogFile();
+
             //! Disables the std::cout stream for output
             void disableCout();
             //! Enables the std::cout stream for output (startup behaviour)
             void enableCout();
+            //! Stop writing to the memory buffer (call this as soon as possible to minimise memory usage)
+            void disableMemoryLog();
 
             //! Sets the level of the incoming output and returns the OutputHandler
             inline OutputHandler& setOutputLevel(int level)
@@ -212,20 +217,20 @@ namespace orxonox
             //! Dummy operator required by Debug.h for the ternary operator
             inline operator int() const { return 0; }
 
-            //! Name of the OutputListener that writes to the log file
-            static const std::string logFileOutputListenerName_s;
-
         private:
             OutputHandler();
             ~OutputHandler();
             OutputHandler(const OutputHandler& rhs);      //!< Copy-constructor: Unused and undefined
 
-            std::list<OutputListener*> listeners_;        //!< Array with all registered output listeners
-            int                        outputLevel_;      //!< The level of the incoming output
-            LogFileWriter*             logFile_;          //!< Listener that writes to the log file
-            ConsoleWriter*             consoleWriter_;    //!< Listener for std::cout (just program beginning)
-            MemoryLogWriter*           output_;           //!< Listener that Stores ALL output below the current soft debug level
-            static int                 softDebugLevel_s;  //!< Maximum of all soft debug levels. @note This is only static for faster access
+            /// Evaluates the maximum global log level
+            void updateGlobalDebugLevel();
+
+            std::vector<OutputListener*> listeners_;        //!< Array with all registered output listeners
+            int                          outputLevel_;      //!< The level of the incoming output
+            LogFileWriter*               logFile_;          //!< Writes output to the log file
+            ConsoleWriter*               consoleWriter_;    //!< Writes to std::cout (can be disabled)
+            MemoryLogWriter*             memoryBuffer_;     //!< Writes to memory as a buffer (can/must be stopped at some time)
+            static int                   softDebugLevel_s;  //!< Maximum of all soft debug levels. @note This is only static for faster access
     };
 
     /**
@@ -250,14 +255,6 @@ namespace orxonox
         virtual void outputChanged(int level) {}
         //! Returns the name of this output listener
         const std::string& getOutputListenerName() const { return this->name_; }
-        //! Returns the soft debug level of the listener
-        int getSoftDebugLevel() const { return this->softDebugLevel_; }
-        //! Sets the soft debug level of the listener
-        void setSoftDebugLevel(int level)
-        {
-            this->softDebugLevel_ = level;
-            OutputHandler::getInstance().setSoftDebugLevel(this->name_, level);
-        }
 
     protected:
         std::ostream*     outputStream_;   //!< Pointer to the associated output stream, can be NULL
@@ -270,7 +267,7 @@ namespace orxonox
     template<class T>
     inline OutputHandler& OutputHandler::output(const T& output)
     {
-        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::vector<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if (this->outputLevel_ <= (*it)->softDebugLevel_ && (*it)->outputStream_ != NULL)
             {

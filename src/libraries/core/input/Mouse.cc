@@ -36,6 +36,7 @@
 #ifdef ORXONOX_PLATFORM_LINUX
 // include this as last, X11 seems to define some macros...
 #include <ois/linux/LinuxMouse.h>
+#undef Success
 #endif
 
 namespace orxonox

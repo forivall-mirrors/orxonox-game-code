@@ -30,10 +30,19 @@
 #define _InputHandler_H__
 
 #include "InputPrereqs.h"
-#include "util/Math.h"
 
 namespace orxonox
 {
+    /// A Vector class containing two integers @a x and @a y.
+    class IntVector2
+    {
+    public:
+        IntVector2() : x(0), y(0) { }
+        IntVector2(int _x, int _y) : x(_x), y(_y) { }
+        int x;
+        int y;
+    };
+
     namespace ButtonEvent
     {
         //! Helper enum to deploy events with the help of templates

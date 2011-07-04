@@ -60,7 +60,8 @@ namespace orxonox
 
     BaseSound::~BaseSound()
     {
-        this->stop();
+        if (this->state_ != Stopped)
+            this->stop();
         // Release buffer
         if (this->soundBuffer_ != NULL)
         {

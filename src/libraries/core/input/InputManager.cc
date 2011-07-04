@@ -93,7 +93,7 @@ namespace orxonox
         : internalState_(Bad)
         , oisInputManager_(0)
         , devices_(2)
-        , exclusiveMouse_(TriBool::False)
+        , exclusiveMouse_(false)
         , emptyState_(0)
         , calibratorCallbackHandler_(0)
     {
@@ -107,7 +107,7 @@ namespace orxonox
         this->setConfigValues();
 
         if (GraphicsManager::getInstance().isFullScreen())
-            exclusiveMouse_ = TriBool::True;
+            exclusiveMouse_ = true;
         this->loadDevices();
 
         // Lowest priority empty InputState
@@ -160,7 +160,7 @@ namespace orxonox
         paramList.insert(StringPair("w32_keyboard", "DISCL_NONEXCLUSIVE"));
         paramList.insert(StringPair("w32_keyboard", "DISCL_FOREGROUND"));
         paramList.insert(StringPair("w32_mouse", "DISCL_FOREGROUND"));
-        if (exclusiveMouse_ == TriBool::True || GraphicsManager::getInstance().isFullScreen())
+        if (exclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
         {
             // Disable Windows key plus special keys (like play, stop, next, etc.)
             paramList.insert(StringPair("w32_keyboard", "DISCL_NOWINKEY"));
@@ -173,7 +173,7 @@ namespace orxonox
         // Trouble might be that the Pressed event occurs a bit too often...
         paramList.insert(StringPair("XAutoRepeatOn", "true"));
 
-        if (exclusiveMouse_ == TriBool::True || GraphicsManager::getInstance().isFullScreen())
+        if (exclusiveMouse_ || GraphicsManager::getInstance().isFullScreen())
         {
             if (CommandLineParser::getValue("keyboard_no_grab").getBool())
                 paramList.insert(StringPair("x11_keyboard_grab", "false"));
@@ -446,15 +446,16 @@ namespace orxonox
             activeStatesTicked_.push_back(*it);
 
         // Check whether we have to change the mouse mode
-        TriBool::Value requestedMode = TriBool::Dontcare;
+        tribool requestedMode = dontcare;
         std::vector<InputState*>& mouseStates = devices_[InputDeviceEnumerator::Mouse]->getStateListRef();
         if (mouseStates.empty())
-            requestedMode = TriBool::False;
+            requestedMode = false;
         else
             requestedMode = mouseStates.front()->getMouseExclusive();
-        if (requestedMode != TriBool::Dontcare && exclusiveMouse_ != requestedMode)
+        if (requestedMode != dontcare && exclusiveMouse_ != requestedMode)
         {
-            exclusiveMouse_ = requestedMode;
+            assert(requestedMode != dontcare);
+            exclusiveMouse_ = (requestedMode == true);
             if (!GraphicsManager::getInstance().isFullScreen())
                 this->reloadInternal();
         }
@@ -643,7 +644,7 @@ namespace orxonox
         state->destroy();
     }
 
-    bool InputManager::setMouseExclusive(const std::string& name, TriBool::Value value)
+    bool InputManager::setMouseExclusive(const std::string& name, tribool value)
     {
         if (name == "empty")
         {

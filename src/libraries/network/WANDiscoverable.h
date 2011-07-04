@@ -27,7 +27,7 @@
 #define _WANDiscoverable_H__
 
 #include "NetworkPrereqs.h"
-// #include "core/OrxonoxClass.h"
+#include "core/OrxonoxClass.h"
 #include "core/CoreIncludes.h"
 #include "MasterServerComm.h"
 

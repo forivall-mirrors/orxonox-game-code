@@ -29,9 +29,9 @@
 #ifndef _ViewportEventListener_H__
 #define _ViewportEventListener_H__
 
-#include "util/OgreForwardRefs.h"
-
 #include "CorePrereqs.h"
+
+#include "util/OgreForwardRefs.h"
 #include "OrxonoxClass.h"
 
 namespace orxonox

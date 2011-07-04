@@ -235,26 +235,26 @@ namespace orxonox
 
     void IOConsole::printOutputLine(const std::string& text, Shell::LineType type)
     {
-/*
         // Colour line
         switch (type)
         {
-        case Shell::None:    this->cout_ << "\033[37m"; break;
         case Shell::Error:   this->cout_ << "\033[91m"; break;
-        case Shell::Warning: this->cout_ << "\033[31m"; break;
-        case Shell::Info:    this->cout_ << "\033[34m"; break;
-        case Shell::Debug:   this->cout_ << "\033[36m"; break;
-        case Shell::Verbose: this->cout_ << "\033[35m"; break;
-        case Shell::Ultra:   this->cout_ << "\033[37m"; break;
+        case Shell::Warning: this->cout_ << "\033[93m"; break;
+        case Shell::Info:    this->cout_ << "\033[90m"; break;
+        case Shell::Debug:   this->cout_ << "\033[90m"; break;
+        case Shell::Verbose: this->cout_ << "\033[90m"; break;
+        case Shell::Ultra:   this->cout_ << "\033[90m"; break;
+        case Shell::Command: this->cout_ << "\033[36m"; break;
+        case Shell::Hint:    this->cout_ << "\033[33m"; break;
+        case Shell::TDebug:  this->cout_ << "\033[95m"; break;
         default: break;
         }
-*/
 
         // Print output line
         this->cout_ << text;
 
-        // Reset colour to white
-//        this->cout_ << "\033[37m";
+        // Reset colour atributes
+        this->cout_ << "\033[0m";
     }
 
     void IOConsole::printInputLine()

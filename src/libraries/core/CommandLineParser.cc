@@ -40,8 +40,6 @@
 
 namespace orxonox
 {
-    SetCommandLineOnlyArgument(optionsFile, "start.ini").shortcut("o");
-
     /**
     @brief
         Parses a value string for a command line argument.
@@ -49,10 +47,8 @@ namespace orxonox
         Bools are treated specially. That is necessary
         so that you can have simple command line switches.
     */
-    void CommandLineArgument::parse(const std::string& value, bool bParsingFile)
+    void CommandLineArgument::parse(const std::string& value)
     {
-        if (bParsingFile && this->bCommandLineOnly_)
-            ThrowException(Argument, "Command line argument '" + getName() + "' is not allowed in files.");
         if (value_.getType() == MT_Type::Bool)
         {
             // simulate command line switch
@@ -115,21 +111,21 @@ namespace orxonox
         _getInstance().cmdLineArgs_.clear();
     }
 
-    /**
-    @brief
-        Reads the command line parses the values of each argument.
-        It is then stored in the corresponding CommandLineArgument.
+    /** Parses the command line string for arguments and stores these.
     @note
         The reason that you have to provide the string to be parsed as
-        space separted list is because of argc and argv. If you only have
+        space separated list is because of argc and argv. If you only have
         a whole string, simply use getAllStrings() of SubString.
-    @param arguments
-        Vector of space separated strings.
-    @param bParsingFile
-        Parsing a file or the command line itself
+    @param cmdLine
+        Command line string WITHOUT the execution path.
     */
-    void CommandLineParser::_parse(const std::vector<std::string>& arguments, bool bParsingFile)
+    void CommandLineParser::_parse(const std::string& cmdLine)
     {
+        std::vector<std::string> arguments;
+        SubString tokens(cmdLine, " ", " ", false, '\\', true, '"', true, '\0', '\0', false);
+        for (unsigned i = 0; i < tokens.size(); ++i)
+            arguments.push_back(tokens[i]);
+
         try
         {
             // why this? See bFirstTimeParse_ declaration.
@@ -176,13 +172,13 @@ namespace orxonox
                             value = removeTrailingWhitespaces(value);
                             if (!name.empty())
                             {
-                                checkFullArgument(name, value, bParsingFile);
+                                checkFullArgument(name, value);
                                 name.clear();
                                 assert(shortcut.empty());
                             }
                             else if (!shortcut.empty())
                             {
-                                checkShortcut(shortcut, value, bParsingFile);
+                                checkShortcut(shortcut, value);
                                 shortcut.clear();
                                 assert(name.empty());
                             }
@@ -221,18 +217,18 @@ namespace orxonox
             value = removeTrailingWhitespaces(value);
             if (!name.empty())
             {
-                checkFullArgument(name, value, bParsingFile);
+                checkFullArgument(name, value);
                 assert(shortcut.empty());
             }
             else if (!shortcut.empty())
             {
-                checkShortcut(shortcut, value, bParsingFile);
+                checkShortcut(shortcut, value);
                 assert(name.empty());
             }
         }
         catch (const ArgumentException& ex)
         {
-            COUT(0) << "Could not parse command line (including additional files): " << ex.what() << std::endl;
+            COUT(0) << "Could not parse command line: " << ex.what() << std::endl;
             COUT(0) << CommandLineParser::getUsageInformation() << std::endl;
             throw GeneralException("");
         }
@@ -248,13 +244,13 @@ namespace orxonox
     @param bParsingFile
         Parsing a file or the command line itself
     */
-    void CommandLineParser::checkFullArgument(const std::string& name, const std::string& value, bool bParsingFile)
+    void CommandLineParser::checkFullArgument(const std::string& name, const std::string& value)
     {
         std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgs_.find(name);
         if (it == cmdLineArgs_.end())
             ThrowException(Argument, "Command line argument '" + name + "' does not exist.");
 
-        it->second->parse(value, bParsingFile);
+        it->second->parse(value);
     }
 
     /**
@@ -267,13 +263,13 @@ namespace orxonox
     @param bParsingFile
         Parsing a file or the command line itself
     */
-    void CommandLineParser::checkShortcut(const std::string& shortcut, const std::string& value, bool bParsingFile)
+    void CommandLineParser::checkShortcut(const std::string& shortcut, const std::string& value)
     {
         std::map<std::string, CommandLineArgument*>::const_iterator it = cmdLineArgsShortcut_.find(shortcut);
         if (it == cmdLineArgsShortcut_.end())
             ThrowException(Argument, "Command line shortcut '" + shortcut + "' does not exist.");
 
-        it->second->parse(value, bParsingFile);
+        it->second->parse(value);
     }
 
     std::string CommandLineParser::getUsageInformation()
@@ -340,53 +336,5 @@ namespace orxonox
         {
             return it->second;
         }
-    }
-
-    /**
-    @brief
-        Parses only the command line for CommandLineArguments.
-    */
-    void CommandLineParser::_parseCommandLine(const std::string& cmdLine)
-    {
-        std::vector<std::string> args;
-        SubString tokens(cmdLine, " ", " ", false, '\\', true, '"', true, '\0', '\0', false);
-        for (unsigned i = 0; i < tokens.size(); ++i)
-            args.push_back(tokens[i]);
-        this->_parse(args, false);
-    }
-
-    /**
-    @brief
-        Parses start.ini (or the file specified with --optionsFile) for CommandLineArguments.
-    */
-    void CommandLineParser::_parseFile()
-    {
-        const std::string& filename = CommandLineParser::getValue("optionsFile").getString();
-
-        // look for additional arguments in given file or start.ini as default
-        // They will not overwrite the arguments given directly
-        std::ifstream file;
-        file.open((PathConfig::getConfigPathString() + filename).c_str());
-        std::vector<std::string> args;
-        if (file)
-        {
-            while (!file.eof())
-            {
-                std::string line;
-                std::getline(file, line);
-                line = removeTrailingWhitespaces(line);
-                //if (!(line[0] == '#' || line[0] == '%'))
-                //{
-                SubString tokens(line, " ", " ", false, '\\', true, '"', true, '\0', '\0', false, '#');
-                for (unsigned i = 0; i < tokens.size(); ++i)
-                    if (tokens[i][0] != '#')
-                        args.push_back(tokens[i]);
-                //args.insert(args.end(), tokens.getAllStrings().begin(), tokens.getAllStrings().end());
-                //}
-            }
-            file.close();
-        }
-
-        _parse(args, true);
     }
 }

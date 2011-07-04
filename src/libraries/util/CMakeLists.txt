@@ -18,7 +18,8 @@
  #
 
 SET_SOURCE_FILES(UTIL_SRC_FILES
-COMPILATION_BEGIN StableCompilation.cc
+
+BUILD_UNIT StableBuildUnit.cc
   Clipboard.cc
   Clock.cc
   Convert.cc
@@ -31,7 +32,7 @@ COMPILATION_BEGIN StableCompilation.cc
   Sleep.cc
   SmallObjectAllocator.cc
   SubString.cc
-COMPILATION_END
+END_BUILD_UNIT
 
   MultiType.cc
   Exception.cc
@@ -39,13 +40,6 @@ COMPILATION_END
   SignalHandler.cc
   StringUtils.cc
 )
-
-IF(MSVC)
-  # Simply using #pragma warning(disable:4244) doesn't really disable it
-  # if the warning occurs in a template in another file
-  # Hence promote it manually to a higher warning level (4)
-  SET_SOURCE_FILES_PROPERTIES(MultiType.cc PROPERTIES COMPILE_FLAGS "-w44244")
-ENDIF()
 
 ORXONOX_ADD_LIBRARY(util
   FIND_HEADER_FILES

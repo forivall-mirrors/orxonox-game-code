@@ -10,12 +10,12 @@ P.__index = P -- Provide class character
 -- Use this function to construct a new MenuSheet.
 -- Parameters:
 -- Except for _name, you can provide nil. Then the default value will be used.
--- For _tShowCusor and _tUseKeyboard you can specify TriBool.Dontcare if the value doesn't matter at all. Then the value of the underlaying sheet will be used.
+-- For _tShowCusor and _tUseKeyboard you can specify tribool(dontcare) if the value doesn't matter at all. Then the value of the underlaying sheet will be used.
 function P.new(_name, _bHidePrevious, _tShowCursor, _tUseKeyboard, _bBlockJoyStick)
     local newSheet = GUISheet.new(_name)
     newSheet.bHidePrevious  = handleDefArg(_bHidePrevious,  true)
-    newSheet.tShowCursor    = handleDefArg(_tShowCusor,     TriBool.True)
-    newSheet.tUseKeyboard   = handleDefArg(_tUseKeyboard,   TriBool.True)
+    newSheet.tShowCursor    = handleDefArg(_tShowCusor,     tribool(true))
+    newSheet.tUseKeyboard   = handleDefArg(_tUseKeyboard,   tribool(true))
     newSheet.bBlockJoyStick = handleDefArg(_bBlockJoyStick, false)
 
     setmetatable(newSheet, P)

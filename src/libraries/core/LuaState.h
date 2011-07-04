@@ -47,9 +47,6 @@
 #include <string>
 #include <vector>
 #include <boost/shared_ptr.hpp>
-#include <loki/ScopeGuard.h>
-
-#include "ToluaInterface.h"
 
 namespace orxonox // tolua_export
 { // tolua_export
@@ -120,9 +117,27 @@ namespace orxonox // tolua_export
         std::string (*includeParseFunction_)(const std::string&);
 
         typedef std::map<std::string, int (*)(lua_State *L)> ToluaInterfaceMap;
-        static ToluaInterfaceMap toluaInterfaces_s;
-        static std::vector<LuaState*> instances_s;
+        static ToluaInterfaceMap& getToluaInterfaces();
+        static std::vector<LuaState*>& getInstances();
     }; // tolua_export
+
+
+    //! Helper class that registers/unregisters tolua bindings
+    class ToluaBindingsHelper
+    {
+    public:
+        ToluaBindingsHelper(int (*function)(lua_State*), const std::string& libraryName)
+            : libraryName_(libraryName)
+        {
+            LuaState::addToluaInterface(function, libraryName_);
+        }
+        ~ToluaBindingsHelper()
+        {
+            LuaState::removeToluaInterface(libraryName_);
+        }
+    private:
+        std::string libraryName_;
+    };
 } // tolua_export
 
 #endif /* _LuaState_H__ */

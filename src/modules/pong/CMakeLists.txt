@@ -1,5 +1,5 @@
 SET_SOURCE_FILES(PONG_SRC_FILES
-COMPILATION_BEGIN PongCompilation.cc
+BUILD_UNIT PongBuildUnit.cc
   Pong.cc
   PongAI.cc
   PongBall.cc
@@ -7,7 +7,7 @@ COMPILATION_BEGIN PongCompilation.cc
   PongBot.cc
   PongCenterpoint.cc
   PongScore.cc
-COMPILATION_END
+END_BUILD_UNIT
 )
 
 ORXONOX_ADD_LIBRARY(pong

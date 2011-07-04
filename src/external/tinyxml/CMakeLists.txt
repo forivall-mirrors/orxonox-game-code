@@ -23,13 +23,11 @@ SET_SOURCE_FILES(TINYXML_FILES
   tinystr.h
   tinyxml.h
 
-COMPILATION_BEGIN TicppCompilation.cpp
   ticpp.cpp
   tinystr.cpp
   tinyxml.cpp
   tinyxmlerror.cpp
   tinyxmlparser.cpp
-COMPILATION_END
 )
 
 ORXONOX_ADD_LIBRARY(tinyxml_orxonox

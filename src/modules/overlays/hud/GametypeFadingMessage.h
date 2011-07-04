@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef _GametypeInfoMessage_H__
-#define _GametypeInfoMessage_H__
+#ifndef _GametypeFadingMessage_H__
+#define _GametypeFadingMessage_H__
 
 #include "overlays/OverlaysPrereqs.h"
 

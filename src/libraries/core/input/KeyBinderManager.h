@@ -33,7 +33,6 @@
 
 #include <map>
 #include <string>
-#include <boost/shared_ptr.hpp>
 
 #include "util/Singleton.h"
 #include "core/OrxonoxClass.h"

@@ -68,7 +68,7 @@ namespace orxonox
             Gets temporary log path and starts the log file
         */
         LogFileWriter()
-            : OutputListener(OutputHandler::logFileOutputListenerName_s)
+            : OutputListener("LogFile")
         {
             // Get path for a temporary file
 #ifdef ORXONOX_PLATFORM_WINDOWS
@@ -84,35 +84,59 @@ namespace orxonox
             time(&rawtime);
             timeinfo = localtime(&rawtime);
 
-            this->logFile_.open(this->logFilename_.c_str(), std::fstream::out);
-            this->logFile_ << "Started log on " << asctime(timeinfo) << std::endl;
-            this->logFile_.flush();
-
-            this->outputStream_ = &this->logFile_;
+            this->openFile();
+            if (this->logFile_.is_open())
+            {
+                this->logFile_ << "Started log on " << asctime(timeinfo) << std::endl;
+                this->logFile_.flush();
+            }
         }
 
         //! Closes the log file
         ~LogFileWriter()
         {
-            this->logFile_ << "Closed log" << std::endl;
-            this->logFile_.close();
+            if (this->logFile_.is_open())
+            {
+                this->logFile_ << "Closed log" << std::endl;
+                this->logFile_.close();
+            }
         }
 
         //! Changes the log path
         void setLogPath(const std::string& path)
         {
-            this->logFile_.close();
-            // Read old file into a buffer
-            std::ifstream old(this->logFilename_.c_str());
+            if (this->logFile_.is_open())
+                this->logFile_.close();
+
+            // Open the new file
             this->logFilename_ = path + logFileBaseName_g;
-            // Open the new file and feed it the content of the old one
-            this->logFile_.open(this->logFilename_.c_str(), std::fstream::out);
-            this->logFile_ << old.rdbuf();
-            this->logFile_.flush();
-            old.close();
+            this->openFile();
+        }
+
+        //! Erases the log file
+        void clearFile()
+        {
+            if (this->logFile_.is_open())
+            {
+                this->logFile_.close();
+                this->openFile();
+            }
         }
 
     private:
+        void openFile()
+        {
+            this->logFile_.open(this->logFilename_.c_str(), std::fstream::out);
+
+            if (this->logFile_.is_open())
+                this->outputStream_ = &this->logFile_;
+            else
+            {
+                COUT(2) << "Warning: Failed to open log file. File logging disabled." << std::endl;
+                this->outputStream_ = NULL;
+            }
+        }
+
         std::ofstream logFile_;     //!< File handle for the log file
         std::string   logFilename_; //!< Filename of the log file
     };
@@ -132,7 +156,7 @@ namespace orxonox
     public:
         //! Only assigns the output stream with std::cout
         ConsoleWriter()
-            : OutputListener("consoleLog")
+            : OutputListener("Console")
         {
             this->outputStream_ = &std::cout;
         }
@@ -146,26 +170,23 @@ namespace orxonox
     @brief
         OutputListener that writes all the output piece by piece to an array
         associated with the corresponding output level.
+        Used as buffer until all output devices have been initialised.
     @note
-        Only output below or equal to the current soft debug level is written
-        to minimise huge arrays for the normal run.
+        At some point, OutputHandler::disableMemoryLog() has to be called in
+        order to avoid large memory footprints of this class.
     */
     class MemoryLogWriter : public OutputListener
     {
     public:
         friend class OutputHandler;
 
-        /**
-        @brief
-            Sets the right soft debug level and registers itself
-        */
         MemoryLogWriter()
             : OutputListener("memoryLog")
         {
             this->outputStream_ = &this->buffer_;
         }
 
-        //! Pushed the just written output to the internal array
+        //! Push the just written output to the internal array
         void outputChanged(int level)
         {
             if (!this->buffer_.str().empty())
@@ -179,42 +200,44 @@ namespace orxonox
         }
 
     private:
-        std::ostringstream                        buffer_; //!< Stream object used to process the output
-        std::vector<std::pair<int, std::string> > output_; //!< Vector containing ALL output
+        std::ostringstream          buffer_; //!< Stream object used to process the output
+        OutputHandler::OutputVector output_; //!< Vector containing ALL output
     };
 
 
     /////////////////////////
     ///// OutputHandler /////
     /////////////////////////
-    const std::string OutputHandler::logFileOutputListenerName_s = "logFile";
-          int         OutputHandler::softDebugLevel_s = hardDebugLevel;
+    int OutputHandler::softDebugLevel_s = hardDebugLevel;
 
     //! Creates the LogFileWriter and the MemoryLogWriter
     OutputHandler::OutputHandler()
         : outputLevel_(OutputLevel::Verbose)
     {
+        // Note: These levels only concern startup before orxonox.ini is read.
 #ifdef ORXONOX_RELEASE
-        const OutputLevel::Value defaultLevelConsole = OutputLevel::Error;
-        const OutputLevel::Value defaultLevelLogFile = OutputLevel::Info;
+        const OutputLevel::Value initialLevelConsole = OutputLevel::Error;
 #else
-        const OutputLevel::Value defaultLevelConsole = OutputLevel::Info;
-        const OutputLevel::Value defaultLevelLogFile = OutputLevel::Debug;
+        const OutputLevel::Value initialLevelConsole = OutputLevel::Info;
 #endif
+        // Use high log level because we rewrite the log file anyway with the
+        // correct level. But if Orxonox were to crash before that, we might be
+        // grateful to have a high debug level, esp. for releases.
+        const OutputLevel::Value intialLevelLogFile = OutputLevel::Debug;
 
         this->logFile_ = new LogFileWriter();
         // Use default level until we get the configValue from the Core
-        this->logFile_->softDebugLevel_ = defaultLevelLogFile;
+        this->logFile_->softDebugLevel_ = intialLevelLogFile;
         this->registerOutputListener(this->logFile_);
 
         this->consoleWriter_ = new ConsoleWriter();
-        this->consoleWriter_->softDebugLevel_ = defaultLevelConsole;
+        this->consoleWriter_->softDebugLevel_ = initialLevelConsole;
         this->registerOutputListener(this->consoleWriter_);
 
-        this->output_ = new MemoryLogWriter();
-        // We capture as much input as the listener with the highest level
-        this->output_->softDebugLevel_ = getSoftDebugLevel();
-        this->registerOutputListener(this->output_);
+        this->memoryBuffer_ = new MemoryLogWriter();
+        // Write everything, e.g. use hardDebugLevel
+        this->memoryBuffer_->softDebugLevel_ = hardDebugLevel;
+        this->registerOutputListener(this->memoryBuffer_);
     }
 
     //! Destroys the LogFileWriter and the MemoryLogWriter
@@ -222,7 +245,7 @@ namespace orxonox
     {
         delete this->logFile_;
         delete this->consoleWriter_;
-        delete this->output_;
+        delete this->memoryBuffer_; // Might already be NULL
     }
 
     OutputHandler& OutputHandler::getInstance()
@@ -233,7 +256,7 @@ namespace orxonox
 
     void OutputHandler::registerOutputListener(OutputListener* listener)
     {
-        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::vector<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if ((*it)->name_ == listener->name_)
             {
@@ -242,18 +265,41 @@ namespace orxonox
             }
         }
         this->listeners_.push_back(listener);
-        // Update global soft debug level
-        this->setSoftDebugLevel(listener->getOutputListenerName(), listener->getSoftDebugLevel());
+        this->updateGlobalDebugLevel();
     }
 
     void OutputHandler::unregisterOutputListener(OutputListener* listener)
     {
-        this->listeners_.remove(listener);
+        for (std::vector<OutputListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        {
+            if ((*it)->name_ == listener->name_)
+            {
+                this->listeners_.erase(it);
+                break;
+            }
+        }
+        this->updateGlobalDebugLevel();
     }
 
     void OutputHandler::setLogPath(const std::string& path)
     {
         this->logFile_->setLogPath(path);
+        this->rewriteLogFile();
+    }
+
+    void OutputHandler::rewriteLogFile()
+    {
+        logFile_->clearFile();
+
+        if (logFile_->outputStream_ == NULL)
+            return;
+
+        for (OutputVector::const_iterator it = this->getOutput().begin(); it != this->getOutput().end(); ++it)
+        {
+            if (it->first <= logFile_->softDebugLevel_)
+                (*logFile_->outputStream_) << it->second;
+        }
+        logFile_->outputStream_->flush();
     }
 
     void OutputHandler::disableCout()
@@ -266,19 +312,21 @@ namespace orxonox
         this->registerOutputListener(this->consoleWriter_);
     }
 
-    OutputHandler::OutputVectorIterator OutputHandler::getOutputVectorBegin() const
+    void OutputHandler::disableMemoryLog()
     {
-        return this->output_->output_.begin();
+        this->unregisterOutputListener(this->memoryBuffer_);
+        // Only clear the buffer so we can still reference the vector
+        this->memoryBuffer_->output_.clear();
     }
 
-    OutputHandler::OutputVectorIterator OutputHandler::getOutputVectorEnd() const
+    const OutputHandler::OutputVector& OutputHandler::getOutput() const
     {
-        return this->output_->output_.end();
+        return this->memoryBuffer_->output_;
     }
 
     int OutputHandler::getSoftDebugLevel(const std::string& name) const
     {
-        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::vector<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if ((*it)->name_ == name)
                 return (*it)->softDebugLevel_;
@@ -288,15 +336,21 @@ namespace orxonox
 
     void OutputHandler::setSoftDebugLevel(const std::string& name, int level)
     {
-        int globalSoftDebugLevel = -1;
-        for (std::list<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
+        for (std::vector<OutputListener*>::const_iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
         {
             if ((*it)->name_ == name)
                 (*it)->softDebugLevel_ = level;
-            if ((*it)->softDebugLevel_ > globalSoftDebugLevel)
-                globalSoftDebugLevel = (*it)->softDebugLevel_;
         }
-        // Update global soft debug level
+        this->updateGlobalDebugLevel();
+    }
+
+    void OutputHandler::updateGlobalDebugLevel()
+    {
+        int globalSoftDebugLevel = -1;
+        std::vector<OutputListener*>::const_iterator it = this->listeners_.begin();
+        for (; it != this->listeners_.end(); ++it)
+            globalSoftDebugLevel = std::max(globalSoftDebugLevel, (*it)->softDebugLevel_);
+
         OutputHandler::softDebugLevel_s = globalSoftDebugLevel;
     }
 }

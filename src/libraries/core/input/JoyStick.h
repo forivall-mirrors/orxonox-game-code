@@ -33,6 +33,7 @@
 
 #include <string>
 #include <vector>
+#include <ois/OISJoyStick.h>
 #include "InputDevice.h"
 
 namespace orxonox

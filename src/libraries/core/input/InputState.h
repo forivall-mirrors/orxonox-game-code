@@ -37,7 +37,7 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 
-#include "util/TriBool.h"
+#include "util/tribool.h"
 #include "InputHandler.h"
 #include "InputManager.h"
 #include "JoyStickQuantityListener.h"
@@ -111,8 +111,8 @@ namespace orxonox
         //! Sets an InputHandler to be used for all devices
         void setHandler        (InputHandler* handler);
 
-        void setMouseExclusive(TriBool::Value value) { exclusiveMouse_ = value; this->bExpired_ = true; }
-        TriBool::Value getMouseExclusive() const { return exclusiveMouse_; }
+        void setMouseExclusive(tribool value) { exclusiveMouse_ = value; this->bExpired_ = true; }
+        tribool getMouseExclusive() const { return exclusiveMouse_; }
 
         //! Returns the name of the state (which is unique!)
         const std::string& getName() const { return name_; }
@@ -165,7 +165,7 @@ namespace orxonox
         const std::string           name_;                  //!< Name of the state
         const bool                  bAlwaysGetsInput_;      //!< See class declaration for explanation
         const bool                  bTransparent_;          //!< See class declaration for explanation
-        TriBool::Value              exclusiveMouse_;        //!< See class declaration for explanation
+        tribool                     exclusiveMouse_;        //!< See class declaration for explanation
         int                         priority_;              //!< Current priority (might change)
         bool                        bExpired_;              //!< See hasExpired()
         std::vector<InputHandler*>  handlers_;              //!< Vector with all handlers where the index is the device ID

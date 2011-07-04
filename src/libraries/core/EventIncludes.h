@@ -36,6 +36,8 @@
 #define _EventIncludes_H__
 
 #include "CorePrereqs.h"
+
+#include "Event.h"
 #include "XMLPort.h"
 #include "command/Executor.h"
 

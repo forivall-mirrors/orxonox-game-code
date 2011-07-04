@@ -18,54 +18,53 @@
  #
 
 SET_SOURCE_FILES(CORE_SRC_FILES
+
+#BUILD_UNIT CoreStableBuildUnit.cc
+  ClassTreeMask.cc
   CommandLineParser.cc
   ConfigValueContainer.cc
-  Core.cc
   DynLib.cc
   DynLibManager.cc
   Event.cc
   Game.cc
   GameMode.cc
   GameState.cc
-  GraphicsManager.cc
-  GUIManager.cc
-  Language.cc
-  LuaState.cc
-  ObjectListBase.cc
-  OrxonoxClass.cc
-  Resource.cc
-
-  # hierarchy
   Identifier.cc
-  MetaObjectList.cc
-
-  # level
-  BaseObject.cc
-  ClassTreeMask.cc
+  Language.cc
   Loader.cc
+  LuaState.cc
+  MetaObjectList.cc
   Namespace.cc
   NamespaceNode.cc
+  ObjectListBase.cc
+  OrxonoxClass.cc
   Template.cc
-  XMLPort.cc
-
-COMPILATION_BEGIN ListenerCompilation.cc
   ViewportEventListener.cc
   WindowEventListener.cc
   XMLNameListener.cc
-COMPILATION_END
+  XMLPort.cc
+#END_BUILD_UNIT
 
-COMPILATION_BEGIN FilesystemCompilation.cc
+  BaseObject.cc
+  Core.cc
+
+BUILD_UNIT OgreBuildUnit.cc
+  GraphicsManager.cc
+  GUIManager.cc
+  Resource.cc
+END_BUILD_UNIT
+
+BUILD_UNIT FilesystemBuildUnit.cc
   command/ArgumentCompletionFunctions.cc
   ConfigFileManager.cc
   PathConfig.cc
-COMPILATION_END
+END_BUILD_UNIT
 
-  # multithreading
-  ThreadPool.cc
-COMPILATION_BEGIN ThreadCompilation.cc
+BUILD_UNIT ThreadBuildUnit.cc
   command/TclThreadManager.cc
   Thread.cc
-COMPILATION_END
+  ThreadPool.cc
+END_BUILD_UNIT
 )
 
 ADD_SUBDIRECTORY(command)

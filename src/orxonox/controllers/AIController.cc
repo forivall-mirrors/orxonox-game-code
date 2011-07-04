@@ -36,7 +36,7 @@
 
 namespace orxonox
 {
-    static const float ACTION_INTERVAL = 1.0f;
+    const float AIController::ACTION_INTERVAL = 1.0f;
 
     CreateFactory(AIController);
 

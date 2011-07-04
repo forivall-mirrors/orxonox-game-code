@@ -298,31 +298,6 @@ namespace orxonox
     }
 
     _UtilExport unsigned long getUniqueNumber();
-
-    /**
-        @brief A Vector class containing two integers @a x and @a y.
-    */
-    class IntVector2
-    {
-    public:
-        IntVector2() : x(0), y(0) { }
-        IntVector2(int _x, int _y) : x(_x), y(_y) { }
-        int x;
-        int y;
-    };
-
-    /**
-        @brief A Vector class containing three integers @a x, @a y, and @a z.
-    */
-    class IntVector3
-    {
-    public:
-        IntVector3() : x(0), y(0), z(0) { }
-        IntVector3(int _x, int _y, int _z) : x(_x), y(_y), z(_z) { }
-        int x;
-        int y;
-        int z;
-    };
 }
 
 #endif /* _Util_Math_H__ */

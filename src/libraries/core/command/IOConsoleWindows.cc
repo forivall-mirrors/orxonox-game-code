@@ -207,6 +207,7 @@ namespace orxonox
         case Shell::Ultra:   colour = FOREGROUND_INTENSITY                                     ; break;
         case Shell::Command: colour =                        FOREGROUND_GREEN                  | FOREGROUND_BLUE; break;
         case Shell::Hint:    colour =                        FOREGROUND_GREEN | FOREGROUND_RED                  ; break;
+        case Shell::TDebug:  colour = FOREGROUND_INTENSITY                    | FOREGROUND_RED | FOREGROUND_BLUE; break;
         default:             colour =                        FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE; break;
         }
 
