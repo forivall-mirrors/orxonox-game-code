@@ -1,6 +1,6 @@
 -- MiscConfigMenu.lua
 
-local P = createMenuSheet("MiscConfigMenu", true, TriBool.True, TriBool.True)
+local P = createMenuSheet("MiscConfigMenu", true, tribool(true), tribool(true))
 
 P.commandList = {}
 P.nameList = {}

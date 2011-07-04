@@ -43,13 +43,8 @@
 #include "interfaces/PlayerTrigger.h"
 #include "worldentities/pawns/Pawn.h"
 
-#include "ToluaBindDocking.h"
-
 namespace orxonox
 {
-    // Register tolua_open function when loading the library
-    DeclareToluaInterface(Docking);
-
     CreateFactory(Dock);
 
     SetConsoleCommand("Dock", "dock",    &Dock::cmdDock).addShortcut().setAsInputCommand();

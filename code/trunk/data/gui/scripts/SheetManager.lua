@@ -80,7 +80,7 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
     end
 
     if bNoInput == true then
-        menuSheet.tShowCursor = TriBool.Dontcare
+        menuSheet.tShowCursor = tribool(dontcare)
     end
 
     -- Add the sheet in a tuple of additional information
@@ -109,10 +109,10 @@ function showMenuSheet(name, bHidePrevious, bNoInput)
         inputMgr:enterState(menuSheet.inputState)
     end
 
-    -- Only change cursor situation if menuSheet.tShowCursor ~= TriBool.Dontcare
-    if menuSheet.tShowCursor == TriBool.True then
+    -- Only change cursor situation if menuSheet.tShowCursor ~= tribool(dontcare)
+    if menuSheet.tShowCursor == tribool(true) then
         showCursor()
-    elseif menuSheet.tShowCursor == TriBool.False then
+    elseif menuSheet.tShowCursor == tribool(false) then
         hideCursor()
     end
 
@@ -185,11 +185,11 @@ function hideMenuSheet(name)
 
     -- CURSOR SHOWING
     local i = activeMenuSheets.size
-    -- Find top most sheet that doesn't have tShowCusor == TriBool.Dontcare
-    while i > 0 and activeMenuSheets[i].sheet.tShowCursor == TriBool.Dontcare do
+    -- Find top most sheet that doesn't have tShowCusor == tribool(dontcare)
+    while i > 0 and activeMenuSheets[i].sheet.tShowCursor == tribool(dontcare) do
         i = i - 1
     end
-    if i > 0 and activeMenuSheets[i].sheet.tShowCursor == TriBool.True then
+    if i > 0 and activeMenuSheets[i].sheet.tShowCursor == tribool(true) then
         showCursor()
     else
         hideCursor()
@@ -255,15 +255,15 @@ end
 
 function windowResized(e)
     for name, sheet in pairs(loadedSheets) do
-        if orxonox.GraphicsManager:getInstance():isFullScreen() or sheet.tShowCursor == TriBool.False then
-            inputMgr:setMouseExclusive(sheet.inputState, TriBool.True)
+        if orxonox.GraphicsManager:getInstance():isFullScreen() or sheet.tShowCursor == tribool(false) then
+            inputMgr:setMouseExclusive(sheet.inputState, tribool(true))
         else
-            inputMgr:setMouseExclusive(sheet.inputState, TriBool.False)
+            inputMgr:setMouseExclusive(sheet.inputState, tribool(false))
         end
     end
     local sheetTuple = activeMenuSheets[activeMenuSheets.size]
     if sheetTuple then
-        if orxonox.GraphicsManager:getInstance():isFullScreen() and sheetTuple.sheet.tShowCursor ~= TriBool.False then
+        if orxonox.GraphicsManager:getInstance():isFullScreen() and sheetTuple.sheet.tShowCursor ~= tribool(false) then
             showCursor()
         else
             hideCursor()

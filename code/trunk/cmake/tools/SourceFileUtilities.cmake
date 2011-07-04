@@ -24,10 +24,10 @@
  #    [ADD/SET]_SOURCE_FILES - Writes source files to the cache by force and
  #                             adds the current directory.
  #                             Also compiles multiple source files into a single
- #                             one by including them
- #                             Use COMPILATION_[BEGIN|END] in
+ #                             translation unit (faster)
+ #                             Use [END_]BUILD_UNIT in
  #                             [ADD|SET]_SOURCE_FILES and specify the name of
- #                             the new source file after COMPILATION_BEGIN
+ #                             the new source file after BUILD_UNIT
  #    GET_ALL_HEADER_FILES   - Finds all header files recursively.
  #    GENERATE_SOURCE_GROUPS - Set Visual Studio source groups.
  #
@@ -35,7 +35,7 @@
 FUNCTION(PREPARE_SOURCE_FILES)
   SET(_source_files)
   FOREACH(_file ${ARGN})
-    IF(_file MATCHES "^(COMPILATION_BEGIN|COMPILATION_END)$")
+    IF(_file MATCHES "^(BUILD_UNIT|END_BUILD_UNIT)$")
       # Append keywords verbatim
       LIST(APPEND _source_files ${_file})
     ELSE()

@@ -42,15 +42,10 @@
 #include "core/XMLPort.h"
 #include "util/Convert.h"
 
-#include "ToluaBindNotifications.h"
-
 namespace orxonox
 {
 
     CreateFactory(NotificationQueueCEGUI);
-
-    // Register tolua_open function when loading the library.
-    DeclareToluaInterface(Notifications);
 
     /*static*/ const std::string NotificationQueueCEGUI::NOTIFICATION_LAYER("NotificationLayer");
 

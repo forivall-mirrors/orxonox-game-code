@@ -47,6 +47,7 @@ P.S: If you don't want to be a victim: Get rid of your part by shooting a chaser
 
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
+#include "core/command/Executor.h"
 #include "network/Host.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"

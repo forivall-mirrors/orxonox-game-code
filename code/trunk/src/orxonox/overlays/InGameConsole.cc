@@ -90,6 +90,10 @@ namespace orxonox
 
         this->setConfigValues();
         this->initialise();
+
+        // Output buffering is not anymore needed. Not the best solution to do
+        // this here, but there isn't much of another way.
+        OutputHandler::getInstance().disableMemoryLog();
     }
 
     /**
@@ -584,6 +588,9 @@ namespace orxonox
 
         case Shell::Hint:    colourTop = ColourValue(0.80f, 0.80f, 0.80f, 1.00f);
                           colourBottom = ColourValue(0.90f, 0.90f, 0.90f, 1.00f); break;
+
+        case Shell::TDebug:  colourTop = ColourValue(0.90f, 0.00f, 0.90f, 1.00f);
+                          colourBottom = ColourValue(1.00f, 0.00f, 1.00f, 1.00f); break;
 
         default:             colourTop = ColourValue(0.90f, 0.90f, 0.90f, 1.00f);
                           colourBottom = ColourValue(1.00f, 1.00f, 1.00f, 1.00f); break;

@@ -15,10 +15,6 @@ function table.findIndex(table, value)
     return 0
 end
 
--- Short forms for TriBool
-TriBool =
-{
-    True     = orxonox.TriBool.True,
-    False    = orxonox.TriBool.False,
-    Dontcare = orxonox.TriBool.Dontcare
-}
+-- Shortcuts for tribool
+tribool  = orxonox.tribool
+dontcare = orxonox.dontcare_keyword_t()

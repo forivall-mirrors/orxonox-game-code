@@ -33,7 +33,7 @@
 */
 
 #ifndef _PickupCollectionIdentifier_H__
-#define _PickupCollectionIdentifier_H_
+#define _PickupCollectionIdentifier_H__
 
 #include "PickupPrereqs.h"
 
@@ -74,4 +74,4 @@ namespace orxonox
 
 }
 
-#endif // _PickupCollectionIdentifier_H_
+#endif // _PickupCollectionIdentifier_H__

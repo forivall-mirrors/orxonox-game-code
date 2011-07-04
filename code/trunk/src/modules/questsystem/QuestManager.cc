@@ -46,13 +46,8 @@
 #include "QuestHint.h"
 #include "QuestItem.h"
 
-#include "ToluaBindQuestsystem.h"
-
 namespace orxonox
 {
-    // Register tolua_open function when loading the library
-    DeclareToluaInterface(Questsystem);
-
     ManageScopedSingleton(QuestManager, ScopeID::Root, false);
 
     /**

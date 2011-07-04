@@ -39,6 +39,7 @@
  #                         specified with PCH_FILE
  #      NO_INSTALL:        Do not install the target at all
  #      NO_VERSION:        Prevents adding any version to a target
+ #      NO_BUILD_UNITS:    Disables automatic (full) build units
  #
  #    Lists:
  #      LINK_LIBRARIES:    Redirects to TARGET_LINK_LIBRARIES
@@ -53,6 +54,9 @@
  #      PCH_FILE:          Precompiled header file
  #      PCH_EXCLUDE:       Source files to be excluded from PCH support
  #      OUTPUT_NAME:       If you want a different name than the target name
+ #      EXCLUDE_FROM_BUILD_UNITS: Specifies files that are not put into
+ #                         automatic (full) build units. They can still
+ #                         explicitely be included in a BUILD_UNIT (partial)
  #  Note:
  #    This function also installs the target!
  #  Prerequisistes:
@@ -61,6 +65,7 @@
  #    _target_name, ARGN for the macro arguments
  #
 
+INCLUDE(BuildUnits)
 INCLUDE(CMakeDependentOption)
 INCLUDE(CapitaliseName)
 INCLUDE(GenerateToluaBindings)
@@ -86,46 +91,54 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   # Specify all possible options (either switch or with add. arguments)
   SET(_switches   FIND_HEADER_FILES  EXCLUDE_FROM_ALL  ORXONOX_EXTERNAL
                   NO_DLL_INTERFACE   NO_SOURCE_GROUPS  PCH_NO_DEFAULT 
-                  NO_INSTALL         NO_VERSION        ${_additional_switches})
+                  NO_INSTALL         NO_VERSION        NO_BUILD_UNITS
+                  ${_additional_switches})
   SET(_list_names LINK_LIBRARIES     VERSION           SOURCE_FILES
                   DEFINE_SYMBOL      TOLUA_FILES       PCH_FILE
                   PCH_EXCLUDE        OUTPUT_NAME       LINK_LIBS_LINUX
-                  LINK_LIBS_WIN32    LINK_LIBS_APPLE   LINK_LIBS_UNIX)
+                  LINK_LIBS_WIN32    LINK_LIBS_APPLE   LINK_LIBS_UNIX
+                  EXCLUDE_FROM_BUILD_UNITS)
 
   PARSE_MACRO_ARGUMENTS("${_switches}" "${_list_names}" ${ARGN})
 
-  # Process source files with support for compilations
+  # Process source files with support for build units
   # Note: All file paths are relative to the root source directory, even the
-  #       name of the compilation file.
+  #       name of the build unit.
   SET(_${_target_name}_source_files)
-  SET(_get_compilation_file FALSE)
-  SET(_add_to_compilation FALSE)
+  SET(_get_build_unit_file FALSE)
+  SET(_add_to_build_unit FALSE)
   FOREACH(_file ${_arg_SOURCE_FILES})
-    IF(_file STREQUAL "COMPILATION_BEGIN")
-      # Next file is the name of the compilation
-      SET(_get_compilation_file TRUE)
-    ELSEIF(_file STREQUAL "COMPILATION_END")
-      IF(NOT _compilation_file)
-        MESSAGE(FATAL_ERROR "No name provided for source file compilation")
+    IF(_file STREQUAL "BUILD_UNIT")
+      # Next file is the name of the build unit
+      SET(_get_build_unit_file TRUE)
+    ELSEIF(_file STREQUAL "END_BUILD_UNIT")
+      IF(NOT _build_unit_file)
+        MESSAGE(FATAL_ERROR "No name provided for build unit")
       ENDIF()
-      IF(NOT DISABLE_COMPILATIONS)
-        IF(NOT _compilation_include_string)
-          MESSAGE(STATUS "Warning: Empty source file compilation!")
+      IF(ENABLE_BUILD_UNITS)
+        IF(NOT _build_unit_include_string)
+          MESSAGE(STATUS "Warning: Empty build unit!")
         ENDIF()
-        IF(EXISTS ${_compilation_file})
-          FILE(READ ${_compilation_file} _include_string_file)
+        IF(EXISTS ${_build_unit_file})
+          FILE(READ ${_build_unit_file} _include_string_file)
         ENDIF()
-        IF(NOT _compilation_include_string STREQUAL "${_include_string_file}")
-          FILE(WRITE ${_compilation_file} "${_compilation_include_string}")
+        IF(NOT _build_unit_include_string STREQUAL "${_include_string_file}")
+          FILE(WRITE ${_build_unit_file} "${_build_unit_include_string}")
         ENDIF()
-        LIST(APPEND _${_target_name}_source_files ${_compilation_file})
+        LIST(APPEND _${_target_name}_source_files ${_build_unit_file})
+        LIST(APPEND _${_target_name}_build_units ${_build_unit_file})
+        # Store the number of files included. May be used for full build units.
+        SET_SOURCE_FILES_PROPERTIES(${_build_unit_file}
+          PROPERTIES BUILD_UNIT_SIZE "${_build_unit_count}")
       ENDIF()
-      SET(_add_to_compilation FALSE)
-    ELSEIF(_get_compilation_file)
-      SET(_compilation_file ${CMAKE_BINARY_DIR}/${_file})
-      SET(_get_compilation_file FALSE)
-      SET(_add_to_compilation TRUE)
-      SET(_compilation_include_string)
+      SET(_add_to_build_unit FALSE)
+    ELSEIF(_get_build_unit_file)
+      # Note: ${_file} is relative to the binary directory
+      SET(_build_unit_file ${CMAKE_BINARY_DIR}/${_file})
+      SET(_get_build_unit_file FALSE)
+      SET(_add_to_build_unit TRUE)
+      SET(_build_unit_include_string)
+      SET(_build_unit_count "0")
     ELSE()
       # Default, add source file
 
@@ -145,10 +158,11 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
 
       LIST(APPEND _${_target_name}_source_files ${_file})
 
-      # Handle compilations
-      IF(_add_to_compilation AND NOT DISABLE_COMPILATIONS)
+      # Handle build units
+      IF(_add_to_build_unit AND ENABLE_BUILD_UNITS)
         IF(_file MATCHES "\\.(c|cc|cpp|cxx)$")
-          SET(_compilation_include_string "${_compilation_include_string}#include \"${_file}\"\n")
+          SET(_build_unit_include_string "${_build_unit_include_string}#include \"${_file}\"\n")
+          MATH(EXPR _build_unit_count "1 + ${_build_unit_count}")
         ENDIF()
         # Don't compile these files, even if they are source files
         SET_SOURCE_FILES_PROPERTIES(${_file} PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -182,6 +196,20 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     ENDIF()
   ENDIF()
 
+  # Mark files to be excluded from build units
+  IF(_arg_EXCLUDE_FROM_BUILD_UNITS)
+    SET_SOURCE_FILES_PROPERTIES(${_arg_EXCLUDE_FROM_BUILD_UNITS}
+      PROPERTIES EXCLUDE_FROM_BUILD_UNITS TRUE)
+  ENDIF()
+
+  # Full build units
+  IF(ENABLE_BUILD_UNITS AND NOT _arg_NO_BUILD_UNITS)
+    # Use full build units even in partial mode for externals
+    IF(ENABLE_BUILD_UNITS MATCHES "full" OR _arg_ORXONOX_EXTERNAL)
+      GENERATE_BUILD_UNITS(${_target_name} _${_target_name}_files)
+    ENDIF()
+  ENDIF()
+
   # First part (pre target) of precompiled header files
   IF(PCH_COMPILER_SUPPORT AND _arg_PCH_FILE)
     # Provide convenient option to control PCH
@@ -195,7 +223,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
     # Almost never used individually, but produces a lot of options --> hide
     MARK_AS_ADVANCED(PCH_ENABLE_${_target_name_upper})
 
-    IF(PCH_ENABLE_${_target_name_upper})
+    IF(PCH_ENABLE_${_target_name_upper} AND NOT PCH_DISABLE_${_target_name})
       PRECOMPILED_HEADER_FILES_PRE_TARGET(${_target_name} ${_arg_PCH_FILE} _${_target_name}_files EXCLUDE ${_arg_PCH_EXCLUDE})
     ENDIF()
   ENDIF()
@@ -343,7 +371,7 @@ MACRO(TU_ADD_TARGET _target_name _target_type _additional_switches)
   ENDIF()
 
   # Second part of precompiled header files
-  IF(PCH_COMPILER_SUPPORT AND PCH_ENABLE_${_target_name_upper} AND _arg_PCH_FILE)
+  IF(PCH_COMPILER_SUPPORT AND PCH_ENABLE_${_target_name_upper} AND _arg_PCH_FILE AND NOT PCH_DISABLE_${_target_name})
     PRECOMPILED_HEADER_FILES_POST_TARGET(${_target_name} ${_arg_PCH_FILE})
   ENDIF()
 

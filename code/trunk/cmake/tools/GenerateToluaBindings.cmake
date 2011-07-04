@@ -48,18 +48,23 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
 
   SET(_tolua_pkgfile "${CMAKE_CURRENT_BINARY_DIR}/tolua.pkg")
   SET(_tolua_cxxfile "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/ToluaBind${_tolua_package}.cc")
-  SET(_tolua_hfile   "${CMAKE_BINARY_DIR}/src/toluabind/${CMAKE_CFG_INTDIR}/ToluaBind${_tolua_package}.h")
+  #SET(_tolua_hfile   "${CMAKE_BINARY_DIR}/src/toluabind/${CMAKE_CFG_INTDIR}/ToluaBind${_tolua_package}.h")
 
   SET(${_target_source_files}
     ${${_target_source_files}}
     ${_tolua_cxxfile}
-    ${_tolua_hfile}
     PARENT_SCOPE
   )
 
-  # Disable annoying GCC warnings
   IF(CMAKE_COMPILER_IS_GNU)
+    # Disable annoying GCC warnings
     SET_SOURCE_FILES_PROPERTIES(${_tolua_cxxfile} PROPERTIES COMPILE_FLAGS "-w")
+  ENDIF()
+
+  IF(MSVC)
+    # Including the file in a build unit is impossible because CMAKE_CFG_INTDIR
+    # exands to an expression that the compiler doesn't understand
+    SET_SOURCE_FILES_PROPERTIES(${_tolua_cxxfile} PROPERTIES EXCLUDE_FROM_BUILD_UNITS TRUE)
   ENDIF()
 
   # Create temporary package file and implicit dependencies
@@ -69,13 +74,18 @@ FUNCTION(GENERATE_TOLUA_BINDINGS _tolua_package _target_source_files)
     LIST(APPEND _implicit_dependencies CXX ${_tolua_inputfile})
   ENDFOREACH(_tolua_inputfile)
 
+  IF(TOLUA_PARSER_HOOK_SCRIPT)
+    # Hook scripts may contain functions that act as Tolua hooks
+    SET(_hook_script -L "${TOLUA_PARSER_HOOK_SCRIPT}")
+  ENDIF()
+
   ADD_CUSTOM_COMMAND(
-    OUTPUT ${_tolua_cxxfile} ${_tolua_hfile}
+    OUTPUT ${_tolua_cxxfile}
     COMMAND toluaapp_orxonox -n ${_tolua_package}
                              -w ${CMAKE_CURRENT_SOURCE_DIR}
                              -o ${_tolua_cxxfile}
-                             -H ${_tolua_hfile}
                              -s ${TOLUA_PARSER_SOURCE}
+                                ${_hook_script}
                                 ${_tolua_pkgfile}
     DEPENDS           ${TOLUA_PARSER_DEPENDENCIES}
     IMPLICIT_DEPENDS  ${_implicit_dependencies}

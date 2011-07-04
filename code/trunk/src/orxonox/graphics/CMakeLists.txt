@@ -8,9 +8,10 @@ ADD_SOURCE_FILES(ORXONOX_SRC_FILES
   AnimatedModel.cc
   ParticleEmitter.cc
   ParticleSpawner.cc
-COMPILATION_BEGIN GraphicsCompilation.cc
+
+BUILD_UNIT GraphicsBuildUnit.cc
   Backlight.cc
   Camera.cc
   Light.cc
-COMPILATION_END
+END_BUILD_UNIT
 )

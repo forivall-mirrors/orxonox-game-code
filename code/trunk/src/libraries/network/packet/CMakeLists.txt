@@ -1,5 +1,6 @@
 ADD_SOURCE_FILES(NETWORK_SRC_FILES
-COMPILATION_BEGIN PacketCompilation.cc
+
+BUILD_UNIT PacketBuildUnit.cc
   Acknowledgement.cc
   Chat.cc
   ClassID.cc
@@ -9,7 +10,8 @@ COMPILATION_BEGIN PacketCompilation.cc
   Gamestate.cc
   Packet.cc
   Welcome.cc
-COMPILATION_END
+END_BUILD_UNIT
+
   ServerInformation.cc
 )
 

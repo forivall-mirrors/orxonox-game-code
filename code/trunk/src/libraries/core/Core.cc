@@ -68,6 +68,7 @@
 #include "Identifier.h"
 #include "Language.h"
 #include "LuaState.h"
+#include "ObjectList.h"
 #include "command/ConsoleCommand.h"
 #include "command/IOConsole.h"
 #include "command/TclBind.h"
@@ -130,7 +131,7 @@ namespace orxonox
         }
 
         // Parse command line arguments AFTER the modules have been loaded (static code!)
-        CommandLineParser::parseCommandLine(cmdLine);
+        CommandLineParser::parse(cmdLine);
 
         // Set configurable paths like log, config and media
         this->pathConfig_->setConfigurablePaths();
@@ -142,9 +143,6 @@ namespace orxonox
 
         // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% (Windows) was used
         OutputHandler::getInstance().setLogPath(PathConfig::getLogPathString());
-
-        // Parse additional options file now that we know its path
-        CommandLineParser::parseFile();
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
@@ -167,6 +165,8 @@ namespace orxonox
         // possibility to configure everything below here
         RegisterRootObject(Core);
         this->setConfigValues();
+        // Rewrite the log file with the correct log levels
+        OutputHandler::getInstance().rewriteLogFile();
 
 #if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
         // Create persistent IO console
@@ -229,20 +229,25 @@ namespace orxonox
         safeObjectDelete(&pathConfig_);
     }
 
+    namespace DefaultLevelLogFile
+    {
+        const OutputLevel::Value Dev  = OutputLevel::Debug;
+        const OutputLevel::Value User = OutputLevel::Info;
+    }
+
     //! Function to collect the SetConfigValue-macro calls.
     void Core::setConfigValues()
     {
-#ifdef ORXONOX_RELEASE
-        const unsigned int defaultLevelLogFile = 3;
-#else
-        const unsigned int defaultLevelLogFile = 4;
-#endif
-        SetConfigValueExternal(softDebugLevelLogFile_, "OutputHandler", "softDebugLevelLogFile", defaultLevelLogFile)
-            .description("The maximum level of debug output shown in the log file");
-        OutputHandler::getInstance().setSoftDebugLevel(OutputHandler::logFileOutputListenerName_s, this->softDebugLevelLogFile_);
+        // Choose the default level according to the path Orxonox was started (build directory or not)
+        OutputLevel::Value defaultLogLevel = (PathConfig::buildDirectoryRun() ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
+
+        SetConfigValueExternal(debugLevelLogFile_, "OutputHandler", "debugLevelLogFile", defaultLogLevel)
+            .description("The maximum level of debug output written to the log file");
+        OutputHandler::getInstance().setSoftDebugLevel("LogFile", debugLevelLogFile_);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
-            .description("Developer mode. If not set, hides some things from the user to not confuse him.");
+            .description("Developer mode. If not set, hides some things from the user to not confuse him.")
+            .callback(this, &Core::devModeChanged);
         SetConfigValue(language_, Language::getInstance().defaultLanguage_)
             .description("The language of the in game text")
             .callback(this, &Core::languageChanged);
@@ -255,6 +260,39 @@ namespace orxonox
             .description("Timestamp when the last level was started.");
         SetConfigValue(ogreConfigTimestamp_, 0)
             .description("Timestamp when the ogre config file was changed.");
+    }
+
+    /** Callback function for changes in the dev mode that affect debug levels.
+        The function behaves according to these rules:
+        - 'normal' mode is defined based on where the program was launched: if
+          the launch path was the build directory, development mode \c on is
+          normal, otherwise normal means development mode \c off.
+        - Debug levels should not be hard configured (\c config instead of
+          \c tconfig) in non 'normal' mode to avoid strange behaviour.
+        - Changing the development mode from 'normal' to the other state will
+          immediately change the debug levels to predefined values which can be
+          reconfigured with \c tconfig.
+    @note
+        The debug levels for the IOConsole and the InGameConsole can be found
+        in the Shell class. The same rules apply.
+    */
+    void Core::devModeChanged()
+    {
+        bool isNormal = (bDevMode_ == PathConfig::buildDirectoryRun());
+        if (isNormal)
+        {
+            ModifyConfigValueExternal(debugLevelLogFile_, "debugLevelLogFile", update);
+        }
+        else
+        {
+            OutputLevel::Value level = (bDevMode_ ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
+            ModifyConfigValueExternal(debugLevelLogFile_, "debugLevelLogFile", tset, level);
+        }
+
+        // Inform listeners
+        ObjectList<DevModeListener>::iterator it = ObjectList<DevModeListener>::begin();
+        for (; it != ObjectList<DevModeListener>::end(); ++it)
+            it->devModeChanged(bDevMode_);
     }
 
     //! Callback function if the language has changed.
@@ -438,5 +476,11 @@ namespace orxonox
     void Core::updateOgreConfigTimestamp()
     {
         ModifyConfigValue(ogreConfigTimestamp_, set, static_cast<long long>(time(NULL)));
+    }
+
+
+    DevModeListener::DevModeListener()
+    {
+        RegisterRootObject(DevModeListener);
     }
 }

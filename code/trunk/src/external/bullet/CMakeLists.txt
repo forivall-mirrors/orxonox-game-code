@@ -31,6 +31,8 @@ ORXONOX_ADD_LIBRARY(bullet_orxonox
   NO_DLL_INTERFACE
   VERSION
     2.78
+  EXCLUDE_FROM_BUILD_UNITS
+    BulletCollision/NarrowPhaseCollision/btPolyhedralContactClipping.cpp
   SOURCE_FILES
     ${BULLET_FILES}
 )

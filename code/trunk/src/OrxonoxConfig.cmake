@@ -33,8 +33,33 @@ IF(PCH_COMPILER_SUPPORT AND NOT APPLE)
   OPTION(PCH_ENABLE "Global PCH switch" TRUE)
 ENDIF()
 
-# Global switch to disable multiple file compilations
-OPTION(DISABLE_COMPILATIONS "Global multi-file compilation switch" FALSE)
+# Global option to steer building muliple files as a single one
+# off/false: Turn off completely
+# partial:   Only combine files explicitly specified with BUILD_UNIT
+# full##:    Use ## source files per orxonox library and use manual build units
+#            for external dependencies. Example: full8 will in general use 8
+#            source files per library, but more specifically tries to occupy
+#            8 CPU threads.
+#            This is configured manually in BuildUnitsConfig.cmake
+SET(ENABLE_BUILD_UNITS "partial" CACHE STRING "Enables building multiple source files as one.")
+IF(ENABLE_BUILD_UNITS)
+  IF(NOT "${ENABLE_BUILD_UNITS}" STREQUAL "partial")
+    STRING(REGEX REPLACE "^full([1-9][0-9]?)$" "\\1" _nr_of_units "${ENABLE_BUILD_UNITS}")
+    IF("${_nr_of_units}" STREQUAL "${ENABLE_BUILD_UNITS}") # Regex match failed
+      MESSAGE(FATAL_ERROR "Unrecognised option for ENABLE_BUILD_UNITS: ${ENABLE_BUILD_UNITS}")
+    ELSE()
+      SET(NR_OF_BUILD_UNITS ${_nr_of_units})
+      IF(NOT HAVE_COUNTER_MACRO)
+        MESSAGE(WARNING "Your compiler doesn't support the __COUNTER__ macro. Full build units might not work!")
+      ENDIF()
+    ENDIF()
+  ENDIF()
+  IF(CMAKE_COMPILER_IS_GNU)
+    INCLUDE(BuildUnitsConfigGCC.cmake)
+  ELSEIF(MSVC)
+    INCLUDE(BuildUnitsConfigMSVC.cmake)
+  ENDIF()
+ENDIF()
 
 # Use WinMain() or main()?
 IF(WIN32)

@@ -254,4 +254,19 @@ namespace orxonox
 #define ModifyConfigValue(varname, modifier, ...) \
     ModifyConfigValueGeneric(this, &varname, #varname, modifier, __VA_ARGS__)
 
+/** Modifies a runtime configurable value by using a modifier and some arguments.
+    If the container for the value doesn't yet exist, a warning is displayed.
+    Also, the @a variable argument will be modified and set to the current value.
+@param variable
+    Pointer to the variable where the value should be written to
+@param entryName
+    Name of the entry in the ini file (e.g. [MySection] myValue)
+@param modifier
+    On of these functions: set, tset, add, remove, reset, update
+@param ...
+    Arguments for the modifier function
+*/
+#define ModifyConfigValueExternal(variable, entryName, modifier, ...) \
+    ModifyConfigValueGeneric(this, &variable, entryName, modifier, __VA_ARGS__)
+
 #endif /* _ConfigValueIncludes_H__ */

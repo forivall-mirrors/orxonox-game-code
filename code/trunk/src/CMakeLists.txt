@@ -65,10 +65,6 @@ IF(MSVC AND VLD_FOUND)
       REMOVE_LINKER_FLAGS("-INCREMENTAL:YES" Debug)
       ADD_LINKER_FLAGS   ("-INCREMENTAL:NO"  Debug)
     ENDIF()
-    IF(NOT DISABLE_COMPILATIONS)
-      # Compilations seem to generate 'memory leaks' with static variables
-      MESSAGE("Warning: You should disable Compilations when using VLD!")
-    ENDIF()
   ENDIF()
 ENDIF()
 
@@ -148,12 +144,9 @@ ENDIF()
 
 ################### Tolua Bind ##################
 
-# Create directory because the tolua application doesn't work otherwise
-IF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
-ENDIF()
-
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/toluabind/${CMAKE_CFG_INTDIR})
+# Add hook script to the lua code that generates the bindings
+SET(TOLUA_PARSER_HOOK_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/libraries/core/ToluaInterfaceHook.lua)
+SET(TOLUA_PARSER_DEPENDENCIES ${TOLUA_PARSER_DEPENDENCIES} ${TOLUA_PARSER_HOOK_SCRIPT})
 
 ################ Sub Directories ################
 

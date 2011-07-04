@@ -34,7 +34,6 @@ SET_SOURCE_FILES(OIS_FILES
   OISObject.h
   OISPrereqs.h
 
-#COMPILATION_BEGIN OISCompilation.cpp
   OISEffect.cpp
   OISException.cpp
   OISForceFeedback.cpp
@@ -42,8 +41,8 @@ SET_SOURCE_FILES(OIS_FILES
   OISJoyStick.cpp
   OISKeyboard.cpp
   OISObject.cpp
-#COMPILATION_END
 )
+
 IF(WIN32)
   ADD_SUBDIRECTORY(win32)
 ELSEIF(APPLE)
@@ -55,6 +54,11 @@ ENDIF()
 # MinGW doesn't come with some required Windows headers
 IF(MINGW)
   INCLUDE_DIRECTORIES(${WMI_INCLUDE_DIR})
+ENDIF()
+
+# Apple has problems with OIS and build units
+IF(APPLE)
+  SET(USE_BUILD_UNITS NO_BUILD_UNITS)
 ENDIF()
 
 ORXONOX_ADD_LIBRARY(ois_orxonox
@@ -71,6 +75,7 @@ ORXONOX_ADD_LIBRARY(ois_orxonox
     /System/Library/Frameworks/Carbon.framework
   LINK_LIBS_LINUX
     X11
+  ${USE_BUILD_UNITS}
   SOURCE_FILES
     ${OIS_FILES}
 )

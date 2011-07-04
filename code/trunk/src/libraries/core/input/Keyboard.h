@@ -30,8 +30,6 @@
 #define _Core_Keyboard_H__
 
 #include "InputPrereqs.h"
-
-#include "InputHandler.h"
 #include "InputDevice.h"
 
 namespace orxonox

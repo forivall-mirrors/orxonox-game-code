@@ -44,10 +44,10 @@
 #define _OrxonoxClass_H__
 
 #include "CorePrereqs.h"
-#include "Super.h"
 
 #include <set>
 #include <vector>
+#include "Super.h"
 
 /**
 @def CCOUT

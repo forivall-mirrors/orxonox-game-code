@@ -34,10 +34,11 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   ChatHistory.cc
   ChatInputHandler.cc
 #  Test.cc
-COMPILATION_BEGIN SceneCompilation.cc
+
+BUILD_UNIT SceneBuildUnit.cc
   CameraManager.cc
   Scene.cc
-COMPILATION_END
+END_BUILD_UNIT
 )
 
 ADD_SUBDIRECTORY(collisionshapes)

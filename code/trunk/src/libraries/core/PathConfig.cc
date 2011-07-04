@@ -73,7 +73,7 @@ namespace orxonox
     PathConfig* PathConfig::singletonPtr_s  = 0;
 
     SetCommandLineArgument(externalDataPath, "").information("Path to the external data files");
-    SetCommandLineOnlyArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
+    SetCommandLineArgument(writingPathSuffix, "").information("Additional subfolder for config and log files");
 
     PathConfig::PathConfig()
         : rootPath_(*(new bf::path()))

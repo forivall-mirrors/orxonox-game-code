@@ -40,9 +40,7 @@
 #define _ObjectListBase_H__
 
 #include "CorePrereqs.h"
-
 #include <vector>
-#include "OrxonoxClass.h"
 
 namespace orxonox
 {

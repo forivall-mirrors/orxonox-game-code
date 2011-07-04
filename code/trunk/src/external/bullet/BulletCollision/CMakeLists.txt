@@ -1,7 +1,5 @@
 ADD_SOURCE_FILES(BULLET_FILES
 
-COMPILATION_BEGIN BulletCollisionCompilation.cpp
-
 	BroadphaseCollision/btAxisSweep3.cpp
 	BroadphaseCollision/btBroadphaseProxy.cpp
 	BroadphaseCollision/btCollisionAlgorithm.cpp
@@ -83,14 +81,11 @@ COMPILATION_BEGIN BulletCollisionCompilation.cpp
 	NarrowPhaseCollision/btGjkPairDetector.cpp
 	NarrowPhaseCollision/btMinkowskiPenetrationDepthSolver.cpp
 	NarrowPhaseCollision/btPersistentManifold.cpp
+	NarrowPhaseCollision/btPolyhedralContactClipping.cpp
 	NarrowPhaseCollision/btRaycastCallback.cpp
 	NarrowPhaseCollision/btSubSimplexConvexCast.cpp
 	NarrowPhaseCollision/btVoronoiSimplexSolver.cpp
 
-COMPILATION_END
-
-    # Raises compiler errors when compiled inside the compilation
-	NarrowPhaseCollision/btPolyhedralContactClipping.cpp
 
 	# Headers
 	BroadphaseCollision/btAxisSweep3.h

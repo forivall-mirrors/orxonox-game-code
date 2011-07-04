@@ -27,7 +27,9 @@
  */
 
 #include "ReplenishingMunition.h"
+
 #include "core/CoreIncludes.h"
+#include "core/command/Executor.h"
 
 namespace orxonox
 {

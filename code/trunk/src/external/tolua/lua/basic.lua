@@ -353,4 +353,6 @@ function parser_hook(s)
     return nil
 end
 
-
+-- called after all the required C++ includes have been written
+function post_include_hook(package_name)
+end

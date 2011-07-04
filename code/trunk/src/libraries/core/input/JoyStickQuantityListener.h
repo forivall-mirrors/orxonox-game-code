@@ -35,6 +35,8 @@
 #define _JoyStickQuantityListener_H__
 
 #include "InputPrereqs.h"
+
+#include <vector>
 #include "core/OrxonoxClass.h"
 
 namespace orxonox

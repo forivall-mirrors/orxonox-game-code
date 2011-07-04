@@ -38,7 +38,6 @@
 #include "CorePrereqs.h"
 
 #include <map>
-#include <set>
 #include <string>
 #include <CEGUIForwardRefs.h>
 #include <CEGUIVersion.h>
@@ -46,17 +45,11 @@
 
 #include "util/DestructionHelper.h"
 #include "util/OgreForwardRefs.h"
-#include "util/TriBool.h"
+#include "util/tribool.h"
 #include "util/Singleton.h"
 #include "input/InputHandler.h"
-#include "Core.h"
 #include "OrxonoxClass.h"
 #include "WindowEventListener.h"
-
-// Tolua includes (have to be relative to the current directory)
-/*
-$cfile "../util/TriBool.h" // tolua_export
-*/
 
 #if CEGUI_VERSION_MAJOR < 1 && CEGUI_VERSION_MINOR < 7
 #  define ORXONOX_OLD_CEGUI
@@ -65,6 +58,20 @@ $cfile "../util/TriBool.h" // tolua_export
 namespace orxonox // tolua_export
 { // tolua_export
     class PlayerInfo; // Forward declaration
+
+    // Acquaint Tolua with tribool
+    /* tolua_begin
+    struct dontcare_keyword_t
+    {
+        dontcare_keyword_t();
+    };
+    class tribool
+    {
+        tribool(bool value);
+        tribool(dontcare_keyword_t);
+        bool operator==(tribool);
+    };
+    tolua_end */
 
     /**
     @class GUIManager
@@ -103,14 +110,10 @@ namespace orxonox // tolua_export
         void setBackgroundImage(const std::string& imageSet, const std::string imageName); // tolua_export
         void setBackgroundImage(const std::string& image);
 
-        /**
-        @brief Helper method to get the developer's mode without having to export Core.h.
-        @see Core::inDevMode
-        */
-        static bool inDevMode(void) { return Core::getInstance().inDevMode(); } // tolua_export
+        static bool inDevMode(void); // tolua_export
 
         //! Creates a new InputState to be used with a GUI Sheet
-        const std::string& createInputState(const std::string& name, TriBool::Value showCursor = TriBool::True, TriBool::Value useKeyboard = TriBool::True, bool bBlockJoyStick = false); // tolua_export
+        const std::string& createInputState(const std::string& name, tribool showCursor = tribool(true), tribool useKeyboard = tribool(true), bool bBlockJoyStick = false); // tolua_export
         LuaState* getLuaState(void)
             { return this->luaState_; }
 

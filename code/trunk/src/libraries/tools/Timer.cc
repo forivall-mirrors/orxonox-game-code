@@ -41,6 +41,7 @@
 #include "core/CoreIncludes.h"
 #include "core/command/ConsoleCommand.h"
 #include "core/command/CommandExecutor.h"
+#include "core/command/Executor.h"
 #include "core/command/Functor.h"
 #include "tools/interfaces/TimeFactorListener.h"
 
@@ -174,6 +175,26 @@ namespace orxonox
     float Timer::getTimeFactor()
     {
         return TimeFactorListener::getTimeFactor();
+    }
+
+    /**
+        @brief Initializes and starts the timer, which will call an executor after some time.
+        @param interval         The timer-interval in seconds
+        @param bLoop            If true, the executor gets called every @a interval seconds
+        @param executor         The executor that will be called
+        @param bKillAfterCall   If true, the timer will be deleted after the executor was called
+    */
+    void Timer::setTimer(float interval, bool bLoop, const ExecutorPtr& executor, bool bKillAfterCall)
+    {
+        this->setInterval(interval);
+        this->bLoop_ = bLoop;
+        this->executor_ = executor;
+        this->bActive_ = true;
+
+        this->time_ = this->interval_;
+        this->bKillAfterCall_ = bKillAfterCall;
+
+        executor->getFunctor()->setSafeMode(true);
     }
 
     /**

@@ -33,12 +33,15 @@
 
 #include "Shell.h"
 
+#include "util/Math.h"
 #include "util/OutputHandler.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueIncludes.h"
+#include "core/PathConfig.h"
+#include "core/input/InputBuffer.h"
 #include "CommandExecutor.h"
 #include "ConsoleCommand.h"
 
@@ -83,10 +86,10 @@ namespace orxonox
         this->setConfigValues();
 
         // Get the previous output and add it to the Shell
-        for (OutputHandler::OutputVectorIterator it = OutputHandler::getInstance().getOutputVectorBegin();
-            it != OutputHandler::getInstance().getOutputVectorEnd(); ++it)
+        OutputHandler::OutputVector::const_iterator it = OutputHandler::getInstance().getOutput().begin();
+        for (;it != OutputHandler::getInstance().getOutput().end(); ++it)
         {
-            if (it->first <= this->getSoftDebugLevel())
+            if (it->first <= debugLevel_)
             {
                 this->outputBuffer_ << it->second;
                 this->outputChanged(it->first);
@@ -95,6 +98,7 @@ namespace orxonox
 
         // Register the shell as output listener
         OutputHandler::getInstance().registerOutputListener(this);
+        OutputHandler::getInstance().setSoftDebugLevel(consoleName_, debugLevel_);
     }
 
     /**
@@ -104,6 +108,12 @@ namespace orxonox
     {
         OutputHandler::getInstance().unregisterOutputListener(this);
         this->inputBuffer_->destroy();
+    }
+
+    namespace DefaultLogLevel
+    {
+        const OutputLevel::Value Dev  = OutputLevel::Info;
+        const OutputLevel::Value User = OutputLevel::Error;
     }
 
     /**
@@ -118,14 +128,11 @@ namespace orxonox
         setConfigValueGeneric(this, &commandHistory_, ConfigFileType::CommandHistory, "Shell", "commandHistory_", std::vector<std::string>());
         SetConfigValue(cacheSize_s, 32);
 
-#ifdef ORXONOX_RELEASE
-        const unsigned int defaultLevel = 1;
-#else
-        const unsigned int defaultLevel = 3;
-#endif
-        SetConfigValueExternal(softDebugLevel_, "OutputHandler", "softDebugLevel" + this->consoleName_, defaultLevel)
-            .description("The maximal level of debug output shown in the Shell");
-        this->setSoftDebugLevel(this->softDebugLevel_);
+        // Choose the default level according to the path Orxonox was started (build directory or not)
+        OutputLevel::Value defaultDebugLevel = (PathConfig::buildDirectoryRun() ? DefaultLogLevel::Dev : DefaultLogLevel::User);
+        SetConfigValueExternal(debugLevel_, "OutputHandler", "debugLevel" + consoleName_, defaultDebugLevel)
+            .description("The maximum level of debug output shown in the " + consoleName_);
+        OutputHandler::getInstance().setSoftDebugLevel(consoleName_, debugLevel_);
     }
 
     /**
@@ -149,6 +156,23 @@ namespace orxonox
             unsigned int index = this->commandHistory_.size() - 1;
             this->commandHistory_.erase(this->commandHistory_.begin() + index);
             ModifyConfigValue(commandHistory_, remove, index);
+        }
+    }
+
+    /** Called upon changes in the development mode (by Core)
+        Behaviour details see Core::devModeChanged.
+    */
+    void Shell::devModeChanged(bool value)
+    {
+        bool isNormal = (value == PathConfig::buildDirectoryRun());
+        if (isNormal)
+        {
+            ModifyConfigValueExternal(debugLevel_, "debugLevel" + consoleName_, update);
+        }
+        else
+        {
+            OutputLevel::Value level = (value ? DefaultLogLevel::Dev : DefaultLogLevel::User);
+            ModifyConfigValueExternal(debugLevel_, "debugLevel" + consoleName_, tset, level);
         }
     }
 
@@ -212,6 +236,18 @@ namespace orxonox
     {
         this->inputBuffer_->setCursorPosition(cursor);
         this->updateListeners<&ShellListener::cursorChanged>();
+    }
+
+    /// Returns the current position of the cursor in the input buffer.
+    unsigned int Shell::getCursorPosition() const
+    {
+        return this->inputBuffer_->getCursorPosition();
+    }
+
+    /// Returns the current content of the input buffer (the text which was entered by the user)
+    const std::string& Shell::getInput() const
+    {
+        return this->inputBuffer_->get();
     }
 
     /**
