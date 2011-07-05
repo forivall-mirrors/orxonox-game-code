@@ -207,10 +207,42 @@ namespace orxonox
 
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
+        if(this->mode_ == DEFAULT)
+	    {
+            if (this->state_ == MASTER)
+            {
+                if (this->specificMasterAction_ ==  NONE)
+                {
+                    if (this->target_)
+                    {
+                        if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
+                            this->forgetTarget();
+                        else this->aimAtTarget();
+                    }
 
-        if (this->state_ == MASTER)
-        {
-            if (this->specificMasterAction_ ==  NONE)
+                    if (this->bHasTargetPosition_)
+                        this->moveToTargetPosition();
+
+                    if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
+                        this->getControllableEntity()->fire(0);
+                }
+
+                if (this->specificMasterAction_  == TURN180)
+                    this->turn180();
+
+                if (this->specificMasterAction_ == SPIN)
+                    this->spin();
+                if (this->specificMasterAction_ == FOLLOW)
+                    this->follow();
+            }
+
+            if (this->state_ == SLAVE)
+            {
+                if (this->bHasTargetPosition_)
+                    this->moveToTargetPosition();
+            }
+
+            if (this->state_ == FREE)
             {
                 if (this->target_)
                 {
@@ -225,39 +257,28 @@ namespace orxonox
                 if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
                     this->getControllableEntity()->fire(0);
             }
-
-            if (this->specificMasterAction_  == TURN180)
-                    this->turn180();
-
-            if (this->specificMasterAction_ == SPIN)
-                    this->spin();
-            if (this->specificMasterAction_ == FOLLOW)
-                    this->follow();
-        }
-
-        if (this->state_ == SLAVE)
-        {
-
-            if (this->bHasTargetPosition_)
-                this->moveToTargetPosition();
-
-        }
-
-         if (this->state_ == FREE)
-        {
-            if (this->target_)
+        }//END_OF DEFAULT MODE
+        else if (this->mode_ == ROCKET)//Rockets do not belong to a group of bots -> bot states are not relevant.
+        {   //Vector-implementation: mode_.back() == ROCKET;
+            ControllableEntity *controllable = this->getControllableEntity(); 
+            if(controllable)
             {
-                if (!this->target_->getRadarVisibility()) /* So AI won't shoot invisible Spaceships */
-                    this->forgetTarget();
-                else this->aimAtTarget();
+                if(controllable->getRocket())//Check wether the bot is controlling the rocket and if the timeout is over.
+                {
+                    this->follow(); //TODO: CHECK: does follow make the bot crash into the target_ ?
+                    this->timeout_ -= dt;
+                    if((timeout_< 0)||(!target_))//Check if the timeout is over or target died.
+                    {
+                       controllable->fire(0);//kill the rocket
+                       this->setPreviousMode();//get out of rocket mode
+                    }
+                }
+                else
+                    this->setPreviousMode();//no rocket entity -> get out of rocket mode
             }
-
-            if (this->bHasTargetPosition_)
-                this->moveToTargetPosition();
-
-            if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
-                this->getControllableEntity()->fire(0);
-        }
+            else
+                this->setPreviousMode();//If bot dies -> getControllableEntity == NULL -> get out of ROCKET mode
+        }//END_OF ROCKET MODE
 
         SUPER(AIController, tick, dt);
     }
