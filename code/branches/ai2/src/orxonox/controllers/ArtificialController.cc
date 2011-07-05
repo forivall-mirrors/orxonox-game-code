@@ -1048,9 +1048,9 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             }
             else if((weapons[3]==3)&& this->isCloseAtTarget(400) /*&&projectiles[3]*/ )
             {//ROCKET: mid range weapon
-                //TODO: Which weapon is the rocket? How many rockets are available?
+                //TODO: How many rockets are available?
                 this->mode_ = ROCKET;//Vector-implementation: mode_.push_back(ROCKET);
-                this->getControllableEntity()->fire(3);//launch rocket
+                this->getControllableEntity()->fire(3);//launch rocket BUG IS TRIGGERED HERE.
                 if(this->getControllableEntity()&&this->target_)//after fire(3) getControllableEntity() refers to the rocket!
                 {
                     float speed = this->getControllableEntity()->getVelocity().length() - target_->getVelocity().length();
@@ -1080,7 +1080,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             {
                 for(unsigned int i=0; i<WeaponSystem::MAX_WEAPON_MODES; i++)
                 {
-                    const std::string wpn = getWeaponname(i, pawn); COUT(0)<<wpn<< std::endl;//Temporary debug info.
+                    //const std::string wpn = getWeaponname(i, pawn); COUT(0)<<wpn<< std::endl;//Temporary debug info.
                     /*if(wpn=="")
                         weapons[i]=-1;
                     else if(wpn=="LaserMunition")//other munitiontypes are not defined yet :-(

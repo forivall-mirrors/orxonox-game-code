@@ -229,8 +229,7 @@ namespace orxonox
                     if (this->bHasTargetPosition_)
                         this->moveToTargetPosition();
 
-                    if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
-                        this->getControllableEntity()->fire(0);
+                    this->doFire();
                 }
 
                 if (this->specificMasterAction_  == TURN180)
@@ -266,8 +265,7 @@ namespace orxonox
                 if (this->bHasTargetPosition_)
                     this->moveToTargetPosition();
 
-                if (this->getControllableEntity() && this->bShooting_ && this->isCloseAtTarget(1000) && this->isLookingAtTarget(math::pi / 20.0f))
-                    this->getControllableEntity()->fire(0);
+                this->doFire();
             }
         }//END_OF DEFAULT MODE
         else if (this->mode_ == ROCKET)//Rockets do not belong to a group of bots -> bot states are not relevant.
