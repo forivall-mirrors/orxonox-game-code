@@ -74,47 +74,45 @@ namespace orxonox
             @param value  The amount by which the SimpleRocket is to be moved.
             */
             inline void moveFrontBack(float value)
-            { this->moveFrontBack(Vector2(value, 0)); }
+                { this->moveFrontBack(Vector2(value, 0)); }
             /**
             @brief Moves the SimpleRocket in the Right/Left-direction by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be moved.
             */
             inline void moveRightLeft(float value)
-            { this->moveRightLeft(Vector2(value, 0)); }
+                { this->moveRightLeft(Vector2(value, 0)); }
             /**
             @brief Moves the SimpleRocket in the Up/Down-direction by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be moved.
             */
             inline void moveUpDown(float value)
-            { this->moveUpDown(Vector2(value, 0)); }
+                { this->moveUpDown(Vector2(value, 0)); }
 
             /**
             @brief Rotates the SimpleRocket around the y-axis by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotateYaw(float value)
-            { this->rotateYaw(Vector2(value, 0)); }
+                { this->rotateYaw(Vector2(value, 0)); }
             /**
             @brief Rotates the SimpleRocket around the x-axis by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotatePitch(float value)
-            {
-                this->rotatePitch(Vector2(value, 0)); }
+                { this->rotatePitch(Vector2(value, 0)); }
             /**
             @brief Rotates the SimpleRocket around the z-axis by the specifed amount.
             @param value  The amount by which the SimpleRocket is to be rotated.
             */
             inline void rotateRoll(float value)
-            {
-                this->rotateRoll(Vector2(value, 0)); }
+                { this->rotateRoll(Vector2(value, 0)); }
 
             void setOwner(Pawn* owner);
             inline Pawn* getOwner() const
                 { return this->owner_; }
 
             inline bool hasFuel() const
-            { return this->fuel_; }
+                { return this->fuel_; }
 
 
         private:

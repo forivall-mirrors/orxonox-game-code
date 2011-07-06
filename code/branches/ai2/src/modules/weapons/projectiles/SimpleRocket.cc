@@ -99,8 +99,6 @@ namespace orxonox
         SUPER(SimpleRocket, tick, dt);
         if ( GameMode::isMaster() )
         {
-
-
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
             this->setVelocity( this->getOrientation()*WorldEntity::FRONT*this->getVelocity().length() );
             this->localAngularVelocity_ = 0;
