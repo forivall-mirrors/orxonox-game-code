@@ -38,6 +38,7 @@
 #include "worldentities/ControllableEntity.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/TeamBaseMatchBase.h"
+#include "worldentities/pawns/SpaceShip.h"
 #include "gametypes/TeamDeathmatch.h"
 #include "gametypes/Dynamicmatch.h"
 #include "controllers/WaypointPatrolController.h"
@@ -46,6 +47,7 @@
 #include "weaponsystem/WeaponMode.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/Weapon.h"
+
 
 namespace orxonox
 {
@@ -1037,31 +1039,30 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         if(!bSetupWorked)//setup: find out which weapons are active ! hard coded: laser is "0", lens flare is "1", ...
         {
             this->setupWeapons();
-            if(numberOfWeapons>0)
-                bSetupWorked=true;
+            if(numberOfWeapons > 0)
+                bSetupWorked = true;
         }
-        else if(this->getControllableEntity()&&(numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
+        else if(this->getControllableEntity() && (numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
         {
-            if (this->isCloseAtTarget(130) &&weapons[1] )
+            float random = rnd(1);//
+            if (this->isCloseAtTarget(130) && weapons[1] )
             {//LENSFLARE: short range weapon     
                 this->getControllableEntity()->fire(1); //ai uses lens flare if they're close enough to the target
             }
-            else if(weapons[3]&& this->isCloseAtTarget(400) /*&&projectiles[3]*/ )
+            else if(weapons[3] && this->isCloseAtTarget(400) && (projectiles[3] > 0) && (random < this->botlevel_) )
             {//ROCKET: mid range weapon
-                //TODO: How many rockets are available?
-                this->mode_ = ROCKET;//Vector-implementation: mode_.push_back(ROCKET);
-                this->getControllableEntity()->fire(3);//launch rocket
-                if(this->getControllableEntity()&&this->target_)//after fire(3) getControllableEntity() refers to the rocket!
+                this->mode_ = ROCKET; //Vector-implementation: mode_.push_back(ROCKET);
+                this->getControllableEntity()->fire(3); //launch rocket
+                if(this->getControllableEntity() && this->target_) //after fire(3) is called, getControllableEntity() refers to the rocket!
                 {
                     float speed = this->getControllableEntity()->getVelocity().length() - target_->getVelocity().length();
                     if(!speed) speed = 0.1f;
                     float distance = target_->getPosition().length() - this->getControllableEntity()->getPosition().length();
-                    this->timeout_= distance/speed*sgn(speed*distance) + 1.8f;//predicted time of target hit (+ tolerance)
+                    this->timeout_= distance/speed*sgn(speed*distance) + 1.8f; //predicted time of target hit (+ tolerance)
                 }
                 else
-                    this->timeout_ = 4.0f;//TODO: find better default value
-                
-                this->projectiles[3]-=1;//decrease ammo !!
+                    this->timeout_ = 4.0f; //TODO: find better default value
+                this->projectiles[3] -= 1; //decrease ammo
             }
             else if (weapons[0])//LASER: default weapon
                 this->getControllableEntity()->fire(0);
@@ -1078,10 +1079,10 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
             if(pawn)
             {
-                for(unsigned int i=0; i<WeaponSystem::MAX_WEAPON_MODES; i++)
+                for(unsigned int i=0; i < WeaponSystem::MAX_WEAPON_MODES; i++)
                 {
-                    //const std::string wpn = getWeaponname(i, pawn); COUT(0)<<wpn<< std::endl;//Temporary debug info.
-                    /*if(wpn=="")
+                    const std::string wpn = getWeaponname(i, pawn); COUT(0)<<wpn<< std::endl;//Temporary debug info.
+                    /*if(wpn=="") //future, more generic implementation; until now, only LaserMunition works. Is this a bug??
                         weapons[i]=false;
                     else if(wpn=="LaserMunition")//other munitiontypes are not defined yet :-(
                         weapons[0]=true;
@@ -1096,12 +1097,12 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                     */
                     if(pawn->getWeaponSet(i)) //main part: find which weapons a pawn can use; hard coded at the moment!
                     {
-                        weapons[i]=true;
-                        projectiles[i]=1;//TODO: how to express infinite ammo? how to get data?? getWeaponmode(i)->getMunition()->getNumMunition(WeaponMode* user)
+                        weapons[i] = true;
+                        projectiles[i] = 10; //TODO: how to get data?? getWeaponmode(i)->getMunition()->getNumMunition(WeaponMode* user)
                           numberOfWeapons++;
                     }
                     else
-                        weapons[i]=-false;
+                        weapons[i] = false;
                 }
                  //pawn->weaponSystem_->getMunition(SubclassIdentifier< Munition > *identifier)->getNumMunition (WeaponMode *user);
             }
@@ -1142,4 +1143,14 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         this->mode_ = DEFAULT; //Vector-implementation: mode_.pop_back();
     }
     
+    void ArtificialController::boostControl()
+    {
+        SpaceShip* ship = orxonox_cast<SpaceShip*>(this->getControllableEntity());
+        if(ship == NULL) return;
+        if(ship->getBoostPower()*1.5f > ship->getInitialBoostPower() )//upper limit ->boost
+            this->getControllableEntity()->boost(true);
+        else if(ship->getBoostPower()*4.0f < ship->getInitialBoostPower())//lower limit ->do not boost
+            this->getControllableEntity()->boost(false);
+    }
+
 }

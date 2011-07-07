@@ -141,6 +141,7 @@ namespace orxonox
             void targetDied();
 
             static bool sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype); // hack
+            void boostControl();
 
             bool bHasTargetPosition_;
             Vector3 targetPosition_;

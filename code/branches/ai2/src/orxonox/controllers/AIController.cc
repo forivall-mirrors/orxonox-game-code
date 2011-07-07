@@ -210,6 +210,7 @@ namespace orxonox
             this->numberOfWeapons = 0;
             this->resetDeathFlag();
         }
+        this->boostControl();//TEST
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
         if(this->mode_ == DEFAULT)
@@ -280,7 +281,7 @@ namespace orxonox
             {
                 if(controllable->getRocket())//Check wether the bot is controlling the rocket and if the timeout is over.
                 {
-                    this->follow(); //TODO: CHECK: does follow make the bot crash into the target_ ?
+                    this->follow();
                     this->timeout_ -= dt;
                     if((timeout_< 0)||(!target_))//Check if the timeout is over or target died.
                     {
