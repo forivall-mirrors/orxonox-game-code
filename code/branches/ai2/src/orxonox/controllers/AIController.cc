@@ -204,7 +204,12 @@ namespace orxonox
     {
         if (!this->isActive())
             return;
-
+        if(this->bDeathFlag_)//If a bot died recently, make him check his weaponsystem.
+        {
+            this->bSetupWorked = false;
+            this->numberOfWeapons = 0;
+            this->resetDeathFlag();
+        }
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
         if(this->mode_ == DEFAULT)

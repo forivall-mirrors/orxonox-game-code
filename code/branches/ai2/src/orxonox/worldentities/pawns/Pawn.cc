@@ -303,6 +303,10 @@ namespace orxonox
         this->setHealth(1);
         if (this->getGametype() && this->getGametype()->allowPawnDeath(this, this->lastHitOriginator_))
         {
+            if ( this->getController()&& (!this->isHumanShip_) ) //announce death to the ai
+            {
+                 this->getController()->setDeathFlag();
+            }
             // Set bAlive_ to false and wait for PawnManager to do the destruction
             this->bAlive_ = false;
 

@@ -148,19 +148,17 @@ namespace orxonox
             bool bShooting_;
 
             int numberOfWeapons; //< Used for weapon init function. Displayes number of weapons available for a bot.
-            int weapons[WeaponSystem::MAX_WEAPON_MODES];
-            int projectiles[WeaponSystem::MAX_WEAPON_MODES];
+            bool weapons[WeaponSystem::MAX_WEAPON_MODES]; //<! Displays if a weapon is available - managed by setupWeapons()
+            int projectiles[WeaponSystem::MAX_WEAPON_MODES]; //<! Displays amount of projectiles. - managed by setupWeapons()
             float botlevel_; //< Makes the level of a bot configurable.
             float timeout_; //< Timeout for rocket usage. (If a rocket misses, a bot should stop using it.)
 
             enum Mode {DEFAULT, ROCKET, DEFENCE, MOVING};//TODO; implement DEFENCE, MOVING modes
             Mode mode_; //TODO: replace single value with stack-like implementation: std::vector<Mode> mode_;
-            void setPreviousMode();
-
-        private:
-            void setupWeapons();
-            const std::string& getWeaponname(int i, Pawn* pawn);
-            bool bSetupWorked;
+            void setPreviousMode(); 
+            void setupWeapons(); //<! Defines which weapons are available for a bot. Is recalled whenever a bot was killed.
+            const std::string& getWeaponname(int i, Pawn* pawn); //<! Function that links a weapon's firemode to its name.
+            bool bSetupWorked; //<! If false, setupWeapons() is called.
     };
 }
 
