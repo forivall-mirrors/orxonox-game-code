@@ -112,6 +112,18 @@ namespace orxonox
             }
         inline Shape getRadarObjectShape() const
             { return this->radarObjectShape_; }
+
+        inline void setRadarObjectScale(float scale)
+            {
+                if(this->scale_ != scale)
+                {
+                    this->scale_ = scale;
+                    this->settingsChanged();
+                }
+            }
+        inline float getRadarObjectScale() const
+            { return this->scale_; }
+
         void settingsChanged();
 
 
@@ -138,7 +150,7 @@ namespace orxonox
         Shape radarObjectShape_;
         std::string radarObjectDescription_;
         ColourValue radarObjectColour_;
-
+        float scale_;
     };
 }
 

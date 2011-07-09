@@ -34,6 +34,7 @@
 #include "tools/Timer.h"
 #include "worldentities/ControllableEntity.h"
 #include "graphics/ParticleSpawner.h"
+#include "interfaces/RadarViewable.h"
 
 #include "BasicProjectile.h"
 
@@ -47,7 +48,7 @@ namespace orxonox
     @author
        Gabriel Nadler (Original file: Oli Scheuss)
     */
-    class _WeaponsExport SimpleRocket : public ControllableEntity, public BasicProjectile
+    class _WeaponsExport SimpleRocket : public ControllableEntity, public BasicProjectile, public RadarViewable
     {
         public:
             SimpleRocket(BaseObject* creator);
