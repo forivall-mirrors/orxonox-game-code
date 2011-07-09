@@ -47,12 +47,15 @@ namespace orxonox
 
     CreateFactory(SimpleRocket);
 
-    SimpleRocket::SimpleRocket(BaseObject* creator) : ControllableEntity(creator), BasicProjectile()
+    SimpleRocket::SimpleRocket(BaseObject* creator)
+        : ControllableEntity(creator)
+        , BasicProjectile()
+        , RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
         RegisterObject(SimpleRocket);// - register the SimpleRocket class to the core
 
         this->localAngularVelocity_ = 0;
-        this->lifetime_ = 120;
+        this->lifetime_ = 10;
 
         this->setMass(15);
 //        COUT(4) << "simplerocket constructed\n";
@@ -85,6 +88,9 @@ namespace orxonox
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&SimpleRocket::destroyObject, this)));
         }
 
+        this->setRadarObjectColour(ColourValue(1.0, 1.0, 0.0)); // yellow
+        this->setRadarObjectShape(RadarViewable::Triangle);
+        this->setRadarObjectScale(0.5f);
     }
 
 

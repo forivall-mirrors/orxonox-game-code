@@ -105,6 +105,7 @@ namespace orxonox
         // get right material
         panel->setMaterialName(TextureGenerator::getMaterialName(
             shapeMaterials_[object->getRadarObjectShape()], object->getRadarObjectColour()));
+        panel->hide();
         this->radarObjects_[object] = panel;
     }
 
@@ -165,7 +166,7 @@ namespace orxonox
             // set size to fit distance...
             float distance = (wePointer->getWorldPosition() - this->owner_->getPosition()).length();
             // calculate the size with 1/distance dependency for simplicity (instead of exp(-distance * lambda)
-            float size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance);
+            float size = maximumDotSize_ * halfDotSizeDistance_ / (halfDotSizeDistance_ + distance) * it->first->getRadarObjectScale();
             it->second->setDimensions(size, size);
 
             // calc position on radar...

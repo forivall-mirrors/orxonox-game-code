@@ -51,7 +51,10 @@ namespace orxonox
     @brief
         Constructor. Registers the object and initializes some default values.
     */
-    Rocket::Rocket(BaseObject* creator) : ControllableEntity(creator), BasicProjectile()
+    Rocket::Rocket(BaseObject* creator)
+        : ControllableEntity(creator)
+        , BasicProjectile()
+        , RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
         RegisterObject(Rocket);// - register the Rocket class to the core
 
@@ -105,6 +108,10 @@ namespace orxonox
         camPosition->setPosition(0,4,15);
         camPosition->setAllowMouseLook(true);
         this->addCameraPosition(camPosition);
+
+        this->setRadarObjectColour(ColourValue(1.0, 0.5, 0.0)); // orange
+        this->setRadarObjectShape(RadarViewable::Triangle);
+        this->setRadarObjectScale(0.5f);
     }
 
     /**
