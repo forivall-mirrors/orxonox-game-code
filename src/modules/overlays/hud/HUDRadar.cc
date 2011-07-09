@@ -136,6 +136,7 @@ namespace orxonox
         std::set<RadarViewable*>::const_iterator it;
         for( it=objectSet.begin(); it!=objectSet.end(); ++it )
             this->addObject(*it);
+        this->radarTick(0);
     }
 
     void HUDRadar::radarTick(float dt)
