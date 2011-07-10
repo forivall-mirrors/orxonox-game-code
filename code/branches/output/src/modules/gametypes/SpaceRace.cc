@@ -54,7 +54,7 @@ namespace orxonox
         {
             this->clock_.capture();
             int s = this->clock_.getSeconds();
-            int ms = this->clock_.getMilliseconds()-1000*s;
+            int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
             const std::string& message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
                         + "You didn't reach the check point " + multi_cast<std::string>(this->bCheckpointsReached_+1)
                         + " before the time limit. You lose!";
@@ -66,7 +66,7 @@ namespace orxonox
         {
             this->clock_.capture();
             int s = this->clock_.getSeconds();
-            int ms = this->clock_.getMilliseconds()-1000*s;
+            int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
             const std::string& message = "You win!! You have reached the last check point after "+ multi_cast<std::string>(s)
                         + "." + multi_cast<std::string>(ms) + " seconds.";
             COUT(3) << message << std::endl;
@@ -94,7 +94,7 @@ namespace orxonox
         this->bCheckpointsReached_++;
         this->clock_.capture();
         int s = this->clock_.getSeconds();
-        int ms = this->clock_.getMilliseconds()-1000*s;
+        int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
         const std::string& message = "Checkpoint " + multi_cast<std::string>(this->getCheckpointsReached())
                         + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
                         + " seconds.\n";

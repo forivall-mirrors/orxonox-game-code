@@ -195,7 +195,7 @@ namespace orxonox
         
         this->startCountdown_ = countdown;
         // Set the counter to the ceiling of the current countdown.
-        this->counter_ = std::ceil(countdown);
+        this->counter_ = static_cast<unsigned int>(std::ceil(countdown));
         this->changedCountdownCounter();
     }
 
