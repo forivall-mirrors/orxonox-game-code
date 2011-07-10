@@ -1,0 +1,104 @@
+--- OgreCEGUIRenderer.cpp	Sun Dec 27 10:40:24 2009
++++ OgreCEGUIRenderer.cpp	Sat Apr 30 17:21:29 2011
+@@ -24,12 +24,15 @@
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *************************************************************************/
+ 
+-#include <CEGUI/CEGUIImagesetManager.h>
+-#include <CEGUI/CEGUIImageset.h>
+-#include <CEGUI/CEGUIImage.h>
+-#include <CEGUI/CEGUIExceptions.h>
+-#include <CEGUI/CEGUISystem.h>
++// Workaround for GCC 4.6
++#include <cstddef>
+ 
++#include <CEGUIImagesetManager.h>
++#include <CEGUIImageset.h>
++#include <CEGUIImage.h>
++#include <CEGUIExceptions.h>
++#include <CEGUISystem.h>
++
+ #include "OgreCEGUIRenderer.h"
+ #include "OgreCEGUITexture.h"
+ #include "OgreCEGUIResourceProvider.h"
+--- OgreCEGUIRenderer.h	Wed Jan 28 21:14:09 2009
++++ OgreCEGUIRenderer.h	Wed Jan 28 21:06:46 2009
+@@ -29,15 +29,15 @@
+ #ifndef _OgreCEGUIRenderer_h_
+ #define _OgreCEGUIRenderer_h_
+ 
+-#include <CEGUI/CEGUIBase.h>
+-#include <CEGUI/CEGUIRenderer.h>
+-#include <CEGUI/CEGUITexture.h>
++#include <CEGUIBase.h>
++#include <CEGUIRenderer.h>
++#include <CEGUITexture.h>
+ 
+ #include <OgreRenderQueueListener.h>
+ #include <OgreSceneManagerEnumerator.h>
+ #include <OgreTextureUnitState.h>
+
+-#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !defined(OGRE_STATIC_LIB)
++#if (OGRE_PLATFORM == OGRE_PLATFORM_WIN32) && !defined(OGRE_GUIRENDERER_STATIC_LIB)
+ #   ifdef OGRE_GUIRENDERER_EXPORTS
+ #       define OGRE_GUIRENDERER_API __declspec(dllexport)
+ #   else
+--- OgreCEGUIResourceProvider.cpp	Sun Dec 27 10:40:24 2009
++++ OgreCEGUIResourceProvider.cpp	Sat Apr 30 17:21:40 2011
+@@ -23,9 +23,13 @@
+     License along with this library; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *************************************************************************/
++
++// Workaround for GCC 4.6
++#include <cstddef>
++
+ #include "OgreCEGUIResourceProvider.h"
+ 
+-#include <CEGUI/CEGUIExceptions.h>
++#include <CEGUIExceptions.h>
+ #include <OgreArchiveManager.h>
+ 
+ 
+--- OgreCEGUIResourceProvider.h	Wed Jan 28 21:14:09 2009
++++ OgreCEGUIResourceProvider.h	Wed Jan 28 21:06:51 2009
+@@ -26,7 +26,7 @@
+ #ifndef _OgreCEGUIResourceProvider_h_
+ #define _OgreCEGUIResourceProvider_h_
+ 
+-#include <CEGUI/CEGUIResourceProvider.h>
++#include <CEGUIResourceProvider.h>
+ #include "OgreCEGUIRenderer.h"
+ 
+ // Start of CEGUI namespace section
+--- OgreCEGUITexture.cpp	Sun Dec 27 10:40:24 2009
++++ OgreCEGUITexture.cpp	Sat Apr 30 17:21:52 2011
+@@ -24,8 +24,11 @@
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *************************************************************************/
+ 
+-#include <CEGUI/CEGUISystem.h>
+-#include <CEGUI/CEGUIExceptions.h>
++// Workaround for GCC 4.6
++#include <cstddef>
++
++#include <CEGUISystem.h>
++#include <CEGUIExceptions.h>
+ #include "OgreCEGUITexture.h"
+ #include "OgreCEGUIRenderer.h"
+ 
+--- OgreCEGUITexture.h	Wed Jan 28 21:14:09 2009
++++ OgreCEGUITexture.h	Wed Jan 28 21:07:06 2009
+@@ -26,9 +26,9 @@
+ #ifndef _OgreCEGUITexture_h_
+ #define _OgreCEGUITexture_h_
+ 
+-#include <CEGUI/CEGUIBase.h>
+-#include <CEGUI/CEGUIRenderer.h>
+-#include <CEGUI/CEGUITexture.h>
++#include <CEGUIBase.h>
++#include <CEGUIRenderer.h>
++#include <CEGUITexture.h>
+ #include "OgreCEGUIRenderer.h"
+ 
+ // Start of CEGUI namespace section

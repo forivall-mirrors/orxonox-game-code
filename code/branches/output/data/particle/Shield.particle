@@ -1,0 +1,49 @@
+
+particle_system Orxonox/Shield
+{
+	quota	2000
+	material	PE/lensflare
+	particle_width	25
+	particle_height	25
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	true
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	texcoord
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter HollowEllipsoid
+	{
+		angle	0
+		colour	0 0.298701 1 0.1
+		colour_range_start	0 0.298701 1 0.1
+		colour_range_end	0 0.298701 1 0.1
+		direction	0 1 0
+		emission_rate	2000
+		position	0 0 0
+		velocity	0
+		velocity_min	0
+		velocity_max	0
+		time_to_live	0.1
+		time_to_live_min	0.1
+		time_to_live_max	0.3
+		duration	0.1
+		duration_min	0.1
+		duration_max	0.2
+		repeat_delay	1000000
+		repeat_delay_min	1000000
+		repeat_delay_max	1000000
+		width	100
+		height	100
+		depth	100
+		inner_width	0.999999
+		inner_height	0.999999
+		inner_depth	0.999999
+	}
+}
