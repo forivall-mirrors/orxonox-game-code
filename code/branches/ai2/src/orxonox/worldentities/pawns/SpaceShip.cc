@@ -325,17 +325,20 @@ namespace orxonox
 
     void SpaceShip::resetCamera()
     {
-        Camera *camera = this->getCamera();
-
-        if (camera == 0)
+        if(this->hasLocalController() && this->hasHumanController())
         {
-            COUT(2) << "Failed to reset camera!";
-            return;
-        }
+            Camera *camera = this->getCamera();
+
+            if (camera == 0)
+            {
+                COUT(2) << "Failed to reset camera!";
+                return;
+            }
     
-        this->shakeDt_ = 0;
-        camera->setPosition(this->cameraOriginalPosition_);
-        camera->setOrientation(this->cameraOriginalOrientation_);
+            this->shakeDt_ = 0;
+            camera->setPosition(this->cameraOriginalPosition_);
+            camera->setOrientation(this->cameraOriginalOrientation_);
+        }
     }
 
     void SpaceShip::backupCamera()

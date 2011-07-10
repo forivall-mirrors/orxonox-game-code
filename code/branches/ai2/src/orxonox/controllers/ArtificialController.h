@@ -141,18 +141,18 @@ namespace orxonox
             void targetDied();
 
             static bool sameTeam(ControllableEntity* entity1, ControllableEntity* entity2, Gametype* gametype); // hack
-            void boostControl();
+            void boostControl(); //<! Sets and resets the boost parameter of the spaceship. Bots alternate between boosting and saving boost.
 
             bool bHasTargetPosition_;
             Vector3 targetPosition_;
             WeakPtr<Pawn> target_;
             bool bShooting_;
 
-            int numberOfWeapons; //< Used for weapon init function. Displayes number of weapons available for a bot.
+            int numberOfWeapons; //<! Used for weapon init function. Displayes number of weapons available for a bot.
             bool weapons[WeaponSystem::MAX_WEAPON_MODES]; //<! Displays if a weapon is available - managed by setupWeapons()
-            int projectiles[WeaponSystem::MAX_WEAPON_MODES]; //<! Displays amount of projectiles. - managed by setupWeapons()
-            float botlevel_; //< Makes the level of a bot configurable.
-            float timeout_; //< Timeout for rocket usage. (If a rocket misses, a bot should stop using it.)
+            int projectiles[WeaponSystem::MAX_WEAPON_MODES]; //<! Displays amount of projectiles of each weapon. - managed by setupWeapons()
+            float botlevel_; //<! Makes the level of a bot configurable.
+            float timeout_; //<! Timeout for rocket usage. (If a rocket misses, a bot should stop using it.)
 
             enum Mode {DEFAULT, ROCKET, DEFENCE, MOVING};//TODO; implement DEFENCE, MOVING modes
             Mode mode_; //TODO: replace single value with stack-like implementation: std::vector<Mode> mode_;
