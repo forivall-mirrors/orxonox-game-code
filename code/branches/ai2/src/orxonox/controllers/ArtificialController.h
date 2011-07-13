@@ -79,8 +79,8 @@ namespace orxonox
             static void formationsize(const int size);
 
             virtual void doFire();
-	    void setBotLevel(float level=1.0f);
-	    inline float getBotLevel() const
+            void setBotLevel(float level=1.0f);
+            inline float getBotLevel() const
                 { return this->botlevel_; }
             static void setAllBotLevel(float level);
 
@@ -156,9 +156,10 @@ namespace orxonox
 
             enum Mode {DEFAULT, ROCKET, DEFENCE, MOVING};//TODO; implement DEFENCE, MOVING modes
             Mode mode_; //TODO: replace single value with stack-like implementation: std::vector<Mode> mode_;
-            void setPreviousMode(); 
+            void setPreviousMode();
             void setupWeapons(); //<! Defines which weapons are available for a bot. Is recalled whenever a bot was killed.
-            const std::string& getWeaponname(int i, Pawn* pawn); //<! Function that links a weapon's firemode to its name.
+            const std::string getWeaponname(int i, int u, Pawn* pawn); //<! Function that links a weapon's firemode to its name.
+            void analyseWeapons(Pawn* pawn);
             bool bSetupWorked; //<! If false, setupWeapons() is called.
     };
 }

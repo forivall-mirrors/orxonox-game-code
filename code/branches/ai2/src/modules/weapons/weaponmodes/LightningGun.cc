@@ -49,6 +49,7 @@ namespace orxonox
 
         this->setMunitionName("LaserMunition");
         this->setDefaultSound("sounds/Weapon_LightningGun.ogg");
+        this->setName("LIGHTNING_GUN");
     }
 
     LightningGun::~LightningGun()

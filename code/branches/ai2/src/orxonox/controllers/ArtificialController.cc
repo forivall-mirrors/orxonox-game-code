@@ -32,6 +32,7 @@
 #include <climits>
 
 #include "util/Math.h"
+#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/command/ConsoleCommand.h"
@@ -1046,7 +1047,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         {
             float random = rnd(1);//
             if (this->isCloseAtTarget(130) && weapons[1] )
-            {//LENSFLARE: short range weapon     
+            {//LENSFLARE: short range weapon
                 this->getControllableEntity()->fire(1); //ai uses lens flare if they're close enough to the target
             }
             else if(weapons[3] && this->isCloseAtTarget(400) && (projectiles[3] > 0) && (random < this->botlevel_) )
@@ -1079,9 +1080,10 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
             if(pawn)
             {
+                this->analyseWeapons(pawn);
                 for(unsigned int i=0; i < WeaponSystem::MAX_WEAPON_MODES; i++)
                 {
-                    const std::string wpn = getWeaponname(i, pawn); COUT(0)<<wpn<< std::endl;//Temporary debug info.
+                    //const std::string wpn = getWeaponname(i, 0, pawn); COUT(0)<<wpn<< std::endl;//Temporary debug info.
                     /*if(wpn=="") //future, more generic implementation; until now, only LaserMunition works. Is this a bug??
                         weapons[i]=false;
                     else if(wpn=="LaserMunition")//other munitiontypes are not defined yet :-(
@@ -1109,29 +1111,62 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         }
     }
 
-    const std::string& ArtificialController::getWeaponname(int i, Pawn* pawn)
+    const std::string ArtificialController::getWeaponname(int i, int u, Pawn* pawn)//Search through all wPacks,
     {//is there a way to minimize this long if-return structure, without triggering nullpointer exceptions?
-        if(!pawn) return "";
-        WeaponPack* wPack = pawn->getWeaponPack(i);
-        if(!wPack) return "";
+        if(!pawn) return "a";
+        WeaponPack* wPack = pawn->getWeaponPack(u);
+        if(!wPack) return "b";
         Weapon* wpn = wPack->getWeapon(i);
-        if(!wpn) return "";
-        WeaponMode* wMode = wpn->getWeaponmode(i);
-        if(!wMode) return "";
-        return wMode->getMunitionName();
+        if(!wpn && u<10 && i>0)
+        {
+            return this->getWeaponname(i, u+1, pawn);
+        }
+        else if(!wpn)
+            return "c";
+        //return wpn->getName();
+        WeaponMode* wMode = wpn->getWeaponmode(0);
+        if(!wMode) return "d";
+        return wMode->getMunitionName();//getName();
     }//pawn->getWeaponpack(i)->getWeapon(i)->getWeaponmode(i)->getMunitionName()
+    /**
+        @brief Display how a spaceship is equiped with weapons. TODO: why are only 3 out of 8 weapons displayed??
+    */
+    void ArtificialController::analyseWeapons(Pawn* pawn)
+    {
+        int max=10, i=0, j=0, k=0;
+        if(!pawn) {COUT(0)<<"NO PAWN"<<std::endl; return;}
+        while(i<max)
+        {
+            WeaponPack* wPack = pawn->getWeaponPack(i); //WeaponSet* wSet = pawn->getWeaponSet(i);
+            i++;
+            if(wPack==NULL) continue;
+            while(j<max)
+            {
+                Weapon* wpn = wPack->getWeapon(j);
+                j++;
+                if(wpn==NULL) continue;
+                while(k<max)
+                {
+                    WeaponMode* wMode = wpn->getWeaponmode(k);
+                    k++;
+                    if(wMode==NULL) continue;
+                    COUT(0)<<wMode->getName()<<": weaponpack "+multi_cast<std::string>(i-1)<<", weapon "<<multi_cast<std::string>(j-1)<<", weaponmode "<<multi_cast<std::string>(k-1)<<std::endl;
+                }
+            }
+        }
+    }
 
-    
+
     void ArtificialController::setBotLevel(float level)
     {
         if (level < 0.0f)
-            this->botlevel_ = 0.0f; 
+            this->botlevel_ = 0.0f;
         else if (level > 1.0f)
             this->botlevel_ = 1.0f;
         else
             this->botlevel_ = level;
     }
-    
+
     void ArtificialController::setAllBotLevel(float level)
     {
         for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it != ObjectList<ArtificialController>::end(); ++it)
@@ -1142,7 +1177,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     {
         this->mode_ = DEFAULT; //Vector-implementation: mode_.pop_back();
     }
-    
+
     void ArtificialController::boostControl()
     {
         SpaceShip* ship = orxonox_cast<SpaceShip*>(this->getControllableEntity());
