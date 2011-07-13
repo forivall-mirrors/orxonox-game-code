@@ -1,7 +1,7 @@
 <LevelInfo
   name = "Fight in our Back"
   description = "Our fleet is far ahead of us. We need to get rid of all the enemies in its back, because we do not want our enemies to attack from everywhere. So let us clear this Sector!"
-  tags = "" 
+  tags = ""
 />
 
 <?lua
@@ -20,7 +20,6 @@
   <SpaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipassffcameras
-   engine                 = spaceshipassffengine
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 6
@@ -38,6 +37,10 @@
    linearDamping     = 0.7
    angularDamping    = 0.9999999
   >
+      <engines>
+      <MultiStateEngine position=" 7.6, 0, 6" template=spaceshipassffengine />
+      <MultiStateEngine position="-7.6, 0, 0" template=spaceshipassffengine />
+    </engines>
     <attached>
       <Model position="0,0,0" yaw=90 pitch=-90 roll=0 scale=4 mesh="assff.mesh" />
       <BlinkingBillboard position="17,-1.5,0" material="Examples/Flare" colour="1.0, 0.5, 0.3" amplitude=0.1 frequency=0.5 quadratic=1 />
@@ -57,7 +60,51 @@
 ?>
   </SpaceShip>
 </Template>
+<Template name=spaceshipassffengine baseclass=MultiStateEngine>
+  <MultiStateEngine
+   boostfactor    = 2
 
+   speedfront     = 150
+   speedback      =  50
+   speedleftright =  50
+   speedupdown    =  50
+
+   defEngineSndNormal = "sounds/Engine_low.ogg"
+   defEngineSndBoost = "sounds/Engine_high.ogg"
+
+   accelerationfront     = 500
+   accelerationbrake     = 500
+   accelerationback      =  125
+   accelerationleftright =  125
+   accelerationupdown    =  125
+  >
+      <EffectContainer condition="idle">
+      <WorldSound mainstate="activity" source="sounds/Engine_idle.ogg" looping=1 active=false/>
+    </EffectContainer>
+    <EffectContainer condition="not idle">
+      <FadingBillboard mainstate=activity active=false scale=0.1 position="7.6, 0, 9" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.1 position="-7.6, 0, 9" colour="0.2, 0.65, 1.0, 1.0" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+    <EffectContainer condition="normal or brake">
+
+    </EffectContainer>
+    <EffectContainer condition="normal or boost">
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 7.6, 0, 6" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-7.6, 0, 6" colour="0.2, 0.65, 1.0, 1.0" width=15 length=1500 lifetime=2 elements=50 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Flares/ThrusterFlare1" />
+    </EffectContainer>
+    <EffectContainer condition="boost">
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position=" 7.6, 0, 6" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+      <Backlight mainstate=activity active=false scale=0.4 name=bltest position="-7.6, 0, 6" colour="0.6, 0.75, 0.8, 0.7" width=40 length=1000 lifetime=1 elements=30 trailmaterial="Trail/backlighttrail" turnontime=1 turnofftime=1 material="Examples/Flare" />
+    </EffectContainer>
+<!--    <EffectContainer condition="brake">
+      <FadingBillboard mainstate=activity active=false scale=0.3 position=" 8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.3 position="-8, 0, 6" colour="0.5, 0.0, 0.0, 0.3" material="Examples/Flare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position=" 8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+      <FadingBillboard mainstate=activity active=false scale=0.15 position="-8, 0, 6" colour="1.0, 0.0, 0.0, 1.0" material="Flares/backlightflare" turnontime=0.5 turnofftime=0.5 />
+    </EffectContainer>
+-->
+  </MultiStateEngine>
+</Template>
 <!--*****************************************************************************************************************************************************************************************-->
 <Level
   name="Fight in our back"
@@ -120,7 +167,7 @@
                 </activity>
             </events>
         </SpawnPoint>
-    
+
 <!--Player's Spawnpoint END-->
 
 <!--Launching Quests -->
@@ -156,9 +203,9 @@
                 <DistanceTrigger name="FightInOurBack_FollowEnd_DTranspStart_AssisStart" position="0,0,0" distance="1000" target="Pawn" beaconMode="identify" targetname="PlayerDistanceTrigger" stayactive=1 activations=1 />
             </attached>
         </QuestEffectBeacon>
-    
+
 <!---->
-    
+
 <!--Launching Quests END -->
 
 <!--Creating Transporters OK-->
@@ -190,7 +237,7 @@ health=2750
 <?lua end ?>
 
 
-<?lua for j=0,1,1 do 
+<?lua for j=0,1,1 do
 health=1600
 x=800
 z=j*300
@@ -274,7 +321,7 @@ z=j*300
 <!--Creating player's team END  -->
 
 
-<!--Asteroids (field OK --> 
+<!--Asteroids (field OK -->
 
 <?lua for i=0,100,1 do
 x=math.random(250,4000)
@@ -393,7 +440,7 @@ z=math.random(-300,300)
 
 <!--Enemies on the way to the transporters -->
 
-<?lua for i=0,1,1 do 
+<?lua for i=0,1,1 do
 z=math.random(-300,300)
 ?>
 <!--NO 1-->
@@ -439,7 +486,7 @@ z=math.random(-300,300)
                 </WaypointPatrolController>
             </controller>
         </SpaceShip>
-<?lua for i=0,1,1 do ?>    
+<?lua for i=0,1,1 do ?>
         <SpaceShip position="<?lua print(i*400+13000) ?>,100,10000" lookat="8000,0,1000">
             <templates>
                 <Template link=spaceshippirate/>
