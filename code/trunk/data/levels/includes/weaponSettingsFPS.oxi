@@ -16,8 +16,8 @@
           <DefaultWeaponmodeLink firemode=2 weaponmode=2 />
         </links>
 	<Weapon>
-	   <HsW01 mode=0 munitionpershot=0 delay=0.0 material="Flares/point_lensflare" muzzleoffset=" 0.7, -0.3, -3" />
-           <LightningGun mode=1 muzzleoffset="0,0,0" />
+	   <HsW01 mode=0 munitionpershot=0 delay=0.0 damage=2.5 material="Flares/point_lensflare" muzzleoffset=" 0.7, -0.3, -3" />
+           <LightningGun mode=1 muzzleoffset="0,0,0" damage=3.14159 shielddamage=20/>
         </Weapon>
         <LaserGun
             position="0,0,0"
