@@ -59,7 +59,6 @@ namespace orxonox
         this->delayTimer_.stopTimer();
 
         this->setDefaultSound("sounds/Weapon_HsW01.ogg");
-        this->setName("HSW01");
     }
 
     HsW01::~HsW01()

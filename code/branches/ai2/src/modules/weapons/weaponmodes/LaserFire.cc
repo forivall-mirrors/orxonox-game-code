@@ -48,7 +48,6 @@ namespace orxonox
         this->speed_ = 1250;
 
         this->setMunitionName("LaserMunition");
-        this->setName("LASER_FIRE");
     }
 
     /* Creates the projectile object, sets its properties to the LaserFire properties

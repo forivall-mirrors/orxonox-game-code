@@ -56,7 +56,6 @@ namespace orxonox
 
         this->delayTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&EnergyDrink::shot, this)));
         this->delayTimer_.stopTimer();
-        this->setName("ENERGY_DRINK");
     }
 
     void EnergyDrink::XMLPort(Element& xmlelement, XMLPort::Mode mode)
