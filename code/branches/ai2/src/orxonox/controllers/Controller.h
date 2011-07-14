@@ -62,10 +62,6 @@ namespace orxonox
 
             inline ControllableEntity* getControllableEntity() const
                 { return this->controllableEntity_; }
-            inline void setDeathFlag()
-                { this->bDeathFlag_ = true; }
-            inline void resetDeathFlag()
-                { this->bDeathFlag_ = false; }
             virtual void changedControllableEntity() {}
 
         protected:
@@ -82,7 +78,6 @@ namespace orxonox
         protected:
             PlayerInfo* player_;
             ControllableEntity* controllableEntity_;
-            bool bDeathFlag_; //<! Signal, when a controlled entity died. Flag is set in Pawn.cc and used in AIController.
         private:
             bool bGodMode_;
     };

@@ -51,7 +51,6 @@ namespace orxonox
         this->speed_ = 1250;
 
         this->setMunitionName("FusionMunition");
-        this->setName("FUSION_FIRE");
     }
 
     /* Creates the projectile (BillboardProjectile) object, sets its properties to the FusionFire properties

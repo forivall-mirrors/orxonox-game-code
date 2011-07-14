@@ -316,6 +316,9 @@ namespace orxonox
     {
         if (!this->getControllableEntity())
             this->removeFromFormation();
+        this->bSetupWorked = false;        // reset weapon information
+        this->numberOfWeapons = 0;
+        COUT(0)<<"ArtificialController::changedControllableEntity()"<<endl; //why is this function called more than once ??
     }
 
     void ArtificialController::removeFromFormation()
@@ -1134,7 +1137,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     void ArtificialController::analyseWeapons(Pawn* pawn)
     {
         int max=10, i=0, j=0, k=0;
-        if(!pawn) {COUT(0)<<"NO PAWN"<<std::endl; return;}
+        if(!pawn) return;
         while(i<max)
         {
             WeaponPack* wPack = pawn->getWeaponPack(i); //WeaponSet* wSet = pawn->getWeaponSet(i);
@@ -1150,7 +1153,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                     WeaponMode* wMode = wpn->getWeaponmode(k);
                     k++;
                     if(wMode==NULL) continue;
-                    COUT(0)<<wMode->getName()<<": weaponpack "+multi_cast<std::string>(i-1)<<", weapon "<<multi_cast<std::string>(j-1)<<", weaponmode "<<multi_cast<std::string>(k-1)<<std::endl;
+                    COUT(0)<<wMode->getIdentifier()->getName()<<": weaponpack "+multi_cast<std::string>(i-1)<<", weapon "<<multi_cast<std::string>(j-1)<<", weaponmode "<<multi_cast<std::string>(k-1)<<std::endl;
                 }
             }
         }

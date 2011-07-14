@@ -195,6 +195,10 @@ namespace orxonox
                 if (random < ( (1- botlevel_)*25 ) && (this->bShooting_))
                     this->bShooting_ = false;
 
+                //boost
+                random = rnd(maxrand);
+                if (random < botlevel_*100 )
+                    this->boostControl(); //TEST
             }
         }
 
@@ -204,13 +208,7 @@ namespace orxonox
     {
         if (!this->isActive())
             return;
-        if(this->bDeathFlag_)//If a bot died recently, make him check his weaponsystem.
-        {
-            this->bSetupWorked = false;
-            this->numberOfWeapons = 0;
-            this->resetDeathFlag();
-        }
-        this->boostControl();//TEST
+
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
         if(this->mode_ == DEFAULT)
@@ -228,7 +226,7 @@ namespace orxonox
                             this->aimAtTarget();
                             random = rnd(maxrand);
                             if(this->botlevel_*100 > random)
-                                this->follow();//If a bot is shooting a player, it shouldn't let him go away easily.
+                                this->follow();  //If a bot is shooting a player, it shouldn't let him go away easily.
                         }
                     }
 
@@ -276,7 +274,7 @@ namespace orxonox
         }//END_OF DEFAULT MODE
         else if (this->mode_ == ROCKET)//Rockets do not belong to a group of bots -> bot states are not relevant.
         {   //Vector-implementation: mode_.back() == ROCKET;
-            ControllableEntity *controllable = this->getControllableEntity(); 
+            ControllableEntity *controllable = this->getControllableEntity();
             if(controllable)
             {
                 if(controllable->getRocket())//Check wether the bot is controlling the rocket and if the timeout is over.

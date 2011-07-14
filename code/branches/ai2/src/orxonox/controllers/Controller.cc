@@ -41,7 +41,6 @@ namespace orxonox
         this->player_ = 0;
         this->controllableEntity_ = 0;
         this->bGodMode_ = false;
-        this->bDeathFlag_ = false;
     }
 
     Controller::~Controller()
