@@ -32,7 +32,6 @@
 #include <climits>
 
 #include "util/Math.h"
-#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/command/ConsoleCommand.h"
@@ -48,7 +47,7 @@
 #include "weaponsystem/WeaponMode.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/Weapon.h"
-
+#include "weaponsystem/WeaponSlot.h"
 
 namespace orxonox
 {
@@ -1136,25 +1135,17 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     */
     void ArtificialController::analyseWeapons(Pawn* pawn)
     {
-        int max=10, i=0, j=0, k=0;
+        int max = 10;
         if(!pawn) return;
-        while(i<max)
+        for(int l=0; l<max ;l++)
         {
-            WeaponPack* wPack = pawn->getWeaponPack(i); //WeaponSet* wSet = pawn->getWeaponSet(i);
-            i++;
-            if(wPack==NULL) continue;
-            while(j<max)
+            WeaponSlot* wSlot = pawn->getWeaponSlot(l);
+            if(wSlot==NULL) continue;//{COUT(0)<<"WEAPONSLOT "<<l<< " failed"<<endl; continue;}
+            for(int i=0; i<max; i++)
             {
-                Weapon* wpn = wPack->getWeapon(j);
-                j++;
-                if(wpn==NULL) continue;
-                while(k<max)
-                {
-                    WeaponMode* wMode = wpn->getWeaponmode(k);
-                    k++;
-                    if(wMode==NULL) continue;
-                    COUT(0)<<wMode->getIdentifier()->getName()<<": weaponpack "+multi_cast<std::string>(i-1)<<", weapon "<<multi_cast<std::string>(j-1)<<", weaponmode "<<multi_cast<std::string>(k-1)<<std::endl;
-                }
+                 WeaponMode* wMode = wSlot->getWeapon()->getWeaponmode(i);
+                 if(wMode==NULL) continue;//{COUT(0)<<"WEAPONMODE "<<i<< " failed"<<endl;}
+                 COUT(0)<<wMode->getIdentifier()->getName()<< " using mode:"<<i<<endl;
             }
         }
     }
