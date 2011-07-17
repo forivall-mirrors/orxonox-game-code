@@ -317,7 +317,7 @@ namespace orxonox
             this->removeFromFormation();
         this->bSetupWorked = false;        // reset weapon information
         this->numberOfWeapons = 0;
-        COUT(0)<<"ArtificialController::changedControllableEntity()"<<endl; //why is this function called more than once ??
+        this->setupWeapons();
     }
 
     void ArtificialController::removeFromFormation()
@@ -1039,23 +1039,23 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     */
     void ArtificialController::doFire()
     {
-        if(!bSetupWorked)//setup: find out which weapons are active ! hard coded: laser is "0", lens flare is "1", ...
+        if(!this->bSetupWorked)//setup: find out which weapons are active ! hard coded: laser is "0", lens flare is "1", ...
         {
             this->setupWeapons();
             if(numberOfWeapons > 0)
-                bSetupWorked = true;
+                this->bSetupWorked = true;
         }
         else if(this->getControllableEntity() && (numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
         {
             float random = rnd(1);//
-            if (this->isCloseAtTarget(130) && weapons[1] )
+            if (this->isCloseAtTarget(130) && (weaponModes[1]>-1) )
             {//LENSFLARE: short range weapon
-                this->getControllableEntity()->fire(1); //ai uses lens flare if they're close enough to the target
+                this->getControllableEntity()->fire(weaponModes[1]); //ai uses lens flare if they're close enough to the target
             }
-            else if(weapons[3] && this->isCloseAtTarget(400) && (projectiles[3] > 0) && (random < this->botlevel_) )
+            else if( (weaponModes[3]>-1) && this->isCloseAtTarget(400) && (projectiles[3] > 0) && (random < this->botlevel_) )
             {//ROCKET: mid range weapon
                 this->mode_ = ROCKET; //Vector-implementation: mode_.push_back(ROCKET);
-                this->getControllableEntity()->fire(3); //launch rocket
+                this->getControllableEntity()->fire(weaponModes[3]); //launch rocket
                 if(this->getControllableEntity() && this->target_) //after fire(3) is called, getControllableEntity() refers to the rocket!
                 {
                     float speed = this->getControllableEntity()->getVelocity().length() - target_->getVelocity().length();
@@ -1067,8 +1067,8 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                     this->timeout_ = 4.0f; //TODO: find better default value
                 this->projectiles[3] -= 1; //decrease ammo
             }
-            else if (weapons[0])//LASER: default weapon
-                this->getControllableEntity()->fire(0);
+            else if (weaponModes[0]>-1) //LASER: default weapon
+                this->getControllableEntity()->fire(weaponModes[0]);
         }
     }
 
@@ -1082,71 +1082,34 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
             if(pawn)
             {
-                this->analyseWeapons(pawn);
-                for(unsigned int i=0; i < WeaponSystem::MAX_WEAPON_MODES; i++)
+                int max = WeaponSystem::MAX_WEAPON_MODES; // assumption: there are only so many weaponmodes possible
+                for(int x=0; x<max ;x++)
+                    weaponModes[x] = -1; // reset previous weapon information
+                this->numberOfWeapons = 0;
+                for(int l=0; l<max ;l++)
                 {
-                    //const std::string wpn = getWeaponname(i, 0, pawn); COUT(0)<<wpn<< std::endl;//Temporary debug info.
-                    /*if(wpn=="") //future, more generic implementation; until now, only LaserMunition works. Is this a bug??
-                        weapons[i]=false;
-                    else if(wpn=="LaserMunition")//other munitiontypes are not defined yet :-(
-                        weapons[0]=true;
-                    else if(wpn=="FusionMunition")
-                        weapons[1]=true;
-                    else if(wpn=="TargetSeeking Rockets")
-                        weapons[2]=true;
-                    else if(wpn=="RocketMunition")
-                        weapons[3]=true;
-                    else
-                        COUT(1)<< wpn << + << " has to be added in ArtificialController.cc as new weapon." << std::endl;
-                    */
-                    if(pawn->getWeaponSet(i)) //main part: find which weapons a pawn can use; hard coded at the moment!
+                    WeaponSlot* wSlot = pawn->getWeaponSlot(l);
+                    if(wSlot==NULL) continue;
+                    for(int i=0; i<max; i++)
                     {
-                        weapons[i] = true;
-                        projectiles[i] = 10; //TODO: how to get data?? getWeaponmode(i)->getMunition()->getNumMunition(WeaponMode* user)
-                          numberOfWeapons++;
+                        WeaponMode* wMode = wSlot->getWeapon()->getWeaponmode(i);
+                        if(wMode == NULL) continue;
+                        this->numberOfWeapons++;
+                        if(wMode->getIdentifier()->getName() == "HsW01") // red laser <-> 0
+                            weaponModes[0] = wMode->getMode();
+                        else if(wMode->getIdentifier()->getName() == "LightningGun") // yellow energy  <-> 1
+                            weaponModes[1] = wMode->getMode();
+                        else if(wMode->getIdentifier()->getName() == "SimpleRocketFire") // target seeking rocktes <-> 2
+                            weaponModes[2] = wMode->getMode(); // not relevant jet, since doFire() doesn't support simple rockets
+                        else if(wMode->getIdentifier()->getName() == "RocketFire") // manual rockets <-> 3
+                            weaponModes[3] = wMode->getMode();
+                        else
+                            COUT(1)<< wMode->getIdentifier()->getName() << " has to be added in ArtificialController.cc as new weapon." << std::endl;
                     }
-                    else
-                        weapons[i] = false;
                 }
-                 //pawn->weaponSystem_->getMunition(SubclassIdentifier< Munition > *identifier)->getNumMunition (WeaponMode *user);
-            }
-        }
-    }
-
-    const std::string ArtificialController::getWeaponname(int i, int u, Pawn* pawn)//Search through all wPacks,
-    {//is there a way to minimize this long if-return structure, without triggering nullpointer exceptions?
-        if(!pawn) return "a";
-        WeaponPack* wPack = pawn->getWeaponPack(u);
-        if(!wPack) return "b";
-        Weapon* wpn = wPack->getWeapon(i);
-        if(!wpn && u<10 && i>0)
-        {
-            return this->getWeaponname(i, u+1, pawn);
-        }
-        else if(!wpn)
-            return "c";
-        //return wpn->getName();
-        WeaponMode* wMode = wpn->getWeaponmode(0);
-        if(!wMode) return "d";
-        return wMode->getMunitionName();//getName();
-    }//pawn->getWeaponpack(i)->getWeapon(i)->getWeaponmode(i)->getMunitionName()
-    /**
-        @brief Display how a spaceship is equiped with weapons. TODO: why are only 3 out of 8 weapons displayed??
-    */
-    void ArtificialController::analyseWeapons(Pawn* pawn)
-    {
-        int max = 10;
-        if(!pawn) return;
-        for(int l=0; l<max ;l++)
-        {
-            WeaponSlot* wSlot = pawn->getWeaponSlot(l);
-            if(wSlot==NULL) continue;//{COUT(0)<<"WEAPONSLOT "<<l<< " failed"<<endl; continue;}
-            for(int i=0; i<max; i++)
-            {
-                 WeaponMode* wMode = wSlot->getWeapon()->getWeaponmode(i);
-                 if(wMode==NULL) continue;//{COUT(0)<<"WEAPONMODE "<<i<< " failed"<<endl;}
-                 COUT(0)<<wMode->getIdentifier()->getName()<< " using mode:"<<i<<endl;
-            }
+                if(numberOfWeapons>0)
+                    this->bSetupWorked = true;
+            }//pawn->weaponSystem_->getMunition(SubclassIdentifier< Munition > *identifier)->getNumMunition (WeaponMode *user);
         }
     }
 
@@ -1176,9 +1139,9 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     {
         SpaceShip* ship = orxonox_cast<SpaceShip*>(this->getControllableEntity());
         if(ship == NULL) return;
-        if(ship->getBoostPower()*1.5f > ship->getInitialBoostPower() )//upper limit ->boost
+        if(ship->getBoostPower()*1.5f > ship->getInitialBoostPower() ) //upper limit ->boost
             this->getControllableEntity()->boost(true);
-        else if(ship->getBoostPower()*4.0f < ship->getInitialBoostPower())//lower limit ->do not boost
+        else if(ship->getBoostPower()*4.0f < ship->getInitialBoostPower()) //lower limit ->do not boost
             this->getControllableEntity()->boost(false);
     }
 
