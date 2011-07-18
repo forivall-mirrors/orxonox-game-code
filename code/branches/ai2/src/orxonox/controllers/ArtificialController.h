@@ -31,7 +31,7 @@
 
 #include "OrxonoxPrereqs.h"
 
-#include <vector>
+#include <map>
 
 #include "util/Math.h"
 #include "Controller.h"
@@ -148,9 +148,8 @@ namespace orxonox
             WeakPtr<Pawn> target_;
             bool bShooting_;
 
-            int numberOfWeapons; //<! Used for weapon init function. Displayes number of weapons available for a bot.
-            int weaponModes[WeaponSystem::MAX_WEAPON_MODES]; //<! Links each "weapon" to it's weaponmode- managed by setupWeapons()
-            int projectiles[WeaponSystem::MAX_WEAPON_MODES]; //<! Displays amount of projectiles of each weapon. - managed by setupWeapons()
+            std::map<std::string, int> weaponModes_; //<! Links each "weapon" to it's weaponmode- managed by setupWeapons()
+            //std::vector<int> projectiles_; //<! Displays amount of projectiles of each weapon. - managed by setupWeapons()
             float botlevel_; //<! Makes the level of a bot configurable.
             float timeout_; //<! Timeout for rocket usage. (If a rocket misses, a bot should stop using it.)
 
@@ -159,6 +158,7 @@ namespace orxonox
             void setPreviousMode();
             void setupWeapons(); //<! Defines which weapons are available for a bot. Is recalled whenever a bot was killed.
             bool bSetupWorked; //<! If false, setupWeapons() is called.
+            int getFiremode(std::string name);
     };
 }
 

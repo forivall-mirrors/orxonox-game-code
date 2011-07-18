@@ -90,7 +90,6 @@ namespace orxonox
 
         this->target_.setCallback(createFunctor(&ArtificialController::targetDied, this));
         this->bSetupWorked = false;
-        this->numberOfWeapons = 0;
         this->botlevel_ = 0.5f;
         this->mode_ = DEFAULT;////Vector-implementation: mode_.push_back(DEFAULT);
         this->timeout_=0;
@@ -101,7 +100,7 @@ namespace orxonox
         if (this->isInitialized())
         {//Vector-implementation: mode_.erase(mode_.begin(),mode_.end());
             this->removeFromFormation();
-
+            this->weaponModes_.clear();
             for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it; ++it)
             {
                 if (*it != this)
@@ -316,7 +315,6 @@ namespace orxonox
         if (!this->getControllableEntity())
             this->removeFromFormation();
         this->bSetupWorked = false;        // reset weapon information
-        this->numberOfWeapons = 0;
         this->setupWeapons();
     }
 
@@ -1042,20 +1040,19 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         if(!this->bSetupWorked)//setup: find out which weapons are active ! hard coded: laser is "0", lens flare is "1", ...
         {
             this->setupWeapons();
-            if(numberOfWeapons > 0)
-                this->bSetupWorked = true;
         }
-        else if(this->getControllableEntity() && (numberOfWeapons>0)&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
+        else if(this->getControllableEntity() && weaponModes_.size()&&this->bShooting_ && this->isCloseAtTarget((1 + 2*botlevel_)*1000) && this->isLookingAtTarget(math::pi / 20.0f))
         {
+            int firemode;
             float random = rnd(1);//
-            if (this->isCloseAtTarget(130) && (weaponModes[1]>-1) )
+            if (this->isCloseAtTarget(130) && (firemode = getFiremode("LightningGun"))>-1 )
             {//LENSFLARE: short range weapon
-                this->getControllableEntity()->fire(weaponModes[1]); //ai uses lens flare if they're close enough to the target
+                this->getControllableEntity()->fire(firemode); //ai uses lens flare if they're close enough to the target
             }
-            else if( (weaponModes[3]>-1) && this->isCloseAtTarget(400) && (projectiles[3] > 0) && (random < this->botlevel_) )
+            else if( this->isCloseAtTarget(400) && (random < this->botlevel_) && (firemode = getFiremode("RocketFire")>-1))
             {//ROCKET: mid range weapon
                 this->mode_ = ROCKET; //Vector-implementation: mode_.push_back(ROCKET);
-                this->getControllableEntity()->fire(weaponModes[3]); //launch rocket
+                this->getControllableEntity()->fire(firemode); //launch rocket
                 if(this->getControllableEntity() && this->target_) //after fire(3) is called, getControllableEntity() refers to the rocket!
                 {
                     float speed = this->getControllableEntity()->getVelocity().length() - target_->getVelocity().length();
@@ -1065,10 +1062,9 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                 }
                 else
                     this->timeout_ = 4.0f; //TODO: find better default value
-                this->projectiles[3] -= 1; //decrease ammo
             }
-            else if (weaponModes[0]>-1) //LASER: default weapon
-                this->getControllableEntity()->fire(weaponModes[0]);
+            else if ((firemode = getFiremode("HsW01")>-1)) //LASER: default weapon
+                this->getControllableEntity()->fire(firemode);
         }
     }
 
@@ -1077,37 +1073,25 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     */
     void ArtificialController::setupWeapons() //TODO: Make this function generic!! (at the moment is is based on conventions)
     {
+        this->bSetupWorked = false;
         if(this->getControllableEntity())
         {
             Pawn* pawn = orxonox_cast<Pawn*>(this->getControllableEntity());
             if(pawn)
             {
-                int max = WeaponSystem::MAX_WEAPON_MODES; // assumption: there are only so many weaponmodes possible
-                for(int x=0; x<max ;x++)
-                    weaponModes[x] = -1; // reset previous weapon information
-                this->numberOfWeapons = 0;
-                for(int l=0; l<max ;l++)
+                this->weaponModes_.clear(); // reset previous weapon information
+                WeaponSlot* wSlot = 0;
+                for(int l=0; (wSlot = pawn->getWeaponSlot(l)) ; l++)
                 {
-                    WeaponSlot* wSlot = pawn->getWeaponSlot(l);
-                    if(wSlot==NULL) continue;
-                    for(int i=0; i<max; i++)
+                    WeaponMode* wMode = 0;
+                    for(int i=0; (wMode = wSlot->getWeapon()->getWeaponmode(i)) ; i++)
                     {
-                        WeaponMode* wMode = wSlot->getWeapon()->getWeaponmode(i);
-                        if(wMode == NULL) continue;
-                        this->numberOfWeapons++;
-                        if(wMode->getIdentifier()->getName() == "HsW01") // red laser <-> 0
-                            weaponModes[0] = wMode->getMode();
-                        else if(wMode->getIdentifier()->getName() == "LightningGun") // yellow energy  <-> 1
-                            weaponModes[1] = wMode->getMode();
-                        else if(wMode->getIdentifier()->getName() == "SimpleRocketFire") // target seeking rocktes <-> 2
-                            weaponModes[2] = wMode->getMode(); // not relevant jet, since doFire() doesn't support simple rockets
-                        else if(wMode->getIdentifier()->getName() == "RocketFire") // manual rockets <-> 3
-                            weaponModes[3] = wMode->getMode();
-                        else
-                            COUT(1)<< wMode->getIdentifier()->getName() << " has to be added in ArtificialController.cc as new weapon." << std::endl;
+                        std::string wName = wMode->getIdentifier()->getName();
+                        if(this->getFiremode(wName) == -1) //only add a weapon, if it is "new"
+                            weaponModes_[wName] = wMode->getMode();
                     }
                 }
-                if(numberOfWeapons>0)
+                if(weaponModes_.size())//at least one weapon detected
                     this->bSetupWorked = true;
             }//pawn->weaponSystem_->getMunition(SubclassIdentifier< Munition > *identifier)->getNumMunition (WeaponMode *user);
         }
@@ -1143,6 +1127,16 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             this->getControllableEntity()->boost(true);
         else if(ship->getBoostPower()*4.0f < ship->getInitialBoostPower()) //lower limit ->do not boost
             this->getControllableEntity()->boost(false);
+    }
+
+    int ArtificialController::getFiremode(std::string name)
+    {
+        for (std::map< std::string, int >::iterator it = this->weaponModes_.begin(); it != this->weaponModes_.end(); ++it)
+        {
+            if (it->first == name)
+                return it->second;
+        }
+        return -1;
     }
 
 }
