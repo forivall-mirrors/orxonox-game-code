@@ -1045,11 +1045,11 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         {
             int firemode;
             float random = rnd(1);//
-            if (this->isCloseAtTarget(130) && (firemode = getFiremode("LightningGun"))>-1 )
+            if (this->isCloseAtTarget(130) && (firemode = getFiremode("LightningGun")) > -1 )
             {//LENSFLARE: short range weapon
                 this->getControllableEntity()->fire(firemode); //ai uses lens flare if they're close enough to the target
             }
-            else if( this->isCloseAtTarget(400) && (random < this->botlevel_) && (firemode = getFiremode("RocketFire")>-1))
+            else if( this->isCloseAtTarget(400) && (random < this->botlevel_) && (firemode = getFiremode("RocketFire")) > -1 )
             {//ROCKET: mid range weapon
                 this->mode_ = ROCKET; //Vector-implementation: mode_.push_back(ROCKET);
                 this->getControllableEntity()->fire(firemode); //launch rocket
@@ -1063,7 +1063,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                 else
                     this->timeout_ = 4.0f; //TODO: find better default value
             }
-            else if ((firemode = getFiremode("HsW01")>-1)) //LASER: default weapon
+            else if ((firemode = getFiremode("HsW01")) > -1 ) //LASER: default weapon
                 this->getControllableEntity()->fire(firemode);
         }
     }
