@@ -39,6 +39,9 @@ END_BUILD_UNIT
   Math.cc
   SignalHandler.cc
   StringUtils.cc
+  output/OutputStream.cc
+  output/OutputManager.cc
+  output/OutputListener.cc
 )
 
 ORXONOX_ADD_LIBRARY(util
