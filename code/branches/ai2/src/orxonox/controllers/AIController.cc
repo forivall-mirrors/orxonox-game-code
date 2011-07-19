@@ -225,7 +225,7 @@ namespace orxonox
                         {
                             this->aimAtTarget();
                             random = rnd(maxrand);
-                            if(this->botlevel_*100 > random)
+                            if(this->botlevel_*100 > random && !this->isCloseAtTarget(20))
                                 this->follow();  //If a bot is shooting a player, it shouldn't let him go away easily.
                         }
                     }
@@ -261,7 +261,8 @@ namespace orxonox
                     {
                         this->aimAtTarget();
                         random = rnd(maxrand);
-                        if(this->botlevel_*100 > random)
+
+                        if(this->botlevel_*100 > random && !this->isCloseAtTarget(20))
                             this->follow();//If a bot is shooting a player, it shouldn't let him go away easily.
                      }
                 }

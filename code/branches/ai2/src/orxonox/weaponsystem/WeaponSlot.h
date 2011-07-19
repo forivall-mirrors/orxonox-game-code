@@ -34,6 +34,25 @@
 
 namespace orxonox
 {
+        /**
+        @brief
+            The a WeaponSlot defines where a @ref orxonox::Weapon "Weapon" is placed on a pawn. (A WeaponSlot is a StaticEntity)
+            In a WeaponSlot there can be only one "Weapon", but a Weapon can have several @ref orxonox::WeaponMode "WeaponModes".
+            A WeaponMode is what one intuitively imagines as weapon. (E.g. RocketFire, LightningGun, LaserFire are weaponmodes)
+
+            A WeaponSlot is created in XML (in a weaponsettings file), which can be done in the following fashion:
+            @code
+            <weaponslots>
+              <WeaponSlot position="-15.0,-1.5,0" />
+              <WeaponSlot position=" 15.0,-1.5,0" />
+              <WeaponSlot position="    0,   0,0" />
+            </weaponslots>
+
+        @author
+            Martin Polak
+
+        @ingroup Weaponsystem
+    */
     class _OrxonoxExport WeaponSlot : public StaticEntity
     {
         public:
