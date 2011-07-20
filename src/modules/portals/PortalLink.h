@@ -36,12 +36,12 @@
 #define _PortalLink_H__
 
 #include "portals/PortalsPrereqs.h"
-#include "tools/interfaces/Tickable.h"
-#include "core/BaseObject.h"
-#include "PortalEndPoint.h"
-#include "objects/eventsystem/EventListener.h"
 
 #include <map>
+
+#include "PortalEndPoint.h"
+
+#include "core/BaseObject.h"
 
 namespace orxonox
 {
@@ -56,22 +56,15 @@ namespace orxonox
             PortalLink(BaseObject* creator);
             virtual ~PortalLink();
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
+
             inline void setFromID(unsigned int from)    //!< set the ID of the PortalEndPoint which should act as the entrance of this link
-            {
-                this->fromID_ = from;
-            }
+                { this->fromID_ = from; }
             inline unsigned int getFromID(unsigned int) const
-            {
-                return this->fromID_;
-            }
+                { return this->fromID_; }
             inline void setToID(unsigned int to)     //!< set the ID of the PortalEndPoint which should act as the exit of this link
-            {
-                this->toID_ = to;
-            }
+                { this->toID_ = to; }
             inline unsigned int getToID(unsigned int) const
-            {
-                return this->toID_;
-            }
+                { return this->toID_; }
             /*! \brief Let an entity enter a certain PortalEndPoint
                 \param entity pointer to the entity which is entering a PortalEndPoint
                 \param entrance pointer to the PortalEndPoint to enter

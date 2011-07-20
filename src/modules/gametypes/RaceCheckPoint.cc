@@ -30,13 +30,14 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "SpaceRace.h"
 #include "util/Convert.h"
+
+#include "SpaceRace.h"
 
 namespace orxonox
 {
     CreateFactory(RaceCheckPoint);
-    
+
     RaceCheckPoint::RaceCheckPoint(BaseObject* creator): DistanceTrigger(creator), RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
         RegisterObject(RaceCheckPoint);
@@ -49,23 +50,23 @@ namespace orxonox
         this->setRadarObjectShape(RadarViewable::Triangle);
         this->setRadarVisibility(false);
     }
-    
+
     RaceCheckPoint::~RaceCheckPoint()
     {
     }
-    
+
     void RaceCheckPoint::tick(float dt)
     {
         SUPER(RaceCheckPoint, tick, dt);
 
         SpaceRace* gametype = orxonox_cast<SpaceRace*>(this->getGametype().get());
+        assert(gametype);
         if (this->getCheckpointIndex() == gametype->getCheckpointsReached())
             this->setRadarVisibility(true);
         else
             this->setRadarVisibility(false);
     }
 
-    
     void RaceCheckPoint::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(RaceCheckPoint, XMLPort, xmlelement, mode);
@@ -74,7 +75,7 @@ namespace orxonox
         XMLPortParam(RaceCheckPoint, "islast", setLast, getLast, xmlelement, mode).defaultValues(false);
         XMLPortParam(RaceCheckPoint, "timelimit", setTimelimit, getTimeLimit, xmlelement, mode).defaultValues(0);
     }
-    
+
     void RaceCheckPoint::triggered(bool bIsTriggered)
     {
         DistanceTrigger::triggered(bIsTriggered);
@@ -98,7 +99,7 @@ namespace orxonox
             }
         }
     }
-    
+
     void RaceCheckPoint::setTimelimit(float timeLimit)
     {
         this->bTimeLimit_ = timeLimit;
@@ -114,5 +115,5 @@ namespace orxonox
             }
         }
     }
-    
+
 }

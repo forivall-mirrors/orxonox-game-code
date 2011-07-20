@@ -33,15 +33,14 @@
 
 #include "objects/triggers/DistanceTrigger.h"
 #include "interfaces/RadarViewable.h"
-//#include <boost/concept_check.hpp>
 
 namespace orxonox
 {
-  /**
-  @brief
-    The RaceCheckPoint class enables the creation of a check point to use in a SpaceRace level.
-    !!! Don't forget to control the indexes of your check points and to set one last check point!!!
-  */
+    /**
+    @brief
+        The RaceCheckPoint class enables the creation of a check point to use in a SpaceRace level.
+        !!! Don't forget to control the indexes of your check points and to set one last check point!!!
+    */
     class _GametypesExport RaceCheckPoint : public DistanceTrigger, public RadarViewable
     {
         public:

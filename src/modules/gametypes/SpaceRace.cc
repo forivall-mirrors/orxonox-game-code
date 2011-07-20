@@ -30,37 +30,35 @@
 
 #include "core/CoreIncludes.h"
 #include "network/Host.h"
-#include <util/Clock.h>
-#include <util/Math.h>
 #include "util/Convert.h"
+#include "util/Math.h"
 
 namespace orxonox
 {
     CreateUnloadableFactory(SpaceRace);
-    
+
     SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
     {
         RegisterObject(SpaceRace);
-        this->bCheckpointsReached_ = 0;
+        this->checkpointsReached_ = 0;
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
     }
-    
+
     void SpaceRace::end()
     {
         this->Gametype::end();
-          
+
         if (this->bTimeIsUp_)
         {
             this->clock_.capture();
             int s = this->clock_.getSeconds();
             int ms = this->clock_.getMilliseconds()-1000*s;
             const std::string& message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
-                        + "You didn't reach the check point " + multi_cast<std::string>(this->bCheckpointsReached_+1)
+                        + "You didn't reach the check point " + multi_cast<std::string>(this->checkpointsReached_+1)
                         + " before the time limit. You lose!";
             COUT(3) << message;
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-            Host::Broadcast(message);
         }
         else
         {
@@ -71,7 +69,6 @@ namespace orxonox
                         + "." + multi_cast<std::string>(ms) + " seconds.";
             COUT(3) << message << std::endl;
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-            Host::Broadcast(message);
             float time = this->clock_.getSecondsPrecise();
             this->scores_.insert(time);
             std::set<float>::iterator it;
@@ -86,12 +83,12 @@ namespace orxonox
 
         std::string message("The match has started! Reach the check points as quickly as possible!");
         COUT(3) << message << std::endl;
-        Host::Broadcast(message);
+        const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
     }
-    
+
     void SpaceRace::newCheckpointReached()
     {
-        this->bCheckpointsReached_++;
+        this->checkpointsReached_++;
         this->clock_.capture();
         int s = this->clock_.getSeconds();
         int ms = this->clock_.getMilliseconds()-1000*s;
@@ -100,7 +97,6 @@ namespace orxonox
                         + " seconds.\n";
         COUT(3) << message;
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-        Host::Broadcast(message);
     }
 
 }
