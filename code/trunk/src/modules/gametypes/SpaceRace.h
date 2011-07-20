@@ -29,13 +29,16 @@
 #ifndef _SpaceRace_H__
 #define _SpaceRace_H__
 
-#include "gametypes/Gametype.h"
 #include "gametypes/GametypesPrereqs.h"
-#include "RaceCheckPoint.h"
-#include <boost/concept_check.hpp>
-#include <util/Clock.h>
-#include <string.h>
+
 #include <set>
+#include <string>
+
+#include <util/Clock.h>
+
+#include "gametypes/Gametype.h"
+
+#include "RaceCheckPoint.h"
 
 namespace orxonox
 {
@@ -46,27 +49,27 @@ namespace orxonox
     class _GametypesExport SpaceRace : public Gametype
     {
         friend class RaceCheckPoint;
-        
+
         public:
             SpaceRace(BaseObject* creator);
             virtual ~SpaceRace() {}
 
             virtual void start();
-                virtual void end();
+            virtual void end();
 
             virtual void newCheckpointReached();
 
             inline void setCheckpointsReached(int n)
-            { this->bCheckpointsReached_ = n;}
+                { this->checkpointsReached_ = n;}
             inline int getCheckpointsReached()
-            { return this->bCheckpointsReached_; }
+                { return this->checkpointsReached_; }
             inline void timeIsUp()
-            { this->bTimeIsUp_ = true;}
+                { this->bTimeIsUp_ = true;}
 
         protected:
 
         private:
-            int bCheckpointsReached_; //The current number of check points reached by the player.
+            int checkpointsReached_; //The current number of check points reached by the player.
             std::set<float> scores_; //The times of the players are saved in a set.
             bool bTimeIsUp_; //True if one of the check points is reached too late.
             Clock clock_; //The clock starts running at the beginning of the game. It is used to give the time at each check point, the give the time at the end of the game, and to stop the game if a check point is reached too late.

@@ -57,7 +57,7 @@ namespace orxonox
         if (this->isInitialized())
         {
             this->pawnsIn_.clear();
-        
+
             for( std::vector<BillboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++)
             {
                 if( current->billy != NULL)
@@ -68,7 +68,7 @@ namespace orxonox
             this->billboards_.clear();
         }
     }
-    
+
     void SpaceBoundaries::checkWhoIsIn()
     {
         pawnsIn_.clear();
@@ -93,7 +93,7 @@ namespace orxonox
             }
         }
     }
-    
+
     void SpaceBoundaries::positionBillboard(const Vector3& position, float alpha)
     {
         size_t current;
@@ -123,7 +123,7 @@ namespace orxonox
         upVector.normalise();
         this->billboards_[current].billy->setCommonUpVector(upVector);
     }
-    
+
     void SpaceBoundaries::setBillboardOptions(Billboard *billy)
     {
         if(billy != NULL)
@@ -134,7 +134,7 @@ namespace orxonox
             billy->setVisible(true);
         }
     }
-    
+
     void SpaceBoundaries::removeAllBillboards()
     {
         for( std::vector<BillboardAdministration>::iterator current = this->billboards_.begin(); current != this->billboards_.end(); current++ )
@@ -143,7 +143,7 @@ namespace orxonox
             current->billy->setVisible(false);
         }
     }
-    
+
     void SpaceBoundaries::setMaxDistance(float r)
     {
         this->maxDistance_ = r;
@@ -152,7 +152,7 @@ namespace orxonox
     {
         return this->maxDistance_;
     }
-    
+
     void SpaceBoundaries::setWarnDistance(float r)
     {
         this->warnDistance_ = r;
@@ -161,7 +161,7 @@ namespace orxonox
     {
         return this->warnDistance_;
     }
-    
+
     void SpaceBoundaries::setShowDistance(float r)
     {
         this->showDistance_ = r;
@@ -170,7 +170,7 @@ namespace orxonox
     {
         return this->showDistance_;
     }
-    
+
     void SpaceBoundaries::setHealthDecrease(float amount)
     {
         this->healthDecrease_ = amount/1000;
@@ -179,7 +179,7 @@ namespace orxonox
     {
         return this->healthDecrease_;
     }
-    
+
     void SpaceBoundaries::setReaction(int mode)
     {
         this->reaction_ = mode;
@@ -199,12 +199,12 @@ namespace orxonox
         XMLPortParam(SpaceBoundaries, "healthDecrease", setHealthDecrease, getHealthDecrease, xmlelement, mode);
         XMLPortParam(SpaceBoundaries, "reactionMode", setReaction, getReaction, xmlelement, mode);
     }
-    
+
     void SpaceBoundaries::tick(float dt)
     {
         this->checkWhoIsIn();
         this->removeAllBillboards();
-        
+
         float distance;
         bool humanItem;
         for( std::list<WeakPtr<Pawn> >::iterator current = pawnsIn_.begin(); current != pawnsIn_.end(); current++ )
@@ -246,7 +246,7 @@ namespace orxonox
             }
         }
     }
-    
+
     float SpaceBoundaries::computeDistance(WorldEntity *item)
     {
         if(item != NULL)
@@ -257,30 +257,30 @@ namespace orxonox
             return -1;
         }
     }
-    
+
     void SpaceBoundaries::displayWarning(const std::string warnText)
-    {   
+    {
         // TODO
     }
-    
+
     void SpaceBoundaries::displayBoundaries(Pawn *item, float alpha)
     {
-        
+
         Vector3 direction = item->getPosition() - this->getPosition();
         direction.normalise();
-        
+
         Vector3 boundaryPosition = this->getPosition() + direction * this->maxDistance_;
-        
+
         this->positionBillboard(boundaryPosition, alpha);
     }
-    
+
     void SpaceBoundaries::conditionalBounceBack(Pawn *item, float currentDistance, float dt)
     {
         Vector3 normal = item->getPosition() - this->getPosition();
         normal.normalise();
         Vector3 velocity = item->getVelocity();
         float normalSpeed = item->getVelocity().dotProduct(normal);
-        
+
         /* Check, whether the Pawn would leave the boundary in the next tick, if so send it back. */
         if( this->reaction_ == 0 && currentDistance + normalSpeed * dt > this->maxDistance_ - 10 ) // -10: "security measure"
         {
@@ -291,22 +291,22 @@ namespace orxonox
             bounceBack(item, &normal, &velocity);
         }
     }
-    
+
     void SpaceBoundaries::bounceBack(Pawn *item, Vector3 *normal, Vector3 *velocity)
     {
         float dampingFactor = 0.5;
         *velocity = velocity->reflect(*normal);
         Vector3 acceleration = item->getAcceleration();
         acceleration = acceleration.reflect(*normal);
-        
+
         item->lookAt( *velocity + this->getPosition() );
-        
+
         item->setAcceleration(acceleration * dampingFactor);
         item->setVelocity(*velocity * dampingFactor);
-        
+
         item->setPosition( item->getPosition() - *normal * 10 ); // Set the position of the Pawn to be well inside the boundary.
     }
-    
+
     bool SpaceBoundaries::isHumanPlayer(Pawn *item)
     {
         if(item != NULL)
@@ -318,5 +318,5 @@ namespace orxonox
         }
         return false;
     }
-    
+
 }

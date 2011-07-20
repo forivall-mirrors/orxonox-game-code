@@ -51,9 +51,9 @@ namespace orxonox
 
         // Default damage must be zero, otherwise it would be above zero if no settings are made in the weaponsettings xml file.
         // same thing for all weaponmodes files
-        this->damage_ = 0;
-        this->healthdamage_ = 0;
-        this->shielddamage_ = 0;
+        this->damage_ = 0.0f;
+        this->healthdamage_ = 0.0f;
+        this->shielddamage_ = 0.0f;
     }
 
     BasicProjectile::~BasicProjectile()
