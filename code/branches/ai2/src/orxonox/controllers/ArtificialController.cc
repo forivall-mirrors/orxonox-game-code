@@ -48,6 +48,7 @@
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponSlot.h"
+#include "weaponsystem/WeaponSlot.h"
 
 namespace orxonox
 {
@@ -92,13 +93,17 @@ namespace orxonox
         this->bSetupWorked = false;
         this->botlevel_ = 0.5f;
         this->mode_ = DEFAULT;////Vector-implementation: mode_.push_back(DEFAULT);
-        this->timeout_=0;
+        this->timeout_ = 0;
+        this->currentWaypoint_ = 0;
+        this->setAccuracy(100);
     }
 
     ArtificialController::~ArtificialController()
     {
         if (this->isInitialized())
         {//Vector-implementation: mode_.erase(mode_.begin(),mode_.end());
+            for (size_t i = 0; i < this->waypoints_.size(); ++i)
+                this->waypoints_[i]->destroy();
             this->removeFromFormation();
             this->weaponModes_.clear();
             for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it; ++it)
@@ -1137,6 +1142,45 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                 return it->second;
         }
         return -1;
+    }
+
+    void ArtificialController::addWaypoint(WorldEntity* waypoint)
+    {
+        this->waypoints_.push_back(waypoint);
+    }
+
+    WorldEntity* ArtificialController::getWaypoint(unsigned int index) const
+    {
+        if (index < this->waypoints_.size())
+            return this->waypoints_[index];
+        else
+            return 0;
+    }
+
+    void ArtificialController::updatePointsOfInterest(std::string name, float distance)
+    {
+        WorldEntity* waypoint = NULL;
+        if(name == "Pickup")
+        {
+            for (ObjectList<WorldEntity>::iterator it = ObjectList<WorldEntity>::begin(); it != ObjectList<WorldEntity>::end(); ++it)
+            {
+                //get POI by string: Possible POIs are PICKUPSPAWNER, FORCEFIELDS (!analyse!), ...
+                //if(it->isA(Pickupable)) //distance to POI decides wether it is added (neither too close nor too far away)
+                //To Think: how should POI's be managed? (e.g. if there are no real moving target or if the can be taken "en passant".)
+                   waypoint = *it;
+                /*const Vector3 realDistance = it->getPosition() - this->getControllableEntity()->getPosition();
+                if( realDistance.length() < distance)
+                {
+                    float minDistance = it->getTriggerDistance().length()*it->getTriggerDistance().length();
+                    if(this->squaredaccuracy_ > minDistance)
+                        this->squaredaccuracy_ = minDistance;
+                    //waypoint = static_cast<WorldEntity*>(it);
+                    break;
+               // }*/
+            }
+        }
+        if(waypoint)
+            this->waypoints_.push_back(waypoint);
     }
 
 }

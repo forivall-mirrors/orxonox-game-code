@@ -46,18 +46,8 @@ namespace orxonox
             virtual void XMLPort(Element& xmlelement, XMLPort::Mode mode);
             virtual void tick(float dt);
 
-            void addWaypoint(WorldEntity* waypoint);
-            WorldEntity* getWaypoint(unsigned int index) const;
-
-            inline void setAccuracy(float accuracy)
-                { this->squaredaccuracy_ = accuracy*accuracy; }
-            inline float getAccuracy() const
-                { return sqrt(this->squaredaccuracy_); }
-
         protected:
-            std::vector<WorldEntity*> waypoints_;
-            size_t currentWaypoint_;
-            float squaredaccuracy_;
+
     };
 }
 

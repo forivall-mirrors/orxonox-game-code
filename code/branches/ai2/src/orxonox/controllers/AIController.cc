@@ -211,6 +211,13 @@ namespace orxonox
 
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
+        if (this->waypoints_.size() > 0 && this->getControllableEntity() && this->mode_ == DEFAULT) //Waypoint functionality.
+        {
+            if (this->waypoints_[this->currentWaypoint_]->getWorldPosition().squaredDistance(this->getControllableEntity()->getPosition()) <= this->squaredaccuracy_)
+                this->currentWaypoint_ = (this->currentWaypoint_ + 1) % this->waypoints_.size();
+
+            this->moveToPosition(this->waypoints_[this->currentWaypoint_]->getWorldPosition());
+        }
         if(this->mode_ == DEFAULT)
 	    {
             if (this->state_ == MASTER)

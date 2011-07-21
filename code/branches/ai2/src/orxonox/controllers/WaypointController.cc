@@ -39,26 +39,18 @@ namespace orxonox
     WaypointController::WaypointController(BaseObject* creator) : ArtificialController(creator)
     {
         RegisterObject(WaypointController);
-
-        this->currentWaypoint_ = 0;
-        this->setAccuracy(100);
     }
 
     WaypointController::~WaypointController()
     {
-        if (this->isInitialized())
-        {
-            for (size_t i = 0; i < this->waypoints_.size(); ++i)
-                this->waypoints_[i]->destroy();
-        }
     }
 
     void WaypointController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
     {
         SUPER(WaypointController, XMLPort, xmlelement, mode);
 
-        XMLPortParam(WaypointController, "accuracy", setAccuracy, getAccuracy, xmlelement, mode).defaultValues(100.0f);
-        XMLPortObject(WaypointController, WorldEntity, "waypoints", addWaypoint, getWaypoint,  xmlelement, mode);
+        XMLPortParam(ArtificialController, "accuracy", setAccuracy, getAccuracy, xmlelement, mode).defaultValues(100.0f);
+        XMLPortObject(ArtificialController, WorldEntity, "waypoints", addWaypoint, getWaypoint,  xmlelement, mode);
     }
 
     void WaypointController::tick(float dt)
@@ -75,16 +67,4 @@ namespace orxonox
         this->moveToPosition(this->waypoints_[this->currentWaypoint_]->getWorldPosition());
     }
 
-    void WaypointController::addWaypoint(WorldEntity* waypoint)
-    {
-        this->waypoints_.push_back(waypoint);
-    }
-
-    WorldEntity* WaypointController::getWaypoint(unsigned int index) const
-    {
-        if (index < this->waypoints_.size())
-            return this->waypoints_[index];
-        else
-            return 0;
-    }
 }
