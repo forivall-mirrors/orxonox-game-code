@@ -39,14 +39,14 @@ namespace orxonox
 {
 namespace test
 {
-    class _UtilExport OutputStream : public std::ostringstream
+    class OutputStream : public std::ostringstream
     {
         typedef std::ostream& (*EndlType)(std::ostream&);
 
         public:
-            OutputStream();
+            _UtilExport OutputStream();
 
-            void setOutputAttributes(OutputLevel level, OutputContext context);
+            void _UtilExport setOutputAttributes(OutputLevel level, OutputContext context);
 
             template <class T>
             inline OutputStream& operator<<(const T& val) { return this->output(val); }
@@ -73,7 +73,7 @@ namespace test
                 return *this;
             }
 
-            void sendMessage();
+            void _UtilExport sendMessage();
 
             OutputLevel level_;
             OutputContext context_;

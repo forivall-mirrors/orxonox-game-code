@@ -33,6 +33,8 @@
 
 #include <vector>
 
+#include <boost/bimap.hpp>
+
 #include "OutputDefinitions.h"
 
 namespace orxonox
@@ -65,6 +67,11 @@ namespace test
             inline bool acceptsOutput(OutputLevel level, OutputContext context) const
                 { return ((this->combinedLevelMask_ & level) && (this->combinedContextMask_ & context)); }
 
+            OutputContext registerContext(const std::string& name);
+
+            const std::string& getLevelName(OutputLevel level) const;
+            const std::string& getContextName(OutputContext context) const;
+
         private:
             OutputManager();
             OutputManager(const OutputManager&);
@@ -76,6 +83,8 @@ namespace test
 
             OutputLevel   combinedLevelMask_;
             OutputContext combinedContextMask_;
+
+            boost::bimap<OutputContext, std::string> contexts_;
     };
 }
 }

@@ -30,6 +30,7 @@
 #define _OutputDefinitions_H__
 
 #include "util/UtilPrereqs.h"
+#include <string>
 
 namespace orxonox
 {
@@ -57,14 +58,16 @@ namespace test
 
     typedef uint64_t OutputContext;
 
+    extern _UtilExport OutputContext registerContext(const std::string& name);
+
     namespace context
     {
         static const OutputContext all       = 0xFFFFFFFFFFFFFFFF;
         static const OutputContext none      = 0x0000000000000000;
-        static const OutputContext undefined = 0x0000000000000001;
+        static const OutputContext undefined = registerContext("undefined");
 
-        static const OutputContext test1     = 0x0000000000000002;
-        static const OutputContext test2     = 0x0000000000000004;
+        static const OutputContext test1     = registerContext("test1");
+        static const OutputContext test2     = registerContext("test2");
     }
 }
 }
