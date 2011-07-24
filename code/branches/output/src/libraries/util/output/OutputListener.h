@@ -30,6 +30,9 @@
 #define _OutputListener_H__
 
 #include "util/UtilPrereqs.h"
+
+#include <vector>
+
 #include "OutputDefinitions.h"
 
 namespace orxonox
@@ -59,8 +62,7 @@ namespace test
             inline bool acceptsOutput(OutputLevel level, OutputContext context) const
                 { return ((this->levelMask_ & level) && (this->contextMask_ & context)); }
 
-        protected:
-            virtual void output(OutputLevel level, OutputContext context, const std::string& message) = 0;
+            virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines) = 0;
 
         private:
             OutputLevel   levelMask_;

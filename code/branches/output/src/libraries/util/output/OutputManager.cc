@@ -43,10 +43,20 @@ namespace test
                 this->setLevelMax(level::user_info);
             }
 
-        protected:
-            virtual void output(OutputLevel level, OutputContext context, const std::string& message)
+            virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
             {
-                COUT(0) << OutputManager::getInstance().getLevelName(level) << " / " << OutputManager::getInstance().getContextName(context) << " : " << message << endl;
+                std::string prefix = OutputManager::getInstance().getLevelName(level) + ": ";
+                if (context != context::undefined)
+                {
+                    std::string context_name = OutputManager::getInstance().getContextName(context);
+                    if (context_name == "")
+                        context_name = OutputManager::getInstance().getComposedContextName(context);
+                    prefix += "[" + context_name + "] ";
+                }
+                std::string blanks(prefix.length(), ' ');
+
+                for (size_t i = 0; i < lines.size(); ++i)
+                    COUT(0) << (i == 0 ? prefix : blanks) << lines[i] << endl;
             }
     };
 
@@ -75,9 +85,16 @@ namespace test
 
     void OutputManager::pushMessage(OutputLevel level, OutputContext context, const std::string& message)
     {
+        std::vector<std::string> lines;
+        for (size_t start = 0, end = 0; end != std::string::npos; start = end + 1)
+        {
+            end = message.find_first_of('\n', start);
+            lines.push_back(message.substr(start, end));
+        }
+
         for (size_t i = 0; i < this->listeners_.size(); ++i)
             if (this->listeners_[i]->acceptsOutput(level, context))
-                this->listeners_[i]->output(level, context, message);
+                this->listeners_[i]->output(level, context, lines);
     }
 
     void OutputManager::registerListener(OutputListener* listener)
@@ -167,33 +184,31 @@ namespace test
         {
             boost::bimap<OutputContext, std::string>::left_map::const_iterator it = this->contexts_.left.find(context);
             if (it != this->contexts_.left.end())
-            {
                 return it->second;
-            }
-            else
-            {
-                static std::string composed_context;
-                composed_context = "";
-                size_t counter = 0;
-                for (OutputContext context_test = 0x1; context_test != 0x0; context_test = context_test << 1)
-                {
-                    if (context & context_test)
-                    {
-                        it = this->contexts_.left.find(context_test);
-                        if (it != this->contexts_.left.end())
-                        {
-                            if (counter)
-                                composed_context += ", ";
-
-                            composed_context += it->second;
-                            ++counter;
-                        }
-                    }
-                }
-                return composed_context;
-            }
         }
         return BLANKSTRING;
+    }
+
+    std::string OutputManager::getComposedContextName(OutputContext context) const
+    {
+        std::string name;
+        size_t counter = 0;
+        for (OutputContext context_test = 0x1; context_test != 0x0; context_test = context_test << 1)
+        {
+            if (context & context_test)
+            {
+                boost::bimap<OutputContext, std::string>::left_map::const_iterator it = this->contexts_.left.find(context_test);
+                if (it != this->contexts_.left.end())
+                {
+                    if (counter)
+                        name += ", ";
+
+                    name += it->second;
+                    ++counter;
+                }
+            }
+        }
+        return name;
     }
 }
 }

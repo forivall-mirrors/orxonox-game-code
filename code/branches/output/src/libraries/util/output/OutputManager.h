@@ -71,6 +71,7 @@ namespace test
 
             const std::string& getLevelName(OutputLevel level) const;
             const std::string& getContextName(OutputContext context) const;
+            std::string getComposedContextName(OutputContext context) const;
 
         private:
             OutputManager();
