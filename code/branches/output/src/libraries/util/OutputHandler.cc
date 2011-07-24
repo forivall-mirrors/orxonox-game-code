@@ -45,9 +45,6 @@
 
 namespace orxonox
 {
-    //! How the log file shall be named on the filesystem
-    const std::string logFileBaseName_g = "orxonox.log";
-
     /////////////////////////
     ///// LogFileWriter /////
     /////////////////////////
@@ -70,12 +67,14 @@ namespace orxonox
         LogFileWriter()
             : OutputListener("LogFile")
         {
+            this->logFileBaseName_ = "orxonox.log";
+
             // Get path for a temporary file
 #ifdef ORXONOX_PLATFORM_WINDOWS
             char* pTempDir = getenv("TEMP");
-            this->logFilename_ = std::string(pTempDir) + '/' + logFileBaseName_g;
+            this->logFilename_ = std::string(pTempDir) + '/' + this->logFileBaseName_;
 #else
-            this->logFilename_ = std::string("/tmp/") + logFileBaseName_g;
+            this->logFilename_ = std::string("/tmp/") + this->logFileBaseName_;
 #endif
 
             // Get current time
@@ -109,7 +108,7 @@ namespace orxonox
                 this->logFile_.close();
 
             // Open the new file
-            this->logFilename_ = path + logFileBaseName_g;
+            this->logFilename_ = path + this->logFileBaseName_;
             this->openFile();
         }
 
@@ -137,8 +136,9 @@ namespace orxonox
             }
         }
 
-        std::ofstream logFile_;     //!< File handle for the log file
-        std::string   logFilename_; //!< Filename of the log file
+        std::ofstream logFile_;         //!< File handle for the log file
+        std::string   logFilename_;     //!< Filename of the log file
+        std::string   logFileBaseName_; //!< How the log file shall be named on the filesystem
     };
 
 
