@@ -68,6 +68,7 @@ namespace test
 
         static const OutputContext test1     = registerContext("test1");
         static const OutputContext test2     = registerContext("test2");
+        static const OutputContext output    = registerContext("output");
     }
 }
 }

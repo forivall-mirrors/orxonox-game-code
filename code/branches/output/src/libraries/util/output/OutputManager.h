@@ -45,10 +45,9 @@ namespace test
 
     class _UtilExport OutputManager
     {
-        friend class OutputListener;
-
         public:
             static OutputManager& getInstance();
+            static OutputManager& getInstanceInternal();
 
             void pushMessage(OutputLevel level, OutputContext context, const std::string& message);
 
@@ -72,13 +71,12 @@ namespace test
             const std::string& getLevelName(OutputLevel level) const;
             const std::string& getContextName(OutputContext context) const;
             std::string getComposedContextName(OutputContext context) const;
+            std::string getDefaultPrefix(OutputLevel level, OutputContext context) const;
 
         private:
             OutputManager();
             OutputManager(const OutputManager&);
             ~OutputManager();
-
-            static OutputManager& getInstanceInternal();
 
             std::vector<OutputListener*> listeners_;
 

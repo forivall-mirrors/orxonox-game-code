@@ -30,6 +30,8 @@
 
 #include "util/Debug.h"
 #include "OutputListener.h"
+#include "MemoryWriter.h"
+#include "LogWriter.h"
 
 namespace orxonox
 {
@@ -43,16 +45,10 @@ namespace test
                 this->setLevelMax(level::user_info);
             }
 
+        protected:
             virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
             {
-                std::string prefix = OutputManager::getInstance().getLevelName(level) + ": ";
-                if (context != context::undefined)
-                {
-                    std::string context_name = OutputManager::getInstance().getContextName(context);
-                    if (context_name == "")
-                        context_name = OutputManager::getInstance().getComposedContextName(context);
-                    prefix += "[" + context_name + "] ";
-                }
+                const std::string& prefix = OutputManager::getInstance().getDefaultPrefix(level, context);
                 std::string blanks(prefix.length(), ' ');
 
                 for (size_t i = 0; i < lines.size(); ++i)
@@ -73,7 +69,11 @@ namespace test
     /*static*/ OutputManager& OutputManager::getInstance()
     {
         static OutputManager& instance = OutputManager::getInstanceInternal();
+
         static ConsoleOutput consoleOutputInstance;
+        static MemoryWriter& memoryWriterInstance = MemoryWriter::getInstance(); (void)memoryWriterInstance;
+        static LogWriter& logWriterInstance = LogWriter::getInstance(); (void)logWriterInstance;
+
         return instance;
     }
 
@@ -93,8 +93,7 @@ namespace test
         }
 
         for (size_t i = 0; i < this->listeners_.size(); ++i)
-            if (this->listeners_[i]->acceptsOutput(level, context))
-                this->listeners_[i]->output(level, context, lines);
+            this->listeners_[i]->unfilteredOutput(level, context, lines);
     }
 
     void OutputManager::registerListener(OutputListener* listener)
@@ -209,6 +208,19 @@ namespace test
             }
         }
         return name;
+    }
+
+    std::string OutputManager::getDefaultPrefix(OutputLevel level, OutputContext context) const
+    {
+        std::string prefix = this->getLevelName(level) + ": ";
+        if (context != context::undefined)
+        {
+            std::string context_name = this->getContextName(context);
+            if (context_name == "")
+                context_name = this->getComposedContextName(context);
+            prefix += "[" + context_name + "] ";
+        }
+        return prefix;
     }
 }
 }

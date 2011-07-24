@@ -42,6 +42,8 @@ END_BUILD_UNIT
   output/OutputStream.cc
   output/OutputManager.cc
   output/OutputListener.cc
+  output/LogWriter.cc
+  output/MemoryWriter.cc
 )
 
 ORXONOX_ADD_LIBRARY(util

@@ -41,8 +41,6 @@ namespace test
 {
     class _UtilExport OutputListener
     {
-        friend class OutputManager;
-
         public:
             OutputListener();
             ~OutputListener();
@@ -62,6 +60,10 @@ namespace test
             inline bool acceptsOutput(OutputLevel level, OutputContext context) const
                 { return ((this->levelMask_ & level) && (this->contextMask_ & context)); }
 
+            inline void unfilteredOutput(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
+                { if (this->acceptsOutput(level, context)) this->output(level, context, lines); }
+
+        protected:
             virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines) = 0;
 
         private:
