@@ -1169,9 +1169,21 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
                 //How should POI's be managed? (e.g. Look for POIs if there are no real targets to move to or if they can be taken "en passant".)
                    waypoint = *it;
                    if(waypoint->getIdentifier() == ClassByString(name))
-                   {//TODO: check distance,
-                       // PickupSpawner: adjust waypoint accuracy to PickupSpawner's triggerdistance
-                       // ForceField: analyze is angle between forcefield boost and own flying direction is acceptable
+                   {
+                       ControllableEntity* controllable = this->getControllableEntity();
+                       if(!controllable) continue;
+                       float distance = ( waypoint->getPosition() - controllable->getPosition() ).length();
+                       if(distance > 50.0f || distance < 5.0f) continue;
+                       if(name == "PickupSpawner") // PickupSpawner: adjust waypoint accuracy to PickupSpawner's triggerdistance
+                       {
+                           squaredaccuracy_ = waypoint->getTriggerDistance() * waypoint->getTriggerDistance();
+                       }
+                       else if(name == "ForceField") // ForceField: analyze is angle between forcefield boost and own flying direction is acceptable
+                       {
+
+                       }
+
+
                        break;
                    }
 

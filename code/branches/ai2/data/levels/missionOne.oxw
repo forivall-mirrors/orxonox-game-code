@@ -1,0 +1,87 @@
+<LevelInfo
+ name = "Tutorial"
+ description = "First guided steps in the orxonoxian universe."
+ tags = ""
+/>
+
+<?lua
+  include("stats.oxo")
+  include("HUDTemplates3.oxo")
+  include("templates/lodInformation.oxt")
+  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipPirate.oxt")
+?>
+
+<Level
+ name         = "Tutorial"
+ description  = "How to steer a spaceship."
+>
+  <templates>
+    <Template link=lodtemplate_default />
+  </templates>
+  <?lua include("includes/notifications.oxi") ?>
+
+  <Scene
+    ambientlight = "0.8, 0.8, 0.8"
+    skybox       = "Orxonox/Starbox"
+  >
+
+    <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
+    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff2 />
+
+<!-- Four boxes for aiming
+TODO: Turn engine off at the beginning.
+TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by using the left mouse button."
+"The laser is a standard weapon. It is fast and precise but does not deal much damage. Now do the same with the next target, but right click instead."
+"That was the lightning gun. Its plasma munition is quite slow, but a normal spaceship can't take more than three hits of such a strong weapon. That should be your favourite in close range combat or if you want to hit a really slow enemy. Try to destroy the next box by right clicking at it."
+"The target seeking rockets follow their target on their own and the explosive load shouldn't be underestimated. Now its time to hit the last target with the hand guided rocket. You can release one by pressing T once. Note: If you miss the target, you can get out of the rocket by clicking or pressing T once more."
+
+TODO: send in waypoint controlled ship that moves
+
+"Task complete. Manual rockets are your most powerful weapon. But since you have to steer it to your target yourself, you will leave your spaceship unprotected for a while. Now lets move to a slightly more difficult target. Take a look at your radar. The red dot is an enemy's ship. Try to turn your ship towards it, such that the red dot is in the radar's centre. You should be able to see it then directly. Your task is to destroy it."
+
+TODO: Turn engine on. Display a waypoint.
+"Lets start flying. Use W to accelerate and S to brake. The goal is to reach the spacestation which is displayed on the radar. If you want to be faster you can temporarily boost by hitting additionally to A the space button. If you use too much boost your engine heats up and you won't be able to use boost for a while. By the way boost could be useful during combat .."
+"That thing you've just collected is a drone. It will follow and protect you."
+TODO: send in a level 0.1 bot on a pirate ship.
+"Hi. We have been attacked by a pirate lately. Please protect us. The drone pickup will help you."
+
+-->    
+  <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+      <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+      </collisionShapes>
+  </Pawn>
+  <Pawn health=30 position="20,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+      <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+      </collisionShapes>
+  </Pawn>
+  <Pawn health=30 position="40,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+      <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="5,5,5" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="25,25,25" />
+      </collisionShapes>
+  </Pawn>
+  <Pawn health=30 position="60,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+      <attached>
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="5,5,5" />
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape position="0,0,0" halfExtents="25,25,25" />
+      </collisionShapes>
+  </Pawn>
+
+
+
+  </Scene>
+</Level>
+
