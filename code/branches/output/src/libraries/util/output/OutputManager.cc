@@ -28,34 +28,14 @@
 
 #include "OutputManager.h"
 
-#include "util/Debug.h"
-#include "OutputListener.h"
 #include "MemoryWriter.h"
+#include "ConsoleWriter.h"
 #include "LogWriter.h"
 
 namespace orxonox
 {
 namespace test
 {
-    class ConsoleOutput : public OutputListener
-    {
-        public:
-            ConsoleOutput()
-            {
-                this->setLevelMax(level::user_info);
-            }
-
-        protected:
-            virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
-            {
-                const std::string& prefix = OutputManager::getInstance().getDefaultPrefix(level, context);
-                std::string blanks(prefix.length(), ' ');
-
-                for (size_t i = 0; i < lines.size(); ++i)
-                    COUT(0) << (i == 0 ? prefix : blanks) << lines[i] << endl;
-            }
-    };
-
     OutputManager::OutputManager()
     {
         this->combinedLevelMask_ = 0;
@@ -76,8 +56,8 @@ namespace test
     {
         static OutputManager& instance = OutputManager::getInstance();
 
-        static ConsoleOutput consoleOutputInstance;
         static MemoryWriter& memoryWriterInstance = MemoryWriter::getInstance(); (void)memoryWriterInstance;
+        static ConsoleWriter& consoleWriterInstance = ConsoleWriter::getInstance(); (void)consoleWriterInstance;
         static LogWriter& logWriterInstance = LogWriter::getInstance(); (void)logWriterInstance;
 
         return instance;
@@ -152,7 +132,6 @@ namespace test
 
     OutputContext registerContext(const std::string& name)
     {
-        COUT(0) << "### register context " << name << std::endl;
         return OutputManager::getInstance().registerContext(name);
     }
 
