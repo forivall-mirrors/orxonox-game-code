@@ -32,6 +32,9 @@
 #include "util/UtilPrereqs.h"
 #include <string>
 
+#define REGISTER_OUTPUT_CONTEXT(name) \
+    OutputContext name() { static OutputContext value = registerContext(#name); return value; }
+
 namespace orxonox
 {
 namespace test
@@ -68,11 +71,11 @@ namespace test
 
         namespace
         {
-            OutputContext undefined()   { static OutputContext value = registerContext("undefined");    return value; }
+            REGISTER_OUTPUT_CONTEXT(undefined);
 
-            OutputContext test1()       { static OutputContext value = registerContext("test1");        return value; }
-            OutputContext test2()       { static OutputContext value = registerContext("test2");        return value; }
-            OutputContext output()      { static OutputContext value = registerContext("output");       return value; }
+            REGISTER_OUTPUT_CONTEXT(test1);
+            REGISTER_OUTPUT_CONTEXT(test2);
+            REGISTER_OUTPUT_CONTEXT(output);
         }
     }
 }
