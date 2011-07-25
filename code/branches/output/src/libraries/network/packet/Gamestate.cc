@@ -30,7 +30,7 @@
 
 #include <zlib.h>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/OrxAssert.h"
 #include "core/GameMode.h"
 #include "core/ObjectList.h"

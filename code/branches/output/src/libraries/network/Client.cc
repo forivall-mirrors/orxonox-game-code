@@ -43,7 +43,7 @@
 #include <cassert>
 
 #include "util/Clock.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/ScopedSingletonManager.h"
 #include "synchronisable/Synchronisable.h"
 #include "packet/Chat.h"

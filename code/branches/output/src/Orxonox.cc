@@ -42,7 +42,7 @@
 #include <windows.h>
 #endif
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "orxonox/Main.h"
 

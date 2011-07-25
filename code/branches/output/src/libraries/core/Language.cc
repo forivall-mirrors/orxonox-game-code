@@ -34,7 +34,7 @@
 #include "Language.h"
 
 #include <fstream>
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/StringUtils.h"
 #include "Core.h"
 #include "PathConfig.h"

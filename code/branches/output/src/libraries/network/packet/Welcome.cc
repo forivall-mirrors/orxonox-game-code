@@ -31,7 +31,7 @@
 #include "Welcome.h"
 
 #include <cassert>
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "network/Host.h"
 #include "network/synchronisable/Synchronisable.h"
 

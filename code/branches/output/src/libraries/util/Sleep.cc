@@ -33,7 +33,7 @@
 */
 
 #include "Sleep.h"
-#include "Debug.h"
+#include "Output.h"
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
 #ifndef WIN32_LEAN_AND_MEAN

@@ -72,7 +72,7 @@
 #define _Super_H__
 
 #include "CorePrereqs.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 
 ///////////////////////
 // Macro definitions //

@@ -36,7 +36,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "Acknowledgement.h"
 #include "Chat.h"
 #include "ClassID.h"

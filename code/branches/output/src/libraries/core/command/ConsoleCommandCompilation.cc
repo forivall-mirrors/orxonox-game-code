@@ -37,7 +37,7 @@
 #include <set>
 #include <string>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/ExprParser.h"
 #include "util/StringUtils.h"
 #include "ConsoleCommand.h"

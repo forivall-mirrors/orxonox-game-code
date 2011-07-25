@@ -32,7 +32,7 @@
 #include <tinyxml/ticpp.h>
 #include <boost/scoped_ptr.hpp>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "BaseObject.h"

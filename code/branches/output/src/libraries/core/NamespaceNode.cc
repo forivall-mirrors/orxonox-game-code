@@ -27,7 +27,7 @@
  */
 
 #include "NamespaceNode.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 
 namespace orxonox
 {

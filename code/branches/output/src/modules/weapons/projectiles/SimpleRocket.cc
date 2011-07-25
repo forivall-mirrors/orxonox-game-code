@@ -40,7 +40,7 @@
 #include "controllers/Controller.h"
 #include "weapons/RocketController.h"
 #include "sound/WorldSound.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 
 namespace orxonox
 {

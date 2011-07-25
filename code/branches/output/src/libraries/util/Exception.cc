@@ -36,7 +36,7 @@
 
 #include <cstddef>
 #include <CEGUIExceptions.h>
-#include "Debug.h"
+#include "Output.h"
 
 namespace orxonox
 {

@@ -33,7 +33,7 @@
 #include <queue>
 #include <string>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "core/ObjectList.h"
 #include "network/NetworkFunction.h"
 

@@ -51,7 +51,7 @@
 #include "core/ThreadPool.h"
 #include "core/command/Executor.h"
 #include "core/GameMode.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Clock.h"
 #include "util/OrxAssert.h"
 // #include "TrafficControl.h"

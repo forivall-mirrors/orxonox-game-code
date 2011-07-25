@@ -37,7 +37,7 @@
 #include "util/Convert.h"
 #include "util/SubString.h"
 #include "util/StringUtils.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "core/command/ConsoleCommand.h"
 #include "core/command/CommandEvaluation.h"
 #include "core/command/CommandExecutor.h"

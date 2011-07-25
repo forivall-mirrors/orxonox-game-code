@@ -36,7 +36,7 @@ extern "C" {
 }
 #include <loki/ScopeGuard.h>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "Resource.h"
 #include "command/IOConsole.h"

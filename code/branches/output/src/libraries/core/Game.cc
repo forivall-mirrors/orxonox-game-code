@@ -39,7 +39,7 @@
 #include <loki/ScopeGuard.h>
 
 #include "util/Clock.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/Sleep.h"
 #include "util/SubString.h"

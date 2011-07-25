@@ -42,7 +42,7 @@
 #include <ois/OISException.h>
 
 #include "util/Clock.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "InputState.h"
 

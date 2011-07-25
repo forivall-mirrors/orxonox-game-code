@@ -30,7 +30,7 @@
 #include "DeleteObjects.h"
 
 #include <cassert>
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "network/synchronisable/Synchronisable.h"
 
 namespace orxonox {

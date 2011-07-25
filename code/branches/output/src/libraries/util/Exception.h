@@ -62,7 +62,7 @@
 #include <exception>
 #include <sstream>
 #include <string>
-#include "Debug.h"
+#include "Output.h"
 
 namespace orxonox
 {

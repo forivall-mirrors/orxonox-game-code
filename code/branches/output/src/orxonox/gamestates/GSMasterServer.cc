@@ -29,7 +29,7 @@
 
 #include "GSMasterServer.h"
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
 

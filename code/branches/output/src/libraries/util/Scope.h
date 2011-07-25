@@ -59,7 +59,7 @@ Scopes are usually used to control the creation and destruction of Singletons.
 #include <set>
 #include <loki/ScopeGuard.h>
 
-#include "Debug.h"
+#include "Output.h"
 
 namespace orxonox
 {

@@ -33,7 +33,7 @@
 
 #include "MetaObjectList.h"
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "Identifier.h"
 #include "ObjectListBase.h"
 

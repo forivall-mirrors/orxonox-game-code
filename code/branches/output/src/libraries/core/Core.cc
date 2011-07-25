@@ -51,7 +51,7 @@
 #endif
 
 #include "util/Clock.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/Scope.h"
 #include "util/ScopedSingletonManager.h"

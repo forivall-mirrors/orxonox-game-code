@@ -44,7 +44,7 @@
 
 #include "SubString.h"
 #include <cstdio>
-#include "Debug.h"
+#include "Output.h"
 
 namespace orxonox
 {

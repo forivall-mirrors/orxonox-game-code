@@ -47,7 +47,7 @@
 #include <windows.h>
 #undef min
 #undef max
-#include "Debug.h"
+#include "Output.h"
 
 namespace orxonox
 {

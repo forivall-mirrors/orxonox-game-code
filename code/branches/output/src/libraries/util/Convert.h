@@ -129,7 +129,7 @@
 #include <typeinfo>
 #include <loki/TypeManip.h>
 
-#include "Debug.h"
+#include "Output.h"
 #include "ImplicitConversion.h"
 
 // disable warnings about possible loss of data

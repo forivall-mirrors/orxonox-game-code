@@ -28,7 +28,7 @@
 
 #include "Acknowledgement.h"
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "network/GamestateHandler.h"
 #include "network/Host.h"
 

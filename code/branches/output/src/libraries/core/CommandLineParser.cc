@@ -32,7 +32,7 @@
 #include <sstream>
 
 #include "util/Convert.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"

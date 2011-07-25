@@ -31,7 +31,7 @@
 #include <tinyxml/tinyxml.h>
 #include <tinyxml/ticpp.h>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "CoreIncludes.h"
 #include "XMLPort.h"
 

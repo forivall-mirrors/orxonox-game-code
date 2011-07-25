@@ -33,7 +33,7 @@
 #include <cpptcl/cpptcl.h>
 
 #include "SpecialConfig.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "core/PathConfig.h"

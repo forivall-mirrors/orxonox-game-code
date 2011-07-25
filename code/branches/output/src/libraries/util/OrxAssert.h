@@ -39,7 +39,7 @@
 #include "UtilPrereqs.h"
 
 #include <cassert>
-#include "Debug.h"
+#include "Output.h"
 
 #ifndef NDEBUG
 

@@ -72,7 +72,7 @@ extern "C" {
 
 #include "util/Clock.h"
 #include "util/Convert.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/Math.h"
 #include "util/OrxAssert.h"

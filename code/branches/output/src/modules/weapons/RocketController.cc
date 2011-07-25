@@ -30,7 +30,7 @@
 #include "projectiles/SimpleRocket.h"
 #include "util/Math.h"
 #include "weapons/projectiles/SimpleRocket.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "weapons/weaponmodes/SimpleRocketFire.h"
 #include "worldentities/pawns/Pawn.h"
 

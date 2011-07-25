@@ -28,7 +28,6 @@
 
 #include "GSClient.h"
 
-#include "util/Debug.h"
 #include "util/Exception.h"
 #include "core/CommandLineParser.h"
 #include "core/Game.h"

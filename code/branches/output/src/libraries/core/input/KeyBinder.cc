@@ -31,7 +31,7 @@
 #include <algorithm>
 #include <sstream>
 #include "util/Convert.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"

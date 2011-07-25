@@ -88,7 +88,7 @@
 #include <typeinfo>
 #include <loki/TypeTraits.h>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "MetaObjectList.h"
 #include "ObjectList.h"
 #include "ObjectListBase.h"

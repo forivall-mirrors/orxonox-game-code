@@ -38,7 +38,7 @@
 #include <cstring>
 #include <cstdio>
 
-#include "Debug.h"
+#include "Output.h"
 
 namespace orxonox
 {

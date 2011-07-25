@@ -32,7 +32,7 @@
 #include <cassert>
 #include <cstring>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "packet/ServerInformation.h"
 
 namespace orxonox

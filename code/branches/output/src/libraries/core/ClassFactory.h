@@ -41,7 +41,7 @@
 
 #include <string>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "Identifier.h"
 
 namespace orxonox
