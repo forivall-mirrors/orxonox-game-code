@@ -55,7 +55,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
       </collisionShapes>
   </Pawn>
-  <Pawn health=30 position="20,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+  <Pawn health=30 position="70,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
       <attached>
         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
       </attached>
@@ -63,7 +63,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
       </collisionShapes>
   </Pawn>
-  <Pawn health=30 position="40,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+  <Pawn health=30 position="140,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
       <attached>
         <Model position="0,0,0" mesh="crate.mesh" scale3D="5,5,5" />
       </attached>
@@ -71,7 +71,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <BoxCollisionShape position="0,0,0" halfExtents="25,25,25" />
       </collisionShapes>
   </Pawn>
-  <Pawn health=30 position="60,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+  <Pawn health=30 position="210,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
       <attached>
         <Model position="0,0,0" mesh="crate.mesh" scale3D="5,5,5" />
       </attached>

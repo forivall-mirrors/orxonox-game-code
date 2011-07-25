@@ -39,6 +39,7 @@ namespace orxonox
     WaypointController::WaypointController(BaseObject* creator) : ArtificialController(creator)
     {
         RegisterObject(WaypointController);
+        this->setAccuracy(100);
     }
 
     WaypointController::~WaypointController()

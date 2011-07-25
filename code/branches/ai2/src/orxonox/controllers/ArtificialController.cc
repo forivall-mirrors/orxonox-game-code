@@ -95,7 +95,8 @@ namespace orxonox
         this->mode_ = DEFAULT;////Vector-implementation: mode_.push_back(DEFAULT);
         this->timeout_ = 0;
         this->currentWaypoint_ = 0;
-        this->setAccuracy(100);
+        this->setAccuracy(9);
+        this->defaultWaypoint_ = NULL;
     }
 
     ArtificialController::~ArtificialController()
@@ -1124,6 +1125,9 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
         this->mode_ = DEFAULT; //Vector-implementation: mode_.pop_back();
     }
 
+    /**
+        @brief Manages boost. Switches between boost usage and boost safe mode.
+    */
     void ArtificialController::boostControl()
     {
         SpaceShip* ship = orxonox_cast<SpaceShip*>(this->getControllableEntity());
@@ -1157,49 +1161,43 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
             return 0;
     }
 
-    void ArtificialController::updatePointsOfInterest(std::string name, float distance)
+    /**
+        @brief Adds first waypoint of type name to the waypoint stack, which is within the searchDistance
+        @param name object-name of a point of interest (e.g. "PickupSpawner", "ForceField")
+    */
+    void ArtificialController::updatePointsOfInterest(std::string name, float searchDistance)
     {
         WorldEntity* waypoint = NULL;
-        if(name == "Pickup")
+        for (ObjectList<WorldEntity>::iterator it = ObjectList<WorldEntity>::begin(); it != ObjectList<WorldEntity>::end(); ++it)
         {
-            for (ObjectList<WorldEntity>::iterator it = ObjectList<WorldEntity>::begin(); it != ObjectList<WorldEntity>::end(); ++it)
+            if((*it)->getIdentifier() == ClassByString(name))
             {
-                //get POI by string: Possible POIs are PICKUPSPAWNER, FORCEFIELDS (!analyse!), ...
-                //distance to POI decides wether it is added (neither too close nor too far away)
-                //How should POI's be managed? (e.g. Look for POIs if there are no real targets to move to or if they can be taken "en passant".)
-                   waypoint = *it;
-                   if(waypoint->getIdentifier() == ClassByString(name))
-                   {
-                       ControllableEntity* controllable = this->getControllableEntity();
-                       if(!controllable) continue;
-                       float distance = ( waypoint->getPosition() - controllable->getPosition() ).length();
-                       if(distance > 50.0f || distance < 5.0f) continue;
-                       if(name == "PickupSpawner") // PickupSpawner: adjust waypoint accuracy to PickupSpawner's triggerdistance
-                       {
-                           squaredaccuracy_ = waypoint->getTriggerDistance() * waypoint->getTriggerDistance();
-                       }
-                       else if(name == "ForceField") // ForceField: analyze is angle between forcefield boost and own flying direction is acceptable
-                       {
-
-                       }
-
-
-                       break;
-                   }
-
-                /*const Vector3 realDistance = it->getPosition() - this->getControllableEntity()->getPosition();
-                if( realDistance.length() < distance)
+                ControllableEntity* controllable = this->getControllableEntity();
+                if(!controllable) continue;
+                float actualDistance = ( (*it)->getPosition() - controllable->getPosition() ).length();
+                if(actualDistance > searchDistance || actualDistance < 5.0f) continue;
+                    // TODO: PickupSpawner: adjust waypoint accuracy to PickupSpawner's triggerdistance
+                    // TODO: ForceField: analyze is angle between forcefield boost and own flying direction is acceptable
+                else
                 {
-                    float minDistance = it->getTriggerDistance().length()*it->getTriggerDistance().length();
-                    if(this->squaredaccuracy_ > minDistance)
-                        this->squaredaccuracy_ = minDistance;
-                    //waypoint = static_cast<WorldEntity*>(it);
+                    waypoint = *it;
                     break;
-               // }*/
+                }
             }
         }
         if(waypoint)
             this->waypoints_.push_back(waypoint);
+    }
+
+    /**
+        @brief Adds point of interest depending on context
+    */
+    void ArtificialController::manageWaypoints()
+    {
+        if(!defaultWaypoint_)
+            this->updatePointsOfInterest("PickupSpawner", 60.0f); // long search radius if there is no default goal
+        else
+            this->updatePointsOfInterest("PickupSpawner", 20.0f); // take pickup en passant if there is a default waypoint
     }
 
 }

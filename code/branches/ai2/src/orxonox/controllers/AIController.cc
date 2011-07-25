@@ -113,6 +113,18 @@ namespace orxonox
             if (random < ((1 - botlevel_)*25) && (this->bShooting_))
                 this->bShooting_ = false;
 
+            // boost
+            random = rnd(maxrand);
+            if (random < botlevel_*100 )
+                this->boostControl();
+
+            // update Checkpoints
+            random = rnd(maxrand);
+            if (this->defaultWaypoint_ && random > (maxrand-10))
+                this->manageWaypoints();
+            else //if(random > maxrand-10) //CHECK USABILITY!!
+                this->manageWaypoints();
+
         }
 
         if (this->state_ == SLAVE)
@@ -195,10 +207,17 @@ namespace orxonox
                 if (random < ( (1- botlevel_)*25 ) && (this->bShooting_))
                     this->bShooting_ = false;
 
-                //boost
+                // boost
                 random = rnd(maxrand);
                 if (random < botlevel_*100 )
-                    this->boostControl(); //TEST
+                    this->boostControl();
+
+                // update Checkpoints
+                random = rnd(maxrand);
+                if (this->defaultWaypoint_ && random > (maxrand-10))
+                    this->manageWaypoints();
+                else //if(random > maxrand-10) //CHECK USABILITY!!
+                    this->manageWaypoints();
             }
         }
 
@@ -211,12 +230,22 @@ namespace orxonox
 
         float random;
         float maxrand = 100.0f / ACTION_INTERVAL;
-        if (this->waypoints_.size() > 0 && this->getControllableEntity() && this->mode_ == DEFAULT) //Waypoint functionality.
-        {
-            if (this->waypoints_[this->currentWaypoint_]->getWorldPosition().squaredDistance(this->getControllableEntity()->getPosition()) <= this->squaredaccuracy_)
-                this->currentWaypoint_ = (this->currentWaypoint_ + 1) % this->waypoints_.size();
+        ControllableEntity* controllable = this->getControllableEntity();
 
-            this->moveToPosition(this->waypoints_[this->currentWaypoint_]->getWorldPosition());
+        if (controllable && this->mode_ == DEFAULT)// bot is ready to move to a target
+        {
+            if (this->waypoints_.size() > 0 ) //Waypoint functionality.
+            {
+                if (this->waypoints_[this->waypoints_.size()-1]->getWorldPosition().squaredDistance(controllable->getPosition()) <= this->squaredaccuracy_)
+                    this->waypoints_.pop_back(); // if goal is reached, remove it from the list
+                if(this->waypoints_.size() > 0 )
+                    this->moveToPosition(this->waypoints_[this->waypoints_.size()-1]->getWorldPosition());
+            }
+            else if(this->defaultWaypoint_ && ((this->defaultWaypoint_->getPosition()-controllable->getPosition()).length()  > 200.0f))
+            {
+                this->moveToPosition(this->defaultWaypoint_->getPosition()); // stay within a certain range of the defaultWaypoint_
+                random = rnd(maxrand);
+            }
         }
         if(this->mode_ == DEFAULT)
 	    {
@@ -282,7 +311,6 @@ namespace orxonox
         }//END_OF DEFAULT MODE
         else if (this->mode_ == ROCKET)//Rockets do not belong to a group of bots -> bot states are not relevant.
         {   //Vector-implementation: mode_.back() == ROCKET;
-            ControllableEntity *controllable = this->getControllableEntity();
             if(controllable)
             {
                 if(controllable->getRocket())//Check wether the bot is controlling the rocket and if the timeout is over.

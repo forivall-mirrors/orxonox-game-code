@@ -92,6 +92,7 @@ namespace orxonox
             inline float getAccuracy() const
                 { return sqrt(this->squaredaccuracy_); }
             void updatePointsOfInterest(std::string name, float distance);
+            void manageWaypoints();
 
         protected:
 
@@ -174,6 +175,7 @@ namespace orxonox
             std::vector<WorldEntity*> waypoints_;
             size_t currentWaypoint_;
             float squaredaccuracy_;
+            WorldEntity* defaultWaypoint_;
     };
 }
 
