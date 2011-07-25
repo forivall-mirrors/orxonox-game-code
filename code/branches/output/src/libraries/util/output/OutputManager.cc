@@ -179,7 +179,7 @@ namespace test
 
     const std::string& OutputManager::getContextName(OutputContext context) const
     {
-        if (context != context::undefined)
+        if (context != context::undefined())
         {
             boost::bimap<OutputContext, std::string>::left_map::const_iterator it = this->contexts_.left.find(context);
             if (it != this->contexts_.left.end())
@@ -213,7 +213,7 @@ namespace test
     std::string OutputManager::getDefaultPrefix(OutputLevel level, OutputContext context) const
     {
         std::string prefix = this->getLevelName(level) + ": ";
-        if (context != context::undefined)
+        if (context != context::undefined())
         {
             std::string context_name = this->getContextName(context);
             if (context_name == "")

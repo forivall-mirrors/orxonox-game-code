@@ -66,7 +66,7 @@ namespace test
     void MemoryWriter::disable()
     {
         OutputManager::getInstance().unregisterListener(this);
-        this->output(level::debug_output, context::undefined, std::vector<std::string>(1, "MemoryWriter disabled, further messages may be lost"));
+        this->output(level::debug_output, context::undefined(), std::vector<std::string>(1, "MemoryWriter disabled, further messages may be lost"));
     }
 }
 }

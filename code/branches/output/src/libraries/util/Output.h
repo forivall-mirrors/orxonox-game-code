@@ -39,7 +39,7 @@ namespace test
 {
     using namespace level;
 
-    inline OutputStream& orxout(OutputLevel level = level::debug_output, OutputContext context = context::undefined)
+    inline OutputStream& orxout(OutputLevel level = level::debug_output, OutputContextFunction context = context::undefined)
     {
         static OutputStream stream;
         stream.setOutputAttributes(level, context);

@@ -46,7 +46,7 @@ namespace test
         public:
             _UtilExport OutputStream();
 
-            void _UtilExport setOutputAttributes(OutputLevel level, OutputContext context);
+            void _UtilExport setOutputAttributes(OutputLevel level, OutputContextFunction context);
 
             template <class T>
             inline OutputStream& operator<<(const T& val) { return this->output(val); }

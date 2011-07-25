@@ -47,12 +47,12 @@ namespace test
         this->str("");
     }
 
-    void OutputStream::setOutputAttributes(OutputLevel level, OutputContext context)
+    void OutputStream::setOutputAttributes(OutputLevel level, OutputContextFunction context)
     {
         this->level_ = level;
-        this->context_ = context;
+        this->context_ = context();
 
-        this->bAcceptsOutput_ = OutputManager::getInstanceAndCreateListeners().acceptsOutput(level, context);
+        this->bAcceptsOutput_ = OutputManager::getInstanceAndCreateListeners().acceptsOutput(this->level_, this->context_);
     }
 }
 }

@@ -57,6 +57,7 @@ namespace test
     }
 
     typedef uint64_t OutputContext;
+    typedef OutputContext (OutputContextFunction)();
 
     extern _UtilExport OutputContext registerContext(const std::string& name);
 
@@ -64,11 +65,15 @@ namespace test
     {
         static const OutputContext all       = 0xFFFFFFFFFFFFFFFF;
         static const OutputContext none      = 0x0000000000000000;
-        static const OutputContext undefined = registerContext("undefined");
 
-        static const OutputContext test1     = registerContext("test1");
-        static const OutputContext test2     = registerContext("test2");
-        static const OutputContext output    = registerContext("output");
+        namespace
+        {
+            OutputContext undefined()   { static OutputContext value = registerContext("undefined");    return value; }
+
+            OutputContext test1()       { static OutputContext value = registerContext("test1");        return value; }
+            OutputContext test2()       { static OutputContext value = registerContext("test2");        return value; }
+            OutputContext output()      { static OutputContext value = registerContext("output");       return value; }
+        }
     }
 }
 }
