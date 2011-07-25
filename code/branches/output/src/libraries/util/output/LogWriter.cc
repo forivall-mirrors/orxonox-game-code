@@ -35,8 +35,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     LogWriter::LogWriter()
     {
         this->setLevelMax(level::internal_info);
@@ -126,5 +124,4 @@ namespace test
                        (timeinfo->tm_min  < 10 ? "0" : "") << timeinfo->tm_min  << ':' <<
                        (timeinfo->tm_sec  < 10 ? "0" : "") << timeinfo->tm_sec  << ' ' << line << std::endl;
     }
-}
 }

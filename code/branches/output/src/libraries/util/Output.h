@@ -34,8 +34,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     // Just for convenience
     using std::endl;
     using namespace level;
@@ -52,6 +50,8 @@ namespace test
         return orxout(level, context());
     }
 }
-}
+
+#define COUT(level) orxonox::orxout()
+#define DOUT orxonox::orxout()
 
 #endif /* _Output_H__ */

@@ -37,8 +37,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     class _UtilExport LogWriter : public OutputListener
     {
         public:
@@ -65,7 +63,6 @@ namespace test
 
             std::ofstream file_;
     };
-}
 }
 
 #endif /* _LogWriter_H__ */

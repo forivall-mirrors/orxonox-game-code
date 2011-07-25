@@ -37,8 +37,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     class OutputStream : public std::ostringstream
     {
         typedef std::ostream& (*EndlType)(std::ostream&);
@@ -79,7 +77,6 @@ namespace test
             OutputContext context_;
             bool bAcceptsOutput_;
     };
-}
 }
 
 #endif /* _OutputStream_H__ */

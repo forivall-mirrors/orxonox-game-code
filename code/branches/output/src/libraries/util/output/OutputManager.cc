@@ -34,8 +34,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     OutputManager::OutputManager()
     {
         this->combinedLevelMask_ = 0;
@@ -201,5 +199,4 @@ namespace test
         }
         return prefix;
     }
-}
 }

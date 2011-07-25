@@ -34,8 +34,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     class _UtilExport ConsoleWriter : public OutputListener
     {
         public:
@@ -54,7 +52,6 @@ namespace test
 
             bool bEnabled_;
     };
-}
 }
 
 #endif /* _ConsoleWriter_H__ */

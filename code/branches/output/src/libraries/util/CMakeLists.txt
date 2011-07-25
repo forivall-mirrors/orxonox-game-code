@@ -25,7 +25,6 @@ BUILD_UNIT StableBuildUnit.cc
   Convert.cc
   CRC32.cc
   ExprParser.cc
-  OutputHandler.cc
   Scope.cc
   ScopedSingletonManager.cc
   SharedPtr.cc

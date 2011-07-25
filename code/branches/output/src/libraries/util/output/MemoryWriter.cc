@@ -32,8 +32,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     MemoryWriter::MemoryWriter()
     {
         this->setLevelMask(level::all);
@@ -68,5 +66,4 @@ namespace test
         OutputManager::getInstance().unregisterListener(this);
         this->output(level::debug_output, context::undefined(), std::vector<std::string>(1, "MemoryWriter disabled, further messages may be lost"));
     }
-}
 }

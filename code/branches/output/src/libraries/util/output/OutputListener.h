@@ -37,8 +37,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     class _UtilExport OutputListener
     {
         public:
@@ -70,7 +68,6 @@ namespace test
             OutputLevel   levelMask_;
             OutputContext contextMask_;
     };
-}
 }
 
 #endif /* _OutputListener_H__ */

@@ -32,8 +32,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     OutputStream::OutputStream()
     {
         this->level_ = level::none;
@@ -54,5 +52,4 @@ namespace test
 
         this->bAcceptsOutput_ = OutputManager::getInstanceAndCreateListeners().acceptsOutput(this->level_, this->context_);
     }
-}
 }

@@ -32,17 +32,12 @@
 #include "util/UtilPrereqs.h"
 
 #include <vector>
-
 #include <boost/bimap.hpp>
 
 #include "OutputDefinitions.h"
 
 namespace orxonox
 {
-namespace test
-{
-    class OutputListener;
-
     class _UtilExport OutputManager
     {
         public:
@@ -85,7 +80,6 @@ namespace test
 
             boost::bimap<OutputContext, std::string> contexts_;
     };
-}
 }
 
 #endif /* _OutputManager_H__ */

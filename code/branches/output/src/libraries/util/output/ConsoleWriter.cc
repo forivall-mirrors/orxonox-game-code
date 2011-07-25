@@ -32,8 +32,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     ConsoleWriter::ConsoleWriter()
     {
         this->setLevelMax(level::user_info);
@@ -76,5 +74,4 @@ namespace test
             this->bEnabled_ = false;
         }
     }
-}
 }

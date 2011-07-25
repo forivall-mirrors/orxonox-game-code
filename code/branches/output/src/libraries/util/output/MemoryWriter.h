@@ -34,8 +34,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     class _UtilExport MemoryWriter : public OutputListener
     {
         struct Message
@@ -64,7 +62,6 @@ namespace test
 
             std::vector<Message> messages_;
     };
-}
 }
 
 #endif /* _MemoryWriter_H__ */

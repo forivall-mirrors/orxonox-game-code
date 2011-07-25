@@ -32,8 +32,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     OutputListener::OutputListener()
     {
         this->levelMask_ = level::none;
@@ -75,5 +73,4 @@ namespace test
 
         OutputManager::getInstance().updateCombinedContextMask();
     }
-}
 }

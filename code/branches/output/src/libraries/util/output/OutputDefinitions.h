@@ -37,8 +37,6 @@
 
 namespace orxonox
 {
-namespace test
-{
     typedef uint16_t OutputLevel;
 
     namespace level
@@ -78,7 +76,6 @@ namespace test
             REGISTER_OUTPUT_CONTEXT(output);
         }
     }
-}
 }
 
 #endif /* _OutputDefinitions_H__ */
