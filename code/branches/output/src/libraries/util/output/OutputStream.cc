@@ -43,7 +43,7 @@ namespace test
 
     void OutputStream::sendMessage()
     {
-        OutputManager::getInstance().pushMessage(this->level_, this->context_, this->str());
+        OutputManager::getInstanceAndCreateListeners().pushMessage(this->level_, this->context_, this->str());
         this->str("");
     }
 
@@ -52,7 +52,7 @@ namespace test
         this->level_ = level;
         this->context_ = context;
 
-        this->bAcceptsOutput_ = OutputManager::getInstance().acceptsOutput(level, context);
+        this->bAcceptsOutput_ = OutputManager::getInstanceAndCreateListeners().acceptsOutput(level, context);
     }
 }
 }

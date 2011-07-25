@@ -47,7 +47,7 @@ namespace test
     {
         public:
             static OutputManager& getInstance();
-            static OutputManager& getInstanceInternal();
+            static OutputManager& getInstanceAndCreateListeners();
 
             void pushMessage(OutputLevel level, OutputContext context, const std::string& message);
 

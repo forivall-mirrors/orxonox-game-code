@@ -68,18 +68,18 @@ namespace test
 
     /*static*/ OutputManager& OutputManager::getInstance()
     {
-        static OutputManager& instance = OutputManager::getInstanceInternal();
+        static OutputManager instance;
+        return instance;
+    }
+
+    /*static*/ OutputManager& OutputManager::getInstanceAndCreateListeners()
+    {
+        static OutputManager& instance = OutputManager::getInstance();
 
         static ConsoleOutput consoleOutputInstance;
         static MemoryWriter& memoryWriterInstance = MemoryWriter::getInstance(); (void)memoryWriterInstance;
         static LogWriter& logWriterInstance = LogWriter::getInstance(); (void)logWriterInstance;
 
-        return instance;
-    }
-
-    /*static*/ OutputManager& OutputManager::getInstanceInternal()
-    {
-        static OutputManager instance;
         return instance;
     }
 

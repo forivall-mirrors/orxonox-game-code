@@ -39,12 +39,12 @@ namespace test
         this->levelMask_ = level::none;
         this->contextMask_ = context::all;
 
-        OutputManager::getInstanceInternal().registerListener(this);
+        OutputManager::getInstance().registerListener(this);
     }
 
     OutputListener::~OutputListener()
     {
-        OutputManager::getInstanceInternal().unregisterListener(this);
+        OutputManager::getInstance().unregisterListener(this);
     }
 
     void OutputListener::setLevelMax(OutputLevel max)
@@ -66,14 +66,14 @@ namespace test
     {
         this->levelMask_ = mask;
 
-        OutputManager::getInstanceInternal().updateCombinedLevelMask();
+        OutputManager::getInstance().updateCombinedLevelMask();
     }
 
     void OutputListener::setContextMask(OutputContext mask)
     {
         this->contextMask_ = mask;
 
-        OutputManager::getInstanceInternal().updateCombinedContextMask();
+        OutputManager::getInstance().updateCombinedContextMask();
     }
 }
 }

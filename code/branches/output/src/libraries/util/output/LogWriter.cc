@@ -82,7 +82,7 @@ namespace test
         std::string name = this->path_ + '/' + this->filename_;
 
         if (this->bDefaultPath_)
-            OutputManager::getInstanceInternal().pushMessage(level::user_info, context::output, "Opening log file " + name);
+            OutputManager::getInstance().pushMessage(level::user_info, context::output, "Opening log file " + name);
 
         this->file_.open(name.c_str(), std::fstream::out);
 
