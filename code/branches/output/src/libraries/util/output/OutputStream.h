@@ -43,6 +43,7 @@ namespace orxonox
 
         public:
             _UtilExport OutputStream();
+            _UtilExport OutputStream(OutputLevel level, OutputContext context);
 
             void _UtilExport setOutputAttributes(OutputLevel level, OutputContext context);
 

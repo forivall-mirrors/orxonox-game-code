@@ -33,7 +33,7 @@
 #include <string>
 
 #define REGISTER_OUTPUT_CONTEXT(name) \
-    OutputContext name() { static OutputContext value = registerContext(#name); return value; }
+    OutputContext name() { static OutputContext context = registerContext(#name); return context; }
 
 namespace orxonox
 {

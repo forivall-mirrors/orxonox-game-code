@@ -28,6 +28,8 @@
 
 #include "ConsoleWriter.h"
 
+#include <iostream>
+
 #include "OutputManager.h"
 
 namespace orxonox

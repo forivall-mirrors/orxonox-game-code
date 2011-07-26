@@ -34,9 +34,12 @@ namespace orxonox
 {
     OutputStream::OutputStream()
     {
-        this->level_ = level::none;
-        this->context_ = context::none;
-        this->bAcceptsOutput_ = false;
+        this->setOutputAttributes(level::debug_output, context::undefined());
+    }
+
+    OutputStream::OutputStream(OutputLevel level, OutputContext context)
+    {
+        this->setOutputAttributes(level, context);
     }
 
     void OutputStream::sendMessage()
@@ -50,6 +53,6 @@ namespace orxonox
         this->level_ = level;
         this->context_ = context;
 
-        this->bAcceptsOutput_ = OutputManager::getInstanceAndCreateListeners().acceptsOutput(this->level_, this->context_);
+        this->bAcceptsOutput_ = OutputManager::getInstanceAndCreateListeners().acceptsOutput(level, context);
     }
 }
