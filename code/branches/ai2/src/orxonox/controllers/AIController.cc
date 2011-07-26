@@ -119,10 +119,11 @@ namespace orxonox
                 this->boostControl();
 
             // update Checkpoints
-            random = rnd(maxrand);
+            /*random = rnd(maxrand);
             if (this->defaultWaypoint_ && random > (maxrand-10))
                 this->manageWaypoints();
-            else //if(random > maxrand-10) //CHECK USABILITY!!
+            else //if(random > maxrand-10) //CHECK USABILITY!!*/
+            if (this->waypoints_.size() == 0 )
                 this->manageWaypoints();
 
         }
@@ -213,10 +214,11 @@ namespace orxonox
                     this->boostControl();
 
                 // update Checkpoints
-                random = rnd(maxrand);
+                /*random = rnd(maxrand);
                 if (this->defaultWaypoint_ && random > (maxrand-10))
                     this->manageWaypoints();
-                else //if(random > maxrand-10) //CHECK USABILITY!!
+                else //if(random > maxrand-10) //CHECK USABILITY!!*/
+                if (this->waypoints_.size() == 0 )
                     this->manageWaypoints();
             }
         }
@@ -236,10 +238,12 @@ namespace orxonox
         {
             if (this->waypoints_.size() > 0 ) //Waypoint functionality.
             {
-                if (this->waypoints_[this->waypoints_.size()-1]->getWorldPosition().squaredDistance(controllable->getPosition()) <= this->squaredaccuracy_)
+                WorldEntity* wPoint = this->waypoints_[this->waypoints_.size()-1];
+                if(wPoint)
+                    this->moveToPosition(wPoint->getWorldPosition()); //BUG ?? sometime wPoint->getWorldPosition() causes crash
+                if (wPoint->getWorldPosition().squaredDistance(controllable->getPosition()) <= this->squaredaccuracy_)
                     this->waypoints_.pop_back(); // if goal is reached, remove it from the list
-                if(this->waypoints_.size() > 0 )
-                    this->moveToPosition(this->waypoints_[this->waypoints_.size()-1]->getWorldPosition());
+
             }
             else if(this->defaultWaypoint_ && ((this->defaultWaypoint_->getPosition()-controllable->getPosition()).length()  > 200.0f))
             {

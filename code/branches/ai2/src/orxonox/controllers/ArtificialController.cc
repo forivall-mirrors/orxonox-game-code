@@ -95,7 +95,7 @@ namespace orxonox
         this->mode_ = DEFAULT;////Vector-implementation: mode_.push_back(DEFAULT);
         this->timeout_ = 0;
         this->currentWaypoint_ = 0;
-        this->setAccuracy(9);
+        this->setAccuracy(5);
         this->defaultWaypoint_ = NULL;
     }
 
