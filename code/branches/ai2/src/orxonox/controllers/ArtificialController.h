@@ -172,7 +172,7 @@ namespace orxonox
             int getFiremode(std::string name);
 
             //WAYPOINT DATA
-            std::vector<WorldEntity*> waypoints_;
+            std::vector<WeakPtr<WorldEntity> > waypoints_;
             size_t currentWaypoint_;
             float squaredaccuracy_;
             WorldEntity* defaultWaypoint_;

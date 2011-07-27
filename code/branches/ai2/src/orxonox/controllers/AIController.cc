@@ -240,9 +240,13 @@ namespace orxonox
             {
                 WorldEntity* wPoint = this->waypoints_[this->waypoints_.size()-1];
                 if(wPoint)
+                {
                     this->moveToPosition(wPoint->getWorldPosition()); //BUG ?? sometime wPoint->getWorldPosition() causes crash
-                if (wPoint->getWorldPosition().squaredDistance(controllable->getPosition()) <= this->squaredaccuracy_)
-                    this->waypoints_.pop_back(); // if goal is reached, remove it from the list
+                    if (wPoint->getWorldPosition().squaredDistance(controllable->getPosition()) <= this->squaredaccuracy_)
+                        this->waypoints_.pop_back(); // if goal is reached, remove it from the list
+                }
+                else
+                    this->waypoints_.pop_back(); // remove invalid waypoints
 
             }
             else if(this->defaultWaypoint_ && ((this->defaultWaypoint_->getPosition()-controllable->getPosition()).length()  > 200.0f))

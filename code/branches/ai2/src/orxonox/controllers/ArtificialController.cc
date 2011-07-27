@@ -104,7 +104,11 @@ namespace orxonox
         if (this->isInitialized())
         {//Vector-implementation: mode_.erase(mode_.begin(),mode_.end());
             for (size_t i = 0; i < this->waypoints_.size(); ++i)
-                this->waypoints_[i]->destroy();
+            {
+                if(this->waypoints_[i])
+                    this->waypoints_[i]->destroy();
+            }
+            //this->waypoints_.clear();
             this->removeFromFormation();
             this->weaponModes_.clear();
             for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it; ++it)
@@ -1195,7 +1199,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     void ArtificialController::manageWaypoints()
     {
         if(!defaultWaypoint_)
-            this->updatePointsOfInterest("PickupSpawner", 60.0f); // long search radius if there is no default goal
+            this->updatePointsOfInterest("PickupSpawner", 200.0f); // long search radius if there is no default goal
         else
             this->updatePointsOfInterest("PickupSpawner", 20.0f); // take pickup en passant if there is a default waypoint
     }
