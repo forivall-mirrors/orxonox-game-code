@@ -103,12 +103,7 @@ namespace orxonox
     {
         if (this->isInitialized())
         {//Vector-implementation: mode_.erase(mode_.begin(),mode_.end());
-            for (size_t i = 0; i < this->waypoints_.size(); ++i)
-            {
-                if(this->waypoints_[i])
-                    this->waypoints_[i]->destroy();
-            }
-            //this->waypoints_.clear();
+            this->waypoints_.clear();
             this->removeFromFormation();
             this->weaponModes_.clear();
             for (ObjectList<ArtificialController>::iterator it = ObjectList<ArtificialController>::begin(); it; ++it)

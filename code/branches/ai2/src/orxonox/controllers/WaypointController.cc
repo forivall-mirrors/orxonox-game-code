@@ -44,6 +44,11 @@ namespace orxonox
 
     WaypointController::~WaypointController()
     {
+        for (size_t i = 0; i < this->waypoints_.size(); ++i)
+        {
+            if(this->waypoints_[i])
+                this->waypoints_[i]->destroy();
+        }
     }
 
     void WaypointController::XMLPort(Element& xmlelement, XMLPort::Mode mode)
