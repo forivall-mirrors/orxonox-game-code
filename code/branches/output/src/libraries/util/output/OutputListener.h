@@ -41,7 +41,7 @@ namespace orxonox
     {
         public:
             OutputListener();
-            ~OutputListener();
+            virtual ~OutputListener();
 
             void setLevelMax(OutputLevel max);
             void setLevelRange(OutputLevel min, OutputLevel max);

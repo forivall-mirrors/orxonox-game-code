@@ -30,11 +30,11 @@
 #define _ConsoleWriter_H__
 
 #include "util/UtilPrereqs.h"
-#include "OutputListener.h"
+#include "BaseWriter.h"
 
 namespace orxonox
 {
-    class _UtilExport ConsoleWriter : public OutputListener
+    class _UtilExport ConsoleWriter : public BaseWriter
     {
         public:
             static ConsoleWriter& getInstance();
@@ -43,12 +43,12 @@ namespace orxonox
             void disable();
 
         protected:
-            virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines);
+            virtual void printLine(const std::string& line);
 
         private:
             ConsoleWriter();
             ConsoleWriter(const ConsoleWriter&);
-            ~ConsoleWriter();
+            virtual ~ConsoleWriter();
 
             bool bEnabled_;
     };

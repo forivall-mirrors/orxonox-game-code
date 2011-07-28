@@ -26,41 +26,26 @@
  *
  */
 
-#ifndef _LogWriter_H__
-#define _LogWriter_H__
-
-#include "util/UtilPrereqs.h"
-
-#include <fstream>
-
 #include "BaseWriter.h"
+
+#include "OutputManager.h"
 
 namespace orxonox
 {
-    class _UtilExport LogWriter : public BaseWriter
+    BaseWriter::BaseWriter()
     {
-        public:
-            static LogWriter& getInstance();
+    }
 
-            void setLogPath(const std::string& path);
+    BaseWriter::~BaseWriter()
+    {
+    }
 
-        protected:
-            virtual void printLine(const std::string& line);
+    void BaseWriter::output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
+    {
+        const std::string& prefix = OutputManager::getInstance().getDefaultPrefix(level, context);
+        std::string blanks(prefix.length(), ' ');
 
-        private:
-            LogWriter();
-            LogWriter(const LogWriter&);
-            virtual ~LogWriter();
-
-            void openFile();
-            void closeFile();
-
-            std::string filename_;
-            std::string path_;
-            bool bDefaultPath_;
-
-            std::ofstream file_;
-    };
+        for (size_t i = 0; i < lines.size(); ++i)
+            this->printLine((i == 0 ? prefix : blanks) + lines[i]);
+    }
 }
-
-#endif /* _LogWriter_H__ */

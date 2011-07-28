@@ -50,13 +50,9 @@ namespace orxonox
         return instance;
     }
 
-    void ConsoleWriter::output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
+    void ConsoleWriter::printLine(const std::string& line)
     {
-        const std::string& prefix = OutputManager::getInstance().getDefaultPrefix(level, context);
-        std::string blanks(prefix.length(), ' ');
-
-        for (size_t i = 0; i < lines.size(); ++i)
-            std::cout << (i == 0 ? prefix : blanks) << lines[i] << std::endl;
+        std::cout << line << std::endl;
     }
 
     void ConsoleWriter::enable()

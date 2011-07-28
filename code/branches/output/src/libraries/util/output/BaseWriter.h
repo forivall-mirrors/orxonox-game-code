@@ -26,42 +26,26 @@
  *
  */
 
-#ifndef _MemoryWriter_H__
-#define _MemoryWriter_H__
+#ifndef _BaseWriter_H__
+#define _BaseWriter_H__
 
 #include "util/UtilPrereqs.h"
 #include "OutputListener.h"
 
 namespace orxonox
 {
-    class _UtilExport MemoryWriter : public OutputListener
+    class _UtilExport BaseWriter : public OutputListener
     {
-        struct Message
-        {
-            Message(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
-                : level(level), context(context), lines(lines) {}
-
-            OutputLevel level;
-            OutputContext context;
-            std::vector<std::string> lines;
-        };
-
         public:
-            static MemoryWriter& getInstance();
-
-            void resendOutput(OutputListener* listener) const;
-            void disable();
+            BaseWriter();
+            virtual ~BaseWriter();
 
         protected:
             virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines);
 
         private:
-            MemoryWriter();
-            MemoryWriter(const MemoryWriter&);
-            virtual ~MemoryWriter();
-
-            std::vector<Message> messages_;
+            virtual void printLine(const std::string& line) = 0;
     };
 }
 
-#endif /* _MemoryWriter_H__ */
+#endif /* _BaseWriter_H__ */

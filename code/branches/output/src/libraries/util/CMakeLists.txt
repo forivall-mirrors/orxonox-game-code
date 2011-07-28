@@ -41,6 +41,7 @@ END_BUILD_UNIT
   output/OutputStream.cc
   output/OutputManager.cc
   output/OutputListener.cc
+  output/BaseWriter.cc
   output/ConsoleWriter.cc
   output/LogWriter.cc
   output/MemoryWriter.cc

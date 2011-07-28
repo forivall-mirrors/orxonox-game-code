@@ -63,18 +63,6 @@ namespace orxonox
         return instance;
     }
 
-    void LogWriter::output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
-    {
-        if (!this->file_.is_open())
-            return;
-
-        const std::string& prefix = OutputManager::getInstance().getDefaultPrefix(level, context);
-        std::string blanks(prefix.length(), ' ');
-
-        for (size_t i = 0; i < lines.size(); ++i)
-            this->printLine((i == 0 ? prefix : blanks) + lines[i]);
-    }
-
     void LogWriter::openFile()
     {
         std::string name = this->path_ + '/' + this->filename_;
@@ -113,6 +101,9 @@ namespace orxonox
 
     void LogWriter::printLine(const std::string& line)
     {
+        if (!this->file_.is_open())
+            return;
+
         // Get current time
         time_t rawtime;
         struct tm* timeinfo;
