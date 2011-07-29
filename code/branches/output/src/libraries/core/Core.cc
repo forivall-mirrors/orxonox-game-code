@@ -50,9 +50,12 @@
 #  undef max
 #endif
 
+#include <boost/preprocessor/stringize.hpp>
+
 #include "util/Clock.h"
 #include "util/Output.h"
 #include "util/Exception.h"
+#include "util/output/LogWriter.h"
 #include "util/Scope.h"
 #include "util/ScopedSingletonManager.h"
 #include "util/SignalHandler.h"
@@ -141,9 +144,6 @@ namespace orxonox
         this->signalHandler_ = new SignalHandler();
         this->signalHandler_->doCatch(PathConfig::getExecutablePathString(), PathConfig::getLogPathString() + "orxonox_crash.log");
 
-        // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% (Windows) was used
-        OutputHandler::getInstance().setLogPath(PathConfig::getLogPathString());
-
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
         // do this after ogre has initialised. Somehow Ogre changes the settings again (not through
@@ -165,8 +165,9 @@ namespace orxonox
         // possibility to configure everything below here
         RegisterRootObject(Core);
         this->setConfigValues();
-        // Rewrite the log file with the correct log levels
-        OutputHandler::getInstance().rewriteLogFile();
+
+        // Set the correct log path and rewrite the log file with the correct log levels
+        LogWriter::getInstance().setLogPath(PathConfig::getLogPathString());
 
 #if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
         // Create persistent IO console
@@ -231,19 +232,20 @@ namespace orxonox
 
     namespace DefaultLevelLogFile
     {
-        const OutputLevel::Value Dev  = OutputLevel::Debug;
-        const OutputLevel::Value User = OutputLevel::Info;
+#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: inspect this (and remove boost include)")
+        const OutputLevel Dev  = level::internal_info;
+        const OutputLevel User = level::internal_info;
     }
 
     //! Function to collect the SetConfigValue-macro calls.
     void Core::setConfigValues()
     {
         // Choose the default level according to the path Orxonox was started (build directory or not)
-        OutputLevel::Value defaultLogLevel = (PathConfig::buildDirectoryRun() ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
+        OutputLevel defaultLogLevel = (PathConfig::buildDirectoryRun() ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
 
         SetConfigValueExternal(debugLevelLogFile_, "OutputHandler", "debugLevelLogFile", defaultLogLevel)
             .description("The maximum level of debug output written to the log file");
-        OutputHandler::getInstance().setSoftDebugLevel("LogFile", debugLevelLogFile_);
+        LogWriter::getInstance().setLevelMax(this->debugLevelLogFile_);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
             .description("Developer mode. If not set, hides some things from the user to not confuse him.")
@@ -285,7 +287,7 @@ namespace orxonox
         }
         else
         {
-            OutputLevel::Value level = (bDevMode_ ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
+            OutputLevel level = (bDevMode_ ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
             ModifyConfigValueExternal(debugLevelLogFile_, "debugLevelLogFile", tset, level);
         }
 

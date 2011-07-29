@@ -34,6 +34,7 @@
 #include <sstream>
 #include <boost/filesystem.hpp>
 #include <boost/shared_array.hpp>
+#include <boost/preprocessor/stringize.hpp>
 
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
@@ -395,12 +396,12 @@ namespace orxonox
     void GraphicsManager::messageLogged(const std::string& message,
         Ogre::LogMessageLevel lml, bool maskDebug, const std::string& logName)
     {
-        int orxonoxLevel;
+        OutputLevel orxonoxLevel;
         std::string introduction;
         // Do not show caught OGRE exceptions in front
         if (message.find("EXCEPTION") != std::string::npos)
         {
-            orxonoxLevel = OutputLevel::Debug;
+            orxonoxLevel = level::internal_error;
             introduction = "Ogre, caught exception: ";
         }
         else
@@ -417,12 +418,12 @@ namespace orxonox
                 orxonoxLevel = this->ogreLogLevelCritical_;
                 break;
             default:
-                orxonoxLevel = 0;
+                orxonoxLevel = level::debug_output;
             }
             introduction = "Ogre: ";
         }
-        OutputHandler::getOutStream(orxonoxLevel)
-            << introduction << message << std::endl;
+#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: use correct level, also for config values (and remove boost include)")
+        orxout(debug_output, context::ogre) << "ogre (level: " << lml << "): " << introduction << message << endl;
     }
 
     size_t GraphicsManager::getRenderWindowHandle()

@@ -32,6 +32,7 @@
 #include <fstream>
 #include <memory>
 #include <boost/bind.hpp>
+#include <boost/preprocessor/stringize.hpp>
 #include <OgreRenderQueue.h>
 #include <OgreRenderWindow.h>
 
@@ -100,18 +101,19 @@ namespace orxonox
     public:
         void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level = CEGUI::Standard)
         {
-            int orxonoxLevel = CEGUI::Standard;
+            OutputLevel orxonoxLevel = level::debug_output;
             switch (level)
             {
-                case CEGUI::Errors:      orxonoxLevel = 1; break;
-                case CEGUI::Warnings:    orxonoxLevel = 2; break;
-                case CEGUI::Standard:    orxonoxLevel = 4; break;
-                case CEGUI::Informative: orxonoxLevel = 5; break;
-                case CEGUI::Insane:      orxonoxLevel = 6; break;
+                case CEGUI::Errors:      orxonoxLevel = level::internal_error; break;
+                case CEGUI::Warnings:    orxonoxLevel = level::internal_warning; break;
+                case CEGUI::Standard:    orxonoxLevel = level::internal_status; break;
+                case CEGUI::Informative: orxonoxLevel = level::internal_info; break;
+                case CEGUI::Insane:      orxonoxLevel = level::verbose; break;
                 default: OrxAssert(false, "CEGUI log level out of range, inspect immediately!");
             }
-            OutputHandler::getOutStream(orxonoxLevel)
-                << "CEGUI: " << message << std::endl;
+
+#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: use correct level (and remove boost include)")
+            orxout(debug_output, context::cegui) << "CEGUI (level: " << level << "): " << message << endl;
 
             CEGUI::DefaultLogger::logEvent(message, level);
         }
@@ -262,7 +264,7 @@ namespace orxonox
         COUT(3) << "Initialising CEGUI." << std::endl;
 
         this->oldCEGUI_ = false;
-        
+
         // Note: No SceneManager specified yet
 #ifdef ORXONOX_OLD_CEGUI
         guiRenderer_ = new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
@@ -299,9 +301,10 @@ namespace orxonox
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
         ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
-        // Set the log level according to ours (translate by subtracting 1)
-        ceguiLogger->setLoggingLevel(
-            static_cast<LoggingLevel>(OutputHandler::getInstance().getSoftDebugLevel("logFile") - 1));
+#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: inspect this (and remove boost include)")
+//        // Set the log level according to ours (translate by subtracting 1)
+//        ceguiLogger->setLoggingLevel(
+//            static_cast<LoggingLevel>(OutputHandler::getInstance().getSoftDebugLevel("logFile") - 1));
         this->ceguiLogger_ = ceguiLogger.release();
 
         // Create the CEGUI system singleton
