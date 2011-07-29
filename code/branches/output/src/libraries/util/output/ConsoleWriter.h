@@ -43,7 +43,7 @@ namespace orxonox
             void disable();
 
         protected:
-            virtual void printLine(const std::string& line);
+            virtual void printLine(const std::string& line, OutputLevel level);
 
         private:
             ConsoleWriter();

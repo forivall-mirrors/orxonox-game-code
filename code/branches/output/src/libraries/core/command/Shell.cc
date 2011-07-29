@@ -34,9 +34,9 @@
 #include "Shell.h"
 
 #include "util/Math.h"
-#include "util/OutputHandler.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
+#include "util/output/MemoryWriter.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
 #include "core/ConfigValueIncludes.h"
@@ -47,22 +47,21 @@
 
 namespace orxonox
 {
-    SetConsoleCommand("log",     OutputHandler::log    );
-    SetConsoleCommand("error",   OutputHandler::error  ).hide();
-    SetConsoleCommand("warning", OutputHandler::warning).hide();
-    SetConsoleCommand("info",    OutputHandler::info   ).hide();
-    SetConsoleCommand("debug",   OutputHandler::debug  ).hide();
+//    SetConsoleCommand("log",     OutputHandler::log    );
+//    SetConsoleCommand("error",   OutputHandler::error  ).hide();
+//    SetConsoleCommand("warning", OutputHandler::warning).hide();
+//    SetConsoleCommand("info",    OutputHandler::info   ).hide();
+//    SetConsoleCommand("debug",   OutputHandler::debug  ).hide();
 
     unsigned int Shell::cacheSize_s;
 
     /**
-        @brief Constructor: Initializes the values and registers itself at OutputHandler.
+        @brief Constructor: Initializes the values.
         @param consoleName The name of the shell - used to define the name of the soft-debug-level config-value
         @param bScrollable If true, the user is allowed to scroll through the output-lines
     */
     Shell::Shell(const std::string& consoleName, bool bScrollable)
-        : OutputListener(consoleName)
-        , inputBuffer_(new InputBuffer())
+        : inputBuffer_(new InputBuffer())
         , consoleName_(consoleName)
         , bScrollable_(bScrollable)
     {
@@ -72,7 +71,6 @@ namespace orxonox
         this->maxHistoryLength_ = 100;
         this->historyPosition_ = 0;
         this->historyOffset_ = 0;
-        this->bFinishedLastLine_ = true;
 
         this->clearOutput();
         this->configureInputBuffer();
@@ -80,40 +78,24 @@ namespace orxonox
         // Specify file for the command history
         ConfigFileManager::getInstance().setFilename(ConfigFileType::CommandHistory, "commandHistory.ini");
 
-        // Use a stringstream object to buffer the output
-        this->outputStream_ = &this->outputBuffer_;
-
         this->setConfigValues();
 
         // Get the previous output and add it to the Shell
-        OutputHandler::OutputVector::const_iterator it = OutputHandler::getInstance().getOutput().begin();
-        for (;it != OutputHandler::getInstance().getOutput().end(); ++it)
-        {
-            if (it->first <= debugLevel_)
-            {
-                this->outputBuffer_ << it->second;
-                this->outputChanged(it->first);
-            }
-        }
-
-        // Register the shell as output listener
-        OutputHandler::getInstance().registerOutputListener(this);
-        OutputHandler::getInstance().setSoftDebugLevel(consoleName_, debugLevel_);
+        MemoryWriter::getInstance().resendOutput(this);
     }
 
     /**
-        @brief Destructor: Unregisters the shell from OutputHandler.
+        @brief Destructor
     */
     Shell::~Shell()
     {
-        OutputHandler::getInstance().unregisterOutputListener(this);
         this->inputBuffer_->destroy();
     }
 
     namespace DefaultLogLevel
     {
-        const OutputLevel::Value Dev  = OutputLevel::Info;
-        const OutputLevel::Value User = OutputLevel::Error;
+        const OutputLevel Dev  = level::internal_warning;
+        const OutputLevel User = level::user_info;
     }
 
     /**
@@ -129,10 +111,10 @@ namespace orxonox
         SetConfigValue(cacheSize_s, 32);
 
         // Choose the default level according to the path Orxonox was started (build directory or not)
-        OutputLevel::Value defaultDebugLevel = (PathConfig::buildDirectoryRun() ? DefaultLogLevel::Dev : DefaultLogLevel::User);
+        OutputLevel defaultDebugLevel = (PathConfig::buildDirectoryRun() ? DefaultLogLevel::Dev : DefaultLogLevel::User);
         SetConfigValueExternal(debugLevel_, "OutputHandler", "debugLevel" + consoleName_, defaultDebugLevel)
             .description("The maximum level of debug output shown in the " + consoleName_);
-        OutputHandler::getInstance().setSoftDebugLevel(consoleName_, debugLevel_);
+        this->setLevelMax(this->debugLevel_);
     }
 
     /**
@@ -171,7 +153,7 @@ namespace orxonox
         }
         else
         {
-            OutputLevel::Value level = (value ? DefaultLogLevel::Dev : DefaultLogLevel::User);
+            OutputLevel level = (value ? DefaultLogLevel::Dev : DefaultLogLevel::User);
             ModifyConfigValueExternal(debugLevel_, "debugLevel" + consoleName_, tset, level);
         }
     }
@@ -255,8 +237,17 @@ namespace orxonox
     */
     void Shell::addOutput(const std::string& text, LineType type)
     {
-        this->outputBuffer_ << text;
-        this->outputChanged(type);
+        // yes it was - push the new line to the list
+        this->outputLines_.push_front(std::make_pair(text, static_cast<LineType>(type)));
+
+        // adjust the scroll position if needed
+        if (this->scrollPosition_)
+            this->scrollPosition_++;
+        else
+            this->scrollIterator_ = this->outputLines_.begin();
+
+        if (!this->scrollPosition_)
+            this->updateListeners<&ShellListener::lineAdded>();
     }
 
     /**
@@ -268,9 +259,16 @@ namespace orxonox
         this->scrollIterator_ = this->outputLines_.begin();
 
         this->scrollPosition_ = 0;
-        this->bFinishedLastLine_ = true;
 
         this->updateListeners<&ShellListener::linesChanged>();
+    }
+
+    /**
+        @brief Inherited from BaseWriter (LogListener), called if a new line of output was sent.
+    */
+    void Shell::printLine(const std::string& line, OutputLevel level)
+    {
+        this->addOutput(line, static_cast<LineType>(level));
     }
 
     /**
@@ -322,61 +320,6 @@ namespace orxonox
     }
 
     /**
-        @brief Called by OutputHandler or internally whenever output was sent to the output buffer. Reads from the buffer and writes the new output-lines to the list.
-    */
-    void Shell::outputChanged(int lineType)
-    {
-        bool newline = false;
-        do
-        {
-            // get the first line from the buffer
-            std::string output;
-            std::getline(this->outputBuffer_, output);
-
-            // check the state of the buffer
-            bool eof = this->outputBuffer_.eof();
-            bool fail = this->outputBuffer_.fail();
-            if (eof)
-                this->outputBuffer_.flush(); // check if more output was received in the meantime
-            if (eof || fail)
-                this->outputBuffer_.clear(); // clear the error flags
-
-            // the line is terminated with a line-break if neither an error occurred nor the end of the file was reached
-            newline = (!eof && !fail);
-
-            // no output retrieved - break the loop
-            if (!newline && output.empty())
-                break;
-
-            // check if the last line was terminated with a line-break
-            if (this->bFinishedLastLine_)
-            {
-                // yes it was - push the new line to the list
-                this->outputLines_.push_front(std::make_pair(output, static_cast<LineType>(lineType)));
-
-                // adjust the scroll position if needed
-                if (this->scrollPosition_)
-                    this->scrollPosition_++;
-                else
-                    this->scrollIterator_ = this->outputLines_.begin();
-
-                if (!this->scrollPosition_)
-                    this->updateListeners<&ShellListener::lineAdded>();
-            }
-            else
-            {
-                // no it wasn't - add the new output to the last line
-                this->outputLines_.front().first += output;
-                this->updateListeners<&ShellListener::onlyLastLineChanged>();
-            }
-
-            // remember if the last line was terminated with a line-break
-            this->bFinishedLastLine_ = newline;
-
-        } while (newline); // loop as long as more lines are in the buffer
-    }
-
-    /**
         @brief Clears the text in the input buffer.
     */
     void Shell::clearInput()
@@ -411,17 +354,15 @@ namespace orxonox
         {
             switch (error)
             {
-                case CommandExecutor::Error:       this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", command doesn't exist. (S)" << std::endl; break;
-                case CommandExecutor::Incomplete:  this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", not enough arguments given. (S)" << std::endl; break;
-                case CommandExecutor::Deactivated: this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", command is not active. (S)" << std::endl; break;
-                case CommandExecutor::Denied:      this->outputBuffer_ << "Error: Can't execute \"" << this->inputBuffer_->get() << "\", access denied. (S)" << std::endl; break;
+                case CommandExecutor::Error:       this->addOutput("Error: Can't execute \"" + this->inputBuffer_->get() + "\", command doesn't exist. (S)", UserError); break;
+                case CommandExecutor::Incomplete:  this->addOutput("Error: Can't execute \"" + this->inputBuffer_->get() + "\", not enough arguments given. (S)", UserError); break;
+                case CommandExecutor::Deactivated: this->addOutput("Error: Can't execute \"" + this->inputBuffer_->get() + "\", command is not active. (S)", UserError); break;
+                case CommandExecutor::Denied:      this->addOutput("Error: Can't execute \"" + this->inputBuffer_->get() + "\", access denied. (S)", UserError); break;
             }
-            this->outputChanged(Error);
         }
         else if (result != "")
         {
-            this->outputBuffer_ << result << std::endl;
-            this->outputChanged(Command);
+            this->addOutput(result, Command);
         }
 
         this->clearInput();
@@ -431,8 +372,7 @@ namespace orxonox
     void Shell::hintAndComplete()
     {
         this->inputBuffer_->set(CommandExecutor::evaluate(this->inputBuffer_->get()).complete());
-        this->outputBuffer_ << CommandExecutor::evaluate(this->inputBuffer_->get()).hint() << std::endl;
-        this->outputChanged(Hint);
+        this->addOutput(CommandExecutor::evaluate(this->inputBuffer_->get()).hint(), Hint);
 
         this->inputChanged();
     }

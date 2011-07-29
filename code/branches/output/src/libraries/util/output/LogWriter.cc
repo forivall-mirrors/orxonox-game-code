@@ -73,7 +73,7 @@ namespace orxonox
         this->file_.open(name.c_str(), std::fstream::out);
 
         if (this->file_.is_open())
-            this->printLine("Log file opened");
+            this->printLine("Log file opened", level::none);
         else
             OutputManager::getInstance().pushMessage(level::user_warning, context::output(), "Failed to open log file. File logging disabled.");
     }
@@ -82,7 +82,7 @@ namespace orxonox
     {
         if (this->file_.is_open())
         {
-            this->printLine("Log file closed");
+            this->printLine("Log file closed", level::none);
             this->file_.close();
         }
     }
@@ -99,7 +99,7 @@ namespace orxonox
         MemoryWriter::getInstance().resendOutput(this);
     }
 
-    void LogWriter::printLine(const std::string& line)
+    void LogWriter::printLine(const std::string& line, OutputLevel)
     {
         if (!this->file_.is_open())
             return;

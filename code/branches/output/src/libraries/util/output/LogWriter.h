@@ -45,7 +45,7 @@ namespace orxonox
             void setLogPath(const std::string& path);
 
         protected:
-            virtual void printLine(const std::string& line);
+            virtual void printLine(const std::string& line, OutputLevel level);
 
         private:
             LogWriter();

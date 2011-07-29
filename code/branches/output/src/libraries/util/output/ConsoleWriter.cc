@@ -36,7 +36,11 @@ namespace orxonox
 {
     ConsoleWriter::ConsoleWriter()
     {
+#ifdef ORXONOX_RELEASE
         this->setLevelMax(level::user_info);
+#else
+        this->setLevelMax(level::internal_warning);
+#endif
         this->bEnabled_ = true;
     }
 
@@ -50,7 +54,7 @@ namespace orxonox
         return instance;
     }
 
-    void ConsoleWriter::printLine(const std::string& line)
+    void ConsoleWriter::printLine(const std::string& line, OutputLevel)
     {
         std::cout << line << std::endl;
     }

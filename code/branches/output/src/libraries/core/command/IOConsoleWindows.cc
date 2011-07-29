@@ -33,6 +33,7 @@
 
 #include "util/Clock.h"
 #include "util/Math.h"
+#include "util/output/ConsoleWriter.h"
 #include "core/Game.h"
 #include "core/input/InputBuffer.h"
 
@@ -51,7 +52,7 @@ namespace orxonox
         , lastOutputLineHeight_(0)
     {
         // Disable standard this->cout_ logging
-        OutputHandler::getInstance().disableCout();
+        ConsoleWriter::getInstance().disable();
         // Redirect std::cout to an ostringstream
         // (Other part is in the initialiser list)
         std::cout.rdbuf(this->origCout_.rdbuf());
@@ -94,7 +95,7 @@ namespace orxonox
         // Process output written to std::cout in the meantime
         std::cout.flush();
         if (!this->origCout_.str().empty())
-            this->shell_->addOutput(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::Cout);
 
         this->shell_->unregisterListener(this);
 
@@ -107,7 +108,7 @@ namespace orxonox
         // Restore this->cout_ redirection
         std::cout.rdbuf(this->cout_.rdbuf());
         // Enable standard this->cout_ logging again
-        OutputHandler::getInstance().enableCout();
+        ConsoleWriter::getInstance().enable();
 
         resetTerminalMode();
         this->shell_->destroy();
@@ -187,7 +188,7 @@ namespace orxonox
         std::cout.flush();
         if (!this->origCout_.str().empty())
         {
-            this->shell_->addOutput(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::Cout);
             this->origCout_.str("");
         }
     }
@@ -199,16 +200,26 @@ namespace orxonox
         WORD colour = 0;
         switch (type)
         {
-        case Shell::Error:   colour = FOREGROUND_INTENSITY                    | FOREGROUND_RED; break;
-        case Shell::Warning: colour = FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_RED; break;
-        case Shell::Info:
-        case Shell::Debug:
-        case Shell::Verbose:
-        case Shell::Ultra:   colour = FOREGROUND_INTENSITY                                     ; break;
-        case Shell::Command: colour =                        FOREGROUND_GREEN                  | FOREGROUND_BLUE; break;
-        case Shell::Hint:    colour =                        FOREGROUND_GREEN | FOREGROUND_RED                  ; break;
-        case Shell::TDebug:  colour = FOREGROUND_INTENSITY                    | FOREGROUND_RED | FOREGROUND_BLUE; break;
-        default:             colour =                        FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE; break;
+            case Shell::DebugOutput:     colour = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
+
+            case Shell::UserError:       colour = FOREGROUND_INTENSITY | FOREGROUND_RED | 0                | 0              ; break;
+            case Shell::UserWarning:     colour = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | 0              ; break;
+            case Shell::UserStatus:      colour = FOREGROUND_INTENSITY | 0              | FOREGROUND_GREEN | 0              ; break;
+            case Shell::UserInfo:        colour = FOREGROUND_INTENSITY | 0              | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
+
+            case Shell::InternalError:   colour = 0                    | FOREGROUND_RED | 0                | 0              ; break;
+            case Shell::InternalWarning: colour = 0                    | FOREGROUND_RED | FOREGROUND_GREEN | 0              ; break;
+            case Shell::InternalStatus:  colour = 0                    | 0              | FOREGROUND_GREEN | 0              ; break;
+            case Shell::InternalInfo:    colour = 0                    | 0              | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
+
+            case Shell::Verbose:         colour = FOREGROUND_INTENSITY | 0              | 0                | FOREGROUND_BLUE; break;
+            case Shell::VerboseMore:     colour = 0                    | 0              | 0                | FOREGROUND_BLUE; break;
+            case Shell::VerboseUltra:    colour = 0                    | 0              | 0                | FOREGROUND_BLUE; break;
+
+            case Shell::Command:         colour = FOREGROUND_INTENSITY | FOREGROUND_RED | 0                | FOREGROUND_BLUE; break;
+            case Shell::Hint:            colour = 0                    | FOREGROUND_RED | 0                | FOREGROUND_BLUE; break;
+
+            default:                     colour = 0                    | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
         }
 
         // Print output line

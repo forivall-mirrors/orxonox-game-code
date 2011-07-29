@@ -46,6 +46,6 @@ namespace orxonox
         std::string blanks(prefix.length(), ' ');
 
         for (size_t i = 0; i < lines.size(); ++i)
-            this->printLine((i == 0 ? prefix : blanks) + lines[i]);
+            this->printLine((i == 0 ? prefix : blanks) + lines[i], level);
     }
 }

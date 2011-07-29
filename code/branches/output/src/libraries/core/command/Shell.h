@@ -47,7 +47,7 @@
 #include <string>
 #include <vector>
 
-#include "util/OutputHandler.h"
+#include "util/output/BaseWriter.h"
 #include "core/Core.h"
 #include "core/OrxonoxClass.h"
 
@@ -77,27 +77,32 @@ namespace orxonox
     /**
         @brief The Shell is the logical component of the console that displays output to the user and allows him to enter commands.
 
-        The Shell gathers output sent from OutputHandler by inheriting from OutputListener.
+        The Shell gathers output sent from OutputManager by inheriting from BaseWriter.
         The output-lines are stored in the shell, so they can be displayed in a graphical
         console. Additionally the Shell has an InputBuffer which is needed by the user to
         enter commands.
 
         Different graphical consoles build upon a Shell, for example InGameConsole and IOConsole.
     */
-    class _CoreExport Shell : public OutputListener, public DevModeListener
+    class _CoreExport Shell : public BaseWriter, public DevModeListener
     {
         public:
             /// Defines the type of a line of text in the Shell - some types depend on the output level, others are of internal use.
             enum LineType
             {
-                TDebug  = OutputLevel::TDebug,
-                None    = OutputLevel::None,
-                Warning = OutputLevel::Warning,
-                Error   = OutputLevel::Error,
-                Info    = OutputLevel::Info,
-                Debug   = OutputLevel::Debug,
-                Verbose = OutputLevel::Verbose,
-                Ultra   = OutputLevel::Ultra,
+                DebugOutput     = debug_output,
+                UserError       = user_error,
+                UserWarning     = user_warning,
+                UserStatus      = user_status,
+                UserInfo        = user_info,
+                InternalError   = internal_error,
+                InternalWarning = internal_warning,
+                InternalStatus  = internal_status,
+                InternalInfo    = internal_info,
+                Verbose         = verbose,
+                VerboseMore     = verbose_more,
+                VerboseUltra    = verbose_ultra,
+                Cout,
                 Input,
                 Command,
                 Hint
@@ -126,7 +131,7 @@ namespace orxonox
             LineList::const_iterator getNewestLineIterator() const;
             LineList::const_iterator getEndIterator() const;
 
-            void addOutput(const std::string& text, LineType type = None);
+            void addOutput(const std::string& text, LineType type = DebugOutput);
             void clearOutput();
 
             /// Returns the number of output-lines that are displayed in the shell.
@@ -149,8 +154,8 @@ namespace orxonox
             void addToHistory(const std::string& command);
             const std::string& getFromHistory() const;
             void clearInput();
-            // OutputListener
-            void outputChanged(int level);
+            // BaseWriter
+            virtual void printLine(const std::string& line, OutputLevel level);
 
             void configureInputBuffer();
 
@@ -182,8 +187,6 @@ namespace orxonox
 
             std::list<ShellListener*> listeners_;           ///< The registered shell listeners
             InputBuffer*              inputBuffer_;         ///< The input buffer that is needed by the user to enter text
-            std::stringstream         outputBuffer_;        ///< The output buffer that is used to retrieve lines of output from OutputListener
-            bool                      bFinishedLastLine_;   ///< Stores if the most recent output-line was terminated with a line-break or if more output is expected for this line
             LineList                  outputLines_;         ///< A list of all output-lines that were displayed in the shell so far
             LineList::const_iterator  scrollIterator_;      ///< An iterator to an entry of the list of output-lines, changes if the user scrolls through the output in the shell
             unsigned int              scrollPosition_;      ///< The number of the line that is currently being referenced by scrollIterator_
@@ -196,7 +199,7 @@ namespace orxonox
             unsigned int              maxHistoryLength_;    ///< The maximum number of saved commands
             unsigned int              historyOffset_;       ///< The command history is a circular buffer, this variable defines the current write-offset
             std::vector<std::string>  commandHistory_;      ///< The history of commands that were entered by the user
-            int                       debugLevel_;          //!< The maximum level of output that is displayed in the shell (will be passed to OutputListener to filter output)
+            OutputLevel               debugLevel_;          //!< The maximum level of output that is displayed in the shell (will be passed to OutputListener to filter output)
             static unsigned int       cacheSize_s;          ///< The maximum cache size of the CommandExecutor - this is stored here for better readability of the config file and because CommandExecutor is no OrxonoxClass
     };
 }

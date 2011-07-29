@@ -44,7 +44,7 @@ namespace orxonox
             virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines);
 
         private:
-            virtual void printLine(const std::string& line) = 0;
+            virtual void printLine(const std::string& line, OutputLevel level) = 0;
     };
 }
 
