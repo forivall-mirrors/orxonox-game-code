@@ -512,9 +512,9 @@ namespace orxonox
     */
     void SubString::debug() const
     {
-        COUT(0) << "Substring-information::count=" << this->tokens_.size() << " ::";
+        orxout() << "Substring-information::count=" << this->tokens_.size() << " ::";
         for (unsigned int i = 0; i < this->tokens_.size(); ++i)
-            COUT(0) << "s" << i << "='" << this->tokens_[i].c_str() << "'::";
-        COUT(0) << std::endl;
+            orxout() << "s" << i << "='" << this->tokens_[i].c_str() << "'::";
+        orxout() << endl;
     }
 }

@@ -75,8 +75,8 @@ namespace orxonox
         }
         catch (...)
         {
-            COUT(1) << "Error: Unable to copy the following text to the clipboard:" << std::endl;
-            COUT(1) << "       \"" << text << '"' << std::endl;
+            orxout(user_error) << "Unable to copy the following text to the clipboard:" << endl;
+            orxout(user_error) << '"' << text << '"' << endl;
         }
         return false;
     }
@@ -103,7 +103,7 @@ namespace orxonox
         }
         catch (...)
         {
-            COUT(1) << "Error: Unable to retrieve text from the clipboard." << std::endl;
+            orxout(user_error) << "Unable to retrieve text from the clipboard." << endl;
         }
         return "";
     }

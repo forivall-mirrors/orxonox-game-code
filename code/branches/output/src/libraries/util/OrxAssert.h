@@ -45,7 +45,7 @@
 
 /** Run time assertion like assert(), but with an embedded message.
 @details
-    The message will be printed as error with COUT(1). <br>
+    The message will be printed as error with orxout(user_error). <br>
     You can use the same magic here as you can with \ref ThrowException
     @code
         OrxAssert(condition, "Text: " << number << " more text");
@@ -56,10 +56,10 @@
     { \
         if (!(condition)) \
         { \
-            COUT(1) << __FILE__ << "(" << __LINE__ << "): "; \
-            COUT(1) << "Assertion failed in " << __FUNCTIONNAME__ << std::endl; \
-            COUT(1) << "Expression: " << #condition << std::endl; \
-            COUT(1) << "Message   : " << errorMessage << std::endl; \
+            orxout(user_error) << __FILE__ << "(" << __LINE__ << "): "; \
+            orxout(user_error) << "Assertion failed in " << __FUNCTIONNAME__ << endl; \
+            orxout(user_error) << "Expression: " << #condition << endl; \
+            orxout(user_error) << "Message   : " << errorMessage << endl; \
             /* Don't use the condition again to avoid double evaluation */ \
             /* Instead, stringify the expression and negate it */ \
             assert(!#condition); \
@@ -69,7 +69,7 @@
 /** Works like OrxAssert in debug mode, but also checks the condition in release
     mode (no abort() triggered then).
 @details
-    The message will be printed as error with COUT(1). <br>
+    The message will be printed as error with orxout(user_error). <br>
     You can use the same magic here as you can with \ref ThrowException
     @code
         OrxVerify(condition, "Text: " << number << " more text");
@@ -80,10 +80,10 @@
     { \
         if (!(condition)) \
         { \
-            COUT(1) << __FILE__ << "(" << __LINE__ << "): "; \
-            COUT(1) << "Verification failed in " << __FUNCTIONNAME__ << std::endl; \
-            COUT(1) << "Expression: " << #condition << std::endl; \
-            COUT(1) << "Message   : " << errorMessage << std::endl; \
+            orxout(user_error) << __FILE__ << "(" << __LINE__ << "): "; \
+            orxout(user_error) << "Verification failed in " << __FUNCTIONNAME__ << endl; \
+            orxout(user_error) << "Expression: " << #condition << endl; \
+            orxout(user_error) << "Message   : " << errorMessage << endl; \
             /* Don't use the condition again to avoid double evaluation */ \
             /* Instead, stringify the expression and negate it */ \
             assert(!#condition); \
@@ -99,10 +99,10 @@
     { \
         if (!(condition)) \
         { \
-            COUT(1) << __FILE__ << "(" << __LINE__ << "): "; \
-            COUT(1) << "Verification failed in " << __FUNCTIONNAME__ << std::endl; \
-            COUT(1) << "Expression: " << #condition << std::endl; \
-            COUT(1) << "Message   : " << errorMessage << std::endl; \
+            orxout(user_error) << __FILE__ << "(" << __LINE__ << "): "; \
+            orxout(user_error) << "Verification failed in " << __FUNCTIONNAME__ << endl; \
+            orxout(user_error) << "Expression: " << #condition << endl; \
+            orxout(user_error) << "Message   : " << errorMessage << endl; \
             /* No assert() in release configuration */ \
         } \
     } while (false)

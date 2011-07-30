@@ -173,7 +173,7 @@ namespace orxonox
                         try
                             { (*it)->deactivated(); }
                         catch (...)
-                            { COUT(0) << "ScopeListener::deactivated() failed! This MUST NOT happen, fix it!" << std::endl; }
+                            { orxout(internal_warning) << "ScopeListener::deactivated() failed! This MUST NOT happen, fix it!" << endl; }
                         (*(it++))->bActivated_ = false;
                     }
                     else

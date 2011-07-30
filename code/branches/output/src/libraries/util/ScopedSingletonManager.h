@@ -230,9 +230,9 @@ namespace orxonox
             try
                 { singletonPtr_ = new T(); }
             catch (const InitialisationAbortedException& ex)
-                { COUT(3) << ex.getDescription() << std::endl; }
+                { orxout(internal_error) << ex.getDescription() << endl; }
             catch (...)
-                { COUT(1) << "Singleton creation failed: " << Exception::handleMessage() << std::endl; }
+                { orxout(internal_error) << "Singleton creation failed: " << Exception::handleMessage() << endl; }
         }
 
         //! Called if the Scope of this Singleton gets deactivated (destroys the instance)
