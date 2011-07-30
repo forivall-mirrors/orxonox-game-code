@@ -55,7 +55,7 @@ namespace orxonox
     }
 
     IOConsole::IOConsole()
-        : shell_(new Shell("IOConsole", false))
+        : shell_(new Shell("Console", false))
         , buffer_(shell_->getInputBuffer())
         , cout_(std::cout.rdbuf())
         , promptString_("orxonox # ")

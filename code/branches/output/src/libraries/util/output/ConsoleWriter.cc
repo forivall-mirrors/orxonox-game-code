@@ -34,7 +34,7 @@
 
 namespace orxonox
 {
-    ConsoleWriter::ConsoleWriter()
+    ConsoleWriter::ConsoleWriter() : BaseWriter("Console")
     {
 #ifdef ORXONOX_RELEASE
         this->setLevelMax(level::user_info);

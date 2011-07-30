@@ -55,14 +55,20 @@ namespace orxonox
 
     unsigned int Shell::cacheSize_s;
 
+    namespace DefaultLogLevel
+    {
+        const OutputLevel Dev  = level::internal_warning;
+        const OutputLevel User = level::user_info;
+    }
+
     /**
         @brief Constructor: Initializes the values.
         @param consoleName The name of the shell - used to define the name of the soft-debug-level config-value
         @param bScrollable If true, the user is allowed to scroll through the output-lines
     */
     Shell::Shell(const std::string& consoleName, bool bScrollable)
-        : inputBuffer_(new InputBuffer())
-        , consoleName_(consoleName)
+        : BaseWriter(consoleName)
+        , inputBuffer_(new InputBuffer())
         , bScrollable_(bScrollable)
     {
         RegisterRootObject(Shell);
@@ -78,6 +84,10 @@ namespace orxonox
         // Specify file for the command history
         ConfigFileManager::getInstance().setFilename(ConfigFileType::CommandHistory, "commandHistory.ini");
 
+        // Choose the default level according to the path Orxonox was started (build directory or not)
+        OutputLevel defaultDebugLevel = (PathConfig::buildDirectoryRun() ? DefaultLogLevel::Dev : DefaultLogLevel::User);
+        this->setLevelMax(defaultDebugLevel);
+
         this->setConfigValues();
 
         // Get the previous output and add it to the Shell
@@ -92,12 +102,6 @@ namespace orxonox
         this->inputBuffer_->destroy();
     }
 
-    namespace DefaultLogLevel
-    {
-        const OutputLevel Dev  = level::internal_warning;
-        const OutputLevel User = level::user_info;
-    }
-
     /**
         @brief Defines the config values.
     */
@@ -110,11 +114,24 @@ namespace orxonox
         setConfigValueGeneric(this, &commandHistory_, ConfigFileType::CommandHistory, "Shell", "commandHistory_", std::vector<std::string>());
         SetConfigValue(cacheSize_s, 32);
 
-        // Choose the default level according to the path Orxonox was started (build directory or not)
-        OutputLevel defaultDebugLevel = (PathConfig::buildDirectoryRun() ? DefaultLogLevel::Dev : DefaultLogLevel::User);
-        SetConfigValueExternal(debugLevel_, "OutputHandler", "debugLevel" + consoleName_, defaultDebugLevel)
-            .description("The maximum level of debug output shown in the " + consoleName_);
-        this->setLevelMax(this->debugLevel_);
+        SetConfigValueExternal(this->configurableMaxLevel_,
+                               this->getConfigurableSectionName(),
+                               this->getConfigurableMaxLevelName(),
+                               this->configurableMaxLevel_)
+            .description("The maximum level of output shown in the " + this->getName())
+            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableLevels);
+        SetConfigValueExternal(this->configurableContextsMaxLevel_,
+                               this->getConfigurableSectionName(),
+                               this->getConfigurableContextsMaxLevelName(),
+                               this->configurableContextsMaxLevel_)
+            .description("The maximum level of output shown in the " + this->getName() + " for additional contexts")
+            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableLevels);
+        SetConfigValueExternal(this->configurableContexts_,
+                               this->getConfigurableSectionName(),
+                               this->getConfigurableContextsName(),
+                               this->configurableContexts_)
+            .description("Additional output contexts shown in the " + this->getName())
+            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableLevels);
     }
 
     /**
@@ -149,12 +166,12 @@ namespace orxonox
         bool isNormal = (value == PathConfig::buildDirectoryRun());
         if (isNormal)
         {
-            ModifyConfigValueExternal(debugLevel_, "debugLevel" + consoleName_, update);
+            ModifyConfigValueExternal(debugLevel_, this->getConfigurableMaxLevelName(), update);
         }
         else
         {
             OutputLevel level = (value ? DefaultLogLevel::Dev : DefaultLogLevel::User);
-            ModifyConfigValueExternal(debugLevel_, "debugLevel" + consoleName_, tset, level);
+            ModifyConfigValueExternal(debugLevel_, this->getConfigurableMaxLevelName(), tset, level);
         }
     }
 

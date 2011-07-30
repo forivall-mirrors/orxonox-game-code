@@ -30,6 +30,10 @@
 #define _BaseWriter_H__
 
 #include "util/UtilPrereqs.h"
+
+#include <set>
+#include <vector>
+
 #include "OutputListener.h"
 
 namespace orxonox
@@ -37,14 +41,45 @@ namespace orxonox
     class _UtilExport BaseWriter : public OutputListener
     {
         public:
-            BaseWriter();
+            BaseWriter(const std::string& name);
             virtual ~BaseWriter();
+
+            const std::string& getName() const
+                { return this->name_; }
+
+            void setLevelMax(OutputLevel max);
+
+            OutputLevel configurableMaxLevel_;
+            inline std::string getConfigurableMaxLevelName() const
+                { return "outputLevel" + this->name_; }
+
+            OutputLevel configurableContextsMaxLevel_;
+            inline std::string getConfigurableContextsMaxLevelName() const
+                { return "outputContextsLevel" + this->name_; }
+
+            std::vector<std::string> configurableContexts_;
+            inline std::string getConfigurableContextsName() const
+                { return "outputContexts" + this->name_; }
+
+            void changedConfigurableLevels();
+            void changedConfigurableContexts();
+
+            static inline std::string getConfigurableSectionName()
+                { return "Output"; }
 
         protected:
             virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines);
 
         private:
             virtual void printLine(const std::string& line, OutputLevel level) = 0;
+
+            void setLevelRange(OutputLevel min, OutputLevel max);
+            void setLevelMask(OutputLevel mask);
+
+            bool isAdditionalContext(OutputContext context) const;
+
+            std::string name_;
+            std::set<std::string> configurableContextsSet_;
     };
 }
 

@@ -43,7 +43,7 @@ namespace orxonox
 
     //! Redirects std::cout, creates the corresponding Shell and changes the terminal mode
     IOConsole::IOConsole()
-        : shell_(new Shell("IOConsole", false))
+        : shell_(new Shell("Console", false))
         , buffer_(shell_->getInputBuffer())
         , cout_(std::cout.rdbuf())
         , promptString_("orxonox # ")

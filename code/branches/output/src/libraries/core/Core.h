@@ -135,7 +135,6 @@ namespace orxonox
             Scope<ScopeID::Graphics>* graphicsScope_;
 
             bool                      bGraphicsLoaded_;
-            OutputLevel               debugLevelLogFile_;          //!< The debug level for the log file (belongs to LogWriter)
             std::string               language_;                   //!< The language
             bool                      bInitRandomNumberGenerator_; //!< If true, srand(time(0)) is called
             bool                      bStartIOConsole_;            //!< Set to false if you don't want to use the IOConsole

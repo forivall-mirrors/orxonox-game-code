@@ -165,6 +165,15 @@ namespace orxonox
         return BLANKSTRING;
     }
 
+    OutputContext OutputManager::getContextValue(const std::string& name) const
+    {
+        boost::bimap<OutputContext, std::string>::right_map::const_iterator it = this->contexts_.right.find(name);
+        if (it != this->contexts_.right.end())
+            return it->second;
+        else
+            return context::none;
+    }
+
     std::string OutputManager::getComposedContextName(OutputContext context) const
     {
         std::string name;

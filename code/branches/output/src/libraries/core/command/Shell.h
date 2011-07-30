@@ -190,8 +190,6 @@ namespace orxonox
             LineList::const_iterator  scrollIterator_;      ///< An iterator to an entry of the list of output-lines, changes if the user scrolls through the output in the shell
             unsigned int              scrollPosition_;      ///< The number of the line that is currently being referenced by scrollIterator_
             unsigned int              historyPosition_;     ///< If the user scrolls through the history of entered commands (stored in commandHistory_), this contains the currently viewed history entry
-
-            const std::string         consoleName_;         ///< The name of this shell - used to define the name of the soft-debug-level config-value
             const bool                bScrollable_;         ///< If true, the user can scroll through the output-lines
 
             // Config values

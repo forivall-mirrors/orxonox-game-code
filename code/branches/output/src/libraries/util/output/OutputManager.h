@@ -65,6 +65,8 @@ namespace orxonox
 
             const std::string& getLevelName(OutputLevel level) const;
             const std::string& getContextName(OutputContext context) const;
+            OutputContext getContextValue(const std::string& name) const;
+
             std::string getComposedContextName(OutputContext context) const;
             std::string getDefaultPrefix(OutputLevel level, OutputContext context) const;
 

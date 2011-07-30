@@ -35,11 +35,11 @@
 
 namespace orxonox
 {
-    LogWriter::LogWriter()
+    LogWriter::LogWriter() : BaseWriter("Log")
     {
         this->setLevelMax(level::internal_info);
 
-        this->filename_ = "orxonox2.log";
+        this->filename_ = "orxonox.log";
 
         // Get path for a temporary file
 #ifdef ORXONOX_PLATFORM_WINDOWS

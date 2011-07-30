@@ -50,8 +50,6 @@
 #  undef max
 #endif
 
-#include <boost/preprocessor/stringize.hpp>
-
 #include "util/Clock.h"
 #include "util/Output.h"
 #include "util/Exception.h"
@@ -230,22 +228,27 @@ namespace orxonox
         safeObjectDelete(&pathConfig_);
     }
 
-    namespace DefaultLevelLogFile
-    {
-#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: inspect this (and remove boost include)")
-        const OutputLevel Dev  = level::internal_info;
-        const OutputLevel User = level::internal_info;
-    }
-
     //! Function to collect the SetConfigValue-macro calls.
     void Core::setConfigValues()
     {
-        // Choose the default level according to the path Orxonox was started (build directory or not)
-        OutputLevel defaultLogLevel = (PathConfig::buildDirectoryRun() ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
-
-        SetConfigValueExternal(debugLevelLogFile_, "OutputHandler", "debugLevelLogFile", defaultLogLevel)
-            .description("The maximum level of debug output written to the log file");
-        LogWriter::getInstance().setLevelMax(this->debugLevelLogFile_);
+        SetConfigValueExternal(LogWriter::getInstance().configurableMaxLevel_,
+                               LogWriter::getInstance().getConfigurableSectionName(),
+                               LogWriter::getInstance().getConfigurableMaxLevelName(),
+                               LogWriter::getInstance().configurableMaxLevel_)
+            .description("The maximum level of output shown in the log file")
+            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableLevels);
+        SetConfigValueExternal(LogWriter::getInstance().configurableContextsMaxLevel_,
+                               LogWriter::getInstance().getConfigurableSectionName(),
+                               LogWriter::getInstance().getConfigurableContextsMaxLevelName(),
+                               LogWriter::getInstance().configurableContextsMaxLevel_)
+            .description("The maximum level of output shown in the log file for additional contexts")
+            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableLevels);
+        SetConfigValueExternal(LogWriter::getInstance().configurableContexts_,
+                               LogWriter::getInstance().getConfigurableSectionName(),
+                               LogWriter::getInstance().getConfigurableContextsName(),
+                               LogWriter::getInstance().configurableContexts_)
+            .description("Additional output contexts shown in the log file")
+            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableContexts);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
             .description("Developer mode. If not set, hides some things from the user to not confuse him.")
@@ -280,17 +283,6 @@ namespace orxonox
     */
     void Core::devModeChanged()
     {
-        bool isNormal = (bDevMode_ == PathConfig::buildDirectoryRun());
-        if (isNormal)
-        {
-            ModifyConfigValueExternal(debugLevelLogFile_, "debugLevelLogFile", update);
-        }
-        else
-        {
-            OutputLevel level = (bDevMode_ ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
-            ModifyConfigValueExternal(debugLevelLogFile_, "debugLevelLogFile", tset, level);
-        }
-
         // Inform listeners
         ObjectList<DevModeListener>::iterator it = ObjectList<DevModeListener>::begin();
         for (; it != ObjectList<DevModeListener>::end(); ++it)

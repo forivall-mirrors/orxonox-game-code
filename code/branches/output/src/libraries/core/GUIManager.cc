@@ -76,6 +76,7 @@ extern "C" {
 #include "util/Exception.h"
 #include "util/Math.h"
 #include "util/OrxAssert.h"
+#include "util/output/BaseWriter.h"
 #include "ConfigValueIncludes.h"
 #include "Core.h"
 #include "CoreIncludes.h"
@@ -367,7 +368,7 @@ namespace orxonox
     {
         SetConfigValue(guiScheme_, GUIManager::defaultScheme_).description("Changes the current GUI scheme.").callback(this, &GUIManager::changedGUIScheme);
         SetConfigValue(numScrollLines_, 1).description("How many lines to scroll in a list if the scroll wheel is used");
-        SetConfigValueExternal(outputLevelCeguiLog_, "OutputHandler", "outputLevelCeguiLog", CEGUI::Standard).description("The log level of the CEGUI log file").callback(this, &GUIManager::changedCeguiOutputLevel);
+        SetConfigValueExternal(outputLevelCeguiLog_, BaseWriter::getConfigurableSectionName(), "outputLevelCeguiLog", CEGUI::Standard).description("The log level of the CEGUI log file").callback(this, &GUIManager::changedCeguiOutputLevel);
     }
 
     void GUIManager::changedGUIScheme(void)

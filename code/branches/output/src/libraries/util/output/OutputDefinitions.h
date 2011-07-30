@@ -43,6 +43,7 @@ namespace orxonox
     {
         static const OutputLevel all              = 0xFFFF;
         static const OutputLevel none             = 0x0000;
+
         static const OutputLevel debug_output     = 0x0001;
         static const OutputLevel user_error       = 0x0002;
         static const OutputLevel user_warning     = 0x0004;
