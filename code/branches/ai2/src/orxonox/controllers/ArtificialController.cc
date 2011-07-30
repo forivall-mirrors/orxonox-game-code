@@ -1189,7 +1189,7 @@ COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCo
     }
 
     /**
-        @brief Adds point of interest depending on context
+        @brief Adds point of interest depending on context. Further Possibilites: "ForceField", "PortalEndPoint", "MovableEntity", "Dock"
     */
     void ArtificialController::manageWaypoints()
     {

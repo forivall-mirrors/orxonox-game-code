@@ -8,8 +8,12 @@
   include("stats.oxo")
   include("HUDTemplates3.oxo")
   include("templates/lodInformation.oxt")
-  include("templates/spaceshipAssff2.oxt")
+  include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
+?>
+
+<?lua
+include("templates/pickupRepresentationTemplates.oxt")
 ?>
 
 <Level
@@ -21,15 +25,40 @@
   </templates>
   <?lua include("includes/notifications.oxi") ?>
 
+  <NotificationQueueCEGUI
+    name="narrative"
+    targets="simpleNotification"
+    size=1
+    displayTime=30
+    position="0.2, 0, 0.1, 0"
+    fontSize="24"
+    fontColor="0.3, 1, 0.2, 0.8"
+    alignment="HorzCentred"
+    displaySize="0.6, 0, 0, 0"
+    />
   <Scene
     ambientlight = "0.8, 0.8, 0.8"
     skybox       = "Orxonox/Starbox"
   >
+    <?lua
+      include("includes/pickups.oxi")
+    ?>
 
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
-    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff2 />
+    <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
+    <!-- Script code="artificialcontroller setbotlevel 0.1" /--> <!-- Does not influence waypointPatrolController-->
 
-<!-- Four boxes for aiming
+<!-- END OF INCLUDES & NECESSARITIES -->
+
+<!-- TUTORIAL-TODO: -->
+
+<!-- 1. Aiming & Weapons (static targets, moving targets, dangerous targets)--> <!-- 3 Mouse buttons + "T"-->
+<!-- 2. Flying & manoeuvring (basic flying, using pickups, forcefields, docks & portals) --> <!-- "W","S","SPACE"-->
+<!-- 3. Game handling (quests, knowing when a game is over :-), pausing, chat, ... ) --> <!--"F3", "F2", "ESC" -->
+<!-- 4. Extras (other things to discover) --> <!-- "Q","E","A","D","C", "CTRL", "", ... -->
+
+<!--
+Four boxes for aiming
 TODO: Turn engine off at the beginning.
 TODO: display text: "Destroy those four boxes. Aim the a the box and shoot by using the left mouse button."
 "The laser is a standard weapon. It is fast and precise but does not deal much damage. Now do the same with the next target, but right click instead."
@@ -46,8 +75,62 @@ TODO: Turn engine on. Display a waypoint.
 TODO: send in a level 0.1 bot on a pirate ship.
 "Hi. We have been attacked by a pirate lately. Please protect us. The drone pickup will help you."
 
--->    
-  <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+-->
+<!-------------------------------------- PART ONE: Destroy boxes --------------------------------------->
+    <DistanceTrigger name="spawndelaytrigger1" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=1 />
+    <SimpleNotification message="Destroy those four boxes.">
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="spawndelaytrigger2" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=2 />
+    <SimpleNotification message=" 1. Aim the a the red cycle.">
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="spawndelaytrigger3" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=4 />
+    <SimpleNotification message="2. Click! (hold the left mouse button)">
+        <events>
+            <trigger>
+                <EventListener event=spawndelaytrigger3 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <SimpleNotification message="Right click on the next target.">
+        <events>
+            <trigger>
+                <EventListener event=PawnDied1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+
+<!-- BRIEFING END--> 
+<!-- TODO: does NOT work. Intended effect: pawn death causes message to appear (and probably the next box) -->
+  <SimpleNotification message="Right click on the next target.">
+        <events>
+            <trigger>
+                <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+                    <attached>
+                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+                    </attached>
+                    <collisionShapes>
+                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+                    </collisionShapes>
+                </Pawn>
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+  <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000>
       <attached>
         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
       </attached>
@@ -55,7 +138,8 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
       </collisionShapes>
   </Pawn>
-  <Pawn health=30 position="70,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+
+  <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000>
       <attached>
         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
       </attached>
@@ -63,24 +147,118 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
       </collisionShapes>
   </Pawn>
-  <Pawn health=30 position="140,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+
+  <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000>
       <attached>
-        <Model position="0,0,0" mesh="crate.mesh" scale3D="5,5,5" />
+        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
       </attached>
       <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="25,25,25" />
-      </collisionShapes>
-  </Pawn>
-  <Pawn health=30 position="210,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
-      <attached>
-        <Model position="0,0,0" mesh="crate.mesh" scale3D="5,5,5" />
-      </attached>
-      <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="25,25,25" />
+        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
       </collisionShapes>
   </Pawn>
 
+<!--------------------------------------PART TWO: Moving targets --------------------------------------->
 
+    <SpaceShip position="0,1500,200" lookat="0,0,0">
+      <templates>
+        <Template link=spaceshippirate />
+      </templates>
+      <controller>
+        <WaypointController>
+          <waypoints>
+            <Model mesh="cube.mesh" scale=8 position="  0,1300,-200" />
+            <Model mesh="cube.mesh" scale=8 position="  0,1300,-700" />
+            <Model mesh="cube.mesh" scale=8 position="500,1300,-700" />
+            <Model mesh="cube.mesh" scale=8 position="500,1300,-200" />
+          </waypoints>
+        </WaypointController>
+      </controller>
+    </SpaceShip>
+    <PickupSpawner position="250,1300,-450" triggerDistance="10" respawnTime="30" maxSpawnedItems="1">
+      <pickup>
+        <DronePickup template=dronepickup />
+      </pickup>
+    </PickupSpawner>
+
+    <SpaceShip position="0,1500,400" lookat="0,0,0">
+      <templates>
+        <Template link=spaceshippirate />
+      </templates>
+      <controller>
+        <WaypointController>
+          <waypoints>
+            <Model mesh="cube.mesh" scale=8 position="  0,1300,1000" />
+            <Model mesh="cube.mesh" scale=8 position="  0,1300,500" />
+            <Model mesh="cube.mesh" scale=8 position="500,1300,500" />
+            <Model mesh="cube.mesh" scale=8 position="500,1300, 1000" />
+          </waypoints>
+        </WaypointController>
+      </controller>
+    </SpaceShip>
+
+
+<!--------------------------------------PART THREE: to the space station --------------------------------------->
+    <DistanceTrigger name="duball1" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=2 />
+    <SimpleNotification message="Welcome to the Duball Space Station!">
+        <events>
+            <trigger>
+                <EventListener event=duball1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="duball2" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=4 />
+    <SimpleNotification message="Warning: Something big is coming.">
+        <events>
+            <trigger>
+                <EventListener event=duball2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="duball2" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=6 />
+    <SimpleNotification message="Be on your guard!">
+        <events>
+            <trigger>
+                <EventListener event=duball3 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+<StaticEntity position="-1000,-300,700" collisionType=static>
+      <attached>
+        <Model scale=11 mesh="DuBall1.mesh" position = "-100,0,0"/>
+        <Model scale=11 mesh="DuBall2.mesh" position = "100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "-100,0,0"/>
+        <Billboard scale=7 material="Examples/Flare" colour="0.5,0.5,0.5" position = "100,0,0"/>        
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="80"            position = "-100,0,0" />
+        <SphereCollisionShape radius="120"           position = "100,0,0" />
+        <BoxCollisionShape    halfExtents="90,25,45" position = "-155,0,40" />
+      </collisionShapes>
+</StaticEntity>
+
+    <DistanceTrigger name="duball3" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=6 />
+    <!-- SpaceShip position="-1000,900,700" lookat="0,0,0">
+      <templates>
+        <Template link=spaceshipTransporter />
+      </templates>
+      <controller>
+        <WaypointPatrolController>
+          <waypoints>
+            <Model mesh="cube.mesh" scale=8 position="-1000,500,700" />
+          </waypoints>
+        </WaypointPatrolController>
+      </controller>
+        <events>
+            <trigger>
+                <EventListener event=duball3 />
+            </trigger>
+        </events>
+    </SpaceShip -->
+
+<!--------------------------------------PART FOUR --------------------------------------->
 
   </Scene>
 </Level>
