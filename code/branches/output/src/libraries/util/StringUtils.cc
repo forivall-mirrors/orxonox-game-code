@@ -80,6 +80,16 @@ namespace orxonox
         return str.substr(pos1, pos2 - pos1 + 1);
     }
 
+    /// Splits a given string by a delimiter and stores it in an output vector
+    void vectorize(const std::string& str, char delimiter, std::vector<std::string>* output)
+    {
+        for (size_t start = 0, end = 0; end != std::string::npos; start = end + 1)
+        {
+            end = str.find_first_of(delimiter, start);
+            output->push_back(str.substr(start, end - start));
+        }
+    }
+
     /**
         @brief Returns the position of the next quotation mark in the string, starting with start.
         @param str The string
@@ -516,7 +526,7 @@ namespace orxonox
 
         return matrix[(rows-1)*cols + cols-1];
     }
-    
+
     /**
     @brief
         Get a timestamp for the curent time instant.

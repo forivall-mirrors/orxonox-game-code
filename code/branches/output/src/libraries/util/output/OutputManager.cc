@@ -31,6 +31,7 @@
 #include "MemoryWriter.h"
 #include "ConsoleWriter.h"
 #include "LogWriter.h"
+#include "util/StringUtils.h"
 
 namespace orxonox
 {
@@ -64,11 +65,7 @@ namespace orxonox
     void OutputManager::pushMessage(OutputLevel level, OutputContext context, const std::string& message)
     {
         std::vector<std::string> lines;
-        for (size_t start = 0, end = 0; end != std::string::npos; start = end + 1)
-        {
-            end = message.find_first_of('\n', start);
-            lines.push_back(message.substr(start, end));
-        }
+        vectorize(message, '\n', &lines);
 
         for (size_t i = 0; i < this->listeners_.size(); ++i)
             this->listeners_[i]->unfilteredOutput(level, context, lines);

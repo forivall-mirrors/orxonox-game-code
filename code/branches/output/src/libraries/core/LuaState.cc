@@ -238,7 +238,7 @@ namespace orxonox
 
     void LuaState::luaLog(unsigned int level, const std::string& message)
     {
-#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: use correct level (and remove boost include)")
+#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: use correct level, inspect lua support (and remove boost include)")
         orxout(debug_output, context::lua) << "luaLog (level: " << level << "): " << message << endl;
     }
 

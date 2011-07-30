@@ -560,19 +560,19 @@ namespace orxonox
         {
             case Shell::DebugOutput:     colourTop = ColourValue(0.9f, 0.9f, 0.9f); break;
 
-            case Shell::UserError:       colourTop = ColourValue(0.9f, 0.2f, 0.2f); break;
-            case Shell::UserWarning:     colourTop = ColourValue(0.9f, 0.5f, 0.2f); break;
-            case Shell::UserStatus:      colourTop = ColourValue(0.2f, 0.9f, 0.2f); break;
-            case Shell::UserInfo:        colourTop = ColourValue(0.2f, 0.8f, 0.8f); break;
+            case Shell::UserError:       colourTop = ColourValue(0.9f, 0.0f, 0.0f); break;
+            case Shell::UserWarning:     colourTop = ColourValue(0.9f, 0.5f, 0.0f); break;
+            case Shell::UserStatus:      colourTop = ColourValue(0.0f, 0.9f, 0.0f); break;
+            case Shell::UserInfo:        colourTop = ColourValue(0.0f, 0.8f, 0.8f); break;
 
             case Shell::InternalError:   colourTop = ColourValue(0.5f, 0.0f, 0.0f); break;
             case Shell::InternalWarning: colourTop = ColourValue(0.5f, 0.2f, 0.0f); break;
             case Shell::InternalStatus:  colourTop = ColourValue(0.0f, 0.5f, 0.0f); break;
             case Shell::InternalInfo:    colourTop = ColourValue(0.0f, 0.4f, 0.4f); break;
 
-            case Shell::Verbose:         colourTop = ColourValue(0.2f, 0.2f, 0.9f); break;
-            case Shell::VerboseMore:     colourTop = ColourValue(0.1f, 0.1f, 0.6f); break;
-            case Shell::VerboseUltra:    colourTop = ColourValue(0.0f, 0.0f, 0.4f); break;
+            case Shell::Verbose:         colourTop = ColourValue(0.3f, 0.3f, 0.9f); break;
+            case Shell::VerboseMore:     colourTop = ColourValue(0.2f, 0.2f, 0.7f); break;
+            case Shell::VerboseUltra:    colourTop = ColourValue(0.1f, 0.1f, 0.5f); break;
 
             case Shell::Command:         colourTop = ColourValue(0.8f, 0.2f, 0.8f); break;
             case Shell::Hint:            colourTop = ColourValue(0.4f, 0.0f, 0.4f); break;

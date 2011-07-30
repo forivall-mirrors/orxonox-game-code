@@ -33,6 +33,8 @@
 
 #include "Shell.h"
 
+#include <boost/preprocessor/stringize.hpp>
+
 #include "util/Math.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
@@ -47,6 +49,7 @@
 
 namespace orxonox
 {
+#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: add commands again, inspect tcl support (and remove boost include)")
 //    SetConsoleCommand("log",     OutputHandler::log    );
 //    SetConsoleCommand("error",   OutputHandler::error  ).hide();
 //    SetConsoleCommand("warning", OutputHandler::warning).hide();
@@ -250,12 +253,24 @@ namespace orxonox
     }
 
     /**
-        @brief Sends output to the internal output buffer.
+        @brief Adds multiple lines to the internal output buffer.
     */
     void Shell::addOutput(const std::string& text, LineType type)
     {
+        std::vector<std::string> lines;
+        vectorize(text, '\n', &lines);
+
+        for (size_t i = 0; i < lines.size(); ++i)
+            this->addLine(lines[i], type);
+    }
+
+    /**
+        @brief Adds a line to the internal output buffer.
+    */
+    void Shell::addLine(const std::string& line, LineType type)
+    {
         // yes it was - push the new line to the list
-        this->outputLines_.push_front(std::make_pair(text, static_cast<LineType>(type)));
+        this->outputLines_.push_front(std::make_pair(line, static_cast<LineType>(type)));
 
         // adjust the scroll position if needed
         if (this->scrollPosition_)
@@ -285,7 +300,7 @@ namespace orxonox
     */
     void Shell::printLine(const std::string& line, OutputLevel level)
     {
-        this->addOutput(line, static_cast<LineType>(level));
+        this->addLine(line, static_cast<LineType>(level));
     }
 
     /**

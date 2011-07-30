@@ -213,8 +213,8 @@ namespace orxonox
             case Shell::InternalInfo:    colour = 0                    | 0              | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
 
             case Shell::Verbose:         colour = FOREGROUND_INTENSITY | 0              | 0                | FOREGROUND_BLUE; break;
-            case Shell::VerboseMore:     colour = 0                    | 0              | 0                | FOREGROUND_BLUE; break;
-            case Shell::VerboseUltra:    colour = 0                    | 0              | 0                | FOREGROUND_BLUE; break;
+            case Shell::VerboseMore:     colour = FOREGROUND_INTENSITY | 0              | 0                | FOREGROUND_BLUE; break;
+            case Shell::VerboseUltra:    colour = FOREGROUND_INTENSITY | 0              | 0                | FOREGROUND_BLUE; break;
 
             case Shell::Command:         colour = FOREGROUND_INTENSITY | FOREGROUND_RED | 0                | FOREGROUND_BLUE; break;
             case Shell::Hint:            colour = 0                    | FOREGROUND_RED | 0                | FOREGROUND_BLUE; break;

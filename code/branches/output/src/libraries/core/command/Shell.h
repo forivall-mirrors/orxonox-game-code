@@ -131,6 +131,7 @@ namespace orxonox
             LineList::const_iterator getEndIterator() const;
 
             void addOutput(const std::string& text, LineType type = DebugOutput);
+            void addLine(const std::string& line, LineType type = DebugOutput);
             void clearOutput();
 
             /// Returns the number of output-lines that are displayed in the shell.
