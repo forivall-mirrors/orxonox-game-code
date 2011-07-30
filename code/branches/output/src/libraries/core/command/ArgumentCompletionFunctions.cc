@@ -89,7 +89,7 @@ namespace orxonox
             */
             ArgumentCompletionList _groupsandcommands(const std::string& fragment, bool bOnlyShowHidden)
             {
-                // note: this function returns only arguments that begin with "fragment", which would't be necessary for the
+                // note: this function returns only arguments that begin with "fragment", which wouldn't be necessary for the
                 //       auto-completion, but it's necessary to place the line-break "\n" between groups and commands
                 //       only if both groups AND commands are in the list.
 

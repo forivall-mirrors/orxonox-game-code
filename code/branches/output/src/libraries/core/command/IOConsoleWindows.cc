@@ -328,7 +328,7 @@ namespace orxonox
     //! Called if a command is about to be executed
     void IOConsole::executed()
     {
-        this->shell_->addOutput(this->promptString_ + this->shell_->getInput() + '\n', Shell::Command);
+        this->shell_->addOutput(this->promptString_ + this->shell_->getInput(), Shell::Command);
     }
 
     //! Called if the console gets closed

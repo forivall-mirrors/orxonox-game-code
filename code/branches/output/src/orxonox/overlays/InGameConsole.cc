@@ -58,7 +58,7 @@
 namespace orxonox
 {
     const int LINES = 30;
-    const float CHAR_WIDTH = 7.45f; // fix this please - determine the char-width dynamically
+    const float CHAR_WIDTH = 8.0f; // fix this please - determine the char-width dynamically
 
     SetConsoleCommand("InGameConsole", "openConsole", &InGameConsole::openConsole);
     SetConsoleCommand("InGameConsole", "closeConsole", &InGameConsole::closeConsole);
@@ -338,7 +338,7 @@ namespace orxonox
     */
     void InGameConsole::executed()
     {
-        this->shell_->addOutput(this->shell_->getInput() + '\n', Shell::Command);
+        this->shell_->addOutput(this->shell_->getInput(), Shell::Command);
     }
 
     /**
@@ -429,7 +429,7 @@ namespace orxonox
         this->consoleOverlayNoise_->setTiling(consoleOverlayNoise_->getWidth() / (50.0f * this->noiseSize_), consoleOverlayNoise_->getHeight() / (50.0f * this->noiseSize_));
 
         // now adjust the text lines...
-        this->desiredTextWidth_ = static_cast<int>(this->windowW_ * this->relativeWidth) - 12;
+        this->desiredTextWidth_ = static_cast<int>(this->windowW_ * this->relativeWidth) - 24;
 
         if (LINES > 0)
             this->maxCharsPerLine_ = std::max(10U, static_cast<unsigned int>(static_cast<float>(this->desiredTextWidth_) / CHAR_WIDTH));

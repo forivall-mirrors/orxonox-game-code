@@ -104,6 +104,7 @@ namespace orxonox
                 Cout,
                 Input,
                 Command,
+                Result,
                 Hint
             };
 

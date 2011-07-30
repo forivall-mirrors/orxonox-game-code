@@ -394,7 +394,7 @@ namespace orxonox
         }
         else if (result != "")
         {
-            this->addOutput(result, Command);
+            this->addOutput(result, Result);
         }
 
         this->clearInput();
