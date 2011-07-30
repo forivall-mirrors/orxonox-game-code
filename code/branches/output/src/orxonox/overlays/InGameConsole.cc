@@ -298,22 +298,14 @@ namespace orxonox
     }
 
     /**
-        @brief Called if only the last output-line has changed.
-    */
-    void InGameConsole::onlyLastLineChanged()
-    {
-        if (LINES > 1)
-            this->print(this->shell_->getNewestLineIterator()->first, this->shell_->getNewestLineIterator()->second, 1);
-    }
-
-    /**
         @brief Called if a new output-line was added.
     */
     void InGameConsole::lineAdded()
     {
         this->numLinesShifted_ = 0;
         this->shiftLines();
-        this->onlyLastLineChanged();
+        if (LINES > 1)
+            this->print(this->shell_->getNewestLineIterator()->first, this->shell_->getNewestLineIterator()->second, 1);
     }
 
     /**

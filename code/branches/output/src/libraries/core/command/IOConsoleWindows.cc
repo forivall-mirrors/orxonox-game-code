@@ -387,20 +387,6 @@ namespace orxonox
         SetConsoleCursorPosition(stdOutHandle_, pos);
     }
 
-    //! Called if only the last output-line has changed
-    void IOConsole::onlyLastLineChanged()
-    {
-        int newLineHeight = 1 + this->shell_->getNewestLineIterator()->first.size() / this->terminalWidth_;
-        // Compute the number of new lines needed
-        int newLines = newLineHeight - this->lastOutputLineHeight_;
-        this->lastOutputLineHeight_ = newLineHeight;
-        // Scroll console if necessary
-        if (newLines > 0) // newLines < 0 is assumed impossible
-            this->createNewOutputLines(newLines);
-        Shell::LineList::const_iterator it = this->shell_->getNewestLineIterator();
-        this->printOutputLine(it->first, it->second, makeCOORD(0, this->inputLineRow_ - newLineHeight));
-    }
-
     //! Called if a new output line was added
     void IOConsole::lineAdded()
     {

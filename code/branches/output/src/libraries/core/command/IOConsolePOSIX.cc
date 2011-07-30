@@ -390,20 +390,6 @@ namespace orxonox
         // Exit is not an option, just do nothing (Shell doesn't really exit too)
     }
 
-    //! Called if only the last output-line has changed
-    void IOConsole::onlyLastLineChanged()
-    {
-        // Save cursor position and move it to the beginning of the first output line
-        this->cout_ << "\033[s\033[1A\033[1G";
-        // Erase the line
-        this->cout_ << "\033[K";
-        // Reprint the last output line
-        this->printOutputLine(this->shell_->getNewestLineIterator()->first, this->shell_->getNewestLineIterator()->second);
-        // Restore cursor
-        this->cout_ << "\033[u";
-        this->cout_.flush();
-    }
-
     //! Called if a new output-line was added
     void IOConsole::lineAdded()
     {

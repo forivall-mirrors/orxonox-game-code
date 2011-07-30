@@ -65,7 +65,6 @@ namespace orxonox
 
         private:
             virtual void linesChanged() {}          ///< Called if all output-lines have changed
-            virtual void onlyLastLineChanged() {}   ///< Called if only the last output-line has changed
             virtual void lineAdded() {}             ///< Called if a new line was added to the output
             virtual void inputChanged() {}          ///< Called if the input has changed
             virtual void cursorChanged() {}         ///< Called if the cursor in the input line has changed
