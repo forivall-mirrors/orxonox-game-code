@@ -34,7 +34,6 @@
 #include <sstream>
 #include <boost/filesystem.hpp>
 #include <boost/shared_array.hpp>
-#include <boost/preprocessor/stringize.hpp>
 
 #include <OgreFrameListener.h>
 #include <OgreRoot.h>
@@ -68,6 +67,14 @@
 
 namespace orxonox
 {
+    namespace context
+    {
+        namespace
+        {
+            REGISTER_OUTPUT_CONTEXT(ogre);
+        }
+    }
+
     static const std::string __CC_GraphicsManager_group = "GraphicsManager";
     static const std::string __CC_setScreenResolution_name = "setScreenResolution";
     static const std::string __CC_setFSAA_name = "setFSAA";
@@ -158,12 +165,6 @@ namespace orxonox
             .description("Comma separated list of all plugins to load.");
         SetConfigValue(ogreLogFile_,     "ogre.log")
             .description("Logfile for messages from Ogre. Use \"\" to suppress log file creation.");
-        SetConfigValue(ogreLogLevelTrivial_ , 5)
-            .description("Corresponding orxonox debug level for ogre Trivial");
-        SetConfigValue(ogreLogLevelNormal_  , 4)
-            .description("Corresponding orxonox debug level for ogre Normal");
-        SetConfigValue(ogreLogLevelCritical_, 2)
-            .description("Corresponding orxonox debug level for ogre Critical");
     }
 
     /**
@@ -409,21 +410,21 @@ namespace orxonox
             switch (lml)
             {
             case Ogre::LML_TRIVIAL:
-                orxonoxLevel = this->ogreLogLevelTrivial_;
+                orxonoxLevel = level::verbose_more;
                 break;
             case Ogre::LML_NORMAL:
-                orxonoxLevel = this->ogreLogLevelNormal_;
+                orxonoxLevel = level::verbose;
                 break;
             case Ogre::LML_CRITICAL:
-                orxonoxLevel = this->ogreLogLevelCritical_;
+                orxonoxLevel = level::internal_warning;
                 break;
             default:
                 orxonoxLevel = level::debug_output;
             }
             introduction = "Ogre: ";
         }
-#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: use correct level, also for config values (and remove boost include)")
-        orxout(debug_output, context::ogre) << "ogre (level: " << lml << "): " << introduction << message << endl;
+
+        orxout(orxonoxLevel, context::ogre) << introduction << message << endl;
     }
 
     size_t GraphicsManager::getRenderWindowHandle()

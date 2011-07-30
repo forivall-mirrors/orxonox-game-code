@@ -151,6 +151,8 @@ namespace orxonox // tolua_export
         template <typename FunctionType>
         bool protectedCall(FunctionType function);
 
+        void changedCeguiOutputLevel();
+
         // keyHandler functions
         void buttonPressed (const KeyEvent& evt);
         void buttonReleased(const KeyEvent& evt);
@@ -167,35 +169,36 @@ namespace orxonox // tolua_export
         virtual void windowFocusChanged(bool bFocus);
 
 #ifdef ORXONOX_OLD_CEGUI
-        CEGUI::OgreCEGUIRenderer*            guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
-        CEGUI::ResourceProvider*             resourceProvider_; //!< CEGUI's resource provider
+        CEGUI::OgreCEGUIRenderer*            guiRenderer_;          //!< CEGUI's interface to the Ogre Engine
+        CEGUI::ResourceProvider*             resourceProvider_;     //!< CEGUI's resource provider
 #else
-        CEGUI::OgreRenderer*                 guiRenderer_;      //!< CEGUI's interface to the Ogre Engine
-        CEGUI::OgreResourceProvider*         resourceProvider_; //!< CEGUI's resource provider
-        Ogre::RenderQueueListener*           rqListener_;       //!< RQ listener so we can draw UNDER Ogre overlays
+        CEGUI::OgreRenderer*                 guiRenderer_;          //!< CEGUI's interface to the Ogre Engine
+        CEGUI::OgreResourceProvider*         resourceProvider_;     //!< CEGUI's resource provider
+        Ogre::RenderQueueListener*           rqListener_;           //!< RQ listener so we can draw UNDER Ogre overlays
         CEGUI::OgreImageCodec*               imageCodec_;
 #endif
-        LuaState*                            luaState_;         //!< LuaState, access point to the Lua engine
-        CEGUI::LuaScriptModule*              scriptModule_;     //!< CEGUI's script module to use Lua
-        CEGUI::System*                       guiSystem_;        //!< CEGUI's main system
-        shared_ptr<ResourceInfo>             rootFileInfo_;     //!< Resource information about the root script
-        CEGUI::Logger*                       ceguiLogger_;      //!< CEGUI's logger to be able to log CEGUI errors in our log
-        CEGUI::Window*                       rootWindow_;       //!< Root node for all windows
-        CEGUI::Window*                       hudRootWindow_;    //!< Root node for the HUD sheets
-        CEGUI::Window*                       menuRootWindow_;   //!< Root node for the menu sheets (used by Lua)
-        std::map<std::string, PlayerInfo*>   players_;          //!< Stores the player (owner) for each GUI
-        Ogre::Camera*                        camera_;           //!< Camera used to render the scene with the GUI
+        LuaState*                            luaState_;             //!< LuaState, access point to the Lua engine
+        CEGUI::LuaScriptModule*              scriptModule_;         //!< CEGUI's script module to use Lua
+        CEGUI::System*                       guiSystem_;            //!< CEGUI's main system
+        shared_ptr<ResourceInfo>             rootFileInfo_;         //!< Resource information about the root script
+        CEGUI::Logger*                       ceguiLogger_;          //!< CEGUI's logger to be able to log CEGUI errors in our log
+        int                                  outputLevelCeguiLog_;  //!< CEGUI's log level
+        CEGUI::Window*                       rootWindow_;           //!< Root node for all windows
+        CEGUI::Window*                       hudRootWindow_;        //!< Root node for the HUD sheets
+        CEGUI::Window*                       menuRootWindow_;       //!< Root node for the menu sheets (used by Lua)
+        std::map<std::string, PlayerInfo*>   players_;              //!< Stores the player (owner) for each GUI
+        Ogre::Camera*                        camera_;               //!< Camera used to render the scene with the GUI
 
         /// Helper object that executes the surrogate destructor destroy()
         DestructionHelper<GUIManager>        destructionHelper_;
 
-        static GUIManager*                   singletonPtr_s;    //!< Singleton reference to GUIManager
+        static GUIManager*                   singletonPtr_s;        //!< Singleton reference to GUIManager
 
         // The used CEGUI scheme.
         static const std::string defaultScheme_;
         std::string guiScheme_;
         bool oldCEGUI_;
-        
+
         int numScrollLines_; ///< How many lines to scroll in a list if the scroll wheel is used
 
     }; // tolua_export

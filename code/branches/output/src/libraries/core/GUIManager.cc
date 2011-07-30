@@ -32,7 +32,6 @@
 #include <fstream>
 #include <memory>
 #include <boost/bind.hpp>
-#include <boost/preprocessor/stringize.hpp>
 #include <OgreRenderQueue.h>
 #include <OgreRenderWindow.h>
 
@@ -92,6 +91,14 @@ extern "C" {
 
 namespace orxonox
 {
+    namespace context
+    {
+        namespace
+        {
+            REGISTER_OUTPUT_CONTEXT(cegui);
+        }
+    }
+
     static void key_esc()
         { GUIManager::getInstance().keyESC(); }
     SetConsoleCommand("keyESC", &key_esc);
@@ -106,14 +113,13 @@ namespace orxonox
             {
                 case CEGUI::Errors:      orxonoxLevel = level::internal_error; break;
                 case CEGUI::Warnings:    orxonoxLevel = level::internal_warning; break;
-                case CEGUI::Standard:    orxonoxLevel = level::internal_status; break;
-                case CEGUI::Informative: orxonoxLevel = level::internal_info; break;
-                case CEGUI::Insane:      orxonoxLevel = level::verbose; break;
+                case CEGUI::Standard:    orxonoxLevel = level::verbose; break;
+                case CEGUI::Informative: orxonoxLevel = level::verbose_more; break;
+                case CEGUI::Insane:      orxonoxLevel = level::verbose_ultra; break;
                 default: OrxAssert(false, "CEGUI log level out of range, inspect immediately!");
             }
 
-#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: use correct level (and remove boost include)")
-            orxout(debug_output, context::cegui) << "CEGUI (level: " << level << "): " << message << endl;
+            orxout(orxonoxLevel, context::cegui) << message << endl;
 
             CEGUI::DefaultLogger::logEvent(message, level);
         }
@@ -301,10 +307,7 @@ namespace orxonox
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
         ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
-#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: inspect this (and remove boost include)")
-//        // Set the log level according to ours (translate by subtracting 1)
-//        ceguiLogger->setLoggingLevel(
-//            static_cast<LoggingLevel>(OutputHandler::getInstance().getSoftDebugLevel("logFile") - 1));
+        ceguiLogger->setLoggingLevel(static_cast<CEGUI::LoggingLevel>(this->outputLevelCeguiLog_));
         this->ceguiLogger_ = ceguiLogger.release();
 
         // Create the CEGUI system singleton
@@ -362,12 +365,19 @@ namespace orxonox
 
     void GUIManager::setConfigValues(void)
     {
-        SetConfigValue(guiScheme_, GUIManager::defaultScheme_) .description("Changes the current GUI scheme.") .callback(this, &GUIManager::changedGUIScheme);
+        SetConfigValue(guiScheme_, GUIManager::defaultScheme_).description("Changes the current GUI scheme.").callback(this, &GUIManager::changedGUIScheme);
         SetConfigValue(numScrollLines_, 1).description("How many lines to scroll in a list if the scroll wheel is used");
+        SetConfigValueExternal(outputLevelCeguiLog_, "OutputHandler", "outputLevelCeguiLog", CEGUI::Standard).description("The log level of the CEGUI log file").callback(this, &GUIManager::changedCeguiOutputLevel);
     }
 
     void GUIManager::changedGUIScheme(void)
     {
+    }
+
+    void GUIManager::changedCeguiOutputLevel()
+    {
+        if (this->ceguiLogger_)
+            this->ceguiLogger_->setLoggingLevel(static_cast<CEGUI::LoggingLevel>(this->outputLevelCeguiLog_));
     }
 
     /**

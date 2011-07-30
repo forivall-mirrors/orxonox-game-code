@@ -74,8 +74,6 @@ namespace orxonox
             REGISTER_OUTPUT_CONTEXT(test1);
             REGISTER_OUTPUT_CONTEXT(test2);
             REGISTER_OUTPUT_CONTEXT(output);
-            REGISTER_OUTPUT_CONTEXT(cegui);
-            REGISTER_OUTPUT_CONTEXT(ogre);
             REGISTER_OUTPUT_CONTEXT(lua);
             REGISTER_OUTPUT_CONTEXT(tcl);
         }
