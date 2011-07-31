@@ -39,7 +39,7 @@ namespace orxonox
     //void ChatListener::incomingChat( const std::string& message,
       //unsigned int senderID )
     //{
-      //COUT(0) << "Chat: \"" << message << "\"\n";
+      //orxout(message) << "Chat: \"" << message << "\"" << endl;
 
 
     //}

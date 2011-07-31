@@ -39,7 +39,7 @@ namespace orxonox
   PeerList::addPeer( ENetPeer *toadd )
   { /* error correction */
     if( toadd == NULL ) 
-    { fprintf( stderr, "PeerList::addPeer: empty peer given.\n" );
+    { orxout(internal_error, context::master_server) << "PeerList::addPeer: empty peer given." << endl;
       return -1;
     }
 

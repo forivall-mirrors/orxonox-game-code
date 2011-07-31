@@ -91,7 +91,7 @@ ClassID::ClassID( ) : Packet(){
   }
   assert(tempsize==packetSize);
 
-  COUT(5) << "classid packetSize is " << packetSize << endl;
+  orxout(verbose_more, context::packets) << "classid packetSize is " << packetSize << endl;
 
 }
 
@@ -130,7 +130,7 @@ bool ClassID::process(orxonox::Host* host){
   //clear the map of network ids
   Identifier::clearNetworkIDs();
 
-  COUT(4) << "=== processing classids: " << endl;
+  orxout(verbose, context::packets) << "=== processing classids: " << endl;
   std::pair<uint32_t, std::string> tempPair;
   Identifier *id;
   // read the total number of classes
@@ -142,9 +142,9 @@ bool ClassID::process(orxonox::Host* host){
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
     classname = temp+2*sizeof(uint32_t);
     id=ClassByString( std::string((const char*)classname) );
-    COUT(3) << "processing classid: " << networkID << " name: " << classname << " id: " << id << std::endl;
+    orxout(internal_info, context::packets) << "processing classid: " << networkID << " name: " << classname << " id: " << id << endl;
     if(id==NULL){
-      COUT(0) << "Received a bad classname" << endl;
+      orxout(user_error, context::packets) << "Received a bad classname" << endl;
       abort();
     }
     id->setNetworkID( networkID );

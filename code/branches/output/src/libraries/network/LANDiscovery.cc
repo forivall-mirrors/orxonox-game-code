@@ -43,7 +43,7 @@ namespace orxonox
   {
     this->host_ = enet_host_create(NULL, 10, 0, 0, 0 );
     if ( this->host_ == NULL )
-        COUT(1) << "LANDiscovery: host_ == NULL" << std::endl;
+        orxout(internal_error, context::network) << "LANDiscovery: host_ == NULL" << endl;
   }
 
   LANDiscovery::~LANDiscovery()
@@ -65,13 +65,13 @@ namespace orxonox
     address.host = ENET_HOST_BROADCAST;
     peer = enet_host_connect(this->host_, &address, 0, 0);
     if (peer == NULL)
-        COUT(1) << "Error: Could not send LAN discovery to IPv4 Broadcast." << std::endl;
+        orxout(internal_error, context::network) << "Could not send LAN discovery to IPv4 Broadcast." << endl;
 
     /* IPv6 */
     enet_address_set_host(&address, "ff02::1"); // TODO: use a multicast group
     peer = enet_host_connect(this->host_, &address, 0, 0);
     if (peer == NULL)
-        COUT(1) << "Error: Could not send LAN discovery to IPv6 Multicast." << std::endl;
+        orxout(internal_error, context::network) << "Could not send LAN discovery to IPv6 Multicast." << endl;
 
     ENetEvent event;
     while( enet_host_service(this->host_, &event, 1000 ) )
@@ -80,7 +80,7 @@ namespace orxonox
       {
         case ENET_EVENT_TYPE_CONNECT:
         {
-          COUT(4) << "Received LAN discovery connect from server " << event.peer->host->receivedAddress << std::endl;
+          orxout(verbose, context::network) << "Received LAN discovery connect from server " << event.peer->host->receivedAddress << endl;
           ENetPacket* packet = enet_packet_create(LAN_DISCOVERY_MESSAGE, strlen(LAN_DISCOVERY_MESSAGE)+1, ENET_PACKET_FLAG_RELIABLE);
           enet_peer_send(event.peer, 0, packet);
           break;
@@ -88,7 +88,7 @@ namespace orxonox
         case ENET_EVENT_TYPE_RECEIVE:
           {
             packet::ServerInformation info(&event);
-            COUT(3) << "Received LAN discovery server information; Name: " << info.getServerName() << ", Address: " << info.getServerIP() << ", RTT: " << info.getServerRTT() << endl;
+            orxout(internal_info, context::network) << "Received LAN discovery server information; Name: " << info.getServerName() << ", Address: " << info.getServerIP() << ", RTT: " << info.getServerRTT() << endl;
             std::vector<packet::ServerInformation>::iterator it;
             for( it=this->servers_.begin(); it!=this->servers_.end(); ++it )
             {

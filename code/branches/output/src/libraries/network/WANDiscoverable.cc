@@ -43,7 +43,7 @@ namespace orxonox
   WANDiscoverable::WANDiscoverable(): bActive_(false)
   {
     /* debugging output */
-    COUT(4) << "Creating WANDiscoverable.\n";
+    orxout(verbose, context::master_server) << "Creating WANDiscoverable." << endl;
   
     /* register object in orxonox */
     RegisterObject(WANDiscoverable);
@@ -90,20 +90,20 @@ namespace orxonox
     /* initialize it and see if it worked */
     if( msc.initialize() )
     {
-      COUT(2) << "Error: could not initialize master server communications!\n";
+      orxout(internal_error, context::master_server) << "Could not initialize master server communications!" << endl;
       return false;
     }
     
     /* connect and see if it worked */
     if( msc.connect( this->msaddress.c_str(), ORX_MSERVER_PORT ) )
     {
-      COUT(2) << "Error: could not connect to master server at " 
-                 << this->msaddress << std::endl;
+      orxout(internal_error, context::master_server) << "Could not connect to master server at " 
+                 << this->msaddress << endl;
       return false;
     }
                  
     /* debugging output */
-    COUT(4) << "Initialization of WANDiscoverable complete.\n";
+    orxout(verbose, context::master_server) << "Initialization of WANDiscoverable complete." << endl;
     
     
     // Now register the server at the master server

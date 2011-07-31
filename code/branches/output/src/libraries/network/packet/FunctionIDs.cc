@@ -87,7 +87,7 @@ FunctionIDs::FunctionIDs( ) : Packet()
     temp+=2*sizeof(uint32_t)+tempPair.second.size()+1;
   }
 
-  COUT(5) << "FunctionIDs packetSize is " << packetSize << endl;
+  orxout(verbose_more, context::packets) << "FunctionIDs packetSize is " << packetSize << endl;
 
 }
 
@@ -125,7 +125,7 @@ bool FunctionIDs::process(orxonox::Host* host)
   uint32_t stringsize;
   unsigned char *functionname;
 
-  COUT(4) << "=== processing functionids: " << endl;
+  orxout(verbose, context::packets) << "=== processing functionids: " << endl;
   std::pair<uint32_t, std::string> tempPair;
   // read the total number of classes
   nrOfFunctions = *(uint32_t*)temp;
@@ -136,7 +136,7 @@ bool FunctionIDs::process(orxonox::Host* host)
     networkID = *(uint32_t*)temp;
     stringsize = *(uint32_t*)(temp+sizeof(uint32_t));
     functionname = temp+2*sizeof(uint32_t);
-    COUT(3) << "processing functionid: " << networkID << " name: " << functionname << std::endl;
+    orxout(internal_info, context::packets) << "processing functionid: " << networkID << " name: " << functionname << endl;
     NetworkFunctionBase::setNetworkID((const char*)functionname, networkID);
     temp += 2*sizeof(uint32_t) + stringsize;
   }

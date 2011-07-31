@@ -90,6 +90,9 @@ namespace orxonox
             REGISTER_OUTPUT_CONTEXT(templates);
             REGISTER_OUTPUT_CONTEXT(loader);
             REGISTER_OUTPUT_CONTEXT(xml);
+            REGISTER_OUTPUT_CONTEXT(network);
+            REGISTER_OUTPUT_CONTEXT(packets);
+            REGISTER_OUTPUT_CONTEXT(master_server);
         }
     }
 }

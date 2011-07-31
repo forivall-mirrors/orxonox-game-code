@@ -61,7 +61,7 @@ bool DeleteObjects::fetchIDs()
   unsigned int number = Synchronisable::getNumberOfDeletedObject();
   if(number==0)
     return false;
-  COUT(4) << "sending DeleteObjects: ";
+  orxout(verbose, context::packets) << "sending DeleteObjects: ";
   unsigned int size = sizeof(Type::Value) + sizeof(uint32_t)*(number+1);
   data_ = new uint8_t[size];
   uint8_t *tdata = data_;
@@ -72,10 +72,10 @@ bool DeleteObjects::fetchIDs()
   for(unsigned int i=0; i<number; i++){
     unsigned int temp = Synchronisable::popDeletedObject();
     *reinterpret_cast<uint32_t*>(tdata) = temp;
-    COUT(4) << temp << ' ';
+    orxout(verbose, context::packets) << temp << ' ';
     tdata += sizeof(uint32_t);
   }
-  COUT(4) << std::endl;
+  orxout(verbose, context::packets) << endl;
   return true;
 }
 
@@ -89,7 +89,7 @@ bool DeleteObjects::process(orxonox::Host* host)
 {
   for(unsigned int i=0; i<*(unsigned int *)(data_+_QUANTITY); i++)
   {
-    COUT(4) << "deleting object with id: " << *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) << std::endl;
+    orxout(verbose, context::packets) << "deleting object with id: " << *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) << endl;
     Synchronisable::deleteObject( *(uint32_t*)(data_+_OBJECTIDS+i*sizeof(uint32_t)) );
   }
   delete this;

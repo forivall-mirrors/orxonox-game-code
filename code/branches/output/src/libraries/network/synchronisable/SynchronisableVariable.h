@@ -201,7 +201,7 @@ namespace orxonox{
         // check that the client (source of the data) has a recent version of this variable
         if ( *static_cast<uint8_t*>(mem) != this->varReference_ )
         { // wrong reference number, so discard the data
-//           COUT(0) << "discharding data" << endl;
+//           orxout(debug_output, context::network) << "discharding data" << endl;
           mem += getSize( mode ); // SynchronisableVariableBidirectional::getSize returns size of variable + reference
           return;
         }

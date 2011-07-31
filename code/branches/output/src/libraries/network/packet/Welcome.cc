@@ -77,7 +77,7 @@ bool Welcome::process(orxonox::Host* host){
   clientID = *(uint32_t *)(data_ + _CLIENTID );
   assert(*(uint32_t *)(data_ + _ENDIANTEST ) == 0xFEDC4321);
   host->setClientID(clientID);
-  COUT(3) << "Welcome set clientId: " << clientID << endl;
+  orxout(internal_info, context::packets) << "Welcome set clientId: " << clientID << endl;
   Synchronisable::setClient(true);
   delete this;
   return true;

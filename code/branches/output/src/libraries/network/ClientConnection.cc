@@ -59,7 +59,7 @@ namespace orxonox
 
   void ClientConnection::setServerAddress( const std::string& serverAddress ) {
     if (enet_address_set_host (this->serverAddress_, serverAddress.c_str()) < 0)
-        COUT(1) << "Error: Could not resolve \"" << serverAddress << "\"." << std::endl;
+        orxout(internal_error, context::network) << "Could not resolve \"" << serverAddress << "\"." << endl;
   }
 
   void ClientConnection::setPort( unsigned int port ) {
@@ -75,7 +75,7 @@ namespace orxonox
     
     if ( this->host_ == NULL )
     {
-      COUT(1) << "ClientConnection: host_ == NULL" << std::endl;
+      orxout(internal_error, context::network) << "ClientConnection: host_ == NULL" << endl;
       // error handling
       return false;
     }
@@ -85,16 +85,16 @@ namespace orxonox
     
     assert( this->host_->socket4 != ENET_SOCKET_NULL || this->host_->socket6 != ENET_SOCKET_NULL );
     if (this->host_->socket4 == ENET_SOCKET_NULL)
-        COUT(2) << "Warning: IPv4 Socket failed." << std::endl;
+        orxout(internal_warning, context::network) << "IPv4 Socket failed." << endl;
     else if (this->host_->socket6 == ENET_SOCKET_NULL)
-        COUT(2) << "Warning: IPv6 Socket failed." << std::endl;
+        orxout(internal_warning, context::network) << "IPv6 Socket failed." << endl;
     else
-        COUT(3) << "Info: Using IPv4 and IPv6 Sockets." << std::endl;
+        orxout(internal_info, context::network) << "Using IPv4 and IPv6 Sockets." << endl;
 
     this->server_ = enet_host_connect(this->host_, serverAddress_, NETWORK_CHANNEL_COUNT, 0);
     if ( this->server_==NULL )
     {
-      COUT(1) << "ClientConnection: server_ == NULL" << std::endl;
+      orxout(internal_error, context::network) << "ClientConnection: server_ == NULL" << endl;
       // error handling
       return false;
     }
@@ -112,7 +112,7 @@ namespace orxonox
         return true;
       }
     }
-    COUT(1) << "Could not connect to server" << endl;
+    orxout(user_error, context::network) << "Could not connect to server" << endl;
     return false;
   }
 
@@ -139,7 +139,7 @@ namespace orxonox
             enet_packet_destroy(event.packet);
             break;
           case ENET_EVENT_TYPE_DISCONNECT:
-            COUT(4) << "received disconnect confirmation from server" << endl;
+            orxout(verbose, context::network) << "received disconnect confirmation from server" << endl;
             this->connectionClosed();
             return true;
         }
@@ -166,7 +166,7 @@ namespace orxonox
   void ClientConnection::removePeer(uint32_t peerID)
   {
     this->established_=false;
-    COUT(1) << "Received disconnect Packet from Server!" << endl;
+    orxout(internal_error, context::network) << "Received disconnect Packet from Server!" << endl;
         // server closed the connection
     this->stopCommunicationThread();
     this->connectionClosed();

@@ -286,9 +286,9 @@ namespace orxonox {
   void TrafficControl::printList(std::list<obj>& list, unsigned int clientID)
   {
     std::list<obj>::iterator it;
-    COUT(0) << "=========== Objectlist ===========" << endl;
+    orxout(debug_output, context::network) << "=========== Objectlist ===========" << endl;
     for( it=list.begin(); it!=list.end(); it++)
-      COUT(0) << "ObjectID: " << it->objID << " creatorID: " << it->objCreatorID << " Priority: " << clientListPerm_[clientID][it->objID].objValuePerm + clientListPerm_[clientID][it->objID].objValueSched << " size: " << it->objSize << endl;
+      orxout(debug_output, context::network) << "ObjectID: " << it->objID << " creatorID: " << it->objCreatorID << " Priority: " << clientListPerm_[clientID][it->objID].objValuePerm + clientListPerm_[clientID][it->objID].objValueSched << " size: " << it->objSize << endl;
   }
 
   void TrafficControl::fixCreatorDependencies(std::list<obj>::iterator it1, std::list<obj>& list, unsigned int clientID)

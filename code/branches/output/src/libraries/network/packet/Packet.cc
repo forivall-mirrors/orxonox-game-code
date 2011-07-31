@@ -191,39 +191,39 @@ Packet *Packet::createPacket(ENetPacket* packet, uint32_t peerID)
 //   if( peerID==static_cast<unsigned int>(-2))
 //     peerID = NETWORK_PEER_ID_SERVER;
   Packet *p = 0;
-//   COUT(6) << "packet type: " << *(Type::Value *)&data[_PACKETID] << std::endl;
+//   orxout(verbose_ultra, context::packets) << "packet type: " << *(Type::Value *)&data[_PACKETID] << endl;
   switch( *(Type::Value *)(data + _PACKETID) )
   {
     case Type::Acknowledgement:
-//       COUT(5) << "ack" << std::endl;
+//       orxout(verbose_more, context::packets) << "ack" << endl;
     p = new Acknowledgement( data, peerID );
       break;
     case Type::Chat:
-//       COUT(5) << "chat" << std::endl;
+//       orxout(verbose_more, context::packets) << "chat" << endl;
       p = new Chat( data, peerID );
       break;
     case Type::ClassID:
-//       COUT(5) << "classid" << std::endl;
+//       orxout(verbose_more, context::packets) << "classid" << endl;
       p = new ClassID( data, peerID );
       break;
     case Type::Gamestate:
-//       COUT(5) << "gamestate" << std::endl;
+//       orxout(verbose_more, context::packets) << "gamestate" << endl;
       p = new Gamestate( data, peerID );
       break;
     case Type::Welcome:
-//       COUT(5) << "welcome" << std::endl;
+//       orxout(verbose_more, context::packets) << "welcome" << endl;
       p = new Welcome( data, peerID );
       break;
     case Type::DeleteObjects:
-//       COUT(5) << "deleteobjects" << std::endl;
+//       orxout(verbose_more, context::packets) << "deleteobjects" << endl;
       p = new DeleteObjects( data, peerID );
       break;
     case Type::FunctionCalls:
-//       COUT(5) << "functionCalls" << std::endl;
+//       orxout(verbose_more, context::packets) << "functionCalls" << endl;
       p = new FunctionCalls( data, peerID );
       break;
     case Type::FunctionIDs:
-//       COUT(5) << "functionIDs" << std::endl;
+//       orxout(verbose_more, context::packets) << "functionIDs" << endl;
       p = new FunctionIDs( data, peerID );
       break;
     default:
@@ -254,7 +254,7 @@ void Packet::deletePacket(ENetPacket *enetPacket)
   delete it->second;
   packetMap_.erase(it);
   Packet::packetMapMutex_.unlock();
-//   COUT(6) << "PacketMap size: " << packetMap_.size() << std::endl;
+//   orxout(verbose_ultra, context::packets) << "PacketMap size: " << packetMap_.size() << endl;
 }
 
 } // namespace packet

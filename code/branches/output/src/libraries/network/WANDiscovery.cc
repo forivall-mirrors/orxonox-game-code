@@ -44,7 +44,7 @@ namespace orxonox
   WANDiscovery::WANDiscovery()
   {
     /* debugging output */
-    COUT(4) << "Creating WANDiscovery.\n";
+    orxout(verbose, context::master_server) << "Creating WANDiscovery." << endl;
   
     /* register object in orxonox */
     RegisterObject(WANDiscovery);
@@ -54,15 +54,15 @@ namespace orxonox
 
     /* initialize it and see if it worked */
     if( msc.initialize() )
-      COUT(2) << "Error: could not initialize master server communications!\n";
+      orxout(internal_error, context::master_server) << "Could not initialize master server communications!" << endl;
 
     /* connect and see if it worked */
     if( msc.connect( this->msaddress.c_str(), ORX_MSERVER_PORT ) )
-      COUT(2) << "Error: could not connect to master server at " 
-        << this->msaddress << std::endl;
+      orxout(internal_error, context::master_server) << "Could not connect to master server at " 
+        << this->msaddress << endl;
 
     /* debugging output */
-    COUT(4) << "Initialization of WANDiscovery complete.\n";
+    orxout(verbose, context::master_server) << "Initialization of WANDiscovery complete." << endl;
   }
 
   void WANDiscovery::setConfigValues()
@@ -84,7 +84,7 @@ namespace orxonox
   { 
     /* error recognition */
     if( !ev || !ev->packet || !ev->packet->data )
-    { COUT(2) << "Bad arguments received in WANDiscovery's reply handler.\n";
+    { orxout(internal_warning, context::master_server) << "Bad arguments received in WANDiscovery's reply handler." << endl;
       return 0;
     }
 

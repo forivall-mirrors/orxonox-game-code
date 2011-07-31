@@ -231,7 +231,7 @@ namespace orxonox
       else
         it++;
     }
-    COUT(1) << "Tried to unregister not registered variable" << endl;
+    orxout(internal_error, context::network) << "Tried to unregister not registered variable" << endl;
     assert(false); //if we reach this point something went wrong:
     // the variable has not been registered before
   }

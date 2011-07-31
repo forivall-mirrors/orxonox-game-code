@@ -117,13 +117,13 @@ namespace orxonox
 
   bool Client::processChat(const std::string& message, unsigned int playerID)
   {
-//    COUT(1) << "Player " << playerID << ": " << message << std::endl;
+//    orxout(message) << "Player " << playerID << ": " << message << endl;
     return true;
   }
 
   void Client::printRTT()
   {
-    COUT(0) << "Round trip time to server is " << ClientConnection::getRTT() << " ms" << endl;
+    orxout(message) << "Round trip time to server is " << ClientConnection::getRTT() << " ms" << endl;
   }
 
   /**
@@ -149,10 +149,9 @@ namespace orxonox
     if(timeSinceLastUpdate_>=NETWORK_PERIOD)
     {
       timeSinceLastUpdate_ -= static_cast<unsigned int>( timeSinceLastUpdate_ / NETWORK_PERIOD ) * NETWORK_PERIOD;
-      //     COUT(3) << '.';
       if ( isConnected() && isSynched_ )
       {
-        COUT(4) << "popping partial gamestate: " << std::endl;
+        orxout(verbose, context::network) << "popping partial gamestate: " << endl;
 //         packet::Gamestate *gs = GamestateClient::getGamestate();
         if( GamestateManager::update() )
         {
@@ -165,9 +164,9 @@ namespace orxonox
         }
         //assert(gs); <--- there might be the case that no data has to be sent, so its commented out now
 //         if(gs){
-//           COUT(4) << "client tick: sending gs " << gs << std::endl;
+//           orxout(verbose, context::network) << "client tick: sending gs " << gs << endl;
 //           if( !gs->send() )
-//             COUT(2) << "Problem adding partial gamestate to queue" << std::endl;
+//             orxout(internal_warning, context::network) << "Problem adding partial gamestate to queue" << endl;
 //         // gs gets automatically deleted by enet callback
 //         }
         FunctionCallManager::sendCalls(static_cast<Host*>(this));
