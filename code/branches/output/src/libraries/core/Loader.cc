@@ -92,16 +92,16 @@ namespace orxonox
         Loads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
     @param mask
         A ClassTreeMask, which defines which types of classes are loaded and which aren't.
-    @param verbose
+    @param bVerbose
         Whether the loader is verbose (prints its progress in a low output level) or not.
     @return
         Returns true if successful.
     */
-    bool Loader::load(const ClassTreeMask& mask, bool verbose)
+    bool Loader::load(const ClassTreeMask& mask, bool bVerbose)
     {
         bool success = true;
         for (std::vector<std::pair<const XMLFile*, ClassTreeMask> >::iterator it = Loader::files_s.begin(); it != Loader::files_s.end(); ++it)
-            if (!Loader::load(it->first, it->second * mask, verbose))
+            if (!Loader::load(it->first, it->second * mask, bVerbose))
                 success = false;
 
         return success;
@@ -123,15 +123,15 @@ namespace orxonox
         Reloads all opened files, while conforming to the restrictions given by the input ClassTreeMask.
     @param mask
         A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
-    @param verbose
+    @param bVerbose
         Whether the loader is verbose (prints its progress in a low output level) or not.
     @return
         Returns true if successful.
     */
-    bool Loader::reload(const ClassTreeMask& mask, bool verbose)
+    bool Loader::reload(const ClassTreeMask& mask, bool bVerbose)
     {
         Loader::unload(mask);
-        return Loader::load(mask, verbose);
+        return Loader::load(mask, bVerbose);
     }
 
     /**
@@ -141,14 +141,14 @@ namespace orxonox
         The file to be loaded.
     @param mask
         A ClassTreeMask, which defines which types of classes are loaded and which aren't.
-    @param verbose
+    @param bVerbose
         Whether the loader is verbose (prints its progress in a low output level) or not.
     @param bRemoveLuaTags
         If true lua tags are just ignored and removed. The default is false.
     @return
         Returns true if successful.
     */
-    bool Loader::load(const XMLFile* file, const ClassTreeMask& mask, bool verbose, bool bRemoveLuaTags)
+    bool Loader::load(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose, bool bRemoveLuaTags)
     {
         if (!file)
             return false;
@@ -186,7 +186,7 @@ namespace orxonox
 
         try
         {
-            if(verbose)
+            if(bVerbose)
             {
                 orxout(user_status, context::loader) << "Start loading " << file->getFilename() << "..." << endl;
                 orxout(internal_info, context::loader) << "Mask: " << Loader::currentMask_s << endl;
@@ -215,7 +215,7 @@ namespace orxonox
             rootNamespace->setRoot(true);
             rootNamespace->XMLPort(rootElement, XMLPort::LoadObject);
 
-            if(verbose)
+            if(bVerbose)
                 orxout(user_status, context::loader) << "Finished loading " << file->getFilename() << '.' << endl;
             else
                 orxout(verbose, context::loader) << "Finished loading " << file->getFilename() << '.' << endl;
@@ -270,15 +270,15 @@ namespace orxonox
         The file to be reloaded.
     @param mask
         A ClassTreeMask, which defines which types of classes are reloaded and which aren't.
-    @param verbose
+    @param bVerbose
         Whether the loader is verbose (prints its progress in a low output level) or not.
     @return
         Returns true if successful.
     */
-    bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask, bool verbose)
+    bool Loader::reload(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose)
     {
         Loader::unload(file, mask);
-        return Loader::load(file, mask, verbose);
+        return Loader::load(file, mask, bVerbose);
     }
 
     bool Loader::getLuaTags(const std::string& text, std::map<size_t, bool>& luaTags)
@@ -338,7 +338,7 @@ namespace orxonox
             {
                 orxout(internal_error, context::loader) << "Error in level file" << endl;
                 // TODO: error handling
-                return false; 
+                return false;
             }
         }
 

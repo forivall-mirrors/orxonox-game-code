@@ -37,7 +37,7 @@ namespace orxonox
 {
     OutputManager::OutputManager()
     {
-        this->combinedLevelMask_ = 0;
+        this->combinedLevelMask_ = level::none;
         this->combinedContextMask_ = 0;
     }
 
@@ -98,9 +98,10 @@ namespace orxonox
 
     void OutputManager::updateCombinedLevelMask()
     {
-        this->combinedLevelMask_ = 0;
+        int mask = 0;
         for (size_t i = 0; i < this->listeners_.size(); ++i)
-            this->combinedLevelMask_ |= this->listeners_[i]->getLevelMask();
+            mask |= this->listeners_[i]->getLevelMask();
+        this->combinedLevelMask_ = static_cast<OutputLevel>(mask);
     }
 
     void OutputManager::updateCombinedContextMask()

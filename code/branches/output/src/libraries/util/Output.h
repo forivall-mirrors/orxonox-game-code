@@ -36,7 +36,6 @@ namespace orxonox
 {
     // Just for convenience
     using std::endl;
-    using namespace level;
 
     inline OutputStream& orxout(OutputLevel level = level::debug_output, OutputContext context = context::undefined())
     {

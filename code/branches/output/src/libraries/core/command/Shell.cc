@@ -169,12 +169,12 @@ namespace orxonox
         bool isNormal = (value == PathConfig::buildDirectoryRun());
         if (isNormal)
         {
-            ModifyConfigValueExternal(debugLevel_, this->getConfigurableMaxLevelName(), update);
+            ModifyConfigValueExternal(this->configurableMaxLevel_, this->getConfigurableMaxLevelName(), update);
         }
         else
         {
             OutputLevel level = (value ? DefaultLogLevel::Dev : DefaultLogLevel::User);
-            ModifyConfigValueExternal(debugLevel_, this->getConfigurableMaxLevelName(), tset, level);
+            ModifyConfigValueExternal(this->configurableMaxLevel_, this->getConfigurableMaxLevelName(), tset, level);
         }
     }
 

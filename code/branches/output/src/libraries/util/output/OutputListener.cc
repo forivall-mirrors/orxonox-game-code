@@ -47,17 +47,16 @@ namespace orxonox
 
     void OutputListener::setLevelMax(OutputLevel max)
     {
-        this->setLevelRange(level::debug_output, max);
+        this->setLevelRange(static_cast<OutputLevel>(0x1), max);
     }
 
     void OutputListener::setLevelRange(OutputLevel min, OutputLevel max)
     {
-        OutputLevel mask = 0;
-
-        for (OutputLevel level = min; level <= max; level = level << 1)
+        int mask = 0;
+        for (int level = min; level <= max; level = level << 1)
             mask |= level;
 
-        this->setLevelMask(mask);
+        this->setLevelMask(static_cast<OutputLevel>(mask));
     }
 
     void OutputListener::setLevelMask(OutputLevel mask)

@@ -37,27 +37,30 @@
 
 namespace orxonox
 {
-    typedef uint16_t OutputLevel;
-
     namespace level
     {
-        static const OutputLevel all              = 0xFFFF;
-        static const OutputLevel none             = 0x0000;
+        enum OutputLevel
+        {
+            all              = 0xFFFF,
+            none             = 0x0000,
 
-        static const OutputLevel message          = 0x0001;
-        static const OutputLevel debug_output     = 0x0002;
-        static const OutputLevel user_error       = 0x0004;
-        static const OutputLevel user_warning     = 0x0008;
-        static const OutputLevel user_status      = 0x0010;
-        static const OutputLevel user_info        = 0x0020;
-        static const OutputLevel internal_error   = 0x0040;
-        static const OutputLevel internal_warning = 0x0080;
-        static const OutputLevel internal_status  = 0x0100;
-        static const OutputLevel internal_info    = 0x0200;
-        static const OutputLevel verbose          = 0x0400;
-        static const OutputLevel verbose_more     = 0x0800;
-        static const OutputLevel verbose_ultra    = 0x1000;
+            message          = 0x0001,
+            debug_output     = 0x0002,
+            user_error       = 0x0004,
+            user_warning     = 0x0008,
+            user_status      = 0x0010,
+            user_info        = 0x0020,
+            internal_error   = 0x0040,
+            internal_warning = 0x0080,
+            internal_status  = 0x0100,
+            internal_info    = 0x0200,
+            verbose          = 0x0400,
+            verbose_more     = 0x0800,
+            verbose_ultra    = 0x1000
+        };
     }
+
+    using namespace level;
 
     typedef uint64_t OutputContext;
     typedef OutputContext (OutputContextFunction)();

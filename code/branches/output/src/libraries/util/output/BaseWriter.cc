@@ -64,8 +64,8 @@ namespace orxonox
 
     void BaseWriter::changedConfigurableLevels()
     {
-        OutputLevel max_level = std::max(this->configurableMaxLevel_, this->configurableContextsMaxLevel_);
-        OutputListener::setLevelMax(max_level);
+        int max_level = std::max(this->configurableMaxLevel_, this->configurableContextsMaxLevel_);
+        OutputListener::setLevelMax(static_cast<OutputLevel>(max_level));
     }
 
     void BaseWriter::changedConfigurableContexts()

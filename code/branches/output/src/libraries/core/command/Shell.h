@@ -199,7 +199,6 @@ namespace orxonox
             unsigned int              maxHistoryLength_;    ///< The maximum number of saved commands
             unsigned int              historyOffset_;       ///< The command history is a circular buffer, this variable defines the current write-offset
             std::vector<std::string>  commandHistory_;      ///< The history of commands that were entered by the user
-            OutputLevel               debugLevel_;          //!< The maximum level of output that is displayed in the shell (will be passed to OutputListener to filter output)
             static unsigned int       cacheSize_s;          ///< The maximum cache size of the CommandExecutor - this is stored here for better readability of the config file and because CommandExecutor is no OrxonoxClass
     };
 }

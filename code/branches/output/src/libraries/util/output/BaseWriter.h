@@ -49,11 +49,11 @@ namespace orxonox
 
             void setLevelMax(OutputLevel max);
 
-            OutputLevel configurableMaxLevel_;
+            int configurableMaxLevel_;
             inline std::string getConfigurableMaxLevelName() const
                 { return "outputLevel" + this->name_; }
 
-            OutputLevel configurableContextsMaxLevel_;
+            int configurableContextsMaxLevel_;
             inline std::string getConfigurableContextsMaxLevelName() const
                 { return "outputContextsLevel" + this->name_; }
 
