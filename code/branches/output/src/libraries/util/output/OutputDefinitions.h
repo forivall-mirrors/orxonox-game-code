@@ -44,18 +44,19 @@ namespace orxonox
         static const OutputLevel all              = 0xFFFF;
         static const OutputLevel none             = 0x0000;
 
-        static const OutputLevel debug_output     = 0x0001;
-        static const OutputLevel user_error       = 0x0002;
-        static const OutputLevel user_warning     = 0x0004;
-        static const OutputLevel user_status      = 0x0008;
-        static const OutputLevel user_info        = 0x0010;
-        static const OutputLevel internal_error   = 0x0020;
-        static const OutputLevel internal_warning = 0x0040;
-        static const OutputLevel internal_status  = 0x0080;
-        static const OutputLevel internal_info    = 0x0100;
-        static const OutputLevel verbose          = 0x0200;
-        static const OutputLevel verbose_more     = 0x0400;
-        static const OutputLevel verbose_ultra    = 0x0800;
+        static const OutputLevel message          = 0x0001;
+        static const OutputLevel debug_output     = 0x0002;
+        static const OutputLevel user_error       = 0x0004;
+        static const OutputLevel user_warning     = 0x0008;
+        static const OutputLevel user_status      = 0x0010;
+        static const OutputLevel user_info        = 0x0020;
+        static const OutputLevel internal_error   = 0x0040;
+        static const OutputLevel internal_warning = 0x0080;
+        static const OutputLevel internal_status  = 0x0100;
+        static const OutputLevel internal_info    = 0x0200;
+        static const OutputLevel verbose          = 0x0400;
+        static const OutputLevel verbose_more     = 0x0800;
+        static const OutputLevel verbose_ultra    = 0x1000;
     }
 
     typedef uint64_t OutputContext;
@@ -72,11 +73,20 @@ namespace orxonox
         {
             REGISTER_OUTPUT_CONTEXT(undefined);
 
-            REGISTER_OUTPUT_CONTEXT(test1);
-            REGISTER_OUTPUT_CONTEXT(test2);
-            REGISTER_OUTPUT_CONTEXT(output);
+            REGISTER_OUTPUT_CONTEXT(ogre);
+            REGISTER_OUTPUT_CONTEXT(cegui);
             REGISTER_OUTPUT_CONTEXT(lua);
             REGISTER_OUTPUT_CONTEXT(tcl);
+            REGISTER_OUTPUT_CONTEXT(identifier);
+            REGISTER_OUTPUT_CONTEXT(object_list);
+            REGISTER_OUTPUT_CONTEXT(super);
+            REGISTER_OUTPUT_CONTEXT(language);
+            REGISTER_OUTPUT_CONTEXT(output);
+            REGISTER_OUTPUT_CONTEXT(commands);
+            REGISTER_OUTPUT_CONTEXT(executor);
+            REGISTER_OUTPUT_CONTEXT(input);
+            REGISTER_OUTPUT_CONTEXT(events);
+            REGISTER_OUTPUT_CONTEXT(config);
         }
     }
 }

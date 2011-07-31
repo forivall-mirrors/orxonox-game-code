@@ -92,14 +92,6 @@ extern "C" {
 
 namespace orxonox
 {
-    namespace context
-    {
-        namespace
-        {
-            REGISTER_OUTPUT_CONTEXT(cegui);
-        }
-    }
-
     static void key_esc()
         { GUIManager::getInstance().keyESC(); }
     SetConsoleCommand("keyESC", &key_esc);

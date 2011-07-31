@@ -135,6 +135,7 @@ namespace orxonox
         switch (level)
         {
             case level::none:               { static std::string name = "None"; return name; }
+            case level::message:            { static std::string name = "Message"; return name; }
             case level::debug_output:       { static std::string name = "Debug"; return name; }
             case level::user_error:         { static std::string name = "Error"; return name; }
             case level::user_warning:       { static std::string name = "Warning"; return name; }

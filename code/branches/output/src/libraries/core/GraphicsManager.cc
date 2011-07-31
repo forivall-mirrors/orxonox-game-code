@@ -67,14 +67,6 @@
 
 namespace orxonox
 {
-    namespace context
-    {
-        namespace
-        {
-            REGISTER_OUTPUT_CONTEXT(ogre);
-        }
-    }
-
     static const std::string __CC_GraphicsManager_group = "GraphicsManager";
     static const std::string __CC_setScreenResolution_name = "setScreenResolution";
     static const std::string __CC_setFSAA_name = "setFSAA";

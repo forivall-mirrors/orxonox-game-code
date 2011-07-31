@@ -239,6 +239,7 @@ namespace orxonox
         // Colour line
         switch (type)
         {
+            case Shell::Message:
             case Shell::DebugOutput:     this->cout_ << "\033[0m"; break;
 
             case Shell::UserError:       this->cout_ << "\033[91m"; break;

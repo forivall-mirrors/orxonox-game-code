@@ -90,6 +90,7 @@ namespace orxonox
             enum LineType
             {
                 DebugOutput     = debug_output,
+                Message         = message,
                 UserError       = user_error,
                 UserWarning     = user_warning,
                 UserStatus      = user_status,

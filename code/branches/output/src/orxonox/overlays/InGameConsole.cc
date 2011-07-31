@@ -558,6 +558,7 @@ namespace orxonox
         ColourValue colourTop, colourBottom;
         switch (type)
         {
+            case Shell::Message:
             case Shell::DebugOutput:     colourTop = ColourValue(0.9f, 0.9f, 0.9f); break;
 
             case Shell::UserError:       colourTop = ColourValue(0.9f, 0.0f, 0.0f); break;

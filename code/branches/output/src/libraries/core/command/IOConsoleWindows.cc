@@ -200,6 +200,7 @@ namespace orxonox
         WORD colour = 0;
         switch (type)
         {
+            case Shell::Message:
             case Shell::DebugOutput:     colour = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE; break;
 
             case Shell::UserError:       colour = FOREGROUND_INTENSITY | FOREGROUND_RED | 0                | 0              ; break;
@@ -248,7 +249,7 @@ namespace orxonox
             || !GetConsoleMode(this->stdInHandle_, &this->originalTerminalSettings_)
             || !SetConsoleMode(this->stdInHandle_, 0))
         {
-            COUT(1) << "Error: Could not set Windows console settings" << std::endl;
+            orxout(user_error) << "Error: Could not set Windows console settings" << endl;
             return;
         }
         FlushConsoleInputBuffer(this->stdInHandle_);
