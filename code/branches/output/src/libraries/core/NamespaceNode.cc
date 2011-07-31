@@ -69,12 +69,12 @@ namespace orxonox
             {
                 if (this->bRoot_)
                 {
-                    COUT(2) << "Warning: Can't go to enclosing namespace with '..' operator in namespace " << this->name_ << ", namespace is root." << std::endl;
+                    orxout(internal_warning) << "Can't go to enclosing namespace with '..' operator in namespace " << this->name_ << ", namespace is root." << endl;
                     nodes = this->getNodeRelative(secondPart);
                 }
                 else if (!this->parent_)
                 {
-                    COUT(2) << "Warning: Can't go to enclosing namespace with '..' operator in namespace " << this->name_ << ", no parent namespace set." << std::endl;
+                    orxout(internal_warning) << "Can't go to enclosing namespace with '..' operator in namespace " << this->name_ << ", no parent namespace set." << endl;
                     nodes = this->getNodeRelative(secondPart);
                 }
                 else
@@ -90,7 +90,7 @@ namespace orxonox
 
                 if (it->second->isHidden())
                 {
-                    COUT(2) << "Warning: Subnamespace '" << firstPart << "' in namespace '" << this->name_ << "' is hidden and can't be accessed." << std::endl;
+                    orxout(internal_warning) << "Subnamespace '" << firstPart << "' in namespace '" << this->name_ << "' is hidden and can't be accessed." << endl;
                     nodes.insert(this);
                 }
                 else
@@ -114,7 +114,7 @@ namespace orxonox
 
                 if (!bFoundMatchingNamespace)
                 {
-                    COUT(2) << "Warning: No file included with name '" << firstPart.substr(1, std::string::npos) << "' at this part of the level file, using parent namespace instead." << std::endl;
+                    orxout(internal_warning) << "No file included with name '" << firstPart.substr(1, std::string::npos) << "' at this part of the level file, using parent namespace instead." << endl;
                     nodes = this->getNodeRelative(secondPart);
                 }
             }

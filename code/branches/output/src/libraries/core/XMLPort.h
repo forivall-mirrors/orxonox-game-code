@@ -414,7 +414,7 @@ namespace orxonox
                         //       Unfortunately this does not seem to work with the Executor parser yet.
                         if ((!attributeValue.empty()) || ((mode != XMLPort::ExpandObject) && this->loadexecutor_->allDefaultValuesSet()))
                         {
-                            COUT(5) << this->owner_->getLoaderIndentation() << "Loading parameter " << this->paramname_ << " in " << this->identifier_->getName() << " (objectname " << this->owner_->getName() << ")." << std::endl << this->owner_->getLoaderIndentation();
+                            orxout(verbose_more, context::xml) << this->owner_->getLoaderIndentation() << "Loading parameter " << this->paramname_ << " in " << this->identifier_->getName() << " (objectname " << this->owner_->getName() << ")." << endl;
                             int error;
                             this->loadexecutor_->parse(object, attributeValue, &error, ",");
                             if (!error || (mode  == XMLPort::ExpandObject))
@@ -429,9 +429,9 @@ namespace orxonox
                     }
                     catch (ticpp::Exception& ex)
                     {
-                        COUT(1) << std::endl;
-                        COUT(1) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << this->owner_->getName() << ") in " << this->owner_->getFilename() << ':' << std::endl;
-                        COUT(1) << ex.what() << std::endl;
+                        orxout(internal_error, context::xml) << endl;
+                        orxout(internal_error, context::xml) << "An error occurred in XMLPort.h while loading attribute '" << this->paramname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << this->owner_->getName() << ") in " << this->owner_->getFilename() << ':' << endl;
+                        orxout(internal_error, context::xml) << ex.what() << endl;
                     }
                 }
                 else if (mode == XMLPort::SaveObject)

@@ -52,7 +52,7 @@
     @code
     void myCoutFunction(const std::string& text)        // Define a static function
     {
-        COUT(0) << "Text: " << text << std::endl;       // Print the text to the console
+        orxout() << "Text: " << text << endl;           // Print the text to the console
     }
 
     SetConsoleCommand("cout", &myCoutFunction);         // Register the function as command with name "cout"
@@ -124,7 +124,7 @@
     @code
     void myOtherCoutFunction(const std::string& text)                       // Define a new static function
     {
-        COUT(0) << "Uppercase: " << getUppercase(text) << std::endl;        // Print the text in uppercase to the console
+        orxout() << "Uppercase: " << getUppercase(text) << endl;            // Print the text in uppercase to the console
     }
 
     {

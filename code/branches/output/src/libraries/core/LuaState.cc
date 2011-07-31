@@ -96,7 +96,7 @@ namespace orxonox
             return this->includeString(Resource::open(sourceInfo)->getAsString(), sourceInfo);
         else
         {
-            COUT(2) << "LuaState: Cannot include file '" << filename << "' (not found)." << std::endl;
+            orxout(internal_warning, context::lua) << "LuaState: Cannot include file '" << filename << "' (not found)." << endl;
             return false;
         }
     }
@@ -136,7 +136,7 @@ namespace orxonox
             return this->doString(Resource::open(sourceInfo)->getAsString(), sourceInfo);
         else
         {
-            COUT(2) << "LuaState: Cannot do file '" << filename << "' (not found)." << std::endl;
+            orxout(internal_warning, context::lua) << "LuaState: Cannot do file '" << filename << "' (not found)." << endl;
             return false;
         }
     }
@@ -176,10 +176,10 @@ namespace orxonox
         switch (error)
         {
         case LUA_ERRSYNTAX: // Syntax error
-            COUT(1) << "Lua syntax error: " << lua_tostring(luaState_, -1) << std::endl;
+            orxout(internal_error, context::lua) << "Lua syntax error: " << lua_tostring(luaState_, -1) << endl;
             break;
         case LUA_ERRMEM:    // Memory allocation error
-            COUT(1) << "Lua memory allocation error: Consult your dentist immediately!" << std::endl;
+            orxout(internal_error, context::lua) << "Lua memory allocation error: Consult your dentist immediately!" << endl;
             break;
         }
 
@@ -200,14 +200,14 @@ namespace orxonox
                 {
                     std::string errorString = lua_tostring(this->luaState_, -1);
                     if (errorString.find("Error propagation") == std::string::npos)
-                        COUT(1) << "Lua runtime error: " << errorString << std::endl;
+                        orxout(internal_error, context::lua) << "Lua runtime error: " << errorString << endl;
                 }
                 break;
             case LUA_ERRERR: // Error in the error handler
-                COUT(1) << "Lua error in error handler. No message available." << std::endl;
+                orxout(internal_error, context::lua) << "Lua error in error handler. No message available." << endl;
                 break;
             case LUA_ERRMEM: // Memory allocation error
-                COUT(1) << "Lua memory allocation error: Consult your dentist immediately!" << std::endl;
+                orxout(internal_error, context::lua) << "Lua memory allocation error: Consult your dentist immediately!" << endl;
                 break;
             }
         }
@@ -289,7 +289,7 @@ namespace orxonox
         {
             if (it->first == name || it->second == function)
             {
-                COUT(2) << "Warning: Trying to add a Tolua interface with the same name or function." << std::endl;
+                orxout(internal_warning, context::lua) << "Trying to add a Tolua interface with the same name or function." << endl;
                 return true;
             }
         }
@@ -308,7 +308,7 @@ namespace orxonox
         ToluaInterfaceMap::iterator it = getToluaInterfaces().find(name);
         if (it == getToluaInterfaces().end())
         {
-            COUT(2) << "Warning: Cannot remove Tolua interface '" << name << "': Not found" << std::endl;
+            orxout(internal_warning, context::lua) << "Cannot remove Tolua interface '" << name << "': Not found" << endl;
             return true;
         }
 

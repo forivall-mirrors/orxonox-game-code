@@ -59,7 +59,7 @@ namespace orxonox
     OrxonoxClass::~OrxonoxClass()
     {
 //        if (!this->requestedDestruction_)
-//            COUT(2) << "Warning: Destroyed object without destroy() (" << this->getIdentifier()->getName() << ')' << std::endl;
+//            orxout(internal_warning) << "Destroyed object without destroy() (" << this->getIdentifier()->getName() << ')' << endl;
 
         assert(this->referenceCount_ <= 0);
 

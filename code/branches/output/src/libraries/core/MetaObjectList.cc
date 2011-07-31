@@ -47,7 +47,7 @@ namespace orxonox
     */
     MetaObjectListElement::~MetaObjectListElement()
     {
-        COUT(5) << "*** MetaObjectList: Removing Object from " << this->list_->getIdentifier()->getName() << "-list." << std::endl;
+        orxout(verbose, context::object_list) << "Removing Object from " << this->list_->getIdentifier()->getName() << "-list." << endl;
         this->list_->notifyIterators(this->element_->objectBase_);
 
         if (this->element_->next_)

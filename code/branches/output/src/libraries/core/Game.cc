@@ -59,10 +59,10 @@ namespace orxonox
         { Game::getInstance().stop(); }
     SetConsoleCommand("exit", &stop_game);
     static void printFPS()
-        { COUT(0) << Game::getInstance().getAvgFPS() << std::endl; }
+        { orxout(message) << Game::getInstance().getAvgFPS() << endl; }
     SetConsoleCommand("Stats", "printFPS", &printFPS);
     static void printTickTime()
-        { COUT(0) << Game::getInstance().getAvgTickTime() << std::endl; }
+        { orxout(message) << Game::getInstance().getAvgTickTime() << endl; }
     SetConsoleCommand("Stats", "printTickTime", &printTickTime);
 
     std::map<std::string, GameStateInfo> Game::gameStateDeclarations_s;
@@ -162,7 +162,7 @@ namespace orxonox
     void Game::run()
     {
         if (this->requestedStateNodes_.empty())
-            COUT(0) << "Warning: Starting game without requesting GameState. This automatically terminates the program." << std::endl;
+            orxout(user_error) << "Starting game without requesting GameState. This automatically terminates the program." << endl;
 
         // START GAME
         // first delta time should be about 0 seconds
@@ -188,8 +188,8 @@ namespace orxonox
                 { this->core_->preUpdate(*this->gameClock_); }
             catch (...)
             {
-                COUT(0) << "An exception occurred in the Core preUpdate: " << Exception::handleMessage() << std::endl;
-                COUT(0) << "This should really never happen! Closing the program." << std::endl;
+                orxout(user_error) << "An exception occurred in the Core preUpdate: " << Exception::handleMessage() << endl;
+                orxout(user_error) << "This should really never happen! Closing the program." << endl;
                 this->stop();
                 break;
             }
@@ -202,8 +202,8 @@ namespace orxonox
                 { this->core_->postUpdate(*this->gameClock_); }
             catch (...)
             {
-                COUT(0) << "An exception occurred in the Core postUpdate: " << Exception::handleMessage() << std::endl;
-                COUT(0) << "This should really never happen! Closing the program." << std::endl;
+                orxout(user_error) << "An exception occurred in the Core postUpdate: " << Exception::handleMessage() << endl;
+                orxout(user_error) << "This should really never happen! Closing the program." << endl;
                 this->stop();
                 break;
             }
@@ -240,10 +240,10 @@ namespace orxonox
                 }
                 catch (...)
                 {
-                    COUT(1) << "Error: Loading GameState '" << requestedStateNode->name_ << "' failed: " << Exception::handleMessage() << std::endl;
+                    orxout(user_error) << "Loading GameState '" << requestedStateNode->name_ << "' failed: " << Exception::handleMessage() << endl;
                     // All scheduled operations have now been rendered inert --> flush them and issue a warning
                     if (this->requestedStateNodes_.size() > 1)
-                        COUT(4) << "All " << this->requestedStateNodes_.size() - 1 << " scheduled transitions have been ignored." << std::endl;
+                        orxout(internal_info) << "All " << this->requestedStateNodes_.size() - 1 << " scheduled transitions have been ignored." << endl;
                     this->requestedStateNodes_.clear();
                     break;
                 }
@@ -271,9 +271,9 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "An exception occurred while updating '" << (*it)->getName() << "': " << Exception::handleMessage() << std::endl;
-                COUT(1) << "This should really never happen!" << std::endl;
-                COUT(1) << "Unloading all GameStates depending on the one that crashed." << std::endl;
+                orxout(user_error) << "An exception occurred while updating '" << (*it)->getName() << "': " << Exception::handleMessage() << endl;
+                orxout(user_error) << "This should really never happen!" << endl;
+                orxout(user_error) << "Unloading all GameStates depending on the one that crashed." << endl;
                 shared_ptr<GameStateTreeNode> current = this->loadedTopStateNode_;
                 while (current->name_ != (*it)->getName() && current)
                     current = current->parent_.lock();
@@ -354,13 +354,13 @@ namespace orxonox
     {
         if (!this->checkState(name))
         {
-            COUT(2) << "Warning: GameState named '" << name << "' doesn't exist!" << std::endl;
+            orxout(user_warning) << "GameState named '" << name << "' doesn't exist!" << endl;
             return;
         }
 
         if (this->bChangingState_)
         {
-            COUT(2) << "Warning: Requesting GameStates while loading/unloading a GameState is illegal! Ignoring." << std::endl;
+            orxout(user_warning) << "Requesting GameStates while loading/unloading a GameState is illegal! Ignoring." << endl;
             return;
         }
 
@@ -371,7 +371,7 @@ namespace orxonox
             lastRequestedNode = this->requestedStateNodes_.back();
         if (name == lastRequestedNode->name_)
         {
-            COUT(2) << "Warning: Requesting the currently active state! Ignoring." << std::endl;
+            orxout(user_warning) << "Requesting the currently active state! Ignoring." << endl;
             return;
         }
 
@@ -402,7 +402,7 @@ namespace orxonox
         }
 
         if (requestedNodes.empty())
-            COUT(1) << "Error: Requested GameState transition is not allowed. Ignoring." << std::endl;
+            orxout(user_error) << "Requested GameState transition is not allowed. Ignoring." << endl;
         else
             this->requestedStateNodes_.insert(requestedStateNodes_.end(), requestedNodes.begin(), requestedNodes.end());
     }
@@ -424,7 +424,7 @@ namespace orxonox
         if (lastRequestedNode != this->rootStateNode_)
             this->requestState(lastRequestedNode->parent_.lock()->name_);
         else
-            COUT(2) << "Warning: Can't pop the internal dummy root GameState" << std::endl;
+            orxout(internal_warning) << "Can't pop the internal dummy root GameState" << endl;
     }
 
     shared_ptr<GameState> Game::getState(const std::string& name)
@@ -436,9 +436,9 @@ namespace orxonox
         {
             std::map<std::string, GameStateInfo>::const_iterator it = gameStateDeclarations_s.find(name);
             if (it != gameStateDeclarations_s.end())
-                COUT(1) << "Error: GameState '" << name << "' has not yet been loaded." << std::endl;
+                orxout(internal_error) << "GameState '" << name << "' has not yet been loaded." << endl;
             else
-                COUT(1) << "Error: Could not find GameState '" << name << "'." << std::endl;
+                orxout(internal_error) << "Could not find GameState '" << name << "'." << endl;
             return shared_ptr<GameState>();
         }
     }
@@ -588,8 +588,8 @@ namespace orxonox
         }
         catch (...)
         {
-            COUT(2) << "Warning: Unloading GameState '" << name << "' threw an exception: " << Exception::handleMessage() << std::endl;
-            COUT(2) << "         There might be potential resource leaks involved! To avoid this, improve exception-safety." << std::endl;
+            orxout(internal_warning) << "Unloading GameState '" << name << "' threw an exception: " << Exception::handleMessage() << endl;
+            orxout(internal_warning) << "There might be potential resource leaks involved! To avoid this, improve exception-safety." << endl;
         }
         // Check if graphics is still required
         if (!bAbort_)

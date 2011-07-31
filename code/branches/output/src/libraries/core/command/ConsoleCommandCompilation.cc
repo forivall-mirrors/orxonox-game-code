@@ -47,7 +47,6 @@ namespace orxonox
 {
 //    SetConsoleCommand("source", source).argumentCompleter(0, autocompletion::files());  // disabled because we use the implementation in Tcl
     SetConsoleCommand("echo", echo);
-//    SetConsoleCommand("puts", puts);                                                    // disabled because we use the implementation in Tcl
 
 //    SetConsoleCommand("read", read).argumentCompleter(0, autocompletion::files());      // disabled because we use the implementation in Tcl
 //    SetConsoleCommand("append", append).argumentCompleter(0, autocompletion::files());  // disabled because we use the implementation in Tcl
@@ -65,7 +64,7 @@ namespace orxonox
         std::set<std::string>::const_iterator it = executingFiles.find(filename);
         if (it != executingFiles.end())
         {
-            COUT(1) << "Error: Recurring source command in \"" << filename << "\". Stopped execution." << std::endl;
+            orxout(user_error) << "Recurring source command in \"" << filename << "\". Stopped execution." << endl;
             return;
         }
 
@@ -75,7 +74,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't open file \"" << filename << "\"." << std::endl;
+            orxout(user_error) << "Couldn't open file \"" << filename << "\"." << endl;
             return;
         }
 
@@ -102,21 +101,6 @@ namespace orxonox
     }
 
     /**
-        @brief Writes text to the console, depending on the first argument with or without a line-break after it.
-    */
-    void puts(bool newline, const std::string& text)
-    {
-        if (newline)
-        {
-            COUT(0) << stripEnclosingBraces(text) << std::endl;
-        }
-        else
-        {
-            COUT(0) << stripEnclosingBraces(text);
-        }
-    }
-
-    /**
         @brief Writes text to a file.
     */
     void write(const std::string& filename, const std::string& text)
@@ -126,11 +110,11 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't write to file \"" << filename << "\"." << std::endl;
+            orxout(user_error) << "Couldn't write to file \"" << filename << "\"." << endl;
             return;
         }
 
-        file << text << std::endl;
+        file << text << endl;
         file.close();
     }
 
@@ -144,11 +128,11 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't append to file \"" << filename << "\"." << std::endl;
+            orxout(user_error) << "Couldn't append to file \"" << filename << "\"." << endl;
             return;
         }
 
-        file << text << std::endl;
+        file << text << endl;
         file.close();
     }
 
@@ -162,7 +146,7 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't read from file \"" << filename << "\"." << std::endl;
+            orxout(user_error) << "Couldn't read from file \"" << filename << "\"." << endl;
             return "";
         }
 
@@ -191,17 +175,17 @@ namespace orxonox
         {
             if (expr.getResult() == 42.0)
             {
-                COUT(3) << "Greetings from the restaurant at the end of the universe." << std::endl;
+                orxout(user_info) << "Greetings from the restaurant at the end of the universe." << endl;
             }
             if (!expr.getRemains().empty())
             {
-                COUT(2) << "Warning: Expression could not be parsed to the end! Remains: '" << expr.getRemains() << '\'' << std::endl;
+                orxout(user_warning) << "Expression could not be parsed to the end! Remains: '" << expr.getRemains() << '\'' << endl;
             }
             return static_cast<float>(expr.getResult());
         }
         else
         {
-            COUT(1) << "Error: Cannot calculate expression: Parse error." << std::endl;
+            orxout(user_error) << "Cannot calculate expression: Parse error." << endl;
             return 0;
         }
     }

@@ -127,7 +127,7 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "Couldn't load module \"" << *it << "\": " << Exception::handleMessage() << std::endl;
+                orxout(user_error) << "Couldn't load module \"" << *it << "\": " << Exception::handleMessage() << endl;
             }
         }
 
@@ -202,7 +202,7 @@ namespace orxonox
                 docFile.close();
             }
             else
-                COUT(0) << "Error: Could not open file for documentation writing" << endl;
+                orxout(internal_error) << "Could not open file for documentation writing" << endl;
         }
     }
 
@@ -320,7 +320,7 @@ namespace orxonox
         catch (const InitialisationFailedException&)
         {
             // Exit the application if the Ogre config dialog was canceled
-            COUT(1) << Exception::handleMessage() << std::endl;
+            orxout(user_error) << Exception::handleMessage() << endl;
             exit(EXIT_FAILURE);
         }
         catch (...)
@@ -331,9 +331,9 @@ namespace orxonox
             // throws an exception and the graphics engine then gets destroyed
             // and reloaded between throw and catch (access violation in MSVC).
             // That's why we abort completely and only display the exception.
-            COUT(1) << "An exception occurred during upgrade to graphics. "
-                    << "That is unrecoverable. The message was:" << endl
-                    << Exception::handleMessage() << endl;
+            orxout(user_error) << "An exception occurred during upgrade to graphics. "
+                               << "That is unrecoverable. The message was:" << endl
+                               << Exception::handleMessage() << endl;
             abort();
         }
 
@@ -367,9 +367,9 @@ namespace orxonox
             { this->graphicsManager_ = new GraphicsManager(false); }
         catch (...)
         {
-            COUT(0) << "An exception occurred during 'unloadGraphics':" << Exception::handleMessage() << std::endl
-                    << "Another exception might be being handled which may lead to undefined behaviour!" << std::endl
-                    << "Terminating the program." << std::endl;
+            orxout(user_error) << "An exception occurred during 'unloadGraphics':" << Exception::handleMessage() << endl
+                               << "Another exception might be being handled which may lead to undefined behaviour!" << endl
+                               << "Terminating the program." << endl;
             abort();
         }
 

@@ -169,7 +169,7 @@ namespace orxonox
             shared_ptr<ResourceInfo> info = Resource::getInfo(file->getFilename());
             if (info == NULL)
             {
-                COUT(1) << "Error: Could not find XML file '" << file->getFilename() << "'." << std::endl;
+                orxout(user_error, context::loader) << "Could not find XML file '" << file->getFilename() << "'." << endl;
                 return false;
             }
             xmlInput = Resource::open(file->getFilename())->getAsString();
@@ -188,13 +188,13 @@ namespace orxonox
         {
             if(verbose)
             {
-                COUT(0) << "Start loading " << file->getFilename() << "..." << std::endl;
-                COUT(3) << "Mask: " << Loader::currentMask_s << std::endl;
+                orxout(user_status, context::loader) << "Start loading " << file->getFilename() << "..." << endl;
+                orxout(internal_info, context::loader) << "Mask: " << Loader::currentMask_s << endl;
             }
             else
             {
-                COUT(4) << "Start loading " << file->getFilename() << "..." << std::endl;
-                COUT(4) << "Mask: " << Loader::currentMask_s << std::endl;
+                orxout(verbose, context::loader) << "Start loading " << file->getFilename() << "..." << endl;
+                orxout(verbose_more, context::loader) << "Mask: " << Loader::currentMask_s << endl;
             }
 
             ticpp::Document xmlfile(file->getFilename());
@@ -207,7 +207,7 @@ namespace orxonox
             for (ticpp::Iterator<ticpp::Element> child = xmlfile.FirstChildElement(false); child != child.end(); child++)
                 rootElement.InsertEndChild(*child);
 
-            COUT(4) << "  creating root-namespace..." << std::endl;
+            orxout(verbose, context::loader) << "  creating root-namespace..." << endl;
             Namespace* rootNamespace = new Namespace(0);
             rootNamespace->setLoaderIndentation("    ");
             rootNamespace->setFile(file);
@@ -216,36 +216,36 @@ namespace orxonox
             rootNamespace->XMLPort(rootElement, XMLPort::LoadObject);
 
             if(verbose)
-                COUT(0) << "Finished loading " << file->getFilename() << '.' << std::endl;
+                orxout(user_status, context::loader) << "Finished loading " << file->getFilename() << '.' << endl;
             else
-                COUT(4) << "Finished loading " << file->getFilename() << '.' << std::endl;
+                orxout(verbose, context::loader) << "Finished loading " << file->getFilename() << '.' << endl;
 
-            COUT(4) << "Namespace-tree:" << std::endl << rootNamespace->toString("  ") << std::endl;
+            orxout(verbose, context::loader) << "Namespace-tree:" << '\n' << rootNamespace->toString("  ") << endl;
 
             return true;
         }
         catch (ticpp::Exception& ex)
         {
-            COUT(1) << std::endl;
-            COUT(1) << "An XML-error occurred in Loader.cc while loading " << file->getFilename() << ':' << std::endl;
-            COUT(1) << ex.what() << std::endl;
-            COUT(1) << "Loading aborted." << std::endl;
+            orxout(user_error, context::loader) << endl;
+            orxout(user_error, context::loader) << "An XML-error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
+            orxout(user_error, context::loader) << ex.what() << endl;
+            orxout(user_error, context::loader) << "Loading aborted." << endl;
             return false;
         }
         catch (Exception& ex)
         {
-            COUT(1) << std::endl;
-            COUT(1) << "A loading-error occurred in Loader.cc while loading " << file->getFilename() << ':' << std::endl;
-            COUT(1) << ex.what() << std::endl;
-            COUT(1) << "Loading aborted." << std::endl;
+            orxout(user_error, context::loader) << endl;
+            orxout(user_error, context::loader) << "A loading-error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
+            orxout(user_error, context::loader) << ex.what() << endl;
+            orxout(user_error, context::loader) << "Loading aborted." << endl;
             return false;
         }
         catch (...)
         {
-            COUT(1) << std::endl;
-            COUT(1) << "An error occurred in Loader.cc while loading " << file->getFilename() << ':' << std::endl;
-            COUT(1) << Exception::handleMessage() << std::endl;
-            COUT(1) << "Loading aborted." << std::endl;
+            orxout(user_error, context::loader) << endl;
+            orxout(user_error, context::loader) << "An error occurred in Loader.cc while loading " << file->getFilename() << ':' << endl;
+            orxout(user_error, context::loader) << Exception::handleMessage() << endl;
+            orxout(user_error, context::loader) << "Loading aborted." << endl;
             return false;
         }
     }
@@ -336,7 +336,7 @@ namespace orxonox
             }
             if (!expectedValue)
             {
-                COUT(2) << "Warning: Error in level file" << std::endl;
+                orxout(internal_error, context::loader) << "Error in level file" << endl;
                 // TODO: error handling
                 return false; 
             }

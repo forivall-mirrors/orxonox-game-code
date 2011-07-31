@@ -224,7 +224,7 @@ namespace orxonox
     {
         TclThreadManager::getInstance().numInterpreterBundles_++;
         TclThreadManager::createWithId(TclThreadManager::getInstance().numInterpreterBundles_);
-        COUT(0) << "Created new Tcl-interpreter with ID " << TclThreadManager::getInstance().numInterpreterBundles_ << std::endl;
+        orxout(user_info) << "Created new Tcl-interpreter with ID " << TclThreadManager::getInstance().numInterpreterBundles_ << endl;
         return TclThreadManager::getInstance().numInterpreterBundles_;
     }
 
@@ -287,7 +287,10 @@ namespace orxonox
             bundle->interpreter_->eval("rename ::orxonox::for for");
         }
         catch (const Tcl::tcl_error& e)
-        {   bundle->interpreter_ = 0; COUT(1) << "Tcl error while creating Tcl-interpreter (" << id_string << "): " << e.what() << std::endl;   }
+        {
+            bundle->interpreter_ = 0;
+            orxout(user_error, context::tcl) << "Tcl error while creating Tcl-interpreter (" << id_string << "): " << e.what() << endl;
+        }
     }
 
     /**
@@ -406,7 +409,7 @@ namespace orxonox
             if ((source_bundle->id_ == target_bundle->id_) || source_bundle->queriers_.is_in(target_bundle->id_))
             {
                 // This query would lead to a deadlock - return with an error
-                TclThreadManager::error("Error: Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + ' ' + multi_cast<std::string>(source_bundle->id_) \
+                TclThreadManager::error("Circular query (" + this->dumpList(source_bundle->queriers_.getList()) + ' ' + multi_cast<std::string>(source_bundle->id_) \
                             + " -> " + multi_cast<std::string>(target_bundle->id_) \
                             + "), couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(target_bundle->id_) \
                             + " from other interpreter with ID " + multi_cast<std::string>(source_bundle->id_) + '.');
@@ -447,10 +450,10 @@ namespace orxonox
                         output = CommandExecutor::query(command, &error, false);
                         switch (error)
                         {
-                            case CommandExecutor::Error:       TclThreadManager::error("Error: Can't execute command \"" + command + "\", command doesn't exist. (T)"); break;
-                            case CommandExecutor::Incomplete:  TclThreadManager::error("Error: Can't execute command \"" + command + "\", not enough arguments given. (T)"); break;
-                            case CommandExecutor::Deactivated: TclThreadManager::error("Error: Can't execute command \"" + command + "\", command is not active. (T)"); break;
-                            case CommandExecutor::Denied:      TclThreadManager::error("Error: Can't execute command \"" + command + "\", access denied. (T)"); break;
+                            case CommandExecutor::Error:       TclThreadManager::error("Can't execute command \"" + command + "\", command doesn't exist. (T)"); break;
+                            case CommandExecutor::Incomplete:  TclThreadManager::error("Can't execute command \"" + command + "\", not enough arguments given. (T)"); break;
+                            case CommandExecutor::Deactivated: TclThreadManager::error("Can't execute command \"" + command + "\", command is not active. (T)"); break;
+                            case CommandExecutor::Denied:      TclThreadManager::error("Can't execute command \"" + command + "\", access denied. (T)"); break;
                         }
                     }
                     else
@@ -475,7 +478,7 @@ namespace orxonox
                 {
                     // This happens if the main thread tries to query a busy interpreter
                     // To avoid a lock of the main thread, we simply don't proceed with the query in this case
-                    TclThreadManager::error("Error: Couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(target_bundle->id_) + ", interpreter is busy right now.");
+                    TclThreadManager::error("Couldn't query Tcl-interpreter with ID " + multi_cast<std::string>(target_bundle->id_) + ", interpreter is busy right now.");
                 }
             }
 
@@ -521,7 +524,7 @@ namespace orxonox
         }
         else
         {
-            TclThreadManager::error("Error: No Tcl-interpreter with ID " + multi_cast<std::string>(id) + " existing.");
+            TclThreadManager::error("No Tcl-interpreter with ID " + multi_cast<std::string>(id) + " existing.");
             return 0;
         }
     }

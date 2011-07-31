@@ -56,7 +56,7 @@
     @code
     void myFunction(int a, int b)                           // declare a static function
     {
-        COUT(0) << "The sum is " << (a + b) << std::endl;   // print the sum of a and b to the console
+        orxout() << "The sum is " << (a + b) << endl;       // print the sum of a and b to the console
     }
 
     FunctorPtr functor = createFunctor(&myFunction);        // create a functor that wraps the function-pointer

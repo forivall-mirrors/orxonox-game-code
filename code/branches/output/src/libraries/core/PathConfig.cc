@@ -136,7 +136,7 @@ namespace orxonox
 
         if (bf::exists(executablePath_ / "orxonox_dev_build.keep_me"))
         {
-            COUT(1) << "Running from the build tree." << std::endl;
+            orxout(internal_info) << "Running from the build tree." << endl;
             PathConfig::bBuildDirectoryRun_ = true;
             modulePath_ = specialConfig::moduleDevDirectory;
         }
@@ -246,7 +246,7 @@ namespace orxonox
             }
             if (bf::create_directories(it->first)) // function may not return true at all (bug?)
             {
-                COUT(4) << "Created " << it->second << " directory" << std::endl;
+                orxout(internal_info) << "Created " << it->second << " directory" << endl;
             }
         }
     }

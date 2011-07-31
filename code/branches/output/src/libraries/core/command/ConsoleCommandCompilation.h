@@ -41,7 +41,6 @@ namespace orxonox
 {
     _CoreExport void source(const std::string& filename);
     _CoreExport std::string echo(const std::string& text);
-    _CoreExport void puts(bool newline, const std::string& test);
 
     _CoreExport void write(const std::string& filename, const std::string& text);
     _CoreExport void append(const std::string& filename, const std::string& text);

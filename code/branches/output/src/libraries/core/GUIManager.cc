@@ -260,7 +260,7 @@ namespace orxonox
 
         using namespace CEGUI;
 
-        COUT(3) << "Initialising CEGUI." << std::endl;
+        orxout(internal_info) << "Initialising CEGUI." << endl;
 
         this->oldCEGUI_ = false;
 
@@ -675,7 +675,7 @@ namespace orxonox
         catch (CEGUI::ScriptException& ex)
         {
             // Display the error and proceed. See @remarks why this can be dangerous.
-            COUT(1) << ex.getMessage() << std::endl;
+            orxout(internal_error) << ex.getMessage() << endl;
             return true;
         }
     }

@@ -190,16 +190,16 @@ namespace orxonox
     */
     void GraphicsManager::loadOgreRoot()
     {
-        COUT(3) << "Setting up Ogre..." << std::endl;
+        orxout(internal_info) << "Setting up Ogre..." << endl;
 
         if (ogreConfigFile_.empty())
         {
-            COUT(2) << "Warning: Ogre config file set to \"\". Defaulting to config.cfg" << std::endl;
+            orxout(internal_warning) << "Ogre config file set to \"\". Defaulting to config.cfg" << endl;
             ModifyConfigValue(ogreConfigFile_, tset, "config.cfg");
         }
         if (ogreLogFile_.empty())
         {
-            COUT(2) << "Warning: Ogre log file set to \"\". Defaulting to ogre.log" << std::endl;
+            orxout(internal_warning) << "Ogre log file set to \"\". Defaulting to ogre.log" << endl;
             ModifyConfigValue(ogreLogFile_, tset, "ogre.log");
         }
 
@@ -209,17 +209,17 @@ namespace orxonox
         // create a new logManager
         // Ogre::Root will detect that we've already created a Log
         ogreLogger_ = new Ogre::LogManager();
-        COUT(4) << "Ogre LogManager created" << std::endl;
+        orxout(internal_info) << "Ogre LogManager created" << endl;
 
         // create our own log that we can listen to
         Ogre::Log *myLog;
         myLog = ogreLogger_->createLog(ogreLogFilepath.string(), true, false, false);
-        COUT(4) << "Ogre Log created" << std::endl;
+        orxout(internal_info) << "Ogre Log created" << endl;
 
         myLog->setLogDetail(Ogre::LL_BOREME);
         myLog->addListener(this);
 
-        COUT(4) << "Creating Ogre Root..." << std::endl;
+        orxout(internal_info) << "Creating Ogre Root..." << endl;
 
         // check for config file existence because Ogre displays (caught) exceptions if not
         if (!boost::filesystem::exists(ogreConfigFilepath))
@@ -233,7 +233,7 @@ namespace orxonox
         // Leave plugins file empty. We're going to do that part manually later
         ogreRoot_ = new Ogre::Root("", ogreConfigFilepath.string(), ogreLogFilepath.string());
 
-        COUT(3) << "Ogre set up done." << std::endl;
+        orxout(internal_info) << "Ogre set up done." << endl;
     }
 
     void GraphicsManager::loadOgrePlugins()
@@ -270,11 +270,11 @@ namespace orxonox
 
     void GraphicsManager::loadRenderer()
     {
-        CCOUT(4) << "Configuring Renderer" << std::endl;
+        orxout(internal_info) << "GraphicsManager: Configuring Renderer" << endl;
 
         bool updatedConfig = Core::getInstance().getOgreConfigTimestamp() > Core::getInstance().getLastLevelTimestamp();
         if (updatedConfig)
-            COUT(2) << "Ogre config file has changed, but no level was started since then. Displaying config dialogue again to verify the changes." << std::endl;
+            orxout(user_info)<< "Ogre config file has changed, but no level was started since then. Displaying config dialogue again to verify the changes." << endl;
 
         if (!ogreRoot_->restoreConfig() || updatedConfig)
         {
@@ -284,7 +284,7 @@ namespace orxonox
                 Core::getInstance().updateOgreConfigTimestamp();
         }
 
-        CCOUT(4) << "Creating render window" << std::endl;
+        orxout(internal_info) << "Creating render window" << endl;
 
         this->renderWindow_ = ogreRoot_->initialise(true, "Orxonox");
         // Propagate the size of the new winodw
@@ -310,7 +310,7 @@ namespace orxonox
     void GraphicsManager::loadDebugOverlay()
     {
         // Load debug overlay to show info about fps and tick time
-        COUT(4) << "Loading Debug Overlay..." << std::endl;
+        orxout(internal_info) << "Loading Debug Overlay..." << endl;
         debugOverlay_.reset(new XMLFile("debug.oxo"));
         Loader::open(debugOverlay_.get());
     }

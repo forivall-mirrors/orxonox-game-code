@@ -129,7 +129,7 @@ namespace orxonox
         if (!this->bCreatedOneObject_ && Identifier::isCreatingHierarchy())
         {
             // If no: We have to store the information and initialize the Identifier
-            COUT(4) << "*** ClassIdentifier: Register Class in " << this->getName() << "-Singleton -> Initialize Singleton." << std::endl;
+            orxout(verbose, context::identifier) << "Register Class in ClassIdentifier<" << this->getName() << ">-Singleton -> Initialize Singleton." << endl;
             if (bRootClass)
                 this->initialize(0); // If a class is derived from two interfaces, the second interface might think it's derived from the first because of the order of constructor-calls. Thats why we set parents to zero in that case.
             else
@@ -143,7 +143,7 @@ namespace orxonox
     */
     void Identifier::initialize(std::set<const Identifier*>* parents)
     {
-        COUT(4) << "*** Identifier: Initialize " << this->name_ << "-Singleton." << std::endl;
+        orxout(verbose, context::identifier) << "Initialize ClassIdentifier<" << this->name_ << ">-Singleton." << endl;
         this->bCreatedOneObject_ = true;
 
         if (parents)
@@ -190,7 +190,7 @@ namespace orxonox
     */
     void Identifier::createClassHierarchy()
     {
-        COUT(3) << "*** Identifier: Create class-hierarchy" << std::endl;
+        orxout(internal_status) << "Create class-hierarchy" << endl;
         Identifier::startCreatingHierarchy();
         for (std::map<std::string, Identifier*>::const_iterator it = Identifier::getStringIdentifierMap().begin(); it != Identifier::getStringIdentifierMap().end(); ++it)
         {
@@ -202,7 +202,7 @@ namespace orxonox
             }
         }
         Identifier::stopCreatingHierarchy();
-        COUT(3) << "*** Identifier: Finished class-hierarchy creation" << std::endl;
+        orxout(internal_status) << "Finished class-hierarchy creation" << endl;
     }
 
     /**
@@ -241,9 +241,9 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "An error occurred in Identifier.cc:" << std::endl;
-            COUT(1) << "Error: Cannot fabricate an object of type '" << this->name_ << "'. Class has no factory." << std::endl;
-            COUT(1) << "Aborting..." << std::endl;
+            orxout(user_error) << "An error occurred in Identifier.cc:" << endl;
+            orxout(user_error) << "Cannot fabricate an object of type '" << this->name_ << "'. Class has no factory." << endl;
+            orxout(user_error) << "Aborting..." << endl;
             abort();
             return 0;
         }
@@ -403,7 +403,7 @@ namespace orxonox
         std::map<std::string, ConfigValueContainer*>::const_iterator it = this->configValues_.find(varname);
         if (it != this->configValues_.end())
         {
-            COUT(2) << "Warning: Overwriting config-value with name " << varname << " in class " << this->getName() << '.' << std::endl;
+            orxout(internal_warning) << "Overwriting config-value with name " << varname << " in class " << this->getName() << '.' << endl;
             delete (it->second);
         }
 
@@ -449,7 +449,7 @@ namespace orxonox
         std::map<std::string, XMLPortParamContainer*>::const_iterator it = this->xmlportParamContainers_.find(paramname);
         if (it != this->xmlportParamContainers_.end())
         {
-            COUT(2) << "Warning: Overwriting XMLPortParamContainer in class " << this->getName() << '.' << std::endl;
+            orxout(internal_warning) << "Overwriting XMLPortParamContainer in class " << this->getName() << '.' << endl;
             delete (it->second);
         }
 
@@ -480,7 +480,7 @@ namespace orxonox
         std::map<std::string, XMLPortObjectContainer*>::const_iterator it = this->xmlportObjectContainers_.find(sectionname);
         if (it != this->xmlportObjectContainers_.end())
         {
-            COUT(2) << "Warning: Overwriting XMLPortObjectContainer in class " << this->getName() << '.' << std::endl;
+            orxout(internal_warning) << "Overwriting XMLPortObjectContainer in class " << this->getName() << '.' << endl;
             delete (it->second);
         }
 

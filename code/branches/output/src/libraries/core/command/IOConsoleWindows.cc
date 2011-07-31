@@ -249,7 +249,7 @@ namespace orxonox
             || !GetConsoleMode(this->stdInHandle_, &this->originalTerminalSettings_)
             || !SetConsoleMode(this->stdInHandle_, 0))
         {
-            orxout(user_error) << "Error: Could not set Windows console settings" << endl;
+            orxout(user_error) << "Could not set Windows console settings" << endl;
             return;
         }
         FlushConsoleInputBuffer(this->stdInHandle_);

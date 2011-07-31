@@ -72,7 +72,7 @@ namespace orxonox
             */
             ClassFactory(const std::string& name, bool bLoadable = true)
             {
-                COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
+                orxout(verbose, context::identifier) << "Create entry for " << name << " in Factory." << endl;
                 ClassIdentifier<T>::getIdentifier(name)->addFactory(this);
                 ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
             }

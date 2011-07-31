@@ -113,7 +113,7 @@
                     \
                     if (!((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_) \
                     { \
-                        COUT(5) << "Added SuperFunctionCaller for " << #functionname << ": " << ClassIdentifier<T>::getIdentifier()->getName() << " <- " << ((ClassIdentifier<T>*)(*it))->getName() << std::endl; \
+                        orxout(verbose, context::super) << "Added SuperFunctionCaller for " << #functionname << ": " << ClassIdentifier<T>::getIdentifier()->getName() << " <- " << ((ClassIdentifier<T>*)(*it))->getName() << endl; \
                         ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_ = new SuperFunctionClassCaller_##functionname <T>; \
                     } \
                 } \
@@ -183,7 +183,7 @@
                     if (!((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_)
                     {
                         // Add the SuperFunctionCaller
-                        COUT(5) << "adding functionpointer to " << ((ClassIdentifier<T>*)(*it))->getName() << std::endl;
+                        orxout(verbose, context::super) << "adding functionpointer to " << ((ClassIdentifier<T>*)(*it))->getName() << endl;
                         ((ClassIdentifier<T>*)(*it))->superFunctionCaller_##functionname##_ = new SuperFunctionClassCaller_##functionname <T>;
                     }
                 }

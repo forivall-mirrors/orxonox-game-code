@@ -87,6 +87,9 @@ namespace orxonox
             REGISTER_OUTPUT_CONTEXT(input);
             REGISTER_OUTPUT_CONTEXT(events);
             REGISTER_OUTPUT_CONTEXT(config);
+            REGISTER_OUTPUT_CONTEXT(templates);
+            REGISTER_OUTPUT_CONTEXT(loader);
+            REGISTER_OUTPUT_CONTEXT(xml);
         }
     }
 }

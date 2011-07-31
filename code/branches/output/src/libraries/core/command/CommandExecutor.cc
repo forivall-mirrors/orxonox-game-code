@@ -260,7 +260,7 @@ namespace orxonox
             // check if the alias already exists - print an error and return if it does
             if ((tokens.size() == 1 && ConsoleCommand::getCommand(tokens[0])) || (tokens.size() == 2 && ConsoleCommand::getCommand(tokens[0], tokens[1])))
             {
-                COUT(1) << "Error: A command with name \"" << alias << "\" already exists." << std::endl;
+                orxout(user_error) << "A command with name \"" << alias << "\" already exists." << endl;
                 return;
             }
 
@@ -270,9 +270,9 @@ namespace orxonox
             else if (tokens.size() == 2)
                 createConsoleCommand(tokens[0], tokens[1], executor);
             else
-                COUT(1) << "Error: \"" << alias << "\" is not a valid alias name (must have one or two words)." << std::endl;
+                orxout(user_error) << "\"" << alias << "\" is not a valid alias name (must have one or two words)." << endl;
         }
         else
-            COUT(1) << "Error: \"" << command << "\" is not a valid command (did you mean \"" << evaluation.getCommandSuggestion() << "\"?)." << std::endl;
+            orxout(user_error) << "\"" << command << "\" is not a valid command (did you mean \"" << evaluation.getCommandSuggestion() << "\"?)." << endl;
     }
 }
