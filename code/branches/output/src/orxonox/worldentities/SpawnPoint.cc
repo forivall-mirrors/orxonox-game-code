@@ -47,7 +47,7 @@ namespace orxonox
         if (this->getGametype())
             this->getGametype()->registerSpawnPoint(this);
         else
-            COUT(1) << "Error: SpawnPoint has no Gametype" << std::endl;
+            orxout(internal_error) << "SpawnPoint has no Gametype" << endl;
 
         this->setSyncMode(ObjectDirection::None);
     }

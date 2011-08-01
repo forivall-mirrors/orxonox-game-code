@@ -88,19 +88,19 @@ namespace orxonox
         strcpy(device, devices);
         std::string renderDevice;
         SetConfigValue(renderDevice, std::string(device)).description("Sound device used for rendering");
-        COUT(4) << "Sound: Available devices: ";
+        orxout(verbose, context::sound) << "Sound: Available devices: ";
         while (true)
         {
             this->deviceNames_.push_back(devices);
-            COUT(4) << '"' << devices << "\", ";
+            orxout(verbose, context::sound) << '"' << devices << "\", ";
             devices += strlen(devices) + 1;
             if (*devices == '\0')
                 break;
         }
-        COUT(4) << std::endl;
+        orxout(verbose, context::sound) << endl;
 
         // Open the selected device
-        COUT(3) << "Sound: Opening device \"" << renderDevice << '\' << std::endl;
+        orxout(internal_info, context::sound) << "Sound: Opening device \"" << renderDevice << '\' << endl;
         this->device_ = alcOpenDevice(renderDevice.c_str());
 */
         this->device_ = alcOpenDevice(NULL);
@@ -121,13 +121,13 @@ namespace orxonox
 
         // Get some information about the sound
         if (const char* version = alGetString(AL_VERSION))
-            COUT(4) << "Sound: --- OpenAL Version: " << version << std::endl;
+            orxout(internal_info, context::sound) << "Sound: --- OpenAL Version: " << version << endl;
         if (const char* vendor = alGetString(AL_VENDOR))
-            COUT(4) << "Sound: --- OpenAL Vendor : " << vendor << std::endl;
+            orxout(internal_info, context::sound) << "Sound: --- OpenAL Vendor : " << vendor << endl;
         if (const char* types = alutGetMIMETypes(ALUT_LOADER_BUFFER))
-            COUT(4) << "Sound: --- Supported MIME Types: " << types << std::endl;
+            orxout(internal_info, context::sound) << "Sound: --- Supported MIME Types: " << types << endl;
         else
-            COUT(2) << "Sound Warning: MIME Type retrieval failed: " << alutGetErrorString(alutGetError()) << std::endl;
+            orxout(internal_warning, context::sound) << "MIME Type retrieval failed: " << alutGetErrorString(alutGetError()) << endl;
 
         this->mute_[SoundType::All]     = 1.0f;
         this->mute_[SoundType::Music]   = 1.0f;
@@ -151,7 +151,7 @@ namespace orxonox
         desroyContextGuard.Dismiss();
         resetPlaysSoundGuard.Dismiss();
 
-        COUT(4) << "Sound: Initialisation complete" << std::endl;
+        orxout(internal_status, context::sound) << "Sound: Initialisation complete" << endl;
     }
 
     SoundManager::~SoundManager()
@@ -163,14 +163,14 @@ namespace orxonox
 
         // If there are still used buffers around, well, that's just very bad...
         if (this->soundBuffers_.size() != this->effectsPool_.size())
-            COUT(1) << "Sound Error: Some sound buffers are still in use but OpenAL is about to shut down. Fix this!" << std::endl;
+            orxout(internal_error, context::sound) << "Some sound buffers are still in use but OpenAL is about to shut down. Fix this!" << endl;
         // Empty buffer pool and buffer list
         this->effectsPool_.clear();
         this->soundBuffers_.clear();
 
         // There should not be any sources in use anymore
         if (!this->usedSoundSources_.empty())
-            COUT(1) << "Sound Error: Some sound sources are still in use but OpenAL is about to shut down. Fix this!" << std::endl;
+            orxout(internal_error, context::sound) << "Some sound sources are still in use but OpenAL is about to shut down. Fix this!" << endl;
         while (!this->availableSoundSources_.empty())
         {
             alDeleteSources(1, &this->availableSoundSources_.back());
@@ -181,23 +181,23 @@ namespace orxonox
 
         // Relieve context to destroy it
         if (!alcMakeContextCurrent(NULL))
-            COUT(1) << "Sound Error: Could not unset ALC context" << std::endl;
+            orxout(internal_error, context::sound) << "Could not unset ALC context" << endl;
         alcDestroyContext(this->context_);
         if (ALCenum error = alcGetError(this->device_))
         {
             if (error == AL_INVALID_OPERATION)
-                COUT(1) << "Sound Error: Could not destroy ALC context because it is the current one" << std::endl;
+                orxout(internal_error, context::sound) << "Could not destroy ALC context because it is the current one" << endl;
             else
-                COUT(1) << "Sound Error: Could not destroy ALC context because it is invalid" << std::endl;
+                orxout(internal_error, context::sound) << "Could not destroy ALC context because it is invalid" << endl;
         }
 #ifdef AL_VERSION_1_1
         if (!alcCloseDevice(this->device_))
-            COUT(1) << "Sound Error: Could not destroy ALC device. This might be because there are still buffers in use!" << std::endl;
+            orxout(internal_error, context::sound) << "Could not destroy ALC device. This might be because there are still buffers in use!" << endl;
 #else
         alcCloseDevice(this->device_);
 #endif
         if (!alutExit())
-            COUT(1) << "Sound Error: Closing ALUT failed: " << alutGetErrorString(alutGetError()) << std::endl;
+            orxout(internal_error, context::sound) << "Closing ALUT failed: " << alutGetErrorString(alutGetError()) << endl;
     }
 
     void SoundManager::setConfigValues()
@@ -243,7 +243,7 @@ namespace orxonox
     {
         if (crossFadeStep_ <= 0.0 || crossFadeStep_ >= 1.0 )
         {
-            COUT(2) << "Sound warning: fade step out of range, ignoring change." << std::endl;
+            orxout(internal_warning, context::sound) << "Fade step out of range, ignoring change." << endl;
             ResetConfigValue(crossFadeStep_);
         }
     }
@@ -252,7 +252,7 @@ namespace orxonox
     {
         float clampedVolume = clamp(this->volume_[type], 0.0f, 1.0f);
         if (clampedVolume != this->volume_[type])
-            COUT(2) << "Sound warning: Volume setting (" << type << ") out of range, clamping." << std::endl;
+            orxout(internal_warning, context::sound) << "Volume setting (" << type << ") out of range, clamping." << endl;
         this->updateVolume(type);
     }
 
@@ -320,7 +320,7 @@ namespace orxonox
         ALenum error = alGetError();
         if (error == AL_INVALID_VALUE)
             // @TODO: Follow this constantly appearing, nerve-racking warning
-            COUT(2) << "Sound: OpenAL: Invalid listener position" << std::endl;
+            orxout(internal_error, context::sound) << "OpenAL: Invalid listener position" << endl;
     }
 
     void SoundManager::setListenerOrientation(const Quaternion& orientation)
@@ -334,7 +334,7 @@ namespace orxonox
         alListenerfv(AL_ORIENTATION, orient);
         ALenum error = alGetError();
         if (error == AL_INVALID_VALUE)
-            COUT(2) << "Sound: OpenAL: Invalid listener orientation" << std::endl;
+            orxout(internal_error, context::sound) << "OpenAL: Invalid listener orientation" << endl;
     }
 
     void SoundManager::registerAmbientSound(AmbientSound* newAmbient)
@@ -345,7 +345,7 @@ namespace orxonox
             {
                 if (it->first == newAmbient)
                 {
-                    COUT(2) << "Sound warning: Will not play an AmbientSound twice." << std::endl;
+                    orxout(internal_warning, context::sound) << "Will not play an AmbientSound twice." << endl;
                     return;
                 }
             }
@@ -519,7 +519,7 @@ namespace orxonox
             }
             catch (const std::exception& ex)
             {
-                COUT(1) << ex.what() << std::endl;
+                orxout(internal_error, context::sound) << ex.what() << endl;
                 return buffer;
             }
             this->soundBuffers_[filename] = buffer;
@@ -613,7 +613,7 @@ namespace orxonox
         {
             alDeleteSources(1, &this->availableSoundSources_.back());
             if (alGetError())
-                COUT(1) << "Sound Error: Failed to delete a source --> lost forever" << std::endl;
+                orxout(internal_error, context::sound) << "Failed to delete a source --> lost forever" << endl;
             this->availableSoundSources_.pop_back();
         }
     }

@@ -194,12 +194,12 @@ namespace orxonox
 
     void Radar::listObjects() const
     {
-        COUT(3) << "List of RadarObjects:\n";
+        orxout(debug_output) << "List of RadarObjects:" << endl;
         // iterate through all Radar Objects
         unsigned int i = 0;
         for (ObjectList<RadarViewable>::iterator it = ObjectList<RadarViewable>::begin(); it; ++it, ++i)
         {
-            COUT(3) << i++ << ": " << (*it)->getRVWorldPosition() << std::endl;
+            orxout(debug_output) << i++ << ": " << (*it)->getRVWorldPosition() << endl;
         }
     }
 

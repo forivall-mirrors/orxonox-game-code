@@ -79,7 +79,7 @@ namespace orxonox
         }
         catch (...)
         {
-            COUT(1) << "Error: Couln't load billboard \"" << file << '"' << std::endl;
+            orxout(internal_error) << "Couldn't load billboard \"" << file << '"' << endl;
             this->billboardSet_ = 0;
         }
 
@@ -102,7 +102,7 @@ namespace orxonox
         }
         catch (...)
         {
-            COUT(1) << "Error: Couln't load billboard \"" << file << '"' << std::endl;
+            orxout(internal_error) << "Couldn't load billboard \"" << file << '"' << endl;
             this->billboardSet_ = 0;
         }
 

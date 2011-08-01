@@ -140,13 +140,13 @@ namespace orxonox
     {
         if (range.length() < 10.0f)
         {
-            CCOUT(2) << "Warning: Setting the negative world range to a very small value: "
-                     << multi_cast<std::string>(range) << std::endl;
+            orxout(internal_warning) << "Setting the negative world range to a very small value: "
+                                     << multi_cast<std::string>(range) << endl;
         }
         if (this->hasPhysics())
         {
-            CCOUT(2) << "Warning: Attempting to set the physical world range at run time. "
-                     << "This causes a complete physical reload which might take some time." << std::endl;
+            orxout(internal_warning) << "Attempting to set the physical world range at run time. "
+                                     << "This causes a complete physical reload which might take some time." << endl;
             this->setPhysicalWorld(false);
             this->negativeWorldRange_ = range;
             this->setPhysicalWorld(true);
@@ -159,13 +159,13 @@ namespace orxonox
     {
         if (range.length() < 10.0f)
         {
-            CCOUT(2) << "Warning: Setting the positive world range to a very small value: "
-                     << multi_cast<std::string>(range) << std::endl;
+            orxout(internal_warning) << "Setting the positive world range to a very small value: "
+                                     << multi_cast<std::string>(range) << endl;
         }
         if (this->hasPhysics())
         {
-            CCOUT(2) << "Warning: Attempting to set the physical world range at run time. "
-                     << "This causes a complete physical reload which might take some time." << std::endl;
+            orxout(internal_warning) << "Attempting to set the physical world range at run time. "
+                                     << "This causes a complete physical reload which might take some time." << endl;
             this->setPhysicalWorld(false);
             this->positiveWorldRange_ = range;
             this->setPhysicalWorld(true);

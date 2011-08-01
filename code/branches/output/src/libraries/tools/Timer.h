@@ -65,7 +65,7 @@
 
     void MyClass::myFunction()
     {
-        COUT(0) << "Hello World" << std::endl;
+        orxout() << "Hello World" << endl;
     }
     @endcode
 

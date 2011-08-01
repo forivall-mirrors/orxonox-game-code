@@ -53,7 +53,7 @@ namespace orxonox
     //GameMode::setIsServer(true);
 
     this->mserver = new MasterServer();
-    COUT(0) << "Loading masterserver mode" << std::endl;
+    orxout(user_status) << "Loading masterserver mode" << endl;
 
     this->mserver->run();
   }

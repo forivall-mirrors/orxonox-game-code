@@ -198,8 +198,8 @@ namespace orxonox
   {
     /* sanity checks */
     if( !tocolor )
-      COUT(2) << "Empty ListBoxTextItem given to "
-        "ChatInputhandler::sub_setcolor().\n";
+      orxout(internal_warning) << "Empty ListBoxTextItem given to "
+        "ChatInputhandler::sub_setcolor()." << endl;
 
     /* "hash" the name */
     int hash = 0;

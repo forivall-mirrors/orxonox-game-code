@@ -310,12 +310,12 @@ namespace orxonox
             this->collisionTypeSynchronised_ != Static &&
             this->collisionTypeSynchronised_ != None)
         {
-            CCOUT(1) << "Error when collsion Type was received over network. Unknown enum value:" << this->collisionTypeSynchronised_ << std::endl;
+            orxout(internal_error) << "Error when collsion Type was received over network. Unknown enum value:" << this->collisionTypeSynchronised_ << endl;
         }
         else if (this->collisionTypeSynchronised_ != collisionType_)
         {
             if (this->parent_)
-                CCOUT(2) << "Warning: Network connection tried to set the collision type of an attached WE. Ignoring." << std::endl;
+                orxout(internal_warning) << "Network connection tried to set the collision type of an attached WE. Ignoring." << endl;
             else
                 this->setCollisionType(this->collisionTypeSynchronised_);
         }
@@ -372,7 +372,7 @@ namespace orxonox
     {
         if (object == this)
         {
-            COUT(2) << "Warning: Can't attach a WorldEntity to itself." << std::endl;
+            orxout(internal_warning) << "Can't attach a WorldEntity to itself." << endl;
             return;
         }
 
@@ -405,22 +405,22 @@ namespace orxonox
         {
             if (!newParent->hasPhysics())
             {
-                COUT(2) << "Warning: Cannot attach a physical object to a non physical one." << std::endl;
+                orxout(internal_warning) << " Cannot attach a physical object to a non physical one." << endl;
                 return false;
             }
             else if (this->isDynamic())
             {
-                COUT(2) << "Warning: Cannot attach a dynamic object to a WorldEntity." << std::endl;
+                orxout(internal_warning) << "Cannot attach a dynamic object to a WorldEntity." << endl;
                 return false;
             }
             else if (this->isKinematic() && newParent->isDynamic())
             {
-                COUT(2) << "Warning: Cannot attach a kinematic object to a dynamic one." << std::endl;
+                orxout(internal_warning) << "Cannot attach a kinematic object to a dynamic one." << endl;
                 return false;
             }
             else if (this->isKinematic())
             {
-                COUT(2) << "Warning: Cannot attach a kinematic object to a static or kinematic one: Not yet implemented." << std::endl;
+                orxout(internal_warning) << "Cannot attach a kinematic object to a static or kinematic one: Not yet implemented." << endl;
                 return false;
             }
         }
@@ -454,7 +454,7 @@ namespace orxonox
         std::set<WorldEntity*>::iterator it = this->children_.find(object);
         if (it == this->children_.end())
         {
-            CCOUT(2) << "Warning: Cannot detach an object that is not a child." << std::endl;
+            orxout(internal_warning) << "Cannot detach an object that is not a child." << endl;
             return;
         }
 
@@ -798,7 +798,7 @@ namespace orxonox
         // If we are already attached to a parent, this would be a bad idea..
         if (this->parent_)
         {
-            CCOUT(2) << "Warning: Cannot set the collision type of a WorldEntity with a parent." << std::endl;
+            orxout(internal_warning) << "Cannot set the collision type of a WorldEntity with a parent." << endl;
             return;
         }
 
@@ -821,7 +821,7 @@ HACK HACK HACK
             // Check whether there was some scaling applied.
             if (!this->node_->getScale().positionEquals(Vector3(1, 1, 1), 0.001))
             {
-                CCOUT(2) << "Warning: Cannot create a physical body if there is scaling applied to the node: Not yet implemented." << std::endl;
+                orxout(internal_warning) << "Cannot create a physical body if there is scaling applied to the node: Not yet implemented." << endl;
                 return;
             }
 HACK HACK HACK
@@ -970,7 +970,7 @@ HACK HACK HACK
             else if ((this->mass_ + this->childrenMass_) == 0.0f)
             {
                 // Use default values to avoid very large or very small values
-                CCOUT(4) << "Warning: Setting the internal physical mass to 1.0 because mass_ is 0.0" << std::endl;
+                orxout(internal_warning) << "Setting the internal physical mass to 1.0 because mass_ is 0.0" << endl;
                 btVector3 inertia(0, 0, 0);
                 this->collisionShape_->calculateLocalInertia(1.0f, inertia);
                 this->physicalBody_->setMassProps(1.0f, inertia);

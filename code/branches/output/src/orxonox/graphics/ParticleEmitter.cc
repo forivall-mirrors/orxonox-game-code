@@ -115,8 +115,8 @@ namespace orxonox
             }
             catch (const std::exception& ex)
             {
-                COUT(1) << "Error: Couln't load particle effect \"" << this->source_ << "\" because:" << std::endl
-                        << ex.what() << std::endl;
+                orxout(internal_error) << "Couldn't load particle effect \"" << this->source_ << "\" because:" << endl
+                                       << ex.what() << endl;
             }
         }
     }

@@ -56,7 +56,7 @@ namespace orxonox
         GameMode::setIsServer(true);
 
         this->server_ = new Server(CommandLineParser::getValue("port"));
-        COUT(0) << "Loading scene in server mode" << std::endl;
+        orxout(user_status) << "Loading scene in server mode" << endl;
 
         server_->open();
     }

@@ -262,7 +262,7 @@ namespace orxonox
         // we take -1.3 because the border makes the panel bigger
         this->consoleOverlayContainer_->setTop(-1.3f * this->relativeHeight);
 
-        COUT(4) << "Info: InGameConsole initialized" << std::endl;
+        orxout(internal_info) << "InGameConsole initialized" << endl;
     }
 
     // ###############################

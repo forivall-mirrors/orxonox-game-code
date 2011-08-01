@@ -387,7 +387,7 @@ namespace orxonox
         Ogre::RaySceneQueryResult::iterator itr;
         for (itr = result.begin(); itr != result.end(); ++itr)
         {
-//             CCOUT(0) << "testing object as target" << endl;
+//             orxout() << "testing object as target" << endl;
             if (itr->movable->isInScene() && itr->movable->getMovableType() == "Entity" && itr->distance > 200)
             {
                 // Try to cast the user pointer

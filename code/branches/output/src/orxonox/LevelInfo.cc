@@ -124,7 +124,7 @@ namespace orxonox
     {
         if(!this->validateTag(tag))
         {
-            COUT(2) << "Bad LevelInfo tag '" << tag << "' in " << this->getXMLFilename() << ". Ignoring..." << std::endl;
+            orxout(internal_warning) << "Bad LevelInfo tag '" << tag << "' in " << this->getXMLFilename() << ". Ignoring..." << endl;
             return false;
         }
         bool success = this->tags_.insert(*LevelInfoItem::possibleTags_s.find(tag)).second;

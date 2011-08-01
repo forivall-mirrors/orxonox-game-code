@@ -130,7 +130,7 @@ namespace orxonox
   {
     /* output the line to the file if logging is enabled */
     if( this->hist_log_enabled )
-      this->hist_logfile << toadd << std::endl;
+      this->hist_logfile << toadd << endl;
     return 0;
   }
 
@@ -153,7 +153,7 @@ namespace orxonox
     if( !this->hist_logfile )
     { this->hist_log_enabled = false;
 #ifndef CHATTEST
-      COUT(2) << "Warning: Could not open logfile." << std::endl;
+      orxout(internal_warning) << "Could not open logfile." << endl;
 #endif
     }
 
@@ -184,10 +184,10 @@ namespace orxonox
     /* output all the strings */
     for( it = this->hist_buffer.begin(); it != this->hist_buffer.end();
       ++it )
-      std::cout << *it << std::endl;
+      orxout(debug_output) << *it << endl;
 
     /* output size */
-    std::cout << "Size: " << hist_buffer.size() << std::endl;
+    orxout(debug_output) << "Size: " << hist_buffer.size() << endl;
   }
 
 #ifndef CHATTEST

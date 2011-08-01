@@ -96,6 +96,13 @@ namespace orxonox
             REGISTER_OUTPUT_CONTEXT(network);
             REGISTER_OUTPUT_CONTEXT(packets);
             REGISTER_OUTPUT_CONTEXT(master_server);
+            REGISTER_OUTPUT_CONTEXT(sound);
+            REGISTER_OUTPUT_CONTEXT(lod);
+            REGISTER_OUTPUT_CONTEXT(pickups);
+            REGISTER_OUTPUT_CONTEXT(quests);
+            REGISTER_OUTPUT_CONTEXT(notifications);
+            REGISTER_OUTPUT_CONTEXT(trigger);
+            REGISTER_OUTPUT_CONTEXT(docking);
         }
     }
 }

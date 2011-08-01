@@ -93,7 +93,7 @@ namespace orxonox
 
             alSourcePlay(this->audioSource_);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
+                orxout(internal_error, context::sound) << "Error playing sound: " << SoundManager::getALErrorString(error) << endl;
         }
     }
 
@@ -146,19 +146,19 @@ namespace orxonox
         alSource3f(this->audioSource_, AL_VELOCITY,  0, 0, 0);
         alSource3f(this->audioSource_, AL_DIRECTION, 0, 0, 0);
         if (ALint error = alGetError())
-            COUT(2) << "Sound Warning: Setting source parameters to 0 failed: "
-                    << SoundManager::getALErrorString(error) << std::endl;
+            orxout(internal_warning, context::sound) << "Setting source parameters to 0 failed: "
+                                                     << SoundManager::getALErrorString(error) << endl;
         assert(this->soundBuffer_ != NULL);
         alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
         if (ALuint error = alGetError())
-            COUT(1) << "Sound Error: Could not set buffer \"" << this->source_ << "\": " << SoundManager::getALErrorString(error) << std::endl;
+            orxout(internal_error, context::sound) << "Could not set buffer \"" << this->source_ << "\": " << SoundManager::getALErrorString(error) << endl;
     }
 
     void BaseSound::setVolume(float vol)
     {
         this->volume_ = clamp(vol, 0.0f, 1.0f);
         if (this->volume_ != vol)
-            COUT(2) << "Sound warning: volume out of range, clamping value." << std::endl;
+            orxout(internal_warning, context::sound) << "Volume out of range, clamping value." << endl;
         this->updateVolume();
     }
 
@@ -169,8 +169,8 @@ namespace orxonox
             float volume = this->volume_ * this->getRealVolume();                
             alSourcef(this->audioSource_, AL_GAIN, volume);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error setting volume to " << volume
-                        << ": " << SoundManager::getALErrorString(error) << std::endl;
+                orxout(internal_error, context::sound) << "Error setting volume to " << volume
+                                                       << ": " << SoundManager::getALErrorString(error) << endl;
         }
     }
 
@@ -185,7 +185,7 @@ namespace orxonox
     {
         if (pitch > 2 || pitch < 0.5f)
         {
-            COUT(2) << "Sound warning: pitch out of range, cropping value." << std::endl;
+            orxout(internal_warning, context::sound) << "Pitch out of range, cropping value." << endl;
             pitch = pitch > 2.0f ? 2.0f : pitch;
             pitch = pitch < 0.5f ? 0.5f : pitch;
         }
@@ -194,7 +194,7 @@ namespace orxonox
         {
             alSourcef(this->audioSource_, AL_PITCH, pitch);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error setting pitch: " << SoundManager::getALErrorString(error) << std::endl;
+                orxout(internal_error, context::sound) << "Error setting pitch: " << SoundManager::getALErrorString(error) << endl;
         }
     }
 
@@ -239,7 +239,7 @@ namespace orxonox
             alSourcei(this->audioSource_, AL_BUFFER, this->soundBuffer_->getBuffer());
             if (ALuint error = alGetError())
             {
-                COUT(1) << "Sound Error: Could not set buffer \"" << source << "\": " << SoundManager::getALErrorString(error) << std::endl;
+                orxout(internal_error, context::sound) << "Could not set buffer \"" << source << "\": " << SoundManager::getALErrorString(error) << endl;
                 return;
             }
 
@@ -247,7 +247,7 @@ namespace orxonox
             assert(this->isPlaying() || this->isPaused());
             alSourcePlay(this->audioSource_);
             if (int error = alGetError())
-                COUT(2) << "Sound: Error playing sound: " << SoundManager::getALErrorString(error) << std::endl;
+                orxout(internal_error, context::sound) << "Error playing sound: " << SoundManager::getALErrorString(error) << endl;
             if (this->isPaused())
                 alSourcePause(this->audioSource_);
         }

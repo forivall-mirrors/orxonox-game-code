@@ -97,7 +97,7 @@ namespace orxonox
                 {
                     if (it->myMaster_ == this)
                     {
-                        COUT(1) << "error: " << this << " is still master in " << (*it) << std::endl;
+                        orxout(internal_error) << this << " is still master in " << (*it) << endl;
                         it->myMaster_ = 0;
                     }
 
@@ -106,7 +106,7 @@ namespace orxonox
                         std::vector<ArtificialController*>::iterator it2 = std::find(it->slaves_.begin(), it->slaves_.end(), this);
                         if (it2 != it->slaves_.end())
                         {
-                            COUT(1) << "error: " << this << " is still slave in " << (*it) << std::endl;
+                            orxout(internal_error) << this << " is still slave in " << (*it) << endl;
                             it->slaves_.erase(it2);
                         }
                         else
@@ -736,7 +736,7 @@ namespace orxonox
 
         float speedDiv = this->getControllableEntity()->getVelocity().squaredLength() - this->target_->getVelocity().squaredLength();
 
-COUT(0) << "~follow distance: " << distance << "SpeedCounter: " << this->speedCounter_ << "~speedDiv: " << speedDiv << std::endl;
+orxout() << "~follow distance: " << distance << "SpeedCounter: " << this->speedCounter_ << "~speedDiv: " << speedDiv << endl;
         if (distance < 800)
         {
             if (distance < 200)

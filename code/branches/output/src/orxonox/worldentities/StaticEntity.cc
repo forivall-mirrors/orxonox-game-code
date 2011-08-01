@@ -62,7 +62,7 @@ namespace orxonox
     {
         if (this->addedToPhysicalWorld())
         {
-            CCOUT(2) << "Warning: Attempting to change the position of a StaticEntity at physics run time. Ignoring change." << std::endl;
+            orxout(internal_warning) << "Attempting to change the position of a StaticEntity at physics run time. Ignoring change." << endl;
             return;
         }
         if (this->isStatic())
@@ -79,7 +79,7 @@ namespace orxonox
     {
         if (this->addedToPhysicalWorld())
         {
-            CCOUT(2) << "Warning: Attempting to change the orientation of a StaticEntity at physics run time. Ignoring change." << std::endl;
+            orxout(internal_warning) << "Attempting to change the orientation of a StaticEntity at physics run time. Ignoring change." << endl;
             return;
         }
         if (this->isStatic())
@@ -96,7 +96,7 @@ namespace orxonox
     {
         if (type == WorldEntity::Kinematic || type == WorldEntity::Dynamic)
         {
-            CCOUT(1) << "Error: Cannot tell a StaticEntity to have kinematic or dynamic collision type! Ignoring." << std::endl;
+            orxout(internal_warning) << "Cannot tell a StaticEntity to have kinematic or dynamic collision type! Ignoring." << endl;
             assert(false); // Only in debug mode
             return false;
         }

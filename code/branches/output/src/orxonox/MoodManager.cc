@@ -53,7 +53,7 @@ namespace orxonox
         if (!Resource::exists(path))
         {
             // TODO: Non-fatal error handling (non-critical resource missing)
-            COUT(2) << "Mood Warning: Folder for default mood (" << MoodManager::defaultMood_ << ") does not exist!" << std::endl;
+            orxout(internal_warning) << "Mood Warning: Folder for default mood (" << MoodManager::defaultMood_ << ") does not exist!" << endl;
         }
         
         // @TODO
@@ -81,12 +81,12 @@ namespace orxonox
         const std::string& path = "ambient/" + mood_ + "/.";
         if (!Resource::exists(path))
         {
-            COUT(3) << "Mood " << mood_ << " does not exist. Will not change." << std::endl;
+            orxout(internal_warning) << "Mood " << mood_ << " does not exist. Will not change." << endl;
             this->setMood(oldMood_);
         }
         else
         {
-            COUT(3) << "Mood changed to " << mood_ << std::endl;
+            orxout(internal_info) << "Mood changed to " << mood_ << endl;
             MoodListener::changedMood(mood_);
         }
     }

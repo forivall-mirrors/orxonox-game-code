@@ -146,7 +146,7 @@ namespace orxonox
         OrxonoxOverlay::overlays_s.erase(this->getOldName());
 
         if (OrxonoxOverlay::overlays_s.find(this->getName()) != OrxonoxOverlay::overlays_s.end())
-            COUT(1) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << '"' << std::endl;
+            orxout(internal_warning) << "Overlay names should be unique or you cannnot access them via console. Name: \"" << this->getName() << '"' << endl;
 
         OrxonoxOverlay::overlays_s[this->getName()] = this;
     }
@@ -361,12 +361,12 @@ namespace orxonox
             if(overlay->isVisible())
             {
                 overlay->hide();
-                COUT(4) << "HIDE " << name << std::endl;
+                orxout(internal_info) << "HIDE " << name << endl;
             }
             else
             {
                 overlay->show();
-                COUT(4) << "SHOW " << name << std::endl;
+                orxout(internal_info) << "SHOW " << name << endl;
             }
         }
     }

@@ -296,7 +296,7 @@ namespace orxonox
                 it->first->startControl(entity);
             }
             else
-                COUT(2) << "Warning: Killed Pawn was not in the playerlist" << std::endl;
+                orxout(internal_warning) << "Killed Pawn was not in the playerlist" << endl;
         }
     }
 
@@ -343,7 +343,7 @@ namespace orxonox
                 return activeSpawnPoints[randomspawn];
             }
 
-            COUT(2) << "Warning: Fallback SpawnPoint was used, because there were no active SpawnPoints." << endl;
+            orxout(internal_warning) << "Fallback SpawnPoint was used because there were no active SpawnPoints." << endl;
             return fallbackSpawnPoint;
         }
         return 0;
@@ -443,7 +443,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
+            orxout(user_error) << "No SpawnPoints in current Gametype" << endl;
             abort();
         }
     }
@@ -460,7 +460,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Error: No SpawnPoints in current Gametype" << std::endl;
+            orxout(user_error) << "No SpawnPoints in current Gametype" << endl;
             abort();
         }
     }

@@ -74,7 +74,7 @@ namespace orxonox {
             it = this->pickups_.begin();
             if(it != this->pickups_.end() && temp == *it) // Infinite loop avoidance, in case the pickup wasn't removed from the carrier somewhere in the carrierDestroy() procedure.
             {
-                COUT(2) << "Oops. In a PickupCarrier, while cleaning up, a Pickupable (&" << temp << ") didn't unregister itself as it should have." << std::endl;;
+                orxout(internal_warning, context::pickups) << "Oops. In a PickupCarrier, while cleaning up, a Pickupable (&" << temp << ") didn't unregister itself as it should have." << endl;;
                 it++;
             }
         }
@@ -157,7 +157,7 @@ namespace orxonox {
     */
     bool PickupCarrier::addPickup(Pickupable* pickup)
     {
-        COUT(4) << "Adding Pickupable (&" << pickup << ") to PickupCarrier (&" << this << ")" << std::endl;
+        orxout(verbose, context::pickups) << "Adding Pickupable (&" << pickup << ") to PickupCarrier (&" << this << ")" << endl;
         return this->pickups_.insert(pickup).second;
     }
 
@@ -171,7 +171,7 @@ namespace orxonox {
     */
     bool PickupCarrier::removePickup(Pickupable* pickup)
     {
-        COUT(4) << "Removing Pickupable (&" << pickup << ") from PickupCarrier (&" << this << ")" << std::endl;
+        orxout(verbose, context::pickups) << "Removing Pickupable (&" << pickup << ") from PickupCarrier (&" << this << ")" << endl;
         return this->pickups_.erase(pickup) == 1;
     }
 

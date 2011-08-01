@@ -87,7 +87,7 @@ namespace orxonox
 
     void Level::networkcallback_applyXMLFile()
     {
-        COUT(0) << "Loading level \"" << this->xmlfilename_ << "\"..." << std::endl;
+        orxout(user_status) << "Loading level \"" << this->xmlfilename_ << "\"..." << endl;
 
         ClassTreeMask mask;
         mask.exclude(Class(BaseObject));
@@ -114,7 +114,7 @@ namespace orxonox
 
         if (!identifier || !identifier->isA(Class(Gametype)))
         {
-            COUT(0) << "Error: \"" << gametype << "\" is not a valid gametype." << std::endl;
+            orxout(internal_error) << "\"" << gametype << "\" is not a valid gametype." << endl;
             identifier = Class(Gametype);
             this->gametype_ = "Gametype";
         }
@@ -156,7 +156,7 @@ namespace orxonox
         std::string meshName = lodInformation->getMeshName();
 //         this->lodInformation_.insert(std::make_pair(meshName,lodInformation));
         if( this->lodInformation_.find(meshName) != this->lodInformation_.end())
-          CCOUT(4) << "replacing lod information for " << meshName << endl;
+            orxout(verbose, context::lod) << "replacing lod information for " << meshName << endl;
         this->lodInformation_[meshName] = lodInformation;
     }
 
@@ -170,13 +170,13 @@ namespace orxonox
 
     void Level::playerEntered(PlayerInfo* player)
     {
-        COUT(3) << "player entered level (id: " << player->getClientID() << ", name: " << player->getName() << ')' << std::endl;
+        orxout(internal_info) << "player entered level (id: " << player->getClientID() << ", name: " << player->getName() << ')' << endl;
         player->setGametype(this->getGametype());
     }
 
     void Level::playerLeft(PlayerInfo* player)
     {
-        COUT(3) << "player left level (id: " << player->getClientID() << ", name: " << player->getName() << ')' << std::endl;
+        orxout(internal_info) << "player left level (id: " << player->getClientID() << ", name: " << player->getName() << ')' << endl;
         player->setGametype(0);
     }
 }

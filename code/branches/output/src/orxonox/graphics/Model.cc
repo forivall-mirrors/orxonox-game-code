@@ -141,7 +141,7 @@ namespace orxonox
             }
             if( this->numLodLevels_>10 )
             {
-                CCOUT(2) << "More than 10 LoD levels requested. Creating only 10." << endl;
+                orxout(internal_warning, context::lod) << "More than 10 LoD levels requested. Creating only 10." << endl;
                 this->numLodLevels_ = 10;
             }
             if( this->bLodEnabled_ )
@@ -157,9 +157,9 @@ namespace orxonox
                     scaleFactor *= getBiggestScale(((WorldEntity*) creatorPtr)->getScale3D());
                     creatorPtr = creatorPtr->getCreator();
                 }
-                COUT(0) << "name: " << this->meshSrc_ << "scaleFactor: " << scaleFactor << ", volume: " << volume << endl;
+                orxout() << "name: " << this->meshSrc_ << "scaleFactor: " << scaleFactor << ", volume: " << volume << endl;
 */
-                COUT(4) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and volume: "<< volume << ":" << std::endl;
+                orxout(verbose, context::lod) << "Setting lodLevel for " << this->meshSrc_<< " with lodLevel_: " << this->lodLevel_ <<" and volume: "<< volume << ":" << endl;
 
 #if OGRE_VERSION >= 0x010700
                 Ogre::Mesh::LodValueList distList;
@@ -172,7 +172,7 @@ namespace orxonox
 //                    float factor = scaleFactor*5/lodLevel_;
                     float factor = pow(volume, 2.0f / 3.0f) * 15.0f / lodLevel_;
 
-                    COUT(4) << "LodLevel set with factor: " << factor << endl;
+                    orxout(verbose, context::lod) << "LodLevel set with factor: " << factor << endl;
 
                     distList.push_back(70.0f*factor);
                     distList.push_back(140.0f*factor);
@@ -199,11 +199,11 @@ namespace orxonox
                     else
                         what = "<0";
 
-                    COUT(4)<<"LodLevel not set because lodLevel("<<lodLevel_<<") was "<<what<<"." << endl;
+                    orxout(verbose, context::lod) << "LodLevel not set because lodLevel(" << lodLevel_ << ") was " << what << "." << endl;
                 }
             }
             else
-                COUT(4) << "LodLevel for " << this->meshSrc_ << " not set because is disabled." << endl;
+                orxout(verbose, context::lod) << "LodLevel for " << this->meshSrc_ << " not set because is disabled." << endl;
         }
     }
 }

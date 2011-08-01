@@ -341,9 +341,9 @@ namespace orxonox
         playerParty_[player]=chaser; //Set playerparty
         numberOf[chaser]++;
         Gametype::playerEntered(player);
-        const std::string& message6 = player->getName() + " entered the game";
-        COUT(0) << message6 << std::endl;
-        Host::Broadcast(message6);
+        const std::string& message = player->getName() + " entered the game";
+        orxout(level::message) << message << endl;
+        Host::Broadcast(message);
     }
 
     bool Dynamicmatch::playerLeft(PlayerInfo* player) //standardfunction
@@ -358,7 +358,7 @@ namespace orxonox
             case 2: numberOf[killer]--; break;
             }
             const std::string& message = player->getName() + " left the game";
-            COUT(0) << message << std::endl;
+            orxout(level::message) << message << endl;
             Host::Broadcast(message);
             //remove player from map
             playerParty_.erase (player);
@@ -616,7 +616,7 @@ namespace orxonox
         if (valid_player)
         {
             const std::string& message = player->getOldName() + " changed name to " + player->getName();
-            COUT(0) << message << std::endl;
+            orxout(level::message) << message << endl;
             Host::Broadcast(message);
         }
 
@@ -629,7 +629,7 @@ namespace orxonox
         if(!tutorial)
         {
             std::string message("Dynamicmatch started!");
-            COUT(0) << message << std::endl;
+            orxout(level::message) << message << endl;
             Host::Broadcast(message);
         }
         else if(tutorial) // Announce selectionphase
@@ -646,7 +646,7 @@ namespace orxonox
     /*void Dynamicmatch::instructions()
     {
         std::string message("Earn points:\n\n\n\tIf you're red: Chase the blue player!\n\n\tIf you're blue shoot at a red player or hide.\n\n\tIf you're green: You've got the licence to kill red players!");
-        COUT(0) << message << std::endl;
+        orxout(level::message) << message << endl;
         Host::Broadcast(message);
         callInstructions_.setTimer(10, false, createExecutor(createFunctor(&Dynamicmatch::furtherInstructions, this)));
     }
@@ -654,7 +654,7 @@ namespace orxonox
     void Dynamicmatch::furtherInstructions()
     {
         std::string message("After 3 Minutes the game is over.");
-        COUT(0) << message << std::endl;
+        orxout(level::message) << message << endl;
         Host::Broadcast(message);
     }*/
     void Dynamicmatch::end()
@@ -662,7 +662,7 @@ namespace orxonox
         Gametype::end();
 
         std::string message("Time out. Press F2 to see the points you scored.");
-        COUT(0) << message << std::endl;
+        orxout(level::message) << message << endl;
         Host::Broadcast(message);
     }
     SpawnPoint* Dynamicmatch::getBestSpawnPoint(PlayerInfo* player) const
