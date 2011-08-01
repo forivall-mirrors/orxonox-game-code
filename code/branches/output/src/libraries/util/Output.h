@@ -48,9 +48,14 @@ namespace orxonox
     {
         return orxout(level, context());
     }
-}
 
-#define COUT(level) orxonox::orxout()
-#define DOUT orxonox::orxout()
+    // COUT() is deprecated, please use orxout()
+    inline __DEPRECATED__(OutputStream& COUT(int level));
+
+    inline OutputStream& COUT(int)
+    {
+        return orxout();
+    }
+}
 
 #endif /* _Output_H__ */

@@ -58,6 +58,8 @@ int main_mac(int argc, char** argv)
 int main(int argc, char** argv)
 #endif
 {
+    using namespace orxonox;
+
     try
     {
 #ifndef ORXONOX_USE_WINMAIN
@@ -69,18 +71,18 @@ int main(int argc, char** argv)
         // 0 is the execution path
         const int firstArgument = 1;
 #endif
-    
+
         std::string strCmdLine;
         for (int i = firstArgument; i < argc; ++i)
             strCmdLine = strCmdLine + argv[i] + ' ';
 #endif
 
-        return orxonox::main(strCmdLine);
+        return main(strCmdLine);
     }
     catch (...)
     {
-        COUT(0) << "Orxonox failed to initialise: " << orxonox::Exception::handleMessage() << std::endl;
-        COUT(0) << "Terminating program." << std::endl;
+        orxout(user_error) << "Orxonox failed to initialise: " << orxonox::Exception::handleMessage() << endl;
+        orxout(user_error) << "Terminating program." << endl;
         return 1;
     }
 }
