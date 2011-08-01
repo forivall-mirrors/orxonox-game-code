@@ -108,8 +108,8 @@ namespace orxonox
             if (gametype)
             {
                 const std::string& message =  "You have " + multi_cast<std::string>(this->bTimeLimit_)
-                            + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1) + "\n";
-                COUT(3) << message;
+                            + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1);
+                orxout(level::message) << message << endl;
                 const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage(message);
             }
         }

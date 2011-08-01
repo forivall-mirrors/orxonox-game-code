@@ -130,11 +130,11 @@ namespace orxonox
         if(!queueRegistered) // If the registration has failed.
         {
             this->registered_ = false;
-            COUT(1) << "Error: NotificationQueue '" << this->getName() << "' could not be registered." << std::endl;
+            orxout(internal_error, context::notifications) << "NotificationQueue '" << this->getName() << "' could not be registered." << endl;
             return;
         }
 
-        COUT(3) << "NotificationQueue '" << this->getName() << "' created." << std::endl;
+        orxout(internal_info, context::notifications) << "NotificationQueue '" << this->getName() << "' created." << endl;
     }
 
     /**
@@ -214,7 +214,7 @@ namespace orxonox
 
         delete notifications;
 
-        COUT(4) << "NotificationQueue '" << this->getName() << "' updated." << std::endl;
+        orxout(verbose, context::notifications) << "NotificationQueue '" << this->getName() << "' updated." << endl;
     }
 
     /**
@@ -231,7 +231,7 @@ namespace orxonox
 
         this->push(notification, time);
 
-        COUT(4) << "NotificationQueue '" << this->getName() << "' updated. A new Notification has been added." << std::endl;
+        orxout(verbose, context::notifications) << "NotificationQueue '" << this->getName() << "' updated. A new Notification has been added." << endl;
     }
 
     /**
@@ -264,8 +264,8 @@ namespace orxonox
         // Inform that a Notification was pushed.
         this->notificationPushed(notification);
 
-        COUT(5) << "Notification \"" << notification->getMessage() << "\" pushed to NotificationQueue '" << this->getName() << "'" << endl;
-        COUT(3) << "NotificationQueue \"" << this->getName() << "\": " << notification->getMessage() << endl;
+        orxout(verbose_more, context::notifications) << "Notification \"" << notification->getMessage() << "\" pushed to NotificationQueue '" << this->getName() << "'" << endl;
+        orxout(internal_info, context::notifications) << "NotificationQueue \"" << this->getName() << "\": " << notification->getMessage() << endl;
     }
 
     /**
@@ -283,7 +283,7 @@ namespace orxonox
         {
             if(container == *it)
             {
-                COUT(5) << "Notification \"" << (*it)->notification->getMessage() << "\" popped from NotificationQueue '" << this->getName() << "'" << endl;
+                orxout(verbose_more, context::notifications) << "Notification \"" << (*it)->notification->getMessage() << "\" popped from NotificationQueue '" << this->getName() << "'" << endl;
                 this->ordering_.erase(it);
                 break;
             }
@@ -310,7 +310,7 @@ namespace orxonox
         // Get the index at which the Notification is.
         std::vector<NotificationContainer*>::difference_type index = it - this->notifications_.begin ();
 
-        COUT(5) << "Notification \"" << (*it)->notification->getMessage() << "\" removed from NotificationQueue '" << this->getName() << "'" << endl;
+        orxout(verbose_more, context::notifications) << "Notification \"" << (*it)->notification->getMessage() << "\" removed from NotificationQueue '" << this->getName() << "'" << endl;
 
         this->ordering_.erase(containerIterator);
         this->notifications_.erase(it);
@@ -332,7 +332,7 @@ namespace orxonox
     */
     void NotificationQueue::clear(bool noGraphics)
     {
-        COUT(4) << "Clearing NotificationQueue " << this->getName() << "." << endl;
+        orxout(verbose, context::notifications) << "Clearing NotificationQueue " << this->getName() << "." << endl;
         this->ordering_.clear();
         // Delete all NotificationContainers in the list.
         for(std::vector<NotificationContainer*>::iterator it = this->notifications_.begin(); it != this->notifications_.end(); it++)
@@ -366,7 +366,7 @@ namespace orxonox
 
         if(size == 0)
         {
-            COUT(2) << "Trying to set maximal size of NotificationQueue '" << this->getName() << "' to 0. Ignoring..." << endl;
+            orxout(internal_warning, context::notifications) << "Trying to set maximal size of NotificationQueue '" << this->getName() << "' to 0. Ignoring..." << endl;
             return;
         }
         
@@ -397,7 +397,7 @@ namespace orxonox
 
         if(time != NotificationQueue::INF && time <= 0)
         {
-            COUT(2) << "Trying to set display time of NotificationQueue '" << this->getName() << "' to non-positive value. Ignoring..." << endl;
+            orxout(internal_warning, context::notifications) << "Trying to set display time of NotificationQueue '" << this->getName() << "' to non-positive value. Ignoring..." << endl;
         }
             
         this->displayTime_ = time;

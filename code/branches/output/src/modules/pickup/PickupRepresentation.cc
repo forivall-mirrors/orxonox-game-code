@@ -139,7 +139,7 @@ namespace orxonox
         if(this->spawnerRepresentation_ != NULL)
             this->spawnerRepresentation_->setVisible(false);
 
-        COUT(4) << "PickupRepresentation created: name: '" << this->name_ << "', description: '" << this->description_ << "', spawnerTemplate: '" << this->spawnerTemplate_ << "'." << std::endl;
+        orxout(verbose, context::pickups) << "PickupRepresentation created: name: '" << this->name_ << "', description: '" << this->description_ << "', spawnerTemplate: '" << this->spawnerTemplate_ << "'." << endl;
     }
 
     /**
@@ -154,10 +154,10 @@ namespace orxonox
     {
         if(this->spawnerRepresentation_ == NULL)
         {
-            COUT(4) << "PickupRepresentation: No spawner representation found." << std::endl;
+            orxout(verbose, context::pickups) << "PickupRepresentation: No spawner representation found." << endl;
             if(this->spawnerTemplate_ == "")
             {
-                COUT(4) << "PickupRepresentation: Spawner template is empty." << std::endl;
+                orxout(verbose, context::pickups) << "PickupRepresentation: Spawner template is empty." << endl;
                 // If neither spawnerRepresentation nor spawnerTemplate was specified
                 return this->getDefaultSpawnerRepresentation(spawner);
             }

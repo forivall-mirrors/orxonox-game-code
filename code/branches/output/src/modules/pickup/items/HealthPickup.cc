@@ -168,7 +168,7 @@ namespace orxonox
                     pawn->addHealth(health);
                     break;
                 default:
-                    COUT(1) << "Invalid healthType in HealthPickup." << std::endl;
+                    orxout(internal_error, context::pickups) << "Invalid healthType in HealthPickup." << endl;
             }
 
             // If all health has been transferred.
@@ -217,7 +217,7 @@ namespace orxonox
                         pawn->addHealth(this->getHealth());
                         break;
                     default:
-                        COUT(1) << "Invalid healthType in HealthPickup." << std::endl;
+                        orxout(internal_error, context::pickups) << "Invalid healthType in HealthPickup." << endl;
                 }
 
                 // The pickup has been used up.
@@ -233,7 +233,7 @@ namespace orxonox
 
                 if(pawn == NULL)
                 {
-                    COUT(1) << "Something went horribly wrong in Health Pickup. PickupCarrier is no Pawn." << std::endl;
+                    orxout(internal_error, context::pickups) << "Something went horribly wrong in Health Pickup. PickupCarrier is no Pawn." << endl;
                     this->Pickupable::destroy();
                     return;
                 }
@@ -267,7 +267,7 @@ namespace orxonox
 
         if(pawn == NULL)
         {
-            COUT(1) << "Invalid PickupCarrier in HealthPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid PickupCarrier in HealthPickup." << endl;
         }
 
         return pawn;
@@ -311,7 +311,7 @@ namespace orxonox
             case pickupHealthType::permanent:
                 return HealthPickup::healthTypePermanent_s;
             default:
-                COUT(1) << "Invalid healthType in HealthPickup." << std::endl;
+                orxout(internal_error, context::pickups) << "Invalid healthType in HealthPickup." << endl;
                 return BLANKSTRING;
         }
     }
@@ -330,7 +330,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid health in HealthPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid health in HealthPickup." << endl;
             this->health_ = 0.0;
         }
     }
@@ -349,7 +349,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid healthSpeed in HealthPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid healthSpeed in HealthPickup." << endl;
         }
     }
 
@@ -375,7 +375,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid healthType in HealthPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid healthType in HealthPickup." << endl;
         }
     }
 

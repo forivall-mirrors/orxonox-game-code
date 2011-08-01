@@ -58,7 +58,7 @@ namespace orxonox
         this->lifetime_ = 10;
 
         this->setMass(15);
-//        COUT(4) << "simplerocket constructed\n";
+//        orxout() << "simplerocket constructed" << endl;
 
         if (GameMode::isMaster())
         {

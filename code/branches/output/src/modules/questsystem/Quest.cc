@@ -95,7 +95,7 @@ namespace orxonox
 
         this->parentQuest_ = quest;
 
-        COUT(4) << "Parent Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
+        orxout(verbose, context::quests) << "Parent Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << endl;
         return true;
     }
 
@@ -114,7 +114,7 @@ namespace orxonox
         quest->setParentQuest(this); // Sets the currentQuest (this) as parent-quest for the added sub-quest.
         this->subQuests_.push_back(quest); // Adds the Quest to the end of the list of sub-quests.
 
-        COUT(4) << "Sub Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
+        orxout(verbose, context::quests) << "Sub Quest {" << quest->getId() << "} was added to Quest {" << this->getId() << "}." << endl;
         return true;
     }
 
@@ -134,7 +134,7 @@ namespace orxonox
         hint->setQuest(this); // Sets the current Quest (this) as Quest for the added QuestHint.
         this->hints_.push_back(hint); // Adds the QuestHint to the end of the list of QuestHints.
 
-        COUT(4) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << std::endl;
+        orxout(verbose, context::quests) << "QuestHint {" << hint->getId() << "} was added to Quest {" << this->getId() << "}." << endl;
         return true;
     }
 
@@ -152,7 +152,7 @@ namespace orxonox
 
         this->failEffects_.push_back(effect); // Adds the QuestEffect to the end of the list of fail QuestEffects.
 
-        COUT(4) << "A FailEffect was added to Quest {" << this->getId() << "}." << std::endl;
+        orxout(verbose, context::quests) << "A FailEffect was added to Quest {" << this->getId() << "}." << endl;
         return true;
     }
 
@@ -170,7 +170,7 @@ namespace orxonox
 
         this->completeEffects_.push_back(effect); // Adds the QuestEffect to the end of the list of complete QuestEffects.
 
-        COUT(4) << "A CompleteEffect was added to Quest {" << this->getId() << "}." << std::endl;
+        orxout(verbose, context::quests) << "A CompleteEffect was added to Quest {" << this->getId() << "}." << endl;
         return true;
     }
 
@@ -340,7 +340,7 @@ namespace orxonox
         QuestListener::advertiseStatusChange(this->listeners_, "fail"); // Tells the QuestListeners, that the status has changed to failed.
         this->setStatus(player, QuestStatus::Failed);
 
-        COUT(4) << "Quest {" << this->getId() << "} is failed for player: " << player << " ." <<std::endl;
+        orxout(verbose, context::quests) << "Quest {" << this->getId() << "} is failed for player: " << player << " ." << endl;
 
         this->getDescription()->sendFailQuestNotification(player);
         return true;
@@ -359,7 +359,7 @@ namespace orxonox
         QuestListener::advertiseStatusChange(this->listeners_, "complete"); // Tells the QuestListeners, that the status has changed to completed.
         this->setStatus(player, QuestStatus::Completed);
 
-        COUT(4) << "Quest {" << this->getId() << "} is completed for player: " << player << " ." <<std::endl;
+        orxout(verbose, context::quests) << "Quest {" << this->getId() << "} is completed for player: " << player << " ." << endl;
 
         this->getDescription()->sendCompleteQuestNotification(player);
         return true;
@@ -377,11 +377,11 @@ namespace orxonox
     {
         if(!this->isStartable(player)) // Checks whether the quest can be started.
         {
-            COUT(4) << "A non-startable quest was trying to be started." << std::endl;
+            orxout(verbose, context::quests) << "A non-startable quest was trying to be started." << endl;
             return false;
         }
 
-        COUT(4) << "Quest {" << this->getId() << "} is started for player: " << player << " ." <<std::endl;
+        orxout(verbose, context::quests) << "Quest {" << this->getId() << "} is started for player: " << player << " ." << endl;
 
         QuestListener::advertiseStatusChange(this->listeners_, "start"); // Tells the QuestListeners, that the status has changed to active.
 

@@ -136,7 +136,7 @@ namespace orxonox
         if(!triggered || !this->isActive()) // If the Script is inactive it cannot be executed.
             return false;
 
-        COUT(4) << "Script (&" << this << ") triggered." << std::endl;
+        orxout(internal_info) << "Script (&" << this << ") triggered." << endl;
 
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
         PlayerInfo* player = NULL;
@@ -154,7 +154,7 @@ namespace orxonox
 
         if(player == NULL)  //TODO: Will this ever happen? If not, change in NotificationDispatcher as well.
         {
-            COUT(4) << "The Script was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
+            orxout(internal_warning) << "The Script was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << endl;
             return false;
         }
 
@@ -271,7 +271,7 @@ namespace orxonox
         }
         else
         {
-            COUT(2) << "Invalid mode '" << mode << "' in Script object. Setting to 'normal'." << std::endl;
+            orxout(internal_warning) << "Invalid mode '" << mode << "' in Script object. Setting to 'normal'." << endl;
             this->setMode(ScriptMode::normal);
             this->modeStr_ = Script::NORMAL;
         }
@@ -322,7 +322,7 @@ namespace orxonox
         }
         else
         {
-            COUT(2) << "Invalid times '" << times << "' in Script. Setting to infinity." << std::endl;
+            orxout(internal_warning) << "Invalid times '" << times << "' in Script. Setting to infinity." << endl;
             this->times_ = Script::INF;
             this->remainingExecutions_ = Script::INF;
         }

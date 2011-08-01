@@ -101,7 +101,7 @@ namespace orxonox
             REGISTER_OUTPUT_CONTEXT(pickups);
             REGISTER_OUTPUT_CONTEXT(quests);
             REGISTER_OUTPUT_CONTEXT(notifications);
-            REGISTER_OUTPUT_CONTEXT(trigger);
+            REGISTER_OUTPUT_CONTEXT(triggers);
             REGISTER_OUTPUT_CONTEXT(docking);
         }
     }

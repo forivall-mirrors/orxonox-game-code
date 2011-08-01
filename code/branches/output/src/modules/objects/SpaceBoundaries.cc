@@ -214,7 +214,7 @@ namespace orxonox
             {
                 distance = this->computeDistance(currentPawn);
                 humanItem = this->isHumanPlayer(currentPawn);
-                COUT(5) << "Distance:" << distance << std::endl; // message for debugging
+//                orxout() << "Distance:" << distance << endl; // message for debugging
                 if(distance > this->warnDistance_ && distance < this->maxDistance_) // Display warning
                 {
                     if(humanItem)
@@ -230,7 +230,7 @@ namespace orxonox
                 {
                     if( humanItem )
                     {
-                        COUT(5) << "Health should be decreasing!" << std::endl;
+//                        orxout() << "Health should be decreasing!" << endl;
                         this->displayWarning("You are out of the area now!");
                     }
                     currentPawn->removeHealth( (distance - this->maxDistance_) * this->healthDecrease_);

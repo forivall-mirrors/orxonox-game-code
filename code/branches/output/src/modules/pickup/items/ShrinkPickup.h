@@ -92,7 +92,7 @@ namespace orxonox {
             @param factor The factor, needs to greater than 1.
             */
             inline void setShrinkFactor(float factor)
-                { if(factor <= 1.0f) { COUT(2) << "Invalid shrinking factor in ShrinkPickup. Ignoring.." << endl; return; } this->shrinkFactor_ = factor; }
+                { if(factor <= 1.0f) { orxout(internal_warning, context::pickups) << "Invalid shrinking factor in ShrinkPickup. Ignoring.." << endl; return; } this->shrinkFactor_ = factor; }
             /**
             @brief Get the duration for which the ship remains shrunken.
             @return Returns the duration.
@@ -104,7 +104,7 @@ namespace orxonox {
             @param duration The duration, needs to be non-negative.
             */
             inline void setDuration(float duration)
-                { if(duration < 0.0f) { COUT(2) << "Invalid duration in ShrinkPickup. Ignoring.." << endl; return; } this->duration_ = duration; }
+                { if(duration < 0.0f) { orxout(internal_warning, context::pickups) << "Invalid duration in ShrinkPickup. Ignoring.." << endl; return; } this->duration_ = duration; }
             /**
             @brief Get the shrink speed.
             @return Returns the shrink speed.
@@ -116,7 +116,7 @@ namespace orxonox {
             @param speed The shrink duration, needs to be positive.
             */
             inline void setShrinkDuration(float speed)
-                { if(speed <= 0.0f) { COUT(2) << "Invalid shrink duration in ShrinkPickup. Ignoring.." << endl; return; } this->shrinkDuration_ = speed; }
+                { if(speed <= 0.0f) { orxout(internal_warning, context::pickups) << "Invalid shrink duration in ShrinkPickup. Ignoring.." << endl; return; } this->shrinkDuration_ = speed; }
 
         protected:
             void initializeIdentifier(void);

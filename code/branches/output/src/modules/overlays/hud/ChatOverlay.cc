@@ -86,7 +86,7 @@ namespace orxonox
         }
 
         this->messages_.push_back(multi_cast<Ogre::DisplayString>(text));
-        COUT(0) << "Chat: " << text << std::endl;
+        orxout(level::message) << "Chat: " << text << endl;
 
         Timer* timer = new Timer();
         this->timers_.insert(timer); // store the timer in a set to destroy it in the destructor

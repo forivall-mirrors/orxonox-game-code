@@ -142,7 +142,7 @@ namespace orxonox
 
         if(size.x < 0.0 || size.x > 1.0 || size.z < 0.0 || size.z > 1.0)
         {
-            COUT(2) << "The display size of the NotificationQueueCEGUI " << this->getName() << " was trying to be set, but the relative size was not in [0,1]. Aborting..." << endl;
+            orxout(internal_warning, context::notifications) << "The display size of the NotificationQueueCEGUI " << this->getName() << " was trying to be set, but the relative size was not in [0,1]. Aborting..." << endl;
             return;
         }
 
@@ -182,7 +182,7 @@ namespace orxonox
 
         if(position.x < 0.0 || position.x > 1.0 || position.z < 0.0 || position.z > 1.0)
         {
-            COUT(2) << "The position the NotificationQueueCEGUI " << this->getName() << " was trying to be set, but the relative position was not in [0,1]. Aborting..." << endl;
+            orxout(internal_warning, context::notifications) << "The position the NotificationQueueCEGUI " << this->getName() << " was trying to be set, but the relative position was not in [0,1]. Aborting..." << endl;
             return;
         }
 

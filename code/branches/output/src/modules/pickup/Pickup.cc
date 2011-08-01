@@ -168,7 +168,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid activationType '" << type << "' in pickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid activationType '" << type << "' in pickup." << endl;
         }
     }
 
@@ -190,7 +190,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid durationType '" << type << "' in pickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid durationType '" << type << "' in pickup." << endl;
         }
     }
 

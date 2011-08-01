@@ -60,7 +60,7 @@ namespace orxonox
     {
         RegisterRootObject(QuestManager);
 
-        COUT(3) << "QuestManager created." << std::endl;
+        orxout(internal_info, context::quests) << "QuestManager created." << endl;
     }
 
     /**
@@ -69,7 +69,7 @@ namespace orxonox
     */
     QuestManager::~QuestManager()
     {
-        COUT(3) << "QuestManager destroyed." << std::endl;
+        orxout(internal_info, context::quests) << "QuestManager destroyed." << endl;
     }
 
     /**
@@ -102,12 +102,12 @@ namespace orxonox
         if(result.second) // If inserting was a success.
         {
             quest->setRegistered();
-            COUT(4) << "Quest with questId {" << quest->getId() << "} successfully inserted." << std::endl;
+            orxout(verbose, context::quests) << "Quest with questId {" << quest->getId() << "} successfully inserted." << endl;
             return true;
         }
         else
         {
-           COUT(2) << "Quest with the same id was already present." << std::endl;
+           orxout(internal_warning, context::quests) << "Quest with the same id was already present." << endl;
            return false;
         }
     }
@@ -140,12 +140,12 @@ namespace orxonox
         if(result.second) // If inserting was a success.
         {
             hint->setRegistered();
-            COUT(4) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << std::endl;
+            orxout(verbose, context::quests) << "QuestHint with hintId {" << hint->getId() << "} successfully inserted." << endl;
             return true;
         }
         else
         {
-           COUT(2) << "QuestHint with the same id was already present." << std::endl;
+           orxout(internal_warning, context::quests) << "QuestHint with the same id was already present." << endl;
            return false;
         }
     }
@@ -182,7 +182,7 @@ namespace orxonox
         else
         {
            quest = NULL;
-           COUT(2) << "The quest with id {" << questId << "} is nowhere to be found." << std::endl;
+           orxout(internal_warning, context::quests) << "The quest with id {" << questId << "} is nowhere to be found." << endl;
         }
 
         return quest;
@@ -211,7 +211,7 @@ namespace orxonox
         else
         {
            hint = NULL;
-           COUT(2) << "The hint with id {" << hintId << "} is nowhere to be found." << std::endl;
+           orxout(internal_warning, context::quests) << "The hint with id {" << hintId << "} is nowhere to be found." << endl;
         }
 
         return hint;
@@ -430,7 +430,7 @@ namespace orxonox
         PlayerInfo* player = GUIManager::getInstance().getPlayer(guiName);
         if(player == NULL)
         {
-            COUT(1) << "Error: GUIOverlay with name '" << guiName << "' has no player." << std::endl;
+            orxout(internal_error, context::quests) << "GUIOverlay with name '" << guiName << "' has no player." << endl;
             return NULL;
         }
 

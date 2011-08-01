@@ -159,7 +159,7 @@ namespace orxonox
             const WorldEntity* wePointer = it->first->getWorldEntity();
             if( !wePointer )
             {
-                CCOUT(0) << "Cannot display a non-WorldEntitiy on the radar" << std::endl;
+                orxout(internal_error) << "Cannot display a non-WorldEntitiy on the radar" << endl;
                 assert(0);
             }
             bool isFocus = (it->first == focusObject);

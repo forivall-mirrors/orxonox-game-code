@@ -88,7 +88,7 @@ namespace orxonox
         //this->collisionShape_->setLocalScaling(multi_cast<btVector3>(this->getScale3D()));
         if(!this->hasUniformScaling())
         {
-            CCOUT(1) << "Error: Non-uniform scaling is not yet supported." << endl;
+            orxout(internal_error) << "SphereCollisionShape: Non-uniform scaling is not yet supported." << endl;
             return;
         }
 

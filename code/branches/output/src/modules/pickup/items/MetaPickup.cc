@@ -231,7 +231,7 @@ namespace orxonox {
             this->setMetaTypeDirect(pickupMetaType::destroyCarrier);
         }
         else
-            COUT(2) << "Invalid metaType '" << type << "' in MetaPickup." << std::endl;
+            orxout(internal_warning, context::pickups) << "Invalid metaType '" << type << "' in MetaPickup." << endl;
     }
 
 }

@@ -82,7 +82,7 @@ namespace orxonox
     {
         if(id == "")
         {
-            COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
+            orxout(internal_warning, context::quests) << "Invalid id. QuestItem id {" << id << "} could not be set." << endl;
             return false;
         }
 
