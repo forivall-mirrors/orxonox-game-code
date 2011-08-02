@@ -99,7 +99,7 @@ namespace orxonox
                 // get all the groups that are visible (except the shortcut group "")
                 const std::map<std::string, std::map<std::string, ConsoleCommand*> >& commands = ConsoleCommand::getCommands();
                 for (std::map<std::string, std::map<std::string, ConsoleCommand*> >::const_iterator it_group = commands.begin(); it_group != commands.end(); ++it_group)
-                    if (groupIsVisible(it_group->second, bOnlyShowHidden) && it_group->first != "" && (fragmentLC == "" || getLowercase(it_group->first).find_first_of(fragmentLC) == 0))
+                    if (groupIsVisible(it_group->second, bOnlyShowHidden) && it_group->first != "" && (fragmentLC == "" || getLowercase(it_group->first).find(fragmentLC) == 0))
                         groupList.push_back(ArgumentCompletionListElement(it_group->first, getLowercase(it_group->first)));
 
                 // now add all shortcuts (in group "")
@@ -112,7 +112,7 @@ namespace orxonox
 
                     // add the shortcuts
                     for (std::map<std::string, ConsoleCommand*>::const_iterator it_command = it_group->second.begin(); it_command != it_group->second.end(); ++it_command)
-                        if (it_command->second->isActive() && it_command->second->hasAccess() && (!it_command->second->isHidden())^bOnlyShowHidden && (fragmentLC == "" || getLowercase(it_command->first).find_first_of(fragmentLC) == 0))
+                        if (it_command->second->isActive() && it_command->second->hasAccess() && (!it_command->second->isHidden())^bOnlyShowHidden && (fragmentLC == "" || getLowercase(it_command->first).find(fragmentLC) == 0))
                             groupList.push_back(ArgumentCompletionListElement(it_command->first, getLowercase(it_command->first)));
                 }
 
