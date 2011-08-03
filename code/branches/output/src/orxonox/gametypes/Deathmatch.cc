@@ -47,7 +47,6 @@ namespace orxonox
         Gametype::start();
 
         std::string message("The match has started!");
-        orxout(level::message) << message << endl;
         Host::Broadcast(message);
     }
 
@@ -56,7 +55,6 @@ namespace orxonox
         Gametype::end();
 
         std::string message("The match has ended.");
-        orxout(level::message) << message << endl;
         Host::Broadcast(message);
     }
 
@@ -65,7 +63,6 @@ namespace orxonox
         Gametype::playerEntered(player);
 
         const std::string& message = player->getName() + " entered the game";
-        orxout(level::message) << message << endl;
         Host::Broadcast(message);
     }
 
@@ -76,7 +73,6 @@ namespace orxonox
         if (valid_player)
         {
             const std::string& message = player->getName() + " left the game";
-            orxout(level::message) << message << endl;
             Host::Broadcast(message);
         }
 
@@ -90,7 +86,6 @@ namespace orxonox
         if (valid_player)
         {
             const std::string& message = player->getOldName() + " changed name to " + player->getName();
-            orxout(level::message) << message << endl;
             Host::Broadcast(message);
         }
 
@@ -112,7 +107,6 @@ namespace orxonox
             else
                 message = victim->getPlayer()->getName() + " died";
 
-            orxout(level::message) << message << endl;
             Host::Broadcast(message);
         }
 
@@ -126,7 +120,6 @@ namespace orxonox
         if (player)
         {
             const std::string& message = player->getName() + " scores!";
-            orxout(level::message) << message << endl;
             Host::Broadcast(message);
         }
     }

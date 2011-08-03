@@ -90,48 +90,36 @@ namespace orxonox {
 
   void Host::Chat(const std::string& message)
   {
-    if(instances_s.size()==0)
+    for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
+      it->incomingChat(message, 0);
+
+    bool result = true;
+    for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
     {
-      for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
-        it->incomingChat(message, 0);
-//      return true;
-    }
-    else
-    {
-      bool result = true;
-      for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
+      if( (*it)->isActive() )
       {
-        if( (*it)->isActive() )
-        {
-          if( !(*it)->chat(message) )
-            result = false;
-        }
+        if( !(*it)->chat(message) )
+          result = false;
       }
-//      return result;
     }
+//    return result;
   }
 
   bool Host::Broadcast(const std::string& message)
   {
-    if(instances_s.size()==0)
+    for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
+      it->incomingChat(message, NETWORK_PEER_ID_BROADCAST);
+
+    bool result = true;
+    for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
     {
-      for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
-        it->incomingChat(message, NETWORK_PEER_ID_BROADCAST);
-      return true;
-    }
-    else
-    {
-      bool result = true;
-      for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
+      if( (*it)->isActive() )
       {
-        if( (*it)->isActive() )
-        {
-          if( !(*it)->broadcast(message) )
-            result = false;
-        }
+        if( !(*it)->broadcast(message) )
+          result = false;
       }
-      return result;
     }
+    return result;
   }
 
   bool Host::incomingChat(const std::string& message, unsigned int playerID)
@@ -160,7 +148,7 @@ namespace orxonox {
     }
     return false;
   }
-  
+
   Host* Host::getActiveInstance()
   {
     std::vector<Host*>::iterator it = Host::instances_s.begin();

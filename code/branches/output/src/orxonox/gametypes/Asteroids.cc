@@ -73,7 +73,6 @@ namespace orxonox
         Gametype::start();
 
         std::string message("The match has started! Reach the first chekpoint within 15 seconds! But be aware, there may be pirates around...");
-        orxout(level::message) << message << endl;
         Host::Broadcast(message);
 
     }
@@ -83,7 +82,6 @@ namespace orxonox
         Gametype::end();
 
         std::string message("The match has ended.");
-        orxout(level::message) << message << endl;
         Host::Broadcast(message);
     }
 }

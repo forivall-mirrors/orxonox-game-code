@@ -89,7 +89,7 @@ namespace orxonox
                     return true;
                 const std::string& message = ""; // resets Camper-Warning-message
                 this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
-            }    
+            }
         }
         return true;
     }
@@ -104,7 +104,6 @@ namespace orxonox
         {
             this->playersAlive--;
             const std::string& message = victim->getPlayer()->getName() + " has lost all lives";
-            orxout(level::message) << message << endl;
             Host::Broadcast(message);
         }
 
@@ -127,7 +126,7 @@ namespace orxonox
     void LastManStanding::end()
     {
         Gametype::end();
-        
+
         for (std::map<PlayerInfo*, int>::iterator it = this->playerLives_.begin(); it != this->playerLives_.end(); ++it)
         {
             if (it->first->getClientID() == NETWORK_PEER_ID_UNKNOWN)
@@ -147,7 +146,7 @@ namespace orxonox
         else
             return 0;
     }
-    
+
     int LastManStanding::getNumPlayersAlive() const
     {
         return this->playersAlive;
@@ -189,7 +188,7 @@ namespace orxonox
             return;
         this->timeToAct_[player]=timeRemaining+3.0f+respawnDelay;//reset timer
         this->playerDelayTime_[player]=respawnDelay;
-        
+
         std::map<PlayerInfo*, Player>::iterator it = this->players_.find(player);
         if (it != this->players_.end())
         {
@@ -197,7 +196,7 @@ namespace orxonox
                 return;
             const std::string& message = ""; // resets Camper-Warning-message
             this->gtinfo_->sendFadingMessage(message,it->first->getClientID());
-        }  
+        }
     }
 
     void LastManStanding::punishPlayer(PlayerInfo* player)
@@ -238,11 +237,11 @@ namespace orxonox
                 this->end();
             }
             for (std::map<PlayerInfo*, float>::iterator it = this->timeToAct_.begin(); it != this->timeToAct_.end(); ++it)
-            {   
+            {
                 if (playerGetLives(it->first)<=0)//Players without lives shouldn't be affected by time.
-                    continue;     
+                    continue;
                 it->second-=dt;//Decreases punishment time.
-                if (!inGame_[it->first])//Manages respawn delay - player is forced to respawn after the delaytime is used up. 
+                if (!inGame_[it->first])//Manages respawn delay - player is forced to respawn after the delaytime is used up.
                 {
                     playerDelayTime_[it->first]-=dt;
                     if (playerDelayTime_[it->first]<=0)

@@ -118,7 +118,6 @@ namespace orxonox
             if(eachTeamsPlayers[team] == 0) //last team member died
                 this->teamsAlive--;
             const std::string& message = victim->getPlayer()->getName() + " has lost all lives";
-            orxout(level::message) << message << endl;
             Host::Broadcast(message);
         }
         return allow;

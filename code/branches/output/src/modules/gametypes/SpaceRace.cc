@@ -37,7 +37,7 @@
 namespace orxonox
 {
     CreateUnloadableFactory(SpaceRace);
-    
+
     SpaceRace::SpaceRace(BaseObject* creator) : Gametype(creator)
     {
         RegisterObject(SpaceRace);
@@ -45,11 +45,11 @@ namespace orxonox
         this->bTimeIsUp_ = false;
         this->numberOfBots_ = 0;
     }
-    
+
     void SpaceRace::end()
     {
         this->Gametype::end();
-          
+
         if (this->bTimeIsUp_)
         {
             this->clock_.capture();
@@ -58,7 +58,6 @@ namespace orxonox
             const std::string& message = multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms) + " seconds !!\n"
                         + "You didn't reach the check point " + multi_cast<std::string>(this->bCheckpointsReached_+1)
                         + " before the time limit. You lose!";
-            orxout(level::message) << message << endl;
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
             Host::Broadcast(message);
         }
@@ -69,14 +68,15 @@ namespace orxonox
             int ms = static_cast<int>(this->clock_.getMilliseconds()-1000*s);
             const std::string& message = "You win!! You have reached the last check point after "+ multi_cast<std::string>(s)
                         + "." + multi_cast<std::string>(ms) + " seconds.";
-            orxout(level::message) << message << endl;
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
             Host::Broadcast(message);
+/*
             float time = this->clock_.getSecondsPrecise();
             this->scores_.insert(time);
             std::set<float>::iterator it;
             for (it=this->scores_.begin(); it!=this->scores_.end(); it++)
-            orxout(level::message) << multi_cast<std::string>(*it) << endl;
+                orxout(level::message) << multi_cast<std::string>(*it) << endl;
+*/
         }
     }
 
@@ -85,10 +85,9 @@ namespace orxonox
         Gametype::start();
 
         std::string message("The match has started! Reach the check points as quickly as possible!");
-        orxout(level::message) << message << endl;
         Host::Broadcast(message);
     }
-    
+
     void SpaceRace::newCheckpointReached()
     {
         this->bCheckpointsReached_++;
@@ -98,7 +97,6 @@ namespace orxonox
         const std::string& message = "Checkpoint " + multi_cast<std::string>(this->getCheckpointsReached())
                         + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
                         + " seconds.";
-        orxout(level::message) << message << endl;
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
         Host::Broadcast(message);
     }
