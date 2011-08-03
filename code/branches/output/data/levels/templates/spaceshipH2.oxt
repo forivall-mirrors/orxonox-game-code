@@ -21,7 +21,7 @@
   >
 
 <?lua
-  include("includes/weaponSettingsH2.oxi")
+  include("../includes/weaponSettingsH2.oxi")
 ?>
     <engines>
       <MultiStateEngine position="0,0,0" template=spaceshipHtwoengine />

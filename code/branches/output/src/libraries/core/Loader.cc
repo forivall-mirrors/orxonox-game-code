@@ -48,10 +48,10 @@ namespace orxonox
     std::vector<std::pair<const XMLFile*, ClassTreeMask> > Loader::files_s;
     ClassTreeMask Loader::currentMask_s;
 
-    bool Loader::open(const XMLFile* file, const ClassTreeMask& mask)
+    bool Loader::open(const XMLFile* file, const ClassTreeMask& mask, bool bVerbose)
     {
         Loader::add(file, mask);
-        return Loader::load(file, mask);
+        return Loader::load(file, mask, bVerbose);
     }
 
     void Loader::close()

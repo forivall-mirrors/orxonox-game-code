@@ -94,7 +94,7 @@ namespace orxonox
         this->collisionShape_ = new WorldEntityCollisionShape(this);
         this->collisionType_             = None;
         this->collisionTypeSynchronised_ = None;
-        this->mass_           = 0;
+        this->mass_           = 1.0f;
         this->childrenMass_   = 0;
         // Using bullet default values
         this->restitution_    = 0;
@@ -967,7 +967,7 @@ HACK HACK HACK
                 // Just set everything to zero
                 this->physicalBody_->setMassProps(0.0f, btVector3(0, 0, 0));
             }
-            else if ((this->mass_ + this->childrenMass_) == 0.0f)
+            else if (totalMass == 0.0f)
             {
                 // Use default values to avoid very large or very small values
                 orxout(internal_warning) << "Setting the internal physical mass to 1.0 because mass_ is 0.0" << endl;

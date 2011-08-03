@@ -50,7 +50,7 @@ namespace orxonox
     class _CoreExport Loader
     {
         public:
-            static bool open(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask());
+            static bool open(const XMLFile* file, const ClassTreeMask& mask = ClassTreeMask(), bool bVerbose = true);
             static void close();
             static void close(const XMLFile* file);
 
