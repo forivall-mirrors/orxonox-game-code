@@ -18,8 +18,10 @@
  *   with this program; if not, write to the Free Software Foundation, Inc., 51
  *   Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- *   Author: Fabian 'x3n' Landau (original) Co-authors: Sandro 'smerkli' Merkli
- *   (copied and adapted to WAN)
+ *   Author:
+ *      Sandro 'smerkli' Merkli
+ *   Co-authors:
+ *      Oliver Scheuss (original)
  *
  */
 
