@@ -104,7 +104,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="Right click on the next target.">
+    <SimpleNotification message="Right click on the next target." meh="true">
         <events>
             <trigger>
                 <EventListener event=PawnDied1 />
@@ -115,7 +115,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
 
 <!-- BRIEFING END--> 
 <!-- TODO: does NOT work. Intended effect: pawn death causes message to appear (and probably the next box) -->
-  <SimpleNotification message="Right click on the next target.">
+  <SimpleNotification message="Right click on the next target." meh="true">
         <events>
             <trigger>
                 <Pawn health=30 position="0,0,0" direction="0,-1,0" collisionType=dynamic mass=100000>
