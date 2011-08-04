@@ -83,7 +83,7 @@ namespace orxonox
         SUPER(NotificationDispatcher, XMLPort, xmlelement, mode);
 
         XMLPortParam(NotificationDispatcher, "sender", setSender, getSender, xmlelement, mode);
-        XMLPortParam(NotificationDispatcher, "meh", setBroadcasting, isBroadcasting, xmlelement, mode);
+        XMLPortParam(NotificationDispatcher, "broadcast", setBroadcasting, isBroadcasting, xmlelement, mode);
 
         XMLPortEventSink(NotificationDispatcher, BaseObject, "trigger", trigger, xmlelement, mode);
     }
@@ -110,7 +110,6 @@ namespace orxonox
     */
     void NotificationDispatcher::broadcast(void)
     {
-        COUT(0) << "meh" << endl;
         // TODO: Needed?
         const std::string message = this->createNotificationMessage();
         NotificationListener::sendNotification(message, this->getSender(), notificationMessageType::info, notificationSendMode::local);

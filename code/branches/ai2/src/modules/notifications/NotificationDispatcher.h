@@ -49,7 +49,7 @@ namespace orxonox
     @brief
         A NotificationDispatcher is an entity that, upon being triggered, dispatches (or sends) a specified @ref orxonox::Notification "Notification".
 
-        There ate two parameter to be set:
+        There are two parameter to be set:
         - The @b sender . The sender specifies the part of Orxonox the sent @ref orxonox::Notification "Notification" comes from. The default value is set by the classes implementing NotificationDispatcher.
         - The @b broadcast . Specifies whether messages are broadcast (i.e. sent to all clients) or just sent to a specific player.
 
