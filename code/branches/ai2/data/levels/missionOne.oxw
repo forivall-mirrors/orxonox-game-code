@@ -1,7 +1,7 @@
 <LevelInfo
- name = "Tutorial"
+ name = "Mission One"
  description = "First guided steps in the orxonoxian universe."
- tags = ""
+ tags = "singleplayer"
 />
 
 <?lua
@@ -104,17 +104,8 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <SimpleNotification message="Right click on the next target." broadcast="true">
-        <events>
-            <trigger>
-                <EventListener event=PawnDied1 />
-            </trigger>
-        </events>
-    </SimpleNotification>
+<!-- BRIEFING END // Interactive briefing start --> 
 
-
-<!-- BRIEFING END--> 
-<!-- TODO: does NOT work. Intended effect: pawn death causes message to appear (and probably the next box) -->
   <SimpleNotification message="Right click on the next target." broadcast="true">
         <events>
             <trigger>
@@ -130,32 +121,51 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-  <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000>
-      <attached>
-        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-      </attached>
-      <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-      </collisionShapes>
-  </Pawn>
+  <SimpleNotification message="Middle click on the next target." broadcast="true">
+        <events>
+            <trigger>
+                <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+                    <attached>
+                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+                    </attached>
+                    <collisionShapes>
+                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+                    </collisionShapes>
+                </Pawn>
+            </trigger>
+        </events>
+    </SimpleNotification>
 
-  <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000>
-      <attached>
-        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-      </attached>
-      <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-      </collisionShapes>
-  </Pawn>
+  <SimpleNotification message="Aim at the last target and press 'T'." broadcast="true">
+        <events>
+            <trigger>
+                <Pawn health=30 position="0,200,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+                    <attached>
+                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+                    </attached>
+                    <collisionShapes>
+                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+                    </collisionShapes>
+                </Pawn>
+            </trigger>
+        </events>
+    </SimpleNotification>
 
-  <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000>
-      <attached>
-        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
-      </attached>
-      <collisionShapes>
-        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
-      </collisionShapes>
-  </Pawn>
+  <SimpleNotification message="Well done. Now press 'W'." broadcast="true">
+        <events>
+            <trigger>
+                <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+                    <attached>
+                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+                    </attached>
+                    <collisionShapes>
+                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+                    </collisionShapes>
+                </Pawn>
+            </trigger>
+        </events>
+    </SimpleNotification>
+
 
 <!--------------------------------------PART TWO: Moving targets --------------------------------------->
 
@@ -259,6 +269,51 @@ TODO: send in a level 0.1 bot on a pirate ship.
     </SpaceShip -->
 
 <!--------------------------------------PART FOUR --------------------------------------->
+
+<!--------------------------------------DUMP YARD --------------------------------------->
+<!-- Idea: Pawndeath should trigger several , delayed events. -->
+    <!--EventTrigger name="PawnDied4" >
+        <events>
+            <trigger>
+                <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+                    <attached>
+                        <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
+                    </attached>
+                    <collisionShapes>
+                        <BoxCollisionShape position="0,0,0" halfExtents="15,15,15" />
+                    </collisionShapes>
+                </Pawn>
+            </trigger>
+        </events>
+    </EventTrigger-->
+
+    <!--SimpleNotification message="Manual rockets are difficult to use.">
+        <events>
+            <trigger>
+                <EventListener event=PawnDied4 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <Trigger name=boxend1 mode=and >
+        <EventTrigger name=trigger6>
+            <events>
+                <trigger>
+                    <EventListener event=PawnDied4/>
+                </trigger>
+            </events>
+        </EventTrigger>
+        <DistanceTrigger name="boxend2" position="-200,0,0" target="Pawn" distance=100 stayActive="true" delay=2 />
+    </Trigger>
+
+    <SimpleNotification message="Let's move on to the pirate ships.">
+        <events>
+            <trigger>
+                <EventListener event=boxend1 />
+            </trigger>
+        </events>
+    </SimpleNotification-->
+
 
   </Scene>
 </Level>
