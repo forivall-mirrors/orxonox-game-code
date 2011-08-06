@@ -68,21 +68,13 @@ namespace orxonox
 
     void ChatOverlay::incomingChat(const std::string& message, unsigned int senderID)
     {
-        std::string text;
+        std::string text = message;
 
         if (senderID != NETWORK_PEER_ID_UNKNOWN)
         {
-            std::string name = "unknown";
-
             PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
             if (player)
-                name = player->getName();
-
-            text = name + ": " + message;
-        }
-        else
-        {
-            text = message;
+                text = player->getName() + ": " + message;
         }
 
         this->messages_.push_back(multi_cast<Ogre::DisplayString>(text));

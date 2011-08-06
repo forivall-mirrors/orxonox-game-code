@@ -77,25 +77,16 @@ namespace orxonox
     unsigned int senderID)
   {
     /* --> a) look up the actual name of the sender */
-    std::string text;
+    std::string text = message;
 
 #ifndef CHATTEST
     /* get sender ID and prepend it to the message */
     if (senderID != NETWORK_PEER_ID_UNKNOWN)
     {
-      /* if we can't find anything, use "unknown" as default */
-      std::string name = "unknown";
-
       PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
       if (player)
-        name = player->getName();
-
-      text = name + ": " + message;
+        text = player->getName() + ": " + message;
     }
-    else
-      text = message;
-#else
-    text = message;
 #endif
 
     /* add the line to the history */

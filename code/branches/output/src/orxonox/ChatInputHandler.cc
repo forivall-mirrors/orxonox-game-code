@@ -216,24 +216,26 @@ namespace orxonox
     unsigned int senderID)
   {
     /* look up the actual name of the sender */
-    std::string text, name = "unknown";
+    std::string text = message;
+    std::string name = "";
 
     /* setup player name info */
     if (senderID != NETWORK_PEER_ID_UNKNOWN)
     {
        PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
        if (player)
+       {
          name = player->getName();
+         text = name + ": " + message;
+       }
     }
-
-    /* assemble the text */
-    text = name + ": " + message;
 
     /* create item */
     CEGUI::ListboxTextItem *toadd = new CEGUI::ListboxTextItem( text );
 
     /* setup colors */
-    sub_setcolor( toadd, name );
+    if (name != "")
+      sub_setcolor( toadd, name );
 
     /* now add */
     this->lb_history->addItem( dynamic_cast<CEGUI::ListboxItem*>(toadd) );
