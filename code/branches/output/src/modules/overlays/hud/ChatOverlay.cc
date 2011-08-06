@@ -108,7 +108,7 @@ namespace orxonox
     {
         this->text_->setCaption("");
 
-        for (std::list<Ogre::DisplayString>::reverse_iterator it = this->messages_.rbegin(); it != this->messages_.rend(); ++it)
+        for (std::list<Ogre::DisplayString>::iterator it = this->messages_.begin(); it != this->messages_.end(); ++it)
         {
             this->text_->setCaption(this->text_->getCaption() + "\n" + (*it));
         }
