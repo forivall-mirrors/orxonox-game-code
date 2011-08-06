@@ -143,8 +143,11 @@ namespace orxonox {
   {
     for (std::vector<Host*>::iterator it=instances_s.begin(); it!=instances_s.end(); ++it )
     {
-      if( (*it)->isServer_() )
-        return true;
+      if( (*it)->isActive() )
+      {
+        if( (*it)->isServer_() )
+          return true;
+      }
     }
     return false;
   }
