@@ -29,7 +29,7 @@
 #include "Asteroids.h"
 
 #include "core/CoreIncludes.h"
-#include "network/Host.h"
+#include "chat/ChatManager.h"
 #include "worldentities/pawns/Pawn.h"
 
 namespace orxonox
@@ -73,7 +73,7 @@ namespace orxonox
         Gametype::start();
 
         std::string message("The match has started! Reach the first chekpoint within 15 seconds! But be aware, there may be pirates around...");
-        Host::Broadcast(message);
+        ChatManager::message(message);
 
     }
 
@@ -82,6 +82,6 @@ namespace orxonox
         Gametype::end();
 
         std::string message("The match has ended.");
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 }

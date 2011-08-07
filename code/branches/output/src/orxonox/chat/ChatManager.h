@@ -26,38 +26,38 @@
  *
  */
 
-#ifndef _ChatOverlay_H__
-#define _ChatOverlay_H__
+#ifndef _ChatManager_H__
+#define _ChatManager_H__
 
-#include "overlays/OverlaysPrereqs.h"
-
-#include <list>
-#include <OgreOverlayElement.h>
-
-#include "chat/ChatListener.h"
-#include "overlays/OverlayText.h"
+#include "OrxonoxPrereqs.h"
+#include "util/Singleton.h"
+#include "network/NetworkChatListener.h"
 
 namespace orxonox
 {
-    class _OverlaysExport ChatOverlay : public OverlayText, public ChatListener
+    /**
+        @brief This class collects and distributes chat messages. If the client is online,
+        all chat messages are sent and received through the network. Otherwise chat is handled
+        directly by this class.
+    */
+    class _OrxonoxExport ChatManager : public Singleton<ChatManager>, public NetworkChatListener
     {
-        public:
-            ChatOverlay(BaseObject* creator);
-            virtual ~ChatOverlay();
+        friend class Singleton<ChatManager>;
 
-            void setConfigValues();
+        public:
+            ChatManager();
+            virtual ~ChatManager() {}
+
+            static void message(const std::string& message, unsigned int targetID = NETWORK_PEER_ID_BROADCAST);
+            static void chat(const std::string& message, unsigned int targetID = NETWORK_PEER_ID_BROADCAST);
 
         protected:
-            virtual void incomingChat(const std::string& message, const std::string& name);
+            ChatManager(const ChatManager&);
 
-            std::list<Ogre::DisplayString> messages_;
+            virtual void incomingChat(const std::string& message, unsigned int sourceID);
 
-        private:
-            void updateOverlayText();
-            void dropMessage(Timer* timer);
-
-            float displayTime_;
-            std::set<Timer*> timers_;
+            static ChatManager* singletonPtr_s;
     };
 }
-#endif /* _DebugFPSText_H__ */
+
+#endif /* _ChatManager_H__ */

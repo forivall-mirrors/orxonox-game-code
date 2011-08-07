@@ -41,7 +41,7 @@ class _NetworkExport Chat : public Packet
 {
 public:
   /* constructors */
-  Chat( const std::string& message, unsigned int playerID );
+  Chat( const std::string& message, unsigned int sourceID, unsigned int targetID );
   Chat( uint8_t* data, unsigned int clientID );
 
   /* destructor */

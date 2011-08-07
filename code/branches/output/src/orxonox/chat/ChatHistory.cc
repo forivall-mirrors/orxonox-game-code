@@ -73,27 +73,13 @@ namespace orxonox
   }
 
   /* react to incoming chat */
-  void ChatHistory::incomingChat(const std::string& message,
-    unsigned int senderID)
+  void ChatHistory::incomingChat(const std::string& message, const std::string& /*name*/)
   {
-    /* --> a) look up the actual name of the sender */
-    std::string text = message;
-
-#ifndef CHATTEST
-    /* get sender ID and prepend it to the message */
-    if (senderID != NETWORK_PEER_ID_UNKNOWN)
-    {
-      PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
-      if (player)
-        text = player->getName() + ": " + message;
-    }
-#endif
-
     /* add the line to the history */
-    this->chat_hist_addline( text );
+    this->chat_hist_addline( message );
 
     /* add the line to the log */
-    this->chat_hist_logline( text );
+    this->chat_hist_logline( message );
   }
 
   /* Synchronize logfile onto the hard drive */ /* MARK MARK */

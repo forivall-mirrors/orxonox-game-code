@@ -29,7 +29,7 @@
 #include "LastManStanding.h"
 
 #include "core/CoreIncludes.h"
-#include "network/Host.h"
+#include "chat/ChatManager.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
 #include "core/ConfigValueIncludes.h"
@@ -104,7 +104,7 @@ namespace orxonox
         {
             this->playersAlive--;
             const std::string& message = victim->getPlayer()->getName() + " has lost all lives";
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
 
         return true;

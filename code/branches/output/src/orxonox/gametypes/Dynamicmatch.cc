@@ -48,7 +48,7 @@ P.S: If you don't want to be a victim: Get rid of your part by shooting a chaser
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/command/Executor.h"
-#include "network/Host.h"
+#include "chat/ChatManager.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
 #include "worldentities/pawns/SpaceShip.h"
@@ -342,7 +342,7 @@ namespace orxonox
         numberOf[chaser]++;
         Gametype::playerEntered(player);
         const std::string& message = player->getName() + " entered the game";
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 
     bool Dynamicmatch::playerLeft(PlayerInfo* player) //standardfunction
@@ -357,7 +357,7 @@ namespace orxonox
             case 2: numberOf[killer]--; break;
             }
             const std::string& message = player->getName() + " left the game";
-            Host::Broadcast(message);
+            ChatManager::message(message);
             //remove player from map
             playerParty_.erase (player);
             //adjust player parties
@@ -614,7 +614,7 @@ namespace orxonox
         if (valid_player)
         {
             const std::string& message = player->getOldName() + " changed name to " + player->getName();
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
 
         return valid_player;
@@ -626,7 +626,7 @@ namespace orxonox
         if(!tutorial)
         {
             std::string message("Dynamicmatch started!");
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
         else if(tutorial) // Announce selectionphase
         {
@@ -642,21 +642,21 @@ namespace orxonox
     /*void Dynamicmatch::instructions()
     {
         std::string message("Earn points:\n\n\n\tIf you're red: Chase the blue player!\n\n\tIf you're blue shoot at a red player or hide.\n\n\tIf you're green: You've got the licence to kill red players!");
-        Host::Broadcast(message);
+        ChatManager::message(message);
         callInstructions_.setTimer(10, false, createExecutor(createFunctor(&Dynamicmatch::furtherInstructions, this)));
     }
 
     void Dynamicmatch::furtherInstructions()
     {
         std::string message("After 3 Minutes the game is over.");
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }*/
     void Dynamicmatch::end()
     {
         Gametype::end();
 
         std::string message("Time out. Press F2 to see the points you scored.");
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
     SpawnPoint* Dynamicmatch::getBestSpawnPoint(PlayerInfo* player) const
     {

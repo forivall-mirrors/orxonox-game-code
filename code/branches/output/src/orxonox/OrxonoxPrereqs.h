@@ -77,6 +77,12 @@ namespace orxonox
     class Radar;
     class Scene;
 
+    // chat
+    class ChatHistory;
+    class ChatInputHandler;
+    class ChatListener;
+    class ChatManager;
+
     // collisionshapes
     class CollisionShape;
     class CompoundCollisionShape;

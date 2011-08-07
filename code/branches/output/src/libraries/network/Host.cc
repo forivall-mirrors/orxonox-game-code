@@ -31,16 +31,16 @@
 #include <cassert>
 #include <string>
 
+#include "core/CoreIncludes.h"
 #include "core/ObjectList.h"
 #include "core/command/ConsoleCommand.h"
-#include "ChatListener.h"
+#include "NetworkChatListener.h"
 
 namespace orxonox {
 
   static const std::string __CC_printRTT_group = "Stats";
   static const std::string __CC_printRTT_name = "printRTT";
 
-  SetConsoleCommand("chat", &Host::Chat);
   SetConsoleCommand(__CC_printRTT_group, __CC_printRTT_name, &Host::printRTT);
 
   // Host*               Host::instance_=0;
@@ -88,56 +88,28 @@ namespace orxonox {
     }
   }
 
-  void Host::Chat(const std::string& message)
+  /**
+   * @brief Sends a chat message through the network.
+   * @param message message to be sent
+   * @param sourceID the ID of the sender
+   * @param targetID the ID of the receiver
+   */
+  void Host::sendChat(const std::string& message, unsigned int sourceID, unsigned int targetID)
   {
-    for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
-      it->incomingChat(message, 0);
-
-    bool result = true;
     for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
-    {
       if( (*it)->isActive() )
-      {
-        if( !(*it)->chat(message) )
-          result = false;
-      }
-    }
-//    return result;
+        (*it)->doSendChat(message, sourceID, targetID);
   }
 
-  bool Host::Broadcast(const std::string& message)
+  /**
+   * @brief Gets called if a packet::Chat packet is received. Passes the message to the listeners.
+   */
+  void Host::doReceiveChat(const std::string& message, unsigned int sourceID, unsigned int targetID)
   {
-    for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
-      it->incomingChat(message, NETWORK_PEER_ID_BROADCAST);
-
-    bool result = true;
-    for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
-    {
-      if( (*it)->isActive() )
-      {
-        if( !(*it)->broadcast(message) )
-          result = false;
-      }
-    }
-    return result;
+    for (ObjectList<NetworkChatListener>::iterator it = ObjectList<NetworkChatListener>::begin(); it != ObjectList<NetworkChatListener>::end(); ++it)
+      it->incomingChat(message, sourceID);
   }
 
-  bool Host::incomingChat(const std::string& message, unsigned int playerID)
-  {
-    for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
-      it->incomingChat(message, playerID);
-
-    bool result = true;
-    for( std::vector<Host*>::iterator it = instances_s.begin(); it!=instances_s.end(); ++it )
-    {
-      if( (*it)->isActive() )
-      {
-        if( !(*it)->processChat(message, playerID) )
-          result = false;
-      }
-    }
-    return result;
-  }
 
   bool Host::isServer()
   {
@@ -165,5 +137,14 @@ namespace orxonox {
     return 0;
   }
 
+
+  //////////////////////////////////////////////////////////////////////////
+  // NetworkChatListener                                                  //
+  //////////////////////////////////////////////////////////////////////////
+
+  NetworkChatListener::NetworkChatListener()
+  {
+      RegisterRootObject(NetworkChatListener);
+  }
 
 }//namespace orxonox

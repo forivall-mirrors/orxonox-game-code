@@ -29,9 +29,9 @@
 #include "SpaceRace.h"
 
 #include "core/CoreIncludes.h"
-#include "network/Host.h"
-#include <util/Clock.h>
-#include <util/Math.h>
+#include "chat/ChatManager.h"
+#include "util/Clock.h"
+#include "util/Math.h"
 #include "util/Convert.h"
 
 namespace orxonox
@@ -59,7 +59,7 @@ namespace orxonox
                         + "You didn't reach the check point " + multi_cast<std::string>(this->bCheckpointsReached_+1)
                         + " before the time limit. You lose!";
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
         else
         {
@@ -69,7 +69,7 @@ namespace orxonox
             const std::string& message = "You win!! You have reached the last check point after "+ multi_cast<std::string>(s)
                         + "." + multi_cast<std::string>(ms) + " seconds.";
             const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-            Host::Broadcast(message);
+            ChatManager::message(message);
 /*
             float time = this->clock_.getSecondsPrecise();
             this->scores_.insert(time);
@@ -85,7 +85,7 @@ namespace orxonox
         Gametype::start();
 
         std::string message("The match has started! Reach the check points as quickly as possible!");
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 
     void SpaceRace::newCheckpointReached()
@@ -98,7 +98,7 @@ namespace orxonox
                         + " reached after " + multi_cast<std::string>(s) + "." + multi_cast<std::string>(ms)
                         + " seconds.";
         const_cast<GametypeInfo*>(this->getGametypeInfo())->sendAnnounceMessage(message);
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 
 }

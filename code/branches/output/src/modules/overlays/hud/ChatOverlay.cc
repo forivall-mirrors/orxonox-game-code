@@ -66,18 +66,9 @@ namespace orxonox
         SetConfigValue(displayTime_, 6.0f);
     }
 
-    void ChatOverlay::incomingChat(const std::string& message, unsigned int senderID)
+    void ChatOverlay::incomingChat(const std::string& message, const std::string& /*name*/)
     {
-        std::string text = message;
-
-        if (senderID != NETWORK_PEER_ID_UNKNOWN)
-        {
-            PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
-            if (player)
-                text = player->getName() + ": " + message;
-        }
-
-        this->messages_.push_back(multi_cast<Ogre::DisplayString>(text));
+        this->messages_.push_back(multi_cast<Ogre::DisplayString>(message));
 
         Timer* timer = new Timer();
         this->timers_.insert(timer); // store the timer in a set to destroy it in the destructor

@@ -31,7 +31,7 @@
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "network/Host.h"
+#include "chat/ChatManager.h"
 #include "SpaceRace.h"
 
 namespace orxonox
@@ -111,7 +111,7 @@ namespace orxonox
                 const std::string& message =  "You have " + multi_cast<std::string>(this->bTimeLimit_)
                             + " seconds to reach the check point " + multi_cast<std::string>(this->bCheckpointIndex_+1);
                 const_cast<GametypeInfo*>(gametype->getGametypeInfo())->sendAnnounceMessage(message);
-                Host::Broadcast(message);
+                ChatManager::message(message);
             }
         }
     }

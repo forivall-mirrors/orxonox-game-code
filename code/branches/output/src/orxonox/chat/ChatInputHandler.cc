@@ -43,8 +43,8 @@
 #include "core/input/InputBuffer.h"
 #include "core/input/InputManager.h"
 #include "core/input/InputState.h"
-#include "network/Host.h"
 
+#include "chat/ChatManager.h"
 #include "PlayerManager.h"
 #include "infos/PlayerInfo.h"
 
@@ -212,26 +212,10 @@ namespace orxonox
   }
 
   /* handle incoming chat */
-  void ChatInputHandler::incomingChat(const std::string& message,
-    unsigned int senderID)
+  void ChatInputHandler::incomingChat(const std::string& message, const std::string& name)
   {
-    /* look up the actual name of the sender */
-    std::string text = message;
-    std::string name = "";
-
-    /* setup player name info */
-    if (senderID != NETWORK_PEER_ID_UNKNOWN)
-    {
-       PlayerInfo* player = PlayerManager::getInstance().getClient(senderID);
-       if (player)
-       {
-         name = player->getName();
-         text = name + ": " + message;
-       }
-    }
-
     /* create item */
-    CEGUI::ListboxTextItem *toadd = new CEGUI::ListboxTextItem( text );
+    CEGUI::ListboxTextItem *toadd = new CEGUI::ListboxTextItem( message );
 
     /* setup colors */
     if (name != "")
@@ -319,7 +303,7 @@ namespace orxonox
       this->inpbuf->clear();
 
     /* c) send the chat via some call */
-    Host::Chat( msgtosend );
+    ChatManager::chat( msgtosend );
 
     /* d) stop listening to input - only if this is not fullchat */
     if( !this->fullchat )

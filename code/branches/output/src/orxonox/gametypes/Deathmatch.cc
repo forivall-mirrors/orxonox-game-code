@@ -29,7 +29,7 @@
 #include "Deathmatch.h"
 
 #include "core/CoreIncludes.h"
-#include "network/Host.h"
+#include "chat/ChatManager.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
 
@@ -47,7 +47,7 @@ namespace orxonox
         Gametype::start();
 
         std::string message("The match has started!");
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 
     void Deathmatch::end()
@@ -55,7 +55,7 @@ namespace orxonox
         Gametype::end();
 
         std::string message("The match has ended.");
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 
     void Deathmatch::playerEntered(PlayerInfo* player)
@@ -63,7 +63,7 @@ namespace orxonox
         Gametype::playerEntered(player);
 
         const std::string& message = player->getName() + " entered the game";
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 
     bool Deathmatch::playerLeft(PlayerInfo* player)
@@ -73,7 +73,7 @@ namespace orxonox
         if (valid_player)
         {
             const std::string& message = player->getName() + " left the game";
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
 
         return valid_player;
@@ -86,7 +86,7 @@ namespace orxonox
         if (valid_player)
         {
             const std::string& message = player->getOldName() + " changed name to " + player->getName();
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
 
         return valid_player;
@@ -107,7 +107,7 @@ namespace orxonox
             else
                 message = victim->getPlayer()->getName() + " died";
 
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
 
         Gametype::pawnKilled(victim, killer);
@@ -120,7 +120,7 @@ namespace orxonox
         if (player)
         {
             const std::string& message = player->getName() + " scores!";
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
     }
 }

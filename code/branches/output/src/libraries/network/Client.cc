@@ -115,28 +115,32 @@ namespace orxonox
     ClientConnection::addPacket(packet, channelID);
   }
 
-  bool Client::processChat(const std::string& message, unsigned int playerID)
-  {
-//    orxout(message) << "Player " << playerID << ": " << message << endl;
-    return true;
-  }
-
   void Client::printRTT()
   {
     orxout(message) << "Round trip time to server is " << ClientConnection::getRTT() << " ms" << endl;
   }
 
   /**
-   * This function implements the method of sending a chat message to the server
+   * @brief Sends a chat message to the server.
    * @param message message to be sent
-   * @return result(true/false)
+   * @param sourceID the ID of the sender
+   * @param targetID the ID of the receiver
    */
-  bool Client::chat(const std::string& message)
+  void Client::doSendChat(const std::string& message, unsigned int sourceID, unsigned int targetID)
   {
-    packet::Chat *m = new packet::Chat(message, Host::getPlayerID());
-    return m->send(static_cast<Host*>(this));
+    // send the message to the server
+    packet::Chat* packet = new packet::Chat(message, sourceID, targetID);
+    packet->send(static_cast<Host*>(this));
   }
 
+  /**
+   * @brief Gets called if a packet::Chat packet is received. Calls the parent function which passes the message to the listeners.
+   */
+  void Client::doReceiveChat(const std::string& message, unsigned int sourceID, unsigned int targetID)
+  {
+    // call the parent function which passes the message to the listeners
+    Host::doReceiveChat(message, sourceID, targetID);
+  }
 
   /**
    * Processes incoming packets, sends a gamestate to the server and does the cleanup
@@ -202,7 +206,7 @@ namespace orxonox
     Game::getInstance().popState();
     Game::getInstance().popState();
   }
-  
+
   void Client::processPacket(packet::Packet* packet)
   {
     if( packet->isReliable() )
@@ -215,8 +219,4 @@ namespace orxonox
     else
       packet->process(static_cast<Host*>(this));
   }
-
-
-
-
 }
