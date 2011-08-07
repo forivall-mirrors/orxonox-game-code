@@ -200,7 +200,7 @@ namespace orxonox
     */
     void Language::readDefaultLanguageFile()
     {
-        orxout(internal_status, context::language) << "Read default language file." << endl;
+        orxout(internal_info, context::language) << "Read default language file." << endl;
 
         const std::string& filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
 
@@ -249,7 +249,7 @@ namespace orxonox
     */
     void Language::readTranslatedLanguageFile()
     {
-        orxout(internal_status, context::language) << "Read translated language file (" << Core::getInstance().getLanguage() << ")." << endl;
+        orxout(internal_info, context::language) << "Read translated language file (" << Core::getInstance().getLanguage() << ")." << endl;
 
         const std::string& filepath = PathConfig::getConfigPathString() + getFilename(Core::getInstance().getLanguage());
 
@@ -262,7 +262,7 @@ namespace orxonox
             orxout(internal_error, context::language) << "An error occurred in Language.cc:" << endl;
             orxout(internal_error, context::language) << "Couldn't open file " << getFilename(Core::getInstance().getLanguage()) << " to read the translated language entries!" << endl;
             Core::getInstance().resetLanguage();
-            orxout(internal_status, context::language) << "Reset language to " << this->defaultLanguage_ << '.' << endl;
+            orxout(internal_info, context::language) << "Reset language to " << this->defaultLanguage_ << '.' << endl;
             return;
         }
 
@@ -303,7 +303,7 @@ namespace orxonox
     */
     void Language::writeDefaultLanguageFile() const
     {
-        orxout(internal_status, context::language) << "Write default language file." << endl;
+        orxout(internal_info, context::language) << "Write default language file." << endl;
 
         const std::string& filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
 

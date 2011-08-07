@@ -188,7 +188,7 @@ namespace orxonox
         {
             if(bVerbose)
             {
-                orxout(user_status, context::loader) << "Start loading " << file->getFilename() << "..." << endl;
+                orxout(user_info) << "Start loading " << file->getFilename() << "..." << endl;
                 orxout(internal_info, context::loader) << "Mask: " << Loader::currentMask_s << endl;
             }
             else
@@ -216,7 +216,7 @@ namespace orxonox
             rootNamespace->XMLPort(rootElement, XMLPort::LoadObject);
 
             if(bVerbose)
-                orxout(user_status, context::loader) << "Finished loading " << file->getFilename() << '.' << endl;
+                orxout(user_info) << "Finished loading " << file->getFilename() << '.' << endl;
             else
                 orxout(verbose, context::loader) << "Finished loading " << file->getFilename() << '.' << endl;
 

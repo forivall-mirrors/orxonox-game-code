@@ -53,6 +53,8 @@ namespace orxonox
 
     void GSServer::activate()
     {
+        orxout(user_status) << "Starting server" << endl;
+
         GameMode::setIsServer(true);
 
         this->server_ = new Server(CommandLineParser::getValue("port"));

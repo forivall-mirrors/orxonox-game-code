@@ -103,6 +103,7 @@ namespace orxonox
     {
         RegisterObject(GraphicsManager);
 
+        orxout(internal_status) << "initializing GraphicsManager..." << endl;
         this->setConfigValues();
 
         // Ogre setup procedure (creating Ogre::Root)
@@ -128,10 +129,14 @@ namespace orxonox
             // Reads the ogre config and creates the render window
             this->upgradeToGraphics();
         }
+
+        orxout(internal_status) << "finished initializing GraphicsManager" << endl;
     }
 
     void GraphicsManager::destroy()
     {
+        orxout(internal_status) << "destroying GraphicsManager..." << endl;
+
         Loader::unload(debugOverlay_.get());
 
         Ogre::WindowEventUtilities::removeWindowEventListener(renderWindow_, ogreWindowEventListener_);
@@ -147,6 +152,8 @@ namespace orxonox
         safeObjectDelete(&ogreRoot_);
         safeObjectDelete(&ogreLogger_);
         safeObjectDelete(&ogreWindowEventListener_);
+
+        orxout(internal_status) << "finished destroying GraphicsManager" << endl;
     }
 
     void GraphicsManager::setConfigValues()
@@ -172,6 +179,8 @@ namespace orxonox
         if (renderWindow_ != NULL)
             return;
 
+        orxout(internal_info) << "GraphicsManager upgrade to graphics" << endl;
+
         // load all the required plugins for Ogre
         this->loadOgrePlugins();
 
@@ -182,6 +191,8 @@ namespace orxonox
         // already been initialised. If you need to load resources later, you will have to
         // choose another resource group.
         Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+        orxout(internal_info) << "GraphicsManager finished upgrade to graphics" << endl;
     }
 
     /**
@@ -238,6 +249,8 @@ namespace orxonox
 
     void GraphicsManager::loadOgrePlugins()
     {
+        orxout(internal_info) << "loading ogre plugins" << endl;
+
         // Plugin path can have many different locations...
         std::string pluginPath = specialConfig::ogrePluginsDirectory;
 #ifdef DEPENDENCY_PACKAGE_ENABLE

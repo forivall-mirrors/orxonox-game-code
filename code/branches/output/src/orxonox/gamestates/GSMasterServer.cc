@@ -49,12 +49,12 @@ namespace orxonox
 
   void GSMasterServer::activate()
   {
+    orxout(user_status) << "Starting masterserver" << endl;
+
     /* TODO make this work for masterserver as well */
     //GameMode::setIsServer(true);
 
     this->mserver = new MasterServer();
-    orxout(user_status) << "Loading masterserver mode" << endl;
-
     this->mserver->run();
   }
 

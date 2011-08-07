@@ -73,6 +73,8 @@ namespace orxonox
 
     void GSLevel::activate()
     {
+        orxout(user_status) << "Loading level" << endl;
+
         if (GameMode::showsGraphics())
         {
             gameInputState_ = InputManager::getInstance().createInputState("game");
@@ -154,7 +156,6 @@ namespace orxonox
             this->staticObjects_.insert(*it);
 
         // call the loader
-        orxout(user_status) << "Loading level..." << endl;
         startFile_ = new XMLFile(LevelManager::getInstance().getDefaultLevel());
         bool loaded = Loader::open(startFile_);
 
@@ -168,7 +169,6 @@ namespace orxonox
         Loader::unload(startFile_);
         delete startFile_;
 
-        orxout(user_status) << "Unloaded level" << endl;
         orxout(internal_info) << "Remaining objects:" << endl;
         unsigned int i = 0;
         for (ObjectList<BaseObject>::iterator it = ObjectList<BaseObject>::begin(); it != ObjectList<BaseObject>::end(); ++it)

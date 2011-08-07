@@ -94,6 +94,8 @@ namespace orxonox
 
     void GSMainMenu::activate()
     {
+        orxout(user_status) << "Loading main menu" << endl;
+
         // show main menu
         GraphicsManager::getInstance().setCamera(this->camera_);
         GUIManager::getInstance().showGUI("MainMenu", true);

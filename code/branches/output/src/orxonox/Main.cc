@@ -60,10 +60,17 @@ namespace orxonox
     */
     int main(const std::string& strCmdLine)
     {
+        orxout(internal_status) << "entering orxonox::main()" << endl;
+        orxout(internal_info) << "command line: " << strCmdLine << endl;
+
+        orxout(internal_info) << "creating Game object:" << endl;
         Game* game = new Game(strCmdLine);
+        orxout(user_status) << "Finished initialization" << endl;
 
         if (CommandLineParser::getValue("generateDoc").getString().empty())
         {
+            orxout(internal_info) << "preparing game states" << endl;
+
             /* TODO make this clear */
             game->setStateHierarchy(
             "root"
@@ -97,6 +104,7 @@ namespace orxonox
                     Game::getInstance().requestStates("graphics, mainMenu");
             }
 
+            orxout(internal_info) << "starting game" << endl;
             game->run();
         }
 

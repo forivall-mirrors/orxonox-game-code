@@ -70,6 +70,8 @@ namespace orxonox
     {
         RegisterRootObject(SoundManager);
 
+        orxout(user_status) << "Loading sound" << endl;
+
         this->bDestructorCalled_ = false;
          
         // See whether we even want to load

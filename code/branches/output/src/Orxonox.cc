@@ -60,6 +60,11 @@ int main(int argc, char** argv)
 {
     using namespace orxonox;
 
+    orxout(user_status) << "Welcome to Orxonox (v" << ORXONOX_VERSION_MAJOR << '.' << ORXONOX_VERSION_MINOR << '.' << ORXONOX_VERSION_PATCH << ' ' << ORXONOX_VERSION_NAME << ')' << endl;
+    orxout(internal_status) << "Congratulations, you survived the static initialization. Entering main()" << endl;
+    if (argc > 0)
+        orxout(internal_info) << "argv[0]: " << argv[0] << endl;
+
     try
     {
 #ifndef ORXONOX_USE_WINMAIN
@@ -77,11 +82,13 @@ int main(int argc, char** argv)
             strCmdLine = strCmdLine + argv[i] + ' ';
 #endif
 
-        return main(strCmdLine);
+        int value = main(strCmdLine);
+        orxout(internal_status) << "Terminating main() normally with value " << value << endl;
+        return value;
     }
     catch (...)
     {
-        orxout(user_error) << "Orxonox failed to initialise: " << orxonox::Exception::handleMessage() << endl;
+        orxout(user_error) << "Exception caught in main(): " << orxonox::Exception::handleMessage() << endl;
         orxout(user_error) << "Terminating program." << endl;
         return 1;
     }

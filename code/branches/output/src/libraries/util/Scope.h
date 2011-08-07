@@ -127,6 +127,8 @@ namespace orxonox
             //! Constructor: Increases the instance counter and activates the scope if the count went from 0 to 1. Counts >1 don't change anything.
             Scope()
             {
+                orxout(internal_status) << "creating scope... (" << scope << ")" << endl;
+
                 try
                 {
                     ScopeManager::instanceCounts_s[scope]++;
@@ -147,11 +149,15 @@ namespace orxonox
                     ScopeManager::instanceCounts_s[scope]--;
                     throw;
                 }
+
+                orxout(internal_status) << "created scope (" << scope << ")" << endl;
             }
 
             //! Destructor: Decreases the instance counter and deactivates the scope if the count went from 1 to 0. Counts >0 don't change anything.
             ~Scope()
             {
+                orxout(internal_status) << "destroying scope... (" << scope << ")" << endl;
+
                 ScopeManager::instanceCounts_s[scope]--;
 
                 // This shouldn't happen but just to be sure: check if the count is positive
@@ -161,6 +167,8 @@ namespace orxonox
 
                 if (ScopeManager::instanceCounts_s[scope] == 0)
                     this->deactivateListeners();
+
+                orxout(internal_status) << "destroyed scope (" << scope << ")" << endl;
             }
 
             //! Deactivates the listeners of this scope in case the scope is destroyed or the construction fails.

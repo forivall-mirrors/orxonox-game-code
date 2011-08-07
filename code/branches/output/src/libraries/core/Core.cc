@@ -111,6 +111,8 @@ namespace orxonox
         , bDevMode_(false)
         , destructionHelper_(this)
     {
+        orxout(internal_status) << "initializing Core object..." << endl;
+
         // Set the hard coded fixed paths
         this->pathConfig_ = new PathConfig();
 
@@ -118,6 +120,7 @@ namespace orxonox
         this->dynLibManager_ = new DynLibManager();
 
         // Load modules
+        orxout(internal_info) << "Loading modules:" << endl;
         const std::vector<std::string>& modulePaths = this->pathConfig_->getModulePaths();
         for (std::vector<std::string>::const_iterator it = modulePaths.begin(); it != modulePaths.end(); ++it)
         {
@@ -137,6 +140,14 @@ namespace orxonox
         // Set configurable paths like log, config and media
         this->pathConfig_->setConfigurablePaths();
 
+        orxout(internal_info) << "Root path:       " << PathConfig::getRootPathString() << endl;
+        orxout(internal_info) << "Executable path: " << PathConfig::getExecutablePathString() << endl;
+        orxout(internal_info) << "Data path:       " << PathConfig::getDataPathString() << endl;
+        orxout(internal_info) << "Ext. data path:  " << PathConfig::getExternalDataPathString() << endl;
+        orxout(internal_info) << "Config path:     " << PathConfig::getConfigPathString() << endl;
+        orxout(internal_info) << "Log path:        " << PathConfig::getLogPathString() << endl;
+        orxout(internal_info) << "Modules path:    " << PathConfig::getModulePathString() << endl;
+
         // create a signal handler (only active for Linux)
         // This call is placed as soon as possible, but after the directories are set
         this->signalHandler_ = new SignalHandler();
@@ -152,16 +163,19 @@ namespace orxonox
 #endif
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
+        orxout(internal_info) << "Loading config:" << endl;
         this->configFileManager_ = new ConfigFileManager();
         this->configFileManager_->setFilename(ConfigFileType::Settings,
             CommandLineParser::getValue("settingsFile").getString());
 
         // Required as well for the config values
+        orxout(internal_info) << "Loading language:" << endl;
         this->languageInstance_ = new Language();
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
         RegisterRootObject(Core);
+        orxout(internal_info) << "configuring Core" << endl;
         this->setConfigValues();
 
         // Set the correct log path and rewrite the log file with the correct log levels
@@ -174,13 +188,18 @@ namespace orxonox
             ModifyConfigValue(bStartIOConsole_, tset, false);
         }
         if (this->bStartIOConsole_)
+        {
+            orxout(internal_info) << "creating IO console" << endl;
             this->ioConsole_ = new IOConsole();
+        }
 #endif
 
         // creates the class hierarchy for all classes with factories
+        orxout(internal_info) << "creating class hierarchy" << endl;
         Identifier::createClassHierarchy();
 
         // Load OGRE excluding the renderer and the render window
+        orxout(internal_info) << "creating GraphicsManager:" << endl;
         this->graphicsManager_ = new GraphicsManager(false);
 
         // initialise Tcl
@@ -188,6 +207,7 @@ namespace orxonox
         this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
 
         // Create singletons that always exist (in other libraries)
+        orxout(internal_info) << "creating root scope:" << endl;
         this->rootScope_ = new Scope<ScopeID::Root>();
 
         // Generate documentation instead of normal run?
@@ -204,10 +224,14 @@ namespace orxonox
             else
                 orxout(internal_error) << "Could not open file for documentation writing" << endl;
         }
+
+        orxout(internal_status) << "finished initializing Core object" << endl;
     }
 
     void Core::destroy()
     {
+        orxout(internal_status) << "destroying Core object..." << endl;
+
         // Remove us from the object lists again to avoid problems when destroying them
         this->unregisterObject();
 
@@ -226,6 +250,8 @@ namespace orxonox
         safeObjectDelete(&signalHandler_);
         safeObjectDelete(&dynLibManager_);
         safeObjectDelete(&pathConfig_);
+
+        orxout(internal_status) << "finished destroying Core object" << endl;
     }
 
     //! Function to collect the SetConfigValue-macro calls.
@@ -309,6 +335,8 @@ namespace orxonox
 
     void Core::loadGraphics()
     {
+        orxout(internal_info) << "loading graphics in Core" << endl;
+        
         // Any exception should trigger this, even in upgradeToGraphics (see its remarks)
         Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
 
@@ -350,13 +378,18 @@ namespace orxonox
         graphicsManager_->loadDebugOverlay();
 
         // Create singletons associated with graphics (in other libraries)
+        orxout(internal_info) << "creating graphics scope:" << endl;
         graphicsScope_ = new Scope<ScopeID::Graphics>();
 
         unloader.Dismiss();
+
+        orxout(internal_info) << "finished loading graphics in Core" << endl;
     }
 
     void Core::unloadGraphics()
     {
+        orxout(internal_info) << "unloading graphics in Core" << endl;
+
         safeObjectDelete(&graphicsScope_);
         safeObjectDelete(&guiManager_);
         safeObjectDelete(&inputManager_);

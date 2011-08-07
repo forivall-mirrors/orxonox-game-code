@@ -83,6 +83,8 @@ namespace orxonox
         , bAbort_(false)
         , destructionHelper_(this)
     {
+        orxout(internal_status) << "initializing Game object..." << endl;
+
 #ifdef ORXONOX_PLATFORM_WINDOWS
         minimumSleepTime_ = 1000/*us*/;
 #else
@@ -105,6 +107,7 @@ namespace orxonox
         this->gameClock_ = new Clock();
 
         // Create the Core
+        orxout(internal_info) << "creating Core object:" << endl;
         this->core_ = new Core(cmdLine);
 
         // Do this after the Core creation!
@@ -124,10 +127,14 @@ namespace orxonox
         this->rootStateNode_->name_ = "emptyRootGameState";
         this->loadedTopStateNode_ = this->rootStateNode_;
         this->loadedStates_.push_back(this->getState(rootStateNode_->name_));
+
+        orxout(internal_status) << "finished initializing Game object" << endl;
     }
 
     void Game::destroy()
     {
+        orxout(internal_status) << "destroying Game object..." << endl;
+
         // Remove us from the object lists again to avoid problems when destroying them
         this->unregisterObject();
 
@@ -138,6 +145,8 @@ namespace orxonox
         GameStateFactory::getFactories().clear();
         safeObjectDelete(&core_);
         safeObjectDelete(&gameClock_);
+
+        orxout(internal_status) << "finished destroying Game object..." << endl;
     }
 
     void Game::setConfigValues()
@@ -163,6 +172,13 @@ namespace orxonox
     {
         if (this->requestedStateNodes_.empty())
             orxout(user_error) << "Starting game without requesting GameState. This automatically terminates the program." << endl;
+
+        // Update the GameState stack if required. We do this already here to have a properly initialized game before entering the main loop
+        this->updateGameStateStack();
+
+        orxout(user_status) << "Game loaded" << endl;
+        orxout(internal_status) << "--------------------------------------------------" << endl;
+        orxout(internal_status) << "starting main loop..." << endl;
 
         // START GAME
         // first delta time should be about 0 seconds
@@ -216,6 +232,9 @@ namespace orxonox
             if (this->fpsLimit_ > 0 && !hasVSync)
                 this->updateFPSLimiter();
         }
+
+        orxout(internal_status) << "finished main loop" << endl;
+        orxout(internal_status) << "--------------------------------------------------" << endl;
 
         // UNLOAD all remaining states
         while (this->loadedStates_.size() > 1)
@@ -337,6 +356,7 @@ namespace orxonox
 
     void Game::stop()
     {
+        orxout(user_status) << "Exit" << endl;
         this->bAbort_ = true;
     }
 
@@ -506,6 +526,9 @@ namespace orxonox
     {
         if (!GameMode::showsGraphics())
         {
+            orxout(user_status) << "Loading graphics" << endl;
+            orxout(internal_info) << "loading graphics in Game" << endl;
+
             core_->loadGraphics();
             Loki::ScopeGuard graphicsUnloader = Loki::MakeObjGuard(*this, &Game::unloadGraphics);
 
@@ -523,6 +546,8 @@ namespace orxonox
                 }
             }
             graphicsUnloader.Dismiss();
+
+            orxout(internal_info) << "finished loading graphics in Game" << endl;
         }
     }
 
@@ -530,6 +555,9 @@ namespace orxonox
     {
         if (GameMode::showsGraphics())
         {
+            orxout(user_status) << "Unloading graphics" << endl;
+            orxout(internal_info) << "unloading graphics in Game" << endl;
+
             // Destroy all the GameStates that require graphics
             for (GameStateMap::iterator it = constructedStates_.begin(); it != constructedStates_.end();)
             {
@@ -554,6 +582,8 @@ namespace orxonox
 
     void Game::loadState(const std::string& name)
     {
+        orxout(internal_status) << "loading state '" << name << "'" << endl;
+
         this->bChangingState_ = true;
         LOKI_ON_BLOCK_EXIT_OBJ(*this, &Game::resetChangingState); (void)LOKI_ANONYMOUS_VARIABLE(scopeGuard);
 
@@ -576,6 +606,8 @@ namespace orxonox
 
     void Game::unloadState(const std::string& name)
     {
+        orxout(internal_status) << "unloading state '" << name << "'" << endl;
+
         this->bChangingState_ = true;
         try
         {

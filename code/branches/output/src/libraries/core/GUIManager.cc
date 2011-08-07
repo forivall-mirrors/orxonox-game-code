@@ -256,6 +256,9 @@ namespace orxonox
         , destructionHelper_(this)
     {
         RegisterRootObject(GUIManager);
+
+        orxout(internal_status) << "initializing GUIManager..." << endl;
+
         this->setConfigValues();
 
         using namespace CEGUI;
@@ -334,10 +337,14 @@ namespace orxonox
 
         // Set up the sheet manager in the Lua framework
         this->luaState_->doFile("SheetManager.lua");
+
+        orxout(internal_status) << "finished initializing GUIManager" << endl;
     }
 
     void GUIManager::destroy()
     {
+        orxout(internal_status) << "destroying GUIManager..." << endl;
+
         using namespace CEGUI;
 
 #ifdef ORXONOX_OLD_CEGUI
@@ -354,6 +361,8 @@ namespace orxonox
         safeObjectDelete(&rqListener_);
 #endif
         safeObjectDelete(&luaState_);
+
+        orxout(internal_status) << "finished destroying GUIManager" << endl;
     }
 
     void GUIManager::setConfigValues(void)
