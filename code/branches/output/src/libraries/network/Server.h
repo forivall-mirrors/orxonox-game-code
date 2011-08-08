@@ -41,8 +41,6 @@
 #include "ServerConnection.h"
 #include "LANDiscoverable.h"
 #include "WANDiscoverable.h"
-// #include "MasterServerComm.h"
-// #include "MasterServerProtocol.h"
 
 
 namespace orxonox
@@ -59,11 +57,6 @@ namespace orxonox
     Server(int port);
     Server(int port, const std::string& bindAddress);
     ~Server();
-
-    /* helpers */
-    void helper_ConnectToMasterserver();
-    void helper_HandleMasterServerRequests();
-    int replyhandler( char *addr, ENetEvent *ev );
 
     void open();
     void close();

@@ -31,15 +31,11 @@
 #include <enet/enet.h>
 #include <cstring>
 
-#include "util/ScopedSingletonManager.h"
 #include "core/CoreIncludes.h"
 
 
 namespace orxonox
 {
-  ManageScopedSingleton(WANDiscovery, ScopeID::Graphics, true);
-
-
   WANDiscovery::WANDiscovery()
   {
     /* debugging output */
@@ -79,7 +75,7 @@ namespace orxonox
   }
 
   /* callback for the network reply poller */
-  int rhandler( char *addr, ENetEvent *ev )
+  int WANDiscovery::rhandler( char *addr, ENetEvent *ev )
   { 
     /* error recognition */
     if( !ev || !ev->packet || !ev->packet->data )
@@ -102,7 +98,7 @@ namespace orxonox
         MSPROTO_SERVERLIST_ITEM_LEN+1) );
 
       /* add to list */
-      WANDiscovery::getInstance().servers_.push_back( toadd );
+      this->servers_.push_back( toadd );
     }
     else if( !strncmp( (char*)ev->packet->data, MSPROTO_SERVERLIST_END,
       MSPROTO_SERVERLIST_END_LEN ) )
@@ -131,7 +127,7 @@ namespace orxonox
     while( i > 0 )
     {
       /* poll for reply and act according to what was received */
-      switch( this->msc.pollForReply( rhandler, 500 ) )
+      switch( this->msc.pollForReply( this, 500 ) )
       { case 0: /* no event occured, decrease timeout */
           --i; break;
         case 1: /* got a list element, continue */ 

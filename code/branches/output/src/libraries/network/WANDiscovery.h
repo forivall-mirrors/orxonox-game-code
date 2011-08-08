@@ -31,7 +31,6 @@
 #include "NetworkPrereqs.h"
 #include "packet/ServerInformation.h"
 #include "core/ConfigFileManager.h"
-#include "util/Singleton.h"
 #include "core/OrxonoxClass.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -48,12 +47,11 @@ namespace orxonox
 
   class _NetworkExport WANDiscovery
 // tolua_end
-    : public Singleton<WANDiscovery>, public OrxonoxClass
+    : public OrxonoxClass
   { // tolua_export
-    friend class Singleton<WANDiscovery>;
     public:
       /** constructor */
-      WANDiscovery();
+      WANDiscovery(); // tolua_export
 
       /** destructor */
       ~WANDiscovery();
@@ -82,12 +80,6 @@ namespace orxonox
        */
       std::string getServerListItemIP( unsigned int index ); // tolua_export
 
-      /** \return an instance of WANDiscovery
-       * 
-       * Create and return an instance of WANDiscovery.
-       */
-      static WANDiscovery& getInstance() { return Singleton<WANDiscovery>::getInstance(); } // tolua_export
-    
       /* todo: might make this private and use getter/setter methods
        * at some later time. 
        */
@@ -99,11 +91,10 @@ namespace orxonox
 
       /** Master server communications object */
       MasterServerComm msc;
+
+      int rhandler( char *addr, ENetEvent *ev );
       
     private:
-      /** Singleton pointer */
-      static WANDiscovery* singletonPtr_s;
-
       /** master server address */
       std::string msaddress;
 

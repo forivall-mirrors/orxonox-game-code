@@ -58,7 +58,6 @@
 // #include "ClientInformation.h"
 #include "FunctionCallManager.h"
 #include "GamestateManager.h"
-#include "WANDiscovery.h"
 
 namespace orxonox
 {
@@ -98,14 +97,6 @@ namespace orxonox
   {
   }
 
-
-  /** helper that connects to the master server */
-  void Server::helper_ConnectToMasterserver()
-  {
-//     WANDiscovery::getInstance().msc.sendRequest( MSPROTO_GAME_SERVER " "
-//       MSPROTO_REGISTER_SERVER );
-  }
-
   /**
   * This function opens the server by creating the listener thread
   */
@@ -120,10 +111,6 @@ namespace orxonox
 
     /* make discoverable on WAN */
     WANDiscoverable::setActivity(true);
-    /* TODO this needs to be optional, we need a switch from the UI to
-     * enable/disable this
-     */
-//     helper_ConnectToMasterserver();
 
     /* done */
     return;
@@ -148,30 +135,6 @@ namespace orxonox
     return;
   }
 
-  /* handle incoming data */
-  int rephandler( char *addr, ENetEvent *ev )
-  {
-    /* reply to pings */
-    if( !strncmp( (char *)ev->packet->data, MSPROTO_PING_GAMESERVER,
-      MSPROTO_PING_GAMESERVER_LEN ) )
-      //this->msc.sendRequest( MSPROTO_ACK );
-      /* NOTE implement this after pollForReply
-       * reimplementation
-       */
-      return 0;
-
-    /* done handling, return all ok code 0 */
-    return 0;
-  }
-
-  void Server::helper_HandleMasterServerRequests()
-  {
-    /* poll the master server for replies and see whether something
-     * has to be done or changed.
-     */
-    //WANDiscovery::getInstance().msc.pollForReply( rhandler, 10 );
-  }
-
   /**
   * Run this function once every tick
   * calls processQueue and updateGamestate
@@ -184,10 +147,6 @@ namespace orxonox
 
     // receive and process incoming discovery packets
     LANDiscoverable::update();
-
-    // receive and process requests from master server
-    /* todo */
-    //helper_HandleMasterServerRequests();
 
     if ( GamestateManager::hasPeers() )
     {

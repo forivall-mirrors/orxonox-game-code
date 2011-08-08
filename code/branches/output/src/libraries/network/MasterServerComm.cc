@@ -28,6 +28,7 @@
 
 #include "MasterServerComm.h"
 #include "util/Output.h"
+#include "WANDiscovery.h"
 
 namespace orxonox
 {
@@ -148,8 +149,7 @@ void MasterServerComm::update()
    * - the event
    * so we can also make callbacks from objects
    */
-  int MasterServerComm::pollForReply( int (*callback)( char*, ENetEvent* ),
-    int delayms )
+  int MasterServerComm::pollForReply( WANDiscovery* listener, int delayms )
   { 
     /* see whether anything happened */
     /* WORK MARK REMOVE THIS OUTPUT */
@@ -192,8 +192,8 @@ void MasterServerComm::update()
           /* END DEBUG */
 
           /* call the supplied callback, if any. */
-          if( (*callback) != NULL )
-            retval = (*callback)( addrconv, &(this->event) );
+          if( listener != NULL )
+            retval = listener->rhandler( addrconv, &(this->event) );
 
           /* clean up */
           enet_packet_destroy( event.packet );
