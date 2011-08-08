@@ -38,6 +38,8 @@ namespace orxonox
 
         this->configurableMaxLevel_ = level::none;
         this->configurableContextsMaxLevel_ = level::verbose;
+        this->configurableContexts_.push_back("example");
+        this->changedConfigurableLevels();
     }
 
     BaseWriter::~BaseWriter()

@@ -84,7 +84,6 @@ namespace orxonox
             REGISTER_OUTPUT_CONTEXT(object_list);
             REGISTER_OUTPUT_CONTEXT(super);
             REGISTER_OUTPUT_CONTEXT(language);
-            REGISTER_OUTPUT_CONTEXT(output);
             REGISTER_OUTPUT_CONTEXT(commands);
             REGISTER_OUTPUT_CONTEXT(executor);
             REGISTER_OUTPUT_CONTEXT(input);

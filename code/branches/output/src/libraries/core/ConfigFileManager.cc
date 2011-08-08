@@ -122,12 +122,9 @@ namespace orxonox
         unsigned int size = 0;
         for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
             if ((*it)->getName() == name)
-                if ((*it)->getIndex() > size)
-                    size = (*it)->getIndex();
-        if (size == 0)
-            return 0;
-        else
-            return (size + 1);
+                if ((*it)->getIndex() >= size)
+                    size = (*it)->getIndex() + 1;
+        return size;
     }
 
     /**

@@ -134,7 +134,7 @@ namespace orxonox
                                this->getConfigurableContextsName(),
                                this->configurableContexts_)
             .description("Additional output contexts shown in the " + this->getName())
-            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableLevels);
+            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableContexts);
     }
 
     /**

@@ -68,14 +68,14 @@ namespace orxonox
         std::string name = this->path_ + '/' + this->filename_;
 
         if (this->bDefaultPath_)
-            OutputManager::getInstance().pushMessage(level::user_info, context::output(), "Opening log file " + name);
+            OutputManager::getInstance().pushMessage(level::user_info, context::undefined(), "Opening log file " + name);
 
         this->file_.open(name.c_str(), std::fstream::out);
 
         if (this->file_.is_open())
             this->printLine("Log file opened", level::none);
         else
-            OutputManager::getInstance().pushMessage(level::user_warning, context::output(), "Failed to open log file. File logging disabled.");
+            OutputManager::getInstance().pushMessage(level::user_warning, context::undefined(), "Failed to open log file. File logging disabled.");
     }
 
     void LogWriter::closeFile()
@@ -89,7 +89,7 @@ namespace orxonox
 
     void LogWriter::setLogPath(const std::string& path)
     {
-        OutputManager::getInstance().pushMessage(level::internal_info, context::output(), "Migrating log file from " + this->path_ + "\nto " + path);
+        OutputManager::getInstance().pushMessage(level::internal_info, context::undefined(), "Migrating log file from " + this->path_ + "\nto " + path);
 
         this->closeFile();
         this->path_ = path;
