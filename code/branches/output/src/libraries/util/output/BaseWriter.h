@@ -41,7 +41,7 @@ namespace orxonox
     class _UtilExport BaseWriter : public OutputListener
     {
         public:
-            BaseWriter(const std::string& name);
+            BaseWriter(const std::string& name, bool bRegister = true);
             virtual ~BaseWriter();
 
             void setLevelMax(OutputLevel max);
@@ -84,6 +84,7 @@ namespace orxonox
             std::string name_;
 
             OutputContextMask subcontextsCheckMask_;
+            OutputContextMask subcontextsNoCheckMask_;
             std::set<OutputContextSubID> subcontexts_;
     };
 }

@@ -32,13 +32,14 @@
 
 namespace orxonox
 {
-    OutputListener::OutputListener()
+    OutputListener::OutputListener(bool bRegister)
     {
         this->levelMask_ = level::none;
         this->additionalContextsLevelMask_ = level::none;
         this->additionalContextsMask_ = context::none;
 
-        OutputManager::getInstance().registerListener(this);
+        if (bRegister)
+            OutputManager::getInstance().registerListener(this);
     }
 
     OutputListener::~OutputListener()

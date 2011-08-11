@@ -38,6 +38,7 @@
 #include "util/Math.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
+#include "util/output/OutputManager.h"
 #include "util/output/MemoryWriter.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigFileManager.h"
@@ -70,11 +71,13 @@ namespace orxonox
         @param bScrollable If true, the user is allowed to scroll through the output-lines
     */
     Shell::Shell(const std::string& consoleName, bool bScrollable)
-        : BaseWriter(consoleName)
+        : BaseWriter(consoleName, false)
         , inputBuffer_(new InputBuffer())
         , bScrollable_(bScrollable)
     {
         RegisterRootObject(Shell);
+
+        OutputManager::getInstance().registerListener(this);
 
         this->scrollPosition_ = 0;
         this->maxHistoryLength_ = 100;
@@ -103,6 +106,8 @@ namespace orxonox
     Shell::~Shell()
     {
         this->inputBuffer_->destroy();
+
+        OutputManager::getInstance().unregisterListener(this);
     }
 
     /**

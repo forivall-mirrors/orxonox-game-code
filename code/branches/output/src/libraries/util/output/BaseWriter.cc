@@ -32,7 +32,7 @@
 
 namespace orxonox
 {
-    BaseWriter::BaseWriter(const std::string& name)
+    BaseWriter::BaseWriter(const std::string& name, bool bRegister) : OutputListener(bRegister)
     {
         this->name_ = name;
 
@@ -41,6 +41,7 @@ namespace orxonox
         this->configurableAdditionalContexts_.push_back("example");
 
         this->subcontextsCheckMask_ = context::none;
+        this->subcontextsNoCheckMask_ = context::none;
 
         this->changedConfigurableLevel();
         this->changedConfigurableAdditionalContextsLevel();
@@ -53,7 +54,9 @@ namespace orxonox
 
     void BaseWriter::output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
     {
-        if (((this->subcontextsCheckMask_ & context.mask) == 0) || (this->subcontexts_.find(context.sub_id) != this->subcontexts_.end()))
+        if (((this->subcontextsCheckMask_ & context.mask) == 0) ||
+            (this->subcontextsNoCheckMask_ & context.mask) ||
+            (this->subcontexts_.find(context.sub_id) != this->subcontexts_.end()))
         {
             const std::string& prefix = OutputManager::getInstance().getDefaultPrefix(level, context);
             std::string blanks(prefix.length(), ' ');
@@ -89,9 +92,9 @@ namespace orxonox
     {
         OutputContextMask context_mask = context::none;
         this->subcontextsCheckMask_ = context::none;
+        this->subcontextsNoCheckMask_ = context::none;
 
         this->subcontexts_.clear();
-        this->subcontexts_.insert(context::no_subcontext);
 
         for (size_t i = 0; i < this->configurableAdditionalContexts_.size(); ++i)
         {
@@ -115,6 +118,10 @@ namespace orxonox
             {
                 this->subcontexts_.insert(container.sub_id);
                 this->subcontextsCheckMask_ |= container.mask;
+            }
+            else
+            {
+                this->subcontextsNoCheckMask_ |= container.mask;
             }
         }
 

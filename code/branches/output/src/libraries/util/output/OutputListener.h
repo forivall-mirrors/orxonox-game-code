@@ -40,7 +40,7 @@ namespace orxonox
     class _UtilExport OutputListener
     {
         public:
-            OutputListener();
+            OutputListener(bool bRegister = true);
             virtual ~OutputListener();
 
             void setLevelMax(OutputLevel max);
