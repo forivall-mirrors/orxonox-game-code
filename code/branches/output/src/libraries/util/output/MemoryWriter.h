@@ -38,11 +38,11 @@ namespace orxonox
     {
         struct Message
         {
-            Message(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
-                : level(level), context(context), lines(lines) {}
+            Message(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
+                : level(level), context(&context), lines(lines) {}
 
             OutputLevel level;
-            OutputContext context;
+            const OutputContextContainer* context;
             std::vector<std::string> lines;
         };
 
@@ -53,7 +53,7 @@ namespace orxonox
             void disable();
 
         protected:
-            virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines);
+            virtual void output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines);
 
         private:
             MemoryWriter();

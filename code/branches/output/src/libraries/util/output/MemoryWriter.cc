@@ -47,7 +47,7 @@ namespace orxonox
         return instance;
     }
 
-    void MemoryWriter::output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
+    void MemoryWriter::output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
     {
         this->messages_.push_back(Message(level, context, lines));
     }
@@ -57,7 +57,7 @@ namespace orxonox
         for (size_t i = 0; i < this->messages_.size(); ++i)
         {
             const Message& message = this->messages_[i];
-            listener->unfilteredOutput(message.level, message.context, message.lines);
+            listener->unfilteredOutput(message.level, *message.context, message.lines);
         }
     }
 

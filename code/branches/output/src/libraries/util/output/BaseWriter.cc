@@ -37,18 +37,23 @@ namespace orxonox
         this->name_ = name;
 
         this->configurableMaxLevel_ = level::none;
-        this->configurableContextsMaxLevel_ = level::verbose;
-        this->configurableContexts_.push_back("example");
-        this->changedConfigurableLevels();
+        this->configurableAdditionalContextsMaxLevel_ = level::verbose;
+        this->configurableAdditionalContexts_.push_back("example");
+
+        this->subcontextsCheckMask_ = context::none;
+
+        this->changedConfigurableLevel();
+        this->changedConfigurableAdditionalContextsLevel();
+        this->changedConfigurableAdditionalContexts();
     }
 
     BaseWriter::~BaseWriter()
     {
     }
 
-    void BaseWriter::output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
+    void BaseWriter::output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
     {
-        if (level <= this->configurableMaxLevel_ || (level <= this->configurableContextsMaxLevel_ && this->isAdditionalContext(context)))
+        if (((this->subcontextsCheckMask_ & context.mask) == 0) || (this->subcontexts_.find(context.sub_id) != this->subcontexts_.end()))
         {
             const std::string& prefix = OutputManager::getInstance().getDefaultPrefix(level, context);
             std::string blanks(prefix.length(), ' ');
@@ -61,26 +66,58 @@ namespace orxonox
     void BaseWriter::setLevelMax(OutputLevel max)
     {
         this->configurableMaxLevel_ = max;
-        this->changedConfigurableLevels();
+        this->changedConfigurableLevel();
     }
 
-    void BaseWriter::changedConfigurableLevels()
+    void BaseWriter::setAdditionalContextsLevelMax(OutputLevel max)
     {
-        int max_level = std::max(this->configurableMaxLevel_, this->configurableContextsMaxLevel_);
-        OutputListener::setLevelMax(static_cast<OutputLevel>(max_level));
+        this->configurableAdditionalContextsMaxLevel_ = max;
+        this->changedConfigurableAdditionalContextsLevel();
     }
 
-    void BaseWriter::changedConfigurableContexts()
+    void BaseWriter::changedConfigurableLevel()
     {
-        this->configurableContextsSet_.clear();
-        for (size_t i = 0; i < this->configurableContexts_.size(); ++i)
-            this->configurableContextsSet_.insert(this->configurableContexts_[i]);
+        OutputListener::setLevelMax(static_cast<OutputLevel>(this->configurableMaxLevel_));
     }
 
-    bool BaseWriter::isAdditionalContext(OutputContext context) const
+    void BaseWriter::changedConfigurableAdditionalContextsLevel()
     {
-        const std::string& name = OutputManager::getInstance().getContextName(context);
-        std::set<std::string>::const_iterator it = this->configurableContextsSet_.find(name);
-        return (it != this->configurableContextsSet_.end());
+        OutputListener::setAdditionalContextsLevelMax(static_cast<OutputLevel>(this->configurableAdditionalContextsMaxLevel_));
+    }
+
+    void BaseWriter::changedConfigurableAdditionalContexts()
+    {
+        OutputContextMask context_mask = context::none;
+        this->subcontextsCheckMask_ = context::none;
+
+        this->subcontexts_.clear();
+        this->subcontexts_.insert(context::no_subcontext);
+
+        for (size_t i = 0; i < this->configurableAdditionalContexts_.size(); ++i)
+        {
+            const std::string& full_name = this->configurableAdditionalContexts_[i];
+
+            std::string name = full_name;
+            std::string subname;
+
+            size_t pos = full_name.find("::");
+            if (pos != std::string::npos)
+            {
+                name = full_name.substr(0, pos);
+                subname = full_name.substr(pos + 2);
+            }
+
+            const OutputContextContainer& container = OutputManager::getInstance().registerContext(name, subname);
+
+            context_mask |= container.mask;
+
+            if (container.sub_id != context::no_subcontext)
+            {
+                this->subcontexts_.insert(container.sub_id);
+                this->subcontextsCheckMask_ |= container.mask;
+            }
+        }
+
+        this->setAdditionalContextsMask(context_mask);
     }
 }

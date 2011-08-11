@@ -44,31 +44,33 @@ namespace orxonox
             BaseWriter(const std::string& name);
             virtual ~BaseWriter();
 
+            void setLevelMax(OutputLevel max);
+            void setAdditionalContextsLevelMax(OutputLevel max);
+
             const std::string& getName() const
                 { return this->name_; }
 
-            void setLevelMax(OutputLevel max);
-
             int configurableMaxLevel_;
             inline std::string getConfigurableMaxLevelName() const
-                { return "outputLevel" + this->name_; }
+                { return this->name_ + "Level"; }
 
-            int configurableContextsMaxLevel_;
-            inline std::string getConfigurableContextsMaxLevelName() const
-                { return "outputContextsLevel" + this->name_; }
+            int configurableAdditionalContextsMaxLevel_;
+            inline std::string getConfigurableAdditionalContextsMaxLevelName() const
+                { return this->name_ + "AdditionalContextsLevel"; }
 
-            std::vector<std::string> configurableContexts_;
-            inline std::string getConfigurableContextsName() const
-                { return "outputContexts" + this->name_; }
+            std::vector<std::string> configurableAdditionalContexts_;
+            inline std::string getConfigurableAdditionalContextsName() const
+                { return this->name_ + "AdditionalContexts"; }
 
-            void changedConfigurableLevels();
-            void changedConfigurableContexts();
+            void changedConfigurableLevel();
+            void changedConfigurableAdditionalContextsLevel();
+            void changedConfigurableAdditionalContexts();
 
             static inline std::string getConfigurableSectionName()
                 { return "Output"; }
 
         protected:
-            virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines);
+            virtual void output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines);
 
         private:
             virtual void printLine(const std::string& line, OutputLevel level) = 0;
@@ -76,10 +78,13 @@ namespace orxonox
             void setLevelRange(OutputLevel min, OutputLevel max);
             void setLevelMask(OutputLevel mask);
 
-            bool isAdditionalContext(OutputContext context) const;
+            void setAdditionalContextsLevelRange(OutputLevel min, OutputLevel max);
+            void setAdditionalContextsLevelMask(OutputLevel mask);
 
             std::string name_;
-            std::set<std::string> configurableContextsSet_;
+
+            OutputContextMask subcontextsCheckMask_;
+            std::set<OutputContextSubID> subcontexts_;
     };
 }
 

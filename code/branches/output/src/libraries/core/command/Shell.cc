@@ -122,19 +122,19 @@ namespace orxonox
                                this->getConfigurableMaxLevelName(),
                                this->configurableMaxLevel_)
             .description("The maximum level of output shown in the " + this->getName())
-            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableLevels);
-        SetConfigValueExternal(this->configurableContextsMaxLevel_,
+            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableLevel);
+        SetConfigValueExternal(this->configurableAdditionalContextsMaxLevel_,
                                this->getConfigurableSectionName(),
-                               this->getConfigurableContextsMaxLevelName(),
-                               this->configurableContextsMaxLevel_)
+                               this->getConfigurableAdditionalContextsMaxLevelName(),
+                               this->configurableAdditionalContextsMaxLevel_)
             .description("The maximum level of output shown in the " + this->getName() + " for additional contexts")
-            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableLevels);
-        SetConfigValueExternal(this->configurableContexts_,
+            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableAdditionalContextsLevel);
+        SetConfigValueExternal(this->configurableAdditionalContexts_,
                                this->getConfigurableSectionName(),
-                               this->getConfigurableContextsName(),
-                               this->configurableContexts_)
+                               this->getConfigurableAdditionalContextsName(),
+                               this->configurableAdditionalContexts_)
             .description("Additional output contexts shown in the " + this->getName())
-            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableContexts);
+            .callback(static_cast<BaseWriter*>(this), &BaseWriter::changedConfigurableAdditionalContexts);
     }
 
     /**

@@ -33,7 +33,10 @@
 #include <string>
 
 #define REGISTER_OUTPUT_CONTEXT(name) \
-    OutputContext name() { static OutputContext context = registerContext(#name); return context; }
+    const OutputContextContainer& name() { static const OutputContextContainer& context = registerContext(#name); return context; }
+
+#define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
+    const OutputContextContainer& subname() { static const OutputContextContainer& context = registerContext(#name, #subname); return context; }
 
 namespace orxonox
 {
@@ -62,15 +65,26 @@ namespace orxonox
 
     using namespace level;
 
-    typedef uint64_t OutputContext;
-    typedef OutputContext (OutputContextFunction)();
+    typedef uint64_t OutputContextMask;
+    typedef uint16_t OutputContextSubID;
 
-    extern _UtilExport OutputContext registerContext(const std::string& name);
+    struct OutputContextContainer
+    {
+        OutputContextMask mask;
+        OutputContextSubID sub_id;
+        std::string name;
+    };
+
+    typedef const OutputContextContainer& (OutputContextFunction)();
+
+    extern _UtilExport const OutputContextContainer& registerContext(const std::string& name, const std::string& subname = "");
 
     namespace context
     {
-        static const OutputContext all       = 0xFFFFFFFFFFFFFFFF;
-        static const OutputContext none      = 0x0000000000000000;
+        static const OutputContextMask all       = 0xFFFFFFFFFFFFFFFF;
+        static const OutputContextMask none      = 0x0000000000000000;
+
+        static const OutputContextSubID no_subcontext = 0;
 
         namespace
         {
@@ -102,6 +116,52 @@ namespace orxonox
             REGISTER_OUTPUT_CONTEXT(notifications);
             REGISTER_OUTPUT_CONTEXT(triggers);
             REGISTER_OUTPUT_CONTEXT(docking);
+
+            namespace misc
+            {
+                REGISTER_OUTPUT_SUBCONTEXT(misc, testcontext1);
+                REGISTER_OUTPUT_SUBCONTEXT(misc, testcontext2);
+                REGISTER_OUTPUT_SUBCONTEXT(misc, testcontext3);
+                REGISTER_OUTPUT_SUBCONTEXT(misc, testcontext4);
+            }
+
+            REGISTER_OUTPUT_CONTEXT(c30);
+            REGISTER_OUTPUT_CONTEXT(c31);
+            REGISTER_OUTPUT_CONTEXT(c32);
+            REGISTER_OUTPUT_CONTEXT(c33);
+            REGISTER_OUTPUT_CONTEXT(c34);
+            REGISTER_OUTPUT_CONTEXT(c35);
+            REGISTER_OUTPUT_CONTEXT(c36);
+            REGISTER_OUTPUT_CONTEXT(c37);
+            REGISTER_OUTPUT_CONTEXT(c38);
+            REGISTER_OUTPUT_CONTEXT(c39);
+            REGISTER_OUTPUT_CONTEXT(c40);
+            REGISTER_OUTPUT_CONTEXT(c41);
+            REGISTER_OUTPUT_CONTEXT(c42);
+            REGISTER_OUTPUT_CONTEXT(c43);
+            REGISTER_OUTPUT_CONTEXT(c44);
+            REGISTER_OUTPUT_CONTEXT(c45);
+            REGISTER_OUTPUT_CONTEXT(c46);
+            REGISTER_OUTPUT_CONTEXT(c47);
+            REGISTER_OUTPUT_CONTEXT(c48);
+            REGISTER_OUTPUT_CONTEXT(c49);
+            REGISTER_OUTPUT_CONTEXT(c50);
+            REGISTER_OUTPUT_CONTEXT(c51);
+            REGISTER_OUTPUT_CONTEXT(c52);
+            REGISTER_OUTPUT_CONTEXT(c53);
+            REGISTER_OUTPUT_CONTEXT(c54);
+            REGISTER_OUTPUT_CONTEXT(c55);
+            REGISTER_OUTPUT_CONTEXT(c56);
+            REGISTER_OUTPUT_CONTEXT(c57);
+            REGISTER_OUTPUT_CONTEXT(c58);
+            REGISTER_OUTPUT_CONTEXT(c59);
+            REGISTER_OUTPUT_CONTEXT(c60);
+            REGISTER_OUTPUT_CONTEXT(c61);
+            REGISTER_OUTPUT_CONTEXT(c62);
+            REGISTER_OUTPUT_CONTEXT(c63);
+            REGISTER_OUTPUT_CONTEXT(c64);
+            REGISTER_OUTPUT_CONTEXT(c65);
+            REGISTER_OUTPUT_CONTEXT(c66);
         }
     }
 }

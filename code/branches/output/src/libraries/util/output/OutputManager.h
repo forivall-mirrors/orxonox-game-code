@@ -32,7 +32,7 @@
 #include "util/UtilPrereqs.h"
 
 #include <vector>
-#include <boost/bimap.hpp>
+#include <map>
 
 #include "OutputDefinitions.h"
 
@@ -44,31 +44,26 @@ namespace orxonox
             static OutputManager& getInstance();
             static OutputManager& getInstanceAndCreateListeners();
 
-            void pushMessage(OutputLevel level, OutputContext context, const std::string& message);
+            void pushMessage(OutputLevel level, const OutputContextContainer& context, const std::string& message);
 
             void registerListener(OutputListener* listener);
             void unregisterListener(OutputListener* listener);
 
             void updateMasks();
             void updateCombinedLevelMask();
-            void updateCombinedContextMask();
+            void updateCombinedAdditionalContextsLevelMask();
+            void updateCombinedAdditionalContextsMask();
 
-            inline OutputLevel getCombinedLevelMask() const
-                { return this->combinedLevelMask_; }
-            inline OutputContext getCombinedContextMask() const
-                { return this->combinedContextMask_; }
+            inline bool acceptsOutput(OutputLevel level, const OutputContextContainer& context) const
+            {
+                return (this->combinedLevelMask_ & level) ||
+                       ((this->combinedAdditionalContextsLevelMask_ & level) && (this->combinedAdditionalContextsMask_ & context.mask));
+            }
 
-            inline bool acceptsOutput(OutputLevel level, OutputContext context) const
-                { return ((this->combinedLevelMask_ & level) && (this->combinedContextMask_ & context)); }
-
-            OutputContext registerContext(const std::string& name);
+            const OutputContextContainer& registerContext(const std::string& name, const std::string& subname = "");
 
             const std::string& getLevelName(OutputLevel level) const;
-            const std::string& getContextName(OutputContext context) const;
-            OutputContext getContextValue(const std::string& name) const;
-
-            std::string getComposedContextName(OutputContext context) const;
-            std::string getDefaultPrefix(OutputLevel level, OutputContext context) const;
+            std::string getDefaultPrefix(OutputLevel level, const OutputContextContainer& context) const;
 
         private:
             OutputManager();
@@ -77,10 +72,13 @@ namespace orxonox
 
             std::vector<OutputListener*> listeners_;
 
-            OutputLevel   combinedLevelMask_;
-            OutputContext combinedContextMask_;
+            OutputLevel       combinedLevelMask_;
+            OutputLevel       combinedAdditionalContextsLevelMask_;
+            OutputContextMask combinedAdditionalContextsMask_;
 
-            boost::bimap<OutputContext, std::string> contexts_;
+            std::map<std::string, OutputContextMask> contextMasks_;
+            std::map<std::string, OutputContextContainer> contextContainers_;
+            OutputContextSubID subcontextCounter_;
     };
 }
 

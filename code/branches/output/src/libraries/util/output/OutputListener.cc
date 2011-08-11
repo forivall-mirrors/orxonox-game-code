@@ -35,7 +35,8 @@ namespace orxonox
     OutputListener::OutputListener()
     {
         this->levelMask_ = level::none;
-        this->contextMask_ = context::all;
+        this->additionalContextsLevelMask_ = level::none;
+        this->additionalContextsMask_ = context::none;
 
         OutputManager::getInstance().registerListener(this);
     }
@@ -66,10 +67,31 @@ namespace orxonox
         OutputManager::getInstance().updateCombinedLevelMask();
     }
 
-    void OutputListener::setContextMask(OutputContext mask)
+    void OutputListener::setAdditionalContextsLevelMax(OutputLevel max)
     {
-        this->contextMask_ = mask;
+        this->setAdditionalContextsLevelRange(static_cast<OutputLevel>(0x1), max);
+    }
 
-        OutputManager::getInstance().updateCombinedContextMask();
+    void OutputListener::setAdditionalContextsLevelRange(OutputLevel min, OutputLevel max)
+    {
+        int mask = 0;
+        for (int level = min; level <= max; level = level << 1)
+            mask |= level;
+
+        this->setAdditionalContextsLevelMask(static_cast<OutputLevel>(mask));
+    }
+
+    void OutputListener::setAdditionalContextsLevelMask(OutputLevel mask)
+    {
+        this->additionalContextsLevelMask_ = mask;
+
+        OutputManager::getInstance().updateCombinedAdditionalContextsLevelMask();
+    }
+
+    void OutputListener::setAdditionalContextsMask(OutputContextMask mask)
+    {
+        this->additionalContextsMask_ = mask;
+
+        OutputManager::getInstance().updateCombinedAdditionalContextsMask();
     }
 }

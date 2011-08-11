@@ -29,6 +29,7 @@
 #include "LogWriter.h"
 
 #include <ctime>
+#include <cstdlib>
 
 #include "OutputManager.h"
 #include "MemoryWriter.h"

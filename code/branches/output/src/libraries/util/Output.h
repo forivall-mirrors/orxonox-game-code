@@ -37,7 +37,7 @@ namespace orxonox
     // Just for convenience
     using std::endl;
 
-    inline OutputStream& orxout(OutputLevel level = level::debug_output, OutputContext context = context::undefined())
+    inline OutputStream& orxout(OutputLevel level = level::debug_output, const OutputContextContainer& context = context::undefined())
     {
         static OutputStream stream;
         stream.setOutputAttributes(level, context);

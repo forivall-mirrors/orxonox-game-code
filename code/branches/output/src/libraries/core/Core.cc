@@ -262,19 +262,19 @@ namespace orxonox
                                LogWriter::getInstance().getConfigurableMaxLevelName(),
                                LogWriter::getInstance().configurableMaxLevel_)
             .description("The maximum level of output shown in the log file")
-            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableLevels);
-        SetConfigValueExternal(LogWriter::getInstance().configurableContextsMaxLevel_,
+            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableLevel);
+        SetConfigValueExternal(LogWriter::getInstance().configurableAdditionalContextsMaxLevel_,
                                LogWriter::getInstance().getConfigurableSectionName(),
-                               LogWriter::getInstance().getConfigurableContextsMaxLevelName(),
-                               LogWriter::getInstance().configurableContextsMaxLevel_)
+                               LogWriter::getInstance().getConfigurableAdditionalContextsMaxLevelName(),
+                               LogWriter::getInstance().configurableAdditionalContextsMaxLevel_)
             .description("The maximum level of output shown in the log file for additional contexts")
-            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableLevels);
-        SetConfigValueExternal(LogWriter::getInstance().configurableContexts_,
+            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableAdditionalContextsLevel);
+        SetConfigValueExternal(LogWriter::getInstance().configurableAdditionalContexts_,
                                LogWriter::getInstance().getConfigurableSectionName(),
-                               LogWriter::getInstance().getConfigurableContextsName(),
-                               LogWriter::getInstance().configurableContexts_)
+                               LogWriter::getInstance().getConfigurableAdditionalContextsName(),
+                               LogWriter::getInstance().configurableAdditionalContexts_)
             .description("Additional output contexts shown in the log file")
-            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableContexts);
+            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableAdditionalContexts);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
             .description("Developer mode. If not set, hides some things from the user to not confuse him.")

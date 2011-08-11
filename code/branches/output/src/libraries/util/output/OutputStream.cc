@@ -37,21 +37,21 @@ namespace orxonox
         this->setOutputAttributes(level::debug_output, context::undefined());
     }
 
-    OutputStream::OutputStream(OutputLevel level, OutputContext context)
+    OutputStream::OutputStream(OutputLevel level, const OutputContextContainer& context)
     {
         this->setOutputAttributes(level, context);
     }
 
     void OutputStream::sendMessage()
     {
-        OutputManager::getInstanceAndCreateListeners().pushMessage(this->level_, this->context_, this->str());
+        OutputManager::getInstanceAndCreateListeners().pushMessage(this->level_, *this->context_, this->str());
         this->str("");
     }
 
-    void OutputStream::setOutputAttributes(OutputLevel level, OutputContext context)
+    void OutputStream::setOutputAttributes(OutputLevel level, const OutputContextContainer& context)
     {
         this->level_ = level;
-        this->context_ = context;
+        this->context_ = &context;
 
         this->bAcceptsOutput_ = OutputManager::getInstanceAndCreateListeners().acceptsOutput(level, context);
     }

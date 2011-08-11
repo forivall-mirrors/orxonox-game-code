@@ -43,9 +43,9 @@ namespace orxonox
 
         public:
             _UtilExport OutputStream();
-            _UtilExport OutputStream(OutputLevel level, OutputContext context);
+            _UtilExport OutputStream(OutputLevel level, const OutputContextContainer& context);
 
-            void _UtilExport setOutputAttributes(OutputLevel level, OutputContext context);
+            void _UtilExport setOutputAttributes(OutputLevel level, const OutputContextContainer& context);
 
             template <class T>
             inline OutputStream& operator<<(const T& val) { return this->output(val); }
@@ -75,7 +75,7 @@ namespace orxonox
             void _UtilExport sendMessage();
 
             OutputLevel level_;
-            OutputContext context_;
+            const OutputContextContainer* context_;
             bool bAcceptsOutput_;
     };
 }

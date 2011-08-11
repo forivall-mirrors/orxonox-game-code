@@ -47,26 +47,34 @@ namespace orxonox
             void setLevelRange(OutputLevel min, OutputLevel max);
             void setLevelMask(OutputLevel mask);
 
+            void setAdditionalContextsLevelMax(OutputLevel max);
+            void setAdditionalContextsLevelRange(OutputLevel min, OutputLevel max);
+            void setAdditionalContextsLevelMask(OutputLevel mask);
+
+            void setAdditionalContextsMask(OutputContextMask mask);
+
             inline OutputLevel getLevelMask() const
                 { return this->levelMask_; }
+            inline OutputLevel getAdditionalContextsLevelMask() const
+                { return this->additionalContextsLevelMask_; }
+            inline OutputContextMask getAdditionalContextsMask() const
+                { return this->additionalContextsMask_; }
 
-            void setContextMask(OutputContext mask);
+            inline bool acceptsOutput(OutputLevel level, const OutputContextContainer& context) const
+            {
+                return (this->levelMask_ & level) ||
+                       ((this->additionalContextsLevelMask_ & level) && (this->additionalContextsMask_ & context.mask)); }
 
-            inline OutputContext getContextMask() const
-                { return this->contextMask_; }
-
-            inline bool acceptsOutput(OutputLevel level, OutputContext context) const
-                { return ((this->levelMask_ & level) && (this->contextMask_ & context)); }
-
-            inline void unfilteredOutput(OutputLevel level, OutputContext context, const std::vector<std::string>& lines)
+            inline void unfilteredOutput(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
                 { if (this->acceptsOutput(level, context)) this->output(level, context, lines); }
 
         protected:
-            virtual void output(OutputLevel level, OutputContext context, const std::vector<std::string>& lines) = 0;
+            virtual void output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines) = 0;
 
         private:
-            OutputLevel   levelMask_;
-            OutputContext contextMask_;
+            OutputLevel       levelMask_;
+            OutputLevel       additionalContextsLevelMask_;
+            OutputContextMask additionalContextsMask_;
     };
 }
 
