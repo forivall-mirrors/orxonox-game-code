@@ -107,7 +107,7 @@ namespace orxonox
             return MT_Type::Null;
         }
 
-        orxout(verbose, context::executor) << "Executor::parse: \"" << arguments.join(delimiter) << "\" -> " << argCount << " arguments: " << arg[0] << " / " << arg[1] << " / " << arg[2] << " / " << arg[3] << " / " << arg[4] << endl;
+        orxout(verbose, context::misc::executor) << "Executor::parse: \"" << arguments.join(delimiter) << "\" -> " << argCount << " arguments: " << arg[0] << " / " << arg[1] << " / " << arg[2] << " / " << arg[3] << " / " << arg[4] << endl;
 
         // execute the function with the evaluated arguments (the default values of the executor are also included in these arguments)
         switch (argCount)

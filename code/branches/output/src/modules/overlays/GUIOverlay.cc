@@ -75,12 +75,12 @@ namespace orxonox
             const std::string& str = multi_cast<std::string>(reinterpret_cast<long>(this));
             GUIManager::getInstance().showGUIExtra(this->guiName_, str);
 
-            orxout(internal_info) << "Showing GUI " << this->guiName_ << endl;
+            orxout(verbose, context::misc::gui) << "Showing GUI " << this->guiName_ << endl;
         }
         else
         {
             GUIManager::hideGUI(this->guiName_);
-            orxout(internal_info) << "Hiding GUI " << this->guiName_ << endl;
+            orxout(verbose, context::misc::gui) << "Hiding GUI " << this->guiName_ << endl;
         }
     }
 

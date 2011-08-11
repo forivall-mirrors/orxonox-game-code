@@ -136,7 +136,7 @@ namespace orxonox
         if(!triggered || !this->isActive()) // If the Script is inactive it cannot be executed.
             return false;
 
-        orxout(internal_info) << "Script (&" << this << ") triggered." << endl;
+        orxout(verbose, context::misc::script) << "Script (&" << this << ") triggered." << endl;
 
         PlayerTrigger* pTrigger = orxonox_cast<PlayerTrigger*>(trigger);
         PlayerInfo* player = NULL;

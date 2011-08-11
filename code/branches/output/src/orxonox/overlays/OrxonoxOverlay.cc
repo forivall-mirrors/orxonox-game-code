@@ -361,12 +361,12 @@ namespace orxonox
             if(overlay->isVisible())
             {
                 overlay->hide();
-                orxout(internal_info) << "HIDE " << name << endl;
+                orxout(verbose, context::misc::overlays) << "HIDE " << name << endl;
             }
             else
             {
                 overlay->show();
-                orxout(internal_info) << "SHOW " << name << endl;
+                orxout(verbose, context::misc::overlays) << "SHOW " << name << endl;
             }
         }
     }
