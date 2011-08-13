@@ -17,22 +17,22 @@ end
 
 function P.GameplayThemeCombobox_changed(e)
     -- theme
-    logMessage(0, "event: theme")
+    orxout("event: theme")
 end
 
 function P.GameplayDifficultyEasyButton_clicked(e)
     -- difficulty easy
-    logMessage(0, "event: easy")
+    orxout("event: easy")
 end
 
 function P.GameplayDifficultyNormalButton_clicked(e)
     -- difficulty normal
-    logMessage(0, "event: normal")
+    orxout("event: normal")
 end
 
 function P.GameplayDifficultyHardButton_clicked(e)
     -- difficulty hard
-    logMessage(0, "event: hard")
+    orxout("event: hard")
 end
 
 function P.GameplayBackButton_clicked(e)

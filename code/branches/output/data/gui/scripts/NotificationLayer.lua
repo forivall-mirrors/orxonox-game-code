@@ -135,7 +135,7 @@ function P.removeNotification(queueName, index)
     local moved = false
     if index > queue.first then -- Move all older notifications up in the list.
         for i=index-1,-1,queue.first do
-            cout(0, i)
+            orxout(i)
             item = queue.items[i]
             item:setYposition(CEGUI.UDim(0, itemHeight*(queue.last-i-1)))
             queue.items[i+1] = item

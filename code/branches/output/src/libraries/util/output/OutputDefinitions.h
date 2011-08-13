@@ -38,6 +38,7 @@
 #define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
     const OutputContextContainer& subname() { static const OutputContextContainer& context = registerContext(#name, #subname); return context; }
 
+// tolua_begin
 namespace orxonox
 {
     namespace level
@@ -62,6 +63,7 @@ namespace orxonox
             verbose_ultra    = 0x1000
         };
     }
+// tolua_end
 
     using namespace level;
 
@@ -127,6 +129,6 @@ namespace orxonox
 
         }
     }
-}
+} // tolua_export
 
 #endif /* _OutputDefinitions_H__ */

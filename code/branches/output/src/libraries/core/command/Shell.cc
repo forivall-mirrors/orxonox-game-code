@@ -33,8 +33,6 @@
 
 #include "Shell.h"
 
-#include <boost/preprocessor/stringize.hpp>
-
 #include "util/Math.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"

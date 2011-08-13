@@ -35,7 +35,6 @@ extern "C" {
 #include <lualib.h>
 }
 #include <loki/ScopeGuard.h>
-#include <boost/preprocessor/stringize.hpp>
 
 #include "util/Output.h"
 #include "util/Exception.h"
@@ -236,10 +235,19 @@ namespace orxonox
         output_ << str;
     }
 
-    void LuaState::luaLog(unsigned int level, const std::string& message)
+    void LuaState::luaOutput(OutputLevel level, const std::string& context, const std::string& message)
     {
-#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: use correct level, inspect lua support (and remove boost include)")
-        orxout(debug_output, context::lua) << "luaLog (level: " << level << "): " << message << endl;
+        orxout(level, registerContext(context)) << message << endl;
+    }
+
+    void LuaState::luaOutput(OutputLevel level, const std::string& message)
+    {
+        orxout(level, context::lua) << message << endl;
+    }
+
+    void LuaState::luaOutput(const std::string& message)
+    {
+        orxout(debug_output, context::lua) << message << endl;
     }
 
     bool LuaState::fileExists(const std::string& filename)
