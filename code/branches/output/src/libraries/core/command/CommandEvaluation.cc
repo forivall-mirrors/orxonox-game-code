@@ -130,7 +130,7 @@ namespace orxonox
             *error = CommandExecutor::Success;
 
             if (!this->execCommand_)
-                *error = CommandExecutor::Error;
+                *error = CommandExecutor::Inexistent;
             else if (!this->execCommand_->isActive())
                 *error = CommandExecutor::Deactivated;
             else if (!this->execCommand_->hasAccess())
@@ -186,7 +186,7 @@ namespace orxonox
         {
             if (bPrintError)
                 orxout(internal_error, context::commands) << "Can't evaluate arguments, no console command assigned." << endl;
-            return CommandExecutor::Error;
+            return CommandExecutor::Inexistent;
         }
 
         int error;

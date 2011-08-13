@@ -186,16 +186,12 @@ namespace orxonox
         else
             error = evaluation.execute();
 
-        switch (error)
+        if (error)
         {
-            case CommandExecutor::Error:       orxout(user_error) << "Can't execute command \"" << command << "\", command doesn't exist. (B)" << endl; break;
-            case CommandExecutor::Incomplete:  orxout(user_error) << "Can't execute command \"" << command << "\", not enough arguments given. (B)" << endl; break;
-            case CommandExecutor::Deactivated: orxout(user_error) << "Can't execute command \"" << command << "\", command is not active. (B)" << endl; break;
-            case CommandExecutor::Denied:      orxout(user_error) << "Can't execute command \"" << command << "\", access denied. (B)" << endl; break;
+            orxout(user_error) << "Can't execute command \"" << command << "\", " + CommandExecutor::getErrorDescription(error) + ". (TclBind)" << endl;
+            if (error == CommandExecutor::Inexistent)
+                orxout(user_info) << "Did you mean \"" << evaluation.getCommandSuggestion() << "\"?" << endl;
         }
-
-        if (error == CommandExecutor::Error)
-            orxout(user_info) << "Did you mean \"" << evaluation.getCommandSuggestion() << "\"?" << endl;
 
         return result;
     }

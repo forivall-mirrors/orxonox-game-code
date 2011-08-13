@@ -448,13 +448,8 @@ namespace orxonox
                         TclThreadManager::debug("TclThread_query -> CE: " + command);
                         int error;
                         output = CommandExecutor::query(command, &error, false);
-                        switch (error)
-                        {
-                            case CommandExecutor::Error:       TclThreadManager::error("Can't execute command \"" + command + "\", command doesn't exist. (T)"); break;
-                            case CommandExecutor::Incomplete:  TclThreadManager::error("Can't execute command \"" + command + "\", not enough arguments given. (T)"); break;
-                            case CommandExecutor::Deactivated: TclThreadManager::error("Can't execute command \"" + command + "\", command is not active. (T)"); break;
-                            case CommandExecutor::Denied:      TclThreadManager::error("Can't execute command \"" + command + "\", access denied. (T)"); break;
-                        }
+                        if (error)
+                            TclThreadManager::error("Can't execute command \"" + command + "\", " + CommandExecutor::getErrorDescription(error) + ". (TclThreadManager)");
                     }
                     else
                     {

@@ -68,10 +68,12 @@ namespace orxonox
         @param useTcl If true, the command is passed to tcl (see TclBind)
         @return Returns the error-code (see @ref CommandExecutorErrorCodes "error codes")
     */
-    /* static */ int CommandExecutor::execute(const std::string& command, bool useTcl)
+    /* static */ int CommandExecutor::execute(const std::string& command, bool useTcl, bool printErrors)
     {
         int error;
         CommandExecutor::queryMT(command, &error, useTcl);
+        if (error)
+            orxout(user_error) << "Can't execute \"" << command << "\", " << CommandExecutor::getErrorDescription(error) << ". (execute)" << endl;
         return error;
     }
 
@@ -84,10 +86,13 @@ namespace orxonox
     */
     /* static */ MultiType CommandExecutor::queryMT(const std::string& command, int* error, bool useTcl)
     {
+        MultiType result;
+        int error_internal;
+
         if (useTcl)
         {
             // pass the command to tcl
-            return TclBind::eval(command, error);
+            result = TclBind::eval(command, &error_internal);
         }
         else
         {
@@ -107,8 +112,15 @@ namespace orxonox
             }
 
             // query the command and return its return-value
-            return evaluation.query(error);
+            result = evaluation.query(&error_internal);
         }
+
+        if (error)
+            *error = error_internal;
+        else if (error_internal)
+            orxout(user_error) << "Can't execute \"" << command << "\", " << CommandExecutor::getErrorDescription(error_internal) << ". (query)" << endl;
+
+        return result;
     }
 
     /**
@@ -168,6 +180,23 @@ namespace orxonox
         }
 
         return evaluation;
+    }
+
+    /**
+        @brief Returns a description of the error code.
+        @param error The error code
+    */
+    /* static */ std::string CommandExecutor::getErrorDescription(int error)
+    {
+        switch (error)
+        {
+            case CommandExecutor::Inexistent:  return "command doesn't exist";
+            case CommandExecutor::Incomplete:  return "not enough arguments given";
+            case CommandExecutor::Deactivated: return "command is not active";
+            case CommandExecutor::Denied:      return "access denied";
+            case CommandExecutor::Error:       return "an error occurred";
+            default: return "";
+        }
     }
 
     /**

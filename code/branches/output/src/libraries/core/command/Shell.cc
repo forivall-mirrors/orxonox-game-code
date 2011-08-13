@@ -388,19 +388,9 @@ namespace orxonox
         int error;
         const std::string& result = CommandExecutor::query(this->inputBuffer_->get(), &error);
         if (error)
-        {
-            switch (error)
-            {
-                case CommandExecutor::Error:       this->addOutput("Error: Can't execute \"" + this->inputBuffer_->get() + "\", command doesn't exist. (S)", UserError); break;
-                case CommandExecutor::Incomplete:  this->addOutput("Error: Can't execute \"" + this->inputBuffer_->get() + "\", not enough arguments given. (S)", UserError); break;
-                case CommandExecutor::Deactivated: this->addOutput("Error: Can't execute \"" + this->inputBuffer_->get() + "\", command is not active. (S)", UserError); break;
-                case CommandExecutor::Denied:      this->addOutput("Error: Can't execute \"" + this->inputBuffer_->get() + "\", access denied. (S)", UserError); break;
-            }
-        }
+            this->addOutput("Error: Can't execute \"" + this->inputBuffer_->get() + "\", " + CommandExecutor::getErrorDescription(error) + ". (Shell)", UserError);
         else if (result != "")
-        {
             this->addOutput(result, Result);
-        }
 
         this->clearInput();
     }
