@@ -168,8 +168,10 @@ proc puts args {
 
     foreach {channel s} $input break
 
-    if {$channel == "stdout" || $channel == "stderr"} {
-        execute puts $newline $s
+    if {$channel == "stdout"} {
+        execute log $s
+    } elseif {$channel == "stderr"} {
+        execute error $s
     } else {
         eval [concat ::tcl::puts $args]
     }

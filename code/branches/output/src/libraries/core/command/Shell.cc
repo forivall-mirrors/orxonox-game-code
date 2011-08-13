@@ -46,17 +46,9 @@
 #include "core/PathConfig.h"
 #include "core/input/InputBuffer.h"
 #include "CommandExecutor.h"
-#include "ConsoleCommand.h"
 
 namespace orxonox
 {
-#pragma message(__FILE__ "("BOOST_PP_STRINGIZE(__LINE__)") : Warning: TODO: add commands again, inspect tcl support (and remove boost include)")
-//    SetConsoleCommand("log",     OutputHandler::log    );
-//    SetConsoleCommand("error",   OutputHandler::error  ).hide();
-//    SetConsoleCommand("warning", OutputHandler::warning).hide();
-//    SetConsoleCommand("info",    OutputHandler::info   ).hide();
-//    SetConsoleCommand("debug",   OutputHandler::debug  ).hide();
-
     unsigned int Shell::cacheSize_s;
 
     namespace DefaultLogLevel
