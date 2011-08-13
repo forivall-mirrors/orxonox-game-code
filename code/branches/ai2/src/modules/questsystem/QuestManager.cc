@@ -64,7 +64,7 @@ namespace orxonox
     QuestManager::QuestManager()
     {
         RegisterRootObject(QuestManager);
-
+        this->nullstring_ = "";
         COUT(3) << "QuestManager created." << std::endl;
     }
 

@@ -29,6 +29,12 @@ function P.onShow()
 
     -- Load the list of quests to be displayed.
     P.loadQuestsList(P.currentQuest)
+    -- Pause the game - possible conflict for multiplayer quests
+    orxonox.execute("setPause 1")
+end
+
+function P.onQuit()
+    orxonox.execute("setPause 0")
 end
 
 -- Loads the list of quests, depending on P.showActive, either the active (P.showActive == true) or the finished, i.e. inactive quests are loaded.

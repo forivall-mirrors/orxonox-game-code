@@ -44,6 +44,12 @@ include("templates/pickupRepresentationTemplates.oxt")
       include("includes/pickups.oxi")
     ?>
 
+    <WorldAmbientSound
+      ambientSource="AlphaCentauri.ogg"
+      looping="true"
+      playOnLoad="true"
+    />
+
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <!-- Script code="artificialcontroller setbotlevel 0.1" /--> <!-- Does not influence waypointPatrolController-->
@@ -77,7 +83,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
 
 -->
 <!-------------------------------------- PART ONE: Destroy boxes --------------------------------------->
-    <DistanceTrigger name="spawndelaytrigger1" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=1 />
+    <DistanceTrigger name="spawndelaytrigger1" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=2 />
     <SimpleNotification message="Destroy those four boxes.">
         <events>
             <trigger>
@@ -86,7 +92,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="spawndelaytrigger2" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=2 />
+    <DistanceTrigger name="spawndelaytrigger2" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=5 />
     <SimpleNotification message=" 1. Aim the a the red cycle.">
         <events>
             <trigger>
@@ -95,7 +101,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="spawndelaytrigger3" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=4 />
+    <DistanceTrigger name="spawndelaytrigger3" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=8 />
     <SimpleNotification message="2. Click! (hold the left mouse button)">
         <events>
             <trigger>
@@ -104,7 +110,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-<!-- BRIEFING END // Interactive briefing start --> 
+<!-- static briefing END // Interactive briefing start --> 
 
   <SimpleNotification message="Right click on the next target." broadcast="true">
         <events>
@@ -151,7 +157,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-  <SimpleNotification message="Well done. Now press 'W'." broadcast="true">
+  <SimpleNotification message="Fly towards the pirates. Press 'W'." broadcast="true">
         <events>
             <trigger>
                 <Pawn health=30 position="0,300,0" direction="0,-1,0" collisionType=dynamic mass=100000>
@@ -168,44 +174,61 @@ TODO: send in a level 0.1 bot on a pirate ship.
 
 
 <!--------------------------------------PART TWO: Moving targets --------------------------------------->
+    <DistanceTrigger name="movingtargets" position="0,500,0" target="Pawn" distance=180 stayActive="true" delay=2 />
+    <Billboard position="0,500,0" material="Examples/Flare" colour="0.5,0,0" scale=3/>
+    <SimpleNotification message="Try to hit the pirates while you are flying.">
+        <events>
+            <trigger>
+                <EventListener event=movingtargets />
+            </trigger>
+        </events>
+    </SimpleNotification>
 
-    <SpaceShip position="0,1500,200" lookat="0,0,0">
-      <templates>
-        <Template link=spaceshippirate />
-      </templates>
-      <controller>
-        <WaypointController>
-          <waypoints>
-            <Model mesh="cube.mesh" scale=8 position="  0,1300,-200" />
-            <Model mesh="cube.mesh" scale=8 position="  0,1300,-700" />
-            <Model mesh="cube.mesh" scale=8 position="500,1300,-700" />
-            <Model mesh="cube.mesh" scale=8 position="500,1300,-200" />
-          </waypoints>
-        </WaypointController>
-      </controller>
-    </SpaceShip>
-    <PickupSpawner position="250,1300,-450" triggerDistance="10" respawnTime="30" maxSpawnedItems="1">
-      <pickup>
-        <DronePickup template=dronepickup />
-      </pickup>
-    </PickupSpawner>
 
-    <SpaceShip position="0,1500,400" lookat="0,0,0">
-      <templates>
-        <Template link=spaceshippirate />
-      </templates>
-      <controller>
-        <WaypointController>
-          <waypoints>
-            <Model mesh="cube.mesh" scale=8 position="  0,1300,1000" />
-            <Model mesh="cube.mesh" scale=8 position="  0,1300,500" />
-            <Model mesh="cube.mesh" scale=8 position="500,1300,500" />
-            <Model mesh="cube.mesh" scale=8 position="500,1300, 1000" />
-          </waypoints>
-        </WaypointController>
-      </controller>
-    </SpaceShip>
 
+  <SimpleNotification message="Now get the other one." broadcast="true">
+        <events>
+            <trigger>
+                <SpaceShip position="0,2000,200" lookat="0,0,0">
+                    <templates>
+                      <Template link=spaceshippirate />
+                    </templates>
+                    <controller>
+                      <WaypointController>
+                         <waypoints>
+                          <Model mesh="cube.mesh" scale=8 position="  0,1700,-200" />
+                          <Model mesh="cube.mesh" scale=8 position="  0,1700,-700" />
+                          <Model mesh="cube.mesh" scale=8 position="500,1700,-700" />
+                          <Model mesh="cube.mesh" scale=8 position="500,1700,-200" />
+                       </waypoints>
+                    </WaypointController>
+                  </controller>
+                </SpaceShip>
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+  <SimpleNotification message="Fly towards the space station (grey dot)." broadcast="true">
+        <events>
+            <trigger>
+                <SpaceShip position="0,2000,400" lookat="0,0,0">
+                  <templates>
+                    <Template link=spaceshippirate />
+                  </templates>
+                  <controller>
+                    <WaypointController>
+                      <waypoints>
+                        <Model mesh="cube.mesh" scale=8 position="  0,2400,1000" />
+                        <Model mesh="cube.mesh" scale=8 position="  0,2400,500" />
+                        <Model mesh="cube.mesh" scale=8 position="500,2400,500" />
+                        <Model mesh="cube.mesh" scale=8 position="500,2400, 1000" />
+                      </waypoints>
+                    </WaypointController>
+                  </controller>
+                </SpaceShip>
+            </trigger>
+        </events>
+    </SimpleNotification>
 
 <!--------------------------------------PART THREE: to the space station --------------------------------------->
     <DistanceTrigger name="duball1" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=2 />
@@ -217,7 +240,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="duball2" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=4 />
+    <DistanceTrigger name="duball2" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=5 />
     <SimpleNotification message="Warning: Something big is coming.">
         <events>
             <trigger>
@@ -226,14 +249,49 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SimpleNotification>
 
-    <DistanceTrigger name="duball2" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=6 />
-    <SimpleNotification message="Be on your guard!">
+    <!--DistanceTrigger name="duball3" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=9 />
+    <SimpleNotification message="Get some help,  before it is too late.">
         <events>
             <trigger>
                 <EventListener event=duball3 />
             </trigger>
         </events>
+    </SimpleNotification-->
+
+    <DistanceTrigger name="duball4" position="-1000,-300,700" target="Pawn" distance=700 stayActive="true" delay=10 />
+    <SimpleNotification message="Use the portals to get help. (grey dot)">
+        <events>
+            <trigger>
+                <EventListener event=duball4 />
+            </trigger>
+        </events>
     </SimpleNotification>
+
+
+
+<!-- PORTALS -->
+    <Template name=PortalDefault>
+        <PortalEndPoint>
+            <attached>
+                <Billboard material="Portals/Default" />
+            </attached>
+        </PortalEndPoint>
+    </Template>
+
+    <PortalEndPoint position="-1400,-500,800" id="1" distance="40" target="MobileEntity" design="PortalDefault">
+        <!--events>
+            <visibility>
+                <EventListener event=portal />
+            </visibility>
+        </events-->
+    </PortalEndPoint>
+
+    <PortalEndPoint position="-40000,0,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" />
+    <PortalLink fromID="1" toID="2" />
+    <PortalLink fromID="2" toID="1" />
+<!-- PORTALS END-->
+
+
 
 <StaticEntity position="-1000,-300,700" collisionType=static>
       <attached>
@@ -268,7 +326,42 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SpaceShip -->
 
-<!--------------------------------------PART FOUR --------------------------------------->
+<!-------------------------------------- PART FOUR : Get Help --------------------------------------->
+    <PickupSpawner position="-40400,100,0" triggerDistance="10" respawnTime="30" maxSpawnedItems="1">
+      <pickup>
+        <DronePickup template=dronepickup />
+      </pickup>
+    </PickupSpawner>    
+
+
+
+
+
+    <Planet
+      position="-50000,0,0"
+      scale="1000"
+      collisionType="dynamic"
+      linearDamping="0.8"
+      angularDamping="0"
+      mass="10000000"
+      pitch="0"
+      mesh="planets/muunilinst.mesh"
+      atmosphere="atmosphere1"
+      rotationaxis="1,0,0"
+      rotationrate="1.0"
+      atmospheresize="80.0f"
+      imagesize="1024.0f"
+      collisiondamage = 2
+      enablecollisiondamage = true
+    >
+      <attached>
+        <ForceField position="0,0,0" mode="sphere" diameter="10000" velocity="-50" />
+      </attached>
+      <collisionShapes>
+        <SphereCollisionShape radius="1000" position="0,0,0" />
+      </collisionShapes>
+    </Planet>
+
 
 <!--------------------------------------DUMP YARD --------------------------------------->
 <!-- Idea: Pawndeath should trigger several , delayed events. -->
