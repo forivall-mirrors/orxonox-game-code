@@ -4,7 +4,6 @@ local P = createMenuSheet("QuestGUI")
 
 P.questManager = nil -- The QuestManager.
 P.showActive = true -- Whether the active or finished quest list is displayed.
-P.currentQuest = nil -- The quest that is currently displayed.
 P.player = nil -- The player the quests are displayed for.
 P.quests = {}
 P.subquests = {}
@@ -28,7 +27,7 @@ function P.onShow()
     P.player = orxonox.GUIManager:getInstance():getPlayer(P.name)
 
     -- Load the list of quests to be displayed.
-    P.loadQuestsList(P.currentQuest)
+    P.loadQuestsList()
     -- Pause the game - possible conflict for multiplayer quests
     orxonox.execute("setPause 1")
 end
@@ -176,8 +175,6 @@ function P.loadQuest(quest)
         local window = winMgr:getWindow("orxonox/QuestGUI/Quest/Wrapper")
         window:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.borderSize-P.scrollbarWidth), CEGUI.UDim(0,offset+P.borderSize)))
     end
-
-    P.currentQuest = quest
 end
 
 -- Clear the currently displayed quest.
@@ -209,8 +206,6 @@ function P.clearQuest()
         i = i+1
     end
     hints:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.scrollbarWidth-P.borderSize), CEGUI.UDim(0, 0)))
-
-    P.currentQuest = nil
 end
 
 -- Clear the quests list
@@ -263,7 +258,7 @@ function P.insertHint(hintsWindow, hint, index, offset)
     window:setProperty("FrameEnabled", "false")
     window:setID(index)
     hintsWindow:addChildWindow(window)
-    local description = P.questManager:getHintDescription(hint)
+    local description = P.questManager:getDescription(hint)
     window:setText(description:getDescription())
     window:setSize(CEGUI.UVector2(CEGUI.UDim(1, -P.borderSize), CEGUI.UDim(1, 0)))
     local height = getStaticTextWindowHeight(window)

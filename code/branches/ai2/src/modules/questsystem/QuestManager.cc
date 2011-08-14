@@ -399,7 +399,7 @@ namespace orxonox
     @return
         Returns a pointer to the QuestDescription of the input QuestHint.
     */
-    QuestDescription* QuestManager::getHintDescription(QuestHint* item)
+    QuestDescription* QuestManager::getDescription(QuestHint* item)
     {
         OrxAssert(item, "The input QuestHint is NULL.");
         return item->getDescription();
@@ -427,7 +427,7 @@ namespace orxonox
     @return
         Returns the id of the input QuestHint.
     */
-    const std::string QuestManager::getHintId(QuestHint* item) const
+    const std::string QuestManager::getId(QuestHint* item) const
     {
         OrxAssert(item, "The input QuestHint is NULL.");
         return item->getId();
