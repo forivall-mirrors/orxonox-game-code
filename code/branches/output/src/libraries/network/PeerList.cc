@@ -27,8 +27,10 @@
  */
 
 #include "PeerList.h"
-#include <network/packet/ServerInformation.h>
+
 #include <cstdio>
+#include "util/Output.h"
+#include "network/packet/ServerInformation.h"
 
 namespace orxonox
 {

@@ -31,6 +31,8 @@
 
 #include "NetworkPrereqs.h"
 
+#include "core/OrxonoxClass.h"
+
 namespace orxonox
 {
     /**

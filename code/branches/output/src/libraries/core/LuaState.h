@@ -48,6 +48,8 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
+#include "util/Output.h"
+
 namespace orxonox // tolua_export
 { // tolua_export
     class LuaFunctor; // tolua_export
