@@ -34,6 +34,7 @@
 #include "QuestManager.h"
 
 #include "util/Exception.h"
+#include "util/OrxAssert.h"
 #include "util/ScopedSingletonManager.h"
 #include "core/command/ConsoleCommand.h"
 #include "core/CoreIncludes.h"
@@ -98,7 +99,11 @@ namespace orxonox
     */
     bool QuestManager::registerQuest(Quest* quest)
     {
-        assert(quest);
+        if(quest == NULL)
+        {
+            COUT(1) << "Quest pointer is NULL." << endl;
+            return false;
+        }
 
         std::pair<std::map<std::string, Quest*>::iterator,bool> result;
         result = this->questMap_.insert( std::pair<std::string,Quest*>(quest->getId(),quest) ); // Inserting the Quest.
@@ -136,7 +141,11 @@ namespace orxonox
     */
     bool QuestManager::registerHint(QuestHint* hint)
     {
-        assert(hint);
+        if(hint == NULL)
+        {
+            COUT(1) << "Hint pointer is NULL." << endl;
+            return false;
+        }
 
         std::pair<std::map<std::string, QuestHint*>::iterator,bool> result;
         result = this->hintMap_.insert ( std::pair<std::string,QuestHint*>(hint->getId(),hint) ); // Inserting the QuestHSint.
@@ -364,6 +373,7 @@ namespace orxonox
     */
     Quest* QuestManager::getParentQuest(Quest* quest)
     {
+        OrxAssert(quest, "The input Quest is NULL.");
         return quest->getParentQuest();
     }
 
@@ -377,6 +387,7 @@ namespace orxonox
     */
     QuestDescription* QuestManager::getDescription(Quest* item)
     {
+        OrxAssert(item, "The input Quest is NULL.");
         return item->getDescription();
     }
 
@@ -390,6 +401,7 @@ namespace orxonox
     */
     QuestDescription* QuestManager::getDescription(QuestHint* item)
     {
+        OrxAssert(item, "The input QuestHint is NULL.");
         return item->getDescription();
     }
 
@@ -403,6 +415,7 @@ namespace orxonox
     */
     const std::string QuestManager::getId(Quest* item) const
     {
+        OrxAssert(item, "The input Quest is NULL.");
         return item->getId();
     }
 
@@ -416,6 +429,7 @@ namespace orxonox
     */
     const std::string QuestManager::getId(QuestHint* item) const
     {
+        OrxAssert(item, "The input QuestHint is NULL.");
         return item->getId();
     }
 
