@@ -83,10 +83,10 @@ namespace orxonox  // tolua_export
             Quest* getParentQuest(Quest* quest); //!< Get the parent-quest of the input Quest.
 
             QuestDescription* getDescription(Quest* item); //!< Get the QuestDescription of the input Quest.
-            QuestDescription* getDescription(QuestHint* item); //!< Get the QuestDescription of the input QuestHint.
+            QuestDescription* getHintDescription(QuestHint* item); //!< Get the QuestDescription of the input QuestHint.
 
             const std::string getId(Quest* item) const; //!< Get the id of the input Quest.
-            const std::string getId(QuestHint* item) const; //!< Get the id of the input QuestHint.
+            const std::string getHintId(QuestHint* item) const; //!< Get the id of the input QuestHint.
             // tolua_end
 
             bool registerQuest(Quest* quest); //!< Registers a Quest in the QuestManager.
