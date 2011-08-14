@@ -112,6 +112,7 @@ namespace orxonox
 
             void moveToPosition(const Vector3& target);
             void moveToTargetPosition();
+            void absoluteMoveToPosition(const Vector3& target);
 
             virtual void positionReached() {}
 

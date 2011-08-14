@@ -404,6 +404,31 @@ namespace orxonox
         }
     }
 
+    void ArtificialController::absoluteMoveToPosition(const Vector3& target)
+    {
+        float minDistance = 40.0f;
+        if (!this->getControllableEntity())
+            return;
+
+        Vector2 coord = get2DViewdirection(this->getControllableEntity()->getPosition(), this->getControllableEntity()->getOrientation() * WorldEntity::FRONT, this->getControllableEntity()->getOrientation() * WorldEntity::UP, target);
+        float distance = (target - this->getControllableEntity()->getPosition()).length();
+
+            if (this->target_ || distance > minDistance)
+            {
+                // Multiply with ROTATEFACTOR_FREE to make them a bit slower
+                this->getControllableEntity()->rotateYaw(-1.0f * ROTATEFACTOR_FREE * sgn(coord.x) * coord.x*coord.x);
+                this->getControllableEntity()->rotatePitch(ROTATEFACTOR_FREE * sgn(coord.y) * coord.y*coord.y);
+                this->getControllableEntity()->moveFrontBack(SPEED_FREE);
+            }
+
+
+        if (distance < minDistance)
+        {
+            this->positionReached();
+        }
+    }
+
+
     void ArtificialController::moveToTargetPosition()
     {
         this->moveToPosition(this->targetPosition_);
