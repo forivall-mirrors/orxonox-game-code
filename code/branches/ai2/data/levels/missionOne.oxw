@@ -76,12 +76,14 @@ TODO: send in waypoint controlled ship that moves
 "Task complete. Manual rockets are your most powerful weapon. But since you have to steer it to your target yourself, you will leave your spaceship unprotected for a while. Now lets move to a slightly more difficult target. Take a look at your radar. The red dot is an enemy's ship. Try to turn your ship towards it, such that the red dot is in the radar's centre. You should be able to see it then directly. Your task is to destroy it."
 
 TODO: Turn engine on. Display a waypoint.
-"Lets start flying. Use W to accelerate and S to brake. The goal is to reach the spacestation which is displayed on the radar. If you want to be faster you can temporarily boost by hitting additionally to A the space button. If you use too much boost your engine heats up and you won't be able to use boost for a while. By the way boost could be useful during combat .."
+"Lets start flying. Use W to accelerate and S to brake. The goal is to reach the spacestation which is displayed on the radar. If you want to be faster you can temporarily boost by hitting additionally the space button. If you use too much boost your engine heats up and you won't be able to use boost for a while. By the way boost could be useful during combat .."
 "That thing you've just collected is a drone. It will follow and protect you."
 TODO: send in a level 0.1 bot on a pirate ship.
 "Hi. We have been attacked by a pirate lately. Please protect us. The drone pickup will help you."
 
 -->
+
+
 <!-------------------------------------- PART ONE: Destroy boxes --------------------------------------->
     <DistanceTrigger name="spawndelaytrigger1" position="-200,0,0" target="Pawn" distance=10 stayActive="true" delay=2 />
     <SimpleNotification message="Destroy those four boxes.">
@@ -131,6 +133,12 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <events>
             <trigger>
                 <Pawn health=30 position="0,100,0" direction="0,-1,0" collisionType=dynamic mass=100000>
+                    <!--events>
+                        <visibility>
+                            <EventListener event=spawndelaytrigger3 />
+                        </visibility>
+                   </events-->
+
                     <attached>
                         <Model position="0,0,0" mesh="crate.mesh" scale3D="3,3,3" />
                     </attached>
@@ -141,6 +149,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
             </trigger>
         </events>
     </SimpleNotification>
+
 
   <SimpleNotification message="Aim at the last target and press 'T'." broadcast="true">
         <events>
@@ -175,7 +184,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
 
 <!--------------------------------------PART TWO: Moving targets --------------------------------------->
     <DistanceTrigger name="movingtargets" position="0,500,0" target="Pawn" distance=180 stayActive="true" delay=2 />
-    <Billboard position="0,500,0" material="Examples/Flare" colour="0.5,0,0" scale=3/>
+    <Billboard position="0,500,0" material="Examples/Flare" colour="0.5,0,0" scale=3/><!-- TODO: hide. -->
     <SimpleNotification message="Try to hit the pirates while you are flying.">
         <events>
             <trigger>
@@ -286,7 +295,7 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events-->
     </PortalEndPoint>
 
-    <PortalEndPoint position="-40000,0,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" />
+    <PortalEndPoint position="-47000,-1000,0" id="2" distance="40" target="MobileEntity" design="PortalDefault" />
     <PortalLink fromID="1" toID="2" />
     <PortalLink fromID="2" toID="1" />
 <!-- PORTALS END-->
@@ -326,20 +335,94 @@ TODO: send in a level 0.1 bot on a pirate ship.
         </events>
     </SpaceShip -->
 
-<!-------------------------------------- PART FOUR : Get Help --------------------------------------->
-    <PickupSpawner position="-40400,100,0" triggerDistance="10" respawnTime="30" maxSpawnedItems="1">
+<!-------------------------------------- PART FOUR : Get Help --------------------------------------->   
+    <DistanceTrigger name="famer1" position="-48200,100,0" target="Pawn" distance=300 stayActive="true" delay=0 />
+    <SimpleNotification message="We just received a message from DuBall.">
+        <events>
+            <trigger>
+                <EventListener event=famer1 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <DistanceTrigger name="famer2" position="-48200,100,0" target="Pawn" distance=300 stayActive="true" delay=4 />
+    <SimpleNotification message="We will lend you our strongest ship.">
+        <events>
+            <trigger>
+                <EventListener event=famer2 />
+            </trigger>
+        </events>
+    </SimpleNotification>
+<!-- TODO: a) docking, b) spacecruiser, c) enemy -->
+
+    <!-- HYDROGEN FARMER & DOCKING?? -->
+    <SpaceShip position="-48600,100,0" roll=90 yaw=0 pitch=20 mass=10000 health=100000 >
+      <attached>
+        <!-- Docking -->
+        <!--DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" /-->
+
+        <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
+   <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
+        <Model mesh="cube.mesh" mass=10 position="290,0,-480" scale3D="115,100,245" yaw=-120 />
+        <Model mesh="cube.mesh" mass=10 position="290,0,480" scale3D="115,100,245" yaw=-240 />
+        <Model mesh="cube.mesh" mass=10 position="-280,0,0" scale3D="163,50,50" />
+        <Model mesh="cube.mesh" mass=10 position="140,0,-240" scale3D="163,50,50"  yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="140,0,240" scale3D="163,50,50" yaw=-240/>
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" />
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="0,530,0" scale3D="172,52,298" yaw=-240/>
+        <Model mesh="cube.mesh" mass=10 position="0,400,0" scale3D="43,110,26" yaw=-30 />
+        <Model mesh="cube.mesh" mass=10 position="-200,100,0" scale3D="26,50,43" />
+        <Model mesh="cube.mesh" mass=10 position="100,100,-173" scale3D="43,50,26" yaw=-30/>
+        <Model mesh="cube.mesh" mass=10 position="100,100,173" scale3D="43,50,26" yaw=30/>
+        <Model mesh="cube.mesh" mass=10 position="-100,264,0" scale3D="26,105,43" roll=-49/>
+        <Model mesh="cube.mesh" mass=10 position="50,264,-87" scale3D="26,105,43" roll=-49 yaw=-120/>
+        <Model mesh="cube.mesh" mass=10 position="50,264,87" scale3D="26,105,43" roll=-49 yaw=-240/>     -->
+      </attached>
+      <collisionShapes>
+        <BoxCollisionShape  position="-560,0,0" halfExtents="115,100,245" /><!-- Three lower boxes -->
+        <BoxCollisionShape  position="290,0,-480" halfExtents="115,100,245" yaw=-120 />
+        <BoxCollisionShape  position="290,0,480" halfExtents="115,100,245" yaw=-240 />
+        <BoxCollisionShape  position="-280,0,0" halfExtents="163,50,50" /><!-- Three lower connections -->
+        <BoxCollisionShape  position="140,0,-240" halfExtents="163,50,50" yaw=-120 />
+        <BoxCollisionShape  position="140,0,240" halfExtents="163,50,50" yaw=-240 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" /><!-- Upper Tower -->
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-120 />
+        <BoxCollisionShape  position="0,530,0" halfExtents="172,52,298" yaw=-240 />
+        <BoxCollisionShape  position="0,400,0" halfExtents="43,110,26" yaw=-30 /><!-- Middle one-->
+        <BoxCollisionShape  position="-200,100,0" halfExtents="26,50,43" /><!--Three lower legs -->
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=-30 />
+        <BoxCollisionShape  position="100,100,-173" halfExtents="43,50,26" yaw=30 />
+        <BoxCollisionShape  position="-100,264,0" halfExtents="26,105,43" roll=-49 /><!--Three upper legs -->
+        <BoxCollisionShape  position="50,264,-87" halfExtents="26,105,43" roll=-49 yaw=-120 />
+        <BoxCollisionShape  position="50,264,87" halfExtents="26,105,43" roll=-49 yaw=-240 />
+      </collisionShapes>
+    </SpaceShip>
+
+
+
+<!-- Pickup - find better place !! -->
+    <DistanceTrigger name="pickupShield" position="-49300,100,0" target="Pawn" distance=20 stayActive="true" delay=0 />
+    <SimpleNotification message="This pickup enhances your shield.">
+        <events>
+            <trigger>
+                <EventListener event=pickupShield />
+            </trigger>
+        </events>
+    </SimpleNotification>
+
+    <PickupSpawner position="-49300,100,0" triggerDistance="20" respawnTime="30" maxSpawnedItems="1">
       <pickup>
-        <DronePickup template=dronepickup />
+        <ShieldPickup template=hugeshieldpickup />
       </pickup>
-    </PickupSpawner>    
-
-
-
+    </PickupSpawner>
+<!-- Pickup-->
 
 
     <Planet
-      position="-50000,0,0"
-      scale="1000"
+      position="-44000,0,0"
+      scale="2500"
       collisionType="dynamic"
       linearDamping="0.8"
       angularDamping="0"
@@ -354,16 +437,88 @@ TODO: send in a level 0.1 bot on a pirate ship.
       collisiondamage = 2
       enablecollisiondamage = true
     >
-      <attached>
-        <ForceField position="0,0,0" mode="sphere" diameter="10000" velocity="-50" />
-      </attached>
+      <!--attached>
+        <ForceField position="0,0,0" mode="sphere" diameter="10000" velocity="-50" /> 
+      </attached-->  <!-- Forcefield kills HYDROGEN FARMER-->
       <collisionShapes>
-        <SphereCollisionShape radius="1000" position="0,0,0" />
+        <SphereCollisionShape radius="2350" position="0,0,0" /> <!-- Nasty: Collisionradius =! planet scale -->
       </collisionShapes>
     </Planet>
 
 
 <!--------------------------------------DUMP YARD --------------------------------------->
+<!-- TODO: Docking causes game to crash !! what went wrong ?? -->
+    <!-- Dock position="-48600,1288,-255" roll=90 yaw=180 >
+        <animations>
+            <MoveToDockingTarget target="destroyer" />
+        </animations>
+        <effects>
+            <DockToShip target="spaceShip" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+        </events>
+        <attached>
+            <DistanceTrigger position="10,-202, -42" distance="800" target="Pawn"
+                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
+            />
+            <Billboard position="0,0,0" material="Examples/Flare" colour="0.5,0,0" scale=3/>
+        </attached>
+    </Dock>
+
+    <SpaceShip template="spaceshipassff" position="-48600,5000,67" orientation="-0.14045, 0.68254, 0.68144, 0.223774" >
+      <attached>
+        <DockingTarget name="spaceShip" />
+      </attached>
+    </SpaceShip-->
+
+
+
+<!-- TODO: a) bots trigger themselves b) bots are not in player's team c) bots do friendly fire -->
+
+<!--Trigger to activate this Team (TEAM NO 1)-->
+    <!--DistanceTrigger name="activateTeam0No1" position="-40400,100,0" distance="300" target="Pawn" activations="1" stayactive="true" /-->
+<!--TEAM NO 1 (activationType : distance || killing a spaceship what belongs to TEAM 0 NO 0)-->
+<?lua for i=0,10,1 do
+x=math.random(-300,300)
+y=math.random(-200,200)
+z=math.random(-200,200)
+?>
+    <EventTrigger name="activateTeam0No1" activations=1 stayactive="true">
+        <events>
+            <trigger>
+                <SpaceShip position="<?lua print(x-39200) ?>,<?lua print(y-2000) ?>,<?lua print(z+4000) ?>" lookat="<?lua print(4000+x) ?>,<?lua print(y) ?>,<?lua print(z+3000) ?>">
+                    <templates>
+                        <Template link=spaceshipassff />
+                    </templates>
+                    <controller>
+                        <WaypointPatrolController alertnessradius=3129 team=0 active=false>
+                            <waypoints>
+                                <Model mesh="cube.mesh" scale=0 position="-40000,0,0" />
+                                <Model mesh="cube.mesh" scale=0 position="-40100,250,-500" />
+                                <Model mesh="cube.mesh" scale=0 position="0,0,0" />
+                            </waypoints>
+                            <events>
+                                <activity>
+                                    <EventListener event="activateTeam0No1" />
+                                </activity>
+                            </events>
+                        </WaypointPatrolController>
+                    </controller>
+                </SpaceShip>
+            </trigger>
+        </events>
+    </EventTrigger>
+
+<?lua end ?>
+<!--Creating spaceships (player's team) END -->
+
+
+
+
+
 <!-- Idea: Pawndeath should trigger several , delayed events. -->
     <!--EventTrigger name="PawnDied4" >
         <events>

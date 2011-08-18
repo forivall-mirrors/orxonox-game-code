@@ -51,7 +51,6 @@ namespace orxonox
         this->owner_ = 0;
         this->drone_ = 0;
         this->isShooting_ = false;
-        //this->criticalDistance_ = 1000.0f;
         this->setAccuracy(10);
 
         this->actionTimer_.setTimer(ACTION_INTERVAL, true, createExecutor(createFunctor(&DroneController::action, this)));
