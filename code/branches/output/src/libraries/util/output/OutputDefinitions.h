@@ -57,7 +57,7 @@
     Sub-contexts act like normal contexts, except that multiple sub-contexts
     share the context mask of their main-context. This allows contexts with
     more descriptive names (e.g. input::keyboard) and they can be filtered
-    individually by derivatives of orxonox::BaseWriter.
+    individually by derivatives of orxonox::SubcontextOutputListener.
 */
 #define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
     const OutputContextContainer& subname() { static const OutputContextContainer& context = registerContext(#name, #subname); return context; }
@@ -159,7 +159,6 @@ namespace orxonox
                 REGISTER_OUTPUT_SUBCONTEXT(misc, overlays);
                 REGISTER_OUTPUT_SUBCONTEXT(misc, script);
             }
-
         }
     }
 } // tolua_export

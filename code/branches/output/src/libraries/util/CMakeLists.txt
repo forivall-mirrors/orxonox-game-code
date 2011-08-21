@@ -38,15 +38,9 @@ END_BUILD_UNIT
   Math.cc
   SignalHandler.cc
   StringUtils.cc
-  output/OutputStream.cc
-  output/OutputManager.cc
-  output/OutputListener.cc
-  output/BaseWriter.cc
-  output/ConsoleWriter.cc
-  output/LogWriter.cc
-  output/MemoryWriter.cc
-  output/SubcontextOutputListener.cc
 )
+
+ADD_SUBDIRECTORY(output)
 
 ORXONOX_ADD_LIBRARY(util
   FIND_HEADER_FILES

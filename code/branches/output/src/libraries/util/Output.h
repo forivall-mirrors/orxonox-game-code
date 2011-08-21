@@ -44,9 +44,10 @@
     Levels and contexts are defined in OutputDefinitions.h
 
     Each orxonox::OutputListener can define a mask of desired levels and
-    contexts, to receive only a part of the output. A derivative of
-    orxonox::BaseWriter is able to define these masks through config values
-    and to filter specific subcontexts.
+    contexts, to receive only a part of the output. Instances of
+    orxonox::SubcontextOutputListener are even able to filter sub-contexts.
+    A derivative of orxonox::BaseWriter is able to define these levels and
+    contexts through config values.
 
     @attention
     A message sent to the output system MUST end with "endl" or the message

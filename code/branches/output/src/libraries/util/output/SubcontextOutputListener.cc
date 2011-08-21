@@ -26,20 +26,38 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of the SubcontextOutputListener interface.
+*/
+
 #include "SubcontextOutputListener.h"
 
 namespace orxonox
 {
+    /**
+        @brief Constructor, initializes the context masks.
+    */
     SubcontextOutputListener::SubcontextOutputListener(bool bRegister) : OutputListener(bRegister)
     {
         this->subcontextsCheckMask_ = context::none;
         this->subcontextsNoCheckMask_ = context::none;
     }
 
+    /**
+        @brief Destructor.
+    */
     SubcontextOutputListener::~SubcontextOutputListener()
     {
     }
 
+    /**
+        @brief Overwritten implementation of the function defined by OutputListener.
+
+        Contexts defined with this function are accepted independent of the
+        sub-context. The "final" mask of additional contexts is defined by the
+        combination of this mask and the masks of all accepted sub-contexts.
+    */
     void SubcontextOutputListener::setAdditionalContextsMask(OutputContextMask mask)
     {
         this->subcontextsNoCheckMask_ = mask;
@@ -47,11 +65,19 @@ namespace orxonox
         OutputListener::setAdditionalContextsMask(this->subcontextsCheckMask_ | this->subcontextsNoCheckMask_);
     }
 
+    /**
+        @brief Defines the set of accepted sub-contexts.
+
+        The masks of sub-contexts in this set are added to the mask of
+        additional contexts, but output is only accepted if the exact
+        sub-context exists in this set.
+    */
     void SubcontextOutputListener::setAdditionalSubcontexts(const std::set<const OutputContextContainer*>& subcontexts)
     {
         this->subcontextsCheckMask_ = context::none;
         this->subcontexts_.clear();
 
+        // compose the mask of subcontexts and build the set of sub-context-IDs
         for (std::set<const OutputContextContainer*>::const_iterator it = subcontexts.begin(); it != subcontexts.end(); ++it)
         {
             this->subcontextsCheckMask_ |= (*it)->mask;
@@ -62,7 +88,7 @@ namespace orxonox
     }
 
     /**
-        @brief Returns true if this listener accepts output of the given level and context, based on the levels, contexts masks, and sub-contexts.
+        @brief Returns true if this listener accepts output of the given level and context, based on the levels and contexts masks, as well as the set of accepted sub-contexts.
     */
     bool SubcontextOutputListener::acceptsOutput(OutputLevel level, const OutputContextContainer& context) const
     {
