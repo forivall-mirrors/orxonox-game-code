@@ -10,6 +10,7 @@
   include("templates/lodInformation.oxt")
   include("templates/spaceshipAssff.oxt")
   include("templates/spaceshipPirate.oxt")
+  include("templates/spaceshipSpacecruiser.oxt")
 ?>
 
 <?lua
@@ -45,11 +46,11 @@ include("templates/pickupRepresentationTemplates.oxt")
     ?>
 
     <WorldAmbientSound
-      ambientSource="AlphaCentauri.ogg"
+      ambientSource="Jupiter.ogg"
       looping="true"
       playOnLoad="true"
     />
-
+<!-- AlphaCentauri.ogg-->
     <Light type=directional position="0,0,0" direction="0.253, 0.593, -0.765" diffuse="1.0, 0.9, 0.9, 1.0" specular="1.0, 0.9, 0.9, 1.0"/>
     <SpawnPoint team=0 position="-200,0,0" lookat="0,0,0" spawnclass=SpaceShip pawndesign=spaceshipassff />
     <!-- Script code="artificialcontroller setbotlevel 0.1" /--> <!-- Does not influence waypointPatrolController-->
@@ -359,8 +360,8 @@ TODO: send in a level 0.1 bot on a pirate ship.
     <SpaceShip position="-48600,100,0" roll=90 yaw=0 pitch=20 mass=10000 health=100000 >
       <attached>
         <!-- Docking -->
-        <!--DistanceTriggerBeacon name="bcnDestroyer" />
-        <DockingTarget name="destroyer" /-->
+        <DistanceTriggerBeacon name="bcnDestroyer" />
+        <DockingTarget name="destroyer" />
 
         <Model mesh="HydroHarvester.mesh" mass=10 position="0,0,0" scale=50 />
    <!-- <Model mesh="cube.mesh" mass=10 position="-560,0,0" scale3D="115,100,245"  />
@@ -400,21 +401,50 @@ TODO: send in a level 0.1 bot on a pirate ship.
       </collisionShapes>
     </SpaceShip>
 
+    <Billboard position="-48600,0,0" material="Examples/Flare" colour="0.6,0,0" scale=3/>
+    <Dock position="-48600,0,0" roll=90 yaw=180 >
+        <animations>
+            <MoveToDockingTarget target="destroyer" />
+        </animations>
+        <effects>
+            <DockToShip target="spaceShip" />
+        </effects>
+        <events>
+            <execute>
+                <EventListener event="dockMe" />
+            </execute>
+        </events>
+        <attached>
+            <DistanceTrigger position="10,-202, -42" distance="800" target="Pawn"
+                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
+            />
+        </attached>
+    </Dock>
+
+    <SpaceShip template="spaceshipspacecruiser" position="-48600,800,0" orientation="-0.14, 0.68, 0.68, 0.223" health="300" maxhealth="400" initialhealth="300">
+      <attached>
+        <DockingTarget name="spaceShip" />
+      </attached>
+    </SpaceShip>
+
+
+
+
 
 
 <!-- Pickup - find better place !! -->
-    <DistanceTrigger name="pickupShield" position="-49300,100,0" target="Pawn" distance=20 stayActive="true" delay=0 />
-    <SimpleNotification message="This pickup enhances your shield.">
+    <DistanceTrigger name="pickup" position="-49300,-100,-50" target="Pawn" distance=20 stayActive="true" delay=0 />
+    <SimpleNotification message="This pickup makes you temporarly small.">
         <events>
             <trigger>
-                <EventListener event=pickupShield />
+                <EventListener event=pickup />
             </trigger>
         </events>
     </SimpleNotification>
 
-    <PickupSpawner position="-49300,100,0" triggerDistance="20" respawnTime="30" maxSpawnedItems="1">
+    <PickupSpawner position="-49300,-100,-50" triggerDistance="20" respawnTime="30" maxSpawnedItems="1">
       <pickup>
-        <ShieldPickup template=hugeshieldpickup />
+        <ShieldPickup template=hugeshrinkpickup />
       </pickup>
     </PickupSpawner>
 <!-- Pickup-->
@@ -441,38 +471,12 @@ TODO: send in a level 0.1 bot on a pirate ship.
         <ForceField position="0,0,0" mode="sphere" diameter="10000" velocity="-50" /> 
       </attached-->  <!-- Forcefield kills HYDROGEN FARMER-->
       <collisionShapes>
-        <SphereCollisionShape radius="2350" position="0,0,0" /> <!-- Nasty: Collisionradius =! planet scale -->
+        <SphereCollisionShape radius="2400" position="0,0,0" /> <!-- Nasty: Collisionradius =! planet scale -->
       </collisionShapes>
     </Planet>
 
 
 <!--------------------------------------DUMP YARD --------------------------------------->
-<!-- TODO: Docking causes game to crash !! what went wrong ?? -->
-    <!-- Dock position="-48600,1288,-255" roll=90 yaw=180 >
-        <animations>
-            <MoveToDockingTarget target="destroyer" />
-        </animations>
-        <effects>
-            <DockToShip target="spaceShip" />
-        </effects>
-        <events>
-            <execute>
-                <EventListener event="dockMe" />
-            </execute>
-        </events>
-        <attached>
-            <DistanceTrigger position="10,-202, -42" distance="800" target="Pawn"
-                beaconMode="exclude" targetname="bcnDestroyer" name="dockMe"
-            />
-            <Billboard position="0,0,0" material="Examples/Flare" colour="0.5,0,0" scale=3/>
-        </attached>
-    </Dock>
-
-    <SpaceShip template="spaceshipassff" position="-48600,5000,67" orientation="-0.14045, 0.68254, 0.68144, 0.223774" >
-      <attached>
-        <DockingTarget name="spaceShip" />
-      </attached>
-    </SpaceShip-->
 
 
 
@@ -514,7 +518,6 @@ z=math.random(-200,200)
 
 <?lua end ?>
 <!--Creating spaceships (player's team) END -->
-
 
 
 
