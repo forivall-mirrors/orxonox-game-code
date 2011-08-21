@@ -30,15 +30,11 @@
 #define _BaseWriter_H__
 
 #include "util/UtilPrereqs.h"
-
-#include <set>
-#include <vector>
-
-#include "OutputListener.h"
+#include "SubcontextOutputListener.h"
 
 namespace orxonox
 {
-    class _UtilExport BaseWriter : public OutputListener
+    class _UtilExport BaseWriter : public SubcontextOutputListener
     {
         public:
             BaseWriter(const std::string& name, bool bRegister = true);
@@ -82,10 +78,6 @@ namespace orxonox
             void setAdditionalContextsLevelMask(OutputLevel mask);
 
             std::string name_;
-
-            OutputContextMask subcontextsCheckMask_;
-            OutputContextMask subcontextsNoCheckMask_;
-            std::set<OutputContextSubID> subcontexts_;
     };
 }
 

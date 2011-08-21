@@ -74,11 +74,7 @@ namespace orxonox
             inline OutputLevel getAdditionalContextsLevelMask() const
                 { return this->additionalContextsLevelMask_; }
 
-            /// @brief Returns true if this listener accepts output of the given level and context, based on the levels and contexts masks.
-            inline bool acceptsOutput(OutputLevel level, const OutputContextContainer& context) const
-            {
-                return (this->levelMask_ & level) ||
-                       ((this->additionalContextsLevelMask_ & level) && (this->additionalContextsMask_ & context.mask)); }
+            virtual bool acceptsOutput(OutputLevel level, const OutputContextContainer& context) const;
 
             /// @brief Called by OutputManager for each line of output, checks if this listener actually accepts this output before it calls the output() function.
             inline void unfilteredOutput(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)

@@ -32,16 +32,13 @@
 
 namespace orxonox
 {
-    BaseWriter::BaseWriter(const std::string& name, bool bRegister) : OutputListener(bRegister)
+    BaseWriter::BaseWriter(const std::string& name, bool bRegister) : SubcontextOutputListener(bRegister)
     {
         this->name_ = name;
 
         this->configurableMaxLevel_ = level::none;
         this->configurableAdditionalContextsMaxLevel_ = level::verbose;
         this->configurableAdditionalContexts_.push_back("example");
-
-        this->subcontextsCheckMask_ = context::none;
-        this->subcontextsNoCheckMask_ = context::none;
 
         this->changedConfigurableLevel();
         this->changedConfigurableAdditionalContextsLevel();
@@ -54,16 +51,11 @@ namespace orxonox
 
     void BaseWriter::output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
     {
-        if (((this->subcontextsCheckMask_ & context.mask) == 0) ||
-            (this->subcontextsNoCheckMask_ & context.mask) ||
-            (this->subcontexts_.find(context.sub_id) != this->subcontexts_.end()))
-        {
-            const std::string& prefix = OutputManager::getInstance().getDefaultPrefix(level, context);
-            std::string blanks(prefix.length(), ' ');
+        const std::string& prefix = OutputManager::getInstance().getDefaultPrefix(level, context);
+        std::string blanks(prefix.length(), ' ');
 
-            for (size_t i = 0; i < lines.size(); ++i)
-                this->printLine((i == 0 ? prefix : blanks) + lines[i], level);
-        }
+        for (size_t i = 0; i < lines.size(); ++i)
+            this->printLine((i == 0 ? prefix : blanks) + lines[i], level);
     }
 
     void BaseWriter::setLevelMax(OutputLevel max)
@@ -90,11 +82,8 @@ namespace orxonox
 
     void BaseWriter::changedConfigurableAdditionalContexts()
     {
-        OutputContextMask context_mask = context::none;
-        this->subcontextsCheckMask_ = context::none;
-        this->subcontextsNoCheckMask_ = context::none;
-
-        this->subcontexts_.clear();
+        OutputContextMask main_contexts = context::none;
+        std::set<const OutputContextContainer*> sub_contexts;
 
         for (size_t i = 0; i < this->configurableAdditionalContexts_.size(); ++i)
         {
@@ -110,21 +99,15 @@ namespace orxonox
                 subname = full_name.substr(pos + 2);
             }
 
-            const OutputContextContainer& container = OutputManager::getInstance().registerContext(name, subname);
+            const OutputContextContainer& context = OutputManager::getInstance().registerContext(name, subname);
 
-            context_mask |= container.mask;
-
-            if (container.sub_id != context::no_subcontext)
-            {
-                this->subcontexts_.insert(container.sub_id);
-                this->subcontextsCheckMask_ |= container.mask;
-            }
+            if (context.sub_id == context::no_subcontext)
+                main_contexts |= context.mask;
             else
-            {
-                this->subcontextsNoCheckMask_ |= container.mask;
-            }
+                sub_contexts.insert(&context);
         }
 
-        this->setAdditionalContextsMask(context_mask);
+        this->setAdditionalContextsMask(main_contexts);
+        this->setAdditionalSubcontexts(sub_contexts);
     }
 }

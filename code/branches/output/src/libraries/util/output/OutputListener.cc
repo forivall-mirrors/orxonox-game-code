@@ -129,4 +129,21 @@ namespace orxonox
 
         OutputManager::getInstance().updateCombinedAdditionalContextsMask();
     }
+
+    /**
+        @brief Returns true if this listener accepts output of the given level and context, based on the levels and contexts masks.
+    */
+    bool OutputListener::acceptsOutput(OutputLevel level, const OutputContextContainer& context) const
+    {
+        // check if the output level is accepted by the level mask (independent of the context)
+        if (this->levelMask_ & level)
+            return true;
+
+        // check if the output context is accepted by the additional context mask and if the level matches as well
+        if ((this->additionalContextsMask_ & context.mask) && (this->additionalContextsLevelMask_ & level))
+            return true;
+
+        // otherwise we don't accept the output
+        return false;
+    }
 }

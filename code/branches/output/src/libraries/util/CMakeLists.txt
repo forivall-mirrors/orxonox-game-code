@@ -45,6 +45,7 @@ END_BUILD_UNIT
   output/ConsoleWriter.cc
   output/LogWriter.cc
   output/MemoryWriter.cc
+  output/SubcontextOutputListener.cc
 )
 
 ORXONOX_ADD_LIBRARY(util
