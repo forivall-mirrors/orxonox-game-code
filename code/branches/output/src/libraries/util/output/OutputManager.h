@@ -26,6 +26,13 @@
  *
  */
 
+/**
+    @file
+    @ingroup Output
+    @brief Declaration of the OutputManager class which receives output from orxonox::OutputStream
+    and distributes it to all instances of orxonox::OutputListener.
+*/
+
 #ifndef _OutputManager_H__
 #define _OutputManager_H__
 
@@ -38,6 +45,21 @@
 
 namespace orxonox
 {
+    /**
+        @brief OutputManager acts as the center of the output system and is implemented as a singleton.
+
+        All instances of OutputStream (and hence also the orxout() function)
+        send their buffered output to OutputManager. OutputManager then
+        distributes this output to all registered instances of OutputListener.
+
+        For each listener OutputManager checks if it wants to receive output
+        with the given level and context. OutputManager itself also maintains
+        masks that define the accepted levels and concept. They are a
+        combination of the masks of all output listeners. See the description
+        of OutputListener for a more conclusive description of these masks.
+
+        Additionally OutputManager is used to register output contexts.
+    */
     class _UtilExport OutputManager
     {
         public:
@@ -54,6 +76,13 @@ namespace orxonox
             void updateCombinedAdditionalContextsLevelMask();
             void updateCombinedAdditionalContextsMask();
 
+            /**
+                @brief Returns true if at least one of the output listeners will accept output with the given level and context.
+
+                For the sake of performance, output messages with levels or
+                contexts that are not accepted should be ignored or, even
+                better, not generated at all.
+            */
             inline bool acceptsOutput(OutputLevel level, const OutputContextContainer& context) const
             {
                 return (this->combinedLevelMask_ & level) ||
@@ -70,15 +99,15 @@ namespace orxonox
             OutputManager(const OutputManager&);
             ~OutputManager();
 
-            std::vector<OutputListener*> listeners_;
+            std::vector<OutputListener*> listeners_;                            ///< List of all registered output listeners
 
-            OutputLevel       combinedLevelMask_;
-            OutputLevel       combinedAdditionalContextsLevelMask_;
-            OutputContextMask combinedAdditionalContextsMask_;
+            OutputLevel       combinedLevelMask_;                               ///< The combined mask of accepted levels of all listeners
+            OutputLevel       combinedAdditionalContextsLevelMask_;             ///< The combined mask of accepted additional contexts levels of all listeners
+            OutputContextMask combinedAdditionalContextsMask_;                  ///< The combined mask of accepted additional contexts of all listeners
 
-            std::map<std::string, OutputContextMask> contextMasks_;
-            std::map<std::string, OutputContextContainer> contextContainers_;
-            OutputContextSubID subcontextCounter_;
+            std::map<std::string, OutputContextMask> contextMasks_;             ///< Contains all main-contexts and their masks
+            std::map<std::string, OutputContextContainer> contextContainers_;   ///< Contains all contexts including sub-contexts and their containers
+            OutputContextSubID subcontextCounter_;                              ///< Counts the number of sub-contexts (and generates their IDs)
     };
 }
 

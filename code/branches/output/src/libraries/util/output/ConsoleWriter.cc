@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of the ConsoleWriter singleton.
+*/
+
 #include "ConsoleWriter.h"
 
 #include <iostream>
@@ -34,6 +39,14 @@
 
 namespace orxonox
 {
+    /**
+        @brief Constructor, initializes the output level.
+
+        In debug builds, it writes output up to level::internal_warning to the
+        console, in release builds only up to level::user_info.
+
+        After creation, the instance is enabled.
+    */
     ConsoleWriter::ConsoleWriter() : BaseWriter("Console")
     {
 #ifdef ORXONOX_RELEASE
@@ -44,21 +57,33 @@ namespace orxonox
         this->bEnabled_ = true;
     }
 
+    /**
+        @brief Destructor.
+    */
     ConsoleWriter::~ConsoleWriter()
     {
     }
 
+    /**
+        @brief Returns the only existing instance of this class.
+    */
     /*static*/ ConsoleWriter& ConsoleWriter::getInstance()
     {
         static ConsoleWriter instance;
         return instance;
     }
 
+    /**
+        @brief Inherited function from BaseWriter, writes output to the console using std::cout.
+    */
     void ConsoleWriter::printLine(const std::string& line, OutputLevel)
     {
         std::cout << line << std::endl;
     }
 
+    /**
+        @brief Enables the instance by registering itself as listener at OutputManager.
+    */
     void ConsoleWriter::enable()
     {
         if (!this->bEnabled_)
@@ -68,6 +93,9 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Disables the instance by unregistering itself from OutputManager.
+    */
     void ConsoleWriter::disable()
     {
         if (this->bEnabled_)

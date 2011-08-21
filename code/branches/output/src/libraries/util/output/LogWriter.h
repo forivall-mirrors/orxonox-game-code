@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file
+    @ingroup Output
+    @brief Declaration of the LogWriter singleton which writes output to a log-file.
+*/
+
 #ifndef _LogWriter_H__
 #define _LogWriter_H__
 
@@ -37,6 +43,16 @@
 
 namespace orxonox
 {
+    /**
+        @brief The LogWriter class inherits from BaseWriter and writes output to a log-file.
+
+        It is implemented as singleton because we (currently) use only one
+        log-file. The path of the file can be changed, in which case the file
+        is rewritten by using the output stored by MemoryWriter. This adds the
+        possibility to change the desired output levels before changing the
+        path in order to get the complete output with the new output levels
+        at the new path.
+    */
     class _UtilExport LogWriter : public BaseWriter
     {
         public:
@@ -55,11 +71,11 @@ namespace orxonox
             void openFile();
             void closeFile();
 
-            std::string filename_;
-            std::string path_;
-            bool bDefaultPath_;
+            std::string filename_;  ///< The name of the log-file (without directories)
+            std::string path_;      ///< The path of the log-file (without file-name)
+            bool bDefaultPath_;     ///< If true, the log-file resides at the default path (which is usually a temporary directory)
 
-            std::ofstream file_;
+            std::ofstream file_;    ///< The output file stream.
     };
 }
 

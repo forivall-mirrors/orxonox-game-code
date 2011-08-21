@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file
+    @ingroup Output
+    @brief Declaration of the ConsoleWriter singleton which is used to write output to the console.
+*/
+
 #ifndef _ConsoleWriter_H__
 #define _ConsoleWriter_H__
 
@@ -34,6 +40,12 @@
 
 namespace orxonox
 {
+    /**
+        @brief ConsoleWriter inherits from BaseWriter and writes output to the console.
+
+        This class can be seen as an equivalent to std::cout within the output
+        system. It is implemented as a singleton for static acces.
+    */
     class _UtilExport ConsoleWriter : public BaseWriter
     {
         public:
@@ -50,7 +62,7 @@ namespace orxonox
             ConsoleWriter(const ConsoleWriter&);
             virtual ~ConsoleWriter();
 
-            bool bEnabled_;
+            bool bEnabled_; ///< If false, the instance will not write output to the console.
     };
 }
 

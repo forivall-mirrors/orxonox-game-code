@@ -26,32 +26,51 @@
  *
  */
 
-#include "MemoryWriter.h"
+/**
+    @file
+    @brief Implementation of the MemoryWriter singleton.
+*/
 
+#include "MemoryWriter.h"
 #include "OutputManager.h"
 
 namespace orxonox
 {
+    /**
+        @brief Constructor, initializes the level mask with all levels activated.
+    */
     MemoryWriter::MemoryWriter()
     {
         this->setLevelMask(level::all);
     }
 
+    /**
+        @brief Destructor.
+    */
     MemoryWriter::~MemoryWriter()
     {
     }
 
+    /**
+        @brief Returns the only existing instance of this singleton class.
+    */
     /*static*/ MemoryWriter& MemoryWriter::getInstance()
     {
         static MemoryWriter instance;
         return instance;
     }
 
+    /**
+        @brief Implementation of the output() function inherited from OutputListener, stores the received output in memory.
+    */
     void MemoryWriter::output(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
     {
         this->messages_.push_back(Message(level, context, lines));
     }
 
+    /**
+        @brief Iterates over all stored output messages and sends them to the OutputListener.
+    */
     void MemoryWriter::resendOutput(OutputListener* listener) const
     {
         for (size_t i = 0; i < this->messages_.size(); ++i)
@@ -61,6 +80,9 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Unregisters the instance from OutputManager, hence it will not receive any further output.
+    */
     void MemoryWriter::disable()
     {
         OutputManager::getInstance().unregisterListener(this);

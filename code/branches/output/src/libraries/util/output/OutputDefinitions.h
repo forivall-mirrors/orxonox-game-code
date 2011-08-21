@@ -26,15 +26,39 @@
  *
  */
 
+/**
+    @file
+    @ingroup Output
+    @brief Defines output levels and output contexts.
+*/
+
 #ifndef _OutputDefinitions_H__
 #define _OutputDefinitions_H__
 
 #include "util/UtilPrereqs.h"
 #include <string>
 
+/**
+    @brief Defines a context function with a given name.
+    @param name Name of the context
+
+    Context functions return a reference to a OutputContextContainer. Context
+    functions (or the containers they return) can be passed to orxout() as
+    context argument.
+*/
 #define REGISTER_OUTPUT_CONTEXT(name) \
     const OutputContextContainer& name() { static const OutputContextContainer& context = registerContext(#name); return context; }
 
+/**
+    @brief Defines a sub-context.
+    @param name Name of the main-context
+    @param subname Name of the sub-context
+
+    Sub-contexts act like normal contexts, except that multiple sub-contexts
+    share the context mask of their main-context. This allows contexts with
+    more descriptive names (e.g. input::keyboard) and they can be filtered
+    individually by derivatives of orxonox::BaseWriter.
+*/
 #define REGISTER_OUTPUT_SUBCONTEXT(name, subname) \
     const OutputContextContainer& subname() { static const OutputContextContainer& context = registerContext(#name, #subname); return context; }
 
@@ -43,54 +67,63 @@ namespace orxonox
 {
     namespace level
     {
+        /**
+            @brief Output levels define type and importance of an output message.
+            They can be passed to the orxout() function as level argument.
+        */
         enum OutputLevel
         {
-            all              = 0xFFFF,
-            none             = 0x0000,
+            all              = 0xFFFF, ///< Level mask with all bits set to 1
+            none             = 0x0000, ///< Level mask with all bits set to 0
 
-            message          = 0x0001,
-            debug_output     = 0x0002,
-            user_error       = 0x0004,
-            user_warning     = 0x0008,
-            user_status      = 0x0010,
-            user_info        = 0x0020,
-            internal_error   = 0x0040,
-            internal_warning = 0x0080,
-            internal_status  = 0x0100,
-            internal_info    = 0x0200,
-            verbose          = 0x0400,
-            verbose_more     = 0x0800,
-            verbose_ultra    = 0x1000
+            message          = 0x0001, ///< Output level, used for messages directed to the user (e.g. "Press any key to continue")
+            debug_output     = 0x0002, ///< Output level, used for temporary debug output while writing code
+            user_error       = 0x0004, ///< Output level, used for error messages which are important for the user
+            user_warning     = 0x0008, ///< Output level, used for warnings which are important for the user
+            user_status      = 0x0010, ///< Output level, used to notify the user about the program's state
+            user_info        = 0x0020, ///< Output level, used to provide the user with additional progress information
+            internal_error   = 0x0040, ///< Output level, used for error messages which are important for developers
+            internal_warning = 0x0080, ///< Output level, used for warnings which are important for developers
+            internal_status  = 0x0100, ///< Output level, used to log the program's internal state in the log file
+            internal_info    = 0x0200, ///< Output level, used to log information about the program's progress in the log file
+            verbose          = 0x0400, ///< Output level, usually not visible, used for unimportant debug information
+            verbose_more     = 0x0800, ///< Output level, usually not visible, used for unimportant debug information (less important than verbose)
+            verbose_ultra    = 0x1000  ///< Output level, usually not visible, used for unimportant debug information (even less important than verbose_more)
         };
     }
 // tolua_end
 
     using namespace level;
 
-    typedef uint64_t OutputContextMask;
-    typedef uint16_t OutputContextSubID;
+    typedef uint64_t OutputContextMask;  ///< Used to store the context masks. Each bit defines a context.
+    typedef uint16_t OutputContextSubID; ///< Used to store the IDs of sub-contexts. Each number except context::no_subcontext defines a sub-context.
 
+    /// @brief Stores all information about a context.
     struct OutputContextContainer
     {
-        OutputContextMask mask;
-        OutputContextSubID sub_id;
-        std::string name;
+        OutputContextMask mask;     ///< The mask of the context (or the mask of the main-context if this container defines a sub-context)
+        OutputContextSubID sub_id;  ///< The id of the sub-context (or context::no_subcontext if this container doesn't define a sub-context)
+        std::string name;           ///< The name of this context
     };
 
     typedef const OutputContextContainer& (OutputContextFunction)();
 
+    /**
+        @brief Registers a context.
+        This is a shortcut to OutputManager::registerContext() to avoid the inclusion of its header file.
+    */
     extern _UtilExport const OutputContextContainer& registerContext(const std::string& name, const std::string& subname = "");
 
     namespace context
     {
-        static const OutputContextMask all       = 0xFFFFFFFFFFFFFFFF;
-        static const OutputContextMask none      = 0x0000000000000000;
+        static const OutputContextMask all       = 0xFFFFFFFFFFFFFFFF; ///< Context mask, all bits set to 1
+        static const OutputContextMask none      = 0x0000000000000000; ///< Context mask, all bits set to 0
 
-        static const OutputContextSubID no_subcontext = 0;
+        static const OutputContextSubID no_subcontext = 0; ///< Used as ID for contexts which are not sub-contexts
 
         namespace
         {
-            REGISTER_OUTPUT_CONTEXT(undefined);
+            REGISTER_OUTPUT_CONTEXT(undefined); ///< "undefined" context which is implicitly used for all output that has no explicit context
 
             REGISTER_OUTPUT_CONTEXT(ogre);
             REGISTER_OUTPUT_CONTEXT(cegui);

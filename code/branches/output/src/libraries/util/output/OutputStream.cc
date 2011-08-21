@@ -26,28 +26,47 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of the non-generic functions of the OutputStream class.
+*/
+
 #include "OutputStream.h"
 
 #include "OutputManager.h"
 
 namespace orxonox
 {
+    /**
+        @brief Default constructor, initializes level and context with default values.
+    */
     OutputStream::OutputStream()
     {
         this->setOutputAttributes(level::debug_output, context::undefined());
     }
 
+    /**
+        @brief Constructor, initializes level and context with the provided values.
+    */
     OutputStream::OutputStream(OutputLevel level, const OutputContextContainer& context)
     {
         this->setOutputAttributes(level, context);
     }
 
+    /**
+        @brief Sends the buffered message to OutputManager together with the stored level and context.
+        Additionally empties the buffer.
+    */
     void OutputStream::sendMessage()
     {
         OutputManager::getInstanceAndCreateListeners().pushMessage(this->level_, *this->context_, this->str());
         this->str("");
     }
 
+    /**
+        @brief Defines level and context of the following output.
+        Also sets the bAcceptsOutput_ flag according to the masks defined in OutputManager.
+    */
     void OutputStream::setOutputAttributes(OutputLevel level, const OutputContextContainer& context)
     {
         this->level_ = level;

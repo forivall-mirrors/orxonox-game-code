@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of the OutputManager singleton.
+*/
+
 #include "OutputManager.h"
 
 #include "MemoryWriter.h"
@@ -36,6 +41,9 @@
 
 namespace orxonox
 {
+    /**
+        @brief Constructor, initializes all values.
+    */
     OutputManager::OutputManager()
     {
         this->combinedLevelMask_ = level::none;
@@ -45,16 +53,30 @@ namespace orxonox
         this->subcontextCounter_ = 0;
     }
 
+    /**
+        @brief Destructor.
+    */
     OutputManager::~OutputManager()
     {
     }
 
+    /**
+        @brief Returns the only existing instance of the OutputManager singleton.
+    */
     /*static*/ OutputManager& OutputManager::getInstance()
     {
         static OutputManager instance;
         return instance;
     }
 
+    /**
+        @brief Returns the only existing instance of the OutputManager singleton
+        and ensures that the most important output listeners exist.
+
+        You should use this function if you send output to OutputManager and want
+        to be sure that the most important output listeners exist. Don't use it
+        elsewhere inside the output system to avoid circular calls.
+    */
     /*static*/ OutputManager& OutputManager::getInstanceAndCreateListeners()
     {
         static OutputManager& instance = OutputManager::getInstance();
@@ -66,6 +88,16 @@ namespace orxonox
         return instance;
     }
 
+    /**
+        @brief Sends an output message to all output listeners.
+        @param level The level of the message
+        @param context The context of the message
+        @param message The output message (may contain '\\n')
+
+        This function splits the message into lines (if it contains '\\n') and
+        sends it to the output listeners. They may ignore the message if it
+        doesn't match their level- and context-masks.
+    */
     void OutputManager::pushMessage(OutputLevel level, const OutputContextContainer& context, const std::string& message)
     {
         std::vector<std::string> lines;
@@ -75,12 +107,18 @@ namespace orxonox
             this->listeners_[i]->unfilteredOutput(level, context, lines);
     }
 
+    /**
+        @brief Adds an output listener to the list of listeners.
+    */
     void OutputManager::registerListener(OutputListener* listener)
     {
         this->listeners_.push_back(listener);
         this->updateMasks();
     }
 
+    /**
+        @brief Removes an output listener from the list of listeners.
+    */
     void OutputManager::unregisterListener(OutputListener* listener)
     {
         for (std::vector<OutputListener*>::iterator it = this->listeners_.begin(); it != this->listeners_.end(); ++it)
@@ -94,6 +132,9 @@ namespace orxonox
         this->updateMasks();
     }
 
+    /**
+        @brief Updates all three combined level- and context-masks.
+    */
     void OutputManager::updateMasks()
     {
         this->updateCombinedLevelMask();
@@ -101,6 +142,9 @@ namespace orxonox
         this->updateCombinedAdditionalContextsMask();
     }
 
+    /**
+        @brief Updates the combined level mask. The masks of all listeners are ORed to form the combined mask.
+    */
     void OutputManager::updateCombinedLevelMask()
     {
         int mask = 0;
@@ -109,6 +153,9 @@ namespace orxonox
         this->combinedLevelMask_ = static_cast<OutputLevel>(mask);
     }
 
+    /**
+        @brief Updates the combined additional contexts level mask. The masks of all listeners are ORed to form the combined mask.
+    */
     void OutputManager::updateCombinedAdditionalContextsLevelMask()
     {
         int mask = 0;
@@ -117,6 +164,9 @@ namespace orxonox
         this->combinedAdditionalContextsLevelMask_ = static_cast<OutputLevel>(mask);
     }
 
+    /**
+        @brief Updates the combined additional contexts mask. The masks of all listeners are ORed to form the combined mask.
+    */
     void OutputManager::updateCombinedAdditionalContextsMask()
     {
         this->combinedAdditionalContextsMask_ = 0;
@@ -124,26 +174,39 @@ namespace orxonox
             this->combinedAdditionalContextsMask_ |= this->listeners_[i]->getAdditionalContextsMask();
     }
 
+    /**
+        @brief Registers a context (or sub-context) and returns the container which identifies the context.
+        @param name The name of the context
+        @param subname The name of the sub-context (or "" if it is not a sub-context)
+
+        If the context doesn't exist, it gets created. Otherwise the existing instance is returned.
+    */
     const OutputContextContainer& OutputManager::registerContext(const std::string& name, const std::string& subname)
     {
+        // the full name of a context is a combination of name and subname with "::" in between
         std::string full_name = name;
         if (subname != "")
             full_name += "::" + subname;
 
+        // check if the context already exists (and return it if it does)
         std::map<std::string, OutputContextContainer>::iterator it_container = this->contextContainers_.find(full_name);
         if (it_container != this->contextContainers_.end())
             return it_container->second;
 
+        // create a new context container
         OutputContextContainer container;
         container.name = full_name;
 
+        // check if the mask of the main-context already exists
         std::map<std::string, OutputContextMask>::iterator it_mask = this->contextMasks_.find(name);
         if (it_mask != this->contextMasks_.end())
         {
+            // the mask exists, assign it to the container
             container.mask = it_mask->second;
         }
         else
         {
+            // the mask doesn't exist, create it. It's a binary mask. The n-th main-context is defined by the n-th bit in the mask.
             container.mask = static_cast<OutputContextMask>(0x1) << this->contextMasks_.size();
             this->contextMasks_[name] = container.mask;
 
@@ -151,23 +214,33 @@ namespace orxonox
                 orxout(internal_warning) << "More than " << sizeof(OutputContextMask) * 8 << " output contexts defined. Context '" << name << "' might not get filtered correctly" << endl;
         }
 
+        // if the context is a sub-context, assign a unique ID.
         if (subname == "")
             container.sub_id = context::no_subcontext;
         else
             container.sub_id = ++this->subcontextCounter_; // start with 1
 
+        // add the new context to the map and return it
         return (this->contextContainers_[full_name] = container);
     }
 
+    /**
+        @brief Static function, shortcut to OutputManager::registerContext().
+        The function is declared in OutputDefinitions.h.
+    */
     const OutputContextContainer& registerContext(const std::string& name, const std::string& subname)
     {
         return OutputManager::getInstance().registerContext(name, subname);
     }
 
+    /**
+        @brief Returns a human readable string for each output level.
+    */
     const std::string& OutputManager::getLevelName(OutputLevel level) const
     {
         switch (level)
         {
+            // using static cache variables for speed
             case level::none:               { static std::string name = "None"; return name; }
             case level::message:            { static std::string name = "Message"; return name; }
             case level::debug_output:       { static std::string name = "Debug"; return name; }
@@ -186,8 +259,13 @@ namespace orxonox
         }
     }
 
+    /**
+        @brief Returns a string containing the name of the level and the context (if any) which
+        can be prepended to an output message if it is written to the console or the log file.
+    */
     std::string OutputManager::getDefaultPrefix(OutputLevel level, const OutputContextContainer& context) const
     {
+        // "undefined" context is ignored because it's used implicitly if no explicit context is defined
         static OutputContextMask undefined_mask = context::undefined().mask;
 
         std::string prefix = this->getLevelName(level) + ": ";

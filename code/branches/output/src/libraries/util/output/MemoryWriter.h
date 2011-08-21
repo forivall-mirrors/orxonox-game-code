@@ -26,6 +26,12 @@
  *
  */
 
+/**
+    @file
+    @ingroup Output
+    @brief Declaration of the MemoryWriter singleton.
+*/
+
 #ifndef _MemoryWriter_H__
 #define _MemoryWriter_H__
 
@@ -34,16 +40,29 @@
 
 namespace orxonox
 {
+    /**
+        @brief MemoryWriter is a singleton which is derived from OutputListener and writes all output to a list.
+
+        This list can be used to re-send old output to other instances of
+        OutputListener, e.g. if they were newly created or to re-write the
+        log-file.
+
+        Since MemoryWriter receives output of all levels, this means also that
+        all possible output needs to be generated as long as MemoryWriter stays
+        active. Hence disable() should be called as soon as possible.
+    */
     class _UtilExport MemoryWriter : public OutputListener
     {
+        /// @brief A helper struct which is used to store output and its properties.
         struct Message
         {
+            /// @brief Constructor, assigns all values.
             Message(OutputLevel level, const OutputContextContainer& context, const std::vector<std::string>& lines)
                 : level(level), context(&context), lines(lines) {}
 
-            OutputLevel level;
-            const OutputContextContainer* context;
-            std::vector<std::string> lines;
+            OutputLevel level;                      ///< The level of the output message
+            const OutputContextContainer* context;  ///< The context of the output message
+            std::vector<std::string> lines;         ///< The lines of text of the output message
         };
 
         public:
@@ -60,7 +79,7 @@ namespace orxonox
             MemoryWriter(const MemoryWriter&);
             virtual ~MemoryWriter();
 
-            std::vector<Message> messages_;
+            std::vector<Message> messages_; ///< Stores all output messages from the creation of this instance until disable() is called.
     };
 }
 

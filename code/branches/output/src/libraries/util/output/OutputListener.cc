@@ -26,12 +26,22 @@
  *
  */
 
+/**
+    @file
+    @brief Implementation of the OutputListener class.
+*/
+
 #include "OutputListener.h"
 
 #include "OutputManager.h"
 
 namespace orxonox
 {
+    /**
+        @brief Constructor, initializes the values and registers the instance at OutputManager if requested.
+        @param bRegister If \c true, the instance is automatically registered at OutputManager.
+                         Should be \c false if the constructor of the derived class generates output.
+    */
     OutputListener::OutputListener(bool bRegister)
     {
         this->levelMask_ = level::none;
@@ -42,16 +52,25 @@ namespace orxonox
             OutputManager::getInstance().registerListener(this);
     }
 
+    /**
+        @brief Destructor, unregisters the instance from OutputManager.
+    */
     OutputListener::~OutputListener()
     {
         OutputManager::getInstance().unregisterListener(this);
     }
 
+    /**
+        @brief Defines the level mask in a way which accepts all output up to the level \c max.
+    */
     void OutputListener::setLevelMax(OutputLevel max)
     {
         this->setLevelRange(static_cast<OutputLevel>(0x1), max);
     }
 
+    /**
+        @brief Defines the level mask in a way which accepts all output between the levels \c min and \c max.
+    */
     void OutputListener::setLevelRange(OutputLevel min, OutputLevel max)
     {
         int mask = 0;
@@ -61,6 +80,9 @@ namespace orxonox
         this->setLevelMask(static_cast<OutputLevel>(mask));
     }
 
+    /**
+        @brief Defines the level mask.
+    */
     void OutputListener::setLevelMask(OutputLevel mask)
     {
         this->levelMask_ = mask;
@@ -68,11 +90,17 @@ namespace orxonox
         OutputManager::getInstance().updateCombinedLevelMask();
     }
 
+    /**
+        @brief Defines the level mask of additional contexts in a way which accepts all output up to the level \c max.
+    */
     void OutputListener::setAdditionalContextsLevelMax(OutputLevel max)
     {
         this->setAdditionalContextsLevelRange(static_cast<OutputLevel>(0x1), max);
     }
 
+    /**
+        @brief Defines the level mask of additional contexts in a way which accepts all output between the levels \c min and \c max.
+    */
     void OutputListener::setAdditionalContextsLevelRange(OutputLevel min, OutputLevel max)
     {
         int mask = 0;
@@ -82,6 +110,9 @@ namespace orxonox
         this->setAdditionalContextsLevelMask(static_cast<OutputLevel>(mask));
     }
 
+    /**
+        @brief Defines the level mask of additional contexts.
+    */
     void OutputListener::setAdditionalContextsLevelMask(OutputLevel mask)
     {
         this->additionalContextsLevelMask_ = mask;
@@ -89,6 +120,9 @@ namespace orxonox
         OutputManager::getInstance().updateCombinedAdditionalContextsLevelMask();
     }
 
+    /**
+        @brief Defines the mask of additional contexts.
+    */
     void OutputListener::setAdditionalContextsMask(OutputContextMask mask)
     {
         this->additionalContextsMask_ = mask;
