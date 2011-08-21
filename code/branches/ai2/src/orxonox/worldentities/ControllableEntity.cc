@@ -66,7 +66,7 @@ namespace orxonox
         this->hud_ = 0;
         this->camera_ = 0;
         this->xmlcontroller_ = 0;
-        this->controller_ = 0;
+        //this->controller_ = 0;
         this->reverseCamera_ = 0;
         this->bDestroyWhenPlayerLeft_ = false;
         this->cameraPositionRootNode_ = this->node_->createChildSceneNode();
@@ -189,7 +189,7 @@ namespace orxonox
 
         return counter;
     }
-    
+
     bool ControllableEntity::setCameraPosition(unsigned int index)
     {
         if(this->camera_ != NULL && this->cameraPositions_.size() > 0)
@@ -307,6 +307,11 @@ namespace orxonox
         {
             callMemberNetworkFunction(ControllableEntity, fire, this->getObjectID(), 0, firemode);
         }
+    }
+
+    void ControllableEntity::setController(Controller* val)
+    {
+        this->controller_ = val;
     }
 
     void ControllableEntity::setTarget( WorldEntity* target )

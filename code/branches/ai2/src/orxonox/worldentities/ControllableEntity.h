@@ -98,7 +98,7 @@ namespace orxonox
             @param bBoost If true the ControllableEntity is told to start boosting, if false it is told to stop.
             */
             virtual void boost(bool bBoost) {}
-            
+
             virtual void greet() {}
             virtual void switchCamera();
             virtual void mouseLook();
@@ -154,9 +154,9 @@ namespace orxonox
                 { return this->xmlcontroller_; }
 
             inline Controller* getController() const
-                { return this->controller_; }
-            inline void setController(Controller* val)
-                { this->controller_ = val; }
+                { return this->controller_.get(); }
+            void setController(Controller* val);
+
 
             virtual void setTarget( WorldEntity* target );
             virtual WorldEntity* getTarget()
@@ -236,9 +236,10 @@ namespace orxonox
             CameraPosition* currentCameraPosition_;
             std::string cameraPositionTemplate_;
             Controller* xmlcontroller_;
-            Controller* controller_;
+            WeakPtr<Controller> controller_;
             CameraPosition* reverseCamera_;
             WeakPtr<WorldEntity> target_;
+            WeakPtr<Controller> test_;
     };
 }
 

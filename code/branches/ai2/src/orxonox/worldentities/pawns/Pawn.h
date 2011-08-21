@@ -194,7 +194,7 @@ namespace orxonox // tolua_export
             float health_;
             float maxHealth_;
             float initialHealth_;
-            
+
             float shieldHealth_;
             float maxShieldHealth_;
             float initialShieldHealth_;
