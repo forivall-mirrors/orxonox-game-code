@@ -142,7 +142,7 @@ namespace orxonox
     */
     void InputManager::loadDevices()
     {
-        orxout(internal_info, context::input) << "InputManager: Loading input devices..." << endl;
+        orxout(verbose, context::input) << "InputManager: Loading input devices..." << endl;
 
         // When loading the devices they should not already be loaded
         assert(internalState_ & Bad);
@@ -195,7 +195,7 @@ namespace orxonox
             oisInputManager_ = OIS::InputManager::createInputSystem(paramList);
             // Exception-safety
             Loki::ScopeGuard guard = Loki::MakeGuard(OIS::InputManager::destroyInputSystem, oisInputManager_);
-            orxout(internal_info, context::input) << "Created OIS input manager." << endl;
+            orxout(verbose, context::input) << "Created OIS input manager." << endl;
 
             if (oisInputManager_->getNumberOfDevices(OIS::OISKeyboard) > 0)
                 devices_[InputDeviceEnumerator::Keyboard] = new Keyboard(InputDeviceEnumerator::Keyboard, oisInputManager_);
@@ -218,7 +218,7 @@ namespace orxonox
         // Reorder states in case some joy sticks were added/removed
         this->updateActiveStates();
 
-        orxout(internal_info, context::input) << "Input devices loaded." << endl;
+        orxout(verbose, context::input) << "Input devices loaded." << endl;
     }
 
     //! Creates a new orxonox::Mouse
@@ -305,7 +305,7 @@ namespace orxonox
     */
     void InputManager::destroyDevices()
     {
-        orxout(internal_info, context::input) << "InputManager: Destroying devices..." << endl;
+        orxout(verbose, context::input) << "InputManager: Destroying devices..." << endl;
 
         BOOST_FOREACH(InputDevice*& device, devices_)
         {
@@ -314,7 +314,7 @@ namespace orxonox
             const std::string& className = device->getClassName();
             delete device;
             device = 0;
-            orxout(internal_info, context::input) << className << " destroyed." << endl;
+            orxout(verbose, context::input) << className << " destroyed." << endl;
         }
         devices_.resize(InputDeviceEnumerator::FirstJoyStick);
 
@@ -331,7 +331,7 @@ namespace orxonox
         oisInputManager_ = NULL;
 
         internalState_ |= Bad;
-        orxout(internal_info, context::input) << "Destroyed devices." << endl;
+        orxout(verbose, context::input) << "Destroyed devices." << endl;
     }
 
     // ############################################################
@@ -350,13 +350,13 @@ namespace orxonox
     //! Internal reload method. Destroys the OIS devices and loads them again.
     void InputManager::reloadInternal()
     {
-        orxout(internal_info, context::input) << "InputManager: Reloading ..." << endl;
+        orxout(verbose, context::input) << "InputManager: Reloading ..." << endl;
 
         this->destroyDevices();
         this->loadDevices();
 
         internalState_ &= ~Bad;
-        orxout(internal_info, context::input) << "InputManager: Reloading complete." << endl;
+        orxout(verbose, context::input) << "InputManager: Reloading complete." << endl;
     }
 
     // ############################################################

@@ -303,7 +303,7 @@ namespace orxonox
     */
     void Language::writeDefaultLanguageFile() const
     {
-        orxout(internal_info, context::language) << "Write default language file." << endl;
+        orxout(verbose, context::language) << "Write default language file." << endl;
 
         const std::string& filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
 
