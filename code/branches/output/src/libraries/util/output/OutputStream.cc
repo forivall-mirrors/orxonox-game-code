@@ -54,6 +54,15 @@ namespace orxonox
     }
 
     /**
+        @brief Destructor, sends remaining output to OutputManager (if any).
+    */
+    OutputStream::~OutputStream()
+    {
+        if (this->str() != "")
+            *this << " [missing endl]" << std::endl;
+    }
+
+    /**
         @brief Sends the buffered message to OutputManager together with the stored level and context.
         Additionally empties the buffer.
     */

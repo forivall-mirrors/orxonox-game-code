@@ -77,6 +77,7 @@ namespace orxonox
         public:
             _UtilExport OutputStream();
             _UtilExport OutputStream(OutputLevel level, const OutputContextContainer& context);
+            _UtilExport ~OutputStream();
 
             void _UtilExport setOutputAttributes(OutputLevel level, const OutputContextContainer& context);
 

@@ -72,7 +72,7 @@ namespace orxonox
     {
         int error;
         CommandExecutor::queryMT(command, &error, useTcl);
-        if (error)
+        if (error && printErrors)
             orxout(user_error) << "Can't execute \"" << command << "\", " << CommandExecutor::getErrorDescription(error) << ". (execute)" << endl;
         return error;
     }
