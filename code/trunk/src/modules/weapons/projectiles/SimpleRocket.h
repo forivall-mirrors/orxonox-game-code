@@ -121,8 +121,8 @@ namespace orxonox
 
 
         private:
-            static const float FUEL_PERCENTAGE = 0.8f; //!< Percentage of lifetime the rocket has fuel
-            
+            static const float FUEL_PERCENTAGE; //!< Percentage of lifetime the rocket has fuel
+
             Vector3 localAngularVelocity_; //!< Variable to temporarily store accumulated steering command input.
             bool fuel_; //!< Bool is true while the rocket "has fuel"
 
