@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file MuzzleFlash.h
+    @brief Definition of the MuzzleFlash class.
+*/
+
 #ifndef _MuzzleFlash_H__
 #define _MuzzleFlash_H__
 
@@ -36,6 +41,16 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        A muzzle flash that destroys itself after some time.
+    @author
+        Hagen Seifert
+    @ingroup Weapons
+    @todo
+        Remove because it's unused?
+    */
     class _WeaponsExport MuzzleFlash : public Billboard
     {
         public:
@@ -43,7 +58,7 @@ namespace orxonox
             virtual ~MuzzleFlash() {}
 
         private:
-            Timer delayTimer_;
+            Timer delayTimer_; //!< Timer to destroy the object.
     };
 }
 

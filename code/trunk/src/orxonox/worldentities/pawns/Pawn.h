@@ -74,13 +74,13 @@ namespace orxonox // tolua_export
             virtual void setShieldHealth(float shieldHealth);
 
             inline float getShieldHealth()
-            { return this->shieldHealth_; }
+                { return this->shieldHealth_; }
 
             inline void addShieldHealth(float amount)
-            { this->setShieldHealth(this->shieldHealth_ + amount); }
+                { this->setShieldHealth(this->shieldHealth_ + amount); }
 
             inline bool hasShield()
-            { return (this->getShieldHealth() > 0); }
+                { return (this->getShieldHealth() > 0); }
 
             virtual void setMaxShieldHealth(float maxshieldhealth);
             inline float getMaxShieldHealth() const
@@ -97,9 +97,9 @@ namespace orxonox // tolua_export
                 { this->setShieldHealth(this->maxShieldHealth_); }
 
             inline void setShieldAbsorption(float shieldAbsorption)
-            { this->shieldAbsorption_ = shieldAbsorption; }
+                { this->shieldAbsorption_ = shieldAbsorption; }
             inline float getShieldAbsorption()
-            { return this->shieldAbsorption_; }
+                { return this->shieldAbsorption_; }
 
             // TODO: Rename to shieldRechargeRate
             virtual void setReloadRate(float reloadrate);
@@ -111,10 +111,10 @@ namespace orxonox // tolua_export
                 { return this->reloadWaitTime_; }
 
             inline void resetReloadCountdown()
-            { this->reloadWaitCountdown_ = 0; }
+                { this->reloadWaitCountdown_ = 0; }
 
             inline void startReloadCountdown()
-            { this->reloadWaitCountdown_ = this->getReloadWaitTime(); } // TODO: Implement in Projectile.cc
+                { this->reloadWaitCountdown_ = this->getReloadWaitTime(); } // TODO: Implement in Projectile.cc
 
             virtual void decreaseReloadCountdownTime(float dt);
 

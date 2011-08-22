@@ -26,11 +26,16 @@
  *
  */
 
+/**
+    @file LightningGunProjectile.h
+    @brief Implementation of the LightningGunProjectile class.
+*/
+
 #include "LightningGunProjectile.h"
 
-#include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/command/Executor.h"
+#include "util/Convert.h"
 
 namespace orxonox
 {
@@ -52,6 +57,12 @@ namespace orxonox
         registerVariable(this->materialBase_);
     }
 
+    /**
+    @brief
+        Set the material.
+    @param material
+        The name of the material. Material names with 1 to 8 appended must exist.
+    */
     void LightningGunProjectile::setMaterial(const std::string& material)
     {
         this->materialBase_ = material;
@@ -59,6 +70,10 @@ namespace orxonox
         BillboardProjectile::setMaterial(material + multi_cast<std::string>(this->textureIndex_));
     }
 
+    /**
+    @brief
+        Change the texture.
+    */
     void LightningGunProjectile::changeTexture()
     {
         this->textureIndex_++;

@@ -26,19 +26,25 @@
  *
  */
 
+/**
+    @file EnergyDrink.h
+    @brief Implementation of the EnergyDrink class.
+*/
+
 #include "EnergyDrink.h"
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
 #include "core/command/Executor.h"
-#include "graphics/Model.h"
 
-#include "weapons/projectiles/Projectile.h"
-#include "weapons/MuzzleFlash.h"
+#include "graphics/Model.h"
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
+
+#include "weapons/projectiles/Projectile.h"
+#include "weapons/MuzzleFlash.h"
 
 namespace orxonox
 {
@@ -48,10 +54,10 @@ namespace orxonox
     {
         RegisterObject(EnergyDrink);
 
-        this->reloadTime_ = 0.25;
-        this->damage_ = 0; //default 15
-        this->speed_ = 2500;
-        this->delay_ = 0;
+        this->reloadTime_ = 0.25f;
+        this->damage_ = 0.0f;
+        this->speed_ = 2500.0f;
+        this->delay_ = 0.0f;
         this->setMunitionName("FusionMunition");
 
         this->delayTimer_.setTimer(1.0f, false, createExecutor(createFunctor(&EnergyDrink::shot, this)));
@@ -64,42 +70,36 @@ namespace orxonox
 
         XMLPortParam(EnergyDrink, "delay", setDelay, getDelay, xmlelement, mode);
         XMLPortParam(EnergyDrink, "material", setMaterial, getMaterial, xmlelement, mode);
-
     }
 
-    void EnergyDrink::setMaterial(const std::string& material)
+    /**
+    @brief
+        Sets the delay with which is fired.
+    @param delay
+        The delay in seconds.
+    */
+    void EnergyDrink::setDelay(float delay)
     {
-        this->material_ = material;
-    }
-
-    void EnergyDrink::setDelay(float d)
-    {
-        this->delay_ = d;
+        this->delay_ = delay;
         this->delayTimer_.setInterval(this->delay_);
     }
 
-    float EnergyDrink::getDelay() const
-    {
-        return this->delay_;
-    }
-
+    /**
+    @brief
+        Fires the weapon.
+    */
     void EnergyDrink::fire()
     {
         this->delayTimer_.startTimer();
     }
 
-    void EnergyDrink::muendungsfeuer()
-    {
-        MuzzleFlash *muzzleFlash = new MuzzleFlash(this);
-        this->getWeapon()->attach(muzzleFlash);
-        muzzleFlash->setPosition(this->getMuzzleOffset());
-        muzzleFlash->setMaterial(this->material_);
-    }
-
-    /* Creates the projectile object, sets its properties to the EnergyDrink properties, calls muendungsfeuer()
-     */
+    /**
+    @brief
+        Executes the shot, be creating the projectile and sending it on its way.
+    */
     void EnergyDrink::shot()
     {
+        // Create the projectile
         Projectile* projectile = new Projectile(this);
         Model* model = new Model(projectile);
         model->setMeshSource("can.mesh");
@@ -111,11 +111,24 @@ namespace orxonox
         projectile->setPosition(this->getMuzzlePosition());
         projectile->setVelocity(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getVelocity() + this->getMuzzleDirection() * this->speed_);
 
-        projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+        projectile->setShooter(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
         projectile->setShieldDamage(this->getShieldDamage());
         projectile->setHealthDamage(this->getHealthDamage());
 
-        EnergyDrink::muendungsfeuer();
+        // Display a muzzle flash.
+        this->muzzleflash();
+    }
+
+    /**
+    @brief
+        Displays a muzzle flash.
+    */
+    void EnergyDrink::muzzleflash()
+    {
+        MuzzleFlash *muzzleFlash = new MuzzleFlash(this);
+        this->getWeapon()->attach(muzzleFlash);
+        muzzleFlash->setPosition(this->getMuzzleOffset());
+        muzzleFlash->setMaterial(this->material_);
     }
 }

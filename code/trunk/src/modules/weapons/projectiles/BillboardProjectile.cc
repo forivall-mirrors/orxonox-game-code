@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file BillboardProjectile.h
+    @brief Implementation of the BillboardProjectile class.
+*/
+
 #include "BillboardProjectile.h"
 
 #include "core/CoreIncludes.h"
@@ -43,6 +48,8 @@ namespace orxonox
         if (GameMode::showsGraphics())
         {
             assert(this->getScene()->getSceneManager()); // getScene() was already checked by WorldEntity
+
+            // Create the billboard.
             this->billboard_.setBillboardSet(this->getScene()->getSceneManager(), "Examples/Flare", ColourValue(0.5f, 0.5f, 0.7f, 0.8f), 1);
             this->attachOgreObject(this->billboard_.getBillboardSet());
         }
@@ -56,20 +63,37 @@ namespace orxonox
             this->detachOgreObject(this->billboard_.getBillboardSet());
     }
 
+    /**
+    @brief
+        Set the colour of the BillboardProjectile.
+    @param colour
+        The colour to be set.
+    */
     void BillboardProjectile::setColour(const ColourValue& colour)
     {
         this->billboard_.setColour(colour);
     }
 
+    /**
+    @brief
+        Set the material of the BillboardProjectile.
+    @param material
+        The material name.
+    */
     void BillboardProjectile::setMaterial(const std::string& material)
     {
         this->billboard_.setMaterial(material);
     }
 
+    /**
+    @brief
+        Is called when the visibility of the BillboardProjectile has changed.
+    */
     void BillboardProjectile::changedVisibility()
     {
         SUPER(BillboardProjectile, changedVisibility);
 
+        // Also change the visibility of the billboard.
         this->billboard_.setVisible(this->isVisible());
     }
 }

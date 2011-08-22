@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file Projectile.h
+    @brief Definition of the Projectile class.
+*/
+
 #ifndef _Projectile_H__
 #define _Projectile_H__
 
@@ -38,6 +43,17 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        Represents all 'standard' projectiles.
+
+    @author
+        Fabian 'x3n' Landau
+    @author
+        Simon Miescher
+    @ingroup WeaponsProjectiles
+    */
     class _WeaponsExport Projectile : public MovableEntity, public BasicProjectile
     {
         public:
@@ -45,20 +61,13 @@ namespace orxonox
             virtual ~Projectile();
 
             void setConfigValues();
-            void destroyObject();
 
             virtual void tick(float dt);
             virtual bool collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint);
 
-            void setOwner(Pawn* owner);
-            inline Pawn* getOwner() const
-                { return this->owner_; }
-
-
         private:
-            WeakPtr<Pawn> owner_;
-            float lifetime_;
-            Timer destroyTimer_;
+            float lifetime_; //!< The time the projectile exists.
+            Timer destroyTimer_; //!< Timer to destroy the projectile after its lifetime has run out.
     };
 }
 

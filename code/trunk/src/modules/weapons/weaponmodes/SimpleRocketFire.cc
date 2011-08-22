@@ -20,23 +20,31 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss
+ *      Gabriel Nadler
  *   Co-authors:
+ *      Oliver Scheuss
  *      simonmie
  *
  */
 
+/**
+    @file BasicProjectile.h
+    @brief Implementation of the BasicProjectile class.
+*/
+
 #include "SimpleRocketFire.h"
 
-#include "util/Math.h"
 #include "core/CoreIncludes.h"
-#include "weapons/RocketController.h"
+#include "util/Math.h"
 
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
 #include "sound/WorldSound.h"
+
+#include "weapons/RocketController.h"
+#include "weapons/projectiles/SimpleRocket.h"
 
 namespace orxonox
 {
@@ -47,10 +55,10 @@ namespace orxonox
     {
         RegisterObject(SimpleRocketFire);
 
-        this->reloadTime_ = 1;
+        this->reloadTime_ = 1.0f;
         this->bParallelReload_ = false;
-        this->damage_ = 0;
-        this->speed_ = 500;
+        this->damage_ = 0.0f;
+        this->speed_ = 500.0f;
 
         this->setMunitionName("RocketMunition");
         this->setDefaultSoundWithVolume("sounds/Rocket_launch.ogg",0.4f);
@@ -61,23 +69,25 @@ namespace orxonox
     {
     }
 
-    /* Creates the Rocket (RocketController) object, sets its properties to the SimpleRocketFire properties, sets target
-     */
+    /**
+    @brief
+        Fires the weapon. Creates the SimpleRocket and a RocketController to steer it and fires it.
+    */
     void SimpleRocketFire::fire()
     {
-        RocketController* con = new RocketController(this);
-        SimpleRocket* rocket = con->getRocket();
+        RocketController* controller = new RocketController(this);
+        SimpleRocket* rocket = controller->getRocket();
         this->computeMuzzleParameters(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getAimPosition());
         rocket->setOrientation(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getWorldOrientation());
         rocket->setPosition(this->getMuzzlePosition());
         rocket->setVelocity(this->getMuzzleDirection()*this->speed_);
-        rocket->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+        rocket->setShooter(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
 
         rocket->setDamage(this->damage_);
         rocket->setShieldDamage(this->getShieldDamage());
         rocket->setHealthDamage(this->getHealthDamage());
 
-        WorldEntity* pawnn=static_cast<ControllableEntity*>(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn())->getTarget();
-        if (pawnn) con->setTarget(pawnn);
+        WorldEntity* pawn = static_cast<ControllableEntity*>(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn())->getTarget();
+        if (pawn) controller->setTarget(pawn);
     }
 }

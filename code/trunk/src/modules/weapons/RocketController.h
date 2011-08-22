@@ -20,29 +20,33 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Gabriel Nadler, Originalfile: Oli Scheuss
+ *      Gabriel Nadler
  *   Co-authors:
  *      ...
  *
  */
+
+/**
+    @file RocketController.h
+    @brief Definition of the RocketController class.
+*/
 
 #ifndef _RocketController_H__
 #define _RocketController_H__
 
 #include "weapons/WeaponsPrereqs.h"
 
-#include "controllers/Controller.h"
 #include "tools/interfaces/Tickable.h"
-#include "weapons/projectiles/SimpleRocket.h"
-#include "weapons/weaponmodes/SimpleRocketFire.h"
+#include "controllers/Controller.h"
 
 namespace orxonox
 {
     /**
     @brief
-        Controller for the Rocket (targetseeking)
+        Controller for the SimpleRocket (target seeking)
     @author
-        Gabriel Nadler, Originalfile: Oli Scheuss
+        Gabriel Nadler
+    @ingroup Weapons
     */
     class _WeaponsExport RocketController : public Controller, public Tickable
     {
@@ -51,22 +55,30 @@ namespace orxonox
             virtual ~RocketController();
 
             virtual void tick(float dt);
+            /**
+            @brief Get the rocket that is controlled by this controller.
+            @return Returns a pointer to the rocket.
+            */
             SimpleRocket* getRocket() const
-             {  return this->rocket_;  };
-            void setTarget(WorldEntity* target);
+                { return this->rocket_; };
+
+            /**
+            @brief Set the target of the rocket.
+            @param target A pointer to the target.
+            */
+            void setTarget(WorldEntity* target)
+                { this->target_ = target; }
+
         protected:
+            void updateTargetPosition();
             void moveToPosition(const Vector3& target);
-            void setTargetPosition();
-            void moveToTargetPosition();
 
         private:
-            SimpleRocket* rocket_; //!<The Rocket it controlls
-            Vector3 targetPosition_;
-            WeakPtr<PlayerInfo> player_;
+            SimpleRocket* rocket_; //!< The Rocket it controls.
+            Vector3 targetPosition_; //!< The position of the target.
+            WeakPtr<PlayerInfo> player_; //!< The player the rocket belongs to.
 
-            WeakPtr<WorldEntity> target_;
-
-
+            WeakPtr<WorldEntity> target_; //!< The target.
     };
 }
 

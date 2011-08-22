@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file FusionFire.h
+    @brief Definition of the FusionFire class.
+*/
+
 #ifndef _FusionFire_H__
 #define _FusionFire_H__
 
@@ -34,6 +39,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        FusionFire.
+    @author
+        Martin Polak
+    @ingroup WeaponsWeaponModes
+    */
     class _WeaponsExport FusionFire : public WeaponMode
     {
         public:
@@ -43,7 +56,7 @@ namespace orxonox
             virtual void fire();
 
         private:
-            float speed_;
+            float speed_; //!< The speed of the fusion fire weapon.
     };
 }
 

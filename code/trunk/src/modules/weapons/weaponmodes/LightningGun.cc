@@ -26,14 +26,20 @@
  *
  */
 
+/**
+    @file LightningGun.h
+    @brief Implementation of the LightningGun class.
+*/
+
 #include "LightningGun.h"
 
 #include "core/CoreIncludes.h"
-#include "weapons/projectiles/LightningGunProjectile.h"
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
+
+#include "weapons/projectiles/LightningGunProjectile.h"
 
 namespace orxonox
 {
@@ -43,9 +49,9 @@ namespace orxonox
     {
         RegisterObject(LightningGun);
 
-        this->reloadTime_ = 1;
-        this->damage_ = 0; //default 100
-        this->speed_ = 150;
+        this->reloadTime_ = 1.0f;
+        this->damage_ = 0.0f;
+        this->speed_ = 250.0f;
 
         this->setMunitionName("LaserMunition");
         this->setDefaultSound("sounds/Weapon_LightningGun.ogg");
@@ -55,8 +61,10 @@ namespace orxonox
     {
     }
 
-    /* Creates the projectile (LightningGunProjectile) object, sets its properties to the LightningGun properties
-     */
+    /**
+    @brief
+        Fires the weapon. Creates a projectile and fires it.
+    */
     void LightningGun::fire()
     {
         LightningGunProjectile* projectile = new LightningGunProjectile(this);
@@ -66,9 +74,8 @@ namespace orxonox
         projectile->setOrientation(this->getMuzzleOrientation());
         projectile->setPosition(this->getMuzzlePosition());
         projectile->setVelocity(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getVelocity() + this->getMuzzleDirection() * this->speed_);
-        projectile->setAcceleration(this->getMuzzleDirection() * 1000);
 
-        projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+        projectile->setShooter(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
         projectile->setShieldDamage(this->getShieldDamage());
         projectile->setHealthDamage(this->getHealthDamage());

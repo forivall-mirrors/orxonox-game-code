@@ -26,16 +26,22 @@
  *
  */
 
+/**
+    @file FusionFire.h
+    @brief Implementation of the FusionFire class.
+*/
+
 #include "FusionFire.h"
 
-#include "util/Math.h"
 #include "core/CoreIncludes.h"
-#include "weapons/projectiles/BillboardProjectile.h"
+#include "util/Math.h"
 
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
+
+#include "weapons/projectiles/BillboardProjectile.h"
 
 namespace orxonox
 {
@@ -45,16 +51,18 @@ namespace orxonox
     {
         RegisterObject(FusionFire);
 
-        this->reloadTime_ = 1.0;
+        this->reloadTime_ = 1.0f;
         this->bParallelReload_ = false;
-        this->damage_ = 0; //default 40
-        this->speed_ = 1250;
+        this->damage_ = 0.0f;
+        this->speed_ = 1250.0f;
 
         this->setMunitionName("FusionMunition");
     }
 
-    /* Creates the projectile (BillboardProjectile) object, sets its properties to the FusionFire properties
-     */
+    /**
+    @brief
+        Fires the weapon, by creating a projectile.
+    */
     void FusionFire::fire()
     {
         BillboardProjectile* projectile = new BillboardProjectile(this);
@@ -64,7 +72,7 @@ namespace orxonox
         projectile->setVelocity(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getVelocity() + this->getMuzzleDirection() * this->speed_);
         projectile->scale(5);
 
-        projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+        projectile->setShooter(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
         projectile->setShieldDamage(this->getShieldDamage());
         projectile->setHealthDamage(this->getHealthDamage());

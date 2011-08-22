@@ -20,11 +20,16 @@
  *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  *   Author:
- *      Oliver Scheuss
+ *      Gabriel Nadler
  *   Co-authors:
- *      ...
+ *      Oliver Scheuss
  *
  */
+
+/**
+    @file SimpleRocketFire.h
+    @brief Definition of the SimpleRocketFire class.
+*/
 
 #ifndef _SimpleRocketFire_H__
 #define _SimpleRocketFire_H__
@@ -38,7 +43,8 @@ namespace orxonox
     @brief
         FireMode for target-seeking Rocket
     @author
-        Gabriel Nadler (Original file: Oli Scheuss)
+        Gabriel Nadler
+    @ingroup WeaponsWeaponModes
     */
     class _WeaponsExport SimpleRocketFire : public WeaponMode
     {
@@ -49,7 +55,7 @@ namespace orxonox
             virtual void fire();
 
         private:
-            float speed_;
+            float speed_; //!< The speed of the SimpleRocket.
 
     };
 }

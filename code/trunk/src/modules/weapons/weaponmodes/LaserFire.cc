@@ -26,14 +26,21 @@
  *
  */
 
+/**
+    @file LaserFire.h
+    @brief Implementation of the LaserFire class.
+*/
+
 #include "LaserFire.h"
 
 #include "core/CoreIncludes.h"
-#include "weapons/projectiles/ParticleProjectile.h"
+
 #include "weaponsystem/Weapon.h"
 #include "weaponsystem/WeaponPack.h"
 #include "weaponsystem/WeaponSystem.h"
 #include "worldentities/pawns/Pawn.h"
+
+#include "weapons/projectiles/ParticleProjectile.h"
 
 namespace orxonox
 {
@@ -43,15 +50,17 @@ namespace orxonox
     {
         RegisterObject(LaserFire);
 
-        this->reloadTime_ = 0.25;
-        this->damage_ = 0; //default 15
-        this->speed_ = 1250;
+        this->reloadTime_ = 0.25f;
+        this->damage_ = 0.0f;
+        this->speed_ = 1250.0f;
 
         this->setMunitionName("LaserMunition");
     }
 
-    /* Creates the projectile object, sets its properties to the LaserFire properties
-     */
+    /**
+    @brief
+        Fires the weapon. Creates a projectile and fires it.
+    */
     void LaserFire::fire()
     {
         ParticleProjectile* projectile = new ParticleProjectile(this);
@@ -60,7 +69,7 @@ namespace orxonox
         projectile->setPosition(this->getMuzzlePosition());
         projectile->setVelocity(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn()->getVelocity() + this->getMuzzleDirection() * this->speed_);
 
-        projectile->setOwner(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
+        projectile->setShooter(this->getWeapon()->getWeaponPack()->getWeaponSystem()->getPawn());
         projectile->setDamage(this->getDamage());
         projectile->setShieldDamage(this->getShieldDamage());
         projectile->setHealthDamage(this->getHealthDamage());

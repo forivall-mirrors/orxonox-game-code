@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file ReplenishingMunition.h
+    @brief Implementation of the ReplenishingMunition class.
+*/
+
 #include "ReplenishingMunition.h"
 
 #include "core/CoreIncludes.h"
@@ -39,7 +44,7 @@ namespace orxonox
     {
         RegisterObject(ReplenishingMunition);
 
-        this->replenishIntervall_ = 1.0f;
+        this->replenishInterval_ = 1.0f;
         this->replenishMunitionAmount_ = 1;
 
         // Use the timer to initialize itself after the first tick (because the real values for
@@ -51,7 +56,7 @@ namespace orxonox
     void ReplenishingMunition::initializeTimer()
     {
         // Initialize the timer
-        this->replenishingTimer_.setTimer(this->replenishIntervall_, true, createExecutor(createFunctor(&ReplenishingMunition::replenish, this)));
+        this->replenishingTimer_.setTimer(this->replenishInterval_, true, createExecutor(createFunctor(&ReplenishingMunition::replenish, this)));
     }
 
     void ReplenishingMunition::replenish()

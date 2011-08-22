@@ -26,16 +26,18 @@
  *
  */
 
+/**
+    @file BasicProjectile.h
+    @brief Implementation of the BasicProjectile class.
+*/
+
 #include "BasicProjectile.h"
 
 #include "core/CoreIncludes.h"
-#include "core/ConfigValueIncludes.h"
 #include "core/GameMode.h"
 #include "core/command/Executor.h"
-#include "objects/collisionshapes/SphereCollisionShape.h"
-#include "worldentities/pawns/Pawn.h"
+
 #include "graphics/ParticleSpawner.h"
-#include "core/OrxonoxClass.h"
 
 namespace orxonox
 {
@@ -45,7 +47,7 @@ namespace orxonox
     */
     BasicProjectile::BasicProjectile() : OrxonoxClass()
     {
-        RegisterRootObject(BasicProjectile);// - register the BasicProjectile class to the core
+        RegisterRootObject(BasicProjectile);// Register the BasicProjectile class to the core
 
         this->bDestroy_ = false;
 
@@ -60,51 +62,59 @@ namespace orxonox
     {
     }
 
-    /* The function called when a projectile hits another thing.
-     * calls the hit-function, starts the reload countdown, displays visual effects
-     * hit is defined in src/orxonox/worldentities/pawns/pawn.cc
-     */
-    bool BasicProjectile::basicCollidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint, Pawn* owner, BasicProjectile* this_)
+    /**
+    @brief
+        The function called when a projectile hits another thing.
+        Calls the hit-function, starts the reload countdown, displays visual hit effects defined in Pawn.
+        Needs to be called in the collidesAgainst() function by every Class directly inheriting from BasicProjectile.
+    @param otherObject
+        A pointer to the object the Projectile has collided against.
+    @param contactPoint
+        A btManifoldPoint indicating the point of contact/impact.
+    @return
+        Returns true if the collision resulted in a successful hit.
+    @see Pawn.h
+    */
+    bool BasicProjectile::processCollision(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        if (!this_->getBDestroy() && GameMode::isMaster())
+        if (!this->bDestroy_ && GameMode::isMaster())
         {
-            if (otherObject == owner) //prevents you from shooting yourself
+            if (otherObject == this->getShooter()) // Prevents you from shooting yourself
                 return false;
 
-            this_->setBDestroy(true); // If something is hit, the object is destroyed and can't hit something else.
-                                      // The projectile is destroyed by its tick()-function (in the following tick).
+            this->bDestroy_ = true; // If something is hit, the object is destroyed and can't hit something else.
+                                    // The projectile is destroyed by its tick()-function (in the following tick).
 
-            Pawn* victim = orxonox_cast<Pawn*>(otherObject); //if otherObject isn't a Pawn, then victim is NULL
+            Pawn* victim = orxonox_cast<Pawn*>(otherObject); // If otherObject isn't a Pawn, then victim is NULL
 
-            WorldEntity* entity = orxonox_cast<WorldEntity*>(this_);
-            assert(entity); //entity must not be null
+            WorldEntity* entity = orxonox_cast<WorldEntity*>(this);
+            assert(entity); // The projectile must not be a WorldEntity.
 
-
-            // if visual effects after destruction cause problems, put this block below the effects code block
+            // If visual effects after destruction cause problems, put this block below the effects code block
             if (victim)
             {
-                victim->hit(owner, contactPoint, this_->getDamage(), this_->getHealthDamage(), this_->getShieldDamage());
+                victim->hit(this->getShooter(), contactPoint, this->getDamage(), this->getHealthDamage(), this->getShieldDamage());
                 victim->startReloadCountdown();
             }
 
-            // visual effects for being hit, depending on whether the shield is hit or not
-            if (owner) //if the owner does not exist (anymore?), no effects are displayed.
+            // Visual effects for being hit, depending on whether the shield is hit or not
+            if (this->getShooter()) // If the owner does not exist (anymore?), no effects are displayed.
             {
-                // damping and explosion effect is only played if the victim is no pawn (see cast above)
-                // or if the victim is a pawn, has no shield left, is still alive and any damage goes to the health
-                if (!victim || (victim && !victim->hasShield() && victim->getHealth() > 0 && (this_->getDamage() > 0 || this_->getHealthDamage() > 0)))
+                // Damping and explosion effect is only played if the victim is no Pawn (see cast above)
+                // or if the victim is a Pawn, has no shield left, is still alive and any damage goes to the health
+                if (!victim || (victim && !victim->hasShield() && victim->getHealth() > 0.0f && (this->getDamage() > 0.0f || this->getHealthDamage() > 0.0f)))
                 {
                     {
-                        ParticleSpawner* effect = new ParticleSpawner(owner->getCreator());
+                        ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getCreator());
                         effect->setPosition(entity->getPosition());
                         effect->setOrientation(entity->getOrientation());
                         effect->setDestroyAfterLife(true);
                         effect->setSource("Orxonox/explosion3");
                         effect->setLifetime(2.0f);
                     }
-                        // second effect with same condition
+                    // Second effect with same condition
                     {
-                        ParticleSpawner* effect = new ParticleSpawner(owner->getCreator());
+                        ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getCreator());
                         effect->setPosition(entity->getPosition());
                         effect->setOrientation(entity->getOrientation());
                         effect->setDestroyAfterLife(true);
@@ -114,17 +124,38 @@ namespace orxonox
                 }
 
                 // victim->isAlive() is not false until the next tick, so getHealth() > 0 is used instead
-                if (victim && victim->hasShield() && (this_->getDamage() > 0 || this_->getShieldDamage() > 0) && victim->getHealth() > 0)
+                if (victim && victim->hasShield() && (this->getDamage() > 0.0f || this->getShieldDamage() > 0.0f) && victim->getHealth() > 0.0f)
                 {
-                    ParticleSpawner* effect = new ParticleSpawner(owner->getCreator());
+                    ParticleSpawner* effect = new ParticleSpawner(this->getShooter()->getCreator());
                     effect->setDestroyAfterLife(true);
                     effect->setSource("Orxonox/Shield");
                     effect->setLifetime(0.5f);
                     victim->attach(effect);
                 }
             }
-
+            return true;
         }
         return false;
+    }
+
+    /**
+    @brief
+        Check whether the projectile needs to be destroyed and destroys it if so.
+        Needs to be called in the tick() by every Class directly inheriting from BasicProjectile, to make sure the projectile is destroyed after it has hit something.
+    */
+    void BasicProjectile::destroyCheck(void)
+    {
+        if(GameMode::isMaster() && this->bDestroy_)
+            this->destroy();
+    }
+
+    /**
+    @brief
+        Destroys the object.
+    */
+    void BasicProjectile::destroyObject(void)
+    {
+        if(GameMode::isMaster())
+            this->destroy();
     }
 }

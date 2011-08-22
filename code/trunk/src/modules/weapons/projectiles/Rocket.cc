@@ -26,26 +26,31 @@
  *
  */
 
+/**
+    @file Rocket.h
+    @brief Implementation of the Rocket class.
+*/
+
 #include "Rocket.h"
 
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
+
+#include "Scene.h"
+#include "controllers/Controller.h"
+#include "graphics/Model.h"
+#include "graphics/ParticleSpawner.h"
+#include "infos/PlayerInfo.h"
+#include "objects/collisionshapes/ConeCollisionShape.h"
+#include "sound/WorldSound.h"
 #include "worldentities/CameraPosition.h"
 #include "worldentities/pawns/Pawn.h"
-#include "graphics/ParticleSpawner.h"
-#include "graphics/Model.h"
-#include "objects/collisionshapes/ConeCollisionShape.h"
-#include "infos/PlayerInfo.h"
-#include "controllers/Controller.h"
-#include "sound/WorldSound.h"
-#include "Scene.h"
 
 namespace orxonox
 {
     CreateFactory(Rocket);
-    // create the factory for the Rocket
 
     /**
     @brief
@@ -56,20 +61,23 @@ namespace orxonox
         , BasicProjectile()
         , RadarViewable(creator, static_cast<WorldEntity*>(this))
     {
-        RegisterObject(Rocket);// - register the Rocket class to the core
+        RegisterObject(Rocket);// Register the Rocket class to the core
 
         this->localAngularVelocity_ = 0;
-        this->lifetime_ = 100;
+        this->lifetime_ = 100.0f;
 
         if (GameMode::isMaster())
         {
             this->setCollisionType(WorldEntity::Kinematic);
             this->setVelocity(0,0,-100);
 
+            // Create rocket model
             Model* model = new Model(this);
             model->setMeshSource("rocket.mesh");
             model->scale(0.7f);
             this->attach(model);
+
+            // Add effects.
             ParticleEmitter* fire = new ParticleEmitter(this);
             this->attach(fire);
             fire->setOrientation(this->getOrientation());
@@ -79,13 +87,15 @@ namespace orxonox
             this->setCollisionResponse(false);
             this->setCollisionType(Kinematic);
 
+            // Add collision shape
             ConeCollisionShape* collisionShape = new ConeCollisionShape(this);
             collisionShape->setRadius(3);
             collisionShape->setHeight(500);
             this->attachCollisionShape(collisionShape);
 
-            this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&Rocket::destroyObject, this)));
+            this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&BasicProjectile::destroyObject, this)));
 
+            // Add sound
             this->defSndWpnEngine_ = new WorldSound(this);
             this->defSndWpnEngine_->setLooping(true);
             this->defSndWpnEngine_->setSource("sounds/Rocket_engine.ogg");
@@ -104,6 +114,7 @@ namespace orxonox
             this->defSndWpnLaunch_ = 0;
         }
 
+        // Add camera
         CameraPosition* camPosition = new CameraPosition(this);
         camPosition->setPosition(0,4,15);
         camPosition->setAllowMouseLook(true);
@@ -140,19 +151,16 @@ namespace orxonox
 
     /**
     @brief
-        Method for creating a Rocket through XML.
+        Sets the entity that fired the Rocket.
+    @param shooter
+        A pointer to the Pawn that fired the Rocket.
     */
-    void Rocket::XMLPort(Element& xmlelement, XMLPort::Mode mode)
+    void Rocket::setShooter(Pawn* shooter)
     {
-        // this calls the XMLPort function of the parent class
-        SUPER(Rocket, XMLPort, xmlelement, mode);
-    }
-
-    void Rocket::setOwner(Pawn* owner)
-    {
-        this->owner_ = owner;
-        this->player_ = this->getOwner()->getPlayer();
-        this->getOwner()->getPlayer()->startTemporaryControl(this);
+        this->BasicProjectile::setShooter(shooter);
+        
+        this->player_ = this->getShooter()->getPlayer();
+        this->getShooter()->getPlayer()->startTemporaryControl(this);
 
         if( GameMode::isMaster() )
         {
@@ -178,45 +186,46 @@ namespace orxonox
             this->localAngularVelocity_ = 0;
         }
 
-        if( GameMode::isMaster() )
-        {
-            if( this->getBDestroy() )
-                this->destroy();
-
-        }
+       this->destroyCheck();
     }
 
-    /* Calls the collidesAgainst function of BasicProjectile
-     */
     bool Rocket::collidesAgainst(WorldEntity* otherObject, btManifoldPoint& contactPoint)
     {
-        return BasicProjectile::basicCollidesAgainst(otherObject,contactPoint,this->getOwner(),this);
+        return this->processCollision(otherObject, contactPoint);
     }
 
-    void Rocket::destroyObject()
+    /**
+    @brief
+        Destroys the Rocket and stops the sound,
+    */
+    void Rocket::destroyObject(void)
     {
-        if (GameMode::isMaster())
-        {
-            if(this->defSndWpnEngine_->isPlaying())
-            {
-                this->defSndWpnEngine_->stop();
-            }
-            this->destroy();
-        }
+        if (GameMode::isMaster() && this->defSndWpnEngine_->isPlaying())
+            this->defSndWpnEngine_->stop();
+
+        this->BasicProjectile::destroyObject();
     }
 
+    /**
+    @brief
+        Destroys the Rocket upon pressing "fire".
+    */
     void Rocket::fired(unsigned int firemode)
     {
-        this->destroy();
+        this->destroyObject();
     }
 
+    /**
+    @brief
+        The effects that are displayed, when the Rocket is destroyed.
+    */
     void Rocket::destructionEffect()
     {
         ParticleSpawner *effect1, *effect2;
-        if( this->getOwner() )
+        if(this->getShooter())
         {
-            effect1 = new ParticleSpawner(this->getOwner()->getCreator());
-            effect2 = new ParticleSpawner(this->getOwner()->getCreator());
+            effect1 = new ParticleSpawner(this->getShooter()->getCreator());
+            effect2 = new ParticleSpawner(this->getShooter()->getCreator());
         }
         else
         {

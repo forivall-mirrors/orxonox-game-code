@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file LaserMunition.h
+    @brief Definition of the LaserMunition class.
+*/
+
 #ifndef _LaserMunition_H__
 #define _LaserMunition_H__
 
@@ -34,6 +39,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        LaserMunition.
+    @author
+        Martin Polak
+    @ingroup WeaponsMunitions
+    */
     class _WeaponsExport LaserMunition : public ReplenishingMunition
     {
         public:

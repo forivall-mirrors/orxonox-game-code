@@ -26,6 +26,11 @@
  *
  */
 
+/**
+    @file ParticleProjectile.h
+    @brief Definition of the ParticleProjectile class.
+*/
+
 #ifndef _ParticleProjectile_H__
 #define _ParticleProjectile_H__
 
@@ -34,6 +39,14 @@
 
 namespace orxonox
 {
+
+    /**
+    @brief
+        A projectile that is represented by particles.
+    @author
+        Fabian 'x3n' Landau
+    @ingroup WeaponsProjectiles
+    */
     class _WeaponsExport ParticleProjectile : public BillboardProjectile
     {
         public:
@@ -42,7 +55,7 @@ namespace orxonox
             virtual void changedVisibility();
 
         private:
-            ParticleInterface* particles_;
+            ParticleInterface* particles_; //!< The particles.
     };
 }
 

@@ -22,10 +22,14 @@
  *   Author:
  *      Hagen Seifert
  *   Co-authors:
- *      Ich
- *      Dini Mueter
+ *      ...
  *
  */
+
+/**
+    @file MuzzleFlash.h
+    @brief Implementation of the MuzzleFlash class.
+*/
 
 #include "MuzzleFlash.h"
 
@@ -42,6 +46,6 @@ namespace orxonox
         this->setScale(0.1f);
 
         if( GameMode::isMaster() )
-          this->delayTimer_.setTimer(0.1f, false, createExecutor(createFunctor(&MuzzleFlash::destroy, this)));
+            this->delayTimer_.setTimer(0.1f, false, createExecutor(createFunctor(&MuzzleFlash::destroy, this)));
     }
 }
