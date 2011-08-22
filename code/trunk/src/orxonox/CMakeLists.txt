@@ -31,8 +31,6 @@ SET_SOURCE_FILES(ORXONOX_SRC_FILES
   PawnManager.cc
   PlayerManager.cc
   Radar.cc
-  ChatHistory.cc
-  ChatInputHandler.cc
 #  Test.cc
 
 BUILD_UNIT SceneBuildUnit.cc
@@ -41,6 +39,7 @@ BUILD_UNIT SceneBuildUnit.cc
 END_BUILD_UNIT
 )
 
+ADD_SUBDIRECTORY(chat)
 ADD_SUBDIRECTORY(collisionshapes)
 ADD_SUBDIRECTORY(controllers)
 ADD_SUBDIRECTORY(gamestates)
@@ -58,7 +57,7 @@ ADD_SUBDIRECTORY(worldentities)
 ORXONOX_ADD_LIBRARY(orxonox
   FIND_HEADER_FILES
   TOLUA_FILES
-    ChatInputHandler.h
+    chat/ChatInputHandler.h
     LevelInfo.h
     LevelManager.h
     MoodManager.h

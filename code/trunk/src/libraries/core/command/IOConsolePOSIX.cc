@@ -36,6 +36,7 @@
 
 #include "util/Clock.h"
 #include "util/Math.h"
+#include "util/output/ConsoleWriter.h"
 #include "core/Game.h"
 #include "core/input/InputBuffer.h"
 
@@ -54,7 +55,7 @@ namespace orxonox
     }
 
     IOConsole::IOConsole()
-        : shell_(new Shell("IOConsole", false))
+        : shell_(new Shell("Console", false))
         , buffer_(shell_->getInputBuffer())
         , cout_(std::cout.rdbuf())
         , promptString_("orxonox # ")
@@ -73,7 +74,7 @@ namespace orxonox
         this->lastTerminalHeight_ = this->terminalHeight_;
 
         // Disable standard std::cout logging
-        OutputHandler::getInstance().disableCout();
+        ConsoleWriter::getInstance().disable();
         // Redirect std::cout to an ostringstream
         // (Other part is in the initialiser list)
         std::cout.rdbuf(this->origCout_.rdbuf());
@@ -87,7 +88,7 @@ namespace orxonox
         // Process output written to std::cout in the meantime
         std::cout.flush();
         if (!this->origCout_.str().empty())
-            this->shell_->addOutput(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::Cout);
         // Erase input and status lines
         this->cout_ << "\033[1G\033[J";
         // Move cursor to the bottom
@@ -101,7 +102,7 @@ namespace orxonox
         // Restore this->cout_ redirection
         std::cout.rdbuf(this->cout_.rdbuf());
         // Enable standard std::cout logging again
-        OutputHandler::getInstance().enableCout();
+        ConsoleWriter::getInstance().enable();
     }
 
     void IOConsole::preUpdate(const Clock& time)
@@ -228,7 +229,7 @@ namespace orxonox
         std::cout.flush();
         if (!this->origCout_.str().empty())
         {
-            this->shell_->addOutput(this->origCout_.str(), Shell::None);
+            this->shell_->addOutput(this->origCout_.str(), Shell::Cout);
             this->origCout_.str("");
         }
     }
@@ -238,16 +239,27 @@ namespace orxonox
         // Colour line
         switch (type)
         {
-        case Shell::Error:   this->cout_ << "\033[91m"; break;
-        case Shell::Warning: this->cout_ << "\033[93m"; break;
-        case Shell::Info:    this->cout_ << "\033[90m"; break;
-        case Shell::Debug:   this->cout_ << "\033[90m"; break;
-        case Shell::Verbose: this->cout_ << "\033[90m"; break;
-        case Shell::Ultra:   this->cout_ << "\033[90m"; break;
-        case Shell::Command: this->cout_ << "\033[36m"; break;
-        case Shell::Hint:    this->cout_ << "\033[33m"; break;
-        case Shell::TDebug:  this->cout_ << "\033[95m"; break;
-        default: break;
+            case Shell::Message:
+            case Shell::DebugOutput:     this->cout_ << "\033[0m"; break;
+
+            case Shell::UserError:       this->cout_ << "\033[91m"; break;
+            case Shell::UserWarning:     this->cout_ << "\033[93m"; break;
+            case Shell::UserStatus:      this->cout_ << "\033[92m"; break;
+            case Shell::UserInfo:        this->cout_ << "\033[96m"; break;
+
+            case Shell::InternalError:   this->cout_ << "\033[31m"; break;
+            case Shell::InternalWarning: this->cout_ << "\033[33m"; break;
+            case Shell::InternalStatus:  this->cout_ << "\033[32m"; break;
+            case Shell::InternalInfo:    this->cout_ << "\033[36m"; break;
+
+            case Shell::Verbose:         this->cout_ << "\033[94m"; break;
+            case Shell::VerboseMore:     this->cout_ << "\033[34m"; break;
+            case Shell::VerboseUltra:    this->cout_ << "\033[34m"; break;
+
+            case Shell::Command:         this->cout_ << "\033[95m"; break;
+            case Shell::Hint:            this->cout_ << "\033[35m"; break;
+
+            default:                     this->cout_ << "\033[37m"; break;
         }
 
         // Print output line
@@ -370,27 +382,13 @@ namespace orxonox
     //! Called if a command is about to be executed
     void IOConsole::executed()
     {
-        this->shell_->addOutput(this->promptString_ + this->shell_->getInput() + '\n', Shell::Command);
+        this->shell_->addOutput(this->promptString_ + this->shell_->getInput(), Shell::Command);
     }
 
     //! Called if the console gets closed
     void IOConsole::exit()
     {
         // Exit is not an option, just do nothing (Shell doesn't really exit too)
-    }
-
-    //! Called if only the last output-line has changed
-    void IOConsole::onlyLastLineChanged()
-    {
-        // Save cursor position and move it to the beginning of the first output line
-        this->cout_ << "\033[s\033[1A\033[1G";
-        // Erase the line
-        this->cout_ << "\033[K";
-        // Reprint the last output line
-        this->printOutputLine(this->shell_->getNewestLineIterator()->first, this->shell_->getNewestLineIterator()->second);
-        // Restore cursor
-        this->cout_ << "\033[u";
-        this->cout_.flush();
     }
 
     //! Called if a new output-line was added

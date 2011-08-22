@@ -49,13 +49,6 @@
 #include <vector>
 #include "Super.h"
 
-/**
-@def CCOUT
-    Acts almost exactly like COUT(x), but prepends "ClassName: "
-*/
-#define CCOUT(level) \
-    COUT(level) << this->getIdentifier()->getName() << ": "
-
 namespace orxonox
 {
     /**

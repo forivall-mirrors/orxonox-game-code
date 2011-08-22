@@ -140,7 +140,7 @@ namespace orxonox
                         Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, this->compositorName_, this->isVisible() && viewport->getCamera() && this->scenemanager_ == viewport->getCamera()->getSceneManager());
                 }
                 else
-                    COUT(2) << "Warning: Couldn't load compositor with name \"" << this->compositorName_ << "\"." << std::endl;
+                    orxout(internal_warning) << "Couldn't load compositor with name \"" << this->compositorName_ << "\"." << endl;
             }
             this->oldcompositorName_ = this->compositorName_;
         }
@@ -216,10 +216,10 @@ namespace orxonox
                     }
                 }
                 else
-                    COUT(2) << "Warning: No pass " << it->pass_ << " in technique " << it->technique_ << " in compositor \"" << this->compositorName_ << "\" or pass has no shader." << std::endl;
+                    orxout(internal_warning) << "No pass " << it->pass_ << " in technique " << it->technique_ << " in compositor \"" << this->compositorName_ << "\" or pass has no shader." << endl;
             }
             else
-                COUT(2) << "Warning: No technique " << it->technique_ << " in compositor \"" << this->compositorName_ << "\" or technique has no pass with shader." << std::endl;
+                orxout(internal_warning) << "No technique " << it->technique_ << " in compositor \"" << this->compositorName_ << "\" or technique has no pass with shader." << endl;
         }
         this->parameters_.clear();
     }

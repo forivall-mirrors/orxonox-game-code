@@ -30,7 +30,7 @@
 
 #include <zlib.h>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/OrxAssert.h"
 #include "core/GameMode.h"
 #include "core/ObjectList.h"
@@ -107,13 +107,13 @@ bool Gamestate::collectData(int id, uint8_t mode)
   assert(data_==0);
   uint32_t size = calcGamestateSize(id, mode);
 
-  COUT(5) << "G.ST.Man: producing gamestate with id: " << id << std::endl;
+  orxout(verbose_more, context::packets) << "G.ST.Man: producing gamestate with id: " << id << endl;
   if(size==0)
     return false;
   data_ = new uint8_t[size + GamestateHeader::getSize()];
   if(!data_)
   {
-    COUT(2) << "GameStateManager: could not allocate memory" << std::endl;
+    orxout(internal_warning, context::packets) << "GameStateManager: could not allocate memory" << endl;
     return false;
   }
 
@@ -138,7 +138,7 @@ bool Gamestate::collectData(int id, uint8_t mode)
     {
       assert(0); // if we don't use multithreading this part shouldn't be neccessary
       // start allocate additional memory
-      COUT(3) << "Gamestate: need additional memory" << std::endl;
+      orxout(internal_info, context::packets) << "Gamestate: need additional memory" << endl;
       ObjectList<Synchronisable>::iterator temp = it;
       uint32_t addsize=tempsize;
       while(++temp)
@@ -166,15 +166,15 @@ bool Gamestate::collectData(int id, uint8_t mode)
   header_.setCompressed( false );
   //stop write gamestate header
 
-  COUT(5) << "Gamestate: Gamestate size: " << currentsize << std::endl;
-  COUT(5) << "Gamestate: 'estimated' (and corrected) Gamestate size: " << size << std::endl;
+  orxout(verbose_more, context::packets) << "Gamestate: Gamestate size: " << currentsize << endl;
+  orxout(verbose_more, context::packets) << "Gamestate: 'estimated' (and corrected) Gamestate size: " << size << endl;
   return true;
 }
 
 
 bool Gamestate::spreadData(uint8_t mode)
 {
-  COUT(5) << "processing gamestate with id " << header_.getID() << endl;
+  orxout(verbose_more, context::packets) << "processing gamestate with id " << header_.getID() << endl;
   assert(data_);
   assert(!header_.isCompressed());
   uint8_t *mem=data_+GamestateHeader::getSize();
@@ -194,13 +194,13 @@ bool Gamestate::spreadData(uint8_t mode)
       }
       else
       {
-//         COUT(4) << "not creating object of classid " << objectheader.getClassID() << endl;
+//         orxout(verbose, context::packets) << "not creating object of classid " << objectheader.getClassID() << endl;
         mem += objectheader.getDataSize() + ( objectheader.isDiffed() ? SynchronisableHeaderLight::getSize() : SynchronisableHeader::getSize() );
       }
     }
     else
     {
-//       COUT(4) << "updating object of classid " << objectheader.getClassID() << endl;
+//       orxout(verbose, context::packets) << "updating object of classid " << objectheader.getClassID() << endl;
       OrxVerify(s->updateData(mem, mode), "ERROR: could not update Synchronisable with Gamestate data");
     }
   }
@@ -218,9 +218,9 @@ bool Gamestate::spreadData(uint8_t mode)
       {
         if (it->objectMode_ != 0x0)
         {
-          COUT(0) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << std::endl;
-          COUT(0) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << std::endl;
-          COUT(0) << "Objects class: " << it->getIdentifier()->getName() << std::endl;
+          orxout(user_error, context::packets) << "Found object with OBJECTID_UNKNOWN on the client with objectMode != 0x0!" << endl;
+          orxout(user_error, context::packets) << "Possible reason for this error: Client created a synchronized object without the Server's approval." << endl;
+          orxout(user_error, context::packets) << "Objects class: " << it->getIdentifier()->getName() << endl;
           assert(false);
         }
       }
@@ -231,9 +231,9 @@ bool Gamestate::spreadData(uint8_t mode)
         {
           if (it->getObjectID() == *it2)
           {
-            COUT(0) << "Found duplicate objectIDs on the client!" << std::endl
-                    << "Are you sure you don't create a Sychnronisable objcect with 'new' \
-                        that doesn't have objectMode = 0x0?" << std::endl;
+            orxout(user_error, context::packets) << "Found duplicate objectIDs on the client!" << endl
+                                                 << "Are you sure you don't create a Sychnronisable objcect with 'new' \
+                                                     that doesn't have objectMode = 0x0?" << endl;
             assert(false);
           }
         }
@@ -292,10 +292,10 @@ bool Gamestate::compressData()
   retval = compress( dest, &buffer, source, (uLong)(header_.getDataSize()) );
   switch ( retval )
   {
-    case Z_OK: COUT(5) << "G.St.Man: compress: successfully compressed" << std::endl; break;
-    case Z_MEM_ERROR: COUT(1) << "G.St.Man: compress: not enough memory available in gamestate.compress" << std::endl; return false;
-    case Z_BUF_ERROR: COUT(2) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << std::endl; return false;
-    case Z_DATA_ERROR: COUT(2) << "G.St.Man: compress: data corrupted in gamestate.compress" << std::endl; return false;
+    case Z_OK: orxout(verbose_more, context::packets) << "G.St.Man: compress: successfully compressed" << endl; break;
+    case Z_MEM_ERROR: orxout(internal_error, context::packets) << "G.St.Man: compress: not enough memory available in gamestate.compress" << endl; return false;
+    case Z_BUF_ERROR: orxout(internal_warning, context::packets) << "G.St.Man: compress: not enough memory available in the buffer in gamestate.compress" << endl; return false;
+    case Z_DATA_ERROR: orxout(internal_warning, context::packets) << "G.St.Man: compress: data corrupted in gamestate.compress" << endl; return false;
   }
 
   //copy and modify header
@@ -309,7 +309,7 @@ bool Gamestate::compressData()
   data_ = ndata;
   header_.setCompSize( buffer );
   header_.setCompressed( true );
-  COUT(4) << "gamestate compress datasize: " << header_.getDataSize() << " compsize: " << header_.getCompSize() << std::endl;
+  orxout(verbose, context::packets) << "gamestate compress datasize: " << header_.getDataSize() << " compsize: " << header_.getCompSize() << endl;
   return true;
 }
 
@@ -318,7 +318,7 @@ bool Gamestate::decompressData()
 {
   assert(data_);
   assert(header_.isCompressed());
-  COUT(4) << "GameStateClient: uncompressing gamestate. id: " << header_.getID() << ", baseid: " << header_.getBaseID() << ", datasize: " << header_.getDataSize() << ", compsize: " << header_.getCompSize() << std::endl;
+  orxout(verbose, context::packets) << "GameStateClient: uncompressing gamestate. id: " << header_.getID() << ", baseid: " << header_.getBaseID() << ", datasize: " << header_.getDataSize() << ", compsize: " << header_.getCompSize() << endl;
   uint32_t datasize = header_.getDataSize();
   uint32_t compsize = header_.getCompSize();
   uint32_t bufsize;
@@ -332,10 +332,10 @@ bool Gamestate::decompressData()
   retval = uncompress( dest, &length, source, (uLong)compsize );
   switch ( retval )
   {
-    case Z_OK: COUT(5) << "successfully decompressed" << std::endl; break;
-    case Z_MEM_ERROR: COUT(1) << "not enough memory available" << std::endl; return false;
-    case Z_BUF_ERROR: COUT(2) << "not enough memory available in the buffer" << std::endl; return false;
-    case Z_DATA_ERROR: COUT(2) << "data corrupted (zlib)" << std::endl; return false;
+    case Z_OK: orxout(verbose_more, context::packets) << "successfully decompressed" << endl; break;
+    case Z_MEM_ERROR: orxout(internal_error, context::packets) << "not enough memory available" << endl; return false;
+    case Z_BUF_ERROR: orxout(internal_warning, context::packets) << "not enough memory available in the buffer" << endl; return false;
+    case Z_DATA_ERROR: orxout(internal_warning, context::packets) << "data corrupted (zlib)" << endl; return false;
   }
 
   //copy over the header
@@ -374,7 +374,7 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newDataPtr, uint8_t*& origDataP
   // Check whether the whole object stayed the same
   if( memcmp( origDataPtr+objectOffset, baseDataPtr+objectOffset, objectHeader.getDataSize()) == 0 )
   {
-//     COUT(4) << "skip object " << Synchronisable::getSynchronisable(objectHeader.getObjectID())->getIdentifier()->getName() << endl;
+//     orxout(verbose, context::packets) << "skip object " << Synchronisable::getSynchronisable(objectHeader.getObjectID())->getIdentifier()->getName() << endl;
     origDataPtr += objectOffset + objectHeader.getDataSize(); // skip the whole object
     baseDataPtr += objectOffset + objectHeader.getDataSize();
     sizes += Synchronisable::getSynchronisable(objectHeader.getObjectID())->getNrOfVariables();
@@ -430,7 +430,7 @@ inline void /*Gamestate::*/diffObject( uint8_t*& newDataPtr, uint8_t*& origDataP
 
 inline void /*Gamestate::*/copyObject( uint8_t*& newData, uint8_t*& origData, uint8_t*& baseData, SynchronisableHeader& objectHeader, std::vector<uint32_t>::iterator& sizes )
 {
-  //       COUT(4) << "docopy" << endl;
+  //       orxout(verbose, context::packets) << "docopy" << endl;
   // Just copy over the whole Object
   memcpy( newData, origData, objectHeader.getDataSize()+SynchronisableHeader::getSize() );
   SynchronisableHeader(newData).setDiffed(false);
@@ -439,15 +439,15 @@ inline void /*Gamestate::*/copyObject( uint8_t*& newData, uint8_t*& origData, ui
   origData += objectHeader.getDataSize()+SynchronisableHeader::getSize();
 //   SynchronisableHeader baseHeader( baseData );
 //   baseData += baseHeader.getDataSize()+SynchronisableHeader::getSize();
-  //       COUT(4) << "copy " << h.getObjectID() << endl;
-  //       COUT(4) << "copy " << h.getObjectID() << ":";
+  //       orxout(verbose, context::packets) << "copy " << h.getObjectID() << endl;
+  //       orxout(verbose, context::packets) << "copy " << h.getObjectID() << ":";
   sizes += Synchronisable::getSynchronisable(objectHeader.getObjectID())->getNrOfVariables();
 //   for( unsigned int i = 0; i < Synchronisable::getSynchronisable(objectHeader.getObjectID())->getNrOfVariables(); ++i )
 //   {
-//     //         COUT(4) << " " << *sizes;
+//     //         orxout(verbose, context::packets) << " " << *sizes;
 //     ++sizes;
 //   }
-    //       COUT(4) << endl;
+    //       orxout(verbose, context::packets) << endl;
 }
 
 inline bool findObject(uint8_t*& dataPtr, uint8_t* endPtr, SynchronisableHeader& objectHeader)
@@ -540,13 +540,13 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
       assert(baseHeader.getDataSize() < 500);
       if( SynchronisableHeader(baseDataPtr).getDataSize()==origHeader.getDataSize() )
       {
-//         COUT(4) << "diffing object in order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+//         orxout(verbose, context::packets) << "diffing object in order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
         diffObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
         diffedObject = true;
       }
       else
       {
-//         COUT(4) << "copy object because of different data sizes (1): " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+//         orxout(verbose, context::packets) << "copy object because of different data sizes (1): " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
         copyObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
         assert(sizesIt != this->sizes_.end() || origDataPtr==origDataEnd);
       }
@@ -564,20 +564,20 @@ Gamestate* Gamestate::diffVariables(Gamestate *base)
         assert(baseHeader.getDataSize() < 500);
         if( SynchronisableHeader(baseDataPtr).getDataSize()==origHeader.getDataSize() )
         {
-//           COUT(4) << "diffing object out of order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+//           orxout(verbose, context::packets) << "diffing object out of order: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
           diffObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
           diffedObject = true;
         }
         else
         {
-//           COUT(4) << "copy object because of different data sizes (2): " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+//           orxout(verbose, context::packets) << "copy object because of different data sizes (2): " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
           copyObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
           assert(sizesIt != this->sizes_.end() || origDataPtr==origDataEnd);
         }
       }
       else
       {
-//         COUT(4) << "copy object: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
+//         orxout(verbose, context::packets) << "copy object: " << Synchronisable::getSynchronisable(origHeader.getObjectID())->getIdentifier()->getName() << endl;
         assert(baseDataPtr == oldBaseDataPtr);
         copyObject(destDataPtr, origDataPtr, baseDataPtr, origHeader, sizesIt);
         assert(sizesIt != this->sizes_.end() || origDataPtr==origDataEnd);
@@ -717,10 +717,10 @@ void Gamestate::rawDiff( uint8_t* newdata, uint8_t* data, uint8_t* basedata, uin
 
   //copy in the zeros
 //   std::list<obj>::iterator itt;
-//   COUT(0) << "myvector contains:";
+//   orxout() << "myvector contains:";
 //   for ( itt=dataVector_.begin() ; itt!=dataVector_.end(); itt++ )
-//     COUT(0) << " " << (*itt).objID;
-//   COUT(0) << endl;
+//     orxout() << " " << (*itt).objID;
+//   orxout() << endl;
   for(it=dataVector_.begin(); it!=dataVector_.end();){
     SynchronisableHeader oldobjectheader(origdata);
     SynchronisableHeader newobjectheader(newdata);
@@ -770,7 +770,7 @@ uint32_t Gamestate::calcGamestateSize(uint32_t id, uint8_t mode)
     size+=it->getSize(id, mode); // size of the actual data of the synchronisable
     nrOfVariables += it->getNrOfVariables();
   }
-//   COUT(0) << "allocating " << nrOfVariables << " ints" << endl;
+//   orxout() << "allocating " << nrOfVariables << " ints" << endl;
   this->sizes_.reserve(nrOfVariables);
   return size;
 }

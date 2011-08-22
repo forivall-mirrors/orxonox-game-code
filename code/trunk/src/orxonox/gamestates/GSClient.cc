@@ -28,7 +28,6 @@
 
 #include "GSClient.h"
 
-#include "util/Debug.h"
 #include "util/Exception.h"
 #include "core/CommandLineParser.h"
 #include "core/Game.h"
@@ -52,6 +51,8 @@ namespace orxonox
 
     void GSClient::activate()
     {
+        orxout(user_status) << "Starting client" << endl;
+
         GameMode::setIsClient(true);
 
 //         this->client_ = new Client();

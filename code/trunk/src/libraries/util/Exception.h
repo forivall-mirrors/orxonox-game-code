@@ -62,7 +62,7 @@
 #include <exception>
 #include <sstream>
 #include <string>
-#include "Debug.h"
+#include "Output.h"
 
 namespace orxonox
 {
@@ -175,8 +175,8 @@ namespace orxonox
     template <class T>
     inline const T& exceptionThrowerHelper(const T& exception)
     {
-        // let the catcher decide whether to display the message below level 4
-        COUT(4) << exception.getFullDescription() << std::endl;
+        // let the catcher decide whether to display the message also to the user
+        orxout(internal_error) << exception.getFullDescription() << endl;
         return exception;
     }
 

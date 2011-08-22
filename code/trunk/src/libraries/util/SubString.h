@@ -58,7 +58,7 @@
     SubString tokens(text, SubString::WhiteSpaces, "", false, '\\', true, '"', true, '{', '}', true, '\0');
 
     for (unsigned int i = 0; i < tokens.size(); ++i)
-        COUT(0) << i << ": " << tokens[i] << std::endl;
+        orxout() << i << ": " << tokens[i] << endl;
     @endcode
 
     The output of this code is:

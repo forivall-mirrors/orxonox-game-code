@@ -69,7 +69,7 @@ namespace orxonox
     {
         SUPER(AddQuest, XMLPort, xmlelement, mode);
 
-        COUT(4) << "New AddQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
+        orxout(verbose, context::quests) << "New AddQuest, with target Quest {" << this->getQuestId() << "}, created." << endl;
     }
 
     /**
@@ -84,7 +84,7 @@ namespace orxonox
     {
         assert(player);
 
-        COUT(5) << "AddQuest on player: " << player << " ." << std::endl;
+        orxout(verbose_more, context::quests) << "AddQuest on player: " << player << " ." << endl;
 
         try
         {
@@ -94,11 +94,11 @@ namespace orxonox
         }
         catch(const orxonox::Exception& ex)
         {
-            COUT(2) << ex.getFullDescription() << std::endl;
+            orxout(internal_warning, context::quests) << ex.getFullDescription() << endl;
             return false;
         }
 
-        COUT(4) << "Quest {" << this->getQuestId() << "} successfully added to player: " << player << " ." << std::endl;
+        orxout(verbose, context::quests) << "Quest {" << this->getQuestId() << "} successfully added to player: " << player << " ." << endl;
         return true;
     }
 

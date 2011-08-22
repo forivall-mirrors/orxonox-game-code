@@ -246,7 +246,7 @@ namespace orxonox
         else if(mode == DistanceMultiTrigger::beaconModeExlcude_s)
             this->setBeaconModeDirect(distanceMultiTriggerBeaconMode::exclude);
         else
-            COUT(1) << "Invalid beacon mode in DistanceMultiTrigger." << endl;
+            orxout(internal_error, context::triggers) << "Invalid beacon mode in DistanceMultiTrigger." << endl;
     }
 
     /**

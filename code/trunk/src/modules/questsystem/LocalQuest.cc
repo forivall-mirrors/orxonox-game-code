@@ -68,7 +68,7 @@ namespace orxonox
     {
         SUPER(LocalQuest, XMLPort, xmlelement, mode);
 
-        COUT(4) << "New LocalQuest {" << this->getId() << "} created." << std::endl;
+        orxout(verbose, context::quests) << "New LocalQuest {" << this->getId() << "} created." << endl;
     }
 
     /**
@@ -84,7 +84,7 @@ namespace orxonox
     {
         if(!this->isFailable(player)) // Checks whether the quest can be failed.
         {
-            COUT(4) << "A non-failable quest was trying to be failed." << std::endl;
+            orxout(verbose, context::quests) << "A non-failable quest was trying to be failed." << endl;
             return false;
         }
 
@@ -107,7 +107,7 @@ namespace orxonox
     {
         if(!this->isCompletable(player)) // Checks whether the Quest can be completed.
         {
-            COUT(4) << "A non-completable quest was trying to be completed." << std::endl;
+            orxout(verbose, context::quests) << "A non-completable quest was trying to be completed." << endl;
             return false;
         }
 

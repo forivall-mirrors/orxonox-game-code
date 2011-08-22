@@ -219,7 +219,7 @@ end
 -- quest is the quest to be selected.
 function P.selectQuest(list, quest)
     if quest == nil then -- If the input quest is nil, there is nothing to be selected, an error is output and the first quest is selected instead.
-        cout(1, "Error in QuestGUI: selectQuest(), input quest is nil. Selecting first.")
+        orxout(orxonox.level.internal_error, "Error in QuestGUI: selectQuest(), input quest is nil. Selecting first.")
         list:setItemSelectState(list:getListboxItemFromIndex(0), true) -- Select first
         return
     end
@@ -239,7 +239,7 @@ function P.selectQuest(list, quest)
     if found then -- If the quest was found it is selected.
         list:setItemSelectState(list:getListboxItemFromIndex(index), true)
     else -- If the quest isn't found an error is output and the first quest is selected instead.
-        cout(1, "Error in QuestGUI: selectQuest(), input quest is not in list. Selecting first.")
+        orxout(orxonox.level.internal_error, "Error in QuestGUI: selectQuest(), input quest is not in list. Selecting first.")
         list:setItemSelectState(list:getListboxItemFromIndex(0), true) -- Select first
     end
 end
@@ -312,7 +312,7 @@ function P.changeToSubquest_clicked(e)
                 P.loadQuestsList(quest)
             end
         else
-            cout(1, "Error in QuestGUI: changeToSubquest(), quest was nil. Ignoring...")
+            orxout(orxonox.level.internal_error, "Error in QuestGUI: changeToSubquest(), quest was nil. Ignoring...")
         end
     end
 end

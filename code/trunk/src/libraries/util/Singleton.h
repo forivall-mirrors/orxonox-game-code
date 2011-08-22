@@ -99,7 +99,7 @@
 
     void TestSingleton::testFunction()                      // implement testFunction
     {
-        COUT(0) << "My value is " << this->testValue_ << std::endl;
+        orxout() << "My value is " << this->testValue_ << endl;
     }
 
     TestSingleton::getInstance().testFunction();            // prints "My value is 15"

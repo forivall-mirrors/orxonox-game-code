@@ -28,7 +28,7 @@
 
 #include "KeyBinderManager.h"
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/ScopedSingletonManager.h"
 #include "core/ConfigValueIncludes.h"
@@ -167,7 +167,7 @@ namespace orxonox
     {
         if (!this->bBinding_)
         {
-            COUT(0) << "Press any button/key or move a mouse/joystick axis" << std::endl;
+            orxout(message) << "Press any button/key or move a mouse/joystick axis" << endl;
             KeyDetector::getInstance().setCallback(createFunctor(&KeyBinderManager::keybindKeyPressed, this));
             InputManager::getInstance().enterState("detector");
             this->command_ = command;
@@ -184,11 +184,11 @@ namespace orxonox
         {
             if (keyName == "Keys.KeyEscape")
             {
-                COUT(0) << "Keybinding aborted." << std::endl;
+                orxout(message) << "Keybinding aborted." << endl;
             }
             else
             {
-                COUT(0) << "Binding string \"" << command_ << "\" on key '" << keyName << "'" << std::endl;
+                orxout(message) << "Binding string \"" << command_ << "\" on key '" << keyName << "'" << endl;
                 this->currentBinder_->setBinding(command_, keyName, bTemporary_);
             }
             InputManager::getInstance().leaveState("detector");

@@ -6,11 +6,21 @@ print = function(s)
   luaState:luaPrint(s)
 end
 
--- Create function to log text like COUT, but always prints a line!
-logMessage = function(level, message)
-  luaState:luaLog(level, message)
+-- Prints output to the console and the logfile
+--
+-- Accepts the following arguments:
+--   orxout("message")
+--   orxout(orxonox.level.levelname, "message")
+--   orxout(orxonox.level.levelname, "context", "message)
+orxout = function(arg1, arg2, arg3)
+  if arg1 and arg2 and arg3 then
+    luaState:luaOutput(arg1, arg2, arg3)
+  elseif arg1 and arg2 then
+    luaState:luaOutput(arg1, arg2)
+  else
+    luaState:luaOutput(arg1)
+  end
 end
-cout = logMessage
 
 -- Redirect dofile in order to load with the resource manager
 original_dofile = dofile
@@ -41,7 +51,7 @@ _REQUIREDNAME = ""
 LuaStateReturnValue = true
 require = function(moduleName)
   if not luaState:fileExists(moduleName .. ".lua") then
-    logMessage(2, "Warning: Lua function require() could not find file '" .. moduleName .. ".lua' ")
+    orxout(orxonox.level.internal_warning, "Warning: Lua function require() could not find file '" .. moduleName .. ".lua' ")
     return nil
   end
 
@@ -84,7 +94,7 @@ if _VERSION ~= "Lua 5.0"  and not luaState:usingIOConsole() then
 else
   -- Fallback pause function
   pause = function()
-    logMessage(2, [["Warning: debug() called in Lua, but Debugger is not active.
+    orxout(orxonox.level.internal_warning, [["Warning: debug() called in Lua, but Debugger is not active.
 Do you have the IOConsole disabled and are you using Lua version 5.1?"]])
   end
 end
@@ -97,7 +107,7 @@ errorHandler = function(err)
       return err
     end
     -- Display the error message
-    logMessage(1, "Lua runtime error: "..err)
+    orxout(orxonox.level.internal_error, "Lua runtime error: "..err)
   end
 
   -- Start debugger if possible
@@ -105,7 +115,7 @@ errorHandler = function(err)
     pause()
   else
     -- Fallback: print stack trace
-    logMessage(3, debug.traceback(""))
+    orxout(orxonox.level.internal_error, debug.traceback(""))
   end
   return err -- Hello Lua debugger user! Please type 'set 2' to get to the
              -- actual position in the stack where the error occurred

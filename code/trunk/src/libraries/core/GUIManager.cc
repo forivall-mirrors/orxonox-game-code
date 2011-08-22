@@ -72,10 +72,11 @@ extern "C" {
 
 #include "util/Clock.h"
 #include "util/Convert.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/Math.h"
 #include "util/OrxAssert.h"
+#include "util/output/BaseWriter.h"
 #include "ConfigValueIncludes.h"
 #include "Core.h"
 #include "CoreIncludes.h"
@@ -100,18 +101,18 @@ namespace orxonox
     public:
         void logEvent(const CEGUI::String& message, CEGUI::LoggingLevel level = CEGUI::Standard)
         {
-            int orxonoxLevel = CEGUI::Standard;
+            OutputLevel orxonoxLevel = level::debug_output;
             switch (level)
             {
-                case CEGUI::Errors:      orxonoxLevel = 1; break;
-                case CEGUI::Warnings:    orxonoxLevel = 2; break;
-                case CEGUI::Standard:    orxonoxLevel = 4; break;
-                case CEGUI::Informative: orxonoxLevel = 5; break;
-                case CEGUI::Insane:      orxonoxLevel = 6; break;
+                case CEGUI::Errors:      orxonoxLevel = level::internal_error; break;
+                case CEGUI::Warnings:    orxonoxLevel = level::internal_warning; break;
+                case CEGUI::Standard:    orxonoxLevel = level::verbose; break;
+                case CEGUI::Informative: orxonoxLevel = level::verbose_more; break;
+                case CEGUI::Insane:      orxonoxLevel = level::verbose_ultra; break;
                 default: OrxAssert(false, "CEGUI log level out of range, inspect immediately!");
             }
-            OutputHandler::getOutStream(orxonoxLevel)
-                << "CEGUI: " << message << std::endl;
+
+            orxout(orxonoxLevel, context::cegui) << message << endl;
 
             CEGUI::DefaultLogger::logEvent(message, level);
         }
@@ -255,14 +256,17 @@ namespace orxonox
         , destructionHelper_(this)
     {
         RegisterRootObject(GUIManager);
+
+        orxout(internal_status) << "initializing GUIManager..." << endl;
+
         this->setConfigValues();
 
         using namespace CEGUI;
 
-        COUT(3) << "Initialising CEGUI." << std::endl;
+        orxout(internal_info) << "Initialising CEGUI." << endl;
 
         this->oldCEGUI_ = false;
-        
+
         // Note: No SceneManager specified yet
 #ifdef ORXONOX_OLD_CEGUI
         guiRenderer_ = new OgreCEGUIRenderer(GraphicsManager::getInstance().getRenderWindow(), Ogre::RENDER_QUEUE_OVERLAY, false, 3000);
@@ -299,9 +303,7 @@ namespace orxonox
         // Create our own logger to specify the filepath
         std::auto_ptr<CEGUILogger> ceguiLogger(new CEGUILogger());
         ceguiLogger->setLogFilename(PathConfig::getLogPathString() + "cegui.log");
-        // Set the log level according to ours (translate by subtracting 1)
-        ceguiLogger->setLoggingLevel(
-            static_cast<LoggingLevel>(OutputHandler::getInstance().getSoftDebugLevel("logFile") - 1));
+        ceguiLogger->setLoggingLevel(static_cast<CEGUI::LoggingLevel>(this->outputLevelCeguiLog_));
         this->ceguiLogger_ = ceguiLogger.release();
 
         // Create the CEGUI system singleton
@@ -335,10 +337,14 @@ namespace orxonox
 
         // Set up the sheet manager in the Lua framework
         this->luaState_->doFile("SheetManager.lua");
+
+        orxout(internal_status) << "finished initializing GUIManager" << endl;
     }
 
     void GUIManager::destroy()
     {
+        orxout(internal_status) << "destroying GUIManager..." << endl;
+
         using namespace CEGUI;
 
 #ifdef ORXONOX_OLD_CEGUI
@@ -355,16 +361,25 @@ namespace orxonox
         safeObjectDelete(&rqListener_);
 #endif
         safeObjectDelete(&luaState_);
+
+        orxout(internal_status) << "finished destroying GUIManager" << endl;
     }
 
     void GUIManager::setConfigValues(void)
     {
-        SetConfigValue(guiScheme_, GUIManager::defaultScheme_) .description("Changes the current GUI scheme.") .callback(this, &GUIManager::changedGUIScheme);
+        SetConfigValue(guiScheme_, GUIManager::defaultScheme_).description("Changes the current GUI scheme.").callback(this, &GUIManager::changedGUIScheme);
         SetConfigValue(numScrollLines_, 1).description("How many lines to scroll in a list if the scroll wheel is used");
+        SetConfigValueExternal(outputLevelCeguiLog_, BaseWriter::getConfigurableSectionName(), "outputLevelCeguiLog", CEGUI::Standard).description("The log level of the CEGUI log file").callback(this, &GUIManager::changedCeguiOutputLevel);
     }
 
     void GUIManager::changedGUIScheme(void)
     {
+    }
+
+    void GUIManager::changedCeguiOutputLevel()
+    {
+        if (this->ceguiLogger_)
+            this->ceguiLogger_->setLoggingLevel(static_cast<CEGUI::LoggingLevel>(this->outputLevelCeguiLog_));
     }
 
     /**
@@ -669,7 +684,7 @@ namespace orxonox
         catch (CEGUI::ScriptException& ex)
         {
             // Display the error and proceed. See @remarks why this can be dangerous.
-            COUT(1) << ex.getMessage() << std::endl;
+            orxout(internal_error) << ex.getMessage() << endl;
             return true;
         }
     }

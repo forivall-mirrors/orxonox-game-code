@@ -188,7 +188,7 @@ namespace orxonox
     {
         if (type == WorldEntity::Static)
         {
-            CCOUT(1) << "Error: Cannot tell a MobileEntity to have static collision type! Ignoring." << std::endl;
+            orxout(internal_warning) << "Cannot tell a MobileEntity to have static collision type! Ignoring." << endl;
             assert(false); // Only in debug mode
             return false;
         }

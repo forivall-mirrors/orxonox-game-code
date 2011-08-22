@@ -29,7 +29,7 @@
     </camerapositions>
     
     <?lua
-	include("includes/weaponSettingsFPS.oxi")
+	include("../includes/weaponSettingsFPS.oxi")
     ?>
 
   </FpsPlayer>

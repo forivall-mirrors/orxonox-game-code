@@ -187,7 +187,7 @@ namespace orxonox
         if (identifier)
             this->munitiontype_ = identifier;
         else
-            COUT(2) << "Warning: No munition class defined in WeaponMode " << this->getName() << std::endl;
+            orxout(internal_warning) << "No munition class defined in WeaponMode " << this->getName() << endl;
         this->updateMunition();
     }
 
@@ -248,7 +248,6 @@ namespace orxonox
 
             Vector3 muzzleDirection;
             muzzleDirection = target - this->muzzlePosition_;
-//             COUT(0) << "muzzleDirection " << muzzleDirection << endl;
             this->muzzleOrientation_ = (this->weapon_->getWorldOrientation() * WorldEntity::FRONT).getRotationTo(muzzleDirection) * this->weapon_->getWorldOrientation();
         }
         else

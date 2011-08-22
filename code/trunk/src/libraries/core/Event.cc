@@ -48,13 +48,13 @@ namespace orxonox
     {
         if (this->bProcessingEvent_)
         {
-            COUT(2) << "Warning: Detected Event loop in section \"" << event.statename_ << "\" of object \"" << object->getName() << "\" and fired by \"" << event.originator_->getName() << '"' << std::endl;
+            orxout(internal_warning, context::events) << "Detected Event loop in section \"" << event.statename_ << "\" of object \"" << object->getName() << "\" and fired by \"" << event.originator_->getName() << '"' << endl;
             return;
         }
 
         this->bProcessingEvent_ = true;
 
-        COUT(4) << "Processing event (EventState) : originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << "), activate: " << event.activate_ << ", name: " << event.name_ << ", statename: " << event.statename_ << ", object: " << object->getIdentifier()->getName() << " (&" << object << ")" << "." << std::endl;
+        orxout(verbose, context::events) << "Processing event (EventState) : originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << "), activate: " << event.activate_ << ", name: " << event.name_ << ", statename: " << event.statename_ << ", object: " << object->getIdentifier()->getName() << " (&" << object << ")" << "." << endl;
 
         // check if the originator is an instance of the requested class
         if (event.originator_->isA(this->subclass_))

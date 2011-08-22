@@ -31,7 +31,7 @@
 #include <tinyxml/tinyxml.h>
 #include <tinyxml/ticpp.h>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "CoreIncludes.h"
 #include "XMLPort.h"
 
@@ -87,7 +87,7 @@ namespace orxonox
 
             it = Template::getTemplateMap().find(this->getName());
             if (it != Template::getTemplateMap().end())
-                COUT(2) << "Warning: Template with name \"" << this->getName() << "\" already exists." << std::endl;
+                orxout(internal_warning, context::templates) << "Template with name \"" << this->getName() << "\" already exists." << endl;
             else
                 Template::getTemplateMap()[this->getName()] = this;
         }
@@ -116,12 +116,12 @@ namespace orxonox
                 }
                 else
                 {
-                    COUT(2) << "Warning: Linking from " << this->getName() << " to " << this->link_ << " leads to an infinite loop. Returning own element." << std::endl;
+                    orxout(internal_warning, context::templates) << "Linking from \"" << this->getName() << "\" to \"" << this->link_ << "\" leads to an infinite loop. Returning own element." << endl;
                 }
             }
             else
             {
-                COUT(2) << "Warning: " << this->link_ << " is not an existing Template name. Returning own element." << std::endl;
+                orxout(internal_warning, context::templates) << '"' << this->link_ << "\" is not an existing Template name. Returning own element." << endl;
             }
         }
 
@@ -141,12 +141,12 @@ namespace orxonox
         {
             if (!object->isA(this->baseclassIdentifier_))
             {
-                COUT(1) << "Error: Can't apply template (name: " << this->getName() << "), object (name: " << object->getName() << ", class: " << object->getIdentifier()->getName() << ") is not a " << this->baseclassIdentifier_->getName() << std::endl;
+                orxout(internal_error, context::templates) << "Can't apply template (name: " << this->getName() << "), object (name: " << object->getName() << ", class: " << object->getIdentifier()->getName() << ") is not a " << this->baseclassIdentifier_->getName() << endl;
                 return;
             }
         }
 
-        COUT(4) << object->getLoaderIndentation() << " aplying Template \"" << this->getName() << "\"..." << std::endl;
+        orxout(verbose, context::templates) << object->getLoaderIndentation() << " aplying Template \"" << this->getName() << "\"..." << endl;
 
         Element temp = &const_cast<TiXmlElement&>(this->getXMLElement());
 
@@ -169,7 +169,7 @@ namespace orxonox
             return it->second;
         else
         {
-            COUT(2) << "Warning: Template with name " << name << " doesn't exist." << std::endl;
+            orxout(internal_warning, context::templates) << "Template with name " << name << " doesn't exist." << endl;
             return 0;
         }
     }

@@ -93,19 +93,19 @@ namespace orxonox
             alSource3f(this->audioSource_, AL_POSITION, pos.x, pos.y, pos.z);
             ALenum error = alGetError();
             if (error == AL_INVALID_VALUE)
-                COUT(2) << "Sound: OpenAL: Invalid sound position" << std::endl;
+                orxout(internal_error, context::sound) << "OpenAL: Invalid sound position" << endl;
 
             const Vector3& vel = this->getVelocity();
             alSource3f(this->audioSource_, AL_VELOCITY, vel.x, vel.y, vel.z);
             error = alGetError();
             if (error == AL_INVALID_VALUE)
-                COUT(2) << "Sound: OpenAL: Invalid sound velocity" << std::endl;
+                orxout(internal_error, context::sound) << "OpenAL: Invalid sound velocity" << endl;
 
             const Vector3& direction = -this->getWorldOrientation().zAxis();
             alSource3f(this->audioSource_, AL_DIRECTION, direction.x, direction.y, direction.z);
             error = alGetError();
             if (error == AL_INVALID_VALUE)
-                COUT(2) << "Sound: OpenAL: Invalid sound direction" << std::endl;
+                orxout(internal_error, context::sound) << "OpenAL: Invalid sound direction" << endl;
         }
     }
 

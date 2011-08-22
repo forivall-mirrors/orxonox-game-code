@@ -51,7 +51,7 @@
 #include "core/ThreadPool.h"
 #include "core/command/Executor.h"
 #include "core/GameMode.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Clock.h"
 #include "util/OrxAssert.h"
 // #include "TrafficControl.h"
@@ -127,12 +127,12 @@ namespace orxonox
     packet::Acknowledgement *ack = new packet::Acknowledgement(gamestateID, peerID);
     if( !this->sendPacket(ack))
     {
-      COUT(3) << "could not ack gamestate: " << gamestateID << std::endl;
+      orxout(internal_warning, context::network) << "could not ack gamestate: " << gamestateID << endl;
       return false;
     }
     else
     {
-      COUT(5) << "acked a gamestate: " << gamestateID << std::endl;
+      orxout(verbose_more, context::network) << "acked a gamestate: " << gamestateID << endl;
       return true;
     }
   }
@@ -181,11 +181,11 @@ namespace orxonox
     {
       if( !peerIt->second.isSynched )
       {
-        COUT(5) << "Server: not sending gamestate" << std::endl;
+        orxout(verbose_more, context::network) << "Server: not sending gamestate" << endl;
         continue;
       }
-      COUT(5) << "client id: " << peerIt->first << std::endl;
-      COUT(5) << "Server: doing gamestate gamestate preparation" << std::endl;
+      orxout(verbose_more, context::network) << "client id: " << peerIt->first << endl;
+      orxout(verbose_more, context::network) << "Server: doing gamestate gamestate preparation" << endl;
       int peerID = peerIt->first; //get client id
 
       unsigned int lastAckedGamestateID = peerIt->second.lastAckedGamestateID;
@@ -255,12 +255,12 @@ namespace orxonox
 
 //     OrxVerify(gs->compressData(), "");
     clock.capture();
-    COUT(5) << "diff and compress time: " << clock.getDeltaTime() << endl;
-//     COUT(5) << "sending gamestate with id " << gs->getID();
+    orxout(verbose_more, context::network) << "diff and compress time: " << clock.getDeltaTime() << endl;
+//     orxout(verbose_more, context::network) << "sending gamestate with id " << gs->getID();
 //     if(gamestate->isDiffed())
-//       COUT(5) << " and baseid " << gs->getBaseID() << endl;
+//       orxout(verbose_more, context::network) << " and baseid " << gs->getBaseID() << endl;
 //     else
-//       COUT(5) << endl;
+//       orxout(verbose_more, context::network) << endl;
     gs->setPeerID(peerID);
     destgamestate = gs;
   }
@@ -290,7 +290,7 @@ namespace orxonox
 //    assert(curid==GAMESTATEID_INITIAL || curid<=gamestateID); // this line is commented out because acknowledgements are unreliable and may arrive in distorted order
     if( gamestateID <= curid && curid != GAMESTATEID_INITIAL )
         return true;
-COUT(4) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " curid: " << curid << std::endl;
+orxout(verbose, context::network) << "acking gamestate " << gamestateID << " for peerID: " << peerID << " curid: " << curid << endl;
     std::map<uint32_t, packet::Gamestate*>::iterator it2;
     for( it2=it->second.gamestates.begin(); it2!=it->second.gamestates.end(); )
     {

@@ -59,7 +59,7 @@ namespace orxonox
     {
         if (this->bActive_)
         {
-            COUT(2) << "Warning: Detected Event loop in EventTarget \"" << this->getName() << '"' << std::endl;
+            orxout(internal_warning, context::events) << "Detected Event loop in EventTarget \"" << this->getName() << '"' << endl;
             return;
         }
 

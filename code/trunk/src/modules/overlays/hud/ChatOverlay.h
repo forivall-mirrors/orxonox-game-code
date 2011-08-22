@@ -34,7 +34,7 @@
 #include <list>
 #include <OgreOverlayElement.h>
 
-#include "network/ChatListener.h"
+#include "chat/ChatListener.h"
 #include "overlays/OverlayText.h"
 
 namespace orxonox
@@ -48,7 +48,7 @@ namespace orxonox
             void setConfigValues();
 
         protected:
-            virtual void incomingChat(const std::string& message, unsigned int senderID);
+            virtual void incomingChat(const std::string& message, const std::string& name);
 
             std::list<Ogre::DisplayString> messages_;
 

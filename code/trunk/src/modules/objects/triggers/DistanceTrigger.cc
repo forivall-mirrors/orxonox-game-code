@@ -107,7 +107,7 @@ namespace orxonox
 
         if (targetId == NULL)
         {
-            COUT(1) << "Error: \"" << targetStr << "\" is not a valid class name to include in ClassTreeMask (in " << this->getName() << ", class " << this->getIdentifier()->getName() << ')' << std::endl;
+            orxout(internal_error, context::triggers) << "\"" << targetStr << "\" is not a valid class name to include in ClassTreeMask (in " << this->getName() << ", class " << this->getIdentifier()->getName() << ')' << endl;
             return;
         }
 
@@ -208,7 +208,7 @@ namespace orxonox
                     if(pawn != NULL)
                         this->setTriggeringPawn(pawn);
                     else
-                        CCOUT(2) << "Pawn was NULL." << endl;
+                        orxout(internal_warning, context::triggers) << "Pawn was NULL." << endl;
                 }
                 
                 // Add the entity to the cache.
@@ -269,7 +269,7 @@ namespace orxonox
         else if(mode == DistanceTrigger::beaconModeExlcude_s)
             this->setBeaconModeDirect(distanceTriggerBeaconMode::exclude);
         else
-            COUT(1) << "Invalid beacon mode in DistanceTrigger." << endl;
+            orxout(internal_error, context::triggers) << "Invalid beacon mode in DistanceTrigger." << endl;
     }
 
     /**

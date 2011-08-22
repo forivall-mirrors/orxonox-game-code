@@ -122,12 +122,9 @@ namespace orxonox
         unsigned int size = 0;
         for (std::list<ConfigFileEntry*>::const_iterator it = this->entries_.begin(); it != this->entries_.end(); ++it)
             if ((*it)->getName() == name)
-                if ((*it)->getIndex() > size)
-                    size = (*it)->getIndex();
-        if (size == 0)
-            return 0;
-        else
-            return (size + 1);
+                if ((*it)->getIndex() >= size)
+                    size = (*it)->getIndex() + 1;
+        return size;
     }
 
     /**
@@ -273,10 +270,10 @@ namespace orxonox
                         try
                         {
                             boost::filesystem::copy_file(defaultFilepath, filepath);
-                            COUT(3) << "Copied " << this->filename_ << " from the default config folder." << std::endl;
+                            orxout(internal_info, context::config) << "Copied " << this->filename_ << " from the default config folder." << endl;
                         }
                         catch (const boost::filesystem::filesystem_error& ex)
-                        { COUT(1) << "Error in ConfigFile: " << ex.what() << std::endl; }
+                        { orxout(user_error, context::config) << "Error in ConfigFile: " << ex.what() << endl; }
                     }
                 }
             }
@@ -374,7 +371,7 @@ namespace orxonox
 
             file.close();
 
-            COUT(3) << "Loaded config file \"" << this->filename_ << "\"." << std::endl;
+            orxout(internal_info, context::config) << "Loaded config file \"" << this->filename_ << "\"." << endl;
 
             // DO NOT save the file --> we can open supposedly read only config files
         } // end file.is_open()
@@ -403,23 +400,23 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "Error: Couldn't open config-file \"" << filename << "\"." << std::endl;
+            orxout(user_error, context::config) << "Couldn't open config-file \"" << filename << "\"." << endl;
             return;
         }
 
         for (std::list<ConfigFileSection*>::const_iterator it = this->sections_.begin(); it != this->sections_.end(); ++it)
         {
-            file << (*it)->getFileEntry() << std::endl;
+            file << (*it)->getFileEntry() << endl;
 
             for (std::list<ConfigFileEntry*>::const_iterator it_entries = (*it)->getEntriesBegin(); it_entries != (*it)->getEntriesEnd(); ++it_entries)
-                file << (*it_entries)->getFileEntry() << std::endl;
+                file << (*it_entries)->getFileEntry() << endl;
 
-            file << std::endl;
+            file << endl;
         }
 
         file.close();
 
-        COUT(4) << "Saved config file \"" << filename << "\"." << std::endl;
+        orxout(verbose, context::config) << "Saved config file \"" << filename << "\"." << endl;
     }
 
     /**
@@ -668,7 +665,7 @@ namespace orxonox
     void SettingsConfigFile::config(const std::string& section, const std::string& entry, const std::string& value)
     {
         if (!this->configImpl(section, entry, value, &ConfigValueContainer::set))
-            COUT(1) << "Error: Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << std::endl;
+            orxout(user_error, context::config) << "Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << endl;
     }
 
     /**
@@ -681,7 +678,7 @@ namespace orxonox
     void SettingsConfigFile::tconfig(const std::string& section, const std::string& entry, const std::string& value)
     {
         if (!this->configImpl(section, entry, value, &ConfigValueContainer::tset))
-            COUT(1) << "Error: Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << std::endl;
+            orxout(user_error, context::config) << "Config value \"" << entry << "\" in section \"" << section << "\" doesn't exist." << endl;
     }
 
     /**

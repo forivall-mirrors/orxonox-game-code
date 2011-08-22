@@ -171,7 +171,7 @@ namespace orxonox
             {
                 if (!this->executor_->defaultValueSet(i))
                 {
-                    COUT(2) << "Default value " << i << " is missing" << std::endl;
+                    orxout(internal_warning, context::commands) << "Default value " << i << " is missing" << endl;
                     return false;
                 }
             }
@@ -201,7 +201,7 @@ namespace orxonox
             {
                 if (!executor->defaultValueSet(i))
                 {
-                    COUT(2) << "Default value " << i << " is missing" << std::endl;
+                    orxout(internal_warning, context::commands) << "Default value " << i << " is missing" << endl;
                     return false;
                 }
             }
@@ -228,7 +228,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Error: Couldn't assign new executor to console command \"" << this->baseName_ << "\", headers don't match." << std::endl;
+            orxout(internal_error, context::commands) << "Couldn't assign new executor to console command \"" << this->baseName_ << "\", headers don't match." << endl;
             return false;
         }
     }
@@ -255,7 +255,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Error: Couldn't assign new functor to console command \"" << this->baseName_ << "\", headers don't match." << std::endl;
+            orxout(internal_error, context::commands) << "Couldn't assign new functor to console command \"" << this->baseName_ << "\", headers don't match." << endl;
             return false;
         }
     }
@@ -306,7 +306,7 @@ namespace orxonox
         if (this->executor_)
             this->pushFunction(new Executor(*this->executor_.get()));
         else
-            COUT(1) << "Error: Couldn't push copy of executor in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+            orxout(internal_error, context::commands) << "Couldn't push copy of executor in console command \"" << this->baseName_ << "\", no executor set." << endl;
     }
 
     /**
@@ -366,10 +366,10 @@ namespace orxonox
                 return true;
             }
             else if (object)
-                COUT(1) << "Error: Can't assign object to console command \"" << this->baseName_ << "\", no functor set." << std::endl;
+                orxout(internal_error, context::commands) << "Can't assign object to console command \"" << this->baseName_ << "\", no functor set." << endl;
         }
         else if (object)
-            COUT(1) << "Error: Can't assign object to console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+            orxout(internal_error, context::commands) << "Can't assign object to console command \"" << this->baseName_ << "\", no executor set." << endl;
 
         return false;
     }
@@ -417,7 +417,7 @@ namespace orxonox
         if (this->executor_)
             this->executor_->setDefaultValues(arg1);
         else
-            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+            orxout(internal_error, context::commands) << "Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << endl;
 
         return *this;
     }
@@ -430,7 +430,7 @@ namespace orxonox
         if (this->executor_)
             this->executor_->setDefaultValues(arg1, arg2);
         else
-            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+            orxout(internal_error, context::commands) << "Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << endl;
 
         return *this;
     }
@@ -443,7 +443,7 @@ namespace orxonox
         if (this->executor_)
             this->executor_->setDefaultValues(arg1, arg2, arg3);
         else
-            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+            orxout(internal_error, context::commands) << "Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << endl;
 
         return *this;
     }
@@ -456,7 +456,7 @@ namespace orxonox
         if (this->executor_)
             this->executor_->setDefaultValues(arg1, arg2, arg3, arg4);
         else
-            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+            orxout(internal_error, context::commands) << "Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << endl;
 
         return *this;
     }
@@ -469,7 +469,7 @@ namespace orxonox
         if (this->executor_)
             this->executor_->setDefaultValues(arg1, arg2, arg3, arg4, arg5);
         else
-            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+            orxout(internal_error, context::commands) << "Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << endl;
 
         return *this;
     }
@@ -484,7 +484,7 @@ namespace orxonox
         if (this->executor_)
             this->executor_->setDefaultValue(index, arg);
         else
-            COUT(1) << "Error: Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << std::endl;
+            orxout(internal_error, context::commands) << "Can't set default values in console command \"" << this->baseName_ << "\", no executor set." << endl;
 
         return *this;
     }
@@ -499,7 +499,7 @@ namespace orxonox
         if (index < 5)
             this->argumentCompleter_[index] = completer;
         else
-            COUT(2) << "Warning: Couldn't add autocompletion-function for index " << index << " in console command \"" << this->baseName_ << "\": index out of bound." << std::endl;
+            orxout(internal_warning, context::commands) << "Couldn't add autocompletion-function for index " << index << " in console command \"" << this->baseName_ << "\": index out of bound." << endl;
 
         return *this;
     }
@@ -610,9 +610,9 @@ namespace orxonox
         if (bPrintError)
         {
             if (group == "")
-                COUT(1) << "Error: Couldn't find console command with shortcut \"" << name << "\"" << std::endl;
+                orxout(internal_error, context::commands) << "Couldn't find console command with shortcut \"" << name << "\"" << endl;
             else
-                COUT(1) << "Error: Couldn't find console command with group \"" << group << "\" and name \"" << name << "\"" << std::endl;
+                orxout(internal_error, context::commands) << "Couldn't find console command with group \"" << group << "\" and name \"" << name << "\"" << endl;
         }
         return 0;
     }
@@ -643,9 +643,9 @@ namespace orxonox
         if (bPrintError)
         {
             if (group == "")
-                COUT(1) << "Error: Couldn't find console command with shortcut \"" << name << "\"" << std::endl;
+                orxout(internal_error, context::commands) << "Couldn't find console command with shortcut \"" << name << "\"" << endl;
             else
-                COUT(1) << "Error: Couldn't find console command with group \"" << group << "\" and name \"" << name << "\"" << std::endl;
+                orxout(internal_error, context::commands) << "Couldn't find console command with group \"" << group << "\" and name \"" << name << "\"" << endl;
         }
         return 0;
     }
@@ -680,9 +680,9 @@ namespace orxonox
         if (ConsoleCommand::getCommand(group, name) != 0)
         {
             if (group == "")
-                COUT(2) << "Warning: A console command with shortcut \"" << name << "\" already exists." << std::endl;
+                orxout(internal_warning, context::commands) << "A console command with shortcut \"" << name << "\" already exists." << endl;
             else
-                COUT(2) << "Warning: A console command with name \"" << name << "\" already exists in group \"" << group << "\"." << std::endl;
+                orxout(internal_warning, context::commands) << "A console command with name \"" << name << "\" already exists in group \"" << group << "\"." << endl;
         }
         else
         {

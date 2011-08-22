@@ -180,7 +180,7 @@ namespace orxonox
 
         if(pawn == NULL)
         {
-            COUT(1) << "Invalid PickupCarrier in ShieldPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid PickupCarrier in ShieldPickup." << endl;
         }
         return pawn;
     }
@@ -219,7 +219,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid duration in ShieldPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid duration in ShieldPickup." << endl;
             this->duration_ = 0.0f;
         }
     }
@@ -238,7 +238,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid Shieldhealth in ShieldPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid Shieldhealth in ShieldPickup." << endl;
             this->shieldHealth_=0;
         }
     }
@@ -257,7 +257,7 @@ namespace orxonox
         }
         else
         {
-            COUT(1) << "Invalid Absorption in ShieldPickup." << std::endl;
+            orxout(internal_error, context::pickups) << "Invalid Absorption in ShieldPickup." << endl;
             this->shieldAbsorption_=0;
         }
     }

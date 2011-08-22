@@ -129,7 +129,7 @@
 #include <typeinfo>
 #include <loki/TypeManip.h>
 
-#include "Debug.h"
+#include "Output.h"
 #include "ImplicitConversion.h"
 
 // disable warnings about possible loss of data
@@ -150,8 +150,8 @@ namespace orxonox
     {
         ORX_FORCEINLINE static bool convert(ToType* /*output*/, const FromType& /*input*/)
         {
-            COUT(2) << "Could not convert value of type " << typeid(FromType).name()
-                    << " to type " << typeid(ToType).name() << std::endl;
+            orxout(internal_warning) << "Could not convert value of type " << typeid(FromType).name()
+                                     << " to type " << typeid(ToType).name() << endl;
             return false;
         }
     };

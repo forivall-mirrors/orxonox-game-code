@@ -33,7 +33,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <enet/enet.h>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include <util/Sleep.h>
 // #include "ClientInformation.h"
 
@@ -60,7 +60,7 @@ namespace orxonox
   void ServerConnection::setBindAddress( const std::string& bindAddress )
   {
     if (enet_address_set_host (this->bindAddress_, bindAddress.c_str()) < 0)
-        COUT(1) << "Error: Could not resolve \"" << bindAddress << "\"." << std::endl;
+        orxout(internal_error, context::network) << "Could not resolve \"" << bindAddress << "\"." << endl;
   }
 
   void ServerConnection::setPort( unsigned int port ) {
@@ -74,7 +74,7 @@ namespace orxonox
     
     if ( this->host_ == NULL )
     {
-        COUT(1) << "ServerConnection: host_ == NULL" << std::endl;
+        orxout(internal_error, context::network) << "ServerConnection: host_ == NULL" << endl;
         return false;
     }
     
@@ -82,11 +82,11 @@ namespace orxonox
     this->enableCompression();
     assert( this->host_->socket4 != ENET_SOCKET_NULL || this->host_->socket6 != ENET_SOCKET_NULL );
     if (this->host_->socket4 == ENET_SOCKET_NULL)
-        COUT(2) << "Warning: IPv4 Socket failed." << std::endl;
+        orxout(internal_warning, context::network) << "IPv4 Socket failed." << endl;
     else if (this->host_->socket6 == ENET_SOCKET_NULL)
-        COUT(2) << "Warning: IPv6 Socket failed." << std::endl;
+        orxout(internal_warning, context::network) << "IPv6 Socket failed." << endl;
     else
-        COUT(3) << "Info: Using IPv4 and IPv6 Sockets." << std::endl;
+        orxout(internal_info, context::network) << "Using IPv4 and IPv6 Sockets." << endl;
     
     // start communication thread
     Connection::startCommunicationThread();
@@ -113,7 +113,7 @@ namespace orxonox
     {
 //       ClientInformation *temp = ClientInformation::findClient(clientID);
 //       if(!temp){
-//         COUT(3) << "C.Man: addPacket findClient failed" << std::endl;
+//         orxout(internal_warning, context::network) << "C.Man: addPacket findClient failed" << endl;
 //       }
       Connection::addPacket(packet, clientID, channelID);
     }

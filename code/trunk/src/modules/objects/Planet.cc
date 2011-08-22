@@ -72,7 +72,7 @@ namespace orxonox
             if (activeCamera && this->billboard_.getBillboardSet())
             {
                 float distance = this->getPosition().distance( activeCamera->getWorldPosition() );
-                //             COUT(2) << distance << std::endl;
+                //             orxout(internal_warning) << distance << endl;
                 float planetRadius = this->getScale();
 
                 float newScale = 2 * distance / sqrt(distance*distance - planetRadius*planetRadius);

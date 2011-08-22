@@ -41,7 +41,7 @@
 
 #include <string>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "Identifier.h"
 
 namespace orxonox
@@ -72,7 +72,7 @@ namespace orxonox
             */
             ClassFactory(const std::string& name, bool bLoadable = true)
             {
-                COUT(4) << "*** ClassFactory: Create entry for " << name << " in Factory." << std::endl;
+                orxout(verbose, context::misc::factory) << "Create entry for " << name << " in Factory." << endl;
                 ClassIdentifier<T>::getIdentifier(name)->addFactory(this);
                 ClassIdentifier<T>::getIdentifier()->setLoadable(bLoadable);
             }

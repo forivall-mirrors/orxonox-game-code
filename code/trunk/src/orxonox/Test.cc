@@ -126,7 +126,7 @@ namespace orxonox
     //     temp = mem;
     //     mt2.importData( temp );
     //     assert( temp-mem == mt1.getNetworkSize() );
-    //     COUT(0) << mt2 << endl;
+    //     orxout() << mt2 << endl;
     //     if(!Core::isMaster())
     //       call2(0, "bal", "a", "n", "ce");
     //       callMemberNetworkFunction( Test, checkU1, this->getObjectID(), 0 );
@@ -134,19 +134,19 @@ namespace orxonox
 
     void Test::printBlaBla(std::string s1, std::string s2, std::string s3, std::string s4, std::string s5)
     {
-        COUT(0) << s1 << s2 << s3 << s4 << s5 << endl;
+        orxout() << s1 << s2 << s3 << s4 << s5 << endl;
     }
 
-    void Test::checkU1(){ COUT(1) << "U1 changed: " << u1 << std::endl; }
-    void Test::checkU2(){ COUT(1) << "U2 changed: " << u2 << std::endl; }
-    void Test::checkU3(){ COUT(1) << "U3 changed: " << u3 << std::endl; }
-    void Test::checkU4(){ COUT(1) << "U4 changed: " << u4 << std::endl; }
+    void Test::checkU1(){ orxout() << "U1 changed: " << u1 << endl; }
+    void Test::checkU2(){ orxout() << "U2 changed: " << u2 << endl; }
+    void Test::checkU3(){ orxout() << "U3 changed: " << u3 << endl; }
+    void Test::checkU4(){ orxout() << "U4 changed: " << u4 << endl; }
 
-    void Test::checkS1(){ COUT(1) << "S1 changed: " << s1 << std::endl; }
-    void Test::checkS2(){ COUT(1) << "S2 changed: " << s2 << std::endl; }
-    void Test::checkS3(){ COUT(1) << "S3 changed: " << s3 << std::endl; }
-    void Test::checkS4(){ COUT(1) << "S4 changed: " << s4 << std::endl; }
+    void Test::checkS1(){ orxout() << "S1 changed: " << s1 << endl; }
+    void Test::checkS2(){ orxout() << "S2 changed: " << s2 << endl; }
+    void Test::checkS3(){ orxout() << "S3 changed: " << s3 << endl; }
+    void Test::checkS4(){ orxout() << "S4 changed: " << s4 << endl; }
 
-    void Test::printPointer(){ CCOUT(1) << "pointer: " << this->pointer_ << endl; }
+    void Test::printPointer(){ orxout() << "pointer: " << this->pointer_ << endl; }
 
 }

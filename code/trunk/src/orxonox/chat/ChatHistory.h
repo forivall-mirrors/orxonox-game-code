@@ -36,13 +36,14 @@
 //#define CHATTEST
 
 #ifndef CHATTEST
-#include <OrxonoxPrereqs.h>
-#include <PlayerManager.h>
-#include <infos/PlayerInfo.h>
-#include <core/BaseObject.h>
-#include <network/ChatListener.h>
-#include <core/PathConfig.h>
-#include <util/Singleton.h>
+#include "OrxonoxPrereqs.h"
+
+#include "util/Singleton.h"
+#include "core/BaseObject.h"
+#include "core/PathConfig.h"
+#include "chat/ChatListener.h"
+#include "infos/PlayerInfo.h"
+#include "PlayerManager.h"
 #endif
 
 #ifndef _ChatHistory_H__
@@ -81,8 +82,7 @@ namespace orxonox
        * \param message The incoming message
        * \param senderID Identification number of the sender
        */
-      virtual void incomingChat(const std::string& message,
-        unsigned int senderID);
+      virtual void incomingChat(const std::string& message, const std::string& name);
 
       /** Synchronize logfile onto the hard drive
        *

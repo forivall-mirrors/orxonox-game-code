@@ -46,7 +46,7 @@
 #include <string>
 
 #include "util/Clock.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "core/ObjectList.h"
 #include "core/command/Executor.h"
 #include "packet/Chat.h"
@@ -55,11 +55,9 @@
 #include "packet/FunctionIDs.h"
 #include "packet/Gamestate.h"
 #include "packet/Welcome.h"
-#include "ChatListener.h"
 // #include "ClientInformation.h"
 #include "FunctionCallManager.h"
 #include "GamestateManager.h"
-#include "WANDiscovery.h"
 
 namespace orxonox
 {
@@ -99,32 +97,20 @@ namespace orxonox
   {
   }
 
-
-  /** helper that connects to the master server */
-  void Server::helper_ConnectToMasterserver()
-  {
-//     WANDiscovery::getInstance().msc.sendRequest( MSPROTO_GAME_SERVER " " 
-//       MSPROTO_REGISTER_SERVER );
-  }
-
   /**
   * This function opens the server by creating the listener thread
   */
   void Server::open()
   {
     Host::setActive(true);
-    COUT(4) << "opening server" << endl;
+    orxout(verbose, context::network) << "opening server" << endl;
     this->openListener();
-    
+
     /* make discoverable on LAN */
     LANDiscoverable::setActivity(true);
 
     /* make discoverable on WAN */
     WANDiscoverable::setActivity(true);
-    /* TODO this needs to be optional, we need a switch from the UI to
-     * enable/disable this 
-     */
-//     helper_ConnectToMasterserver();
 
     /* done */
     return;
@@ -136,57 +122,17 @@ namespace orxonox
   void Server::close()
   {
     Host::setActive(false);
-    COUT(4) << "closing server" << endl;
+    orxout(verbose, context::network) << "closing server" << endl;
     this->disconnectClients();
     this->closeListener();
 
     /* tell master server we're closing */
-    COUT(2) << "disconnecting." << endl;
-    WANDiscoverable::setActivity(false);    
-    COUT(2) << "disconnecting done" << endl;
+    orxout(internal_info, context::network) << "disconnecting." << endl;
+    WANDiscoverable::setActivity(false);
+    orxout(internal_info, context::network) << "disconnecting done" << endl;
 
     LANDiscoverable::setActivity(false);
     return;
-  }
-
-  bool Server::processChat(const std::string& message, unsigned int playerID)
-  {
-//     ClientInformation *temp = ClientInformation::getBegin();
-    packet::Chat *chat;
-//     while(temp){
-    chat = new packet::Chat(message, playerID);
-    chat->setPeerID(NETWORK_PEER_ID_BROADCAST);
-    chat->send( static_cast<Host*>(this) );
-//         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
-//       temp = temp->next();
-//     }
-//    COUT(1) << "Player " << playerID << ": " << message << std::endl;
-    return true;
-  }
-
-
-  /* handle incoming data */
-  int rephandler( char *addr, ENetEvent *ev )
-  { 
-    /* reply to pings */
-    if( !strncmp( (char *)ev->packet->data, MSPROTO_PING_GAMESERVER, 
-      MSPROTO_PING_GAMESERVER_LEN ) )
-      //this->msc.sendRequest( MSPROTO_ACK );
-      /* NOTE implement this after pollForReply
-       * reimplementation 
-       */
-      return 0;
-
-    /* done handling, return all ok code 0 */
-    return 0;
-  }
-
-  void Server::helper_HandleMasterServerRequests()
-  { 
-    /* poll the master server for replies and see whether something 
-     * has to be done or changed.
-     */
-    //WANDiscovery::getInstance().msc.pollForReply( rhandler, 10 );
   }
 
   /**
@@ -201,10 +147,6 @@ namespace orxonox
 
     // receive and process incoming discovery packets
     LANDiscoverable::update();
-    
-    // receive and process requests from master server
-    /* todo */
-    //helper_HandleMasterServerRequests();
 
     if ( GamestateManager::hasPeers() )
     {
@@ -245,7 +187,7 @@ namespace orxonox
   void Server::printRTT()
   {
 //     for( ClientInformation* temp=ClientInformation::getBegin(); temp!=0; temp=temp->next() )
-//       COUT(0) << "Round trip time to client with ID: " << temp->getID() << " is " << temp->getRTT() << " ms" << endl;
+//       orxout(message) << "Round trip time to client with ID: " << temp->getID() << " is " << temp->getRTT() << " ms" << endl;
   }
 
   /**
@@ -267,13 +209,13 @@ namespace orxonox
       //no client connected
       return;
     GamestateManager::update();
-//     COUT(5) << "Server: one gamestate update complete, goig to sendGameState" << std::endl;
-    //std::cout << "updated gamestate, sending it" << std::endl;
+//     orxout(verbose_more, context::network) << "Server: one gamestate update complete, goig to sendGameState" << endl;
+    //orxout(verbose_more, context::network) << "updated gamestate, sending it" << endl;
     //if(clients->getGamestateID()!=GAMESTATEID_INITIAL)
     sendGameStates();
     sendObjectDeletes();
-//     COUT(5) << "Server: one sendGameState turn complete, repeat in next tick" << std::endl;
-    //std::cout << "sent gamestate" << std::endl;
+//     orxout(verbose_more, context::network) << "Server: one sendGameState turn complete, repeat in next tick" << endl;
+    //orxout(verbose_more, context::network) << "sent gamestate" << endl;
   }
 
   /**
@@ -304,11 +246,11 @@ namespace orxonox
       delete del;
       return true;  //everything ok (no deletes this tick)
     }
-//     COUT(3) << "sending DeleteObjects" << std::endl;
+//     orxout(verbose, context::network) << "sending DeleteObjects" << endl;
 //     while(temp != NULL){
 //       if( !(temp->getSynched()) )
 //       {
-//         COUT(5) << "Server: not sending gamestate" << std::endl;
+//         orxout(verbose_more, context::network) << "Server: not sending gamestate" << endl;
 //         temp=temp->next();
 //         continue;
 //       }
@@ -317,7 +259,7 @@ namespace orxonox
 //       assert(cd);
     del->setPeerID(NETWORK_PEER_ID_BROADCAST);
     if ( !del->send( static_cast<Host*>(this) ) )
-      COUT(3) << "Server: could not broadcast deleteObjects packet" << std::endl;
+      orxout(internal_warning, context::network) << "Server: could not broadcast deleteObjects packet" << endl;
 //       temp=temp->next();
       // gs gets automatically deleted by enet callback
 //     }
@@ -329,12 +271,12 @@ namespace orxonox
   void Server::addPeer(uint32_t peerID)
   {
 //     static unsigned int newid=1;
-// 
-//     COUT(2) << "Server: adding client" << std::endl;
+//
+//     orxout(internal_info, context::network) << "Server: adding client" << endl;
 //     ClientInformation *temp = ClientInformation::insertBack(new ClientInformation);
 //     if(!temp)
 //     {
-//       COUT(2) << "Server: could not add client" << std::endl;
+//       orxout(internal_warning, context::network) << "Server: could not add client" << endl;
 //     }
 //     temp->setID(newid);
 //     temp->setPeer(event->peer);
@@ -346,13 +288,13 @@ namespace orxonox
 
 //     ++newid;
 
-    COUT(3) << "Server: added client id: " << peerID << std::endl;
+    orxout(internal_info, context::network) << "Server: added client id: " << peerID << endl;
     createClient(peerID);
 }
 
   void Server::removePeer(uint32_t peerID)
   {
-    COUT(4) << "removing client from list" << std::endl;
+    orxout(verbose, context::network) << "removing client from list" << endl;
 //     ClientInformation *client = ClientInformation::findClient(&event->peer->address);
 //     if(!client)
 //       return;
@@ -374,7 +316,7 @@ namespace orxonox
 //       delete client;
 //     }
   }
-  
+
   void Server::processPacket(packet::Packet* packet)
   {
     if( packet->isReliable() )
@@ -394,10 +336,10 @@ namespace orxonox
 //     ClientInformation *temp = ClientInformation::findClient(clientID);
 //     if(!temp)
 //     {
-//       COUT(2) << "Server. could not create client with id: " << clientID << std::endl;
+//       orxout(internal_error, context::network) << "Server. could not create client with id: " << clientID << endl;
 //       return false;
 //     }
-//     COUT(4) << "Con.Man: creating client id: " << temp->getID() << std::endl;
+//     orxout(verbose, context::network) << "Con.Man: creating client id: " << temp->getID() << endl;
 
     // synchronise class ids
     syncClassid(clientID);
@@ -410,8 +352,8 @@ namespace orxonox
 
 //     temp->setSynched(true);
     GamestateManager::setSynched(clientID);
-    
-    COUT(4) << "sending welcome" << std::endl;
+
+    orxout(verbose, context::network) << "sending welcome" << endl;
     packet::Welcome *w = new packet::Welcome(clientID);
     w->setPeerID(clientID);
     b = w->send( static_cast<Host*>(this) );
@@ -437,33 +379,52 @@ namespace orxonox
     // ClientConnectionListener::broadcastClientDisconnected(client->getID()); // this is done in ClientInformation now
   }
 
-  bool Server::chat(const std::string& message)
+  /**
+   * @brief Sends a chat message to the given target ID.
+   * @param message message to be sent
+   * @param sourceID the ID of the sender
+   * @param targetID the ID of the receiver
+   */
+  void Server::doSendChat(const std::string& message, unsigned int sourceID, unsigned int targetID)
   {
-      return this->sendChat(message, Host::getPlayerID());
+    // check if the target exists. just ignore the message otherwise
+    if (!this->isValidTarget(targetID)) // TODO: remove this if an invalid clientIDs don't trigger assertions anymore
+      return;
+
+    // send the message to the target
+    packet::Chat* packet = new packet::Chat(message, sourceID, targetID);
+    packet->setPeerID(targetID);
+    packet->send( static_cast<Host*>(this) );
+
+    // if the target is (or includes) this host as well, call the parent function which passes the message to the listeners
+    if (targetID == NETWORK_PEER_ID_BROADCAST || targetID == Host::getPlayerID())
+      Host::doReceiveChat(message, sourceID, targetID);
   }
 
-  bool Server::broadcast(const std::string& message)
+  /**
+   * @brief Gets called if a packet::Chat packet is received. Forwards the packet to the target
+   * and calls the parent function if necessary.
+   */
+  void Server::doReceiveChat(const std::string& message, unsigned int sourceID, unsigned int targetID)
   {
-      return this->sendChat(message, NETWORK_PEER_ID_BROADCAST);
+      this->doSendChat(message, sourceID, targetID);
   }
 
-  bool Server::sendChat(const std::string& message, unsigned int clientID)
+  /**
+   * @brief Returns true if the target ID is in the list of clients (or if it
+   * corresponds to the broadcast or the server ID).
+   */
+  bool Server::isValidTarget(unsigned int targetID)
   {
-//     ClientInformation *temp = ClientInformation::getBegin();
-    packet::Chat *chat;
-//     while(temp)
-    {
-      chat = new packet::Chat(message, clientID);
-      chat->setPeerID(NETWORK_PEER_ID_BROADCAST);
-      chat->send( static_cast<Host*>(this) );
-//         COUT(3) << "could not send Chat message to client ID: " << temp->getID() << std::endl;
-//       temp = temp->next();
-    }
-//    COUT(1) << "Player " << Host::getPlayerID() << ": " << message << std::endl;
-    for (ObjectList<ChatListener>::iterator it = ObjectList<ChatListener>::begin(); it != ObjectList<ChatListener>::end(); ++it)
-      it->incomingChat(message, clientID);
+    if (targetID == NETWORK_PEER_ID_BROADCAST || targetID == NETWORK_PEER_ID_SERVER)
+      return true;
 
-    return true;
+    std::vector<uint32_t>::iterator it;
+    for( it=this->clientIDs_.begin(); it!=this->clientIDs_.end(); ++it )
+      if( *it == targetID )
+        return true;
+
+    return false;
   }
 
   void Server::syncClassid(unsigned int clientID)
@@ -475,7 +436,7 @@ namespace orxonox
       failures++;
     }
     assert(failures<10);
-    COUT(4) << "syncClassid:\tall synchClassID packets have been sent" << std::endl;
+    orxout(verbose, context::network) << "syncClassid:\tall synchClassID packets have been sent" << endl;
   }
 
 }

@@ -72,7 +72,7 @@ namespace orxonox
 
         XMLPortParam(AddQuestHint, "hintId", setHintId, getHintId, xmlelement, mode);
 
-        COUT(4) << "New AddQuestHint, with target QuestHint {" << this->getHintId() << "}, created." << std::endl;
+        orxout(verbose, context::quests) << "New AddQuestHint, with target QuestHint {" << this->getHintId() << "}, created." << endl;
     }
 
     /**
@@ -87,7 +87,7 @@ namespace orxonox
     {
         if(id == "")
         {
-            COUT(2) << "Invalid id. QuestItem id {" << id << "} could not be set." << std::endl;
+            orxout(internal_warning, context::quests) << "Invalid id. QuestItem id {" << id << "} could not be set." << endl;
             return false;
         }
 
@@ -107,7 +107,7 @@ namespace orxonox
     {
         assert(player);
 
-        COUT(5) << "AddQuestHint on player: " << player << " ." << std::endl;
+        orxout(verbose_more, context::quests) << "AddQuestHint on player: " << player << " ." << endl;
 
         try
         {
@@ -117,11 +117,11 @@ namespace orxonox
         }
         catch(const Exception& e)
         {
-           COUT(2) << e.getFullDescription() << std::endl;
+           orxout(internal_warning, context::quests) << e.getFullDescription() << endl;
            return false;
         }
 
-        COUT(4) << "QuestHint {" << this->getHintId() << "} successfully added to player: " << player << " ." << std::endl;
+        orxout(verbose, context::quests) << "QuestHint {" << this->getHintId() << "} successfully added to player: " << player << " ." << endl;
         return true;
 
     }

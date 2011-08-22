@@ -96,7 +96,7 @@ namespace orxonox
 
         if (docking)
         {
-            COUT(4) << "DockingController::takeControl Taking over control." << std::endl;
+            orxout(verbose, context::docking) << "DockingController::takeControl Taking over control." << endl;
 
             this->entity_->setDestroyWhenPlayerLeft(false);
             this->player_->pauseControl();
@@ -107,7 +107,7 @@ namespace orxonox
 
     void DockingController::positionReached()
     {
-        COUT(4) << "DockingController::positionReached() called." << std::endl;
+        orxout(verbose, context::docking) << "DockingController::positionReached() called." << endl;
 
         assert(this->player_);
         assert(this->dock_);

@@ -32,7 +32,7 @@
 #include <sstream>
 
 #include "util/Convert.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
@@ -228,8 +228,8 @@ namespace orxonox
         }
         catch (const ArgumentException& ex)
         {
-            COUT(0) << "Could not parse command line: " << ex.what() << std::endl;
-            COUT(0) << CommandLineParser::getUsageInformation() << std::endl;
+            orxout(user_error) << "Could not parse command line: " << ex.what() << endl;
+            orxout(user_error) << CommandLineParser::getUsageInformation() << endl;
             throw GeneralException("");
         }
     }
@@ -285,9 +285,9 @@ namespace orxonox
             maxNameSize = std::max(it->second->getName().size(), maxNameSize);
         }
 
-        infoStr << std::endl;
-        infoStr << "Usage: orxonox [options]" << std::endl;
-        infoStr << "Available options:" << std::endl;
+        infoStr << endl;
+        infoStr << "Usage: orxonox [options]" << endl;
+        infoStr << "Available options:" << endl;
 
         for (std::map<std::string, CommandLineArgument*>::const_iterator it = inst.cmdLineArgs_.begin();
             it != inst.cmdLineArgs_.end(); ++it)
@@ -304,7 +304,7 @@ namespace orxonox
             // fill with the necessary amount of blanks
             infoStr << std::string(maxNameSize - it->second->getName().size(), ' ');
             infoStr << ": " << it->second->getInformation();
-            infoStr << std::endl;
+            infoStr << endl;
         }
         return infoStr.str();
     }

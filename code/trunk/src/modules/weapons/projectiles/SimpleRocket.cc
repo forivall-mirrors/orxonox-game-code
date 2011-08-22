@@ -38,7 +38,6 @@
 
 #include "core/CoreIncludes.h"
 #include "core/XMLPort.h"
-#include "util/Debug.h"
 
 #include "controllers/Controller.h"
 #include "graphics/Model.h"

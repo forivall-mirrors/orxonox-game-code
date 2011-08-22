@@ -31,7 +31,7 @@
 #include <algorithm>
 #include <sstream>
 #include "util/Convert.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/CoreIncludes.h"
@@ -250,7 +250,7 @@ namespace orxonox
     */
     void KeyBinder::loadBindings()
     {
-        COUT(3) << "KeyBinder: Loading key bindings..." << std::endl;
+        orxout(internal_info, context::input) << "KeyBinder: Loading key bindings..." << endl;
 
         this->configFile_ = new ConfigFile(this->filename_, !PathConfig::buildDirectoryRun());
         this->configFile_->load();
@@ -276,7 +276,7 @@ namespace orxonox
             addButtonToCommand(it->second->bindingString_, it->second);
         }
 
-        COUT(3) << "KeyBinder: Loading key bindings done." << std::endl;
+        orxout(internal_info, context::input) << "KeyBinder: Loading key bindings done." << endl;
     }
 
     bool KeyBinder::setBinding(const std::string& binding, const std::string& name, bool bTemporary)
@@ -293,7 +293,7 @@ namespace orxonox
         }
         else
         {
-            COUT(2) << "Could not find key/button/axis with name '" << name << "'." << std::endl;
+            orxout(internal_warning, context::input) << "Could not find key/button/axis with name '" << name << "'." << endl;
             return false;
         }
     }

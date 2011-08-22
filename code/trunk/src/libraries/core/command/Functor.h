@@ -117,7 +117,7 @@
 
 #include <typeinfo>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/MultiType.h"
 #include "core/OrxonoxClass.h"
 #include "FunctorPtr.h"
@@ -255,7 +255,7 @@ namespace orxonox
                     return (*this)(this->object_, param1, param2, param3, param4, param5);
                 else
                 {
-                    COUT(1) << "Error: Can't execute FunctorMember, no object set." << std::endl;
+                    orxout(internal_error) << "Can't execute FunctorMember, no object set." << endl;
                     return MT_Type::Null;
                 }
             }
@@ -338,7 +338,7 @@ namespace orxonox
 
             // see Functor::setRawObjectPointer()
             inline void setRawObjectPointer(void*)
-                { COUT(2) << "Warning: Can't assign an object pointer to a static functor" << std::endl; }
+                { orxout(internal_warning) << "Can't assign an object pointer to a static functor" << endl; }
             // see Functor::getRawObjectPointer()
             inline void* getRawObjectPointer() const
                 { return 0; }

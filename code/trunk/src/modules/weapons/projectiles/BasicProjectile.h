@@ -63,7 +63,7 @@ namespace orxonox
             @param damage The amount of damage. Must be non-negative.
             */
             inline void setDamage(float damage)
-                { if(damage >= 0.0f)  { this->damage_ = damage; return; } COUT(1) << "The input projectile damage must be non-negative. Ignoring..." << endl; }
+                { if(damage >= 0.0f)  { this->damage_ = damage; return; } orxout(internal_warning) << "The input projectile damage must be non-negative. Ignoring..." << endl; }
             /**
             @brief Get the normal damage done by this projectile.
                    Normal damage can be (partially) absorbed by shields.
@@ -78,7 +78,7 @@ namespace orxonox
             @param healthdamage The amount of damage. Must be non-negative.
             */
             inline void setHealthDamage(float healthdamage)
-                { if(healthdamage >= 0.0f)  { this->healthdamage_ = healthdamage; return; } COUT(1) << "The input projectile health-damage must be non-negative. Ignoring..." << endl; }
+                { if(healthdamage >= 0.0f)  { this->healthdamage_ = healthdamage; return; } orxout(internal_warning) << "The input projectile health-damage must be non-negative. Ignoring..." << endl; }
             /**
             @brief Get the health-damage done by this projectile.
                    Health-damage cannot be absorbed by shields.
@@ -93,7 +93,7 @@ namespace orxonox
             @param shielddamage The amount of damage. Must be non-negative.
             */
             inline void setShieldDamage(float shielddamage)
-                { if(shielddamage >= 0.0f)  { this->shielddamage_ = shielddamage; return; } COUT(1) << "The input projectile shield-damage must be non-negative. Ignoring..." << endl; }
+                { if(shielddamage >= 0.0f)  { this->shielddamage_ = shielddamage; return; } orxout(internal_warning) << "The input projectile shield-damage must be non-negative. Ignoring..." << endl; }
             /**
             @brief Get the shield-damage done by this projectile.
                    Shield-damage only reduces shield health.

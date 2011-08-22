@@ -63,7 +63,7 @@
     int count;
     for (Iterator<BaseObject> it = objects.begin(); it != objects.end(); ++it)  // iterate through the objects
         ++count;
-    COUT(0) << count << std::endl;                                              // prints "2" because we created 2 instances of MyClass so far
+    orxout() << count << endl;                                                  // prints "2" because we created 2 instances of MyClass so far
 
 
     // test the class hierarchy
@@ -88,7 +88,7 @@
 #include <typeinfo>
 #include <loki/TypeTraits.h>
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "MetaObjectList.h"
 #include "ObjectList.h"
 #include "ObjectListBase.h"
@@ -404,11 +404,11 @@ namespace orxonox
 
         if (ClassIdentifier<T>::classIdentifier_s == proposal)
         {
-            COUT(4) << "*** Identifier: Requested Identifier for " << name << " was not yet existing and got created." << std::endl;
+            orxout(verbose, context::identifier) << "Requested Identifier for " << name << " was not yet existing and got created." << endl;
         }
         else
         {
-            COUT(4) << "*** Identifier: Requested Identifier for " << name << " was already existing and got assigned." << std::endl;
+            orxout(verbose, context::identifier) << "Requested Identifier for " << name << " was already existing and got assigned." << endl;
         }
     }
 
@@ -422,9 +422,9 @@ namespace orxonox
     bool ClassIdentifier<T>::initialiseObject(T* object, const std::string& className, bool bRootClass)
     {
         if (bRootClass)
-            COUT(5) << "*** Register Root-Object: " << className << std::endl;
+            orxout(verbose, context::object_list) << "Register Root-Object: " << className << endl;
         else
-            COUT(5) << "*** Register Object: " << className << std::endl;
+            orxout(verbose, context::object_list) << "Register Object: " << className << endl;
 
         object->identifier_ = this;
         if (Identifier::isCreatingHierarchy())
@@ -443,7 +443,7 @@ namespace orxonox
         }
         else
         {
-            COUT(5) << "*** ClassIdentifier: Added object to " << this->getName() << "-list." << std::endl;
+            orxout(verbose, context::object_list) << "Added object to " << this->getName() << "-list." << endl;
             object->metaList_->add(this->objects_, this->objects_->add(new ObjectListElement<T>(object)));
 
             // Add pointer of type T to the map in the OrxonoxClass instance that enables "dynamic_casts"

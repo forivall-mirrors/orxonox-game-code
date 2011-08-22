@@ -21,7 +21,8 @@
  *
  *   Author:
  *      Benjamin de Capitani
- *
+ *   Co-authors:
+ *      ...
  *
  */
 

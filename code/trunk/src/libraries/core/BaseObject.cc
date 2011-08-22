@@ -108,7 +108,7 @@ namespace orxonox
     /** @brief Adds an object which listens to the events of this object. */
     void BaseObject::registerEventListener(BaseObject* object)
     {
-        COUT(4) << "New EventListener: " << object->getIdentifier()->getName() << " &(" << object << ")." << std::endl;
+        orxout(verbose, context::events) << "New EventListener: " << object->getIdentifier()->getName() << " &(" << object << ")." << endl;
         this->eventListeners_.insert(object);
     }
 
@@ -185,7 +185,7 @@ namespace orxonox
         if (temp)
             this->addTemplate(temp);
         else
-            COUT(1) << "Error: \"" << name << "\" is not a valid Template name (in class: " << this->getIdentifier()->getName() << ", name: " << this->getName() << ")." << std::endl;
+            orxout(internal_error) << "\"" << name << "\" is not a valid Template name (in class: " << this->getIdentifier()->getName() << ", name: " << this->getName() << ")." << endl;
     }
 
     /**
@@ -311,7 +311,7 @@ namespace orxonox
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(name);
         if (it != this->eventStates_.end())
         {
-            COUT(2) << "Warning: Overwriting EventState in class " << this->getIdentifier()->getName() << '.' << std::endl;
+            orxout(internal_warning, context::events) << "Overwriting EventState in class " << this->getIdentifier()->getName() << '.' << endl;
             delete (it->second);
         }
 
@@ -378,15 +378,15 @@ namespace orxonox
     {
         this->registerEventStates();
 
-        COUT(4) << this->getIdentifier()->getName() << " (&" << this << ") processing event. originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << "), activate: " << event.activate_ << ", name: " << event.name_ << ", statename: " << event.statename_ << "." << std::endl;
+        orxout(verbose, context::events) << this->getIdentifier()->getName() << " (&" << this << ") processing event. originator: " << event.originator_->getIdentifier()->getName() << " (&" << event.originator_ << "), activate: " << event.activate_ << ", name: " << event.name_ << ", statename: " << event.statename_ << "." << endl;
 
         std::map<std::string, EventState*>::const_iterator it = this->eventStates_.find(event.statename_);
         if (it != this->eventStates_.end())
             it->second->process(event, this);
         else if (!event.statename_.empty())
-            COUT(2) << "Warning: \"" << event.statename_ << "\" is not a valid state in object \"" << this->getName() << "\" of class " << this->getIdentifier()->getName() << "." << std::endl;
+            orxout(internal_warning, context::events) << "\"" << event.statename_ << "\" is not a valid state in object \"" << this->getName() << "\" of class " << this->getIdentifier()->getName() << "." << endl;
         else
-            COUT(2) << "Warning: Event with invalid source sent to object \"" << this->getName() << "\" of class " << this->getIdentifier()->getName() << "." << std::endl;
+            orxout(internal_warning, context::events) << "Event with invalid source sent to object \"" << this->getName() << "\" of class " << this->getIdentifier()->getName() << "." << endl;
     }
 
     /**
@@ -411,7 +411,7 @@ namespace orxonox
             }
         }
         else
-            COUT(2) << "Warning: No MainState defined in object \"" << this->getName() << "\" (" << this->getIdentifier()->getName() << ")" << std::endl;
+            orxout(internal_warning, context::events) << "No MainState defined in object \"" << this->getName() << "\" (" << this->getIdentifier()->getName() << ")" << endl;
     }
 
     /**
@@ -431,10 +431,10 @@ namespace orxonox
                 if (it->second->getFunctor()->getParamCount() <= 1)
                     this->mainStateFunctor_ = it->second->getFunctor();
                 else
-                    COUT(2) << "Warning: Can't use \"" << this->mainStateName_ << "\" as MainState because it needs a second argument." << std::endl;
+                    orxout(internal_warning, context::events) << "Can't use \"" << this->mainStateName_ << "\" as MainState because it needs a second argument." << endl;
             }
             else
-                COUT(2) << "Warning: \"" << this->mainStateName_ << "\" is not a valid MainState." << std::endl;
+                orxout(internal_warning, context::events) << "\"" << this->mainStateName_ << "\" is not a valid MainState." << endl;
         }
     }
 

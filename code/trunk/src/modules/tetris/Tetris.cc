@@ -164,7 +164,7 @@ namespace orxonox
         }
         else // If no centerpoint was specified, an error is thrown and the level is exited.
         {
-            COUT(1) << "Error: No Centerpoint specified." << std::endl;
+            orxout(internal_error) << "Tetris: No Centerpoint specified." << endl;
             GSLevel::startMainMenu();
             return;
         }

@@ -33,7 +33,7 @@
 
 /**
     @file
-    @ingroup Object Factory
+    @ingroup Object Factory Class Identifier
     @brief Defines several very important macros used to register objects, create factories, and to work with identifiers.
 
     Every class needs the @c RegisterObject(class) macro in its constructor. If the class is an interface
@@ -77,7 +77,7 @@
 
 #include "CorePrereqs.h"
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "Identifier.h"
 #include "ClassFactory.h"
 #include "ObjectList.h"

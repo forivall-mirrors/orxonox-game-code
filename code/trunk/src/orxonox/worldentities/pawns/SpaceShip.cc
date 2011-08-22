@@ -144,7 +144,7 @@ namespace orxonox
     {
         if (type != WorldEntity::Dynamic)
         {
-            CCOUT(1) << "Error: Cannot tell a SpaceShip not to be dynamic! Ignoring." << std::endl;
+            orxout(internal_warning) << "Cannot tell a SpaceShip not to be dynamic! Ignoring." << endl;
             assert(false); // Only in debug mode
             return false;
         }
@@ -506,7 +506,7 @@ namespace orxonox
         Camera *camera = this->getCamera();
         if (camera == 0)
         {
-            COUT(2) << "Failed to reset camera!";
+            orxout(internal_warning) << "Failed to reset camera!" << endl;
             return;
         }
 

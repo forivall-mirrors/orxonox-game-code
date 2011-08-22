@@ -42,7 +42,7 @@
 #include <windows.h>
 #endif
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "orxonox/Main.h"
 
@@ -58,6 +58,13 @@ int main_mac(int argc, char** argv)
 int main(int argc, char** argv)
 #endif
 {
+    using namespace orxonox;
+
+    orxout(user_status) << "Welcome to Orxonox (v" << ORXONOX_VERSION_MAJOR << '.' << ORXONOX_VERSION_MINOR << '.' << ORXONOX_VERSION_PATCH << ' ' << ORXONOX_VERSION_NAME << ')' << endl;
+    orxout(internal_status) << "Congratulations, you survived the static initialization. Entering main()" << endl;
+    if (argc > 0)
+        orxout(internal_info) << "argv[0]: " << argv[0] << endl;
+
     try
     {
 #ifndef ORXONOX_USE_WINMAIN
@@ -69,18 +76,20 @@ int main(int argc, char** argv)
         // 0 is the execution path
         const int firstArgument = 1;
 #endif
-    
+
         std::string strCmdLine;
         for (int i = firstArgument; i < argc; ++i)
             strCmdLine = strCmdLine + argv[i] + ' ';
 #endif
 
-        return orxonox::main(strCmdLine);
+        int value = main(strCmdLine);
+        orxout(internal_status) << "Terminating main() normally with value " << value << endl;
+        return value;
     }
     catch (...)
     {
-        COUT(0) << "Orxonox failed to initialise: " << orxonox::Exception::handleMessage() << std::endl;
-        COUT(0) << "Terminating program." << std::endl;
+        orxout(user_error) << "Exception caught in main(): " << orxonox::Exception::handleMessage() << endl;
+        orxout(user_error) << "Terminating program." << endl;
         return 1;
     }
 }

@@ -29,8 +29,7 @@
 #include "LastTeamStanding.h"
 
 #include "core/CoreIncludes.h"
-#include "network/NetworkPrereqs.h"
-#include "network/Host.h"
+#include "chat/ChatManager.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
 #include "core/ConfigValueIncludes.h"
@@ -118,8 +117,7 @@ namespace orxonox
             if(eachTeamsPlayers[team] == 0) //last team member died
                 this->teamsAlive--;
             const std::string& message = victim->getPlayer()->getName() + " has lost all lives";
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
         return allow;
     }

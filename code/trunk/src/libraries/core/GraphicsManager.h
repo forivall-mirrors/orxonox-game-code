@@ -133,9 +133,6 @@ namespace orxonox
         std::string         ogreConfigFile_;           //!< ogre config filename
         std::string         ogrePlugins_;              //!< Comma separated list of all plugins to load
         std::string         ogreLogFile_;              //!< log filename for Ogre log messages
-        int                 ogreLogLevelTrivial_;      //!< Corresponding Orxonox debug level for LL_TRIVIAL
-        int                 ogreLogLevelNormal_;       //!< Corresponding Orxonox debug level for LL_NORMAL
-        int                 ogreLogLevelCritical_;     //!< Corresponding Orxonox debug level for LL_CRITICAL
 
         /// Helper object that executes the surrogate destructor destroy()
         DestructionHelper<GraphicsManager> destructionHelper_;

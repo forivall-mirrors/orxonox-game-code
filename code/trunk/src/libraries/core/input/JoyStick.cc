@@ -79,7 +79,7 @@ namespace orxonox
             }
         }
 
-        COUT(4) << "Created OIS joy stick with ID " << deviceName_ << std::endl;
+        orxout(verbose, context::input) << "Created OIS joy stick with ID " << deviceName_ << endl;
 
         // Load calibration
         size_t axes = sliderAxes_s + static_cast<size_t>(oisDevice_->getNumberOfComponents(OIS::OIS_Axis));

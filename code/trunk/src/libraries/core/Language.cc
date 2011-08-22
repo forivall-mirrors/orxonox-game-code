@@ -34,7 +34,7 @@
 #include "Language.h"
 
 #include <fstream>
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/StringUtils.h"
 #include "Core.h"
 #include "PathConfig.h"
@@ -130,7 +130,7 @@ namespace orxonox
             return newEntry;
         }
 
-        COUT(2) << "Warning: Language entry " << label << " is duplicate in " << getFilename(this->defaultLanguage_) << '!' << std::endl;
+        orxout(internal_warning, context::language) << "Language entry " << label << " is duplicate in " << getFilename(this->defaultLanguage_) << '!' << endl;
         return it->second;
     }
 
@@ -141,7 +141,7 @@ namespace orxonox
     */
     void Language::addEntry(const LanguageEntryLabel& label, const std::string& entry)
     {
-        COUT(5) << "Language: Called addEntry with\n  label: " << label << "\n  entry: " <<  entry << std::endl;
+        orxout(verbose, context::language) << "Called addEntry with" << '\n' << "label: " << label << '\n' << "entry: " <<  entry << endl;
         std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.find(label);
         if (it == this->languageEntries_.end())
         {
@@ -178,7 +178,7 @@ namespace orxonox
         else if (bError)
         {
             // Uh, oh, an undefined entry was requested: return the default string
-            COUT(2) << "Warning: Language entry \"" << label << "\" not found!" << std::endl;
+            orxout(internal_warning, context::language) << "Language entry \"" << label << "\" not found!" << endl;
             return this->defaultLocalisation_;
         }
         else
@@ -200,7 +200,7 @@ namespace orxonox
     */
     void Language::readDefaultLanguageFile()
     {
-        COUT(4) << "Read default language file." << std::endl;
+        orxout(internal_info, context::language) << "Read default language file." << endl;
 
         const std::string& filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
 
@@ -215,8 +215,8 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFilename(this->defaultLanguage_) << " to read the default language entries!" << std::endl;
+            orxout(internal_error, context::language) << "An error occurred in Language.cc:" << endl;
+            orxout(internal_error, context::language) << "Couldn't open file " << getFilename(this->defaultLanguage_) << " to read the default language entries!" << endl;
             return;
         }
 
@@ -236,7 +236,7 @@ namespace orxonox
                     this->createEntry(lineString.substr(0, pos), lineString.substr(pos + 1));
                 else
                 {
-                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFilename(this->defaultLanguage_) << std::endl;
+                    orxout(internal_warning, context::language) << "Invalid language entry \"" << lineString << "\" in " << getFilename(this->defaultLanguage_) << endl;
                 }
             }
         }
@@ -249,7 +249,7 @@ namespace orxonox
     */
     void Language::readTranslatedLanguageFile()
     {
-        COUT(4) << "Read translated language file (" << Core::getInstance().getLanguage() << ")." << std::endl;
+        orxout(internal_info, context::language) << "Read translated language file (" << Core::getInstance().getLanguage() << ")." << endl;
 
         const std::string& filepath = PathConfig::getConfigPathString() + getFilename(Core::getInstance().getLanguage());
 
@@ -259,10 +259,10 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFilename(Core::getInstance().getLanguage()) << " to read the translated language entries!" << std::endl;
+            orxout(internal_error, context::language) << "An error occurred in Language.cc:" << endl;
+            orxout(internal_error, context::language) << "Couldn't open file " << getFilename(Core::getInstance().getLanguage()) << " to read the translated language entries!" << endl;
             Core::getInstance().resetLanguage();
-            COUT(3) << "Info: Reset language to " << this->defaultLanguage_ << '.' << std::endl;
+            orxout(internal_info, context::language) << "Reset language to " << this->defaultLanguage_ << '.' << endl;
             return;
         }
 
@@ -290,7 +290,7 @@ namespace orxonox
                 }
                 else
                 {
-                    COUT(2) << "Warning: Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getInstance().getLanguage()) << std::endl;
+                    orxout(internal_warning, context::language) << "Invalid language entry \"" << lineString << "\" in " << getFilename(Core::getInstance().getLanguage()) << endl;
                 }
             }
         }
@@ -303,7 +303,7 @@ namespace orxonox
     */
     void Language::writeDefaultLanguageFile() const
     {
-        COUT(4) << "Language: Write default language file." << std::endl;
+        orxout(verbose, context::language) << "Write default language file." << endl;
 
         const std::string& filepath = PathConfig::getConfigPathString() + getFilename(this->defaultLanguage_);
 
@@ -313,15 +313,15 @@ namespace orxonox
 
         if (!file.is_open())
         {
-            COUT(1) << "An error occurred in Language.cc:" << std::endl;
-            COUT(1) << "Error: Couldn't open file " << getFilename(this->defaultLanguage_) << " to write the default language entries!" << std::endl;
+            orxout(internal_error, context::language) << "An error occurred in Language.cc:" << endl;
+            orxout(internal_error, context::language) << "Couldn't open file " << getFilename(this->defaultLanguage_) << " to write the default language entries!" << endl;
             return;
         }
 
         // Iterate through the list an write the lines into the file
         for (std::map<std::string, LanguageEntry*>::const_iterator it = this->languageEntries_.begin(); it != this->languageEntries_.end(); ++it)
         {
-            file << it->second->getLabel() << '=' << it->second->getDefault() << std::endl;
+            file << it->second->getLabel() << '=' << it->second->getDefault() << endl;
         }
 
         file.close();

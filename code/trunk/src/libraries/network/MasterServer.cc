@@ -37,14 +37,15 @@ namespace orxonox
   static void 
   helper_output_debug( ENetEvent *event, char *addrconv )
   {
-    COUT(4) << "A packet of length" 
+    orxout(verbose, context::master_server)
+      << "A packet of length" 
       << event->packet->dataLength
       << " containing "
       << (const char*)event->packet->data
       << " was received from "
       << addrconv 
       << " on channel "
-      << event->channelID << "\n";
+      << event->channelID << endl;
   }
 
   void
@@ -65,7 +66,7 @@ namespace orxonox
       char *tosend = (char *)calloc( (*i).getServerIP().length() 
           + MSPROTO_SERVERLIST_ITEM_LEN + 2,1 );
       if( !tosend ) 
-      { COUT(2) << "Masterserver.cc: Memory allocation failed.\n";
+      { orxout(internal_warning, context::master_server) << "Masterserver.cc: Memory allocation failed." << endl;
         continue;
       } 
       sprintf( tosend, "%s %s", MSPROTO_SERVERLIST_ITEM, 
@@ -107,7 +108,7 @@ namespace orxonox
   MasterServer::eventConnect( ENetEvent *event )
   { /* check for bad parameters */
     if( !event )
-    { COUT(2) << "MasterServer::eventConnect: No event given.\n" ;
+    { orxout(internal_warning, context::master_server) << "MasterServer::eventConnect: No event given." << endl;
       return -1;
     }
 
@@ -116,10 +117,10 @@ namespace orxonox
     enet_address_get_host_ip( &(event->peer->address), addrconv, 49 );
 
     /* output debug info */
-    COUT(4) << "A new client connected from " 
+    orxout(verbose, context::master_server) << "A new client connected from " 
       << addrconv 
       << " on port " 
-      << event->peer->address.port << "\n";
+      << event->peer->address.port << endl;
 
     /* store string form of address here */
     event->peer->data = addrconv; 
@@ -133,12 +134,12 @@ namespace orxonox
   MasterServer::eventDisconnect( ENetEvent *event )
   { /* check for bad parameters */
     if( !event )
-    { COUT(2) << "No event given.\n";
+    { orxout(internal_warning, context::master_server) << "No event given." << endl;
       return -1;
     }
 
     /* output that the disconnect happened */
-    COUT(4) << (char*)event->peer->data << " disconnected.\n";
+    orxout(verbose, context::master_server) << (char*)event->peer->data << " disconnected." << endl;
 
     /* create string from peer data */
     std::string name = std::string( (char*)event->peer->data );
@@ -158,7 +159,7 @@ namespace orxonox
   MasterServer::eventData( ENetEvent *event )
   { /* validate packet */
     if( !event || !(event->packet) || !(event->peer) )
-    { COUT(2) << "No complete event given.\n";
+    { orxout(internal_warning, context::master_server) << "No complete event given." << endl;
       return -1;
     }
      
@@ -181,8 +182,8 @@ namespace orxonox
         mainlist.addServer( packet::ServerInformation( event ) );
         
         /* tell people we did so */
-        COUT(2) << "Added new server to list: " << 
-          packet::ServerInformation( event ).getServerIP() << "\n";
+        orxout(internal_info, context::master_server) << "Added new server to list: " << 
+          packet::ServerInformation( event ).getServerIP() << endl;
       }
 
       else if( !strncmp( (char *)event->packet->data
@@ -196,7 +197,7 @@ namespace orxonox
         this->mainlist.delServerByAddress( name );
 
         /* tell the user */
-        COUT(2) << "Removed server " << name << " from list.\n";
+        orxout(internal_info, context::master_server) << "Removed server " << name << " from list." << endl;
       }
 
       /* TODO add hook for disconnect here */
@@ -229,7 +230,7 @@ namespace orxonox
     ENetEvent *event = (ENetEvent *)calloc(sizeof(ENetEvent), sizeof(char));
     if( event == NULL )
     { 
-      COUT(1) << "Could not create ENetEvent structure, exiting.\n";
+      orxout(user_error, context::master_server) << "Could not create ENetEvent structure, exiting." << endl;
       exit( EXIT_FAILURE );
     }
 
@@ -262,7 +263,7 @@ namespace orxonox
   {
     /***** INITIALIZE NETWORKING *****/
     if( enet_initialize () != 0)
-    { COUT(1) << "An error occurred while initializing ENet.\n";
+    { orxout(user_error, context::master_server) << "An error occurred while initializing ENet." << endl;
       exit( EXIT_FAILURE );
     }
 
@@ -284,8 +285,8 @@ namespace orxonox
 
     /* see if creation worked */
     if( !this->server )
-    { COUT(1) << 
-        "An error occurred while trying to create an ENet server host.\n";
+    { orxout(user_error, context::master_server) << 
+        "An error occurred while trying to create an ENet server host." << endl;
       exit( EXIT_FAILURE );
     }
 
@@ -293,7 +294,7 @@ namespace orxonox
     this->peers = new PeerList();
 
     /* tell people we're now initialized */
-    COUT(0) << "MasterServer initialized, waiting for connections.\n";
+    orxout(internal_status, context::master_server) << "MasterServer initialized, waiting for connections." << endl;
   }
 
   /* destructor */

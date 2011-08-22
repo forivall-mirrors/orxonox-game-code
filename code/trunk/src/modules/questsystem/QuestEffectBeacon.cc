@@ -78,7 +78,7 @@ namespace orxonox
 
         XMLPortEventSink(QuestEffectBeacon, BaseObject, "execute", execute, xmlelement, mode); //TODO: Change BaseObject to MultiTrigger as soon as MultiTrigger is the base of all triggers.
 
-        COUT(4) << "New QuestEffectBeacon created." << std::endl;
+        orxout(verbose, context::quests) << "New QuestEffectBeacon created." << endl;
     }
 
     void QuestEffectBeacon::XMLEventPort(Element& xmlelement, XMLPort::Mode mode)
@@ -107,7 +107,7 @@ namespace orxonox
         }
         if(!(this->isActive())) // If the QuestEffectBeacon is inactive it cannot be executed.
         {
-            COUT(4) << "The QuestEffectBeacon is inactive." << std::endl;
+            orxout(verbose, context::quests) << "The QuestEffectBeacon is inactive." << endl;
             return false;
         }
 
@@ -127,11 +127,11 @@ namespace orxonox
 
         if(player == NULL)
         {
-            COUT(4) << "The QuestEffectBeacon was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << std::endl;
+            orxout(verbose, context::quests) << "The QuestEffectBeacon was triggered by an entity other than a Pawn. (" << trigger->getIdentifier()->getName() << ")" << endl;
             return false;
         }
 
-        COUT(4) << "QuestEffectBeacon executed on player: " << player << " ." << std::endl;
+        orxout(verbose, context::quests) << "QuestEffectBeacon executed on player: " << player << " ." << endl;
 
         bool temp = QuestEffect::invokeEffects(player, this->effects_); // Invoke the QuestEffects on the PlayerInfo.
         if(temp)
@@ -220,7 +220,7 @@ namespace orxonox
 
         this->effects_.push_back(effect);
 
-        COUT(4) << "A QuestEffect was added to a QuestEffectBeacon." << std::endl;
+        orxout(verbose, context::quests) << "A QuestEffect was added to a QuestEffectBeacon." << endl;
         return true;
     }
 

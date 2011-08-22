@@ -37,7 +37,7 @@
 #include <algorithm>
 
 #include "util/Convert.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/StringUtils.h"
 #include "util/SubString.h"
 #include "CommandExecutor.h"
@@ -103,11 +103,11 @@ namespace orxonox
         if (error && *error)
         {
             if (bPrintError)
-                COUT(2) << "Warning: Can't call executor " << this->name_ << " through parser: Not enough arguments or default values given (input: " << arguments.join() << ")." << std::endl;
+                orxout(internal_warning) << "Can't call executor " << this->name_ << " through parser: Not enough arguments or default values given (input: " << arguments.join() << ")." << endl;
             return MT_Type::Null;
         }
 
-        COUT(5) << "Executor::parse: \"" << arguments.join(delimiter) << "\" -> " << argCount << " arguments: " << arg[0] << " / " << arg[1] << " / " << arg[2] << " / " << arg[3] << " / " << arg[4] << std::endl;
+        orxout(verbose, context::misc::executor) << "Executor::parse: \"" << arguments.join(delimiter) << "\" -> " << argCount << " arguments: " << arg[0] << " / " << arg[1] << " / " << arg[2] << " / " << arg[3] << " / " << arg[4] << endl;
 
         // execute the function with the evaluated arguments (the default values of the executor are also included in these arguments)
         switch (argCount)

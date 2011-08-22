@@ -45,6 +45,7 @@
 #include "util/Math.h"
 #include "util/DisplayStringConversions.h"
 #include "util/ScopedSingletonManager.h"
+#include "util/output/MemoryWriter.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
 #include "core/command/ConsoleCommand.h"
@@ -57,7 +58,7 @@
 namespace orxonox
 {
     const int LINES = 30;
-    const float CHAR_WIDTH = 7.45f; // fix this please - determine the char-width dynamically
+    const float CHAR_WIDTH = 8.0f; // fix this please - determine the char-width dynamically
 
     SetConsoleCommand("InGameConsole", "openConsole", &InGameConsole::openConsole);
     SetConsoleCommand("InGameConsole", "closeConsole", &InGameConsole::closeConsole);
@@ -93,7 +94,7 @@ namespace orxonox
 
         // Output buffering is not anymore needed. Not the best solution to do
         // this here, but there isn't much of another way.
-        OutputHandler::getInstance().disableMemoryLog();
+        MemoryWriter::getInstance().disable();
     }
 
     /**
@@ -261,7 +262,7 @@ namespace orxonox
         // we take -1.3 because the border makes the panel bigger
         this->consoleOverlayContainer_->setTop(-1.3f * this->relativeHeight);
 
-        COUT(4) << "Info: InGameConsole initialized" << std::endl;
+        orxout(internal_info) << "InGameConsole initialized" << endl;
     }
 
     // ###############################
@@ -287,7 +288,7 @@ namespace orxonox
         }
 
         for (int i = LINES - 1; i > max; --i)
-            this->print("", Shell::None, i, true);
+            this->print("", Shell::DebugOutput, i, true);
 
         for (int i = max; i >= 1; --i)
         {
@@ -297,22 +298,14 @@ namespace orxonox
     }
 
     /**
-        @brief Called if only the last output-line has changed.
-    */
-    void InGameConsole::onlyLastLineChanged()
-    {
-        if (LINES > 1)
-            this->print(this->shell_->getNewestLineIterator()->first, this->shell_->getNewestLineIterator()->second, 1);
-    }
-
-    /**
         @brief Called if a new output-line was added.
     */
     void InGameConsole::lineAdded()
     {
         this->numLinesShifted_ = 0;
         this->shiftLines();
-        this->onlyLastLineChanged();
+        if (LINES > 1)
+            this->print(this->shell_->getNewestLineIterator()->first, this->shell_->getNewestLineIterator()->second, 1);
     }
 
     /**
@@ -345,7 +338,7 @@ namespace orxonox
     */
     void InGameConsole::executed()
     {
-        this->shell_->addOutput(this->shell_->getInput() + '\n', Shell::Command);
+        this->shell_->addOutput(this->shell_->getInput(), Shell::Command);
     }
 
     /**
@@ -436,7 +429,7 @@ namespace orxonox
         this->consoleOverlayNoise_->setTiling(consoleOverlayNoise_->getWidth() / (50.0f * this->noiseSize_), consoleOverlayNoise_->getHeight() / (50.0f * this->noiseSize_));
 
         // now adjust the text lines...
-        this->desiredTextWidth_ = static_cast<int>(this->windowW_ * this->relativeWidth) - 12;
+        this->desiredTextWidth_ = static_cast<int>(this->windowW_ * this->relativeWidth) - 24;
 
         if (LINES > 0)
             this->maxCharsPerLine_ = std::max(10U, static_cast<unsigned int>(static_cast<float>(this->desiredTextWidth_) / CHAR_WIDTH));
@@ -565,36 +558,31 @@ namespace orxonox
         ColourValue colourTop, colourBottom;
         switch (type)
         {
-        case Shell::Error:   colourTop = ColourValue(0.95f, 0.25f, 0.25f, 1.00f);
-                          colourBottom = ColourValue(1.00f, 0.50f, 0.50f, 1.00f); break;
+            case Shell::Message:
+            case Shell::DebugOutput:     colourTop = ColourValue(0.9f, 0.9f, 0.9f); break;
 
-        case Shell::Warning: colourTop = ColourValue(0.95f, 0.50f, 0.20f, 1.00f);
-                          colourBottom = ColourValue(1.00f, 0.70f, 0.50f, 1.00f); break;
+            case Shell::UserError:       colourTop = ColourValue(0.9f, 0.0f, 0.0f); break;
+            case Shell::UserWarning:     colourTop = ColourValue(0.9f, 0.5f, 0.0f); break;
+            case Shell::UserStatus:      colourTop = ColourValue(0.0f, 0.9f, 0.0f); break;
+            case Shell::UserInfo:        colourTop = ColourValue(0.0f, 0.8f, 0.8f); break;
 
-        case Shell::Info:    colourTop = ColourValue(0.50f, 0.50f, 0.95f, 1.00f);
-                          colourBottom = ColourValue(0.80f, 0.80f, 1.00f, 1.00f); break;
+            case Shell::InternalError:   colourTop = ColourValue(0.5f, 0.0f, 0.0f); break;
+            case Shell::InternalWarning: colourTop = ColourValue(0.5f, 0.2f, 0.0f); break;
+            case Shell::InternalStatus:  colourTop = ColourValue(0.0f, 0.5f, 0.0f); break;
+            case Shell::InternalInfo:    colourTop = ColourValue(0.0f, 0.4f, 0.4f); break;
 
-        case Shell::Debug:   colourTop = ColourValue(0.65f, 0.48f, 0.44f, 1.00f);
-                          colourBottom = ColourValue(1.00f, 0.90f, 0.90f, 1.00f); break;
+            case Shell::Verbose:         colourTop = ColourValue(0.3f, 0.3f, 0.9f); break;
+            case Shell::VerboseMore:     colourTop = ColourValue(0.2f, 0.2f, 0.7f); break;
+            case Shell::VerboseUltra:    colourTop = ColourValue(0.1f, 0.1f, 0.5f); break;
 
-        case Shell::Verbose: colourTop = ColourValue(0.40f, 0.20f, 0.40f, 1.00f);
-                          colourBottom = ColourValue(0.80f, 0.60f, 0.80f, 1.00f); break;
+            case Shell::Command:         colourTop = ColourValue(0.8f, 0.2f, 0.8f); break;
+            case Shell::Hint:            colourTop = ColourValue(0.4f, 0.0f, 0.4f); break;
+            case Shell::Input:           colourTop = ColourValue(0.9f, 0.9f, 0.9f); break;
 
-        case Shell::Ultra:   colourTop = ColourValue(0.21f, 0.69f, 0.21f, 1.00f);
-                          colourBottom = ColourValue(0.80f, 1.00f, 0.80f, 1.00f); break;
-
-        case Shell::Command: colourTop = ColourValue(0.80f, 0.80f, 0.80f, 1.00f);
-                          colourBottom = ColourValue(0.90f, 0.90f, 0.90f, 0.90f); break;
-
-        case Shell::Hint:    colourTop = ColourValue(0.80f, 0.80f, 0.80f, 1.00f);
-                          colourBottom = ColourValue(0.90f, 0.90f, 0.90f, 1.00f); break;
-
-        case Shell::TDebug:  colourTop = ColourValue(0.90f, 0.00f, 0.90f, 1.00f);
-                          colourBottom = ColourValue(1.00f, 0.00f, 1.00f, 1.00f); break;
-
-        default:             colourTop = ColourValue(0.90f, 0.90f, 0.90f, 1.00f);
-                          colourBottom = ColourValue(1.00f, 1.00f, 1.00f, 1.00f); break;
+            default:                     colourTop = ColourValue(0.5f, 0.5f, 0.5f); break;
         }
+
+        colourBottom = ColourValue(sqrt(colourTop.r), sqrt(colourTop.g), sqrt(colourTop.b));
 
         this->consoleOverlayTextAreas_[index]->setColourTop   (colourTop);
         this->consoleOverlayTextAreas_[index]->setColourBottom(colourBottom);

@@ -69,7 +69,7 @@ namespace orxonox
     {
         SUPER(FailQuest, XMLPort, xmlelement, mode);
 
-        COUT(4) << "New FailQuest, with target Quest {" << this->getQuestId() << "}, created." << std::endl;
+        orxout(verbose, context::quests) << "New FailQuest, with target Quest {" << this->getQuestId() << "}, created." << endl;
     }
 
     /**
@@ -84,7 +84,7 @@ namespace orxonox
     {
         assert(player);
 
-        COUT(4) << "FailQuest on player: " << player << " ." << std::endl;
+        orxout(verbose, context::quests) << "FailQuest on player: " << player << " ." << endl;
 
         Quest* quest;
         try
@@ -95,11 +95,11 @@ namespace orxonox
         }
         catch(const Exception& e)
         {
-            COUT(2) << e.getFullDescription() << std::endl;
+            orxout(internal_warning, context::quests) << e.getFullDescription() << endl;
             return false;
         }
 
-        COUT(4) << "Quest {" << quest->getId() << "} failed by player: " << player << " ." << std::endl;
+        orxout(verbose, context::quests) << "Quest {" << quest->getId() << "} failed by player: " << player << " ." << endl;
         return true;
     }
 

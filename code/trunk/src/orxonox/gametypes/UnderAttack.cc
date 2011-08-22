@@ -31,7 +31,7 @@
 #include "util/Convert.h"
 #include "core/CoreIncludes.h"
 #include "core/ConfigValueIncludes.h"
-#include "network/Host.h"
+#include "chat/ChatManager.h"
 #include "worldentities/pawns/Destroyer.h"
 #include "infos/PlayerInfo.h"
 
@@ -69,8 +69,7 @@ namespace orxonox
     {
         this->end(); //end gametype
         std::string message("Ship destroyed! Team 0 has won!");
-        COUT(0) << message << std::endl;
-        Host::Broadcast(message);
+        ChatManager::message(message);
         this->gameEnded_ = true;
 
         for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
@@ -152,8 +151,7 @@ namespace orxonox
                 this->gameEnded_ = true;
                 this->end();
                 std::string message("Time is up! Team 1 has won!");
-                COUT(0) << message << std::endl;
-                Host::Broadcast(message);
+                ChatManager::message(message);
 
                 for (std::map<PlayerInfo*, int>::iterator it = this->teamnumbers_.begin(); it != this->teamnumbers_.end(); ++it)
                 {
@@ -172,8 +170,7 @@ namespace orxonox
             {
                 const std::string& message = multi_cast<std::string>(timesequence_) + " seconds left!";
 /*
-                COUT(0) << message << std::endl;
-                Host::Broadcast(message);
+                ChatManager::message(message);
 */
                 this->gtinfo_->sendAnnounceMessage(message);
 

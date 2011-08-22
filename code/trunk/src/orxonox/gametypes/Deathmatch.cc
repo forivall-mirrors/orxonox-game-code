@@ -29,7 +29,7 @@
 #include "Deathmatch.h"
 
 #include "core/CoreIncludes.h"
-#include "network/Host.h"
+#include "chat/ChatManager.h"
 #include "infos/PlayerInfo.h"
 #include "worldentities/pawns/Pawn.h"
 
@@ -47,8 +47,7 @@ namespace orxonox
         Gametype::start();
 
         std::string message("The match has started!");
-        COUT(0) << message << std::endl;
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 
     void Deathmatch::end()
@@ -56,8 +55,7 @@ namespace orxonox
         Gametype::end();
 
         std::string message("The match has ended.");
-        COUT(0) << message << std::endl;
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 
     void Deathmatch::playerEntered(PlayerInfo* player)
@@ -65,8 +63,7 @@ namespace orxonox
         Gametype::playerEntered(player);
 
         const std::string& message = player->getName() + " entered the game";
-        COUT(0) << message << std::endl;
-        Host::Broadcast(message);
+        ChatManager::message(message);
     }
 
     bool Deathmatch::playerLeft(PlayerInfo* player)
@@ -76,8 +73,7 @@ namespace orxonox
         if (valid_player)
         {
             const std::string& message = player->getName() + " left the game";
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
 
         return valid_player;
@@ -90,8 +86,7 @@ namespace orxonox
         if (valid_player)
         {
             const std::string& message = player->getOldName() + " changed name to " + player->getName();
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
 
         return valid_player;
@@ -112,8 +107,7 @@ namespace orxonox
             else
                 message = victim->getPlayer()->getName() + " died";
 
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
 
         Gametype::pawnKilled(victim, killer);
@@ -126,8 +120,7 @@ namespace orxonox
         if (player)
         {
             const std::string& message = player->getName() + " scores!";
-            COUT(0) << message << std::endl;
-            Host::Broadcast(message);
+            ChatManager::message(message);
         }
     }
 }

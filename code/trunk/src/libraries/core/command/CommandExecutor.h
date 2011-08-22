@@ -110,7 +110,7 @@ namespace orxonox
     {
 // tolua_end
         public:
-            static int execute(const std::string& command, bool useTcl = true); // tolua_export
+            static int execute(const std::string& command, bool useTcl = true, bool printErrors = true); // tolua_export
 
             static MultiType queryMT(const std::string& command, int* error = 0, bool useTcl = true);
             static std::string query(const std::string& command, int* error = 0, bool useTcl = true); // tolua_export
@@ -118,10 +118,13 @@ namespace orxonox
             static CommandEvaluation evaluate(const std::string& command);
 
             static const int Success = 0;       ///< Error code for "success" (or no error)
-            static const int Error = 1;         ///< Error code if the command doesn't exist
+            static const int Inexistent = 1;    ///< Error code if the command doesn't exist
             static const int Incomplete = 2;    ///< Error code if the command needs more arguments
             static const int Deactivated = 3;   ///< Error code if the command is not active
             static const int Denied = 4;        ///< Error code if the command needs a different access level
+            static const int Error = 5;         ///< Error code if the command returned an error
+
+            static std::string getErrorDescription(int error);
 
             static MultiType unhide(const std::string& command);
             static void alias(const std::string& alias, const std::string& command);

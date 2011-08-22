@@ -51,8 +51,9 @@
 #endif
 
 #include "util/Clock.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
+#include "util/output/LogWriter.h"
 #include "util/Scope.h"
 #include "util/ScopedSingletonManager.h"
 #include "util/SignalHandler.h"
@@ -110,6 +111,8 @@ namespace orxonox
         , bDevMode_(false)
         , destructionHelper_(this)
     {
+        orxout(internal_status) << "initializing Core object..." << endl;
+
         // Set the hard coded fixed paths
         this->pathConfig_ = new PathConfig();
 
@@ -117,6 +120,7 @@ namespace orxonox
         this->dynLibManager_ = new DynLibManager();
 
         // Load modules
+        orxout(internal_info) << "Loading modules:" << endl;
         const std::vector<std::string>& modulePaths = this->pathConfig_->getModulePaths();
         for (std::vector<std::string>::const_iterator it = modulePaths.begin(); it != modulePaths.end(); ++it)
         {
@@ -126,7 +130,7 @@ namespace orxonox
             }
             catch (...)
             {
-                COUT(1) << "Couldn't load module \"" << *it << "\": " << Exception::handleMessage() << std::endl;
+                orxout(user_error) << "Couldn't load module \"" << *it << "\": " << Exception::handleMessage() << endl;
             }
         }
 
@@ -136,13 +140,18 @@ namespace orxonox
         // Set configurable paths like log, config and media
         this->pathConfig_->setConfigurablePaths();
 
+        orxout(internal_info) << "Root path:       " << PathConfig::getRootPathString() << endl;
+        orxout(internal_info) << "Executable path: " << PathConfig::getExecutablePathString() << endl;
+        orxout(internal_info) << "Data path:       " << PathConfig::getDataPathString() << endl;
+        orxout(internal_info) << "Ext. data path:  " << PathConfig::getExternalDataPathString() << endl;
+        orxout(internal_info) << "Config path:     " << PathConfig::getConfigPathString() << endl;
+        orxout(internal_info) << "Log path:        " << PathConfig::getLogPathString() << endl;
+        orxout(internal_info) << "Modules path:    " << PathConfig::getModulePathString() << endl;
+
         // create a signal handler (only active for Linux)
         // This call is placed as soon as possible, but after the directories are set
         this->signalHandler_ = new SignalHandler();
         this->signalHandler_->doCatch(PathConfig::getExecutablePathString(), PathConfig::getLogPathString() + "orxonox_crash.log");
-
-        // Set the correct log path. Before this call, /tmp (Unix) or %TEMP% (Windows) was used
-        OutputHandler::getInstance().setLogPath(PathConfig::getLogPathString());
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
         // limit the main thread to the first core so that QueryPerformanceCounter doesn't jump
@@ -154,19 +163,23 @@ namespace orxonox
 #endif
 
         // Manage ini files and set the default settings file (usually orxonox.ini)
+        orxout(internal_info) << "Loading config:" << endl;
         this->configFileManager_ = new ConfigFileManager();
         this->configFileManager_->setFilename(ConfigFileType::Settings,
             CommandLineParser::getValue("settingsFile").getString());
 
         // Required as well for the config values
+        orxout(internal_info) << "Loading language:" << endl;
         this->languageInstance_ = new Language();
 
         // Do this soon after the ConfigFileManager has been created to open up the
         // possibility to configure everything below here
         RegisterRootObject(Core);
+        orxout(internal_info) << "configuring Core" << endl;
         this->setConfigValues();
-        // Rewrite the log file with the correct log levels
-        OutputHandler::getInstance().rewriteLogFile();
+
+        // Set the correct log path and rewrite the log file with the correct log levels
+        LogWriter::getInstance().setLogPath(PathConfig::getLogPathString());
 
 #if !defined(ORXONOX_PLATFORM_APPLE) && !defined(ORXONOX_USE_WINMAIN)
         // Create persistent IO console
@@ -175,13 +188,18 @@ namespace orxonox
             ModifyConfigValue(bStartIOConsole_, tset, false);
         }
         if (this->bStartIOConsole_)
+        {
+            orxout(internal_info) << "creating IO console" << endl;
             this->ioConsole_ = new IOConsole();
+        }
 #endif
 
         // creates the class hierarchy for all classes with factories
+        orxout(internal_info) << "creating class hierarchy" << endl;
         Identifier::createClassHierarchy();
 
         // Load OGRE excluding the renderer and the render window
+        orxout(internal_info) << "creating GraphicsManager:" << endl;
         this->graphicsManager_ = new GraphicsManager(false);
 
         // initialise Tcl
@@ -189,6 +207,7 @@ namespace orxonox
         this->tclThreadManager_ = new TclThreadManager(tclBind_->getTclInterpreter());
 
         // Create singletons that always exist (in other libraries)
+        orxout(internal_info) << "creating root scope:" << endl;
         this->rootScope_ = new Scope<ScopeID::Root>();
 
         // Generate documentation instead of normal run?
@@ -203,12 +222,16 @@ namespace orxonox
                 docFile.close();
             }
             else
-                COUT(0) << "Error: Could not open file for documentation writing" << endl;
+                orxout(internal_error) << "Could not open file for documentation writing" << endl;
         }
+
+        orxout(internal_status) << "finished initializing Core object" << endl;
     }
 
     void Core::destroy()
     {
+        orxout(internal_status) << "destroying Core object..." << endl;
+
         // Remove us from the object lists again to avoid problems when destroying them
         this->unregisterObject();
 
@@ -227,23 +250,31 @@ namespace orxonox
         safeObjectDelete(&signalHandler_);
         safeObjectDelete(&dynLibManager_);
         safeObjectDelete(&pathConfig_);
-    }
 
-    namespace DefaultLevelLogFile
-    {
-        const OutputLevel::Value Dev  = OutputLevel::Debug;
-        const OutputLevel::Value User = OutputLevel::Info;
+        orxout(internal_status) << "finished destroying Core object" << endl;
     }
 
     //! Function to collect the SetConfigValue-macro calls.
     void Core::setConfigValues()
     {
-        // Choose the default level according to the path Orxonox was started (build directory or not)
-        OutputLevel::Value defaultLogLevel = (PathConfig::buildDirectoryRun() ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
-
-        SetConfigValueExternal(debugLevelLogFile_, "OutputHandler", "debugLevelLogFile", defaultLogLevel)
-            .description("The maximum level of debug output written to the log file");
-        OutputHandler::getInstance().setSoftDebugLevel("LogFile", debugLevelLogFile_);
+        SetConfigValueExternal(LogWriter::getInstance().configurableMaxLevel_,
+                               LogWriter::getInstance().getConfigurableSectionName(),
+                               LogWriter::getInstance().getConfigurableMaxLevelName(),
+                               LogWriter::getInstance().configurableMaxLevel_)
+            .description("The maximum level of output shown in the log file")
+            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableLevel);
+        SetConfigValueExternal(LogWriter::getInstance().configurableAdditionalContextsMaxLevel_,
+                               LogWriter::getInstance().getConfigurableSectionName(),
+                               LogWriter::getInstance().getConfigurableAdditionalContextsMaxLevelName(),
+                               LogWriter::getInstance().configurableAdditionalContextsMaxLevel_)
+            .description("The maximum level of output shown in the log file for additional contexts")
+            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableAdditionalContextsLevel);
+        SetConfigValueExternal(LogWriter::getInstance().configurableAdditionalContexts_,
+                               LogWriter::getInstance().getConfigurableSectionName(),
+                               LogWriter::getInstance().getConfigurableAdditionalContextsName(),
+                               LogWriter::getInstance().configurableAdditionalContexts_)
+            .description("Additional output contexts shown in the log file")
+            .callback(static_cast<BaseWriter*>(&LogWriter::getInstance()), &BaseWriter::changedConfigurableAdditionalContexts);
 
         SetConfigValue(bDevMode_, PathConfig::buildDirectoryRun())
             .description("Developer mode. If not set, hides some things from the user to not confuse him.")
@@ -278,17 +309,6 @@ namespace orxonox
     */
     void Core::devModeChanged()
     {
-        bool isNormal = (bDevMode_ == PathConfig::buildDirectoryRun());
-        if (isNormal)
-        {
-            ModifyConfigValueExternal(debugLevelLogFile_, "debugLevelLogFile", update);
-        }
-        else
-        {
-            OutputLevel::Value level = (bDevMode_ ? DefaultLevelLogFile::Dev : DefaultLevelLogFile::User);
-            ModifyConfigValueExternal(debugLevelLogFile_, "debugLevelLogFile", tset, level);
-        }
-
         // Inform listeners
         ObjectList<DevModeListener>::iterator it = ObjectList<DevModeListener>::begin();
         for (; it != ObjectList<DevModeListener>::end(); ++it)
@@ -315,6 +335,8 @@ namespace orxonox
 
     void Core::loadGraphics()
     {
+        orxout(internal_info) << "loading graphics in Core" << endl;
+        
         // Any exception should trigger this, even in upgradeToGraphics (see its remarks)
         Loki::ScopeGuard unloader = Loki::MakeObjGuard(*this, &Core::unloadGraphics);
 
@@ -326,7 +348,7 @@ namespace orxonox
         catch (const InitialisationFailedException&)
         {
             // Exit the application if the Ogre config dialog was canceled
-            COUT(1) << Exception::handleMessage() << std::endl;
+            orxout(user_error) << Exception::handleMessage() << endl;
             exit(EXIT_FAILURE);
         }
         catch (...)
@@ -337,9 +359,9 @@ namespace orxonox
             // throws an exception and the graphics engine then gets destroyed
             // and reloaded between throw and catch (access violation in MSVC).
             // That's why we abort completely and only display the exception.
-            COUT(1) << "An exception occurred during upgrade to graphics. "
-                    << "That is unrecoverable. The message was:" << endl
-                    << Exception::handleMessage() << endl;
+            orxout(user_error) << "An exception occurred during upgrade to graphics. "
+                               << "That is unrecoverable. The message was:" << endl
+                               << Exception::handleMessage() << endl;
             abort();
         }
 
@@ -356,13 +378,18 @@ namespace orxonox
         graphicsManager_->loadDebugOverlay();
 
         // Create singletons associated with graphics (in other libraries)
+        orxout(internal_info) << "creating graphics scope:" << endl;
         graphicsScope_ = new Scope<ScopeID::Graphics>();
 
         unloader.Dismiss();
+
+        orxout(internal_info) << "finished loading graphics in Core" << endl;
     }
 
     void Core::unloadGraphics()
     {
+        orxout(internal_info) << "unloading graphics in Core" << endl;
+
         safeObjectDelete(&graphicsScope_);
         safeObjectDelete(&guiManager_);
         safeObjectDelete(&inputManager_);
@@ -373,9 +400,9 @@ namespace orxonox
             { this->graphicsManager_ = new GraphicsManager(false); }
         catch (...)
         {
-            COUT(0) << "An exception occurred during 'unloadGraphics':" << Exception::handleMessage() << std::endl
-                    << "Another exception might be being handled which may lead to undefined behaviour!" << std::endl
-                    << "Terminating the program." << std::endl;
+            orxout(user_error) << "An exception occurred during 'unloadGraphics':" << Exception::handleMessage() << endl
+                               << "Another exception might be being handled which may lead to undefined behaviour!" << endl
+                               << "Terminating the program." << endl;
             abort();
         }
 

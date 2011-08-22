@@ -456,7 +456,7 @@ namespace orxonox
             this->xmlcontroller_->setControllableEntity(this);
         }
         else
-            COUT(2) << "Warning: ControllableEntity \"" << this->getName() << "\" already has a Controller." << std::endl;
+            orxout(internal_warning) << "ControllableEntity \"" << this->getName() << "\" already has a Controller." << endl;
     }
 
     void ControllableEntity::parentChanged()

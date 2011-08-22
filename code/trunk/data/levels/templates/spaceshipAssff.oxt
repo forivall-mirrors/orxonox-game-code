@@ -55,7 +55,7 @@
       <BoxCollisionShape position="0,0.1,-19"  halfExtents="1.4, 1, 2" />
     </collisionShapes>
 <?lua
-  include("includes/weaponSettingsAssff.oxi")
+  include("../includes/weaponSettingsAssff.oxi")
 ?>
   </SpaceShip>
 </Template>

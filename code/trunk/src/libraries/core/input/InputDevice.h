@@ -42,7 +42,7 @@
 #include <ois/OISException.h>
 
 #include "util/Clock.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "util/Exception.h"
 #include "InputState.h"
 
@@ -134,7 +134,7 @@ namespace orxonox
             // Note: after the static_cast here, the cast this pointer becomes
             //       invalid right until the subclass has been constructed!
             oisDevice_->setEventCallback(static_cast<DeviceClass*>(this));
-            COUT(4) << "Instantiated a " << this->getClassName() << std::endl;
+            orxout(verbose, context::input) << "Instantiated a " << this->getClassName() << endl;
         }
 
         //! Destroys the OIS device
@@ -146,8 +146,8 @@ namespace orxonox
             }
             catch (const OIS::Exception& ex)
             {
-                COUT(1) << this->getClassName() << " destruction failed: " << ex.eText << std::endl
-                        << "    Potential resource leak!" << std::endl;
+                orxout(internal_error, context::input) << this->getClassName() << " destruction failed: " << ex.eText << '\n'
+                                                       << "Potential resource leak!" << endl;
             }
         }
 

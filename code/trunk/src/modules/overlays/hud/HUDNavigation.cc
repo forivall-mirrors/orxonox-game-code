@@ -104,7 +104,7 @@ void HUDNavigation::setFont ( const std::string& font )
     const Ogre::ResourcePtr& fontPtr = Ogre::FontManager::getSingleton().getByName ( font );
     if ( fontPtr.isNull() )
     {
-        COUT ( 2 ) << "Warning: HUDNavigation: Font '" << font << "' not found" << std::endl;
+        orxout(internal_warning) << "HUDNavigation: Font '" << font << "' not found" << endl;
         return;
     }
     fontName_ = font;
@@ -124,7 +124,7 @@ void HUDNavigation::setTextSize ( float size )
 {
     if ( size <= 0.0f )
     {
-        COUT ( 2 ) << "Warning: HUDNavigation: Negative font size not allowed" << std::endl;
+        orxout(internal_warning) << "HUDNavigation: Negative font size not allowed" << endl;
         return;
     }
     textSize_ = size;

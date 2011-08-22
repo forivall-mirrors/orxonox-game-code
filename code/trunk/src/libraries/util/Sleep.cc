@@ -33,7 +33,7 @@
 */
 
 #include "Sleep.h"
-#include "Debug.h"
+#include "Output.h"
 
 #ifdef ORXONOX_PLATFORM_WINDOWS
 #ifndef WIN32_LEAN_AND_MEAN
@@ -48,7 +48,7 @@ namespace orxonox
     void usleep(unsigned long microseconds)
     {
         //if (microseconds < 1000)
-        //    COUT(2) << "Warning: Windows cannot sleep less than 1ms, ignoring" << std::endl;
+        //    orxout(internal_warning) << "Windows cannot sleep less than 1ms, ignoring" << endl;
         Sleep(microseconds / 1000);
     }
 

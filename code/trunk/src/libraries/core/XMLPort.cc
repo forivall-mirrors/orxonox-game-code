@@ -63,7 +63,7 @@ namespace orxonox
                     {
                         if (!this->sectionname_.empty())
                         {
-                            COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a valid classname." << std::endl;
+                            orxout(internal_warning, context::xml) << object->getLoaderIndentation() << "'" << child->Value() << "' is not a valid classname." << endl;
                         }
                         else
                         {
@@ -73,12 +73,12 @@ namespace orxonox
                     }
                     if (!identifier->isA(objectIdentifier_))
                     {
-                        COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not a '" << objectIdentifier_->getName() << "'." << std::endl;
+                        orxout(internal_warning, context::xml) << object->getLoaderIndentation() << "'" << child->Value() << "' is not a '" << objectIdentifier_->getName() << "'." << endl;
                         continue;
                     }
                     if (!identifier->isLoadable())
                     {
-                        COUT(2) << object->getLoaderIndentation() << "Warning: '" << child->Value() << "' is not loadable." << std::endl;
+                        orxout(internal_warning, context::xml) << object->getLoaderIndentation() << "'" << child->Value() << "' is not loadable." << endl;
                         continue;
                     }
                     if (!this->identifierIsIncludedInLoaderMask(identifier))
@@ -86,7 +86,7 @@ namespace orxonox
 
                     try
                     {
-                        COUT(4) << object->getLoaderIndentation() << "fabricating " << child->Value() << "..." << std::endl;
+                        orxout(verbose, context::xml) << object->getLoaderIndentation() << "fabricating " << child->Value() << "..." << endl;
 
                         BaseObject* newObject = identifier->fabricate(object);
                         newObject->setLoaderIndentation(object->getLoaderIndentation() + "  ");
@@ -94,39 +94,37 @@ namespace orxonox
                         if (this->bLoadBefore_)
                         {
                             newObject->XMLPort(*child, XMLPort::LoadObject);
-                            COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ')' << std::endl;
+                            orxout(verbose, context::xml) << object->getLoaderIndentation() << "assigning " << child->Value() << " (objectname " << newObject->getName() << ") to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ')' << endl;
                         }
                         else
                         {
-                            COUT(4) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ')' << std::endl;
+                            orxout(verbose, context::xml) << object->getLoaderIndentation() << "assigning " << child->Value() << " (object not yet loaded) to " << this->identifier_->getName() << " (objectname " << static_cast<BaseObject*>(object)->getName() << ')' << endl;
                         }
-
-                        COUT(5) << object->getLoaderIndentation();
 
                         this->callLoadExecutor(object, newObject);
 
                         if (!this->bLoadBefore_)
                             newObject->XMLPort(*child, XMLPort::LoadObject);
 
-                        COUT(5) << object->getLoaderIndentation() << "...fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << std::endl;
+                        orxout(verbose, context::xml) << object->getLoaderIndentation() << "fabricated " << child->Value() << " (objectname " << newObject->getName() << ")." << endl;
                     }
                     catch (AbortLoadingException& ex)
                     {
-                        COUT(1) << "An error occurred while loading object, abort loading..." << std::endl;
+                        orxout(internal_error, context::xml) << "An error occurred while loading object, abort loading..." << endl;
                         throw ex;
                     }
                     catch (...)
                     {
-                        COUT(1) << "An error occurred while loading object:" << std::endl;
-                        COUT(1) << Exception::handleMessage() << std::endl;
+                        orxout(internal_error, context::xml) << "An error occurred while loading object:" << endl;
+                        orxout(internal_error, context::xml) << Exception::handleMessage() << endl;
                     }
                 }
             }
             catch (ticpp::Exception& ex)
             {
-                COUT(1) << std::endl;
-                COUT(1) << "An error occurred in XMLPort.h while loading a '" << objectIdentifier_->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << object->getName() << ") in " << object->getFilename() << ':' << std::endl;
-                COUT(1) << ex.what() << std::endl;
+                orxout(internal_error, context::xml) << endl;
+                orxout(internal_error, context::xml) << "An error occurred in XMLPort.h while loading a '" << objectIdentifier_->getName() << "' in '" << this->sectionname_ << "' of '" << this->identifier_->getName() << "' (objectname: " << object->getName() << ") in " << object->getFilename() << ':' << endl;
+                orxout(internal_error, context::xml) << ex.what() << endl;
             }
         }
         else if (mode == XMLPort::SaveObject)

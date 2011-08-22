@@ -37,7 +37,7 @@
 #include "util/Convert.h"
 #include "util/SubString.h"
 #include "util/StringUtils.h"
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "core/command/ConsoleCommand.h"
 #include "core/command/CommandEvaluation.h"
 #include "core/command/CommandExecutor.h"
@@ -254,13 +254,13 @@ namespace orxonox
     {
         if (serious)
         {
-            COUT(2) << "Error while parsing binding for button/axis " << this->name_ << ". "
-                << message << std::endl;
+            orxout(internal_error, context::input) << "Error while parsing binding for button/axis " << this->name_ << ". "
+                << message << endl;
         }
         else
         {
-            COUT(3) << "Warning while parsing binding for button/axis " << this->name_ << ". "
-                << message << std::endl;
+            orxout(internal_warning, context::input) << "Warning while parsing binding for button/axis " << this->name_ << ". "
+                << message << endl;
         }
     }
 }

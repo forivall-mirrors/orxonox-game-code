@@ -77,7 +77,7 @@
     @code
     void myfunction(int value)
     {
-        COUT(0) << "doubled value is " << (2 * value) << std::endl;
+        orxout() << "doubled value is " << (2 * value) << endl;
     }
 
     MultiType a = "50";        // Note: We assigned a string

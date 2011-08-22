@@ -48,6 +48,8 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
+#include "util/Output.h"
+
 namespace orxonox // tolua_export
 { // tolua_export
     class LuaFunctor; // tolua_export
@@ -82,7 +84,9 @@ namespace orxonox // tolua_export
         bool includeString(const std::string& code, const shared_ptr<ResourceInfo>& sourceFileInfo = shared_ptr<ResourceInfo>());
 
         void luaPrint(const std::string& str); // tolua_export
-        void luaLog(unsigned int level, const std::string& message); // tolua_export
+        void luaOutput(orxonox::level::OutputLevel level, const std::string& context, const std::string& message); // tolua_export
+        void luaOutput(orxonox::level::OutputLevel level, const std::string& message); // tolua_export
+        void luaOutput(const std::string& message); // tolua_export
         bool fileExists(const std::string& filename); // tolua_export
         std::string getSourceCode(const std::string& filename); // tolua_export
 

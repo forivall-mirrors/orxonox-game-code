@@ -28,7 +28,7 @@
 
 #include "GSServer.h"
 
-#include "util/Debug.h"
+#include "util/Output.h"
 #include "core/CommandLineParser.h"
 #include "core/Game.h"
 #include "core/GameMode.h"
@@ -53,10 +53,12 @@ namespace orxonox
 
     void GSServer::activate()
     {
+        orxout(user_status) << "Starting server" << endl;
+
         GameMode::setIsServer(true);
 
         this->server_ = new Server(CommandLineParser::getValue("port"));
-        COUT(0) << "Loading scene in server mode" << std::endl;
+        orxout(user_status) << "Loading scene in server mode" << endl;
 
         server_->open();
     }

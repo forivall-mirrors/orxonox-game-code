@@ -97,7 +97,7 @@ namespace orxonox
 
         if (this->attachedShapes_.find(shape) != this->attachedShapes_.end())
         {
-            CCOUT(2) << "Warning: Attaching a CollisionShape twice is not yet supported." << std::endl;
+            orxout(internal_warning) << "Attaching a CollisionShape twice is not yet supported." << endl;
             return;
         }
 
@@ -138,7 +138,7 @@ namespace orxonox
             this->updatePublicShape();
         }
         else
-            CCOUT(2) << "Warning: Cannot detach non child collision shape" << std::endl;
+            orxout(internal_warning) << "Cannot detach non child collision shape" << endl;
     }
 
     /**
@@ -167,7 +167,7 @@ namespace orxonox
         // Check whether the input shape belongs to this CompoundCollisionShape.
         if (it == this->attachedShapes_.end())
         {
-            CCOUT(2) << "Warning: Cannot update child shape: Instance not a child." << std::endl;
+            orxout(internal_warning) << "Cannot update child shape: Instance not a child." << endl;
             return;
         }
 

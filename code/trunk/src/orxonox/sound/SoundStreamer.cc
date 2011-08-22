@@ -50,7 +50,7 @@ namespace orxonox
         int ret = ov_open_callbacks(dataStream.get(), &vf, NULL, 0, vorbisCallbacks);
         if (ret < 0)
         {
-            COUT(2) << "Sound: libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << std::endl;
+            orxout(internal_error, context::sound) << "libvorbisfile: File does not seem to be an Ogg Vorbis bitstream" << endl;
             ov_clear(&vf);
             return;
         }
@@ -76,7 +76,7 @@ namespace orxonox
             }
             else if (ret < 0)
             {
-                COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
+                orxout(internal_error, context::sound) << "libvorbisfile: error reading the file" << endl;
                 ov_clear(&vf);
                 return;
             }
@@ -90,16 +90,16 @@ namespace orxonox
             int processed;
             alGetSourcei(audioSource, AL_BUFFERS_PROCESSED, &processed);
             if (ALint error = alGetError())
-            COUT(2) << "Sound Warning: Couldn't get number of processed buffers: "
-                    << SoundManager::getALErrorString(error) << std::endl;
+            orxout(internal_warning, context::sound) << "Couldn't get number of processed buffers: "
+                                                     << SoundManager::getALErrorString(error) << endl;
 
             if(processed > 0)
             {
                 ALuint* buffers = new ALuint[processed];
                 alSourceUnqueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
-                    COUT(2) << "Sound Warning: Couldn't unqueue buffers: "
-                    << SoundManager::getALErrorString(error) << std::endl;
+                    orxout(internal_warning, context::sound) << "Couldn't unqueue buffers: "
+                                                             << SoundManager::getALErrorString(error) << endl;
 
                 for(int i = 0; i < processed; i++)
                 {
@@ -110,7 +110,7 @@ namespace orxonox
                     }
                     else if (ret < 0)
                     {
-                        COUT(2) << "Sound: libvorbisfile: error reading the file" << std::endl;
+                        orxout(internal_error, context::sound) << "libvorbisfile: error reading the file" << endl;
                         ov_clear(&vf);
                         return;
                     }
@@ -120,8 +120,8 @@ namespace orxonox
 
                 alSourceQueueBuffers(audioSource, processed, buffers);
                 if (ALint error = alGetError())
-                    COUT(2) << "Sound Warning: Couldn't queue buffers: "
-                    << SoundManager::getALErrorString(error) << std::endl;
+                    orxout(internal_warning, context::sound) << "Couldn't queue buffers: "
+                                                             << SoundManager::getALErrorString(error) << endl;
             }
         }
     }
