@@ -66,10 +66,6 @@
       <CameraPosition position="0,10, 40" drag=true mouselook=true />
       <CameraPosition position="0,20, 80" drag=true mouselook=true />
       <CameraPosition position="0,30,120" drag=true mouselook=true />
-      <CameraPosition position="0,0,-40" yaw=180 drag=true />
-      <CameraPosition position="0,3,-14" yaw=0 />
-      <CameraPosition position="-50,5,-8" yaw=-90 drag=true />
-      <CameraPosition position="50,5,-8" yaw=90 drag=true /-->
     </camerapositions>
   </SpaceShip>
 </Template>
