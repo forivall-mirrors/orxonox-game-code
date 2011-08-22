@@ -51,8 +51,9 @@
 
 namespace orxonox
 {
-
     CreateFactory(SimpleRocket);
+
+    const float SimpleRocket::FUEL_PERCENTAGE = 0.8f;
 
     SimpleRocket::SimpleRocket(BaseObject* creator)
         : ControllableEntity(creator)
@@ -94,7 +95,7 @@ namespace orxonox
             collisionShape->setRadius(1.5f);
             collisionShape->setHeight(5);
             this->attachCollisionShape(collisionShape);
-            
+
             this->destroyTimer_.setTimer(this->lifetime_, false, createExecutor(createFunctor(&BasicProjectile::destroyObject, this)));
         }
 
@@ -114,7 +115,7 @@ namespace orxonox
     void SimpleRocket::tick(float dt)
     {
         SUPER(SimpleRocket, tick, dt);
-        
+
         if (GameMode::isMaster())
         {
             this->setAngularVelocity(this->getOrientation() * this->localAngularVelocity_);
@@ -166,7 +167,7 @@ namespace orxonox
     void SimpleRocket::setShooter(Pawn* shooter)
     {
         BasicProjectile::setShooter(shooter);
-        
+
         this->player_ = this->getShooter()->getPlayer();
     }
 
