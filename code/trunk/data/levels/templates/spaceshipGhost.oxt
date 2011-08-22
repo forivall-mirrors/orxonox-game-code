@@ -2,18 +2,35 @@
   <SpaceShip
    hudtemplate            = spaceshiphud
    camerapositiontemplate = spaceshipghostcameras
-
    spawnparticlesource    = "Orxonox/fairytwirl"
    spawnparticleduration  = 3
    explosionchunks        = 6
 
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
+   health            = 30
+   maxhealth         = 50
+   initialhealth     = 30
 
-   primaryThrust     = 600;
-   auxilaryThrust    = 30;
-   rotationThrust    = 25;
+   shieldhealth        = 100
+   initialshieldhealth = 100
+   maxshieldhealth     = 150
+   shieldabsorption    = 0.9
+   reloadrate          = 3
+   reloadwaittime      = 0.0
+
+   primaryThrust     = 600
+   auxilaryThrust    = 30
+   rotationThrust    = 25
+
+   lift = 1;
+   stallSpeed = 220;
+
+   boostPower            = 30
+   boostPowerRate        = 1
+   boostRate             = 5
+   boostCooldownDuration = 15
+
+   shakeFrequency = 20
+   shakeAmplitude = 6
 
    collisionType     = "dynamic"
    mass              = 100
@@ -59,7 +76,7 @@
    speedleftright =  50
    speedupdown    =  50
 
-   accelerationfront     = 700
+   accelerationfront     = 1000
    accelerationbrake     = 300
    accelerationback      =  100
    accelerationleftright =  100

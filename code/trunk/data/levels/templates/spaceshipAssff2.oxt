@@ -66,7 +66,6 @@
       <CameraPosition position="0,10, 40" drag=true mouselook=true />
       <CameraPosition position="0,20, 80" drag=true mouselook=true />
       <CameraPosition position="0,30,120" drag=true mouselook=true />
-      <!--CameraPosition position="0,150,-25" pitch=-90 drag=true />
       <CameraPosition position="0,0,-40" yaw=180 drag=true />
       <CameraPosition position="0,3,-14" yaw=0 />
       <CameraPosition position="-50,5,-8" yaw=-90 drag=true />
@@ -120,41 +119,3 @@
 -->
   </MultiStateEngine>
 </Template>
-
-<!--Template name=spaceshippirate>
-  <SpaceShip
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
-
-   maxspeed          = 250
-   maxsecondaryspeed = 50
-   maxrotation       = 100
-   transacc          = 200
-   rotacc            = 140
-   transdamp         = 75
-  >
-    <attached>
-      <Model position="0,-10,-45" yaw=90 pitch=-90 roll=0 scale=4 mesh="pirate.mesh" />
-    </attached>
-  </SpaceShip>
-</Template>
-
-<Template name=spaceshipspacecruiser>
-  <SpaceShip
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
-
-   maxspeed          = 250
-   maxsecondaryspeed = 50
-   maxrotation       = 100
-   transacc          = 200
-   rotacc            = 140
-   transdamp         = 75
-  >
-    <attached>
-      <Model position="8,-30,-120" yaw=90 pitch=-90 roll=0 scale=4 mesh="spacecruiser.mesh" />
-    </attached>
-  </SpaceShip>
-</Template-->

@@ -6,13 +6,28 @@
    spawnparticleduration  = 3
    explosionchunks        = 6
 
-   health            = 100
-   maxhealth         = 200
-   initialhealth     = 100
+   health            = 50
+   maxhealth         = 120
+   initialhealth     = 50
+
+   shieldhealth        = 60
+   initialshieldhealth = 60
+   maxshieldhealth     = 80
+   shieldabsorption    = 0.75
+   reloadrate          = 1.5
+   reloadwaittime      = 0.2
 
    primaryThrust     = 600;
    auxilaryThrust    = 30;
    rotationThrust    = 25;
+
+   lift = 1.2;
+   stallSpeed = 220;
+
+   boostPower            = 20
+   boostPowerRate        = 1
+   boostRate             = 5
+   boostCooldownDuration = 10
 
    collisionType     = "dynamic"
    mass              = 100
@@ -58,7 +73,7 @@
    speedleftright =  60
    speedupdown    =  60
 
-   accelerationfront     = 700
+   accelerationfront     = 1000
    accelerationbrake     = 300
    accelerationback      =  100
    accelerationleftright =  120
